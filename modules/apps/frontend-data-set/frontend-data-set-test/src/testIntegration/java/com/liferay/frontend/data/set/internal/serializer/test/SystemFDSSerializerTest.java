@@ -143,7 +143,7 @@ public class SystemFDSSerializerTest {
 					"L_DATA_SET_USER_CONFIGURATION",
 					TestPropsValues.getCompanyId());
 
-		// Malformed data set user configuration
+		// Malformed configuration JSON
 
 		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
@@ -163,7 +163,7 @@ public class SystemFDSSerializerTest {
 			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest));
 
-		// Valid data set user configuration
+		// Valid configuration JSON
 
 		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.updateObjectEntry(

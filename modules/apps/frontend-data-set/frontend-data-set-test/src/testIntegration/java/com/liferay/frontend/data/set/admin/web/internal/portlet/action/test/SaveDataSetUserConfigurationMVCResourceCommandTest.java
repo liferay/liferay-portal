@@ -134,7 +134,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 	@Test
 	public void testServeResource() throws Exception {
 
-		// Empty data set user configuration
+		// Empty configuration JSON
 
 		_assertResponse(_serveResource());
 
@@ -142,7 +142,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_OK,
 			_serveResource(_jsonFactory.createJSONObject()));
 
-		// Null value in data set user configuration
+		// Null value in configuration JSON
 
 		_assertResponse(_serveResource());
 
@@ -166,7 +166,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		_objectEntryLocalService.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
 
-		// Random entry in data set user configuration
+		// Random entry in configuration JSON
 
 		_assertResponse(
 			_serveResource(
@@ -203,7 +203,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 	@Test
 	public void testServeResourceWithError() throws Exception {
 
-		// Blank data set user configuration
+		// Blank configuration JSON
 
 		_assertResponse(_serveResource());
 
@@ -231,7 +231,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 				_userLocalService.getGuestUser(
 					TestPropsValues.getCompanyId())));
 
-		// Malformed data set user configuration
+		// Malformed configuration JSON
 
 		_assertResponse(_serveResource());
 
@@ -239,7 +239,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(RandomTestUtil.randomString()));
 
-		// Null data set user configuration
+		// Null configuration JSON
 
 		_assertResponse(_serveResource());
 

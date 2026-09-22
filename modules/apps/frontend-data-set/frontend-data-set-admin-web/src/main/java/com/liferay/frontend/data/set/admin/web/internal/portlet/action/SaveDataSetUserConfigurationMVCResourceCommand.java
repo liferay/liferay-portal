@@ -120,10 +120,11 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			return;
 		}
 
-		JSONObject jsonObject = null;
+		JSONObject configurationJSONObject = null;
 
 		try {
-			jsonObject = _jsonFactory.createJSONObject(configurationJSON);
+			configurationJSONObject = _jsonFactory.createJSONObject(
+				configurationJSON);
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
@@ -137,7 +138,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			return;
 		}
 
-		String initialDataSetSnapshotERC = jsonObject.getString(
+		String initialDataSetSnapshotERC = configurationJSONObject.getString(
 			"initialDataSetSnapshotERC", null);
 
 		try {
