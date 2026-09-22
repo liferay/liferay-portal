@@ -1,10 +1,10 @@
 apiVersion: v1
+data:
+    purpose: netpol smoke test fixture
 kind: ConfigMap
 metadata:
     name: netpol-smoke-cm
     namespace: crossplane-system
-data:
-    purpose: netpol smoke test fixture
 ---
 apiVersion: protection.crossplane.io/v1beta1
 kind: Usage
