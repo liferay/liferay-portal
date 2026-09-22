@@ -18,6 +18,7 @@ import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {usersAndOrganizationsPagesTest} from '../../../../fixtures/usersAndOrganizationsPagesTest';
 import {liferayConfig} from '../../../../liferay.config';
+import {getTableRowCells} from '../../../../pages/commerce/commerce-order-content-web/orderImportPage';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -33,6 +34,9 @@ import {
 	configureBuyerUserForSite,
 	configureOperationsManagerUserForSite,
 	configureOrderManagerUserForSite,
+	createAccountWithBuyerUser,
+	createProductWithOptions,
+	findSkuByOptionValueKeys,
 	miniumSetUp,
 } from '../../utils/commerce';
 
@@ -2139,5 +2143,209 @@ test(
 		await expect(
 			commerceLayoutsPage.orderActionsButton('Request a Quote')
 		).toHaveCount(1);
+	}
+);
+
+test(
+	'A buyer can edit every type of product option from the pending orders page',
+	{tag: ['@COMMERCE-12746', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceAdminProductPage,
+		commerceMiniCartPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const productName = `OptionsProduct${getRandomInt()}`;
+
+		const {catalog, channel, site} = await miniumSetUp(apiHelpers);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const {product, productOptions} = await createProductWithOptions(
+			apiHelpers,
+			commerceAdminProductPage,
+			{
+				catalogId: catalog.id,
+				name: productName,
+				optionSpecs: [
+					{
+						fieldType: 'select',
+						name: 'Color',
+						required: true,
+						skuContributor: true,
+						values: [
+							{key: 'value1', name: 'Value1'},
+							{key: 'value2', name: 'Value2'},
+						],
+					},
+					{
+						fieldType: 'radio',
+						name: 'Material',
+						required: true,
+						skuContributor: true,
+						values: [
+							{key: 'value3', name: 'Value3'},
+							{key: 'value4', name: 'Value4'},
+						],
+					},
+					{
+						fieldType: 'checkbox_multiple',
+						name: 'Extras',
+						values: [
+							{key: 'value5', name: 'Value5'},
+							{key: 'value6', name: 'Value6'},
+						],
+					},
+					{fieldType: 'checkbox', name: 'Gift Wrap'},
+					{fieldType: 'date', name: 'Delivery Date'},
+					{fieldType: 'numeric', name: 'Floors'},
+					{fieldType: 'text', name: 'Engraving'},
+				],
+				productConfiguration: {allowBackOrder: true},
+			}
+		);
+
+		const optionKeyOf = (optionName: string) =>
+			productOptions.find(
+				(productOption) => productOption.name['en_US'] === optionName
+			).key;
+
+		const skuForOptionValues = (optionValueKeys: string[]) =>
+			findSkuByOptionValueKeys(product, optionValueKeys);
+
+		const orderedSku = skuForOptionValues(['value1', 'value3']);
+		const editedSku = skuForOptionValues(['value2', 'value4']);
+
+		await apiHelpers.headlessCommerceAdminPricing.postBasePriceEntries(
+			catalog.id,
+			[
+				{price: 10, skuId: orderedSku.id},
+				{price: 20, skuId: editedSku.id},
+			]
+		);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{
+						options:
+							`[{key: ${optionKeyOf('Extras')}, value: ['value5', 'value6']}, ` +
+							`{key: ${optionKeyOf('Gift Wrap')}, value: '${optionKeyOf('Gift Wrap')}'}, ` +
+							`{key: ${optionKeyOf('Delivery Date')}, value: '2023-01-02'}, ` +
+							`{key: ${optionKeyOf('Floors')}, value: '10'}, ` +
+							`{key: ${optionKeyOf('Engraving')}, value: 'Text Content'}]`,
+						quantity: 1,
+						skuId: orderedSku.id,
+					},
+				],
+			},
+			channel.id
+		);
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await pendingOrdersPage.gotoOrder(site.friendlyUrlPath, cart.id);
+
+		await test.step('The order item carries the options it was created with', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
+				'$ 10.00'
+			);
+
+			await commerceMiniCartPage.miniCartButtonClose.click();
+		});
+
+		await test.step('Every option type can be edited from the pending order', async () => {
+			await (
+				await pendingOrdersPage.orderItemsTableRowLink(productName)
+			).click();
+
+			await pendingOrdersPage.editMenuItem.click();
+
+			const editPanel = commerceMiniCartPage.miniCartEditItemPanel;
+
+			await expect(editPanel).toBeVisible();
+
+			await commerceMiniCartPage.selectEditItemOption('Value2', 'Color');
+
+			await expect(commerceMiniCartPage.miniCartSaveButton).toBeEnabled();
+
+			await editPanel.getByRole('radio', {name: 'Value4'}).check();
+
+			await expect(commerceMiniCartPage.miniCartSaveButton).toBeEnabled();
+
+			for (const optionValueName of ['Value5', 'Value6']) {
+				await editPanel
+					.getByRole('checkbox', {name: optionValueName})
+					.uncheck();
+			}
+
+			await editPanel.getByLabel('Gift Wrap', {exact: true}).uncheck();
+
+			await editPanel
+				.getByLabel('Delivery Date', {exact: true})
+				.fill('2023-01-01');
+			await editPanel.getByLabel('Floors', {exact: true}).fill('20');
+			await editPanel
+				.getByLabel('Engraving', {exact: true})
+				.fill('Text Content Edit');
+
+			await commerceMiniCartPage.miniCartSaveButton.click();
+
+			await expect(commerceMiniCartPage.miniCartSaveButton).toBeHidden();
+		});
+
+		await test.step('The edits resolve a different SKU and reprice the order', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
+				'$ 20.00'
+			);
+
+			await page.reload({waitUntil: 'networkidle'});
+
+			let orderItemCells: Record<string, string>;
+
+			await expect(async () => {
+				orderItemCells = await getTableRowCells(
+					pendingOrdersPage.orderItemsTable,
+					productName
+				);
+
+				expect(orderItemCells).toMatchObject({
+					'LIST PRICE': '$ 20.00',
+					'QUANTITY': '1',
+					'SKU': editedSku.sku,
+					'TOTAL': '$ 20.00',
+				});
+			}).toPass({timeout: 30000});
+
+			const orderItemOptions = orderItemCells.OPTIONS;
+
+			for (const optionValue of [
+				'2023-01-01',
+				'20',
+				'Text Content Edit',
+				'Value2',
+				'Value4',
+			]) {
+				expect(orderItemOptions).toContain(optionValue);
+			}
+
+			for (const optionValue of ['Value5', 'Value6']) {
+				expect(orderItemOptions).not.toContain(optionValue);
+			}
+		});
+
+		await performLoginViaApi({page, screenName: 'test'});
 	}
 );

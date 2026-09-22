@@ -28,7 +28,10 @@ import {
 	assignBuyerUserToAccount,
 	createAccountWithBuyerUser,
 	deployProductFragmentsOnDefaultDPT,
+	expectBrakeFluidCartItems,
 	miniumSetUp,
+	setUpBrakeFluidUnitsOfMeasure,
+	unitOfMeasurePriceLabel,
 } from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -77,6 +80,7 @@ test.beforeAll(async ({browser}) => {
 
 	for (const name of [
 		'ABS Sensor',
+		'Brake Fluid',
 		'Mount',
 		'Torque Converters',
 		'Transmission Cooler Line Assembly',
@@ -1543,5 +1547,709 @@ test(
 
 			await expectMiniCartToHold(otherOrderId);
 		});
+	}
+);
+
+test(
+	'The Add to Cart fragment adds a SKU with a single active unit of measure to the cart',
+	{tag: ['@COMMERCE-12427', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const absSensor = products['ABS Sensor'];
+		const productName = absSensor.name['en_US'];
+		const sku = absSensor.skus[0];
+
+		await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+			sku.id,
+			{
+				active: false,
+				basePrice: 25,
+				incrementalOrderQuantity: 1,
+				key: 'uom1',
+				name: {en_US: 'UOM1'},
+				precision: 1,
+				priority: 1,
+			}
+		);
+
+		const unitOfMeasure =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					active: true,
+					basePrice: 25,
+					incrementalOrderQuantity: 0.6,
+					key: 'uom2',
+					name: {en_US: 'UOM2'},
+					precision: 1,
+					priority: 2,
+				}
+			);
+
+		const {maxOrderQuantity, minOrderQuantity, multipleOrderQuantity} =
+			absSensor.productConfiguration;
+
+		const multipleQuantity =
+			commerceThemeMiniumCatalogPage.getMultipleQuantity(
+				unitOfMeasure.incrementalOrderQuantity,
+				multipleOrderQuantity,
+				unitOfMeasure.precision
+			);
+		const minQuantity =
+			commerceThemeMiniumCatalogPage.getProductMinQuantity(
+				minOrderQuantity,
+				multipleQuantity,
+				unitOfMeasure.precision
+			);
+		const maxQuantity =
+			commerceThemeMiniumCatalogPage.getProductMaxQuantity(
+				maxOrderQuantity,
+				multipleQuantity,
+				unitOfMeasure.precision
+			);
+
+		const listPrice = `$ ${unitOfMeasure.basePrice.toFixed(2)}`;
+		const totalPriceFor = (quantity: number) =>
+			`$ ${(
+				(quantity * unitOfMeasure.basePrice) /
+				unitOfMeasure.incrementalOrderQuantity
+			).toFixed(2)}`;
+
+		await test.step('Deploy the Add to Cart, Price and Availability fragments on the default product display page template', async () => {
+			await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+				displayPageTemplatesPage,
+				fragmentNames: ['Add to Cart', 'Price', 'Availability'],
+				pageEditorPage,
+				site,
+			});
+		});
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await test.step('The catalog card offers an enabled add to cart for the only active unit of measure', async () => {
+			await page.goto(`/web${site.friendlyUrlPath}/catalog`);
+
+			await commerceThemeMiniumCatalogPage.selectSorting(
+				'Name Ascending'
+			);
+
+			const productCard =
+				commerceThemeMiniumCatalogPage.productCard(productName);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardAddToCartButton(
+					productName
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardAddToCartButton(
+					productName
+				)
+			).not.toHaveClass(/not-allowed/);
+
+			await commerceThemeMiniumCatalogPage
+				.quantitySelector(productCard)
+				.fill(String(minQuantity));
+
+			await commerceThemeMiniumCatalogPage.checkQuantitiesInPopOverMessages(
+				maxQuantity,
+				minQuantity,
+				multipleQuantity
+			);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton(productName)
+				.click();
+
+			await expect(commerceMiniCartPage.miniCartButton).toHaveAttribute(
+				'data-badge-count',
+				'1'
+			);
+		});
+
+		await test.step('The mini cart carries the unit of measure key, the quantity and the converted total', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartSku(sku.sku)
+			).toBeVisible();
+			await expect(
+				commerceMiniCartPage.miniCartItemUnitOfMeasure(productName)
+			).toHaveText(unitOfMeasure.key);
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(
+					commerceMiniCartPage.miniCartItem(productName)
+				)
+			).toHaveValue(String(minQuantity));
+			await expect(
+				commerceMiniCartPage.miniCartItemListPrice(productName)
+			).toHaveText(listPrice);
+			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
+				totalPriceFor(minQuantity)
+			);
+		});
+
+		await test.step('The product details page locks the selector to the only active unit of measure', async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${absSensor.urls['en_US']}`
+			);
+
+			await expect(productDetailsPage.unitOfMeasureSelect).toBeDisabled();
+			await expect(productDetailsPage.unitOfMeasureSelect).toHaveValue(
+				unitOfMeasure.key
+			);
+		});
+
+		await test.step('The Add to Cart fragment rejects a quantity that breaks the unit of measure rules', async () => {
+			const addToCartFragment =
+				commerceThemeMiniumCatalogPage.addToCartFragment;
+
+			await commerceThemeMiniumCatalogPage
+				.quantitySelector(addToCartFragment)
+				.fill('1.2');
+
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelectorErrorContainer(
+					addToCartFragment
+				)
+			).toHaveClass(/has-error/);
+
+			await commerceThemeMiniumCatalogPage.checkQuantitiesInPopOverMessages(
+				maxQuantity,
+				minQuantity,
+				multipleQuantity,
+				false,
+				true,
+				true
+			);
+
+			await commerceThemeMiniumCatalogPage
+				.quantitySelector(addToCartFragment)
+				.fill(String(minQuantity));
+
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelectorErrorContainer(
+					addToCartFragment
+				)
+			).not.toHaveClass(/has-error/);
+
+			await commerceThemeMiniumCatalogPage.checkQuantitiesInPopOverMessages(
+				maxQuantity,
+				minQuantity,
+				multipleQuantity
+			);
+		});
+
+		await test.step('Adding the SKU again from the fragment merges into the existing order item', async () => {
+			await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(
+					commerceMiniCartPage.miniCartItem(productName)
+				)
+			).toHaveValue(String(minQuantity * 2));
+			await expect(
+				commerceMiniCartPage.miniCartItemUnitOfMeasure(productName)
+			).toHaveText(unitOfMeasure.key);
+			await expect(
+				commerceMiniCartPage.miniCartItemListPrice(productName)
+			).toHaveText(listPrice);
+			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
+				totalPriceFor(minQuantity * 2)
+			);
+		});
+	}
+);
+
+test(
+	'The Add to Cart fragment adds a SKU with several units of measure to the cart',
+	{tag: ['@COMMERCE-12427', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const uJoint = products['U-Joint'];
+		const productName = uJoint.name['en_US'];
+		const sku = uJoint.skus[0];
+
+		const unitsOfMeasure = [];
+
+		for (const [index, promoPrice] of [0, 15].entries()) {
+			unitsOfMeasure.push(
+				await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+					sku.id,
+					{
+						active: true,
+						basePrice: 20,
+						incrementalOrderQuantity: 0.6,
+						key: `UOM${index + 1}KEY`,
+						name: {en_US: `UOM${index + 1}`},
+						precision: 1,
+						priority: index + 1,
+						promoPrice,
+					}
+				)
+			);
+		}
+
+		const [firstUnitOfMeasure, secondUnitOfMeasure] = unitsOfMeasure;
+
+		type UnitOfMeasure = {
+			basePrice: number;
+			incrementalOrderQuantity: number;
+			name: {[key: string]: string};
+			promoPrice: number;
+		};
+
+		const totalPriceFor = (
+			unitOfMeasure: UnitOfMeasure,
+			quantity: number
+		) =>
+			(quantity * (unitOfMeasure.promoPrice || unitOfMeasure.basePrice)) /
+			unitOfMeasure.incrementalOrderQuantity;
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			String(uJoint.productId),
+			{
+				name: uJoint.name,
+				productConfiguration: {
+					allowBackOrder: true,
+					multipleOrderQuantity: 0.6,
+				},
+			}
+		);
+
+		try {
+			await test.step('Deploy the Add to Cart, Price, Availability and Inventory fragments on the default product display page template', async () => {
+				await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+					displayPageTemplatesPage,
+					fragmentNames: ['Add to Cart', 'Price', 'Availability'],
+					onFragmentsAdded: async () => {
+						await pageEditorPage.addFragment(
+							'Product',
+							'Dynamic Field'
+						);
+
+						for (const fieldLabel of ['Field', 'Label']) {
+							await pageEditorPage.changeConfiguration({
+								fieldLabel,
+								tab: 'General',
+								value: 'Inventory',
+							});
+						}
+					},
+					pageEditorPage,
+					site,
+				});
+			});
+
+			await performUserSwitch(page, buyerUser.alternateName);
+
+			await test.step('The catalog card offers the variants instead of a direct add to cart', async () => {
+				await page.goto(`/web${site.friendlyUrlPath}/catalog`);
+
+				await commerceThemeMiniumCatalogPage.selectSorting(
+					'Name Ascending'
+				);
+
+				await commerceThemeMiniumCatalogPage.catalogSearch.fill(
+					productName
+				);
+				await commerceThemeMiniumCatalogPage.catalogSearch.press(
+					'Enter'
+				);
+
+				await expect(
+					commerceThemeMiniumCatalogPage.productCardViewAllVariantsButton(
+						productName
+					)
+				).toBeVisible();
+				await expect(
+					commerceThemeMiniumCatalogPage.productCardAddToCartButton(
+						productName
+					)
+				).toHaveCount(0);
+			});
+
+			await test.step('The first unit of measure renders its own price, availability and inventory', async () => {
+				await page.goto(
+					`/web${site.friendlyUrlPath}/p/${uJoint.urls['en_US']}`,
+					{waitUntil: 'networkidle'}
+				);
+
+				await expect(
+					productDetailsPage.unitOfMeasureSelect
+				).toHaveValue(firstUnitOfMeasure.key);
+				await expect(productDetailsPage.availabilityLabel).toHaveText(
+					'Available'
+				);
+				await expect(
+					productDetailsPage.priceFragmentListPrice
+				).toHaveText(
+					unitOfMeasurePriceLabel(
+						firstUnitOfMeasure,
+						firstUnitOfMeasure.basePrice
+					)
+				);
+				await expect(productDetailsPage.dynamicFieldValues).toHaveText([
+					'120',
+				]);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('3');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartButton
+				).toHaveAttribute('data-badge-count', '1');
+			});
+
+			await test.step('The second unit of measure renders its promotion price, availability and inventory', async () => {
+				await productDetailsPage.unitOfMeasureSelect.selectOption(
+					secondUnitOfMeasure.key
+				);
+
+				await expect(productDetailsPage.availabilityLabel).toHaveText(
+					'Unavailable'
+				);
+				await expect(
+					productDetailsPage.priceFragmentInactivePrice
+				).toHaveText(
+					unitOfMeasurePriceLabel(
+						secondUnitOfMeasure,
+						secondUnitOfMeasure.basePrice
+					)
+				);
+				await expect(
+					productDetailsPage.priceFragmentPromoPrice
+				).toHaveText(`$ ${secondUnitOfMeasure.promoPrice.toFixed(2)}`);
+				await expect(productDetailsPage.dynamicFieldValues).toHaveText([
+					'0',
+				]);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('6');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartButton
+				).toHaveAttribute('data-badge-count', '2');
+			});
+
+			await test.step('Adding the first unit of measure again merges into its own order item', async () => {
+				await productDetailsPage.unitOfMeasureSelect.selectOption(
+					firstUnitOfMeasure.key
+				);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('3');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				const firstCartItem =
+					commerceMiniCartPage.miniCartItemForUnitOfMeasure(
+						productName,
+						firstUnitOfMeasure.key
+					);
+				const secondCartItem =
+					commerceMiniCartPage.miniCartItemForUnitOfMeasure(
+						productName,
+						secondUnitOfMeasure.key
+					);
+
+				await expect(
+					commerceThemeMiniumCatalogPage.quantitySelector(
+						firstCartItem
+					)
+				).toHaveValue('6');
+				await expect(
+					commerceMiniCartPage.miniCartItemListPrice(firstCartItem)
+				).toHaveText(`$ ${firstUnitOfMeasure.basePrice.toFixed(2)}`);
+				await expect(firstCartItem.getByText(sku.sku)).toBeVisible();
+				await expect(
+					commerceThemeMiniumCatalogPage.quantitySelector(
+						secondCartItem
+					)
+				).toHaveValue('6');
+				await expect(
+					commerceMiniCartPage.miniCartItemPromoPrice(secondCartItem)
+				).toHaveText(`$ ${secondUnitOfMeasure.promoPrice.toFixed(2)}`);
+				await expect(secondCartItem.getByText(sku.sku)).toBeVisible();
+				await expect(
+					commerceMiniCartPage.miniCartTotalPrice
+				).toHaveText(
+					`$ ${(
+						totalPriceFor(firstUnitOfMeasure, 6) +
+						totalPriceFor(secondUnitOfMeasure, 6)
+					).toFixed(2)}`
+				);
+			});
+		}
+		finally {
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				String(uJoint.productId),
+				{
+					name: uJoint.name,
+					productConfiguration: {
+						allowBackOrder:
+							uJoint.productConfiguration.allowBackOrder,
+						multipleOrderQuantity:
+							uJoint.productConfiguration.multipleOrderQuantity,
+					},
+				}
+			);
+		}
+	}
+);
+
+test(
+	'The Add to Cart fragment adds every SKU of a multi SKU product with its own units of measure to the cart',
+	{tag: ['@COMMERCE-12429', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const optionName = 'Package Quantity';
+
+		const {
+			brakeFluid,
+			firstUnitOfMeasure,
+			secondUnitOfMeasure,
+			thirdUnitOfMeasure,
+		} = await setUpBrakeFluidUnitsOfMeasure(apiHelpers, catalog.id);
+
+		try {
+			await test.step('Deploy the Option Selector, Add to Cart, Price, Availability and Inventory fragments on the default product display page template', async () => {
+				await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+					displayPageTemplatesPage,
+					fragmentNames: [
+						'Option Selector',
+						'Add to Cart',
+						'Price',
+						'Availability',
+					],
+					onFragmentsAdded: async () => {
+						await pageEditorPage.addFragment(
+							'Product',
+							'Dynamic Field'
+						);
+
+						for (const fieldLabel of ['Field', 'Label']) {
+							await pageEditorPage.changeConfiguration({
+								fieldLabel,
+								tab: 'General',
+								value: 'Inventory',
+							});
+						}
+					},
+					pageEditorPage,
+					site,
+				});
+			});
+
+			await performUserSwitch(page, buyerUser.alternateName);
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${brakeFluid.urls['en_US']}`,
+				{waitUntil: 'networkidle'}
+			);
+
+			await test.step('The preselected SKU offers its only unit of measure and cannot switch away from it', async () => {
+				await expect(
+					productDetailsPage.unitOfMeasureSelect
+				).toHaveValue(firstUnitOfMeasure.key);
+				await expect(
+					productDetailsPage.unitOfMeasureSelect
+				).toBeDisabled();
+				await expect(
+					productDetailsPage.unitOfMeasureSelect.locator('option')
+				).toHaveText([firstUnitOfMeasure.name['en_US']]);
+				await expect(productDetailsPage.availabilityLabel).toHaveText(
+					'Available'
+				);
+				await expect(
+					productDetailsPage.priceFragmentListPrice
+				).toHaveText(
+					unitOfMeasurePriceLabel(
+						firstUnitOfMeasure,
+						firstUnitOfMeasure.basePrice
+					)
+				);
+				await expect(productDetailsPage.dynamicFieldValues).toHaveText([
+					'240',
+				]);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('1.2');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartButton
+				).toHaveAttribute('data-badge-count', '1');
+			});
+
+			await test.step('A SKU without a unit of measure hides the selector', async () => {
+				await productDetailsPage.selectOption('48', optionName);
+
+				await expect(
+					productDetailsPage.unitOfMeasureSelect
+				).toHaveCount(0);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('1');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartButton
+				).toHaveAttribute('data-badge-count', '2');
+			});
+
+			await test.step('A SKU with several units of measure lists only the active ones and preselects the first', async () => {
+				await productDetailsPage.selectOption('112', optionName);
+
+				await expect(
+					productDetailsPage.unitOfMeasureSelect.locator('option')
+				).toHaveText([
+					secondUnitOfMeasure.name['en_US'],
+					thirdUnitOfMeasure.name['en_US'],
+				]);
+				await expect(
+					productDetailsPage.unitOfMeasureSelect
+				).toHaveValue(secondUnitOfMeasure.key);
+				await expect(productDetailsPage.availabilityLabel).toHaveText(
+					'Available'
+				);
+				await expect(
+					productDetailsPage.priceFragmentListPrice
+				).toHaveText(
+					unitOfMeasurePriceLabel(
+						secondUnitOfMeasure,
+						secondUnitOfMeasure.basePrice
+					)
+				);
+				await expect(productDetailsPage.dynamicFieldValues).toHaveText([
+					'240',
+				]);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('1');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartButton
+				).toHaveAttribute('data-badge-count', '3');
+			});
+
+			await test.step('Switching the unit of measure switches the price, the availability and the inventory', async () => {
+				await productDetailsPage.unitOfMeasureSelect.selectOption(
+					thirdUnitOfMeasure.key
+				);
+
+				await expect(productDetailsPage.availabilityLabel).toHaveText(
+					'Unavailable'
+				);
+				await expect(
+					productDetailsPage.priceFragmentPromoPrice
+				).toHaveText(`$ ${thirdUnitOfMeasure.promoPrice.toFixed(2)}`);
+				await expect(productDetailsPage.dynamicFieldValues).toHaveText([
+					'0',
+				]);
+
+				await commerceThemeMiniumCatalogPage
+					.quantitySelector(
+						commerceThemeMiniumCatalogPage.addToCartFragment
+					)
+					.fill('1');
+
+				await commerceThemeMiniumCatalogPage.addToCartFragmentButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartButton
+				).toHaveAttribute('data-badge-count', '4');
+			});
+
+			await test.step('Every SKU and unit of measure combination reaches the mini cart with its own quantity and price', async () => {
+				await commerceMiniCartPage.miniCartButton.click();
+
+				await expectBrakeFluidCartItems(
+					commerceMiniCartPage,
+					commerceThemeMiniumCatalogPage,
+					{
+						firstUnitOfMeasure,
+						secondUnitOfMeasure,
+						thirdUnitOfMeasure,
+					}
+				);
+			});
+		}
+		finally {
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				String(brakeFluid.productId),
+				{
+					name: brakeFluid.name,
+					productConfiguration: {
+						minOrderQuantity:
+							brakeFluid.productConfiguration.minOrderQuantity,
+						multipleOrderQuantity:
+							brakeFluid.productConfiguration
+								.multipleOrderQuantity,
+					},
+				}
+			);
+		}
 	}
 );

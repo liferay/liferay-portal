@@ -30,6 +30,8 @@ import getWidgetDefinition from '../../../layout-content-page-editor-web/main/ut
 import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
 import {
 	createAccountWithBuyerUser,
+	createProductWithOptions,
+	findSkuByOptionValueKeys,
 	miniumSetUp,
 	selectCurrentAccount,
 } from '../../utils/commerce';
@@ -2119,5 +2121,206 @@ test(
 		await expect(
 			placedOrdersPage.configurationIFrameDisplayTemplateSelector
 		).toHaveText(displayTemplateName);
+	}
+);
+
+test(
+	'A placed order does not offer to edit the options of any of its order items',
+	{tag: ['@COMMERCE-12744', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductPage,
+		page,
+		placedOrdersPage,
+		site,
+	}) => {
+		test.setTimeout(300000);
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		await waitForAlert(page);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const simpleProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: `SimpleProduct${getRandomInt()}`},
+			});
+
+		const linkedProducts = [];
+
+		for (const price of [20, 30]) {
+			linkedProducts.push(
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: `LinkedProduct${getRandomInt()}`},
+					skus: [
+						{
+							cost: price,
+							price,
+							published: true,
+							purchasable: true,
+							sku: `LINKED-${getRandomString()}`,
+						},
+					],
+				})
+			);
+		}
+
+		const {product: optionsProduct} = await createProductWithOptions(
+			apiHelpers,
+			commerceAdminProductPage,
+			{
+				catalogId: catalog.id,
+				name: `OptionsProduct${getRandomInt()}`,
+				optionSpecs: [
+					{
+						fieldType: 'select',
+						name: 'Package Quantity',
+						skuContributor: true,
+						values: [
+							{key: 'small', name: '12'},
+							{key: 'large', name: '48'},
+						],
+					},
+				],
+			}
+		);
+
+		const {product: bundleProduct} = await createProductWithOptions(
+			apiHelpers,
+			commerceAdminProductPage,
+			{
+				catalogId: catalog.id,
+				optionSpecs: [
+					{
+						fieldType: 'select',
+						name: 'Color',
+						priceType: 'static',
+						skuContributor: true,
+						values: [
+							{
+								deltaPrice: 20,
+								key: 'blue',
+								name: 'Blue',
+								skuId: linkedProducts[0].skus[0].id,
+							},
+							{
+								deltaPrice: 30,
+								key: 'white',
+								name: 'White',
+								skuId: linkedProducts[1].skus[0].id,
+							},
+						],
+					},
+				],
+			}
+		);
+
+		const orderedSkus = [
+			simpleProduct.skus[0],
+			findSkuByOptionValueKeys(optionsProduct, ['small']),
+			findSkuByOptionValueKeys(bundleProduct, ['blue']),
+		];
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: getRandomInt(),
+					longitude: getRandomInt(),
+					warehouseItems: orderedSkus.map((sku) => ({
+						quantity: 100,
+						sku: sku.sku,
+					})),
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '12345', regionISOCode: 'AL'}
+			);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				billingAddressId: address.id,
+				cartItems: orderedSkus.map((sku) => ({
+					quantity: 1,
+					skuId: sku.id,
+				})),
+				currencyCode: 'USD',
+				shippingAddressId: address.id,
+			},
+			channel.id
+		);
+
+		await apiHelpers.headlessCommerceDeliveryCart.checkoutCart(cart.id);
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+			{waitUntil: 'networkidle'}
+		);
+
+		await placedOrdersPage.viewButton.click();
+
+		for (const productName of [
+			simpleProduct.name['en_US'],
+			optionsProduct.name['en_US'],
+			bundleProduct.name['en_US'],
+		]) {
+			await expect(
+				placedOrdersPage.orderItemActionsButtonFor(productName)
+			).toBeVisible();
+
+			await placedOrdersPage
+				.orderItemActionsButtonFor(productName)
+				.click();
+
+			await expect(
+				placedOrdersPage.orderItemActionsButtonEdit
+			).toHaveCount(0);
+
+			await page.keyboard.press('Escape');
+		}
+
+		await performLoginViaApi({page, screenName: 'test'});
 	}
 );

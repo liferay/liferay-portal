@@ -28,6 +28,7 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly orderRowLink: (orderId: number | string) => Locator;
 	readonly orderItemActionsButton: Locator;
 	readonly orderItemActionsButtonEdit: Locator;
+	readonly orderItemActionsButtonFor: (productName: string) => Locator;
 	readonly page: Page;
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
@@ -99,6 +100,11 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.orderItemActionsButtonEdit = page.getByRole('menuitem', {
 			name: 'Edit',
 		});
+		this.orderItemActionsButtonFor = (productName: string) =>
+			this.table.getByRole('button', {
+				exact: true,
+				name: `${productName} Actions`,
+			});
 		this.page = page;
 		this.pageLabel = page
 			.getByTestId('layoutHref')

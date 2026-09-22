@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
+import {selectOptionContaining} from '../../../tests/commerce/utils/selectOptionContaining';
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
 
 export class ProductDetailsPage {
@@ -45,8 +46,19 @@ export class ProductDetailsPage {
 	readonly mappedProductsTable: Locator;
 	readonly mpnField: (mpn: string) => Promise<Locator>;
 	readonly nameField: (name: string) => Promise<Locator>;
-	readonly optionRadio: (optionValue: string) => Locator;
+	readonly optionField: (
+		optionName: string,
+		container?: Locator | Page
+	) => Locator;
+	readonly optionRadio: (
+		optionValue: string,
+		container?: Locator | Page
+	) => Locator;
 	readonly optionSelector: (optionName: string) => Locator;
+	readonly optionValueCheckbox: (
+		optionValueName: string,
+		container?: Locator | Page
+	) => Locator;
 	readonly optionSelectorValues: (optionName: string) => Locator;
 	readonly page: Page;
 	readonly pageTitle: Locator;
@@ -69,6 +81,8 @@ export class ProductDetailsPage {
 	readonly productNameHeading: (productName: string) => Promise<Locator>;
 	readonly productDetail: Locator;
 	readonly productDetailAddToCartButton: Locator;
+	readonly productDetailAvailabilityLabel: Locator;
+	readonly productDetailValue: (label: string) => Locator;
 	readonly productDetailQuantitySelector: Locator;
 	readonly productOptionUploadFormFeedback: Locator;
 	readonly relatedDiagramLink: (name: string) => Locator;
@@ -193,8 +207,18 @@ export class ProductDetailsPage {
 		this.nameField = async (name: string) => {
 			return page.getByRole('heading', {exact: true, name});
 		};
-		this.optionRadio = (optionValue: string) =>
-			page.getByRole('radio', {exact: true, name: optionValue});
+		this.optionField = (
+			optionName: string,
+			container: Locator | Page = page
+		) => container.getByLabel(optionName, {exact: true});
+		this.optionRadio = (
+			optionValue: string,
+			container: Locator | Page = page
+		) => container.getByRole('radio', {exact: true, name: optionValue});
+		this.optionValueCheckbox = (
+			optionValueName: string,
+			container: Locator | Page = page
+		) => container.getByRole('checkbox', {name: optionValueName});
 		this.optionSelector = (optionName: string) => {
 			return page.getByLabel(optionName);
 		};
@@ -247,6 +271,15 @@ export class ProductDetailsPage {
 			'button',
 			{name: 'Add to Cart'}
 		);
+		this.productDetailAvailabilityLabel = this.productDetail.locator(
+			'[class*="availability-label"]'
+		);
+		this.productDetailValue = (label: string) =>
+			this.productDetail
+				.locator('p')
+				.filter({has: page.getByText(label, {exact: true})})
+				.locator('span')
+				.last();
 		this.productDetailQuantitySelector = this.productDetail.getByRole(
 			'spinbutton',
 			{name: 'Quantity Selector'}
@@ -336,5 +369,12 @@ export class ProductDetailsPage {
 
 	async goto() {
 		await this.layoutsPage.goto();
+	}
+
+	async selectOptionContaining(optionLabel: string, optionName: string) {
+		await selectOptionContaining(
+			this.optionSelector(optionName),
+			optionLabel
+		);
 	}
 }

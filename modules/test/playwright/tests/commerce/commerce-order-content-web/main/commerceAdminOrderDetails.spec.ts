@@ -18,7 +18,13 @@ import {
 	performLogout,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
-import {miniumSetUp} from '../../utils/commerce';
+import {
+	createAccountWithBuyerUser,
+	createProductWithOptions,
+	findSkuByOptionValueKeys,
+	getSkusByName,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -1375,5 +1381,172 @@ test(
 		}).toPass();
 
 		await waitForAlert(page);
+	}
+);
+
+test(
+	'An admin sees on the order details the product options a buyer edited on the pending order',
+	{tag: ['@COMMERCE-12745', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		commerceAdminProductPage,
+		commerceMiniCartPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const bundleProductName = `BundledProduct${getRandomInt()}`;
+
+		const {catalog, channel, site} = await miniumSetUp(apiHelpers);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const skuByName = await getSkusByName(apiHelpers, [
+			'MIN55858',
+			'MIN93015',
+			'MIN93016A',
+			'MIN93020',
+		]);
+
+		const {product: bundleProduct} = await createProductWithOptions(
+			apiHelpers,
+			commerceAdminProductPage,
+			{
+				catalogId: catalog.id,
+				name: bundleProductName,
+				optionSpecs: [
+					{
+						fieldType: 'select',
+						name: 'Color',
+						priceType: 'static',
+						required: true,
+						skuContributor: true,
+						values: [
+							{
+								deltaPrice: 20,
+								key: 'blue',
+								name: 'Blue',
+								skuId: skuByName.MIN93015.id,
+							},
+							{
+								deltaPrice: 30,
+								key: 'white',
+								name: 'White',
+								skuId: skuByName.MIN93020.id,
+							},
+						],
+					},
+				],
+				productConfiguration: {allowBackOrder: true},
+			}
+		);
+
+		const bundleSkuForOptionValue = (optionValueKey: string) =>
+			findSkuByOptionValueKeys(bundleProduct, [optionValueKey]);
+
+		await apiHelpers.headlessCommerceAdminPricing.postBasePriceEntries(
+			catalog.id,
+			[
+				{price: 10, skuId: bundleSkuForOptionValue('blue').id},
+				{price: 20, skuId: bundleSkuForOptionValue('white').id},
+			]
+		);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{quantity: 1, skuId: bundleSkuForOptionValue('blue').id},
+					{quantity: 1, skuId: skuByName.MIN93016A.id},
+					{quantity: 1, skuId: skuByName.MIN55858.id},
+				],
+			},
+			channel.id
+		);
+
+		await test.step('The buyer edits the options of the bundled product and of the multi SKU product', async () => {
+			await performLogout(page);
+			await performLoginViaApi({
+				page,
+				screenName: buyerUser.alternateName,
+			});
+
+			await pendingOrdersPage.gotoOrder(site.friendlyUrlPath, cart.id);
+
+			for (const [productName, optionLabel, optionName] of [
+				['Brake Fluid', '48', 'Package Quantity'],
+				[bundleProductName, 'White', 'Color'],
+			]) {
+				await (
+					await pendingOrdersPage.orderItemsTableRowLink(productName)
+				).click();
+
+				await pendingOrdersPage.editMenuItem.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartEditItemPanel
+				).toBeVisible();
+
+				await commerceMiniCartPage.selectEditItemOption(
+					optionLabel,
+					optionName
+				);
+
+				await commerceMiniCartPage.miniCartSaveButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartSaveButton
+				).toBeHidden();
+
+				await page.waitForLoadState('load');
+			}
+		});
+
+		await test.step('The admin order details carry the edited option values, prices and SKUs', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await commerceAdminOrdersPage.goto();
+
+			await commerceAdminOrdersPage.tableRowOrderIdLink(cart.id).click();
+
+			await expect(
+				commerceAdminOrderDetailsPage.headerDetailsTitle
+			).toBeVisible();
+
+			for (const [productName, values] of [
+				['Brake Fluid', ['MIN93016B', '48', '$ 80.00', '$ 72.00']],
+				[bundleProductName, ['WHITE', 'White', '$ 50.00']],
+				['Wheel Seal - Front', ['MIN55858', '$ 4.00']],
+			] as Array<[string, string[]]>) {
+				const {row} = await commerceAdminOrderDetailsPage.tableRow(
+					2,
+					productName,
+					true
+				);
+
+				for (const value of values) {
+					await expect(row).toContainText(value);
+				}
+			}
+
+			await commerceAdminOrderDetailsPage.expandProductButton.click();
+
+			const {row} = await commerceAdminOrderDetailsPage.tableRow(
+				2,
+				'Brake Rotors',
+				true
+			);
+
+			for (const value of ['MIN93020', '$ 30.00']) {
+				await expect(row).toContainText(value);
+			}
+		});
 	}
 );

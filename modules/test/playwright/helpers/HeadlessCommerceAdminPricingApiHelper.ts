@@ -260,6 +260,20 @@ export class HeadlessCommerceAdminPricingApiHelper {
 		);
 	}
 
+	async postBasePriceEntries(
+		catalogId: number,
+		priceEntries: Array<{price: number; skuId: number}>
+	) {
+		const basePriceLists = await this.getBasePriceListId(catalogId);
+
+		for (const priceEntry of priceEntries) {
+			await this.postPriceEntry({
+				...priceEntry,
+				priceListId: basePriceLists.items[0].id,
+			});
+		}
+	}
+
 	async postDiscount(discount?: TDiscount) {
 		discount = {
 			active: true,

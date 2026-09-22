@@ -28,6 +28,109 @@ export const test = mergeTests(
 	loginTest()
 );
 
+const PRODUCT_PRICE = 24;
+
+const QUANTITY_RULE_CASES: Array<{
+	imports: Array<{importStatus: string; quantity: number}>;
+	productConfiguration: {[key: string]: number | number[]};
+	tag: string;
+	title: string;
+}> = [
+	{
+		imports: [
+			{importStatus: 'The minimum quantity is 5', quantity: 4},
+			{importStatus: 'OK', quantity: 6},
+		],
+		productConfiguration: {minOrderQuantity: 5},
+		tag: '@COMMERCE-10069',
+		title: 'An order import enforces the minimum order quantity',
+	},
+	{
+		imports: [
+			{importStatus: 'The maximum quantity is 5', quantity: 6},
+			{importStatus: 'OK', quantity: 4},
+		],
+		productConfiguration: {maxOrderQuantity: 5},
+		tag: '@COMMERCE-10070',
+		title: 'An order import enforces the maximum order quantity',
+	},
+	{
+		imports: [
+			{
+				importStatus: 'The specified quantity is not a multiple of 3',
+				quantity: 4,
+			},
+			{importStatus: 'OK', quantity: 6},
+		],
+		productConfiguration: {multipleOrderQuantity: 3},
+		tag: '@COMMERCE-10071',
+		title: 'An order import enforces the multiple order quantity',
+	},
+	{
+		imports: [
+			{
+				importStatus: 'The specified quantity is not allowed.',
+				quantity: 4,
+			},
+			{importStatus: 'OK', quantity: 6},
+		],
+		productConfiguration: {allowedOrderQuantities: [1, 3, 6]},
+		tag: '@COMMERCE-10072',
+		title: 'An order import enforces the allowed order quantities',
+	},
+	{
+		imports: [
+			{importStatus: 'The minimum quantity is 5', quantity: 4},
+			{
+				importStatus: 'The specified quantity is not a multiple of 2',
+				quantity: 7,
+			},
+			{importStatus: 'OK', quantity: 6},
+		],
+		productConfiguration: {minOrderQuantity: 5, multipleOrderQuantity: 2},
+		tag: '@COMMERCE-10073',
+		title: 'An order import enforces a minimum order quantity higher than the multiple',
+	},
+	{
+		imports: [
+			{importStatus: 'The minimum quantity is 3', quantity: 2},
+			{
+				importStatus: 'The specified quantity is not a multiple of 4',
+				quantity: 6,
+			},
+			{importStatus: 'OK', quantity: 8},
+		],
+		productConfiguration: {minOrderQuantity: 3, multipleOrderQuantity: 4},
+		tag: '@COMMERCE-10074',
+		title: 'An order import enforces a minimum order quantity lower than the multiple',
+	},
+	{
+		imports: [
+			{importStatus: 'The maximum quantity is 10', quantity: 12},
+			{
+				importStatus: 'The specified quantity is not a multiple of 4',
+				quantity: 5,
+			},
+			{importStatus: 'OK', quantity: 8},
+		],
+		productConfiguration: {maxOrderQuantity: 10, multipleOrderQuantity: 4},
+		tag: '@COMMERCE-10075',
+		title: 'An order import enforces a maximum order quantity higher than the multiple',
+	},
+	{
+		imports: [
+			{importStatus: 'The maximum quantity is 4', quantity: 10},
+			{
+				importStatus: 'The specified quantity is not a multiple of 5',
+				quantity: 3,
+			},
+		],
+		productConfiguration: {maxOrderQuantity: 4, multipleOrderQuantity: 5},
+		tag: '@COMMERCE-10240',
+		title: 'An order import enforces a maximum order quantity lower than the multiple',
+	},
+];
+
 let catalogId: number;
 let channel: {id: number; name: string; siteGroupId: number};
 let setupData: Array<{id: number | string; type: string}>;
@@ -729,3 +832,123 @@ test(
 		}).toPass({timeout: 30000});
 	}
 );
+
+for (const {imports, productConfiguration, tag, title} of QUANTITY_RULE_CASES) {
+	test(
+		title,
+		{tag: [tag, '@LPD-106905']},
+		async ({apiHelpers, orderImportPage, page, pendingOrdersPage}) => {
+			test.setTimeout(300000);
+
+			const product = await createProduct(apiHelpers, {
+				name: `Importable ${getRandomString()}`,
+				price: PRODUCT_PRICE,
+			});
+
+			const {sourceCarts} = await setUpOrderImport(
+				apiHelpers,
+				page,
+				pendingOrdersPage,
+				{
+					beforeUserSwitch: async () => {
+						await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+							String(product.productId),
+							{name: product.name, productConfiguration}
+						);
+					},
+					sourceOrders: imports.map(({quantity}) => [
+						{product, quantity},
+					]),
+				}
+			);
+
+			let importedItemCount = 0;
+
+			for (const [index, {importStatus, quantity}] of imports.entries()) {
+				const imported = importStatus === 'OK';
+
+				await test.step(`Importing a quantity of ${quantity} reports "${importStatus}"`, async () => {
+					await orderImportPage.openImportModal('Orders');
+
+					await expect(
+						orderImportPage.sourceLink(
+							String(sourceCarts[index].id),
+							'Orders'
+						)
+					).toBeVisible({timeout: 30000});
+
+					await orderImportPage.selectSource(
+						String(sourceCarts[index].id),
+						'Orders'
+					);
+
+					await expect(async () => {
+						expect(
+							await orderImportPage.previewRowCells(
+								product.name['en_US'],
+								'Orders'
+							)
+						).toMatchObject({
+							'IMPORT STATUS': imported
+								? importStatus
+								: expect.stringContaining(importStatus),
+							'QUANTITY': String(quantity),
+							'SKU': product.skus[0].sku,
+							...(imported
+								? {
+										'TOTAL PRICE': `$ ${(
+											quantity * PRODUCT_PRICE
+										).toFixed(2)}`,
+										'UNIT PRICE': `$ ${PRODUCT_PRICE.toFixed(
+											2
+										)}`,
+									}
+								: {}),
+						});
+					}).toPass({timeout: 30000});
+
+					await orderImportPage.importButton('Orders').click();
+
+					if (imported) {
+						importedItemCount += 1;
+
+						await expect(
+							orderImportPage.importedRowsAlert(1)
+						).toBeVisible();
+					}
+					else {
+						await expect(
+							orderImportPage.notImportedRowsAlert(1)
+						).toBeVisible();
+					}
+
+					await expect(
+						pendingOrdersPage.orderItemsTableRows
+					).toHaveCount(importedItemCount, {timeout: 30000});
+				});
+			}
+
+			const importedQuantity = imports.find(
+				({importStatus}) => importStatus === 'OK'
+			)?.quantity;
+
+			if (importedQuantity) {
+				await expect(async () => {
+					expect(
+						await getTableRowCells(
+							pendingOrdersPage.orderItemsTable,
+							product.name['en_US']
+						)
+					).toMatchObject({
+						'LIST PRICE': `$ ${PRODUCT_PRICE.toFixed(2)}`,
+						'QUANTITY': String(importedQuantity),
+						'SKU': product.skus[0].sku,
+						'TOTAL': `$ ${(
+							importedQuantity * PRODUCT_PRICE
+						).toFixed(2)}`,
+					});
+				}).toPass({timeout: 30000});
+			}
+		}
+	);
+}

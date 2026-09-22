@@ -210,6 +210,7 @@ type TRelatedProduct = {
 type TSku = {
 	cost: number;
 	discontinued?: boolean;
+	discontinuedDate?: string;
 	expirationDate?: string;
 	gtin?: string;
 	id?: number;

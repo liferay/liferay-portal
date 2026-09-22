@@ -10,6 +10,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {getTableRowCells} from '../../../../pages/commerce/commerce-order-content-web/orderImportPage';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
@@ -18,7 +19,12 @@ import {
 } from '../../../../utils/performLogin';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
-import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
+import {
+	createAccountWithBuyerUser,
+	getSkusByName,
+	miniumSetUp,
+	zeroWarehouseStock,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -29,6 +35,10 @@ export const test = mergeTests(
 	isolatedSiteTest,
 	loginTest()
 );
+
+test.afterEach(async ({page}) => {
+	await performLoginViaApi({page, screenName: 'test'});
+});
 
 test(
 	'Can view discontinued replacement SKUs in product details',
@@ -491,5 +501,310 @@ test(
 		await expect(
 			await productDetailsPage.skuField(discontinuedSku)
 		).toBeVisible();
+	}
+);
+
+test(
+	'A discontinued product shows its end of life date and offers no replacements list',
+	{tag: ['@COMMERCE-9347', '@LPD-106905']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const suffix = getRandomString();
+
+		const discontinuedProductName = `Test Simple Product ${suffix}`;
+		const discontinuedSku = `SKU1002-${suffix}`;
+		const replacementProductName = `Test Simple Product Replacement ${suffix}`;
+		const replacementSku = `SKU1001-${suffix}`;
+
+		const replacementProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: replacementProductName},
+				productType: 'simple',
+				skus: [
+					{
+						cost: 0,
+						price: 0,
+						published: true,
+						purchasable: true,
+						sku: replacementSku,
+					},
+				],
+			});
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: discontinuedProductName},
+			productType: 'simple',
+			skus: [
+				{
+					cost: 0,
+					discontinued: true,
+					discontinuedDate: new Date().toISOString(),
+					price: 0,
+					published: true,
+					purchasable: true,
+					replacementSkuId: replacementProduct.skus[0].id,
+					sku: discontinuedSku,
+				},
+			],
+		});
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(
+			`/web/${site.name}/p/${discontinuedProductName
+				.toLowerCase()
+				.replace(/ /g, '-')}`,
+			{waitUntil: 'networkidle'}
+		);
+
+		await expect(
+			await productDetailsPage.nameField(discontinuedProductName)
+		).toBeVisible();
+
+		await test.step('The product is flagged as discontinued and dated', async () => {
+			await expect(productDetailsPage.inStockQuantity).toContainText(
+				'Discontinued'
+			);
+
+			const endOfLifeDate = await productDetailsPage
+				.productDetailValue('End of Life')
+				.innerText();
+
+			expect(new Date(endOfLifeDate).toDateString()).toEqual(
+				new Date().toDateString()
+			);
+		});
+
+		await test.step('The discontinued product lists no replacements of its own', async () => {
+			await expect(productDetailsPage.replacementsTab).toHaveCount(0);
+			await expect(
+				page.getByText('Replacements', {exact: true})
+			).toHaveCount(0);
+			await expect(
+				page.getByText(replacementSku, {exact: true})
+			).toHaveCount(0);
+		});
+	}
+);
+
+test(
+	'A discontinued SKU without stock puts the first available replacement of its chain in the cart',
+	{tag: ['@COMMERCE-12026', '@LPD-106905']},
+	async ({apiHelpers, commerceMiniCartPage, page}) => {
+		test.setTimeout(300000);
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const skuByName = await getSkusByName(apiHelpers, [
+			'MIN55861',
+			'MIN93015',
+			'MIN93017',
+		]);
+
+		await test.step('Discontinue the SKU and its replacement, and leave both without stock or back orders', async () => {
+			for (const [skuName, replacementSkuName] of [
+				['MIN55861', 'MIN93015'],
+				['MIN93015', 'MIN93017'],
+			]) {
+				const sku = skuByName[skuName];
+
+				await apiHelpers.headlessCommerceAdminCatalog.patchSku(
+					String(sku.id),
+					{
+						discontinued: true,
+						published: true,
+						purchasable: true,
+						replacementSkuId: skuByName[replacementSkuName].id,
+						sku: sku.sku,
+					}
+				);
+			}
+
+			await zeroWarehouseStock(apiHelpers, ['MIN55861', 'MIN93015']);
+
+			await Promise.all(
+				['ABS Sensor', 'U-Joint'].map(async (productName) => {
+					const product =
+						await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+							productName
+						);
+
+					await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+						String(product.productId),
+						{
+							name: product.name,
+							productConfiguration: {allowBackOrder: false},
+						}
+					);
+				})
+			);
+		});
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(`/web/${site.name}/catalog`, {
+			waitUntil: 'networkidle',
+		});
+
+		await commerceMiniCartPage.quickAddToCart('MIN55861');
+
+		await expect(
+			commerceMiniCartPage.miniCartSku('MIN93017')
+		).toBeVisible();
+		await expect(
+			commerceMiniCartPage.miniCartItemReplacementLabel(
+				'Premium Brake Fluid'
+			)
+		).toBeVisible();
+		await expect(
+			commerceMiniCartPage.miniCartReplacementInfoMessage
+		).toBeVisible();
+
+		for (const skuName of ['MIN55861', 'MIN93015']) {
+			await expect(commerceMiniCartPage.miniCartSku(skuName)).toHaveCount(
+				0
+			);
+		}
+	}
+);
+
+test(
+	'A discontinued product is replaced when an order that holds it is imported',
+	{tag: ['@COMMERCE-9352', '@LPD-106905']},
+	async ({apiHelpers, orderImportPage, page, pendingOrdersPage}) => {
+		test.setTimeout(300000);
+
+		const {channel, site} = await miniumSetUp(apiHelpers);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const {MIN55861: discontinuedSku, MIN93015: replacementSku} =
+			await getSkusByName(apiHelpers, ['MIN55861', 'MIN93015']);
+
+		const sourceCart =
+			await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [{quantity: 1, skuId: discontinuedSku.id}],
+				},
+				channel.id
+			);
+
+		const targetCart =
+			await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{accountId: account.id, cartItems: []},
+				channel.id
+			);
+
+		await test.step('Discontinue the ordered SKU, empty its stock and point it at a replacement', async () => {
+			await zeroWarehouseStock(apiHelpers, [discontinuedSku.sku]);
+
+			await apiHelpers.headlessCommerceAdminCatalog.patchSku(
+				String(discontinuedSku.id),
+				{
+					discontinued: true,
+					published: true,
+					purchasable: true,
+					replacementSkuId: replacementSku.id,
+					sku: discontinuedSku.sku,
+				}
+			);
+		});
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await pendingOrdersPage.gotoOrder(site.friendlyUrlPath, targetCart.id);
+
+		await orderImportPage.openImportModal('Orders');
+
+		await expect(async () => {
+			await expect(
+				orderImportPage.sourceLink(String(sourceCart.id), 'Orders')
+			).toBeVisible({timeout: 5000});
+		}).toPass({timeout: 30000});
+
+		await orderImportPage.selectSource(String(sourceCart.id), 'Orders');
+
+		await expect(async () => {
+			expect(
+				await orderImportPage.previewRowCells('ABS Sensor', 'Orders')
+			).toMatchObject({
+				'IMPORT STATUS': 'OK',
+				'QUANTITY': '1',
+				'SKU': replacementSku.sku,
+				'TOTAL PRICE': '$ 50.00',
+				'UNIT PRICE': '$ 50.00',
+			});
+		}).toPass({timeout: 30000});
+
+		await orderImportPage.importButton('Orders').click();
+
+		await expect(orderImportPage.importedRowsAlert(1)).toBeVisible();
+
+		await expect(async () => {
+			expect(
+				await getTableRowCells(
+					pendingOrdersPage.orderItemsTable,
+					'ABS Sensor'
+				)
+			).toMatchObject({
+				'LIST PRICE': '$ 50.00',
+				'QUANTITY': '1',
+				'SKU': replacementSku.sku,
+				'TOTAL': '$ 50.00',
+			});
+		}).toPass({timeout: 30000});
+
+		await expect(
+			pendingOrdersPage.orderItemsTable.getByText('U-Joint')
+		).toHaveCount(0);
 	}
 );
