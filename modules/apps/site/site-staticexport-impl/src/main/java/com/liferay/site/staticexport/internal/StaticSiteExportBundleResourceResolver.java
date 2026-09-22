@@ -6,9 +6,9 @@
 package com.liferay.site.staticexport.internal;
 
 import com.liferay.petra.io.StreamUtil;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 
 import java.io.File;
@@ -87,26 +87,12 @@ public class StaticSiteExportBundleResourceResolver {
 			return url;
 		}
 
-		resourcePath = _removeHash(resourcePath);
-
-		return servletContextHelper.getResource(resourcePath);
-	}
-
-	private String _removeHash(String resourcePath) {
-		int index = resourcePath.indexOf(".(");
-
-		if (index == -1) {
-			return resourcePath;
+		if (!HashedFilesUtil.containsHash(resourcePath)) {
+			return null;
 		}
 
-		int endIndex = resourcePath.indexOf(CharPool.CLOSE_PARENTHESIS, index);
-
-		if (endIndex == -1) {
-			return resourcePath;
-		}
-
-		return resourcePath.substring(0, index) +
-			resourcePath.substring(endIndex + 1);
+		return servletContextHelper.getResource(
+			HashedFilesUtil.removeHash(resourcePath));
 	}
 
 	private final BundleContext _bundleContext;
