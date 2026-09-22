@@ -40,6 +40,14 @@ run "should_honor_custom_master_cidr_and_observability_config" {
 		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == "10.1.2.0/28"
 		error_message="A custom master_ipv4_cidr_block must flow into crossplane-webhook-ingress"
 	}
+	assert {
+		condition=length([for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from) == 2
+		error_message="crossplane-webhook-ingress must allow two sources: the control plane CIDR and the konnectivity agents"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from[1].podSelector.matchLabels["k8s-app"] == "konnectivity-agent"
+		error_message="crossplane-webhook-ingress must allow the kube-system konnectivity-agent pods — on GKE the API server reaches in-cluster webhooks through them, so the call arrives from an agent pod IP and never from master_ipv4_cidr_block; verified on a live cluster"
+	}
 	command=plan
 	variables {
 		master_ipv4_cidr_block="10.1.2.0/28"

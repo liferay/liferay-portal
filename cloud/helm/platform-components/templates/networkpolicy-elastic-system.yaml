@@ -9,8 +9,7 @@ metadata:
 spec:
     ingress:
         -   from:
-                -   ipBlock:
-                        cidr: {{ .Values.operatorApplications.eckOperator.masterIpv4CidrBlock }}
+                {{- include "liferay-platform.webhookIngressFrom" .Values.operatorApplications.eckOperator.masterIpv4CidrBlock | nindent 16 }}
             ports:
                 -   port: https-webhook
                     protocol: TCP

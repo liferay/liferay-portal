@@ -4,4 +4,23 @@ locals {
 		"environment"="internal"
 	}
 	terraform_manager_name="liferay-cloud-native-terraform"
+	webhook_ingress_from=[
+		{
+			ipBlock={
+				cidr=var.master_ipv4_cidr_block
+			}
+		},
+		{
+			namespaceSelector={
+				matchLabels={
+					"kubernetes.io/metadata.name"="kube-system"
+				}
+			}
+			podSelector={
+				matchLabels={
+					"k8s-app"="konnectivity-agent"
+				}
+			}
+		},
+	]
 }

@@ -90,13 +90,7 @@ resource "helm_release" "crossplane" {
 						spec={
 							ingress=[
 								{
-									from=[
-										{
-											ipBlock={
-												cidr=var.master_ipv4_cidr_block
-											}
-										},
-									]
+									from=local.webhook_ingress_from
 									ports=[
 										{
 											port=9443

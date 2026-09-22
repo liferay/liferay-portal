@@ -21,6 +21,12 @@ tests:
                     path: spec.ingress[0].from[0].ipBlock.cidr
                     value: 172.16.0.0/28
             -   equal:
+                    path: spec.ingress[0].from[1].podSelector.matchLabels["k8s-app"]
+                    value: konnectivity-agent
+            -   lengthEqual:
+                    count: 2
+                    path: spec.ingress[0].from
+            -   equal:
                     path: spec.ingress[0].ports[0]
                     value:
                         port: https-webhook
