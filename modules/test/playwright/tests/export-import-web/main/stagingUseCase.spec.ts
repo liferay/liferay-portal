@@ -45,6 +45,7 @@ const test = mergeTests(
 		'LPD-39304': {enabled: true},
 		'LPD-57655': {enabled: true},
 		'LPD-76864': {enabled: true},
+		'LPD-101272': {enabled: true},
 		'LPD-105778': {enabled: true},
 	}),
 	loginTest(),
