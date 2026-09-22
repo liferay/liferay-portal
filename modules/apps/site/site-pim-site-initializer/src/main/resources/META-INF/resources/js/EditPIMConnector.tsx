@@ -5,9 +5,9 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm, {
-	ClayCheckbox,
 	ClayInput,
 	ClaySelectWithOption,
+	ClayToggle,
 } from '@clayui/form';
 import {RequiredMark, Toolbar} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
@@ -168,12 +168,10 @@ export default function EditPIMConnector({
 					</ClayForm.Group>
 
 					<ClayForm.Group>
-						<ClayCheckbox
-							checked={active}
+						<ClayToggle
 							label={Liferay.Language.get('active')}
-							onChange={() =>
-								setActive((previousActive) => !previousActive)
-							}
+							onToggle={setActive}
+							toggled={active}
 						/>
 					</ClayForm.Group>
 				</ClayForm>

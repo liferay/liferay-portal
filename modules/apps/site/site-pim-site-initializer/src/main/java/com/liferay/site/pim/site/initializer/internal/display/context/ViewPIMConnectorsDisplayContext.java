@@ -51,10 +51,7 @@ public class ViewPIMConnectorsDisplayContext {
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(
-					StringBundler.concat(
-						_getURL("/edit-connector"), "?backURL=",
-						_themeDisplay.getURLCurrent()));
+				dropdownItem.setHref(_getEditConnectorURL());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "new"));
 			}
@@ -75,9 +72,7 @@ public class ViewPIMConnectorsDisplayContext {
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
 		return ListUtil.fromArray(
 			FDSActionDropdownItemBuilder.setHref(
-				StringBundler.concat(
-					_getURL("/edit-connector"), "?backURL=",
-					_themeDisplay.getURLCurrent(), "&objectEntryId={id}")
+				_getEditConnectorURL() + "&objectEntryId={id}"
 			).setIcon(
 				"pencil"
 			).setLabel(
@@ -122,12 +117,12 @@ public class ViewPIMConnectorsDisplayContext {
 			));
 	}
 
-	private String _getURL(String friendlyURL) {
+	private String _getEditConnectorURL() {
 		Group group = _themeDisplay.getScopeGroup();
 
 		return StringBundler.concat(
 			_themeDisplay.getPathFriendlyURLPublic(), group.getFriendlyURL(),
-			friendlyURL);
+			"/edit-connector?backURL=", _themeDisplay.getURLCurrent());
 	}
 
 	private final HttpServletRequest _httpServletRequest;

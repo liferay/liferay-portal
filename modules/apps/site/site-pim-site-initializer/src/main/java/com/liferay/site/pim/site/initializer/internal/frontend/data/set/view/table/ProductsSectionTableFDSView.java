@@ -5,10 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.frontend.data.set.view.table;
 
-import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
-import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
-import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -26,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = "frontend.data.set.name=" + PIMFDSNames.PRODUCTS,
 	service = FDSView.class
 )
-public class ProductsSectionTableFDSView extends BaseTableFDSView {
+public class ProductsSectionTableFDSView extends BasePIMTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {
@@ -50,7 +47,7 @@ public class ProductsSectionTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"authorTableCellRenderer")
 		).add(
-			_getModifiedFDSTableSchemaField()
+			getDateFDSTableSchemaField("dateModified", "modified")
 		).add(
 			"embedded.status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
@@ -61,28 +58,6 @@ public class ProductsSectionTableFDSView extends BaseTableFDSView {
 	@Override
 	public boolean isDefault(String fdsName) {
 		return true;
-	}
-
-	private DateTimeFDSTableSchemaField _getModifiedFDSTableSchemaField() {
-		DateTimeFDSTableSchemaField dateTimeFDSTableSchemaField =
-			new DateTimeFDSTableSchemaField();
-
-		dateTimeFDSTableSchemaField.setContentRenderer(
-			"dateTime"
-		).setFieldName(
-			"dateModified"
-		).setLabel(
-			"modified"
-		).setLocalizeLabel(
-			true
-		).setSortable(
-			true
-		);
-
-		dateTimeFDSTableSchemaField.setTimeZoneBehavior(
-			FDSTimeZoneBehaviorConstants.APPLY_THEME_DISPLAY_TIME_ZONE);
-
-		return dateTimeFDSTableSchemaField;
 	}
 
 	@Reference
