@@ -1,11 +1,13 @@
 {{- if .Values.argocd.gateway.enabled -}}
 {{- $accessControl := .Values.accessControl }}
 {{- $envoyProxy := .Values.argocd.gateway.envoyProxy }}
-{{- $hostname := required "The value \"argocd.gateway.hostname\" is required to route traffic to ArgoCD" .Values.argocd.gateway.hostname }}
+{{- $hostname := required (printf "The value %q is required to route traffic to ArgoCD" "argocd.gateway.hostname") .Values.argocd.gateway.hostname }}
 {{- $tlsEnabled := ne .Values.argocd.gateway.tls.externalSecretKey "" }}
+
 {{- if and $accessControl.enabled (not $accessControl.allowedCIDRs) }}
-{{- fail "The value \"accessControl.allowedCIDRs\" must not be empty when \"accessControl.enabled\" is true" }}
+{{- fail (printf "The value %q must not be empty when %q is true" "accessControl.allowedCIDRs" "accessControl.enabled") }}
 {{- end }}
+
 {{- if $tlsEnabled }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
