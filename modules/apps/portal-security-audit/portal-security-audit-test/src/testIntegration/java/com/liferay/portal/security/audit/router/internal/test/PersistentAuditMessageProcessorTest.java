@@ -77,13 +77,13 @@ public class PersistentAuditMessageProcessorTest {
 						).build())) {
 
 			String correlationId = RandomTestUtil.randomString();
-			String eventType1 = _createEventType();
-			String eventType2 = _createEventType();
 
 			AuditRequestThreadLocal auditRequestThreadLocal =
 				AuditRequestThreadLocal.getAuditThreadLocal();
 
 			auditRequestThreadLocal.setCorrelationId(correlationId);
+
+			String eventType1 = _createEventType();
 
 			_route(_company1.getCompanyId(), eventType1);
 
@@ -91,6 +91,8 @@ public class PersistentAuditMessageProcessorTest {
 
 			Assert.assertEquals(
 				0, _getAuditEventsCount(_company1.getCompanyId(), eventType1));
+
+			String eventType2 = _createEventType();
 
 			_route(_company1.getCompanyId(), eventType2);
 
