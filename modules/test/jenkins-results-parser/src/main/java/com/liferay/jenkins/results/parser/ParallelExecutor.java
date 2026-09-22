@@ -80,14 +80,20 @@ public class ParallelExecutor<T> {
 		return _description;
 	}
 
+	public int getFailedTaskCount() {
+		if (_taskRunnable == null) {
+			return 0;
+		}
+
+		return _taskRunnable.getFailedTaskCount();
+	}
+
 	public String getId() {
 		return String.valueOf(_id);
 	}
 
 	public boolean hasFailedTask() {
-		if ((_taskRunnable == null) ||
-			(_taskRunnable.getFailedTaskCount() <= 0)) {
-
+		if (getFailedTaskCount() <= 0) {
 			return false;
 		}
 
