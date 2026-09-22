@@ -13,7 +13,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
@@ -312,7 +311,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 				testMockLiferayResourceResponse.getPortletOutputStream();
 
 		JSONAssert.assertEquals(
-			JSONFactoryUtil.createJSONObject(
+			_jsonFactory.createJSONObject(
 				byteArrayOutputStream.toString()
 			).toString(),
 			jsonObject.toString(), JSONCompareMode.STRICT);
@@ -324,7 +323,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			Map<String, Serializable> values = objectEntry.getValues();
 
 			JSONAssert.assertEquals(
-				JSONFactoryUtil.createJSONObject(
+				_jsonFactory.createJSONObject(
 					GetterUtil.getString(values.get("configuration"))
 				).toString(),
 				jsonObject.toString(), JSONCompareMode.STRICT);
