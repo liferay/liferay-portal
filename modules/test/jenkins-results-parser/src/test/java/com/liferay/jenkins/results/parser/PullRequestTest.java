@@ -102,11 +102,11 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 		Properties buildProperties = new Properties();
 
 		_setRequiredSuites(
-			"ci.forward." + propertyNameSuffix, "sf", buildProperties,
-			pullRequest);
+			"ci.forward." + propertyNameSuffix, buildProperties, pullRequest,
+			"sf");
 		_setRequiredSuites(
-			"ci.forward.force." + propertyNameSuffix, "relevant",
-			buildProperties, pullRequest);
+			"ci.forward.force." + propertyNameSuffix, buildProperties,
+			pullRequest, "relevant");
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -114,14 +114,14 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	private void _setRequiredSuites(
-		String basePropertyName, String branchKeyedValue,
-		Properties buildProperties, PullRequest pullRequest) {
+		String basePropertyName, Properties buildProperties,
+		PullRequest pullRequest, String testSuiteName) {
 
 		buildProperties.setProperty(
 			JenkinsResultsParserUtil.combine(
 				basePropertyName, "[", pullRequest.getGitRepositoryName(), "][",
 				pullRequest.getRefName(), "]"),
-			branchKeyedValue);
+			testSuiteName);
 		buildProperties.setProperty(basePropertyName, "relevant");
 	}
 
