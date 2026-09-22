@@ -122,12 +122,16 @@ function AssetVocabulariesCategoriesSelector({
 				!items.find((item) => item.value === selectedItem.value)
 		);
 
-		const current = [...selectedItems, ...validAddedItems].filter(
-			(item) =>
-				!removedItems.find(
-					(removedItem) => removedItem.value === item.value
-				)
-		);
+		const current =
+			singleSelect && !!validAddedItems.length
+				? validAddedItems.slice(0, 1)
+				: [...selectedItems, ...validAddedItems].filter(
+						(item) =>
+							!removedItems.find(
+								(removedItem) =>
+									removedItem.value === item.value
+							)
+					);
 
 		setInvalidItems(invalidAddedItems);
 
