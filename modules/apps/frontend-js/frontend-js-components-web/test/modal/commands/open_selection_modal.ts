@@ -17,16 +17,19 @@ const getAddButtonOnClick = () =>
 	getModalProps().buttons.find(({type}: {type?: string}) => type !== 'cancel')
 		.onClick;
 
-const createIframeWindow = () => {
+const createIframeWindow = (searchContainerRendered = true) => {
 	const iframeDocument = document.implementation.createHTMLDocument();
 
 	iframeDocument.body.innerHTML =
-		'<div class="searchcontainer" id="entries">' +
+		'<div class="' +
+		(searchContainerRendered ? 'searchcontainer' : '') +
+		'" id="entries">' +
+		'<ul><li><input type="checkbox" checked value="on" /></li></ul>' +
 		'<table><tbody><tr data-value="row-payload">' +
-		'<td><input type="checkbox" value="1" /></td>' +
+		'<td><input name="rowIds" type="checkbox" checked value="1" /></td>' +
 		'</tr></tbody></table></div>';
 
-	const checkbox = iframeDocument.querySelector('input');
+	const checkbox = iframeDocument.querySelector('tr input');
 
 	return {
 		Liferay: {
@@ -69,6 +72,31 @@ describe('openSelectionModal', () => {
 		expect(getModalProps().buttons).toBeUndefined();
 
 		expect(getModalProps().disableButtonsOnLoading).toBe(false);
+	});
+
+	it('selects the checked items when the search container has not rendered yet', async () => {
+		const onSelect = jest.fn();
+		const processClose = jest.fn();
+
+		openSelectionModal({
+			multiple: true,
+			onSelect,
+			title: 'Select Organization',
+			url: 'https://www.sample.url',
+		});
+
+		getModalProps().onOpen({
+			iframeWindow: createIframeWindow(false),
+			processClose,
+		});
+
+		getAddButtonOnClick()();
+
+		await Promise.resolve();
+
+		expect(onSelect).toHaveBeenCalledWith([{value: 'row-payload'}]);
+
+		expect(processClose).toHaveBeenCalled();
 	});
 
 	it('does not select anything when the add button is clicked before the iframe opens', () => {
