@@ -10,8 +10,6 @@ import {truncateText} from 'shared/util/util';
 import {updateDefaultChannelId} from 'shared/actions/preferences';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 
-const PICKER_WIDTH = 248;
-
 export type Channel = {
 	createTime: number;
 	groupIdCount: number;
@@ -105,7 +103,6 @@ export const ChannelsMenu: React.FC<IChannelsMenuProps> = ({
 				searchable
 				selectedKey={channel ? channel.id : undefined}
 				size="regular"
-				width={PICKER_WIDTH}
 			>
 				{(item) => (
 					<Option key={item.id} textValue={item.name}>

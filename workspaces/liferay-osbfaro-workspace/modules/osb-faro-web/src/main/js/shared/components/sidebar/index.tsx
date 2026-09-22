@@ -16,9 +16,9 @@ interface ISidebarProps {
 	channels: Channel[];
 	className?: string;
 	collapsed: boolean;
-	expandedSections: Map<string, boolean>;
+	collapsedSections: Map<string, boolean>;
 	groupId: string;
-	onSectionExpandedChange: (sectionKey: string, expanded: boolean) => void;
+	onSectionToggle: (sectionKey: string, collapsed: boolean) => void;
 }
 
 const Sidebar: React.FC<ISidebarProps> = ({
@@ -27,9 +27,9 @@ const Sidebar: React.FC<ISidebarProps> = ({
 	channels = [],
 	className,
 	collapsed = false,
-	expandedSections = Map(),
+	collapsedSections = Map(),
 	groupId,
-	onSectionExpandedChange,
+	onSectionToggle,
 }) => {
 	const LDPEnabled = useLDPEnabled({groupId});
 
@@ -137,58 +137,62 @@ const Sidebar: React.FC<ISidebarProps> = ({
 				</div>
 
 				<div className="sidebar-body">
-					{sidebarSections.map(({items, key, label}) => (
-						<Panel
-							collapsable
-							displayTitle={
-								<div className="section-title">
-									<span>{label}</span>
+					{sidebarSections.map(({items, key, label}) => {
+						const expanded = !collapsedSections.get(key, false);
 
-									<ClayIcon
-										className="icon-root"
-										symbol={
-											expandedSections.get(key, true)
-												? 'angle-down'
-												: 'angle-right'
-										}
-									/>
-								</div>
-							}
-							expanded={expandedSections.get(key, true)}
-							key={key}
-							onExpandedChange={(expanded) =>
-								onSectionExpandedChange(key, expanded)
-							}
-							showCollapseIcon={false}
-						>
-							<Panel.Body>
-								<ul className="nav-list">
-									{items.map(
-										(
-											{icon, label, route, url},
-											itemIndex
-										) => (
-											<SidebarItem
-												active={
-													!!matchPath(
-														{
-															end: false,
-															path: route,
-														},
-														activePathname
-													)
-												}
-												href={url}
-												icon={icon}
-												key={itemIndex}
-												label={label}
-											/>
-										)
-									)}
-								</ul>
-							</Panel.Body>
-						</Panel>
-					))}
+						return (
+							<Panel
+								collapsable
+								displayTitle={
+									<div className="section-title">
+										<span>{label}</span>
+
+										<ClayIcon
+											className="icon-root"
+											symbol={
+												expanded
+													? 'angle-down'
+													: 'angle-right'
+											}
+										/>
+									</div>
+								}
+								expanded={expanded}
+								key={key}
+								onExpandedChange={(nextExpanded) =>
+									onSectionToggle(key, !nextExpanded)
+								}
+								showCollapseIcon={false}
+							>
+								<Panel.Body>
+									<ul className="nav-list">
+										{items.map(
+											(
+												{icon, label, route, url},
+												itemIndex
+											) => (
+												<SidebarItem
+													active={
+														!!matchPath(
+															{
+																end: false,
+																path: route,
+															},
+															activePathname
+														)
+													}
+													href={url}
+													icon={icon}
+													key={itemIndex}
+													label={label}
+												/>
+											)
+										)}
+									</ul>
+								</Panel.Body>
+							</Panel>
+						);
+					})}
 				</div>
 
 				{DEVELOPER_MODE && (

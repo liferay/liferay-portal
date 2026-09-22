@@ -117,7 +117,7 @@ describe('Sidebar', () => {
 		render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
 				<MemoryRouter>
-					<Sidebar {...defaultProps} expandedSections={new Map()} />
+					<Sidebar {...defaultProps} collapsedSections={new Map()} />
 				</MemoryRouter>
 			</Provider>
 		);
@@ -127,15 +127,13 @@ describe('Sidebar', () => {
 		).toHaveAttribute('aria-expanded', 'true');
 	});
 
-	it('should collapse a section whose expandedSections entry is false', () => {
+	it('should collapse a section whose collapsedSections entry is true', () => {
 		render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
 				<MemoryRouter>
 					<Sidebar
 						{...defaultProps}
-						expandedSections={
-							new Map({touchpoints: false})
-						}
+						collapsedSections={new Map({touchpoints: true})}
 					/>
 				</MemoryRouter>
 			</Provider>
@@ -146,15 +144,15 @@ describe('Sidebar', () => {
 		).toHaveAttribute('aria-expanded', 'false');
 	});
 
-	it('should call onSectionExpandedChange with the section key when its header is clicked', () => {
-		const onSectionExpandedChange = jest.fn();
+	it('should call onSectionToggle with the section key when its header is clicked', () => {
+		const onSectionToggle = jest.fn();
 
 		render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
 				<MemoryRouter>
 					<Sidebar
 						{...defaultProps}
-						onSectionExpandedChange={onSectionExpandedChange}
+						onSectionToggle={onSectionToggle}
 					/>
 				</MemoryRouter>
 			</Provider>
@@ -162,9 +160,6 @@ describe('Sidebar', () => {
 
 		fireEvent.click(screen.getByRole('button', {name: 'Touchpoints'}));
 
-		expect(onSectionExpandedChange).toHaveBeenCalledWith(
-			'touchpoints',
-			false
-		);
+		expect(onSectionToggle).toHaveBeenCalledWith('touchpoints', true);
 	});
 });

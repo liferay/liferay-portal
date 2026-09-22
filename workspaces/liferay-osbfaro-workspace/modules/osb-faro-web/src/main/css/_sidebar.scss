@@ -36,7 +36,7 @@
 		font-size: $fontSizeSmall;
 		font-weight: $fontWeightRegular;
 		height: 40px;
-		padding: 0 24px;
+		padding: 0 $sidebarGutter;
 		position: relative;
 		transition:
 			border-color 0.15s ease-out,
@@ -89,7 +89,7 @@
 				align-items: center;
 				display: flex;
 				height: auto;
-				padding: 8px 32px;
+				padding: 8px $sidebarGutter;
 			}
 
 			.panel-body {
@@ -138,17 +138,16 @@
 	.sidebar-header {
 		align-items: center;
 		margin: 24px 0;
-		padding: 0 16px;
+		padding: 0 $sidebarGutter;
 	}
 
 	.sidebar-item-root {
 		&.active .link {
 			background: $light;
 			border-left: 4px solid $primary;
-			border-radius: 0 !important;
 			color: $dark;
 			font-weight: $fontWeightSemiBold;
-			padding-left: 20px;
+			padding-left: calc(#{$sidebarGutter} - 4px);
 
 			&:hover {
 				color: $dark;

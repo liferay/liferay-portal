@@ -10,15 +10,4 @@ describe('Sidebar Actions', () => {
 			expect(action.type).toBe(actions.actionTypes.COLLAPSE_SIDEBAR);
 		});
 	});
-
-	describe('setSidebarSectionExpanded', () => {
-		it('should return an action', () => {
-			const action = actions.setSidebarSectionExpanded();
-
-			expect(isFSA(action)).toBe(true);
-			expect(action.type).toBe(
-				actions.actionTypes.SET_SIDEBAR_SECTION_EXPANDED
-			);
-		});
-	});
 });

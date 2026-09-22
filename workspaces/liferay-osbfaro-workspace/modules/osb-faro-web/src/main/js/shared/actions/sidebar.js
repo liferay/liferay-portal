@@ -1,18 +1,15 @@
 export const actionTypes = {
 	COLLAPSE_SIDEBAR: 'COLLAPSE_SIDEBAR',
-	SET_SIDEBAR_SECTION_EXPANDED: 'SET_SIDEBAR_SECTION_EXPANDED',
 };
+
+/**
+ * Collapses the whole sidebar, or one of its sections when `sectionKey` is
+ * given.
+ */
 
 export function collapseSidebar(payload) {
 	return {
 		payload,
 		type: actionTypes.COLLAPSE_SIDEBAR,
-	};
-}
-
-export function setSidebarSectionExpanded(payload) {
-	return {
-		payload,
-		type: actionTypes.SET_SIDEBAR_SECTION_EXPANDED,
 	};
 }

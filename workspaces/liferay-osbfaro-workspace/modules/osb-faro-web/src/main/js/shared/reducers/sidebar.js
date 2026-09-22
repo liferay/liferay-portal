@@ -5,8 +5,8 @@ import {Map} from 'immutable';
 /**
  * Reads the per-user slice, replacing it with an empty Map when missing or
  * when it is still the flat boolean this reducer stored before it tracked
- * per-section expansion. `setIn` throws when an intermediate value isn't a
- * Collection, and browsers may still have that older shape in localStorage.
+ * sections. `setIn` throws when an intermediate value isn't a Collection,
+ * and browsers may still have that older shape in localStorage.
  */
 
 const getUserState = (state, currentUserId) => {
@@ -17,23 +17,15 @@ const getUserState = (state, currentUserId) => {
 
 const actionHandlers = {
 	[actionTypes.COLLAPSE_SIDEBAR]: (state, {payload}) => {
-		const {collapsed, currentUserId} = payload;
+		const {collapsed, currentUserId, sectionKey} = payload;
+
+		const userState = getUserState(state, currentUserId);
 
 		return state.set(
 			String(currentUserId),
-			getUserState(state, currentUserId).set('collapsed', collapsed)
-		);
-	},
-
-	[actionTypes.SET_SIDEBAR_SECTION_EXPANDED]: (state, {payload}) => {
-		const {currentUserId, expanded, sectionKey} = payload;
-
-		return state.set(
-			String(currentUserId),
-			getUserState(state, currentUserId).setIn(
-				['expandedSections', sectionKey],
-				expanded
-			)
+			sectionKey
+				? userState.setIn(['collapsedSections', sectionKey], collapsed)
+				: userState.set('collapsed', collapsed)
 		);
 	},
 };

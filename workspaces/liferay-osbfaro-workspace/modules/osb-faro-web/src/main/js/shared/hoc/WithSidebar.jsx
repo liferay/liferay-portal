@@ -12,7 +12,7 @@ import withCurrentUser from './WithCurrentUser';
 import withDefaultChannelId from './WithDefaultChannelId';
 import withQuery from './WithQuery';
 import {ActionType, ChannelContext} from 'shared/context/channel';
-import {collapseSidebar, setSidebarSectionExpanded} from 'shared/actions/sidebar';
+import {collapseSidebar} from 'shared/actions/sidebar';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {get} from 'lodash';
@@ -42,12 +42,12 @@ export default compose(
 				['sidebar', String(currentUser.id), 'collapsed'],
 				false
 			),
-			expandedSections: store.getIn(
-				['sidebar', String(currentUser.id), 'expandedSections'],
+			collapsedSections: store.getIn(
+				['sidebar', String(currentUser.id), 'collapsedSections'],
 				Map()
 			)
 		}),
-		{collapseSidebar, setSidebarSectionExpanded, updateDefaultChannelId}
+		{collapseSidebar, updateDefaultChannelId}
 	),
 	withQuery(
 		API.channels.fetchAll,
@@ -75,13 +75,12 @@ export default compose(
 					})
 				),
 				collapsed: PropTypes.bool.isRequired,
+				collapsedSections: PropTypes.instanceOf(Map).isRequired,
 				collapseSidebar: PropTypes.func.isRequired,
 				currentUser: PropTypes.instanceOf(User).isRequired,
 				defaultChannelId: PropTypes.string,
-				expandedSections: PropTypes.instanceOf(Map).isRequired,
 				groupId: PropTypes.string.isRequired,
-				location: PropTypes.object,
-				setSidebarSectionExpanded: PropTypes.func.isRequired
+				location: PropTypes.object
 			};
 
 			state = {
@@ -166,12 +165,12 @@ export default compose(
 			}
 
 			@autobind
-			handleSectionExpandedChange(sectionKey, expanded) {
-				const {currentUser, setSidebarSectionExpanded} = this.props;
+			handleSectionToggle(sectionKey, collapsed) {
+				const {collapseSidebar, currentUser} = this.props;
 
-				setSidebarSectionExpanded({
+				collapseSidebar({
+					collapsed,
 					currentUserId: currentUser.id,
-					expanded,
 					sectionKey
 				});
 			}
@@ -182,8 +181,8 @@ export default compose(
 					props: {
 						className,
 						collapsed,
+						collapsedSections,
 						currentUser,
-						expandedSections,
 						groupId,
 						location,
 						...otherProps
@@ -210,11 +209,9 @@ export default compose(
 							channelId={selectedChannel && selectedChannel.id}
 							channels={channels}
 							collapsed={collapsed}
-							expandedSections={expandedSections}
+							collapsedSections={collapsedSections}
 							groupId={groupId}
-							onSectionExpandedChange={
-								this.handleSectionExpandedChange
-							}
+							onSectionToggle={this.handleSectionToggle}
 						/>
 
 						<WrappedComponent
