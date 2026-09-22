@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -395,7 +396,7 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		String cssVariable = styleValueJSONObject.getString(
 			FrontendTokenMapping.TYPE_CSS_VARIABLE);
 
-		return "var(--" + cssVariable + ")";
+		return "var(--" + HtmlUtil.escapeCSS(cssVariable) + ")";
 	}
 
 	private String _getStyleValue(
