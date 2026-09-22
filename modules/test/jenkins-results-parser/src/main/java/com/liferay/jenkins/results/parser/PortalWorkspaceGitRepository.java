@@ -184,6 +184,12 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	public void setUpTCKHome() {
+		File tckBuildFile = new File(getDirectory(), "build-test-tck.xml");
+
+		if (!tckBuildFile.exists()) {
+			return;
+		}
+
 		Map<String, String> parameters = new HashMap<>();
 
 		String tckHome = JenkinsResultsParserUtil.getProperty(
