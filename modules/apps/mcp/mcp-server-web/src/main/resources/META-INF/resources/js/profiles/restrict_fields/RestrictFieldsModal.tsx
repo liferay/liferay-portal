@@ -125,9 +125,7 @@ export default function RestrictFieldsModal({
 
 			<ClayModal.Body className="pt-0 px-0">
 				{loading ? (
-					<div className="align-items-center d-flex h-100 justify-content-center">
-						<ClayLoadingIndicator />
-					</div>
+					<ClayLoadingIndicator />
 				) : (
 					<>
 						<div className="sticky-top">
@@ -176,11 +174,13 @@ export default function RestrictFieldsModal({
 									)}
 								</TreeView>
 							) : (
-								<p className="text-secondary" role="status">
-									{Liferay.Language.get(
-										'no-fields-were-found'
-									)}
-								</p>
+								<div className="align-items-center d-flex justify-content-center py-4">
+									<p className="text-secondary" role="status">
+										{Liferay.Language.get(
+											'no-fields-were-found'
+										)}
+									</p>
+								</div>
 							)}
 						</div>
 					</>

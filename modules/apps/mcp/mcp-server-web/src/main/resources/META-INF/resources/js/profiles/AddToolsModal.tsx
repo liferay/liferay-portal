@@ -325,117 +325,125 @@ export default function AddToolsModal({
 			</ClayModal.Header>
 
 			<ClayModal.Body className="pt-0 px-0">
-				<div className="sticky-top">
-					<SelectedItemsBar
-						count={selectedTools.length}
-						onDeselectAll={() => setSelectedKeys(new Set())}
-					/>
-				</div>
-
-				<div className="px-4 py-2">
-					{loading ? (
-						<div className="align-items-center d-flex justify-content-center py-4">
-							<ClayLoadingIndicator />
+				{loading ? (
+					<ClayLoadingIndicator />
+				) : (
+					<>
+						<div className="sticky-top">
+							<SelectedItemsBar
+								count={selectedTools.length}
+								onDeselectAll={() => setSelectedKeys(new Set())}
+							/>
 						</div>
-					) : null}
 
-					{!loading && !!initialItems.length ? (
-						<TreeView
-							className="bg-transparent"
-							defaultItems={initialItems}
-							nestedKey="children"
-							onLoadMore={onLoadMore}
-							onSelectionChange={setSelectedKeys}
-							selectedKeys={selectedKeys}
-							selectionMode="multiple-recursive"
-							showExpanderOnHover={false}
-						>
-							{(item: ToolTreeItem) =>
-								item.children ? (
-									<TreeView.Item>
-										<TreeView.ItemStack
-											expandOnClick={false}
-											expanderDisabled={false}
-											onClick={(event) =>
-												event.preventDefault()
-											}
-										>
-											<ClayCheckbox
-												aria-label={item.name}
-												checked
-											/>
-
-											<span className="font-weight-normal pl-1 text-3">
-												{item.name}
-											</span>
-										</TreeView.ItemStack>
-
-										<TreeView.Group items={item.children}>
-											{(child: ToolTreeItem) => (
-												<TreeView.Item
+						<div className="px-4 py-2">
+							{initialItems.length ? (
+								<TreeView
+									className="bg-transparent"
+									defaultItems={initialItems}
+									nestedKey="children"
+									onLoadMore={onLoadMore}
+									onSelectionChange={setSelectedKeys}
+									selectedKeys={selectedKeys}
+									selectionMode="multiple-recursive"
+									showExpanderOnHover={false}
+								>
+									{(item: ToolTreeItem) =>
+										item.children ? (
+											<TreeView.Item>
+												<TreeView.ItemStack
+													expandOnClick={false}
+													expanderDisabled={false}
 													onClick={(event) =>
 														event.preventDefault()
 													}
 												>
 													<ClayCheckbox
-														aria-label={child.name}
+														aria-label={item.name}
 														checked
 													/>
 
 													<span className="font-weight-normal pl-1 text-3">
-														{child.name}
+														{item.name}
 													</span>
-												</TreeView.Item>
-											)}
-										</TreeView.Group>
-									</TreeView.Item>
-								) : (
-									<TreeView.Item
-										expandable
-										onClick={(event) =>
-											event.preventDefault()
-										}
-									>
-										<span>
-											<ClayCheckbox
-												aria-label={item.name}
-												checked={selectedKeys.has(
-													item.id
-												)}
-												onChange={() =>
-													toggleCollapsedToolSet(item)
-												}
+												</TreeView.ItemStack>
+
+												<TreeView.Group
+													items={item.children}
+												>
+													{(child: ToolTreeItem) => (
+														<TreeView.Item
+															onClick={(event) =>
+																event.preventDefault()
+															}
+														>
+															<ClayCheckbox
+																aria-label={
+																	child.name
+																}
+																checked
+															/>
+
+															<span className="font-weight-normal pl-1 text-3">
+																{child.name}
+															</span>
+														</TreeView.Item>
+													)}
+												</TreeView.Group>
+											</TreeView.Item>
+										) : (
+											<TreeView.Item
+												expandable
 												onClick={(event) =>
-													event.stopPropagation()
+													event.preventDefault()
 												}
-											/>
-										</span>
+											>
+												<span>
+													<ClayCheckbox
+														aria-label={item.name}
+														checked={selectedKeys.has(
+															item.id
+														)}
+														onChange={() =>
+															toggleCollapsedToolSet(
+																item
+															)
+														}
+														onClick={(event) =>
+															event.stopPropagation()
+														}
+													/>
+												</span>
 
-										<span className="font-weight-normal pl-1 text-3">
-											{item.name}
-										</span>
+												<span className="font-weight-normal pl-1 text-3">
+													{item.name}
+												</span>
 
-										{selectingToolSetNames.has(
-											item.name
-										) && (
-											<ClayLoadingIndicator
-												className="mb-0 ml-2 mt-0"
-												displayType="secondary"
-												size="sm"
-											/>
+												{selectingToolSetNames.has(
+													item.name
+												) && (
+													<ClayLoadingIndicator
+														className="mb-0 ml-2 mt-0"
+														displayType="secondary"
+														size="sm"
+													/>
+												)}
+											</TreeView.Item>
+										)
+									}
+								</TreeView>
+							) : (
+								<div className="align-items-center d-flex justify-content-center py-4">
+									<p className="text-secondary" role="status">
+										{Liferay.Language.get(
+											'no-tools-were-found'
 										)}
-									</TreeView.Item>
-								)
-							}
-						</TreeView>
-					) : null}
-
-					{!loading && !initialItems.length ? (
-						<p className="text-secondary">
-							{Liferay.Language.get('no-tools-were-found')}
-						</p>
-					) : null}
-				</div>
+									</p>
+								</div>
+							)}
+						</div>
+					</>
+				)}
 			</ClayModal.Body>
 
 			<ClayModal.Footer
