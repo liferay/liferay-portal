@@ -14,6 +14,7 @@ import buildObjectRelationships from '../../../../src/main/resources/META-INF/re
 import buildStructure from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildStructure';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
+import {setSystemObjectFieldNames} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/isCustomObjectField';
 
 const parent = getUuid();
 
@@ -533,6 +534,58 @@ describe('buildStructure', () => {
 		expect(fieldNames).toContain('customField');
 		expect(fieldNames).not.toContain('content');
 		expect(fieldNames).not.toContain('videoURL');
+	});
+
+	it('Locks the contributed system fields of a definition', () => {
+		setSystemObjectFieldNames({CONTRIBUTED_ERC: ['code', 'name']});
+
+		const objectDefinition = createObjectDefinition({
+			externalReferenceCode: 'CONTRIBUTED_ERC',
+			objectFields: [
+				createObjectField({
+					externalReferenceCode: 'CODE',
+					name: 'code',
+					system: true,
+				}),
+				createObjectField({
+					externalReferenceCode: 'CUSTOM',
+					name: 'customField',
+					system: false,
+				}),
+				createObjectField({
+					externalReferenceCode: 'NAME',
+					name: 'name',
+					system: true,
+				}),
+			],
+		});
+
+		const structure = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {},
+		});
+
+		const lockedByName = new Map(
+			Array.from(structure.children.values()).map((child) => [
+				child.name,
+				(child as Field).locked,
+			])
+		);
+
+		expect(lockedByName.get('code')).toBe(true);
+		expect(lockedByName.get('customField')).toBe(false);
+		expect(lockedByName.get('name')).toBe(true);
+
+		setSystemObjectFieldNames({});
+
+		const structureWithoutContribution = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {},
+		});
+
+		expect(getChildFieldNames(structureWithoutContribution)).toEqual([
+			'customField',
+		]);
 	});
 });
 
