@@ -10,11 +10,11 @@ import React, {useMemo, useState} from 'react';
 
 import {PageTreePickerSelectionEntry} from '../../types/PageTreePicker';
 import PageTreePickerPanel from './PageTreePickerPanel';
-import SitePageTreeDataSource, {
+import createSitePageDataSource, {
 	ROOT_ITEM_ID,
 	SitePage,
 	SitePageTreeSelection,
-} from './SitePageTreeDataSource';
+} from './createSitePageDataSource';
 
 interface PageTreePickerModalProps {
 	initialSelection?: SitePageTreeSelection | null;
@@ -42,7 +42,7 @@ export default function PageTreePickerModal({
 
 	const dataSource = useMemo(
 		() =>
-			new SitePageTreeDataSource({
+			createSitePageDataSource({
 				pageSize,
 				privateLayout,
 				siteExternalReferenceCode,

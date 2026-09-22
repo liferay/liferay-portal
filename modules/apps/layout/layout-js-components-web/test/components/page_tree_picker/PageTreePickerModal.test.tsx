@@ -11,7 +11,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import PageTreePickerModal from '../../../src/main/resources/META-INF/resources/js/components/page_tree_picker/PageTreePickerModal';
-import {SitePage} from '../../../src/main/resources/META-INF/resources/js/components/page_tree_picker/SitePageTreeDataSource';
+import {SitePage} from '../../../src/main/resources/META-INF/resources/js/components/page_tree_picker/createSitePageDataSource';
 import checkAccessibility from '../../__lib__/checkAccessibility';
 
 const MIXED_CASE_SITE_PAGES: SitePage[] = [
