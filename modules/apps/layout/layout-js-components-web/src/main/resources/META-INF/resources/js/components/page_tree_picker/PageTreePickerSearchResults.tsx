@@ -60,7 +60,7 @@ export default function PageTreePickerSearchResults<T>({
 						return;
 					}
 
-					registerItems([...(ancestors ?? []), ...items], null);
+					registerItems([...(ancestors ?? []), ...items]);
 
 					setResults(items);
 					setTotalCount(nextTotalCount);
@@ -104,7 +104,7 @@ export default function PageTreePickerSearchResults<T>({
 		dataSource
 			.search(query, nextPage)
 			.then(({ancestors, items, totalCount: nextTotalCount}) => {
-				registerItems([...(ancestors ?? []), ...items], null);
+				registerItems([...(ancestors ?? []), ...items]);
 
 				setPage(nextPage);
 				setResults((previousResults) => [

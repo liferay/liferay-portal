@@ -179,7 +179,7 @@ export default function PageTreePickerPanel<T>({
 			.resolveItems(items)
 			.then((resolvedItems) => {
 				if (!cancelled) {
-					registerItems(resolvedItems, null);
+					registerItems(resolvedItems);
 				}
 			})
 			.catch((error) => {

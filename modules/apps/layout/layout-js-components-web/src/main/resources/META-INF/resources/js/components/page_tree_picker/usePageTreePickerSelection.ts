@@ -20,7 +20,7 @@ export interface PageTreePickerSelection<T> {
 	isDescendant: (itemId: string, ancestorId: string) => boolean;
 	registerItems: (
 		items: Array<PageTreePickerItem<T>>,
-		parentId: string | null
+		parentId?: string | null
 	) => void;
 	select: (item: PageTreePickerItem<T>) => void;
 	selectedKeys: Set<React.Key>;
@@ -156,14 +156,17 @@ export default function usePageTreePickerSelection<T>({
 	}, [isEffectivelySelected, itemsById, rulesById]);
 
 	const registerItems = useCallback(
-		(items: Array<PageTreePickerItem<T>>, parentId: string | null) => {
+		(items: Array<PageTreePickerItem<T>>, parentId?: string | null) => {
 			items.forEach((item) => {
 				itemsById.set(item.id, {...item});
 
 				if (item.parentId !== undefined) {
 					parentIdsById.set(item.id, item.parentId);
 				}
-				else if (!parentIdsById.has(item.id)) {
+				else if (
+					parentId !== undefined &&
+					!parentIdsById.has(item.id)
+				) {
 					parentIdsById.set(item.id, parentId);
 				}
 			});
