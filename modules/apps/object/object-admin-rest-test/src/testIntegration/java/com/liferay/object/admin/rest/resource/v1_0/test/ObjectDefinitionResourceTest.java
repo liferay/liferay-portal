@@ -467,9 +467,10 @@ public class ObjectDefinitionResourceTest
 				externalReferenceCode);
 
 		Assert.assertTrue(emptyObjectDefinition.getModifiable());
+		Assert.assertTrue(emptyObjectDefinition.getSystem());
+
 		_assertObjectDefinitionStatus(
 			WorkflowConstants.STATUS_EMPTY, emptyObjectDefinition);
-		Assert.assertTrue(emptyObjectDefinition.getSystem());
 
 		ObjectDefinition randomObjectDefinition = randomObjectDefinition();
 
@@ -493,9 +494,10 @@ public class ObjectDefinitionResourceTest
 				externalReferenceCode);
 
 		Assert.assertTrue(emptyObjectDefinition.getModifiable());
+		Assert.assertTrue(emptyObjectDefinition.getSystem());
+
 		_assertObjectDefinitionStatus(
 			WorkflowConstants.STATUS_EMPTY, emptyObjectDefinition);
-		Assert.assertTrue(emptyObjectDefinition.getSystem());
 
 		// Empty object definition created by object action
 
@@ -515,6 +517,7 @@ public class ObjectDefinitionResourceTest
 				externalReferenceCode);
 
 		Assert.assertTrue(emptyObjectDefinition.getModifiable());
+
 		_assertObjectDefinitionStatus(
 			WorkflowConstants.STATUS_EMPTY, emptyObjectDefinition);
 
@@ -583,9 +586,10 @@ public class ObjectDefinitionResourceTest
 			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
 				externalReferenceCode);
 
+		Assert.assertFalse(emptyObjectDefinition.getSystem());
+
 		_assertObjectDefinitionStatus(
 			WorkflowConstants.STATUS_EMPTY, emptyObjectDefinition);
-		Assert.assertFalse(emptyObjectDefinition.getSystem());
 
 		// Enable index search
 
