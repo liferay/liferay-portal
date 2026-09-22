@@ -90,12 +90,12 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 			upgradeInfos = _upgradeExecutor.getUpgradeInfos(bundleSymbolicName);
 		}
 		catch (Throwable throwable) {
-			_log.error(
-				"Failed upgrade process for module ".concat(bundleSymbolicName),
-				throwable);
+			String failedModuleMessage =
+				ReleaseManagerUtil.getFailedModuleMessage(bundleSymbolicName);
 
-			return ReleaseManagerUtil.getFailedModuleMessage(
-				bundleSymbolicName);
+			_log.error(failedModuleMessage, throwable);
+
+			return failedModuleMessage;
 		}
 
 		if (upgradeInfos == null) {
@@ -182,12 +182,12 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 			upgradeInfos = _upgradeExecutor.getUpgradeInfos(bundleSymbolicName);
 		}
 		catch (Throwable throwable) {
-			_log.error(
-				"Failed upgrade process for module ".concat(bundleSymbolicName),
-				throwable);
+			String failedModuleMessage =
+				ReleaseManagerUtil.getFailedModuleMessage(bundleSymbolicName);
 
-			return ReleaseManagerUtil.getFailedModuleMessage(
-				bundleSymbolicName);
+			_log.error(failedModuleMessage, throwable);
+
+			return failedModuleMessage;
 		}
 
 		if (upgradeInfos == null) {
