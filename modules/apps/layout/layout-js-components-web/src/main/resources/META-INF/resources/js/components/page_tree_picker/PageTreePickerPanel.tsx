@@ -19,6 +19,7 @@ import {
 import isNullOrUndefined from '../../utils/isNullOrUndefined';
 import PageTreePicker from './PageTreePicker';
 import PageTreePickerSearchResults from './PageTreePickerSearchResults';
+import computeSelectionCount from './computeSelectionCount';
 import usePageTreePickerSelection from './usePageTreePickerSelection';
 
 import './PageTreePicker.scss';
@@ -36,72 +37,6 @@ function ShiftHint() {
 
 			{suffix}
 		</p>
-	);
-}
-
-function computeSelectionCount<T>(
-	entries: Array<PageTreePickerSelectionEntry<T>>,
-	subtreeCountsById: Map<string, number>,
-	isDescendant: (itemId: string, ancestorId: string) => boolean
-): number {
-	const getSize = (entry: PageTreePickerSelectionEntry<T>) => {
-		let size = isNullOrUndefined(entry.item.page) ? 0 : 1;
-
-		if (entry.includeDescendants) {
-			size += subtreeCountsById.get(entry.item.id) ?? 0;
-		}
-
-		return size;
-	};
-
-	let count = 0;
-
-	entries.forEach((entry) => {
-		if (entry.excluded) {
-			return;
-		}
-
-		let regionSize = getSize(entry);
-
-		entries.forEach((nestedEntry) => {
-			if (
-				nestedEntry === entry ||
-				!isNested(nestedEntry, entry, isDescendant)
-			) {
-				return;
-			}
-
-			const intermediateEntry = entries.some(
-				(otherEntry) =>
-					otherEntry !== entry &&
-					otherEntry !== nestedEntry &&
-					isNested(nestedEntry, otherEntry, isDescendant) &&
-					isNested(otherEntry, entry, isDescendant)
-			);
-
-			if (!intermediateEntry) {
-				regionSize -= getSize(nestedEntry);
-			}
-		});
-
-		count += Math.max(0, regionSize);
-	});
-
-	return count;
-}
-
-function isNested<T>(
-	entry: PageTreePickerSelectionEntry<T>,
-	ancestorEntry: PageTreePickerSelectionEntry<T>,
-	isDescendant: (itemId: string, ancestorId: string) => boolean
-): boolean {
-	if (entry.item.id === ancestorEntry.item.id) {
-		return ancestorEntry.includeDescendants && !entry.includeDescendants;
-	}
-
-	return (
-		ancestorEntry.includeDescendants &&
-		isDescendant(entry.item.id, ancestorEntry.item.id)
 	);
 }
 
