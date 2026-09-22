@@ -81,21 +81,23 @@ public class AsahSegmentsEntryResourceSecurityTest {
 
 	@Test
 	public void testPostAsahSegmentsEntry() throws Exception {
-		_testPostAsahSegmentsEntryWithUnknownMembershipUserId();
 		_testPostAsahSegmentsEntryWithAnalyticsAdministratorUser();
 		_testPostAsahSegmentsEntryWithUnauthorizedUser();
+		_testPostAsahSegmentsEntryWithUnknownMembershipUserId();
 	}
 
 	private SegmentsEntry _postAsahSegmentsEntry(
 			Membership membership, User user)
 		throws Exception {
 
-		String segmentsEntryKey = RandomTestUtil.randomString();
-
 		AsahSegmentsEntry asahSegmentsEntry = new AsahSegmentsEntry();
 
 		asahSegmentsEntry.setActive(true);
+
+		String segmentsEntryKey = RandomTestUtil.randomString();
+
 		asahSegmentsEntry.setId(segmentsEntryKey);
+
 		asahSegmentsEntry.setMemberships(new Membership[] {membership});
 		asahSegmentsEntry.setName(segmentsEntryKey);
 
