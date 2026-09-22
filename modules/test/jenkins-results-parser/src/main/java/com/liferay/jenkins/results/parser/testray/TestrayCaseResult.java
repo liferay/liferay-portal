@@ -294,6 +294,8 @@ public class TestrayCaseResult {
 			return null;
 		}
 
+		_testrayCaseResultURLCached = true;
+
 		URL cachedTestrayCaseResultURL = _fetchTestrayCaseResultURL();
 
 		if (cachedTestrayCaseResultURL != null) {
@@ -301,8 +303,6 @@ public class TestrayCaseResult {
 
 			return _testrayCaseResultURL;
 		}
-
-		_testrayCaseResultURLCached = true;
 
 		_testrayCaseResultURL = _createTestrayCaseResultURL();
 
