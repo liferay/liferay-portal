@@ -417,11 +417,11 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setParameter("fdsName", fdsName);
-
 		if (configuration != null) {
 			mockHttpServletRequest.setParameter("configuration", configuration);
 		}
+
+		mockHttpServletRequest.setParameter("fdsName", fdsName);
 
 		mockLiferayResourceRequest.setAttribute(
 			PortletServlet.PORTLET_SERVLET_REQUEST, mockHttpServletRequest);
