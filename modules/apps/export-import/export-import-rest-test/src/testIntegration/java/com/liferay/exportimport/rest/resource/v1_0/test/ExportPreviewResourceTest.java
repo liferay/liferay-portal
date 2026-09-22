@@ -257,46 +257,8 @@ public class ExportPreviewResourceTest
 			exportPreviewResource.getSiteExportPreview(
 				externalReferenceCode, null, null, plid, portletId, null),
 			portletId);
-	}
-
-	@FeatureFlag("LPD-38869")
-	@Test
-	@TestInfo("LPD-105790")
-	public void testGetSiteExportPreviewWithPortletInfoPermission()
-		throws Exception {
-
-		String externalReferenceCode = testGroup.getExternalReferenceCode();
-
-		String portletId = _siteObjectDefinition.getPortletId();
-
-		long plid = _addLayoutWithPortlet(testGroup, portletId);
-
-		_userLocalService.addGroupUsers(
-			testGroup.getGroupId(), new long[] {_user.getUserId()});
-
-		assertHttpResponseStatusCode(
-			404,
-			_exportPreviewResource.getSiteExportPreviewHttpResponse(
-				externalReferenceCode, null, null, plid, portletId, null));
-
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		RoleTestUtil.addResourcePermission(
-			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testGroup.getGroupId()),
-			ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
-
-		_roleLocalService.addUserRole(_user.getUserId(), _role);
-
-		_testGetPortletExportPreview(
-			_exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, null, plid, portletId, null),
-			portletId);
-
-		assertHttpResponseStatusCode(
-			404,
-			_exportPreviewResource.getSiteExportPreviewHttpResponse(
-				externalReferenceCode, null, null, 0L, null, null));
+		_testGetSiteExportPreviewWithGroupPermissions(
+			externalReferenceCode, plid, portletId);
 	}
 
 	private LayoutPageTemplateCollection _addBasicLayoutPageTemplateCollection()
@@ -642,6 +604,39 @@ public class ExportPreviewResourceTest
 			ArrayUtil.isNotEmpty(
 				previewPortletDataHandlers[0].
 					getPreviewPortletDataHandlerControls()));
+	}
+
+	@TestInfo("LPD-105790")
+	private void _testGetSiteExportPreviewWithGroupPermissions(
+			String externalReferenceCode, long plid, String portletId)
+		throws Exception {
+
+		_userLocalService.addGroupUsers(
+			testGroup.getGroupId(), new long[] {_user.getUserId()});
+
+		assertHttpResponseStatusCode(
+			404,
+			_exportPreviewResource.getSiteExportPreviewHttpResponse(
+				externalReferenceCode, null, null, plid, portletId, null));
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roleLocalService.addUserRole(_user.getUserId(), _role);
+
+		RoleTestUtil.addResourcePermission(
+			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()),
+			ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
+
+		_testGetPortletExportPreview(
+			_exportPreviewResource.getSiteExportPreview(
+				externalReferenceCode, null, null, plid, portletId, null),
+			portletId);
+
+		assertHttpResponseStatusCode(
+			404,
+			_exportPreviewResource.getSiteExportPreviewHttpResponse(
+				externalReferenceCode, null, null, 0L, null, null));
 	}
 
 	@TestInfo({"LPD-67433", "LPD-90359"})
