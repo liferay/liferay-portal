@@ -1143,7 +1143,11 @@ definition {
 
 	@summary = "Default summary"
 	macro editFieldLabel(fieldName = null, fieldFieldLabel = null, fieldFieldLabelEdit = null) {
-		WaitForVisible(locator1 = "Sidebar#PANEL_OPEN");
+		WaitForElementPresent(locator1 = "Sidebar#FORM_BUILDER");
+
+		if (IsElementNotPresent(locator1 = "Sidebar#FORM_BUILDER")) {
+			fail("The data engine form builder did not render, so the structure editor has no Builder panel and no fields.");
+		}
 
 		Navigator.gotoSidebarTab(tabName = "Builder");
 
