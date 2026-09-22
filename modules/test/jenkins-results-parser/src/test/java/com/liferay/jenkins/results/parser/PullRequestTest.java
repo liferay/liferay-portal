@@ -117,13 +117,12 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 		String basePropertyName, String branchKeyedValue,
 		Properties buildProperties, PullRequest pullRequest) {
 
-		buildProperties.setProperty(basePropertyName, "relevant");
-
 		buildProperties.setProperty(
 			JenkinsResultsParserUtil.combine(
 				basePropertyName, "[", pullRequest.getGitRepositoryName(), "][",
 				pullRequest.getRefName(), "]"),
 			branchKeyedValue);
+		buildProperties.setProperty(basePropertyName, "relevant");
 	}
 
 }
