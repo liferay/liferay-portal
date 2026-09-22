@@ -7,8 +7,6 @@ import React, {createContext} from 'react';
 import UserDropdown from 'shared/components/user-dropdown';
 import withCurrentUser from 'shared/hoc/WithCurrentUser';
 import {Align} from '@clayui/drop-down';
-import {getLanguageDisplayName} from 'shared/util/locale';
-import {LANGUAGES} from 'shared/util/constants';
 import {Routes} from 'shared/util/router';
 import {User} from 'shared/util/records';
 
@@ -63,25 +61,27 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 			],
 			language: [
 				{
-					items: LANGUAGES.map((id) => {
-						const active = languageId === id;
+					items: Object.entries(Liferay.Language.available).map(
+						([id, label]) => {
+							const active = languageId === id;
 
-						return {
-							active,
-							label: getLanguageDisplayName(id),
-							onClick: active
-								? undefined
-								: () => {
-										API.user
-											.updateLanguage({
-												languageId: id,
-											})
-											.then(() =>
-												window.location.reload()
-											);
-									},
-						};
-					}),
+							return {
+								active,
+								label,
+								onClick: active
+									? undefined
+									: () => {
+											API.user
+												.updateLanguage({
+													languageId: id,
+												})
+												.then(() =>
+													window.location.reload()
+												);
+										},
+							};
+						}
+					),
 				},
 			],
 		};

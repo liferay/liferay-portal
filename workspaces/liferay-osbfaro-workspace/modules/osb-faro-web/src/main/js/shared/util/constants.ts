@@ -455,13 +455,6 @@ export const EXPIRATION_DATE_LABELS = {
 	[ExpirationPeriod.Indefinite]: Liferay.Language.get('indefinite'),
 };
 
-export const LANGUAGES = [
-	LanguageIds.English,
-	LanguageIds.Japanese,
-	LanguageIds.Portuguese,
-	LanguageIds.Spanish,
-];
-
 export const MAX_LABEL_LENGTH = 35;
 
 export const ONE_DAY = '86400000';

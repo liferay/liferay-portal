@@ -37,6 +37,12 @@ global.AUI = () => ({
 global.Liferay = {
 	FeatureFlags: {},
 	Language: {
+		available: {
+			en_US: 'English (United States)',
+			es_ES: 'español (España)',
+			ja_JP: '日本語 (日本)',
+			pt_BR: 'português (Brasil)',
+		},
 		get: lang,
 	},
 };

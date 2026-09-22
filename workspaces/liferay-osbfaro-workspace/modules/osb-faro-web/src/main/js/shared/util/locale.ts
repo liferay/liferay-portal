@@ -28,22 +28,8 @@ export function resolveLocale(languageId?: string | null): string {
 	return SUPPORTED_LOCALES[resolveLanguageId(languageId)];
 }
 
-export function getLanguageDisplayName(languageId?: string | null): string {
-	const locale = resolveLocale(languageId);
-
-	const [language] = locale.split('-');
-
-	const displayName = new Intl.DisplayNames([locale], {
-		type: 'language',
-	}).of(language) as string;
-
-	return (
-		displayName.charAt(0).toLocaleUpperCase(locale) + displayName.slice(1)
-	);
-}
-
 export function getLanguageLabel(languageId?: string | null): string {
-	const [language, country] = resolveLanguageId(languageId).split('_');
+	const [language, country] = (languageId || DEFAULT_LANGUAGE_ID).split('_');
 
 	return `${language.toUpperCase()} (${country})`;
 }

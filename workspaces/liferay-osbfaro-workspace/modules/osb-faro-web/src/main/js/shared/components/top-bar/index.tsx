@@ -6,9 +6,8 @@ import ClaySticker from '@clayui/sticker';
 import ClayToolbar from '@clayui/toolbar';
 import getCN from 'classnames';
 import React, {useRef, useState} from 'react';
-import {LANGUAGES} from 'shared/util/constants';
 import {Link} from 'react-router-dom';
-import {getLanguageDisplayName, getLanguageLabel} from 'shared/util/locale';
+import {getLanguageLabel} from 'shared/util/locale';
 import {Routes, toRoute} from 'shared/util/router';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
@@ -134,27 +133,31 @@ const TopBar: React.FC<ITopBarProps> = ({
 						alignmentPosition={Align.BottomRight}
 					>
 						<ClayDropDown.ItemList>
-							{LANGUAGES.map((id) => (
-								<ClayDropDown.Item
-									active={languageId === id}
-									key={id}
-									onClick={() => {
-										setActive(false);
+							{Object.entries(Liferay.Language.available).map(
+								([id, label]) => (
+									<ClayDropDown.Item
+										active={languageId === id}
+										key={id}
+										onClick={() => {
+											setActive(false);
 
-										if (languageId === id) {
-											return;
-										}
+											if (languageId === id) {
+												return;
+											}
 
-										API.user
-											.updateLanguage({languageId: id})
-											.then(() =>
-												window.location.reload()
-											);
-									}}
-								>
-									{getLanguageDisplayName(id)}
-								</ClayDropDown.Item>
-							))}
+											API.user
+												.updateLanguage({
+													languageId: id,
+												})
+												.then(() =>
+													window.location.reload()
+												);
+										}}
+									>
+										{label}
+									</ClayDropDown.Item>
+								)
+							)}
 						</ClayDropDown.ItemList>
 					</ClayDropDown.Menu>
 				</ClayToolbar.Item>

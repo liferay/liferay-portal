@@ -84,7 +84,7 @@ describe('TopBar', () => {
 
 		fireEvent.click(screen.getByTitle(/language/i));
 
-		fireEvent.click(await screen.findByText('日本語'));
+		fireEvent.click(await screen.findByText(/日本語/));
 
 		await waitFor(() =>
 			expect(API.user.updateLanguage).toHaveBeenCalledWith({
@@ -98,7 +98,7 @@ describe('TopBar', () => {
 
 		fireEvent.click(screen.getByTitle(/language/i));
 
-		fireEvent.click(await screen.findByText('English'));
+		fireEvent.click(await screen.findByText(/english/i));
 
 		expect(API.user.updateLanguage).not.toHaveBeenCalled();
 	});
@@ -112,7 +112,7 @@ describe('TopBar', () => {
 
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
-		fireEvent.click(await screen.findByText('English'));
+		fireEvent.click(await screen.findByText(/english/i));
 
 		await waitFor(() =>
 			expect(trigger).toHaveAttribute('aria-expanded', 'false')
