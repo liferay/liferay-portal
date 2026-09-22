@@ -117,22 +117,21 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 
 		int exportImportConfigurationType = exportImportConfiguration.getType();
 
-		if ((exportImportConfigurationType ==
-				ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT) ||
-			(exportImportConfigurationType ==
-				ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET)) {
-
-			String groupActionId = ActionKeys.EXPORT_IMPORT_LAYOUTS;
-
-			if (exportImportConfigurationType ==
-					ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET) {
-
-				groupActionId = ActionKeys.EXPORT_IMPORT_PORTLET_INFO;
-			}
+		if (exportImportConfigurationType ==
+				ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT) {
 
 			PermissionUtil.checkImportPermission(
 				contextCompany.getCompanyId(),
-				exportImportConfiguration.getGroupId(), groupActionId);
+				exportImportConfiguration.getGroupId(),
+				ActionKeys.EXPORT_IMPORT_LAYOUTS);
+		}
+		else if (exportImportConfigurationType ==
+					ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET) {
+
+			PermissionUtil.checkImportPermission(
+				contextCompany.getCompanyId(),
+				exportImportConfiguration.getGroupId(),
+				ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
 		}
 		else {
 			PermissionUtil.checkPublishPermission(
