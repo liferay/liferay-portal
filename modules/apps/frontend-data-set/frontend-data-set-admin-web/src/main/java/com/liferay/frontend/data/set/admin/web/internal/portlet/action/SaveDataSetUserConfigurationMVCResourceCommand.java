@@ -7,6 +7,7 @@ package com.liferay.frontend.data.set.admin.web.internal.portlet.action;
 
 import com.liferay.frontend.data.set.constants.FDSAdminPortletKeys;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -134,13 +136,12 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			return;
 		}
 
-		JSONObject dataSetUserConfigurationJSONObject =
-			_jsonFactory.createJSONObject();
+		String initialDataSetSnapshotERC = jsonObject.getString(
+			"initialDataSetSnapshotERC", null);
 
 		try {
-			_checkInitialDataSetSnapshotERC(
-				companyId, dataSetUserConfigurationJSONObject,
-				jsonObject.getString("initialDataSetSnapshotERC"), user);
+			_validateInitialDataSetSnapshotERC(
+				companyId, initialDataSetSnapshotERC, user);
 		}
 		catch (PrincipalException principalException) {
 			if (_log.isDebugEnabled()) {
@@ -153,9 +154,9 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 
 			return;
 		}
-		catch (JSONException jsonException) {
+		catch (NoSuchObjectEntryException noSuchObjectEntryException) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
+				_log.debug(noSuchObjectEntryException);
 			}
 
 			_writeEmptyJSONObject(
@@ -164,6 +165,18 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 
 			return;
 		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
+				HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+			return;
+		}
+
+		JSONObject dataSetUserConfigurationJSONObject = JSONUtil.put(
+			"initialDataSetSnapshotERC", initialDataSetSnapshotERC);
 
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -183,10 +196,9 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			dataSetUserConfigurationJSONObject);
 	}
 
-	private void _checkInitialDataSetSnapshotERC(
-			long companyId, JSONObject dataSetUserConfigurationJSONObject,
-			String externalReferenceCode, User user)
-		throws Exception {
+	private void _validateInitialDataSetSnapshotERC(
+			long companyId, String externalReferenceCode, User user)
+		throws PortalException {
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return;
@@ -194,17 +206,11 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
+				getObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT", companyId);
 
-		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
 			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
-
-		if (objectEntry == null) {
-			throw new PortalException(
-				"Unable to find data set snapshot with external reference " +
-					"code " + externalReferenceCode);
-		}
 
 		if ((objectEntry.getUserId() != user.getUserId()) &&
 			!_sharingEntryLocalService.hasSharingPermission(
@@ -217,9 +223,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 				"User does not have permission to access data set snapshot " +
 					"with external reference code " + externalReferenceCode);
 		}
-
-		dataSetUserConfigurationJSONObject.put(
-			"initialDataSetSnapshotERC", externalReferenceCode);
 	}
 
 	private void _writeEmptyJSONObject(

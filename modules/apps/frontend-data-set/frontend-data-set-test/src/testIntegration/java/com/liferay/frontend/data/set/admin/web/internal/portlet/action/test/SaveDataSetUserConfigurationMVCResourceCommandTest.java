@@ -247,6 +247,17 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		_assertResponse(
 			HttpServletResponse.SC_BAD_REQUEST, _serveResource((String)null));
 
+		// Unknown data set snapshot
+
+		_assertResponse(_serveResource());
+
+		_assertResponse(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(
+				JSONUtil.put(
+					"initialDataSetSnapshotERC",
+					RandomTestUtil.randomString())));
+
 		// User cannot access the data set snapshot
 
 		_assertResponse(_serveResource());
