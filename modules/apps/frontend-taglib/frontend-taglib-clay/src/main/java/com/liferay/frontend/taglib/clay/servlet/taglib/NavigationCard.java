@@ -10,6 +10,10 @@ package com.liferay.frontend.taglib.clay.servlet.taglib;
  */
 public interface NavigationCard extends BaseClayCard {
 
+	public default String getCardType() {
+		return null;
+	}
+
 	public default String getDescription() {
 		return null;
 	}

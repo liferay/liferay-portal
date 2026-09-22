@@ -15,6 +15,7 @@ import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -35,6 +36,22 @@ public class NavigationCardTag extends BaseCardTag {
 		}
 
 		return super.doStartTag();
+	}
+
+	public String getCardType() {
+		NavigationCard navigationCard = getNavigationCard();
+
+		if (navigationCard == null) {
+			return "template";
+		}
+
+		String cardType = navigationCard.getCardType();
+
+		if (Validator.isNull(cardType)) {
+			return "template";
+		}
+
+		return cardType;
 	}
 
 	public String getDescription() {
@@ -165,6 +182,7 @@ public class NavigationCardTag extends BaseCardTag {
 
 	@Override
 	protected Map<String, Object> prepareProps(Map<String, Object> props) {
+		props.put("cardType", getCardType());
 		props.put("description", getDescription());
 		props.put("horizontal", isSmall());
 		props.put("imageAlt", getImageAlt());
@@ -178,14 +196,30 @@ public class NavigationCardTag extends BaseCardTag {
 	protected String processCssClasses(Set<String> cssClasses) {
 		cssClasses.add("card");
 		cssClasses.add("card-interactive");
-		cssClasses.add("card-interactive-primary");
-		cssClasses.add("card-type-template");
 
-		if (isSmall()) {
-			cssClasses.add("template-card-horizontal");
+		String cardType = getCardType();
+
+		if (Objects.equals(cardType, "navigation")) {
+			if (isSmall()) {
+				cssClasses.add("navigation-card-horizontal");
+			}
+			else {
+				cssClasses.add("navigation-card");
+			}
 		}
 		else {
-			cssClasses.add("template-card");
+			cssClasses.add("card-interactive-primary");
+		}
+
+		if (Objects.equals(cardType, "template")) {
+			cssClasses.add("card-type-template");
+
+			if (isSmall()) {
+				cssClasses.add("template-card-horizontal");
+			}
+			else {
+				cssClasses.add("template-card");
+			}
 		}
 
 		return super.processCssClasses(cssClasses);
@@ -200,15 +234,20 @@ public class NavigationCardTag extends BaseCardTag {
 		Boolean small = isSmall();
 
 		if (!small) {
-			jspWriter.write("<span class=\"aspect-ratio\"><span class=\"");
-			jspWriter.write("aspect-ratio-item ");
-			jspWriter.write("aspect-ratio-item-center-middle ");
-			jspWriter.write("aspect-ratio-item-flush\">");
+			jspWriter.write("<span class=\"card-item-first aspect-ratio ");
+			jspWriter.write("aspect-ratio-16-to-9\"><span ");
+			jspWriter.write("class=\"aspect-ratio-item");
 
-			String icon = getIcon();
+			if (Objects.equals(getCardType(), "template")) {
+				jspWriter.write(" aspect-ratio-item-center-middle ");
+				jspWriter.write("aspect-ratio-item-flush");
+			}
+
+			jspWriter.write("\">");
+
 			String imageSrc = getImageSrc();
 
-			if (imageSrc != null) {
+			if (Validator.isNotNull(imageSrc)) {
 				jspWriter.write("<img");
 
 				String imageAlt = getImageAlt();
@@ -223,12 +262,16 @@ public class NavigationCardTag extends BaseCardTag {
 				jspWriter.write(imageSrc);
 				jspWriter.write("\" />");
 			}
-			else if (icon != null) {
-				IconTag iconTag = new IconTag();
+			else {
+				String icon = getIcon();
 
-				iconTag.setSymbol(icon);
+				if (icon != null) {
+					IconTag iconTag = new IconTag();
 
-				iconTag.doTag(pageContext);
+					iconTag.setSymbol(icon);
+
+					iconTag.doTag(pageContext);
+				}
 			}
 
 			jspWriter.write("</span></span>");

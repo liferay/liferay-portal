@@ -1001,7 +1001,6 @@ $cadmin-template-card-horizontal-card-row: map-deep-merge(
 $cadmin-template-card-horizontal-card-title: () !default;
 $cadmin-template-card-horizontal-card-title: map-deep-merge(
 	(
-		color: inherit,
 		margin-bottom: 0px,
 	),
 	$cadmin-template-card-horizontal-card-title

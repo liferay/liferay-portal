@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayCardWithNavigation} from '@clayui/card';
+import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
 import React from 'react';
 
-import '../../../css/Home.scss';
 import {CategoryItemGrouped} from '../types';
-import CategoryCard from './CategoryCard';
-import CategoryCardHorizontal from './CategoryCardHorizontal';
 
 type Props = {
 	displayType?: 'horizontal' | 'vertical';
@@ -53,7 +52,6 @@ const HomePageLayout = ({
 						>
 							<ClaySticker
 								borderless
-								className="home-sticker"
 								displayType="outline"
 								size="xl"
 							>
@@ -62,12 +60,9 @@ const HomePageLayout = ({
 						</div>
 
 						<h2
-							className={classNames(
-								'font-weight-bold home-title text-11',
-								{
-									'c-ml-3 c-ml-lg-4': isHorizontal,
-								}
-							)}
+							className={classNames('font-weight-bold text-11', {
+								'c-ml-3 c-ml-lg-4': isHorizontal,
+							})}
 						>
 							{title}
 						</h2>
@@ -85,7 +80,13 @@ const HomePageLayout = ({
 					if (!isHorizontal) {
 						return group.items.map((item) => (
 							<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>
-								<CategoryCard item={item} />
+								<ClayCardWithNavigation
+									cardType="navigation"
+									href={item.href}
+									title={item.label}
+								>
+									<ClayIcon symbol={item.leadingIcon} />
+								</ClayCardWithNavigation>
 							</ClayLayout.Col>
 						));
 					}
@@ -102,7 +103,7 @@ const HomePageLayout = ({
 							{hasLabel && (
 								<ClayLayout.ContentRow className="c-mb-1 c-mb-lg-2 c-pb-2">
 									<ClayLayout.ContentCol expand>
-										<p className="font-weight-semi-bold home-subtitle mb-0 text-2 text-secondary text-uppercase">
+										<p className="font-weight-semi-bold mb-0 text-2 text-secondary text-uppercase">
 											{group.label}
 										</p>
 									</ClayLayout.ContentCol>
@@ -110,9 +111,16 @@ const HomePageLayout = ({
 							)}
 
 							<ClayLayout.Row>
-								{group.items.map((app) => (
-									<ClayLayout.Col key={app.id} md={4} sm={6}>
-										<CategoryCardHorizontal item={app} />
+								{group.items.map((item) => (
+									<ClayLayout.Col key={item.id} md={4} sm={6}>
+										<ClayCardWithNavigation
+											cardType="navigation"
+											className="c-mb-2 c-mb-lg-3"
+											horizontal
+											horizontalSymbol={item.leadingIcon}
+											href={item.href}
+											title={item.label}
+										/>
 									</ClayLayout.Col>
 								))}
 							</ClayLayout.Row>

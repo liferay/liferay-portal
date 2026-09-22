@@ -1150,7 +1150,6 @@ $template-card-horizontal-card-row: map-deep-merge(
 $template-card-horizontal-card-title: () !default;
 $template-card-horizontal-card-title: map-deep-merge(
 	(
-		color: inherit,
 		margin-bottom: 0rem,
 	),
 	$template-card-horizontal-card-title

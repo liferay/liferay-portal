@@ -8,6 +8,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import {cleanup, fireEvent, render} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ClayCard, {
@@ -812,6 +813,197 @@ describe('ClayCardWithUser', () => {
 		fireEvent.click(container.querySelector('img') as HTMLElement, {});
 
 		expect(onClickFn).toHaveBeenCalledTimes(1);
+	});
+
+	it.each([['template'], ['navigation']] as const)(
+		'renders the description as a card subtitle when %s',
+		(cardType) => {
+			const {container} = render(
+				<ClayCardWithNavigation
+					cardType={cardType}
+					description="Pick and choose your layout"
+					href="#"
+					title="Layout Page"
+				>
+					<img alt="portlet image" src="/some/path" />
+				</ClayCardWithNavigation>
+			);
+
+			expect(container.querySelector('.card-subtitle')).toHaveTextContent(
+				'Pick and choose your layout'
+			);
+			expect(container.querySelector('.card-text')).toBeNull();
+		}
+	);
+
+	it('omits only the card type class when navigation', () => {
+		const {getByRole} = render(
+			<ClayCardWithNavigation
+				cardType="navigation"
+				href="#"
+				title="Layout Page"
+			>
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		const card = getByRole('link');
+
+		expect(card).toHaveClass(
+			'card',
+			'card-interactive',
+			'card-interactive-primary',
+			'template-card'
+		);
+		expect(card).not.toHaveClass('card-type-template');
+	});
+
+	it('keeps the horizontal template card class when navigation', () => {
+		const {getByRole} = render(
+			<ClayCardWithNavigation
+				cardType="navigation"
+				horizontal
+				horizontalSymbol="user"
+				href="#"
+				spritemap="foo/bar"
+				title="Layout Page"
+			/>
+		);
+
+		const card = getByRole('link');
+
+		expect(card).toHaveClass('template-card-horizontal');
+		expect(card).not.toHaveClass('card-type-template');
+	});
+
+	it('positions the aspect ratio item top right when navigation', () => {
+		const {container} = render(
+			<ClayCardWithNavigation
+				cardType="navigation"
+				href="#"
+				title="Layout Page"
+			>
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		expect(container.querySelector('.aspect-ratio')).toHaveClass(
+			'aspect-ratio-16-to-9'
+		);
+
+		const aspectRatioItem = container.querySelector('.aspect-ratio-item');
+
+		expect(aspectRatioItem).toHaveClass('aspect-ratio-item-top-right');
+		expect(aspectRatioItem).not.toHaveClass('aspect-ratio-item-flush');
+	});
+
+	it('replaces the default aspect ratio item classes', () => {
+		const {container} = render(
+			<ClayCardWithNavigation
+				aspectRatioProps={{
+					item: {className: 'aspect-ratio-item-bottom-left'},
+				}}
+				href="#"
+				title="Layout Page"
+			>
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		const aspectRatioItem = container.querySelector(
+			'.aspect-ratio-item-bottom-left'
+		);
+
+		expect(aspectRatioItem).not.toHaveClass('aspect-ratio-item-flush');
+		expect(
+			container.querySelector('.aspect-ratio-item-center-middle')
+		).toBeNull();
+	});
+
+	it('does not prevent the default action on Enter when the card is a link', async () => {
+		const keyDownSpy = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation href="#" title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('link').focus();
+
+		await userEvent.keyboard('{Enter}');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(false);
+	});
+
+	it('activates a link with an onClick on Space', async () => {
+		const keyDownSpy = jest.fn();
+		const onClickFn = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation
+				href="#"
+				onClick={onClickFn}
+				title="Layout Page"
+			>
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('button').focus();
+
+		await userEvent.keyboard(' ');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(true);
+		expect(onClickFn).toHaveBeenCalledTimes(1);
+	});
+
+	it('does not prevent the default action on Space when the card is only a link', async () => {
+		const keyDownSpy = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation href="#" title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('link').focus();
+
+		await userEvent.keyboard(' ');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(false);
+	});
+
+	it('prevents the default action on Enter when the card is not a link', async () => {
+		const keyDownSpy = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation onClick={() => {}} title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('button').focus();
+
+		await userEvent.keyboard('{Enter}');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(true);
 	});
 });
 

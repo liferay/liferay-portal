@@ -16,8 +16,8 @@ interface IProps
 		React.BaseHTMLAttributes<HTMLAnchorElement | HTMLDivElement> {
 
 	/**
-	 * Determines whether `card-type-template` is emitted. `template` keeps that
-	 * styling, `navigation` and `null` opt out of it.
+	 * Determines whether the template card classes are emitted. `template`
+	 * keeps that styling, `navigation` and `null` opt out of it.
 	 */
 	cardType?: CardType;
 }
@@ -33,18 +33,20 @@ export function ClayCardNavigation({
 }: IProps) {
 	const Container = href ? ClayLink : 'div';
 
+	const navigation = cardType === 'navigation';
+	const template = cardType === 'template';
+
 	return (
 		<Context.Provider value={{horizontal, interactive: true}}>
 			<Container
-				className={classNames(
-					className,
-					'card card-interactive card-interactive-primary',
-					{
-						'card-type-template': cardType === 'template',
-						'template-card': !horizontal,
-						'template-card-horizontal': horizontal,
-					}
-				)}
+				className={classNames(className, 'card card-interactive', {
+					'card-interactive-primary': !navigation,
+					'card-type-template': template,
+					'navigation-card': navigation && !horizontal,
+					'navigation-card-horizontal': navigation && horizontal,
+					'template-card': template && !horizontal,
+					'template-card-horizontal': template && horizontal,
+				})}
 				href={href}
 				onClick={onClick}
 				role={onClick ? 'button' : undefined}

@@ -1,4 +1,10 @@
-@import 'atlas-variables';
+@import '_atlas-custom-properties-variables';
+
+.home-card {
+	.lexicon-icon {
+		color: $primary-l0;
+	}
+}
 
 .home-title {
 	font-size: 24px;
@@ -23,11 +29,21 @@
 }
 
 .home-horizontal {
-	.card-title {
-		font-size: 14px;
+	.home-card {
+		.card-title {
+			font-size: 14px;
 
-		@include media-breakpoint-up(lg, $grid-breakpoints) {
-			font-size: 16px;
+			@include media-breakpoint-up(lg, $grid-breakpoints) {
+				font-size: 16px;
+			}
+		}
+
+		.card-body {
+			padding: map-get($spacers, 2);
+		}
+
+		.sticker .lexicon-icon {
+			font-size: 12px;
 		}
 	}
 
@@ -49,27 +65,19 @@
 }
 
 .home-vertical {
-	.card-title {
-		font-size: 12px;
+	.home-card {
+		.card-body {
+			text-align: start;
+		}
 
-		@include media-breakpoint-up(lg, $grid-breakpoints) {
-			font-size: 14px;
+		.lexicon-icon {
+			font-size: 2rem;
 		}
 	}
 
 	@include media-breakpoint-down(md, $grid-breakpoints) {
 		.home-card {
 			margin-bottom: 0.75rem;
-
-			.sticker {
-				height: 2.5rem;
-				width: 2.5rem;
-
-				.lexicon-icon {
-					height: 1.25rem;
-					width: 1.25rem;
-				}
-			}
 		}
 	}
 }

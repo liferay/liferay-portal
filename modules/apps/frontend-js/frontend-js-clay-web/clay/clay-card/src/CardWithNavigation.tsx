@@ -7,13 +7,21 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {Keys} from '@clayui/shared';
 import ClaySticker from '@clayui/sticker';
+import classNames from 'classnames';
 import React from 'react';
 
 import ClayCard from './Card';
-import {ClayCardNavigation} from './CardNavigation';
+import {CardType, ClayCardNavigation} from './CardNavigation';
 
 interface IProps
 	extends React.BaseHTMLAttributes<HTMLAnchorElement | HTMLDivElement> {
+
+	/**
+	 * Determines which card type classes are emitted and which aspect ratio
+	 * defaults apply.
+	 */
+	cardType?: CardType;
+
 	children?: React.ReactNode;
 
 	/**
@@ -66,6 +74,7 @@ function noop() {}
 
 export function ClayCardWithNavigation({
 	'aria-label': ariaLabel,
+	cardType = 'template',
 	children,
 	description,
 	horizontal = false,
@@ -81,13 +90,14 @@ export function ClayCardWithNavigation({
 	return (
 		<ClayCardNavigation
 			{...otherProps}
+			cardType={cardType}
 			horizontal={horizontal}
 			href={href}
 			onClick={onClick}
 			onKeyDown={(event: React.KeyboardEvent) => {
 				if (
-					(event && event.key === Keys.Enter) ||
-					(event && event.key === Keys.Spacebar)
+					(!href && event.key === Keys.Enter) ||
+					(onClick && event.key === Keys.Spacebar)
 				) {
 					event.preventDefault();
 					if (onClick) {
@@ -99,8 +109,16 @@ export function ClayCardWithNavigation({
 			tabIndex={0}
 		>
 			{!horizontal && (
-				<ClayCard.AspectRatio>
-					<span className="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-flush">
+				<ClayCard.AspectRatio
+					className="card-item-first"
+					containerAspectRatio="16/9"
+				>
+					<span
+						className={classNames('aspect-ratio-item', {
+							'aspect-ratio-item-center-middle aspect-ratio-item-flush':
+								cardType === 'template',
+						})}
+					>
 						{children}
 					</span>
 				</ClayCard.AspectRatio>

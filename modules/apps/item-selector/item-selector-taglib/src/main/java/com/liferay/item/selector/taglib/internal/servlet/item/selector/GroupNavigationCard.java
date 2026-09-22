@@ -32,6 +32,11 @@ public class GroupNavigationCard implements NavigationCard {
 	}
 
 	@Override
+	public String getCardType() {
+		return "template";
+	}
+
+	@Override
 	public String getHref() {
 		return _groupSelectorDisplayContext.getViewGroupURL(_group);
 	}

@@ -6,6 +6,7 @@
 package com.liferay.depot.web.internal.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.NavigationCard;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
  * @author Adolfo Pérez
@@ -19,6 +20,15 @@ public class DepotDashboardApplicationNavigationCard implements NavigationCard {
 		_icon = icon;
 		_small = small;
 		_title = title;
+	}
+
+	@Override
+	public String getCardType() {
+		if (GetterUtil.getBoolean(_small)) {
+			return "navigation";
+		}
+
+		return "template";
 	}
 
 	@Override
