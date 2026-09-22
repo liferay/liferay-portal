@@ -14,123 +14,152 @@ exports[`withSidebar should render with the sidebar 1`] = `
   <div
     class="with-sidebar-root has-sidebar"
   >
-    <div
-      class="align-items-center bg-white d-flex fixed-top justify-content-between px-3 top-bar-root"
+    <nav
+      class="align-items-center bg-white fixed-top top-bar-root tbar component-tbar"
     >
-      <div
-        class="align-items-center d-flex"
+      <ul
+        class="align-items-center mx-3 tbar-nav"
       >
-        <button
-          aria-label="Menu"
-          class="btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
-          data-tooltip-align="bottom"
-          title="Menu"
-          type="button"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-product-menu-open"
-            role="presentation"
-          >
-            <use
-              href="#product-menu-open"
-            />
-          </svg>
-        </button>
-        <svg
-          class="lexicon-icon lexicon-icon-ac_logo icon-root ml-2 top-bar-logo"
-          role="presentation"
-        >
-          <use
-            href="#ac_logo"
-          />
-        </svg>
-        <span
-          class="font-weight-semi-bold ml-2 text-nowrap top-bar-product-name"
-        >
-          Analytics Cloud
-        </span>
-      </div>
-      <div
-        class="align-items-center d-flex"
-      >
-        <a
-          aria-label="Settings"
-          class="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
-          data-discover="true"
-          data-tooltip-align="bottom"
-          href="/workspace/23/settings/data-source"
-          title="Settings"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-cog"
-            role="presentation"
-          >
-            <use
-              href="#cog"
-            />
-          </svg>
-        </a>
-        <span
-          class="mx-2 top-bar-divider"
-        />
-        <button
-          aria-expanded="false"
-          aria-haspopup="true"
-          class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
-          data-tooltip-align="bottom"
-          title="Language"
-          type="button"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-automatic-translate inline-item inline-item-before top-bar-language-icon"
-            role="presentation"
-          >
-            <use
-              href="#automatic-translate"
-            />
-          </svg>
-          <span
-            class="top-bar-language-label"
-          >
-            EN (US)
-          </span>
-          <svg
-            class="lexicon-icon lexicon-icon-caret-bottom inline-item inline-item-after top-bar-language-caret"
-            role="presentation"
-          >
-            <use
-              href="#caret-bottom"
-            />
-          </svg>
-        </button>
-        <div
-          class="ml-2 top-bar-user"
+        <li
+          class="tbar-item"
         >
           <button
-            aria-label="Test Test"
-            class="user-menu button-root btn btn-unstyled trigger"
+            aria-label="Menu"
+            class="btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
+            data-tooltip-align="bottom"
+            title="Menu"
             type="button"
           >
-            <div
-              class="text-truncate"
+            <svg
+              class="lexicon-icon lexicon-icon-product-menu-open"
+              role="presentation"
             >
-              <div
-                class="sticker sticker-root sticker-static avatar sticker-circle"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-user icon-root"
-                  role="presentation"
-                >
-                  <use
-                    href="#user"
-                  />
-                </svg>
-              </div>
-            </div>
+              <use
+                href="#product-menu-open"
+              />
+            </svg>
           </button>
-        </div>
-      </div>
-    </div>
+        </li>
+        <li
+          class="tbar-item"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-ac_logo icon-root text-6"
+            role="presentation"
+          >
+            <use
+              href="#ac_logo"
+            />
+          </svg>
+        </li>
+        <li
+          class="d-none d-sm-block pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="font-weight-semi-bold text-5 text-dark text-nowrap"
+            >
+              Analytics Cloud
+            </span>
+          </div>
+        </li>
+        <li
+          class="tbar-item tbar-item-expand"
+        />
+        <li
+          class="tbar-item"
+        >
+          <a
+            aria-label="Settings"
+            class="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
+            data-discover="true"
+            data-tooltip-align="bottom"
+            href="/workspace/23/settings/data-source"
+            title="Settings"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-cog"
+              role="presentation"
+            >
+              <use
+                href="#cog"
+              />
+            </svg>
+          </a>
+        </li>
+        <li
+          class="align-self-stretch border-left my-1 p-0 tbar-item"
+        />
+        <li
+          class="tbar-item"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
+            data-tooltip-align="bottom"
+            title="Language"
+            type="button"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-automatic-translate inline-item mr-sm-1"
+              role="presentation"
+            >
+              <use
+                href="#automatic-translate"
+              />
+            </svg>
+            <span
+              class="d-none d-sm-inline"
+            >
+              EN (US)
+            </span>
+            <svg
+              class="lexicon-icon lexicon-icon-caret-bottom d-none d-sm-inline-flex inline-item inline-item-after"
+              role="presentation"
+            >
+              <use
+                href="#caret-bottom"
+              />
+            </svg>
+          </button>
+        </li>
+        <li
+          class="tbar-item"
+        >
+          <div
+            class="dropdown"
+          >
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-label="Test Test"
+              class="dropdown-toggle btn btn-unstyled"
+              type="button"
+            >
+              <span
+                class="sticker border text-secondary sticker-circle sticker-unstyled"
+              >
+                <span
+                  class="sticker-overlay"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user"
+                    />
+                  </svg>
+                </span>
+              </span>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </nav>
     <div
       class="sidebar-root"
     >

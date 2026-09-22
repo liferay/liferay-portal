@@ -2,9 +2,10 @@ import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
+import ClaySticker from '@clayui/sticker';
+import ClayToolbar from '@clayui/toolbar';
 import getCN from 'classnames';
 import React, {useRef, useState} from 'react';
-import UserDropdown, {Menus} from 'shared/components/user-dropdown';
 import {LANGUAGES} from 'shared/util/constants';
 import {Link} from 'react-router-dom';
 import {getLanguageDisplayName, getLanguageLabel} from 'shared/util/locale';
@@ -35,143 +36,162 @@ const TopBar: React.FC<ITopBarProps> = ({
 
 	const {emailAddress, languageId} = currentUser;
 
-	const userMenus: Menus = {
-		base: [
-			{
-				items: [
-					{
-						label: Liferay.Language.get('switch-workspaces'),
-						url: Routes.BASE,
-					},
-					{
-						externalLink: true,
-						label: Liferay.Language.get('sign-out'),
-						url: Routes.LOGOUT,
-					},
-				],
-				subheaderLabel: emailAddress,
-			},
-		],
-	};
-
 	return (
-		<div
+		<ClayToolbar
 			className={getCN(
-				'align-items-center bg-white d-flex fixed-top justify-content-between px-3 top-bar-root',
+				'align-items-center bg-white fixed-top top-bar-root',
 				className
 			)}
 		>
-			<div className="align-items-center d-flex">
-				<ClayButton
-					aria-label={Liferay.Language.get('menu')}
-					borderless
-					data-tooltip-align="bottom"
-					displayType="secondary"
-					monospaced
-					onClick={onToggle}
-					size="sm"
-					title={Liferay.Language.get('menu')}
-				>
+			<ClayToolbar.Nav className="align-items-center mx-3">
+				<ClayToolbar.Item>
+					<ClayButton
+						aria-label={Liferay.Language.get('menu')}
+						borderless
+						data-tooltip-align="bottom"
+						displayType="secondary"
+						monospaced
+						onClick={onToggle}
+						size="sm"
+						title={Liferay.Language.get('menu')}
+					>
+						<ClayIcon
+							symbol={
+								collapsed
+									? 'product-menu-closed'
+									: 'product-menu-open'
+							}
+						/>
+					</ClayButton>
+				</ClayToolbar.Item>
+
+				<ClayToolbar.Item>
 					<ClayIcon
-						symbol={
-							collapsed
-								? 'product-menu-closed'
-								: 'product-menu-open'
-						}
+						className="icon-root text-6"
+						symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
 					/>
-				</ClayButton>
+				</ClayToolbar.Item>
 
-				<ClayIcon
-					className="icon-root ml-2 top-bar-logo"
-					symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
-				/>
+				<ClayToolbar.Item className="d-none d-sm-block pl-0">
+					<ClayToolbar.Section>
+						<span className="font-weight-semi-bold text-5 text-dark text-nowrap">
+							{LDPEnabled
+								? Liferay.Language.get('liferay-data-platform')
+								: Liferay.Language.get('analytics-cloud')}
+						</span>
+					</ClayToolbar.Section>
+				</ClayToolbar.Item>
 
-				<span className="font-weight-semi-bold ml-2 text-nowrap top-bar-product-name">
-					{LDPEnabled
-						? Liferay.Language.get('liferay-data-platform')
-						: Liferay.Language.get('analytics-cloud')}
-				</span>
-			</div>
+				<ClayToolbar.Item expand />
 
-			<div className="align-items-center d-flex">
-				<Link
-					aria-label={Liferay.Language.get('settings')}
-					className="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
-					data-tooltip-align="bottom"
-					title={Liferay.Language.get('settings')}
-					to={toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {groupId})}
-				>
-					<ClayIcon symbol="cog" />
-				</Link>
+				<ClayToolbar.Item>
+					<Link
+						aria-label={Liferay.Language.get('settings')}
+						className="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
+						data-tooltip-align="bottom"
+						title={Liferay.Language.get('settings')}
+						to={toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {
+							groupId,
+						})}
+					>
+						<ClayIcon symbol="cog" />
+					</Link>
+				</ClayToolbar.Item>
 
-				<span className="mx-2 top-bar-divider" />
+				<ClayToolbar.Item className="align-self-stretch border-left my-1 p-0" />
 
-				<ClayButton
-					aria-expanded={active}
-					aria-haspopup="true"
-					borderless
-					className="text-nowrap"
-					data-tooltip-align="bottom"
-					displayType="secondary"
-					onClick={() => setActive(!active)}
-					ref={triggerElementRef}
-					size="sm"
-					title={Liferay.Language.get('language')}
-				>
-					<ClayIcon
-						className="inline-item inline-item-before top-bar-language-icon"
-						symbol="automatic-translate"
-					/>
+				<ClayToolbar.Item>
+					<ClayButton
+						aria-expanded={active}
+						aria-haspopup="true"
+						borderless
+						className="text-nowrap"
+						data-tooltip-align="bottom"
+						displayType="secondary"
+						onClick={() => setActive(!active)}
+						ref={triggerElementRef}
+						size="sm"
+						title={Liferay.Language.get('language')}
+					>
+						<ClayIcon
+							className="inline-item mr-sm-1"
+							symbol="automatic-translate"
+						/>
 
-					<span className="top-bar-language-label">
-						{getLanguageLabel(languageId)}
-					</span>
+						<span className="d-none d-sm-inline">
+							{getLanguageLabel(languageId)}
+						</span>
 
-					<ClayIcon
-						className="inline-item inline-item-after top-bar-language-caret"
-						symbol="caret-bottom"
-					/>
-				</ClayButton>
+						<ClayIcon
+							className="d-none d-sm-inline-flex inline-item inline-item-after"
+							symbol="caret-bottom"
+						/>
+					</ClayButton>
 
-				<ClayDropDown.Menu
-					active={active}
-					alignElementRef={triggerElementRef}
-					alignmentPosition={Align.BottomRight}
-					onSetActive={setActive}
-				>
-					<ClayDropDown.ItemList>
-						{LANGUAGES.map((id) => (
-							<ClayDropDown.Item
-								active={languageId === id}
-								key={id}
-								onClick={() => {
-									setActive(false);
+					<ClayDropDown.Menu
+						active={active}
+						alignElementRef={triggerElementRef}
+						alignmentPosition={Align.BottomRight}
+					>
+						<ClayDropDown.ItemList>
+							{LANGUAGES.map((id) => (
+								<ClayDropDown.Item
+									active={languageId === id}
+									key={id}
+									onClick={() => {
+										setActive(false);
 
-									if (languageId === id) {
-										return;
-									}
+										if (languageId === id) {
+											return;
+										}
 
-									API.user
-										.updateLanguage({languageId: id})
-										.then(() => window.location.reload());
-								}}
+										API.user
+											.updateLanguage({languageId: id})
+											.then(() =>
+												window.location.reload()
+											);
+									}}
+								>
+									{getLanguageDisplayName(id)}
+								</ClayDropDown.Item>
+							))}
+						</ClayDropDown.ItemList>
+					</ClayDropDown.Menu>
+				</ClayToolbar.Item>
+
+				<ClayToolbar.Item>
+					<ClayDropDown
+						alignmentPosition={Align.BottomRight}
+						trigger={
+							<ClayButton
+								aria-label={currentUser.name}
+								displayType="unstyled"
 							>
-								{getLanguageDisplayName(id)}
-							</ClayDropDown.Item>
-						))}
-					</ClayDropDown.ItemList>
-				</ClayDropDown.Menu>
+								<ClaySticker
+									className="border text-secondary"
+									displayType="unstyled"
+									shape="circle"
+								>
+									<ClayIcon symbol="user" />
+								</ClaySticker>
+							</ClayButton>
+						}
+					>
+						<ClayDropDown.ItemList>
+							<ClayDropDown.Group header={emailAddress}>
+								<ClayDropDown.Item href={Routes.BASE}>
+									{Liferay.Language.get('switch-workspaces')}
+								</ClayDropDown.Item>
 
-				<UserDropdown
-					alignmentPosition={Align.BottomRight}
-					className="ml-2 top-bar-user"
-					initialActiveMenu="base"
-					menus={userMenus}
-					symbol="user"
-					userName={currentUser.name}
-				/>
-			</div>
-		</div>
+								<ClayDropDown.Item href={Routes.LOGOUT}>
+									{Liferay.Language.get('sign-out')}
+								</ClayDropDown.Item>
+							</ClayDropDown.Group>
+						</ClayDropDown.ItemList>
+					</ClayDropDown>
+				</ClayToolbar.Item>
+			</ClayToolbar.Nav>
+		</ClayToolbar>
 	);
 };
 
