@@ -58,22 +58,34 @@ export default function ({namespace}) {
 	const submitButton = document.getElementById(`${namespace}submitButton`);
 
 	submitButton.addEventListener('click', async () => {
-		if (preferencesUseRootCategory.checked) {
-			const assetCategoryIdsKey = Object.keys(form.elements).filter(
-				(input) => input.includes('assetCategoriesSelectorCategoryId')
-			);
+		if (
+			preferencesUseRootCategory.checked &&
+			!preferencesUseCategoryFromRequest.checked
+		) {
+			const externalReferenceCodes = [];
 
-			for (let i = 0; i < assetCategoryIdsKey.length; i++) {
-				const assetCategoryId = assetCategoryIdsKey[i];
+			const categoryDataContainers =
+				rootAssetCategoryContainer.querySelectorAll(
+					'[data-categories]'
+				);
 
-				if (form.elements[assetCategoryId].value) {
-					preferencesRootAssetCategoryExternalReferenceCode.value =
-						(await getTaxonomyCategoryExternalReferenceCode(
-							Number(form.elements[assetCategoryId].value)
-						)) || '';
-					break;
+			for (const container of categoryDataContainers) {
+				const categories = JSON.parse(container.dataset.categories);
+
+				if (categories.length) {
+					const externalReferenceCode =
+						await getTaxonomyCategoryExternalReferenceCode(
+							Number(categories[0].value)
+						);
+
+					if (externalReferenceCode) {
+						externalReferenceCodes.push(externalReferenceCode);
+					}
 				}
 			}
+
+			preferencesRootAssetCategoryExternalReferenceCode.value =
+				externalReferenceCodes.join(',');
 		}
 		submitForm(form);
 	});
