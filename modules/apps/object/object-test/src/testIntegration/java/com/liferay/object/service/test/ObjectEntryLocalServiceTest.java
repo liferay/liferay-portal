@@ -5724,6 +5724,37 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetObjectEntriesCountWithChangedHeadObjectEntryId()
+		throws Exception {
+
+		long objectDefinitionId =
+			_irrelevantObjectDefinition.getObjectDefinitionId();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			0, objectDefinitionId, Collections.emptyMap());
+
+		Assert.assertEquals(
+			1,
+			_objectEntryLocalService.getObjectEntriesCount(objectDefinitionId));
+
+		objectEntry.setHeadObjectEntryId(RandomTestUtil.randomLong());
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertEquals(
+			0,
+			_objectEntryLocalService.getObjectEntriesCount(objectDefinitionId));
+
+		objectEntry.setHeadObjectEntryId(objectEntry.getObjectEntryId());
+
+		_objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertEquals(
+			1,
+			_objectEntryLocalService.getObjectEntriesCount(objectDefinitionId));
+	}
+
+	@Test
 	public void testGetObjectEntry() throws Exception {
 		ObjectEntry objectEntry = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
