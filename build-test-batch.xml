@@ -8819,19 +8819,19 @@ information. Make sure to commit in all format-javadoc results.
 
 				<format-js-unit-test-results portal.dir="${project.dir}" test.dir="modules" />
 
-				<replace
-					dir="modules"
-					includes="**/TEST-frontend-js.xml"
-				>
-					<replacefilter>
-						<replacetoken><![CDATA[<testsuites>]]></replacetoken>
-						<replacevalue><![CDATA[]]></replacevalue>
-					</replacefilter>
-					<replacefilter>
-						<replacetoken><![CDATA[</testsuites>]]></replacetoken>
-						<replacevalue><![CDATA[]]></replacevalue>
-					</replacefilter>
-				</replace>
+				<for param="test.results.file">
+					<path>
+						<fileset
+							dir="modules"
+							erroronmissingdir="false"
+							excludes="**/node_modules/**"
+							includes="**/TEST-frontend-js.xml"
+						/>
+					</path>
+					<sequential>
+						<split-testsuites-junit-report test.suites.report.filepath="@{test.results.file}" />
+					</sequential>
+				</for>
 
 				<report-js-unit-test-results failure.count="${js.unit.failure.count}">
 					<fileset
