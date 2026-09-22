@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -489,9 +490,13 @@ public class GitUtil {
 	}
 
 	protected static int getGitLevel(String baseDirName) throws GitException {
-		File dir = new File(baseDirName);
+		Path path = Paths.get(baseDirName);
 
-		dir = dir.getAbsoluteFile();
+		path = path.toAbsolutePath();
+
+		path = path.normalize();
+
+		File dir = path.toFile();
 
 		for (int i = 0; i <= ToolsUtil.PORTAL_MAX_DIR_LEVEL; i++) {
 			if ((dir == null) || !dir.exists()) {
