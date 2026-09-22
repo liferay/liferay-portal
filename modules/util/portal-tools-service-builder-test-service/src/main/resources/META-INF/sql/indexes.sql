@@ -10,6 +10,8 @@ create index IX_4F11FECA on CacheFieldEntry (groupId);
 create index IX_CC6D5DF1 on CacheReplicatorEntry (companyId);
 create unique index IX_45E63C56 on CacheReplicatorEntry (name[$COLUMN_LENGTH:75$]);
 
+create unique index IX_3E112855 on CompoundPKEntry (companyId, name[$COLUMN_LENGTH:75$]);
+
 create unique index IX_3C42BA64 on DateEntry (companyId, snapshotDate);
 create index IX_C5085390 on DateEntry (snapshotDate);
 

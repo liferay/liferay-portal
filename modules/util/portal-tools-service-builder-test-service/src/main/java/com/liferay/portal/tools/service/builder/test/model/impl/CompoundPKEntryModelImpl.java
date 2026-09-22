@@ -108,18 +108,22 @@ public class CompoundPKEntryModelImpl
 	public static final boolean COLUMN_BITMASK_ENABLED = true;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long CLASSNAMEID_COLUMN_BITMASK = 1L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CLASSNAMEID_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NAME_COLUMN_BITMASK = 4L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.tools.service.builder.test.service.util.ServiceProps.
@@ -277,6 +281,16 @@ public class CompoundPKEntryModelImpl
 		_companyId = companyId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalCompanyId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("companyId"));
+	}
+
 	@Override
 	public String getClassName() {
 		if (getClassNameId() <= 0) {
@@ -311,6 +325,16 @@ public class CompoundPKEntryModelImpl
 		_classNameId = classNameId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalClassNameId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("classNameId"));
+	}
+
 	@Override
 	public String getName() {
 		if (_name == null) {
@@ -328,6 +352,15 @@ public class CompoundPKEntryModelImpl
 		}
 
 		_name = name;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalName() {
+		return getColumnOriginalValue("name");
 	}
 
 	public long getColumnBitmask() {
@@ -596,4 +629,4 @@ public class CompoundPKEntryModelImpl
 	private CompoundPKEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1510107849
+// LIFERAY-SERVICE-BUILDER-HASH:-1397546764

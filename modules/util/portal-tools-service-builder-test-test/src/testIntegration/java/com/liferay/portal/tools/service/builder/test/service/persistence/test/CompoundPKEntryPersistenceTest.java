@@ -10,7 +10,9 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -125,6 +127,23 @@ public class CompoundPKEntryPersistenceTest {
 			newCompoundPKEntry.getClassNameId());
 		Assert.assertEquals(
 			existingCompoundPKEntry.getName(), newCompoundPKEntry.getName());
+	}
+
+	@Test
+	public void testCountByC_CN() throws Exception {
+		_persistence.countByC_CN(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+
+		_persistence.countByC_CN(0L, 0L);
+	}
+
+	@Test
+	public void testCountByC_N() throws Exception {
+		_persistence.countByC_N(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByC_N(0L, "null");
+
+		_persistence.countByC_N(0L, (String)null);
 	}
 
 	@Test
@@ -345,6 +364,72 @@ public class CompoundPKEntryPersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		CompoundPKEntry newCompoundPKEntry = addCompoundPKEntry();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(newCompoundPKEntry.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		CompoundPKEntry newCompoundPKEntry = addCompoundPKEntry();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			CompoundPKEntry.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"id.companyId", newCompoundPKEntry.getCompanyId()));
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"id.classNameId", newCompoundPKEntry.getClassNameId()));
+
+		List<CompoundPKEntry> result = _persistence.findWithDynamicQuery(
+			dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(CompoundPKEntry compoundPKEntry) {
+		Assert.assertEquals(
+			Long.valueOf(compoundPKEntry.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				compoundPKEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+		Assert.assertEquals(
+			compoundPKEntry.getName(),
+			ReflectionTestUtil.invoke(
+				compoundPKEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "name"));
+	}
+
 	protected CompoundPKEntry addCompoundPKEntry() throws Exception {
 		CompoundPKEntryPK pk = new CompoundPKEntryPK(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -364,4 +449,4 @@ public class CompoundPKEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1078125304
+// LIFERAY-SERVICE-BUILDER-HASH:1194048715
