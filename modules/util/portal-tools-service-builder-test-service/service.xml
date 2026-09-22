@@ -339,13 +339,25 @@
 
 		<!-- Other fields -->
 
+		<column name="headId" type="long" />
 		<column name="name" type="String" />
 		<column name="nickname" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Finder methods -->
 
+		<finder name="HeadId" return-type="Collection" where="finderWhereClauseEntryId = headId">
+			<finder-column name="headId" />
+		</finder>
 		<finder name="Name_Nickname" return-type="Collection" where="nickname IS NOT NULL">
 			<finder-column name="name" />
+		</finder>
+		<finder name="Status" return-type="Collection" where="finderWhereClauseEntryId != headId">
+			<finder-column name="status" />
+		</finder>
+		<finder name="Name_Status" return-type="Collection" where="(nickname IS NOT NULL) AND (status != 0)">
+			<finder-column name="name" />
+			<finder-column name="status" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="GenericMethodsEntry" remote-service="false" />
