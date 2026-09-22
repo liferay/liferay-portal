@@ -23,10 +23,9 @@ public class TestrayCaseResultTest
 		List<String> errorsList = TestrayCaseResult.getErrorsList(
 			"first\nsecond\nthird\nlast");
 
-		Assert.assertEquals(errorsList.toString(), 3, errorsList.size());
-
-		Assert.assertEquals("first\n...\nlast", errorsList.get(1));
 		Assert.assertEquals("first\nsecond\nthird\nlast", errorsList.get(0));
+		Assert.assertEquals("first\n...\nlast", errorsList.get(1));
+		Assert.assertEquals(errorsList.toString(), 3, errorsList.size());
 	}
 
 	@Test
@@ -34,9 +33,8 @@ public class TestrayCaseResultTest
 		for (String errors : new String[] {null, ""}) {
 			List<String> errorsList = TestrayCaseResult.getErrorsList(errors);
 
-			Assert.assertEquals(errorsList.toString(), 1, errorsList.size());
-
 			Assert.assertEquals(errors, errorsList.get(0));
+			Assert.assertEquals(errorsList.toString(), 1, errorsList.size());
 		}
 	}
 
@@ -64,9 +62,8 @@ public class TestrayCaseResultTest
 		List<String> errorsList = TestrayCaseResult.getErrorsList(
 			"first\nlast");
 
-		Assert.assertEquals(errorsList.toString(), 2, errorsList.size());
-
 		Assert.assertEquals("first\nlast", errorsList.get(0));
+		Assert.assertEquals(errorsList.toString(), 2, errorsList.size());
 	}
 
 	@Test
@@ -79,7 +76,6 @@ public class TestrayCaseResultTest
 		Assert.assertTrue(
 			summarizedErrors,
 			summarizedErrors.endsWith("Semantic versioning is incorrect"));
-
 		Assert.assertTrue(
 			summarizedErrors,
 			summarizedErrors.startsWith("     [exec]   PACKAGE_NAME"));
