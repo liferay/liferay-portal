@@ -9,13 +9,7 @@ import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {useId} from 'frontend-js-components-web';
-import React, {
-	useCallback,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-	useState,
-} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {
 	PageTreePickerDataSource,
@@ -219,7 +213,6 @@ export default function PageTreePicker<T>({
 	selection,
 	selectionMode = 'multiple',
 }: Props<T>) {
-	const treeContainerRef = useRef<HTMLDivElement>(null);
 	const pageTreePickerId = useId();
 
 	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(
@@ -262,33 +255,6 @@ export default function PageTreePicker<T>({
 		[onItemSelect, select, singleSelection, toggleKey, toggleSubtree]
 	);
 
-	useLayoutEffect(() => {
-		const treeContainerElement = treeContainerRef.current;
-
-		if (!treeContainerElement) {
-			return;
-		}
-
-		treeContainerElement
-			.querySelectorAll<HTMLElement>('.treeview-link[data-id]')
-			.forEach((linkElement) => {
-				const checkboxElement =
-					linkElement.querySelector<HTMLInputElement>(
-						'input[type="checkbox"]'
-					);
-
-				if (!checkboxElement) {
-					return;
-				}
-
-				const dataId = linkElement.getAttribute('data-id') as string;
-
-				const itemId = dataId.substring(dataId.indexOf(',') + 1);
-
-				checkboxElement.checked = selectedKeys.has(itemId);
-			});
-	});
-
 	if (hidden) {
 		return null;
 	}
@@ -299,8 +265,9 @@ export default function PageTreePicker<T>({
 
 	const renderItemContent = (item: PageTreePickerNode<T>) => [
 		!singleSelection && !item.disabled && (
-			<Checkbox
+			<ClayCheckbox
 				aria-labelledby={`${pageTreePickerId}-${item.id}`}
+				checked={selectedKeys.has(item.id)}
 				containerProps={{className: 'my-0'}}
 				key="checkbox"
 				onChange={(event) =>
@@ -388,7 +355,7 @@ export default function PageTreePicker<T>({
 		};
 
 	return (
-		<div ref={treeContainerRef}>
+		<div>
 			<ClayTreeView
 				expandedKeys={expandedKeys}
 				items={items}
@@ -397,6 +364,8 @@ export default function PageTreePicker<T>({
 					setItems(nextItems as Array<PageTreePickerNode<T>>)
 				}
 				onLoadMore={onLoadMore}
+				selectedKeys={selectedKeys}
+				selectionMode={selectionMode}
 				showExpanderOnHover={false}
 			>
 				{(item: PageTreePickerNode<T>, selection, expand, load) =>
@@ -492,15 +461,5 @@ export default function PageTreePicker<T>({
 				</ClayButton>
 			)}
 		</div>
-	);
-}
-
-function Checkbox(
-	props: Omit<React.ComponentProps<typeof ClayCheckbox>, 'checked'>
-) {
-	return (
-		<ClayCheckbox
-			{...(props as React.ComponentProps<typeof ClayCheckbox>)}
-		/>
 	);
 }
