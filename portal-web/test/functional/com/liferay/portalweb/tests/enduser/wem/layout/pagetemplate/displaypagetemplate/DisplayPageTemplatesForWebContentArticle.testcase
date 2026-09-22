@@ -282,6 +282,8 @@ definition {
 		task ("Then the site designer could preview the web content through display page") {
 			WebContent.addCP(webContentTitle = "Web Content Title");
 
+			WebContent.saveAsDraftWithPermissions();
+
 			Panel.expandPanel(panel = "Display Page Preview");
 
 			WebContent.selectPreviewSite(siteName = "Test Site Name");
@@ -414,6 +416,8 @@ definition {
 			WebContent.addCP(
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
+
+			WebContent.saveAsDraftWithPermissions();
 		}
 
 		task ("Then the site designer could preview the web content on the default display page") {
@@ -423,9 +427,9 @@ definition {
 				displayPageTemplateName = "Default Display Page Name",
 				displayPageTemplateType = "Default");
 
-			MouseOver(
+			MouseOver.javaScriptFocus(
 				key_text = "Preview",
-				locator1 = "Button#ANY");
+				locator1 = "Button#ANY_SECONDARY");
 
 			AssertVisible(
 				key_content = "A draft will be saved before displaying the preview.",
@@ -533,6 +537,8 @@ definition {
 			WebContent.addCP(
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
+
+			WebContent.saveAsDraftWithPermissions();
 		}
 
 		task ("Then the site designer can see the Display Page Preview section") {
@@ -677,6 +683,8 @@ definition {
 			WebContent.addCP(
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
+
+			WebContent.saveAsDraftWithPermissions();
 		}
 
 		task ("Then the site designer can see the Display Page Preview section") {

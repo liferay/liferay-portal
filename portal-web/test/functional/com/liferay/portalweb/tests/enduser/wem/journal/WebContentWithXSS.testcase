@@ -168,6 +168,8 @@ definition {
 			WebContent.addCP(
 				webContentContent = "<script>alert(456);</script>",
 				webContentTitle = "<script>alert(123);</script>");
+
+			WebContent.saveAsDraftWithPermissions();
 		}
 
 		task ("Then the XSS won't be executed on preview window") {
