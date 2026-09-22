@@ -221,8 +221,10 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 				objectEntry.getObjectEntryId(), SharingEntryAction.VIEW)) {
 
 			throw new PrincipalException(
-				"User does not have permission to access data set snapshot " +
-					"with external reference code " + externalReferenceCode);
+				StringBundler.concat(
+					"User does not have permission to access the data set ",
+					"snapshot with external reference code ",
+					externalReferenceCode));
 		}
 	}
 
