@@ -336,6 +336,8 @@ function TreeItemSelectorModal({
 
 	const resolvedTitle = title ?? Liferay.Language.get('select-category');
 
+	const hasError = !loading && !!error;
+
 	const isEmpty = !loading && !error && !nodes.length;
 
 	const hasFilterMisses =
@@ -408,9 +410,21 @@ function TreeItemSelectorModal({
 				)}
 
 				<div className="d-flex flex-column flex-grow-1 px-3 py-3">
-					{(loading || isEmpty || hasFilterMisses) && (
+					{(loading || hasError || isEmpty || hasFilterMisses) && (
 						<div className="align-items-center d-flex flex-column flex-grow-1 justify-content-center">
 							{loading && <ClayLoadingIndicator />}
+
+							{hasError && (
+								<ClayEmptyState
+									description={Liferay.Language.get(
+										'an-unexpected-error-occurred'
+									)}
+									imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+									title={Liferay.Language.get(
+										'unable-to-load-content'
+									)}
+								/>
+							)}
 
 							{isEmpty && (
 								<ClayEmptyState
