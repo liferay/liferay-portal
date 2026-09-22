@@ -334,6 +334,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	public void testGetSiteSitePageSitePagesPage() throws Exception {
 		super.testGetSiteSitePageSitePagesPage();
 
+		_testGetSiteSitePageSitePagesPageWithContentPage();
 		_testGetSiteSitePageSitePagesPageWithFlatten();
 		_testGetSiteSitePageSitePagesPageWithoutViewPermission();
 		_testGetSiteSitePageSitePagesPageWithPermissions();
@@ -2394,6 +2395,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_assertSitePage(layout, sitePage);
 		_testGetSiteSitePageWithNestedFields(sitePage);
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithContentPage()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout childLayout = LayoutTestUtil.addTypeContentLayout(
+			testGroup, parentLayout.getPlid());
+
+		Assert.assertNotNull(childLayout.fetchDraftLayout());
+
+		for (Boolean flatten : new Boolean[] {null, true}) {
+			Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+				testGroup.getExternalReferenceCode(),
+				parentLayout.getExternalReferenceCode(), flatten,
+				Pagination.of(1, 10));
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			_assertExternalReferenceCodes(
+				Collections.singletonList(childLayout), page);
+		}
 	}
 
 	private void _testGetSiteSitePageSitePagesPageWithFlatten()
