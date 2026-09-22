@@ -28,6 +28,7 @@ import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryLayoutP
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
@@ -110,7 +111,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-74327", "LPD-104240"})
+	@TestInfo({"LPD-74327", "LPD-104240", "LPD-106070"})
 	public void testAddLayoutPageTemplateEntry() throws Exception {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
@@ -275,6 +276,8 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			DepotConstants.TYPE_ASSET_LIBRARY);
 		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
 			DepotConstants.TYPE_SPACE);
+
+		_testAddLayoutPageTemplateEntryDefaultTemplate();
 
 		_testAddLayoutPageTemplateEntryWithExternalReferenceCode();
 
@@ -802,6 +805,32 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		Assert.assertTrue(
 			Validator.isNotNull(
 				layoutPageTemplateEntry.getExternalReferenceCode()));
+	}
+
+	private void _testAddLayoutPageTemplateEntryDefaultTemplate()
+		throws Exception {
+
+		long classNameId = _portal.getClassNameId(JournalArticle.class);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId(), classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertTrue(layoutPageTemplateEntry1.isDefaultTemplate());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId(), classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertTrue(layoutPageTemplateEntry2.isDefaultTemplate());
+
+		layoutPageTemplateEntry1 =
+			_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+				layoutPageTemplateEntry1.getLayoutPageTemplateEntryId());
+
+		Assert.assertFalse(layoutPageTemplateEntry1.isDefaultTemplate());
 	}
 
 	private void
