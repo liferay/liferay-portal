@@ -257,12 +257,7 @@ function _sync_default_versions {
 	_update_operator_image_version "${operator_version}"
 
 	local default_version_files=(
-		"${ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
-		"${ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
-		"${ROOT_CLOUD_DIR}/helm/platform/values.yaml"
 		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
-		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/resources/terraform.tfvars"
-		"${ROOT_CLOUD_DIR}/terraform/gcp/gitops/resources/terraform.tfvars"
 	)
 
 	if ! git diff --exit-code -- "${default_version_files[@]}"
