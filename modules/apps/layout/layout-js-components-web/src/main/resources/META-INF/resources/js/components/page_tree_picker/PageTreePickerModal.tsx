@@ -66,7 +66,7 @@ export default function PageTreePickerModal({
 				{title}
 			</ClayModal.Header>
 
-			<ClayModal.Body className="cadmin p-0 page-tree-picker">
+			<ClayModal.Body className="cadmin p-0">
 				<PageTreePickerPanel<SitePage | null>
 					dataSource={dataSource}
 					defaultExpandedIds={[ROOT_ITEM_ID]}

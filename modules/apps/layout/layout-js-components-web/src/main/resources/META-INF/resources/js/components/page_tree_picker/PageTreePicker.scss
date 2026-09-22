@@ -1,20 +1,22 @@
 @import 'cadmin-variables';
 
 html#{$cadmin-selector} .cadmin {
-	.search-result-button {
-		font-size: 14px;
-	}
+	.page-tree-picker {
+		&__count-feedback {
+			background: $cadmin-primary-l2;
+			min-height: 48px;
+		}
 
-	.page-tree-picker-count-feedback {
-		background: $cadmin-primary-l2;
-		min-height: 48px;
-	}
+		&__filter {
+			border-bottom: 1px solid $cadmin-secondary-l3;
+		}
 
-	.page-tree-picker-filter {
-		border-bottom: 1px solid $cadmin-secondary-l3;
-	}
+		&__search-mark mark {
+			background-color: $cadmin-gray-300;
+		}
 
-	.page-tree-picker-search-mark mark {
-		background-color: $cadmin-gray-300;
+		&__search-result-button {
+			font-size: 14px;
+		}
 	}
 }

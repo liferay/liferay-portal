@@ -297,8 +297,8 @@ export default function PageTreePickerPanel<T>({
 			.length;
 
 	return (
-		<>
-			<ClayForm.Group className="m-0 p-3 page-tree-picker-filter">
+		<div className="page-tree-picker">
+			<ClayForm.Group className="m-0 p-3 page-tree-picker__filter">
 				<ClayInput.Group>
 					<ClayInput.GroupItem prepend>
 						<ClayInput
@@ -323,7 +323,7 @@ export default function PageTreePickerPanel<T>({
 			{filterSlot}
 
 			{!singleSelection && (
-				<div className="align-items-center d-flex page-tree-picker-count-feedback px-3">
+				<div className="align-items-center d-flex page-tree-picker__count-feedback px-3">
 					{resolvingCount ? (
 						<ClayLoadingIndicator
 							className="m-0"
@@ -373,6 +373,6 @@ export default function PageTreePickerPanel<T>({
 					selectionMode={selectionMode}
 				/>
 			</div>
-		</>
+		</div>
 	);
 }

@@ -150,7 +150,7 @@ export default function PageTreePickerSearchResults<T>({
 
 						{singleSelection ? (
 							<ClayButton
-								className="font-weight-semi-bold px-0 py-1 search-result-button"
+								className="font-weight-semi-bold page-tree-picker__search-result-button px-0 py-1"
 								disabled={item.disabled}
 								displayType="unstyled"
 								onClick={() => {
@@ -211,7 +211,7 @@ function HighlightedLabel({label, query}: {label: string; query: string}) {
 		<>
 			<span className="sr-only">{label}</span>
 
-			<span aria-hidden={true} className="page-tree-picker-search-mark">
+			<span aria-hidden={true} className="page-tree-picker__search-mark">
 				{label.substring(0, index)}
 
 				<mark className="px-0">
