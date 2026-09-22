@@ -279,7 +279,9 @@ public class SitePageResourceImpl
 		List<Layout> sitePageLayouts = transform(
 			layouts,
 			curLayout -> {
-				if (!ArrayUtil.contains(_TYPES, curLayout.getType())) {
+				if (curLayout.isSystem() ||
+					!ArrayUtil.contains(_TYPES, curLayout.getType())) {
+
 					return null;
 				}
 
