@@ -30,13 +30,13 @@ public class BatchEngineImportTaskUtilTest {
 
 	@Test
 	public void testIsPartialUpdateWithCreateOperation() {
-		Assert.assertTrue(
-			_isPartialUpdate(
-				BatchEngineTaskOperation.CREATE, CreateStrategy.UPSERT,
-				UpdateStrategy.PARTIAL_UPDATE));
 		Assert.assertFalse(
 			_isPartialUpdate(
 				BatchEngineTaskOperation.CREATE, CreateStrategy.INSERT,
+				UpdateStrategy.PARTIAL_UPDATE));
+		Assert.assertTrue(
+			_isPartialUpdate(
+				BatchEngineTaskOperation.CREATE, CreateStrategy.UPSERT,
 				UpdateStrategy.PARTIAL_UPDATE));
 		Assert.assertFalse(
 			_isPartialUpdate(

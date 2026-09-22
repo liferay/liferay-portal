@@ -154,6 +154,9 @@ public class ObjectRelationshipExtensionProviderTest {
 
 	@Test
 	public void testSetExtendedProperties() throws Exception {
+
+		// Partial update
+
 		String objectFieldName1 = "x" + RandomTestUtil.randomString();
 		String objectFieldName2 = "x" + RandomTestUtil.randomString();
 
@@ -168,8 +171,6 @@ public class ObjectRelationshipExtensionProviderTest {
 
 		ObjectRelationship objectRelationship = _addObjectRelationship(
 			objectDefinition);
-
-		// Partial update
 
 		String objectFieldValue1 = RandomTestUtil.randomString();
 
