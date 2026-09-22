@@ -269,8 +269,6 @@ public class DisplayPageTemplateResourceTest
 					displayPageTemplate.getExternalReferenceCode(),
 					RoleConstants.GUEST);
 
-		Assert.assertNotNull(page);
-
 		_assertDesignLibraryPermissionActionHrefs(page.getActions());
 	}
 

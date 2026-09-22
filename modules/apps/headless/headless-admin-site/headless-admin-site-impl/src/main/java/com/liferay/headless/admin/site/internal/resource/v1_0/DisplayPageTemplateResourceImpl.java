@@ -170,11 +170,10 @@ public class DisplayPageTemplateResourceImpl
 
 		long groupId = _getDesignLibraryGroupId(
 			designLibraryExternalReferenceCode);
-
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			designLibraryExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			designLibraryExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
 
@@ -419,19 +418,18 @@ public class DisplayPageTemplateResourceImpl
 
 		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
+		super.putSiteDisplayPageTemplatePermissionsPage(
+			designLibraryExternalReferenceCode,
+			displayPageTemplateExternalReferenceCode, permissions);
+
 		long groupId = _getDesignLibraryGroupId(
 			designLibraryExternalReferenceCode);
-
 		Long resourceId = getPermissionCheckerResourceId(
 			designLibraryExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
 		String resourceName = getPermissionCheckerResourceName(
 			designLibraryExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
-
-		super.putSiteDisplayPageTemplatePermissionsPage(
-			designLibraryExternalReferenceCode,
-			displayPageTemplateExternalReferenceCode, permissions);
 
 		return _toDesignLibraryPermissionPage(
 			groupId, resourceId, resourceName, null);

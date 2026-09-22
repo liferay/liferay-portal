@@ -278,7 +278,6 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			DepotConstants.TYPE_SPACE);
 
 		_testAddLayoutPageTemplateEntryDefaultTemplate();
-
 		_testAddLayoutPageTemplateEntryWithExternalReferenceCode();
 
 		String layoutPageTemplateEntryKey = RandomTestUtil.randomString();
