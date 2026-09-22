@@ -55,7 +55,7 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testHasRequiredCompletedTestSuites() throws Exception {
-		PullRequest pullRequest = _newPullRequestWithRequiredSuites(
+		PullRequest pullRequest = _newPullRequestWithRequiredTestSuites(
 			"required.completed.suites");
 
 		Assert.assertTrue(pullRequest.hasRequiredCompletedTestSuites());
@@ -64,7 +64,7 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testHasRequiredPassingTestSuites() throws Exception {
-		PullRequest pullRequest = _newPullRequestWithRequiredSuites(
+		PullRequest pullRequest = _newPullRequestWithRequiredTestSuites(
 			"required.passing.suites");
 
 		Assert.assertTrue(pullRequest.hasRequiredPassingTestSuites());
@@ -87,7 +87,7 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 		return PullRequestFactory.newPullRequest(iterator.next(), null);
 	}
 
-	private PullRequest _newPullRequestWithRequiredSuites(
+	private PullRequest _newPullRequestWithRequiredTestSuites(
 			String propertyNameSuffix)
 		throws Exception {
 
@@ -101,10 +101,10 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 		Properties buildProperties = new Properties();
 
-		_setRequiredSuites(
+		_setRequiredTestSuites(
 			"ci.forward." + propertyNameSuffix, buildProperties, pullRequest,
 			"sf");
-		_setRequiredSuites(
+		_setRequiredTestSuites(
 			"ci.forward.force." + propertyNameSuffix, buildProperties,
 			pullRequest, "relevant");
 
@@ -113,7 +113,7 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 		return pullRequest;
 	}
 
-	private void _setRequiredSuites(
+	private void _setRequiredTestSuites(
 		String basePropertyName, Properties buildProperties,
 		PullRequest pullRequest, String testSuiteName) {
 
