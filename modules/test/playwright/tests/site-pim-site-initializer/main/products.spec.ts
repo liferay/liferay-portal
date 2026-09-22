@@ -101,16 +101,13 @@ test(
 			await expect(productPage.unitOfMeasureSymbol).toBeHidden();
 		});
 
-		await test.step(
-			'The dimensions are grouped in a panel of the first tab',
-			async () => {
-				await expect(productPage.dimensions).toBeVisible();
-				await expect(productPage.depth).toBeVisible();
-				await expect(productPage.height).toBeVisible();
-				await expect(productPage.weight).toBeVisible();
-				await expect(productPage.width).toBeVisible();
-			}
-		);
+		await test.step('The dimensions are grouped in a panel of the first tab', async () => {
+			await expect(productPage.dimensions).toBeVisible();
+			await expect(productPage.depth).toBeVisible();
+			await expect(productPage.height).toBeVisible();
+			await expect(productPage.weight).toBeVisible();
+			await expect(productPage.width).toBeVisible();
+		});
 
 		await clickAndExpectToBeVisible({
 			target: productPage.unitOfMeasureName,
