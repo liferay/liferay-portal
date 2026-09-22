@@ -1665,59 +1665,56 @@ public class ObjectEntryServiceTest {
 					"service.wrapper.class", ObjectEntryService.class.getName()
 				).build());
 
-		try {
-			_setUser(_user);
+		_setUser(_user);
 
-			try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-					new ConfigurationTemporarySwapper(
-						"com.liferay.portal.security.permission.internal." +
-							"configuration.InlinePermissionConfiguration",
-						HashMapDictionaryBuilder.<String, Object>put(
-							"sqlCheckEnabled", sqlCheckEnabled
-						).build())) {
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.portal.security.permission.internal." +
+						"configuration.InlinePermissionConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"sqlCheckEnabled", sqlCheckEnabled
+					).build())) {
 
-				if (hasPermission) {
-					Assert.assertEquals(
-						SetUtil.fromArray(
-							relatedObjectEntry1, relatedObjectEntry2),
-						SetUtil.fromList(
-							_objectEntryService.getManyToManyObjectEntries(
-								_group.getGroupId(),
-								objectRelationship.getObjectRelationshipId(),
-								objectEntry.getObjectEntryId(), true, false,
-								null, QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
-				}
-				else if (sqlCheckEnabled) {
-					Assert.assertEquals(
-						SetUtil.fromArray(relatedObjectEntry1),
-						SetUtil.fromList(
-							_objectEntryService.getManyToManyObjectEntries(
-								_group.getGroupId(),
-								objectRelationship.getObjectRelationshipId(),
-								objectEntry.getObjectEntryId(), true, false,
-								null, QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
-				}
-				else {
-					AssertUtils.assertFailure(
-						PrincipalException.MustHavePermission.class,
-						StringBundler.concat(
-							"User ", _user.getUserId(),
-							" must have VIEW permission for ",
-							_objectDefinition.getClassName(), " ",
-							relatedObjectEntry2.getObjectEntryId()),
-						() -> _objectEntryService.getManyToManyObjectEntries(
+			if (hasPermission) {
+				Assert.assertEquals(
+					SetUtil.fromArray(relatedObjectEntry1, relatedObjectEntry2),
+					SetUtil.fromList(
+						_objectEntryService.getManyToManyObjectEntries(
 							_group.getGroupId(),
 							objectRelationship.getObjectRelationshipId(),
 							objectEntry.getObjectEntryId(), true, false, null,
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS));
-				}
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+			}
+			else if (sqlCheckEnabled) {
+				Assert.assertEquals(
+					SetUtil.fromArray(relatedObjectEntry1),
+					SetUtil.fromList(
+						_objectEntryService.getManyToManyObjectEntries(
+							_group.getGroupId(),
+							objectRelationship.getObjectRelationshipId(),
+							objectEntry.getObjectEntryId(), true, false, null,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+			}
+			else {
+				AssertUtils.assertFailure(
+					PrincipalException.MustHavePermission.class,
+					StringBundler.concat(
+						"User ", _user.getUserId(),
+						" must have VIEW permission for ",
+						_objectDefinition.getClassName(), " ",
+						relatedObjectEntry2.getObjectEntryId()),
+					() -> _objectEntryService.getManyToManyObjectEntries(
+						_group.getGroupId(),
+						objectRelationship.getObjectRelationshipId(),
+						objectEntry.getObjectEntryId(), true, false, null,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+			}
 
-				if (sqlCheckEnabled) {
-					Assert.assertEquals(0, atomicInteger.get());
-				}
-				else {
-					Assert.assertEquals(2, atomicInteger.get());
-				}
+			if (sqlCheckEnabled) {
+				Assert.assertEquals(0, atomicInteger.get());
+			}
+			else {
+				Assert.assertEquals(2, atomicInteger.get());
 			}
 		}
 		finally {
