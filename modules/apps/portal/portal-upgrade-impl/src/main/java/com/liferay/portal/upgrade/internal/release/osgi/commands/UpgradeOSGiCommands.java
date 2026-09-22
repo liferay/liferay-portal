@@ -190,6 +190,10 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 				bundleSymbolicName);
 		}
 
+		if (upgradeInfos == null) {
+			return "No upgrade processes registered for " + bundleSymbolicName;
+		}
+
 		StringBundler sb = new StringBundler(5 + (3 * upgradeInfos.size()));
 
 		sb.append("Registered upgrade processes for ");
