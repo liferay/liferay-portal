@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -190,20 +189,21 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		Map<String, Serializable> values = objectEntry.getValues();
 
-		Group group = _groupService.getGroup(
-			GetterUtil.getLong(values.get("siteId")));
+		Group group = _groupService.getGroup(MapUtil.getLong(values, "siteId"));
 
 		_checkPermission(group, userAccount.getRoleKey());
 
-		long accountEntryId = GetterUtil.getLong(
-			values.get("r_accountToDSRRooms_accountEntryId"));
+		long accountEntryId = MapUtil.getLong(
+			values, "r_accountToDSRRooms_accountEntryId");
+
+		String name = MapUtil.getString(values, "name");
+
+		if (Validator.isNull(name)) {
+			name = group.getName(contextAcceptLanguage.getPreferredLocale());
+		}
 
 		Ticket ticket = _addInviteMemberTicket(
-			accountEntryId, group.getCompanyId(), group,
-			GetterUtil.getString(
-				values.get("name"),
-				group.getName(contextAcceptLanguage.getPreferredLocale())),
-			userAccount);
+			accountEntryId, group.getCompanyId(), group, name, userAccount);
 
 		User user = _userLocalService.fetchUserByEmailAddress(
 			ticket.getCompanyId(), userAccount.getEmailAddress());

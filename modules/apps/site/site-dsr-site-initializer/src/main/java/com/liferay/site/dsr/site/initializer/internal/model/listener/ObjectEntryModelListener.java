@@ -61,7 +61,6 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -310,7 +309,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		return users.get(0);
 	}
 
-	private String _getFriendlyURL(String friendlyURL) {
+	private String _getFriendlyURL(Map<String, Serializable> values) {
+		String friendlyURL = MapUtil.getString(values, "friendlyURL");
+
+		if (Validator.isNull(friendlyURL)) {
+			friendlyURL = MapUtil.getString(values, "name");
+		}
+
 		if (Validator.isNotNull(friendlyURL) && !friendlyURL.startsWith("/")) {
 			return "/" + friendlyURL;
 		}
@@ -418,16 +423,11 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
 				GroupConstants.DEFAULT_LIVE_GROUP_ID,
 				HashMapBuilder.put(
-					LocaleUtil.getDefault(),
-					GetterUtil.getString(values.get("name"))
+					LocaleUtil.getDefault(), MapUtil.getString(values, "name")
 				).build(),
 				null, GroupConstants.TYPE_SITE_RESTRICTED, null, true,
 				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
-				_getFriendlyURL(
-					GetterUtil.getString(
-						values.get("friendlyURL"),
-						GetterUtil.getString(values.get("name")))),
-				true, false, true,
+				_getFriendlyURL(values), true, false, true,
 				_getServiceContext(company.getCompanyId(), user.getUserId()));
 
 			Role role = _roleLocalService.getRole(
@@ -443,13 +443,17 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			LiveUsers.joinGroup(
 				group.getCompanyId(), group.getGroupId(), user.getUserId());
 
+			String siteTemplateKey = MapUtil.getString(
+				values, "siteTemplateKey");
+
+			if (Validator.isNull(siteTemplateKey)) {
+				siteTemplateKey = "L_DSR_LAYOUT_SET_PROTOTYPE";
+			}
+
 			layoutSetPrototype =
 				_layoutSetPrototypeLocalService.
 					getLayoutSetPrototypeByUuidAndCompanyId(
-						GetterUtil.getString(
-							values.get("siteTemplateKey"),
-							"L_DSR_LAYOUT_SET_PROTOTYPE"),
-						company.getCompanyId());
+						siteTemplateKey, company.getCompanyId());
 		}
 
 		User administratorUser = _getAdministratorUser(company.getCompanyId());
@@ -573,11 +577,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
+		String friendlyURL = _getFriendlyURL(objectEntry.getValues());
 		String name = MapUtil.getString(objectEntry.getValues(), "name");
-
-		String friendlyURL = _getFriendlyURL(
-			MapUtil.getString(objectEntry.getValues(), "friendlyURL", name));
-
 		Map<Locale, String> nameMap = group.getNameMap();
 
 		if (Objects.equals(friendlyURL, group.getFriendlyURL()) &&
