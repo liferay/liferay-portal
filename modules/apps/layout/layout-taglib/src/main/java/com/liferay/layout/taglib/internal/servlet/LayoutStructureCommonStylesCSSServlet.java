@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
@@ -272,10 +273,46 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		return customCSSViewports.get(viewportSize.getViewportSizeId());
 	}
 
+	private JSONObject _getCustomFrontendTokensJSONObject(
+		JSONObject frontendTokenValuesJSONObject) {
+
+		JSONObject customFrontendTokensJSONObject =
+			_jsonFactory.createJSONObject();
+
+		String prefix =
+			StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID +
+				StringPool.COLON;
+
+		for (String key : frontendTokenValuesJSONObject.keySet()) {
+			if (!key.startsWith(prefix)) {
+				continue;
+			}
+
+			JSONObject valueJSONObject =
+				frontendTokenValuesJSONObject.getJSONObject(key);
+
+			if (valueJSONObject == null) {
+				continue;
+			}
+
+			String cssVariable = valueJSONObject.getString(
+				"cssVariableMapping");
+
+			if (Validator.isNull(cssVariable)) {
+				continue;
+			}
+
+			customFrontendTokensJSONObject.put(
+				key.substring(prefix.length()),
+				JSONUtil.put(
+					FrontendTokenMapping.TYPE_CSS_VARIABLE, cssVariable));
+		}
+
+		return customFrontendTokensJSONObject;
+	}
+
 	private JSONObject _getFrontendTokensJSONObject(
 		long groupId, Layout layout, boolean styleBookEntryPreview) {
-
-		JSONObject frontendTokensJSONObject = _jsonFactory.createJSONObject();
 
 		StyleBookEntry styleBookEntry = null;
 
@@ -292,61 +329,10 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 				styleBookEntry.getFrontendTokensValues());
 		}
 
-		Group group = _groupLocalService.fetchGroup(groupId);
-
-		if (group == null) {
-			return _jsonFactory.createJSONObject();
-		}
-
-		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry =
-			ServletContextUtil.getFrontendTokenDefinitionRegistry();
-
-		FrontendTokenDefinition frontendTokenDefinition =
-			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(layout);
-
-		if (frontendTokenDefinition == null) {
-			return _jsonFactory.createJSONObject();
-		}
-
-		Collection<FrontendToken> frontendTokens =
-			frontendTokenDefinition.getFrontendTokens();
-
-		for (FrontendToken frontendToken : frontendTokens) {
-			List<FrontendTokenMapping> frontendTokenMappings = new ArrayList<>(
-				frontendToken.getFrontendTokenMappings(
-					FrontendTokenMapping.TYPE_CSS_VARIABLE));
-
-			if (ListUtil.isEmpty(frontendTokenMappings)) {
-				continue;
-			}
-
-			String value = String.valueOf(
-				frontendToken.<Object>getDefaultValue());
-
-			JSONObject valueJSONObject =
-				frontendTokenValuesJSONObject.getJSONObject(
-					frontendToken.getName());
-
-			if (valueJSONObject != null) {
-				value = valueJSONObject.getString("value");
-			}
-
-			frontendTokensJSONObject.put(
-				frontendToken.getName(),
-				JSONUtil.put(
-					FrontendTokenMapping.TYPE_CSS_VARIABLE,
-					() -> {
-						FrontendTokenMapping frontendTokenMapping =
-							frontendTokenMappings.get(0);
-
-						return frontendTokenMapping.getValue();
-					}
-				).put(
-					"value", value
-				));
-		}
-
-		return frontendTokensJSONObject;
+		return _mergeFrontendTokensJSONObjects(
+			_getThemeFrontendTokensJSONObject(
+				groupId, layout, frontendTokenValuesJSONObject),
+			_getCustomFrontendTokensJSONObject(frontendTokenValuesJSONObject));
 	}
 
 	private String _getLayoutStructureItemCSS(
@@ -470,6 +456,68 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		return _jsonFactory.createJSONObject();
 	}
 
+	private JSONObject _getThemeFrontendTokensJSONObject(
+		long groupId, Layout layout, JSONObject frontendTokenValuesJSONObject) {
+
+		JSONObject frontendTokensJSONObject = _jsonFactory.createJSONObject();
+
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if (group == null) {
+			return frontendTokensJSONObject;
+		}
+
+		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry =
+			ServletContextUtil.getFrontendTokenDefinitionRegistry();
+
+		FrontendTokenDefinition frontendTokenDefinition =
+			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(layout);
+
+		if (frontendTokenDefinition == null) {
+			return frontendTokensJSONObject;
+		}
+
+		Collection<FrontendToken> frontendTokens =
+			frontendTokenDefinition.getFrontendTokens();
+
+		for (FrontendToken frontendToken : frontendTokens) {
+			List<FrontendTokenMapping> frontendTokenMappings = new ArrayList<>(
+				frontendToken.getFrontendTokenMappings(
+					FrontendTokenMapping.TYPE_CSS_VARIABLE));
+
+			if (ListUtil.isEmpty(frontendTokenMappings)) {
+				continue;
+			}
+
+			String value = String.valueOf(
+				frontendToken.<Object>getDefaultValue());
+
+			JSONObject valueJSONObject =
+				frontendTokenValuesJSONObject.getJSONObject(
+					frontendToken.getName());
+
+			if (valueJSONObject != null) {
+				value = valueJSONObject.getString("value");
+			}
+
+			frontendTokensJSONObject.put(
+				frontendToken.getName(),
+				JSONUtil.put(
+					FrontendTokenMapping.TYPE_CSS_VARIABLE,
+					() -> {
+						FrontendTokenMapping frontendTokenMapping =
+							frontendTokenMappings.get(0);
+
+						return frontendTokenMapping.getValue();
+					}
+				).put(
+					"value", value
+				));
+		}
+
+		return frontendTokensJSONObject;
+	}
+
 	private boolean _includeStyles(
 		StyledLayoutStructureItem styledLayoutStructureItem, String styleName,
 		String value, ViewportSize viewportSize) {
@@ -504,6 +552,23 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		}
 
 		return true;
+	}
+
+	private JSONObject _mergeFrontendTokensJSONObjects(
+		JSONObject frontendTokensJSONObject1,
+		JSONObject frontendTokensJSONObject2) {
+
+		try {
+			return JSONUtil.merge(
+				frontendTokensJSONObject1, frontendTokensJSONObject2);
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+
+			return frontendTokensJSONObject1;
+		}
 	}
 
 	private static final String _FRAGMENT_CLASS_PLACEHOLDER =
