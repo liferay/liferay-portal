@@ -136,24 +136,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro setOverrideDiscount(overrideDiscounts = null) {
-		Check.checkToggleSwitch(
-			key_toggleSwitchLabel = "Override Discount",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
-		for (var overrideDiscount : list ${overrideDiscounts}) {
-			var key_text = StringUtil.extractFirst(${overrideDiscount}, "-");
-			var currentValue = StringUtil.extractLast(${overrideDiscount}, "-");
-
-			Type(
-				locator1 = "TextInput#ANY",
-				value1 = ${currentValue});
-		}
-
-		Button.clickSave();
-	}
-
-	@summary = "Default summary"
 	macro viewPriceListEntry(priceListCatalog = null, priceListType = null, priceListCurrency = null, priceListPriority = null, priceListParent = null, priceListName = null) {
 		if (isSet(priceListName)) {
 			AssertTextEquals(

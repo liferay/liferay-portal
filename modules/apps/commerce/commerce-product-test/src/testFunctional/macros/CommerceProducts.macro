@@ -638,13 +638,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro discontinueSKU() {
-		CommerceEntry.gotoMenuTab(menuTab = "Details");
-
-		Check.checkToggleSwitch(locator1 = "CommerceEntry#SKU_DISCONTINUED_TOGGLE");
-	}
-
-	@summary = "Default summary"
 	macro duplicateProduct(productShortDescription = null, publishProduct = null, checkProductFields = null, compileDescription = null, productFullDescription = null, status = null, productCatalog = null) {
 		var productName = ${productName};
 
@@ -758,15 +751,6 @@ definition {
 		KeyPress(
 			locator1 = "CommerceNavigation#SEARCH_FIELD",
 			value1 = "\RETURN");
-	}
-
-	@summary = "Default summary"
-	macro setReplacementSKU(replacementSKU = null) {
-		Type(
-			locator1 = "TextInput#REPLACEMENT",
-			value1 = ${replacementSKU});
-
-		Button.clickPublish();
 	}
 
 	@summary = "Default summary"

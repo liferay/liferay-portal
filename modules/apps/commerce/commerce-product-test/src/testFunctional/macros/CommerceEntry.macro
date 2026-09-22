@@ -1436,26 +1436,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editWarehousesQuantity(northeastQuantity = null, productSku = null, italyQuantity = null, southwestQuantity = null, productName = null) {
-		Search.searchCP(searchTerm = ${productName});
-
-		CommerceNavigator.gotoTableListEntry(entryName = ${productName});
-
-		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
-
-		CommerceNavigator.gotoTableListEntry(entryName = ${productSku});
-
-		SelectFrame(locator1 = "IFrame#IFRAME");
-
-		CommerceEntry.gotoMenuTab(menuTab = "Inventory");
-
-		CommerceSKUs.setSkuInventory(
-			italyQuantity = ${italyQuantity},
-			northeastQuantity = ${northeastQuantity},
-			southwestQuantity = ${southwestQuantity});
-	}
-
-	@summary = "Default summary"
 	macro getFileEntryIDFromProductMedia() {
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 

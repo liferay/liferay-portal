@@ -383,51 +383,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro changeQuantityByUsingKeyArrows(quantitySelectorType = null, productSKU = null, productName = null, arrowAction = null) {
-		if (${quantitySelectorType} == "Product Card") {
-			Click(
-				key_productName = ${productName},
-				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD");
-
-			KeyPress(
-				key_productName = ${productName},
-				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
-				value1 = "\${arrowAction}");
-
-			KeyPress(
-				key_productName = ${productName},
-				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
-				value1 = "\TAB");
-		}
-		else {
-			if (${quantitySelectorType} == "Product Details") {
-				Click(locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD");
-
-				KeyPress(
-					locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
-					value1 = "\${arrowAction}");
-			}
-			else {
-				if (${quantitySelectorType} == "Mini-cart") {
-					Click(
-						key_cartItemSku = ${productSKU},
-						locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY");
-
-					KeyPress(
-						key_cartItemSku = ${productSKU},
-						locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
-						value1 = "\${arrowAction}");
-
-					KeyPress(
-						key_cartItemSku = ${productSKU},
-						locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
-						value1 = "\TAB");
-				}
-			}
-		}
-	}
-
-	@summary = "Default summary"
 	macro clickEllipsisItemInMiniCart(uomKey = null, menuItem = null) {
 		Click(
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_WITH_UOM",
@@ -465,35 +420,6 @@ definition {
 		if (${clickCompare} != "false") {
 			Click(locator1 = "CommerceFrontStore#MINI_COMPARE_COMPARE_BUTTON");
 		}
-	}
-
-	@summary = "This macro edits product options of an order item from the minicart"
-	macro editMiniCartItemProductOption(date = null, boolean = null, multipleSelectionValuesChecked = null, cartItemOptionName = null, multipleSelectionValuesNotChecked = null, numeric = null, cartItemOptionValue = null, text = null, singleSelectionValueNotChecked = null, singleSelectionValueChecked = null) {
-		Select(
-			key_optionName = ${cartItemOptionName},
-			locator1 = "CommerceAccelerators#MINI_CART_PRODUCT_OPTIONS_SELECT",
-			value1 = ${cartItemOptionValue});
-
-		FrontStore.setAssociatedFSOptionsValue(
-			boolean = ${boolean},
-			date = ${date},
-			multipleSelectionValuesChecked = ${multipleSelectionValuesChecked},
-			multipleSelectionValuesNotChecked = ${multipleSelectionValuesNotChecked},
-			numeric = ${numeric},
-			singleSelectionValueChecked = ${singleSelectionValueChecked},
-			text = ${text});
-
-		FrontStore.viewAssociatedFSOptionsValue(
-			boolean = ${boolean},
-			date = ${date},
-			multipleSelectionValuesChecked = ${multipleSelectionValuesChecked},
-			multipleSelectionValuesNotChecked = ${multipleSelectionValuesNotChecked},
-			numeric = ${numeric},
-			singleSelectionValueChecked = ${singleSelectionValueChecked},
-			singleSelectionValueNotChecked = ${singleSelectionValueNotChecked},
-			text = ${text});
-
-		Button.clickSave();
 	}
 
 	@summary = "Default summary"
@@ -681,71 +607,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewAssociatedFSOptionsValue(boolean = null, multipleSelectionValuesChecked = null, multipleSelectionValuesNotChecked = null, numeric = null, text = null, singleSelectionValueChecked = null) {
-		if (${boolean} == "enabled") {
-			AssertChecked.assertCheckedNotVisible(
-				checkboxName = "",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-		else if (${boolean} == "disabled") {
-			AssertNotChecked.assertNotCheckedNotVisible(
-				checkboxName = "",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		if (isSet(date)) {
-			var date = DateUtil.format(${date}, "MM/dd/yyyy", "yyyy-MM-dd");
-
-			AssertTextEquals(
-				key_text = "date",
-				locator1 = "TextInput#ANY",
-				value1 = ${date});
-		}
-
-		if (isSet(multipleSelectionValuesChecked)) {
-			for (var multipleSelectionValueChecked : list ${multipleSelectionValuesChecked}) {
-				AssertChecked.assertCheckedNotVisible(
-					checkboxName = ${multipleSelectionValueChecked},
-					locator1 = "Checkbox#ANY_CHECKBOX");
-			}
-		}
-		else if (isSet(multipleSelectionValuesNotChecked)) {
-			for (var multipleSelectionValueNotChecked : list ${multipleSelectionValuesNotChecked}) {
-				AssertNotChecked.assertNotCheckedNotVisible(
-					checkboxName = ${multipleSelectionValueNotChecked},
-					locator1 = "Checkbox#ANY_CHECKBOX");
-			}
-		}
-
-		if (isSet(numeric)) {
-			AssertTextEquals(
-				key_text = "numeric",
-				locator1 = "TextInput#ANY",
-				value1 = ${numeric});
-		}
-
-		if (isSet(singleSelectionValueChecked)) {
-			AssertChecked.assertCheckedNotVisible(
-				key_fieldValue = ${singleSelectionValueChecked},
-				locator1 = "CommerceEntry#RADIO_BUTTON_WITH_VALUE");
-		}
-		else if (isSet(singleSelectionValueNotChecked)) {
-			for (var singleSelectionValueNotChecked : list ${singleSelectionValueNotChecked}) {
-				AssertNotChecked.assertNotCheckedNotVisible(
-					key_fieldValue = ${singleSelectionValueNotChecked},
-					locator1 = "CommerceEntry#RADIO_BUTTON_WITH_VALUE");
-			}
-		}
-
-		if (isSet(text)) {
-			AssertTextEquals(
-				key_text = "text",
-				locator1 = "TextInput#ANY",
-				value1 = ${text});
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewGroupedProductEntries(productNames = null) {
 		Variables.assertDefined(parameterList = ${productNames});
 
@@ -807,65 +668,6 @@ definition {
 				locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_TOTAL",
 				value1 = "$ ${cartSummaryTotal}");
 		}
-	}
-
-	@summary = "This macro views product options of an order item from the minicart"
-	macro viewMiniCartEditProductOption(date = null, multipleSelectionValuesChecked = null, cartItemPromoPriceValue = null, cartItemPriceAsConfiguredValue = null, numeric = null, cartItemPriceValue = null, singleSelectionValueNotChecked = null, boolean = null, cartItemPriceInactiveValue = null, cartItemDiscountValue = null, cartItemOptionName = null, multipleSelectionValuesNotChecked = null, cartItemOptionValue = null, text = null, singleSelectionValueChecked = null) {
-		AssertVisible(
-			key_productName = "Bundled Product",
-			locator1 = "CommerceAccelerators#MINI_CART_EDIT_ITEM_PANEL");
-
-		AssertSelectedLabel(
-			key_optionName = ${cartItemOptionName},
-			locator1 = "CommerceAccelerators#MINI_CART_PRODUCT_OPTIONS_SELECT",
-			value1 = ${cartItemOptionValue});
-
-		if (isSet(cartItemDiscountValue)) {
-			AssertTextEquals(
-				key_priceField = "Discount",
-				locator1 = "CommerceAccelerators#MINI_CART_EDIT_BUNDLED_PRODUCT_PRICE_VALUE",
-				value1 = ${cartItemDiscountValue});
-		}
-
-		if (${cartItemPriceOnApplication} == "true") {
-			AssertElementPresent(locator1 = "CommerceAccelerators#MINI_CART_EDIT_ITEM_PRICE_ON_APPLICATION");
-		}
-
-		if (isSet(cartItemPriceAsConfiguredValue)) {
-			AssertTextEquals(
-				key_priceField = "Price as Configured",
-				locator1 = "CommerceAccelerators#MINI_CART_EDIT_BUNDLED_PRODUCT_PRICE_VALUE",
-				value1 = ${cartItemPriceAsConfiguredValue});
-		}
-
-		if (isSet(cartItemPriceValue)) {
-			AssertTextEquals(
-				key_priceField = "List Price",
-				locator1 = "CommerceAccelerators#MINI_CART_EDIT_BUNDLED_PRODUCT_PRICE_VALUE",
-				value1 = ${cartItemPriceValue});
-		}
-		else if (isSet(cartItemPriceInactiveValue)) {
-			AssertTextEquals(
-				locator1 = "CommerceAccelerators#MINI_CART_EDIT_BUNDLED_PRODUCT_LIST_PRICE_INACTIVE",
-				value1 = ${cartItemPriceInactiveValue});
-		}
-
-		if (isSet(cartItemPromoPriceValue)) {
-			AssertTextEquals(
-				key_priceField = "Promo Price",
-				locator1 = "CommerceAccelerators#MINI_CART_EDIT_BUNDLED_PRODUCT_PRICE_VALUE",
-				value1 = ${cartItemPromoPriceValue});
-		}
-
-		FrontStore.viewAssociatedFSOptionsValue(
-			boolean = ${boolean},
-			date = ${date},
-			multipleSelectionValuesChecked = ${multipleSelectionValuesChecked},
-			multipleSelectionValuesNotChecked = ${multipleSelectionValuesNotChecked},
-			numeric = ${numeric},
-			singleSelectionValueChecked = ${singleSelectionValueChecked},
-			singleSelectionValueNotChecked = ${singleSelectionValueNotChecked},
-			text = ${text});
 	}
 
 	@summary = "Default summary"

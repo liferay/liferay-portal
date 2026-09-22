@@ -137,25 +137,6 @@ definition {
 		}
 	}
 
-	@summary = "This macro edits the SKU Name"
-	macro editSkuName(productSku = null) {
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Type(
-			locator1 = "CommerceEntry#SKU_FIELD",
-			value1 = ${productSku});
-
-		if (isSet(publish)) {
-			Button.clickPublish();
-		}
-
-		if (isSet(closeFrame)) {
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrame.selectFrameTop();
-		}
-	}
-
 	@summary = "Default summary"
 	macro editSkuPricing(priceOnApplication = null, promoPrice = null, cost = null, basePrice = null) {
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");

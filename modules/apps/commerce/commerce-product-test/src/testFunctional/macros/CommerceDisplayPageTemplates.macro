@@ -228,49 +228,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editDynamicField(field = null, fragmentName = null, valueElementType = null, label = null, labelElementType = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		PageEditor.clickConfigurableField(
-			fragmentName = ${fragmentName},
-			index = ${index});
-
-		PageEditor.gotoTab(tabName = "Browser");
-
-		Navigator.gotoNavTab(navTab = "General");
-
-		if (isSet(field)) {
-			Select(
-				key_fieldLabel = "Field",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${field});
-		}
-
-		if (isSet(labelElementType)) {
-			Select(
-				key_fieldLabel = "Label Element Type",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${labelElementType});
-		}
-
-		if (isSet(valueElementType)) {
-			Select(
-				key_fieldLabel = "Value Element Type",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${valueElementType});
-		}
-
-		if (isSet(label)) {
-			Type(
-				key_text = "Label",
-				locator1 = "TextInput#ANY",
-				value1 = ${label});
-		}
-	}
-
-	@summary = "Default summary"
 	macro mapEditableTextToField(field = null, fragmentName = null, index = null, className = null, source = null) {
 		if (${index} == 1) {
 			var contributed = "false";
