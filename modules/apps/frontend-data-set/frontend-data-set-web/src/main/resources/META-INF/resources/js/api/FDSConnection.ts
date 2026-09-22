@@ -53,8 +53,8 @@ export class FDSConnection {
 	private static filteringOwners = new Map<string, FDSConnection>();
 	private static instanceCount = 0;
 
-	private apply?: (customConfig: FDSConnectionCustomConfig) => void;
 	private appId?: string;
+	private apply?: (customConfig: FDSConnectionCustomConfig) => void;
 	private atom!: Atom<FDSState>;
 	private disconnected = false;
 	private fdsName: string;
@@ -76,8 +76,8 @@ export class FDSConnection {
 		) => void,
 		options: FDSConnectionOptions = {}
 	) {
-		this.apply = fdsStateChangeCallback.apply;
 		this.appId = options.appId;
+		this.apply = fdsStateChangeCallback.apply;
 		this.fdsName = fdsName;
 		this.onFDSConnectionInfoChange = onFDSConnectionInfoChange;
 		this.requestedOwnership = options.owns ?? DEFAULT_OWNERSHIP;
@@ -120,7 +120,7 @@ export class FDSConnection {
 
 				// initialize consumer's state
 
-				if (this.ownsFiltering()) {
+				if (this.isFilteringOwned()) {
 					this.subscriptions.offeredCustomConfigs =
 						Liferay.State.subscribe(
 							this.selectors.offeredCustomConfigs,
@@ -132,14 +132,14 @@ export class FDSConnection {
 					);
 
 					if (offeredCustomConfigs !== undefined) {
-						this.applyOwnCustomConfig(offeredCustomConfigs);
+						this.applyCustomConfig(offeredCustomConfigs);
 					}
 				}
 
 				fdsStateChangeCallback.search(this.getSearch() || '');
 
 				this.notifyStatus(
-					this.isFilteringRefused() ? 'refused' : 'ready'
+					this.isFilteringOwnershipRefused() ? 'refused' : 'ready'
 				);
 			})
 			.catch((error: Error) => {
@@ -196,7 +196,7 @@ export class FDSConnection {
 			return;
 		}
 
-		if (!this.ownsFiltering()) {
+		if (!this.isFilteringOwned()) {
 			this.warn(
 				'Ignored setFilters() for ' +
 					this.fdsName +
@@ -229,8 +229,8 @@ export class FDSConnection {
 			return;
 		}
 
-		if (this.ownsFiltering() && this.isReady) {
-			this.releaseFiltering();
+		if (this.isFilteringOwned() && this.isReady) {
+			this.releaseFilteringOwnership();
 		}
 
 		this.subscriptions?.offeredCustomConfigs?.dispose();
@@ -241,7 +241,7 @@ export class FDSConnection {
 		this.notifyStatus('disconnected');
 	};
 
-	private applyOwnCustomConfig(
+	private applyCustomConfig(
 		offeredCustomConfigs: FDSConnectionCustomConfigs
 	): void {
 		const customConfig =
@@ -261,13 +261,13 @@ export class FDSConnection {
 			);
 		}
 
-		this.dropOwnOfferedCustomConfig();
+		this.dropOfferedCustomConfig();
 	}
 
-	private dropOwnOfferedCustomConfig(): void {
+	private dropOfferedCustomConfig(): void {
 		const fdsState = {...Liferay.State.read(this.atom)};
 
-		const remaining = this.withoutOwnKey(fdsState.offeredCustomConfigs);
+		const remaining = this.withoutSelfKey(fdsState.offeredCustomConfigs);
 
 		if (remaining) {
 			fdsState.offeredCustomConfigs = remaining;
@@ -279,7 +279,7 @@ export class FDSConnection {
 		Liferay.State.write(this.atom, fdsState);
 	}
 
-	private withoutOwnKey<T extends object>(
+	private withoutSelfKey<T extends object>(
 		keyedByAppId: T | null | undefined
 	): T | undefined {
 		if (!keyedByAppId) {
@@ -313,10 +313,10 @@ export class FDSConnection {
 			return;
 		}
 
-		this.applyOwnCustomConfig(offeredCustomConfigs);
+		this.applyCustomConfig(offeredCustomConfigs);
 	};
 
-	private releaseFiltering(): void {
+	private releaseFilteringOwnership(): void {
 		FDSConnection.filteringOwners.delete(this.fdsName);
 
 		const fdsState = {...Liferay.State.read(this.atom)};
@@ -324,7 +324,7 @@ export class FDSConnection {
 		delete fdsState.connectionFilters;
 		delete fdsState.filteringOwnerAppId;
 
-		const remaining = this.withoutOwnKey(fdsState.appliedCustomConfigs);
+		const remaining = this.withoutSelfKey(fdsState.appliedCustomConfigs);
 
 		if (remaining) {
 			fdsState.appliedCustomConfigs = remaining;
@@ -342,7 +342,7 @@ export class FDSConnection {
 		}
 
 		if (!this.appId) {
-			this.refuseFiltering(
+			this.logFilteringOwnershipRefusal(
 				'connect with an appId to own the filtering, since what' +
 					' a connection filters by is kept in the URL under it'
 			);
@@ -351,12 +351,17 @@ export class FDSConnection {
 		}
 
 		if (this.isFilteringOwnedByAnotherConnection()) {
-			this.refuseFiltering(
+			this.logFilteringOwnershipRefusal(
 				'another connection already owns it, and a data set can' +
 					' only have one filtering owner'
 			);
 
-			this.warnFilteringTaken();
+			Liferay.Util.openToast({
+				message: Liferay.Language.get(
+					'another-widget-is-already-filtering-this-data-set'
+				),
+				type: 'warning',
+			});
 
 			return;
 		}
@@ -372,11 +377,11 @@ export class FDSConnection {
 		Liferay.State.write(this.atom, fdsState);
 	}
 
-	private ownsFiltering(): boolean {
+	private isFilteringOwned(): boolean {
 		return FDSConnection.filteringOwners.get(this.fdsName) === this;
 	}
 
-	private refuseFiltering(reason: string): void {
+	private logFilteringOwnershipRefusal(reason: string): void {
 		this.warn(
 			'Refused the filtering of ' +
 				this.fdsName +
@@ -403,9 +408,10 @@ export class FDSConnection {
 		return Liferay.State.read(this.atom).filteringOwnerAppId !== undefined;
 	}
 
-	private isFilteringRefused(): boolean {
+	private isFilteringOwnershipRefused(): boolean {
 		return (
-			this.requestedOwnership.includes('filters') && !this.ownsFiltering()
+			this.requestedOwnership.includes('filters') &&
+			!this.isFilteringOwned()
 		);
 	}
 
@@ -418,22 +424,13 @@ export class FDSConnection {
 		);
 	}
 
-	private warnFilteringTaken(): void {
-		Liferay.Util.openToast({
-			message: Liferay.Language.get(
-				'another-widget-is-already-filtering-this-data-set'
-			),
-			type: 'warning',
-		});
-	}
-
 	private writeConnectionFilters(
 		connectionFilters: Array<FDSConnectionFilter>,
 		customConfig?: FDSConnectionCustomConfig
 	): void {
 		const fdsState = {...Liferay.State.read(this.atom), connectionFilters};
 
-		const remaining = this.withoutOwnKey(fdsState.appliedCustomConfigs);
+		const remaining = this.withoutSelfKey(fdsState.appliedCustomConfigs);
 
 		// The state read back is deeply readonly, which maps a value the data
 		// set keeps without reading to Readonly<unknown>, and nothing unknown
