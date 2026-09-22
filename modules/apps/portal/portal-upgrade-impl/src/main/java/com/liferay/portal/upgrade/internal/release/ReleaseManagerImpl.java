@@ -185,13 +185,15 @@ public class ReleaseManagerImpl implements ReleaseManager {
 					_upgradeExecutor.getUpgradeInfos(bundleSymbolicName));
 			}
 			catch (Throwable throwable) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(throwable);
+				String failedModuleMessage =
+					ReleaseManagerUtil.getFailedModuleMessage(
+						bundleSymbolicName);
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(failedModuleMessage, throwable);
 				}
 
-				sb.append(
-					ReleaseManagerUtil.getFailedModuleMessage(
-						bundleSymbolicName));
+				sb.append(failedModuleMessage);
 				sb.append(StringPool.NEW_LINE);
 
 				continue;
