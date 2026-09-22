@@ -6,6 +6,7 @@
 package com.liferay.fragment.internal.importer;
 
 import com.liferay.fragment.configuration.FragmentServiceConfiguration;
+import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentExportImportConstants;
 import com.liferay.fragment.constants.FragmentPortletKeys;
@@ -42,6 +43,8 @@ import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -85,6 +88,10 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			FragmentsImportStrategy fragmentsImportStrategy,
 			boolean marketplace)
 		throws Exception {
+
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		_fragmentsImporterResultEntries = new ArrayList<>();
 
@@ -174,6 +181,10 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 	public boolean validateFragmentEntries(
 			long userId, long groupId, long fragmentCollectionId, File file)
 		throws Exception {
+
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		try (ZipFile zipFile = new ZipFile(file)) {
 			Map<String, String> orphanFragmentCompositions = new HashMap<>();
@@ -1298,6 +1309,11 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference(
+		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	private class FragmentCollectionFolder {
 
