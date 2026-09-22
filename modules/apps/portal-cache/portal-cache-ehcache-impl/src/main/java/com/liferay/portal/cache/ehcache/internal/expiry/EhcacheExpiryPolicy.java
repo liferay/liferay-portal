@@ -22,7 +22,15 @@ public class EhcacheExpiryPolicy implements ExpiryPolicy<Object, Object> {
 
 	@Override
 	public Duration getExpiryForAccess(Object key, Supplier<?> value) {
-		return _expiryPolicy.getExpiryForAccess(key, value);
+		EhcacheExpiryValue ehcacheExpiryValue = (EhcacheExpiryValue)value.get();
+
+		Duration timeToLive = ehcacheExpiryValue.getTimeToLive();
+
+		if (timeToLive.equals(ExpiryPolicy.INFINITE)) {
+			return _expiryPolicy.getExpiryForAccess(key, value);
+		}
+
+		return null;
 	}
 
 	@Override
