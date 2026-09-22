@@ -19,6 +19,7 @@ import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.controller.main.PreferencesFaroController;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
+import com.liferay.osb.faro.web.internal.helper.NotificationPreferencesHelper;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.IndividualSegmentActivationDisplay;
@@ -129,6 +130,9 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 		_preferencesFaroController.removeIndividualSegmentsPreferences(
 			groupId, idsFaroParam.getValue(),
 			FaroPreferencesConstants.SCOPE_GROUP);
+
+		_notificationPreferencesHelper.removeSegmentNotificationPreferences(
+			groupId, idsFaroParam.getValue());
 	}
 
 	@GET
@@ -570,6 +574,9 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 	private static final int[] _ENTITY_TYPES = {
 		FaroConstants.TYPE_SEGMENT_INDIVIDUALS
 	};
+
+	@Reference
+	private NotificationPreferencesHelper _notificationPreferencesHelper;
 
 	@Reference
 	private PreferencesFaroController _preferencesFaroController;

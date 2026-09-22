@@ -68,6 +68,7 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChang
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChangeAggregation;
 import com.liferay.osb.faro.engine.client.model.IndividualTransformation;
 import com.liferay.osb.faro.engine.client.model.Interest;
+import com.liferay.osb.faro.engine.client.model.LifecycleTriggerResult;
 import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
@@ -596,6 +597,27 @@ public class ContactsEngineClientImpl
 				<Map<String, List<DataSourceFieldCatalogEntry>>>() {
 			},
 			getUriVariables(faroProject));
+	}
+
+	@Override
+	public long fetchSegmentNewMembersCount(
+		FaroProject faroProject, String id, int rangeKey) {
+
+		RestTemplate restTemplate = getRestTemplate(faroProject);
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		uriVariables.put("rangeKey", rangeKey);
+
+		ResponseEntity<Long> responseEntity = restTemplate.exchange(
+			getTemplatedURL(faroProject, Rels.SEGMENT_NEW_MEMBERS_COUNT),
+			HttpMethod.GET, HttpEntity.EMPTY, Long.class, uriVariables);
+
+		if (responseEntity.getBody() == null) {
+			return 0L;
+		}
+
+		return responseEntity.getBody();
 	}
 
 	@Override
@@ -3517,6 +3539,20 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public LifecycleTriggerResult getNewAccountsLifecycleTriggerResult(
+			FaroProject faroProject, String id, int rangeKey)
+		throws Exception {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		uriVariables.put("rangeKey", rangeKey);
+
+		return get(
+			faroProject, Rels.ACCOUNT_LIFECYCLE_NEW_ACCOUNTS, id,
+			LifecycleTriggerResult.class, uriVariables);
+	}
+
+	@Override
 	public List<PageExperience> getPageExperiences(
 			FaroProject faroProject, String canonicalUrl, String channelId,
 			String pageTitle)
@@ -3651,6 +3687,20 @@ public class ContactsEngineClientImpl
 		List<OrderByField> orderByFields) {
 
 		return new Results<>();
+	}
+
+	@Override
+	public LifecycleTriggerResult getStalledAccountsLifecycleTriggerResult(
+			FaroProject faroProject, String id, int rangeKey)
+		throws Exception {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		uriVariables.put("rangeKey", rangeKey);
+
+		return get(
+			faroProject, Rels.ACCOUNT_LIFECYCLE_STALLED_ACCOUNTS, id,
+			LifecycleTriggerResult.class, uriVariables);
 	}
 
 	@Override

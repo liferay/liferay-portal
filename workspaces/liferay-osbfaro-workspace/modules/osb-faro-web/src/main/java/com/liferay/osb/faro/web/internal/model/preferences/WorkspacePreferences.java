@@ -5,12 +5,15 @@
 
 package com.liferay.osb.faro.web.internal.model.preferences;
 
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Matthew Kong
@@ -52,8 +55,11 @@ public class WorkspacePreferences {
 		_lifecycleNotificationPreferences.put(
 			lifecycleId,
 			new LifecycleNotificationPreferences(
-				accountStageChanges, emailFrequency, netNewPipelineAccounts,
-				newAccounts, newAtRiskAccounts, newStalledAccounts));
+				GetterUtil.getBoolean(accountStageChanges), emailFrequency,
+				GetterUtil.getBoolean(netNewPipelineAccounts),
+				GetterUtil.getBoolean(newAccounts),
+				GetterUtil.getBoolean(newAtRiskAccounts),
+				GetterUtil.getBoolean(newStalledAccounts)));
 
 		return _lifecycleNotificationPreferences;
 	}
@@ -64,7 +70,8 @@ public class WorkspacePreferences {
 
 		_segmentNotificationPreferences.put(
 			segmentId,
-			new SegmentNotificationPreferences(emailFrequency, newMemberAdded));
+			new SegmentNotificationPreferences(
+				emailFrequency, GetterUtil.getBoolean(newMemberAdded)));
 
 		return _segmentNotificationPreferences;
 	}
@@ -105,7 +112,8 @@ public class WorkspacePreferences {
 		return Collections.singletonMap(
 			channelId,
 			_emailReportPreferences.getOrDefault(
-				channelId, new EmailReportPreferences(false, "monthly")));
+				channelId,
+				new EmailReportPreferences(false, _DEFAULT_EMAIL_FREQUENCY)));
 	}
 
 	public IndividualDashboardPreferences getIndividualDashboardPreferences() {
@@ -130,7 +138,8 @@ public class WorkspacePreferences {
 			_lifecycleNotificationPreferences.getOrDefault(
 				lifecycleId,
 				new LifecycleNotificationPreferences(
-					false, "monthly", false, false, false, false)));
+					false, _DEFAULT_EMAIL_FREQUENCY, false, false, false,
+					false)));
 	}
 
 	public Map<String, SegmentNotificationPreferences>
@@ -144,7 +153,8 @@ public class WorkspacePreferences {
 			segmentId,
 			_segmentNotificationPreferences.getOrDefault(
 				segmentId,
-				new SegmentNotificationPreferences("monthly", false)));
+				new SegmentNotificationPreferences(
+					_DEFAULT_EMAIL_FREQUENCY, false)));
 	}
 
 	public boolean isUpgradeModalSeen() {
@@ -183,26 +193,12 @@ public class WorkspacePreferences {
 		}
 	}
 
-	public boolean removeLifecycleNotificationPreferences(String lifecycleId) {
-		LifecycleNotificationPreferences lifecycleNotificationPreferences =
-			_lifecycleNotificationPreferences.remove(lifecycleId);
+	public boolean removeSegmentNotificationPreferences(
+		Collection<String> segmentIds) {
 
-		if (lifecycleNotificationPreferences != null) {
-			return true;
-		}
+		Set<String> keySet = _segmentNotificationPreferences.keySet();
 
-		return false;
-	}
-
-	public boolean removeSegmentNotificationPreferences(String segmentId) {
-		SegmentNotificationPreferences segmentNotificationPreferences =
-			_segmentNotificationPreferences.remove(segmentId);
-
-		if (segmentNotificationPreferences != null) {
-			return true;
-		}
-
-		return false;
+		return keySet.removeAll(segmentIds);
 	}
 
 	public void setDefaultChannelId(String defaultChannelId) {
@@ -231,6 +227,8 @@ public class WorkspacePreferences {
 	public void setUpgradeModalSeen(boolean upgradeModalSeen) {
 		_upgradeModalSeen = upgradeModalSeen;
 	}
+
+	private static final String _DEFAULT_EMAIL_FREQUENCY = "monthly";
 
 	private String _defaultChannelId;
 	private Map<String, EmailReportPreferences> _emailReportPreferences =

@@ -47,6 +47,17 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = EmailReportHelper.class)
 public class EmailReportHelper {
 
+	public int getRangeKey(String frequency) {
+		if (Objects.equals(frequency, "daily")) {
+			return 1;
+		}
+		else if (Objects.equals(frequency, "monthly")) {
+			return 30;
+		}
+
+		return 7;
+	}
+
 	public void sendEmail(
 			String channelId, String frequency, long groupId, long userId)
 		throws Exception {
@@ -111,7 +122,7 @@ public class EmailReportHelper {
 
 		JSONObject siteMetricsJSONObject = _jsonFactory.createJSONObject(
 			_cerebroEngineClient.getSiteMetrics(
-				channelId, faroProject, "D", _getRangeKey(frequency)));
+				channelId, faroProject, "D", getRangeKey(frequency)));
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -269,17 +280,6 @@ public class EmailReportHelper {
 		JSONObject trendJSONObject = metricsJSONObject.getJSONObject("trend");
 
 		return Math.abs(trendJSONObject.getDouble("percentage", 0)) + "%";
-	}
-
-	private int _getRangeKey(String frequency) {
-		if (Objects.equals(frequency, "daily")) {
-			return 1;
-		}
-		else if (Objects.equals(frequency, "monthly")) {
-			return 30;
-		}
-
-		return 7;
 	}
 
 	private String _getTemporal(String frequency) {
