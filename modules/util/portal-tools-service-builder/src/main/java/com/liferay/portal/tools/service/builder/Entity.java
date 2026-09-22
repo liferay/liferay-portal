@@ -50,7 +50,7 @@ public class Entity implements Comparable<Entity> {
 
 		};
 
-	public static EntityColumn getEntityColumn(
+	public static EntityColumn fetchEntityColumn(
 		String name, List<EntityColumn> entityColumns) {
 
 		for (EntityColumn entityColumn : entityColumns) {
@@ -59,7 +59,19 @@ public class Entity implements Comparable<Entity> {
 			}
 		}
 
-		throw new RuntimeException("Entity column " + name + " not found");
+		return null;
+	}
+
+	public static EntityColumn getEntityColumn(
+		String name, List<EntityColumn> entityColumns) {
+
+		EntityColumn entityColumn = fetchEntityColumn(name, entityColumns);
+
+		if (entityColumn == null) {
+			throw new RuntimeException("Entity column " + name + " not found");
+		}
+
+		return entityColumn;
 	}
 
 	public static boolean hasEntityColumn(
@@ -256,6 +268,10 @@ public class Entity implements Comparable<Entity> {
 		Entity entity = (Entity)object;
 
 		return _name.equals(entity.getName());
+	}
+
+	public EntityColumn fetchEntityColumn(String name) {
+		return fetchEntityColumn(name, _entityColumns);
 	}
 
 	public String getAlias() {

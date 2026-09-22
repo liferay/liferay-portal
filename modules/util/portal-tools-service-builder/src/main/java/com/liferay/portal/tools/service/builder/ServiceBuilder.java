@@ -3617,6 +3617,8 @@ public class ServiceBuilder {
 		Map<String, Object> context = _getContext();
 
 		context.put("entity", entity);
+		context.put(
+			"entityFinderWhereClauses", _getEntityFinderWhereClauses(entity));
 
 		JavaClass modelImplJavaClass = _getJavaClass(
 			StringBundler.concat(
@@ -5932,6 +5934,27 @@ public class ServiceBuilder {
 		}
 
 		return name;
+	}
+
+	private Map<String, EntityFinderWhereClause> _getEntityFinderWhereClauses(
+		Entity entity) {
+
+		Map<String, EntityFinderWhereClause> entityFinderWhereClauses =
+			new LinkedHashMap<>();
+
+		for (EntityFinder entityFinder : entity.getEntityFinders()) {
+			String where = entityFinder.getWhere();
+
+			if (Validator.isNotNull(where)) {
+				EntityFinderWhereClause entityFinderWhereClause =
+					entityFinderWhereClauses.computeIfAbsent(
+						where, key -> new EntityFinderWhereClause(entity, key));
+
+				entityFinderWhereClause.addEntityFinder(entityFinder);
+			}
+		}
+
+		return entityFinderWhereClauses;
 	}
 
 	private List<String> _getEntityMappingPKEntityColumnDBNames(
