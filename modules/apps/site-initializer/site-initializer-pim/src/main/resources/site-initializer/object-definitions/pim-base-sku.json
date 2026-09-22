@@ -204,6 +204,182 @@
 		}
 	],
 	"objectFolderExternalReferenceCode": "L_PIM_PRODUCT_TYPES",
+	"objectLayouts": [
+		{
+			"defaultObjectLayout": false,
+			"name": {
+				"en_US": "PIM Base SKU"
+			},
+			"objectLayoutTabs": [
+				{
+					"name": {
+						"en_US": "Details"
+					},
+					"objectLayoutBoxes": [
+						{
+							"collapsable": false,
+							"name": {
+								"en_US": "Details"
+							},
+							"objectLayoutRows": [
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "name",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 0
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "code",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 1
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "description",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 2
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "virtual",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 3
+								}
+							],
+							"priority": 0,
+							"type": "regular"
+						},
+						{
+							"collapsable": true,
+							"name": {
+								"en_US": "Dimensions"
+							},
+							"objectLayoutRows": [
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "depth",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 0
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "height",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 1
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "weight",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 2
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "width",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 3
+								}
+							],
+							"priority": 1,
+							"type": "regular"
+						}
+					],
+					"priority": 0
+				},
+				{
+					"name": {
+						"en_US": "Units of Measure"
+					},
+					"objectLayoutBoxes": [
+						{
+							"collapsable": false,
+							"name": {
+								"en_US": "Units of Measure"
+							},
+							"objectLayoutRows": [
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "unitOfMeasureName",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 0
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "unitOfMeasureKey",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 1
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "unitOfMeasureSymbol",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 2
+								},
+								{
+									"objectLayoutColumns": [
+										{
+											"objectFieldName": "unitOfMeasureAllowDecimalQuantities",
+											"priority": 0,
+											"size": 12
+										}
+									],
+									"priority": 3
+								}
+							],
+							"priority": 0,
+							"type": "regular"
+						}
+					],
+					"priority": 1
+				}
+			]
+		}
+	],
 	"objectRelationships": [
 	],
 	"panelCategoryKey": "",
