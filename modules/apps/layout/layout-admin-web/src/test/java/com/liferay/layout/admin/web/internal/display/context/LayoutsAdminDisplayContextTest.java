@@ -602,9 +602,8 @@ public class LayoutsAdminDisplayContextTest {
 
 		_setUpDesignLibraryGroup(designLibraryGroupId, title);
 
-		String name = RandomTestUtil.randomString();
-
 		long layoutPageTemplateCollectionId1 = RandomTestUtil.randomLong();
+		String name = RandomTestUtil.randomString();
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection1 =
 			_getLayoutPageTemplateCollection(
