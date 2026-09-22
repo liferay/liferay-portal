@@ -155,7 +155,7 @@ public class SystemFDSSerializerTest {
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
-					"configuration", "{\"initialDataSetSnapshotERC\": "
+					"configuration", RandomTestUtil.randomString()
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId(), _memberUser.getUserId()));
