@@ -5,7 +5,8 @@
 
 import '@testing-library/jest-dom';
 import {useResource} from '@clayui/data-provider';
-import {render} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import AssetVocabularyCategoriesSelector from '../../src/main/resources/META-INF/resources/js/asset_categories_selector/AssetVocabularyCategoriesSelector';
@@ -17,15 +18,41 @@ const DEFAULT_PROPS = {
 	portletURL: '',
 };
 
-let capturedProps;
-
 jest.mock('@clayui/multi-select', () => ({
 	__esModule: true,
-	default: (props) => {
-		capturedProps = props;
+	default: ({
+		'aria-labelledby': ariaLabelledBy,
+		id,
+		items,
+		onItemsChange,
+		sourceItems,
+	}) => (
+		<div>
+			<input
+				aria-labelledby={ariaLabelledBy}
+				id={id}
+				readOnly
+				role="combobox"
+			/>
 
-		return null;
-	},
+			<ul role="listbox">
+				{(sourceItems ?? []).map((item) => (
+					<li
+						key={item.value}
+						onClick={() =>
+							onItemsChange([
+								...items,
+								{label: item.label, value: item.value},
+							])
+						}
+						role="option"
+					>
+						{item.label}
+					</li>
+				))}
+			</ul>
+		</div>
+	),
 }));
 
 jest.mock('@clayui/data-provider', () => {
@@ -43,7 +70,7 @@ jest.mock('@clayui/data-provider', () => {
 
 describe('AssetVocabularyCategoriesSelector', () => {
 	beforeEach(() => {
-		capturedProps = undefined;
+		jest.clearAllMocks();
 	});
 
 	it('refetch is not called in the first component render', () => {
@@ -65,7 +92,10 @@ describe('AssetVocabularyCategoriesSelector', () => {
 
 		const labelId = 'assetCategoryIds_42_MultiSelectLabel';
 
-		expect(capturedProps['aria-labelledby']).toBe(labelId);
+		expect(screen.getByRole('combobox')).toHaveAttribute(
+			'aria-labelledby',
+			labelId
+		);
 
 		const label = container.querySelector(`#${labelId}`);
 
@@ -78,6 +108,61 @@ describe('AssetVocabularyCategoriesSelector', () => {
 	it('does not set aria-labelledby when there is no label', () => {
 		render(<AssetVocabularyCategoriesSelector {...DEFAULT_PROPS} />);
 
-		expect(capturedProps['aria-labelledby']).toBeUndefined();
+		expect(screen.getByRole('combobox')).not.toHaveAttribute(
+			'aria-labelledby'
+		);
+	});
+
+	it('replaces the existing selection when singleSelect is true and a new valid category is added via autocomplete', async () => {
+		const user = userEvent.setup();
+
+		useResource.mockReturnValue({
+			refetch: jest.fn(),
+			resource: [{categoryId: '2', titleCurrentValue: 'Clothing'}],
+		});
+
+		const onSelectedItemsChange = jest.fn();
+
+		render(
+			<AssetVocabularyCategoriesSelector
+				{...DEFAULT_PROPS}
+				onSelectedItemsChange={onSelectedItemsChange}
+				selectedItems={[{label: 'Electronics', value: '1'}]}
+				singleSelect={true}
+			/>
+		);
+
+		await user.click(screen.getByRole('option', {name: 'Clothing'}));
+
+		expect(onSelectedItemsChange).toHaveBeenCalledWith([
+			{label: 'Clothing', value: '2'},
+		]);
+	});
+
+	it('keeps all selections when singleSelect is false and a new valid category is added via autocomplete', async () => {
+		const user = userEvent.setup();
+
+		useResource.mockReturnValue({
+			refetch: jest.fn(),
+			resource: [{categoryId: '2', titleCurrentValue: 'Clothing'}],
+		});
+
+		const onSelectedItemsChange = jest.fn();
+
+		render(
+			<AssetVocabularyCategoriesSelector
+				{...DEFAULT_PROPS}
+				onSelectedItemsChange={onSelectedItemsChange}
+				selectedItems={[{label: 'Electronics', value: '1'}]}
+				singleSelect={false}
+			/>
+		);
+
+		await user.click(screen.getByRole('option', {name: 'Clothing'}));
+
+		expect(onSelectedItemsChange).toHaveBeenCalledWith([
+			{label: 'Electronics', value: '1'},
+			{label: 'Clothing', value: '2'},
+		]);
 	});
 });
