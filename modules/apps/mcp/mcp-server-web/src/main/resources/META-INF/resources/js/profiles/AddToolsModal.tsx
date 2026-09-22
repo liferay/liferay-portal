@@ -11,6 +11,7 @@ import ClayModal from '@clayui/modal';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import SelectedItemsBar from '../components/SelectedItemsBar';
+import {RequestResult} from '../services/ApiHelper';
 import {getProfileTools} from '../services/getProfileTools';
 import {getToolSetTools} from '../services/getToolSetTools';
 import {getToolSets} from '../services/getToolSets';
@@ -46,27 +47,27 @@ export default function AddToolsModal({
 		Set<string>
 	>(new Set());
 
-	const toolsCacheRef = useRef<Record<string, Promise<ToolSummary[] | null>>>(
-		{}
-	);
+	const toolsCacheRef = useRef<
+		Record<string, Promise<RequestResult<ToolSummary[]>>>
+	>({});
 
 	const loadToolSet = useCallback((toolSetName: string) => {
 		if (!toolsCacheRef.current[toolSetName]) {
 			toolsCacheRef.current[toolSetName] = getToolSetTools(
 				toolSetName
-			).then(({data, error}) => {
-				if (error || !data) {
-					delete toolsCacheRef.current[toolSetName];
-
-					openErrorToast(
-						error ||
-							Liferay.Language.get('an-unexpected-error-occurred')
-					);
-
-					return null;
+			).then((result) => {
+				if (result.data) {
+					return result;
 				}
 
-				return data;
+				delete toolsCacheRef.current[toolSetName];
+
+				return {
+					data: null,
+					error:
+						result.error ||
+						Liferay.Language.get('an-unexpected-error-occurred'),
+				};
 			});
 		}
 
@@ -79,7 +80,7 @@ export default function AddToolsModal({
 
 			await Promise.all(
 				toolSetNames.map(async (toolSetName) => {
-					const tools = await loadToolSet(toolSetName);
+					const {data: tools} = await loadToolSet(toolSetName);
 
 					if (tools) {
 						toolsByToolSetName.set(toolSetName, tools);
@@ -173,9 +174,11 @@ export default function AddToolsModal({
 			return;
 		}
 
-		const tools = await loadToolSet(item.name);
+		const {data: tools, error} = await loadToolSet(item.name);
 
 		if (!tools) {
+			openErrorToast(error);
+
 			return;
 		}
 
@@ -230,10 +233,12 @@ export default function AddToolsModal({
 			new Set(previousNames).add(item.name)
 		);
 
-		loadToolSet(item.name).then((tools) => {
+		loadToolSet(item.name).then(({data: tools, error}) => {
 			stopSelectingToolSet(item.name);
 
 			if (!tools) {
+				openErrorToast(error);
+
 				return;
 			}
 
