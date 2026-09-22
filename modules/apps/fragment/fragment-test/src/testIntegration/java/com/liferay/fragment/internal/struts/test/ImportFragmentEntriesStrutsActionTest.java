@@ -18,6 +18,7 @@ import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -97,7 +98,7 @@ public class ImportFragmentEntriesStrutsActionTest {
 	}
 
 	@Test
-	public void testImportZipFile() throws Exception {
+	public void testExecute() throws Exception {
 		_user = UserTestUtil.addOmniadminUser();
 
 		UserTestUtil.setUser(_user);
@@ -155,6 +156,40 @@ public class ImportFragmentEntriesStrutsActionTest {
 		Assert.assertNotNull(
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 				_group.getGroupId(), "page-template"));
+	}
+
+	@Test(expected = PrincipalException.class)
+	public void testExecuteWithoutPermissions() throws Exception {
+		_user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(_user);
+
+		byte[] bytes = _getFileBytes();
+
+		Map<String, FileItem[]> fileParameters = _getFileParameters(
+			bytes, "file");
+
+		HttpServletRequest httpServletRequest = _getMultipartHttpServletRequest(
+			bytes, "file");
+
+		UploadPortletRequest uploadPortletRequest =
+			UploadTestUtil.createUploadPortletRequest(
+				UploadTestUtil.createUploadServletRequest(
+					httpServletRequest, fileParameters,
+					HashMapBuilder.put(
+						"groupId",
+						Collections.singletonList(
+							String.valueOf(_group.getGroupId()))
+					).build()),
+				null, RandomTestUtil.randomString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
+
+		_importFragmentEntriesStrutsAction.execute(
+			uploadPortletRequest, mockHttpServletResponse);
 	}
 
 	private FileItem _createFileItem(byte[] bytes) throws Exception {
