@@ -47,7 +47,6 @@ public class FrontendTokenDefinitionApplicationTest {
 		ReflectionTestUtil.setFieldValue(
 			_frontendTokenDefinitionApplication, "_jsonFactory",
 			new JSONFactoryImpl());
-
 		ReflectionTestUtil.setFieldValue(
 			_frontendTokenDefinitionApplication, "_language",
 			Mockito.mock(Language.class));
