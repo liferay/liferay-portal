@@ -1045,14 +1045,14 @@ public class TestrayImporter {
 					" Testray axes"));
 		}
 
-		int uncreatedTestrayCaseResultCount =
-			_uncreatedTestrayCaseResultCount.get();
+		int uncreatedTestrayCaseResultsCount =
+			_uncreatedTestrayCaseResultsCount.get();
 
-		if (uncreatedTestrayCaseResultCount > 0) {
+		if (uncreatedTestrayCaseResultsCount > 0) {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"Unable to create ",
-					String.valueOf(uncreatedTestrayCaseResultCount), " of ",
+					String.valueOf(uncreatedTestrayCaseResultsCount), " of ",
 					String.valueOf(callables.size()), " Testray case results"));
 		}
 
@@ -1690,7 +1690,7 @@ public class TestrayImporter {
 		buildTestrayCaseResult.cacheTestrayCaseResultURL();
 
 		if (buildTestrayCaseResult.getTestrayCaseResultURL() == null) {
-			_uncreatedTestrayCaseResultCount.incrementAndGet();
+			_uncreatedTestrayCaseResultsCount.incrementAndGet();
 		}
 
 		testrayCaseResults.add(buildTestrayCaseResult);
@@ -2306,7 +2306,7 @@ public class TestrayImporter {
 	private final Map<File, TestrayServer> _testrayServers =
 		Collections.synchronizedMap(new HashMap<File, TestrayServer>());
 	private final TopLevelBuildReport _topLevelBuildReport;
-	private final AtomicInteger _uncreatedTestrayCaseResultCount =
+	private final AtomicInteger _uncreatedTestrayCaseResultsCount =
 		new AtomicInteger();
 	private final List<Workspace> _workspaces;
 
