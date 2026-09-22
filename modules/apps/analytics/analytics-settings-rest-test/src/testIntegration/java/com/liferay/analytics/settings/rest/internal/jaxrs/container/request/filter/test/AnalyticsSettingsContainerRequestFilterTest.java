@@ -104,7 +104,25 @@ public class AnalyticsSettingsContainerRequestFilterTest {
 			HttpInvoker.HttpMethod.PUT, "/contacts/configuration", "{}");
 		_assertForbidden(
 			HttpInvoker.HttpMethod.PUT, "/recommendation/configuration", "{}");
-
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
+			"/contacts/account-groups");
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
+			"/contacts/configuration");
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
+			"/contacts/organizations");
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
+			"/contacts/user-groups");
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD, "/fields");
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
+			"/fields/accounts");
+		_assertReadsAreAllowed(
+			_analyticsAdminUser.getEmailAddress(), _PASSWORD, "/fields/people");
 		_assertReadsAreAllowed(
 			_companyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD, "/contacts/account-groups");
@@ -126,26 +144,6 @@ public class AnalyticsSettingsContainerRequestFilterTest {
 		_assertReadsAreAllowed(
 			_companyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD, "/fields/people");
-
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
-			"/contacts/account-groups");
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
-			"/contacts/configuration");
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
-			"/contacts/organizations");
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
-			"/contacts/user-groups");
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD, "/fields");
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD,
-			"/fields/accounts");
-		_assertReadsAreAllowed(
-			_analyticsAdminUser.getEmailAddress(), _PASSWORD, "/fields/people");
 	}
 
 	private void _assertForbidden(
