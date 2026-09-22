@@ -42,7 +42,7 @@ const test = mergeTests(
 const testDeprecatedFragmentSet = mergeTests(
 	test,
 	featureFlagsTest({
-		'LPD-40529': {enabled: true, system: true},
+		'LPD-40529': {enabled: true},
 	})
 );
 

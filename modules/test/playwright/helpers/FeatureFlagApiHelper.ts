@@ -37,10 +37,7 @@ export class FeatureFlagApiHelper {
 					Liferay.Util.fetch(
 						'/o/com-liferay-feature-flag-web/is-enabled',
 						{
-							body: Liferay.Util.objectToFormData({
-								companyId: Liferay.ThemeDisplay.getCompanyId(),
-								key,
-							}),
+							body: Liferay.Util.objectToFormData({key}),
 							method: 'POST',
 						}
 					)
@@ -85,7 +82,6 @@ export class FeatureFlagApiHelper {
 					'/o/com-liferay-feature-flag-web/set-enabled',
 					{
 						body: Liferay.Util.objectToFormData({
-							companyId: Liferay.ThemeDisplay.getCompanyId(),
 							enabled: enabled.toString(),
 							key,
 						}),

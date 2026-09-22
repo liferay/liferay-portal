@@ -15,7 +15,7 @@ import {createSegmentsEntry, editSegmentsEntry} from './utils/segments';
 export const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPD-78863': {enabled: true, system: true},
+		'LPD-78863': {enabled: true},
 	}),
 	changeTrackingPagesTest,
 	pageEditorPagesTest

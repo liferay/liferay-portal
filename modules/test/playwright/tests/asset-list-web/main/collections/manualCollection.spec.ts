@@ -19,7 +19,7 @@ const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-39304': {enabled: true}, // Asset Selection for Asset Publisher
-		'LPD-78863': {enabled: true, system: true}, // DXP Segments
+		'LPD-78863': {enabled: true}, // DXP Segments
 	}),
 	collectionsPagesTest
 );

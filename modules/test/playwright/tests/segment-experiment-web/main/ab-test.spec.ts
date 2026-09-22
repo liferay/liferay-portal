@@ -29,7 +29,7 @@ import {createABTest, createVariant, openABTesSidebar} from './utils/ab-test';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPD-78863': {enabled: true, system: true},
+		'LPD-78863': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedChannelTest,

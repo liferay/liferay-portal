@@ -19,7 +19,7 @@ import getPageDefinition from '../../layout-content-page-editor-web/main/utils/g
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPD-78863': {enabled: true, system: true},
+		'LPD-78863': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
