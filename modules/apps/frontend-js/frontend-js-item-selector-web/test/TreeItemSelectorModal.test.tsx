@@ -132,6 +132,26 @@ describe('TreeItemSelectorModal', () => {
 		expect(await within(modal).findByText('Solo')).toBeInTheDocument();
 	});
 
+	it('shows an error state when the API call fails', async () => {
+		mockedFetch.mockResolvedValueOnce({
+			headers: new Headers(),
+			ok: false,
+			status: 500,
+		});
+
+		const {findByRole} = render(<Wrapper onItemsChange={jest.fn()} />);
+
+		const modal = await findByRole('dialog');
+
+		expect(
+			await within(modal).findByText('an-unexpected-error-occurred')
+		).toBeInTheDocument();
+
+		expect(
+			await within(modal).findByText('unable-to-load-content')
+		).toBeInTheDocument();
+	});
+
 	it('renders an empty state when the vocabulary has no categories', async () => {
 		configureFetch({emptyVocabulary: true});
 
