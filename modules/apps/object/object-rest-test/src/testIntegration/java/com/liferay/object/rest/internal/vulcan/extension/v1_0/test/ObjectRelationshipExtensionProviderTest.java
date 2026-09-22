@@ -154,15 +154,17 @@ public class ObjectRelationshipExtensionProviderTest {
 
 	@Test
 	public void testSetExtendedProperties() throws Exception {
+		String objectFieldName1 = "x" + RandomTestUtil.randomString();
+		String objectFieldName2 = "x" + RandomTestUtil.randomString();
+
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					"Text", "String", true, true, null,
-					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_1, false),
+					RandomTestUtil.randomString(), objectFieldName1, false),
 				ObjectFieldUtil.createObjectField(
 					"Text", "String", true, true, null,
-					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_2,
-					false)));
+					RandomTestUtil.randomString(), objectFieldName2, false)));
 
 		ObjectRelationship objectRelationship = _addObjectRelationship(
 			objectDefinition);
@@ -172,40 +174,53 @@ public class ObjectRelationshipExtensionProviderTest {
 		String objectFieldValue1 = RandomTestUtil.randomString();
 
 		ObjectEntry objectEntry1 = _addRelatedObjectEntry(
-			objectDefinition, objectFieldValue1, RandomTestUtil.randomString(),
-			objectRelationship);
+			objectDefinition, objectRelationship,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName1, objectFieldValue1
+			).put(
+				objectFieldName2, RandomTestUtil.randomString()
+			).build());
 
 		String objectFieldValue2 = RandomTestUtil.randomString();
 
 		_setExtendedProperties(
-			objectEntry1.getExternalReferenceCode(), null, objectFieldValue2,
+			HashMapBuilder.<String, Object>put(
+				objectFieldName2, objectFieldValue2
+			).put(
+				"externalReferenceCode", objectEntry1.getExternalReferenceCode()
+			).build(),
 			objectRelationship, true);
 
 		Map<String, Serializable> values =
 			ObjectEntryLocalServiceUtil.getValues(
 				objectEntry1.getObjectEntryId());
 
-		Assert.assertEquals(
-			objectFieldValue1, values.get(_OBJECT_FIELD_NAME_1));
-		Assert.assertEquals(
-			objectFieldValue2, values.get(_OBJECT_FIELD_NAME_2));
+		Assert.assertEquals(objectFieldValue1, values.get(objectFieldName1));
+		Assert.assertEquals(objectFieldValue2, values.get(objectFieldName2));
 
 		// Update
 
 		ObjectEntry objectEntry2 = _addRelatedObjectEntry(
-			objectDefinition, objectFieldValue1, RandomTestUtil.randomString(),
-			objectRelationship);
+			objectDefinition, objectRelationship,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName1, objectFieldValue1
+			).put(
+				objectFieldName2, RandomTestUtil.randomString()
+			).build());
 
 		_setExtendedProperties(
-			objectEntry2.getExternalReferenceCode(), null, objectFieldValue2,
+			HashMapBuilder.<String, Object>put(
+				objectFieldName2, objectFieldValue2
+			).put(
+				"externalReferenceCode", objectEntry2.getExternalReferenceCode()
+			).build(),
 			objectRelationship, false);
 
 		values = ObjectEntryLocalServiceUtil.getValues(
 			objectEntry2.getObjectEntryId());
 
-		Assert.assertTrue(Validator.isNull(values.get(_OBJECT_FIELD_NAME_1)));
-		Assert.assertEquals(
-			objectFieldValue2, values.get(_OBJECT_FIELD_NAME_2));
+		Assert.assertTrue(Validator.isNull(values.get(objectFieldName1)));
+		Assert.assertEquals(objectFieldValue2, values.get(objectFieldName2));
 
 		ObjectRelationshipLocalServiceUtil.deleteObjectRelationship(
 			objectRelationship);
@@ -252,8 +267,9 @@ public class ObjectRelationshipExtensionProviderTest {
 	}
 
 	private ObjectEntry _addRelatedObjectEntry(
-			ObjectDefinition objectDefinition, String objectFieldValue1,
-			String objectFieldValue2, ObjectRelationship objectRelationship)
+			ObjectDefinition objectDefinition,
+			ObjectRelationship objectRelationship,
+			Map<String, Serializable> values)
 		throws Exception {
 
 		ObjectEntry objectEntry =
@@ -262,12 +278,7 @@ public class ObjectRelationshipExtensionProviderTest {
 				objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				HashMapBuilder.<String, Serializable>put(
-					_OBJECT_FIELD_NAME_1, objectFieldValue1
-				).put(
-					_OBJECT_FIELD_NAME_2, objectFieldValue2
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+				values, ServiceContextTestUtil.getServiceContext());
 
 		ObjectRelationshipLocalServiceUtil.
 			addObjectRelationshipMappingTableValues(
@@ -309,9 +320,8 @@ public class ObjectRelationshipExtensionProviderTest {
 	}
 
 	private void _setExtendedProperties(
-			String externalReferenceCode, String objectFieldValue1,
-			String objectFieldValue2, ObjectRelationship objectRelationship,
-			boolean partialUpdate)
+			Map<String, Object> nestedObjectEntryProperties,
+			ObjectRelationship objectRelationship, boolean partialUpdate)
 		throws Exception {
 
 		_extensionProvider.setExtendedProperties(
@@ -325,13 +335,7 @@ public class ObjectRelationshipExtensionProviderTest {
 			HashMapBuilder.<String, Serializable>put(
 				objectRelationship.getName(),
 				(Serializable)Collections.singletonList(
-					HashMapBuilder.<String, Object>put(
-						_OBJECT_FIELD_NAME_1, () -> objectFieldValue1
-					).put(
-						_OBJECT_FIELD_NAME_2, () -> objectFieldValue2
-					).put(
-						"externalReferenceCode", externalReferenceCode
-					).build())
+					nestedObjectEntryProperties)
 			).build(),
 			partialUpdate);
 	}
@@ -468,12 +472,6 @@ public class ObjectRelationshipExtensionProviderTest {
 	}
 
 	private static final String _OBJECT_FIELD_NAME =
-		"x" + RandomTestUtil.randomString();
-
-	private static final String _OBJECT_FIELD_NAME_1 =
-		"x" + RandomTestUtil.randomString();
-
-	private static final String _OBJECT_FIELD_NAME_2 =
 		"x" + RandomTestUtil.randomString();
 
 	private static final String _OBJECT_FIELD_VALUE =
