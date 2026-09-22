@@ -76,23 +76,24 @@ export class AssetPublisherPage {
 		);
 	}
 
-	async addManualItem(type: string, itemName: string) {
+	async addManualItem(itemName: string) {
 		if (await this.itemSelector.isHidden({timeout: 2000})) {
 			await this.page.getByRole('button', {name: 'Save'}).click();
 			await waitForAlert(this.page);
 		}
 		await this.itemSelector.click();
-		await this.page.getByRole('menuitem', {name: type}).click();
 
-		await this.page
-			.frameLocator(`iframe[title="Select ${type}"]`)
-			.locator(
-				'[id^="_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_articles_"]'
-			)
+		const itemSelectorModal = this.page.getByRole('dialog');
+
+		await itemSelectorModal
+			.getByRole('row')
 			.filter({hasText: itemName})
-			.locator('.checkbox')
+			.getByRole('checkbox')
+			.check();
+
+		await itemSelectorModal
+			.getByRole('button', {exact: true, name: 'Select'})
 			.click();
-		await this.page.getByRole('button', {name: 'Add'}).click();
 
 		await waitForAlert(this.page);
 	}
