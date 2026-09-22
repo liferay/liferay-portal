@@ -94,13 +94,6 @@ public class StaticSiteExportURLRewriterTest {
 		Assert.assertThat(
 			html,
 			CoreMatchers.not(CoreMatchers.containsString("localhost:8080")));
-
-		Assert.assertEquals(
-			"@import \"/o/theme/css/clay.1a2b.css\"; a { background: " +
-				"url(/o/theme/images/logo.png); }",
-			staticSiteExportURLRewriter.rewriteCSS(
-				"@import \"/o/theme/css/clay.css?languageId=en_US\"; a { " +
-					"background: url(/o/theme/images/logo.png); }"));
 	}
 
 }

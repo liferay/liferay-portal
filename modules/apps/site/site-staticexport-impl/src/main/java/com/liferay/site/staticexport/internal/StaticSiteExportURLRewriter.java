@@ -27,19 +27,6 @@ public class StaticSiteExportURLRewriter {
 		staticSiteExportDocument.rewrite(this::_getPath);
 	}
 
-	public String rewriteCSS(String css) {
-		for (Map.Entry<String, String> entry : _resourcePaths.entrySet()) {
-			String url = entry.getKey();
-			String path = StringPool.SLASH + entry.getValue();
-
-			if (!url.equals(path)) {
-				css = StringUtil.replace(css, url, path);
-			}
-		}
-
-		return css;
-	}
-
 	private String _getPath(String url) {
 		if (Validator.isNull(url)) {
 			return null;

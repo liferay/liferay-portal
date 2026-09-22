@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -119,8 +118,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				_rewriteLayouts(
 					staticSiteExportDocuments, staticSiteExportURLRewriter),
 				new StaticSiteExportReport(layoutFailures, resourceFailures),
-				_rewriteResources(
-					staticSiteExportResources, staticSiteExportURLRewriter));
+				staticSiteExportResources);
 		}
 		catch (PortalException portalException) {
 			throw portalException;
@@ -178,10 +176,9 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private List<StaticSiteExportResource> _fetchStaticSiteExportResources(
-			HttpServletRequest httpServletRequest, String portalURL,
-			List<StaticSiteExportReport.Failure> resourceFailures,
-			Collection<StaticSiteExportDocument> staticSiteExportDocuments)
-		throws Exception {
+		HttpServletRequest httpServletRequest, String portalURL,
+		List<StaticSiteExportReport.Failure> resourceFailures,
+		Collection<StaticSiteExportDocument> staticSiteExportDocuments) {
 
 		List<StaticSiteExportResource> staticSiteExportResources =
 			new ArrayList<>();
@@ -366,14 +363,6 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		return resourceURLs;
 	}
 
-	private boolean _isStylesheetURL(String url) {
-		if (url.endsWith(".css") || url.contains(".css?")) {
-			return true;
-		}
-
-		return false;
-	}
-
 	private void _putPagePath(
 		Map<String, String> pagePaths, String path, String portalURL,
 		String url) {
@@ -409,28 +398,6 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		}
 
 		return rewrittenStaticSiteExportLayouts;
-	}
-
-	private List<StaticSiteExportResource> _rewriteResources(
-			List<StaticSiteExportResource> staticSiteExportResources,
-			StaticSiteExportURLRewriter staticSiteExportURLRewriter)
-		throws Exception {
-
-		for (StaticSiteExportResource staticSiteExportResource :
-				staticSiteExportResources) {
-
-			if (!_isStylesheetURL(staticSiteExportResource.getURL())) {
-				continue;
-			}
-
-			File file = staticSiteExportResource.getFile();
-
-			FileUtil.write(
-				file,
-				staticSiteExportURLRewriter.rewriteCSS(FileUtil.read(file)));
-		}
-
-		return staticSiteExportResources;
 	}
 
 	private static final String[] _RESOURCE_PREFIXES = {
