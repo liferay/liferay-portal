@@ -118,7 +118,6 @@ interface PageTreePickerPanelProps<T> {
 	defaultExpandedIds?: string[];
 	defaultRegisteredItems?: Array<PageTreePickerItem<T>>;
 	defaultSelectedEntries?: Array<PageTreePickerSelectionEntry<T>>;
-	filterSlot?: React.ReactNode;
 	onError?: (error: unknown) => void;
 	onItemSelect?: (item: PageTreePickerItem<T>) => void;
 	onSelectionChange?: (
@@ -133,7 +132,6 @@ export default function PageTreePickerPanel<T>({
 	defaultExpandedIds,
 	defaultRegisteredItems,
 	defaultSelectedEntries,
-	filterSlot,
 	onError,
 	onItemSelect,
 	onSelectionChange,
@@ -319,8 +317,6 @@ export default function PageTreePickerPanel<T>({
 					</ClayInput.GroupItem>
 				</ClayInput.Group>
 			</ClayForm.Group>
-
-			{filterSlot}
 
 			{!singleSelection && (
 				<div className="align-items-center d-flex page-tree-picker__count-feedback px-3">
