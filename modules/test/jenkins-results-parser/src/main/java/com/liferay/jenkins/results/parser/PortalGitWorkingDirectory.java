@@ -18,9 +18,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -596,7 +598,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	}
 
 	protected static List<String> getJSUnitFilePaths(String standardOut) {
-		List<String> filePaths = new ArrayList<>();
+		Set<String> filePaths = new LinkedHashSet<>();
 
 		Matcher matcher = _jsUnitFilePathPattern.matcher(standardOut);
 
@@ -604,7 +606,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			filePaths.add(matcher.group("filePath"));
 		}
 
-		return filePaths;
+		return new ArrayList<>(filePaths);
 	}
 
 	protected PortalGitWorkingDirectory(
