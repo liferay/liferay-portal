@@ -118,7 +118,7 @@ async function viewUpgradedPartition({
 			);
 
 			await expect(
-				usersAndOrganizationsPage.noResultsMessage
+				usersAndOrganizationsPage.noUsersMessage
 			).toBeVisible();
 		});
 
