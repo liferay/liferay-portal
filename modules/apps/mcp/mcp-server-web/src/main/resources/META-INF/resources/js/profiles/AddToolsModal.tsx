@@ -353,10 +353,6 @@ export default function AddToolsModal({
 											<TreeView.Item>
 												<TreeView.ItemStack
 													expandOnClick={false}
-													expanderDisabled={false}
-													onClick={(event) =>
-														event.preventDefault()
-													}
 												>
 													<ClayCheckbox
 														aria-label={item.name}
@@ -372,11 +368,7 @@ export default function AddToolsModal({
 													items={item.children}
 												>
 													{(child: ToolTreeItem) => (
-														<TreeView.Item
-															onClick={(event) =>
-																event.preventDefault()
-															}
-														>
+														<TreeView.Item>
 															<ClayCheckbox
 																aria-label={
 																	child.name
@@ -394,9 +386,13 @@ export default function AddToolsModal({
 										) : (
 											<TreeView.Item
 												expandable
-												onClick={(event) =>
-													event.preventDefault()
-												}
+												onClick={(event) => {
+													event.preventDefault();
+
+													toggleCollapsedToolSet(
+														item
+													);
+												}}
 											>
 												<span>
 													<ClayCheckbox
