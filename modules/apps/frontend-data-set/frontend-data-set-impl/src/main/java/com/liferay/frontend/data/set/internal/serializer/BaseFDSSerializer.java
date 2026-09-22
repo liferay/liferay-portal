@@ -185,14 +185,14 @@ public abstract class BaseFDSSerializer {
 			Map<String, Serializable> values =
 				serviceBuilderObjectEntry.getValues();
 
-			String configuration = GetterUtil.getString(
+			String configurationJSON = GetterUtil.getString(
 				values.get("configuration"));
 
-			if (Validator.isNull(configuration)) {
+			if (Validator.isNull(configurationJSON)) {
 				return null;
 			}
 
-			return jsonFactory.createJSONObject(configuration);
+			return jsonFactory.createJSONObject(configurationJSON);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

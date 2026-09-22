@@ -71,10 +71,10 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			_portal.getOriginalServletRequest(
 				_portal.getHttpServletRequest(resourceRequest));
 
-		String configuration = ParamUtil.getString(
+		String configurationJSON = ParamUtil.getString(
 			httpServletRequest, "configuration");
 
-		if (Validator.isNull(configuration)) {
+		if (Validator.isNull(configurationJSON)) {
 			_writeEmptyJSONObject(
 				resourceRequest, resourceResponse,
 				HttpServletResponse.SC_BAD_REQUEST);
@@ -123,7 +123,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 		JSONObject jsonObject = null;
 
 		try {
-			jsonObject = _jsonFactory.createJSONObject(configuration);
+			jsonObject = _jsonFactory.createJSONObject(configurationJSON);
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {

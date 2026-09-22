@@ -372,10 +372,11 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		return _serveResource(_FDS_NAME, objectEntry, _user);
 	}
 
-	private TestMockLiferayResourceResponse _serveResource(String configuration)
+	private TestMockLiferayResourceResponse _serveResource(
+			String configurationJSON)
 		throws Exception {
 
-		return _serveResource(configuration, _FDS_NAME, _user);
+		return _serveResource(configurationJSON, _FDS_NAME, _user);
 	}
 
 	private TestMockLiferayResourceResponse _serveResource(
@@ -391,7 +392,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 	}
 
 	private TestMockLiferayResourceResponse _serveResource(
-			String configuration, String fdsName, User user)
+			String configurationJSON, String fdsName, User user)
 		throws Exception {
 
 		TestMockLiferayResourceResponse testMockLiferayResourceResponse =
@@ -417,8 +418,9 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		if (configuration != null) {
-			mockHttpServletRequest.setParameter("configuration", configuration);
+		if (configurationJSON != null) {
+			mockHttpServletRequest.setParameter(
+				"configuration", configurationJSON);
 		}
 
 		mockHttpServletRequest.setParameter("fdsName", fdsName);
