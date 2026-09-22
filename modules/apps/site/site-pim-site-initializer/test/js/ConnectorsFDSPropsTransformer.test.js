@@ -11,6 +11,18 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 }));
 
 describe('ConnectorsFDSPropsTransformer', () => {
+	it('marks the delete action as text-danger and leaves the other actions unchanged', () => {
+		const result = propsTransformer({
+			itemsActions: [
+				{data: {id: 'edit'}, icon: 'pencil'},
+				{data: {id: 'delete'}, icon: 'trash'},
+			],
+		});
+
+		expect(result.itemsActions[0].className).toBeUndefined();
+		expect(result.itemsActions[1].className).toBe('text-danger');
+	});
+
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
 		const result = propsTransformer({
 			apiURL: '/o/c/pimconnectors',
