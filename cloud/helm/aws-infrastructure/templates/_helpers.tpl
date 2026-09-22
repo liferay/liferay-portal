@@ -2,6 +2,14 @@
 {{- .Values.search.elasticsearch.name | default (printf "%s-es" .Release.Name) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "elasticsearch.namespace" -}}
+{{- $namespace := printf "%s-elasticsearch" .Release.Namespace -}}
+{{- if gt (len $namespace) 63 -}}
+{{- fail (printf "Elasticsearch namespace is longer than the 63 character Kubernetes limit: %s" $namespace) -}}
+{{- end -}}
+{{- $namespace -}}
+{{- end -}}
+
 {{- define "liferay.k8sFriendlyString" -}}
 {{- $sanitized := . | lower | replace "/" "-" | replace "_" "-" | trimPrefix "-" | trunc 63 | trimSuffix "-" -}}
 {{- if or (empty $sanitized) (not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$" $sanitized)) -}}

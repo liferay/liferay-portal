@@ -18,6 +18,9 @@ tests:
                         name: ES_SETTING_TWO
                         value: two
                     path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: Elasticsearch
         it: Appends every custom env entry through the loop
         set:
             enabled: true
@@ -34,7 +37,19 @@ tests:
                         name: ES_JAVA_OPTS
                         value: -Xms4g -Xmx4g
                     path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: Elasticsearch
         it: Applies the default JVM options when no custom env is configured
+        set:
+            enabled: true
+            search.elasticsearch.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: Elasticsearch namespace is longer than the 63 character Kubernetes limit
+        it: Fails when the Elasticsearch namespace exceeds the Kubernetes name limit
+        release:
+            namespace: liferay-a-very-long-project-id-and-environment-ids
         set:
             enabled: true
             search.elasticsearch.enabled: true
@@ -42,6 +57,9 @@ tests:
             -   equal:
                     path: metadata.name
                     value: custom-es
+        documentSelector:
+            path: kind
+            value: Elasticsearch
         it: Names the Elasticsearch resource after the configured name override
         set:
             enabled: true
@@ -50,18 +68,41 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 0
-        it: Omits the Elasticsearch resource when search is disabled by default
+        it: Omits the Elasticsearch resources when search is disabled by default
     -   asserts:
             -   hasDocuments:
                     count: 0
-        it: Omits the Elasticsearch resource when the chart is disabled
+        it: Omits the Elasticsearch resources when the chart is disabled
         set:
             enabled: false
             search.elasticsearch.enabled: true
     -   asserts:
             -   equal:
                     path: metadata.name
+                    value: my-namespace-elasticsearch
+            -   isKind:
+                    of: Namespace
+        documentSelector:
+            path: kind
+            value: Namespace
+        it: Provisions the dedicated Elasticsearch namespace
+        set:
+            enabled: true
+            search.elasticsearch.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+        it: Renders both the Elasticsearch resource and its namespace when search is enabled
+        set:
+            enabled: true
+            search.elasticsearch.enabled: true
+    -   asserts:
+            -   equal:
+                    path: metadata.name
                     value: my-release-es
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace-elasticsearch
             -   equal:
                     path: spec.nodeSets[0].count
                     value: 1
@@ -70,7 +111,21 @@ tests:
                     value: 8.19.11
             -   isKind:
                     of: Elasticsearch
-        it: Renders the Elasticsearch resource named after the release when search is enabled
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Renders the Elasticsearch resource named after the release and dedicated namespace
+        set:
+            enabled: true
+            search.elasticsearch.enabled: true
+    -   asserts:
+            -   equal:
+                    path: metadata.labels["pod-security.kubernetes.io/enforce"]
+                    value: restricted
+        documentSelector:
+            path: kind
+            value: Namespace
+        it: Restricts the Elasticsearch namespace to the restricted pod security standard
         set:
             enabled: true
             search.elasticsearch.enabled: true

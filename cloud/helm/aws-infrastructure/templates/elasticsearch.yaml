@@ -7,7 +7,7 @@ metadata:
         argocd.argoproj.io/sync-wave: "-25"
         {{- $search.annotations | toYaml | nindent 8 }}
     name: {{ include "elasticsearch.name" . }}
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ include "elasticsearch.namespace" . }}
 spec:
     http:
         tls:
@@ -75,4 +75,14 @@ spec:
                             requests:
                                 storage: {{ $search.volumeSize }}
     version: {{ $search.version }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-25"
+    labels:
+        name: {{ include "elasticsearch.namespace" . }}
+        pod-security.kubernetes.io/enforce: restricted
+    name: {{ include "elasticsearch.namespace" . }}
 {{- end -}}
