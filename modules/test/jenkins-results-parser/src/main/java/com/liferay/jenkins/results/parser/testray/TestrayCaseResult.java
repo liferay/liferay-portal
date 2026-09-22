@@ -561,8 +561,8 @@ public class TestrayCaseResult {
 		catch (RuntimeException runtimeException) {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
-					"Unable to create Testray case result '", getName(),
-					"':\n", runtimeException.getMessage()));
+					"Unable to create Testray case result '", getName(), "':\n",
+					runtimeException.getMessage()));
 		}
 	}
 

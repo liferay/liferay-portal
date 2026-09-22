@@ -1041,8 +1041,7 @@ public class TestrayImporter {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"Unable to record ", String.valueOf(failedTaskCount),
-					" of ", String.valueOf(callables.size()),
-					" Testray axes"));
+					" of ", String.valueOf(callables.size()), " Testray axes"));
 		}
 
 		int uncreatedTestrayCaseResultsCount =
