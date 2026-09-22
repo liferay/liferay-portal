@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -621,7 +620,7 @@ public class ExportPreviewResourceTest
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		_roleLocalService.addUserRole(_user.getUserId(), _role);
+		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
 
 		RoleTestUtil.addResourcePermission(
 			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
@@ -768,9 +767,6 @@ public class ExportPreviewResourceTest
 
 	@DeleteAfterTestRun
 	private Role _role;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 	private ObjectDefinition _siteObjectDefinition;
 	private User _user;
