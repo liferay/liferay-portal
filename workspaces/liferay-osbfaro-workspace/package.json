@@ -18,8 +18,8 @@
 			"**/osb-faro-web/@clayui/css/**"
 		],
 		"packages": [
-			"modules/osb-faro-theme",
-			"modules/osb-faro-web"
+			"modules/osb-faro-web",
+			"modules/osb-faro-theme"
 		]
 	}
 }
