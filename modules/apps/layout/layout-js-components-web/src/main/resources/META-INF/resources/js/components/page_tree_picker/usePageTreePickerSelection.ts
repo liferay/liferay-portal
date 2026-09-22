@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {useStableCallback} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {
@@ -258,11 +259,10 @@ export default function usePageTreePickerSelection<T>({
 		[isDescendant, isEffectivelySelected, setRulesById]
 	);
 
-	const onSelectionChangeRef = useRef(onSelectionChange);
-
-	useEffect(() => {
-		onSelectionChangeRef.current = onSelectionChange;
-	}, [onSelectionChange]);
+	const handleSelectionChange = useStableCallback(
+		(nextEntries: Array<PageTreePickerSelectionEntry<T>>) =>
+			onSelectionChange?.(nextEntries)
+	);
 
 	useEffect(() => {
 		const entries: Array<PageTreePickerSelectionEntry<T>> = [];
@@ -291,8 +291,8 @@ export default function usePageTreePickerSelection<T>({
 			}
 		});
 
-		onSelectionChangeRef.current?.(entries);
-	}, [itemsById, rulesById]);
+		handleSelectionChange(entries);
+	}, [handleSelectionChange, itemsById, rulesById]);
 
 	return {
 		getSelectedItems,

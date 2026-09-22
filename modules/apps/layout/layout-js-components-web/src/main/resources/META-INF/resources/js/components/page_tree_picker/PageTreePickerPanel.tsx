@@ -6,9 +6,9 @@
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {openToast} from 'frontend-js-components-web';
+import {openToast, useStableCallback} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {
 	PageTreePickerDataSource,
@@ -87,16 +87,8 @@ export default function PageTreePickerPanel<T>({
 
 	const defaultSelectedEntriesRef = useRef(defaultSelectedEntries);
 
-	const onErrorRef = useRef(onError);
-
-	useEffect(() => {
-		onErrorRef.current = onError;
-	}, [onError]);
-
-	const handleError = useCallback(
-		(error: unknown) =>
-			onErrorRef.current ? onErrorRef.current(error) : openErrorToast(),
-		[]
+	const handleError = useStableCallback((error: unknown) =>
+		onError ? onError(error) : openErrorToast()
 	);
 
 	useEffect(() => {
@@ -128,15 +120,16 @@ export default function PageTreePickerPanel<T>({
 		};
 	}, [dataSource, handleError, registerItems]);
 
-	const onSelectionChangeRef = useRef(onSelectionChange);
+	const handleSelectionChange = useStableCallback(
+		(
+			nextEntries: Array<PageTreePickerSelectionEntry<T>>,
+			items: Array<PageTreePickerItem<T>>
+		) => onSelectionChange?.(nextEntries, items)
+	);
 
 	useEffect(() => {
-		onSelectionChangeRef.current = onSelectionChange;
-	}, [onSelectionChange]);
-
-	useEffect(() => {
-		onSelectionChangeRef.current?.(entries, getSelectedItems());
-	}, [entries, getSelectedItems, selectedKeys]);
+		handleSelectionChange(entries, getSelectedItems());
+	}, [entries, getSelectedItems, handleSelectionChange, selectedKeys]);
 
 	const [searchValue, setSearchValue] = useState('');
 
