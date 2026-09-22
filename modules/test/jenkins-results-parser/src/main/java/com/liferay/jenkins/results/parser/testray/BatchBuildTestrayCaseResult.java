@@ -506,13 +506,11 @@ public class BatchBuildTestrayCaseResult
 			if (result == null) {
 				testResultErrors = "Unable to finish build on CI";
 			}
-
-			if (result.equals("ABORTED")) {
+			else if (result.equals("ABORTED")) {
 				testResultErrors =
 					buildReport.getJobName() + " timed out after 2 hours";
 			}
-
-			if (result.equals("SUCCESS") || result.equals("UNSTABLE")) {
+			else if (result.equals("SUCCESS") || result.equals("UNSTABLE")) {
 				testResultErrors = "Unable to run test on CI";
 			}
 
