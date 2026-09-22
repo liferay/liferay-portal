@@ -11,6 +11,8 @@ import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSet
 export class ConnectorsPage {
 	readonly dataSetFragmentPage: DataSetPage;
 	readonly emptyStateTitle: Locator;
+	readonly filterButton: Locator;
+	readonly filterMenuItem: (name: string) => Locator;
 	readonly newConnectorButton: Locator;
 	readonly page: Page;
 
@@ -19,6 +21,12 @@ export class ConnectorsPage {
 		this.emptyStateTitle = page.getByText('No Connectors Yet', {
 			exact: true,
 		});
+		this.filterButton = page.getByRole('button', {
+			exact: true,
+			name: 'Filter',
+		});
+		this.filterMenuItem = (name) =>
+			page.getByRole('menuitem', {exact: true, name});
 		this.newConnectorButton = page.getByTestId('fdsCreationActionButton');
 		this.page = page;
 	}
@@ -36,6 +44,10 @@ export class ConnectorsPage {
 
 	getConnector(name: string) {
 		return this.dataSetFragmentPage.getRow(name).getByRole('link', {name});
+	}
+
+	getConnectorStatus(name: string) {
+		return this.dataSetFragmentPage.getRow(name).locator('.label');
 	}
 
 	async goto() {
