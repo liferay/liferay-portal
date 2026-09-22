@@ -40,6 +40,8 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
@@ -297,22 +299,11 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			boolean related, boolean reverse, String search, int start, int end)
 		throws PortalException {
 
-		List<ObjectEntry> objectEntries =
+		return _getObjectEntries(
+			groupId,
 			objectEntryLocalService.getManyToManyObjectEntries(
 				groupId, objectRelationshipId, primaryKey, related, reverse,
-				search, start, end);
-
-		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission() &&
-			!_inlineSQLHelper.isEnabled(groupId)) {
-
-			for (ObjectEntry objectEntry : objectEntries) {
-				objectEntryService.checkModelResourcePermission(
-					objectEntry.getObjectDefinitionId(),
-					objectEntry.getObjectEntryId(), ActionKeys.VIEW);
-			}
-		}
-
-		return objectEntries;
+				search, start, end));
 	}
 
 	@Override
@@ -441,20 +432,11 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			String search, int start, int end, Sort[] sorts)
 		throws PortalException {
 
-		List<ObjectEntry> objectEntries =
+		return _getObjectEntries(
+			groupId,
 			objectEntryLocalService.getOneToManyObjectEntries(
 				groupId, objectRelationshipId, predicate, preferApproved,
-				primaryKey, related, search, start, end, sorts);
-
-		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
-			for (ObjectEntry objectEntry : objectEntries) {
-				objectEntryService.checkModelResourcePermission(
-					objectEntry.getObjectDefinitionId(),
-					objectEntry.getObjectEntryId(), ActionKeys.VIEW);
-			}
-		}
-
-		return objectEntries;
+				primaryKey, related, search, start, end, sorts));
 	}
 
 	@Override
@@ -820,6 +802,36 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			getPermissionChecker(), objectEntry, actionId);
 	}
 
+	private List<ObjectEntry> _getObjectEntries(
+			long groupId, List<ObjectEntry> objectEntries)
+		throws PortalException {
+
+		if (ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission() ||
+			_inlineSQLHelper.isEnabled(groupId)) {
+
+			return objectEntries;
+		}
+
+		return TransformUtil.transform(
+			objectEntries,
+			objectEntry -> {
+				try {
+					objectEntryService.checkModelResourcePermission(
+						objectEntry.getObjectDefinitionId(),
+						objectEntry.getObjectEntryId(), ActionKeys.VIEW);
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+
+					return null;
+				}
+
+				return objectEntry;
+			});
+	}
+
 	private ObjectEntry _getRootObjectEntry(
 			ObjectDefinition objectDefinition, Map<String, Serializable> values)
 		throws PortalException {
@@ -1003,6 +1015,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 					objectDefinition.getDefaultLanguageId()));
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectEntryServiceImpl.class);
 
 	private static final TransactionConfig _transactionConfig =
 		TransactionConfig.Factory.create(
