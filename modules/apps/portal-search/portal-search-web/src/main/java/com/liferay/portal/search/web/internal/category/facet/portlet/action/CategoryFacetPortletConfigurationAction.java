@@ -6,9 +6,15 @@
 package com.liferay.portal.search.web.internal.category.facet.portlet.action;
 
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyService;
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.category.facet.constants.CategoryFacetPortletKeys;
+import com.liferay.portal.search.web.internal.category.facet.display.context.CategoryFacetConfigurationDisplayContext;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
 import jakarta.portlet.PortletConfig;
@@ -42,17 +48,36 @@ public class CategoryFacetPortletConfigurationAction
 
 		httpServletRequest.setAttribute(
 			AssetVocabularyLocalService.class.getName(),
-			assetVocabularyLocalService);
+			_assetVocabularyLocalService);
 		httpServletRequest.setAttribute(
-			GroupLocalService.class.getName(), groupLocalService);
+			GroupLocalService.class.getName(), _groupLocalService);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		httpServletRequest.setAttribute(
+			WebKeys.PORTLET_DISPLAY_CONTEXT,
+			new CategoryFacetConfigurationDisplayContext(
+				_assetVocabularyService, _groupLocalService, _groupService,
+				themeDisplay.getLocale(), _siteConnectedGroupGroupProvider));
 
 		super.include(portletConfig, httpServletRequest, httpServletResponse);
 	}
 
 	@Reference
-	protected AssetVocabularyLocalService assetVocabularyLocalService;
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Reference
-	protected GroupLocalService groupLocalService;
+	private AssetVocabularyService _assetVocabularyService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private GroupService _groupService;
+
+	@Reference
+	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;
 
 }
