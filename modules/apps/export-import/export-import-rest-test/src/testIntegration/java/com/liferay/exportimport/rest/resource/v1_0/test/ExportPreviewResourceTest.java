@@ -627,6 +627,10 @@ public class ExportPreviewResourceTest
 			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
 			String.valueOf(testGroup.getGroupId()),
 			ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
+		RoleTestUtil.addResourcePermission(
+			_role, _siteObjectDefinition.getClassName(),
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()), ActionKeys.VIEW);
 
 		_testGetPortletExportPreview(
 			_exportPreviewResource.getSiteExportPreview(
