@@ -172,6 +172,14 @@ public class LayoutsAdminDisplayContext {
 			return _activeLayoutSetBranchId;
 		}
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-105778")) {
+
+			_activeLayoutSetBranchId = 0L;
+
+			return _activeLayoutSetBranchId;
+		}
+
 		_activeLayoutSetBranchId = ParamUtil.getLong(
 			httpServletRequest, "layoutSetBranchId");
 

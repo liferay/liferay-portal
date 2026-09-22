@@ -507,6 +507,12 @@ public class MillerColumnsDisplayContext {
 	private JSONArray _getLayoutSetBranchesJSONArray() throws Exception {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-105778")) {
+
+			return jsonArray;
+		}
+
 		List<LayoutSetBranch> layoutSetBranches =
 			LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(
 				_themeDisplay.getScopeGroupId(),
