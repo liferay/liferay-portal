@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -60,6 +62,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Lourdes Fernández Besada
@@ -184,6 +191,50 @@ public class DDMStructureModelListenerTest {
 
 		_assertDDMFormFieldValuesMap(
 			_expectedFieldValuesMap, journalArticle.getDDMFormValues());
+	}
+
+	@Test
+	public void testUpdateDataDefinitionRollback() throws Exception {
+		JournalArticle journalArticle = _addJournalArticle();
+
+		String content = journalArticle.getContent();
+
+		RuntimeException runtimeException = new RuntimeException(
+			RandomTestUtil.randomString());
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			DDMStructureModelListenerTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ModelListener.class,
+				new TestDDMStructureModelListener(runtimeException),
+				new HashMapDictionary<>());
+
+		try {
+			_updateDataDefinition(
+				_dataDefinition.getDataDefinitionKey(),
+				"dependencies/updated_data_definition.json");
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertEquals(
+				runtimeException.getMessage(), exception.getMessage());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		journalArticle = _journalArticleLocalService.getJournalArticle(
+			journalArticle.getId());
+
+		_assertDDMFormFieldValuesMap(
+			_expectedFieldValuesMap, journalArticle.getDDMFormValues());
+
+		Assert.assertEquals(content, journalArticle.getContent());
 	}
 
 	@Test
