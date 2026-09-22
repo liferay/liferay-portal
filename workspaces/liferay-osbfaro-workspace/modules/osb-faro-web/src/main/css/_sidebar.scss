@@ -1,5 +1,6 @@
 .sidebar-root {
 	background: $lightL1;
+	border-right: 1px solid $cadmin-secondary-l2;
 	height: calc(100% - #{$topBarHeight});
 	left: 0;
 	overflow: hidden;

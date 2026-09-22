@@ -15,7 +15,7 @@ exports[`withSidebar should render with the sidebar 1`] = `
     class="with-sidebar-root has-sidebar"
   >
     <div
-      class="align-items-center bg-white border-bottom d-flex fixed-top justify-content-between px-3 top-bar-root"
+      class="align-items-center bg-white d-flex fixed-top justify-content-between px-3 top-bar-root"
     >
       <div
         class="align-items-center d-flex"

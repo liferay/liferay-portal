@@ -57,7 +57,7 @@ const TopBar: React.FC<ITopBarProps> = ({
 	return (
 		<div
 			className={getCN(
-				'align-items-center bg-white border-bottom d-flex fixed-top justify-content-between px-3 top-bar-root',
+				'align-items-center bg-white d-flex fixed-top justify-content-between px-3 top-bar-root',
 				className
 			)}
 		>
