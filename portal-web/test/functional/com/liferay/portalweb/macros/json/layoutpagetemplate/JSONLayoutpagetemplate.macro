@@ -15,11 +15,16 @@ definition {
 		var classNameId = JSONLayoutpagetemplateSetter.setClassNameId(contentType = ${contentType});
 
 		if (!(isSet(classTypeKey))) {
-			if ((${subType} == "Basic Document") || (${contentType} == "Blogs Entry") || (${contentType} == "Category") || (${contentType} == "Order") || (${contentType} == "Product") || (${contentType} == "Knowledge Base Article")) {
+			if ((${contentType} == "Blogs Entry") || (${contentType} == "Category") || (${contentType} == "Order") || (${contentType} == "Product") || (${contentType} == "Knowledge Base Article")) {
 				var classTypeKey = "";
 			}
 			else {
-				if (${subType} == "Basic Web Content") {
+				if (${subType} == "Basic Document") {
+					var classTypeKey = JSONDLfileentrytype._getFileEntryTypeKey(
+						fileEntryTypeName = ${subType},
+						groupId = ${groupId});
+				}
+				else if (${subType} == "Basic Web Content") {
 					var globalGroupId = JSONGroupAPI._getGroupIdByName(
 						groupName = "Global",
 						site = "true");
