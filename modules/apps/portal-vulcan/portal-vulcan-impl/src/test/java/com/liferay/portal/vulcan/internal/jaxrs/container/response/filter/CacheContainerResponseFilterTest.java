@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
@@ -52,6 +54,9 @@ public class CacheContainerResponseFilterTest {
 
 		ReflectionTestUtil.setFieldValue(
 			_cacheContainerResponseFilter, "_company", _company);
+		ReflectionTestUtil.setFieldValue(
+			_cacheContainerResponseFilter, "_httpServletRequest",
+			_httpServletRequest);
 		ReflectionTestUtil.setFieldValue(
 			_cacheContainerResponseFilter, "_user", _user);
 
@@ -103,6 +108,12 @@ public class CacheContainerResponseFilterTest {
 		).thenReturn(
 			"public, max-age=3600"
 		);
+
+		Mockito.when(
+			_httpServletRequest.getSession(false)
+		).thenReturn(
+			null
+		);
 	}
 
 	@Test
@@ -147,6 +158,9 @@ public class CacheContainerResponseFilterTest {
 	@Mock
 	private HeadlessAPICacheManagedServiceFactory
 		_headlessAPICacheManagedServiceFactory;
+
+	@Mock
+	private HttpServletRequest _httpServletRequest;
 
 	@Mock
 	private UriInfo _uriInfo;
