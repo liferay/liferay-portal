@@ -76,10 +76,10 @@ function check_crossplane_webhook {
 		  namespace: crossplane-system
 		spec:
 		  of:
-		    apiVersion: v1
-		    kind: ConfigMap
-		    resourceRef:
-		      name: netpol-smoke-cm
+			apiVersion: v1
+			kind: ConfigMap
+			resourceRef:
+			  name: netpol-smoke-cm
 		  reason: "netpol smoke test fixture"
 	EOF
 
@@ -152,8 +152,8 @@ function check_eck_webhook {
 		spec:
 		  version: 0.0.0-not-a-real-version
 		  nodeSets:
-		    - name: default
-		      count: 1
+			- name: default
+			  count: 1
 	EOF
 	then
 		echo "FAIL  eck: an invalid Elasticsearch was ADMITTED - the webhook is not being called"
@@ -186,8 +186,8 @@ function check_external_secrets_webhook {
 		  namespace: external-secrets-system
 		spec:
 		  provider:
-		    gcpsm:
-		      projectID: netpol-smoke
+			gcpsm:
+			  projectID: netpol-smoke
 	EOF
 	then
 		echo "FAIL  external-secrets: a valid SecretStore was REJECTED - the webhook is unreachable"
