@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
@@ -190,6 +191,9 @@ public class StructureBuilderDisplayContext {
 		).put(
 			"state",
 			JSONUtil.put(
+				"baseObjectDefinition",
+				_getObjectDefinitionJSONObject(_getBaseObjectDefinition())
+			).put(
 				"mainObjectDefinition",
 				_getObjectDefinitionJSONObject(_getObjectDefinition())
 			).put(
@@ -198,6 +202,53 @@ public class StructureBuilderDisplayContext {
 		).put(
 			"systemObjectFieldNames", _getSystemObjectFieldNamesJSONObject()
 		).build();
+	}
+
+	private ObjectDefinition _getBaseObjectDefinition() throws Exception {
+		if (_getObjectDefinition() != null) {
+			return null;
+		}
+
+		String objectFolderExternalReferenceCode =
+			_getObjectFolderExternalReferenceCode();
+
+		if (Validator.isNull(objectFolderExternalReferenceCode)) {
+			return null;
+		}
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			if (!Objects.equals(
+					objectFolderExternalReferenceCode,
+					cmsStructureObjectFolderContributor.
+						getObjectFolderExternalReferenceCode())) {
+
+				continue;
+			}
+
+			String baseObjectDefinitionExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode();
+
+			if (Validator.isNull(baseObjectDefinitionExternalReferenceCode)) {
+				return null;
+			}
+
+			ObjectDefinitionResource.Builder builder =
+				_objectDefinitionResourceFactory.create();
+
+			ObjectDefinitionResource objectDefinitionResource = builder.user(
+				_themeDisplay.getUser()
+			).build();
+
+			return objectDefinitionResource.
+				getObjectDefinitionByExternalReferenceCode(
+					baseObjectDefinitionExternalReferenceCode);
+		}
+
+		return null;
 	}
 
 	private List<Map<String, String>> _getCountries() {
@@ -352,8 +403,15 @@ public class StructureBuilderDisplayContext {
 		return _objectFolderExternalReferenceCode;
 	}
 
-	private JSONObject _getSystemObjectFieldNamesJSONObject() {
+	private JSONObject _getSystemObjectFieldNamesJSONObject()
+		throws Exception {
+
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+		ObjectDefinition objectDefinition = _getObjectDefinition();
+
+		String objectFolderExternalReferenceCode =
+			_getObjectFolderExternalReferenceCode();
 
 		for (CMSStructureObjectFolderContributor
 				cmsStructureObjectFolderContributor :
@@ -377,6 +435,30 @@ public class StructureBuilderDisplayContext {
 
 				jsonObject.put(entry.getKey(), jsonArray);
 			}
+
+			String baseObjectDefinitionExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode();
+
+			if ((objectDefinition == null) ||
+				Validator.isNull(baseObjectDefinitionExternalReferenceCode) ||
+				!Objects.equals(
+					objectFolderExternalReferenceCode,
+					cmsStructureObjectFolderContributor.
+						getObjectFolderExternalReferenceCode())) {
+
+				continue;
+			}
+
+			JSONArray jsonArray = jsonObject.getJSONArray(
+				baseObjectDefinitionExternalReferenceCode);
+
+			if (jsonArray == null) {
+				continue;
+			}
+
+			jsonObject.put(
+				objectDefinition.getExternalReferenceCode(), jsonArray);
 		}
 
 		return jsonObject;

@@ -16,6 +16,17 @@ const CUSTOM_OBJECT_SYSTEM_FIELD_NAMES = ['file', 'title'];
 
 let CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES: Record<string, string[]> = {};
 
+export function isSystemObjectFieldName(
+	objectDefinitionERC: string,
+	name: string
+): boolean {
+	return Boolean(
+		CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES[objectDefinitionERC]?.includes(
+			name
+		)
+	);
+}
+
 export function setSystemObjectFieldNames(
 	systemObjectFieldNames: Record<string, string[]>
 ) {

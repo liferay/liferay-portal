@@ -27,6 +27,11 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
+import {
+	getBaseObjectDefinition,
+	getBaseObjectDefinitions,
+} from '../utils/baseObjectDefinition';
+import {buildChildren} from '../utils/buildStructure';
 import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
@@ -1215,6 +1220,16 @@ function useStateDispatch() {
 
 function getDefaultChildren(structureUuid: Uuid) {
 	const type = getType();
+
+	const baseObjectDefinition = getBaseObjectDefinition();
+
+	if (baseObjectDefinition) {
+		return buildChildren({
+			objectDefinition: baseObjectDefinition,
+			objectDefinitions: getBaseObjectDefinitions(),
+			parent: structureUuid,
+		});
+	}
 
 	const children = new Map();
 

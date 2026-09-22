@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public interface CMSStructureObjectFolderContributor {
 
+	public default String getBaseObjectDefinitionExternalReferenceCode() {
+		return null;
+	}
+
 	public String getLabel();
 
 	public String getObjectFolderExternalReferenceCode();

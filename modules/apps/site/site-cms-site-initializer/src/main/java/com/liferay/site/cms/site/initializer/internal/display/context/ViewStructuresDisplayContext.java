@@ -184,7 +184,7 @@ public class ViewStructuresDisplayContext {
 	}
 
 	public CreationMenu getCreationMenu() {
-		return CreationMenuBuilder.addPrimaryDropdownItem(
+		CreationMenu creationMenu = CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(
 					ActionUtil.getBaseStructureBuilderURL(_themeDisplay) +
@@ -205,6 +205,33 @@ public class ViewStructuresDisplayContext {
 					LanguageUtil.get(_httpServletRequest, "file"));
 			}
 		).build();
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectFolderExternalReferenceCode)) {
+				continue;
+			}
+
+			creationMenu.addPrimaryDropdownItem(
+				dropdownItem -> {
+					dropdownItem.setHref(
+						ActionUtil.getBaseStructureBuilderURL(_themeDisplay) +
+							"?objectFolderExternalReferenceCode=" +
+								objectFolderExternalReferenceCode);
+					dropdownItem.setLabel(
+						LanguageUtil.get(
+							_httpServletRequest,
+							cmsStructureObjectFolderContributor.getLabel()));
+				});
+		}
+
+		return creationMenu;
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()

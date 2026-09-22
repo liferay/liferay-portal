@@ -21,6 +21,7 @@ import CacheContextProvider from '../contexts/CacheContext';
 import StateContextProvider, {useSelector} from '../contexts/StateContext';
 import selectStructureId from '../selectors/selectStructureId';
 import selectStructureStatus from '../selectors/selectStructureStatus';
+import {setBaseObjectDefinition} from '../utils/baseObjectDefinition';
 import buildState from '../utils/buildState';
 import {setSystemObjectFieldNames} from '../utils/isCustomObjectField';
 import HelpButton from './HelpButton';
@@ -38,6 +39,7 @@ export default function StructureBuilder({
 	config: Config;
 	defaultLanguageLabels: DefaultLanguageLabels;
 	state: {
+		baseObjectDefinition?: ObjectDefinition | null;
 		mainObjectDefinition: ObjectDefinition;
 		objectDefinitions: ObjectDefinitions;
 		relatedContentObjectRelationships: ObjectRelationship[];
@@ -45,6 +47,10 @@ export default function StructureBuilder({
 	systemObjectFieldNames: Record<string, string[]>;
 }) {
 	initializeConfig(config);
+	setBaseObjectDefinition(
+		state.baseObjectDefinition ?? null,
+		state.objectDefinitions
+	);
 	setDefaultLanguageLabels(defaultLanguageLabels);
 	setSystemObjectFieldNames(systemObjectFieldNames);
 

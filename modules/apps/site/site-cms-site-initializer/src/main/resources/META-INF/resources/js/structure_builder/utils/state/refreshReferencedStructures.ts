@@ -178,7 +178,12 @@ export default function refreshReferencedStructures({
 		);
 
 		for (const objectField of newObjectFields) {
-			const field = buildField({objectField, parent: root.uuid});
+			const field = buildField({
+				objectDefinitionExternalReferenceCode:
+					objectDefinition.externalReferenceCode,
+				objectField,
+				parent: root.uuid,
+			});
 
 			children.set(field.uuid, field);
 		}
