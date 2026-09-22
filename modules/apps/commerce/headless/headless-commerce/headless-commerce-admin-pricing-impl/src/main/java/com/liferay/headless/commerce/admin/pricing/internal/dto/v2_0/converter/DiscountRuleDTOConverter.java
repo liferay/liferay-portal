@@ -44,6 +44,8 @@ public class DiscountRuleDTOConverter
 			{
 				setActions(dtoConverterContext::getActions);
 				setDiscountId(commerceDiscountRule::getCommerceDiscountId);
+				setExternalReferenceCode(
+					commerceDiscountRule::getExternalReferenceCode);
 				setId(commerceDiscountRule::getCommerceDiscountRuleId);
 				setName(commerceDiscountRule::getName);
 				setType(commerceDiscountRule::getType);

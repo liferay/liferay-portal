@@ -1114,6 +1114,11 @@ components:
                     minimum: 0
                     readOnly: true
                     type: integer
+                externalReferenceCode:
+                    description:
+                        Idempotency key for create and update; must be unique within the company. On import it is what binds the payload to the discount rule already stored, so a repeated import updates that rule instead of adding another one.
+                    example: DR-0001
+                    type: string
                 id:
                     description:
                         Internal numeric identifier of the discountrule. Server-assigned and stable.

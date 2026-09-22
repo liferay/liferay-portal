@@ -61,6 +61,21 @@ public class CommerceDiscountRuleServiceImpl
 	}
 
 	@Override
+	public CommerceDiscountRule addOrUpdateCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountRuleId,
+			long commerceDiscountId, String name, String type,
+			String typeSettings, ServiceContext serviceContext)
+		throws PortalException {
+
+		_commerceDiscountResourcePermission.check(
+			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
+
+		return commerceDiscountRuleLocalService.addOrUpdateCommerceDiscountRule(
+			externalReferenceCode, commerceDiscountRuleId, commerceDiscountId,
+			name, type, typeSettings, serviceContext);
+	}
+
+	@Override
 	public void deleteCommerceDiscountRule(long commerceDiscountRuleId)
 		throws PortalException {
 

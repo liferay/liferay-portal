@@ -244,7 +244,7 @@
 			<finder-column name="classPK" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CommerceDiscountRule" remote-service="true">
+	<entity external-reference-code="company" local-service="true" name="CommerceDiscountRule" remote-service="true">
 
 		<!-- PK fields -->
 

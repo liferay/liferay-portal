@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
@@ -57,6 +58,16 @@ public class CommerceDiscountRuleLocalServiceImpl
 			String typeSettings, ServiceContext serviceContext)
 		throws PortalException {
 
+		return commerceDiscountRuleLocalService.addCommerceDiscountRule(
+			null, commerceDiscountId, name, type, typeSettings, serviceContext);
+	}
+
+	@Override
+	public CommerceDiscountRule addCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountId, String name,
+			String type, String typeSettings, ServiceContext serviceContext)
+		throws PortalException {
+
 		// Commerce discount rule
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
@@ -68,6 +79,7 @@ public class CommerceDiscountRuleLocalServiceImpl
 		CommerceDiscountRule commerceDiscountRule =
 			commerceDiscountRulePersistence.create(commerceDiscountRuleId);
 
+		commerceDiscountRule.setExternalReferenceCode(externalReferenceCode);
 		commerceDiscountRule.setCompanyId(user.getCompanyId());
 		commerceDiscountRule.setUserId(user.getUserId());
 		commerceDiscountRule.setUserName(user.getFullName());
@@ -90,6 +102,37 @@ public class CommerceDiscountRuleLocalServiceImpl
 		_reindexCommerceDiscount(commerceDiscountId);
 
 		return commerceDiscountRule;
+	}
+
+	@Override
+	public CommerceDiscountRule addOrUpdateCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountRuleId,
+			long commerceDiscountId, String name, String type,
+			String typeSettings, ServiceContext serviceContext)
+		throws PortalException {
+
+		CommerceDiscountRule commerceDiscountRule = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			commerceDiscountRule = commerceDiscountRulePersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		if ((commerceDiscountRule == null) && (commerceDiscountRuleId > 0)) {
+			commerceDiscountRule =
+				commerceDiscountRulePersistence.fetchByPrimaryKey(
+					commerceDiscountRuleId);
+		}
+
+		if (commerceDiscountRule == null) {
+			return commerceDiscountRuleLocalService.addCommerceDiscountRule(
+				externalReferenceCode, commerceDiscountId, name, type,
+				typeSettings, serviceContext);
+		}
+
+		return commerceDiscountRuleLocalService.updateCommerceDiscountRule(
+			commerceDiscountRule.getCommerceDiscountRuleId(), name, type,
+			typeSettings);
 	}
 
 	@Override

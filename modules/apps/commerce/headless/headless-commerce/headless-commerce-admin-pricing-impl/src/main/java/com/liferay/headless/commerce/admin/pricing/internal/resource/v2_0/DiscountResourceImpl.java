@@ -12,7 +12,6 @@ import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
-import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountOrderTypeRelService;
@@ -549,15 +548,7 @@ public class DiscountResourceImpl
 
 		if (discountRules != null) {
 			for (DiscountRule discountRule : discountRules) {
-				CommerceDiscountRule commerceDiscountRule =
-					_commerceDiscountRuleService.fetchCommerceDiscountRule(
-						discountRule.getId());
-
-				if (commerceDiscountRule != null) {
-					continue;
-				}
-
-				DiscountRuleUtil.addCommerceDiscountRule(
+				DiscountRuleUtil.addOrUpdateCommerceDiscountRule(
 					_commerceDiscountRuleService, discountRule,
 					commerceDiscount, _serviceContextHelper);
 			}

@@ -11,19 +11,28 @@ import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountRule;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Alessio Antonio Rendina
  */
 public class DiscountRuleUtil {
 
-	public static CommerceDiscountRule addCommerceDiscountRule(
+	public static CommerceDiscountRule addOrUpdateCommerceDiscountRule(
 			CommerceDiscountRuleService commerceDiscountRuleService,
 			DiscountRule discountRule, CommerceDiscount commerceDiscount,
 			ServiceContextHelper serviceContextHelper)
 		throws PortalException {
 
-		return commerceDiscountRuleService.addCommerceDiscountRule(
+		long discountRuleId = 0;
+
+		if (Validator.isNull(discountRule.getExternalReferenceCode())) {
+			discountRuleId = GetterUtil.getLong(discountRule.getId());
+		}
+
+		return commerceDiscountRuleService.addOrUpdateCommerceDiscountRule(
+			discountRule.getExternalReferenceCode(), discountRuleId,
 			commerceDiscount.getCommerceDiscountId(), discountRule.getName(),
 			discountRule.getType(), discountRule.getTypeSettings(),
 			serviceContextHelper.getServiceContext());

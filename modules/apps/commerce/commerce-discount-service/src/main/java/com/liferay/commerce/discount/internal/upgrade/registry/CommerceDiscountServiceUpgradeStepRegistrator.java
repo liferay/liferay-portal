@@ -131,6 +131,17 @@ public class CommerceDiscountServiceUpgradeStepRegistrator
 			"2.9.0", "2.10.0",
 			new CommerceDiscountRuleTypeSettingsUpgradeProcess());
 
+		registry.register(
+			"2.10.0", "2.11.0",
+			new BaseExternalReferenceCodeUpgradeProcess() {
+
+				@Override
+				protected String[] getTableNames() {
+					return new String[] {"CommerceDiscountRule"};
+				}
+
+			});
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce discount upgrade step registrator finished");
 		}

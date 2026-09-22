@@ -140,7 +140,7 @@ public class DiscountRuleResourceImpl extends BaseDiscountRuleResourceImpl {
 		}
 
 		CommerceDiscountRule commerceDiscountRule =
-			DiscountRuleUtil.addCommerceDiscountRule(
+			DiscountRuleUtil.addOrUpdateCommerceDiscountRule(
 				_commerceDiscountRuleService, discountRule, commerceDiscount,
 				_serviceContextHelper);
 
@@ -154,7 +154,7 @@ public class DiscountRuleResourceImpl extends BaseDiscountRuleResourceImpl {
 		throws Exception {
 
 		CommerceDiscountRule commerceDiscountRule =
-			DiscountRuleUtil.addCommerceDiscountRule(
+			DiscountRuleUtil.addOrUpdateCommerceDiscountRule(
 				_commerceDiscountRuleService, discountRule,
 				_commerceDiscountService.getCommerceDiscount(id),
 				_serviceContextHelper);
