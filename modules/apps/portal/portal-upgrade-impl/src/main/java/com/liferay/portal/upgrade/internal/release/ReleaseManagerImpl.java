@@ -390,6 +390,10 @@ public class ReleaseManagerImpl implements ReleaseManager {
 					ReleaseManagerUtil.getSchemaVersionString(
 						_releaseLocalService.fetchRelease(bundleSymbolicName)));
 
+			if (upgradeInfosList.isEmpty()) {
+				continue;
+			}
+
 			List<UpgradeInfo> upgradeInfos = upgradeInfosList.get(0);
 
 			for (UpgradeInfo upgradeInfo : upgradeInfos) {
