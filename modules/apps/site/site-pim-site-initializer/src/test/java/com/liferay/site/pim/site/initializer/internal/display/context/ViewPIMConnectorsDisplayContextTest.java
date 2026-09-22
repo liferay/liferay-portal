@@ -6,11 +6,13 @@
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -63,6 +65,48 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		Assert.assertEquals(
 			StringPool.BLANK, viewPIMConnectorsDisplayContext.getAPIURL());
+	}
+
+	@Test
+	public void testGetCreationMenu() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		Language language = Mockito.mock(Language.class);
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+
+		Mockito.when(
+			language.get(httpServletRequest, "new")
+		).thenReturn(
+			"New"
+		);
+
+		languageUtil.setLanguage(language);
+
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
+
+		Mockito.when(
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext =
+			new ViewPIMConnectorsDisplayContext(httpServletRequest, null);
+
+		List<DropdownItem> dropdownItems = ReflectionTestUtil.getFieldValue(
+			viewPIMConnectorsDisplayContext.getCreationMenu(),
+			"_primaryDropdownItems");
+
+		Assert.assertEquals(dropdownItems.toString(), 1, dropdownItems.size());
+
+		DropdownItem dropdownItem = dropdownItems.get(0);
+
+		Assert.assertEquals(
+			"/web/cms/edit-connector?backURL=/web/cms/connectors",
+			dropdownItem.get("href"));
+		Assert.assertEquals("New", dropdownItem.get("label"));
 	}
 
 	@Test
@@ -138,33 +182,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		languageUtil.setLanguage(language);
 
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			themeDisplay.getPathFriendlyURLPublic()
-		).thenReturn(
-			"/web"
-		);
-
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			group.getFriendlyURL()
-		).thenReturn(
-			"/cms"
-		);
-
-		Mockito.when(
-			themeDisplay.getScopeGroup()
-		).thenReturn(
-			group
-		);
-
-		Mockito.when(
-			themeDisplay.getURLCurrent()
-		).thenReturn(
-			"/web/cms/connectors"
-		);
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
 
 		Mockito.when(
 			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
@@ -185,11 +203,10 @@ public class ViewPIMConnectorsDisplayContextTest {
 		FDSActionDropdownItem editFDSActionDropdownItem =
 			fdsActionDropdownItems.get(0);
 
-		String href = String.valueOf(editFDSActionDropdownItem.get("href"));
-
-		Assert.assertTrue(href, href.contains("/edit-connector"));
-		Assert.assertTrue(href, href.contains("&objectEntryId={id}"));
-
+		Assert.assertEquals(
+			"/web/cms/edit-connector?backURL=/web/cms/connectors" +
+				"&objectEntryId={id}",
+			editFDSActionDropdownItem.get("href"));
 		Assert.assertEquals("pencil", editFDSActionDropdownItem.get("icon"));
 		Assert.assertEquals("Edit", editFDSActionDropdownItem.get("label"));
 
@@ -231,6 +248,38 @@ public class ViewPIMConnectorsDisplayContextTest {
 		Assert.assertEquals("delete", data.get("id"));
 		Assert.assertEquals("delete", data.get("method"));
 		Assert.assertEquals("delete", data.get("permissionKey"));
+	}
+
+	private ThemeDisplay _mockThemeDisplay() {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			group.getFriendlyURL()
+		).thenReturn(
+			"/cms"
+		);
+
+		Mockito.when(
+			themeDisplay.getPathFriendlyURLPublic()
+		).thenReturn(
+			"/web"
+		);
+
+		Mockito.when(
+			themeDisplay.getScopeGroup()
+		).thenReturn(
+			group
+		);
+
+		Mockito.when(
+			themeDisplay.getURLCurrent()
+		).thenReturn(
+			"/web/cms/connectors"
+		);
+
+		return themeDisplay;
 	}
 
 }

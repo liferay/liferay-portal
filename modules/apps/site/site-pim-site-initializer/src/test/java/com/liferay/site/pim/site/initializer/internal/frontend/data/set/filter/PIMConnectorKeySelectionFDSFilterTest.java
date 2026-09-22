@@ -65,8 +65,22 @@ public class PIMConnectorKeySelectionFDSFilterTest {
 
 	@Test
 	public void testGetSelectionFDSFilterItems() {
+		Mockito.when(
+			_pimConnectorRegistry.getPIMConnectors(_COMPANY_ID)
+		).thenReturn(
+			ListUtil.fromArray(new PIMConnector[0])
+		);
+
+		List<SelectionFDSFilterItem> selectionFDSFilterItems =
+			_pimConnectorKeySelectionFDSFilter.getSelectionFDSFilterItems(
+				LocaleUtil.US);
+
+		Assert.assertTrue(
+			selectionFDSFilterItems.toString(),
+			selectionFDSFilterItems.isEmpty());
+
 		PIMConnector pimConnector = _mockPIMConnector(
-			"Liferay Commerce", "liferay-commerce");
+			"liferay-commerce", "Liferay Commerce");
 
 		Mockito.when(
 			_pimConnectorRegistry.getPIMConnectors(_COMPANY_ID)
@@ -74,7 +88,7 @@ public class PIMConnectorKeySelectionFDSFilterTest {
 			ListUtil.fromArray(pimConnector)
 		);
 
-		List<SelectionFDSFilterItem> selectionFDSFilterItems =
+		selectionFDSFilterItems =
 			_pimConnectorKeySelectionFDSFilter.getSelectionFDSFilterItems(
 				LocaleUtil.US);
 
@@ -91,24 +105,7 @@ public class PIMConnectorKeySelectionFDSFilterTest {
 			"liferay-commerce", selectionFDSFilterItem.getValue());
 	}
 
-	@Test
-	public void testGetSelectionFDSFilterItemsWithoutPIMConnectors() {
-		Mockito.when(
-			_pimConnectorRegistry.getPIMConnectors(_COMPANY_ID)
-		).thenReturn(
-			ListUtil.fromArray(new PIMConnector[0])
-		);
-
-		List<SelectionFDSFilterItem> selectionFDSFilterItems =
-			_pimConnectorKeySelectionFDSFilter.getSelectionFDSFilterItems(
-				LocaleUtil.US);
-
-		Assert.assertTrue(
-			selectionFDSFilterItems.toString(),
-			selectionFDSFilterItems.isEmpty());
-	}
-
-	private PIMConnector _mockPIMConnector(String name, String key) {
+	private PIMConnector _mockPIMConnector(String key, String name) {
 		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
 
 		Mockito.when(
