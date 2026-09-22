@@ -5,6 +5,7 @@
 
 import {Page, expect} from '@playwright/test';
 
+import {EditUserPage} from '../../../pages/users-admin-web/EditUserPage';
 import {UsersAndOrganizationsPage} from '../../../pages/users-admin-web/UsersAndOrganizationsPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 
@@ -42,7 +43,7 @@ export async function viewUpgradedVirtualInstance({
 	page: Page;
 	usersAndOrganizationsPage: UsersAndOrganizationsPage;
 }) {
-	const {documentTitle, nameSuffix, pathSuffix, userIndex} = instance;
+	const {documentTitle, nameSuffix, pathSuffix, userIndex, webId} = instance;
 
 	const absentNameSuffix = absentInstance.nameSuffix;
 	const absentUserIndex = absentInstance.userIndex;
@@ -111,6 +112,8 @@ export async function viewUpgradedVirtualInstance({
 		threadRow.locator('.lfr-portal-tooltip[title="0 Replies"]')
 	).toBeVisible();
 
+	await expect(threadRow.getByText('Test Test')).toBeVisible();
+
 	const threadURL = await threadLink.getAttribute('href');
 
 	expect(threadURL).not.toBeNull();
@@ -158,10 +161,6 @@ export async function viewUpgradedVirtualInstance({
 
 	await usersAndOrganizationsPage.goto();
 
-	// The list renders Name and Screen Name but not the email address, so the
-	// row is matched on the screen name and read for the full name. Both carry
-	// the instance index, so either one landing on the wrong instance fails.
-
 	const userRow = page
 		.getByRole('row')
 		.filter({hasText: `usersn${userIndex}`});
@@ -175,4 +174,18 @@ export async function viewUpgradedVirtualInstance({
 	await expect(
 		page.getByRole('row').filter({hasText: `usersn${absentUserIndex}`})
 	).toBeHidden();
+
+	await usersAndOrganizationsPage.usersDataTable.search(`usersn${userIndex}`);
+
+	const usersTableRowLink = await usersAndOrganizationsPage.usersTableRowLink(
+		`usersn${userIndex}`
+	);
+
+	await usersTableRowLink.click();
+
+	const editUserPage = new EditUserPage(page);
+
+	await expect(editUserPage.emailAddressInput).toHaveValue(
+		`userea${userIndex}@${webId}`
+	);
 }
