@@ -92,8 +92,16 @@ It asserts the paths that must stay open. The assertion differs by
 
 | failurePolicy | A blocked webhook looks like | So the check must assert |
 | --- | --- | --- |
-| `Fail` (ESO, crossplane) | admission errors | a valid resource is **admitted** |
+| `Fail` (ESO) | admission errors | a valid resource is **admitted** |
+| `Fail` (crossplane) | `failed calling webhook` on an in-use delete | the delete is denied **for being in use**, not for a webhook error |
 | `Ignore` (ECK) | nothing at all — validation silently stops | an invalid resource is **rejected** |
+
+Crossplane's check has to create its own fixture: its webhook only fires on
+deletes of objects labelled `crossplane.io/in-use=true`, so the script makes a
+throwaway `ConfigMap` and a `Usage`, exercises the delete, and removes both.
+Note that `kubectl delete usage` resolves to the deprecated cluster-scoped
+`apiextensions.crossplane.io` kind — the namespaced
+`usages.protection.crossplane.io` must be named in full.
 
 The `Ignore` case is why "it worked" is not evidence. A blocked ECK webhook
 returns success and admits resources it should have refused, with nothing in

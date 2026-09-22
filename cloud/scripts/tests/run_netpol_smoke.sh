@@ -28,6 +28,8 @@ function main {
 
 	check_eck_webhook "${context}" || failed=1
 
+	check_crossplane_webhook "${context}" || failed=1
+
 	if [[ ${failed} -ne 0 ]]
 	then
 		echo
@@ -40,6 +42,90 @@ function main {
 
 	echo
 	echo "PASS: every webhook path checked is still open."
+}
+
+#
+# Crossplane's webhook only fires on DELETE of objects labelled
+# crossplane.io/in-use=true, so the check has to create one. It is
+# failurePolicy Fail, so an unreachable webhook surfaces as a webhook-call
+# error rather than as the in-use denial we want to see.
+#
+function check_crossplane_webhook {
+	local context="${1}"
+
+	if ! kubectl --context "${context}" get crd usages.protection.crossplane.io > /dev/null 2>&1
+	then
+		echo "SKIP  crossplane: Usage CRD not installed"
+
+		return 0
+	fi
+
+	kubectl --context "${context}" apply -f - > /dev/null 2>&1 <<-EOF
+		apiVersion: v1
+		kind: ConfigMap
+		metadata:
+		  name: netpol-smoke-cm
+		  namespace: crossplane-system
+		data:
+		  purpose: "netpol smoke test fixture"
+		---
+		apiVersion: protection.crossplane.io/v1beta1
+		kind: Usage
+		metadata:
+		  name: netpol-smoke-usage
+		  namespace: crossplane-system
+		spec:
+		  of:
+		    apiVersion: v1
+		    kind: ConfigMap
+		    resourceRef:
+		      name: netpol-smoke-cm
+		  reason: "netpol smoke test fixture"
+	EOF
+
+	local attempt
+
+	for attempt in 1 2 3 4 5 6
+	do
+		if [[ $(kubectl --context "${context}" -n crossplane-system get configmap netpol-smoke-cm -o jsonpath='{.metadata.labels.crossplane\.io/in-use}' 2>/dev/null) == "true" ]]
+		then
+			break
+		fi
+
+		sleep 5
+	done
+
+	local output
+
+	output=$(kubectl --context "${context}" -n crossplane-system delete configmap netpol-smoke-cm --dry-run=server 2>&1 || true)
+
+	cleanup_crossplane_fixture "${context}"
+
+	if [[ ${output} == *"failed calling webhook"* ]]
+	then
+		echo "FAIL  crossplane: the API server could not call the webhook"
+
+		return 1
+	fi
+
+	if [[ ${output} != *"in-use"* ]]
+	then
+		echo "FAIL  crossplane: expected an in-use denial, got: ${output:0:90}"
+
+		return 1
+	fi
+
+	echo "ok    crossplane: in-use delete denied, webhook reachable"
+}
+
+function cleanup_crossplane_fixture {
+	local context="${1}"
+
+	kubectl --context "${context}" -n crossplane-system delete usages.protection.crossplane.io netpol-smoke-usage > /dev/null 2>&1 || true
+
+	sleep 3
+
+	kubectl --context "${context}" -n crossplane-system delete configmap netpol-smoke-cm > /dev/null 2>&1 || true
 }
 
 #
