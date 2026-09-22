@@ -40,8 +40,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	public void testGetActionDropdownItemsForDraftFragmentEntry()
 		throws Exception {
 
-		setUpFragmentPermission(true);
 		_setUpFragmentEntry(true, false, false);
+		setUpFragmentPermission(true);
 
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
@@ -87,8 +87,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	public void testGetActionDropdownItemsForReactFragmentEntry()
 		throws Exception {
 
-		setUpFragmentPermission(true);
 		_setUpFragmentEntry(false, false, true);
+		setUpFragmentPermission(true);
 
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
@@ -107,8 +107,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	public void testGetActionDropdownItemsForReadonlyFragmentEntry()
 		throws Exception {
 
-		setUpFragmentPermission(true);
 		_setUpFragmentEntry(false, true, false);
+		setUpFragmentPermission(true);
 
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
@@ -127,8 +127,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	public void testGetActionDropdownItemsForSiteScopedFragmentEntry()
 		throws Exception {
 
-		setUpFragmentPermission(true);
 		_setUpFragmentEntry(false, false, false);
+		setUpFragmentPermission(true);
 
 		Mockito.when(
 			_fragmentEntry.getGroupId()
@@ -193,8 +193,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	public void testGetActionDropdownItemsWithManageFragmentEntries()
 		throws Exception {
 
-		setUpFragmentPermission(true);
 		_setUpFragmentEntry(false, false, false);
+		setUpFragmentPermission(true);
 
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
@@ -221,8 +221,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	public void testGetActionDropdownItemsWithoutManageFragmentEntries()
 		throws Exception {
 
-		setUpFragmentPermission(false);
 		_setUpFragmentEntry(false, false, false);
+		setUpFragmentPermission(false);
 
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
@@ -239,8 +239,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 			boolean disabled, int usageCount)
 		throws Exception {
 
-		setUpFragmentPermission(true);
 		_setUpFragmentEntry(false, false, false);
+		setUpFragmentPermission(true);
 
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
