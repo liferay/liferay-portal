@@ -187,6 +187,27 @@ public class UpgradeOSGiCommandsTest {
 	}
 
 	@Test
+	public void testExecuteWithUnregisteredModule() {
+		String bundleSymbolicName = RandomTestUtil.randomString();
+
+		String expectedMessage =
+			"No upgrade processes registered for " + bundleSymbolicName;
+
+		String message = ReflectionTestUtil.invoke(
+			_upgradeOSGiCommands, "execute", new Class<?>[] {String.class},
+			bundleSymbolicName);
+
+		Assert.assertEquals(expectedMessage, message);
+
+		message = ReflectionTestUtil.invoke(
+			_upgradeOSGiCommands, "execute",
+			new Class<?>[] {String.class, String.class}, bundleSymbolicName,
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(expectedMessage, message);
+	}
+
+	@Test
 	public void testListWithFailedRegistration() throws Exception {
 		Bundle bundle = FrameworkUtil.getBundle(UpgradeOSGiCommandsTest.class);
 
@@ -226,6 +247,19 @@ public class UpgradeOSGiCommandsTest {
 		finally {
 			_releaseLocalService.deleteRelease(release);
 		}
+	}
+
+	@Test
+	public void testListWithUnregisteredModule() {
+		String bundleSymbolicName = RandomTestUtil.randomString();
+
+		String message = ReflectionTestUtil.invoke(
+			_upgradeOSGiCommands, "list", new Class<?>[] {String.class},
+			bundleSymbolicName);
+
+		Assert.assertEquals(
+			"No upgrade processes registered for " + bundleSymbolicName,
+			message);
 	}
 
 	private void _assertExecuteAll(String expectedMessage) {
