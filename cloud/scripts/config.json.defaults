@@ -13,8 +13,8 @@
 			"liferay-dxp-operator": "0.1.1"
 		},
 		"registries": {
-			"container_image": "us-central1-docker.pkg.dev/external-assets-prd/liferay-cloud-native",
-			"helm_chart": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart"
+			"charts": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+			"images": "us-central1-docker.pkg.dev/external-assets-prd/liferay-cloud-native"
 		}
 	}
 }

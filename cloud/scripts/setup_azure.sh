@@ -167,35 +167,35 @@ function _get_artifact_values {
 
 	jq \
 		'.artifacts
-		| "oci://\(.registries.helm_chart)" as $helm_chart_registry
+		| "oci://\(.registries.charts)" as $charts_registry
 		| {
 			platformComponents: {
-				repoURL: "\($helm_chart_registry)/liferay-platform-components",
+				repoURL: "\($charts_registry)/liferay-platform-components",
 				targetRevision: .charts."liferay-platform-components",
 				values: {
 					infrastructure: {
-						repoURL: "\($helm_chart_registry)/liferay-infrastructure",
+						repoURL: "\($charts_registry)/liferay-infrastructure",
 						targetRevision: .charts."liferay-infrastructure"
 					},
 					infrastructureProvider: {
-						repoURL: "\($helm_chart_registry)/liferay-azure-infrastructure-provider",
+						repoURL: "\($charts_registry)/liferay-azure-infrastructure-provider",
 						targetRevision: .charts."liferay-azure-infrastructure-provider"
 					},
 					liferay: {
-						repoURL: "\($helm_chart_registry)/liferay-azure",
+						repoURL: "\($charts_registry)/liferay-azure",
 						targetRevision: .charts."liferay-azure"
 					},
 					observability: {
-						repoURL: "\($helm_chart_registry)/observability",
+						repoURL: "\($charts_registry)/observability",
 						targetRevision: .charts.observability
 					},
 					operatorApplications: {
 						dxpOperator: {
-							repoURL: "\($helm_chart_registry)/liferay-dxp-operator",
+							repoURL: "\($charts_registry)/liferay-dxp-operator",
 							targetRevision: .charts."liferay-dxp-operator",
 							values: {
 								image: {
-									repository: "\(.registries.container_image)/liferay-dxp-operator",
+									repository: "\(.registries.images)/liferay-dxp-operator",
 									tag: .images."liferay-dxp-operator"
 								}
 							}
@@ -320,7 +320,7 @@ function _install_liferay_platform_chart {
 	local platform_repo_url
 	local platform_target_revision
 
-	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.registries.helm_chart)/liferay-platform"' "${configuration_json_file}")
+	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.registries.charts)/liferay-platform"' "${configuration_json_file}")
 	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform"' "${configuration_json_file}")
 
 	echo "Applying the Liferay platform root application."

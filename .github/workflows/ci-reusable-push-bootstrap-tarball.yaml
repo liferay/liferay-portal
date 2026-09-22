@@ -78,10 +78,10 @@ jobs:
 
                         updated_config_json_defaults=$( \
                             jq \
-                                --arg container_image_registry "${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
-                                --arg helm_chart_registry "${HELM_CHART_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
+                                --arg charts_registry "${HELM_CHART_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
+                                --arg images_registry "${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
                                 --tab \
-                                '.artifacts.registries.container_image = $container_image_registry | .artifacts.registries.helm_chart = $helm_chart_registry' \
+                                '.artifacts.registries.charts = $charts_registry | .artifacts.registries.images = $images_registry' \
                                 "${config_json_defaults_file}")
 
                         printf '%s' "${updated_config_json_defaults}" > "${config_json_defaults_file}"
