@@ -8,7 +8,6 @@ import React, {useEffect, useRef, useState} from 'react';
 
 interface IProps {
 	ariaLabel: string;
-	companyId: number;
 	disabled: boolean;
 	enabled: boolean;
 	featureFlagKey: string;
@@ -18,7 +17,6 @@ interface IProps {
 
 const FeatureFlagToggle = ({
 	ariaLabel,
-	companyId,
 	disabled,
 	enabled,
 	featureFlagKey,
@@ -36,7 +34,6 @@ const FeatureFlagToggle = ({
 				'/o/com-liferay-feature-flag-web/set-enabled',
 				{
 					body: Liferay.Util.objectToFormData({
-						companyId,
 						enabled: newToggled,
 						key: featureFlagKey,
 					}),
