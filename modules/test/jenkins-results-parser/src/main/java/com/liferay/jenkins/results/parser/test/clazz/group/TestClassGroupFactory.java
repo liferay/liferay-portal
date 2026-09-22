@@ -73,6 +73,13 @@ public class TestClassGroupFactory {
 				(PluginsGulpBatchTestClassGroup)batchTestClassGroup);
 		}
 
+		if (batchTestClassGroup instanceof
+				WorkspacesCompileBatchTestClassGroup) {
+
+			return new WorkspacesCompileAxisTestClassGroup(
+				(WorkspacesCompileBatchTestClassGroup)batchTestClassGroup);
+		}
+
 		return new AxisTestClassGroup(batchTestClassGroup);
 	}
 
@@ -116,6 +123,13 @@ public class TestClassGroupFactory {
 
 		if (batchTestClassGroup instanceof PluginsGulpBatchTestClassGroup) {
 			return new PluginsGulpAxisTestClassGroup(
+				jsonObject, segmentTestClassGroup);
+		}
+
+		if (batchTestClassGroup instanceof
+				WorkspacesCompileBatchTestClassGroup) {
+
+			return new WorkspacesCompileAxisTestClassGroup(
 				jsonObject, segmentTestClassGroup);
 		}
 

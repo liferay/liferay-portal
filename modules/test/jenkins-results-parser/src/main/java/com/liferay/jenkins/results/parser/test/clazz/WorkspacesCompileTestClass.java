@@ -16,6 +16,13 @@ import org.json.JSONObject;
  */
 public class WorkspacesCompileTestClass extends BaseTestClass {
 
+	@Override
+	public String getName() {
+		File testClassFile = getTestClassFile();
+
+		return "workspaces/" + testClassFile.getName();
+	}
+
 	protected WorkspacesCompileTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile) {
 
