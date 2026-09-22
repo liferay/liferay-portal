@@ -71,14 +71,3 @@ liferay.com/project: liferay-cloud-native
 {{- end -}}
 {{- toYaml (uniq $sourceRepos) -}}
 {{- end -}}
-
-{{- define "liferay-platform.webhookIngressFrom" -}}
--   ipBlock:
-        cidr: {{ . }}
--   namespaceSelector:
-        matchLabels:
-            kubernetes.io/metadata.name: kube-system
-    podSelector:
-        matchLabels:
-            k8s-app: konnectivity-agent
-{{- end -}}

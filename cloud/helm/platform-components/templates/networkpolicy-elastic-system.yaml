@@ -9,7 +9,14 @@ metadata:
 spec:
     ingress:
         -   from:
-                {{- include "liferay-platform.webhookIngressFrom" .Values.operatorApplications.eckOperator.masterIpv4CidrBlock | nindent 16 }}
+                -   ipBlock:
+                        cidr: {{ .Values.operatorApplications.eckOperator.masterIpv4CidrBlock }}
+                -   namespaceSelector:
+                        matchLabels:
+                            kubernetes.io/metadata.name: kube-system
+                    podSelector:
+                        matchLabels:
+                            k8s-app: konnectivity-agent
             ports:
                 -   port: https-webhook
                     protocol: TCP

@@ -37,10 +37,10 @@ it: it is what matches on a cluster that connects directly.
 The two selectors must stay in the **same** list entry. Split into two entries
 they mean "anything in kube-system, or any konnectivity-agent pod anywhere".
 
-This source is defined once and shared:
-
-- Terraform: `local.webhook_ingress_from` in `gcp/gitops/platform/locals.tf`
-- Helm: `liferay-platform.webhookIngressFrom` in `platform-components/templates/_helpers.tpl`
+This rule is written out at each webhook policy rather than shared. Keeping it
+inline makes the allow-list visible where it is read, which matters for a
+security rule; the duplication is guarded by a test per policy that requires the
+konnectivity source. Revisit once a second consumer exists in either stack.
 
 ## Matrix
 
@@ -68,14 +68,14 @@ This source is defined once and shared:
 | --- | --- | --- | --- |
 | function runtimes | crossplane core pods | `grpc` | Core calls function pods over gRPC. |
 | metrics | `observability` | `metrics` | Empty `podSelector`: core, RBAC manager, functions and providers all expose metrics and share no single label. |
-| webhook | `local.webhook_ingress_from` | 9443 | API server calls it. Port by number: core names it `webhooks`, providers name it `webhook`. |
+| webhook | control plane CIDR + konnectivity agents | 9443 | API server calls it. Port by number: core names it `webhooks`, providers name it `webhook`. |
 | everything else | — | — | `default-deny-ingress` |
 
 ### elastic-system
 
 | Allowed in | From | Port | Why |
 | --- | --- | --- | --- |
-| operator webhook | `liferay-platform.webhookIngressFrom` | `https-webhook` | API server calls it. `failurePolicy: Ignore`, so a block is **silent** — see below. |
+| operator webhook | control plane CIDR + konnectivity agents | `https-webhook` | API server calls it. `failurePolicy: Ignore`, so a block is **silent** — see below. |
 | everything else | — | — | `default-deny-ingress` |
 
 ## Verifying A Change
