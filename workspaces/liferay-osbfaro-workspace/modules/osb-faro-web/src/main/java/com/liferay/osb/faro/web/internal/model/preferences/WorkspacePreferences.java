@@ -42,6 +42,33 @@ public class WorkspacePreferences {
 		return _emailReportPreferences;
 	}
 
+	public Map<String, LifecycleNotificationPreferences>
+		addLifecycleNotificationPreference(
+			Boolean accountStageChanges, String emailFrequency,
+			String lifecycleId, Boolean netNewPipelineAccounts,
+			Boolean newAccounts, Boolean newAtRiskAccounts,
+			Boolean newStalledAccounts) {
+
+		_lifecycleNotificationPreferences.put(
+			lifecycleId,
+			new LifecycleNotificationPreferences(
+				accountStageChanges, emailFrequency, netNewPipelineAccounts,
+				newAccounts, newAtRiskAccounts, newStalledAccounts));
+
+		return _lifecycleNotificationPreferences;
+	}
+
+	public Map<String, SegmentNotificationPreferences>
+		addSegmentNotificationPreference(
+			String emailFrequency, Boolean newMemberAdded, String segmentId) {
+
+		_segmentNotificationPreferences.put(
+			segmentId,
+			new SegmentNotificationPreferences(emailFrequency, newMemberAdded));
+
+		return _segmentNotificationPreferences;
+	}
+
 	public String getDefaultChannelId() {
 		return _defaultChannelId;
 	}
@@ -91,6 +118,35 @@ public class WorkspacePreferences {
 		return _individualSegmentPreferences;
 	}
 
+	public Map<String, LifecycleNotificationPreferences>
+		getLifecycleNotificationPreferences(String lifecycleId) {
+
+		if (Validator.isNull(lifecycleId)) {
+			return _lifecycleNotificationPreferences;
+		}
+
+		return Collections.singletonMap(
+			lifecycleId,
+			_lifecycleNotificationPreferences.getOrDefault(
+				lifecycleId,
+				new LifecycleNotificationPreferences(
+					false, "monthly", false, false, false, false)));
+	}
+
+	public Map<String, SegmentNotificationPreferences>
+		getSegmentNotificationPreferences(String segmentId) {
+
+		if (Validator.isNull(segmentId)) {
+			return _segmentNotificationPreferences;
+		}
+
+		return Collections.singletonMap(
+			segmentId,
+			_segmentNotificationPreferences.getOrDefault(
+				segmentId,
+				new SegmentNotificationPreferences("monthly", false)));
+	}
+
 	public boolean isUpgradeModalSeen() {
 		return _upgradeModalSeen;
 	}
@@ -127,6 +183,28 @@ public class WorkspacePreferences {
 		}
 	}
 
+	public boolean removeLifecycleNotificationPreferences(String lifecycleId) {
+		LifecycleNotificationPreferences lifecycleNotificationPreferences =
+			_lifecycleNotificationPreferences.remove(lifecycleId);
+
+		if (lifecycleNotificationPreferences != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean removeSegmentNotificationPreferences(String segmentId) {
+		SegmentNotificationPreferences segmentNotificationPreferences =
+			_segmentNotificationPreferences.remove(segmentId);
+
+		if (segmentNotificationPreferences != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public void setDefaultChannelId(String defaultChannelId) {
 		_defaultChannelId = defaultChannelId;
 	}
@@ -161,6 +239,10 @@ public class WorkspacePreferences {
 		new IndividualDashboardPreferences();
 	private Map<String, IndividualSegmentPreferences>
 		_individualSegmentPreferences = new HashMap<>();
+	private final Map<String, LifecycleNotificationPreferences>
+		_lifecycleNotificationPreferences = new HashMap<>();
+	private final Map<String, SegmentNotificationPreferences>
+		_segmentNotificationPreferences = new HashMap<>();
 	private boolean _upgradeModalSeen;
 
 }
