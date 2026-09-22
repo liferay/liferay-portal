@@ -61,7 +61,6 @@ public class FeatureFlagApplicationTest {
 	@Before
 	public void setUp() throws Exception {
 		_adminUser = TestPropsValues.getUser();
-
 		_regularUser = UserTestUtil.addUser(
 			CompanyLocalServiceUtil.getCompany(TestPropsValues.getCompanyId()),
 			_REGULAR_USER_PASSWORD);
@@ -98,12 +97,12 @@ public class FeatureFlagApplicationTest {
 			User user)
 		throws Exception {
 
+		Http.Options options = new Http.Options();
+
 		String credentials = StringBundler.concat(
 			user.getEmailAddress(), StringPool.COLON, password);
 
 		String encodedCredentials = Base64.encode(credentials.getBytes());
-
-		Http.Options options = new Http.Options();
 
 		options.addHeader("Authorization", "Basic " + encodedCredentials);
 
