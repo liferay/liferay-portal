@@ -10992,6 +10992,7 @@ junit.jvm.override.version=21</echo>
 
 				<for list="${workspace.names}" param="workspace.name">
 					<sequential>
+						<local name="workspace.absolute.dir" />
 						<local name="workspace.dir" />
 
 						<condition else="workspaces/@{workspace.name}" property="workspace.dir" value="${liferay.portal.private.dir}/workspaces/@{workspace.name}">
@@ -10999,6 +11000,8 @@ junit.jvm.override.version=21</echo>
 						</condition>
 
 						<property name="workspace.dir" value="workspaces/@{workspace.name}" />
+
+						<property location="${workspace.dir}" name="workspace.absolute.dir" />
 
 						<if>
 							<available file="${workspace.dir}" />
@@ -11009,11 +11012,11 @@ junit.jvm.override.version=21</echo>
 								<echo>##</echo>
 								<echo></echo>
 
-								<download-gradle-wrapper-binary workspace.dir="${project.dir}/${workspace.dir}" />
+								<download-gradle-wrapper-binary workspace.dir="${workspace.absolute.dir}" />
 
-								<execute-gradle-task gradle.task.module.dir="${workspace.dir}" gradle.task.name="build">
+								<execute-gradle-task gradle.task.module.dir="workspaces/@{workspace.name}" gradle.task.name="build">
 									<action>
-										<exec dir="${workspace.dir}" executable="${project.dir}/${workspace.dir}/gradlew" failonerror="true">
+										<exec dir="${workspace.dir}" executable="${workspace.absolute.dir}/gradlew" failonerror="true">
 											<arg value="assemble" />
 											<env key="GRADLE_USER_HOME" value="${project.dir}/workspaces/.gradle" />
 											<env key="YARN_YARN_OFFLINE_MIRROR_PRUNING" value="false" />
