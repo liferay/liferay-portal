@@ -370,33 +370,31 @@ public class ObjectRelationshipExtensionProvider
 			boolean partialUpdate)
 		throws Exception {
 
-		ObjectEntry existingObjectEntry = null;
-		String externalReferenceCode = objectEntry.getExternalReferenceCode();
-		String scopeKey = objectDefinition.getScope();
-
 		ObjectEntryManager objectEntryManager =
 			_objectEntryManagerRegistry.getObjectEntryManager(
 				objectDefinition.getCompanyId(),
 				objectDefinition.getStorageType());
 
-		if (partialUpdate &&
-			(objectEntryManager instanceof DefaultObjectEntryManager)) {
+		String externalReferenceCode = objectEntry.getExternalReferenceCode();
+		String scopeKey = objectDefinition.getScope();
 
+		if (partialUpdate && objectDefinition.isDefaultStorageType()) {
 			DefaultObjectEntryManager defaultObjectEntryManager =
 				DefaultObjectEntryManagerProvider.provide(objectEntryManager);
 
-			existingObjectEntry = defaultObjectEntryManager.fetchObjectEntry(
-				dtoConverterContext, externalReferenceCode, objectDefinition,
-				scopeKey);
+			ObjectEntry existingObjectEntry =
+				defaultObjectEntryManager.fetchObjectEntry(
+					dtoConverterContext, externalReferenceCode,
+					objectDefinition, scopeKey);
+
+			if (existingObjectEntry != null) {
+				return objectEntryManager.partialUpdateObjectEntry(
+					companyId, dtoConverterContext, externalReferenceCode,
+					objectDefinition, objectEntry, scopeKey);
+			}
 		}
 
-		if (existingObjectEntry == null) {
-			return objectEntryManager.updateObjectEntry(
-				companyId, dtoConverterContext, externalReferenceCode,
-				objectDefinition, objectEntry, scopeKey);
-		}
-
-		return objectEntryManager.partialUpdateObjectEntry(
+		return objectEntryManager.updateObjectEntry(
 			companyId, dtoConverterContext, externalReferenceCode,
 			objectDefinition, objectEntry, scopeKey);
 	}
