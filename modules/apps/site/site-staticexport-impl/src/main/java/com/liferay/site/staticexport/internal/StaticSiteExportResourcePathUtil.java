@@ -27,8 +27,7 @@ public class StaticSiteExportResourcePathUtil {
 			queryString = url.substring(index + 1);
 		}
 
-		path = _addInheritedExtension(
-			StringUtil.removeFirst(path, StringPool.SLASH));
+		path = _addExtension(StringUtil.removeFirst(path, StringPool.SLASH));
 
 		if (Validator.isNull(queryString)) {
 			return path;
@@ -47,7 +46,7 @@ public class StaticSiteExportResourcePathUtil {
 			path.substring(extensionIndex));
 	}
 
-	private static String _addInheritedExtension(String path) {
+	private static String _addExtension(String path) {
 		int slashIndex = path.lastIndexOf(CharPool.SLASH);
 
 		if (path.indexOf(CharPool.PERIOD, slashIndex + 1) != -1) {

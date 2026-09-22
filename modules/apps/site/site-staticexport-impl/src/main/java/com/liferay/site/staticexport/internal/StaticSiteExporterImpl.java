@@ -342,13 +342,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 					continue;
 				}
 
-				url = StringUtil.trim(url);
-
-				int index = url.indexOf(CharPool.POUND);
-
-				if (index != -1) {
-					url = url.substring(0, index);
-				}
+				url = _removeURLFragment(StringUtil.trim(url));
 
 				for (String resourcePrefix : _RESOURCE_PREFIXES) {
 					if (url.startsWith(resourcePrefix)) {
@@ -369,6 +363,16 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 		pagePaths.put(portalURL + url, path);
 		pagePaths.put(url, path);
+	}
+
+	private String _removeURLFragment(String url) {
+		int index = url.indexOf(CharPool.POUND);
+
+		if (index == -1) {
+			return url;
+		}
+
+		return url.substring(0, index);
 	}
 
 	private List<StaticSiteExportLayout> _rewriteLayouts(
