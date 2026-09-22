@@ -86,10 +86,7 @@ public class PermissionUtil {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if (permissionChecker.isGroupAdmin(groupId) ||
-			GroupPermissionUtil.contains(
-				permissionChecker, groupId, groupActionId)) {
-
+		if (permissionChecker.isGroupAdmin(groupId)) {
 			return;
 		}
 
@@ -101,7 +98,9 @@ public class PermissionUtil {
 				permissionChecker, groupId, companyPortletKey,
 				ActionKeys.ACCESS_IN_CONTROL_PANEL);
 		}
-		else {
+		else if (!GroupPermissionUtil.contains(
+					permissionChecker, groupId, groupActionId)) {
+
 			PortletPermissionUtil.check(
 				permissionChecker, groupId, portletKey,
 				ActionKeys.ACCESS_IN_CONTROL_PANEL);
