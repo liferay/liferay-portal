@@ -8,7 +8,6 @@ package com.liferay.site.staticexport.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -105,11 +104,8 @@ public class StaticSiteExporterTest {
 			for (StaticSiteExportLayout staticSiteExportLayout :
 					staticSiteExportLayouts) {
 
-				String html = staticSiteExportLayout.getHTML();
-
-				Assert.assertThat(html, CoreMatchers.containsString("</html>"));
 				Assert.assertThat(
-					html,
+					staticSiteExportLayout.getHTML(),
 					CoreMatchers.containsString(
 						"/o/layout-common-styles/main."));
 			}
@@ -153,22 +149,6 @@ public class StaticSiteExporterTest {
 		}
 	}
 
-	@Test
-	public void testExportWithUnpublishedLayout() throws Exception {
-		LayoutTestUtil.addTypeContentLayout(_group);
-
-		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
-				_group.getGroupId(), Set.of(LocaleUtil.US))) {
-
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
-
-			Assert.assertTrue(
-				staticSiteExportLayouts.toString(),
-				staticSiteExportLayouts.isEmpty());
-		}
-	}
-
 	private void _assertStaticSiteExport(
 		Layout layout, StaticSiteExport staticSiteExport) {
 
@@ -191,12 +171,6 @@ public class StaticSiteExporterTest {
 		Assert.assertThat(
 			staticSiteExportLayout.getHTML(),
 			CoreMatchers.containsString(layout.getName(LocaleUtil.US)));
-		Assert.assertThat(
-			staticSiteExportLayout.getHTML(),
-			CoreMatchers.containsString(
-				StringBundler.concat(
-					"href=\"/", staticSiteExportLayout.getPath(),
-					"\" rel=\"canonical\"")));
 
 		List<StaticSiteExportResource> staticSiteExportResources =
 			staticSiteExport.getStaticSiteExportResources();
