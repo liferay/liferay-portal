@@ -75,6 +75,9 @@ public class FeatureFlagApplicationTest {
 		_testConfirmWithAuthorizedUser(
 			TestPropsValues.getCompanyId(),
 			FeatureFlagTestHelper.FEATURE_FLAG_KEY_1);
+		_testConfirmWithCompanyId(CompanyConstants.SYSTEM);
+		_testConfirmWithCompanyId(RandomTestUtil.randomLong());
+		_testConfirmWithNonexistentKey();
 		_testConfirmWithUnauthorizedUser(
 			CompanyConstants.SYSTEM,
 			FeatureFlagTestHelper.FEATURE_FLAG_KEY_SYSTEM);
@@ -84,7 +87,14 @@ public class FeatureFlagApplicationTest {
 	}
 
 	private Http.Response _getResponse(
-			long companyId, boolean enabled, String key, String password,
+			boolean enabled, String key, String password, User user)
+		throws Exception {
+
+		return _getResponse(null, enabled, key, password, user);
+	}
+
+	private Http.Response _getResponse(
+			Long companyId, boolean enabled, String key, String password,
 			User user)
 		throws Exception {
 
@@ -96,7 +106,11 @@ public class FeatureFlagApplicationTest {
 		Http.Options options = new Http.Options();
 
 		options.addHeader("Authorization", "Basic " + encodedCredentials);
-		options.addPart("companyId", String.valueOf(companyId));
+
+		if (companyId != null) {
+			options.addPart("companyId", String.valueOf(companyId));
+		}
+
 		options.addPart("enabled", String.valueOf(enabled));
 		options.addPart("key", key);
 		options.setLocation(
@@ -117,8 +131,8 @@ public class FeatureFlagApplicationTest {
 			companyId, key);
 
 		Http.Response response = _getResponse(
-			companyId, !featureFlagValue, key,
-			PropsValues.DEFAULT_ADMIN_PASSWORD, _adminUser);
+			!featureFlagValue, key, PropsValues.DEFAULT_ADMIN_PASSWORD,
+			_adminUser);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, response.getResponseCode());
@@ -128,6 +142,34 @@ public class FeatureFlagApplicationTest {
 			_featureFlagTestHelper.getFeatureFlagValue(companyId, key));
 	}
 
+	private void _testConfirmWithCompanyId(long companyId) throws Exception {
+		String key = FeatureFlagTestHelper.FEATURE_FLAG_KEY_1;
+
+		boolean featureFlagValue = _featureFlagTestHelper.getFeatureFlagValue(
+			TestPropsValues.getCompanyId(), key);
+
+		Http.Response response = _getResponse(
+			companyId, !featureFlagValue, key,
+			PropsValues.DEFAULT_ADMIN_PASSWORD, _adminUser);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, response.getResponseCode());
+
+		Assert.assertEquals(
+			!featureFlagValue,
+			_featureFlagTestHelper.getFeatureFlagValue(
+				TestPropsValues.getCompanyId(), key));
+	}
+
+	private void _testConfirmWithNonexistentKey() throws Exception {
+		Http.Response response = _getResponse(
+			true, RandomTestUtil.randomString(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD, _adminUser);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND, response.getResponseCode());
+	}
+
 	private void _testConfirmWithUnauthorizedUser(long companyId, String key)
 		throws Exception {
 
@@ -135,8 +177,7 @@ public class FeatureFlagApplicationTest {
 			companyId, key);
 
 		Http.Response response = _getResponse(
-			companyId, !featureFlagValue, key, _REGULAR_USER_PASSWORD,
-			_regularUser);
+			!featureFlagValue, key, _REGULAR_USER_PASSWORD, _regularUser);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_FORBIDDEN, response.getResponseCode());

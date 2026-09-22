@@ -63,16 +63,23 @@ public class FeatureFlagApplication extends Application {
 	public Response confirm(
 			@Context HttpServletRequest httpServletRequest,
 			@Context HttpServletResponse httpServletResponse,
-			@FormParam("companyId") long companyId,
 			@FormParam("enabled") boolean enabled, @FormParam("key") String key)
 		throws Exception {
 
-		_checkPermission(companyId);
+		long companyId = _getCompanyId(key);
 
-		_featureFlagsBagProvider.setEnabled(companyId, key, enabled);
+		_checkPermission(companyId);
 
 		FeatureFlagsBag featureFlagsBag =
 			_featureFlagsBagProvider.getOrCreateFeatureFlagsBag(companyId);
+
+		if (featureFlagsBag.getFeatureFlag(key) == null) {
+			return Response.status(
+				Response.Status.NOT_FOUND
+			).build();
+		}
+
+		_featureFlagsBagProvider.setEnabled(companyId, key, enabled);
 
 		return Response.ok(
 			HashMapBuilder.put(
@@ -96,9 +103,11 @@ public class FeatureFlagApplication extends Application {
 	public Response isEnabled(
 		@Context HttpServletRequest httpServletRequest,
 		@Context HttpServletResponse httpServletResponse,
-		@FormParam("companyId") long companyId, @FormParam("key") String key) {
+		@FormParam("key") String key) {
 
 		try {
+			long companyId = _getCompanyId(key);
+
 			FeatureFlagsBag featureFlagsBag =
 				_featureFlagsBagProvider.getOrCreateFeatureFlagsBag(companyId);
 
@@ -148,6 +157,17 @@ public class FeatureFlagApplication extends Application {
 		else if (!permissionChecker.isCompanyAdmin(companyId)) {
 			throw new PrincipalException.MustBeCompanyAdmin(permissionChecker);
 		}
+	}
+
+	private long _getCompanyId(String key) {
+		if (_featureFlagsBagProvider.isSystemKey(key)) {
+			return CompanyConstants.SYSTEM;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return permissionChecker.getCompanyId();
 	}
 
 	private List<FeatureFlag> _getDependencyFeatureFlags(
