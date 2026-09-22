@@ -9,11 +9,21 @@ import React from 'react';
 
 import Context, {IContext} from './Context';
 
+export type CardType = 'navigation' | 'template' | null;
+
 interface IProps
 	extends Omit<IContext, 'interactive'>,
-		React.BaseHTMLAttributes<HTMLAnchorElement | HTMLDivElement> {}
+		React.BaseHTMLAttributes<HTMLAnchorElement | HTMLDivElement> {
+
+	/**
+	 * Determines whether `card-type-template` is emitted. `template` keeps that
+	 * styling, `navigation` and `null` opt out of it.
+	 */
+	cardType?: CardType;
+}
 
 export function ClayCardNavigation({
+	cardType = 'template',
 	children,
 	className,
 	horizontal,
@@ -28,8 +38,9 @@ export function ClayCardNavigation({
 			<Container
 				className={classNames(
 					className,
-					'card card-interactive card-interactive-primary card-type-template',
+					'card card-interactive card-interactive-primary',
 					{
+						'card-type-template': cardType === 'template',
 						'template-card': !horizontal,
 						'template-card-horizontal': horizontal,
 					}
