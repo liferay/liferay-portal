@@ -2180,13 +2180,12 @@ public class LayoutsAdminDisplayContext {
 				verticalNavItem -> {
 					if (group.isDepot()) {
 						verticalNavItem.addIcon(
-							IconItem.of(
-								"books-brush",
-								LanguageUtil.format(
-									httpServletRequest,
-									"page-template-set-from-x-design-library",
-									group.getDescriptiveName(
-										themeDisplay.getLocale()))));
+							IconItem.of("books-brush", StringPool.BLANK));
+						verticalNavItem.setTitle(
+							LanguageUtil.format(
+								httpServletRequest, "x-design-library",
+								group.getDescriptiveName(
+									themeDisplay.getLocale())));
 					}
 
 					long layoutPageTemplateCollectionId =

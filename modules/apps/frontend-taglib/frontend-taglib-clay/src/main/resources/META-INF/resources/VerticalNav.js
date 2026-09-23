@@ -50,6 +50,8 @@ export default function VerticalNav({
 			{(item) => (
 				<ClayVerticalNav.Item
 					active={active ? active === item.id : item.active}
+					data-title={item.title}
+					data-tooltip-align="top"
 					href={item.href}
 					items={item.items}
 					key={item.id}
