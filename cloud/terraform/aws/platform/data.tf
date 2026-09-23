@@ -28,53 +28,6 @@ data "aws_iam_policy_document" "ack_prometheusservice" {
 		]
 	}
 }
-data "aws_iam_policy_document" "crossplane_iam_boundary" {
-	statement {
-		actions=[
-			"aws-marketplace:BatchMeterUsage",
-			"aws-marketplace:RegisterUsage",
-			"backup-storage:*",
-			"backup:*",
-			"cloudwatch:GetMetricData",
-			"ec2:Describe*",
-			"ecr:BatchCheckLayerAvailability",
-			"ecr:BatchGetImage",
-			"ecr:GetAuthorizationToken",
-			"ecr:GetDownloadUrlForLayer",
-			"events:DeleteRule",
-			"events:DescribeRule",
-			"events:DisableRule",
-			"events:EnableRule",
-			"events:ListRules",
-			"events:ListTargetsByRule",
-			"events:PutRule",
-			"events:PutTargets",
-			"events:RemoveTargets",
-			"kms:CreateGrant",
-			"kms:Decrypt",
-			"kms:DescribeKey",
-			"kms:Encrypt",
-			"kms:GenerateDataKey*",
-			"kms:ReEncrypt*",
-			"kms:RetireGrant",
-			"rds:*",
-			"s3:*",
-			"tag:GetResources",
-		]
-		effect="Allow"
-		resources=["*"]
-	}
-	statement {
-		actions=["iam:PassRole"]
-		condition {
-			test="StringEquals"
-			values=["backup.amazonaws.com"]
-			variable="iam:PassedToService"
-		}
-		effect="Allow"
-		resources=["arn:${local.partition}:iam::${local.account_id}:role${local.crossplane_iam_path}*"]
-	}
-}
 data "aws_iam_policy_document" "crossplane_data_backup" {
 	statement {
 		actions=["backup:*"]
@@ -371,6 +324,53 @@ data "aws_iam_policy_document" "crossplane_iam" {
 		]
 		effect="Allow"
 		resources=["arn:${local.partition}:iam::${local.account_id}:policy${local.crossplane_iam_path}*"]
+	}
+}
+data "aws_iam_policy_document" "crossplane_iam_boundary" {
+	statement {
+		actions=[
+			"aws-marketplace:BatchMeterUsage",
+			"aws-marketplace:RegisterUsage",
+			"backup-storage:*",
+			"backup:*",
+			"cloudwatch:GetMetricData",
+			"ec2:Describe*",
+			"ecr:BatchCheckLayerAvailability",
+			"ecr:BatchGetImage",
+			"ecr:GetAuthorizationToken",
+			"ecr:GetDownloadUrlForLayer",
+			"events:DeleteRule",
+			"events:DescribeRule",
+			"events:DisableRule",
+			"events:EnableRule",
+			"events:ListRules",
+			"events:ListTargetsByRule",
+			"events:PutRule",
+			"events:PutTargets",
+			"events:RemoveTargets",
+			"kms:CreateGrant",
+			"kms:Decrypt",
+			"kms:DescribeKey",
+			"kms:Encrypt",
+			"kms:GenerateDataKey*",
+			"kms:ReEncrypt*",
+			"kms:RetireGrant",
+			"rds:*",
+			"s3:*",
+			"tag:GetResources",
+		]
+		effect="Allow"
+		resources=["*"]
+	}
+	statement {
+		actions=["iam:PassRole"]
+		condition {
+			test="StringEquals"
+			values=["backup.amazonaws.com"]
+			variable="iam:PassedToService"
+		}
+		effect="Allow"
+		resources=["arn:${local.partition}:iam::${local.account_id}:role${local.crossplane_iam_path}*"]
 	}
 }
 data "aws_iam_policy_document" "external_secrets" {
