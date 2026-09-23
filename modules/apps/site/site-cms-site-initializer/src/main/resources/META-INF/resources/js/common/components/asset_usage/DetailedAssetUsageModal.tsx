@@ -11,7 +11,11 @@ import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import {FrontendDataSet, replaceTokens} from '@liferay/frontend-data-set-web';
+import {
+	EConfigInURLBehavior,
+	FrontendDataSet,
+	replaceTokens,
+} from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -144,6 +148,7 @@ const DetailedAssetUsageModal: React.FC<IDetailedAssetUsageModalProps> = ({
 
 					<FrontendDataSet
 						apiURL={`/o/headless-cms/v1.0/asset-usages/${item.classPK}`}
+						configInURLBehavior={EConfigInURLBehavior.OFF}
 						customRenderers={{
 							tableCell: [
 								{

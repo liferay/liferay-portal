@@ -40,8 +40,8 @@ export default function selectAssetsAction(
 				initialDelta: 20,
 			},
 
-			// The id is new on every open, so the modal keeps its state out of
-			// the atom registry and out of the page URL. That id also keys the
+			// The id is new on every open, so each one gets its own state
+			// rather than inheriting the last one's. That id also keys the
 			// search history, which nothing could ever read back, so the
 			// suggestions stay off here.
 

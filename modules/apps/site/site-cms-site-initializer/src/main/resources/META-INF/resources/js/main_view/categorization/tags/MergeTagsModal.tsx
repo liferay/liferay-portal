@@ -8,7 +8,10 @@ import Form, {ClayInput, ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
 import ClayMultiSelect from '@clayui/multi-select';
-import {FrontendDataSet} from '@liferay/frontend-data-set-web';
+import {
+	EConfigInURLBehavior,
+	FrontendDataSet,
+} from '@liferay/frontend-data-set-web';
 import {useFormik} from 'formik';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useId, useRef, useState} from 'react';
@@ -252,6 +255,7 @@ export default function MergeTagsModalContent({
 					<FrontendDataSet
 						apiURL={`/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`}
 						bulkActions={[]}
+						configInURLBehavior={EConfigInURLBehavior.OFF}
 						customRenderers={{
 							tableCell: [
 								{

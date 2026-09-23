@@ -4,10 +4,12 @@
  */
 
 import {EConfigInURLBehavior} from '@liferay/frontend-data-set-web';
-import {render} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {DetailedAssetUsageModal} from '../../src/main/resources/META-INF/resources/js/common/components/asset_usage/DetailedAssetUsageModal';
+import MergeTagsModal from '../../src/main/resources/META-INF/resources/js/main_view/categorization/tags/MergeTagsModal';
 import {Summary} from '../../src/main/resources/META-INF/resources/js/main_view/find_and_replace/components/Summary';
 import FolderItemSelectorModalContent from '../../src/main/resources/META-INF/resources/js/main_view/modal/FolderItemSelectorModalContent';
 import AllRelatedAssetsFDSPropsTransformer from '../../src/main/resources/META-INF/resources/js/main_view/props_transformer/AllRelatedAssetsFDSPropsTransformer';
@@ -40,6 +42,21 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	...(jest.requireActual('@liferay/frontend-data-set-web') as any),
 	FrontendDataSet: (props: any) => mockFrontendDataSet(props),
 }));
+
+jest.mock(
+	'../../src/main/resources/META-INF/resources/js/common/services/ApiHelper',
+	() => ({
+		__esModule: true,
+		default: {get: jest.fn(async () => ({data: {items: []}, error: null}))},
+	})
+);
+
+const mockOpenCMSModal = jest.fn();
+
+jest.mock(
+	'../../src/main/resources/META-INF/resources/js/common/utils/openCMSModal',
+	() => ({openCMSModal: (props: any) => mockOpenCMSModal(props)})
+);
 
 jest.mock('@liferay/frontend-js-item-selector-web', () => ({
 	ItemSelectorModal: (props: any) => mockItemSelectorModal(props),
@@ -84,7 +101,45 @@ const TRANSFORMERS: Array<[string, (props: any) => any]> = [
 // The Data Sets the CMS renders as React instead, paired with the mock that
 // receives their props.
 
-const COMPONENTS: Array<[string, () => void, jest.Mock]> = [
+// The item a picker is opened for is a search result, which carries no id of
+// its own; the fixture leaves it out so the id the picker derives is the one
+// production derives.
+
+const renderFolderItemSelector = () =>
+	render(
+		<FolderItemSelectorModalContent
+			action="move"
+			assetLibraries={[]}
+			itemData={{embedded: {id: 1, scopeId: 1}} as any}
+			loadData={jest.fn() as any}
+			objectEntryFolderExternalReferenceCode={undefined}
+			rootObjectEntryFolderExternalReferenceCode="CONTENTS"
+			selectedData={{} as any}
+		/>
+	);
+
+// The Merge Tags picker is a Data Set inside a second modal, which only opens
+// once the user asks to select tags.
+
+const renderMergeTagsPicker = async () => {
+	render(
+		<MergeTagsModal
+			closeModal={jest.fn()}
+			cmsGroupId={1}
+			loadData={jest.fn() as any}
+			selectIntoTags={[{label: 'Tag', value: 1}]}
+		/>
+	);
+
+	await userEvent.click(screen.getByRole('button', {name: /select/i}));
+
+	const [{contentComponent: ContentComponent}] =
+		mockOpenCMSModal.mock.calls[0];
+
+	render(<ContentComponent closeModal={jest.fn()} />);
+};
+
+const COMPONENTS: Array<[string, () => unknown, jest.Mock]> = [
 	[
 		'Asset Usages',
 		() =>
@@ -102,22 +157,7 @@ const COMPONENTS: Array<[string, () => void, jest.Mock]> = [
 		mockFrontendDataSet,
 	],
 	['Find and Replace', () => render(<Summary />), mockFrontendDataSet],
-	[
-		'Folder Item Selector',
-		() =>
-			render(
-				<FolderItemSelectorModalContent
-					action="move"
-					assetLibraries={[]}
-					itemData={{embedded: {id: 1, scopeId: 1}, id: 1} as any}
-					loadData={jest.fn() as any}
-					objectEntryFolderExternalReferenceCode={undefined}
-					rootObjectEntryFolderExternalReferenceCode="CONTENTS"
-					selectedData={{} as any}
-				/>
-			),
-		mockItemSelectorModal,
-	],
+	['Merge Tags', renderMergeTagsPicker, mockFrontendDataSet],
 	[
 		'Picklist Options',
 		() =>
@@ -147,8 +187,8 @@ describe('[CMS] Instant search', () => {
 
 	it.each(COMPONENTS)(
 		'searches the %s Data Set as the user types and offers search suggestions',
-		(_dataSet, renderDataSet, mock) => {
-			renderDataSet();
+		async (_dataSet, renderDataSet, mock) => {
+			await renderDataSet();
 
 			const [props] = mock.mock.calls[0];
 
@@ -184,33 +224,14 @@ describe('[CMS] Instant search', () => {
 		expect(onItemsPropSearch(item, 'nothing')).toBe(false);
 	});
 
-	// The Select Assets picker is the one Data Set that searches as the user
-	// types without offering suggestions, because its id is new on every open
-
-	it('searches the Select Assets Data Set as the user types, remembering nothing', () => {
-		selectAssetsAction({searchAPIURL: '/o/search/v1.0/search'} as any);
-
-		const [{fdsProps}] = mockOpenItemSelectorModal.mock.calls[0];
-
-		expect(fdsProps.searchAsYouType).toBe(true);
-		expect(fdsProps.searchSuggestionsEnabled).toBeUndefined();
-	});
+	// A picker whose Data Set id changes between opens can never read its own
+	// search history back, so it searches as the user types and remembers
+	// nothing
 
 	it.each([
 		[
 			'Folder Item Selector',
-			() =>
-				render(
-					<FolderItemSelectorModalContent
-						action="move"
-						assetLibraries={[]}
-						itemData={{embedded: {id: 1, scopeId: 1}, id: 1} as any}
-						loadData={jest.fn() as any}
-						objectEntryFolderExternalReferenceCode={undefined}
-						rootObjectEntryFolderExternalReferenceCode="CONTENTS"
-						selectedData={{} as any}
-					/>
-				),
+			renderFolderItemSelector,
 			mockItemSelectorModal,
 		],
 		[
@@ -221,14 +242,62 @@ describe('[CMS] Instant search', () => {
 				} as any),
 			mockOpenItemSelectorModal,
 		],
-	] as Array<[string, () => void, jest.Mock]>)(
-		'keeps the %s picker out of the URL of the page behind it',
+	] as Array<[string, () => unknown, jest.Mock]>)(
+		'searches the %s Data Set as the user types, remembering nothing',
 		(_dataSet, openPicker, mock) => {
 			openPicker();
 
 			const [{fdsProps}] = mock.mock.calls[0];
 
-			expect(fdsProps.configInURLBehavior).toBe(EConfigInURLBehavior.OFF);
+			expect(fdsProps.searchAsYouType).toBe(true);
+			expect(fdsProps.searchSuggestionsEnabled).toBeUndefined();
+		}
+	);
+
+	// A Data Set that opens over a page keeps its search, sort and pagination
+	// out of the URL of the page behind it
+
+	it.each([
+		[
+			'Asset Usages',
+			() =>
+				render(
+					<DetailedAssetUsageModal
+						item={
+							{
+								attributes: {usages: 1},
+								classPK: '1',
+								name: 'Asset',
+							} as any
+						}
+					/>
+				),
+			mockFrontendDataSet,
+		],
+		[
+			'Folder Item Selector',
+			renderFolderItemSelector,
+			mockItemSelectorModal,
+		],
+		['Merge Tags', renderMergeTagsPicker, mockFrontendDataSet],
+		[
+			'Select Assets',
+			() =>
+				selectAssetsAction({
+					searchAPIURL: '/o/search/v1.0/search',
+				} as any),
+			mockOpenItemSelectorModal,
+		],
+	] as Array<[string, () => unknown, jest.Mock]>)(
+		'keeps the %s Data Set out of the URL of the page behind it',
+		async (_dataSet, openDataSet, mock) => {
+			await openDataSet();
+
+			const [props] = mock.mock.calls[0];
+
+			const {configInURLBehavior} = props.fdsProps ?? props;
+
+			expect(configInURLBehavior).toBe(EConfigInURLBehavior.OFF);
 		}
 	);
 });
