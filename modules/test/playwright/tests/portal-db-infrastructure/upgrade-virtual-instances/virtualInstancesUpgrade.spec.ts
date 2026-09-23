@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import {liferayConfig} from '../../../liferay.config';
 import {performLoginViaApi} from '../../../utils/performLogin';
+import {reindexAllSearchIndexes} from '../utils/reindexAllSearchIndexes';
 import {viewUpgradedCustomObject} from '../utils/viewUpgradedCustomObject';
 import {
 	UpgradedVirtualInstance,
@@ -70,22 +71,7 @@ test.describe.serial('View virtual instances upgrade', () => {
 			// same reason.
 
 			await test.step('Reindex all search indexes', async () => {
-				await searchAdminPage.goto();
-
-				await searchAdminPage.goToIndexActionsTab();
-
-				await searchAdminPage.reindexAllSearchIndexes();
-
-				const reindexAllSearchIndexes =
-					await searchAdminPage.getIndexActionsItem(
-						'All Search Indexes'
-					);
-
-				await expect(reindexAllSearchIndexes).toBeVisible();
-
-				await expect(
-					reindexAllSearchIndexes.locator('.progress')
-				).toBeHidden({timeout: 120 * 1000});
+				await reindexAllSearchIndexes({searchAdminPage});
 			});
 
 			await viewUpgradedVirtualInstance({

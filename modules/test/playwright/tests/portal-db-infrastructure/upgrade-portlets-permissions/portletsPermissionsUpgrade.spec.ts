@@ -12,6 +12,7 @@ import {getHeader} from '../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../liferay.config';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
+import {reindexAllSearchIndexes} from '../utils/reindexAllSearchIndexes';
 
 const test = mergeTests(
 	featureFlagsTest({
@@ -65,22 +66,7 @@ test.describe.serial('View portlets permissions upgrade', () => {
 		{tag: ['@LPD-104389']},
 		async ({page, searchAdminPage}) => {
 			await test.step('Reindex all search indexes', async () => {
-				await searchAdminPage.goto();
-
-				await searchAdminPage.goToIndexActionsTab();
-
-				await searchAdminPage.reindexAllSearchIndexes();
-
-				const reindexAllSearchIndexes =
-					await searchAdminPage.getIndexActionsItem(
-						'All Search Indexes'
-					);
-
-				await expect(reindexAllSearchIndexes).toBeVisible();
-
-				await expect(
-					reindexAllSearchIndexes.locator('.progress')
-				).toBeHidden({timeout: 120 * 1000});
+				await reindexAllSearchIndexes({searchAdminPage});
 			});
 
 			await test.step('Sign in as the first upgraded user', async () => {
