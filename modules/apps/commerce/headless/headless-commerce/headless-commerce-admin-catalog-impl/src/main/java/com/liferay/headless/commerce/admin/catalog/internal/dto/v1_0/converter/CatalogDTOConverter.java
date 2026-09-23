@@ -75,6 +75,8 @@ public class CatalogDTOConverter
 				setCurrencyExternalReferenceCode(
 					commerceCurrency::getExternalReferenceCode);
 				setCurrencyId(commerceCurrency::getCommerceCurrencyId);
+				setDateCreated(commerceCatalog::getCreateDate);
+				setDateModified(commerceCatalog::getModifiedDate);
 				setDefaultLanguageId(
 					commerceCatalog::getCatalogDefaultLanguageId);
 				setExternalReferenceCode(

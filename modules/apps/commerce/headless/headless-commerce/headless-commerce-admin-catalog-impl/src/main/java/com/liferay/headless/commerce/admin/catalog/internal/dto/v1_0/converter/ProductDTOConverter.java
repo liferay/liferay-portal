@@ -128,6 +128,8 @@ public class ProductDTOConverter
 						cpDefinition.getCPDefinitionId(),
 						cpDefinition.getCompanyId(),
 						dtoConverterContext.getLocale()));
+				setDateCreated(cpDefinition::getCreateDate);
+				setDateModified(cpDefinition::getModifiedDate);
 				setDescription(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpDefinition.getDescriptionMap()));

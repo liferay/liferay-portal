@@ -292,6 +292,8 @@ public class CurrencyResourceImpl
 			{
 				setActive(commerceCurrency::isActive);
 				setCode(commerceCurrency::getCode);
+				setDateCreated(commerceCurrency::getCreateDate);
+				setDateModified(commerceCurrency::getModifiedDate);
 				setExternalReferenceCode(
 					commerceCurrency::getExternalReferenceCode);
 				setFormatPattern(
