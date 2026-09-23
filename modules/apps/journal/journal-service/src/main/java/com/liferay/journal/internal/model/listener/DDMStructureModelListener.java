@@ -148,6 +148,15 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 
 		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
 
+		for (DDMFormFieldValue nestedDDMFormFieldValue :
+				_createDDMFormFieldValues(
+					ddmFormField.getNestedDDMFormFields(),
+					scopeDDMFormFieldValues)) {
+
+			ddmFormFieldValue.addNestedDDMFormFieldValue(
+				nestedDDMFormFieldValue);
+		}
+
 		ddmFormFieldValue.setFieldReference(ddmFormField.getFieldReference());
 		ddmFormFieldValue.setName(ddmFormField.getName());
 
@@ -158,15 +167,6 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 			ddmFormFieldValue.setInstanceId(
 				matchingDDMFormFieldValue.getInstanceId());
 			ddmFormFieldValue.setValue(matchingDDMFormFieldValue.getValue());
-		}
-
-		for (DDMFormFieldValue nestedDDMFormFieldValue :
-				_createDDMFormFieldValues(
-					ddmFormField.getNestedDDMFormFields(),
-					scopeDDMFormFieldValues)) {
-
-			ddmFormFieldValue.addNestedDDMFormFieldValue(
-				nestedDDMFormFieldValue);
 		}
 
 		return ddmFormFieldValue;
@@ -215,11 +215,6 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
-		ddmFormValues.setAvailableLocales(
-			originalDDMFormValues.getAvailableLocales());
-		ddmFormValues.setDefaultLocale(
-			originalDDMFormValues.getDefaultLocale());
-
 		for (DDMFormFieldValue ddmFormFieldValue :
 				_createDDMFormFieldValues(
 					ddmForm.getDDMFormFields(),
@@ -227,6 +222,11 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 
 			ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 		}
+
+		ddmFormValues.setAvailableLocales(
+			originalDDMFormValues.getAvailableLocales());
+		ddmFormValues.setDefaultLocale(
+			originalDDMFormValues.getDefaultLocale());
 
 		return ddmFormValues;
 	}
