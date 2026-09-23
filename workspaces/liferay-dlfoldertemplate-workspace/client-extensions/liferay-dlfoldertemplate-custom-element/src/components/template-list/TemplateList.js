@@ -4,7 +4,6 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import ClayButtonGroup from '@clayui/button/lib/Group';
 import {Body, Cell, Head, Row, Table} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
@@ -174,7 +173,7 @@ const TemplateList = () => {
 					<ClayToolbar.Item>
 						<ClayToolbar.Section>
 							{Liferay.ThemeDisplay.isSignedIn() && (
-								<ClayButtonGroup spaced={true}>
+								<ClayButton.Group spaced={true}>
 									<ClayButtonWithIcon
 										aria-label="Reload"
 										className="lfr-portal-tooltip"
@@ -194,7 +193,7 @@ const TemplateList = () => {
 										symbol="plus"
 										title="Create New"
 									/>
-								</ClayButtonGroup>
+								</ClayButton.Group>
 							)}
 						</ClayToolbar.Section>
 					</ClayToolbar.Item>

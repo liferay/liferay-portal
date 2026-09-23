@@ -33,7 +33,8 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-scripts": "5.0.1",
-		"react-to-webcomponent": "^2.0.0"
+		"react-to-webcomponent": "^2.0.0",
+		"reactflow": "^11.11.4"
 	},
 	"name": "@liferay/liferay-dlfoldertemplate-custom-element",
 	"private": true,
