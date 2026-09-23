@@ -47,6 +47,7 @@ const FIELD: Field = {
 
 const DEFAULT_STATE: State = {
 	clipboard: null,
+	defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
@@ -74,6 +75,7 @@ const DEFAULT_STATE: State = {
 		uuid: getUuid(),
 		workflows: {},
 	},
+	systemFieldNames: {},
 	unsavedChanges: false,
 };
 
@@ -239,6 +241,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'datetime',
 								}),
@@ -277,6 +283,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'long-text',
 								}),
@@ -325,6 +335,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'integer',
 								}),
@@ -401,6 +415,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'email',
 								}),
@@ -449,6 +467,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'phone-number',
 								}),
@@ -500,6 +522,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'phone-number',
 								}),
@@ -542,6 +568,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'upload',
 								}),
@@ -625,6 +655,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'select-from-list',
 								}),
@@ -661,6 +695,10 @@ describe('StructureFieldSettings', () => {
 							uuid,
 							{
 								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
 									parent: getUuid(),
 									type: 'select-from-list',
 								}),

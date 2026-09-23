@@ -14,7 +14,6 @@ import buildObjectRelationships from '../../../../src/main/resources/META-INF/re
 import buildStructure from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildStructure';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
-import {setSystemObjectFieldNames} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/isCustomObjectField';
 
 const parent = getUuid();
 
@@ -253,6 +252,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const childrenMap = new Map(
@@ -281,6 +281,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const emailField = Array.from(structure.children.values()).find(
@@ -342,6 +343,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const fieldNames = getChildFieldNames(structure);
@@ -379,6 +381,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const fieldNames = getChildFieldNames(structure);
@@ -407,6 +410,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {SELF_ERC: objectDefinition},
+			systemFieldNames: {},
 		});
 
 		const relatedContents = Array.from(structure.children.values()).filter(
@@ -442,6 +446,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {SELF_ERC: objectDefinition},
+			systemFieldNames: {},
 		});
 
 		expect(
@@ -473,6 +478,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {SELF_GROUP_ERC: objectDefinition},
+			systemFieldNames: {},
 		});
 
 		const children = Array.from(structure.children.values());
@@ -525,6 +531,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const fieldNames = getChildFieldNames(structure);
@@ -537,8 +544,6 @@ describe('buildStructure', () => {
 	});
 
 	it('Locks the contributed system fields of a definition', () => {
-		setSystemObjectFieldNames({CONTRIBUTED_ERC: ['code', 'name']});
-
 		const objectDefinition = createObjectDefinition({
 			externalReferenceCode: 'CONTRIBUTED_ERC',
 			objectFields: [
@@ -563,6 +568,7 @@ describe('buildStructure', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {CONTRIBUTED_ERC: ['code', 'name']},
 		});
 
 		const lockedByName = new Map(
@@ -576,11 +582,10 @@ describe('buildStructure', () => {
 		expect(lockedByName.get('customField')).toBe(false);
 		expect(lockedByName.get('name')).toBe(true);
 
-		setSystemObjectFieldNames({});
-
 		const structureWithoutContribution = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		expect(getChildFieldNames(structureWithoutContribution)).toEqual([
@@ -633,6 +638,7 @@ describe('buildStructure object layout', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const [group] = Array.from(structure.children.values());
@@ -689,6 +695,7 @@ describe('buildStructure object layout', () => {
 		const structure = buildStructure({
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const [group] = Array.from(structure.children.values());

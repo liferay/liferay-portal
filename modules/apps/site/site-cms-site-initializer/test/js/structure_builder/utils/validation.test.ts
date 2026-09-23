@@ -44,7 +44,11 @@ function buildRepeatableGroup(children: StructureChild[]): RepeatableGroup {
 }
 
 function buildField() {
-	return getDefaultField({parent: GROUP_UUID, type: 'text'});
+	return getDefaultField({
+		defaultLanguageLabels: {labels: {}, locale: 'en_US'},
+		parent: GROUP_UUID,
+		type: 'text',
+	});
 }
 
 function buildNestedGroup(children: StructureChild[]): NonRepeatableGroup {

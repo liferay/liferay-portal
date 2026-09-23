@@ -30,6 +30,7 @@ const renderComponent = () => {
 			parentUuid={'parentUuid' as Uuid}
 			status="saved"
 			structure={DEFAULT_STRUCTURE}
+			systemFieldNames={{}}
 		/>
 	);
 };

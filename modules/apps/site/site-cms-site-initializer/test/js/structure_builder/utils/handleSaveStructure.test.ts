@@ -31,6 +31,7 @@ jest.mock(
 
 function buildDraftState() {
 	return buildState({
+		defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 		mainObjectDefinition: buildObjectDefinition({
 			erc: 'erc',
 			label: {en_US: 'Label'},
@@ -38,6 +39,7 @@ function buildDraftState() {
 			spaces: 'all',
 		}),
 		objectDefinitions: {},
+		systemFieldNames: {},
 	})!;
 }
 

@@ -74,7 +74,13 @@ describe('exceedsMaxNesting', () => {
 	it('Allows a new group at the root level', () => {
 		expect(
 			exceedsMaxNesting({
-				items: [getDefaultField({parent: ROOT_UUID, type: 'text'})],
+				items: [
+					getDefaultField({
+						defaultLanguageLabels: {labels: {}, locale: 'en_US'},
+						parent: ROOT_UUID,
+						type: 'text',
+					}),
+				],
 				newGroup: true,
 				structure: buildStructure([]),
 				targetUuid: ROOT_UUID,
@@ -172,7 +178,14 @@ describe('exceedsMaxNesting', () => {
 			expect(
 				exceedsMaxNesting({
 					items: [
-						getDefaultField({parent: targetUuid, type: 'text'}),
+						getDefaultField({
+							defaultLanguageLabels: {
+								labels: {},
+								locale: 'en_US',
+							},
+							parent: targetUuid,
+							type: 'text',
+						}),
 					],
 					structure: buildStructure([buildNestedGroups(2)]),
 					targetUuid,

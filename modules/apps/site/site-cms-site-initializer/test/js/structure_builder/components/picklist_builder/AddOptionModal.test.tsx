@@ -9,7 +9,6 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {Option} from '../../../../../src/main/resources/META-INF/resources/js/common/types/Picklist';
-import {setDefaultLanguageLabels} from '../../../../../src/main/resources/META-INF/resources/js/common/utils/defaultLanguageLabels';
 import AddOptionModal from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/components/picklist_builder/AddOptionModal';
 import * as PicklistContext from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/PicklistBuilderContext';
 import {MockStateProvider} from '../../mocks/MockPicklistStateProvider';
@@ -33,7 +32,6 @@ const renderComponent = async (
 describe('AddOptionModal', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
-		setDefaultLanguageLabels({labels: {}, locale: 'en_US'});
 	});
 
 	it('Generates random values if no option exists', async () => {
@@ -58,13 +56,13 @@ describe('AddOptionModal', () => {
 		});
 	});
 
-	it('seeds the default-language label using the singleton, not the current-locale translation', async () => {
-		setDefaultLanguageLabels({
-			labels: {
-				option: 'Option',
-			},
-			locale: 'en_US',
-		});
+	it('seeds the default-language label from the default language labels, not from the current-locale translation', async () => {
+		jest.spyOn(PicklistContext, 'useDefaultLanguageLabels').mockReturnValue(
+			{
+				labels: {option: 'Option'},
+				locale: 'en_US',
+			}
+		);
 
 		const getLanguageIdSpy = jest
 			.spyOn(Liferay.ThemeDisplay, 'getLanguageId')

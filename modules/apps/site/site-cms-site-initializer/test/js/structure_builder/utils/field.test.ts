@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {setDefaultLanguageLabels} from '../../../../src/main/resources/META-INF/resources/js/common/utils/defaultLanguageLabels';
 import {
 	FIELD_TYPE_LABEL,
 	getDefaultField,
@@ -24,17 +23,11 @@ describe('getDefaultField', () => {
 
 	afterEach(() => {
 		jest.restoreAllMocks();
-		setDefaultLanguageLabels({labels: {}, locale: 'en_US'});
 	});
 
 	it('uses languageKey to seed both locale slots correctly when they differ', () => {
 		getDefaultLanguageIdSpy.mockReturnValue('en_US');
 		getLanguageIdSpy.mockReturnValue('es_ES');
-
-		setDefaultLanguageLabels({
-			labels: {title: 'Title'},
-			locale: 'en_US',
-		});
 
 		const getLanguageSpy = jest
 			.spyOn(Liferay.Language, 'get')
@@ -44,6 +37,10 @@ describe('getDefaultField', () => {
 
 		try {
 			const field = getDefaultField({
+				defaultLanguageLabels: {
+					labels: {title: 'Title'},
+					locale: 'en_US',
+				},
 				languageKey: 'title',
 				parent: getUuid(),
 				type: 'text',
@@ -64,6 +61,7 @@ describe('getDefaultField', () => {
 		getLanguageIdSpy.mockReturnValue('en_US');
 
 		const field = getDefaultField({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			parent: getUuid(),
 			type: 'text',
 		});
@@ -76,6 +74,7 @@ describe('getDefaultField', () => {
 		getLanguageIdSpy.mockReturnValue('es_ES');
 
 		const field = getDefaultField({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			parent: getUuid(),
 			type: 'text',
 		});
@@ -90,20 +89,28 @@ describe('getDefaultField', () => {
 		getDefaultLanguageIdSpy.mockReturnValue('en_US');
 		getLanguageIdSpy.mockReturnValue('es_ES');
 
-		setDefaultLanguageLabels({
+		const defaultLanguageLabels = {
 			labels: {
 				'date-and-time': 'Date and time',
 				'text': 'Text',
 			},
 			locale: 'en_US',
-		});
+		};
 
 		expect(
-			getDefaultField({parent: getUuid(), type: 'text'}).label.en_US
+			getDefaultField({
+				defaultLanguageLabels,
+				parent: getUuid(),
+				type: 'text',
+			}).label.en_US
 		).toBe('Text');
 
 		expect(
-			getDefaultField({parent: getUuid(), type: 'datetime'}).label.en_US
+			getDefaultField({
+				defaultLanguageLabels,
+				parent: getUuid(),
+				type: 'datetime',
+			}).label.en_US
 		).toBe('Date and time');
 	});
 });

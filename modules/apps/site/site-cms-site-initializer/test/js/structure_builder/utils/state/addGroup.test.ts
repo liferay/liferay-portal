@@ -34,6 +34,7 @@ function buildStructure(children: Structure['children']): Structure {
 describe('addGroup', () => {
 	it('Inserts a group that is not repeatable', () => {
 		const children = addGroup({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			groupChildren: [],
 			groupParent: ROOT_UUID,
 			groupUuid: GROUP_UUID,
@@ -48,6 +49,7 @@ describe('addGroup', () => {
 
 	it('Does not give the group an ERC nor a relationship', () => {
 		const children = addGroup({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			groupChildren: [],
 			groupParent: ROOT_UUID,
 			groupUuid: GROUP_UUID,
@@ -63,9 +65,14 @@ describe('addGroup', () => {
 	});
 
 	it('Moves the selected children into the new group', () => {
-		const field = getDefaultField({parent: ROOT_UUID, type: 'text'});
+		const field = getDefaultField({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
+			parent: ROOT_UUID,
+			type: 'text',
+		});
 
 		const children = addGroup({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			groupChildren: [field],
 			groupParent: ROOT_UUID,
 			groupUuid: GROUP_UUID,

@@ -53,6 +53,7 @@ const OBJECT_DEFINITIONS: ObjectDefinitions = {
 
 const DEFAULT_STATE: State = {
 	clipboard: null,
+	defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
@@ -80,6 +81,7 @@ const DEFAULT_STATE: State = {
 		uuid: getUuid(),
 		workflows: {},
 	},
+	systemFieldNames: {},
 	unsavedChanges: false,
 };
 

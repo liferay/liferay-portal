@@ -137,6 +137,7 @@ describe('refreshReferencedStructures', () => {
 		const result = refreshReferencedStructures({
 			objectDefinitions,
 			root,
+			systemFieldNames: {},
 		});
 
 		const updatedReferencedStructure = result.get(
@@ -268,6 +269,7 @@ describe('refreshReferencedStructures with groups', () => {
 				[objectDefinition.externalReferenceCode]: objectDefinition,
 			},
 			root,
+			systemFieldNames: {},
 		});
 
 		const repeatable = children.get(repeatableUuid) as RepeatableGroup;

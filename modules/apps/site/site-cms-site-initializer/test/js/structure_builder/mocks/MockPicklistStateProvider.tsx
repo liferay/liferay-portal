@@ -11,6 +11,7 @@ import {
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/PicklistBuilderContext';
 
 export const DEFAULT_STATE: State = {
+	defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 	deletedOptions: false,
 	erc: 'picklistERC',
 	id: 1,

@@ -44,7 +44,11 @@ function buildRepeatableGroup(children: StructureChild[]): RepeatableGroup {
 }
 
 function buildField(parent: Uuid = PARENT_UUID) {
-	return getDefaultField({parent, type: 'text'});
+	return getDefaultField({
+		defaultLanguageLabels: {labels: {}, locale: 'en_US'},
+		parent,
+		type: 'text',
+	});
 }
 
 const RELATED_CONTENT: RelatedContent = {
