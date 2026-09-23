@@ -91,7 +91,14 @@ public class KeyManagerProfileRegistryImplTest {
 	}
 
 	private void _setActiveProfileId(String activeProfileId) {
-		KeyManagerConfiguration keyManagerConfiguration = () -> activeProfileId;
+		KeyManagerConfiguration keyManagerConfiguration = Mockito.mock(
+			KeyManagerConfiguration.class);
+
+		Mockito.when(
+			keyManagerConfiguration.activeProfileId()
+		).thenReturn(
+			activeProfileId
+		);
 
 		ReflectionTestUtil.setFieldValue(
 			_keyManagerProfileRegistryImpl, "_keyManagerConfiguration",
