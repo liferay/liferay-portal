@@ -200,6 +200,16 @@ public class ProductSerDes {
 			sb.append("\"");
 		}
 
+		if (product.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(product.getCreator()));
+		}
+
 		if (product.getCustomFields() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -218,6 +228,35 @@ public class ProductSerDes {
 			}
 
 			sb.append("]");
+		}
+
+		if (product.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(product.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (product.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(product.getDateModified()));
+
+			sb.append("\"");
 		}
 
 		if (product.getDefaultSku() != null) {
@@ -911,11 +950,36 @@ public class ProductSerDes {
 				liferayToJSONDateFormat.format(product.getCreateDate()));
 		}
 
+		if (product.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(product.getCreator()));
+		}
+
 		if (product.getCustomFields() == null) {
 			map.put("customFields", null);
 		}
 		else {
 			map.put("customFields", String.valueOf(product.getCustomFields()));
+		}
+
+		if (product.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(product.getDateCreated()));
+		}
+
+		if (product.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(product.getDateModified()));
 		}
 
 		if (product.getDefaultSku() == null) {
@@ -1316,7 +1380,16 @@ public class ProductSerDes {
 			else if (Objects.equals(jsonParserFieldName, "createDate")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "customFields")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "defaultSku")) {
@@ -1562,6 +1635,12 @@ public class ProductSerDes {
 					product.setCreateDate(toDate((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					product.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "customFields")) {
 				if (jsonParserFieldValue != null) {
 					Object[] jsonParserFieldValues =
@@ -1581,6 +1660,18 @@ public class ProductSerDes {
 					}
 
 					product.setCustomFields(customFieldsArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					product.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					product.setDateModified(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "defaultSku")) {
@@ -2055,4 +2146,4 @@ public class ProductSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:180769946
+// LIFERAY-REST-BUILDER-HASH:937987306

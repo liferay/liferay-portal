@@ -61,6 +61,10 @@ public interface CatalogResource {
 			String externalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getCatalogPermissionsPage(Long catalogId, String roleNames)
+		throws Exception;
+
 	public Page<Catalog> getCatalogsPage(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
@@ -95,6 +99,12 @@ public interface CatalogResource {
 
 	public Catalog putCatalogByExternalReferenceCode(
 			String externalReferenceCode, Catalog catalog)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putCatalogPermissionsPage(
+				Long catalogId,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -193,4 +203,4 @@ public interface CatalogResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-998486809
+// LIFERAY-REST-BUILDER-HASH:-1544378671

@@ -188,7 +188,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of commerce currencies scoped to the current company. List query support — filterable fields -- active, primary, priority, code, name; sortable fields -- active, primary, priority, code, name."
+		description = "Returns a page of commerce currencies scoped to the current company. List query support — filterable fields -- active, primary, dateCreated, dateModified, priority, code, externalReferenceCode, name; sortable fields -- active, primary, dateCreated, dateModified, priority, code, externalReferenceCode, name."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1420,4 +1420,4 @@ public abstract class BaseCurrencyResourceImpl
 		LogFactoryUtil.getLog(BaseCurrencyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1737179950
+// LIFERAY-REST-BUILDER-HASH:1737424578

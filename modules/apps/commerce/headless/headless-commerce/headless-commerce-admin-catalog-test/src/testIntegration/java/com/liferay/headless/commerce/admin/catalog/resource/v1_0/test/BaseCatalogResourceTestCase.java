@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Catalog;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.catalog.client.permission.Permission;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.CatalogResource;
 import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.CatalogSerDes;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,6 +45,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -159,6 +162,19 @@ public abstract class BaseCatalogResourceTestCase {
 			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
+		).build();
+
+		permissionsCatalogResource = CatalogResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameter(
+			"nestedFields", "permissions"
 		).build();
 	}
 
@@ -525,6 +541,12 @@ public abstract class BaseCatalogResourceTestCase {
 
 		assertEquals(postCatalog, getCatalog);
 		assertValid(getCatalog);
+
+		Assert.assertNull(getCatalog.getPermissions());
+
+		getCatalog = permissionsCatalogResource.getCatalog(postCatalog.getId());
+
+		Assert.assertNotNull(getCatalog.getPermissions());
 	}
 
 	@Test
@@ -826,6 +848,14 @@ public abstract class BaseCatalogResourceTestCase {
 
 		assertEquals(postCatalog, getCatalog);
 		assertValid(getCatalog);
+
+		Assert.assertNull(getCatalog.getPermissions());
+
+		getCatalog =
+			permissionsCatalogResource.getCatalogByExternalReferenceCode(
+				postCatalog.getExternalReferenceCode());
+
+		Assert.assertNotNull(getCatalog.getPermissions());
 	}
 
 	protected Catalog testGetCatalogByExternalReferenceCode_addCatalog()
@@ -949,6 +979,51 @@ public abstract class BaseCatalogResourceTestCase {
 	}
 
 	@Test
+	public void testGetCatalogPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Catalog postCatalog = testGetCatalogPermissionsPage_addCatalog();
+
+		Page<Permission> page = catalogResource.getCatalogPermissionsPage(
+			postCatalog.getId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected Catalog testGetCatalogPermissionsPage_addCatalog()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetCatalogPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Catalog postCatalog = testGraphQLGetCatalogPermissionsPage_addCatalog();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"catalogPermissions",
+			new HashMap<String, Object>() {
+				{
+					put("catalogId", postCatalog.getId());
+				}
+			},
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject catalogPermissionsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/catalogPermissions");
+
+		Assert.assertNotNull(catalogPermissionsJSONObject);
+	}
+
+	protected Catalog testGraphQLGetCatalogPermissionsPage_addCatalog()
+		throws Exception {
+
+		return testGraphQLCatalog_addCatalog();
+	}
+
+	@Test
 	public void testGetCatalogsPage() throws Exception {
 		Page<Catalog> page = catalogResource.getCatalogsPage(
 			null, null, Pagination.of(1, 10), null);
@@ -967,6 +1042,17 @@ public abstract class BaseCatalogResourceTestCase {
 		assertContains(catalog1, (List<Catalog>)page.getItems());
 		assertContains(catalog2, (List<Catalog>)page.getItems());
 		assertValid(page, testGetCatalogsPage_getExpectedActions());
+
+		for (Catalog catalog : page.getItems()) {
+			Assert.assertNull(catalog.getPermissions());
+		}
+
+		page = permissionsCatalogResource.getCatalogsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		for (Catalog catalog : page.getItems()) {
+			Assert.assertNotNull(catalog.getPermissions());
+		}
 
 		catalogResource.deleteCatalog(catalog1.getId());
 
@@ -1639,9 +1725,30 @@ public abstract class BaseCatalogResourceTestCase {
 
 		assertEquals(randomCatalog, postCatalog);
 		assertValid(postCatalog);
+
+		Catalog randomPermissionsCatalog1 = randomPermissionsCatalog();
+
+		Catalog postPermissionsCatalog1 = testPostCatalog_addCatalog(
+			randomPermissionsCatalog1);
+
+		Assert.assertNull(postPermissionsCatalog1.getPermissions());
+
+		Catalog randomPermissionsCatalog2 = randomPermissionsCatalog();
+
+		Catalog postPermissionsCatalog2 = testPostCatalog_addPermissionsCatalog(
+			randomPermissionsCatalog2);
+
+		Assert.assertNotNull(postPermissionsCatalog2.getPermissions());
 	}
 
 	protected Catalog testPostCatalog_addCatalog(Catalog catalog)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Catalog testPostCatalog_addPermissionsCatalog(Catalog catalog)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1670,11 +1777,30 @@ public abstract class BaseCatalogResourceTestCase {
 		assertEquals(randomCatalog, putCatalog);
 		assertValid(putCatalog);
 
+		Assert.assertNull(putCatalog.getPermissions());
+
 		Catalog getCatalog = catalogResource.getCatalogByExternalReferenceCode(
 			putCatalog.getExternalReferenceCode());
 
 		assertEquals(randomCatalog, getCatalog);
 		assertValid(getCatalog);
+
+		Catalog randomPermissionsCatalog = randomPermissionsCatalog();
+
+		putCatalog = catalogResource.putCatalogByExternalReferenceCode(
+			postCatalog.getExternalReferenceCode(), randomPermissionsCatalog);
+
+		assertEquals(randomPermissionsCatalog, putCatalog);
+		assertValid(putCatalog);
+
+		Assert.assertNull(putCatalog.getPermissions());
+
+		putCatalog =
+			permissionsCatalogResource.putCatalogByExternalReferenceCode(
+				postCatalog.getExternalReferenceCode(),
+				randomPermissionsCatalog);
+
+		Assert.assertNotNull(putCatalog.getPermissions());
 
 		Catalog newCatalog =
 			testPutCatalogByExternalReferenceCode_createCatalog();
@@ -1706,6 +1832,49 @@ public abstract class BaseCatalogResourceTestCase {
 		throws Exception {
 
 		return randomCatalog();
+	}
+
+	@Test
+	public void testPutCatalogPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Catalog catalog = testPutCatalogPermissionsPage_addCatalog();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			catalogResource.putCatalogPermissionsPageHttpResponse(
+				catalog.getId(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"VIEW"});
+							setRoleName(role.getName());
+						}
+					}
+				}));
+
+		assertHttpResponseStatusCode(
+			404,
+			catalogResource.putCatalogPermissionsPageHttpResponse(
+				0L,
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"-"});
+							setRoleName("-");
+						}
+					}
+				}));
+	}
+
+	protected Catalog testPutCatalogPermissionsPage_addCatalog()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1977,6 +2146,14 @@ public abstract class BaseCatalogResourceTestCase {
 	protected void assertValid(Catalog catalog) throws Exception {
 		boolean valid = true;
 
+		if (catalog.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (catalog.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (catalog.getId() == null) {
 			valid = false;
 		}
@@ -2013,6 +2190,14 @@ public abstract class BaseCatalogResourceTestCase {
 
 			if (Objects.equals("actions", additionalAssertFieldName)) {
 				if (catalog.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (catalog.getCreator() == null) {
 					valid = false;
 				}
 
@@ -2068,6 +2253,14 @@ public abstract class BaseCatalogResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (catalog.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (catalog.getPermissions() == null) {
 					valid = false;
 				}
 
@@ -2247,6 +2440,16 @@ public abstract class BaseCatalogResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						catalog1.getCreator(), catalog2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("currencyCode", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						catalog1.getCurrencyCode(),
@@ -2275,6 +2478,27 @@ public abstract class BaseCatalogResourceTestCase {
 			if (Objects.equals("currencyId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						catalog1.getCurrencyId(), catalog2.getCurrencyId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						catalog1.getDateCreated(), catalog2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						catalog1.getDateModified(),
+						catalog2.getDateModified())) {
 
 					return false;
 				}
@@ -2319,6 +2543,16 @@ public abstract class BaseCatalogResourceTestCase {
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						catalog1.getName(), catalog2.getName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						catalog1.getPermissions(), catalog2.getPermissions())) {
 
 					return false;
 				}
@@ -2504,6 +2738,11 @@ public abstract class BaseCatalogResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("currencyCode")) {
 			Object object = catalog.getCurrencyCode();
 
@@ -2599,6 +2838,64 @@ public abstract class BaseCatalogResourceTestCase {
 		if (entityFieldName.equals("currencyId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = catalog.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(catalog.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = catalog.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(catalog.getDateModified()));
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("defaultLanguageId")) {
@@ -2744,6 +3041,11 @@ public abstract class BaseCatalogResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("system")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2804,6 +3106,8 @@ public abstract class BaseCatalogResourceTestCase {
 				currencyExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				currencyId = RandomTestUtil.randomLong();
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -2823,6 +3127,25 @@ public abstract class BaseCatalogResourceTestCase {
 
 	protected Catalog randomPatchCatalog() throws Exception {
 		return randomCatalog();
+	}
+
+	protected Catalog randomPermissionsCatalog() throws Exception {
+		Catalog catalog = randomCatalog();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		catalog.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {"VIEW"});
+						setRoleName(role.getName());
+					}
+				}
+			});
+
+		return catalog;
 	}
 
 	protected final JSONObject waitForFinish(
@@ -2850,6 +3173,7 @@ public abstract class BaseCatalogResourceTestCase {
 	protected CatalogResource catalogResource;
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
+	protected CatalogResource permissionsCatalogResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
@@ -3081,4 +3405,4 @@ public abstract class BaseCatalogResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1223836946
+// LIFERAY-REST-BUILDER-HASH:1084020388

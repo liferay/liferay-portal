@@ -450,7 +450,7 @@ public abstract class BaseProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of products scoped to the current company, with filtering by indexed product fields and expando-backed custom fields. List query support — filterable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, modifiedDate, catalogId, productId, externalReferenceCode, name, productType; sortable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, modifiedDate, catalogId, productId, externalReferenceCode, name, productType."
+		description = "Returns a page of products scoped to the current company, with filtering by indexed product fields and expando-backed custom fields. List query support — filterable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, dateCreated, dateModified, modifiedDate, catalogId, productId, externalReferenceCode, name, productType; sortable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, dateCreated, dateModified, modifiedDate, catalogId, productId, externalReferenceCode, name, productType."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1759,4 +1759,4 @@ public abstract class BaseProductResourceImpl
 		LogFactoryUtil.getLog(BaseProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1284145771
+// LIFERAY-REST-BUILDER-HASH:1327581949

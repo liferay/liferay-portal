@@ -10,6 +10,9 @@ import com.liferay.headless.commerce.admin.catalog.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,6 +47,9 @@ public class CatalogSerDes {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{");
+
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
 
 		if (catalog.getAccountExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
@@ -91,6 +97,16 @@ public class CatalogSerDes {
 			sb.append(_toJSON(catalog.getActions()));
 		}
 
+		if (catalog.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(catalog.getCreator()));
+		}
+
 		if (catalog.getCurrencyCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -127,6 +143,35 @@ public class CatalogSerDes {
 			sb.append("\"currencyId\": ");
 
 			sb.append(catalog.getCurrencyId());
+		}
+
+		if (catalog.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(catalog.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (catalog.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(catalog.getDateModified()));
+
+			sb.append("\"");
 		}
 
 		if (catalog.getDefaultLanguageId() != null) {
@@ -181,6 +226,26 @@ public class CatalogSerDes {
 			sb.append("\"");
 		}
 
+		if (catalog.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < catalog.getPermissions().length; i++) {
+				sb.append(catalog.getPermissions()[i]);
+
+				if ((i + 1) < catalog.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (catalog.getSystem() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -208,6 +273,9 @@ public class CatalogSerDes {
 		}
 
 		Map<String, String> map = new TreeMap<>();
+
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
 
 		if (catalog.getAccountExternalReferenceCode() == null) {
 			map.put("accountExternalReferenceCode", null);
@@ -239,6 +307,13 @@ public class CatalogSerDes {
 			map.put("actions", String.valueOf(catalog.getActions()));
 		}
 
+		if (catalog.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(catalog.getCreator()));
+		}
+
 		if (catalog.getCurrencyCode() == null) {
 			map.put("currencyCode", null);
 		}
@@ -260,6 +335,24 @@ public class CatalogSerDes {
 		}
 		else {
 			map.put("currencyId", String.valueOf(catalog.getCurrencyId()));
+		}
+
+		if (catalog.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(catalog.getDateCreated()));
+		}
+
+		if (catalog.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(catalog.getDateModified()));
 		}
 
 		if (catalog.getDefaultLanguageId() == null) {
@@ -292,6 +385,13 @@ public class CatalogSerDes {
 		}
 		else {
 			map.put("name", String.valueOf(catalog.getName()));
+		}
+
+		if (catalog.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put("permissions", String.valueOf(catalog.getPermissions()));
 		}
 
 		if (catalog.getSystem() == null) {
@@ -332,6 +432,9 @@ public class CatalogSerDes {
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
 				return true;
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
 				return false;
 			}
@@ -341,6 +444,12 @@ public class CatalogSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "currencyId")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "defaultLanguageId")) {
@@ -355,6 +464,9 @@ public class CatalogSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "system")) {
@@ -396,6 +508,12 @@ public class CatalogSerDes {
 						(Map<String, Map<String, String>>)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					catalog.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
 				if (jsonParserFieldValue != null) {
 					catalog.setCurrencyCode((String)jsonParserFieldValue);
@@ -413,6 +531,18 @@ public class CatalogSerDes {
 				if (jsonParserFieldValue != null) {
 					catalog.setCurrencyId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					catalog.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					catalog.setDateModified(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "defaultLanguageId")) {
@@ -436,6 +566,26 @@ public class CatalogSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					catalog.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.commerce.admin.catalog.client.
+						permission.Permission[] permissionsArray = new
+						com.liferay.headless.commerce.admin.catalog.client.
+							permission.Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.commerce.admin.catalog.client.
+								permission.Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					catalog.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "system")) {
@@ -530,4 +680,4 @@ public class CatalogSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1273079537
+// LIFERAY-REST-BUILDER-HASH:-24211672

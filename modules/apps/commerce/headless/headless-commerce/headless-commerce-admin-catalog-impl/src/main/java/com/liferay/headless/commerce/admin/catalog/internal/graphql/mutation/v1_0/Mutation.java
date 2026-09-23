@@ -815,6 +815,28 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Replaces the role permissions granted on the catalog identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the catalog."
+	)
+	public java.util.Collection<com.liferay.portal.vulcan.permission.Permission>
+			updateCatalogPermissionsPage(
+				@GraphQLName("catalogId") Long catalogId,
+				@GraphQLName("permissions")
+					com.liferay.portal.vulcan.permission.Permission[]
+						permissions)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_catalogResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			catalogResource -> {
+				Page paginationPage = catalogResource.putCatalogPermissionsPage(
+					catalogId, permissions);
+
+				return paginationPage.getItems();
+			});
+	}
+
+	@GraphQLField(
 		description = "Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization)."
 	)
 	public Response patchProductByExternalReferenceCodeCategory(
@@ -4865,4 +4887,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1001693787
+// LIFERAY-REST-BUILDER-HASH:-1982078954

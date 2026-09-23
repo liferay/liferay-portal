@@ -444,6 +444,11 @@ public class ServletDataImpl implements ServletData {
 							CatalogResourceImpl.class,
 							"putCatalogByExternalReferenceCode"));
 					put(
+						"mutation#updateCatalogPermissionsPage",
+						new ObjectValuePair<>(
+							CatalogResourceImpl.class,
+							"putCatalogPermissionsPage"));
+					put(
 						"mutation#patchProductByExternalReferenceCodeCategory",
 						new ObjectValuePair<>(
 							CategoryResourceImpl.class,
@@ -1434,6 +1439,11 @@ public class ServletDataImpl implements ServletData {
 							CatalogResourceImpl.class,
 							"getCatalogByExternalReferenceCode"));
 					put(
+						"query#catalogPermissions",
+						new ObjectValuePair<>(
+							CatalogResourceImpl.class,
+							"getCatalogPermissionsPage"));
+					put(
 						"query#catalogs",
 						new ObjectValuePair<>(
 							CatalogResourceImpl.class, "getCatalogsPage"));
@@ -2353,4 +2363,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1617227089
+// LIFERAY-REST-BUILDER-HASH:1902528253

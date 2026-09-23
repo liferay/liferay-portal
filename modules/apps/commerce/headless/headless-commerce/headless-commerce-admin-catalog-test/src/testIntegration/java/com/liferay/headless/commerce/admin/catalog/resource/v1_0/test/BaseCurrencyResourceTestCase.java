@@ -1756,6 +1756,14 @@ public abstract class BaseCurrencyResourceTestCase {
 	protected void assertValid(Currency currency) throws Exception {
 		boolean valid = true;
 
+		if (currency.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (currency.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (currency.getId() == null) {
 			valid = false;
 		}
@@ -1773,6 +1781,14 @@ public abstract class BaseCurrencyResourceTestCase {
 
 			if (Objects.equals("code", additionalAssertFieldName)) {
 				if (currency.getCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (currency.getCreator() == null) {
 					valid = false;
 				}
 
@@ -1998,6 +2014,38 @@ public abstract class BaseCurrencyResourceTestCase {
 			if (Objects.equals("code", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						currency1.getCode(), currency2.getCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						currency1.getCreator(), currency2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						currency1.getDateCreated(),
+						currency2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						currency1.getDateModified(),
+						currency2.getDateModified())) {
 
 					return false;
 				}
@@ -2282,6 +2330,69 @@ public abstract class BaseCurrencyResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = currency.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(currency.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = currency.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(currency.getDateModified()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = currency.getExternalReferenceCode();
 
@@ -2471,6 +2582,8 @@ public abstract class BaseCurrencyResourceTestCase {
 			{
 				active = RandomTestUtil.randomBoolean();
 				code = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
@@ -2749,4 +2862,4 @@ public abstract class BaseCurrencyResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1330327905
+// LIFERAY-REST-BUILDER-HASH:-1761869054
