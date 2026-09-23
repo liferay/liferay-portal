@@ -148,3 +148,112 @@ test('LPD-84993 Editing the Configuration tab and clicking Publish carries the c
 		commerceAdminProductDetailsConfigurationPage.purchasableInput
 	).not.toBeChecked();
 });
+
+test(
+	'Save as Draft asks for confirmation when the product already has a draft',
+	{tag: '@LPD-106110'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				productStatus: 2,
+			});
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			String(product.productId),
+			{name: product.name, productStatus: 0}
+		);
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		const productURL = page.url();
+
+		await commerceAdminProductDetailsPage.saveAsDraft();
+
+		await expect(
+			commerceAdminProductDetailsPage.workflowStatusLabel('Draft')
+		).toBeVisible();
+
+		await page.goto(productURL);
+
+		await Promise.all([
+			page.waitForEvent('dialog').then(async (dialog) => {
+				expect(dialog.message()).toContain(
+					'There is already a draft version of this product.'
+				);
+
+				await dialog.accept();
+			}),
+			commerceAdminProductDetailsPage.saveAsDraft(),
+		]);
+
+		await expect(
+			commerceAdminProductDetailsPage.workflowStatusLabel('Draft')
+		).toBeVisible();
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
+			product.productId,
+			2
+		);
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
+			product.productId,
+			1
+		);
+	}
+);
+
+test(
+	'Save as Draft is shown only when product versioning is enabled',
+	{tag: '@LPD-106110'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		commerceInstanceSettingsPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				productStatus: 2,
+			});
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			String(product.productId),
+			{name: product.name, productStatus: 0}
+		);
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await expect(
+			commerceAdminProductDetailsPage.saveAsDraftLink
+		).toBeVisible();
+
+		await commerceInstanceSettingsPage.toggleProductVersioning();
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await expect(commerceAdminProductDetailsPage.publishLink).toBeVisible();
+		await expect(
+			commerceAdminProductDetailsPage.saveAsDraftLink
+		).toBeHidden();
+
+		await commerceInstanceSettingsPage.toggleProductVersioning();
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
+			product.productId,
+			1
+		);
+	}
+);

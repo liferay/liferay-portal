@@ -46,8 +46,10 @@ export class CommerceAdminProductDetailsPage {
 	readonly productSkusLink: Locator;
 	readonly productVisibilityLink: Locator;
 	readonly publishLink: Locator;
+	readonly saveAsDraftLink: Locator;
 	readonly textTableCell: (text: string) => Locator;
 	readonly visibleToggle: Locator;
+	readonly workflowStatusLabel: (status: string) => Locator;
 
 	constructor(page: Page) {
 		this.addSpecification = page
@@ -156,6 +158,10 @@ export class CommerceAdminProductDetailsPage {
 			name: 'Visibility',
 		});
 		this.publishLink = page.getByRole('link', {name: 'Publish'});
+		this.saveAsDraftLink = page.getByRole('link', {
+			exact: true,
+			name: 'Save as Draft',
+		});
 		this.textTableCell = (text: string) =>
 			this.page.getByRole('cell', {
 				exact: true,
@@ -165,6 +171,8 @@ export class CommerceAdminProductDetailsPage {
 			'Visible',
 			{exact: true}
 		);
+		this.workflowStatusLabel = (status: string) =>
+			page.locator('.workflow-status', {hasText: status});
 	}
 
 	async addExistingProductSpecification(
@@ -277,5 +285,11 @@ export class CommerceAdminProductDetailsPage {
 		}).toPass({timeout: 30000});
 
 		return publishAlert;
+	}
+
+	async saveAsDraft() {
+		await this.page.waitForLoadState('networkidle');
+
+		await this.saveAsDraftLink.click();
 	}
 }
