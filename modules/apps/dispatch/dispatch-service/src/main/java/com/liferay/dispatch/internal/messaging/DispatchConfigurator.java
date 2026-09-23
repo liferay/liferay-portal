@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
 import java.util.Arrays;
@@ -105,19 +106,25 @@ public class DispatchConfigurator {
 				_dispatchTriggerLocalService.getActiveDispatchTriggers(
 					dispatchTaskClusterModes)) {
 
-			DispatchTaskClusterMode dispatchTaskClusterMode =
-				DispatchTaskClusterMode.valueOf(
-					dispatchTrigger.getDispatchTaskClusterMode());
-
 			try {
-				_dispatchTriggerHelper.addSchedulerJob(
-					dispatchTrigger, dispatchTaskClusterMode.getStorageType(),
-					dispatchTrigger.getTimeZoneId());
-			}
-			catch (DispatchTriggerSchedulerException
-						dispatchTriggerSchedulerException) {
+				DispatchTaskClusterMode dispatchTaskClusterMode =
+					DispatchTaskClusterMode.valueOf(
+						dispatchTrigger.getDispatchTaskClusterMode());
 
-				_log.error(dispatchTriggerSchedulerException);
+				if (!_dispatchTriggerHelper.hasSchedulerJob(
+						dispatchTrigger,
+						dispatchTaskClusterMode.getStorageType())) {
+
+					_dispatchTriggerHelper.addSchedulerJob(
+						dispatchTrigger,
+						dispatchTaskClusterMode.getStorageType(),
+						dispatchTrigger.getTimeZoneId());
+				}
+			}
+			catch (DispatchTriggerSchedulerException | SchedulerException
+						exception) {
+
+				_log.error(exception);
 			}
 		}
 	}

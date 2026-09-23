@@ -137,6 +137,22 @@ public class DispatchTriggerHelper {
 		return _schedulerEngineHelper.getPreviousFireDate(schedulerResponse);
 	}
 
+	public boolean hasSchedulerJob(
+			DispatchTrigger dispatchTrigger, StorageType storageType)
+		throws SchedulerException {
+
+		SchedulerResponse schedulerResponse =
+			_schedulerEngineHelper.getScheduledJob(
+				_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
+				storageType);
+
+		if (schedulerResponse == null) {
+			return false;
+		}
+
+		return true;
+	}
+
 	private String _getGroupName(DispatchTrigger dispatchTrigger) {
 		return StringBundler.concat(
 			"DISPATCH_GROUP_",
