@@ -18,6 +18,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPSpecificationOption;
+import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -65,11 +66,15 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -191,6 +196,14 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	@Override
 	@Test
 	public void testDeleteProductBatch() throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testDeleteProductByExternalReferenceCode() throws Exception {
+		super.testDeleteProductByExternalReferenceCode();
+
+		_testDeleteProductByExternalReferenceCodeWithSystemEvent();
 	}
 
 	@Ignore
@@ -758,6 +771,28 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			404,
 			productResource.getProductByExternalReferenceCodeHttpResponse(
 				product.getExternalReferenceCode()));
+	}
+
+	private void _testDeleteProductByExternalReferenceCodeWithSystemEvent()
+		throws Exception {
+
+		Product product = testDeleteProductByExternalReferenceCode_addProduct();
+
+		productResource.deleteProductByExternalReferenceCode(
+			product.getExternalReferenceCode());
+
+		List<SystemEvent> systemEvents =
+			_systemEventLocalService.getSystemEvents(
+				0, _classNameLocalService.getClassNameId(CProduct.class),
+				product.getProductId(), SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
+
+		SystemEvent systemEvent = systemEvents.get(0);
+
+		Assert.assertEquals(
+			product.getExternalReferenceCode(),
+			systemEvent.getClassExternalReferenceCode());
 	}
 
 	private void _testGetProductsPage() throws Exception {
@@ -1641,6 +1676,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	@Inject
 	private AccountGroupLocalService _accountGroupLocalService;
 
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
+
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
@@ -1679,6 +1717,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
