@@ -68,13 +68,13 @@ public class FragmentDesignLibraryResourceTypeContributor
 			httpServletRequest, depotGroup, backURL);
 
 		return ListUtil.fromArray(
-			_newCreationItem(
+			_getDesignLibraryResourceCreationItem(
 				httpServletRequest, "add-basic-fragment", "new-basic-fragment",
 				"fragment", FragmentConstants.TYPE_COMPONENT, baseModuleProps),
-			_newCreationItem(
+			_getDesignLibraryResourceCreationItem(
 				httpServletRequest, "add-form-fragment", "new-form-fragment",
 				"fragment", FragmentConstants.TYPE_INPUT, baseModuleProps),
-			_newCreationItem(
+			_getDesignLibraryResourceCreationItem(
 				httpServletRequest, "add-fragment-set", "new-fragment-set",
 				"set", 0, baseModuleProps));
 	}
@@ -211,7 +211,7 @@ public class FragmentDesignLibraryResourceTypeContributor
 		).build();
 	}
 
-	private DesignLibraryResourceCreationItem _newCreationItem(
+	private DesignLibraryResourceCreationItem _getDesignLibraryResourceCreationItem(
 		HttpServletRequest httpServletRequest, String id, String languageKey,
 		String mode, int fragmentType, Map<String, Object> baseModuleProps) {
 

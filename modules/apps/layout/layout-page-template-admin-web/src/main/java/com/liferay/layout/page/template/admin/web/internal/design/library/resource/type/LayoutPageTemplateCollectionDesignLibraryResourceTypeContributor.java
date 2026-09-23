@@ -66,10 +66,10 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 			httpServletRequest, depotEntry.getGroup(), backURL);
 
 		return ListUtil.fromArray(
-			_newCreationItem(
+			_getDesignLibraryResourceCreationItem(
 				httpServletRequest, "add-content-page-template",
 				"new-content-page-template", "page-template", baseModuleProps),
-			_newCreationItem(
+			_getDesignLibraryResourceCreationItem(
 				httpServletRequest, "add-page-template-set",
 				"new-page-template-set", "set", baseModuleProps));
 	}
@@ -221,7 +221,7 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 		).build();
 	}
 
-	private DesignLibraryResourceCreationItem _newCreationItem(
+	private DesignLibraryResourceCreationItem _getDesignLibraryResourceCreationItem(
 		HttpServletRequest httpServletRequest, String id, String languageKey,
 		String mode, Map<String, Object> baseModuleProps) {
 
