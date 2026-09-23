@@ -5,11 +5,20 @@
 
 package com.liferay.dispatch.internal.upgrade.registry;
 
+import com.liferay.dispatch.internal.upgrade.v4_4_0.DispatchRepositoryResourcePermissionUpgradeProcess;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RepositoryLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.upgrade.BaseUuidUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Igor Beslic
@@ -91,6 +100,35 @@ public class DispatchServiceUpgradeStepRegistrator
 			"4.2.0", "4.3.0",
 			new com.liferay.dispatch.internal.upgrade.v4_3_0.
 				DispatchTriggerUpgradeProcess());
+
+		registry.register(
+			"4.3.0", "4.4.0",
+			new DispatchRepositoryResourcePermissionUpgradeProcess(
+				_companyLocalService, _dlFileEntryLocalService,
+				_dlFolderLocalService, _groupLocalService,
+				_repositoryLocalService, _resourcePermissionLocalService,
+				_roleLocalService));
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLFolderLocalService _dlFolderLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private RepositoryLocalService _repositoryLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
