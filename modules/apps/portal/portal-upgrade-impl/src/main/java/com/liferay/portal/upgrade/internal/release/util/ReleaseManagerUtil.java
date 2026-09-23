@@ -66,9 +66,8 @@ public class ReleaseManagerUtil {
 				upgradeExecutor.getUpgradeInfos(bundleSymbolicName));
 		}
 		catch (Throwable throwable) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					getFailedModuleMessage(bundleSymbolicName), throwable);
+			if (_log.isDebugEnabled()) {
+				_log.debug(throwable);
 			}
 
 			return false;
