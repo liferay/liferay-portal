@@ -1,0 +1,15 @@
+@import 'atlas-custom-properties/_variables';
+
+// OpenStreetMap has no address input, so the map shows the field's error
+// state.
+
+.has-error .object-field__location-map {
+	border-color: var(--danger-l1);
+}
+
+.object-field__location-map {
+	border: $input-border-width solid var(--secondary-l3);
+	border-radius: $input-border-radius;
+	height: 280px;
+	width: 100%;
+}
