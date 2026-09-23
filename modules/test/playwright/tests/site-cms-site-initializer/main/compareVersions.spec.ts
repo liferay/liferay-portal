@@ -41,6 +41,12 @@ function getDiffBox(frame: FrameLocator, fieldName: string): Locator {
 	);
 }
 
+function getRelatedContentDiffBox(frame: FrameLocator): Locator {
+	return frame.locator(
+		'[data-field-name^="ObjectField_r_"] .cms-compare-versions-diff'
+	);
+}
+
 async function expectDiffBoxToShow(
 	frame: FrameLocator,
 	fieldName: string,
@@ -341,6 +347,16 @@ test(
 			await expect(
 				getDiffBox(leftFrame, 'moment').locator('.diff-html-added')
 			).toHaveText('09/15/2026, 04:45 PM');
+		});
+
+		await test.step('A changed reference is marked by its title', async () => {
+			await expect(
+				getRelatedContentDiffBox(leftFrame).locator('.diff-html-added')
+			).toHaveText(secondRelatedTitle);
+
+			await expect(
+				getRelatedContentDiffBox(rightFrame).locator('.diff-html-added')
+			).toHaveText(firstRelatedTitle);
 		});
 
 		await test.step('A replaced attachment shows each version thumbnail and file name', async () => {
