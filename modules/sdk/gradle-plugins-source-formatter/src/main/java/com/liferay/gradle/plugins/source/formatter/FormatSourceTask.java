@@ -359,7 +359,9 @@ public class FormatSourceTask extends JavaExec {
 			pathString = pathString.replace(File.separatorChar, '/');
 		}
 
-		if (pathString.charAt(pathString.length() - 1) != '/') {
+		if (file.isDirectory() &&
+			(pathString.charAt(pathString.length() - 1) != '/')) {
+
 			pathString += '/';
 		}
 
