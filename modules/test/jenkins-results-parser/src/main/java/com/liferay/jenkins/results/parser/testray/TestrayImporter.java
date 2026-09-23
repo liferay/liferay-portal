@@ -1817,6 +1817,8 @@ public class TestrayImporter {
 
 		topLevelStandaloneBuildTestrayCaseResult.recordTestrayCaseResult(job);
 
+		topLevelStandaloneBuildTestrayCaseResult.cacheTestrayCaseResultURL();
+
 		return topLevelStandaloneBuildTestrayCaseResult;
 	}
 
