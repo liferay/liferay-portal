@@ -12,7 +12,10 @@ import React, {
 	useReducer,
 } from 'react';
 
-import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
+import {
+	ObjectDefinition,
+	ObjectDefinitions,
+} from '../../common/types/ObjectDefinition';
 import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
@@ -27,10 +30,6 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
-import {
-	getBaseObjectDefinition,
-	getBaseObjectDefinitions,
-} from '../utils/baseObjectDefinition';
 import {buildChildren} from '../utils/buildStructure';
 import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
@@ -1162,7 +1161,15 @@ function reducer(state: State, action: Action): State {
 	}
 }
 
-function initState(state: State): State {
+function initState({
+	baseObjectDefinition,
+	objectDefinitions,
+	state,
+}: {
+	baseObjectDefinition: ObjectDefinition | null;
+	objectDefinitions: ObjectDefinitions;
+	state: State;
+}): State {
 	const {structure} = state;
 
 	if (structure.erc) {
@@ -1173,7 +1180,11 @@ function initState(state: State): State {
 		...state,
 		structure: {
 			...structure,
-			children: getDefaultChildren(structure.uuid),
+			children: getDefaultChildren({
+				baseObjectDefinition,
+				objectDefinitions,
+				parent: structure.uuid,
+			}),
 			erc: getRandomId(),
 			type: getType(),
 		},
@@ -1189,16 +1200,20 @@ const StateContext = createContext<{
 });
 
 export default function StateContextProvider({
+	baseObjectDefinition = null,
 	children,
 	initialState,
+	objectDefinitions = {},
 }: {
+	baseObjectDefinition?: ObjectDefinition | null;
 	children: ReactNode;
 	initialState: State | null;
+	objectDefinitions?: ObjectDefinitions;
 }) {
 	const [state, dispatch] = useReducer<React.Reducer<State, Action>, State>(
 		reducer,
 		initialState ?? INITIAL_STATE,
-		initState
+		(state) => initState({baseObjectDefinition, objectDefinitions, state})
 	);
 
 	return (
@@ -1218,16 +1233,20 @@ function useStateDispatch() {
 	return useContext(StateContext).dispatch;
 }
 
-function getDefaultChildren(structureUuid: Uuid) {
-	const type = getType();
-
-	const baseObjectDefinition = getBaseObjectDefinition();
-
+function getDefaultChildren({
+	baseObjectDefinition,
+	objectDefinitions,
+	parent,
+}: {
+	baseObjectDefinition: ObjectDefinition | null;
+	objectDefinitions: ObjectDefinitions;
+	parent: Uuid;
+}) {
 	if (baseObjectDefinition) {
 		return buildChildren({
 			objectDefinition: baseObjectDefinition,
-			objectDefinitions: getBaseObjectDefinitions(),
-			parent: structureUuid,
+			objectDefinitions,
+			parent,
 		});
 	}
 
@@ -1237,19 +1256,19 @@ function getDefaultChildren(structureUuid: Uuid) {
 		languageKey: 'title',
 		locked: true,
 		name: 'title',
-		parent: structureUuid,
+		parent,
 		required: true,
 		type: 'text',
 	});
 
 	children.set(title.uuid, title);
 
-	if (type === 'L_CMS_FILE_TYPES') {
+	if (getType() === 'L_CMS_FILE_TYPES') {
 		const file = getDefaultField({
 			languageKey: 'file',
 			locked: true,
 			name: 'file',
-			parent: structureUuid,
+			parent,
 			required: true,
 			type: 'upload',
 		});
