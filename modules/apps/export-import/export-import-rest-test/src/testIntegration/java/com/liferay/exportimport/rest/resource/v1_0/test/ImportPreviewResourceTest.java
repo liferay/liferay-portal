@@ -15,6 +15,7 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
+import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -34,19 +35,25 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -55,7 +62,10 @@ import com.liferay.staging.StagingGroupHelper;
 import java.io.File;
 import java.io.Serializable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -162,6 +172,11 @@ public class ImportPreviewResourceTest
 		}
 	}
 
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(value = "LPD-57655"), @FeatureFlag("LPD-85946")
+		}
+	)
 	@Override
 	@Test
 	public void testPostImportPreview() throws Exception {
@@ -211,6 +226,10 @@ public class ImportPreviewResourceTest
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
 		}
+
+		_testPostImportPreviewWithoutSites();
+		_testPostImportPreviewWithSiteMissingFromInstance();
+		_testPostImportPreviewWithSites();
 	}
 
 	@Override
@@ -262,6 +281,18 @@ public class ImportPreviewResourceTest
 		}
 	}
 
+	private Group _addGroup() throws Exception {
+		return _addGroup(GroupConstants.DEFAULT_PARENT_GROUP_ID);
+	}
+
+	private Group _addGroup(long parentGroupId) throws Exception {
+		Group group = GroupTestUtil.addGroup(parentGroupId);
+
+		_groups.add(0, group);
+
+		return group;
+	}
+
 	private long _addLayoutWithPortlet(Group group, String portletId)
 		throws Exception {
 
@@ -287,18 +318,14 @@ public class ImportPreviewResourceTest
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private File _exportLayoutAsFile(long groupId) throws Exception {
+	private File _exportLayoutAsFile(long groupId, Group... groups)
+		throws Exception {
+
 		Map<String, Serializable> parameterMap =
 			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildExportLayoutSettingsMap(
 					TestPropsValues.getUser(), groupId, false, null,
-					HashMapBuilder.put(
-						PortletDataHandlerKeys.PORTLET_DATA,
-						new String[] {Boolean.TRUE.toString()}
-					).put(
-						PortletDataHandlerKeys.PORTLET_DATA_ALL,
-						new String[] {Boolean.TRUE.toString()}
-					).build());
+					_getExportLayoutParameterMap(groups));
 
 		ExportImportConfiguration exportImportConfiguration =
 			ExportImportConfigurationLocalServiceUtil.
@@ -370,6 +397,63 @@ public class ImportPreviewResourceTest
 		return 0;
 	}
 
+	private Map<String, String[]> _getExportLayoutParameterMap(
+		Group... groups) {
+
+		Map<String, String[]> parameterMap = HashMapBuilder.put(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).build();
+
+		if (groups.length == 0) {
+			return parameterMap;
+		}
+
+		String[] groupExternalReferenceCodes = new String[groups.length];
+
+		for (int i = 0; i < groups.length; i++) {
+			groupExternalReferenceCodes[i] =
+				groups[i].getExternalReferenceCode();
+		}
+
+		parameterMap.put(
+			PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
+			groupExternalReferenceCodes);
+
+		return parameterMap;
+	}
+
+	private PreviewSite _getPreviewSite(
+		ImportPreview importPreview, String externalReferenceCode) {
+
+		PreviewSite[] previewSites = importPreview.getPreviewSites();
+
+		if (previewSites == null) {
+			return null;
+		}
+
+		for (PreviewSite previewSite : previewSites) {
+			if (externalReferenceCode.equals(
+					previewSite.getExternalReferenceCode())) {
+
+				return previewSite;
+			}
+		}
+
+		return null;
+	}
+
+	private ImportPreview _postImportPreview(File file) throws Exception {
+		return importPreviewResource.postImportPreview(
+			0L, null, null,
+			HashMapBuilder.put(
+				"file", file
+			).build());
+	}
+
 	private ObjectDefinition _publishObjectDefinitionWithEntries(
 			long groupId, String scope)
 		throws Exception {
@@ -432,6 +516,64 @@ public class ImportPreviewResourceTest
 		Assert.assertTrue(additionCount > 0);
 	}
 
+	private void _testPostImportPreviewWithSiteMissingFromInstance()
+		throws Exception {
+
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		Group group = _addGroup();
+
+		File file = _exportLayoutAsFile(companyGroup.getGroupId(), group);
+
+		_groupLocalService.deleteGroup(group);
+
+		PreviewSite previewSite = _getPreviewSite(
+			_postImportPreview(file), group.getExternalReferenceCode());
+
+		Assert.assertFalse(previewSite.getExistsInInstance());
+	}
+
+	private void _testPostImportPreviewWithSites() throws Exception {
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		Group group = _addGroup();
+
+		Group childGroup = _addGroup(group.getGroupId());
+
+		ImportPreview importPreview = _postImportPreview(
+			_exportLayoutAsFile(companyGroup.getGroupId(), group, childGroup));
+
+		PreviewSite previewSite = _getPreviewSite(
+			importPreview, group.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			Integer.valueOf(1), previewSite.getChildSitesCount());
+		Assert.assertEquals(
+			group.getDescriptiveName(), previewSite.getDescriptiveName());
+		Assert.assertTrue(previewSite.getExistsInInstance());
+
+		PreviewSite childPreviewSite = _getPreviewSite(
+			importPreview, childGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			previewSite.getPath() + " / " + childGroup.getDescriptiveName(),
+			childPreviewSite.getPath());
+	}
+
+	private void _testPostImportPreviewWithoutSites() throws Exception {
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		ImportPreview importPreview = _postImportPreview(
+			_exportLayoutAsFile(companyGroup.getGroupId()));
+
+		Assert.assertTrue(
+			Arrays.toString(importPreview.getPreviewSites()),
+			ArrayUtil.isEmpty(importPreview.getPreviewSites()));
+	}
+
 	private void _testPostPortletImportPreviewWithObjectEntries(
 			long groupId, ObjectDefinition objectDefinition, long plid,
 			UnsafeFunction<File, ImportPreview, Exception> unsafeFunction)
@@ -446,6 +588,12 @@ public class ImportPreviewResourceTest
 
 		Assert.assertTrue(additionCount > 0);
 	}
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Group> _groups = new ArrayList<>();
 
 	private ImportPreviewResource _importPreviewResource;
 
