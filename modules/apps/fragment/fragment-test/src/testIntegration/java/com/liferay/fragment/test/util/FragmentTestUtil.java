@@ -13,10 +13,12 @@ import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 
 import java.util.Date;
@@ -74,6 +76,27 @@ public class FragmentTestUtil {
 		return FragmentCollectionLocalServiceUtil.addFragmentCollection(
 			null, TestPropsValues.getUserId(), groupId, fragmentCollectionKey,
 			name, StringPool.BLANK, false, serviceContext);
+	}
+
+	public static FragmentEntryLink addFragmentEntryLink(
+			FragmentEntry fragmentEntry, Group group, long plid)
+		throws PortalException {
+
+		long defaultSegmentsExperienceId =
+			SegmentsExperienceLocalServiceUtil.fetchDefaultSegmentsExperienceId(
+				plid);
+
+		return FragmentEntryLinkLocalServiceUtil.addFragmentEntryLink(
+			null, TestPropsValues.getUserId(), group.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(),
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				fragmentEntry.getGroupId(), group.getGroupId()),
+			defaultSegmentsExperienceId, plid, fragmentEntry.getCss(),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(),
+			fragmentEntry.getConfiguration(), StringPool.BLANK,
+			StringPool.BLANK, 1, StringPool.BLANK, fragmentEntry.getType(),
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
 	public static FragmentEntryLink addFragmentEntryLink(
