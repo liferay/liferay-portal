@@ -212,9 +212,9 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	@Test
 	@TestInfo("LPD-101584")
 	public void testGetActionDropdownItemsWithUsageCount() throws Exception {
-		_assertViewSiteUsagesDropdownItemDisabled(true, 0);
 		_assertViewSiteUsagesDropdownItemDisabled(
 			false, RandomTestUtil.randomInt());
+		_assertViewSiteUsagesDropdownItemDisabled(true, 0);
 	}
 
 	@Test
