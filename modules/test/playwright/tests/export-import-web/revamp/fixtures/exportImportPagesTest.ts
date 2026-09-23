@@ -5,18 +5,23 @@
 
 import {test} from '@playwright/test';
 
+import {UploadServletRequestSystemSettingsPage} from '../../main/pages/UploadServletRequestSystemSettingsPage';
 import {ExportImportDataSelectionPage} from '../pages/ExportImportDataSelectionPage';
 import {ExportImportPage} from '../pages/ExportImportPage';
 
 const exportImportPagesTest = test.extend<{
 	exportImportDataSelectionPage: ExportImportDataSelectionPage;
 	exportImportPage: ExportImportPage;
+	uploadServletRequestSystemSettingsPage: UploadServletRequestSystemSettingsPage;
 }>({
 	exportImportDataSelectionPage: async ({page}, use) => {
 		await use(new ExportImportDataSelectionPage(page));
 	},
 	exportImportPage: async ({page}, use) => {
 		await use(new ExportImportPage(page));
+	},
+	uploadServletRequestSystemSettingsPage: async ({page}, use) => {
+		await use(new UploadServletRequestSystemSettingsPage(page));
 	},
 });
 export {exportImportPagesTest};
