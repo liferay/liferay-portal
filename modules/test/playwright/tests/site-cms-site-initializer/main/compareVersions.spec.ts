@@ -33,6 +33,8 @@ const test = mergeTests(
 
 const PICKLIST = 'CMS Bulk Action Statuses';
 
+const RELATED_CONTENT_LABEL = 'Reference';
+
 function getDiffBox(frame: FrameLocator, fieldName: string): Locator {
 	return frame.locator(
 		`[data-field-name="ObjectField_${fieldName}"] .cms-compare-versions-diff`
@@ -83,6 +85,23 @@ async function selectPicklistOption(
 	await page.getByRole('option', {name: option}).click();
 }
 
+async function selectRelatedContent(page: Page, title: string) {
+	const combobox = page.getByRole('combobox', {
+		exact: true,
+		name: RELATED_CONTENT_LABEL,
+	});
+
+	const option = page.getByRole('option', {exact: true, name: title});
+
+	await expect(async () => {
+		await combobox.fill(title, {timeout: 2000});
+
+		await expect(option).toBeVisible({timeout: 3000});
+	}).toPass({timeout: 30000});
+
+	await option.click();
+}
+
 async function uploadAttachment(page: Page, fileName: string) {
 	const fileChooserPromise = page.waitForEvent('filechooser');
 
@@ -97,7 +116,7 @@ async function uploadAttachment(page: Page, fileName: string) {
 
 test(
 	'Compares every field type against the previous version',
-	{tag: '@LPD-101811'},
+	{tag: ['@LPD-101811', '@LPD-106606']},
 	async ({
 		apiHelpers,
 		assetsPage,
@@ -109,13 +128,26 @@ test(
 		const contentTitle = `zoo content ${getRandomString()}`;
 		const revisedTitle = `${contentTitle} revised`;
 		const spaceName = `Space ${getRandomString()}`;
+		const firstRelatedTitle = `first reference ${getRandomString()}`;
+		const secondRelatedTitle = `second reference ${getRandomString()}`;
 
-		await test.step('Create a space', async () => {
+		await test.step('Create a space with two contents to reference', async () => {
 			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 				name: spaceName,
 				settings: {},
 				type: 'Space',
 			});
+
+			for (const title of [firstRelatedTitle, secondRelatedTitle]) {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+						title,
+					},
+					'cms/basic-web-contents',
+					spaceName
+				);
+			}
 		});
 
 		await test.step('Create a structure with every field type', async () => {
@@ -156,6 +188,11 @@ test(
 				});
 			}
 
+			await structureBuilderPage.addRelatedContent(
+				RELATED_CONTENT_LABEL,
+				'Basic Web Content'
+			);
+
 			await structureBuilderPage.publishStructure();
 		});
 
@@ -173,6 +210,8 @@ test(
 				{label: 'Day', type: 'Date', value: '08/28/2026'},
 				{label: 'Moment', type: 'Date', value: '08/28/2026 10:30 AM'},
 			]);
+
+			await selectRelatedContent(page, firstRelatedTitle);
 
 			await selectPicklistOption(page, 'State', 'Completed');
 			await selectPicklistOption(page, 'Tags', 'Initial');
@@ -198,6 +237,8 @@ test(
 				{label: 'Moment', type: 'Date', value: '09/15/2026 04:45 PM'},
 				{label: 'Flag', type: 'Checkbox', value: true},
 			]);
+
+			await selectRelatedContent(page, secondRelatedTitle);
 
 			await selectPicklistOption(page, 'State', 'Failed');
 			await selectPicklistOption(page, 'Tags', 'Started');

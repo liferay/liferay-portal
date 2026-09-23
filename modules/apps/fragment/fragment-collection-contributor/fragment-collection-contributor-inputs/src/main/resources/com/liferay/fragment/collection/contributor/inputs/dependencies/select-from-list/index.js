@@ -242,6 +242,10 @@ else {
 					defaultLanguageId,
 					inputElement: uiInputElement,
 					onLocaleChange: (languageId) => {
+						if (input.readOnly) {
+							return;
+						}
+
 						if (defaultLanguageId === languageId) {
 							uiInputElement.addEventListener(
 								'click',
