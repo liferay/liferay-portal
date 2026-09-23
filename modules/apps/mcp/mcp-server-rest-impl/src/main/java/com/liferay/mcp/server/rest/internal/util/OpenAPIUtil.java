@@ -156,7 +156,8 @@ public class OpenAPIUtil {
 				String path = basePath + _getPath(inputJSONObject, operation);
 
 				String queryString = _getQueryString(
-					inputJSONObject, operation, restrictFields);
+					inputJSONObject, openAPIJSONObject, operation,
+					restrictFields);
 
 				if (queryString.isEmpty()) {
 					return path;
@@ -234,6 +235,37 @@ public class OpenAPIUtil {
 		}
 
 		return toolSummaries;
+	}
+
+	private static String _addLocalizedRestrictFields(
+		JSONObject openAPIJSONObject, JSONObject operationJSONObject,
+		String restrictFields) {
+
+		if (Validator.isNull(restrictFields)) {
+			return restrictFields;
+		}
+
+		Set<String> restrictFieldNames = new LinkedHashSet<>();
+
+		Object schemaObject = _getSchemaObject(
+			"writeOnly", openAPIJSONObject,
+			_getResponseSchemaJSONObject(operationJSONObject), new HashSet<>());
+
+		for (String restrictFieldName : StringUtil.split(restrictFields)) {
+			restrictFieldNames.add(restrictFieldName);
+
+			if (restrictFieldName.endsWith("_i18n")) {
+				continue;
+			}
+
+			String localizedRestrictFieldName = restrictFieldName + "_i18n";
+
+			if (_hasSchemaProperty(localizedRestrictFieldName, schemaObject)) {
+				restrictFieldNames.add(localizedRestrictFieldName);
+			}
+		}
+
+		return StringUtil.merge(restrictFieldNames);
 	}
 
 	private static void _addMultipartParts(
@@ -676,6 +708,9 @@ public class OpenAPIUtil {
 		Collection<String> responseFieldNames = _getResponseFieldNames(
 			openAPIJSONObject, operationJSONObject);
 
+		restrictFields = _addLocalizedRestrictFields(
+			openAPIJSONObject, operationJSONObject, restrictFields);
+
 		if (Validator.isNotNull(restrictFields)) {
 			responseFieldNames.removeAll(
 				Arrays.asList(StringUtil.split(restrictFields)));
@@ -1035,8 +1070,8 @@ public class OpenAPIUtil {
 	}
 
 	private static String _getQueryString(
-		JSONObject inputJSONObject, Operation operation,
-		String restrictFields) {
+		JSONObject inputJSONObject, JSONObject openAPIJSONObject,
+		Operation operation, String restrictFields) {
 
 		StringBundler sb = new StringBundler();
 
@@ -1061,6 +1096,9 @@ public class OpenAPIUtil {
 		if (!fieldNames.isEmpty()) {
 			_appendQueryParameter("fields", sb, StringUtil.merge(fieldNames));
 		}
+
+		restrictFields = _addLocalizedRestrictFields(
+			openAPIJSONObject, operation._operationJSONObject, restrictFields);
 
 		if (Objects.equals(operation._method, "get")) {
 			if (Validator.isNull(restrictFields)) {
@@ -1287,6 +1325,43 @@ public class OpenAPIUtil {
 		return value;
 	}
 
+	private static Map<String, Object> _getSchemaProperties(
+		Object schemaObject) {
+
+		if (!(schemaObject instanceof Map)) {
+			return null;
+		}
+
+		Map<String, Object> schemaMap = (Map<String, Object>)schemaObject;
+
+		if (Objects.equals(schemaMap.get("type"), "array")) {
+			return _getSchemaProperties(schemaMap.get("items"));
+		}
+
+		Object propertiesObject = schemaMap.get("properties");
+
+		if (!(propertiesObject instanceof Map)) {
+			return null;
+		}
+
+		Map<String, Object> propertiesMap =
+			(Map<String, Object>)propertiesObject;
+
+		Object itemsObject = propertiesMap.get("items");
+
+		if (!(itemsObject instanceof Map)) {
+			return propertiesMap;
+		}
+
+		Map<String, Object> itemsMap = (Map<String, Object>)itemsObject;
+
+		if (!Objects.equals(itemsMap.get("type"), "array")) {
+			return propertiesMap;
+		}
+
+		return _getSchemaProperties(itemsMap.get("items"));
+	}
+
 	private static Set<String> _getSortFieldPaths(String sortString) {
 		if (Validator.isNull(sortString)) {
 			return Collections.emptySet();
@@ -1309,6 +1384,27 @@ public class OpenAPIUtil {
 		}
 
 		return fieldPaths;
+	}
+
+	private static boolean _hasSchemaProperty(
+		String fieldName, Object schemaObject) {
+
+		for (String name : StringUtil.split(fieldName, CharPool.PERIOD)) {
+			Map<String, Object> propertiesMap = _getSchemaProperties(
+				schemaObject);
+
+			if (propertiesMap == null) {
+				return false;
+			}
+
+			schemaObject = propertiesMap.get(name);
+		}
+
+		if (schemaObject != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static boolean _isBinary(Map<String, Object> schemaMap) {
