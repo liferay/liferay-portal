@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -39,12 +39,11 @@ public class HttpsInitialAbsoluteRedirectsFilterTest {
 	public void tearDown() {
 		ReflectionTestUtil.setFieldValue(
 			PropsValues.class, "SESSION_ENABLE_PHISHING_PROTECTION",
-			_sessionEnablePhishingProtection);
+			_SESSION_ENABLE_PHISHING_PROTECTION);
 	}
 
 	@Test
-	public void
-			testDoesNotForceSessionCreationWhenPhishingProtectionIsEnabled()
+	public void testDoesNotForceSessionCreationWhenPhishingProtectionIsEnabled()
 		throws Exception {
 
 		ReflectionTestUtil.setFieldValue(
@@ -60,8 +59,7 @@ public class HttpsInitialAbsoluteRedirectsFilterTest {
 	}
 
 	@Test
-	public void
-			testPinsHTTPSInitialOnFirstRequestWhenPhishingProtectionIsDisabled()
+	public void testPinsHTTPSInitialOnFirstRequestWhenPhishingProtectionIsDisabled()
 		throws Exception {
 
 		ReflectionTestUtil.setFieldValue(
@@ -105,9 +103,10 @@ public class HttpsInitialAbsoluteRedirectsFilterTest {
 		return mockHttpServletRequest;
 	}
 
+	private static final boolean _SESSION_ENABLE_PHISHING_PROTECTION =
+		PropsValues.SESSION_ENABLE_PHISHING_PROTECTION;
+
 	private final AbsoluteRedirectsFilter _absoluteRedirectsFilter =
 		new AbsoluteRedirectsFilter();
-	private final boolean _sessionEnablePhishingProtection =
-		PropsValues.SESSION_ENABLE_PHISHING_PROTECTION;
 
 }

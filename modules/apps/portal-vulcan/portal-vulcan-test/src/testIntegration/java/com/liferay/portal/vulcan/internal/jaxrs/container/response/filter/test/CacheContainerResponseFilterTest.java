@@ -152,14 +152,6 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
-	public void testCacheWithoutMaxAge() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 0);
-
-		Assert.assertEquals(
-			"public", _getCacheControl(_openURLConnection("/test")));
-	}
-
-	@Test
 	public void testCacheWithOverlappingCacheableEndpoints() throws Exception {
 		_addCacheableEndpoint(
 			"/test-vulcan-cache/tests/*/nested", "private", 0);
@@ -225,6 +217,14 @@ public class CacheContainerResponseFilterTest {
 		_addCacheableEndpoint("/test-vulcan-cache/not-found", "public", 3600);
 
 		_assertNotCacheable(_openURLConnection("/not-found"));
+	}
+
+	@Test
+	public void testCacheWithoutMaxAge() throws Exception {
+		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 0);
+
+		Assert.assertEquals(
+			"public", _getCacheControl(_openURLConnection("/test")));
 	}
 
 	public static class TestApplication extends Application {
