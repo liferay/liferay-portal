@@ -115,7 +115,7 @@ $zIndexPanel: 1;
 		z-index: $zIndexContent;
 
 		&-open {
-			transform: translateX(0);
+			transform: none;
 			visibility: visible;
 		}
 
@@ -156,7 +156,7 @@ $zIndexPanel: 1;
 		transform: translateX(100%);
 
 		&-open {
-			transform: translateX(0);
+			transform: none;
 		}
 	}
 }
