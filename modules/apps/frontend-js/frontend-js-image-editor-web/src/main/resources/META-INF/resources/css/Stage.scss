@@ -5,38 +5,15 @@
 
 @import 'atlas-variables';
 
-.image-editor .editor-workspace {
-	background: var(--editor-workspace-bg);
-	display: flex;
-	flex: 1;
-	overflow: scroll;
-	scrollbar-gutter: stable;
-}
-
-.image-editor .editor-workspace:focus-visible {
-	box-shadow: inset 0 0 0 3px rgba($white, 0.6);
-	outline: 2px solid var(--editor-accent);
-	outline-offset: -2px;
-}
-
-.image-editor .editor-stage {
-	box-sizing: content-box;
-	display: block;
-	margin: auto;
-	overflow: visible;
-	padding: 24px;
+.image-editor .crop-border,
+.image-editor .editor-draw-cursor-line line,
+.image-editor .focus-ring-outer,
+.image-editor .selection-ring {
+	stroke: var(--editor-accent);
 }
 
 .image-editor .crop-dim {
 	fill: rgba($dark, 0.6);
-}
-
-.image-editor .crop-border {
-	stroke: var(--editor-accent);
-}
-
-.image-editor .crop-move {
-	cursor: move;
 }
 
 .image-editor .crop-grid {
@@ -45,40 +22,12 @@
 	@include transition(opacity 400ms ease-out);
 }
 
-.image-editor .crop-grid-visible {
-	opacity: 1;
-}
-
 .image-editor .crop-grid line {
 	stroke: rgba($white, 0.5);
 }
 
-.image-editor .crop-recenter {
-	cursor: pointer;
-	opacity: 0;
-	outline: none;
-
-	@include transition(opacity 250ms ease-out);
-}
-
-.image-editor .crop-move:hover ~ .crop-recenter,
-.image-editor .crop-recenter-focused,
-.image-editor .crop-recenter:hover {
+.image-editor .crop-grid-visible {
 	opacity: 1;
-}
-
-.image-editor .crop-recenter-disc {
-	fill: rgba($white, 0.9);
-}
-
-.image-editor .crop-recenter-icon {
-	color: $dark;
-	pointer-events: none;
-}
-
-.image-editor .crop-handle-visual {
-	fill: $white;
-	stroke: var(--editor-accent);
 }
 
 .image-editor .crop-handle {
@@ -87,56 +36,16 @@
 
 .image-editor .crop-handle,
 .image-editor .crop-move,
+.image-editor .editor-draw-surface rect,
 .image-editor .overlay-hit {
 	outline: none;
 }
 
-.image-editor .overlay-hit {
-	cursor: move;
-}
-
-.image-editor .editor-draw-surface rect:focus {
-	outline: none;
-}
-
-.image-editor .editor-draw-cursor-halo line {
-	stroke: $white;
-}
-
-.image-editor .editor-draw-cursor-line line {
-	stroke: var(--editor-accent);
-}
-
-.image-editor .editor-draw-cursor-dot {
-	fill: $white;
-	stroke: var(--editor-accent);
-}
-
-.image-editor .editor-draw-preview {
-	opacity: 0.9;
-}
-
-.image-editor .editor-draw-anchor {
-	fill: $white;
-	stroke: var(--editor-accent);
-}
-
-.image-editor .editor-draw-anchor-halo {
-	fill: none;
-	stroke: $white;
-}
-
+.image-editor .crop-handle-visual,
+.image-editor .editor-draw-anchor,
+.image-editor .editor-draw-cursor-dot,
 .image-editor .object-handle {
 	fill: $white;
-	stroke: var(--editor-accent);
-}
-
-.image-editor .object-handle-rotate {
-	cursor: grab;
-}
-
-.image-editor .object-rotate-stick {
-	pointer-events: none;
 	stroke: var(--editor-accent);
 }
 
@@ -153,16 +62,31 @@
 	}
 }
 
-.image-editor .focus-ring-inner {
-	stroke: $white;
+.image-editor .crop-move {
+	cursor: move;
 }
 
-.image-editor .focus-ring-outer {
-	stroke: var(--editor-accent);
+.image-editor .crop-move:hover ~ .crop-recenter,
+.image-editor .crop-recenter.crop-recenter-focused,
+.image-editor .crop-recenter:hover {
+	opacity: 1;
 }
 
-.image-editor .selection-ring {
-	stroke: var(--editor-accent);
+.image-editor .crop-recenter {
+	cursor: pointer;
+	opacity: 0;
+	outline: none;
+
+	@include transition(opacity 250ms ease-out);
+}
+
+.image-editor .crop-recenter-disc {
+	fill: rgba($white, 0.9);
+}
+
+.image-editor .crop-recenter-icon {
+	color: $dark;
+	pointer-events: none;
 }
 
 .image-editor .editor-crop-size-row {
@@ -173,4 +97,53 @@
 
 .image-editor .editor-crop-size-row .form-group {
 	flex: 1;
+}
+
+.image-editor .editor-draw-anchor-halo {
+	fill: none;
+	stroke: $white;
+}
+
+.image-editor .editor-draw-cursor-halo line,
+.image-editor .focus-ring-inner {
+	stroke: $white;
+}
+
+.image-editor .editor-draw-preview {
+	opacity: 0.9;
+}
+
+.image-editor .editor-stage {
+	box-sizing: content-box;
+	display: block;
+	margin: auto;
+	overflow: visible;
+	padding: 24px;
+}
+
+.image-editor .editor-workspace {
+	background: var(--editor-workspace-bg);
+	display: flex;
+	flex: 1;
+	overflow: scroll;
+	scrollbar-gutter: stable;
+}
+
+.image-editor .editor-workspace:focus-visible {
+	box-shadow: inset 0 0 0 3px rgba($white, 0.6);
+	outline: 2px solid var(--editor-accent);
+	outline-offset: -2px;
+}
+
+.image-editor .object-handle-rotate {
+	cursor: grab;
+}
+
+.image-editor .object-rotate-stick {
+	pointer-events: none;
+	stroke: var(--editor-accent);
+}
+
+.image-editor .overlay-hit {
+	cursor: move;
 }
