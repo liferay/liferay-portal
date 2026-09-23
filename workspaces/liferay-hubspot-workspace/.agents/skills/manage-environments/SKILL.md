@@ -79,10 +79,6 @@ com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguratio
 # Mail (disable for dev)
 
 mail.send.blacklist=*
-
-# Feature flags
-
-feature.flag.LPD-35443=true
 ```
 
 ### Export Object Definitions

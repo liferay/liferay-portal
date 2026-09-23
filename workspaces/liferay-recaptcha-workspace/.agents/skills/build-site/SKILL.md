@@ -98,7 +98,6 @@ Call `feature-flags` for the full set of flags the workflow needs:
 
 | Scenario | Required Flags |
 | --- | --- |
-| Site pages via API | `LPD-35443` |
 | Fragment composition via API | `LPD-39244` |
 | Object entry permissions | `LPD-17564` |
 | MCP transport | `LPD-63311` |

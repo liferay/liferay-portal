@@ -11,10 +11,9 @@ Defaults change between quarterly releases. Reverify against the running portal 
 | Key | Default | Status | Unlocks | Used By | Dependent On |
 | --- | --- | --- | --- | --- | --- |
 | `LPD-63311` | off | beta | MCP server at `/o/mcp/sse`; `call-http-endpoint` tool | `build-site`, `manage-objects` (when MCP first) | none |
-| `LPD-35443` | off | beta | Headless Admin Site public layout REST API | `build-site`, `manage-pages` | none |
 | `LPD-38869` | on | deprecation | Private layout REST access | `manage-pages` (private pages) | none |
 | `LPD-39244` | off | beta | Headless Admin Fragment / page composition REST API | `manage-pages`, `scaffold-fragment` | none |
-| `LPD-74328` | off | beta | Page element / page-specification creation and update (headless-admin-site) | `manage-pages`, `build-site` | `LPD-35443` |
+| `LPD-74328` | off | beta | Page element / page-specification creation and update (headless-admin-site) | `manage-pages`, `build-site` | none |
 | `LPD-17564` | off | release | Object collaborators API (per entry permissions) | `manage-objects`, `manage-roles-permissions` | none |
 | `LPD-52006` | off | beta | Object entry folders (nested folder structure) | `manage-objects` | `LPD-17564` |
 | `LPD-32867` | off | beta | Content provider integration for dynamic content sets (headless-delivery) | (informational) | none |

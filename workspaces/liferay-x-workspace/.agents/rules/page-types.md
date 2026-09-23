@@ -73,7 +73,6 @@ Only one display page template per `contentType` + `contentSubtype` combination 
 
 | Flag | Default | Unlocks |
 | --- | --- | --- |
-| `LPD-35443` | off | Public layout (page) REST API via headless-admin-site |
 | `LPD-38869` | on | Private layout REST access |
 | `LPD-39244` | off | Fragment and page composition REST API |
 | `LPD-74328` | off | Page element / page-specification creation and update |

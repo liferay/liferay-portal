@@ -1,6 +1,6 @@
 ---
 
-description: Create and configure site pages, navigation menus, display page templates, page templates, and SEO settings via the Headless Admin Site API. Use when the user asks to create a page, set up navigation, build a display page template for an object, or configure page SEO. Requires feature flag LPD-35443.
+description: Create and configure site pages, navigation menus, display page templates, page templates, and SEO settings via the Headless Admin Site API. Use when the user asks to create a page, set up navigation, build a display page template for an object, or configure page SEO.
 name: manage-pages
 
 ---
@@ -15,14 +15,6 @@ Create and wire site pages, navigation menus, and page templates. The reliable p
 - "Build a display page template for Books"
 - "Set the page title, description, and URL"
 - Called by `build-site` during the page composition phase
-
-## Prerequisites
-
-Verify and enable via the `feature-flags` skill. Flag defaults are `inferred — verify`.
-
-| Flag | Default | Required For |
-| --- | --- | --- |
-| `LPD-35443` | off | Public layout (page) REST API |
 
 ## Page Types
 
@@ -294,7 +286,7 @@ Published examples for this module — including older ones in this pack's histo
 - **`DisplayPageTemplate` binds through `contentTypeReference`**, not flat `contentType`/`contentSubtype`. For a Liferay Object the class name is `com.liferay.object.model.ObjectEntry` and the subtype is the object definition's ERC.
 - **A custom fragment reference uses `BasicFragment` + `fragmentReferenceType`** over the live API, and `key` + `siteKey` in the initializer tree. Neither accepts `collectionExternalReferenceCode`/`fragmentEntryKey` — that form is silently dropped and the section renders blank. See "Custom Fragment Placement via the Headless API" below.
 - **Three distinct `type` vocabularies.** Live API: `ContentPage` / `WidgetPage` / `LinkToURLPage` / `EmbeddedPage` / `PageSetPage` / `LinkToPagePage`. Initializer `page.json`: `Content` / `Portlet` / `URL` / `Embedded`. `headless-delivery` uses a separate `pageType`.
-- **Page element operations require flag `LPD-74328`**, and public layout access requires `LPD-35443`.
+- **Page element operations require flag `LPD-74328`**.
 
 #### Ensure the Site Exists
 
@@ -431,7 +423,7 @@ Applies to **both** paths — a page authored in the initializer tree and one cr
 curl --head --silent --url "http://localhost:${PORT}/web/<site-friendly-url>/<page-url-slug>"
 ```
 
-Expect `200 OK`. Listing pages over REST (`GET /sites/<site-erc>/site-pages`) needs flag `LPD-35443`; without it the call returns `400 UnsupportedOperationException`, which says nothing about whether the pages exist.
+Expect `200 OK`.
 
 **`200 OK` is not evidence the page works.** A page whose Collection returned no rows, whose fragment reused another page's placeholder text, or whose mapping silently failed all return 200 with fragments present. Verify content, and verify it as the audience:
 
