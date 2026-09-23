@@ -6,14 +6,14 @@
 import {mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
-import {SearchAdminPage} from '../../../pages/portal-search-admin-web/SearchAdminPage';
+import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {reindexAllSearchIndexes} from '../utils/reindexAllSearchIndexes';
 import {
 	UpgradedPartition,
 	viewUpgradedPartition,
 } from '../utils/viewUpgradedPartition';
 
-const test = mergeTests(loginTest());
+const test = mergeTests(loginTest(), searchAdminPageTest);
 
 const ABLE_PARTITION: UpgradedPartition = {
 	documentTitle: 'DM Document1 Title',
@@ -41,11 +41,9 @@ test.describe('View database partitioning upgrade', () => {
 	test(
 		'Can view upgraded content in each partition and not across them',
 		{tag: '@LPD-104394'},
-		async ({browser, page}) => {
+		async ({browser, searchAdminPage}) => {
 			await test.step('Reindex all search indexes', async () => {
-				await reindexAllSearchIndexes({
-					searchAdminPage: new SearchAdminPage(page),
-				});
+				await reindexAllSearchIndexes({searchAdminPage});
 			});
 
 			await viewUpgradedPartition({
