@@ -101,6 +101,92 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
+	public void testCommitAfterWriterCommit() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		_commitPut(transactionalPortalCache, _KEY_1, _VALUE_2);
+
+		transactionalPortalCache.put(_KEY_1, _VALUE_1);
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCommitReadOnlyAfterWriterCommit() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		transactionalPortalCache.put(_KEY_1, _VALUE_1);
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCommitSavepointAfterWriterCommit() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionLifecycleListener transactionLifecycleListener =
+			TransactionalPortalCacheUtil.TRANSACTION_LIFECYCLE_LISTENER;
+
+		TransactionAttribute.Builder builder =
+			new TransactionAttribute.Builder();
+
+		builder.setReadOnly(true);
+
+		TransactionAttribute transactionAttribute = builder.build();
+
+		TransactionStatus transactionStatus = new TestTrasactionStatus(
+			true, false, false);
+
+		TransactionAttribute.Builder savepointBuilder =
+			new TransactionAttribute.Builder();
+
+		savepointBuilder.setPropagation(Propagation.NESTED);
+
+		TransactionAttribute savepointTransactionAttribute =
+			savepointBuilder.build();
+
+		TransactionStatus savepointTransactionStatus = new TestTrasactionStatus(
+			false, false, false);
+
+		transactionLifecycleListener.created(
+			transactionAttribute, transactionStatus);
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		transactionLifecycleListener.created(
+			savepointTransactionAttribute, savepointTransactionStatus);
+
+		transactionalPortalCache.put(_KEY_1, _VALUE_1);
+
+		transactionLifecycleListener.committed(
+			savepointTransactionAttribute, savepointTransactionStatus);
+
+		transactionLifecycleListener.committed(
+			transactionAttribute, transactionStatus);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
 	public void testConcurrentTransactionForMVCCPortalCache() throws Exception {
 		_setEnableTransactionalCache(true);
 
@@ -1111,6 +1197,28 @@ public class TransactionalPortalCacheTest {
 		TransactionalPortalCacheUtil.commit(false);
 
 		Assert.assertSame(nullMVCCModel, transactionalPortalCache.get(_KEY_1));
+	}
+
+	private void _commitPut(
+		TransactionalPortalCache<String, String> transactionalPortalCache,
+		String key, String value) {
+
+		TransactionalPortalCacheUtil.begin();
+
+		transactionalPortalCache.put(key, value);
+
+		TransactionalPortalCacheUtil.commit(false);
+	}
+
+	private void _commitRemove(
+		TransactionalPortalCache<String, String> transactionalPortalCache,
+		String key) {
+
+		TransactionalPortalCacheUtil.begin();
+
+		transactionalPortalCache.remove(key);
+
+		TransactionalPortalCacheUtil.commit(false);
 	}
 
 	private int _getTransactionStackSize() {

@@ -14,15 +14,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class InvalidationSequence {
 
-	public long getInvalidationSequence(String regionName) {
-		AtomicLong invalidationSequence = _invalidationSequences.get(
-			regionName);
-
-		if (invalidationSequence == null) {
-			return 0;
-		}
-
-		return invalidationSequence.get();
+	public long getSequence() {
+		return _sequence.get();
 	}
 
 	public boolean invalidate(String regionName, long sequence) {

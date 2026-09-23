@@ -21,25 +21,18 @@ public class InvalidationSequenceTest {
 		CodeCoverageAssertor.INSTANCE;
 
 	@Test
-	public void testGetInvalidationSequence() {
+	public void testGetSequence() {
 		InvalidationSequence invalidationSequence = new InvalidationSequence();
 
-		Assert.assertEquals(
-			0, invalidationSequence.getInvalidationSequence(_REGION_NAME_1));
+		Assert.assertEquals(0, invalidationSequence.getSequence());
 
 		invalidationSequence.invalidate(_REGION_NAME_1, 0);
 
-		Assert.assertEquals(
-			1, invalidationSequence.getInvalidationSequence(_REGION_NAME_1));
-		Assert.assertEquals(
-			0, invalidationSequence.getInvalidationSequence(_REGION_NAME_2));
+		Assert.assertEquals(1, invalidationSequence.getSequence());
 
 		invalidationSequence.invalidate(_REGION_NAME_2, 0);
 
-		Assert.assertEquals(
-			1, invalidationSequence.getInvalidationSequence(_REGION_NAME_1));
-		Assert.assertEquals(
-			2, invalidationSequence.getInvalidationSequence(_REGION_NAME_2));
+		Assert.assertEquals(2, invalidationSequence.getSequence());
 	}
 
 	@Test
@@ -55,8 +48,7 @@ public class InvalidationSequenceTest {
 		Assert.assertTrue(
 			"Region should have been invalidated after sequence 1",
 			invalidationSequence.invalidate(_REGION_NAME_1, 1));
-		Assert.assertEquals(
-			3, invalidationSequence.getInvalidationSequence(_REGION_NAME_1));
+		Assert.assertEquals(3, invalidationSequence.getSequence());
 	}
 
 	@Test

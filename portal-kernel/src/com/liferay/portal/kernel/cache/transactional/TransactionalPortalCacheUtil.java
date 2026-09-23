@@ -150,7 +150,7 @@ public class TransactionalPortalCacheUtil {
 		PortalCacheMap portalCacheMap = _popPortalCacheMap();
 
 		for (UncommittedBuffer uncommittedBuffer : portalCacheMap.values()) {
-			uncommittedBuffer.commit(readOnly);
+			uncommittedBuffer.commit(readOnly, portalCacheMap._startSequence);
 		}
 
 		portalCacheMap.clear();
@@ -290,6 +290,7 @@ public class TransactionalPortalCacheUtil {
 		}
 
 		private final boolean _savepoint;
+		private final long _startSequence = _invalidationSequence.getSequence();
 
 	}
 
@@ -394,14 +395,14 @@ public class TransactionalPortalCacheUtil {
 		extends MVCCUncommittedBuffer {
 
 		@Override
-		public void commit(boolean readOnly) {
+		public void commit(boolean readOnly, long startSequence) {
 			if (skipCommit(readOnly)) {
 				return;
 			}
 
 			if (readOnly) {
 				if (_invalidationSequence.isInvalidatedAfter(
-						_regionName, _startSequence)) {
+						_regionName, startSequence)) {
 
 					return;
 				}
@@ -411,7 +412,7 @@ public class TransactionalPortalCacheUtil {
 			else {
 				doCommit(
 					_invalidationSequence.invalidate(
-						_regionName, _startSequence));
+						_regionName, startSequence));
 			}
 		}
 
@@ -431,9 +432,6 @@ public class TransactionalPortalCacheUtil {
 			super(portalCache);
 
 			_regionName = _getShardedRegionName(companyId, portalCache);
-
-			_startSequence = _invalidationSequence.getInvalidationSequence(
-				_regionName);
 		}
 
 		private InvalidatingUncommittedBuffer(
@@ -442,19 +440,15 @@ public class TransactionalPortalCacheUtil {
 			super(portalCache);
 
 			_regionName = portalCache.getPortalCacheName();
-
-			_startSequence = _invalidationSequence.getInvalidationSequence(
-				_regionName);
 		}
 
 		private final String _regionName;
-		private final long _startSequence;
 
 	}
 
 	private static class MVCCUncommittedBuffer implements UncommittedBuffer {
 
-		public void commit(boolean readOnly) {
+		public void commit(boolean readOnly, long startSequence) {
 			if (skipCommit(readOnly)) {
 				return;
 			}
@@ -572,7 +566,7 @@ public class TransactionalPortalCacheUtil {
 	private static class ShardedUncommittedBuffer implements UncommittedBuffer {
 
 		@Override
-		public void commit(boolean readOnly) {
+		public void commit(boolean readOnly, long startSequence) {
 			for (Map.Entry<Long, UncommittedBuffer> entry :
 					_shardedUncommittedBuffers.entrySet()) {
 
@@ -582,7 +576,7 @@ public class TransactionalPortalCacheUtil {
 
 					UncommittedBuffer uncommittedBuffer = entry.getValue();
 
-					uncommittedBuffer.commit(readOnly);
+					uncommittedBuffer.commit(readOnly, startSequence);
 				}
 			}
 
@@ -742,7 +736,7 @@ public class TransactionalPortalCacheUtil {
 
 	private interface UncommittedBuffer {
 
-		public void commit(boolean readOnly);
+		public void commit(boolean readOnly, long startSequence);
 
 		public ValueEntry get(Serializable key);
 
