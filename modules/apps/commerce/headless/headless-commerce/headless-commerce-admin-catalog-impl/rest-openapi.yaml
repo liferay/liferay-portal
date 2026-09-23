@@ -762,6 +762,20 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the catalog is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 defaultLanguageId:
                     description:
                         Liferay locale code used as the catalog's default language for localized product content.
@@ -890,6 +904,20 @@ components:
                     description:
                         ISO 4217 currency code; required and rejected when blank; must be unique per company, and a duplicate code in the same company is rejected; filterable and sortable through the OData query parameter.
                     example: USD
+                    type: string
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the currency is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
@@ -1689,6 +1717,20 @@ components:
                     items:
                         type: customField
                     type: array
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the product is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 defaultSku:
                     description:
                         Optional default SKU code used during product creation to seed the initial variant.
@@ -4785,7 +4827,7 @@ paths:
     /catalogs:
         get:
             description:
-                Returns a page of commerce catalogs scoped to the current company using free-text search, filter, and sort. Validation -- None (returns empty page when no matches). List query support — filterable fields -- name; sortable fields -- name.
+                Returns a page of commerce catalogs scoped to the current company using free-text search, filter, and sort. Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode, name; sortable fields -- dateCreated, dateModified, externalReferenceCode, name.
             operationId: getCatalogsPage
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -4920,7 +4962,7 @@ paths:
     /currencies:
         get:
             description:
-                Returns a page of commerce currencies scoped to the current company. List query support — filterable fields -- active, primary, priority, code, name; sortable fields -- active, primary, priority, code, name.
+                Returns a page of commerce currencies scoped to the current company. List query support — filterable fields -- active, primary, dateCreated, dateModified, priority, code, externalReferenceCode, name; sortable fields -- active, primary, dateCreated, dateModified, priority, code, externalReferenceCode, name.
             operationId: getCurrenciesPage
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -12706,7 +12748,7 @@ paths:
     /products:
         get:
             description:
-                Returns a page of products scoped to the current company, with filtering by indexed product fields and expando-backed custom fields. List query support — filterable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, modifiedDate, catalogId, productId, externalReferenceCode, name, productType; sortable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, modifiedDate, catalogId, productId, externalReferenceCode, name, productType.
+                Returns a page of products scoped to the current company, with filtering by indexed product fields and expando-backed custom fields. List query support — filterable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, dateCreated, dateModified, modifiedDate, catalogId, productId, externalReferenceCode, name, productType; sortable fields -- channelId, statusCode, categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, customFields, createDate, dateCreated, dateModified, modifiedDate, catalogId, productId, externalReferenceCode, name, productType.
             operationId: getProductsPage
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
