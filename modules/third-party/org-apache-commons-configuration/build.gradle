@@ -5,6 +5,9 @@ apply plugin: "com.liferay.patcher"
 task deployJar(type: Copy)
 task patch(type: PatchTask)
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 dependencies {
 	compileOnly group: "commons-configuration", name: "commons-configuration", version: "1.10"
 }
@@ -35,6 +38,8 @@ patch {
 		autoClean = false
 	}
 
+	fileNames "org/apache/commons/configuration/AbstractConfiguration.java"
 	fileNames "org/apache/commons/configuration/PropertiesConfiguration.java"
+	fileNames "org/apache/commons/configuration/PropertyConverter.java"
 	originalLibModuleName = "commons-configuration"
 }
