@@ -121,13 +121,12 @@ public class TestrayCaseResultTest
 		JSONObject requestJSONObject = new JSONObject(
 			requestDataArgumentCaptor.getValue());
 
-		Assert.assertFalse(
-			requestJSONObject.toString(), requestJSONObject.has("errors"));
-
 		Assert.assertTrue(
 			requestJSONObject.toString(), requestJSONObject.has("attachments"));
 		Assert.assertTrue(
 			requestJSONObject.toString(), requestJSONObject.has("dueStatus"));
+		Assert.assertFalse(
+			requestJSONObject.toString(), requestJSONObject.has("errors"));
 		Assert.assertTrue(
 			requestJSONObject.toString(),
 			requestJSONObject.has("r_buildToCaseResult_c_buildId"));
