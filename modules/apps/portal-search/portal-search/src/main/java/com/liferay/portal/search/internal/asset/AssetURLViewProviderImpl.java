@@ -19,9 +19,11 @@ import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -57,9 +59,11 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 
 			Layout layout = themeDisplay.getLayout();
 
+			String searchResultsPortletId = _getSearchResultsPortletId(layout);
+
 			PortletURL viewContentURL =
 				PortletURLBuilder.createLiferayPortletURL(
-					liferayPortletResponse, _getSearchResultsPortletId(layout),
+					liferayPortletResponse, searchResultsPortletId,
 					PortletRequest.RENDER_PHASE
 				).setPortletMode(
 					PortletMode.VIEW
@@ -83,7 +87,9 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 
 			String viewURL = null;
 
-			if (assetRenderer != null) {
+			if ((assetRenderer != null) &&
+				_isViewInContext(layout, searchResultsPortletId)) {
+
 				viewURL = assetRenderer.getURLViewInContext(
 					liferayPortletRequest, liferayPortletResponse,
 					viewContentURL.toString());
@@ -148,6 +154,17 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 		}
 
 		return SearchResultsPortletKeys.SEARCH_RESULTS;
+	}
+
+	private boolean _isViewInContext(
+		Layout layout, String searchResultsPortletId) {
+
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
+			PortletPreferencesFactoryUtil.getStrictLayoutPortletSetup(
+				layout, searchResultsPortletId);
+
+		return GetterUtil.getBoolean(
+			jxPortletPreferences.getValue("viewInContext", null), true);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
