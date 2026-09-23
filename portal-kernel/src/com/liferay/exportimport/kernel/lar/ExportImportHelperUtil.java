@@ -7,11 +7,13 @@ package com.liferay.exportimport.kernel.lar;
 
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -21,6 +23,7 @@ import jakarta.portlet.PortletRequest;
 import java.io.File;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -42,6 +45,13 @@ public class ExportImportHelperUtil {
 			_exportImportHelperSnapshot.get();
 
 		return exportImportHelper.getAllLayoutIdsMap(groupId, privateLayout);
+	}
+
+	public static int getChildGroupsCount(Group group) throws PortalException {
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.getChildGroupsCount(group);
 	}
 
 	public static List<Portlet> getDataSiteAndInstanceLevelPortlets(
@@ -96,6 +106,26 @@ public class ExportImportHelperUtil {
 			companyId, excludeDataAlwaysStaged);
 	}
 
+	public static List<ExportImportGroup> getExportImportGroups(
+			FileEntry fileEntry)
+		throws Exception {
+
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.getExportImportGroups(fileEntry);
+	}
+
+	public static List<ExportImportGroup> getExportImportGroups(
+			PortletDataContext portletDataContext)
+		throws Exception {
+
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.getExportImportGroups(portletDataContext);
+	}
+
 	public static Map<String, Boolean> getExportPortletControlsMap(
 			long companyId, String portletId,
 			Map<String, String[]> parameterMap)
@@ -139,6 +169,15 @@ public class ExportImportHelperUtil {
 
 		return exportImportHelper.getExportableRootPortletId(
 			companyId, portletId);
+	}
+
+	public static String getGroupPath(Group group, Locale locale)
+		throws PortalException {
+
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.getGroupPath(group, locale);
 	}
 
 	public static Map<String, Boolean> getImportPortletControlsMap(
@@ -305,6 +344,18 @@ public class ExportImportHelperUtil {
 			groupId, privateLayout, selectedNodes);
 	}
 
+	public static List<Group> getSupportedGroups(
+			long companyId, String keywords,
+			OrderByComparator<Group> orderByComparator)
+		throws PortalException {
+
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.getSupportedGroups(
+			companyId, keywords, orderByComparator);
+	}
+
 	public static FileEntry getTempFileEntry(
 			long groupId, long userId, String folderName)
 		throws PortalException {
@@ -354,6 +405,13 @@ public class ExportImportHelperUtil {
 			_exportImportHelperSnapshot.get();
 
 		return exportImportHelper.isExportPortletData(portletDataContext);
+	}
+
+	public static boolean isGroupSupported(Group group) {
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.isGroupSupported(group);
 	}
 
 	public static boolean isLayoutRevisionInReview(Layout layout) {
