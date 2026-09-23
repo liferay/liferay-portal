@@ -161,9 +161,9 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 						{
 							active: true,
 							default: true,
-							direction: 'asc',
-							key: 'accountName',
-							label: Liferay.Language.get('name'),
+							direction: 'desc',
+							key: 'salesforce/openPipelineAmount',
+							label: Liferay.Language.get('pipeline-value'),
 						},
 					]}
 					views={views}

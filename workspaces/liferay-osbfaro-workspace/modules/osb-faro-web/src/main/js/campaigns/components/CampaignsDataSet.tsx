@@ -84,9 +84,9 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 				{
 					active: true,
 					default: true,
-					direction: 'asc',
-					key: 'campaignName',
-					label: Liferay.Language.get('campaign-name'),
+					direction: 'desc',
+					key: 'accountsTouched',
+					label: Liferay.Language.get('accounts-touched'),
 				},
 			]}
 			views={views}

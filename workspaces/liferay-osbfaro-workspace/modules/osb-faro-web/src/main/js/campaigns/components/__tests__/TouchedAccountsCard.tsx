@@ -91,16 +91,16 @@ describe('TouchedAccountsCard', () => {
 		expect(getFields().every(({sortable}: any) => sortable)).toBe(true);
 	});
 
-	it('should sort by account name ascending by default', () => {
+	it('should sort by pipeline value descending by default', () => {
 		renderCard();
 
 		expect(lastFDSProps.sorts).toEqual([
 			{
 				active: true,
 				default: true,
-				direction: 'asc',
-				key: 'accountName',
-				label: 'Name',
+				direction: 'desc',
+				key: 'salesforce/openPipelineAmount',
+				label: 'Pipeline Value',
 			},
 		]);
 	});
