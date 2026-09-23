@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.translation.exception.TranslatorException;
 import com.liferay.translation.translator.BaseTranslator;
 import com.liferay.translation.translator.Translator;
@@ -73,7 +74,7 @@ public class DeepLTranslator extends BaseTranslator {
 		}
 
 		List<String> supportedLanguageCodes = _getSupportedLanguageCodes(
-			deepLTranslatorConfiguration);
+			translatorPacket.getCompanyId(), deepLTranslatorConfiguration);
 
 		String targetLanguageCode = StringUtil.toUpperCase(
 			_getTargetLanguageCode(translatorPacket.getTargetLanguageId()));
@@ -88,8 +89,8 @@ public class DeepLTranslator extends BaseTranslator {
 		}
 
 		Map<String, String> translatedFieldsMap = _translate(
-			deepLTranslatorConfiguration, translatorPacket.getFieldsMap(),
-			translatorPacket.getHTMLMap(),
+			translatorPacket.getCompanyId(), deepLTranslatorConfiguration,
+			translatorPacket.getFieldsMap(), translatorPacket.getHTMLMap(),
 			StringUtil.toUpperCase(
 				getLanguageCode(translatorPacket.getSourceLanguageId())),
 			targetLanguageCode);
@@ -134,6 +135,7 @@ public class DeepLTranslator extends BaseTranslator {
 	}
 
 	private List<String> _getSupportedLanguageCodes(
+			long companyId,
 			DeepLTranslatorConfiguration deepLTranslatorConfiguration)
 		throws PortalException {
 
@@ -144,7 +146,7 @@ public class DeepLTranslator extends BaseTranslator {
 		return JSONUtil.toList(
 			_jsonFactory.createJSONArray(
 				_invoke(
-					deepLTranslatorConfiguration, options,
+					companyId, deepLTranslatorConfiguration, options,
 					URLBuilder.create(
 						deepLTranslatorConfiguration.validateLanguageURL()
 					).addParameter(
@@ -181,15 +183,19 @@ public class DeepLTranslator extends BaseTranslator {
 	}
 
 	private String _invoke(
+			long companyId,
 			DeepLTranslatorConfiguration deepLTranslatorConfiguration,
 			Http.Options options, String url)
 		throws PortalException {
 
 		String json = null;
 
+		String authKey = _secretResolver.resolve(
+			companyId, deepLTranslatorConfiguration.authKey());
+
 		options.addHeader(
-			HttpHeaders.AUTHORIZATION,
-			"DeepL-Auth-Key " + deepLTranslatorConfiguration.authKey());
+			HttpHeaders.AUTHORIZATION, "DeepL-Auth-Key " + authKey);
+
 		options.addHeader(
 			HttpHeaders.USER_AGENT,
 			_getUserAgent(deepLTranslatorConfiguration.userAgent()));
@@ -215,6 +221,7 @@ public class DeepLTranslator extends BaseTranslator {
 	}
 
 	private Map<String, String> _translate(
+			long companyId,
 			DeepLTranslatorConfiguration deepLTranslatorConfiguration,
 			Map<String, String> fieldsMap, Map<String, Boolean> htmlMap,
 			String sourceLanguageCode, String targetLanguageCode)
@@ -228,7 +235,7 @@ public class DeepLTranslator extends BaseTranslator {
 			translatedFieldsMap.put(
 				entry.getKey(),
 				_translate(
-					deepLTranslatorConfiguration, sourceLanguageCode,
+					companyId, deepLTranslatorConfiguration, sourceLanguageCode,
 					targetLanguageCode, entry.getValue(), html));
 		}
 
@@ -236,6 +243,7 @@ public class DeepLTranslator extends BaseTranslator {
 	}
 
 	private String _translate(
+			long companyId,
 			DeepLTranslatorConfiguration deepLTranslatorConfiguration,
 			String sourceLanguageCode, String targetLanguageCode, String text,
 			Boolean html)
@@ -273,7 +281,7 @@ public class DeepLTranslator extends BaseTranslator {
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			_invoke(
-				deepLTranslatorConfiguration, options,
+				companyId, deepLTranslatorConfiguration, options,
 				deepLTranslatorConfiguration.url()));
 
 		JSONArray jsonArray = jsonObject.getJSONArray("translations");
@@ -294,5 +302,8 @@ public class DeepLTranslator extends BaseTranslator {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

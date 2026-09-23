@@ -9,6 +9,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.translation.translator.BaseTranslator;
 import com.liferay.translation.translator.Translator;
 import com.liferay.translation.translator.TranslatorPacket;
@@ -63,7 +64,9 @@ public class AWSTranslator extends BaseTranslator {
 			StaticCredentialsProvider.create(
 				AwsBasicCredentials.create(
 					awsTranslatorConfiguration.accessKey(),
-					awsTranslatorConfiguration.secretKey()))
+					_secretResolver.resolve(
+						translatorPacket.getCompanyId(),
+						awsTranslatorConfiguration.secretKey())))
 		).region(
 			Region.of(awsTranslatorConfiguration.region())
 		).build();
@@ -137,5 +140,8 @@ public class AWSTranslator extends BaseTranslator {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

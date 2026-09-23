@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.translation.exception.TranslatorException;
 import com.liferay.translation.translator.BaseTranslator;
 import com.liferay.translation.translator.Translator;
@@ -83,7 +84,9 @@ public class GoogleCloudTranslator extends BaseTranslator {
 		String targetLanguageCode = getLanguageCode(
 			translatorPacket.getTargetLanguageId());
 
-		Translate translate = _getTranslate(googleCloudTranslatorConfiguration);
+		Translate translate = _getTranslate(
+			translatorPacket.getCompanyId(),
+			googleCloudTranslatorConfiguration);
 
 		Set<String> supportedLanguageCodes = SetUtil.fromCollection(
 			TransformUtil.transform(
@@ -144,12 +147,14 @@ public class GoogleCloudTranslator extends BaseTranslator {
 	}
 
 	private Translate _getTranslate(
+			long companyId,
 			GoogleCloudTranslatorConfiguration
 				googleCloudTranslatorConfiguration)
 		throws ConfigurationException {
 
-		String serviceAccountPrivateKey =
-			googleCloudTranslatorConfiguration.serviceAccountPrivateKey();
+		String serviceAccountPrivateKey = _secretResolver.resolve(
+			companyId,
+			googleCloudTranslatorConfiguration.serviceAccountPrivateKey());
 
 		GoogleCredentials googleCredentials = null;
 
@@ -175,5 +180,8 @@ public class GoogleCloudTranslator extends BaseTranslator {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.translation.translator.TranslatorPacket;
 import com.liferay.translation.translator.azure.internal.configuration.AzureTranslatorConfiguration;
@@ -115,6 +116,9 @@ public class AzureTranslatorTest {
 			_azureTranslator, "_http", _setUpHttp());
 		ReflectionTestUtil.setFieldValue(
 			_azureTranslator, "_jsonFactory", new JSONFactoryImpl());
+		ReflectionTestUtil.setFieldValue(
+			_azureTranslator, "_secretResolver",
+			(SecretResolver)(companyId, value) -> value);
 	}
 
 	private ConfigurationProvider _setUpConfigurationProvider(

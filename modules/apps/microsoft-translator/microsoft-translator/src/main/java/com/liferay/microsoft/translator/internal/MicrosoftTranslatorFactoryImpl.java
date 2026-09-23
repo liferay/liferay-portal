@@ -9,6 +9,8 @@ import com.liferay.microsoft.translator.internal.configuration.MicrosoftTranslat
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslator;
 import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslatorFactory;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Hugo Huijser
@@ -31,7 +34,9 @@ public class MicrosoftTranslatorFactoryImpl
 	public MicrosoftTranslator getMicrosoftTranslator() {
 		if (_microsoftTranslator == null) {
 			_microsoftTranslator = new MicrosoftTranslatorImpl(
-				_microsoftTranslatorConfiguration.subscriptionKey());
+				_secretResolver.resolve(
+					CompanyConstants.SYSTEM,
+					_microsoftTranslatorConfiguration.subscriptionKey()));
 		}
 
 		return _microsoftTranslator;
@@ -54,5 +59,8 @@ public class MicrosoftTranslatorFactoryImpl
 	private volatile MicrosoftTranslator _microsoftTranslator;
 	private volatile MicrosoftTranslatorConfiguration
 		_microsoftTranslatorConfiguration;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

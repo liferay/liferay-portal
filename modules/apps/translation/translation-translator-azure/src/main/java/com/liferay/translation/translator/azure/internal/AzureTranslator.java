@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.url.URLBuilder;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.translation.translator.BaseTranslator;
 import com.liferay.translation.translator.Translator;
 import com.liferay.translation.translator.TranslatorPacket;
@@ -73,7 +74,9 @@ public class AzureTranslator extends BaseTranslator {
 				_getUserAgent(azureTranslatorConfiguration.userAgent()));
 			options.addHeader(
 				"Ocp-Apim-Subscription-Key",
-				azureTranslatorConfiguration.subscriptionKey());
+				_secretResolver.resolve(
+					translatorPacket.getCompanyId(),
+					azureTranslatorConfiguration.subscriptionKey()));
 			options.addHeader(
 				"Ocp-Apim-Subscription-Region",
 				azureTranslatorConfiguration.resourceLocation());
@@ -195,5 +198,8 @@ public class AzureTranslator extends BaseTranslator {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
