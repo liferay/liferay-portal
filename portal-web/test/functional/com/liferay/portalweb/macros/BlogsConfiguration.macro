@@ -2,15 +2,7 @@ definition {
 
 	@summary = "Default summary"
 	macro configureDisplayStyleInSystemSettings(displayStyle = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Blogs",
-			configurationName = "Blogs",
-			configurationScope = "Widget Scope");
+		SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.blogs.web.internal.configuration.BlogsPortletInstanceConfiguration");
 
 		if (${displayStyle} == "Abstract") {
 			var displayStyleKey = "abstract";
@@ -38,15 +30,7 @@ definition {
 
 	@summary = "Default summary"
 	macro enableReadingTime() {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Blogs",
-			configurationName = "Blogs",
-			configurationScope = "Widget Scope");
+		SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.blogs.web.internal.configuration.BlogsPortletInstanceConfiguration");
 
 		if (IsNotChecked.isNotCheckedNotVisible(key_fieldName = "enableReadingTime", locator1 = "FormFields#CHECKBOX")) {
 			Check.checkNotVisible(

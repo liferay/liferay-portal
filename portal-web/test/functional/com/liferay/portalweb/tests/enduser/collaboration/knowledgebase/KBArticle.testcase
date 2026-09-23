@@ -1818,15 +1818,7 @@ definition {
 
 		Navigator.openURL();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Knowledge Base",
-			configurationName = "Service",
-			configurationScope = "Site Scope");
+		SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.knowledge.base.configuration.KBGroupServiceConfiguration");
 
 		FormFields.enableCheckbox(fieldName = "sourceURLEnabled");
 
