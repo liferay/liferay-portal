@@ -6,6 +6,8 @@
 package com.liferay.comment.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -33,7 +35,7 @@ public class EditDiscussionStrutsActionTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	@TestInfo("LPD-89886")
+	@TestInfo({"LPD-89886", "LPD-106192"})
 	public void testExecute() throws Exception {
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
@@ -45,10 +47,12 @@ public class EditDiscussionStrutsActionTest {
 			ContentTypes.APPLICATION_JSON,
 			mockHttpServletResponse.getContentType());
 
-		String content = mockHttpServletResponse.getContentAsString();
-
-		Assert.assertTrue(content.contains("MustHaveSessionCSRFToken"));
-		Assert.assertTrue(content.contains("\"exception\""));
+		Assert.assertEquals(
+			JSONUtil.put(
+				"exception",
+				PrincipalException.MustHaveSessionCSRFToken.class.getName()
+			).toString(),
+			mockHttpServletResponse.getContentAsString());
 	}
 
 	@Inject(filter = "path=/portal/comment/discussion/edit")
