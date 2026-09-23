@@ -389,7 +389,7 @@ public class TransactionalPortalCacheUtil {
 				return;
 			}
 
-			doCommit();
+			doCommit(false);
 		}
 
 		public ValueEntry get(Serializable key) {
@@ -436,7 +436,7 @@ public class TransactionalPortalCacheUtil {
 			}
 		}
 
-		protected void doCommit() {
+		protected void doCommit(boolean byRemove) {
 			if (_removeAll) {
 				if (_skipReplicator) {
 					PortalCacheHelperUtil.removeAllWithoutReplicator(
@@ -452,7 +452,7 @@ public class TransactionalPortalCacheUtil {
 
 				ValueEntry valueEntry = entry.getValue();
 
-				if (commitByRemove) {
+				if (byRemove) {
 					valueEntry.commitToByRemove(_portalCache, entry.getKey());
 				}
 				else {
@@ -485,8 +485,6 @@ public class TransactionalPortalCacheUtil {
 			return false;
 		}
 
-		protected boolean commitByRemove;
-
 		private MVCCUncommittedBuffer(
 			PortalCache<Serializable, Object> portalCache) {
 
@@ -512,15 +510,11 @@ public class TransactionalPortalCacheUtil {
 
 			if (readOnly) {
 				if (_markers.get(_portalCacheName) == _marker) {
-					doCommit();
+					doCommit(false);
 				}
 			}
 			else {
-				if (_markers.remove(_portalCacheName) != _marker) {
-					commitByRemove = true;
-				}
-
-				doCommit();
+				doCommit(_markers.remove(_portalCacheName) != _marker);
 			}
 		}
 
