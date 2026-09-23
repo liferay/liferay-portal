@@ -15,6 +15,7 @@ import com.liferay.expando.kernel.model.adapter.StagedExpandoColumn;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.kernel.util.ExpandoUtil;
 import com.liferay.exportimport.internal.util.ExportImportPermissionUtil;
+import com.liferay.exportimport.internal.util.ManifestXmlFilePathUtil;
 import com.liferay.exportimport.internal.xstream.ConverterAdapter;
 import com.liferay.exportimport.internal.xstream.XStreamStagedModelTypeHierarchyPermission;
 import com.liferay.exportimport.internal.xstream.converter.TimestampConverter;
@@ -556,7 +557,8 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 			if (classedModel instanceof Layout) {
 				missingReferenceElement.addAttribute(
-					"element-path", "/manifest.xml");
+					"element-path",
+					ManifestXmlFilePathUtil.getExportManifestXmlFilePath(this));
 			}
 			else {
 				missingReferenceElement.addAttribute(
