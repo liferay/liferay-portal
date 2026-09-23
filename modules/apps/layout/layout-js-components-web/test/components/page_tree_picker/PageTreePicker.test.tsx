@@ -327,6 +327,16 @@ describe('PageTreePicker', () => {
 		);
 	});
 
+	it('does not highlight a checked page in the multiple selection mode', async () => {
+		const {container} = await renderPageTreePicker();
+
+		await userEvent.click(screen.getByRole('checkbox', {name: 'Products'}));
+
+		expect(screen.getByRole('checkbox', {name: 'Products'})).toBeChecked();
+
+		expect(container.querySelector('.treeview-link.active')).toBeNull();
+	});
+
 	it('renders a disabled page as disabled', async () => {
 		const childrenByParentId = createDefaultChildrenByParentId();
 
