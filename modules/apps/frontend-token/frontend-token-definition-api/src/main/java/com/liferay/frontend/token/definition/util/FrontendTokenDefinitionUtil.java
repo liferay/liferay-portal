@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.token.definition.util;
 
+import com.liferay.frontend.token.definition.FrontendToken;
+import com.liferay.frontend.token.definition.FrontendTokenMapping;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -20,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Gabriel Lima
@@ -27,16 +30,130 @@ import java.util.Map;
  */
 public class FrontendTokenDefinitionUtil {
 
+	public static final String EDITOR_TYPE_DEFAULT = "Default";
+
+	public static JSONObject createFrontendTokenDefinitionJSONObject(
+		String frontendTokenCategoryLabel, String frontendTokenCategoryName,
+		JSONObject frontendTokenSetJSONObject) {
+
+		if (Validator.isBlank(frontendTokenCategoryName) ||
+			(frontendTokenSetJSONObject == null)) {
+
+			throw new IllegalArgumentException(
+				"Frontend token category name and frontend token set are " +
+					"required");
+		}
+
+		return JSONUtil.put(
+			"frontendTokenCategories",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"frontendTokenSets",
+					JSONUtil.putAll(_clone(frontendTokenSetJSONObject))
+				).put(
+					"label",
+					() -> {
+						if (Validator.isBlank(frontendTokenCategoryLabel)) {
+							return null;
+						}
+
+						return frontendTokenCategoryLabel;
+					}
+				).put(
+					"name", frontendTokenCategoryName
+				)));
+	}
+
+	public static JSONObject createFrontendTokenJSONObject(
+		String cssVariableMappingValue, String defaultValue, String description,
+		String editorType, String label, String name, FrontendToken.Type type) {
+
+		if (Validator.isBlank(cssVariableMappingValue) ||
+			Validator.isBlank(name) || (type == null)) {
+
+			throw new IllegalArgumentException(
+				"Frontend token CSS variable mapping value, name, and type " +
+					"are required");
+		}
+
+		return JSONUtil.put(
+			"defaultValue", defaultValue
+		).put(
+			"description",
+			() -> {
+				if (Validator.isBlank(description)) {
+					return null;
+				}
+
+				return description;
+			}
+		).put(
+			"editorType",
+			() -> {
+				if (Validator.isBlank(editorType) ||
+					Objects.equals(editorType, EDITOR_TYPE_DEFAULT)) {
+
+					return null;
+				}
+
+				return editorType;
+			}
+		).put(
+			"label", label
+		).put(
+			"mappings",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"type", FrontendTokenMapping.TYPE_CSS_VARIABLE
+				).put(
+					"value", cssVariableMappingValue
+				))
+		).put(
+			"name", name
+		).put(
+			"type", type.getValue()
+		);
+	}
+
+	public static JSONObject createFrontendTokenSetJSONObject(
+		String description, JSONObject frontendTokenJSONObject, String label,
+		String name) {
+
+		if (frontendTokenJSONObject == null) {
+			throw new IllegalArgumentException("Frontend token is required");
+		}
+
+		return JSONUtil.put(
+			"description",
+			() -> {
+				if (Validator.isBlank(description)) {
+					return null;
+				}
+
+				return description;
+			}
+		).put(
+			"frontendTokens", JSONUtil.putAll(_clone(frontendTokenJSONObject))
+		).put(
+			"label",
+			() -> {
+				if (Validator.isBlank(label)) {
+					return null;
+				}
+
+				return label;
+			}
+		).put(
+			"name", name
+		);
+	}
+
 	public static List<String> getFrontendTokenNames(
 		JSONObject frontendTokenDefinitionJSONObject) {
 
-		if (frontendTokenDefinitionJSONObject == null) {
-			return Collections.emptyList();
-		}
-
 		JSONArray frontendTokenCategoriesJSONArray =
-			frontendTokenDefinitionJSONObject.getJSONArray(
-				"frontendTokenCategories");
+			_getFrontendTokenCategoriesJSONArray(
+				frontendTokenDefinitionJSONObject);
 
 		if (frontendTokenCategoriesJSONArray == null) {
 			return Collections.emptyList();
