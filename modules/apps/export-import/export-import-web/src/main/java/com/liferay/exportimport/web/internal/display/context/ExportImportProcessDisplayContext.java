@@ -11,6 +11,7 @@ import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate.Scope;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -126,6 +127,16 @@ public class ExportImportProcessDisplayContext {
 		return _exportPreviewJSONObject;
 	}
 
+	public String getExportPreviewSitesAPIURL() {
+		if (_exportPreviewSitesAPIURL != null) {
+			return _exportPreviewSitesAPIURL;
+		}
+
+		_exportPreviewSitesAPIURL = _getResourceAPIURL("/export-preview/sites");
+
+		return _exportPreviewSitesAPIURL;
+	}
+
 	public String getExportProcessAPIURL() {
 		if (_exportProcessAPIURL != null) {
 			return _exportProcessAPIURL;
@@ -187,6 +198,17 @@ public class ExportImportProcessDisplayContext {
 	public boolean isLookAndFeelEnabled() {
 		if ((getScope() != Scope.PORTLET) &&
 			ScopeUtil.isLookAndFeelEnabled(_group)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isSitesEnabled() {
+		if ((getScope() == Scope.COMPANY) &&
+			FeatureFlagManagerUtil.isEnabled(
+				_group.getCompanyId(), "LPD-85946")) {
 
 			return true;
 		}
@@ -289,6 +311,7 @@ public class ExportImportProcessDisplayContext {
 	private String _exportPreviewAPIURL;
 	private JSONObject _exportPreviewJSONObject;
 	private final ExportPreviewResource.Factory _exportPreviewResourceFactory;
+	private String _exportPreviewSitesAPIURL;
 	private String _exportProcessAPIURL;
 	private final Group _group;
 	private final long _groupId;
