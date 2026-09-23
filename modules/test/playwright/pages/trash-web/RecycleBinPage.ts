@@ -54,6 +54,12 @@ export class RecycleBinPage {
 			.getByRole('dialog')
 			.getByRole('button', {exact: true, name: 'Delete'})
 			.click();
+
+		// Wait for the deletion to complete before returning, otherwise a
+		// following row action opens its menu against a list that is still
+		// re-rendering
+
+		await expect(this._row(assetName)).toHaveCount(0);
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
@@ -181,8 +187,8 @@ export class RecycleBinPage {
 				.dispatchEvent('click');
 
 			await expect(menuItem).toBeVisible({timeout: 2000});
-		}).toPass();
 
-		await menuItem.click();
+			await menuItem.click({timeout: 2000});
+		}).toPass();
 	}
 }
