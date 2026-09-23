@@ -7,13 +7,13 @@ package com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.pars
 
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -110,7 +110,8 @@ public class ResourceOpenAPIParser {
 										operationId),
 									returnType,
 									_getParentSchema(
-										path, pathItems, schemaName));
+										configYAML, path, pathItems,
+										schemaName));
 
 							javaMethodSignatures.add(javaMethodSignature);
 
@@ -381,9 +382,6 @@ public class ResourceOpenAPIParser {
 			}
 
 			if (methodName.equals("post" + parentSchemaName + schemaName) ||
-				(methodName.equals("post" + schemaName) &&
-				 ListUtil.isEmpty(
-					 javaMethodSignature.getPathJavaMethodParameters())) ||
 				isExternalReferenceCodeMethod("post", javaMethodSignature)) {
 
 				createStrategies.add("INSERT");
@@ -595,9 +593,6 @@ public class ResourceOpenAPIParser {
 				 methodName.equals(
 					 StringBundler.concat(
 						 "post", parentSchemaName, "Id", schemaName)) ||
-				 (methodName.equals("post" + schemaName) &&
-				  ListUtil.isEmpty(
-					  javaMethodSignature.getPathJavaMethodParameters())) ||
 				 methodName.equals("put" + schemaName)) {
 
 			batchOperationType = BatchOperationType.IMPORT;
@@ -1389,7 +1384,8 @@ public class ResourceOpenAPIParser {
 	}
 
 	private static String _getParentSchema(
-		String path, Map<String, PathItem> pathItems, String schemaName) {
+		ConfigYAML configYAML, String path, Map<String, PathItem> pathItems,
+		String schemaName) {
 
 		String basePath = path;
 
@@ -1419,6 +1415,8 @@ public class ResourceOpenAPIParser {
 			return null;
 		}
 
+		String lastPath = basePath.substring(lastIndexOfSlash + 1);
+
 		basePath = basePath.substring(0, lastIndexOfSlash);
 
 		if (basePath.startsWith(
@@ -1431,6 +1429,22 @@ public class ResourceOpenAPIParser {
 				 basePath.startsWith("/sites/{siteId}")) {
 
 			return "Site";
+		}
+
+		if (!basePath.contains(StringPool.OPEN_CURLY_BRACE) &&
+			!lastPath.contains(StringPool.OPEN_CURLY_BRACE)) {
+
+			String prefix = StringUtil.upperCaseFirstLetter(
+				OpenAPIUtil.formatSingular(
+					configYAML,
+					CamelCaseUtil.toCamelCase(basePath.substring(1))));
+
+			String suffix = StringUtil.upperCaseFirstLetter(
+				CamelCaseUtil.toCamelCase(lastPath));
+
+			if (schemaName.equals(prefix + suffix)) {
+				return null;
+			}
 		}
 
 		basePath = basePath.replaceAll("\\{parent([^}]*)\\}", "{$1}");
