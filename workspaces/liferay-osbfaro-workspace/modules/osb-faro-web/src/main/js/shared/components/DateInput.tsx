@@ -11,8 +11,10 @@ import {
 	applyTimeZone,
 	DATE_MASK,
 	DATE_TIME_MASK,
+	DateFormat,
 	DEFAULT_DATE_FORMAT,
 	DEFAULT_TIMEZONE_ID,
+	formatDate,
 } from 'shared/util/date';
 import {DatePickerRetentionPeriodHeader} from './DatePickerRetentionPeriodHeader';
 import {formatDateWithTimezone} from './dropdown-range-key/utils';
@@ -20,7 +22,7 @@ import {noop} from 'lodash';
 import {useRetentionPeriod} from 'shared/hooks/useRetentionPeriod';
 
 interface IDateInputProps extends React.HTMLAttributes<HTMLInputElement> {
-	displayFormat?: string;
+	displayFormat?: DateFormat | string;
 	format?: string;
 	name?: string;
 	onDateInputBlur?: (param: any) => void;
@@ -87,7 +89,7 @@ const DateInput: React.FC<IDateInputProps> = ({
 			return value;
 		}
 
-		return date.isValid() ? date.format(displayFormat) : '';
+		return date.isValid() ? formatDate(date, displayFormat) : '';
 	};
 
 	const retentionPeriod = useRetentionPeriod();

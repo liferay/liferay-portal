@@ -7,9 +7,7 @@ export const DEFAULT_LOCALE = 'en-US';
 /**
  * Keeps a portal languageId when it is one of the languages the portal
  * makes available, falling back to DEFAULT_LANGUAGE_ID when it is
- * missing or not available. Use this when the consumer needs the portal
- * languageId itself; prefer `resolveLocale`/`getLocale`/`useLocale` for
- * Intl-style formatting.
+ * missing or not available.
  */
 export function resolveLanguageId(languageId?: string | null): string {
 	return languageId && languageId in Liferay.Language.available
@@ -25,15 +23,6 @@ export function getLanguageLabel(languageId?: string | null): string {
 	const [language, country] = (languageId || DEFAULT_LANGUAGE_ID).split('_');
 
 	return `${language.toUpperCase()} (${country})`;
-}
-
-/**
- * Reverses `resolveLocale`: given a BCP-47 locale, returns the portal
- * languageId it came from (e.g. moment's locale packs, which are keyed
- * by languageId rather than by the Intl-style locale string).
- */
-export function localeToLanguageId(locale: string): string {
-	return locale.replace(/-/g, '_');
 }
 
 let currentLocale: string = DEFAULT_LOCALE;

@@ -8,7 +8,7 @@ import React from 'react';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';
 import URLConstants from 'shared/util/url-constants';
 import withStatefulPagination from 'shared/hoc/StatefulPagination';
-import {applyTimeZone} from 'shared/util/date';
+import {applyTimeZone, formatRelativeTime} from 'shared/util/date';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
@@ -118,10 +118,9 @@ const IndividualAttributes: React.FC<IIndividualAttributesProps> = ({
 							accessor: 'dateModified',
 							className: 'pr-5',
 							dataFormatter: (dateModified: string) =>
-								applyTimeZone(
-									dateModified,
-									timeZoneId
-								).fromNow(),
+								formatRelativeTime(
+									applyTimeZone(dateModified, timeZoneId)
+								),
 							label: Liferay.Language.get('last-synced'),
 							sortable: false,
 						},

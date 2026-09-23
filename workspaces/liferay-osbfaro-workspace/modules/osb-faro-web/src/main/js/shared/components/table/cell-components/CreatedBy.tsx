@@ -1,5 +1,8 @@
 import React from 'react';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {
+	formatDateToTimeZone,
+	SHORT_NUMERIC_DATE_FORMAT,
+} from 'shared/util/date';
 import {sub} from 'shared/util/lang';
 
 interface ICreatedByProps {
@@ -21,7 +24,11 @@ const CreatedByCell: React.FC<ICreatedByProps> = ({
 		<div className="text-secondary">
 			<em>
 				{sub(Liferay.Language.get('last-edited-x'), [
-					formatDateToTimeZone(dateModified, 'M/D/YY', timeZoneId),
+					formatDateToTimeZone(
+						dateModified,
+						SHORT_NUMERIC_DATE_FORMAT,
+						timeZoneId
+					),
 				])}
 			</em>
 		</div>

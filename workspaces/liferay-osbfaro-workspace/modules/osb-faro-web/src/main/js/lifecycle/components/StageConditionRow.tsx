@@ -1,12 +1,16 @@
 import ClayDatePicker from '@clayui/date-picker';
 import getCN from 'classnames';
 import Label from '@clayui/label';
-import moment from 'moment';
 import PickerTriggerButton from 'shared/components/PickerTriggerButton';
 import React, {useState} from 'react';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
-import {DEFAULT_DATE_FORMAT, getDateNow} from 'shared/util/date';
+import {
+	DEFAULT_DATE_FORMAT,
+	getDateNow,
+	getMonthNames,
+	getShortWeekdayNames,
+} from 'shared/util/date';
 import {getCatalogFieldLabel, ICatalogField} from 'shared/api/catalog';
 import {IStageCondition} from 'lifecycle/utils/stageConfiguration';
 import {Option, Picker, Text} from '@clayui/core';
@@ -177,12 +181,12 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 					expanded={dateExpanded}
 					max={maxDate.format(DEFAULT_DATE_FORMAT)}
 					min={minDate.format(DEFAULT_DATE_FORMAT)}
-					months={moment.months()}
+					months={getMonthNames()}
 					onChange={(conditionValue) => onChange({conditionValue})}
 					onExpandedChange={setDateExpanded}
 					placeholder={Liferay.Language.get('yyyy-mm-dd')}
 					value={condition.conditionValue ?? ''}
-					weekdaysShort={moment.weekdaysShort()}
+					weekdaysShort={getShortWeekdayNames()}
 					years={{
 						end: maxDate.year(),
 						start: minDate.year(),

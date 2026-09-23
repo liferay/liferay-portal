@@ -7,6 +7,7 @@ import React from 'react';
 import {chunk, noop, range} from 'lodash';
 import {isDateOrRange, isInRange, isRange} from './util';
 import {PropTypes} from 'prop-types';
+import {getShortWeekdayNames} from 'shared/util/date';
 
 const FIVE_ROWS = 35;
 const SIX_ROWS = 42;
@@ -280,7 +281,7 @@ export default class Calendar extends React.Component {
 			<table className={getCN('calendar-root', {className})}>
 				<thead>
 					<tr>
-						{moment.weekdaysShort().map(day => (
+						{getShortWeekdayNames().map(day => (
 							<th key={day}>{day}</th>
 						))}
 					</tr>

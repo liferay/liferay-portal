@@ -15,6 +15,7 @@ import {
 } from './types';
 import {formatTime} from 'shared/util/time';
 import {
+	formatDate,
 	formatUTCDate,
 	getCustomDateFormat,
 	getMonthYearFormat,
@@ -352,9 +353,12 @@ export const formatDateName = (
 ): string => {
 	switch (dateGrouping) {
 		case DateGroupings.Day:
-			return moment(name, 'YYYY-MM-DD').format(getCustomDateFormat());
+			return formatDate(
+				moment(name, 'YYYY-MM-DD'),
+				getCustomDateFormat()
+			);
 		case DateGroupings.Month:
-			return moment(name, 'YYYY-MM').format(getMonthYearFormat());
+			return formatDate(moment(name, 'YYYY-MM'), getMonthYearFormat());
 		case DateGroupings.Year:
 		default:
 			return name;

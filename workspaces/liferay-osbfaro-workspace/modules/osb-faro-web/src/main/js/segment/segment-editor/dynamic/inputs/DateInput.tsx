@@ -4,9 +4,10 @@ import moment from 'moment';
 import React from 'react';
 import {INPUT_DATE_FORMAT, PropertyTypes} from '../utils/constants';
 import {ISegmentEditorInputBase} from '../utils/types';
+import {DateFormat} from 'shared/util/date';
 
 interface IEditorDateInputProps extends ISegmentEditorInputBase {
-	displayFormat: string;
+	displayFormat: DateFormat | string;
 	value: string;
 }
 

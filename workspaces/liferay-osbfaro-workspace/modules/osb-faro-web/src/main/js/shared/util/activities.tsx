@@ -460,7 +460,7 @@ export const formatGroupingTime = (
 
 	return day === toDayKey(Date.now(), timeZoneId)
 		? Liferay.Language.get('today')
-		: moment.utc(day).format(getCustomDateFormat());
+		: formatUTCDate(day, getCustomDateFormat());
 };
 
 /**

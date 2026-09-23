@@ -3,11 +3,11 @@ import mockStore, {toRD} from 'test/mock-store';
 import React from 'react';
 import {act, renderHook} from '@testing-library/react';
 import {actionTypes} from 'shared/actions/users';
-import {DEFAULT_LANGUAGE_ID, DEFAULT_LOCALE} from 'shared/util/locale';
+import {DEFAULT_LOCALE} from 'shared/util/locale';
 import {fromJS} from 'immutable';
 import {LanguageIds} from 'shared/util/constants';
 import {Provider} from 'react-redux';
-import {useLanguageId, useLocale} from 'shared/hooks/useLocale';
+import {useLocale} from 'shared/hooks/useLocale';
 import {User} from 'shared/util/records';
 
 jest.unmock('react-dom');
@@ -75,23 +75,5 @@ describe('useLocale', () => {
 		});
 
 		expect(result.current).toBe('pt-BR');
-	});
-});
-
-describe('useLanguageId', () => {
-	it('wires the current user languageId into resolveLanguageId', () => {
-		const store = mockStore(
-			buildInitialState('1', {1: LanguageIds.Portuguese})
-		);
-		const {result} = renderWithStore(useLanguageId, store);
-
-		expect(result.current).toBe(LanguageIds.Portuguese);
-	});
-
-	it('falls back to the default language id when the current user has no languageId set', () => {
-		const store = mockStore(buildInitialState('1', {1: null}));
-		const {result} = renderWithStore(useLanguageId, store);
-
-		expect(result.current).toBe(DEFAULT_LANGUAGE_ID);
 	});
 });

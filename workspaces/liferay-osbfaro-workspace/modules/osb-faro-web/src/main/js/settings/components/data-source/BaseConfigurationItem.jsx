@@ -2,7 +2,11 @@ import ClayLink from '@clayui/link';
 import getCN from 'classnames';
 import MetricBar from 'shared/components/MetricBar';
 import React from 'react';
-import {formatUTCDateFromUnix} from 'shared/util/date';
+import {
+	formatUTCDateFromUnix,
+	NUMERIC_DATE_FORMAT,
+	TIME_FORMAT
+} from 'shared/util/date';
 import {getFinitePercent, toRounded} from 'shared/util/numbers';
 import {PropTypes} from 'prop-types';
 import {sub} from 'shared/util/lang';
@@ -15,7 +19,10 @@ export function getStatusMessage({configured, current, dateRecorded, total}) {
 			]);
 		} else if (dateRecorded) {
 			return `${sub(Liferay.Language.get('last-sync-x'), [
-				formatUTCDateFromUnix(dateRecorded, 'l - LT')
+				`${formatUTCDateFromUnix(
+					dateRecorded,
+					NUMERIC_DATE_FORMAT
+				)} - ${formatUTCDateFromUnix(dateRecorded, TIME_FORMAT)}`
 			])} GMT`;
 		}
 	}

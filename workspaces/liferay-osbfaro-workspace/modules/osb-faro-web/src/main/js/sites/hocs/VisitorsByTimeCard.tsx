@@ -23,15 +23,14 @@ import {
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
-import {getHourOnlyFormat} from 'shared/util/date';
+import {formatDate, getHourOnlyFormat} from 'shared/util/date';
 import {withEmpty, withError, withLoading} from 'shared/hoc';
 
 export const formatHour = (hour: string) =>
-	moment
-		.utc()
-		.startOf('day')
-		.add(Number(hour), 'hours')
-		.format(getHourOnlyFormat());
+	formatDate(
+		moment.utc().startOf('day').add(Number(hour), 'hours'),
+		getHourOnlyFormat()
+	);
 
 export const renderTooltip = ({
 	column,

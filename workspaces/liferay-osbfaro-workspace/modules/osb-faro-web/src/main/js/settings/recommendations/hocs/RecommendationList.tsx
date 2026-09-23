@@ -28,7 +28,7 @@ import {
 	getSortFromOrderIOMap,
 	NAME,
 } from 'shared/util/pagination';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {get} from 'lodash';
 import {getFormattedTitle} from 'shared/components/NoResultsDisplay';
 import {
@@ -300,7 +300,7 @@ const RecommendationList: React.FC<IRecommendationListProps> = ({
 						dataFormatter: (date: string) =>
 							formatDateToTimeZone(
 								date,
-								'MMM Do, YYYY',
+								getCustomDateFormat(),
 								timeZoneId
 							),
 						label: Liferay.Language.get('last-trained'),

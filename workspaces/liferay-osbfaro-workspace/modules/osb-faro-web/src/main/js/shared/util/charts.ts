@@ -1,11 +1,13 @@
 import moment from 'moment';
 import {BAR_COLORS} from 'shared/util/recharts';
 import {
+	formatUTCDate,
 	getCustomDateFormat,
 	getDayMonthFormat,
 	getDayMonthHourFormat,
 	getHourOnlyFormat,
 	getMonthYearFormat,
+	SHORT_MONTH_FORMAT,
 } from 'shared/util/date';
 import {getIntervalHandle} from './intervals';
 import {Interval, RangeSelectors} from 'shared/types';
@@ -111,19 +113,16 @@ export const dateRangeFormatter = (
 	const dayMonthFormat = getDayMonthFormat();
 	const dayMonthYearFormat = getCustomDateFormat();
 
-	const format = (date: Date, momentFormat: string) =>
-		moment.utc(date).format(momentFormat);
-
 	return `${
 		withYear
-			? format(dateStart, dayMonthYearFormat)
-			: format(dateStart, dayMonthFormat)
+			? formatUTCDate(dateStart, dayMonthYearFormat)
+			: formatUTCDate(dateStart, dayMonthFormat)
 	} - ${
 		moment(dateStart).get('month') !== moment(dateEnd).get('month')
 			? withYear
-				? format(dateEnd, dayMonthYearFormat)
-				: format(dateEnd, dayMonthFormat)
-			: format(dateEnd, dayFormat)
+				? formatUTCDate(dateEnd, dayMonthYearFormat)
+				: formatUTCDate(dateEnd, dayMonthFormat)
+			: formatUTCDate(dateEnd, dayFormat)
 	}`;
 };
 
@@ -143,10 +142,10 @@ export const formatTooltipDate = (
 
 		// display hours for Last 24 hours and yesterday
 
-		return moment.utc(date).format(getDayMonthHourFormat());
+		return formatUTCDate(date, getDayMonthHourFormat());
 	}
 
-	return moment.utc(date).format(getCustomDateFormat());
+	return formatUTCDate(date, getCustomDateFormat());
 };
 
 export const formatXAxisDate = (
@@ -158,9 +157,8 @@ export const formatXAxisDate = (
 
 	// display date and month
 
-	let formatter = (date: Date) =>
-		moment.utc(date).format(getDayMonthFormat());
-	const monthFormat = (date: Date) => moment.utc(date).format('MMM');
+	let formatter = (date: Date) => formatUTCDate(date, getDayMonthFormat());
+	const monthFormat = (date: Date) => formatUTCDate(date, SHORT_MONTH_FORMAT);
 
 	const dates = dateKeysIMap.get(Number(dateKey));
 	const dateStart = dates ? dates[0] : 0;
@@ -199,7 +197,7 @@ export const formatXAxisDate = (
 			// display hours
 
 			formatter = (date: Date) =>
-				moment.utc(date).format(getHourOnlyFormat());
+				formatUTCDate(date, getHourOnlyFormat());
 			break;
 		default:
 			break;
@@ -356,7 +354,7 @@ export const getDateTitle = (
 		);
 	}
 	else if (interval === INTERVAL_KEY_MAP.month) {
-		return moment.utc(startDate).format(getMonthYearFormat());
+		return formatUTCDate(startDate, getMonthYearFormat());
 	}
 
 	return formatTooltipDate(startDate, rangeKey);

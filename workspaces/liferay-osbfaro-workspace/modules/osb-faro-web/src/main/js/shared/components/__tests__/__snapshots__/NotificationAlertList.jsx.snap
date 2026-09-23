@@ -26,7 +26,7 @@ exports[`NotificationAlertList should render 1`] = `
       >
         Info:
       </strong>
-      Workspace timezone has changed to UTC -03:00 Brasilia Time  as of a few seconds ago. Please allow 1-2 days for the data to adjust to this new setting.
+      Workspace timezone has changed to UTC -03:00 Brasilia Time  as of now. Please allow 1-2 days for the data to adjust to this new setting.
       <button
         class="close"
       >

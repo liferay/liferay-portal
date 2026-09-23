@@ -1,8 +1,7 @@
 import Alert, {AlertTypes} from 'shared/components/Alert';
 import React from 'react';
-import {applyTimeZone} from 'shared/util/date';
+import {applyTimeZone, formatRelativeTime} from 'shared/util/date';
 import {sub} from 'shared/util/lang';
-import {useLanguageId} from 'shared/hooks/useLocale';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
 
 const TIME_ZONE_COUNTRY_REGEX = /\([^)]+.*/;
@@ -19,7 +18,6 @@ const TimeZoneAlert: React.FC<ITimeZoneAlertProps> = ({
 	stripe,
 }) => {
 	const {displayTimeZone, timeZoneId} = useTimeZone();
-	const languageId = useLanguageId();
 
 	return (
 		<Alert
@@ -35,11 +33,7 @@ const TimeZoneAlert: React.FC<ITimeZoneAlertProps> = ({
 				),
 				[
 					displayTimeZone.replace(TIME_ZONE_COUNTRY_REGEX, ''),
-					applyTimeZone(
-						modifiedTime,
-						timeZoneId,
-						languageId
-					).fromNow(),
+					formatRelativeTime(applyTimeZone(modifiedTime, timeZoneId)),
 				]
 			)}
 		</Alert>

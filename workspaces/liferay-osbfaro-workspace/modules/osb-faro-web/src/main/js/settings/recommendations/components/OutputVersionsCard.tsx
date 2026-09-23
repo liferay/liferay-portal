@@ -4,14 +4,17 @@ import moment from 'moment';
 import React from 'react';
 import RecommendationJobRunsQuery from '../queries/RecommendationJobRunsQuery';
 import Table from 'shared/components/table';
-import {applyTimeZone} from 'shared/util/date';
+import {
+	applyTimeZone,
+	formatRelativeTime,
+	formatTodayOrDate,
+} from 'shared/util/date';
 import {compose} from 'redux';
 import {
 	createOrderIOMap,
 	getSortFromOrderIOMap,
 	ID,
 } from 'shared/util/pagination';
-import {getCustomDateFormat} from 'shared/util/date';
 import {getFormattedTitle} from 'shared/components/NoResultsDisplay';
 import {getMapResultToProps} from 'shared/hoc/mappers/metrics';
 import {graphql} from '@apollo/client/react/hoc';
@@ -121,7 +124,7 @@ const OutputVersionsCard: React.FC<IOutputVersionsCardProps> = ({
 
 				{!!nextRunDate && (
 					<b>{`(${sub(Liferay.Language.get('next-x'), [
-						moment(nextRunDate).fromNow(),
+						formatRelativeTime(moment(nextRunDate)),
 					])})`}</b>
 				)}
 			</div>
@@ -133,23 +136,8 @@ const OutputVersionsCard: React.FC<IOutputVersionsCardProps> = ({
 					{
 						accessor: 'completedDate',
 						className: 'table-cell-expand',
-						dataFormatter: (val: string) => {
-							const dateFormat = getCustomDateFormat();
-
-							return applyTimeZone(val, timeZoneId).calendar(
-								null,
-								{
-									lastDay: dateFormat,
-									lastWeek: dateFormat,
-									nextDay: dateFormat,
-									nextWeek: dateFormat,
-									sameDay: `[${Liferay.Language.get(
-										'today'
-									)}]`,
-									sameElse: dateFormat,
-								}
-							);
-						},
+						dataFormatter: (val: string) =>
+							formatTodayOrDate(applyTimeZone(val, timeZoneId)),
 						label: Liferay.Language.get('training-date'),
 						sortable: false,
 						title: true,

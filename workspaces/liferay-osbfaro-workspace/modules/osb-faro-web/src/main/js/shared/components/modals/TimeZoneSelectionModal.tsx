@@ -10,12 +10,11 @@ import {
 	formatDateToTimeZone,
 	formatUTCDate,
 	getDateNow,
+	TIME_FORMAT,
 } from 'shared/util/date';
 import {Modal as ModalType} from 'shared/types';
 import {RootState} from 'shared/store';
 import {TimeZone} from 'shared/util/records';
-
-const FORMAT_LT = 'LT';
 
 const connector = connect((store: RootState, {groupId}: {groupId: string}) => ({
 	timeZone: new TimeZone(
@@ -39,7 +38,7 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 }) => {
 	const _formRef = useRef<any>(null);
 	const [currentTime, setCurrentTime] = useState(
-		formatUTCDate(getDateNow(), FORMAT_LT)
+		formatUTCDate(getDateNow(), TIME_FORMAT)
 	);
 
 	const onSubmit = (): void => {
@@ -76,7 +75,7 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 					setCurrentTime(
 						formatDateToTimeZone(
 							getDateNow(),
-							FORMAT_LT,
+							TIME_FORMAT,
 							timeZoneId
 						)
 					);
@@ -99,7 +98,7 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 												setCurrentTime(
 													formatUTCDate(
 														getDateNow(),
-														FORMAT_LT
+														TIME_FORMAT
 													)
 												);
 											}}

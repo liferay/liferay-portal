@@ -13,7 +13,7 @@ import React, {FC, useState} from 'react';
 import RowMain from 'shared/components/RowMain';
 import TextTruncate from './TextTruncate';
 import {Colors} from 'shared/util/colors-size';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, TIME_FORMAT} from 'shared/util/date';
 import {
 	formatPayloadTables,
 	PayloadTable as IPayloadTable,
@@ -29,11 +29,6 @@ import {
 import {LIFERAY_DXP_APPLICATION_IDS} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
-
-// 'LT' is moment's locale-aware time token: 12-hour with AM/PM for
-// en-US, 24-hour for pt-BR/es-ES/ja-JP.
-
-const TIME_FORMAT = 'LT';
 
 const DEVICE_ICONS_MAP = {
 	any: {

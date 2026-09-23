@@ -6,6 +6,7 @@ import TextTruncate from 'shared/components/TextTruncate';
 import {
 	applyTimeZone,
 	formatDateToTimeZone,
+	formatRelativeTime,
 	getCustomDateFormat,
 } from 'shared/util/date';
 import {DateCell} from 'shared/components/table/cell-components';
@@ -106,7 +107,7 @@ export default (timeZoneId) => [
 								getCustomDateFormat(),
 								timeZoneId
 							)
-						: moment.utc(modifiedDate).fromNow();
+						: formatRelativeTime(moment.utc(modifiedDate));
 				}
 			},
 			datePath: 'modifiedDate',

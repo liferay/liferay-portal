@@ -7,7 +7,7 @@ import Input from './Input';
 import moment from 'moment';
 import React, {useRef, useState} from 'react';
 import {DatePickerRetentionPeriodHeader} from './DatePickerRetentionPeriodHeader';
-import {DEFAULT_DATE_FORMAT} from 'shared/util/date';
+import {DateFormat, DEFAULT_DATE_FORMAT, formatDate} from 'shared/util/date';
 import {formatDateWithTimezone} from './dropdown-range-key/utils';
 import {isNil, noop} from 'lodash';
 import {sub} from 'shared/util/lang';
@@ -23,8 +23,10 @@ const convertToMoment = (
 	return date.isValid() ? date : null;
 };
 
-const formatMoment = (value: moment.Moment | null, format: string): string =>
-	isNil(value) ? '' : value.format(format);
+const formatMoment = (
+	value: moment.Moment | null,
+	format: DateFormat | string
+): string => (isNil(value) ? '' : formatDate(value, format));
 
 export type DateRange = {
 	end: string;
@@ -38,7 +40,7 @@ export type MomentDateRange = {
 
 interface IDateInputProps {
 	className?: string;
-	displayFormat?: string;
+	displayFormat?: DateFormat | string;
 	format?: string;
 	groupId?: string;
 	limitEndDate?: boolean;

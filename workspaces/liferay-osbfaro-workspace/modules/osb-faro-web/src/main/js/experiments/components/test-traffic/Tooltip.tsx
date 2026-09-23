@@ -1,11 +1,14 @@
 import ChartTooltip, {
 	IChartTooltipProps,
 } from 'shared/components/chart-tooltip';
-import moment from 'moment';
 import React from 'react';
 import {Alignments, Weights} from 'shared/components/chart-tooltip';
 import {formatPercent} from 'shared/util/numbers';
-import {getCustomDateFormat, getDate as getDateUtil} from 'shared/util/date';
+import {
+	formatUTCDate,
+	getCustomDateFormat,
+	getDate as getDateUtil,
+} from 'shared/util/date';
 import {toThousandsABTesting} from 'experiments/util/experiments';
 
 const formatTooltip = (dataPoint: any[]): IChartTooltipProps => {
@@ -16,9 +19,10 @@ const formatTooltip = (dataPoint: any[]): IChartTooltipProps => {
 		{
 			columns: [
 				{
-					label: `${Liferay.Language.get('test-traffic')} | ${moment
-						.utc(getDateUtil(control.payload.key))
-						.format(getCustomDateFormat())}`,
+					label: `${Liferay.Language.get('test-traffic')} | ${formatUTCDate(
+						getDateUtil(control.payload.key),
+						getCustomDateFormat()
+					)}`,
 					weight: Weights.Semibold,
 					width: 180,
 				},

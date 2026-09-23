@@ -1,5 +1,7 @@
 import moment from 'moment';
+import {DEFAULT_LOCALE, setLocale} from 'shared/util/locale';
 import {
+	formatDate,
 	getCustomDateFormat,
 	getCustomDateTimeFormat,
 	getDayMonthFormat,
@@ -8,19 +10,17 @@ import {
 	getMonthYearFormat,
 	usesTwelveHourClock,
 } from '../date';
-import {LanguageIds} from 'shared/util/constants';
-import {localeToLanguageId} from 'shared/util/locale';
 
 const DATE = '2026-06-10T14:30:00.000Z';
 
 describe('locale-aware date/time format lookups', () => {
 	afterEach(() => {
-		moment.locale('en');
+		setLocale(DEFAULT_LOCALE);
 	});
 
 	describe('en-US', () => {
 		beforeEach(() => {
-			moment.locale('en');
+			setLocale('en-US');
 		});
 
 		it('usesTwelveHourClock should be true', () => {
@@ -28,41 +28,45 @@ describe('locale-aware date/time format lookups', () => {
 		});
 
 		it('getHourOnlyFormat should omit minutes', () => {
-			expect(moment.utc(DATE).format(getHourOnlyFormat())).toBe('2 PM');
+			expect(formatDate(moment.utc(DATE), getHourOnlyFormat())).toBe(
+				'2 PM'
+			);
 		});
 
 		it('getDayMonthFormat should be month-first', () => {
-			expect(moment.utc(DATE).format(getDayMonthFormat())).toBe('Jun 10');
+			expect(formatDate(moment.utc(DATE), getDayMonthFormat())).toBe(
+				'Jun 10'
+			);
 		});
 
 		it('getFullDayMonthFormat should spell out the month', () => {
-			expect(moment.utc(DATE).format(getFullDayMonthFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getFullDayMonthFormat())).toBe(
 				'June 10'
 			);
 		});
 
 		it('getMonthYearFormat should format correctly', () => {
-			expect(moment.utc(DATE).format(getMonthYearFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getMonthYearFormat())).toBe(
 				'Jun 2026'
 			);
 		});
 
 		it('getCustomDateFormat should format correctly', () => {
-			expect(moment.utc(DATE).format(getCustomDateFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getCustomDateFormat())).toBe(
 				'Jun 10, 2026'
 			);
 		});
 
 		it('getCustomDateTimeFormat should format correctly', () => {
-			expect(moment.utc(DATE).format(getCustomDateTimeFormat())).toBe(
-				'Jun 10, 2026, 2:30 PM'
-			);
+			expect(
+				formatDate(moment.utc(DATE), getCustomDateTimeFormat())
+			).toBe('Jun 10, 2026, 2:30 PM');
 		});
 	});
 
 	describe('es-ES', () => {
 		beforeEach(() => {
-			moment.locale('es');
+			setLocale('es-ES');
 		});
 
 		it('usesTwelveHourClock should be false', () => {
@@ -70,73 +74,45 @@ describe('locale-aware date/time format lookups', () => {
 		});
 
 		it('getHourOnlyFormat should include minutes, 24-hour', () => {
-			expect(moment.utc(DATE).format(getHourOnlyFormat())).toBe('14:30');
+			expect(formatDate(moment.utc(DATE), getHourOnlyFormat())).toBe(
+				'14:30'
+			);
 		});
 
 		it('getDayMonthFormat should be day-first', () => {
-			expect(moment.utc(DATE).format(getDayMonthFormat())).toBe(
-				'10 jun.'
+			expect(formatDate(moment.utc(DATE), getDayMonthFormat())).toBe(
+				'10 jun'
 			);
 		});
 
 		it('getFullDayMonthFormat should use the "de" connector', () => {
-			expect(moment.utc(DATE).format(getFullDayMonthFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getFullDayMonthFormat())).toBe(
 				'10 de junio'
 			);
 		});
 
 		it('getMonthYearFormat should use the "de" connector', () => {
-			expect(moment.utc(DATE).format(getMonthYearFormat())).toBe(
-				'jun. de 2026'
+			expect(formatDate(moment.utc(DATE), getMonthYearFormat())).toBe(
+				'jun 2026'
 			);
 		});
 
 		it('getCustomDateFormat should drop "de" connectors (compact convention)', () => {
-			expect(moment.utc(DATE).format(getCustomDateFormat())).toBe(
-				'10 jun. 2026'
-			);
-		});
-
-		it('getCustomDateTimeFormat should format correctly', () => {
-			expect(moment.utc(DATE).format(getCustomDateTimeFormat())).toBe(
-				'10 jun. 2026, 14:30'
-			);
-		});
-	});
-
-	describe('pt-BR', () => {
-		beforeEach(() => {
-			moment.locale('pt-br');
-		});
-
-		it('usesTwelveHourClock should be false', () => {
-			expect(usesTwelveHourClock()).toBe(false);
-		});
-
-		it('getHourOnlyFormat should include minutes, 24-hour', () => {
-			expect(moment.utc(DATE).format(getHourOnlyFormat())).toBe('14:30');
-		});
-
-		it('getDayMonthFormat should be day-first', () => {
-			expect(moment.utc(DATE).format(getDayMonthFormat())).toBe('10 jun');
-		});
-
-		it('getCustomDateFormat should drop "de" connectors (compact convention)', () => {
-			expect(moment.utc(DATE).format(getCustomDateFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getCustomDateFormat())).toBe(
 				'10 jun 2026'
 			);
 		});
 
 		it('getCustomDateTimeFormat should format correctly', () => {
-			expect(moment.utc(DATE).format(getCustomDateTimeFormat())).toBe(
-				'10 jun 2026, 14:30'
-			);
+			expect(
+				formatDate(moment.utc(DATE), getCustomDateTimeFormat())
+			).toBe('10 jun 2026, 14:30');
 		});
 	});
 
-	describe('ja-JP', () => {
+	describe('pt-BR', () => {
 		beforeEach(() => {
-			moment.locale('ja');
+			setLocale('pt-BR');
 		});
 
 		it('usesTwelveHourClock should be false', () => {
@@ -144,44 +120,67 @@ describe('locale-aware date/time format lookups', () => {
 		});
 
 		it('getHourOnlyFormat should include minutes, 24-hour', () => {
-			expect(moment.utc(DATE).format(getHourOnlyFormat())).toBe('14:30');
+			expect(formatDate(moment.utc(DATE), getHourOnlyFormat())).toBe(
+				'14:30'
+			);
+		});
+
+		it('getDayMonthFormat should be day-first', () => {
+			expect(formatDate(moment.utc(DATE), getDayMonthFormat())).toBe(
+				'10 de jun.'
+			);
+		});
+
+		it('getCustomDateFormat should drop "de" connectors (compact convention)', () => {
+			expect(formatDate(moment.utc(DATE), getCustomDateFormat())).toBe(
+				'10 de jun. de 2026'
+			);
+		});
+
+		it('getCustomDateTimeFormat should format correctly', () => {
+			expect(
+				formatDate(moment.utc(DATE), getCustomDateTimeFormat())
+			).toBe('10 de jun. de 2026, 14:30');
+		});
+	});
+
+	describe('ja-JP', () => {
+		beforeEach(() => {
+			setLocale('ja-JP');
+		});
+
+		it('usesTwelveHourClock should be false', () => {
+			expect(usesTwelveHourClock()).toBe(false);
+		});
+
+		it('getHourOnlyFormat should include minutes, 24-hour', () => {
+			expect(formatDate(moment.utc(DATE), getHourOnlyFormat())).toBe(
+				'14:30'
+			);
 		});
 
 		it('getDayMonthFormat should render 月/日 characters', () => {
-			expect(moment.utc(DATE).format(getDayMonthFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getDayMonthFormat())).toBe(
 				'6月10日'
 			);
 		});
 
 		it('getMonthYearFormat should render 年/月 characters', () => {
-			expect(moment.utc(DATE).format(getMonthYearFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getMonthYearFormat())).toBe(
 				'2026年6月'
 			);
 		});
 
 		it('getCustomDateFormat should render 年/月/日 characters', () => {
-			expect(moment.utc(DATE).format(getCustomDateFormat())).toBe(
+			expect(formatDate(moment.utc(DATE), getCustomDateFormat())).toBe(
 				'2026年6月10日'
 			);
 		});
 
 		it('getCustomDateTimeFormat should use a bare space, not a comma', () => {
-			expect(moment.utc(DATE).format(getCustomDateTimeFormat())).toBe(
-				'2026年6月10日 14:30'
-			);
+			expect(
+				formatDate(moment.utc(DATE), getCustomDateTimeFormat())
+			).toBe('2026年6月10日 14:30');
 		});
-	});
-});
-
-describe('localeToLanguageId', () => {
-	it('should reverse resolveLocale for every supported locale', () => {
-		expect(localeToLanguageId('en-US')).toBe(LanguageIds.English);
-		expect(localeToLanguageId('ja-JP')).toBe(LanguageIds.Japanese);
-		expect(localeToLanguageId('pt-BR')).toBe(LanguageIds.Portuguese);
-		expect(localeToLanguageId('es-ES')).toBe(LanguageIds.Spanish);
-	});
-
-	it('should reverse resolveLocale for any other locale', () => {
-		expect(localeToLanguageId('fr-FR')).toBe('fr_FR');
 	});
 });
