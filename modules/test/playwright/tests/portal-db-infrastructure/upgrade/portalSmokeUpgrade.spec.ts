@@ -11,6 +11,7 @@ import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {getHeader} from '../../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
+import {reindexAllSearchIndexes} from '../utils/reindexAllSearchIndexes';
 
 const test = mergeTests(
 	featureFlagsTest({
@@ -150,22 +151,7 @@ test.describe.serial('View portal smoke upgrade', () => {
 		{tag: ['@LPD-96642', '@LPD-104393', '@LPD-104520']},
 		async ({page, searchAdminPage}) => {
 			await test.step('Reindex all search indexes', async () => {
-				await searchAdminPage.goto();
-
-				await searchAdminPage.goToIndexActionsTab();
-
-				await searchAdminPage.reindexAllSearchIndexes();
-
-				const reindexAllSearchIndexes =
-					await searchAdminPage.getIndexActionsItem(
-						'All Search Indexes'
-					);
-
-				await expect(reindexAllSearchIndexes).toBeVisible();
-
-				await expect(
-					reindexAllSearchIndexes.locator('.progress')
-				).toBeHidden({timeout: 120 * 1000});
+				await reindexAllSearchIndexes({searchAdminPage});
 			});
 
 			await viewUpgradedPortalContent(page);
