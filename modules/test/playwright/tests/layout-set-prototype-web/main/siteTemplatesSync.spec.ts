@@ -22,7 +22,6 @@ import createSiteTemplate from './utils/createSiteTemplate';
 export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: true},
 		'LPD-82107': {enabled: true},
 	}),
 	globalMenuPagesTest,
@@ -36,7 +35,6 @@ export const test = mergeTests(
 const testWithPublications = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: true},
 		'LPD-82107': {enabled: true},
 		'LPD-104837': {enabled: true},
 	}),

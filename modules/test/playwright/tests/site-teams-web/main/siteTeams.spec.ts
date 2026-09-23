@@ -25,7 +25,6 @@ import {siteTeamsPagesTest} from './fixtures/siteTeamsPagesTest';
 const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,

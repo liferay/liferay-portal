@@ -8,7 +8,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {countriesManagementPageTest} from '../../../fixtures/CountriesManagementPageTest';
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
@@ -24,9 +23,6 @@ export const test = mergeTests(
 	apiHelpersTest,
 	countriesManagementPageTest,
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-35443': {enabled: true},
-	}),
 	isolatedSiteTest,
 	loginTest(),
 	pageViewModePagesTest,

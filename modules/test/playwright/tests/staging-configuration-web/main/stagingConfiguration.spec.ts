@@ -68,11 +68,6 @@ export const testFlagsEnabled = mergeTests(
 	webContentDisplayPageTest
 );
 
-export const testWithSitePagesAPI = mergeTests(
-	test,
-	featureFlagsTest({'LPD-35443': {enabled: true}})
-);
-
 test(
 	'Verify there is advanced staging configuration checkbox with description in Instance Setting,the configuration checkbox can be enabled',
 	{tag: ['@LPS-189238', '@LPD-88913']},
@@ -480,7 +475,7 @@ testFlagsEnabled(
 	}
 );
 
-testWithSitePagesAPI(
+test(
 	'Staging is blocked for a Site linked to a Site Template with propagation enabled',
 	{tag: '@LPD-87027'},
 	async ({

@@ -6,16 +6,9 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {digitalSalesRoomPagesTest} from '../../../fixtures/digitalSalesRoomPagesTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 
-export const test = mergeTests(
-	digitalSalesRoomPagesTest,
-	featureFlagsTest({
-		'LPD-35443': {enabled: true},
-	}),
-	loginTest()
-);
+export const test = mergeTests(digitalSalesRoomPagesTest, loginTest());
 
 test(
 	'Navigate between Overview and Timeline analytics tabs',

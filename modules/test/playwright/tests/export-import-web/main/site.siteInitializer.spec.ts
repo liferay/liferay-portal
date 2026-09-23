@@ -15,7 +15,6 @@ import {stagingPageTest} from './fixtures/stagingPageTest';
 const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: false},
 		'LPD-45276': {enabled: true},
 	}),
 	loginTest(),

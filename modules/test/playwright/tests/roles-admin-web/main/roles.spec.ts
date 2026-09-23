@@ -27,7 +27,6 @@ import {setupBookmark} from './utils/bookmarks';
 export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: true},
 		'LPD-78863': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),

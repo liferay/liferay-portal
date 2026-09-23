@@ -36,7 +36,6 @@ export const test = mergeTests(
 const testWithSiteTemplateSync = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: true},
 		'LPD-82107': {enabled: true},
 	}),
 	globalMenuPagesTest,

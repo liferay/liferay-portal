@@ -9,7 +9,6 @@ import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {digitalSalesRoomPagesTest} from '../../../fixtures/digitalSalesRoomPagesTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {liferayConfig} from '../../../liferay.config';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
@@ -21,9 +20,6 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 export const test = mergeTests(
 	dataApiHelpersTest,
 	digitalSalesRoomPagesTest,
-	featureFlagsTest({
-		'LPD-35443': {enabled: true},
-	}),
 	loginTest()
 );
 

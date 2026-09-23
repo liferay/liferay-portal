@@ -24,7 +24,6 @@ const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	featureFlagsTest({
-		'LPD-35443': {enabled: true},
 		'LPD-76864': {enabled: true},
 	}),
 	loginTest(),
