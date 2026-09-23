@@ -287,6 +287,10 @@ public class PreviewPortletDataHandlerUtil {
 				LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS.equals(
 					portlet.getPortletId());
 
+			if (!layoutSetScoped && portletDataHandler.isHidden()) {
+				continue;
+			}
+
 			DateRange dateRange = ExportImportDateUtil.getDateRange(
 				parameterMap, groupId, false, plid,
 				layoutSetScoped ? null : portlet.getRootPortletId(), locale,
