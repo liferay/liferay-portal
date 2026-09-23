@@ -16,7 +16,7 @@ rules:
         verbs: ["get", "list"]
     -   apiGroups: ["elasticsearch.k8s.elastic.co"]
         resources: ["elasticsearches"]
-        verbs: ["get", "list", "watch"]
+        verbs: ["get", "list", "patch", "watch"]
     -   apiGroups: ["rbac.authorization.k8s.io"]
         resources: ["clusterroles"]
         verbs: ["bind", "get", "list", "watch"]

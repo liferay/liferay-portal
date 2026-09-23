@@ -1,0 +1,16 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: RBAC
+templates:
+    -   templates/rbac.yaml
+tests:
+    -   asserts:
+            -   documentIndex: 0
+                contains:
+                    content:
+                        apiGroups: ["elasticsearch.k8s.elastic.co"]
+                        resources: ["elasticsearches"]
+                        verbs: ["get", "list", "patch", "watch"]
+                    path: rules
+        it: Grants required permissions on ElasticSearch resources
