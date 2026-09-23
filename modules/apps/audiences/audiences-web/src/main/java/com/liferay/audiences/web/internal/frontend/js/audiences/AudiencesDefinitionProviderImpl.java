@@ -8,7 +8,6 @@ package com.liferay.audiences.web.internal.frontend.js.audiences;
 import com.liferay.audiences.cache.AudiencesDefinitionCache;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
 import com.liferay.audiences.model.AudiencesEntry;
-import com.liferay.audiences.service.AudiencesEntryGroupRelLocalService;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
 import com.liferay.frontend.js.audiences.AudiencesDefinitionProvider;
@@ -123,15 +122,11 @@ public class AudiencesDefinitionProviderImpl
 
 	private JSONArray _getScopeJSONArray(AudiencesEntry audiencesEntry) {
 		return JSONUtil.toJSONArray(
-			_audiencesEntryGroupRelLocalService.
-				getAudiencesEntryGroupRelsByAudienceEntryERC(
-					audiencesEntry.getCompanyId(),
-					audiencesEntry.getExternalReferenceCode()),
-			audiencesEntryGroupRel -> {
+			audiencesEntry.getGroupERCs(),
+			groupERC -> {
 				Group group =
 					_groupLocalService.fetchGroupByExternalReferenceCode(
-						audiencesEntryGroupRel.getGroupERC(),
-						audiencesEntryGroupRel.getCompanyId());
+						groupERC, audiencesEntry.getCompanyId());
 
 				if (group == null) {
 					return null;
@@ -179,10 +174,6 @@ public class AudiencesDefinitionProviderImpl
 
 	@Reference
 	private AudiencesDefinitionCache _audiencesDefinitionCache;
-
-	@Reference
-	private AudiencesEntryGroupRelLocalService
-		_audiencesEntryGroupRelLocalService;
 
 	@Reference
 	private AudiencesEntryLocalService _audiencesEntryLocalService;
