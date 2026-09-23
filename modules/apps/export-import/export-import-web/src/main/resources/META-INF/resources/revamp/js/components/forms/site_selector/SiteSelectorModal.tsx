@@ -47,7 +47,7 @@ function getView(showExistsInInstance: boolean): IView {
 							label: Liferay.Language.get('exists-in-instance'),
 						}
 					: {
-							fieldName: 'childSiteCount',
+							fieldName: 'childSitesCount',
 							label: Liferay.Language.get('child-sites'),
 						},
 			],

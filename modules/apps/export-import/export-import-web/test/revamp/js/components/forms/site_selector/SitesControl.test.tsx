@@ -17,14 +17,14 @@ import {PreviewSite} from '../../../../../../src/main/resources/META-INF/resourc
 
 const PREVIEW_SITES: PreviewSite[] = [
 	{
-		childSiteCount: 1,
+		childSitesCount: 1,
 		descriptiveName: 'Marketing',
 		existsInInstance: true,
 		externalReferenceCode: 'erc-marketing',
 		path: 'Global / Marketing',
 	},
 	{
-		childSiteCount: 0,
+		childSitesCount: 0,
 		descriptiveName: 'Support',
 		existsInInstance: false,
 		externalReferenceCode: 'erc-support',

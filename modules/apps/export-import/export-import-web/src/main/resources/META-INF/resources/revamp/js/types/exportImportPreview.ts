@@ -23,7 +23,7 @@ export interface ImportPreview {
 }
 
 export interface PreviewSite {
-	childSiteCount?: number;
+	childSitesCount?: number;
 	descriptiveName?: string;
 	existsInInstance?: boolean;
 	externalReferenceCode: string;

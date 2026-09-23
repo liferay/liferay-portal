@@ -132,7 +132,8 @@ public class ExportImportProcessDisplayContext {
 			return _exportPreviewSitesAPIURL;
 		}
 
-		_exportPreviewSitesAPIURL = _getResourceAPIURL("/export-preview/sites");
+		_exportPreviewSitesAPIURL = _getResourceAPIURL(
+			"/export-preview/preview-sites");
 
 		return _exportPreviewSitesAPIURL;
 	}
