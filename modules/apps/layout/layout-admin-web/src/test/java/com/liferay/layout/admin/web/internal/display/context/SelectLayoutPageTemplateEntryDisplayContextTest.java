@@ -122,8 +122,27 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 	}
 
 	@Test
-	@TestInfo("LPD-89086")
+	@TestInfo({"LPD-89086", "LPD-105566"})
 	public void testGetLayoutPageTemplateEntries() throws Exception {
+		_testGetLayoutPageTemplateEntries();
+		_testGetLayoutPageTemplateEntriesWithDesignLibraryGroup();
+	}
+
+	@Test
+	@TestInfo({"LPD-89086", "LPD-105566"})
+	public void testGetLayoutPageTemplateEntriesCount() throws Exception {
+		_testGetLayoutPageTemplateEntriesCount();
+		_testGetLayoutPageTemplateEntriesCountWithDesignLibraryGroup();
+	}
+
+	private SelectLayoutPageTemplateEntryDisplayContext
+		_getSelectLayoutPageTemplateEntryDisplayContext() {
+
+		return new SelectLayoutPageTemplateEntryDisplayContext(
+			_mockHttpServletRequest, null);
+	}
+
+	private void _testGetLayoutPageTemplateEntries() throws Exception {
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			Collections.singletonList(
 				Mockito.mock(LayoutPageTemplateEntry.class));
@@ -191,9 +210,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 		}
 	}
 
-	@Test
-	@TestInfo("LPD-89086")
-	public void testGetLayoutPageTemplateEntriesCount() throws Exception {
+	private void _testGetLayoutPageTemplateEntriesCount() throws Exception {
 		int count = RandomTestUtil.randomInt();
 		int countByType = RandomTestUtil.randomInt();
 		SelectLayoutPageTemplateEntryDisplayContext
@@ -255,9 +272,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 		}
 	}
 
-	@Test
-	@TestInfo("LPD-105566")
-	public void testGetLayoutPageTemplateEntriesWithDesignLibraryGroup()
+	private void _testGetLayoutPageTemplateEntriesCountWithDesignLibraryGroup()
 		throws Exception {
 
 		long designLibraryGroupId = RandomTestUtil.randomLong();
@@ -305,6 +320,53 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 				count
 			);
 
+			SelectLayoutPageTemplateEntryDisplayContext
+				selectLayoutPageTemplateEntryDisplayContext =
+					_getSelectLayoutPageTemplateEntryDisplayContext();
+
+			Assert.assertEquals(
+				count,
+				selectLayoutPageTemplateEntryDisplayContext.
+					getLayoutPageTemplateEntriesCount());
+		}
+	}
+
+	private void _testGetLayoutPageTemplateEntriesWithDesignLibraryGroup()
+		throws Exception {
+
+		long designLibraryGroupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_layoutPageTemplateCollection.getGroupId()
+		).thenReturn(
+			designLibraryGroupId
+		);
+
+		try (MockedStatic<DesignLibraryUtil> designLibraryUtilMockedStatic =
+				Mockito.mockStatic(DesignLibraryUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class);
+			MockedStatic<LayoutPageTemplateEntryServiceUtil>
+				layoutPageTemplateEntryServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						LayoutPageTemplateEntryServiceUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-76864"))
+			).thenReturn(
+				true
+			);
+
+			designLibraryUtilMockedStatic.when(
+				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
+					Mockito.anyLong())
+			).thenReturn(
+				true
+			);
+
 			List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 				Collections.singletonList(
 					Mockito.mock(LayoutPageTemplateEntry.class));
@@ -324,22 +386,11 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 				selectLayoutPageTemplateEntryDisplayContext =
 					_getSelectLayoutPageTemplateEntryDisplayContext();
 
-			Assert.assertEquals(
-				count,
-				selectLayoutPageTemplateEntryDisplayContext.
-					getLayoutPageTemplateEntriesCount());
 			Assert.assertSame(
 				layoutPageTemplateEntries,
 				selectLayoutPageTemplateEntryDisplayContext.
 					getLayoutPageTemplateEntries(0, 10));
 		}
-	}
-
-	private SelectLayoutPageTemplateEntryDisplayContext
-		_getSelectLayoutPageTemplateEntryDisplayContext() {
-
-		return new SelectLayoutPageTemplateEntryDisplayContext(
-			_mockHttpServletRequest, null);
 	}
 
 	private static final MockedStatic

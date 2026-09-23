@@ -226,7 +226,7 @@ public class LayoutsAdminDisplayContextTest {
 	private void _assertVerticalNavItem(
 		String expectedHref, List<IconItem> expectedIconItems,
 		String expectedLabel, long expectedLayoutPageTemplateCollectionId,
-		VerticalNavItem verticalNavItem) {
+		String expectedTitle, VerticalNavItem verticalNavItem) {
 
 		Assert.assertEquals(expectedHref, verticalNavItem.get("href"));
 		Assert.assertEquals(expectedIconItems, verticalNavItem.get("icons"));
@@ -234,6 +234,7 @@ public class LayoutsAdminDisplayContextTest {
 			String.valueOf(expectedLayoutPageTemplateCollectionId),
 			verticalNavItem.get("id"));
 		Assert.assertEquals(expectedLabel, verticalNavItem.get("label"));
+		Assert.assertEquals(expectedTitle, verticalNavItem.get("title"));
 	}
 
 	private void _assertVerticalNavItemList(
@@ -419,8 +420,7 @@ public class LayoutsAdminDisplayContextTest {
 		Mockito.when(
 			_language.format(
 				Mockito.any(HttpServletRequest.class),
-				Mockito.eq("page-template-set-from-x-design-library"),
-				Mockito.eq(descriptiveName))
+				Mockito.eq("x-design-library"), Mockito.eq(descriptiveName))
 		).thenReturn(
 			title
 		);
@@ -670,11 +670,13 @@ public class LayoutsAdminDisplayContextTest {
 
 			_assertVerticalNavItem(
 				StringPool.BLANK, null, name, layoutPageTemplateCollectionId1,
-				verticalNavItemList.get(1));
+				null, verticalNavItemList.get(1));
 			_assertVerticalNavItem(
 				selectLayoutPageTemplateEntryURL,
-				Collections.singletonList(IconItem.of("books", title)), name,
-				layoutPageTemplateCollectionId2, verticalNavItemList.get(2));
+				Collections.singletonList(
+					IconItem.of("books-brush", StringPool.BLANK)),
+				name, layoutPageTemplateCollectionId2, title,
+				verticalNavItemList.get(2));
 		}
 	}
 
