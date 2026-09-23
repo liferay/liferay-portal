@@ -26,9 +26,7 @@ import jakarta.ws.rs.BadRequestException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Daniel Raposo
@@ -155,13 +153,14 @@ public class ParameterMapUtil {
 					GetterUtil.getBoolean(exportProcessRequest.getDeletions()))
 			});
 
-		String[] siteExternalReferenceCodes = _removeDuplicates(
-			exportProcessRequest.getSiteExternalReferenceCodes());
+		String[] siteExternalReferenceCodes = ArrayUtil.filter(
+			exportProcessRequest.getSiteExternalReferenceCodes(),
+			Validator::isNotNull);
 
 		if (ArrayUtil.isNotEmpty(siteExternalReferenceCodes)) {
 			parameterMap.put(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
-				siteExternalReferenceCodes);
+				ArrayUtil.unique(siteExternalReferenceCodes));
 		}
 
 		parameterMap.put(
@@ -240,13 +239,14 @@ public class ParameterMapUtil {
 					GetterUtil.getBoolean(importProcessRequest.getDeletions()))
 			});
 
-		String[] siteExternalReferenceCodes = _removeDuplicates(
-			importProcessRequest.getSiteExternalReferenceCodes());
+		String[] siteExternalReferenceCodes = ArrayUtil.filter(
+			importProcessRequest.getSiteExternalReferenceCodes(),
+			Validator::isNotNull);
 
 		if (ArrayUtil.isNotEmpty(siteExternalReferenceCodes)) {
 			parameterMap.put(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
-				siteExternalReferenceCodes);
+				ArrayUtil.unique(siteExternalReferenceCodes));
 		}
 
 		parameterMap.put(
@@ -503,22 +503,6 @@ public class ParameterMapUtil {
 		parameterMap.put(
 			prefix + "Year",
 			new String[] {String.valueOf(calendar.get(Calendar.YEAR))});
-	}
-
-	private static String[] _removeDuplicates(String[] externalReferenceCodes) {
-		if (ArrayUtil.isEmpty(externalReferenceCodes)) {
-			return new String[0];
-		}
-
-		Set<String> uniqueExternalReferenceCodes = new LinkedHashSet<>();
-
-		for (String externalReferenceCode : externalReferenceCodes) {
-			if (externalReferenceCode != null) {
-				uniqueExternalReferenceCodes.add(externalReferenceCode);
-			}
-		}
-
-		return uniqueExternalReferenceCodes.toArray(new String[0]);
 	}
 
 	private static final String _DATE_RANGE_TYPE_ALL = "ALL";
