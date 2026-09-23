@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -140,6 +141,31 @@ public class OpenAPIUtilTest {
 			null, null, "GET",
 			"/v1.0/items?sort=string%3Aasc&restrictFields=actions",
 			JSONUtil.put("sort", "string:asc"), "getItems");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/localized-page?restrictFields=actions%2Cname%2Cname_i18n",
+			JSONFactoryUtil.createJSONObject(), "name", "getLocalizedPage");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/localized?restrictFields=actions%2Cchild.name%2C" +
+				"child.name_i18n",
+			JSONFactoryUtil.createJSONObject(), "child.name", "getLocalized");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/localized?restrictFields=actions%2Cname%2Cname_i18n",
+			JSONFactoryUtil.createJSONObject(), "name", "getLocalized");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/localized?restrictFields=actions%2Cname_i18n",
+			JSONFactoryUtil.createJSONObject(), "name_i18n", "getLocalized");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/localized?restrictFields=actions%2Ctags.name%2C" +
+				"tags.name_i18n",
+			JSONFactoryUtil.createJSONObject(), "tags.name", "getLocalized");
+		_testGetRequest(
+			null, null, "GET", "/v1.0/localized?restrictFields=actions%2Ctitle",
+			JSONFactoryUtil.createJSONObject(), "title", "getLocalized");
 		_testGetRequest(
 			JSONUtil.put(
 				"name", "Test"
@@ -390,6 +416,25 @@ public class OpenAPIUtilTest {
 		Assert.assertFalse(enumValues.contains("boolean"));
 		Assert.assertTrue(enumValues.contains("object1"));
 
+		tool = OpenAPIUtil.getTool(
+			true, _openAPIJSONObject, "name,title", "getLocalized");
+
+		inputSchemaMap = tool.getInputSchema();
+
+		propertiesMap = (Map<String, ?>)inputSchemaMap.get("properties");
+
+		fieldsMap = (Map<String, ?>)propertiesMap.get("fields");
+
+		itemsMap = (Map<String, ?>)fieldsMap.get("items");
+
+		enumValues = (List<String>)itemsMap.get("enum");
+
+		Assert.assertTrue(enumValues.contains("child"));
+		Assert.assertFalse(enumValues.contains("name"));
+		Assert.assertFalse(enumValues.contains("name_i18n"));
+		Assert.assertTrue(enumValues.contains("tags"));
+		Assert.assertFalse(enumValues.contains("title"));
+
 		JSONObject itemJSONObject = JSONFactoryUtil.createJSONObject(
 			_read("get_test_v1.0_items_itemId_output.json"));
 
@@ -431,39 +476,48 @@ public class OpenAPIUtilTest {
 		List<ToolSummary> toolSummaries = OpenAPIUtil.getToolSummaries(
 			_openAPIJSONObject);
 
-		Assert.assertEquals(toolSummaries.toString(), 15, toolSummaries.size());
-		_assertToolSummary(
-			"POST /v1.0/described", "postDescribed", toolSummaries.get(0));
-		_assertToolSummary(
-			"POST /v1.0/levels", "postLevel", toolSummaries.get(1));
-		_assertToolSummary(
-			"POST /v1.0/undescribed", "postUndescribed", toolSummaries.get(2));
-		_assertToolSummary(
-			"This is the description", "getItem", toolSummaries.get(3));
-		_assertToolSummary(
-			"PATCH /v1.0/items/{itemId}", "patchItem", toolSummaries.get(4));
-		_assertToolSummary(
-			"PUT /v1.0/items/{itemId}", "putItem", toolSummaries.get(5));
-		_assertToolSummary(
-			"POST /v1.0/binaries", "postBinary", toolSummaries.get(6));
-		_assertToolSummary(
-			"POST /v1.0/empty-content", "postEmptyContent",
-			toolSummaries.get(7));
-		_assertToolSummary(
-			"POST /v1.0/no-content", "postNoContent", toolSummaries.get(8));
-		_assertToolSummary(
-			"POST /v1.0/parents", "postParent", toolSummaries.get(9));
-		_assertToolSummary(
-			"POST /v1.0/uploads", "postUpload", toolSummaries.get(10));
-		_assertToolSummary(
-			"This is the summary. This is the description", "getItems",
-			toolSummaries.get(11));
-		_assertToolSummary(
-			"POST /v1.0/items", "postItem", toolSummaries.get(12));
-		_assertToolSummary(
-			"POST /v1.0/no-schema", "postNoSchema", toolSummaries.get(13));
-		_assertToolSummary(
-			"This is the summary", "getItemsPage", toolSummaries.get(14));
+		Assert.assertEquals(toolSummaries.toString(), 17, toolSummaries.size());
+
+		Map<String, String> descriptions = new HashMap<>();
+
+		for (ToolSummary toolSummary : toolSummaries) {
+			descriptions.put(
+				toolSummary.getName(), toolSummary.getDescription());
+		}
+
+		Assert.assertEquals(
+			"This is the description", descriptions.get("getItem"));
+		Assert.assertEquals(
+			"This is the summary. This is the description",
+			descriptions.get("getItems"));
+		Assert.assertEquals(
+			"This is the summary", descriptions.get("getItemsPage"));
+		Assert.assertEquals(
+			"GET /v1.0/localized", descriptions.get("getLocalized"));
+		Assert.assertEquals(
+			"GET /v1.0/localized-page", descriptions.get("getLocalizedPage"));
+		Assert.assertEquals(
+			"PATCH /v1.0/items/{itemId}", descriptions.get("patchItem"));
+		Assert.assertEquals(
+			"POST /v1.0/binaries", descriptions.get("postBinary"));
+		Assert.assertEquals(
+			"POST /v1.0/described", descriptions.get("postDescribed"));
+		Assert.assertEquals(
+			"POST /v1.0/empty-content", descriptions.get("postEmptyContent"));
+		Assert.assertEquals("POST /v1.0/items", descriptions.get("postItem"));
+		Assert.assertEquals("POST /v1.0/levels", descriptions.get("postLevel"));
+		Assert.assertEquals(
+			"POST /v1.0/no-content", descriptions.get("postNoContent"));
+		Assert.assertEquals(
+			"POST /v1.0/no-schema", descriptions.get("postNoSchema"));
+		Assert.assertEquals(
+			"POST /v1.0/parents", descriptions.get("postParent"));
+		Assert.assertEquals(
+			"POST /v1.0/undescribed", descriptions.get("postUndescribed"));
+		Assert.assertEquals(
+			"POST /v1.0/uploads", descriptions.get("postUpload"));
+		Assert.assertEquals(
+			"PUT /v1.0/items/{itemId}", descriptions.get("putItem"));
 
 		AssertUtils.assertFailure(
 			IllegalArgumentException.class,
@@ -481,14 +535,6 @@ public class OpenAPIUtilTest {
 		Assert.assertTrue(
 			contentType,
 			contentType.startsWith("multipart/form-data; boundary="));
-	}
-
-	private void _assertToolSummary(
-		String expectedDescription, String expectedName,
-		ToolSummary toolSummary) {
-
-		Assert.assertEquals(expectedDescription, toolSummary.getDescription());
-		Assert.assertEquals(expectedName, toolSummary.getName());
 	}
 
 	private FileItem _getFileItem(List<FileItem> fileItems, String fieldName) {

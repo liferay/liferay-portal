@@ -139,6 +139,54 @@
 				},
 				"type": "object"
 			},
+			"Localized": {
+				"properties": {
+					"child": {
+						"$ref": "#/components/schemas/LocalizedChild"
+					},
+					"name": {
+						"type": "string"
+					},
+					"name_i18n": {
+						"additionalProperties": {
+							"type": "string"
+						},
+						"type": "object"
+					},
+					"tags": {
+						"items": {
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"name_i18n": {
+									"type": "object"
+								}
+							},
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"title": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"LocalizedChild": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"name_i18n": {
+						"additionalProperties": {
+							"type": "string"
+						},
+						"type": "object"
+					}
+				},
+				"type": "object"
+			},
 			"PageItem": {
 				"properties": {
 					"items": {
@@ -438,6 +486,49 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/LevelA"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1.0/localized": {
+			"get": {
+				"operationId": "getLocalized",
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Localized"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1.0/localized-page": {
+			"get": {
+				"operationId": "getLocalizedPage",
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"items": {
+											"items": {
+												"$ref": "#/components/schemas/Localized"
+											},
+											"type": "array"
+										},
+										"page": {
+											"type": "integer"
+										}
+									},
+									"type": "object"
+								}
 							}
 						}
 					}
