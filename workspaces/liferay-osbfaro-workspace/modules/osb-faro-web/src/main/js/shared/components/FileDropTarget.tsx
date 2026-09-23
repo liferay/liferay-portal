@@ -9,6 +9,7 @@ import TextTruncate from 'shared/components/TextTruncate';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {connect, ConnectedProps} from 'react-redux';
+import {getLocale} from 'shared/util/locale';
 import {round} from 'lodash';
 import {sub} from 'shared/util/lang';
 
@@ -33,12 +34,12 @@ export const getFileSizeLabel = (value: number): string => {
 
 	if (kbSize < 1000) {
 		return sub(Liferay.Language.get('x-kb'), [
-			kbSize.toLocaleString(),
+			kbSize.toLocaleString(getLocale()),
 		]) as string;
 	}
 
 	return sub(Liferay.Language.get('x-mb'), [
-		round(value / mb, 1).toLocaleString(),
+		round(value / mb, 1).toLocaleString(getLocale()),
 	]) as string;
 };
 

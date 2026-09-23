@@ -12,6 +12,7 @@ import {
 import {fromJS} from 'immutable';
 import {mockSubscription} from 'test/data';
 import {Plan} from '../../util/records';
+import {DEFAULT_LOCALE, setLocale} from '../locale';
 
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({
@@ -37,6 +38,29 @@ describe('subscriptions', () => {
 			expect(planAddOns).toEqual({
 				individuals: '10,000',
 				pageViews: '5,000,000',
+			});
+		});
+
+		it('should format the addon limits in the current locale', () => {
+			setLocale('de-DE');
+
+			const planAddOns = getPlanAddOns(
+				formatPlanData(
+					fromJS(
+						mockSubscription({
+							individualsCount: 5000,
+							name: SubscriptionNames.LiferayAnalyticsCloudEnterprise,
+							pageViewsCount: 5000000,
+						})
+					)
+				)
+			);
+
+			setLocale(DEFAULT_LOCALE);
+
+			expect(planAddOns).toEqual({
+				individuals: '10.000',
+				pageViews: '5.000.000',
 			});
 		});
 

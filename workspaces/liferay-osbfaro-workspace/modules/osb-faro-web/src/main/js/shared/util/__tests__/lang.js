@@ -1,4 +1,5 @@
 import {DataSourceTypes, EntityTypes} from '../constants';
+import {DEFAULT_LOCALE, setLocale} from '../locale';
 import {
 	getDataSourceLangKey,
 	getPluralMessage,
@@ -82,5 +83,18 @@ describe('getPluralMessage', () => {
 		expect(
 			getPluralMessage(singular, plural, 1, true, [1, 'test'])
 		).toEqual('1 result found for test');
+	});
+
+	it('should format the count in the current locale', () => {
+		setLocale('de-DE');
+
+		try {
+			expect(getPluralMessage('{0} person', '{0} people', 1234)).toEqual(
+				'1.234 people'
+			);
+		}
+		finally {
+			setLocale(DEFAULT_LOCALE);
+		}
 	});
 });

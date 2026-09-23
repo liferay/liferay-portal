@@ -1,5 +1,6 @@
 import Constants, {SubscriptionStatuses} from 'shared/util/constants';
 import {fromJS, List, Map} from 'immutable';
+import {getLocale} from 'shared/util/locale';
 import {isNil} from 'lodash';
 import {Metric, Plan} from 'shared/util/records';
 
@@ -236,7 +237,9 @@ export function getPlanAddOns(currentPlan) {
 
 			return {
 				...acc,
-				[name]: totalLimit ? totalLimit.toLocaleString() : '-',
+				[name]: totalLimit
+					? totalLimit.toLocaleString(getLocale())
+					: '-',
 			};
 		}, {});
 }

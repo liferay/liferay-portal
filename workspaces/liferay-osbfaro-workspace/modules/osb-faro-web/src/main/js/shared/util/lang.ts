@@ -7,6 +7,7 @@ import {
 	EntityTypes,
 	UserRoleNames,
 } from 'shared/util/constants';
+import {getLocale} from 'shared/util/locale';
 
 const SPLIT_REGEX = /({\d+})/g;
 
@@ -60,7 +61,11 @@ export const getPluralMessage = (
 ) => {
 	const message = count === 1 ? singular : plural;
 
-	return sub(message, subArray || [count.toLocaleString()], toString);
+	return sub(
+		message,
+		subArray || [count.toLocaleString(getLocale())],
+		toString
+	);
 };
 
 export const ACQUISITION_LABEL_MAP = {
