@@ -40,6 +40,8 @@ function getLiferayHome(): string {
 
 export const exportImportConfig = {
 	environment: {
-		tomcatDir: getLiferayHome(),
+		get tomcatDir() {
+			return getLiferayHome();
+		},
 	},
 };
