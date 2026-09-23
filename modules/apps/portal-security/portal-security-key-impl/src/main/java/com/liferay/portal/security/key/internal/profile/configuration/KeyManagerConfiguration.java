@@ -23,4 +23,16 @@ public interface KeyManagerConfiguration {
 	@Meta.AD(deflt = "custom", name = "active-profile-id", required = false)
 	public String activeProfileId();
 
+	@Meta.AD(
+		deflt = "", description = "company-kek-identifier-help",
+		name = "company-kek-identifier", required = false
+	)
+	public String companyKEKIdentifier();
+
+	@Meta.AD(
+		deflt = "300", description = "company-key-cache-ttl-help",
+		name = "company-key-cache-ttl", required = false
+	)
+	public int companyKeyCacheTTL();
+
 }
