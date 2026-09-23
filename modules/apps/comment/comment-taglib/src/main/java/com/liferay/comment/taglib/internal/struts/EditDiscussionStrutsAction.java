@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
@@ -144,11 +143,11 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 			   NoSuchMessageException | PrincipalException |
 			   RequiredMessageException exception) {
 
-			JSONObject jsonObject = _jsonFactory.createJSONObject();
+			Class<?> clazz = exception.getClass();
 
-			jsonObject.putException(exception);
-
-			_writeJSON(httpServletResponse, jsonObject);
+			_writeJSON(
+				httpServletResponse,
+				JSONUtil.put("exception", clazz.getName()));
 		}
 
 		return null;
