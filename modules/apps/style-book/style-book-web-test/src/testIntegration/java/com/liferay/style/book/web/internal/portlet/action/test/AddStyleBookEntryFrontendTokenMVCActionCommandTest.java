@@ -118,6 +118,7 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			long styleBookEntryId, String tokenSetName, FrontendToken.Type type)
 		throws Exception {
 
+		String categoryLabel = RandomTestUtil.randomString();
 		String defaultValue = RandomTestUtil.randomString();
 		String tokenSetDescription = RandomTestUtil.randomString();
 		String tokenSetLabel = RandomTestUtil.randomString();
@@ -126,9 +127,9 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			_getCustomFrontendTokenDefinitionJSONObject(
 				_processAction(
 					_getMockLiferayPortletActionRequest(
-						categoryName, defaultValue, description, label,
-						styleBookEntryId, tokenSetDescription, tokenSetLabel,
-						tokenSetName, type.getValue())));
+						categoryLabel, categoryName, defaultValue, description,
+						label, styleBookEntryId, tokenSetDescription,
+						tokenSetLabel, tokenSetName, type.getValue())));
 
 		JSONArray frontendTokenCategoriesJSONArray =
 			frontendTokenDefinitionJSONObject.getJSONArray(
@@ -141,7 +142,7 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			frontendTokenCategoryJSONObjects.get(categoryName);
 
 		Assert.assertEquals(
-			categoryName, frontendTokenCategoryJSONObject.getString("label"));
+			categoryLabel, frontendTokenCategoryJSONObject.getString("label"));
 
 		JSONArray frontendTokenSetsJSONArray =
 			frontendTokenCategoryJSONObject.getJSONArray("frontendTokenSets");
@@ -151,6 +152,12 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 
 		JSONObject frontendTokenSetJSONObject = frontendTokenSetJSONObjects.get(
 			tokenSetName);
+
+		Assert.assertEquals(
+			tokenSetDescription,
+			frontendTokenSetJSONObject.getString("description"));
+		Assert.assertEquals(
+			tokenSetLabel, frontendTokenSetJSONObject.getString("label"));
 
 		JSONArray frontendTokensJSONArray =
 			frontendTokenSetJSONObject.getJSONArray("frontendTokens");
@@ -184,17 +191,33 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			FrontendTokenDefinitionConstants.PRIORITY_CUSTOM,
 			customFrontendTokenDefinitionJSONObject.getInt("priority"));
 
+		JSONObject frontendTokensValuesJSONObject =
+			responseJSONObject.getJSONObject("frontendTokensValues");
+
+		for (String frontendTokenName :
+				FrontendTokenDefinitionUtil.getFrontendTokenNames(
+					customFrontendTokenDefinitionJSONObject)) {
+
+			Assert.assertTrue(
+				frontendTokensValuesJSONObject.has(
+					StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID +
+						StringPool.COLON + frontendTokenName));
+		}
+
 		return customFrontendTokenDefinitionJSONObject;
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
-		String categoryName, String defaultValue, String description,
-		String label, long styleBookEntryId, String tokenSetDescription,
-		String tokenSetLabel, String tokenSetName, String type) {
+		String categoryLabel, String categoryName, String defaultValue,
+		String description, String label, long styleBookEntryId,
+		String tokenSetDescription, String tokenSetLabel, String tokenSetName,
+		String type) {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
+		mockLiferayPortletActionRequest.addParameter(
+			"categoryLabel", categoryLabel);
 		mockLiferayPortletActionRequest.addParameter(
 			"categoryName", categoryName);
 		mockLiferayPortletActionRequest.addParameter(
@@ -246,6 +269,7 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 				_getMockLiferayPortletActionRequest(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), StringPool.BLANK,
 					styleBookEntry.getStyleBookEntryId(),
 					RandomTestUtil.randomString(),
@@ -279,7 +303,8 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 		JSONObject responseJSONObject = JSONFactoryUtil.createJSONObject(
 			_processAction(
 				_getMockLiferayPortletActionRequest(
-					categoryName, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), categoryName,
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), label,
 					styleBookEntry.getStyleBookEntryId(),
 					RandomTestUtil.randomString(),
