@@ -2766,7 +2766,6 @@ public class ObjectDefinitionLocalServiceImpl
 		long oldObjectFolderId = objectDefinition.getObjectFolderId();
 		boolean oldActive = objectDefinition.isActive();
 		String oldClassName = objectDefinition.getClassName();
-
 		boolean oldEnableObjectEntrySubscription =
 			objectDefinition.isEnableObjectEntrySubscription();
 
