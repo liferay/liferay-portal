@@ -5,7 +5,6 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 
@@ -16,7 +15,6 @@ import java.io.PrintStream;
 import java.net.URL;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,69 +37,6 @@ public class TestrayCaseResultTest
 	public void testCacheTestrayCaseResultURL() throws Exception {
 		_testCacheTestrayCaseResultURL(false);
 		_testCacheTestrayCaseResultURL(true);
-	}
-
-	@Test
-	public void testGetErrorsList() {
-		List<String> errorsList = TestrayCaseResult.getErrorsList(
-			"first\nsecond\nthird\nlast");
-
-		Assert.assertEquals("first\nsecond\nthird\nlast", errorsList.get(0));
-		Assert.assertEquals("first\n...\nlast", errorsList.get(1));
-		Assert.assertEquals(errorsList.toString(), 3, errorsList.size());
-	}
-
-	@Test
-	public void testGetErrorsListEmptyErrors() {
-		for (String errors : new String[] {null, ""}) {
-			List<String> errorsList = TestrayCaseResult.getErrorsList(errors);
-
-			Assert.assertEquals(errors, errorsList.get(0));
-			Assert.assertEquals(errorsList.toString(), 1, errorsList.size());
-		}
-	}
-
-	@Test
-	public void testGetErrorsListEndsWithRejectedMessage() {
-		for (String errors :
-				new String[] {
-					"only line", "first\nlast", "first\nsecond\nlast",
-					_SEM_VER_ERRORS
-				}) {
-
-			List<String> errorsList = TestrayCaseResult.getErrorsList(errors);
-
-			String lastErrors = errorsList.get(errorsList.size() - 1);
-
-			Assert.assertNotEquals(errors, lastErrors);
-
-			Assert.assertTrue(
-				lastErrors, lastErrors.contains("web application firewall"));
-		}
-	}
-
-	@Test
-	public void testGetErrorsListSkipsSummaryForShortErrors() {
-		List<String> errorsList = TestrayCaseResult.getErrorsList(
-			"first\nlast");
-
-		Assert.assertEquals("first\nlast", errorsList.get(0));
-		Assert.assertEquals(errorsList.toString(), 2, errorsList.size());
-	}
-
-	@Test
-	public void testGetErrorsListSummarizesSemanticVersioning() {
-		List<String> errorsList = TestrayCaseResult.getErrorsList(
-			_SEM_VER_ERRORS);
-
-		String summarizedErrors = errorsList.get(1);
-
-		Assert.assertTrue(
-			summarizedErrors,
-			summarizedErrors.endsWith("Semantic versioning is incorrect"));
-		Assert.assertTrue(
-			summarizedErrors,
-			summarizedErrors.startsWith("     [exec]   PACKAGE_NAME"));
 	}
 
 	@Test
@@ -152,10 +87,8 @@ public class TestrayCaseResultTest
 			testrayCaseResult
 		).getDuration();
 
-		String errors = RandomTestUtil.randomString();
-
 		Mockito.doReturn(
-			errors
+			RandomTestUtil.randomString()
 		).when(
 			testrayCaseResult
 		).getErrors();
@@ -186,6 +119,9 @@ public class TestrayCaseResultTest
 		JSONObject requestJSONObject = new JSONObject(
 			requestDataArgumentCaptor.getValue());
 
+		Assert.assertFalse(
+			requestJSONObject.toString(), requestJSONObject.has("errors"));
+
 		Assert.assertTrue(
 			requestJSONObject.toString(), requestJSONObject.has("attachments"));
 		Assert.assertTrue(
@@ -198,7 +134,6 @@ public class TestrayCaseResultTest
 			requestJSONObject.has("r_caseToCaseResult_c_caseId"));
 
 		testEquals(_DURATION, requestJSONObject.getLong("duration"));
-		testEquals(errors, requestJSONObject.getString("errors"));
 	}
 
 	private TestrayAttachment _mockTestrayAttachment() {
@@ -458,13 +393,6 @@ public class TestrayCaseResultTest
 	}
 
 	private static final long _DURATION = 1000;
-
-	private static final String _SEM_VER_ERRORS =
-		JenkinsResultsParserUtil.combine(
-			"     [exec]   PACKAGE_NAME   DELTA   CUR_VER\n",
-			"     [exec] * com.liferay.portal.kernel.util   MINOR   102.0.0\n",
-			"     [exec] \t\t\t+   return     java.lang.String\n",
-			"     [exec] Semantic versioning is incorrect");
 
 	private static final String _TESTRAY_URL =
 		"https://testray.liferay.com/home";
