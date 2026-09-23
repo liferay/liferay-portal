@@ -93,7 +93,8 @@ public class TypeScriptClientUtil {
 
 			for (Map.Entry<String, Schema> entry : schemas.entrySet()) {
 				_createFile(
-					_buildModelContext(entry.getKey(), entry.getValue()),
+					_buildModelContext(
+						entry.getKey(), entry.getValue(), schemas),
 					configYAML, copyrightFile, files, "typescript/model",
 					StringBundler.concat(
 						baseClientDir.getPath(), "/src/models/", entry.getKey(),
@@ -289,7 +290,7 @@ public class TypeScriptClientUtil {
 	}
 
 	private static Map<String, Object> _buildModelContext(
-		String modelName, Schema schema) {
+		String modelName, Schema schema, Map<String, Schema> schemas) {
 
 		Set<String> importClasses = new HashSet<>();
 		String parentClass = null;
@@ -311,7 +312,8 @@ public class TypeScriptClientUtil {
 
 				for (Schema allOfSchema : allOfSchemas) {
 					Map<String, Schema> allOfSchemaPropertySchemas =
-						allOfSchema.getPropertySchemas();
+						_getAllOfSchemaPropertySchemas(
+							parentClass, allOfSchema, schemas);
 
 					if (allOfSchemaPropertySchemas != null) {
 						propertySchemas.putAll(allOfSchemaPropertySchemas);
@@ -691,7 +693,8 @@ public class TypeScriptClientUtil {
 				referencedSchemaName);
 
 			_createFile(
-				_buildModelContext(referencedSchemaName, referencedSchema),
+				_buildModelContext(
+					referencedSchemaName, referencedSchema, referencedSchemas),
 				configYAML, copyrightFile, files, "typescript/model",
 				StringBundler.concat(
 					baseClientDir.getPath(), "/src/models/",
@@ -701,6 +704,35 @@ public class TypeScriptClientUtil {
 				referencedYAMLFile.getAbsolutePath(), processedReferences,
 				referencedSchema);
 		}
+	}
+
+	private static Map<String, Schema> _getAllOfSchemaPropertySchemas(
+		String parentClass, Schema schema, Map<String, Schema> schemas) {
+
+		if (schema.getPropertySchemas() != null) {
+			return schema.getPropertySchemas();
+		}
+
+		String reference = schema.getReference();
+
+		if (reference == null) {
+			return null;
+		}
+
+		String referenceName = reference.substring(
+			reference.lastIndexOf('/') + 1);
+
+		if (referenceName.equals(parentClass)) {
+			return null;
+		}
+
+		Schema referencedSchema = schemas.get(referenceName);
+
+		if (referencedSchema == null) {
+			return null;
+		}
+
+		return referencedSchema.getPropertySchemas();
 	}
 
 	private static String _getDataType(Set<String> dataTypes, Schema schema) {
