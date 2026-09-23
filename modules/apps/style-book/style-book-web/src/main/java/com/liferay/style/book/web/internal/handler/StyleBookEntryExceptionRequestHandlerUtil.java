@@ -13,7 +13,10 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.style.book.exception.DuplicateStyleBookEntryFrontendTokenException;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryNameException;
+import com.liferay.style.book.exception.StyleBookEntryFrontendTokenDefinitionException;
+import com.liferay.style.book.exception.StyleBookEntryFrontendTokenException;
 import com.liferay.style.book.exception.StyleBookEntryFrontendTokensValuesException;
 import com.liferay.style.book.exception.StyleBookEntryNameException;
 
@@ -22,6 +25,7 @@ import jakarta.portlet.ActionResponse;
 
 /**
  * @author Eudaldo Alonso
+ * @author Thiago Buarque
  */
 public class StyleBookEntryExceptionRequestHandlerUtil {
 
@@ -36,11 +40,40 @@ public class StyleBookEntryExceptionRequestHandlerUtil {
 		String errorMessage = LanguageUtil.get(
 			themeDisplay.getRequest(), "an-unexpected-error-occurred");
 
-		if (portalException instanceof DuplicateStyleBookEntryNameException) {
+		if (portalException instanceof
+				DuplicateStyleBookEntryFrontendTokenException) {
+
+			errorMessage = LanguageUtil.get(
+				themeDisplay.getRequest(),
+				"a-custom-token-with-this-label-already-exists.-please-enter-" +
+					"a-different-label");
+		}
+		else if (portalException instanceof
+					DuplicateStyleBookEntryNameException) {
+
 			errorMessage = LanguageUtil.get(
 				themeDisplay.getRequest(),
 				"a-style-book-with-this-name-already-exists.-please-enter-a-" +
 					"different-name");
+		}
+		else if (portalException instanceof
+					StyleBookEntryFrontendTokenDefinitionException) {
+
+			errorMessage = LanguageUtil.get(
+				themeDisplay.getRequest(), "please-enter-a-valid-value");
+		}
+		else if (portalException instanceof
+					StyleBookEntryFrontendTokenException.MustHaveValidType) {
+
+			errorMessage = LanguageUtil.get(
+				themeDisplay.getRequest(), "please-select-a-valid-type");
+		}
+		else if (portalException instanceof
+					StyleBookEntryFrontendTokenException.MustNotBeNull) {
+
+			errorMessage = LanguageUtil.get(
+				themeDisplay.getRequest(),
+				"please-fill-in-the-required-fields");
 		}
 		else if (portalException instanceof
 					StyleBookEntryFrontendTokensValuesException.
