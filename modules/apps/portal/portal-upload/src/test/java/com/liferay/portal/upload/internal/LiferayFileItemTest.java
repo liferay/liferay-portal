@@ -5,8 +5,6 @@
 
 package com.liferay.portal.upload.internal;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -150,13 +148,10 @@ public class LiferayFileItemTest {
 	}
 
 	@Test
-	public void testGetTempFileIgnoresFileNameExtension() {
+	public void testGetTempFile() {
 		LiferayFileItem liferayFileItem = _liferayFileItemFactory.createItem(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), false,
-			StringBundler.concat(
-				RandomTestUtil.randomString(), StringPool.PERIOD,
-				RandomTestUtil.randomString(), "/../../",
-				RandomTestUtil.randomString()));
+			RandomTestUtil.randomString() + ".txt");
 
 		File tempFile = liferayFileItem.getTempFile();
 
@@ -165,7 +160,7 @@ public class LiferayFileItemTest {
 		String name = tempFile.getName();
 
 		Assert.assertTrue(name, name.startsWith("upload_"));
-		Assert.assertTrue(name, name.endsWith(".tmp"));
+		Assert.assertTrue(name, name.endsWith(".txt"));
 	}
 
 	@Test

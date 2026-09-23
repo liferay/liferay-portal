@@ -175,7 +175,13 @@ public class LiferayFileItem extends DiskFileItem implements FileItem {
 			return _tempFile;
 		}
 
-		String tempFileName = "upload_" + _getUniqueId() + ".tmp";
+		String tempFileName = "upload_" + _getUniqueId();
+
+		String extension = getFileNameExtension();
+
+		if (extension != null) {
+			tempFileName += "." + extension;
+		}
 
 		_tempFile = new File(_tempDir, tempFileName);
 
