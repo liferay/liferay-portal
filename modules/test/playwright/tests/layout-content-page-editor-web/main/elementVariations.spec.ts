@@ -1094,3 +1094,126 @@ test(
 		await guestContext.close();
 	}
 );
+
+test(
+	'Warns about the element variations whose audience was deleted',
+	{tag: '@LPD-104867'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create two audiences
+
+		const deletedAudienceName = 'Audience ' + getRandomString();
+
+		const keptAudienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		for (const audienceName of [deletedAudienceName, keptAudienceName]) {
+			await audiencesPage.createAudience({
+				attributeName: 'Language',
+				name: audienceName,
+				value: 'English (United States)',
+				valueType: 'select',
+			});
+		}
+
+		// Create a page with a Heading fragment and a variation for each
+		// audience
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const orphanedVariationName = 'Variation ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName: deletedAudienceName,
+			hide: true,
+			name: orphanedVariationName,
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		const keptVariationName = 'Variation ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName: keptAudienceName,
+			hide: true,
+			name: keptVariationName,
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		// Every variation has an audience, so there is no warning
+
+		await expect(
+			elementVariationsPage.missingAudiencesAlert
+		).not.toBeVisible();
+
+		// Delete the audience of the first variation
+
+		await audiencesPage.goto();
+
+		await audiencesPage.deleteAudience(deletedAudienceName);
+
+		// The orphaned variation is marked as missing an audience
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		await expect(
+			elementVariationsPage
+				.getVariationListItem(orphanedVariationName)
+				.getByText('Missing Audience')
+		).toBeVisible();
+
+		await expect(
+			elementVariationsPage
+				.getVariationListItem(keptVariationName)
+				.getByText('Missing Audience')
+		).not.toBeVisible();
+
+		await expect(elementVariationsPage.missingAudiencesAlert).toContainText(
+			'There are missing audiences for some variations.'
+		);
+
+		// Show the orphaned variations
+
+		await elementVariationsPage.showMissingAudienceVariations();
+
+		await expect(
+			elementVariationsPage.getAppliedFilter('Audience: None')
+		).toBeVisible();
+
+		await expect(
+			elementVariationsPage.getVariationListItem(orphanedVariationName)
+		).toBeVisible();
+
+		await expect(
+			elementVariationsPage.getVariationListItem(keptVariationName)
+		).not.toBeVisible();
+
+		await expect(
+			elementVariationsPage.missingAudiencesAlert
+		).not.toBeVisible();
+
+		await expect(page.getByText('1 Result Found for:')).toBeVisible();
+	}
+);

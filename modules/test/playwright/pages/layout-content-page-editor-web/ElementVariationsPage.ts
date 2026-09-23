@@ -17,6 +17,7 @@ export class ElementVariationsPage {
 	readonly htmlInput: Locator;
 	readonly javaScriptInput: Locator;
 	readonly languageSelector: Locator;
+	readonly missingAudiencesAlert: Locator;
 	readonly nameInput: Locator;
 	readonly newVariationButton: Locator;
 	readonly page: Page;
@@ -40,6 +41,7 @@ export class ElementVariationsPage {
 		this.htmlInput = page.getByLabel('HTML', {exact: true});
 		this.javaScriptInput = page.getByLabel('JavaScript', {exact: true});
 		this.languageSelector = page.getByLabel('Select a language');
+		this.missingAudiencesAlert = this.sidebar.locator('.alert-warning');
 		this.nameInput = page.getByLabel('Name');
 		this.newVariationButton = page.getByRole('button', {
 			name: 'New Variation',
@@ -108,6 +110,10 @@ export class ElementVariationsPage {
 		await this.sidebar.getByText(name).waitFor();
 	}
 
+	async showMissingAudienceVariations() {
+		await this.missingAudiencesAlert.locator('.alert-footer .btn').click();
+	}
+
 	async startElementVariationDraft() {
 		await this.newVariationButton.click();
 
@@ -172,6 +178,12 @@ export class ElementVariationsPage {
 		await this.cancelButton.click();
 
 		await this.experiencePicker.waitFor();
+	}
+
+	getAppliedFilter(label: string): Locator {
+		return this.sidebar
+			.locator('.label-dismissible')
+			.filter({hasText: label});
 	}
 
 	getPageElementOption(label: string): Locator {
