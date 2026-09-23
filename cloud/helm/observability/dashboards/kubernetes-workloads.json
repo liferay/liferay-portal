@@ -553,7 +553,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[${__interval}]))",
+							"expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval]))",
 							"format": "time_series",
 							"instant": false,
 							"interval": "",
@@ -1392,7 +1392,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[${__interval}]))",
+							"expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval]))",
 							"format": "time_series",
 							"instant": false,
 							"interval": "",

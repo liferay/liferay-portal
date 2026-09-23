@@ -110,3 +110,16 @@ tests:
         it: Selects the dedicated Elasticsearch namespace when the cloud provider is GCP
         set:
             cloudProvider: gcp
+    -   asserts:
+            -   matchRegex:
+                    path: data["kubernetes-workloads.json"]
+                    pattern: 'kube_pod_container_status_restarts_total\{[^}]*\}\[\$__rate_interval\]'
+            -   notMatchRegex:
+                    path: data["kubernetes-workloads.json"]
+                    pattern: 'kube_pod_container_status_restarts_total\{[^}]*\}\[\$\{__interval\}\]'
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-kubernetes-workloads
+        it: Spans at least two scrapes in the restart windows so that a pod without restarts still plots zero
+        set:
+            cloudProvider: azure
