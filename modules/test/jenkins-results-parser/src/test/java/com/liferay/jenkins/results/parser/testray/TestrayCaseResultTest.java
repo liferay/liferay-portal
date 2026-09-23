@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 
@@ -24,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -293,7 +295,17 @@ public class TestrayCaseResultTest
 
 		System.setOut(new PrintStream(byteArrayOutputStream, true));
 
-		try {
+		try (MockedStatic<JenkinsResultsParserUtil> mockedStatic =
+				Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			mockedStatic.when(
+				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong())
+			).thenAnswer(
+				invocation -> null
+			);
+
 			testrayCaseResult.cacheTestrayCaseResultURL();
 		}
 		finally {
