@@ -14,6 +14,7 @@ import com.liferay.commerce.service.CommerceOrderTypeService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -36,30 +37,8 @@ public class PriceListOrderTypeUtil {
 		ServiceContext serviceContext = serviceContextHelper.getServiceContext(
 			commercePriceList.getGroupId());
 
-		CommerceOrderType commerceOrderType;
-
-		if (Validator.isNull(
-				priceListOrderType.getOrderTypeExternalReferenceCode())) {
-
-			commerceOrderType = commerceOrderTypeService.getCommerceOrderType(
-				priceListOrderType.getOrderTypeId());
-		}
-		else {
-			commerceOrderType =
-				commerceOrderTypeService.
-					fetchCommerceOrderTypeByExternalReferenceCode(
-						priceListOrderType.getOrderTypeExternalReferenceCode(),
-						serviceContext.getCompanyId());
-
-			if (commerceOrderType == null) {
-				String orderTypeExternalReferenceCode =
-					priceListOrderType.getOrderTypeExternalReferenceCode();
-
-				throw new NoSuchOrderTypeException(
-					"Unable to find order type with external reference code " +
-						orderTypeExternalReferenceCode);
-			}
-		}
+		CommerceOrderType commerceOrderType = _getCommerceOrderType(
+			commerceOrderTypeService, priceListOrderType, serviceContext);
 
 		CommercePriceListOrderTypeRel commercePriceListOrderTypeRel =
 			commercePriceListOrderTypeRelService.
@@ -80,6 +59,55 @@ public class PriceListOrderTypeUtil {
 				commerceOrderType.getCommerceOrderTypeId(),
 				GetterUtil.get(priceListOrderType.getPriority(), 0),
 				serviceContext);
+	}
+
+	private static CommerceOrderType _getCommerceOrderType(
+			CommerceOrderTypeService commerceOrderTypeService,
+			PriceListOrderType priceListOrderType,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String orderTypeExternalReferenceCode =
+			priceListOrderType.getOrderTypeExternalReferenceCode();
+
+		if (Validator.isNull(orderTypeExternalReferenceCode)) {
+			return commerceOrderTypeService.getCommerceOrderType(
+				GetterUtil.getLong(priceListOrderType.getOrderTypeId()));
+		}
+
+		CommerceOrderType commerceOrderType =
+			commerceOrderTypeService.
+				fetchCommerceOrderTypeByExternalReferenceCode(
+					orderTypeExternalReferenceCode,
+					serviceContext.getCompanyId());
+
+		if (commerceOrderType != null) {
+			return commerceOrderType;
+		}
+
+		long orderTypeId = GetterUtil.getLong(
+			priceListOrderType.getOrderTypeId());
+
+		if ((orderTypeId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			commerceOrderType = commerceOrderTypeService.fetchCommerceOrderType(
+				orderTypeId);
+
+			if ((commerceOrderType != null) &&
+				(commerceOrderType.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return commerceOrderType;
+			}
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			throw new NoSuchOrderTypeException(
+				"Unable to find order type with external reference code " +
+					orderTypeExternalReferenceCode);
+		}
+
+		return commerceOrderTypeService.getOrAddEmptyCommerceOrderType(
+			orderTypeExternalReferenceCode);
 	}
 
 }
