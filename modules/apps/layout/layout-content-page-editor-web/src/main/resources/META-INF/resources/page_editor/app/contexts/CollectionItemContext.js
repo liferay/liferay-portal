@@ -10,8 +10,10 @@ import React, {useCallback, useContext, useEffect} from 'react';
 import batchRenderFragmentEntryContentRequest from '../../common/batchRenderFragmentEntryContentRequest';
 import {updateFragmentEntryLinkContent} from '../actions/index';
 import {FRAGMENT_ENTRY_TYPES} from '../config/constants/fragmentEntryTypes';
+import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../config/constants/freemarkerFragmentEntryProcessor';
 import InfoItemService from '../services/InfoItemService';
 import LayoutService from '../services/LayoutService';
+import {deepEqual} from '../utils/checkDeepEqual';
 import isMappedToInfoItem from '../utils/editable_value/isMappedToInfoItem';
 import isMappedToLayout from '../utils/editable_value/isMappedToLayout';
 import isMappedToStructure from '../utils/editable_value/isMappedToStructure';
@@ -250,6 +252,19 @@ const shouldRenderFragmentEntryLink = ({
 				isNullOrUndefined(previousItemExternalReferenceCode)) ||
 			(!isNullOrUndefined(editableValues) &&
 				previousEditableValues !== editableValues))
+	) {
+		return true;
+	}
+
+	// Configuration updates are rendered without the display page preview
+	// item, so we need to render again when there is one
+
+	if (
+		itemClassName &&
+		!deepEqual(
+			previousEditableValues?.[FREEMARKER_FRAGMENT_ENTRY_PROCESSOR],
+			editableValues?.[FREEMARKER_FRAGMENT_ENTRY_PROCESSOR]
+		)
 	) {
 		return true;
 	}
