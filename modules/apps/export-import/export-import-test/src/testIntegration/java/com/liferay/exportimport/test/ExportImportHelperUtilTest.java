@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.staging.StagingGroupHelper;
 
 import jakarta.portlet.GenericPortlet;
 
@@ -1019,7 +1020,8 @@ public class ExportImportHelperUtilTest {
 		Assert.assertTrue(ExportImportHelperUtil.isGroupSupported(_liveGroup));
 		Assert.assertFalse(
 			ExportImportHelperUtil.isGroupSupported(
-				_groupLocalService.getCompanyGroup(_liveGroup.getCompanyId())));
+				_stagingGroupHelper.fetchCompanyGroup(
+					_liveGroup.getCompanyId())));
 		Assert.assertFalse(
 			ExportImportHelperUtil.isGroupSupported(
 				_deactivateGroup(_liveGroup)));
@@ -1246,6 +1248,9 @@ public class ExportImportHelperUtilTest {
 
 	@DeleteAfterTestRun
 	private Group _stagingGroup;
+
+	@Inject
+	private StagingGroupHelper _stagingGroupHelper;
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;
