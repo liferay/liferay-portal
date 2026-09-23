@@ -1493,22 +1493,8 @@ public class PropertiesConfiguration extends AbstractFileConfiguration
      */
     private void loadIncludeFile(String fileName) throws ConfigurationException
     {
-        URL url = ConfigurationUtils.locate(getFileSystem(), getBasePath(), fileName);
-        if (url == null)
-        {
-            URL baseURL = getURL();
-            if (baseURL != null)
-            {
-                url = ConfigurationUtils.locate(getFileSystem(), baseURL.toString(), fileName);
-            }
-        }
-
-        if (url == null)
-        {
-            throw new ConfigurationException("Cannot resolve include file "
-                    + fileName);
-        }
-        load(url);
+        throw new ConfigurationException(
+            "Property file includes are not allowed: " + fileName);
     }
 }
 /* @generated */
