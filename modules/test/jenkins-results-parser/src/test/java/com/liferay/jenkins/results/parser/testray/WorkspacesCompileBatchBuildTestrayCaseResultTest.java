@@ -147,78 +147,6 @@ public class WorkspacesCompileBatchBuildTestrayCaseResultTest
 	}
 
 	@Test
-	public void testGetParentTestrayAttachments() throws Exception {
-		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
-
-		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
-
-		String testrayServerURLString =
-			"https://" + RandomTestUtil.randomString();
-
-		Mockito.doReturn(
-			new URL(testrayServerURLString)
-		).when(
-			testrayServer
-		).getURL();
-
-		Mockito.doReturn(
-			testrayServer
-		).when(
-			testrayBuild
-		).getTestrayServer();
-
-		WorkspacesCompileBatchBuildTestrayCaseResult
-			workspacesCompileBatchBuildTestrayCaseResult =
-				new WorkspacesCompileBatchBuildTestrayCaseResult(
-					Mockito.mock(WorkspacesCompileAxisTestClassGroup.class),
-					_getTestClass(
-						new File(
-							RandomTestUtil.randomString(),
-							RandomTestUtil.randomString())),
-					testrayBuild, Mockito.mock(TopLevelBuildReport.class));
-
-		List<TestrayAttachment> testrayAttachments =
-			workspacesCompileBatchBuildTestrayCaseResult.
-				getTestrayAttachments();
-
-		Assert.assertTrue(testrayAttachments.isEmpty());
-
-		TestrayCaseResult parentTestrayCaseResult = Mockito.mock(
-			TestrayCaseResult.class);
-
-		String parentTestrayCaseResultName = RandomTestUtil.randomString();
-
-		Mockito.doReturn(
-			parentTestrayCaseResultName
-		).when(
-			parentTestrayCaseResult
-		).getName();
-
-		URL parentTestrayCaseResultURL = new URL(
-			testrayServerURLString + "/" + RandomTestUtil.randomString());
-
-		Mockito.doReturn(
-			parentTestrayCaseResultURL
-		).when(
-			parentTestrayCaseResult
-		).getTestrayCaseResultURL();
-
-		workspacesCompileBatchBuildTestrayCaseResult.setParentTestrayCaseResult(
-			parentTestrayCaseResult);
-
-		testrayAttachments =
-			workspacesCompileBatchBuildTestrayCaseResult.
-				getTestrayAttachments();
-
-		testEquals(1, testrayAttachments.size());
-
-		TestrayAttachment testrayAttachment = testrayAttachments.get(0);
-
-		testEquals(parentTestrayCaseResultName, testrayAttachment.getName());
-		testEquals(parentTestrayCaseResultURL, testrayAttachment.getURL());
-	}
-
-	@Test
 	public void testGetStatus() {
 		String workspaceName = RandomTestUtil.randomString();
 
@@ -291,6 +219,78 @@ public class WorkspacesCompileBatchBuildTestrayCaseResultTest
 				}
 			}
 		}
+	}
+
+	@Test
+	public void testGetTestrayAttachments() throws Exception {
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
+
+		String testrayServerURLString =
+			"https://" + RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			new URL(testrayServerURLString)
+		).when(
+			testrayServer
+		).getURL();
+
+		Mockito.doReturn(
+			testrayServer
+		).when(
+			testrayBuild
+		).getTestrayServer();
+
+		WorkspacesCompileBatchBuildTestrayCaseResult
+			workspacesCompileBatchBuildTestrayCaseResult =
+				new WorkspacesCompileBatchBuildTestrayCaseResult(
+					Mockito.mock(WorkspacesCompileAxisTestClassGroup.class),
+					_getTestClass(
+						new File(
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString())),
+					testrayBuild, Mockito.mock(TopLevelBuildReport.class));
+
+		List<TestrayAttachment> testrayAttachments =
+			workspacesCompileBatchBuildTestrayCaseResult.
+				getTestrayAttachments();
+
+		Assert.assertTrue(testrayAttachments.isEmpty());
+
+		TestrayCaseResult parentTestrayCaseResult = Mockito.mock(
+			TestrayCaseResult.class);
+
+		String parentTestrayCaseResultName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			parentTestrayCaseResultName
+		).when(
+			parentTestrayCaseResult
+		).getName();
+
+		URL parentTestrayCaseResultURL = new URL(
+			testrayServerURLString + "/" + RandomTestUtil.randomString());
+
+		Mockito.doReturn(
+			parentTestrayCaseResultURL
+		).when(
+			parentTestrayCaseResult
+		).getTestrayCaseResultURL();
+
+		workspacesCompileBatchBuildTestrayCaseResult.setParentTestrayCaseResult(
+			parentTestrayCaseResult);
+
+		testrayAttachments =
+			workspacesCompileBatchBuildTestrayCaseResult.
+				getTestrayAttachments();
+
+		testEquals(1, testrayAttachments.size());
+
+		TestrayAttachment testrayAttachment = testrayAttachments.get(0);
+
+		testEquals(parentTestrayCaseResultName, testrayAttachment.getName());
+		testEquals(parentTestrayCaseResultURL, testrayAttachment.getURL());
 	}
 
 	private JSONObject _getCaseJSONObject(
