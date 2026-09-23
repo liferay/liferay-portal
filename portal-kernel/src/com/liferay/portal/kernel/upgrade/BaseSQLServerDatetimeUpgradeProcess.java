@@ -95,8 +95,8 @@ public class BaseSQLServerDatetimeUpgradeProcess extends UpgradeProcess {
 						(_NEW_SIZE == columnResultSet.getInt(
 							"DECIMAL_DIGITS"))) {
 
-						if (_log.isWarnEnabled()) {
-							_log.warn(
+						if (_log.isInfoEnabled()) {
+							_log.info(
 								StringBundler.concat(
 									"Column ", columnName, " in table ",
 									tableName, " already is ",
