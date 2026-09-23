@@ -261,6 +261,8 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 			{
 				active = commerceCurrency.isActive();
 				code = commerceCurrency.getCode();
+				dateCreated = commerceCurrency.getCreateDate();
+				dateModified = commerceCurrency.getModifiedDate();
 				externalReferenceCode =
 					commerceCurrency.getExternalReferenceCode();
 				formatPattern = LanguageUtils.getLanguageIdMap(
