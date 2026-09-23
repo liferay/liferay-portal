@@ -13,6 +13,7 @@ import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Currency;
+import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.CurrencyEntityModel;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.CurrencyResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
@@ -20,10 +21,13 @@ import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
@@ -33,6 +37,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import java.math.BigDecimal;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -147,6 +152,11 @@ public class CurrencyResourceImpl
 			@Override
 			public Class<CommerceCurrency> getModelClass() {
 				return CommerceCurrency.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("creator");
 			}
 
 			@Override
@@ -292,6 +302,13 @@ public class CurrencyResourceImpl
 			{
 				setActive(commerceCurrency::isActive);
 				setCode(commerceCurrency::getCode);
+				setCreator(
+					() -> NestedFieldsSupplier.supply(
+						"creator",
+						fieldName -> CreatorUtil.toCreator(
+							_portal,
+							_userLocalService.fetchUser(
+								commerceCurrency.getUserId()))));
 				setDateCreated(commerceCurrency::getCreateDate);
 				setDateModified(commerceCurrency::getModifiedDate);
 				setExternalReferenceCode(
@@ -374,6 +391,12 @@ public class CurrencyResourceImpl
 	private Localization _localization;
 
 	@Reference
+	private Portal _portal;
+
+	@Reference
 	private ServiceContextHelper _serviceContextHelper;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

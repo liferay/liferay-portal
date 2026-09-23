@@ -411,11 +411,12 @@ public class ProductResourceImpl
 			@Override
 			public List<String> getNestedFields() {
 				return List.of(
-					"attachments", "diagram", "images", "mappedProducts",
-					"pins", "productAccountGroups", "productChannels",
-					"productConfiguration", "productGroups", "productOptions",
-					"productSpecifications", "productVirtualSettings",
-					"relatedProducts", "shippingConfiguration", "skus",
+					"attachments", "creator", "diagram", "images",
+					"mappedProducts", "pins", "productAccountGroups",
+					"productChannels", "productConfiguration", "productGroups",
+					"productOptions", "productSpecifications",
+					"productVirtualSettings", "relatedProducts",
+					"shippingConfiguration", "skus",
 					"subscriptionConfiguration", "taxConfiguration");
 			}
 

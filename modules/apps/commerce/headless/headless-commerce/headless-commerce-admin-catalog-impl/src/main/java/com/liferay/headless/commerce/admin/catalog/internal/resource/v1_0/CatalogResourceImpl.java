@@ -50,6 +50,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -170,6 +171,11 @@ public class CatalogResourceImpl
 			@Override
 			public Class<CommerceCatalog> getModelClass() {
 				return CommerceCatalog.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("creator");
 			}
 
 			@Override
