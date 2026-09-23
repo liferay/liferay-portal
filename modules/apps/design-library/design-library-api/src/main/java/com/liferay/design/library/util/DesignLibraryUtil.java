@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
@@ -62,6 +63,15 @@ public class DesignLibraryUtil {
 		).setParameter(
 			"designLibraryEntryId", depotEntry.getDepotEntryId()
 		).buildString();
+	}
+
+	public static boolean isConnectedDesignLibraryGroupId(
+			long companyId, long designLibraryGroupId, long groupId)
+		throws PortalException {
+
+		return ArrayUtil.contains(
+			getConnectedDesignLibraryGroupIds(companyId, groupId),
+			designLibraryGroupId);
 	}
 
 	public static boolean isDesignLibraryScope(Group group) {

@@ -7,10 +7,13 @@ package com.liferay.layout.admin.web.internal.display.context;
 
 import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -21,6 +24,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -90,6 +94,16 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 		).build();
 	}
 
+	public Group getDesignLibraryGroup() throws PortalException {
+		long groupId = _getGroupId();
+
+		if (groupId == _themeDisplay.getScopeGroupId()) {
+			return null;
+		}
+
+		return GroupLocalServiceUtil.getGroup(groupId);
+	}
+
 	public List<LayoutPageTemplateEntry> getGlobalLayoutPageTemplateEntries() {
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator =
 			LayoutPageTemplatePortletUtil.
@@ -127,15 +141,13 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 		if (!_isWidgetPageFeatureFlagEnabled()) {
 			return LayoutPageTemplateEntryServiceUtil.
 				getLayoutPageTemplateEntriesByType(
-					_themeDisplay.getScopeGroupId(),
-					getLayoutPageTemplateCollectionId(),
+					_getGroupId(), getLayoutPageTemplateCollectionId(),
 					LayoutPageTemplateEntryTypeConstants.BASIC, start, end,
 					null);
 		}
 
 		return LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
-			_themeDisplay.getScopeGroupId(),
-			getLayoutPageTemplateCollectionId(),
+			_getGroupId(), getLayoutPageTemplateCollectionId(),
 			WorkflowConstants.STATUS_APPROVED, start, end);
 	}
 
@@ -143,15 +155,13 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 		if (!_isWidgetPageFeatureFlagEnabled()) {
 			return LayoutPageTemplateEntryServiceUtil.
 				getLayoutPageTemplateEntriesCountByType(
-					_themeDisplay.getScopeGroupId(),
-					getLayoutPageTemplateCollectionId(),
+					_getGroupId(), getLayoutPageTemplateCollectionId(),
 					LayoutPageTemplateEntryTypeConstants.BASIC);
 		}
 
 		return LayoutPageTemplateEntryServiceUtil.
 			getLayoutPageTemplateEntriesCount(
-				_themeDisplay.getScopeGroupId(),
-				getLayoutPageTemplateCollectionId(),
+				_getGroupId(), getLayoutPageTemplateCollectionId(),
 				WorkflowConstants.STATUS_APPROVED);
 	}
 
@@ -380,6 +390,30 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 		return false;
 	}
 
+	private long _getGroupId() {
+		if (_groupId != null) {
+			return _groupId;
+		}
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			LayoutPageTemplateCollectionLocalServiceUtil.
+				fetchLayoutPageTemplateCollection(
+					getLayoutPageTemplateCollectionId());
+
+		if ((layoutPageTemplateCollection == null) ||
+			(layoutPageTemplateCollection.getGroupId() ==
+				_themeDisplay.getScopeGroupId())) {
+
+			_groupId = _themeDisplay.getScopeGroupId();
+
+			return _groupId;
+		}
+
+		_groupId = layoutPageTemplateCollection.getGroupId();
+
+		return _groupId;
+	}
+
 	private String _getLayoutPageTemplateEntryAddLayoutURL(
 		LayoutPageTemplateEntry layoutPageTemplateEntry) {
 
@@ -426,6 +460,7 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 	}
 
 	private String _backURL;
+	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private Long _layoutPageTemplateCollectionId;
 	private final LiferayPortletResponse _liferayPortletResponse;
