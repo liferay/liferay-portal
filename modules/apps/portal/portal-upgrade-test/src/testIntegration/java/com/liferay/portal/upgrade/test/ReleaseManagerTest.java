@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -28,6 +29,8 @@ import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.release.SchemaCreator;
 
 import java.sql.Connection;
+
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -154,7 +157,10 @@ public class ReleaseManagerTest {
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
-					"UPGRADE_DATABASE_AUTO_RUN", false, false)) {
+					"UPGRADE_DATABASE_AUTO_RUN", false, false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.upgrade.internal.executor.UpgradeExecutor",
+				LoggerTestUtil.ERROR)) {
 
 			_registerFailingUpgradeStepRegistrator(bundle);
 
@@ -173,6 +179,12 @@ public class ReleaseManagerTest {
 				statusMessage,
 				statusMessage.contains(
 					"The upgrade of module " + bundleSymbolicName + " failed"));
+
+			Assert.assertEquals("failure", _releaseManager.getStatus());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 3, logEntries.size());
 		}
 		finally {
 			_releaseLocalService.deleteRelease(release);

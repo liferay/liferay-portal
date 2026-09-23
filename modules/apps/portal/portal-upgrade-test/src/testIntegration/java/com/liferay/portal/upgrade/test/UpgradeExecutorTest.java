@@ -134,9 +134,13 @@ public class UpgradeExecutorTest {
 		Release release = _releaseLocalService.addRelease(
 			bundleSymbolicName, "1.0.0");
 
+		Class<?> clazz = _upgradeExecutor.getClass();
+
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
-					"UPGRADE_DATABASE_AUTO_RUN", false, false)) {
+					"UPGRADE_DATABASE_AUTO_RUN", false, false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				clazz.getName(), LoggerTestUtil.OFF)) {
 
 			_registerUpgradeStepRegistrator(bundle);
 

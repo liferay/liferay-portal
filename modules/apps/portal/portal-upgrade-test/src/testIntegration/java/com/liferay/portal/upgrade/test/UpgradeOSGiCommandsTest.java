@@ -59,13 +59,16 @@ public class UpgradeOSGiCommandsTest {
 
 		String bundleSymbolicName = bundle.getSymbolicName();
 
-		Class<?> clazz = _upgradeOSGiCommands.getClass();
+		Class<?> upgradeExecutorClass = _upgradeExecutor.getClass();
+		Class<?> upgradeOSGiCommandsClass = _upgradeOSGiCommands.getClass();
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"UPGRADE_DATABASE_AUTO_RUN", false, false);
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				clazz.getName(), LoggerTestUtil.OFF)) {
+			LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
+				upgradeExecutorClass.getName(), LoggerTestUtil.OFF);
+			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
+				upgradeOSGiCommandsClass.getName(), LoggerTestUtil.OFF)) {
 
 			_registerFailingUpgradeStepRegistrator(bundle);
 
@@ -163,8 +166,10 @@ public class UpgradeOSGiCommandsTest {
 
 			_registerFailingUpgradeStepRegistrator(bundle);
 
+			Class<?> upgradeExecutorClass = _upgradeExecutor.getClass();
+
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					clazz.getName(), LoggerTestUtil.OFF)) {
+					upgradeExecutorClass.getName(), LoggerTestUtil.OFF)) {
 
 				String message = ReflectionTestUtil.invoke(
 					_upgradeOSGiCommands, "execute",
@@ -228,7 +233,7 @@ public class UpgradeOSGiCommandsTest {
 
 			_registerFailingUpgradeStepRegistrator(bundle);
 
-			Class<?> clazz = _upgradeOSGiCommands.getClass();
+			Class<?> clazz = _upgradeExecutor.getClass();
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 					clazz.getName(), LoggerTestUtil.OFF)) {
