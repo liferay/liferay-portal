@@ -883,6 +883,30 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		return LocaleThreadLocal.getDefaultLocale();
 	}
 
+	private Map<String, Map<String, Object>> _getDefaultValuesMap(
+		DataDefinitionField[] dataDefinitionFields) {
+
+		Map<String, Map<String, Object>> defaultValuesMap = new HashMap<>();
+
+		if (dataDefinitionFields == null) {
+			return defaultValuesMap;
+		}
+
+		for (DataDefinitionField dataDefinitionField : dataDefinitionFields) {
+			if (MapUtil.isNotEmpty(dataDefinitionField.getDefaultValue())) {
+				defaultValuesMap.put(
+					dataDefinitionField.getName(),
+					dataDefinitionField.getDefaultValue());
+			}
+
+			defaultValuesMap.putAll(
+				_getDefaultValuesMap(
+					dataDefinitionField.getNestedDataDefinitionFields()));
+		}
+
+		return defaultValuesMap;
+	}
+
 	private JSONObject _getFieldTypeMetadataJSONObject(
 			String ddmFormFieldName, ResourceBundle resourceBundle)
 		throws Exception {
@@ -1110,6 +1134,10 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 				int finalDataDefinitionFieldsCount = dataDefinitionFieldsCount;
 
+				Map<String, Map<String, Object>> defaultValuesMap =
+					_getDefaultValuesMap(
+						dataDefinitionField.getNestedDataDefinitionFields());
+
 				dataDefinitionField.setNestedDataDefinitionFields(
 					() -> {
 						Gson gson = new Gson();
@@ -1121,7 +1149,7 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 								DataDefinitionField[].class);
 
 						_normalizeNestedDataDefinitionFields(
-							finalDataDefinitionFieldsCount,
+							finalDataDefinitionFieldsCount, defaultValuesMap,
 							nestedDataDefinitionFields);
 
 						return nestedDataDefinitionFields;
@@ -1160,48 +1188,57 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 	private void _normalizeNestedDataDefinitionFields(
 			int dataDefinitionFieldsCount,
+			Map<String, Map<String, Object>> defaultValuesMap,
 			DataDefinitionField[] nestedDataDefinitionFields)
 		throws Exception {
 
-		if ((dataDefinitionFieldsCount == 0) ||
-			(nestedDataDefinitionFields == null)) {
-
+		if (nestedDataDefinitionFields == null) {
 			return;
 		}
 
 		for (DataDefinitionField nestedDataDefinitionField :
 				nestedDataDefinitionFields) {
 
-			String nestedDataDefinitionFieldName =
-				nestedDataDefinitionField.getName();
+			if (dataDefinitionFieldsCount > 0) {
+				String nestedDataDefinitionFieldName =
+					nestedDataDefinitionField.getName();
 
-			nestedDataDefinitionField.setName(
-				() -> _normalizeFieldName(
-					nestedDataDefinitionFieldName, dataDefinitionFieldsCount));
+				nestedDataDefinitionField.setName(
+					() -> _normalizeFieldName(
+						nestedDataDefinitionFieldName,
+						dataDefinitionFieldsCount));
 
-			Map<String, Object> customProperties =
-				nestedDataDefinitionField.getCustomProperties();
+				Map<String, Object> customProperties =
+					nestedDataDefinitionField.getCustomProperties();
 
-			customProperties.put(
-				"fieldReference",
-				_normalizeFieldName(
-					(String)customProperties.get("fieldReference"),
-					dataDefinitionFieldsCount));
+				customProperties.put(
+					"fieldReference",
+					_normalizeFieldName(
+						(String)customProperties.get("fieldReference"),
+						dataDefinitionFieldsCount));
 
-			Object rows = customProperties.get("rows");
+				Object rows = customProperties.get("rows");
 
-			if (!(rows instanceof String)) {
-				rows = _jsonFactory.looseSerializeDeep(rows);
+				if (!(rows instanceof String)) {
+					rows = _jsonFactory.looseSerializeDeep(rows);
+				}
+
+				customProperties.put(
+					"rows",
+					_normalizeRowsJSONArray(
+						dataDefinitionFieldsCount,
+						_jsonFactory.createJSONArray((String)rows)));
 			}
 
-			customProperties.put(
-				"rows",
-				_normalizeRowsJSONArray(
-					dataDefinitionFieldsCount,
-					_jsonFactory.createJSONArray((String)rows)));
+			Map<String, Object> defaultValue = defaultValuesMap.get(
+				nestedDataDefinitionField.getName());
+
+			if (MapUtil.isNotEmpty(defaultValue)) {
+				nestedDataDefinitionField.setDefaultValue(() -> defaultValue);
+			}
 
 			_normalizeNestedDataDefinitionFields(
-				dataDefinitionFieldsCount,
+				dataDefinitionFieldsCount, defaultValuesMap,
 				nestedDataDefinitionField.getNestedDataDefinitionFields());
 		}
 	}
