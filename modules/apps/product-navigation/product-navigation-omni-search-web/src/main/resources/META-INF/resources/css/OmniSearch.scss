@@ -46,6 +46,24 @@ html#{$cadmin-selector} .cadmin.omni-search-modal {
 		padding: $cadmin-spacer 20px $cadmin-spacer $cadmin-spacer;
 	}
 
+	@include media-breakpoint-up(md, $cadmin-grid-breakpoints) {
+		.modal-header .close {
+			@include sr-only();
+			@include sr-only-focusable();
+
+			&:active,
+			&:focus {
+				margin-left: calc(#{$cadmin-spacer} * 0.5);
+				position: relative;
+				z-index: 5;
+			}
+		}
+	}
+
+	.modal-title {
+		overflow: visible;
+	}
+
 	.modal-body {
 		background-color: var(--cadmin-white);
 		border-radius: $cadmin-border-radius-xl;
@@ -54,6 +72,10 @@ html#{$cadmin-selector} .cadmin.omni-search-modal {
 		max-height: calc(100vh - 16rem);
 		overflow-y: auto;
 		padding: $cadmin-spacer;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	.modal-header .input-group {
