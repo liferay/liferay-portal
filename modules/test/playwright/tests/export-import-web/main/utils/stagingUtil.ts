@@ -8,6 +8,16 @@ import path from 'path';
 
 import {checkInZip} from '../../../../utils/zip';
 
+export function getTomcatTempDir(liferayHomeDir: string): string {
+	const tomcatDirs = readdirSync(liferayHomeDir)
+		.filter((file) => file.startsWith('tomcat-'))
+		.sort((a, b) =>
+			a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'})
+		);
+
+	return path.join(liferayHomeDir, tomcatDirs[tomcatDirs.length - 1], 'temp');
+}
+
 export async function unzipAndCheckFolder(
 	tempDir: string,
 	folderName: string = 'adaptive-media'

@@ -8,7 +8,7 @@ import {
 	TaxonomyVocabularyAPI,
 } from '@liferay/headless-admin-taxonomy-client-js';
 import {expect, mergeTests} from '@playwright/test';
-import {createReadStream, readdirSync} from 'fs';
+import {createReadStream} from 'fs';
 import path from 'path';
 
 import {assetPublisherPagesTest} from '../../../fixtures/assetPublisherPagesTest';
@@ -36,7 +36,7 @@ import {exportImportConfig} from './export_import.config';
 import {stagingConfigurationPageTest} from './fixtures/stagingConfigurationPageTest';
 import {stagingPageTest} from './fixtures/stagingPageTest';
 import {StageableEntities} from './utils/stagingConstants';
-import {unzipAndCheckFolder} from './utils/stagingUtil';
+import {getTomcatTempDir, unzipAndCheckFolder} from './utils/stagingUtil';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -632,14 +632,8 @@ test(
 			includeIfModified: ['Web Content 1 Items Web'],
 		});
 
-		const tomcatDir = exportImportConfig.environment.tomcatDir;
-
-		const files = readdirSync(tomcatDir).filter((file) =>
-			file.startsWith('tomcat-')
-		);
-
 		const hasFolder = await unzipAndCheckFolder(
-			path.resolve(tomcatDir, files[0], 'temp')
+			getTomcatTempDir(exportImportConfig.environment.tomcatDir)
 		);
 
 		expect(hasFolder).toEqual(false);
