@@ -112,6 +112,9 @@ public class EditStyleBookEntryDisplayContext {
 
 	public Map<String, Object> getStyleBookEditorData() throws Exception {
 		return HashMapBuilder.<String, Object>put(
+			"addFrontendTokenURL",
+			_getActionURL("/style_book/add_style_book_entry_frontend_token")
+		).put(
 			"customFrontendTokenDefinition",
 			StyleBookFrontendTokenDefinitionUtil.
 				getCustomFrontendTokenDefinitionJSONObject(
