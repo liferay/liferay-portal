@@ -6,5 +6,23 @@ locals {
 		"app.kubernetes.io/managed-by"=local.terraform_manager_name
 		"liferay.com/project"="liferay-cloud-native"
 	}
+	observability_metrics_ingress=var.observability_enabled ? [
+		{
+			from=[
+				{
+					namespaceSelector={
+						matchLabels={
+							"kubernetes.io/metadata.name"="observability"
+						}
+					}
+				},
+			]
+			ports=[
+				{
+					port="metrics"
+				},
+			]
+		},
+	] : []
 	terraform_manager_name="liferay-cloud-native-terraform"
 }

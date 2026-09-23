@@ -20,3 +20,7 @@ variable "argocd_helm_chart_version" {
 variable "infrastructure_api_group" {
 	type=string
 }
+variable "observability_enabled" {
+	default=false
+	type=bool
+}

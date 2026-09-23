@@ -11,6 +11,7 @@ function main {
 		aws/eks
 		aws/gitops/platform
 		aws/gitops/resources
+		aws/platform
 		azure/aks
 		azure/platform
 		gcp/gitops/platform

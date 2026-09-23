@@ -1,6 +1,5 @@
 resource "helm_release" "argocd" {
 	chart="argo-cd"
-	create_namespace=false
 	depends_on=[
 		kubernetes_namespace_v1.argocd,
 		kubernetes_secret_v1.argocd_secret,
@@ -45,12 +44,74 @@ resource "helm_release" "argocd" {
 							"resource.exclusions"=yamlencode(
 								[
 									{
+										apiGroups=[
+											"",
+											"discovery.k8s.io",
+										]
+										kinds=[
+											"EndpointSlice",
+											"Endpoints",
+										]
+									},
+									{
 										apiGroups=["*"]
 										kinds=["ProviderConfigUsage"]
 									},
 									{
 										apiGroups=["apiextensions.crossplane.io"]
 										kinds=["ManagedResourceDefinition"]
+									},
+									{
+										apiGroups=[
+											"authentication.k8s.io",
+											"authorization.k8s.io",
+										]
+										kinds=[
+											"LocalSubjectAccessReview",
+											"SelfSubjectAccessReview",
+											"SelfSubjectReview",
+											"SelfSubjectRulesReview",
+											"SubjectAccessReview",
+											"TokenReview",
+										]
+									},
+									{
+										apiGroups=["cert-manager.io"]
+										kinds=["CertificateRequest"]
+									},
+									{
+										apiGroups=["certificates.k8s.io"]
+										kinds=["CertificateSigningRequest"]
+									},
+									{
+										apiGroups=["cilium.io"]
+										kinds=[
+											"CiliumEndpoint",
+											"CiliumEndpointSlice",
+											"CiliumIdentity",
+										]
+									},
+									{
+										apiGroups=["coordination.k8s.io"]
+										kinds=["Lease"]
+									},
+									{
+										apiGroups=[
+											"kyverno.io",
+											"reports.kyverno.io",
+											"wgpolicyk8s.io",
+										]
+										kinds=[
+											"AdmissionReport",
+											"BackgroundScanReport",
+											"ClusterAdmissionReport",
+											"ClusterBackgroundScanReport",
+											"ClusterEphemeralReport",
+											"ClusterPolicyReport",
+											"EphemeralReport",
+											"PolicyReport",
+											"UpdateRequest",
+										]
 									},
 								])
 						}
@@ -79,6 +140,270 @@ resource "helm_release" "argocd" {
 								cpu="15m"
 								memory="128Mi"
 							}
+						}
+					}
+					extraObjects=[
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-application-controller"
+							}
+							spec={
+								ingress=local.observability_metrics_ingress
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-application-controller"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-applicationset-controller-ingress"
+							}
+							spec={
+								ingress=local.observability_metrics_ingress
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-applicationset-controller"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-dex-server"
+							}
+							spec={
+								ingress=concat(
+									[
+										{
+											from=[
+												{
+													podSelector={
+														matchLabels={
+															"app.kubernetes.io/instance"="argocd"
+															"app.kubernetes.io/name"="argocd-server"
+														}
+													}
+												},
+											]
+											ports=[
+												{
+													port="grpc"
+												},
+												{
+													port="http"
+												},
+											]
+										},
+									],
+									local.observability_metrics_ingress)
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-dex-server"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-notifications-controller-ingress"
+							}
+							spec={
+								ingress=local.observability_metrics_ingress
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-notifications-controller"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-redis"
+							}
+							spec={
+								ingress=[
+									{
+										from=[
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-application-controller"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-repo-server"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-server"
+													}
+												}
+											},
+										]
+										ports=[
+											{
+												port="redis"
+											},
+										]
+									},
+								]
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-redis"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-repo-server"
+							}
+							spec={
+								ingress=concat(
+									[
+										{
+											from=[
+												{
+													podSelector={
+														matchLabels={
+															"app.kubernetes.io/instance"="argocd"
+															"app.kubernetes.io/name"="argocd-application-controller"
+														}
+													}
+												},
+												{
+													podSelector={
+														matchLabels={
+															"app.kubernetes.io/instance"="argocd"
+															"app.kubernetes.io/name"="argocd-applicationset-controller"
+														}
+													}
+												},
+												{
+													podSelector={
+														matchLabels={
+															"app.kubernetes.io/instance"="argocd"
+															"app.kubernetes.io/name"="argocd-notifications-controller"
+														}
+													}
+												},
+												{
+													podSelector={
+														matchLabels={
+															"app.kubernetes.io/instance"="argocd"
+															"app.kubernetes.io/name"="argocd-server"
+														}
+													}
+												},
+											]
+											ports=[
+												{
+													port="repo-server"
+												},
+											]
+										},
+									],
+									local.observability_metrics_ingress)
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-repo-server"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="argocd-server-ingress"
+							}
+							spec={
+								ingress=concat(
+									[
+										{
+											from=[
+												{
+													namespaceSelector={
+														matchLabels={
+															"kubernetes.io/metadata.name"="envoy-gateway-system"
+														}
+													}
+													podSelector={
+														matchLabels={
+															"app.kubernetes.io/managed-by"="envoy-gateway"
+															"app.kubernetes.io/name"="envoy"
+															"gateway.envoyproxy.io/owning-gateway-namespace"=local.argocd_namespace
+														}
+													}
+												},
+											]
+											ports=[
+												{
+													port="server"
+												},
+											]
+										},
+									],
+									local.observability_metrics_ingress)
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/instance"="argocd"
+										"app.kubernetes.io/name"="argocd-server"
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
+								name="default-deny-ingress"
+							}
+							spec={
+								podSelector={}
+							}
+						},
+					]
+					global={
+						networkPolicy={
+							create=false
 						}
 					}
 					notifications={
@@ -201,11 +526,14 @@ resource "helm_release" "argocd" {
 		var.additional_values,
 	)
 	version=var.argocd_helm_chart_version
-	wait=true
 }
 resource "kubernetes_namespace_v1" "argocd" {
 	metadata {
-		labels=local.common_labels
+		labels=merge(
+			local.common_labels,
+			{
+				"pod-security.kubernetes.io/enforce"="restricted"
+			})
 		name=local.argocd_namespace
 	}
 }
@@ -232,7 +560,6 @@ resource "kubernetes_secret_v1" "argocd_secret" {
 		name="argocd-secret"
 		namespace=kubernetes_namespace_v1.argocd.metadata[0].name
 	}
-	type="Opaque"
 }
 resource "random_password" "argocd_server_secretkey" {
 	length=32
