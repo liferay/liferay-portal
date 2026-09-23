@@ -23,11 +23,14 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.IOException;
 
@@ -294,9 +297,13 @@ public class RemoteCommerceTaxEngine implements CommerceTaxEngine {
 				remoteCommerceTaxConfiguration.
 					taxValueEndpointAuthorizationToken())) {
 
-			String taxValueEndpointAuthorizationToken =
+			Group group = _groupLocalService.getGroup(
+				commerceTaxCalculateRequest.getCommerceChannelGroupId());
+
+			String taxValueEndpointAuthorizationToken = _secretResolver.resolve(
+				group.getCompanyId(),
 				remoteCommerceTaxConfiguration.
-					taxValueEndpointAuthorizationToken();
+					taxValueEndpointAuthorizationToken());
 
 			httpGet.addHeader(
 				"Authorization", "token " + taxValueEndpointAuthorizationToken);
@@ -325,10 +332,16 @@ public class RemoteCommerceTaxEngine implements CommerceTaxEngine {
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private Language _language;
 
 	private final ObjectMapper _objectMapper = new ObjectMapper();
 	private PoolingHttpClientConnectionManager
 		_poolingHttpClientConnectionManager;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

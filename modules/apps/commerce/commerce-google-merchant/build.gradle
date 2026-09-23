@@ -14,5 +14,7 @@ dependencies {
 	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
+	compileOnly project(":core:petra:petra-reflect")
 }

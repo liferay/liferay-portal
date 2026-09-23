@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import com.worldline.sips.model.PaypageResponse;
 import com.worldline.sips.model.ResponseCode;
@@ -199,7 +200,9 @@ public class MercanetServlet extends HttpServlet {
 					Environment.valueOf(environment),
 					mercanetGroupServiceConfiguration.merchantId(),
 					Integer.valueOf(keyVersion),
-					mercanetGroupServiceConfiguration.secretKey());
+					_secretResolver.resolve(
+						commerceOrder.getCompanyId(),
+						mercanetGroupServiceConfiguration.secretKey()));
 
 				PaypageResponse paypageResponse = paypageClient.decodeResponse(
 					HashMapBuilder.put(
@@ -284,6 +287,9 @@ public class MercanetServlet extends HttpServlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.commerce.payment.method.mercanet)"

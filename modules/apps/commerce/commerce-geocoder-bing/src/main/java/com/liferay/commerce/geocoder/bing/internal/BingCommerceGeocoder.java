@@ -15,6 +15,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Region;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -102,7 +104,9 @@ public class BingCommerceGeocoder implements CommerceGeocoder {
 			ConfigurableUtil.createConfigurable(
 				BingCommerceGeocoderConfiguration.class, properties);
 
-		_apiKey = bingCommerceGeocoderConfiguration.apiKey();
+		_apiKey = _secretResolver.resolve(
+			CompanyConstants.SYSTEM,
+			bingCommerceGeocoderConfiguration.apiKey());
 	}
 
 	@Deactivate
@@ -225,5 +229,8 @@ public class BingCommerceGeocoder implements CommerceGeocoder {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

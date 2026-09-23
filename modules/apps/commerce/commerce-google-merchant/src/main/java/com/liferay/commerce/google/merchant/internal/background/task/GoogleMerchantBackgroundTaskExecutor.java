@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Thomas Stewart
@@ -76,7 +79,8 @@ public class GoogleMerchantBackgroundTaskExecutor
 
 		try {
 			String host = _sftpConfiguration.host();
-			String password = _sftpConfiguration.password();
+			String password = _secretResolver.resolve(
+				CompanyConstants.SYSTEM, _sftpConfiguration.password());
 			int port = _sftpConfiguration.port();
 			String username = _sftpConfiguration.username();
 
@@ -116,6 +120,9 @@ public class GoogleMerchantBackgroundTaskExecutor
 			}
 		}
 	}
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	private SftpConfiguration _sftpConfiguration;
 

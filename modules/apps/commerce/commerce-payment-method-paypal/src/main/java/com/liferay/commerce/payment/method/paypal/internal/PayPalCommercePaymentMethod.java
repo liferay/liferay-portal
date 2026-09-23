@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import com.paypal.api.payments.Agreement;
 import com.paypal.api.payments.AgreementStateDescriptor;
@@ -135,7 +136,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 			_commerceOrderLocalService.getCommerceOrder(
 				commercePaymentRequest.getCommerceOrderId());
 
-		APIContext apiContext = _getAPIContext(commerceOrder.getGroupId());
+		APIContext apiContext = _getAPIContext(
+			commerceOrder.getCompanyId(), commerceOrder.getGroupId());
 
 		AgreementStateDescriptor agreementStateDescriptor =
 			new AgreementStateDescriptor();
@@ -266,7 +268,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 			_commerceOrderLocalService.getCommerceOrder(
 				commercePaymentRequest.getCommerceOrderId());
 
-		APIContext apiContext = _getAPIContext(commerceOrder.getGroupId());
+		APIContext apiContext = _getAPIContext(
+			commerceOrder.getCompanyId(), commerceOrder.getGroupId());
 
 		AgreementStateDescriptor agreementStateDescriptor =
 			new AgreementStateDescriptor();
@@ -402,7 +405,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 					commercePaymentRequest.getCommerceOrderId());
 
 			Agreement activeAgreement = agreement.execute(
-				_getAPIContext(commerceOrder.getGroupId()),
+				_getAPIContext(
+					commerceOrder.getCompanyId(), commerceOrder.getGroupId()),
 				agreement.getToken());
 
 			if (PayPalCommercePaymentMethodConstants.PAYMENT_STATE_FAILED.
@@ -478,7 +482,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 
 		try {
 			Agreement agreement = Agreement.get(
-				_getAPIContext(commerceOrder.getGroupId()),
+				_getAPIContext(
+					commerceOrder.getCompanyId(), commerceOrder.getGroupId()),
 				commercePaymentRequest.getTransactionId());
 
 			String agreementState = agreement.getState();
@@ -692,7 +697,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 		int status = CommerceOrderPaymentConstants.STATUS_FAILED;
 
 		try {
-			APIContext apiContext = _getAPIContext(commerceOrder.getGroupId());
+			APIContext apiContext = _getAPIContext(
+				commerceOrder.getCompanyId(), commerceOrder.getGroupId());
 
 			Plan plan = _getPlan(
 				commercePaymentRequest, commerceOrder, apiContext,
@@ -807,7 +813,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 			_commerceOrderLocalService.getCommerceOrder(
 				commercePaymentRequest.getCommerceOrderId());
 
-		APIContext apiContext = _getAPIContext(commerceOrder.getGroupId());
+		APIContext apiContext = _getAPIContext(
+			commerceOrder.getCompanyId(), commerceOrder.getGroupId());
 
 		AgreementStateDescriptor agreementStateDescriptor =
 			new AgreementStateDescriptor();
@@ -1011,13 +1018,16 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 		return _buildMinimalRequestBody(commerceOrder);
 	}
 
-	private APIContext _getAPIContext(long groupId) throws PortalException {
+	private APIContext _getAPIContext(long companyId, long groupId)
+		throws PortalException {
+
 		PayPalGroupServiceConfiguration payPalGroupServiceConfiguration =
 			_getPayPalGroupServiceConfiguration(groupId);
 
 		return new APIContext(
 			payPalGroupServiceConfiguration.clientId(),
-			payPalGroupServiceConfiguration.clientSecret(),
+			_secretResolver.resolve(
+				companyId, payPalGroupServiceConfiguration.clientSecret()),
 			payPalGroupServiceConfiguration.mode());
 	}
 
@@ -1149,16 +1159,18 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 		PayPalGroupServiceConfiguration payPalGroupServiceConfiguration =
 			_getPayPalGroupServiceConfiguration(commerceOrder.getGroupId());
 
-		PayPalEnvironment payPalEnvironment = new PayPalEnvironment.Sandbox(
-			payPalGroupServiceConfiguration.clientId(),
+		String clientSecret = _secretResolver.resolve(
+			commerceOrder.getCompanyId(),
 			payPalGroupServiceConfiguration.clientSecret());
+
+		PayPalEnvironment payPalEnvironment = new PayPalEnvironment.Sandbox(
+			payPalGroupServiceConfiguration.clientId(), clientSecret);
 
 		String mode = payPalGroupServiceConfiguration.mode();
 
 		if (mode.equals(PayPalCommercePaymentMethodConstants.MODE_LIVE)) {
 			payPalEnvironment = new PayPalEnvironment.Live(
-				payPalGroupServiceConfiguration.clientId(),
-				payPalGroupServiceConfiguration.clientSecret());
+				payPalGroupServiceConfiguration.clientId(), clientSecret);
 		}
 
 		return new PayPalHttpClient(payPalEnvironment);
@@ -1346,5 +1358,8 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

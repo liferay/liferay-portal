@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import com.worldline.sips.model.CaptureMode;
 import com.worldline.sips.model.Currency;
@@ -221,7 +222,9 @@ public class MercanetCommercePaymentMethod implements CommercePaymentMethod {
 			Environment.valueOf(environment),
 			mercanetGroupServiceConfiguration.merchantId(),
 			Integer.valueOf(keyVersion),
-			mercanetGroupServiceConfiguration.secretKey());
+			_secretResolver.resolve(
+				commerceOrder.getCompanyId(),
+				mercanetGroupServiceConfiguration.secretKey()));
 
 		InitializationResponse initializationResponse =
 			paypageClient.initialize(paymentRequest);
@@ -292,5 +295,8 @@ public class MercanetCommercePaymentMethod implements CommercePaymentMethod {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

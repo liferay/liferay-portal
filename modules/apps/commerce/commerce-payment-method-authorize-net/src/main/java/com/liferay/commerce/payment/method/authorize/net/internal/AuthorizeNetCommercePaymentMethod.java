@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -178,7 +179,9 @@ public class AuthorizeNetCommercePaymentMethod
 		merchantAuthenticationType.setName(
 			authorizeNetGroupServiceConfiguration.apiLoginId());
 		merchantAuthenticationType.setTransactionKey(
-			authorizeNetGroupServiceConfiguration.transactionKey());
+			_secretResolver.resolve(
+				commerceOrder.getCompanyId(),
+				authorizeNetGroupServiceConfiguration.transactionKey()));
 
 		ApiOperationBase.setMerchantAuthentication(merchantAuthenticationType);
 
@@ -562,6 +565,9 @@ public class AuthorizeNetCommercePaymentMethod
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference
 	private UserLocalService _userLocalService;
