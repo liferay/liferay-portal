@@ -246,3 +246,30 @@ function FormField({children, error, id, name}: FormFieldProps) {
 		</div>
 	);
 }
+
+export function validateForm(form: any, namespace: string): ValidationError {
+	const {elements} = form;
+	const error: ValidationError = {};
+
+	const errorMessage = Liferay.Language.get('this-field-is-required');
+
+	const nameField = elements[`${namespace}name`];
+
+	if (nameField && !nameField.value) {
+		error.name = errorMessage;
+	}
+
+	const classNameIdField = elements[`${namespace}classNameId`];
+
+	if (classNameIdField.selectedIndex === 0) {
+		error.classNameId = errorMessage;
+	}
+
+	const classTypeIdField = elements[`${namespace}classTypeId`];
+
+	if (classTypeIdField && classTypeIdField.selectedIndex === 0) {
+		error.classTypeId = errorMessage;
+	}
+
+	return error;
+}

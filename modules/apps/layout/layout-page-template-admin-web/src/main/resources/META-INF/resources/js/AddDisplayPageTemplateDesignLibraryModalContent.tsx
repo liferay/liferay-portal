@@ -9,7 +9,9 @@ import {openToast} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
 import React, {useCallback, useRef, useState} from 'react';
 
-import ContentTypeModalForm from './components/ContentTypeModalForm';
+import ContentTypeModalForm, {
+	validateForm,
+} from './components/ContentTypeModalForm';
 import {MODAL_TYPES} from './constants/modalTypes';
 import {MappingType} from './types/MappingTypes';
 import {ValidationError} from './types/ValidationError';
@@ -32,43 +34,13 @@ export default function AddDisplayPageTemplateDesignLibraryModalContent({
 
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const validateForm = useCallback(
-		(form: any) => {
-			const {elements} = form;
-			const error: ValidationError = {};
-
-			const errorMessage = Liferay.Language.get('this-field-is-required');
-
-			const nameField = elements[`${namespace}name`];
-
-			if (nameField && !nameField.value) {
-				error.name = errorMessage;
-			}
-
-			const classNameIdField = elements[`${namespace}classNameId`];
-
-			if (classNameIdField.selectedIndex === 0) {
-				error.classNameId = errorMessage;
-			}
-
-			const classTypeIdField = elements[`${namespace}classTypeId`];
-
-			if (classTypeIdField && classTypeIdField.selectedIndex === 0) {
-				error.classTypeId = errorMessage;
-			}
-
-			return error;
-		},
-		[namespace]
-	);
-
 	const handleSubmit = useCallback(
 		(event: any) => {
 			event.preventDefault();
 
 			const form = formRef.current;
 
-			const error = validateForm(form);
+			const error = validateForm(form, namespace);
 
 			if (Object.keys(error).length !== 0) {
 				setError(error);
@@ -103,7 +75,7 @@ export default function AddDisplayPageTemplateDesignLibraryModalContent({
 					});
 				});
 		},
-		[closeModal, formSubmitURL, validateForm]
+		[closeModal, formSubmitURL, namespace]
 	);
 
 	return (

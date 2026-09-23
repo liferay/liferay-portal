@@ -14,7 +14,7 @@ import openInUseModal from '../commands/openInUseModal';
 import {ModalType} from '../constants/modalTypes';
 import {MappingType} from '../types/MappingTypes';
 import {ValidationError} from '../types/ValidationError';
-import ContentTypeModalForm from './ContentTypeModalForm';
+import ContentTypeModalForm, {validateForm} from './ContentTypeModalForm';
 
 interface Props {
 	description?: string;
@@ -101,43 +101,13 @@ export default function ContentTypeModal({
 
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const validateForm = useCallback(
-		(form: any) => {
-			const {elements} = form;
-			const error: ValidationError = {};
-
-			const errorMessage = Liferay.Language.get('this-field-is-required');
-
-			const nameField = elements[`${namespace}name`];
-
-			if (nameField && !nameField.value) {
-				error.name = errorMessage;
-			}
-
-			const classNameIdField = elements[`${namespace}classNameId`];
-
-			if (classNameIdField.selectedIndex === 0) {
-				error.classNameId = errorMessage;
-			}
-
-			const classTypeIdField = elements[`${namespace}classTypeId`];
-
-			if (classTypeIdField && classTypeIdField.selectedIndex === 0) {
-				error.classTypeId = errorMessage;
-			}
-
-			return error;
-		},
-		[namespace]
-	);
-
 	const handleSubmit = useCallback(
 		(event: any) => {
 			event.preventDefault();
 
 			const form = formRef.current;
 
-			const error = validateForm(form);
+			const error = validateForm(form, namespace);
 
 			if (Object.keys(error).length !== 0) {
 				setError(error);
@@ -205,7 +175,7 @@ export default function ContentTypeModal({
 					})
 				);
 		},
-		[formSubmitURL, onClose, validateForm]
+		[formSubmitURL, namespace, onClose]
 	);
 
 	return (
