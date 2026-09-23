@@ -390,7 +390,7 @@ public class ProductResourceImpl
 	}
 
 	@Override
-	public ExportImportDescriptor<CPDefinition> getExportImportDescriptor() {
+	public ExportImportDescriptor<CProduct> getExportImportDescriptor() {
 		return new ExportImportDescriptor<>() {
 
 			@Override
@@ -404,8 +404,8 @@ public class ProductResourceImpl
 			}
 
 			@Override
-			public Class<CPDefinition> getModelClass() {
-				return CPDefinition.class;
+			public Class<CProduct> getModelClass() {
+				return CProduct.class;
 			}
 
 			@Override
