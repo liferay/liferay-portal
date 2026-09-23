@@ -3,6 +3,7 @@ modules/apps/account/    @liferay-commerce
 modules/apps/adaptive-media/    @liferay-content-management
 modules/apps/address/    @liferay-commerce
 modules/apps/ai-creator/    @liferay-content-management
+modules/apps/ai-hub-cell/    @liferay-ai-hub
 modules/apps/analytics/    @liferay-ac
 modules/apps/announcements/    @liferay-content-management
 modules/apps/application-list/    @liferay-platform-experience
@@ -487,6 +488,7 @@ modules/sdk/gradle-plugins-wsdl-builder/    @liferay-devtools
 modules/sdk/gradle-plugins-xsd-builder/    @liferay-devtools
 modules/sdk/gradle-util/    @liferay-devtools
 modules/sdk/project-templates/    @liferay-devtools
+modules/test/playwright/tests/ai-hub-site-initializer    @liferay-ai-hub
 modules/test/playwright/tests/batch-planner    @liferay-headless
 modules/test/playwright/tests/dispatch-web    @liferay-headless
 modules/test/playwright/tests/export-import-web    @liferay-headless
