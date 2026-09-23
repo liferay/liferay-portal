@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {Option, Picker, SidePanel} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
@@ -27,7 +28,11 @@ import ElementVariationsList from './ElementVariationsList';
 import ElementVariationsPreview, {
 	ElementVariationsPreviewRef,
 } from './ElementVariationsPreview';
-import {Filter, getFilteredVariations} from './elementVariationFilters';
+import {
+	Filter,
+	NO_AUDIENCE_VALUE,
+	getFilteredVariations,
+} from './elementVariationFilters';
 import {
 	LoadedElementVariation,
 	createElementVariation,
@@ -161,6 +166,9 @@ function ElementVariations({
 	const wrapperRef = useRef<HTMLElement | null>(
 		document.getElementById('wrapper')
 	);
+
+	const [missingAudiencesAlertVisible, setMissingAudiencesAlertVisible] =
+		useState(true);
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -310,6 +318,30 @@ function ElementVariations({
 								searchTerm={searchTerm}
 							/>
 
+							{missingAudiencesAlertVisible &&
+							experienceElementVariations.some(
+								(elementVariation) =>
+									!elementVariation.audienceEntryERCs.length
+							) ? (
+								<MissingAudiencesAlert
+									onClose={() =>
+										setMissingAudiencesAlertVisible(false)
+									}
+									onShowVariations={() => {
+										dispatch({
+											filter: {
+												exclude: false,
+												type: 'audience',
+												values: [NO_AUDIENCE_VALUE],
+											},
+											type: 'ADD_FILTER',
+										});
+
+										setMissingAudiencesAlertVisible(false);
+									}}
+								/>
+							) : null}
+
 							{Boolean(filters.length) || searchTerm ? (
 								<AppliedFilters
 									audiences={audiences}
@@ -340,7 +372,8 @@ function ElementVariations({
 							) : null}
 
 							<div className="pt-3">
-								{!audiences.length ? (
+								{!audiences.length &&
+								!experienceElementVariations.length ? (
 									<NoAudiencesState
 										createAudienceURL={createAudienceURL}
 									/>
@@ -520,6 +553,40 @@ function Toolbar({
 				/>
 			</div>
 		</div>
+	);
+}
+
+interface MissingAudiencesAlertProps {
+	onClose: () => void;
+	onShowVariations: () => void;
+}
+
+function MissingAudiencesAlert({
+	onClose,
+	onShowVariations,
+}: MissingAudiencesAlertProps) {
+	return (
+		<ClayAlert
+			closeButtonAriaLabel={Liferay.Language.get('close')}
+			displayType="warning"
+			onClose={onClose}
+			title={`${Liferay.Language.get('warning')}:`}
+			variant="stripe"
+		>
+			{Liferay.Language.get(
+				'there-are-missing-audiences-for-some-variations'
+			)}
+
+			<ClayAlert.Footer>
+				<ClayButton
+					displayType="warning"
+					onClick={onShowVariations}
+					small
+				>
+					{Liferay.Language.get('show-variations')}
+				</ClayButton>
+			</ClayAlert.Footer>
+		</ClayAlert>
 	);
 }
 

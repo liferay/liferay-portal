@@ -11,7 +11,7 @@ import {
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -156,6 +156,113 @@ describe('ElementVariations', () => {
 
 		expect(screen.getByText('My Variation')).toBeInTheDocument();
 		expect(screen.queryByText('Other Variation')).not.toBeInTheDocument();
+	});
+
+	it('marks the variations without audiences as missing an audience', async () => {
+		renderElementVariations({
+			elementVariations: [
+				ELEMENT_VARIATIONS[0],
+				{
+					...ELEMENT_VARIATIONS[0],
+					audienceEntryERCs: [],
+					externalReferenceCode: 'element-variation-2',
+					name: 'Other Variation',
+				},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('missing-audience')).toBeInTheDocument();
+		expect(
+			screen.getByText('there-are-missing-audiences-for-some-variations')
+		).toBeInTheDocument();
+	});
+
+	it('does not show the missing audiences alert when every variation has an audience', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+		expect(screen.queryByText('missing-audience')).not.toBeInTheDocument();
+		expect(
+			screen.queryByText(
+				'there-are-missing-audiences-for-some-variations'
+			)
+		).not.toBeInTheDocument();
+	});
+
+	it('filters the variations without audiences from the missing audiences alert', async () => {
+		renderElementVariations({
+			elementVariations: [
+				ELEMENT_VARIATIONS[0],
+				{
+					...ELEMENT_VARIATIONS[0],
+					audienceEntryERCs: [],
+					externalReferenceCode: 'element-variation-2',
+					name: 'Other Variation',
+				},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await userEvent.click(screen.getByText('show-variations'));
+
+		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
+		expect(screen.getByText('Other Variation')).toBeInTheDocument();
+		expect(screen.getByText('none')).toBeInTheDocument();
+		expect(
+			screen.queryByText(
+				'there-are-missing-audiences-for-some-variations'
+			)
+		).not.toBeInTheDocument();
+	});
+
+	it('lists the variations without audiences when the site has no audiences left', async () => {
+		renderElementVariations({
+			audiences: [],
+			elementVariations: [
+				{...ELEMENT_VARIATIONS[0], audienceEntryERCs: []},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+		expect(screen.getByText('missing-audience')).toBeInTheDocument();
+		expect(
+			screen.queryByText('create-new-audience')
+		).not.toBeInTheDocument();
+	});
+
+	it('dismisses the missing audiences alert', async () => {
+		renderElementVariations({
+			elementVariations: [
+				{...ELEMENT_VARIATIONS[0], audienceEntryERCs: []},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await userEvent.click(
+			within(
+				screen.getByRole('alert').closest('.alert') as HTMLElement
+			).getByRole('button', {
+				name: 'close',
+			})
+		);
+
+		expect(
+			screen.queryByText(
+				'there-are-missing-audiences-for-some-variations'
+			)
+		).not.toBeInTheDocument();
 	});
 
 	it('excludes the selected audiences when the exclude toggle is on', async () => {
@@ -474,6 +581,20 @@ describe('ElementVariations', () => {
 		await userEvent.click(await screen.findByText('new'));
 
 		expect(screen.getByLabelText('name')).toBeInTheDocument();
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('has no accessibility violations when the missing audiences alert is shown', async () => {
+		const {container} = renderElementVariations({
+			elementVariations: [
+				{...ELEMENT_VARIATIONS[0], audienceEntryERCs: []},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('missing-audience')).toBeInTheDocument();
 
 		await checkAccessibility({bestPractices: true, context: container});
 	});

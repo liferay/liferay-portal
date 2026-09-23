@@ -7,6 +7,8 @@ import {ElementVariation} from './elementVariationsReducer';
 
 export const FILTER_TYPES = ['audience', 'status', 'type'] as const;
 
+export const NO_AUDIENCE_VALUE = 'none';
+
 const PREVIEW_VALUES_COUNT = 3;
 
 export type FilterType = (typeof FILTER_TYPES)[number];
@@ -42,7 +44,10 @@ export function getFilterOptions(
 	audiences: Option[]
 ): Option[] {
 	if (type === 'audience') {
-		return audiences;
+		return [
+			{label: Liferay.Language.get('none'), value: NO_AUDIENCE_VALUE},
+			...audiences,
+		];
 	}
 
 	if (type === 'status') {
@@ -84,6 +89,10 @@ function getVariationValues(
 	elementVariation: ElementVariation
 ): string[] {
 	if (type === 'audience') {
+		if (!elementVariation.audienceEntryERCs.length) {
+			return [NO_AUDIENCE_VALUE];
+		}
+
 		return elementVariation.audienceEntryERCs;
 	}
 

@@ -76,19 +76,37 @@ export default function ElementVariationsList({
 												{elementVariation.name}
 											</ClayList.ItemTitle>
 
-											<ClayList.ItemText>
-												{elementVariation.audienceEntryERCs
-													.map(
-														(audienceEntryERC) =>
-															audiences.find(
-																(audience) =>
-																	audience.value ===
-																	audienceEntryERC
-															)?.label
-													)
-													.filter(Boolean)
-													.join(', ')}
-											</ClayList.ItemText>
+											{elementVariation.audienceEntryERCs
+												.length ? (
+												<ClayList.ItemText>
+													{elementVariation.audienceEntryERCs
+														.map(
+															(
+																audienceEntryERC
+															) =>
+																audiences.find(
+																	(
+																		audience
+																	) =>
+																		audience.value ===
+																		audienceEntryERC
+																)?.label
+														)
+														.filter(Boolean)
+														.join(', ')}
+												</ClayList.ItemText>
+											) : (
+												<ClayList.ItemText className="text-warning">
+													<ClayIcon
+														className="mr-2"
+														symbol="warning-full"
+													/>
+
+													{Liferay.Language.get(
+														'missing-audience'
+													)}
+												</ClayList.ItemText>
+											)}
 
 											<ClayList.ItemText>
 												<div>

@@ -30,6 +30,10 @@ $element-variations-sidebar-width: 320px;
 
 .c-slideout .element-variations__sidebar {
 	border-right: 0.5px solid $secondary;
+
+	.alert .close {
+		color: inherit;
+	}
 }
 
 #wrapper.c-slideout-container {
