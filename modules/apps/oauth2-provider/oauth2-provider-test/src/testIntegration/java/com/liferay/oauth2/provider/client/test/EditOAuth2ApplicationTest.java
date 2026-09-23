@@ -61,8 +61,8 @@ public class EditOAuth2ApplicationTest extends BaseClientTestCase {
 		_assertEscapedOnce(
 			_getEditOAuth2ApplicationPageBodyString(0), _user.getScreenName());
 		_assertEscapedOnce(
-			_getEditOAuth2ApplicationPageBodyString(
-				_oAuth2ApplicationId), _clientCredentialUser.getScreenName());
+			_getEditOAuth2ApplicationPageBodyString(_oAuth2ApplicationId),
+			_clientCredentialUser.getScreenName());
 	}
 
 	@Override
