@@ -221,13 +221,22 @@ definition {
 			MenuItem.click(menuItem = "Edit");
 		}
 
-		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+		WaitForElementPresent(locator1 = "CKEditor#BODY_FIELD_EITHER_EDITOR");
 
-		Type(
-			locator1 = "CKEditor#BODY",
-			value1 = "${threadBody} @${mentionsUserScreenName}");
+		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-		SelectFrame(value1 = "relative=top");
+			Type(
+				locator1 = "CKEditor#BODY",
+				value1 = "${threadBody} @${mentionsUserScreenName}");
+
+			SelectFrame(value1 = "relative=top");
+		}
+		else {
+			Type(
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+				value1 = "${threadBody} @${mentionsUserScreenName}");
+		}
 
 		var key_mentionsUserScreenName = ${mentionsUserScreenName};
 
