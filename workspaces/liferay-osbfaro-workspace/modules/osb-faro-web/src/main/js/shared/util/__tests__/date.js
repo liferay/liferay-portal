@@ -1,4 +1,5 @@
 import * as data from 'test/data';
+import moment from 'moment';
 import {
 	applyTimeZone,
 	formatUTCDate,
@@ -11,6 +12,7 @@ import {
 	getFirstDate,
 	getISODate,
 	getLastDate,
+	setMomentLocale,
 	toUnix,
 } from '../date';
 
@@ -204,5 +206,32 @@ describe('date', () => {
 				);
 			}
 		);
+
+		it('should format in English for a language moment has no locale for', () => {
+			expect(
+				applyTimeZone('2022-11-11T23:00:00.000', 'UTC', 'de_DE').format(
+					'MMMM'
+				)
+			).toBe('November');
+		});
+	});
+
+	describe('setMomentLocale', () => {
+		afterEach(() => {
+			moment.locale('en');
+		});
+
+		it('should switch moment to the language when it has a locale for it', () => {
+			setMomentLocale('pt_BR');
+
+			expect(moment.locale()).toBe('pt-br');
+		});
+
+		it('should fall back to English for a language moment has no locale for', () => {
+			setMomentLocale('pt_BR');
+			setMomentLocale('de_DE');
+
+			expect(moment.locale()).toBe('en');
+		});
 	});
 });

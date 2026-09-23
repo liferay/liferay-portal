@@ -1,8 +1,7 @@
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
-import {getLocale, SUPPORTED_LOCALES} from 'shared/util/locale';
+import {getLocale} from 'shared/util/locale';
 import {isNumber} from 'lodash';
-import {LanguageIds} from 'shared/util/constants';
 
 momentDurationFormatSetup(moment);
 
@@ -93,7 +92,7 @@ export const toThousandsBase = (number, setFactor, locale = getLocale()) => {
 		return '';
 	}
 
-	const isJapanese = locale === SUPPORTED_LOCALES[LanguageIds.Japanese];
+	const isJapanese = new Intl.Locale(locale).language === 'ja';
 	const tier = getTier(number, isJapanese ? JAPANESE_TIERS : WESTERN_TIERS);
 
 	if (!tier) {

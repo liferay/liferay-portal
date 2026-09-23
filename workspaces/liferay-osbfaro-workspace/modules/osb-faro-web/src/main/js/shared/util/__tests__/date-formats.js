@@ -181,7 +181,7 @@ describe('localeToLanguageId', () => {
 		expect(localeToLanguageId('es-ES')).toBe(LanguageIds.Spanish);
 	});
 
-	it('should fall back to English for an unsupported locale', () => {
-		expect(localeToLanguageId('fr-FR')).toBe(LanguageIds.English);
+	it('should reverse resolveLocale for any other locale', () => {
+		expect(localeToLanguageId('fr-FR')).toBe('fr_FR');
 	});
 });

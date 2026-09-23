@@ -55,6 +55,10 @@ const FORMATTED_LANGUAGE_IDS = {
 	[LanguageIds.Spanish]: 'es',
 };
 
+function toMomentLocale(languageId) {
+	return FORMATTED_LANGUAGE_IDS[languageId] || 'en';
+}
+
 export const ISO_8601_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
 
 // Looks up a format string for the active locale, falling back to
@@ -180,7 +184,7 @@ export const WEEKDAYS = [
 	Liferay.Language.get('saturday'),
 ];
 
-moment.locale(FORMATTED_LANGUAGE_IDS[DEFAULT_LANGUAGE_ID]);
+moment.locale(toMomentLocale(DEFAULT_LANGUAGE_ID));
 
 export function convertMillisecondsToDays(milliseconds) {
 	return Math.round(milliseconds / 1000 / 60 / 60 / 24);
@@ -225,7 +229,7 @@ export function applyTimeZone(
 	return momentTimezone
 		.utc(date)
 		.tz(timeZoneId)
-		.locale(FORMATTED_LANGUAGE_IDS[languageId]);
+		.locale(toMomentLocale(languageId));
 }
 
 /**
@@ -237,7 +241,7 @@ export function applyTimeZone(
  * @param {string} languageId
  */
 export function setMomentLocale(languageId) {
-	moment.locale(FORMATTED_LANGUAGE_IDS[languageId]);
+	moment.locale(toMomentLocale(languageId));
 }
 
 export function generateDateRange(period = 30, interval = 'days') {

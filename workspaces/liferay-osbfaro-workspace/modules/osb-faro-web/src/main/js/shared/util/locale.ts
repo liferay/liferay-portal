@@ -2,30 +2,23 @@ import {LanguageIds} from 'shared/util/constants';
 
 export const DEFAULT_LANGUAGE_ID = LanguageIds.English;
 
-export const SUPPORTED_LOCALES: Record<LanguageIds, string> = {
-	[LanguageIds.English]: 'en-US',
-	[LanguageIds.Japanese]: 'ja-JP',
-	[LanguageIds.Portuguese]: 'pt-BR',
-	[LanguageIds.Spanish]: 'es-ES',
-};
-
-export const DEFAULT_LOCALE = SUPPORTED_LOCALES[DEFAULT_LANGUAGE_ID];
+export const DEFAULT_LOCALE = 'en-US';
 
 /**
- * Clamps a portal languageId to one of the 4 languages the product
- * ships, falling back to DEFAULT_LANGUAGE_ID when it is missing or not
- * one of them. Use this when the consumer needs the portal languageId
- * itself (e.g. `applyTimeZone`'s moment-locale mapping); prefer
- * `resolveLocale`/`getLocale`/`useLocale` for Intl-style formatting.
+ * Keeps a portal languageId when it is one of the languages the portal
+ * makes available, falling back to DEFAULT_LANGUAGE_ID when it is
+ * missing or not available. Use this when the consumer needs the portal
+ * languageId itself; prefer `resolveLocale`/`getLocale`/`useLocale` for
+ * Intl-style formatting.
  */
-export function resolveLanguageId(languageId?: string | null): LanguageIds {
-	return languageId && SUPPORTED_LOCALES[languageId as LanguageIds]
-		? (languageId as LanguageIds)
+export function resolveLanguageId(languageId?: string | null): string {
+	return languageId && languageId in Liferay.Language.available
+		? languageId
 		: DEFAULT_LANGUAGE_ID;
 }
 
 export function resolveLocale(languageId?: string | null): string {
-	return SUPPORTED_LOCALES[resolveLanguageId(languageId)];
+	return resolveLanguageId(languageId).replace(/_/g, '-');
 }
 
 export function getLanguageLabel(languageId?: string | null): string {
@@ -34,22 +27,13 @@ export function getLanguageLabel(languageId?: string | null): string {
 	return `${language.toUpperCase()} (${country})`;
 }
 
-const LANGUAGE_IDS_BY_LOCALE: Record<string, LanguageIds> = Object.fromEntries(
-	Object.entries(SUPPORTED_LOCALES).map(
-		([languageId, locale]): [string, LanguageIds] => [
-			locale,
-			languageId as LanguageIds,
-		]
-	)
-);
-
 /**
  * Reverses `resolveLocale`: given a BCP-47 locale, returns the portal
  * languageId it came from (e.g. moment's locale packs, which are keyed
  * by languageId rather than by the Intl-style locale string).
  */
-export function localeToLanguageId(locale: string): LanguageIds {
-	return LANGUAGE_IDS_BY_LOCALE[locale] || DEFAULT_LANGUAGE_ID;
+export function localeToLanguageId(locale: string): string {
+	return locale.replace(/-/g, '_');
 }
 
 let currentLocale: string = DEFAULT_LOCALE;

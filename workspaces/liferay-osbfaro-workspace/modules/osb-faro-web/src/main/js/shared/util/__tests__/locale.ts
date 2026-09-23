@@ -9,6 +9,17 @@ import {
 } from '../locale';
 import {LanguageIds} from 'shared/util/constants';
 
+function makeAvailable(languages: Record<string, string>) {
+	jest.replaceProperty(Liferay.Language, 'available', {
+		...Liferay.Language.available,
+		...languages,
+	});
+}
+
+afterEach(() => {
+	jest.restoreAllMocks();
+});
+
 describe('resolveLanguageId', () => {
 	it.each([
 		LanguageIds.English,
@@ -17,6 +28,12 @@ describe('resolveLanguageId', () => {
 		LanguageIds.Spanish,
 	])('keeps %s unchanged', (languageId) => {
 		expect(resolveLanguageId(languageId)).toBe(languageId);
+	});
+
+	it('keeps any language the portal makes available', () => {
+		makeAvailable({de_DE: 'Deutsch (Deutschland)'});
+
+		expect(resolveLanguageId('de_DE')).toBe('de_DE');
 	});
 
 	it.each([null, undefined, '', 'de_DE', 'not-a-real-language'])(
@@ -34,6 +51,16 @@ describe('resolveLocale', () => {
 		[LanguageIds.Portuguese, 'pt-BR'],
 		[LanguageIds.Spanish, 'es-ES'],
 	])('resolves %s to %s', (languageId, locale) => {
+		expect(resolveLocale(languageId)).toBe(locale);
+	});
+
+	it.each([
+		['de_DE', 'de-DE'],
+		['fr_CA', 'fr-CA'],
+		['zh_TW', 'zh-TW'],
+	])('resolves the available language %s to %s', (languageId, locale) => {
+		makeAvailable({[languageId]: languageId});
+
 		expect(resolveLocale(languageId)).toBe(locale);
 	});
 
