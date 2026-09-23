@@ -6,7 +6,7 @@
 package com.liferay.portal.security.key.internal.company;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.encryptor.CompanyKeyUtil;
+import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.exception.CompanyKeyResolutionException;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.security.key.KeyReference;
@@ -76,10 +76,10 @@ public class WrappedCompanyKeyTest {
 		_testParse(_VERSION_PREFIX + "provider:ali}as|Y2lwaGVy}");
 		_testParse(_VERSION_PREFIX + "provider:|Y2lwaGVy}");
 		_testParse(_VERSION_PREFIX + "pro}vider:alias|Y2lwaGVy}");
-		_testParse(CompanyKeyUtil.WRAPPED_KEY_PREFIX);
-		_testParse(CompanyKeyUtil.WRAPPED_KEY_PREFIX + "}");
+		_testParse(CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX);
+		_testParse(CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX + "}");
 		_testParse(
-			CompanyKeyUtil.WRAPPED_KEY_PREFIX +
+			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
 				"v2:provider:alias/kek|Y2lwaGVy}");
 		_testParse(RandomTestUtil.randomString());
 	}
@@ -95,7 +95,7 @@ public class WrappedCompanyKeyTest {
 
 		String wrappedKey = wrappedCompanyKey.toWrappedKey();
 
-		Assert.assertTrue(CompanyKeyUtil.isWrappedKey(wrappedKey));
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(wrappedKey));
 
 		WrappedCompanyKey parsedWrappedCompanyKey = WrappedCompanyKey.parse(
 			_COMPANY_ID, wrappedKey);
@@ -153,7 +153,7 @@ public class WrappedCompanyKeyTest {
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final String _VERSION_PREFIX =
-		CompanyKeyUtil.WRAPPED_KEY_PREFIX + CompanyKeyUtil.WRAPPED_KEY_VERSION +
-			StringPool.COLON;
+		CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
+			CompanyKeyResolverUtil.WRAPPED_KEY_VERSION + StringPool.COLON;
 
 }

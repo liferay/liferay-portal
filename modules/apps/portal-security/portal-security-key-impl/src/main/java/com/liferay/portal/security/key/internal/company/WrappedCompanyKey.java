@@ -8,7 +8,7 @@ package com.liferay.portal.security.key.internal.company;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.encryptor.CompanyKeyUtil;
+import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.exception.CompanyKeyResolutionException;
 import com.liferay.portal.security.key.KeyReference;
 
@@ -21,7 +21,7 @@ import java.util.Base64;
 public class WrappedCompanyKey {
 
 	public static WrappedCompanyKey parse(long companyId, String wrappedKey) {
-		if (!CompanyKeyUtil.isWrappedKey(wrappedKey) ||
+		if (!CompanyKeyResolverUtil.isWrappedKey(wrappedKey) ||
 			!wrappedKey.endsWith(StringPool.CLOSE_CURLY_BRACE)) {
 
 			throw new CompanyKeyResolutionException(
@@ -29,7 +29,7 @@ public class WrappedCompanyKey {
 		}
 
 		String body = wrappedKey.substring(
-			CompanyKeyUtil.WRAPPED_KEY_PREFIX.length(),
+			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX.length(),
 			wrappedKey.length() - 1);
 
 		int versionIndex = body.indexOf(CharPool.COLON);
@@ -41,7 +41,7 @@ public class WrappedCompanyKey {
 
 		String version = body.substring(0, versionIndex);
 
-		if (!version.equals(CompanyKeyUtil.WRAPPED_KEY_VERSION)) {
+		if (!version.equals(CompanyKeyResolverUtil.WRAPPED_KEY_VERSION)) {
 			throw new CompanyKeyResolutionException(
 				StringBundler.concat(
 					"Wrapped key version ", version,
@@ -129,8 +129,8 @@ public class WrappedCompanyKey {
 		Base64.Encoder encoder = Base64.getEncoder();
 
 		return StringBundler.concat(
-			CompanyKeyUtil.WRAPPED_KEY_PREFIX,
-			CompanyKeyUtil.WRAPPED_KEY_VERSION, StringPool.COLON,
+			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX,
+			CompanyKeyResolverUtil.WRAPPED_KEY_VERSION, StringPool.COLON,
 			_keyReference.getProviderId(), StringPool.COLON,
 			_keyReference.getIdentifier(), StringPool.PIPE,
 			encoder.encodeToString(_ciphertext), StringPool.CLOSE_CURLY_BRACE);

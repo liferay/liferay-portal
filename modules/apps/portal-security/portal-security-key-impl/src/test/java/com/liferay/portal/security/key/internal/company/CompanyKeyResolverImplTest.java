@@ -7,7 +7,7 @@ package com.liferay.portal.security.key.internal.company;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.encryptor.CompanyKeyUtil;
+import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.exception.CompanyKeyResolutionException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -537,8 +537,8 @@ public class CompanyKeyResolverImplTest {
 			companyKeyResolverImpl, RandomTestUtil.randomString());
 
 		String body = StringBundler.concat(
-			CompanyKeyUtil.WRAPPED_KEY_PREFIX,
-			CompanyKeyUtil.WRAPPED_KEY_VERSION, StringPool.COLON,
+			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX,
+			CompanyKeyResolverUtil.WRAPPED_KEY_VERSION, StringPool.COLON,
 			_KEK_PROVIDER_ID, StringPool.COLON, _KEK_IDENTIFIER);
 
 		_assertUnwrapKeyFails(
@@ -593,11 +593,11 @@ public class CompanyKeyResolverImplTest {
 
 		String wrappedKey = StringUtil.replaceFirst(
 			wrappedCompanyKey.toWrappedKey(),
-			CompanyKeyUtil.WRAPPED_KEY_PREFIX +
-				CompanyKeyUtil.WRAPPED_KEY_VERSION,
-			CompanyKeyUtil.WRAPPED_KEY_PREFIX.concat("v2"));
+			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
+				CompanyKeyResolverUtil.WRAPPED_KEY_VERSION,
+			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX.concat("v2"));
 
-		Assert.assertTrue(CompanyKeyUtil.isWrappedKey(wrappedKey));
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(wrappedKey));
 
 		_assertUnwrapKeyFails(
 			_createCompanyKeyResolverImpl(RandomTestUtil.randomInt(1, 1000)),
@@ -674,7 +674,7 @@ public class CompanyKeyResolverImplTest {
 
 		Assert.assertEquals(
 			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey));
-		Assert.assertTrue(CompanyKeyUtil.isWrappedKey(wrappedKey));
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(wrappedKey));
 
 		Mockito.verify(
 			_cryptoManager, Mockito.never()
