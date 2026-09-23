@@ -7,7 +7,7 @@ import {Page, expect} from '@playwright/test';
 
 import {EditUserPage} from '../../../pages/users-admin-web/EditUserPage';
 import {UsersAndOrganizationsPage} from '../../../pages/users-admin-web/UsersAndOrganizationsPage';
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {viewUpgradedDocument} from './viewUpgradedDocument';
 
 /**
  * One virtual instance in the data-archive-virtual-instances archive. The three
@@ -69,32 +69,11 @@ export async function viewUpgradedVirtualInstance({
 		page.getByText(`Web Content Title${absentNameSuffix}`, {exact: true})
 	).toBeHidden();
 
-	await page.goto(`${sitePath}/document${pathSuffix}`);
-
-	await page.getByRole('link', {name: documentTitle}).click();
-
-	const downloadLink = page
-		.locator('.sidebar-section')
-		.getByRole('link', {name: 'Download'});
-
-	await clickAndExpectToBeVisible({
-		target: downloadLink,
-		timeout: 5000,
-		trigger: page.locator('a[href*=infoPanel]'),
+	await viewUpgradedDocument({
+		documentPageURL: `${sitePath}/document${pathSuffix}`,
+		page,
+		title: documentTitle,
 	});
-
-	const userName = page.locator('.sidebar-body .username');
-	const version = page.locator('.sidebar-header .label-item');
-	const workflowStatus = page.locator('.sidebar-header .workflow-status');
-
-	await expect(userName).toBeVisible();
-	await expect(userName).toHaveText('Test Test');
-
-	await expect(version).toBeVisible();
-	await expect(version).toHaveText('Version 1.0');
-
-	await expect(workflowStatus).toBeVisible();
-	await expect(workflowStatus).toHaveText('Approved');
 
 	await page.goto(`${sitePath}/message-boards${pathSuffix}`);
 
