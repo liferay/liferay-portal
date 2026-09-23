@@ -1907,6 +1907,34 @@ export const iconsData = [
 		name: 'spacer',
 	},
 	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-all',
+	},
+	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-bottom',
+	},
+	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-horizontal',
+	},
+	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-left',
+	},
+	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-right',
+	},
+	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-top',
+	},
+	{
+		aliases: ['edit', 'layout', 'position'],
+		name: 'spacing-vertical',
+	},
+	{
 		aliases: [''],
 		name: 'special-character',
 	},
