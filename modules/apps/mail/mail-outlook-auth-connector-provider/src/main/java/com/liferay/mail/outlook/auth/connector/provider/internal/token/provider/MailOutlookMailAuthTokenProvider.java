@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import com.microsoft.aad.msal4j.ClientCredentialFactory;
 import com.microsoft.aad.msal4j.ClientCredentialParameters;
@@ -50,8 +51,10 @@ public class MailOutlookMailAuthTokenProvider implements MailAuthTokenProvider {
 				ConfidentialClientApplication.builder(
 					mailOutlookAuthConnectorCompanyConfiguration.clientId(),
 					ClientCredentialFactory.createFromSecret(
-						mailOutlookAuthConnectorCompanyConfiguration.
-							clientSecret())
+						_secretResolver.resolve(
+							companyId,
+							mailOutlookAuthConnectorCompanyConfiguration.
+								clientSecret()))
 				).authority(
 					String.format(
 						"https://login.microsoftonline.com/%s/",
@@ -117,5 +120,8 @@ public class MailOutlookMailAuthTokenProvider implements MailAuthTokenProvider {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

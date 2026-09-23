@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.mail.Authenticator;
 import jakarta.mail.PasswordAuthentication;
@@ -188,12 +189,14 @@ public class MailServiceImpl
 		String advancedPropertiesString =
 			mailSettingCompanyConfiguration.additionalJavaMailProperties();
 		String pop3Host = mailSettingCompanyConfiguration.incomingPOPServer();
-		String pop3Password = mailSettingCompanyConfiguration.popPassword();
+		String pop3Password = _secretResolver.resolve(
+			companyId, mailSettingCompanyConfiguration.popPassword());
 		int pop3Port = GetterUtil.getInteger(
 			mailSettingCompanyConfiguration.incomingPOPPort());
 		String pop3User = mailSettingCompanyConfiguration.popUserName();
 		String smtpHost = mailSettingCompanyConfiguration.outgoingSMTPServer();
-		String smtpPassword = mailSettingCompanyConfiguration.smtpPassword();
+		String smtpPassword = _secretResolver.resolve(
+			companyId, mailSettingCompanyConfiguration.smtpPassword());
 		int smtpPort = GetterUtil.getInteger(
 			mailSettingCompanyConfiguration.outgoingSMTPPort());
 		boolean smtpStartTLSEnable = GetterUtil.getBoolean(
@@ -451,6 +454,10 @@ public class MailServiceImpl
 
 	private volatile MailSettingSystemConfiguration
 		_mailSettingSystemConfiguration;
+
+	@Reference
+	private SecretResolver _secretResolver;
+
 	private final Map<Long, Session> _sessions = new ConcurrentHashMap<>();
 
 }
