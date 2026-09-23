@@ -155,7 +155,7 @@ export default function ElementVariationForm({
 				</div>
 			</SidePanel.Header>
 
-			<SidePanel.Body className="flex-grow-1 p-3">
+			<SidePanel.Body className="flex-grow-1 overflow-auto p-3">
 				<ClayForm.Group
 					className={errors.name ? 'has-error' : undefined}
 					small
