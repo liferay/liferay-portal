@@ -10,8 +10,10 @@ const OBJECT_DEFINITIONS_PATH =
 
 /**
  * Asserts that the custom object one virtual instance defines survived the
- * legacy database upgrade, keeping the label and plural label that identify it,
- * and that the neighbouring instance's object is not visible from here. Only
+ * legacy database upgrade, keeping the label, plural label, title field, scope
+ * and panel link the archive recorded for it, and that the neighbouring
+ * instance's object is not visible from here. Scope is the company-scoped value
+ * a virtual-instance upgrade can mis-assign, so it is the one that matters. Only
  * the 7.4.13.u33 archive carries custom objects, so this runs for the project
  * whose config sets assertCustomObjects.
  */
@@ -44,9 +46,6 @@ export async function viewUpgradedCustomObject({
 
 	await objectLink.click();
 
-	// The form labels its inputs "Label Mandatory" and "Plural Label Mandatory",
-	// and Scope is a disabled combobox rather than text.
-
 	await expect(
 		page.getByRole('textbox', {exact: true, name: 'Label Mandatory'})
 	).toHaveValue(`Custom Object${nameSuffix}`);
@@ -54,4 +53,16 @@ export async function viewUpgradedCustomObject({
 	await expect(
 		page.getByRole('textbox', {exact: true, name: 'Plural Label Mandatory'})
 	).toHaveValue(`Custom Objects${nameSuffix}`);
+
+	await expect(
+		page.getByRole('combobox', {name: 'Title Field'})
+	).toHaveText(`Custom Field Text${nameSuffix}`);
+
+	await expect(page.getByRole('combobox', {name: 'Scope'})).toHaveText(
+		'Company'
+	);
+
+	await expect(page.getByRole('combobox', {name: 'Panel Link'})).toHaveText(
+		'Object'
+	);
 }
