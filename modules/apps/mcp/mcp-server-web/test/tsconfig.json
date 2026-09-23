@@ -1,5 +1,5 @@
 {
-	"@generated": "80909a60f834bdcbc4f20a67843ec89f55b3dee0",
+	"@generated": "6b55250531650da6e5b78022d4dfe85f8f69cbb7",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -55,6 +55,9 @@
 	],
 	"references": [
 		{
+			"path": "../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
 			"path": "../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
@@ -65,9 +68,6 @@
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/tsconfig.json"
 		}
 	]
 }
