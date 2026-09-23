@@ -9,6 +9,8 @@ import {
 	CriteriaNode,
 	Group,
 	Rule,
+	Scope,
+	Site,
 } from './types';
 import {addGroup} from './util/tree/addGroup';
 import {addRule} from './util/tree/addRule';
@@ -27,6 +29,7 @@ export interface State {
 	externalReferenceCode: string;
 	name: string;
 	root: Group;
+	scope: Scope;
 }
 
 export type Action =
@@ -52,6 +55,7 @@ export type Action =
 	| {externalReferenceCode: string; type: 'SET_EXTERNAL_REFERENCE_CODE'}
 	| {groupPath?: number[]; items: CriteriaNode[]; type: 'REORDER_RULES'}
 	| {name: string; type: 'SET_NAME'}
+	| {scope: Scope; type: 'SET_SCOPE'}
 	| {path: number[]; rule: Rule; type: 'UPDATE_RULE'}
 	| {path: number[]; type: 'DELETE_RULE'}
 	| {path: number[]; type: 'DUPLICATE_RULE'};
@@ -60,10 +64,12 @@ export function initState({
 	externalReferenceCode = '',
 	name = '',
 	rulesGroup,
+	scopeSites = [],
 }: {
 	externalReferenceCode?: string;
 	name?: string;
 	rulesGroup?: AudiencesCriteriaRulesGroup;
+	scopeSites?: Site[];
 }): State {
 	return {
 		externalReferenceCode,
@@ -80,6 +86,7 @@ export function initState({
 				)
 			)
 		),
+		scope: scopeSites.length ? scopeSites : 'all',
 	};
 }
 
@@ -155,6 +162,8 @@ export function reducer(state: State, action: Action): State {
 				...state,
 				externalReferenceCode: action.externalReferenceCode,
 			};
+		case 'SET_SCOPE':
+			return {...state, scope: action.scope};
 		case 'SET_NAME':
 			return {...state, name: action.name};
 		case 'UPDATE_RULE':

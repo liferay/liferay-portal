@@ -27,6 +27,8 @@ import {
 	AudiencesCriteriaType,
 	SaveErrorField,
 	SaveErrors,
+	Scope,
+	Site,
 } from './types';
 import {getAudiencesCriteriasByKey} from './util/getAudiencesCriteriasByKey';
 import {serializeCriteria} from './util/tree/serializeCriteria';
@@ -39,14 +41,20 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
 >;
 
-const SAVE_ERROR_FIELDS: SaveErrorField[] = ['name', 'externalReferenceCode'];
+const SAVE_ERROR_FIELDS: SaveErrorField[] = [
+	'name',
+	'externalReferenceCode',
+	'groupERCs',
+];
 
 function getSaveErrors({
 	externalReferenceCode,
 	name,
+	scope,
 }: {
 	externalReferenceCode: string;
 	name: string;
+	scope: Scope;
 }): SaveErrors {
 	const saveErrors: SaveErrors = {};
 
@@ -57,6 +65,12 @@ function getSaveErrors({
 	if (!externalReferenceCode.trim()) {
 		saveErrors.externalReferenceCode = Liferay.Language.get(
 			'this-field-is-required'
+		);
+	}
+
+	if (scope !== 'all' && !scope.length) {
+		saveErrors.groupERCs = Liferay.Language.get(
+			'please-select-at-least-one-site'
 		);
 	}
 
@@ -86,11 +100,13 @@ interface IProps {
 	audiencesEntryId?: number;
 	backURL?: string;
 	backURLTitle?: string;
+	companyGroupERC?: string;
 	externalReferenceCode?: string;
 	name?: string;
 	namespace?: string;
 	redirect?: string;
 	rulesGroup?: AudiencesCriteriaRulesGroup;
+	scopeSites?: Site[];
 	updateAudiencesEntryActionURL?: string;
 }
 
@@ -99,16 +115,18 @@ export default function AudienceBuilder({
 	audiencesEntryId = 0,
 	backURL,
 	backURLTitle,
+	companyGroupERC = '',
 	externalReferenceCode,
 	name,
 	namespace = '',
 	redirect = '',
 	rulesGroup,
+	scopeSites,
 	updateAudiencesEntryActionURL = '',
 }: IProps) {
 	const [state, dispatch] = useReducer(
 		reducer,
-		{externalReferenceCode, name, rulesGroup},
+		{externalReferenceCode, name, rulesGroup, scopeSites},
 		initState
 	);
 
@@ -137,7 +155,7 @@ export default function AudienceBuilder({
 	const showSaveErrors = (nextSaveErrors: SaveErrors) => {
 		setSaveErrors(nextSaveErrors);
 
-		if (nextSaveErrors.externalReferenceCode) {
+		if (nextSaveErrors.externalReferenceCode || nextSaveErrors.groupERCs) {
 			setGeneralSettingsExpanded(true);
 		}
 	};
@@ -182,6 +200,15 @@ export default function AudienceBuilder({
 			serializeCriteria(state.root, audiencesCriteriasByKey)
 		);
 		formData.append(`${namespace}name`, state.name);
+
+		if (state.scope !== 'all') {
+			state.scope.forEach((scopeSite) =>
+				formData.append(
+					`${namespace}groupERCs`,
+					scopeSite.externalReferenceCode
+				)
+			);
+		}
 
 		fetch(updateAudiencesEntryActionURL, {
 			body: formData,
@@ -295,9 +322,7 @@ export default function AudienceBuilder({
 								</ClayForm.Group>
 
 								<GeneralSettings
-									errorMessage={
-										saveErrors.externalReferenceCode
-									}
+									companyGroupERC={companyGroupERC}
 									expanded={generalSettingsExpanded}
 									externalReferenceCode={
 										state.externalReferenceCode
@@ -320,6 +345,13 @@ export default function AudienceBuilder({
 											type: 'SET_EXTERNAL_REFERENCE_CODE',
 										});
 									}}
+									onScopeChange={(scope) => {
+										clearSaveError('groupERCs');
+
+										dispatch({scope, type: 'SET_SCOPE'});
+									}}
+									saveErrors={saveErrors}
+									scope={state.scope}
 								/>
 
 								<ConditionsPanel
