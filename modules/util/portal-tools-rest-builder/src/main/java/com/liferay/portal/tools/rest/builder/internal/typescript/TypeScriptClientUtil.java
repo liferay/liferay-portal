@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -293,6 +294,7 @@ public class TypeScriptClientUtil {
 		Set<String> importClasses = new HashSet<>();
 		String parentClass = null;
 		List<Map<String, Object>> properties = new ArrayList<>();
+		Map<String, Schema> propertySchemas = new LinkedHashMap<>();
 
 		if (schema.getAllOfSchemas() != null) {
 			List<Schema> allOfSchemas = schema.getAllOfSchemas();
@@ -307,37 +309,28 @@ public class TypeScriptClientUtil {
 
 				importClasses.add(parentClass);
 
-				for (Schema curSchema : schema.getAllOfSchemas()) {
-					if (curSchema.getPropertySchemas() == null) {
-						continue;
+				for (Schema allOfSchema : allOfSchemas) {
+					Map<String, Schema> allOfSchemaPropertySchemas =
+						allOfSchema.getPropertySchemas();
+
+					if (allOfSchemaPropertySchemas != null) {
+						propertySchemas.putAll(allOfSchemaPropertySchemas);
 					}
-
-					Map<String, Schema> propertySchemas =
-						curSchema.getPropertySchemas();
-
-					propertySchemas.forEach(
-						(name, propertySchema) -> properties.add(
-							HashMapBuilder.<String, Object>put(
-								"dataType",
-								_getDataType(importClasses, propertySchema)
-							).put(
-								"name", StringUtil.replace(name, '-', '_')
-							).build()));
 				}
 			}
 		}
 
-		Map<String, Schema> propertySchemas = schema.getPropertySchemas();
-
-		if (propertySchemas != null) {
-			propertySchemas.forEach(
-				(name, propertySchema) -> properties.add(
-					HashMapBuilder.<String, Object>put(
-						"dataType", _getDataType(importClasses, propertySchema)
-					).put(
-						"name", StringUtil.replace(name, '-', '_')
-					).build()));
+		if (schema.getPropertySchemas() != null) {
+			propertySchemas.putAll(schema.getPropertySchemas());
 		}
+
+		propertySchemas.forEach(
+			(name, propertySchema) -> properties.add(
+				HashMapBuilder.<String, Object>put(
+					"dataType", _getDataType(importClasses, propertySchema)
+				).put(
+					"name", StringUtil.replace(name, '-', '_')
+				).build()));
 
 		return HashMapBuilder.<String, Object>put(
 			"description", schema.getDescription()
