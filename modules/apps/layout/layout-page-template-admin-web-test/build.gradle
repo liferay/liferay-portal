@@ -12,6 +12,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:blogs:blogs-test-util")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
+	testIntegrationImplementation project(":apps:depot:depot-api")
+	testIntegrationImplementation project(":apps:design-library:design-library-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
