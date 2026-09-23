@@ -10,12 +10,14 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {ConnectorsPage} from '../pages/ConnectorsPage';
 import {EditConnectorPage} from '../pages/EditConnectorPage';
+import {FieldMappingsPage} from '../pages/FieldMappingsPage';
 import {ProductPage} from '../pages/ProductPage';
 import {ProductsPage} from '../pages/ProductsPage';
 
 const pimPages = test.extend<{
 	connectorsPage: ConnectorsPage;
 	editConnectorPage: EditConnectorPage;
+	fieldMappingsPage: FieldMappingsPage;
 	pimSetup;
 	productPage: ProductPage;
 	productsPage: ProductsPage;
@@ -25,6 +27,9 @@ const pimPages = test.extend<{
 	},
 	editConnectorPage: async ({page}, use) => {
 		await use(new EditConnectorPage(page));
+	},
+	fieldMappingsPage: async ({page}, use) => {
+		await use(new FieldMappingsPage(page));
 	},
 	pimSetup: [
 		async ({page}, use) => {
