@@ -9,7 +9,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolver;
-import com.liferay.portal.kernel.exception.CompanyKeyResolutionException;
+import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -97,19 +97,19 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		String companyKEKIdentifier = _getCompanyKEKIdentifier();
 
 		if (Validator.isNull(companyKEKIdentifier)) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"KEK identifier is not configured for company " + companyId);
 		}
 
 		String companyKEKProviderId = _getCompanyKEKProviderId();
 
 		if (Validator.isNull(companyKEKProviderId)) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"KEK provider is not configured for company " + companyId);
 		}
 
 		if (Objects.equals(companyKEKProviderId, StringPool.STAR)) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"KEK provider must name a single provider rather than a " +
 					"wildcard for company " + companyId);
 		}
@@ -117,7 +117,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		byte[] keyBytes = key.getEncoded();
 
 		if (ArrayUtil.isEmpty(keyBytes)) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Key has no encoded key material for company " + companyId);
 		}
 
@@ -130,7 +130,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			if ((cryptoProviderIds == null) ||
 				!cryptoProviderIds.contains(companyKEKProviderId)) {
 
-				throw new CompanyKeyResolutionException(
+				throw new CompanyKeyException(
 					StringBundler.concat(
 						"KEK provider ", companyKEKProviderId,
 						" is not registered for company ", companyId));
@@ -147,7 +147,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			byte[] ciphertext = cryptoServiceResult.getValue();
 
 			if (ArrayUtil.isEmpty(ciphertext)) {
-				throw new CompanyKeyResolutionException(
+				throw new CompanyKeyException(
 					"Encrypting the key returned no ciphertext for company " +
 						companyId);
 			}
@@ -162,7 +162,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			return wrappedKey;
 		}
 		catch (CryptoException cryptoException) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Unable to encrypt the key for company " + companyId,
 				cryptoException);
 		}
@@ -217,7 +217,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			keyBytes = cryptoServiceResult.getValue();
 
 			if (ArrayUtil.isEmpty(keyBytes)) {
-				throw new CompanyKeyResolutionException(
+				throw new CompanyKeyException(
 					StringBundler.concat(
 						"Decrypting the wrapped key returned no key material ",
 						"for company ", companyId));
@@ -228,7 +228,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			return _createKey(keyBytes);
 		}
 		catch (CryptoException cryptoException) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Unable to decrypt the wrapped key for company " + companyId,
 				cryptoException);
 		}

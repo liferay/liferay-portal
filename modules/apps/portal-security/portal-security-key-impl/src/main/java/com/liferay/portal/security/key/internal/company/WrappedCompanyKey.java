@@ -9,7 +9,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
-import com.liferay.portal.kernel.exception.CompanyKeyResolutionException;
+import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.security.key.KeyReference;
 
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class WrappedCompanyKey {
 		if (!CompanyKeyResolverUtil.isWrappedKey(wrappedKey) ||
 			!wrappedKey.endsWith(StringPool.CLOSE_CURLY_BRACE)) {
 
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Wrapped key is malformed for company " + companyId);
 		}
 
@@ -35,14 +35,14 @@ public class WrappedCompanyKey {
 		int versionIndex = body.indexOf(CharPool.COLON);
 
 		if (versionIndex <= 0) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Wrapped key is malformed for company " + companyId);
 		}
 
 		String version = body.substring(0, versionIndex);
 
 		if (!version.equals(CompanyKeyResolverUtil.WRAPPED_KEY_VERSION)) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				StringBundler.concat(
 					"Wrapped key version ", version,
 					" is not supported for company ", companyId));
@@ -56,7 +56,7 @@ public class WrappedCompanyKey {
 		if ((colonIndex <= 0) || (pipeIndex <= (colonIndex + 1)) ||
 			(pipeIndex >= (body.length() - 1))) {
 
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Wrapped key is malformed for company " + companyId);
 		}
 
@@ -68,7 +68,7 @@ public class WrappedCompanyKey {
 			ciphertext = decoder.decode(body.substring(pipeIndex + 1));
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Wrapped key ciphertext is not valid Base64 for company " +
 					companyId,
 				illegalArgumentException);
@@ -82,7 +82,7 @@ public class WrappedCompanyKey {
 					body.substring(0, colonIndex), KeyReference.Type.CRYPTO));
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
-			throw new CompanyKeyResolutionException(
+			throw new CompanyKeyException(
 				"Wrapped key is malformed for company " + companyId,
 				illegalArgumentException);
 		}

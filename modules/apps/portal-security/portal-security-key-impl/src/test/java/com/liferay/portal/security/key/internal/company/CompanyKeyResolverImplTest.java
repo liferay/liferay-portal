@@ -8,7 +8,7 @@ package com.liferay.portal.security.key.internal.company;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
-import com.liferay.portal.kernel.exception.CompanyKeyResolutionException;
+import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -146,7 +146,7 @@ public class CompanyKeyResolverImplTest {
 
 			Assert.fail();
 		}
-		catch (CompanyKeyResolutionException companyKeyResolutionException) {
+		catch (CompanyKeyException companyKeyException) {
 		}
 	}
 
@@ -158,7 +158,7 @@ public class CompanyKeyResolverImplTest {
 
 			Assert.fail();
 		}
-		catch (CompanyKeyResolutionException companyKeyResolutionException) {
+		catch (CompanyKeyException companyKeyException) {
 		}
 	}
 
