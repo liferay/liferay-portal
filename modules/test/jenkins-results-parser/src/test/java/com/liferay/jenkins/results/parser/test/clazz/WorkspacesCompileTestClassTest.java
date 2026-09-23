@@ -44,14 +44,14 @@ public class WorkspacesCompileTestClassTest
 			workspacesCompileBatchTestClassGroup = Mockito.mock(
 				WorkspacesCompileBatchTestClassGroup.class);
 
-		TestClass defaultTestClass = TestClassFactory.newTestClass(
+		TestClass fileTestClass = TestClassFactory.newTestClass(
 			workspacesCompileBatchTestClassGroup, workspaceDir);
 
-		testEquals("workspaces/" + workspaceName, defaultTestClass.getName());
+		testEquals("workspaces/" + workspaceName, fileTestClass.getName());
 
 		TestClass jsonObjectTestClass = TestClassFactory.newTestClass(
 			workspacesCompileBatchTestClassGroup,
-			new JSONObject(String.valueOf(defaultTestClass.getJSONObject())));
+			new JSONObject(String.valueOf(fileTestClass.getJSONObject())));
 
 		testEquals(
 			"workspaces/" + workspaceName, jsonObjectTestClass.getName());
