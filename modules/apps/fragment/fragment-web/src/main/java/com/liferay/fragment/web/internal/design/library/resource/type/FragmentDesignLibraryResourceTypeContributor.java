@@ -211,9 +211,11 @@ public class FragmentDesignLibraryResourceTypeContributor
 		).build();
 	}
 
-	private DesignLibraryResourceCreationItem _getDesignLibraryResourceCreationItem(
-		HttpServletRequest httpServletRequest, String id, String languageKey,
-		String mode, int fragmentType, Map<String, Object> baseModuleProps) {
+	private DesignLibraryResourceCreationItem
+		_getDesignLibraryResourceCreationItem(
+			HttpServletRequest httpServletRequest, String id,
+			String languageKey, String mode, int fragmentType,
+			Map<String, Object> baseModuleProps) {
 
 		return new DesignLibraryResourceCreationItem(
 			id, LanguageUtil.get(httpServletRequest, languageKey),

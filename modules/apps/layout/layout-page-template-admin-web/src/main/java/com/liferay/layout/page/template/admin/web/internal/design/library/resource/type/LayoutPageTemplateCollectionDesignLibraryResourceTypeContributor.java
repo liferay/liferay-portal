@@ -221,9 +221,11 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 		).build();
 	}
 
-	private DesignLibraryResourceCreationItem _getDesignLibraryResourceCreationItem(
-		HttpServletRequest httpServletRequest, String id, String languageKey,
-		String mode, Map<String, Object> baseModuleProps) {
+	private DesignLibraryResourceCreationItem
+		_getDesignLibraryResourceCreationItem(
+			HttpServletRequest httpServletRequest, String id,
+			String languageKey, String mode,
+			Map<String, Object> baseModuleProps) {
 
 		return new DesignLibraryResourceCreationItem(
 			id, LanguageUtil.get(httpServletRequest, languageKey),
