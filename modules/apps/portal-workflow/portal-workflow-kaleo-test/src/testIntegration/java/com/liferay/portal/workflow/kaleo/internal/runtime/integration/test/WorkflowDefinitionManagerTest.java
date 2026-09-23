@@ -76,6 +76,57 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 	}
 
 	@Test
+	public void testDeployDRLWorkflowDefinition() throws Exception {
+		try (Closeable closeable =
+				ScriptManagementConfigurationTestUtil.saveWithCloseable(
+					false)) {
+
+			String content1 = StringUtil.replace(
+				StringUtil.read(
+					getResourceInputStream(
+						"single-approver-site-member-workflow-definition.xml")),
+				"<script-language>groovy</script-language>",
+				"<script-language>drl</script-language>");
+
+			AssertUtils.assertFailure(
+				KaleoDefinitionValidationException.NotAllowedScriptLanguage.
+					class,
+				"DRL is not allowed",
+				() -> _workflowDefinitionManager.deployWorkflowDefinition(
+					content1.getBytes(), TestPropsValues.getCompanyId(), null,
+					WorkflowDefinitionConstants.NAME_SINGLE_APPROVER,
+					StringPool.BLANK, TestPropsValues.getUserId()));
+
+			String content2 = StringUtil.replace(
+				content1, "<script-language>drl</script-language>",
+				"<script-language><![CDATA[drl]]></script-language>");
+
+			AssertUtils.assertFailure(
+				KaleoDefinitionValidationException.NotAllowedScriptLanguage.
+					class,
+				"DRL is not allowed",
+				() -> _workflowDefinitionManager.deployWorkflowDefinition(
+					content2.getBytes(), TestPropsValues.getCompanyId(), null,
+					WorkflowDefinitionConstants.NAME_SINGLE_APPROVER,
+					StringPool.BLANK, TestPropsValues.getUserId()));
+
+			String content3 = StringUtil.replace(
+				content1, "<name>Site Member Single Approver</name>",
+				"<name>Message Board Threads and Comments Reputation " +
+					"Approver</name>");
+
+			AssertUtils.assertFailure(
+				KaleoDefinitionValidationException.NotAllowedScriptLanguage.
+					class,
+				"DRL is not allowed",
+				() -> _workflowDefinitionManager.deployWorkflowDefinition(
+					content3.getBytes(), TestPropsValues.getCompanyId(), null,
+					"Message Board Threads and Comments Reputation Approver",
+					StringPool.BLANK, TestPropsValues.getUserId()));
+		}
+	}
+
+	@Test
 	public void testDeployGroovyWorkflowDefinition() throws Exception {
 		try (Closeable closeable =
 				ScriptManagementConfigurationTestUtil.saveWithCloseable(
