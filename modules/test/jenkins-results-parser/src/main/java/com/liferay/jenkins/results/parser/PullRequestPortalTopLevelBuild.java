@@ -251,6 +251,8 @@ public class PullRequestPortalTopLevelBuild
 			portalWorkspace.setBuildProfile(getBuildProfile());
 			portalWorkspace.setOSBAsahGitHubURL(_getOSBAsahGitHubURL());
 			portalWorkspace.setOSBFaroGitHubURL(_getOSBFaroGitHubURL());
+			portalWorkspace.setPortalUpstreamBranchName(
+				_getPortalUpstreamBranchName());
 		}
 
 		WorkspaceGitRepository workspaceGitRepository =
@@ -503,6 +505,17 @@ public class PullRequestPortalTopLevelBuild
 		}
 
 		return "https://github.com/liferay/liferay-portal/tree/master";
+	}
+
+	private String _getPortalUpstreamBranchName() {
+		String portalUpstreamBranchName = getParameterValue(
+			"PORTAL_UPSTREAM_BRANCH_NAME");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+			return portalUpstreamBranchName;
+		}
+
+		return null;
 	}
 
 	private String _getSenderBranchSHA() {
