@@ -879,12 +879,15 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 	@Override
 	public boolean isGroupSupported(Group group) {
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
 		if (ArrayUtil.contains(
 				_getSupportedExportImportGroupClassNameIds(),
 				group.getClassNameId()) &&
 			group.isActive() && !group.isCMS() && !group.isDepot() &&
 			group.isSite() && !group.isStaged() && !group.isStagingGroup() &&
-			!_stagingGroupHelper.isCompanyGroup(group)) {
+			!stagingGroupHelper.isCompanyGroup(group)) {
 
 			return true;
 		}
@@ -1816,9 +1819,6 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	private PortletLocalService _portletLocalService;
 
 	private volatile StagingConfiguration _stagingConfiguration;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
 
 	@Reference
 	private SystemEventLocalService _systemEventLocalService;
