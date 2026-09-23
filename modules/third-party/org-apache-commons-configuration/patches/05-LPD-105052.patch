@@ -1,0 +1,62 @@
+diff --git a/org/apache/commons/configuration/AbstractConfiguration.java b/org/apache/commons/configuration/AbstractConfiguration.java
+index 3ae1539..4c25008 100644
+--- a/org/apache/commons/configuration/AbstractConfiguration.java
++++ b/org/apache/commons/configuration/AbstractConfiguration.java
+@@ -146,6 +146,9 @@ public abstract class AbstractConfiguration extends EventSource implements Confi
+     /** Maximum length a single interpolation may expand to before aborting.*/
+     private static final int MAX_INTERPOLATION_LENGTH = 5000000;
+ 
++    /** Maximum number of variables a single interpolation may resolve.*/
++    private static final int MAX_INTERPOLATION_DEPTH = 50;
++
+     /** Stores a reference to the object that handles variable interpolation.*/
+     private StrSubstitutor substitutor;
+ 
+@@ -297,6 +300,32 @@ public abstract class AbstractConfiguration extends EventSource implements Confi
+         {
+             substitutor = new StrSubstitutor(createInterpolator())
+             {
++                private final ThreadLocal<int[]> interpolationCount =
++                    new ThreadLocal<int[]>()
++                    {
++                        @Override
++                        protected int[] initialValue()
++                        {
++                            return new int[1];
++                        }
++                    };
++
++                @Override
++                protected boolean substitute(
++                    StrBuilder buf, int offset, int length)
++                {
++                    interpolationCount.get()[0] = 0;
++
++                    try
++                    {
++                        return super.substitute(buf, offset, length);
++                    }
++                    finally
++                    {
++                        interpolationCount.get()[0] = 0;
++                    }
++                }
++
+                 @Override
+                 protected String resolveVariable(
+                     String variableName, StrBuilder buf, int startPos,
+@@ -309,6 +338,14 @@ public abstract class AbstractConfiguration extends EventSource implements Confi
+                                 MAX_INTERPOLATION_LENGTH);
+                     }
+ 
++                    if (++interpolationCount.get()[0] >
++                            MAX_INTERPOLATION_DEPTH)
++                    {
++                        throw new IllegalStateException(
++                            "Interpolation exceeded maximum depth " +
++                                MAX_INTERPOLATION_DEPTH);
++                    }
++
+                     return super.resolveVariable(
+                         variableName, buf, startPos, endPos);
+                 }
