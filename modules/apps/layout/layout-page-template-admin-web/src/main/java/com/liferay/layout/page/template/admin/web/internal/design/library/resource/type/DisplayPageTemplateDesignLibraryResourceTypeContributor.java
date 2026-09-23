@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -116,7 +117,46 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 			String backURL)
 		throws PortalException {
 
-		return Collections.emptyList();
+		Group depotGroup = depotEntry.getGroup();
+
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				PortletURLBuilder.create(
+					PortalUtil.getControlPanelPortletURL(
+						httpServletRequest, depotGroup,
+						LayoutPageTemplateAdminPortletKeys.
+							LAYOUT_PAGE_TEMPLATES,
+						0, 0, PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/layout_page_template_admin/edit_display_page"
+				).setRedirect(
+					backURL
+				).setParameter(
+					"displayPageTemplateExternalReferenceCode",
+					"{embedded.externalReferenceCode}"
+				).buildString(),
+				"pencil", "edit", LanguageUtil.get(httpServletRequest, "edit"),
+				null, "get", "link"),
+			new FDSActionDropdownItem(
+				PortletURLBuilder.create(
+					PortalUtil.getControlPanelPortletURL(
+						httpServletRequest, depotGroup,
+						LayoutPageTemplateAdminPortletKeys.
+							LAYOUT_PAGE_TEMPLATES,
+						0, 0, PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/layout_page_template_admin/view_display_page_permissions"
+				).setParameter(
+					"displayPageTemplateExternalReferenceCode",
+					"{embedded.externalReferenceCode}"
+				).buildString(),
+				"password-policies", "permissions",
+				LanguageUtil.get(httpServletRequest, "permissions"), null,
+				"permissions", "modal-permissions"),
+			new FDSActionDropdownItem(
+				"{actions.delete.href}", "trash", "delete",
+				LanguageUtil.get(httpServletRequest, "delete"), "delete",
+				"delete", "async"));
 	}
 
 	@Override
