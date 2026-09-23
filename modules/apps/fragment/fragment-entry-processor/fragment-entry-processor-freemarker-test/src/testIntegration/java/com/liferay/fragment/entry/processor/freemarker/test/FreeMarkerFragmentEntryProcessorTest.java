@@ -699,6 +699,69 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	}
 
 	@Test
+	public void testProcessFragmentEntryLinkHTMLWithContextInfoItem()
+		throws Exception {
+
+		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		FragmentEntryLink fragmentEntryLink = _getFragmentEntryLink(
+			"configuration_itemselector.json",
+			"fragment_entry_link_editable_values_with_configuration_" +
+				"itemselector.json",
+			"fragment_entry_with_configuration_itemselector_journal_article." +
+				"html",
+			HashMapBuilder.put(
+				"className", journalArticle1.getModelClassName()
+			).put(
+				"classNameId", String.valueOf(journalArticle1.getClassNameId())
+			).put(
+				"classPK", String.valueOf(journalArticle1.getResourcePrimKey())
+			).build());
+
+		fragmentEntryLink.setHtml(
+			"<div class=\"fragment_name\">[#if itemSelector1Object??]" +
+				"${itemSelector1Object}[/#if]</div>");
+
+		JSONObject jsonObject = JSONUtil.put(
+			"itemSelector1",
+			JSONUtil.put(
+				"className", JournalArticle.class.getName()
+			).put(
+				"classPK", String.valueOf(journalArticle1.getResourcePrimKey())
+			));
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_serviceContext.getCompanyId(),
+					_serviceContext.getRequest(), new MockHttpServletResponse(),
+					null, null, _serviceContext.getScopeGroupId());
+
+		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		defaultFragmentEntryProcessorContext.setContextInfoItem(
+			journalArticle2);
+
+		_assertContainsJournalArticleInfo(
+			_getProcessedHTML(
+				fragmentEntryLink, jsonObject,
+				defaultFragmentEntryProcessorContext),
+			journalArticle2);
+
+		defaultFragmentEntryProcessorContext.setContextInfoItem(null);
+
+		_assertContainsJournalArticleInfo(
+			_getProcessedHTML(
+				fragmentEntryLink, jsonObject,
+				defaultFragmentEntryProcessorContext),
+			journalArticle1);
+	}
+
+	@Test
 	public void testProcessFragmentEntryLinkHTMLWithInvalidFreeMarker()
 		throws Exception {
 
