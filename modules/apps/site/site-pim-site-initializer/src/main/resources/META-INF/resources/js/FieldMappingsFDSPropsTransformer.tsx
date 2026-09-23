@@ -4,9 +4,7 @@
  */
 
 import FieldMappingChannelFieldRenderer from './cell_renderers/FieldMappingChannelFieldRenderer';
-import FieldMappingRequiredRenderer from './cell_renderers/FieldMappingRequiredRenderer';
-import FieldMappingSourceAttributeRenderer from './cell_renderers/FieldMappingSourceAttributeRenderer';
-import FieldMappingStatusRenderer from './cell_renderers/FieldMappingStatusRenderer';
+import FieldMappingSourceAttributesRenderer from './cell_renderers/FieldMappingSourceAttributesRenderer';
 
 export default function propsTransformer({...props}: {[key: string]: any}) {
 	return {
@@ -19,18 +17,8 @@ export default function propsTransformer({...props}: {[key: string]: any}) {
 					type: 'internal',
 				},
 				{
-					component: FieldMappingRequiredRenderer,
-					name: 'requiredTableCellRenderer',
-					type: 'internal',
-				},
-				{
-					component: FieldMappingSourceAttributeRenderer,
-					name: 'sourceAttributeTableCellRenderer',
-					type: 'internal',
-				},
-				{
-					component: FieldMappingStatusRenderer,
-					name: 'statusTableCellRenderer',
+					component: FieldMappingSourceAttributesRenderer,
+					name: 'sourceAttributesTableCellRenderer',
 					type: 'internal',
 				},
 			],

@@ -12,6 +12,7 @@ import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
 @ProviderType
 public interface PIMConnector {
@@ -20,7 +21,8 @@ public interface PIMConnector {
 
 	public String getName(Locale locale);
 
-	public List<PIMConnectorField> getPIMConnectorFields(Locale locale);
+	public List<PIMConnectorChannelField> getPIMConnectorChannelFields(
+		Locale locale);
 
 	public boolean isActive(long companyId);
 

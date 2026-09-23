@@ -6,7 +6,6 @@
 package com.liferay.site.pim.site.initializer.internal.frontend.data.set.view.table;
 
 import com.liferay.frontend.data.set.view.FDSView;
-import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -19,12 +18,13 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
 @Component(
 	property = "frontend.data.set.name=" + PIMFDSNames.FIELD_MAPPINGS,
 	service = FDSView.class
 )
-public class PIMFieldMappingTableFDSView extends BaseTableFDSView {
+public class PIMConnectorChannelFieldTableFDSView extends BasePIMTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {
@@ -41,23 +41,21 @@ public class PIMFieldMappingTableFDSView extends BaseTableFDSView {
 		).add(
 			"required", "required",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"requiredTableCellRenderer"
+				"boolean"
 			).setSortable(
 				true
 			)
 		).add(
-			"sourceAttributes", "source-attribute",
+			"sourceAttributes", "source-attributes",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"sourceAttributeTableCellRenderer"
+				"sourceAttributesTableCellRenderer"
 			).setSortable(
 				true
 			)
 		).add(
-			"transformationRule", "transformation-rule"
-		).add(
-			"mapped", "status",
+			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"statusTableCellRenderer"
+				"label"
 			).setSortable(
 				true
 			)

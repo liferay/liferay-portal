@@ -7,18 +7,17 @@ package com.liferay.site.pim.site.initializer.connector;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
-public class PIMConnectorField {
+public class PIMConnectorChannelField {
 
-	public PIMConnectorField(
-		String label, boolean multiple, String name, boolean required,
-		String type) {
+	public PIMConnectorChannelField(
+		String label, boolean multiple, String name, boolean required) {
 
 		_label = label;
 		_multiple = multiple;
 		_name = name;
 		_required = required;
-		_type = type;
 	}
 
 	public String getLabel() {
@@ -27,10 +26,6 @@ public class PIMConnectorField {
 
 	public String getName() {
 		return _name;
-	}
-
-	public String getType() {
-		return _type;
 	}
 
 	public boolean isMultiple() {
@@ -45,6 +40,5 @@ public class PIMConnectorField {
 	private final boolean _multiple;
 	private final String _name;
 	private final boolean _required;
-	private final String _type;
 
 }

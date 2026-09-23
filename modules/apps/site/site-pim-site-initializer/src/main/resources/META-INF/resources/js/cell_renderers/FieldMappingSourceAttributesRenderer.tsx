@@ -8,7 +8,7 @@ import React from 'react';
 
 const MAX_VISIBLE_SOURCE_ATTRIBUTES = 3;
 
-export default function FieldMappingSourceAttributeRenderer({
+export default function FieldMappingSourceAttributesRenderer({
 	value,
 }: {
 	value: string[];

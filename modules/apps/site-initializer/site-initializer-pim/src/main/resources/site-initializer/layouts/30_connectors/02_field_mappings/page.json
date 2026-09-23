@@ -1,8 +1,8 @@
 {
-	"friendlyURL": "/field-mapping",
+	"friendlyURL": "/field-mappings",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Field Mapping"
+		"en_US": "Field Mappings"
 	},
 	"permissions": [
 		{

@@ -4,7 +4,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.site.pim.site.initializer.internal.fragment.renderer.PIMConnectorFieldMappingJSPSectionFragmentRenderer"
+						"key": "com.liferay.site.pim.site.initializer.internal.fragment.renderer.PIMConnectorFieldMappingsJSPSectionFragmentRenderer"
 					},
 					"fragmentConfig": {
 					},

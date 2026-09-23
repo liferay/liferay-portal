@@ -36,20 +36,6 @@
 			"system": true
 		},
 		{
-			"DBType": "Clob",
-			"businessType": "LongText",
-			"externalReferenceCode": "FIELD_MAPPING",
-			"indexed": false,
-			"indexedAsKeyword": false,
-			"indexedLanguageId": "",
-			"label": {
-				"en_US": "Field Mapping"
-			},
-			"name": "fieldMapping",
-			"required": false,
-			"system": true
-		},
-		{
 			"DBType": "String",
 			"businessType": "Text",
 			"externalReferenceCode": "KEY",
@@ -80,6 +66,22 @@
 	],
 	"objectFolderExternalReferenceCode": "L_PIM_DEFINITIONS",
 	"objectRelationships": [
+		{
+			"deletionType": "cascade",
+			"externalReferenceCode": "L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
+			"label": {
+				"en_US": "PIM Connector to PIM Connector Field Mappings"
+			},
+			"name": "pimConnectorToPIMConnectorFieldMappings",
+			"objectDefinitionExternalReferenceCode1": "L_PIM_CONNECTOR",
+			"objectDefinitionExternalReferenceCode2": "L_PIM_CONNECTOR_FIELD_MAPPING",
+			"objectDefinitionName2": "PIMConnectorFieldMapping",
+			"parameterObjectFieldId": 0,
+			"parameterObjectFieldName": "",
+			"reverse": false,
+			"system": true,
+			"type": "oneToMany"
+		}
 	],
 	"panelCategoryKey": "",
 	"pluralLabel": {
@@ -87,5 +89,6 @@
 	},
 	"scope": "company",
 	"system": true,
-	"titleObjectFieldName": "name"
+	"titleObjectFieldName": "name",
+	"updateStrategy": "UPDATE"
 }

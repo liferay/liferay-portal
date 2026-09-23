@@ -17,7 +17,7 @@ export default function ConnectorNameRenderer({
 	value: string;
 }) {
 	const href = itemData?.actions?.update
-		? getItemActionURL(actions, 'fieldMapping', itemData)
+		? getItemActionURL(actions, 'fieldMappings', itemData)
 		: null;
 
 	return (

@@ -8,22 +8,22 @@
 <%@ include file="/init.jsp" %>
 
 <%
-PIMConnectorFieldMappingDisplayContext pimConnectorFieldMappingDisplayContext = (PIMConnectorFieldMappingDisplayContext)request.getAttribute(PIMConnectorFieldMappingDisplayContext.class.getName());
+PIMConnectorFieldMappingsDisplayContext pimConnectorFieldMappingsDisplayContext = (PIMConnectorFieldMappingsDisplayContext)request.getAttribute(PIMConnectorFieldMappingsDisplayContext.class.getName());
 %>
 
-<div class="pim-field-mapping">
+<div class="pim-field-mappings">
 	<div>
 		<react:component
-			module="{FieldMappingBreadcrumb} from site-pim-site-initializer"
-			props="<%= pimConnectorFieldMappingDisplayContext.getBreadcrumbProps() %>"
+			module="{Breadcrumb} from site-cms-site-initializer"
+			props="<%= pimConnectorFieldMappingsDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
 
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:classic-display
-			contextParams="<%= pimConnectorFieldMappingDisplayContext.getContextParams() %>"
+			contextParams="<%= pimConnectorFieldMappingsDisplayContext.getContextParams() %>"
 			dataProviderKey="<%= PIMFDSNames.FIELD_MAPPINGS %>"
-			emptyState="<%= pimConnectorFieldMappingDisplayContext.getEmptyState() %>"
+			emptyState="<%= pimConnectorFieldMappingsDisplayContext.getEmptyState() %>"
 			id="<%= PIMFDSNames.FIELD_MAPPINGS %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{FieldMappingsFDSPropsTransformer} from site-pim-site-initializer"

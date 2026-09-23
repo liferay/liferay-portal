@@ -7,7 +7,7 @@ package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.site.pim.site.initializer.internal.display.context.PIMConnectorFieldMappingDisplayContext;
+import com.liferay.site.pim.site.initializer.internal.display.context.PIMConnectorFieldMappingsDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -16,22 +16,23 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
 @Component(service = FragmentRenderer.class)
-public class PIMConnectorFieldMappingJSPSectionFragmentRenderer
+public class PIMConnectorFieldMappingsJSPSectionFragmentRenderer
 	extends BaseJSPSectionFragmentRenderer
-		<PIMConnectorFieldMappingDisplayContext> {
+		<PIMConnectorFieldMappingsDisplayContext> {
 
 	@Override
 	public String getLabelKey() {
-		return "field-mapping";
+		return "field-mappings";
 	}
 
 	@Override
-	protected PIMConnectorFieldMappingDisplayContext getDisplayContext(
+	protected PIMConnectorFieldMappingsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new PIMConnectorFieldMappingDisplayContext(
+		return new PIMConnectorFieldMappingsDisplayContext(
 			httpServletRequest, _objectEntryLocalService);
 	}
 

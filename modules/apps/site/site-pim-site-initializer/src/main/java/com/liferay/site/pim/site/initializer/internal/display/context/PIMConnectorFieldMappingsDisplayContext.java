@@ -7,11 +7,9 @@ package com.liferay.site.pim.site.initializer.internal.display.context;
 
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -19,6 +17,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.pim.site.initializer.internal.util.PIMURLUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,10 +25,11 @@ import java.util.Map;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
-public class PIMConnectorFieldMappingDisplayContext {
+public class PIMConnectorFieldMappingsDisplayContext {
 
-	public PIMConnectorFieldMappingDisplayContext(
+	public PIMConnectorFieldMappingsDisplayContext(
 		HttpServletRequest httpServletRequest,
 		ObjectEntryLocalService objectEntryLocalService) {
 
@@ -46,7 +46,9 @@ public class PIMConnectorFieldMappingDisplayContext {
 			"actionItems",
 			JSONUtil.putAll(
 				JSONUtil.put(
-					"href", _getEditConnectorURL()
+					"href",
+					PIMURLUtil.getEditConnectorURL(
+						String.valueOf(_objectEntryId), _themeDisplay)
 				).put(
 					"label", LanguageUtil.get(_httpServletRequest, "edit")
 				))
@@ -56,7 +58,7 @@ public class PIMConnectorFieldMappingDisplayContext {
 				JSONUtil.put(
 					"active", false
 				).put(
-					"href", _getSiteURL("/connectors")
+					"href", PIMURLUtil.getConnectorsURL(_themeDisplay)
 				).put(
 					"label", LanguageUtil.get(_httpServletRequest, "connectors")
 				),
@@ -76,7 +78,10 @@ public class PIMConnectorFieldMappingDisplayContext {
 
 	public Map<String, String> getContextParams() {
 		return HashMapBuilder.put(
-			"mapChannelFieldURL", URLCodec.encodeURL(_getMapChannelFieldURL())
+			"editFieldMappingURL",
+			URLCodec.encodeURL(
+				PIMURLUtil.getEditFieldMappingURL(
+					String.valueOf(_objectEntryId), _themeDisplay))
 		).put(
 			"objectEntryId", String.valueOf(_objectEntryId)
 		).build();
@@ -87,24 +92,11 @@ public class PIMConnectorFieldMappingDisplayContext {
 			"description",
 			LanguageUtil.get(
 				_httpServletRequest,
-				"this-connector-does-not-declare-any-field")
+				"this-connector-does-not-declare-any-fields")
 		).put(
 			"title",
 			LanguageUtil.get(_httpServletRequest, "no-fields-were-found")
 		).build();
-	}
-
-	private String _getEditConnectorURL() {
-		return StringBundler.concat(
-			_getSiteURL("/edit-connector"), "?backURL=",
-			URLCodec.encodeURL(_themeDisplay.getURLCurrent()),
-			"&objectEntryId=", _objectEntryId);
-	}
-
-	private String _getMapChannelFieldURL() {
-		return StringBundler.concat(
-			_getSiteURL("/map-channel-field"), "?objectEntryId=",
-			_objectEntryId);
 	}
 
 	private String _getName() {
@@ -112,7 +104,7 @@ public class PIMConnectorFieldMappingDisplayContext {
 			_objectEntryId);
 
 		if (objectEntry == null) {
-			return LanguageUtil.get(_httpServletRequest, "field-mapping");
+			return LanguageUtil.get(_httpServletRequest, "field-mappings");
 		}
 
 		String name = MapUtil.getString(objectEntry.getValues(), "name");
@@ -121,15 +113,7 @@ public class PIMConnectorFieldMappingDisplayContext {
 			return name;
 		}
 
-		return LanguageUtil.get(_httpServletRequest, "field-mapping");
-	}
-
-	private String _getSiteURL(String friendlyURL) {
-		Group group = _themeDisplay.getScopeGroup();
-
-		return StringBundler.concat(
-			_themeDisplay.getPathFriendlyURLPublic(), group.getFriendlyURL(),
-			friendlyURL);
+		return LanguageUtil.get(_httpServletRequest, "field-mappings");
 	}
 
 	private final HttpServletRequest _httpServletRequest;
