@@ -490,11 +490,13 @@ testWithExportImport(
 	}
 );
 
-testWithModalExportImport(
+testWithExportImport(
 	'CMS Administrator can export and import content structures',
 	{tag: '@LPD-87533'},
-	async ({apiHelpers, page, structuresPage}) => {
-		let larFilePath: string;
+	async ({apiHelpers, exportImportPage, page, structuresPage}) => {
+		const exportName = `MyExport-${getRandomString()}`;
+
+		let folderPath: string;
 
 		await test.step('Log in as a CMS Administrator', async () => {
 			const user = await addCMSAdministrator(apiHelpers);
@@ -503,64 +505,23 @@ testWithModalExportImport(
 		});
 
 		await test.step('Export content structures and download the LAR', async () => {
-			await structuresPage.openMenuItem('Export');
+			await structuresPage.openMenuItem('Export Content Structures');
 
-			await expect(page.locator('.modal-title')).toHaveText(
-				'Export Content Structures'
-			);
-
-			const exportDialog = page
-				.getByRole('dialog', {name: 'Export Content Structures'})
-				.frameLocator('iframe');
-
-			await exportDialog
-				.getByRole('button', {exact: true, name: 'Export'})
-				.click();
+			await exportImportPage.export(exportName);
 
 			await expect(
-				exportDialog.getByRole('cell', {name: 'In Progress'}).first()
+				exportImportPage.taskStatusLabel(exportName)
 			).toBeVisible();
 
-			await expect(
-				exportDialog.getByRole('cell', {name: 'Successful'}).first()
-			).toBeVisible({timeout: 30000});
-
-			const downloadPromise = page.waitForEvent('download');
-
-			await exportDialog
-				.getByRole('link', {name: /\.lar/i})
-				.first()
-				.click();
-
-			const download = await downloadPromise;
-
-			larFilePath = `${getTempDir()}/${download.suggestedFilename()}`;
-
-			await download.saveAs(larFilePath);
+			folderPath = await exportImportPage.download(exportName);
 		});
 
 		await test.step('Import the downloaded LAR back', async () => {
-			await structuresPage.openMenuItem('Import');
+			await structuresPage.openMenuItem('Import Content Structures');
 
-			await expect(page.locator('.modal-title')).toHaveText(
-				'Import Content Structures'
-			);
+			await exportImportPage.newButton.click();
 
-			const importDialog = page
-				.getByRole('dialog', {name: 'Import Content Structures'})
-				.frameLocator('iframe');
-
-			await importDialog
-				.locator('input[type="file"]')
-				.setInputFiles(larFilePath);
-
-			await importDialog.getByRole('button', {name: 'Continue'}).click();
-
-			await importDialog.getByRole('button', {name: 'Import'}).click();
-
-			await expect(
-				importDialog.getByRole('cell', {name: 'Successful'}).first()
-			).toBeVisible({timeout: 30000});
+			await exportImportPage.import({folderPath, name: exportName});
 		});
 	}
 );
