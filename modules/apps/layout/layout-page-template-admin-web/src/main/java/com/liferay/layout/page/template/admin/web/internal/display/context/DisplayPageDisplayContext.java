@@ -9,9 +9,8 @@ import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
-import com.liferay.info.localized.InfoLocalizedValue;
-import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
+import com.liferay.layout.page.template.admin.web.internal.util.MappingTypesUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.info.item.capability.DisplayPageInfoItemCapability;
@@ -27,9 +26,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -53,7 +50,6 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -256,30 +252,9 @@ public class DisplayPageDisplayContext {
 			return _mappingTypesJSONArray;
 		}
 
-		JSONArray mappingTypesJSONArray = JSONFactoryUtil.createJSONArray();
-
-		for (InfoItemClassDetails infoItemClassDetails :
-				_infoItemServiceRegistry.getInfoItemClassDetails(
-					_themeDisplay.getScopeGroupId(),
-					DisplayPageInfoItemCapability.KEY,
-					_themeDisplay.getPermissionChecker())) {
-
-			mappingTypesJSONArray.put(
-				JSONUtil.put(
-					"id",
-					String.valueOf(
-						PortalUtil.getClassNameId(
-							infoItemClassDetails.getClassName()))
-				).put(
-					"label",
-					infoItemClassDetails.getLabel(_themeDisplay.getLocale())
-				).put(
-					"subtypes",
-					_getMappingFormVariationsJSONArray(infoItemClassDetails)
-				));
-		}
-
-		_mappingTypesJSONArray = mappingTypesJSONArray;
+		_mappingTypesJSONArray = MappingTypesUtil.getMappingTypesJSONArray(
+			_themeDisplay.getScopeGroupId(), _infoItemServiceRegistry,
+			_themeDisplay.getLocale(), _themeDisplay.getPermissionChecker());
 
 		return _mappingTypesJSONArray;
 	}
@@ -455,59 +430,6 @@ public class DisplayPageDisplayContext {
 				}
 
 			});
-	}
-
-	private JSONArray _getMappingFormVariationsJSONArray(
-		InfoItemClassDetails infoItemClassDetails) {
-
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemFormVariationsProvider.class,
-				infoItemClassDetails.getClassName());
-
-		if (infoItemFormVariationsProvider == null) {
-			return jsonArray;
-		}
-
-		InfoPermissionProvider infoPermissionProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoPermissionProvider.class,
-				infoItemClassDetails.getClassName());
-
-		Collection<InfoItemFormVariation> infoItemFormVariations =
-			infoItemFormVariationsProvider.getInfoItemFormVariations(
-				_themeDisplay.getScopeGroupId());
-
-		for (InfoItemFormVariation infoItemFormVariation :
-				infoItemFormVariations) {
-
-			if ((infoPermissionProvider != null) &&
-				!infoPermissionProvider.hasViewPermission(
-					infoItemFormVariation.getKey(),
-					_themeDisplay.getScopeGroupId(),
-					_themeDisplay.getPermissionChecker())) {
-
-				continue;
-			}
-
-			jsonArray.put(
-				JSONUtil.put(
-					"id", String.valueOf(infoItemFormVariation.getKey())
-				).put(
-					"label",
-					() -> {
-						InfoLocalizedValue<String> labelInfoLocalizedValue =
-							infoItemFormVariation.getLabelInfoLocalizedValue();
-
-						return labelInfoLocalizedValue.getValue(
-							_themeDisplay.getLocale());
-					}
-				));
-		}
-
-		return jsonArray;
 	}
 
 	private OrderByComparator<Object> _getOrderByComparator() {

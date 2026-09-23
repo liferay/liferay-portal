@@ -6,17 +6,29 @@
 package com.liferay.layout.page.template.admin.web.internal.design.library.resource.type;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.design.library.resource.type.DesignLibraryResourceCreationItem;
 import com.liferay.design.library.resource.type.DesignLibraryResourceTypeContributor;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
+import com.liferay.layout.page.template.admin.web.internal.util.MappingTypesUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -40,6 +52,52 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 	@Override
 	public String getColor() {
 		return "blue";
+	}
+
+	@Override
+	public List<DesignLibraryResourceCreationItem> getCreationItems(
+			HttpServletRequest httpServletRequest, DepotEntry depotEntry,
+			String backURL)
+		throws PortalException {
+
+		Group depotGroup = depotEntry.getGroup();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return Collections.singletonList(
+			new DesignLibraryResourceCreationItem(
+				"add-display-page-template",
+				LanguageUtil.get(
+					httpServletRequest, "new-display-page-template"),
+				"{AddDisplayPageTemplateDesignLibraryModalContent} from " +
+					"layout-page-template-admin-web",
+				HashMapBuilder.<String, Object>put(
+					"formSubmitURL",
+					PortletURLBuilder.create(
+						PortalUtil.getControlPanelPortletURL(
+							httpServletRequest, depotGroup,
+							LayoutPageTemplateAdminPortletKeys.
+								LAYOUT_PAGE_TEMPLATES,
+							0, 0, PortletRequest.ACTION_PHASE)
+					).setActionName(
+						"/layout_page_template_admin/add_display_page"
+					).setRedirect(
+						backURL
+					).buildString()
+				).put(
+					"mappingTypes",
+					MappingTypesUtil.getMappingTypesJSONArray(
+						depotGroup.getGroupId(), _infoItemServiceRegistry,
+						themeDisplay.getLocale(),
+						themeDisplay.getPermissionChecker())
+				).put(
+					"namespace",
+					PortalUtil.getPortletNamespace(
+						LayoutPageTemplateAdminPortletKeys.
+							LAYOUT_PAGE_TEMPLATES)
+				).build()));
 	}
 
 	@Override
@@ -98,6 +156,9 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 		return _portletResourcePermission.contains(
 			permissionChecker, depotEntry.getGroupId(), ActionKeys.VIEW);
 	}
+
+	@Reference
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference(
 		target = "(resource.name=" + LayoutPageTemplateConstants.RESOURCE_NAME + ")"
