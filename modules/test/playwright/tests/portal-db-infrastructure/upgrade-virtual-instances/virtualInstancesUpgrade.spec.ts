@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
+import {liferayConfig} from '../../../liferay.config';
 import {performLoginViaApi} from '../../../utils/performLogin';
 import {viewUpgradedCustomObject} from '../utils/viewUpgradedCustomObject';
 import {
@@ -55,12 +56,6 @@ function assertsCustomObjects() {
 	};
 
 	return Boolean(assertCustomObjects);
-}
-
-function getInstanceURL(baseURL: string, instance: UpgradedVirtualInstance) {
-	const {port} = new URL(baseURL);
-
-	return `http://${instance.webId}:${port}`;
 }
 
 test.describe.serial('View virtual instances upgrade', () => {
@@ -115,11 +110,8 @@ test.describe.serial('View virtual instances upgrade', () => {
 	test(
 		'Can view upgraded content on the second instance',
 		{tag: ['@LPD-104392']},
-		async ({baseURL, page, usersAndOrganizationsPage}) => {
-			const instanceURL = getInstanceURL(
-				baseURL as string,
-				SECOND_INSTANCE
-			);
+		async ({page, usersAndOrganizationsPage}) => {
+			const instanceURL = `http://${SECOND_INSTANCE.webId}:${liferayConfig.environment.port}`;
 
 			await performLoginViaApi({
 				domain: `@${SECOND_INSTANCE.webId}`,
@@ -150,11 +142,8 @@ test.describe.serial('View virtual instances upgrade', () => {
 	test(
 		'Can view upgraded content on the third instance',
 		{tag: ['@LPD-104392']},
-		async ({baseURL, page, usersAndOrganizationsPage}) => {
-			const instanceURL = getInstanceURL(
-				baseURL as string,
-				THIRD_INSTANCE
-			);
+		async ({page, usersAndOrganizationsPage}) => {
+			const instanceURL = `http://${THIRD_INSTANCE.webId}:${liferayConfig.environment.port}`;
 
 			await performLoginViaApi({
 				domain: `@${THIRD_INSTANCE.webId}`,
