@@ -1,0 +1,37 @@
+components:
+    schemas:
+        ExternalChildEntity1:
+            allOf:
+                -   $ref: "#/components/schemas/ExternalEntity"
+                -   properties:
+                        externalProperty:
+                            type: string
+            type: object
+        ExternalChildEntity2:
+            allOf:
+                -   $ref: "#/components/schemas/ExternalEntity"
+                -   $ref: "#/components/schemas/ExternalMixin"
+            type: object
+        ExternalEntity:
+            discriminator:
+                mapping:
+                    ExternalChildEntity1: "#/components/schemas/ExternalChildEntity1"
+                    ExternalChildEntity2: "#/components/schemas/ExternalChildEntity2"
+                propertyName: type
+            properties:
+                type:
+                    enum:
+                        -   ExternalChildEntity1
+                        -   ExternalChildEntity2
+                    type: string
+            type: object
+        ExternalMixin:
+            properties:
+                mixinProperty:
+                    type: string
+            type: object
+info:
+    title: External
+    version: v1.0
+openapi: 3.0.1
+paths: {}

@@ -1,0 +1,12 @@
+components:
+    schemas:
+        TestEntity:
+            properties:
+                externalEntity:
+                    $ref: ../external-impl/rest-openapi.yaml#ExternalEntity
+            type: object
+info:
+    title: Test
+    version: v1.0
+openapi: 3.0.1
+paths: {}
