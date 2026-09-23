@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.repository.capabilities.ThumbnailCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Element;
@@ -64,6 +67,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -97,6 +101,18 @@ public class ExportImportHelperUtilTest {
 	public void setUp() throws Exception {
 		_liveGroup = GroupTestUtil.addGroup();
 		_stagingGroup = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testGetChildGroupsCount() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		GroupTestUtil.addGroup(_liveGroup.getGroupId());
+
+		_deactivateGroup(GroupTestUtil.addGroup(_liveGroup.getGroupId()));
+
+		Assert.assertEquals(
+			1, ExportImportHelperUtil.getChildGroupsCount(_liveGroup));
 	}
 
 	@Test
@@ -450,6 +466,18 @@ public class ExportImportHelperUtilTest {
 
 		_assertPortletControlsMap(
 			actualPortletControlsMap, true, true, false, false, false);
+	}
+
+	@Test
+	public void testGetGroupPath() throws Exception {
+		Group childGroup = GroupTestUtil.addGroup(_liveGroup.getGroupId());
+
+		Locale locale = LocaleUtil.getDefault();
+
+		Assert.assertEquals(
+			_liveGroup.getDescriptiveName(locale) + " / " +
+				childGroup.getDescriptiveName(locale),
+			ExportImportHelperUtil.getGroupPath(childGroup, locale));
 	}
 
 	@Test
@@ -975,6 +1003,29 @@ public class ExportImportHelperUtilTest {
 	}
 
 	@Test
+	public void testGetSupportedGroups() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		List<Group> groups = ExportImportHelperUtil.getSupportedGroups(
+			_liveGroup.getCompanyId(),
+			_liveGroup.getName(LocaleUtil.getDefault()), null);
+
+		Assert.assertEquals(groups.toString(), 1, groups.size());
+		Assert.assertEquals(_liveGroup, groups.get(0));
+	}
+
+	@Test
+	public void testIsGroupSupported() throws Exception {
+		Assert.assertTrue(ExportImportHelperUtil.isGroupSupported(_liveGroup));
+		Assert.assertFalse(
+			ExportImportHelperUtil.isGroupSupported(
+				_groupLocalService.getCompanyGroup(_liveGroup.getCompanyId())));
+		Assert.assertFalse(
+			ExportImportHelperUtil.isGroupSupported(
+				_deactivateGroup(_liveGroup)));
+	}
+
+	@Test
 	public void testValidateMissingReferences() throws Exception {
 		_testValidateMissingReferences();
 		_testValidateMissingReferencesWithUnknownClassName();
@@ -1045,6 +1096,12 @@ public class ExportImportHelperUtilTest {
 		Assert.assertEquals(portletSetup, actualPortletSetup);
 		Assert.assertEquals(
 			portletUserPreferences, actualPortletUserPreferences);
+	}
+
+	private Group _deactivateGroup(Group group) throws Exception {
+		group.setActive(false);
+
+		return _groupLocalService.updateGroup(group);
 	}
 
 	private Portlet _getDataSiteLevelPortlet(
@@ -1180,6 +1237,9 @@ public class ExportImportHelperUtilTest {
 
 		FileUtil.delete(zipWriter.getFile());
 	}
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@DeleteAfterTestRun
 	private Group _liveGroup;
