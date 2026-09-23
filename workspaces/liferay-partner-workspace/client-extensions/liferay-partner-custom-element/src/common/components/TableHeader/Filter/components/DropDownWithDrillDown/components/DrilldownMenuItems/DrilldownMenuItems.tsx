@@ -4,7 +4,6 @@
  */
 
 import Button, {ClayButtonWithIcon} from '@clayui/button';
-import DrilldownMenu, {IItem} from '@clayui/drop-down/lib/drilldown/Menu';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React from 'react';
@@ -14,14 +13,24 @@ import FilterSelector, {
 	FilterProps,
 } from '../../../FilterSelector/FilterSelector';
 
-interface MenuItem extends Omit<IItem, 'child' | 'type'> {
+interface MenuItem {
 	child?: string | FilterProps;
+	className?: string;
+	disabled?: boolean;
+	onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+	symbol?: string;
+	title?: string;
 	type?: 'divider' | 'component';
 }
 
 interface IProps {
+	active: boolean;
 	closeFilterMenu: () => void;
+	direction?: 'next' | 'prev';
+	header?: string;
 	items: MenuItem[];
+	onBack: () => void;
+	onForward: (title: string, child: string) => void;
 	onKeyDown: (event: {key: string}) => void;
 }
 
@@ -33,8 +42,7 @@ const DrilldownMenuItems = ({
 	items,
 	onBack,
 	onForward,
-}: Omit<React.ComponentProps<typeof DrilldownMenu>, 'items' | 'messages'> &
-	IProps) => {
+}: IProps) => {
 	const initialClasses = classNames('transitioning', {
 		'drilldown-prev-initial': direction === 'prev',
 	});

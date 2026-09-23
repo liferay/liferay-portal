@@ -24,8 +24,13 @@ interface IUtil {
 	openToast: (options?: any) => void;
 }
 
+interface ILiferayLanguage {
+	get: (key: string) => string;
+}
+
 interface ILiferay {
 	FeatureFlags: {[index: string]: boolean};
+	Language: ILiferayLanguage;
 	ThemeDisplay: IThemeDisplay;
 	Util: IUtil;
 	authToken: string;
@@ -37,6 +42,9 @@ declare global {
 }
 export const Liferay = window.Liferay || {
 	FeatureFlags: {},
+	Language: {
+		get: (key: string) => key,
+	},
 	ThemeDisplay: {
 		getBCP47LanguageId: () => 'en-US',
 		getCompanyGroupId: () => 0,

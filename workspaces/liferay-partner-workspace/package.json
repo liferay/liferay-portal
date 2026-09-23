@@ -11,6 +11,9 @@
 		"typescript": "4.4.2"
 	},
 	"private": true,
+	"resolutions": {
+		"@types/react": "18.3.28"
+	},
 	"workspaces": {
 		"packages": [
 			"client-extensions/liferay-partner-custom-element"
