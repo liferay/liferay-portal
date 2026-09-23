@@ -145,6 +145,11 @@ public class XMLWorkflowValidator implements WorkflowValidator {
 
 		String value = scriptLanguage.getValue();
 
+		if (Objects.equals(value, ScriptLanguage.DRL.getValue())) {
+			throw new KaleoDefinitionValidationException.
+				NotAllowedScriptLanguage("DRL is not allowed");
+		}
+
 		if (Objects.equals(value, ScriptLanguage.GROOVY.getValue())) {
 			throw new KaleoDefinitionValidationException.
 				NotAllowedScriptLanguage("Groovy is not allowed");
