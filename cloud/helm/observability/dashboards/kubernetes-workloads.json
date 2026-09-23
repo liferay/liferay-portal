@@ -471,7 +471,7 @@
 								"axisColorMode": "text",
 								"axisLabel": "",
 								"axisPlacement": "auto",
-								"axisSoftMax": 10,
+								"axisSoftMax": 3,
 								"barAlignment": 0,
 								"barWidthFactor": 0.6,
 								"drawStyle": "line",
@@ -503,6 +503,7 @@
 									"mode": "off"
 								}
 							},
+							"decimals": 0,
 							"fieldMinMax": false,
 							"mappings": [
 							],
@@ -1310,7 +1311,7 @@
 								"axisColorMode": "text",
 								"axisLabel": "",
 								"axisPlacement": "auto",
-								"axisSoftMax": 10,
+								"axisSoftMax": 3,
 								"barAlignment": 0,
 								"barWidthFactor": 0.6,
 								"drawStyle": "line",
@@ -1342,6 +1343,7 @@
 									"mode": "off"
 								}
 							},
+							"decimals": 0,
 							"fieldMinMax": false,
 							"mappings": [
 							],
