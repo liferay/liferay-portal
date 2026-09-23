@@ -48,6 +48,10 @@ export class RecycleBinPage {
 	}
 
 	async delete(assetName: string) {
+		const rows = this._row(assetName);
+
+		const rowCount = await rows.count();
+
 		await this._openRowAction(assetName, 'Delete');
 
 		await this.page
@@ -57,9 +61,10 @@ export class RecycleBinPage {
 
 		// Wait for the deletion to complete before returning, otherwise a
 		// following row action opens its menu against a list that is still
-		// re-rendering
+		// re-rendering. Rows are matched on a substring, so wait for one
+		// fewer match rather than for none
 
-		await expect(this._row(assetName)).toHaveCount(0);
+		await expect(rows).toHaveCount(rowCount - 1);
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
