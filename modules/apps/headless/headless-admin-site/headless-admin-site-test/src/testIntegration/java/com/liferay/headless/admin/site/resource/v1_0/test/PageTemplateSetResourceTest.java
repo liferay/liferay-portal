@@ -48,7 +48,6 @@ import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -71,9 +70,7 @@ import org.junit.runner.RunWith;
  * @author Rubén Pulido
  * @author Georgel Pop
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-35443"), @FeatureFlag("LPD-57283")}
-)
+@FeatureFlag("LPD-57283")
 @RunWith(Arquillian.class)
 public class PageTemplateSetResourceTest
 	extends BasePageTemplateSetResourceTestCase {

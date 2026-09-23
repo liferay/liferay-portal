@@ -2747,7 +2747,6 @@ public class BatchEnginePortletDataHandlerTest {
 			objectDefinition, sourceGroup);
 	}
 
-	@FeatureFlag("LPD-35443")
 	@Test
 	@TestInfo("LPD-75473")
 	public void testExportImportTaxonomyVocabulariesAndCategories()

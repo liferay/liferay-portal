@@ -209,10 +209,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Rubén Pulido
  */
 @FeatureFlags(
-	featureFlags = {
-		@FeatureFlag("LPD-10622"), @FeatureFlag("LPD-35443"),
-		@FeatureFlag("LPD-76864")
-	}
+	featureFlags = {@FeatureFlag("LPD-10622"), @FeatureFlag("LPD-76864")}
 )
 @RunWith(Arquillian.class)
 public class SitePageResourceTest extends BaseSitePageResourceTestCase {
