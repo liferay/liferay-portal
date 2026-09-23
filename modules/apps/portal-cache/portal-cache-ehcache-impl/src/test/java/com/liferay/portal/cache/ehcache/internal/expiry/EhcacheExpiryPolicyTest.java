@@ -67,39 +67,37 @@ public class EhcacheExpiryPolicyTest {
 	}
 
 	@Test
-	public void testAccessDoesNotExtendTimeToLive() {
+	public void testGetExpiryForAccess() {
 		_cache.put(
-			"key", new EhcacheExpiryValue("value", Duration.ofSeconds(10)));
+			"key1", new EhcacheExpiryValue("value", Duration.ofSeconds(10)));
+		_cache.put(
+			"key2", new EhcacheExpiryValue("value", ExpiryPolicy.INFINITE));
 
 		_timeMillis = 9000;
 
-		Assert.assertNotNull(_cache.get("key"));
+		Assert.assertNotNull(_cache.get("key1"));
+		Assert.assertNotNull(_cache.get("key2"));
 
 		_timeMillis = 11000;
 
-		Assert.assertNull(_cache.get("key"));
-	}
-
-	@Test
-	public void testAccessExtendsTimeToIdle() {
-		_cache.put(
-			"key", new EhcacheExpiryValue("value", ExpiryPolicy.INFINITE));
+		Assert.assertNull(_cache.get("key1"));
+		Assert.assertNotNull(_cache.get("key2"));
 
 		_timeMillis = 500000;
 
-		Assert.assertNotNull(_cache.get("key"));
+		Assert.assertNotNull(_cache.get("key2"));
 
 		_timeMillis = 1000000;
 
-		Assert.assertNotNull(_cache.get("key"));
+		Assert.assertNotNull(_cache.get("key2"));
 
 		_timeMillis = 1700000;
 
-		Assert.assertNull(_cache.get("key"));
+		Assert.assertNull(_cache.get("key2"));
 	}
 
 	@Test
-	public void testUpdateRestartsTimeToLive() {
+	public void testGetExpiryForUpdate() {
 		_cache.put(
 			"key", new EhcacheExpiryValue("value", Duration.ofSeconds(10)));
 
