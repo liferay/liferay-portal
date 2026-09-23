@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -137,11 +138,15 @@ public class CopyDLObjectsMVCRenderCommand implements MVCRenderCommand {
 		throws PortletException {
 
 		try {
-			HttpServletResponse httpServletResponse =
-				_portal.getHttpServletResponse(renderResponse);
-
-			httpServletResponse.sendRedirect(
+			String redirect = _portal.escapeRedirect(
 				ParamUtil.getString(renderRequest, "redirect"));
+
+			if (Validator.isNotNull(redirect)) {
+				HttpServletResponse httpServletResponse =
+					_portal.getHttpServletResponse(renderResponse);
+
+				httpServletResponse.sendRedirect(redirect);
+			}
 		}
 		catch (IOException ioException) {
 			throw new PortletException(ioException);
