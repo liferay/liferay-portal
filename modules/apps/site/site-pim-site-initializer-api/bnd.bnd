@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site PIM Site Initializer API
 Bundle-SymbolicName: com.liferay.site.pim.site.initializer.api
-Bundle-Version: 2.0.0
+Bundle-Version: 1.2.0
 Export-Package:\
 	com.liferay.site.pim.site.initializer.connector,\
 	com.liferay.site.pim.site.initializer.constants,\
