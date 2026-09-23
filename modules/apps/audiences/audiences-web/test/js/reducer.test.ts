@@ -5,11 +5,44 @@
 
 import '@testing-library/jest-dom';
 
-import {initState} from '../../src/main/resources/META-INF/resources/js/reducer';
-import {AudiencesCriteriaRulesGroup} from '../../src/main/resources/META-INF/resources/js/types';
+import {
+	initState,
+	reducer,
+} from '../../src/main/resources/META-INF/resources/js/reducer';
+import {
+	AudiencesCriteriaRulesGroup,
+	Site,
+} from '../../src/main/resources/META-INF/resources/js/types';
 import {serializeCriteria} from '../../src/main/resources/META-INF/resources/js/util/tree/serializeCriteria';
 
+const SCOPE_SITE: Site = {
+	descriptiveName: 'Liferay DXP',
+	externalReferenceCode: 'SITE-1',
+	id: 1,
+	logo: '/logo',
+};
+
 describe('reducer', () => {
+	it('scopes an audience to all sites when it has no scope sites', () => {
+		expect(initState({}).scope).toBe('all');
+		expect(initState({scopeSites: [SCOPE_SITE]}).scope).toEqual([
+			SCOPE_SITE,
+		]);
+	});
+
+	it('sets the scope', () => {
+		const state = reducer(initState({}), {
+			scope: [SCOPE_SITE],
+			type: 'SET_SCOPE',
+		});
+
+		expect(state.scope).toEqual([SCOPE_SITE]);
+
+		expect(reducer(state, {scope: 'all', type: 'SET_SCOPE'}).scope).toBe(
+			'all'
+		);
+	});
+
 	it('normalizes groups when loading stored criteria', () => {
 		const rulesGroup: AudiencesCriteriaRulesGroup = {
 			conjunction: 'AND',

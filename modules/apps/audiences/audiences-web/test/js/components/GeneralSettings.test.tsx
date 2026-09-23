@@ -4,11 +4,32 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, {useRef, useState} from 'react';
 
 import GeneralSettings from '../../../src/main/resources/META-INF/resources/js/components/GeneralSettings';
+import {Site} from '../../../src/main/resources/META-INF/resources/js/types';
+
+jest.mock('frontend-js-web', () => ({
+	...(jest.requireActual('frontend-js-web') as object),
+	fetch: jest.fn(),
+}));
+
+const SCOPE_SITES: Site[] = [
+	{
+		descriptiveName: 'Liferay DXP',
+		externalReferenceCode: 'SITE-1',
+		id: 1,
+		logo: '/logo-1',
+	},
+	{
+		descriptiveName: 'Liferay Design',
+		externalReferenceCode: 'SITE-2',
+		id: 2,
+		logo: '/logo-2',
+	},
+];
 
 function GeneralSettingsWrapper({errorMessage}: {errorMessage?: string}) {
 	const [expanded, setExpanded] = useState(false);
@@ -18,13 +39,16 @@ function GeneralSettingsWrapper({errorMessage}: {errorMessage?: string}) {
 
 	return (
 		<GeneralSettings
-			errorMessage={errorMessage}
+			companyGroupERC=""
 			expanded={expanded}
 			externalReferenceCode={externalReferenceCode}
 			externalReferenceCodeInputRef={externalReferenceCodeInputRef}
 			namespace="_test_"
 			onExpandedChange={setExpanded}
 			onExternalReferenceCodeChange={setExternalReferenceCode}
+			onScopeChange={() => {}}
+			saveErrors={{externalReferenceCode: errorMessage}}
+			scope="all"
 		/>
 	);
 }
@@ -73,13 +97,16 @@ describe('GeneralSettings', () => {
 	it('announces the error message and marks the input invalid', () => {
 		render(
 			<GeneralSettings
-				errorMessage="error-message"
+				companyGroupERC=""
 				expanded
 				externalReferenceCode="ERC-123"
 				externalReferenceCodeInputRef={React.createRef()}
 				namespace="_test_"
 				onExpandedChange={() => {}}
 				onExternalReferenceCodeChange={() => {}}
+				onScopeChange={() => {}}
+				saveErrors={{externalReferenceCode: 'error-message'}}
+				scope="all"
 			/>
 		);
 
@@ -98,5 +125,92 @@ describe('GeneralSettings', () => {
 		expect(alert).toContainElement(
 			document.getElementById('_test_externalReferenceCodeError')
 		);
+	});
+
+	describe('scope', () => {
+		const renderGeneralSettings = ({
+			groupERCsError,
+			scope,
+		}: {
+			groupERCsError?: string;
+			scope: 'all' | Site[];
+		}) => {
+			const onScopeChange = jest.fn();
+
+			render(
+				<GeneralSettings
+					companyGroupERC="GLOBAL"
+					expanded
+					externalReferenceCode="ERC-123"
+					externalReferenceCodeInputRef={React.createRef()}
+					namespace="_test_"
+					onExpandedChange={() => {}}
+					onExternalReferenceCodeChange={() => {}}
+					onScopeChange={onScopeChange}
+					saveErrors={{groupERCs: groupERCsError}}
+					scope={scope}
+				/>
+			);
+
+			return onScopeChange;
+		};
+
+		it('shows the audience available for all sites and hides the scope sites', () => {
+			renderGeneralSettings({scope: 'all'});
+
+			expect(
+				screen.getByRole('checkbox', {
+					name: 'make-this-audience-available-for-all-sites',
+				})
+			).toBeChecked();
+
+			expect(screen.queryByText('scope-sites')).toBeNull();
+		});
+
+		it('lists the scope sites and removes one', async () => {
+			const onScopeChange = renderGeneralSettings({scope: SCOPE_SITES});
+
+			expect(
+				screen.getByRole('checkbox', {
+					name: 'make-this-audience-available-for-all-sites',
+				})
+			).not.toBeChecked();
+
+			const scopeSitesList = screen.getByRole('list', {
+				name: 'scope-sites',
+			});
+
+			expect(
+				within(scopeSitesList).getAllByRole('listitem')
+			).toHaveLength(2);
+
+			await userEvent.click(
+				within(scopeSitesList).getAllByRole('button', {
+					name: 'remove-x',
+				})[0]
+			);
+
+			expect(onScopeChange).toHaveBeenCalledWith([SCOPE_SITES[1]]);
+		});
+
+		it('makes the audience available for all sites', async () => {
+			const onScopeChange = renderGeneralSettings({scope: SCOPE_SITES});
+
+			await userEvent.click(
+				screen.getByRole('checkbox', {
+					name: 'make-this-audience-available-for-all-sites',
+				})
+			);
+
+			expect(onScopeChange).toHaveBeenCalledWith('all');
+		});
+
+		it('shows the scope error under the sites', () => {
+			renderGeneralSettings({groupERCsError: 'error-message', scope: []});
+
+			expect(screen.getByRole('alert')).toHaveTextContent(
+				'error-message'
+			);
+		});
 	});
 });

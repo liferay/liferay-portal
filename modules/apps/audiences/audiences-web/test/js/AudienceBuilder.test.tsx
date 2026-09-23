@@ -540,4 +540,110 @@ describe('AudienceBuilder', () => {
 			expect(row).toHaveFocus();
 		});
 	});
+
+	describe('scope', () => {
+		const SCOPE_SITES = [
+			{
+				descriptiveName: 'Liferay DXP',
+				externalReferenceCode: 'SITE-1',
+				id: 1,
+				logo: '/logo-1',
+			},
+			{
+				descriptiveName: 'Liferay Design',
+				externalReferenceCode: 'SITE-2',
+				id: 2,
+				logo: '/logo-2',
+			},
+		];
+
+		const getPostedGroupERCs = async () => {
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			const [, {body}] = (fetch as jest.Mock).mock.calls.find(
+				([url]) => url === '/update'
+			);
+
+			return body.getAll('_test_groupERCs');
+		};
+
+		const renderAudienceBuilder = (scopeSites?: typeof SCOPE_SITES) =>
+			render(
+				<AudienceBuilder
+					externalReferenceCode="ERC-123"
+					name="My Audience"
+					namespace="_test_"
+					scopeSites={scopeSites}
+					updateAudiencesEntryActionURL="/update"
+				/>
+			);
+
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('posts no sites for a new audience', async () => {
+			renderAudienceBuilder();
+
+			expect(await getPostedGroupERCs()).toEqual([]);
+		});
+
+		it('posts the remaining sites after a removal', async () => {
+			renderAudienceBuilder(SCOPE_SITES);
+
+			await userEvent.click(
+				screen.getAllByRole('button', {name: 'remove-x'})[0]
+			);
+
+			expect(await getPostedGroupERCs()).toEqual(['SITE-2']);
+		});
+
+		it('posts no sites when the audience is made available for all sites', async () => {
+			renderAudienceBuilder(SCOPE_SITES);
+
+			await userEvent.click(
+				screen.getByRole('checkbox', {
+					name: 'make-this-audience-available-for-all-sites',
+				})
+			);
+
+			expect(await getPostedGroupERCs()).toEqual([]);
+		});
+
+		it('requires a site when the audience is not available for all sites', async () => {
+			renderAudienceBuilder();
+
+			await userEvent.click(
+				screen.getByRole('checkbox', {
+					name: 'make-this-audience-available-for-all-sites',
+				})
+			);
+
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			expect(
+				await screen.findByText('please-select-at-least-one-site')
+			).toBeVisible();
+
+			expect(fetch).not.toHaveBeenCalledWith(
+				'/update',
+				expect.anything()
+			);
+		});
+
+		it('shows the error on the sites when the save fails', async () => {
+			(fetch as jest.Mock).mockResolvedValue({
+				json: () =>
+					Promise.resolve({error: {groupERCs: 'error-message'}}),
+			});
+
+			renderAudienceBuilder(SCOPE_SITES);
+
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			expect(await screen.findByText('error-message')).toBeVisible();
+
+			expect(navigate).not.toHaveBeenCalled();
+		});
+	});
 });
