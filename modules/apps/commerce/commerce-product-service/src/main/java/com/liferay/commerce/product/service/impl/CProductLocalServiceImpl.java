@@ -11,6 +11,7 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.base.CProductLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -18,8 +19,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -56,12 +57,17 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 	}
 
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CProduct deleteCProduct(CProduct cProduct) throws PortalException {
 		cProduct = cProductPersistence.remove(cProduct);
 
 		_cpDefinitionLinkLocalService.deleteCPDefinitionLinksByCProductId(
 			cProduct.getCProductId());
+
+		_systemEventLocalService.addSystemEvent(
+			cProduct.getCompanyId(), cProduct.getExternalReferenceCode(),
+			CProduct.class.getName(), cProduct.getCProductId(),
+			cProduct.getUuid(), null, SystemEventConstants.TYPE_DELETE,
+			StringPool.BLANK);
 
 		return cProduct;
 	}
@@ -151,6 +157,9 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 
 	@Reference
 	private CPDefinitionLinkLocalService _cpDefinitionLinkLocalService;
+
+	@Reference
+	private SystemEventLocalService _systemEventLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
