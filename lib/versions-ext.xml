@@ -1044,7 +1044,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/commons-configuration.jar</file-name>
-				<version>1.10.LIFERAY-PATCHED-2</version>
+				<version>1.10.LIFERAY-PATCHED-3</version>
 				<project-name>Commons Configuration</project-name>
 				<project-url>http://commons.apache.org/configuration</project-url>
 				<licenses>
