@@ -130,6 +130,9 @@ public class SystemFDSSerializerTest {
 
 	@Test
 	public void testSerializeUserConfiguration() throws Exception {
+
+		// Malformed configuration JSON
+
 		HttpServletRequest httpServletRequest = _getHttpServletRequest(
 			_memberUser.getUserId());
 
@@ -142,8 +145,6 @@ public class SystemFDSSerializerTest {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_USER_CONFIGURATION",
 					TestPropsValues.getCompanyId());
-
-		// Malformed configuration JSON
 
 		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(

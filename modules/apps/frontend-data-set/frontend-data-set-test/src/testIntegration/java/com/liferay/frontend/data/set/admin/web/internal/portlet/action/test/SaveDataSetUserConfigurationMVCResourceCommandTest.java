@@ -137,7 +137,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Empty configuration JSON
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_OK,
 			_serveResource(_jsonFactory.createJSONObject()));
@@ -145,7 +144,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Null value in configuration JSON
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_OK,
 			_serveResource("{\"initialDataSetSnapshotERC\": null}"));
@@ -206,7 +204,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Blank configuration JSON
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(StringPool.BLANK));
@@ -214,7 +211,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Blank frontend data set name
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(
@@ -223,7 +219,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Guest user
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_FORBIDDEN,
 			_serveResource(
@@ -234,7 +229,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Malformed configuration JSON
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(RandomTestUtil.randomString()));
@@ -242,7 +236,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		// Null configuration JSON
 
 		_assertResponse(_serveResource());
-
 		_assertResponse(
 			HttpServletResponse.SC_BAD_REQUEST, _serveResource((String)null));
 
