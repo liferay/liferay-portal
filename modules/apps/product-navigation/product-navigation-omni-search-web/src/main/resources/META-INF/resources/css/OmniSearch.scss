@@ -182,4 +182,23 @@ html#{$cadmin-selector} .cadmin.omni-search-modal {
 			white-space: nowrap;
 		}
 	}
+
+	@include media-breakpoint-down(sm, $cadmin-grid-breakpoints) {
+		.modal-dialog {
+			margin-bottom: calc(#{$cadmin-spacer} * 0.5);
+			margin-top: calc(#{$cadmin-spacer} * 0.5);
+		}
+
+		.modal-content {
+			max-height: calc(100vh - #{$cadmin-spacer});
+		}
+
+		.modal-header {
+			margin-bottom: calc(#{$cadmin-spacer} * 0.5);
+		}
+
+		.modal-body {
+			max-height: calc(100vh - 6.5rem);
+		}
+	}
 }
