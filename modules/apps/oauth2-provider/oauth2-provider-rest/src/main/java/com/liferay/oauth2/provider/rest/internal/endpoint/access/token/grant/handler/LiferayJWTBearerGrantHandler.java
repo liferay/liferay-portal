@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -229,6 +230,10 @@ public class LiferayJWTBearerGrantHandler extends BaseAccessTokenGrantHandler {
 	private LiferayOAuthDataProvider _liferayOAuthDataProvider;
 
 	private volatile OAuth2ProviderConfiguration _oAuth2ProviderConfiguration;
+
+	@Reference
+	private SecretResolver _secretResolver;
+
 	private ServiceRegistration<ManagedServiceFactory> _serviceRegistration;
 	private final Map<Long, Map<String, String>> _userAuthTypes =
 		new ConcurrentHashMap<>();
@@ -514,7 +519,10 @@ public class LiferayJWTBearerGrantHandler extends BaseAccessTokenGrantHandler {
 					jwsSignatureVerifiers.get(issuer);
 
 				JsonWebKeys jsonWebKeys = JwkUtils.readJwkSet(
-					oAuth2InAssertionConfiguration.signatureJSONWebKeySet());
+					_secretResolver.resolve(
+						companyId,
+						oAuth2InAssertionConfiguration.
+							signatureJSONWebKeySet()));
 
 				for (JsonWebKey jsonWebKey : jsonWebKeys.getKeys()) {
 					PublicKeyUse publicKeyUse = jsonWebKey.getPublicKeyUse();

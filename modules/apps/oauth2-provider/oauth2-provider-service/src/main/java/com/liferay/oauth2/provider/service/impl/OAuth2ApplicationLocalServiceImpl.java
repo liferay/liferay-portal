@@ -66,6 +66,7 @@ import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.awt.image.RenderedImage;
 
@@ -504,18 +505,9 @@ public class OAuth2ApplicationLocalServiceImpl
 	public String getPlaintextClientSecret(OAuth2Application oAuth2Application)
 		throws PortalException {
 
-		String clientSecret = oAuth2Application.getClientSecret();
-
-		if (!KeyReferenceUtil.isKeyReference(clientSecret)) {
-			return clientSecret;
-		}
-
-		try (Secret secret = _secretManager.getSecret(
-				oAuth2Application.getCompanyId(),
-				KeyReferenceUtil.toKeyReference(clientSecret))) {
-
-			return new String(secret.getChars());
-		}
+		return _secretResolver.resolve(
+			oAuth2Application.getCompanyId(),
+			oAuth2Application.getClientSecret());
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1036,6 +1028,9 @@ public class OAuth2ApplicationLocalServiceImpl
 
 	@Reference
 	private SecretManager _secretManager;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference
 	private UserLocalService _userLocalService;
