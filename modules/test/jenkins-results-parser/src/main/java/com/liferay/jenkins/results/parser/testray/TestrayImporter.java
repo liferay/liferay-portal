@@ -1819,9 +1819,10 @@ public class TestrayImporter {
 
 		topLevelStandaloneBuildTestrayCaseResult.cacheTestrayCaseResultURL();
 
-		if (topLevelStandaloneBuildTestrayCaseResult.
-				getTestrayCaseResultURL() == null) {
+		URL testrayCaseResultURL =
+			topLevelStandaloneBuildTestrayCaseResult.getTestrayCaseResultURL();
 
+		if (testrayCaseResultURL == null) {
 			_uncreatedTestrayCaseResultsCount.incrementAndGet();
 		}
 
