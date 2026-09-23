@@ -176,6 +176,8 @@ test(
 				['Date', 'Day', {}],
 				['Date and Time', 'Moment', {}],
 				['Boolean', 'Flag', {}],
+				['Email', 'Contact', {}],
+				['Phone Number', 'Line', {}],
 				['Select from List', 'State', {picklist: PICKLIST}],
 				[
 					'Select from List',
@@ -213,6 +215,8 @@ test(
 				{label: 'Essay', value: 'First long text value.'},
 				{label: 'Amount', value: '10'},
 				{label: 'Ratio', value: '1.5'},
+				{label: 'Contact', value: 'first@liferay.com'},
+				{label: 'Line', value: '600111222'},
 				{label: 'Day', type: 'Date', value: '08/28/2026'},
 				{label: 'Moment', type: 'Date', value: '08/28/2026 10:30 AM'},
 			]);
@@ -239,6 +243,8 @@ test(
 				{label: 'Essay', value: 'Second long text value.'},
 				{label: 'Amount', value: '25'},
 				{label: 'Ratio', value: '3.75'},
+				{label: 'Contact', value: 'second@liferay.com'},
+				{label: 'Line', value: '600999888'},
 				{label: 'Day', type: 'Date', value: '09/15/2026'},
 				{label: 'Moment', type: 'Date', value: '09/15/2026 04:45 PM'},
 				{label: 'Flag', type: 'Checkbox', value: true},
@@ -332,7 +338,7 @@ test(
 			}
 		});
 
-		await test.step('A changed date is marked as a single value', async () => {
+		await test.step('A changed atomic value is marked as one unit', async () => {
 			const leftDay = getDiffBox(leftFrame, 'day').locator(
 				'.diff-html-added'
 			);
@@ -347,6 +353,23 @@ test(
 			await expect(
 				getDiffBox(leftFrame, 'moment').locator('.diff-html-added')
 			).toHaveText('09/15/2026, 04:45 PM');
+
+			const atomicCases: [string, string, string][] = [
+				['contact', 'second@liferay.com', 'first@liferay.com'],
+				['line', '+1600999888', '+1600111222'],
+				['ratio', '3.75', '1.5'],
+			];
+
+			for (const [fieldName, leftValue, rightValue] of atomicCases) {
+				await expect(
+					getDiffBox(leftFrame, fieldName).locator('.diff-html-added')
+				).toHaveText(leftValue);
+				await expect(
+					getDiffBox(rightFrame, fieldName).locator(
+						'.diff-html-added'
+					)
+				).toHaveText(rightValue);
+			}
 		});
 
 		await test.step('A changed reference is marked by its title', async () => {

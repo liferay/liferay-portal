@@ -98,6 +98,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 
 	@Test
 	public void testToDiffHtml() throws Exception {
+		_testToDiffHtmlWithAtomicObjectFields();
 		_testToDiffHtmlWithAttachmentObjectField();
 		_testToDiffHtmlWithDateObjectField();
 		_testToDiffHtmlWithTextObjectField();
@@ -388,6 +389,27 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		Assert.assertEquals(
 			"hello-world", fieldValues.get("objectEntryFriendlyURL"));
 		Assert.assertEquals("Hello", fieldValues.get("title"));
+	}
+
+	private void _testToDiffHtmlWithAtomicObjectFields() throws Exception {
+		for (String businessType :
+				new String[] {
+					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
+					ObjectFieldConstants.BUSINESS_TYPE_EMAIL_ADDRESS,
+					ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
+					ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER,
+					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP
+				}) {
+
+			Assert.assertEquals(
+				businessType,
+				"<span class=\"diff-html-removed\">1.5</span>" +
+					"<span class=\"diff-html-added\">3.75</span>",
+				_objectEntryVersionFieldValueResolver.toDiffHtml(
+					"3.75", _mockObjectField(businessType), "1.5"));
+		}
 	}
 
 	private void _testToDiffHtmlWithAttachmentObjectField() throws Exception {

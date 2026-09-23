@@ -12,7 +12,6 @@ import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../main/fixtures/cmsPagesTest';
 import {structureBuilderPagesTest} from './fixtures/structureBuilderPagesTest';
-import {FieldType} from './pages/StructureBuilderPage';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -37,7 +36,7 @@ test(
 			page: structureBuilderPage,
 		});
 
-		await structureBuilderPage.addField('Email' as FieldType);
+		await structureBuilderPage.addField('Email');
 
 		// Accept Unique Values Only lives in the General tab
 

@@ -19,6 +19,7 @@ export const FIELD_TYPES = [
 	'Long Text',
 	'Rich Text',
 	'Decimal',
+	'Email',
 	'Select from List',
 	'Numeric',
 	'Date',

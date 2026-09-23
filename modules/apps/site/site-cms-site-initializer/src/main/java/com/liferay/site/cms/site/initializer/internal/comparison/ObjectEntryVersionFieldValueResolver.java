@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -54,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -158,11 +160,7 @@ public class ObjectEntryVersionFieldValueResolver {
 		String businessType =
 			(objectField == null) ? null : objectField.getBusinessType();
 
-		if (ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT.equals(
-				businessType) ||
-			ObjectFieldConstants.BUSINESS_TYPE_DATE.equals(businessType) ||
-			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME.equals(businessType)) {
-
+		if (_atomicBusinessTypes.contains(businessType)) {
 			StringBundler sb = new StringBundler(6);
 
 			if (!removedDisplayValue.isEmpty()) {
@@ -475,6 +473,18 @@ public class ObjectEntryVersionFieldValueResolver {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryVersionFieldValueResolver.class);
+
+	private static final Set<String> _atomicBusinessTypes = SetUtil.fromArray(
+		ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+		ObjectFieldConstants.BUSINESS_TYPE_DATE,
+		ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+		ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
+		ObjectFieldConstants.BUSINESS_TYPE_EMAIL_ADDRESS,
+		ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+		ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
+		ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER,
+		ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
+		ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP);
 
 	private final DiffHtml _diffHtml;
 	private final DLAppLocalService _dlAppLocalService;
