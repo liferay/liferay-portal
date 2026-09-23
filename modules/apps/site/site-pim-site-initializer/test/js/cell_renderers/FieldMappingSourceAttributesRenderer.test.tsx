@@ -7,12 +7,12 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import FieldMappingSourceAttributeRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingSourceAttributeRenderer';
+import FieldMappingSourceAttributesRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingSourceAttributesRenderer';
 
-describe('FieldMappingSourceAttributeRenderer', () => {
+describe('FieldMappingSourceAttributesRenderer', () => {
 	it('shows a chip for every mapped source attribute', () => {
 		render(
-			<FieldMappingSourceAttributeRenderer value={['Code', 'Name']} />
+			<FieldMappingSourceAttributesRenderer value={['Code', 'Name']} />
 		);
 
 		expect(screen.getByText('Code')).toBeInTheDocument();
@@ -21,7 +21,7 @@ describe('FieldMappingSourceAttributeRenderer', () => {
 
 	it('counts the source attributes it cannot fit', () => {
 		render(
-			<FieldMappingSourceAttributeRenderer
+			<FieldMappingSourceAttributesRenderer
 				value={['a', 'b', 'c', 'd', 'e']}
 			/>
 		);
@@ -34,7 +34,7 @@ describe('FieldMappingSourceAttributeRenderer', () => {
 
 	it('shows nothing when the channel field is not mapped', () => {
 		const {container} = render(
-			<FieldMappingSourceAttributeRenderer value={[]} />
+			<FieldMappingSourceAttributesRenderer value={[]} />
 		);
 
 		expect(container).toBeEmptyDOMElement();

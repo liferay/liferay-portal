@@ -27,36 +27,41 @@ const ACTIONS = [
 		href: '/edit-connector?objectEntryId={id}',
 	},
 	{
-		data: {id: 'fieldMapping'},
-		href: '/field-mapping?objectEntryId={id}',
+		data: {id: 'fieldMappings'},
+		href: '/field-mappings?objectEntryId={id}',
 	},
 ];
+
+const NAME = Math.random().toString(36);
+
+const OBJECT_ENTRY_ID = Math.random().toString(36);
 
 describe('ConnectorNameRenderer', () => {
 	it('links the connector name to the field mapping page when the user can update', () => {
 		render(
 			<ConnectorNameRenderer
 				actions={ACTIONS}
-				itemData={{actions: {update: {}}, id: '42'}}
-				value="Ushio Commerce"
+				itemData={{actions: {update: {}}, id: OBJECT_ENTRY_ID}}
+				value={NAME}
 			/>
 		);
 
-		expect(
-			screen.getByRole('link', {name: 'Ushio Commerce'})
-		).toHaveAttribute('href', '/field-mapping?objectEntryId=42');
+		expect(screen.getByRole('link', {name: NAME})).toHaveAttribute(
+			'href',
+			`/field-mappings?objectEntryId=${OBJECT_ENTRY_ID}`
+		);
 	});
 
 	it('renders the connector name as plain text when the user cannot update', () => {
 		render(
 			<ConnectorNameRenderer
 				actions={ACTIONS}
-				itemData={{actions: {}, id: '42'}}
-				value="Ushio Commerce"
+				itemData={{actions: {}, id: OBJECT_ENTRY_ID}}
+				value={NAME}
 			/>
 		);
 
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
-		expect(screen.getByText('Ushio Commerce')).toBeInTheDocument();
+		expect(screen.getByText(NAME)).toBeInTheDocument();
 	});
 });

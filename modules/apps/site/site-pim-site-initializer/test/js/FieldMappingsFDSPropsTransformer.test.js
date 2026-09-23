@@ -4,26 +4,36 @@
  */
 
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/FieldMappingsFDSPropsTransformer';
+import FieldMappingChannelFieldRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingChannelFieldRenderer';
+import FieldMappingSourceAttributesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingSourceAttributesRenderer';
 
 describe('FieldMappingsFDSPropsTransformer', () => {
-	it('registers a renderer for every custom column', () => {
-		const {customRenderers} = propsTransformer({});
+	it('registers the cell renderers under the names the table view declares', () => {
+		const result = propsTransformer({});
 
-		expect(customRenderers.tableCell.map(({name}) => name)).toEqual([
-			'channelFieldTableCellRenderer',
-			'requiredTableCellRenderer',
-			'sourceAttributeTableCellRenderer',
-			'statusTableCellRenderer',
+		expect(result.customRenderers.tableCell).toEqual([
+			{
+				component: FieldMappingChannelFieldRenderer,
+				name: 'channelFieldTableCellRenderer',
+				type: 'internal',
+			},
+			{
+				component: FieldMappingSourceAttributesRenderer,
+				name: 'sourceAttributesTableCellRenderer',
+				type: 'internal',
+			},
 		]);
 	});
 
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
 		const result = propsTransformer({
+			apiURL: '/o/frontend-data-set-taglib/app',
 			hideManagementBarInEmptyState: false,
-			id: 'fieldMappings',
+			id: 'field-mappings',
 		});
 
+		expect(result.apiURL).toBe('/o/frontend-data-set-taglib/app');
 		expect(result.hideManagementBarInEmptyState).toBe(true);
-		expect(result.id).toBe('fieldMappings');
+		expect(result.id).toBe('field-mappings');
 	});
 });

@@ -13,14 +13,14 @@ describe('FieldMappingChannelFieldRenderer', () => {
 	it('links the channel field to its mapping page', () => {
 		render(
 			<FieldMappingChannelFieldRenderer
-				itemData={{href: '/map-channel-field?channelField=name'}}
+				itemData={{href: '/edit-field-mapping?channelField=name'}}
 				value="Name"
 			/>
 		);
 
 		expect(screen.getByRole('link', {name: 'Name'})).toHaveAttribute(
 			'href',
-			'/map-channel-field?channelField=name'
+			'/edit-field-mapping?channelField=name'
 		);
 	});
 });
