@@ -10,7 +10,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
-import com.liferay.portal.kernel.encryptor.CompanyKeyUtil;
+import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
@@ -43,7 +43,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Christopher Kian
  */
 @RunWith(Arquillian.class)
-public class CompanyKeyUtilTest {
+public class CompanyKeyResolverUtilTest {
 
 	@ClassRule
 	@Rule
@@ -52,11 +52,12 @@ public class CompanyKeyUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_testCompanyCryptoProvider = new TestCompanyCryptoProvider();
-
-		Bundle bundle = FrameworkUtil.getBundle(CompanyKeyUtilTest.class);
+		Bundle bundle = FrameworkUtil.getBundle(
+			CompanyKeyResolverUtilTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
+
+		_testCompanyCryptoProvider = new TestCompanyCryptoProvider();
 
 		_serviceRegistration = bundleContext.registerService(
 			CryptoProvider.class, _testCompanyCryptoProvider,
@@ -83,7 +84,6 @@ public class CompanyKeyUtilTest {
 	@After
 	public void tearDown() throws Exception {
 		_keyManagerConfigurationTemporarySwapper.close();
-
 		_keyManagerCustomProfileConfigurationTemporarySwapper.close();
 
 		_serviceRegistration.unregister();
@@ -94,19 +94,19 @@ public class CompanyKeyUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		Key key = EncryptorUtil.generateKey();
 
-		String wrappedKey = CompanyKeyUtil.wrapKey(companyId, key);
+		String wrappedKey = CompanyKeyResolverUtil.wrapKey(companyId, key);
 
 		_saveKeyManagerConfiguration(TestCompanyCryptoProvider.KEY_IDENTIFIER);
 
 		int decryptCount = _testCompanyCryptoProvider.getDecryptCount();
-
-		Key unwrappedKey = CompanyKeyUtil.unwrapKey(companyId, wrappedKey);
+		Key unwrappedKey = CompanyKeyResolverUtil.unwrapKey(
+			companyId, wrappedKey);
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
 		Assert.assertEquals(key, unwrappedKey);
 
-		unwrappedKey = CompanyKeyUtil.unwrapKey(companyId, wrappedKey);
+		unwrappedKey = CompanyKeyResolverUtil.unwrapKey(companyId, wrappedKey);
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
@@ -114,7 +114,7 @@ public class CompanyKeyUtilTest {
 
 		key = EncryptorUtil.generateKey();
 
-		unwrappedKey = CompanyKeyUtil.unwrapKey(
+		unwrappedKey = CompanyKeyResolverUtil.unwrapKey(
 			companyId, EncryptorUtil.serializeKey(key));
 
 		Assert.assertEquals(
@@ -126,7 +126,8 @@ public class CompanyKeyUtilTest {
 	public void testWrapKey() throws Exception {
 		_company = CompanyTestUtil.addCompany();
 
-		Assert.assertTrue(CompanyKeyUtil.isWrappedKey(_company.getKey()));
+		Assert.assertTrue(
+			CompanyKeyResolverUtil.isWrappedKey(_company.getKey()));
 
 		Key key = _company.getKeyObj();
 
@@ -145,7 +146,7 @@ public class CompanyKeyUtilTest {
 
 		Assert.assertEquals(key, persistedCompany.getKeyObj());
 		Assert.assertTrue(
-			CompanyKeyUtil.isWrappedKey(persistedCompany.getKey()));
+			CompanyKeyResolverUtil.isWrappedKey(persistedCompany.getKey()));
 
 		_saveKeyManagerConfiguration(StringPool.BLANK);
 
@@ -153,7 +154,7 @@ public class CompanyKeyUtilTest {
 
 		String serializedKey = _legacyCompany.getKey();
 
-		Assert.assertFalse(CompanyKeyUtil.isWrappedKey(serializedKey));
+		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(serializedKey));
 		Assert.assertEquals(
 			EncryptorUtil.deserializeKey(serializedKey),
 			_legacyCompany.getKeyObj());
