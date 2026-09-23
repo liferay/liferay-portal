@@ -13,6 +13,7 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-function")

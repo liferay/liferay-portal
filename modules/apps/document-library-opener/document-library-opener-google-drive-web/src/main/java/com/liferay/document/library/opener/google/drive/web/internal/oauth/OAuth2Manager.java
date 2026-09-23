@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.IOException;
 
@@ -222,7 +223,10 @@ public class OAuth2Manager {
 						dlGoogleDriveCompanyConfiguration.clientId()) &&
 					StringUtil.equals(
 						clientParametersAuthentication.getClientSecret(),
-						dlGoogleDriveCompanyConfiguration.clientSecret())) {
+						_secretResolver.resolve(
+							companyId,
+							dlGoogleDriveCompanyConfiguration.
+								clientSecret()))) {
 
 					return googleAuthorizationCodeFlow;
 				}
@@ -241,7 +245,10 @@ public class OAuth2Manager {
 						GetterUtil.getString(
 							dlGoogleDriveCompanyConfiguration.clientId()),
 						GetterUtil.getString(
-							dlGoogleDriveCompanyConfiguration.clientSecret()),
+							_secretResolver.resolve(
+								companyId,
+								dlGoogleDriveCompanyConfiguration.
+									clientSecret())),
 						Collections.singleton(DriveScopes.DRIVE_FILE));
 
 			googleAuthorizationCodeFlowBuilder =
@@ -271,5 +278,8 @@ public class OAuth2Manager {
 
 	private final Map<Long, GoogleAuthorizationCodeFlow>
 		_googleAuthorizationCodeFlows = new ConcurrentHashMap<>();
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

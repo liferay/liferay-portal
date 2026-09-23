@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -74,8 +75,10 @@ public class MSCognitiveServicesImageAssetAutoTagProvider
 			JSONObject responseJSONObject = _queryComputerVisionJSONObject(
 				msCognitiveServicesAssetAutoTagProviderCompanyConfiguration.
 					apiEndpoint(),
-				msCognitiveServicesAssetAutoTagProviderCompanyConfiguration.
-					apiKey(),
+				_secretResolver.resolve(
+					fileEntry.getCompanyId(),
+					msCognitiveServicesAssetAutoTagProviderCompanyConfiguration.
+						apiKey()),
 				fileEntry.getFileVersion());
 
 			JSONArray tagsJSONArray = responseJSONObject.getJSONArray("tags");
@@ -175,5 +178,8 @@ public class MSCognitiveServicesImageAssetAutoTagProvider
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

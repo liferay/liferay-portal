@@ -8,6 +8,7 @@ package com.liferay.document.library.google.docs.internal.helper;
 import com.liferay.document.library.google.drive.configuration.DLGoogleDriveCompanyConfiguration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 /**
  * @author Iván Zaera
@@ -17,19 +18,23 @@ public class GoogleDocsConfigurationHelper {
 	public GoogleDocsConfigurationHelper(long companyId)
 		throws ConfigurationException {
 
+		_companyId = companyId;
+
 		_dlGoogleDriveCompanyConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
 				DLGoogleDriveCompanyConfiguration.class, companyId);
 	}
 
 	public String getGoogleAppsAPIKey() {
-		return _dlGoogleDriveCompanyConfiguration.pickerAPIKey();
+		return SecretResolverUtil.resolve(
+			_companyId, _dlGoogleDriveCompanyConfiguration.pickerAPIKey());
 	}
 
 	public String getGoogleClientId() {
 		return _dlGoogleDriveCompanyConfiguration.clientId();
 	}
 
+	private final long _companyId;
 	private final DLGoogleDriveCompanyConfiguration
 		_dlGoogleDriveCompanyConfiguration;
 

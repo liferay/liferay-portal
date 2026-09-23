@@ -16,6 +16,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.IOException;
 
@@ -113,7 +114,8 @@ public class OAuth2Manager {
 		ServiceBuilderOAuth20 serviceBuilderOAuth20 = new ServiceBuilder(
 			dlOneDriveCompanyConfiguration.clientId()
 		).apiSecret(
-			dlOneDriveCompanyConfiguration.clientSecret()
+			_secretResolver.resolve(
+				companyId, dlOneDriveCompanyConfiguration.clientSecret())
 		).callback(
 			redirectURL
 		).withScope(
@@ -179,5 +181,8 @@ public class OAuth2Manager {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
