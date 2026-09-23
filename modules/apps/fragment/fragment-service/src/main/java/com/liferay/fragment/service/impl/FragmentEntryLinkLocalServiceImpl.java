@@ -354,7 +354,7 @@ public class FragmentEntryLinkLocalServiceImpl
 			).where(
 				_getLatestFragmentEntryLinkPredicate(
 					_getAllFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry, FragmentEntryLinkTable.INSTANCE))
+						fragmentEntry))
 			).orderBy(
 				_getOrderByStepLimitStepFunction(orderByComparator)
 			).limit(
@@ -376,7 +376,7 @@ public class FragmentEntryLinkLocalServiceImpl
 					FragmentEntryLinkTable.INSTANCE
 				).where(
 					_getAllFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry, FragmentEntryLinkTable.INSTANCE)
+						fragmentEntry)
 				).as(
 					"tempFragmentEntryLinkTable"
 				)
@@ -549,14 +549,7 @@ public class FragmentEntryLinkLocalServiceImpl
 			).from(
 				FragmentEntryLinkTable.INSTANCE
 			).where(
-				FragmentEntryLinkTable.INSTANCE.fragmentEntryERC.eq(
-					fragmentEntry.getExternalReferenceCode()
-				).and(
-					_getFragmentEntryScopePredicate(
-						_groupLocalService.getGroup(fragmentEntry.getGroupId()))
-				).and(
-					FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
-				)
+				_getAllFragmentEntryLinksByFragmentEntryPredicate(fragmentEntry)
 			).groupBy(
 				FragmentEntryLinkTable.INSTANCE.groupId
 			));
@@ -863,28 +856,19 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	private Predicate _getAllFragmentEntryLinksByFragmentEntryPredicate(
-			FragmentEntry fragmentEntry,
-			FragmentEntryLinkTable fragmentEntryLinkTable)
+			FragmentEntry fragmentEntry)
 		throws PortalException {
 
-		Group group = _groupLocalService.getGroup(fragmentEntry.getGroupId());
-
-		return fragmentEntryLinkTable.fragmentEntryERC.eq(
-			fragmentEntry.getExternalReferenceCode()
+		return FragmentEntryLinkTable.INSTANCE.companyId.eq(
+			fragmentEntry.getCompanyId()
 		).and(
-			Predicate.withParentheses(
-				fragmentEntryLinkTable.fragmentEntryScopeERC.eq(
-					group.getExternalReferenceCode()
-				).or(
-					Predicate.withParentheses(
-						fragmentEntryLinkTable.fragmentEntryScopeERC.isNull(
-						).and(
-							fragmentEntryLinkTable.groupId.eq(
-								group.getGroupId())
-						))
-				))
+			FragmentEntryLinkTable.INSTANCE.fragmentEntryERC.eq(
+				fragmentEntry.getExternalReferenceCode())
 		).and(
-			fragmentEntryLinkTable.deleted.eq(false)
+			_getFragmentEntryScopePredicate(
+				_groupLocalService.getGroup(fragmentEntry.getGroupId()))
+		).and(
+			FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
 		);
 	}
 
