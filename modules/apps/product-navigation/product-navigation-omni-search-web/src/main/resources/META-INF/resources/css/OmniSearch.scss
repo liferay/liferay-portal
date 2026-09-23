@@ -23,127 +23,6 @@ html#{$cadmin-selector} .cadmin.omni-search-modal {
 		transform: scale(1);
 	}
 
-	.modal-dialog {
-		margin-top: 4rem;
-	}
-
-	.modal-content {
-		background-color: transparent;
-		border: 0;
-		box-shadow: none;
-		max-height: calc(100vh - 3.75rem);
-		overflow: visible;
-	}
-
-	.modal-header {
-		align-items: center;
-		background: var(--cadmin-white);
-		border-radius: $cadmin-border-radius-xl;
-		border-width: 0;
-		box-shadow: $cadmin-box-shadow-lg;
-		height: auto;
-		margin-bottom: $cadmin-spacer;
-		padding: $cadmin-spacer 20px $cadmin-spacer $cadmin-spacer;
-	}
-
-	@include media-breakpoint-up(md, $cadmin-grid-breakpoints) {
-		.modal-header .close {
-			@include sr-only();
-			@include sr-only-focusable();
-
-			&:active,
-			&:focus {
-				margin-left: calc(#{$cadmin-spacer} * 0.5);
-				position: relative;
-				z-index: 5;
-			}
-		}
-	}
-
-	.modal-title {
-		overflow: visible;
-	}
-
-	.modal-body {
-		background-color: var(--cadmin-white);
-		border-radius: $cadmin-border-radius-xl;
-		border-width: 0;
-		box-shadow: $cadmin-box-shadow-lg;
-		max-height: calc(100vh - 16rem);
-		overflow-y: auto;
-		padding: $cadmin-spacer;
-
-		&:empty {
-			display: none;
-		}
-	}
-
-	.modal-header .input-group {
-		flex-grow: 1;
-	}
-
-	.form-control.omni-search-input {
-		font-size: 20px;
-		height: 48px;
-	}
-
-	.input-group-item-focusable {
-		border-radius: $cadmin-border-radius;
-	}
-
-	.input-group-inset-item-before {
-		border-bottom-left-radius: $cadmin-border-radius;
-		border-top-left-radius: $cadmin-border-radius;
-		padding-left: $cadmin-spacer;
-		padding-right: calc(#{$cadmin-spacer} * 0.5);
-	}
-
-	.input-group-inset-item-after {
-		border-bottom-right-radius: $cadmin-border-radius;
-		border-top-right-radius: $cadmin-border-radius;
-		min-width: 40px;
-	}
-
-	.omni-search-section-header {
-		align-items: center;
-		display: flex;
-		font-size: 0.75rem;
-		font-weight: 600;
-		letter-spacing: 0.05em;
-		margin: 1rem 0 0.5rem;
-
-		&:first-child {
-			margin-top: 0;
-		}
-	}
-
-	.omni-search-list {
-		margin-bottom: 0;
-	}
-
-	.omni-search-result-item {
-		position: relative;
-
-		.omni-search-result-delete {
-			opacity: 0;
-			position: absolute;
-			right: calc(#{$cadmin-spacer} * 0.5);
-			top: 50%;
-			transform: translateY(-50%);
-		}
-
-		&:focus-within .omni-search-result-delete,
-		&:has(.omni-search-result.active) .omni-search-result-delete,
-		&:hover .omni-search-result-delete,
-		.omni-search-result-delete:focus {
-			opacity: 1;
-		}
-
-		&:has(.omni-search-result-delete) .omni-search-result {
-			padding-right: 48px;
-		}
-	}
-
 	.btn.omni-search-result {
 		align-items: center;
 		border-radius: $cadmin-border-radius;
@@ -153,10 +32,17 @@ html#{$cadmin-selector} .cadmin.omni-search-modal {
 		text-align: left;
 		width: 100%;
 
-		&:hover,
+		&.active,
 		&:focus,
-		&.active {
+		&:hover {
 			background-color: var(--cadmin-gray-100);
+		}
+
+		.omni-search-result-source {
+			font-size: 0.8125rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		.omni-search-result-sticker {
@@ -174,31 +60,145 @@ html#{$cadmin-selector} .cadmin.omni-search-modal {
 		.omni-search-result-title {
 			font-weight: 600;
 		}
+	}
 
-		.omni-search-result-source {
-			font-size: 0.8125rem;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+	.form-control.omni-search-input {
+		font-size: 20px;
+		height: 48px;
+	}
+
+	.input-group-inset-item-after {
+		border-bottom-right-radius: $cadmin-border-radius;
+		border-top-right-radius: $cadmin-border-radius;
+		min-width: 40px;
+	}
+
+	.input-group-inset-item-before {
+		border-bottom-left-radius: $cadmin-border-radius;
+		border-top-left-radius: $cadmin-border-radius;
+		padding-left: $cadmin-spacer;
+		padding-right: calc(#{$cadmin-spacer} * 0.5);
+	}
+
+	.input-group-item-focusable {
+		border-radius: $cadmin-border-radius;
+	}
+
+	.modal-body {
+		background-color: var(--cadmin-white);
+		border-radius: $cadmin-border-radius-xl;
+		border-width: 0;
+		box-shadow: $cadmin-box-shadow-lg;
+		max-height: calc(100vh - 16rem);
+		overflow-y: auto;
+		padding: $cadmin-spacer;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	.modal-content {
+		background-color: transparent;
+		border: 0;
+		box-shadow: none;
+		max-height: calc(100vh - 3.75rem);
+		overflow: visible;
+	}
+
+	.modal-dialog {
+		margin-top: 4rem;
+	}
+
+	.modal-header {
+		align-items: center;
+		background: var(--cadmin-white);
+		border-radius: $cadmin-border-radius-xl;
+		border-width: 0;
+		box-shadow: $cadmin-box-shadow-lg;
+		height: auto;
+		margin-bottom: $cadmin-spacer;
+		padding: $cadmin-spacer 20px $cadmin-spacer $cadmin-spacer;
+	}
+
+	.modal-header .input-group {
+		flex-grow: 1;
+	}
+
+	.modal-title {
+		overflow: visible;
+	}
+
+	.omni-search-list {
+		margin-bottom: 0;
+	}
+
+	.omni-search-result-item {
+		position: relative;
+
+		&:focus-within .omni-search-result-delete,
+		&:has(.omni-search-result.active) .omni-search-result-delete,
+		&:hover .omni-search-result-delete,
+		.omni-search-result-delete:focus {
+			opacity: 1;
+		}
+
+		&:has(.omni-search-result-delete) .omni-search-result {
+			padding-right: 48px;
+		}
+
+		.omni-search-result-delete {
+			opacity: 0;
+			position: absolute;
+			right: calc(#{$cadmin-spacer} * 0.5);
+			top: 50%;
+			transform: translateY(-50%);
+		}
+	}
+
+	.omni-search-section-header {
+		align-items: center;
+		display: flex;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		margin: 1rem 0 0.5rem;
+
+		&:first-child {
+			margin-top: 0;
 		}
 	}
 
 	@include media-breakpoint-down(sm, $cadmin-grid-breakpoints) {
-		.modal-dialog {
-			margin-bottom: calc(#{$cadmin-spacer} * 0.5);
-			margin-top: calc(#{$cadmin-spacer} * 0.5);
+		.modal-body {
+			max-height: calc(100vh - 6.5rem);
 		}
 
 		.modal-content {
 			max-height: calc(100vh - #{$cadmin-spacer});
 		}
 
+		.modal-dialog {
+			margin-bottom: calc(#{$cadmin-spacer} * 0.5);
+			margin-top: calc(#{$cadmin-spacer} * 0.5);
+		}
+
 		.modal-header {
 			margin-bottom: calc(#{$cadmin-spacer} * 0.5);
 		}
+	}
 
-		.modal-body {
-			max-height: calc(100vh - 6.5rem);
+	@include media-breakpoint-up(md, $cadmin-grid-breakpoints) {
+		.modal-header .close {
+			@include sr-only();
+			@include sr-only-focusable();
+
+			&:active,
+			&:focus {
+				margin-left: calc(#{$cadmin-spacer} * 0.5);
+				position: relative;
+				z-index: 5;
+			}
 		}
 	}
 }
