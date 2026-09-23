@@ -129,8 +129,10 @@
 	</model>
 	<model name="com.liferay.portal.tools.service.builder.test.model.FinderWhereClauseEntry">
 		<field name="finderWhereClauseEntryId" type="long" />
+		<field name="headId" type="long" />
 		<field name="name" type="String" />
 		<field name="nickname" type="String" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.portal.tools.service.builder.test.model.IndexEntry">
 		<field name="mvccVersion" type="long" />

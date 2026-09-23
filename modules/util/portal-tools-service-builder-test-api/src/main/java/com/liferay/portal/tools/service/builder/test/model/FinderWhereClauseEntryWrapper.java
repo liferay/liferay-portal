@@ -36,8 +36,10 @@ public class FinderWhereClauseEntryWrapper
 
 		attributes.put(
 			"finderWhereClauseEntryId", getFinderWhereClauseEntryId());
+		attributes.put("headId", getHeadId());
 		attributes.put("name", getName());
 		attributes.put("nickname", getNickname());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -51,6 +53,12 @@ public class FinderWhereClauseEntryWrapper
 			setFinderWhereClauseEntryId(finderWhereClauseEntryId);
 		}
 
+		Long headId = (Long)attributes.get("headId");
+
+		if (headId != null) {
+			setHeadId(headId);
+		}
+
 		String name = (String)attributes.get("name");
 
 		if (name != null) {
@@ -61,6 +69,12 @@ public class FinderWhereClauseEntryWrapper
 
 		if (nickname != null) {
 			setNickname(nickname);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -77,6 +91,16 @@ public class FinderWhereClauseEntryWrapper
 	@Override
 	public long getFinderWhereClauseEntryId() {
 		return model.getFinderWhereClauseEntryId();
+	}
+
+	/**
+	 * Returns the head ID of this finder where clause entry.
+	 *
+	 * @return the head ID of this finder where clause entry
+	 */
+	@Override
+	public long getHeadId() {
+		return model.getHeadId();
 	}
 
 	/**
@@ -109,6 +133,16 @@ public class FinderWhereClauseEntryWrapper
 		return model.getPrimaryKey();
 	}
 
+	/**
+	 * Returns the status of this finder where clause entry.
+	 *
+	 * @return the status of this finder where clause entry
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
+	}
+
 	@Override
 	public void persist() {
 		model.persist();
@@ -122,6 +156,16 @@ public class FinderWhereClauseEntryWrapper
 	@Override
 	public void setFinderWhereClauseEntryId(long finderWhereClauseEntryId) {
 		model.setFinderWhereClauseEntryId(finderWhereClauseEntryId);
+	}
+
+	/**
+	 * Sets the head ID of this finder where clause entry.
+	 *
+	 * @param headId the head ID of this finder where clause entry
+	 */
+	@Override
+	public void setHeadId(long headId) {
+		model.setHeadId(headId);
 	}
 
 	/**
@@ -154,6 +198,16 @@ public class FinderWhereClauseEntryWrapper
 		model.setPrimaryKey(primaryKey);
 	}
 
+	/**
+	 * Sets the status of this finder where clause entry.
+	 *
+	 * @param status the status of this finder where clause entry
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
 	@Override
 	public String toXmlString() {
 		return model.toXmlString();
@@ -167,4 +221,4 @@ public class FinderWhereClauseEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:274564420
+// LIFERAY-SERVICE-BUILDER-HASH:-1374148306

@@ -60,6 +60,20 @@ public interface FinderWhereClauseEntryModel
 	public void setFinderWhereClauseEntryId(long finderWhereClauseEntryId);
 
 	/**
+	 * Returns the head ID of this finder where clause entry.
+	 *
+	 * @return the head ID of this finder where clause entry
+	 */
+	public long getHeadId();
+
+	/**
+	 * Sets the head ID of this finder where clause entry.
+	 *
+	 * @param headId the head ID of this finder where clause entry
+	 */
+	public void setHeadId(long headId);
+
+	/**
 	 * Returns the name of this finder where clause entry.
 	 *
 	 * @return the name of this finder where clause entry
@@ -89,6 +103,20 @@ public interface FinderWhereClauseEntryModel
 	 */
 	public void setNickname(String nickname);
 
+	/**
+	 * Returns the status of this finder where clause entry.
+	 *
+	 * @return the status of this finder where clause entry
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this finder where clause entry.
+	 *
+	 * @param status the status of this finder where clause entry
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public FinderWhereClauseEntry cloneWithOriginalValues();
 
@@ -97,4 +125,4 @@ public interface FinderWhereClauseEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1988835555
+// LIFERAY-SERVICE-BUILDER-HASH:-579950725

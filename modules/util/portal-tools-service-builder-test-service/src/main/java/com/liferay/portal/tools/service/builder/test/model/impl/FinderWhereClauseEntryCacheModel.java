@@ -53,14 +53,18 @@ public class FinderWhereClauseEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{finderWhereClauseEntryId=");
 		sb.append(finderWhereClauseEntryId);
+		sb.append(", headId=");
+		sb.append(headId);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", nickname=");
 		sb.append(nickname);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -73,6 +77,7 @@ public class FinderWhereClauseEntryCacheModel
 
 		finderWhereClauseEntryImpl.setFinderWhereClauseEntryId(
 			finderWhereClauseEntryId);
+		finderWhereClauseEntryImpl.setHeadId(headId);
 
 		if (name == null) {
 			finderWhereClauseEntryImpl.setName("");
@@ -88,6 +93,8 @@ public class FinderWhereClauseEntryCacheModel
 			finderWhereClauseEntryImpl.setNickname(nickname);
 		}
 
+		finderWhereClauseEntryImpl.setStatus(status);
+
 		finderWhereClauseEntryImpl.resetOriginalValues();
 
 		return finderWhereClauseEntryImpl;
@@ -96,13 +103,19 @@ public class FinderWhereClauseEntryCacheModel
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		finderWhereClauseEntryId = objectInput.readLong();
+
+		headId = objectInput.readLong();
 		name = objectInput.readUTF();
 		nickname = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeLong(finderWhereClauseEntryId);
+
+		objectOutput.writeLong(headId);
 
 		if (name == null) {
 			objectOutput.writeUTF("");
@@ -117,11 +130,15 @@ public class FinderWhereClauseEntryCacheModel
 		else {
 			objectOutput.writeUTF(nickname);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long finderWhereClauseEntryId;
+	public long headId;
 	public String name;
 	public String nickname;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1429523993
+// LIFERAY-SERVICE-BUILDER-HASH:-565013894

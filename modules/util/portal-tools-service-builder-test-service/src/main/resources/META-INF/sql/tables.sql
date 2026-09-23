@@ -152,8 +152,10 @@ create table EagerBlobEntry (
 
 create table FinderWhereClauseEntry (
 	finderWhereClauseEntryId LONG not null primary key,
+	headId LONG,
 	name VARCHAR(75) null,
-	nickname VARCHAR(75) null
+	nickname VARCHAR(75) null,
+	status INTEGER
 );
 
 create table IndexEntry (

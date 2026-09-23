@@ -10,11 +10,14 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.OrganizationTable;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.model.impl.OrganizationImpl;
 import com.liferay.portal.model.impl.OrganizationModelImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 /**
  * The arguments resolver class for retrieving value from Organization.
@@ -49,6 +52,15 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 		OrganizationModelImpl organizationModelImpl =
 			(OrganizationModelImpl)baseModel;
 
+		BiPredicate<OrganizationModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(organizationModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = organizationModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -64,6 +76,13 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |=
 					organizationModelImpl.getColumnBitmask(columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			if (finderPath.isBaseModelResult() &&
@@ -93,6 +112,17 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 	@Override
 	public String getTableName() {
 		return OrganizationTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		OrganizationModelImpl organizationModelImpl, String columnName,
+		boolean original) {
+
+		if (original) {
+			return organizationModelImpl.getColumnOriginalValue(columnName);
+		}
+
+		return organizationModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -135,5 +165,25 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 		_ORDER_BY_COLUMNS_BITMASK = orderByColumnsBitmask;
 	}
 
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map
+		<String, BiPredicate<OrganizationModelImpl, Boolean>> _wherePredicates =
+			new HashMap<>();
+
+	static {
+		long whereColumnBitmask = OrganizationModelImpl.getColumnBitmask(
+			"parentOrganizationId");
+		BiPredicate<OrganizationModelImpl, Boolean> wherePredicate =
+			(organizationModelImpl, original) ->
+				GetterUtil.getLong(
+					_getColumnValue(
+						organizationModelImpl, "parentOrganizationId",
+						original)) != 0L;
+
+		_whereColumnBitmasks.put("CompanyIdLocations", whereColumnBitmask);
+		_wherePredicates.put("CompanyIdLocations", wherePredicate);
+	}
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:535128053
+// LIFERAY-SERVICE-BUILDER-HASH:-1149999351

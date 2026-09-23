@@ -9,12 +9,16 @@ import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.service.builder.test.model.FinderWhereClauseEntryTable;
 import com.liferay.portal.tools.service.builder.test.model.impl.FinderWhereClauseEntryImpl;
 import com.liferay.portal.tools.service.builder.test.model.impl.FinderWhereClauseEntryModelImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 /**
  * The arguments resolver class for retrieving value from FinderWhereClauseEntry.
@@ -50,6 +54,15 @@ public class FinderWhereClauseEntryModelArgumentsResolver
 		FinderWhereClauseEntryModelImpl finderWhereClauseEntryModelImpl =
 			(FinderWhereClauseEntryModelImpl)baseModel;
 
+		BiPredicate<FinderWhereClauseEntryModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(finderWhereClauseEntryModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = finderWhereClauseEntryModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -67,6 +80,13 @@ public class FinderWhereClauseEntryModelArgumentsResolver
 				finderPathColumnBitmask |=
 					finderWhereClauseEntryModelImpl.getColumnBitmask(
 						columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			_finderPathColumnBitmasksCache.put(
@@ -89,6 +109,18 @@ public class FinderWhereClauseEntryModelArgumentsResolver
 	@Override
 	public String getTableName() {
 		return FinderWhereClauseEntryTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		FinderWhereClauseEntryModelImpl finderWhereClauseEntryModelImpl,
+		String columnName, boolean original) {
+
+		if (original) {
+			return finderWhereClauseEntryModelImpl.getColumnOriginalValue(
+				columnName);
+		}
+
+		return finderWhereClauseEntryModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -121,6 +153,75 @@ public class FinderWhereClauseEntryModelArgumentsResolver
 
 	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
 		new ConcurrentHashMap<>();
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map
+		<String, BiPredicate<FinderWhereClauseEntryModelImpl, Boolean>>
+			_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask =
+			FinderWhereClauseEntryModelImpl.getColumnBitmask(
+				"finderWhereClauseEntryId") |
+			FinderWhereClauseEntryModelImpl.getColumnBitmask("headId");
+		BiPredicate<FinderWhereClauseEntryModelImpl, Boolean> wherePredicate =
+			(finderWhereClauseEntryModelImpl, original) ->
+				GetterUtil.getLong(
+					_getColumnValue(
+						finderWhereClauseEntryModelImpl,
+						"finderWhereClauseEntryId", original)) ==
+							GetterUtil.getLong(
+								_getColumnValue(
+									finderWhereClauseEntryModelImpl, "headId",
+									original));
+
+		_whereColumnBitmasks.put("HeadId", whereColumnBitmask);
+		_wherePredicates.put("HeadId", wherePredicate);
+
+		whereColumnBitmask = FinderWhereClauseEntryModelImpl.getColumnBitmask(
+			"nickname");
+		wherePredicate =
+			(finderWhereClauseEntryModelImpl, original) -> Validator.isNotNull(
+				GetterUtil.getString(
+					_getColumnValue(
+						finderWhereClauseEntryModelImpl, "nickname",
+						original)));
+
+		_whereColumnBitmasks.put("Name_Nickname", whereColumnBitmask);
+		_wherePredicates.put("Name_Nickname", wherePredicate);
+
+		whereColumnBitmask =
+			FinderWhereClauseEntryModelImpl.getColumnBitmask(
+				"finderWhereClauseEntryId") |
+			FinderWhereClauseEntryModelImpl.getColumnBitmask("headId");
+		wherePredicate = (finderWhereClauseEntryModelImpl, original) ->
+			GetterUtil.getLong(
+				_getColumnValue(
+					finderWhereClauseEntryModelImpl, "finderWhereClauseEntryId",
+					original)) != GetterUtil.getLong(
+						_getColumnValue(
+							finderWhereClauseEntryModelImpl, "headId",
+							original));
+
+		_whereColumnBitmasks.put("Status", whereColumnBitmask);
+		_wherePredicates.put("Status", wherePredicate);
+
+		whereColumnBitmask =
+			FinderWhereClauseEntryModelImpl.getColumnBitmask("nickname") |
+			FinderWhereClauseEntryModelImpl.getColumnBitmask("status");
+		wherePredicate = (finderWhereClauseEntryModelImpl, original) ->
+			Validator.isNotNull(
+				GetterUtil.getString(
+					_getColumnValue(
+						finderWhereClauseEntryModelImpl, "nickname",
+						original))) &&
+			(GetterUtil.getInteger(
+				_getColumnValue(
+					finderWhereClauseEntryModelImpl, "status", original)) != 0);
+
+		_whereColumnBitmasks.put("Name_Status", whereColumnBitmask);
+		_wherePredicates.put("Name_Status", wherePredicate);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:134438875
+// LIFERAY-SERVICE-BUILDER-HASH:1574780017

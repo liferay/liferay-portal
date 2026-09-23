@@ -10,11 +10,14 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.LayoutTable;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.model.impl.LayoutImpl;
 import com.liferay.portal.model.impl.LayoutModelImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 /**
  * The arguments resolver class for retrieving value from Layout.
@@ -48,6 +51,15 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 
 		LayoutModelImpl layoutModelImpl = (LayoutModelImpl)baseModel;
 
+		BiPredicate<LayoutModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(layoutModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = layoutModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -63,6 +75,13 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |= layoutModelImpl.getColumnBitmask(
 					columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			if (finderPath.isBaseModelResult() &&
@@ -92,6 +111,16 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 	@Override
 	public String getTableName() {
 		return LayoutTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		LayoutModelImpl layoutModelImpl, String columnName, boolean original) {
+
+		if (original) {
+			return layoutModelImpl.getColumnOriginalValue(columnName);
+		}
+
+		return layoutModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -135,5 +164,41 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 		_ORDER_BY_COLUMNS_BITMASK = orderByColumnsBitmask;
 	}
 
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map<String, BiPredicate<LayoutModelImpl, Boolean>>
+		_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask = LayoutModelImpl.getColumnBitmask("system_");
+		BiPredicate<LayoutModelImpl, Boolean> wherePredicate =
+			(layoutModelImpl, original) -> !GetterUtil.getBoolean(
+				_getColumnValue(layoutModelImpl, "system_", original));
+
+		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
+		_wherePredicates.put("GroupId", wherePredicate);
+		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
+		_wherePredicates.put("CompanyId", wherePredicate);
+		_whereColumnBitmasks.put("ParentPlid", whereColumnBitmask);
+		_wherePredicates.put("ParentPlid", wherePredicate);
+		_whereColumnBitmasks.put(
+			"LayoutSetPrototypeLayoutERC", whereColumnBitmask);
+		_wherePredicates.put("LayoutSetPrototypeLayoutERC", wherePredicate);
+		_whereColumnBitmasks.put("G_T", whereColumnBitmask);
+		_wherePredicates.put("G_T", wherePredicate);
+		_whereColumnBitmasks.put("PLPTEERC_PLPTESERC", whereColumnBitmask);
+		_wherePredicates.put("PLPTEERC_PLPTESERC", wherePredicate);
+		_whereColumnBitmasks.put("G_P_P", whereColumnBitmask);
+		_wherePredicates.put("G_P_P", wherePredicate);
+		_whereColumnBitmasks.put("G_P_T", whereColumnBitmask);
+		_wherePredicates.put("G_P_T", wherePredicate);
+		_whereColumnBitmasks.put("G_P_ST", whereColumnBitmask);
+		_wherePredicates.put("G_P_ST", wherePredicate);
+		_whereColumnBitmasks.put("G_P_P_H", whereColumnBitmask);
+		_wherePredicates.put("G_P_P_H", wherePredicate);
+		_whereColumnBitmasks.put("G_P_P_LteP", whereColumnBitmask);
+		_wherePredicates.put("G_P_P_LteP", wherePredicate);
+	}
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1583236968
+// LIFERAY-SERVICE-BUILDER-HASH:1890217944

@@ -11,9 +11,12 @@ import com.liferay.message.boards.model.impl.MBMessageModelImpl;
 import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -49,6 +52,15 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 
 		MBMessageModelImpl mbMessageModelImpl = (MBMessageModelImpl)baseModel;
 
+		BiPredicate<MBMessageModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(mbMessageModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = mbMessageModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -64,6 +76,13 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |= mbMessageModelImpl.getColumnBitmask(
 					columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			if (finderPath.isBaseModelResult() &&
@@ -93,6 +112,17 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 	@Override
 	public String getTableName() {
 		return MBMessageTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		MBMessageModelImpl mbMessageModelImpl, String columnName,
+		boolean original) {
+
+		if (original) {
+			return mbMessageModelImpl.getColumnOriginalValue(columnName);
+		}
+
+		return mbMessageModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -135,5 +165,58 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 		_ORDER_BY_COLUMNS_BITMASK = orderByColumnsBitmask;
 	}
 
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map<String, BiPredicate<MBMessageModelImpl, Boolean>>
+		_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask = MBMessageModelImpl.getColumnBitmask(
+			"categoryId");
+		BiPredicate<MBMessageModelImpl, Boolean> wherePredicate =
+			(mbMessageModelImpl, original) ->
+				GetterUtil.getLong(
+					_getColumnValue(
+						mbMessageModelImpl, "categoryId", original)) != -1L;
+
+		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
+		_wherePredicates.put("GroupId", wherePredicate);
+		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
+		_wherePredicates.put("CompanyId", wherePredicate);
+		_whereColumnBitmasks.put("UserId", whereColumnBitmask);
+		_wherePredicates.put("UserId", wherePredicate);
+		_whereColumnBitmasks.put("G_S", whereColumnBitmask);
+		_wherePredicates.put("G_S", wherePredicate);
+		_whereColumnBitmasks.put("C_S", whereColumnBitmask);
+		_wherePredicates.put("C_S", wherePredicate);
+
+		whereColumnBitmask = MBMessageModelImpl.getColumnBitmask(
+			"parentMessageId");
+		wherePredicate = (mbMessageModelImpl, original) ->
+			GetterUtil.getLong(
+				_getColumnValue(
+					mbMessageModelImpl, "parentMessageId", original)) != 0L;
+
+		_whereColumnBitmasks.put("ThreadIdReplies", whereColumnBitmask);
+		_wherePredicates.put("ThreadIdReplies", wherePredicate);
+		_whereColumnBitmasks.put("TR_S", whereColumnBitmask);
+		_wherePredicates.put("TR_S", wherePredicate);
+
+		whereColumnBitmask =
+			MBMessageModelImpl.getColumnBitmask("categoryId") |
+			MBMessageModelImpl.getColumnBitmask("anonymous");
+		wherePredicate = (mbMessageModelImpl, original) ->
+			(GetterUtil.getLong(
+				_getColumnValue(mbMessageModelImpl, "categoryId", original)) !=
+					-1L) &&
+			!GetterUtil.getBoolean(
+				_getColumnValue(mbMessageModelImpl, "anonymous", original));
+
+		_whereColumnBitmasks.put("G_U", whereColumnBitmask);
+		_wherePredicates.put("G_U", wherePredicate);
+		_whereColumnBitmasks.put("G_U_S", whereColumnBitmask);
+		_wherePredicates.put("G_U_S", wherePredicate);
+	}
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:26618332
+// LIFERAY-SERVICE-BUILDER-HASH:1370769055

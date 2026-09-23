@@ -32,7 +32,9 @@ create unique index IX_1F1BC169 on ERCVersionedEntryVersion (uuid_[$COLUMN_LENGT
 
 create unique index IX_6E042099 on EagerBlobEntry (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-create index IX_420C1E47 on FinderWhereClauseEntry (name[$COLUMN_LENGTH:75$]);
+create index IX_3F567457 on FinderWhereClauseEntry (headId);
+create index IX_2247262D on FinderWhereClauseEntry (name[$COLUMN_LENGTH:75$], status);
+create index IX_D0768B6E on FinderWhereClauseEntry (status);
 
 create unique index IX_EA51DD99 on IndexEntry (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_366486F8 on IndexEntry (ownerId);

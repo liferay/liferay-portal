@@ -115,9 +115,13 @@ public class FinderWhereClauseEntryPersistenceTest {
 		FinderWhereClauseEntry newFinderWhereClauseEntry =
 			addFinderWhereClauseEntry();
 
+		newFinderWhereClauseEntry.setHeadId(RandomTestUtil.nextLong());
+
 		newFinderWhereClauseEntry.setName(RandomTestUtil.randomString());
 
 		newFinderWhereClauseEntry.setNickname(RandomTestUtil.randomString());
+
+		newFinderWhereClauseEntry.setStatus(RandomTestUtil.nextInt());
 
 		newFinderWhereClauseEntry = _persistence.update(
 			newFinderWhereClauseEntry);
@@ -132,11 +136,24 @@ public class FinderWhereClauseEntryPersistenceTest {
 			existingFinderWhereClauseEntry.getFinderWhereClauseEntryId(),
 			newFinderWhereClauseEntry.getFinderWhereClauseEntryId());
 		Assert.assertEquals(
+			existingFinderWhereClauseEntry.getHeadId(),
+			newFinderWhereClauseEntry.getHeadId());
+		Assert.assertEquals(
 			existingFinderWhereClauseEntry.getName(),
 			newFinderWhereClauseEntry.getName());
 		Assert.assertEquals(
 			existingFinderWhereClauseEntry.getNickname(),
 			newFinderWhereClauseEntry.getNickname());
+		Assert.assertEquals(
+			existingFinderWhereClauseEntry.getStatus(),
+			newFinderWhereClauseEntry.getStatus());
+	}
+
+	@Test
+	public void testCountByHeadId() throws Exception {
+		_persistence.countByHeadId(RandomTestUtil.nextLong());
+
+		_persistence.countByHeadId(0L);
 	}
 
 	@Test
@@ -146,6 +163,22 @@ public class FinderWhereClauseEntryPersistenceTest {
 		_persistence.countByName_Nickname("null");
 
 		_persistence.countByName_Nickname((String)null);
+	}
+
+	@Test
+	public void testCountByStatus() throws Exception {
+		_persistence.countByStatus(RandomTestUtil.nextInt());
+
+		_persistence.countByStatus(0);
+	}
+
+	@Test
+	public void testCountByName_Status() throws Exception {
+		_persistence.countByName_Status("", RandomTestUtil.nextInt());
+
+		_persistence.countByName_Status("null", 0);
+
+		_persistence.countByName_Status((String)null, 0);
 	}
 
 	@Test
@@ -176,8 +209,8 @@ public class FinderWhereClauseEntryPersistenceTest {
 
 	protected OrderByComparator<FinderWhereClauseEntry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"FinderWhereClauseEntry", "finderWhereClauseEntryId", true, "name",
-			true, "nickname", true);
+			"FinderWhereClauseEntry", "finderWhereClauseEntryId", true,
+			"headId", true, "name", true, "nickname", true, "status", true);
 	}
 
 	@Test
@@ -423,9 +456,13 @@ public class FinderWhereClauseEntryPersistenceTest {
 
 		FinderWhereClauseEntry finderWhereClauseEntry = _persistence.create(pk);
 
+		finderWhereClauseEntry.setHeadId(RandomTestUtil.nextLong());
+
 		finderWhereClauseEntry.setName(RandomTestUtil.randomString());
 
 		finderWhereClauseEntry.setNickname(RandomTestUtil.randomString());
+
+		finderWhereClauseEntry.setStatus(RandomTestUtil.nextInt());
 
 		_finderWhereClauseEntries.add(
 			_persistence.update(finderWhereClauseEntry));
@@ -439,4 +476,4 @@ public class FinderWhereClauseEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1084695872
+// LIFERAY-SERVICE-BUILDER-HASH:1380175781

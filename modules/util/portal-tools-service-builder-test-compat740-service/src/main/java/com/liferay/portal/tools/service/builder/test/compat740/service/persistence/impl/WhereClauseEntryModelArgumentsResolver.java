@@ -8,12 +8,16 @@ package com.liferay.portal.tools.service.builder.test.compat740.service.persiste
 import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.service.builder.test.compat740.model.WhereClauseEntryTable;
 import com.liferay.portal.tools.service.builder.test.compat740.model.impl.WhereClauseEntryImpl;
 import com.liferay.portal.tools.service.builder.test.compat740.model.impl.WhereClauseEntryModelImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -51,6 +55,15 @@ public class WhereClauseEntryModelArgumentsResolver
 		WhereClauseEntryModelImpl whereClauseEntryModelImpl =
 			(WhereClauseEntryModelImpl)baseModel;
 
+		BiPredicate<WhereClauseEntryModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(whereClauseEntryModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = whereClauseEntryModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -66,6 +79,13 @@ public class WhereClauseEntryModelArgumentsResolver
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |=
 					whereClauseEntryModelImpl.getColumnBitmask(columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			_finderPathColumnBitmasksCache.put(
@@ -87,6 +107,17 @@ public class WhereClauseEntryModelArgumentsResolver
 	@Override
 	public String getTableName() {
 		return WhereClauseEntryTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		WhereClauseEntryModelImpl whereClauseEntryModelImpl, String columnName,
+		boolean original) {
+
+		if (original) {
+			return whereClauseEntryModelImpl.getColumnOriginalValue(columnName);
+		}
+
+		return whereClauseEntryModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -118,6 +149,24 @@ public class WhereClauseEntryModelArgumentsResolver
 
 	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
 		new ConcurrentHashMap<>();
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map
+		<String, BiPredicate<WhereClauseEntryModelImpl, Boolean>>
+			_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask = WhereClauseEntryModelImpl.getColumnBitmask(
+			"nickname");
+		BiPredicate<WhereClauseEntryModelImpl, Boolean> wherePredicate =
+			(whereClauseEntryModelImpl, original) -> Validator.isNotNull(
+				GetterUtil.getString(
+					_getColumnValue(
+						whereClauseEntryModelImpl, "nickname", original)));
+
+		_whereColumnBitmasks.put("Name_Nickname", whereColumnBitmask);
+		_wherePredicates.put("Name_Nickname", wherePredicate);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1498088596
+// LIFERAY-SERVICE-BUILDER-HASH:470184641

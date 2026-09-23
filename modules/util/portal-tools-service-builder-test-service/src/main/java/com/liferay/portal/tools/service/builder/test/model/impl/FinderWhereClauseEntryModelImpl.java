@@ -58,8 +58,9 @@ public class FinderWhereClauseEntryModelImpl
 	public static final String TABLE_NAME = "FinderWhereClauseEntry";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"finderWhereClauseEntryId", Types.BIGINT}, {"name", Types.VARCHAR},
-		{"nickname", Types.VARCHAR}
+		{"finderWhereClauseEntryId", Types.BIGINT}, {"headId", Types.BIGINT},
+		{"name", Types.VARCHAR}, {"nickname", Types.VARCHAR},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -67,12 +68,14 @@ public class FinderWhereClauseEntryModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("finderWhereClauseEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("headId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("nickname", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table FinderWhereClauseEntry (finderWhereClauseEntryId LONG not null primary key,name VARCHAR(75) null,nickname VARCHAR(75) null)";
+		"create table FinderWhereClauseEntry (finderWhereClauseEntryId LONG not null primary key,headId LONG,name VARCHAR(75) null,nickname VARCHAR(75) null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table FinderWhereClauseEntry";
@@ -113,14 +116,26 @@ public class FinderWhereClauseEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long NAME_COLUMN_BITMASK = 1L;
+	public static final long HEADID_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NAME_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long STATUS_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long FINDERWHERECLAUSEENTRYID_COLUMN_BITMASK = 2L;
+	public static final long FINDERWHERECLAUSEENTRYID_COLUMN_BITMASK = 8L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.tools.service.builder.test.service.util.ServiceProps.
@@ -229,9 +244,13 @@ public class FinderWhereClauseEntryModelImpl
 				"finderWhereClauseEntryId",
 				FinderWhereClauseEntry::getFinderWhereClauseEntryId);
 			attributeGetterFunctions.put(
+				"headId", FinderWhereClauseEntry::getHeadId);
+			attributeGetterFunctions.put(
 				"name", FinderWhereClauseEntry::getName);
 			attributeGetterFunctions.put(
 				"nickname", FinderWhereClauseEntry::getNickname);
+			attributeGetterFunctions.put(
+				"status", FinderWhereClauseEntry::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -256,6 +275,10 @@ public class FinderWhereClauseEntryModelImpl
 				(BiConsumer<FinderWhereClauseEntry, Long>)
 					FinderWhereClauseEntry::setFinderWhereClauseEntryId);
 			attributeSetterBiConsumers.put(
+				"headId",
+				(BiConsumer<FinderWhereClauseEntry, Long>)
+					FinderWhereClauseEntry::setHeadId);
+			attributeSetterBiConsumers.put(
 				"name",
 				(BiConsumer<FinderWhereClauseEntry, String>)
 					FinderWhereClauseEntry::setName);
@@ -263,6 +286,10 @@ public class FinderWhereClauseEntryModelImpl
 				"nickname",
 				(BiConsumer<FinderWhereClauseEntry, String>)
 					FinderWhereClauseEntry::setNickname);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<FinderWhereClauseEntry, Integer>)
+					FinderWhereClauseEntry::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -282,6 +309,29 @@ public class FinderWhereClauseEntryModelImpl
 		}
 
 		_finderWhereClauseEntryId = finderWhereClauseEntryId;
+	}
+
+	@Override
+	public long getHeadId() {
+		return _headId;
+	}
+
+	@Override
+	public void setHeadId(long headId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_headId = headId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalHeadId() {
+		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("headId"));
 	}
 
 	@Override
@@ -329,6 +379,30 @@ public class FinderWhereClauseEntryModelImpl
 		}
 
 		_nickname = nickname;
+	}
+
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalStatus() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("status"));
 	}
 
 	public long getColumnBitmask() {
@@ -390,8 +464,10 @@ public class FinderWhereClauseEntryModelImpl
 
 		finderWhereClauseEntryImpl.setFinderWhereClauseEntryId(
 			getFinderWhereClauseEntryId());
+		finderWhereClauseEntryImpl.setHeadId(getHeadId());
 		finderWhereClauseEntryImpl.setName(getName());
 		finderWhereClauseEntryImpl.setNickname(getNickname());
+		finderWhereClauseEntryImpl.setStatus(getStatus());
 
 		finderWhereClauseEntryImpl.resetOriginalValues();
 
@@ -405,10 +481,14 @@ public class FinderWhereClauseEntryModelImpl
 
 		finderWhereClauseEntryImpl.setFinderWhereClauseEntryId(
 			this.<Long>getColumnOriginalValue("finderWhereClauseEntryId"));
+		finderWhereClauseEntryImpl.setHeadId(
+			this.<Long>getColumnOriginalValue("headId"));
 		finderWhereClauseEntryImpl.setName(
 			this.<String>getColumnOriginalValue("name"));
 		finderWhereClauseEntryImpl.setNickname(
 			this.<String>getColumnOriginalValue("nickname"));
+		finderWhereClauseEntryImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return finderWhereClauseEntryImpl;
 	}
@@ -489,6 +569,8 @@ public class FinderWhereClauseEntryModelImpl
 		finderWhereClauseEntryCacheModel.finderWhereClauseEntryId =
 			getFinderWhereClauseEntryId();
 
+		finderWhereClauseEntryCacheModel.headId = getHeadId();
+
 		finderWhereClauseEntryCacheModel.name = getName();
 
 		String name = finderWhereClauseEntryCacheModel.name;
@@ -504,6 +586,8 @@ public class FinderWhereClauseEntryModelImpl
 		if ((nickname != null) && (nickname.length() == 0)) {
 			finderWhereClauseEntryCacheModel.nickname = null;
 		}
+
+		finderWhereClauseEntryCacheModel.status = getStatus();
 
 		return finderWhereClauseEntryCacheModel;
 	}
@@ -568,8 +652,10 @@ public class FinderWhereClauseEntryModelImpl
 	}
 
 	private long _finderWhereClauseEntryId;
+	private long _headId;
 	private String _name;
 	private String _nickname;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<FinderWhereClauseEntry, Object> function =
@@ -601,8 +687,10 @@ public class FinderWhereClauseEntryModelImpl
 
 		_columnOriginalValues.put(
 			"finderWhereClauseEntryId", _finderWhereClauseEntryId);
+		_columnOriginalValues.put("headId", _headId);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("nickname", _nickname);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -618,9 +706,13 @@ public class FinderWhereClauseEntryModelImpl
 
 		columnBitmasks.put("finderWhereClauseEntryId", 1L);
 
-		columnBitmasks.put("name", 2L);
+		columnBitmasks.put("headId", 2L);
 
-		columnBitmasks.put("nickname", 4L);
+		columnBitmasks.put("name", 4L);
+
+		columnBitmasks.put("nickname", 8L);
+
+		columnBitmasks.put("status", 16L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -629,4 +721,4 @@ public class FinderWhereClauseEntryModelImpl
 	private FinderWhereClauseEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1109076397
+// LIFERAY-SERVICE-BUILDER-HASH:469814964

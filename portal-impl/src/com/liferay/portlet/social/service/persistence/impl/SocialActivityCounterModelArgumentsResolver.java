@@ -9,12 +9,15 @@ import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portlet.social.model.impl.SocialActivityCounterImpl;
 import com.liferay.portlet.social.model.impl.SocialActivityCounterModelImpl;
 import com.liferay.social.kernel.model.SocialActivityCounterTable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 /**
  * The arguments resolver class for retrieving value from SocialActivityCounter.
@@ -50,6 +53,15 @@ public class SocialActivityCounterModelArgumentsResolver
 		SocialActivityCounterModelImpl socialActivityCounterModelImpl =
 			(SocialActivityCounterModelImpl)baseModel;
 
+		BiPredicate<SocialActivityCounterModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(socialActivityCounterModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = socialActivityCounterModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -66,6 +78,13 @@ public class SocialActivityCounterModelArgumentsResolver
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |=
 					socialActivityCounterModelImpl.getColumnBitmask(columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			_finderPathColumnBitmasksCache.put(
@@ -88,6 +107,18 @@ public class SocialActivityCounterModelArgumentsResolver
 	@Override
 	public String getTableName() {
 		return SocialActivityCounterTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		SocialActivityCounterModelImpl socialActivityCounterModelImpl,
+		String columnName, boolean original) {
+
+		if (original) {
+			return socialActivityCounterModelImpl.getColumnOriginalValue(
+				columnName);
+		}
+
+		return socialActivityCounterModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -120,6 +151,25 @@ public class SocialActivityCounterModelArgumentsResolver
 
 	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
 		new ConcurrentHashMap<>();
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map
+		<String, BiPredicate<SocialActivityCounterModelImpl, Boolean>>
+			_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask =
+			SocialActivityCounterModelImpl.getColumnBitmask("endPeriod");
+		BiPredicate<SocialActivityCounterModelImpl, Boolean> wherePredicate =
+			(socialActivityCounterModelImpl, original) ->
+				GetterUtil.getInteger(
+					_getColumnValue(
+						socialActivityCounterModelImpl, "endPeriod",
+						original)) == -1;
+
+		_whereColumnBitmasks.put("G_C_C_O", whereColumnBitmask);
+		_wherePredicates.put("G_C_C_O", wherePredicate);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1220367896
+// LIFERAY-SERVICE-BUILDER-HASH:-477519833

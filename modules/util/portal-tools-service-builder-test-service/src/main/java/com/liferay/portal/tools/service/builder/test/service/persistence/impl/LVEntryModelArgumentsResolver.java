@@ -9,12 +9,15 @@ import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.tools.service.builder.test.model.LVEntryTable;
 import com.liferay.portal.tools.service.builder.test.model.impl.LVEntryImpl;
 import com.liferay.portal.tools.service.builder.test.model.impl.LVEntryModelImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 /**
  * The arguments resolver class for retrieving value from LVEntry.
@@ -48,6 +51,15 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 
 		LVEntryModelImpl lvEntryModelImpl = (LVEntryModelImpl)baseModel;
 
+		BiPredicate<LVEntryModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(lvEntryModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = lvEntryModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -63,6 +75,13 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |= lvEntryModelImpl.getColumnBitmask(
 					columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			_finderPathColumnBitmasksCache.put(
@@ -84,6 +103,17 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 	@Override
 	public String getTableName() {
 		return LVEntryTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		LVEntryModelImpl lvEntryModelImpl, String columnName,
+		boolean original) {
+
+		if (original) {
+			return lvEntryModelImpl.getColumnOriginalValue(columnName);
+		}
+
+		return lvEntryModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -114,6 +144,25 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 
 	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
 		new ConcurrentHashMap<>();
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map<String, BiPredicate<LVEntryModelImpl, Boolean>>
+		_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask = LVEntryModelImpl.getColumnBitmask(
+			"lvEntryId");
+		BiPredicate<LVEntryModelImpl, Boolean> wherePredicate =
+			(lvEntryModelImpl, original) ->
+				GetterUtil.getLong(
+					_getColumnValue(lvEntryModelImpl, "lvEntryId", original)) >
+						0L;
+
+		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
+		_wherePredicates.put("GroupId", wherePredicate);
+		_whereColumnBitmasks.put("GroupId_Head", whereColumnBitmask);
+		_wherePredicates.put("GroupId_Head", wherePredicate);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:138074361
+// LIFERAY-SERVICE-BUILDER-HASH:1316614895

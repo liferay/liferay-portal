@@ -10,11 +10,14 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.UserTable;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.model.impl.UserImpl;
 import com.liferay.portal.model.impl.UserModelImpl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 /**
  * The arguments resolver class for retrieving value from User.
@@ -47,6 +50,15 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 
 		UserModelImpl userModelImpl = (UserModelImpl)baseModel;
 
+		BiPredicate<UserModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(userModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask = userModelImpl.getColumnBitmask();
 
 		if (!checkColumn || (columnBitmask == 0)) {
@@ -62,6 +74,13 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 			for (String columnName : columnNames) {
 				finderPathColumnBitmask |= userModelImpl.getColumnBitmask(
 					columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			_finderPathColumnBitmasksCache.put(
@@ -83,6 +102,16 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 	@Override
 	public String getTableName() {
 		return UserTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		UserModelImpl userModelImpl, String columnName, boolean original) {
+
+		if (original) {
+			return userModelImpl.getColumnOriginalValue(columnName);
+		}
+
+		return userModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -112,6 +141,31 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 
 	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
 		new ConcurrentHashMap<>();
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map<String, BiPredicate<UserModelImpl, Boolean>>
+		_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask = UserModelImpl.getColumnBitmask("type_");
+		BiPredicate<UserModelImpl, Boolean> wherePredicate =
+			(userModelImpl, original) ->
+				GetterUtil.getInteger(
+					_getColumnValue(userModelImpl, "type_", original)) == 1;
+
+		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
+		_wherePredicates.put("CompanyId", wherePredicate);
+		_whereColumnBitmasks.put("GtU_C", whereColumnBitmask);
+		_wherePredicates.put("GtU_C", wherePredicate);
+		_whereColumnBitmasks.put("C_CD", whereColumnBitmask);
+		_wherePredicates.put("C_CD", wherePredicate);
+		_whereColumnBitmasks.put("C_MD", whereColumnBitmask);
+		_wherePredicates.put("C_MD", wherePredicate);
+		_whereColumnBitmasks.put("C_S", whereColumnBitmask);
+		_wherePredicates.put("C_S", wherePredicate);
+		_whereColumnBitmasks.put("C_CD_MD", whereColumnBitmask);
+		_wherePredicates.put("C_CD_MD", wherePredicate);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:238859330
+// LIFERAY-SERVICE-BUILDER-HASH:1876571596

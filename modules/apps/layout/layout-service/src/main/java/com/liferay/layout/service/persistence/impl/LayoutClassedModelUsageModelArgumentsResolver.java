@@ -11,9 +11,13 @@ import com.liferay.layout.model.impl.LayoutClassedModelUsageModelImpl;
 import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -51,6 +55,15 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 		LayoutClassedModelUsageModelImpl layoutClassedModelUsageModelImpl =
 			(LayoutClassedModelUsageModelImpl)baseModel;
 
+		BiPredicate<LayoutClassedModelUsageModelImpl, Boolean> wherePredicate =
+			_wherePredicates.get(finderPath.getFinderName());
+
+		if ((wherePredicate != null) &&
+			!wherePredicate.test(layoutClassedModelUsageModelImpl, original)) {
+
+			return null;
+		}
+
 		long columnBitmask =
 			layoutClassedModelUsageModelImpl.getColumnBitmask();
 
@@ -69,6 +82,13 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 				finderPathColumnBitmask |=
 					layoutClassedModelUsageModelImpl.getColumnBitmask(
 						columnName);
+			}
+
+			Long whereColumnBitmask = _whereColumnBitmasks.get(
+				finderPath.getFinderName());
+
+			if (whereColumnBitmask != null) {
+				finderPathColumnBitmask |= whereColumnBitmask;
 			}
 
 			_finderPathColumnBitmasksCache.put(
@@ -91,6 +111,18 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 	@Override
 	public String getTableName() {
 		return LayoutClassedModelUsageTable.INSTANCE.getTableName();
+	}
+
+	private static Object _getColumnValue(
+		LayoutClassedModelUsageModelImpl layoutClassedModelUsageModelImpl,
+		String columnName, boolean original) {
+
+		if (original) {
+			return layoutClassedModelUsageModelImpl.getColumnOriginalValue(
+				columnName);
+		}
+
+		return layoutClassedModelUsageModelImpl.getColumnValue(columnName);
 	}
 
 	private static Object[] _getValue(
@@ -123,6 +155,39 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 
 	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
 		new ConcurrentHashMap<>();
+	private static final Map<String, Long> _whereColumnBitmasks =
+		new HashMap<>();
+	private static final Map
+		<String, BiPredicate<LayoutClassedModelUsageModelImpl, Boolean>>
+			_wherePredicates = new HashMap<>();
+
+	static {
+		long whereColumnBitmask =
+			LayoutClassedModelUsageModelImpl.getColumnBitmask("containerKey");
+		BiPredicate<LayoutClassedModelUsageModelImpl, Boolean> wherePredicate =
+			(layoutClassedModelUsageModelImpl, original) -> Validator.isNotNull(
+				GetterUtil.getString(
+					_getColumnValue(
+						layoutClassedModelUsageModelImpl, "containerKey",
+						original)));
+
+		_whereColumnBitmasks.put("Plid", whereColumnBitmask);
+		_wherePredicates.put("Plid", wherePredicate);
+		_whereColumnBitmasks.put("C_CN", whereColumnBitmask);
+		_wherePredicates.put("C_CN", wherePredicate);
+		_whereColumnBitmasks.put("CN_CPK", whereColumnBitmask);
+		_wherePredicates.put("CN_CPK", wherePredicate);
+		_whereColumnBitmasks.put("C_CERC_CN", whereColumnBitmask);
+		_wherePredicates.put("C_CERC_CN", wherePredicate);
+		_whereColumnBitmasks.put("C_CN_CT", whereColumnBitmask);
+		_wherePredicates.put("C_CN_CT", wherePredicate);
+		_whereColumnBitmasks.put("CN_CPK_T", whereColumnBitmask);
+		_wherePredicates.put("CN_CPK_T", wherePredicate);
+		_whereColumnBitmasks.put("CK_CT_P", whereColumnBitmask);
+		_wherePredicates.put("CK_CT_P", wherePredicate);
+		_whereColumnBitmasks.put("C_CERC_CN_T", whereColumnBitmask);
+		_wherePredicates.put("C_CERC_CN_T", wherePredicate);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1566514678
+// LIFERAY-SERVICE-BUILDER-HASH:53730685
