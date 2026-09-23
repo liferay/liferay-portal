@@ -7,10 +7,12 @@ package com.liferay.exportimport.kernel.lar;
 
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -20,6 +22,7 @@ import jakarta.portlet.PortletRequest;
 import java.io.File;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -38,6 +41,8 @@ public interface ExportImportHelper {
 	public Map<Long, Boolean> getAllLayoutIdsMap(
 		long groupId, boolean privateLayout);
 
+	public int getChildGroupsCount(Group group) throws PortalException;
+
 	public List<Portlet> getDataSiteAndInstanceLevelPortlets(long companyId)
 		throws Exception;
 
@@ -53,6 +58,13 @@ public interface ExportImportHelper {
 
 	public List<Portlet> getDataSiteLevelPortlets(
 			long companyId, boolean excludeDataAlwaysStaged)
+		throws Exception;
+
+	public List<ExportImportGroup> getExportImportGroups(FileEntry fileEntry)
+		throws Exception;
+
+	public List<ExportImportGroup> getExportImportGroups(
+			PortletDataContext portletDataContext)
 		throws Exception;
 
 	public Map<String, Boolean> getExportPortletControlsMap(
@@ -74,6 +86,9 @@ public interface ExportImportHelper {
 	public String getExportableRootPortletId(
 			long companyId, String sourcePortletId, String targetPortletId)
 		throws Exception;
+
+	public String getGroupPath(Group group, Locale locale)
+		throws PortalException;
 
 	public Map<String, Boolean> getImportPortletControlsMap(
 			long companyId, String portletId,
@@ -152,6 +167,11 @@ public interface ExportImportHelper {
 	public String getSelectedLayoutsJSON(
 		long groupId, boolean privateLayout, String selectedNodes);
 
+	public List<Group> getSupportedGroups(
+			long companyId, String keywords,
+			OrderByComparator<Group> orderByComparator)
+		throws PortalException;
+
 	public FileEntry getTempFileEntry(
 			long groupId, long userId, String folderName)
 		throws PortalException;
@@ -168,6 +188,8 @@ public interface ExportImportHelper {
 		String rootPortletId);
 
 	public boolean isExportPortletData(PortletDataContext portletDataContext);
+
+	public boolean isGroupSupported(Group group);
 
 	public boolean isLayoutRevisionInReview(Layout layout);
 
