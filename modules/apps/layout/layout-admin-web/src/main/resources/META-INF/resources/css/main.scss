@@ -32,6 +32,10 @@
 }
 
 .design-library-page-template-set {
+	.card-type-asset-icon {
+		color: $blue;
+	}
+
 	.label-inverse-content-5 {
 		color: $teal;
 
@@ -42,8 +46,8 @@
 }
 
 .page-template-sets-vertical-nav {
-	.lexicon-icon-books {
-		background-color: $teal-l3;
+	.lexicon-icon-books-brush {
+		background-color: $teal-l5;
 		border-radius: 0.25rem;
 		color: $teal !important;
 		height: 1.75rem;

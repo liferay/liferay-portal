@@ -2181,7 +2181,7 @@ public class LayoutsAdminDisplayContext {
 					if (group.isDepot()) {
 						verticalNavItem.addIcon(
 							IconItem.of(
-								"books",
+								"books-brush",
 								LanguageUtil.format(
 									httpServletRequest,
 									"page-template-set-from-x-design-library",
