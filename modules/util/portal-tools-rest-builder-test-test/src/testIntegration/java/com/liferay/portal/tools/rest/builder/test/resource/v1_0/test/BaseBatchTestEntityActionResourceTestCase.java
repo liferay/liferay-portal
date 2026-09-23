@@ -210,6 +210,11 @@ public abstract class BaseBatchTestEntityActionResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostBatchTestEntityAction() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
@@ -910,4 +915,4 @@ public abstract class BaseBatchTestEntityActionResourceTestCase {
 		BatchTestEntityActionResource _batchTestEntityActionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-392442997
+// LIFERAY-REST-BUILDER-HASH:381933132
