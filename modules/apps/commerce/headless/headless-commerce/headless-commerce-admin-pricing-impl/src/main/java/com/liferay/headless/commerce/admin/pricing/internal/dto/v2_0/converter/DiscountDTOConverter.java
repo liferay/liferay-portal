@@ -92,6 +92,7 @@ public class DiscountDTOConverter
 						LanguageResources.getResourceBundle(
 							dtoConverterContext.getLocale()),
 						commerceDiscount.getTarget()));
+				setTargetKey(commerceDiscount::getTarget);
 				setTitle(commerceDiscount::getTitle);
 				setUseCouponCode(commerceDiscount::isUseCouponCode);
 				setUsePercentage(commerceDiscount::isUsePercentage);

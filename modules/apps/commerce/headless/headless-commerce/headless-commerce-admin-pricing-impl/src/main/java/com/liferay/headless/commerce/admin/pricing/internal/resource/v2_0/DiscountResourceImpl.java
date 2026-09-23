@@ -285,7 +285,7 @@ public class DiscountResourceImpl
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountService.addOrUpdateCommerceDiscount(
 				externalReferenceCode, discountId, discount.getTitle(),
-				discount.getTarget(),
+				GetterUtil.get(discount.getTargetKey(), discount.getTarget()),
 				GetterUtil.getBoolean(discount.getUseCouponCode()),
 				discount.getCouponCode(),
 				GetterUtil.getBoolean(discount.getUsePercentage()),
@@ -391,7 +391,7 @@ public class DiscountResourceImpl
 
 		commerceDiscount = _commerceDiscountService.updateCommerceDiscount(
 			commerceDiscount.getCommerceDiscountId(), discount.getTitle(),
-			discount.getTarget(),
+			GetterUtil.get(discount.getTargetKey(), discount.getTarget()),
 			GetterUtil.get(
 				discount.getUseCouponCode(),
 				commerceDiscount.isUseCouponCode()),

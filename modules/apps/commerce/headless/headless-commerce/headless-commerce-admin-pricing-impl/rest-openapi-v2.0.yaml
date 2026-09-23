@@ -694,6 +694,11 @@ components:
                         Which order slice the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping`.
                     example: subtotal
                     type: string
+                targetKey:
+                    description:
+                        Key of the order slice the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping`. Takes precedence over `target` on input.
+                    example: subtotal
+                    type: string
                 title:
                     description:
                         Human-readable name of the discount; shown in admin and used as the fallback label at checkout.
@@ -1140,6 +1145,11 @@ components:
                 typeSettings:
                     description:
                         Free-form JSON payload interpreted by the matching type handler at evaluation time.
+                    example: "22.50"
+                    type: string
+                typeSettingsValue:
+                    description:
+                        Value of the type settings for the rule type, without the type prefix the stored settings carry. Takes precedence over `typeSettings` on input.
                     example: "22.50"
                     type: string
             required:

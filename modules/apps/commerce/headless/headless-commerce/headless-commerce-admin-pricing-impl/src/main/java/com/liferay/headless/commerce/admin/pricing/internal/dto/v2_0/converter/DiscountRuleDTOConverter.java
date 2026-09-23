@@ -50,6 +50,9 @@ public class DiscountRuleDTOConverter
 				setName(commerceDiscountRule::getName);
 				setType(commerceDiscountRule::getType);
 				setTypeSettings(commerceDiscountRule::getTypeSettings);
+				setTypeSettingsValue(
+					() -> commerceDiscountRule.getSettingsProperty(
+						commerceDiscountRule.getType()));
 			}
 		};
 	}

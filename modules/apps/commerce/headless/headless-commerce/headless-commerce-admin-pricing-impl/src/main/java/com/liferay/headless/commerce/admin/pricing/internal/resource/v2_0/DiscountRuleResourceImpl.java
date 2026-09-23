@@ -119,8 +119,10 @@ public class DiscountRuleResourceImpl extends BaseDiscountRuleResourceImpl {
 					discountRule.getName(), commerceDiscountRule.getName()),
 				discountRule.getType(),
 				GetterUtil.get(
-					discountRule.getTypeSettings(),
-					commerceDiscountRule.getTypeSettings())));
+					discountRule.getTypeSettingsValue(),
+					GetterUtil.get(
+						discountRule.getTypeSettings(),
+						commerceDiscountRule.getTypeSettings()))));
 	}
 
 	@Override

@@ -34,7 +34,10 @@ public class DiscountRuleUtil {
 		return commerceDiscountRuleService.addOrUpdateCommerceDiscountRule(
 			discountRule.getExternalReferenceCode(), discountRuleId,
 			commerceDiscount.getCommerceDiscountId(), discountRule.getName(),
-			discountRule.getType(), discountRule.getTypeSettings(),
+			discountRule.getType(),
+			GetterUtil.get(
+				discountRule.getTypeSettingsValue(),
+				discountRule.getTypeSettings()),
 			serviceContextHelper.getServiceContext());
 	}
 
