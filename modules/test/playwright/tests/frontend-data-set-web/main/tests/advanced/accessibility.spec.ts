@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
@@ -341,6 +341,11 @@ test('Advanced FDS is accessible across user views', async ({
 			.click();
 
 		await fdsSamplePage.userViewsSaveModal.waitFor();
+
+		await expect(page.locator(OPEN_MODAL_SELECTOR)).toHaveCSS(
+			'opacity',
+			'1'
+		);
 
 		await checkAccessibility({
 			page,
