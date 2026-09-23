@@ -154,6 +154,36 @@ public class ImportProcessRequestSerDes {
 			sb.append("]");
 		}
 
+		if (importProcessRequest.getSiteExternalReferenceCodes() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteExternalReferenceCodes\": ");
+
+			sb.append("[");
+
+			for (int i = 0;
+				 i <
+					 importProcessRequest.
+						 getSiteExternalReferenceCodes().length;
+				 i++) {
+
+				sb.append(
+					_toJSON(
+						importProcessRequest.getSiteExternalReferenceCodes()
+							[i]));
+
+				if ((i + 1) < importProcessRequest.
+						getSiteExternalReferenceCodes().length) {
+
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (importProcessRequest.getSitePagesSettings() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -284,6 +314,16 @@ public class ImportProcessRequestSerDes {
 					importProcessRequest.getRequestPortletDataHandlers()));
 		}
 
+		if (importProcessRequest.getSiteExternalReferenceCodes() == null) {
+			map.put("siteExternalReferenceCodes", null);
+		}
+		else {
+			map.put(
+				"siteExternalReferenceCodes",
+				String.valueOf(
+					importProcessRequest.getSiteExternalReferenceCodes()));
+		}
+
 		if (importProcessRequest.getSitePagesSettings() == null) {
 			map.put("sitePagesSettings", null);
 		}
@@ -361,6 +401,11 @@ public class ImportProcessRequestSerDes {
 			}
 			else if (Objects.equals(
 						jsonParserFieldName, "requestPortletDataHandlers")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "siteExternalReferenceCodes")) {
 
 				return false;
 			}
@@ -450,6 +495,14 @@ public class ImportProcessRequestSerDes {
 
 					importProcessRequest.setRequestPortletDataHandlers(
 						requestPortletDataHandlersArray);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "siteExternalReferenceCodes")) {
+
+				if (jsonParserFieldValue != null) {
+					importProcessRequest.setSiteExternalReferenceCodes(
+						toStrings((Object[])jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "sitePagesSettings")) {
@@ -566,4 +619,4 @@ public class ImportProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1010301637
+// LIFERAY-REST-BUILDER-HASH:376992532

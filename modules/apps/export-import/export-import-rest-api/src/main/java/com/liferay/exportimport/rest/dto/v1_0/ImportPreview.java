@@ -352,6 +352,48 @@ public class ImportPreview implements Serializable {
 	private Supplier<PreviewPortletDataHandlerSection[]>
 		_previewPortletDataHandlerSectionsSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public PreviewSite[] getPreviewSites() {
+		if (_previewSitesSupplier != null) {
+			previewSites = _previewSitesSupplier.get();
+
+			_previewSitesSupplier = null;
+		}
+
+		return previewSites;
+	}
+
+	public void setPreviewSites(PreviewSite[] previewSites) {
+		this.previewSites = previewSites;
+
+		_previewSitesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPreviewSites(
+		UnsafeSupplier<PreviewSite[], Exception> previewSitesUnsafeSupplier) {
+
+		_previewSitesSupplier = () -> {
+			try {
+				return previewSitesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected PreviewSite[] previewSites;
+
+	@JsonIgnore
+	private Supplier<PreviewSite[]> _previewSitesSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -489,6 +531,28 @@ public class ImportPreview implements Serializable {
 			sb.append("]");
 		}
 
+		PreviewSite[] previewSites = getPreviewSites();
+
+		if (previewSites != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"previewSites\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < previewSites.length; i++) {
+				sb.append(String.valueOf(previewSites[i]));
+
+				if ((i + 1) < previewSites.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -611,4 +675,4 @@ public class ImportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1967918244
+// LIFERAY-REST-BUILDER-HASH:1461636162

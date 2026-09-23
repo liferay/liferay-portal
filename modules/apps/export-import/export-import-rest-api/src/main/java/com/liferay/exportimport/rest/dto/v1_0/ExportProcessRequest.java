@@ -451,6 +451,51 @@ public class ExportProcessRequest implements Serializable {
 		_requestPortletDataHandlersSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String[] getSiteExternalReferenceCodes() {
+		if (_siteExternalReferenceCodesSupplier != null) {
+			siteExternalReferenceCodes =
+				_siteExternalReferenceCodesSupplier.get();
+
+			_siteExternalReferenceCodesSupplier = null;
+		}
+
+		return siteExternalReferenceCodes;
+	}
+
+	public void setSiteExternalReferenceCodes(
+		String[] siteExternalReferenceCodes) {
+
+		this.siteExternalReferenceCodes = siteExternalReferenceCodes;
+
+		_siteExternalReferenceCodesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSiteExternalReferenceCodes(
+		UnsafeSupplier<String[], Exception>
+			siteExternalReferenceCodesUnsafeSupplier) {
+
+		_siteExternalReferenceCodesSupplier = () -> {
+			try {
+				return siteExternalReferenceCodesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String[] siteExternalReferenceCodes;
+
+	@JsonIgnore
+	private Supplier<String[]> _siteExternalReferenceCodesSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getSitePagesSettings() {
 		if (_sitePagesSettingsSupplier != null) {
 			sitePagesSettings = _sitePagesSettingsSupplier.get();
@@ -774,6 +819,32 @@ public class ExportProcessRequest implements Serializable {
 			sb.append("]");
 		}
 
+		String[] siteExternalReferenceCodes = getSiteExternalReferenceCodes();
+
+		if (siteExternalReferenceCodes != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteExternalReferenceCodes\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < siteExternalReferenceCodes.length; i++) {
+				sb.append("\"");
+
+				sb.append(_escape(siteExternalReferenceCodes[i]));
+
+				sb.append("\"");
+
+				if ((i + 1) < siteExternalReferenceCodes.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Boolean sitePagesSettings = getSitePagesSettings();
 
 		if (sitePagesSettings != null) {
@@ -986,4 +1057,4 @@ public class ExportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1109215080
+// LIFERAY-REST-BUILDER-HASH:-1295466518
