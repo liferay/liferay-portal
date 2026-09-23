@@ -745,6 +745,12 @@ components:
                         Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the catalog. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 currencyCode:
                     description:
                         ISO 4217 code of the catalog's default currency; on write the catalog's default currency can be identified by `currencyCode`, `currencyExternalReferenceCode`, or `currencyId`.
@@ -799,6 +805,10 @@ components:
                         Display name of the catalog; required on create and used to seed the localized name map for the backing Liferay site group; matched by the search query parameter and filterable and sortable through the OData query parameter.
                     example: Default Catalog
                     type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 system:
                     description:
                         Indicates that the catalog is platform-managed (the master catalog and similar); read-only; deletion of system catalogs is blocked.
@@ -891,6 +901,40 @@ components:
                     example: site
                     type: string
             type: object
+        Creator:
+            description:
+                User account that created the entity. Properties follow the [creator](https://schema.org/creator) specification; the batch engine uses `externalReferenceCode` and `id` to keep the original creator on import.
+            properties:
+                additionalName:
+                    readOnly: true
+                    type: string
+                contentType:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                familyName:
+                    readOnly: true
+                    type: string
+                givenName:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    format: uri
+                    readOnly: true
+                    type: string
+                name:
+                    readOnly: true
+                    type: string
+                profileURL:
+                    readOnly: true
+                    type: string
+            type: object
         Currency:
             description:
                 Currency definition specifying the formatting, fraction digits, rounding mode, and exchange rate used by catalogs and channels; supports create, read, update, and delete operations from the catalog admin perspective; every write triggers a reindex.
@@ -905,6 +949,12 @@ components:
                         ISO 4217 currency code; required and rejected when blank; must be unique per company, and a duplicate code in the same company is rejected; filterable and sortable through the OData query parameter.
                     example: USD
                     type: string
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the currency. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 dateCreated:
                     description:
                         Creation timestamp in ISO 8601 (UTC). Read-only; set when the currency is first persisted. Filterable and sortable via the OData query parameter.
@@ -1711,6 +1761,12 @@ components:
                     example: 2017-07-21T19:30:00Z
                     format: date-time
                     type: string
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the product. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 customFields:
                     description:
                         Custom field values stored against the product; written as expando attribute values during save.
@@ -4647,6 +4703,69 @@ paths:
                     description:
                         Unexpected error
             summary: Creates or updates a catalog.
+            tags:
+                -   Catalog
+    /catalog/{catalogId}/permissions:
+        get:
+            description:
+                Lists the role permissions granted on the catalog identified by ID. Requires the PERMISSIONS action on the catalog.
+            operationId: getCatalogPermissionsPage
+            parameters:
+                -   in: path
+                    name: catalogId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the catalog, the same `id` the catalog payload carries.
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The role permissions of the catalog.
+            summary: Lists the permissions of a catalog by ID.
+            tags:
+                -   Catalog
+        put:
+            description:
+                Replaces the role permissions granted on the catalog identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the catalog.
+            operationId: putCatalogPermissionsPage
+            parameters:
+                -   in: path
+                    name: catalogId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the catalog, the same `id` the catalog payload carries.
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The updated role permissions of the catalog.
+            summary: Replaces the permissions of a catalog by ID.
             tags:
                 -   Catalog
     /catalog/{id}:
