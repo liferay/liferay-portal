@@ -14,6 +14,9 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.LocalizationImpl;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -48,196 +51,82 @@ public class ObjectDefinitionUtilTest {
 
 	@Test
 	public void testGetDescriptionWithObjectDefinition() {
-
-		// No description
-
-		Assert.assertNull(
-			ObjectDefinitionUtil.getDescription(_objectDefinition));
-
-		Mockito.when(
-			_objectDefinition.getDescription(_DEFAULT_LANGUAGE_ID, false)
-		).thenReturn(
-			StringPool.BLANK
-		);
-
-		Mockito.when(
-			_objectDefinition.getDescription(_ENGLISH_LANGUAGE_ID, false)
-		).thenReturn(
-			StringPool.BLANK
-		);
-
-		Assert.assertNull(
-			ObjectDefinitionUtil.getDescription(_objectDefinition));
-
-		// With English translation
-
-		String description = RandomTestUtil.randomString();
-
-		Mockito.when(
-			_objectDefinition.getDescription(_DEFAULT_LANGUAGE_ID, false)
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			_objectDefinition.getDescription(_ENGLISH_LANGUAGE_ID, false)
-		).thenReturn(
-			description
-		);
-
-		Assert.assertEquals(
-			description,
-			ObjectDefinitionUtil.getDescription(_objectDefinition));
-
-		// Without English translation
-
-		Mockito.when(
-			_objectDefinition.getDescription(_DEFAULT_LANGUAGE_ID, false)
-		).thenReturn(
-			description
-		);
-
-		Mockito.when(
-			_objectDefinition.getDescription(_ENGLISH_LANGUAGE_ID, false)
-		).thenReturn(
-			StringPool.BLANK
-		);
-
-		Assert.assertEquals(
-			description,
-			ObjectDefinitionUtil.getDescription(_objectDefinition));
+		_testGetDescription(
+			languageId -> _objectDefinition.getDescription(languageId, false),
+			() -> ObjectDefinitionUtil.getDescription(_objectDefinition));
 	}
 
 	@Test
 	public void testGetDescriptionWithObjectField() {
-
-		// No description
-
-		Assert.assertNull(
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectField));
-
-		Mockito.when(
-			_objectField.getDescription(_DEFAULT_LANGUAGE_ID, false)
-		).thenReturn(
-			StringPool.BLANK
-		);
-
-		Mockito.when(
-			_objectField.getDescription(_ENGLISH_LANGUAGE_ID, false)
-		).thenReturn(
-			StringPool.BLANK
-		);
-
-		Assert.assertNull(
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectField));
-
-		// With English translation
-
-		String description = RandomTestUtil.randomString();
-
-		Mockito.when(
-			_objectField.getDescription(_DEFAULT_LANGUAGE_ID, false)
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			_objectField.getDescription(_ENGLISH_LANGUAGE_ID, false)
-		).thenReturn(
-			description
-		);
-
-		Assert.assertEquals(
-			description,
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectField));
-
-		// Without English translation
-
-		Mockito.when(
-			_objectField.getDescription(_DEFAULT_LANGUAGE_ID, false)
-		).thenReturn(
-			description
-		);
-
-		Mockito.when(
-			_objectField.getDescription(_ENGLISH_LANGUAGE_ID, false)
-		).thenReturn(
-			StringPool.BLANK
-		);
-
-		Assert.assertEquals(
-			description,
-			ObjectDefinitionUtil.getDescription(
+		_testGetDescription(
+			languageId -> _objectField.getDescription(languageId, false),
+			() -> ObjectDefinitionUtil.getDescription(
 				_objectDefinition, _objectField));
 	}
 
 	@Test
 	public void testGetDescriptionWithObjectRelationship() {
+		_testGetDescription(
+			languageId -> _objectRelationship.getDescription(languageId, false),
+			() -> ObjectDefinitionUtil.getDescription(
+				_objectDefinition, _objectRelationship));
+	}
+
+	private void _testGetDescription(
+		Function<String, String> descriptionFunction,
+		Supplier<String> descriptionSupplier) {
 
 		// No description
 
-		Assert.assertNull(
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectRelationship));
+		Assert.assertNull(descriptionSupplier.get());
 
 		Mockito.when(
-			_objectRelationship.getDescription(_DEFAULT_LANGUAGE_ID, false)
+			descriptionFunction.apply(_DEFAULT_LANGUAGE_ID)
 		).thenReturn(
 			StringPool.BLANK
 		);
 
 		Mockito.when(
-			_objectRelationship.getDescription(_ENGLISH_LANGUAGE_ID, false)
+			descriptionFunction.apply(_ENGLISH_LANGUAGE_ID)
 		).thenReturn(
 			StringPool.BLANK
 		);
 
-		Assert.assertNull(
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectRelationship));
+		Assert.assertNull(descriptionSupplier.get());
 
 		// With English translation
 
 		String description = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_objectRelationship.getDescription(_DEFAULT_LANGUAGE_ID, false)
+			descriptionFunction.apply(_DEFAULT_LANGUAGE_ID)
 		).thenReturn(
 			RandomTestUtil.randomString()
 		);
 
 		Mockito.when(
-			_objectRelationship.getDescription(_ENGLISH_LANGUAGE_ID, false)
+			descriptionFunction.apply(_ENGLISH_LANGUAGE_ID)
 		).thenReturn(
 			description
 		);
 
-		Assert.assertEquals(
-			description,
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectRelationship));
+		Assert.assertEquals(description, descriptionSupplier.get());
 
 		// Without English translation
 
 		Mockito.when(
-			_objectRelationship.getDescription(_DEFAULT_LANGUAGE_ID, false)
+			descriptionFunction.apply(_DEFAULT_LANGUAGE_ID)
 		).thenReturn(
 			description
 		);
 
 		Mockito.when(
-			_objectRelationship.getDescription(_ENGLISH_LANGUAGE_ID, false)
+			descriptionFunction.apply(_ENGLISH_LANGUAGE_ID)
 		).thenReturn(
 			StringPool.BLANK
 		);
 
-		Assert.assertEquals(
-			description,
-			ObjectDefinitionUtil.getDescription(
-				_objectDefinition, _objectRelationship));
+		Assert.assertEquals(description, descriptionSupplier.get());
 	}
 
 	private static final String _DEFAULT_LANGUAGE_ID = "pt_BR";
