@@ -238,6 +238,46 @@ public class DispatchConfiguratorTest {
 	}
 
 	@Test
+	public void testActivateSkipsAlreadyScheduledJobs() throws Exception {
+		Mockito.when(
+			_clusterMasterExecutor.isMaster()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_dispatchTriggerHelper.hasSchedulerJob(
+				Mockito.same(_singleNodePersistedDispatchTrigger),
+				Mockito.eq(StorageType.PERSISTED))
+		).thenReturn(
+			true
+		);
+
+		_dispatchConfigurator.activate(_bundleContext);
+
+		Mockito.verify(
+			_dispatchTriggerHelper
+		).addSchedulerJob(
+			Mockito.same(_allNodesDispatchTrigger),
+			Mockito.eq(StorageType.MEMORY), Mockito.any()
+		);
+
+		Mockito.verify(
+			_dispatchTriggerHelper
+		).addSchedulerJob(
+			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
+			Mockito.eq(StorageType.MEMORY_CLUSTERED), Mockito.any()
+		);
+
+		Mockito.verify(
+			_dispatchTriggerHelper, Mockito.never()
+		).addSchedulerJob(
+			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any(),
+			Mockito.any()
+		);
+	}
+
+	@Test
 	public void testDeactivateUnschedulesAllTypeOfJobsOnMasterNode() {
 		Mockito.when(
 			_clusterMasterExecutor.isMaster()
