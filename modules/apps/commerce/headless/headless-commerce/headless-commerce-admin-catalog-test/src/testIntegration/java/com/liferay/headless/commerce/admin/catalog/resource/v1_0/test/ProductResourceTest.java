@@ -30,6 +30,7 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Attachment;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Creator;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Diagram;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
@@ -402,6 +403,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductProductShippingConfigurationFromProductConfiguration();
 		_testPostProductProductTaxConfigurationFromProductConfiguration();
 		_testPostProductVirtual();
+		_testPostProductWithCreator();
 		_testPostProductWithDiagramImageExternalReferenceCode();
 		_testPostProductWithLazyReferencingDisabled();
 		_testPostProductWithLazyReferencingEnabled();
@@ -1234,6 +1236,31 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			productVirtualSettingsFileEntries[0];
 
 		Assert.assertNotNull(productVirtualSettingsFileEntry.getSrc());
+	}
+
+	private void _testPostProductWithCreator() throws Exception {
+		String password = RandomTestUtil.randomString();
+		User user = UserTestUtil.addOmniadminUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		ProductResource productResource = ProductResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "creator"
+		).build();
+
+		Product postProduct = productResource.postProduct(randomProduct());
+
+		Creator creator = postProduct.getCreator();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
 	}
 
 	private void _testPostProductWithDiagramImageExternalReferenceCode()

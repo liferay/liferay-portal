@@ -8,16 +8,22 @@ package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Creator;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Currency;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.CurrencyResource;
 import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.CurrencySerDes;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
@@ -139,6 +145,14 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 			Arrays.asList(
 				CurrencySerDes.toDTOs(
 					currenciesJSONObject.getString("items"))));
+	}
+
+	@Override
+	@Test
+	public void testPostCurrency() throws Exception {
+		super.testPostCurrency();
+
+		_testPostCurrencyWithCreator();
 	}
 
 	@Override
@@ -282,6 +296,31 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 		};
 	}
 
+	private void _testPostCurrencyWithCreator() throws Exception {
+		String password = RandomTestUtil.randomString();
+		User user = UserTestUtil.addOmniadminUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		CurrencyResource currencyResource = CurrencyResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "creator"
+		).build();
+
+		Currency postCurrency = currencyResource.postCurrency(randomCurrency());
+
+		Creator creator = postCurrency.getCreator();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
+	}
+
 	private void _testPutCurrencyByExternalReferenceCodeWithPartialCurrency()
 		throws Exception {
 
@@ -311,5 +350,8 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 
 	@Inject
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
