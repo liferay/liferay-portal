@@ -84,6 +84,11 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 				group1.getExternalReferenceCode(),
 				group2.getExternalReferenceCode()),
 			_getGroupERCs());
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				group1.getExternalReferenceCode(),
+				group2.getExternalReferenceCode()),
+			SetUtil.fromCollection(_audiencesEntry.getGroupERCs()));
 
 		Group group3 = GroupTestUtil.addGroup();
 
@@ -96,6 +101,16 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 				group2.getExternalReferenceCode(),
 				group3.getExternalReferenceCode()),
 			_getGroupERCs());
+
+		AudiencesEntry audiencesEntry =
+			_audiencesEntryLocalService.getAudiencesEntry(
+				_audiencesEntry.getAudiencesEntryId());
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				group2.getExternalReferenceCode(),
+				group3.getExternalReferenceCode()),
+			SetUtil.fromCollection(audiencesEntry.getGroupERCs()));
 
 		_updateAudiencesEntry();
 
