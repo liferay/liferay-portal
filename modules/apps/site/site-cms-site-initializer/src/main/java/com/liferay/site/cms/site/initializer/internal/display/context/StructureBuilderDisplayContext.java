@@ -403,9 +403,7 @@ public class StructureBuilderDisplayContext {
 		return _objectFolderExternalReferenceCode;
 	}
 
-	private JSONObject _getSystemObjectFieldNamesJSONObject()
-		throws Exception {
-
+	private JSONObject _getSystemObjectFieldNamesJSONObject() throws Exception {
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 		ObjectDefinition objectDefinition = _getObjectDefinition();
