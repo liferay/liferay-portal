@@ -1327,7 +1327,7 @@
 									"fill": "solid"
 								},
 								"lineWidth": 1,
-								"pointSize": 5,
+								"pointSize": 2,
 								"scaleDistribution": {
 									"type": "linear"
 								},
