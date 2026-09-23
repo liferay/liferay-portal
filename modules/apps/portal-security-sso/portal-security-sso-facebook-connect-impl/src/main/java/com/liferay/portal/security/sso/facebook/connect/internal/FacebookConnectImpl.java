@@ -13,12 +13,14 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.sso.facebook.connect.configuration.FacebookConnectConfiguration;
 import com.liferay.portal.security.sso.facebook.connect.constants.FacebookConnectConstants;
 import com.liferay.portal.security.sso.facebook.connect.constants.FacebookConnectWebKeys;
@@ -59,7 +61,10 @@ public class FacebookConnectImpl implements FacebookConnect {
 		url = HttpComponentsUtil.addParameter(
 			url, "client_id", facebookConnectConfiguration.appId());
 		url = HttpComponentsUtil.addParameter(
-			url, "client_secret", facebookConnectConfiguration.appSecret());
+			url, "client_secret",
+			_secretResolver.resolve(
+				CompanyConstants.SYSTEM,
+				facebookConnectConfiguration.appSecret()));
 		url = HttpComponentsUtil.addParameter(url, "code", code);
 		url = HttpComponentsUtil.addParameter(
 			url, "redirect_uri",
@@ -127,7 +132,8 @@ public class FacebookConnectImpl implements FacebookConnect {
 		FacebookConnectConfiguration facebookConnectConfiguration =
 			_getFacebookConnectConfiguration(companyId);
 
-		return facebookConnectConfiguration.appSecret();
+		return _secretResolver.resolve(
+			CompanyConstants.SYSTEM, facebookConnectConfiguration.appSecret());
 	}
 
 	@Override
@@ -261,5 +267,8 @@ public class FacebookConnectImpl implements FacebookConnect {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
