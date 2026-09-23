@@ -47,5 +47,7 @@ public interface AudiencesEntry extends AudiencesEntryModel, PersistedModel {
 
 		};
 
+	public java.util.List<String> getGroupERCs();
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1047756647
+// LIFERAY-SERVICE-BUILDER-HASH:348584731

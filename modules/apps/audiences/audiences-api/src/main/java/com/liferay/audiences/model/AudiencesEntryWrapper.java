@@ -156,6 +156,11 @@ public class AudiencesEntryWrapper
 		return model.getExternalReferenceCode();
 	}
 
+	@Override
+	public java.util.List<String> getGroupERCs() {
+		return model.getGroupERCs();
+	}
+
 	/**
 	 * Returns the json of this audiences entry.
 	 *
@@ -372,4 +377,4 @@ public class AudiencesEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-104579513
+// LIFERAY-SERVICE-BUILDER-HASH:-708844041
