@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -275,10 +276,16 @@ public class DiscountResourceImpl
 		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
 			discount.getExpirationDate(), serviceContext.getTimeZone());
 
+		long discountId = 0;
+
+		if (Validator.isNull(externalReferenceCode)) {
+			discountId = GetterUtil.getLong(discount.getId());
+		}
+
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountService.addOrUpdateCommerceDiscount(
-				externalReferenceCode, GetterUtil.getLong(discount.getId()),
-				discount.getTitle(), discount.getTarget(),
+				externalReferenceCode, discountId, discount.getTitle(),
+				discount.getTarget(),
 				GetterUtil.getBoolean(discount.getUseCouponCode()),
 				discount.getCouponCode(),
 				GetterUtil.getBoolean(discount.getUsePercentage()),
