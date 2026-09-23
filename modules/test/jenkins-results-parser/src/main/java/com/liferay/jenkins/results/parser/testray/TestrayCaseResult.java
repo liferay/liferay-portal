@@ -491,31 +491,6 @@ public class TestrayCaseResult {
 
 	}
 
-	protected static List<String> getErrorsList(String errors) {
-		if (JenkinsResultsParserUtil.isNullOrEmpty(errors)) {
-			return Arrays.asList(errors);
-		}
-
-		List<String> errorsList = new ArrayList<>();
-
-		errorsList.add(errors);
-
-		String[] lines = errors.split("\n");
-
-		if (lines.length > 2) {
-			errorsList.add(
-				JenkinsResultsParserUtil.combine(
-					lines[0], "\n...\n", lines[lines.length - 1]));
-		}
-
-		errorsList.add(
-			JenkinsResultsParserUtil.combine(
-				"Failed. The error message was rejected by the Testray web ",
-				"application firewall. See the Jenkins Console attachment."));
-
-		return errorsList;
-	}
-
 	protected TestrayCaseResult(
 		TestrayBuild testrayBuild, JSONObject jsonObject) {
 
@@ -653,8 +628,6 @@ public class TestrayCaseResult {
 			requestJSONObject.put("duration", duration);
 		}
 
-		final List<String> errorsList = getErrorsList(getErrors());
-
 		requestJSONObject.put(
 			"r_buildToCaseResult_c_buildId", testrayBuild.getId()
 		).put(
@@ -691,13 +664,6 @@ public class TestrayCaseResult {
 					return cachedTestrayCaseResultURL;
 				}
 
-				String errors = errorsList.get(
-					Math.min(_attempts++, errorsList.size() - 1));
-
-				if (!JenkinsResultsParserUtil.isNullOrEmpty(errors)) {
-					requestJSONObject.put("errors", errors);
-				}
-
 				try {
 					JSONObject responseJSONObject = new JSONObject(
 						_testrayServer.requestPost(
@@ -725,8 +691,6 @@ public class TestrayCaseResult {
 					throw new RuntimeException(ioException);
 				}
 			}
-
-			private int _attempts;
 
 		};
 
