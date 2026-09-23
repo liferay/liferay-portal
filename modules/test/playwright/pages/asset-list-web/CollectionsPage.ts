@@ -3,16 +3,26 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page} from '@playwright/test';
+import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 
+type FilterCondition = {
+	field: string;
+	fieldGroup?: string;
+	operator?: string;
+	quantifier?: string;
+	value?: string;
+};
+
 export class CollectionsPage {
+	readonly conditionBuilder: Locator;
 	readonly page: Page;
 
 	constructor(page: Page) {
+		this.conditionBuilder = page.locator('.condition-builder');
 		this.page = page;
 	}
 
@@ -265,71 +275,95 @@ export class CollectionsPage {
 	/**
 	 * On a collection's edit page, adds one condition per entry to the Filter
 	 * section. Call `save` to persist them. Only available with the LPD-74731
-	 * feature flag
-	 * enabled, which replaces the tags and categories rules with the condition
-	 * builder.
+	 * feature flag enabled, which replaces the tags and categories rules with
+	 * the condition builder.
 	 */
-	async addFilterConditions(
-		conditions: Array<{
-			field: string;
-			fieldGroup: string;
-			operator: string;
-			quantifier: string;
-			value: string;
-		}>
-	) {
-		const conditionBuilder = this.page.locator('.condition-builder');
+	async addFilterConditions(conditions: Array<FilterCondition>) {
+		await this.openFilterSection();
 
+		for (const [index, condition] of conditions.entries()) {
+			if (index) {
+				await this.addFilterRow();
+			}
+
+			await this.fillFilterCondition(index, condition);
+		}
+	}
+
+	/**
+	 * On a collection's edit page, appends an empty row to the Filter section's
+	 * condition builder.
+	 */
+	async addFilterRow() {
+		await this.page.getByRole('button', {name: 'Add Filter'}).click();
+	}
+
+	/**
+	 * On a collection's edit page, the nth row of the Filter section's condition
+	 * builder, which scopes the row's own pickers.
+	 */
+	getFilterConditionRow(index: number) {
+		return this.conditionBuilder
+			.locator('.condition-builder__row')
+			.nth(index);
+	}
+
+	/**
+	 * On a collection's edit page, fills the nth row of the Filter section. Every
+	 * part after the field is optional.
+	 */
+	async fillFilterCondition(
+		index: number,
+		{field, fieldGroup, operator, quantifier, value}: FilterCondition
+	) {
+		const row = this.getFilterConditionRow(index);
+
+		await row.getByLabel('Field').click();
+
+		const fieldOption = fieldGroup
+			? this.page
+					.getByRole('group', {name: fieldGroup})
+					.getByRole('option', {exact: true, name: field})
+			: this.page.getByRole('option', {exact: true, name: field});
+
+		await fieldOption.click();
+
+		// Select Operator + Quantifier
+
+		for (const [label, option] of [
+			['Operator', operator],
+			['Quantifier', quantifier],
+		]) {
+			if (!option) {
+				continue;
+			}
+
+			await row.getByLabel(label as string).click();
+
+			await this.page
+				.getByRole('option', {exact: true, name: option})
+				.click();
+		}
+
+		// Provide Value (if present)
+
+		if (value !== undefined) {
+			await row.getByLabel('Value').fill(value);
+		}
+	}
+
+	/**
+	 * On a collection's edit page, opens the Filter section and waits for its
+	 * condition builder to be on screen.
+	 */
+	async openFilterSection() {
 		await clickAndExpectToBeVisible({
-			target: conditionBuilder,
+			target: this.conditionBuilder,
 			trigger: this.page.getByRole('button', {
 				exact: true,
 				name: 'Filter',
 			}),
 		});
-
-		for (const [
-			index,
-			{field, fieldGroup, operator, quantifier, value},
-		] of conditions.entries()) {
-			if (index) {
-				await this.page
-					.getByRole('button', {name: 'Add Filter'})
-					.click();
-			}
-
-			// Scope the controls to the row being filled in.
-
-			const row = conditionBuilder
-				.locator('.condition-builder__row')
-				.nth(index);
-
-			// Select Field
-
-			await row.getByLabel('Field').click();
-
-			await this.page
-				.getByRole('group', {name: fieldGroup})
-				.getByRole('option', {exact: true, name: field})
-				.click();
-
-			// Select Operator + Quantifier
-
-			for (const [label, option] of [
-				['Operator', operator],
-				['Quantifier', quantifier],
-			]) {
-				await row.getByLabel(label).click();
-
-				await this.page
-					.getByRole('option', {exact: true, name: option})
-					.click();
-			}
-
-			// Provide Value
-
-			await row.getByLabel('Value').fill(value);
-		}
 	}
 
 	/**
