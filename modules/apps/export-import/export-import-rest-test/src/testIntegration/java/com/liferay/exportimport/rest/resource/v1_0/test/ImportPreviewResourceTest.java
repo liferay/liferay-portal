@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -62,10 +61,8 @@ import com.liferay.staging.StagingGroupHelper;
 import java.io.File;
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -279,18 +276,6 @@ public class ImportPreviewResourceTest
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
 		}
-	}
-
-	private Group _addGroup() throws Exception {
-		return _addGroup(GroupConstants.DEFAULT_PARENT_GROUP_ID);
-	}
-
-	private Group _addGroup(long parentGroupId) throws Exception {
-		Group group = GroupTestUtil.addGroup(parentGroupId);
-
-		_groups.add(0, group);
-
-		return group;
 	}
 
 	private long _addLayoutWithPortlet(Group group, String portletId)
@@ -522,7 +507,7 @@ public class ImportPreviewResourceTest
 		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
 			testCompany.getCompanyId());
 
-		Group group = _addGroup();
+		Group group = GroupTestUtil.addGroup();
 
 		File file = _exportLayoutAsFile(companyGroup.getGroupId(), group);
 
@@ -538,9 +523,9 @@ public class ImportPreviewResourceTest
 		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
 			testCompany.getCompanyId());
 
-		Group group = _addGroup();
+		Group group = GroupTestUtil.addGroup();
 
-		Group childGroup = _addGroup(group.getGroupId());
+		Group childGroup = GroupTestUtil.addGroup(group.getGroupId());
 
 		ImportPreview importPreview = _postImportPreview(
 			_exportLayoutAsFile(companyGroup.getGroupId(), group, childGroup));
@@ -591,9 +576,6 @@ public class ImportPreviewResourceTest
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@DeleteAfterTestRun
-	private final List<Group> _groups = new ArrayList<>();
 
 	private ImportPreviewResource _importPreviewResource;
 
