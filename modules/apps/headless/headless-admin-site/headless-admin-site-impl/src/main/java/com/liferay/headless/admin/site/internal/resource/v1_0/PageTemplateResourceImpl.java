@@ -102,8 +102,6 @@ public class PageTemplateResourceImpl
 			String pageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
 			pageTemplateExternalReferenceCode,
 			GroupUtil.getGroupId(
@@ -181,8 +179,6 @@ public class PageTemplateResourceImpl
 			String pageTemplateSetExternalReferenceCode, Boolean flatten)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -215,8 +211,6 @@ public class PageTemplateResourceImpl
 			String pageTemplateExternalReferenceCode,
 			ContentPageSpecification contentPageSpecification)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
@@ -256,8 +250,6 @@ public class PageTemplateResourceImpl
 			PageTemplate pageTemplate)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			_layoutPageTemplateCollectionService.
 				getLayoutPageTemplateCollection(
@@ -285,8 +277,6 @@ public class PageTemplateResourceImpl
 			String siteExternalReferenceCode,
 			String pageTemplateExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
@@ -316,8 +306,6 @@ public class PageTemplateResourceImpl
 			Aggregation aggregation, Filter filter, Pagination pagination,
 			Sort[] sorts)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
@@ -353,8 +341,6 @@ public class PageTemplateResourceImpl
 			String siteExternalReferenceCode, PageTemplate pageTemplate)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _addPageTemplate(
 			GroupUtil.getStagingAwareGroupId(
 				_isTypeWidgetPageTemplate(pageTemplate),
@@ -367,8 +353,6 @@ public class PageTemplateResourceImpl
 			String siteExternalReferenceCode,
 			String pageTemplateExternalReferenceCode, PageTemplate pageTemplate)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			_isTypeWidgetPageTemplate(pageTemplate),

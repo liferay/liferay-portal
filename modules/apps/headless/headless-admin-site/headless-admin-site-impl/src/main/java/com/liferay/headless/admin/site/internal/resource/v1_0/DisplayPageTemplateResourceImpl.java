@@ -138,8 +138,6 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
 			displayPageTemplateExternalReferenceCode,
 			GroupUtil.getStagingAwareGroupId(
@@ -294,8 +292,6 @@ public class DisplayPageTemplateResourceImpl
 				group.getExternalReferenceCode(), layoutPageTemplateEntry);
 		}
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _toDisplayPageTemplate(layoutPageTemplateEntry);
 	}
 
@@ -306,8 +302,6 @@ public class DisplayPageTemplateResourceImpl
 				String displayPageTemplateFolderExternalReferenceCode,
 				Boolean flatten)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -428,8 +422,6 @@ public class DisplayPageTemplateResourceImpl
 				DisplayPageTemplate displayPageTemplate)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -459,8 +451,6 @@ public class DisplayPageTemplateResourceImpl
 				String pageTemplateExternalReferenceCode,
 				ContentPageSpecification contentPageSpecification)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
@@ -526,8 +516,6 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
@@ -555,8 +543,6 @@ public class DisplayPageTemplateResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _getDisplayPageTemplatesPage(
 			filter,
 			GroupUtil.getGroupId(
@@ -569,8 +555,6 @@ public class DisplayPageTemplateResourceImpl
 			String siteExternalReferenceCode,
 			DisplayPageTemplate displayPageTemplate)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -586,8 +570,6 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode,
 			DisplayPageTemplate displayPageTemplate)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);

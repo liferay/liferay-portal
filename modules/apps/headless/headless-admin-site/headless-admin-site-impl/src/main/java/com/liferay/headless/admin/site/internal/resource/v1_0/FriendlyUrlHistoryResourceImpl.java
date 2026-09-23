@@ -13,7 +13,6 @@ import com.liferay.headless.admin.site.dto.v1_0.FriendlyUrlHistory;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPage;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
-import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.resource.v1_0.FriendlyUrlHistoryResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
@@ -59,8 +58,6 @@ public class FriendlyUrlHistoryResourceImpl
 				displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
@@ -88,8 +85,6 @@ public class FriendlyUrlHistoryResourceImpl
 			@NestedFieldId(value = "externalReferenceCode") String
 				sitePageExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
 			sitePageExternalReferenceCode,
@@ -124,8 +119,6 @@ public class FriendlyUrlHistoryResourceImpl
 			@NestedFieldId(value = "externalReferenceCode") String
 				utilityPageExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.

@@ -87,8 +87,6 @@ public class PageTemplateSetResourceImpl
 			String pageTemplateSetExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		_layoutPageTemplateCollectionService.deleteLayoutPageTemplateCollection(
 			pageTemplateSetExternalReferenceCode,
 			GroupUtil.getStagingAwareGroupId(
@@ -219,8 +217,6 @@ public class PageTemplateSetResourceImpl
 				group.getExternalReferenceCode(), layoutPageTemplateCollection);
 		}
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _toPageTemplateSet(layoutPageTemplateCollection);
 	}
 
@@ -229,8 +225,6 @@ public class PageTemplateSetResourceImpl
 			String siteExternalReferenceCode,
 			String pageTemplateSetExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		return _toPageTemplateSet(
 			_layoutPageTemplateCollectionService.
@@ -248,8 +242,6 @@ public class PageTemplateSetResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _getPageTemplateSetsPage(
 			aggregation, filter,
 			GroupUtil.getGroupId(
@@ -261,8 +253,6 @@ public class PageTemplateSetResourceImpl
 	protected PageTemplateSet doPostSitePageTemplateSet(
 			String siteExternalReferenceCode, PageTemplateSet pageTemplateSet)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		return _toPageTemplateSet(
 			PageTemplateSetUtil.addLayoutPageTemplateCollection(
@@ -277,8 +267,6 @@ public class PageTemplateSetResourceImpl
 			String pageTemplateSetExternalReferenceCode,
 			PageTemplateSet pageTemplateSet)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);

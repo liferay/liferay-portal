@@ -10,7 +10,6 @@ import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngin
 import com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplateFolder;
 import com.liferay.headless.admin.site.internal.odata.entity.v1_0.DisplayPageTemplateFolderEntityModel;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.DisplayPageTemplateFolderUtil;
-import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.resource.v1_0.DisplayPageTemplateFolderResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
@@ -58,8 +57,6 @@ public class DisplayPageTemplateFolderResourceImpl
 			String siteExternalReferenceCode,
 			String displayPageTemplateFolderExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		_layoutPageTemplateCollectionService.deleteLayoutPageTemplateCollection(
 			displayPageTemplateFolderExternalReferenceCode,
@@ -132,8 +129,6 @@ public class DisplayPageTemplateFolderResourceImpl
 			String displayPageTemplateFolderExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _toDisplayPageTemplateFolder(
 			_layoutPageTemplateCollectionService.
 				getLayoutPageTemplateCollection(
@@ -150,8 +145,6 @@ public class DisplayPageTemplateFolderResourceImpl
 				Aggregation aggregation, Filter filter, Pagination pagination,
 				Sort[] sorts)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -187,8 +180,6 @@ public class DisplayPageTemplateFolderResourceImpl
 			DisplayPageTemplateFolder displayPageTemplateFolder)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _addDisplayPageTemplateFolder(
 			displayPageTemplateFolder,
 			GroupUtil.getStagingAwareGroupId(
@@ -201,8 +192,6 @@ public class DisplayPageTemplateFolderResourceImpl
 			String displayPageTemplateFolderExternalReferenceCode,
 			DisplayPageTemplateFolder displayPageTemplateFolder)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);

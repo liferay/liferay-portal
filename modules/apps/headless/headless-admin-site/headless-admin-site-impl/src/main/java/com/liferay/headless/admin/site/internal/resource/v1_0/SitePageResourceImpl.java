@@ -124,8 +124,6 @@ public class SitePageResourceImpl
 			String sitePageExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		Layout layout = SitePageUtil.getSitePageLayout(
 			GroupUtil.getStagingAwareGroupId(
 				contextCompany.getCompanyId(), siteExternalReferenceCode),
@@ -265,7 +263,9 @@ public class SitePageResourceImpl
 				true, contextCompany.getCompanyId(), siteExternalReferenceCode),
 			sitePageExternalReferenceCode);
 
-		EnabledUtil.checkEnabled(contextCompany, layout.isPrivateLayout());
+		if (layout.isPrivateLayout()) {
+			EnabledUtil.checkPrivateLayoutEnabled(contextCompany);
+		}
 
 		List<Layout> layouts = null;
 
@@ -318,8 +318,6 @@ public class SitePageResourceImpl
 			ContentPageSpecification contentPageSpecification)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		Layout layout = SitePageUtil.getSitePageLayout(
 			GroupUtil.getStagingAwareGroupId(
 				contextCompany.getCompanyId(), siteExternalReferenceCode),
@@ -350,8 +348,6 @@ public class SitePageResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return super.read(filter, pagination, sorts, parameters, search);
 	}
 
@@ -360,8 +356,6 @@ public class SitePageResourceImpl
 			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		return _toSitePage(
 			SitePageUtil.getSitePageLayout(
@@ -378,7 +372,9 @@ public class SitePageResourceImpl
 			Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany, privateLayout);
+		if (privateLayout) {
+			EnabledUtil.checkPrivateLayoutEnabled(contextCompany);
+		}
 
 		long groupId = GroupUtil.getGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -431,7 +427,9 @@ public class SitePageResourceImpl
 			SitePage sitePage)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany, privateLayout);
+		if (privateLayout) {
+			EnabledUtil.checkPrivateLayoutEnabled(contextCompany);
+		}
 
 		if (Objects.equals(sitePage.getType(), SitePage.Type.WIDGET_PAGE)) {
 			EnabledUtil.checkAddWidgetPageEnabled(contextCompany);
@@ -453,7 +451,9 @@ public class SitePageResourceImpl
 			SitePage sitePage)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany, privateLayout);
+		if (privateLayout) {
+			EnabledUtil.checkPrivateLayoutEnabled(contextCompany);
+		}
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);

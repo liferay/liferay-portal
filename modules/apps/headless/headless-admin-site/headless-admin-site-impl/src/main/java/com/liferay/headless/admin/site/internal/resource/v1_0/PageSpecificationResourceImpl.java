@@ -114,8 +114,6 @@ public class PageSpecificationResourceImpl
 					displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
@@ -146,8 +144,6 @@ public class PageSpecificationResourceImpl
 				masterPageExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
@@ -175,8 +171,6 @@ public class PageSpecificationResourceImpl
 			String siteExternalReferenceCode,
 			String pageSpecificationExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		Layout layout = _getLayout(
 			GroupUtil.getGroupId(
@@ -206,8 +200,6 @@ public class PageSpecificationResourceImpl
 			@NestedFieldId(value = "externalReferenceCode") String
 				pageTemplateExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
@@ -283,8 +275,6 @@ public class PageSpecificationResourceImpl
 				sitePageExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			sitePageExternalReferenceCode,
 			GroupUtil.getGroupId(
@@ -318,8 +308,6 @@ public class PageSpecificationResourceImpl
 			@NestedFieldId(value = "externalReferenceCode") String
 				utilityPageExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.

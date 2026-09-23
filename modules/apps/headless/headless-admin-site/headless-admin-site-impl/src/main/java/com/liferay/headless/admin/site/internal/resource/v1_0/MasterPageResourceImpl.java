@@ -18,7 +18,6 @@ import com.liferay.headless.admin.site.internal.odata.entity.v1_0.MasterPageEnti
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
-import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.resource.v1_0.MasterPageResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
@@ -77,8 +76,6 @@ public class MasterPageResourceImpl
 			String siteExternalReferenceCode,
 			String masterPageExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
 			masterPageExternalReferenceCode,
@@ -157,8 +154,6 @@ public class MasterPageResourceImpl
 			ContentPageSpecification contentPageSpecification)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
 				fetchLayoutPageTemplateEntryByExternalReferenceCode(
@@ -196,8 +191,6 @@ public class MasterPageResourceImpl
 			String masterPageExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
@@ -229,8 +222,6 @@ public class MasterPageResourceImpl
 			Aggregation aggregation, Filter filter, Pagination pagination,
 			Sort[] sorts)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -273,8 +264,6 @@ public class MasterPageResourceImpl
 			String siteExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		return _addMasterPage(
 			GroupUtil.getStagingAwareGroupId(
 				contextCompany.getCompanyId(), siteExternalReferenceCode),
@@ -286,8 +275,6 @@ public class MasterPageResourceImpl
 			String siteExternalReferenceCode,
 			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
