@@ -118,7 +118,7 @@
 					"type": "oneToMany"
 				}
 			],
-			"panelCategoryKey": "control_panel.object",
+			"panelCategoryKey": "",
 			"pluralLabel": {
 				"en_US": "MCP Server Profiles"
 			},

@@ -88,7 +88,7 @@
 					"type": "String"
 				}
 			],
-			"panelCategoryKey": "control_panel.object",
+			"panelCategoryKey": "",
 			"pluralLabel": {
 				"en_US": "MCP Server Profile Data Masks"
 			},
