@@ -15,6 +15,7 @@ import recentSearches from '../../../src/main/resources/META-INF/resources/utils
 import recentlyVisited from '../../../src/main/resources/META-INF/resources/utils/recentlyVisited';
 
 const DEBOUNCE_DELAY = 300;
+const TOOLTIP_DELAY = 600;
 
 const FDS_NAME = 'test-fds';
 const OTHER_FDS_NAME = 'other-test-fds';
@@ -369,6 +370,27 @@ describe('MainSearch', () => {
 				screen.getByRole('menuitem', {name: 'adidas'})
 			).toBeInTheDocument();
 			expect(recentSearches.get(FDS_NAME)).toEqual(['adidas']);
+		});
+
+		it('describes the remove button with its own tooltip rather than the browser one', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			const removeButton = screen.getByRole('menuitem', {
+				name: 'clear-search',
+			});
+
+			await user.hover(removeButton);
+
+			elapse(TOOLTIP_DELAY);
+
+			expect(screen.getByRole('tooltip')).toHaveTextContent(
+				'clear-search'
+			);
+			expect(removeButton).not.toHaveAttribute('title');
 		});
 
 		it('removes every query at once', async () => {

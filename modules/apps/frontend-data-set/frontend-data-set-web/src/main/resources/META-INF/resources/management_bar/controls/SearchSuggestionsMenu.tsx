@@ -5,6 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
@@ -114,75 +115,86 @@ function SearchSuggestionsMenu({
 			suppress={[menuRef, alignElementRef]}
 			triggerRef={alignElementRef}
 		>
-			<ul className="list-unstyled" role="menu">
-				{!!matchedQueries.length && (
-					<ClayDropDown.Group
-						header={Liferay.Language.get('recent-searches')}
+
+			{/*
+			 * The menu is rendered in a portal of its own, out of the reach of
+			 * the provider the page scopes to the management bar, so it brings
+			 * one along to replace the browser tooltip on the remove buttons.
+			 */}
+
+			<ClayTooltipProvider>
+				<ul className="list-unstyled" role="menu">
+					{!!matchedQueries.length && (
+						<ClayDropDown.Group
+							header={Liferay.Language.get('recent-searches')}
+						>
+							{matchedQueries.map(({match, query}) => (
+								<Entry
+									className="fds-search-suggestions-query-item"
+									key={query}
+									label={query}
+									match={match}
+									onClick={() => onQueryClick(query)}
+									onRemove={() =>
+										setQueries(
+											recentSearches.remove(id, query)
+										)
+									}
+									removeTitle={Liferay.Language.get(
+										'clear-search'
+									)}
+								/>
+							))}
+						</ClayDropDown.Group>
+					)}
+
+					{!!matchedVisitedItems.length && (
+						<ClayDropDown.Group
+							header={Liferay.Language.get('recently-visited')}
+						>
+							{matchedVisitedItems.map(({href, label, match}) => (
+								<Entry
+									className="fds-search-suggestions-visited-item"
+									href={href}
+									key={href}
+									label={label}
+									match={match}
+									onClick={() => {
+										recentlyVisited.add(id, {href, label});
+
+										onVisitedItemClick();
+									}}
+									onRemove={() =>
+										setVisitedItems(
+											recentlyVisited.remove(id, href)
+										)
+									}
+									removeTitle={Liferay.Language.get('remove')}
+								/>
+							))}
+						</ClayDropDown.Group>
+					)}
+
+					<ClayDropDown.Divider />
+
+					<li
+						className="fds-search-suggestions-clear-all"
+						role="presentation"
 					>
-						{matchedQueries.map(({match, query}) => (
-							<Entry
-								className="fds-search-suggestions-query-item"
-								key={query}
-								label={query}
-								match={match}
-								onClick={() => onQueryClick(query)}
-								onRemove={() =>
-									setQueries(recentSearches.remove(id, query))
-								}
-								removeTitle={Liferay.Language.get(
-									'clear-search'
-								)}
-							/>
-						))}
-					</ClayDropDown.Group>
-				)}
-
-				{!!matchedVisitedItems.length && (
-					<ClayDropDown.Group
-						header={Liferay.Language.get('recently-visited')}
-					>
-						{matchedVisitedItems.map(({href, label, match}) => (
-							<Entry
-								className="fds-search-suggestions-visited-item"
-								href={href}
-								key={href}
-								label={label}
-								match={match}
-								onClick={() => {
-									recentlyVisited.add(id, {href, label});
-
-									onVisitedItemClick();
-								}}
-								onRemove={() =>
-									setVisitedItems(
-										recentlyVisited.remove(id, href)
-									)
-								}
-								removeTitle={Liferay.Language.get('remove')}
-							/>
-						))}
-					</ClayDropDown.Group>
-				)}
-
-				<ClayDropDown.Divider />
-
-				<li
-					className="fds-search-suggestions-clear-all"
-					role="presentation"
-				>
-					<button
-						className="dropdown-item"
-						onClick={() => {
-							setQueries(recentSearches.clear(id));
-							setVisitedItems(recentlyVisited.clear(id));
-						}}
-						role="menuitem"
-						type="button"
-					>
-						{Liferay.Language.get('clear-all')}
-					</button>
-				</li>
-			</ul>
+						<button
+							className="dropdown-item"
+							onClick={() => {
+								setQueries(recentSearches.clear(id));
+								setVisitedItems(recentlyVisited.clear(id));
+							}}
+							role="menuitem"
+							type="button"
+						>
+							{Liferay.Language.get('clear-all')}
+						</button>
+					</li>
+				</ul>
+			</ClayTooltipProvider>
 		</ClayDropDown.Menu>
 	);
 }
