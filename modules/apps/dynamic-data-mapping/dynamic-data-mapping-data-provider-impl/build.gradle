@@ -4,7 +4,7 @@ dependencies {
 	compileInclude group: "com.netflix.hystrix", name: "hystrix-core", version: "1.5.18"
 	compileInclude group: "io.reactivex", name: "rxjava", version: "1.2.0"
 	compileInclude group: "org.hdrhistogram", name: "HdrHistogram", version: "2.2.2"
-	compileOnly group: "com.liferay", name: "org.apache.commons.configuration", version: "1.10.LIFERAY-PATCHED-2"
+	compileOnly group: "com.liferay", name: "org.apache.commons.configuration", version: "1.10.LIFERAY-PATCHED-3"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
