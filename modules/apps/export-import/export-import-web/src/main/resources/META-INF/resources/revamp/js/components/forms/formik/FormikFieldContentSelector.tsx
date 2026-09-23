@@ -4,7 +4,7 @@
  */
 
 import {useField, useFormikContext} from 'formik';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
@@ -39,10 +39,18 @@ export function FormikFieldContentSelector({
 
 	const showDeletions = !!deletions;
 
+	// The selection starts out full once the preview arrives, and only once.
+	// Whether it has been seeded is tracked here rather than read from
+	// `meta.touched`: Formik drops a field whose value is `undefined` from
+	// `values`, and on submit it rebuilds `touched` from `values`, so a
+	// deselected field reads as untouched again right after the submit.
+
+	const [seeded, setSeeded] = useState(false);
+
 	const shouldSeed =
+		!seeded &&
 		!!previewPortletDataHandlerSections.length &&
-		field.value === undefined &&
-		!meta.touched;
+		field.value === undefined;
 
 	const defaultContentSelection = shouldSeed
 		? getFullDataSelection(previewPortletDataHandlerSections, {
@@ -52,14 +60,12 @@ export function FormikFieldContentSelector({
 			})
 		: undefined;
 
-	const hasSeededRef = useRef(false);
-
 	useEffect(() => {
-		if (hasSeededRef.current || !defaultContentSelection) {
+		if (!defaultContentSelection) {
 			return;
 		}
 
-		hasSeededRef.current = true;
+		setSeeded(true);
 
 		setFieldValue(name, defaultContentSelection);
 	}, [name, defaultContentSelection, setFieldValue]);

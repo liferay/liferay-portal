@@ -255,6 +255,82 @@ describe('NewExport', () => {
 		).toBeTruthy();
 	});
 
+	it('keeps the entity types deselected after exporting only sites', async () => {
+		fetch.mockResponse(async (request) => {
+			if (request.url.includes('preview-sites')) {
+				return JSON.stringify({
+					items: [
+						{
+							childSitesCount: 0,
+							descriptiveName: 'Support',
+							externalReferenceCode: 'erc-support',
+							path: 'Global / Support',
+						},
+					],
+					lastPage: 1,
+					page: 1,
+					pageSize: 20,
+					totalCount: 1,
+				});
+			}
+
+			if (request.method === 'POST') {
+				return JSON.stringify({exportImportConfigurationId: 1});
+			}
+
+			return JSON.stringify(mockPreview);
+		});
+
+		renderComponent({
+			exportPreviewSitesAPIURL:
+				'/o/export-import/v1.0/export-preview/preview-sites',
+			sitesEnabled: true,
+		});
+
+		await userEvent.type(
+			await screen.findByRole('textbox', {name: /^name/i}),
+			'test-file'
+		);
+
+		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
+			await userEvent.click(screen.getByRole('checkbox', {name}));
+		}
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'select-sites'})
+		);
+
+		const row = await screen.findByText('Support');
+
+		await userEvent.click(
+			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
+		);
+		await userEvent.click(screen.getByRole('button', {name: 'select'}));
+
+		const exportButton = screen.getByRole('button', {name: /^export$/i});
+
+		await waitFor(() => expect(exportButton).toBeEnabled());
+
+		await userEvent.click(exportButton);
+
+		await waitFor(() => expect(getExportCall()).toBeDefined());
+
+		expect(
+			screen.getByRole('checkbox', {name: 'Design'})
+		).not.toBeChecked();
+		expect(
+			screen.getByRole('checkbox', {name: 'Site Builder'})
+		).not.toBeChecked();
+		expect(
+			screen.getByRole('checkbox', {name: 'Content & Data'})
+		).not.toBeChecked();
+
+		expect(JSON.parse(String(getExportCall()?.[1]?.body))).toMatchObject({
+			requestPortletDataHandlers: [],
+			siteExternalReferenceCodes: ['erc-support'],
+		});
+	});
+
 	it('keeps form values after applying a filter', async () => {
 		renderComponent();
 
