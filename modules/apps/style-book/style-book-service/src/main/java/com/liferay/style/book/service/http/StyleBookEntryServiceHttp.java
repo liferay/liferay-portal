@@ -41,6 +41,58 @@ import com.liferay.style.book.service.StyleBookEntryServiceUtil;
  */
 public class StyleBookEntryServiceHttp {
 
+	public static com.liferay.style.book.model.StyleBookEntry addFrontendToken(
+			HttpPrincipal httpPrincipal, long styleBookEntryId,
+			String cssVariableMappingValue, String defaultValue,
+			String editorType, String frontendTokenCategoryLabel,
+			String frontendTokenCategoryName, String frontendTokenDescription,
+			String frontendTokenLabel, String frontendTokenName,
+			String frontendTokenSetDescription, String frontendTokenSetLabel,
+			String frontendTokenSetName, String frontendTokenType,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				StyleBookEntryServiceUtil.class, "addFrontendToken",
+				_addFrontendTokenParameterTypes0);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, styleBookEntryId, cssVariableMappingValue,
+				defaultValue, editorType, frontendTokenCategoryLabel,
+				frontendTokenCategoryName, frontendTokenDescription,
+				frontendTokenLabel, frontendTokenName,
+				frontendTokenSetDescription, frontendTokenSetLabel,
+				frontendTokenSetName, frontendTokenType, serviceContext);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.style.book.model.StyleBookEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.style.book.model.StyleBookEntry addStyleBookEntry(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			long groupId, boolean defaultStyleBookEntry,
@@ -52,7 +104,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "addStyleBookEntry",
-				_addStyleBookEntryParameterTypes0);
+				_addStyleBookEntryParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId,
@@ -97,7 +149,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "addStyleBookEntry",
-				_addStyleBookEntryParameterTypes1);
+				_addStyleBookEntryParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId, name,
@@ -142,7 +194,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "addStyleBookEntry",
-				_addStyleBookEntryParameterTypes2);
+				_addStyleBookEntryParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId,
@@ -187,7 +239,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "copyStyleBookEntry",
-				_copyStyleBookEntryParameterTypes3);
+				_copyStyleBookEntryParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, sourceStyleBookEntryId, serviceContext);
@@ -228,7 +280,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "deleteStyleBookEntry",
-				_deleteStyleBookEntryParameterTypes4);
+				_deleteStyleBookEntryParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId);
@@ -270,7 +322,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "deleteStyleBookEntry",
-				_deleteStyleBookEntryParameterTypes5);
+				_deleteStyleBookEntryParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -312,7 +364,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "deleteStyleBookEntry",
-				_deleteStyleBookEntryParameterTypes6);
+				_deleteStyleBookEntryParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntry);
@@ -353,7 +405,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "discardDraftStyleBookEntry",
-				_discardDraftStyleBookEntryParameterTypes7);
+				_discardDraftStyleBookEntryParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId);
@@ -396,7 +448,7 @@ public class StyleBookEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class,
 				"fetchStyleBookEntryByExternalReferenceCode",
-				_fetchStyleBookEntryByExternalReferenceCodeParameterTypes8);
+				_fetchStyleBookEntryByExternalReferenceCodeParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -440,7 +492,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "getStyleBookEntries",
-				_getStyleBookEntriesParameterTypes9);
+				_getStyleBookEntriesParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, start, end, orderByComparator);
@@ -487,7 +539,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "getStyleBookEntries",
-				_getStyleBookEntriesParameterTypes10);
+				_getStyleBookEntriesParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, name, start, end, orderByComparator);
@@ -529,7 +581,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "getStyleBookEntriesCount",
-				_getStyleBookEntriesCountParameterTypes11);
+				_getStyleBookEntriesCountParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
 
@@ -569,7 +621,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "getStyleBookEntriesCount",
-				_getStyleBookEntriesCountParameterTypes12);
+				_getStyleBookEntriesCountParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, name);
@@ -610,7 +662,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "getStyleBookEntry",
-				_getStyleBookEntryParameterTypes13);
+				_getStyleBookEntryParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId);
@@ -653,7 +705,7 @@ public class StyleBookEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class,
 				"getStyleBookEntryByExternalReferenceCode",
-				_getStyleBookEntryByExternalReferenceCodeParameterTypes14);
+				_getStyleBookEntryByExternalReferenceCodeParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -693,7 +745,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "publishDraft",
-				_publishDraftParameterTypes15);
+				_publishDraftParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId);
@@ -735,7 +787,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateDefaultStyleBookEntry",
-				_updateDefaultStyleBookEntryParameterTypes16);
+				_updateDefaultStyleBookEntryParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, defaultStyleBookEntry);
@@ -779,7 +831,7 @@ public class StyleBookEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class,
 				"updateFrontendTokenDefinition",
-				_updateFrontendTokenDefinitionParameterTypes17);
+				_updateFrontendTokenDefinitionParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, frontendTokenDefinition,
@@ -822,7 +874,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateFrontendTokensValues",
-				_updateFrontendTokensValuesParameterTypes18);
+				_updateFrontendTokensValuesParameterTypes19);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, frontendTokensValues);
@@ -862,7 +914,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateName",
-				_updateNameParameterTypes19);
+				_updateNameParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, name);
@@ -905,7 +957,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updatePreviewFileEntryId",
-				_updatePreviewFileEntryIdParameterTypes20);
+				_updatePreviewFileEntryIdParameterTypes21);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, previewFileEntryId,
@@ -951,7 +1003,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateStyleBookEntry",
-				_updateStyleBookEntryParameterTypes21);
+				_updateStyleBookEntryParameterTypes22);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, defaultStyleBookEntry,
@@ -997,7 +1049,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateStyleBookEntry",
-				_updateStyleBookEntryParameterTypes22);
+				_updateStyleBookEntryParameterTypes23);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, frontendTokenDefinition,
@@ -1034,92 +1086,99 @@ public class StyleBookEntryServiceHttp {
 	private static Log _log = LogFactoryUtil.getLog(
 		StyleBookEntryServiceHttp.class);
 
-	private static final Class<?>[] _addStyleBookEntryParameterTypes0 =
+	private static final Class<?>[] _addFrontendTokenParameterTypes0 =
+		new Class[] {
+			long.class, String.class, String.class, String.class, String.class,
+			String.class, String.class, String.class, String.class,
+			String.class, String.class, String.class, String.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _addStyleBookEntryParameterTypes1 =
 		new Class[] {
 			String.class, long.class, boolean.class, String.class, String.class,
 			String.class, String.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _addStyleBookEntryParameterTypes1 =
+	private static final Class<?>[] _addStyleBookEntryParameterTypes2 =
 		new Class[] {
 			String.class, long.class, String.class, String.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _addStyleBookEntryParameterTypes2 =
+	private static final Class<?>[] _addStyleBookEntryParameterTypes3 =
 		new Class[] {
 			String.class, long.class, String.class, String.class, String.class,
 			String.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _copyStyleBookEntryParameterTypes3 =
+	private static final Class<?>[] _copyStyleBookEntryParameterTypes4 =
 		new Class[] {
 			long.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _deleteStyleBookEntryParameterTypes4 =
-		new Class[] {long.class};
 	private static final Class<?>[] _deleteStyleBookEntryParameterTypes5 =
-		new Class[] {String.class, long.class};
+		new Class[] {long.class};
 	private static final Class<?>[] _deleteStyleBookEntryParameterTypes6 =
+		new Class[] {String.class, long.class};
+	private static final Class<?>[] _deleteStyleBookEntryParameterTypes7 =
 		new Class[] {com.liferay.style.book.model.StyleBookEntry.class};
-	private static final Class<?>[] _discardDraftStyleBookEntryParameterTypes7 =
+	private static final Class<?>[] _discardDraftStyleBookEntryParameterTypes8 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_fetchStyleBookEntryByExternalReferenceCodeParameterTypes8 =
+		_fetchStyleBookEntryByExternalReferenceCodeParameterTypes9 =
 			new Class[] {String.class, long.class};
-	private static final Class<?>[] _getStyleBookEntriesParameterTypes9 =
+	private static final Class<?>[] _getStyleBookEntriesParameterTypes10 =
 		new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getStyleBookEntriesParameterTypes10 =
+	private static final Class<?>[] _getStyleBookEntriesParameterTypes11 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getStyleBookEntriesCountParameterTypes11 =
-		new Class[] {long.class};
 	private static final Class<?>[] _getStyleBookEntriesCountParameterTypes12 =
+		new Class[] {long.class};
+	private static final Class<?>[] _getStyleBookEntriesCountParameterTypes13 =
 		new Class[] {long.class, String.class};
-	private static final Class<?>[] _getStyleBookEntryParameterTypes13 =
+	private static final Class<?>[] _getStyleBookEntryParameterTypes14 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getStyleBookEntryByExternalReferenceCodeParameterTypes14 =
+		_getStyleBookEntryByExternalReferenceCodeParameterTypes15 =
 			new Class[] {String.class, long.class};
-	private static final Class<?>[] _publishDraftParameterTypes15 =
+	private static final Class<?>[] _publishDraftParameterTypes16 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_updateDefaultStyleBookEntryParameterTypes16 = new Class[] {
+		_updateDefaultStyleBookEntryParameterTypes17 = new Class[] {
 			long.class, boolean.class
 		};
 	private static final Class<?>[]
-		_updateFrontendTokenDefinitionParameterTypes17 = new Class[] {
+		_updateFrontendTokenDefinitionParameterTypes18 = new Class[] {
 			long.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateFrontendTokensValuesParameterTypes18 = new Class[] {
+		_updateFrontendTokensValuesParameterTypes19 = new Class[] {
 			long.class, String.class
 		};
-	private static final Class<?>[] _updateNameParameterTypes19 = new Class[] {
+	private static final Class<?>[] _updateNameParameterTypes20 = new Class[] {
 		long.class, String.class
 	};
-	private static final Class<?>[] _updatePreviewFileEntryIdParameterTypes20 =
+	private static final Class<?>[] _updatePreviewFileEntryIdParameterTypes21 =
 		new Class[] {
 			long.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateStyleBookEntryParameterTypes21 =
+	private static final Class<?>[] _updateStyleBookEntryParameterTypes22 =
 		new Class[] {
 			long.class, boolean.class, String.class, String.class, String.class,
 			String.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateStyleBookEntryParameterTypes22 =
+	private static final Class<?>[] _updateStyleBookEntryParameterTypes23 =
 		new Class[] {
 			long.class, String.class, String.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-643318548
+// LIFERAY-SERVICE-BUILDER-HASH:-900802160

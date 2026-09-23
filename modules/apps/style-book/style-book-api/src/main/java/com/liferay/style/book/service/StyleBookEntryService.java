@@ -47,6 +47,16 @@ public interface StyleBookEntryService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.style.book.service.impl.StyleBookEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the style book entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link StyleBookEntryServiceUtil} if injection and service tracking are not available.
 	 */
+	public StyleBookEntry addFrontendToken(
+			long styleBookEntryId, String cssVariableMappingValue,
+			String defaultValue, String editorType,
+			String frontendTokenCategoryLabel, String frontendTokenCategoryName,
+			String frontendTokenDescription, String frontendTokenLabel,
+			String frontendTokenName, String frontendTokenSetDescription,
+			String frontendTokenSetLabel, String frontendTokenSetName,
+			String frontendTokenType, ServiceContext serviceContext)
+		throws PortalException;
+
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokenDefinition,
@@ -163,4 +173,4 @@ public interface StyleBookEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-930720101
+// LIFERAY-SERVICE-BUILDER-HASH:-175720445

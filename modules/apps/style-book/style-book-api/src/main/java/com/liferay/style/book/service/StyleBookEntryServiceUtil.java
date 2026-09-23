@@ -31,6 +31,25 @@ public class StyleBookEntryServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.style.book.service.impl.StyleBookEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static StyleBookEntry addFrontendToken(
+			long styleBookEntryId, String cssVariableMappingValue,
+			String defaultValue, String editorType,
+			String frontendTokenCategoryLabel, String frontendTokenCategoryName,
+			String frontendTokenDescription, String frontendTokenLabel,
+			String frontendTokenName, String frontendTokenSetDescription,
+			String frontendTokenSetLabel, String frontendTokenSetName,
+			String frontendTokenType,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addFrontendToken(
+			styleBookEntryId, cssVariableMappingValue, defaultValue, editorType,
+			frontendTokenCategoryLabel, frontendTokenCategoryName,
+			frontendTokenDescription, frontendTokenLabel, frontendTokenName,
+			frontendTokenSetDescription, frontendTokenSetLabel,
+			frontendTokenSetName, frontendTokenType, serviceContext);
+	}
+
 	public static StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokenDefinition,
@@ -246,4 +265,4 @@ public class StyleBookEntryServiceUtil {
 			StyleBookEntryServiceUtil.class, StyleBookEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:652033979
+// LIFERAY-SERVICE-BUILDER-HASH:730077978
