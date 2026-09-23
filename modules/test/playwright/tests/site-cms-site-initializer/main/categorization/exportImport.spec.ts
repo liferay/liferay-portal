@@ -7,12 +7,9 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
-import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
-const testWithoutFF = mergeTests(cmsPagesTest, loginTest());
-
-const testWithFF = mergeTests(
+const test = mergeTests(
 	cmsPagesTest,
 	featureFlagsTest({
 		'LPD-57655': {enabled: true},
@@ -20,46 +17,8 @@ const testWithFF = mergeTests(
 	loginTest()
 );
 
-testWithoutFF(
-	'Without LPD-57655, the Vocabularies view opens the combined Export/Import Vocabularies action in a modal',
-	{tag: '@LPD-88927'},
-	async ({page, vocabulariesPage}) => {
-		await vocabulariesPage.goto();
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {
-				exact: true,
-				name: 'Export/Import Vocabularies',
-			}),
-			trigger: page.getByRole('button', {name: 'More Actions'}),
-		});
-
-		await expect(page.locator('.modal-content')).toBeVisible();
-	}
-);
-
-testWithoutFF(
-	'Without LPD-57655, the Tags view opens the combined Export/Import Tags action in a modal',
-	{tag: '@LPD-88927'},
-	async ({page, tagsPage}) => {
-		await tagsPage.goto();
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {
-				exact: true,
-				name: 'Export/Import Tags',
-			}),
-			trigger: page.getByRole('button', {name: 'More Actions'}),
-		});
-
-		await expect(page.locator('.modal-content')).toBeVisible();
-	}
-);
-
-testWithFF(
-	'With LPD-57655, the Vocabularies view exposes separate Export and Import items for Vocabularies and Tags',
+test(
+	'The Vocabularies view exposes separate Export and Import items for Vocabularies and Tags',
 	{tag: '@LPD-88927'},
 	async ({page, vocabulariesPage}) => {
 		await vocabulariesPage.goto();
@@ -100,8 +59,8 @@ testWithFF(
 	}
 );
 
-testWithFF(
-	'With LPD-57655, the Tags view exposes the same four separate Export and Import items',
+test(
+	'The Tags view exposes the same four separate Export and Import items',
 	{tag: '@LPD-88927'},
 	async ({page, tagsPage}) => {
 		await tagsPage.goto();
@@ -129,8 +88,8 @@ testWithFF(
 	}
 );
 
-testWithFF(
-	'With LPD-57655, clicking Export Vocabularies navigates to the dedicated CMS Export/Import page without opening a modal',
+test(
+	'Clicking Export Vocabularies navigates to the dedicated CMS Export/Import page without opening a modal',
 	{tag: '@LPD-88927'},
 	async ({page, vocabulariesPage}) => {
 		await vocabulariesPage.goto();
@@ -145,8 +104,8 @@ testWithFF(
 	}
 );
 
-testWithFF(
-	'With LPD-57655, clicking Import Tags from the Tags view navigates to the dedicated CMS Export/Import page',
+test(
+	'Clicking Import Tags from the Tags view navigates to the dedicated CMS Export/Import page',
 	{tag: '@LPD-88927'},
 	async ({page, tagsPage}) => {
 		await tagsPage.goto();
