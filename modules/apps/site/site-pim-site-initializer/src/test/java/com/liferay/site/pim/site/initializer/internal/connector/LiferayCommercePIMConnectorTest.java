@@ -11,8 +11,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.site.pim.site.initializer.connector.PIMConnectorField;
-import com.liferay.site.pim.site.initializer.constants.PIMConnectorFieldConstants;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.mockito.Mockito;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
 public class LiferayCommercePIMConnectorTest {
 
@@ -66,15 +66,39 @@ public class LiferayCommercePIMConnectorTest {
 	}
 
 	@Test
-	public void testGetPIMConnectorFields() {
+	public void testGetPIMConnectorChannelFields() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
-			language.get(Mockito.eq(LocaleUtil.US), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
+			language.get(LocaleUtil.US, "catalog-id")
+		).thenReturn(
+			"Catalog ID"
+		);
+
+		Mockito.when(
+			language.get(LocaleUtil.US, "description")
+		).thenReturn(
+			"Description"
+		);
+
+		Mockito.when(
+			language.get(LocaleUtil.US, "name")
+		).thenReturn(
+			"Name"
+		);
+
+		Mockito.when(
+			language.get(LocaleUtil.US, "sku")
+		).thenReturn(
+			"SKU"
+		);
+
+		Mockito.when(
+			language.get(LocaleUtil.US, "tags")
+		).thenReturn(
+			"Tags"
 		);
 
 		languageUtil.setLanguage(language);
@@ -82,59 +106,50 @@ public class LiferayCommercePIMConnectorTest {
 		LiferayCommercePIMConnector liferayCommercePIMConnector =
 			new LiferayCommercePIMConnector();
 
-		List<PIMConnectorField> pimConnectorFields =
-			liferayCommercePIMConnector.getPIMConnectorFields(LocaleUtil.US);
+		List<PIMConnectorChannelField> pimConnectorChannelFields =
+			liferayCommercePIMConnector.getPIMConnectorChannelFields(
+				LocaleUtil.US);
 
 		Assert.assertEquals(
-			pimConnectorFields.toString(), 5, pimConnectorFields.size());
+			pimConnectorChannelFields.toString(), 5,
+			pimConnectorChannelFields.size());
 
 		Assert.assertEquals(
 			Arrays.asList(
 				"catalogId", "description", "name", "skus[].sku", "tags"),
 			TransformUtil.transform(
-				pimConnectorFields, PIMConnectorField::getName));
+				pimConnectorChannelFields, PIMConnectorChannelField::getName));
 
-		PIMConnectorField pimConnectorField = pimConnectorFields.get(0);
+		PIMConnectorChannelField pimConnectorChannelField =
+			pimConnectorChannelFields.get(0);
 
-		Assert.assertEquals("catalog-id", pimConnectorField.getLabel());
-		Assert.assertEquals(
-			PIMConnectorFieldConstants.TYPE_LONG, pimConnectorField.getType());
-		Assert.assertFalse(pimConnectorField.isMultiple());
-		Assert.assertTrue(pimConnectorField.isRequired());
+		Assert.assertEquals("Catalog ID", pimConnectorChannelField.getLabel());
+		Assert.assertFalse(pimConnectorChannelField.isMultiple());
+		Assert.assertTrue(pimConnectorChannelField.isRequired());
 
-		pimConnectorField = pimConnectorFields.get(1);
+		pimConnectorChannelField = pimConnectorChannelFields.get(1);
 
-		Assert.assertEquals("description", pimConnectorField.getLabel());
-		Assert.assertEquals(
-			PIMConnectorFieldConstants.TYPE_LOCALIZED_TEXT,
-			pimConnectorField.getType());
-		Assert.assertFalse(pimConnectorField.isMultiple());
-		Assert.assertFalse(pimConnectorField.isRequired());
+		Assert.assertEquals("Description", pimConnectorChannelField.getLabel());
+		Assert.assertFalse(pimConnectorChannelField.isMultiple());
+		Assert.assertFalse(pimConnectorChannelField.isRequired());
 
-		pimConnectorField = pimConnectorFields.get(2);
+		pimConnectorChannelField = pimConnectorChannelFields.get(2);
 
-		Assert.assertEquals("name", pimConnectorField.getLabel());
-		Assert.assertEquals(
-			PIMConnectorFieldConstants.TYPE_LOCALIZED_TEXT,
-			pimConnectorField.getType());
-		Assert.assertFalse(pimConnectorField.isMultiple());
-		Assert.assertTrue(pimConnectorField.isRequired());
+		Assert.assertEquals("Name", pimConnectorChannelField.getLabel());
+		Assert.assertFalse(pimConnectorChannelField.isMultiple());
+		Assert.assertTrue(pimConnectorChannelField.isRequired());
 
-		pimConnectorField = pimConnectorFields.get(3);
+		pimConnectorChannelField = pimConnectorChannelFields.get(3);
 
-		Assert.assertEquals("sku", pimConnectorField.getLabel());
-		Assert.assertEquals(
-			PIMConnectorFieldConstants.TYPE_TEXT, pimConnectorField.getType());
-		Assert.assertFalse(pimConnectorField.isMultiple());
-		Assert.assertTrue(pimConnectorField.isRequired());
+		Assert.assertEquals("SKU", pimConnectorChannelField.getLabel());
+		Assert.assertFalse(pimConnectorChannelField.isMultiple());
+		Assert.assertTrue(pimConnectorChannelField.isRequired());
 
-		pimConnectorField = pimConnectorFields.get(4);
+		pimConnectorChannelField = pimConnectorChannelFields.get(4);
 
-		Assert.assertEquals("tags", pimConnectorField.getLabel());
-		Assert.assertEquals(
-			PIMConnectorFieldConstants.TYPE_TEXT, pimConnectorField.getType());
-		Assert.assertTrue(pimConnectorField.isMultiple());
-		Assert.assertFalse(pimConnectorField.isRequired());
+		Assert.assertEquals("Tags", pimConnectorChannelField.getLabel());
+		Assert.assertTrue(pimConnectorChannelField.isMultiple());
+		Assert.assertFalse(pimConnectorChannelField.isRequired());
 	}
 
 	@Test

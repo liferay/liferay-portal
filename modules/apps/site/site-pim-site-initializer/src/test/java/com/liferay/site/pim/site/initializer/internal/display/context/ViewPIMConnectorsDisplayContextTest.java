@@ -8,12 +8,14 @@ package com.liferay.site.pim.site.initializer.internal.display.context;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -31,6 +33,7 @@ import org.mockito.Mockito;
 
 /**
  * @author Andrea Sbarra
+ * @author Stefano Motta
  */
 public class ViewPIMConnectorsDisplayContextTest {
 
@@ -104,7 +107,8 @@ public class ViewPIMConnectorsDisplayContextTest {
 		DropdownItem dropdownItem = dropdownItems.get(0);
 
 		Assert.assertEquals(
-			"/web/cms/edit-connector?backURL=/web/cms/connectors",
+			"/web/cms/edit-connector?backURL=" +
+				URLCodec.encodeURL(_URL_CURRENT),
 			dropdownItem.get("href"));
 		Assert.assertEquals("New", dropdownItem.get("label"));
 	}
@@ -206,67 +210,62 @@ public class ViewPIMConnectorsDisplayContextTest {
 			fdsActionDropdownItems.toString(), 4,
 			fdsActionDropdownItems.size());
 
-		FDSActionDropdownItem editFDSActionDropdownItem =
+		FDSActionDropdownItem fdsActionDropdownItem =
 			fdsActionDropdownItems.get(0);
 
 		Assert.assertEquals(
-			"/web/cms/edit-connector?backURL=/web/cms/connectors" +
-				"&objectEntryId={id}",
-			editFDSActionDropdownItem.get("href"));
-		Assert.assertEquals("pencil", editFDSActionDropdownItem.get("icon"));
-		Assert.assertEquals("Edit", editFDSActionDropdownItem.get("label"));
+			StringBundler.concat(
+				"/web/cms/edit-connector?backURL=",
+				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
+			fdsActionDropdownItem.get("href"));
+		Assert.assertEquals("pencil", fdsActionDropdownItem.get("icon"));
+		Assert.assertEquals("Edit", fdsActionDropdownItem.get("label"));
 
-		Map<?, ?> data = (Map<?, ?>)editFDSActionDropdownItem.get("data");
+		Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
 		Assert.assertEquals("edit", data.get("id"));
 		Assert.assertEquals("get", data.get("method"));
 		Assert.assertEquals("update", data.get("permissionKey"));
 
-		FDSActionDropdownItem fieldMappingFDSActionDropdownItem =
-			fdsActionDropdownItems.get(1);
-
-		href = String.valueOf(fieldMappingFDSActionDropdownItem.get("href"));
-
-		Assert.assertEquals("/web/cms/field-mapping?objectEntryId={id}", href);
+		fdsActionDropdownItem = fdsActionDropdownItems.get(1);
 
 		Assert.assertEquals(
-			"sheets", fieldMappingFDSActionDropdownItem.get("icon"));
-		Assert.assertEquals(
-			"Map Fields", fieldMappingFDSActionDropdownItem.get("label"));
+			StringBundler.concat(
+				"/web/cms/field-mappings?backURL=",
+				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
+			fdsActionDropdownItem.get("href"));
+		Assert.assertEquals("sheets", fdsActionDropdownItem.get("icon"));
+		Assert.assertEquals("Map Fields", fdsActionDropdownItem.get("label"));
 
-		data = (Map<?, ?>)fieldMappingFDSActionDropdownItem.get("data");
+		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
-		Assert.assertEquals("fieldMapping", data.get("id"));
+		Assert.assertEquals("fieldMappings", data.get("id"));
 		Assert.assertEquals("get", data.get("method"));
 		Assert.assertEquals("update", data.get("permissionKey"));
 
-		FDSActionDropdownItem exportFDSActionDropdownItem =
-			fdsActionDropdownItems.get(2);
+		fdsActionDropdownItem = fdsActionDropdownItems.get(2);
 
 		Assert.assertEquals(
 			"/o/pim/export-to-liferay-commerce",
-			exportFDSActionDropdownItem.get("href"));
-		Assert.assertEquals(
-			"download", exportFDSActionDropdownItem.get("icon"));
-		Assert.assertEquals("Export", exportFDSActionDropdownItem.get("label"));
-		Assert.assertEquals("blank", exportFDSActionDropdownItem.get("target"));
+			fdsActionDropdownItem.get("href"));
+		Assert.assertEquals("download", fdsActionDropdownItem.get("icon"));
+		Assert.assertEquals("Export", fdsActionDropdownItem.get("label"));
+		Assert.assertEquals("blank", fdsActionDropdownItem.get("target"));
 
-		data = (Map<?, ?>)exportFDSActionDropdownItem.get("data");
+		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
 		Assert.assertEquals("export", data.get("id"));
 		Assert.assertEquals("get", data.get("method"));
 
-		FDSActionDropdownItem deleteFDSActionDropdownItem =
-			fdsActionDropdownItems.get(3);
+		fdsActionDropdownItem = fdsActionDropdownItems.get(3);
 
 		Assert.assertEquals(
-			"{actions.delete.href}", deleteFDSActionDropdownItem.get("href"));
-		Assert.assertEquals("trash", deleteFDSActionDropdownItem.get("icon"));
-		Assert.assertEquals("Delete", deleteFDSActionDropdownItem.get("label"));
-		Assert.assertEquals(
-			"headless", deleteFDSActionDropdownItem.get("target"));
+			"{actions.delete.href}", fdsActionDropdownItem.get("href"));
+		Assert.assertEquals("trash", fdsActionDropdownItem.get("icon"));
+		Assert.assertEquals("Delete", fdsActionDropdownItem.get("label"));
+		Assert.assertEquals("headless", fdsActionDropdownItem.get("target"));
 
-		data = (Map<?, ?>)deleteFDSActionDropdownItem.get("data");
+		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
 		Assert.assertEquals("Are you sure?", data.get("confirmationMessage"));
 		Assert.assertEquals("delete", data.get("id"));
@@ -305,5 +304,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		return themeDisplay;
 	}
+
+	private static final String _URL_CURRENT = "/web/cms/connectors";
 
 }

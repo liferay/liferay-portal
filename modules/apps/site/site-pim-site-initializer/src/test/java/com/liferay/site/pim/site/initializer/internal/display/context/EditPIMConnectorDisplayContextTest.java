@@ -126,8 +126,6 @@ public class EditPIMConnectorDisplayContextTest {
 			HashMapBuilder.<String, Serializable>put(
 				"active", true
 			).put(
-				"fieldMapping", "{}"
-			).put(
 				"key", "liferay-commerce"
 			).put(
 				"name", "Liferay Commerce Connector"
@@ -162,9 +160,6 @@ public class EditPIMConnectorDisplayContextTest {
 		Assert.assertTrue(
 			pimConnectorJSONObject.toString(),
 			pimConnectorJSONObject.getBoolean("active"));
-		Assert.assertFalse(
-			pimConnectorJSONObject.toString(),
-			pimConnectorJSONObject.has("fieldMapping"));
 		Assert.assertEquals(
 			"liferay-commerce", pimConnectorJSONObject.getString("key"));
 		Assert.assertEquals(
