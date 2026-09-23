@@ -161,7 +161,7 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 
 	@Override
 	public String getIcon() {
-		return "page";
+		return "web-content";
 	}
 
 	@Override
