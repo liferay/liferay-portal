@@ -500,7 +500,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			site.getName(), group.getName(LocaleUtil.getDefault()));
 	}
 
-	private File _exportLayoutsAsFile(String... siteExternalReferenceCodes)
+	private File _exportLayoutsAsFile(String... groupExternalReferenceCodes)
 		throws Exception {
 
 		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
@@ -516,12 +516,12 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 							TestPropsValues.getUser(),
 							companyGroup.getGroupId(), false, new long[0],
 							HashMapBuilder.put(
+								PortletDataHandlerKeys.
+									GROUP_EXTERNAL_REFERENCE_CODES,
+								groupExternalReferenceCodes
+							).put(
 								PortletDataHandlerKeys.PORTLET_DATA,
 								new String[] {Boolean.TRUE.toString()}
-							).put(
-								PortletDataHandlerKeys.
-									SITE_EXTERNAL_REFERENCE_CODES,
-								siteExternalReferenceCodes
 							).build())));
 	}
 
@@ -554,15 +554,15 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 							TestPropsValues.getUser(),
 							companyGroup.getGroupId(), false, new long[0],
 							HashMapBuilder.put(
+								PortletDataHandlerKeys.
+									GROUP_EXTERNAL_REFERENCE_CODES,
+								siteExternalReferenceCodes
+							).put(
 								PortletDataHandlerKeys.PORTLET_DATA,
 								new String[] {Boolean.TRUE.toString()}
 							).put(
 								PortletDataHandlerKeys.PORTLET_DATA_ALL,
 								new String[] {Boolean.TRUE.toString()}
-							).put(
-								PortletDataHandlerKeys.
-									SITE_EXTERNAL_REFERENCE_CODES,
-								siteExternalReferenceCodes
 							).build())),
 			larFile);
 	}
