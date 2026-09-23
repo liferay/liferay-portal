@@ -66,7 +66,7 @@ public class EditStyleBookEntryDisplayContextTest {
 	}
 
 	@Test
-	public void testGetFrontendTokenDefinitionsJSONArray() throws Exception {
+	public void testGetStyleBookEditorData() throws Exception {
 		String frontendTokenName = RandomTestUtil.randomString();
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -118,19 +118,23 @@ public class EditStyleBookEntryDisplayContextTest {
 				"com.liferay.style.book.web.internal.display.context." +
 					"EditStyleBookEntryDisplayContext");
 
-		JSONArray frontendTokenDefinitionsJSONArray = ReflectionTestUtil.invoke(
-			editStyleBookEntryDisplayContext,
-			"_getFrontendTokenDefinitionsJSONArray", new Class<?>[0]);
+		Map<String, Object> styleBookEditorData = ReflectionTestUtil.invoke(
+			editStyleBookEntryDisplayContext, "getStyleBookEditorData",
+			new Class<?>[0]);
+
+		JSONArray frontendTokenDefinitionsJSONArray =
+			(JSONArray)styleBookEditorData.get("frontendTokenDefinitions");
 
 		Map<String, JSONObject> frontendTokenDefinitionJSONObjects =
 			JSONUtil.toJSONObjectMap(frontendTokenDefinitionsJSONArray, "id");
 
-		JSONObject frontendTokenDefinitionJSONObject =
-			frontendTokenDefinitionJSONObjects.get(_THEME_ID_CLASSIC);
+		Assert.assertTrue(
+			frontendTokenDefinitionJSONObjects.containsKey(_THEME_ID_CLASSIC));
 
 		List<String> frontendTokenNames =
 			FrontendTokenDefinitionUtil.getFrontendTokenNames(
-				frontendTokenDefinitionJSONObject);
+				(JSONObject)styleBookEditorData.get(
+					"customFrontendTokenDefinition"));
 
 		Assert.assertTrue(frontendTokenNames.contains(frontendTokenName));
 	}
