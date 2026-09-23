@@ -43,6 +43,9 @@ public class CommerceCurrencyModelDocumentContributor
 					QueryUtil.ALL_POS, null),
 				CommerceChannelRel::getCommerceChannelId));
 		document.addText(CPField.CODE, commerceCurrency.getCode());
+		document.addKeyword(
+			CPField.EXTERNAL_REFERENCE_CODE,
+			commerceCurrency.getExternalReferenceCode(), true);
 		document.addNumberSortable(
 			Field.PRIORITY, commerceCurrency.getPriority());
 

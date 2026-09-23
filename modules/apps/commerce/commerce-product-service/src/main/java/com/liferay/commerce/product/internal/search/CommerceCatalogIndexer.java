@@ -107,6 +107,9 @@ public class CommerceCatalogIndexer extends BaseIndexer<CommerceCatalog> {
 		document.addKeyword(
 			CPField.CATALOG_DEFAULT_LANGUAGE_ID,
 			commerceCatalog.getCatalogDefaultLanguageId());
+		document.addKeyword(
+			CPField.EXTERNAL_REFERENCE_CODE,
+			commerceCatalog.getExternalReferenceCode(), true);
 		document.addKeyword(Field.GROUP_ID, commerceCatalog.getGroupId());
 		document.addKeyword(Field.NAME, commerceCatalog.getName(), true);
 		document.addKeyword(
