@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -72,6 +73,7 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		_group = _addGroup();
 	}
 
+	@FeatureFlag("LPD-57283")
 	@Test
 	@TestInfo("LPD-104242")
 	public void testGetLayoutFriendlyURLComposite() throws Exception {
