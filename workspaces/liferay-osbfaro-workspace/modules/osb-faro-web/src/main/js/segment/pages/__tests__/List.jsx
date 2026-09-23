@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import * as data from 'test/data';
 import List from '../List';
-import mockStore from 'test/mock-store';
+import mockStore, {mockStoreData, mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
 import {act} from '@testing-library/react';
 import {ChannelContext} from 'shared/context/channel';
@@ -25,10 +25,12 @@ const MOCK_UNASSIGNED_SEGMENTS_CONTEXT = {
 	unassignedSegmentsDispatch: jest.fn()
 };
 
-const store = mockStore();
-
-const DefaultComponent = ({queryString = '', ...otherProps}) => (
-	<Provider store={store}>
+const DefaultComponent = ({
+	queryString = '',
+	storeData = mockStoreDataLDP,
+	...otherProps
+}) => (
+	<Provider store={mockStore(storeData)}>
 		<MemoryRouter
 			initialEntries={[
 				`/workspace/23/123/contacts/segments${queryString}`
@@ -189,6 +191,32 @@ describe('List', () => {
 
 		expect(accountGroup).toHaveTextContent('Account');
 		expect(individualGroup).toHaveTextContent('Individual');
+	});
+
+	it('links straight to an individual batch segment for non-LDP plans', async () => {
+		render(<DefaultComponent storeData={mockStoreData} />);
+
+		await act(async () => {
+			jest.runAllTimers();
+		});
+
+		expect(
+			screen.queryByTestId('account-batch-segment-dropdown-item')
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByTestId('batch-segment-dropdown-item')
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByTestId('real-time-segment-dropdown-item')
+		).not.toBeInTheDocument();
+
+		const newSegmentLink = screen.getByTestId('new-segment-link');
+
+		expect(newSegmentLink).toHaveTextContent('New Segment');
+		expect(newSegmentLink).toHaveAttribute(
+			'href',
+			'/workspace/23/123/contacts/segments/create?type=BATCH'
+		);
 	});
 
 	it('shows the account count for account segments', async () => {

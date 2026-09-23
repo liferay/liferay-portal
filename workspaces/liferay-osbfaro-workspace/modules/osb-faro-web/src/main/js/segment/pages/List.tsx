@@ -8,6 +8,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import LinkCell from 'shared/components/table/cell-components/LinkCell';
+import getCN from 'classnames';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useContext, useEffect, useRef, useState} from 'react';
@@ -71,6 +72,7 @@ import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -213,6 +215,7 @@ export const List: React.FC<IListProps> = ({
 	open,
 }) => {
 	const currentUser = useCurrentUser();
+	const LDPEnabled = useLDPEnabled({groupId});
 	const {selectedChannel} = useChannelContext();
 	const _tableRef = useRef<HTMLDivElement & SearchableEntityTable>();
 
@@ -493,82 +496,113 @@ export const List: React.FC<IListProps> = ({
 				<Nav>
 					<Nav.Item>
 						<div className="d-flex align-items-center">
-							<ClayDropDown
-								alignmentPosition={Align.BottomRight}
-								trigger={
-									<ClayButton
-										aria-label={
-											pageActionsLabel &&
-											Liferay.Language.get('menu')
-										}
-										className="button-root p-2 rounded-lg"
-										disabled={error || loading}
-										displayType="primary"
-										size="sm"
-									>
-										<>
-											<span>{pageActionsLabel}</span>
-											<ClayIcon
-												className="icon-root ml-2"
-												symbol="caret-bottom"
-											/>
-										</>
-									</ClayButton>
-								}
-							>
-								<ClayDropDown.Group
-									header={Liferay.Language.get('account')}
+							{!LDPEnabled && (
+								<ClayLink
+									aria-disabled={error || loading}
+									button
+									className={getCN(
+										'button-root p-2 rounded-lg',
+										{disabled: error || loading}
+									)}
+									data-testid="new-segment-link"
+									displayType="primary"
+									href={setUriQueryValues(
+										{type: SegmentTypes.Batch},
+										toRoute(
+											Routes.CONTACTS_SEGMENT_CREATE,
+											{channelId, groupId}
+										)
+									)}
+									small
 								>
-									<ClayDropDown.Item
-										data-testid="account-batch-segment-dropdown-item"
-										href={setUriQueryValues(
-											{
-												category:
-													SegmentCategories.Account,
-												type: SegmentTypes.Batch,
-											},
-											toRoute(
-												Routes.CONTACTS_SEGMENT_CREATE,
-												{channelId, groupId}
-											)
-										)}
-									>
-										{Liferay.Language.get('batch-segment')}
-									</ClayDropDown.Item>
-								</ClayDropDown.Group>
+									{pageActionsLabel}
+								</ClayLink>
+							)}
 
-								<ClayDropDown.Group
-									header={Liferay.Language.get('individual')}
+							{LDPEnabled && (
+								<ClayDropDown
+									alignmentPosition={Align.BottomRight}
+									trigger={
+										<ClayButton
+											aria-label={
+												pageActionsLabel &&
+												Liferay.Language.get('menu')
+											}
+											className="button-root p-2 rounded-lg"
+											disabled={error || loading}
+											displayType="primary"
+											size="sm"
+										>
+											<>
+												<span>{pageActionsLabel}</span>
+												<ClayIcon
+													className="icon-root ml-2"
+													symbol="caret-bottom"
+												/>
+											</>
+										</ClayButton>
+									}
 								>
-									<ClayDropDown.Item
-										data-testid="batch-segment-dropdown-item"
-										href={setUriQueryValues(
-											{type: SegmentTypes.Batch},
-											toRoute(
-												Routes.CONTACTS_SEGMENT_CREATE,
-												{channelId, groupId}
-											)
-										)}
+									<ClayDropDown.Group
+										header={Liferay.Language.get('account')}
 									>
-										{Liferay.Language.get('batch-segment')}
-									</ClayDropDown.Item>
+										<ClayDropDown.Item
+											data-testid="account-batch-segment-dropdown-item"
+											href={setUriQueryValues(
+												{
+													category:
+														SegmentCategories.Account,
+													type: SegmentTypes.Batch,
+												},
+												toRoute(
+													Routes.CONTACTS_SEGMENT_CREATE,
+													{channelId, groupId}
+												)
+											)}
+										>
+											{Liferay.Language.get(
+												'batch-segment'
+											)}
+										</ClayDropDown.Item>
+									</ClayDropDown.Group>
 
-									<ClayDropDown.Item
-										data-testid="real-time-segment-dropdown-item"
-										href={setUriQueryValues(
-											{type: SegmentTypes.RealTime},
-											toRoute(
-												Routes.CONTACTS_SEGMENT_CREATE,
-												{channelId, groupId}
-											)
+									<ClayDropDown.Group
+										header={Liferay.Language.get(
+											'individual'
 										)}
 									>
-										{Liferay.Language.get(
-											'real-time-segment'
-										)}
-									</ClayDropDown.Item>
-								</ClayDropDown.Group>
-							</ClayDropDown>
+										<ClayDropDown.Item
+											data-testid="batch-segment-dropdown-item"
+											href={setUriQueryValues(
+												{type: SegmentTypes.Batch},
+												toRoute(
+													Routes.CONTACTS_SEGMENT_CREATE,
+													{channelId, groupId}
+												)
+											)}
+										>
+											{Liferay.Language.get(
+												'batch-segment'
+											)}
+										</ClayDropDown.Item>
+
+										<ClayDropDown.Item
+											data-testid="real-time-segment-dropdown-item"
+											href={setUriQueryValues(
+												{type: SegmentTypes.RealTime},
+												toRoute(
+													Routes.CONTACTS_SEGMENT_CREATE,
+													{channelId, groupId}
+												)
+											)}
+										>
+											{Liferay.Language.get(
+												'real-time-segment'
+											)}
+										</ClayDropDown.Item>
+									</ClayDropDown.Group>
+								</ClayDropDown>
+							)}
 						</div>
 					</Nav.Item>
 				</Nav>
