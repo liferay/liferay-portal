@@ -53,7 +53,7 @@ public class StaticSiteExportDocument {
 
 		for (Element element : _document.select("[srcset]")) {
 			for (String candidate : _getSrcsetCandidates(element)) {
-				urls.add(_getSrcsetCandidateURL(candidate));
+				urls.add(_getCandidateURL(candidate));
 			}
 		}
 
@@ -97,7 +97,7 @@ public class StaticSiteExportDocument {
 			List<String> candidates = new ArrayList<>();
 
 			for (String candidate : _getSrcsetCandidates(element)) {
-				String url = _getSrcsetCandidateURL(candidate);
+				String url = _getCandidateURL(candidate);
 
 				String path = pathFunction.apply(url);
 
@@ -141,6 +141,12 @@ public class StaticSiteExportDocument {
 		}
 	}
 
+	private String _getCandidateURL(String candidate) {
+		String[] candidateParts = StringUtil.split(candidate, CharPool.SPACE);
+
+		return candidateParts[0];
+	}
+
 	private JSONObject _getImportsJSONObject(Element element) {
 		JSONObject jsonObject = _getJSONObject(element);
 
@@ -174,12 +180,6 @@ public class StaticSiteExportDocument {
 		}
 
 		return candidates;
-	}
-
-	private String _getSrcsetCandidateURL(String candidate) {
-		String[] candidateParts = StringUtil.split(candidate, CharPool.SPACE);
-
-		return candidateParts[0];
 	}
 
 	private static final String[] _ATTRIBUTE_NAMES = {
