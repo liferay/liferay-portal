@@ -88,3 +88,4 @@ Contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) to get start
 `SPDX-License-Identifier: (LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06)`
 
 See [`LICENSING.md`](LICENSING.md) for details.
+<!-- Test PR -->
