@@ -5,7 +5,6 @@
 
 import {mergeTests, test} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {ConnectorsPage} from '../pages/ConnectorsPage';
@@ -52,12 +51,6 @@ const pimPages = test.extend<{
 	},
 });
 
-const pimPagesTest = mergeTests(
-	loginTest(),
-	featureFlagsTest({
-		'LPD-96666': {enabled: true},
-	}),
-	pimPages
-);
+const pimPagesTest = mergeTests(loginTest(), pimPages);
 
 export {pimPagesTest};

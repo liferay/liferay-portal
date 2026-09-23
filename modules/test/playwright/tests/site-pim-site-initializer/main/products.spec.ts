@@ -5,13 +5,19 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {pimPagesTest} from './fixtures/pimPagesTest';
 
-const test = mergeTests(cmsPagesTest, loginTest(), pimPagesTest);
+const test = mergeTests(
+	cmsPagesTest,
+	featureFlagsTest({'LPD-96666': {enabled: true}}),
+	loginTest(),
+	pimPagesTest
+);
 
 test(
 	'Create a base SKU',

@@ -5,13 +5,18 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {applyFDSSelectionFilter} from '../../../utils/applyFDSSelectionFilter';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {pimPagesTest} from './fixtures/pimPagesTest';
 
-const test = mergeTests(loginTest(), pimPagesTest);
+const test = mergeTests(
+	featureFlagsTest({'LPD-96666': {enabled: true}}),
+	loginTest(),
+	pimPagesTest
+);
 
 test(
 	'Hide the search bar in the connectors empty state',
