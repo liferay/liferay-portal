@@ -696,8 +696,7 @@ public class OpenAPIUtil {
 
 			properties.put(
 				"fields",
-				_getParameterSchemaMap(
-					_DESCRIPTION, responseFieldNames));
+				_getParameterSchemaMap(_DESCRIPTION, responseFieldNames));
 		}
 
 		return LinkedHashMapBuilder.<String, Object>put(
