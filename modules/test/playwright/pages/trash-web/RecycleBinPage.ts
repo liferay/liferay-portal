@@ -187,8 +187,8 @@ export class RecycleBinPage {
 				.dispatchEvent('click');
 
 			await expect(menuItem).toBeVisible({timeout: 2000});
-
-			await menuItem.click({timeout: 2000});
 		}).toPass();
+
+		await menuItem.click({timeout: 2000});
 	}
 }
