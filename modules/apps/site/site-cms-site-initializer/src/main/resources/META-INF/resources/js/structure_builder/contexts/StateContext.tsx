@@ -28,6 +28,7 @@ import {
 	StructureChild,
 	StructureType,
 } from '../types/Structure';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
 import {buildChildren} from '../utils/buildStructure';
@@ -88,6 +89,7 @@ export type State = {
 	savedChildren: Set<Uuid>;
 	selection: Uuid[];
 	structure: Structure;
+	systemFieldNames: SystemFieldNames;
 	unsavedChanges: boolean;
 };
 
@@ -121,6 +123,7 @@ const INITIAL_STATE: State = {
 		uuid: getUuid(),
 		workflows: {},
 	},
+	systemFieldNames: {},
 	unsavedChanges: false,
 };
 
@@ -727,6 +730,7 @@ function reducer(state: State, action: Action): State {
 			const nextChildren = refreshReferencedStructures({
 				objectDefinitions,
 				root: structure,
+				systemFieldNames: state.systemFieldNames,
 			});
 
 			const nextStructure = {
@@ -1165,10 +1169,12 @@ function initState({
 	baseObjectDefinition,
 	objectDefinitions,
 	state,
+	systemFieldNames,
 }: {
 	baseObjectDefinition: ObjectDefinition | null;
 	objectDefinitions: ObjectDefinitions;
 	state: State;
+	systemFieldNames: SystemFieldNames;
 }): State {
 	const {structure} = state;
 
@@ -1184,10 +1190,12 @@ function initState({
 				baseObjectDefinition,
 				objectDefinitions,
 				parent: structure.uuid,
+				systemFieldNames,
 			}),
 			erc: getRandomId(),
 			type: getType(),
 		},
+		systemFieldNames,
 	};
 }
 
@@ -1204,16 +1212,24 @@ export default function StateContextProvider({
 	children,
 	initialState,
 	objectDefinitions = {},
+	systemFieldNames = {},
 }: {
 	baseObjectDefinition?: ObjectDefinition | null;
 	children: ReactNode;
 	initialState: State | null;
 	objectDefinitions?: ObjectDefinitions;
+	systemFieldNames?: SystemFieldNames;
 }) {
 	const [state, dispatch] = useReducer<React.Reducer<State, Action>, State>(
 		reducer,
 		initialState ?? INITIAL_STATE,
-		(state) => initState({baseObjectDefinition, objectDefinitions, state})
+		(state) =>
+			initState({
+				baseObjectDefinition,
+				objectDefinitions,
+				state,
+				systemFieldNames,
+			})
 	);
 
 	return (
@@ -1237,16 +1253,19 @@ function getDefaultChildren({
 	baseObjectDefinition,
 	objectDefinitions,
 	parent,
+	systemFieldNames,
 }: {
 	baseObjectDefinition: ObjectDefinition | null;
 	objectDefinitions: ObjectDefinitions;
 	parent: Uuid;
+	systemFieldNames: SystemFieldNames;
 }) {
 	if (baseObjectDefinition) {
 		return buildChildren({
 			objectDefinition: baseObjectDefinition,
 			objectDefinitions,
 			parent,
+			systemFieldNames,
 		});
 	}
 

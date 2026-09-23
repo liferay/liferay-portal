@@ -4,6 +4,7 @@
  */
 
 import {ObjectField} from '../../common/types/ObjectDefinition';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 
 const CMS_SYSTEM_OBJECT_FIELD_NAMES: Record<string, string[]> = {
 	L_CMS_BASIC_DOCUMENT: ['file', 'title'],
@@ -14,29 +15,15 @@ const CMS_SYSTEM_OBJECT_FIELD_NAMES: Record<string, string[]> = {
 
 const CUSTOM_OBJECT_SYSTEM_FIELD_NAMES = ['file', 'title'];
 
-let CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES: Record<string, string[]> = {};
-
-export function isSystemObjectFieldName(
-	objectDefinitionERC: string,
-	name: string
-): boolean {
-	return Boolean(
-		CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES[objectDefinitionERC]?.includes(
-			name
-		)
-	);
-}
-
-export function setSystemObjectFieldNames(
-	systemObjectFieldNames: Record<string, string[]>
-) {
-	CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES = systemObjectFieldNames ?? {};
-}
-
-export default function isCustomObjectField(
-	objectField: ObjectField,
-	objectDefinitionERC: string
-) {
+export default function isCustomObjectField({
+	objectDefinitionERC,
+	objectField,
+	systemFieldNames,
+}: {
+	objectDefinitionERC: string;
+	objectField: ObjectField;
+	systemFieldNames: SystemFieldNames;
+}) {
 	if (objectField.businessType === 'Relationship') {
 		return false;
 	}
@@ -44,7 +31,7 @@ export default function isCustomObjectField(
 	if (objectField.system) {
 		const allowedSystemFields =
 			CMS_SYSTEM_OBJECT_FIELD_NAMES[objectDefinitionERC] ??
-			CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES[objectDefinitionERC] ??
+			systemFieldNames[objectDefinitionERC] ??
 			CUSTOM_OBJECT_SYSTEM_FIELD_NAMES;
 
 		if (!allowedSystemFields.includes(objectField.name)) {

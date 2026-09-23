@@ -8,15 +8,18 @@ import {
 	ObjectDefinitions,
 } from '../../common/types/ObjectDefinition';
 import {State} from '../contexts/StateContext';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import buildStructure from './buildStructure';
 import {getChildrenUuids} from './getChildrenUuids';
 
 export default function buildState({
 	mainObjectDefinition,
 	objectDefinitions,
+	systemFieldNames,
 }: {
 	mainObjectDefinition: ObjectDefinition;
 	objectDefinitions: ObjectDefinitions;
+	systemFieldNames: SystemFieldNames;
 }): State | null {
 	if (!mainObjectDefinition) {
 		return null;
@@ -25,6 +28,7 @@ export default function buildState({
 	const structure = buildStructure({
 		mainObjectDefinition,
 		objectDefinitions,
+		systemFieldNames,
 	});
 
 	return {
@@ -46,6 +50,7 @@ export default function buildState({
 		savedChildren: getChildrenUuids({root: structure}),
 		selection: [],
 		structure,
+		systemFieldNames,
 		unsavedChanges: false,
 	};
 }

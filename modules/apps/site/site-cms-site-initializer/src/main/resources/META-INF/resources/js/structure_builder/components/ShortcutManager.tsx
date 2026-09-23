@@ -148,6 +148,7 @@ export default function ShortcutManager() {
 					parentUuid: structure.uuid,
 					status: objectDefinitionsStatus,
 					structure,
+					systemFieldNames: state.systemFieldNames,
 				}),
 		});
 

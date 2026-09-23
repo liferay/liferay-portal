@@ -21,6 +21,7 @@ import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {CacheStatus} from '../contexts/CacheContext';
 import {Action} from '../contexts/StateContext';
 import {ReferencedStructure, Structure} from '../types/Structure';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import {Uuid} from '../types/Uuid';
 import {buildReferencedStructure} from '../utils/buildStructure';
 import getRandomId from '../utils/getRandomId';
@@ -37,12 +38,14 @@ export default function openReferencedStructureModal({
 	parentUuid,
 	status,
 	structure,
+	systemFieldNames,
 }: {
 	dispatch: Dispatch<Action>;
 	objectDefinitions: ObjectDefinitions;
 	parentUuid: Uuid;
 	status: CacheStatus;
 	structure: Structure;
+	systemFieldNames: SystemFieldNames;
 }) {
 	const addReferencedStructures = (
 		referencedStructures: ReferencedStructure[]
@@ -62,6 +65,7 @@ export default function openReferencedStructureModal({
 				parentUuid={parentUuid}
 				status={status}
 				structure={structure}
+				systemFieldNames={systemFieldNames}
 			/>
 		),
 	});
@@ -74,6 +78,7 @@ export function ReferencedStructureModal({
 	parentUuid,
 	status,
 	structure,
+	systemFieldNames,
 }: {
 	closeModal: () => void;
 	objectDefinitions: ObjectDefinitions;
@@ -81,6 +86,7 @@ export function ReferencedStructureModal({
 	parentUuid: Uuid;
 	status: CacheStatus;
 	structure: Structure;
+	systemFieldNames: SystemFieldNames;
 }) {
 	const [selection, setSelection] = useState<Item[]>([]);
 	const [hasError, setHasError] = useState(false);
@@ -169,12 +175,13 @@ export function ReferencedStructureModal({
 									return;
 								}
 
-								const structures = buildStructures(
-									selection,
+								const structures = buildStructures({
+									mainStructureERC: structure.erc,
 									objectDefinitions,
-									structure.erc,
-									parentUuid
-								);
+									parentUuid,
+									selection,
+									systemFieldNames,
+								});
 
 								onAdd(structures);
 
@@ -260,12 +267,19 @@ function hasCircularDependency(
 	return false;
 }
 
-function buildStructures(
-	selection: Item[],
-	objectDefinitions: ObjectDefinitions,
-	mainStructureERC: Structure['erc'],
-	parentUuid: Uuid
-) {
+function buildStructures({
+	mainStructureERC,
+	objectDefinitions,
+	parentUuid,
+	selection,
+	systemFieldNames,
+}: {
+	mainStructureERC: Structure['erc'];
+	objectDefinitions: ObjectDefinitions;
+	parentUuid: Uuid;
+	selection: Item[];
+	systemFieldNames: SystemFieldNames;
+}) {
 	const ercs = selection.map(({value}) => value);
 
 	return ercs.map((erc) => {
@@ -276,6 +290,7 @@ function buildStructures(
 			parent: parentUuid,
 			relationshipERC: getRandomId(),
 			relationshipName: getRandomName(),
+			systemFieldNames,
 		});
 
 		return structure;

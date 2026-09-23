@@ -8,6 +8,7 @@ import {
 	ObjectDefinitions,
 } from '../../../common/types/ObjectDefinition';
 import {Group, ReferencedStructure, Structure} from '../../types/Structure';
+import {SystemFieldNames} from '../../types/SystemFieldNames';
 import {
 	buildField,
 	buildReferencedStructure,
@@ -24,11 +25,13 @@ export default function refreshReferencedStructures({
 	objectDefinition,
 	objectDefinitions,
 	root,
+	systemFieldNames,
 }: {
 	ancestors?: Array<ObjectDefinition['externalReferenceCode']>;
 	objectDefinition?: ObjectDefinition;
 	objectDefinitions: ObjectDefinitions;
 	root: ReferencedStructure | Group | Structure;
+	systemFieldNames: SystemFieldNames;
 }) {
 	const children = new Map();
 
@@ -65,6 +68,7 @@ export default function refreshReferencedStructures({
 					objectDefinition: relatedObjectDefinition,
 					objectDefinitions,
 					root: child,
+					systemFieldNames,
 				}),
 				label: relatedObjectDefinition.label,
 				spaces: getSpaces(relatedObjectDefinition),
@@ -106,6 +110,7 @@ export default function refreshReferencedStructures({
 					objectDefinition: relatedObjectDefinition,
 					objectDefinitions,
 					root: child,
+					systemFieldNames,
 				}),
 				label: relatedObjectDefinition.label,
 			};
@@ -120,6 +125,7 @@ export default function refreshReferencedStructures({
 					objectDefinition,
 					objectDefinitions,
 					root: child,
+					systemFieldNames,
 				}),
 			};
 
@@ -171,18 +177,19 @@ export default function refreshReferencedStructures({
 		).filter(
 			(objectField) =>
 				!childrenERCs.includes(objectField.externalReferenceCode) &&
-				isCustomObjectField(
+				isCustomObjectField({
+					objectDefinitionERC: objectDefinition.externalReferenceCode,
 					objectField,
-					objectDefinition.externalReferenceCode
-				)
+					systemFieldNames,
+				})
 		);
 
 		for (const objectField of newObjectFields) {
 			const field = buildField({
-				objectDefinitionExternalReferenceCode:
-					objectDefinition.externalReferenceCode,
+				objectDefinitionERC: objectDefinition.externalReferenceCode,
 				objectField,
 				parent: root.uuid,
+				systemFieldNames,
 			});
 
 			children.set(field.uuid, field);
@@ -216,6 +223,7 @@ export default function refreshReferencedStructures({
 					parent: root.uuid,
 					relationshipERC: objectRelationship.externalReferenceCode,
 					relationshipName: objectRelationship.name,
+					systemFieldNames,
 				});
 
 				children.set(repeatableGroup.uuid, repeatableGroup);
@@ -228,6 +236,7 @@ export default function refreshReferencedStructures({
 					parent: root.uuid,
 					relationshipERC: objectRelationship.externalReferenceCode,
 					relationshipName: objectRelationship.name,
+					systemFieldNames,
 				});
 
 				children.set(referencedStructure.uuid, referencedStructure);

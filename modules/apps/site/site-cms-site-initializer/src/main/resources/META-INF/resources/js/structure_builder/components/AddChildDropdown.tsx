@@ -12,6 +12,7 @@ import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
 import selectStructure from '../selectors/selectStructure';
+import selectSystemFieldNames from '../selectors/selectSystemFieldNames';
 import {Group} from '../types/Structure';
 import {
 	FIELD_TYPES,
@@ -51,6 +52,7 @@ export default function AddChildDropdown({
 	const dispatch = useStateDispatch();
 	const publishedChildren = useSelector(selectPublishedChildren);
 	const structure = useSelector(selectStructure);
+	const systemFieldNames = useSelector(selectSystemFieldNames);
 
 	const {data: objectDefinitions, status} = useCache('object-definitions');
 
@@ -139,6 +141,7 @@ export default function AddChildDropdown({
 											parentUuid ?? structure.uuid,
 										status,
 										structure,
+										systemFieldNames,
 									}),
 								symbolLeft: 'edit-layout',
 							},
