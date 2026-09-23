@@ -45,7 +45,26 @@ public abstract class PortalGitRepositoryJob
 	protected PortalGitRepositoryJob(JSONObject jsonObject) {
 		super(jsonObject);
 
-		_initialize(null);
+		_initialize(
+			GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
+				_getPortalUpstreamBranchName(jsonObject)));
+	}
+
+	private String _getPortalUpstreamBranchName(JSONObject jsonObject) {
+		JSONObject branchJSONObject = jsonObject.optJSONObject("branch");
+
+		if (branchJSONObject != null) {
+			String portalUpstreamBranchName = branchJSONObject.optString(
+				"upstream_branch_name");
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					portalUpstreamBranchName)) {
+
+				return portalUpstreamBranchName;
+			}
+		}
+
+		return getUpstreamBranchName();
 	}
 
 	private void _initialize(
