@@ -173,8 +173,29 @@ public class HeadlessAPICacheManagedServiceFactory
 					_wildcardCount, cacheableEndpoint._wildcardCount);
 			}
 
-			return Integer.compare(
-				cacheableEndpoint._patternParts.length, _patternParts.length);
+			if (_patternParts.length !=
+					cacheableEndpoint._patternParts.length) {
+
+				return Integer.compare(
+					cacheableEndpoint._patternParts.length,
+					_patternParts.length);
+			}
+
+			for (int i = 0; i < _patternParts.length; i++) {
+				boolean wildcard = Objects.equals(_patternParts[i], _WILDCARD);
+				boolean otherWildcard = Objects.equals(
+					cacheableEndpoint._patternParts[i], _WILDCARD);
+
+				if (wildcard != otherWildcard) {
+					if (wildcard) {
+						return 1;
+					}
+
+					return -1;
+				}
+			}
+
+			return 0;
 		}
 
 		public String getCacheControl() {

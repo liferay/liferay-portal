@@ -34,8 +34,8 @@ public interface HeadlessAPICacheCompanyConfiguration {
 	public String cacheControl();
 
 	@Meta.AD(
-		deflt = "0", description = "max-age-description", name = "max-age",
-		required = false
+		deflt = "0", description = "headless-api-cache-max-age-description",
+		max = "86400", min = "0", name = "max-age", required = false
 	)
 	public int maxAge();
 

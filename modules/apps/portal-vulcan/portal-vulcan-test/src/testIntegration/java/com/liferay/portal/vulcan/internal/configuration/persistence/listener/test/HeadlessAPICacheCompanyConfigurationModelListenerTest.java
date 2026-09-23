@@ -10,6 +10,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -53,9 +54,9 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 	@Test
 	public void testOnBeforeSave() throws Exception {
 		_configurationModelListener.onBeforeSave(
-			StringPool.BLANK, _createDictionary("private"));
+			StringPool.BLANK, _createDictionary("private", 0));
 		_configurationModelListener.onBeforeSave(
-			StringPool.BLANK, _createDictionary("public"));
+			StringPool.BLANK, _createDictionary("public", 0));
 	}
 
 	@Test
@@ -67,11 +68,22 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 	}
 
 	@Test
+	public void testOnBeforeSaveWithInvalidMaxAge() throws Exception {
+		_assertInvalidMaxAge(-1);
+		_assertInvalidMaxAge(86401);
+	}
+
+	@Test
+	public void testOnBeforeSaveWithInvalidPath() throws Exception {
+		_assertInvalidPath(StringPool.BLANK);
+	}
+
+	@Test
 	public void testOnBeforeSaveWithoutCacheControl() throws Exception {
 		_configurationModelListener.onBeforeSave(
 			StringPool.BLANK,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"path", "/test-vulcan-cache/test"
+				"path", RandomTestUtil.randomString()
 			).build());
 	}
 
@@ -87,7 +99,7 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 
 		try {
 			_configurationModelListener.onBeforeSave(
-				StringPool.BLANK, _createDictionary(cacheControl));
+				StringPool.BLANK, _createDictionary(cacheControl, 0));
 
 			Assert.fail();
 		}
@@ -105,11 +117,64 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 		}
 	}
 
-	private Dictionary<String, Object> _createDictionary(String cacheControl) {
+	private void _assertInvalidMaxAge(int maxAge) throws Exception {
+		try {
+			_configurationModelListener.onBeforeSave(
+				StringPool.BLANK, _createDictionary("public", maxAge));
+
+			Assert.fail();
+		}
+		catch (ConfigurationModelListenerException
+					configurationModelListenerException) {
+
+			String message = configurationModelListenerException.getMessage();
+
+			Assert.assertTrue(
+				message,
+				message.contains(
+					_language.get(
+						LocaleUtil.US,
+						"headless-api-cache-max-age-out-of-range")));
+		}
+	}
+
+	private void _assertInvalidPath(String path) throws Exception {
+		try {
+			_configurationModelListener.onBeforeSave(
+				StringPool.BLANK,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"cacheControl", "public"
+				).put(
+					"maxAge", 0
+				).put(
+					"path", path
+				).build());
+
+			Assert.fail();
+		}
+		catch (ConfigurationModelListenerException
+					configurationModelListenerException) {
+
+			String message = configurationModelListenerException.getMessage();
+
+			Assert.assertTrue(
+				message,
+				message.contains(
+					_language.get(
+						LocaleUtil.US,
+						"headless-api-cacheable-endpoint-path-required")));
+		}
+	}
+
+	private Dictionary<String, Object> _createDictionary(
+		String cacheControl, int maxAge) {
+
 		return HashMapDictionaryBuilder.<String, Object>put(
 			"cacheControl", cacheControl
 		).put(
-			"path", "/test-vulcan-cache/test"
+			"maxAge", maxAge
+		).put(
+			"path", RandomTestUtil.randomString()
 		).build();
 	}
 

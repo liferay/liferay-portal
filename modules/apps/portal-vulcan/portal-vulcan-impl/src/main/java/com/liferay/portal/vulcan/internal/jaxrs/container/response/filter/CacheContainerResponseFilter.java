@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
 import jakarta.ws.rs.HttpMethod;
@@ -56,18 +55,26 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 
 		String cacheControl = null;
 
-		if (Objects.equals(
-				containerRequestContext.getMethod(), HttpMethod.GET) &&
+		String method = containerRequestContext.getMethod();
+
+		if ((Objects.equals(method, HttpMethod.GET) ||
+			 Objects.equals(method, HttpMethod.HEAD)) &&
 			(statusType.getFamily() == Response.Status.Family.SUCCESSFUL) &&
 			(_company != null) && (_user != null) && _user.isGuestUser() &&
-			CTCollectionThreadLocal.isProductionMode()) {
+			CTCollectionThreadLocal.isProductionMode() &&
+			!headers.containsKey("Set-Cookie")) {
 
 			UriInfo uriInfo = containerRequestContext.getUriInfo();
 
 			URI baseURI = uriInfo.getBaseUri();
 
-			String basePath = StringUtil.removeFirst(
-				baseURI.getPath(), Portal.PATH_MODULE);
+			String path = baseURI.getPath();
+
+			int index =
+				path.indexOf(Portal.PATH_MODULE + "/") +
+					Portal.PATH_MODULE.length();
+
+			String basePath = path.substring(index);
 
 			if (!basePath.endsWith("/")) {
 				basePath += "/";
@@ -85,7 +92,11 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 		}
 
 		headers.putSingle("Cache-Control", cacheControl);
-		headers.putSingle("Vary", "Accept, Accept-Language");
+		headers.putSingle(
+			"Vary",
+			"Accept, Accept-Encoding, Accept-Language, " +
+				"X-Accept-All-Languages, X-Liferay-Accept-All-Languages, " +
+					"X-Liferay-Data-Masks");
 	}
 
 	@Context
