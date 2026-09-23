@@ -26,6 +26,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":apps:depot:depot-api")
 	testImplementation project(":apps:friendly-url:friendly-url-api")
 	testImplementation project(":apps:layout:layout-seo-api")
 }
