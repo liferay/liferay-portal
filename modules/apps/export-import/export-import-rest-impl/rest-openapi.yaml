@@ -90,6 +90,10 @@ components:
                     items:
                         $ref: "#/components/schemas/RequestPortletDataHandler"
                     type: array
+                siteExternalReferenceCodes:
+                    items:
+                        type: string
+                    type: array
                 sitePagesSettings:
                     default: false
                     type: boolean
@@ -132,6 +136,11 @@ components:
                 previewPortletDataHandlerSections:
                     items:
                         $ref: "#/components/schemas/PreviewPortletDataHandlerSection"
+                    readOnly: true
+                    type: array
+                previewSites:
+                    items:
+                        $ref: "#/components/schemas/PreviewSite"
                     readOnly: true
                     type: array
             type: object
@@ -204,6 +213,10 @@ components:
                 requestPortletDataHandlers:
                     items:
                         $ref: "#/components/schemas/RequestPortletDataHandler"
+                    type: array
+                siteExternalReferenceCodes:
+                    items:
+                        type: string
                     type: array
                 sitePagesSettings:
                     default: false
@@ -364,6 +377,29 @@ components:
                                 $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
                             readOnly: true
                             type: array
+            type: object
+        PreviewSite:
+            properties:
+                childSitesCount:
+                    format: int32
+                    readOnly: true
+                    type: integer
+                descriptiveName:
+                    readOnly: true
+                    type: string
+                existsInInstance:
+                    description:
+                        Whether the instance being imported into already has a site of the same external reference code. Set only when previewing a file to import.
+                    readOnly: true
+                    type: boolean
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                path:
+                    description:
+                        Site's path in the site hierarchy.
+                    readOnly: true
+                    type: string
             type: object
         ProcessProgress:
             properties:
@@ -1010,6 +1046,42 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ExportPreview"
             tags: ["ExportPreview"]
+    "/export-preview/preview-sites":
+        get:
+            description:
+                Retrieves the sites that can be exported.
+            operationId: getExportPreviewPreviewSitesPage
+            parameters:
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PreviewSite"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PreviewSite"
+                                type: array
+            tags: ["PreviewSite"]
     "/export-processes":
         get:
             description:
