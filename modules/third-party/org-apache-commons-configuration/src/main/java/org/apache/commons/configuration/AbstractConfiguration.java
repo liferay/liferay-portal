@@ -36,6 +36,7 @@ import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.lang.text.StrLookup;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.logging.Log;
@@ -141,6 +142,9 @@ public abstract class AbstractConfiguration extends EventSource implements Confi
      * return null when a property does not exist. Defaults to return null.
      */
     private boolean throwExceptionOnMissing;
+
+    /** Maximum length a single interpolation may expand to before aborting.*/
+    private static final int MAX_INTERPOLATION_LENGTH = 5000000;
 
     /** Stores a reference to the object that handles variable interpolation.*/
     private StrSubstitutor substitutor;
@@ -291,7 +295,24 @@ public abstract class AbstractConfiguration extends EventSource implements Confi
     {
         if (substitutor == null)
         {
-            substitutor = new StrSubstitutor(createInterpolator());
+            substitutor = new StrSubstitutor(createInterpolator())
+            {
+                @Override
+                protected String resolveVariable(
+                    String variableName, StrBuilder buf, int startPos,
+                    int endPos)
+                {
+                    if (buf.length() > MAX_INTERPOLATION_LENGTH)
+                    {
+                        throw new IllegalStateException(
+                            "Interpolation exceeded maximum length " +
+                                MAX_INTERPOLATION_LENGTH);
+                    }
+
+                    return super.resolveVariable(
+                        variableName, buf, startPos, endPos);
+                }
+            };
         }
         return substitutor;
     }
@@ -1307,3 +1328,4 @@ public abstract class AbstractConfiguration extends EventSource implements Confi
         return c;
     }
 }
+/* @generated */
