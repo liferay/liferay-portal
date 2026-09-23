@@ -3,14 +3,23 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getDefaultLanguageLabel} from './defaultLanguageLabels';
+import {
+	DefaultLanguageLabels,
+	getDefaultLanguageLabel,
+} from './defaultLanguageLabels';
 
-export default function buildLocalizedValue(
-	key: string
-): Liferay.Language.LocalizedValue<string> {
+export default function buildLocalizedValue({
+	defaultLanguageLabels,
+	key,
+}: {
+	defaultLanguageLabels: DefaultLanguageLabels;
+	key: string;
+}): Liferay.Language.LocalizedValue<string> {
 	return {
-		[Liferay.ThemeDisplay.getDefaultLanguageId()]:
-			getDefaultLanguageLabel(key),
+		[Liferay.ThemeDisplay.getDefaultLanguageId()]: getDefaultLanguageLabel({
+			defaultLanguageLabels,
+			key,
+		}),
 		[Liferay.ThemeDisplay.getLanguageId()]: Liferay.Language.get(key),
 	};
 }

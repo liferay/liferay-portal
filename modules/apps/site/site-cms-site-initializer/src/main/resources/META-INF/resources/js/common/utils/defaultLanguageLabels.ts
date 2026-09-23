@@ -8,14 +8,12 @@ export type DefaultLanguageLabels = {
 	locale: string;
 };
 
-export let defaultLanguageLabels = {} as DefaultLanguageLabels;
-
-export function setDefaultLanguageLabels(
-	languageLabels: DefaultLanguageLabels
-) {
-	defaultLanguageLabels = languageLabels;
-}
-
-export function getDefaultLanguageLabel(key: string): string {
+export function getDefaultLanguageLabel({
+	defaultLanguageLabels,
+	key,
+}: {
+	defaultLanguageLabels: DefaultLanguageLabels;
+	key: string;
+}): string {
 	return defaultLanguageLabels.labels?.[key] ?? Liferay.Language.get(key);
 }

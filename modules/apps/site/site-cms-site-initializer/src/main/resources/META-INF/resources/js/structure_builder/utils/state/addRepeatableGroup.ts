@@ -4,6 +4,7 @@
  */
 
 import buildLocalizedValue from '../../../common/utils/buildLocalizedValue';
+import {DefaultLanguageLabels} from '../../../common/utils/defaultLanguageLabels';
 import {
 	Group,
 	RepeatableGroup,
@@ -16,11 +17,13 @@ import getRandomName from '../getRandomName';
 import insertGroup from './insertGroup';
 
 export default function addRepeatableGroup({
+	defaultLanguageLabels,
 	groupChildren,
 	groupParent,
 	groupUuid,
 	root,
 }: {
+	defaultLanguageLabels: DefaultLanguageLabels;
 	groupChildren: StructureChild[];
 	groupParent: Uuid;
 	groupUuid: Uuid;
@@ -35,7 +38,10 @@ export default function addRepeatableGroup({
 		),
 		erc: getRandomId(),
 		isRepeatable: true,
-		label: buildLocalizedValue('repeatable-group'),
+		label: buildLocalizedValue({
+			defaultLanguageLabels,
+			key: 'repeatable-group',
+		}),
 		name: getRandomName({capitalize: true}),
 		parent: groupParent,
 		relationshipERC: getRandomId(),

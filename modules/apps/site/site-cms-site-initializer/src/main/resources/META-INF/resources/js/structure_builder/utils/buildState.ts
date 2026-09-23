@@ -7,16 +7,19 @@ import {
 	ObjectDefinition,
 	ObjectDefinitions,
 } from '../../common/types/ObjectDefinition';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import {State} from '../contexts/StateContext';
 import {SystemFieldNames} from '../types/SystemFieldNames';
 import buildStructure from './buildStructure';
 import {getChildrenUuids} from './getChildrenUuids';
 
 export default function buildState({
+	defaultLanguageLabels,
 	mainObjectDefinition,
 	objectDefinitions,
 	systemFieldNames,
 }: {
+	defaultLanguageLabels: DefaultLanguageLabels;
 	mainObjectDefinition: ObjectDefinition;
 	objectDefinitions: ObjectDefinitions;
 	systemFieldNames: SystemFieldNames;
@@ -33,6 +36,7 @@ export default function buildState({
 
 	return {
 		clipboard: null,
+		defaultLanguageLabels,
 		history: {
 			deletedChildren: [],
 			deletedGroupERCs: [],

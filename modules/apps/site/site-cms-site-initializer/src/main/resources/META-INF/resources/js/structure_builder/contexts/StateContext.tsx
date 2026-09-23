@@ -18,6 +18,7 @@ import {
 } from '../../common/types/ObjectDefinition';
 import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {
 	Group,
@@ -81,6 +82,7 @@ export type Operation = 'publishing' | 'saving';
 
 export type State = {
 	clipboard: Clipboard | null;
+	defaultLanguageLabels: DefaultLanguageLabels;
 	history: History;
 	invalids: Map<Uuid, ErrorMap>;
 	operation: Operation | null;
@@ -95,6 +97,7 @@ export type State = {
 
 const INITIAL_STATE: State = {
 	clipboard: null,
+	defaultLanguageLabels: {labels: {}, locale: ''},
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
@@ -435,6 +438,7 @@ function reducer(state: State, action: Action): State {
 			const groupUuid = getUuid();
 
 			const children = addGroup({
+				defaultLanguageLabels: state.defaultLanguageLabels,
 				groupChildren: items,
 				groupParent: parent,
 				groupUuid,
@@ -459,6 +463,7 @@ function reducer(state: State, action: Action): State {
 			const groupUuid = getUuid();
 
 			const children = addRepeatableGroup({
+				defaultLanguageLabels: state.defaultLanguageLabels,
 				groupChildren: items,
 				groupParent: items[0].parent,
 				groupUuid,
@@ -1167,11 +1172,13 @@ function reducer(state: State, action: Action): State {
 
 function initState({
 	baseObjectDefinition,
+	defaultLanguageLabels,
 	objectDefinitions,
 	state,
 	systemFieldNames,
 }: {
 	baseObjectDefinition: ObjectDefinition | null;
+	defaultLanguageLabels: DefaultLanguageLabels;
 	objectDefinitions: ObjectDefinitions;
 	state: State;
 	systemFieldNames: SystemFieldNames;
@@ -1188,6 +1195,7 @@ function initState({
 			...structure,
 			children: getDefaultChildren({
 				baseObjectDefinition,
+				defaultLanguageLabels,
 				objectDefinitions,
 				parent: structure.uuid,
 				systemFieldNames,
@@ -1210,12 +1218,14 @@ const StateContext = createContext<{
 export default function StateContextProvider({
 	baseObjectDefinition = null,
 	children,
+	defaultLanguageLabels = {labels: {}, locale: ''},
 	initialState,
 	objectDefinitions = {},
 	systemFieldNames = {},
 }: {
 	baseObjectDefinition?: ObjectDefinition | null;
 	children: ReactNode;
+	defaultLanguageLabels?: DefaultLanguageLabels;
 	initialState: State | null;
 	objectDefinitions?: ObjectDefinitions;
 	systemFieldNames?: SystemFieldNames;
@@ -1226,6 +1236,7 @@ export default function StateContextProvider({
 		(state) =>
 			initState({
 				baseObjectDefinition,
+				defaultLanguageLabels,
 				objectDefinitions,
 				state,
 				systemFieldNames,
@@ -1251,11 +1262,13 @@ function useStateDispatch() {
 
 function getDefaultChildren({
 	baseObjectDefinition,
+	defaultLanguageLabels,
 	objectDefinitions,
 	parent,
 	systemFieldNames,
 }: {
 	baseObjectDefinition: ObjectDefinition | null;
+	defaultLanguageLabels: DefaultLanguageLabels;
 	objectDefinitions: ObjectDefinitions;
 	parent: Uuid;
 	systemFieldNames: SystemFieldNames;
@@ -1272,6 +1285,7 @@ function getDefaultChildren({
 	const children = new Map();
 
 	const title = getDefaultField({
+		defaultLanguageLabels,
 		languageKey: 'title',
 		locked: true,
 		name: 'title',
@@ -1284,6 +1298,7 @@ function getDefaultChildren({
 
 	if (getType() === 'L_CMS_FILE_TYPES') {
 		const file = getDefaultField({
+			defaultLanguageLabels,
 			languageKey: 'file',
 			locked: true,
 			name: 'file',

@@ -5,7 +5,10 @@
 
 import {ObjectField} from '../../common/types/ObjectDefinition';
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
-import {getDefaultLanguageLabel} from '../../common/utils/defaultLanguageLabels';
+import {
+	DefaultLanguageLabels,
+	getDefaultLanguageLabel,
+} from '../../common/utils/defaultLanguageLabels';
 import {Uuid} from '../types/Uuid';
 import getRandomId from './getRandomId';
 import getUuid from './getUuid';
@@ -249,6 +252,7 @@ export type FieldType = (typeof FIELD_TYPES)[number];
 // Functions
 
 export function getDefaultField({
+	defaultLanguageLabels,
 	languageKey,
 	locked = false,
 	name,
@@ -256,6 +260,7 @@ export function getDefaultField({
 	required = false,
 	type,
 }: {
+	defaultLanguageLabels: DefaultLanguageLabels;
 	languageKey?: string;
 	locked?: boolean;
 	name?: string;
@@ -264,7 +269,11 @@ export function getDefaultField({
 	type: FieldType;
 }): Field {
 	const resolvedLanguageKey = languageKey ?? FIELD_TYPE_LANGUAGE_KEY[type];
-	const defaultLocaleLabel = getDefaultLanguageLabel(resolvedLanguageKey);
+
+	const defaultLocaleLabel = getDefaultLanguageLabel({
+		defaultLanguageLabels,
+		key: resolvedLanguageKey,
+	});
 
 	const base = {
 		erc: getRandomId(),
@@ -273,7 +282,10 @@ export function getDefaultField({
 			indexedAsKeyword: false,
 			indexedLanguageId: Liferay.ThemeDisplay.getDefaultLanguageId(),
 		},
-		label: buildLocalizedValue(resolvedLanguageKey),
+		label: buildLocalizedValue({
+			defaultLanguageLabels,
+			key: resolvedLanguageKey,
+		}),
 		localized: true,
 		locked,
 		name: name ?? normalizeString(defaultLocaleLabel, {style: 'camel'}),

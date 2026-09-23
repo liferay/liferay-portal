@@ -12,10 +12,7 @@ import {
 	ObjectDefinitions,
 	ObjectRelationship,
 } from '../../common/types/ObjectDefinition';
-import {
-	DefaultLanguageLabels,
-	setDefaultLanguageLabels,
-} from '../../common/utils/defaultLanguageLabels';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import {Config, initializeConfig} from '../config';
 import CacheContextProvider from '../contexts/CacheContext';
 import StateContextProvider, {useSelector} from '../contexts/StateContext';
@@ -46,12 +43,16 @@ export default function StructureBuilder({
 	systemObjectFieldNames: SystemFieldNames;
 }) {
 	initializeConfig(config);
-	setDefaultLanguageLabels(defaultLanguageLabels);
 
 	return (
 		<StateContextProvider
 			baseObjectDefinition={state.baseObjectDefinition}
-			initialState={buildState({...state, systemFieldNames})}
+			defaultLanguageLabels={defaultLanguageLabels}
+			initialState={buildState({
+				...state,
+				defaultLanguageLabels,
+				systemFieldNames,
+			})}
 			objectDefinitions={state.objectDefinitions}
 			systemFieldNames={systemFieldNames}
 		>

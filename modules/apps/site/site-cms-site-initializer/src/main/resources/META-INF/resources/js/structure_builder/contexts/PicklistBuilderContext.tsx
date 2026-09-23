@@ -14,12 +14,14 @@ import React, {
 
 import {Option, Options, Picklist} from '../../common/types/Picklist';
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import getRandomId from '../utils/getRandomId';
 import normalizeI18nValue from '../utils/normalizeI18nValue';
 
 const noop = () => null;
 
 const INITIAL_STATE: State = {
+	defaultLanguageLabels: {labels: {}, locale: ''},
 	deletedOptions: false,
 	erc: '',
 	id: null,
@@ -32,15 +34,20 @@ const INITIAL_STATE: State = {
 	setOptions: noop,
 };
 
-function getInitialState(): State {
+function getInitialState(defaultLanguageLabels: DefaultLanguageLabels): State {
 	return {
 		...INITIAL_STATE,
+		defaultLanguageLabels,
 		erc: getRandomId(),
-		name: buildLocalizedValue('untitled-picklist'),
+		name: buildLocalizedValue({
+			defaultLanguageLabels,
+			key: 'untitled-picklist',
+		}),
 	};
 }
 
 export type State = {
+	defaultLanguageLabels: DefaultLanguageLabels;
 	deletedOptions: boolean;
 	erc: string;
 	id: number | null;
@@ -62,6 +69,8 @@ export default function PicklistBuilderContextProvider({
 	children: ReactNode;
 	initialState: State;
 }) {
+	const {defaultLanguageLabels} = initialState;
+
 	const [deletedOptions, setDeletedOptions] = useState<boolean>(false);
 	const [erc, setErc] = useState<string>(initialState.erc);
 	const [id, setId] = useState<number | null>(initialState.id);
@@ -73,6 +82,7 @@ export default function PicklistBuilderContextProvider({
 	return (
 		<PicklistBuilderContext.Provider
 			value={{
+				defaultLanguageLabels,
 				deletedOptions,
 				erc,
 				id,
@@ -90,13 +100,16 @@ export default function PicklistBuilderContextProvider({
 	);
 }
 
-const buildState = (picklist: Picklist): State => {
+const buildState = (
+	picklist: Picklist,
+	defaultLanguageLabels: DefaultLanguageLabels
+): State => {
 	if (!picklist) {
-		return getInitialState();
+		return getInitialState(defaultLanguageLabels);
 	}
 
 	return {
-		...getInitialState(),
+		...getInitialState(defaultLanguageLabels),
 		erc: picklist.externalReferenceCode,
 		id: picklist.id,
 		name: normalizeI18nValue(picklist.name_i18n),
@@ -129,6 +142,9 @@ const useAddOption = () => {
 		});
 	};
 };
+
+const useDefaultLanguageLabels = () =>
+	useContext(PicklistBuilderContext).defaultLanguageLabels;
 
 const useDeletedOptions = () =>
 	useContext(PicklistBuilderContext).deletedOptions;
@@ -169,6 +185,7 @@ export {
 	PicklistBuilderContextProvider,
 	buildState,
 	useAddOption,
+	useDefaultLanguageLabels,
 	useDeletedOptions,
 	useErc,
 	useId,

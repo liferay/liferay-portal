@@ -10,10 +10,7 @@ import {ILearnResourceContext} from 'frontend-js-components-web';
 import React, {useEffect} from 'react';
 
 import {Picklist} from '../../../common/types/Picklist';
-import {
-	DefaultLanguageLabels,
-	setDefaultLanguageLabels,
-} from '../../../common/utils/defaultLanguageLabels';
+import {DefaultLanguageLabels} from '../../../common/utils/defaultLanguageLabels';
 import PicklistBuilderContextProvider, {
 	buildState,
 	useId,
@@ -31,11 +28,12 @@ export default function PicklistBuilder({
 	learnResources: ILearnResourceContext;
 	state: {listTypeDefinition: Picklist};
 }) {
-	setDefaultLanguageLabels(defaultLanguageLabels);
-
 	return (
 		<PicklistBuilderContextProvider
-			initialState={buildState(state.listTypeDefinition)}
+			initialState={buildState(
+				state.listTypeDefinition,
+				defaultLanguageLabels
+			)}
 		>
 			<div className="d-flex flex-column">
 				<HistoryManager />

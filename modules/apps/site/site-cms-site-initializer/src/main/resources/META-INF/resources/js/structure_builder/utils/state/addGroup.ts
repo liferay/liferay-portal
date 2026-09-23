@@ -4,6 +4,7 @@
  */
 
 import buildLocalizedValue from '../../../common/utils/buildLocalizedValue';
+import {DefaultLanguageLabels} from '../../../common/utils/defaultLanguageLabels';
 import {
 	Group,
 	NonRepeatableGroup,
@@ -14,11 +15,13 @@ import {Uuid} from '../../types/Uuid';
 import insertGroup from './insertGroup';
 
 export default function addGroup({
+	defaultLanguageLabels,
 	groupChildren,
 	groupParent,
 	groupUuid,
 	root,
 }: {
+	defaultLanguageLabels: DefaultLanguageLabels;
 	groupChildren: StructureChild[];
 	groupParent: Uuid;
 	groupUuid: Uuid;
@@ -32,7 +35,10 @@ export default function addGroup({
 			])
 		),
 		isRepeatable: false,
-		label: buildLocalizedValue('group'),
+		label: buildLocalizedValue({
+			defaultLanguageLabels,
+			key: 'group',
+		}),
 		parent: groupParent,
 		type: 'group',
 		uuid: groupUuid,
