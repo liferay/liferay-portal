@@ -863,6 +863,114 @@ test.describe('Preview Item', () => {
 			).toContainText('Product Spectification 1');
 		}
 	);
+
+	test(
+		'Keep the preview item in the fragment when its configuration changes',
+		{tag: '@LPD-104867'},
+		async ({
+			apiHelpers,
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			pageManagementSite,
+		}) => {
+
+			// Create a fragment that reads the preview item and a configuration value
+
+			const fragmentCollectionName = getRandomString();
+
+			const {fragmentCollectionId} =
+				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+					{
+						groupId: pageManagementSite.id,
+						name: fragmentCollectionName,
+					}
+				);
+
+			const fragmentEntryName = getRandomString();
+
+			await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+				configuration: {
+					fieldSets: [
+						{
+							fields: [
+								{
+									defaultValue: 'Initial Label',
+									label: 'Label',
+									name: 'label',
+									type: 'text',
+								},
+							],
+						},
+					],
+				},
+				fragmentCollectionId,
+				groupId: pageManagementSite.id,
+				html: `
+					<div class="preview-item-label">\${configuration.label}</div>
+					<div class="preview-item-url-title">
+						[#assign infoItem = request.getAttribute("INFO_ITEM")! /]
+						[#if infoItem?has_content]
+							[#assign structuredContent = restClient.get("/headless-delivery/v1.0/structured-contents/" + infoItem.getResourcePrimKey()?c + "?fields=friendlyUrlPath")!{} /]
+							\${structuredContent.friendlyUrlPath!}
+						[/#if]
+					</div>
+				`,
+				name: fragmentEntryName,
+			});
+
+			// Create a Display Page Template for Animal with the fragment
+
+			await displayPageTemplatesPage.goto(
+				pageManagementSite.friendlyUrlPath
+			);
+
+			const displayPageTemplateName = getRandomString();
+
+			await displayPageTemplatesPage.createTemplate({
+				contentSubtype: 'Animal',
+				contentType: 'Web Content Article',
+				name: displayPageTemplateName,
+			});
+
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await pageEditorPage.addFragment(
+				fragmentCollectionName,
+				fragmentEntryName
+			);
+
+			// Preview with an item
+
+			await displayPageTemplatesPage.changePreviewItem('Animal 01');
+
+			await expect(page.locator('.preview-item-url-title')).toHaveText(
+				ANIMAL_01_FRIENDLY_URL
+			);
+
+			// Change the configuration and check that the preview item is kept
+
+			const fragmentId =
+				await pageEditorPage.getFragmentId(fragmentEntryName);
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Label',
+				fragmentId,
+				tab: 'General',
+				value: 'Updated Label',
+			});
+
+			await expect(page.locator('.preview-item-label')).toHaveText(
+				'Updated Label'
+			);
+
+			await expect(page.locator('.preview-item-url-title')).toHaveText(
+				ANIMAL_01_FRIENDLY_URL
+			);
+		}
+	);
 });
 
 test.describe('Object Display page', () => {
