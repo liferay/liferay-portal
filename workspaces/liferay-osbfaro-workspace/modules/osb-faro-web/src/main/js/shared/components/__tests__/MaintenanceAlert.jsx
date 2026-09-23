@@ -44,6 +44,21 @@ describe('MaintenanceAlert', () => {
 		// Alert should be shown when project state is Scheduled
 		expect(getByText(/Scheduled Maintenance/)).toBeInTheDocument();
 	});
+
+	it('should render the scheduled date and time of the maintenance', () => {
+		const project = data.getImmutableMock(Project, data.mockProject, '23', {
+			state: ProjectStates.Scheduled,
+			stateStartDate: Date.parse('2026-06-10T14:30:00Z')
+		});
+
+		const {getByText} = render(<MaintenanceAlert project={project} />);
+
+		expect(
+			getByText(
+				'A system-wide maintenance has been scheduled to take place on Jun 10, 2026 at 2:30 PM.'
+			)
+		).toBeInTheDocument();
+	});
 });
 
 describe('mapState', () => {

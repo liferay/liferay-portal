@@ -6,7 +6,7 @@ import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Provider} from 'react-redux';
-import {RemoteData, User} from 'shared/util/records';
+import {RemoteData, TimeZone, User} from 'shared/util/records';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -125,5 +125,38 @@ describe.skip('Channels List', () => {
 
 		expect(clearDataIcon).toBeInTheDocument();
 		expect(deleteIcon).toBeInTheDocument();
+	});
+});
+
+describe('ChannelList', () => {
+	afterEach(cleanup);
+
+	it('renders the date added in the workspace time zone', async () => {
+		API.channels.search.mockReturnValue(
+			Promise.resolve({
+				...data.mockChannels(),
+				items: [
+					{
+						...data.mockChannels().items[0],
+						createTime: Date.UTC(2026, 5, 10, 1, 30)
+					}
+				]
+			})
+		);
+
+		render(
+			<Wrapper
+				store={mockStore(
+					mockStoreData.setIn(
+						['projects', '23', 'data', 'timeZone'],
+						new TimeZone({timeZoneId: 'America/Recife'})
+					)
+				)}
+			>
+				<ChannelList {...defaultProps} />
+			</Wrapper>
+		);
+
+		expect(await screen.findByText('Jun 9, 2026')).toBeInTheDocument();
 	});
 });

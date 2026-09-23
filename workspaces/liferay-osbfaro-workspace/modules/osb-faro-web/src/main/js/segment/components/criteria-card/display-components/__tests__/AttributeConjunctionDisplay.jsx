@@ -95,6 +95,23 @@ describe('AttributeConjunctionDisplay', () => {
 		expect(getByText('articleId')).toBeTruthy();
 	});
 
+	it('renders a between date range with the custom date format', () => {
+		const {getByText} = render(
+			<DefaultComponent
+				conjunctionCriterion={{
+					operatorName: FunctionalOperators.Between,
+					propertyName: 'attribute/4',
+					value: {
+						end: '2026-07-20T23:30:00.000Z',
+						start: '2026-06-10T14:30:00.000Z'
+					}
+				}}
+			/>
+		);
+
+		expect(getByText('Jun 10, 2026 - Jul 20, 2026')).toBeInTheDocument();
+	});
+
 	it.each`
 		operatorName                    | propertyName     | value           | displayName                 | operatorLabel         | displayValue
 		${RelationalOperators.EQ}       | ${'attribute/1'} | ${'false'}      | ${'Foo Attribute Boolean'}  | ${'is'}               | ${'False'}

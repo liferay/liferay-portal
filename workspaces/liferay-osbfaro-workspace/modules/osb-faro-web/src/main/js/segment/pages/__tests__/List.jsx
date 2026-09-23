@@ -380,6 +380,46 @@ describe('List', () => {
 		).toBeInTheDocument();
 	});
 
+	it('renders the last membership update date with the custom date time format', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					lastMembershipUpdateDate: Date.UTC(2026, 5, 10, 14, 30)
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(
+			within(row).getByText('Jun 10, 2026, 2:30 PM')
+		).toBeInTheDocument();
+	});
+
+	it('renders the modified date with the custom date format', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					dateModified: Date.UTC(2026, 5, 9, 23, 45)
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('Jun 9, 2026')).toBeInTheDocument();
+	});
+
 	it('shows the last membership update date as processing while it is not available', async () => {
 		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(

@@ -22,6 +22,29 @@ describe('Calendar', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('should render the short weekday names as the header', () => {
+		const {container} = render(
+			<Calendar
+				currentMonth={moment.utc('2026-06-01')}
+				date={moment.utc('2026-06-10')}
+			/>
+		);
+
+		const weekdays = Array.from(container.querySelectorAll('thead th')).map(
+			th => th.textContent
+		);
+
+		expect(weekdays).toEqual([
+			'Sun',
+			'Mon',
+			'Tue',
+			'Wed',
+			'Thu',
+			'Fri',
+			'Sat'
+		]);
+	});
+
 	it('should render days as being in a range', () => {
 		const {container} = render(
 			<Calendar

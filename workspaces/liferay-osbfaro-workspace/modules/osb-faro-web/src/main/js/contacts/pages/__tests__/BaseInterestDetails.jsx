@@ -123,3 +123,32 @@ describe('BaseInterestDetails', () => {
 		expect(InactivePagesGrandparentElement).toHaveClass('active');
 	});
 });
+
+describe('BaseInterestDetails date', () => {
+	beforeEach(() => {
+		jest.setSystemTime(new Date('2026-06-10T14:30:00Z'));
+	});
+
+	it('renders the individuals list title as of the previous day', () => {
+		const {container} = render(
+			<MemoryRouter>
+				<BaseInterestDetails
+					channelId='123'
+					entity={new Segment(data.mockSegment())}
+					groupId='23'
+					id='test'
+					interestDetailsRoute={
+						Routes.CONTACTS_SEGMENT_INTEREST_DETAILS
+					}
+					interestId='Liferay'
+					tabId='individuals'
+					type={SEGMENTS}
+				/>
+			</MemoryRouter>
+		);
+
+		expect(container.querySelector('.list-title')).toHaveTextContent(
+			'Members Interested in "Liferay" - As of June 9, 2026'
+		);
+	});
+});

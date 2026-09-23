@@ -43,6 +43,34 @@ describe('activities', () => {
 			expect(typeof result).toBe('string');
 			expect(result.length).toBeGreaterThan(0);
 		});
+
+		describe('with the current time frozen', () => {
+			afterEach(() => {
+				jest.useRealTimers();
+			});
+
+			beforeEach(() => {
+				jest.useFakeTimers().setSystemTime(
+					new Date('2026-06-20T12:00:00Z')
+				);
+			});
+
+			it('formats a past day in the custom date format, in UTC', () => {
+				expect(formatGroupingTime('2026-06-10T01:30:00Z')).toBe(
+					'Jun 10, 2026'
+				);
+			});
+
+			it('formats a past day in the custom date format, in the given time zone', () => {
+				expect(
+					formatGroupingTime('2026-06-10T01:30:00Z', 'America/Recife')
+				).toBe('Jun 9, 2026');
+			});
+
+			it('labels the current day as today', () => {
+				expect(formatGroupingTime('2026-06-20T08:00:00Z')).toBe('Today');
+			});
+		});
 	});
 
 	describe('isWebhookUserAgent', () => {

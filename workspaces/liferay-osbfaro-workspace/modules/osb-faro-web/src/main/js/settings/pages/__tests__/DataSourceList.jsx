@@ -1,14 +1,20 @@
-import React from 'react';
-import {
+import * as API from 'shared/api';
+import * as data from 'test/data';
+import DataSourceList, {
 	AddDataSourceNav,
 	DataSourceName,
 	disableRow,
 	StatusRenderer,
 	typeFormatter
 } from '../DataSourceList';
+import mockStore, {mockStoreData} from 'test/mock-store';
+import React from 'react';
 import {DataSourceStates, DataSourceTypes} from 'shared/util/constants';
-import {MemoryRouter} from 'react-router-dom';
-import {fireEvent, render} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
+import {Provider} from 'react-redux';
+import {Routes} from 'shared/util/router';
+import {TimeZone} from 'shared/util/records';
 
 jest.unmock('react-dom');
 
@@ -243,5 +249,48 @@ describe('DataSourceList exports', () => {
 			expect(container.querySelector('a')).toBeNull();
 			expect(getByText('Deleting Data Source')).toBeInTheDocument();
 		});
+	});
+});
+
+describe('DataSourceList', () => {
+	it('renders the date added in the workspace time zone', async () => {
+		API.dataSource.search.mockImplementation(({states = []}) =>
+			Promise.resolve(
+				states.length
+					? {items: [], total: 0}
+					: {
+							items: [
+								data.mockCSVDataSource(1, {
+									createDate: Date.UTC(2026, 5, 10, 1, 30)
+								})
+							],
+							total: 1
+						}
+			)
+		);
+
+		render(
+			<Provider
+				store={mockStore(
+					mockStoreData.setIn(
+						['projects', '23', 'data', 'timeZone'],
+						new TimeZone({timeZoneId: 'America/Recife'})
+					)
+				)}
+			>
+				<MemoryRouter
+					initialEntries={['/workspace/23/settings/data-source']}
+				>
+					<RouterRoutes>
+						<Route
+							element={<DataSourceList />}
+							path={`${Routes.SETTINGS_DATA_SOURCE_LIST}/*`}
+						/>
+					</RouterRoutes>
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(await screen.findByText('Jun 9, 2026')).toBeInTheDocument();
 	});
 });

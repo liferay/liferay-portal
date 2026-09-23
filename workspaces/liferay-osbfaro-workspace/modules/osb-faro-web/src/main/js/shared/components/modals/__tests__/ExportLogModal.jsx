@@ -11,21 +11,42 @@ import {Provider} from 'react-redux';
 
 jest.unmock('react-dom');
 
-// Mock DateRangeInput to simplify the test and avoid complex portal/calendar logic
-jest.mock('shared/components/DateRangeInput', () => ({onChange}) => (
-	<div data-testid='mock-date-range-input'>
-		<button
-			onClick={() =>
-				onChange({
-					end: require('moment')('2024-01-02'),
-					start: require('moment')('2024-01-01')
-				})
-			}
-		>
-			{'Set Date Range'}
-		</button>
-	</div>
-));
+// Mock DateRangeInput to simplify the test and avoid complex portal/calendar
+// logic. Tests that pin the displayed range opt into rendering the real input
+// next to the mock button through mockRenderActualDateRangeInput.
+
+let mockRenderActualDateRangeInput = false;
+
+jest.mock('shared/components/DateRangeInput', () => props => {
+	const {onChange} = props;
+
+	const {default: ActualDateRangeInput} = jest.requireActual(
+		'shared/components/DateRangeInput'
+	);
+
+	return (
+		<div data-testid='mock-date-range-input'>
+			<button
+				onClick={() =>
+					onChange(
+						mockRenderActualDateRangeInput
+							? {end: '2026-06-17', start: '2026-06-10'}
+							: {
+									end: require('moment')('2024-01-02'),
+									start: require('moment')('2024-01-01')
+								}
+					)
+				}
+			>
+				{'Set Date Range'}
+			</button>
+
+			{mockRenderActualDateRangeInput && (
+				<ActualDateRangeInput {...props} />
+			)}
+		</div>
+	);
+});
 
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({
@@ -155,5 +176,32 @@ describe('ExportLogModal', () => {
 		await waitFor(() =>
 			expect(container.querySelector('.loading-root')).toBeNull()
 		);
+	});
+	describe('with the real date range input', () => {
+		afterEach(() => {
+			mockRenderActualDateRangeInput = false;
+		});
+
+		beforeEach(() => {
+			mockRenderActualDateRangeInput = true;
+		});
+
+		it('renders the selected date range in the custom date format', () => {
+			render(
+				<Wrapper>
+					<ExportLogModal
+						description='Test description'
+						onClose={noop}
+						title='Test Title'
+					/>
+				</Wrapper>
+			);
+
+			fireEvent.click(screen.getByText('Set Date Range'));
+
+			expect(screen.getByTestId('date-range-input')).toHaveValue(
+				'Jun 10, 2026 to Jun 17, 2026'
+			);
+		});
 	});
 });

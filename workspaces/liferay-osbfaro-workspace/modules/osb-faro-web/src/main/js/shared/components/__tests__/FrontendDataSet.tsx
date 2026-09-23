@@ -48,6 +48,30 @@ afterEach(() => {
 
 beforeAll(warmFrontendDataSet);
 
+describe('columns.dateRenderer', () => {
+	it('should render an ISO date in the custom date format, in UTC', () => {
+		render(
+			columns.dateRenderer({
+				itemData: {},
+				value: '2026-06-10T01:30:00Z',
+			})
+		);
+
+		expect(screen.getByText('Jun 10, 2026')).toBeInTheDocument();
+	});
+
+	it('should render a timestamp in the custom date format, in UTC', () => {
+		render(
+			columns.dateRenderer({
+				itemData: {},
+				value: Date.parse('2026-06-10T23:30:00Z'),
+			})
+		);
+
+		expect(screen.getByText('Jun 10, 2026')).toBeInTheDocument();
+	});
+});
+
 describe('columns.nameAndLinkRenderer', () => {
 	it('should generate an href that includes the channelId path segment', () => {
 		render(

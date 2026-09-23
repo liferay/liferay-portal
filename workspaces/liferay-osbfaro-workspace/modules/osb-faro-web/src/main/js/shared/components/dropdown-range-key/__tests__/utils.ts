@@ -371,4 +371,17 @@ describe('getSelectedItem', () => {
 			startDate: '2024-01-15T19:00',
 		});
 	});
+	it('returns a custom range labeled with both dates in the custom date format', () => {
+		expect(
+			getSelectedItem({
+				rangeEnd: '2026-06-17',
+				rangeKey: 'CUSTOM',
+				rangeStart: '2026-06-10',
+				timeRange,
+			})
+		).toEqual({
+			label: 'Jun 10, 2026 - Jun 17, 2026',
+			value: 'CUSTOM',
+		});
+	});
 });

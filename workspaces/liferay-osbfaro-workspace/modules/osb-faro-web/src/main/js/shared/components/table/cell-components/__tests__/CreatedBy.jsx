@@ -21,4 +21,19 @@ describe('CreatedByCell', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('renders the last edited date in the given time zone', () => {
+		const {getByText} = render(
+			<CreatedByCell
+				data={{
+					dateModified: Date.UTC(2026, 5, 10, 1, 30),
+					userName: 'Test Test'
+				}}
+				timeZoneId='America/Recife'
+			/>,
+			{container: document.body.appendChild(tableRow)}
+		);
+
+		expect(getByText('Last Edited: 6/9/26')).toBeTruthy();
+	});
 });

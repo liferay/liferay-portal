@@ -133,4 +133,61 @@ describe('StageConditionRow', () => {
 
 		expect(container.querySelector('.has-error')).toBeNull();
 	});
+	describe('with a date attribute', () => {
+		afterEach(() => {
+			jest.useRealTimers();
+		});
+
+		beforeEach(() => {
+			jest.useFakeTimers().setSystemTime(
+				new Date('2026-06-10T14:30:00Z')
+			);
+		});
+
+		it('renders the month and weekday names in the date picker', () => {
+			renderRow({
+				condition: buildCondition({
+					conditionValue: '2026-06-10',
+					field: 'account.createDate',
+					fieldDataCategory: 'Date',
+					fieldDataType: 'DATE',
+					operator: 'eq',
+				}),
+			});
+
+			fireEvent.click(screen.getByTestId('date-button'));
+
+			const monthOptions = Array.from(
+				screen.getByTestId('month-select').querySelectorAll('option')
+			).map((option) => option.textContent);
+
+			const weekdays = Array.from(
+				screen.getByRole('grid').querySelectorAll('abbr')
+			).map((abbr) => abbr.textContent);
+
+			expect(monthOptions).toEqual([
+				'January',
+				'February',
+				'March',
+				'April',
+				'May',
+				'June',
+				'July',
+				'August',
+				'September',
+				'October',
+				'November',
+				'December',
+			]);
+			expect(weekdays).toEqual([
+				'Sun',
+				'Mon',
+				'Tue',
+				'Wed',
+				'Thu',
+				'Fri',
+				'Sat',
+			]);
+		});
+	});
 });

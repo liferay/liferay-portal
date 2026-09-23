@@ -138,3 +138,38 @@ describe('SegmentActivationCard', () => {
 		expect(getByTestId('mock-date-input')).toBeInTheDocument();
 	});
 });
+
+describe('SegmentActivationCard dates', () => {
+	const segmentActivation = fromJS({
+		frequencyType: SegmentActivationFrequencyTypes.Between,
+		scheduleEndDate: String(Date.UTC(2026, 6, 20, 23, 30)),
+		scheduleStartDate: String(Date.UTC(2026, 5, 10, 14, 30)),
+		scheduleType: SegmentActivationScheduleTypes.Batch,
+	});
+
+	it('renders the schedule range label with the custom date format', () => {
+		const {getByText} = render(
+			<WrapperComponent>
+				<SegmentActivationCard segmentActivation={segmentActivation} />
+			</WrapperComponent>
+		);
+
+		expect(
+			getByText('Batch Sync Will Run from Jun 10, 2026 to Jul 20, 2026')
+		).toBeInTheDocument();
+	});
+
+	it('renders the schedule range in the modal date input as ISO dates', async () => {
+		const {findByTestId, getByTestId} = render(
+			<WrapperComponent>
+				<SegmentActivationCard segmentActivation={segmentActivation} />
+			</WrapperComponent>
+		);
+
+		fireEvent.click(getByTestId('edit-activation-button'));
+
+		expect(await findByTestId('mock-date-input')).toHaveTextContent(
+			'2026-06-10 - 2026-07-20'
+		);
+	});
+});

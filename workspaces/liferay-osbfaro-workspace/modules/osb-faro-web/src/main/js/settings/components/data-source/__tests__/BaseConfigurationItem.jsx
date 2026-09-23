@@ -18,6 +18,17 @@ describe('getStatusMessage', () => {
 			getStatusMessage({configured: true, current: 1, total: 3})
 		).toBe('Syncing - 33.33% Completed');
 	});
+
+	it('renders the last sync date as a short date and time in GMT', () => {
+		expect(
+			getStatusMessage({
+				configured: true,
+				current: 40,
+				dateRecorded: Date.UTC(2026, 5, 10, 14, 30),
+				total: 40
+			})
+		).toBe('Last Sync: 6/10/2026 - 2:30 PM GMT');
+	});
 });
 
 describe('BaseConfigurationItem', () => {

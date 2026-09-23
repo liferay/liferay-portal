@@ -12,6 +12,19 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('recharts', () => {
+	const OriginalModule = jest.requireActual('recharts');
+
+	return {
+		...OriginalModule,
+		ResponsiveContainer: ({children}) => (
+			<OriginalModule.ResponsiveContainer height={350} width={800}>
+				{children}
+			</OriginalModule.ResponsiveContainer>
+		)
+	};
+});
+
 describe('SegmentGrowthWithList', () => {
 	it('should render', async () => {
 		const {container} = render(
@@ -98,6 +111,35 @@ describe('SegmentGrowthChart', () => {
 		expect(
 			screen.getByText('There is no data for segment membership.')
 		).toBeInTheDocument();
+	});
+
+	it('renders the selected point tooltip header with the custom date format', () => {
+		render(
+			<SegmentGrowthChart
+				data={[
+					{
+						added: 2,
+						anonymousCount: 1,
+						knownCount: 4,
+						modifiedDate: Date.UTC(2026, 5, 9),
+						removed: 0,
+						value: 5
+					},
+					{
+						added: 3,
+						anonymousCount: 2,
+						knownCount: 6,
+						modifiedDate: Date.UTC(2026, 5, 10, 14, 30),
+						removed: 1,
+						value: 8
+					}
+				]}
+				hasSelectedPoint
+				selectedPoint={1}
+			/>
+		);
+
+		expect(screen.getByText('As of Jun 10, 2026')).toBeInTheDocument();
 	});
 });
 
