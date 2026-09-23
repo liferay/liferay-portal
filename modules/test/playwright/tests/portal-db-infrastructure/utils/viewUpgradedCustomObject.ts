@@ -12,10 +12,10 @@ const OBJECT_DEFINITIONS_PATH =
  * Asserts that the custom object one virtual instance defines survived the
  * legacy database upgrade, keeping the label, plural label, title field, scope
  * and panel link the archive recorded for it, and that the neighbouring
- * instance's object is not visible from here. Scope is the company-scoped value
- * a virtual-instance upgrade can mis-assign, so it is the one that matters. Only
- * the 7.4.13.u33 archive carries custom objects, so this runs for the project
- * whose config sets assertCustomObjects.
+ * instance's object is not visible from here. Scope is the company-scoped
+ * value a virtual-instance upgrade can mis-assign, so it is the one that
+ * matters. Only the 7.4.13.u33 archive carries custom objects, so this runs
+ * for the project whose config sets assertCustomObjects.
  */
 export async function viewUpgradedCustomObject({
 	absentNameSuffix,
@@ -54,9 +54,9 @@ export async function viewUpgradedCustomObject({
 		page.getByRole('textbox', {exact: true, name: 'Plural Label Mandatory'})
 	).toHaveValue(`Custom Objects${nameSuffix}`);
 
-	await expect(
-		page.getByRole('combobox', {name: 'Title Field'})
-	).toHaveText(`Custom Field Text${nameSuffix}`);
+	await expect(page.getByRole('combobox', {name: 'Title Field'})).toHaveText(
+		`Custom Field Text${nameSuffix}`
+	);
 
 	await expect(page.getByRole('combobox', {name: 'Scope'})).toHaveText(
 		'Company'
