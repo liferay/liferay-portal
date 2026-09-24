@@ -12,7 +12,7 @@ import {Routes, toRoute} from 'shared/util/router';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
 
-interface ITopBarProps {
+interface IToolbarProps {
 	className?: string;
 	collapsed: boolean;
 	currentUser: User;
@@ -20,7 +20,7 @@ interface ITopBarProps {
 	onToggle: () => void;
 }
 
-const TopBar: React.FC<ITopBarProps> = ({
+const Toolbar: React.FC<IToolbarProps> = ({
 	className,
 	collapsed = false,
 	currentUser = new User(),
@@ -38,7 +38,7 @@ const TopBar: React.FC<ITopBarProps> = ({
 	return (
 		<ClayToolbar
 			className={getCN(
-				'align-items-center bg-white fixed-top top-bar-root',
+				'align-items-center bg-white fixed-top toolbar-root',
 				className
 			)}
 		>
@@ -198,4 +198,4 @@ const TopBar: React.FC<ITopBarProps> = ({
 	);
 };
 
-export default TopBar;
+export default Toolbar;

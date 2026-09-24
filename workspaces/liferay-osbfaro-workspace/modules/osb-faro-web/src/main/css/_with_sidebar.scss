@@ -1,7 +1,7 @@
 .with-sidebar-root {
 	min-height: 100vh;
 	padding-left: $sidebarOpenWidth;
-	padding-top: $topBarHeight;
+	padding-top: $toolbarHeight;
 
 	&.has-sidebar {
 		@media (prefers-reduced-motion: no-preference) {
@@ -14,6 +14,6 @@
 	}
 
 	.index-root {
-		min-height: calc(100vh - #{$topBarHeight});
+		min-height: calc(100vh - #{$toolbarHeight});
 	}
 }

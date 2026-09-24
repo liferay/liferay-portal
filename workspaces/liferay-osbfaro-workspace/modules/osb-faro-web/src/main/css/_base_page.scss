@@ -114,9 +114,9 @@
 		}
 
 		.info-panel-root {
-			height: calc(100vh - #{$topBarHeight});
+			height: calc(100vh - #{$toolbarHeight});
 			position: fixed;
-			top: $topBarHeight;
+			top: $toolbarHeight;
 			transform: translateY(-1px);
 		}
 	}

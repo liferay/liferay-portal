@@ -16,10 +16,10 @@
 	}
 
 	.content-wrapper {
-		height: calc(100vh - #{$topBarHeight});
+		height: calc(100vh - #{$toolbarHeight});
 		overflow: scroll;
 		position: sticky;
-		top: $topBarHeight;
+		top: $toolbarHeight;
 	}
 
 	.header {

@@ -2,7 +2,7 @@
 	background-color: $white;
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 119px - #{$topBarHeight});
+	height: calc(100vh - 119px - #{$toolbarHeight});
 	position: relative;
 	width: 100%;
 

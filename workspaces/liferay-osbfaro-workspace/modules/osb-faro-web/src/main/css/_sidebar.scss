@@ -1,11 +1,11 @@
 .sidebar-root {
 	background: $lightL1;
 	border-right: 1px solid $cadmin-secondary-l2;
-	height: calc(100% - #{$topBarHeight});
+	height: calc(100% - #{$toolbarHeight});
 	left: 0;
 	overflow: hidden;
 	position: fixed;
-	top: $topBarHeight;
+	top: $toolbarHeight;
 	width: $sidebarOpenWidth;
 	z-index: 1000;
 

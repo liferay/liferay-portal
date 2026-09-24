@@ -15,7 +15,7 @@ exports[`withSidebar should render with the sidebar 1`] = `
     class="with-sidebar-root has-sidebar"
   >
     <nav
-      class="align-items-center bg-white fixed-top top-bar-root tbar component-tbar"
+      class="align-items-center bg-white fixed-top toolbar-root tbar component-tbar"
     >
       <ul
         class="align-items-center mx-3 tbar-nav"

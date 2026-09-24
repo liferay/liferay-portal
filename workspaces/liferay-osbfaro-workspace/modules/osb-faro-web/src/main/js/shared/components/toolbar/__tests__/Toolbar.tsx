@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import mockStore, {mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
-import TopBar from '../index';
+import Toolbar from '../index';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -27,28 +27,28 @@ const defaultProps = {
 	onToggle: jest.fn(),
 };
 
-const renderTopBar = (props = {}, storeData = mockStoreDataLDP) =>
+const renderToolbar = (props = {}, storeData = mockStoreDataLDP) =>
 	render(
 		<Provider store={mockStore(storeData)}>
 			<MemoryRouter>
-				<TopBar {...defaultProps} {...props} />
+				<Toolbar {...defaultProps} {...props} />
 			</MemoryRouter>
 		</Provider>
 	);
 
-describe('TopBar', () => {
+describe('Toolbar', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
 
 	it('renders the product name', () => {
-		renderTopBar();
+		renderToolbar();
 
 		expect(screen.getByText(/liferay data platform/i)).toBeTruthy();
 	});
 
 	it('collapses the sidebar from the toggle', () => {
-		renderTopBar();
+		renderToolbar();
 
 		fireEvent.click(screen.getByTitle(/menu/i));
 
@@ -59,13 +59,13 @@ describe('TopBar', () => {
 		[false, 'product-menu-open'],
 		[true, 'product-menu-closed'],
 	])('marks the toggle as collapsed=%p with %s', (collapsed, symbol) => {
-		const {container} = renderTopBar({collapsed});
+		const {container} = renderToolbar({collapsed});
 
 		expect(container.querySelector(`.lexicon-icon-${symbol}`)).toBeTruthy();
 	});
 
 	it('links the settings button to the workspace settings', () => {
-		renderTopBar();
+		renderToolbar();
 
 		expect(screen.getByTitle(/settings/i).closest('a')).toHaveAttribute(
 			'href',
@@ -74,13 +74,13 @@ describe('TopBar', () => {
 	});
 
 	it('labels the language selector with the active language', () => {
-		renderTopBar();
+		renderToolbar();
 
 		expect(screen.getByTitle(/language/i)).toHaveTextContent('EN (US)');
 	});
 
 	it('updates the language when another one is picked', async () => {
-		renderTopBar();
+		renderToolbar();
 
 		fireEvent.click(screen.getByTitle(/language/i));
 
@@ -94,7 +94,7 @@ describe('TopBar', () => {
 	});
 
 	it('does not update the language when the active one is picked', async () => {
-		renderTopBar();
+		renderToolbar();
 
 		fireEvent.click(screen.getByTitle(/language/i));
 
@@ -104,7 +104,7 @@ describe('TopBar', () => {
 	});
 
 	it('closes the language menu once a language is picked', async () => {
-		renderTopBar();
+		renderToolbar();
 
 		const trigger = screen.getByTitle(/language/i);
 
@@ -120,7 +120,7 @@ describe('TopBar', () => {
 	});
 
 	it('opens the user menu from the sticker', async () => {
-		renderTopBar();
+		renderToolbar();
 
 		fireEvent.click(screen.getByLabelText('Test Test'));
 

@@ -7,7 +7,7 @@ import getCN from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Sidebar from 'shared/components/sidebar';
-import TopBar from 'shared/components/top-bar';
+import Toolbar from 'shared/components/toolbar';
 import withCurrentUser from './WithCurrentUser';
 import withDefaultChannelId from './WithDefaultChannelId';
 import withQuery from './WithQuery';
@@ -197,7 +197,7 @@ export default compose(
 
 				return (
 					<div className={classes}>
-						<TopBar
+						<Toolbar
 							collapsed={collapsed}
 							currentUser={currentUser}
 							groupId={groupId}
