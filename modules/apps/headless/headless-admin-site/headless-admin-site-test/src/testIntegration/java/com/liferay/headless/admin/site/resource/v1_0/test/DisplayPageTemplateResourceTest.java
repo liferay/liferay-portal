@@ -248,10 +248,18 @@ public class DisplayPageTemplateResourceTest
 		Map<String, Map<String, String>> actions =
 			displayPageTemplate.getActions();
 
+		Assert.assertTrue(actions.toString(), actions.containsKey("copy"));
 		Assert.assertTrue(actions.toString(), actions.containsKey("delete"));
 		Assert.assertTrue(actions.toString(), actions.containsKey("get"));
 		Assert.assertTrue(
 			actions.toString(), actions.containsKey("permissions"));
+
+		Map<String, String> copyAction = actions.get("copy");
+
+		String copyHref = copyAction.get("href");
+
+		Assert.assertTrue(copyHref, copyHref.contains("/design-libraries/"));
+		Assert.assertTrue(copyHref, copyHref.endsWith("/copy"));
 	}
 
 	@Override
@@ -487,6 +495,50 @@ public class DisplayPageTemplateResourceTest
 				testGroup.getExternalReferenceCode(),
 				expectedDisplayPageTemplate.getExternalReferenceCode(),
 				expectedDisplayPageTemplate));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-106072")
+	public void testPostDesignLibraryDisplayPageTemplateCopy()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode);
+
+		DisplayPageTemplate copiedDisplayPageTemplate =
+			displayPageTemplateResource.
+				postDesignLibraryDisplayPageTemplateCopy(
+					designLibraryExternalReferenceCode,
+					displayPageTemplate.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			displayPageTemplate.getContentTypeReference(),
+			copiedDisplayPageTemplate.getContentTypeReference());
+		Assert.assertNotEquals(
+			displayPageTemplate.getExternalReferenceCode(),
+			copiedDisplayPageTemplate.getExternalReferenceCode());
+		Assert.assertTrue(
+			copiedDisplayPageTemplate.getName(),
+			StringUtil.startsWith(
+				copiedDisplayPageTemplate.getName(),
+				displayPageTemplate.getName()));
+
+		Page<DisplayPageTemplate> displayPageTemplatesPage =
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					designLibraryExternalReferenceCode, null, null, null, null,
+					null);
+
+		Assert.assertNotNull(
+			displayPageTemplatesPage.toString(),
+			_getDisplayPageTemplate(
+				(List<DisplayPageTemplate>)displayPageTemplatesPage.getItems(),
+				copiedDisplayPageTemplate.getExternalReferenceCode()));
 	}
 
 	@Override

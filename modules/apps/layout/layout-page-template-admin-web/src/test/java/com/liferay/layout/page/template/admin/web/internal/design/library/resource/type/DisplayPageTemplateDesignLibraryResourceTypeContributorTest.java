@@ -219,21 +219,30 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 					_httpServletRequest, _depotEntry, _BACK_URL);
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 3,
+			fdsActionDropdownItems.toString(), 4,
 			fdsActionDropdownItems.size());
 
 		_assertFDSActionDropdownItem(
 			fdsActionDropdownItems.get(0), "pencil", "edit", "edit", null,
 			"get", "link");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(1), "password-policies", "permissions",
+			fdsActionDropdownItems.get(1), "copy", "copy", "duplicate", "post",
+			"copy", "async");
+		_assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(2), "password-policies", "permissions",
 			"permissions", null, "permissions", "modal-permissions");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(2), "trash", "delete", "delete",
+			fdsActionDropdownItems.get(3), "trash", "delete", "delete",
 			"delete", "delete", "async");
 
+		FDSActionDropdownItem copyFDSActionDropdownItem =
+			fdsActionDropdownItems.get(1);
+
+		Assert.assertEquals(
+			"{actions.copy.href}", copyFDSActionDropdownItem.get("href"));
+
 		FDSActionDropdownItem deleteFDSActionDropdownItem =
-			fdsActionDropdownItems.get(2);
+			fdsActionDropdownItems.get(3);
 
 		Assert.assertEquals(
 			"{actions.delete.href}", deleteFDSActionDropdownItem.get("href"));
