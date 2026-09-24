@@ -146,10 +146,6 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 	});
 
 	it('surfaces the validation error the server reports', async () => {
-
-		// The action command nests the message under "error", so reading the
-		// top level would swallow it
-
 		mockFetch.mockResolvedValue({
 			json: () =>
 				Promise.resolve({
