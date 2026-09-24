@@ -7,6 +7,7 @@ package com.liferay.dynamic.data.mapping.internal.exportimport.content.processor
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.util.DLFileEntryJSONHelper;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
@@ -279,6 +280,9 @@ public class DDMFormValuesExportImportContentProcessor
 	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
+	private DLFileEntryJSONHelper _dlFileEntryJSONHelper;
+
+	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Reference
@@ -420,8 +424,6 @@ public class DDMFormValuesExportImportContentProcessor
 					continue;
 				}
 
-				String type = jsonObject.getString("type");
-
 				FileEntry importedFileEntry = fetchImportedFileEntry(
 					_portletDataContext, jsonObject);
 
@@ -429,7 +431,12 @@ public class DDMFormValuesExportImportContentProcessor
 					continue;
 				}
 
-				value.addString(locale, toJSON(importedFileEntry, type));
+				jsonObject.remove("html");
+
+				value.addString(
+					locale,
+					_dlFileEntryJSONHelper.getFileEntryJSON(
+						importedFileEntry, jsonObject));
 			}
 		}
 
@@ -485,20 +492,6 @@ public class DDMFormValuesExportImportContentProcessor
 			}
 
 			return null;
-		}
-
-		protected String toJSON(FileEntry fileEntry, String type) {
-			return JSONUtil.put(
-				"classPK", fileEntry.getFileEntryId()
-			).put(
-				"groupId", fileEntry.getGroupId()
-			).put(
-				"title", fileEntry.getTitle()
-			).put(
-				"type", type
-			).put(
-				"uuid", fileEntry.getUuid()
-			).toString();
 		}
 
 		private final PortletDataContext _portletDataContext;
