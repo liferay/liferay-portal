@@ -69,6 +69,15 @@ public class
 
 	@Override
 	public void
+		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId, String audienceEntryERC) {
+
+		layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
+			removeByG_AEERC(groupId, audienceEntryERC);
+	}
+
+	@Override
+	public void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC) {
@@ -85,6 +94,15 @@ public class
 
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
 			removeByC_AEERC(companyId, audienceEntryERC);
+	}
+
+	@Override
+	public int
+		getGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCount(
+			long groupId, String audienceEntryERC) {
+
+		return layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
+			countByG_AEERC(groupId, audienceEntryERC);
 	}
 
 	@Override
