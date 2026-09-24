@@ -9,6 +9,7 @@ import com.liferay.audiences.criteria.AudiencesCriteria;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryServiceUtil;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -299,6 +300,9 @@ public class EditAudiencesEntryDisplayContext {
 			return JSONFactoryUtil.createJSONArray();
 		}
 
+		String externalReferenceCode =
+			audiencesEntry.getExternalReferenceCode();
+
 		return JSONUtil.toJSONArray(
 			audiencesEntry.getGroupERCs(),
 			groupERC -> {
@@ -315,6 +319,16 @@ public class EditAudiencesEntryDisplayContext {
 					group.getDescriptiveName(themeDisplay.getLocale())
 				).put(
 					"externalReferenceCode", group.getExternalReferenceCode()
+				).put(
+					"hasElementVariations",
+					() -> {
+						int count =
+							LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalServiceUtil.
+								getGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCount(
+									group.getGroupId(), externalReferenceCode);
+
+						return count > 0;
+					}
 				).put(
 					"id", group.getGroupId()
 				).put(

@@ -10,7 +10,8 @@ import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
 import {ItemSelector} from '@liferay/frontend-js-item-selector-web';
 import classNames from 'classnames';
-import {sub} from 'frontend-js-web';
+import {openModal} from 'frontend-js-components-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 import React, {useId, useMemo, useState} from 'react';
 
 import {Scope, Site} from '../types';
@@ -50,6 +51,56 @@ export default function ScopeSettings({
 		() => getSitesAPIURL(companyGroupERC, scope),
 		[companyGroupERC, scope]
 	);
+
+	const removeScopeSite = (scopeSite: Site) => {
+		const onRemove = () =>
+			onScopeChange(
+				scopeSites.filter(
+					(item) =>
+						item.externalReferenceCode !==
+						scopeSite.externalReferenceCode
+				)
+			);
+
+		if (!scopeSite.hasElementVariations) {
+			onRemove();
+
+			return;
+		}
+
+		openModal({
+			bodyHTML: escapeHTML(
+				sub(
+					Liferay.Language.get(
+						'this-audience-is-used-in-one-or-more-element-variations-on-x.-removing-the-site-will-stop-those-variations-from-being-applied'
+					),
+					scopeSite.descriptiveName
+				)
+			),
+			buttons: [
+				{
+					displayType: 'secondary',
+					label: Liferay.Language.get('cancel'),
+					type: 'cancel',
+				},
+				{
+					displayType: 'warning',
+					label: Liferay.Language.get('remove-from-scope'),
+					onClick: ({processClose}) => {
+						processClose();
+
+						onRemove();
+					},
+				},
+			],
+			role: 'alertdialog',
+			status: 'warning',
+			title: sub(
+				Liferay.Language.get('remove-x-from-scope'),
+				scopeSite.descriptiveName
+			),
+		});
+	};
 
 	return (
 		<>
@@ -189,13 +240,7 @@ export default function ScopeSettings({
 												borderless
 												displayType="secondary"
 												onClick={() =>
-													onScopeChange(
-														scopeSites.filter(
-															(item) =>
-																item.externalReferenceCode !==
-																scopeSite.externalReferenceCode
-														)
-													)
+													removeScopeSite(scopeSite)
 												}
 												size="sm"
 												symbol="times-circle"

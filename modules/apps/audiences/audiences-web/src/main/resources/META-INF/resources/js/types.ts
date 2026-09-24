@@ -30,6 +30,7 @@ export type Scope = 'all' | Site[];
 export interface Site {
 	descriptiveName: string;
 	externalReferenceCode: string;
+	hasElementVariations?: boolean;
 	id: number;
 	logo: string;
 }
