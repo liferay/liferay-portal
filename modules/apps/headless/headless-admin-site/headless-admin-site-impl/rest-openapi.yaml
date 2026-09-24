@@ -5188,6 +5188,33 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
             tags: ["DisplayPageTemplate"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/copy":
+        post:
+            # @review
+            description:
+                Copies a specific display page template of a design library.
+            operationId: postDesignLibraryDisplayPageTemplateCopy
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: displayPageTemplateExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DisplayPageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DisplayPageTemplate"
+            tags: ["DisplayPageTemplate"]
     "/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions":
         get:
             operationId: getDesignLibraryDisplayPageTemplatePermissionsPage
