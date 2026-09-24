@@ -2,6 +2,7 @@ suite: Grafana data sources
 templates:
     -   templates/aws/amp-datasource.yaml
     -   templates/azure/amw-datasource.yaml
+    -   templates/azure/azure-monitor-datasource.yaml
     -   templates/gcp/gmp-datasource.yaml
 tests:
     -   asserts:
@@ -11,6 +12,9 @@ tests:
             -   hasDocuments:
                     count: 0
                 template: templates/azure/amw-datasource.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/azure/azure-monitor-datasource.yaml
             -   matchRegex:
                     path: data["amp-datasource.yaml"]
                     pattern: "type: \"prometheus\""
@@ -27,6 +31,9 @@ tests:
             -   hasDocuments:
                     count: 0
                 template: templates/azure/amw-datasource.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/azure/azure-monitor-datasource.yaml
             -   matchRegex:
                     path: data["gmp-datasource.yaml"]
                     pattern: "type: \"prometheus\""
@@ -34,6 +41,39 @@ tests:
         it: Keeps the core Prometheus data source on GCP
         set:
             cloudProvider: gcp
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   equal:
+                    path: metadata.labels["grafana_datasource"]
+                    value: "true"
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   matchRegex:
+                    path: data["azure-monitor-datasource.yaml"]
+                    pattern: "azureAuthType: workloadidentity"
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   matchRegex:
+                    path: data["azure-monitor-datasource.yaml"]
+                    pattern: "isDefault: false"
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   matchRegex:
+                    path: data["azure-monitor-datasource.yaml"]
+                    pattern: "subscriptionId: \"00000000-0000-0000-0000-000000000000\""
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   matchRegex:
+                    path: data["azure-monitor-datasource.yaml"]
+                    pattern: "type: grafana-azure-monitor-datasource"
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   matchRegex:
+                    path: data["azure-monitor-datasource.yaml"]
+                    pattern: "uid: \"azure-monitor\""
+                template: templates/azure/azure-monitor-datasource.yaml
+        it: Queries Azure Resource Graph with Entra workload identity
+        set:
+            azure.prometheusWorkspaceEndpoint: https://liferay-test-abcd.eastus.prometheus.monitor.azure.com
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
     -   asserts:
             -   hasDocuments:
                     count: 1
@@ -69,6 +109,7 @@ tests:
         it: Queries the Azure Monitor workspace with Entra workload identity
         set:
             azure.prometheusWorkspaceEndpoint: https://liferay-test-abcd.eastus.prometheus.monitor.azure.com
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
             -   failedTemplate:
@@ -76,4 +117,13 @@ tests:
                 template: templates/azure/amw-datasource.yaml
         it: Rejects Azure without a Prometheus workspace endpoint
         set:
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.subscriptionId must be set when cloudProvider=azure
+                template: templates/azure/azure-monitor-datasource.yaml
+        it: Rejects Azure without a subscription
+        set:
+            azure.prometheusWorkspaceEndpoint: https://liferay-test-abcd.eastus.prometheus.monitor.azure.com
             cloudProvider: azure

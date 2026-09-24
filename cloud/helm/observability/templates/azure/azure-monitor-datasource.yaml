@@ -1,0 +1,23 @@
+{{- if eq (include "observability.cloudProvider" .) "azure" -}}
+{{- $subscriptionId := required "azure.subscriptionId must be set when cloudProvider=azure" .Values.azure.subscriptionId -}}
+apiVersion: v1
+data:
+    azure-monitor-datasource.yaml: |
+        apiVersion: 1
+        datasources:
+            -   editable: true
+                isDefault: false
+                jsonData:
+                    azureAuthType: workloadidentity
+                    subscriptionId: {{ $subscriptionId | quote }}
+                name: Azure Monitor
+                type: grafana-azure-monitor-datasource
+                uid: {{ include "observability.azureMonitorDatasourceUid" . | quote }}
+kind: ConfigMap
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+        grafana_datasource: "true"
+    name: {{ printf "%s-azure-monitor-datasource" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+{{- end -}}
