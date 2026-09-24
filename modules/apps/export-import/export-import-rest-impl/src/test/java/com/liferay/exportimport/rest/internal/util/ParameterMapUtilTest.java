@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Map;
@@ -31,7 +32,8 @@ public class ParameterMapUtilTest {
 	@Test
 	public void testToParameterMapWhenExportGroupExternalReferenceCodeIsNull() {
 		_assertExportGroupExternalReferenceCodes(
-			new String[] {"erc1", null}, new String[] {"erc1"});
+			new String[] {_EXTERNAL_REFERENCE_CODE_1, null},
+			new String[] {_EXTERNAL_REFERENCE_CODE_1});
 	}
 
 	@Test
@@ -52,8 +54,13 @@ public class ParameterMapUtilTest {
 	@Test
 	public void testToParameterMapWhenExportGroupExternalReferenceCodesAreDuplicated() {
 		_assertExportGroupExternalReferenceCodes(
-			new String[] {"erc1", "erc2", "erc1"},
-			new String[] {"erc1", "erc2"});
+			new String[] {
+				_EXTERNAL_REFERENCE_CODE_1, _EXTERNAL_REFERENCE_CODE_2,
+				_EXTERNAL_REFERENCE_CODE_1
+			},
+			new String[] {
+				_EXTERNAL_REFERENCE_CODE_1, _EXTERNAL_REFERENCE_CODE_2
+			});
 	}
 
 	@Test
@@ -83,7 +90,12 @@ public class ParameterMapUtilTest {
 	@Test
 	public void testToParameterMapWhenExportGroupExternalReferenceCodesAreSet() {
 		_assertExportGroupExternalReferenceCodes(
-			new String[] {"erc1", "erc2"}, new String[] {"erc1", "erc2"});
+			new String[] {
+				_EXTERNAL_REFERENCE_CODE_1, _EXTERNAL_REFERENCE_CODE_2
+			},
+			new String[] {
+				_EXTERNAL_REFERENCE_CODE_1, _EXTERNAL_REFERENCE_CODE_2
+			});
 	}
 
 	@Test
@@ -105,13 +117,13 @@ public class ParameterMapUtilTest {
 		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
 
 		importProcessRequest.setSiteExternalReferenceCodes(
-			new String[] {"erc1"});
+			new String[] {_EXTERNAL_REFERENCE_CODE_1});
 
 		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
 			importProcessRequest, false);
 
 		Assert.assertArrayEquals(
-			new String[] {"erc1"},
+			new String[] {_EXTERNAL_REFERENCE_CODE_1},
 			parameterMap.get(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 	}
@@ -133,5 +145,11 @@ public class ParameterMapUtilTest {
 			parameterMap.get(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 	}
+
+	private static final String _EXTERNAL_REFERENCE_CODE_1 =
+		RandomTestUtil.randomString();
+
+	private static final String _EXTERNAL_REFERENCE_CODE_2 =
+		RandomTestUtil.randomString();
 
 }
