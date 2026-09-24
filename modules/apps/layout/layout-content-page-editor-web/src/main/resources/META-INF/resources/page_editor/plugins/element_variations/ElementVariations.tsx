@@ -255,7 +255,7 @@ function ElementVariations({
 								closeAriaLabel: Liferay.Language.get('close'),
 							}}
 						>
-							<span className="font-weight-bold">
+							<span className="d-block font-weight-bold py-1">
 								{Liferay.Language.get('element-variations')}
 							</span>
 						</SidePanel.Header>
