@@ -6,6 +6,7 @@
 package com.liferay.wiki.engine.text.internal;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.wiki.engine.BaseWikiEngine;
 import com.liferay.wiki.engine.WikiEngine;
 import com.liferay.wiki.model.WikiPage;
@@ -35,7 +36,7 @@ public class TextEngine extends BaseWikiEngine {
 			return StringPool.BLANK;
 		}
 
-		return "<pre>" + page.getContent() + "</pre>";
+		return "<pre>" + HtmlUtil.escape(page.getContent()) + "</pre>";
 	}
 
 	@Override
