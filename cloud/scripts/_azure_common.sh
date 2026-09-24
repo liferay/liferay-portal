@@ -117,6 +117,28 @@ function ensure_tfstate_access {
 		--output none \
 		--role "Storage Blob Data Contributor" \
 		--scope "${storage_account_id}/blobServices/default/containers/${container_name}"
+
+	local timeout_minutes=5
+
+	echo "Waiting up to ${timeout_minutes} minutes for the role assignment to take effect."
+
+	local timeout
+
+	timeout=$(($(date +%s) + timeout_minutes * 60))
+
+	while [ $(date +%s) -lt ${timeout} ]
+	do
+		if _has_tfstate_access "${container_name}" "${storage_account_name}"
+		then
+			return
+		fi
+
+		sleep 10
+	done
+
+	echo "Unable to access the storage container ${container_name} after ${timeout_minutes} minutes." >&2
+
+	return 1
 }
 
 function generate_local_backend_overrides {
