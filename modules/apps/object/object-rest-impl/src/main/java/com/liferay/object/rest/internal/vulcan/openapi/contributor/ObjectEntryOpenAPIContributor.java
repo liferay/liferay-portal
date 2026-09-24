@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.openapi.OpenAPIContext;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
@@ -419,12 +418,9 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 				put(
 					new Operation() {
 						{
-							if (Validator.isNotNull(
-									objectAction.getDescription())) {
-
-								description(objectAction.getDescription());
-							}
-
+							description(
+								ObjectDefinitionUtil.getDescription(
+									objectAction, _objectDefinition));
 							operationId(
 								StringBundler.concat(
 									"put", _objectDefinition.getShortName(),
