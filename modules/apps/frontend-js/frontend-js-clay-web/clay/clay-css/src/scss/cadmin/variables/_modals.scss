@@ -148,10 +148,24 @@ $cadmin-modal-body: map-deep-merge(
 		padding: $cadmin-modal-inner-padding,
 		position: relative,
 
-		'.aspect-ratio': (
+		'&.inline-scroller': (
+			max-height: none,
+			-webkit-overflow-scrolling: touch,
+			overflow: auto,
+			padding: $cadmin-modal-inner-padding,
+		),
+
+		'.modal-banner-img': (
 			margin-left: calc(#{$cadmin-modal-inner-padding} * -1),
 			margin-right: calc(#{$cadmin-modal-inner-padding} * -1),
-			top: calc(#{$cadmin-modal-inner-padding} * -1),
+		),
+
+		'.modal-banner-img-start': (
+			margin-top: calc(#{$cadmin-modal-inner-padding} * -1),
+		),
+
+		'.modal-banner-img-end': (
+			margin-bottom: calc(#{$cadmin-modal-inner-padding} * -1),
 		),
 
 		'> .close': (
@@ -159,13 +173,6 @@ $cadmin-modal-body: map-deep-merge(
 			right: 1rem,
 			top: 1rem,
 			z-index: 1,
-		),
-
-		'&.inline-scroller': (
-			max-height: none,
-			-webkit-overflow-scrolling: touch,
-			overflow: auto,
-			padding: $cadmin-modal-inner-padding,
 		),
 	),
 	$cadmin-modal-body
