@@ -14,8 +14,10 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.model.CProduct;
@@ -37,6 +39,8 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfiguration;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductProductGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
@@ -99,6 +103,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -223,6 +228,14 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	@Override
 	@Test
 	public void testGetProduct() throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGetProductByExternalReferenceCode() throws Exception {
+		super.testGetProductByExternalReferenceCode();
+
+		_testGetProductByExternalReferenceCodeWithNestedProductOptionValues();
 	}
 
 	@Ignore
@@ -793,6 +806,73 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			product.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
+	}
+
+	private void _testGetProductByExternalReferenceCodeWithNestedProductOptionValues()
+		throws Exception {
+
+		Product randomProduct = _randomProductWithSku();
+
+		_cpOption = CPTestUtil.addCPOption(testGroup.getGroupId(), true);
+		String productOptionValueKey = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		randomProduct.setProductOptions(
+			new ProductOption[] {
+				new ProductOption() {
+					{
+						fieldType = CPConstants.PRODUCT_OPTION_SELECT_KEY;
+						key = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						name = LanguageUtils.getLanguageIdMap(
+							RandomTestUtil.randomLocaleStringMap());
+						optionExternalReferenceCode =
+							_cpOption.getExternalReferenceCode();
+						optionId = _cpOption.getCPOptionId();
+						productOptionValues = new ProductOptionValue[] {
+							new ProductOptionValue() {
+								{
+									key = productOptionValueKey;
+									name = LanguageUtils.getLanguageIdMap(
+										RandomTestUtil.randomLocaleStringMap());
+									priority = RandomTestUtil.randomDouble();
+								}
+							}
+						};
+					}
+				}
+			});
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ProductResource nestedFieldsProductResource = ProductResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "productOptions,productOptions.productOptionValues"
+		).build();
+
+		Product postProduct = productResource.postProduct(randomProduct);
+
+		Product product =
+			nestedFieldsProductResource.getProductByExternalReferenceCode(
+				postProduct.getExternalReferenceCode());
+
+		ProductOption[] productOptions = product.getProductOptions();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptions), 1, productOptions.length);
+
+		ProductOptionValue[] productOptionValues =
+			productOptions[0].getProductOptionValues();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptionValues), 1,
+			productOptionValues.length);
+		Assert.assertEquals(
+			productOptionValueKey, productOptionValues[0].getKey());
 	}
 
 	private void _testGetProductsPage() throws Exception {
@@ -1699,6 +1779,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@DeleteAfterTestRun
+	private CPOption _cpOption;
 
 	@DeleteAfterTestRun
 	private CPOptionCategory _cpOptionCategory;
