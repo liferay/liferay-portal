@@ -73,7 +73,7 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 				}
 				catch (Throwable throwable) {
 					_log.error(
-						"Failed upgrade process for module ".concat(
+						ReleaseManagerUtil.getFailedModuleMessage(
 							bundleSymbolicName),
 						throwable);
 				}
@@ -260,7 +260,7 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 				}
 				catch (Throwable throwable) {
 					_log.error(
-						"Failed upgrade process for module ".concat(
+						ReleaseManagerUtil.getFailedModuleMessage(
 							upgradableBundleSymbolicName),
 						throwable);
 

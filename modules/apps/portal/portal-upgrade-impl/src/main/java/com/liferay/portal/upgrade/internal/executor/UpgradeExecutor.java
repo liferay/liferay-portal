@@ -370,7 +370,7 @@ public class UpgradeExecutor {
 				_failedBundleSymbolicNames.add(bundleSymbolicName);
 
 				_log.error(
-					"Failed upgrade process for module ".concat(
+					ReleaseManagerUtil.getFailedModuleMessage(
 						bundleSymbolicName),
 					throwable);
 			}
