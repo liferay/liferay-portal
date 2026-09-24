@@ -8,10 +8,14 @@ package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Option;
+import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -43,12 +47,21 @@ public class OptionDTOConverter implements DTOConverter<CPOption, Option> {
 		return new Option() {
 			{
 				setActions(dtoConverterContext::getActions);
+				setCreator(
+					() -> NestedFieldsSupplier.supply(
+						"creator",
+						fieldName -> CreatorUtil.toCreator(
+							_portal,
+							_userLocalService.fetchUser(
+								cpOption.getUserId()))));
 				setCustomFields(
 					() -> CustomFieldsUtil.toCustomFields(
 						dtoConverterContext.isAcceptAllLanguages(),
 						CPOption.class.getName(), cpOption.getCPOptionId(),
 						cpOption.getCompanyId(),
 						dtoConverterContext.getLocale()));
+				setDateCreated(cpOption::getCreateDate);
+				setDateModified(cpOption::getModifiedDate);
 				setDescription(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpOption.getDescriptionMap()));
@@ -70,5 +83,11 @@ public class OptionDTOConverter implements DTOConverter<CPOption, Option> {
 
 	@Reference
 	private CPOptionService _cpOptionService;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
