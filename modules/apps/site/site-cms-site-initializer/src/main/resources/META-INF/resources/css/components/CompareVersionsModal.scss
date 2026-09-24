@@ -15,6 +15,8 @@
 	&-additions,
 	&-removals {
 		.cms-compare-versions-diff {
+			background-color: map-get($input-readonly, background-color);
+			border-color: map-get($input-readonly, border-color);
 			height: auto;
 
 			img {
