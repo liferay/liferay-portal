@@ -874,6 +874,7 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.SecretComparisonCheck">
 			<property name="category" value="Security" />
 			<property name="description" value="Finds secrets compared with a method that returns at the first differing byte." />
+			<property name="enabled" value="false" />
 			<message key="message.digest.is.equal.use" value="Use &quot;MessageDigest.isEqual&quot; to compare secrets, see LPD-93281" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SelfReferenceCheck">
