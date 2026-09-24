@@ -58,16 +58,6 @@ public class FinderPath {
 		Function<Object, Object[]> argsExtractorFunction) {
 
 		_cacheName = cacheName;
-
-		int index = methodName.indexOf("By");
-
-		if (index == -1) {
-			_finderName = methodName;
-		}
-		else {
-			_finderName = methodName.substring(index + 2);
-		}
-
 		_columnNames = columnNames;
 		_caseInsensitiveBitmask = caseInsensitiveBitmask;
 		_convertNullBitmask = convertNullBitmask;
@@ -81,6 +71,15 @@ public class FinderPath {
 		}
 
 		_initCacheKeyPrefix(methodName, params);
+
+		int index = methodName.indexOf("By");
+
+		if (index == -1) {
+			_finderName = methodName;
+		}
+		else {
+			_finderName = methodName.substring(index + 2);
+		}
 
 		if (_cacheName.contains(".List") || methodName.equals("dslQuery")) {
 			_singleResult = false;
