@@ -172,25 +172,25 @@ import {config as osbFaroWebSettingsConfig} from './tests/osb-faro-web/settings/
 import {config as passwordPoliciesAdminWebFirstLoginConfig} from './tests/password-policies-admin-web/first-login/config';
 import {config as passwordPoliciesAdminWebConfig} from './tests/password-policies-admin-web/main/config';
 import {config as passwordPoliciesAdminWebSetupAdminConfig} from './tests/password-policies-admin-web/setup-admin/config';
-import {config as portalDbInfrastructureUpgradeAFSStore7413Config} from './tests/portal-db-infrastructure/upgrade-afs-store-7413/config';
-import {config as portalDbInfrastructureUpgradeDbStore621021Config} from './tests/portal-db-infrastructure/upgrade-db-store-621021/config';
-import {config as portalDbInfrastructureUpgradeDbStore7310Config} from './tests/portal-db-infrastructure/upgrade-db-store-7310/config';
-import {config as portalDbInfrastructureUpgradeDbStore7413Config} from './tests/portal-db-infrastructure/upgrade-db-store-7413/config';
-import {config as portalDbInfrastructureUpgradePortal6130Config} from './tests/portal-db-infrastructure/upgrade-portal-6130/config';
-import {config as portalDbInfrastructureUpgradePortal621021Config} from './tests/portal-db-infrastructure/upgrade-portal-621021/config';
-import {config as portalDbInfrastructureUpgradePortal625Config} from './tests/portal-db-infrastructure/upgrade-portal-625/config';
-import {config as portalDbInfrastructureUpgradePortal70106Config} from './tests/portal-db-infrastructure/upgrade-portal-70106/config';
-import {config as portalDbInfrastructureUpgradePortal7110Config} from './tests/portal-db-infrastructure/upgrade-portal-7110/config';
-import {config as portalDbInfrastructureUpgradePortal71103Config} from './tests/portal-db-infrastructure/upgrade-portal-71103/config';
-import {config as portalDbInfrastructureUpgradePortal7210Config} from './tests/portal-db-infrastructure/upgrade-portal-7210/config';
-import {config as portalDbInfrastructureUpgradePortal7310Config} from './tests/portal-db-infrastructure/upgrade-portal-7310/config';
-import {config as portalDbInfrastructureUpgradePortal7413Config} from './tests/portal-db-infrastructure/upgrade-portal-7413/config';
-import {config as portalDbInfrastructureUpgradePortalPartition7413u33Config} from './tests/portal-db-infrastructure/upgrade-portal-partition-7413u33/config';
-import {config as portalDbInfrastructureUpgradePortletsPermissions621015Config} from './tests/portal-db-infrastructure/upgrade-portlets-permissions-621015/config';
-import {config as portalDbInfrastructureUpgradePortletsPermissions621021Config} from './tests/portal-db-infrastructure/upgrade-portlets-permissions-621021/config';
-import {config as portalDbInfrastructureUpgradeVirtualInstances621021Config} from './tests/portal-db-infrastructure/upgrade-virtual-instances-621021/config';
-import {config as portalDbInfrastructureUpgradeVirtualInstances7310Config} from './tests/portal-db-infrastructure/upgrade-virtual-instances-7310/config';
-import {config as portalDbInfrastructureUpgradeVirtualInstances7413u33Config} from './tests/portal-db-infrastructure/upgrade-virtual-instances-7413u33/config';
+import {config as portalDBInfrastructureUpgradeAFSStore7413Config} from './tests/portal-db-infrastructure/upgrade-afs-store-7413/config';
+import {config as portalDBInfrastructureUpgradeDBStore621021Config} from './tests/portal-db-infrastructure/upgrade-db-store-621021/config';
+import {config as portalDBInfrastructureUpgradeDBStore7310Config} from './tests/portal-db-infrastructure/upgrade-db-store-7310/config';
+import {config as portalDBInfrastructureUpgradeDBStore7413Config} from './tests/portal-db-infrastructure/upgrade-db-store-7413/config';
+import {config as portalDBInfrastructureUpgradePortal6130Config} from './tests/portal-db-infrastructure/upgrade-portal-6130/config';
+import {config as portalDBInfrastructureUpgradePortal621021Config} from './tests/portal-db-infrastructure/upgrade-portal-621021/config';
+import {config as portalDBInfrastructureUpgradePortal625Config} from './tests/portal-db-infrastructure/upgrade-portal-625/config';
+import {config as portalDBInfrastructureUpgradePortal70106Config} from './tests/portal-db-infrastructure/upgrade-portal-70106/config';
+import {config as portalDBInfrastructureUpgradePortal7110Config} from './tests/portal-db-infrastructure/upgrade-portal-7110/config';
+import {config as portalDBInfrastructureUpgradePortal71103Config} from './tests/portal-db-infrastructure/upgrade-portal-71103/config';
+import {config as portalDBInfrastructureUpgradePortal7210Config} from './tests/portal-db-infrastructure/upgrade-portal-7210/config';
+import {config as portalDBInfrastructureUpgradePortal7310Config} from './tests/portal-db-infrastructure/upgrade-portal-7310/config';
+import {config as portalDBInfrastructureUpgradePortal7413Config} from './tests/portal-db-infrastructure/upgrade-portal-7413/config';
+import {config as portalDBInfrastructureUpgradePortalPartition7413u33Config} from './tests/portal-db-infrastructure/upgrade-portal-partition-7413u33/config';
+import {config as portalDBInfrastructureUpgradePortletsPermissions621015Config} from './tests/portal-db-infrastructure/upgrade-portlets-permissions-621015/config';
+import {config as portalDBInfrastructureUpgradePortletsPermissions621021Config} from './tests/portal-db-infrastructure/upgrade-portlets-permissions-621021/config';
+import {config as portalDBInfrastructureUpgradeVirtualInstances621021Config} from './tests/portal-db-infrastructure/upgrade-virtual-instances-621021/config';
+import {config as portalDBInfrastructureUpgradeVirtualInstances7310Config} from './tests/portal-db-infrastructure/upgrade-virtual-instances-7310/config';
+import {config as portalDBInfrastructureUpgradeVirtualInstances7413u33Config} from './tests/portal-db-infrastructure/upgrade-virtual-instances-7413u33/config';
 import {config as portalDefaultPermissionsWebConfig} from './tests/portal-default-permissions-web/main/config';
 import {config as portalImplMainConfig} from './tests/portal-impl/main/config';
 import {config as portalImplPortletConfig} from './tests/portal-impl/portlet/config';
@@ -452,25 +452,25 @@ export default defineConfig({
 		passwordPoliciesAdminWebConfig,
 		passwordPoliciesAdminWebFirstLoginConfig,
 		passwordPoliciesAdminWebSetupAdminConfig,
-		portalDbInfrastructureUpgradeAFSStore7413Config,
-		portalDbInfrastructureUpgradeDbStore621021Config,
-		portalDbInfrastructureUpgradeDbStore7310Config,
-		portalDbInfrastructureUpgradeDbStore7413Config,
-		portalDbInfrastructureUpgradePortal6130Config,
-		portalDbInfrastructureUpgradePortal621021Config,
-		portalDbInfrastructureUpgradePortal625Config,
-		portalDbInfrastructureUpgradePortal70106Config,
-		portalDbInfrastructureUpgradePortal71103Config,
-		portalDbInfrastructureUpgradePortal7110Config,
-		portalDbInfrastructureUpgradePortal7210Config,
-		portalDbInfrastructureUpgradePortal7310Config,
-		portalDbInfrastructureUpgradePortal7413Config,
-		portalDbInfrastructureUpgradePortalPartition7413u33Config,
-		portalDbInfrastructureUpgradePortletsPermissions621015Config,
-		portalDbInfrastructureUpgradePortletsPermissions621021Config,
-		portalDbInfrastructureUpgradeVirtualInstances621021Config,
-		portalDbInfrastructureUpgradeVirtualInstances7310Config,
-		portalDbInfrastructureUpgradeVirtualInstances7413u33Config,
+		portalDBInfrastructureUpgradeAFSStore7413Config,
+		portalDBInfrastructureUpgradeDBStore621021Config,
+		portalDBInfrastructureUpgradeDBStore7310Config,
+		portalDBInfrastructureUpgradeDBStore7413Config,
+		portalDBInfrastructureUpgradePortal6130Config,
+		portalDBInfrastructureUpgradePortal621021Config,
+		portalDBInfrastructureUpgradePortal625Config,
+		portalDBInfrastructureUpgradePortal70106Config,
+		portalDBInfrastructureUpgradePortal71103Config,
+		portalDBInfrastructureUpgradePortal7110Config,
+		portalDBInfrastructureUpgradePortal7210Config,
+		portalDBInfrastructureUpgradePortal7310Config,
+		portalDBInfrastructureUpgradePortal7413Config,
+		portalDBInfrastructureUpgradePortalPartition7413u33Config,
+		portalDBInfrastructureUpgradePortletsPermissions621015Config,
+		portalDBInfrastructureUpgradePortletsPermissions621021Config,
+		portalDBInfrastructureUpgradeVirtualInstances621021Config,
+		portalDBInfrastructureUpgradeVirtualInstances7310Config,
+		portalDBInfrastructureUpgradeVirtualInstances7413u33Config,
 		portalDefaultPermissionsWebConfig,
 		portalImplMainConfig,
 		portalImplPortletConfig,
