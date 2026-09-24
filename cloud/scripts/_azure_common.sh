@@ -86,6 +86,39 @@ function connect_to_cluster {
 	pop_directory
 }
 
+function ensure_tfstate_access {
+	local container_name="${1}"
+	local resource_group_name="${2}"
+	local storage_account_name="${3}"
+
+	if _has_tfstate_access "${container_name}" "${storage_account_name}"
+	then
+		return
+	fi
+
+	local storage_account_id
+
+	storage_account_id=$( \
+		az storage account show \
+			--name "${storage_account_name}" \
+			--output tsv \
+			--query id \
+			--resource-group "${resource_group_name}")
+
+	local user_id
+
+	user_id=$(az ad signed-in-user show --output tsv --query id)
+
+	echo "Assigning the Storage Blob Data Contributor role on the storage container ${container_name} to the current Azure user."
+
+	az role assignment create \
+		--assignee-object-id "${user_id}" \
+		--assignee-principal-type User \
+		--output none \
+		--role "Storage Blob Data Contributor" \
+		--scope "${storage_account_id}/blobServices/default/containers/${container_name}"
+}
+
 function generate_local_backend_overrides {
 	local directory
 
@@ -218,4 +251,17 @@ function validate_config_json {
 			exit 1
 		fi
 	done
+}
+
+function _has_tfstate_access {
+	local container_name="${1}"
+	local storage_account_name="${2}"
+
+	az storage blob list \
+		--account-name "${storage_account_name}" \
+		--auth-mode login \
+		--container-name "${container_name}" \
+		--num-results 1 \
+		--output none \
+		&> /dev/null
 }
