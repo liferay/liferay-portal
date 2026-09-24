@@ -202,7 +202,7 @@ public class ObjectDefinitionsActionsDisplayContext
 				return conditionExpression;
 			}
 		).put(
-			"description", objectAction.getDescription()
+			"description", objectAction.getDescriptionMap()
 		).put(
 			"errorMessage", objectAction.getErrorMessageMap()
 		).put(
