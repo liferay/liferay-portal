@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.asset.AssetURLViewProvider;
@@ -62,8 +61,6 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 				PortletURLBuilder.createLiferayPortletURL(
 					liferayPortletResponse, _getSearchResultsPortletId(layout),
 					PortletRequest.RENDER_PHASE
-				).setRedirect(
-					_portal.getCurrentURL(liferayPortletRequest)
 				).setPortletMode(
 					PortletMode.VIEW
 				).setWindowState(
@@ -96,9 +93,14 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 				viewURL = viewContentURL.toString();
 			}
 
+			String currentURL = HttpComponentsUtil.removeParameter(
+				HttpComponentsUtil.removeParameter(
+					themeDisplay.getURLCurrent(), "p_l_back_url"),
+				"p_l_back_url_title");
+
 			return HttpComponentsUtil.addParameters(
-				viewURL, "p_l_back_url", themeDisplay.getURLCurrent(),
-				"p_l_back_url_title", layout.getName(themeDisplay.getLocale()));
+				viewURL, "p_l_back_url", currentURL, "p_l_back_url_title",
+				layout.getName(themeDisplay.getLocale()));
 		}
 		catch (Exception exception) {
 			_log.error(
@@ -146,9 +148,6 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
