@@ -114,6 +114,14 @@ describe('ElementVariationForm', () => {
 		jest.clearAllMocks();
 	});
 
+	it('does not show a close button', () => {
+		renderForm();
+
+		expect(
+			screen.queryByRole('button', {name: 'close'})
+		).not.toBeInTheDocument();
+	});
+
 	it('hides the audience selector, the toggle, and the html and js fields until a page element is selected', () => {
 		renderForm({targetElement: ''});
 
