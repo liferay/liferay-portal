@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.upgrade;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -60,7 +61,10 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 
 			logCapture.resetPriority(LoggerTestUtil.INFO);
 
-			_upgradeTable(_createConnection(false, "datetime2", 6));
+			_upgradeTable(
+				_createConnection(
+					false, RandomTestUtil.randomString(),
+					RandomTestUtil.randomInt()));
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -90,7 +94,42 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 			boolean columnPresent, String typeName, int decimalDigits)
 		throws Exception {
 
+		Connection connection = Mockito.mock(Connection.class);
+
+		DatabaseMetaData databaseMetaData = Mockito.mock(
+			DatabaseMetaData.class);
+
+		Mockito.when(
+			connection.getMetaData()
+		).thenReturn(
+			databaseMetaData
+		);
+
+		ResultSet tableResultSet = Mockito.mock(ResultSet.class);
+
+		Mockito.when(
+			databaseMetaData.getTables(
+				Mockito.any(), Mockito.any(), Mockito.anyString(),
+				Mockito.any())
+		).thenReturn(
+			tableResultSet
+		);
+
+		Mockito.when(
+			tableResultSet.next()
+		).thenReturn(
+			true
+		);
+
 		ResultSet columnResultSet = Mockito.mock(ResultSet.class);
+
+		Mockito.when(
+			databaseMetaData.getColumns(
+				Mockito.isNull(), Mockito.isNull(), Mockito.anyString(),
+				Mockito.anyString())
+		).thenReturn(
+			columnResultSet
+		);
 
 		Mockito.when(
 			columnResultSet.next()
@@ -108,41 +147,6 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 			columnResultSet.getInt("DECIMAL_DIGITS")
 		).thenReturn(
 			decimalDigits
-		);
-
-		ResultSet tableResultSet = Mockito.mock(ResultSet.class);
-
-		Mockito.when(
-			tableResultSet.next()
-		).thenReturn(
-			true
-		);
-
-		DatabaseMetaData databaseMetaData = Mockito.mock(
-			DatabaseMetaData.class);
-
-		Mockito.when(
-			databaseMetaData.getColumns(
-				Mockito.isNull(), Mockito.isNull(), Mockito.anyString(),
-				Mockito.anyString())
-		).thenReturn(
-			columnResultSet
-		);
-
-		Mockito.when(
-			databaseMetaData.getTables(
-				Mockito.any(), Mockito.any(), Mockito.anyString(),
-				Mockito.any())
-		).thenReturn(
-			tableResultSet
-		);
-
-		Connection connection = Mockito.mock(Connection.class);
-
-		Mockito.when(
-			connection.getMetaData()
-		).thenReturn(
-			databaseMetaData
 		);
 
 		return connection;
