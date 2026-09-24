@@ -72,17 +72,8 @@ public class WorkspacesCompileBatchBuildTestrayCaseResultTest
 
 	@Test
 	public void testGetErrors() {
-		String errorStackTrace = JenkinsResultsParserUtil.combine(
-			"Execute failed: java.io.IOException: Cannot run program\n",
-			"\tat org.apache.tools.ant.taskdefs.Execute.execute(",
-			"Execute.java:1)");
 		String jobName = RandomTestUtil.randomString();
-
 		String workspaceName = RandomTestUtil.randomString();
-
-		String errorDetails =
-			"workspaces/" + workspaceName +
-				" build failed. Please check the logs for details.";
 
 		_testGetErrors(
 			_getDownstreamBuildReport(jobName, "ABORTED"),
@@ -101,6 +92,16 @@ public class WorkspacesCompileBatchBuildTestrayCaseResultTest
 		_testGetErrors(
 			_getDownstreamBuildReport(null, "UNSTABLE"),
 			"Unable to run test on CI", workspaceName);
+
+		String errorDetails =
+			"workspaces/" + workspaceName +
+				" build failed. Please check the logs for details.";
+
+		String errorStackTrace = JenkinsResultsParserUtil.combine(
+			"Execute failed: java.io.IOException: Cannot run program\n",
+			"\tat org.apache.tools.ant.taskdefs.Execute.execute(",
+			"Execute.java:1)");
+
 		_testGetErrors(
 			_getDownstreamBuildReport(
 				null, "UNSTABLE",
@@ -108,6 +109,7 @@ public class WorkspacesCompileBatchBuildTestrayCaseResultTest
 					errorDetails, errorStackTrace, "FAILED", workspaceName)),
 			"Execute failed: java.io.IOException: Cannot run program",
 			workspaceName);
+
 		_testGetErrors(
 			_getDownstreamBuildReport(
 				null, "UNSTABLE",
