@@ -119,4 +119,4 @@ public class RedirectEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:692843586
+// LIFERAY-SERVICE-BUILDER-HASH:3311246

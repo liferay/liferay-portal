@@ -118,4 +118,4 @@ public class LazyBlobEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1098500899
+// LIFERAY-SERVICE-BUILDER-HASH:306207059

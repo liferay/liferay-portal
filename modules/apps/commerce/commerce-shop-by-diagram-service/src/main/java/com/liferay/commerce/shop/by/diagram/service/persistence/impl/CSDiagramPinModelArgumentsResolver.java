@@ -138,4 +138,4 @@ public class CSDiagramPinModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-347735378
+// LIFERAY-SERVICE-BUILDER-HASH:2105101730

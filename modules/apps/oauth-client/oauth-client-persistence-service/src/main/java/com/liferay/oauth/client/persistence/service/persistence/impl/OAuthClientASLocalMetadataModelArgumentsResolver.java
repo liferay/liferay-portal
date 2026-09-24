@@ -127,4 +127,4 @@ public class OAuthClientASLocalMetadataModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1765367371
+// LIFERAY-SERVICE-BUILDER-HASH:-1108189787

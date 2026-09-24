@@ -118,4 +118,4 @@ public class RatingsEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:62736915
+// LIFERAY-SERVICE-BUILDER-HASH:1944840925

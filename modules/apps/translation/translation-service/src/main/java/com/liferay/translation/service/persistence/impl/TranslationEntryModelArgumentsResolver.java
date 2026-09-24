@@ -120,4 +120,4 @@ public class TranslationEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1362307063
+// LIFERAY-SERVICE-BUILDER-HASH:718150567

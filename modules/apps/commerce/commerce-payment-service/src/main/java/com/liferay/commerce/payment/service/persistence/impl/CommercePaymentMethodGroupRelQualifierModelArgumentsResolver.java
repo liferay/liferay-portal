@@ -152,4 +152,4 @@ public class CommercePaymentMethodGroupRelQualifierModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-249455978
+// LIFERAY-SERVICE-BUILDER-HASH:856795834

@@ -138,4 +138,4 @@ public class SegmentsEntryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-296648957
+// LIFERAY-SERVICE-BUILDER-HASH:-606186515

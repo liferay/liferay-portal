@@ -147,4 +147,4 @@ public class CommerceMLForecastAlertEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-775828714
+// LIFERAY-SERVICE-BUILDER-HASH:1719110202

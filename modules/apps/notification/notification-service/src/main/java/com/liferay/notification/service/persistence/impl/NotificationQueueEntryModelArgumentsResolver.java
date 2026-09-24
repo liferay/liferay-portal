@@ -124,4 +124,4 @@ public class NotificationQueueEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1628706444
+// LIFERAY-SERVICE-BUILDER-HASH:-1049711228

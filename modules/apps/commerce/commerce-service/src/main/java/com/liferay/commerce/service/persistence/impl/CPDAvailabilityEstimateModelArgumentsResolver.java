@@ -125,4 +125,4 @@ public class CPDAvailabilityEstimateModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:86330753
+// LIFERAY-SERVICE-BUILDER-HASH:-1618717393

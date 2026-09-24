@@ -124,4 +124,4 @@ public class CTermEntryLocalizationModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-640237730
+// LIFERAY-SERVICE-BUILDER-HASH:1627463410

@@ -139,4 +139,4 @@ public class ReadingTimeEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1326379427
+// LIFERAY-SERVICE-BUILDER-HASH:1831907283

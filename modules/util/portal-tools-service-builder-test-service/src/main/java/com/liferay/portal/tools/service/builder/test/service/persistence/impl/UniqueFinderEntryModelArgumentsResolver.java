@@ -138,4 +138,4 @@ public class UniqueFinderEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-350736188
+// LIFERAY-SERVICE-BUILDER-HASH:2012076620

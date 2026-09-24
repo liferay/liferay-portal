@@ -128,4 +128,4 @@ public class SiteSitemapRegenerationEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1256570693
+// LIFERAY-SERVICE-BUILDER-HASH:298982379

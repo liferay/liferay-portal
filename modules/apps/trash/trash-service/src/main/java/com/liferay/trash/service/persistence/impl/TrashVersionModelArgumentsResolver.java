@@ -119,4 +119,4 @@ public class TrashVersionModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:344310758
+// LIFERAY-SERVICE-BUILDER-HASH:2083695466

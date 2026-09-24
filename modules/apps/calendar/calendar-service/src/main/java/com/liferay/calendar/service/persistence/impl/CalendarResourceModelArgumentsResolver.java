@@ -139,4 +139,4 @@ public class CalendarResourceModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1088152726
+// LIFERAY-SERVICE-BUILDER-HASH:627000422

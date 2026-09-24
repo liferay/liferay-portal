@@ -136,4 +136,4 @@ public class KaleoNotificationModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1253504752
+// LIFERAY-SERVICE-BUILDER-HASH:203938208

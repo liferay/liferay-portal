@@ -119,4 +119,4 @@ public class LayoutPrototypeModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:55070919
+// LIFERAY-SERVICE-BUILDER-HASH:1707195049

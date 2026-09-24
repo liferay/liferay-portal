@@ -117,4 +117,4 @@ public class CTScoreModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-617414783
+// LIFERAY-SERVICE-BUILDER-HASH:-1959992529

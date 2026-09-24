@@ -120,4 +120,4 @@ public class SamlPeerBindingModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:122282709
+// LIFERAY-SERVICE-BUILDER-HASH:-504206757

@@ -118,4 +118,4 @@ public class AccountRoleModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:381379107
+// LIFERAY-SERVICE-BUILDER-HASH:-1062153011

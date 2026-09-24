@@ -119,4 +119,4 @@ public class UserGroupGroupRoleModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1682620819
+// LIFERAY-SERVICE-BUILDER-HASH:-621641277

@@ -50,11 +50,11 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 
 		UserModelImpl userModelImpl = (UserModelImpl)baseModel;
 
-		BiPredicate<UserModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<UserModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(userModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(userModelImpl, original)) {
 
 			return null;
 		}
@@ -144,28 +144,35 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map<String, BiPredicate<UserModelImpl, Boolean>>
-		_wherePredicates = new HashMap<>();
+		_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = UserModelImpl.getColumnBitmask("type_");
-		BiPredicate<UserModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<UserModelImpl, Boolean> whereBiPredicate =
 			(userModelImpl, original) ->
 				GetterUtil.getInteger(
 					_getColumnValue(userModelImpl, "type_", original)) == 1;
 
 		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
-		_wherePredicates.put("CompanyId", wherePredicate);
+
+		_whereBiPredicates.put("CompanyId", whereBiPredicate);
 		_whereColumnBitmasks.put("GtU_C", whereColumnBitmask);
-		_wherePredicates.put("GtU_C", wherePredicate);
+
+		_whereBiPredicates.put("GtU_C", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CD", whereColumnBitmask);
-		_wherePredicates.put("C_CD", wherePredicate);
+
+		_whereBiPredicates.put("C_CD", whereBiPredicate);
 		_whereColumnBitmasks.put("C_MD", whereColumnBitmask);
-		_wherePredicates.put("C_MD", wherePredicate);
+
+		_whereBiPredicates.put("C_MD", whereBiPredicate);
 		_whereColumnBitmasks.put("C_S", whereColumnBitmask);
-		_wherePredicates.put("C_S", wherePredicate);
+
+		_whereBiPredicates.put("C_S", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CD_MD", whereColumnBitmask);
-		_wherePredicates.put("C_CD_MD", wherePredicate);
+
+		_whereBiPredicates.put("C_CD_MD", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1876571596
+// LIFERAY-SERVICE-BUILDER-HASH:1554654412

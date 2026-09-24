@@ -119,4 +119,4 @@ public class PortalPreferencesModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1363205999
+// LIFERAY-SERVICE-BUILDER-HASH:-690290431

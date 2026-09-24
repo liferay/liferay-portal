@@ -118,4 +118,4 @@ public class SXPElementModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:352869317
+// LIFERAY-SERVICE-BUILDER-HASH:-1945956501

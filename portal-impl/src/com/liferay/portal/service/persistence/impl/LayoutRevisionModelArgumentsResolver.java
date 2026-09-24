@@ -53,11 +53,11 @@ public class LayoutRevisionModelArgumentsResolver implements ArgumentsResolver {
 		LayoutRevisionModelImpl layoutRevisionModelImpl =
 			(LayoutRevisionModelImpl)baseModel;
 
-		BiPredicate<LayoutRevisionModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<LayoutRevisionModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(layoutRevisionModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(layoutRevisionModelImpl, original)) {
 
 			return null;
 		}
@@ -171,20 +171,22 @@ public class LayoutRevisionModelArgumentsResolver implements ArgumentsResolver {
 		new HashMap<>();
 	private static final Map
 		<String, BiPredicate<LayoutRevisionModelImpl, Boolean>>
-			_wherePredicates = new HashMap<>();
+			_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = LayoutRevisionModelImpl.getColumnBitmask(
 			"status");
-		BiPredicate<LayoutRevisionModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<LayoutRevisionModelImpl, Boolean> whereBiPredicate =
 			(layoutRevisionModelImpl, original) ->
 				GetterUtil.getInteger(
 					_getColumnValue(
 						layoutRevisionModelImpl, "status", original)) != 5;
 
 		_whereColumnBitmasks.put("L_L_P", whereColumnBitmask);
-		_wherePredicates.put("L_L_P", wherePredicate);
+
+		_whereBiPredicates.put("L_L_P", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:773021728
+// LIFERAY-SERVICE-BUILDER-HASH:1124067476

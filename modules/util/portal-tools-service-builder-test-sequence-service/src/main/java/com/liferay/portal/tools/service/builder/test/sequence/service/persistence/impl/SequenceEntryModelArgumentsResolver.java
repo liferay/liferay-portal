@@ -119,4 +119,4 @@ public class SequenceEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-597963036
+// LIFERAY-SERVICE-BUILDER-HASH:-1356988372

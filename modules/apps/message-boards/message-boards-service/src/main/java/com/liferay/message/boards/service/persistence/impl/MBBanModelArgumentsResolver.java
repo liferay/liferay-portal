@@ -117,4 +117,4 @@ public class MBBanModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-644167854
+// LIFERAY-SERVICE-BUILDER-HASH:1505629566

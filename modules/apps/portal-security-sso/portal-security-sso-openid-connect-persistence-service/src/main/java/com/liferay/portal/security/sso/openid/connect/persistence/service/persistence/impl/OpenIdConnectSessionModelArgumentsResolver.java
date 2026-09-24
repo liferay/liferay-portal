@@ -123,4 +123,4 @@ public class OpenIdConnectSessionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-108705012
+// LIFERAY-SERVICE-BUILDER-HASH:925108484

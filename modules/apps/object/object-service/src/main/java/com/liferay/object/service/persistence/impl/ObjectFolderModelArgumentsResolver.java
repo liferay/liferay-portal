@@ -119,4 +119,4 @@ public class ObjectFolderModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-349900343
+// LIFERAY-SERVICE-BUILDER-HASH:2037987815

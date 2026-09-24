@@ -118,4 +118,4 @@ public class PluginSettingModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:965342193
+// LIFERAY-SERVICE-BUILDER-HASH:-139166529

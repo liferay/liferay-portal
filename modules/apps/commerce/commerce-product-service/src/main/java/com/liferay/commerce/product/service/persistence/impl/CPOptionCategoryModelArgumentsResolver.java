@@ -141,4 +141,4 @@ public class CPOptionCategoryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1533667341
+// LIFERAY-SERVICE-BUILDER-HASH:-299050755

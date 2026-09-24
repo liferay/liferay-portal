@@ -143,4 +143,4 @@ public class CommerceInventoryAuditModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1278579641
+// LIFERAY-SERVICE-BUILDER-HASH:981259767

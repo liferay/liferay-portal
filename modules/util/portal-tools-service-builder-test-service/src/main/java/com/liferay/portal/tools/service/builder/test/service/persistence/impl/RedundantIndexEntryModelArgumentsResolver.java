@@ -121,4 +121,4 @@ public class RedundantIndexEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-233054515
+// LIFERAY-SERVICE-BUILDER-HASH:1365241187

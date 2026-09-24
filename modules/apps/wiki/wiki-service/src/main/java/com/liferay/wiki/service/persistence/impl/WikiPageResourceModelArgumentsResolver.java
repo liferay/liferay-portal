@@ -120,4 +120,4 @@ public class WikiPageResourceModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-820697996
+// LIFERAY-SERVICE-BUILDER-HASH:328162460

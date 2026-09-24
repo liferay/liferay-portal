@@ -120,4 +120,4 @@ public class OAuth2ScopeGrantModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1643403214
+// LIFERAY-SERVICE-BUILDER-HASH:-594111358

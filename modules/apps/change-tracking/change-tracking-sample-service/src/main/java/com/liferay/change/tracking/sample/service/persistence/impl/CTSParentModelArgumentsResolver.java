@@ -117,4 +117,4 @@ public class CTSParentModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1342168464
+// LIFERAY-SERVICE-BUILDER-HASH:1342447136

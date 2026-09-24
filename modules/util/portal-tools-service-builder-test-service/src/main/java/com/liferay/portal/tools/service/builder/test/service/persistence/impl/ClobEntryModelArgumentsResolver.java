@@ -116,4 +116,4 @@ public class ClobEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-45075531
+// LIFERAY-SERVICE-BUILDER-HASH:-1397344901

@@ -120,4 +120,4 @@ public class FriendlyURLEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1388301830
+// LIFERAY-SERVICE-BUILDER-HASH:87680330

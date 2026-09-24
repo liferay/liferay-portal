@@ -117,4 +117,4 @@ public class CTMessageModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1778418153
+// LIFERAY-SERVICE-BUILDER-HASH:703608665

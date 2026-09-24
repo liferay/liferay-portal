@@ -136,4 +136,4 @@ public class KaleoTransitionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1087875986
+// LIFERAY-SERVICE-BUILDER-HASH:635579362

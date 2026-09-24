@@ -141,4 +141,4 @@ public class UserNotificationEventModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1035892019
+// LIFERAY-SERVICE-BUILDER-HASH:-2047884957

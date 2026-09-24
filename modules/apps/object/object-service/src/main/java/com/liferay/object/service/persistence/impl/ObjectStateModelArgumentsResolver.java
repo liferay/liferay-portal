@@ -118,4 +118,4 @@ public class ObjectStateModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:692067718
+// LIFERAY-SERVICE-BUILDER-HASH:-20740662

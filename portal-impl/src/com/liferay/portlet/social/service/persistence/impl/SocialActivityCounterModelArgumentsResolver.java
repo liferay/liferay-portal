@@ -53,11 +53,11 @@ public class SocialActivityCounterModelArgumentsResolver
 		SocialActivityCounterModelImpl socialActivityCounterModelImpl =
 			(SocialActivityCounterModelImpl)baseModel;
 
-		BiPredicate<SocialActivityCounterModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<SocialActivityCounterModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(socialActivityCounterModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(socialActivityCounterModelImpl, original)) {
 
 			return null;
 		}
@@ -155,12 +155,13 @@ public class SocialActivityCounterModelArgumentsResolver
 		new HashMap<>();
 	private static final Map
 		<String, BiPredicate<SocialActivityCounterModelImpl, Boolean>>
-			_wherePredicates = new HashMap<>();
+			_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask =
 			SocialActivityCounterModelImpl.getColumnBitmask("endPeriod");
-		BiPredicate<SocialActivityCounterModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<SocialActivityCounterModelImpl, Boolean> whereBiPredicate =
 			(socialActivityCounterModelImpl, original) ->
 				GetterUtil.getInteger(
 					_getColumnValue(
@@ -168,8 +169,9 @@ public class SocialActivityCounterModelArgumentsResolver
 						original)) == -1;
 
 		_whereColumnBitmasks.put("G_C_C_O", whereColumnBitmask);
-		_wherePredicates.put("G_C_C_O", wherePredicate);
+
+		_whereBiPredicates.put("G_C_C_O", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-477519833
+// LIFERAY-SERVICE-BUILDER-HASH:-404960515

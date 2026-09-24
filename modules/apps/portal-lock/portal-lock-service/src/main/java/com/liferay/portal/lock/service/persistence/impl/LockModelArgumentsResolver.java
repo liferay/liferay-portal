@@ -116,4 +116,4 @@ public class LockModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-813783154
+// LIFERAY-SERVICE-BUILDER-HASH:542522562

@@ -119,4 +119,4 @@ public class DLFileEntryTypeModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-922139991
+// LIFERAY-SERVICE-BUILDER-HASH:1478427911

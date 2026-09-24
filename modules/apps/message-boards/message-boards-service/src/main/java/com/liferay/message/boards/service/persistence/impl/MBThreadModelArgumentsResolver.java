@@ -52,11 +52,11 @@ public class MBThreadModelArgumentsResolver implements ArgumentsResolver {
 
 		MBThreadModelImpl mbThreadModelImpl = (MBThreadModelImpl)baseModel;
 
-		BiPredicate<MBThreadModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<MBThreadModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(mbThreadModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(mbThreadModelImpl, original)) {
 
 			return null;
 		}
@@ -169,24 +169,28 @@ public class MBThreadModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map<String, BiPredicate<MBThreadModelImpl, Boolean>>
-		_wherePredicates = new HashMap<>();
+		_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = MBThreadModelImpl.getColumnBitmask(
 			"categoryId");
-		BiPredicate<MBThreadModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<MBThreadModelImpl, Boolean> whereBiPredicate =
 			(mbThreadModelImpl, original) ->
 				GetterUtil.getLong(
 					_getColumnValue(
 						mbThreadModelImpl, "categoryId", original)) != -1L;
 
 		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
-		_wherePredicates.put("GroupId", wherePredicate);
+
+		_whereBiPredicates.put("GroupId", whereBiPredicate);
 		_whereColumnBitmasks.put("G_S", whereColumnBitmask);
-		_wherePredicates.put("G_S", wherePredicate);
+
+		_whereBiPredicates.put("G_S", whereBiPredicate);
 		_whereColumnBitmasks.put("L_P", whereColumnBitmask);
-		_wherePredicates.put("L_P", wherePredicate);
+
+		_whereBiPredicates.put("L_P", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:976897253
+// LIFERAY-SERVICE-BUILDER-HASH:345519315

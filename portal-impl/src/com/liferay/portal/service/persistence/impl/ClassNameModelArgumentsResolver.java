@@ -116,4 +116,4 @@ public class ClassNameModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1497665182
+// LIFERAY-SERVICE-BUILDER-HASH:817016174

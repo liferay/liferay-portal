@@ -142,4 +142,4 @@ public class CommerceShipmentItemModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1489326239
+// LIFERAY-SERVICE-BUILDER-HASH:-1075530287

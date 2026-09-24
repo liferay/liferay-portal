@@ -134,4 +134,4 @@ public class GroupModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:699541209
+// LIFERAY-SERVICE-BUILDER-HASH:210937559

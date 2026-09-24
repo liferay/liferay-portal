@@ -138,4 +138,4 @@ public class CPTaxCategoryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-939357463
+// LIFERAY-SERVICE-BUILDER-HASH:944686279

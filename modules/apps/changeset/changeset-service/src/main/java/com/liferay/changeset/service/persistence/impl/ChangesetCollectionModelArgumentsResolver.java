@@ -122,4 +122,4 @@ public class ChangesetCollectionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:163877512
+// LIFERAY-SERVICE-BUILDER-HASH:785232136

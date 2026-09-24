@@ -119,4 +119,4 @@ public class CompoundPKEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1410951859
+// LIFERAY-SERVICE-BUILDER-HASH:-789838109

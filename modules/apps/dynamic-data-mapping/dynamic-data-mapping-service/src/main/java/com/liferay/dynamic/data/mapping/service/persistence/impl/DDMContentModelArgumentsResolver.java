@@ -118,4 +118,4 @@ public class DDMContentModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1699556303
+// LIFERAY-SERVICE-BUILDER-HASH:-1146641281

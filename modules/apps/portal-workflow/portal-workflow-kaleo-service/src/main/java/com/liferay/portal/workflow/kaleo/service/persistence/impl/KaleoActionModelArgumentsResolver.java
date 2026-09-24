@@ -137,4 +137,4 @@ public class KaleoActionModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1949379413
+// LIFERAY-SERVICE-BUILDER-HASH:301216219

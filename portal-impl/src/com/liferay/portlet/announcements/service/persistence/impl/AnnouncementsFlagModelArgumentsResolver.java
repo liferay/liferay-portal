@@ -140,4 +140,4 @@ public class AnnouncementsFlagModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-742699749
+// LIFERAY-SERVICE-BUILDER-HASH:-1548859179

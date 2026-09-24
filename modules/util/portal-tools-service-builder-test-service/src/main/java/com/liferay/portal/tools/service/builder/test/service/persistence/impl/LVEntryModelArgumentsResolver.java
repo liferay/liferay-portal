@@ -51,11 +51,11 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 
 		LVEntryModelImpl lvEntryModelImpl = (LVEntryModelImpl)baseModel;
 
-		BiPredicate<LVEntryModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<LVEntryModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(lvEntryModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(lvEntryModelImpl, original)) {
 
 			return null;
 		}
@@ -147,22 +147,25 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map<String, BiPredicate<LVEntryModelImpl, Boolean>>
-		_wherePredicates = new HashMap<>();
+		_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = LVEntryModelImpl.getColumnBitmask(
 			"lvEntryId");
-		BiPredicate<LVEntryModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<LVEntryModelImpl, Boolean> whereBiPredicate =
 			(lvEntryModelImpl, original) ->
 				GetterUtil.getLong(
 					_getColumnValue(lvEntryModelImpl, "lvEntryId", original)) >
 						0L;
 
 		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
-		_wherePredicates.put("GroupId", wherePredicate);
+
+		_whereBiPredicates.put("GroupId", whereBiPredicate);
 		_whereColumnBitmasks.put("GroupId_Head", whereColumnBitmask);
-		_wherePredicates.put("GroupId_Head", wherePredicate);
+
+		_whereBiPredicates.put("GroupId_Head", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1316614895
+// LIFERAY-SERVICE-BUILDER-HASH:-1113524325

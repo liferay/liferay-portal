@@ -117,4 +117,4 @@ public class PortletItemModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-96903791
+// LIFERAY-SERVICE-BUILDER-HASH:1290946335

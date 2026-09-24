@@ -117,4 +117,4 @@ public class KBFolderModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1036488599
+// LIFERAY-SERVICE-BUILDER-HASH:2066372057

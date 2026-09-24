@@ -136,4 +136,4 @@ public class CTSchemaVersionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2086303429
+// LIFERAY-SERVICE-BUILDER-HASH:-250900299

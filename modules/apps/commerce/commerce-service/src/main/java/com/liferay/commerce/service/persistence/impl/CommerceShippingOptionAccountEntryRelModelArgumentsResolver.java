@@ -132,4 +132,4 @@ public class CommerceShippingOptionAccountEntryRelModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-66414798
+// LIFERAY-SERVICE-BUILDER-HASH:-2058862178

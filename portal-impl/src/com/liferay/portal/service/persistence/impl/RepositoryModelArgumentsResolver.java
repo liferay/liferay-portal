@@ -117,4 +117,4 @@ public class RepositoryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:848784023
+// LIFERAY-SERVICE-BUILDER-HASH:542497497

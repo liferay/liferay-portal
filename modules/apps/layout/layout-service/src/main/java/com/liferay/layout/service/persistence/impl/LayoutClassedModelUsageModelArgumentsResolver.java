@@ -55,11 +55,13 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 		LayoutClassedModelUsageModelImpl layoutClassedModelUsageModelImpl =
 			(LayoutClassedModelUsageModelImpl)baseModel;
 
-		BiPredicate<LayoutClassedModelUsageModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<LayoutClassedModelUsageModelImpl, Boolean>
+			whereBiPredicate = _whereBiPredicates.get(
+				finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(layoutClassedModelUsageModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(
+				layoutClassedModelUsageModelImpl, original)) {
 
 			return null;
 		}
@@ -159,35 +161,46 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 		new HashMap<>();
 	private static final Map
 		<String, BiPredicate<LayoutClassedModelUsageModelImpl, Boolean>>
-			_wherePredicates = new HashMap<>();
+			_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask =
 			LayoutClassedModelUsageModelImpl.getColumnBitmask("containerKey");
-		BiPredicate<LayoutClassedModelUsageModelImpl, Boolean> wherePredicate =
-			(layoutClassedModelUsageModelImpl, original) -> Validator.isNotNull(
-				GetterUtil.getString(
-					_getColumnValue(
-						layoutClassedModelUsageModelImpl, "containerKey",
-						original)));
+
+		BiPredicate<LayoutClassedModelUsageModelImpl, Boolean>
+			whereBiPredicate =
+				(layoutClassedModelUsageModelImpl, original) ->
+					Validator.isNotNull(
+						GetterUtil.getString(
+							_getColumnValue(
+								layoutClassedModelUsageModelImpl,
+								"containerKey", original)));
 
 		_whereColumnBitmasks.put("Plid", whereColumnBitmask);
-		_wherePredicates.put("Plid", wherePredicate);
+
+		_whereBiPredicates.put("Plid", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CN", whereColumnBitmask);
-		_wherePredicates.put("C_CN", wherePredicate);
+
+		_whereBiPredicates.put("C_CN", whereBiPredicate);
 		_whereColumnBitmasks.put("CN_CPK", whereColumnBitmask);
-		_wherePredicates.put("CN_CPK", wherePredicate);
+
+		_whereBiPredicates.put("CN_CPK", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CERC_CN", whereColumnBitmask);
-		_wherePredicates.put("C_CERC_CN", wherePredicate);
+
+		_whereBiPredicates.put("C_CERC_CN", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CN_CT", whereColumnBitmask);
-		_wherePredicates.put("C_CN_CT", wherePredicate);
+
+		_whereBiPredicates.put("C_CN_CT", whereBiPredicate);
 		_whereColumnBitmasks.put("CN_CPK_T", whereColumnBitmask);
-		_wherePredicates.put("CN_CPK_T", wherePredicate);
+
+		_whereBiPredicates.put("CN_CPK_T", whereBiPredicate);
 		_whereColumnBitmasks.put("CK_CT_P", whereColumnBitmask);
-		_wherePredicates.put("CK_CT_P", wherePredicate);
+
+		_whereBiPredicates.put("CK_CT_P", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CERC_CN_T", whereColumnBitmask);
-		_wherePredicates.put("C_CERC_CN_T", wherePredicate);
+
+		_whereBiPredicates.put("C_CERC_CN_T", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:53730685
+// LIFERAY-SERVICE-BUILDER-HASH:1328106379

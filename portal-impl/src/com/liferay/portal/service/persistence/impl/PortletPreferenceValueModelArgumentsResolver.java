@@ -142,4 +142,4 @@ public class PortletPreferenceValueModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2066915636
+// LIFERAY-SERVICE-BUILDER-HASH:350121284

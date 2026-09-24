@@ -119,4 +119,4 @@ public class MBMailingListModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2035424402
+// LIFERAY-SERVICE-BUILDER-HASH:1326349538

@@ -122,4 +122,4 @@ public class AnnouncementsDeliveryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1382395635
+// LIFERAY-SERVICE-BUILDER-HASH:95404835

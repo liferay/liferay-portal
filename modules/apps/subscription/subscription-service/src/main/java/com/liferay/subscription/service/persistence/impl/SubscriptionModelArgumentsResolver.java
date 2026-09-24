@@ -119,4 +119,4 @@ public class SubscriptionModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-402820805
+// LIFERAY-SERVICE-BUILDER-HASH:397453493

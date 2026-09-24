@@ -149,4 +149,4 @@ public class CommerceNotificationAttachmentModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:986293346
+// LIFERAY-SERVICE-BUILDER-HASH:510319214

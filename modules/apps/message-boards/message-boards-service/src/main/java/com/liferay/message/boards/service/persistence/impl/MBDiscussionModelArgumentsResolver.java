@@ -119,4 +119,4 @@ public class MBDiscussionModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:811049344
+// LIFERAY-SERVICE-BUILDER-HASH:-627277552

@@ -122,4 +122,4 @@ public class DDLRecordSetVersionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1592740884
+// LIFERAY-SERVICE-BUILDER-HASH:2130323708

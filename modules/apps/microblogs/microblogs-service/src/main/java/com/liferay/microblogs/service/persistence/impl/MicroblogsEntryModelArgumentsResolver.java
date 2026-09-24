@@ -139,4 +139,4 @@ public class MicroblogsEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1473838657
+// LIFERAY-SERVICE-BUILDER-HASH:-1555645329

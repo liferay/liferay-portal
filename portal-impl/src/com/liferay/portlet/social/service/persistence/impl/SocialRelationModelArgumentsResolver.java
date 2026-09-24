@@ -118,4 +118,4 @@ public class SocialRelationModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:263255284
+// LIFERAY-SERVICE-BUILDER-HASH:-429024228

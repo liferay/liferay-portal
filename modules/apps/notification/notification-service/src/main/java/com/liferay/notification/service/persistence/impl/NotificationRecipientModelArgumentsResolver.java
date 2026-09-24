@@ -123,4 +123,4 @@ public class NotificationRecipientModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1473100590
+// LIFERAY-SERVICE-BUILDER-HASH:1578518526

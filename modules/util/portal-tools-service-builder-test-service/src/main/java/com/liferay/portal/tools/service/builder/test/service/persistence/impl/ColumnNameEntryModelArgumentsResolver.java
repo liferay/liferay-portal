@@ -119,4 +119,4 @@ public class ColumnNameEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:228536609
+// LIFERAY-SERVICE-BUILDER-HASH:-1505303153

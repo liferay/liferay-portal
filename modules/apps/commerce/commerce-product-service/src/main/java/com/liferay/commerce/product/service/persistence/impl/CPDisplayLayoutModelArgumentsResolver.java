@@ -55,11 +55,11 @@ public class CPDisplayLayoutModelArgumentsResolver
 		CPDisplayLayoutModelImpl cpDisplayLayoutModelImpl =
 			(CPDisplayLayoutModelImpl)baseModel;
 
-		BiPredicate<CPDisplayLayoutModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<CPDisplayLayoutModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(cpDisplayLayoutModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(cpDisplayLayoutModelImpl, original)) {
 
 			return null;
 		}
@@ -153,12 +153,13 @@ public class CPDisplayLayoutModelArgumentsResolver
 		new HashMap<>();
 	private static final Map
 		<String, BiPredicate<CPDisplayLayoutModelImpl, Boolean>>
-			_wherePredicates = new HashMap<>();
+			_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = CPDisplayLayoutModelImpl.getColumnBitmask(
 			"layoutPageTemplateEntryUuid");
-		BiPredicate<CPDisplayLayoutModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<CPDisplayLayoutModelImpl, Boolean> whereBiPredicate =
 			(cpDisplayLayoutModelImpl, original) -> Validator.isNotNull(
 				GetterUtil.getString(
 					_getColumnValue(
@@ -166,19 +167,21 @@ public class CPDisplayLayoutModelArgumentsResolver
 						original)));
 
 		_whereColumnBitmasks.put("C_C_LPTEU", whereColumnBitmask);
-		_wherePredicates.put("C_C_LPTEU", wherePredicate);
 
+		_whereBiPredicates.put("C_C_LPTEU", whereBiPredicate);
 		whereColumnBitmask = CPDisplayLayoutModelImpl.getColumnBitmask(
 			"layoutUuid");
-		wherePredicate =
+
+		whereBiPredicate =
 			(cpDisplayLayoutModelImpl, original) -> Validator.isNotNull(
 				GetterUtil.getString(
 					_getColumnValue(
 						cpDisplayLayoutModelImpl, "layoutUuid", original)));
 
 		_whereColumnBitmasks.put("C_C_L", whereColumnBitmask);
-		_wherePredicates.put("C_C_L", wherePredicate);
+
+		_whereBiPredicates.put("C_C_L", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:158411382
+// LIFERAY-SERVICE-BUILDER-HASH:-1175381055

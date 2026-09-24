@@ -126,4 +126,4 @@ public class UndefinedDefaultOrderEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1402988754
+// LIFERAY-SERVICE-BUILDER-HASH:542974974

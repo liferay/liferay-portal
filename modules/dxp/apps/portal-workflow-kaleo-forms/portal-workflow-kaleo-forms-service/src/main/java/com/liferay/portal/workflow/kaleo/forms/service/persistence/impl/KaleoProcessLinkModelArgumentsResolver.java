@@ -120,4 +120,4 @@ public class KaleoProcessLinkModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:542801527
+// LIFERAY-SERVICE-BUILDER-HASH:-353025287

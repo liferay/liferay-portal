@@ -128,4 +128,4 @@ public class FriendlyURLEntryLocalizationModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-765145420
+// LIFERAY-SERVICE-BUILDER-HASH:2050292316

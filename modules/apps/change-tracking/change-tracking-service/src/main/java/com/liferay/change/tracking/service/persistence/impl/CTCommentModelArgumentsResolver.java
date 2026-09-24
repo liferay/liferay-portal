@@ -133,4 +133,4 @@ public class CTCommentModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1029847885
+// LIFERAY-SERVICE-BUILDER-HASH:-1860516803

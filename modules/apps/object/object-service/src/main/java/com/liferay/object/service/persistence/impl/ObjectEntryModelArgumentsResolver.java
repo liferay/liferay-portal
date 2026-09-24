@@ -53,11 +53,11 @@ public class ObjectEntryModelArgumentsResolver implements ArgumentsResolver {
 		ObjectEntryModelImpl objectEntryModelImpl =
 			(ObjectEntryModelImpl)baseModel;
 
-		BiPredicate<ObjectEntryModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<ObjectEntryModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(objectEntryModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(objectEntryModelImpl, original)) {
 
 			return null;
 		}
@@ -166,13 +166,14 @@ public class ObjectEntryModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map<String, BiPredicate<ObjectEntryModelImpl, Boolean>>
-		_wherePredicates = new HashMap<>();
+		_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask =
 			ObjectEntryModelImpl.getColumnBitmask("objectEntryId") |
 			ObjectEntryModelImpl.getColumnBitmask("headObjectEntryId");
-		BiPredicate<ObjectEntryModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<ObjectEntryModelImpl, Boolean> whereBiPredicate =
 			(objectEntryModelImpl, original) ->
 				GetterUtil.getLong(
 					_getColumnValue(
@@ -183,12 +184,13 @@ public class ObjectEntryModelArgumentsResolver implements ArgumentsResolver {
 									original));
 
 		_whereColumnBitmasks.put("HeadObjectEntryId", whereColumnBitmask);
-		_wherePredicates.put("HeadObjectEntryId", wherePredicate);
 
+		_whereBiPredicates.put("HeadObjectEntryId", whereBiPredicate);
 		whereColumnBitmask =
 			ObjectEntryModelImpl.getColumnBitmask("objectEntryId") |
 			ObjectEntryModelImpl.getColumnBitmask("headObjectEntryId");
-		wherePredicate = (objectEntryModelImpl, original) ->
+
+		whereBiPredicate = (objectEntryModelImpl, original) ->
 			GetterUtil.getLong(
 				_getColumnValue(
 					objectEntryModelImpl, "objectEntryId", original)) ==
@@ -198,26 +200,36 @@ public class ObjectEntryModelArgumentsResolver implements ArgumentsResolver {
 								original));
 
 		_whereColumnBitmasks.put("ObjectDefinitionId", whereColumnBitmask);
-		_wherePredicates.put("ObjectDefinitionId", wherePredicate);
+
+		_whereBiPredicates.put("ObjectDefinitionId", whereBiPredicate);
 		_whereColumnBitmasks.put("G_ODI", whereColumnBitmask);
-		_wherePredicates.put("G_ODI", wherePredicate);
+
+		_whereBiPredicates.put("G_ODI", whereBiPredicate);
 		_whereColumnBitmasks.put("G_OEFI", whereColumnBitmask);
-		_wherePredicates.put("G_OEFI", wherePredicate);
+
+		_whereBiPredicates.put("G_OEFI", whereBiPredicate);
 		_whereColumnBitmasks.put("U_ODI", whereColumnBitmask);
-		_wherePredicates.put("U_ODI", wherePredicate);
+
+		_whereBiPredicates.put("U_ODI", whereBiPredicate);
 		_whereColumnBitmasks.put("ODI_NotS", whereColumnBitmask);
-		_wherePredicates.put("ODI_NotS", wherePredicate);
+
+		_whereBiPredicates.put("ODI_NotS", whereBiPredicate);
 		_whereColumnBitmasks.put("ROEI_NotS", whereColumnBitmask);
-		_wherePredicates.put("ROEI_NotS", wherePredicate);
+
+		_whereBiPredicates.put("ROEI_NotS", whereBiPredicate);
 		_whereColumnBitmasks.put("G_C_OEFI", whereColumnBitmask);
-		_wherePredicates.put("G_C_OEFI", wherePredicate);
+
+		_whereBiPredicates.put("G_C_OEFI", whereBiPredicate);
 		_whereColumnBitmasks.put("G_ODI_S", whereColumnBitmask);
-		_wherePredicates.put("G_ODI_S", wherePredicate);
+
+		_whereBiPredicates.put("G_ODI_S", whereBiPredicate);
 		_whereColumnBitmasks.put("G_ODI_NotS", whereColumnBitmask);
-		_wherePredicates.put("G_ODI_NotS", wherePredicate);
+
+		_whereBiPredicates.put("G_ODI_NotS", whereBiPredicate);
 		_whereColumnBitmasks.put("U_GtCD_ODI", whereColumnBitmask);
-		_wherePredicates.put("U_GtCD_ODI", wherePredicate);
+
+		_whereBiPredicates.put("U_GtCD_ODI", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2058757105
+// LIFERAY-SERVICE-BUILDER-HASH:-1896703948

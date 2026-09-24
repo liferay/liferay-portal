@@ -132,4 +132,4 @@ public class RoleModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:499294447
+// LIFERAY-SERVICE-BUILDER-HASH:-1701744767

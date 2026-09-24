@@ -139,4 +139,4 @@ public class CommerceTaxMethodModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-35886187
+// LIFERAY-SERVICE-BUILDER-HASH:-1112475237

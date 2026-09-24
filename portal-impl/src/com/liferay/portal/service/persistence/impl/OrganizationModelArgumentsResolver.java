@@ -52,11 +52,11 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 		OrganizationModelImpl organizationModelImpl =
 			(OrganizationModelImpl)baseModel;
 
-		BiPredicate<OrganizationModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<OrganizationModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(organizationModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(organizationModelImpl, original)) {
 
 			return null;
 		}
@@ -168,13 +168,14 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map
-		<String, BiPredicate<OrganizationModelImpl, Boolean>> _wherePredicates =
-			new HashMap<>();
+		<String, BiPredicate<OrganizationModelImpl, Boolean>>
+			_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = OrganizationModelImpl.getColumnBitmask(
 			"parentOrganizationId");
-		BiPredicate<OrganizationModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<OrganizationModelImpl, Boolean> whereBiPredicate =
 			(organizationModelImpl, original) ->
 				GetterUtil.getLong(
 					_getColumnValue(
@@ -182,8 +183,9 @@ public class OrganizationModelArgumentsResolver implements ArgumentsResolver {
 						original)) != 0L;
 
 		_whereColumnBitmasks.put("CompanyIdLocations", whereColumnBitmask);
-		_wherePredicates.put("CompanyIdLocations", wherePredicate);
+
+		_whereBiPredicates.put("CompanyIdLocations", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1149999351
+// LIFERAY-SERVICE-BUILDER-HASH:-1718688639

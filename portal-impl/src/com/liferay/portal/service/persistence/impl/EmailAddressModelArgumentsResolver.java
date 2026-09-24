@@ -137,4 +137,4 @@ public class EmailAddressModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-577800569
+// LIFERAY-SERVICE-BUILDER-HASH:-731951895

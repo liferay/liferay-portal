@@ -136,4 +136,4 @@ public class KBCommentModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1684005108
+// LIFERAY-SERVICE-BUILDER-HASH:664547356

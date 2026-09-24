@@ -52,11 +52,11 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 
 		MBMessageModelImpl mbMessageModelImpl = (MBMessageModelImpl)baseModel;
 
-		BiPredicate<MBMessageModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<MBMessageModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(mbMessageModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(mbMessageModelImpl, original)) {
 
 			return null;
 		}
@@ -168,44 +168,52 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map<String, BiPredicate<MBMessageModelImpl, Boolean>>
-		_wherePredicates = new HashMap<>();
+		_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = MBMessageModelImpl.getColumnBitmask(
 			"categoryId");
-		BiPredicate<MBMessageModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<MBMessageModelImpl, Boolean> whereBiPredicate =
 			(mbMessageModelImpl, original) ->
 				GetterUtil.getLong(
 					_getColumnValue(
 						mbMessageModelImpl, "categoryId", original)) != -1L;
 
 		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
-		_wherePredicates.put("GroupId", wherePredicate);
-		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
-		_wherePredicates.put("CompanyId", wherePredicate);
-		_whereColumnBitmasks.put("UserId", whereColumnBitmask);
-		_wherePredicates.put("UserId", wherePredicate);
-		_whereColumnBitmasks.put("G_S", whereColumnBitmask);
-		_wherePredicates.put("G_S", wherePredicate);
-		_whereColumnBitmasks.put("C_S", whereColumnBitmask);
-		_wherePredicates.put("C_S", wherePredicate);
 
+		_whereBiPredicates.put("GroupId", whereBiPredicate);
+		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
+
+		_whereBiPredicates.put("CompanyId", whereBiPredicate);
+		_whereColumnBitmasks.put("UserId", whereColumnBitmask);
+
+		_whereBiPredicates.put("UserId", whereBiPredicate);
+		_whereColumnBitmasks.put("G_S", whereColumnBitmask);
+
+		_whereBiPredicates.put("G_S", whereBiPredicate);
+		_whereColumnBitmasks.put("C_S", whereColumnBitmask);
+
+		_whereBiPredicates.put("C_S", whereBiPredicate);
 		whereColumnBitmask = MBMessageModelImpl.getColumnBitmask(
 			"parentMessageId");
-		wherePredicate = (mbMessageModelImpl, original) ->
+
+		whereBiPredicate = (mbMessageModelImpl, original) ->
 			GetterUtil.getLong(
 				_getColumnValue(
 					mbMessageModelImpl, "parentMessageId", original)) != 0L;
 
 		_whereColumnBitmasks.put("ThreadIdReplies", whereColumnBitmask);
-		_wherePredicates.put("ThreadIdReplies", wherePredicate);
-		_whereColumnBitmasks.put("TR_S", whereColumnBitmask);
-		_wherePredicates.put("TR_S", wherePredicate);
 
+		_whereBiPredicates.put("ThreadIdReplies", whereBiPredicate);
+		_whereColumnBitmasks.put("TR_S", whereColumnBitmask);
+
+		_whereBiPredicates.put("TR_S", whereBiPredicate);
 		whereColumnBitmask =
 			MBMessageModelImpl.getColumnBitmask("categoryId") |
 			MBMessageModelImpl.getColumnBitmask("anonymous");
-		wherePredicate = (mbMessageModelImpl, original) ->
+
+		whereBiPredicate = (mbMessageModelImpl, original) ->
 			(GetterUtil.getLong(
 				_getColumnValue(mbMessageModelImpl, "categoryId", original)) !=
 					-1L) &&
@@ -213,10 +221,12 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 				_getColumnValue(mbMessageModelImpl, "anonymous", original));
 
 		_whereColumnBitmasks.put("G_U", whereColumnBitmask);
-		_wherePredicates.put("G_U", wherePredicate);
+
+		_whereBiPredicates.put("G_U", whereBiPredicate);
 		_whereColumnBitmasks.put("G_U_S", whereColumnBitmask);
-		_wherePredicates.put("G_U_S", wherePredicate);
+
+		_whereBiPredicates.put("G_U_S", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1370769055
+// LIFERAY-SERVICE-BUILDER-HASH:-1781918329

@@ -120,4 +120,4 @@ public class OpenIdConnectUserModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-522531563
+// LIFERAY-SERVICE-BUILDER-HASH:981387291

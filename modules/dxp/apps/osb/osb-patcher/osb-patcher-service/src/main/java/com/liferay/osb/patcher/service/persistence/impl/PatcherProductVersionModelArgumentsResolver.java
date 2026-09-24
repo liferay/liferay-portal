@@ -123,4 +123,4 @@ public class PatcherProductVersionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1826601193
+// LIFERAY-SERVICE-BUILDER-HASH:-790065575

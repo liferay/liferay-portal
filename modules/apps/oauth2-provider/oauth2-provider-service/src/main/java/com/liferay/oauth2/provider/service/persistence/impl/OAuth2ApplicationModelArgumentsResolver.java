@@ -120,4 +120,4 @@ public class OAuth2ApplicationModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1657065434
+// LIFERAY-SERVICE-BUILDER-HASH:170575658

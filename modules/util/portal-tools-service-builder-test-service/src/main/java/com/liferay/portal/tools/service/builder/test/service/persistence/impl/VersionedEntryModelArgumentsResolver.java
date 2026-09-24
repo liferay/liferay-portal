@@ -118,4 +118,4 @@ public class VersionedEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-304577673
+// LIFERAY-SERVICE-BUILDER-HASH:-851976711

@@ -143,4 +143,4 @@ public class FragmentEntryLinkModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:257894604
+// LIFERAY-SERVICE-BUILDER-HASH:-595205308

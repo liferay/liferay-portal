@@ -119,4 +119,4 @@ public class DLStorageQuotaModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-574869972
+// LIFERAY-SERVICE-BUILDER-HASH:-641103388

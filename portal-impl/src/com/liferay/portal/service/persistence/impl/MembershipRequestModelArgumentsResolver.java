@@ -138,4 +138,4 @@ public class MembershipRequestModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-372832747
+// LIFERAY-SERVICE-BUILDER-HASH:1327083291

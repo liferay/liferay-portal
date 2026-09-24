@@ -51,11 +51,11 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 
 		LayoutModelImpl layoutModelImpl = (LayoutModelImpl)baseModel;
 
-		BiPredicate<LayoutModelImpl, Boolean> wherePredicate =
-			_wherePredicates.get(finderPath.getFinderName());
+		BiPredicate<LayoutModelImpl, Boolean> whereBiPredicate =
+			_whereBiPredicates.get(finderPath.getFinderName());
 
-		if ((wherePredicate != null) &&
-			!wherePredicate.test(layoutModelImpl, original)) {
+		if ((whereBiPredicate != null) &&
+			!whereBiPredicate.test(layoutModelImpl, original)) {
 
 			return null;
 		}
@@ -167,38 +167,50 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 	private static final Map<String, Long> _whereColumnBitmasks =
 		new HashMap<>();
 	private static final Map<String, BiPredicate<LayoutModelImpl, Boolean>>
-		_wherePredicates = new HashMap<>();
+		_whereBiPredicates = new HashMap<>();
 
 	static {
 		long whereColumnBitmask = LayoutModelImpl.getColumnBitmask("system_");
-		BiPredicate<LayoutModelImpl, Boolean> wherePredicate =
+
+		BiPredicate<LayoutModelImpl, Boolean> whereBiPredicate =
 			(layoutModelImpl, original) -> !GetterUtil.getBoolean(
 				_getColumnValue(layoutModelImpl, "system_", original));
 
 		_whereColumnBitmasks.put("GroupId", whereColumnBitmask);
-		_wherePredicates.put("GroupId", wherePredicate);
+
+		_whereBiPredicates.put("GroupId", whereBiPredicate);
 		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
-		_wherePredicates.put("CompanyId", wherePredicate);
+
+		_whereBiPredicates.put("CompanyId", whereBiPredicate);
 		_whereColumnBitmasks.put("ParentPlid", whereColumnBitmask);
-		_wherePredicates.put("ParentPlid", wherePredicate);
+
+		_whereBiPredicates.put("ParentPlid", whereBiPredicate);
 		_whereColumnBitmasks.put(
 			"LayoutSetPrototypeLayoutERC", whereColumnBitmask);
-		_wherePredicates.put("LayoutSetPrototypeLayoutERC", wherePredicate);
+
+		_whereBiPredicates.put("LayoutSetPrototypeLayoutERC", whereBiPredicate);
 		_whereColumnBitmasks.put("G_T", whereColumnBitmask);
-		_wherePredicates.put("G_T", wherePredicate);
+
+		_whereBiPredicates.put("G_T", whereBiPredicate);
 		_whereColumnBitmasks.put("PLPTEERC_PLPTESERC", whereColumnBitmask);
-		_wherePredicates.put("PLPTEERC_PLPTESERC", wherePredicate);
+
+		_whereBiPredicates.put("PLPTEERC_PLPTESERC", whereBiPredicate);
 		_whereColumnBitmasks.put("G_P_P", whereColumnBitmask);
-		_wherePredicates.put("G_P_P", wherePredicate);
+
+		_whereBiPredicates.put("G_P_P", whereBiPredicate);
 		_whereColumnBitmasks.put("G_P_T", whereColumnBitmask);
-		_wherePredicates.put("G_P_T", wherePredicate);
+
+		_whereBiPredicates.put("G_P_T", whereBiPredicate);
 		_whereColumnBitmasks.put("G_P_ST", whereColumnBitmask);
-		_wherePredicates.put("G_P_ST", wherePredicate);
+
+		_whereBiPredicates.put("G_P_ST", whereBiPredicate);
 		_whereColumnBitmasks.put("G_P_P_H", whereColumnBitmask);
-		_wherePredicates.put("G_P_P_H", wherePredicate);
+
+		_whereBiPredicates.put("G_P_P_H", whereBiPredicate);
 		_whereColumnBitmasks.put("G_P_P_LteP", whereColumnBitmask);
-		_wherePredicates.put("G_P_P_LteP", wherePredicate);
+
+		_whereBiPredicates.put("G_P_P_LteP", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1890217944
+// LIFERAY-SERVICE-BUILDER-HASH:-1983334692

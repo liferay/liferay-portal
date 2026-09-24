@@ -119,4 +119,4 @@ public class CTSGrandParentModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-554373726
+// LIFERAY-SERVICE-BUILDER-HASH:-5719762

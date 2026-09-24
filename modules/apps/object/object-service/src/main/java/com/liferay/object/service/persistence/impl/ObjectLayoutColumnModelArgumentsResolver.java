@@ -120,4 +120,4 @@ public class ObjectLayoutColumnModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:39713982
+// LIFERAY-SERVICE-BUILDER-HASH:1231130002

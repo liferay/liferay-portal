@@ -138,4 +138,4 @@ public class BigDecimalEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:582364767
+// LIFERAY-SERVICE-BUILDER-HASH:873435153

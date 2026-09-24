@@ -133,4 +133,4 @@ public class VirtualHostModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-654464076
+// LIFERAY-SERVICE-BUILDER-HASH:1186446684

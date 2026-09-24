@@ -125,4 +125,4 @@ public class PushNotificationsDeviceModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2064628761
+// LIFERAY-SERVICE-BUILDER-HASH:421014409

@@ -125,4 +125,4 @@ public class DDMDataProviderInstanceModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1297037175
+// LIFERAY-SERVICE-BUILDER-HASH:-1553450201

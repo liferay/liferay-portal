@@ -135,4 +135,4 @@ public class RegionModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1829311535
+// LIFERAY-SERVICE-BUILDER-HASH:-874086177
