@@ -75,7 +75,10 @@ public class AudiencesDefinitionProviderTest {
 			"audiences",
 			JSONUtil.putAll(
 				audiencesEntryJSONObject.put(
-					"id", audiencesEntry.getExternalReferenceCode())));
+					"id", audiencesEntry.getExternalReferenceCode()
+				).put(
+					"scope", JSONFactoryUtil.createJSONArray()
+				)));
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -141,13 +144,19 @@ public class AudiencesDefinitionProviderTest {
 
 		JSONObject jsonObject = _getAudienceJSONObject(audiencesEntry);
 
-		Assert.assertTrue(jsonObject.toString(), jsonObject.has("scope"));
+		JSONArray scopeJSONArray = jsonObject.getJSONArray("scope");
+
+		Assert.assertEquals(
+			scopeJSONArray.toString(), 1, scopeJSONArray.length());
 
 		_groupLocalService.deleteGroup(group);
 
 		jsonObject = _getAudienceJSONObject(audiencesEntry);
 
-		Assert.assertFalse(jsonObject.toString(), jsonObject.has("scope"));
+		scopeJSONArray = jsonObject.getJSONArray("scope");
+
+		Assert.assertEquals(
+			scopeJSONArray.toString(), 0, scopeJSONArray.length());
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-85746"))
@@ -184,16 +193,21 @@ public class AudiencesDefinitionProviderTest {
 		Assert.assertEquals(
 			scopeJSONArray.toString(), 2, scopeJSONArray.length());
 
-		Set<Long> groupIds = JSONUtil.toLongSet(scopeJSONArray);
+		Set<String> groupIds = JSONUtil.toStringSet(scopeJSONArray);
 
 		Assert.assertTrue(
-			groupIds.toString(), groupIds.contains(group1.getGroupId()));
+			groupIds.toString(),
+			groupIds.contains(String.valueOf(group1.getGroupId())));
 		Assert.assertTrue(
-			groupIds.toString(), groupIds.contains(group2.getGroupId()));
+			groupIds.toString(),
+			groupIds.contains(String.valueOf(group2.getGroupId())));
 
 		JSONObject jsonObject2 = _getAudienceJSONObject(audiencesEntry2);
 
-		Assert.assertFalse(jsonObject2.toString(), jsonObject2.has("scope"));
+		scopeJSONArray = jsonObject2.getJSONArray("scope");
+
+		Assert.assertEquals(
+			scopeJSONArray.toString(), 0, scopeJSONArray.length());
 	}
 
 	private AudiencesEntryGroupRel _addAudiencesEntryGroupRel(

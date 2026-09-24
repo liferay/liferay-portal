@@ -30,6 +30,7 @@ function mockAudiencesDefinition(conjunction: Conjunction, rules: Rule[]) {
 			conjunction,
 			id: 'the_audience',
 			rules,
+			scope: [],
 		},
 	]);
 }
@@ -587,6 +588,7 @@ describe('detection', () => {
 						value: 'US',
 					},
 				],
+				scope: [],
 			},
 			{
 				conjunction: 'AND',
@@ -594,6 +596,7 @@ describe('detection', () => {
 				rules: [
 					{attribute: 'hostname', operator: 'eq', value: 'localhost'},
 				],
+				scope: [],
 			},
 		]);
 
@@ -624,6 +627,7 @@ describe('detection', () => {
 							value: 'US',
 						},
 					],
+					scope: [],
 				},
 				{
 					conjunction: 'AND',
@@ -635,6 +639,7 @@ describe('detection', () => {
 							value: 'localhost',
 						},
 					],
+					scope: [],
 				},
 			]);
 

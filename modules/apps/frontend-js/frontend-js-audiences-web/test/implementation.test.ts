@@ -17,6 +17,7 @@ function mockAudiencesDefinition(audienceIds: string[]) {
 			rules: [
 				{attribute: 'hostname', operator: 'eq', value: 'localhost'},
 			],
+			scope: [],
 		})),
 	};
 

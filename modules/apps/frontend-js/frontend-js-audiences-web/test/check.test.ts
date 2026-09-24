@@ -27,6 +27,7 @@ function audience(overrides: {[key: string]: any} = {}): any {
 		conjunction: 'AND',
 		id: 'the_audience',
 		rules: [leafRule()],
+		scope: [],
 		...overrides,
 	};
 }
@@ -201,6 +202,28 @@ describe('check', () => {
 			expect(() =>
 				check(audiencesDefinition({audiences: [audience({id: 123})]}))
 			).toThrow("field 'id' must be a string");
+		});
+
+		it('rejects a non-array scope', () => {
+			expect(() =>
+				check(
+					audiencesDefinition({
+						audiences: [audience({scope: '20121'})],
+					})
+				)
+			).toThrow("Audience 'the_audience' field 'scope' must be an array");
+		});
+
+		it('rejects a non-string site group ID in the scope', () => {
+			expect(() =>
+				check(
+					audiencesDefinition({
+						audiences: [audience({scope: [20121]})],
+					})
+				)
+			).toThrow(
+				"Audience 'the_audience' field 'scope'[0] must be a string"
+			);
 		});
 	});
 

@@ -24,6 +24,7 @@ export interface Audience {
 	conjunction: Conjunction;
 	id: AudienceId;
 	rules: Rule[];
+	scope: string[];
 }
 
 export type AudienceId = string;

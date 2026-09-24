@@ -81,15 +81,12 @@ public class AudiencesDefinitionProviderImpl
 				continue;
 			}
 
-			JSONArray scopeJSONArray = _getScopeJSONArray(audiencesEntry);
-
-			if (scopeJSONArray.length() > 0) {
-				jsonObject.put("scope", scopeJSONArray);
-			}
-
 			audiencesJSONArray.put(
 				jsonObject.put(
-					"id", audiencesEntry.getExternalReferenceCode()));
+					"id", audiencesEntry.getExternalReferenceCode()
+				).put(
+					"scope", _getScopeJSONArray(audiencesEntry)
+				));
 		}
 
 		String json = JSONUtil.put(
@@ -132,7 +129,7 @@ public class AudiencesDefinitionProviderImpl
 					return null;
 				}
 
-				return group.getGroupId();
+				return String.valueOf(group.getGroupId());
 			},
 			_log);
 	}
