@@ -274,9 +274,6 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 
 					_whereBiPredicates.put("${entityFinder.name}", whereBiPredicate);
 				</#list>
-				<#if entityFinderWhereClause_has_next>
-
-				</#if>
 			</#list>
 		}
 	</#if>
