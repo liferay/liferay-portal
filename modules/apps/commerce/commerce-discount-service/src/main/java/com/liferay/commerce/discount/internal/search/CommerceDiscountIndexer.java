@@ -79,6 +79,9 @@ public class CommerceDiscountIndexer extends BaseIndexer<CommerceDiscount> {
 
 	public static final String FIELD_COUPON_CODE = "couponCode";
 
+	public static final String FIELD_EXTERNAL_REFERENCE_CODE =
+		"externalReferenceCode";
+
 	public static final String FIELD_GROUP_IDS = "groupIds";
 
 	public static final String FIELD_TARGET_TYPE = "targetType";
@@ -317,6 +320,9 @@ public class CommerceDiscountIndexer extends BaseIndexer<CommerceDiscount> {
 		document.addKeyword(FIELD_ACTIVE, commerceDiscount.isActive());
 		document.addKeyword(
 			FIELD_COUPON_CODE, commerceDiscount.getCouponCode());
+		document.addKeyword(
+			FIELD_EXTERNAL_REFERENCE_CODE,
+			commerceDiscount.getExternalReferenceCode(), true);
 		document.addText(
 			FIELD_TARGET_TYPE, commerceDiscountTargetType.toString());
 		document.addKeyword(

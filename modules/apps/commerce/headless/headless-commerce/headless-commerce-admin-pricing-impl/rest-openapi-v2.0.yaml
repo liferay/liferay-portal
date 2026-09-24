@@ -520,6 +520,12 @@ components:
                         Optional coupon code that the buyer must supply at checkout when `useCouponCode` is true. Case-sensitive; ignored when `useCouponCode` is false.
                     example: SAVE20
                     type: string
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the discount. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 customFields:
                     additionalProperties: true
                     description:
@@ -528,6 +534,20 @@ components:
                         priority: high
                         segment: B2B
                     type: object
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the discount is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 discountAccountGroups:
                     description:
                         Account-group bindings cascaded on upsert. Each entry attaches the discount to one AccountGroup; supplying this array on POST/PUT replaces the previous bindings.
@@ -684,6 +704,10 @@ components:
                     format: bigdecimal
                     minimum: 0
                     type: number
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 rulesConjunction:
                     description:
                         When true, all attached discount rules must pass for the discount to apply; when false, any single passing rule activates the discount.
@@ -5190,6 +5214,69 @@ paths:
                         Unexpected error
             summary: Creates or updates a Discount Sku.
             tags: ["DiscountSku"]
+    /discounts/{discountId}/permissions:
+        get:
+            description:
+                Lists the role permissions granted on the discount identified by ID. Requires the PERMISSIONS action on the discount.
+            operationId: getDiscountPermissionsPage
+            parameters:
+                -   in: path
+                    name: discountId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the discount, the same `id` the discount payload carries.
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The role permissions of the discount.
+            summary: Lists the permissions of a discount by ID.
+            tags:
+                -   Discount
+        put:
+            description:
+                Replaces the role permissions granted on the discount identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the discount.
+            operationId: putDiscountPermissionsPage
+            parameters:
+                -   in: path
+                    name: discountId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the discount, the same `id` the discount payload carries.
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The updated role permissions of the discount.
+            summary: Replaces the permissions of a discount by ID.
+            tags:
+                -   Discount
     /discounts/{id}:
         delete:
             description:

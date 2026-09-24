@@ -8,5 +8,6 @@ author: Zoltán Takács
 clientDir: ../headless-commerce-admin-pricing-client/src/main/java
 compatibilityVersion: 16
 forcePredictableSchemaPropertyName: false
+generatePermissions: true
 javaEEPackage: jakarta
 testDir: ../headless-commerce-admin-pricing-test/src/testIntegration/java

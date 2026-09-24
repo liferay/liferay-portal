@@ -14,6 +14,7 @@ import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelService;
+import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.discount.service.CommerceDiscountOrderTypeRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
@@ -54,9 +55,11 @@ import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResourc
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.core.util.ExpandoUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -119,52 +122,6 @@ public class DiscountResourceImpl
 	}
 
 	@Override
-	public Discount getDiscount(Long id) throws Exception {
-		return _toDiscount(GetterUtil.getLong(id));
-	}
-
-	@Override
-	public Discount getDiscountByExternalReferenceCode(
-			String externalReferenceCode)
-		throws Exception {
-
-		CommerceDiscount commerceDiscount =
-			_commerceDiscountService.
-				fetchCommerceDiscountByExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId());
-
-		if (commerceDiscount == null) {
-			throw new NoSuchDiscountException(
-				"Unable to find discount with external reference code " +
-					externalReferenceCode);
-		}
-
-		return _toDiscount(commerceDiscount.getCommerceDiscountId());
-	}
-
-	@Override
-	public Page<Discount> getDiscountsPage(
-			String search, Filter filter, Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		return SearchUtil.search(
-			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
-			CommerceDiscount.class.getName(), search, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
-			searchContext -> {
-				searchContext.setAttribute(
-					"skipCommerceAccountGroupValidation", Boolean.TRUE);
-				searchContext.setAttribute(
-					"status", WorkflowConstants.STATUS_ANY);
-				searchContext.setCompanyId(contextCompany.getCompanyId());
-			},
-			sorts,
-			document -> _toDiscount(
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
-	}
-
-	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
 		throws Exception {
 
@@ -195,7 +152,7 @@ public class DiscountResourceImpl
 			@Override
 			public List<String> getNestedFields() {
 				return List.of(
-					"discountAccountGroups", "discountAccounts",
+					"creator", "discountAccountGroups", "discountAccounts",
 					"discountCategories", "discountChannels",
 					"discountOrderTypes", "discountProductGroups",
 					"discountProducts", "discountRules", "discountSkus");
@@ -246,7 +203,53 @@ public class DiscountResourceImpl
 	}
 
 	@Override
-	public Discount postDiscount(Discount discount) throws Exception {
+	protected Discount doGetDiscount(Long id) throws Exception {
+		return _toDiscount(GetterUtil.getLong(id));
+	}
+
+	@Override
+	protected Discount doGetDiscountByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		CommerceDiscount commerceDiscount =
+			_commerceDiscountService.
+				fetchCommerceDiscountByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		if (commerceDiscount == null) {
+			throw new NoSuchDiscountException(
+				"Unable to find discount with external reference code " +
+					externalReferenceCode);
+		}
+
+		return _toDiscount(commerceDiscount.getCommerceDiscountId());
+	}
+
+	@Override
+	protected Page<Discount> doGetDiscountsPage(
+			String search, Filter filter, Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return SearchUtil.search(
+			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
+			CommerceDiscount.class.getName(), search, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.setAttribute(
+					"skipCommerceAccountGroupValidation", Boolean.TRUE);
+				searchContext.setAttribute(
+					"status", WorkflowConstants.STATUS_ANY);
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+			},
+			sorts,
+			document -> _toDiscount(
+				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
+	}
+
+	@Override
+	protected Discount doPostDiscount(Discount discount) throws Exception {
 		CommerceDiscount commerceDiscount = _addOrUpdateCommerceDiscount(
 			discount.getExternalReferenceCode(), discount);
 
@@ -254,7 +257,7 @@ public class DiscountResourceImpl
 	}
 
 	@Override
-	public Discount putDiscountByExternalReferenceCode(
+	protected Discount doPutDiscountByExternalReferenceCode(
 			String externalReferenceCode, Discount discount)
 		throws Exception {
 
@@ -262,6 +265,22 @@ public class DiscountResourceImpl
 			externalReferenceCode, discount);
 
 		return _toDiscount(commerceDiscount.getCommerceDiscountId());
+	}
+
+	@Override
+	protected Long getPermissionCheckerGroupId(Object id) throws Exception {
+		CommerceDiscount commerceDiscount =
+			_commerceDiscountLocalService.getCommerceDiscount((Long)id);
+
+		Group group = _groupLocalService.getCompanyGroup(
+			commerceDiscount.getCompanyId());
+
+		return group.getGroupId();
+	}
+
+	@Override
+	protected String getPermissionCheckerResourceName(Object id) {
+		return CommerceDiscount.class.getName();
 	}
 
 	private CommerceDiscount _addOrUpdateCommerceDiscount(
@@ -617,6 +636,9 @@ public class DiscountResourceImpl
 		_commerceDiscountCommerceAccountGroupRelService;
 
 	@Reference
+	private CommerceDiscountLocalService _commerceDiscountLocalService;
+
+	@Reference
 	private CommerceDiscountOrderTypeRelService
 		_commerceDiscountOrderTypeRelService;
 
@@ -652,6 +674,9 @@ public class DiscountResourceImpl
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;
