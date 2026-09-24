@@ -54,6 +54,22 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 
 	@Override
 	public DTOConverter<?, ?> getDTOConverter(
+		String dtoClassName, String type) {
+
+		if (!Validator.isBlank(type)) {
+			DTOConverter<?, ?> dtoConverter = _getDTOConverter(
+				_getKey(dtoClassName, type));
+
+			if (dtoConverter != null) {
+				return dtoConverter;
+			}
+		}
+
+		return _getDTOConverter(dtoClassName);
+	}
+
+	@Override
+	public DTOConverter<?, ?> getDTOConverter(
 		String applicationName, String dtoClassName, String version) {
 
 		return _getDTOConverter(
@@ -69,6 +85,16 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 			(serviceReference, emitter) -> {
 				String dtoClassName = (String)serviceReference.getProperty(
 					"dto.class.name");
+
+				String[] types = _getTypes(serviceReference);
+
+				if (types.length > 0) {
+					for (String type : types) {
+						emitter.emit(_getKey(dtoClassName, type));
+					}
+
+					return;
+				}
 
 				emitter.emit(dtoClassName);
 
@@ -135,12 +161,32 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 		return defaultDTOConverterHolder.getDTOConverter();
 	}
 
+	private String _getKey(String dtoClassName, String type) {
+		return StringBundler.concat(dtoClassName, StringPool.POUND, type);
+	}
+
 	private String _getKey(
 		String applicationName, String dtoClassName, String version) {
 
 		return StringBundler.concat(
 			applicationName, StringPool.POUND, dtoClassName, StringPool.POUND,
 			version);
+	}
+
+	private String[] _getTypes(
+		ServiceReference<DTOConverter<?, ?>> serviceReference) {
+
+		Object types = serviceReference.getProperty("dto.class.type");
+
+		if (types == null) {
+			return new String[0];
+		}
+
+		if (types instanceof String[]) {
+			return (String[])types;
+		}
+
+		return new String[] {String.valueOf(types)};
 	}
 
 	private ServiceTrackerMap<String, List<DTOConverterHolder>>

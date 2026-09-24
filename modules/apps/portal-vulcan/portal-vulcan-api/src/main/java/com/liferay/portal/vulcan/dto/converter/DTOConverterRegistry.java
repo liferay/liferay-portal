@@ -20,6 +20,12 @@ public interface DTOConverterRegistry {
 
 	public DTOConverter<?, ?> getDTOConverter(String dtoClassName);
 
+	public default DTOConverter<?, ?> getDTOConverter(
+		String dtoClassName, String type) {
+
+		return getDTOConverter(dtoClassName);
+	}
+
 	public DTOConverter<?, ?> getDTOConverter(
 		String applicationName, String dtoClassName, String version);
 
