@@ -256,7 +256,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
-		_validate(0, cpDefinitionOptionRel, 0, key, StringPool.BLANK);
+		if (!_emptyModelManager.isEmptyModel()) {
+			_validate(0, cpDefinitionOptionRel, 0, key, StringPool.BLANK);
+		}
 
 		long cpDefinitionOptionValueRelId = counterLocalService.increment();
 
@@ -676,7 +678,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	@Override
 	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
 			String externalReferenceCode, long companyId, long userId,
-			long cpDefinitionOptionRelId)
+			long cpDefinitionOptionRelId, String key)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -690,7 +692,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 				cpDefinitionOptionValueRelLocalService.
 					addCPDefinitionOptionValueRel(
 						externalReferenceCode, cpDefinitionOptionRelId,
-						externalReferenceCode,
+						GetterUtil.get(key, externalReferenceCode),
 						Collections.singletonMap(
 							LocaleUtil.getSiteDefault(), externalReferenceCode),
 						0, serviceContext),

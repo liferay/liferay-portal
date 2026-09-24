@@ -262,7 +262,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 	@Override
 	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
-			String externalReferenceCode, long cpDefinitionOptionRelId)
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key)
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
@@ -277,7 +278,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		return cpDefinitionOptionValueRelLocalService.
 			getOrAddEmptyCPDefinitionOptionValueRel(
 				externalReferenceCode, permissionChecker.getCompanyId(),
-				permissionChecker.getUserId(), cpDefinitionOptionRelId);
+				permissionChecker.getUserId(), cpDefinitionOptionRelId, key);
 	}
 
 	@Override
