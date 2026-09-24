@@ -37,19 +37,23 @@ public class InvalidationSequence {
 		return false;
 	}
 
-	public void publish(
+	public boolean publish(
 		String regionName, long sequence, Runnable publishRunnable,
 		Runnable withdrawRunnable) {
 
 		if (_isInvalidatedAfter(regionName, sequence)) {
-			return;
+			return false;
 		}
 
 		publishRunnable.run();
 
 		if (_isInvalidatedAfter(regionName, sequence)) {
 			withdrawRunnable.run();
+
+			return false;
 		}
+
+		return true;
 	}
 
 	private boolean _isInvalidatedAfter(String regionName, long sequence) {

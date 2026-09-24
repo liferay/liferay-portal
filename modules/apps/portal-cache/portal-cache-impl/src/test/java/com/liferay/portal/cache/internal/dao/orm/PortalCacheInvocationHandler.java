@@ -54,6 +54,14 @@ public class PortalCacheInvocationHandler implements InvocationHandler {
 			return _portalCacheName;
 		}
 
+		if (methodName.equals("hashCode")) {
+			return System.identityHashCode(proxy);
+		}
+
+		if (methodName.equals("isSharded")) {
+			return false;
+		}
+
 		if (methodName.equals("put")) {
 			if (_serialized) {
 				Serializer serializer = new Serializer();
@@ -71,6 +79,10 @@ public class PortalCacheInvocationHandler implements InvocationHandler {
 
 		if (methodName.equals("remove")) {
 			return _map.remove(args[0]);
+		}
+
+		if (methodName.equals("removeAll")) {
+			_map.clear();
 		}
 
 		return null;

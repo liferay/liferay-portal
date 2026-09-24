@@ -180,6 +180,29 @@ public class TransactionalPortalCacheUtil {
 		portalCacheMap.clear();
 	}
 
+	public static <K extends Serializable, V> boolean completePut(
+		PortalCache<K, V> portalCache, K key, V value) {
+
+		PendingPut pendingPut = _pendingPut.get();
+
+		if ((pendingPut == null) || (pendingPut._portalCache != portalCache) ||
+			!key.equals(pendingPut._key) || isEnabled()) {
+
+			PortalCacheHelperUtil.putWithoutReplicator(portalCache, key, value);
+
+			return true;
+		}
+
+		_pendingPut.remove();
+
+		return _invalidationSequence.publish(
+			_getRegionName(portalCache), pendingPut._sequence,
+			() -> PortalCacheHelperUtil.putWithoutReplicator(
+				portalCache, key, value),
+			() -> PortalCacheHelperUtil.removeWithoutReplicator(
+				portalCache, key));
+	}
+
 	public static <K extends Serializable, V> V get(
 		PortalCache<K, V> portalCache, K key) {
 
@@ -255,6 +278,24 @@ public class TransactionalPortalCacheUtil {
 		return !portalCacheMaps.isEmpty();
 	}
 
+	public static <K extends Serializable> void preparePut(
+		PortalCache<K, ?> portalCache, K key) {
+
+		if (!_isTransactionalCacheEnabled()) {
+			return;
+		}
+
+		List<PortalCacheMap> portalCacheMaps = _portalCacheMaps.get();
+
+		if (!portalCacheMaps.isEmpty()) {
+			return;
+		}
+
+		_pendingPut.set(
+			new PendingPut(
+				portalCache, key, _invalidationSequence.getSequence()));
+	}
+
 	public static <K extends Serializable, V> void put(
 		PortalCache<K, V> portalCache, K key, V value, int ttl, boolean mvcc) {
 
@@ -298,6 +339,15 @@ public class TransactionalPortalCacheUtil {
 		List<PortalCacheMap> portalCacheMaps = _portalCacheMaps.get();
 
 		portalCacheMaps.add(new PortalCacheMap(savepoint));
+	}
+
+	private static String _getRegionName(PortalCache<?, ?> portalCache) {
+		if (portalCache.isSharded()) {
+			return _getShardedRegionName(
+				CompanyThreadLocal.getNonsystemCompanyId(), portalCache);
+		}
+
+		return portalCache.getPortalCacheName();
 	}
 
 	private static String _getShardedRegionName(
@@ -381,6 +431,9 @@ public class TransactionalPortalCacheUtil {
 			ArrayList::new, false);
 	private static final InvalidationSequence _invalidationSequence =
 		new InvalidationSequence();
+	private static final ThreadLocal<PendingPut> _pendingPut =
+		new CentralizedThreadLocal<>(
+			TransactionalPortalCacheUtil.class.getName() + "._pendingPut");
 	private static final ThreadLocal<List<PortalCacheMap>> _portalCacheMaps =
 		new CentralizedThreadLocal<>(
 			TransactionalPortalCacheUtil.class.getName() + "._portalCacheMaps",
@@ -556,6 +609,22 @@ public class TransactionalPortalCacheUtil {
 		private boolean _skipReplicator = true;
 		private final Map<Serializable, ValueEntry> _uncommittedMap =
 			new HashMap<>();
+
+	}
+
+	private static class PendingPut {
+
+		private PendingPut(
+			PortalCache<?, ?> portalCache, Serializable key, long sequence) {
+
+			_portalCache = portalCache;
+			_key = key;
+			_sequence = sequence;
+		}
+
+		private final Serializable _key;
+		private final PortalCache<?, ?> _portalCache;
+		private final long _sequence;
 
 	}
 

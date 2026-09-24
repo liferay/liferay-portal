@@ -62,7 +62,10 @@ public class InvalidationSequenceTest {
 
 		List<String> actions = new ArrayList<>();
 
-		_publish(invalidationSequence, _REGION_NAME_1, 0, actions);
+		boolean published = _publish(
+			invalidationSequence, _REGION_NAME_1, 0, actions);
+
+		Assert.assertTrue(actions.toString(), published);
 
 		Assert.assertEquals(Collections.singletonList("publish"), actions);
 
@@ -70,23 +73,29 @@ public class InvalidationSequenceTest {
 
 		invalidationSequence.invalidate(_REGION_NAME_1, 0);
 
-		_publish(invalidationSequence, _REGION_NAME_1, 0, actions);
+		published = _publish(invalidationSequence, _REGION_NAME_1, 0, actions);
+
+		Assert.assertFalse(actions.toString(), published);
 
 		Assert.assertTrue(actions.toString(), actions.isEmpty());
 
-		_publish(invalidationSequence, _REGION_NAME_1, 1, actions);
+		published = _publish(invalidationSequence, _REGION_NAME_1, 1, actions);
+
+		Assert.assertTrue(actions.toString(), published);
 
 		Assert.assertEquals(Collections.singletonList("publish"), actions);
 
 		actions.clear();
 
-		_publish(invalidationSequence, _REGION_NAME_2, 0, actions);
+		published = _publish(invalidationSequence, _REGION_NAME_2, 0, actions);
+
+		Assert.assertTrue(actions.toString(), published);
 
 		Assert.assertEquals(Collections.singletonList("publish"), actions);
 
 		actions.clear();
 
-		invalidationSequence.publish(
+		published = invalidationSequence.publish(
 			_REGION_NAME_1, 1,
 			() -> {
 				actions.add("publish");
@@ -95,14 +104,16 @@ public class InvalidationSequenceTest {
 			},
 			() -> actions.add("withdraw"));
 
+		Assert.assertFalse(actions.toString(), published);
+
 		Assert.assertEquals(Arrays.asList("publish", "withdraw"), actions);
 	}
 
-	private void _publish(
+	private boolean _publish(
 		InvalidationSequence invalidationSequence, String regionName,
 		long sequence, List<String> actions) {
 
-		invalidationSequence.publish(
+		return invalidationSequence.publish(
 			regionName, sequence, () -> actions.add("publish"),
 			() -> actions.add("withdraw"));
 	}

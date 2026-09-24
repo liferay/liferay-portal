@@ -219,6 +219,168 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
+	public void testCompletePut() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		Assert.assertTrue(
+			"Put should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertTrue(
+			"Put without a prepare should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertTrue(
+			"Put of another key should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_2, _VALUE_2));
+		Assert.assertEquals(_VALUE_2, _portalCache.get(_KEY_2));
+
+		PortalCache<String, String> portalCache = new TestPortalCache<>(
+			_portalCache.getPortalCacheName());
+
+		Assert.assertTrue(
+			"Put of another cache should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				portalCache, _KEY_1, _VALUE_2));
+		Assert.assertEquals(_VALUE_2, portalCache.get(_KEY_1));
+
+		Assert.assertFalse(
+			"Put should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_2));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCompletePutAfterWriterCommit() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertFalse(
+			"Put should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		ShardedTestPortalCache<String, String> shardedPortalCache =
+			new ShardedTestPortalCache<>("Sharded Test Portal Cache");
+
+		TransactionalPortalCache<String, String>
+			shardedTransactionalPortalCache = new TransactionalPortalCache<>(
+				shardedPortalCache, false);
+
+		long companyId1 = 1;
+		long companyId2 = 2;
+
+		_companyIdThreadLocal.set(companyId1);
+
+		TransactionalPortalCacheUtil.preparePut(shardedPortalCache, _KEY_1);
+
+		_companyIdThreadLocal.set(companyId2);
+
+		_commitRemove(shardedTransactionalPortalCache, _KEY_1);
+
+		_companyIdThreadLocal.set(companyId1);
+
+		Assert.assertTrue(
+			"Put should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				shardedPortalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_1, shardedPortalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.preparePut(shardedPortalCache, _KEY_2);
+
+		_commitRemove(shardedTransactionalPortalCache, _KEY_2);
+
+		Assert.assertFalse(
+			"Put should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				shardedPortalCache, _KEY_2, _VALUE_2));
+		Assert.assertNull(shardedPortalCache.get(_KEY_2));
+	}
+
+	@Test
+	public void testCompletePutDuringWriterCommit() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		PortalCache<String, String> portalCache = new TestPortalCache<>(
+			_portalCache.getPortalCacheName()) {
+
+			@Override
+			protected void doPut(String key, String value, int timeToLive) {
+				super.doPut(key, value, timeToLive);
+
+				_commitRemove(transactionalPortalCache, _KEY_1);
+			}
+
+		};
+
+		TransactionalPortalCacheUtil.preparePut(portalCache, _KEY_1);
+
+		Assert.assertFalse(
+			"Put should be withdrawn",
+			TransactionalPortalCacheUtil.completePut(
+				portalCache, _KEY_1, _VALUE_1));
+		Assert.assertNull(portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCompletePutInTransaction() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.preparePut(
+			transactionalPortalCache, _KEY_1);
+
+		TransactionalPortalCacheUtil.begin();
+
+		Assert.assertTrue(
+			"Put should be buffered",
+			TransactionalPortalCacheUtil.completePut(
+				transactionalPortalCache, _KEY_1, _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertFalse(
+			"Put after a put in a transaction should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				transactionalPortalCache, _KEY_1, _VALUE_2));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
 	public void testConcurrentTransactionForMVCCPortalCache() throws Exception {
 		_setEnableTransactionalCache(true);
 
@@ -514,6 +676,56 @@ public class TransactionalPortalCacheTest {
 
 		_testNoneTransactionalPortalCache(
 			new TransactionalPortalCache<>(_portalCache, false));
+	}
+
+	@Test
+	public void testPreparePut() {
+		_setEnableTransactionalCache(false);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertTrue(
+			"Put without a prepare should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.begin();
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_2);
+
+		TransactionalPortalCacheUtil.rollback();
+
+		_commitRemove(transactionalPortalCache, _KEY_2);
+
+		Assert.assertTrue(
+			"Put without a prepare should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_2, _VALUE_2));
+		Assert.assertEquals(_VALUE_2, _portalCache.get(_KEY_2));
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		TransactionalPortalCacheUtil.begin();
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_2);
+
+		TransactionalPortalCacheUtil.rollback();
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertFalse(
+			"Put after a prepare in a transaction should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
 	}
 
 	@Test
