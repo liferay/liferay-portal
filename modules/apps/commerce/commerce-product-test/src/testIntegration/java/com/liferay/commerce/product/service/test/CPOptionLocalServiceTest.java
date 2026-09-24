@@ -253,27 +253,31 @@ public class CPOptionLocalServiceTest {
 		frutillaRule.scenario(
 			"Get or add an empty product option"
 		).given(
-			"A company and an external reference code"
+			"A company, an external reference code, and a commerce option type"
 		).when(
 			"An empty product option is requested"
 		).then(
 			"A NoSuchCPOptionException is thrown while lazy referencing is " +
 				"disabled"
 		).and(
-			"An empty stub with the given external reference code is " +
-				"returned while lazy referencing is enabled"
+			"An empty stub with the given external reference code, commerce " +
+				"option type, and SKU contributor attribute is returned " +
+					"while lazy referencing is enabled"
 		).and(
 			"The same product option is resolved on subsequent requests"
 		).and(
 			"The empty status is cleared once the stub is updated"
 		);
 
+		String defaultCommerceOptionTypeKey =
+			CPTestUtil.getDefaultCommerceOptionTypeKey(true);
 		String externalReferenceCode = RandomTestUtil.randomString();
 
 		try {
 			_cpOptionLocalService.getOrAddEmptyCPOption(
 				externalReferenceCode, _serviceContext.getCompanyId(),
-				_serviceContext.getUserId());
+				_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
+				true);
 
 			Assert.fail();
 		}
@@ -288,17 +292,23 @@ public class CPOptionLocalServiceTest {
 
 			cpOption = _cpOptionLocalService.getOrAddEmptyCPOption(
 				externalReferenceCode, _serviceContext.getCompanyId(),
-				_serviceContext.getUserId());
+				_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
+				true);
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
+				defaultCommerceOptionTypeKey,
+				cpOption.getCommerceOptionTypeKey());
 			Assert.assertEquals(
 				externalReferenceCode, cpOption.getExternalReferenceCode());
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
+			Assert.assertTrue(cpOption.isSkuContributor());
 
 			CPOption resolvedCPOption =
 				_cpOptionLocalService.getOrAddEmptyCPOption(
 					externalReferenceCode, _serviceContext.getCompanyId(),
-					_serviceContext.getUserId());
+					_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
+					true);
 
 			Assert.assertEquals(
 				cpOption.getCPOptionId(), resolvedCPOption.getCPOptionId());
@@ -314,6 +324,31 @@ public class CPOptionLocalServiceTest {
 
 		Assert.assertNotEquals(
 			WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
+	}
+
+	@Test(expected = CPOptionSKUContributorException.class)
+	public void testGetOrAddEmptyCPOptionIfSKUContributorOptionTypeIsInvalid()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Get or add an empty SKU contributor product option with a " +
+				"commerce option type that does not contribute to the SKU"
+		).given(
+			"A company and an external reference code"
+		).when(
+			"An empty SKU contributor product option is requested with a " +
+				"checkbox commerce option type"
+		).then(
+			"The product option creation fails"
+		);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			_cpOptionLocalService.getOrAddEmptyCPOption(
+				RandomTestUtil.randomString(), _serviceContext.getCompanyId(),
+				_serviceContext.getUserId(), "checkbox", true);
+		}
 	}
 
 	@Rule
