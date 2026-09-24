@@ -270,11 +270,17 @@ function DiffKeyPopover() {
 			trigger={
 				<ClayButtonWithIcon
 					aria-expanded={show}
-					className="mr-3 text-secondary"
+					aria-label={Liferay.Language.get(
+						'compare-versions-key-help'
+					)}
+					className="lfr-portal-tooltip mr-3 text-secondary"
+					data-title={Liferay.Language.get(
+						'compare-versions-key-help'
+					)}
+					data-tooltip-align="bottom"
 					displayType="unstyled"
 					size="sm"
 					symbol="question-circle-full"
-					title={Liferay.Language.get('compare-versions-key-help')}
 				/>
 			}
 		>
