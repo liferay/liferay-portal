@@ -238,6 +238,26 @@ public class KaleoDefinitionServiceImplTest {
 
 	private void _testAddKaleoDefinition() throws Exception {
 
+		// A user with the "checkPermission" attribute set to false
+
+		User user = _addUser();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setAttribute("checkPermission", Boolean.FALSE);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", user.getUserId(), " must have ",
+				ActionKeys.ADD_DEFINITION, " permission for ",
+				WorkflowConstants.RESOURCE_NAME, StringPool.SPACE),
+			() -> _kaleoDefinitionService.addKaleoDefinition(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_read(), "company", false, 1, serviceContext));
+
 		// Administrator with "company.administrator.can.publish" disabled
 
 		_setUpPermissionThreadLocal(_companyAdminUser);
@@ -346,10 +366,30 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testUpdateKaleoDefinition() throws Exception {
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		// A user with the "checkPermission" attribute set to false
+
+		User user = _addUser();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setAttribute("checkPermission", Boolean.FALSE);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", user.getUserId(), " must have ",
+				ActionKeys.ADD_DEFINITION, " permission for ",
+				WorkflowConstants.RESOURCE_NAME, StringPool.SPACE),
+			() -> _kaleoDefinitionService.updateKaleoDefinition(
+				kaleoDefinition.getExternalReferenceCode(),
+				kaleoDefinition.getKaleoDefinitionId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				kaleoDefinition.getContent(), false, serviceContext));
 
 		// Administrator with "company.administrator.can.publish" disabled
-
-		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
 
 		_setUpPermissionThreadLocal(_companyAdminUser);
 
