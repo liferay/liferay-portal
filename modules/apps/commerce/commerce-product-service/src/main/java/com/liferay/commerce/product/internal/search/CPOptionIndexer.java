@@ -96,6 +96,10 @@ public class CPOptionIndexer extends BaseIndexer<CPOption> {
 
 		Document document = getBaseModelDocument(CLASS_NAME, cpOption);
 
+		document.addKeyword(
+			CPField.EXTERNAL_REFERENCE_CODE,
+			cpOption.getExternalReferenceCode(), true);
+
 		String cpOptionDefaultLanguageId = _localization.getDefaultLanguageId(
 			cpOption.getName());
 
