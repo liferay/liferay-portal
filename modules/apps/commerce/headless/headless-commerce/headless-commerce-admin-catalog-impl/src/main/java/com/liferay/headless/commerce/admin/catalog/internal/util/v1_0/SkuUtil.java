@@ -13,6 +13,7 @@ import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.pricing.configuration.CommercePricingConfiguration;
 import com.liferay.commerce.pricing.constants.CommercePricingConstants;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionValueRelException;
+import com.liferay.commerce.product.exception.NoSuchCPOptionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -58,11 +60,12 @@ import java.util.Objects;
 public class SkuUtil {
 
 	public static CPInstance addOrUpdateCPInstance(
-			CPInstanceService cpInstanceService, Sku sku,
 			CPDefinition cpDefinition,
 			CPDefinitionOptionRelService cpDefinitionOptionRelService,
 			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
-			CPOptionService cpOptionService, ServiceContext serviceContext)
+			CPInstanceService cpInstanceService,
+			CPOptionService cpOptionService, String externalReferenceCode,
+			Sku sku, ServiceContext serviceContext)
 		throws PortalException {
 
 		long replacementCProductId = 0;
@@ -213,7 +216,7 @@ public class SkuUtil {
 		}
 
 		return cpInstanceService.addOrUpdateCPInstance(
-			sku.getExternalReferenceCode(), cpDefinition.getCPDefinitionId(),
+			externalReferenceCode, cpDefinition.getCPDefinitionId(),
 			cpDefinition.getGroupId(), sku.getSku(), sku.getGtin(),
 			sku.getManufacturerPartNumber(),
 			GetterUtil.get(sku.getPurchasable(), false),
@@ -275,24 +278,20 @@ public class SkuUtil {
 			CPOptionService cpOptionService, SkuOption skuOption)
 		throws PortalException {
 
-		String externalReferenceCode =
+		String optionExternalReferenceCode =
 			skuOption.getOptionExternalReferenceCode();
 
-		if (Validator.isNotNull(externalReferenceCode)) {
-			CPOption cpOption = cpOptionService.fetchCPOption(
-				cpDefinition.getCompanyId(), skuOption.getKey());
-
-			if (cpOption == null) {
+		if (Validator.isNotNull(optionExternalReferenceCode)) {
+			if (!LazyReferencingThreadLocal.isEnabled()) {
 				return cpDefinitionOptionRelService.
 					getCPDefinitionOptionRelByExternalReferenceCode(
-						externalReferenceCode, cpDefinition.getCompanyId());
+						optionExternalReferenceCode,
+						cpDefinition.getCompanyId());
 			}
 
-			return cpDefinitionOptionRelService.
-				getOrAddEmptyCPDefinitionOptionRel(
-					externalReferenceCode, cpDefinition.getCPDefinitionId(),
-					cpOption.getCPOptionId(),
-					cpOption.getCommerceOptionTypeKey());
+			return _getOrAddEmptyCPDefinitionOptionRel(
+				cpDefinition, cpDefinitionOptionRelService, cpOptionService,
+				skuOption);
 		}
 
 		if (Validator.isNull(skuOption.getKey())) {
@@ -335,7 +334,8 @@ public class SkuUtil {
 			CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
 				cpDefinitionOptionValueRelService.
 					getOrAddEmptyCPDefinitionOptionValueRel(
-						externalReferenceCode, cpDefinitionOptionRelId);
+						externalReferenceCode, cpDefinitionOptionRelId,
+						skuOption.getValue());
 
 			if (cpDefinitionOptionValueRel.getCPDefinitionOptionRelId() !=
 					cpDefinitionOptionRelId) {
@@ -434,6 +434,45 @@ public class SkuUtil {
 		}
 
 		return jsonArray.toString();
+	}
+
+	private static CPDefinitionOptionRel _getOrAddEmptyCPDefinitionOptionRel(
+			CPDefinition cpDefinition,
+			CPDefinitionOptionRelService cpDefinitionOptionRelService,
+			CPOptionService cpOptionService, SkuOption skuOption)
+		throws PortalException {
+
+		CPOption cpOption = null;
+
+		String parentOptionExternalReferenceCode =
+			skuOption.getParentOptionExternalReferenceCode();
+
+		if (Validator.isNull(parentOptionExternalReferenceCode)) {
+			cpOption = cpOptionService.fetchCPOption(
+				cpDefinition.getCompanyId(), skuOption.getKey());
+
+			if (cpOption == null) {
+				throw new NoSuchCPOptionException(
+					"Unable to find option with key " + skuOption.getKey());
+			}
+		}
+		else {
+			cpOption = cpOptionService.getOrAddEmptyCPOption(
+				parentOptionExternalReferenceCode,
+				skuOption.getParentOptionFieldType(),
+				GetterUtil.get(
+					skuOption.getParentOptionSkuContributor(), false));
+		}
+
+		return cpDefinitionOptionRelService.getOrAddEmptyCPDefinitionOptionRel(
+			skuOption.getOptionExternalReferenceCode(),
+			cpDefinition.getCPDefinitionId(), cpOption.getCPOptionId(),
+			GetterUtil.get(
+				skuOption.getOptionFieldType(),
+				cpOption.getCommerceOptionTypeKey()),
+			GetterUtil.get(
+				skuOption.getOptionSkuContributor(),
+				cpOption.isSkuContributor()));
 	}
 
 	private static void _updateCommercePriceEntry(

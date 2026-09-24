@@ -414,9 +414,9 @@ public class ProductResourceImpl
 					"attachments", "creator", "diagram", "images",
 					"mappedProducts", "pins", "productAccountGroups",
 					"productChannels", "productConfiguration", "productGroups",
-					"productOptions", "productSpecifications",
-					"productVirtualSettings", "relatedProducts",
-					"shippingConfiguration", "skus",
+					"productOptions", "productOptions.productOptionValues",
+					"productSpecifications", "productVirtualSettings",
+					"relatedProducts", "shippingConfiguration", "skus",
 					"subscriptionConfiguration", "taxConfiguration");
 			}
 
@@ -1517,9 +1517,9 @@ public class ProductResourceImpl
 						CPInstance.class.getName(), sku.getCustomFields()));
 
 				CPInstance cpInstance = SkuUtil.addOrUpdateCPInstance(
-					_cpInstanceService, sku, cpDefinition,
-					_cpDefinitionOptionRelService,
-					_cpDefinitionOptionValueRelService, _cpOptionService,
+					cpDefinition, _cpDefinitionOptionRelService,
+					_cpDefinitionOptionValueRelService, _cpInstanceService,
+					_cpOptionService, sku.getExternalReferenceCode(), sku,
 					serviceContext);
 
 				serviceContext.setExpandoBridgeAttributes(null);
