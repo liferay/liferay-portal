@@ -1,4 +1,5 @@
 <#assign hasEntityFinderWhereClauses = serviceBuilder.isVersionGTE_7_4_0() && entityFinderWhereClauses?? && (entityFinderWhereClauses?size > 0) />
+
 <#if serviceBuilder.isVersionGTE_7_4_0()>
 	package ${packagePath}.service.persistence.impl;
 
@@ -10,24 +11,29 @@
 	import com.liferay.portal.kernel.dao.orm.FinderPath;
 	import com.liferay.portal.kernel.model.BaseModel;
 	import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+
 	<#if hasEntityFinderWhereClauses>
 		import com.liferay.portal.kernel.util.GetterUtil;
 		import com.liferay.portal.kernel.util.Validator;
 	</#if>
 
 	import java.util.ArrayList;
+
 	<#if hasEntityFinderWhereClauses>
 		import java.util.HashMap;
 	</#if>
+
 	import java.util.List;
 	import java.util.Map;
 	import java.util.Objects;
 	import java.util.concurrent.ConcurrentHashMap;
+
 	<#if hasEntityFinderWhereClauses>
 		import java.util.function.BiPredicate;
 	</#if>
 
 	import org.osgi.service.component.annotations.Component;
+
 	<#assign columnBitmaskEnabled = (entity.databaseRegularEntityColumns?size &lt; 64) && !entity.hasEagerBlobColumn() />
 
 	/**
@@ -66,13 +72,13 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 		${entity.name}ModelImpl ${entity.variableName}ModelImpl = (${entity.name}ModelImpl)baseModel;
 
 		<#if hasEntityFinderWhereClauses>
-			BiPredicate<${entity.name}ModelImpl, Boolean> wherePredicate = _wherePredicates.get(finderPath.getFinderName());
+			BiPredicate<${entity.name}ModelImpl, Boolean> whereBiPredicate = _whereBiPredicates.get(finderPath.getFinderName());
 
-			if ((wherePredicate != null) && !wherePredicate.test(${entity.variableName}ModelImpl, original)) {
+			if ((whereBiPredicate != null) && !whereBiPredicate.test(${entity.variableName}ModelImpl, original)) {
 				return null;
 			}
-
 		</#if>
+
 		<#if columnBitmaskEnabled>
 			long columnBitmask = ${entity.variableName}ModelImpl.getColumnBitmask();
 
@@ -95,8 +101,8 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 					if (whereColumnBitmask != null) {
 						finderPathColumnBitmask |= whereColumnBitmask;
 					}
-
 				</#if>
+
 				<#if entity.entityOrder??>
 					if (finderPath.isBaseModelResult() && (${entity.name}PersistenceImpl.FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION == finderPath.getCacheName())) {
 						finderPathColumnBitmask |= _ORDER_BY_COLUMNS_BITMASK;
@@ -112,14 +118,14 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 		<#else>
 			<#if hasEntityFinderWhereClauses>
 				String[] whereColumnNames = _whereColumnNames.get(finderPath.getFinderName());
-
 			</#if>
+
 			if (!checkColumn || _hasModifiedColumns(${entity.variableName}ModelImpl, columnNames)
 
 			<#if hasEntityFinderWhereClauses>
 				|| ((whereColumnNames != null) && _hasModifiedColumns(${entity.variableName}ModelImpl, whereColumnNames))
-
 			</#if>
+
 			<#if entity.entityOrder??>
 				|| _hasModifiedColumns(${entity.variableName}ModelImpl, _ORDER_BY_COLUMNS)
 			</#if>
@@ -152,8 +158,8 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 
 			return ${entity.variableName}ModelImpl.getColumnValue(columnName);
 		}
-
 	</#if>
+
 	private static Object[] _getValue(${entity.name}ModelImpl ${entity.variableName}ModelImpl, <#if serviceBuilder.isVersionGTE_7_4_0()>FinderPath finderPath<#else>String[] columnNames</#if>, boolean original) {
 		<#if serviceBuilder.isVersionGTE_7_4_0()>
 			String[] columnNames = finderPath.getColumnNames();
@@ -239,14 +245,15 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 			}
 		</#if>
 	</#if>
-	<#if hasEntityFinderWhereClauses>
 
+	<#if hasEntityFinderWhereClauses>
 		<#if columnBitmaskEnabled>
 			private static final Map<String, Long> _whereColumnBitmasks = new HashMap<>();
 		<#else>
 			private static final Map<String, String[]> _whereColumnNames = new HashMap<>();
 		</#if>
-		private static final Map<String, BiPredicate<${entity.name}ModelImpl, Boolean>> _wherePredicates = new HashMap<>();
+
+		private static final Map<String, BiPredicate<${entity.name}ModelImpl, Boolean>> _whereBiPredicates = new HashMap<>();
 
 		static {
 			<#list entityFinderWhereClauses?values as entityFinderWhereClause>
@@ -255,7 +262,8 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 				<#else>
 					<#if entityFinderWhereClause?is_first>String[] </#if>whereColumnNames = new String[] {<#list entityFinderWhereClause.DBColumnNames as dbColumnName>"${dbColumnName}"<#if dbColumnName_has_next>, </#if></#list>};
 				</#if>
-				<#if entityFinderWhereClause?is_first>BiPredicate<${entity.name}ModelImpl, Boolean> </#if>wherePredicate = (${entity.variableName}ModelImpl, original) -> ${entityFinderWhereClause.javaExpression};
+
+				<#if entityFinderWhereClause?is_first>BiPredicate<${entity.name}ModelImpl, Boolean> </#if>whereBiPredicate = (${entity.variableName}ModelImpl, original) -> ${entityFinderWhereClause.javaExpression};
 
 				<#list entityFinderWhereClause.entityFinders as entityFinder>
 					<#if columnBitmaskEnabled>
@@ -263,7 +271,8 @@ class ${entity.name}ModelArgumentsResolver implements ArgumentsResolver {
 					<#else>
 						_whereColumnNames.put("${entityFinder.name}", whereColumnNames);
 					</#if>
-					_wherePredicates.put("${entityFinder.name}", wherePredicate);
+
+					_whereBiPredicates.put("${entityFinder.name}", whereBiPredicate);
 				</#list>
 				<#if entityFinderWhereClause_has_next>
 

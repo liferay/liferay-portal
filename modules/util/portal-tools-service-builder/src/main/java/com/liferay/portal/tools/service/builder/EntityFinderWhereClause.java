@@ -21,6 +21,8 @@ import java.util.Set;
 public class EntityFinderWhereClause {
 
 	public EntityFinderWhereClause(Entity entity, String where) {
+		Set<String> dbColumnNames = new LinkedHashSet<>();
+
 		where = StringUtil.removeSubstring(
 			where, entity.getAlias() + StringPool.PERIOD);
 
@@ -28,8 +30,6 @@ public class EntityFinderWhereClause {
 			StringUtil.removeChars(
 				where, CharPool.OPEN_PARENTHESIS, CharPool.CLOSE_PARENTHESIS),
 			_AND);
-
-		Set<String> dbColumnNames = new LinkedHashSet<>();
 
 		StringBundler sb = new StringBundler(terms.length * 2);
 
