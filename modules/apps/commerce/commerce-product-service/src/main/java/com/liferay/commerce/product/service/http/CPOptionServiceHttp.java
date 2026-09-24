@@ -381,7 +381,8 @@ public class CPOptionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPOption
 			getOrAddEmptyCPOption(
-				HttpPrincipal httpPrincipal, String externalReferenceCode)
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				String commerceOptionTypeKey, boolean skuContributor)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -390,7 +391,8 @@ public class CPOptionServiceHttp {
 				_getOrAddEmptyCPOptionParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode);
+				methodKey, externalReferenceCode, commerceOptionTypeKey,
+				skuContributor);
 
 			Object returnObj = null;
 
@@ -585,7 +587,7 @@ public class CPOptionServiceHttp {
 		long.class
 	};
 	private static final Class<?>[] _getOrAddEmptyCPOptionParameterTypes8 =
-		new Class[] {String.class};
+		new Class[] {String.class, String.class, boolean.class};
 	private static final Class<?>[] _searchCPOptionsParameterTypes9 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,
@@ -603,4 +605,4 @@ public class CPOptionServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1729165856
+// LIFERAY-SERVICE-BUILDER-HASH:1933142550

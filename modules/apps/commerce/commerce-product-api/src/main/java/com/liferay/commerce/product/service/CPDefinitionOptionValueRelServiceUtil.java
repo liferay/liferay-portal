@@ -138,11 +138,12 @@ public class CPDefinitionOptionValueRelServiceUtil {
 
 	public static CPDefinitionOptionValueRel
 			getOrAddEmptyCPDefinitionOptionValueRel(
-				String externalReferenceCode, long cpDefinitionOptionRelId)
+				String externalReferenceCode, long cpDefinitionOptionRelId,
+				String key)
 		throws PortalException {
 
 		return getService().getOrAddEmptyCPDefinitionOptionValueRel(
-			externalReferenceCode, cpDefinitionOptionRelId);
+			externalReferenceCode, cpDefinitionOptionRelId, key);
 	}
 
 	/**
@@ -225,4 +226,4 @@ public class CPDefinitionOptionValueRelServiceUtil {
 			CPDefinitionOptionValueRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-880117067
+// LIFERAY-SERVICE-BUILDER-HASH:-834225084

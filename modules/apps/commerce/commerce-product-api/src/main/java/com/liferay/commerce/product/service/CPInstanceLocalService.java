@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
@@ -30,7 +29,6 @@ import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -172,12 +170,10 @@ public interface CPInstanceLocalService
 	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPInstance deleteCPInstance(CPInstance cpInstance)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPInstance deleteCPInstance(CPInstance cpInstance, boolean makeCopy)
 		throws PortalException;
 
@@ -595,4 +591,4 @@ public interface CPInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-444394145
+// LIFERAY-SERVICE-BUILDER-HASH:249422484

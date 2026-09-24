@@ -113,7 +113,8 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
-			String externalReferenceCode, long cpDefinitionOptionRelId)
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key)
 		throws PortalException;
 
 	/**
@@ -157,4 +158,4 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-849437097
+// LIFERAY-SERVICE-BUILDER-HASH:-443504072

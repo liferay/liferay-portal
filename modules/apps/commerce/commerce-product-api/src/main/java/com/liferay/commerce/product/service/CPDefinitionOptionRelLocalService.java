@@ -432,7 +432,8 @@ public interface CPDefinitionOptionRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
 			String externalReferenceCode, long companyId, long userId,
-			long cpDefinitionId, long cpOptionId, String commerceOptionTypeKey)
+			long cpDefinitionId, long cpOptionId, String commerceOptionTypeKey,
+			boolean skuContributor)
 		throws PortalException;
 
 	/**
@@ -529,4 +530,4 @@ public interface CPDefinitionOptionRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-634396289
+// LIFERAY-SERVICE-BUILDER-HASH:-2125764152

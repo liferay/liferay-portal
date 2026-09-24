@@ -313,7 +313,8 @@ public interface CPOptionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPOption getOrAddEmptyCPOption(
-			String externalReferenceCode, long companyId, long userId)
+			String externalReferenceCode, long companyId, long userId,
+			String commerceOptionTypeKey, boolean skuContributor)
 		throws PortalException;
 
 	/**
@@ -377,4 +378,4 @@ public interface CPOptionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:402723359
+// LIFERAY-SERVICE-BUILDER-HASH:306430019

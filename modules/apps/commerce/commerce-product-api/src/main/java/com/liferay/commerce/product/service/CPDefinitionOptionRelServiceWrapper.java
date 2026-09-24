@@ -202,12 +202,12 @@ public class CPDefinitionOptionRelServiceWrapper
 	@Override
 	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
 			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
-			String commerceOptionTypeKey)
+			String commerceOptionTypeKey, boolean skuContributor)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelService.getOrAddEmptyCPDefinitionOptionRel(
 			externalReferenceCode, cpDefinitionId, cpOptionId,
-			commerceOptionTypeKey);
+			commerceOptionTypeKey, skuContributor);
 	}
 
 	/**
@@ -300,4 +300,4 @@ public class CPDefinitionOptionRelServiceWrapper
 	private CPDefinitionOptionRelService _cpDefinitionOptionRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1429335976
+// LIFERAY-SERVICE-BUILDER-HASH:-1608501670

@@ -149,12 +149,13 @@ public class CPDefinitionOptionValueRelServiceWrapper
 
 	@Override
 	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
-			String externalReferenceCode, long cpDefinitionOptionRelId)
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionValueRelService.
 			getOrAddEmptyCPDefinitionOptionValueRel(
-				externalReferenceCode, cpDefinitionOptionRelId);
+				externalReferenceCode, cpDefinitionOptionRelId, key);
 	}
 
 	/**
@@ -254,4 +255,4 @@ public class CPDefinitionOptionValueRelServiceWrapper
 		_cpDefinitionOptionValueRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1183389987
+// LIFERAY-SERVICE-BUILDER-HASH:1116792920

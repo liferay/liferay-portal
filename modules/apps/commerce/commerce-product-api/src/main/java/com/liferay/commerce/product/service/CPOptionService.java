@@ -86,7 +86,9 @@ public interface CPOptionService extends BaseService {
 	public CPOption getCPOption(long cpOptionId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPOption getOrAddEmptyCPOption(String externalReferenceCode)
+	public CPOption getOrAddEmptyCPOption(
+			String externalReferenceCode, String commerceOptionTypeKey,
+			boolean skuContributor)
 		throws PortalException;
 
 	/**
@@ -113,4 +115,4 @@ public interface CPOptionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-841157087
+// LIFERAY-SERVICE-BUILDER-HASH:1567956413

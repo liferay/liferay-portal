@@ -543,7 +543,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
 			getOrAddEmptyCPDefinitionOptionValueRel(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long cpDefinitionOptionRelId)
+				long cpDefinitionOptionRelId, String key)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -553,7 +553,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				_getOrAddEmptyCPDefinitionOptionValueRelParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, cpDefinitionOptionRelId);
+				methodKey, externalReferenceCode, cpDefinitionOptionRelId, key);
 
 			Object returnObj = null;
 
@@ -910,7 +910,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 		};
 	private static final Class<?>[]
 		_getOrAddEmptyCPDefinitionOptionValueRelParameterTypes11 = new Class[] {
-			String.class, long.class
+			String.class, long.class, String.class
 		};
 	private static final Class<?>[]
 		_resetCPInstanceCPDefinitionOptionValueRelParameterTypes12 =
@@ -940,4 +940,4 @@ public class CPDefinitionOptionValueRelServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1190382933
+// LIFERAY-SERVICE-BUILDER-HASH:926110988
