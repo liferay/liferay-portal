@@ -3,9 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {openConfirmModal} from '@liferay/layout-js-components-web';
+
 import deleteItem, {
 	getPreviousItemId,
 } from '../../../../src/main/resources/META-INF/resources/page_editor/app/thunks/deleteItem';
+
+jest.mock('@liferay/layout-js-components-web', () => ({
+	openConfirmModal: jest.fn(),
+}));
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/page_editor/app/services/InfoItemService',
@@ -148,7 +154,32 @@ const STATE = {
 	},
 };
 
+function getElementVariationsState(segmentsExperienceERC) {
+	return {
+		...STATE,
+		availableSegmentsExperiences: {
+			1: {
+				segmentsExperienceERC: 'experience',
+				segmentsExperienceId: '1',
+			},
+		},
+		elementVariations: [
+			{
+				segmentsExperienceERC,
+				targetElement:
+					'.lfr-layout-structure-item-child1 [data-lfr-editable-id="element-text"]',
+			},
+		],
+		layoutData: {...STATE.layoutData, deletedItems: []},
+		segmentsExperienceId: '1',
+	};
+}
+
 describe('deleteItem', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it('dispatches the delete item action with the portletIds of the removed portlets, if any', async () => {
 		const dispatch = jest.fn();
 
@@ -164,6 +195,54 @@ describe('deleteItem', () => {
 					'com_liferay_blogs_web_portlet_BlogsPortlet',
 					'com_liferay_microblogs_web_portlet_AnotherPortlet_INSTANCE_2411',
 				],
+			})
+		);
+	});
+
+	it('warns before deleting an item whose descendants are referenced in element variations', async () => {
+		const dispatch = jest.fn();
+
+		await deleteItem({itemIds: ['container']})(dispatch, () =>
+			getElementVariationsState('experience')
+		);
+
+		expect(openConfirmModal).toHaveBeenCalledTimes(1);
+		expect(openConfirmModal).toHaveBeenCalledWith(
+			expect.objectContaining({
+				text: 'one-or-more-of-the-selected-fragments-are-referenced-in-one-or-more-element-variations.-are-you-sure-you-want-to-proceed-with-the-deletion',
+			})
+		);
+		expect(dispatch).not.toHaveBeenCalled();
+	});
+
+	it('ignores the element variations of other experiences', async () => {
+		const dispatch = jest.fn();
+
+		await deleteItem({itemIds: ['container']})(dispatch, () =>
+			getElementVariationsState('otherExperience')
+		);
+
+		expect(openConfirmModal).not.toHaveBeenCalled();
+		expect(dispatch).toHaveBeenCalled();
+	});
+
+	it('warns about the rules after the element variations', async () => {
+		openConfirmModal.mockImplementationOnce(({onConfirm}) => onConfirm());
+
+		const state = getElementVariationsState('experience');
+
+		await deleteItem({itemIds: ['container']})(jest.fn(), () => ({
+			...state,
+			layoutData: {
+				...state.layoutData,
+				pageRules: [{actions: [{itemId: 'container'}], conditions: []}],
+			},
+		}));
+
+		expect(openConfirmModal).toHaveBeenCalledTimes(2);
+		expect(openConfirmModal).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				text: 'one-or-more-of-the-selected-fragments-are-referenced-in-one-or-more-rules',
 			})
 		);
 	});
