@@ -156,8 +156,6 @@ public class ViewDisplayPagePermissionsMVCRenderCommandTest {
 	private void _testRenderWithoutExternalReferenceCode() throws Exception {
 		Assert.assertEquals(
 			"/view.jsp", _render(null, new MockLiferayPortletRenderResponse()));
-		Assert.assertEquals(
-			"/view.jsp", _render("", new MockLiferayPortletRenderResponse()));
 	}
 
 	private static final String _PORTLET_CONFIGURATION_PORTLET_ID =

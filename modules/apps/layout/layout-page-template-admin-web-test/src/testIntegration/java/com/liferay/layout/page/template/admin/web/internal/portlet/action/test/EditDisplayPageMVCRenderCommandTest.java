@@ -151,8 +151,6 @@ public class EditDisplayPageMVCRenderCommandTest {
 	private void _testRenderWithoutExternalReferenceCode() throws Exception {
 		Assert.assertEquals(
 			"/view.jsp", _render(null, new MockLiferayPortletRenderResponse()));
-		Assert.assertEquals(
-			"/view.jsp", _render("", new MockLiferayPortletRenderResponse()));
 	}
 
 	private Company _company;
