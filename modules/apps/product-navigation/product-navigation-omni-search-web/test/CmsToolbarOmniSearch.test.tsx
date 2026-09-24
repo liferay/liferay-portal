@@ -58,7 +58,13 @@ function getOmniSearchItem() {
 }
 
 describe('CmsToolbarOmniSearch', () => {
+	beforeEach(() => {
+		(Liferay as any).Browser = {isMac: jest.fn(() => false)};
+	});
+
 	afterEach(() => {
+		delete (Liferay as any).Browser;
+
 		document.body.innerHTML = '';
 	});
 

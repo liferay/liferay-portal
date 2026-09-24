@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String omniSearchLabel = LanguageUtil.get(request, "omni-search") + " (Ctrl+K)";
+String omniSearchLabel = LanguageUtil.get(request, "omni-search");
 
 OmniSearchDisplayContext omniSearchDisplayContext = new OmniSearchDisplayContext(request);
 %>

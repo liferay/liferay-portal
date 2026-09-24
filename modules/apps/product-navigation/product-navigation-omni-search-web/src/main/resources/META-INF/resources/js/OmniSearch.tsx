@@ -42,6 +42,8 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 
 	const inputRef = useRef<HTMLInputElement>(null);
 
+	const openButtonTitle = useMemo(() => getOpenOmniSearchTooltipMarkup(), []);
+
 	const {observer} = useModal({
 		onClose: () => setVisible(false),
 	});
@@ -149,14 +151,16 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 		<>
 			<ClayButtonWithIcon
 				aria-haspopup="dialog"
-				aria-label={`${Liferay.Language.get('omni-search')} (Ctrl+K)`}
+				aria-label={Liferay.Language.get('omni-search')}
 				className="control-menu-nav-link lfr-portal-tooltip"
 				data-qa-id="omniSearch"
+				data-title={openButtonTitle}
+				data-title-set-as-html
+				data-tooltip-align="bottom-left"
 				displayType="unstyled"
 				onClick={() => setVisible(true)}
 				size="sm"
 				symbol="search"
-				title={`${Liferay.Language.get('omni-search')} (Ctrl+K)`}
 			/>
 
 			{visible && (
@@ -264,4 +268,21 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 			)}
 		</>
 	);
+}
+
+function getOpenOmniSearchTooltipMarkup() {
+	const commandKey = Liferay.Browser.isMac() ? '⌘' : 'Ctrl';
+
+	return `
+	<div>${Liferay.Language.get('omni-search')}</div>
+	<kbd class="c-kbd c-kbd-dark mt-1">
+		<kbd class="c-kbd">${commandKey}</kbd>
+
+		<span class="c-kbd-separator">+</span>
+
+		<kbd class="c-kbd">K</kbd>
+	</kbd>
+`
+		.replaceAll('\n', '')
+		.replaceAll('\t', '');
 }

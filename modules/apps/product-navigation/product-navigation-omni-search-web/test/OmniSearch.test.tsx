@@ -7,7 +7,7 @@
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 
 import '@testing-library/jest-dom';
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
@@ -113,9 +113,17 @@ const mockFetchResponse = (response = RESULTS_RESPONSE) => {
 const openModal = async () => {
 	render(<OmniSearch resultsURL={RESULTS_URL} />);
 
-	await userEvent.click(screen.getByLabelText('omni-search (Ctrl+K)'));
+	await userEvent.click(screen.getByLabelText('omni-search'));
 
 	return screen.findByPlaceholderText('search');
+};
+
+const getTooltip = (button: HTMLElement) => {
+	const tooltip = document.createElement('div');
+
+	tooltip.innerHTML = button.getAttribute('data-title') ?? '';
+
+	return tooltip;
 };
 
 const searchFor = async (keywords: string) => {
@@ -141,6 +149,39 @@ describe('OmniSearch', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 		mockFetchResponse();
+
+		(Liferay as any).Browser = {isMac: jest.fn(() => false)};
+	});
+
+	afterEach(() => {
+		delete (Liferay as any).Browser;
+	});
+
+	it('shows the shortcut as styled keys in the button tooltip', () => {
+		render(<OmniSearch resultsURL={RESULTS_URL} />);
+
+		const button = screen.getByRole('button', {name: 'omni-search'});
+
+		expect(button).toHaveAttribute('data-title-set-as-html');
+
+		const tooltip = getTooltip(button);
+
+		expect(tooltip).toHaveTextContent('omni-search');
+		expect(within(tooltip).getByText('Ctrl').tagName).toBe('KBD');
+		expect(within(tooltip).getByText('K').tagName).toBe('KBD');
+	});
+
+	it('shows the Command key in the button tooltip on macOS', () => {
+		(Liferay as any).Browser.isMac.mockReturnValue(true);
+
+		render(<OmniSearch resultsURL={RESULTS_URL} />);
+
+		const tooltip = getTooltip(
+			screen.getByRole('button', {name: 'omni-search'})
+		);
+
+		expect(within(tooltip).getByText('⌘').tagName).toBe('KBD');
+		expect(within(tooltip).queryByText('Ctrl')).toBeNull();
 	});
 
 	it('opens the modal when the search button is clicked', async () => {
