@@ -21,9 +21,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.search.rest.client.dto.v1_0.Suggestion;
 import com.liferay.portal.search.rest.client.dto.v1_0.SuggestionsContributorConfiguration;
 import com.liferay.portal.search.rest.client.dto.v1_0.SuggestionsContributorResults;
@@ -68,6 +70,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 	public void testPostSuggestionsPage() throws Exception {
 		_testPostSuggestionsPageWithBasicSuggestionsContributor();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithAssetSearchSummary();
+		_testPostSuggestionsPageWithBasicSuggestionsContributorWithCurrentURL();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithDestinationLayout();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithEverythingScope();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithGroupERCScope();
@@ -201,6 +204,46 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 		Assert.assertEquals(
 			_journalArticle.getDescription(_locale),
 			suggestionAttributesJSONObject.get("assetSearchSummary"));
+	}
+
+	private void _testPostSuggestionsPageWithBasicSuggestionsContributorWithCurrentURL()
+		throws Exception {
+
+		String currentURL =
+			"http://localhost:" + PortalUtil.getPortalServerPort(false) +
+				"/web/guest/home";
+
+		Page<SuggestionsContributorResults> page = _postSuggestionsPage(
+			HttpComponentsUtil.addParameters(
+				currentURL, "p_l_back_url", currentURL, "p_l_back_url_title",
+				RandomTestUtil.randomString()),
+			"/search", null, "q", _layout.getPlid(), null,
+			_journalArticle.getArticleId(),
+			new SuggestionsContributorConfiguration[] {
+				new SuggestionsContributorConfiguration() {
+					{
+						contributorName = "basic";
+						displayGroupName = "Suggestions";
+					}
+				}
+			});
+
+		SuggestionsContributorResults suggestionsContributorResults =
+			page.fetchFirstItem();
+
+		Suggestion[] suggestions =
+			suggestionsContributorResults.getSuggestions();
+
+		JSONObject suggestionAttributesJSONObject =
+			JSONFactoryUtil.createJSONObject(
+				String.valueOf(suggestions[0].getAttributes()));
+
+		String assetURL = suggestionAttributesJSONObject.getString("assetURL");
+
+		Assert.assertEquals(
+			URLCodec.encodeURL(currentURL),
+			HttpComponentsUtil.getParameter(assetURL, "p_l_back_url", false));
+		Assert.assertFalse(assetURL, assetURL.contains("_redirect="));
 	}
 
 	private void _testPostSuggestionsPageWithBasicSuggestionsContributorWithDestinationLayout()
