@@ -906,32 +906,60 @@ components:
                 User account that created the entity. Properties follow the [creator](https://schema.org/creator) specification; the batch engine uses `externalReferenceCode` and `id` to keep the original creator on import.
             properties:
                 additionalName:
+                    description:
+                        The user's additional name, which can be used as a middle name. Read-only; taken from the user's middle name.
+                    example: Paul
                     readOnly: true
                     type: string
                 contentType:
+                    description:
+                        The type of the referenced content. Read-only; always UserAccount, because the creator is always a user.
+                    example: UserAccount
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        The user's external reference code. Read-only; the batch engine matches the creator by this code on import.
+                    example: AB-34098-789-N
                     readOnly: true
                     type: string
                 familyName:
+                    description:
+                        The user's surname (last name).
+                    example: Smith
                     readOnly: true
                     type: string
                 givenName:
+                    description:
+                        The user's first name.
+                    example: John
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        The user's ID. Read-only; the batch engine falls back to this identifier when the external reference code does not match a user on import.
+                    example: 20132
                     format: int64
                     readOnly: true
                     type: integer
                 image:
+                    description:
+                        A relative URL to the user's profile image. Read-only; omitted when the user has no portrait.
+                    example: /image/user_portrait?screenName=john.smith
                     format: uri
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        The user's full name.
+                    example: John Smith
                     readOnly: true
                     type: string
                 profileURL:
+                    description:
+                        A relative URL to the user's profile. Read-only; resolved from the user's personal site.
+                    example: /web/john.smith
+                    format: uri
                     readOnly: true
                     type: string
             type: object
@@ -1447,12 +1475,32 @@ components:
                     example: 30130
                     format: int64
                     type: integer
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the option. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 customFields:
                     description:
                         Custom field values stored against the option through the expando bridge; localized when the request accepts all languages.
                     items:
                         type: customField
                     type: array
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the option is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 description:
                     additionalProperties:
                         type: string
@@ -1516,6 +1564,12 @@ components:
                         Available values for this option; populated on create or update by cascading each value through the option-value resource.
                     items:
                         $ref: "#/components/schemas/OptionValue"
+                    type: array
+                permissions:
+                    description:
+                        Role permissions granted on the option. Read and replaced through the dedicated permissions endpoints; carried along on export and import so the option keeps its permissions across environments.
+                    items:
+                        type: permission
                     type: array
                 priority:
                     description:
@@ -3419,6 +3473,21 @@ components:
             description:
                 A purchasable stock keeping unit (variant) of a product, with its own SKU code, pricing, dimensions, subscription configuration, and optional virtual download settings.
             properties:
+                catalogCurrencyCode:
+                    description:
+                        Currency code of the catalog the parent product belongs to. On read it mirrors that catalog's currency code; on write it is used only when the catalog does not yet exist, to create it with the right currency, which its base price lists then carry.
+                    example: USD
+                    type: string
+                catalogCurrencyExternalReferenceCode:
+                    description:
+                        External reference code of the catalog currency; resolved after `catalogCurrencyCode` and, when the currency has not been imported yet, used to create it as an empty stub.
+                    example: US_DOLLAR
+                    type: string
+                catalogExternalReferenceCode:
+                    description:
+                        External reference code of the catalog the parent product belongs to. On read it mirrors that catalog's external reference code; on write it is used only when the parent product does not yet exist, to create it in the right catalog.
+                    example: CAT0111
+                    type: string
                 cost:
                     description:
                         Cost paid to acquire the SKU, before margin; expressed in the parent product catalog's default currency and rejected when negative.
@@ -3426,12 +3495,32 @@ components:
                     format: bigdecimal
                     minimum: 0
                     type: number
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the SKU. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 customFields:
                     description:
                         Custom expando fields defined for SKUs; read using the request locale and written back as expando attributes alongside the SKU.
                     items:
                         type: customField
                     type: array
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the SKU is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 depth:
                     description:
                         Depth dimension of the SKU; rejected when negative; expressed in the dimensions unit configured on the parent catalog or commerce shop settings.
@@ -3510,6 +3599,11 @@ components:
                     format: bigdecimal
                     minimum: 0
                     type: number
+                productExternalReferenceCode:
+                    description:
+                        External reference code of the parent product. On read it mirrors the parent product's external reference code; on write it binds the SKU to that product, which is what lets a SKU be imported on its own into an environment where the numeric identifiers do not apply.
+                    example: PROD0111
+                    type: string
                 productId:
                     description:
                         Internal numeric identifier of the parent product; read-only.
@@ -3529,6 +3623,11 @@ components:
                         hu_HU: Kezi fureszrol
                     readOnly: true
                     type: object
+                productType:
+                    description:
+                        Product type name of the parent product. On read it mirrors the parent product's type; on write it is used only when the parent product does not yet exist, to create it with the right type, and is then required.
+                    example: simple
+                    type: string
                 promoPrice:
                     description:
                         Promotional selling price applied in place of `price` when a promotion is active; expressed in the parent catalog's default currency, rejected when negative, and synchronized to a promotion price-list entry for the SKU.
@@ -3638,6 +3737,11 @@ components:
                         External reference code of the product option this selection answers; it takes precedence over `optionId` and over the numeric form of `key`, and it names the product option link rather than the global option template. During an import, when no product option carries the code and `key` names an existing option, an empty product option is created and completed when the product option itself is imported. Outside an import, a code that matches nothing fails the request with a 404 error.
                     example: AB-34098-789-N
                     type: string
+                optionFieldType:
+                    description:
+                        Field type of the product option this selection answers, mirroring `fieldType` on that product option. On write it is consulted only during an import, to give the empty product option a valid field type, and is then required alongside `optionExternalReferenceCode`. It is read from the product option rather than from the option the product option derives from, because the two may differ.
+                    example: select
+                    type: string
                 optionId:
                     description:
                         Internal numeric identifier of the product option this selection answers.
@@ -3645,6 +3749,11 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                optionSkuContributor:
+                    description:
+                        Whether the product option this selection answers contributes to the SKU, mirroring `skuContributor` on that product option. On write it is consulted only during an import, together with `optionFieldType`, because the two decide which field types the empty product option may carry.
+                    example: true
+                    type: boolean
                 optionValueExternalReferenceCode:
                     description:
                         External reference code of the chosen product option value; it takes precedence over `optionValueId` and over the numeric form of `value`, and it names the product option value link rather than the global option value. During an import, when no product option value carries the code, an empty product option value is created under the resolved product option and completed when the product option value itself is imported. Outside an import, a code that matches nothing fails the request with a 404 error.
@@ -3657,9 +3766,24 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                parentOptionExternalReferenceCode:
+                    description:
+                        External reference code of the option this selection derives from, as opposed to `optionExternalReferenceCode`, which names the product option link. On read it mirrors that option's code. On write it is consulted only during an import, and only when neither the product option nor an option named by `key` exists yet. The option is then created as an empty stub so the product option can be created under it, and both are completed when the options themselves are imported.
+                    example: AB-34098-789-N
+                    type: string
+                parentOptionFieldType:
+                    description:
+                        Field type of the option this selection derives from, mirroring `fieldType` on that option. On write it is consulted only during an import, to give the product option created under an empty option a valid field type, and is then required alongside `parentOptionExternalReferenceCode`.
+                    example: select
+                    type: string
+                parentOptionSkuContributor:
+                    description:
+                        Whether the option this selection derives from contributes to the SKU, mirroring `skuContributor` on that option. On write it is consulted only during an import, together with `parentOptionFieldType`, because the two decide which field types the product option created under an empty option may carry.
+                    example: true
+                    type: boolean
                 value:
                     description:
-                        Stable string key of the option value chosen for this option; on read the value is the option value's key.
+                        Stable string key of the option value chosen for this option; on read the value is the option value's key. During an import it also gives the empty product option value its key, so that the key is valid for the field type of the product option.
                     example: red
                     type: string
             type: object
@@ -6025,6 +6149,69 @@ paths:
             summary: Updates a mapped product by its ID.
             tags:
                 -   MappedProduct
+    /option/{optionId}/permissions:
+        get:
+            description:
+                Lists the role permissions granted on the option identified by ID. Requires the PERMISSIONS action on the option.
+            operationId: getOptionPermissionsPage
+            parameters:
+                -   in: path
+                    name: optionId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the option, the same `id` the option payload carries.
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The role permissions of the option.
+            summary: Lists the permissions of an option by ID.
+            tags:
+                -   Option
+        put:
+            description:
+                Replaces the role permissions granted on the option identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the option.
+            operationId: putOptionPermissionsPage
+            parameters:
+                -   in: path
+                    name: optionId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the option, the same `id` the option payload carries.
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The updated role permissions of the option.
+            summary: Replaces the permissions of an option by ID.
+            tags:
+                -   Option
     /optionCategories:
         get:
             description:
