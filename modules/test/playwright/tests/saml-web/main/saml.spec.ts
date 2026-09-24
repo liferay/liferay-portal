@@ -61,6 +61,7 @@ import {
 	performSpInitiatedSSO,
 } from './utils/samlAuthUtil';
 import {
+	addIdentityProviderConnection,
 	connectSpAndIdp,
 	editIdentityProviderConnection,
 	editServiceProviderConnection,
@@ -3697,3 +3698,82 @@ test('LPD-62689: IdP initiated SLO is propagated correctly from Identity Brokers
 
 	await deleteAfterTestVirtualInstances.delete(SECONDARY_SP_NAME);
 });
+
+test(
+	'Verify an ampersand in an identity provider connection name is not double escaped in the identity provider selector',
+	{tag: '@LPD-106932'},
+	async ({browser}) => {
+		const idpAdminPage = await configureVirtualInstanceForSaml(
+			browser,
+			DEFAULT_IDP_NAME,
+			'Identity Provider'
+		);
+
+		const spAdminPage = await configureVirtualInstanceForSaml(
+			browser,
+			DEFAULT_SP_NAME,
+			'Service Provider'
+		);
+
+		await connectSpAndIdp(
+			idpAdminPage,
+			DEFAULT_IDP_NAME,
+			spAdminPage,
+			DEFAULT_SP_NAME
+		);
+
+		// Create an additional IdP virtual instance, and connect it to the SP
+
+		const localhostAdminPage = await browser.newPage();
+
+		await performLogin(localhostAdminPage, 'test');
+
+		await createIdentityProviderVirtualInstance(
+			browser,
+			localhostAdminPage,
+			SECONDARY_IDP_NAME
+		);
+
+		// Use a connection name containing an ampersand
+
+		const idpConnectionName = `Charlie ${getRandomString()} & Co.`;
+
+		const idpConnection: TIdpConnection = {
+			entityId: SECONDARY_IDP_NAME,
+			idpDomain: SECONDARY_IDP_URL,
+			idpName: idpConnectionName,
+			metadataURL: `${SECONDARY_IDP_URL}/c/portal/saml/metadata`,
+			spName: DEFAULT_SP_NAME,
+			...DEFAULT_IDP_CONNECTION_VALUES,
+		};
+
+		await addIdentityProviderConnection(idpConnection, spAdminPage);
+
+		// The selector must show the name as it was typed
+
+		const spInstancePage = await browser.newPage();
+
+		await spInstancePage.goto(DEFAULT_SP_URL);
+
+		await spInstancePage.getByRole('button', {name: 'Sign In'}).click();
+
+		await spInstancePage
+			.getByText('Please select your identity provider.')
+			.waitFor({timeout: 30 * 1000});
+
+		await expect(
+			spInstancePage.getByLabel('Identity Provider', {exact: true})
+		).toContainText(idpConnectionName);
+
+		await spInstancePage.close();
+
+		// Delete newly created virtual instance, and remove from afterAll
+		// deletion
+
+		await deleteVirtualInstance(SECONDARY_IDP_NAME, localhostAdminPage);
+
+		await deleteAfterTestProviderConnections.delete(SECONDARY_IDP_NAME);
+
+		await deleteAfterTestVirtualInstances.delete(SECONDARY_IDP_NAME);
+	}
+);
