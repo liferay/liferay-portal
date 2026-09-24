@@ -195,8 +195,10 @@ export default function RestrictFieldsModal({
 						</ClayButton>
 
 						<ClayButton
+							aria-busy={saving}
 							disabled={loading || saving || !items.length}
 							displayType="primary"
+							loading={saving}
 							onClick={save}
 						>
 							{Liferay.Language.get('save')}

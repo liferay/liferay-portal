@@ -470,7 +470,6 @@ export default function AddToolsModal({
 				last={
 					<ClayButton.Group spaced>
 						<ClayButton
-							disabled={saving}
 							displayType="secondary"
 							onClick={onClose}
 							type="button"

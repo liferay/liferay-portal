@@ -208,9 +208,11 @@ export default function AddDataMasksModal({
 						</ClayButton>
 
 						<ClayButton
+							aria-busy={saving}
 							disabled={
 								!selectedExternalReferenceCodes.length || saving
 							}
+							loading={saving}
 							onClick={addSelected}
 							type="button"
 						>
