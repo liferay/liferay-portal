@@ -19,9 +19,11 @@ export default function selectErrors(uuid: Uuid) {
 		}
 
 		let item;
+		let slug;
 
 		if (uuid === state.structure.uuid) {
 			item = state.structure;
+			slug = state.structure.slug;
 		}
 		else {
 			item = findChild({root: state.structure, uuid});
@@ -34,7 +36,11 @@ export default function selectErrors(uuid: Uuid) {
 		const {erc, name} = item;
 
 		for (const [property, error] of errors.entries()) {
-			const message = getErrorMessage(property, error, {erc, name});
+			const message = getErrorMessage(property, error, {
+				erc,
+				name,
+				slug,
+			});
 
 			if (message) {
 				messages.set(property, message);

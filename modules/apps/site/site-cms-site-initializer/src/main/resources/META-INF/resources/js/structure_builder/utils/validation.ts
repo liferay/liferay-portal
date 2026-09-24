@@ -24,6 +24,7 @@ import removeServerErrors from './state/removeServerErrors';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
+const SLUG_MAX_LENGTH = 253;
 
 export type ValidationProperty =
 	| 'erc'
@@ -45,6 +46,7 @@ export type ValidationError =
 	| 'default-language-label'
 	| 'no-children'
 	| 'no-fields'
+	| 'number'
 	| 'permission'
 	| 'prefix-reserved'
 	| 'unexpected'
@@ -242,7 +244,7 @@ export function validateStructure({
 	isGlobalValidation?: boolean;
 	objectDefinitions?: ObjectDefinitions;
 }): ErrorMap {
-	const {erc, label, name, spaces} = data;
+	const {erc, label, name, slug, spaces} = data;
 
 	const errors = new Map(currentErrors);
 
@@ -305,6 +307,21 @@ export function validateStructure({
 		}
 	}
 
+	if (!isNullOrUndefined(slug)) {
+		if (slug.length > SLUG_MAX_LENGTH) {
+			errors.set('slug', 'max-length');
+		}
+		else if (`/${slug}/`.includes('/-/')) {
+			errors.set('slug', 'invalid-character');
+		}
+		else if (/^\d+$/.test(slug)) {
+			errors.set('slug', 'number');
+		}
+		else {
+			errors.delete('slug');
+		}
+	}
+
 	if (!isNullOrUndefined(spaces)) {
 		spaces.length ? errors.delete('spaces') : errors.set('spaces', 'empty');
 	}
@@ -318,9 +335,10 @@ export function getErrorMessage(
 	values: {
 		erc?: string;
 		name?: string;
+		slug?: string;
 	}
 ) {
-	const {erc, name} = values;
+	const {erc, name, slug} = values;
 
 	if (property === 'global') {
 		if (error === 'unexpected') {
@@ -377,6 +395,21 @@ export function getErrorMessage(
 		if (error === 'in-use') {
 			return Liferay.Language.get(
 				'the-friendly-url-is-already-in-use.-please-enter-a-unique-friendly-url'
+			);
+		}
+		else if (error === 'invalid-character') {
+			return Liferay.Language.get(
+				'friendly-url-separator-error-invalid-characters'
+			);
+		}
+		else if (error === 'max-length' && slug) {
+			return `${Liferay.Language.get(
+				'maximum-number-of-characters-exceeded'
+			)}: ${slug.length}/${SLUG_MAX_LENGTH}`;
+		}
+		else if (error === 'number') {
+			return Liferay.Language.get(
+				'friendly-url-separator-error-cannot-be-a-number'
 			);
 		}
 	}
