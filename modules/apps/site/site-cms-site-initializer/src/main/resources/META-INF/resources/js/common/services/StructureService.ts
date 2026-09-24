@@ -9,22 +9,29 @@ import buildGroupObjectDefinitions from '../../structure_builder/utils/buildGrou
 import buildObjectDefinition from '../../structure_builder/utils/buildObjectDefinition';
 import buildObjectRelationships from '../../structure_builder/utils/buildObjectRelationships';
 import getRandomId from '../../structure_builder/utils/getRandomId';
+import {ServerError} from '../../structure_builder/utils/validation';
 import {ObjectDefinition} from '../types/ObjectDefinition';
 import ApiHelper from './ApiHelper';
 
-export type StructureServiceError = 'slug-in-use' | 'in-use' | 'unexpected';
-
-function classifyError(type?: string | null): StructureServiceError {
+function classifyError(type?: string | null): ServerError {
 	if (!type) {
 		return 'unexpected';
+	}
+
+	if (type === 'DuplicateObjectDefinitionExternalReferenceCodeException') {
+		return 'erc-in-use';
 	}
 
 	if (type.startsWith('ObjectDefinitionFriendlyURLSeparatorException')) {
 		return 'slug-in-use';
 	}
 
-	if (type.startsWith('ObjectDefinitionNameException')) {
-		return 'in-use';
+	if (type === 'ObjectDefinitionNameException.MustNotBeDuplicate') {
+		return 'name-in-use';
+	}
+
+	if (type.startsWith('PrincipalException')) {
+		return 'permission';
 	}
 
 	return 'unexpected';

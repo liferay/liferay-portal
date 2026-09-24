@@ -11,9 +11,7 @@ import {addParams, navigate, sub} from 'frontend-js-web';
 import React, {Dispatch} from 'react';
 
 import SpaceService from '../../common/services/SpaceService';
-import StructureService, {
-	StructureServiceError,
-} from '../../common/services/StructureService';
+import StructureService from '../../common/services/StructureService';
 import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
 import {Space} from '../../common/types/Space';
 import {config} from '../config';
@@ -37,6 +35,7 @@ import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import DisplayPageService from '../services/DisplayPageService';
 import buildStructureErrorAction from './buildStructureErrorAction';
+import {ServerError} from './validation';
 
 type Props = {
 	dispatch: Dispatch<Action>;
@@ -267,7 +266,7 @@ export default async function handlePublishStructure({
 		});
 	};
 
-	const onError = (error: StructureServiceError) =>
+	const onError = (error: ServerError) =>
 		dispatch(buildStructureErrorAction({error, uuid}));
 
 	dispatch({operation: 'publishing', type: 'start-operation'});

@@ -6,9 +6,7 @@
 import {openToast} from 'frontend-js-components-web';
 import {Dispatch} from 'react';
 
-import StructureService, {
-	StructureServiceError,
-} from '../../common/services/StructureService';
+import StructureService from '../../common/services/StructureService';
 import {Action, State} from '../contexts/StateContext';
 import selectHistory from '../selectors/selectHistory';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
@@ -26,6 +24,7 @@ import selectStructureTitleFieldName from '../selectors/selectStructureTitleFiel
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import buildStructureErrorAction from './buildStructureErrorAction';
+import {ServerError} from './validation';
 
 type Props = {
 	dispatch: Dispatch<Action>;
@@ -60,7 +59,7 @@ export default async function handleSaveStructure({
 	const workflows = selectStructureWorkflows(state);
 	const uuid = selectStructureUuid(state);
 
-	const onError = (error: StructureServiceError) =>
+	const onError = (error: ServerError) =>
 		dispatch(buildStructureErrorAction({error, uuid}));
 
 	dispatch({operation: 'saving', type: 'start-operation'});

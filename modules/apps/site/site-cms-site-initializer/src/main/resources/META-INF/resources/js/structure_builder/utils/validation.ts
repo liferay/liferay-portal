@@ -44,11 +44,30 @@ export type ValidationError =
 	| 'default-language-label'
 	| 'no-children'
 	| 'no-fields'
+	| 'permission'
 	| 'prefix-reserved'
 	| 'unexpected'
 	| 'uppercase';
 
 export type ErrorMap = Map<ValidationProperty, ValidationError>;
+
+export type ServerError =
+	| 'erc-in-use'
+	| 'name-in-use'
+	| 'permission'
+	| 'slug-in-use'
+	| 'unexpected';
+
+export const SERVER_ERRORS: Record<
+	ServerError,
+	{error: ValidationError; property: ValidationProperty}
+> = {
+	'erc-in-use': {error: 'in-use', property: 'erc'},
+	'name-in-use': {error: 'in-use', property: 'name'},
+	'permission': {error: 'permission', property: 'global'},
+	'slug-in-use': {error: 'in-use', property: 'slug'},
+	'unexpected': {error: 'unexpected', property: 'global'},
+};
 
 export function validateField({
 	children,
@@ -309,6 +328,12 @@ export function getErrorMessage(
 			);
 		}
 
+		if (error === 'permission') {
+			return Liferay.Language.get(
+				'you-do-not-have-permission-to-access-the-requested-resource'
+			);
+		}
+
 		if (error === 'default-language-label') {
 			return sub(
 				Liferay.Language.get(
@@ -339,6 +364,11 @@ export function getErrorMessage(
 		}
 		else if (error === 'prefix-reserved') {
 			return sub(Liferay.Language.get('the-prefix-x-is-reserved'), 'L_');
+		}
+		else if (error === 'in-use') {
+			return Liferay.Language.get(
+				'this-external-reference-code-is-already-in-use'
+			);
 		}
 	}
 
