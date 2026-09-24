@@ -14,6 +14,7 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -156,6 +157,27 @@ public class ExportTaskResourceTest extends BaseTaskResourceTestCase {
 	}
 
 	@Test
+	public void testPostExportTaskWithDeletedObjectField() throws Exception {
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "TestObject1");
+
+		_testPostExportTask("COMPLETED", null, objectDefinition);
+
+		_objectFieldLocalService.deleteObjectField(
+			_objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(),
+				OBJECT_FIELD_NAME_TEXT_2));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "TestObject2");
+
+		JSONObject jsonObject = _testPostExportTask(
+			"COMPLETED", null, objectDefinition);
+
+		Assert.assertEquals(2, jsonObject.getInt("processedItemsCount"));
+	}
+
+	@Test
 	@TestInfo("LPD-60157")
 	public void testPostExportTaskWithFieldNames() throws Exception {
 		ObjectEntryTestUtil.addObjectEntry(
@@ -262,5 +284,8 @@ public class ExportTaskResourceTest extends BaseTaskResourceTestCase {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 }
