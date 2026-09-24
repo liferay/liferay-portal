@@ -8,14 +8,6 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "SEARCH_URL: http://\{\{ \$elasticsearchName \}\}-es-http\.\{\{ \$elasticsearchNamespace \}\}\.svc:9200"
-        documentSelector:
-            path: kind
-            value: Composition
-        it: Resolves the search URL through the dedicated Elasticsearch namespace
-    -   asserts:
-            -   matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "name: \{\{ \$elasticsearchName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}"
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -24,6 +16,14 @@ tests:
             path: kind
             value: Composition
         it: Observes the Elasticsearch resource and its secret in the dedicated namespace
+    -   asserts:
+            -   matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "SEARCH_URL: http://\{\{ \$elasticsearchName \}\}-es-http\.\{\{ \$elasticsearchNamespace \}\}\.svc:9200"
+        documentSelector:
+            path: kind
+            value: Composition
+        it: Resolves the search URL through the dedicated Elasticsearch namespace
     -   asserts:
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
