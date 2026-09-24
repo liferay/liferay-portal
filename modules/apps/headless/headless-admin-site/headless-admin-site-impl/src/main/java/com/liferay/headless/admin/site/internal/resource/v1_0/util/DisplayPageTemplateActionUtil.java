@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
 import com.liferay.headless.admin.site.internal.resource.v1_0.DisplayPageTemplateResourceImpl;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -37,6 +39,14 @@ public class DisplayPageTemplateActionUtil {
 		).build();
 
 		return HashMapBuilder.<String, Map<String, String>>put(
+			"copy",
+			_addAction(
+				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY,
+				contextScopeChecker, layoutPageTemplateEntry,
+				"postDesignLibraryDisplayPageTemplateCopy",
+				LayoutPageTemplateConstants.RESOURCE_NAME, templateParameterMap,
+				uriInfo)
+		).put(
 			"delete",
 			_addAction(
 				ActionKeys.DELETE, contextScopeChecker, layoutPageTemplateEntry,
@@ -69,6 +79,20 @@ public class DisplayPageTemplateActionUtil {
 			actionName, DisplayPageTemplateResourceImpl.class,
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), methodName,
 			contextScopeChecker, modelResourcePermission, templateParameterMap,
+			uriInfo);
+	}
+
+	private static Map<String, String> _addAction(
+		String actionName, Object contextScopeChecker,
+		LayoutPageTemplateEntry layoutPageTemplateEntry, String methodName,
+		String resourceName, Map<String, String> templateParameterMap,
+		UriInfo uriInfo) {
+
+		return ActionUtil.addAction(
+			actionName, DisplayPageTemplateResourceImpl.class,
+			layoutPageTemplateEntry.getGroupId(), methodName,
+			contextScopeChecker, null, resourceName,
+			layoutPageTemplateEntry.getGroupId(), templateParameterMap,
 			uriInfo);
 	}
 

@@ -336,6 +336,30 @@ public class DisplayPageTemplateResourceImpl
 	}
 
 	@Override
+	public DisplayPageTemplate postDesignLibraryDisplayPageTemplateCopy(
+			String designLibraryExternalReferenceCode,
+			String displayPageTemplateExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry(
+				displayPageTemplateExternalReferenceCode, groupId);
+
+		return _toDesignLibraryDisplayPageTemplate(
+			designLibraryExternalReferenceCode,
+			_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
+				groupId,
+				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId(),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), true,
+				_getServiceContext(groupId)));
+	}
+
+	@Override
 	public DisplayPageTemplate
 			postSiteDisplayPageTemplateFolderDisplayPageTemplate(
 				String siteExternalReferenceCode,
@@ -889,15 +913,22 @@ public class DisplayPageTemplateResourceImpl
 	private ServiceContext _getServiceContext(
 		DisplayPageTemplate displayPageTemplate, long groupId) {
 
+		ServiceContext serviceContext = _getServiceContext(groupId);
+
+		serviceContext.setCreateDate(displayPageTemplate.getDateCreated());
+		serviceContext.setModifiedDate(displayPageTemplate.getDateModified());
+		serviceContext.setUuid(displayPageTemplate.getUuid());
+
+		return serviceContext;
+	}
+
+	private ServiceContext _getServiceContext(long groupId) {
 		ServiceContext serviceContext = ServiceContextBuilder.create(
 			groupId, contextHttpServletRequest, null
 		).build();
 
 		serviceContext.setCompanyId(contextCompany.getCompanyId());
-		serviceContext.setCreateDate(displayPageTemplate.getDateCreated());
-		serviceContext.setModifiedDate(displayPageTemplate.getDateModified());
 		serviceContext.setUserId(contextUser.getUserId());
-		serviceContext.setUuid(displayPageTemplate.getUuid());
 
 		return serviceContext;
 	}
