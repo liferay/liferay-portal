@@ -16,6 +16,7 @@ import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.SubtypeUtil;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
@@ -40,7 +41,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lourdes Fernández Besada
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.page.template.model.LayoutPageTemplateEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.page.template.model.LayoutPageTemplateEntry",
+		"dto.class.type=" + LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE
+	},
 	service = DTOConverter.class
 )
 public class DisplayPageTemplateDTOConverter

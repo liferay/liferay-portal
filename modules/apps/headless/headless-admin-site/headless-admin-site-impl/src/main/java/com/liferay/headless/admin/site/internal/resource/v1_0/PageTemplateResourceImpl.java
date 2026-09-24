@@ -64,6 +64,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -71,6 +72,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
@@ -89,12 +91,17 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/page-template.properties",
-	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
+	property = {
+		"crud.entity.class.name=com.liferay.headless.admin.site.dto.v1_0.PageTemplate",
+		"crud.item.delegate=true",
+		"export.import.vulcan.batch.engine.task.item.delegate=true"
+	},
 	scope = ServiceScope.PROTOTYPE, service = PageTemplateResource.class
 )
 public class PageTemplateResourceImpl
 	extends BasePageTemplateResourceImpl
-	implements ExportImportVulcanBatchEngineTaskItemDelegate<PageTemplate> {
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<PageTemplate>,
+			   VulcanCRUDItemDelegate<PageTemplate> {
 
 	@Override
 	public void deleteSitePageTemplate(
@@ -171,6 +178,27 @@ public class PageTemplateResourceImpl
 			}
 
 		};
+	}
+
+	@Override
+	public PageTemplate getItem(Long id) throws Exception {
+		EnabledUtil.checkEnabled(contextCompany);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntry(id);
+
+		if (!Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.BASIC,
+				layoutPageTemplateEntry.getType()) &&
+			!Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE,
+				layoutPageTemplateEntry.getType())) {
+
+			throw new NotFoundException(
+				"The layout page template entry is not a page template");
+		}
+
+		return _toPageTemplate(layoutPageTemplateEntry);
 	}
 
 	@Override
