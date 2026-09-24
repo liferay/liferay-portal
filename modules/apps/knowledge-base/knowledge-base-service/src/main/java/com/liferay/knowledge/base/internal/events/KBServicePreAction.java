@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -85,6 +87,17 @@ public class KBServicePreAction extends Action {
 			httpServletRequest, themeDisplay.getPlid(), portletId);
 
 		if (request_p_p_auth.equals(actual_p_p_auth)) {
+			return;
+		}
+
+		Layout layout = themeDisplay.getLayout();
+
+		long plid = _portal.getPlidFromPortletId(
+			layout.getGroupId(), KBPortletKeys.KNOWLEDGE_BASE_DISPLAY);
+
+		if ((plid != LayoutConstants.DEFAULT_PARENT_LAYOUT_ID) ||
+			layout.isTypeControlPanel()) {
+
 			return;
 		}
 
