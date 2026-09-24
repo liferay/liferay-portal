@@ -102,7 +102,7 @@ public class BookmarksFolderLocalServiceTest {
 		BookmarksFolder folder = BookmarksTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
-		BookmarksFolder subfolder = BookmarksTestUtil.addFolder(
+		BookmarksFolder childFolder = BookmarksTestUtil.addFolder(
 			_group.getGroupId(), folder.getFolderId(),
 			RandomTestUtil.randomString());
 
@@ -119,7 +119,7 @@ public class BookmarksFolderLocalServiceTest {
 		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
 
 		systemEvents = SystemEventLocalServiceUtil.getSystemEvents(
-			_group.getGroupId(), classNameId, subfolder.getFolderId(),
+			_group.getGroupId(), classNameId, childFolder.getFolderId(),
 			SystemEventConstants.TYPE_DELETE);
 
 		Assert.assertEquals(systemEvents.toString(), 0, systemEvents.size());

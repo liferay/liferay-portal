@@ -5584,7 +5584,6 @@ public class ObjectDefinitionLocalServiceTest {
 			objectDefinition.getObjectDefinitionId(),
 			SystemEventConstants.TYPE_DELETE);
 
-		Assert.assertNotNull(systemEvent);
 		Assert.assertEquals(
 			objectDefinition.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
