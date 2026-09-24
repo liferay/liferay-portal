@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -51,6 +52,9 @@ public class ToolSetResourceTest extends BaseToolSetResourceTestCase {
 			toolSet ->
 				Objects.equals(toolSet.getName(), "mcp-server-v1.0") &&
 				Validator.isNotNull(toolSet.getDescription()));
+
+		_assertNoToolSet(
+			toolSet -> StringUtil.startsWith(toolSet.getName(), "openapi"));
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -86,13 +90,8 @@ public class ToolSetResourceTest extends BaseToolSetResourceTestCase {
 
 		String companyToolSetName = "c-" + companyRESTContextPath.substring(3);
 
-		Page<ToolSet> toolSetsPage = toolSetResource.getToolSetsPage();
-
-		Assert.assertFalse(
-			ListUtil.exists(
-				new ArrayList<>(toolSetsPage.getItems()),
-				toolSet -> Objects.equals(
-					companyToolSetName, toolSet.getName())));
+		_assertNoToolSet(
+			toolSet -> Objects.equals(companyToolSetName, toolSet.getName()));
 
 		String toolSetName = "c-" + restContextPath.substring(3);
 
@@ -117,6 +116,16 @@ public class ToolSetResourceTest extends BaseToolSetResourceTestCase {
 					toolSetNames.contains(toolSetName));
 			}
 		);
+	}
+
+	private void _assertNoToolSet(Predicate<ToolSet> predicate)
+		throws Exception {
+
+		Page<ToolSet> toolSetsPage = toolSetResource.getToolSetsPage();
+
+		Assert.assertFalse(
+			ListUtil.exists(
+				new ArrayList<>(toolSetsPage.getItems()), predicate));
 	}
 
 	private void _assertToolSet(Predicate<ToolSet> predicate) throws Exception {

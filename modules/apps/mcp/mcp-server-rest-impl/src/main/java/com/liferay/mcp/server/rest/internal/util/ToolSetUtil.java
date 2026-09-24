@@ -264,7 +264,10 @@ public class ToolSetUtil {
 		for (HeadlessApplicationProvider.Application application :
 				headlessApplicationProvider.getApplications()) {
 
-			if (Validator.isNull(application.getBasePath())) {
+			if (Validator.isNull(application.getBasePath()) ||
+				Objects.equals(
+					application.getBasePath(), _DISCOVERY_OPEN_API_BASE_PATH)) {
+
 				continue;
 			}
 
@@ -338,6 +341,8 @@ public class ToolSetUtil {
 
 		return restrictFieldsMap.get(getToolKey(toolName, toolSetName));
 	}
+
+	private static final String _DISCOVERY_OPEN_API_BASE_PATH = "/openapi";
 
 	private static final String _TOOL_SET_NAME = "mcp-server-v1.0";
 
