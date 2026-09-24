@@ -109,9 +109,9 @@ export default function ElementVariationForm({
 		<>
 			<SidePanel.Header
 				className="border-bottom flex-shrink-0 px-3 py-3"
+				closeButtonProps={{hidden: true}}
 				messages={{
 					backAriaLabel: Liferay.Language.get('back'),
-					closeAriaLabel: Liferay.Language.get('close'),
 				}}
 				onBack={onCancel}
 			>
