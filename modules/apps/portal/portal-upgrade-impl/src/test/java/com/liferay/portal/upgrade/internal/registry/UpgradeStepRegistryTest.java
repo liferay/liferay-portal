@@ -191,7 +191,7 @@ public class UpgradeStepRegistryTest {
 		ServiceRegistration<UpgradeStepRegistrator> serviceRegistration =
 			bundleContext.registerService(
 				UpgradeStepRegistrator.class,
-				registry -> {
+				upgradeStepRegistry -> {
 				},
 				null);
 

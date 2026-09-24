@@ -183,8 +183,9 @@ public class UpgradeExecutorTest {
 
 			_serviceRegistration = bundleContext.registerService(
 				UpgradeStepRegistrator.class,
-				registry -> {
-					registry.register("0.0.0", "1.0.0", new DummyUpgradeStep());
+				upgradeStepRegistry -> {
+					upgradeStepRegistry.register(
+						"0.0.0", "1.0.0", new DummyUpgradeStep());
 
 					if (registerCount.incrementAndGet() == 1) {
 						throw new IllegalStateException();

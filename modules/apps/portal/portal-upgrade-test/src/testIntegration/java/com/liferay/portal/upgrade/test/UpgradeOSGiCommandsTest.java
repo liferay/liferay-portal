@@ -82,8 +82,9 @@ public class UpgradeOSGiCommandsTest {
 
 			_registerUpgradeStepRegistrator(
 				bundle,
-				registry -> {
-					registry.register("0.0.0", "1.0.0", new DummyUpgradeStep());
+				upgradeStepRegistry -> {
+					upgradeStepRegistry.register(
+						"0.0.0", "1.0.0", new DummyUpgradeStep());
 
 					if (registerCount.incrementAndGet() == 1) {
 						throw new IllegalStateException();
@@ -302,7 +303,7 @@ public class UpgradeOSGiCommandsTest {
 	private void _registerFailingUpgradeStepRegistrator(Bundle bundle) {
 		_registerUpgradeStepRegistrator(
 			bundle,
-			registry -> {
+			upgradeStepRegistry -> {
 				throw new IllegalStateException();
 			});
 	}
@@ -312,9 +313,11 @@ public class UpgradeOSGiCommandsTest {
 
 		_registerUpgradeStepRegistrator(
 			bundle,
-			registry -> {
-				registry.register("0.0.0", "1.0.0", new DummyUpgradeStep());
-				registry.register("1.0.0", "2.0.0", new DummyUpgradeStep());
+			upgradeStepRegistry -> {
+				upgradeStepRegistry.register(
+					"0.0.0", "1.0.0", new DummyUpgradeStep());
+				upgradeStepRegistry.register(
+					"1.0.0", "2.0.0", new DummyUpgradeStep());
 
 				if (registerCount.incrementAndGet() == 1) {
 					throw new IllegalStateException();

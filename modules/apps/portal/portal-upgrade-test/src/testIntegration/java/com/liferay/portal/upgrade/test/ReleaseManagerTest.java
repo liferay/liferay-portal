@@ -409,7 +409,7 @@ public class ReleaseManagerTest {
 
 			_serviceRegistration = bundleContext.registerService(
 				UpgradeStepRegistrator.class,
-				registry -> {
+				upgradeStepRegistry -> {
 					throw new IllegalStateException();
 				},
 				null);
