@@ -4,7 +4,8 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import AddDisplayPageTemplateDesignLibraryModalContent from '../../src/main/resources/META-INF/resources/js/AddDisplayPageTemplateDesignLibraryModalContent';
@@ -49,14 +50,15 @@ const DEFAULT_PROPS = {
 	namespace: NAMESPACE,
 };
 
-function fillForm(container: HTMLElement) {
-	fireEvent.change(container.querySelector(`#${NAMESPACE}name`)!, {
-		target: {value: 'Display Page Template'},
-	});
-
-	fireEvent.change(container.querySelector(`#${NAMESPACE}classNameId`)!, {
-		target: {value: 'type-without-subtype'},
-	});
+async function fillForm(container: HTMLElement) {
+	await userEvent.type(
+		container.querySelector(`#${NAMESPACE}name`)!,
+		'Display Page Template'
+	);
+	await userEvent.selectOptions(
+		container.querySelector(`#${NAMESPACE}classNameId`)!,
+		'type-without-subtype'
+	);
 }
 
 function renderComponent(props = {}) {
@@ -68,8 +70,8 @@ function renderComponent(props = {}) {
 	);
 }
 
-function submit() {
-	fireEvent.click(screen.getByText('save'));
+async function submit() {
+	await userEvent.click(screen.getByText('save'));
 }
 
 describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
@@ -84,9 +86,9 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 
 		const {container} = renderComponent();
 
-		fillForm(container);
+		await fillForm(container);
 
-		submit();
+		await submit();
 
 		await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
 
@@ -104,9 +106,9 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 
 		const {container} = renderComponent();
 
-		fillForm(container);
+		await fillForm(container);
 
-		submit();
+		await submit();
 
 		await waitFor(() => expect(mockOpenToast).toHaveBeenCalledTimes(1));
 
@@ -116,10 +118,10 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 		expect(mockNavigate).not.toHaveBeenCalled();
 	});
 
-	it('requires a name and a content type before submitting', () => {
+	it('requires a name and a content type before submitting', async () => {
 		renderComponent();
 
-		submit();
+		await submit();
 
 		expect(screen.getAllByText('this-field-is-required')).toHaveLength(2);
 		expect(mockFetch).not.toHaveBeenCalled();
@@ -139,9 +141,9 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 
 		const {container} = renderComponent();
 
-		fillForm(container);
+		await fillForm(container);
 
-		submit();
+		await submit();
 
 		await waitFor(() =>
 			expect(
