@@ -98,6 +98,15 @@ public class
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
+	public static void
+		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId, String audienceEntryERC) {
+
+		getService().
+			deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				groupId, audienceEntryERC);
+	}
+
 	/**
 	 * Deletes the layout page template structure rel element variation audience entry rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -303,6 +312,15 @@ public class
 		return getService().getExportActionableDynamicQuery(portletDataContext);
 	}
 
+	public static int
+		getGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCount(
+			long groupId, String audienceEntryERC) {
+
+		return getService().
+			getGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCount(
+				groupId, audienceEntryERC);
+	}
+
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -492,4 +510,4 @@ public class
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-576015336
+// LIFERAY-SERVICE-BUILDER-HASH:1996495128

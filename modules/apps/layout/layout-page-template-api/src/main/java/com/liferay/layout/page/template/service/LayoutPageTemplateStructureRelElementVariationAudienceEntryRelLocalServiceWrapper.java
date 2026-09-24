@@ -101,6 +101,16 @@ public class
 			createPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public void
+		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId, String audienceEntryERC) {
+
+		_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				groupId, audienceEntryERC);
+	}
+
 	/**
 	 * Deletes the layout page template structure rel element variation audience entry rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -340,6 +350,16 @@ public class
 
 		return _layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 			getExportActionableDynamicQuery(portletDataContext);
+	}
+
+	@Override
+	public int
+		getGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCount(
+			long groupId, String audienceEntryERC) {
+
+		return _layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			getGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCount(
+				groupId, audienceEntryERC);
 	}
 
 	@Override
@@ -589,4 +609,4 @@ public class
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1938393786
+// LIFERAY-SERVICE-BUILDER-HASH:-1741964126

@@ -386,6 +386,97 @@ public class
 	}
 
 	/**
+	 * Returns an ordered range of all the layout page template structure rel element variation audience entry rels where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param start the lower bound of the range of layout page template structure rel element variation audience entry rels
+	 * @param end the upper bound of the range of layout page template structure rel element variation audience entry rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layout page template structure rel element variation audience entry rels
+	 */
+	public static List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			findByG_AEERC(
+				long groupId, String audienceEntryERC, int start, int end,
+				OrderByComparator
+					<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+						orderByComparator,
+				boolean useFinderCache) {
+
+		return getPersistence().findByG_AEERC(
+			groupId, audienceEntryERC, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first layout page template structure rel element variation audience entry rel in the ordered set where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching layout page template structure rel element variation audience entry rel
+	 * @throws NoSuchPageTemplateStructureRelElementVariationAudienceEntryRelException if a matching layout page template structure rel element variation audience entry rel could not be found
+	 */
+	public static LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+			findByG_AEERC_First(
+				long groupId, String audienceEntryERC,
+				OrderByComparator
+					<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+						orderByComparator)
+		throws com.liferay.layout.page.template.exception.
+			NoSuchPageTemplateStructureRelElementVariationAudienceEntryRelException {
+
+		return getPersistence().findByG_AEERC_First(
+			groupId, audienceEntryERC, orderByComparator);
+	}
+
+	/**
+	 * Returns the first layout page template structure rel element variation audience entry rel in the ordered set where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching layout page template structure rel element variation audience entry rel, or <code>null</code> if a matching layout page template structure rel element variation audience entry rel could not be found
+	 */
+	public static LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+		fetchByG_AEERC_First(
+			long groupId, String audienceEntryERC,
+			OrderByComparator
+				<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+					orderByComparator) {
+
+		return getPersistence().fetchByG_AEERC_First(
+			groupId, audienceEntryERC, orderByComparator);
+	}
+
+	/**
+	 * Removes all the layout page template structure rel element variation audience entry rels where groupId = &#63; and audienceEntryERC = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 */
+	public static void removeByG_AEERC(long groupId, String audienceEntryERC) {
+		getPersistence().removeByG_AEERC(groupId, audienceEntryERC);
+	}
+
+	/**
+	 * Returns the number of layout page template structure rel element variation audience entry rels where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @return the number of matching layout page template structure rel element variation audience entry rels
+	 */
+	public static int countByG_AEERC(long groupId, String audienceEntryERC) {
+		return getPersistence().countByG_AEERC(groupId, audienceEntryERC);
+	}
+
+	/**
 	 * Returns an ordered range of all the layout page template structure rel element variation audience entry rels where groupId = &#63; and layoutPageTemplateStructureRelElementVariationERC = &#63;.
 	 *
 	 * <p>
@@ -860,6 +951,68 @@ public class
 	}
 
 	/**
+	 * Returns all the layout page template structure rel element variation audience entry rels where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @return the matching layout page template structure rel element variation audience entry rels
+	 */
+	public static List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			findByG_AEERC(long groupId, String audienceEntryERC) {
+
+		return getPersistence().findByG_AEERC(groupId, audienceEntryERC);
+	}
+
+	/**
+	 * Returns a range of all the layout page template structure rel element variation audience entry rels where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param start the lower bound of the range of layout page template structure rel element variation audience entry rels
+	 * @param end the upper bound of the range of layout page template structure rel element variation audience entry rels (not inclusive)
+	 * @return the range of matching layout page template structure rel element variation audience entry rels
+	 */
+	public static List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			findByG_AEERC(
+				long groupId, String audienceEntryERC, int start, int end) {
+
+		return getPersistence().findByG_AEERC(
+			groupId, audienceEntryERC, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout page template structure rel element variation audience entry rels where groupId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param start the lower bound of the range of layout page template structure rel element variation audience entry rels
+	 * @param end the upper bound of the range of layout page template structure rel element variation audience entry rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template structure rel element variation audience entry rels
+	 */
+	public static List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			findByG_AEERC(
+				long groupId, String audienceEntryERC, int start, int end,
+				OrderByComparator
+					<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+						orderByComparator) {
+
+		return getPersistence().findByG_AEERC(
+			groupId, audienceEntryERC, start, end, orderByComparator);
+	}
+
+	/**
 	 * Returns all the layout page template structure rel element variation audience entry rels where groupId = &#63; and layoutPageTemplateStructureRelElementVariationERC = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -1011,4 +1164,4 @@ public class
 			_persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:15988496
+// LIFERAY-SERVICE-BUILDER-HASH:-285557052

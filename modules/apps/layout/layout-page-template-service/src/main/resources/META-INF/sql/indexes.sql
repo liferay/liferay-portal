@@ -1,7 +1,9 @@
-create index IX_11CEFB3 on LPTSREVAudienceEntryRel (companyId, audienceEntryERC[$COLUMN_LENGTH:75$]);
+create index IX_E652CEFB on LPTSREVAudienceEntryRel (audienceEntryERC[$COLUMN_LENGTH:75$], companyId);
+create index IX_16107375 on LPTSREVAudienceEntryRel (groupId, audienceEntryERC[$COLUMN_LENGTH:75$]);
 create unique index IX_BB3F862 on LPTSREVAudienceEntryRel (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_BFC958B6 on LPTSREVAudienceEntryRel (groupId, lptsRelElementVariationERC[$COLUMN_LENGTH:75$]);
-create unique index IX_B988F085 on LPTSREVAudienceEntryRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
+create unique index IX_6366D4D9 on LPTSREVAudienceEntryRel (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_FA3DDBE3 on LPTSREVAudienceEntryRel (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_D4E7D564 on LPTSRelElementVariation (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_E09954CB on LPTSRelElementVariation (plid, segmentsExperienceERC[$COLUMN_LENGTH:75$], active_);

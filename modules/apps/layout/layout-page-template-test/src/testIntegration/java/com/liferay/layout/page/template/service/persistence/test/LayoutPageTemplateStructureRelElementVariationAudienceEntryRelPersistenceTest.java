@@ -317,6 +317,15 @@ public class
 	}
 
 	@Test
+	public void testCountByG_AEERC() throws Exception {
+		_persistence.countByG_AEERC(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByG_AEERC(0L, "null");
+
+		_persistence.countByG_AEERC(0L, (String)null);
+	}
+
+	@Test
 	public void testCountByG_LPTSREVERC() throws Exception {
 		_persistence.countByG_LPTSREVERC(RandomTestUtil.nextLong(), "");
 
@@ -860,4 +869,4 @@ public class
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:330975690
+// LIFERAY-SERVICE-BUILDER-HASH:2099897087
