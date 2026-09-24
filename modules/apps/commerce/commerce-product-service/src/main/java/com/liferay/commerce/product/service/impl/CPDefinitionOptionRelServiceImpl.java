@@ -275,7 +275,7 @@ public class CPDefinitionOptionRelServiceImpl
 	@Override
 	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
 			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
-			String commerceOptionTypeKey)
+			String commerceOptionTypeKey, boolean skuContributor)
 		throws PortalException {
 
 		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
@@ -286,7 +286,7 @@ public class CPDefinitionOptionRelServiceImpl
 			getOrAddEmptyCPDefinitionOptionRel(
 				externalReferenceCode, permissionChecker.getCompanyId(),
 				permissionChecker.getUserId(), cpDefinitionId, cpOptionId,
-				commerceOptionTypeKey);
+				commerceOptionTypeKey, skuContributor);
 	}
 
 	@Override
