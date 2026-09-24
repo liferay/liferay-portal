@@ -188,7 +188,7 @@ public class ObjectEntryResourceFactoryImpl
 		}
 	}
 
-	private ObjectDefinition _getObjectDefinition(long companyId) {
+	private ObjectDefinition _fetchObjectDefinition(long companyId) {
 		Long objectDefinitionId = _objectDefinitionIds.get(companyId);
 
 		if (objectDefinitionId == null) {
@@ -241,7 +241,7 @@ public class ObjectEntryResourceFactoryImpl
 		objectEntryResourceImpl.setFilterParserProvider(_filterParserProvider);
 		objectEntryResourceImpl.setGroupLocalService(_groupLocalService);
 		objectEntryResourceImpl.setObjectDefinition(
-			_getObjectDefinition(company.getCompanyId()));
+			_fetchObjectDefinition(company.getCompanyId()));
 		objectEntryResourceImpl.setResourceActionLocalService(
 			_resourceActionLocalService);
 		objectEntryResourceImpl.setResourcePermissionLocalService(

@@ -188,7 +188,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			long companyId, String restContextPath)
 		throws Exception {
 
-		ObjectDefinition objectDefinition = _getObjectDefinition(
+		ObjectDefinition objectDefinition = _fetchObjectDefinition(
 			companyId, restContextPath);
 
 		if (objectDefinition == null) {
@@ -405,12 +405,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		}
 	}
 
-	private String _getEntityClassName(ObjectDefinition objectDefinition) {
-		return ObjectEntry.class.getName() + "#" +
-			StringUtil.toLowerCase(objectDefinition.getShortName());
-	}
-
-	private ObjectDefinition _getObjectDefinition(
+	private ObjectDefinition _fetchObjectDefinition(
 		long companyId, String restContextPath) {
 
 		Map<Long, Long> objectDefinitionIds = _objectDefinitionIdsMap.get(
@@ -428,6 +423,11 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		return _objectDefinitionLocalService.fetchObjectDefinition(
 			objectDefinitionId);
+	}
+
+	private String _getEntityClassName(ObjectDefinition objectDefinition) {
+		return ObjectEntry.class.getName() + "#" +
+			StringUtil.toLowerCase(objectDefinition.getShortName());
 	}
 
 	private String _getResourceLocatorKey(ObjectDefinition objectDefinition) {

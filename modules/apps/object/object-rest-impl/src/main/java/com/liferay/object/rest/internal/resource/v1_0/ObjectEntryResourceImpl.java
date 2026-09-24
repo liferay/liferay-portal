@@ -466,7 +466,7 @@ public class ObjectEntryResourceImpl
 		}
 
 		return _entityModelProvider.getEntityModel(
-			_getObjectDefinition(contextCompany.getCompanyId()));
+			_fetchObjectDefinition(contextCompany.getCompanyId()));
 	}
 
 	@Override
@@ -1514,7 +1514,7 @@ public class ObjectEntryResourceImpl
 			restContextPath = _objectDefinition.getRESTContextPath();
 		}
 		else {
-			ObjectDefinition objectDefinition = _getObjectDefinition(
+			ObjectDefinition objectDefinition = _fetchObjectDefinition(
 				contextCompany.getCompanyId());
 
 			if (objectDefinition == null) {
@@ -1680,6 +1680,17 @@ public class ObjectEntryResourceImpl
 		}
 	}
 
+	private ObjectDefinition _fetchObjectDefinition(long companyId) {
+		Long objectDefinitionId = _objectDefinitionIds.get(companyId);
+
+		if (objectDefinitionId == null) {
+			return null;
+		}
+
+		return _objectDefinitionLocalService.fetchObjectDefinition(
+			objectDefinitionId);
+	}
+
 	private DefaultDTOConverterContext _getDTOConverterContext(
 		Long objectEntryId) {
 
@@ -1753,17 +1764,6 @@ public class ObjectEntryResourceImpl
 
 		return modelResourceNamePrefix.concat(
 			objectDefinition.getResourceName());
-	}
-
-	private ObjectDefinition _getObjectDefinition(long companyId) {
-		Long objectDefinitionId = _objectDefinitionIds.get(companyId);
-
-		if (objectDefinitionId == null) {
-			return null;
-		}
-
-		return _objectDefinitionLocalService.fetchObjectDefinition(
-			objectDefinitionId);
 	}
 
 	private StreamingOutput _getStreamingOutput(File file) {
