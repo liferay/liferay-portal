@@ -291,5 +291,7 @@ export class CommerceAdminProductDetailsPage {
 		await this.page.waitForLoadState('networkidle');
 
 		await this.saveAsDraftLink.click();
+
+		await expect(this.workflowStatusLabel('Draft')).toBeVisible();
 	}
 }

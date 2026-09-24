@@ -622,7 +622,9 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
 				commerceCatalog.getGroupId(), "simple", null, null, true, true,
-				WorkflowConstants.STATUS_APPROVED);
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(
+					commerceCatalog.getGroupId()));
 
 			_cpDefinitions.add(cpDefinition1);
 

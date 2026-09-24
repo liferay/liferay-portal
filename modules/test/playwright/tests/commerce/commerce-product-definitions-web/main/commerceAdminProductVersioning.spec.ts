@@ -178,10 +178,6 @@ test(
 
 		await commerceAdminProductDetailsPage.saveAsDraft();
 
-		await expect(
-			commerceAdminProductDetailsPage.workflowStatusLabel('Draft')
-		).toBeVisible();
-
 		await page.goto(productURL);
 
 		await Promise.all([
@@ -194,10 +190,6 @@ test(
 			}),
 			commerceAdminProductDetailsPage.saveAsDraft(),
 		]);
-
-		await expect(
-			commerceAdminProductDetailsPage.workflowStatusLabel('Draft')
-		).toBeVisible();
 
 		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
 			product.productId,

@@ -381,8 +381,8 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
-		if (saveAsDraft &&
-			(cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE))) {
+		if ((cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) &&
+			saveAsDraft) {
 
 			return _cpDefinitionService.copyCPDefinition(
 				cpDefinitionId, cpDefinition.getGroupId(),
