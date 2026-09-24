@@ -117,6 +117,7 @@ import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 <#if serviceBuilder.isVersionGTE_7_4_0()>
 	import com.liferay.portal.kernel.service.persistence.impl.ArrayableFinderColumn;
 	import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
+
 	<#if entity.isPermissionCheckEnabled()>
 		import com.liferay.portal.kernel.service.persistence.impl.FilterCollectionPersistenceFinder;
 	</#if>
