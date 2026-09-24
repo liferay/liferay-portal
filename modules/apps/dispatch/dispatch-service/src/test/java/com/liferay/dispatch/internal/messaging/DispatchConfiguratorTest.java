@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.cluster.ClusterMasterTokenTransitionListener;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -238,7 +239,9 @@ public class DispatchConfiguratorTest {
 	}
 
 	@Test
-	public void testActivateSkipsAlreadyScheduledJobs() throws Exception {
+	public void testActivateSchedulesRemainingJobsWhenSchedulerCheckFails()
+		throws Exception {
+
 		Mockito.when(
 			_clusterMasterExecutor.isMaster()
 		).thenReturn(
@@ -247,13 +250,50 @@ public class DispatchConfiguratorTest {
 
 		Mockito.when(
 			_dispatchTriggerHelper.hasSchedulerJob(
-				Mockito.same(_singleNodePersistedDispatchTrigger),
-				Mockito.eq(StorageType.PERSISTED))
+				Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
+				Mockito.eq(StorageType.MEMORY_CLUSTERED))
+		).thenThrow(
+			new SchedulerException()
+		);
+
+		_dispatchConfigurator.activate(_bundleContext);
+
+		Mockito.verify(
+			_dispatchTriggerHelper, Mockito.never()
+		).addSchedulerJob(
+			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
+			Mockito.any(), Mockito.any()
+		);
+
+		Mockito.verify(
+			_dispatchTriggerHelper
+		).addSchedulerJob(
+			Mockito.same(_singleNodePersistedDispatchTrigger),
+			Mockito.eq(StorageType.PERSISTED), Mockito.any()
+		);
+	}
+
+	@Test
+	public void testActivateSkipsAlreadyScheduledJobs() throws Exception {
+		Mockito.when(
+			_clusterMasterExecutor.isMaster()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_dispatchTriggerHelper.hasSchedulerJob(Mockito.any(), Mockito.any())
 		).thenReturn(
 			true
 		);
 
 		_dispatchConfigurator.activate(_bundleContext);
+
+		Mockito.verify(
+			_dispatchTriggerHelper, Mockito.never()
+		).hasSchedulerJob(
+			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
+		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper
@@ -263,10 +303,10 @@ public class DispatchConfiguratorTest {
 		);
 
 		Mockito.verify(
-			_dispatchTriggerHelper
+			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
 			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY_CLUSTERED), Mockito.any()
+			Mockito.any(), Mockito.any()
 		);
 
 		Mockito.verify(
