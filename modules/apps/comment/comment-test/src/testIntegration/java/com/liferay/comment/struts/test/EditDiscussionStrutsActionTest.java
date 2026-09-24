@@ -44,15 +44,14 @@ public class EditDiscussionStrutsActionTest {
 			new MockHttpServletRequest(), mockHttpServletResponse);
 
 		Assert.assertEquals(
-			ContentTypes.APPLICATION_JSON,
-			mockHttpServletResponse.getContentType());
-
-		Assert.assertEquals(
 			JSONUtil.put(
 				"exception",
 				PrincipalException.MustHaveSessionCSRFToken.class.getName()
 			).toString(),
 			mockHttpServletResponse.getContentAsString());
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_JSON,
+			mockHttpServletResponse.getContentType());
 	}
 
 	@Inject(filter = "path=/portal/comment/discussion/edit")
