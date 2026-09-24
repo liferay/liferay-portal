@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {EConfigInURLBehavior} from '@liferay/frontend-data-set-web';
-import {render, screen} from '@testing-library/react';
+import {
+	EConfigInURLBehavior,
+	FrontendDataSetContext,
+} from '@liferay/frontend-data-set-web';
+import {fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -170,6 +173,67 @@ const COMPONENTS: Array<[string, () => unknown, jest.Mock]> = [
 	],
 ];
 
+// The sections whose rows lead away through a renderer of the CMS's own rather
+// than one of the Data Set's, paired with the renderer and a row it can link.
+// Such a renderer has to record the visit itself, or the suggestions never
+// offer the row back.
+
+const EDIT_ACTION = {data: {id: 'edit'}, href: '/edit/{id}'};
+
+const VISITED_RENDERERS: Array<
+	[string, (props: any) => any, string, string, Record<string, unknown>]
+> = [
+	[
+		'All Spaces',
+		(props) =>
+			AllSpacesFDSPropsTransformer({
+				...props,
+				additionalProps: {baseSpaceURL: '/spaces/'},
+			}),
+		'tableCell',
+		'spaceTableCellRenderer',
+		{
+			itemData: {id: 7, name: 'Marketing', settings: {}},
+			value: 'Marketing',
+		},
+	],
+	[
+		'Broken Links',
+		BrokenLinksFDSPropsTransformer,
+		'listSection',
+		'brokenLinkAssetTitle',
+		{
+			actions: [EDIT_ACTION],
+			itemData: {actions: {update: {}}, id: 7},
+			value: 'Marketing',
+		},
+	],
+	[
+		'Shared With Me',
+		SharedWithMeFDSPropsTransformer,
+		'tableCell',
+		'sharedItemTableCellRenderer',
+		{
+			actions: [{data: {id: 'viewEdit'}, href: '/edit/{id}'}],
+			itemData: {actionIds: ['UPDATE'], id: 7, visible: true},
+			options: {actionId: 'view'},
+			value: 'Marketing',
+		},
+	],
+	[
+		'Structures',
+		StructuresFDSPropsTransformer,
+		'tableCell',
+		'simpleActionLinkTableCellRenderer',
+		{
+			actions: [EDIT_ACTION],
+			itemData: {actions: {update: {}}, id: 7},
+			options: {actionId: 'edit'},
+			value: 'Marketing',
+		},
+	],
+];
+
 describe('[CMS] Instant search', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
@@ -298,6 +362,47 @@ describe('[CMS] Instant search', () => {
 			const {configInURLBehavior} = props.fdsProps ?? props;
 
 			expect(configInURLBehavior).toBe(EConfigInURLBehavior.OFF);
+		}
+	);
+
+	it.each(VISITED_RENDERERS)(
+		'remembers the %s row the user opens',
+		(_section, transform, type, name, rendererProps) => {
+			const {customRenderers} = transform(TRANSFORMER_PROPS);
+
+			const {component: Renderer} = customRenderers[type].find(
+				(renderer: any) => renderer.name === name
+			);
+
+			render(
+				<FrontendDataSetContext.Provider
+					value={
+						{
+							id: 'fdsName',
+							searchSuggestionsEnabled: true,
+						} as any
+					}
+				>
+					<Renderer {...rendererProps} />
+				</FrontendDataSetContext.Provider>
+			);
+
+			const link = screen.getByRole('link', {name: 'Marketing'});
+
+			fireEvent.click(link);
+
+			expect(
+				JSON.parse(
+					localStorage.getItem('LFR_RECENTLY_VISITED_fdsName')!
+				)
+			).toEqual([
+				expect.objectContaining({
+					href: link.getAttribute('href'),
+					label: 'Marketing',
+				}),
+			]);
+
+			localStorage.clear();
 		}
 	);
 });

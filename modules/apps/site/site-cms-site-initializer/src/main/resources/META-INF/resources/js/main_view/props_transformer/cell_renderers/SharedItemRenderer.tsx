@@ -6,7 +6,7 @@
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
-import {replaceTokens} from '@liferay/frontend-data-set-web';
+import {replaceTokens, useFDSRecordVisit} from '@liferay/frontend-data-set-web';
 import React, {useMemo} from 'react';
 
 import SharedIcon from '../../../common/components/SharedIcon';
@@ -29,6 +29,8 @@ export default function SharedItemRenderer({
 	options: {actionId: string};
 	value: string;
 }) {
+	const recordVisit = useFDSRecordVisit();
+
 	const {assetType, fileTypeIcon, fileTypeIconColor, siteName} = itemData;
 	const title =
 		value && value !== '' && value !== 'null'
@@ -103,7 +105,14 @@ export default function SharedItemRenderer({
 					{title}
 				</ClayLink>
 			) : linkHref ? (
-				<ClayLink aria-label={title} data-senna-off href={linkHref}>
+				<ClayLink
+					aria-label={title}
+					data-senna-off
+					href={linkHref}
+					onClick={() =>
+						recordVisit(itemData, {href: linkHref, label: title})
+					}
+				>
 					{title}
 				</ClayLink>
 			) : (

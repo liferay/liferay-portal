@@ -6,7 +6,11 @@
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
-import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
+import {
+	findAction,
+	replaceTokens,
+	useFDSRecordVisit,
+} from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
 import React, {useId} from 'react';
 
@@ -45,6 +49,7 @@ export default function SimpleActionLinkRenderer({
 	value: string;
 }) {
 	const {actionId} = options;
+	const recordVisit = useFDSRecordVisit();
 	const systemIconId = useId();
 	const title =
 		value && value !== '' ? value : Liferay.Language.get('untitled-asset');
@@ -55,7 +60,7 @@ export default function SimpleActionLinkRenderer({
 	const hasUpdatePermission =
 		!requiresUpdatePermission || Boolean(itemData?.actions?.update);
 
-	let formattedHref = null;
+	let formattedHref: string | undefined;
 	let shouldOpenModal = false;
 
 	if (actions.length && actionId) {
@@ -174,6 +179,9 @@ export default function SimpleActionLinkRenderer({
 				aria-label={title}
 				data-senna-off
 				href={formattedHref}
+				onClick={() =>
+					recordVisit(itemData, {href: formattedHref, label: title})
+				}
 			>
 				{title}
 

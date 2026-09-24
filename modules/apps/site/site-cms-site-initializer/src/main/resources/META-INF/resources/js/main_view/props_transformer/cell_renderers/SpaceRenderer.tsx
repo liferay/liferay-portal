@@ -4,6 +4,7 @@
  */
 
 import {IClayStickerProps} from '@clayui/sticker';
+import {useFDSRecordVisit} from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -12,15 +13,19 @@ import {LogoColor} from '../../../common/types/Space';
 
 const SpaceRenderer = ({
 	href,
+	itemData,
 	logoColor,
 	size = 'xs',
 	value,
 }: {
 	href?: string;
+	itemData?: any;
 	logoColor?: LogoColor;
 	size?: IClayStickerProps['size'];
 	value: string;
 }) => {
+	const recordVisit = useFDSRecordVisit();
+
 	return (
 		<span
 			className={classNames(
@@ -34,6 +39,7 @@ const SpaceRenderer = ({
 				displayType={logoColor}
 				href={href}
 				name={value}
+				onLinkClick={() => recordVisit(itemData, {href, label: value})}
 				size={size}
 			/>
 		</span>

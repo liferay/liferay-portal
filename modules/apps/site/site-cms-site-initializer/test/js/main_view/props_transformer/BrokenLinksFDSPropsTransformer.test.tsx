@@ -12,6 +12,7 @@ import BrokenLinksFDSPropsTransformer from '../../../../src/main/resources/META-
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	findAction: jest.fn(() => ({data: {id: 'edit'}, href: '/edit/{id}'})),
 	replaceTokens: jest.fn(() => '/edit/1'),
+	useFDSRecordVisit: () => jest.fn(),
 }));
 
 const TITLE = 'Referring Content';

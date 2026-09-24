@@ -28,12 +28,14 @@ export default function SpaceSticker({
 	hideName,
 	href,
 	name,
+	onLinkClick,
 	size,
 	...otherProps
 }: {
 	hideName?: boolean;
 	href?: string;
 	name: string;
+	onLinkClick?: () => void;
 } & Pick<
 	React.ComponentProps<typeof ClaySticker>,
 	'className' | 'displayType' | 'id' | 'size'
@@ -49,7 +51,9 @@ export default function SpaceSticker({
 
 			{!hideName &&
 				(href ? (
-					<ClayLink href={href}>{name}</ClayLink>
+					<ClayLink href={href} onClick={onLinkClick}>
+						{name}
+					</ClayLink>
 				) : (
 					<span>{name}</span>
 				))}
