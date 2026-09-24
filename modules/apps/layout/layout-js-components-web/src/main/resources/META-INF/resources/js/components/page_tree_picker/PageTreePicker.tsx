@@ -364,6 +364,7 @@ export default function PageTreePicker<T>({
 					setItems(nextItems as Array<PageTreePickerNode<T>>)
 				}
 				onLoadMore={onLoadMore}
+				onSelectionChange={() => {}}
 				selectedKeys={selectedKeys}
 				selectionMode={selectionMode}
 				showExpanderOnHover={false}
