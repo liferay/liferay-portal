@@ -26,6 +26,7 @@ import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.utility.page.converter.LayoutUtilityPageEntryTypeConverter;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Field;
@@ -46,6 +47,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
@@ -144,11 +146,18 @@ public class UtilityPageResourceImpl
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.
-				getLayoutUtilityPageEntryByExternalReferenceCode(
+				fetchLayoutUtilityPageEntryByExternalReferenceCode(
 					utilityPageExternalReferenceCode,
 					GroupUtil.getStagingAwareGroupId(
 						contextCompany.getCompanyId(),
 						siteExternalReferenceCode));
+
+		if (layoutUtilityPageEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No utility page exists with the external reference code ",
+					"\"", utilityPageExternalReferenceCode, "\""));
+		}
 
 		return (ContentPageSpecification)_pageSpecificationDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
@@ -172,11 +181,18 @@ public class UtilityPageResourceImpl
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.
-				getLayoutUtilityPageEntryByExternalReferenceCode(
+				fetchLayoutUtilityPageEntryByExternalReferenceCode(
 					utilityPageExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, contextCompany.getCompanyId(),
 						siteExternalReferenceCode));
+
+		if (layoutUtilityPageEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No utility page exists with the external reference code ",
+					"\"", utilityPageExternalReferenceCode, "\""));
+		}
 
 		return _utilityPageDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
@@ -330,9 +346,16 @@ public class UtilityPageResourceImpl
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.
-				getLayoutUtilityPageEntryByExternalReferenceCode(
+				fetchLayoutUtilityPageEntryByExternalReferenceCode(
 					externalReferenceCode,
 					getPermissionCheckerGroupId(groupExternalReferenceCode));
+
+		if (layoutUtilityPageEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No utility page exists with the external reference code ",
+					"\"", externalReferenceCode, "\""));
+		}
 
 		return layoutUtilityPageEntry.getPrimaryKey();
 	}

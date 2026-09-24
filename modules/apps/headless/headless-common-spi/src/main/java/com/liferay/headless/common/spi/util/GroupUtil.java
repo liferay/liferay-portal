@@ -62,7 +62,8 @@ public class GroupUtil {
 		if ((!allowCompanyGroup && group.isCompany()) || group.isDepot() ||
 			(!allowLiveGroup && group.hasLocalOrRemoteStagingGroup())) {
 
-			throw new UnsupportedOperationException();
+			throw new IllegalArgumentException(
+				"The site does not support this operation");
 		}
 
 		return group.getGroupId();

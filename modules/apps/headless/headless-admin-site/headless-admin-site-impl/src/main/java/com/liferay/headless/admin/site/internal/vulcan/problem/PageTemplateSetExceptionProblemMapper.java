@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
@@ -23,9 +25,18 @@ public class PageTemplateSetExceptionProblemMapper
 		DuplicateLayoutPageTemplateCollectionException
 			duplicateLayoutPageTemplateCollectionException) {
 
+		String name =
+			duplicateLayoutPageTemplateCollectionException.getMessage();
+		String message =
+			"A page template set with the same name already exists";
+
+		if (Validator.isNotNull(name)) {
+			message = StringBundler.concat(
+				"A page template set with name ", name, " already exists");
+		}
+
 		return ProblemUtil.getProblem(
-			"A page template set with the same name already exists",
-			Problem.Status.CONFLICT,
+			message, Problem.Status.CONFLICT,
 			duplicateLayoutPageTemplateCollectionException);
 	}
 

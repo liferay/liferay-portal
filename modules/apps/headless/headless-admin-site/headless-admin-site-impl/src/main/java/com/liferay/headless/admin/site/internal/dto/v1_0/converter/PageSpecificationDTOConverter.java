@@ -38,6 +38,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
@@ -56,6 +57,8 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.segments.service.SegmentsExperienceService;
+
+import jakarta.ws.rs.NotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -207,7 +210,12 @@ public class PageSpecificationDTOConverter
 							segmentsExperience.getSegmentsExperienceId());
 
 				if (layoutPageTemplateStructureRel == null) {
-					throw new UnsupportedOperationException();
+					throw new NotFoundException(
+						StringBundler.concat(
+							"No page experience exists with the external ",
+							"reference code \"",
+							segmentsExperience.getExternalReferenceCode(),
+							"\""));
 				}
 
 				return _pageExperienceDTOConverter.toDTO(

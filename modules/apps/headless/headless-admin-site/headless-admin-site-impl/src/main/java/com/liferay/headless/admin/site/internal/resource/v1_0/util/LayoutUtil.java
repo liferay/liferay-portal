@@ -792,8 +792,8 @@ public class LayoutUtil {
 
 		if (itemExternalReference.getScope() != null) {
 			throw new IllegalArgumentException(
-				"The master page references do not belong to the same scope " +
-					"as the current page");
+				"The master page reference does not belong to the same scope " +
+					"as the target page");
 		}
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -820,7 +820,10 @@ public class LayoutUtil {
 				layoutPageTemplateEntry.getType())) {
 
 			throw new IllegalArgumentException(
-				"The master page reference does not point to a master page");
+				StringBundler.concat(
+					"The external reference code \"",
+					itemExternalReference.getExternalReferenceCode(),
+					"\" does not point to a master page"));
 		}
 
 		if (layoutPageTemplateEntry == null) {
