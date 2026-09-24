@@ -6214,6 +6214,41 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
+	public void testGetObjectEntriesPageWithDeletedObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_NAME_1)));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		HTTPTestUtil.invokeToJSONObject(
+			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
+
+		_objectFieldLocalService.deleteObjectField(
+			_objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(),
+				_OBJECT_FIELD_NAME_1));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
+
+		Assert.assertEquals(
+			jsonObject.toString(), 2, jsonObject.getInt("totalCount"));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testGetObjectEntriesPageWithFilterOnManyToManyRelatedLocalizedObjectField()
 		throws Exception {
 
