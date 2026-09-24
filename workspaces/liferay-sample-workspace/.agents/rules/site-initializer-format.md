@@ -610,9 +610,13 @@ Controls theme assignment and theme settings for the public (nonprivate) layout 
 
 Use the `settings` block to switch off the stock theme chrome when a master page supplies a branded header and footer — otherwise both render, one above the other. Prefer this over hiding `#banner` / `#footer` with CSS: the setting is scoped to this layout set, whereas a `globalCSS` CET is injected instance wide and there is no site specific `body` class to scope such a rule to.
 
-> **A `themeCSS` CET cannot be selected from the initializer tree.** Liferay attaches one through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set, and `BundleSiteInitializer` has **no handler** that creates that relation — there is no key in `metadata.json` for it either. A deployed themeCSS CET is therefore *available* but not *applied* until someone picks it in Site Administration → Design → Theme, and that selection is lost on every reprovision.
+> **The tree cannot attach a theme CET — but it is not the only route.** Liferay attaches `themeCSS`, `themeFavicon`, and `themeSpritemap` through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set. `BundleSiteInitializer` never writes that row — the class does not mention `ClientExtensionEntryRel` at all — and there is no key in `metadata.json` for it, so a CET deployed by the tree alone is *available* but not *applied*.
 >
-> Plan accordingly. Appearance that must survive delete and redeploy has to come from things the tree can express: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. Reach for a themeCSS CET for Clay level overrides that have no token — Classic exposes no `headings*` style book tokens, for instance — and state plainly that applying it needs a manual step.
+> `headless-admin-site` holds settings that write it, and `LayoutsImporterImpl` — which this initializer calls for every layout — reads the same keys off `page-definition.json`. Neither route is proven to take effect on a 2026.Q2 bundle: the REST one is **verified unreliable** (the write persists, the rendering does not change), and the tree one is untested. See `skills/theme-and-design/SKILL.md` → "Apply to Site" and its addendum before spending time here.
+>
+> None of that is a reason to skip the client extension. Still build and deploy it — a `themeFavicon` is the only way to deliver a browser tab icon at all — and treat **selecting** it as a manual step that must be redone after a reprovision.
+>
+> What the tree *can* carry unaided, and what therefore needs no reattachment: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. A browser tab icon is not among them — no handler writes the site record's favicon column either, so a custom favicon means a `themeFavicon` CET plus the attach call.
 
 ## `client-extension.yaml` for the Initializer
 
