@@ -402,8 +402,22 @@ export default function AddToolsModal({
 														item
 													);
 												}}
+												onKeyDown={(event) => {
+													if (
+														event.key === 'Enter' ||
+														event.key === ' '
+													) {
+														event.preventDefault();
+
+														toggleCollapsedToolSet(
+															item
+														);
+													}
+												}}
 											>
-												<span>
+												<span
+													id={`${item.id}-checkbox`}
+												>
 													<ClayCheckbox
 														aria-label={item.name}
 														checked={selectedKeys.has(
@@ -430,6 +444,7 @@ export default function AddToolsModal({
 													<ClayLoadingIndicator
 														className="mb-0 ml-2 mt-0"
 														displayType="secondary"
+														id={`${item.id}-loading`}
 														size="sm"
 													/>
 												)}
