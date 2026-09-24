@@ -10,7 +10,7 @@ import com.liferay.exportimport.constants.ExportImportBackgroundTaskContextMapCo
 import com.liferay.exportimport.internal.data.handler.BatchEnginePortletDataHandler;
 import com.liferay.exportimport.internal.data.handler.BatchEnginePortletDataHandlerRegistryUtil;
 import com.liferay.exportimport.internal.data.handler.MissingPortlet;
-import com.liferay.exportimport.internal.util.ManifestXmlFilePathUtil;
+import com.liferay.exportimport.internal.util.ManifestXMLFilePathUtil;
 import com.liferay.exportimport.kernel.lar.DataLevel;
 import com.liferay.exportimport.kernel.lar.DefaultConfigurationPortletDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportGroup;
@@ -249,7 +249,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 			ZipReader zipReader = _zipReaderFactory.getZipReader(inputStream)) {
 
 			return _getExportImportGroups(
-				zipReader, ManifestXmlFilePathUtil.MANIFEST_XML_FILE_PATH);
+				zipReader, ManifestXMLFilePathUtil.MANIFEST_XML_FILE_PATH);
 		}
 	}
 
@@ -260,7 +260,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 		return _getExportImportGroups(
 			portletDataContext.getZipReader(),
-			ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 				portletDataContext));
 	}
 
@@ -633,7 +633,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		xmlReader.parse(
 			new InputSource(
 				portletDataContext.getZipEntryAsInputStream(
-					ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+					ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 						portletDataContext))));
 
 		return manifestSummary;
@@ -1168,7 +1168,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		xmlReader.parse(
 			new InputSource(
 				portletDataContext.getZipEntryAsInputStream(
-					ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+					ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 						portletDataContext))));
 
 		return missingReferences;

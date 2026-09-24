@@ -10,7 +10,7 @@ import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletExportController;
 import com.liferay.exportimport.internal.lar.GroupExporter;
 import com.liferay.exportimport.internal.lar.PermissionExporter;
-import com.liferay.exportimport.internal.util.ManifestXmlFilePathUtil;
+import com.liferay.exportimport.internal.util.ManifestXMLFilePathUtil;
 import com.liferay.exportimport.kernel.controller.ExportController;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
@@ -349,7 +349,7 @@ public class LayoutExportController implements ExportController {
 		}
 
 		portletDataContext.addZipEntry(
-			ManifestXmlFilePathUtil.getExportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getExportManifestXmlFilePath(
 				portletDataContext),
 			document.formattedString());
 

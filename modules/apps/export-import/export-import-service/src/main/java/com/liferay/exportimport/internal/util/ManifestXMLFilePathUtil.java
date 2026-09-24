@@ -13,7 +13,7 @@ import com.liferay.petra.string.StringPool;
 /**
  * @author Petteri Karttunen
  */
-public class ManifestXmlFilePathUtil {
+public class ManifestXMLFilePathUtil {
 
 	public static final String MANIFEST_XML_FILE_PATH = "/manifest.xml";
 
@@ -28,13 +28,13 @@ public class ManifestXmlFilePathUtil {
 			MANIFEST_XML_FILE_PATH;
 	}
 
-	public static String getImportManifestXmlFilePath(long sourceGroupId) {
+	public static String getImportManifestXMLFilePath(long sourceGroupId) {
 		return StringBundler.concat(
 			StringPool.FORWARD_SLASH, ExportImportPathUtil.PATH_PREFIX_GROUP,
 			StringPool.FORWARD_SLASH, sourceGroupId, MANIFEST_XML_FILE_PATH);
 	}
 
-	public static String getImportManifestXmlFilePath(
+	public static String getImportManifestXMLFilePath(
 		PortletDataContext portletDataContext) {
 
 		if (!GroupExportImportParameterUtil.isGroupScoped(portletDataContext)) {

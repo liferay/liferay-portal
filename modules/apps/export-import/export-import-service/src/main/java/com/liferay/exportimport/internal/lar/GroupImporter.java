@@ -6,7 +6,7 @@
 package com.liferay.exportimport.internal.lar;
 
 import com.liferay.exportimport.internal.util.GroupExportImportParameterUtil;
-import com.liferay.exportimport.internal.util.ManifestXmlFilePathUtil;
+import com.liferay.exportimport.internal.util.ManifestXMLFilePathUtil;
 import com.liferay.exportimport.kernel.exception.LARFileException;
 import com.liferay.exportimport.kernel.lar.ExportImportGroup;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
@@ -250,7 +250,7 @@ public class GroupImporter {
 		throws Exception {
 
 		String xml = portletDataContext.getZipEntryAsString(
-			ManifestXmlFilePathUtil.getImportManifestXmlFilePath(groupId));
+			ManifestXMLFilePathUtil.getImportManifestXMLFilePath(groupId));
 
 		if (Validator.isNull(xml)) {
 			throw new LARFileException(LARFileException.TYPE_MISSING_MANIFEST);

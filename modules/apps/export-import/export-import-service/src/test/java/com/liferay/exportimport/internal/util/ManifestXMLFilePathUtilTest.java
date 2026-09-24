@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 /**
  * @author Petteri Karttunen
  */
-public class ManifestXmlFilePathUtilTest {
+public class ManifestXMLFilePathUtilTest {
 
 	@ClassRule
 	@Rule
@@ -33,7 +33,7 @@ public class ManifestXmlFilePathUtilTest {
 	public void testGetExportManifestXmlFilePathWhenGroupScoped() {
 		Assert.assertEquals(
 			"/group/" + _SCOPE_GROUP_ID + "/manifest.xml",
-			ManifestXmlFilePathUtil.getExportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getExportManifestXmlFilePath(
 				_mockPortletDataContext(_getGroupParameterMap())));
 	}
 
@@ -41,31 +41,31 @@ public class ManifestXmlFilePathUtilTest {
 	public void testGetExportManifestXmlFilePathWhenNotGroupScoped() {
 		Assert.assertEquals(
 			"/manifest.xml",
-			ManifestXmlFilePathUtil.getExportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getExportManifestXmlFilePath(
 				_mockPortletDataContext(new HashMap<>())));
 	}
 
 	@Test
-	public void testGetImportManifestXmlFilePathWhenGroupScoped() {
+	public void testGetImportManifestXMLFilePathWhenGroupScoped() {
 		Assert.assertEquals(
 			"/group/" + _SOURCE_GROUP_ID + "/manifest.xml",
-			ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 				_mockPortletDataContext(_getGroupParameterMap())));
 	}
 
 	@Test
-	public void testGetImportManifestXmlFilePathWhenNotGroupScoped() {
+	public void testGetImportManifestXMLFilePathWhenNotGroupScoped() {
 		Assert.assertEquals(
 			"/manifest.xml",
-			ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 				_mockPortletDataContext(new HashMap<>())));
 	}
 
 	@Test
-	public void testGetImportManifestXmlFilePathWhenSourceGroupIdIsGiven() {
+	public void testGetImportManifestXMLFilePathWhenSourceGroupIdIsGiven() {
 		Assert.assertEquals(
 			"/group/" + _SOURCE_GROUP_ID + "/manifest.xml",
-			ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 				_SOURCE_GROUP_ID));
 	}
 

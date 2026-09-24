@@ -10,7 +10,7 @@ import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletImportController;
 import com.liferay.exportimport.internal.lar.GroupImporter;
-import com.liferay.exportimport.internal.util.ManifestXmlFilePathUtil;
+import com.liferay.exportimport.internal.util.ManifestXMLFilePathUtil;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
 import com.liferay.exportimport.kernel.controller.ImportController;
 import com.liferay.exportimport.kernel.exception.LARFileException;
@@ -151,7 +151,7 @@ public class LayoutImportController implements ImportController {
 			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
 				validateFile(
 					layoutSet.getCompanyId(), targetGroupId,
-					ManifestXmlFilePathUtil.MANIFEST_XML_FILE_PATH,
+					ManifestXMLFilePathUtil.MANIFEST_XML_FILE_PATH,
 					parameterMap, zipReader);
 
 				PortletDataContext portletDataContext = getPortletDataContext(
@@ -282,7 +282,7 @@ public class LayoutImportController implements ImportController {
 			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
 				validateFile(
 					layoutSet.getCompanyId(), targetGroupId,
-					ManifestXmlFilePathUtil.MANIFEST_XML_FILE_PATH,
+					ManifestXMLFilePathUtil.MANIFEST_XML_FILE_PATH,
 					parameterMap, zipReader);
 
 				PortletDataContext portletDataContext = getPortletDataContext(
@@ -784,7 +784,7 @@ public class LayoutImportController implements ImportController {
 
 		validateFile(
 			companyId, portletDataContext.getGroupId(),
-			ManifestXmlFilePathUtil.getImportManifestXmlFilePath(
+			ManifestXMLFilePathUtil.getImportManifestXMLFilePath(
 				portletDataContext),
 			parameterMap, portletDataContext.getZipReader());
 
