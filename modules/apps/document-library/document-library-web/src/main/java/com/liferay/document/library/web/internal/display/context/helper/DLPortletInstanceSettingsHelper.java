@@ -11,9 +11,14 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.NoSuchRepositoryException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -183,6 +188,19 @@ public class DLPortletInstanceSettingsHelper {
 					selectedGroup.getGroupId());
 
 			return selectedRepository.getRepositoryId();
+		}
+		catch (NoSuchGroupException | NoSuchRepositoryException exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Unable to resolve the selected repository for ",
+						"external reference code \"",
+						selectedGroupExternalReferenceCode,
+						"\" on this instance"),
+					exception);
+			}
+
+			return 0;
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -386,6 +404,9 @@ public class DLPortletInstanceSettingsHelper {
 			}
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DLPortletInstanceSettingsHelper.class);
 
 	private static final Map<String, String> _displayViews = HashMapBuilder.put(
 		"descriptive", "list"
