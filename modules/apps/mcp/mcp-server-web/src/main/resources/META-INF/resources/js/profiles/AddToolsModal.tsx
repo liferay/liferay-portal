@@ -22,6 +22,7 @@ import {
 	buildToolWaves,
 	getAvailableToolSets,
 	getSelectedTools,
+	isToolOfToolSet,
 	openErrorToast,
 	openSuccessToast,
 } from '../utils';
@@ -236,7 +237,7 @@ export default function AddToolsModal({
 						[...previousKeys].filter(
 							(key) =>
 								key !== item.id &&
-								!String(key).startsWith(`${item.name}/`)
+								!isToolOfToolSet(key, item.name)
 						)
 					)
 			);

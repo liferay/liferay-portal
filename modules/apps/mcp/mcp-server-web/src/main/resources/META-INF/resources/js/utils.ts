@@ -172,6 +172,13 @@ export function isSystemMask(dataMask: DataMask | null): boolean {
 	return dataMask?.maskType?.key === 'system';
 }
 
+export function isToolOfToolSet(
+	key: string | number,
+	toolSetName: string
+): boolean {
+	return String(key).startsWith(`${toolSetName}${TOOL_ID_SEPARATOR}`);
+}
+
 export function openErrorToast(
 	message: string,
 	options?: ToastMessageOptions
