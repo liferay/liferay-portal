@@ -1,0 +1,340 @@
+@component-name = "liferay-sample-workspace"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Liferay Sample Workspace";
+	property workspaces.client.extension.names = "liferay-sample-custom-element-1,liferay-sample-custom-element-2,liferay-sample-global-css,liferay-sample-global-js,liferay-sample-iframe-1,liferay-sample-theme-css-1,liferay-sample-theme-favicon,liferay-sample-theme-spritemap-1";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if (${testPortalInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "Smoke test Liferay Sample Custom Element 1"
+	@priority = 4
+	test LiferaySampleCustomElement1Smoke {
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Test Page");
+
+		Navigator.openSitePage(
+			pageName = "Test Page",
+			siteName = "Guest");
+
+		Portlet.addPG(portletName = "Liferay Sample Custom Element 1");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_WIDGET",
+			value1 = "Portlet internal route");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_COUNTER",
+			value1 = 0);
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_INCREMENT_BUTTON");
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_INCREMENT_BUTTON");
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_INCREMENT_BUTTON");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_COUNTER",
+			value1 = 3);
+
+		AssertTextNotEquals.assertNotPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_COUNTER",
+			value1 = 0);
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_DECREMENT_BUTTON");
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_DECREMENT_BUTTON");
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_DECREMENT_BUTTON");
+
+		Click(locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_DECREMENT_BUTTON");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_COUNTER",
+			value1 = "-1");
+
+		AssertTextNotEquals.assertNotPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_COUNTER",
+			value1 = 3);
+
+		AssertTextNotEquals.assertNotPartialText(
+			locator1 = "ClientExtensionsSamples#CUSTOM_ELEMENT_1_COUNTER",
+			value1 = 0);
+	}
+
+	@description = "Smoke test Liferay Sample Custom Element 2"
+	@priority = 4
+	test LiferaySampleCustomElement2Smoke {
+		var pageName = "TestPage";
+
+		task ("Given: The Liferay Sample Custom Element 2 is added to a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = ${pageName});
+
+			Navigator.openSitePage(
+				pageName = ${pageName},
+				siteName = "Guest");
+
+			Portlet.addPG(portletName = "Liferay Sample Custom Element 2");
+		}
+
+		task ("Then: Sample element greets the user by name") {
+			AssertTextEquals.assertPartialText(
+				key_portletName = "Liferay Sample Custom Element 2",
+				locator1 = "Portlet#SPECIFIC_PORTLET_SECTION",
+				value1 = "Hello Test");
+		}
+
+		task ("When: User logs out") {
+			User.logoutViaURL();
+		}
+
+		task ("And: User navigates to test page") {
+			Navigator.openSitePage(
+				pageName = ${pageName},
+				siteName = "Guest");
+		}
+
+		task ("Then: Sample element says 'Hello World'") {
+			AssertTextEquals.assertPartialText(
+				key_portletName = "Liferay Sample Custom Element 2",
+				locator1 = "Portlet#BODY",
+				value1 = "Hello World");
+		}
+	}
+
+	@description = "Test Liferay Sample Global CSS"
+	@priority = 4
+	test LiferaySampleGlobalCSS {
+		var pageName = "TestPage";
+
+		task ("Given: The Liferay Sample Global CSS is added to a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = ${pageName});
+
+			Navigator.openSitePage(
+				pageName = ${pageName},
+				siteName = "Guest");
+		}
+
+		task ("When: User accesses to Basic Settings of widget page") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "guest");
+
+			PagesAdmin.gotoPageEllipsisMenuItem(
+				menuItem = "Configure",
+				pageName = "${pageName}");
+
+			Navigator.gotoNavTab(navTab = "Design");
+
+			AssertElementPresent(locator1 = "PagesAdmin#NO_CSS_THEME_LOADED");
+		}
+
+		task ("Then: User can add a CSS Extension to widget page") {
+			PagesAdmin.addCSSExtensions(extensionNameList = "Liferay Sample Global CSS");
+
+			AssertVisible(
+				key_tableEntry = "Liferay Sample Global CSS",
+				locator1 = "LexiconTable#TABLE_ENTRY");
+
+			PortletEntry.save();
+		}
+
+		task ("And: User can view the changes on the widget page") {
+			Navigator.openSitePage(
+				pageName = ${pageName},
+				siteName = "Guest");
+
+			OcularAssertElementImage(
+				locator1 = "ClientExtensions#GLOBAL_CSS_TITLE_CONTAINER",
+				value1 = "client_extensions/liferay_dxp_logo.png",
+				value2 = 90);
+		}
+	}
+
+	@description = "Test Liferay Sample IFrame 1 - Counter App"
+	@priority = 4
+	test CounterApp {
+		task ("When: User adds the Counter App widget") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Test Page");
+
+			Navigator.openSitePage(
+				pageName = "Test Page",
+				siteName = "Guest");
+			
+			Portlet.addPG(portletName = "Counter App");
+		}
+
+		task ("Then: User can add items to the cart") {
+			Default.SelectFrame(locator1 = "IFrame#IFRAME");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_HEADER",
+				value1 = "Items");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_ROW",
+				key_row = "1",
+				value1 = "Zero");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "0");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "1");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "1");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_QUANTITY_VALUE",
+				key_row = "1",
+				value1 = "1");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "2");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "2");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "2");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_QUANTITY_VALUE",
+				key_row = "2",
+				value1 = "2");
+			
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "3");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "3");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "3");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "3");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_QUANTITY_VALUE",
+				key_row = "3",
+				value1 = "3");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "4");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "4");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "4");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_INCREMENT",
+				key_row = "4");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "4");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_QUANTITY_VALUE",
+				key_row = "4",
+				value1 = "4");
+		}
+
+		task ("And: User can decrease item quantity") {
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_DECREMENT",
+				key_row = "2");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_DECREMENT",
+				key_row = "2");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_ROW",
+				key_row = "2",
+				value1 = "Zero");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "3");
+		}
+
+		task ("And: User can delete an item from the list") {
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_DELETE_ROW",
+				key_row = "1");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "2");
+
+			Default.AssertElementNotPresent(
+				locator1 = "ClientExtensions#COUNTER_ROW",
+				key_row = "4");
+		}
+
+		task ("And: User can reset the app") {
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_DELETE_ROW",
+				key_row = "1");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_DELETE_ROW",
+				key_row = "1");
+
+			Default.Click(
+				locator1 = "ClientExtensions#COUNTER_DELETE_ROW",
+				key_row = "1");
+
+			Default.AssertElementNotPresent(
+				locator1 = "ClientExtensions#COUNTER_ROW",
+				key_row = "1");
+
+			Default.AssertTextEquals.assertPartialText(
+				locator1 = "ClientExtensions#COUNTER_CART_TOTAL",
+				value1 = "0");
+
+			Default.Click(locator1 = "ClientExtensions#COUNTER_RESET_BUTTON");
+
+			Default.AssertElementPresent(
+				locator1 = "ClientExtensions#COUNTER_ROW",
+				key_row = "4");
+		}
+	}
+
+}
