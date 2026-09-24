@@ -133,16 +133,17 @@ public class ObjectAction implements Cloneable, Serializable {
 
 	protected Date dateModified;
 
-	public String getDescription() {
+	public Map<String, String> getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(Map<String, String> description) {
 		this.description = description;
 	}
 
 	public void setDescription(
-		UnsafeSupplier<String, Exception> descriptionUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
 
 		try {
 			description = descriptionUnsafeSupplier.get();
@@ -152,7 +153,7 @@ public class ObjectAction implements Cloneable, Serializable {
 		}
 	}
 
-	protected String description;
+	protected Map<String, String> description;
 
 	public Map<String, String> getErrorMessage() {
 		return errorMessage;
@@ -396,4 +397,4 @@ public class ObjectAction implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:956790037
+// LIFERAY-REST-BUILDER-HASH:-1558858057

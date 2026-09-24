@@ -263,7 +263,8 @@ public class ObjectAction implements Serializable {
 	private Supplier<Date> _dateModifiedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getDescription() {
+	@Valid
+	public Map<String, String> getDescription() {
 		if (_descriptionSupplier != null) {
 			description = _descriptionSupplier.get();
 
@@ -273,7 +274,7 @@ public class ObjectAction implements Serializable {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(Map<String, String> description) {
 		this.description = description;
 
 		_descriptionSupplier = null;
@@ -281,7 +282,8 @@ public class ObjectAction implements Serializable {
 
 	@JsonIgnore
 	public void setDescription(
-		UnsafeSupplier<String, Exception> descriptionUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
 
 		_descriptionSupplier = () -> {
 			try {
@@ -298,10 +300,10 @@ public class ObjectAction implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String description;
+	protected Map<String, String> description;
 
 	@JsonIgnore
-	private Supplier<String> _descriptionSupplier;
+	private Supplier<Map<String, String>> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
@@ -818,7 +820,7 @@ public class ObjectAction implements Serializable {
 			sb.append("\"");
 		}
 
-		String description = getDescription();
+		Map<String, String> description = getDescription();
 
 		if (description != null) {
 			if (sb.length() > 1) {
@@ -827,11 +829,7 @@ public class ObjectAction implements Serializable {
 
 			sb.append("\"description\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(description));
-
-			sb.append("\"");
+			sb.append(_toJSON(description));
 		}
 
 		Map<String, String> errorMessage = getErrorMessage();
@@ -1092,4 +1090,4 @@ public class ObjectAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-622790054
+// LIFERAY-REST-BUILDER-HASH:-925794398

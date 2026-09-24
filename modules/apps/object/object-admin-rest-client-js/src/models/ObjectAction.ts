@@ -16,7 +16,7 @@
 			"conditionExpression"?: string;
 			"dateCreated"?: Date;
 			"dateModified"?: Date;
-			"description"?: string;
+			"description"?: {[key: string]: string;};
 			"errorMessage"?: {[key: string]: string;};
 			"externalReferenceCode"?: string;
 			"id"?: number;
@@ -63,7 +63,7 @@
 		{
 			baseName: "description",
 			name: "description",
-			type: "string",
+			type: "{[key: string]: string;}",
 		},
 		{
 			baseName: "errorMessage",

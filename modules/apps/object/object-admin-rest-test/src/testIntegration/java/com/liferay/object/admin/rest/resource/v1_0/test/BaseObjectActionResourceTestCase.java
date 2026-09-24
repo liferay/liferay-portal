@@ -218,7 +218,6 @@ public abstract class BaseObjectActionResourceTestCase {
 		ObjectAction objectAction = randomObjectAction();
 
 		objectAction.setConditionExpression(regex);
-		objectAction.setDescription(regex);
 		objectAction.setExternalReferenceCode(regex);
 		objectAction.setName(regex);
 		objectAction.setObjectActionExecutorKey(regex);
@@ -231,7 +230,6 @@ public abstract class BaseObjectActionResourceTestCase {
 		objectAction = ObjectActionSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, objectAction.getConditionExpression());
-		Assert.assertEquals(regex, objectAction.getDescription());
 		Assert.assertEquals(regex, objectAction.getExternalReferenceCode());
 		Assert.assertEquals(regex, objectAction.getName());
 		Assert.assertEquals(regex, objectAction.getObjectActionExecutorKey());
@@ -2347,9 +2345,9 @@ public abstract class BaseObjectActionResourceTestCase {
 			}
 
 			if (Objects.equals("description", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						objectAction1.getDescription(),
-						objectAction2.getDescription())) {
+				if (!equals(
+						(Map)objectAction1.getDescription(),
+						(Map)objectAction2.getDescription())) {
 
 					return false;
 				}
@@ -2691,49 +2689,8 @@ public abstract class BaseObjectActionResourceTestCase {
 		}
 
 		if (entityFieldName.equals("description")) {
-			Object object = objectAction.getDescription();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("errorMessage")) {
@@ -3002,8 +2959,6 @@ public abstract class BaseObjectActionResourceTestCase {
 					RandomTestUtil.randomString());
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
-				description = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
@@ -3282,4 +3237,4 @@ public abstract class BaseObjectActionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:979147092
+// LIFERAY-REST-BUILDER-HASH:-1130922553
