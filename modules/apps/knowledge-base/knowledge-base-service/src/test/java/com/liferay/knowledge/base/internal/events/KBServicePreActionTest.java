@@ -151,6 +151,8 @@ public class KBServicePreActionTest {
 	}
 
 	private ThemeDisplay _mockThemeDisplay(boolean typeControlPanel) {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
 		Layout layout = Mockito.mock(Layout.class);
 
 		Mockito.when(
@@ -164,8 +166,6 @@ public class KBServicePreActionTest {
 		).thenReturn(
 			typeControlPanel
 		);
-
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 		Mockito.when(
 			themeDisplay.getLayout()
