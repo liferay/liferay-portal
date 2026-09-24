@@ -11,6 +11,7 @@ import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 
 export class AudiencesPage {
+	readonly allSitesCheckbox: Locator;
 	readonly apiHelpers: DataApiHelpers;
 	readonly externalReferenceCodeErrorMessage: Locator;
 	readonly externalReferenceCodeInput: Locator;
@@ -18,11 +19,16 @@ export class AudiencesPage {
 	readonly nameInput: Locator;
 	readonly newAudienceButton: Locator;
 	readonly page: Page;
+	readonly removeSiteFromScopeModal: Locator;
 	readonly ruleDropZone: Locator;
 	readonly saveButton: Locator;
+	readonly siteSelector: Locator;
 	readonly valueInput: Locator;
 
 	constructor(page: Page, apiHelpers: DataApiHelpers) {
+		this.allSitesCheckbox = page.getByRole('checkbox', {
+			name: 'Make This Audience Available for All Sites',
+		});
 		this.apiHelpers = apiHelpers;
 		this.externalReferenceCodeErrorMessage = page.locator(
 			'.audience-builder-general-settings .form-feedback-item'
@@ -36,8 +42,10 @@ export class AudiencesPage {
 		this.nameInput = page.getByPlaceholder('New Audience');
 		this.newAudienceButton = page.getByLabel('New', {exact: true});
 		this.page = page;
+		this.removeSiteFromScopeModal = page.getByRole('alertdialog');
 		this.ruleDropZone = page.locator('.audience-builder-drop-zone');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.siteSelector = page.getByPlaceholder('Select Site');
 		this.valueInput = page.getByLabel('Value');
 	}
 
@@ -65,6 +73,34 @@ export class AudiencesPage {
 		await expect(this.page.locator('.audience-builder-rule')).toHaveCount(
 			ruleCount + 1
 		);
+	}
+
+	async addSiteToScope(siteName: string) {
+		if (await this.allSitesCheckbox.isChecked()) {
+			await this.allSitesCheckbox.uncheck();
+		}
+
+		const siteOption = this.page.getByRole('option', {name: siteName});
+
+		await expect(async () => {
+			await this.siteSelector.clear({timeout: 2000});
+
+			await this.siteSelector.pressSequentially(siteName, {
+				timeout: 5000,
+			});
+
+			await expect(siteOption).toBeVisible({timeout: 3000});
+		}).toPass();
+
+		await siteOption.click();
+
+		await this.page
+			.getByRole('button', {name: 'Add Site to Scope'})
+			.click();
+
+		await expect(
+			this.page.getByRole('button', {name: `Remove ${siteName}`})
+		).toBeVisible();
 	}
 
 	async createAudience({
@@ -162,6 +198,18 @@ export class AudiencesPage {
 		await this.page.goto(PORTLET_URLS.audiences);
 	}
 
+	async openAudience(name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'Edit'}),
+			trigger: this.page
+				.locator('tr', {hasText: name})
+				.locator('button.dropdown-toggle'),
+		});
+
+		await expect(this.nameInput).toHaveValue(name);
+	}
+
 	async openNewAudience() {
 		await this.goto();
 
@@ -175,6 +223,12 @@ export class AudiencesPage {
 				.locator('img')
 				.first()
 		).toBeVisible();
+	}
+
+	async removeSiteFromScope(siteName: string) {
+		await this.page
+			.getByRole('button', {name: `Remove ${siteName}`})
+			.click();
 	}
 
 	async setValue({
@@ -209,13 +263,7 @@ export class AudiencesPage {
 		value: string;
 		valueType?: 'select' | 'text';
 	}) {
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('menuitem', {name: 'Edit'}),
-			trigger: this.page
-				.locator('tr', {hasText: name})
-				.locator('button.dropdown-toggle'),
-		});
+		await this.openAudience(name);
 
 		await this.setValue({value, valueType});
 

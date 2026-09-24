@@ -14,6 +14,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {waitForSPAToBeLoaded} from '../../../utils/waitForSPAToBeLoaded';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -1215,5 +1216,202 @@ test(
 		).not.toBeVisible();
 
 		await expect(page.getByText('1 Result Found for:')).toBeVisible();
+	}
+);
+
+test(
+	'Warns before removing a site whose element variations use the audience',
+	{tag: '@LPD-106899'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience scoped to the site and to a second site
+
+		const otherSite = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.addSiteToScope(site.name);
+		await audiencesPage.addSiteToScope(otherSite.name);
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		// Create a variation that uses the audience and publish the page
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const variationText = 'Variation ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${variationText}</span>`,
+			name: 'Replace heading',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		const layoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+
+		await page.goto(layoutURL);
+
+		await expect(page.getByText(variationText)).toBeVisible();
+
+		// Making the audience available for all sites keeps the variation
+
+		await audiencesPage.goto();
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.allSitesCheckbox.check();
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await page.goto(layoutURL);
+
+		await expect(page.getByText(variationText)).toBeVisible();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.addSiteToScope(site.name);
+		await audiencesPage.addSiteToScope(otherSite.name);
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		// Removing the other site does not warn
+
+		await audiencesPage.goto();
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.removeSiteFromScope(otherSite.name);
+
+		await expect(audiencesPage.removeSiteFromScopeModal).not.toBeVisible();
+
+		await expect(
+			page.getByRole('button', {name: `Remove ${otherSite.name}`})
+		).not.toBeVisible();
+
+		await audiencesPage.addSiteToScope(otherSite.name);
+
+		// Removing the site warns with the site name
+
+		await audiencesPage.removeSiteFromScope(site.name);
+
+		await expect(audiencesPage.removeSiteFromScopeModal).toContainText(
+			`Remove ${site.name} from Scope`
+		);
+		await expect(audiencesPage.removeSiteFromScopeModal).toContainText(
+			`This audience is used in one or more element variations on ${site.name}. Removing the site will stop those variations from being applied.`
+		);
+
+		// Canceling keeps the site in the scope
+
+		await audiencesPage.removeSiteFromScopeModal
+			.getByRole('button', {name: 'Cancel'})
+			.click();
+
+		await expect(audiencesPage.removeSiteFromScopeModal).not.toBeVisible();
+
+		await expect(
+			page.getByRole('button', {name: `Remove ${site.name}`})
+		).toBeVisible();
+
+		// Confirming removes the site from the scope
+
+		await audiencesPage.removeSiteFromScope(site.name);
+
+		await audiencesPage.removeSiteFromScopeModal
+			.getByRole('button', {name: 'Remove from Scope'})
+			.click();
+
+		await expect(
+			page.getByRole('button', {name: `Remove ${site.name}`})
+		).not.toBeVisible();
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		// Adding the site back does not restore the variation, since saving
+		// removed its relation with the audience
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.addSiteToScope(site.name);
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await page.goto(layoutURL);
+
+		await expect(page.getByText('Heading Example')).toBeVisible();
+
+		await expect(page.getByText(variationText)).not.toBeVisible();
+
+		// Removing the site again does not warn
+
+		await audiencesPage.goto();
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.removeSiteFromScope(site.name);
+
+		await expect(audiencesPage.removeSiteFromScopeModal).not.toBeVisible();
 	}
 );
