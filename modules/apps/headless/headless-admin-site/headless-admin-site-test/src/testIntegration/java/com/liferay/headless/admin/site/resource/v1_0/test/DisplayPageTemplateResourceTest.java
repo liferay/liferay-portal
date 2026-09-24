@@ -543,6 +543,151 @@ public class DisplayPageTemplateResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-106073")
+	public void testPostDesignLibraryDisplayPageTemplateMarkAsDefault()
+		throws Exception {
+
+		String externalReferenceCode = _getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				externalReferenceCode, WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertFalse(displayPageTemplate.getMarkedAsDefault());
+
+		Map<String, Map<String, String>> actions =
+			displayPageTemplate.getActions();
+
+		Assert.assertTrue(actions.containsKey("markAsDefault"));
+		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
+
+		Map<String, String> markAsDefaultAction = actions.get("markAsDefault");
+
+		String markAsDefaultHref = markAsDefaultAction.get("href");
+
+		Assert.assertTrue(markAsDefaultHref.endsWith("/mark-as-default"));
+
+		DisplayPageTemplate defaultDisplayPageTemplate =
+			displayPageTemplateResource.
+				postDesignLibraryDisplayPageTemplateMarkAsDefault(
+					externalReferenceCode,
+					displayPageTemplate.getExternalReferenceCode());
+
+		Assert.assertTrue(defaultDisplayPageTemplate.getMarkedAsDefault());
+
+		actions = defaultDisplayPageTemplate.getActions();
+
+		Assert.assertFalse(actions.containsKey("markAsDefault"));
+		Assert.assertTrue(actions.containsKey("unmarkAsDefault"));
+
+		_assertProblemException(
+			"CONFLICT",
+			"The display page template already is the default for its " +
+				"content type",
+			() ->
+				displayPageTemplateResource.
+					postDesignLibraryDisplayPageTemplateMarkAsDefault(
+						externalReferenceCode,
+						displayPageTemplate.getExternalReferenceCode()));
+
+		DisplayPageTemplate draftDisplayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				externalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+
+		actions = draftDisplayPageTemplate.getActions();
+
+		Assert.assertFalse(actions.containsKey("markAsDefault"));
+
+		_assertProblemException(
+			"CONFLICT",
+			"The default display page template must be published first.",
+			() ->
+				displayPageTemplateResource.
+					postDesignLibraryDisplayPageTemplateMarkAsDefault(
+						externalReferenceCode,
+						draftDisplayPageTemplate.getExternalReferenceCode()));
+
+		DisplayPageTemplate noContentTypeDisplayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(externalReferenceCode);
+
+		actions = noContentTypeDisplayPageTemplate.getActions();
+
+		Assert.assertFalse(actions.containsKey("markAsDefault"));
+
+		_assertProblemException(
+			"CONFLICT",
+			"A display page template without a content type cannot be marked " +
+				"as default",
+			() ->
+				displayPageTemplateResource.
+					postDesignLibraryDisplayPageTemplateMarkAsDefault(
+						externalReferenceCode,
+						noContentTypeDisplayPageTemplate.
+							getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-106073")
+	public void testPostDesignLibraryDisplayPageTemplateUnmarkAsDefault()
+		throws Exception {
+
+		String externalReferenceCode = _getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				externalReferenceCode, WorkflowConstants.STATUS_APPROVED);
+
+		_assertProblemException(
+			"CONFLICT",
+			"The display page template is not the default for its content type",
+			() ->
+				displayPageTemplateResource.
+					postDesignLibraryDisplayPageTemplateUnmarkAsDefault(
+						externalReferenceCode,
+						displayPageTemplate.getExternalReferenceCode()));
+
+		DisplayPageTemplate defaultDisplayPageTemplate =
+			displayPageTemplateResource.
+				postDesignLibraryDisplayPageTemplateMarkAsDefault(
+					externalReferenceCode,
+					displayPageTemplate.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> actions =
+			defaultDisplayPageTemplate.getActions();
+
+		Map<String, String> unmarkAsDefaultAction = actions.get(
+			"unmarkAsDefault");
+
+		String unmarkAsDefaultHref = unmarkAsDefaultAction.get("href");
+
+		Assert.assertTrue(unmarkAsDefaultHref.endsWith("/unmark-as-default"));
+
+		DisplayPageTemplate nondefaultDisplayPageTemplate =
+			displayPageTemplateResource.
+				postDesignLibraryDisplayPageTemplateUnmarkAsDefault(
+					externalReferenceCode,
+					displayPageTemplate.getExternalReferenceCode());
+
+		Assert.assertFalse(nondefaultDisplayPageTemplate.getMarkedAsDefault());
+
+		actions = nondefaultDisplayPageTemplate.getActions();
+
+		Assert.assertTrue(actions.containsKey("markAsDefault"));
+		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
+
+		_assertProblemException(
+			"CONFLICT",
+			"The display page template is not the default for its content type",
+			() ->
+				displayPageTemplateResource.
+					postDesignLibraryDisplayPageTemplateUnmarkAsDefault(
+						externalReferenceCode,
+						displayPageTemplate.getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
 	@TestInfo("LPD-92443")
 	public void testPostSiteDisplayPageTemplate() throws Exception {
 		super.testPostSiteDisplayPageTemplate();
@@ -890,6 +1035,24 @@ public class DisplayPageTemplateResourceTest
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				group.getGroupId());
+
+		return displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
+			designLibraryExternalReferenceCode,
+			layoutPageTemplateEntry.getExternalReferenceCode());
+	}
+
+	private DisplayPageTemplate _addDesignLibraryDisplayPageTemplate(
+			String designLibraryExternalReferenceCode, int status)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			designLibraryExternalReferenceCode, TestPropsValues.getCompanyId());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				group.getGroupId(),
+				_portal.getClassNameId(AssetCategory.class.getName()), null,
+				false, status);
 
 		return displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
 			designLibraryExternalReferenceCode,

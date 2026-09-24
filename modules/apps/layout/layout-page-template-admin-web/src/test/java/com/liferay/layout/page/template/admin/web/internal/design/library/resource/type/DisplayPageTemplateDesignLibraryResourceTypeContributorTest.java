@@ -219,7 +219,7 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 					_httpServletRequest, _depotEntry, _BACK_URL);
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 4,
+			fdsActionDropdownItems.toString(), 6,
 			fdsActionDropdownItems.size());
 
 		_assertFDSActionDropdownItem(
@@ -229,10 +229,16 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			fdsActionDropdownItems.get(1), "copy", "copy", "duplicate", "post",
 			"copy", "async");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(2), "password-policies", "permissions",
+			fdsActionDropdownItems.get(2), "star", "markAsDefault",
+			"mark-as-default", "post", "markAsDefault", "async");
+		_assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(3), "star-o", "unmarkAsDefault",
+			"unmark-as-default", "post", "unmarkAsDefault", "async");
+		_assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(4), "password-policies", "permissions",
 			"permissions", null, "permissions", "modal-permissions");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(3), "trash", "delete", "delete",
+			fdsActionDropdownItems.get(5), "trash", "delete", "delete",
 			"delete", "delete", "async");
 
 		FDSActionDropdownItem copyFDSActionDropdownItem =
@@ -241,8 +247,22 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 		Assert.assertEquals(
 			"{actions.copy.href}", copyFDSActionDropdownItem.get("href"));
 
-		FDSActionDropdownItem deleteFDSActionDropdownItem =
+		FDSActionDropdownItem markAsDefaultFDSActionDropdownItem =
+			fdsActionDropdownItems.get(2);
+
+		Assert.assertEquals(
+			"{actions.markAsDefault.href}",
+			markAsDefaultFDSActionDropdownItem.get("href"));
+
+		FDSActionDropdownItem unmarkAsDefaultFDSActionDropdownItem =
 			fdsActionDropdownItems.get(3);
+
+		Assert.assertEquals(
+			"{actions.unmarkAsDefault.href}",
+			unmarkAsDefaultFDSActionDropdownItem.get("href"));
+
+		FDSActionDropdownItem deleteFDSActionDropdownItem =
+			fdsActionDropdownItems.get(5);
 
 		Assert.assertEquals(
 			"{actions.delete.href}", deleteFDSActionDropdownItem.get("href"));
