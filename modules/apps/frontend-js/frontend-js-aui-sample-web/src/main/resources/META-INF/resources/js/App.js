@@ -26,6 +26,170 @@ const EXPECTED_GROUP = 'liferaydeprecated';
 
 const USE_TIMEOUT = 10000;
 
+export function App() {
+	const [results, setResults] = useState(null);
+
+	useEffect(() => {
+		let cancelled = false;
+
+		const run = async () => {
+			const nextResults = [];
+
+			for (const check of CHECKS) {
+				nextResults.push(await runCheck(check));
+			}
+
+			if (!cancelled) {
+				setResults(nextResults);
+			}
+		};
+
+		run();
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	if (!results) {
+		return (
+			<div
+				className="container-fluid container-fluid-max-xl py-3"
+				data-qa-id="auiDeprecationChecker"
+			>
+				<p>Checking&hellip;</p>
+			</div>
+		);
+	}
+
+	const failed = results.filter((result) => !result.passed);
+
+	return (
+		<div
+			className="container-fluid container-fluid-max-xl py-3"
+			data-qa-id="auiDeprecationChecker"
+			data-status={failed.length ? 'fail' : 'pass'}
+		>
+			<div
+				className={
+					'alert ' +
+					(failed.length ? 'alert-danger' : 'alert-success')
+				}
+				data-qa-id="auiDeprecationCheckerSummary"
+				data-status={failed.length ? 'fail' : 'pass'}
+				role="alert"
+			>
+				{failed.length
+					? failed.length +
+						' of ' +
+						results.length +
+						' modules behaved unexpectedly'
+					: 'All ' + results.length + ' modules behaved as expected'}
+			</div>
+
+			<p className="text-secondary">
+				{'AlloyUI on this page: '}
+
+				<code>{typeof window.AUI === 'function' ? 'yes' : 'no'}</code>
+
+				{', '}
+
+				<code>modules_deprecated.js</code>
+
+				{' loaded: '}
+
+				<code data-qa-id="auiDeprecationCheckerOverlay">
+					{isOverlayLoaded() ? 'yes' : 'no'}
+				</code>
+			</p>
+
+			{results.map((result) => (
+				<Module key={result.check.moduleKey} result={result} />
+			))}
+		</div>
+	);
+}
+
+function Assertion({assertion}) {
+	return (
+		<li
+			className="list-group-item list-group-item-flex"
+			data-qa-id="auiDeprecationCheckerAssertion"
+			data-status={assertion.passed ? 'pass' : 'fail'}
+		>
+			<div className="autofit-col">
+				<span
+					className={
+						'label ' +
+						(assertion.passed ? 'label-success' : 'label-danger')
+					}
+				>
+					{assertion.passed ? 'Pass' : 'Fail'}
+				</span>
+			</div>
+
+			<div className="autofit-col autofit-col-expand">
+				{assertion.label}
+
+				{!assertion.passed && (
+					<>
+						{' — expected '}
+
+						<code>{String(assertion.expected)}</code>
+
+						{', got '}
+
+						<code>{String(assertion.actual)}</code>
+					</>
+				)}
+
+				{assertion.note ? <em>{' (' + assertion.note + ')'}</em> : null}
+			</div>
+		</li>
+	);
+}
+
+function Module({result}) {
+	return (
+		<div
+			className="card"
+			data-feature-flag-enabled={String(result.enabled)}
+			data-module-key={result.check.moduleKey}
+			data-qa-id="auiDeprecationCheckerModule"
+			data-status={result.passed ? 'pass' : 'fail'}
+		>
+			<div className="card-body">
+				<h4 className="card-title">
+					{result.check.title}{' '}
+
+					<span
+						className={
+							'label ' +
+							(result.enabled ? 'label-info' : 'label-secondary')
+						}
+					>
+						{result.check.featureFlagKey}
+
+						{result.enabled ? ' enabled' : ' disabled'}
+					</span>
+				</h4>
+
+				<p className="card-subtitle text-secondary">
+					<code>{result.check.moduleKey}</code>
+
+					{', removed by ' + result.check.removedBy}
+				</p>
+			</div>
+
+			<ul className="list-group">
+				{result.assertions.map((assertion, index) => (
+					<Assertion assertion={assertion} key={index} />
+				))}
+			</ul>
+		</div>
+	);
+}
+
 function getModuleInfo(moduleKey) {
 	if (typeof window.AUI !== 'function') {
 		return null;
@@ -201,168 +365,4 @@ async function runCheck(check) {
 		enabled,
 		passed: assertions.every((assertion) => assertion.passed),
 	};
-}
-
-function Assertion({assertion}) {
-	return (
-		<li
-			className="list-group-item list-group-item-flex"
-			data-qa-id="auiDeprecationCheckerAssertion"
-			data-status={assertion.passed ? 'pass' : 'fail'}
-		>
-			<div className="autofit-col">
-				<span
-					className={
-						'label ' +
-						(assertion.passed ? 'label-success' : 'label-danger')
-					}
-				>
-					{assertion.passed ? 'Pass' : 'Fail'}
-				</span>
-			</div>
-
-			<div className="autofit-col autofit-col-expand">
-				{assertion.label}
-
-				{!assertion.passed && (
-					<>
-						{' — expected '}
-
-						<code>{String(assertion.expected)}</code>
-
-						{', got '}
-
-						<code>{String(assertion.actual)}</code>
-					</>
-				)}
-
-				{assertion.note ? <em>{' (' + assertion.note + ')'}</em> : null}
-			</div>
-		</li>
-	);
-}
-
-function Module({result}) {
-	return (
-		<div
-			className="card"
-			data-feature-flag-enabled={String(result.enabled)}
-			data-module-key={result.check.moduleKey}
-			data-qa-id="auiDeprecationCheckerModule"
-			data-status={result.passed ? 'pass' : 'fail'}
-		>
-			<div className="card-body">
-				<h4 className="card-title">
-					{result.check.title}{' '}
-
-					<span
-						className={
-							'label ' +
-							(result.enabled ? 'label-info' : 'label-secondary')
-						}
-					>
-						{result.check.featureFlagKey}
-
-						{result.enabled ? ' enabled' : ' disabled'}
-					</span>
-				</h4>
-
-				<p className="card-subtitle text-secondary">
-					<code>{result.check.moduleKey}</code>
-
-					{', removed by ' + result.check.removedBy}
-				</p>
-			</div>
-
-			<ul className="list-group">
-				{result.assertions.map((assertion, index) => (
-					<Assertion assertion={assertion} key={index} />
-				))}
-			</ul>
-		</div>
-	);
-}
-
-export default function AUIDeprecationChecker() {
-	const [results, setResults] = useState(null);
-
-	useEffect(() => {
-		let cancelled = false;
-
-		const run = async () => {
-			const nextResults = [];
-
-			for (const check of CHECKS) {
-				nextResults.push(await runCheck(check));
-			}
-
-			if (!cancelled) {
-				setResults(nextResults);
-			}
-		};
-
-		run();
-
-		return () => {
-			cancelled = true;
-		};
-	}, []);
-
-	if (!results) {
-		return (
-			<div
-				className="container-fluid container-fluid-max-xl py-3"
-				data-qa-id="auiDeprecationChecker"
-			>
-				<p>Checking&hellip;</p>
-			</div>
-		);
-	}
-
-	const failed = results.filter((result) => !result.passed);
-
-	return (
-		<div
-			className="container-fluid container-fluid-max-xl py-3"
-			data-qa-id="auiDeprecationChecker"
-			data-status={failed.length ? 'fail' : 'pass'}
-		>
-			<div
-				className={
-					'alert ' +
-					(failed.length ? 'alert-danger' : 'alert-success')
-				}
-				data-qa-id="auiDeprecationCheckerSummary"
-				data-status={failed.length ? 'fail' : 'pass'}
-				role="alert"
-			>
-				{failed.length
-					? failed.length +
-						' of ' +
-						results.length +
-						' modules behaved unexpectedly'
-					: 'All ' + results.length + ' modules behaved as expected'}
-			</div>
-
-			<p className="text-secondary">
-				{'AlloyUI on this page: '}
-
-				<code>{typeof window.AUI === 'function' ? 'yes' : 'no'}</code>
-
-				{', '}
-
-				<code>modules_deprecated.js</code>
-
-				{' loaded: '}
-
-				<code data-qa-id="auiDeprecationCheckerOverlay">
-					{isOverlayLoaded() ? 'yes' : 'no'}
-				</code>
-			</p>
-
-			{results.map((result) => (
-				<Module key={result.check.moduleKey} result={result} />
-			))}
-		</div>
-	);
 }

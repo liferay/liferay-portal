@@ -18,7 +18,7 @@ const auiSamplePageTest = isolatedSiteTest.extend<{
 		const widgetDefinition = getWidgetDefinition({
 			id: getRandomString(),
 			widgetName:
-				'com_liferay_frontend_js_aui_sample_web_portlet_FrontendJSAUISampleWebPortlet',
+				'com_liferay_frontend_js_aui_sample_web_internal_portlet_FrontendJSAUISampleWebPortlet',
 		});
 
 		const apiHelpers = new ApiHelpers(page);

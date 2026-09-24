@@ -9,6 +9,6 @@
 
 <div>
 	<react:component
-		module="{AUIDeprecationChecker} from frontend-js-aui-sample-web"
+		module="{App} from frontend-js-aui-sample-web"
 	/>
 </div>

@@ -2,7 +2,7 @@
 	"dependencies": {
 		"react": "18.2.0"
 	},
-	"main": "js/index.js",
+	"main": "js/App.js",
 	"name": "@liferay/frontend-js-aui-sample-web",
 	"scripts": {
 		"build": "node-scripts build",

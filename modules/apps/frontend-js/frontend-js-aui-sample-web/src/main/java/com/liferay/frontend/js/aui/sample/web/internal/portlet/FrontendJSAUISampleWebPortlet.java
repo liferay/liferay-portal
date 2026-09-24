@@ -5,7 +5,6 @@
 
 package com.liferay.frontend.js.aui.sample.web.internal.portlet;
 
-import com.liferay.frontend.js.aui.sample.web.internal.constants.FrontendJSAUISampleWebPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
 import jakarta.portlet.Portlet;
@@ -18,17 +17,9 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"com.liferay.portlet.display-category=category.sample",
-		"com.liferay.portlet.instanceable=true",
-		"com.liferay.portlet.layout-cacheable=true",
-		"com.liferay.portlet.private-request-attributes=false",
-		"com.liferay.portlet.private-session-attributes=false",
-		"com.liferay.portlet.render-weight=50",
-		"com.liferay.portlet.use-default-template=true",
-		"jakarta.portlet.display-name=AUI Deprecation Sample",
-		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.display-name=JS AUI Sample",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/view.jsp",
-		"jakarta.portlet.name=" + FrontendJSAUISampleWebPortletKeys.JS_AUI_SAMPLE,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=power-user,user",
 		"jakarta.portlet.version=4.0"
