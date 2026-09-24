@@ -5215,6 +5215,33 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
             tags: ["DisplayPageTemplate"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/mark-as-default":
+        post:
+            # @review
+            description:
+                Marks a display page template of a design library as the default for its content type.
+            operationId: postDesignLibraryDisplayPageTemplateMarkAsDefault
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: displayPageTemplateExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DisplayPageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DisplayPageTemplate"
+            tags: ["DisplayPageTemplate"]
     "/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions":
         get:
             operationId: getDesignLibraryDisplayPageTemplatePermissionsPage
@@ -5269,6 +5296,33 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+            tags: ["DisplayPageTemplate"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/unmark-as-default":
+        post:
+            # @review
+            description:
+                Stops a display page template of a design library from being the default for its content type.
+            operationId: postDesignLibraryDisplayPageTemplateUnmarkAsDefault
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: displayPageTemplateExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DisplayPageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DisplayPageTemplate"
             tags: ["DisplayPageTemplate"]
     "/design-libraries/{designLibraryExternalReferenceCode}/page-template-sets":
         get:
