@@ -6,21 +6,30 @@
 package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
+import com.liferay.commerce.product.constants.CPConstants;
+import com.liferay.commerce.product.helper.CPInstanceHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
+import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
@@ -55,7 +64,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -88,8 +100,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		_cpOption = _cpOptionLocalService.addCPOption(
 			RandomTestUtil.randomString(), _user.getUserId(),
 			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(), "select", false, false,
-			false, RandomTestUtil.randomString(), serviceContext);
+			RandomTestUtil.randomLocaleStringMap(),
+			CPConstants.PRODUCT_OPTION_SELECT_KEY, false, false, false,
+			RandomTestUtil.randomString(), serviceContext);
 
 		_cpOptionValue = _cpOptionValueLocalService.addCPOptionValue(
 			_cpOption.getCPOptionId(), RandomTestUtil.randomLocaleStringMap(),
@@ -166,6 +179,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		super.testPostProductIdSku();
 
 		_testPostProductIdSkuWithLazyReferencedOptionExternalReferenceCode();
+		_testPostProductIdSkuWithLazyReferencedParentOptionExternalReferenceCode();
 		_testPostProductIdSkuWithNonexistentOptionExternalReferenceCode();
 		_testPostProductIdSkuWithOptionExternalReferenceCode();
 		_testPostProductIdSkuWithOptionId();
@@ -179,7 +193,10 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Override
 	@Test
 	public void testPutSkuByExternalReferenceCode() throws Exception {
-		_testPatchSkuExternalReferenceCode();
+		super.testPutSkuByExternalReferenceCode();
+
+		_testPutSkuByExternalReferenceCodeWithLazyReferences();
+		_testPutSkuByExternalReferenceCodeWithUnitOfMeasures();
 	}
 
 	@Override
@@ -323,11 +340,74 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	}
 
 	@Override
+	protected Sku testPutSkuByExternalReferenceCode_addSku() throws Exception {
+		return skuResource.postProductByExternalReferenceCodeSku(
+			_cProduct.getExternalReferenceCode(), randomSku());
+	}
+
+	@Override
 	protected Sku testPutSkuByExternalReferenceCode_createSku()
 		throws Exception {
 
 		return skuResource.postProductByExternalReferenceCodeSku(
 			_cProduct.getExternalReferenceCode(), randomSku());
+	}
+
+	private void _assertCPInstanceOptionValueRel(
+		CPDefinitionOptionRel cpDefinitionOptionRel,
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel, Sku sku) {
+
+		List<CPInstanceOptionValueRel> cpInstanceOptionValueRels =
+			_cpInstanceHelper.getCPInstanceCPInstanceOptionValueRels(
+				sku.getId());
+
+		Assert.assertEquals(
+			cpInstanceOptionValueRels.toString(), 1,
+			cpInstanceOptionValueRels.size());
+
+		CPInstanceOptionValueRel cpInstanceOptionValueRel =
+			cpInstanceOptionValueRels.get(0);
+
+		Assert.assertEquals(
+			cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			cpInstanceOptionValueRel.getCPDefinitionOptionRelId());
+		Assert.assertEquals(
+			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
+			cpInstanceOptionValueRel.getCPDefinitionOptionValueRelId());
+	}
+
+	private void _assertSkuUnitOfMeasures(Sku expectedSku, Sku sku) {
+		SkuUnitOfMeasure[] expectedSkuUnitOfMeasures =
+			expectedSku.getSkuUnitOfMeasures();
+		SkuUnitOfMeasure[] skuUnitOfMeasures = sku.getSkuUnitOfMeasures();
+
+		Assert.assertEquals(
+			Arrays.toString(skuUnitOfMeasures),
+			expectedSkuUnitOfMeasures.length, skuUnitOfMeasures.length);
+
+		Map<String, SkuUnitOfMeasure> skuUnitOfMeasuresMap = new HashMap<>();
+
+		for (SkuUnitOfMeasure skuUnitOfMeasure : skuUnitOfMeasures) {
+			skuUnitOfMeasuresMap.put(
+				skuUnitOfMeasure.getKey(), skuUnitOfMeasure);
+		}
+
+		for (SkuUnitOfMeasure expectedSkuUnitOfMeasure :
+				expectedSkuUnitOfMeasures) {
+
+			SkuUnitOfMeasure skuUnitOfMeasure = skuUnitOfMeasuresMap.get(
+				expectedSkuUnitOfMeasure.getKey());
+
+			Assert.assertEquals(
+				expectedSkuUnitOfMeasure.getPrimary(),
+				skuUnitOfMeasure.getPrimary());
+
+			BigDecimal basePrice = expectedSkuUnitOfMeasure.getBasePrice();
+
+			Assert.assertEquals(
+				basePrice.setScale(2, RoundingMode.HALF_UP),
+				skuUnitOfMeasure.getBasePrice());
+		}
 	}
 
 	private CommercePriceEntry _getCommercePriceEntry(
@@ -377,6 +457,54 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		return postSku.getSkuVirtualSettings();
 	}
 
+	private SkuUnitOfMeasure _randomSkuUnitOfMeasure(boolean primaryValue) {
+		return new SkuUnitOfMeasure() {
+			{
+				active = true;
+				basePrice = BigDecimal.valueOf(RandomTestUtil.randomDouble());
+				incrementalOrderQuantity = BigDecimal.valueOf(
+					RandomTestUtil.randomInt(1, 10));
+				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				name = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+				precision = 0;
+				primary = primaryValue;
+				priority = RandomTestUtil.randomDouble();
+				promoPrice = BigDecimal.valueOf(RandomTestUtil.randomDouble());
+				rate = BigDecimal.valueOf(RandomTestUtil.randomInt(1, 10));
+			}
+		};
+	}
+
+	private Sku _randomSkuWithParentOptionExternalReferenceCode(
+			String optionKey, String optionKeyExternalReferenceCode,
+			String optionValueKeyExternalReferenceCode,
+			String parentOptionKeyExternalReferenceCode)
+		throws Exception {
+
+		Sku sku = randomSku();
+
+		sku.setSkuOptions(
+			() -> new SkuOption[] {
+				new SkuOption() {
+					{
+						key = optionKey;
+						optionExternalReferenceCode =
+							optionKeyExternalReferenceCode;
+						optionValueExternalReferenceCode =
+							optionValueKeyExternalReferenceCode;
+						parentOptionExternalReferenceCode =
+							parentOptionKeyExternalReferenceCode;
+						parentOptionFieldType =
+							CPConstants.PRODUCT_OPTION_SELECT_KEY;
+						parentOptionSkuContributor = true;
+					}
+				}
+			});
+
+		return sku;
+	}
+
 	private Sku _randomSkuWithSkuOptions(
 			String optionKey, String optionKeyExternalReferenceCode,
 			Long optionKeyId, String optionValueKeyExternalReferenceCode,
@@ -399,6 +527,19 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 						value = optionValue;
 					}
 				}
+			});
+
+		return sku;
+	}
+
+	private Sku _randomSkuWithUnitOfMeasures() throws Exception {
+		Sku sku = randomSku();
+
+		sku.setProductExternalReferenceCode(
+			_cProduct::getExternalReferenceCode);
+		sku.setSkuUnitOfMeasures(
+			() -> new SkuUnitOfMeasure[] {
+				_randomSkuUnitOfMeasure(true), _randomSkuUnitOfMeasure(false)
 			});
 
 		return sku;
@@ -512,22 +653,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	private void _testPatchSkuWithUnitOfMeasure() throws Exception {
 		Sku sku = testPatchSku_addSku();
 
-		SkuUnitOfMeasure randomSkuUnitOfMeasure = new SkuUnitOfMeasure() {
-			{
-				active = true;
-				basePrice = BigDecimal.valueOf(RandomTestUtil.randomDouble());
-				incrementalOrderQuantity = BigDecimal.valueOf(
-					RandomTestUtil.randomInt(1, 10));
-				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				name = LanguageUtils.getLanguageIdMap(
-					RandomTestUtil.randomLocaleStringMap());
-				precision = 0;
-				primary = true;
-				priority = RandomTestUtil.randomDouble();
-				promoPrice = BigDecimal.valueOf(RandomTestUtil.randomDouble());
-				rate = BigDecimal.valueOf(RandomTestUtil.randomInt(1, 10));
-			}
-		};
+		SkuUnitOfMeasure randomSkuUnitOfMeasure = _randomSkuUnitOfMeasure(true);
 
 		SkuUnitOfMeasure[] randomSkuUnitOfMeasureArray = {
 			randomSkuUnitOfMeasure
@@ -571,8 +697,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		CPOption cpOption = _cpOptionLocalService.addCPOption(
 			RandomTestUtil.randomString(), _user.getUserId(),
 			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(), "select", false, false,
-			false, RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(),
+			CPConstants.PRODUCT_OPTION_SELECT_KEY, false, false, false,
+			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				testCompany.getCompanyId(), testGroup.getGroupId(),
 				_user.getUserId()));
@@ -602,6 +729,73 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			cpDefinitionOptionRel.getCPDefinitionId());
 		Assert.assertEquals(
 			cpOption.getCPOptionId(), cpDefinitionOptionRel.getCPOptionId());
+	}
+
+	private void _testPostProductIdSkuWithLazyReferencedParentOptionExternalReferenceCode()
+		throws Exception {
+
+		Sku postSku = null;
+
+		String optionExternalReferenceCode = RandomTestUtil.randomString();
+		String optionValueExternalReferenceCode = RandomTestUtil.randomString();
+		String parentOptionExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			postSku = skuResource.postProductIdSku(
+				_cpDefinition.getCProductId(),
+				_randomSkuWithParentOptionExternalReferenceCode(
+					RandomTestUtil.randomString(), optionExternalReferenceCode,
+					optionValueExternalReferenceCode,
+					parentOptionExternalReferenceCode));
+		}
+
+		CPOption cpOption =
+			_cpOptionLocalService.getCPOptionByExternalReferenceCode(
+				parentOptionExternalReferenceCode, testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			CPConstants.PRODUCT_OPTION_SELECT_KEY,
+			cpOption.getCommerceOptionTypeKey());
+		Assert.assertEquals(
+			StringUtil.toLowerCase(parentOptionExternalReferenceCode),
+			cpOption.getKey());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
+		Assert.assertTrue(cpOption.isSkuContributor());
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.
+				getCPDefinitionOptionRelByExternalReferenceCode(
+					optionExternalReferenceCode, testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			_cpDefinition.getCPDefinitionId(),
+			cpDefinitionOptionRel.getCPDefinitionId());
+		Assert.assertEquals(
+			cpOption.getCPOptionId(), cpDefinitionOptionRel.getCPOptionId());
+		Assert.assertEquals(
+			CPConstants.PRODUCT_OPTION_SELECT_KEY,
+			cpDefinitionOptionRel.getCommerceOptionTypeKey());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, cpDefinitionOptionRel.getStatus());
+		Assert.assertTrue(cpDefinitionOptionRel.isSkuContributor());
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				getCPDefinitionOptionValueRelByExternalReferenceCode(
+					optionValueExternalReferenceCode,
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+
+		_assertCPInstanceOptionValueRel(
+			cpDefinitionOptionRel, cpDefinitionOptionValueRel, postSku);
 	}
 
 	private void _testPostProductIdSkuWithNonexistentOptionExternalReferenceCode()
@@ -649,6 +843,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			(long)skuOption.getOptionValueId(),
 			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId());
 		Assert.assertEquals(skuOption.getValue(), _cpOptionValue.getKey());
+
+		_assertCPInstanceOptionValueRel(
+			_cpDefinitionOptionRel, cpDefinitionOptionValueRel, postSku);
 	}
 
 	private void _testPostProductIdSkuWithOptionId() throws Exception {
@@ -856,14 +1053,191 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			postSkuVirtualSettings.getTermsOfUseJournalArticleId());
 	}
 
+	private void _testPutSkuByExternalReferenceCodeWithLazyReferences()
+		throws Exception {
+
+		String optionKeyExternalReferenceCode = RandomTestUtil.randomString();
+		String optionValueKeyExternalReferenceCode =
+			RandomTestUtil.randomString();
+		String parentOptionKeyExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		SkuOption skuOption = new SkuOption() {
+			{
+				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				optionExternalReferenceCode = optionKeyExternalReferenceCode;
+				optionFieldType = CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY;
+				optionSkuContributor = true;
+				optionValueExternalReferenceCode =
+					optionValueKeyExternalReferenceCode;
+				parentOptionExternalReferenceCode =
+					parentOptionKeyExternalReferenceCode;
+				parentOptionFieldType = CPConstants.PRODUCT_OPTION_SELECT_KEY;
+				parentOptionSkuContributor = true;
+				value = _CP_DEFINITION_OPTION_VALUE_REL_KEY;
+			}
+		};
+
+		Sku sku = randomSku();
+
+		String catalogCurrencyCode = RandomTestUtil.randomString();
+		String catalogCurrencyExternalReferenceCode =
+			RandomTestUtil.randomString();
+		String catalogExternalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = RandomTestUtil.randomString();
+		String productExternalReferenceCode = RandomTestUtil.randomString();
+
+		sku.setCatalogCurrencyCode(catalogCurrencyCode);
+		sku.setCatalogCurrencyExternalReferenceCode(
+			catalogCurrencyExternalReferenceCode);
+		sku.setCatalogExternalReferenceCode(catalogExternalReferenceCode);
+		sku.setExternalReferenceCode(externalReferenceCode);
+		sku.setProductExternalReferenceCode(productExternalReferenceCode);
+		sku.setProductType(_PRODUCT_TYPE_NAME);
+		sku.setSkuOptions(new SkuOption[] {skuOption});
+
+		Sku putSku = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			putSku = skuResource.putSkuByExternalReferenceCode(
+				externalReferenceCode, sku);
+		}
+
+		_commerceCurrency =
+			_commerceCurrencyLocalService.
+				getCommerceCurrencyByExternalReferenceCode(
+					catalogCurrencyExternalReferenceCode,
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(catalogCurrencyCode, _commerceCurrency.getCode());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, _commerceCurrency.getStatus());
+
+		_commerceCatalog =
+			_commerceCatalogLocalService.
+				getCommerceCatalogByExternalReferenceCode(
+					catalogExternalReferenceCode, testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			catalogCurrencyCode, _commerceCatalog.getCommerceCurrencyCode());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, _commerceCatalog.getStatus());
+
+		_lazyReferencedCPDefinition =
+			_cpDefinitionLocalService.
+				getCPDefinitionByCProductExternalReferenceCode(
+					productExternalReferenceCode, testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			_commerceCatalog.getGroupId(),
+			_lazyReferencedCPDefinition.getGroupId());
+		Assert.assertEquals(
+			_PRODUCT_TYPE_NAME,
+			_lazyReferencedCPDefinition.getProductTypeName());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY,
+			_lazyReferencedCPDefinition.getStatus());
+
+		CPInstance cpInstance =
+			_cpInstanceLocalService.getCPInstanceByExternalReferenceCode(
+				externalReferenceCode, testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			_lazyReferencedCPDefinition.getCPDefinitionId(),
+			cpInstance.getCPDefinitionId());
+		Assert.assertEquals(putSku.getId(), (Long)cpInstance.getCPInstanceId());
+
+		_lazyReferencedCPOption =
+			_cpOptionLocalService.getCPOptionByExternalReferenceCode(
+				parentOptionKeyExternalReferenceCode,
+				testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			CPConstants.PRODUCT_OPTION_SELECT_KEY,
+			_lazyReferencedCPOption.getCommerceOptionTypeKey());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY,
+			_lazyReferencedCPOption.getStatus());
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.
+				getCPDefinitionOptionRelByExternalReferenceCode(
+					optionKeyExternalReferenceCode, testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			_lazyReferencedCPDefinition.getCPDefinitionId(),
+			cpDefinitionOptionRel.getCPDefinitionId());
+		Assert.assertEquals(
+			CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY,
+			cpDefinitionOptionRel.getCommerceOptionTypeKey());
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				getCPDefinitionOptionValueRelByExternalReferenceCode(
+					optionValueKeyExternalReferenceCode,
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+		Assert.assertEquals(
+			_CP_DEFINITION_OPTION_VALUE_REL_KEY,
+			cpDefinitionOptionValueRel.getKey());
+	}
+
+	private void _testPutSkuByExternalReferenceCodeWithUnitOfMeasures()
+		throws Exception {
+
+		Sku sku = _randomSkuWithUnitOfMeasures();
+
+		Sku postSku = skuResource.postProductByExternalReferenceCodeSku(
+			_cProduct.getExternalReferenceCode(), sku);
+		Sku putSku1 = skuResource.putSkuByExternalReferenceCode(
+			sku.getExternalReferenceCode(), sku);
+
+		Assert.assertEquals(postSku.getId(), putSku1.getId());
+
+		_assertSkuUnitOfMeasures(sku, putSku1);
+
+		Sku putSku2 = skuResource.putSkuByExternalReferenceCode(
+			sku.getExternalReferenceCode(), sku);
+
+		Assert.assertEquals(putSku1.getId(), putSku2.getId());
+
+		_assertSkuUnitOfMeasures(sku, putSku2);
+	}
+
+	private static final String _CP_DEFINITION_OPTION_VALUE_REL_KEY =
+		"03-18-2024-16-45-1-hours-europe-paris";
+
+	private static final String _PRODUCT_TYPE_NAME = "simple";
+
 	@DeleteAfterTestRun
 	private CProduct _cProduct;
+
+	@DeleteAfterTestRun
+	private CommerceCatalog _commerceCatalog;
+
+	@Inject
+	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@DeleteAfterTestRun
+	private CommerceCurrency _commerceCurrency;
+
+	@Inject
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Inject
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private CPDefinitionOptionRel _cpDefinitionOptionRel;
@@ -872,9 +1246,16 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
 
+	@Inject
+	private CPDefinitionOptionValueRelLocalService
+		_cpDefinitionOptionValueRelLocalService;
+
 	@DeleteAfterTestRun
 	private List<CPDefinitionOptionValueRel> _cpDefinitionOptionValueRels =
 		new ArrayList<>();
+
+	@Inject
+	private CPInstanceHelper _cpInstanceHelper;
 
 	@Inject
 	private CPInstanceLocalService _cpInstanceLocalService;
@@ -903,6 +1284,12 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
+
+	@DeleteAfterTestRun
+	private CPDefinition _lazyReferencedCPDefinition;
+
+	@DeleteAfterTestRun
+	private CPOption _lazyReferencedCPOption;
 
 	@DeleteAfterTestRun
 	private User _user;
