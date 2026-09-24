@@ -377,7 +377,7 @@ export function CardStyleModal(args: any) {
 							<ClayIcon symbol="times" />
 						</ClayButton>
 
-						<div className="aspect-ratio aspect-ratio-16-to-9 bg-primary-l3 modal-banner-img">
+						<div className="aspect-ratio aspect-ratio-16-to-9 bg-primary-l3 modal-banner-img modal-banner-img-start">
 							<div className="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-fluid">
 								<img
 									alt="An image of adding modules to a page"
