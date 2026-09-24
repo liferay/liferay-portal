@@ -283,6 +283,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"PIMConnector", "/pim/connectors"
 		).put(
+			"PIMConnectorFieldMapping", "/pim/connector-field-mappings"
+		).put(
 			"PIMLink", "/pim/links"
 		).put(
 			"SEOStudioDomain", "/seo-studio/domains"

@@ -1,0 +1,120 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#F1M1",
+	"enableCategorization": false,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": true,
+	"enableLocalization": false,
+	"enableObjectEntryDraft": false,
+	"enableObjectEntryHistory": false,
+	"enableObjectEntrySchedule": false,
+	"enableObjectEntrySubscription": false,
+	"externalReferenceCode": "L_PIM_CONNECTOR_FIELD_MAPPING",
+	"label": {
+		"en_US": "PIM Connector Field Mapping"
+	},
+	"modifiable": true,
+	"name": "PIMConnectorFieldMapping",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+	],
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "CHANNEL_FIELD_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Channel Field Name"
+			},
+			"name": "channelFieldName",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "Integer",
+			"businessType": "Integer",
+			"defaultValue": 0,
+			"externalReferenceCode": "PRIORITY",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Priority"
+			},
+			"name": "priority",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "SOURCE_CLASS_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Source Class Name"
+			},
+			"name": "sourceClassName",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "SOURCE_FIELD_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Source Field Name"
+			},
+			"name": "sourceFieldName",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TYPE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Type"
+			},
+			"name": "type",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "Clob",
+			"businessType": "LongText",
+			"externalReferenceCode": "VALUE",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Value"
+			},
+			"name": "value",
+			"required": false,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_PIM_DEFINITIONS",
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "PIM Connector Field Mappings"
+	},
+	"scope": "company",
+	"system": true,
+	"titleObjectFieldName": "channelFieldName",
+	"updateStrategy": "UPDATE"
+}
