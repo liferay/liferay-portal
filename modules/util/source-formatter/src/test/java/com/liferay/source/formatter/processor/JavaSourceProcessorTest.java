@@ -1080,19 +1080,15 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			).addExpectedMessage(
 				"Use \"MessageDigest.isEqual\" to compare secrets, see " +
 					"LPD-93281",
-				42
+				18
 			).addExpectedMessage(
 				"Use \"MessageDigest.isEqual\" to compare secrets, see " +
 					"LPD-93281",
-				50
+				26
 			).addExpectedMessage(
 				"Use \"MessageDigest.isEqual\" to compare secrets, see " +
 					"LPD-93281",
-				54
-			).addExpectedMessage(
-				"Use \"MessageDigest.isEqual\" to compare secrets, see " +
-					"LPD-93281",
-				60
+				32
 			));
 	}
 
