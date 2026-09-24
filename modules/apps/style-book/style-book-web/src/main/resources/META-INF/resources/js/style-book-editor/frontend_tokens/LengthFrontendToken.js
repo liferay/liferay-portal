@@ -9,12 +9,14 @@ import React from 'react';
 
 export default function LengthFrontendToken({
 	frontendToken,
+	labelAfter,
 	onValueSelect,
 	value,
 }) {
 	return (
 		<LengthInput
 			field={frontendToken}
+			labelAfter={labelAfter}
 			onValueSelect={(_, value) => onValueSelect(value)}
 			value={value}
 		/>

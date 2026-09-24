@@ -69,6 +69,7 @@ export default function ({
 	themeName,
 } = {}) {
 	initializeConfig({
+		customTokenDefinitionId,
 		defaultTokenDefinitionPriority,
 		fragmentCollectionPreviewURL,
 		getFrontendTokenDefinitions: getFrontendTokenDefinitionsFactory({

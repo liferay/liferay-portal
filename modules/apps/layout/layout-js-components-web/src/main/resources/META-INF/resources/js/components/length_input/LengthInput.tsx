@@ -86,6 +86,7 @@ interface Props {
 	className?: string;
 	defaultUnit?: Unit;
 	field: Field;
+	labelAfter?: React.ReactNode;
 	onEnter?: () => {};
 	onValueSelect: (fieldName: string, value: string) => void;
 	ref?: React.Ref<HTMLInputElement>;
@@ -138,6 +139,7 @@ const LengthInput = forwardRef<LengthInputRef, Props>(
 			className,
 			defaultUnit,
 			field,
+			labelAfter,
 			onEnter,
 			onValueSelect,
 			showLabel = true,
@@ -287,6 +289,8 @@ const LengthInput = forwardRef<LengthInputRef, Props>(
 				>
 					{field.label}
 				</label>
+
+				{labelAfter}
 
 				<ClayInput.Group className="rounded">
 					<ClayInput.GroupItem prepend>

@@ -50,6 +50,7 @@ interface Props {
 	defaultTokenValue?: string;
 	editedTokenValues: Record<string, Token>;
 	field: Field;
+	labelAfter?: React.ReactNode;
 	onValueSelect: (fieldName: string, value: string) => void;
 	restoreButtonLabel?: string;
 	showLabel?: boolean;
@@ -64,6 +65,7 @@ export default function ColorPicker({
 	defaultTokenValue = '',
 	editedTokenValues,
 	field,
+	labelAfter,
 	onValueSelect,
 	showLabel = true,
 	tokenValues,
@@ -261,6 +263,8 @@ export default function ColorPicker({
 			<label className={classNames({'sr-only': !showLabel})}>
 				{field.label}
 			</label>
+
+			{labelAfter}
 
 			<div
 				className={classNames('layout__color-picker rounded', {

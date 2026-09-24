@@ -11,6 +11,7 @@ import React from 'react';
 
 export default function TextFrontendToken({
 	frontendToken,
+	labelAfter,
 	onValueSelect,
 	value,
 }) {
@@ -22,6 +23,8 @@ export default function TextFrontendToken({
 	return (
 		<ClayForm.Group small>
 			<label htmlFor={id}>{label}</label>
+
+			{labelAfter}
 
 			<ClayInput
 				id={id}

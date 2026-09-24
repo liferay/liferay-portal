@@ -10,6 +10,7 @@ import React from 'react';
 export default function ColorFrontendToken({
 	frontendToken,
 	frontendTokensValues,
+	labelAfter,
 	onValueSelect,
 	tokenValues,
 	value,
@@ -18,6 +19,7 @@ export default function ColorFrontendToken({
 		<ColorPicker
 			editedTokenValues={frontendTokensValues}
 			field={frontendToken}
+			labelAfter={labelAfter}
 			onValueSelect={(_, value) => onValueSelect(value)}
 			tokenValues={tokenValues}
 			value={value}
