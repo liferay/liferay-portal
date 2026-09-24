@@ -6,18 +6,13 @@
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionService;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -117,24 +112,10 @@ public class
 		}
 
 		for (long layoutPageTemplateEntryId : layoutPageTemplateEntriesId) {
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
-					themeDisplay.getScopeGroupId(),
-					layoutParentPageTemplateCollectionId,
-					layoutPageTemplateEntryId, copyPermissions, serviceContext);
-
-			LayoutPageTemplateEntry sourceLayoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
-					layoutPageTemplateEntryId);
-
-			Layout sourceLayout = _layoutLocalService.getLayout(
-				sourceLayoutPageTemplateEntry.getPlid());
-
-			Layout targetLayout = _layoutLocalService.getLayout(
-				layoutPageTemplateEntry.getPlid());
-
-			_layoutService.copyLayoutContent(
-				sourceLayout, targetLayout.fetchDraftLayout());
+			_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
+				themeDisplay.getScopeGroupId(),
+				layoutParentPageTemplateCollectionId, layoutPageTemplateEntryId,
+				copyPermissions, serviceContext);
 		}
 
 		return null;
@@ -148,21 +129,11 @@ public class
 			Propagation.REQUIRED, new Class<?>[] {Exception.class});
 
 	@Reference
-	private LayoutLocalService _layoutLocalService;
-
-	@Reference
 	private LayoutPageTemplateCollectionService
 		_layoutPageTemplateCollectionService;
 
 	@Reference
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
-
-	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
-
-	@Reference
-	private LayoutService _layoutService;
 
 	private class
 		CopyLayoutPageTemplateEntryAndLayoutPageTemplateCollectionCallable

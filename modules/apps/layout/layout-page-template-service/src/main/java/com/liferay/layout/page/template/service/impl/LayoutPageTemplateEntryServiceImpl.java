@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -143,9 +144,30 @@ public class LayoutPageTemplateEntryServiceImpl
 			getPermissionChecker(), sourceLayoutPageTemplateEntryId,
 			ActionKeys.VIEW);
 
-		return layoutPageTemplateEntryLocalService.copyLayoutPageTemplateEntry(
-			getUserId(), groupId, layoutPageTemplateCollectionId,
-			sourceLayoutPageTemplateEntryId, copyPermissions, serviceContext);
+		LayoutPageTemplateEntry sourceLayoutPageTemplateEntry =
+			layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+				sourceLayoutPageTemplateEntryId);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			layoutPageTemplateEntryLocalService.copyLayoutPageTemplateEntry(
+				getUserId(), groupId, layoutPageTemplateCollectionId,
+				sourceLayoutPageTemplateEntryId, copyPermissions,
+				serviceContext);
+
+		Layout sourceLayout = _layoutLocalService.fetchLayout(
+			sourceLayoutPageTemplateEntry.getPlid());
+
+		if (sourceLayout == null) {
+			return layoutPageTemplateEntry;
+		}
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_layoutService.copyLayoutContent(
+			sourceLayout, layout.fetchDraftLayout());
+
+		return layoutPageTemplateEntry;
 	}
 
 	@Override
@@ -1327,6 +1349,9 @@ public class LayoutPageTemplateEntryServiceImpl
 	)
 	private ModelResourcePermission<LayoutPageTemplateEntry>
 		_layoutPageTemplateEntryModelResourcePermission;
+
+	@Reference
+	private LayoutService _layoutService;
 
 	@Reference(
 		target = "(component.name=com.liferay.layout.page.template.internal.security.permission.resource.LayoutPageTemplatePortletResourcePermission)"
