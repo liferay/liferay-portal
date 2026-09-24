@@ -72,9 +72,9 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
@@ -524,7 +524,6 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPInstance deleteCPInstance(CPInstance cpInstance)
 		throws PortalException {
 
@@ -533,7 +532,6 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPInstance deleteCPInstance(CPInstance cpInstance, boolean makeCopy)
 		throws PortalException {
 
@@ -574,6 +572,12 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			CPInstance.class.getName(), cpInstance.getCPInstanceId());
 
 		_reindexCPDefinition(cpInstance.getCPDefinitionId());
+
+		_systemEventLocalService.addSystemEvent(
+			cpInstance.getCompanyId(), cpInstance.getExternalReferenceCode(),
+			CPInstance.class.getName(), cpInstance.getCPInstanceId(),
+			cpInstance.getCPInstanceUuid(), null,
+			SystemEventConstants.TYPE_DELETE, StringPool.BLANK);
 
 		return cpInstance;
 	}
@@ -2187,6 +2191,9 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SystemEventLocalService _systemEventLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
