@@ -539,6 +539,33 @@ public class ResourceOpenAPIParser {
 		return validMethodNames.contains(javaMethodSignature.getMethodName());
 	}
 
+	public static boolean isObjectMethodNameSuffixOverload(
+		JavaMethodSignature javaMethodSignature,
+		List<JavaMethodSignature> javaMethodSignatures) {
+
+		Operation operation = javaMethodSignature.getOperation();
+
+		String operationId = operation.getOperationId();
+
+		if (!StringUtil.equals(
+				javaMethodSignature.getMethodName(), operationId + "Object")) {
+
+			return false;
+		}
+
+		for (JavaMethodSignature curJavaMethodSignature :
+				javaMethodSignatures) {
+
+			if (StringUtil.equals(
+					curJavaMethodSignature.getMethodName(), operationId)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static void _addBatchJavaMethodSignature(
 		ConfigYAML configYAML, JavaMethodSignature javaMethodSignature,
 		List<JavaMethodSignature> javaMethodSignatures) {

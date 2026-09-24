@@ -691,6 +691,12 @@ public class FreeMarkerTool {
 		return null;
 	}
 
+	public String getJavadocMethodReference(
+		JavaMethodSignature javaMethodSignature) {
+
+		return OpenAPIParserUtil.getJavadocMethodReference(javaMethodSignature);
+	}
+
 	public Map<String, Schema> getMultipartBodySchemas(
 		JavaMethodSignature javaMethodSignature) {
 
@@ -1303,6 +1309,14 @@ public class FreeMarkerTool {
 		}
 
 		return false;
+	}
+
+	public boolean isObjectMethodNameSuffixOverload(
+		JavaMethodSignature javaMethodSignature,
+		List<JavaMethodSignature> javaMethodSignatures) {
+
+		return ResourceOpenAPIParser.isObjectMethodNameSuffixOverload(
+			javaMethodSignature, javaMethodSignatures);
 	}
 
 	public boolean isParameter(

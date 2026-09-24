@@ -62,6 +62,17 @@ public interface ${schemaName}Resource {
 	/>
 
 	<#list javaMethodSignatures as javaMethodSignature>
+		<#if freeMarkerTool.isObjectMethodNameSuffixOverload(javaMethodSignature, javaMethodSignatures)>
+			/**
+			 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link ${freeMarkerTool.getJavadocMethodReference(javaMethodSignature)}}
+			 */
+			@Deprecated
+			public default ${javaMethodSignature.returnType} ${javaMethodSignature.operation.operationId}(${freeMarkerTool.getResourceParameters(configYAML, javaMethodSignature.javaMethodParameters, javaMethodSignature.operation, allSchemas, false)}) throws Exception {
+				return ${javaMethodSignature.methodName}(${freeMarkerTool.getResourceArguments(javaMethodSignature.javaMethodParameters)});
+			}
+
+		</#if>
+
 		public ${javaMethodSignature.returnType} ${javaMethodSignature.methodName}(${freeMarkerTool.getResourceParameters(configYAML, javaMethodSignature.javaMethodParameters, javaMethodSignature.operation, allSchemas, false)}) throws Exception;
 	</#list>
 

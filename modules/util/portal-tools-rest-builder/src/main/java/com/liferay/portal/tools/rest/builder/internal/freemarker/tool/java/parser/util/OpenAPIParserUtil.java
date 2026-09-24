@@ -414,6 +414,24 @@ public class OpenAPIParserUtil {
 		return javaDataTypeMap;
 	}
 
+	public static String getJavadocMethodReference(
+		JavaMethodSignature javaMethodSignature) {
+
+		List<String> parameterTypes = new ArrayList<>();
+
+		for (JavaMethodParameter javaMethodParameter :
+				javaMethodSignature.getJavaMethodParameters()) {
+
+			String parameterType = javaMethodParameter.getParameterType();
+
+			parameterTypes.add(parameterType.replaceAll("([a-z]\\w*\\.)+", ""));
+		}
+
+		return StringBundler.concat(
+			"#", javaMethodSignature.getMethodName(), "(",
+			StringUtil.merge(parameterTypes, ", "), ")");
+	}
+
 	public static List<Operation> getOperations(PathItem pathItem) {
 		List<Operation> operations = new ArrayList<>();
 
