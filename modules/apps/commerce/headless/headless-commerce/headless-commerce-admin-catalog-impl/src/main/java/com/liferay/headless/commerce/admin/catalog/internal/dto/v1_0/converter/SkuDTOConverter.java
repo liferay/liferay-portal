@@ -5,27 +5,36 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.helper.CPInstanceHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
+import com.liferay.commerce.product.model.CPOption;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceService;
+import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuUnitOfMeasure;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.constants.DTOConverterConstants;
+import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.util.TransformUtil;
 
 import org.osgi.service.component.annotations.Component;
@@ -54,6 +63,11 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			(Long)dtoConverterContext.getId());
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.fetchCommerceCatalogByGroupId(
+				cpDefinition.getGroupId());
+
 		CPInstance replacementCPInstance =
 			_cpInstanceService.fetchCProductInstance(
 				cpInstance.getReplacementCProductId(),
@@ -65,13 +79,55 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 		return new Sku() {
 			{
+				setCatalogCurrencyCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getCommerceCurrencyCode();
+					});
+				setCatalogCurrencyExternalReferenceCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						CommerceCurrency commerceCurrency =
+							_commerceCurrencyLocalService.fetchCommerceCurrency(
+								commerceCatalog.getCompanyId(),
+								commerceCatalog.getCommerceCurrencyCode());
+
+						if (commerceCurrency == null) {
+							return null;
+						}
+
+						return commerceCurrency.getExternalReferenceCode();
+					});
+				setCatalogExternalReferenceCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getExternalReferenceCode();
+					});
 				setCost(cpInstance::getCost);
+				setCreator(
+					() -> NestedFieldsSupplier.supply(
+						"creator",
+						fieldName -> CreatorUtil.toCreator(
+							_portal,
+							_userLocalService.fetchUser(
+								cpInstance.getUserId()))));
 				setCustomFields(
 					() -> CustomFieldsUtil.toCustomFields(
 						dtoConverterContext.isAcceptAllLanguages(),
 						CPInstance.class.getName(),
 						cpInstance.getCPInstanceId(), cpInstance.getCompanyId(),
 						dtoConverterContext.getLocale()));
+				setDateCreated(cpInstance::getCreateDate);
+				setDateModified(cpInstance::getModifiedDate);
 				setDepth(cpInstance::getDepth);
 				setDiscontinued(cpInstance::isDiscontinued);
 				setDiscontinuedDate(cpInstance::getDiscontinuedDate);
@@ -84,10 +140,13 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				setManufacturerPartNumber(
 					cpInstance::getManufacturerPartNumber);
 				setPrice(cpInstance::getPrice);
+				setProductExternalReferenceCode(
+					cpDefinition::getCProductExternalReferenceCode);
 				setProductId(cpDefinition::getCProductId);
 				setProductName(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpDefinition.getNameMap()));
+				setProductType(cpDefinition::getProductTypeName);
 				setPromoPrice(cpInstance::getPromoPrice);
 				setPublished(cpInstance::isPublished);
 				setPurchasable(cpInstance::isPurchasable);
@@ -135,21 +194,36 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 								return null;
 							}
 
+							CPOption cpOption =
+								cpDefinitionOptionRel.getCPOption();
+
 							return new SkuOption() {
 								{
 									setKey(cpDefinitionOptionRel::getKey);
 									setOptionExternalReferenceCode(
 										cpDefinitionOptionRel::
 											getExternalReferenceCode);
+									setOptionFieldType(
+										cpDefinitionOptionRel::
+											getCommerceOptionTypeKey);
 									setOptionId(
 										cpDefinitionOptionRel::
 											getCPDefinitionOptionRelId);
+									setOptionSkuContributor(
+										cpDefinitionOptionRel::
+											isSkuContributor);
 									setOptionValueExternalReferenceCode(
 										cpDefinitionOptionValueRel::
 											getExternalReferenceCode);
 									setOptionValueId(
 										cpDefinitionOptionValueRel::
 											getCPDefinitionOptionValueRelId);
+									setParentOptionExternalReferenceCode(
+										cpOption::getExternalReferenceCode);
+									setParentOptionFieldType(
+										cpOption::getCommerceOptionTypeKey);
+									setParentOptionSkuContributor(
+										cpOption::isSkuContributor);
 									setValue(
 										cpDefinitionOptionValueRel::getKey);
 								}
@@ -216,6 +290,12 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 	}
 
 	@Reference
+	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@Reference
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
 
@@ -229,8 +309,14 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 	@Reference
 	private CPInstanceService _cpInstanceService;
 
+	@Reference
+	private Portal _portal;
+
 	@Reference(target = DTOConverterConstants.SKU_UNIT_OF_MEASURE_DTO_CONVERTER)
 	private DTOConverter<CPInstanceUnitOfMeasure, SkuUnitOfMeasure>
 		_skuUnitOfMeasureDTOConverter;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
