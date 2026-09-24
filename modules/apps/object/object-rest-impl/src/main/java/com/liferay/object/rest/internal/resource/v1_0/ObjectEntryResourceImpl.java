@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -1432,6 +1433,15 @@ public class ObjectEntryResourceImpl
 		return getObjectEntriesPage(search, null, filter, pagination, sorts);
 	}
 
+	@Override
+	public void setContextCompany(Company contextCompany) {
+		super.setContextCompany(contextCompany);
+
+		if (_objectDefinition != null) {
+			_objectDefinition = (ObjectDefinition)_objectDefinition.clone();
+		}
+	}
+
 	public void setObjectDefinition(ObjectDefinition objectDefinition) {
 		_objectDefinition = objectDefinition;
 	}
@@ -1908,7 +1918,7 @@ public class ObjectEntryResourceImpl
 	private final EntityModelProvider _entityModelProvider;
 
 	@Context
-	private ObjectDefinition _objectDefinition;
+	private volatile ObjectDefinition _objectDefinition;
 
 	private final Map<Long, Long> _objectDefinitionIds;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
