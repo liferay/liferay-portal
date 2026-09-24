@@ -889,7 +889,7 @@ function upgrade_legacy_database_set_up {
 		ant -f build-test.xml \
 			-Dcustom.upgrade.properties="${custom_upgrade_properties}" \
 			-Dportal.version="${portal_version}" \
-			-Dtest.class=PortalSmokeUpgrade \
+			-Dtest.class=playwright \
 			upgrade-legacy-database
 	else
 		ant -f build-test.xml \
