@@ -63,15 +63,21 @@ async function createStructure({
 		publishedChildren,
 	});
 
+	const ids: number[] = [];
+
 	for (const objectDefinition of objectDefinitions) {
-		const {error, type} = await ApiHelper.put(
+		const {data, error, type} = await ApiHelper.put<{id: number}>(
 			`/o/object-admin/v1.0/object-definitions/by-external-reference-code/${objectDefinition.externalReferenceCode}`,
 			objectDefinition
 		);
 
-		if (error) {
+		if (error !== null) {
+			await deleteStructures(ids);
+
 			return {data: null, error: classifyError(type)};
 		}
+
+		ids.push(data.id);
 	}
 
 	// Publish the main object definition
@@ -89,14 +95,18 @@ async function createStructure({
 		workflows,
 	});
 
-	const {data, error, type} = await ApiHelper.post<{id: number}>(
+	const result = await ApiHelper.post<{id: number}>(
 		'/o/object-admin/v1.0/object-definitions',
 		mainObjectDefinition
 	);
 
-	if (error) {
-		return {data: null, error: classifyError(type)};
+	if (result.error !== null) {
+		await deleteStructures(ids);
+
+		return {data: null, error: classifyError(result.type)};
 	}
+
+	const {data} = result;
 
 	const objectRelationships = buildObjectRelationships({
 		children,
@@ -109,7 +119,9 @@ async function createStructure({
 			objectRelationship
 		);
 
-		if (error) {
+		if (error !== null) {
+			await deleteStructures([data.id, ...ids]);
+
 			return {data: null, error: classifyError(type)};
 		}
 	}
@@ -224,6 +236,12 @@ async function deleteStructure({id}: {id: Structure['id']}) {
 
 	if (response?.error) {
 		return {error: response.error};
+	}
+}
+
+async function deleteStructures(ids: number[]) {
+	for (const id of ids) {
+		await deleteStructure({id});
 	}
 }
 
