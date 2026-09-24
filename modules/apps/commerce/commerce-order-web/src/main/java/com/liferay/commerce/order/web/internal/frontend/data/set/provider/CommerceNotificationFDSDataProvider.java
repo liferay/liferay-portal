@@ -19,13 +19,13 @@ import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
@@ -187,22 +187,16 @@ public class CommerceNotificationFDSDataProvider
 	}
 
 	private String _getUserPortraitSrc(
-		User user, HttpServletRequest httpServletRequest) {
-
-		StringBundler sb = new StringBundler(5);
+			User user, HttpServletRequest httpServletRequest)
+		throws PortalException {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		sb.append(themeDisplay.getPathImage());
-
-		sb.append("/user_portrait?screenName=");
-		sb.append(user.getScreenName());
-		sb.append("&amp;companyId=");
-		sb.append(user.getCompanyId());
-
-		return sb.toString();
+		return UserConstants.getPortraitURL(
+			themeDisplay.getPathImage(), user.isMale(), user.getPortraitId(),
+			user.getUserUuid());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

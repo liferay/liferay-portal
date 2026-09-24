@@ -20,7 +20,7 @@ CookiesBannerDisplayContext cookiesBannerDisplayContext = (CookiesBannerDisplayC
 
 	<c:choose>
 		<c:when test='<%= Objects.equals("custom", floatingIcon) %>'>
-			<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="floating-icon" />" class="custom-floating-icon-image d-none ml-3" id="<portlet:namespace />floatingIconButton" name="<portlet:namespace />floatingIconButton" src="<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId %>" />
+			<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="floating-icon" />" class="custom-floating-icon-image d-none ml-3" id="<portlet:namespace />floatingIconButton" name="<portlet:namespace />floatingIconButton" src="<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId + "&t=" + WebServerServletTokenUtil.getToken(customFloatingIconImageId) %>" />
 		</c:when>
 		<c:otherwise>
 			<clay:button

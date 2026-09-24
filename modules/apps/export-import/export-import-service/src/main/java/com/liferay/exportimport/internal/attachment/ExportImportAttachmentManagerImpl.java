@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.webserver.WebServerServletToken;
 
 import java.io.InputStream;
 
@@ -68,7 +69,8 @@ public class ExportImportAttachmentManagerImpl
 			String.valueOf(image.getImageId()),
 			() -> StringBundler.concat(
 				_portal.getPathImage(), "/layout_icon?img_id=",
-				image.getImageId()));
+				image.getImageId(), "&t=",
+				_webServerServletToken.getToken(image.getImageId())));
 	}
 
 	@Override
@@ -166,5 +168,8 @@ public class ExportImportAttachmentManagerImpl
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private WebServerServletToken _webServerServletToken;
 
 }

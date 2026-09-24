@@ -299,7 +299,7 @@ String forceReconsentURL = cookiesPreferenceHandlingConfigurationDisplayContext.
 
 			<liferay-frontend:logo-selector
 				aspectRatio="<%= 1 %>"
-				currentLogoURL='<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId %>'
+				currentLogoURL='<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId + "&t=" + WebServerServletTokenUtil.getToken(customFloatingIconImageId) %>'
 				defaultLogoURL='<%= themeDisplay.getPathThemeImages() + "/spacer.png" %>'
 				label='<%= LanguageUtil.get(request, "custom-icon") %>'
 				type="floating_icon"

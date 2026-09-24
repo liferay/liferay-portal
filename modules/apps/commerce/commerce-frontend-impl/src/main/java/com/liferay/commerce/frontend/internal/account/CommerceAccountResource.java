@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -431,10 +432,11 @@ public class CommerceAccountResource {
 		).build();
 	}
 
-	private String _getUserPortraitSrc(User user, String imagePath) {
-		return StringBundler.concat(
-			imagePath, "/user_portrait?screenName=", user.getScreenName(),
-			"&amp;companyId=", user.getCompanyId());
+	private String _getUserPortraitSrc(User user, String imagePath)
+		throws PortalException {
+
+		return UserConstants.getPortraitURL(
+			imagePath, user.isMale(), user.getPortraitId(), user.getUserUuid());
 	}
 
 	private List<AccountOrganization> _searchOrganizations(
@@ -455,7 +457,8 @@ public class CommerceAccountResource {
 	}
 
 	private List<AccountUser> _searchUsers(
-		long companyId, String keywords, String imagePath) {
+			long companyId, String keywords, String imagePath)
+		throws PortalException {
 
 		List<User> users = _userLocalService.search(
 			companyId, keywords, WorkflowConstants.STATUS_APPROVED, null, 0, 10,
