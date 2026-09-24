@@ -9,10 +9,12 @@ import {openToast} from 'frontend-js-components-web';
 import deleteItemAction from '../actions/deleteItem';
 import {ITEM_ACTIVATION_ORIGINS} from '../config/constants/itemActivationOrigins';
 import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
+import {LAYOUT_STRUCTURE_ITEM_CLASS_NAME_PREFIX} from '../config/constants/layoutStructureItemClassNamePrefix';
 import selectFormConfiguration from '../selectors/selectFormConfiguration';
 import FormService from '../services/FormService';
 import LayoutService from '../services/LayoutService';
 import {CACHE_KEYS, getCacheItem, getCacheKey} from '../utils/cache';
+import {getDescendantIds} from '../utils/getDescendantIds';
 import {
 	FORM_ERROR_TYPES,
 	getFormErrorDescription,
@@ -52,20 +54,13 @@ export function getPreviousItemId(deletedItems, items, nextItems) {
 
 export default function deleteItem({itemIds, selectItems = () => {}}) {
 	return (dispatch, getState) => {
-		const {fragmentEntryLinks, layoutData, segmentsExperienceId} =
-			getState();
-
-		const isUsedInRule = layoutData.pageRules.some((rule) => {
-			const actionHasItem = rule.actions.some(({itemId}) =>
-				itemIds.includes(itemId)
-			);
-
-			const conditionHasItem = rule.conditions.some(({field}) =>
-				itemIds.includes(field)
-			);
-
-			return actionHasItem || conditionHasItem;
-		});
+		const {
+			availableSegmentsExperiences = {},
+			elementVariations = [],
+			fragmentEntryLinks,
+			layoutData,
+			segmentsExperienceId,
+		} = getState();
 
 		const handleDeleteItems = async () => {
 			return markItemForDeletion({
@@ -137,19 +132,44 @@ export default function deleteItem({itemIds, selectItems = () => {}}) {
 			});
 		};
 
-		if (isUsedInRule) {
+		const handleRules = async () => {
+			if (isUsedInRule(itemIds, layoutData)) {
+				openConfirmModal({
+					buttonLabel: Liferay.Language.get('delete'),
+					onConfirm: handleDeleteItems,
+					status: 'warning',
+					text: Liferay.Language.get(
+						'one-or-more-of-the-selected-fragments-are-referenced-in-one-or-more-rules'
+					),
+					title: Liferay.Language.get('delete-referenced-fragments'),
+				});
+			}
+			else {
+				return handleDeleteItems();
+			}
+		};
+
+		if (
+			isUsedInElementVariation({
+				availableSegmentsExperiences,
+				elementVariations,
+				itemIds,
+				layoutData,
+				segmentsExperienceId,
+			})
+		) {
 			openConfirmModal({
 				buttonLabel: Liferay.Language.get('delete'),
-				onConfirm: handleDeleteItems,
+				onConfirm: handleRules,
 				status: 'warning',
 				text: Liferay.Language.get(
-					'one-or-more-of-the-selected-fragments-are-referenced-in-one-or-more-rules'
+					'one-or-more-of-the-selected-fragments-are-referenced-in-one-or-more-element-variations.-are-you-sure-you-want-to-proceed-with-the-deletion'
 				),
 				title: Liferay.Language.get('delete-referenced-fragments'),
 			});
 		}
 		else {
-			return handleDeleteItems();
+			return handleRules();
 		}
 	};
 }
@@ -247,4 +267,52 @@ async function isRequiredFormField(layoutData, itemId, fragmentEntryLinks) {
 	) {
 		return true;
 	}
+}
+
+function isUsedInElementVariation({
+	availableSegmentsExperiences,
+	elementVariations,
+	itemIds,
+	layoutData,
+	segmentsExperienceId,
+}) {
+	const segmentsExperienceERC =
+		availableSegmentsExperiences[segmentsExperienceId]
+			?.segmentsExperienceERC;
+
+	const experienceElementVariations = elementVariations.filter(
+		(elementVariation) =>
+			elementVariation.segmentsExperienceERC === segmentsExperienceERC
+	);
+
+	if (!experienceElementVariations.length) {
+		return false;
+	}
+
+	const deletedItemIds = itemIds.flatMap((itemId) => [
+		itemId,
+		...getDescendantIds(layoutData, itemId),
+	]);
+
+	return experienceElementVariations.some((elementVariation) =>
+		deletedItemIds.some((itemId) =>
+			elementVariation.targetElement.startsWith(
+				`.${LAYOUT_STRUCTURE_ITEM_CLASS_NAME_PREFIX}${itemId} `
+			)
+		)
+	);
+}
+
+function isUsedInRule(itemIds, layoutData) {
+	return layoutData.pageRules.some((rule) => {
+		const actionHasItem = rule.actions.some(({itemId}) =>
+			itemIds.includes(itemId)
+		);
+
+		const conditionHasItem = rule.conditions.some(({field}) =>
+			itemIds.includes(field)
+		);
+
+		return actionHasItem || conditionHasItem;
+	});
 }
