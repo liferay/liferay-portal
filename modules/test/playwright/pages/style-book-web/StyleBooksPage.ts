@@ -199,6 +199,70 @@ export class StyleBooksPage {
 		).toBeVisible();
 	}
 
+	async createCustomToken({
+		tokenName,
+		tokenSetName,
+		value,
+	}: {
+		tokenName: string;
+		tokenSetName?: string;
+		value: string;
+	}) {
+		await this.page
+			.getByRole('button', {
+				name: 'New Token',
+			})
+			.click();
+
+		const tokenDialog = this.page.getByRole('dialog').filter({
+			has: this.page.getByRole('heading', {
+				name: 'New Custom Token',
+			}),
+		});
+
+		await expect(tokenDialog).toBeVisible();
+
+		await tokenDialog
+			.getByRole('textbox', {name: 'Token Name'})
+			.fill(tokenName);
+
+		if (tokenSetName) {
+			const tokenSetDialog = this.page.getByRole('dialog').filter({
+				has: this.page.getByRole('heading', {name: 'New Token Set'}),
+			});
+
+			await tokenDialog
+				.getByRole('button', {name: 'New Token Set'})
+				.click();
+
+			await expect(tokenSetDialog).toBeVisible();
+
+			await tokenSetDialog
+				.getByRole('textbox', {name: 'Name'})
+				.fill(tokenSetName);
+
+			await tokenSetDialog
+				.getByRole('button', {name: 'Create Token Set'})
+				.click();
+
+			await expect(tokenSetDialog).toBeHidden();
+		}
+
+		await tokenDialog.getByRole('textbox', {name: 'Value'}).fill(value);
+
+		await tokenDialog.getByRole('button', {name: 'Create Token'}).click();
+
+		await expect(tokenDialog).toBeHidden();
+	}
+
+	async reloadEditor() {
+		await this.page.reload();
+
+		await expect(
+			this.page.getByTestId('styleBookEditorSidebarContent')
+		).toBeVisible();
+	}
+
 	async selectTokenCategory(category: string) {
 		await this.page
 			.locator('.style-book-editor__sidebar-content .form-control-select')
