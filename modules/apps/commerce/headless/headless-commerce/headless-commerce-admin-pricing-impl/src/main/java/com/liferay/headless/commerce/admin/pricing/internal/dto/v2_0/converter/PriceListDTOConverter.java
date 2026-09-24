@@ -14,12 +14,16 @@ import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.Status;
+import com.liferay.headless.commerce.admin.pricing.internal.dto.v2_0.util.CreatorUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -109,6 +113,13 @@ public class PriceListDTOConverter
 						return commerceCatalog.getName();
 					});
 				setCreateDate(commercePriceList::getCreateDate);
+				setCreator(
+					() -> NestedFieldsSupplier.supply(
+						"creator",
+						fieldName -> CreatorUtil.toCreator(
+							_portal,
+							_userLocalService.fetchUser(
+								commercePriceList.getUserId()))));
 				setCurrencyCode(commerceCurrency::getCode);
 				setCurrencyExternalReferenceCode(
 					commerceCurrency::getExternalReferenceCode);
@@ -120,6 +131,8 @@ public class PriceListDTOConverter
 
 						return expandoBridge.getAttributes();
 					});
+				setDateCreated(commercePriceList::getCreateDate);
+				setDateModified(commercePriceList::getModifiedDate);
 				setDisplayDate(commercePriceList::getDisplayDate);
 				setExpirationDate(commercePriceList::getExpirationDate);
 				setExternalReferenceCode(
@@ -187,5 +200,11 @@ public class PriceListDTOConverter
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

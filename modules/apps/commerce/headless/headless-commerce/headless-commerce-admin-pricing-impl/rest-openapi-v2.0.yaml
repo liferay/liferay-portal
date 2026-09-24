@@ -458,6 +458,40 @@ components:
                     example: site
                     type: string
             type: object
+        Creator:
+            description:
+                User account that created the entity. Properties follow the [creator](https://schema.org/creator) specification; the batch engine uses `externalReferenceCode` and `id` to keep the original creator on import.
+            properties:
+                additionalName:
+                    readOnly: true
+                    type: string
+                contentType:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                familyName:
+                    readOnly: true
+                    type: string
+                givenName:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    format: uri
+                    readOnly: true
+                    type: string
+                name:
+                    readOnly: true
+                    type: string
+                profileURL:
+                    readOnly: true
+                    type: string
+            type: object
         Discount:
             description:
                 Promotional discount program scoped to a single company. Backed by discount; carries the target slice (subtotal, total, products, categories, skus, product-groups, order-types, or shipping), the limitation policy that caps reuse, an optional couponCode gate, the percentage tiers (or fixed-amount cap), and the cascading rel collections (account-group, account, category, channel, order-type, product, product-group, sku, rule). Workflow-aware -- the runtime only honours discounts whose status is approved (Approved).
@@ -1467,6 +1501,12 @@ components:
                     example: 2017-07-21
                     format: date
                     type: string
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the price list. Read-only; embedded through the `creator` nested field.
+                    readOnly: true
                 currencyCode:
                     description:
                         ISO 4217 currency code in which monetary values on this record are expressed.
@@ -1492,6 +1532,20 @@ components:
                         priority: high
                         segment: B2B
                     type: object
+                dateCreated:
+                    description:
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the price list is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 displayDate:
                     description:
                         Date and time when this record becomes effective. ISO 8601.
@@ -7882,8 +7936,7 @@ paths:
     /price-lists:
         get:
             description:
-                Pages price lists with search and OData filter via SearchUtil. Filterable field: name (from
-                PriceListEntityModel); sortable field: name.
+                Pages price lists with search and OData filter via SearchUtil. Filterable fields -- accountGroupId, accountId, catalogBasePriceList, catalogId, channelId, createDate, dateCreated, dateModified, externalReferenceCode, name, orderTypeId, type (from PriceListEntityModel); sortable fields -- createDate, dateCreated, dateModified, externalReferenceCode, name.
             operationId: getPriceListsPage
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
