@@ -94,19 +94,19 @@ public class CompanyKeyResolverUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		Key key = EncryptorUtil.generateKey();
 
-		String wrappedKey = CompanyKeyResolverUtil.wrapKey(companyId, key);
+		String keyString = CompanyKeyResolverUtil.wrapKey(companyId, key);
 
 		_saveKeyManagerConfiguration(TestCompanyCryptoProvider.KEY_IDENTIFIER);
 
 		int decryptCount = _testCompanyCryptoProvider.getDecryptCount();
 		Key unwrappedKey = CompanyKeyResolverUtil.unwrapKey(
-			companyId, wrappedKey);
+			companyId, keyString);
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
 		Assert.assertEquals(key, unwrappedKey);
 
-		unwrappedKey = CompanyKeyResolverUtil.unwrapKey(companyId, wrappedKey);
+		unwrappedKey = CompanyKeyResolverUtil.unwrapKey(companyId, keyString);
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
@@ -152,12 +152,12 @@ public class CompanyKeyResolverUtilTest {
 
 		_legacyCompany = CompanyTestUtil.addCompany();
 
-		String serializedKey = _legacyCompany.getKey();
+		String keyString = _legacyCompany.getKey();
 
-		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(serializedKey));
 		Assert.assertEquals(
-			EncryptorUtil.deserializeKey(serializedKey),
+			EncryptorUtil.deserializeKey(keyString),
 			_legacyCompany.getKeyObj());
+		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(keyString));
 	}
 
 	private Dictionary<String, Object> _getKeyManagerConfigurationProperties(

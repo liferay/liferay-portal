@@ -656,11 +656,11 @@ public class DBUpgrader {
 			company -> {
 				long companyId = company.getCompanyId();
 
-				String serializedKey = CompanyKeyResolverUtil.wrapKey(
+				String keyString = CompanyKeyResolverUtil.wrapKey(
 					companyId, EncryptorUtil.generateKey());
 
 				if (CompanyKeyResolverUtil.isWrappedKey(company.getKey()) &&
-					!CompanyKeyResolverUtil.isWrappedKey(serializedKey)) {
+					!CompanyKeyResolverUtil.isWrappedKey(keyString)) {
 
 					throw new IllegalStateException(
 						"Unable to wrap the regenerated key for company " +
@@ -672,7 +672,7 @@ public class DBUpgrader {
 					PreparedStatement preparedStatement =
 						connection.prepareStatement(sql)) {
 
-					preparedStatement.setString(1, serializedKey);
+					preparedStatement.setString(1, keyString);
 					preparedStatement.setLong(2, companyId);
 
 					preparedStatement.executeUpdate();
