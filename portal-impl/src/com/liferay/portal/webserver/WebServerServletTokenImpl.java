@@ -5,10 +5,15 @@
 
 package com.liferay.portal.webserver;
 
-import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
-import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Image;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.webserver.WebServerServletToken;
+
+import java.util.Date;
 
 /**
  * @author Brian Wing Shun Chan
@@ -16,38 +21,36 @@ import com.liferay.portal.kernel.webserver.WebServerServletToken;
  */
 public class WebServerServletTokenImpl implements WebServerServletToken {
 
-	public void afterPropertiesSet() {
-		_portalCache = PortalCacheHelperUtil.getPortalCache(
-			PortalCacheManagerNames.MULTI_VM, _CACHE_NAME);
-	}
-
 	@Override
 	public String getToken(long imageId) {
-		Long key = imageId;
+		Image image = ImageLocalServiceUtil.fetchImage(imageId);
 
-		String token = _portalCache.get(key);
-
-		if (token == null) {
-			token = _createToken();
-
-			_portalCache.put(key, token);
+		if (image == null) {
+			return StringPool.BLANK;
 		}
 
-		return token;
+		Company company = CompanyLocalServiceUtil.fetchCompany(
+			image.getCompanyId());
+
+		if (company == null) {
+			return StringPool.BLANK;
+		}
+
+		Date modifiedDate = image.getModifiedDate();
+
+		long modifiedTime = 0;
+
+		if (modifiedDate != null) {
+			modifiedTime = modifiedDate.getTime();
+		}
+
+		return DigesterUtil.digestHex(
+			DigesterUtil.SHA_256, String.valueOf(imageId),
+			String.valueOf(modifiedTime), company.getKey());
 	}
 
 	@Override
 	public void resetToken(long imageId) {
-		_portalCache.remove(imageId);
 	}
-
-	private String _createToken() {
-		return String.valueOf(System.currentTimeMillis());
-	}
-
-	private static final String _CACHE_NAME =
-		WebServerServletToken.class.getName();
-
-	private PortalCache<Long, String> _portalCache;
 
 }
