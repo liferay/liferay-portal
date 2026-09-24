@@ -62,6 +62,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -383,21 +385,9 @@ public class OpenAPIResourceTest {
 	public void testGetOpenAPIWithActions() throws Exception {
 		_assertOpenAPI("expected_openapi_actions.json", _objectDefinition);
 
-		_objectActionLocalService.addObjectAction(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
+		_addObjectAction(
 			LocalizedMapUtil.getLocalizedMap(
-				"This is the description of an object action."),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			"objectAction", ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_STANDALONE,
-			UnicodePropertiesBuilder.put(
-				"secret", "standalone"
-			).put(
-				"url", "https://standalone.com"
-			).build(),
-			false);
+				"This is the description of an object action."));
 
 		_assertOpenAPI(
 			"expected_openapi_actions_object_action.json", _objectDefinition);
@@ -585,6 +575,25 @@ public class OpenAPIResourceTest {
 	}
 
 	@Test
+	public void testGetOpenAPIWithNullActionDescription() throws Exception {
+		_addObjectAction(null);
+
+		JSONObject openAPIJSONObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectDefinition.getRESTContextPath() + "/openapi.json",
+			Http.Method.GET);
+
+		JSONObject pathsJSONObject = openAPIJSONObject.getJSONObject("paths");
+
+		JSONObject pathItemJSONObject = pathsJSONObject.getJSONObject(
+			"/{object1Id}/object-actions/objectAction");
+
+		JSONObject operationJSONObject = pathItemJSONObject.getJSONObject(
+			"put");
+
+		Assert.assertFalse(operationJSONObject.has("description"));
+	}
+
+	@Test
 	public void testGetOpenAPIWithSystemObjectRelationship() throws Exception {
 		_user = TestPropsValues.getUser();
 
@@ -653,6 +662,25 @@ public class OpenAPIResourceTest {
 					listTypeValue,
 					Collections.singletonMap(LocaleUtil.US, listTypeValue))),
 			new ServiceContext());
+	}
+
+	private void _addObjectAction(Map<Locale, String> descriptionMap)
+		throws Exception {
+
+		_objectActionLocalService.addObjectAction(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
+			descriptionMap,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			"objectAction", ObjectActionExecutorConstants.KEY_WEBHOOK,
+			ObjectActionTriggerConstants.KEY_STANDALONE,
+			UnicodePropertiesBuilder.put(
+				"secret", "standalone"
+			).put(
+				"url", "https://standalone.com"
+			).build(),
+			false);
 	}
 
 	private void _assertOpenAPI(

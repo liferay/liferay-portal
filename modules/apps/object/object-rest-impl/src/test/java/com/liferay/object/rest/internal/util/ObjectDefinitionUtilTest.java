@@ -5,6 +5,7 @@
 
 package com.liferay.object.rest.internal.util;
 
+import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
@@ -47,6 +48,14 @@ public class ObjectDefinitionUtilTest {
 		).thenReturn(
 			_DEFAULT_LANGUAGE_ID
 		);
+	}
+
+	@Test
+	public void testGetDescriptionWithObjectAction() {
+		_testGetDescription(
+			languageId -> _objectAction.getDescription(languageId, false),
+			() -> ObjectDefinitionUtil.getDescription(
+				_objectAction, _objectDefinition));
 	}
 
 	@Test
@@ -133,6 +142,7 @@ public class ObjectDefinitionUtilTest {
 
 	private static final String _ENGLISH_LANGUAGE_ID = "en_US";
 
+	private final ObjectAction _objectAction = Mockito.mock(ObjectAction.class);
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
 	private final ObjectField _objectField = Mockito.mock(ObjectField.class);

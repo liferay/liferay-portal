@@ -3341,6 +3341,37 @@ public class ObjectActionLocalServiceTest {
 		_objectActionLocalService.deleteObjectAction(systemObjectAction);
 	}
 
+	@Test
+	public void testUpdateObjectActionWithEmptyDescriptionMap()
+		throws Exception {
+
+		ObjectAction objectAction = _addObjectAction(
+			RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_WEBHOOK,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+			UnicodePropertiesBuilder.put(
+				"secret", "0123456789"
+			).put(
+				"url", "https://onafteradd.com"
+			).build(),
+			false);
+
+		Map<Locale, String> descriptionMap = objectAction.getDescriptionMap();
+
+		objectAction = _objectActionLocalService.updateObjectAction(
+			objectAction.getExternalReferenceCode(),
+			objectAction.getObjectActionId(), objectAction.isActive(),
+			objectAction.getConditionExpression(), Collections.emptyMap(),
+			objectAction.getErrorMessageMap(), objectAction.getLabelMap(),
+			objectAction.getName(), objectAction.getObjectActionExecutorKey(),
+			objectAction.getObjectActionTriggerKey(),
+			objectAction.getParametersUnicodeProperties());
+
+		Assert.assertEquals(descriptionMap, objectAction.getDescriptionMap());
+
+		_objectActionLocalService.deleteObjectAction(objectAction);
+	}
+
 	@Rule
 	public TestName testName = new TestName();
 

@@ -17,8 +17,10 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -60,6 +62,20 @@ public class ObjectActionResourceTest extends BaseObjectActionResourceTestCase {
 	@Override
 	@Test
 	public void testGraphQLGetObjectActionNotFound() {
+	}
+
+	@Override
+	@Test
+	public void testPutObjectAction() throws Exception {
+		super.testPutObjectAction();
+
+		_testPutObjectActionDescription(Collections.emptyMap());
+		_testPutObjectActionDescription(null);
+	}
+
+	@Override
+	protected String[] getAdditionalAssertFieldNames() {
+		return new String[] {"description"};
 	}
 
 	@Override
@@ -199,6 +215,24 @@ public class ObjectActionResourceTest extends BaseObjectActionResourceTestCase {
 	private ObjectAction _addObjectAction() throws Exception {
 		return objectActionResource.postObjectDefinitionObjectAction(
 			_objectDefinition.getObjectDefinitionId(), randomObjectAction());
+	}
+
+	private void _testPutObjectActionDescription(
+			Map<String, String> descriptionMap)
+		throws Exception {
+
+		ObjectAction objectAction = _addObjectAction();
+
+		Map<String, String> expectedDescriptionMap =
+			objectAction.getDescription();
+
+		objectAction.setDescription(descriptionMap);
+
+		objectAction = objectActionResource.putObjectAction(
+			objectAction.getId(), objectAction);
+
+		Assert.assertEquals(
+			expectedDescriptionMap, objectAction.getDescription());
 	}
 
 	private ObjectDefinition _objectDefinition;
