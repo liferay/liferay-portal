@@ -7,6 +7,8 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Image;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.service.base.ImageServiceBaseImpl;
 
 /**
@@ -18,7 +20,19 @@ public class ImageServiceImpl extends ImageServiceBaseImpl {
 
 	@Override
 	public Image getImage(long imageId) throws PortalException {
-		return imagePersistence.findByPrimaryKey(imageId);
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isCompanyAdmin()) {
+			throw new PrincipalException.MustBeCompanyAdmin(getUserId());
+		}
+
+		Image image = imagePersistence.findByPrimaryKey(imageId);
+
+		if (!permissionChecker.isCompanyAdmin(image.getCompanyId())) {
+			throw new PrincipalException.MustBeCompanyAdmin(getUserId());
+		}
+
+		return image;
 	}
 
 }
