@@ -452,6 +452,41 @@ describe('StateContext update-structure', () => {
 
 		expect(result.current.state.structure.slug).toBe('product-categories');
 	});
+
+	it('Flags a friendly URL the server would reject and clears it once fixed', () => {
+		const {result} = renderState();
+
+		act(() => {
+			result.current.dispatch({slug: '123', type: 'update-structure'});
+		});
+
+		expect(
+			result.current.state.invalids.get(STRUCTURE_UUID)?.get('slug')
+		).toBe('number');
+
+		act(() => {
+			result.current.dispatch({slug: 'fruit', type: 'update-structure'});
+		});
+
+		expect(result.current.state.invalids.has(STRUCTURE_UUID)).toBe(false);
+	});
+
+	it('Clears a friendly URL collision reported by the server once edited', () => {
+		const {result} = renderState({
+			state: {
+				...buildState(),
+				invalids: new Map([
+					[STRUCTURE_UUID, new Map([['slug', 'in-use']])],
+				]),
+			},
+		});
+
+		act(() => {
+			result.current.dispatch({slug: 'fruit', type: 'update-structure'});
+		});
+
+		expect(result.current.state.invalids.has(STRUCTURE_UUID)).toBe(false);
+	});
 });
 
 describe('StateContext start-operation', () => {
@@ -538,6 +573,34 @@ describe('StateContext start-operation', () => {
 		});
 
 		expect(result.current.state.operation).toBe('publishing');
+	});
+
+	it('Discards the errors reported by a previous rejected save when an operation starts', () => {
+		const {result} = renderState({
+			state: {
+				...buildPublishedState(),
+				invalids: new Map([
+					[
+						STRUCTURE_UUID,
+						new Map([
+							['global', 'unexpected'],
+							['label', 'empty'],
+						]),
+					],
+				]),
+			},
+		});
+
+		act(() => {
+			result.current.dispatch({
+				operation: 'saving',
+				type: 'start-operation',
+			});
+		});
+
+		expect(result.current.state.invalids.get(STRUCTURE_UUID)).toEqual(
+			new Map([['label', 'empty']])
+		);
 	});
 });
 

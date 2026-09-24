@@ -25,13 +25,41 @@ describe('buildStructureErrorAction', () => {
 
 	it('routes a name collision to the name field', () => {
 		const action = buildStructureErrorAction({
-			error: 'in-use',
+			error: 'name-in-use',
 			uuid: UUID,
 		});
 
 		expect(action).toEqual({
 			error: 'in-use',
 			property: 'name',
+			type: 'add-error',
+			uuid: UUID,
+		});
+	});
+
+	it('routes an external reference code collision to the external reference code field', () => {
+		const action = buildStructureErrorAction({
+			error: 'erc-in-use',
+			uuid: UUID,
+		});
+
+		expect(action).toEqual({
+			error: 'in-use',
+			property: 'erc',
+			type: 'add-error',
+			uuid: UUID,
+		});
+	});
+
+	it('routes a missing permission to the global scope', () => {
+		const action = buildStructureErrorAction({
+			error: 'permission',
+			uuid: UUID,
+		});
+
+		expect(action).toEqual({
+			error: 'permission',
+			property: 'global',
 			type: 'add-error',
 			uuid: UUID,
 		});
