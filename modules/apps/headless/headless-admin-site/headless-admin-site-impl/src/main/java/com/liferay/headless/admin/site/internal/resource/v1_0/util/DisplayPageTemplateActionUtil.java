@@ -12,6 +12,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.util.ActionUtil;
 
 import jakarta.ws.rs.core.UriInfo;
@@ -59,11 +60,35 @@ public class DisplayPageTemplateActionUtil {
 				"getDesignLibraryDisplayPageTemplate", modelResourcePermission,
 				templateParameterMap, uriInfo)
 		).put(
+			() -> {
+				if (_isMarkableAsDefault(layoutPageTemplateEntry)) {
+					return "markAsDefault";
+				}
+
+				return null;
+			},
+			() -> _addAction(
+				ActionKeys.UPDATE, contextScopeChecker, layoutPageTemplateEntry,
+				"postDesignLibraryDisplayPageTemplateMarkAsDefault",
+				modelResourcePermission, templateParameterMap, uriInfo)
+		).put(
 			"permissions",
 			_addAction(
 				ActionKeys.PERMISSIONS, contextScopeChecker,
 				layoutPageTemplateEntry,
 				"getDesignLibraryDisplayPageTemplatePermissionsPage",
+				modelResourcePermission, templateParameterMap, uriInfo)
+		).put(
+			() -> {
+				if (layoutPageTemplateEntry.isDefaultTemplate()) {
+					return "unmarkAsDefault";
+				}
+
+				return null;
+			},
+			() -> _addAction(
+				ActionKeys.UPDATE, contextScopeChecker, layoutPageTemplateEntry,
+				"postDesignLibraryDisplayPageTemplateUnmarkAsDefault",
 				modelResourcePermission, templateParameterMap, uriInfo)
 		).build();
 	}
@@ -94,6 +119,19 @@ public class DisplayPageTemplateActionUtil {
 			contextScopeChecker, null, resourceName,
 			layoutPageTemplateEntry.getGroupId(), templateParameterMap,
 			uriInfo);
+	}
+
+	private static boolean _isMarkableAsDefault(
+		LayoutPageTemplateEntry layoutPageTemplateEntry) {
+
+		if (!layoutPageTemplateEntry.isApproved() ||
+			layoutPageTemplateEntry.isDefaultTemplate() ||
+			Validator.isNull(layoutPageTemplateEntry.getClassName())) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 }
