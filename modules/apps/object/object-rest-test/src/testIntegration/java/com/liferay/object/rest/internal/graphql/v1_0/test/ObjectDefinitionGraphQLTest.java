@@ -29,6 +29,7 @@ import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
@@ -601,6 +602,51 @@ public class ObjectDefinitionGraphQLTest {
 				"JSONObject/data", "JSONObject/c", "JSONObject/" + pluralName,
 				"JSONArray/items"),
 			JSONCompareMode.LENIENT);
+	}
+
+	@Test
+	public void testGetListObjectEntryWithDeletedObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						_OBJECT_FIELD_NAME_TEXT, _OBJECT_FIELD_NAME_TEXT)));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		String pluralName = TextFormatter.formatPlural(
+			StringUtil.lowerCaseFirstLetter(objectDefinition.getShortName()));
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"c",
+				new GraphQLField(pluralName, new GraphQLField("totalCount"))));
+
+		_invoke(graphQLField);
+
+		_objectFieldLocalService.deleteObjectField(
+			_objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(),
+				_OBJECT_FIELD_NAME_TEXT));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		JSONObject jsonObject = _invoke(graphQLField);
+
+		Assert.assertEquals(
+			jsonObject.toString(), 2,
+			JSONUtil.getValueAsInt(
+				jsonObject, "JSONObject/data", "JSONObject/c",
+				"JSONObject/" + pluralName, "Object/totalCount"));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
@@ -1332,6 +1378,9 @@ public class ObjectDefinitionGraphQLTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _parentObjectDefinition;
