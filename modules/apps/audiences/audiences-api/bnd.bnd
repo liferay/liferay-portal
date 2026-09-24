@@ -6,6 +6,7 @@ Export-Package:\
 	com.liferay.audiences.constants,\
 	com.liferay.audiences.criteria,\
 	com.liferay.audiences.exception,\
+	com.liferay.audiences.listener,\
 	com.liferay.audiences.model,\
 	com.liferay.audiences.service,\
 	com.liferay.audiences.service.persistence
