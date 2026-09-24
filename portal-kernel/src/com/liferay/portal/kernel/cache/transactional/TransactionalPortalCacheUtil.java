@@ -195,8 +195,8 @@ public class TransactionalPortalCacheUtil {
 
 		_pendingPut.remove();
 
-		return _invalidationSequence.publish(
-			_getRegionName(portalCache), pendingPut._sequence,
+		return _invalidationSequence.publishKey(
+			_getRegionName(portalCache), key, pendingPut._sequence,
 			() -> PortalCacheHelperUtil.putWithoutReplicator(
 				portalCache, key, value),
 			() -> PortalCacheHelperUtil.removeWithoutReplicator(
@@ -461,7 +461,8 @@ public class TransactionalPortalCacheUtil {
 			else {
 				doCommit(
 					_invalidationSequence.invalidate(
-						_regionName, startSequence));
+						_regionName, startSequence, super._removeAll,
+						super._uncommittedMap.keySet()));
 			}
 		}
 

@@ -322,6 +322,91 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
+	public void testCompletePutAfterWriterCommitOnAnotherKey() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		_commitRemove(transactionalPortalCache, _KEY_2);
+
+		Assert.assertTrue(
+			"Put after a writer on another key should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCompletePutAfterWriterCommitOnCollidingKey() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, "Aa");
+
+		_commitRemove(transactionalPortalCache, "BB");
+
+		Assert.assertFalse(
+			"Put after a writer on a key that shares its slot should be " +
+				"dropped",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, "Aa", _VALUE_1));
+		Assert.assertNull(_portalCache.get("Aa"));
+	}
+
+	@Test
+	public void testCompletePutAfterWriterPut() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		_commitPut(transactionalPortalCache, _KEY_1, _VALUE_2);
+
+		Assert.assertFalse(
+			"Put after a writer that put its key should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_2, _portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCompletePutAfterWriterRemoveAll() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		TransactionalPortalCacheUtil.begin();
+
+		transactionalPortalCache.removeAll();
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		Assert.assertFalse(
+			"Put after a writer that removed all should be dropped",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		Assert.assertTrue(
+			"Put after an earlier writer that removed all should be kept",
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+	}
+
+	@Test
 	public void testCompletePutDuringWriterCommit() {
 		_setEnableTransactionalCache(true);
 
