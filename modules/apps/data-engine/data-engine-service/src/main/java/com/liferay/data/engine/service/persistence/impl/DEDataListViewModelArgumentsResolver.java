@@ -119,4 +119,4 @@ public class DEDataListViewModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1671620720
+// LIFERAY-SERVICE-BUILDER-HASH:725204228

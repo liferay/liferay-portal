@@ -122,4 +122,4 @@ public class SocialActivitySettingModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:245366096
+// LIFERAY-SERVICE-BUILDER-HASH:280617114

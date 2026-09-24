@@ -142,4 +142,4 @@ public class FragmentEntryVersionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1050423510
+// LIFERAY-SERVICE-BUILDER-HASH:186528008

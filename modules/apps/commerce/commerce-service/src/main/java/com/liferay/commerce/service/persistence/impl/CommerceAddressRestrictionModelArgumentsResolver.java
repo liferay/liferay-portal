@@ -146,4 +146,4 @@ public class CommerceAddressRestrictionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:794558803
+// LIFERAY-SERVICE-BUILDER-HASH:-1402415111

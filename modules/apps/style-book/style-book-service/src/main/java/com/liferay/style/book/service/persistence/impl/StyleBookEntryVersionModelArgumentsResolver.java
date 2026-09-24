@@ -142,4 +142,4 @@ public class StyleBookEntryVersionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:460203446
+// LIFERAY-SERVICE-BUILDER-HASH:1473347700

@@ -139,4 +139,4 @@ public class CPMeasurementUnitModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-653513727
+// LIFERAY-SERVICE-BUILDER-HASH:-439853433

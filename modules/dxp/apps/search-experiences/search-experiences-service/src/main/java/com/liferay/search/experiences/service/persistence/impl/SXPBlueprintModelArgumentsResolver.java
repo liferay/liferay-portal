@@ -119,4 +119,4 @@ public class SXPBlueprintModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1142718457
+// LIFERAY-SERVICE-BUILDER-HASH:1800635619

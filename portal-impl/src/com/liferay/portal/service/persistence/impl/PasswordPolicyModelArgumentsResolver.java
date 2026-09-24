@@ -118,4 +118,4 @@ public class PasswordPolicyModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-409194421
+// LIFERAY-SERVICE-BUILDER-HASH:-910706269

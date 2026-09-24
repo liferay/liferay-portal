@@ -135,4 +135,4 @@ public class DLContentModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-613322425
+// LIFERAY-SERVICE-BUILDER-HASH:1530735989

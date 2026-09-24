@@ -148,4 +148,4 @@ public class CommerceShippingFixedOptionRelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1178507016
+// LIFERAY-SERVICE-BUILDER-HASH:854407138

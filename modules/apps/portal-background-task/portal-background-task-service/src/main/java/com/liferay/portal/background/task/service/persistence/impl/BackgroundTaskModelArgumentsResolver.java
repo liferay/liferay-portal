@@ -138,4 +138,4 @@ public class BackgroundTaskModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1347678987
+// LIFERAY-SERVICE-BUILDER-HASH:-869817887

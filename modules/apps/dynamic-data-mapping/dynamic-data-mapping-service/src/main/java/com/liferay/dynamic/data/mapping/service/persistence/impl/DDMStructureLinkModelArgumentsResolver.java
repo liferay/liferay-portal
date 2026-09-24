@@ -120,4 +120,4 @@ public class DDMStructureLinkModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:32907751
+// LIFERAY-SERVICE-BUILDER-HASH:-461039547

@@ -137,4 +137,4 @@ public class DLSyncEventModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1193171243
+// LIFERAY-SERVICE-BUILDER-HASH:-1445797685

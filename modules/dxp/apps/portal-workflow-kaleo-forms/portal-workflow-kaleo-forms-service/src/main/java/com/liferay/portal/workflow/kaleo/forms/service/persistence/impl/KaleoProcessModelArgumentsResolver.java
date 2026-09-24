@@ -119,4 +119,4 @@ public class KaleoProcessModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-494098159
+// LIFERAY-SERVICE-BUILDER-HASH:-982710581

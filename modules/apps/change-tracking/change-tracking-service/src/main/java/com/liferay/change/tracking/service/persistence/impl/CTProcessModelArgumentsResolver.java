@@ -136,4 +136,4 @@ public class CTProcessModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1012053545
+// LIFERAY-SERVICE-BUILDER-HASH:1417526191

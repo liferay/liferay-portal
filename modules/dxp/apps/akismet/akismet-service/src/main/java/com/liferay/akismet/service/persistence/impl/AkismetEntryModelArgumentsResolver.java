@@ -119,4 +119,4 @@ public class AkismetEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1341932697
+// LIFERAY-SERVICE-BUILDER-HASH:265399579

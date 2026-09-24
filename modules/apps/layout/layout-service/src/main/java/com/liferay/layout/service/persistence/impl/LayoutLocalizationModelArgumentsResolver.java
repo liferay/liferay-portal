@@ -120,4 +120,4 @@ public class LayoutLocalizationModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1591840474
+// LIFERAY-SERVICE-BUILDER-HASH:658460866

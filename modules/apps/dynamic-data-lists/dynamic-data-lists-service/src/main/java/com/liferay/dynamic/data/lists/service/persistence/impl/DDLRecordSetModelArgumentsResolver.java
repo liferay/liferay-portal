@@ -119,4 +119,4 @@ public class DDLRecordSetModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-288089156
+// LIFERAY-SERVICE-BUILDER-HASH:-797680384

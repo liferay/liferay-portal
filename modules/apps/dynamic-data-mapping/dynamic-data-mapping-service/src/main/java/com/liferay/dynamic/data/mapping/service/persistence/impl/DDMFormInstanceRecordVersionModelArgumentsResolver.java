@@ -128,4 +128,4 @@ public class DDMFormInstanceRecordVersionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1704930679
+// LIFERAY-SERVICE-BUILDER-HASH:-1520946645

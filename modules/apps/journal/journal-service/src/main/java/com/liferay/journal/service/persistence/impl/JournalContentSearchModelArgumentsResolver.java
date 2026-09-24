@@ -123,4 +123,4 @@ public class JournalContentSearchModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1321084305
+// LIFERAY-SERVICE-BUILDER-HASH:1134208675

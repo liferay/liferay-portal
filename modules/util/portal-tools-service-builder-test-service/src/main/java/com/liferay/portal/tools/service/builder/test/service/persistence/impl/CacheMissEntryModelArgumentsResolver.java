@@ -118,4 +118,4 @@ public class CacheMissEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1971728221
+// LIFERAY-SERVICE-BUILDER-HASH:2114825723

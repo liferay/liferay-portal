@@ -117,4 +117,4 @@ public class AssetEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-664205521
+// LIFERAY-SERVICE-BUILDER-HASH:2084361695

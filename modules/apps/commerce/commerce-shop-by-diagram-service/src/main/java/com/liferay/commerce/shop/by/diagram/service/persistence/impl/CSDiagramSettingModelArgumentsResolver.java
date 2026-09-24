@@ -120,4 +120,4 @@ public class CSDiagramSettingModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-532461071
+// LIFERAY-SERVICE-BUILDER-HASH:-1856567797

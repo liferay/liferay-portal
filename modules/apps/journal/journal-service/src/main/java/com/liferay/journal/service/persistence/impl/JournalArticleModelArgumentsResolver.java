@@ -140,4 +140,4 @@ public class JournalArticleModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2111272507
+// LIFERAY-SERVICE-BUILDER-HASH:-55409455

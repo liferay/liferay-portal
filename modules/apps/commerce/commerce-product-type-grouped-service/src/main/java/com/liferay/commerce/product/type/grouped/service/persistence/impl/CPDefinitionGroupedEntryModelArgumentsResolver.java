@@ -145,4 +145,4 @@ public class CPDefinitionGroupedEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1198678332
+// LIFERAY-SERVICE-BUILDER-HASH:-915952914

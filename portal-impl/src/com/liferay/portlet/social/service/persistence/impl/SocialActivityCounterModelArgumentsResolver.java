@@ -174,4 +174,4 @@ public class SocialActivityCounterModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-404960515
+// LIFERAY-SERVICE-BUILDER-HASH:-1277532371

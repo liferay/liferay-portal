@@ -119,4 +119,4 @@ public class AMImageEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1083279347
+// LIFERAY-SERVICE-BUILDER-HASH:1472847799

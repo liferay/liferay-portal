@@ -135,4 +135,4 @@ public class DDMFieldModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-371572969
+// LIFERAY-SERVICE-BUILDER-HASH:1763217949

@@ -118,4 +118,4 @@ public class DepotEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1912204322
+// LIFERAY-SERVICE-BUILDER-HASH:1948865878

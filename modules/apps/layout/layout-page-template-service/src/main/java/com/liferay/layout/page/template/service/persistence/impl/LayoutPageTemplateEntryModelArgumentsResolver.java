@@ -144,4 +144,4 @@ public class LayoutPageTemplateEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1304152736
+// LIFERAY-SERVICE-BUILDER-HASH:457010554

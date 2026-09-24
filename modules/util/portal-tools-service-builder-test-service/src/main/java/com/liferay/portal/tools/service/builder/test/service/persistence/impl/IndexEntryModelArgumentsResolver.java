@@ -117,4 +117,4 @@ public class IndexEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:591627531
+// LIFERAY-SERVICE-BUILDER-HASH:406591133

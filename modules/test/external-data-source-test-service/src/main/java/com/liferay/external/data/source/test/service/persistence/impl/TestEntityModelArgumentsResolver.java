@@ -117,4 +117,4 @@ public class TestEntityModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1901246574
+// LIFERAY-SERVICE-BUILDER-HASH:34546674

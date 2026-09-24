@@ -148,4 +148,4 @@ public class CommerceInventoryWarehouseRelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:947638851
+// LIFERAY-SERVICE-BUILDER-HASH:-1742319075

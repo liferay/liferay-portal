@@ -124,4 +124,4 @@ public class KaleoDefinitionVersionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2095228199
+// LIFERAY-SERVICE-BUILDER-HASH:-1374035213

@@ -142,4 +142,4 @@ public class LayoutContentVersionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-124942661
+// LIFERAY-SERVICE-BUILDER-HASH:-895332675

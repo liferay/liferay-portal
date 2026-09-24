@@ -229,4 +229,4 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1781918329
+// LIFERAY-SERVICE-BUILDER-HASH:1208382721

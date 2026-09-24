@@ -119,4 +119,4 @@ public class AccountGroupModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1250319449
+// LIFERAY-SERVICE-BUILDER-HASH:1768527117

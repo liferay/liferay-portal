@@ -147,4 +147,4 @@ public class LayoutPageTemplateCollectionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:852764338
+// LIFERAY-SERVICE-BUILDER-HASH:-309884328

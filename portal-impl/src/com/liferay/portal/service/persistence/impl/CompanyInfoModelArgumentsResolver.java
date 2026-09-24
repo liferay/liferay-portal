@@ -117,4 +117,4 @@ public class CompanyInfoModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-226818141
+// LIFERAY-SERVICE-BUILDER-HASH:-585512337

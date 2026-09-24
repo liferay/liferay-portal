@@ -139,4 +139,4 @@ public class ObjectDefinitionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1579650079
+// LIFERAY-SERVICE-BUILDER-HASH:-113073857

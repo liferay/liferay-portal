@@ -120,4 +120,4 @@ public class ObjectLayoutBoxModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1948876822
+// LIFERAY-SERVICE-BUILDER-HASH:-775480746

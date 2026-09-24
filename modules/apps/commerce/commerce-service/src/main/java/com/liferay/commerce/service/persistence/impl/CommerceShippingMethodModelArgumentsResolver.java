@@ -143,4 +143,4 @@ public class CommerceShippingMethodModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1934429961
+// LIFERAY-SERVICE-BUILDER-HASH:785017515

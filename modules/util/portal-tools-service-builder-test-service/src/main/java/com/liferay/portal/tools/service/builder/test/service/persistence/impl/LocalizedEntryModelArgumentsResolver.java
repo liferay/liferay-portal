@@ -118,4 +118,4 @@ public class LocalizedEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2069932567
+// LIFERAY-SERVICE-BUILDER-HASH:1779802323

@@ -121,4 +121,4 @@ public class SocialActivityLimitModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:103634202
+// LIFERAY-SERVICE-BUILDER-HASH:-1017328004

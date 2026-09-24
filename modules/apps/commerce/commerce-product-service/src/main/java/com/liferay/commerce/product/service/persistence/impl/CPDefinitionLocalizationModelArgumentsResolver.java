@@ -126,4 +126,4 @@ public class CPDefinitionLocalizationModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:941471807
+// LIFERAY-SERVICE-BUILDER-HASH:75757925

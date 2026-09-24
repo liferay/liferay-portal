@@ -120,4 +120,4 @@ public class PatcherBuildRelModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-192556752
+// LIFERAY-SERVICE-BUILDER-HASH:-782589040

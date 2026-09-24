@@ -145,4 +145,4 @@ public class CommerceVirtualOrderItemModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-429607645
+// LIFERAY-SERVICE-BUILDER-HASH:662208453

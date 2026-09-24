@@ -125,4 +125,4 @@ public class ObjectDefinitionSettingModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1315834869
+// LIFERAY-SERVICE-BUILDER-HASH:-1265558885

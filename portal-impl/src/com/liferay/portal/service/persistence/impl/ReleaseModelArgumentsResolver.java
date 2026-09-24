@@ -116,4 +116,4 @@ public class ReleaseModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1787094950
+// LIFERAY-SERVICE-BUILDER-HASH:-283729080

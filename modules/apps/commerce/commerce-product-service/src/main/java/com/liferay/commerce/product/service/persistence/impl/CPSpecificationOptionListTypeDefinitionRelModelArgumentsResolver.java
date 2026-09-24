@@ -133,4 +133,4 @@ public class CPSpecificationOptionListTypeDefinitionRelModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1755239687
+// LIFERAY-SERVICE-BUILDER-HASH:-1776660891

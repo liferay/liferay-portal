@@ -119,4 +119,4 @@ public class SharingEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:287366246
+// LIFERAY-SERVICE-BUILDER-HASH:-737139186

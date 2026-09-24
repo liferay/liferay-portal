@@ -117,4 +117,4 @@ public class SpringEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1499973094
+// LIFERAY-SERVICE-BUILDER-HASH:846691922

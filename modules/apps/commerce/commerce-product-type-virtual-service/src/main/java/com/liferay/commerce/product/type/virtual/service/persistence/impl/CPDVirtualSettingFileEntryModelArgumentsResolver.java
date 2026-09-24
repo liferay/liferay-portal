@@ -127,4 +127,4 @@ public class CPDVirtualSettingFileEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-624531093
+// LIFERAY-SERVICE-BUILDER-HASH:1150000693

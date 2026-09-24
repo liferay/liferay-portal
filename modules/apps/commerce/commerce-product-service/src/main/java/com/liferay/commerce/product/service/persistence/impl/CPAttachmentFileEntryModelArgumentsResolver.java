@@ -142,4 +142,4 @@ public class CPAttachmentFileEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2027681377
+// LIFERAY-SERVICE-BUILDER-HASH:530545145

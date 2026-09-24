@@ -145,4 +145,4 @@ public class LVEntryLocalizationVersionModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1659068133
+// LIFERAY-SERVICE-BUILDER-HASH:-283251415

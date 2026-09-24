@@ -124,4 +124,4 @@ public class ObjectViewFilterColumnModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1863817636
+// LIFERAY-SERVICE-BUILDER-HASH:-272925980

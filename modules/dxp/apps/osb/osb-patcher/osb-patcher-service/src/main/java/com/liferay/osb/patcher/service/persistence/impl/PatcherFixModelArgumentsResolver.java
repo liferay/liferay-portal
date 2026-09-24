@@ -118,4 +118,4 @@ public class PatcherFixModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1430301678
+// LIFERAY-SERVICE-BUILDER-HASH:-1749035914

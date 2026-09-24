@@ -135,4 +135,4 @@ public class WikiNodeModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-694124669
+// LIFERAY-SERVICE-BUILDER-HASH:1252544889

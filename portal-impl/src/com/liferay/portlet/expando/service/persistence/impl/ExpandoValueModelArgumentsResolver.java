@@ -141,4 +141,4 @@ public class ExpandoValueModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:716880800
+// LIFERAY-SERVICE-BUILDER-HASH:1153615040

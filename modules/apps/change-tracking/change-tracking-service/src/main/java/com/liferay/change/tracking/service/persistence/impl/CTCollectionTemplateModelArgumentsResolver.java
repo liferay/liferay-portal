@@ -142,4 +142,4 @@ public class CTCollectionTemplateModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1923000665
+// LIFERAY-SERVICE-BUILDER-HASH:-119086039

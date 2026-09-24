@@ -135,4 +135,4 @@ public class WebsiteModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:287288283
+// LIFERAY-SERVICE-BUILDER-HASH:568078915

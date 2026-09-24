@@ -125,4 +125,4 @@ public class CPInstanceUnitOfMeasureModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:677046291
+// LIFERAY-SERVICE-BUILDER-HASH:-1450463171

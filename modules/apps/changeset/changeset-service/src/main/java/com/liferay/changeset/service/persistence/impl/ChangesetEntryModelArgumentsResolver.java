@@ -119,4 +119,4 @@ public class ChangesetEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:235659236
+// LIFERAY-SERVICE-BUILDER-HASH:-466548704

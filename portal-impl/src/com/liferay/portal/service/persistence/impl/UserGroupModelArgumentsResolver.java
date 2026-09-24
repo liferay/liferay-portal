@@ -134,4 +134,4 @@ public class UserGroupModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-516377732
+// LIFERAY-SERVICE-BUILDER-HASH:1225037914

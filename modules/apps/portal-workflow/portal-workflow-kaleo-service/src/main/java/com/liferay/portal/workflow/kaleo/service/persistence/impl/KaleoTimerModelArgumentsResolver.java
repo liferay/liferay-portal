@@ -134,4 +134,4 @@ public class KaleoTimerModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-502964146
+// LIFERAY-SERVICE-BUILDER-HASH:-1761275632

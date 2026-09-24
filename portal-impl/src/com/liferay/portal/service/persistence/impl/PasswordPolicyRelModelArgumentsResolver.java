@@ -119,4 +119,4 @@ public class PasswordPolicyRelModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1091677057
+// LIFERAY-SERVICE-BUILDER-HASH:1877032597

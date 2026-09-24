@@ -140,4 +140,4 @@ public class ServiceComponentModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:121280357
+// LIFERAY-SERVICE-BUILDER-HASH:1270490119

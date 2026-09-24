@@ -137,4 +137,4 @@ public class ExpandoColumnModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:741605703
+// LIFERAY-SERVICE-BUILDER-HASH:1752675697

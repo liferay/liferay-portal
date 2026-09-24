@@ -139,4 +139,4 @@ public class DLFileVersionModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2138511336
+// LIFERAY-SERVICE-BUILDER-HASH:-568612170

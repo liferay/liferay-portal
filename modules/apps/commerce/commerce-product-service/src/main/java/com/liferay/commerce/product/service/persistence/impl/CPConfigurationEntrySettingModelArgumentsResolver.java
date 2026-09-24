@@ -147,4 +147,4 @@ public class CPConfigurationEntrySettingModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-456502679
+// LIFERAY-SERVICE-BUILDER-HASH:1630517859

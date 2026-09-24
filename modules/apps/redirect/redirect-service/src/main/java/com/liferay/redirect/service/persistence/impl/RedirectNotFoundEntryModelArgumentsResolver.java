@@ -123,4 +123,4 @@ public class RedirectNotFoundEntryModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1559009272
+// LIFERAY-SERVICE-BUILDER-HASH:-1559319680

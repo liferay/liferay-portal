@@ -118,4 +118,4 @@ public class UserGroupRoleModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1978658693
+// LIFERAY-SERVICE-BUILDER-HASH:255624457

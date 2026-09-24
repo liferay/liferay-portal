@@ -135,4 +135,4 @@ public class PLOEntryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-770120125
+// LIFERAY-SERVICE-BUILDER-HASH:2028163781

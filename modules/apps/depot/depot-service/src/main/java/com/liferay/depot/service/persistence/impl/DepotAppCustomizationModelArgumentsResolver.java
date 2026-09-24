@@ -123,4 +123,4 @@ public class DepotAppCustomizationModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-927072394
+// LIFERAY-SERVICE-BUILDER-HASH:1611202234

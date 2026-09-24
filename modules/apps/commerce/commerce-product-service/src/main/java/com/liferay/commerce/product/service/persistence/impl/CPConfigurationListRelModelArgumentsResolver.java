@@ -143,4 +143,4 @@ public class CPConfigurationListRelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1326006861
+// LIFERAY-SERVICE-BUILDER-HASH:-1564014349

@@ -143,4 +143,4 @@ public class CommerceQualifierEntryModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1995981716
+// LIFERAY-SERVICE-BUILDER-HASH:-1447298464

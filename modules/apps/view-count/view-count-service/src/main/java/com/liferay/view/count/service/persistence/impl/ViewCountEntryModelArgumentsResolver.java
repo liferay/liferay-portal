@@ -119,4 +119,4 @@ public class ViewCountEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1119536977
+// LIFERAY-SERVICE-BUILDER-HASH:-479250887

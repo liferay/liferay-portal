@@ -139,4 +139,4 @@ public class ResourceActionModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-644634426
+// LIFERAY-SERVICE-BUILDER-HASH:-795250388

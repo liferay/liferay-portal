@@ -139,4 +139,4 @@ public class CommerceChannelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-812917497
+// LIFERAY-SERVICE-BUILDER-HASH:123352939

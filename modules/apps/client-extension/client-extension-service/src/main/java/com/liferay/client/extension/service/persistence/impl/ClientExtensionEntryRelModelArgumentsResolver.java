@@ -125,4 +125,4 @@ public class ClientExtensionEntryRelModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1527366672
+// LIFERAY-SERVICE-BUILDER-HASH:-1098414856

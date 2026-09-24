@@ -138,4 +138,4 @@ public class MBCategoryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1212977089
+// LIFERAY-SERVICE-BUILDER-HASH:-2133853779

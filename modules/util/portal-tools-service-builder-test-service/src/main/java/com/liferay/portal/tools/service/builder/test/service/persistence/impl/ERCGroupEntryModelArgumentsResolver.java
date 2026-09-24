@@ -118,4 +118,4 @@ public class ERCGroupEntryModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2065096269
+// LIFERAY-SERVICE-BUILDER-HASH:954742809

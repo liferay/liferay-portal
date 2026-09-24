@@ -120,4 +120,4 @@ public class ObjectEntryFolderModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-99951345
+// LIFERAY-SERVICE-BUILDER-HASH:-760815987

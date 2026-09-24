@@ -141,4 +141,4 @@ public class BookmarksFolderModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1128019082
+// LIFERAY-SERVICE-BUILDER-HASH:-1470247764

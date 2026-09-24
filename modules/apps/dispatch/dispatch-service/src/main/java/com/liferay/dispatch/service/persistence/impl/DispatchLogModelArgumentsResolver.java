@@ -137,4 +137,4 @@ public class DispatchLogModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1806249162
+// LIFERAY-SERVICE-BUILDER-HASH:-329105082

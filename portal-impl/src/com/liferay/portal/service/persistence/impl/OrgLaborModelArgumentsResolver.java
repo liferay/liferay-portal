@@ -137,4 +137,4 @@ public class OrgLaborModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-363670962
+// LIFERAY-SERVICE-BUILDER-HASH:-1585096412

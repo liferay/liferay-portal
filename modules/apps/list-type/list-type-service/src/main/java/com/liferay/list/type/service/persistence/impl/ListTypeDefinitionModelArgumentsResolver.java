@@ -120,4 +120,4 @@ public class ListTypeDefinitionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:242359177
+// LIFERAY-SERVICE-BUILDER-HASH:-617052893

@@ -141,4 +141,4 @@ public class CalendarBookingModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-472327376
+// LIFERAY-SERVICE-BUILDER-HASH:-1822595744

@@ -148,4 +148,4 @@ public class CPDefinitionOptionValueRelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1849792590
+// LIFERAY-SERVICE-BUILDER-HASH:-1100284908

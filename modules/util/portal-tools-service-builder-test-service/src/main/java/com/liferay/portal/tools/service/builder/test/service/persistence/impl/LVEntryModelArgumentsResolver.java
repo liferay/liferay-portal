@@ -168,4 +168,4 @@ public class LVEntryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1113524325
+// LIFERAY-SERVICE-BUILDER-HASH:-1358478935

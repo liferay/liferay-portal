@@ -123,4 +123,4 @@ public class RecentLayoutRevisionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:235972246
+// LIFERAY-SERVICE-BUILDER-HASH:73251740

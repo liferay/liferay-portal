@@ -136,4 +136,4 @@ public class DLFolderModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2060971415
+// LIFERAY-SERVICE-BUILDER-HASH:943634927

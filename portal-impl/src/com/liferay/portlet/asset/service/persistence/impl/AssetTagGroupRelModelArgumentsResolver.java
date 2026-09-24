@@ -119,4 +119,4 @@ public class AssetTagGroupRelModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1652750854
+// LIFERAY-SERVICE-BUILDER-HASH:351799052

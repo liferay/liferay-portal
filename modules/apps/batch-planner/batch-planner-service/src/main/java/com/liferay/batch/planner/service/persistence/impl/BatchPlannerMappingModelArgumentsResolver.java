@@ -141,4 +141,4 @@ public class BatchPlannerMappingModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:143699749
+// LIFERAY-SERVICE-BUILDER-HASH:-548155509

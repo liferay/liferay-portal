@@ -119,4 +119,4 @@ public class ResourcePermissionModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1325184043
+// LIFERAY-SERVICE-BUILDER-HASH:-247834493

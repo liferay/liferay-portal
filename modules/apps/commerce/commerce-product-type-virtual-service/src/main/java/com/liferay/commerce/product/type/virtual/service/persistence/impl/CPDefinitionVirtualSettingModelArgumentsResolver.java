@@ -127,4 +127,4 @@ public class CPDefinitionVirtualSettingModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1420205768
+// LIFERAY-SERVICE-BUILDER-HASH:-1875620148

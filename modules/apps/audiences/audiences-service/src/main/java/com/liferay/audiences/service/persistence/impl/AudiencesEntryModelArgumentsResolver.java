@@ -138,4 +138,4 @@ public class AudiencesEntryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1319020442
+// LIFERAY-SERVICE-BUILDER-HASH:1214251220

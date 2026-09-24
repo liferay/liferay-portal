@@ -136,4 +136,4 @@ public class KBArticleModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1458845472
+// LIFERAY-SERVICE-BUILDER-HASH:196450018

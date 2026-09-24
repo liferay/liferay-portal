@@ -117,4 +117,4 @@ public class CTSChildModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-397097158
+// LIFERAY-SERVICE-BUILDER-HASH:2066842834

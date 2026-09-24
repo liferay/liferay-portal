@@ -139,4 +139,4 @@ public class CPInstanceModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1706874375
+// LIFERAY-SERVICE-BUILDER-HASH:-1998970083

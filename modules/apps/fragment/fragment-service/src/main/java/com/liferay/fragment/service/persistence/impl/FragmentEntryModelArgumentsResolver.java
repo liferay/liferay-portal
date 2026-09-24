@@ -138,4 +138,4 @@ public class FragmentEntryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1954595513
+// LIFERAY-SERVICE-BUILDER-HASH:1509106171

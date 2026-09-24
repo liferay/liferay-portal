@@ -119,4 +119,4 @@ public class PatcherFixRelModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-631842722
+// LIFERAY-SERVICE-BUILDER-HASH:-149216954

@@ -141,4 +141,4 @@ public class CommerceDiscountRelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1417673791
+// LIFERAY-SERVICE-BUILDER-HASH:1007517737

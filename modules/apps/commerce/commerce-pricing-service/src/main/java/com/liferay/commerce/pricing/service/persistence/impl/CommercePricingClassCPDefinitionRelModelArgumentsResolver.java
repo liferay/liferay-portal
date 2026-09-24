@@ -151,4 +151,4 @@ public class CommercePricingClassCPDefinitionRelModelArgumentsResolver
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2026794506
+// LIFERAY-SERVICE-BUILDER-HASH:-1069044976

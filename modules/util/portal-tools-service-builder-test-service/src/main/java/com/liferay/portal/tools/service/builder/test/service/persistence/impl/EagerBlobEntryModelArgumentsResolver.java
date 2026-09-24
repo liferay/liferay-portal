@@ -114,4 +114,4 @@ public class EagerBlobEntryModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:710240759
+// LIFERAY-SERVICE-BUILDER-HASH:290097511

@@ -119,4 +119,4 @@ public class DDMStructureModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:971916787
+// LIFERAY-SERVICE-BUILDER-HASH:80113769
