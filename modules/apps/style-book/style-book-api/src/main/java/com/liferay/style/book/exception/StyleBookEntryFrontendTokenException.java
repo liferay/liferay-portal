@@ -5,28 +5,47 @@
 
 package com.liferay.style.book.exception;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Thiago Buarque
  */
 public class StyleBookEntryFrontendTokenException extends PortalException {
 
-	public StyleBookEntryFrontendTokenException() {
+	public static class MustHaveValidType
+		extends StyleBookEntryFrontendTokenException {
+
+		public MustHaveValidType(String type, Throwable throwable) {
+			super(
+				StringBundler.concat(
+					"Frontend token type \"", type, "\" is not supported"),
+				throwable);
+		}
+
 	}
 
-	public StyleBookEntryFrontendTokenException(String msg) {
+	public static class MustNotBeNull
+		extends StyleBookEntryFrontendTokenException {
+
+		public MustNotBeNull(String fieldName) {
+			super(
+				StringBundler.concat(
+					"Frontend token field \"", fieldName,
+					"\" must not be null"));
+		}
+
+	}
+
+	private StyleBookEntryFrontendTokenException(String msg) {
 		super(msg);
 	}
 
-	public StyleBookEntryFrontendTokenException(
+	private StyleBookEntryFrontendTokenException(
 		String msg, Throwable throwable) {
 
 		super(msg, throwable);
-	}
-
-	public StyleBookEntryFrontendTokenException(Throwable throwable) {
-		super(throwable);
 	}
 
 }
