@@ -62,6 +62,10 @@
 		}
 	}
 
+	&-content.portal-popup:not(.article-preview) #main-content {
+		position: static;
+	}
+
 	&-key-added {
 		@include cms-compare-versions-mark($success-l2, $success);
 	}
@@ -77,12 +81,17 @@
 	}
 
 	&-pane {
-		flex: 1;
-		min-height: 0;
 		min-width: 0;
 
-		&-content {
-			min-height: 0;
+		@include media-breakpoint-up(md) {
+			flex: 1;
+		}
+
+		&-empty-state,
+		&-header {
+			position: sticky;
+			top: 0;
+			z-index: 1;
 		}
 
 		& + & {
@@ -97,6 +106,10 @@
 
 	&-panes {
 		min-height: 0;
+
+		&-row {
+			min-height: 100%;
+		}
 	}
 
 	&-removals {
