@@ -16,6 +16,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.OSDetector;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -390,7 +391,9 @@ public class Sidecar {
 			"--enable-native-access=org.elasticsearch.nativeaccess," +
 				"org.apache.lucene.core");
 
-		if (OSDetector.isLinux()) {
+		String javaVersion = JavaDetector.getJavaVersion();
+
+		if (javaVersion.startsWith("21") && OSDetector.isLinux()) {
 			arguments.add("-XX:-UseContainerSupport");
 		}
 
@@ -527,7 +530,12 @@ public class Sidecar {
 		settingsHelperImpl.put(
 			"path.repo", String.valueOf(dataParentPath.resolve("repo")));
 
-		settingsHelperImpl.put("thread_pool.warmer.max", "20");
+		String javaVersion = JavaDetector.getJavaVersion();
+
+		if (javaVersion.startsWith("21")) {
+			settingsHelperImpl.put("thread_pool.warmer.max", "20");
+		}
+
 		settingsHelperImpl.put("node.store.allow_mmap", false);
 
 		settingsHelperImpl.loadFromSource(

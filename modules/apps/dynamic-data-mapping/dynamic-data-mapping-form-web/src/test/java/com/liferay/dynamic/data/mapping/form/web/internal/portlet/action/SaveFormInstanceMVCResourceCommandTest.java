@@ -6,6 +6,7 @@
 package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -57,7 +58,11 @@ public class SaveFormInstanceMVCResourceCommandTest {
 	}
 
 	private String _getExpectedFormattedDate(String amPm, String time) {
-		return StringBundler.concat("Apr 18, 2018, ", time, "\u202F", amPm);
+		if (JavaDetector.getJavaSpecificationVersion() >= 20) {
+			return StringBundler.concat("Apr 18, 2018, ", time, "\u202F", amPm);
+		}
+
+		return StringBundler.concat("Apr 18, 2018, ", time, " ", amPm);
 	}
 
 	private void _setUpSaveFormInstanceMVCResourceCommand() throws Exception {

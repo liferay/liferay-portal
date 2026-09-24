@@ -225,6 +225,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -2249,7 +2250,7 @@ public class ObjectEntryLocalServiceTest {
 						EncryptorException.class.getName(), ": ",
 						EncryptorException.class.getName(), ": ",
 						NoSuchAlgorithmException.class.getName(),
-						": Null or empty transformation"),
+						_getNoSuchAlgorithmExceptionMessage()),
 					() -> _objectEntryLocalService.getValues(
 						objectEntry.getObjectEntryId()));
 
@@ -2259,7 +2260,7 @@ public class ObjectEntryLocalServiceTest {
 						EncryptorException.class.getName(), ": ",
 						EncryptorException.class.getName(), ": ",
 						NoSuchAlgorithmException.class.getName(),
-						": Null or empty transformation"),
+						_getNoSuchAlgorithmExceptionMessage()),
 					() -> _addObjectEntry(
 						HashMapBuilder.<String, Serializable>put(
 							"emailAddress", RandomTestUtil.randomString()
@@ -10811,6 +10812,16 @@ public class ObjectEntryLocalServiceTest {
 		}
 
 		return sb.toString();
+	}
+
+	private String _getNoSuchAlgorithmExceptionMessage() {
+		String javaVersion = JavaDetector.getJavaVersion();
+
+		if (javaVersion.startsWith("21")) {
+			return ": Null or empty transformation";
+		}
+
+		return ": Invalid transformation format:";
 	}
 
 	private String _getRandomEmailAddress() {
