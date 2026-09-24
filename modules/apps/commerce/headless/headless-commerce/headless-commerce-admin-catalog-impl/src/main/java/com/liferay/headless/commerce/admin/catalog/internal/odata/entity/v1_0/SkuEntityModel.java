@@ -6,7 +6,9 @@
 package com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0;
 
 import com.liferay.commerce.product.constants.CPField;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.odata.entity.BooleanEntityField;
+import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IntegerEntityField;
@@ -24,7 +26,19 @@ public class SkuEntityModel implements EntityModel {
 			new BooleanEntityField(
 				CPField.HAS_CHILD_CP_DEFINITIONS,
 				locale -> CPField.HAS_CHILD_CP_DEFINITIONS),
+			new DateTimeEntityField(
+				"dateCreated",
+				locale -> Field.getSortableFieldName(Field.CREATE_DATE),
+				locale -> Field.CREATE_DATE),
+			new DateTimeEntityField(
+				"dateModified",
+				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
+				locale -> Field.MODIFIED_DATE),
 			new IntegerEntityField("catalogId", locale -> "commerceCatalogId"),
+			new StringEntityField(
+				"externalReferenceCode",
+				locale -> Field.getSortableFieldName("externalReferenceCode"),
+				locale -> "externalReferenceCode"),
 			new StringEntityField("sku", locale -> CPField.SKU));
 	}
 
