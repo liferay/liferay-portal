@@ -1,6 +1,7 @@
 import BundleRouter from 'route-middleware/BundleRouter';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense} from 'react';
+import Toolbar from 'shared/components/toolbar';
 import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
@@ -60,7 +61,15 @@ const WorkspaceLayer = ({
 				/>
 
 				<Route
-					element={<BundleRouter data={AppSidebarRoutes} />}
+					element={
+						<>
+							<Toolbar groupId={groupId} />
+
+							<Suspense fallback={<Loading />}>
+								<BundleRouter data={AppSidebarRoutes} />
+							</Suspense>
+						</>
+					}
 					path="*"
 				/>
 			</RouterRoutes>

@@ -7,7 +7,6 @@ import getCN from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Sidebar from 'shared/components/sidebar';
-import Toolbar from 'shared/components/toolbar';
 import withCurrentUser from './WithCurrentUser';
 import withDefaultChannelId from './WithDefaultChannelId';
 import withQuery from './WithQuery';
@@ -155,16 +154,6 @@ export default compose(
 			}
 
 			@autobind
-			handleSidebarToggle() {
-				const {collapseSidebar, collapsed, currentUser} = this.props;
-
-				collapseSidebar({
-					collapsed: !collapsed,
-					currentUserId: currentUser.id
-				});
-			}
-
-			@autobind
 			handleSectionToggle(sectionKey, collapsed) {
 				const {collapseSidebar, currentUser} = this.props;
 
@@ -197,13 +186,6 @@ export default compose(
 
 				return (
 					<div className={classes}>
-						<Toolbar
-							collapsed={collapsed}
-							currentUser={currentUser}
-							groupId={groupId}
-							onToggle={this.handleSidebarToggle}
-						/>
-
 						<Sidebar
 							activePathname={location.pathname}
 							channelId={selectedChannel && selectedChannel.id}

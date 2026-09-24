@@ -6,27 +6,28 @@ import ClaySticker from '@clayui/sticker';
 import ClayToolbar from '@clayui/toolbar';
 import getCN from 'classnames';
 import React, {useRef, useState} from 'react';
-import {Link} from 'react-router-dom';
+import {collapseSidebar} from 'shared/actions/sidebar';
 import {getLanguageLabel} from 'shared/util/locale';
+import {Link} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
+import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useDispatch, useSelector} from 'react-redux';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
-import {User} from 'shared/util/records';
 
 interface IToolbarProps {
 	className?: string;
-	collapsed: boolean;
-	currentUser: User;
 	groupId: string;
-	onToggle: () => void;
 }
 
-const Toolbar: React.FC<IToolbarProps> = ({
-	className,
-	collapsed = false,
-	currentUser = new User(),
-	groupId,
-	onToggle,
-}) => {
+const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
+	const currentUser = useCurrentUser();
+
+	const collapsed = useSelector<any, boolean>((state) =>
+		state.getIn(['sidebar', String(currentUser.id), 'collapsed'], false)
+	);
+
+	const dispatch = useDispatch();
+
 	const [active, setActive] = useState(false);
 
 	const triggerElementRef = useRef(null);
@@ -50,7 +51,14 @@ const Toolbar: React.FC<IToolbarProps> = ({
 						data-tooltip-align="bottom"
 						displayType="secondary"
 						monospaced
-						onClick={onToggle}
+						onClick={() =>
+							dispatch(
+								collapseSidebar({
+									collapsed: !collapsed,
+									currentUserId: currentUser.id,
+								})
+							)
+						}
 						size="sm"
 						title={Liferay.Language.get('menu')}
 					>

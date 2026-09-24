@@ -6,7 +6,6 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {Routes, toRoute} from 'shared/util/router';
-import {User} from 'shared/util/records';
 
 jest.unmock('react-dom');
 
@@ -16,22 +15,11 @@ jest.mock('shared/api', () => ({
 	},
 }));
 
-const defaultProps = {
-	collapsed: false,
-	currentUser: new User({
-		emailAddress: 'test@test.com',
-		languageId: 'en_US',
-		name: 'Test Test',
-	}),
-	groupId: '23',
-	onToggle: jest.fn(),
-};
-
-const renderToolbar = (props = {}, storeData = mockStoreDataLDP) =>
+const renderToolbar = (storeData = mockStoreDataLDP) =>
 	render(
 		<Provider store={mockStore(storeData)}>
 			<MemoryRouter>
-				<Toolbar {...defaultProps} {...props} />
+				<Toolbar groupId="23" />
 			</MemoryRouter>
 		</Provider>
 	);
@@ -48,20 +36,27 @@ describe('Toolbar', () => {
 	});
 
 	it('collapses the sidebar from the toggle', () => {
-		renderToolbar();
+		const {container} = renderToolbar();
+
+		expect(
+			container.querySelector('.lexicon-icon-product-menu-open')
+		).toBeTruthy();
 
 		fireEvent.click(screen.getByTitle(/menu/i));
 
-		expect(defaultProps.onToggle).toHaveBeenCalled();
+		expect(
+			container.querySelector('.lexicon-icon-product-menu-closed')
+		).toBeTruthy();
 	});
 
-	it.each([
-		[false, 'product-menu-open'],
-		[true, 'product-menu-closed'],
-	])('marks the toggle as collapsed=%p with %s', (collapsed, symbol) => {
-		const {container} = renderToolbar({collapsed});
+	it('reads the collapsed sidebar of the current user', () => {
+		const {container} = renderToolbar(
+			mockStoreDataLDP.setIn(['sidebar', '23', 'collapsed'], true)
+		);
 
-		expect(container.querySelector(`.lexicon-icon-${symbol}`)).toBeTruthy();
+		expect(
+			container.querySelector('.lexicon-icon-product-menu-closed')
+		).toBeTruthy();
 	});
 
 	it('links the settings button to the workspace settings', () => {
@@ -124,7 +119,7 @@ describe('Toolbar', () => {
 
 		fireEvent.click(screen.getByLabelText('Test Test'));
 
-		expect(await screen.findByText('test@test.com')).toBeTruthy();
+		expect(await screen.findByText('test@liferay.com')).toBeTruthy();
 		expect(screen.getByText(/sign.out/i)).toBeTruthy();
 	});
 });

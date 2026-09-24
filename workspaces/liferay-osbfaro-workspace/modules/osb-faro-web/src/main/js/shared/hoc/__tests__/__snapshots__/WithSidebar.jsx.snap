@@ -14,152 +14,6 @@ exports[`withSidebar should render with the sidebar 1`] = `
   <div
     class="with-sidebar-root has-sidebar"
   >
-    <nav
-      class="align-items-center bg-white fixed-top toolbar-root tbar component-tbar"
-    >
-      <ul
-        class="align-items-center mx-3 tbar-nav"
-      >
-        <li
-          class="tbar-item"
-        >
-          <button
-            aria-label="Menu"
-            class="btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
-            data-tooltip-align="bottom"
-            title="Menu"
-            type="button"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-product-menu-open"
-              role="presentation"
-            >
-              <use
-                href="#product-menu-open"
-              />
-            </svg>
-          </button>
-        </li>
-        <li
-          class="tbar-item"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-ac_logo icon-root text-6"
-            role="presentation"
-          >
-            <use
-              href="#ac_logo"
-            />
-          </svg>
-        </li>
-        <li
-          class="d-none d-sm-block pl-0 tbar-item"
-        >
-          <div
-            class="tbar-section"
-          >
-            <span
-              class="font-weight-semi-bold text-5 text-dark text-nowrap"
-            >
-              Analytics Cloud
-            </span>
-          </div>
-        </li>
-        <li
-          class="tbar-item tbar-item-expand"
-        />
-        <li
-          class="tbar-item"
-        >
-          <a
-            aria-label="Settings"
-            class="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
-            data-discover="true"
-            data-tooltip-align="bottom"
-            href="/workspace/23/settings/data-source"
-            title="Settings"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-cog"
-              role="presentation"
-            >
-              <use
-                href="#cog"
-              />
-            </svg>
-          </a>
-        </li>
-        <li
-          class="align-self-stretch border-left my-1 p-0 tbar-item"
-        />
-        <li
-          class="tbar-item"
-        >
-          <button
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
-            data-tooltip-align="bottom"
-            title="Language"
-            type="button"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-automatic-translate inline-item mr-sm-1"
-              role="presentation"
-            >
-              <use
-                href="#automatic-translate"
-              />
-            </svg>
-            <span
-              class="d-none d-sm-inline"
-            >
-              EN (US)
-            </span>
-            <svg
-              class="lexicon-icon lexicon-icon-caret-bottom d-none d-sm-inline-flex inline-item inline-item-after"
-              role="presentation"
-            >
-              <use
-                href="#caret-bottom"
-              />
-            </svg>
-          </button>
-        </li>
-        <li
-          class="tbar-item"
-        >
-          <div
-            class="dropdown"
-          >
-            <button
-              aria-expanded="false"
-              aria-haspopup="true"
-              aria-label="Test Test"
-              class="dropdown-toggle btn btn-unstyled"
-              type="button"
-            >
-              <span
-                class="sticker border text-secondary sticker-circle sticker-unstyled"
-              >
-                <span
-                  class="sticker-overlay"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-user"
-                    role="presentation"
-                  >
-                    <use
-                      href="#user"
-                    />
-                  </svg>
-                </span>
-              </span>
-            </button>
-          </div>
-        </li>
-      </ul>
-    </nav>
     <div
       class="sidebar-root"
     >
@@ -218,7 +72,7 @@ exports[`withSidebar should render with the sidebar 1`] = `
             class="panel"
           >
             <button
-              aria-controls="clay-id-6"
+              aria-controls="clay-id-3"
               aria-expanded="true"
               class="panel-header panel-header-link show btn btn-unstyled"
               type="button"
@@ -240,9 +94,9 @@ exports[`withSidebar should render with the sidebar 1`] = `
               </div>
             </button>
             <div
-              aria-labelledby="clay-id-6"
+              aria-labelledby="clay-id-3"
               class="panel-collapse"
-              id="clay-id-6"
+              id="clay-id-3"
               role="region"
             >
               <div
@@ -349,7 +203,7 @@ exports[`withSidebar should render with the sidebar 1`] = `
             class="panel"
           >
             <button
-              aria-controls="clay-id-7"
+              aria-controls="clay-id-4"
               aria-expanded="true"
               class="panel-header panel-header-link show btn btn-unstyled"
               type="button"
@@ -371,9 +225,9 @@ exports[`withSidebar should render with the sidebar 1`] = `
               </div>
             </button>
             <div
-              aria-labelledby="clay-id-7"
+              aria-labelledby="clay-id-4"
               class="panel-collapse"
-              id="clay-id-7"
+              id="clay-id-4"
               role="region"
             >
               <div
@@ -450,7 +304,7 @@ exports[`withSidebar should render with the sidebar 1`] = `
             class="panel"
           >
             <button
-              aria-controls="clay-id-8"
+              aria-controls="clay-id-5"
               aria-expanded="true"
               class="panel-header panel-header-link show btn btn-unstyled"
               type="button"
@@ -472,9 +326,9 @@ exports[`withSidebar should render with the sidebar 1`] = `
               </div>
             </button>
             <div
-              aria-labelledby="clay-id-8"
+              aria-labelledby="clay-id-5"
               class="panel-collapse"
-              id="clay-id-8"
+              id="clay-id-5"
               role="region"
             >
               <div
