@@ -80,7 +80,8 @@ public interface ObjectActionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectAction addObjectAction(
 			String externalReferenceCode, long userId, long objectDefinitionId,
-			boolean active, String conditionExpression, String description,
+			boolean active, String conditionExpression,
+			Map<Locale, String> descriptionMap,
 			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
 			String name, String objectActionExecutorKey,
 			String objectActionTriggerKey,
@@ -91,9 +92,10 @@ public interface ObjectActionLocalService
 	public ObjectAction addOrUpdateObjectAction(
 			String externalReferenceCode, long objectActionId, long userId,
 			long objectDefinitionId, boolean active, String conditionExpression,
-			String description, Map<Locale, String> errorMessageMap,
-			Map<Locale, String> labelMap, String name,
-			String objectActionExecutorKey, String objectActionTriggerKey,
+			Map<Locale, String> descriptionMap,
+			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
+			String name, String objectActionExecutorKey,
+			String objectActionTriggerKey,
 			UnicodeProperties parametersUnicodeProperties, boolean system)
 		throws PortalException;
 
@@ -361,7 +363,7 @@ public interface ObjectActionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectAction updateObjectAction(
 			String externalReferenceCode, long objectActionId, boolean active,
-			String conditionExpression, String description,
+			String conditionExpression, Map<Locale, String> descriptionMap,
 			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
 			String name, String objectActionExecutorKey,
 			String objectActionTriggerKey,
@@ -382,4 +384,4 @@ public interface ObjectActionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1017884659
+// LIFERAY-SERVICE-BUILDER-HASH:-524907175

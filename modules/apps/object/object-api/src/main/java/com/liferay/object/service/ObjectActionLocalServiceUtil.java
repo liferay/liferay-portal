@@ -54,7 +54,8 @@ public class ObjectActionLocalServiceUtil {
 
 	public static ObjectAction addObjectAction(
 			String externalReferenceCode, long userId, long objectDefinitionId,
-			boolean active, String conditionExpression, String description,
+			boolean active, String conditionExpression,
+			Map<java.util.Locale, String> descriptionMap,
 			Map<java.util.Locale, String> errorMessageMap,
 			Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
@@ -65,15 +66,16 @@ public class ObjectActionLocalServiceUtil {
 
 		return getService().addObjectAction(
 			externalReferenceCode, userId, objectDefinitionId, active,
-			conditionExpression, description, errorMessageMap, labelMap, name,
-			objectActionExecutorKey, objectActionTriggerKey,
+			conditionExpression, descriptionMap, errorMessageMap, labelMap,
+			name, objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties, system);
 	}
 
 	public static ObjectAction addOrUpdateObjectAction(
 			String externalReferenceCode, long objectActionId, long userId,
 			long objectDefinitionId, boolean active, String conditionExpression,
-			String description, Map<java.util.Locale, String> errorMessageMap,
+			Map<java.util.Locale, String> descriptionMap,
+			Map<java.util.Locale, String> errorMessageMap,
 			Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
 			com.liferay.portal.kernel.util.UnicodeProperties
@@ -83,8 +85,8 @@ public class ObjectActionLocalServiceUtil {
 
 		return getService().addOrUpdateObjectAction(
 			externalReferenceCode, objectActionId, userId, objectDefinitionId,
-			active, conditionExpression, description, errorMessageMap, labelMap,
-			name, objectActionExecutorKey, objectActionTriggerKey,
+			active, conditionExpression, descriptionMap, errorMessageMap,
+			labelMap, name, objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties, system);
 	}
 
@@ -427,7 +429,8 @@ public class ObjectActionLocalServiceUtil {
 
 	public static ObjectAction updateObjectAction(
 			String externalReferenceCode, long objectActionId, boolean active,
-			String conditionExpression, String description,
+			String conditionExpression,
+			Map<java.util.Locale, String> descriptionMap,
 			Map<java.util.Locale, String> errorMessageMap,
 			Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
@@ -437,7 +440,7 @@ public class ObjectActionLocalServiceUtil {
 
 		return getService().updateObjectAction(
 			externalReferenceCode, objectActionId, active, conditionExpression,
-			description, errorMessageMap, labelMap, name,
+			descriptionMap, errorMessageMap, labelMap, name,
 			objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties);
 	}
@@ -457,4 +460,4 @@ public class ObjectActionLocalServiceUtil {
 			ObjectActionLocalServiceUtil.class, ObjectActionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1137417248
+// LIFERAY-SERVICE-BUILDER-HASH:370351074

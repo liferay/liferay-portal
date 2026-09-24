@@ -44,7 +44,7 @@ public class ObjectActionServiceHttp {
 	public static com.liferay.object.model.ObjectAction addObjectAction(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			long objectDefinitionId, boolean active, String conditionExpression,
-			String description,
+			java.util.Map<java.util.Locale, String> descriptionMap,
 			java.util.Map<java.util.Locale, String> errorMessageMap,
 			java.util.Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
@@ -60,7 +60,7 @@ public class ObjectActionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, objectDefinitionId, active,
-				conditionExpression, description, errorMessageMap, labelMap,
+				conditionExpression, descriptionMap, errorMessageMap, labelMap,
 				name, objectActionExecutorKey, objectActionTriggerKey,
 				parametersUnicodeProperties, system);
 
@@ -175,7 +175,7 @@ public class ObjectActionServiceHttp {
 	public static com.liferay.object.model.ObjectAction updateObjectAction(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			long objectActionId, boolean active, String conditionExpression,
-			String description,
+			java.util.Map<java.util.Locale, String> descriptionMap,
 			java.util.Map<java.util.Locale, String> errorMessageMap,
 			java.util.Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
@@ -190,7 +190,7 @@ public class ObjectActionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, objectActionId, active,
-				conditionExpression, description, errorMessageMap, labelMap,
+				conditionExpression, descriptionMap, errorMessageMap, labelMap,
 				name, objectActionExecutorKey, objectActionTriggerKey,
 				parametersUnicodeProperties);
 
@@ -227,9 +227,9 @@ public class ObjectActionServiceHttp {
 
 	private static final Class<?>[] _addObjectActionParameterTypes0 =
 		new Class[] {
-			String.class, long.class, boolean.class, String.class, String.class,
-			java.util.Map.class, java.util.Map.class, String.class,
-			String.class, String.class,
+			String.class, long.class, boolean.class, String.class,
+			java.util.Map.class, java.util.Map.class, java.util.Map.class,
+			String.class, String.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class,
 			boolean.class
 		};
@@ -239,11 +239,11 @@ public class ObjectActionServiceHttp {
 		new Class[] {long.class};
 	private static final Class<?>[] _updateObjectActionParameterTypes3 =
 		new Class[] {
-			String.class, long.class, boolean.class, String.class, String.class,
-			java.util.Map.class, java.util.Map.class, String.class,
-			String.class, String.class,
+			String.class, long.class, boolean.class, String.class,
+			java.util.Map.class, java.util.Map.class, java.util.Map.class,
+			String.class, String.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-570179611
+// LIFERAY-SERVICE-BUILDER-HASH:-667042545

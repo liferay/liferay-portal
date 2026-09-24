@@ -46,7 +46,8 @@ public interface ObjectActionService extends BaseService {
 	 */
 	public ObjectAction addObjectAction(
 			String externalReferenceCode, long objectDefinitionId,
-			boolean active, String conditionExpression, String description,
+			boolean active, String conditionExpression,
+			Map<Locale, String> descriptionMap,
 			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
 			String name, String objectActionExecutorKey,
 			String objectActionTriggerKey,
@@ -69,7 +70,7 @@ public interface ObjectActionService extends BaseService {
 
 	public ObjectAction updateObjectAction(
 			String externalReferenceCode, long objectActionId, boolean active,
-			String conditionExpression, String description,
+			String conditionExpression, Map<Locale, String> descriptionMap,
 			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
 			String name, String objectActionExecutorKey,
 			String objectActionTriggerKey,
@@ -77,4 +78,4 @@ public interface ObjectActionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1292296752
+// LIFERAY-SERVICE-BUILDER-HASH:-1386081864

@@ -28,7 +28,8 @@ public class ObjectActionServiceWrapper
 	@Override
 	public com.liferay.object.model.ObjectAction addObjectAction(
 			String externalReferenceCode, long objectDefinitionId,
-			boolean active, String conditionExpression, String description,
+			boolean active, String conditionExpression,
+			java.util.Map<java.util.Locale, String> descriptionMap,
 			java.util.Map<java.util.Locale, String> errorMessageMap,
 			java.util.Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
@@ -39,8 +40,8 @@ public class ObjectActionServiceWrapper
 
 		return _objectActionService.addObjectAction(
 			externalReferenceCode, objectDefinitionId, active,
-			conditionExpression, description, errorMessageMap, labelMap, name,
-			objectActionExecutorKey, objectActionTriggerKey,
+			conditionExpression, descriptionMap, errorMessageMap, labelMap,
+			name, objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties, system);
 	}
 
@@ -73,7 +74,8 @@ public class ObjectActionServiceWrapper
 	@Override
 	public com.liferay.object.model.ObjectAction updateObjectAction(
 			String externalReferenceCode, long objectActionId, boolean active,
-			String conditionExpression, String description,
+			String conditionExpression,
+			java.util.Map<java.util.Locale, String> descriptionMap,
 			java.util.Map<java.util.Locale, String> errorMessageMap,
 			java.util.Map<java.util.Locale, String> labelMap, String name,
 			String objectActionExecutorKey, String objectActionTriggerKey,
@@ -83,7 +85,7 @@ public class ObjectActionServiceWrapper
 
 		return _objectActionService.updateObjectAction(
 			externalReferenceCode, objectActionId, active, conditionExpression,
-			description, errorMessageMap, labelMap, name,
+			descriptionMap, errorMessageMap, labelMap, name,
 			objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties);
 	}
@@ -101,4 +103,4 @@ public class ObjectActionServiceWrapper
 	private ObjectActionService _objectActionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1220317811
+// LIFERAY-SERVICE-BUILDER-HASH:-1001408135
