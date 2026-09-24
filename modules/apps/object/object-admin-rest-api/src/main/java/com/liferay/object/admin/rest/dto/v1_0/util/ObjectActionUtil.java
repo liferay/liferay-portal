@@ -50,7 +50,9 @@ public class ObjectActionUtil {
 					serviceBuilderObjectAction::getConditionExpression);
 				setDateCreated(serviceBuilderObjectAction::getCreateDate);
 				setDateModified(serviceBuilderObjectAction::getModifiedDate);
-				setDescription(serviceBuilderObjectAction::getDescription);
+				setDescription(
+					() -> LocalizedMapUtil.getLanguageIdMap(
+						serviceBuilderObjectAction.getDescriptionMap()));
 				setErrorMessage(
 					() -> LocalizedMapUtil.getLanguageIdMap(
 						serviceBuilderObjectAction.getErrorMessageMap()));

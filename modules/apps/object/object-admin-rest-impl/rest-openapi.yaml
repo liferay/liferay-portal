@@ -22,7 +22,9 @@ components:
                     readOnly: true
                     type: string
                 description:
-                    type: string
+                    additionalProperties:
+                        type: string
+                    type: object
                 errorMessage:
                     additionalProperties:
                         type: string

@@ -155,7 +155,8 @@ public class ObjectActionResourceImpl extends BaseObjectActionResourceImpl {
 			_objectActionService.addObjectAction(
 				objectAction.getExternalReferenceCode(), objectDefinitionId,
 				objectAction.getActive(), objectAction.getConditionExpression(),
-				objectAction.getDescription(),
+				LocalizedMapUtil.populateLocalizedMap(
+					objectAction.getDescription()),
 				LocalizedMapUtil.populateLocalizedMap(
 					objectAction.getErrorMessage()),
 				LocalizedMapUtil.populateLocalizedMap(objectAction.getLabel()),
@@ -176,7 +177,8 @@ public class ObjectActionResourceImpl extends BaseObjectActionResourceImpl {
 			_objectActionService.updateObjectAction(
 				objectAction.getExternalReferenceCode(), objectActionId,
 				objectAction.getActive(), objectAction.getConditionExpression(),
-				objectAction.getDescription(),
+				LocalizedMapUtil.populateLocalizedMap(
+					objectAction.getDescription()),
 				LocalizedMapUtil.populateLocalizedMap(
 					objectAction.getErrorMessage()),
 				LocalizedMapUtil.populateLocalizedMap(objectAction.getLabel()),
