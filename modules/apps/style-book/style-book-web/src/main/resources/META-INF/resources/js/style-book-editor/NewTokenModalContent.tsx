@@ -8,14 +8,13 @@ import ClayModal from '@clayui/modal';
 import {FormikProvider, useFormik} from 'formik';
 import {openToast, useId} from 'frontend-js-components-web';
 import {escapeHTML, fetch, objectToFormData} from 'frontend-js-web';
-import React from 'react';
+import React, {useState} from 'react';
 
 import ModalFormFooter from './ModalFormFooter';
+import {FrontendTokenSetOption} from './NewTokenSetModalContent';
 import TextField from './TextField';
 import EditorTypeField from './new_token/EditorTypeField';
-import TokenSetField, {
-	FrontendTokenSetOption,
-} from './new_token/TokenSetField';
+import TokenSetField from './new_token/TokenSetField';
 import {required, validate} from './utils/validations';
 
 interface AddFrontendTokenSuccessData {
@@ -52,14 +51,23 @@ const NewTokenModalContent = ({
 	styleBookEntryId,
 	tokenSets,
 }: NewTokenModalContentProps) => {
+	const [tokenSetItems, setTokenSetItems] =
+		useState<FrontendTokenSetOption[]>(tokenSets);
+
 	const formId = useId();
 
 	const handleSubmit = (values: NewTokenFormValues) => {
+		const selectedTokenSet = tokenSetItems.find(
+			({name}) => name === values.tokenSetName
+		);
+
 		const body = Liferay.Util.ns(namespace, {
 			...values,
 			categoryLabel: categoryLabel ?? categoryName,
 			categoryName,
 			styleBookEntryId,
+			tokenSetDescription: selectedTokenSet?.description ?? '',
+			tokenSetLabel: selectedTokenSet?.label ?? values.tokenSetName,
 		});
 
 		return fetch(addFrontendTokenURL, {
@@ -150,7 +158,15 @@ const NewTokenModalContent = ({
 						required
 					/>
 
-					<TokenSetField tokenSets={tokenSets} />
+					<TokenSetField
+						onCreate={(tokenSet) =>
+							setTokenSetItems((tokenSetItems) => [
+								...tokenSetItems,
+								tokenSet,
+							])
+						}
+						tokenSets={tokenSetItems}
+					/>
 
 					<TextField
 						className="mb-0"

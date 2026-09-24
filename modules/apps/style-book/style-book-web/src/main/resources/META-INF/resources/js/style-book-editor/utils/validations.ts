@@ -13,6 +13,21 @@ const required: ValidationFunction = (value) => {
 	}
 };
 
+const unique =
+	(existingValues: string[], errorMessage: string): ValidationFunction =>
+	(value) => {
+		const normalizedValue = value.trim().toLowerCase();
+
+		if (
+			existingValues.some(
+				(existingValue) =>
+					existingValue.toLowerCase() === normalizedValue
+			)
+		) {
+			return errorMessage;
+		}
+	};
+
 const validate = <Values extends {[FieldName in keyof Values]: string}>(
 	fields: Partial<Record<keyof Values, ValidationFunction[]>>,
 	values: Values
@@ -35,4 +50,4 @@ const validate = <Values extends {[FieldName in keyof Values]: string}>(
 	}, {});
 };
 
-export {required, validate};
+export {required, unique, validate};
