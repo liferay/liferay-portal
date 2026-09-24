@@ -139,6 +139,8 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 						active={active}
 						alignElementRef={triggerElementRef}
 						alignmentPosition={Align.BottomRight}
+						onActiveChange={setActive}
+						triggerRef={triggerElementRef}
 					>
 						<ClayDropDown.ItemList>
 							{Object.entries(Liferay.Language.available).map(

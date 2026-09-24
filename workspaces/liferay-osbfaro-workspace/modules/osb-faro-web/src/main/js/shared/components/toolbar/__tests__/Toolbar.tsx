@@ -114,6 +114,43 @@ describe('Toolbar', () => {
 		);
 	});
 
+	it('closes the language menu when clicking outside of it', async () => {
+		renderToolbar();
+
+		const trigger = screen.getByTitle(/language/i);
+
+		fireEvent.click(trigger);
+
+		expect(trigger).toHaveAttribute('aria-expanded', 'true');
+
+		fireEvent.pointerDown(document.body);
+		fireEvent.pointerUp(document.body);
+		fireEvent.mouseDown(document.body);
+		fireEvent.mouseUp(document.body);
+
+		await waitFor(() =>
+			expect(trigger).toHaveAttribute('aria-expanded', 'false')
+		);
+	});
+
+	it('closes the language menu when its trigger is clicked again', async () => {
+		renderToolbar();
+
+		const trigger = screen.getByTitle(/language/i);
+
+		fireEvent.click(trigger);
+
+		fireEvent.pointerDown(trigger);
+		fireEvent.pointerUp(trigger);
+		fireEvent.mouseDown(trigger);
+		fireEvent.mouseUp(trigger);
+		fireEvent.click(trigger);
+
+		await waitFor(() =>
+			expect(trigger).toHaveAttribute('aria-expanded', 'false')
+		);
+	});
+
 	it('opens the user menu from the sticker', async () => {
 		renderToolbar();
 
