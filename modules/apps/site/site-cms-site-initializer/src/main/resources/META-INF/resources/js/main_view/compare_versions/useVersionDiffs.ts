@@ -109,7 +109,9 @@ function applyFieldDiffs(
 			return;
 		}
 
-		const control = field.querySelector('.form-control');
+		const control = field.querySelector(
+			'.form-control:not(.input-group-inset)'
+		);
 
 		const container = iframeDocument.createElement('div');
 
