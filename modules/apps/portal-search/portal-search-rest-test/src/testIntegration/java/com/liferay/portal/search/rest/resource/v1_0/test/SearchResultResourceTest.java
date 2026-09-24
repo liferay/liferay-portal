@@ -902,8 +902,6 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		List<String> types = TransformUtil.transform(
 			page.getItems(), searchResult -> searchResult.getType());
 
-		Assert.assertEquals(types.toString(), 2, types.size());
-
 		Assert.assertTrue(
 			types.toString(),
 			types.contains(
@@ -914,6 +912,7 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 			types.contains(
 				String.valueOf(
 					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT)));
+		Assert.assertEquals(types.toString(), 2, types.size());
 	}
 
 	private void _testGetSearchPageTypeFilter() throws Exception {
