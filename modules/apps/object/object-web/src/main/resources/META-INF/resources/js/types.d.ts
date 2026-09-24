@@ -157,7 +157,7 @@ type NotificationTemplate = {
 interface ObjectAction {
 	active: boolean;
 	conditionExpression?: string;
-	description?: string;
+	description?: LocalizedValue<string>;
 	errorMessage: LocalizedValue<string>;
 	id?: number;
 	label: LocalizedValue<string>;
