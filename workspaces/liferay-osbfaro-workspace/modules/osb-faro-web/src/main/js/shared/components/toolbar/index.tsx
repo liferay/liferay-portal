@@ -8,6 +8,7 @@ import getCN from 'classnames';
 import React, {useRef, useState} from 'react';
 import {collapseSidebar} from 'shared/actions/sidebar';
 import {getLanguageLabel} from 'shared/util/locale';
+import {getInitials} from 'shared/util/util';
 import {Link} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -72,7 +73,7 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 					</ClayButton>
 				</ClayToolbar.Item>
 
-				<ClayToolbar.Item>
+				<ClayToolbar.Item className="mt-1">
 					<ClayIcon
 						className="icon-root text-6"
 						symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
@@ -185,7 +186,7 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 									displayType="unstyled"
 									shape="circle"
 								>
-									<ClayIcon symbol="user" />
+									{getInitials(currentUser.name)}
 								</ClaySticker>
 							</ClayButton>
 						}

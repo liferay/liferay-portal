@@ -151,6 +151,12 @@ describe('Toolbar', () => {
 		);
 	});
 
+	it('renders the initials of the current user in the sticker', () => {
+		renderToolbar();
+
+		expect(screen.getByLabelText('Test Test')).toHaveTextContent('TT');
+	});
+
 	it('opens the user menu from the sticker', async () => {
 		renderToolbar();
 
