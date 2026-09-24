@@ -416,8 +416,7 @@ export default function AssetsFDSPropsTransformer({
 			else if (
 				action?.data?.id === 'export-for-translation' ||
 				action?.data?.id === 'import-translation' ||
-				action?.data?.id === 'translate' ||
-				action?.data?.id === 'view-content'
+				action?.data?.id === 'translate'
 			) {
 				return {
 					...action,
@@ -429,6 +428,18 @@ export default function AssetsFDSPropsTransformer({
 						),
 				};
 			}
+			else if (action?.data?.id === 'view-content') {
+				return {
+					...action,
+					isVisible: (item: any) =>
+						Boolean(
+							item?.entryClassName !==
+								OBJECT_ENTRY_FOLDER_CLASS_NAME &&
+								!item?.embedded?.file
+						),
+					target: 'event',
+				};
+			}
 			else if (action?.data?.id === 'view-file') {
 				return {
 					...action,
@@ -438,6 +449,7 @@ export default function AssetsFDSPropsTransformer({
 							item?.entryClassName !==
 								OBJECT_ENTRY_FOLDER_CLASS_NAME
 						),
+					target: 'event',
 				};
 			}
 

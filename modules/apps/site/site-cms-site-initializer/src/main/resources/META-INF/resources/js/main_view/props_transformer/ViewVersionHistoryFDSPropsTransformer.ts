@@ -98,12 +98,14 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 				return {
 					...action,
 					isVisible: (item: any) => Boolean(!item?.file),
+					target: 'event',
 				};
 			}
 			else if (action?.data?.id === 'view-file') {
 				return {
 					...action,
 					isVisible: (item: any) => Boolean(item?.file?.thumbnailURL),
+					target: 'event',
 				};
 			}
 

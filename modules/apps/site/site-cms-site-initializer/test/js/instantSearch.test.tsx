@@ -234,6 +234,16 @@ const VISITED_RENDERERS: Array<
 	],
 ];
 
+// The sections whose View action previews the row in a modal. A Data Set
+// remembers an action with no target as a visit, so View has to say it is
+// handled here, or the suggestions offer a preview URL that opens bare.
+
+const PREVIEWING_TRANSFORMERS: Array<[string, (props: any) => any]> = [
+	['Contents', AssetsFDSPropsTransformer],
+	['Shared With Me', SharedWithMeFDSPropsTransformer],
+	['Version History', ViewVersionHistoryFDSPropsTransformer],
+];
+
 describe('[CMS] Instant search', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
@@ -403,6 +413,23 @@ describe('[CMS] Instant search', () => {
 			]);
 
 			localStorage.clear();
+		}
+	);
+
+	it.each(PREVIEWING_TRANSFORMERS)(
+		'previews the %s row from View without remembering it',
+		(_section, transform) => {
+			const {itemsActions} = transform({
+				...TRANSFORMER_PROPS,
+				itemsActions: [
+					{data: {id: 'view-content'}, href: '/view/{id}'},
+					{data: {id: 'view-file'}, href: ''},
+				],
+			});
+
+			expect(
+				itemsActions.map(({target}: {target?: string}) => target)
+			).toEqual(['event', 'event']);
 		}
 	);
 });

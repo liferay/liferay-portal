@@ -121,6 +121,7 @@ export default function SharedWithMeFDSPropsTransformer({
 								!item?.file &&
 								item?.visible
 						),
+					target: 'event',
 				};
 			}
 			else if (action?.data?.id === 'view-file') {
@@ -133,6 +134,7 @@ export default function SharedWithMeFDSPropsTransformer({
 								item?.file &&
 								item?.visible
 						),
+					target: 'event',
 				};
 			}
 
