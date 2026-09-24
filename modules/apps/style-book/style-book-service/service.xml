@@ -78,6 +78,7 @@
 		<exception>DuplicateStyleBookEntryKey</exception>
 		<exception>DuplicateStyleBookEntryName</exception>
 		<exception>StyleBookEntryFile</exception>
+		<exception>StyleBookEntryFrontendToken</exception>
 		<exception>StyleBookEntryFrontendTokenDefinition</exception>
 		<exception>StyleBookEntryFrontendTokensValues</exception>
 		<exception>StyleBookEntryName</exception>
