@@ -123,6 +123,9 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 			String redirectTitle, ServiceContext serviceContext)
 		throws PortalException {
 
+		_wikiNodeModelResourcePermission.check(
+			getPermissionChecker(), nodeId, ActionKeys.ADD_PAGE);
+
 		return wikiPageLocalService.addPage(
 			externalReferenceCode, getUserId(), nodeId, title, version, content,
 			summary, minorEdit, format, head, parentTitle, redirectTitle,
