@@ -151,6 +151,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 			channelId,
 			filter: criteriaString,
 			groupId,
+			includeAnonymousUsers,
 			...params,
 		});
 	}
@@ -162,11 +163,12 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 
 		open(modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL, {
 			...(isAccountSegment && {initialDelta: 20}),
-			columns: [
-				isAccountSegment
-					? accountsListColumns.getAccountName({channelId, groupId})
-					: individualsListColumns.name,
-			],
+			columns: isAccountSegment
+				? [accountsListColumns.getAccountName({channelId, groupId})]
+				: [
+						individualsListColumns.name,
+						individualsListColumns.accountName,
+					],
 			dataSourceFn: this.fetchMembers,
 			entityLabel: isAccountSegment
 				? Liferay.Language.get('accounts')
@@ -180,7 +182,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 			size: 'lg',
 			title: isAccountSegment
 				? Liferay.Language.get('segment-accounts')
-				: Liferay.Language.get('known-segment-members'),
+				: Liferay.Language.get('segment-membership'),
 		});
 	}
 
