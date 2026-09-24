@@ -1398,7 +1398,7 @@ describe('drawing', () => {
 			screen.queryByRole('application', {name: 'drawing-area'})
 		).toBeNull();
 		expect(stroke(container)).toBeNull();
-		expect(announce).toHaveBeenLastCalledWith('drawing-canceled');
+		expect(announce).toHaveBeenLastCalledWith('drawing-was-canceled');
 		expect(container.querySelector('.editor-workspace')).toHaveFocus();
 	});
 

@@ -176,7 +176,7 @@ export function DrawSurface({
 						'the-line-starts-at-the-center-of-the-crop-area.-move-its-end-with-the-arrow-keys-then-press-enter-to-set-the-line'
 					)
 				: Liferay.Language.get(
-						'drawing-started.-click-or-press-enter-to-add-points-and-finish-on-the-last-point'
+						'drawing-has-started.-click-or-press-enter-to-add-points-and-finish-on-the-last-point'
 					)
 		);
 	}, [guided, onAnnounce]);
@@ -201,7 +201,7 @@ export function DrawSurface({
 	const announcePoint = (count: number, x: number, y: number) =>
 		onAnnounce(
 			sub(
-				Liferay.Language.get('point-x-added-at-x-x-y-x'),
+				Liferay.Language.get('point-x-was-added-at-x-x-y-x'),
 				count,
 				Math.round(x),
 				Math.round(y)
@@ -213,7 +213,7 @@ export function DrawSurface({
 
 		onFinish(null);
 
-		onAnnounce(Liferay.Language.get('drawing-canceled'));
+		onAnnounce(Liferay.Language.get('drawing-was-canceled'));
 	};
 
 	const finish = (raw: number[], smooth: boolean) => {
@@ -297,7 +297,7 @@ export function DrawSurface({
 
 			setPoints((current) => current.slice(0, active.startCount));
 
-			onAnnounce(Liferay.Language.get('drawing-canceled'));
+			onAnnounce(Liferay.Language.get('drawing-was-canceled'));
 		}
 	};
 
@@ -418,7 +418,7 @@ export function DrawSurface({
 
 					onAnnounce(
 						Liferay.Language.get(
-							'line-set.-move-the-middle-point-with-the-arrow-keys-to-curve-the-line-then-press-enter-to-finish'
+							'line-was-set.-move-the-middle-point-with-the-arrow-keys-to-curve-the-line-then-press-enter-to-finish'
 						)
 					);
 
@@ -482,7 +482,7 @@ export function DrawSurface({
 			case 'Delete':
 				setPoints((current) => current.slice(0, -2));
 
-				onAnnounce(Liferay.Language.get('point-removed'));
+				onAnnounce(Liferay.Language.get('point-was-removed'));
 				break;
 
 			case 'Enter': {
