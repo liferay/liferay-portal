@@ -54,7 +54,7 @@ exports[`SelectItemsModal should render 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -173,7 +173,7 @@ exports[`SelectItemsModal should render items as an entity list 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -292,7 +292,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -423,7 +423,7 @@ exports[`SelectItemsModal should render with a custom submit message 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -542,7 +542,7 @@ exports[`SelectItemsModal should render with a custom title 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -661,7 +661,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -788,7 +788,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -919,7 +919,7 @@ exports[`SelectItemsModal should render with selectedItems 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -1038,7 +1038,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -1233,7 +1233,7 @@ exports[`SelectItemsModal should render without the sort button 1`] = `
         </button>
       </div>
       <div
-        class="toolbar-root"
+        class="search-toolbar-root"
       >
         <nav
           class="navbar navbar-root management-bar management-bar-light navbar-expand"

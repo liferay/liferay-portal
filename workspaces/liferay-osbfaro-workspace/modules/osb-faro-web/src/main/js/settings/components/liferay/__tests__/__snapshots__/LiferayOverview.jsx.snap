@@ -778,7 +778,7 @@ exports[`LiferayOverview should render 1`] = `
                   </div>
                 </div>
                 <div
-                  class="toolbar-root"
+                  class="search-toolbar-root"
                 >
                   <nav
                     class="navbar navbar-root management-bar management-bar-light navbar-expand"

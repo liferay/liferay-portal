@@ -6,7 +6,7 @@ exports[`CustomEventList should render 1`] = `
     class="mx-4"
   />
   <div
-    class="toolbar-root"
+    class="search-toolbar-root"
   >
     <nav
       class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -412,7 +412,7 @@ exports[`CustomEventList should render alert notification 1`] = `
     </div>
   </div>
   <div
-    class="toolbar-root"
+    class="search-toolbar-root"
   >
     <nav
       class="navbar navbar-root management-bar management-bar-light navbar-expand"

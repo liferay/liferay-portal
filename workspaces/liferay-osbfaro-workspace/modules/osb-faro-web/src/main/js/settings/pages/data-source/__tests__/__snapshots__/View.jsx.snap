@@ -1288,7 +1288,7 @@ exports[`View should render a Liferay data-source page 1`] = `
                   </div>
                 </div>
                 <div
-                  class="toolbar-root"
+                  class="search-toolbar-root"
                 >
                   <nav
                     class="navbar navbar-root management-bar management-bar-light navbar-expand"
@@ -2229,7 +2229,7 @@ exports[`View should render a Salesforce data-source page 1`] = `
                   </div>
                 </div>
                 <div
-                  class="toolbar-root"
+                  class="search-toolbar-root"
                 >
                   <nav
                     class="navbar navbar-root management-bar management-bar-light navbar-expand"

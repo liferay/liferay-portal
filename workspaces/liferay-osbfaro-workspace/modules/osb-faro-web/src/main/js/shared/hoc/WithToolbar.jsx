@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Toolbar from 'shared/components/toolbar';
+import SearchToolbar from 'shared/components/search-toolbar';
 import withHistory from './WithHistory';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {get} from 'lodash';
@@ -138,7 +138,7 @@ export default configs => WrappedComponent => {
 
 			return (
 				<>
-					<Toolbar
+					<SearchToolbar
 						{...otherProps}
 						alwaysShowSearch={alwaysShowSearch}
 						disableSearch={get(
@@ -189,7 +189,7 @@ export default configs => WrappedComponent => {
 						)}
 
 						{renderNav && renderNav(this.props)}
-					</Toolbar>
+					</SearchToolbar>
 
 					<WrappedComponent {...this.props} />
 				</>

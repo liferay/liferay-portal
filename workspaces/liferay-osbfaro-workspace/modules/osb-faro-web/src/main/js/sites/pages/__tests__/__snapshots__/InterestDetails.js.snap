@@ -50,7 +50,7 @@ exports[`Sites Dashboard InterestDetails render 1`] = `
             class="d-flex flex-column flex-grow-1 justify-content-between"
           >
             <div
-              class="toolbar-root"
+              class="search-toolbar-root"
             >
               <nav
                 class="navbar navbar-root management-bar management-bar-light navbar-expand"

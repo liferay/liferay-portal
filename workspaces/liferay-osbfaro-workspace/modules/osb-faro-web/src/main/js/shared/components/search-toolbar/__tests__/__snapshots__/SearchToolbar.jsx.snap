@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Toolbar should render 1`] = `
+exports[`SearchToolbar should render 1`] = `
 <div>
   <div
-    class="toolbar-root"
+    class="search-toolbar-root"
   >
     <nav
       class="navbar navbar-root management-bar management-bar-light navbar-expand"

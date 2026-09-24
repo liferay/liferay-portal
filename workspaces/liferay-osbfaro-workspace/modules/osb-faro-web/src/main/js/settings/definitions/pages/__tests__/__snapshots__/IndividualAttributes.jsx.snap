@@ -352,7 +352,7 @@ exports[`IndividualAttributes should render 1`] = `
                 class="base-results-root d-flex flex-column flex-grow-1 searchable-table-root searchable-table-borderless"
               >
                 <div
-                  class="toolbar-root"
+                  class="search-toolbar-root"
                 >
                   <nav
                     class="navbar navbar-root management-bar management-bar-light navbar-expand"

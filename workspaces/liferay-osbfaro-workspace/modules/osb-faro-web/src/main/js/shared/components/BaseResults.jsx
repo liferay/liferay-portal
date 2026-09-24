@@ -7,7 +7,7 @@ import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import PaginationBar from 'shared/components/PaginationBar';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Toolbar from 'shared/components/toolbar';
+import SearchToolbar from 'shared/components/search-toolbar';
 import {ACTION_TYPES, SelectionContext} from 'shared/context/selection';
 import {autoCancel, hasRequest} from 'shared/util/request-decorator';
 import {hasChanges} from 'shared/util/react';
@@ -415,7 +415,7 @@ export default class BaseResults extends React.Component {
 					className
 				)}
 			>
-				<Toolbar
+				<SearchToolbar
 					alwaysShowSearch={crossPageSelect}
 					autoFocus={autoFocusSearch}
 					disabled={error}
@@ -444,7 +444,7 @@ export default class BaseResults extends React.Component {
 					total={total}
 				>
 					{navRenderer && navRenderer(selectedItemsIOMap, items)}
-				</Toolbar>
+				</SearchToolbar>
 
 				{renderSubnav &&
 					!error &&

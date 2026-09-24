@@ -12,7 +12,7 @@ import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useState} from 'react';
 import SearchInput from 'shared/components/SearchInput';
-import Toolbar from 'shared/components/toolbar';
+import SearchToolbar from 'shared/components/search-toolbar';
 import URLConstants from 'shared/util/url-constants';
 import UserSessionQuery, {
 	UserSessionData,
@@ -319,7 +319,7 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 				</div>
 			</Card.Body>
 
-			<Toolbar
+			<SearchToolbar
 				onQueryChange={onQueryChange}
 				onSearchValueChange={handleQuery}
 				query={query}

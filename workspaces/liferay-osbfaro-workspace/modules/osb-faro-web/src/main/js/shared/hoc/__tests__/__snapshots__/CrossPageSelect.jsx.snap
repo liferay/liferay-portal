@@ -3,7 +3,7 @@
 exports[`CrossPageSelect should render the selected list when the user presses the "view selected link" 1`] = `
 <div>
   <div
-    class="toolbar-root"
+    class="search-toolbar-root"
   >
     <nav
       class="navbar navbar-root items-selected management-bar management-bar-primary navbar-expand"
@@ -272,7 +272,7 @@ exports[`CrossPageSelect should render the selected list when the user presses t
 exports[`CrossPageSelect should render the server data list by default 1`] = `
 <div>
   <div
-    class="toolbar-root"
+    class="search-toolbar-root"
   >
     <nav
       class="navbar navbar-root management-bar management-bar-light navbar-expand"

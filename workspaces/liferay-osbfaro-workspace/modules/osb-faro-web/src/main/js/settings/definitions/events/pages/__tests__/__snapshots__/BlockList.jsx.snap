@@ -338,7 +338,7 @@ exports[`BlockList should render 1`] = `
               class="card card-root page-display"
             >
               <div
-                class="toolbar-root"
+                class="search-toolbar-root"
               >
                 <nav
                   class="navbar navbar-root management-bar management-bar-light navbar-expand"

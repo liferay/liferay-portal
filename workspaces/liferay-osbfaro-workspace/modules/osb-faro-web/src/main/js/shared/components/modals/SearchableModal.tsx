@@ -7,7 +7,7 @@ import NoResultsDisplay, {
 	getFormattedTitle,
 } from 'shared/components/NoResultsDisplay';
 import React, {useEffect, useState} from 'react';
-import Toolbar from 'shared/components/toolbar';
+import SearchToolbar from 'shared/components/search-toolbar';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
 import {sub} from 'shared/util/lang';
@@ -138,7 +138,7 @@ const SearchableModal: React.FC<ISearchableModalProps> = ({
 			<Modal.Header onClose={onClose} title={title} />
 
 			{showToolbar && (
-				<Toolbar
+				<SearchToolbar
 					alwaysShowSearch
 					autoFocus
 					onOrderIOMapChange={onOrderIOMapChange}

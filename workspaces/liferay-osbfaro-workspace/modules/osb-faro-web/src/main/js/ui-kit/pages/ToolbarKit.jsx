@@ -1,12 +1,12 @@
 import FaroConstants from 'shared/util/constants';
 import React from 'react';
 import Row from '../components/Row';
-import Toolbar from 'shared/components/toolbar';
+import SearchToolbar from 'shared/components/search-toolbar';
 import {Map, Set} from 'immutable';
 import {noop} from 'lodash';
 
 const DefaultToolbar = (props = {}) => (
-	<Toolbar
+	<SearchToolbar
 		loading={false}
 		onOrderByFieldChange={noop}
 		onOrderClick={noop}

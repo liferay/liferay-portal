@@ -40,7 +40,7 @@ function getFilterLabel(
 	return filterValueObject?.label;
 }
 
-interface IToolbarProps extends React.HTMLAttributes<HTMLElement> {
+interface ISearchToolbarProps extends React.HTMLAttributes<HTMLElement> {
 	alwaysShowSearch?: boolean;
 	autoFocus?: boolean;
 	disabled?: boolean;
@@ -71,7 +71,7 @@ interface IToolbarProps extends React.HTMLAttributes<HTMLElement> {
 	total?: number;
 }
 
-const Toolbar: React.FC<IToolbarProps> = ({
+const SearchToolbar: React.FC<ISearchToolbarProps> = ({
 	alwaysShowSearch = false,
 	autoFocus = false,
 	children,
@@ -279,7 +279,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
 	};
 
 	return (
-		<div className={getCN('toolbar-root', className)}>
+		<div className={getCN('search-toolbar-root', className)}>
 			{(showCheckbox || showSearch) && (
 				<NavBar
 					className={classes}
@@ -396,4 +396,4 @@ const Toolbar: React.FC<IToolbarProps> = ({
 	);
 };
 
-export default Toolbar;
+export default SearchToolbar;
