@@ -439,7 +439,7 @@ function CompareVersionPane({
 					/>
 				</div>
 			) : (
-				<div className="align-items-center d-flex flex-column flex-grow-1 justify-content-center mt-n8 text-center">
+				<div className="align-items-center d-flex flex-column pt-6 text-center">
 					<ClayEmptyState
 						description={Liferay.Language.get(
 							'this-version-does-not-have-a-translation-in-the-selected-language.-try-a-different-version-or-language'
