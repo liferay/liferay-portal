@@ -183,4 +183,4 @@ public interface PriceEntryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:18864340
+// LIFERAY-REST-BUILDER-HASH:284124508

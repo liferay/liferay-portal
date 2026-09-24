@@ -132,4 +132,4 @@ public interface ChannelResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-395155180
+// LIFERAY-REST-BUILDER-HASH:-1878038588

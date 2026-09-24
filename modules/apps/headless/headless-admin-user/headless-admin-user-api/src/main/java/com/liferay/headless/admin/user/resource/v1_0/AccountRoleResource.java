@@ -244,4 +244,4 @@ public interface AccountRoleResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-239185115
+// LIFERAY-REST-BUILDER-HASH:-216312765

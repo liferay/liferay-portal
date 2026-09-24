@@ -147,4 +147,4 @@ public interface EmbeddingModelResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1748129333
+// LIFERAY-REST-BUILDER-HASH:2075154401

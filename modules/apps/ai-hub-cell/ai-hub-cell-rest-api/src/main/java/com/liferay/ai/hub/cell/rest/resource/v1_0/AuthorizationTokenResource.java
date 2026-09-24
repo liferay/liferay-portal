@@ -146,4 +146,4 @@ public interface AuthorizationTokenResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-220200619
+// LIFERAY-REST-BUILDER-HASH:644204969

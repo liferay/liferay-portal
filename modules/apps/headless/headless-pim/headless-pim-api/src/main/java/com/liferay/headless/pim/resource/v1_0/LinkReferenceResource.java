@@ -136,4 +136,4 @@ public interface LinkReferenceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:87332526
+// LIFERAY-REST-BUILDER-HASH:-1677305554

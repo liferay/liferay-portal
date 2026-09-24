@@ -137,4 +137,4 @@ public interface PricingAccountGroupResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1787256074
+// LIFERAY-REST-BUILDER-HASH:-282380922

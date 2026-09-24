@@ -134,4 +134,4 @@ public interface ToolSummaryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1341799841
+// LIFERAY-REST-BUILDER-HASH:-2011169777

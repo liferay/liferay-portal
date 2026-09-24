@@ -135,4 +135,4 @@ public interface AssetPermissionActionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1081641857
+// LIFERAY-REST-BUILDER-HASH:-112934779

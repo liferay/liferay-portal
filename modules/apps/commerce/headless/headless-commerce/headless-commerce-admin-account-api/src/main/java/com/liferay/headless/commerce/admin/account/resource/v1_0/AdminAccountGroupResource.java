@@ -183,4 +183,4 @@ public interface AdminAccountGroupResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1867275523
+// LIFERAY-REST-BUILDER-HASH:1575308101

@@ -134,4 +134,4 @@ public interface MostActiveVisitorsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-47398647
+// LIFERAY-REST-BUILDER-HASH:2108621911

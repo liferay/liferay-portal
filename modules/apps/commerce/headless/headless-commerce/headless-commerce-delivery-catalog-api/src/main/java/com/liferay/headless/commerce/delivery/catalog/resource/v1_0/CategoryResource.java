@@ -145,4 +145,4 @@ public interface CategoryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1451525542
+// LIFERAY-REST-BUILDER-HASH:-1538678592

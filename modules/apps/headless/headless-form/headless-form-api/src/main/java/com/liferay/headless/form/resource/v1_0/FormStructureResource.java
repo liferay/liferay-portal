@@ -154,4 +154,4 @@ public interface FormStructureResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1962398013
+// LIFERAY-REST-BUILDER-HASH:-827522949

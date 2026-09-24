@@ -171,4 +171,4 @@ public interface SiteConfigurationResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1256662644
+// LIFERAY-REST-BUILDER-HASH:-743105980

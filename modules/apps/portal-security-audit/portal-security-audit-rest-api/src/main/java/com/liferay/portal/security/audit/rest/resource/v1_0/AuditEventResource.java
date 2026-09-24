@@ -138,4 +138,4 @@ public interface AuditEventResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2011132535
+// LIFERAY-REST-BUILDER-HASH:223249077

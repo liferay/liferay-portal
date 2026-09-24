@@ -133,4 +133,4 @@ public interface DatabaseSchemaExportResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2056491885
+// LIFERAY-REST-BUILDER-HASH:680298315

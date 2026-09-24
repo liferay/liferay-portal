@@ -134,4 +134,4 @@ public interface SiteScopeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-547549780
+// LIFERAY-REST-BUILDER-HASH:1125056964

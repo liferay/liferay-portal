@@ -144,4 +144,4 @@ public interface SearchableAssetNameDisplayResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1221886241
+// LIFERAY-REST-BUILDER-HASH:-1141753595

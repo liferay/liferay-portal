@@ -49,6 +49,20 @@ public interface ImportTaskResource {
 			MultipartBody multipartBody)
 		throws Exception;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #deleteImportTaskObject(String, String, String, String, String, Object)}
+	 */
+	@Deprecated
+	public default ImportTask deleteImportTask(
+			String className, String callbackURL, String externalReferenceCode,
+			String importStrategy, String taskItemDelegateName, Object object)
+		throws Exception {
+
+		return deleteImportTaskObject(
+			className, callbackURL, externalReferenceCode, importStrategy,
+			taskItemDelegateName, object);
+	}
+
 	public ImportTask deleteImportTaskObject(
 			String className, String callbackURL, String externalReferenceCode,
 			String importStrategy, String taskItemDelegateName, Object object)
@@ -81,6 +95,24 @@ public interface ImportTaskResource {
 			String taskItemDelegateName, MultipartBody multipartBody)
 		throws Exception;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #postImportTaskObject(String, String, String, String, String, String, String, String, String, Object)}
+	 */
+	@Deprecated
+	public default ImportTask postImportTask(
+			String className, String batchExternalReferenceCode,
+			String batchRestrictFields, String callbackURL,
+			String createStrategy, String externalReferenceCode,
+			String fieldNameMapping, String importStrategy,
+			String taskItemDelegateName, Object object)
+		throws Exception {
+
+		return postImportTaskObject(
+			className, batchExternalReferenceCode, batchRestrictFields,
+			callbackURL, createStrategy, externalReferenceCode,
+			fieldNameMapping, importStrategy, taskItemDelegateName, object);
+	}
+
 	public ImportTask postImportTaskObject(
 			String className, String batchExternalReferenceCode,
 			String batchRestrictFields, String callbackURL,
@@ -94,6 +126,21 @@ public interface ImportTaskResource {
 			String importStrategy, String taskItemDelegateName,
 			String updateStrategy, MultipartBody multipartBody)
 		throws Exception;
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #putImportTaskObject(String, String, String, String, String, String, Object)}
+	 */
+	@Deprecated
+	public default ImportTask putImportTask(
+			String className, String callbackURL, String externalReferenceCode,
+			String importStrategy, String taskItemDelegateName,
+			String updateStrategy, Object object)
+		throws Exception {
+
+		return putImportTaskObject(
+			className, callbackURL, externalReferenceCode, importStrategy,
+			taskItemDelegateName, updateStrategy, object);
+	}
 
 	public ImportTask putImportTaskObject(
 			String className, String callbackURL, String externalReferenceCode,
@@ -189,4 +236,4 @@ public interface ImportTaskResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:42234143
+// LIFERAY-REST-BUILDER-HASH:778849461

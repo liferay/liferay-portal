@@ -134,4 +134,4 @@ public interface RedactionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-987843886
+// LIFERAY-REST-BUILDER-HASH:640404232

@@ -188,4 +188,4 @@ public interface AvailabilityEstimateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:223567013
+// LIFERAY-REST-BUILDER-HASH:130730957

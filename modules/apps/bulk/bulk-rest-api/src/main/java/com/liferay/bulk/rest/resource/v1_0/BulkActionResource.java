@@ -150,4 +150,4 @@ public interface BulkActionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1890325513
+// LIFERAY-REST-BUILDER-HASH:-175671287

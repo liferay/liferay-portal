@@ -304,4 +304,4 @@ public interface TaxonomyCategoryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-461924647
+// LIFERAY-REST-BUILDER-HASH:787844523

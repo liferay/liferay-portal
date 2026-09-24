@@ -144,4 +144,4 @@ public interface ShippingAddressResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1195024492
+// LIFERAY-REST-BUILDER-HASH:-1380280238

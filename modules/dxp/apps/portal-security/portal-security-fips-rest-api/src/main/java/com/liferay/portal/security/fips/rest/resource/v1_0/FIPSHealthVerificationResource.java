@@ -131,4 +131,4 @@ public interface FIPSHealthVerificationResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1004367698
+// LIFERAY-REST-BUILDER-HASH:-180890304

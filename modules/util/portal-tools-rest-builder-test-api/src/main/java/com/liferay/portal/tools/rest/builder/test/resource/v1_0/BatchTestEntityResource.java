@@ -172,4 +172,4 @@ public interface BatchTestEntityResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-802291559
+// LIFERAY-REST-BUILDER-HASH:414549765

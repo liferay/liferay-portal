@@ -134,4 +134,4 @@ public interface PerformanceHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:96225995
+// LIFERAY-REST-BUILDER-HASH:781589597

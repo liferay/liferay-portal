@@ -136,4 +136,4 @@ public interface DataSourceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1982226826
+// LIFERAY-REST-BUILDER-HASH:1906645772

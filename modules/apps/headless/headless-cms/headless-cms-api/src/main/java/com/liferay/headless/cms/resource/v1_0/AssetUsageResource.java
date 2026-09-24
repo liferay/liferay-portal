@@ -138,4 +138,4 @@ public interface AssetUsageResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-966991125
+// LIFERAY-REST-BUILDER-HASH:-12489857

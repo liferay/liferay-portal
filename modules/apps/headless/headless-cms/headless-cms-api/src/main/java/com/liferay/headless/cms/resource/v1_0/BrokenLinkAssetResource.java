@@ -138,4 +138,4 @@ public interface BrokenLinkAssetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1619757765
+// LIFERAY-REST-BUILDER-HASH:-417226825

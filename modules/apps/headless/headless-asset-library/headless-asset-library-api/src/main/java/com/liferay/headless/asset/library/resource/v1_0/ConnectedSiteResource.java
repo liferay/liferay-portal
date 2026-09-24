@@ -167,4 +167,4 @@ public interface ConnectedSiteResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1322024025
+// LIFERAY-REST-BUILDER-HASH:-1618696661

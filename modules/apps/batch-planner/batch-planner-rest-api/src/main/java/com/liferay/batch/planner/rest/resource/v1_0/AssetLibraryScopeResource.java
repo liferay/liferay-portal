@@ -135,4 +135,4 @@ public interface AssetLibraryScopeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1036438956
+// LIFERAY-REST-BUILDER-HASH:-177659660

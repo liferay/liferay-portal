@@ -135,4 +135,4 @@ public interface DocumentsMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:611402718
+// LIFERAY-REST-BUILDER-HASH:313179724

@@ -231,4 +231,4 @@ public interface KnowledgeBaseFolderResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-225619208
+// LIFERAY-REST-BUILDER-HASH:-1038767148

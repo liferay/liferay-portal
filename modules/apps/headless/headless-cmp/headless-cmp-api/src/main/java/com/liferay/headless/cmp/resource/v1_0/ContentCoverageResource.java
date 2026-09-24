@@ -134,4 +134,4 @@ public interface ContentCoverageResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-210441053
+// LIFERAY-REST-BUILDER-HASH:-1916937545

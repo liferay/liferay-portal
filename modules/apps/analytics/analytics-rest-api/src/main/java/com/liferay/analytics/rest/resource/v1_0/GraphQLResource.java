@@ -34,7 +34,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  *     curl -u your@email.com:yourpassword -D - http://localhost:8080/o/analytics-rest/v1.0
  *
- * @author Marcos Martins
+ * @author Ivica Cardic
  * @generated
  */
 @Generated("")
@@ -131,4 +131,4 @@ public interface GraphQLResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:132244635
+// LIFERAY-REST-BUILDER-HASH:-2132096949

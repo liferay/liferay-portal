@@ -162,4 +162,4 @@ public interface ShippingFixedOptionTermResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:748586085
+// LIFERAY-REST-BUILDER-HASH:-1164467567

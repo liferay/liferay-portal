@@ -134,4 +134,4 @@ public interface PunchOutSessionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2004401707
+// LIFERAY-REST-BUILDER-HASH:1047631319

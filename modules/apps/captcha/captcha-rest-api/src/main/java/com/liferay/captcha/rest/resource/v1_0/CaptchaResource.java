@@ -133,4 +133,4 @@ public interface CaptchaResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1072023135
+// LIFERAY-REST-BUILDER-HASH:345725745

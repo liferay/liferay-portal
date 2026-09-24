@@ -150,4 +150,4 @@ public interface FieldMappingInfoResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:397530517
+// LIFERAY-REST-BUILDER-HASH:-439339281

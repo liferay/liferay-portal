@@ -134,4 +134,4 @@ public interface ObjectEntryMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:936431319
+// LIFERAY-REST-BUILDER-HASH:332206215

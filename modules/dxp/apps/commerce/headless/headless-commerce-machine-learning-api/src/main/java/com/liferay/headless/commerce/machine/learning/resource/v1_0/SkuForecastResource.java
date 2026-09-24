@@ -147,4 +147,4 @@ public interface SkuForecastResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1481426986
+// LIFERAY-REST-BUILDER-HASH:-2028324164

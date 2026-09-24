@@ -161,4 +161,4 @@ public interface StructuredContentResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1043375333
+// LIFERAY-REST-BUILDER-HASH:1882932159

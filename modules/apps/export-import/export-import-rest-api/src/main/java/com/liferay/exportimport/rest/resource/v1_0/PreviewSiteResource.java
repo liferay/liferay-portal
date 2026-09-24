@@ -152,4 +152,4 @@ public interface PreviewSiteResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-235368176
+// LIFERAY-REST-BUILDER-HASH:-1091929170

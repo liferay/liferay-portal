@@ -133,4 +133,4 @@ public interface SiteVisitorBehaviorMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1724855120
+// LIFERAY-REST-BUILDER-HASH:-1615971610

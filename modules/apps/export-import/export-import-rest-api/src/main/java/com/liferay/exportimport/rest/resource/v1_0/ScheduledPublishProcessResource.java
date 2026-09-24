@@ -162,4 +162,4 @@ public interface ScheduledPublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1383633235
+// LIFERAY-REST-BUILDER-HASH:-2009188273

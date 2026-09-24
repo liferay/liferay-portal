@@ -194,4 +194,4 @@ public interface ResourceFolderResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1850976413
+// LIFERAY-REST-BUILDER-HASH:1294706047

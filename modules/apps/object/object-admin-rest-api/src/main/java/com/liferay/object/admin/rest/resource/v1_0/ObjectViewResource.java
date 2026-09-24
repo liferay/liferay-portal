@@ -187,4 +187,4 @@ public interface ObjectViewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1672898803
+// LIFERAY-REST-BUILDER-HASH:-2038809903

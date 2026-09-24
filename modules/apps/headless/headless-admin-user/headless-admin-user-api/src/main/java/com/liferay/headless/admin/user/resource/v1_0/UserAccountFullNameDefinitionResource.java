@@ -133,4 +133,4 @@ public interface UserAccountFullNameDefinitionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:378016467
+// LIFERAY-REST-BUILDER-HASH:-1361783451

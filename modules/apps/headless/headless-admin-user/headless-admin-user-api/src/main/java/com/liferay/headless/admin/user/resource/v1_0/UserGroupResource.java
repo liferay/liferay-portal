@@ -210,4 +210,4 @@ public interface UserGroupResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-999309280
+// LIFERAY-REST-BUILDER-HASH:18215440

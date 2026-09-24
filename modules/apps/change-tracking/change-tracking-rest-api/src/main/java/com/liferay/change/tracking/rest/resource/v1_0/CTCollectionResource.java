@@ -216,4 +216,4 @@ public interface CTCollectionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1732701158
+// LIFERAY-REST-BUILDER-HASH:1511088394

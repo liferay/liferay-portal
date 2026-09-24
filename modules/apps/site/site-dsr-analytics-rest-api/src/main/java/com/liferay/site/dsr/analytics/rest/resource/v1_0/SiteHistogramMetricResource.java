@@ -139,4 +139,4 @@ public interface SiteHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1975476456
+// LIFERAY-REST-BUILDER-HASH:1515750844

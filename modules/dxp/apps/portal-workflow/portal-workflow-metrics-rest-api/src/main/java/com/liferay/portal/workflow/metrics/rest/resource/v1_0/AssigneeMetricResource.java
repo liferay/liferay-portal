@@ -148,4 +148,4 @@ public interface AssigneeMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-140908128
+// LIFERAY-REST-BUILDER-HASH:-870230572

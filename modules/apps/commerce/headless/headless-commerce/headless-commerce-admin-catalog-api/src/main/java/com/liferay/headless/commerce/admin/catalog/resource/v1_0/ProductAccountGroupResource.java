@@ -159,4 +159,4 @@ public interface ProductAccountGroupResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1696340372
+// LIFERAY-REST-BUILDER-HASH:-2139160154

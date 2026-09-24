@@ -296,4 +296,4 @@ public interface KnowledgeBaseArticleResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:725919860
+// LIFERAY-REST-BUILDER-HASH:-95164950

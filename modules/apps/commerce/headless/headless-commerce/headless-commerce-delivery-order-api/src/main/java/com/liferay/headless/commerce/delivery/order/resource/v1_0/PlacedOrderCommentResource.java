@@ -163,4 +163,4 @@ public interface PlacedOrderCommentResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:278709543
+// LIFERAY-REST-BUILDER-HASH:1262681577

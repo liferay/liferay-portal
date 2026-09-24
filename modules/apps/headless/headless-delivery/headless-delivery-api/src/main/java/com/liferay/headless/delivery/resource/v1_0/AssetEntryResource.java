@@ -158,4 +158,4 @@ public interface AssetEntryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1192055749
+// LIFERAY-REST-BUILDER-HASH:-91529971

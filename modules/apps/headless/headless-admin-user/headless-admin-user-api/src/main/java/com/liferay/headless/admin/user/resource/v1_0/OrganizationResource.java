@@ -300,4 +300,4 @@ public interface OrganizationResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1186565237
+// LIFERAY-REST-BUILDER-HASH:-1973881703

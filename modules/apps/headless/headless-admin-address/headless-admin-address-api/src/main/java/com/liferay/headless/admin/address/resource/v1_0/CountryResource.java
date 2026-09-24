@@ -200,4 +200,4 @@ public interface CountryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:755968145
+// LIFERAY-REST-BUILDER-HASH:528044695

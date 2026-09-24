@@ -192,4 +192,4 @@ public interface ResourceFileResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1271023949
+// LIFERAY-REST-BUILDER-HASH:1324800289

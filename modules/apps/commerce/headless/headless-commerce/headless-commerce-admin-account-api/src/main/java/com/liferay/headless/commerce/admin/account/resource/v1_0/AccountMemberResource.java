@@ -187,4 +187,4 @@ public interface AccountMemberResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1385306283
+// LIFERAY-REST-BUILDER-HASH:127179991

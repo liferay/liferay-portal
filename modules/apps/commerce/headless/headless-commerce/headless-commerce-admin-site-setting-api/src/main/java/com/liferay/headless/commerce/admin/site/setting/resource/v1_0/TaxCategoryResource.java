@@ -163,4 +163,4 @@ public interface TaxCategoryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-60722256
+// LIFERAY-REST-BUILDER-HASH:1543298472

@@ -181,4 +181,4 @@ public interface PublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1622521499
+// LIFERAY-REST-BUILDER-HASH:-361475677

@@ -141,4 +141,4 @@ public interface SuggestionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1880240603
+// LIFERAY-REST-BUILDER-HASH:-1663881085

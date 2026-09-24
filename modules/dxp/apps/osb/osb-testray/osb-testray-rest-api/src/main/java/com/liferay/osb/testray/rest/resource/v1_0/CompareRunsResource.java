@@ -132,4 +132,4 @@ public interface CompareRunsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1663640950
+// LIFERAY-REST-BUILDER-HASH:-1953154398

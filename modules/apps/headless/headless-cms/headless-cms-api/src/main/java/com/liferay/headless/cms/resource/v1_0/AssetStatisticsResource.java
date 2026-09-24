@@ -134,4 +134,4 @@ public interface AssetStatisticsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:325639570
+// LIFERAY-REST-BUILDER-HASH:1648849576

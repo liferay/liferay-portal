@@ -135,4 +135,4 @@ public interface EventsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-398250752
+// LIFERAY-REST-BUILDER-HASH:880241714

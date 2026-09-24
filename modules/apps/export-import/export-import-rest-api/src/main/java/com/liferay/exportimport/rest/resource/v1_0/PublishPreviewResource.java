@@ -135,4 +135,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-804255047
+// LIFERAY-REST-BUILDER-HASH:151617465

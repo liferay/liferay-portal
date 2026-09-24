@@ -140,4 +140,4 @@ public interface PerformanceMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-909510184
+// LIFERAY-REST-BUILDER-HASH:-1112115866

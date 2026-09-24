@@ -227,4 +227,4 @@ public interface ImportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1354619723
+// LIFERAY-REST-BUILDER-HASH:-1390392627

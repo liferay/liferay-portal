@@ -171,4 +171,4 @@ public interface ContentSetElementResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1810978009
+// LIFERAY-REST-BUILDER-HASH:1585648301

@@ -147,4 +147,4 @@ public interface PerformanceTopAssetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1109380354
+// LIFERAY-REST-BUILDER-HASH:508693298

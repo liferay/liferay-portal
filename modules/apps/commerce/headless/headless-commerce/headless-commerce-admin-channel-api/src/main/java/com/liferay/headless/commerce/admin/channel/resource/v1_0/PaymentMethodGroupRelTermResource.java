@@ -163,4 +163,4 @@ public interface PaymentMethodGroupRelTermResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-299967487
+// LIFERAY-REST-BUILDER-HASH:1888466681
