@@ -144,7 +144,9 @@ public class WebServerServletTest {
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
-			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			ImageToolUtil.getBytes(
+				new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB), "png"),
+			null, null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		mockHttpServletRequest = new MockHttpServletRequest();
