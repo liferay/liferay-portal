@@ -244,7 +244,7 @@ export function validateStructure({
 	isGlobalValidation?: boolean;
 	objectDefinitions?: ObjectDefinitions;
 }): ErrorMap {
-	const {erc, label, name, slug, spaces} = data;
+	const {erc, id, label, name, slug, spaces} = data;
 
 	const errors = new Map(currentErrors);
 
@@ -257,6 +257,12 @@ export function validateStructure({
 		}
 		else if (erc.startsWith('L_')) {
 			errors.set('erc', 'prefix-reserved');
+		}
+		else if (
+			objectDefinitions?.[erc] &&
+			objectDefinitions[erc].id !== id
+		) {
+			errors.set('erc', 'in-use');
 		}
 		else {
 			errors.delete('erc');

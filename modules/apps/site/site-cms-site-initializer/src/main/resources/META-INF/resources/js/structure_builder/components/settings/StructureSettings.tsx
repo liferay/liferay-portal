@@ -142,7 +142,11 @@ function GeneralTab() {
 				disabled={system}
 				error={errors.get('erc')}
 				onValueChange={(value) =>
-					dispatch({erc: value, type: 'update-structure'})
+					dispatch({
+						erc: value,
+						objectDefinitions,
+						type: 'update-structure',
+					})
 				}
 				value={erc}
 			/>
