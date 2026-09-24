@@ -34,6 +34,16 @@ public class AccountEntryValidatorResultTestUtil {
 			return objectDefinition;
 		}
 
+		processBatchEngineUnits(clazz);
+
+		return ObjectDefinitionLocalServiceUtil.
+			fetchObjectDefinitionByExternalReferenceCode(
+				"L_ACCOUNT_VALIDATOR_RESULT", TestPropsValues.getCompanyId());
+	}
+
+	public static void processBatchEngineUnits(Class<?> clazz)
+		throws Exception {
+
 		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 		String originalName = PrincipalThreadLocal.getName();
@@ -59,10 +69,6 @@ public class AccountEntryValidatorResultTestUtil {
 
 			PrincipalThreadLocal.setName(originalName);
 		}
-
-		return ObjectDefinitionLocalServiceUtil.
-			fetchObjectDefinitionByExternalReferenceCode(
-				"L_ACCOUNT_VALIDATOR_RESULT", TestPropsValues.getCompanyId());
 	}
 
 	private static final String _BATCH_ENGINE_UNIT_FILE_NAME =

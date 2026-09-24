@@ -14,13 +14,26 @@ import com.liferay.account.service.test.util.AccountEntryValidatorResultTestUtil
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.account.validator.BaseAccountEntryValidator;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.util.ObjectFieldUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -132,6 +145,42 @@ public class AccountEntryValidatorResultManagerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-106902")
+	public void testProcessBatchEngineUnits() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_ACCOUNT", TestPropsValues.getCompanyId());
+
+		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"x" + RandomTestUtil.randomString()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition,
+				ObjectDefinitionTestUtil.publishObjectDefinition());
+
+		AccountEntryValidatorResultTestUtil.processBatchEngineUnits(
+			AccountEntryValidatorResultManagerTest.class);
+
+		Assert.assertNotNull(
+			_objectFieldLocalService.fetchObjectField(
+				objectField.getObjectFieldId()));
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
+	}
+
+	@Test
 	public void testValidate() throws Exception {
 		TestAccountEntryValidator testAccountEntryValidator =
 			new TestAccountEntryValidator(RandomTestUtil.randomString());
@@ -156,6 +205,15 @@ public class AccountEntryValidatorResultManagerTest {
 	@Inject
 	private AccountEntryValidatorResultManager
 		_accountEntryValidatorResultManager;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	private static class TestAccountEntryValidator
 		extends BaseAccountEntryValidator {
