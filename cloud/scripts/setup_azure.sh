@@ -57,7 +57,7 @@ function main {
 
 		_create_tfstate_storage "${container_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 
-		grant_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
+		_grant_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
 
 		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 	else
@@ -314,6 +314,74 @@ function _get_observability_parameters {
 			}
 		]
 		| map(select(.value != ""))'
+}
+
+function _grant_tfstate_access {
+	local container_name="${1}"
+	local resource_group_name="${2}"
+	local storage_account_name="${3}"
+
+	if _has_tfstate_access "${container_name}" "${storage_account_name}"
+	then
+		return
+	fi
+
+	local storage_account_id
+
+	storage_account_id=$( \
+		az storage account show \
+			--name "${storage_account_name}" \
+			--output tsv \
+			--query id \
+			--resource-group "${resource_group_name}")
+
+	local user_id
+
+	user_id=$(az ad signed-in-user show --output tsv --query id)
+
+	echo "Assigning the Storage Blob Data Contributor role on the storage container ${container_name} to the current Azure user."
+
+	az role assignment create \
+		--assignee-object-id "${user_id}" \
+		--assignee-principal-type User \
+		--output none \
+		--role "Storage Blob Data Contributor" \
+		--scope "${storage_account_id}/blobServices/default/containers/${container_name}"
+
+	local timeout_minutes=5
+
+	echo "Waiting up to ${timeout_minutes} minutes for the role assignment to take effect."
+
+	local timeout
+
+	timeout=$(($(date +%s) + timeout_minutes * 60))
+
+	while [ $(date +%s) -lt ${timeout} ]
+	do
+		if _has_tfstate_access "${container_name}" "${storage_account_name}"
+		then
+			return
+		fi
+
+		sleep 10
+	done
+
+	echo "Unable to access the storage container ${container_name} after ${timeout_minutes} minutes." >&2
+
+	return 1
+}
+
+function _has_tfstate_access {
+	local container_name="${1}"
+	local storage_account_name="${2}"
+
+	az storage blob list \
+		--account-name "${storage_account_name}" \
+		--auth-mode login \
+		--container-name "${container_name}" \
+		--num-results 1 \
+		--output none \
+		&> /dev/null
 }
 
 function _install_liferay_platform_chart {
