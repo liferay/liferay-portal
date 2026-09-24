@@ -14,7 +14,7 @@ jest.mock(
 	'../../src/main/resources/META-INF/resources/js/style-book-editor/config',
 	() => ({
 		config: {
-			frontendTokenDefinitions: [
+			getFrontendTokenDefinitions: () => [
 				{
 					frontendTokenCategories: [
 						{
@@ -31,6 +31,7 @@ jest.mock(
 												},
 											],
 											name: 'token1',
+											tokenDefinitionId: 'theme',
 											type: 'color',
 										},
 									],
@@ -61,6 +62,7 @@ jest.mock(
 												},
 											],
 											name: 'clayToken',
+											tokenDefinitionId: 'clay',
 											type: 'color',
 										},
 									],
@@ -76,22 +78,7 @@ jest.mock(
 					name: 'Clay Tokens',
 				},
 			],
-			frontendTokens: {
-				'clay:clayToken': {
-					defaultValue: '#fff',
-					label: 'Clay Token',
-					mappings: [{type: 'cssVariable', value: 'clay-token'}],
-					name: 'clay:clayToken',
-					type: 'color',
-				},
-				'theme:token1': {
-					defaultValue: '#000',
-					label: 'Token 1',
-					mappings: [{type: 'cssVariable', value: 'token-1'}],
-					name: 'theme:token1',
-					type: 'color',
-				},
-			},
+			getFrontendTokens: () => ({}),
 			sortFrontendTokenValues: (frontendTokensValues) =>
 				Object.values(frontendTokensValues),
 			themeFrontendTokenDefinitionId: 'theme',
@@ -110,6 +97,7 @@ const renderComponent = () => {
 	render(
 		<StyleBookEditorContextProvider
 			initialState={{
+				customFrontendTokenDefinition: {},
 				frontendTokensValues: {},
 			}}
 		>

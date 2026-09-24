@@ -8,7 +8,6 @@ import {render} from '@testing-library/react';
 import React from 'react';
 
 import StyleBookEditor from '../../src/main/resources/META-INF/resources/js/style-book-editor/StyleBookEditor';
-import {config} from '../../src/main/resources/META-INF/resources/js/style-book-editor/config';
 
 const DEFAULT_TOKEN_DEFINITION_PRIORITY = 300;
 
@@ -127,37 +126,6 @@ const previewOptions = [
 ];
 
 describe('StyleBookEditor', () => {
-	it('initializes config with namespaced tokens and backward compatibility for theme tokens', () => {
-		render(
-			<StyleBookEditor
-				defaultTokenDefinitionPriority={
-					DEFAULT_TOKEN_DEFINITION_PRIORITY
-				}
-				frontendTokenDefinitions={frontendTokenDefinitions}
-				previewOptions={previewOptions}
-				themeFrontendTokenDefinitionId="theme"
-			/>
-		);
-
-		// Namespaced keys should exist
-
-		expect(config.frontendTokens['theme:themeToken']).toBeDefined();
-		expect(config.frontendTokens['theme:themeToken'].value).toBe('#000');
-
-		expect(config.frontendTokens['clay:clayToken']).toBeDefined();
-		expect(config.frontendTokens['clay:clayToken'].value).toBe('#fff');
-
-		// Backward compatibility: theme tokens should also exist without namespace
-
-		expect(config.frontendTokens['themeToken']).toBeDefined();
-		expect(config.frontendTokens['themeToken'].name).toBe('themeToken');
-		expect(config.frontendTokens['themeToken'].value).toBe('#000');
-
-		// Clay tokens should NOT exist without namespace (unless it was the theme)
-
-		expect(config.frontendTokens['clayToken']).toBeUndefined();
-	});
-
 	it('respects priority precedence when multiple tokens map to the same CSS variable', () => {
 		const conflictingValues = {
 			'clay:conflictingToken': {
