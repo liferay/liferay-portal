@@ -22,6 +22,7 @@ import com.liferay.object.internal.upgrade.v10_8_0.util.ObjectDefinitionSettingT
 import com.liferay.object.internal.upgrade.v10_8_1.ObjectEntryAssetEntryTitleUpgradeProcess;
 import com.liferay.object.internal.upgrade.v10_9_0.util.ObjectEntryVersionTable;
 import com.liferay.object.internal.upgrade.v10_9_1.ClassNameUpgradeProcess;
+import com.liferay.object.internal.upgrade.v13_12_0.ObjectActionDescriptionUpgradeProcess;
 import com.liferay.object.internal.upgrade.v13_3_0.AttachmentObjectFieldDownloadPermissionUpgradeProcess;
 import com.liferay.object.internal.upgrade.v13_8_0.LayoutPageTemplateEntryClassNameIdUpgradeProcess;
 import com.liferay.object.internal.upgrade.v1_2_0.util.ObjectViewColumnTable;
@@ -805,6 +806,9 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.10.0", "13.11.0",
 			UpgradeProcessFactory.addColumns(
 				"ObjectRelationship", "description STRING null"));
+
+		registry.register(
+			"13.11.0", "13.12.0", new ObjectActionDescriptionUpgradeProcess());
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
