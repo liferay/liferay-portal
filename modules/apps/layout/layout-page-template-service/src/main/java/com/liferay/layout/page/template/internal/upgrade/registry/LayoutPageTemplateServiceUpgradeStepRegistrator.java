@@ -288,6 +288,11 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.dynamic.data.mapping.service)(release.schema.version>=3.3.0))"
+	)
+	private Release _dynamicDataMappingServiceRelease;
+
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
 
@@ -300,16 +305,16 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 	@Reference
 	private LayoutPrototypeLocalService _layoutPrototypeLocalService;
 
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.object.service)(release.schema.version>=10.8.0))"
+	)
+	private Release _objectServiceRelease;
+
 	@Reference
 	private Portal _portal;
 
 	@Reference
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Reference(
-		target = "(&(release.bundle.symbolic.name=com.liferay.dynamic.data.mapping.service)(release.schema.version>=3.3.0))"
-	)
-	private Release _release;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
