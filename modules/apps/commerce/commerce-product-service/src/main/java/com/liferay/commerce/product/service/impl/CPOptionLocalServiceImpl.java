@@ -17,7 +17,6 @@ import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.service.base.CPOptionLocalServiceBaseImpl;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -83,10 +82,7 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 			boolean skuContributor, String key, ServiceContext serviceContext)
 		throws PortalException {
 
-		if (!_emptyModelManager.isEmptyModel()) {
-			_validateCommerceOptionTypeKey(
-				commerceOptionTypeKey, skuContributor);
-		}
+		_validateCommerceOptionTypeKey(commerceOptionTypeKey, skuContributor);
 
 		User user = _userLocalService.getUser(userId);
 
@@ -239,7 +235,8 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 
 	@Override
 	public CPOption getOrAddEmptyCPOption(
-			String externalReferenceCode, long companyId, long userId)
+			String externalReferenceCode, long companyId, long userId,
+			String commerceOptionTypeKey, boolean skuContributor)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -253,7 +250,7 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 				externalReferenceCode, userId,
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), externalReferenceCode),
-				null, StringPool.BLANK, false, false, false,
+				null, commerceOptionTypeKey, false, false, skuContributor,
 				externalReferenceCode, serviceContext),
 			externalReferenceCode, this::fetchCPOptionByExternalReferenceCode,
 			this::getCPOptionByExternalReferenceCode, CPOption.class.getName());

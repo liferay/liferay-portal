@@ -152,7 +152,9 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 	}
 
 	@Override
-	public CPOption getOrAddEmptyCPOption(String externalReferenceCode)
+	public CPOption getOrAddEmptyCPOption(
+			String externalReferenceCode, String commerceOptionTypeKey,
+			boolean skuContributor)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -173,7 +175,8 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 
 		return cpOptionLocalService.getOrAddEmptyCPOption(
 			externalReferenceCode, permissionChecker.getCompanyId(),
-			permissionChecker.getUserId());
+			permissionChecker.getUserId(), commerceOptionTypeKey,
+			skuContributor);
 	}
 
 	@Override
