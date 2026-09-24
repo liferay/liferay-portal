@@ -339,7 +339,7 @@ function _grant_tfstate_access {
 
 	user_id=$(az ad signed-in-user show --output tsv --query id)
 
-	echo "Assigning the Storage Blob Data Contributor role on the storage container ${container_name} to the current Azure user."
+	_log "Assigning the Storage Blob Data Contributor role on the storage container ${container_name} to the current Azure user."
 
 	az role assignment create \
 		--assignee-object-id "${user_id}" \
@@ -350,7 +350,7 @@ function _grant_tfstate_access {
 
 	local timeout_minutes=5
 
-	echo "Waiting up to ${timeout_minutes} minutes for the role assignment to take effect."
+	_log "Waiting up to ${timeout_minutes} minutes for the role assignment to take effect."
 
 	local timeout
 
@@ -366,7 +366,7 @@ function _grant_tfstate_access {
 		sleep 10
 	done
 
-	echo "Unable to access the storage container ${container_name} after ${timeout_minutes} minutes." >&2
+	_log "Unable to access the storage container ${container_name} after ${timeout_minutes} minutes." >&2
 
 	return 1
 }
