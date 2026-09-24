@@ -50,8 +50,8 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	@FeatureFlag("LPD-98858")
 	@Test
 	public void testContributeTrackTotalHitsLimit() {
-		_testContributeTrackTotalHitsLimit(null, 1000);
 		_testContributeTrackTotalHitsLimit("0", 0);
+		_testContributeTrackTotalHitsLimit(null, 1000);
 
 		int accurateCountLimit = RandomTestUtil.randomInt();
 
@@ -62,9 +62,9 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	@FeatureFlag(enable = false, value = "LPD-98858")
 	@Test
 	public void testContributeTrackTotalHitsLimitWhenFeatureFlagIsDisabled() {
-		_testContributeTrackTotalHitsLimit(null, null);
 		_testContributeTrackTotalHitsLimit(
 			String.valueOf(RandomTestUtil.randomInt()), null);
+		_testContributeTrackTotalHitsLimit(null, null);
 	}
 
 	private SearchRequest _buildSearchRequest(
