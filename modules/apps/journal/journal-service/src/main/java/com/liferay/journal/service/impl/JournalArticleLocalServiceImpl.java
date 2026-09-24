@@ -25,6 +25,7 @@ import com.liferay.diff.DiffHtml;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.document.library.util.DLFileEntryJSONHelper;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
@@ -8622,56 +8623,8 @@ public class JournalArticleLocalServiceImpl
 			return content;
 		}
 
-		Group group = _groupLocalService.fetchGroup(fileEntry.getGroupId());
-		String previewURL = _dlURLHelper.getPreviewURL(
-			fileEntry, fileEntry.getFileVersion(), null, StringPool.BLANK,
-			false, true);
-
-		JSONObject jsonObject = JSONUtil.put(
-			"alt", valueJSONObject.getString("alt")
-		).put(
-			"classNameId",
-			_classNameLocalService.getClassNameId(FileEntry.class)
-		).put(
-			"classPK", fileEntry.getFileEntryId()
-		).put(
-			"description", valueJSONObject.getString("description")
-		).put(
-			"extension", fileEntry.getExtension()
-		).put(
-			"externalReferenceCode", fileEntry.getExternalReferenceCode()
-		).put(
-			"fileEntryId", fileEntry.getFileEntryId()
-		).put(
-			"groupExternalReferenceCode",
-			() -> {
-				if (group == null) {
-					return StringPool.BLANK;
-				}
-
-				return group.getExternalReferenceCode();
-			}
-		).put(
-			"groupId", fileEntry.getGroupId()
-		).put(
-			"name", fileEntry.getFileName()
-		).put(
-			"resourcePrimKey", fileEntry.getPrimaryKey()
-		).put(
-			"size", fileEntry.getSize()
-		).put(
-			"title", fileEntry.getTitle()
-		).put(
-			"type", "document"
-		).put(
-			"url", previewURL
-		).put(
-			"uuid", fileEntry.getUuid()
-		);
-
-		jsonObject = JSONUtil.merge(valueJSONObject, jsonObject);
-
-		return jsonObject.toString();
+		return _dlFileEntryJSONHelper.getFileEntryJSON(
+			fileEntry, valueJSONObject);
 	}
 
 	private String _toJSON(
@@ -8858,6 +8811,9 @@ public class JournalArticleLocalServiceImpl
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLFileEntryJSONHelper _dlFileEntryJSONHelper;
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
