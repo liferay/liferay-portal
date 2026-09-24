@@ -52,7 +52,6 @@ import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -116,13 +115,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		throws Exception {
 
 		try {
-			if (FeatureFlagManagerUtil.isEnabled(
-					_portal.getCompanyId(actionRequest), "LPD-89850")) {
-
-				_validateAccountEntry(
-					_portal.getHttpServletRequest(actionRequest));
-			}
-
+			_validateAccountEntry(_portal.getHttpServletRequest(actionRequest));
 			_validateCommerceOrder(actionRequest);
 
 			_checkoutCommerceOrder(actionRequest);
@@ -208,12 +201,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_DISPLAY_CONTEXT,
 				orderSummaryCheckoutStepDisplayContext);
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					_portal.getCompanyId(httpServletRequest), "LPD-89850")) {
-
-				_getAccountEntryValidatorResult(
-					commerceOrder, httpServletRequest);
-			}
+			_getAccountEntryValidatorResult(commerceOrder, httpServletRequest);
 
 			_jspRenderer.renderJSP(
 				httpServletRequest, httpServletResponse,
@@ -235,16 +223,12 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 
 		try {
-			if (FeatureFlagManagerUtil.isEnabled(
-					_portal.getCompanyId(httpServletRequest), "LPD-89850")) {
+			AccountEntryValidatorResult accountEntryValidatorResult =
+				_getAccountEntryValidatorResult(
+					commerceOrder, httpServletRequest);
 
-				AccountEntryValidatorResult accountEntryValidatorResult =
-					_getAccountEntryValidatorResult(
-						commerceOrder, httpServletRequest);
-
-				if (accountEntryValidatorResult != null) {
-					return false;
-				}
+			if (accountEntryValidatorResult != null) {
+				return false;
 			}
 
 			ThemeDisplay themeDisplay =

@@ -50,7 +50,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -807,10 +806,7 @@ public class CommerceOrderEditDisplayContext {
 
 		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
 
-		if ((accountEntry == null) ||
-			!FeatureFlagManagerUtil.isEnabled(
-				accountEntry.getCompanyId(), "LPD-89850")) {
-
+		if (accountEntry == null) {
 			return false;
 		}
 

@@ -13,8 +13,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Tancredi Covioli
  */
 @ExtendedObjectClassDefinition(
-	category = "orders", featureFlagKey = "LPD-89850",
-	scope = ExtendedObjectClassDefinition.Scope.GROUP
+	category = "orders", scope = ExtendedObjectClassDefinition.Scope.GROUP
 )
 @Meta.OCD(
 	id = "com.liferay.commerce.configuration.CommerceAccountEntryValidationConfiguration",

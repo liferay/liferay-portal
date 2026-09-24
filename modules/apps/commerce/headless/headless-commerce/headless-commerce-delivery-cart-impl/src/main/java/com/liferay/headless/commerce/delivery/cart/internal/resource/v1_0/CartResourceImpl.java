@@ -81,7 +81,6 @@ import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Country;
@@ -826,62 +825,57 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		cart.setValid(() -> true);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				commerceOrder.getCompanyId(), "LPD-89850")) {
+		CommerceAccountEntryValidationConfiguration
+			commerceAccountEntryValidationConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceAccountEntryValidationConfiguration.class,
+					new GroupServiceSettingsLocator(
+						commerceOrder.getGroupId(),
+						CommerceConstants.
+							SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
 
-			CommerceAccountEntryValidationConfiguration
-				commerceAccountEntryValidationConfiguration =
-					_configurationProvider.getConfiguration(
-						CommerceAccountEntryValidationConfiguration.class,
-						new GroupServiceSettingsLocator(
-							commerceOrder.getGroupId(),
-							CommerceConstants.
-								SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
+		String validationMode =
+			commerceAccountEntryValidationConfiguration.validationMode();
 
-			String validationMode =
-				commerceAccountEntryValidationConfiguration.validationMode();
+		if (!Objects.equals(
+				validationMode,
+				CommerceAccountEntryValidationConstants.
+					VALIDATION_MODE_DISABLED)) {
 
-			if (!Objects.equals(
-					validationMode,
-					CommerceAccountEntryValidationConstants.
-						VALIDATION_MODE_DISABLED)) {
+			for (AccountEntryValidatorResult accountEntryValidatorResult :
+					_accountEntryValidatorRegistry.validate(
+						_accountEntryLocalService.fetchAccountEntry(
+							commerceOrder.getCommerceAccountId()),
+						JSONUtil.put(
+							"billingAddressId",
+							commerceOrder.getBillingAddressId()
+						).put(
+							"commerceOrderId",
+							commerceOrder.getCommerceOrderId()
+						).put(
+							"shippingAddressId",
+							commerceOrder.getShippingAddressId()
+						))) {
 
-				for (AccountEntryValidatorResult accountEntryValidatorResult :
-						_accountEntryValidatorRegistry.validate(
-							_accountEntryLocalService.fetchAccountEntry(
-								commerceOrder.getCommerceAccountId()),
-							JSONUtil.put(
-								"billingAddressId",
-								commerceOrder.getBillingAddressId()
-							).put(
-								"commerceOrderId",
-								commerceOrder.getCommerceOrderId()
-							).put(
-								"shippingAddressId",
-								commerceOrder.getShippingAddressId()
-							))) {
+				if (_isAccountValidationResultValid(
+						accountEntryValidatorResult, validationMode)) {
 
-					if (_isAccountValidationResultValid(
-							accountEntryValidatorResult, validationMode)) {
-
-						continue;
-					}
-
-					cart.setValid(() -> false);
-
-					if (Validator.isNotNull(
-							accountEntryValidatorResult.getResultMessage())) {
-
-						String errorMessage = _language.get(
-							contextAcceptLanguage.getPreferredLocale(),
-							accountEntryValidatorResult.getResultMessage());
-
-						cart.setErrorMessages(
-							() -> new String[] {errorMessage});
-					}
-
-					return cart;
+					continue;
 				}
+
+				cart.setValid(() -> false);
+
+				if (Validator.isNotNull(
+						accountEntryValidatorResult.getResultMessage())) {
+
+					String errorMessage = _language.get(
+						contextAcceptLanguage.getPreferredLocale(),
+						accountEntryValidatorResult.getResultMessage());
+
+					cart.setErrorMessages(() -> new String[] {errorMessage});
+				}
+
+				return cart;
 			}
 		}
 
