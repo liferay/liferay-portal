@@ -127,6 +127,24 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 		expect(mockFetch).not.toHaveBeenCalled();
 	});
 
+	it('requires a subtype when the content type has subtypes', async () => {
+		const {container} = renderComponent();
+
+		await userEvent.type(
+			container.querySelector(`#${NAMESPACE}name`)!,
+			'Display Page Template'
+		);
+		await userEvent.selectOptions(
+			container.querySelector(`#${NAMESPACE}classNameId`)!,
+			'type-with-subtype'
+		);
+
+		await submit();
+
+		expect(screen.getAllByText('this-field-is-required')).toHaveLength(1);
+		expect(mockFetch).not.toHaveBeenCalled();
+	});
+
 	it('surfaces the validation error the server reports', async () => {
 
 		// The action command nests the message under "error", so reading the
