@@ -80,16 +80,16 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 	}
 
 	@Override
-	public Key unwrapKey(long companyId, String wrappedKey) {
-		Key key = _getCachedKey(companyId, wrappedKey);
+	public Key unwrapKey(long companyId, String keyString) {
+		Key key = _getCachedKey(companyId, keyString);
 
 		if (key != null) {
 			return key;
 		}
 
 		return _decryptKey(
-			companyId, WrappedCompanyKey.parse(companyId, wrappedKey),
-			wrappedKey);
+			companyId, WrappedCompanyKey.parse(companyId, keyString),
+			keyString);
 	}
 
 	@Override
@@ -155,11 +155,11 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
 				ciphertext, keyReference);
 
-			String wrappedKey = wrappedCompanyKey.toWrappedKey();
+			String keyString = wrappedCompanyKey.toKeyString();
 
-			_putCompanyKeyCacheEntry(companyId, keyBytes, wrappedKey);
+			_putCompanyKeyCacheEntry(companyId, keyBytes, keyString);
 
-			return wrappedKey;
+			return keyString;
 		}
 		catch (CryptoException cryptoException) {
 			throw new CompanyKeyException(
@@ -203,8 +203,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 	}
 
 	private Key _decryptKey(
-		long companyId, WrappedCompanyKey wrappedCompanyKey,
-		String wrappedKey) {
+		long companyId, WrappedCompanyKey wrappedCompanyKey, String keyString) {
 
 		byte[] keyBytes = null;
 
@@ -223,7 +222,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 						"for company ", companyId));
 			}
 
-			_putCompanyKeyCacheEntry(companyId, keyBytes, wrappedKey);
+			_putCompanyKeyCacheEntry(companyId, keyBytes, keyString);
 
 			return _createKey(keyBytes);
 		}
@@ -266,9 +265,9 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		return cacheTTLSeconds * 1000;
 	}
 
-	private Key _getCachedKey(long companyId, String wrappedKey) {
+	private Key _getCachedKey(long companyId, String keyString) {
 		CompanyKeyCacheEntry companyKeyCacheEntry = _getCompanyKeyCacheEntry(
-			companyId, wrappedKey);
+			companyId, keyString);
 
 		if (companyKeyCacheEntry == null) {
 			return null;
@@ -311,7 +310,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 	}
 
 	private CompanyKeyCacheEntry _getCompanyKeyCacheEntry(
-		long companyId, String wrappedKey) {
+		long companyId, String keyString) {
 
 		CompanyKeyCacheEntry companyKeyCacheEntry = _companyKeyCacheEntries.get(
 			companyId);
@@ -321,7 +320,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		}
 
 		if (companyKeyCacheEntry.isExpired(System.currentTimeMillis()) ||
-			!Objects.equals(companyKeyCacheEntry.getWrappedKey(), wrappedKey)) {
+			!Objects.equals(companyKeyCacheEntry.getKeyString(), keyString)) {
 
 			if (_companyKeyCacheEntries.remove(
 					companyId, companyKeyCacheEntry)) {
@@ -350,7 +349,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 	}
 
 	private void _putCompanyKeyCacheEntry(
-		long companyId, byte[] keyBytes, String wrappedKey) {
+		long companyId, byte[] keyBytes, String keyString) {
 
 		long cacheTTLMillis = _getCacheTTLMillis();
 
@@ -364,7 +363,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			companyId,
 			new CompanyKeyCacheEntry(
 				System.currentTimeMillis() + cacheTTLMillis, keyBytes,
-				wrappedKey));
+				keyString));
 
 		if (companyKeyCacheEntry != null) {
 			companyKeyCacheEntry.destroy();

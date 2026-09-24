@@ -56,13 +56,13 @@ public class CompanyKeyCacheEntryTest {
 	}
 
 	@Test
-	public void testGetWrappedKey() {
-		String wrappedKey = RandomTestUtil.randomString();
+	public void testGetKeyString() {
+		String keyString = RandomTestUtil.randomString();
 
 		CompanyKeyCacheEntry companyKeyCacheEntry = new CompanyKeyCacheEntry(
-			Long.MAX_VALUE, _KEY_BYTES, wrappedKey);
+			Long.MAX_VALUE, _KEY_BYTES, keyString);
 
-		Assert.assertEquals(wrappedKey, companyKeyCacheEntry.getWrappedKey());
+		Assert.assertEquals(keyString, companyKeyCacheEntry.getKeyString());
 	}
 
 	@Test

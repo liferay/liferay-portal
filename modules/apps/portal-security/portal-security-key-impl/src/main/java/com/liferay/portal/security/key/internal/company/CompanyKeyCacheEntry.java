@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class CompanyKeyCacheEntry {
 
 	public CompanyKeyCacheEntry(
-		long expirationTime, byte[] keyBytes, String wrappedKey) {
+		long expirationTime, byte[] keyBytes, String keyString) {
 
 		if (keyBytes == null) {
 			throw new IllegalArgumentException("Key bytes are null");
@@ -21,7 +21,7 @@ public class CompanyKeyCacheEntry {
 
 		_expirationTime = expirationTime;
 		_keyBytes = Arrays.copyOf(keyBytes, keyBytes.length);
-		_wrappedKey = wrappedKey;
+		_keyString = keyString;
 	}
 
 	public synchronized void destroy() {
@@ -38,8 +38,8 @@ public class CompanyKeyCacheEntry {
 		return Arrays.copyOf(_keyBytes, _keyBytes.length);
 	}
 
-	public String getWrappedKey() {
-		return _wrappedKey;
+	public String getKeyString() {
+		return _keyString;
 	}
 
 	public boolean isExpired(long time) {
@@ -53,6 +53,6 @@ public class CompanyKeyCacheEntry {
 	private boolean _destroyed;
 	private final long _expirationTime;
 	private final byte[] _keyBytes;
-	private final String _wrappedKey;
+	private final String _keyString;
 
 }

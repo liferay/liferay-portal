@@ -137,10 +137,10 @@ public class CompanyKeyResolverImplTest {
 	}
 
 	private void _assertUnwrapKeyFails(
-		CompanyKeyResolverImpl companyKeyResolverImpl, String wrappedKey) {
+		CompanyKeyResolverImpl companyKeyResolverImpl, String keyString) {
 
 		try {
-			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey);
+			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString);
 
 			Assert.fail();
 		}
@@ -167,7 +167,7 @@ public class CompanyKeyResolverImplTest {
 		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
 
 		companyKeyResolverImpl.unwrapKey(
-			_COMPANY_ID_1, _toWrappedKey(_CIPHERTEXT_1));
+			_COMPANY_ID_1, _toKeyString(_CIPHERTEXT_1));
 
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
@@ -390,15 +390,15 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl(RandomTestUtil.randomInt(1, 1000));
 
-		String wrappedKey = _toWrappedKey(_CIPHERTEXT_1);
+		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		byte[] providerKeyBytes = _mockDecrypt(
 			_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
 
 		Assert.assertEquals(
-			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
 		Assert.assertEquals(
-			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
 
 		Mockito.verify(
 			_cryptoManager, Mockito.times(1)
@@ -418,7 +418,7 @@ public class CompanyKeyResolverImplTest {
 		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
 
 		companyKeyResolverImpl.unwrapKey(
-			_COMPANY_ID_1, _toWrappedKey(_CIPHERTEXT_1));
+			_COMPANY_ID_1, _toKeyString(_CIPHERTEXT_1));
 
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
@@ -435,7 +435,7 @@ public class CompanyKeyResolverImplTest {
 		Assert.assertEquals(
 			_key1,
 			companyKeyResolverImpl.unwrapKey(
-				_COMPANY_ID_1, _toWrappedKey(changedCiphertext)));
+				_COMPANY_ID_1, _toKeyString(changedCiphertext)));
 
 		Mockito.verify(
 			_cryptoManager, Mockito.times(2)
@@ -453,42 +453,42 @@ public class CompanyKeyResolverImplTest {
 
 		_createCompanyKeyCacheEntry(companyKeyResolverImpl);
 
-		String wrappedKey = _toWrappedKey(_CIPHERTEXT_1);
+		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		_mockDecryptFailure();
 
 		Assert.assertEquals(
-			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
 
 		companyKeyResolverImpl = _createCompanyKeyResolverImpl(
 			RandomTestUtil.randomInt(1, 1000));
 
 		_mockDecryptFailure();
 
-		_assertUnwrapKeyFails(companyKeyResolverImpl, wrappedKey);
+		_assertUnwrapKeyFails(companyKeyResolverImpl, keyString);
 	}
 
 	private void _testUnwrapKeyWithExpiredCacheEntry() throws Exception {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl(RandomTestUtil.randomInt(1, 1000));
 
-		String wrappedKey = _toWrappedKey(_CIPHERTEXT_1);
+		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
 
-		companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey);
+		companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString);
 
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
 
 		CompanyKeyCacheEntry expiredCompanyKeyCacheEntry =
 			new CompanyKeyCacheEntry(
-				System.currentTimeMillis() - 1, _KEY_BYTES_1, wrappedKey);
+				System.currentTimeMillis() - 1, _KEY_BYTES_1, keyString);
 
 		companyKeyCacheEntries.put(_COMPANY_ID_1, expiredCompanyKeyCacheEntry);
 
 		Assert.assertEquals(
-			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
 
 		Mockito.verify(
 			_cryptoManager, Mockito.times(2)
@@ -512,7 +512,7 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyCacheEntry expiredCompanyKeyCacheEntry =
 			new CompanyKeyCacheEntry(
 				System.currentTimeMillis() - 1, _KEY_BYTES_1,
-				_toWrappedKey(_CIPHERTEXT_1));
+				_toKeyString(_CIPHERTEXT_1));
 
 		companyKeyCacheEntries.put(_COMPANY_ID_1, expiredCompanyKeyCacheEntry);
 
@@ -521,7 +521,7 @@ public class CompanyKeyResolverImplTest {
 		Assert.assertEquals(
 			_key2,
 			companyKeyResolverImpl.unwrapKey(
-				_COMPANY_ID_2, _toWrappedKey(_CIPHERTEXT_2)));
+				_COMPANY_ID_2, _toKeyString(_CIPHERTEXT_2)));
 
 		Assert.assertFalse(companyKeyCacheEntries.containsKey(_COMPANY_ID_1));
 		Assert.assertNull(expiredCompanyKeyCacheEntry.getKeyBytes());
@@ -555,25 +555,21 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl(RandomTestUtil.randomInt(1, 1000));
 
-		String wrappedKey1 = _toWrappedKey(_CIPHERTEXT_1);
-		String wrappedKey2 = _toWrappedKey(_CIPHERTEXT_2);
+		String keyString1 = _toKeyString(_CIPHERTEXT_1);
+		String keyString2 = _toKeyString(_CIPHERTEXT_2);
 
 		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
 		_mockDecrypt(_COMPANY_ID_2, _CIPHERTEXT_2, _KEY_BYTES_2);
 
 		Assert.assertEquals(
-			_key1,
-			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey1));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString1));
 		Assert.assertEquals(
-			_key2,
-			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_2, wrappedKey2));
+			_key2, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_2, keyString2));
 
 		Assert.assertEquals(
-			_key1,
-			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey1));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString1));
 		Assert.assertEquals(
-			_key2,
-			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_2, wrappedKey2));
+			_key2, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_2, keyString2));
 
 		Mockito.verify(
 			_cryptoManager, Mockito.times(2)
@@ -589,29 +585,29 @@ public class CompanyKeyResolverImplTest {
 			new KeyReference(
 				_KEK_IDENTIFIER, _KEK_PROVIDER_ID, KeyReference.Type.CRYPTO));
 
-		String wrappedKey = StringUtil.replaceFirst(
-			wrappedCompanyKey.toWrappedKey(),
+		String keyString = StringUtil.replaceFirst(
+			wrappedCompanyKey.toKeyString(),
 			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
 				CompanyKeyResolverUtil.WRAPPED_KEY_VERSION,
 			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX.concat("v2"));
 
-		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(wrappedKey));
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
 		_assertUnwrapKeyFails(
 			_createCompanyKeyResolverImpl(RandomTestUtil.randomInt(1, 1000)),
-			wrappedKey);
+			keyString);
 	}
 
 	private void _testUnwrapKeyWithoutCache() throws Exception {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl(0);
 
-		String wrappedKey = _toWrappedKey(_CIPHERTEXT_1);
+		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
 
-		companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey);
-		companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey);
+		companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString);
+		companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString);
 
 		Mockito.verify(
 			_cryptoManager, Mockito.times(2)
@@ -642,11 +638,10 @@ public class CompanyKeyResolverImplTest {
 			new CryptoServiceResult<>(_serviceIndicator, _CIPHERTEXT_1.clone())
 		);
 
-		String wrappedKey = companyKeyResolverImpl.wrapKey(
-			_COMPANY_ID_1, _key1);
+		String keyString = companyKeyResolverImpl.wrapKey(_COMPANY_ID_1, _key1);
 
 		WrappedCompanyKey wrappedCompanyKey = WrappedCompanyKey.parse(
-			_COMPANY_ID_1, wrappedKey);
+			_COMPANY_ID_1, keyString);
 
 		KeyReference keyReference = wrappedCompanyKey.getKeyReference();
 
@@ -671,8 +666,8 @@ public class CompanyKeyResolverImplTest {
 			new byte[_KEY_BYTES_1.length], argumentCaptor.getValue());
 
 		Assert.assertEquals(
-			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, wrappedKey));
-		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(wrappedKey));
+			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
 		Mockito.verify(
 			_cryptoManager, Mockito.never()
@@ -748,13 +743,13 @@ public class CompanyKeyResolverImplTest {
 		_assertWrapKeyFails(companyKeyResolverImpl);
 	}
 
-	private String _toWrappedKey(byte[] ciphertext) {
+	private String _toKeyString(byte[] ciphertext) {
 		WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
 			ciphertext,
 			new KeyReference(
 				_KEK_IDENTIFIER, _KEK_PROVIDER_ID, KeyReference.Type.CRYPTO));
 
-		return wrappedCompanyKey.toWrappedKey();
+		return wrappedCompanyKey.toKeyString();
 	}
 
 	private static final byte[] _CIPHERTEXT_1 = RandomTestUtil.randomBytes();
