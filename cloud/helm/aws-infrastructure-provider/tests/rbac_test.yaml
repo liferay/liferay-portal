@@ -6,11 +6,11 @@ templates:
     -   templates/rbac.yaml
 tests:
     -   asserts:
-            -   documentIndex: 0
-                contains:
+            -   contains:
                     content:
                         apiGroups: ["elasticsearch.k8s.elastic.co"]
                         resources: ["elasticsearches"]
                         verbs: ["get", "list", "patch", "watch"]
                     path: rules
+                documentIndex: 0
         it: Grants required permissions on ElasticSearch resources

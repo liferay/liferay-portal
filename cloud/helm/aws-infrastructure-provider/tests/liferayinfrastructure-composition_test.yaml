@@ -8,7 +8,7 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: 'SEARCH_URL: http://\{\{ \$elasticsearchName \}\}-es-http\.\{\{ \$elasticsearchNamespace \}\}\.svc:9200'
+                    pattern: "SEARCH_URL: http://\{\{ \$elasticsearchName \}\}-es-http\.\{\{ \$elasticsearchNamespace \}\}\.svc:9200"
         documentSelector:
             path: kind
             value: Composition
@@ -16,10 +16,10 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: 'name: \{\{ \$elasticsearchName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}'
+                    pattern: "name: \{\{ \$elasticsearchName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}"
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: 'name: \{\{ \$elasticsearchSecretName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}'
+                    pattern: "name: \{\{ \$elasticsearchSecretName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}"
         documentSelector:
             path: kind
             value: Composition
@@ -27,7 +27,7 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: 'name: search-connection-details\n\s+namespace: \{\{ \$namespace \}\}'
+                    pattern: "name: search-connection-details\n\s+namespace: \{\{ \$namespace \}\}"
         documentSelector:
             path: kind
             value: Composition
