@@ -50,17 +50,6 @@ const DEFAULT_PROPS = {
 	namespace: NAMESPACE,
 };
 
-const fillRequiredFields = async (container: HTMLElement) => {
-	await userEvent.type(
-		container.querySelector(`#${NAMESPACE}name`)!,
-		'Display Page Template'
-	);
-	await userEvent.selectOptions(
-		container.querySelector(`#${NAMESPACE}classNameId`)!,
-		'type-without-subtype'
-	);
-};
-
 const renderComponent = (props = {}) =>
 	render(
 		<AddDisplayPageTemplateDesignLibraryModalContent
@@ -78,20 +67,60 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 		jest.clearAllMocks();
 	});
 
-	it('navigates to the editor of the created display page template', async () => {
-		mockFetch.mockResolvedValue({
-			json: () => Promise.resolve({redirectURL: '/editor?p_l_mode=edit'}),
-		});
+	it('creates a display page template once the form is valid', async () => {
+		mockFetch
+			.mockResolvedValueOnce({
+				json: () =>
+					Promise.resolve({
+						error: {name: 'that-name-is-already-taken'},
+					}),
+			})
+			.mockResolvedValueOnce({
+				json: () =>
+					Promise.resolve({redirectURL: '/editor?p_l_mode=edit'}),
+			});
 
 		const {container} = renderComponent();
 
-		await fillRequiredFields(container);
+		await submitForm();
+
+		expect(screen.getAllByText('this-field-is-required')).toHaveLength(2);
+
+		const nameInput = container.querySelector(`#${NAMESPACE}name`)!;
+
+		await userEvent.type(nameInput, 'Display Page Template');
+
+		const classNameIdSelect = container.querySelector(
+			`#${NAMESPACE}classNameId`
+		)!;
+
+		await userEvent.selectOptions(classNameIdSelect, 'type-with-subtype');
+
+		await submitForm();
+
+		expect(screen.getAllByText('this-field-is-required')).toHaveLength(1);
+		expect(mockFetch).not.toHaveBeenCalled();
+
+		await userEvent.selectOptions(
+			classNameIdSelect,
+			'type-without-subtype'
+		);
+
+		await submitForm();
+
+		expect(
+			await screen.findByText('that-name-is-already-taken')
+		).toBeInTheDocument();
+		expect(mockNavigate).not.toHaveBeenCalled();
+
+		await userEvent.type(nameInput, ' 2');
 
 		await submitForm();
 
 		await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
 
-		expect(mockFetch).toHaveBeenCalledWith(
+		expect(mockFetch).toHaveBeenCalledTimes(2);
+		expect(mockFetch).toHaveBeenLastCalledWith(
 			ADD_DISPLAY_PAGE_URL,
 			expect.objectContaining({method: 'POST'})
 		);
@@ -105,7 +134,14 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 
 		const {container} = renderComponent();
 
-		await fillRequiredFields(container);
+		await userEvent.type(
+			container.querySelector(`#${NAMESPACE}name`)!,
+			'Display Page Template'
+		);
+		await userEvent.selectOptions(
+			container.querySelector(`#${NAMESPACE}classNameId`)!,
+			'type-without-subtype'
+		);
 
 		await submitForm();
 
@@ -114,56 +150,6 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 		expect(mockOpenToast).toHaveBeenCalledWith(
 			expect.objectContaining({type: 'danger'})
 		);
-		expect(mockNavigate).not.toHaveBeenCalled();
-	});
-
-	it('requires a name and a content type before submitting', async () => {
-		renderComponent();
-
-		await submitForm();
-
-		expect(screen.getAllByText('this-field-is-required')).toHaveLength(2);
-		expect(mockFetch).not.toHaveBeenCalled();
-	});
-
-	it('requires a subtype when the content type has subtypes', async () => {
-		const {container} = renderComponent();
-
-		await userEvent.type(
-			container.querySelector(`#${NAMESPACE}name`)!,
-			'Display Page Template'
-		);
-		await userEvent.selectOptions(
-			container.querySelector(`#${NAMESPACE}classNameId`)!,
-			'type-with-subtype'
-		);
-
-		await submitForm();
-
-		expect(screen.getAllByText('this-field-is-required')).toHaveLength(1);
-		expect(mockFetch).not.toHaveBeenCalled();
-	});
-
-	it('surfaces the validation error the server reports', async () => {
-		mockFetch.mockResolvedValue({
-			json: () =>
-				Promise.resolve({
-					error: {name: 'that-name-is-already-taken'},
-				}),
-		});
-
-		const {container} = renderComponent();
-
-		await fillRequiredFields(container);
-
-		await submitForm();
-
-		await waitFor(() =>
-			expect(
-				screen.getByText('that-name-is-already-taken')
-			).toBeInTheDocument()
-		);
-
 		expect(mockNavigate).not.toHaveBeenCalled();
 	});
 });
