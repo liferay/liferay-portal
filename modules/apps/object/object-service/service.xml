@@ -27,7 +27,7 @@
 		<column name="objectDefinitionId" type="long" />
 		<column name="active" type="boolean" />
 		<column name="conditionExpression" type="String" />
-		<column name="description" type="String" />
+		<column localized="true" name="description" type="String" />
 		<column localized="true" name="errorMessage" type="String" />
 		<column localized="true" name="label" type="String" />
 		<column name="name" type="String" />
