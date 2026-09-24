@@ -180,7 +180,7 @@ public class PortletURLUtil {
 
 		if (Validator.isNotNull(layoutMode)) {
 			sb.append("&p_l_mode=");
-			sb.append(layoutMode);
+			sb.append(URLCodec.encodeURL(layoutMode));
 		}
 
 		Portlet portlet = (Portlet)httpServletRequest.getAttribute(
@@ -283,7 +283,7 @@ public class PortletURLUtil {
 
 		if (Validator.isNotNull(settingsScope)) {
 			sb.append("&settingsScope=");
-			sb.append(settingsScope);
+			sb.append(URLCodec.encodeURL(settingsScope));
 		}
 
 		if (includeParameters) {
