@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
 import java.util.Arrays;
@@ -111,13 +112,15 @@ public class DispatchConfigurator {
 					DispatchTaskClusterMode.valueOf(
 						dispatchTrigger.getDispatchTaskClusterMode());
 
-				if (!_dispatchTriggerHelper.hasSchedulerJob(
-						dispatchTrigger,
-						dispatchTaskClusterMode.getStorageType())) {
+				StorageType storageType =
+					dispatchTaskClusterMode.getStorageType();
+
+				if ((storageType == StorageType.MEMORY) ||
+					!_dispatchTriggerHelper.hasSchedulerJob(
+						dispatchTrigger, storageType)) {
 
 					_dispatchTriggerHelper.addSchedulerJob(
-						dispatchTrigger,
-						dispatchTaskClusterMode.getStorageType(),
+						dispatchTrigger, storageType,
 						dispatchTrigger.getTimeZoneId());
 				}
 			}
