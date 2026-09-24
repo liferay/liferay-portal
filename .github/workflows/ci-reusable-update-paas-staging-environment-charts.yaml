@@ -114,7 +114,7 @@ jobs:
                     function main {
                         yq \
                             --exit-status \
-                            '.argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.source.repoURL' \
+                            '.argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.sources[0].repoURL' \
                             "${PAAS_STAGING_APPLICATIONS_FILE}" \
                             > /dev/null
 
@@ -123,8 +123,8 @@ jobs:
                             yq \
                                 --inplace \
                                 '
-                                    .argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.source.repoURL = strenv(REPO_URL) |
-                                    .argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.source.targetRevision = strenv(TARGET_REVISION)
+                                    .argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.sources[0].repoURL = strenv(REPO_URL) |
+                                    .argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.sources[0].targetRevision = strenv(TARGET_REVISION)
                                 ' \
                                 "${PAAS_STAGING_APPLICATIONS_FILE}"
                     }
