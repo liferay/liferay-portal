@@ -5,7 +5,6 @@
 
 package com.liferay.jenkins.results.parser;
 
-import java.util.Collections;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -40,10 +39,6 @@ public class PullRequestPortalTopLevelBuildTest
 
 	@Test
 	public void testGetWorkspace() {
-		mockEnvironment(
-			Collections.singletonMap(
-				"BUILD_DIR", RandomTestUtil.randomString()));
-
 		BuildDatabaseUtil.setBuildDatabase(Mockito.mock(BuildDatabase.class));
 
 		ReflectionTestUtil.setFieldValue(
@@ -52,18 +47,6 @@ public class PullRequestPortalTopLevelBuildTest
 		ReflectionTestUtil.setFieldValue(
 			JenkinsResultsParserUtil.class, "_gitWorkingDirectoriesJSONArray",
 			new JSONArray());
-
-		String portalUpstreamBranchName = RandomTestUtil.randomString();
-
-		_testGetWorkspace(portalUpstreamBranchName, portalUpstreamBranchName);
-
-		_testGetWorkspace(null, "");
-		_testGetWorkspace(null, null);
-	}
-
-	private void _testGetWorkspace(
-		String expectedPortalUpstreamBranchName,
-		String portalUpstreamBranchName) {
 
 		PullRequest pullRequest = Mockito.mock(PullRequest.class);
 
@@ -94,13 +77,18 @@ public class PullRequestPortalTopLevelBuildTest
 		PullRequestPortalTopLevelBuild pullRequestPortalTopLevelBuild =
 			Mockito.mock(PullRequestPortalTopLevelBuild.class);
 
+		Mockito.doCallRealMethod(
+		).when(
+			pullRequestPortalTopLevelBuild
+		).getWorkspace();
+
+		String portalUpstreamBranchName = RandomTestUtil.randomString();
+
 		Mockito.doReturn(
 			portalUpstreamBranchName
 		).when(
 			pullRequestPortalTopLevelBuild
-		).getParameterValue(
-			"PORTAL_UPSTREAM_BRANCH_NAME"
-		);
+		).getPortalUpstreamBranchName();
 
 		Mockito.doReturn(
 			pullRequest
@@ -108,17 +96,12 @@ public class PullRequestPortalTopLevelBuildTest
 			pullRequestPortalTopLevelBuild
 		).getPullRequest();
 
-		Mockito.doCallRealMethod(
-		).when(
-			pullRequestPortalTopLevelBuild
-		).getWorkspace();
-
 		pullRequestPortalTopLevelBuild.getWorkspace();
 
 		Mockito.verify(
 			portalWorkspace
 		).setPortalUpstreamBranchName(
-			expectedPortalUpstreamBranchName
+			portalUpstreamBranchName
 		);
 	}
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.dom4j.Element;
@@ -69,6 +70,21 @@ public class PullRequestPortalTopLevelBuild
 		}
 
 		return super.getBranchName();
+	}
+
+	public String getPortalUpstreamBranchName() {
+		String portalUpstreamBranchName = getParameterValue(
+			"PORTAL_UPSTREAM_BRANCH_NAME");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+			return portalUpstreamBranchName;
+		}
+
+		if (Objects.equals(getBranchName(), "master-private")) {
+			return "master";
+		}
+
+		return null;
 	}
 
 	@Override
@@ -252,7 +268,7 @@ public class PullRequestPortalTopLevelBuild
 			portalWorkspace.setOSBAsahGitHubURL(_getOSBAsahGitHubURL());
 			portalWorkspace.setOSBFaroGitHubURL(_getOSBFaroGitHubURL());
 			portalWorkspace.setPortalUpstreamBranchName(
-				_getPortalUpstreamBranchName());
+				getPortalUpstreamBranchName());
 		}
 
 		WorkspaceGitRepository workspaceGitRepository =
@@ -505,17 +521,6 @@ public class PullRequestPortalTopLevelBuild
 		}
 
 		return "https://github.com/liferay/liferay-portal/tree/master";
-	}
-
-	private String _getPortalUpstreamBranchName() {
-		String portalUpstreamBranchName = getParameterValue(
-			"PORTAL_UPSTREAM_BRANCH_NAME");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
-			return portalUpstreamBranchName;
-		}
-
-		return null;
 	}
 
 	private String _getSenderBranchSHA() {
