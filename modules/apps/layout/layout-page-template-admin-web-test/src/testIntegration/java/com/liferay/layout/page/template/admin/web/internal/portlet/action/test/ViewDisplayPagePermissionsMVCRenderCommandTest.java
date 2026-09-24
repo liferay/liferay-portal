@@ -102,11 +102,8 @@ public class ViewDisplayPagePermissionsMVCRenderCommandTest {
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		if (externalReferenceCode != null) {
-			mockLiferayPortletRenderRequest.setParameter(
-				"displayPageTemplateExternalReferenceCode",
-				externalReferenceCode);
-		}
+		mockLiferayPortletRenderRequest.setParameter(
+			"displayPageTemplateExternalReferenceCode", externalReferenceCode);
 
 		return _mvcRenderCommand.render(
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
@@ -155,7 +152,7 @@ public class ViewDisplayPagePermissionsMVCRenderCommandTest {
 
 	private void _testRenderWithoutExternalReferenceCode() throws Exception {
 		Assert.assertEquals(
-			"/view.jsp", _render(null, new MockLiferayPortletRenderResponse()));
+			"/view.jsp", _render("", new MockLiferayPortletRenderResponse()));
 	}
 
 	private static final String _PORTLET_CONFIGURATION_PORTLET_ID =

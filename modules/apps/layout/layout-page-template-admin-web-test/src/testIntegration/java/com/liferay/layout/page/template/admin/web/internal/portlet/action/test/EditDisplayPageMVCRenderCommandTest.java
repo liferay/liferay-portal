@@ -98,11 +98,8 @@ public class EditDisplayPageMVCRenderCommandTest {
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 
-		if (externalReferenceCode != null) {
-			mockLiferayPortletRenderRequest.setParameter(
-				"displayPageTemplateExternalReferenceCode",
-				externalReferenceCode);
-		}
+		mockLiferayPortletRenderRequest.setParameter(
+			"displayPageTemplateExternalReferenceCode", externalReferenceCode);
 
 		return _mvcRenderCommand.render(
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
@@ -150,7 +147,7 @@ public class EditDisplayPageMVCRenderCommandTest {
 
 	private void _testRenderWithoutExternalReferenceCode() throws Exception {
 		Assert.assertEquals(
-			"/view.jsp", _render(null, new MockLiferayPortletRenderResponse()));
+			"/view.jsp", _render("", new MockLiferayPortletRenderResponse()));
 	}
 
 	private Company _company;
