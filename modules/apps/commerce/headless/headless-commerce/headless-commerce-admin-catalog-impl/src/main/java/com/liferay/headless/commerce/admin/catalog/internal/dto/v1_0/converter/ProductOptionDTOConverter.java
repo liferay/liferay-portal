@@ -55,7 +55,7 @@ public class ProductOptionDTOConverter
 		CPOption cpOption = _cpOptionLocalService.fetchCPOption(
 			cpDefinitionOptionRel.getCPOptionId());
 
-		return new ProductOption() {
+		ProductOption productOption = new ProductOption() {
 			{
 				setCustomFields(
 					() -> CustomFieldsUtil.toCustomFields(
@@ -93,23 +93,21 @@ public class ProductOptionDTOConverter
 						return cpOption.getCPOptionId();
 					});
 				setPriceType(cpDefinitionOptionRel::getPriceType);
-				setProductOptionValues(
-					() -> {
-						if (!GetterUtil.getBoolean(
-								dtoConverterContext.getAttribute(
-									"showProductOptionValues"))) {
-
-							return null;
-						}
-
-						return _toProductOptionValues(
-							cpDefinitionOptionRel, dtoConverterContext);
-					});
 				setRequired(cpDefinitionOptionRel::isRequired);
 				setSkuContributor(cpDefinitionOptionRel::isSkuContributor);
 				setTypeSettings(cpDefinitionOptionRel::getTypeSettings);
 			}
 		};
+
+		if (GetterUtil.getBoolean(
+				dtoConverterContext.getAttribute("showProductOptionValues"))) {
+
+			productOption.setProductOptionValues(
+				() -> _toProductOptionValues(
+					cpDefinitionOptionRel, dtoConverterContext));
+		}
+
+		return productOption;
 	}
 
 	private ProductOptionValue[] _toProductOptionValues(
