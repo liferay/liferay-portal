@@ -548,52 +548,14 @@ public class WebServerServlet extends HttpServlet {
 		if (imageId > 0) {
 			image = ImageLocalServiceUtil.fetchImage(imageId);
 
+			_checkImagePermission(httpServletRequest, imageId);
+
 			String path = GetterUtil.getString(
 				httpServletRequest.getPathInfo());
 
-			if (path.startsWith("/layout_icon") || path.startsWith("/logo")) {
-				Layout layout = LayoutLocalServiceUtil.fetchLayoutByIconImageId(
-					true, imageId);
-
-				if (layout != null) {
-					PermissionChecker permissionChecker = _getPermissionChecker(
-						httpServletRequest);
-
-					if (!LayoutPermissionUtil.contains(
-							permissionChecker, layout, ActionKeys.VIEW)) {
-
-						throw new PrincipalException.MustHavePermission(
-							permissionChecker, Layout.class.getName(),
-							layout.getPlid(), ActionKeys.VIEW);
-					}
-				}
-			}
-			else if (path.startsWith("/layout_set_logo")) {
-				LayoutSet layoutSet =
-					LayoutSetLocalServiceUtil.fetchLayoutSetByLogoId(
-						true, imageId);
-
-				if (layoutSet != null) {
-					PermissionChecker permissionChecker = _getPermissionChecker(
-						httpServletRequest);
-
-					Group group = layoutSet.getGroup();
-
-					if (!group.isShowSite(
-							permissionChecker, layoutSet.isPrivateLayout()) &&
-						!GroupPermissionUtil.contains(
-							permissionChecker, layoutSet.getGroupId(),
-							ActionKeys.VIEW)) {
-
-						throw new PrincipalException.MustHavePermission(
-							permissionChecker, LayoutSet.class.getName(),
-							layoutSet.getLayoutSetId(), ActionKeys.VIEW);
-					}
-				}
-			}
-			else if (path.startsWith("/user_female_portrait") ||
-					 path.startsWith("/user_male_portrait") ||
-					 path.startsWith("/user_portrait")) {
+			if (path.startsWith("/user_female_portrait") ||
+				path.startsWith("/user_male_portrait") ||
+				path.startsWith("/user_portrait")) {
 
 				image = getUserPortraitImageResized(image, imageId);
 			}
@@ -1757,6 +1719,58 @@ public class WebServerServlet extends HttpServlet {
 			throw new FileEntryExpiredException(
 				"The file entry " + fileEntry.getFileEntryId() +
 					" is expired and the user does not have review permission");
+		}
+	}
+
+	private void _checkImagePermission(
+			HttpServletRequest httpServletRequest, long imageId)
+		throws Exception {
+
+		Layout layout = LayoutLocalServiceUtil.fetchLayoutByIconImageId(
+			true, imageId);
+
+		if (layout == null) {
+			layout = LayoutLocalServiceUtil.fetchLayoutByIconImageId(
+				false, imageId);
+		}
+
+		if (layout != null) {
+			PermissionChecker permissionChecker = _getPermissionChecker(
+				httpServletRequest);
+
+			if (!LayoutPermissionUtil.contains(
+					permissionChecker, layout, ActionKeys.VIEW)) {
+
+				throw new PrincipalException.MustHavePermission(
+					permissionChecker, Layout.class.getName(), layout.getPlid(),
+					ActionKeys.VIEW);
+			}
+		}
+
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSetByLogoId(
+			true, imageId);
+
+		if (layoutSet == null) {
+			layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSetByLogoId(
+				false, imageId);
+		}
+
+		if (layoutSet != null) {
+			PermissionChecker permissionChecker = _getPermissionChecker(
+				httpServletRequest);
+
+			Group group = layoutSet.getGroup();
+
+			if (!group.isShowSite(
+					permissionChecker, layoutSet.isPrivateLayout()) &&
+				!GroupPermissionUtil.contains(
+					permissionChecker, layoutSet.getGroupId(),
+					ActionKeys.VIEW)) {
+
+				throw new PrincipalException.MustHavePermission(
+					permissionChecker, LayoutSet.class.getName(),
+					layoutSet.getLayoutSetId(), ActionKeys.VIEW);
+			}
 		}
 	}
 
