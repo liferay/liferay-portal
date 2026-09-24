@@ -138,6 +138,10 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 				"pencil", "edit", LanguageUtil.get(httpServletRequest, "edit"),
 				null, "get", "link"),
 			new FDSActionDropdownItem(
+				"{actions.copy.href}", "copy", "copy",
+				LanguageUtil.get(httpServletRequest, "duplicate"), "post",
+				"copy", "async"),
+			new FDSActionDropdownItem(
 				PortletURLBuilder.create(
 					PortalUtil.getControlPanelPortletURL(
 						httpServletRequest, depotGroup,
