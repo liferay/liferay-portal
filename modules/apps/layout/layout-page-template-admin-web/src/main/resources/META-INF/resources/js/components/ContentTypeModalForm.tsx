@@ -261,7 +261,7 @@ export function validateForm(form: any, namespace: string): ValidationError {
 
 	const classNameIdField = elements[`${namespace}classNameId`];
 
-	if (classNameIdField.selectedIndex === 0) {
+	if (classNameIdField && classNameIdField.selectedIndex === 0) {
 		error.classNameId = errorMessage;
 	}
 
