@@ -8,8 +8,11 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {CommerceInstanceSettingsPage} from '../../../../pages/commerce/commerceInstanceSettingsPage';
+import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
@@ -17,7 +20,9 @@ export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
-	loginTest()
+	isolatedSiteTest,
+	loginTest(),
+	pageViewModePagesTest
 );
 
 test.beforeAll(async ({browser}) => {
@@ -242,6 +247,127 @@ test(
 		).toBeHidden();
 
 		await commerceInstanceSettingsPage.toggleProductVersioning();
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
+			product.productId,
+			1
+		);
+	}
+);
+
+test(
+	'Saving a draft leaves the published version on the storefront until the draft is published',
+	{tag: ['@LPD-106110', '@LPD-99202']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+		productDetailsPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const product =
+			await test.step('Publish a product and show it on the storefront', async () => {
+				const layout = await apiHelpers.jsonWebServicesLayout.addLayout(
+					{
+						groupId: site.id,
+						title: getRandomString(),
+					}
+				);
+
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
+
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+				const product =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						name: {en_US: getRandomString()},
+						shortDescription: {en_US: 'Short description OLD'},
+					});
+
+				await page.goto(
+					`/web${site.friendlyUrlPath}${layout.friendlyURL}`
+				);
+
+				await widgetPagePage.addPortlet('Product Details');
+
+				return product;
+			});
+
+		const productURL = `/web/${site.name}/p/${product.name['en_US']}`;
+
+		await test.step('The storefront shows the published short description', async () => {
+			await page.goto(productURL);
+
+			await expect(
+				await productDetailsPage.shortDescriptionField(
+					'Short description OLD'
+				)
+			).toBeVisible();
+		});
+
+		const draftURL =
+			await test.step('Edit the short description and save it as a draft', async () => {
+				await commerceAdminProductPage.gotoProduct(
+					product.name['en_US']
+				);
+
+				await (
+					await commerceAdminProductDetailsPage.productDetailsInput(
+						'Short Description'
+					)
+				).fill('Short description NEW');
+
+				await commerceAdminProductDetailsPage.saveAsDraft();
+
+				await expect(
+					commerceAdminProductDetailsPage.workflowStatusLabel('Draft')
+				).toBeVisible();
+
+				return page.url();
+			});
+
+		await test.step('The draft does not reach the storefront', async () => {
+			await page.goto(productURL);
+
+			await expect(
+				await productDetailsPage.shortDescriptionField(
+					'Short description OLD'
+				)
+			).toBeVisible();
+
+			await expect(
+				await productDetailsPage.shortDescriptionField(
+					'Short description NEW'
+				)
+			).toBeHidden();
+		});
+
+		await test.step('Publishing the draft carries it to the storefront', async () => {
+			await page.goto(draftURL);
+
+			await commerceAdminProductDetailsPage.publishLink.click();
+
+			await waitForAlert(page);
+
+			await page.goto(productURL);
+
+			await expect(
+				await productDetailsPage.shortDescriptionField(
+					'Short description NEW'
+				)
+			).toBeVisible();
+		});
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
+			product.productId,
+			2
+		);
 
 		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
 			product.productId,
