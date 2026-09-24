@@ -25,7 +25,6 @@ const baseTest = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-63311': {enabled: true},
-		'LPD-89575': {enabled: true},
 	}),
 	loginTest(),
 	mcpServerWebPagesTest

@@ -54,7 +54,7 @@ public class MCPServerPanelApp extends BasePanelApp {
 		throws PortalException {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-89575")) {
+				group.getCompanyId(), "LPD-63311")) {
 
 			return false;
 		}
