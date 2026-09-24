@@ -1,0 +1,67 @@
+diff --git a/org/apache/commons/configuration/PropertyConverter.java b/org/apache/commons/configuration/PropertyConverter.java
+index d3a4030..c29c78d 100644
+--- a/org/apache/commons/configuration/PropertyConverter.java
++++ b/org/apache/commons/configuration/PropertyConverter.java
+@@ -971,6 +971,19 @@ public final class PropertyConverter
+      */
+     private static Collection<?> flatten(Object value, char delimiter)
+     {
++        return flatten(value, delimiter, 0);
++    }
++
++    private static Collection<?> flatten(Object value, char delimiter, int depth)
++    {
++        if ((depth > 0) &&
++            ((value instanceof Iterable) || (value instanceof Iterator) ||
++                ((value != null) && value.getClass().isArray())))
++        {
++            throw new IllegalArgumentException(
++                "Nested collections are not allowed");
++        }
++
+         if (value instanceof String)
+         {
+             String s = (String) value;
+@@ -983,11 +996,11 @@ public final class PropertyConverter
+         Collection<Object> result = new LinkedList<Object>();
+         if (value instanceof Iterable)
+         {
+-            flattenIterator(result, ((Iterable<?>) value).iterator(), delimiter);
++            flattenIterator(result, ((Iterable<?>) value).iterator(), delimiter, depth);
+         }
+         else if (value instanceof Iterator)
+         {
+-            flattenIterator(result, (Iterator<?>) value, delimiter);
++            flattenIterator(result, (Iterator<?>) value, delimiter, depth);
+         }
+         else if (value != null)
+         {
+@@ -995,7 +1008,7 @@ public final class PropertyConverter
+             {
+                 for (int len = Array.getLength(value), idx = 0; idx < len; idx++)
+                 {
+-                    result.addAll(flatten(Array.get(value, idx), delimiter));
++                    result.addAll(flatten(Array.get(value, idx), delimiter, depth + 1));
+                 }
+             }
+             else
+@@ -1015,11 +1028,11 @@ public final class PropertyConverter
+      * @param it the iterator to process
+      * @param delimiter the delimiter for String values
+      */
+-    private static void flattenIterator(Collection<Object> target, Iterator<?> it, char delimiter)
++    private static void flattenIterator(Collection<Object> target, Iterator<?> it, char delimiter, int depth)
+     {
+         while (it.hasNext())
+         {
+-            target.addAll(flatten(it.next(), delimiter));
++            target.addAll(flatten(it.next(), delimiter, depth + 1));
+         }
+     }
+ 
+@@ -1060,3 +1073,4 @@ public final class PropertyConverter
+         return toEnum(value, enumClass.asSubclass(Enum.class));
+     }
+ }
++/* @generated */
+\ No newline at end of file
