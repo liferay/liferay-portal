@@ -287,8 +287,14 @@ test(
 					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 						catalogId: catalog.id,
 						name: {en_US: getRandomString()},
+						productStatus: 2,
 						shortDescription: {en_US: 'Short description OLD'},
 					});
+
+				await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+					String(product.productId),
+					{name: product.name, productStatus: 0}
+				);
 
 				await page.goto(
 					`/web${site.friendlyUrlPath}${layout.friendlyURL}`
