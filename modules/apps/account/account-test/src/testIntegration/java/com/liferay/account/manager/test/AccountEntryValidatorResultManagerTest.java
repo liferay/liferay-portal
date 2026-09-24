@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -45,7 +44,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Tancredi Covioli
  */
-@FeatureFlag("LPD-89850")
 @RunWith(Arquillian.class)
 public class AccountEntryValidatorResultManagerTest {
 

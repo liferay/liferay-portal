@@ -50,7 +50,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -138,7 +137,6 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 		}
 	}
 
-	@FeatureFlag("LPD-89850")
 	@Test
 	@TestInfo("LPD-89854")
 	public void testProcessAction() throws Exception {

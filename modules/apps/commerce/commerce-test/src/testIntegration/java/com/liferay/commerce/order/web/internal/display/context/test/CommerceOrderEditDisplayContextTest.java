@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -155,7 +154,6 @@ public class CommerceOrderEditDisplayContextTest {
 		}
 	}
 
-	@FeatureFlag("LPD-89850")
 	@Test
 	@TestInfo("LPD-99093")
 	public void testGetValidationButtonCssClass() throws Exception {
@@ -182,7 +180,6 @@ public class CommerceOrderEditDisplayContextTest {
 		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
-	@FeatureFlag("LPD-89850")
 	@Test
 	@TestInfo("LPD-99364")
 	public void testIsValidationButtonVisible() throws Exception {

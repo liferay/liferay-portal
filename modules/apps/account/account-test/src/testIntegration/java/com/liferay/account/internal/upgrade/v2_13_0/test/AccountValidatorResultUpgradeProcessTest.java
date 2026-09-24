@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.version.Version;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -36,7 +35,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Tancredi Covioli
  */
-@FeatureFlag("LPD-89850")
 @RunWith(Arquillian.class)
 public class AccountValidatorResultUpgradeProcessTest {
 

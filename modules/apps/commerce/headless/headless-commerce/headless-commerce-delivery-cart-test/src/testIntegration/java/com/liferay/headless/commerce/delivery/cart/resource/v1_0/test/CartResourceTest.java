@@ -71,7 +71,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -258,7 +257,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		_testPatchCartByExternalReferenceCodeWithMoreExternalReferenceCodes();
 	}
 
-	@FeatureFlag("LPD-89850")
 	@Override
 	@Test
 	public void testPostCartCheckout() throws Exception {
