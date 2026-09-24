@@ -19,7 +19,7 @@ renderResponse.setTitle(editElementVariationsDisplayContext.getLayoutName());
 
 <liferay-product-navigation:control-menu />
 
-<div>
+<div class="element-variations-container" id="<portlet:namespace />elementVariations">
 	<react:component
 		module="{ElementVariations} from layout-content-page-editor-web"
 		props="<%= editElementVariationsDisplayContext.getData() %>"

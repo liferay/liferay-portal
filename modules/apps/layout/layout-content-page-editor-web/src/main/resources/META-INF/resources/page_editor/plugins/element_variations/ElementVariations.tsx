@@ -113,6 +113,7 @@ function ElementVariations({
 	itemNames,
 	locales,
 	plid,
+	portletNamespace,
 	previewURL,
 	selectedSegmentsExperienceId,
 	updateAudiencesPriorityURL,
@@ -163,8 +164,8 @@ function ElementVariations({
 	const elementVariationsPreviewRef =
 		useRef<ElementVariationsPreviewRef>(null);
 
-	const wrapperRef = useRef<HTMLElement | null>(
-		document.getElementById('wrapper')
+	const containerRef = useRef<HTMLElement | null>(
+		document.getElementById(`${portletNamespace}elementVariations`)
 	);
 
 	const [missingAudiencesAlertVisible, setMissingAudiencesAlertVisible] =
@@ -192,7 +193,7 @@ function ElementVariations({
 				aria-label={Liferay.Language.get('element-variations')}
 				className="bg-white element-variations__sidebar overflow-hidden shadow-none"
 				closeOnEscape={!screenLarge}
-				containerRef={wrapperRef}
+				containerRef={containerRef}
 				direction="left"
 				displayType="light"
 				onOpenChange={setSidebarOpen}

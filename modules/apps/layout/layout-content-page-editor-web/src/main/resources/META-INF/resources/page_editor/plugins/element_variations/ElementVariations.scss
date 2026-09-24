@@ -36,7 +36,7 @@ $element-variations-sidebar-width: 320px;
 	}
 }
 
-#wrapper.c-slideout-container {
+.element-variations-container.c-slideout-container {
 	&.c-slideout-push-start {
 		@include media-breakpoint-up(lg) {
 			padding-left: $element-variations-sidebar-width;
