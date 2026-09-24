@@ -69,11 +69,14 @@ public class VimeoDLVideoExternalShortcutProvider
 
 			@Override
 			public String renderHTML(HttpServletRequest httpServletRequest) {
+
+				String src = _getSrcFromEmbedCode(
+					jsonObject.getString("html"));
+				
 				return StringBundler.concat(
 					"<iframe allowfullscreen frameborder=\"0\" height=\"315\" ",
-					"mozallowfullscreen src=\"https://player.vimeo.com/video/",
-					vimeoVideoId, "\" webkitallowfullscreen ",
-					"width=\"560\"></iframe>");
+					"mozallowfullscreen src=\"", src,
+					"\" webkitallowfullscreen width=\"560\"></iframe>");
 			}
 
 		};
@@ -110,6 +113,16 @@ public class VimeoDLVideoExternalShortcutProvider
 		}
 	}
 
+	private String _getSrcFromEmbedCode(String html) {
+		Matcher matcher = _srcHtmlPattern.matcher(html);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+
+		return StringPool.BLANK;
+	}
+
 	private String _getVimeoVideoId(String url) {
 		for (Pattern urlPattern : _urlPatterns) {
 			Matcher matcher = urlPattern.matcher(url);
@@ -124,6 +137,9 @@ public class VimeoDLVideoExternalShortcutProvider
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		VimeoDLVideoExternalShortcutProvider.class);
+
+	private static final Pattern _srcHtmlPattern = Pattern.compile(
+		"src\\s*=\\s*\"([^\"]*)\"");
 
 	private static final List<Pattern> _urlPatterns = Arrays.asList(
 		Pattern.compile(
