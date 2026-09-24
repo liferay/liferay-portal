@@ -1973,3 +1973,27 @@ In a JSON object definition payload, the `panelCategoryKey` that points to a del
 ### Why was this change made?
 
 The Applications Panel has been reorganized by feature area, rather than by arbitrary splits and groups containing a single application. Panel Category groups left empty by this change have been removed and are no longer available as destinations for OSGi applications or object definitions.
+
+---------------------------------------
+
+## Localized the Object Action Description in the Object Admin API
+- **Date:** 2026-Sep-24
+- **JIRA Ticket:** [LPD-103300](https://liferay.atlassian.net/browse/LPD-103300)
+
+### What changed?
+
+An object action's `description` is now a localized value instead of a plain string. In the Object Admin API the property changes from `type: string` to a map of language IDs to strings, matching how `errorMessage` and `label` are already represented on the same resource, and the generated OpenAPI document resolves the English value, falling back to the object definition's default language, rather than emitting the single stored string.
+
+Two behaviors change with it. A `PUT` that omits `description`, or sends an empty map, no longer clears the stored value, where a request that omitted the property used to clear it. And an object action that has no description now returns an empty object rather than omitting the property.
+
+### Who is affected?
+
+This affects clients of the Object Admin API (`/o/object-admin/v1.0`) that read or write an object action's `description`, any Batch Engine import or client extension that carries that property in its payload, and site initializers whose object definition JSON files declare object actions.
+
+### How should I update my code?
+
+When reading, treat `description` as a map keyed by language ID (for example, `{"en_US": "Sends the welcome email."}`) rather than a string, and select the entry for the language you want. When writing, send the same map shape; a plain string is no longer accepted. To clear a language, send `{"en_US": ""}`. In a site initializer, write the property the way `errorMessage` and `label` are already written, as an object keyed by language ID, because a plain string no longer parses. Existing stored descriptions are migrated to the company's default language by an upgrade process, so no data is lost.
+
+### Why was this change made?
+
+The description is authored by administrators and surfaces in the generated OpenAPI document that AI clients consume, so it has to carry a language rather than a single untagged string. Every other administrator authored text on the same resource was already localized; the description was the remaining exception.
