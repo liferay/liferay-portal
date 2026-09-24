@@ -11,6 +11,8 @@ import com.liferay.document.library.kernel.store.Store;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -45,8 +47,7 @@ public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 
 	@Override
 	public void deleteSitemaps(long companyId) throws PortalException {
-		_dlStore.deleteDirectory(
-			companyId, CompanyConstants.SYSTEM, _getDirName());
+		_deleteFiles(companyId, _getDirName());
 
 		String lastRegenerateSitemapDateFileName =
 			_getLastRegenerateSitemapDateFileName();
@@ -65,8 +66,7 @@ public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 	public void deleteSitemaps(long companyId, long groupId)
 		throws PortalException {
 
-		_dlStore.deleteDirectory(
-			companyId, CompanyConstants.SYSTEM, _getDirName(groupId));
+		_deleteFiles(companyId, _getDirName(groupId));
 	}
 
 	@Override
@@ -179,6 +179,25 @@ public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 			companyId, _getSitemapFileName(groupId, assetTypeKey, page), xml);
 	}
 
+	private void _deleteFiles(long companyId, String dirName)
+		throws PortalException {
+
+		for (String fileName :
+				_dlStore.getFileNames(
+					companyId, CompanyConstants.SYSTEM, dirName)) {
+
+			try {
+				_dlStore.deleteFile(
+					companyId, CompanyConstants.SYSTEM, fileName);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(exception);
+				}
+			}
+		}
+	}
+
 	private String _getDirName() {
 		return "sitemaps";
 	}
@@ -218,6 +237,9 @@ public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 
 		_dlStore.addFile(dlStoreRequest, bytes);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SitemapStorageHelperImpl.class);
 
 	@Reference
 	private DLStore _dlStore;
