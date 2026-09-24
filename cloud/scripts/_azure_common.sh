@@ -86,7 +86,7 @@ function connect_to_cluster {
 	pop_directory
 }
 
-function ensure_tfstate_access {
+function grant_tfstate_access {
 	local container_name="${1}"
 	local resource_group_name="${2}"
 	local storage_account_name="${3}"

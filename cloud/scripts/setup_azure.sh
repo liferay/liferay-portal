@@ -57,7 +57,7 @@ function main {
 
 		_create_tfstate_storage "${container_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 
-		ensure_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
+		grant_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
 
 		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 	else
