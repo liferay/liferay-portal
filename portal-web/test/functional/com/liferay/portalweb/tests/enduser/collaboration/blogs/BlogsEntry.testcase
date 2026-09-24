@@ -325,6 +325,8 @@ definition {
 		}
 
 		task ("View that the caption link persists in the control panel") {
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
+
 			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
 
 			BlogsEntry.viewEntryCP(
