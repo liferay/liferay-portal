@@ -97,7 +97,6 @@ public class EditDisplayPageMVCRenderCommandTest {
 
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
-
 		mockLiferayPortletRenderRequest.setParameter(
 			"displayPageTemplateExternalReferenceCode", externalReferenceCode);
 		mockLiferayPortletRenderRequest.setParameter("redirect", redirect);
