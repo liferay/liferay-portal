@@ -88,7 +88,7 @@ public class EditDisplayPageMVCRenderCommandTest {
 	}
 
 	private String _render(
-			String externalReferenceCode,
+			String externalReferenceCode, String redirect,
 			MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse)
 		throws Exception {
 
@@ -100,6 +100,7 @@ public class EditDisplayPageMVCRenderCommandTest {
 
 		mockLiferayPortletRenderRequest.setParameter(
 			"displayPageTemplateExternalReferenceCode", externalReferenceCode);
+		mockLiferayPortletRenderRequest.setParameter("redirect", redirect);
 
 		return _mvcRenderCommand.render(
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
@@ -110,13 +111,15 @@ public class EditDisplayPageMVCRenderCommandTest {
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId());
 
+		String backURL = "/" + RandomTestUtil.randomString();
+
 		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
 			new MockLiferayPortletRenderResponse();
 
 		Assert.assertEquals(
 			MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH,
 			_render(
-				layoutPageTemplateEntry.getExternalReferenceCode(),
+				layoutPageTemplateEntry.getExternalReferenceCode(), backURL,
 				mockLiferayPortletRenderResponse));
 
 		Layout draftLayout = _layoutLocalService.fetchDraftLayout(
@@ -131,6 +134,11 @@ public class EditDisplayPageMVCRenderCommandTest {
 			redirect.startsWith(
 				_portal.getLayoutFullURL(draftLayout, _getThemeDisplay())));
 		Assert.assertEquals(
+			backURL,
+			HttpComponentsUtil.decodeURL(
+				HttpComponentsUtil.getParameter(
+					redirect, "p_l_back_url", false)));
+		Assert.assertEquals(
 			Constants.EDIT,
 			HttpComponentsUtil.getParameter(redirect, "p_l_mode", false));
 	}
@@ -141,13 +149,14 @@ public class EditDisplayPageMVCRenderCommandTest {
 		Assert.assertEquals(
 			"/view.jsp",
 			_render(
-				RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), "",
 				new MockLiferayPortletRenderResponse()));
 	}
 
 	private void _testRenderWithoutExternalReferenceCode() throws Exception {
 		Assert.assertEquals(
-			"/view.jsp", _render("", new MockLiferayPortletRenderResponse()));
+			"/view.jsp",
+			_render("", "", new MockLiferayPortletRenderResponse()));
 	}
 
 	private Company _company;
