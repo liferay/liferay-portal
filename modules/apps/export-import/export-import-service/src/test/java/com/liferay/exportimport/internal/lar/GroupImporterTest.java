@@ -541,7 +541,7 @@ public class GroupImporterTest {
 
 		_verifyReportEntry(
 			"child", ExportImportReportEntryConstants.TYPE_WARNING,
-			"is below it in the target instance");
+			"is a child of the group in the target instance");
 	}
 
 	@Test

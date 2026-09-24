@@ -183,7 +183,6 @@ public class GroupImporter {
 		groupPortletDataContext.setSourceCompanyGroupId(
 			GetterUtil.getLong(
 				headerElement.attributeValue("company-group-id")));
-
 		groupPortletDataContext.setSourceGroupId(
 			exportImportGroup.getGroupId());
 		groupPortletDataContext.setSourceUserPersonalSiteGroupId(
@@ -319,11 +318,12 @@ public class GroupImporter {
 				portletDataContext,
 				exportImportGroup.getExternalReferenceCode(),
 				StringBundler.concat(
-					"The parent group ",
+					"Unable to move the group ",
+					exportImportGroup.getDescriptiveName(),
+					" under its parent group ",
 					exportImportGroup.getParentGroupExternalReferenceCode(),
-					" for ", exportImportGroup.getDescriptiveName(),
-					" is below it in the target instance. Leaving the group ",
-					"where it is"),
+					" because the parent group is a child of the group in the ",
+					"target instance."),
 				ExportImportReportEntryConstants.TYPE_WARNING);
 		}
 		catch (PortalException portalException) {
