@@ -14,6 +14,7 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
+import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -81,6 +82,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -184,6 +186,165 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
+		String alt = RandomTestUtil.randomString();
+		String description = RandomTestUtil.randomString();
+		String html = RandomTestUtil.randomString();
+		String unknownKeyValue = RandomTestUtil.randomString();
+
+		JSONObject jsonObject1 = JSONUtil.put(
+			"alt", alt
+		).put(
+			"classNameId",
+			ClassNameLocalServiceUtil.getClassNameId(FileEntry.class)
+		).put(
+			"classPK", _fileEntry.getFileEntryId()
+		).put(
+			"description", description
+		).put(
+			"extension", _fileEntry.getExtension()
+		).put(
+			"externalReferenceCode", _fileEntry.getExternalReferenceCode()
+		).put(
+			"fileEntryId", _fileEntry.getFileEntryId()
+		).put(
+			"groupExternalReferenceCode",
+			_stagingGroup.getExternalReferenceCode()
+		).put(
+			"groupId", _fileEntry.getGroupId()
+		).put(
+			"html", html
+		).put(
+			"name", _fileEntry.getFileName()
+		).put(
+			"resourcePrimKey", _fileEntry.getPrimaryKey()
+		).put(
+			"size", _fileEntry.getSize()
+		).put(
+			"title", _fileEntry.getTitle()
+		).put(
+			"type", "document"
+		).put(
+			"unknownKey", unknownKeyValue
+		).put(
+			"url", RandomTestUtil.randomString()
+		).put(
+			"uuid", _fileEntry.getUuid()
+		);
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			ddmFormValues.addDDMFormFieldValue(
+				DDMFormValuesTestUtil.createLocalizedDDMFormFieldValue(
+					ddmFormField.getName(), jsonObject1.toString()));
+		}
+
+		DDMFormValues exportDDMFormValues =
+			_exportImportContentProcessor.replaceExportContentReferences(
+				_portletDataContextExport, _journalArticle, ddmFormValues, true,
+				true);
+
+		Map<Long, Long> groupIds =
+			(Map<Long, Long>)_portletDataContextImport.getNewPrimaryKeysMap(
+				Group.class);
+
+		groupIds.put(_stagingGroup.getGroupId(), _liveGroup.getGroupId());
+
+		Map<Long, Long> classPKs =
+			(Map<Long, Long>)_portletDataContextImport.getNewPrimaryKeysMap(
+				DLFileEntry.class);
+
+		long fileEntryId = _fileEntry.getPrimaryKey();
+
+		DLFileEntry newDLFileEntry = _dlFileEntryLocalService.copyFileEntry(
+			TestPropsValues.getUserId(), _liveGroup.getGroupId(),
+			_liveGroup.getGroupId(), fileEntryId,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, null,
+			new ServiceContext());
+
+		newDLFileEntry.setUuid(_fileEntry.getUuid());
+
+		_dlFileEntryLocalService.deleteFileEntry(fileEntryId);
+
+		newDLFileEntry = _dlFileEntryLocalService.updateDLFileEntry(
+			newDLFileEntry);
+
+		classPKs.put(fileEntryId, newDLFileEntry.getPrimaryKey());
+
+		_exportImportContentProcessor.replaceImportContentReferences(
+			_portletDataContextImport, _journalArticle, exportDDMFormValues);
+
+		List<DDMFormFieldValue> ddmFormFieldValues =
+			exportDDMFormValues.getDDMFormFieldValues();
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		JSONObject jsonObject2 = JSONFactoryUtil.createJSONObject(
+			value.getString(LocaleUtil.US));
+
+		long newDLFileEntryId = newDLFileEntry.getFileEntryId();
+
+		FileEntry fileEntry = _dlAppLocalService.getFileEntry(newDLFileEntryId);
+
+		String previewURL = _dlURLHelper.getPreviewURL(
+			fileEntry, fileEntry.getFileVersion(), null, StringPool.BLANK,
+			false, true);
+
+		_dlFileEntryLocalService.deleteFileEntry(newDLFileEntry);
+
+		Set<String> expectedKeySet = new HashSet<>(jsonObject1.keySet());
+
+		expectedKeySet.remove("html");
+
+		Assert.assertEquals(expectedKeySet, jsonObject2.keySet());
+
+		Assert.assertEquals(alt, jsonObject2.getString("alt"));
+		Assert.assertEquals(
+			ClassNameLocalServiceUtil.getClassNameId(FileEntry.class),
+			jsonObject2.getLong("classNameId"));
+		Assert.assertEquals(newDLFileEntryId, jsonObject2.getLong("classPK"));
+		Assert.assertEquals(description, jsonObject2.getString("description"));
+		Assert.assertEquals(
+			newDLFileEntry.getExtension(), jsonObject2.getString("extension"));
+		Assert.assertEquals(
+			newDLFileEntry.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+		Assert.assertEquals(
+			newDLFileEntryId, jsonObject2.getLong("fileEntryId"));
+		Assert.assertEquals(
+			_liveGroup.getExternalReferenceCode(),
+			jsonObject2.getString("groupExternalReferenceCode"));
+		Assert.assertEquals(
+			_liveGroup.getGroupId(), jsonObject2.getLong("groupId"));
+		Assert.assertFalse(jsonObject2.has("html"));
+		Assert.assertEquals(
+			newDLFileEntry.getFileName(), jsonObject2.getString("name"));
+		Assert.assertEquals(
+			newDLFileEntryId, jsonObject2.getLong("resourcePrimKey"));
+		Assert.assertEquals(
+			newDLFileEntry.getSize(), jsonObject2.getLong("size"));
+		Assert.assertEquals(
+			newDLFileEntry.getTitle(), jsonObject2.getString("title"));
+		Assert.assertEquals("document", jsonObject2.getString("type"));
+		Assert.assertEquals(
+			unknownKeyValue, jsonObject2.getString("unknownKey"));
+		Assert.assertEquals(previewURL, jsonObject2.getString("url"));
+		Assert.assertEquals(
+			newDLFileEntry.getUuid(), jsonObject2.getString("uuid"));
+	}
+
+	@Test
+	public void testReplaceDLExportImportContentReferencesWithLegacyValue()
+		throws Exception {
+
+		_initDLReferences();
+
+		DDMForm ddmForm = _formInstance.getDDMForm();
+
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
+		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
+
 		JSONObject jsonObject1 = JSONUtil.put(
 			"classPK", _fileEntry.getFileEntryId()
 		).put(
@@ -249,9 +410,44 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		long newDLFileEntryId = newDLFileEntry.getFileEntryId();
 
+		FileEntry fileEntry = _dlAppLocalService.getFileEntry(newDLFileEntryId);
+
+		String previewURL = _dlURLHelper.getPreviewURL(
+			fileEntry, fileEntry.getFileVersion(), null, StringPool.BLANK,
+			false, true);
+
 		_dlFileEntryLocalService.deleteFileEntry(newDLFileEntry);
 
+		Assert.assertEquals("", jsonObject2.getString("alt"));
+		Assert.assertEquals(
+			ClassNameLocalServiceUtil.getClassNameId(FileEntry.class),
+			jsonObject2.getLong("classNameId"));
 		Assert.assertEquals(newDLFileEntryId, jsonObject2.getLong("classPK"));
+		Assert.assertEquals("", jsonObject2.getString("description"));
+		Assert.assertEquals(
+			newDLFileEntry.getExtension(), jsonObject2.getString("extension"));
+		Assert.assertEquals(
+			newDLFileEntry.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+		Assert.assertEquals(
+			newDLFileEntryId, jsonObject2.getLong("fileEntryId"));
+		Assert.assertEquals(
+			_liveGroup.getExternalReferenceCode(),
+			jsonObject2.getString("groupExternalReferenceCode"));
+		Assert.assertEquals(
+			_liveGroup.getGroupId(), jsonObject2.getLong("groupId"));
+		Assert.assertEquals(
+			newDLFileEntry.getFileName(), jsonObject2.getString("name"));
+		Assert.assertEquals(
+			newDLFileEntryId, jsonObject2.getLong("resourcePrimKey"));
+		Assert.assertEquals(
+			newDLFileEntry.getSize(), jsonObject2.getLong("size"));
+		Assert.assertEquals(
+			newDLFileEntry.getTitle(), jsonObject2.getString("title"));
+		Assert.assertEquals("document", jsonObject2.getString("type"));
+		Assert.assertEquals(previewURL, jsonObject2.getString("url"));
+		Assert.assertEquals(
+			newDLFileEntry.getUuid(), jsonObject2.getString("uuid"));
 	}
 
 	@Test
@@ -658,6 +854,9 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 	@Inject
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
+
+	@Inject
+	private DLURLHelper _dlURLHelper;
 
 	@Inject(
 		filter = "model.class.name=com.liferay.dynamic.data.mapping.storage.DDMFormValues"
