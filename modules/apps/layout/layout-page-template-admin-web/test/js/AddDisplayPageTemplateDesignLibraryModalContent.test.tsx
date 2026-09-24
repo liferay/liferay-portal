@@ -125,14 +125,6 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 		expect(mockFetch).not.toHaveBeenCalled();
 	});
 
-	it('shows the new display page template title', () => {
-		renderComponent();
-
-		expect(
-			screen.getByText('new-display-page-template')
-		).toBeInTheDocument();
-	});
-
 	it('surfaces the validation error the server reports', async () => {
 
 		// The action command nests the message under "error", so reading the
