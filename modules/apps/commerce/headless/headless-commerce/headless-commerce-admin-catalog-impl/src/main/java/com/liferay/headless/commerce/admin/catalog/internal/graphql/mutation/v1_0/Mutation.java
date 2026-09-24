@@ -1453,6 +1453,28 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Replaces the role permissions granted on the option identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the option."
+	)
+	public java.util.Collection<com.liferay.portal.vulcan.permission.Permission>
+			updateOptionPermissionsPage(
+				@GraphQLName("optionId") Long optionId,
+				@GraphQLName("permissions")
+					com.liferay.portal.vulcan.permission.Permission[]
+						permissions)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_optionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			optionResource -> {
+				Page paginationPage = optionResource.putOptionPermissionsPage(
+					optionId, permissions);
+
+				return paginationPage.getItems();
+			});
+	}
+
+	@GraphQLField(
 		description = "Deletes the option category identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through option category delete listeners; reindexes affected specifications."
 	)
 	public Response deleteOptionCategory(@GraphQLName("id") Long id)
@@ -4887,4 +4909,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1982078954
+// LIFERAY-REST-BUILDER-HASH:918071939

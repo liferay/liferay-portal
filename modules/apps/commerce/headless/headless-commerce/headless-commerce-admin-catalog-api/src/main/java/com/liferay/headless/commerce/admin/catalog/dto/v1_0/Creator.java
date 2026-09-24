@@ -55,7 +55,10 @@ public class Creator implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Creator.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user's additional name, which can be used as a middle name. Read-only; taken from the user's middle name.",
+		example = "Paul"
+	)
 	public String getAdditionalName() {
 		if (_additionalNameSupplier != null) {
 			additionalName = _additionalNameSupplier.get();
@@ -89,14 +92,19 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The user's additional name, which can be used as a middle name. Read-only; taken from the user's middle name."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String additionalName;
 
 	@JsonIgnore
 	private Supplier<String> _additionalNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The type of the referenced content. Read-only; always UserAccount, because the creator is always a user.",
+		example = "UserAccount"
+	)
 	public String getContentType() {
 		if (_contentTypeSupplier != null) {
 			contentType = _contentTypeSupplier.get();
@@ -130,14 +138,19 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The type of the referenced content. Read-only; always UserAccount, because the creator is always a user."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String contentType;
 
 	@JsonIgnore
 	private Supplier<String> _contentTypeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user's external reference code. Read-only; the batch engine matches the creator by this code on import.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -171,14 +184,18 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The user's external reference code. Read-only; the batch engine matches the creator by this code on import."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user's surname (last name).", example = "Smith"
+	)
 	public String getFamilyName() {
 		if (_familyNameSupplier != null) {
 			familyName = _familyNameSupplier.get();
@@ -212,14 +229,16 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The user's surname (last name).")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String familyName;
 
 	@JsonIgnore
 	private Supplier<String> _familyNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user's first name.", example = "John"
+	)
 	public String getGivenName() {
 		if (_givenNameSupplier != null) {
 			givenName = _givenNameSupplier.get();
@@ -253,14 +272,17 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The user's first name.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String givenName;
 
 	@JsonIgnore
 	private Supplier<String> _givenNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user's ID. Read-only; the batch engine falls back to this identifier when the external reference code does not match a user on import.",
+		example = "20132"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -292,14 +314,19 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The user's ID. Read-only; the batch engine falls back to this identifier when the external reference code does not match a user on import."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A relative URL to the user's profile image. Read-only; omitted when the user has no portrait.",
+		example = "/image/user_portrait?screenName=john.smith"
+	)
 	public String getImage() {
 		if (_imageSupplier != null) {
 			image = _imageSupplier.get();
@@ -333,14 +360,18 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "A relative URL to the user's profile image. Read-only; omitted when the user has no portrait."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String image;
 
 	@JsonIgnore
 	private Supplier<String> _imageSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user's full name.", example = "John Smith"
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -372,14 +403,17 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The user's full name.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A relative URL to the user's profile. Read-only; resolved from the user's personal site.",
+		example = "/web/john.smith"
+	)
 	public String getProfileURL() {
 		if (_profileURLSupplier != null) {
 			profileURL = _profileURLSupplier.get();
@@ -413,7 +447,9 @@ public class Creator implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "A relative URL to the user's profile. Read-only; resolved from the user's personal site."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String profileURL;
 
@@ -709,4 +745,4 @@ public class Creator implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1601618969
+// LIFERAY-REST-BUILDER-HASH:-1024229482

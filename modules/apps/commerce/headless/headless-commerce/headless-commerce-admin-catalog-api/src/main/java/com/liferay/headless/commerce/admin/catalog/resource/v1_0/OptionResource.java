@@ -60,6 +60,10 @@ public interface OptionResource {
 	public Option getOptionByExternalReferenceCode(String externalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getOptionPermissionsPage(Long optionId, String roleNames)
+		throws Exception;
+
 	public Page<Option> getOptionsPage(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
@@ -87,6 +91,12 @@ public interface OptionResource {
 
 	public Option putOptionByExternalReferenceCode(
 			String externalReferenceCode, Option option)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putOptionPermissionsPage(
+				Long optionId,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -185,4 +195,4 @@ public interface OptionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-775101549
+// LIFERAY-REST-BUILDER-HASH:-1497006541

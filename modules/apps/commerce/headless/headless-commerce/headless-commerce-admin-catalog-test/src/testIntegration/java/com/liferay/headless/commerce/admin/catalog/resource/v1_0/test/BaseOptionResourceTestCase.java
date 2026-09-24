@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Option;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.catalog.client.permission.Permission;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.OptionResource;
 import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.OptionSerDes;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,6 +45,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -159,6 +162,19 @@ public abstract class BaseOptionResourceTestCase {
 			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
+		).build();
+
+		permissionsOptionResource = OptionResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameter(
+			"nestedFields", "permissions"
 		).build();
 	}
 
@@ -515,6 +531,12 @@ public abstract class BaseOptionResourceTestCase {
 
 		assertEquals(postOption, getOption);
 		assertValid(getOption);
+
+		Assert.assertNull(getOption.getPermissions());
+
+		getOption = permissionsOptionResource.getOption(postOption.getId());
+
+		Assert.assertNotNull(getOption.getPermissions());
 	}
 
 	@Test
@@ -815,6 +837,13 @@ public abstract class BaseOptionResourceTestCase {
 
 		assertEquals(postOption, getOption);
 		assertValid(getOption);
+
+		Assert.assertNull(getOption.getPermissions());
+
+		getOption = permissionsOptionResource.getOptionByExternalReferenceCode(
+			postOption.getExternalReferenceCode());
+
+		Assert.assertNotNull(getOption.getPermissions());
 	}
 
 	protected Option testGetOptionByExternalReferenceCode_addOption()
@@ -935,6 +964,49 @@ public abstract class BaseOptionResourceTestCase {
 	}
 
 	@Test
+	public void testGetOptionPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Option postOption = testGetOptionPermissionsPage_addOption();
+
+		Page<Permission> page = optionResource.getOptionPermissionsPage(
+			postOption.getId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected Option testGetOptionPermissionsPage_addOption() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetOptionPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Option postOption = testGraphQLGetOptionPermissionsPage_addOption();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"optionPermissions",
+			new HashMap<String, Object>() {
+				{
+					put("optionId", postOption.getId());
+				}
+			},
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject optionPermissionsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/optionPermissions");
+
+		Assert.assertNotNull(optionPermissionsJSONObject);
+	}
+
+	protected Option testGraphQLGetOptionPermissionsPage_addOption()
+		throws Exception {
+
+		return testGraphQLOption_addOption();
+	}
+
+	@Test
 	public void testGetOptionsPage() throws Exception {
 		Page<Option> page = optionResource.getOptionsPage(
 			null, null, Pagination.of(1, 10), null);
@@ -953,6 +1025,17 @@ public abstract class BaseOptionResourceTestCase {
 		assertContains(option1, (List<Option>)page.getItems());
 		assertContains(option2, (List<Option>)page.getItems());
 		assertValid(page, testGetOptionsPage_getExpectedActions());
+
+		for (Option option : page.getItems()) {
+			Assert.assertNull(option.getPermissions());
+		}
+
+		page = permissionsOptionResource.getOptionsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		for (Option option : page.getItems()) {
+			Assert.assertNotNull(option.getPermissions());
+		}
 
 		optionResource.deleteOption(option1.getId());
 
@@ -1335,9 +1418,30 @@ public abstract class BaseOptionResourceTestCase {
 
 		assertEquals(randomOption, postOption);
 		assertValid(postOption);
+
+		Option randomPermissionsOption1 = randomPermissionsOption();
+
+		Option postPermissionsOption1 = testPostOption_addOption(
+			randomPermissionsOption1);
+
+		Assert.assertNull(postPermissionsOption1.getPermissions());
+
+		Option randomPermissionsOption2 = randomPermissionsOption();
+
+		Option postPermissionsOption2 = testPostOption_addPermissionsOption(
+			randomPermissionsOption2);
+
+		Assert.assertNotNull(postPermissionsOption2.getPermissions());
 	}
 
 	protected Option testPostOption_addOption(Option option) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Option testPostOption_addPermissionsOption(Option option)
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -1363,11 +1467,28 @@ public abstract class BaseOptionResourceTestCase {
 		assertEquals(randomOption, putOption);
 		assertValid(putOption);
 
+		Assert.assertNull(putOption.getPermissions());
+
 		Option getOption = optionResource.getOptionByExternalReferenceCode(
 			putOption.getExternalReferenceCode());
 
 		assertEquals(randomOption, getOption);
 		assertValid(getOption);
+
+		Option randomPermissionsOption = randomPermissionsOption();
+
+		putOption = optionResource.putOptionByExternalReferenceCode(
+			postOption.getExternalReferenceCode(), randomPermissionsOption);
+
+		assertEquals(randomPermissionsOption, putOption);
+		assertValid(putOption);
+
+		Assert.assertNull(putOption.getPermissions());
+
+		putOption = permissionsOptionResource.putOptionByExternalReferenceCode(
+			postOption.getExternalReferenceCode(), randomPermissionsOption);
+
+		Assert.assertNotNull(putOption.getPermissions());
 
 		Option newOption = testPutOptionByExternalReferenceCode_createOption();
 
@@ -1398,6 +1519,47 @@ public abstract class BaseOptionResourceTestCase {
 		throws Exception {
 
 		return randomOption();
+	}
+
+	@Test
+	public void testPutOptionPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Option option = testPutOptionPermissionsPage_addOption();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			optionResource.putOptionPermissionsPageHttpResponse(
+				option.getId(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"VIEW"});
+							setRoleName(role.getName());
+						}
+					}
+				}));
+
+		assertHttpResponseStatusCode(
+			404,
+			optionResource.putOptionPermissionsPageHttpResponse(
+				0L,
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"-"});
+							setRoleName("-");
+						}
+					}
+				}));
+	}
+
+	protected Option testPutOptionPermissionsPage_addOption() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1661,6 +1823,14 @@ public abstract class BaseOptionResourceTestCase {
 	protected void assertValid(Option option) throws Exception {
 		boolean valid = true;
 
+		if (option.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (option.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (option.getId() == null) {
 			valid = false;
 		}
@@ -1678,6 +1848,14 @@ public abstract class BaseOptionResourceTestCase {
 
 			if (Objects.equals("catalogId", additionalAssertFieldName)) {
 				if (option.getCatalogId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (option.getCreator() == null) {
 					valid = false;
 				}
 
@@ -1744,6 +1922,14 @@ public abstract class BaseOptionResourceTestCase {
 
 			if (Objects.equals("optionValues", additionalAssertFieldName)) {
 				if (option.getOptionValues() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (option.getPermissions() == null) {
 					valid = false;
 				}
 
@@ -1914,9 +2100,39 @@ public abstract class BaseOptionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						option1.getCreator(), option2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("customFields", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						option1.getCustomFields(), option2.getCustomFields())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						option1.getDateCreated(), option2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						option1.getDateModified(), option2.getDateModified())) {
 
 					return false;
 				}
@@ -1995,6 +2211,16 @@ public abstract class BaseOptionResourceTestCase {
 			if (Objects.equals("optionValues", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						option1.getOptionValues(), option2.getOptionValues())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						option1.getPermissions(), option2.getPermissions())) {
 
 					return false;
 				}
@@ -2150,9 +2376,72 @@ public abstract class BaseOptionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("customFields")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = option.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(option.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = option.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(option.getDateModified()));
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("description")) {
@@ -2277,6 +2566,11 @@ public abstract class BaseOptionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("priority")) {
 			sb.append(String.valueOf(option.getPriority()));
 
@@ -2341,6 +2635,8 @@ public abstract class BaseOptionResourceTestCase {
 		return new Option() {
 			{
 				catalogId = RandomTestUtil.randomLong();
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				facetable = RandomTestUtil.randomBoolean();
@@ -2361,6 +2657,25 @@ public abstract class BaseOptionResourceTestCase {
 
 	protected Option randomPatchOption() throws Exception {
 		return randomOption();
+	}
+
+	protected Option randomPermissionsOption() throws Exception {
+		Option option = randomOption();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		option.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {"VIEW"});
+						setRoleName(role.getName());
+					}
+				}
+			});
+
+		return option;
 	}
 
 	protected final JSONObject waitForFinish(
@@ -2388,6 +2703,7 @@ public abstract class BaseOptionResourceTestCase {
 	protected OptionResource optionResource;
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
+	protected OptionResource permissionsOptionResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
@@ -2619,4 +2935,4 @@ public abstract class BaseOptionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1317230364
+// LIFERAY-REST-BUILDER-HASH:-1401181406

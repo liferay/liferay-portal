@@ -73,6 +73,20 @@ public class SkuOptionSerDes {
 			sb.append("\"");
 		}
 
+		if (skuOption.getOptionFieldType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionFieldType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(skuOption.getOptionFieldType()));
+
+			sb.append("\"");
+		}
+
 		if (skuOption.getOptionId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -81,6 +95,16 @@ public class SkuOptionSerDes {
 			sb.append("\"optionId\": ");
 
 			sb.append(skuOption.getOptionId());
+		}
+
+		if (skuOption.getOptionSkuContributor() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionSkuContributor\": ");
+
+			sb.append(skuOption.getOptionSkuContributor());
 		}
 
 		if (skuOption.getOptionValueExternalReferenceCode() != null) {
@@ -105,6 +129,45 @@ public class SkuOptionSerDes {
 			sb.append("\"optionValueId\": ");
 
 			sb.append(skuOption.getOptionValueId());
+		}
+
+		if (skuOption.getParentOptionExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentOptionExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(skuOption.getParentOptionExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
+		if (skuOption.getParentOptionFieldType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentOptionFieldType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(skuOption.getParentOptionFieldType()));
+
+			sb.append("\"");
+		}
+
+		if (skuOption.getParentOptionSkuContributor() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentOptionSkuContributor\": ");
+
+			sb.append(skuOption.getParentOptionSkuContributor());
 		}
 
 		if (skuOption.getValue() != null) {
@@ -155,11 +218,29 @@ public class SkuOptionSerDes {
 				String.valueOf(skuOption.getOptionExternalReferenceCode()));
 		}
 
+		if (skuOption.getOptionFieldType() == null) {
+			map.put("optionFieldType", null);
+		}
+		else {
+			map.put(
+				"optionFieldType",
+				String.valueOf(skuOption.getOptionFieldType()));
+		}
+
 		if (skuOption.getOptionId() == null) {
 			map.put("optionId", null);
 		}
 		else {
 			map.put("optionId", String.valueOf(skuOption.getOptionId()));
+		}
+
+		if (skuOption.getOptionSkuContributor() == null) {
+			map.put("optionSkuContributor", null);
+		}
+		else {
+			map.put(
+				"optionSkuContributor",
+				String.valueOf(skuOption.getOptionSkuContributor()));
 		}
 
 		if (skuOption.getOptionValueExternalReferenceCode() == null) {
@@ -178,6 +259,34 @@ public class SkuOptionSerDes {
 		else {
 			map.put(
 				"optionValueId", String.valueOf(skuOption.getOptionValueId()));
+		}
+
+		if (skuOption.getParentOptionExternalReferenceCode() == null) {
+			map.put("parentOptionExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"parentOptionExternalReferenceCode",
+				String.valueOf(
+					skuOption.getParentOptionExternalReferenceCode()));
+		}
+
+		if (skuOption.getParentOptionFieldType() == null) {
+			map.put("parentOptionFieldType", null);
+		}
+		else {
+			map.put(
+				"parentOptionFieldType",
+				String.valueOf(skuOption.getParentOptionFieldType()));
+		}
+
+		if (skuOption.getParentOptionSkuContributor() == null) {
+			map.put("parentOptionSkuContributor", null);
+		}
+		else {
+			map.put(
+				"parentOptionSkuContributor",
+				String.valueOf(skuOption.getParentOptionSkuContributor()));
 		}
 
 		if (skuOption.getValue() == null) {
@@ -212,7 +321,15 @@ public class SkuOptionSerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "optionFieldType")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "optionId")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "optionSkuContributor")) {
+
 				return false;
 			}
 			else if (Objects.equals(
@@ -222,6 +339,22 @@ public class SkuOptionSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "optionValueId")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"parentOptionExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "parentOptionFieldType")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "parentOptionSkuContributor")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "value")) {
@@ -249,10 +382,23 @@ public class SkuOptionSerDes {
 						(String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "optionFieldType")) {
+				if (jsonParserFieldValue != null) {
+					skuOption.setOptionFieldType((String)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "optionId")) {
 				if (jsonParserFieldValue != null) {
 					skuOption.setOptionId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "optionSkuContributor")) {
+
+				if (jsonParserFieldValue != null) {
+					skuOption.setOptionSkuContributor(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -268,6 +414,31 @@ public class SkuOptionSerDes {
 				if (jsonParserFieldValue != null) {
 					skuOption.setOptionValueId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"parentOptionExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					skuOption.setParentOptionExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "parentOptionFieldType")) {
+
+				if (jsonParserFieldValue != null) {
+					skuOption.setParentOptionFieldType(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "parentOptionSkuContributor")) {
+
+				if (jsonParserFieldValue != null) {
+					skuOption.setParentOptionSkuContributor(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "value")) {
@@ -362,4 +533,4 @@ public class SkuOptionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1389181346
+// LIFERAY-REST-BUILDER-HASH:761950418
