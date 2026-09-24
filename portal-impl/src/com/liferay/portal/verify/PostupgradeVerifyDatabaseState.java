@@ -319,6 +319,56 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		return definitionsMap;
 	}
 
+	private String _getIndexMessage(
+			IndexMetadata databaseIndexMetadata, DBInspector dbInspector,
+			IndexMetadata expectedIndexMetadata, String normalizedTableName)
+		throws Exception {
+
+		String indexName = dbInspector.normalizeName(
+			expectedIndexMetadata.getIndexName());
+
+		if (!_hasIndexColumnNames(
+				databaseIndexMetadata,
+				expectedIndexMetadata.getColumnNames())) {
+
+			return StringBundler.concat(
+				"Index ", indexName, " is not defined as ",
+				TransformUtil.transform(
+					Arrays.asList(expectedIndexMetadata.getColumnNames()),
+					dbInspector::normalizeName),
+				" for ", normalizedTableName, " table");
+		}
+
+		if (databaseIndexMetadata.isUnique() ==
+				expectedIndexMetadata.isUnique()) {
+
+			return null;
+		}
+
+		String uniquenessMessage = " must not be defined as unique for ";
+
+		if (expectedIndexMetadata.isUnique()) {
+			uniquenessMessage = " must be defined as unique for ";
+		}
+
+		return StringBundler.concat(
+			"Index ", indexName, uniquenessMessage, normalizedTableName,
+			" table");
+	}
+
+	private Map<String, IndexMetadata> _getIndexMetadataMap(
+		List<IndexMetadata> indexMetadatas) {
+
+		Map<String, IndexMetadata> indexMetadataMap = new TreeMap<>(
+			String.CASE_INSENSITIVE_ORDER);
+
+		for (IndexMetadata indexMetadata : indexMetadatas) {
+			indexMetadataMap.put(indexMetadata.getIndexName(), indexMetadata);
+		}
+
+		return indexMetadataMap;
+	}
+
 	private String _getMessage(
 		Collection<String> names, String prefix, String servletContextName) {
 
@@ -526,12 +576,120 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	}
 
 	private void _verifyIndexes(
+			DBInspector dbInspector,
+			Map<String, List<String>> errorIndexMessagesMap,
+			List<IndexMetadata> expectedIndexMetadatas,
+			String servletContextName, String tableName,
+			Map<String, List<String>> warnIndexMessagesMap)
+		throws Exception {
+
+		DB db = DBManagerUtil.getDB();
+
+		Map<String, IndexMetadata> databaseIndexMetadataMap =
+			_getIndexMetadataMap(
+				db.getIndexMetadatas(connection, tableName, null, false));
+
+		Map<String, IndexMetadata> expectedIndexMetadataMap =
+			_getIndexMetadataMap(expectedIndexMetadatas);
+		String normalizedTableName = dbInspector.normalizeName(tableName);
+
+		for (IndexMetadata expectedIndexMetadata :
+				expectedIndexMetadataMap.values()) {
+
+			IndexMetadata databaseIndexMetadata = databaseIndexMetadataMap.get(
+				expectedIndexMetadata.getIndexName());
+
+			if (databaseIndexMetadata == null) {
+				continue;
+			}
+
+			String message = _getIndexMessage(
+				databaseIndexMetadata, dbInspector, expectedIndexMetadata,
+				normalizedTableName);
+
+			if (message == null) {
+				continue;
+			}
+
+			List<String> messages = errorIndexMessagesMap.computeIfAbsent(
+				tableName, key -> new ArrayList<>());
+
+			messages.add(_getMessage(message, servletContextName));
+		}
+
+		Set<String> missingIndexNames = _asymmetricDifference(
+			expectedIndexMetadataMap.keySet(),
+			databaseIndexMetadataMap.keySet());
+
+		if (!missingIndexNames.isEmpty()) {
+			List<String> messages = errorIndexMessagesMap.computeIfAbsent(
+				tableName, key -> new ArrayList<>());
+
+			messages.add(
+				_getMessage(
+					TransformUtil.transform(
+						missingIndexNames, dbInspector::normalizeName),
+					StringBundler.concat(
+						"Missing indexes were detected for ",
+						normalizedTableName, " table"),
+					servletContextName));
+		}
+
+		List<String> staleIndexNames = new ArrayList<>();
+		List<String> staleUniqueIndexNames = new ArrayList<>();
+
+		for (IndexMetadata databaseIndexMetadata :
+				databaseIndexMetadataMap.values()) {
+
+			String indexName = databaseIndexMetadata.getIndexName();
+
+			if (expectedIndexMetadataMap.containsKey(indexName)) {
+				continue;
+			}
+
+			if (databaseIndexMetadata.isUnique()) {
+				staleUniqueIndexNames.add(indexName);
+			}
+			else {
+				staleIndexNames.add(indexName);
+			}
+		}
+
+		if (!staleUniqueIndexNames.isEmpty()) {
+			List<String> messages = errorIndexMessagesMap.computeIfAbsent(
+				tableName, key -> new ArrayList<>());
+
+			messages.add(
+				_getMessage(
+					TransformUtil.transform(
+						staleUniqueIndexNames, dbInspector::normalizeName),
+					StringBundler.concat(
+						"Stale unique indexes were detected for ",
+						normalizedTableName, " table"),
+					servletContextName));
+		}
+
+		if (!staleIndexNames.isEmpty()) {
+			List<String> messages = warnIndexMessagesMap.computeIfAbsent(
+				tableName, key -> new ArrayList<>());
+
+			messages.add(
+				_getMessage(
+					TransformUtil.transform(
+						staleIndexNames, dbInspector::normalizeName),
+					StringBundler.concat(
+						"Stale indexes were detected for ", normalizedTableName,
+						" table"),
+					servletContextName));
+		}
+	}
+
+	private void _verifyIndexes(
 			Set<String> databaseTableNames, DBInspector dbInspector,
 			Map<String, List<String>> errorMessagesMap,
 			Map<String, List<String>> warnMessagesMap)
 		throws Exception {
 
-		DB db = DBManagerUtil.getDB();
 		Map<String, List<String>> errorIndexMessagesMap =
 			new ConcurrentSkipListMap<>();
 		Map<String, List<IndexMetadata>> indexMetadatasMap =
@@ -554,168 +712,11 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 					return;
 				}
 
-				Map<String, IndexMetadata> databaseIndexMetadataMap =
-					new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-				for (IndexMetadata indexMetadata :
-						db.getIndexMetadatas(
-							connection, tableName, null, false)) {
-
-					databaseIndexMetadataMap.put(
-						indexMetadata.getIndexName(), indexMetadata);
-				}
-
-				Map<String, IndexMetadata> expectedIndexMetadataMap =
-					new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-				for (IndexMetadata indexMetadata :
-						indexMetadatasMap.getOrDefault(
-							tableName, Collections.emptyList())) {
-
-					expectedIndexMetadataMap.put(
-						indexMetadata.getIndexName(), indexMetadata);
-				}
-
-				String normalizedTableName = dbInspector.normalizeName(
-					tableName);
-				String servletContextName = entry.getValue();
-
-				for (IndexMetadata expectedIndexMetadata :
-						expectedIndexMetadataMap.values()) {
-
-					IndexMetadata databaseIndexMetadata =
-						databaseIndexMetadataMap.get(
-							expectedIndexMetadata.getIndexName());
-
-					if (databaseIndexMetadata == null) {
-						continue;
-					}
-
-					List<String> expectedIndexColumnNames =
-						TransformUtil.transform(
-							Arrays.asList(
-								expectedIndexMetadata.getColumnNames()),
-							dbInspector::normalizeName);
-
-					if (!_hasIndexColumnNames(
-							databaseIndexMetadata,
-							expectedIndexMetadata.getColumnNames())) {
-
-						List<String> messages =
-							errorIndexMessagesMap.computeIfAbsent(
-								tableName, key -> new ArrayList<>());
-
-						messages.add(
-							_getMessage(
-								StringBundler.concat(
-									"Index ",
-									dbInspector.normalizeName(
-										expectedIndexMetadata.getIndexName()),
-									" is not defined as ",
-									expectedIndexColumnNames, " for ",
-									normalizedTableName, " table"),
-								servletContextName));
-
-						continue;
-					}
-
-					if (databaseIndexMetadata.isUnique() ==
-							expectedIndexMetadata.isUnique()) {
-
-						continue;
-					}
-
-					String uniquenessMessage =
-						" must not be defined as unique for ";
-
-					if (expectedIndexMetadata.isUnique()) {
-						uniquenessMessage = " must be defined as unique for ";
-					}
-
-					List<String> messages =
-						errorIndexMessagesMap.computeIfAbsent(
-							tableName, key -> new ArrayList<>());
-
-					messages.add(
-						_getMessage(
-							StringBundler.concat(
-								"Index ",
-								dbInspector.normalizeName(
-									expectedIndexMetadata.getIndexName()),
-								uniquenessMessage, normalizedTableName,
-								" table"),
-							servletContextName));
-				}
-
-				Set<String> missingIndexNames = _asymmetricDifference(
-					expectedIndexMetadataMap.keySet(),
-					databaseIndexMetadataMap.keySet());
-
-				if (!missingIndexNames.isEmpty()) {
-					List<String> messages =
-						errorIndexMessagesMap.computeIfAbsent(
-							tableName, key -> new ArrayList<>());
-
-					messages.add(
-						_getMessage(
-							TransformUtil.transform(
-								missingIndexNames, dbInspector::normalizeName),
-							StringBundler.concat(
-								"Missing indexes were detected for ",
-								normalizedTableName, " table"),
-							servletContextName));
-				}
-
-				List<String> staleIndexNames = new ArrayList<>();
-				List<String> staleUniqueIndexNames = new ArrayList<>();
-
-				for (IndexMetadata databaseIndexMetadata :
-						databaseIndexMetadataMap.values()) {
-
-					String indexName = databaseIndexMetadata.getIndexName();
-
-					if (expectedIndexMetadataMap.containsKey(indexName)) {
-						continue;
-					}
-
-					if (databaseIndexMetadata.isUnique()) {
-						staleUniqueIndexNames.add(indexName);
-					}
-					else {
-						staleIndexNames.add(indexName);
-					}
-				}
-
-				if (!staleUniqueIndexNames.isEmpty()) {
-					List<String> messages =
-						errorIndexMessagesMap.computeIfAbsent(
-							tableName, key -> new ArrayList<>());
-
-					messages.add(
-						_getMessage(
-							TransformUtil.transform(
-								staleUniqueIndexNames,
-								dbInspector::normalizeName),
-							StringBundler.concat(
-								"Stale unique indexes were detected for ",
-								normalizedTableName, " table"),
-							servletContextName));
-				}
-
-				if (!staleIndexNames.isEmpty()) {
-					List<String> messages =
-						warnIndexMessagesMap.computeIfAbsent(
-							tableName, key -> new ArrayList<>());
-
-					messages.add(
-						_getMessage(
-							TransformUtil.transform(
-								staleIndexNames, dbInspector::normalizeName),
-							StringBundler.concat(
-								"Stale indexes were detected for ",
-								normalizedTableName, " table"),
-							servletContextName));
-				}
+				_verifyIndexes(
+					dbInspector, errorIndexMessagesMap,
+					indexMetadatasMap.getOrDefault(
+						tableName, Collections.emptyList()),
+					entry.getValue(), tableName, warnIndexMessagesMap);
 			},
 			null);
 
@@ -723,6 +724,53 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			errorMessagesMap, errorIndexMessagesMap, tablesServletContextNames);
 		_addTableMessages(
 			warnMessagesMap, warnIndexMessagesMap, tablesServletContextNames);
+	}
+
+	private void _verifyPrimaryKeys(
+			DBInspector dbInspector,
+			Map<String, List<String>> errorPrimaryKeyMessagesMap,
+			String[] primaryKeyColumnNames, String servletContextName,
+			String tableName)
+		throws Exception {
+
+		String[] databasePrimaryKeyColumnNames = getPrimaryKeyColumnNames(
+			connection, tableName);
+		List<String> expectedPrimaryKeyColumnNames = TransformUtil.transform(
+			Arrays.asList(primaryKeyColumnNames), dbInspector::normalizeName);
+		String normalizedTableName = dbInspector.normalizeName(tableName);
+
+		if (ArrayUtil.isEmpty(databasePrimaryKeyColumnNames)) {
+			List<String> messages = errorPrimaryKeyMessagesMap.computeIfAbsent(
+				tableName, key -> new ArrayList<>());
+
+			messages.add(
+				_getMessage(
+					StringBundler.concat(
+						"Missing primary key was detected for ",
+						normalizedTableName, " table: ",
+						expectedPrimaryKeyColumnNames),
+					servletContextName));
+
+			return;
+		}
+
+		if (ArrayUtil.equalsIgnoreCase(
+				databasePrimaryKeyColumnNames, primaryKeyColumnNames)) {
+
+			return;
+		}
+
+		List<String> messages = errorPrimaryKeyMessagesMap.computeIfAbsent(
+			tableName, key -> new ArrayList<>());
+
+		messages.add(
+			_getMessage(
+				StringBundler.concat(
+					"Primary key ",
+					Arrays.toString(databasePrimaryKeyColumnNames),
+					" is not defined as ", expectedPrimaryKeyColumnNames,
+					" for ", normalizedTableName, " table"),
+				servletContextName));
 	}
 
 	private void _verifyPrimaryKeys(
@@ -753,50 +801,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 					return;
 				}
 
-				String[] databasePrimaryKeyColumnNames =
-					getPrimaryKeyColumnNames(connection, tableName);
-				List<String> expectedPrimaryKeyColumnNames =
-					TransformUtil.transform(
-						Arrays.asList(entry.getValue()),
-						dbInspector::normalizeName);
-				String normalizedTableName = dbInspector.normalizeName(
-					tableName);
-
-				if (ArrayUtil.isEmpty(databasePrimaryKeyColumnNames)) {
-					List<String> messages =
-						errorPrimaryKeyMessagesMap.computeIfAbsent(
-							tableName, key -> new ArrayList<>());
-
-					messages.add(
-						_getMessage(
-							StringBundler.concat(
-								"Missing primary key was detected for ",
-								normalizedTableName, " table: ",
-								expectedPrimaryKeyColumnNames),
-							servletContextName));
-
-					return;
-				}
-
-				if (ArrayUtil.equalsIgnoreCase(
-						databasePrimaryKeyColumnNames, entry.getValue())) {
-
-					return;
-				}
-
-				List<String> messages =
-					errorPrimaryKeyMessagesMap.computeIfAbsent(
-						tableName, key -> new ArrayList<>());
-
-				messages.add(
-					_getMessage(
-						StringBundler.concat(
-							"Primary key ",
-							Arrays.toString(databasePrimaryKeyColumnNames),
-							" is not defined as ",
-							expectedPrimaryKeyColumnNames, " for ",
-							normalizedTableName, " table"),
-						servletContextName));
+				_verifyPrimaryKeys(
+					dbInspector, errorPrimaryKeyMessagesMap, entry.getValue(),
+					servletContextName, tableName);
 			},
 			null);
 
