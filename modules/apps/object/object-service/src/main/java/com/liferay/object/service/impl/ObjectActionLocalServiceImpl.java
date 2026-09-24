@@ -47,7 +47,6 @@ import com.liferay.object.service.persistence.ObjectFieldPersistence;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -105,7 +104,8 @@ public class ObjectActionLocalServiceImpl
 	@Override
 	public ObjectAction addObjectAction(
 			String externalReferenceCode, long userId, long objectDefinitionId,
-			boolean active, String conditionExpression, String description,
+			boolean active, String conditionExpression,
+			Map<Locale, String> descriptionMap,
 			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
 			String name, String objectActionExecutorKey,
 			String objectActionTriggerKey,
@@ -150,7 +150,8 @@ public class ObjectActionLocalServiceImpl
 		objectAction.setObjectDefinitionId(objectDefinitionId);
 		objectAction.setActive(active);
 		objectAction.setConditionExpression(conditionExpression);
-		objectAction.setDescription(description);
+		objectAction.setDescriptionMap(
+			descriptionMap, objectDefinition.getDefaultLocale());
 		objectAction.setErrorMessageMap(
 			errorMessageMap, LocaleUtil.getSiteDefault());
 		objectAction.setLabelMap(
@@ -189,9 +190,10 @@ public class ObjectActionLocalServiceImpl
 	public ObjectAction addOrUpdateObjectAction(
 			String externalReferenceCode, long objectActionId, long userId,
 			long objectDefinitionId, boolean active, String conditionExpression,
-			String description, Map<Locale, String> errorMessageMap,
-			Map<Locale, String> labelMap, String name,
-			String objectActionExecutorKey, String objectActionTriggerKey,
+			Map<Locale, String> descriptionMap,
+			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
+			String name, String objectActionExecutorKey,
+			String objectActionTriggerKey,
 			UnicodeProperties parametersUnicodeProperties, boolean system)
 		throws PortalException {
 
@@ -217,15 +219,15 @@ public class ObjectActionLocalServiceImpl
 		if (existingObjectAction != null) {
 			return updateObjectAction(
 				externalReferenceCode, existingObjectAction.getObjectActionId(),
-				active, conditionExpression, description, errorMessageMap,
+				active, conditionExpression, descriptionMap, errorMessageMap,
 				labelMap, name, objectActionExecutorKey, objectActionTriggerKey,
 				parametersUnicodeProperties);
 		}
 
 		return addObjectAction(
 			externalReferenceCode, userId, objectDefinitionId, active,
-			conditionExpression, description, errorMessageMap, labelMap, name,
-			objectActionExecutorKey, objectActionTriggerKey,
+			conditionExpression, descriptionMap, errorMessageMap, labelMap,
+			name, objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties, system);
 	}
 
@@ -274,7 +276,7 @@ public class ObjectActionLocalServiceImpl
 					null, objectDefinition.getUserId(),
 					objectDefinition.getObjectDefinitionId(), true,
 					MapUtil.getString(entry.getValue(), "conditionExpression"),
-					StringPool.BLANK, null,
+					null, null,
 					LocalizedMapUtil.getLocalizedMap(
 						MapUtil.getString(entry.getValue(), "label")),
 					entry.getKey(),
@@ -440,7 +442,7 @@ public class ObjectActionLocalServiceImpl
 	@Override
 	public ObjectAction updateObjectAction(
 			String externalReferenceCode, long objectActionId, boolean active,
-			String conditionExpression, String description,
+			String conditionExpression, Map<Locale, String> descriptionMap,
 			Map<Locale, String> errorMessageMap, Map<Locale, String> labelMap,
 			String name, String objectActionExecutorKey,
 			String objectActionTriggerKey,
@@ -484,7 +486,9 @@ public class ObjectActionLocalServiceImpl
 
 		objectAction.setActive(active);
 		objectAction.setConditionExpression(conditionExpression);
-		objectAction.setDescription(description);
+		objectAction.setDescriptionMap(
+			_getDescriptionMap(descriptionMap),
+			objectDefinition.getDefaultLocale());
 		objectAction.setErrorMessageMap(
 			errorMessageMap, LocaleUtil.getSiteDefault());
 
@@ -548,6 +552,16 @@ public class ObjectActionLocalServiceImpl
 		objectAction.setStatus(status);
 
 		return objectActionPersistence.update(objectAction);
+	}
+
+	private Map<Locale, String> _getDescriptionMap(
+		Map<Locale, String> descriptionMap) {
+
+		if (MapUtil.isEmpty(descriptionMap)) {
+			return null;
+		}
+
+		return descriptionMap;
 	}
 
 	private boolean _isUsePreferredLanguageForGuestsSupported(
