@@ -75,15 +75,14 @@ public class UpdateKBCommentMVCActionCommand extends BaseMVCActionCommand {
 				actionRequest, "status", KBCommentConstants.STATUS_ANY);
 
 			if (status == KBCommentConstants.STATUS_ANY) {
-				KBComment kbComment = _kbCommentService.getKBComment(
-					kbCommentId);
-
-				status = kbComment.getStatus();
+				_kbCommentService.updateKBComment(
+					kbCommentId, classNameId, classPK, content, serviceContext);
 			}
-
-			_kbCommentLocalService.updateKBComment(
-				kbCommentId, classNameId, classPK, content, status,
-				serviceContext);
+			else {
+				_kbCommentService.updateKBComment(
+					kbCommentId, classNameId, classPK, content, status,
+					serviceContext);
+			}
 		}
 
 		SessionMessages.add(actionRequest, "suggestionSaved");
