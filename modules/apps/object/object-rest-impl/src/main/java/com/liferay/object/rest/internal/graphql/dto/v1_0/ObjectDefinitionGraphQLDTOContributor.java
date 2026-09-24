@@ -221,7 +221,8 @@ public class ObjectDefinitionGraphQLDTOContributor
 
 		return _toMap(
 			_objectEntryManager.addObjectEntry(
-				dtoConverterContext, _objectDefinition, _toObjectEntry(dto),
+				dtoConverterContext, _cloneObjectDefinition(),
+				_toObjectEntry(dto),
 				(String)dtoConverterContext.getAttribute("scopeKey")));
 	}
 
@@ -232,7 +233,8 @@ public class ObjectDefinitionGraphQLDTOContributor
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(_objectEntryManager);
 
-		defaultObjectEntryManager.deleteObjectEntry(_objectDefinition, id);
+		defaultObjectEntryManager.deleteObjectEntry(
+			_cloneObjectDefinition(), id);
 
 		return true;
 	}
@@ -257,7 +259,7 @@ public class ObjectDefinitionGraphQLDTOContributor
 
 		return _toMap(
 			defaultObjectEntryManager.getObjectEntry(
-				dtoConverterContext, _objectDefinition, id));
+				dtoConverterContext, _cloneObjectDefinition(), id));
 	}
 
 	@Override
@@ -268,7 +270,7 @@ public class ObjectDefinitionGraphQLDTOContributor
 
 		Page<ObjectEntry> page = _objectEntryManager.getObjectEntries(
 			(Long)dtoConverterContext.getAttribute("companyId"),
-			_objectDefinition,
+			_cloneObjectDefinition(),
 			(String)dtoConverterContext.getAttribute("scopeKey"), aggregation,
 			dtoConverterContext,
 			(String)dtoConverterContext.getAttribute("filter"), pagination,
@@ -314,7 +316,7 @@ public class ObjectDefinitionGraphQLDTOContributor
 			DefaultObjectEntryManagerProvider.provide(_objectEntryManager);
 
 		ObjectEntry objectEntry = defaultObjectEntryManager.getObjectEntry(
-			dtoConverterContext, _objectDefinition, id);
+			dtoConverterContext, _cloneObjectDefinition(), id);
 
 		Map<String, Object> properties = objectEntry.getProperties();
 
@@ -424,7 +426,7 @@ public class ObjectDefinitionGraphQLDTOContributor
 
 		return _toMap(
 			defaultObjectEntryManager.updateObjectEntry(
-				dtoConverterContext, _objectDefinition, id,
+				dtoConverterContext, _cloneObjectDefinition(), id,
 				_toObjectEntry(dto)));
 	}
 
@@ -458,6 +460,10 @@ public class ObjectDefinitionGraphQLDTOContributor
 		_systemObjectDefinitionManagerRegistry =
 			systemObjectDefinitionManagerRegistry;
 		_typeName = typeName;
+	}
+
+	private ObjectDefinition _cloneObjectDefinition() {
+		return (ObjectDefinition)_objectDefinition.clone();
 	}
 
 	private String _getObjectRelationshipObjectFieldName(
