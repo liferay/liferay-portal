@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -146,10 +147,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		cpInstance = _cpInstanceLocalService.updateCPInstance(cpInstance);
 
 		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED,
-			_cpInstanceLocalService.getCPInstance(
-				cpInstance.getCPInstanceId()
-			).getStatus());
+			WorkflowConstants.STATUS_APPROVED, cpInstance.getStatus());
 
 		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
 			_cpDefinitionOptionValueRelLocalService.
@@ -318,7 +316,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 				getOrAddEmptyCPDefinitionOptionValueRel(
 					externalReferenceCode, _serviceContext.getCompanyId(),
 					_serviceContext.getUserId(),
-					cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					externalReferenceCode);
 
 			Assert.fail();
 		}
@@ -338,24 +337,29 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 					getOrAddEmptyCPDefinitionOptionValueRel(
 						externalReferenceCode, _serviceContext.getCompanyId(),
 						_serviceContext.getUserId(),
-						cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+						externalReferenceCode);
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_EMPTY,
-				cpDefinitionOptionValueRel.getStatus());
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 			Assert.assertEquals(
 				externalReferenceCode,
 				cpDefinitionOptionValueRel.getExternalReferenceCode());
 			Assert.assertEquals(
-				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+				StringUtil.toLowerCase(externalReferenceCode),
+				cpDefinitionOptionValueRel.getKey());
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY,
+				cpDefinitionOptionValueRel.getStatus());
 
 			CPDefinitionOptionValueRel resolvedCPDefinitionOptionValueRel =
 				_cpDefinitionOptionValueRelLocalService.
 					getOrAddEmptyCPDefinitionOptionValueRel(
 						externalReferenceCode, _serviceContext.getCompanyId(),
 						_serviceContext.getUserId(),
-						cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+						externalReferenceCode);
 
 			Assert.assertEquals(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
