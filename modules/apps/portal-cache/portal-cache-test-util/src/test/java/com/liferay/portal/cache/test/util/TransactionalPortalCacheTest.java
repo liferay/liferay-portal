@@ -119,6 +119,38 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
+	public void testCommitReadOnly() {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		PortalCache<String, String> portalCache = new TestPortalCache<>(
+			_portalCache.getPortalCacheName()) {
+
+			@Override
+			protected void doPut(String key, String value, int timeToLive) {
+				super.doPut(key, value, timeToLive);
+
+				_commitRemove(transactionalPortalCache, _KEY_2);
+			}
+
+		};
+
+		TransactionalPortalCacheUtil.begin();
+
+		TransactionalPortalCache<String, String>
+			readOnlyTransactionalPortalCache = new TransactionalPortalCache<>(
+				portalCache, false);
+
+		readOnlyTransactionalPortalCache.put(_KEY_1, _VALUE_1);
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertNull(portalCache.get(_KEY_1));
+	}
+
+	@Test
 	public void testCommitReadOnlyAfterWriterCommit() {
 		_setEnableTransactionalCache(true);
 

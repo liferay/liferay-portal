@@ -401,13 +401,9 @@ public class TransactionalPortalCacheUtil {
 			}
 
 			if (readOnly) {
-				if (_invalidationSequence.isInvalidatedAfter(
-						_regionName, startSequence)) {
-
-					return;
-				}
-
-				doCommit(false);
+				_invalidationSequence.publish(
+					_regionName, startSequence, () -> doCommit(false),
+					() -> doCommit(true));
 			}
 			else {
 				doCommit(
