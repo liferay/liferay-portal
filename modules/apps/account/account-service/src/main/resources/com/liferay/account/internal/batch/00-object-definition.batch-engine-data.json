@@ -13,59 +13,6 @@
 	},
 	"items": [
 		{
-			"externalReferenceCode": "L_ACCOUNT",
-			"objectRelationships": [
-				{
-					"deletionType": "cascade",
-					"edge": false,
-					"externalReferenceCode": "L_ACCOUNT_TO_L_ACCOUNT_VALIDATOR_RESULTS",
-					"label": {
-						"en_US": "Account to Account Validator Results"
-					},
-					"name": "accountToAccountValidatorResults",
-					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
-					"objectDefinitionExternalReferenceCode2": "L_ACCOUNT_VALIDATOR_RESULT",
-					"objectDefinitionModifiable2": true,
-					"objectDefinitionName2": "AccountValidatorResult",
-					"objectDefinitionSystem2": true,
-					"objectField": {
-						"DBType": "Long",
-						"businessType": "Relationship",
-						"externalReferenceCode": "ACCOUNT_TO_ACCOUNT_VALIDATOR_RESULTS",
-						"indexed": true,
-						"label": {
-							"en_US": "Account to Account Validator Results"
-						},
-						"localized": false,
-						"name": "r_accountToAccountValidatorResults_accountEntryId",
-						"objectFieldSettings": [
-							{
-								"name": "objectDefinition1ShortName",
-								"value": "AccountEntry"
-							},
-							{
-								"name": "objectRelationshipERCObjectFieldName",
-								"value": "r_accountToAccountValidatorResults_accountEntryERC"
-							}
-						],
-						"relationshipType": "oneToMany",
-						"required": true,
-						"system": false,
-						"type": "Long"
-					},
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": false,
-					"type": "oneToMany"
-				}
-			],
-			"status": {
-				"code": 0
-			},
-			"titleObjectFieldName": "name"
-		},
-		{
 			"accountEntryRestricted": true,
 			"accountEntryRestrictedObjectFieldName": "r_accountToAccountValidatorResults_accountEntryId",
 			"active": true,
@@ -144,6 +91,33 @@
 					},
 					"name": "resultStatus",
 					"system": true
+				},
+				{
+					"DBType": "Long",
+					"businessType": "Relationship",
+					"externalReferenceCode": "ACCOUNT_TO_ACCOUNT_VALIDATOR_RESULTS",
+					"indexed": true,
+					"label": {
+						"en_US": "Account to Account Validator Results"
+					},
+					"localized": false,
+					"name": "r_accountToAccountValidatorResults_accountEntryId",
+					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
+					"objectFieldSettings": [
+						{
+							"name": "objectDefinition1ShortName",
+							"value": "AccountEntry"
+						},
+						{
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_accountToAccountValidatorResults_accountEntryERC"
+						}
+					],
+					"objectRelationshipExternalReferenceCode": "L_ACCOUNT_TO_L_ACCOUNT_VALIDATOR_RESULTS",
+					"relationshipType": "oneToMany",
+					"required": true,
+					"system": false,
+					"type": "Long"
 				}
 			],
 			"objectFolderExternalReferenceCode": "default",

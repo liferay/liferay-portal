@@ -1,0 +1,60 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-89850",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"deletionType": "cascade",
+			"edge": false,
+			"externalReferenceCode": "L_ACCOUNT_TO_L_ACCOUNT_VALIDATOR_RESULTS",
+			"label": {
+				"en_US": "Account to Account Validator Results"
+			},
+			"name": "accountToAccountValidatorResults",
+			"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
+			"objectDefinitionExternalReferenceCode2": "L_ACCOUNT_VALIDATOR_RESULT",
+			"objectDefinitionModifiable2": true,
+			"objectDefinitionName2": "AccountValidatorResult",
+			"objectDefinitionSystem2": true,
+			"objectField": {
+				"DBType": "Long",
+				"businessType": "Relationship",
+				"externalReferenceCode": "ACCOUNT_TO_ACCOUNT_VALIDATOR_RESULTS",
+				"indexed": true,
+				"label": {
+					"en_US": "Account to Account Validator Results"
+				},
+				"localized": false,
+				"name": "r_accountToAccountValidatorResults_accountEntryId",
+				"objectFieldSettings": [
+					{
+						"name": "objectDefinition1ShortName",
+						"value": "AccountEntry"
+					},
+					{
+						"name": "objectRelationshipERCObjectFieldName",
+						"value": "r_accountToAccountValidatorResults_accountEntryERC"
+					}
+				],
+				"relationshipType": "oneToMany",
+				"required": true,
+				"system": false,
+				"type": "Long"
+			},
+			"parameterObjectFieldId": 0,
+			"parameterObjectFieldName": "",
+			"reverse": false,
+			"system": false,
+			"type": "oneToMany"
+		}
+	]
+}
