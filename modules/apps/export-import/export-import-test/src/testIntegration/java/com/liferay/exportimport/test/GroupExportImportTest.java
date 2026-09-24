@@ -18,6 +18,7 @@ import com.liferay.exportimport.report.constants.ExportImportReportEntryConstant
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -47,6 +48,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -393,13 +395,9 @@ public class GroupExportImportTest {
 	}
 
 	private String[] _getExternalReferenceCodes(Group... groups) {
-		String[] externalReferenceCodes = new String[groups.length];
-
-		for (int i = 0; i < groups.length; i++) {
-			externalReferenceCodes[i] = groups[i].getExternalReferenceCode();
-		}
-
-		return externalReferenceCodes;
+		return TransformUtil.transformToArray(
+			Arrays.asList(groups), Group::getExternalReferenceCode,
+			String.class);
 	}
 
 	private String _getGroupManifestPath(Group group) {

@@ -7,7 +7,6 @@ package com.liferay.exportimport.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
-import com.liferay.exportimport.kernel.lar.ExportImportGroup;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
@@ -243,19 +242,9 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 			return new PreviewSite[0];
 		}
 
-		List<ExportImportGroup> exportImportGroups =
-			_exportImportHelper.getExportImportGroups(fileEntry);
-
-		if (ListUtil.isEmpty(exportImportGroups)) {
-			return new PreviewSite[0];
-		}
-
-		PreviewSite[] previewSites = new PreviewSite[exportImportGroups.size()];
-
-		for (int i = 0; i < exportImportGroups.size(); i++) {
-			ExportImportGroup exportImportGroup = exportImportGroups.get(i);
-
-			previewSites[i] = new PreviewSite() {
+		return transformToArray(
+			_exportImportHelper.getExportImportGroups(fileEntry),
+			exportImportGroup -> new PreviewSite() {
 				{
 					setChildSitesCount(exportImportGroup::getChildGroupsCount);
 					setDescriptiveName(exportImportGroup::getDescriptiveName);
@@ -274,10 +263,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 						exportImportGroup::getExternalReferenceCode);
 					setPath(exportImportGroup::getPath);
 				}
-			};
-		}
-
-		return previewSites;
+			},
+			PreviewSite.class);
 	}
 
 	private void _validateImportFile(
