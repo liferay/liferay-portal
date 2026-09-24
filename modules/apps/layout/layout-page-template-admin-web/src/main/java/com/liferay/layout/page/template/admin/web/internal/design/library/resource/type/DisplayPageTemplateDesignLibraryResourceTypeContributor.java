@@ -75,7 +75,7 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 				"{AddDisplayPageTemplateDesignLibraryModalContent} from " +
 					"layout-page-template-admin-web",
 				HashMapBuilder.<String, Object>put(
-					"formSubmitURL",
+					"addDisplayPageURL",
 					PortletURLBuilder.create(
 						PortalUtil.getControlPanelPortletURL(
 							httpServletRequest, depotGroup,

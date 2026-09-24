@@ -17,15 +17,15 @@ import {MappingType} from './types/MappingTypes';
 import {ValidationError} from './types/ValidationError';
 
 interface Props {
+	addDisplayPageURL: string;
 	closeModal: () => void;
-	formSubmitURL: string;
 	mappingTypes: MappingType[];
 	namespace: string;
 }
 
 export default function AddDisplayPageTemplateDesignLibraryModalContent({
+	addDisplayPageURL,
 	closeModal,
-	formSubmitURL,
 	mappingTypes,
 	namespace,
 }: Props) {
@@ -50,7 +50,7 @@ export default function AddDisplayPageTemplateDesignLibraryModalContent({
 
 			setLoading(true);
 
-			fetch(formSubmitURL, {
+			fetch(addDisplayPageURL, {
 				body: new FormData(form!),
 				method: 'POST',
 			})
@@ -75,7 +75,7 @@ export default function AddDisplayPageTemplateDesignLibraryModalContent({
 					});
 				});
 		},
-		[closeModal, formSubmitURL, namespace]
+		[addDisplayPageURL, closeModal, namespace]
 	);
 
 	return (
