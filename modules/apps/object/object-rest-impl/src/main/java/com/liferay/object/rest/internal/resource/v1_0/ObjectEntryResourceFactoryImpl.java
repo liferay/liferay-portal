@@ -8,6 +8,7 @@ package com.liferay.object.rest.internal.resource.v1_0;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.object.rest.resource.v1_0.ObjectEntryResource;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -58,7 +59,8 @@ public class ObjectEntryResourceFactoryImpl
 		ExpressionConvert<Filter> expressionConvert,
 		FilterParserProvider filterParserProvider,
 		GroupLocalService groupLocalService,
-		Map<Long, ObjectDefinition> objectDefinitions,
+		Map<Long, Long> objectDefinitionIds,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
 		Supplier<ObjectEntryResourceImpl> objectEntryResourceImplSupplier,
 		ResourceActionLocalService resourceActionLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
@@ -71,7 +73,8 @@ public class ObjectEntryResourceFactoryImpl
 		_expressionConvert = expressionConvert;
 		_filterParserProvider = filterParserProvider;
 		_groupLocalService = groupLocalService;
-		_objectDefinitions = objectDefinitions;
+		_objectDefinitionIds = objectDefinitionIds;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryResourceImplSupplier = objectEntryResourceImplSupplier;
 		_resourceActionLocalService = resourceActionLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
@@ -185,6 +188,17 @@ public class ObjectEntryResourceFactoryImpl
 		}
 	}
 
+	private ObjectDefinition _getObjectDefinition(long companyId) {
+		Long objectDefinitionId = _objectDefinitionIds.get(companyId);
+
+		if (objectDefinitionId == null) {
+			return null;
+		}
+
+		return _objectDefinitionLocalService.fetchObjectDefinition(
+			objectDefinitionId);
+	}
+
 	private Object _invoke(
 			Method method, Object[] arguments, boolean checkPermissions,
 			HttpServletRequest httpServletRequest,
@@ -227,7 +241,7 @@ public class ObjectEntryResourceFactoryImpl
 		objectEntryResourceImpl.setFilterParserProvider(_filterParserProvider);
 		objectEntryResourceImpl.setGroupLocalService(_groupLocalService);
 		objectEntryResourceImpl.setObjectDefinition(
-			_objectDefinitions.get(company.getCompanyId()));
+			_getObjectDefinition(company.getCompanyId()));
 		objectEntryResourceImpl.setResourceActionLocalService(
 			_resourceActionLocalService);
 		objectEntryResourceImpl.setResourcePermissionLocalService(
@@ -256,7 +270,8 @@ public class ObjectEntryResourceFactoryImpl
 	private final ExpressionConvert<Filter> _expressionConvert;
 	private final FilterParserProvider _filterParserProvider;
 	private final GroupLocalService _groupLocalService;
-	private final Map<Long, ObjectDefinition> _objectDefinitions;
+	private final Map<Long, Long> _objectDefinitionIds;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final Supplier<ObjectEntryResourceImpl>
 		_objectEntryResourceImplSupplier;
 	private final ResourceActionLocalService _resourceActionLocalService;

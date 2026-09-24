@@ -8,6 +8,7 @@ package com.liferay.object.rest.internal.resource.v1_0;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.object.rest.resource.v1_0.CollaboratorResource;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -59,7 +60,8 @@ public class CollaboratorResourceFactoryImpl
 		ExpressionConvert<Filter> expressionConvert,
 		FilterParserProvider filterParserProvider,
 		GroupLocalService groupLocalService,
-		Map<Long, ObjectDefinition> objectDefinitions,
+		Map<Long, Long> objectDefinitionIds,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ResourceActionLocalService resourceActionLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
@@ -72,7 +74,8 @@ public class CollaboratorResourceFactoryImpl
 		_expressionConvert = expressionConvert;
 		_filterParserProvider = filterParserProvider;
 		_groupLocalService = groupLocalService;
-		_objectDefinitions = objectDefinitions;
+		_objectDefinitionIds = objectDefinitionIds;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_resourceActionLocalService = resourceActionLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
 		_roleLocalService = roleLocalService;
@@ -190,6 +193,17 @@ public class CollaboratorResourceFactoryImpl
 		}
 	}
 
+	private ObjectDefinition _getObjectDefinition(long companyId) {
+		Long objectDefinitionId = _objectDefinitionIds.get(companyId);
+
+		if (objectDefinitionId == null) {
+			return null;
+		}
+
+		return _objectDefinitionLocalService.fetchObjectDefinition(
+			objectDefinitionId);
+	}
+
 	private Object _invoke(
 			Method method, Object[] arguments, boolean checkPermissions,
 			HttpServletRequest httpServletRequest,
@@ -233,7 +247,7 @@ public class CollaboratorResourceFactoryImpl
 		collaboratorResourceImpl.setFilterParserProvider(_filterParserProvider);
 		collaboratorResourceImpl.setGroupLocalService(_groupLocalService);
 		collaboratorResourceImpl.setObjectDefinition(
-			_objectDefinitions.get(company.getCompanyId()));
+			_getObjectDefinition(company.getCompanyId()));
 		collaboratorResourceImpl.setResourceActionLocalService(
 			_resourceActionLocalService);
 		collaboratorResourceImpl.setResourcePermissionLocalService(
@@ -261,7 +275,8 @@ public class CollaboratorResourceFactoryImpl
 	private final ExpressionConvert<Filter> _expressionConvert;
 	private final FilterParserProvider _filterParserProvider;
 	private final GroupLocalService _groupLocalService;
-	private final Map<Long, ObjectDefinition> _objectDefinitions;
+	private final Map<Long, Long> _objectDefinitionIds;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ResourceActionLocalService _resourceActionLocalService;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;

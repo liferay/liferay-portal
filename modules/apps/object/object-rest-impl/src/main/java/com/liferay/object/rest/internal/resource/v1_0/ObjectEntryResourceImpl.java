@@ -113,8 +113,7 @@ public class ObjectEntryResourceImpl
 	public ObjectEntryResourceImpl(
 		DTOConverterRegistry dtoConverterRegistry,
 		EntityModelProvider entityModelProvider,
-		ObjectDefinition objectDefinition,
-		Map<Long, ObjectDefinition> objectDefinitions,
+		ObjectDefinition objectDefinition, Map<Long, Long> objectDefinitionIds,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,
 		ObjectEntryManagerRegistry objectEntryManagerRegistry,
@@ -128,7 +127,7 @@ public class ObjectEntryResourceImpl
 		_dtoConverterRegistry = dtoConverterRegistry;
 		_entityModelProvider = entityModelProvider;
 		_objectDefinition = objectDefinition;
-		_objectDefinitions = objectDefinitions;
+		_objectDefinitionIds = objectDefinitionIds;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectEntryManagerRegistry = objectEntryManagerRegistry;
@@ -467,7 +466,7 @@ public class ObjectEntryResourceImpl
 		}
 
 		return _entityModelProvider.getEntityModel(
-			_objectDefinitions.get(contextCompany.getCompanyId()));
+			_getObjectDefinition(contextCompany.getCompanyId()));
 	}
 
 	@Override
@@ -1515,8 +1514,12 @@ public class ObjectEntryResourceImpl
 			restContextPath = _objectDefinition.getRESTContextPath();
 		}
 		else {
-			ObjectDefinition objectDefinition = _objectDefinitions.get(
+			ObjectDefinition objectDefinition = _getObjectDefinition(
 				contextCompany.getCompanyId());
+
+			if (objectDefinition == null) {
+				return null;
+			}
 
 			restContextPath = objectDefinition.getRESTContextPath();
 		}
@@ -1752,6 +1755,17 @@ public class ObjectEntryResourceImpl
 			objectDefinition.getResourceName());
 	}
 
+	private ObjectDefinition _getObjectDefinition(long companyId) {
+		Long objectDefinitionId = _objectDefinitionIds.get(companyId);
+
+		if (objectDefinitionId == null) {
+			return null;
+		}
+
+		return _objectDefinitionLocalService.fetchObjectDefinition(
+			objectDefinitionId);
+	}
+
 	private StreamingOutput _getStreamingOutput(File file) {
 		return streamingOutput -> {
 			try {
@@ -1896,8 +1910,8 @@ public class ObjectEntryResourceImpl
 	@Context
 	private ObjectDefinition _objectDefinition;
 
+	private final Map<Long, Long> _objectDefinitionIds;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
-	private final Map<Long, ObjectDefinition> _objectDefinitions;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectEntryManagerRegistry _objectEntryManagerRegistry;
 	private final ObjectEntryService _objectEntryService;

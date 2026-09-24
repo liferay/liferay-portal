@@ -188,14 +188,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			long companyId, String restContextPath)
 		throws Exception {
 
-		ObjectDefinition objectDefinition = null;
-
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.get(restContextPath);
-
-		if (objectDefinitions != null) {
-			objectDefinition = objectDefinitions.get(companyId);
-		}
+		ObjectDefinition objectDefinition = _getObjectDefinition(
+			companyId, restContextPath);
 
 		if (objectDefinition == null) {
 			throw new NoSuchObjectDefinitionException();
@@ -242,7 +236,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		return new ObjectEntryResourceImpl(
 			_dtoConverterRegistry, _entityModelProvider, objectDefinition,
-			_objectDefinitionsMap.get(restContextPath),
+			_objectDefinitionIdsMap.get(restContextPath),
 			_objectDefinitionLocalService, _objectEntryLocalService,
 			_objectEntryManagerRegistry, _objectEntryService,
 			_objectFieldLocalService, _objectRelationshipLocalService,
@@ -268,22 +262,23 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_objectScopeProviderRegistry.getObjectScopeProvider(
 				objectDefinition.getScope());
 
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.get(objectDefinition.getRESTContextPath());
+		Map<Long, Long> objectDefinitionIds = _objectDefinitionIdsMap.get(
+			objectDefinition.getRESTContextPath());
 
-		if (objectDefinitions == null) {
-			objectDefinitions = new HashMap<>();
+		if (objectDefinitionIds == null) {
+			objectDefinitionIds = new HashMap<>();
 
-			_objectDefinitionsMap.put(
-				objectDefinition.getRESTContextPath(), objectDefinitions);
+			_objectDefinitionIdsMap.put(
+				objectDefinition.getRESTContextPath(), objectDefinitionIds);
 		}
 
 		_excludeMethods(objectDefinition, objectScopeProvider);
 
 		_initCustomObjectDefinition(objectDefinition);
 
-		objectDefinitions.put(
-			objectDefinition.getCompanyId(), objectDefinition);
+		objectDefinitionIds.put(
+			objectDefinition.getCompanyId(),
+			objectDefinition.getObjectDefinitionId());
 
 		return Collections.singletonList(
 			_bundleContext.registerService(
@@ -413,6 +408,26 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private String _getEntityClassName(ObjectDefinition objectDefinition) {
 		return ObjectEntry.class.getName() + "#" +
 			StringUtil.toLowerCase(objectDefinition.getShortName());
+	}
+
+	private ObjectDefinition _getObjectDefinition(
+		long companyId, String restContextPath) {
+
+		Map<Long, Long> objectDefinitionIds = _objectDefinitionIdsMap.get(
+			restContextPath);
+
+		if (objectDefinitionIds == null) {
+			return null;
+		}
+
+		Long objectDefinitionId = objectDefinitionIds.get(companyId);
+
+		if (objectDefinitionId == null) {
+			return null;
+		}
+
+		return _objectDefinitionLocalService.fetchObjectDefinition(
+			objectDefinitionId);
 	}
 
 	private String _getResourceLocatorKey(ObjectDefinition objectDefinition) {
@@ -748,7 +763,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 							_defaultPermissionCheckerFactory,
 							_expressionConvert, _filterParserProvider,
 							_groupLocalService,
-							_objectDefinitionsMap.get(restContextPath),
+							_objectDefinitionIdsMap.get(restContextPath),
+							_objectDefinitionLocalService,
 							_resourceActionLocalService,
 							_resourcePermissionLocalService, _roleLocalService,
 							_sortParserProvider, _userLocalService),
@@ -836,7 +852,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 							_defaultPermissionCheckerFactory,
 							_expressionConvert, _filterParserProvider,
 							_groupLocalService,
-							_objectDefinitionsMap.get(restContextPath),
+							_objectDefinitionIdsMap.get(restContextPath),
+							_objectDefinitionLocalService,
 							() -> _createObjectEntryResourceImpl(
 								null, restContextPath),
 							_resourceActionLocalService,
@@ -1022,14 +1039,14 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private void _undeployObjectDefinitions(
 		long companyId, String restContextPath) {
 
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.get(restContextPath);
+		Map<Long, Long> objectDefinitionIds = _objectDefinitionIdsMap.get(
+			restContextPath);
 
-		if (objectDefinitions != null) {
-			objectDefinitions.remove(companyId);
+		if (objectDefinitionIds != null) {
+			objectDefinitionIds.remove(companyId);
 
-			if (objectDefinitions.isEmpty()) {
-				_objectDefinitionsMap.remove(restContextPath);
+			if (objectDefinitionIds.isEmpty()) {
+				_objectDefinitionIdsMap.remove(restContextPath);
 			}
 		}
 	}
@@ -1239,11 +1256,11 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	@Reference
 	private ObjectActionLocalService _objectActionLocalService;
 
+	private final Map<String, Map<Long, Long>> _objectDefinitionIdsMap =
+		new HashMap<>();
+
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	private final Map<String, Map<Long, ObjectDefinition>>
-		_objectDefinitionsMap = new HashMap<>();
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
