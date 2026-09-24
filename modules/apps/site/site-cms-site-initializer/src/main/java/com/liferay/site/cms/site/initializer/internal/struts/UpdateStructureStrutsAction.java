@@ -344,11 +344,15 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 					com.liferay.object.model.ObjectRelationship
 						serviceBuilderObjectRelationship =
 							_objectRelationshipLocalService.
-								getObjectRelationshipByExternalReferenceCode(
+								fetchObjectRelationshipByExternalReferenceCode(
 									jsonObject.getString(
 										"objectRelationshipERC"),
 									_companyId,
 									objectDefinition.getObjectDefinitionId());
+
+					if (serviceBuilderObjectRelationship == null) {
+						continue;
+					}
 
 					if (serviceBuilderObjectRelationship.isEdge()) {
 						_objectRelationshipService.updateObjectRelationship(
@@ -376,8 +380,12 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				for (String groupERC : _deletedGroupERCs) {
 					com.liferay.object.model.ObjectDefinition objectDefinition =
 						_objectDefinitionLocalService.
-							getObjectDefinitionByExternalReferenceCode(
+							fetchObjectDefinitionByExternalReferenceCode(
 								groupERC, _companyId);
+
+					if (objectDefinition == null) {
+						continue;
+					}
 
 					_objectDefinitionService.deleteObjectDefinition(
 						objectDefinition.getObjectDefinitionId());
