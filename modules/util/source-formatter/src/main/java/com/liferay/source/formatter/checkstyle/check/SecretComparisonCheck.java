@@ -148,6 +148,6 @@ public class SecretComparisonCheck extends BaseCheck {
 	private static final Pattern _identifierPattern = Pattern.compile(
 		".*(Ids?|Names?)");
 	private static final Pattern _secretNamePattern = Pattern.compile(
-		"\\w*(?i:secret|token|password|apiKey|hmac|otp|nonce)\\w*");
+		"\\w*(?i:apiKey|hmac|nonce|otp|password|secret|token)\\w*");
 
 }
