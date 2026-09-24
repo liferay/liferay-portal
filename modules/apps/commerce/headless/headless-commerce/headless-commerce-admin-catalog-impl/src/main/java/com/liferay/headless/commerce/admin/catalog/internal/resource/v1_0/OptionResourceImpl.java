@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.NoSuchCPOptionException;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.service.CPOptionService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Option;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.OptionValue;
 import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.OptionEntityModel;
@@ -41,6 +44,7 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -52,10 +56,13 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/option.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = OptionResource.class
 )
 @CTAware
-public class OptionResourceImpl extends BaseOptionResourceImpl {
+public class OptionResourceImpl
+	extends BaseOptionResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Option> {
 
 	@Override
 	public Response deleteOption(Long id) throws Exception {
@@ -98,37 +105,45 @@ public class OptionResourceImpl extends BaseOptionResourceImpl {
 	}
 
 	@Override
-	public Option getOption(Long id) throws Exception {
-		return _toOption(GetterUtil.getLong(id));
-	}
+	public ExportImportDescriptor<CPOption> getExportImportDescriptor() {
+		return new ExportImportDescriptor<>() {
 
-	@Override
-	public Option getOptionByExternalReferenceCode(String externalReferenceCode)
-		throws Exception {
+			@Override
+			public String getKey() {
+				return OptionResourceImpl.class.getName();
+			}
 
-		CPOption cpOption =
-			_cpOptionService.fetchCPOptionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+			@Override
+			public String getLabelLanguageKey() {
+				return "options";
+			}
 
-		return _toOption(cpOption.getCPOptionId());
-	}
+			@Override
+			public Class<CPOption> getModelClass() {
+				return CPOption.class;
+			}
 
-	@Override
-	public Page<Option> getOptionsPage(
-			String search, Filter filter, Pagination pagination, Sort[] sorts)
-		throws Exception {
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("creator", "optionValues");
+			}
 
-		return SearchUtil.search(
-			Collections.emptyMap(),
-			booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
-			CPOption.class.getName(), search, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
-			searchContext -> searchContext.setCompanyId(
-				contextCompany.getCompanyId()),
-			sorts,
-			document -> _toOption(
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
+			@Override
+			public String getPortletId() {
+				return CPPortletKeys.CP_OPTIONS;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_PRODUCT_MANAGEMENT;
+			}
+
+		};
 	}
 
 	@Override
@@ -163,16 +178,61 @@ public class OptionResourceImpl extends BaseOptionResourceImpl {
 	}
 
 	@Override
-	public Option postOption(Option option) throws Exception {
+	protected Option doGetOption(Long id) throws Exception {
+		return _toOption(GetterUtil.getLong(id));
+	}
+
+	@Override
+	protected Option doGetOptionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		CPOption cpOption =
+			_cpOptionService.fetchCPOptionByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
+
+		return _toOption(cpOption.getCPOptionId());
+	}
+
+	@Override
+	protected Page<Option> doGetOptionsPage(
+			String search, Filter filter, Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return SearchUtil.search(
+			Collections.emptyMap(),
+			booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
+			CPOption.class.getName(), search, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> searchContext.setCompanyId(
+				contextCompany.getCompanyId()),
+			sorts,
+			document -> _toOption(
+				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
+	}
+
+	@Override
+	protected Option doPostOption(Option option) throws Exception {
 		return _addOrUpdateOption(option.getExternalReferenceCode(), option);
 	}
 
 	@Override
-	public Option putOptionByExternalReferenceCode(
+	protected Option doPutOptionByExternalReferenceCode(
 			String externalReferenceCode, Option option)
 		throws Exception {
 
 		return _addOrUpdateOption(externalReferenceCode, option);
+	}
+
+	@Override
+	protected Long getPermissionCheckerGroupId(Object id) {
+		return 0L;
+	}
+
+	@Override
+	protected String getPermissionCheckerResourceName(Object id) {
+		return CPOption.class.getName();
 	}
 
 	private Option _addOrUpdateOption(
