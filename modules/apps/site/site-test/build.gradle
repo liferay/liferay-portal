@@ -18,6 +18,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal:portal-local-service-tree-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")

@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -41,11 +42,13 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -62,6 +65,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -247,6 +251,82 @@ public class SitemapRegenerationSchedulerTest {
 		Assert.assertNotNull(
 			_sitemapManager.getNextRegenerateSitemapDate(
 				TestPropsValues.getCompanyId()));
+	}
+
+	@Test
+	public void testGetSitemapInputStreamWithRegenerationScheduled()
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		_sitemapManager.scheduleRegenerateSitemap(
+			SitemapConstants.ASSET_TYPE_KEY_PAGES, companyId,
+			_group.getGroupId(),
+			new Date(System.currentTimeMillis() + Time.DAY));
+
+		Date nextFireDate = _getNextFireDate(
+			SitemapConstants.ASSET_TYPE_KEY_PAGES);
+
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		for (int i = 0; i < 2; i++) {
+			Assert.assertNull(
+				_sitemapManager.getSitemapInputStream(
+					SitemapConstants.ASSET_TYPE_KEY_PAGES, null,
+					_group.getGroupId(), 1, false, themeDisplay));
+		}
+
+		Assert.assertEquals(
+			nextFireDate,
+			_getNextFireDate(SitemapConstants.ASSET_TYPE_KEY_PAGES));
+		Assert.assertFalse(
+			_sitemapStorageHelper.hasSitemapFile(
+				companyId, _group.getGroupId(),
+				SitemapConstants.ASSET_TYPE_KEY_PAGES, 1));
+	}
+
+	@Test
+	public void testGetSitemapInputStreamWithSitemapIndexNotStored()
+		throws Exception {
+
+		LayoutTestUtil.addTypePortletLayout(_group);
+
+		Assert.assertNull(
+			_sitemapManager.getSitemapInputStream(
+				null, null, _group.getGroupId(), 1, false, _getThemeDisplay()));
+
+		IdempotentRetryAssert.retryAssert(
+			30, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+			() -> {
+				Assert.assertTrue(
+					_sitemapStorageHelper.hasSitemapFile(
+						TestPropsValues.getCompanyId(), _group.getGroupId()));
+
+				return null;
+			});
+	}
+
+	@Test
+	public void testGetSitemapInputStreamWithSitemapNotStored()
+		throws Exception {
+
+		LayoutTestUtil.addTypePortletLayout(_group);
+
+		Assert.assertNull(
+			_sitemapManager.getSitemapInputStream(
+				SitemapConstants.ASSET_TYPE_KEY_PAGES, null,
+				_group.getGroupId(), 1, false, _getThemeDisplay()));
+
+		IdempotentRetryAssert.retryAssert(
+			30, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+			() -> {
+				Assert.assertTrue(
+					_sitemapStorageHelper.hasSitemapFile(
+						TestPropsValues.getCompanyId(), _group.getGroupId(),
+						SitemapConstants.ASSET_TYPE_KEY_PAGES, 1));
+
+				return null;
+			});
 	}
 
 	@Test
@@ -722,6 +802,15 @@ public class SitemapRegenerationSchedulerTest {
 			});
 	}
 
+	private ThemeDisplay _getThemeDisplay() throws Exception {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+
+		return themeDisplay;
+	}
+
 	private ObjectDefinition _publishObjectDefinition(String scope)
 		throws Exception {
 
@@ -772,6 +861,9 @@ public class SitemapRegenerationSchedulerTest {
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _companyObjectDefinition;
