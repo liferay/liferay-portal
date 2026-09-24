@@ -63,8 +63,6 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyCacheEntry companyKeyCacheEntry = _createCompanyKeyCacheEntry(
 			companyKeyResolverImpl);
 
-		Assert.assertNotNull(companyKeyCacheEntry);
-
 		companyKeyResolverImpl.activate(
 			HashMapBuilder.<String, Object>put(
 				"companyKEKIdentifier", _KEK_IDENTIFIER
@@ -75,9 +73,6 @@ public class CompanyKeyResolverImplTest {
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
 
-		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
-		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
-
 		KeyManagerConfiguration keyManagerConfiguration =
 			ReflectionTestUtil.getFieldValue(
 				companyKeyResolverImpl, "_keyManagerConfiguration");
@@ -85,6 +80,9 @@ public class CompanyKeyResolverImplTest {
 		Assert.assertEquals(
 			_KEK_IDENTIFIER, keyManagerConfiguration.companyKEKIdentifier());
 		Assert.assertEquals(1, keyManagerConfiguration.companyKeyCacheTTL());
+
+		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
+		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
 
 		companyKeyResolverImpl.deactivate();
 	}
@@ -650,10 +648,10 @@ public class CompanyKeyResolverImplTest {
 		WrappedCompanyKey wrappedCompanyKey = WrappedCompanyKey.parse(
 			_COMPANY_ID_1, wrappedKey);
 
+		KeyReference keyReference = wrappedCompanyKey.getKeyReference();
+
 		Assert.assertArrayEquals(
 			_CIPHERTEXT_1, wrappedCompanyKey.getCiphertext());
-
-		KeyReference keyReference = wrappedCompanyKey.getKeyReference();
 
 		Assert.assertEquals(_KEK_IDENTIFIER, keyReference.getIdentifier());
 		Assert.assertEquals(_KEK_PROVIDER_ID, keyReference.getProviderId());
