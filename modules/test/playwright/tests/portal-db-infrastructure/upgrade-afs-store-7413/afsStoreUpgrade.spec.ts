@@ -9,6 +9,7 @@ import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.f
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {RecycleBinPage} from '../../../pages/trash-web/RecycleBinPage';
+import {reindexAllSearchIndexes} from '../utils/reindexAllSearchIndexes';
 import {viewUpgradedDocument} from '../utils/viewUpgradedDocument';
 
 const test = mergeTests(
@@ -23,24 +24,7 @@ test.describe.serial('View AFS store upgrade', () => {
 		{tag: '@LPD-104390'},
 		async ({page, searchAdminPage}) => {
 			await test.step('Reindex all search indexes', async () => {
-				await searchAdminPage.goto();
-
-				await searchAdminPage.goToIndexActionsTab();
-
-				await searchAdminPage.reindexAllSearchIndexes();
-
-				const reindexAllSearchIndexes =
-					await searchAdminPage.getIndexActionsItem(
-						'All Search Indexes'
-					);
-
-				await expect(reindexAllSearchIndexes).toBeVisible();
-
-				const progress = reindexAllSearchIndexes.locator('.progress');
-
-				await expect(progress).toBeVisible();
-
-				await expect(progress).toBeHidden({timeout: 120 * 1000});
+				await reindexAllSearchIndexes({searchAdminPage});
 			});
 
 			for (const [title, expectedSize] of [
