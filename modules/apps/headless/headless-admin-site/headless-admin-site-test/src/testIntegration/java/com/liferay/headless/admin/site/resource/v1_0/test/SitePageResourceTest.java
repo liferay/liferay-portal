@@ -336,10 +336,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_testGetSiteSitePageSitePagesPageWithContentPage();
 		_testGetSiteSitePageSitePagesPageWithFlatten();
-		_testGetSiteSitePageSitePagesPageWithoutViewPermission();
 		_testGetSiteSitePageSitePagesPageWithPermissions();
 		_testGetSiteSitePageSitePagesPageWithUnknownSitePageExternalReferenceCode();
 		_testGetSiteSitePageSitePagesPageWithUnsupportedType();
+		_testGetSiteSitePageSitePagesPageWithoutViewPermission();
 	}
 
 	@Override
