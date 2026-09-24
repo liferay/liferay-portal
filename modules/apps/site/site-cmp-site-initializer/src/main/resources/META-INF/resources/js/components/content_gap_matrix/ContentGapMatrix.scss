@@ -17,7 +17,7 @@ $content-gap-cell-tiers: (
 
 .lfr-cmp__content-gap-cell {
 	align-items: center;
-	border: 0.0625rem solid $secondary-l3;
+	border: 0.0625rem solid var(--secondary-l3);
 	border-radius: 0.5rem;
 	display: flex;
 	justify-content: center;
@@ -143,7 +143,7 @@ $content-gap-cell-tiers: (
 }
 
 .lfr-cmp__content-gap-matrix-column-header {
-	color: $body-color;
+	color: var(--body-color);
 	font-size: 0.75rem;
 	font-weight: 600;
 	padding-bottom: 0.5rem;
@@ -151,7 +151,7 @@ $content-gap-cell-tiers: (
 }
 
 .lfr-cmp__content-gap-matrix-container {
-	border-color: $secondary-l3;
+	border-color: var(--secondary-l3);
 	border-radius: 0.5rem;
 	border-style: solid;
 	border-width: 0.0625rem;
@@ -168,7 +168,7 @@ $content-gap-cell-tiers: (
 }
 
 .lfr-cmp__content-gap-matrix-description {
-	color: $secondary;
+	color: var(--secondary);
 	font-size: 0.875rem;
 	margin-bottom: 0;
 }
@@ -198,7 +198,7 @@ $content-gap-cell-tiers: (
 
 .lfr-cmp__content-gap-matrix-header-title {
 	align-items: center;
-	color: $secondary;
+	color: var(--secondary);
 	display: flex;
 	font-size: 0.875rem;
 	font-weight: 600;
@@ -216,7 +216,7 @@ $content-gap-cell-tiers: (
 
 .lfr-cmp__content-gap-matrix-row-header {
 	align-items: center;
-	color: $body-color;
+	color: var(--body-color);
 	display: flex;
 	font-size: 0.75rem;
 	font-weight: 600;
@@ -224,7 +224,7 @@ $content-gap-cell-tiers: (
 }
 
 .lfr-cmp__content-gap-matrix-title {
-	color: $body-color;
+	color: var(--body-color);
 	font-size: 1rem;
 	font-weight: 600;
 	margin-bottom: 0.25rem;
