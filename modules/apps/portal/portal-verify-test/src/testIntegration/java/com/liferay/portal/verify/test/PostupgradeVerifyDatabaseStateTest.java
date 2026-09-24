@@ -41,6 +41,7 @@ import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -73,14 +74,14 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getErrorMessages,
+				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Missing columns were detected for ",
 						getNormalizedName("UserTracker"), " table"),
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					getNormalizedName("companyId")),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
+					getNormalizedName("companyId")));
 		}
 		finally {
 			alterColumnName(
@@ -94,14 +95,14 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getWarnMessages,
+				LoggerTestUtil.WARN,
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Column ", getNormalizedName("city"),
 						" is not defined as VARCHAR(75) null for ",
 						getNormalizedName("Address"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getWarnMessages,
-				LoggerTestUtil.WARN);
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME));
 		}
 		finally {
 			alterColumnType("Address", "city", "VARCHAR(75)");
@@ -197,10 +198,8 @@ public class PostupgradeVerifyDatabaseStateTest
 				indexMetadata.getColumnNames());
 		}
 
-		dropIndex(indexMetadata.getIndexName(), "UserTracker");
-
 		try {
-			addIndex(
+			updateIndex(
 				indexMetadata.getIndexName(), "UserTracker", false,
 				ArrayUtil.append(indexMetadata.getColumnNames(), "remoteAddr"));
 
@@ -217,72 +216,32 @@ public class PostupgradeVerifyDatabaseStateTest
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME));
 		}
 		finally {
-			dropIndex(indexMetadata.getIndexName(), "UserTracker");
-
-			addIndex(
+			updateIndex(
 				indexMetadata.getIndexName(), "UserTracker", false,
 				indexMetadata.getColumnNames());
-		}
-
-		addIndex("IX_TEST", "UserTracker", false, "companyId", "userId");
-
-		try {
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Stale indexes were detected for ",
-						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					getNormalizedName("IX_TEST")),
-				PostupgradeVerifyDatabaseState::getWarnMessages,
-				LoggerTestUtil.WARN);
-		}
-		finally {
-			dropIndex("IX_TEST", "UserTracker");
-		}
-
-		addIndex("IX_TEST", "UserTracker", true, "userTrackerId");
-
-		try {
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Stale unique indexes were detected for ",
-						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					getNormalizedName("IX_TEST")),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
-		}
-		finally {
-			dropIndex("IX_TEST", "UserTracker");
 		}
 
 		IndexMetadata uniqueIndexMetadata = _getIndexMetadata(
 			portalTablesIndexMetadatas.get("Address"), true);
 
-		dropIndex(uniqueIndexMetadata.getIndexName(), "Address");
-
 		try {
-			addIndex(
+			updateIndex(
 				uniqueIndexMetadata.getIndexName(), "Address", false,
 				uniqueIndexMetadata.getColumnNames());
 
 			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getErrorMessages,
+				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Index ",
 						getNormalizedName(uniqueIndexMetadata.getIndexName()),
 						" must be defined as unique for ",
 						getNormalizedName("Address"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME));
 		}
 		finally {
-			dropIndex(uniqueIndexMetadata.getIndexName(), "Address");
-
-			addIndex(
+			updateIndex(
 				uniqueIndexMetadata.getIndexName(), "Address", true,
 				uniqueIndexMetadata.getColumnNames());
 		}
@@ -302,19 +261,15 @@ public class PostupgradeVerifyDatabaseStateTest
 		IndexMetadata indexMetadata = _getIndexMetadata(
 			portalTablesIndexMetadatas.get("UserTracker"), "sessionId");
 
-		dropIndex(indexMetadata.getIndexName(), "UserTracker");
-
 		try {
-			addIndex(
+			updateIndex(
 				indexMetadata.getIndexName(), "UserTracker", false,
 				"left(sessionId, 50)");
 
 			_testVerifyMessages();
 		}
 		finally {
-			dropIndex(indexMetadata.getIndexName(), "UserTracker");
-
-			addIndex(
+			updateIndex(
 				indexMetadata.getIndexName(), "UserTracker", false,
 				indexMetadata.getColumnNames());
 		}
@@ -356,10 +311,13 @@ public class PostupgradeVerifyDatabaseStateTest
 
 	@Test
 	public void testVerifyPostupgradePrimaryKeys() throws Exception {
-		removePrimaryKey("Phone");
-
 		try {
+			removePrimaryKey("Phone");
+			updatePrimaryKey("UserTracker", "userTrackerId", "mvccVersion");
+
 			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getErrorMessages,
+				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Missing primary key was detected for ",
@@ -367,17 +325,6 @@ public class PostupgradeVerifyDatabaseStateTest
 						getNormalizedName("phoneId"), ", ",
 						getNormalizedName("ctCollectionId"), "]"),
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
-		}
-		finally {
-			updatePrimaryKey("Phone", "phoneId", "ctCollectionId");
-		}
-
-		updatePrimaryKey("UserTracker", "userTrackerId", "mvccVersion");
-
-		try {
-			_testGetMessages(
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Primary key [", getNormalizedName("userTrackerId"),
@@ -385,11 +332,10 @@ public class PostupgradeVerifyDatabaseStateTest
 						"] is not defined as [",
 						getNormalizedName("userTrackerId"), "] for ",
 						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME));
 		}
 		finally {
+			updatePrimaryKey("Phone", "phoneId", "ctCollectionId");
 			updatePrimaryKey("UserTracker", "userTrackerId");
 		}
 	}
@@ -416,6 +362,43 @@ public class PostupgradeVerifyDatabaseStateTest
 			for (String message : logCapture.getMessages()) {
 				Assert.assertFalse(message, message.contains(tableName));
 			}
+		}
+	}
+
+	@Test
+	public void testVerifyPostupgradeStaleIndexes() throws Exception {
+		addIndex("IX_TEST", "UserTracker", false, "companyId", "userId");
+
+		try {
+			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getWarnMessages,
+				LoggerTestUtil.WARN,
+				_getExpectedMessage(
+					StringBundler.concat(
+						"Stale indexes were detected for ",
+						getNormalizedName("UserTracker"), " table"),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+					getNormalizedName("IX_TEST")));
+		}
+		finally {
+			dropIndex("IX_TEST", "UserTracker");
+		}
+
+		addIndex("IX_TEST", "UserTracker", true, "userTrackerId");
+
+		try {
+			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getErrorMessages,
+				LoggerTestUtil.ERROR,
+				_getExpectedMessage(
+					StringBundler.concat(
+						"Stale unique indexes were detected for ",
+						getNormalizedName("UserTracker"), " table"),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+					getNormalizedName("IX_TEST")));
+		}
+		finally {
+			dropIndex("IX_TEST", "UserTracker");
 		}
 	}
 
@@ -631,9 +614,8 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	private void _testGetMessages(
-			String expectedMessage,
 			Function<PostupgradeVerifyDatabaseState, List<String>> function,
-			String priority)
+			String priority, String... expectedMessages)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -658,7 +640,8 @@ public class PostupgradeVerifyDatabaseStateTest
 
 			Assert.assertEquals(logMessages, messages);
 			Assert.assertTrue(
-				messages.toString(), messages.contains(expectedMessage));
+				messages.toString(),
+				messages.containsAll(Arrays.asList(expectedMessages)));
 		}
 	}
 
