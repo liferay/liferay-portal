@@ -180,7 +180,7 @@ public class GroupExporter {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						"Exporting group " + externalReferenceCode +
-							" not supported");
+							" is not supported");
 				}
 
 				return null;
