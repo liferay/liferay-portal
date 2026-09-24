@@ -32,11 +32,19 @@ const baseTest = mergeTests(
 
 const DATA_MASKS_API = 'data-masks';
 
+const OTHER_TOOL_NAME = 'getAuditEventsPage';
+
+const OTHER_TOOL_SET_NAME = 'audit-v1.0';
+
 const PROFILE_DATA_MASKS_API = 'mcp/server-profile-data-masks';
 
 const PROFILE_TOOLS_API = 'mcp/server-profile-tools';
 
 const PROFILES_API = 'mcp/server-profiles';
+
+const TOOL_IN_EVERY_TOOL_SET = 'getOpenAPI';
+
+const TOOL_SETS_API = 'mcp-server/v1.0/tool-sets';
 
 const TOOL_SET_NAME = 'mcp-server-v1.0';
 
@@ -94,13 +102,14 @@ async function trackUIProfileForCleanup(
 async function createProfileTool(
 	apiHelpers: DataApiHelpers,
 	profileERC: string,
-	toolName: string
+	toolName: string,
+	toolSetName: string = TOOL_SET_NAME
 ): Promise<ObjectEntry> {
 	const profileTool = await apiHelpers.objectEntry.postObjectEntry(
 		{
 			r_mcpServerProfileToTools_l_mcpServerProfileERC: profileERC,
 			toolName,
-			toolSetName: TOOL_SET_NAME,
+			toolSetName,
 		},
 		PROFILE_TOOLS_API
 	);
@@ -112,6 +121,18 @@ async function createProfileTool(
 	});
 
 	return profileTool;
+}
+
+async function getToolSetToolNames(
+	apiHelpers: DataApiHelpers
+): Promise<string[]> {
+	const toolSummariesPage = await apiHelpers.get(
+		`${apiHelpers.baseUrl}${TOOL_SETS_API}/${TOOL_SET_NAME}/tool-summaries?fields=name&pageSize=100`
+	);
+
+	return toolSummariesPage.items.map(
+		(toolSummary: {name: string}) => toolSummary.name
+	);
 }
 
 const test = baseTest.extend<{
@@ -847,8 +868,8 @@ test.describe('Profiles - Tools tab', () => {
 	);
 
 	test(
-		'Shows the tools the profile carries as assigned and untouchable',
-		{tag: '@LPD-103214'},
+		'Omits the tools the profile already carries',
+		{tag: '@LPD-104379'},
 		async ({apiHelpers, profilesPage}) => {
 			const name = profileName();
 			const profile = await createProfile(apiHelpers, name);
@@ -862,46 +883,111 @@ test.describe('Profiles - Tools tab', () => {
 
 			await profilesPage.openAddToolsModal();
 
-			// A tool set with assigned tools starts indeterminate and
-			// disabled until its tools are loaded
+			// A tool set with a tool left to add stays in the list
 
 			await expect(
-				profilesPage.toolSetCheckbox(TOOL_SET_NAME)
-			).toBeDisabled();
+				profilesPage.toolSetTreeItem(TOOL_SET_NAME)
+			).toBeVisible();
 			await expect(
 				profilesPage.toolSetCheckbox(TOOL_SET_NAME)
-			).toHaveJSProperty('indeterminate', true);
+			).toBeEnabled();
 
 			await profilesPage.toolSetExpander(TOOL_SET_NAME).click();
 
 			await expect(
-				profilesPage.toolSetCheckbox(TOOL_SET_NAME)
-			).toBeEnabled();
-			await expect(
-				profilesPage.toolSetCheckbox(TOOL_SET_NAME)
-			).toHaveJSProperty('indeterminate', true);
-
-			await expect(
-				profilesPage.toolTreeItem('getToolSetsPage')
+				profilesPage.toolTreeItem('postToolSetToolSetNameToolInvoke')
 			).toBeVisible();
-
-			await expect(
-				profilesPage.toolCheckbox('getToolSetsPage')
-			).toBeChecked();
-			await expect(
-				profilesPage.toolCheckbox('getToolSetsPage')
-			).toBeDisabled();
-
 			await expect(
 				profilesPage.toolCheckbox('postToolSetToolSetNameToolInvoke')
 			).not.toBeChecked();
-			await expect(
-				profilesPage.toolCheckbox('postToolSetToolSetNameToolInvoke')
-			).toBeEnabled();
 
-			// The assigned tools do not count as a pending selection
+			// The tool the profile carries is not offered again
+
+			await expect(
+				profilesPage.toolTreeItem('getToolSetsPage')
+			).toBeHidden();
+
+			// Every tool that reaches the tree can be added
+
+			await expect(
+				profilesPage.dialog.locator('input[type="checkbox"]:disabled')
+			).toHaveCount(0);
 
 			await expect(profilesPage.addToolsSubmitButton).toBeDisabled();
+		}
+	);
+
+	test(
+		'Offers a tool the profile carries under another tool set',
+		{tag: '@LPD-104379'},
+		async ({apiHelpers, profilesPage}) => {
+			const name = profileName();
+			const profile = await createProfile(apiHelpers, name);
+
+			await createProfileTool(
+				apiHelpers,
+				profile.externalReferenceCode,
+				TOOL_IN_EVERY_TOOL_SET,
+				OTHER_TOOL_SET_NAME
+			);
+
+			await profilesPage.gotoToolsTab(name);
+
+			await profilesPage.openAddToolsModal();
+
+			// The tool set the profile took it from no longer offers it
+
+			await profilesPage.toolSetExpander(OTHER_TOOL_SET_NAME).click();
+
+			await expect(
+				profilesPage.toolTreeItem(OTHER_TOOL_NAME)
+			).toBeVisible();
+			await expect(
+				profilesPage.toolTreeItem(TOOL_IN_EVERY_TOOL_SET)
+			).toBeHidden();
+
+			// The same tool name under another tool set is still offered
+
+			await profilesPage.toolSetExpander(TOOL_SET_NAME).click();
+
+			await expect(
+				profilesPage.toolTreeItem(TOOL_IN_EVERY_TOOL_SET)
+			).toBeVisible();
+		}
+	);
+
+	test(
+		'Omits a tool set whose every tool the profile carries',
+		{tag: '@LPD-104379'},
+		async ({apiHelpers, profilesPage}) => {
+			const name = profileName();
+			const profile = await createProfile(apiHelpers, name);
+
+			const toolNames = await getToolSetToolNames(apiHelpers);
+
+			for (const toolName of toolNames) {
+				await createProfileTool(
+					apiHelpers,
+					profile.externalReferenceCode,
+					toolName
+				);
+			}
+
+			await profilesPage.gotoToolsTab(name);
+
+			await expect(profilesPage.rows).toHaveCount(toolNames.length);
+
+			await profilesPage.openAddToolsModal();
+
+			// The tree still shows the tool sets the profile has not exhausted
+
+			await expect(
+				profilesPage.dialog.getByRole('treeitem').first()
+			).toBeVisible();
+
+			await expect(
+				profilesPage.toolSetTreeItem(TOOL_SET_NAME)
+			).toBeHidden();
 		}
 	);
 
