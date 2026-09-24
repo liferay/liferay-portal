@@ -142,6 +142,14 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 				LanguageUtil.get(httpServletRequest, "duplicate"), "post",
 				"copy", "async"),
 			new FDSActionDropdownItem(
+				"{actions.markAsDefault.href}", "star", "markAsDefault",
+				LanguageUtil.get(httpServletRequest, "mark-as-default"), "post",
+				"markAsDefault", "async"),
+			new FDSActionDropdownItem(
+				"{actions.unmarkAsDefault.href}", "star-o", "unmarkAsDefault",
+				LanguageUtil.get(httpServletRequest, "unmark-as-default"),
+				"post", "unmarkAsDefault", "async"),
+			new FDSActionDropdownItem(
 				PortletURLBuilder.create(
 					PortalUtil.getControlPanelPortletURL(
 						httpServletRequest, depotGroup,
