@@ -108,9 +108,7 @@ export class StructuresPage {
 
 	async openMenuItem(
 		action:
-			| 'Export'
 			| 'Export Content Structures'
-			| 'Import'
 			| 'Import Content Structures'
 			| 'Import from JSON'
 	) {

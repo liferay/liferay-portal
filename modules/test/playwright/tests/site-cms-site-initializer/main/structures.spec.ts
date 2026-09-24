@@ -15,7 +15,6 @@ import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden'
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
-import {getTempDir} from '../../../utils/temp';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {exportImportPagesTest} from '../../export-import-web/revamp/fixtures/exportImportPagesTest';
 import postSingleApproverCopy from '../../portal-workflow-kaleo-designer-web/main/utils/postSingleApproverCopy';
@@ -35,16 +34,6 @@ const testWithExportImport = mergeTests(
 	exportImportPagesTest,
 	featureFlagsTest({
 		'LPD-57655': {enabled: true},
-	}),
-	loginTest(),
-	structureBuilderPagesTest
-);
-
-const testWithModalExportImport = mergeTests(
-	cmsPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-57655': {enabled: false},
 	}),
 	loginTest(),
 	structureBuilderPagesTest
@@ -526,14 +515,21 @@ testWithExportImport(
 	}
 );
 
-testWithModalExportImport(
+testWithExportImport(
 	'Content structure with a referenced structure and a repeatable group can be imported',
 	{tag: '@LPD-98702'},
-	async ({apiHelpers, page, structureBuilderPage, structuresPage}) => {
+	async ({
+		apiHelpers,
+		exportImportPage,
+		page,
+		structureBuilderPage,
+		structuresPage,
+	}) => {
+		const exportName = `MyExport-${getRandomString()}`;
 		const structureLabel = getRandomString();
 		const structureName = `StructureName${getRandomInt()}`;
 
-		let larFilePath: string;
+		let folderPath: string;
 
 		await test.step('Create a structure with a referenced structure and a repeatable group', async () => {
 			await structureBuilderPage.createStructureFromData({
@@ -559,36 +555,15 @@ testWithModalExportImport(
 		});
 
 		await test.step('Export content structures and download the LAR', async () => {
-			await structuresPage.goto();
+			await structuresPage.openMenuItem('Export Content Structures');
 
-			await structuresPage.openMenuItem('Export');
+			await exportImportPage.export(exportName);
 
-			const exportDialog = page
-				.getByRole('dialog', {name: 'Export Content Structures'})
-				.frameLocator('iframe');
+			await expect(
+				exportImportPage.taskStatusLabel(exportName)
+			).toBeVisible();
 
-			await exportDialog
-				.getByRole('button', {exact: true, name: 'Export'})
-				.click();
-
-			// The newest process is listed first
-
-			const exportRow = exportDialog.locator('tbody tr').first();
-
-			await expect(exportRow.locator('td.lfr-status-column')).toHaveText(
-				'Successful',
-				{timeout: 30000}
-			);
-
-			const downloadPromise = page.waitForEvent('download');
-
-			await exportRow.getByRole('link', {name: /\.lar/i}).click();
-
-			const download = await downloadPromise;
-
-			larFilePath = `${getTempDir()}/${download.suggestedFilename()}`;
-
-			await download.saveAs(larFilePath);
+			folderPath = await exportImportPage.download(exportName);
 		});
 
 		await test.step('Remove the referenced structure and delete the structure', async () => {
@@ -625,25 +600,11 @@ testWithModalExportImport(
 		});
 
 		await test.step('Import the LAR back without errors', async () => {
-			await structuresPage.openMenuItem('Import');
+			await structuresPage.openMenuItem('Import Content Structures');
 
-			const importDialog = page
-				.getByRole('dialog', {name: 'Import Content Structures'})
-				.frameLocator('iframe');
+			await exportImportPage.newButton.click();
 
-			await importDialog
-				.locator('input[type="file"]')
-				.setInputFiles(larFilePath);
-
-			await importDialog.getByRole('button', {name: 'Continue'}).click();
-
-			await importDialog.getByRole('button', {name: 'Import'}).click();
-
-			// The newest process is listed first
-
-			await expect(
-				importDialog.locator('td.lfr-status-column').first()
-			).toHaveText('Successful', {timeout: 30000});
+			await exportImportPage.import({folderPath, name: exportName});
 		});
 
 		await test.step('The structure is restored with its referenced structure and repeatable group', async () => {
