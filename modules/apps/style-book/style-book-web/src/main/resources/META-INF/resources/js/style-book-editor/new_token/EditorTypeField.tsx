@@ -8,10 +8,21 @@ import {useField} from 'formik';
 import {FieldBase, useId} from 'frontend-js-components-web';
 import React from 'react';
 
+import {FRONTEND_TOKEN_EDITOR_TYPES} from '../constants/frontendTokenEditorTypes';
+
 const EDITOR_TYPE_OPTIONS: {label: string; value: string}[] = [
-	{label: Liferay.Language.get('default'), value: 'Default'},
-	{label: Liferay.Language.get('color-picker'), value: 'ColorPicker'},
-	{label: Liferay.Language.get('length'), value: 'Length'},
+	{
+		label: Liferay.Language.get('default'),
+		value: FRONTEND_TOKEN_EDITOR_TYPES.default,
+	},
+	{
+		label: Liferay.Language.get('color-picker'),
+		value: FRONTEND_TOKEN_EDITOR_TYPES.colorPicker,
+	},
+	{
+		label: Liferay.Language.get('length'),
+		value: FRONTEND_TOKEN_EDITOR_TYPES.length,
+	},
 ];
 
 export default function EditorTypeField() {

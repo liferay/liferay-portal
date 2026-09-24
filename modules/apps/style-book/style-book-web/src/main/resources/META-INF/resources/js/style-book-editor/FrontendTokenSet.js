@@ -10,6 +10,7 @@ import React, {useCallback} from 'react';
 
 import CustomTokenIcon from './CustomTokenIcon';
 import {config} from './config';
+import {FRONTEND_TOKEN_EDITOR_TYPES} from './constants/frontendTokenEditorTypes';
 import {FRONTEND_TOKEN_TYPES} from './constants/frontendTokenTypes';
 import {
 	useFrontendTokensValues,
@@ -114,11 +115,11 @@ export default function FrontendTokenSet({
 }
 
 function getFrontendTokenComponent(frontendToken) {
-	if (frontendToken.editorType === 'ColorPicker') {
+	if (frontendToken.editorType === FRONTEND_TOKEN_EDITOR_TYPES.colorPicker) {
 		return ColorFrontendToken;
 	}
 
-	if (frontendToken.editorType === 'Length') {
+	if (frontendToken.editorType === FRONTEND_TOKEN_EDITOR_TYPES.length) {
 		return LengthFrontendToken;
 	}
 

@@ -13,6 +13,7 @@ import React, {useState} from 'react';
 import ModalFormFooter from './ModalFormFooter';
 import {FrontendTokenSetOption} from './NewTokenSetModalContent';
 import TextField from './TextField';
+import {FRONTEND_TOKEN_EDITOR_TYPES} from './constants/frontendTokenEditorTypes';
 import EditorTypeField from './new_token/EditorTypeField';
 import TokenSetField from './new_token/TokenSetField';
 import {required, validate} from './utils/validations';
@@ -116,7 +117,7 @@ const NewTokenModalContent = ({
 		initialValues: {
 			defaultValue: '',
 			description: '',
-			editorType: 'Default',
+			editorType: FRONTEND_TOKEN_EDITOR_TYPES.default,
 			label: '',
 			tokenSetName: tokenSets[0]?.name ?? '',
 		},
