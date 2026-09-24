@@ -24,6 +24,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
@@ -92,6 +93,7 @@ public class ContentPageEditorDisplayContextProvider {
 				_layoutSetLocalService, _layoutPageTemplateEntryLocalService,
 				_layoutPageTemplateEntryService,
 				_layoutPageTemplateStructureLocalService,
+				_layoutPageTemplateStructureRelElementVariationLocalService,
 				_layoutPageTemplateStructureRelLocalService, _layoutPermission,
 				_pageEditorConfiguration, _portal, portletRequest,
 				_portletResourcePermission, _portletURLFactory, renderResponse,
@@ -229,6 +231,10 @@ public class ContentPageEditorDisplayContextProvider {
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureRelElementVariationLocalService
+		_layoutPageTemplateStructureRelElementVariationLocalService;
 
 	@Reference
 	private LayoutPageTemplateStructureRelLocalService

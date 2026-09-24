@@ -24,6 +24,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.learn.LearnMessage;
 import com.liferay.learn.LearnMessageUtil;
@@ -97,6 +98,8 @@ public class ContentPageLayoutEditorDisplayContext
 		LayoutPageTemplateEntryService layoutPageTemplateEntryService,
 		LayoutPageTemplateStructureLocalService
 			layoutPageTemplateStructureLocalService,
+		LayoutPageTemplateStructureRelElementVariationLocalService
+			layoutPageTemplateStructureRelElementVariationLocalService,
 		LayoutPageTemplateStructureRelLocalService
 			layoutPageTemplateStructureRelLocalService,
 		LayoutPermission layoutPermission,
@@ -130,6 +133,8 @@ public class ContentPageLayoutEditorDisplayContext
 		_groupLocalService = groupLocalService;
 		_layoutPageTemplateStructureLocalService =
 			layoutPageTemplateStructureLocalService;
+		_layoutPageTemplateStructureRelElementVariationLocalService =
+			layoutPageTemplateStructureRelElementVariationLocalService;
 		_layoutPageTemplateStructureRelLocalService =
 			layoutPageTemplateStructureRelLocalService;
 		_segmentsExperimentRelLocalService = segmentsExperimentRelLocalService;
@@ -186,6 +191,7 @@ public class ContentPageLayoutEditorDisplayContext
 			"availableSegmentsExperiences",
 			SegmentsExperienceUtil.getAvailableSegmentsExperiences(
 				httpServletRequest));
+		stateContext.put("elementVariations", _getElementVariations());
 		stateContext.put("layoutDataList", _getLayoutDataList());
 
 		SegmentsExperience segmentsExperience =
@@ -293,6 +299,23 @@ public class ContentPageLayoutEditorDisplayContext
 		}
 
 		return _editSegmentsEntryURL;
+	}
+
+	private List<Map<String, Object>> _getElementVariations() {
+		return TransformUtil.transform(
+			_layoutPageTemplateStructureRelElementVariationLocalService.
+				getLayoutPageTemplateStructureRelElementVariations(
+					themeDisplay.getPlid()),
+			layoutPageTemplateStructureRelElementVariation ->
+				HashMapBuilder.<String, Object>put(
+					"segmentsExperienceERC",
+					layoutPageTemplateStructureRelElementVariation.
+						getSegmentsExperienceERC()
+				).put(
+					"targetElement",
+					layoutPageTemplateStructureRelElementVariation.
+						getTargetElement()
+				).build());
 	}
 
 	private List<Map<String, Object>> _getLayoutDataList() throws Exception {
@@ -411,6 +434,8 @@ public class ContentPageLayoutEditorDisplayContext
 	private final GroupLocalService _groupLocalService;
 	private final LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+	private final LayoutPageTemplateStructureRelElementVariationLocalService
+		_layoutPageTemplateStructureRelElementVariationLocalService;
 	private final LayoutPageTemplateStructureRelLocalService
 		_layoutPageTemplateStructureRelLocalService;
 	private Boolean _lockedSegmentsExperience;

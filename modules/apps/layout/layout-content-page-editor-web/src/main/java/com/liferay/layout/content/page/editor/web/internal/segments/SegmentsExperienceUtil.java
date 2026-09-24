@@ -130,6 +130,9 @@ public class SegmentsExperienceUtil {
 					"segmentsEntryScopeERC",
 					segmentsExperience.getSegmentsEntryScopeERC()
 				).put(
+					"segmentsExperienceERC",
+					segmentsExperience.getExternalReferenceCode()
+				).put(
 					"segmentsExperienceId",
 					String.valueOf(segmentsExperience.getSegmentsExperienceId())
 				).put(
