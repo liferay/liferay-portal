@@ -96,7 +96,7 @@ export default function AddToolsModal({
 	useEffect(() => {
 		let isMounted = true;
 
-		const loadToolSets = async () => {
+		const loadAvailableToolSets = async () => {
 			const [toolSetsResult, profileToolsResult] = await Promise.all([
 				getToolSets(),
 				getProfileTools(profileERC),
@@ -125,13 +125,19 @@ export default function AddToolsModal({
 
 			const loadedProfileTools = profileToolsResult.data.items;
 
-			const toolsByToolSetName = await loadToolsByToolSetName([
-				...new Set(
-					loadedProfileTools.map(
-						(profileTool) => profileTool.toolSetName
-					)
-				),
-			]);
+			const listedToolSetNames = new Set(
+				toolSetsResult.data.map((toolSet) => toolSet.name)
+			);
+
+			const toolsByToolSetName = await loadToolsByToolSetName(
+				[
+					...new Set(
+						loadedProfileTools.map(
+							(profileTool) => profileTool.toolSetName
+						)
+					),
+				].filter((toolSetName) => listedToolSetNames.has(toolSetName))
+			);
 
 			if (!isMounted) {
 				return;
@@ -149,7 +155,7 @@ export default function AddToolsModal({
 			setLoading(false);
 		};
 
-		loadToolSets();
+		loadAvailableToolSets();
 
 		return () => {
 			isMounted = false;
@@ -169,6 +175,22 @@ export default function AddToolsModal({
 		selectedKeys as Set<string | number>
 	);
 
+	const selectToolSetChildren = (
+		item: ToolTreeItem,
+		children: ToolTreeItem[]
+	) => {
+		setSelectedKeys((previousKeys) => {
+			if (!previousKeys.has(item.id)) {
+				return previousKeys;
+			}
+
+			return new Set([
+				...previousKeys,
+				...children.map((child) => child.id),
+			]);
+		});
+	};
+
 	const onLoadMore = async (item: ToolTreeItem) => {
 		if (!toolSets.some((toolSet) => toolSet.name === item.id)) {
 			return;
@@ -184,16 +206,11 @@ export default function AddToolsModal({
 
 		const children = buildToolChildren(item.name, tools, profileTools);
 
-		setSelectedKeys((previousKeys) => {
-			if (!previousKeys.has(item.id)) {
-				return previousKeys;
-			}
+		if (!children.length) {
+			return;
+		}
 
-			return new Set([
-				...previousKeys,
-				...children.map((child) => child.id),
-			]);
-		});
+		selectToolSetChildren(item, children);
 
 		return children;
 	};
@@ -242,18 +259,10 @@ export default function AddToolsModal({
 				return;
 			}
 
-			setSelectedKeys((previousKeys) => {
-				if (!previousKeys.has(item.id)) {
-					return previousKeys;
-				}
-
-				return new Set([
-					...previousKeys,
-					...buildToolChildren(item.name, tools, profileTools).map(
-						(child) => child.id
-					),
-				]);
-			});
+			selectToolSetChildren(
+				item,
+				buildToolChildren(item.name, tools, profileTools)
+			);
 		});
 	};
 
