@@ -67,7 +67,7 @@ definition {
 
 		AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "run-upgrade-client");
 
-		WaitForConsoleTextPresent(value1 = "Failed upgrade process for module com.liferay.journal.service");
+		WaitForConsoleTextPresent(value1 = "The upgrade of module com.liferay.journal.service failed");
 
 		AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "check-upgrade-status -Dupgrade.status=failure");
 
