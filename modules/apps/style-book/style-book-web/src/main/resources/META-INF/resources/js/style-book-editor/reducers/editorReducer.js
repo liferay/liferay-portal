@@ -6,6 +6,7 @@
 import {
 	ADD_REDO_ACTION,
 	ADD_UNDO_ACTION,
+	SET_CUSTOM_FRONTEND_TOKEN_DEFINITION,
 	SET_DRAFT_STATUS,
 	SET_TOKEN_VALUES,
 	UPDATE_UNDO_REDO_HISTORY,
@@ -33,6 +34,15 @@ export default function editorReducer(state, action) {
 					...state.frontendTokensValues,
 					...tokens,
 				},
+			};
+		}
+
+		case SET_CUSTOM_FRONTEND_TOKEN_DEFINITION: {
+			const {customFrontendTokenDefinition} = action;
+
+			return {
+				...state,
+				customFrontendTokenDefinition,
 			};
 		}
 

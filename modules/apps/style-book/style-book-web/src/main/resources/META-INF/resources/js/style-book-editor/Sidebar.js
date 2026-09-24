@@ -7,12 +7,19 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
+import {openModal} from 'frontend-js-components-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import FrontendTokenSet from './FrontendTokenSet';
+import NewTokenModalContent from './NewTokenModalContent';
 import {config} from './config';
 import {
+	SET_CUSTOM_FRONTEND_TOKEN_DEFINITION,
+	SET_TOKEN_VALUES,
+} from './constants/actionTypes';
+import {
 	useCustomFrontendTokenDefinition,
+	useDispatch,
 	useFrontendTokensValues,
 } from './contexts/StyleBookEditorContext';
 
@@ -53,6 +60,7 @@ export default React.memo(function Sidebar() {
 					<>
 						<FrontendTokenCategories
 							activeDefinition={activeDefinition}
+							key={activeDefinition.id}
 						/>
 						<UpdateStyle sidebarRef={sidebarRef} />
 					</>
@@ -199,6 +207,7 @@ function getDefinitionName({id, name}) {
 }
 
 function FrontendTokenCategories({activeDefinition}) {
+	const dispatch = useDispatch();
 	const customFrontendTokenDefinition = useCustomFrontendTokenDefinition();
 	const frontendTokensValues = useFrontendTokensValues();
 
@@ -207,10 +216,6 @@ function FrontendTokenCategories({activeDefinition}) {
 	const [selectedCategory, setSelectedCategory] = useState(
 		frontendTokenCategories[0]
 	);
-
-	useEffect(() => {
-		setSelectedCategory(frontendTokenCategories[0]);
-	}, [activeDefinition, frontendTokenCategories]);
 
 	const frontendTokens = useMemo(
 		() => config.getFrontendTokens(customFrontendTokenDefinition),
@@ -255,48 +260,98 @@ function FrontendTokenCategories({activeDefinition}) {
 		);
 	}, [selectedCategory, frontendTokenCategoriesWithPrefix]);
 
+	const handleNewToken = ({
+		customFrontendTokenDefinition,
+		frontendTokensValues,
+	}) => {
+		dispatch({
+			customFrontendTokenDefinition,
+			type: SET_CUSTOM_FRONTEND_TOKEN_DEFINITION,
+		});
+
+		dispatch({
+			tokens: frontendTokensValues,
+			type: SET_TOKEN_VALUES,
+		});
+	};
+
+	const openNewTokenModal = () => {
+		openModal({
+			contentComponent: ({closeModal}) => (
+				<NewTokenModalContent
+					addFrontendTokenURL={config.addFrontendTokenURL}
+					categoryLabel={activeSelectedCategory.label}
+					categoryName={activeSelectedCategory.name}
+					closeModal={closeModal}
+					namespace={config.namespace}
+					onSuccess={handleNewToken}
+					styleBookEntryId={config.styleBookEntryId}
+					tokenSets={activeSelectedCategory.frontendTokenSets}
+				/>
+			),
+		});
+	};
+
 	return (
 		<>
 			{activeSelectedCategory && (
-				<ClayDropDown
-					active={active}
-					alignmentPosition={Align.BottomLeft}
-					className="mb-4"
-					menuElementAttrs={{
-						containerProps: {
-							className: 'cadmin',
-						},
-					}}
-					onActiveChange={setActive}
-					trigger={
+				<div className="align-items-center d-flex mb-4">
+					<ClayDropDown
+						active={active}
+						alignmentPosition={Align.BottomLeft}
+						className="flex-grow-1 mr-2"
+						menuElementAttrs={{
+							containerProps: {
+								className: 'cadmin',
+							},
+						}}
+						onActiveChange={setActive}
+						trigger={
+							<ClayButton
+								className="form-control form-control-select form-control-sm text-left"
+								displayType="secondary"
+								size="sm"
+								type="button"
+							>
+								{activeSelectedCategory.label}
+							</ClayButton>
+						}
+					>
+						<ClayDropDown.ItemList>
+							{frontendTokenCategoriesWithPrefix.map(
+								(frontendTokenCategory, index) => (
+									<ClayDropDown.Item
+										key={index}
+										onClick={() => {
+											setSelectedCategory(
+												frontendTokenCategory
+											);
+											setActive(false);
+										}}
+									>
+										{frontendTokenCategory.label}
+									</ClayDropDown.Item>
+								)
+							)}
+						</ClayDropDown.ItemList>
+					</ClayDropDown>
+
+					{activeDefinition.id ===
+						config.themeFrontendTokenDefinitionId && (
 						<ClayButton
-							className="form-control form-control-select form-control-sm mb-3 text-left"
 							displayType="secondary"
+							onClick={openNewTokenModal}
 							size="sm"
-							type="button"
 						>
-							{activeSelectedCategory.label}
+							<ClayIcon
+								className="inline-item inline-item-before"
+								symbol="plus"
+							/>
+
+							{Liferay.Language.get('new-token')}
 						</ClayButton>
-					}
-				>
-					<ClayDropDown.ItemList>
-						{frontendTokenCategoriesWithPrefix.map(
-							(frontendTokenCategory, index) => (
-								<ClayDropDown.Item
-									key={index}
-									onClick={() => {
-										setSelectedCategory(
-											frontendTokenCategory
-										);
-										setActive(false);
-									}}
-								>
-									{frontendTokenCategory.label}
-								</ClayDropDown.Item>
-							)
-						)}
-					</ClayDropDown.ItemList>
-				</ClayDropDown>
+					)}
+				</div>
 			)}
 
 			{activeSelectedCategory?.frontendTokenSets.map(
