@@ -39,7 +39,7 @@ const CardStyleModal: React.FC<CardStyleModalProps> = ({
 
 	return (
 		<ClayModal center observer={observer}>
-			<ClayModal.Body className="c-p-0">
+			<ClayModal.Body>
 				<ClayButton
 					aria-label={Liferay.Language.get('close')}
 					className="close"
@@ -49,19 +49,19 @@ const CardStyleModal: React.FC<CardStyleModalProps> = ({
 					<ClayIcon symbol="times" />
 				</ClayButton>
 
-				<div className="aspect-ratio aspect-ratio-16-to-9 bg-primary-l3">
+				<div className="aspect-ratio aspect-ratio-16-to-9 bg-primary-l3 modal-banner-img modal-banner-img-start">
 					<div className="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-fluid">
 						<img alt="" src={imageSrc} />
 					</div>
 				</div>
 
 				{showEnterpriseIndicator ? (
-					<FeatureIndicator className="mt-4 mx-4" type="enterprise" />
+					<FeatureIndicator className="m-0" type="enterprise" />
 				) : null}
 
-				<ClayModal.Title className="c-mx-4">{title}</ClayModal.Title>
+				<ClayModal.Title>{title}</ClayModal.Title>
 
-				<p className="c-m-4 text-secondary">{body}</p>
+				<p className="text-secondary">{body}</p>
 			</ClayModal.Body>
 
 			<ClayModal.Footer
