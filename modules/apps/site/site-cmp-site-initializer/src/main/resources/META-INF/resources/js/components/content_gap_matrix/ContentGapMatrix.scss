@@ -3,14 +3,16 @@
 $content-gap-cell-accent: var(--teal);
 $content-gap-cell-accent-tier-4: var(--teal-d2);
 $content-gap-cell-background-gap-hover: var(--warning-l2);
-$content-gap-cell-text: #125449;
-$content-gap-cell-text-gap: #863a00;
-$content-gap-cell-text-inverse: #ffffff;
+$content-gap-cell-overlay: rgb(from var(--white) r g b / 0.15);
+$content-gap-cell-overlay-divider: rgb(from var(--white) r g b / 0.2);
+$content-gap-cell-text: var(--teal-d2);
+$content-gap-cell-text-gap: var(--warning-d2);
+$content-gap-cell-text-inverse: var(--white);
 $content-gap-cell-tiers: (
-	1: #ccf4ee,
-	2: #96e9db,
-	3: #5dc9b7,
-	4: #15806e,
+	1: var(--teal-l5),
+	2: var(--teal-l4),
+	3: var(--teal-l3),
+	4: var(--teal),
 );
 
 .lfr-cmp__content-gap-cell {
@@ -68,17 +70,17 @@ $content-gap-cell-tiers: (
 	}
 
 	&--gap {
-		background-color: $light-l1;
-		border-color: $warning;
+		background-color: var(--light-l1);
+		border-color: var(--warning);
 		border-style: dashed;
 
 		&.lfr-cmp__content-gap-cell--clickable:focus-within,
 		&.lfr-cmp__content-gap-cell--clickable:hover {
 			background-color: $content-gap-cell-background-gap-hover;
-			border-color: $warning;
+			border-color: var(--warning);
 
 			.lfr-cmp__content-gap-cell-actions {
-				background-color: $warning;
+				background-color: var(--warning);
 			}
 		}
 
@@ -102,7 +104,7 @@ $content-gap-cell-tiers: (
 
 .lfr-cmp__content-gap-cell-action.btn {
 	align-items: center;
-	color: $white;
+	color: $content-gap-cell-text-inverse;
 	display: flex;
 	flex: 1 1 0;
 	font-size: 0.75rem;
@@ -111,19 +113,19 @@ $content-gap-cell-tiers: (
 	padding: 0.1875rem 0.5rem;
 
 	& + & {
-		border-left: 0.0625rem solid rgba($white, 0.2);
+		border-left: 0.0625rem solid $content-gap-cell-overlay-divider;
 		border-radius: 0;
 	}
 
 	&:disabled {
-		color: $white;
+		color: $content-gap-cell-text-inverse;
 		opacity: 1;
 	}
 
 	&:not(:disabled):focus,
 	&:not(:disabled):hover {
-		background-color: rgba($white, 0.15);
-		color: $white;
+		background-color: $content-gap-cell-overlay;
+		color: $content-gap-cell-text-inverse;
 	}
 }
 
