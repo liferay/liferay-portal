@@ -56,7 +56,7 @@ public class ObjectActionTestUtil {
 		return ObjectActionLocalServiceUtil.addObjectAction(
 			null, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(), objectActionExecutorKey,

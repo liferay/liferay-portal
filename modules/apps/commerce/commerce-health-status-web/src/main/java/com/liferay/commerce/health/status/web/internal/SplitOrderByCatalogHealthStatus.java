@@ -161,8 +161,11 @@ public class SplitOrderByCatalogHealthStatus implements CommerceHealthStatus {
 					null, _serviceContext.getUserId(),
 					commerceOrderObjectDefinition.getObjectDefinitionId(),
 					false, "orderStatus = 10",
-					"This action splits an order into supplier orders by " +
-						"catalog",
+					HashMapBuilder.put(
+						_serviceContext.getLocale(),
+						"This action splits an order into supplier orders by " +
+							"catalog"
+					).build(),
 					null,
 					HashMapBuilder.put(
 						_serviceContext.getLocale(), "Split order by catalog"

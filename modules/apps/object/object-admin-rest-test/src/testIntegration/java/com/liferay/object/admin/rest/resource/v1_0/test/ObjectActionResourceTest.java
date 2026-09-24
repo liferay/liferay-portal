@@ -74,7 +74,8 @@ public class ObjectActionResourceTest extends BaseObjectActionResourceTestCase {
 				active = RandomTestUtil.randomBoolean();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
-				description = RandomTestUtil.randomString();
+				description = Collections.singletonMap(
+					"en_US", RandomTestUtil.randomString());
 				errorMessage = Collections.singletonMap(
 					"en_US", RandomTestUtil.randomString());
 				externalReferenceCode = RandomTestUtil.randomString();

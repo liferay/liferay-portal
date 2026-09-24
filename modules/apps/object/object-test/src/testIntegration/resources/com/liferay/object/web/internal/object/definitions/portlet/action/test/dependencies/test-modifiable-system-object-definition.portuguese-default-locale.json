@@ -8,7 +8,8 @@
 		{
 			"active": true,
 			"conditionExpression": "",
-			"description": "",
+			"description": {
+			},
 			"label": {
 				"en_US": "Test Object Action 1"
 			},
@@ -22,7 +23,8 @@
 		{
 			"active": true,
 			"conditionExpression": "",
-			"description": "",
+			"description": {
+			},
 			"label": {
 				"pt_BR": "Ação do Objeto Teste 2"
 			},
@@ -36,7 +38,8 @@
 		{
 			"active": true,
 			"conditionExpression": "",
-			"description": "",
+			"description": {
+			},
 			"label": {
 				"es_ES": "Acción del objeto de prueba 3"
 			},

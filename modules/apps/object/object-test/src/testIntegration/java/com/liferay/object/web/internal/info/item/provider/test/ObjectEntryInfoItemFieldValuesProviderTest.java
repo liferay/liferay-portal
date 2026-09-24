@@ -262,7 +262,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		ObjectAction objectAction = _objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectEntry.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),

@@ -147,7 +147,7 @@ public class ObjectActionServiceTest {
 		return _objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), user.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -175,7 +175,8 @@ public class ObjectActionServiceTest {
 			objectAction = _objectActionService.addObjectAction(
 				RandomTestUtil.randomString(),
 				_objectDefinition.getObjectDefinitionId(), true,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				RandomTestUtil.randomString(),
@@ -240,7 +241,8 @@ public class ObjectActionServiceTest {
 
 			objectAction = _objectActionService.updateObjectAction(
 				RandomTestUtil.randomString(), objectAction.getObjectActionId(),
-				true, StringPool.BLANK, RandomTestUtil.randomString(),
+				true, StringPool.BLANK,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				RandomTestUtil.randomString(),

@@ -10115,7 +10115,7 @@ public class ObjectEntryLocalServiceTest {
 		return _objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectDefinitionId, true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(), objectActionExecutorKey,

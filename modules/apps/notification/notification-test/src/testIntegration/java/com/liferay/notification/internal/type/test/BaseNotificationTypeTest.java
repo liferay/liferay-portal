@@ -702,7 +702,8 @@ public class BaseNotificationTypeTest {
 		ObjectAction objectAction = objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			childObjectDefinition.getObjectDefinitionId(), true,
-			StringPool.BLANK, RandomTestUtil.randomString(),
+			StringPool.BLANK,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),

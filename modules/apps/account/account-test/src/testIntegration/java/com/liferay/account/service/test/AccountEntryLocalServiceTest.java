@@ -257,7 +257,8 @@ public class AccountEntryLocalServiceTest {
 			_objectActionLocalService.addObjectAction(
 				StringPool.BLANK, TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(), true,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				RandomTestUtil.randomString(),
@@ -318,7 +319,8 @@ public class AccountEntryLocalServiceTest {
 			_objectActionLocalService.addObjectAction(
 				StringPool.BLANK, TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(), true,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				RandomTestUtil.randomString(),

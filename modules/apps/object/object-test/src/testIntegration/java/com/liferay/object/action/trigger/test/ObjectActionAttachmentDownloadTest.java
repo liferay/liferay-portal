@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -119,7 +120,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 		_objectAction = _objectActionLocalService.addObjectAction(
 			null, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			Collections.<Locale, String>emptyMap(),
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),

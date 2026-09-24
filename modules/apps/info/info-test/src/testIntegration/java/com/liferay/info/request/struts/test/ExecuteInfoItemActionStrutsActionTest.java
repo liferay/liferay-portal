@@ -131,7 +131,8 @@ public class ExecuteInfoItemActionStrutsActionTest {
 		_objectAction = _objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), _user.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(), _errorMessageMap,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			_errorMessageMap,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
 			ObjectActionExecutorConstants.KEY_GROOVY,

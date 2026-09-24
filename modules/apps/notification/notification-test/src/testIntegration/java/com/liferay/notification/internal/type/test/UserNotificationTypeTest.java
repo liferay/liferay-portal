@@ -391,7 +391,8 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 		objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			childObjectDefinition.getObjectDefinitionId(), true,
-			StringPool.BLANK, RandomTestUtil.randomString(),
+			StringPool.BLANK,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -753,7 +754,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 		ObjectAction objectAction = objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),

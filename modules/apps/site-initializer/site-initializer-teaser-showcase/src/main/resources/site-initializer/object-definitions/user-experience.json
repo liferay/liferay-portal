@@ -17,7 +17,8 @@
 		{
 			"active": true,
 			"conditionExpression": "",
-			"description": "",
+			"description": {
+			},
 			"errorMessage": {
 				"en_US": "Acceptance failed. Please try again later or contact support."
 			},
@@ -51,7 +52,8 @@
 		{
 			"active": true,
 			"conditionExpression": "",
-			"description": "",
+			"description": {
+			},
 			"errorMessage": {
 				"en_US": "Rejection failed. Please try again later or contact support."
 			},
@@ -85,7 +87,8 @@
 		{
 			"active": true,
 			"conditionExpression": "",
-			"description": "",
+			"description": {
+			},
 			"errorMessage": {
 			},
 			"label": {

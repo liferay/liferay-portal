@@ -157,7 +157,7 @@ public class ObjectActionUpgradeProcessTest {
 		return _objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(), objectActionExecutorKey,

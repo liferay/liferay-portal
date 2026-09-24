@@ -1713,7 +1713,7 @@ public class ObjectDefinitionLocalServiceImpl
 				objectAction.getExternalReferenceCode(), 0, userId,
 				objectDefinitionId, objectAction.isActive(),
 				objectAction.getConditionExpression(),
-				objectAction.getDescription(),
+				objectAction.getDescriptionMap(),
 				objectAction.getErrorMessageMap(), objectAction.getLabelMap(),
 				objectAction.getName(),
 				objectAction.getObjectActionExecutorKey(),

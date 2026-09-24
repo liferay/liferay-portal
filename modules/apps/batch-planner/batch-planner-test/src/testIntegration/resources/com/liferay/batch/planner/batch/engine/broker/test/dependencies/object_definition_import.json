@@ -40,7 +40,8 @@
 				"conditionExpression": "",
 				"dateCreated": "2023-09-19T13:44:14Z",
 				"dateModified": "2023-09-19T13:44:14Z",
-				"description": "",
+				"description": {
+				},
 				"errorMessage": {
 					"en_US": "errorMessage"
 				},

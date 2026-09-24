@@ -77,7 +77,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -85,6 +84,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.math.BigDecimal;
 
@@ -828,10 +828,9 @@ public class CommerceOrderSplitTest {
 		ObjectAction objectAction = _objectActionLocalService.addObjectAction(
 			null, _serviceContext.getUserId(),
 			objectDefinition.getObjectDefinitionId(), true, conditionExpression,
-			RandomTestUtil.randomString(), null,
-			HashMapBuilder.put(
-				_serviceContext.getLocale(), RandomTestUtil.randomString()
-			).build(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			null,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			externalReferenceCode,
 			CommerceObjectActionExecutorConstants.
 				KEY_SPLIT_COMMERCE_ORDER_BY_CATALOG,

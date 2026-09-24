@@ -2388,7 +2388,8 @@ public class ObjectDefinitionResourceTest
 		ObjectAction objectAction = new ObjectAction();
 
 		objectAction.setActive(RandomTestUtil.randomBoolean());
-		objectAction.setDescription(RandomTestUtil.randomString());
+		objectAction.setDescription(
+			Collections.singletonMap("en_US", RandomTestUtil.randomString()));
 		objectAction.setErrorMessage(
 			Collections.singletonMap("en_US", RandomTestUtil.randomString()));
 		objectAction.setExternalReferenceCode(RandomTestUtil.randomString());

@@ -344,7 +344,8 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		ObjectAction objectAction = objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			childObjectDefinition.getObjectDefinitionId(), true,
-			StringPool.BLANK, RandomTestUtil.randomString(),
+			StringPool.BLANK,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -1974,7 +1975,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		return objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -1995,7 +1996,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		return objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectDefinitionId, true, StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -2479,7 +2480,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			objectAction.getExternalReferenceCode(),
 			objectAction.getObjectActionId(), objectAction.isActive(),
 			objectAction.getConditionExpression(),
-			objectAction.getDescription(), objectAction.getErrorMessageMap(),
+			objectAction.getDescriptionMap(), objectAction.getErrorMessageMap(),
 			objectAction.getLabelMap(), objectAction.getName(),
 			objectAction.getObjectActionExecutorKey(),
 			objectAction.getObjectActionTriggerKey(),

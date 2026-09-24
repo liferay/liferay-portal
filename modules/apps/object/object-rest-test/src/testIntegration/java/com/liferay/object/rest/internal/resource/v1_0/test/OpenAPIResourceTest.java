@@ -386,7 +386,8 @@ public class OpenAPIResourceTest {
 		_objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			"This is the description of an object action.",
+			LocalizedMapUtil.getLocalizedMap(
+				"This is the description of an object action."),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			"objectAction", ObjectActionExecutorConstants.KEY_WEBHOOK,
