@@ -132,9 +132,9 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 		);
 
 		Mockito.when(
-			columnResultSet.next()
+			columnResultSet.getInt("DECIMAL_DIGITS")
 		).thenReturn(
-			columnPresent
+			decimalDigits
 		);
 
 		Mockito.when(
@@ -144,9 +144,9 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 		);
 
 		Mockito.when(
-			columnResultSet.getInt("DECIMAL_DIGITS")
+			columnResultSet.next()
 		).thenReturn(
-			decimalDigits
+			columnPresent
 		);
 
 		return connection;
