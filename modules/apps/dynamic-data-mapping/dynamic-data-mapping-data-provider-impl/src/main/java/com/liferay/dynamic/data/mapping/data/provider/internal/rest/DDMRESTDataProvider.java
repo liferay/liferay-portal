@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.data.provider.settings.DDMDataProviderSe
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.json.web.service.client.JSONWebServiceClient;
@@ -41,6 +42,9 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.KeyReference;
+import com.liferay.portal.security.key.KeyReferenceUtil;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.io.ByteArrayInputStream;
 
@@ -56,6 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,7 +115,8 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 			try {
 				return _getData(
-					ddmDataProviderRequest, ddmRESTDataProviderSettings);
+					ddmDataProviderInstance, ddmDataProviderRequest,
+					ddmRESTDataProviderSettings);
 			}
 			catch (JSONWebServiceException jsonWebServiceException) {
 				if (_log.isDebugEnabled()) {
@@ -297,6 +303,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 	}
 
 	private DDMDataProviderResponse _getData(
+			DDMDataProviderInstance ddmDataProviderInstance,
 			DDMDataProviderRequest ddmDataProviderRequest,
 			DDMRESTDataProviderSettings ddmRESTDataProviderSettings)
 		throws Exception {
@@ -453,7 +460,10 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 				).put(
 					"login", ddmRESTDataProviderSettings.username()
 				).put(
-					"password", ddmRESTDataProviderSettings.password()
+					"password",
+					_getPassword(
+						ddmDataProviderInstance,
+						ddmRESTDataProviderSettings.password())
 				).put(
 					"protocol", uri.getScheme()
 				).put(
@@ -499,6 +509,28 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 		}
 
 		return ddmDataProviderResponse;
+	}
+
+	private String _getPassword(
+		DDMDataProviderInstance ddmDataProviderInstance, String password) {
+
+		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
+			password);
+
+		if ((keyReference == null) ||
+			!Objects.equals(
+				keyReference.getIdentifier(),
+				StringBundler.concat(
+					DDMDataProviderInstance.class.getSimpleName(),
+					StringPool.SLASH, ddmDataProviderInstance.getCompanyId(),
+					StringPool.SLASH,
+					ddmDataProviderInstance.getDataProviderInstanceId()))) {
+
+			return password;
+		}
+
+		return SecretResolverUtil.resolve(
+			ddmDataProviderInstance.getCompanyId(), password);
 	}
 
 	private String _normalizePath(String path) {
