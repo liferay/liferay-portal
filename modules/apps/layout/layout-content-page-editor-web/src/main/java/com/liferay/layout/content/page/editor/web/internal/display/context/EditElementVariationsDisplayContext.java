@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -177,15 +178,29 @@ public class EditElementVariationsDisplayContext {
 
 	private List<Map<String, Object>> _getAudiencesEntries() {
 		try {
+			Group siteGroup = _themeDisplay.getSiteGroup();
+
+			String siteGroupERC = siteGroup.getExternalReferenceCode();
+
 			return TransformUtil.transform(
 				_audiencesEntryService.getAudiencesEntries(
 					_themeDisplay.getCompanyId(), QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS, null),
-				audiencesEntry -> HashMapBuilder.<String, Object>put(
-					"label", audiencesEntry.getName()
-				).put(
-					"value", audiencesEntry.getExternalReferenceCode()
-				).build());
+				audiencesEntry -> {
+					List<String> groupERCs = audiencesEntry.getGroupERCs();
+
+					if (!groupERCs.isEmpty() &&
+						!groupERCs.contains(siteGroupERC)) {
+
+						return null;
+					}
+
+					return HashMapBuilder.<String, Object>put(
+						"label", audiencesEntry.getName()
+					).put(
+						"value", audiencesEntry.getExternalReferenceCode()
+					).build();
+				});
 		}
 		catch (Exception exception) {
 			_log.error(exception);
