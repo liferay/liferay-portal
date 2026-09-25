@@ -3,7 +3,7 @@
 
 <service-builder auto-import-default-references="false" auto-namespace-tables="true" dependency-injector="ds" package-path="com.liferay.invitation.invite.members">
 	<namespace>IM</namespace>
-	<entity local-service="true" name="MemberRequest" remote-service="false">
+	<entity local-service="true" name="MemberRequest" remote-service="true">
 
 		<!-- PK fields -->
 
