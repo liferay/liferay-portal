@@ -16,6 +16,7 @@ import com.liferay.portal.search.groupby.GroupByRequest;
 import com.liferay.portal.search.legacy.groupby.GroupByRequestFactory;
 import com.liferay.portal.search.legacy.stats.StatsRequestBuilderFactory;
 import com.liferay.portal.search.opensearch2.internal.groupby.GroupByTranslator;
+import com.liferay.portal.search.opensearch2.internal.highlight.HighlightQueryUtil;
 import com.liferay.portal.search.opensearch2.internal.highlight.HighlightTranslator;
 import com.liferay.portal.search.opensearch2.internal.legacy.sort.SortTranslator;
 import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTranslator;
@@ -170,16 +171,28 @@ public class SearchSearchRequestAssembler {
 		SearchRequest.Builder searchRequestBuilder,
 		SearchSearchRequest searchSearchRequest) {
 
+		if ((searchSearchRequest.getHighlight() == null) &&
+			!searchSearchRequest.isHighlightEnabled()) {
+
+			return;
+		}
+
+		org.opensearch.client.opensearch._types.query_dsl.Query highlightQuery =
+			HighlightQueryUtil.getHighlightQuery(
+				CommonSearchRequestBuilderAssembler.INSTANCE.getQuery(
+					searchSearchRequest));
+
 		if (searchSearchRequest.getHighlight() != null) {
 			searchRequestBuilder.highlight(
 				_highlightTranslator.translate(
-					searchSearchRequest.getHighlight()));
+					highlightQuery, searchSearchRequest.getHighlight()));
 		}
-		else if (searchSearchRequest.isHighlightEnabled()) {
+		else {
 			searchRequestBuilder.highlight(
 				_highlightTranslator.translate(
 					searchSearchRequest.getHighlightFieldNames(),
 					searchSearchRequest.getHighlightFragmentSize(),
+					highlightQuery,
 					searchSearchRequest.isHighlightRequireFieldMatch(),
 					searchSearchRequest.getHighlightSnippetSize()));
 		}

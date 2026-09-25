@@ -73,11 +73,36 @@ public class CommonSearchRequestBuilderAssembler {
 		_setTrackTotalHits(baseSearchRequest, searchRequestBuilder);
 	}
 
+	public org.opensearch.client.opensearch._types.query_dsl.Query getQuery(
+		BaseSearchRequest baseSearchRequest) {
+
+		org.opensearch.client.opensearch._types.query_dsl.Query query1 =
+			_combine(
+				_translateQuery(baseSearchRequest.getQuery()),
+				_translateQuery(baseSearchRequest.getQuery71()));
+
+		List<ComplexQueryPart> complexQueryParts =
+			baseSearchRequest.getComplexQueryParts();
+
+		if (complexQueryParts.isEmpty()) {
+			org.opensearch.client.opensearch._types.query_dsl.Query query2 =
+				_combine(
+					translateComplexQueryParts(Collections.emptyList()), query1,
+					BoolQuery.Builder::must);
+
+			return _combine(
+				translateComplexQueryParts(Collections.emptyList()), query2,
+				BoolQuery.Builder::should);
+		}
+
+		return _combine(complexQueryParts, query1);
+	}
+
 	protected void setQuery(
 		BaseSearchRequest baseSearchRequest,
 		SearchRequest.Builder searchRequestBuilder) {
 
-		searchRequestBuilder.query(_getQuery(baseSearchRequest));
+		searchRequestBuilder.query(getQuery(baseSearchRequest));
 	}
 
 	protected BoolQuery.Builder translateComplexQueryParts(
@@ -281,31 +306,6 @@ public class CommonSearchRequestBuilderAssembler {
 		builder.should(boolQuery.should());
 
 		return builder;
-	}
-
-	private org.opensearch.client.opensearch._types.query_dsl.Query _getQuery(
-		BaseSearchRequest baseSearchRequest) {
-
-		org.opensearch.client.opensearch._types.query_dsl.Query query1 =
-			_combine(
-				_translateQuery(baseSearchRequest.getQuery()),
-				_translateQuery(baseSearchRequest.getQuery71()));
-
-		List<ComplexQueryPart> complexQueryParts =
-			baseSearchRequest.getComplexQueryParts();
-
-		if (complexQueryParts.isEmpty()) {
-			org.opensearch.client.opensearch._types.query_dsl.Query query2 =
-				_combine(
-					translateComplexQueryParts(Collections.emptyList()), query1,
-					BoolQuery.Builder::must);
-
-			return _combine(
-				translateComplexQueryParts(Collections.emptyList()), query2,
-				BoolQuery.Builder::should);
-		}
-
-		return _combine(complexQueryParts, query1);
 	}
 
 	private void _setAggregations(
