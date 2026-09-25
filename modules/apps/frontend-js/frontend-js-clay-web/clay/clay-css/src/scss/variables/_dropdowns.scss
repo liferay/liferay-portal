@@ -1049,6 +1049,12 @@ $dropdown-menu-palette: map-deep-merge(
 				padding-left: 1.75rem,
 				padding-right: 0.5rem,
 				padding-top: 0.3125rem,
+
+				disabled: (
+					focus: (
+						box-shadow: $component-focus-inset-box-shadow,
+					),
+				),
 			),
 
 			dropdown-item-scroll: (

@@ -899,6 +899,12 @@ $cadmin-dropdown-menu-palette: map-deep-merge(
 				padding-left: 28px,
 				padding-right: 8px,
 				padding-top: 5px,
+
+				disabled: (
+					focus: (
+						box-shadow: $cadmin-component-focus-inset-box-shadow,
+					),
+				),
 			),
 
 			dropdown-item-scroll: (

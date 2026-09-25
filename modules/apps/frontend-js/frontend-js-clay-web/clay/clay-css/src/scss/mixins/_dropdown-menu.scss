@@ -360,6 +360,9 @@
 /// 		active: (
 /// 			// .dropdown-item:disabled:active
 /// 		),
+/// 		focus: (
+/// 			// .dropdown-item:disabled.focus
+/// 		),
 /// 	),
 /// 	c-inner: (
 /// 		enabled: {Bool}, // Set to false to prevent .c-inner styles from being output. Default: true
@@ -426,6 +429,7 @@
 /// disabled-c-kbd-inline: {Map},
 /// disabled-active-pointer-events: {String | Null}, // deprecated after 3.9.0
 /// disabled-active: {Map},
+/// disabled-focus: {Map},
 
 @mixin clay-dropdown-item-variant($map) {
 	@if (type-of($map) == 'map') {
@@ -657,6 +661,11 @@
 						map-get($disabled-active, pointer-events)
 					),
 			)
+		);
+
+		$disabled-focus: map-deep-merge(
+			setter(map-get($disabled, focus), ()),
+			setter(map-get($map, disabled-focus), ())
 		);
 
 		$_pb: map-get($map, padding-bottom);
@@ -997,6 +1006,12 @@
 									@include clay-css($_after);
 								}
 							}
+						}
+					}
+
+					@if (length($disabled-focus) != 0) {
+						&.focus {
+							@include clay-css($disabled-focus);
 						}
 					}
 				}
