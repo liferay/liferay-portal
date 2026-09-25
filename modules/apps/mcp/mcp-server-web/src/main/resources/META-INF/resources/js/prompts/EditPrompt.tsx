@@ -157,7 +157,10 @@ function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 							)}
 						</span>
 
-						<FormToggle name="active" />
+						<FormToggle
+							ariaLabel={Liferay.Language.get('prompt-status')}
+							name="active"
+						/>
 					</div>
 				</FormSection>
 

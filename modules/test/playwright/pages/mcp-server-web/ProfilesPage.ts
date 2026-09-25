@@ -165,7 +165,7 @@ export class ProfilesPage extends FDSTablePage {
 	}
 
 	get statusToggle(): Locator {
-		return this.page.locator('.toggle-switch-check');
+		return this.page.getByRole('switch', {name: 'Profile Status'});
 	}
 
 	get creationInfoAlert(): Locator {

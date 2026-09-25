@@ -42,7 +42,7 @@ export class PromptsPage extends FDSTablePage {
 	}
 
 	get statusToggle(): Locator {
-		return this.page.locator('.toggle-switch-check');
+		return this.page.getByRole('switch', {name: 'Prompt Status'});
 	}
 
 	get descriptionInput(): Locator {

@@ -8,15 +8,17 @@ import {useField} from 'formik';
 import React from 'react';
 
 interface FormToggleProps {
+	ariaLabel: string;
 	disabled?: boolean;
 	name: string;
 }
 
-export function FormToggle({disabled, name}: FormToggleProps) {
+export function FormToggle({ariaLabel, disabled, name}: FormToggleProps) {
 	const [field, , helpers] = useField<boolean>(name);
 
 	return (
 		<ClayToggle
+			aria-label={ariaLabel}
 			disabled={disabled}
 			label={
 				field.value

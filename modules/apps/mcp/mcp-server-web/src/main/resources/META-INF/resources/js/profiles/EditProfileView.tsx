@@ -183,7 +183,11 @@ function ProfileForm({
 							)}
 						</span>
 
-						<FormToggle disabled={isNew} name="active" />
+						<FormToggle
+							ariaLabel={Liferay.Language.get('profile-status')}
+							disabled={isNew}
+							name="active"
+						/>
 					</div>
 				</FormSection>
 
