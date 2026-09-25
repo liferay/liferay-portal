@@ -115,7 +115,8 @@ public class ObjectEntryItemSelectorView
 			portletURL, itemSelectedEventName, search,
 			new ObjectEntryItemSelectorViewDescriptor(
 				_groupLocalService, (HttpServletRequest)servletRequest,
-				infoItemItemSelectorCriterion, _objectDefinition,
+				infoItemItemSelectorCriterion,
+				(ObjectDefinition)_objectDefinition.clone(),
 				_objectEntryManager, _objectRelatedModelsProviderRegistry,
 				_objectScopeProviderRegistry, _portal, portletURL));
 	}
