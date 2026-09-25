@@ -678,7 +678,7 @@ test(
 		const downloadPromise = page.waitForEvent('download');
 
 		await assetsPage.execCardItemAction({
-			action: 'Download',
+			action: 'Download Folder',
 			filter: folderTitle,
 		});
 

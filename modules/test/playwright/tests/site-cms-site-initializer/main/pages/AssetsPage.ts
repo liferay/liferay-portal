@@ -20,6 +20,7 @@ interface ExecItemActionArgs {
 		| 'Copy To'
 		| 'Delete'
 		| 'Download'
+		| 'Download Folder'
 		| 'Duplicate'
 		| 'Edit'
 		| 'Expire'
