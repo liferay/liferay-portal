@@ -367,9 +367,11 @@ test(
 test(
 	'The Space selector dialog is not shown when creating a Basic Document inside a folder when multiple Spaces exist',
 	{tag: '@LPD-57827'},
-	async ({apiHelpers, assetsPage, folderPage, page}) => {
+	async ({apiHelpers, assetsPage, page}) => {
 		const assetLibraryName = getRandomString();
 		const folderTitle = getRandomString();
+
+		let folder: {id: string};
 
 		await test.step('Create a new Space', async () => {
 			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
@@ -392,28 +394,14 @@ test(
 		});
 
 		await test.step('Create a folder', async () => {
-			await apiHelpers.objectFolder.createObjectEntryFolder({
+			folder = await apiHelpers.objectFolder.createObjectEntryFolder({
 				scopeKey: assetLibraryName,
 				title: folderTitle,
 			});
 		});
 
 		await test.step('Navigate into the folder', async () => {
-			await assetsPage.gotoAll();
-
-			await page
-				.getByRole('menuitem', {exact: true, name: assetLibraryName})
-				.click();
-
-			await page
-				.getByRole('menuitem', {exact: true, name: 'Files'})
-				.click();
-
-			await page.getByRole('heading', {name: 'Files'}).waitFor();
-
-			await assetsPage.changeVisualizationMode('Table');
-
-			await folderPage.clickOption(folderTitle, 'View Folder');
+			await assetsPage.gotoFolder(folder.id, folderTitle);
 		});
 
 		await test.step('Create a Basic Document', async () => {
