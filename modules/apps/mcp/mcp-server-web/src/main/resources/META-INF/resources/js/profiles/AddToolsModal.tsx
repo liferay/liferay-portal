@@ -125,19 +125,18 @@ export default function AddToolsModal({
 			}
 
 			const loadedProfileTools = profileToolsResult.data.items;
+			const loadedToolSets = toolSetsResult.data;
 
-			const listedToolSetNames = new Set(
-				toolSetsResult.data.map((toolSet) => toolSet.name)
+			const profileToolSetNames = new Set(
+				loadedProfileTools.map((profileTool) => profileTool.toolSetName)
 			);
 
 			const toolsByToolSetName = await loadToolsByToolSetName(
-				[
-					...new Set(
-						loadedProfileTools.map(
-							(profileTool) => profileTool.toolSetName
-						)
-					),
-				].filter((toolSetName) => listedToolSetNames.has(toolSetName))
+				loadedToolSets
+					.map((toolSet) => toolSet.name)
+					.filter((toolSetName) =>
+						profileToolSetNames.has(toolSetName)
+					)
 			);
 
 			if (!isMounted) {
@@ -147,7 +146,7 @@ export default function AddToolsModal({
 			setProfileTools(loadedProfileTools);
 			setToolSets(
 				getAvailableToolSets(
-					toolSetsResult.data,
+					loadedToolSets,
 					loadedProfileTools,
 					toolsByToolSetName
 				)
