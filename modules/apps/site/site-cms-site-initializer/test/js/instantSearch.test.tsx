@@ -101,6 +101,18 @@ const TRANSFORMERS: Array<[string, (props: any) => any]> = [
 	['Vocabularies', VocabularyFDSPropsTransformer],
 ];
 
+// The sections backed by a System Data Set, whose instant search and search
+// suggestions the Data Set's configuration decides.
+
+const SYSTEM_DATA_SET_TRANSFORMERS: Array<[string, (props: any) => any]> = [
+	['All', AssetsFilesDropFDSPropsTransformer],
+	['Broken Links', BrokenLinksFDSPropsTransformer],
+	['Expired Assets', ExpiredAssetsFDSPropsTransformer],
+	['Files', AssetsFilesDropFDSPropsTransformer],
+	['Overdue Reviews', OverdueReviewsFDSPropsTransformer],
+	['Pending Workflows', PendingWorkflowsFDSPropsTransformer],
+];
+
 // The Data Sets the CMS renders as React instead, paired with the mock that
 // receives their props.
 
@@ -256,6 +268,20 @@ describe('[CMS] Instant search', () => {
 
 			expect(props.searchAsYouType).toBe(true);
 			expect(props.searchSuggestionsEnabled).toBe(true);
+		}
+	);
+
+	it.each(SYSTEM_DATA_SET_TRANSFORMERS)(
+		'lets the %s System Data Set turn off instant search and search suggestions',
+		(_section, transform) => {
+			const props = transform({
+				...TRANSFORMER_PROPS,
+				searchAsYouType: false,
+				searchSuggestionsEnabled: false,
+			});
+
+			expect(props.searchAsYouType).toBe(false);
+			expect(props.searchSuggestionsEnabled).toBe(false);
 		}
 	);
 

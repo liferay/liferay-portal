@@ -186,6 +186,8 @@ export default function AssetsFDSPropsTransformer({
 	hideManagementBarInEmptyState?: boolean;
 	id?: string;
 	itemsActions?: any[];
+	searchAsYouType?: boolean;
+	searchSuggestionsEnabled?: boolean;
 	views: IView[];
 }) {
 	refreshOnContentChanged(otherProps?.id);
@@ -943,8 +945,8 @@ export default function AssetsFDSPropsTransformer({
 				});
 			}
 		},
-		searchAsYouType: true,
-		searchSuggestionsEnabled: true,
+		searchAsYouType: otherProps.searchAsYouType ?? true,
+		searchSuggestionsEnabled: otherProps.searchSuggestionsEnabled ?? true,
 		snapshotsEnabled: true,
 		views: transformViewsItemsProps({
 			fileMimeTypeCssClasses: additionalProps.fileMimeTypeCssClasses,
