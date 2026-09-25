@@ -19,6 +19,9 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -27,13 +30,16 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -73,16 +79,7 @@ public class PortalInstanceExportResourceTest
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		String name = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
-
-		try {
-			_companyLocalService.deleteCompany(_company.getCompanyId());
-		}
-		finally {
-			PrincipalThreadLocal.setName(name);
-		}
+		_deleteCompany(_company.getCompanyId());
 	}
 
 	@Before
@@ -127,8 +124,22 @@ public class PortalInstanceExportResourceTest
 		Assume.assumeTrue(db.isSupportsDBPartition());
 
 		_testPostPortalInstanceExport();
+		_testPostPortalInstanceExportBatch();
 		_testPostPortalInstanceExportWithNonexistentPortalInstance();
 		_testPostPortalInstanceExportWithoutOmniadminPermission();
+	}
+
+	private static void _deleteCompany(long companyId) throws Exception {
+		String name = PrincipalThreadLocal.getName();
+
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		try {
+			_companyLocalService.deleteCompany(companyId);
+		}
+		finally {
+			PrincipalThreadLocal.setName(name);
+		}
 	}
 
 	private Configuration _createScopedConfiguration(
@@ -324,6 +335,47 @@ public class PortalInstanceExportResourceTest
 		}
 	}
 
+	private void _testPostPortalInstanceExportBatch() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		try {
+			JSONObject importTaskJSONObject = _waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(
+					portalInstanceExportResource.
+						postPortalInstanceExportBatchHttpResponse(
+							null,
+							JSONUtil.putAll(
+								JSONFactoryUtil.createJSONObject(
+									String.valueOf(
+										_toPortalInstanceExport(
+											_company.getWebId()))),
+								JSONFactoryUtil.createJSONObject(
+									String.valueOf(
+										_toPortalInstanceExport(
+											company.getWebId()))))
+						).getContent()));
+
+			Assert.assertEquals(
+				2, importTaskJSONObject.getInt("processedItemsCount"));
+
+			Assert.assertFalse(
+				_getExportedConfigurationIds(
+					_company.getCompanyId()
+				).isEmpty());
+			Assert.assertFalse(
+				_getExportedConfigurationIds(
+					company.getCompanyId()
+				).isEmpty());
+		}
+		finally {
+			_dropExportedSchema(_company.getCompanyId());
+			_dropExportedSchema(company.getCompanyId());
+
+			_deleteCompany(company.getCompanyId());
+		}
+	}
+
 	private void _testPostPortalInstanceExportWithNonexistentPortalInstance()
 		throws Exception {
 
@@ -371,6 +423,30 @@ public class PortalInstanceExportResourceTest
 		portalInstanceExport.setPortalInstanceId(() -> portalInstanceId);
 
 		return portalInstanceExport;
+	}
+
+	private JSONObject _waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null,
+				"headless-batch-engine/v1.0/import-task" +
+					"/by-external-reference-code/" +
+						jsonObject.getString("externalReferenceCode"),
+				Http.Method.GET);
+
+			String executeStatus = jsonObject.getString("executeStatus");
+
+			if (StringUtil.equals(executeStatus, "COMPLETED") ||
+				StringUtil.equals(executeStatus, "FAILED")) {
+
+				Assert.assertEquals(expectedExecuteStatus, executeStatus);
+
+				return jsonObject;
+			}
+		}
 	}
 
 	private static final String
