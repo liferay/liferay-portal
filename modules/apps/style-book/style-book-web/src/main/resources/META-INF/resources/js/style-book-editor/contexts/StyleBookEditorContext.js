@@ -181,12 +181,10 @@ export function useMultipleUndo() {
 	const undoHistory = useUndoHistory();
 	const redoHistory = useRedoHistory();
 	const frontendTokensValues = useFrontendTokensValues();
-	let tokens = {};
 
 	return ({numberOfActions, type}) => {
 		let remainingUndos;
 		let undosToUndo;
-		let updateHistoryAction;
 
 		if (type === UNDO_TYPES.undo) {
 			undosToUndo = undoHistory.slice(0, numberOfActions);
@@ -195,18 +193,6 @@ export function useMultipleUndo() {
 				numberOfActions,
 				undoHistory.length
 			);
-
-			const nextRedoHistory = undosToUndo.map(({label, name}) => ({
-				label,
-				name,
-				value: frontendTokensValues[name],
-			}));
-
-			updateHistoryAction = {
-				redoHistory: [...nextRedoHistory.reverse(), ...redoHistory],
-				type: UPDATE_UNDO_REDO_HISTORY,
-				undoHistory: remainingUndos,
-			};
 		}
 		else {
 			undosToUndo = redoHistory.slice(0, numberOfActions);
@@ -215,21 +201,18 @@ export function useMultipleUndo() {
 				numberOfActions,
 				redoHistory.length
 			);
-
-			const nextUndoHistory = undosToUndo.map(({label, name}) => ({
-				label,
-				name,
-				value: frontendTokensValues[name],
-			}));
-
-			updateHistoryAction = {
-				redoHistory: remainingUndos,
-				type: UPDATE_UNDO_REDO_HISTORY,
-				undoHistory: [...nextUndoHistory.reverse(), ...undoHistory],
-			};
 		}
 
+		const nextHistory = [];
+		let tokens = {};
+
 		for (const undo of undosToUndo) {
+			nextHistory.push({
+				label: undo.label,
+				name: undo.name,
+				value: tokens[undo.name] ?? frontendTokensValues[undo.name],
+			});
+
 			if (undo.value) {
 				tokens = {...tokens, [undo.name]: undo.value};
 			}
@@ -238,6 +221,19 @@ export function useMultipleUndo() {
 				delete tokens[undo.name];
 			}
 		}
+
+		const updateHistoryAction =
+			type === UNDO_TYPES.undo
+				? {
+						redoHistory: [...nextHistory.reverse(), ...redoHistory],
+						type: UPDATE_UNDO_REDO_HISTORY,
+						undoHistory: remainingUndos,
+					}
+				: {
+						redoHistory: remainingUndos,
+						type: UPDATE_UNDO_REDO_HISTORY,
+						undoHistory: [...nextHistory.reverse(), ...undoHistory],
+					};
 
 		return internalSaveTokenValues({
 			dispatch,
