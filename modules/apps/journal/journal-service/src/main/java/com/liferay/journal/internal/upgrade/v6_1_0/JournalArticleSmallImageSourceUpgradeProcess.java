@@ -27,21 +27,21 @@ public class JournalArticleSmallImageSourceUpgradeProcess
 			"update JournalArticle set smallImageSource = " +
 				JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER +
 					" where smallImage = [$TRUE$] and smallImageId > 0");
+
+		// See LPD-25796 and LPD-107081. Oracle stores empty strings as null,
+		// so empty small image URLs must be reset after the URL update.
+
+		runSQL(
+			StringBundler.concat(
+				"update JournalArticle set smallImageSource = ",
+				JournalArticleConstants.SMALL_IMAGE_SOURCE_URL,
+				" where smallImage = [$TRUE$] and smallImageURL is not null"));
 		runSQL(
 			StringBundler.concat(
 				"update JournalArticle set smallImageSource = ",
 				JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER,
 				" where smallImage = [$TRUE$] and (smallImageURL is null or ",
 				"smallImageURL = '')"));
-
-		// See LPD-25796.
-
-		runSQL(
-			StringBundler.concat(
-				"update JournalArticle set smallImageSource = ",
-				JournalArticleConstants.SMALL_IMAGE_SOURCE_URL,
-				" where smallImage = [$TRUE$] and (smallImageURL is not null ",
-				"or smallImageURL != '')"));
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
 import com.liferay.dynamic.data.mapping.util.DefaultDDMStructureHelper;
 import com.liferay.dynamic.data.mapping.util.FieldsToDDMFormValuesConverter;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.content.compatibility.converter.JournalContentCompatibilityConverter;
 import com.liferay.journal.internal.upgrade.helper.JournalArticleImageUpgradeHelper;
 import com.liferay.journal.internal.upgrade.v0_0_3.JournalArticleTypeUpgradeProcess;
@@ -464,6 +465,17 @@ public class JournalServiceUpgradeStepRegistrator
 
 		registry.register(
 			"6.1.8", "6.1.9", new DDMFieldAttributeUpgradeProcess());
+
+		registry.register(
+			"6.1.9", "6.1.10",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update JournalArticle set smallImageSource = ",
+					JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER,
+					" where smallImage = [$TRUE$] and smallImageId > 0 and ",
+					"smallImageSource = ",
+					JournalArticleConstants.SMALL_IMAGE_SOURCE_URL,
+					" and (smallImageURL is null or smallImageURL = '')")));
 	}
 
 	private void _deleteTempImages() throws Exception {
