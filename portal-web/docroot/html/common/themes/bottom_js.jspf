@@ -10,7 +10,7 @@
 		Liferay.provide(
 			Liferay.Portlet,
 			'refreshLayout',
-			function(portletBound) {
+			function (portletBound) {
 				if (!portletBound.isStatic) {
 					Liferay.Layout.refresh(portletBound);
 				}
@@ -23,14 +23,11 @@
 <aui:script position="inline">
 	<c:choose>
 		<c:when test="<%= themeDisplay.isStatePopUp() %>">
-			Liferay.Util.getTop().Liferay.fire(
-				'popupReady',
-				{
-					doc: document,
-					win: window,
-					windowName: window.name
-				}
-			);
+			Liferay.Util.getTop().Liferay.fire('popupReady', {
+				doc: document,
+				win: window,
+				windowName: window.name,
+			});
 		</c:when>
 		<c:otherwise>
 
@@ -39,12 +36,9 @@
 			%>
 
 			<c:if test="<%= Validator.isNotNull(scroll) %>">
-				Liferay.on(
-					'allPortletsReady',
-					function(event) {
-						document.getElementById('<%= HtmlUtil.escape(scroll) %>').scrollIntoView();
-					}
-				);
+				Liferay.on('allPortletsReady', function (event) {
+					document.getElementById('<%= HtmlUtil.escape(scroll) %>').scrollIntoView();
+				});
 			</c:if>
 		</c:otherwise>
 	</c:choose>
@@ -52,35 +46,23 @@
 
 <aui:script>
 	if (window.svg4everybody && Liferay.Data.ICONS_INLINE_SVG) {
-		svg4everybody(
-			{
-				polyfill: true,
-				validate: function (src, svg, use) {
-					return !src || !src.startsWith('#');
-				}
-			}
-		);
+		svg4everybody({
+			polyfill: true,
+			validate: function (src, svg, use) {
+				return !src || !src.startsWith('#');
+			},
+		});
 	}
 </aui:script>
 
 <aui:script sandbox="<%= true %>">
-	Liferay.Util.delegate(
-		document,
-		'focusin',
-		'.portlet',
-		function(event) {
-			event.delegateTarget.closest('.portlet').classList.add('open');
-		}
-	);
+	Liferay.Util.delegate(document, 'focusin', '.portlet', function (event) {
+		event.delegateTarget.closest('.portlet').classList.add('open');
+	});
 
-	Liferay.Util.delegate(
-		document,
-		'focusout',
-		'.portlet',
-		function(event) {
-			event.delegateTarget.closest('.portlet').classList.remove('open');
-		}
-	);
+	Liferay.Util.delegate(document, 'focusout', '.portlet', function (event) {
+		event.delegateTarget.closest('.portlet').classList.remove('open');
+	});
 </aui:script>
 
 <%
@@ -104,10 +86,15 @@ if (layout != null) {
 
 				<c:choose>
 					<c:when test="<%= BrowserSnifferUtil.isMobile(request) %>">
-						handles: Liferay.Data.PORTLET_TOUCH_DRAG_HANDLE_SELECTOR || ['.portlet-title-default'],
+						handles: Liferay.Data.PORTLET_TOUCH_DRAG_HANDLE_SELECTOR || [
+							'.portlet-title-default',
+						],
 					</c:when>
 					<c:otherwise>
-						handles: Liferay.Data.PORTLET_DRAG_HANDLE_SELECTOR || ['.portlet-title-default', '.portlet-topper'],
+						handles: Liferay.Data.PORTLET_DRAG_HANDLE_SELECTOR || [
+							'.portlet-title-default',
+							'.portlet-topper',
+						],
 					</c:otherwise>
 				</c:choose>
 
@@ -117,7 +104,7 @@ if (layout != null) {
 				emptyColumnClass: 'empty',
 				invalid: '.portlet-static',
 				nestedPortletId: '_<%= PortletKeys.NESTED_PORTLETS %>_INSTANCE',
-				portletBoundary: '.portlet-boundary'
+				portletBoundary: '.portlet-boundary',
 			};
 
 			Liferay.fire('dataLayoutConfigReady');
@@ -135,32 +122,24 @@ if (layout != null) {
 			if (A.UA.touchMobile) {
 				var panel = document.querySelector(Liferay.Data.NAV_SELECTOR_MOBILE);
 
-				Liferay.on('liferay.collapse.shown',
-					function(event) {
-						var panelId = event.panel.getAttribute('id');
+				Liferay.on('liferay.collapse.shown', function (event) {
+					var panelId = event.panel.getAttribute('id');
 
-						if (panel && panelId === panel.getAttribute('id')) {
-							Liferay.fire('initNavigation');
-						}
-					}
-				);
-			}
-			else {
-				navBlock.once(
-					['gesturemovestart', 'mousemove'],
-					function () {
+					if (panel && panelId === panel.getAttribute('id')) {
 						Liferay.fire('initNavigation');
 					}
-				);
+				});
+			}
+			else {
+				navBlock.once(['gesturemovestart', 'mousemove'], function () {
+					Liferay.fire('initNavigation');
+				});
 			}
 		}
 
-		A.on(
-			'io:complete',
-			function () {
-				Liferay.fire('io:complete');
-			}
-		);
+		A.on('io:complete', function () {
+			Liferay.fire('io:complete');
+		});
 	</aui:script>
 </c:if>
 
@@ -172,18 +151,19 @@ if (layout != null) {
 	for (var i = 0; i < liferayNotices.length; i++) {
 		Liferay.Util.openToast(liferayNotices[i]);
 	}
-
 </aui:script>
 
 <aui:script type="text/javascript">
+
 	// <![CDATA[
 
-		<%
-		String currentURL = PortalUtil.getCurrentURL(request);
-		%>
+	<%
+	String currentURL = PortalUtil.getCurrentURL(request);
+	%>
 
-		Liferay.currentURL = '<%= HtmlUtil.escapeJS(currentURL) %>';
-		Liferay.currentURLEncoded = '<%= HtmlUtil.escapeJS(URLCodec.encodeURL(currentURL)) %>';
+	Liferay.currentURL = '<%= HtmlUtil.escapeJS(currentURL) %>';
+	Liferay.currentURLEncoded =
+		'<%= HtmlUtil.escapeJS(URLCodec.encodeURL(currentURL)) %>';
 
 	// ]]>
 </aui:script>
