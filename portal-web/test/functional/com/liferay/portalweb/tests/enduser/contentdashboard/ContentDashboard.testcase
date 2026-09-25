@@ -2564,7 +2564,7 @@ definition {
 				dmDocumentTitle = "DM Document Title 2",
 				groupName = "Test Site Name",
 				mimeType = "text/plain",
-				sourceFileName = "Document_1.txt");
+				sourceFileName = "Document_2.txt");
 
 			ContentDashboard.navigateToDocumentVersionHistoryPage(
 				dmDocumentTitle = "DM Document Title 2",
