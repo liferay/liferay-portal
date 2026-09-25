@@ -9,7 +9,7 @@
 	"description": "React Provider",
 	"devDependencies": {
 		"liferay-npm-build-support": "^2.8.0",
-		"liferay-npm-bundler": "^2.8.0"
+		"liferay-npm-bundler": "^2.32.2"
 	},
 	"name": "react-provider",
 	"overrides": {
