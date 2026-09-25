@@ -5,6 +5,7 @@
 
 package com.liferay.invitation.invite.members.service;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
 /**
@@ -26,6 +27,27 @@ public class MemberRequestServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.invitation.invite.members.service.impl.MemberRequestServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static void addMemberRequests(
+			long groupId, long[] receiverUserIds, long invitedRoleId,
+			long invitedTeamId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		getService().addMemberRequests(
+			groupId, receiverUserIds, invitedRoleId, invitedTeamId,
+			serviceContext);
+	}
+
+	public static void addMemberRequests(
+			long groupId, String[] emailAddresses, long invitedRoleId,
+			long invitedTeamId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		getService().addMemberRequests(
+			groupId, emailAddresses, invitedRoleId, invitedTeamId,
+			serviceContext);
+	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -45,4 +67,4 @@ public class MemberRequestServiceUtil {
 			MemberRequestServiceUtil.class, MemberRequestService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-95323346
+// LIFERAY-SERVICE-BUILDER-HASH:418085533

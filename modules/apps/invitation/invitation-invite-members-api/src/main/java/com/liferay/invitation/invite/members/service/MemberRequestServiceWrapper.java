@@ -27,6 +27,30 @@ public class MemberRequestServiceWrapper
 		_memberRequestService = memberRequestService;
 	}
 
+	@Override
+	public void addMemberRequests(
+			long groupId, long[] receiverUserIds, long invitedRoleId,
+			long invitedTeamId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_memberRequestService.addMemberRequests(
+			groupId, receiverUserIds, invitedRoleId, invitedTeamId,
+			serviceContext);
+	}
+
+	@Override
+	public void addMemberRequests(
+			long groupId, String[] emailAddresses, long invitedRoleId,
+			long invitedTeamId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_memberRequestService.addMemberRequests(
+			groupId, emailAddresses, invitedRoleId, invitedTeamId,
+			serviceContext);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -50,4 +74,4 @@ public class MemberRequestServiceWrapper
 	private MemberRequestService _memberRequestService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1498663214
+// LIFERAY-SERVICE-BUILDER-HASH:1107200695

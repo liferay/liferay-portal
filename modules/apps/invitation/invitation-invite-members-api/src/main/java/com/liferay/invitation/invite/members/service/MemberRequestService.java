@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
@@ -38,6 +39,15 @@ public interface MemberRequestService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.invitation.invite.members.service.impl.MemberRequestServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the member request remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link MemberRequestServiceUtil} if injection and service tracking are not available.
 	 */
+	public void addMemberRequests(
+			long groupId, long[] receiverUserIds, long invitedRoleId,
+			long invitedTeamId, ServiceContext serviceContext)
+		throws PortalException;
+
+	public void addMemberRequests(
+			long groupId, String[] emailAddresses, long invitedRoleId,
+			long invitedTeamId, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -47,4 +57,4 @@ public interface MemberRequestService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1613926378
+// LIFERAY-SERVICE-BUILDER-HASH:-1213704930
