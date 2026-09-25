@@ -333,47 +333,9 @@ public class PageTemplateSetResourceTest
 	@Override
 	@Test
 	public void testPostSitePageTemplateSet() throws Exception {
-		PageTemplateSet randomPageTemplateSet = randomPageTemplateSet();
-
-		randomPageTemplateSet.setKey(StringPool.BLANK);
-
-		PageTemplateSet postPageTemplateSet = _testPostSitePageTemplateSet(
-			randomPageTemplateSet);
-
-		Assert.assertTrue(Validator.isNotNull(postPageTemplateSet.getKey()));
-
-		randomPageTemplateSet = randomPageTemplateSet();
-
-		postPageTemplateSet = _testPostSitePageTemplateSet(
-			randomPageTemplateSet);
-
-		Assert.assertEquals(
-			randomPageTemplateSet.getKey(), postPageTemplateSet.getKey());
-
-		_postSitePageTemplateSetWithInvalidKey(
-			postPageTemplateSet.getKey(),
-			StringBundler.concat(
-				"Duplicate page template set for group ",
-				testGroup.getGroupId(), " with key ",
-				postPageTemplateSet.getKey()));
-
-		String key =
-			RandomTestUtil.randomString() + StringPool.AMPERSAND +
-				RandomTestUtil.randomString();
-
-		_postSitePageTemplateSetWithInvalidKey(
-			key,
-			StringBundler.concat(
-				"Key ", key,
-				" must contain only alphanumeric characters, dashes, and ",
-				"underscores"));
-
-		key = RandomTestUtil.randomString(80);
-
-		_postSitePageTemplateSetWithInvalidKey(
-			key,
-			StringBundler.concat(
-				"Key ", key, " must have fewer than 75 characters"));
+		_testPostSitePageTemplateSetWithBlankKey();
+		_testPostSitePageTemplateSetWithInvalidKey();
+		_testPostSitePageTemplateSetWithValidKey();
 	}
 
 	@Override
@@ -866,6 +828,57 @@ public class PageTemplateSetResourceTest
 		assertValid(postPageTemplateSet);
 
 		return postPageTemplateSet;
+	}
+
+	private void _testPostSitePageTemplateSetWithBlankKey() throws Exception {
+		PageTemplateSet randomPageTemplateSet = randomPageTemplateSet();
+
+		randomPageTemplateSet.setKey(StringPool.BLANK);
+
+		PageTemplateSet postPageTemplateSet = _testPostSitePageTemplateSet(
+			randomPageTemplateSet);
+
+		Assert.assertTrue(Validator.isNotNull(postPageTemplateSet.getKey()));
+	}
+
+	private void _testPostSitePageTemplateSetWithInvalidKey() throws Exception {
+		PageTemplateSet postPageTemplateSet = _testPostSitePageTemplateSet(
+			randomPageTemplateSet());
+
+		_postSitePageTemplateSetWithInvalidKey(
+			postPageTemplateSet.getKey(),
+			StringBundler.concat(
+				"Duplicate page template set for group ",
+				testGroup.getGroupId(), " with key ",
+				postPageTemplateSet.getKey()));
+
+		String key =
+			RandomTestUtil.randomString() + StringPool.AMPERSAND +
+				RandomTestUtil.randomString();
+
+		_postSitePageTemplateSetWithInvalidKey(
+			key,
+			StringBundler.concat(
+				"Key ", key,
+				" must contain only alphanumeric characters, dashes, and ",
+				"underscores"));
+
+		key = RandomTestUtil.randomString(80);
+
+		_postSitePageTemplateSetWithInvalidKey(
+			key,
+			StringBundler.concat(
+				"Key ", key, " must have fewer than 75 characters"));
+	}
+
+	private void _testPostSitePageTemplateSetWithValidKey() throws Exception {
+		PageTemplateSet randomPageTemplateSet = randomPageTemplateSet();
+
+		PageTemplateSet postPageTemplateSet = _testPostSitePageTemplateSet(
+			randomPageTemplateSet);
+
+		Assert.assertEquals(
+			randomPageTemplateSet.getKey(), postPageTemplateSet.getKey());
 	}
 
 	private void

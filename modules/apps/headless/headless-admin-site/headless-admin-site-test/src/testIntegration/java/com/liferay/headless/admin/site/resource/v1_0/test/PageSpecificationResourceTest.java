@@ -118,56 +118,11 @@ public class PageSpecificationResourceTest
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId());
 
-		Layout layout = _addLayout(
-			LayoutConstants.TYPE_PORTLET, serviceContext);
-
-		_assertProblemException(
-			"BAD_REQUEST", "The page status is not valid",
-			() -> pageSpecificationResource.deleteSitePageSpecification(
-				testGroup.getExternalReferenceCode(),
-				layout.getExternalReferenceCode()));
-
-		_testDeleteSitePageSpecification(
-			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext),
-			serviceContext);
-		_testDeleteSitePageSpecification(
-			LayoutPageTemplateEntryTestUtil.
-				getBasicLayoutPageTemplateEntryLayout(serviceContext),
-			serviceContext);
-		_testDeleteSitePageSpecification(
-			LayoutPageTemplateEntryTestUtil.
-				getDisplayPageLayoutPageTemplateEntryLayout(serviceContext),
-			serviceContext);
-		_testDeleteSitePageSpecification(
-			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
-				serviceContext),
-			serviceContext);
-		_testDeleteSitePageSpecification(
-			LayoutPageTemplateEntryTestUtil.
-				getMasterLayoutPageTemplateEntryLayout(serviceContext),
-			serviceContext);
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryTestUtil.
-				getWidgetPageLayoutPageTemplateEntry(serviceContext);
-
-		Layout layoutPageTemplateEntryLayout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		_assertProblemException(
-			"NOT_FOUND", null,
-			() -> pageSpecificationResource.deleteSitePageSpecification(
-				testGroup.getExternalReferenceCode(),
-				layoutPageTemplateEntryLayout.getExternalReferenceCode()));
-
-		_assertProblemException(
-			"BAD_REQUEST", "The page status is not valid",
-			() -> pageSpecificationResource.deleteSitePageSpecification(
-				testGroup.getExternalReferenceCode(),
-				layoutPageTemplateEntry.getExternalReferenceCode()));
-
 		_testDeleteSitePageSpecificationWithoutUpdatePermission(
 			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext));
+		_testDeleteSitePageSpecificationWithSupportedPageTypes(serviceContext);
+		_testDeleteSitePageSpecificationWithWidgetPage(serviceContext);
+		_testDeleteSitePageSpecificationWithWidgetPageTemplate(serviceContext);
 	}
 
 	@Override
@@ -221,40 +176,10 @@ public class PageSpecificationResourceTest
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId());
 
-		Layout layout = _addLayout(
-			LayoutConstants.TYPE_PORTLET, serviceContext);
-
-		_testGetSitePageSpecification(
-			layout, layout.getExternalReferenceCode());
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryTestUtil.
-				getWidgetPageLayoutPageTemplateEntry(serviceContext);
-
-		_testGetSitePageSpecification(
-			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
-			layoutPageTemplateEntry.getExternalReferenceCode());
-
-		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
-			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext),
-			serviceContext);
-		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
-			LayoutPageTemplateEntryTestUtil.
-				getBasicLayoutPageTemplateEntryLayout(serviceContext),
-			serviceContext);
-		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
-			LayoutPageTemplateEntryTestUtil.
-				getDisplayPageLayoutPageTemplateEntryLayout(serviceContext),
-			serviceContext);
-		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
-			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
-				serviceContext),
-			serviceContext);
-		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
-			LayoutPageTemplateEntryTestUtil.
-				getMasterLayoutPageTemplateEntryLayout(serviceContext),
-			serviceContext);
+		_testGetSitePageSpecificationWithLayoutWithDraftLayout(serviceContext);
 		_testGetSitePageSpecificationWithStyleBookEntryScopeERC(serviceContext);
+		_testGetSitePageSpecificationWithWidgetPage(serviceContext);
+		_testGetSitePageSpecificationWithWidgetPageTemplate(serviceContext);
 	}
 
 	@Override
@@ -961,6 +886,69 @@ public class PageSpecificationResourceTest
 				draftLayout.getExternalReferenceCode()));
 	}
 
+	private void _testDeleteSitePageSpecificationWithSupportedPageTypes(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		_testDeleteSitePageSpecification(
+			LayoutPageTemplateEntryTestUtil.
+				getBasicLayoutPageTemplateEntryLayout(serviceContext),
+			serviceContext);
+		_testDeleteSitePageSpecification(
+			LayoutPageTemplateEntryTestUtil.
+				getDisplayPageLayoutPageTemplateEntryLayout(serviceContext),
+			serviceContext);
+		_testDeleteSitePageSpecification(
+			LayoutPageTemplateEntryTestUtil.
+				getMasterLayoutPageTemplateEntryLayout(serviceContext),
+			serviceContext);
+		_testDeleteSitePageSpecification(
+			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
+				serviceContext),
+			serviceContext);
+		_testDeleteSitePageSpecification(
+			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext),
+			serviceContext);
+	}
+
+	private void _testDeleteSitePageSpecificationWithWidgetPage(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_PORTLET, serviceContext);
+
+		_assertProblemException(
+			"BAD_REQUEST", "The page status is not valid",
+			() -> pageSpecificationResource.deleteSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				layout.getExternalReferenceCode()));
+	}
+
+	private void _testDeleteSitePageSpecificationWithWidgetPageTemplate(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryTestUtil.
+				getWidgetPageLayoutPageTemplateEntry(serviceContext);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageSpecificationResource.deleteSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				layout.getExternalReferenceCode()));
+
+		_assertProblemException(
+			"BAD_REQUEST", "The page status is not valid",
+			() -> pageSpecificationResource.deleteSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				layoutPageTemplateEntry.getExternalReferenceCode()));
+	}
+
 	private void _testGetSitePageSpecification(
 			Layout layout, String pageSpecificationExternalReferenceCode)
 		throws Exception {
@@ -1052,6 +1040,31 @@ public class PageSpecificationResourceTest
 			draftLayout, draftLayout.getExternalReferenceCode());
 	}
 
+	private void _testGetSitePageSpecificationWithLayoutWithDraftLayout(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
+			LayoutPageTemplateEntryTestUtil.
+				getBasicLayoutPageTemplateEntryLayout(serviceContext),
+			serviceContext);
+		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
+			LayoutPageTemplateEntryTestUtil.
+				getDisplayPageLayoutPageTemplateEntryLayout(serviceContext),
+			serviceContext);
+		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
+			LayoutPageTemplateEntryTestUtil.
+				getMasterLayoutPageTemplateEntryLayout(serviceContext),
+			serviceContext);
+		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
+			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
+				serviceContext),
+			serviceContext);
+		_testGetSitePageSpecificationWithLayoutWithDraftLayout(
+			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext),
+			serviceContext);
+	}
+
 	private void _testGetSitePageSpecificationWithStyleBookEntryScopeERC(
 			ServiceContext serviceContext)
 		throws Exception {
@@ -1095,6 +1108,30 @@ public class PageSpecificationResourceTest
 		Assert.assertEquals(
 			irrelevantGroup.getExternalReferenceCode(),
 			scope.getExternalReferenceCode());
+	}
+
+	private void _testGetSitePageSpecificationWithWidgetPage(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_PORTLET, serviceContext);
+
+		_testGetSitePageSpecification(
+			layout, layout.getExternalReferenceCode());
+	}
+
+	private void _testGetSitePageSpecificationWithWidgetPageTemplate(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryTestUtil.
+				getWidgetPageLayoutPageTemplateEntry(serviceContext);
+
+		_testGetSitePageSpecification(
+			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
+			layoutPageTemplateEntry.getExternalReferenceCode());
 	}
 
 	private void _testPageSpecificationsPage(
