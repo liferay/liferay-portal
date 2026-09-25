@@ -3623,4 +3623,4 @@ public class StyleBookEntryVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1568273174
+// LIFERAY-SERVICE-BUILDER-HASH:-320511010

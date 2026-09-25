@@ -724,4 +724,4 @@ public class DDMDataProviderInstanceLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1356071285
+// LIFERAY-SERVICE-BUILDER-HASH:-1957240907

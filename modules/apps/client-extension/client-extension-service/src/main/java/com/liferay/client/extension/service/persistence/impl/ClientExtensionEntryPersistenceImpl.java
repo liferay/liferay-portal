@@ -1272,4 +1272,4 @@ public class ClientExtensionEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-400012626
+// LIFERAY-SERVICE-BUILDER-HASH:1389789202

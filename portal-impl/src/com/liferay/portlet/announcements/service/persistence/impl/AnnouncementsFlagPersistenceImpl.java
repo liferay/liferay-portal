@@ -677,4 +677,4 @@ public class AnnouncementsFlagPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1895006592
+// LIFERAY-SERVICE-BUILDER-HASH:919059302

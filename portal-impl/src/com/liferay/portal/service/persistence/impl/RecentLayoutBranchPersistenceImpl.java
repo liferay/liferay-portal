@@ -717,4 +717,4 @@ public class RecentLayoutBranchPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:240430119
+// LIFERAY-SERVICE-BUILDER-HASH:-1747968839

@@ -864,4 +864,4 @@ public class CPDefinitionInventoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:164435579
+// LIFERAY-SERVICE-BUILDER-HASH:-1284531627

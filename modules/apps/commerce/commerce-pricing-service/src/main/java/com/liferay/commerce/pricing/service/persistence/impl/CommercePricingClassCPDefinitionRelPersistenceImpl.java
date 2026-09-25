@@ -822,4 +822,4 @@ public class CommercePricingClassCPDefinitionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-381322852
+// LIFERAY-SERVICE-BUILDER-HASH:-2026401344

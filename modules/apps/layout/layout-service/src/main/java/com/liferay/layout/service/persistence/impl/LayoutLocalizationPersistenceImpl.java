@@ -1060,4 +1060,4 @@ public class LayoutLocalizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1501712712
+// LIFERAY-SERVICE-BUILDER-HASH:187686368

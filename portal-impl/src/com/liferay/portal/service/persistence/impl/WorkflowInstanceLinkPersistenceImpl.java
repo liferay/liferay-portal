@@ -893,4 +893,4 @@ public class WorkflowInstanceLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1739486207
+// LIFERAY-SERVICE-BUILDER-HASH:-1540666889

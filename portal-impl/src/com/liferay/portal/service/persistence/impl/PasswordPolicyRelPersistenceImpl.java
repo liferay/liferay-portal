@@ -470,4 +470,4 @@ public class PasswordPolicyRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-542502086
+// LIFERAY-SERVICE-BUILDER-HASH:-923467980

@@ -956,4 +956,4 @@ public abstract class VersionedEntryLocalServiceBaseImpl
 		VersionedEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1869501120
+// LIFERAY-SERVICE-BUILDER-HASH:-1574214792

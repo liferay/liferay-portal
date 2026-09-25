@@ -1703,4 +1703,4 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1791999306
+// LIFERAY-SERVICE-BUILDER-HASH:-1152403742

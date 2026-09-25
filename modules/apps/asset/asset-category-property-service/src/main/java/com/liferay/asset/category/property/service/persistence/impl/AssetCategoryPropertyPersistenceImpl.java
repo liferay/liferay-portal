@@ -1047,4 +1047,4 @@ public class AssetCategoryPropertyPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1755041379
+// LIFERAY-SERVICE-BUILDER-HASH:-824576449

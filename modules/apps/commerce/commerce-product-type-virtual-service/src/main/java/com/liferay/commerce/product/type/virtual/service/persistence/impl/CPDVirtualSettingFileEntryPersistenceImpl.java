@@ -953,4 +953,4 @@ public class CPDVirtualSettingFileEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1635407398
+// LIFERAY-SERVICE-BUILDER-HASH:850758862

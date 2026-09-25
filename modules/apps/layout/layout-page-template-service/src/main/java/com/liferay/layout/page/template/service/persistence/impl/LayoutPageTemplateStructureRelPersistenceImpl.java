@@ -1171,4 +1171,4 @@ public class LayoutPageTemplateStructureRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-411562463
+// LIFERAY-SERVICE-BUILDER-HASH:1222457777

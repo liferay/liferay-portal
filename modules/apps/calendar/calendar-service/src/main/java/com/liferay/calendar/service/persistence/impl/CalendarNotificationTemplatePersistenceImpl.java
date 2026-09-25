@@ -1030,4 +1030,4 @@ public class CalendarNotificationTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-144196275
+// LIFERAY-SERVICE-BUILDER-HASH:-1657128375

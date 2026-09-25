@@ -347,4 +347,4 @@ public class UniqueFinderEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:126697093
+// LIFERAY-SERVICE-BUILDER-HASH:-748443419

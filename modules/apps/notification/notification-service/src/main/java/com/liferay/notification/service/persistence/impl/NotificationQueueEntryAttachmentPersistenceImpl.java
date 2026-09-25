@@ -488,4 +488,4 @@ public class NotificationQueueEntryAttachmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:765278948
+// LIFERAY-SERVICE-BUILDER-HASH:163486238

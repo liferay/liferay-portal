@@ -1191,4 +1191,4 @@ public class DDMFormInstanceRecordVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-878710435
+// LIFERAY-SERVICE-BUILDER-HASH:-636535339

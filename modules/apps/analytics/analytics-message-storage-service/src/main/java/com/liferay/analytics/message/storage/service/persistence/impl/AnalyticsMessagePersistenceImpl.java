@@ -516,4 +516,4 @@ public class AnalyticsMessagePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1611696876
+// LIFERAY-SERVICE-BUILDER-HASH:-842810000

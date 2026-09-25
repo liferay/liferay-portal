@@ -474,4 +474,4 @@ public class CommerceDiscountRulePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:584126556
+// LIFERAY-SERVICE-BUILDER-HASH:1391692280

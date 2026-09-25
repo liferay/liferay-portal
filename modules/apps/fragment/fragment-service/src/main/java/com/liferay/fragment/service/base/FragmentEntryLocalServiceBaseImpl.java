@@ -1109,4 +1109,4 @@ public abstract class FragmentEntryLocalServiceBaseImpl
 		FragmentEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:440841233
+// LIFERAY-SERVICE-BUILDER-HASH:64252515

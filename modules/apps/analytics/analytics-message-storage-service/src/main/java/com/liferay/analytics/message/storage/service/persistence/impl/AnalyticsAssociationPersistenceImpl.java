@@ -1216,4 +1216,4 @@ public class AnalyticsAssociationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:253779308
+// LIFERAY-SERVICE-BUILDER-HASH:-702917040

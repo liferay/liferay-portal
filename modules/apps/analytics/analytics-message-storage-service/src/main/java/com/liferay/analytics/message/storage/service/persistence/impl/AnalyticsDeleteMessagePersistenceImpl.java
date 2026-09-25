@@ -899,4 +899,4 @@ public class AnalyticsDeleteMessagePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-88108649
+// LIFERAY-SERVICE-BUILDER-HASH:1522438471

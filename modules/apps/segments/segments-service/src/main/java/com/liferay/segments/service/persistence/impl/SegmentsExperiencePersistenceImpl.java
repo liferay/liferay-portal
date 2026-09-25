@@ -3379,4 +3379,4 @@ public class SegmentsExperiencePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1098500330
+// LIFERAY-SERVICE-BUILDER-HASH:-750899098

@@ -530,4 +530,4 @@ public class UserNotificationDeliveryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1896710193
+// LIFERAY-SERVICE-BUILDER-HASH:818289033

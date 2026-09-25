@@ -327,4 +327,4 @@ public class NullConvertibleEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1231781016
+// LIFERAY-SERVICE-BUILDER-HASH:-605816572

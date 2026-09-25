@@ -1500,4 +1500,4 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:18110799
+// LIFERAY-SERVICE-BUILDER-HASH:-918189797

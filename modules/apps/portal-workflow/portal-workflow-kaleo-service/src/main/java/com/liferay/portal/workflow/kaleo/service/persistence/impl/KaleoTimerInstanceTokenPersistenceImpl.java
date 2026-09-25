@@ -936,4 +936,4 @@ public class KaleoTimerInstanceTokenPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1321677907
+// LIFERAY-SERVICE-BUILDER-HASH:2055294807

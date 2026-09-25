@@ -735,4 +735,4 @@ public class AssetAutoTaggerEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:181971987
+// LIFERAY-SERVICE-BUILDER-HASH:500740403

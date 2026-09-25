@@ -681,4 +681,4 @@ public class NotificationRecipientPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:97202115
+// LIFERAY-SERVICE-BUILDER-HASH:626096953
