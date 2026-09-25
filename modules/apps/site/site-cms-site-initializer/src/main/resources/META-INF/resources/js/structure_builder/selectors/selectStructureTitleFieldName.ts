@@ -5,6 +5,6 @@
 
 import {State} from '../contexts/StateContext';
 
-export default function selectStructureTitleObjectFieldName(state: State) {
-	return state.structure.titleObjectFieldName;
+export default function selectStructureTitleFieldName(state: State) {
+	return state.structure.titleFieldName;
 }

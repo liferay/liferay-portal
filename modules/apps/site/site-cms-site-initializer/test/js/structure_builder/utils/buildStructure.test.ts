@@ -247,7 +247,7 @@ describe('buildStructure', () => {
 			systemFieldNames: {},
 		});
 
-		expect(structure.titleObjectFieldName).toBe('title');
+		expect(structure.titleFieldName).toBe('title');
 
 		structure = buildStructure({
 			mainObjectDefinition: createObjectDefinition({
@@ -257,7 +257,7 @@ describe('buildStructure', () => {
 			systemFieldNames: {},
 		});
 
-		expect(structure.titleObjectFieldName).toBe('name');
+		expect(structure.titleFieldName).toBe('name');
 	});
 
 	it('Maps object field business types to structure field types', () => {

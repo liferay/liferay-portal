@@ -86,7 +86,7 @@ export type Structure = {
 	spaces: Spaces;
 	status: Status;
 	system: boolean;
-	titleObjectFieldName: string;
+	titleFieldName: string;
 	type: StructureType;
 	uuid: Uuid;
 	workflows: Workflows;

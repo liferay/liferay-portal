@@ -146,6 +146,7 @@ function buildState({
 			spaces: [],
 			status: 'draft',
 			system: false,
+			titleFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: STRUCTURE_UUID,
 			workflows: {},
@@ -612,17 +613,13 @@ describe('StateContext base object definition', () => {
 	it('Takes the title object field name from the base', () => {
 		let {result} = renderNewStructure();
 
-		expect(result.current.state.structure.titleObjectFieldName).toBe(
-			'title'
-		);
+		expect(result.current.state.structure.titleFieldName).toBe('title');
 
 		({result} = renderNewStructure(
 			buildObjectDefinition({titleObjectFieldName: 'name'})
 		));
 
-		expect(result.current.state.structure.titleObjectFieldName).toBe(
-			'name'
-		);
+		expect(result.current.state.structure.titleFieldName).toBe('name');
 	});
 
 	it('Starts a new structure from the fields of the base', () => {
