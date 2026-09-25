@@ -140,6 +140,16 @@ public class FragmentCollectionServicePermissionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-106873")
+	public void testGetFragmentCollections() throws Exception {
+		FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		_assertRoleGrantsPermission(
+			() -> _fragmentCollectionService.getFragmentCollections(
+				_group.getGroupId()));
+	}
+
+	@Test
 	public void testGetTempFileNames() throws Exception {
 		_assertRoleGrantsPermission(
 			() -> _fragmentCollectionService.getTempFileNames(
