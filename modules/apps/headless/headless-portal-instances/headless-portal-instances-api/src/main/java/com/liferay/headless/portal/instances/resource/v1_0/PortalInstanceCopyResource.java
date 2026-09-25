@@ -149,4 +149,4 @@ public interface PortalInstanceCopyResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1608430980
+// LIFERAY-REST-BUILDER-HASH:390806840

@@ -148,4 +148,4 @@ public interface PortalInstanceExportResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:957982438
+// LIFERAY-REST-BUILDER-HASH:-577382612
