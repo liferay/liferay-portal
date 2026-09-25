@@ -290,6 +290,35 @@ public class Country implements Cloneable, Serializable {
 
 	protected Integer number;
 
+	public com.liferay.headless.admin.address.client.permission.Permission[]
+		getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.headless.admin.address.client.permission.Permission[]
+			permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.headless.admin.address.client.permission.Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected com.liferay.headless.admin.address.client.permission.Permission[]
+		permissions;
+
 	public Double getPosition() {
 		return position;
 	}
@@ -449,4 +478,4 @@ public class Country implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-545682095
+// LIFERAY-REST-BUILDER-HASH:784543278

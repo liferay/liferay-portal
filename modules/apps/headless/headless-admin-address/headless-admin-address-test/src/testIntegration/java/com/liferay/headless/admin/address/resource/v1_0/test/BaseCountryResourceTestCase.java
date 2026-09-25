@@ -2289,6 +2289,14 @@ public abstract class BaseCountryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (country.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("position", additionalAssertFieldName)) {
 				if (country.getPosition() == null) {
 					valid = false;
@@ -2580,6 +2588,16 @@ public abstract class BaseCountryResourceTestCase {
 			if (Objects.equals("number", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						country1.getNumber(), country2.getNumber())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						country1.getPermissions(), country2.getPermissions())) {
 
 					return false;
 				}
@@ -3036,6 +3054,11 @@ public abstract class BaseCountryResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("position")) {
 			sb.append(String.valueOf(country.getPosition()));
 
@@ -3400,4 +3423,4 @@ public abstract class BaseCountryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1342702515
+// LIFERAY-REST-BUILDER-HASH:-346024087

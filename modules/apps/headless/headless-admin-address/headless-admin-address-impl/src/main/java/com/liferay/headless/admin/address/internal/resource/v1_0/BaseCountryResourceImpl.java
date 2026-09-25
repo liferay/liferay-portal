@@ -417,7 +417,7 @@ public abstract class BaseCountryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/{countryId}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/{countryId}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "permissions": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -483,6 +483,10 @@ public abstract class BaseCountryResourceImpl
 			existingCountry.setNumber(country.getNumber());
 		}
 
+		if (country.getPermissions() != null) {
+			existingCountry.setPermissions(country.getPermissions());
+		}
+
 		if (country.getPosition() != null) {
 			existingCountry.setPosition(country.getPosition());
 		}
@@ -511,7 +515,7 @@ public abstract class BaseCountryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/by-external-reference-code/{externalReferenceCode}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/by-external-reference-code/{externalReferenceCode}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "permissions": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the country with information sent in the request body. Only the provided fields are updated."
@@ -581,6 +585,10 @@ public abstract class BaseCountryResourceImpl
 
 		if (country.getNumber() != null) {
 			existingCountry.setNumber(country.getNumber());
+		}
+
+		if (country.getPermissions() != null) {
+			existingCountry.setPermissions(country.getPermissions());
 		}
 
 		if (country.getPosition() != null) {
@@ -698,7 +706,7 @@ public abstract class BaseCountryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-address/v1.0/countries' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-address/v1.0/countries' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "permissions": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Country")}
@@ -759,7 +767,7 @@ public abstract class BaseCountryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/{countryId}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/{countryId}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "permissions": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -835,7 +843,7 @@ public abstract class BaseCountryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/by-external-reference-code/{externalReferenceCode}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-address/v1.0/countries/by-external-reference-code/{externalReferenceCode}' -d $'{"a2": ___, "a3": ___, "active": ___, "billingAllowed": ___, "externalReferenceCode": ___, "groupFilterEnabled": ___, "idd": ___, "name": ___, "number": ___, "permissions": ___, "position": ___, "regions": ___, "shippingAllowed": ___, "subjectToVAT": ___, "title_i18n": ___, "zipRequired": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Replaces the country with information sent in the request body. Any missing fields are deleted unless they are required."
@@ -1675,4 +1683,4 @@ public abstract class BaseCountryResourceImpl
 		LogFactoryUtil.getLog(BaseCountryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1164594759
+// LIFERAY-REST-BUILDER-HASH:-437277086

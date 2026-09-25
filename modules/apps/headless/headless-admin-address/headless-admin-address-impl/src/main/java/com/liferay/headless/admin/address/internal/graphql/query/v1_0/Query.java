@@ -86,7 +86,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {country(countryId: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {country(countryId: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, permissions, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Country country(@GraphQLName("countryId") Long countryId)
@@ -101,7 +101,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByA2(a2: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByA2(a2: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, permissions, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Country countryByA2(@GraphQLName("a2") String a2) throws Exception {
@@ -114,7 +114,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByA3(a3: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByA3(a3: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, permissions, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Country countryByA3(@GraphQLName("a3") String a3) throws Exception {
@@ -127,7 +127,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByExternalReferenceCode(externalReferenceCode: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByExternalReferenceCode(externalReferenceCode: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, permissions, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Country countryByExternalReferenceCode(
@@ -145,7 +145,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByName(name: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByName(name: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, permissions, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Country countryByName(@GraphQLName("name") String name)
@@ -160,7 +160,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByNumber(number: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {countryByNumber(number: ___){a2, a3, active, billingAllowed, creator, dateCreated, dateModified, externalReferenceCode, groupFilterEnabled, id, idd, name, number, permissions, position, regions, shippingAllowed, subjectToVAT, title_i18n, zipRequired}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Country countryByNumber(@GraphQLName("number") Integer number)
@@ -498,4 +498,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-399027004
+// LIFERAY-REST-BUILDER-HASH:132986488
