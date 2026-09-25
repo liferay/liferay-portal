@@ -235,6 +235,7 @@ export function useMultipleUndo() {
 			}
 			else {
 				delete frontendTokensValues[undo.name];
+				delete tokens[undo.name];
 			}
 		}
 
