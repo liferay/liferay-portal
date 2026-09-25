@@ -223,7 +223,13 @@ public class FragmentCollectionServiceImpl
 	}
 
 	@Override
-	public List<FragmentCollection> getFragmentCollections(long groupId) {
+	public List<FragmentCollection> getFragmentCollections(long groupId)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
 		return fragmentCollectionLocalService.getFragmentCollections(groupId);
 	}
 
