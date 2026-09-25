@@ -8,6 +8,8 @@ package com.liferay.layout.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -437,6 +440,61 @@ public class LayoutServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-106870")
+	public void testUpdateTypeSettingsWithoutPermissions() throws Exception {
+		Layout layout = _addTypePortletLayout(
+			RandomTestUtil.randomString(), false, StringPool.BLANK);
+
+		User user = UserTestUtil.addUser();
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			layout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), role.getRoleId(),
+			new String[] {ActionKeys.UPDATE});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			_layoutService.updateTypeSettings(
+				layout.getGroupId(), layout.isPrivateLayout(),
+				layout.getLayoutId(), "layout-template-id=1_column");
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _layoutService.updateTypeSettings(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					layout.getLayoutId(),
+					"column-1=" + FragmentPortletKeys.FRAGMENT));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _layoutService.updateTypeSettings(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					layout.getLayoutId(),
+					LayoutTypePortletConstants.FULL_PAGE_APPLICATION_PORTLET +
+						StringPool.EQUAL + FragmentPortletKeys.FRAGMENT));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _layoutService.updateTypeSettings(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					layout.getLayoutId(),
+					LayoutTypePortletConstants.PANEL_SELECTED_PORTLETS +
+						StringPool.EQUAL + FragmentPortletKeys.FRAGMENT));
+		}
+
+		Layout updatedLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		String typeSettings = updatedLayout.getTypeSettings();
+
+		Assert.assertFalse(
+			typeSettings, typeSettings.contains(FragmentPortletKeys.FRAGMENT));
+	}
+
 	private String _addPortletToLayout(
 			int columnIndex, int columnPos, long plid, String portletName)
 		throws Exception {
@@ -654,6 +712,9 @@ public class LayoutServiceTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
