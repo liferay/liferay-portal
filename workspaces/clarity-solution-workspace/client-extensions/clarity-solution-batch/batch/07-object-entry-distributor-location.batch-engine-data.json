@@ -5,10 +5,10 @@
 			"containsHeaders": "true",
 			"createStrategy": "UPSERT",
 			"onErrorFail": "false",
-			"taskItemDelegateName": "C_DistributorLocation",
+			"taskItemDelegateName": "C_U3A2DistributorLocation",
 			"updateStrategy": "UPDATE"
 		},
-		"taskItemDelegateName": "C_DistributorLocation"
+		"taskItemDelegateName": "C_U3A2DistributorLocation"
 	},
 	"items": [
 		{

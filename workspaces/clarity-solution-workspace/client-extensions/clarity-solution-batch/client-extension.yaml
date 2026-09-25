@@ -10,7 +10,7 @@ clarity-solution-batch-oahs:
     .serviceScheme: http
     name: Clarity Solution OAuth Application Headless Server
     scopes:
-        -   C_DistributorLocation.everything
+        -   C_U3A2DistributorLocation.everything
         -   Liferay.Headless.Admin.Workflow.everything
         -   Liferay.Headless.Batch.Engine.everything
         -   Liferay.Object.Admin.REST.everything

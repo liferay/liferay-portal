@@ -21,7 +21,7 @@ const api = async (url, options = {}) => {
 export async function getDistributors() {
 	try {
 		return (
-			await api('/o/c/distributorlocations/').then((response) =>
+			await api('/o/c/u3a2distributorlocations/').then((response) =>
 				response.json()
 			)
 		).items;
@@ -35,7 +35,7 @@ export async function getDistributors() {
 
 export async function getDistributorDetails(id) {
 	try {
-		return await api('/o/c/distributorlocations/' + id).then((response) =>
+		return await api('/o/c/u3a2distributorlocations/' + id).then((response) =>
 			response.json()
 		);
 	}

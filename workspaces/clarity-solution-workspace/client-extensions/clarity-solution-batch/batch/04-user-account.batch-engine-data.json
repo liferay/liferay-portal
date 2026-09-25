@@ -4,6 +4,7 @@
 		"parameters": {
 			"containsHeaders": "true",
 			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_CONTINUE",
 			"onErrorFail": "false",
 			"taskItemDelegateName": "DEFAULT",
 			"updateStrategy": "UPDATE"

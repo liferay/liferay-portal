@@ -16,10 +16,10 @@
 			"enableIndexSearch": true,
 			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION",
 			"label": {
-				"en_US": "Distributor Location"
+				"en_US": "U3A2 Distributor Location"
 			},
 			"modifiable": true,
-			"name": "DistributorLocation",
+			"name": "U3A2DistributorLocation",
 			"objectFields": [
 				{
 					"DBType": "String",
@@ -144,7 +144,7 @@
 			"objectFolderExternalReferenceCode": "U3A2_DISTRIBUTOR_MANAGEMENT",
 			"panelCategoryKey": "control_panel.object",
 			"pluralLabel": {
-				"en_US": "Distributor Locations"
+				"en_US": "U3A2 Distributor Locations"
 			},
 			"scope": "company",
 			"status": {
