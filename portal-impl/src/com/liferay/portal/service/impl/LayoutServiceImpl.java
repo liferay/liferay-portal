@@ -10,6 +10,7 @@ import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfi
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
+import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -57,6 +58,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -1850,7 +1852,21 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 		LayoutTypePortlet layoutTypePortlet =
 			(LayoutTypePortlet)clonedLayout.getLayoutType();
 
-		return layoutTypePortlet.getPortletIds();
+		List<String> portletIds = new ArrayList<>(
+			layoutTypePortlet.getPortletIds());
+
+		Collections.addAll(
+			portletIds,
+			StringUtil.split(
+				clonedLayout.getTypeSettingsProperty(
+					LayoutTypePortletConstants.FULL_PAGE_APPLICATION_PORTLET)));
+		Collections.addAll(
+			portletIds,
+			StringUtil.split(
+				clonedLayout.getTypeSettingsProperty(
+					LayoutTypePortletConstants.PANEL_SELECTED_PORTLETS)));
+
+		return portletIds;
 	}
 
 	private Layout _getFirstLayout(
