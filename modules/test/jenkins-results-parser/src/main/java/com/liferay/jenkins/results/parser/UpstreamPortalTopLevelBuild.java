@@ -33,6 +33,16 @@ public class UpstreamPortalTopLevelBuild
 		return super.getBranchName();
 	}
 
+	public String getPortalUpstreamBranchName() {
+		String branchName = getBranchName();
+
+		if (branchName.endsWith("-private")) {
+			return branchName.substring(0, branchName.lastIndexOf("-private"));
+		}
+
+		return branchName;
+	}
+
 	@Override
 	public PortalWorkspace getPortalWorkspace() {
 		Workspace workspace = getWorkspace();
@@ -55,6 +65,13 @@ public class UpstreamPortalTopLevelBuild
 			portalWorkspace.setBuildProfile(getBuildProfile());
 			portalWorkspace.setOSBAsahGitHubURL(_getOSBAsahGitHubURL());
 			portalWorkspace.setOSBFaroGitHubURL(_getOSBFaroGitHubURL());
+
+			String portalUpstreamBranchName = getPortalUpstreamBranchName();
+
+			if (!portalUpstreamBranchName.equals(getBranchName())) {
+				portalWorkspace.setPortalUpstreamBranchName(
+					portalUpstreamBranchName);
+			}
 		}
 
 		WorkspaceGitRepository workspaceGitRepository =

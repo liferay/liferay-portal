@@ -202,6 +202,13 @@ public class JobFactory {
 			portalUpstreamBranchName =
 				pullRequestPortalTopLevelBuild.getPortalUpstreamBranchName();
 		}
+		else if (topLevelBuild instanceof UpstreamPortalTopLevelBuild) {
+			UpstreamPortalTopLevelBuild upstreamPortalTopLevelBuild =
+				(UpstreamPortalTopLevelBuild)topLevelBuild;
+
+			portalUpstreamBranchName =
+				upstreamPortalTopLevelBuild.getPortalUpstreamBranchName();
+		}
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
 			portalUpstreamBranchName = topLevelBuild.getBranchName();
