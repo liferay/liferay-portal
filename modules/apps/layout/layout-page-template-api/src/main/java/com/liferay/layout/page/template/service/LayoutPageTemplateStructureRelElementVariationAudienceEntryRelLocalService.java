@@ -326,6 +326,11 @@ public interface
 			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC);
+
 	/**
 	 * Returns all the layout page template structure rel element variation audience entry rels matching the UUID and company.
 	 *
@@ -417,4 +422,4 @@ public interface
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1133125757
+// LIFERAY-SERVICE-BUILDER-HASH:1000949198

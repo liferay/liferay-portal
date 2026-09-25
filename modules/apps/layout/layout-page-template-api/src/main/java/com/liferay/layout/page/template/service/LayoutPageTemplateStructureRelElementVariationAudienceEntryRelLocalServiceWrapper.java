@@ -453,6 +453,17 @@ public class
 				groupId, layoutPageTemplateStructureRelElementVariationERC);
 	}
 
+	@Override
+	public java.util.List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+				long companyId, String audienceEntryERC) {
+
+		return _layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
 	/**
 	 * Returns all the layout page template structure rel element variation audience entry rels matching the UUID and company.
 	 *
@@ -609,4 +620,4 @@ public class
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1741964126
+// LIFERAY-SERVICE-BUILDER-HASH:66738654
