@@ -40,6 +40,7 @@ async function createStructure({
 	slug,
 	spaces,
 	status,
+	titleObjectFieldName,
 	workflows,
 }: {
 	children: Structure['children'];
@@ -51,6 +52,7 @@ async function createStructure({
 	slug: Structure['slug'];
 	spaces: Structure['spaces'];
 	status: Structure['status'];
+	titleObjectFieldName: Structure['titleObjectFieldName'];
 	workflows: Structure['workflows'];
 }) {
 
@@ -83,6 +85,7 @@ async function createStructure({
 		slug,
 		spaces,
 		status,
+		titleObjectFieldName,
 		workflows,
 	});
 
@@ -129,6 +132,7 @@ async function updateStructure({
 	slug,
 	spaces,
 	status,
+	titleObjectFieldName,
 	workflows,
 }: {
 	children: Structure['children'];
@@ -142,6 +146,7 @@ async function updateStructure({
 	slug: Structure['slug'];
 	spaces: Structure['spaces'];
 	status: Structure['status'];
+	titleObjectFieldName: Structure['titleObjectFieldName'];
 	workflows: Structure['workflows'];
 }) {
 	const groupObjectDefinitions = buildGroupObjectDefinitions({
@@ -159,6 +164,7 @@ async function updateStructure({
 		slug,
 		spaces,
 		status,
+		titleObjectFieldName,
 		workflows,
 	});
 

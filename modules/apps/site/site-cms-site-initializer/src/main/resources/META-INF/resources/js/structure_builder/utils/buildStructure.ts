@@ -59,6 +59,8 @@ export default function buildStructure({
 		spaces: getSpaces(mainObjectDefinition),
 		status: isPublished ? 'published' : 'draft',
 		system: mainObjectDefinition.system ?? false,
+		titleObjectFieldName:
+			mainObjectDefinition.titleObjectFieldName ?? 'title',
 		type: mainObjectDefinition.objectFolderExternalReferenceCode as Structure['type'],
 		uuid,
 		workflows: getWorkflows(mainObjectDefinition),

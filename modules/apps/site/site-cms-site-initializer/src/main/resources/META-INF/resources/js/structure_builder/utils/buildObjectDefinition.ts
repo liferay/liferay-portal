@@ -38,6 +38,7 @@ export default function buildObjectDefinition({
 	slug,
 	spaces,
 	status = 'draft',
+	titleObjectFieldName = 'title',
 	workflows,
 }: {
 	children?: Structure['children'];
@@ -49,6 +50,7 @@ export default function buildObjectDefinition({
 	slug?: Structure['slug'];
 	spaces: Structure['spaces'];
 	status?: Structure['status'];
+	titleObjectFieldName?: Structure['titleObjectFieldName'];
 	workflows?: Structure['workflows'];
 }): ObjectDefinition {
 	const objectDefinition: ObjectDefinition = {
@@ -74,7 +76,7 @@ export default function buildObjectDefinition({
 		status: {
 			code: status === 'published' ? 0 : 2,
 		},
-		titleObjectFieldName: 'title',
+		titleObjectFieldName,
 	};
 
 	if (slug) {

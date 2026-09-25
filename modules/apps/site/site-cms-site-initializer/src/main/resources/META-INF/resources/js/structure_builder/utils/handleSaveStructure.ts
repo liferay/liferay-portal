@@ -22,6 +22,7 @@ import selectStructureSettings from '../selectors/selectStructureSettings';
 import selectStructureSlug from '../selectors/selectStructureSlug';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureStatus from '../selectors/selectStructureStatus';
+import selectStructureTitleObjectFieldName from '../selectors/selectStructureTitleObjectFieldName';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import buildStructureErrorAction from './buildStructureErrorAction';
@@ -55,6 +56,7 @@ export default async function handleSaveStructure({
 	const settings = selectStructureSettings(state);
 	const spaces = selectStructureSpaces(state);
 	const status = selectStructureStatus(state);
+	const titleObjectFieldName = selectStructureTitleObjectFieldName(state);
 	const workflows = selectStructureWorkflows(state);
 	const uuid = selectStructureUuid(state);
 
@@ -74,6 +76,7 @@ export default async function handleSaveStructure({
 			slug,
 			spaces,
 			status: 'draft',
+			titleObjectFieldName,
 			workflows,
 		});
 
@@ -101,6 +104,7 @@ export default async function handleSaveStructure({
 			slug,
 			spaces,
 			status: 'draft',
+			titleObjectFieldName,
 			workflows,
 		});
 

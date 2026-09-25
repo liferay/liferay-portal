@@ -122,6 +122,7 @@ const INITIAL_STATE: State = {
 		spaces: 'all',
 		status: 'new',
 		system: false,
+		titleObjectFieldName: 'title',
 		type: 'L_CMS_CONTENT_STRUCTURES',
 		uuid: getUuid(),
 		workflows: {},
@@ -1201,6 +1202,8 @@ function initState({
 				systemFieldNames,
 			}),
 			erc: getRandomId(),
+			titleObjectFieldName:
+				baseObjectDefinition?.titleObjectFieldName ?? 'title',
 			type: getType(),
 		},
 		systemFieldNames,
