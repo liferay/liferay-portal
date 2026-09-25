@@ -15,15 +15,20 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -31,6 +36,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
+
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -104,6 +111,7 @@ public class PortalInstanceCopyResourceTest
 			return;
 		}
 
+		_testPostPortalInstanceCopyBatch();
 		_testPostPortalInstanceCopyDefaultCompany();
 		_testPostPortalInstanceCopyMissingRequiredFields();
 		_testPostPortalInstanceCopySuccess();
@@ -192,6 +200,72 @@ public class PortalInstanceCopyResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private void _deleteCompanyByVirtualHost(String virtualHost)
+		throws Exception {
+
+		Company company = _companyLocalService.fetchCompanyByVirtualHost(
+			virtualHost);
+
+		if (company != null) {
+			_deleteCompany(company.getCompanyId());
+		}
+	}
+
+	private PortalInstanceCopy _randomPortalInstanceCopy() {
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		portalInstanceCopy.setName(randomId);
+		portalInstanceCopy.setSourcePortalInstanceId(_company::getWebId);
+		portalInstanceCopy.setVirtualHost(
+			randomId + "." +
+				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
+		portalInstanceCopy.setWebId(randomId);
+
+		return portalInstanceCopy;
+	}
+
+	private void _testPostPortalInstanceCopyBatch() throws Exception {
+		PortalInstanceCopy portalInstanceCopy1 = _randomPortalInstanceCopy();
+		PortalInstanceCopy portalInstanceCopy2 = _randomPortalInstanceCopy();
+
+		try {
+			JSONObject importTaskJSONObject = _waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(
+					portalInstanceCopyResource.
+						postPortalInstanceCopyBatchHttpResponse(
+							null,
+							JSONUtil.putAll(
+								JSONFactoryUtil.createJSONObject(
+									portalInstanceCopy1.toString()),
+								JSONFactoryUtil.createJSONObject(
+									portalInstanceCopy2.toString()))
+						).getContent()));
+
+			Assert.assertEquals(
+				2, importTaskJSONObject.getInt("processedItemsCount"));
+
+			for (PortalInstanceCopy portalInstanceCopy :
+					Arrays.asList(portalInstanceCopy1, portalInstanceCopy2)) {
+
+				Company copiedCompany = _companyLocalService.getCompanyByWebId(
+					portalInstanceCopy.getWebId());
+
+				Assert.assertNotEquals(
+					_company.getCompanyId(), copiedCompany.getCompanyId());
+				Assert.assertEquals(
+					portalInstanceCopy.getVirtualHost(),
+					copiedCompany.getVirtualHostname());
+			}
+		}
+		finally {
+			_deleteCompanyByVirtualHost(portalInstanceCopy1.getVirtualHost());
+			_deleteCompanyByVirtualHost(portalInstanceCopy2.getVirtualHost());
+		}
 	}
 
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
@@ -386,6 +460,30 @@ public class PortalInstanceCopyResourceTest
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private JSONObject _waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null,
+				"headless-batch-engine/v1.0/import-task" +
+					"/by-external-reference-code/" +
+						jsonObject.getString("externalReferenceCode"),
+				Http.Method.GET);
+
+			String executeStatus = jsonObject.getString("executeStatus");
+
+			if (StringUtil.equals(executeStatus, "COMPLETED") ||
+				StringUtil.equals(executeStatus, "FAILED")) {
+
+				Assert.assertEquals(expectedExecuteStatus, executeStatus);
+
+				return jsonObject;
+			}
 		}
 	}
 
