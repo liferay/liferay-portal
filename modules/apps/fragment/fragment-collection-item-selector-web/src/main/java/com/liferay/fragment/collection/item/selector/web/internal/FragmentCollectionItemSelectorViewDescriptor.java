@@ -5,7 +5,6 @@
 
 package com.liferay.fragment.collection.item.selector.web.internal;
 
-import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorCriterion;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorReturnType;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
@@ -13,6 +12,7 @@ import com.liferay.fragment.util.comparator.FragmentCollectionNameComparator;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -22,6 +22,8 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
+
 /**
  * @author Rubén Pulido
  */
@@ -29,14 +31,10 @@ public class FragmentCollectionItemSelectorViewDescriptor
 	implements ItemSelectorViewDescriptor<FragmentCollection> {
 
 	public FragmentCollectionItemSelectorViewDescriptor(
-		FragmentCollectionItemSelectorCriterion
-			fragmentCollectionItemSelectorCriterion,
-		long groupId, HttpServletRequest httpServletRequest,
+		long[] groupIds, HttpServletRequest httpServletRequest,
 		PortletURL portletURL) {
 
-		_fragmentCollectionItemSelectorCriterion =
-			fragmentCollectionItemSelectorCriterion;
-		_groupId = groupId;
+		_groupIds = groupIds;
 		_httpServletRequest = httpServletRequest;
 		_portletURL = portletURL;
 	}
@@ -79,6 +77,12 @@ public class FragmentCollectionItemSelectorViewDescriptor
 
 		searchContainer.setOrderByType(orderByType);
 
+		if (ArrayUtil.isEmpty(_groupIds)) {
+			searchContainer.setResultsAndTotal(Collections::emptyList, 0);
+
+			return searchContainer;
+		}
+
 		FragmentCollectionNameComparator fragmentCollectionNameComparator =
 			FragmentCollectionNameComparator.getInstance(orderByAsc);
 
@@ -87,19 +91,18 @@ public class FragmentCollectionItemSelectorViewDescriptor
 		if (Validator.isNull(keywords)) {
 			searchContainer.setResultsAndTotal(
 				() -> FragmentCollectionServiceUtil.getFragmentCollections(
-					_fragmentCollectionItemSelectorCriterion.getGroupId(),
-					searchContainer.getStart(), searchContainer.getEnd(),
-					fragmentCollectionNameComparator),
+					_groupIds, searchContainer.getStart(),
+					searchContainer.getEnd(), fragmentCollectionNameComparator),
 				FragmentCollectionServiceUtil.getFragmentCollectionsCount(
-					_fragmentCollectionItemSelectorCriterion.getGroupId()));
+					_groupIds));
 		}
 		else {
 			searchContainer.setResultsAndTotal(
 				() -> FragmentCollectionServiceUtil.getFragmentCollections(
-					new long[] {_groupId}, keywords, searchContainer.getStart(),
+					_groupIds, keywords, searchContainer.getStart(),
 					searchContainer.getEnd(), fragmentCollectionNameComparator),
 				FragmentCollectionServiceUtil.getFragmentCollectionsCount(
-					_groupId, keywords));
+					_groupIds, keywords));
 		}
 
 		return searchContainer;
@@ -125,9 +128,7 @@ public class FragmentCollectionItemSelectorViewDescriptor
 			JavaConstants.JAKARTA_PORTLET_REQUEST);
 	}
 
-	private final FragmentCollectionItemSelectorCriterion
-		_fragmentCollectionItemSelectorCriterion;
-	private final long _groupId;
+	private final long[] _groupIds;
 	private final HttpServletRequest _httpServletRequest;
 	private final PortletURL _portletURL;
 

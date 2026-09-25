@@ -99,16 +99,12 @@ public class FragmentCollectionSiteItemSelectorView
 		ThemeDisplay themeDisplay = (ThemeDisplay)servletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		fragmentCollectionItemSelectorCriterion.setGroupId(
-			themeDisplay.getSiteGroupId());
-
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			servletRequest, servletResponse,
 			fragmentCollectionItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
 			new FragmentCollectionItemSelectorViewDescriptor(
-				fragmentCollectionItemSelectorCriterion,
-				themeDisplay.getSiteGroupId(),
+				new long[] {themeDisplay.getSiteGroupId()},
 				(HttpServletRequest)servletRequest, portletURL));
 	}
 

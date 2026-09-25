@@ -12,7 +12,6 @@ import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.CompanyConstants;
 
 import jakarta.portlet.PortletURL;
 
@@ -64,9 +63,6 @@ public class FragmentCollectionSystemItemSelectorView
 				fragmentCollectionItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
-
-		fragmentCollectionItemSelectorCriterion.setGroupId(
-			CompanyConstants.SYSTEM);
 
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			servletRequest, servletResponse,
