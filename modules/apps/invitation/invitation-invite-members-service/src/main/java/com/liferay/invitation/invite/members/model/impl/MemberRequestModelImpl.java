@@ -12,6 +12,7 @@ import com.liferay.invitation.invite.members.model.MemberRequestModel;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
@@ -50,6 +51,7 @@ import java.util.function.Function;
  * @see MemberRequestImpl
  * @generated
  */
+@JSON(strict = true)
 public class MemberRequestModelImpl
 	extends BaseModelImpl<MemberRequest> implements MemberRequestModel {
 
@@ -332,6 +334,7 @@ public class MemberRequestModelImpl
 
 	}
 
+	@JSON
 	@Override
 	public long getMemberRequestId() {
 		return _memberRequestId;
@@ -346,6 +349,7 @@ public class MemberRequestModelImpl
 		_memberRequestId = memberRequestId;
 	}
 
+	@JSON
 	@Override
 	public long getGroupId() {
 		return _groupId;
@@ -369,6 +373,7 @@ public class MemberRequestModelImpl
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("groupId"));
 	}
 
+	@JSON
 	@Override
 	public long getCompanyId() {
 		return _companyId;
@@ -383,6 +388,7 @@ public class MemberRequestModelImpl
 		_companyId = companyId;
 	}
 
+	@JSON
 	@Override
 	public long getUserId() {
 		return _userId;
@@ -413,6 +419,7 @@ public class MemberRequestModelImpl
 	public void setUserUuid(String userUuid) {
 	}
 
+	@JSON
 	@Override
 	public String getUserName() {
 		if (_userName == null) {
@@ -432,6 +439,7 @@ public class MemberRequestModelImpl
 		_userName = userName;
 	}
 
+	@JSON
 	@Override
 	public Date getCreateDate() {
 		return _createDate;
@@ -446,6 +454,7 @@ public class MemberRequestModelImpl
 		_createDate = createDate;
 	}
 
+	@JSON
 	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
@@ -466,6 +475,7 @@ public class MemberRequestModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
+	@JSON
 	@Override
 	public String getKey() {
 		if (_key == null) {
@@ -494,6 +504,7 @@ public class MemberRequestModelImpl
 		return getColumnOriginalValue("key_");
 	}
 
+	@JSON
 	@Override
 	public long getReceiverUserId() {
 		return _receiverUserId;
@@ -534,6 +545,7 @@ public class MemberRequestModelImpl
 			this.<Long>getColumnOriginalValue("receiverUserId"));
 	}
 
+	@JSON
 	@Override
 	public long getInvitedRoleId() {
 		return _invitedRoleId;
@@ -548,6 +560,7 @@ public class MemberRequestModelImpl
 		_invitedRoleId = invitedRoleId;
 	}
 
+	@JSON
 	@Override
 	public long getInvitedTeamId() {
 		return _invitedTeamId;
@@ -562,6 +575,7 @@ public class MemberRequestModelImpl
 		_invitedTeamId = invitedTeamId;
 	}
 
+	@JSON
 	@Override
 	public int getStatus() {
 		return _status;
@@ -987,4 +1001,4 @@ public class MemberRequestModelImpl
 	private MemberRequest _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2032886764
+// LIFERAY-SERVICE-BUILDER-HASH:-1988582216
