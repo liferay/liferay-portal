@@ -211,9 +211,6 @@ describe('AddToolsModal', () => {
 	it('reports a failing tool set only when the user expands it', async () => {
 		mockAPIRoutes({
 			failingToolSetNames: ['organizations'],
-			profileTools: [
-				{toolName: 'getOrganization', toolSetName: 'organizations'},
-			],
 			toolsByToolSetName: {
 				'mcp-server-v1.0': ['getToolSetsPage'],
 				'organizations': ['getOrganization'],
@@ -264,6 +261,26 @@ describe('AddToolsModal', () => {
 		expect(
 			urls.filter((url) => url.includes('/user-management/'))
 		).toHaveLength(0);
+	});
+
+	it('drops a tool set whose prefetch failed', async () => {
+		mockAPIRoutes({
+			failingToolSetNames: ['organizations'],
+			profileTools: [
+				{toolName: 'getOrganization', toolSetName: 'organizations'},
+			],
+			toolsByToolSetName: {
+				'mcp-server-v1.0': ['getToolSetsPage'],
+				'organizations': ['getOrganization', 'postOrganization'],
+			},
+		});
+
+		renderModal();
+
+		expect(await findCheckbox('mcp-server-v1.0')).toBeVisible();
+		expect(
+			screen.queryByRole('checkbox', {name: 'organizations'})
+		).not.toBeInTheDocument();
 	});
 
 	it('shows a loading indicator until the prefetched tool sets are read', async () => {

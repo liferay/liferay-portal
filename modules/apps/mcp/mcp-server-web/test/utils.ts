@@ -365,8 +365,18 @@ describe('getAvailableToolSets', () => {
 		).toEqual(toolSets);
 	});
 
-	it('keeps a tool set whose tools were not read', () => {
+	it('keeps a tool set the prefetch skipped', () => {
 		expect(getAvailableToolSets(toolSets, [], new Map())).toEqual(toolSets);
+	});
+
+	it('omits a tool set whose prefetch failed', () => {
+		expect(
+			getAvailableToolSets(
+				toolSets,
+				[createProfileTool('user-management', 'getUserAccount')],
+				new Map([['user-management', null]])
+			)
+		).toEqual(createToolSets(['organizations']));
 	});
 });
 

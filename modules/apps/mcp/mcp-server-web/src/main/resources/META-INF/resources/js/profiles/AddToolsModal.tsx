@@ -77,15 +77,13 @@ export default function AddToolsModal({
 
 	const loadToolsByToolSetName = useCallback(
 		async (toolSetNames: string[]) => {
-			const toolsByToolSetName = new Map<string, ToolSummary[]>();
+			const toolsByToolSetName = new Map<string, ToolSummary[] | null>();
 
 			await Promise.all(
 				toolSetNames.map(async (toolSetName) => {
 					const {data: tools} = await loadToolSet(toolSetName);
 
-					if (tools) {
-						toolsByToolSetName.set(toolSetName, tools);
-					}
+					toolsByToolSetName.set(toolSetName, tools);
 				})
 			);
 

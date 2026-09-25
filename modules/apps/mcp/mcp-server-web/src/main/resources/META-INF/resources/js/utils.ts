@@ -133,13 +133,17 @@ export function getAssignedToolIds(profileTools: ProfileTool[]): Set<string> {
 export function getAvailableToolSets(
 	toolSets: ToolSet[],
 	profileTools: ProfileTool[],
-	toolsByToolSetName: Map<string, ToolSummary[]>
+	toolsByToolSetName: Map<string, ToolSummary[] | null>
 ): ToolSet[] {
 	return toolSets.filter((toolSet) => {
+		if (!toolsByToolSetName.has(toolSet.name)) {
+			return true;
+		}
+
 		const tools = toolsByToolSetName.get(toolSet.name);
 
 		if (!tools) {
-			return true;
+			return false;
 		}
 
 		return !!buildToolChildren(toolSet.name, tools, profileTools).length;
