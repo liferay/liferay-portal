@@ -542,7 +542,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 		String className, String displayPage,
 		HttpServletRequest httpServletRequest, Object infoItem) {
 
-		if (infoItem == null) {
+		if ((infoItem == null) || Validator.isNull(displayPage)) {
 			return StringPool.BLANK;
 		}
 
