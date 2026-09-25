@@ -437,8 +437,9 @@ public class UserIndexerTest {
 			user.getUserId());
 
 		String expectedFullNameHighlight = StringBundler.concat(
-			HighlightUtil.HIGHLIGHT_TAG_OPEN, firstName, StringPool.SPACE,
-			middleName, StringPool.SPACE, lastName,
+			HighlightUtil.HIGHLIGHT_TAG_OPEN, firstName,
+			HighlightUtil.HIGHLIGHT_TAG_CLOSE, StringPool.SPACE, middleName,
+			StringPool.SPACE, HighlightUtil.HIGHLIGHT_TAG_OPEN, lastName,
 			HighlightUtil.HIGHLIGHT_TAG_CLOSE);
 
 		assertSummary(
