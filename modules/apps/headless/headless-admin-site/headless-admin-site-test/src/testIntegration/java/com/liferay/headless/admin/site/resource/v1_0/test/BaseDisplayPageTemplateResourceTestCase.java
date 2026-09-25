@@ -1611,6 +1611,30 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	}
 
 	@Test
+	public void testPostDesignLibraryDisplayPageTemplateCopyWithPermission()
+		throws Exception {
+
+		DisplayPageTemplate randomDisplayPageTemplate =
+			randomDisplayPageTemplate();
+
+		DisplayPageTemplate postDisplayPageTemplate =
+			testPostDesignLibraryDisplayPageTemplateCopyWithPermission_addDisplayPageTemplate(
+				randomDisplayPageTemplate);
+
+		assertEquals(randomDisplayPageTemplate, postDisplayPageTemplate);
+		assertValid(postDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testPostDesignLibraryDisplayPageTemplateCopyWithPermission_addDisplayPageTemplate(
+				DisplayPageTemplate displayPageTemplate)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostDesignLibraryDisplayPageTemplateMarkAsDefault()
 		throws Exception {
 
@@ -3445,4 +3469,4 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			DisplayPageTemplateResource _displayPageTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:507310814
+// LIFERAY-REST-BUILDER-HASH:2001146410
