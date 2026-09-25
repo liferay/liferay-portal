@@ -405,20 +405,7 @@ public class CommerceOrderTest {
 
 		for (CommerceOrder commerceOrder : randomOrders) {
 			if (RandomTestUtil.randomBoolean()) {
-				CommerceAddress commerceAddress = _addAddressToAccount(
-					commerceOrder.getCommerceAccountId());
-
-				commerceOrder.setBillingAddressId(
-					commerceAddress.getCommerceAddressId());
-				commerceOrder.setShippingAddressId(
-					commerceAddress.getCommerceAddressId());
-
-				commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-					commerceOrder);
-
-				placedCommerceOrders.add(
-					_commerceOrderEngine.checkoutCommerceOrder(
-						commerceOrder, _user.getUserId()));
+				placedCommerceOrders.add(_checkoutCommerceOrder(commerceOrder));
 			}
 		}
 
@@ -503,7 +490,7 @@ public class CommerceOrderTest {
 				_serviceContext.getUserId(), "Test Business Account", null,
 				null, null, null, _serviceContext);
 
-		CommerceOrder commerceOrder =
+		CommerceOrder commerceOrder1 =
 			_commerceOrderLocalService.addCommerceOrder(
 				adminUserId, commerceChannelGroupId,
 				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
@@ -514,7 +501,7 @@ public class CommerceOrderTest {
 				_serviceContext.getUserId(), "Test Business Account 2", null,
 				null, null, null, _serviceContext);
 
-		CommerceOrder secondCommerceOrder =
+		CommerceOrder commerceOrder2 =
 			_commerceOrderLocalService.addCommerceOrder(
 				adminUserId, commerceChannelGroupId,
 				secondAccountEntry.getAccountEntryId(),
@@ -558,12 +545,13 @@ public class CommerceOrderTest {
 
 		commerceOrders = _getUserOrders(commerceChannelGroupId, false);
 
-		Assert.assertEquals(commerceOrder.toString(), 1, commerceOrders.size());
+		Assert.assertEquals(
+			commerceOrder1.toString(), 1, commerceOrders.size());
 
 		Assert.assertEquals(
 			"The Sales Agent should see first order created, which belongs " +
 				"to the account their 1 organization is associated with",
-			commerceOrder, commerceOrders.get(0));
+			commerceOrder1, commerceOrders.get(0));
 
 		// The Sales Agent's Second organization is added to the second Account
 
@@ -586,27 +574,15 @@ public class CommerceOrderTest {
 		Assert.assertEquals(
 			"The first Order the Sales manager can see should match the " +
 				"first created",
-			true, commerceOrders.contains(commerceOrder));
+			true, commerceOrders.contains(commerceOrder1));
 		Assert.assertEquals(
 			"The second Order the Sales manager can see should match the " +
 				"second created",
-			true, commerceOrders.contains(secondCommerceOrder));
+			true, commerceOrders.contains(commerceOrder2));
 
 		// Checkout the first order
 
-		CommerceAddress commerceAddress = _addAddressToAccount(
-			accountEntry.getAccountEntryId());
-
-		commerceOrder.setBillingAddressId(
-			commerceAddress.getCommerceAddressId());
-		commerceOrder.setShippingAddressId(
-			commerceAddress.getCommerceAddressId());
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+		commerceOrder1 = _checkoutCommerceOrder(commerceOrder1);
 
 		ordersCountByUser = _getUserOrdersCount(commerceChannelGroupId, true);
 
@@ -620,23 +596,11 @@ public class CommerceOrderTest {
 		Assert.assertEquals(
 			"The Sales Agent should see first order created, which belongs " +
 				"to the account their 1 organization is associated with",
-			commerceOrder, commerceOrders.get(0));
+			commerceOrder1, commerceOrders.get(0));
 
 		// Checkout the second order
 
-		CommerceAddress secondCommerceAddress = _addAddressToAccount(
-			secondAccountEntry.getAccountEntryId());
-
-		secondCommerceOrder.setBillingAddressId(
-			secondCommerceAddress.getCommerceAddressId());
-		secondCommerceOrder.setShippingAddressId(
-			secondCommerceAddress.getCommerceAddressId());
-
-		secondCommerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			secondCommerceOrder);
-
-		secondCommerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			secondCommerceOrder, _user.getUserId());
+		commerceOrder2 = _checkoutCommerceOrder(commerceOrder2);
 
 		ordersCountByUser = _getUserOrdersCount(commerceChannelGroupId, true);
 
@@ -651,11 +615,11 @@ public class CommerceOrderTest {
 		Assert.assertEquals(
 			"The first Order the Sales manager can see should match the " +
 				"first created",
-			true, commerceOrders.contains(commerceOrder));
+			true, commerceOrders.contains(commerceOrder1));
 		Assert.assertEquals(
 			"The second Order the Sales manager can see should match the " +
 				"second created",
-			true, commerceOrders.contains(secondCommerceOrder));
+			true, commerceOrders.contains(commerceOrder2));
 
 		// There shouldn't be any open orders
 
@@ -684,7 +648,7 @@ public class CommerceOrderTest {
 			commerceOrders.toString(), 1, commerceOrders.size());
 
 		Assert.assertEquals(
-			"The Sales Agent should only see the first order", commerceOrder,
+			"The Sales Agent should only see the first order", commerceOrder1,
 			commerceOrders.get(0));
 
 		// Remove the Organization association from the first account
@@ -701,11 +665,8 @@ public class CommerceOrderTest {
 		Assert.assertEquals(
 			commerceOrders.toString(), 0, commerceOrders.size());
 
-		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
-		_commerceOrderLocalService.deleteCommerceOrder(secondCommerceOrder);
-		_commerceAddressLocalService.deleteCommerceAddress(commerceAddress);
-		_commerceAddressLocalService.deleteCommerceAddress(
-			secondCommerceAddress);
+		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder1);
+		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder2);
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
 		_accountEntryLocalService.deleteAccountEntry(secondAccountEntry);
 		_organizationLocalService.deleteUserOrganization(
@@ -906,25 +867,11 @@ public class CommerceOrderTest {
 
 		long commerceChannelGroupId = _commerceChannel.getGroupId();
 
-		CommerceOrder commerceOrder =
+		CommerceOrder commerceOrder = _checkoutCommerceOrder(
 			_commerceOrderLocalService.addCommerceOrder(
 				_user.getUserId(), commerceChannelGroupId,
 				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0);
-
-		CommerceAddress commerceAddress = _addAddressToAccount(
-			accountEntry.getAccountEntryId());
-
-		commerceOrder.setBillingAddressId(
-			commerceAddress.getCommerceAddressId());
-		commerceOrder.setShippingAddressId(
-			commerceAddress.getCommerceAddressId());
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+				0));
 
 		int ordersCountByAccountId =
 			_commerceOrderService.getPlacedCommerceOrdersCount(
@@ -1148,6 +1095,22 @@ public class CommerceOrderTest {
 			"MANAGE_ORGANIZATIONS");
 
 		return role;
+	}
+
+	private CommerceOrder _checkoutCommerceOrder(CommerceOrder commerceOrder)
+		throws Exception {
+
+		CommerceAddress commerceAddress = _addAddressToAccount(
+			commerceOrder.getCommerceAccountId());
+
+		commerceOrder.setBillingAddressId(
+			commerceAddress.getCommerceAddressId());
+		commerceOrder.setShippingAddressId(
+			commerceAddress.getCommerceAddressId());
+
+		return _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrderLocalService.updateCommerceOrder(commerceOrder),
+			_user.getUserId());
 	}
 
 	private List<CommerceOrder> _getUserOrders(long groupId, boolean negate)
