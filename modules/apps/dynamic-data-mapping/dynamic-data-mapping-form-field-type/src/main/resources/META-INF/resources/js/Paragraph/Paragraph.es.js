@@ -4,7 +4,6 @@
  */
 
 import 'ckeditor5/ckeditor5.css';
-
 import {ReactFieldBase as FieldBase} from 'dynamic-data-mapping-form-field-type/api';
 import React from 'react';
 
