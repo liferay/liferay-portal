@@ -93,10 +93,17 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 				viewURL = viewContentURL.toString();
 			}
 
-			String currentURL = HttpComponentsUtil.removeParameter(
-				HttpComponentsUtil.removeParameter(
-					themeDisplay.getURLCurrent(), "p_l_back_url"),
-				"p_l_back_url_title");
+			String currentURL = themeDisplay.getURLCurrent();
+
+			if (Validator.isNotNull(
+					HttpComponentsUtil.getParameter(
+						currentURL, "p_l_back_url", false))) {
+
+				currentURL = HttpComponentsUtil.removeParameter(
+					HttpComponentsUtil.removeParameter(
+						currentURL, "p_l_back_url"),
+					"p_l_back_url_title");
+			}
 
 			return HttpComponentsUtil.addParameters(
 				viewURL, "p_l_back_url", currentURL, "p_l_back_url_title",
