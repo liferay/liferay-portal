@@ -105,22 +105,6 @@ describe('SitesControl', () => {
 		).not.toBeInTheDocument();
 	});
 
-	it('counts the selected sites when there are too many to name', () => {
-		const manyPreviewSites = Array.from({length: 6}, (_, index) => ({
-			descriptiveName: `Site ${index}`,
-			externalReferenceCode: `erc-${index}`,
-		}));
-
-		renderControl({
-			previewSites: manyPreviewSites,
-			selectedExternalReferenceCodes: manyPreviewSites.map(
-				({externalReferenceCode}) => externalReferenceCode
-			),
-		});
-
-		expect(screen.getByText('x-sites-are-selected')).toBeInTheDocument();
-	});
-
 	it('counts the selected sites when they cannot be named', () => {
 		renderControl({
 			previewSites: undefined,

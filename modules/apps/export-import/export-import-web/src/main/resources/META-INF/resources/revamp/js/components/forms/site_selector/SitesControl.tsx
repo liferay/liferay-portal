@@ -13,25 +13,41 @@ import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SectionTags from '../content_selector/SectionTags';
 import SiteSelectorModal from './SiteSelectorModal';
 
-const MAX_NAMED_SITES = 5;
+function toPreviewSitesByExternalReferenceCode(previewSites: PreviewSite[]) {
+	const previewSitesByExternalReferenceCode = new Map<string, PreviewSite>();
 
-function getSelectedSites(
-	pickedSites: PreviewSite[],
-	previewSites: PreviewSite[],
-	selectedExternalReferenceCodes: string[]
-) {
-	const previewSitesByExternalReferenceCode = new Map(
-		[...previewSites, ...pickedSites].map((previewSite) => [
-			previewSite.externalReferenceCode,
-			previewSite,
-		])
+	for (const previewSite of previewSites) {
+		const knownPreviewSite = previewSitesByExternalReferenceCode.get(
+			previewSite.externalReferenceCode
+		);
+
+		if (previewSite.descriptiveName || !knownPreviewSite) {
+			previewSitesByExternalReferenceCode.set(
+				previewSite.externalReferenceCode,
+				previewSite
+			);
+		}
+	}
+
+	return previewSitesByExternalReferenceCode;
+}
+
+function getDescription(selectedCount: number, selectedNames: string[]) {
+	if (!selectedCount) {
+		return Liferay.Language.get('no-sites-are-selected');
+	}
+
+	if (selectedNames.length === selectedCount) {
+		return sub(
+			Liferay.Language.get('selected-x'),
+			selectedNames.join(', ')
+		);
+	}
+
+	return sub(
+		Liferay.Language.get('x-sites-are-selected'),
+		String(selectedCount)
 	);
-
-	return selectedExternalReferenceCodes
-		.map((externalReferenceCode) =>
-			previewSitesByExternalReferenceCode.get(externalReferenceCode)
-		)
-		.filter(Boolean) as PreviewSite[];
 }
 
 export default function SitesControl({
@@ -53,36 +69,26 @@ export default function SitesControl({
 
 	const [showModal, setShowModal] = useState(false);
 
-	const [pickedSites, setPickedSites] = useState<PreviewSite[]>(
-		previewSites ?? []
+	const [
+		knownSitesByExternalReferenceCode,
+		setKnownSitesByExternalReferenceCode,
+	] = useState(() =>
+		toPreviewSitesByExternalReferenceCode(previewSites ?? [])
 	);
 
 	const selectedCount = selectedExternalReferenceCodes.length;
 
-	const selectedNames = getSelectedSites(
-		pickedSites,
-		previewSites ?? [],
-		selectedExternalReferenceCodes
-	).map(
-		(previewSite) =>
-			previewSite.descriptiveName || previewSite.externalReferenceCode
-	);
+	const selectedNames = selectedExternalReferenceCodes
+		.map((externalReferenceCode) =>
+			knownSitesByExternalReferenceCode.get(externalReferenceCode)
+		)
+		.filter((previewSite): previewSite is PreviewSite => !!previewSite)
+		.map(
+			(previewSite) =>
+				previewSite.descriptiveName || previewSite.externalReferenceCode
+		);
 
-	let description = Liferay.Language.get('no-sites-are-selected');
-
-	if (selectedCount) {
-		description =
-			selectedNames.length === selectedCount &&
-			selectedCount <= MAX_NAMED_SITES
-				? sub(
-						Liferay.Language.get('selected-x'),
-						selectedNames.join(', ')
-					)
-				: sub(
-						Liferay.Language.get('x-sites-are-selected'),
-						String(selectedCount)
-					);
-	}
+	const description = getDescription(selectedCount, selectedNames);
 
 	return (
 		<>
@@ -97,8 +103,9 @@ export default function SitesControl({
 					</span>
 
 					<span
-						className="d-block small text-secondary"
+						className="d-block small text-secondary text-truncate"
 						id={descriptionId}
+						title={description}
 					>
 						{description}
 					</span>
@@ -122,7 +129,13 @@ export default function SitesControl({
 					apiURL={apiURL}
 					onClose={() => setShowModal(false)}
 					onSubmit={(nextPickedSites) => {
-						setPickedSites(nextPickedSites);
+						setKnownSitesByExternalReferenceCode(
+							(previousKnownSitesByExternalReferenceCode) =>
+								toPreviewSitesByExternalReferenceCode([
+									...previousKnownSitesByExternalReferenceCode.values(),
+									...nextPickedSites,
+								])
+						);
 
 						onChange(
 							nextPickedSites.map(
