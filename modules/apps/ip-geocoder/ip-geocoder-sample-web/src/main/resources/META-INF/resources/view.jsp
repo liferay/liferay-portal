@@ -9,7 +9,8 @@
 
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-<%@ page import="com.liferay.ip.geocoder.IPInfo" %>
+<%@ page import="com.liferay.ip.geocoder.IPInfo" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
 <%
 IPInfo ipInfo = (IPInfo)request.getAttribute(IPInfo.class.getName());
@@ -17,8 +18,8 @@ IPInfo ipInfo = (IPInfo)request.getAttribute(IPInfo.class.getName());
 
 <c:choose>
 	<c:when test="<%= ipInfo != null %>">
-		Country Code: <%= ipInfo.getCountryCode() %><br />
-		IP Address: <%= ipInfo.getIPAddress() %><br />
+		Country Code: <%= HtmlUtil.escape(ipInfo.getCountryCode()) %><br />
+		IP Address: <%= HtmlUtil.escape(ipInfo.getIPAddress()) %><br />
 	</c:when>
 	<c:otherwise>
 		<div class="alert alert-error">
