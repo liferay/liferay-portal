@@ -116,6 +116,15 @@ public class
 				groupId, layoutPageTemplateStructureRelElementVariationERC);
 	}
 
+	@Override
+	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC) {
+
+		return layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
+			findByC_AEERC(companyId, audienceEntryERC);
+	}
+
 	@Reference
 	private UserLocalService _userLocalService;
 
