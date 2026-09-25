@@ -71,6 +71,7 @@ function renderElementVariations(props: Partial<Props> = {}) {
 		<ElementVariations
 			addElementVariationURL="/add"
 			audiences={AUDIENCES}
+			availableViewportSizes={{}}
 			createAudienceURL="/create-audience"
 			defaultLanguageId="en_US"
 			deleteElementVariationURL="/delete"

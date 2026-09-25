@@ -1,0 +1,12 @@
+.element-variations__simulation-modal-iframe {
+	transition: opacity 0.3s ease-in-out;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+.element-variations__simulation-modal-iframe--loading {
+	opacity: 0;
+	transition: none;
+}

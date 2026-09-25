@@ -28,6 +28,7 @@ import ElementVariationsList from './ElementVariationsList';
 import ElementVariationsPreview, {
 	ElementVariationsPreviewRef,
 } from './ElementVariationsPreview';
+import ElementVariationsSimulation from './ElementVariationsSimulation';
 import {
 	Filter,
 	NO_AUDIENCE_VALUE,
@@ -49,6 +50,7 @@ const SIDEBAR_WIDTH = 320;
 interface Props {
 	addElementVariationURL: string;
 	audiences: Array<{label: string; value: string}>;
+	availableViewportSizes: Config['availableViewportSizes'];
 	createAudienceURL: string;
 	defaultLanguageId: string;
 	deleteElementVariationURL: string;
@@ -70,7 +72,10 @@ interface Props {
 }
 
 export default function (props: Props) {
-	initializeConfig({portletNamespace: props.portletNamespace} as Config);
+	initializeConfig({
+		availableViewportSizes: props.availableViewportSizes,
+		portletNamespace: props.portletNamespace,
+	} as Config);
 
 	return <ElementVariations {...props} />;
 }
@@ -189,6 +194,16 @@ function ElementVariations({
 
 	return (
 		<div className="d-flex element-variations flex-column">
+			<ElementVariationsSimulation
+				audiences={audiences}
+				defaultLanguageId={defaultLanguageId}
+				experiences={experiences}
+				languageId={languageId}
+				locales={locales}
+				previewURL={previewURL}
+				segmentsExperienceERC={experienceKey}
+			/>
+
 			<SidePanel
 				aria-label={Liferay.Language.get('element-variations')}
 				className="bg-white element-variations__sidebar overflow-hidden shadow-none"
