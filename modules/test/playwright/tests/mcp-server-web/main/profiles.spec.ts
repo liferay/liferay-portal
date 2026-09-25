@@ -1210,6 +1210,7 @@ test.describe('Profiles - Status', () => {
 			await profilesPage.nameInput.fill(name);
 			await profilesPage.descriptionInput.fill('Created from the UI');
 
+			await expect(profilesPage.creationInfoAlert).toBeVisible();
 			await expect(profilesPage.statusToggle).toBeDisabled();
 
 			await profilesPage.saveButton.click();
@@ -1219,6 +1220,7 @@ test.describe('Profiles - Status', () => {
 			await waitForAlert(page, `${name} was saved successfully.`);
 
 			await expect(profilesPage.formHeading).toHaveText('Edit Profile');
+			await expect(profilesPage.creationInfoAlert).toBeHidden();
 			await expect(profilesPage.statusToggle).toBeEnabled();
 
 			await profilesPage.statusToggle.click();

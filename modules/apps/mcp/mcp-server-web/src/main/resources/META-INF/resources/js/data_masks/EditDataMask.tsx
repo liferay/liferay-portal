@@ -122,7 +122,7 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 				{readOnly && (
 					<ClayAlert
 						displayType="info"
-						title={Liferay.Language.get('info')}
+						title={`${Liferay.Language.get('info')}:`}
 					>
 						{Liferay.Language.get(
 							'system-masks-are-read-only-and-cannot-be-edited'

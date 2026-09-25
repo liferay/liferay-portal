@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
@@ -163,6 +164,17 @@ function ProfileForm({
 	return (
 		<FormikProvider value={formik}>
 			<Form className="profile-form" noValidate>
+				{isNew && (
+					<ClayAlert
+						displayType="info"
+						title={`${Liferay.Language.get('info')}:`}
+					>
+						{Liferay.Language.get(
+							'tools,-data-masks,-and-status-become-available-once-the-profile-is-saved'
+						)}
+					</ClayAlert>
+				)}
+
 				<FormSection title={Liferay.Language.get('profile-status')}>
 					<div className="align-items-center d-flex justify-content-between">
 						<span className="text-secondary">

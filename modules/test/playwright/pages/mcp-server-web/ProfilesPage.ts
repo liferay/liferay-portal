@@ -168,6 +168,12 @@ export class ProfilesPage extends FDSTablePage {
 		return this.page.locator('.toggle-switch-check');
 	}
 
+	get creationInfoAlert(): Locator {
+		return this.page.getByText(
+			'Tools, data masks, and status become available once the profile is saved.'
+		);
+	}
+
 	get cancelButton(): Locator {
 		return this.page.getByRole('button', {name: 'Cancel'});
 	}
