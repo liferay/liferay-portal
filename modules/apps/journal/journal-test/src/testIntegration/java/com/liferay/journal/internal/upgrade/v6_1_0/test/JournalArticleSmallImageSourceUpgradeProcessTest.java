@@ -13,6 +13,8 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -56,6 +58,14 @@ public class JournalArticleSmallImageSourceUpgradeProcessTest {
 			_addJournalArticleWithSmallImageFromURL();
 		JournalArticle journalArticleWithSmallImageFromUserComputer =
 			_addJournalArticleWithSmallImageFromUserComputer();
+		JournalArticle journalArticleWithBlankSmallImageURL =
+			_addJournalArticleWithSmallImageFromUserComputer();
+
+		DB db = DBManagerUtil.getDB();
+
+		db.runSQL(
+			"update JournalArticle set smallImageURL = '' where id_ = " +
+				journalArticleWithBlankSmallImageURL.getId());
 
 		_runUpgrade();
 
@@ -82,6 +92,14 @@ public class JournalArticleSmallImageSourceUpgradeProcessTest {
 		Assert.assertEquals(
 			JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER,
 			journalArticleWithSmallImageFromUserComputer.getSmallImageSource());
+
+		journalArticleWithBlankSmallImageURL =
+			_journalArticleLocalService.fetchArticle(
+				journalArticleWithBlankSmallImageURL.getId());
+
+		Assert.assertEquals(
+			JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER,
+			journalArticleWithBlankSmallImageURL.getSmallImageSource());
 	}
 
 	private JournalArticle _addJournalArticleWithSmallImageFromURL()
