@@ -217,7 +217,7 @@ describe('MiniCompare', () => {
 		});
 	});
 
-	it('adds the product to the compare bar when a product that is not being compared is toggled from its card', async () => {
+	it('adds the product to the compare bar when a product that is not being compared is toggled from its card', () => {
 		mockGetCookie.mockReturnValue('1');
 		mockCheckConsent.mockReturnValue(true);
 
@@ -240,18 +240,16 @@ describe('MiniCompare', () => {
 			container.querySelectorAll('.mini-compare-item.active')
 		).toHaveLength(1);
 
-		await act(async () => {
+		act(() => {
 			toggleItemTrigger({id: '2', thumbnail: 'thumb2.png'});
 		});
 
-		await waitFor(() => {
-			expect(
-				container.querySelectorAll('.mini-compare-item.active')
-			).toHaveLength(2);
-		});
+		expect(
+			container.querySelectorAll('.mini-compare-item.active')
+		).toHaveLength(2);
 	});
 
-	it('removes the product from the compare bar when a product that is already being compared is toggled from its card', async () => {
+	it('removes the product from the compare bar when a product that is already being compared is toggled from its card', () => {
 		mockGetCookie.mockReturnValue('1:2');
 		mockCheckConsent.mockReturnValue(true);
 
@@ -277,14 +275,12 @@ describe('MiniCompare', () => {
 			container.querySelectorAll('.mini-compare-item.active')
 		).toHaveLength(2);
 
-		await act(async () => {
+		act(() => {
 			toggleItemTrigger({id: '1', thumbnail: 'thumb1.png'});
 		});
 
-		await waitFor(() => {
-			expect(
-				container.querySelectorAll('.mini-compare-item.active')
-			).toHaveLength(1);
-		});
+		expect(
+			container.querySelectorAll('.mini-compare-item.active')
+		).toHaveLength(1);
 	});
 });
