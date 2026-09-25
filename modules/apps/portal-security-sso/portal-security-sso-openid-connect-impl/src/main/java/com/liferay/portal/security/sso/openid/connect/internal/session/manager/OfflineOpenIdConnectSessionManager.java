@@ -33,6 +33,7 @@ import com.liferay.portal.security.sso.openid.connect.configuration.OpenIdConnec
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 import com.liferay.portal.security.sso.openid.connect.internal.AuthorizationServerMetadataResolver;
 import com.liferay.portal.security.sso.openid.connect.internal.constants.OpenIdConnectDestinationNames;
+import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectClientInformationUtil;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectTokenRequestUtil;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
@@ -42,9 +43,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
-import com.nimbusds.oauth2.sdk.util.JSONObjectUtils;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import jakarta.servlet.http.HttpSession;
@@ -241,8 +240,8 @@ public class OfflineOpenIdConnectSessionManager {
 						oAuthClientEntry.getOAuthClientEntryId());
 
 			OIDCTokens oidcTokens = OpenIdConnectTokenRequestUtil.request(
-				OIDCClientInformation.parse(
-					JSONObjectUtils.parse(oAuthClientEntry.getInfoJSON())),
+				OpenIdConnectClientInformationUtil.getOIDCClientInformation(
+					oAuthClientEntry),
 				oidcProviderMetadata, refreshToken,
 				oAuthClientEntry.getTokenConnectionTimeout(),
 				oAuthClientEntry.getTokenRequestParametersJSON());

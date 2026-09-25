@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectProviderUtil;
 
 import java.util.Dictionary;
@@ -111,7 +110,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 			_updateOAuthClientASLocalMetadata(
 				companyId, guestUserId, properties),
 			_generateCustomClaimsJSON(properties),
-			_generateInfoJSON(companyId, properties),
+			_generateInfoJSON(properties),
 			GetterUtil.getString(properties.get("matcherField")),
 			GetterUtil.getLong(
 				properties.get("discoveryEndpointCacheInMillis")),
@@ -218,9 +217,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 		return customClaimsJSONObject.toString();
 	}
 
-	private String _generateInfoJSON(
-		long companyId, Dictionary<String, ?> properties) {
-
+	private String _generateInfoJSON(Dictionary<String, ?> properties) {
 		return JSONUtil.put(
 			"client_id",
 			_getPropertyAsString("openIdConnectClientId", properties)
@@ -228,9 +225,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 			"client_name", _generateClientName(properties)
 		).put(
 			"client_secret",
-			_secretResolver.resolve(
-				companyId,
-				_getPropertyAsString("openIdConnectClientSecret", properties))
+			_getPropertyAsString("openIdConnectClientSecret", properties)
 		).put(
 			"grant_types",
 			JSONUtil.putAll("authorization_code", "refresh_token")
@@ -469,7 +464,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 						_updateOAuthClientASLocalMetadata(
 							companyId, guestUserId, properties),
 						_generateCustomClaimsJSON(properties),
-						_generateInfoJSON(companyId, properties),
+						_generateInfoJSON(properties),
 						GetterUtil.getString(properties.get("matcherField")),
 						GetterUtil.getLong(
 							properties.get("discoveryEndpointCacheInMillis")),
@@ -526,9 +521,6 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 		target = "(&(release.bundle.symbolic.name=com.liferay.oauth.client.persistence.service)(&(release.schema.version>=1.6.1)))"
 	)
 	private Release _release;
-
-	@Reference
-	private SecretResolver _secretResolver;
 
 	private ServiceRegistration<ManagedServiceFactory> _serviceRegistration;
 

@@ -25,6 +25,7 @@ import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceExcept
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectConstants;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 import com.liferay.portal.security.sso.openid.connect.internal.session.manager.OfflineOpenIdConnectSessionManager;
+import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectClientInformationUtil;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectHttpUtil;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectProviderUtil;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectRequestParametersUtil;
@@ -125,8 +126,8 @@ public class OpenIdConnectAuthenticationHandlerImpl
 				openIdConnectAuthenticationSession.getOAuthClientEntryId());
 
 		OIDCClientInformation oidcClientInformation =
-			OIDCClientInformation.parse(
-				JSONObjectUtils.parse(oAuthClientEntry.getInfoJSON()));
+			OpenIdConnectClientInformationUtil.getOIDCClientInformation(
+				oAuthClientEntry);
 
 		OIDCProviderMetadata oidcProviderMetadata =
 			_authorizationServerMetadataResolver.resolveOIDCProviderMetadata(
