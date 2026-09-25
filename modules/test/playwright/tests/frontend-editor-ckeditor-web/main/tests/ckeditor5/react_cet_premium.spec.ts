@@ -108,7 +108,7 @@ test(
 	{tag: '@LPD-105914'},
 	async ({classicPage, page}) => {
 		await classicPage.toolbar.container
-			.getByRole('button', {name: 'Insert table'})
+			.getByRole('button', {exact: true, name: 'Insert table'})
 			.click();
 
 		await page
