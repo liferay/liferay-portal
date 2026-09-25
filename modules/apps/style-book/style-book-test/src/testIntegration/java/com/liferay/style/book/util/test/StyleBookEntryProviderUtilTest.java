@@ -13,6 +13,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -142,7 +143,7 @@ public class StyleBookEntryProviderUtilTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
-	@TestInfo("LPD-88081")
+	@TestInfo({"LPD-88081", "LPD-107030"})
 	public void testGetStyleBookEntry() throws Exception {
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			TestPropsValues.getCompanyId(), true, "LPD-57283");
@@ -177,6 +178,8 @@ public class StyleBookEntryProviderUtilTest {
 
 		_testGetStyleBookEntry(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		_testGetStyleBookEntryWhenVirtualLayout();
 	}
 
 	private Group _addConnectedDepotGroup() throws Exception {
@@ -291,6 +294,28 @@ public class StyleBookEntryProviderUtilTest {
 
 		Assert.assertEquals(
 			expectedStyleBookEntry.getStyleBookEntryId(),
+			actualStyleBookEntry.getStyleBookEntryId());
+	}
+
+	private void _testGetStyleBookEntryWhenVirtualLayout() throws Exception {
+		Group connectedDepotGroup = _addConnectedDepotGroup();
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			connectedDepotGroup.getGroupId());
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			connectedDepotGroup);
+
+		layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
+
+		layout = _layoutLocalService.updateLayout(layout);
+
+		StyleBookEntry actualStyleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(
+				new VirtualLayout(layout, _group));
+
+		Assert.assertEquals(
+			styleBookEntry.getStyleBookEntryId(),
 			actualStyleBookEntry.getStyleBookEntryId());
 	}
 
