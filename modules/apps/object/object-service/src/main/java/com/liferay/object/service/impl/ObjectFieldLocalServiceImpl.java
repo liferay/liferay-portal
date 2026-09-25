@@ -1121,6 +1121,8 @@ public class ObjectFieldLocalServiceImpl
 					DynamicObjectDefinitionTableUtil.getUpdateDefaultValueSQL(
 						dbColumnName, dbType, defaultValue, dbTableName));
 			}
+
+			_objectEntryPersistence.clearCache();
 		}
 
 		return objectField;
@@ -1459,6 +1461,8 @@ public class ObjectFieldLocalServiceImpl
 		for (String dbColumnName : objectField.getDBColumnNames()) {
 			_alterTableDropColumn(objectField.getDBTableName(), dbColumnName);
 		}
+
+		_objectEntryPersistence.clearCache();
 
 		if (objectField.compareBusinessType(
 				ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {

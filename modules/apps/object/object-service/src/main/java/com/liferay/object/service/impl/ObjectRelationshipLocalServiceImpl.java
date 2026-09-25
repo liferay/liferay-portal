@@ -1275,6 +1275,8 @@ public class ObjectRelationshipLocalServiceImpl
 						objectDefinition2.getDBTableName()));
 		}
 
+		_objectEntryPersistence.clearCache();
+
 		ObjectDBManagerUtil.createIndexMetadata(
 			_currentConnection.getConnection(
 				objectRelationshipPersistence.getDataSource()),
