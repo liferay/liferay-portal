@@ -5,6 +5,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:headless:headless-admin-address:headless-admin-address-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-address:headless-admin-address-client")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
