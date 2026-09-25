@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.text.SimpleDateFormat;
 
@@ -128,13 +129,21 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 			"LiferayCommerceAvalaraConnector", "1.0", "Liferay", serviceURL);
 
 		String securityHeader = StringBundler.concat(
-			accountNumber, StringPool.COLON, licenseKey);
+			accountNumber, StringPool.COLON, _getLicenseKey(licenseKey));
 
 		return avaTaxClient.withSecurity(
 			Base64.encode(securityHeader.getBytes()));
 	}
 
+	private String _getLicenseKey(String licenseKey) {
+		return _secretResolver.resolve(
+			CompanyThreadLocal.getCompanyId(), licenseKey);
+	}
+
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

@@ -20,7 +20,7 @@ public interface CommerceAvalaraConnectorConfiguration {
 	@Meta.AD(name = "account-number", required = false)
 	public String accountNumber();
 
-	@Meta.AD(name = "license-key", required = false)
+	@Meta.AD(name = "license-key", required = false, type = Meta.Type.Password)
 	public String licenseKey();
 
 	@Meta.AD(name = "service-url", required = false)

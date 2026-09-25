@@ -14,7 +14,9 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-tax-engine-fixed-api")
 	compileOnly project(":apps:dispatch:dispatch-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:commerce-avalara:commerce-avalara-connector-api")
+	testImplementation project(":core:petra:petra-lang")
 }
