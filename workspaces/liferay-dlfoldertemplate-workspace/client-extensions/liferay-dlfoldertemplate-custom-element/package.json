@@ -27,7 +27,7 @@
 		"@clayui/toolbar": "^3.159.0",
 		"@clayui/upper-toolbar": "^3.159.0",
 		"antd": "^5.11.3",
-		"axios": "^1.6.2",
+		"axios": "^1.16.0",
 		"dagre": "^0.8.5",
 		"moment": "^2.29.4",
 		"react": "^18.2.0",
