@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import ClayTable from '@clayui/table';
 import ClayButton from '@clayui/button';
-import { getDistributors } from 'clarity-solution-js-import-maps-entry-distributors';
+import {getDistributors} from 'clarity-solution-js-import-maps-entry-distributors';
 import gold from '../resources/gold.png';
 import bronze from '../resources/bronze.png';
 import silver from '../resources/silver.png';
@@ -19,14 +19,13 @@ const DistributorsTable = () => {
 			default:
 				return null;
 		}
-	}
+	};
 	const selectDistributor = (distributor) => {
 		Liferay.fire('selectDistributor', distributor);
 	};
 
 	useEffect(() => {
-		getDistributors()
-			.then((distributors) => setDistributors(distributors));
+		getDistributors().then((distributors) => setDistributors(distributors));
 	}, []);
 
 	return (
@@ -47,7 +46,13 @@ const DistributorsTable = () => {
 						<ClayTable.Cell>{distributor.city}</ClayTable.Cell>
 						<ClayTable.Cell>{distributor.state}</ClayTable.Cell>
 						<ClayTable.Cell>
-							<img className='img img-fluid' src={getTierImage(distributor.tier.key)} alt={distributor.tier.key} />
+							{getTierImage(distributor.tier?.key) && (
+								<img
+									alt={distributor.tier.name}
+									height="48"
+									src={getTierImage(distributor.tier.key)}
+								/>
+							)}
 						</ClayTable.Cell>
 						<ClayTable.Cell>
 							<ClayButton

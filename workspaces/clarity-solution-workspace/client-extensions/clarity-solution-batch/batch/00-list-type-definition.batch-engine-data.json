@@ -212,6 +212,27 @@
 			"name": "U3A2 Distribution Regions"
 		},
 		{
+			"externalReferenceCode": "U3A2_DISTRIBUTOR_TIERS",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "BRONZE",
+					"key": "bronze",
+					"name": "Bronze"
+				},
+				{
+					"externalReferenceCode": "GOLD",
+					"key": "gold",
+					"name": "Gold"
+				},
+				{
+					"externalReferenceCode": "SILVER",
+					"key": "silver",
+					"name": "Silver"
+				}
+			],
+			"name": "U3A2 Distributor Tiers"
+		},
+		{
 			"externalReferenceCode": "U3A2_PRODUCT_TYPES",
 			"listTypeEntries": [
 				{

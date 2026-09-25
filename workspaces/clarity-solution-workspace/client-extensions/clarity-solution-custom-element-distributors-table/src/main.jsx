@@ -1,10 +1,9 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
 
 import DistributorsTable from './components/DistributorTable.jsx';
 
 class WebComponent extends HTMLElement {
-
 	connectedCallback() {
 		this.root = createRoot(this);
 

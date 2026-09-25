@@ -8,11 +8,9 @@ import {defineConfig} from 'vite';
 
 export default defineConfig({
 	build: {
-		assetsInlineLimit: 32 * 1024,
 		outDir: 'build/vite',
 		rollupOptions: {
 			external: [
-				'/@clayui/*/',
 				'clarity-solution-js-import-maps-entry-distributors',
 				'react',
 				'react-dom',

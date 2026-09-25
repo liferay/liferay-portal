@@ -3,7 +3,7 @@
 		"className": "com.liferay.headless.admin.workflow.dto.v1_0.WorkflowDefinition",
 		"parameters": {
 			"containsHeaders": "true",
-			"createStrategy": "UPSERT",
+			"createStrategy": "INSERT",
 			"onErrorFail": "false",
 			"taskItemDelegateName": "DEFAULT",
 			"updateStrategy": "UPDATE"
@@ -421,7 +421,7 @@
 										"#child-nodes": [
 											{
 												"#tag-name": "email-address",
-												"#value": "admin@clarityvisionsolutions.com"
+												"#value": "u3a2.specialist.sam@clarityvisionsolutions.com"
 											}
 										],
 										"#tag-name": "user"

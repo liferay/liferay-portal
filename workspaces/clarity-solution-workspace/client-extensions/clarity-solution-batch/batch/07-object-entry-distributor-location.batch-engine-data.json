@@ -1,0 +1,67 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.rest.dto.v1_0.ObjectEntry",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"onErrorFail": "false",
+			"taskItemDelegateName": "C_DistributorLocation",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "C_DistributorLocation"
+	},
+	"items": [
+		{
+			"city": "Southlake",
+			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_CLEARVIEW_OPTICS",
+			"latitude": 32.945113,
+			"longitude": -97.121117,
+			"name": "ClearView Optics",
+			"state": "TX",
+			"street": "1980 East State Hwy 114",
+			"tier": {
+				"key": "bronze",
+				"name": "Bronze"
+			},
+			"zipCode": "76092"
+		},
+		{
+			"city": "Dallas",
+			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_ROKA",
+			"latitude": 32.848092,
+			"longitude": -96.770822,
+			"name": "Roka",
+			"state": "TX",
+			"street": "5646 Milton St. Suite 540",
+			"tier": {
+				"key": "silver",
+				"name": "Silver"
+			},
+			"zipCode": "75206"
+		},
+		{
+			"city": "McKinney",
+			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_STANTON_OPTICAL",
+			"latitude": 33.217463,
+			"longitude": -96.660282,
+			"name": "Stanton Optical",
+			"state": "TX",
+			"street": "3620 W University Dr #400",
+			"zipCode": "75071"
+		},
+		{
+			"city": "Austin",
+			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_WARBY_PARKER",
+			"latitude": 30.402968,
+			"longitude": -97.720991,
+			"name": "Warby Parker",
+			"state": "TX",
+			"street": "11700 Domain Blvd Suite 114",
+			"tier": {
+				"key": "gold",
+				"name": "Gold"
+			},
+			"zipCode": "78758"
+		}
+	]
+}

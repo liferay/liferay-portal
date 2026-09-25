@@ -1,0 +1,24 @@
+{
+	"configuration": {
+		"className": "com.liferay.headless.admin.user.dto.v1_0.UserAccount",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"onErrorFail": "false",
+			"taskItemDelegateName": "DEFAULT",
+			"updateStrategy": "UPDATE"
+		}
+	},
+	"items": [
+		{
+			"alternateName": "u3a2.specialist.sam",
+			"emailAddress": "u3a2.specialist.sam@clarityvisionsolutions.com",
+			"externalReferenceCode": "U3A2_SPECIALIST_SAM",
+			"familyName": "Sam",
+			"givenName": "U3A2 Specialist",
+			"jobTitle": "Business Development Specialist",
+			"name": "U3A2 Specialist Sam",
+			"password": "test"
+		}
+	]
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 
@@ -6,9 +6,11 @@ const DistributorDetails = () => {
 	const [selectedDistributor, setSelectedDistributor] = useState(null);
 
 	useEffect(() => {
-		Liferay.on('selectDistributor', (distributor) => {
+		const handle = Liferay.on('selectDistributor', (distributor) => {
 			setSelectedDistributor(distributor);
 		});
+
+		return () => handle.detach();
 	}, []);
 
 	return !selectedDistributor ? (
@@ -16,14 +18,15 @@ const DistributorDetails = () => {
 			Please select a distributor from the table.
 		</ClayAlert>
 	) : (
-		<div class="row">
-			<div class="col">
+		<div className="row">
+			<div className="col">
 				<h2>{selectedDistributor.name}</h2>
 				<p>
-					Location: {selectedDistributor.city}, {selectedDistributor.state}
+					Location: {selectedDistributor.city},{' '}
+					{selectedDistributor.state}
 				</p>
 			</div>
-			<div class="col">
+			<div className="col">
 				<ClayButton displayType="primary">
 					Contact Distributor
 				</ClayButton>

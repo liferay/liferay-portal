@@ -1,0 +1,158 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"onErrorFail": "ON_ERROR_FAIL",
+			"taskItemDelegateName": "DEFAULT",
+			"updateStrategy": "UPDATE"
+		}
+	},
+	"items": [
+		{
+			"active": true,
+			"enableCategorization": true,
+			"enableIndexSearch": true,
+			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION",
+			"label": {
+				"en_US": "Distributor Location"
+			},
+			"modifiable": true,
+			"name": "DistributorLocation",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_CITY",
+					"indexed": true,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "City"
+					},
+					"name": "city",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String"
+				},
+				{
+					"DBType": "Double",
+					"businessType": "Decimal",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_LATITUDE",
+					"indexed": true,
+					"label": {
+						"en_US": "Latitude"
+					},
+					"name": "latitude",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "Double"
+				},
+				{
+					"DBType": "Double",
+					"businessType": "Decimal",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_LONGITUDE",
+					"indexed": true,
+					"label": {
+						"en_US": "Longitude"
+					},
+					"name": "longitude",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "Double"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_NAME",
+					"indexed": true,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_STATE",
+					"indexed": true,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "State"
+					},
+					"name": "state",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_STREET",
+					"indexed": true,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Street"
+					},
+					"name": "street",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_TIER",
+					"indexed": true,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Tier"
+					},
+					"listTypeDefinitionExternalReferenceCode": "U3A2_DISTRIBUTOR_TIERS",
+					"name": "tier",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_ZIP_CODE",
+					"indexed": true,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Zip Code"
+					},
+					"name": "zipCode",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String"
+				}
+			],
+			"objectFolderExternalReferenceCode": "U3A2_DISTRIBUTOR_MANAGEMENT",
+			"panelCategoryKey": "control_panel.object",
+			"pluralLabel": {
+				"en_US": "Distributor Locations"
+			},
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"titleObjectFieldName": "name"
+		}
+	]
+}
