@@ -22,7 +22,11 @@ import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceOrderLocalServiceUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.counter.kernel.service.CounterLocalService;
@@ -6218,6 +6222,61 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetTitleValue() throws Exception {
+
+		// Modifiable custom object definition
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"firstName", "John"
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build());
+
+		_assertGetTitleValue(
+			"John", _objectDefinition.getObjectDefinitionId(), "firstName",
+			objectEntry.getObjectEntryId());
+
+		// Unmodifiable system object definition
+
+		CommerceCatalog commerceCatalog = CPTestUtil.getSystemCommerceCatalog(
+			TestPropsValues.getCompanyId());
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			commerceCatalog.getGroupId());
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				TestPropsValues.getCompanyId(), CPDefinition.class.getName());
+
+		Assert.assertEquals(
+			cpDefinition.getName(),
+			_objectEntryLocalService.getTitleValue(
+				objectDefinition.getObjectDefinitionId(),
+				cpDefinition.getCProductId()));
+
+		long originalTitleObjectFieldId =
+			objectDefinition.getTitleObjectFieldId();
+
+		_assertGetTitleValue(
+			String.valueOf(commerceCatalog.getCommerceCatalogId()),
+			objectDefinition.getObjectDefinitionId(), "catalogId",
+			cpDefinition.getCProductId());
+		_assertGetTitleValue(
+			String.valueOf(cpDefinition.getCProductId()),
+			objectDefinition.getObjectDefinitionId(), "productId",
+			cpDefinition.getCProductId());
+
+		_objectDefinitionLocalService.updateTitleObjectFieldId(
+			objectDefinition.getObjectDefinitionId(),
+			originalTitleObjectFieldId);
+
+		_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
+	}
+
+	@Test
 	public void testGetValuesList() throws Exception {
 		Sort[] sorts = {new Sort("id", false)};
 
@@ -10502,6 +10561,23 @@ public class ObjectEntryLocalServiceTest {
 				search, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 	}
 
+	private void _assertGetTitleValue(
+			String expectedTitleValue, long objectDefinitionId,
+			String objectFieldName, long primaryKey)
+		throws Exception {
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectDefinitionId, objectFieldName);
+
+		_objectDefinitionLocalService.updateTitleObjectFieldId(
+			objectDefinitionId, objectField.getObjectFieldId());
+
+		Assert.assertEquals(
+			expectedTitleValue,
+			_objectEntryLocalService.getTitleValue(
+				objectDefinitionId, primaryKey));
+	}
+
 	private void _assertGetWorkflowInstancesSize(
 			String assetClassName, long assetClassPK, int expectedSize)
 		throws Exception {
@@ -12641,6 +12717,9 @@ public class ObjectEntryLocalServiceTest {
 
 	@Inject
 	private CounterLocalService _counterLocalService;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
