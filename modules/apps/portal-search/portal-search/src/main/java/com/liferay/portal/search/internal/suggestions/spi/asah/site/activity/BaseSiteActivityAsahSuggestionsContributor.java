@@ -66,6 +66,7 @@ public abstract class BaseSiteActivityAsahSuggestionsContributor
 
 		return AsahWebCacheItem.get(
 			analyticsConfiguration, _siteActivityAsahConfiguration,
+			searchContext.getCompanyId(),
 			_getURL(
 				analyticsConfiguration, basePath, displayLanguageId, groupId,
 				minCounts, path, size, sort),

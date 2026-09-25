@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
@@ -28,11 +29,11 @@ public class AnalyticsCloudClient {
 	}
 
 	public void createDataControlTasks(
-			AnalyticsConfiguration analyticsConfiguration,
+			AnalyticsConfiguration analyticsConfiguration, long companyId,
 			Set<String> emailAddresses, Set<String> types)
 		throws Exception {
 
-		Http.Options options = _getOptions(analyticsConfiguration);
+		Http.Options options = _getOptions(analyticsConfiguration, companyId);
 
 		options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
 		options.setBody(
@@ -63,15 +64,17 @@ public class AnalyticsCloudClient {
 	}
 
 	private Http.Options _getOptions(
-			AnalyticsConfiguration analyticsConfiguration)
+			AnalyticsConfiguration analyticsConfiguration, long companyId)
 		throws Exception {
 
 		Http.Options options = new Http.Options();
 
 		options.addHeader(
 			"OSB-Asah-Faro-Backend-Security-Signature",
-			analyticsConfiguration.
-				liferayAnalyticsFaroBackendSecuritySignature());
+			SecretResolverUtil.resolve(
+				companyId,
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
 		options.addHeader(
 			"OSB-Asah-Project-ID",
 			analyticsConfiguration.liferayAnalyticsProjectId());

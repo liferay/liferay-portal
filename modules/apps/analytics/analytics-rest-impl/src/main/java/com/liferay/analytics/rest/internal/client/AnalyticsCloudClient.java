@@ -7,8 +7,10 @@ package com.liferay.analytics.rest.internal.client;
 
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 /**
  * @author Marcos Martins
@@ -31,8 +33,10 @@ public class AnalyticsCloudClient {
 			analyticsConfiguration.liferayAnalyticsDataSourceId());
 		options.addHeader(
 			"OSB-Asah-Faro-Backend-Security-Signature",
-			analyticsConfiguration.
-				liferayAnalyticsFaroBackendSecuritySignature());
+			SecretResolverUtil.resolve(
+				CompanyThreadLocal.getCompanyId(),
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
 		options.addHeader(
 			"OSB-Asah-Project-ID",
 			analyticsConfiguration.liferayAnalyticsProjectId());

@@ -21,9 +21,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
@@ -270,8 +272,10 @@ public class AnalyticsCloudClient {
 
 		options.addHeader(
 			"OSB-Asah-Faro-Backend-Security-Signature",
-			analyticsConfiguration.
-				liferayAnalyticsFaroBackendSecuritySignature());
+			SecretResolverUtil.resolve(
+				CompanyThreadLocal.getCompanyId(),
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
 		options.addHeader(
 			"OSB-Asah-Project-ID",
 			analyticsConfiguration.liferayAnalyticsProjectId());

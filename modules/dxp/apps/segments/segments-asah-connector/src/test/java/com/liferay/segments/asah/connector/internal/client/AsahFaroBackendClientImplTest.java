@@ -11,11 +11,17 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NestableRuntimeException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.security.key.KeyReference;
+import com.liferay.portal.security.key.KeyReferenceUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.segments.asah.connector.internal.client.model.DXPVariant;
 import com.liferay.segments.asah.connector.internal.client.model.DXPVariants;
@@ -32,9 +38,12 @@ import java.net.URLDecoder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,6 +60,35 @@ public class AsahFaroBackendClientImplTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@BeforeClass
+	public static void setUpClass() {
+		Mockito.when(
+			_secretResolver.resolve(
+				Mockito.anyLong(), Mockito.nullable(String.class))
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(1)
+		);
+
+		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			new Snapshot<SecretResolver>(
+				SecretResolverUtil.class, SecretResolver.class) {
+
+				@Override
+				public SecretResolver get() {
+					return _secretResolver;
+				}
+
+			});
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		ReflectionTestUtil.setFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			_secretResolverSnapshot);
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -410,6 +448,76 @@ public class AsahFaroBackendClientImplTest {
 	}
 
 	@Test
+	public void testGetIndividualSegmentResultsWithKeyReference()
+		throws Exception {
+
+		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
+			new KeyReference(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				KeyReference.Type.SECRET));
+
+		Mockito.when(
+			_analyticsConfiguration.
+				liferayAnalyticsFaroBackendSecuritySignature()
+		).thenReturn(
+			keyReferenceString
+		);
+
+		long companyId = RandomTestUtil.randomLong();
+		String securitySignature = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_secretResolver.resolve(companyId, keyReferenceString)
+		).thenReturn(
+			securitySignature
+		);
+
+		Http http = Mockito.mock(Http.class);
+
+		Mockito.when(
+			http.URLtoString(Mockito.any(Http.Options.class))
+		).thenAnswer(
+			invocation -> {
+				Http.Options httpOptions = invocation.getArgument(
+					0, Http.Options.class);
+
+				Http.Response response = new Http.Response();
+
+				response.setResponseCode(HttpURLConnection.HTTP_OK);
+
+				httpOptions.setResponse(response);
+
+				return JSONUtil.put(
+					"page", JSONUtil.put("totalElements", 0)
+				).toString();
+			}
+		);
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(_analyticsSettingsManager, http);
+
+		asahFaroBackendClient.getIndividualSegmentResults(
+			companyId, 1, 100, Collections.emptyList());
+
+		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
+			Http.Options.class);
+
+		Mockito.verify(
+			http
+		).URLtoString(
+			argumentCaptor.capture()
+		);
+
+		Http.Options httpOptions = argumentCaptor.getValue();
+
+		Map<String, String> headers = httpOptions.getHeaders();
+
+		Assert.assertEquals(
+			securitySignature,
+			headers.get("OSB-Asah-Faro-Backend-Security-Signature"));
+	}
+
+	@Test
 	public void testGetInterestTermsResults() throws Exception {
 		String userId = String.valueOf(RandomTestUtil.randomLong());
 
@@ -581,6 +689,10 @@ public class AsahFaroBackendClientImplTest {
 
 		portalUtil.setPortal(portal);
 	}
+
+	private static final SecretResolver _secretResolver = Mockito.mock(
+		SecretResolver.class);
+	private static Snapshot<SecretResolver> _secretResolverSnapshot;
 
 	private AnalyticsConfiguration _analyticsConfiguration;
 	private AnalyticsSettingsManager _analyticsSettingsManager;

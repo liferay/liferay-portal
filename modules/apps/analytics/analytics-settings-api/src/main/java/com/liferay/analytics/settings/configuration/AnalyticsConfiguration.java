@@ -51,7 +51,7 @@ public interface AnalyticsConfiguration {
 	@Meta.AD(required = false)
 	public String liferayAnalyticsEndpointURL();
 
-	@Meta.AD(required = false)
+	@Meta.AD(required = false, type = Meta.Type.Password)
 	public String liferayAnalyticsFaroBackendSecuritySignature();
 
 	@Meta.AD(required = false)
@@ -132,7 +132,7 @@ public interface AnalyticsConfiguration {
 	@Meta.AD(required = false)
 	public String[] syncedUserGroupIds();
 
-	@Meta.AD(required = false)
+	@Meta.AD(required = false, type = Meta.Type.Password)
 	public String token();
 
 	@Meta.AD(deflt = "true", required = false)

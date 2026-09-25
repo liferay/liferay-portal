@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.exception.NestableRuntimeException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import org.apache.http.HttpStatus;
 
@@ -80,8 +81,10 @@ public class AsahFaroBackendClient {
 
 		options.addHeader(
 			"OSB-Asah-Faro-Backend-Security-Signature",
-			analyticsConfiguration.
-				liferayAnalyticsFaroBackendSecuritySignature());
+			SecretResolverUtil.resolve(
+				companyId,
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
 
 		String projectId = analyticsConfiguration.liferayAnalyticsProjectId();
 

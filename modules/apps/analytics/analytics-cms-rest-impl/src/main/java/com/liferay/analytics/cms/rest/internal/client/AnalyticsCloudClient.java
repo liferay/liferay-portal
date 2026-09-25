@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -874,8 +875,10 @@ public class AnalyticsCloudClient {
 
 		options.addHeader(
 			"OSB-Asah-Faro-Backend-Security-Signature",
-			analyticsConfiguration.
-				liferayAnalyticsFaroBackendSecuritySignature());
+			SecretResolverUtil.resolve(
+				CompanyThreadLocal.getCompanyId(),
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
 		options.addHeader(
 			"OSB-Asah-Project-ID",
 			analyticsConfiguration.liferayAnalyticsProjectId());

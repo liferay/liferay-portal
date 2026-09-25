@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
@@ -155,7 +156,11 @@ public class OAuth2ApplicationModelListener
 		}
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			new String(Base64.decode(analyticsConfiguration.token())));
+			new String(
+				Base64.decode(
+					SecretResolverUtil.resolve(
+						oAuth2Application.getCompanyId(),
+						analyticsConfiguration.token()))));
 
 		Http.Options options = new Http.Options();
 

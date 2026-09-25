@@ -18,9 +18,13 @@ import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.security.key.secret.SecretResolver;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.IOException;
@@ -36,7 +40,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,6 +58,37 @@ public class AnalyticsReportsDataProviderTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@BeforeClass
+	public static void setUpClass() {
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(
+				Mockito.anyLong(), Mockito.nullable(String.class))
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(1)
+		);
+
+		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			new Snapshot<SecretResolver>(
+				SecretResolverUtil.class, SecretResolver.class) {
+
+				@Override
+				public SecretResolver get() {
+					return secretResolver;
+				}
+
+			});
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		ReflectionTestUtil.setFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			_secretResolverSnapshot);
+	}
 
 	@Test
 	public void testGetAcquisitionChannels() throws Exception {
@@ -538,5 +575,7 @@ public class AnalyticsReportsDataProviderTest {
 
 		return http;
 	}
+
+	private static Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }

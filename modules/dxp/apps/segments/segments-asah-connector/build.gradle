@@ -25,6 +25,7 @@ dependencies {
 	compileOnly project(":apps:layout:layout-content-page-editor-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")

@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
 import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
 import com.liferay.portal.search.internal.configuration.AsahConfiguration;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
@@ -27,13 +28,14 @@ public class AsahWebCacheItem implements WebCacheItem {
 
 	public static JSONObject get(
 		AnalyticsConfiguration analyticsConfiguration,
-		AsahConfiguration asahConfiguration, String url, String webCacheItem) {
+		AsahConfiguration asahConfiguration, long companyId, String url,
+		String webCacheItem) {
 
 		try {
 			return (JSONObject)WebCachePoolUtil.get(
 				AsahWebCacheItem.class.getName() + webCacheItem,
 				new AsahWebCacheItem(
-					analyticsConfiguration, asahConfiguration, url));
+					analyticsConfiguration, asahConfiguration, companyId, url));
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -46,10 +48,11 @@ public class AsahWebCacheItem implements WebCacheItem {
 
 	public AsahWebCacheItem(
 		AnalyticsConfiguration analyticsConfiguration,
-		AsahConfiguration asahConfiguration, String url) {
+		AsahConfiguration asahConfiguration, long companyId, String url) {
 
 		_analyticsConfiguration = analyticsConfiguration;
 		_asahConfiguration = asahConfiguration;
+		_companyId = companyId;
 		_url = url;
 	}
 
@@ -60,8 +63,10 @@ public class AsahWebCacheItem implements WebCacheItem {
 
 			options.addHeader(
 				"OSB-Asah-Faro-Backend-Security-Signature",
-				_analyticsConfiguration.
-					liferayAnalyticsFaroBackendSecuritySignature());
+				SecretResolverUtil.resolve(
+					_companyId,
+					_analyticsConfiguration.
+						liferayAnalyticsFaroBackendSecuritySignature()));
 			options.addHeader(
 				"OSB-Asah-Project-ID",
 				_analyticsConfiguration.liferayAnalyticsProjectId());
@@ -107,6 +112,7 @@ public class AsahWebCacheItem implements WebCacheItem {
 
 	private final AnalyticsConfiguration _analyticsConfiguration;
 	private final AsahConfiguration _asahConfiguration;
+	private final long _companyId;
 	private final String _url;
 
 }

@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
@@ -53,6 +54,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -592,13 +594,23 @@ public class AnalyticsCloudClient {
 
 		Http.Options options = new Http.Options();
 
-		options.addHeader(
-			"OSB-Asah-Faro-Backend-Security-Signature",
+		String liferayAnalyticsFaroBackendSecuritySignature =
 			GetterUtil.getString(
 				_connectionProperties.get(
 					"liferayAnalyticsFaroBackendSecuritySignature"),
-				analyticsConfiguration.
-					liferayAnalyticsFaroBackendSecuritySignature()));
+				null);
+
+		if (liferayAnalyticsFaroBackendSecuritySignature == null) {
+			liferayAnalyticsFaroBackendSecuritySignature =
+				SecretResolverUtil.resolve(
+					CompanyThreadLocal.getCompanyId(),
+					analyticsConfiguration.
+						liferayAnalyticsFaroBackendSecuritySignature());
+		}
+
+		options.addHeader(
+			"OSB-Asah-Faro-Backend-Security-Signature",
+			liferayAnalyticsFaroBackendSecuritySignature);
 		options.addHeader(
 			"OSB-Asah-Project-ID",
 			GetterUtil.getString(

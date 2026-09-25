@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.segments.asah.connector.internal.client.constants.FilterConstants;
 import com.liferay.segments.asah.connector.internal.client.data.binding.ExperimentJSONObjectMapper;
 import com.liferay.segments.asah.connector.internal.client.data.binding.IndividualJSONObjectMapper;
@@ -328,7 +329,7 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 	}
 
 	private Map<String, String> _getHeaders(
-		AnalyticsConfiguration analyticsConfiguration) {
+		AnalyticsConfiguration analyticsConfiguration, long companyId) {
 
 		return HashMapBuilder.put(
 			"Accept", "application/json"
@@ -336,8 +337,10 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 			"Content-Type", "application/json"
 		).put(
 			"OSB-Asah-Faro-Backend-Security-Signature",
-			analyticsConfiguration.
-				liferayAnalyticsFaroBackendSecuritySignature()
+			SecretResolverUtil.resolve(
+				companyId,
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature())
 		).put(
 			"OSB-Asah-Project-ID",
 			analyticsConfiguration.liferayAnalyticsProjectId()
@@ -354,7 +357,7 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 		AnalyticsConfiguration analyticsConfiguration =
 			_analyticsSettingsManager.getAnalyticsConfiguration(companyId);
 
-		httpOptions.setHeaders(_getHeaders(analyticsConfiguration));
+		httpOptions.setHeaders(_getHeaders(analyticsConfiguration, companyId));
 
 		String url = StringBundler.concat(
 			analyticsConfiguration.liferayAnalyticsFaroBackendURL(),

@@ -75,6 +75,7 @@ public abstract class BaseUserActivityAsahSuggestionsContributor
 
 		return AsahWebCacheItem.get(
 			analyticsConfiguration, _userActivityAsahConfiguration,
+			searchContext.getCompanyId(),
 			_getURL(
 				analyticsConfiguration,
 				StringBundler.concat(
