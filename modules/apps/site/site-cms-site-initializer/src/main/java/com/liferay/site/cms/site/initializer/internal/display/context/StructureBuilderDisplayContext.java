@@ -243,9 +243,24 @@ public class StructureBuilderDisplayContext {
 				_themeDisplay.getUser()
 			).build();
 
-			return objectDefinitionResource.
-				getObjectDefinitionByExternalReferenceCode(
-					baseObjectDefinitionExternalReferenceCode);
+			Page<ObjectDefinition> page =
+				objectDefinitionResource.getObjectDefinitionsPage(
+					null, null,
+					objectDefinitionResource.toFilter(
+						StringBundler.concat(
+							"externalReferenceCode eq '",
+							baseObjectDefinitionExternalReferenceCode, "'"),
+						Collections.emptyMap()),
+					null, null);
+
+			List<ObjectDefinition> objectDefinitions = new ArrayList<>(
+				page.getItems());
+
+			if (ListUtil.isEmpty(objectDefinitions)) {
+				return null;
+			}
+
+			return objectDefinitions.get(0);
 		}
 
 		return null;
