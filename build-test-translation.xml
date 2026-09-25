@@ -3,6 +3,30 @@
 <project basedir="." default="test" name="build-test-translation" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<import file="build-test.xml" />
 
+	<macrodef name="fill-empty-translation-target">
+		<attribute name="file" />
+		<attribute name="sourcecdata" />
+		<attribute name="target" />
+		<sequential>
+			<replaceregexp
+				file="@{file}"
+			>
+				<regexp pattern="(\Q@{sourcecdata}\E&lt;/source&gt;\s*&lt;target[^&gt;]*&gt;)&lt;/target&gt;" />
+				<substitution expression="\1@{target}" />
+			</replaceregexp>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="strip-target-tag">
+		<attribute name="property" />
+		<attribute name="value" />
+		<sequential>
+			<antelope:stringutil property="@{property}" string="@{value}">
+				<antelope:replace regex="&lt;/target&gt;" replacement="" />
+			</antelope:stringutil>
+		</sequential>
+	</macrodef>
+
 	<target name="copy-translation-file">
 		<if>
 			<equals arg1="${dependencyFile}" arg2="true" />
@@ -97,8 +121,8 @@
 			<else>
 				<replace
 					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}"
-					token="${translation.title.target.original}"
-					value="${translation.title.target}"
+					token="${translation.content.target.original}"
+					value="${translation.content.target}"
 				/>
 				<replace
 					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}"
@@ -107,8 +131,36 @@
 				/>
 				<replace
 					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}"
-					token="${translation.content.target.original}"
-					value="${translation.content.target}"
+					token="${translation.title.target.original}"
+					value="${translation.title.target}"
+				/>
+
+				<!--
+				The replaces above only match an export whose target already repeats
+				the source text. An export that leaves the target empty needs the
+				translation written into it, anchored on the source text so that each
+				unit keeps its own value. XLIFF 1.2 writes the target with an
+				xml:lang attribute, so the opening tag is matched loosely.
+				-->
+
+				<strip-target-tag property="translation.content.source.cdata" value="${translation.content.target.original}" />
+				<strip-target-tag property="translation.description.source.cdata" value="${translation.description.target.original}" />
+				<strip-target-tag property="translation.title.source.cdata" value="${translation.title.target.original}" />
+
+				<fill-empty-translation-target
+					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}"
+					sourcecdata="${translation.content.source.cdata}"
+					target="${translation.content.target}"
+				/>
+				<fill-empty-translation-target
+					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}"
+					sourcecdata="${translation.description.source.cdata}"
+					target="${translation.description.target}"
+				/>
+				<fill-empty-translation-target
+					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}"
+					sourcecdata="${translation.title.source.cdata}"
+					target="${translation.title.target}"
 				/>
 			</else>
 		</if>
