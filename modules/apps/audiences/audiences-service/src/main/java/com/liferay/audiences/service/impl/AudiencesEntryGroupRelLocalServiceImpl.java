@@ -105,19 +105,6 @@ public class AudiencesEntryGroupRelLocalServiceImpl
 
 		_validate(user.getCompanyId(), groupERCs);
 
-		List<String> removedGroupERCs = new ArrayList<>();
-
-		for (AudiencesEntryGroupRel audiencesEntryGroupRel :
-				audiencesEntryGroupRelPersistence.findByC_AEERC(
-					user.getCompanyId(), audienceEntryERC)) {
-
-			if (!ArrayUtil.contains(
-					groupERCs, audiencesEntryGroupRel.getGroupERC())) {
-
-				removedGroupERCs.add(audiencesEntryGroupRel.getGroupERC());
-			}
-		}
-
 		deleteAudiencesEntryGroupRelsByAudienceEntryERC(
 			user.getCompanyId(), audienceEntryERC);
 
@@ -126,16 +113,15 @@ public class AudiencesEntryGroupRelLocalServiceImpl
 		List<AudiencesEntryGroupRel> audiencesEntryGroupRels =
 			_addAudiencesEntryGroupRels(userId, audienceEntryERC, groupERCs);
 
-		if (ArrayUtil.isEmpty(groupERCs) || removedGroupERCs.isEmpty()) {
+		if (ArrayUtil.isEmpty(groupERCs)) {
 			return audiencesEntryGroupRels;
 		}
 
 		for (AudiencesEntryGroupRelListener audiencesEntryGroupRelListener :
 				_serviceTrackerList) {
 
-			audiencesEntryGroupRelListener.onDeleteAudiencesEntryGroupRels(
-				user.getCompanyId(), audienceEntryERC,
-				ArrayUtil.toStringArray(removedGroupERCs));
+			audiencesEntryGroupRelListener.onUpdateAudiencesEntryGroupRels(
+				user.getCompanyId(), audienceEntryERC, groupERCs);
 		}
 
 		return audiencesEntryGroupRels;

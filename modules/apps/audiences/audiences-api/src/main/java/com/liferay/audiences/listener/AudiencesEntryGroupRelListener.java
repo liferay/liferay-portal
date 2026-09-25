@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public interface AudiencesEntryGroupRelListener {
 
-	public void onDeleteAudiencesEntryGroupRels(
+	public void onUpdateAudiencesEntryGroupRels(
 			long companyId, String audienceEntryERC, String[] groupERCs)
 		throws PortalException;
 

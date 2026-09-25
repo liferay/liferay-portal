@@ -6,9 +6,13 @@
 package com.liferay.layout.page.template.internal.listener;
 
 import com.liferay.audiences.listener.AudiencesEntryGroupRelListener;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariationAudienceEntryRel;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -21,20 +25,36 @@ public class ElementVariationAudiencesEntryGroupRelListener
 	implements AudiencesEntryGroupRelListener {
 
 	@Override
-	public void onDeleteAudiencesEntryGroupRels(
+	public void onUpdateAudiencesEntryGroupRels(
 		long companyId, String audienceEntryERC, String[] groupERCs) {
+
+		Set<Long> groupIds = new HashSet<>();
 
 		for (String groupERC : groupERCs) {
 			Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
 				groupERC, companyId);
 
-			if (group == null) {
+			if (group != null) {
+				groupIds.add(group.getGroupId());
+			}
+		}
+
+		for (LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+				layoutPageTemplateStructureRelElementVariationAudienceEntryRel :
+					_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+						getLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+							companyId, audienceEntryERC)) {
+
+			if (groupIds.contains(
+					layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
+						getGroupId())) {
+
 				continue;
 			}
 
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
-				deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-					group.getGroupId(), audienceEntryERC);
+				deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+					layoutPageTemplateStructureRelElementVariationAudienceEntryRel);
 		}
 	}
 
