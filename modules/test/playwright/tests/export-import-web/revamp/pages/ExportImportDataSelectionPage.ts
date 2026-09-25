@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 
@@ -12,10 +12,18 @@ export class ExportImportDataSelectionPage {
 	readonly expandSectionButton: (name: string) => Locator;
 	readonly page: Page;
 	readonly section: Locator;
+	readonly selectSitesButton: Locator;
+	readonly siteSelectorDialog: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.section = page.locator('[data-testid="data-selection-section"]');
+		this.selectSitesButton = page.getByRole('button', {
+			name: 'Select Sites',
+		});
+		this.siteSelectorDialog = page.getByRole('dialog', {
+			name: 'Select Sites',
+		});
 
 		this.collapseSectionButton = (name) =>
 			page.getByRole('button', {exact: true, name: `Collapse ${name}`});
@@ -57,6 +65,16 @@ export class ExportImportDataSelectionPage {
 		return exportableItems;
 	}
 
+	async uncheckAllItems() {
+		await this.waitForContent();
+
+		const checkboxes = await this.section.getByRole('checkbox').all();
+
+		for (const checkbox of checkboxes) {
+			await checkbox.uncheck();
+		}
+	}
+
 	async uncheckItem(sectionName: string, label: string) {
 		await this.expandSection(sectionName);
 
@@ -65,14 +83,34 @@ export class ExportImportDataSelectionPage {
 			.uncheck();
 	}
 
+	async selectGroup(groupName: string) {
+		await this.selectSitesButton.click();
+
+		const searchbox = this.siteSelectorDialog.getByRole('searchbox', {
+			name: 'Search',
+		});
+
+		await searchbox.fill(groupName);
+		await searchbox.press('Enter');
+
+		await this.siteSelectorDialog
+			.getByRole('row', {name: groupName})
+			.getByRole('checkbox')
+			.check();
+
+		await this.siteSelectorDialog
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await expect(this.siteSelectorDialog).toBeHidden();
+
+		await expect(
+			this.page.getByText(`Selected ${groupName}`)
+		).toBeVisible();
+	}
+
 	async selectOnlyObjectDefinition(label: string) {
-		await this.waitForContent();
-
-		const checkboxes = await this.section.getByRole('checkbox').all();
-
-		for (const checkbox of checkboxes) {
-			await checkbox.uncheck();
-		}
+		await this.uncheckAllItems();
 
 		await this.expandSection('Objects');
 
