@@ -391,6 +391,30 @@ describe('SitesControl', () => {
 				).toContain('sort=descriptiveName%3Adesc')
 			);
 		});
+
+		it('keeps the page URL untouched while browsing the sites', async () => {
+			const search = window.location.search;
+
+			renderControl({apiURL: API_URL, previewSites: undefined});
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'select-sites'})
+			);
+
+			await userEvent.click(
+				await screen.findByRole('button', {name: /order\[sort\]/})
+			);
+
+			await userEvent.click(screen.getByText('descending'));
+
+			await waitFor(() =>
+				expect(
+					fetch.mock.calls[fetch.mock.calls.length - 1][0]
+				).toContain('sort=descriptiveName%3Adesc')
+			);
+
+			expect(window.location.search).toBe(search);
+		});
 	});
 
 	it('lists the sites from the file by title', async () => {

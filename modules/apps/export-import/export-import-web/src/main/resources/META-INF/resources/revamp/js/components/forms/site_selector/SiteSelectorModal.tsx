@@ -5,7 +5,11 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
-import {FrontendDataSet, IView} from '@liferay/frontend-data-set-web';
+import {
+	EConfigInURLBehavior,
+	FrontendDataSet,
+	IView,
+} from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
 import {PreviewSite} from '../../../types/exportImportPreview';
@@ -99,6 +103,7 @@ export default function SiteSelectorModal({
 			<ClayModal.Body className="p-0">
 				<FrontendDataSet
 					apiURL={apiURL}
+					configInURLBehavior={EConfigInURLBehavior.OFF}
 					id={`exportImportSiteSelector_${process}`}
 					onItemsPropSearch={(item, query) =>
 						(item.descriptiveName ?? '')
