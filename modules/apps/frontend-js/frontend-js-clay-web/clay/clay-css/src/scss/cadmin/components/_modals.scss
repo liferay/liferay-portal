@@ -64,6 +64,19 @@
 	transform: $cadmin-modal-scale-transform;
 }
 
+.modal-dialog-centered .modal-dialog,
+.modal-dialog-centered.modal-dialog {
+	align-items: center;
+	display: flex;
+	min-height: calc(100% - #{$cadmin-modal-dialog-margin * 2});
+
+	&::before {
+		content: '';
+		display: block;
+		height: calc(100vh - #{$cadmin-modal-dialog-margin * 2});
+	}
+}
+
 // Default Modal Max Width
 
 @include media-breakpoint-up(sm, $cadmin-grid-breakpoints) {
@@ -110,19 +123,6 @@
 @include media-breakpoint-up(xl, $cadmin-grid-breakpoints) {
 	.modal-xl {
 		max-width: $cadmin-modal-xl;
-	}
-}
-
-.modal-dialog-centered .modal-dialog,
-.modal-dialog-centered.modal-dialog {
-	align-items: center;
-	display: flex;
-	min-height: calc(100% - #{$cadmin-modal-dialog-margin * 2});
-
-	&::before {
-		content: '';
-		display: block;
-		height: calc(100vh - #{$cadmin-modal-dialog-margin * 2});
 	}
 }
 

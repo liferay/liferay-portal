@@ -46,53 +46,6 @@
 	}
 }
 
-// Default Modal Max Width
-
-@include media-breakpoint-up(sm) {
-	.modal-dialog {
-		margin: $modal-dialog-margin-y-sm-up auto;
-		max-width: $modal-md;
-	}
-
-	.modal-dialog-scrollable {
-		max-height: calc(100% - #{$modal-dialog-margin-y-sm-up * 2});
-
-		.modal-content {
-			max-height: calc(100vh - #{$modal-dialog-margin-y-sm-up * 2});
-		}
-	}
-
-	.modal-dialog-centered .modal-dialog,
-	.modal-dialog-centered.modal-dialog {
-		min-height: calc(100% - #{$modal-dialog-margin-y-sm-up * 2});
-
-		&::before {
-			height: calc(100vh - #{$modal-dialog-margin-y-sm-up * 2});
-		}
-	}
-
-	.modal-content {
-		@include box-shadow($modal-content-box-shadow-sm-up);
-	}
-
-	.modal-sm {
-		max-width: $modal-sm;
-	}
-}
-
-@include media-breakpoint-up(lg) {
-	.modal-lg,
-	.modal-xl {
-		max-width: $modal-lg;
-	}
-}
-
-@include media-breakpoint-up(xl) {
-	.modal-xl {
-		max-width: $modal-xl;
-	}
-}
-
 .modal-dialog-scrollable {
 	display: flex;
 	max-height: calc(100% - #{$modal-dialog-margin * 2});
@@ -138,6 +91,53 @@
 		&::before {
 			content: none;
 		}
+	}
+}
+
+// Default Modal Max Width
+
+@include media-breakpoint-up(sm) {
+	.modal-dialog {
+		margin: $modal-dialog-margin-y-sm-up auto;
+		max-width: $modal-md;
+	}
+
+	.modal-dialog-scrollable {
+		max-height: calc(100% - #{$modal-dialog-margin-y-sm-up * 2});
+
+		.modal-content {
+			max-height: calc(100vh - #{$modal-dialog-margin-y-sm-up * 2});
+		}
+	}
+
+	.modal-dialog-centered .modal-dialog,
+	.modal-dialog-centered.modal-dialog {
+		min-height: calc(100% - #{$modal-dialog-margin-y-sm-up * 2});
+
+		&::before {
+			height: calc(100vh - #{$modal-dialog-margin-y-sm-up * 2});
+		}
+	}
+
+	.modal-content {
+		@include box-shadow($modal-content-box-shadow-sm-up);
+	}
+
+	.modal-sm {
+		max-width: $modal-sm;
+	}
+}
+
+@include media-breakpoint-up(lg) {
+	.modal-lg,
+	.modal-xl {
+		max-width: $modal-lg;
+	}
+}
+
+@include media-breakpoint-up(xl) {
+	.modal-xl {
+		max-width: $modal-xl;
 	}
 }
 
