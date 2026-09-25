@@ -35,26 +35,29 @@ type MessageBalloonRenderers = {
 	) => JSX.Element;
 };
 
+function getFeedbackProps({chat, index, item}: MessageBalloonRenderContext) {
+	if (item.error) {
+		return {};
+	}
+
+	return {
+		feedbackGiven: Boolean(chat.feedbackGiven[index]),
+		onReport: () =>
+			chat.setReportContext({
+				agentDefinitionExternalReferenceCodes:
+					item.agentDefinitionExternalReferenceCodes ?? [],
+				index,
+			}),
+		onThumbsUp: () => chat.giveThumbsUp(index, item),
+	};
+}
+
 const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
-	'assistant': ({chat, index, item}) => (
+	'assistant': (context) => (
 		<AIAssistantMessageBalloon
-			error={item.error ?? false}
-			feedbackGiven={Boolean(chat.feedbackGiven[index])}
-			message={item.text}
-			onReport={
-				!item.error
-					? () =>
-							chat.setReportContext({
-								agentDefinitionExternalReferenceCodes:
-									item.agentDefinitionExternalReferenceCodes ??
-									[],
-								index,
-							})
-					: undefined
-			}
-			onThumbsUp={
-				!item.error ? () => chat.giveThumbsUp(index, item) : undefined
-			}
+			error={context.item.error ?? false}
+			message={context.item.text}
+			{...getFeedbackProps(context)}
 		/>
 	),
 	'categorization': ({chat}, {categorization}) => (
@@ -63,8 +66,11 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 			setBalloonGenerating={chat.setBalloonGenerating}
 		/>
 	),
-	'content-drafts': ({item}) => (
-		<ContentsMessageBalloon message={item.text} />
+	'content-drafts': (context) => (
+		<ContentsMessageBalloon
+			message={context.item.text}
+			{...getFeedbackProps(context)}
+		/>
 	),
 	'content-types': ({chat, item}, {contentTypes}) => (
 		<ContentTypeSelectorMessageBalloon
