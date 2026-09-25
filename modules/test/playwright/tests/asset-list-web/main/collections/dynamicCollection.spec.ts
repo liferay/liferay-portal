@@ -272,7 +272,7 @@ testWithEnhancedFiltering.describe(
 		);
 
 		testWithEnhancedFiltering(
-			'Discards a filter that the selected item type no longer displays',
+			'Discards only the filters the selected item type cannot display',
 			{tag: '@LPD-102710'},
 			async ({collectionsPage, page, site}) => {
 				const collectionName = getRandomString();
@@ -343,7 +343,7 @@ testWithEnhancedFiltering.describe(
 				);
 
 				await testWithEnhancedFiltering.step(
-					'Only the filter on the previous item type field is discarded',
+					'The filter on the previous item type field is discarded',
 					async () => {
 						await collectionsPage.goto(site.friendlyUrlPath);
 
@@ -358,7 +358,7 @@ testWithEnhancedFiltering.describe(
 				);
 
 				await testWithEnhancedFiltering.step(
-					'Change the item type to one that does not display the enhanced filter',
+					'Change the item type to Basic Web Content',
 					async () => {
 						await collectionsPage.configureSourceItemType({
 							itemSubtype: 'Basic Web Content',
@@ -370,13 +370,17 @@ testWithEnhancedFiltering.describe(
 				);
 
 				await testWithEnhancedFiltering.step(
-					'The filter on the common field is discarded too',
+					'The filter on the common field persists',
 					async () => {
 						await collectionsPage.goto(site.friendlyUrlPath);
 
 						await collectionsPage.openCollection(collectionName);
 
-						expect(await getFilters()).toEqual([]);
+						const filters = await getFilters();
+
+						expect(filters).toHaveLength(1);
+						expect(filters[0].propertyName).toBe('userName');
+						expect(filters[0].classNameId).toBeUndefined();
 					}
 				);
 			}
