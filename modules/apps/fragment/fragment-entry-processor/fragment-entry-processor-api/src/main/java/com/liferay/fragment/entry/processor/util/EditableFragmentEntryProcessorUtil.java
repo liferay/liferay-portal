@@ -5,7 +5,7 @@
 
 package com.liferay.fragment.entry.processor.util;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ import org.jsoup.select.Elements;
 public class EditableFragmentEntryProcessorUtil {
 
 	public static Map<String, String> getEditableTypes(String html) {
-		Map<String, String> editableTypes = new HashMap<>();
+		Map<String, String> editableTypes = new LinkedHashMap<>();
 
 		Document document = Jsoup.parse(html);
 
