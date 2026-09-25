@@ -5,22 +5,26 @@
 
 package com.liferay.portal.kernel.model.impl;
 
+import com.liferay.layout.page.template.kernel.provider.util.LayoutPageTemplateEntryLayoutProviderUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutType;
 import com.liferay.portal.kernel.model.LayoutWrapper;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LayoutTypePortletFactoryUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +47,77 @@ public class VirtualLayout extends LayoutWrapper {
 	@Override
 	public Object clone() {
 		return new VirtualLayout((Layout)_sourceLayout.clone(), _targetGroup);
+	}
+
+	@Override
+	public ColorScheme getColorScheme() throws PortalException {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+			return super.getColorScheme();
+		}
+
+		LayoutSet layoutSet = getLayoutSet();
+
+		if (layoutSet == null) {
+			return super.getColorScheme();
+		}
+
+		return layoutSet.getColorScheme();
+	}
+
+	@Override
+	public String getCssText() throws PortalException {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+			return super.getCssText();
+		}
+
+		LayoutSet layoutSet = getLayoutSet();
+
+		if (layoutSet == null) {
+			return super.getCssText();
+		}
+
+		return layoutSet.getCss();
+	}
+
+	@Override
+	public String getDefaultThemeSetting(
+		String key, String device, boolean inheritLookAndFeel) {
+
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+			return super.getDefaultThemeSetting(
+				key, device, inheritLookAndFeel);
+		}
+
+		LayoutSet layoutSet = getLayoutSet();
+
+		if (layoutSet == null) {
+			return super.getDefaultThemeSetting(
+				key, device, inheritLookAndFeel);
+		}
+
+		if (!inheritLookAndFeel) {
+			try {
+				Theme theme = layoutSet.getTheme();
+
+				return theme.getSetting(key);
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
+			}
+		}
+
+		try {
+			return layoutSet.getThemeSetting(key, device);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return StringPool.BLANK;
 	}
 
 	@Override
@@ -165,6 +240,43 @@ public class VirtualLayout extends LayoutWrapper {
 		return _sourceLayout;
 	}
 
+	@Override
+	public Theme getTheme() throws PortalException {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+			return super.getTheme();
+		}
+
+		LayoutSet layoutSet = getLayoutSet();
+
+		if (layoutSet == null) {
+			return super.getTheme();
+		}
+
+		return layoutSet.getTheme();
+	}
+
+	@Override
+	public String getThemeSetting(String key, String device) {
+		return getThemeSetting(key, device, isInheritLookAndFeel());
+	}
+
+	@Override
+	public String getThemeSetting(
+		String key, String device, boolean inheritLookAndFeel) {
+
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+			return super.getThemeSetting(key, device, inheritLookAndFeel);
+		}
+
+		String themeSetting = _fetchTypeSettingsThemeSetting(key, device);
+
+		if (themeSetting != null) {
+			return themeSetting;
+		}
+
+		return getDefaultThemeSetting(key, device, inheritLookAndFeel);
+	}
+
 	public long getVirtualGroupId() {
 		return _targetGroup.getGroupId();
 	}
@@ -219,6 +331,42 @@ public class VirtualLayout extends LayoutWrapper {
 		}
 	}
 
+	private String _fetchTypeSettingsThemeSetting(String key, String device) {
+		UnicodeProperties typeSettingsUnicodeProperties =
+			getTypeSettingsProperties();
+
+		Layout masterLayout =
+			LayoutPageTemplateEntryLayoutProviderUtil.
+				getLayoutPageTemplateEntryLayout(
+					getSourceGroupId(), getMasterLayoutPageTemplateEntryERC(),
+					getPlid());
+
+		if (masterLayout != null) {
+			typeSettingsUnicodeProperties =
+				masterLayout.getTypeSettingsProperties();
+		}
+
+		return typeSettingsUnicodeProperties.getProperty(
+			StringBundler.concat("lfr-theme:", device, StringPool.COLON, key));
+	}
+
+	private boolean _isSourceGroupDepot() {
+		if (_sourceGroupDepot == null) {
+			try {
+				Group group = _sourceLayout.getGroup();
+
+				_sourceGroupDepot = group.isDepot();
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+
+				_sourceGroupDepot = Boolean.FALSE;
+			}
+		}
+
+		return _sourceGroupDepot;
+	}
+
 	private static final String
 		_LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING = PropsUtil.get(
 			PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING);
@@ -231,6 +379,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	private LayoutSet _layoutSet;
 	private LayoutType _layoutType;
+	private Boolean _sourceGroupDepot;
 	private final Layout _sourceLayout;
 	private final Group _targetGroup;
 
