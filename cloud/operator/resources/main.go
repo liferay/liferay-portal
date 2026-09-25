@@ -5,9 +5,11 @@ import (
 	"time"
 
 	env "github.com/caarlos0/env/v11"
+	cxv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/cx/v1alpha1"
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	addon "github.com/liferay/liferay-portal/cloud/operator/internal/addon"
 	controller "github.com/liferay/liferay-portal/cloud/operator/internal/controller"
+	cx "github.com/liferay/liferay-portal/cloud/operator/internal/controller/cx"
 	licensing "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -21,6 +23,7 @@ import (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+	utilruntime.Must(cxv1alpha1.AddToScheme(scheme))
 	utilruntime.Must(licensingv1alpha1.AddToScheme(scheme))
 }
 
@@ -66,6 +69,10 @@ func main() {
 
 	if error := controller.SetupWithManager(
 		manager,
+		&cx.ClientExtensionReconciler{
+			Client:   manager.GetClient(),
+			Recorder: manager.GetEventRecorderFor("clientextension-controller"),
+		},
 		&licensing.LiferayEnvironmentReconciler{
 			Client:               manager.GetClient(),
 			GracePeriod:          config.GracePeriod,

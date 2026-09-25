@@ -54,6 +54,22 @@ rules:
             -   update
             -   watch
     -   apiGroups:
+            -   cx.liferay.com
+        resources:
+            -   clientextensions
+        verbs:
+            -   get
+            -   list
+            -   watch
+    -   apiGroups:
+            -   cx.liferay.com
+        resources:
+            -   clientextensions/status
+        verbs:
+            -   get
+            -   patch
+            -   update
+    -   apiGroups:
             -   licensing.liferay.com
         resources:
             -   liferayenvironments

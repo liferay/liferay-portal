@@ -43,6 +43,23 @@ tests:
             serviceAccount.name: operator-sa
     -   asserts:
             -   equal:
+                    path: rules[?(@.resources[0]=="clientextensions")].verbs
+                    value:
+                        -   get
+                        -   list
+                        -   watch
+            -   equal:
+                    path: rules[?(@.resources[0]=="clientextensions/status")].verbs
+                    value:
+                        -   get
+                        -   patch
+                        -   update
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Grants the verbs each ClientExtension subresource needs
+    -   asserts:
+            -   equal:
                     path: rules[?(@.resources[0]=="liferayenvironments")].verbs
                     value:
                         -   get
@@ -108,7 +125,7 @@ tests:
         it: Omits the service account annotations by default
     -   asserts:
             -   lengthEqual:
-                    count: 8
+                    count: 10
                     path: rules
             -   contains:
                     content:
