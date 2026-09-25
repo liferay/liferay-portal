@@ -79,6 +79,7 @@ import com.liferay.portal.kernel.util.CopyLayoutThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -987,6 +988,26 @@ public class LayoutLocalServiceWrapper
 		return fragmentEntryLinksMap;
 	}
 
+	private String _getFragmentEntryScopeERC(
+			FragmentEntryLink sourceFragmentEntryLink, Layout targetLayout)
+		throws Exception {
+
+		if (Validator.isNull(sourceFragmentEntryLink.getFragmentEntryERC())) {
+			return null;
+		}
+
+		if (Validator.isNotNull(
+				sourceFragmentEntryLink.getFragmentEntryScopeERC())) {
+
+			return ScopeUtil.getItemScopeExternalReferenceCode(
+				sourceFragmentEntryLink.getFragmentEntryScopeERC(),
+				targetLayout.getGroupId());
+		}
+
+		return ScopeUtil.getItemScopeExternalReferenceCode(
+			sourceFragmentEntryLink.getGroupId(), targetLayout.getGroupId());
+	}
+
 	private List<String> _getLayoutPortletIds(
 		Layout layout, long[] segmentsExperiencesIds) {
 
@@ -1336,6 +1357,7 @@ public class LayoutLocalServiceWrapper
 				newFragmentEntryLink.setExternalReferenceCode(null);
 				newFragmentEntryLink.setFragmentEntryLinkId(
 					_counterLocalService.increment());
+				newFragmentEntryLink.setGroupId(targetLayout.getGroupId());
 				newFragmentEntryLink.setUserId(user.getUserId());
 				newFragmentEntryLink.setUserName(user.getFullName());
 				newFragmentEntryLink.setCreateDate(
@@ -1352,6 +1374,9 @@ public class LayoutLocalServiceWrapper
 					newFragmentEntryLink.setOriginalFragmentEntryLinkERC(null);
 				}
 
+				newFragmentEntryLink.setFragmentEntryScopeERC(
+					_getFragmentEntryScopeERC(
+						sourceLayoutFragmentEntryLink, targetLayout));
 				newFragmentEntryLink.setSegmentsExperienceId(
 					targetSegmentsExperienceId);
 				newFragmentEntryLink.setClassNameId(
