@@ -56,7 +56,7 @@ const CardStyleModal: React.FC<CardStyleModalProps> = ({
 				</div>
 
 				{showEnterpriseIndicator ? (
-					<FeatureIndicator className="m-0" type="enterprise" />
+					<FeatureIndicator className="m-0 mt-4" type="enterprise" />
 				) : null}
 
 				<ClayModal.Title>{title}</ClayModal.Title>
