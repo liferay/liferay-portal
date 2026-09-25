@@ -347,6 +347,27 @@ export function Picker<T extends Record<string, any> | string | number>({
 		}
 	}, [activeDescendant]);
 
+	const isActiveDescendantDisabled = useCallback(() => {
+		if (!activeDescendant) {
+			return false;
+		}
+
+		const item = document.getElementById(String(activeDescendant));
+
+		return item?.getAttribute('aria-disabled') === 'true';
+	}, [activeDescendant]);
+
+	const resetActiveDescendant = useCallback(() => {
+		const key =
+			selectedKey || selectedKey === 0
+				? selectedKey
+				: collection.getFirstItem().key;
+
+		if (key !== activeDescendant) {
+			setActiveDescendant(key);
+		}
+	}, [activeDescendant, collection, selectedKey]);
+
 	// Apple devices with VoiceOver do not announce correctly when the menu is
 	// opened. There is a bug with `aria-activedescendant` when the element is
 	// not an input and uses `aria-controls` or `aria-owns`.
@@ -589,6 +610,11 @@ export function Picker<T extends Record<string, any> | string | number>({
 							) {
 								event.stopPropagation();
 								onPress();
+
+								if (isActiveDescendantDisabled()) {
+									resetActiveDescendant();
+								}
+
 								setActive(false);
 
 								return;
@@ -654,16 +680,13 @@ export function Picker<T extends Record<string, any> | string | number>({
 							action === 'blur'
 						) {
 							onPress();
+
+							if (isActiveDescendantDisabled()) {
+								resetActiveDescendant();
+							}
 						}
 						else {
-							const key =
-								selectedKey || selectedKey === 0
-									? selectedKey
-									: collection.getFirstItem().key;
-
-							if (key !== activeDescendant) {
-								setActiveDescendant(key);
-							}
+							resetActiveDescendant();
 						}
 
 						setActive(false);
