@@ -1,6 +1,6 @@
 .sxp-category-selector-modal-root {
 	.selector-modal-tree {
-		background-color: $lightL1;
+		background-color: var(--light-l1);
 		border-radius: 4px;
 		height: 382px;
 		margin-top: 24px;
@@ -20,7 +20,7 @@
 		}
 
 		.treeview-link:hover {
-			background-color: $secondaryL3;
+			background-color: var(--secondary-l3);
 
 			.quick-action-item {
 				opacity: 1;
@@ -30,7 +30,7 @@
 
 	.subnav-tbar {
 		&.secondary {
-			background-color: $light;
+			background-color: var(--light);
 		}
 
 		.component-text {

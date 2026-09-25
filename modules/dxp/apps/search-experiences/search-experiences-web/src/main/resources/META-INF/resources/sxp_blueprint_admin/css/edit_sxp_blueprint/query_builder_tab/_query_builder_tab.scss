@@ -10,8 +10,8 @@
 
 		.panel-unstyled .panel-header.panel-header-link:focus {
 			box-shadow:
-				0 0 0 0.25rem $white,
-				0 0 0 0.375rem $primaryL2; // Fixes gray border to white
+				0 0 0 0.25rem var(--white),
+				0 0 0 0.375rem var(--primary-l1); // Fixes gray border to white
 		}
 	}
 

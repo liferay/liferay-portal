@@ -1,45 +1,93 @@
 // Overrides default styling from CodeMirror. Class names are case-sensitive.
+// Colors use Clay's custom properties so the editor follows the color scheme.
 
 .CodeMirror-hints {
+	background-color: var(--white);
+	border-color: var(--secondary-l3);
 	box-shadow: 0 1px 5px -1px rgb(0 0 0 / 30%) !important;
 
 	.CodeMirror-hint {
 		align-items: center;
-		color: $secondary;
+		color: var(--secondary);
 		display: flex;
 		font-size: 13px;
 		justify-content: space-between;
 
 		.hint-type {
-			color: $secondaryL1;
+			color: var(--secondary-l1);
 			font-size: 11px;
 			padding-left: 64px;
 		}
 	}
 
 	li.CodeMirror-hint-active {
-		background-color: $primaryL4;
-		color: $dark;
+		background-color: var(--primary-l3);
+		color: var(--dark);
 	}
 }
 
 .codemirror-editor-wrapper {
-	border: 1px solid $secondaryL3;
+	border: 1px solid var(--secondary-l3);
 	border-radius: 4px;
+
+	.CodeMirror {
+		background-color: var(--white);
+		color: var(--dark);
+	}
+
+	.CodeMirror-cursor {
+		border-left-color: var(--dark);
+	}
 
 	.CodeMirror-foldmarker {
 		border-radius: 0.25rem;
-		color: $primary;
+		color: var(--primary);
 		padding: 0 4px;
 		text-shadow: none;
 
 		&:hover {
-			background-color: $primaryL4;
+			background-color: var(--primary-l3);
 		}
+	}
+
+	.CodeMirror-gutters {
+		background-color: var(--light-l1);
+		border-right-color: var(--secondary-l3);
+	}
+
+	.CodeMirror-linenumber {
+		color: var(--secondary-l1);
+	}
+
+	.CodeMirror-selected {
+		background-color: var(--secondary-l3);
+	}
+
+	.CodeMirror-focused .CodeMirror-selected,
+	.CodeMirror-line::selection,
+	.CodeMirror-line > span::selection,
+	.CodeMirror-line > span > span::selection {
+		background-color: var(--primary-l2);
 	}
 
 	.cm-s-default {
 		font-size: 13px;
+
+		.cm-atom {
+			color: var(--indigo-d1);
+		}
+
+		.cm-error {
+			color: var(--danger);
+		}
+
+		.cm-number {
+			color: var(--green-d1);
+		}
+
+		.cm-string {
+			color: var(--red-d1);
+		}
 	}
 }
 

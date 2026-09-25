@@ -21,7 +21,7 @@
 		padding: 0 12px;
 
 		& > div {
-			border-bottom: 1px solid #e6e6e6;
+			border-bottom: 1px solid var(--secondary-l3);
 			font-size: 12px;
 			padding: 2px 0;
 
@@ -40,14 +40,14 @@
 	}
 
 	.score {
-		background-color: $infoL2;
-		color: $info;
+		background-color: var(--light);
+		color: var(--info);
 		font-size: 10px;
 		font-weight: 700;
 		padding: 4px;
 
 		&:hover {
-			background-color: #dfe6f6;
+			background-color: var(--light-d1);
 		}
 	}
 }

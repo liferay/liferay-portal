@@ -27,7 +27,7 @@
 				float: right;
 
 				.collapse-button {
-					color: $secondary;
+					color: var(--secondary);
 					font-size: 0.875rem;
 					margin: 0.125rem 1rem 0 0;
 				}
@@ -39,7 +39,7 @@
 		}
 
 		.learn-message {
-			color: $primary;
+			color: var(--primary);
 		}
 
 		.sheet + .sheet {
@@ -62,14 +62,14 @@
 
 		.has-error {
 			.codemirror-editor-wrapper {
-				border: 1px solid $errorL1;
+				border: 1px solid var(--danger-l1);
 
 				.CodeMirror {
-					background-color: $errorL2;
+					background-color: var(--danger-l2);
 				}
 
 				.CodeMirror-gutters {
-					background-color: $errorL2;
+					background-color: var(--danger-l2);
 				}
 			}
 		}

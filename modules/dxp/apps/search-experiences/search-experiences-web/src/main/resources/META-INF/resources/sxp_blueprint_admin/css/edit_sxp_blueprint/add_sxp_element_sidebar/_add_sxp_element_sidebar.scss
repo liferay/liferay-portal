@@ -14,7 +14,7 @@
 				border: 0;
 
 				&:hover {
-					background-color: $primaryL4;
+					background-color: var(--primary-l3);
 
 					.add-sxp-element-button,
 					.add-sxp-element-button-background {
@@ -41,7 +41,7 @@
 				}
 
 				.add-sxp-element-button-background {
-					background-color: $primaryL4;
+					background-color: var(--primary-l3);
 					height: 100%;
 					opacity: 0;
 					padding-left: 1rem;
@@ -55,8 +55,8 @@
 				}
 
 				.sticker {
-					background-color: $light;
-					color: $secondary;
+					background-color: var(--light);
+					color: var(--secondary);
 				}
 			}
 		}

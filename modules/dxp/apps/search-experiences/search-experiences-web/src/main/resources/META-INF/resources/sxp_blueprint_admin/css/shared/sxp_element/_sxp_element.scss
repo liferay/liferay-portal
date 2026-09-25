@@ -8,41 +8,41 @@
 		.list-group-title,
 		.list-group-subtext,
 		.optional-text {
-			color: $secondaryL1;
+			color: var(--secondary-l1);
 		}
 
 		.configuration-header-list .sticker {
-			color: $secondaryL1;
+			color: var(--secondary-l1);
 		}
 
 		.has-error {
 			.form-control,
 			select {
-				border-color: $light;
-				color: $secondaryL1;
+				border-color: var(--light);
+				color: var(--secondary-l1);
 			}
 
 			.form-feedback-item {
-				color: $errorL1;
+				color: var(--danger-l1);
 			}
 		}
 	}
 
 	@keyframes focusOutline {
 		0% {
-			background-color: $primaryL4;
+			background-color: var(--primary-l3);
 			box-shadow:
-				0 0 0 0.125rem $white,
-				0 0 0 0.25rem $primaryL2;
+				0 0 0 0.125rem var(--white),
+				0 0 0 0.25rem var(--primary-l1);
 		}
 		25% {
-			background-color: $primaryL4;
+			background-color: var(--primary-l3);
 			box-shadow:
-				0 0 0 0.125rem $white,
-				0 0 0 0.25rem $primaryL2;
+				0 0 0 0.125rem var(--white),
+				0 0 0 0.25rem var(--primary-l1);
 		}
 		100% {
-			background-color: $white;
+			background-color: var(--white);
 			box-shadow: 0;
 		}
 	}
@@ -52,7 +52,7 @@
 	}
 
 	&:hover {
-		border-top: 4px solid $primaryL3;
+		border-top: 4px solid var(--primary-l2);
 
 		.configuration-header-list {
 			margin-top: 21px;
@@ -64,12 +64,12 @@
 	}
 
 	.CodeMirror {
-		background-color: $light;
+		background-color: var(--light);
 		border-radius: 4px;
 		font-size: 13px;
 
 		.CodeMirror-gutters {
-			background-color: $light;
+			background-color: var(--light);
 		}
 	}
 
@@ -86,8 +86,8 @@
 		}
 
 		.sticker {
-			background-color: $light;
-			color: $secondary;
+			background-color: var(--light);
+			color: var(--secondary);
 		}
 	}
 
@@ -203,12 +203,12 @@
 	.custom-json {
 		&.disabled {
 			.codemirror-editor-wrapper {
-				border-color: $light;
+				border-color: var(--light);
 
 				.cm-atom,
 				.cm-string,
 				.CodeMirror-line {
-					color: #a7a9bc;
+					color: var(--secondary-l1);
 				}
 			}
 		}
@@ -216,30 +216,30 @@
 
 	.has-error {
 		input {
-			background-color: $errorL2;
-			border-color: $errorL1;
+			background-color: var(--danger-l2);
+			border-color: var(--danger-l1);
 
 			&:disabled {
-				border-color: $light;
+				border-color: var(--light);
 			}
 		}
 
 		.input-group-inset-item {
-			background-color: $errorL2;
+			background-color: var(--danger-l2);
 		}
 
 		.input-group-text {
-			border-color: $errorL1;
+			border-color: var(--danger-l1);
 			border-left: 0;
 
 			&.secondary {
-				border-color: $light;
+				border-color: var(--light);
 			}
 		}
 
 		.item-selector-input .form-control.focus {
-			background-color: $errorL2;
-			border-color: $errorL1;
+			background-color: var(--danger-l2);
+			border-color: var(--danger-l1);
 		}
 	}
 
@@ -302,7 +302,7 @@
 	}
 
 	.optional-text {
-		color: $secondary;
+		color: var(--secondary);
 		font-size: 12px;
 		font-style: italic;
 		padding-left: 4px;

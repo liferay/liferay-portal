@@ -12,7 +12,7 @@
 	}
 
 	.type {
-		color: $secondaryL1;
+		color: var(--secondary-l1);
 		font-size: 12px;
 		max-width: 56px;
 		overflow: hidden;

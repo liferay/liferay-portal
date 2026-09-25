@@ -25,7 +25,7 @@
 		}
 
 		.list-group-text {
-			color: $secondary;
+			color: var(--secondary);
 		}
 	}
 
@@ -44,7 +44,7 @@
 	}
 
 	.sidebar-header {
-		border-bottom: 1px solid $secondaryL3;
+		border-bottom: 1px solid var(--secondary-l3);
 	}
 
 	.subnav-tbar {

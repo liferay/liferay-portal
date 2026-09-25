@@ -5,10 +5,10 @@
 
 			&.selected {
 				.card {
-					box-shadow: 0 0 0 2px $primaryL2;
+					box-shadow: 0 0 0 2px var(--primary-l1);
 
 					.card-item-first {
-						background-color: $primaryL4;
+						background-color: var(--primary-l3);
 					}
 				}
 			}
@@ -19,7 +19,7 @@
 			}
 
 			.card-item-first {
-				background-color: $light;
+				background-color: var(--light);
 			}
 
 			.card-subtitle {

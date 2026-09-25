@@ -12,7 +12,7 @@ $sxpElementHeaderHeight: 48px;
 	}
 
 	.sxp-element-section {
-		border-color: $secondaryL3;
+		border-color: var(--secondary-l3);
 		border-style: solid;
 		border-width: 0.0625rem;
 		box-sizing: border-box;
@@ -22,8 +22,8 @@ $sxpElementHeaderHeight: 48px;
 		margin: 0 4px;
 
 		.sxp-element-header {
-			background-color: $lightL1;
-			border-color: $secondaryL3;
+			background-color: var(--light-l1);
+			border-color: var(--secondary-l3);
 			border-style: solid;
 			border-width: 0 0 0.0625rem;
 			display: flex;
@@ -40,7 +40,7 @@ $sxpElementHeaderHeight: 48px;
 					text-align: center;
 
 					label {
-						color: $secondary;
+						color: var(--secondary);
 						margin: 0;
 						padding-bottom: 12px;
 						padding-top: 12px;
@@ -61,8 +61,8 @@ $sxpElementHeaderHeight: 48px;
 			padding: 0;
 
 			.sidebar {
-				background-color: $white;
-				border-color: $secondaryL3;
+				background-color: var(--white);
+				border-color: var(--secondary-l3);
 				border-right-width: 0.0625rem;
 				border-style: solid;
 
@@ -73,7 +73,7 @@ $sxpElementHeaderHeight: 48px;
 						padding: 8px 12px;
 
 						&:hover {
-							background-color: $primaryL4;
+							background-color: var(--primary-l3);
 						}
 					}
 
@@ -96,7 +96,7 @@ $sxpElementHeaderHeight: 48px;
 				}
 
 				.text-truncate {
-					color: $secondary;
+					color: var(--secondary);
 					font-size: 14px;
 					font-weight: 600;
 				}
@@ -117,7 +117,7 @@ $sxpElementHeaderHeight: 48px;
 			}
 
 			.CodeMirror-gutters {
-				background-color: $white;
+				background-color: var(--white);
 				border-width: 0;
 			}
 		}
@@ -146,7 +146,7 @@ $sxpElementHeaderHeight: 48px;
 
 		.col-4,
 		.col-8 {
-			background-color: $light;
+			background-color: var(--light);
 			padding: 0;
 		}
 	}
