@@ -6,7 +6,9 @@
 package com.liferay.layout.content.page.editor.web.internal.frontend.js.audiences.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.frontend.js.audiences.ElementVariations;
 import com.liferay.frontend.js.audiences.ElementVariationsProvider;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -19,7 +21,9 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -27,6 +31,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.test.util.SegmentsTestUtil;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -83,8 +89,71 @@ public class ElementVariationsProviderTest {
 				segmentsExperience.getSegmentsExperienceId()));
 	}
 
+	@Test
+	public void testGetElementVariationsWithDraftLayout() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		SegmentsExperience segmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				group.getGroupId(), draftLayout.getPlid());
+
+		String targetElement1 = RandomTestUtil.randomString();
+
+		_addLayoutPageTemplateStructureRelElementVariation(
+			group, draftLayout, segmentsExperience, targetElement1);
+
+		String content = _getElementVariationsContent(
+			draftLayout, segmentsExperience);
+
+		Assert.assertTrue(content, content.contains(targetElement1));
+
+		String targetElement2 = RandomTestUtil.randomString();
+
+		_addLayoutPageTemplateStructureRelElementVariation(
+			group, draftLayout, segmentsExperience, targetElement2);
+
+		content = _getElementVariationsContent(draftLayout, segmentsExperience);
+
+		Assert.assertTrue(content, content.contains(targetElement1));
+		Assert.assertTrue(content, content.contains(targetElement2));
+	}
+
+	private void _addLayoutPageTemplateStructureRelElementVariation(
+			Group group, Layout layout, SegmentsExperience segmentsExperience,
+			String targetElement)
+		throws Exception {
+
+		_layoutPageTemplateStructureRelElementVariationLocalService.
+			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				group.getGroupId(), true, RandomTestUtil.randomString(),
+				Collections.emptyMap(), Collections.emptyMap(),
+				RandomTestUtil.randomString(), layout.getPlid(),
+				segmentsExperience.getExternalReferenceCode(), targetElement,
+				new String[] {RandomTestUtil.randomString()},
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	}
+
+	private String _getElementVariationsContent(
+		Layout layout, SegmentsExperience segmentsExperience) {
+
+		ElementVariations elementVariations =
+			_elementVariationsProvider.getElementVariations(
+				layout.getPlid(), segmentsExperience.getSegmentsExperienceId());
+
+		return elementVariations.getContent();
+	}
+
 	@Inject
 	private ElementVariationsProvider _elementVariationsProvider;
+
+	@Inject
+	private LayoutPageTemplateStructureRelElementVariationLocalService
+		_layoutPageTemplateStructureRelElementVariationLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

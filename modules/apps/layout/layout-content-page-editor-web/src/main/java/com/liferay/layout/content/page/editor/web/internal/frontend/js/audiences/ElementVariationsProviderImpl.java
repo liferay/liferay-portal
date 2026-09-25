@@ -79,6 +79,10 @@ public class ElementVariationsProviderImpl
 			return null;
 		}
 
+		if (layout.isDraftLayout()) {
+			return _getElementVariations(layout, segmentsExperience);
+		}
+
 		ElementVariations elementVariations =
 			_elementVariationsCache.getElementVariations(
 				plid, segmentsExperienceId);
@@ -87,15 +91,7 @@ public class ElementVariationsProviderImpl
 			return elementVariations;
 		}
 
-		String content = ElementVariationsJSUtil.getContent(
-			_getElementVariationsJS(
-				plid, segmentsExperience.getExternalReferenceCode()),
-			_getSortedAudienceEntryERCs(
-				layout.getGroupId(),
-				segmentsExperience.getExternalReferenceCode()));
-
-		elementVariations = new ElementVariations(
-			content, HashedFilesUtil.computeHash(content));
+		elementVariations = _getElementVariations(layout, segmentsExperience);
 
 		_elementVariationsCache.putElementVariations(
 			plid, segmentsExperienceId, elementVariations);
@@ -160,6 +156,21 @@ public class ElementVariationsProviderImpl
 			).toString(),
 			"\"[$ELEMENT_VARIATION_JS$]\"",
 			_getJSFunctions(layoutPageTemplateStructureRelElementVariation));
+	}
+
+	private ElementVariations _getElementVariations(
+		Layout layout, SegmentsExperience segmentsExperience) {
+
+		String content = ElementVariationsJSUtil.getContent(
+			_getElementVariationsJS(
+				layout.getPlid(),
+				segmentsExperience.getExternalReferenceCode()),
+			_getSortedAudienceEntryERCs(
+				layout.getGroupId(),
+				segmentsExperience.getExternalReferenceCode()));
+
+		return new ElementVariations(
+			content, HashedFilesUtil.computeHash(content));
 	}
 
 	private String _getElementVariationsJS(
