@@ -36,7 +36,7 @@ else {
 				modelVar="domain"
 			>
 				<liferay-ui:search-container-column-text
-					value="<%= domain %>"
+					value="<%= HtmlUtil.escape(domain) %>"
 				/>
 			</liferay-ui:search-container-row>
 
