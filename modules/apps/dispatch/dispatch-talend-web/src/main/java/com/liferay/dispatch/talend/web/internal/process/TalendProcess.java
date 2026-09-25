@@ -46,13 +46,6 @@ public class TalendProcess {
 		return _processConfig;
 	}
 
-	@Override
-	public String toString() {
-		return StringBundler.concat(
-			"{mainMethodArguments=", _mainMethodArguments, ", processConfig=",
-			_processConfig, "}");
-	}
-
 	public static class Builder {
 
 		public TalendProcess build() {
