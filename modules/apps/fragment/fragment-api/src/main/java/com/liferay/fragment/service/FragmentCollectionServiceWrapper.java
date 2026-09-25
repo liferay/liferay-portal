@@ -170,7 +170,8 @@ public class FragmentCollectionServiceWrapper
 
 	@Override
 	public java.util.List<FragmentCollection> getFragmentCollections(
-		long groupId) {
+			long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentCollectionService.getFragmentCollections(groupId);
 	}
@@ -373,4 +374,4 @@ public class FragmentCollectionServiceWrapper
 	private FragmentCollectionService _fragmentCollectionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-424141358
+// LIFERAY-SERVICE-BUILDER-HASH:900291428

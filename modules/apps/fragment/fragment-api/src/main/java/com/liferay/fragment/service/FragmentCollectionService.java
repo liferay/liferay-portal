@@ -113,7 +113,8 @@ public interface FragmentCollectionService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentCollection> getFragmentCollections(long groupId);
+	public List<FragmentCollection> getFragmentCollections(long groupId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentCollection> getFragmentCollections(
@@ -209,4 +210,4 @@ public interface FragmentCollectionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:363650178
+// LIFERAY-SERVICE-BUILDER-HASH:1181115310

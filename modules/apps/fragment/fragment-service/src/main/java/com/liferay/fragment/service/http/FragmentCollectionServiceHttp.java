@@ -633,7 +633,8 @@ public class FragmentCollectionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.fragment.model.FragmentCollection>
-		getFragmentCollections(HttpPrincipal httpPrincipal, long groupId) {
+			getFragmentCollections(HttpPrincipal httpPrincipal, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -648,6 +649,13 @@ public class FragmentCollectionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -1559,4 +1567,4 @@ public class FragmentCollectionServiceHttp {
 		new Class[] {long.class, String.class, String.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1898602058
+// LIFERAY-SERVICE-BUILDER-HASH:1574356244

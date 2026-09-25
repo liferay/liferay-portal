@@ -151,8 +151,8 @@ public class FragmentCollectionServiceUtil {
 			fragmentCollectionId);
 	}
 
-	public static List<FragmentCollection> getFragmentCollections(
-		long groupId) {
+	public static List<FragmentCollection> getFragmentCollections(long groupId)
+		throws PortalException {
 
 		return getService().getFragmentCollections(groupId);
 	}
@@ -316,4 +316,4 @@ public class FragmentCollectionServiceUtil {
 			FragmentCollectionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-157910332
+// LIFERAY-SERVICE-BUILDER-HASH:1247180210
