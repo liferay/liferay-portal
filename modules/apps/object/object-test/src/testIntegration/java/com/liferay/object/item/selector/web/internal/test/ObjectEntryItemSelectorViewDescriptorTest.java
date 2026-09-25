@@ -11,10 +11,12 @@ import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
@@ -35,8 +37,10 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import jakarta.servlet.ServletRequest;
 
@@ -115,6 +119,47 @@ public class ObjectEntryItemSelectorViewDescriptorTest {
 			TestPropsValues.getGroupId(), objectEntry.getGroupId());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, objectEntry.getStatus());
+	}
+
+	@Test
+	public void testGetSearchContainerWithDeletedObjectField()
+		throws Exception {
+
+		ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"baker"
+			).objectDefinitionId(
+				_objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition, "text", RandomTestUtil.randomString());
+
+		ItemSelectorViewDescriptor<Object> itemSelectorViewDescriptor =
+			_getItemSelectorViewDescriptor();
+
+		itemSelectorViewDescriptor.getSearchContainer();
+
+		_objectFieldLocalService.deleteObjectField(
+			_objectFieldLocalService.getObjectField(
+				_objectDefinition.getObjectDefinitionId(), "baker"));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition, "text", RandomTestUtil.randomString());
+
+		itemSelectorViewDescriptor = _getItemSelectorViewDescriptor();
+
+		SearchContainer<Object> searchContainer =
+			itemSelectorViewDescriptor.getSearchContainer();
+
+		List<Object> objectEntries = searchContainer.getResults();
+
+		Assert.assertEquals(objectEntries.toString(), 2, objectEntries.size());
 	}
 
 	private ItemSelectorView<InfoItemItemSelectorCriterion>
@@ -208,5 +253,8 @@ public class ObjectEntryItemSelectorViewDescriptorTest {
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 }
