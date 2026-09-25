@@ -7,6 +7,7 @@ package com.liferay.invitation.invite.members.web.internal.portlet;
 
 import com.liferay.invitation.invite.members.constants.InviteMembersPortletKeys;
 import com.liferay.invitation.invite.members.service.MemberRequestLocalService;
+import com.liferay.invitation.invite.members.service.MemberRequestService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.CustomSQLParam;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -269,12 +270,6 @@ public class InviteMembersPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (!_userLocalService.hasGroupUser(
-				groupId, themeDisplay.getUserId())) {
-
-			return;
-		}
-
 		long invitedTeamId = ParamUtil.getLong(actionRequest, "invitedTeamId");
 		long[] receiverUserIds = _getLongArray(
 			actionRequest, "receiverUserIds");
@@ -298,13 +293,13 @@ public class InviteMembersPortlet extends MVCPortlet {
 					UserNotificationEvent.class.getName(),
 					PortletProvider.Action.VIEW)));
 
-		_memberRequestLocalService.addMemberRequests(
-			themeDisplay.getUserId(), groupId, receiverUserIds, invitedRoleId,
-			invitedTeamId, serviceContext);
+		_memberRequestService.addMemberRequests(
+			groupId, receiverUserIds, invitedRoleId, invitedTeamId,
+			serviceContext);
 
-		_memberRequestLocalService.addMemberRequests(
-			themeDisplay.getUserId(), groupId, receiverEmailAddresses,
-			invitedRoleId, invitedTeamId, serviceContext);
+		_memberRequestService.addMemberRequests(
+			groupId, receiverEmailAddresses, invitedRoleId, invitedTeamId,
+			serviceContext);
 	}
 
 	private void _updateArchived(long userId, long userNotificationEventId)
@@ -342,6 +337,9 @@ public class InviteMembersPortlet extends MVCPortlet {
 
 	@Reference
 	private MemberRequestLocalService _memberRequestLocalService;
+
+	@Reference
+	private MemberRequestService _memberRequestService;
 
 	@Reference
 	private Portal _portal;
