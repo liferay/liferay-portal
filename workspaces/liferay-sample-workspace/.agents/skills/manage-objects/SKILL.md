@@ -146,6 +146,14 @@ Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referenc
 
 Writing a picklist value accepts **either** the object form `{"key": "vegan"}` or the bare string `"vegan"`. Both persist identically and both read back as `{key, name}`. An unknown key is rejected with `400 Object field name "<field>" is not mapped to a valid list type entry`.
 
+#### A List Type Entry `key` Must Be Alphanumeric — Underscore and Hyphen 500
+
+`POST .../list-type-definitions/{id}/list-type-entries` (and an entry inside the inline `listTypeEntries` array on create) fails with a bare `500 Internal Server Error` when `key` contains an underscore or a hyphen — `gluten_free`, `dairy_free`, and `test-hyphen` all failed this way, while `glutenfree` and `testCamel` succeeded. Verified on a self hosted 2026.Q1 bundle.
+
+There is no validation message and no hint in the response — it reads exactly like a transient server fault, not a rejected key. Worse, the **inline** `listTypeEntries` array on the definition create call fails atomically per bad entry but the request still returns `200` with the *good* entries silently dropped along with the bad one in some orderings — always read back `listTypeEntries.length` against what you sent rather than trusting the `200`.
+
+Use camelCase for every list type entry `key` (`glutenFree`, not `gluten_free` or `gluten-free`). This is a stricter rule than object field names, which do permit digits after the first letter but were not tested here for underscore/hyphen — treat list type entry keys as alphanumeric-only until proven otherwise.
+
 #### A `state` Picklist Requires `defaultValue` and `defaultValueType`
 
 Setting `"state": true` on a Picklist field turns it into a status field with a transition graph. It also makes two field settings **mandatory**, and omitting them fails the whole definition create:
