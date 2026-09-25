@@ -23,6 +23,7 @@ const ROOT: Structure = {
 	spaces: 'all',
 	status: 'new',
 	system: false,
+	titleFieldName: 'title',
 	type: 'L_CMS_CONTENT_STRUCTURES',
 	uuid: ROOT_UUID,
 	workflows: {},

@@ -45,6 +45,7 @@ function buildStructure(children: StructureChild[]): Structure {
 		spaces: 'all',
 		status: 'draft',
 		system: false,
+		titleFieldName: 'title',
 		type: 'L_CMS_CONTENT_STRUCTURES',
 		uuid: ROOT_UUID,
 		workflows: {},

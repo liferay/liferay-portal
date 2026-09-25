@@ -91,6 +91,7 @@ const STRUCTURE: Structure = {
 	spaces: [SPACE_1.externalReferenceCode, SPACE_2.externalReferenceCode],
 	status: 'draft',
 	system: false,
+	titleFieldName: 'title',
 	type: 'L_CMS_CONTENT_STRUCTURES',
 	uuid: getUuid(),
 	workflows: {},

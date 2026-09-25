@@ -25,6 +25,7 @@ export const DEFAULT_STRUCTURE: Structure = {
 	spaces: [],
 	status: 'new',
 	system: false,
+	titleFieldName: 'title',
 	type: 'L_CMS_CONTENT_STRUCTURES',
 	uuid: getUuid(),
 	workflows: {},

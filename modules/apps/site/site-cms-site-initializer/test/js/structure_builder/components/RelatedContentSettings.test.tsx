@@ -77,6 +77,7 @@ const DEFAULT_STATE: State = {
 		spaces: [],
 		status: 'draft',
 		system: false,
+		titleFieldName: 'title',
 		type: 'L_CMS_CONTENT_STRUCTURES',
 		uuid: getUuid(),
 		workflows: {},
