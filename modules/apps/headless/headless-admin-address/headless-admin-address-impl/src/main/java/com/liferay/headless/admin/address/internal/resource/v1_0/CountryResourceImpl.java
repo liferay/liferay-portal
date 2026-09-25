@@ -258,7 +258,7 @@ public class CountryResourceImpl
 				serviceBuilderCountry.isSubjectToVAT()));
 
 		return _toCountry(
-			_updateNestedResources(country, serviceBuilderCountry, false));
+			_updateNestedResources(country, false, serviceBuilderCountry));
 	}
 
 	@Override
@@ -296,11 +296,10 @@ public class CountryResourceImpl
 
 		return _toCountry(
 			_updateNestedResources(
-				country,
+				country, false,
 				_countryLocalService.updateGroupFilterEnabled(
 					serviceBuilderCountry.getCountryId(),
-					GetterUtil.getBoolean(country.getGroupFilterEnabled())),
-				false));
+					GetterUtil.getBoolean(country.getGroupFilterEnabled()))));
 	}
 
 	@Override
@@ -326,11 +325,10 @@ public class CountryResourceImpl
 
 		return _toCountry(
 			_updateNestedResources(
-				country,
+				country, true,
 				_countryService.updateGroupFilterEnabled(
 					serviceBuilderCountry.getCountryId(),
-					GetterUtil.getBoolean(country.getGroupFilterEnabled())),
-				true));
+					GetterUtil.getBoolean(country.getGroupFilterEnabled()))));
 	}
 
 	@Override
@@ -352,8 +350,8 @@ public class CountryResourceImpl
 	}
 
 	private com.liferay.portal.kernel.model.Region _addOrUpdateRegion(
-			com.liferay.portal.kernel.model.Country serviceBuilderCountry,
-			Region region)
+			Region region,
+			com.liferay.portal.kernel.model.Country serviceBuilderCountry)
 		throws Exception {
 
 		com.liferay.portal.kernel.model.Region serviceBuilderRegion =
@@ -423,21 +421,19 @@ public class CountryResourceImpl
 	}
 
 	private com.liferay.portal.kernel.model.Country _updateNestedResources(
-			Country country,
-			com.liferay.portal.kernel.model.Country serviceBuilderCountry,
-			boolean replaceRegions)
+			Country country, boolean replaceRegions,
+			com.liferay.portal.kernel.model.Country serviceBuilderCountry)
 		throws Exception {
 
-		_updateRegions(country, serviceBuilderCountry, replaceRegions);
+		_updateRegions(country, replaceRegions, serviceBuilderCountry);
 		_updateResourcePermissions(country, serviceBuilderCountry);
 
 		return serviceBuilderCountry;
 	}
 
 	private void _updateRegions(
-			Country country,
-			com.liferay.portal.kernel.model.Country serviceBuilderCountry,
-			boolean replaceRegions)
+			Country country, boolean replaceRegions,
+			com.liferay.portal.kernel.model.Country serviceBuilderCountry)
 		throws Exception {
 
 		if (country.getRegions() == null) {
@@ -454,7 +450,7 @@ public class CountryResourceImpl
 		}
 
 		for (Region region : country.getRegions()) {
-			_addOrUpdateRegion(serviceBuilderCountry, region);
+			_addOrUpdateRegion(region, serviceBuilderCountry);
 		}
 	}
 
