@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
@@ -80,8 +82,10 @@ public class GetFileStrutsActionTest {
 	public void testGetFile() throws Exception {
 		_testGetFileByIdAsGuestWithOnlyViewPermission();
 		_testGetFileByIdAsGuestWithViewAndDownloadPermission();
+		_testGetFileByIdWithBrowserExecutableContentType();
 		_testGetFileByIdWithOnlyDownloadPermission();
 		_testGetFileByIdWithOnlyViewPermission();
+		_testGetFileByIdWithSafeContentType();
 		_testGetFileByIdWithoutViewAndDownloadPermission();
 		_testGetFileByIdWithViewAndDownloadPermission();
 		_testGetFileByNameWithOnlyViewPermission();
@@ -94,6 +98,12 @@ public class GetFileStrutsActionTest {
 	}
 
 	private FileEntry _addFileEntry() throws Exception {
+		return _addFileEntry("txt", ContentTypes.TEXT_PLAIN);
+	}
+
+	private FileEntry _addFileEntry(String extension, String mimeType)
+		throws Exception {
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
@@ -103,8 +113,8 @@ public class GetFileStrutsActionTest {
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
-			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			RandomTestUtil.randomString() + StringPool.PERIOD + extension,
+			mimeType, TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
 			serviceContext);
 	}
 
@@ -124,6 +134,25 @@ public class GetFileStrutsActionTest {
 		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
 
 		return user;
+	}
+
+	private void _assertContentDisposition(
+			String contentDispositionType, String extension, String mimeType)
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(extension, mimeType);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse(
+				_getFileEntryIdParameters(fileEntry),
+				_addUser(fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW));
+
+		String contentDisposition = mockHttpServletResponse.getHeader(
+			HttpHeaders.CONTENT_DISPOSITION);
+
+		Assert.assertTrue(
+			contentDisposition,
+			contentDisposition.startsWith(contentDispositionType));
 	}
 
 	private void _assertFileSent(
@@ -293,6 +322,20 @@ public class GetFileStrutsActionTest {
 					fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
 	}
 
+	private void _testGetFileByIdWithBrowserExecutableContentType()
+		throws Exception {
+
+		_assertContentDisposition(
+			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, "html",
+			ContentTypes.TEXT_HTML);
+		_assertContentDisposition(
+			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, "html",
+			ContentTypes.TEXT_PLAIN);
+		_assertContentDisposition(
+			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, "svg",
+			ContentTypes.IMAGE_SVG_XML);
+	}
+
 	private void _testGetFileByIdWithOnlyDownloadPermission() throws Exception {
 		FileEntry fileEntry = _addFileEntry();
 
@@ -309,6 +352,12 @@ public class GetFileStrutsActionTest {
 			_getMockHttpServletResponse(
 				_getFileEntryIdParameters(fileEntry),
 				_addUser(fileEntry, ActionKeys.VIEW)));
+	}
+
+	private void _testGetFileByIdWithSafeContentType() throws Exception {
+		_assertContentDisposition(
+			HttpHeaders.CONTENT_DISPOSITION_INLINE, "png",
+			ContentTypes.IMAGE_PNG);
 	}
 
 	private void _testGetFileByIdWithViewAndDownloadPermission()
