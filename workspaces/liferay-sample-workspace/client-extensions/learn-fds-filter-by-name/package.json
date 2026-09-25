@@ -1,0 +1,21 @@
+{
+	"dependencies": {
+		"@liferay/js-api": "0.6.2"
+	},
+	"description": "Learn FDS Filter By Name",
+	"devDependencies": {
+		"ts-loader": "9.5.1",
+		"typescript": "^5.0.4",
+		"webpack": "5.90.1",
+		"webpack-cli": "5.1.4",
+		"webpack-dev-server": "4.15.1"
+	},
+	"main": "./src/index.ts",
+	"name": "@liferay/learn-fds-filter-by-name",
+	"scripts": {
+		"build": "webpack",
+		"start": "webpack serve",
+		"watch": "tsc --watch"
+	},
+	"version": "0.0.0"
+}
