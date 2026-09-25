@@ -42,8 +42,8 @@ public class MemberRequestServiceImpl extends MemberRequestServiceBaseImpl {
 		_check(groupId, invitedRoleId, invitedTeamId);
 
 		memberRequestLocalService.addMemberRequests(
-			getUserId(), groupId, receiverUserIds, invitedRoleId,
-			invitedTeamId, serviceContext);
+			getUserId(), groupId, receiverUserIds, invitedRoleId, invitedTeamId,
+			serviceContext);
 	}
 
 	@Override
