@@ -52,6 +52,14 @@ function getView(process: ExportImportProcess): IView {
 	};
 }
 
+function sortByDescriptiveName(previewSites: PreviewSite[]) {
+	return [...previewSites].sort((previewSite1, previewSite2) =>
+		(previewSite1.descriptiveName ?? '').localeCompare(
+			previewSite2.descriptiveName ?? ''
+		)
+	);
+}
+
 export default function SiteSelectorModal({
 	apiURL,
 	onClose,
@@ -104,7 +112,9 @@ export default function SiteSelectorModal({
 					selectionType="multiple"
 					style="fluid"
 					views={[getView(process)]}
-					{...(previewSites ? {items: previewSites} : {sorts: SORTS})}
+					{...(previewSites
+						? {items: sortByDescriptiveName(previewSites)}
+						: {sorts: SORTS})}
 				/>
 			</ClayModal.Body>
 

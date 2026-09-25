@@ -393,6 +393,23 @@ describe('SitesControl', () => {
 		});
 	});
 
+	it('lists the sites from the file by title', async () => {
+		renderControl({previewSites: [...PREVIEW_SITES].reverse()});
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'select-sites'})
+		);
+
+		await screen.findByText('Support');
+
+		const titles = screen
+			.getAllByRole('row')
+			.slice(1)
+			.map((row) => within(row).getAllByRole('cell')[1].textContent);
+
+		expect(titles).toEqual(['Marketing', 'Support']);
+	});
+
 	it('leaves the order alone when the sites come from the file', async () => {
 		renderControl();
 

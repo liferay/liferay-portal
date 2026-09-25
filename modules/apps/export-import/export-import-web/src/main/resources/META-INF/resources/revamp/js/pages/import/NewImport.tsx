@@ -85,9 +85,10 @@ export function NewImport({
 					importPreview={importPreview}
 					lookAndFeelEnabled={lookAndFeelEnabled}
 					sitesSelection={
-						siteSelectionEnabled && (
+						siteSelectionEnabled &&
+						!!importPreview?.previewSites?.length && (
 							<SiteSelection
-								previewSites={importPreview?.previewSites ?? []}
+								previewSites={importPreview.previewSites}
 							/>
 						)
 					}
