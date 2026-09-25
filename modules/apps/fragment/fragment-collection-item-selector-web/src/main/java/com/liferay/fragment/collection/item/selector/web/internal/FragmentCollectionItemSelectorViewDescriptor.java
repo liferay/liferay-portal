@@ -14,6 +14,7 @@ import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -66,14 +67,8 @@ public class FragmentCollectionItemSelectorViewDescriptor
 		searchContainer.setOrderByCol(
 			ParamUtil.getString(_httpServletRequest, "orderByCol", "name"));
 
-		boolean orderByAsc = true;
-
 		String orderByType = ParamUtil.getString(
 			_httpServletRequest, "orderByType", "asc");
-
-		if (orderByType.equals("desc")) {
-			orderByAsc = false;
-		}
 
 		searchContainer.setOrderByType(orderByType);
 
@@ -83,16 +78,16 @@ public class FragmentCollectionItemSelectorViewDescriptor
 			return searchContainer;
 		}
 
-		FragmentCollectionNameComparator fragmentCollectionNameComparator =
-			FragmentCollectionNameComparator.getInstance(orderByAsc);
-
 		String keywords = ParamUtil.getString(_httpServletRequest, "keywords");
+
+		OrderByComparator<FragmentCollection> orderByComparator =
+			getOrderByComparator(orderByType.equals("asc"));
 
 		if (Validator.isNull(keywords)) {
 			searchContainer.setResultsAndTotal(
 				() -> FragmentCollectionServiceUtil.getFragmentCollections(
 					_groupIds, searchContainer.getStart(),
-					searchContainer.getEnd(), fragmentCollectionNameComparator),
+					searchContainer.getEnd(), orderByComparator),
 				FragmentCollectionServiceUtil.getFragmentCollectionsCount(
 					_groupIds));
 		}
@@ -100,7 +95,7 @@ public class FragmentCollectionItemSelectorViewDescriptor
 			searchContainer.setResultsAndTotal(
 				() -> FragmentCollectionServiceUtil.getFragmentCollections(
 					_groupIds, keywords, searchContainer.getStart(),
-					searchContainer.getEnd(), fragmentCollectionNameComparator),
+					searchContainer.getEnd(), orderByComparator),
 				FragmentCollectionServiceUtil.getFragmentCollectionsCount(
 					_groupIds, keywords));
 		}
@@ -121,6 +116,12 @@ public class FragmentCollectionItemSelectorViewDescriptor
 	@Override
 	public boolean isShowSearch() {
 		return true;
+	}
+
+	protected OrderByComparator<FragmentCollection> getOrderByComparator(
+		boolean orderByAsc) {
+
+		return FragmentCollectionNameComparator.getInstance(orderByAsc);
 	}
 
 	private PortletRequest _getPortletRequest() {
