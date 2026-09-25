@@ -2349,3 +2349,63 @@ test(
 		await performLoginViaApi({page, screenName: 'test'});
 	}
 );
+
+test(
+	'A user can search pending orders by order ID',
+	{tag: ['@COMMERCE-6375', '@LPD-107065']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		pendingOrdersPage,
+		site,
+	}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		const order1 = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			channelId: channel.id,
+			orderStatus: '2',
+		});
+		const order2 = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			channelId: channel.id,
+			orderStatus: '2',
+		});
+
+		await page.goto(`/web/${site.name}${layout.friendlyUrlPath}`);
+
+		await expect(pendingOrdersPage.orderRowLink(order1.id)).toBeVisible();
+		await expect(pendingOrdersPage.orderRowLink(order2.id)).toBeVisible();
+
+		await pendingOrdersPage.searchByValue(String(order2.id));
+
+		await expect(pendingOrdersPage.orderRowLink(order1.id)).toBeHidden();
+		await expect(pendingOrdersPage.orderRowLink(order2.id)).toBeVisible();
+	}
+);

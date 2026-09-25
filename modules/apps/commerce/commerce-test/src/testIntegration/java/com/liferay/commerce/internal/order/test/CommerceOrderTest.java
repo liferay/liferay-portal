@@ -905,6 +905,83 @@ public class CommerceOrderTest {
 	}
 
 	@Test
+	public void testGetUserPendingCommerceOrders() throws Exception {
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				_user.getUserId(), RandomTestUtil.randomString(), null, null,
+				new long[] {_user.getUserId()}, null, _serviceContext);
+
+		long groupId = _commerceChannel.getGroupId();
+
+		_commerceOrderLocalService.addCommerceOrder(
+			_user.getUserId(), groupId, accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCode(), 0);
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), groupId, accountEntry.getAccountEntryId(),
+				_commerceCurrency.getCode(), 0);
+
+		String keywords = String.valueOf(commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			1,
+			_commerceOrderService.getUserPendingCommerceOrdersCount(
+				_group.getCompanyId(), groupId, keywords));
+
+		List<CommerceOrder> commerceOrders =
+			_commerceOrderService.getUserPendingCommerceOrders(
+				_group.getCompanyId(), groupId, keywords, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceOrders.toString(), 1, commerceOrders.size());
+		Assert.assertEquals(commerceOrder, commerceOrders.get(0));
+
+		_commerceOrderLocalService.deleteCommerceOrders(groupId);
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
+	@Test
+	public void testGetUserPlacedCommerceOrders() throws Exception {
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				_user.getUserId(), RandomTestUtil.randomString(), null, null,
+				new long[] {_user.getUserId()}, null, _serviceContext);
+
+		long groupId = _commerceChannel.getGroupId();
+
+		_checkoutCommerceOrder(
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), groupId, accountEntry.getAccountEntryId(),
+				_commerceCurrency.getCode(), 0));
+
+		CommerceOrder commerceOrder = _checkoutCommerceOrder(
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), groupId, accountEntry.getAccountEntryId(),
+				_commerceCurrency.getCode(), 0));
+
+		String keywords = String.valueOf(commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			1,
+			_commerceOrderService.getUserPlacedCommerceOrdersCount(
+				_group.getCompanyId(), groupId, keywords));
+
+		List<CommerceOrder> commerceOrders =
+			_commerceOrderService.getUserPlacedCommerceOrders(
+				_group.getCompanyId(), groupId, keywords, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceOrders.toString(), 1, commerceOrders.size());
+		Assert.assertEquals(commerceOrder, commerceOrders.get(0));
+
+		_commerceOrderLocalService.deleteCommerceOrders(groupId);
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
+	@Test
 	public void testSkipValidateAccountLimit() throws Exception {
 		Settings settings = FallbackKeysSettingsUtil.getSettings(
 			new GroupServiceSettingsLocator(
