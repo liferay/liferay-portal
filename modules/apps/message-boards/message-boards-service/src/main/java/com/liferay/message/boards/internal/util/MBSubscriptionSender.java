@@ -63,7 +63,10 @@ public class MBSubscriptionSender
 
 			smtpAccount.setHost(mailingList.getOutServerName());
 			smtpAccount.setUser(mailingList.getOutUserName());
-			smtpAccount.setPassword(mailingList.getOutPassword());
+			smtpAccount.setPassword(
+				MBMailingListPasswordUtil.getPassword(
+					mailingList.getCategoryId(), mailingList.getCompanyId(),
+					"outPassword", mailingList.getOutPassword()));
 
 			setSMTPAccount(smtpAccount);
 		}

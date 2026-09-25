@@ -10,6 +10,7 @@ import com.liferay.mail.kernel.service.MailService;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.internal.util.MBMailMessage;
 import com.liferay.message.boards.internal.util.MBMailUtil;
+import com.liferay.message.boards.internal.util.MBMailingListPasswordUtil;
 import com.liferay.message.boards.internal.util.MailingListThreadLocal;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBMessageLocalService;
@@ -163,7 +164,10 @@ public class MailingListMessageListener extends BaseMessageListener {
 		String host = mailingListRequest.getInServerName();
 		int port = mailingListRequest.getInServerPort();
 		String user = mailingListRequest.getInUserName();
-		String password = mailingListRequest.getInPassword();
+		String password = MBMailingListPasswordUtil.getPassword(
+			mailingListRequest.getCategoryId(),
+			mailingListRequest.getCompanyId(), "inPassword",
+			mailingListRequest.getInPassword());
 
 		Account account = Account.getInstance(protocol, port);
 
