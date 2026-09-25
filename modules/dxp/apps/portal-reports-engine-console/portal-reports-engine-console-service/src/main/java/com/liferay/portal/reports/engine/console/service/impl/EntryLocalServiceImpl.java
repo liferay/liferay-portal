@@ -51,6 +51,7 @@ import com.liferay.portal.reports.engine.console.exception.EntryEmailDeliveryExc
 import com.liferay.portal.reports.engine.console.exception.EntryEmailNotificationsException;
 import com.liferay.portal.reports.engine.console.internal.constants.ReportsEngineDestinationNames;
 import com.liferay.portal.reports.engine.console.internal.util.ReportsEngineConsoleSubscriptionSender;
+import com.liferay.portal.reports.engine.console.internal.util.SourceDriverPasswordUtil;
 import com.liferay.portal.reports.engine.console.model.Definition;
 import com.liferay.portal.reports.engine.console.model.Entry;
 import com.liferay.portal.reports.engine.console.model.Source;
@@ -274,7 +275,10 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 				ReportRequestContext.JDBC_DRIVER_CLASS,
 				source.getDriverClassName());
 			reportRequestContext.setAttribute(
-				ReportRequestContext.JDBC_PASSWORD, source.getDriverPassword());
+				ReportRequestContext.JDBC_PASSWORD,
+				SourceDriverPasswordUtil.getDriverPassword(
+					source.getCompanyId(), source.getDriverPassword(),
+					source.getSourceId()));
 			reportRequestContext.setAttribute(
 				ReportRequestContext.JDBC_URL, source.getDriverUrl());
 			reportRequestContext.setAttribute(

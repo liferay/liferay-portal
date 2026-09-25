@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.reports.engine.console.exception.SourceDriverClassNameException;
+import com.liferay.portal.reports.engine.console.internal.util.SourceDriverPasswordUtil;
 import com.liferay.portal.reports.engine.console.model.Source;
 import com.liferay.portal.reports.engine.console.service.base.SourceLocalServiceBaseImpl;
 import com.liferay.portal.reports.engine.console.util.ReportsEngineConsoleUtil;
@@ -160,7 +161,10 @@ public class SourceLocalServiceImpl extends SourceLocalServiceBaseImpl {
 			driverPassword = source.getDriverPassword();
 		}
 
-		_validate(driverClassName, driverUrl, driverUserName, driverPassword);
+		_validate(
+			driverClassName, driverUrl, driverUserName,
+			SourceDriverPasswordUtil.getDriverPassword(
+				source.getCompanyId(), driverPassword, sourceId));
 
 		source.setModifiedDate(serviceContext.getModifiedDate(null));
 		source.setNameMap(nameMap);
