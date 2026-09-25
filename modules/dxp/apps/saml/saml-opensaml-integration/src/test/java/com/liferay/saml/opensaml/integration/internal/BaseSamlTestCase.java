@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.saml.constants.SamlProviderConfigurationKeys;
 import com.liferay.saml.opensaml.integration.internal.binding.SamlBindingProvider;
 import com.liferay.saml.opensaml.integration.internal.credential.FileSystemKeyStoreManagerImpl;
@@ -100,6 +102,8 @@ public abstract class BaseSamlTestCase {
 
 		_setupPortal();
 
+		_setupSecretResolver();
+
 		_setupMetadata();
 
 		_setupSamlBindings();
@@ -110,6 +114,10 @@ public abstract class BaseSamlTestCase {
 	@After
 	public void tearDown() {
 		identifiers.clear();
+
+		ReflectionTestUtil.setFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			_secretResolverSnapshot);
 
 		for (Class<?> serviceUtilClass : serviceUtilClasses) {
 			try {
@@ -326,6 +334,7 @@ public abstract class BaseSamlTestCase {
 	protected SamlPeerBindingLocalService samlPeerBindingLocalService;
 	protected SamlProviderConfiguration samlProviderConfiguration;
 	protected SamlProviderConfigurationHelper samlProviderConfigurationHelper;
+	protected SecretResolver secretResolver;
 	protected List<Class<?>> serviceUtilClasses = new ArrayList<>();
 	protected UserLocalService userLocalService;
 
@@ -766,11 +775,35 @@ public abstract class BaseSamlTestCase {
 		);
 	}
 
+	private void _setupSecretResolver() {
+		secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(
+				Mockito.anyLong(), Mockito.nullable(String.class))
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(1)
+		);
+
+		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			new Snapshot<SecretResolver>(
+				SecretResolverUtil.class, SecretResolver.class) {
+
+				@Override
+				public SecretResolver get() {
+					return secretResolver;
+				}
+
+			});
+	}
+
 	private static final MockedStatic<PortalUUIDUtil>
 		_portalUUIDUtilMockedStatic = Mockito.mockStatic(PortalUUIDUtil.class);
 
 	private final Map<Long, SamlPeerBinding> _samlPeerBindings =
 		new HashMap<>();
+	private Snapshot<SecretResolver> _secretResolverSnapshot;
 	private final Map<Class<?>, Snapshot<?>> _snapshots = new HashMap<>();
 
 }

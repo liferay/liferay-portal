@@ -68,9 +68,10 @@ public class KeyStoreCredentialResolver extends AbstractCredentialResolver {
 
 		if (entityId.equals(samlProviderConfiguration.entityId())) {
 			if (usageType == UsageType.ENCRYPTION) {
-				keyStoreCredentialPassword =
+				keyStoreCredentialPassword = SecretResolverUtil.resolve(
+					CompanyThreadLocal.getCompanyId(),
 					samlProviderConfiguration.
-						keyStoreEncryptionCredentialPassword();
+						keyStoreEncryptionCredentialPassword());
 			}
 			else {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
