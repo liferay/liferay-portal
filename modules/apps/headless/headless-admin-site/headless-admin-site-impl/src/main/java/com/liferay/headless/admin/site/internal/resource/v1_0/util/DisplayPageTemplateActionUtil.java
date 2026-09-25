@@ -40,11 +40,31 @@ public class DisplayPageTemplateActionUtil {
 		).build();
 
 		return HashMapBuilder.<String, Map<String, String>>put(
-			"copy",
-			_addAction(
+			() -> {
+				if (!layoutPageTemplateEntry.isDraft()) {
+					return "copy";
+				}
+
+				return null;
+			},
+			() -> _addAction(
 				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY,
 				contextScopeChecker, layoutPageTemplateEntry,
 				"postDesignLibraryDisplayPageTemplateCopy",
+				LayoutPageTemplateConstants.RESOURCE_NAME, templateParameterMap,
+				uriInfo)
+		).put(
+			() -> {
+				if (!layoutPageTemplateEntry.isDraft()) {
+					return "copyWithPermission";
+				}
+
+				return null;
+			},
+			() -> _addAction(
+				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY,
+				contextScopeChecker, layoutPageTemplateEntry,
+				"postDesignLibraryDisplayPageTemplateCopyWithPermission",
 				LayoutPageTemplateConstants.RESOURCE_NAME, templateParameterMap,
 				uriInfo)
 		).put(

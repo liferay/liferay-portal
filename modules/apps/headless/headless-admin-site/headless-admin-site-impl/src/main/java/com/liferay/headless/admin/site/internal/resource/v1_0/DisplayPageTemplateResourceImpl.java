@@ -342,22 +342,21 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+		return _copyDesignLibraryDisplayPageTemplate(
+			false, designLibraryExternalReferenceCode,
+			displayPageTemplateExternalReferenceCode);
+	}
 
-		long groupId = _getDesignLibraryGroupId(
-			designLibraryExternalReferenceCode);
+	@Override
+	public DisplayPageTemplate
+			postDesignLibraryDisplayPageTemplateCopyWithPermission(
+				String designLibraryExternalReferenceCode,
+				String displayPageTemplateExternalReferenceCode)
+		throws Exception {
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
-				displayPageTemplateExternalReferenceCode, groupId);
-
-		return _toDesignLibraryDisplayPageTemplate(
-			designLibraryExternalReferenceCode,
-			_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
-				groupId,
-				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId(),
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), true,
-				_getServiceContext(groupId)));
+		return _copyDesignLibraryDisplayPageTemplate(
+			true, designLibraryExternalReferenceCode,
+			displayPageTemplateExternalReferenceCode);
 	}
 
 	@Override
@@ -835,6 +834,34 @@ public class DisplayPageTemplateResourceImpl
 				serviceContext);
 
 		return _toDisplayPageTemplate(layoutPageTemplateEntry);
+	}
+
+	private DisplayPageTemplate _copyDesignLibraryDisplayPageTemplate(
+			boolean copyPermissions, String designLibraryExternalReferenceCode,
+			String displayPageTemplateExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry(
+				displayPageTemplateExternalReferenceCode, groupId);
+
+		if (layoutPageTemplateEntry.isDraft()) {
+			throw new IllegalArgumentException(
+				"A draft display page template cannot be copied");
+		}
+
+		return _toDesignLibraryDisplayPageTemplate(
+			designLibraryExternalReferenceCode,
+			_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
+				groupId,
+				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId(),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+				copyPermissions, _getServiceContext(groupId)));
 	}
 
 	private long _getClassNameId(String contentTypeClassName) {
