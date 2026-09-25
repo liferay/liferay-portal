@@ -130,6 +130,7 @@ export function Option({
 				{...hoverProps}
 				{...asProps}
 				aria-describedby={ariaDescribedby}
+				aria-disabled={disabled || undefined}
 				aria-label={ariaLabel}
 				aria-labelledby={ariaLabelledby}
 				aria-posinset={ariaPosInset}
@@ -137,12 +138,20 @@ export function Option({
 				aria-setsize={ariaSetSize}
 				className={classNames('dropdown-item', {
 					active: selectedKey === keyValue,
+					disabled,
 					focus: activeDescendant === keyValue && isFocus,
 					hover: activeDescendant === keyValue && !isFocus,
 				})}
-				disabled={disabled}
 				id={String(keyValue)}
-				onClick={() => onSelectionChange(keyValue!)}
+				onClick={(event: React.MouseEvent) => {
+					if (disabled) {
+						event.preventDefault();
+
+						return;
+					}
+
+					onSelectionChange(keyValue!);
+				}}
 				role="option"
 				tabIndex={-1}
 			>
