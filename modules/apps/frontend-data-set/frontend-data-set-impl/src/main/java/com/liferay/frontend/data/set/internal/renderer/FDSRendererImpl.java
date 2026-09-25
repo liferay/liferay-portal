@@ -134,6 +134,9 @@ public class FDSRendererImpl implements FDSRenderer {
 					fdsName, httpServletRequest);
 			}
 
+			boolean hasConfiguration = _hasConfiguration(
+				fdsName, fdsSerializer);
+
 			props.putAll(
 				HashMapBuilder.<String, Object>put(
 					"additionalAPIURLParameters",
@@ -265,12 +268,24 @@ public class FDSRendererImpl implements FDSRenderer {
 					}
 				).put(
 					"searchAsYouType",
-					() -> fdsSerializer.serializeSearchAsYouType(
-						fdsName, httpServletRequest)
+					() -> {
+						if (!hasConfiguration) {
+							return null;
+						}
+
+						return fdsSerializer.serializeSearchAsYouType(
+							fdsName, httpServletRequest);
+					}
 				).put(
 					"searchSuggestionsEnabled",
-					() -> fdsSerializer.serializeSearchSuggestionsEnabled(
-						fdsName, httpServletRequest)
+					() -> {
+						if (!hasConfiguration) {
+							return null;
+						}
+
+						return fdsSerializer.serializeSearchSuggestionsEnabled(
+							fdsName, httpServletRequest);
+					}
 				).put(
 					"showSearch",
 					() -> {
@@ -382,6 +397,19 @@ public class FDSRendererImpl implements FDSRenderer {
 		}
 
 		return null;
+	}
+
+	private boolean _hasConfiguration(
+		String fdsName, FDSSerializer fdsSerializer) {
+
+		if ((fdsSerializer == _serviceTrackerMap.getService(
+				FDSSerializer.TYPE_CUSTOM)) ||
+			(_systemFDSEntryRegistry.getSystemFDSEntry(fdsName) != null)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
