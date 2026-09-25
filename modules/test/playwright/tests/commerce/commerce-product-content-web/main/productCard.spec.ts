@@ -25,6 +25,7 @@ import getPageDefinition from '../../../layout-content-page-editor-web/main/util
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
 	classicCommerceSetUp,
+	configureBuyerUserForSite,
 	createAccountWithBuyerUser,
 	miniumSetUp,
 } from '../../utils/commerce';
@@ -979,8 +980,6 @@ test(
 		commerceWishListPage,
 		page,
 	}) => {
-		test.setTimeout(180000);
-
 		const product1Name = 'Wish List Product One ' + getRandomString();
 		const product2Name = 'Wish List Product Two ' + getRandomString();
 
@@ -1052,34 +1051,11 @@ test(
 				type: 'business',
 			});
 
-			const user =
-				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					'demo.unprivileged@liferay.com'
-				);
-
-			const rolesResponse =
-				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
-
-			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-				return role.name === 'Buyer';
-			});
-
-			await apiHelpers.headlessAdminUser.assignAccountRoles(
-				account.externalReferenceCode,
-				accountRoleBuyer[0].id,
-				user.emailAddress
-			);
-
-			const siteRole =
-				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-			await apiHelpers.headlessAdminUser.assignUserToSite(
-				siteRole.id,
-				site.id,
-				user.id
-			);
-			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-				account.id,
-				[user.emailAddress]
+			await configureBuyerUserForSite(
+				account,
+				apiHelpers,
+				site,
+				'demo.unprivileged@liferay.com'
 			);
 		});
 
@@ -1134,8 +1110,6 @@ test(
 		commerceThemeClassicCatalogPage,
 		page,
 	}) => {
-		test.setTimeout(180000);
-
 		const availableProductName = 'Available Product ' + getRandomString();
 		const unavailableProductName =
 			'Unavailable Product ' + getRandomString();
@@ -1232,34 +1206,11 @@ test(
 				type: 'business',
 			});
 
-			const user =
-				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					'demo.unprivileged@liferay.com'
-				);
-
-			const rolesResponse =
-				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
-
-			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-				return role.name === 'Buyer';
-			});
-
-			await apiHelpers.headlessAdminUser.assignAccountRoles(
-				account.externalReferenceCode,
-				accountRoleBuyer[0].id,
-				user.emailAddress
-			);
-
-			const siteRole =
-				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-			await apiHelpers.headlessAdminUser.assignUserToSite(
-				siteRole.id,
-				site.id,
-				user.id
-			);
-			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-				account.id,
-				[user.emailAddress]
+			await configureBuyerUserForSite(
+				account,
+				apiHelpers,
+				site,
+				'demo.unprivileged@liferay.com'
 			);
 		});
 
