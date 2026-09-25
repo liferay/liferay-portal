@@ -251,7 +251,7 @@ describe('TreeItemSelectorModal', () => {
 
 		await waitFor(() => {
 			expect(
-				within(modal).getByText('no-results-found')
+				within(modal).getByText('try-again-with-a-different-search')
 			).toBeInTheDocument();
 		});
 	});
