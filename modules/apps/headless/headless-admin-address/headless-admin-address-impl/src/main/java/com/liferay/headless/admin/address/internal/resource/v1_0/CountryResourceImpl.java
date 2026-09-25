@@ -21,8 +21,12 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -31,6 +35,7 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -423,8 +428,20 @@ public class CountryResourceImpl
 			boolean replaceRegions)
 		throws Exception {
 
+		_updateRegions(country, serviceBuilderCountry, replaceRegions);
+		_updateResourcePermissions(country, serviceBuilderCountry);
+
+		return serviceBuilderCountry;
+	}
+
+	private void _updateRegions(
+			Country country,
+			com.liferay.portal.kernel.model.Country serviceBuilderCountry,
+			boolean replaceRegions)
+		throws Exception {
+
 		if (country.getRegions() == null) {
-			return serviceBuilderCountry;
+			return;
 		}
 
 		if (replaceRegions) {
@@ -439,8 +456,31 @@ public class CountryResourceImpl
 		for (Region region : country.getRegions()) {
 			_addOrUpdateRegion(serviceBuilderCountry, region);
 		}
+	}
 
-		return serviceBuilderCountry;
+	private void _updateResourcePermissions(
+			Country country,
+			com.liferay.portal.kernel.model.Country serviceBuilderCountry)
+		throws Exception {
+
+		if (country.getPermissions() == null) {
+			return;
+		}
+
+		String className =
+			com.liferay.portal.kernel.model.Country.class.getName();
+
+		_permissionService.checkPermission(
+			0, className, serviceBuilderCountry.getCountryId());
+
+		_resourcePermissionLocalService.updateResourcePermissions(
+			serviceBuilderCountry.getCompanyId(), 0, className,
+			String.valueOf(serviceBuilderCountry.getCountryId()),
+			ModelPermissionsUtil.toModelPermissions(
+				serviceBuilderCountry.getCompanyId(), country.getPermissions(),
+				serviceBuilderCountry.getCountryId(), className,
+				_resourceActionLocalService, _resourcePermissionLocalService,
+				_roleLocalService));
 	}
 
 	private static final EntityModel _entityModel = new CountryEntityModel();
@@ -461,9 +501,21 @@ public class CountryResourceImpl
 	private Language _language;
 
 	@Reference
+	private PermissionService _permissionService;
+
+	@Reference
 	private RegionLocalService _regionLocalService;
 
 	@Reference
 	private RegionService _regionService;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }

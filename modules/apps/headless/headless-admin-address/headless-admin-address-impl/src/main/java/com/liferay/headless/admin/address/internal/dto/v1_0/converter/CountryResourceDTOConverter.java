@@ -12,7 +12,9 @@ import com.liferay.headless.admin.address.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -20,6 +22,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
+import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import org.osgi.service.component.annotations.Component;
@@ -96,6 +100,10 @@ public class CountryResourceDTOConverter
 				setName(serviceBuilderCountry::getName);
 				setNumber(
 					() -> Integer.valueOf(serviceBuilderCountry.getNumber()));
+				setPermissions(
+					() -> NestedFieldsSupplier.supply(
+						"permissions",
+						fieldName -> _toPermissions(serviceBuilderCountry)));
 				setPosition(serviceBuilderCountry::getPosition);
 				setRegions(
 					() -> NestedFieldsSupplier.supply(
@@ -120,11 +128,32 @@ public class CountryResourceDTOConverter
 		};
 	}
 
+	private Permission[] _toPermissions(
+			com.liferay.portal.kernel.model.Country serviceBuilderCountry)
+		throws Exception {
+
+		String className =
+			com.liferay.portal.kernel.model.Country.class.getName();
+
+		_permissionService.checkPermission(
+			0, className, serviceBuilderCountry.getCountryId());
+
+		return TransformUtil.transformToArray(
+			PermissionUtil.getPermissions(
+				serviceBuilderCountry.getCompanyId(),
+				_resourceActionLocalService.getResourceActions(className),
+				serviceBuilderCountry.getCountryId(), className, null),
+			permission -> permission, Permission.class);
+	}
+
 	@Reference
 	private CountryService _countryService;
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private PermissionService _permissionService;
 
 	@Reference
 	private Portal _portal;
@@ -135,6 +164,9 @@ public class CountryResourceDTOConverter
 
 	@Reference
 	private RegionService _regionService;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
