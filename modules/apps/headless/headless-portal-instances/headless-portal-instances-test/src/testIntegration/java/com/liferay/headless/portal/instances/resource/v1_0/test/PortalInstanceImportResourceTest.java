@@ -17,15 +17,20 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -95,6 +100,7 @@ public class PortalInstanceImportResourceTest
 			return;
 		}
 
+		_testPostPortalInstanceImportBatch();
 		_testPostPortalInstanceImportExistingDBPartition();
 		_testPostPortalInstanceImportInvalidSchemaName();
 		_testPostPortalInstanceImportNonexistentDBPartition();
@@ -132,6 +138,17 @@ public class PortalInstanceImportResourceTest
 		}
 	}
 
+	private void _deleteCompanyByVirtualHost(String virtualHost)
+		throws Exception {
+
+		Company company = _companyLocalService.fetchCompanyByVirtualHost(
+			virtualHost);
+
+		if (company != null) {
+			_deleteCompany(company.getCompanyId());
+		}
+	}
+
 	private void _dropExportedSchema(long companyId) throws Exception {
 		DB db = DBManagerUtil.getDB();
 
@@ -149,6 +166,91 @@ public class PortalInstanceImportResourceTest
 				sql)) {
 
 			preparedStatement.executeUpdate();
+		}
+	}
+
+	private long _exportCompany() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		long companyId = company.getCompanyId();
+
+		try {
+			_companyLocalService.exportCompany(companyId);
+		}
+		finally {
+			_deleteCompany(companyId);
+		}
+
+		return companyId;
+	}
+
+	private long _getCompanyIdByVirtualHost(String virtualHost)
+		throws Exception {
+
+		Company company = _companyLocalService.getCompanyByVirtualHost(
+			virtualHost);
+
+		return company.getCompanyId();
+	}
+
+	private PortalInstanceImport _randomPortalInstanceImport(long companyId) {
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		portalInstanceImport.setSchemaName(
+			DBPartitionUtil.getExportedPartitionName(companyId));
+		portalInstanceImport.setVirtualHost(
+			randomId + "." +
+				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
+		portalInstanceImport.setWebId(randomId);
+
+		return portalInstanceImport;
+	}
+
+	private void _testPostPortalInstanceImportBatch() throws Exception {
+		long companyId1 = _exportCompany();
+		long companyId2 = _exportCompany();
+
+		PortalInstanceImport portalInstanceImport1 =
+			_randomPortalInstanceImport(companyId1);
+		PortalInstanceImport portalInstanceImport2 =
+			_randomPortalInstanceImport(companyId2);
+
+		try {
+			JSONObject importTaskJSONObject = _waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(
+					portalInstanceImportResource.
+						postPortalInstanceImportBatchHttpResponse(
+							null,
+							JSONUtil.putAll(
+								JSONFactoryUtil.createJSONObject(
+									String.valueOf(portalInstanceImport1)),
+								JSONFactoryUtil.createJSONObject(
+									String.valueOf(portalInstanceImport2)))
+						).getContent()));
+
+			Assert.assertEquals(
+				2, importTaskJSONObject.getInt("processedItemsCount"));
+
+			Assert.assertEquals(
+				Long.valueOf(companyId1),
+				Long.valueOf(
+					_getCompanyIdByVirtualHost(
+						portalInstanceImport1.getVirtualHost())));
+			Assert.assertEquals(
+				Long.valueOf(companyId2),
+				Long.valueOf(
+					_getCompanyIdByVirtualHost(
+						portalInstanceImport2.getVirtualHost())));
+		}
+		finally {
+			_deleteCompanyByVirtualHost(portalInstanceImport1.getVirtualHost());
+			_deleteCompanyByVirtualHost(portalInstanceImport2.getVirtualHost());
+
+			_dropExportedSchema(companyId1);
+			_dropExportedSchema(companyId2);
 		}
 	}
 
@@ -340,6 +442,30 @@ public class PortalInstanceImportResourceTest
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private JSONObject _waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null,
+				"headless-batch-engine/v1.0/import-task" +
+					"/by-external-reference-code/" +
+						jsonObject.getString("externalReferenceCode"),
+				Http.Method.GET);
+
+			String executeStatus = jsonObject.getString("executeStatus");
+
+			if (StringUtil.equals(executeStatus, "COMPLETED") ||
+				StringUtil.equals(executeStatus, "FAILED")) {
+
+				Assert.assertEquals(expectedExecuteStatus, executeStatus);
+
+				return jsonObject;
+			}
 		}
 	}
 
