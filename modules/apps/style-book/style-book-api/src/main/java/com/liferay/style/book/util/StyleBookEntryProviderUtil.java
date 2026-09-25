@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -91,7 +92,7 @@ public class StyleBookEntryProviderUtil {
 
 		Long groupId = ScopeUtil.getItemGroupId(
 			layout.getCompanyId(), layout.getStyleBookEntryScopeERC(),
-			layout.getGroupId());
+			_getStyleBookEntryGroupId(layout));
 
 		if ((groupId != null) && _isConnectedGroup(groupId, layout)) {
 			styleBookEntry =
@@ -135,6 +136,20 @@ public class StyleBookEntryProviderUtil {
 					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 				DepotEntry::getGroupId));
+	}
+
+	private static long _getStyleBookEntryGroupId(Layout layout) {
+		if (!(layout instanceof VirtualLayout)) {
+			return layout.getGroupId();
+		}
+
+		VirtualLayout virtualLayout = (VirtualLayout)layout;
+
+		if (!_isConnectedGroup(virtualLayout.getSourceGroupId(), layout)) {
+			return layout.getGroupId();
+		}
+
+		return virtualLayout.getSourceGroupId();
 	}
 
 	private static boolean _isConnectedGroup(long groupId, Layout layout) {
