@@ -40,16 +40,20 @@ export function LayoutSelector({className = 'ml-3', layoutType}) {
 	const [recentLayouts, setRecentLayouts] = useState(initialRecentLayouts);
 
 	const selectPreviewLayout = (layout) => {
-		if (
-			layout.name === previewLayout.name &&
-			layout.url === previewLayout.url
-		) {
+		if (isSameLayout(layout, previewLayout)) {
 			return;
 		}
 
+		const nextPreviewLayout =
+			recentLayouts.find((recentLayout) =>
+				isSameLayout(recentLayout, layout)
+			) ?? layout;
+
 		setLoading(true);
-		setPreviewLayout(layout);
-		setRecentLayouts(getNextRecentLayouts(recentLayouts, layout));
+		setPreviewLayout(nextPreviewLayout);
+		setRecentLayouts(
+			getNextRecentLayouts(recentLayouts, nextPreviewLayout)
+		);
 	};
 
 	const handleMoreButtonClick = () => {
@@ -177,22 +181,29 @@ LayoutSelector.propTypes = {
  * @param {object} selectedLayout
  */
 function getNextRecentLayouts(recentLayouts, selectedLayout) {
-	const selectedLayoutIndex = recentLayouts.findIndex(
-		(layout) =>
-			layout.url === selectedLayout.url &&
-			layout.name === selectedLayout.name
-	);
-
-	const deletedLayoutIndex =
-		selectedLayoutIndex > -1
-			? selectedLayoutIndex
-			: recentLayouts.length - 1;
-
-	const nextRecentLayouts = [
+	return [
 		selectedLayout,
-		...recentLayouts.slice(0, deletedLayoutIndex),
-		...recentLayouts.slice(deletedLayoutIndex + 1, recentLayouts.length),
-	];
+		...recentLayouts.filter(
+			(layout) => !isSameLayout(layout, selectedLayout)
+		),
+	].slice(0, Math.max(recentLayouts.length, 1));
+}
 
-	return nextRecentLayouts;
+function isSameLayout(layoutA, layoutB) {
+	if (!layoutA || !layoutB) {
+		return false;
+	}
+
+	if (layoutA.fragmentCollectionKey && layoutB.fragmentCollectionKey) {
+		return (
+			layoutA.fragmentCollectionKey === layoutB.fragmentCollectionKey &&
+			layoutA.groupId === layoutB.groupId
+		);
+	}
+
+	if (layoutA.id && layoutB.id) {
+		return layoutA.id === layoutB.id;
+	}
+
+	return layoutA.name === layoutB.name && layoutA.url === layoutB.url;
 }

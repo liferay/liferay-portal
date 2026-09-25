@@ -15,6 +15,8 @@ export function itemSelectorValueFromFragmentCollection(value) {
 	url.searchParams.set(`${config.namespace}groupId`, value.groupId);
 
 	return {
+		fragmentCollectionKey: value.fragmentCollectionKey,
+		groupId: value.groupId,
 		name: value.name,
 		private: false,
 		url: url.toString(),

@@ -289,6 +289,12 @@ public class EditStyleBookEntryDisplayContext {
 						TransformUtil.transformToArray(
 							filteredFragmentCollectionContributors,
 							fragmentCollectionContributor -> JSONUtil.put(
+								"fragmentCollectionKey",
+								fragmentCollectionContributor.
+									getFragmentCollectionKey()
+							).put(
+								"groupId", CompanyConstants.SYSTEM
+							).put(
 								"name",
 								fragmentCollectionContributor.getName(
 									_themeDisplay.getLocale())
@@ -307,6 +313,11 @@ public class EditStyleBookEntryDisplayContext {
 						(JSONObject[])TransformUtil.transformToArray(
 							fragmentCollections,
 							fragmentCollection -> JSONUtil.put(
+								"fragmentCollectionKey",
+								fragmentCollection.getFragmentCollectionKey()
+							).put(
+								"groupId", fragmentCollection.getGroupId()
+							).put(
 								"name",
 								_getName(
 									designLibraryGroupIds, fragmentCollection)
@@ -478,6 +489,11 @@ public class EditStyleBookEntryDisplayContext {
 							LayoutPageTemplateEntryModifiedDateComparator.
 								getInstance(false)),
 					layoutPageTemplateEntry -> JSONUtil.put(
+						"id",
+						String.valueOf(
+							layoutPageTemplateEntry.
+								getLayoutPageTemplateEntryId())
+					).put(
 						"name", layoutPageTemplateEntry.getName()
 					).put(
 						"private", false
@@ -556,6 +572,8 @@ public class EditStyleBookEntryDisplayContext {
 										String.valueOf(layout.getPlid()),
 										role.getRoleId(), ActionKeys.VIEW);
 							}
+						).put(
+							"id", String.valueOf(layout.getPlid())
 						).put(
 							"name", _getName(entryGroup, layout)
 						).put(
