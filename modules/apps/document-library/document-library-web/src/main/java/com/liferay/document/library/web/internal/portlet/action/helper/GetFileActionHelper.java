@@ -25,14 +25,11 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
@@ -47,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Iván Zaera
@@ -225,8 +221,8 @@ public class GetFileActionHelper {
 
 		String contentDispositionType = null;
 
-		if (_isBrowserExecutableContentType(contentType) ||
-			_isBrowserExecutableContentType(
+		if (ServletResponseUtil.isBrowserExecutableContentType(contentType) ||
+			ServletResponseUtil.isBrowserExecutableContentType(
 				MimeTypesUtil.getExtensionContentType(
 					FileUtil.getExtension(fileName)))) {
 
@@ -236,11 +232,6 @@ public class GetFileActionHelper {
 		ServletResponseUtil.sendFile(
 			httpServletRequest, httpServletResponse, fileName, inputStream,
 			contentLength, contentType, contentDispositionType);
-	}
-
-	private boolean _isBrowserExecutableContentType(String contentType) {
-		return _browserExecutableContentTypes.contains(
-			StringUtil.toLowerCase(contentType));
 	}
 
 	private void _processPrincipalException(
@@ -272,11 +263,5 @@ public class GetFileActionHelper {
 
 		httpServletResponse.sendRedirect(redirect);
 	}
-
-	private static final Set<String> _browserExecutableContentTypes =
-		SetUtil.fromArray(
-			ContentTypes.APPLICATION_JAVASCRIPT, ContentTypes.IMAGE_SVG_XML,
-			ContentTypes.TEXT_HTML, ContentTypes.TEXT_JAVASCRIPT,
-			"application/xhtml+xml");
 
 }

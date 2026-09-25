@@ -9,9 +9,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
-import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.webdav.Resource;
 import com.liferay.portal.kernel.webdav.WebDAVException;
 import com.liferay.portal.kernel.webdav.WebDAVRequest;
@@ -21,8 +18,6 @@ import com.liferay.portal.kernel.webdav.methods.Method;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.InputStream;
-
-import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
@@ -52,9 +47,8 @@ public class GetMethodImpl implements Method {
 
 			if (inputStream != null) {
 				try {
-					if (_browserExecutableContentTypes.contains(
-							StringUtil.toLowerCase(
-								resource.getContentType()))) {
+					if (ServletResponseUtil.isBrowserExecutableContentType(
+							resource.getContentType())) {
 
 						ServletResponseUtil.sendFile(
 							webDAVRequest.getHttpServletRequest(),
@@ -88,11 +82,5 @@ public class GetMethodImpl implements Method {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(GetMethodImpl.class);
-
-	private static final Set<String> _browserExecutableContentTypes =
-		SetUtil.fromArray(
-			ContentTypes.APPLICATION_JAVASCRIPT, ContentTypes.IMAGE_SVG_XML,
-			ContentTypes.TEXT_HTML, ContentTypes.TEXT_JAVASCRIPT,
-			"application/xhtml+xml");
 
 }
