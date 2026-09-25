@@ -17,6 +17,7 @@ import com.liferay.asset.util.LinkedAssetEntryIdsUtil;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.friendly.url.provider.FriendlyURLSeparatorProvider;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.exception.NoSuchInfoItemException;
@@ -48,10 +49,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURLComposite;
 import com.liferay.portal.kernel.model.LayoutQueryStringComposite;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -312,13 +315,16 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	}
 
 	protected Layout getLayoutDisplayPageObjectProviderLayout(
-		long groupId, String friendlyURL,
-		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider) {
+			long groupId, String friendlyURL,
+			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
+			LayoutDisplayPageProvider<?> layoutDisplayPageProvider)
+		throws PortalException {
 
-		return _getLayoutDisplayPageObjectProviderLayout(
-			groupId, layoutDisplayPageObjectProvider,
-			layoutDisplayPageProvider);
+		return getVirtualLayout(
+			groupId,
+			_getLayoutDisplayPageObjectProviderLayout(
+				groupId, layoutDisplayPageObjectProvider,
+				layoutDisplayPageProvider));
 	}
 
 	protected LayoutDisplayPageProvider<?> getLayoutDisplayPageProvider(
@@ -355,6 +361,25 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		return versions[0];
+	}
+
+	protected Layout getVirtualLayout(long groupId, Layout layout)
+		throws PortalException {
+
+		if ((layout == null) || (layout.getGroupId() == groupId) ||
+			!DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+				layout.getCompanyId(), layout.getGroupId(), groupId)) {
+
+			return layout;
+		}
+
+		GroupLocalService groupLocalService = _groupLocalServiceSnapshot.get();
+
+		if (groupLocalService == null) {
+			return layout;
+		}
+
+		return new VirtualLayout(layout, groupLocalService.getGroup(groupId));
 	}
 
 	protected boolean isSameFriendlyURL(String url1, String url2) {
@@ -646,5 +671,9 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		_friendlyURLSeparatorProviderSnapshot = new Snapshot<>(
 			BaseAssetDisplayPageFriendlyURLResolver.class,
 			FriendlyURLSeparatorProvider.class);
+	private static final Snapshot<GroupLocalService>
+		_groupLocalServiceSnapshot = new Snapshot<>(
+			BaseAssetDisplayPageFriendlyURLResolver.class,
+			GroupLocalService.class);
 
 }

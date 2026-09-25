@@ -103,9 +103,10 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 
 	@Override
 	protected Layout getLayoutDisplayPageObjectProviderLayout(
-		long groupId, String friendlyURL,
-		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider) {
+			long groupId, String friendlyURL,
+			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
+			LayoutDisplayPageProvider<?> layoutDisplayPageProvider)
+		throws PortalException {
 
 		String[] parts = _getPathParts(friendlyURL);
 
@@ -113,7 +114,9 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 			return null;
 		}
 
-		return _fetchLayoutByFriendlyURL(groupId, StringPool.SLASH + parts[0]);
+		return getVirtualLayout(
+			groupId,
+			_fetchLayoutByFriendlyURL(groupId, StringPool.SLASH + parts[0]));
 	}
 
 	@Override
