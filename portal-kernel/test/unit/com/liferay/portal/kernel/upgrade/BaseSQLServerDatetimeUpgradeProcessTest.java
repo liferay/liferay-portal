@@ -105,36 +105,12 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 			databaseMetaData
 		);
 
-		ResultSet tableResultSet = Mockito.mock(ResultSet.class);
-
-		Mockito.when(
-			databaseMetaData.getTables(
-				Mockito.any(), Mockito.any(), Mockito.anyString(),
-				Mockito.any())
-		).thenReturn(
-			tableResultSet
-		);
-
-		Mockito.when(
-			tableResultSet.next()
-		).thenReturn(
-			true
-		);
-
 		ResultSet columnResultSet = Mockito.mock(ResultSet.class);
 
 		Mockito.when(
-			databaseMetaData.getColumns(
-				Mockito.isNull(), Mockito.isNull(), Mockito.anyString(),
-				Mockito.anyString())
+			columnResultSet.getInt("DECIMAL_DIGITS")
 		).thenReturn(
-			columnResultSet
-		);
-
-		Mockito.when(
-			columnResultSet.next()
-		).thenReturn(
-			columnPresent
+			decimalDigits
 		);
 
 		Mockito.when(
@@ -144,9 +120,33 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 		);
 
 		Mockito.when(
-			columnResultSet.getInt("DECIMAL_DIGITS")
+			columnResultSet.next()
 		).thenReturn(
-			decimalDigits
+			columnPresent
+		);
+
+		Mockito.when(
+			databaseMetaData.getColumns(
+				Mockito.isNull(), Mockito.isNull(), Mockito.anyString(),
+				Mockito.anyString())
+		).thenReturn(
+			columnResultSet
+		);
+
+		ResultSet tableResultSet = Mockito.mock(ResultSet.class);
+
+		Mockito.when(
+			tableResultSet.next()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			databaseMetaData.getTables(
+				Mockito.any(), Mockito.any(), Mockito.anyString(),
+				Mockito.any())
+		).thenReturn(
+			tableResultSet
 		);
 
 		return connection;
