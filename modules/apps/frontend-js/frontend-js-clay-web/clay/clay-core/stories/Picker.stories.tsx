@@ -60,6 +60,38 @@ export function Default() {
 		</div>
 	);
 }
+export function DisabledOptions() {
+	const pickerId = useId();
+	const labelId = useId();
+
+	return (
+		<div style={{width: '150px'}}>
+			<Form.Group>
+				<label htmlFor={pickerId} id={labelId}>
+					Choose a fruit
+				</label>
+
+				<Picker aria-labelledby={labelId} id={pickerId}>
+					<Option disabled key="apple">
+						Apple
+					</Option>
+
+					<Option key="banana">Banana</Option>
+
+					<Option key="mangos">Mangos</Option>
+
+					<Option disabled key="cherry">
+						Cherry
+					</Option>
+
+					<Option key="grape">Grape</Option>
+
+					<Option key="guava">Guava</Option>
+				</Picker>
+			</Form.Group>
+		</div>
+	);
+}
 export function Search() {
 	const pickerId1 = useId();
 	const labelId1 = useId();
