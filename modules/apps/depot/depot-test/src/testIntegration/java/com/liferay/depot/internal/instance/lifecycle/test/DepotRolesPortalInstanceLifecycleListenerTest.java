@@ -62,7 +62,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
-	@TestInfo("LPD-104558")
+	@TestInfo({"LPD-104558", "LPD-107080"})
 	public void testPortalInstanceRegistered() throws Exception {
 		long companyId = _company.getCompanyId();
 
@@ -185,12 +185,14 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			"com.liferay.layout.page.template.model." +
 				"LayoutPageTemplateCollection",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-			roleName, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
+			roleName,
+			List.of(ActionKeys.DELETE, ActionKeys.UPDATE, ActionKeys.VIEW));
 		_assertResourcePermissions(
 			companyId,
 			"com.liferay.layout.page.template.model.LayoutPageTemplateEntry",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-			roleName, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
+			roleName,
+			List.of(ActionKeys.DELETE, ActionKeys.UPDATE, ActionKeys.VIEW));
 		_assertResourcePermissions(
 			companyId, "com.liferay.style.book",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),

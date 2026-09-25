@@ -22,8 +22,13 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureServi
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -31,6 +36,7 @@ import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -70,7 +76,7 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
-	@TestInfo("LPD-104558")
+	@TestInfo({"LPD-104558", "LPD-107080"})
 	public void testGetDepotRolePermissions() throws Exception {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
@@ -120,10 +126,35 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_addLayoutPageTemplateEntry(group, ownerUser, serviceContext);
 
+		String primKey = String.valueOf(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		Role role = _roleLocalService.getDefaultGroupRole(group.getGroupId());
+
+		RoleTestUtil.removeResourcePermission(
+			role.getName(), LayoutPageTemplateEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, primKey, ActionKeys.VIEW);
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, LayoutPageTemplateEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, primKey, ActionKeys.VIEW);
+
 		User nonownerUser = UserTestUtil.addGroupUser(group, roleName);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				nonownerUser)) {
+
+			long layoutPageTemplateCollectionId =
+				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId();
+
+			Assert.assertNotNull(
+				_layoutPageTemplateCollectionService.
+					fetchLayoutPageTemplateCollection(
+						layoutPageTemplateCollectionId));
+
+			Assert.assertNotNull(
+				_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId()));
 
 			LayoutPageTemplateStructure layoutPageTemplateStructure =
 				_layoutPageTemplateStructureService.
@@ -136,8 +167,6 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 				layoutPageTemplateStructure.getData(
 					SegmentsExperienceConstants.ID_DEFAULT));
 
-			long layoutPageTemplateCollectionId =
-				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId();
 			String layoutPageTemplateCollectionName =
 				RandomTestUtil.randomString();
 
@@ -232,6 +261,9 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(group.getGroupId());
 
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		try {
@@ -265,5 +297,8 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 	@Inject
 	private LayoutPageTemplateStructureService
 		_layoutPageTemplateStructureService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }

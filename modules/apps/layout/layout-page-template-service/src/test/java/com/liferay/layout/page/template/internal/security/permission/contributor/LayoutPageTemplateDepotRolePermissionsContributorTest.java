@@ -35,7 +35,7 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	@TestInfo("LPD-104558")
+	@TestInfo({"LPD-104558", "LPD-107080"})
 	public void testGetDepotRolePermissions() {
 		LayoutPageTemplateDepotRolePermissionsContributor
 			layoutPageTemplateDepotRolePermissionsContributor =
@@ -79,7 +79,7 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 		_assertDepotRolePermission(
 			iterator.next(), roleName,
 			LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
-			ActionKeys.UPDATE);
+			ActionKeys.UPDATE, ActionKeys.VIEW);
 		_assertDepotRolePermission(
 			iterator.next(), roleName,
 			LayoutPageTemplateConstants.RESOURCE_NAME,
@@ -87,7 +87,7 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
 		_assertDepotRolePermission(
 			iterator.next(), roleName, LayoutPageTemplateEntry.class.getName(),
-			ActionKeys.DELETE, ActionKeys.UPDATE);
+			ActionKeys.DELETE, ActionKeys.UPDATE, ActionKeys.VIEW);
 	}
 
 }
