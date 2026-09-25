@@ -144,7 +144,7 @@ test(
 			})
 			.click();
 
-		await fullViewPage.waitForLoadState();
+		await expect(fullViewPage).toHaveURL(/tabs1=assigned-to-me/);
 
 		await expect(backButton).toBeVisible();
 
@@ -154,7 +154,7 @@ test(
 			})
 			.click();
 
-		await fullViewPage.waitForLoadState();
+		await expect(fullViewPage).toHaveURL(/tabs1=assigned-to-my-roles/);
 
 		await expect(backButton).toBeVisible();
 	}
