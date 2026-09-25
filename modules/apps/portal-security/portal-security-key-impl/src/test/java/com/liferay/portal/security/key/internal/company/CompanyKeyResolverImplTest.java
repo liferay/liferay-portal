@@ -182,6 +182,14 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			new CompanyKeyResolverImpl();
 
+		_cryptoManager = Mockito.mock(CryptoManager.class);
+
+		Mockito.when(
+			_cryptoManager.getCryptoProviderIds(ArgumentMatchers.anyLong())
+		).thenReturn(
+			Collections.singletonList(_KEK_PROVIDER_ID)
+		);
+
 		_keyManagerConfiguration = Mockito.mock(KeyManagerConfiguration.class);
 
 		Mockito.when(
@@ -216,14 +224,6 @@ public class CompanyKeyResolverImplTest {
 			_keyManagerProfileRegistry.getActiveKeyManagerProfile()
 		).thenReturn(
 			_keyManagerProfile
-		);
-
-		_cryptoManager = Mockito.mock(CryptoManager.class);
-
-		Mockito.when(
-			_cryptoManager.getCryptoProviderIds(ArgumentMatchers.anyLong())
-		).thenReturn(
-			Collections.singletonList(_KEK_PROVIDER_ID)
 		);
 
 		ReflectionTestUtil.setFieldValue(
@@ -535,8 +535,7 @@ public class CompanyKeyResolverImplTest {
 			companyKeyResolverImpl, RandomTestUtil.randomString());
 
 		String body = StringBundler.concat(
-			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX,
-			CompanyKeyResolverUtil.WRAPPED_KEY_VERSION, StringPool.COLON,
+			_WRAPPED_KEY_PREFIX, _WRAPPED_KEY_VERSION, StringPool.COLON,
 			_KEK_PROVIDER_ID, StringPool.COLON, _KEK_IDENTIFIER);
 
 		_assertUnwrapKeyFails(
@@ -587,9 +586,8 @@ public class CompanyKeyResolverImplTest {
 
 		String keyString = StringUtil.replaceFirst(
 			wrappedCompanyKey.toKeyString(),
-			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
-				CompanyKeyResolverUtil.WRAPPED_KEY_VERSION,
-			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX.concat("v2"));
+			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION,
+			_WRAPPED_KEY_PREFIX.concat("v2"));
 
 		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
@@ -770,6 +768,10 @@ public class CompanyKeyResolverImplTest {
 	private static final byte[] _KEY_BYTES_1 = RandomTestUtil.randomBytes();
 
 	private static final byte[] _KEY_BYTES_2 = RandomTestUtil.randomBytes();
+
+	private static final String _WRAPPED_KEY_PREFIX = "${wrappedKey:";
+
+	private static final String _WRAPPED_KEY_VERSION = "v1";
 
 	private CryptoManager _cryptoManager;
 	private final Key _key1 = new SecretKeySpec(_KEY_BYTES_1, _KEY_ALGORITHM);

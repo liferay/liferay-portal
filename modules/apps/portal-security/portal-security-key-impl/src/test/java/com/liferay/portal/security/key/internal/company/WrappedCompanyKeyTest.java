@@ -5,7 +5,6 @@
 
 package com.liferay.portal.security.key.internal.company;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -76,11 +75,9 @@ public class WrappedCompanyKeyTest {
 		_testParse(_VERSION_PREFIX + "provider:ali}as|Y2lwaGVy}");
 		_testParse(_VERSION_PREFIX + "provider:|Y2lwaGVy}");
 		_testParse(_VERSION_PREFIX + "pro}vider:alias|Y2lwaGVy}");
-		_testParse(CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX);
-		_testParse(CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX + "}");
-		_testParse(
-			CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
-				"v2:provider:alias/kek|Y2lwaGVy}");
+		_testParse(_KEY_PREFIX);
+		_testParse(_KEY_PREFIX + "}");
+		_testParse(_KEY_PREFIX + "v2:provider:alias/kek|Y2lwaGVy}");
 		_testParse(RandomTestUtil.randomString());
 	}
 
@@ -150,8 +147,8 @@ public class WrappedCompanyKeyTest {
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
-	private static final String _VERSION_PREFIX =
-		CompanyKeyResolverUtil.WRAPPED_KEY_PREFIX +
-			CompanyKeyResolverUtil.WRAPPED_KEY_VERSION + StringPool.COLON;
+	private static final String _KEY_PREFIX = "${wrappedKey:";
+
+	private static final String _VERSION_PREFIX = _KEY_PREFIX + "v1:";
 
 }
