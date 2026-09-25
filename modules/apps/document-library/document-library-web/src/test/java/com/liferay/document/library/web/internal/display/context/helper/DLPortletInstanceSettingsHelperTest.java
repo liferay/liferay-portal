@@ -8,6 +8,8 @@ package com.liferay.document.library.web.internal.display.context.helper;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.web.internal.constants.DLWebKeys;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.NoSuchRepositoryException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
@@ -178,6 +180,37 @@ public class DLPortletInstanceSettingsHelperTest {
 	}
 
 	@Test
+	public void testGetSelectedRepositoryIdWhenSelectedGroupIsMissing()
+		throws Exception {
+
+		Group scopeGroup = Mockito.mock(Group.class);
+
+		Mockito.when(
+			scopeGroup.isStagingGroup()
+		).thenReturn(
+			false
+		);
+
+		try (MockedStatic<GroupLocalServiceUtil>
+				groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					GroupLocalServiceUtil.class)) {
+
+			Mockito.when(
+				GroupLocalServiceUtil.getGroupByExternalReferenceCode(
+					_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE, _COMPANY_ID)
+			).thenThrow(
+				new NoSuchGroupException()
+			);
+
+			DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper =
+				_createDLPortletInstanceSettingsHelper(scopeGroup);
+
+			Assert.assertEquals(
+				0, dlPortletInstanceSettingsHelper.getSelectedRepositoryId());
+		}
+	}
+
+	@Test
 	public void testGetSelectedRepositoryIdWhenSelectedGroupIsNotStaging()
 		throws Exception {
 
@@ -239,6 +272,62 @@ public class DLPortletInstanceSettingsHelperTest {
 			Assert.assertEquals(
 				_LIVE_REPOSITORY_ID,
 				dlPortletInstanceSettingsHelper.getSelectedRepositoryId());
+		}
+	}
+
+	@Test
+	public void testGetSelectedRepositoryIdWhenSelectedRepositoryIsMissing()
+		throws Exception {
+
+		Group liveGroup = Mockito.mock(Group.class);
+
+		Mockito.when(
+			liveGroup.getGroupId()
+		).thenReturn(
+			_LIVE_GROUP_ID
+		);
+
+		Mockito.when(
+			liveGroup.isStagingGroup()
+		).thenReturn(
+			false
+		);
+
+		Group scopeGroup = Mockito.mock(Group.class);
+
+		Mockito.when(
+			scopeGroup.isStagingGroup()
+		).thenReturn(
+			false
+		);
+
+		try (MockedStatic<GroupLocalServiceUtil>
+				groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					GroupLocalServiceUtil.class);
+			MockedStatic<RepositoryLocalServiceUtil>
+				repositoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					RepositoryLocalServiceUtil.class)) {
+
+			Mockito.when(
+				GroupLocalServiceUtil.getGroupByExternalReferenceCode(
+					_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE, _COMPANY_ID)
+			).thenReturn(
+				liveGroup
+			);
+
+			Mockito.when(
+				RepositoryLocalServiceUtil.getRepositoryByExternalReferenceCode(
+					_SELECTED_REPOSITORY_EXTERNAL_REFERENCE_CODE,
+					_LIVE_GROUP_ID)
+			).thenThrow(
+				new NoSuchRepositoryException()
+			);
+
+			DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper =
+				_createDLPortletInstanceSettingsHelper(scopeGroup);
+
+			Assert.assertEquals(
+				0, dlPortletInstanceSettingsHelper.getSelectedRepositoryId());
 		}
 	}
 

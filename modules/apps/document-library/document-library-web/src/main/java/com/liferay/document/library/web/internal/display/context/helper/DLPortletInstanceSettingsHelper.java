@@ -11,7 +11,6 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchRepositoryException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -192,11 +191,8 @@ public class DLPortletInstanceSettingsHelper {
 		catch (NoSuchGroupException | NoSuchRepositoryException exception) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					StringBundler.concat(
-						"Unable to resolve the selected repository for ",
-						"external reference code \"",
-						selectedGroupExternalReferenceCode,
-						"\" on this instance"),
+					"Unable to get the selected repository, using the " +
+						"default scope",
 					exception);
 			}
 
