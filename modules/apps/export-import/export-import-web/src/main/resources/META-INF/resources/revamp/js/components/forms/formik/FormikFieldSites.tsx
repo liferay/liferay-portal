@@ -31,7 +31,7 @@ export function FormikFieldSites({
 			apiURL={apiURL}
 			onChange={(externalReferenceCodes) => {
 				setFieldValue(name, externalReferenceCodes);
-				setFieldTouched(name, true);
+				setFieldTouched(name, true, false);
 			}}
 			previewSites={previewSites}
 			process={process}
