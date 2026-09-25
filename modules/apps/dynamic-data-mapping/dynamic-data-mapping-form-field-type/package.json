@@ -23,6 +23,7 @@
 		"@liferay/map-google-maps": "*",
 		"@liferay/map-openstreetmap": "*",
 		"@liferay/object-js-components-web": "*",
+		"ckeditor5": "46.0.3",
 		"classnames": "2.3.1",
 		"data-engine-js-components-web": "*",
 		"frontend-editor-ckeditor-web": "*",
