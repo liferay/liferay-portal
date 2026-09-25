@@ -49,6 +49,10 @@ components:
                     type: string
                 number:
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 position:
                     default: 0.0
                     format: double
