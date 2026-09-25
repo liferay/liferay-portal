@@ -64,6 +64,7 @@ import com.liferay.object.entry.contributor.ObjectEntryReviewNotificationContrib
 import com.liferay.object.entry.contributor.ObjectEntryValuesContributor;
 import com.liferay.object.entry.folder.subscription.util.ObjectEntryFolderSubscriptionUtil;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderUtil;
+import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
 import com.liferay.object.entry.util.ObjectEntryPayloadUtil;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.entry.util.ObjectEntryValuesUtil;
@@ -1794,22 +1795,39 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinitionId, "id");
 		}
 
-		PersistedModelLocalService persistedModelLocalService =
-			PersistedModelLocalServiceRegistryUtil.
-				getPersistedModelLocalService(objectDefinition.getClassName());
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager(objectDefinition.getName());
 
 		BaseModel<?> baseModel =
-			(BaseModel<?>)persistedModelLocalService.getPersistedModel(
+			(BaseModel<?>)systemObjectDefinitionManager.getPersistedModel(
 				primaryKey);
 
-		Map<String, ?> attributeGetterFunctions =
-			baseModel.getAttributeGetterFunctions();
+		Map<String, Object> modelAttributes = baseModel.getModelAttributes();
 
-		Function<Object, Object> function =
-			(Function<Object, Object>)attributeGetterFunctions.get(
-				titleObjectField.getDBColumnName());
+		Object titleFieldValue = modelAttributes.get(
+			titleObjectField.getDBColumnName());
 
-		return String.valueOf(function.apply(baseModel));
+		if (!modelAttributes.containsKey(titleObjectField.getDBColumnName()) ||
+			titleObjectField.isLocalized()) {
+
+			User user = _userLocalService.fetchUser(
+				PrincipalThreadLocal.getUserId());
+
+			titleFieldValue = ObjectEntryValuesUtil.getTitleFieldValue(
+				titleObjectField.getBusinessType(), modelAttributes,
+				titleObjectField, user,
+				ObjectEntryDTOConverterUtil.toValues(
+					baseModel, _dtoConverterRegistry,
+					objectDefinition.getName(),
+					_systemObjectDefinitionManagerRegistry, user));
+		}
+
+		if (titleFieldValue == null) {
+			return null;
+		}
+
+		return String.valueOf(titleFieldValue);
 	}
 
 	@Override
