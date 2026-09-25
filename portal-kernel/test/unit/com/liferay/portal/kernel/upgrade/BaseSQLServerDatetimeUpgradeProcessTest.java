@@ -46,10 +46,10 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 
 			LogEntry logEntry = logEntries.get(0);
 
-			Assert.assertEquals("INFO", logEntry.getPriority());
 			Assert.assertEquals(
 				"Column publishDate in table Layout already is datetime2(6)",
 				logEntry.getMessage());
+			Assert.assertEquals("INFO", logEntry.getPriority());
 		}
 	}
 
@@ -72,10 +72,10 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 
 			LogEntry logEntry = logEntries.get(0);
 
-			Assert.assertEquals("ERROR", logEntry.getPriority());
 			Assert.assertEquals(
 				"Column publishDate does not exist in table Layout",
 				logEntry.getMessage());
+			Assert.assertEquals("ERROR", logEntry.getPriority());
 		}
 	}
 
@@ -132,9 +132,9 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 		);
 
 		Mockito.when(
-			columnResultSet.getInt("DECIMAL_DIGITS")
+			columnResultSet.next()
 		).thenReturn(
-			decimalDigits
+			columnPresent
 		);
 
 		Mockito.when(
@@ -144,9 +144,9 @@ public class BaseSQLServerDatetimeUpgradeProcessTest {
 		);
 
 		Mockito.when(
-			columnResultSet.next()
+			columnResultSet.getInt("DECIMAL_DIGITS")
 		).thenReturn(
-			columnPresent
+			decimalDigits
 		);
 
 		return connection;
