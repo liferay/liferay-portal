@@ -238,8 +238,8 @@ test('COMMERCE-12809 As a buyer, I want to be able to verify the included and ex
 		await apiHelpers.headlessCommerceAdminOrder.postOrderRule({
 			type: 'products-limit',
 			typeSettings:
-				'products-limit-field-product-ids=' +
-				product3.productId +
+				'products-limit-field-product-external-reference-codes=' +
+				product3.externalReferenceCode +
 				'\nproducts-limit-field-product-quantity=0.9\n',
 		});
 
