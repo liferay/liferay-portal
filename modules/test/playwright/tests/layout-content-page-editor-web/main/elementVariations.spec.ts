@@ -1415,3 +1415,109 @@ test(
 		await expect(audiencesPage.removeSiteFromScopeModal).not.toBeVisible();
 	}
 );
+
+test(
+	'Audiences out of the site scope are not offered for element variations',
+	{tag: '@LPD-107101'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience for every site and another one scoped to
+		// another site
+
+		const otherSite = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: 'Audience ' + getRandomString(),
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.addSiteToScope(otherSite.name);
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		// The audience is not offered when creating a variation on the site
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		await elementVariationsPage.startElementVariationDraft();
+
+		await elementVariationsPage.selectPageElement('Heading (element-text)');
+
+		await elementVariationsPage.audienceInput.fill(audienceName);
+
+		await expect(
+			page.locator('.dropdown-menu').getByText(audienceName)
+		).not.toBeVisible();
+
+		// Making the audience available for all sites offers it again
+
+		await audiencesPage.goto();
+
+		await audiencesPage.openAudience(audienceName);
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.allSitesCheckbox.check();
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		await elementVariationsPage.startElementVariationDraft();
+
+		await elementVariationsPage.selectPageElement('Heading (element-text)');
+
+		await elementVariationsPage.audienceInput.fill(audienceName);
+
+		await expect(
+			page.locator('.dropdown-menu').getByText(audienceName)
+		).toBeVisible();
+	}
+);
