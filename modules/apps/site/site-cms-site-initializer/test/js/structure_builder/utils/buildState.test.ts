@@ -100,6 +100,7 @@ describe('buildState', () => {
 			spaces: [],
 			status: 'draft',
 			system: false,
+			titleObjectFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: getUuid(),
 			workflows: {},
@@ -168,6 +169,7 @@ describe('buildState', () => {
 			spaces: [],
 			status: 'published',
 			system: false,
+			titleObjectFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: getUuid(),
 			workflows: {},
@@ -245,6 +247,7 @@ describe('buildState', () => {
 			spaces: ['space-1-erc', 'space-2-erc'],
 			status: 'published',
 			system: false,
+			titleObjectFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: getUuid(),
 			workflows: {

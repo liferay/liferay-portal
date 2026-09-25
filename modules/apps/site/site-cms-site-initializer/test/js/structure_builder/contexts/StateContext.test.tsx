@@ -609,6 +609,22 @@ describe('StateContext base object definition', () => {
 		).toEqual(['title']);
 	});
 
+	it('Takes the title object field name from the base', () => {
+		let {result} = renderNewStructure();
+
+		expect(result.current.state.structure.titleObjectFieldName).toBe(
+			'title'
+		);
+
+		({result} = renderNewStructure(
+			buildObjectDefinition({titleObjectFieldName: 'name'})
+		));
+
+		expect(result.current.state.structure.titleObjectFieldName).toBe(
+			'name'
+		);
+	});
+
 	it('Starts a new structure from the fields of the base', () => {
 		const {result} = renderNewStructure(buildObjectDefinition());
 

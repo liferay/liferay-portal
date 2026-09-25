@@ -240,6 +240,26 @@ function getChildFieldNames(structure: ReturnType<typeof buildStructure>) {
 }
 
 describe('buildStructure', () => {
+	it('Restores the title object field name of the definition', () => {
+		let structure = buildStructure({
+			mainObjectDefinition: createObjectDefinition(),
+			objectDefinitions: {},
+			systemFieldNames: {},
+		});
+
+		expect(structure.titleObjectFieldName).toBe('title');
+
+		structure = buildStructure({
+			mainObjectDefinition: createObjectDefinition({
+				titleObjectFieldName: 'name',
+			}),
+			objectDefinitions: {},
+			systemFieldNames: {},
+		});
+
+		expect(structure.titleObjectFieldName).toBe('name');
+	});
+
 	it('Maps object field business types to structure field types', () => {
 		const objectDefinition = buildObjectDefinition({
 			children: getChildren(SAMPLE_STRUCTURE_FIELDS),
