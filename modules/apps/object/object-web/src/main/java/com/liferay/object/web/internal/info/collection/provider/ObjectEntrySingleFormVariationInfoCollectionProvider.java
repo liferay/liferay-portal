@@ -339,6 +339,10 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		return searchContext;
 	}
 
+	private ObjectDefinition _cloneObjectDefinition() {
+		return (ObjectDefinition)_objectDefinition.clone();
+	}
+
 	private List<AssetVocabulary> _getAssetVocabularies(
 		ServiceContext serviceContext) {
 
@@ -431,7 +435,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			defaultObjectEntryManager.getApprovedObjectEntries(
-				themeDisplay.getCompanyId(), _objectDefinition,
+				themeDisplay.getCompanyId(), _cloneObjectDefinition(),
 				scopeGroup.getGroupKey(), null,
 				new DefaultDTOConverterContext(
 					false, null, null, null, null, themeDisplay.getLocale(),
@@ -494,7 +498,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 			Page<ObjectEntry> objectEntriesPage =
 				defaultObjectEntryManager.getServiceBuilderObjectEntries(
-					themeDisplay.getCompanyId(), _objectDefinition,
+					themeDisplay.getCompanyId(), _cloneObjectDefinition(),
 					scopeGroup.getGroupKey(),
 					new DefaultDTOConverterContext(
 						false, null, null, null, null, themeDisplay.getLocale(),
@@ -514,7 +518,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			objectEntryManager.getObjectEntries(
-				themeDisplay.getCompanyId(), _objectDefinition,
+				themeDisplay.getCompanyId(), _cloneObjectDefinition(),
 				scopeGroup.getGroupKey(), null,
 				new DefaultDTOConverterContext(
 					false, null, null, null, null, themeDisplay.getLocale(),
