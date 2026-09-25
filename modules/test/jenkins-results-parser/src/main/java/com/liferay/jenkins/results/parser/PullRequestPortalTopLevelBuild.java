@@ -544,22 +544,38 @@ public class PullRequestPortalTopLevelBuild
 			return null;
 		}
 
+		String portalUpstreamBranchName = getPortalUpstreamBranchName();
+
 		String branchName = getBranchName();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+			portalUpstreamBranchName = branchName;
+		}
+
 		Job.BuildProfile buildProfile = getBuildProfile();
 		String jobName = getJobName();
 		String repositoryName = getBaseGitRepositoryName();
 		String stableTestSuiteName = "stable";
 
+		PortalGitWorkingDirectory portalGitWorkingDirectory = null;
+
+		if (JenkinsResultsParserUtil.isCINode()) {
+			portalGitWorkingDirectory =
+				GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
+					portalUpstreamBranchName);
+		}
+
 		try {
 			_stableJob = JobFactory.newJob(
-				buildProfile, jobName, null, null, null, branchName, null,
-				repositoryName, stableTestSuiteName, branchName);
+				buildProfile, jobName, null, portalGitWorkingDirectory, null,
+				portalUpstreamBranchName, null, repositoryName,
+				stableTestSuiteName, branchName);
 
 			BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
 
 			buildDatabase.putJob(
 				JobFactory.getKey(
-					buildProfile, jobName, null, branchName, null,
+					buildProfile, jobName, null, portalUpstreamBranchName, null,
 					repositoryName, stableTestSuiteName, branchName),
 				_stableJob);
 		}
