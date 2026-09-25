@@ -24,6 +24,10 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly orderCell: (orderId: string) => Locator;
 	readonly orderColumn: (rowIndex: number, rowColumn: number) => Locator;
 	readonly orderDateSortButton: Locator;
+	readonly orderDetailsTermLink: (
+		termType: string,
+		termName: string
+	) => Locator;
 	readonly orderDetailsValue: (label: string) => Locator;
 	readonly orderRowLink: (orderId: number | string) => Locator;
 	readonly orderItemActionsButton: Locator;
@@ -34,6 +38,7 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
 	readonly placedOrderTableViewButton: Locator;
+	readonly portlet: Locator;
 	readonly searchButton: Locator;
 	readonly searchInput: Locator;
 	readonly commerceShippingAddress: Locator;
@@ -85,6 +90,12 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.orderDateSortButton = page
 			.getByRole('columnheader', {name: 'Order Date'})
 			.getByRole('button');
+		this.orderDetailsTermLink = (termType: string, termName: string) =>
+			this.portlet
+				.locator('.commerce-panel', {
+					has: page.getByText(termType, {exact: true}),
+				})
+				.getByRole('link', {name: termName});
 		this.orderDetailsValue = (label: string) =>
 			page
 				.locator('dl.commerce-list')
@@ -116,6 +127,9 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 			.getByTestId('specificationFacetPanel')
 			.getByRole('button');
 		this.placedOrderTableViewButton = this.table.getByLabel('View');
+		this.portlet = page.locator(
+			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet'
+		);
 		this.searchButton = page.getByRole('button', {
 			exact: true,
 			name: 'Search',
