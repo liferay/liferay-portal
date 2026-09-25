@@ -332,7 +332,9 @@ Name receivers, parameters, and locals with the full word that echoes the type, 
 
 Naming after the type wins even when the name shadows the type or an imported package — `var licenseSet licenseSet`, `func encodeSegment(bytes []byte)`. Let the shadow stand rather than reaching for an abbreviation.
 
-Two names keep their conventional short form, because the language or the standard library fixes them:
+Three names keep their conventional short form, because the language or the standard library fixes them:
+
+- `m`, the `*testing.M` parameter of `TestMain`.
 
 - `ok`, the second result of a comma ok type assertion, map index, or channel receive.
 
