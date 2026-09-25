@@ -23,8 +23,10 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -53,6 +55,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -172,6 +175,70 @@ public class ObjectEntrySingleFormVariationInfoCollectionProviderTest {
 		_testGetCollectionInfoPageDisplayAllItems(false, true);
 		_testGetCollectionInfoPageDisplayAllItems(true, false);
 		_testGetCollectionInfoPageDisplayAllItems(true, true);
+	}
+
+	@Test
+	public void testGetCollectionInfoPageWithDeletedObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.addCustomObjectDefinition(
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, false, false, false, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, ObjectDefinitionConstants.SCOPE_COMPANY,
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.emptyList(),
+				Arrays.asList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"able"
+					).build(),
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"baker"
+					).build()),
+				Collections.emptyList(), new ServiceContext());
+
+		objectDefinition =
+			_objectDefinitionLocalService.publishCustomObjectDefinition(
+				TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId());
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		InfoCollectionProvider<ObjectEntry> infoCollectionProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoCollectionProvider.class, objectDefinition.getClassName());
+
+		CollectionQuery collectionQuery = new CollectionQuery();
+
+		collectionQuery.setPagination(Pagination.of(-1, -1));
+
+		infoCollectionProvider.getCollectionInfoPage(collectionQuery);
+
+		_objectFieldLocalService.deleteObjectField(
+			_objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(), "baker"));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		InfoPage<ObjectEntry> infoPage =
+			infoCollectionProvider.getCollectionInfoPage(collectionQuery);
+
+		Assert.assertEquals(2, infoPage.getTotalCount());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	private ServiceContext _getServiceContext() throws Exception {
@@ -319,6 +386,9 @@ public class ObjectEntrySingleFormVariationInfoCollectionProviderTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	private long _segmentsExperienceId;
 
