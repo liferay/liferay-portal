@@ -86,7 +86,7 @@ function _format_generated {
 
 	"${dist_dir}/bin/source-formatter" \
 		source.auto.fix=true \
-		source.files="${_CRD_FILE}"
+		source.files="$(find "${_CRD_DIR}" -name '*.yaml' | sort | paste --delimiters=, --serial)"
 }
 
 function _generate {
@@ -100,17 +100,24 @@ function _generate {
 	_format_generated
 }
 function _test {
-	if [ ! -f api/licensing/v1alpha1/zz_generated.deepcopy.go ]
-	then
-		_generate
-	fi
+	local group
+
+	for group in api/*/v1alpha1
+	do
+		if [ ! -f "${group}/zz_generated.deepcopy.go" ]
+		then
+			_generate
+
+			break
+		fi
+	done
 
 	go tool setup-envtest use "${_ENVTEST_KUBERNETES_VERSION}" --bin-dir "${_ENVTEST_BIN_DIR}" > /dev/null
 
 	go test ./...
 }
 
-_CRD_FILE="$(cd .. && pwd)/helm/dxp-operator/crds/licensing.liferay.com_liferayenvironments.yaml"
+_CRD_DIR="$(cd .. && pwd)/helm/dxp-operator/crds"
 
 _ENVTEST_BIN_DIR="${HOME}/.local/share/kubebuilder-envtest"
 
