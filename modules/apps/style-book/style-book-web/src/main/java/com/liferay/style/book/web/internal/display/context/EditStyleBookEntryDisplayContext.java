@@ -9,6 +9,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalServiceUtil;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorCriterion;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorReturnType;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
@@ -217,6 +218,17 @@ public class EditStyleBookEntryDisplayContext {
 		).buildString();
 	}
 
+	private long[] _getFragmentCollectionGroupIds(
+		long[] designLibraryGroupIds) {
+
+		return ArrayUtil.append(
+			new long[] {
+				_themeDisplay.getSiteGroupId(),
+				_themeDisplay.getCompanyGroupId()
+			},
+			designLibraryGroupIds);
+	}
+
 	private String _getFragmentCollectionItemSelectorURL() {
 		FragmentCollectionItemSelectorCriterion
 			fragmentCollectionItemSelectorCriterion =
@@ -234,7 +246,13 @@ public class EditStyleBookEntryDisplayContext {
 	}
 
 	private JSONObject _getFragmentCollectionOptionJSONObject() {
-		int fragmentCollectionsCount = _getFragmentCollectionsCount();
+		long[] designLibraryGroupIds =
+			DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+				_themeDisplay.getSiteGroupId());
+
+		long[] groupIds = _getFragmentCollectionGroupIds(designLibraryGroupIds);
+
+		int fragmentCollectionsCount = _getFragmentCollectionsCount(groupIds);
 
 		return JSONUtil.put(
 			"itemSelectorURL", _getFragmentCollectionItemSelectorURL()
@@ -243,11 +261,7 @@ public class EditStyleBookEntryDisplayContext {
 			() -> {
 				List<FragmentCollection> fragmentCollections =
 					FragmentCollectionServiceUtil.getFragmentCollections(
-						new long[] {
-							_themeDisplay.getSiteGroupId(),
-							_themeDisplay.getCompanyGroupId()
-						},
-						0, Math.min(fragmentCollectionsCount, 4),
+						groupIds, 0, Math.min(fragmentCollectionsCount, 4),
 						FragmentCollectionCreateDateComparator.getInstance(
 							false));
 
@@ -325,13 +339,9 @@ public class EditStyleBookEntryDisplayContext {
 		).buildString();
 	}
 
-	private int _getFragmentCollectionsCount() {
+	private int _getFragmentCollectionsCount(long[] groupIds) {
 		int fragmentCollectionsCount =
-			FragmentCollectionServiceUtil.getFragmentCollectionsCount(
-				new long[] {
-					_themeDisplay.getSiteGroupId(),
-					_themeDisplay.getCompanyGroupId()
-				});
+			FragmentCollectionServiceUtil.getFragmentCollectionsCount(groupIds);
 
 		if (_fragmentCollectionContributorRegistry == null) {
 			return fragmentCollectionsCount;
