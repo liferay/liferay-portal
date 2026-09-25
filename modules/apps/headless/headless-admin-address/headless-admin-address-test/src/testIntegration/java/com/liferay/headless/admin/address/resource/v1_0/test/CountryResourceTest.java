@@ -6,35 +6,49 @@
 package com.liferay.headless.admin.address.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.admin.address.client.dto.v1_0.Country;
 import com.liferay.headless.admin.address.client.dto.v1_0.Creator;
-import com.liferay.headless.admin.address.client.dto.v1_0.Region;
 import com.liferay.headless.admin.address.client.http.HttpInvoker;
 import com.liferay.headless.admin.address.client.pagination.Page;
 import com.liferay.headless.admin.address.client.pagination.Pagination;
+import com.liferay.headless.admin.address.client.permission.Permission;
 import com.liferay.headless.admin.address.client.resource.v1_0.CountryResource;
 import com.liferay.headless.admin.address.client.serdes.v1_0.CountrySerDes;
 import com.liferay.petra.function.UnsafeTriConsumer;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.CountryA2Exception;
 import com.liferay.portal.kernel.exception.CountryA3Exception;
 import com.liferay.portal.kernel.exception.DuplicateCountryException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.RegionLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.randomizerbumpers.RandomizerBumper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
 
 import jakarta.ws.rs.core.Response;
 
@@ -144,67 +158,8 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 	public void testPostCountry() throws Exception {
 		super.testPostCountry();
 
-		Country existingCountry = countryResource.getCountryByA2("US");
-
-		Country country = randomCountry();
-
-		country.setA2((String)null);
-
-		_testPostCountryProblem(country, null);
-
-		country.setA2("");
-
-		_testPostCountryProblem(country, null);
-
-		country.setA2("too long");
-
-		_testPostCountryProblem(country, CountryA2Exception.class);
-
-		country.setA2(existingCountry.getA2());
-
-		_testPostCountryProblem(country, DuplicateCountryException.class);
-
-		country = randomCountry();
-
-		country.setA3((String)null);
-
-		_testPostCountryProblem(country, null);
-
-		country.setA3("");
-
-		_testPostCountryProblem(country, null);
-
-		country.setA3("too long");
-
-		_testPostCountryProblem(country, CountryA3Exception.class);
-
-		country.setA3(existingCountry.getA3());
-
-		_testPostCountryProblem(country, DuplicateCountryException.class);
-
-		country = randomCountry();
-
-		country.setName((String)null);
-
-		_testPostCountryProblem(country, null);
-
-		country.setName("");
-
-		_testPostCountryProblem(country, null);
-
-		country.setName(existingCountry.getName());
-
-		_testPostCountryProblem(country, DuplicateCountryException.class);
-
-		country = randomCountry();
-
-		country.setNumber((Integer)null);
-
-		_testPostCountryProblem(country, null);
-
-		country.setNumber(existingCountry.getNumber());
-
-		_testPostCountryProblem(country, DuplicateCountryException.class);
+		_testPostCountry();
+		_testPostCountryWithPermissions();
 	}
 
 	@Override
@@ -569,23 +524,45 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 	private void _testGetCountryWithNestedFields() throws Exception {
 		Country postCountry = _addCountry(randomCountry());
 
-		com.liferay.portal.kernel.model.Region serviceBuilderRegion =
-			_regionLocalService.addRegion(
-				null, postCountry.getId(), true, RandomTestUtil.randomString(),
-				0D, RandomTestUtil.randomString(),
-				ServiceContextTestUtil.getServiceContext());
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(),
+			com.liferay.portal.kernel.model.Country.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postCountry.getId()), role.getRoleId(),
+			new String[] {ActionKeys.UPDATE});
+
+		Region serviceBuilderRegion = _regionLocalService.addRegion(
+			null, postCountry.getId(), true, RandomTestUtil.randomString(), 0D,
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext());
 
 		CountryResource countryResource = CountryResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
-			"nestedFields", "creator,regions"
+			"nestedFields", "creator,permissions,regions"
 		).build();
 
 		Country getCountry = countryResource.getCountry(postCountry.getId());
 
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getCountry.getPermissions(),
+				permission -> {
+					Object[] actionIds = permission.getActionIds();
+
+					return (actionIds.length == 1) &&
+						   Objects.equals(ActionKeys.UPDATE, actionIds[0]) &&
+						   Objects.equals(
+							   role.getName(), permission.getRoleName());
+				}));
 		Assert.assertTrue(
 			ArrayUtil.exists(
 				getCountry.getRegions(),
@@ -601,6 +578,70 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 			Objects.equals(
 				creator.getExternalReferenceCode(),
 				user.getExternalReferenceCode()));
+	}
+
+	private void _testPostCountry() throws Exception {
+		Country existingCountry = countryResource.getCountryByA2("US");
+
+		Country country = randomCountry();
+
+		country.setA2((String)null);
+
+		_testPostCountryProblem(country, null);
+
+		country.setA2("");
+
+		_testPostCountryProblem(country, null);
+
+		country.setA2("too long");
+
+		_testPostCountryProblem(country, CountryA2Exception.class);
+
+		country.setA2(existingCountry.getA2());
+
+		_testPostCountryProblem(country, DuplicateCountryException.class);
+
+		country = randomCountry();
+
+		country.setA3((String)null);
+
+		_testPostCountryProblem(country, null);
+
+		country.setA3("");
+
+		_testPostCountryProblem(country, null);
+
+		country.setA3("too long");
+
+		_testPostCountryProblem(country, CountryA3Exception.class);
+
+		country.setA3(existingCountry.getA3());
+
+		_testPostCountryProblem(country, DuplicateCountryException.class);
+
+		country = randomCountry();
+
+		country.setName((String)null);
+
+		_testPostCountryProblem(country, null);
+
+		country.setName("");
+
+		_testPostCountryProblem(country, null);
+
+		country.setName(existingCountry.getName());
+
+		_testPostCountryProblem(country, DuplicateCountryException.class);
+
+		country = randomCountry();
+
+		country.setNumber((Integer)null);
+
+		_testPostCountryProblem(country, null);
+
+		country.setNumber(existingCountry.getNumber());
+
+		_testPostCountryProblem(country, DuplicateCountryException.class);
 	}
 
 	private <T extends Exception> void _testPostCountryProblem(
@@ -620,6 +661,87 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 
 			Assert.assertEquals(
 				exceptionClass.getSimpleName(), jsonObject.get("type"));
+		}
+	}
+
+	private void _testPostCountryWithPermissions() throws Exception {
+		Country country = randomCountry();
+
+		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		Permission permission1 = new Permission() {
+			{
+				actionIds = new String[] {ActionKeys.UPDATE};
+				roleExternalReferenceCode = role1.getExternalReferenceCode();
+				roleName = role1.getName();
+				roleType = RoleConstants.getTypeLabel(role1.getType());
+			}
+		};
+
+		Permission permission2 = new Permission() {
+			{
+				actionIds = new String[] {ActionKeys.DELETE};
+				roleExternalReferenceCode = RandomTestUtil.randomString();
+				roleName = RandomTestUtil.randomString();
+				roleType = RoleConstants.getTypeLabel(
+					RoleConstants.TYPE_REGULAR);
+			}
+		};
+
+		country.setPermissions(new Permission[] {permission1, permission2});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			Country postCountry = _addCountry(country);
+
+			List<com.liferay.portal.vulcan.permission.Permission> permissions =
+				ListUtil.fromCollection(
+					PermissionUtil.getPermissions(
+						TestPropsValues.getCompanyId(),
+						_resourceActionLocalService.getResourceActions(
+							com.liferay.portal.kernel.model.Country.class.
+								getName()),
+						postCountry.getId(),
+						com.liferay.portal.kernel.model.Country.class.getName(),
+						null));
+
+			Assert.assertTrue(
+				ListUtil.exists(
+					permissions,
+					permission -> {
+						String[] actionIds = permission.getActionIds();
+
+						return (actionIds.length == 1) &&
+							   Objects.equals(
+								   ActionKeys.UPDATE, actionIds[0]) &&
+							   Objects.equals(
+								   role1.getExternalReferenceCode(),
+								   permission.getRoleExternalReferenceCode());
+					}));
+
+			Role role2 = _roleLocalService.fetchRoleByExternalReferenceCode(
+				permission2.getRoleExternalReferenceCode(),
+				TestPropsValues.getCompanyId());
+
+			Assert.assertEquals(permission2.getRoleName(), role2.getName());
+			Assert.assertEquals(
+				RoleConstants.getLabelType(permission2.getRoleType()),
+				role2.getType());
+			Assert.assertTrue(
+				ListUtil.exists(
+					permissions,
+					permission -> {
+						String[] actionIds = permission.getActionIds();
+
+						return (actionIds.length == 1) &&
+							   Objects.equals(
+								   ActionKeys.DELETE, actionIds[0]) &&
+							   Objects.equals(
+								   role2.getExternalReferenceCode(),
+								   permission.getRoleExternalReferenceCode());
+					}));
 		}
 	}
 
@@ -651,5 +773,14 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 
 	@Inject
 	private RegionLocalService _regionLocalService;
+
+	@Inject
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }
