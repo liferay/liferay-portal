@@ -150,11 +150,9 @@ public class SiteNavigationMenuDisplayContext {
 			return _expandedLevels;
 		}
 
-		String defaultExpandedLevels =
-			_siteNavigationMenuPortletInstanceConfiguration.expandedLevels();
-
 		_expandedLevels = ParamUtil.getString(
-			_httpServletRequest, "expandedLevels", defaultExpandedLevels);
+			_httpServletRequest, "expandedLevels",
+			_siteNavigationMenuPortletInstanceConfiguration.expandedLevels());
 
 		return _expandedLevels;
 	}
@@ -189,15 +187,26 @@ public class SiteNavigationMenuDisplayContext {
 		return portletDisplay.getNamespace() + "selectRootMenuItem";
 	}
 
+	public String getRootMenuItemExternalReferenceCode() {
+		if (_rootMenuItemExternalReferenceCode != null) {
+			return _rootMenuItemExternalReferenceCode;
+		}
+
+		_rootMenuItemExternalReferenceCode = ParamUtil.getString(
+			_httpServletRequest, "rootMenuItemExternalReferenceCode",
+			_siteNavigationMenuPortletInstanceConfiguration.
+				rootMenuItemExternalReferenceCode());
+
+		return _rootMenuItemExternalReferenceCode;
+	}
+
 	public String getRootMenuItemId() {
 		if (_rootMenuItemId != null) {
 			return _rootMenuItemId;
 		}
 
-		String rootMenuItemExternalReferenceCode = ParamUtil.getString(
-			_httpServletRequest, "rootMenuItemExternalReferenceCode",
-			_siteNavigationMenuPortletInstanceConfiguration.
-				rootMenuItemExternalReferenceCode());
+		String rootMenuItemExternalReferenceCode =
+			getRootMenuItemExternalReferenceCode();
 
 		if (Validator.isNull(rootMenuItemExternalReferenceCode)) {
 			return StringPool.BLANK;
@@ -244,11 +253,10 @@ public class SiteNavigationMenuDisplayContext {
 			return _rootMenuItemLevel;
 		}
 
-		int defaultRootMenuItemLevel =
-			_siteNavigationMenuPortletInstanceConfiguration.rootMenuItemLevel();
-
 		_rootMenuItemLevel = ParamUtil.getInteger(
-			_httpServletRequest, "rootMenuItemLevel", defaultRootMenuItemLevel);
+			_httpServletRequest, "rootMenuItemLevel",
+			_siteNavigationMenuPortletInstanceConfiguration.
+				rootMenuItemLevel());
 
 		return _rootMenuItemLevel;
 	}
@@ -277,11 +285,9 @@ public class SiteNavigationMenuDisplayContext {
 			return _rootMenuItemType;
 		}
 
-		String defaultRootMenuItemType =
-			_siteNavigationMenuPortletInstanceConfiguration.rootMenuItemType();
-
 		_rootMenuItemType = ParamUtil.getString(
-			_httpServletRequest, "rootMenuItemType", defaultRootMenuItemType);
+			_httpServletRequest, "rootMenuItemType",
+			_siteNavigationMenuPortletInstanceConfiguration.rootMenuItemType());
 
 		return _rootMenuItemType;
 	}
@@ -365,10 +371,8 @@ public class SiteNavigationMenuDisplayContext {
 			return _siteNavigationMenu;
 		}
 
-		String siteNavigationMenuExternalReferenceCode = ParamUtil.getString(
-			_httpServletRequest, "siteNavigationMenuExternalReferenceCode",
-			_siteNavigationMenuPortletInstanceConfiguration.
-				siteNavigationMenuExternalReferenceCode());
+		String siteNavigationMenuExternalReferenceCode =
+			getSiteNavigationMenuExternalReferenceCode();
 
 		if (Validator.isNotNull(siteNavigationMenuExternalReferenceCode)) {
 			_siteNavigationMenu =
@@ -385,6 +389,32 @@ public class SiteNavigationMenuDisplayContext {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
 		return portletDisplay.getNamespace() + "selectSiteNavigationMenu";
+	}
+
+	public String getSiteNavigationMenuExternalReferenceCode() {
+		if (_siteNavigationMenuExternalReferenceCode != null) {
+			return _siteNavigationMenuExternalReferenceCode;
+		}
+
+		_siteNavigationMenuExternalReferenceCode = ParamUtil.getString(
+			_httpServletRequest, "siteNavigationMenuExternalReferenceCode",
+			_siteNavigationMenuPortletInstanceConfiguration.
+				siteNavigationMenuExternalReferenceCode());
+
+		return _siteNavigationMenuExternalReferenceCode;
+	}
+
+	public String getSiteNavigationMenuGroupExternalReferenceCode() {
+		if (_siteNavigationMenuGroupExternalReferenceCode != null) {
+			return _siteNavigationMenuGroupExternalReferenceCode;
+		}
+
+		_siteNavigationMenuGroupExternalReferenceCode = ParamUtil.getString(
+			_httpServletRequest, "siteNavigationMenuGroupExternalReferenceCode",
+			_siteNavigationMenuPortletInstanceConfiguration.
+				siteNavigationMenuGroupExternalReferenceCode());
+
+		return _siteNavigationMenuGroupExternalReferenceCode;
 	}
 
 	public long getSiteNavigationMenuId() {
@@ -456,13 +486,10 @@ public class SiteNavigationMenuDisplayContext {
 			return _navigationMenuType;
 		}
 
-		int siteNavigationMenuType =
-			_siteNavigationMenuPortletInstanceConfiguration.
-				siteNavigationMenuType();
-
 		_navigationMenuType = ParamUtil.getInteger(
 			_httpServletRequest, "siteNavigationMenuType",
-			siteNavigationMenuType);
+			_siteNavigationMenuPortletInstanceConfiguration.
+				siteNavigationMenuType());
 
 		return _navigationMenuType;
 	}
@@ -550,11 +577,7 @@ public class SiteNavigationMenuDisplayContext {
 		}
 
 		String siteNavigationMenuGroupExternalReferenceCode =
-			ParamUtil.getString(
-				_httpServletRequest,
-				"siteNavigationMenuGroupExternalReferenceCode",
-				_siteNavigationMenuPortletInstanceConfiguration.
-					siteNavigationMenuGroupExternalReferenceCode());
+			getSiteNavigationMenuGroupExternalReferenceCode();
 
 		long siteNavigationMenuGroupId = 0;
 
@@ -645,10 +668,13 @@ public class SiteNavigationMenuDisplayContext {
 	private NavigationMenuMode _navigationMenuMode;
 	private Integer _navigationMenuType;
 	private Boolean _preview;
+	private String _rootMenuItemExternalReferenceCode;
 	private String _rootMenuItemId;
 	private Integer _rootMenuItemLevel;
 	private String _rootMenuItemType;
 	private SiteNavigationMenu _siteNavigationMenu;
+	private String _siteNavigationMenuExternalReferenceCode;
+	private String _siteNavigationMenuGroupExternalReferenceCode;
 	private Long _siteNavigationMenuGroupId;
 	private Long _siteNavigationMenuId;
 	private final SiteNavigationMenuPortletInstanceConfiguration

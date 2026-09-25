@@ -55,6 +55,11 @@ public class SiteNavigationMenuItemDescriptor
 	@Override
 	public String getPayload() {
 		return JSONUtil.put(
+			"externalReferenceCode",
+			_siteNavigationMenu.getExternalReferenceCode()
+		).put(
+			"groupExternalReferenceCode", _getGroupExternalReferenceCode()
+		).put(
 			"id", _siteNavigationMenu.getSiteNavigationMenuId()
 		).put(
 			"name", _getName()
@@ -86,7 +91,7 @@ public class SiteNavigationMenuItemDescriptor
 		return true;
 	}
 
-	private String _getName() {
+	private Group _fetchGroup() {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)_httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -94,15 +99,33 @@ public class SiteNavigationMenuItemDescriptor
 		if (_siteNavigationMenu.getGroupId() ==
 				themeDisplay.getScopeGroupId()) {
 
-			return _siteNavigationMenu.getName();
+			return null;
 		}
 
-		Group group = GroupLocalServiceUtil.fetchGroup(
+		return GroupLocalServiceUtil.fetchGroup(
 			_siteNavigationMenu.getGroupId());
+	}
+
+	private String _getGroupExternalReferenceCode() {
+		Group group = _fetchGroup();
+
+		if (group == null) {
+			return StringPool.BLANK;
+		}
+
+		return group.getExternalReferenceCode();
+	}
+
+	private String _getName() {
+		Group group = _fetchGroup();
 
 		if (group == null) {
 			return _siteNavigationMenu.getName();
 		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		try {
 			return StringUtil.appendParentheticalSuffix(

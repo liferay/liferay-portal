@@ -12,9 +12,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.constants.SiteNavigationConstants;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
@@ -52,13 +54,41 @@ public class SiteNavigationMenuItemItemSelectorViewDisplayContext {
 			return _siteNavigationMenu;
 		}
 
-		long siteNavigationMenuId = ParamUtil.getLong(
-			_httpServletRequest, "siteNavigationMenuId");
+		String siteNavigationMenuExternalReferenceCode = ParamUtil.getString(
+			_httpServletRequest, "siteNavigationMenuExternalReferenceCode");
 
-		if (siteNavigationMenuId > 0) {
+		if (Validator.isNotNull(siteNavigationMenuExternalReferenceCode)) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)_httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			long siteNavigationMenuGroupId = themeDisplay.getScopeGroupId();
+
+			String siteNavigationMenuGroupExternalReferenceCode =
+				ParamUtil.getString(
+					_httpServletRequest,
+					"siteNavigationMenuGroupExternalReferenceCode");
+
+			if (Validator.isNotNull(
+					siteNavigationMenuGroupExternalReferenceCode)) {
+
+				Group group =
+					GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
+						siteNavigationMenuGroupExternalReferenceCode,
+						themeDisplay.getCompanyId());
+
+				if (group == null) {
+					return _siteNavigationMenu;
+				}
+
+				siteNavigationMenuGroupId = group.getGroupId();
+			}
+
 			_siteNavigationMenu =
-				SiteNavigationMenuLocalServiceUtil.fetchSiteNavigationMenu(
-					siteNavigationMenuId);
+				SiteNavigationMenuLocalServiceUtil.
+					fetchSiteNavigationMenuByExternalReferenceCode(
+						siteNavigationMenuExternalReferenceCode,
+						siteNavigationMenuGroupId);
 
 			return _siteNavigationMenu;
 		}
@@ -270,6 +300,9 @@ public class SiteNavigationMenuItemItemSelectorViewDisplayContext {
 						siteNavigationMenuItem.getType());
 
 			jsonObject.put(
+				"externalReferenceCode",
+				siteNavigationMenuItem.getExternalReferenceCode()
+			).put(
 				"icon", siteNavigationMenuItemType.getIcon()
 			).put(
 				"id",

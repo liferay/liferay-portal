@@ -6,25 +6,14 @@
 package com.liferay.site.navigation.menu.web.internal.portlet.action;
 
 import com.liferay.item.selector.ItemSelector;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 import com.liferay.site.navigation.constants.SiteNavigationMenuPortletKeys;
 import com.liferay.site.navigation.menu.web.internal.constants.SiteNavigationMenuWebKeys;
-import com.liferay.site.navigation.model.SiteNavigationMenu;
-import com.liferay.site.navigation.model.SiteNavigationMenuItem;
-import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
-import com.liferay.site.navigation.service.SiteNavigationMenuService;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 
 import jakarta.portlet.PortletConfig;
@@ -98,10 +87,15 @@ public class SiteNavigationMenuConfigurationAction
 
 		try {
 			portletPreferences.reset("included-layouts");
+			portletPreferences.reset("rootMenuItemId");
+			portletPreferences.reset("siteNavigationMenuId");
 
-			_updateRootMenuItemPreferences(portletPreferences, portletRequest);
-			_updateSiteNavigationMenuPreferences(
-				portletPreferences, portletRequest);
+			if (!Objects.equals(
+					portletPreferences.getValue("rootMenuItemType", null),
+					"select")) {
+
+				portletPreferences.reset("rootMenuItemExternalReferenceCode");
+			}
 		}
 		catch (ReadOnlyException readOnlyException) {
 			throw new SystemException(readOnlyException);
@@ -109,133 +103,7 @@ public class SiteNavigationMenuConfigurationAction
 	}
 
 	@Reference
-	protected GroupLocalService groupLocalService;
-
-	@Reference
-	protected SiteNavigationMenuItemLocalService
-		siteNavigationMenuItemLocalService;
-
-	@Reference
-	protected SiteNavigationMenuService siteNavigationMenuService;
-
-	private void _updateRootMenuItemPreferences(
-			PortletPreferences portletPreferences,
-			PortletRequest portletRequest)
-		throws ReadOnlyException {
-
-		long siteNavigationMenuId = GetterUtil.getLong(
-			portletPreferences.getValue("siteNavigationMenuId", null));
-
-		if (siteNavigationMenuId > 0) {
-			long rootMenuItemId = GetterUtil.getLong(
-				portletPreferences.getValue("rootMenuItemId", null));
-			String rootMenuItemType = portletPreferences.getValue(
-				"rootMenuItemType", StringPool.BLANK);
-
-			if ((rootMenuItemId == 0) ||
-				!Objects.equals(rootMenuItemType, "select")) {
-
-				portletPreferences.reset("rootMenuItemExternalReferenceCode");
-				portletPreferences.reset("rootMenuItemId");
-			}
-
-			SiteNavigationMenuItem siteNavigationMenuItem =
-				siteNavigationMenuItemLocalService.fetchSiteNavigationMenuItem(
-					rootMenuItemId);
-
-			if (siteNavigationMenuItem != null) {
-				portletPreferences.setValue(
-					"rootMenuItemExternalReferenceCode",
-					siteNavigationMenuItem.getExternalReferenceCode());
-
-				return;
-			}
-
-			portletPreferences.reset("rootMenuItemExternalReferenceCode");
-		}
-		else {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)portletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			String rootMenuItemId = portletPreferences.getValue(
-				"rootMenuItemId", null);
-
-			Layout rootLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
-				rootMenuItemId, themeDisplay.getScopeGroupId(), false);
-
-			if (rootLayout == null) {
-				rootLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
-					rootMenuItemId, themeDisplay.getScopeGroupId(), true);
-			}
-
-			if (rootLayout != null) {
-				portletPreferences.setValue(
-					"rootMenuItemExternalReferenceCode", rootLayout.getUuid());
-			}
-			else {
-				portletPreferences.reset("rootMenuItemExternalReferenceCode");
-			}
-		}
-	}
-
-	private void _updateSiteNavigationMenuPreferences(
-			PortletPreferences portletPreferences,
-			PortletRequest portletRequest)
-		throws PortalException, ReadOnlyException {
-
-		long siteNavigationMenuId = GetterUtil.getLong(
-			portletPreferences.getValue("siteNavigationMenuId", null));
-
-		if (siteNavigationMenuId == 0) {
-			portletPreferences.reset("siteNavigationMenuExternalReferenceCode");
-			portletPreferences.reset(
-				"siteNavigationMenuGroupExternalReferenceCode");
-
-			return;
-		}
-
-		SiteNavigationMenu siteNavigationMenu =
-			siteNavigationMenuService.fetchSiteNavigationMenu(
-				siteNavigationMenuId);
-
-		if (siteNavigationMenu != null) {
-			portletPreferences.setValue(
-				"siteNavigationMenuExternalReferenceCode",
-				siteNavigationMenu.getExternalReferenceCode());
-
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)portletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			if (siteNavigationMenu.getGroupId() ==
-					themeDisplay.getScopeGroupId()) {
-
-				portletPreferences.reset(
-					"siteNavigationMenuGroupExternalReferenceCode");
-			}
-			else {
-				Group group = groupLocalService.getGroup(
-					siteNavigationMenu.getGroupId());
-
-				portletPreferences.setValue(
-					"siteNavigationMenuGroupExternalReferenceCode",
-					group.getExternalReferenceCode());
-			}
-
-			return;
-		}
-
-		portletPreferences.reset("siteNavigationMenuExternalReferenceCode");
-		portletPreferences.reset(
-			"siteNavigationMenuGroupExternalReferenceCode");
-	}
-
-	@Reference
 	private ItemSelector _itemSelector;
-
-	@Reference
-	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private PortletDisplayTemplate _portletDisplayTemplate;
