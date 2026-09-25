@@ -30,6 +30,10 @@ import {
 	// eslint-disable-next-line lines-around-comment
 	// @ts-ignore
 } from '../../../src/main/resources/META-INF/resources/utilities/eventsDefinitions';
+import {
+	mockBundledProductMultiSku,
+	mockBundledProductSingleSku,
+} from '../fixtures/productFixtures';
 
 interface ILocators {
 	button: HTMLButtonElement;
@@ -368,15 +372,6 @@ describe('Add to Cart', () => {
 	});
 
 	describe('bundled-product variants and purchasable contract', () => {
-
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const {
-			mockBundledProductMultiSku,
-			mockBundledProductSingleSku,
-
-			// @ts-ignore
-		} = require('../fixtures/productFixtures');
-
 		it('a single-SKU bundled product (purchasable=true) renders an enabled add-to-cart button alongside the quantity selector', () => {
 			const addToCart = render(
 				<AddToCart {...mockBundledProductSingleSku()} />
