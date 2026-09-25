@@ -27,6 +27,8 @@ public class TextEngineTest {
 
 	@Test
 	public void testConvert() {
+		TextEngine textEngine = new TextEngine();
+
 		WikiPage wikiPage = Mockito.mock(WikiPage.class);
 
 		Mockito.when(
@@ -34,8 +36,6 @@ public class TextEngineTest {
 		).thenReturn(
 			"a <b>bold</b> & 1 < 2"
 		);
-
-		TextEngine textEngine = new TextEngine();
 
 		Assert.assertEquals(
 			"<pre>a &lt;b&gt;bold&lt;/b&gt; &amp; 1 &lt; 2</pre>",
