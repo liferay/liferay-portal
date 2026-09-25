@@ -226,14 +226,14 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			fdsActionDropdownItems.get(0), "pencil", "edit", "edit", null,
 			"get", "link");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(1), "copy", "copy", "duplicate", "post",
-			"copy", "async");
-		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(2), "star", "markAsDefault",
+			fdsActionDropdownItems.get(1), "star", "markAsDefault",
 			"mark-as-default", "post", "markAsDefault", "async");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(3), "star-o", "unmarkAsDefault",
+			fdsActionDropdownItems.get(2), "star-o", "unmarkAsDefault",
 			"unmark-as-default", "post", "unmarkAsDefault", "async");
+		_assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(3), "copy", "copyMenu", "make-a-copy",
+			null, null, null);
 		_assertFDSActionDropdownItem(
 			fdsActionDropdownItems.get(4), "password-policies", "permissions",
 			"permissions", null, "permissions", "modal-permissions");
@@ -242,20 +242,49 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			"delete", "delete", "async");
 
 		FDSActionDropdownItem copyFDSActionDropdownItem =
-			fdsActionDropdownItems.get(1);
+			fdsActionDropdownItems.get(3);
 
 		Assert.assertEquals(
-			"{actions.copy.href}", copyFDSActionDropdownItem.get("href"));
+			"contextual", copyFDSActionDropdownItem.get("type"));
+
+		List<FDSActionDropdownItem> copyFDSActionDropdownItems =
+			(List<FDSActionDropdownItem>)copyFDSActionDropdownItem.get("items");
+
+		Assert.assertEquals(
+			copyFDSActionDropdownItems.toString(), 2,
+			copyFDSActionDropdownItems.size());
+
+		_assertFDSActionDropdownItem(
+			copyFDSActionDropdownItems.get(0), null, "copy", "display-page",
+			"post", "copy", "async");
+		_assertFDSActionDropdownItem(
+			copyFDSActionDropdownItems.get(1), null, "copyWithPermission",
+			"display-page-with-permissions", "post", "copyWithPermission",
+			"async");
+
+		FDSActionDropdownItem displayPageFDSActionDropdownItem =
+			copyFDSActionDropdownItems.get(0);
+
+		Assert.assertEquals(
+			"{actions.copy.href}",
+			displayPageFDSActionDropdownItem.get("href"));
+
+		FDSActionDropdownItem displayPageWithPermissionsFDSActionDropdownItem =
+			copyFDSActionDropdownItems.get(1);
+
+		Assert.assertEquals(
+			"{actions.copyWithPermission.href}",
+			displayPageWithPermissionsFDSActionDropdownItem.get("href"));
 
 		FDSActionDropdownItem markAsDefaultFDSActionDropdownItem =
-			fdsActionDropdownItems.get(2);
+			fdsActionDropdownItems.get(1);
 
 		Assert.assertEquals(
 			"{actions.markAsDefault.href}",
 			markAsDefaultFDSActionDropdownItem.get("href"));
 
 		FDSActionDropdownItem unmarkAsDefaultFDSActionDropdownItem =
-			fdsActionDropdownItems.get(3);
+			fdsActionDropdownItems.get(2);
 
 		Assert.assertEquals(
 			"{actions.unmarkAsDefault.href}",
