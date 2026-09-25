@@ -643,10 +643,10 @@ public class FragmentEntryLinkLocalServiceTest {
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
 				_group.getGroupId(), _layout.getPlid());
 
-		Assert.assertEquals(
-			fragmentEntryLinks.toString(), 2, fragmentEntryLinks.size());
 		Assert.assertEquals(fragmentEntryLink1, fragmentEntryLinks.get(0));
 		Assert.assertEquals(fragmentEntryLink2, fragmentEntryLinks.get(1));
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 2, fragmentEntryLinks.size());
 
 		fragmentEntryLink1 =
 			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
@@ -668,10 +668,10 @@ public class FragmentEntryLinkLocalServiceTest {
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
 				_group.getGroupId(), _layout.getPlid());
 
-		Assert.assertEquals(
-			fragmentEntryLinks.toString(), 2, fragmentEntryLinks.size());
 		Assert.assertEquals(fragmentEntryLink2, fragmentEntryLinks.get(0));
 		Assert.assertEquals(fragmentEntryLink1, fragmentEntryLinks.get(1));
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 2, fragmentEntryLinks.size());
 	}
 
 	@Test
@@ -1351,17 +1351,17 @@ public class FragmentEntryLinkLocalServiceTest {
 				_globalFragmentEntry);
 
 		Assert.assertEquals(
-			groupFragmentEntryUsageCounts1.toString(), 1,
-			groupFragmentEntryUsageCounts1.size());
-		Assert.assertEquals(
 			Integer.valueOf(2),
 			groupFragmentEntryUsageCounts1.get(_group.getGroupId()));
 		Assert.assertEquals(
-			groupFragmentEntryUsageCounts2.toString(), 1,
-			groupFragmentEntryUsageCounts2.size());
+			groupFragmentEntryUsageCounts1.toString(), 1,
+			groupFragmentEntryUsageCounts1.size());
 		Assert.assertEquals(
 			Integer.valueOf(1),
 			groupFragmentEntryUsageCounts2.get(_group.getGroupId()));
+		Assert.assertEquals(
+			groupFragmentEntryUsageCounts2.toString(), 1,
+			groupFragmentEntryUsageCounts2.size());
 	}
 
 	@TestInfo("LPD-106764")
@@ -1380,17 +1380,17 @@ public class FragmentEntryLinkLocalServiceTest {
 				fragmentEntryLink.fetchFragmentEntry());
 
 		Assert.assertEquals(
+			Integer.valueOf(1),
+			groupFragmentEntryUsageCounts1.get(_group.getGroupId()));
+		Assert.assertEquals(
 			groupFragmentEntryUsageCounts1.toString(), 1,
 			groupFragmentEntryUsageCounts1.size());
 		Assert.assertEquals(
 			Integer.valueOf(1),
-			groupFragmentEntryUsageCounts1.get(_group.getGroupId()));
+			groupFragmentEntryUsageCounts2.get(fragmentEntryLink.getGroupId()));
 		Assert.assertEquals(
 			groupFragmentEntryUsageCounts2.toString(), 1,
 			groupFragmentEntryUsageCounts2.size());
-		Assert.assertEquals(
-			Integer.valueOf(1),
-			groupFragmentEntryUsageCounts2.get(fragmentEntryLink.getGroupId()));
 	}
 
 	private void _updateFragmentEntry(

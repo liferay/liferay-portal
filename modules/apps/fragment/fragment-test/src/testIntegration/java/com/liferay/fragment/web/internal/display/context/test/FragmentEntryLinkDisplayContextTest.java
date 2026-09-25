@@ -188,14 +188,13 @@ public class FragmentEntryLinkDisplayContextTest {
 			_pageTemplateFragmentEntryLink,
 			_displayPageTemplateFragmentEntryLink,
 			_masterPageFragmentEntryLink);
-
 		_testGetSearchContainer(
-			"pages", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2);
+			"display-page-templates", _displayPageTemplateFragmentEntryLink);
 		_testGetSearchContainer("master-pages", _masterPageFragmentEntryLink);
 		_testGetSearchContainer(
 			"page-templates", _pageTemplateFragmentEntryLink);
 		_testGetSearchContainer(
-			"display-page-templates", _displayPageTemplateFragmentEntryLink);
+			"pages", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2);
 	}
 
 	private static FragmentEntryLink _addFragmentEntryLinkToLayout(Group group)
