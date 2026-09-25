@@ -137,9 +137,9 @@ if (layout != null) {
 
 				Liferay.on('liferay.collapse.shown',
 					function(event) {
-						var panelId = event.panel.geAttribute('id');
+						var panelId = event.panel.getAttribute('id');
 
-						if (panelId === panel.geAttribute('id')) {
+						if (panel && panelId === panel.getAttribute('id')) {
 							Liferay.fire('initNavigation');
 						}
 					}
