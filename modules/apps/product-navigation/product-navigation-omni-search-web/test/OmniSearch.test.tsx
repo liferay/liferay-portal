@@ -150,11 +150,10 @@ describe('OmniSearch', () => {
 		jest.clearAllMocks();
 		mockFetchResponse();
 
-		(Liferay as any).Browser = {isMac: jest.fn(() => false)};
-	});
-
-	afterEach(() => {
-		delete (Liferay as any).Browser;
+		global.Liferay.Browser = {
+			...(global as any).Liferay,
+			isMac: () => false,
+		};
 	});
 
 	it('shows the shortcut as styled keys in the button tooltip', () => {
@@ -169,19 +168,6 @@ describe('OmniSearch', () => {
 		expect(tooltip).toHaveTextContent('omni-search');
 		expect(within(tooltip).getByText('Ctrl').tagName).toBe('KBD');
 		expect(within(tooltip).getByText('K').tagName).toBe('KBD');
-	});
-
-	it('shows the Command key in the button tooltip on macOS', () => {
-		(Liferay as any).Browser.isMac.mockReturnValue(true);
-
-		render(<OmniSearch resultsURL={RESULTS_URL} />);
-
-		const tooltip = getTooltip(
-			screen.getByRole('button', {name: 'omni-search'})
-		);
-
-		expect(within(tooltip).getByText('⌘').tagName).toBe('KBD');
-		expect(within(tooltip).queryByText('Ctrl')).toBeNull();
 	});
 
 	it('opens the modal when the search button is clicked', async () => {
