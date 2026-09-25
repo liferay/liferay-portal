@@ -6,6 +6,7 @@
 package com.liferay.portal.search.elasticsearch8.internal.highlight;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.Query.Kind;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryStringQuery;
 import co.elastic.clients.elasticsearch.core.search.BoundaryScanner;
 import co.elastic.clients.elasticsearch.core.search.HighlightField;
 import co.elastic.clients.elasticsearch.core.search.HighlighterEncoder;
@@ -88,6 +89,38 @@ public class HighlightTranslatorTest {
 	}
 
 	@Test
+	public void testDefaultHighlightQueryIsIgnoredWhenHighlightQueryIsSet() {
+		_highlightPrototype._highlightQuery = new StringQuery("title:explicit");
+
+		co.elastic.clients.elasticsearch._types.query_dsl.Query defaultQuery =
+			new co.elastic.clients.elasticsearch._types.query_dsl.Query(
+				ElasticsearchQueryVisitor.INSTANCE.translate(
+					new StringQuery("title:default")));
+
+		co.elastic.clients.elasticsearch._types.query_dsl.Query highlightQuery =
+			_translateHighlightQuery(_highlightPrototype, defaultQuery);
+
+		QueryStringQuery queryStringQuery = highlightQuery.queryString();
+
+		Assert.assertEquals("title:explicit", queryStringQuery.query());
+
+		Assert.assertNotSame(defaultQuery, highlightQuery);
+	}
+
+	@Test
+	public void testDefaultHighlightQueryIsUsedWhenHighlightQueryIsNull() {
+		co.elastic.clients.elasticsearch._types.query_dsl.Query defaultQuery =
+			new co.elastic.clients.elasticsearch._types.query_dsl.Query(
+				ElasticsearchQueryVisitor.INSTANCE.translate(
+					new StringQuery("title:default")));
+
+		Assert.assertNull(_highlightPrototype._highlightQuery);
+		Assert.assertSame(
+			defaultQuery,
+			_translateHighlightQuery(_highlightPrototype, defaultQuery));
+	}
+
+	@Test
 	public void testFieldConfigs() {
 		List<FieldConfig> fieldConfigs = new ArrayList<>();
 
@@ -106,6 +139,12 @@ public class HighlightTranslatorTest {
 		_highlightPrototype._highlightQuery = new StringQuery("title:test");
 
 		_assertTranslation(_highlightPrototype);
+	}
+
+	@Test
+	public void testHighlightQueryIsNullWhenDefaultHighlightQueryIsNull() {
+		Assert.assertNull(_highlightPrototype._highlightQuery);
+		Assert.assertNull(_translateHighlightQuery(_highlightPrototype, null));
 	}
 
 	@Test
@@ -727,6 +766,19 @@ public class HighlightTranslatorTest {
 		Kind kind = elasticsearchQuery._kind();
 
 		return kind.jsonValue();
+	}
+
+	private co.elastic.clients.elasticsearch._types.query_dsl.Query
+		_translateHighlightQuery(
+			HighlightPrototype highlightPrototype,
+			co.elastic.clients.elasticsearch._types.query_dsl.Query
+				defaultHighlightQuery) {
+
+		co.elastic.clients.elasticsearch.core.search.Highlight highlight =
+			_highlightTranslator.translate(
+				defaultHighlightQuery, _buildHighlight(highlightPrototype));
+
+		return highlight.highlightQuery();
 	}
 
 	private HighlightPrototype _highlightPrototype;

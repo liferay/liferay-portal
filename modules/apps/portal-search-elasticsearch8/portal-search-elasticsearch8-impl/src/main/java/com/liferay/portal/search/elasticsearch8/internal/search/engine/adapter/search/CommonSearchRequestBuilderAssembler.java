@@ -72,11 +72,37 @@ public class CommonSearchRequestBuilderAssembler {
 		_setTrackTotalHits(baseSearchRequest, searchRequestBuilder);
 	}
 
+	public co.elastic.clients.elasticsearch._types.query_dsl.Query getQuery(
+		BaseSearchRequest baseSearchRequest) {
+
+		co.elastic.clients.elasticsearch._types.query_dsl.Query query1 =
+			_combine(
+				_translateQuery(baseSearchRequest.getQuery()),
+				_translateQuery(baseSearchRequest.getQuery71()));
+
+		List<ComplexQueryPart> complexQueryParts =
+			baseSearchRequest.getComplexQueryParts();
+
+		if (complexQueryParts.isEmpty()) {
+			co.elastic.clients.elasticsearch._types.query_dsl.Query query2 =
+				_combine(
+					BoolQuery.Builder::must,
+					translateComplexQueryParts(Collections.emptyList()),
+					query1);
+
+			return _combine(
+				BoolQuery.Builder::should,
+				translateComplexQueryParts(Collections.emptyList()), query2);
+		}
+
+		return _combine(complexQueryParts, query1);
+	}
+
 	protected void setQuery(
 		BaseSearchRequest baseSearchRequest,
 		SearchRequest.Builder searchRequestBuilder) {
 
-		searchRequestBuilder.query(_getQuery(baseSearchRequest));
+		searchRequestBuilder.query(getQuery(baseSearchRequest));
 	}
 
 	protected BoolQuery.Builder translateComplexQueryParts(
@@ -281,32 +307,6 @@ public class CommonSearchRequestBuilderAssembler {
 		builder.should(boolQuery.should());
 
 		return builder;
-	}
-
-	private co.elastic.clients.elasticsearch._types.query_dsl.Query _getQuery(
-		BaseSearchRequest baseSearchRequest) {
-
-		co.elastic.clients.elasticsearch._types.query_dsl.Query query1 =
-			_combine(
-				_translateQuery(baseSearchRequest.getQuery()),
-				_translateQuery(baseSearchRequest.getQuery71()));
-
-		List<ComplexQueryPart> complexQueryParts =
-			baseSearchRequest.getComplexQueryParts();
-
-		if (complexQueryParts.isEmpty()) {
-			co.elastic.clients.elasticsearch._types.query_dsl.Query query2 =
-				_combine(
-					BoolQuery.Builder::must,
-					translateComplexQueryParts(Collections.emptyList()),
-					query1);
-
-			return _combine(
-				BoolQuery.Builder::should,
-				translateComplexQueryParts(Collections.emptyList()), query2);
-		}
-
-		return _combine(complexQueryParts, query1);
 	}
 
 	private void _setAggregations(
