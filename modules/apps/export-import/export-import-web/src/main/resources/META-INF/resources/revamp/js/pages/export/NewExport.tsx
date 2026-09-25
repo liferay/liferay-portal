@@ -30,7 +30,7 @@ import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHand
 import SiteSelection from './components/SiteSelection';
 
 type ExportFormValues = {
-	contentSelection: ContentSelection | undefined;
+	contentSelection: ContentSelection | null | undefined;
 	dateFilter: DateFilterValues;
 	deletions: boolean;
 	name: string;

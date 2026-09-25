@@ -45,7 +45,7 @@ import {
 } from './components/scheduler/utils';
 
 type PublishFormValues = {
-	contentSelection: ContentSelection | undefined;
+	contentSelection: ContentSelection | null | undefined;
 	dateFilter: DateFilterValues;
 	deletions: boolean;
 	name: string;

@@ -343,7 +343,7 @@ export function getVisibleSections(
 }
 
 export function toProcessRequestFlags(
-	contentSelection: ContentSelection | undefined
+	contentSelection: ContentSelection | null | undefined
 ) {
 	const commentsAndRatings = (contentSelection?.[SECTION_KEY_CONTENT]
 		?.commentsAndRatings ??
@@ -418,7 +418,7 @@ export function getLayoutSetCount(
 }
 
 export function isPrivateLayoutSelected(
-	contentSelection: ContentSelection | undefined
+	contentSelection: ContentSelection | null | undefined
 ): boolean {
 	if (!contentSelection) {
 		return false;
@@ -440,7 +440,7 @@ export function isPrivateLayoutSelected(
 export function getSelectedItemsCount(
 	additionCount: number | undefined,
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
-	contentSelection: ContentSelection | undefined
+	contentSelection: ContentSelection | null | undefined
 ): number | undefined {
 	if (additionCount === undefined) {
 		return undefined;
@@ -459,7 +459,7 @@ export function getSelectedItemsCount(
 export function getSelectedDeletionCount(
 	deletionCount: number | undefined,
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
-	contentSelection: ContentSelection | undefined
+	contentSelection: ContentSelection | null | undefined
 ): number | undefined {
 	if (deletionCount === undefined) {
 		return undefined;
@@ -477,7 +477,7 @@ export function getSelectedDeletionCount(
 
 export function getLayoutSetCountDelta(
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
-	contentSelection: ContentSelection | undefined,
+	contentSelection: ContentSelection | null | undefined,
 	key: 'additionCount' | 'deletionCount' = 'additionCount'
 ): number {
 	const privateLayout = isPrivateLayoutSelected(contentSelection);
@@ -496,7 +496,7 @@ export function getLayoutSetCountDelta(
 
 export function withSelectedLayoutSetCount(
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
-	contentSelection: ContentSelection | undefined
+	contentSelection: ContentSelection | null | undefined
 ): PreviewPortletDataHandlerSection[] {
 	const additionCountDelta = getLayoutSetCountDelta(
 		previewPortletDataHandlerSections,

@@ -357,6 +357,39 @@ describe('NewExport', () => {
 		);
 	});
 
+	it('keeps the entity types deselected after applying a filter', async () => {
+		renderComponent();
+
+		await screen.findByText('loaded');
+
+		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
+			await userEvent.click(screen.getByRole('checkbox', {name}));
+		}
+
+		await userEvent.selectOptions(
+			screen.getByRole('combobox', {name: 'filter-content-by'}),
+			'last'
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: /show-results/i})
+		);
+
+		await waitFor(() => {
+			expect(fetch).toHaveBeenCalledTimes(2);
+		});
+
+		expect(
+			await screen.findByRole('checkbox', {name: 'Design'})
+		).not.toBeChecked();
+		expect(
+			screen.getByRole('checkbox', {name: 'Site Builder'})
+		).not.toBeChecked();
+		expect(
+			screen.getByRole('checkbox', {name: 'Content & Data'})
+		).not.toBeChecked();
+	});
+
 	it('ignores a stale filtered preview after the filter is cleared', async () => {
 		renderComponent();
 

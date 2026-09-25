@@ -20,7 +20,7 @@ import {
 
 export function toRequestPortletDataHandlers(
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
-	contentSelection: ContentSelection | undefined
+	contentSelection: ContentSelection | null | undefined
 ): RequestPortletDataHandler[] {
 	if (!contentSelection) {
 		return [];

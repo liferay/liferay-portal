@@ -5,7 +5,14 @@
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {
+	act,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -28,9 +35,11 @@ jest.mock(
 const renderComponent = ({
 	commentsAndRatingsEnabled,
 	lookAndFeelEnabled,
+	siteSelectionEnabled,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	lookAndFeelEnabled?: boolean;
+	siteSelectionEnabled?: boolean;
 } = {}) =>
 	render(
 		<NewImport
@@ -40,6 +49,7 @@ const renderComponent = ({
 			importProcessAPIURL="/o/export-import/v1.0/import-processes"
 			lookAndFeelEnabled={lookAndFeelEnabled}
 			scope={SCOPES.SITE}
+			siteSelectionEnabled={siteSelectionEnabled}
 		/>
 	);
 
@@ -70,6 +80,7 @@ const goToDataSelectionStep = async (
 	options: {
 		commentsAndRatingsEnabled?: boolean;
 		lookAndFeelEnabled?: boolean;
+		siteSelectionEnabled?: boolean;
 	} = {}
 ) => {
 	const result = renderComponent(options);
@@ -408,6 +419,60 @@ describe('NewImport', () => {
 		);
 
 		expect(screen.getByText('Deletions Only')).toBeInTheDocument();
+	});
+
+	it('keeps the entity types deselected when going back after selecting only sites', async () => {
+		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
+			Promise.resolve({
+				data: {
+					...mockImportPreview,
+					previewSites: [
+						{
+							descriptiveName: 'Support',
+							existsInInstance: true,
+							externalReferenceCode: 'erc-support',
+							path: 'Global / Support',
+						},
+					],
+				},
+				error: null,
+			})
+		);
+
+		await goToDataSelectionStep({siteSelectionEnabled: true});
+
+		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
+			await user.click(screen.getByRole('checkbox', {name}));
+		}
+
+		await user.click(screen.getByRole('button', {name: 'select-sites'}));
+
+		const row = await screen.findByText('Support');
+
+		await user.click(
+			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
+		);
+		await user.click(screen.getByRole('button', {name: 'select'}));
+
+		await waitFor(() => {
+			expect(
+				screen.getByRole('button', {name: /continue/i})
+			).toBeEnabled();
+		});
+
+		await user.click(screen.getByRole('button', {name: /continue/i}));
+
+		await user.click(await screen.findByRole('button', {name: 'previous'}));
+
+		expect(
+			await screen.findByRole('checkbox', {name: 'Design'})
+		).not.toBeChecked();
+		expect(
+			screen.getByRole('checkbox', {name: 'Site Builder'})
+		).not.toBeChecked();
+		expect(
+			screen.getByRole('checkbox', {name: 'Content & Data'})
+		).not.toBeChecked();
 	});
 
 	it('renders the Look and Feel block inside the Site Builder section when lookAndFeelEnabled is true', async () => {

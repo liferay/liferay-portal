@@ -4,7 +4,7 @@
  */
 
 import {useField, useFormikContext} from 'formik';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
@@ -33,24 +33,16 @@ export function FormikFieldContentSelector({
 	previewPortletDataHandlerSections,
 	process = 'export',
 }: FormikFieldContentSelectorProps) {
-	const [field, meta, helpers] = useField<ContentSelection | undefined>(name);
+	const [field, meta, helpers] = useField<
+		ContentSelection | null | undefined
+	>(name);
 	const [{value: deletions}] = useField<boolean | undefined>('deletions');
 	const {setFieldTouched, setFieldValue} = useFormikContext();
 
 	const showDeletions = !!deletions;
 
-	// The selection starts out full once the preview arrives, and only once.
-	// Whether it has been seeded is tracked here rather than read from
-	// `meta.touched`: Formik drops a field whose value is `undefined` from
-	// `values`, and on submit it rebuilds `touched` from `values`, so a
-	// deselected field reads as untouched again right after the submit.
-
-	const [seeded, setSeeded] = useState(false);
-
 	const shouldSeed =
-		!seeded &&
-		!!previewPortletDataHandlerSections.length &&
-		field.value === undefined;
+		!!previewPortletDataHandlerSections.length && field.value === undefined;
 
 	const defaultContentSelection = shouldSeed
 		? getFullDataSelection(previewPortletDataHandlerSections, {
@@ -65,8 +57,6 @@ export function FormikFieldContentSelector({
 			return;
 		}
 
-		setSeeded(true);
-
 		setFieldValue(name, defaultContentSelection);
 	}, [name, defaultContentSelection, setFieldValue]);
 
@@ -79,7 +69,7 @@ export function FormikFieldContentSelector({
 			lookAndFeelEnabled={lookAndFeelEnabled}
 			name={name}
 			onChange={(newValue) => {
-				helpers.setValue(newValue);
+				helpers.setValue(newValue ?? null);
 				setFieldTouched(name, true, false);
 			}}
 			pageTreeModalConfiguration={pageTreeModalConfiguration}
