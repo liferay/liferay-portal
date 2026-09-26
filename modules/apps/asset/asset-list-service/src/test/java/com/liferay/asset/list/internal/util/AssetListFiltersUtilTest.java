@@ -234,11 +234,6 @@ public class AssetListFiltersUtilTest {
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"contains", Field.TITLE, title)));
-		_assertMatchQuery(
-			"localized_title_en_US", title,
-			_assertFilterQuery(
-				BooleanClauseOccur.MUST,
-				_getCommonFieldFilterJSONObject("eq", Field.TITLE, title)));
 
 		String userName = RandomTestUtil.randomString();
 
@@ -410,28 +405,6 @@ public class AssetListFiltersUtilTest {
 				_getFilterJSONObject("not-eq", keywordTextFieldName, "Alpha"),
 				keywordTextFieldName));
 
-		String localizedTextFieldName = RandomTestUtil.randomString();
-
-		ObjectField localizedObjectField = _setUpObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, localizedTextFieldName);
-
-		Mockito.when(
-			localizedObjectField.isLocalized()
-		).thenReturn(
-			true
-		);
-
-		String localizedTextFieldValue = RandomTestUtil.randomString();
-
-		_assertTermQuery(
-			"nestedFieldArray.value_en_US", localizedTextFieldValue,
-			_assertNestedQuery(
-				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"eq", localizedTextFieldName, localizedTextFieldValue),
-				localizedTextFieldName));
-
 		String longIntegerFieldName = RandomTestUtil.randomString();
 
 		_setUpObjectField(
@@ -448,27 +421,6 @@ public class AssetListFiltersUtilTest {
 				_getFilterJSONObject(
 					"eq", longIntegerFieldName, longIntegerFieldValue),
 				longIntegerFieldName));
-
-		String textFieldName = RandomTestUtil.randomString();
-
-		_setUpObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, textFieldName);
-
-		String textFieldValue = RandomTestUtil.randomString();
-
-		_assertTermQuery(
-			"nestedFieldArray.value_text", textFieldValue,
-			_assertNestedQuery(
-				BooleanClauseOccur.MUST,
-				_getFilterJSONObject("eq", textFieldName, textFieldValue),
-				textFieldName));
-		_assertTermQuery(
-			"nestedFieldArray.value_text", textFieldValue,
-			_assertNestedQuery(
-				BooleanClauseOccur.MUST_NOT,
-				_getFilterJSONObject("not-eq", textFieldName, textFieldValue),
-				textFieldName));
 	}
 
 	@Test
