@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Product Analytics Web
 Bundle-SymbolicName: com.liferay.product.analytics.web
-Bundle-Version: 1.0.11
+Bundle-Version: 1.0.12
 Web-ContextPath: /product-analytics-web
 -dsannotations-options: inherit
