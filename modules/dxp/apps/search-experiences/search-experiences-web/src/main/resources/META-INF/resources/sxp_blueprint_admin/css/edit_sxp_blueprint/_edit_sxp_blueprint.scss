@@ -19,21 +19,6 @@
 			transition: margin-right ease 0.2s;
 		}
 
-		.configuration-header {
-			font-weight: bold;
-			margin-bottom: 1.25rem;
-
-			.builder-actions {
-				float: right;
-
-				.collapse-button {
-					color: var(--secondary);
-					font-size: 0.875rem;
-					margin: 0.125rem 1rem 0 0;
-				}
-			}
-		}
-
 		.help-text + .learn-message {
 			margin-left: 4px;
 		}

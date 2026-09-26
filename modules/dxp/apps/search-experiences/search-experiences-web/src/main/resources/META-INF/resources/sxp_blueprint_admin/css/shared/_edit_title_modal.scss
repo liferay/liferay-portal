@@ -1,43 +1,5 @@
 .sxp-edit-title-modal-root {
 	.modal-body {
-		.form-check-card {
-			height: calc(100% - 1.5rem);
-
-			&.selected {
-				.card {
-					box-shadow: 0 0 0 2px var(--primary-l1);
-
-					.card-item-first {
-						background-color: var(--primary-l3);
-					}
-				}
-			}
-
-			.card {
-				cursor: pointer;
-				height: 100%;
-			}
-
-			.card-item-first {
-				background-color: var(--light);
-			}
-
-			.card-subtitle {
-				line-height: 1.2rem;
-			}
-
-			.custom-checkbox {
-				display: block;
-				margin-bottom: 1rem;
-				position: relative;
-
-				.custom-control-input,
-				.custom-control-label {
-					left: 0;
-				}
-			}
-		}
-
 		.edit-title {
 			margin-bottom: 1.5rem;
 
