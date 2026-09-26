@@ -53,9 +53,6 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_layoutPageTemplateCollection = Mockito.mock(
-			LayoutPageTemplateCollection.class);
-
 		_layoutPageTemplateCollectionLocalServiceUtilMockedStatic.when(
 			() ->
 				LayoutPageTemplateCollectionLocalServiceUtil.
@@ -63,10 +60,6 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 		).thenReturn(
 			_layoutPageTemplateCollection
 		);
-
-		_themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		_mockHttpServletRequest = new MockHttpServletRequest();
 
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);
@@ -587,8 +580,10 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 				Mockito.mockStatic(
 					LayoutPageTemplateCollectionLocalServiceUtil.class);
 
-	private LayoutPageTemplateCollection _layoutPageTemplateCollection;
-	private MockHttpServletRequest _mockHttpServletRequest;
-	private ThemeDisplay _themeDisplay;
+	private final LayoutPageTemplateCollection _layoutPageTemplateCollection =
+		Mockito.mock(LayoutPageTemplateCollection.class);
+	private final MockHttpServletRequest _mockHttpServletRequest =
+		new MockHttpServletRequest();
+	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 }
