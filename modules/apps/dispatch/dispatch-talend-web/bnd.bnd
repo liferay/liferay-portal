@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Dispatch Talend Web
 Bundle-SymbolicName: com.liferay.dispatch.talend.web
-Bundle-Version: 3.0.38
+Bundle-Version: 3.0.39
 Web-ContextPath: /dispatch-talend-web
 -dsannotations-options: inherit
