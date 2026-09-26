@@ -7,17 +7,20 @@ package com.liferay.document.library.web.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.exception.FileSizeException;
+import com.liferay.document.library.kernel.model.DLFileEntryTable;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.kernel.util.DLValidator;
+import com.liferay.document.library.kernel.util.comparator.RepositoryModelTitleComparator;
 import com.liferay.petra.io.StreamUtil;
-import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.InvalidRepositoryException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.interval.IntervalActionProcessor;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -28,13 +31,14 @@ import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.util.RepositoryUtil;
@@ -189,36 +193,36 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 				(ThemeDisplay)resourceRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			long folderId = ParamUtil.getLong(resourceRequest, "folderId");
-
-			long size = 0;
-
-			for (FileEntry fileEntry : fileEntries) {
-				size += fileEntry.getSize();
-			}
-
 			for (FileShortcut fileShortcut : fileShortcuts) {
-				FileEntry fileEntry = _dlAppService.getFileEntry(
-					fileShortcut.getToFileEntryId());
-
-				fileEntries.add(fileEntry);
-
-				size += fileEntry.getSize();
+				fileEntries.add(
+					_dlAppService.getFileEntry(
+						fileShortcut.getToFileEntryId()));
 			}
 
-			for (Folder folder : folders) {
-				if (!_isExternalRepositoryFolder(folder)) {
-					size += _getFolderSize(themeDisplay, folder.getFolderId());
+			long groupId = themeDisplay.getScopeGroupId();
+
+			if (_dlValidator.getMaxAllowableDownloadSize(groupId) > 0) {
+				long size = 0;
+
+				for (FileEntry fileEntry : fileEntries) {
+					size += fileEntry.getSize();
 				}
+
+				for (Folder folder : folders) {
+					if (!_isExternalRepositoryFolder(folder)) {
+						size += _getFolderSize(
+							folder.getRepositoryId(), folder.getFolderId());
+					}
+				}
+
+				_dlValidator.validateDownloadSize(groupId, size);
 			}
 
-			_dlValidator.validateDownloadSize(
-				themeDisplay.getScopeGroupId(), size);
-
-			PortletResponseUtil.setHeaders(
-				resourceRequest, resourceResponse, null, null,
-				ContentTypes.APPLICATION_ZIP,
-				_getZipFileName(folderId, themeDisplay));
+			_setHeaders(
+				resourceResponse,
+				_getZipFileName(
+					ParamUtil.getLong(resourceRequest, "folderId"),
+					themeDisplay));
 
 			PermissionChecker permissionChecker =
 				themeDisplay.getPermissionChecker();
@@ -238,11 +242,12 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 				if (!_isExternalRepositoryFolder(folder)) {
 					_zipFolder(
 						folder.getRepositoryId(), folder.getFolderId(),
-						folder.getName(), permissionChecker, zipOutputStream);
+						folder.getName() + StringPool.SLASH, permissionChecker,
+						zipOutputStream);
 				}
 			}
 
-			zipOutputStream.finish();
+			zipOutputStream.close();
 		}
 	}
 
@@ -257,34 +262,49 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 
 		_checkFolder(folderId);
 
-		_dlValidator.validateDownloadSize(
-			themeDisplay.getScopeGroupId(),
-			_getFolderSize(themeDisplay, folderId));
+		long repositoryId = ParamUtil.getLong(resourceRequest, "repositoryId");
 
-		PortletResponseUtil.setHeaders(
-			resourceRequest, resourceResponse, null, null,
-			ContentTypes.APPLICATION_ZIP,
-			_getZipFileName(folderId, themeDisplay));
+		long groupId = themeDisplay.getScopeGroupId();
+
+		if (_dlValidator.getMaxAllowableDownloadSize(groupId) > 0) {
+			_dlValidator.validateDownloadSize(
+				groupId, _getFolderSize(repositoryId, folderId));
+		}
+
+		_setHeaders(resourceResponse, _getZipFileName(folderId, themeDisplay));
 
 		ZipOutputStream zipOutputStream = new ZipOutputStream(
 			resourceResponse.getPortletOutputStream());
-
-		long repositoryId = ParamUtil.getLong(resourceRequest, "repositoryId");
 
 		_zipFolder(
 			repositoryId, folderId, StringPool.BLANK,
 			themeDisplay.getPermissionChecker(), zipOutputStream);
 
-		zipOutputStream.finish();
+		zipOutputStream.close();
 	}
 
-	private long _getFolderSize(ThemeDisplay themeDisplay, long folderId) {
+	private long _getFolderSize(long repositoryId, long folderId) {
+		if (folderId == DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+			List<Long> sizes = _dlFolderLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					DSLFunctionFactoryUtil.sum(
+						DLFileEntryTable.INSTANCE.size
+					).as(
+						"SUM_VALUE"
+					)
+				).from(
+					DLFileEntryTable.INSTANCE
+				).where(
+					DLFileEntryTable.INSTANCE.repositoryId.eq(repositoryId)
+				));
+
+			return GetterUtil.getLong(sizes.get(0));
+		}
+
 		DLFolder dlFolder = _dlFolderLocalService.fetchDLFolder(folderId);
 
 		if (dlFolder == null) {
-			return _dlFolderLocalService.getFolderSize(
-				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-				StringPool.SLASH);
+			return 0;
 		}
 
 		return _dlFolderLocalService.getFolderSize(
@@ -292,24 +312,14 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 			dlFolder.getTreePath());
 	}
 
-	private String _getPath(String path, String name) {
-		if (Validator.isNull(path)) {
-			return name;
-		}
-
-		return StringBundler.concat(path, StringPool.SLASH, name);
-	}
-
 	private String _getUniqueFileName(Set<String> fileNames, String fileName) {
 		if (fileNames.add(fileName)) {
 			return fileName;
 		}
 
-		int i = 1;
-
-		while (true) {
+		for (int i = 1;; i++) {
 			String uniqueFileName = FileUtil.appendParentheticalSuffix(
-				fileName, String.valueOf(i++));
+				fileName, String.valueOf(i));
 
 			if (fileNames.add(uniqueFileName)) {
 				return uniqueFileName;
@@ -350,6 +360,18 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 		return _isExternalRepositoryFolder(_dlAppService.getFolder(folderId));
 	}
 
+	private void _setHeaders(
+		ResourceResponse resourceResponse, String zipFileName) {
+
+		resourceResponse.setContentType(ContentTypes.APPLICATION_ZIP);
+		resourceResponse.setProperty(
+			HttpHeaders.CACHE_CONTROL, HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE);
+		resourceResponse.setProperty(
+			HttpHeaders.CONTENT_DISPOSITION,
+			ContentDispositionUtil.getContentDispositionHeaderValue(
+				zipFileName));
+	}
+
 	private void _zipFileEntry(
 			FileEntry fileEntry, String path,
 			PermissionChecker permissionChecker, Set<String> fileNames,
@@ -370,8 +392,7 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 			String fileName = _getUniqueFileName(
 				fileNames, fileEntry.getFileName());
 
-			zipOutputStream.putNextEntry(
-				new ZipEntry(_getPath(path, fileName)));
+			zipOutputStream.putNextEntry(new ZipEntry(path + fileName));
 
 			StreamUtil.transfer(inputStream, zipOutputStream, false);
 
@@ -383,41 +404,78 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 			long repositoryId, long folderId, String path,
 			PermissionChecker permissionChecker,
 			ZipOutputStream zipOutputStream)
-		throws IOException, PortalException {
-
-		List<Object> foldersAndFileEntriesAndFileShortcuts =
-			_dlAppService.getFoldersAndFileEntriesAndFileShortcuts(
-				repositoryId, folderId, WorkflowConstants.STATUS_APPROVED,
-				false, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		throws PortalException {
 
 		Set<String> fileNames = new HashSet<>();
 
-		for (Object entry : foldersAndFileEntriesAndFileShortcuts) {
-			if (entry instanceof Folder) {
-				Folder folder = (Folder)entry;
+		IntervalActionProcessor<Void> intervalActionProcessor =
+			new IntervalActionProcessor<>(
+				_dlAppService.getFoldersAndFileEntriesAndFileShortcutsCount(
+					repositoryId, folderId, WorkflowConstants.STATUS_APPROVED,
+					false),
+				_BATCH_SIZE);
 
-				_zipFolder(
-					folder.getRepositoryId(), folder.getFolderId(),
-					_getPath(path, folder.getName()), permissionChecker,
-					zipOutputStream);
-			}
-			else if (entry instanceof FileEntry) {
-				_zipFileEntry(
-					(FileEntry)entry, path, permissionChecker, fileNames,
-					zipOutputStream);
-			}
-			else if (entry instanceof FileShortcut) {
-				FileShortcut fileShortcut = (FileShortcut)entry;
+		intervalActionProcessor.setPerformIntervalActionMethod(
+			(start, end) -> {
+				List<Object> foldersAndFileEntriesAndFileShortcuts =
+					_dlAppService.getFoldersAndFileEntriesAndFileShortcuts(
+						repositoryId, folderId,
+						WorkflowConstants.STATUS_APPROVED, false, start, end,
+						_orderByComparator);
 
-				_zipFileEntry(
-					_dlAppService.getFileEntry(fileShortcut.getToFileEntryId()),
-					path, permissionChecker, fileNames, zipOutputStream);
-			}
-		}
+				try {
+					for (Object entry : foldersAndFileEntriesAndFileShortcuts) {
+						if (entry instanceof Folder) {
+							Folder folder = (Folder)entry;
+
+							_zipFolder(
+								folder.getRepositoryId(), folder.getFolderId(),
+								path + folder.getName() + StringPool.SLASH,
+								permissionChecker, zipOutputStream);
+						}
+						else if (entry instanceof FileEntry) {
+							_zipFileEntry(
+								(FileEntry)entry, path, permissionChecker,
+								fileNames, zipOutputStream);
+						}
+						else if (entry instanceof FileShortcut) {
+							FileShortcut fileShortcut = (FileShortcut)entry;
+
+							_zipFileEntry(
+								_dlAppService.getFileEntry(
+									fileShortcut.getToFileEntryId()),
+								path, permissionChecker, fileNames,
+								zipOutputStream);
+						}
+					}
+				}
+				catch (IOException ioException) {
+					throw new PortalException(ioException);
+				}
+
+				intervalActionProcessor.incrementStart(
+					foldersAndFileEntriesAndFileShortcuts.size());
+
+				return null;
+			});
+
+		intervalActionProcessor.performIntervalActions();
 	}
+
+	private static final int _BATCH_SIZE = 1000;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DownloadEntriesMVCResourceCommand.class);
+
+	private static final OrderByComparator<Object> _orderByComparator =
+		new RepositoryModelTitleComparator<Object>(true) {
+
+			@Override
+			public String getOrderBy() {
+				return "modelFolder DESC, name ASC, fileShortcutId ASC";
+			}
+
+		};
 
 	@Reference
 	private DLAppService _dlAppService;
