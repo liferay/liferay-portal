@@ -13,6 +13,7 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.layout.util.InfoFieldUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
@@ -79,7 +80,8 @@ public class FragmentEntryLinkModelListener
 
 			fragmentEntryLink.setEditableValues(
 				_sanitizeEditableValues(
-					fragmentEntryLink.getEditableValuesJSONObject(),
+					_jsonFactory.createJSONObject(
+						fragmentEntryLink.getEditableValues()),
 					fragmentEntryLink, infoFieldObjectValuePairs));
 		}
 		catch (Exception exception) {
@@ -206,5 +208,8 @@ public class FragmentEntryLinkModelListener
 
 	@Reference
 	private FragmentRendererController _fragmentRendererController;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }

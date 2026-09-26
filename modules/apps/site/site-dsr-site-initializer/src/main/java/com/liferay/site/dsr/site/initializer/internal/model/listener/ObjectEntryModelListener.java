@@ -33,6 +33,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -737,8 +738,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				continue;
 			}
 
-			JSONObject jsonObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
+			JSONObject jsonObject = _jsonFactory.safeCreateJSONObject(
+				fragmentEntryLink.getEditableValues());
 
 			jsonObject = jsonObject.getJSONObject(
 				FragmentEntryProcessorConstants.
@@ -810,6 +811,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService

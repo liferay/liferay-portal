@@ -1572,7 +1572,8 @@ public class ActionUtil {
 
 		if (configurationJSONObject != null) {
 			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
+				JSONFactoryUtil.createJSONObject(
+					fragmentEntryLink.getEditableValues());
 
 			JSONObject jsonObject = editableValuesJSONObject.getJSONObject(
 				FragmentEntryProcessorConstants.

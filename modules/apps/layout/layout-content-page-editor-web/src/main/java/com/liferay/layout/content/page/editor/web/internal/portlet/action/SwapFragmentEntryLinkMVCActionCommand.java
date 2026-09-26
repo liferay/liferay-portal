@@ -205,7 +205,8 @@ public class SwapFragmentEntryLinkMVCActionCommand
 
 		JSONObject editableValuesJSONObject =
 			_fragmentEntryLinkManager.mergeEditableValuesJSONObject(
-				fragmentEntryLink.getEditableValuesJSONObject(),
+				_jsonFactory.createJSONObject(
+					fragmentEntryLink.getEditableValues()),
 				_jsonFactory.createJSONObject(
 					ParamUtil.getString(actionRequest, "editableValues")));
 
