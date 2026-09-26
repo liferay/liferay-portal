@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Editor API
 Bundle-SymbolicName: com.liferay.frontend.editor.api
-Bundle-Version: 6.0.7
+Bundle-Version: 6.0.8
 Export-Package:\
 	com.liferay.frontend.editor,\
 	com.liferay.frontend.editor.embed,\
