@@ -334,7 +334,7 @@ public class SessionImpl implements Session {
 	}
 
 	@Override
-	public void reassociateIfAbsent(
+	public Object reassociateIfAbsent(
 		Class<?> clazz, Serializable id, Object object) {
 
 		try {
@@ -355,13 +355,13 @@ public class SessionImpl implements Session {
 			Object currentObject = persistenceContext.getEntity(
 				new EntityKey(id, entityPersister));
 
-			if (currentObject == object) {
-				return;
+			if (currentObject != null) {
+				return currentObject;
 			}
 
-			if (currentObject == null) {
-				_session.lock(object, org.hibernate.LockMode.NONE);
-			}
+			_session.lock(object, org.hibernate.LockMode.NONE);
+
+			return object;
 		}
 		catch (Exception exception) {
 			throw ExceptionTranslator.translate(exception);

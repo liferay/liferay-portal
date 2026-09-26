@@ -251,7 +251,7 @@ public interface BasePersistence<T extends BaseModel<T>> {
 
 	public SystemException processException(Exception exception);
 
-	public void reassociateIfAbsent(T model);
+	public T reassociateIfAbsent(T model);
 
 	/**
 	 * Registers a new listener for this model.

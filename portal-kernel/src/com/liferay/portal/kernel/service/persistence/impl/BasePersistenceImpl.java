@@ -747,10 +747,11 @@ public class BasePersistenceImpl
 	}
 
 	@Override
-	public void reassociateIfAbsent(T model) {
+	@SuppressWarnings("unchecked")
+	public T reassociateIfAbsent(T model) {
 		Session session = getCurrentSession();
 
-		session.reassociateIfAbsent(
+		return (T)session.reassociateIfAbsent(
 			_modelImplClass, model.getPrimaryKeyObj(), model);
 	}
 

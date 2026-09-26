@@ -76,7 +76,7 @@ public interface Session {
 
 	public Object merge(Object object) throws ORMException;
 
-	public void reassociateIfAbsent(
+	public Object reassociateIfAbsent(
 		Class<?> clazz, Serializable id, Object object);
 
 	public Serializable save(Object object) throws ORMException;

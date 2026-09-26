@@ -152,10 +152,10 @@ public class SessionWrapper implements Session {
 	}
 
 	@Override
-	public void reassociateIfAbsent(
+	public Object reassociateIfAbsent(
 		Class<?> clazz, Serializable id, Object object) {
 
-		session.reassociateIfAbsent(clazz, id, object);
+		return session.reassociateIfAbsent(clazz, id, object);
 	}
 
 	@Override
