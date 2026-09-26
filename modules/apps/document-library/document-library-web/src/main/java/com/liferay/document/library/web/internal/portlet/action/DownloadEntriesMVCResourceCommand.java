@@ -7,6 +7,7 @@ package com.liferay.document.library.web.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.exception.FileSizeException;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntryTable;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
@@ -194,9 +196,18 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 					WebKeys.THEME_DISPLAY);
 
 			for (FileShortcut fileShortcut : fileShortcuts) {
-				fileEntries.add(
-					_dlAppService.getFileEntry(
-						fileShortcut.getToFileEntryId()));
+				try {
+					fileEntries.add(
+						_dlAppService.getFileEntry(
+							fileShortcut.getToFileEntryId()));
+				}
+				catch (NoSuchFileEntryException | PrincipalException
+							exception) {
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(exception);
+					}
+				}
 			}
 
 			long groupId = themeDisplay.getScopeGroupId();
@@ -441,10 +452,24 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 						else if (entry instanceof FileShortcut) {
 							FileShortcut fileShortcut = (FileShortcut)entry;
 
+							FileEntry fileEntry = null;
+
+							try {
+								fileEntry = _dlAppService.getFileEntry(
+									fileShortcut.getToFileEntryId());
+							}
+							catch (NoSuchFileEntryException | PrincipalException
+										exception) {
+
+								if (_log.isDebugEnabled()) {
+									_log.debug(exception);
+								}
+
+								continue;
+							}
+
 							_zipFileEntry(
-								_dlAppService.getFileEntry(
-									fileShortcut.getToFileEntryId()),
-								path, permissionChecker, fileNames,
+								fileEntry, path, permissionChecker, fileNames,
 								zipOutputStream);
 						}
 					}
