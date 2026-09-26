@@ -51,7 +51,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public ColorScheme getColorScheme() throws PortalException {
-		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getColorScheme();
 		}
 
@@ -66,7 +66,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public String getCssText() throws PortalException {
-		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getCssText();
 		}
 
@@ -83,7 +83,7 @@ public class VirtualLayout extends LayoutWrapper {
 	public String getDefaultThemeSetting(
 		String key, String device, boolean inheritLookAndFeel) {
 
-		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getDefaultThemeSetting(
 				key, device, inheritLookAndFeel);
 		}
@@ -122,7 +122,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public List<Portlet> getEmbeddedPortlets() {
-		if (_isSourceGroupDepot()) {
+		if (isSourceGroupDepot()) {
 			return super.getEmbeddedPortlets(getSourceGroupId());
 		}
 
@@ -136,27 +136,15 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public String getFriendlyURL(Locale locale) {
-		StringBundler sb = new StringBundler(3);
+		if (isSourceGroupDepot()) {
+			if (locale == null) {
+				return _sourceLayout.getFriendlyURL();
+			}
 
-		sb.append(VirtualLayoutConstants.CANONICAL_URL_SEPARATOR);
-
-		try {
-			Group group = _sourceLayout.getGroup();
-
-			sb.append(group.getFriendlyURL());
-		}
-		catch (Exception exception) {
-			_log.error(exception);
+			return _sourceLayout.getFriendlyURL(locale);
 		}
 
-		if (locale == null) {
-			sb.append(_sourceLayout.getFriendlyURL());
-		}
-		else {
-			sb.append(_sourceLayout.getFriendlyURL(locale));
-		}
-
-		return sb.toString();
+		return _getVirtualGroupFriendlyURL(locale);
 	}
 
 	@Override
@@ -246,7 +234,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public Theme getTheme() throws PortalException {
-		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getTheme();
 		}
 
@@ -268,7 +256,7 @@ public class VirtualLayout extends LayoutWrapper {
 	public String getThemeSetting(
 		String key, String device, boolean inheritLookAndFeel) {
 
-		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getThemeSetting(key, device, inheritLookAndFeel);
 		}
 
@@ -283,6 +271,23 @@ public class VirtualLayout extends LayoutWrapper {
 
 	public long getVirtualGroupId() {
 		return _targetGroup.getGroupId();
+	}
+
+	public boolean isSourceGroupDepot() {
+		if (_sourceGroupDepot == null) {
+			try {
+				Group group = _sourceLayout.getGroup();
+
+				_sourceGroupDepot = group.isDepot();
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+
+				_sourceGroupDepot = Boolean.FALSE;
+			}
+		}
+
+		return _sourceGroupDepot;
 	}
 
 	@Override
@@ -320,7 +325,7 @@ public class VirtualLayout extends LayoutWrapper {
 			sb.append(layoutURL.substring(0, pos));
 
 			sb.append(_targetGroup.getFriendlyURL());
-			sb.append(getFriendlyURL(locale));
+			sb.append(_getVirtualGroupFriendlyURL(locale));
 
 			pos = layoutURL.indexOf(StringPool.QUESTION);
 
@@ -354,21 +359,28 @@ public class VirtualLayout extends LayoutWrapper {
 			StringBundler.concat("lfr-theme:", device, StringPool.COLON, key));
 	}
 
-	private boolean _isSourceGroupDepot() {
-		if (_sourceGroupDepot == null) {
-			try {
-				Group group = _sourceLayout.getGroup();
+	private String _getVirtualGroupFriendlyURL(Locale locale) {
+		StringBundler sb = new StringBundler(3);
 
-				_sourceGroupDepot = group.isDepot();
-			}
-			catch (Exception exception) {
-				_log.error(exception);
+		sb.append(VirtualLayoutConstants.CANONICAL_URL_SEPARATOR);
 
-				_sourceGroupDepot = Boolean.FALSE;
-			}
+		try {
+			Group group = _sourceLayout.getGroup();
+
+			sb.append(group.getFriendlyURL());
+		}
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 
-		return _sourceGroupDepot;
+		if (locale == null) {
+			sb.append(_sourceLayout.getFriendlyURL());
+		}
+		else {
+			sb.append(_sourceLayout.getFriendlyURL(locale));
+		}
+
+		return sb.toString();
 	}
 
 	private static final String
