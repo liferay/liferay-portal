@@ -95,7 +95,8 @@ public class ReassociateEntryTest {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"org.hibernate.SQL", LoggerTestUtil.DEBUG)) {
 
-			_reassociateEntryPersistence.reassociateIfAbsent(reassociateEntry);
+			reassociateEntry = _reassociateEntryPersistence.reassociateIfAbsent(
+				reassociateEntry);
 
 			String name = RandomTestUtil.randomString();
 

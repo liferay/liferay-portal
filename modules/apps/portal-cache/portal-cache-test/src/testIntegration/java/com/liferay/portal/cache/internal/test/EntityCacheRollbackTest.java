@@ -58,7 +58,7 @@ public class EntityCacheRollbackTest {
 					Contact contact = _contactPersistence.findByPrimaryKey(
 						contactId);
 
-					_contactPersistence.reassociateIfAbsent(contact);
+					contact = _contactPersistence.reassociateIfAbsent(contact);
 
 					contact.setJobTitle(RandomTestUtil.randomString());
 
