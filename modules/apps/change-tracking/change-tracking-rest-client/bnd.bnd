@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Change Tracking REST Client
 Bundle-SymbolicName: com.liferay.change.tracking.rest.client
-Bundle-Version: 6.1.1
+Bundle-Version: 6.1.2
 Export-Package:\
 	com.liferay.change.tracking.rest.client.aggregation,\
 	com.liferay.change.tracking.rest.client.dto.v1_0,\
