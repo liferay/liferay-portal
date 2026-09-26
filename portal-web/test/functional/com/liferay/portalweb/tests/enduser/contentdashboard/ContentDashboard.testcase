@@ -3801,7 +3801,7 @@ definition {
 
 			AssertVisible(
 				key_columnName = "review-date",
-				key_tableEntry = "2100-01-01",
+				key_tableEntry = "1/1/00",
 				locator1 = "LexiconTable#TABLE_ENTRY_INFO");
 		}
 	}
