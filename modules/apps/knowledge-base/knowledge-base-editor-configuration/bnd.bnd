@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Knowledge Base Editor Configuration
 Bundle-SymbolicName: com.liferay.knowledge.base.editor.configuration
-Bundle-Version: 5.0.22
+Bundle-Version: 5.0.23
 -dsannotations-options: inherit
