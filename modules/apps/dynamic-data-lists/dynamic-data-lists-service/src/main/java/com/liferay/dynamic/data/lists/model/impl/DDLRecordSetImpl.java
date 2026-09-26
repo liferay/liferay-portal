@@ -6,18 +6,14 @@
 package com.liferay.dynamic.data.lists.model.impl;
 
 import com.liferay.dynamic.data.lists.model.DDLRecord;
-import com.liferay.dynamic.data.lists.model.DDLRecordSetSettings;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalServiceUtil;
-import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalServiceUtil;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetVersionLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
-import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.cache.CacheField;
 
 import java.util.List;
 
@@ -77,48 +73,5 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 	public List<DDLRecord> getRecords() {
 		return DDLRecordLocalServiceUtil.getRecords(getRecordSetId());
 	}
-
-	@Override
-	public DDMFormValues getSettingsDDMFormValues() {
-		if (_ddmFormValues == null) {
-			_ddmFormValues =
-				DDLRecordSetLocalServiceUtil.getRecordSetSettingsDDMFormValues(
-					this);
-
-			ddmFormValuesUpdateEntityCacheBiConsumer.accept(
-				this, _ddmFormValues);
-		}
-
-		return _ddmFormValues;
-	}
-
-	@Override
-	public DDLRecordSetSettings getSettingsModel() throws PortalException {
-		if (_recordSetSettings == null) {
-			_recordSetSettings =
-				DDLRecordSetLocalServiceUtil.getRecordSetSettingsModel(this);
-		}
-
-		return _recordSetSettings;
-	}
-
-	@Override
-	public void setSettings(String settings) {
-		super.setSettings(settings);
-
-		_recordSetSettings = null;
-	}
-
-	@Override
-	public void setSettingsDDMFormValues(DDMFormValues ddmFormValues) {
-		_ddmFormValues = ddmFormValues;
-	}
-
-	@CacheField(
-		methodName = "SettingsDDMFormValues", propagateToInterface = true
-	)
-	private DDMFormValues _ddmFormValues;
-
-	private DDLRecordSetSettings _recordSetSettings;
 
 }

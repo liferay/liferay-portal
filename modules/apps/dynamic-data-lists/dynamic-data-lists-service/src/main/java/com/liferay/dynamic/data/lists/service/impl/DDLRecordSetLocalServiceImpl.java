@@ -9,19 +9,14 @@ import com.liferay.dynamic.data.lists.constants.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.exception.RecordSetDDMStructureIdException;
 import com.liferay.dynamic.data.lists.exception.RecordSetDuplicateRecordSetKeyException;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
-import com.liferay.dynamic.data.lists.model.DDLRecordSetSettings;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetVersionLocalService;
 import com.liferay.dynamic.data.lists.service.base.DDLRecordSetLocalServiceBaseImpl;
 import com.liferay.dynamic.data.lists.service.persistence.DDLRecordSetVersionPersistence;
-import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializer;
-import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeRequest;
-import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeResponse;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializerSerializeRequest;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializerSerializeResponse;
-import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLink;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
@@ -29,8 +24,6 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
-import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
-import com.liferay.dynamic.data.mapping.util.DDMFormInstanceFactory;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -384,44 +377,6 @@ public class DDLRecordSetLocalServiceImpl
 		throws PortalException {
 
 		return ddlRecordSetPersistence.findByUUID_G(uuid, recordSetId);
-	}
-
-	/**
-	 * Returns the record set's settings as a DDMFormValues object. For more
-	 * information see <code>DDMFormValues</code> in the
-	 * <code>dynamic.data.mapping.api</code> module.
-	 *
-	 * @param  recordSet the record set
-	 * @return the record set settings as a DDMFormValues object
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public DDMFormValues getRecordSetSettingsDDMFormValues(
-		DDLRecordSet recordSet) {
-
-		DDMForm ddmForm = DDMFormFactory.create(DDLRecordSetSettings.class);
-
-		return _deserialize(recordSet.getSettings(), ddmForm);
-	}
-
-	/**
-	 * Returns the record set's settings.
-	 *
-	 * @param  recordSet the record set
-	 * @return the record set settings
-	 * @throws PortalException if a portal exception occurred
-	 * @see    #getRecordSetSettingsDDMFormValues(DDLRecordSet)
-	 */
-	@Override
-	public DDLRecordSetSettings getRecordSetSettingsModel(
-			DDLRecordSet recordSet)
-		throws PortalException {
-
-		DDMFormValues ddmFormValues = getRecordSetSettingsDDMFormValues(
-			recordSet);
-
-		return DDMFormInstanceFactory.create(
-			DDLRecordSetSettings.class, ddmFormValues);
 	}
 
 	/**
@@ -780,18 +735,6 @@ public class DDLRecordSetLocalServiceImpl
 		return _ddlRecordSetVersionPersistence.update(recordSetVersion);
 	}
 
-	private DDMFormValues _deserialize(String content, DDMForm ddmForm) {
-		DDMFormValuesDeserializerDeserializeRequest.Builder builder =
-			DDMFormValuesDeserializerDeserializeRequest.Builder.newBuilder(
-				content, ddmForm);
-
-		DDMFormValuesDeserializerDeserializeResponse
-			ddmFormValuesDeserializerDeserializeResponse =
-				_jsonDDMFormValuesDeserializer.deserialize(builder.build());
-
-		return ddmFormValuesDeserializerDeserializeResponse.getDDMFormValues();
-	}
-
 	private long _getDDMStructureVersionId(long ddmStructureId)
 		throws PortalException {
 
@@ -987,9 +930,6 @@ public class DDLRecordSetLocalServiceImpl
 
 	@Reference
 	private DDLRecordSetVersionPersistence _ddlRecordSetVersionPersistence;
-
-	@Reference(target = "(ddm.form.values.deserializer.type=json)")
-	private DDMFormValuesDeserializer _jsonDDMFormValuesDeserializer;
 
 	@Reference(target = "(ddm.form.values.serializer.type=json)")
 	private DDMFormValuesSerializer _jsonDDMFormValuesSerializer;
