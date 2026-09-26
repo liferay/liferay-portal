@@ -116,13 +116,12 @@ public class DesignLibraryUtilTest {
 			depotEntries
 		);
 
-		Assert.assertTrue(
-			DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-				companyId, designLibraryGroupId, groupId));
-
 		Assert.assertFalse(
 			DesignLibraryUtil.isConnectedDesignLibraryGroupId(
 				companyId, RandomTestUtil.randomLong(), groupId));
+		Assert.assertTrue(
+			DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+				companyId, designLibraryGroupId, groupId));
 	}
 
 	@Test
