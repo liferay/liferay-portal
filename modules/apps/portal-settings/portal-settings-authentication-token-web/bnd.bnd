@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Settings Authentication Token Web
 Bundle-SymbolicName: com.liferay.portal.settings.authentication.token.web
-Bundle-Version: 5.0.20
+Bundle-Version: 5.0.21
 Web-ContextPath: /portal-settings-authentication-token-web
