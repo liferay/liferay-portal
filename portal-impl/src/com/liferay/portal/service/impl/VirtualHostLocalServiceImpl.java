@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.impl.LayoutSetImpl;
 import com.liferay.portal.service.base.VirtualHostLocalServiceBaseImpl;
 
 import java.net.IDN;
@@ -282,14 +281,6 @@ public class VirtualHostLocalServiceImpl
 
 		if (layoutSet != null) {
 			_layoutSetPersistence.clearCache(layoutSet);
-
-			TransactionCallbackUtil.registerCommitCallback(
-				() -> {
-					EntityCacheUtil.removeResult(
-						LayoutSetImpl.class, layoutSetId);
-
-					return null;
-				});
 		}
 
 		return virtualHosts;
