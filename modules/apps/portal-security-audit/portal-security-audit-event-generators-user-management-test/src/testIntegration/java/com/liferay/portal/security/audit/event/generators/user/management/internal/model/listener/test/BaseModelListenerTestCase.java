@@ -11,11 +11,11 @@ import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -75,7 +75,8 @@ public abstract class BaseModelListenerTestCase {
 		return null;
 	}
 
-	protected final List<AuditMessage> auditMessages = new ArrayList<>();
+	protected final List<AuditMessage> auditMessages =
+		new CopyOnWriteArrayList<>();
 
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 
