@@ -175,9 +175,7 @@ $card-interactive: map-deep-merge(
 	$card-interactive
 );
 
-$card-interactive-primary-hover-box-shadow: unquote(
-	'#{$card-hover-box-shadow}, 0px -2.5rem 0px -2.25rem #{$primary} inset'
-) !default;
+$card-interactive-primary-hover-box-shadow: null !default;
 
 $card-interactive-primary: () !default;
 $card-interactive-primary: map-deep-merge(
@@ -316,4 +314,59 @@ $card-type-template-aspect-ratio-item: map-deep-merge(
 		color: $gray-600,
 	),
 	$card-type-template-aspect-ratio-item
+);
+
+// Navigation Card
+
+$navigation-card: () !default;
+$navigation-card: map-deep-merge(
+	(
+		hover: (
+			transform: translateY(-0.25rem),
+			after: (
+				bottom: -0.25rem,
+				content: '',
+				height: 0.25rem,
+				left: 0,
+				position: absolute,
+				right: 0,
+			),
+		),
+
+		card-title: (
+			font-size: 1rem,
+		),
+
+		aspect-ratio-item: (
+			color: $primary-l0,
+			font-size: 2rem,
+			left: auto,
+			line-height: 1,
+			right: 1rem,
+			top: 1rem,
+		),
+	),
+	$navigation-card
+);
+
+$navigation-card-horizontal: () !default;
+$navigation-card-horizontal: map-deep-merge(
+	(
+		card-body: (
+			padding: 0.4375rem,
+		),
+
+		card-title: (
+			font-size: 1rem,
+		),
+
+		sticker: (
+			color: $primary-l0,
+			font-size: 1.25rem,
+			height: 2.5rem,
+			margin-right: 0.5rem,
+			width: 2.5rem,
+		),
+	),
+	$navigation-card-horizontal
 );

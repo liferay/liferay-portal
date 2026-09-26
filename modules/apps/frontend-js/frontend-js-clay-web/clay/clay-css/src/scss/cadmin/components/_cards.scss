@@ -532,3 +532,13 @@
 .template-card-horizontal {
 	@include clay-card-variant($cadmin-template-card-horizontal);
 }
+
+// Navigation Card
+
+.navigation-card {
+	@include clay-card-variant($cadmin-navigation-card);
+}
+
+.navigation-card-horizontal {
+	@include clay-card-variant($cadmin-navigation-card-horizontal);
+}

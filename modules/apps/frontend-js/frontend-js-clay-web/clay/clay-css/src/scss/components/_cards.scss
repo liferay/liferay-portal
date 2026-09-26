@@ -654,3 +654,13 @@
 .template-card-horizontal {
 	@include clay-card-variant($template-card-horizontal);
 }
+
+// Navigation Card
+
+.navigation-card {
+	@include clay-card-variant($navigation-card);
+}
+
+.navigation-card-horizontal {
+	@include clay-card-variant($navigation-card-horizontal);
+}

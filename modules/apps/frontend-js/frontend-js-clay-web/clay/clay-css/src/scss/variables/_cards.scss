@@ -1172,3 +1172,46 @@ $template-card-horizontal: map-deep-merge(
 	),
 	$template-card-horizontal
 );
+
+// Navigation Card
+
+$navigation-card: () !default;
+$navigation-card: map-deep-merge(
+	(
+		card-title: (
+			font-size: 1rem,
+		),
+
+		aspect-ratio-item: (
+			color: $primary-l0,
+			font-size: 2rem,
+			left: auto,
+			line-height: 1,
+			right: 1rem,
+			top: 1rem,
+		),
+	),
+	$navigation-card
+);
+
+$navigation-card-horizontal: () !default;
+$navigation-card-horizontal: map-deep-merge(
+	(
+		card-body: (
+			padding: 0.4375rem,
+		),
+
+		card-title: (
+			font-size: 1rem,
+		),
+
+		sticker: (
+			color: $primary-l0,
+			font-size: 1.25rem,
+			height: 2.5rem,
+			margin-right: 0.5rem,
+			width: 2.5rem,
+		),
+	),
+	$navigation-card-horizontal
+);
