@@ -313,6 +313,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	public void testVerifyPostupgradePrimaryKeys() throws Exception {
 		try {
 			removePrimaryKey("Phone");
+
 			updatePrimaryKey("UserTracker", "userTrackerId", "mvccVersion");
 
 			_testGetMessages(
