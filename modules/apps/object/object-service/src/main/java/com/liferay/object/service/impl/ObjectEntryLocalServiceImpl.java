@@ -7664,7 +7664,7 @@ public class ObjectEntryLocalServiceImpl
 		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
 			objectEntryId);
 
-		objectEntryPersistence.reassociateIfAbsent(objectEntry);
+		objectEntry = objectEntryPersistence.reassociateIfAbsent(objectEntry);
 
 		_validateObjectEntryFolderId(
 			objectEntry.getGroupId(), objectEntryFolderId);

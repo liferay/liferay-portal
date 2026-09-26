@@ -135,7 +135,8 @@ public class KaleoInstanceTokenLocalServiceImpl
 			kaleoInstanceTokenPersistence.findByPrimaryKey(
 				kaleoInstanceTokenId);
 
-		kaleoInstanceTokenPersistence.reassociateIfAbsent(kaleoInstanceToken);
+		kaleoInstanceToken = kaleoInstanceTokenPersistence.reassociateIfAbsent(
+			kaleoInstanceToken);
 
 		kaleoInstanceToken.setCompleted(true);
 		kaleoInstanceToken.setCompletionDate(new Date());
@@ -343,7 +344,8 @@ public class KaleoInstanceTokenLocalServiceImpl
 			kaleoInstanceTokenPersistence.findByPrimaryKey(
 				kaleoInstanceTokenId);
 
-		kaleoInstanceTokenPersistence.reassociateIfAbsent(kaleoInstanceToken);
+		kaleoInstanceToken = kaleoInstanceTokenPersistence.reassociateIfAbsent(
+			kaleoInstanceToken);
 
 		kaleoInstanceToken.setCurrentKaleoNodeId(currentKaleoNodeId);
 		kaleoInstanceToken.setCurrentKaleoNodeName(currentKaleoNodeName);
