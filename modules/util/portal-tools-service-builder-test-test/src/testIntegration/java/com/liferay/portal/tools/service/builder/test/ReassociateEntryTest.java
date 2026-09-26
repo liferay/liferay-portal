@@ -53,6 +53,11 @@ public class ReassociateEntryTest {
 		reassociateEntry = _reassociateEntryPersistence.update(
 			reassociateEntry);
 
+		Assert.assertSame(
+			reassociateEntry,
+			_reassociateEntryPersistence.reassociateIfAbsent(
+				reassociateEntry.cloneWithOriginalValues()));
+
 		Session session = _reassociateEntryPersistence.getCurrentSession();
 
 		session.flush();
