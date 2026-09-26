@@ -9350,17 +9350,11 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
-	public void testPatchObjectEntryWithAttachmentObjectFieldIdJSONObject()
+	public void testPatchObjectEntryWithAttachmentObjectFieldId()
 		throws Exception {
 
 		_testPatchObjectEntryWithAttachmentObjectField(
 			fileEntryId -> JSONUtil.put("id", fileEntryId));
-	}
-
-	@Test
-	public void testPatchObjectEntryWithAttachmentObjectFieldIdString()
-		throws Exception {
-
 		_testPatchObjectEntryWithAttachmentObjectField(String::valueOf);
 	}
 
