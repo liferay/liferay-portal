@@ -33,5 +33,5 @@
 		"test": "node-scripts test",
 		"test:watch": "node-scripts test --watch"
 	},
-	"version": "1.0.4"
+	"version": "1.0.5"
 }
