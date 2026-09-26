@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Google Places Web
 Bundle-SymbolicName: com.liferay.google.places.web
-Bundle-Version: 1.0.17
+Bundle-Version: 1.0.18
 Web-ContextPath: /google-places-web
