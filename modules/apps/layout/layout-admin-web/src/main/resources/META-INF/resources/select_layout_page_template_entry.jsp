@@ -19,7 +19,6 @@ if (Validator.isNull(backURL)) {
 SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplayContext = (SelectLayoutPageTemplateEntryDisplayContext)request.getAttribute(SelectLayoutPageTemplateEntryDisplayContext.class.getName());
 
 Group designLibraryGroup = selectLayoutPageTemplateEntryDisplayContext.getDesignLibraryGroup();
-
 LayoutPageTemplateCollection layoutPageTemplateCollection = selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateCollection();
 
 portletDisplay.setShowBackIcon(true);
