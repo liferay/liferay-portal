@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal File Install API
 Bundle-SymbolicName: com.liferay.portal.file.install.api
-Bundle-Version: 4.2.5
+Bundle-Version: 4.2.6
 Export-Package:\
 	com.liferay.portal.file.install,\
 	com.liferay.portal.file.install.properties
