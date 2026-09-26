@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Calendar Service
 Bundle-SymbolicName: com.liferay.calendar.service
-Bundle-Version: 6.0.101
+Bundle-Version: 6.0.102
 Import-Package:\
 	!edu.emory.*,\
 	\
