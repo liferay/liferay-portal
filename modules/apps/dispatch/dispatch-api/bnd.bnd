@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dispatch API
 Bundle-SymbolicName: com.liferay.dispatch.api
-Bundle-Version: 21.1.0
+Bundle-Version: 21.1.1
 Export-Package:\
 	com.liferay.dispatch.configuration,\
 	com.liferay.dispatch.constants,\
