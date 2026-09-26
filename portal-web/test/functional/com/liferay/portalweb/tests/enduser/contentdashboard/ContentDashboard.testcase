@@ -3069,12 +3069,12 @@ definition {
 
 			AssertTextEquals(
 				key_tableEntry = "WC Title",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
 				value1 = "WC Title");
 
 			AssertTextEquals(
 				key_tableEntry = "WC Title 2",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
 				value1 = "WC Title 2");
 		}
 	}
