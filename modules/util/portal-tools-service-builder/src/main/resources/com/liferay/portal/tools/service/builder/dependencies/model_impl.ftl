@@ -1696,16 +1696,19 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 				}
 			</#if>
 
-			${entity.name}ModelImpl sourceModelImpl = (${entity.name}ModelImpl)source;
+			try {
+				<#list cacheFields as cacheField>
+					<#assign
+						typeGenericsName = serviceBuilder.getTypeGenericsName(cacheField.getType())
+						variableName = serviceBuilder.getVariableName(cacheField)
+					/>
 
-			<#list cacheFields as cacheField>
-				<#assign
-					getterPrefix = serviceBuilder.getCacheFieldGetterPrefix(cacheField)
-					methodName = serviceBuilder.getCacheFieldMethodName(cacheField)
-				/>
-
-				set${methodName}(sourceModelImpl.${getterPrefix}${methodName}());
-			</#list>
+					_${variableName}SetterMethodHandle.invokeExact((${entity.name}Impl)this, (${typeGenericsName})_${variableName}GetterMethodHandle.invokeExact((${entity.name}Impl)source));
+				</#list>
+			}
+			catch (Throwable throwable) {
+				ReflectionUtil.throwException(throwable);
+			}
 		}
 	</#if>
 
@@ -1881,7 +1884,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 						set${methodName}(null);
 					</#if>
 
-					${entity.variableName}CacheModel.${variableName} = (${typeGenericsName})_${variableName}MethodHandle.invokeExact((${entity.name}Impl)this);
+					${entity.variableName}CacheModel.${variableName} = (${typeGenericsName})_${variableName}GetterMethodHandle.invokeExact((${entity.name}Impl)this);
 				</#list>
 			}
 			catch (Throwable throwable) {
@@ -2179,7 +2182,8 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 			}
 		};
 
-		private static final MethodHandle _${variableName}MethodHandle;
+		private static final MethodHandle _${variableName}GetterMethodHandle;
+		private static final MethodHandle _${variableName}SetterMethodHandle;
 	</#list>
 
 	<#if cacheFields?size != 0>
@@ -2192,7 +2196,8 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 						variableName = serviceBuilder.getVariableName(cacheField)
 					/>
 
-					_${variableName}MethodHandle = lookup.findGetter(${entity.name}Impl.class, "${cacheField.name}", ${cacheField.type.canonicalName}.class);
+					_${variableName}GetterMethodHandle = lookup.findGetter(${entity.name}Impl.class, "${cacheField.name}", ${cacheField.type.canonicalName}.class);
+					_${variableName}SetterMethodHandle = lookup.findSetter(${entity.name}Impl.class, "${cacheField.name}", ${cacheField.type.canonicalName}.class);
 				</#list>
 			}
 			catch (ReflectiveOperationException reflectiveOperationException) {
