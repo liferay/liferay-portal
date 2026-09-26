@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.audit;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -35,6 +36,46 @@ public class AuditRequestContextThreadLocalTest {
 
 		Assert.assertNotSame(
 			auditRequestContext,
+			AuditRequestContextThreadLocal.getAuditRequestContext());
+
+		AuditRequestContextThreadLocal.removeAuditRequestContext();
+	}
+
+	@Test
+	public void testSetAuditRequestContextWithSafeCloseable() {
+		AuditRequestContextThreadLocal.removeAuditRequestContext();
+
+		AuditRequestContext auditRequestContext1 = new AuditRequestContext();
+
+		try (SafeCloseable safeCloseable =
+				AuditRequestContextThreadLocal.
+					setAuditRequestContextWithSafeCloseable(
+						auditRequestContext1)) {
+
+			Assert.assertSame(
+				auditRequestContext1,
+				AuditRequestContextThreadLocal.getAuditRequestContext());
+		}
+
+		Assert.assertNotSame(
+			auditRequestContext1,
+			AuditRequestContextThreadLocal.getAuditRequestContext());
+
+		AuditRequestContext auditRequestContext2 =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		try (SafeCloseable safeCloseable =
+				AuditRequestContextThreadLocal.
+					setAuditRequestContextWithSafeCloseable(
+						auditRequestContext1)) {
+
+			Assert.assertSame(
+				auditRequestContext1,
+				AuditRequestContextThreadLocal.getAuditRequestContext());
+		}
+
+		Assert.assertSame(
+			auditRequestContext2,
 			AuditRequestContextThreadLocal.getAuditRequestContext());
 
 		AuditRequestContextThreadLocal.removeAuditRequestContext();

@@ -8,7 +8,17 @@ package com.liferay.portal.kernel.audit;
 /**
  * @author Rafael Praxedes
  */
-public class AuditRequestContext {
+public class AuditRequestContext implements Cloneable {
+
+	@Override
+	public AuditRequestContext clone() {
+		try {
+			return (AuditRequestContext)super.clone();
+		}
+		catch (CloneNotSupportedException cloneNotSupportedException) {
+			throw new RuntimeException(cloneNotSupportedException);
+		}
+	}
 
 	public String getClientHost() {
 		return _clientHost;
