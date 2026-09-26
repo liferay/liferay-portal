@@ -694,7 +694,7 @@ function EditSXPElementForm({
 
 								<div className="expand-header">
 									<div className="header-label">
-										<label>
+										<label className="text-secondary">
 											{Liferay.Language.get(
 												'element-source-json'
 											)}
@@ -727,7 +727,7 @@ function EditSXPElementForm({
 									<div className="sidebar sidebar-light">
 										<div className="sidebar-header">
 											<span className="text-truncate-inline">
-												<span className="text-truncate">
+												<span className="text-secondary text-truncate">
 													{Liferay.Language.get(
 														'predefined-variables'
 													)}

@@ -134,7 +134,7 @@ export default function PageToolbar({
 												title={title}
 											>
 												{title || (
-													<span className="entry-title-blank">
+													<span className="entry-title-blank text-secondary">
 														{Liferay.Language.get(
 															'untitled'
 														)}
@@ -146,7 +146,7 @@ export default function PageToolbar({
 
 									<ClayTooltipProvider>
 										<div
-											className="entry-description text-truncate"
+											className="entry-description text-secondary text-truncate"
 											data-tooltip-align="bottom"
 											title={description}
 										>
@@ -188,7 +188,7 @@ export default function PageToolbar({
 														: titleI18n[
 																displayLocale
 															]) || (
-														<span className="entry-title-blank">
+														<span className="entry-title-blank text-secondary">
 															{Liferay.Language.get(
 																'untitled'
 															)}
@@ -196,7 +196,7 @@ export default function PageToolbar({
 													)}
 
 													<ClayIcon
-														className="entry-heading-edit-icon"
+														className="entry-heading-edit-icon text-dark"
 														symbol="pencil"
 													/>
 												</div>
@@ -217,7 +217,7 @@ export default function PageToolbar({
 									>
 										<ClayTooltipProvider>
 											<div
-												className="entry-description text-truncate"
+												className="entry-description text-secondary text-truncate"
 												data-tooltip-align="bottom"
 												title={
 													!titleAndDescriptionEdited
@@ -240,7 +240,7 @@ export default function PageToolbar({
 												)}
 
 												<ClayIcon
-													className="entry-heading-edit-icon"
+													className="entry-heading-edit-icon text-dark"
 													symbol="pencil"
 												/>
 											</div>
@@ -326,7 +326,7 @@ export default function PageToolbar({
 
 						{!!children && (
 							<ClayToolbar.Item>
-								<div className="tbar-divider" />
+								<div className="bg-secondary tbar-divider" />
 							</ClayToolbar.Item>
 						)}
 

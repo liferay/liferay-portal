@@ -301,7 +301,7 @@ function PreviewSidebar({
 						</div>
 					) : (
 						!errors.length && (
-							<div className="search-message">
+							<div className="search-message text-secondary">
 								{Liferay.Language.get(
 									'perform-a-search-to-preview-your-blueprints-search-results'
 								)}
@@ -313,7 +313,7 @@ function PreviewSidebar({
 						<ClayLoadingIndicator />
 
 						{showCancel && (
-							<div className="search-message">
+							<div className="search-message text-secondary">
 								{Liferay.Language.get(
 									'it-looks-like-this-is-taking-longer-than-expected'
 								)}

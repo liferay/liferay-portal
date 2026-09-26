@@ -40,7 +40,6 @@ $sxpElementHeaderHeight: 48px;
 					text-align: center;
 
 					label {
-						color: var(--secondary);
 						margin: 0;
 						padding-bottom: 12px;
 						padding-top: 12px;
@@ -61,7 +60,6 @@ $sxpElementHeaderHeight: 48px;
 			padding: 0;
 
 			.sidebar {
-				background-color: var(--white);
 				border-color: var(--secondary-l3);
 				border-right-width: 0.0625rem;
 				border-style: solid;
@@ -96,7 +94,6 @@ $sxpElementHeaderHeight: 48px;
 				}
 
 				.text-truncate {
-					color: var(--secondary);
 					font-size: 14px;
 					font-weight: 600;
 				}

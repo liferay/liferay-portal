@@ -315,7 +315,7 @@ export default function ({
 											{getClassDisplayName(className)}
 										</ClayList.ItemTitle>
 
-										<ClayList.ItemText>
+										<ClayList.ItemText className="text-secondary">
 											{className}
 										</ClayList.ItemText>
 									</ClayList.ItemField>

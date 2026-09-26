@@ -4,7 +4,6 @@
 	z-index: 971;
 
 	.entry-description {
-		color: var(--secondary);
 		font-size: 14px;
 		font-weight: 400;
 
@@ -17,7 +16,6 @@
 		display: block;
 
 		.entry-heading-edit-icon {
-			color: var(--dark);
 			font-size: 0.875rem;
 			line-height: 1.15;
 			margin-left: 8px;
@@ -33,19 +31,16 @@
 	}
 
 	.entry-title {
-		color: var(--dark);
 		font-size: 18px;
 		font-weight: 700;
 		line-height: 1;
 
 		.entry-title-blank {
-			color: var(--secondary);
 			font-style: italic;
 		}
 	}
 
 	.tbar-divider {
-		background-color: var(--secondary);
 		height: 16px;
 		width: 1px;
 	}

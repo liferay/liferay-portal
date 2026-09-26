@@ -107,7 +107,11 @@ const SXPElementList = ({
 								key={index}
 							>
 								<ClayList.ItemField>
-									<ClaySticker size="md">
+									<ClaySticker
+										className="bg-light"
+										displayType="secondary"
+										size="md"
+									>
 										<ClayIcon
 											symbol={
 												sxpElement.elementDefinition
@@ -133,7 +137,7 @@ const SXPElementList = ({
 								</ClayList.ItemField>
 
 								<ClayList.ItemField>
-									<div className="add-sxp-element-button-background" />
+									<div className="add-sxp-element-button-background bg-primary-l3" />
 
 									{isElementInactiveFromNonCompanyIndex(
 										isIndexCompany,
