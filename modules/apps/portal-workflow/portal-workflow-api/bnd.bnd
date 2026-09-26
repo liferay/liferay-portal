@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow API
 Bundle-SymbolicName: com.liferay.portal.workflow.api
-Bundle-Version: 18.1.0
+Bundle-Version: 18.1.1
 Export-Package:\
 	com.liferay.portal.workflow.comparator,\
 	com.liferay.portal.workflow.configuration,\
