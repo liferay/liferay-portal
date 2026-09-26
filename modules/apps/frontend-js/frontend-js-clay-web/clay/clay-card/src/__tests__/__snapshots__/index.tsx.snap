@@ -2992,7 +2992,7 @@ exports[`ClayCardWithUser renders ClayCardWithNavigation with image 1`] = `
     tabindex="0"
   >
     <span
-      class="aspect-ratio"
+      class="card-item-first aspect-ratio aspect-ratio-16-to-9"
     >
       <span
         class="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-flush"

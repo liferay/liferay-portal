@@ -816,7 +816,7 @@ describe('ClayCardWithUser', () => {
 	});
 
 	it.each([['template'], ['navigation']] as const)(
-		'renders the description as a card subtitle when %s',
+		'renders the description as a card text when %s',
 		(cardType) => {
 			const {container} = render(
 				<ClayCardWithNavigation
@@ -829,14 +829,14 @@ describe('ClayCardWithUser', () => {
 				</ClayCardWithNavigation>
 			);
 
-			expect(container.querySelector('.card-subtitle')).toHaveTextContent(
+			expect(container.querySelector('.card-text')).toHaveTextContent(
 				'Pick and choose your layout'
 			);
-			expect(container.querySelector('.card-text')).toBeNull();
+			expect(container.querySelector('.card-subtitle')).toBeNull();
 		}
 	);
 
-	it('omits only the card type class when navigation', () => {
+	it('omits the template card classes when navigation', () => {
 		const {getByRole} = render(
 			<ClayCardWithNavigation
 				cardType="navigation"
@@ -849,16 +849,15 @@ describe('ClayCardWithUser', () => {
 
 		const card = getByRole('link');
 
-		expect(card).toHaveClass(
-			'card',
-			'card-interactive',
+		expect(card).toHaveClass('card', 'card-interactive', 'navigation-card');
+		expect(card).not.toHaveClass(
 			'card-interactive-primary',
+			'card-type-template',
 			'template-card'
 		);
-		expect(card).not.toHaveClass('card-type-template');
 	});
 
-	it('keeps the horizontal template card class when navigation', () => {
+	it('omits the horizontal template card class when navigation', () => {
 		const {getByRole} = render(
 			<ClayCardWithNavigation
 				cardType="navigation"
@@ -872,11 +871,15 @@ describe('ClayCardWithUser', () => {
 
 		const card = getByRole('link');
 
-		expect(card).toHaveClass('template-card-horizontal');
-		expect(card).not.toHaveClass('card-type-template');
+		expect(card).toHaveClass('navigation-card-horizontal');
+		expect(card).not.toHaveClass(
+			'card-interactive-primary',
+			'card-type-template',
+			'template-card-horizontal'
+		);
 	});
 
-	it('positions the aspect ratio item top right when navigation', () => {
+	it('omits the template aspect ratio item classes when navigation', () => {
 		const {container} = render(
 			<ClayCardWithNavigation
 				cardType="navigation"
@@ -888,36 +891,16 @@ describe('ClayCardWithUser', () => {
 		);
 
 		expect(container.querySelector('.aspect-ratio')).toHaveClass(
+			'card-item-first',
 			'aspect-ratio-16-to-9'
 		);
 
 		const aspectRatioItem = container.querySelector('.aspect-ratio-item');
 
-		expect(aspectRatioItem).toHaveClass('aspect-ratio-item-top-right');
-		expect(aspectRatioItem).not.toHaveClass('aspect-ratio-item-flush');
-	});
-
-	it('replaces the default aspect ratio item classes', () => {
-		const {container} = render(
-			<ClayCardWithNavigation
-				aspectRatioProps={{
-					item: {className: 'aspect-ratio-item-bottom-left'},
-				}}
-				href="#"
-				title="Layout Page"
-			>
-				<img alt="portlet image" src="/some/path" />
-			</ClayCardWithNavigation>
+		expect(aspectRatioItem).not.toHaveClass(
+			'aspect-ratio-item-center-middle',
+			'aspect-ratio-item-flush'
 		);
-
-		const aspectRatioItem = container.querySelector(
-			'.aspect-ratio-item-bottom-left'
-		);
-
-		expect(aspectRatioItem).not.toHaveClass('aspect-ratio-item-flush');
-		expect(
-			container.querySelector('.aspect-ratio-item-center-middle')
-		).toBeNull();
 	});
 
 	it('does not prevent the default action on Enter when the card is a link', async () => {
