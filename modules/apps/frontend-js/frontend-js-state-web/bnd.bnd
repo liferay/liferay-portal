@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend JS State Web
 Bundle-SymbolicName: com.liferay.frontend.js.state.web
-Bundle-Version: 1.0.37
+Bundle-Version: 1.0.38
 Liferay-JS-Config: /META-INF/resources/legacy/config.js
 Web-ContextPath: /frontend-js-state-web
