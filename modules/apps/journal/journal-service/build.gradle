@@ -29,6 +29,7 @@ dependencies {
 	compileOnly project(":apps:comment:comment-api")
 	compileOnly project(":apps:data-engine:data-engine-api")
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:diff:diff-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:dynamic-data-lists:dynamic-data-lists-api")

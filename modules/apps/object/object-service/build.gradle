@@ -25,6 +25,7 @@ dependencies {
 	compileOnly project(":apps:batch-engine:batch-engine-api")
 	compileOnly project(":apps:bulk:bulk-selection-api")
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
