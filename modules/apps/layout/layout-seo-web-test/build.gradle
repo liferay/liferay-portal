@@ -2,12 +2,14 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.23.1"
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
+	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:layout:layout-display-page-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
+	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-seo-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-utility-page-api")

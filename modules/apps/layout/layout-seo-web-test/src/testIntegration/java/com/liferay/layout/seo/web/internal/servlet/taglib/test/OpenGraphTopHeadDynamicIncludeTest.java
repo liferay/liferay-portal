@@ -9,6 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.util.DLURLHelper;
@@ -34,6 +38,7 @@ import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTagProperty;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.seo.service.LayoutSEOSiteLocalService;
@@ -49,6 +54,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -80,6 +86,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -236,6 +243,64 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 
 		_assertMetaTag(
 			document, "property", "og:description", "customDescription");
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testIncludeCustomDescriptionWithDesignLibraryDisplayPageTemplate()
+		throws Exception {
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				designLibraryGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			TestPropsValues.getUserId(), designLibraryGroup.getGroupId(),
+			layout.isPrivateLayout(), layout.getLayoutId(), false,
+			Collections.emptyMap(), true,
+			Collections.singletonMap(LocaleUtil.US, "customDescription"),
+			Collections.emptyMap(), null, null, false, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(
+				designLibraryGroup.getGroupId()));
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			layout.isPrivateLayout(), layout.getLayoutId(), true,
+			Collections.singletonMap(LocaleUtil.US, "http://example.com"),
+			false, Collections.emptyMap(), Collections.emptyMap(), null, null,
+			false, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setLayout(new VirtualLayout(layout, _group));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			() -> _dynamicInclude.include(
+				httpServletRequest, mockHttpServletResponse,
+				RandomTestUtil.randomString()),
+			false, true);
+
+		String content = mockHttpServletResponse.getContentAsString();
+
+		Document document = Jsoup.parse(content);
+
+		_assertMetaTag(
+			document, "property", "og:description", "customDescription");
+
+		Assert.assertFalse(content, content.contains("http://example.com"));
 	}
 
 	@Test
@@ -1670,6 +1735,19 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 		_assertNoLinkElements(document, "canonical");
 	}
 
+	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			_depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		return _depotEntry.getGroup();
+	}
+
 	private FileEntry _addImageFileEntry(
 			String fileName, ServiceContext serviceContext)
 		throws Exception {
@@ -2169,6 +2247,15 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
