@@ -134,12 +134,9 @@ public class PortalInstanceExportResourceTest
 
 		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
 
-		try {
-			_companyLocalService.deleteCompany(companyId);
-		}
-		finally {
-			PrincipalThreadLocal.setName(name);
-		}
+		_companyLocalService.deleteCompany(companyId);
+
+		PrincipalThreadLocal.setName(name);
 	}
 
 	private Configuration _createScopedConfiguration(
@@ -242,96 +239,84 @@ public class PortalInstanceExportResourceTest
 
 		List<Configuration> configurations = new ArrayList<>();
 
-		try {
-			Configuration company1Configuration = _createScopedConfiguration(
-				HashMapDictionaryBuilder.<String, Object>put(
-					ExtendedObjectClassDefinition.Scope.COMPANY.
-						getPropertyKey(),
-					companyId
-				).build());
+		Configuration company1Configuration = _createScopedConfiguration(
+			HashMapDictionaryBuilder.<String, Object>put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				companyId
+			).build());
 
-			configurations.add(company1Configuration);
+		configurations.add(company1Configuration);
 
-			Configuration company2Configuration = _createScopedConfiguration(
-				HashMapDictionaryBuilder.<String, Object>put(
-					ExtendedObjectClassDefinition.Scope.COMPANY.
-						getPropertyKey(),
-					RandomTestUtil.randomLong()
-				).build());
+		Configuration company2Configuration = _createScopedConfiguration(
+			HashMapDictionaryBuilder.<String, Object>put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				RandomTestUtil.randomLong()
+			).build());
 
-			configurations.add(company2Configuration);
+		configurations.add(company2Configuration);
 
-			Group group = _groupLocalService.getCompanyGroup(companyId);
+		Group group = _groupLocalService.getCompanyGroup(companyId);
 
-			Configuration groupConfiguration = _createScopedConfiguration(
+		Configuration groupConfiguration = _createScopedConfiguration(
+			HashMapDictionaryBuilder.<String, Object>put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				companyId
+			).put(
+				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
+				group.getGroupId()
+			).build());
+
+		configurations.add(groupConfiguration);
+
+		Configuration nonexistentGroupConfiguration =
+			_createScopedConfiguration(
 				HashMapDictionaryBuilder.<String, Object>put(
 					ExtendedObjectClassDefinition.Scope.COMPANY.
 						getPropertyKey(),
 					companyId
 				).put(
 					ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-					group.getGroupId()
+					RandomTestUtil.randomLong()
 				).build());
 
-			configurations.add(groupConfiguration);
+		configurations.add(nonexistentGroupConfiguration);
 
-			Configuration nonexistentGroupConfiguration =
-				_createScopedConfiguration(
-					HashMapDictionaryBuilder.<String, Object>put(
-						ExtendedObjectClassDefinition.Scope.COMPANY.
-							getPropertyKey(),
-						companyId
-					).put(
-						ExtendedObjectClassDefinition.Scope.GROUP.
-							getPropertyKey(),
-						RandomTestUtil.randomLong()
-					).build());
+		Configuration portletInstanceConfiguration = _createScopedConfiguration(
+			HashMapDictionaryBuilder.<String, Object>put(
+				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
+					getPropertyKey(),
+				RandomTestUtil.randomString()
+			).build());
 
-			configurations.add(nonexistentGroupConfiguration);
+		configurations.add(portletInstanceConfiguration);
 
-			Configuration portletInstanceConfiguration =
-				_createScopedConfiguration(
-					HashMapDictionaryBuilder.<String, Object>put(
-						ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-							getPropertyKey(),
-						RandomTestUtil.randomString()
-					).build());
+		PortalInstanceExport portalInstanceExport =
+			portalInstanceExportResource.postPortalInstanceExport(
+				_toPortalInstanceExport(_company.getWebId()));
 
-			configurations.add(portletInstanceConfiguration);
+		Assert.assertEquals(
+			DBPartitionUtil.getExportedPartitionName(companyId),
+			portalInstanceExport.getExportedPartitionName());
+		Assert.assertEquals(
+			Long.valueOf(companyId), portalInstanceExport.getSourceCompanyId());
 
-			PortalInstanceExport portalInstanceExport =
-				portalInstanceExportResource.postPortalInstanceExport(
-					_toPortalInstanceExport(_company.getWebId()));
+		List<String> configurationIds = _getExportedConfigurationIds(companyId);
 
-			Assert.assertEquals(
-				DBPartitionUtil.getExportedPartitionName(companyId),
-				portalInstanceExport.getExportedPartitionName());
-			Assert.assertEquals(
-				Long.valueOf(companyId),
-				portalInstanceExport.getSourceCompanyId());
+		Assert.assertTrue(
+			configurationIds.contains(company1Configuration.getPid()));
+		Assert.assertTrue(
+			configurationIds.contains(groupConfiguration.getPid()));
+		Assert.assertTrue(
+			configurationIds.contains(portletInstanceConfiguration.getPid()));
+		Assert.assertFalse(
+			configurationIds.contains(company2Configuration.getPid()));
+		Assert.assertFalse(
+			configurationIds.contains(nonexistentGroupConfiguration.getPid()));
 
-			List<String> configurationIds = _getExportedConfigurationIds(
-				companyId);
+		_dropExportedSchema(companyId);
 
-			Assert.assertTrue(
-				configurationIds.contains(company1Configuration.getPid()));
-			Assert.assertTrue(
-				configurationIds.contains(groupConfiguration.getPid()));
-			Assert.assertTrue(
-				configurationIds.contains(
-					portletInstanceConfiguration.getPid()));
-			Assert.assertFalse(
-				configurationIds.contains(company2Configuration.getPid()));
-			Assert.assertFalse(
-				configurationIds.contains(
-					nonexistentGroupConfiguration.getPid()));
-		}
-		finally {
-			_dropExportedSchema(companyId);
-
-			for (Configuration configuration : configurations) {
-				configuration.delete();
-			}
+		for (Configuration configuration : configurations) {
+			configuration.delete();
 		}
 	}
 

@@ -126,12 +126,9 @@ public class PortalInstanceCopyResourceTest
 
 		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
 
-		try {
-			_companyLocalService.deleteCompany(companyId);
-		}
-		finally {
-			PrincipalThreadLocal.setName(name);
-		}
+		_companyLocalService.deleteCompany(companyId);
+
+		PrincipalThreadLocal.setName(name);
 	}
 
 	private void _assertPostPortalInstanceCopyBadRequest(
@@ -163,26 +160,23 @@ public class PortalInstanceCopyResourceTest
 			portalInstanceCopyResource.postPortalInstanceCopy(
 				portalInstanceCopy);
 
-		try {
-			Assert.assertNotEquals(
-				Long.valueOf(_company.getCompanyId()),
-				copiedPortalInstance.getCompanyId());
-			Assert.assertEquals(
-				portalInstanceCopy.getWebId(),
-				copiedPortalInstance.getPortalInstanceId());
-			Assert.assertEquals(
-				portalInstanceCopy.getVirtualHost(),
-				copiedPortalInstance.getVirtualHost());
+		Assert.assertNotEquals(
+			Long.valueOf(_company.getCompanyId()),
+			copiedPortalInstance.getCompanyId());
+		Assert.assertEquals(
+			portalInstanceCopy.getWebId(),
+			copiedPortalInstance.getPortalInstanceId());
+		Assert.assertEquals(
+			portalInstanceCopy.getVirtualHost(),
+			copiedPortalInstance.getVirtualHost());
 
-			if (expectedCompanyId != null) {
-				Assert.assertEquals(
-					expectedCompanyId, copiedPortalInstance.getCompanyId());
-			}
+		if (expectedCompanyId != null) {
+			Assert.assertEquals(
+				expectedCompanyId, copiedPortalInstance.getCompanyId());
 		}
-		finally {
-			if (copiedPortalInstance != null) {
-				_deleteCompany(copiedPortalInstance.getCompanyId());
-			}
+
+		if (copiedPortalInstance != null) {
+			_deleteCompany(copiedPortalInstance.getCompanyId());
 		}
 	}
 
@@ -232,40 +226,37 @@ public class PortalInstanceCopyResourceTest
 		PortalInstanceCopy portalInstanceCopy1 = _randomPortalInstanceCopy();
 		PortalInstanceCopy portalInstanceCopy2 = _randomPortalInstanceCopy();
 
-		try {
-			JSONObject importTaskJSONObject = _waitForFinish(
-				"COMPLETED",
-				JSONFactoryUtil.createJSONObject(
-					portalInstanceCopyResource.
-						postPortalInstanceCopyBatchHttpResponse(
-							null,
-							JSONUtil.putAll(
-								JSONFactoryUtil.createJSONObject(
-									portalInstanceCopy1.toString()),
-								JSONFactoryUtil.createJSONObject(
-									portalInstanceCopy2.toString()))
-						).getContent()));
+		JSONObject importTaskJSONObject = _waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(
+				portalInstanceCopyResource.
+					postPortalInstanceCopyBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								portalInstanceCopy1.toString()),
+							JSONFactoryUtil.createJSONObject(
+								portalInstanceCopy2.toString()))
+					).getContent()));
 
+		Assert.assertEquals(
+			2, importTaskJSONObject.getInt("processedItemsCount"));
+
+		for (PortalInstanceCopy portalInstanceCopy :
+				Arrays.asList(portalInstanceCopy1, portalInstanceCopy2)) {
+
+			Company copiedCompany = _companyLocalService.getCompanyByWebId(
+				portalInstanceCopy.getWebId());
+
+			Assert.assertNotEquals(
+				_company.getCompanyId(), copiedCompany.getCompanyId());
 			Assert.assertEquals(
-				2, importTaskJSONObject.getInt("processedItemsCount"));
-
-			for (PortalInstanceCopy portalInstanceCopy :
-					Arrays.asList(portalInstanceCopy1, portalInstanceCopy2)) {
-
-				Company copiedCompany = _companyLocalService.getCompanyByWebId(
-					portalInstanceCopy.getWebId());
-
-				Assert.assertNotEquals(
-					_company.getCompanyId(), copiedCompany.getCompanyId());
-				Assert.assertEquals(
-					portalInstanceCopy.getVirtualHost(),
-					copiedCompany.getVirtualHostname());
-			}
+				portalInstanceCopy.getVirtualHost(),
+				copiedCompany.getVirtualHostname());
 		}
-		finally {
-			_deleteCompanyByVirtualHost(portalInstanceCopy1.getVirtualHost());
-			_deleteCompanyByVirtualHost(portalInstanceCopy2.getVirtualHost());
-		}
+
+		_deleteCompanyByVirtualHost(portalInstanceCopy1.getVirtualHost());
+		_deleteCompanyByVirtualHost(portalInstanceCopy2.getVirtualHost());
 	}
 
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
