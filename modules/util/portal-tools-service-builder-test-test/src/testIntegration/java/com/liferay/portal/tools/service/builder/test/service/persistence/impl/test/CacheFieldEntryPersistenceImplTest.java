@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.impl.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -76,7 +77,8 @@ public class CacheFieldEntryPersistenceImplTest {
 		List<CacheFieldEntry> cacheFieldEntries =
 			_cacheFieldEntryPersistence.findByGroupId(groupId);
 
-		Assert.assertTrue(cacheFieldEntries.isEmpty());
+		Assert.assertTrue(
+			cacheFieldEntries.toString(), cacheFieldEntries.isEmpty());
 
 		CacheFieldEntry cacheFieldEntry = _cacheFieldEntryPersistence.create(
 			RandomTestUtil.nextLong());
@@ -93,7 +95,29 @@ public class CacheFieldEntryPersistenceImplTest {
 
 		CacheFieldEntry existingCacheFieldEntry = cacheFieldEntries.get(0);
 
-		Assert.assertNotNull(
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				existingCacheFieldEntry, "_nickname"));
+
+		Assert.assertEquals(
+			"Nickname_test.name", existingCacheFieldEntry.getNickname());
+
+		existingCacheFieldEntry = _cacheFieldEntryPersistence.fetchByPrimaryKey(
+			_cacheFieldEntry.getPrimaryKey());
+
+		Assert.assertEquals(
+			"Nickname_test.name", existingCacheFieldEntry.getNickname());
+
+		cacheFieldEntries = _cacheFieldEntryPersistence.findByGroupId(
+			groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null, false);
+
+		Assert.assertEquals(
+			cacheFieldEntries.toString(), 1, cacheFieldEntries.size());
+
+		existingCacheFieldEntry = cacheFieldEntries.get(0);
+
+		Assert.assertEquals(
+			"Nickname_test.name",
 			ReflectionTestUtil.getFieldValue(
 				existingCacheFieldEntry, "_nickname"));
 	}

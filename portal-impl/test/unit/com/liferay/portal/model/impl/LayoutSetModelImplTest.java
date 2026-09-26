@@ -68,4 +68,31 @@ public class LayoutSetModelImplTest {
 			virtualHostnames, layoutSetImpl.getVirtualHostnames());
 	}
 
+	@Test
+	public void testCopyCacheFieldsWithUncomputedSource() {
+		LayoutSetImpl sourceLayoutSetImpl = new LayoutSetImpl();
+
+		sourceLayoutSetImpl.setMvccVersion(1);
+
+		LayoutSetImpl layoutSetImpl = new LayoutSetImpl();
+
+		layoutSetImpl.setMvccVersion(1);
+
+		layoutSetImpl.copyCacheFields(sourceLayoutSetImpl);
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				layoutSetImpl, "_companyFallbackVirtualHostname"));
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				layoutSetImpl, "_virtualHostnames"));
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				sourceLayoutSetImpl, "_companyFallbackVirtualHostname"));
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				sourceLayoutSetImpl, "_virtualHostnames"));
+	}
+
 }
