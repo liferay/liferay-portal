@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Cookies REST Client
 Bundle-SymbolicName: com.liferay.cookies.rest.client
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Export-Package:\
 	com.liferay.cookies.rest.client.dto.v1_0,\
 	com.liferay.cookies.rest.client.function
