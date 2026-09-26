@@ -113,6 +113,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
+import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
@@ -263,55 +264,12 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 	}
 
 	@Test
+	@TestInfo("LPD-107119")
 	public void testCopyContentLayoutStructureWithSegmentsExperiences()
 		throws Exception {
 
-		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout sourceLayout = targetLayout.fetchDraftLayout();
-
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					_group.getGroupId(), sourceLayout.getPlid());
-
-		SegmentsExperience segmentsExperience1 =
-			SegmentsTestUtil.addSegmentsExperience(
-				_group.getGroupId(), sourceLayout.getPlid());
-
-		_layoutPageTemplateStructureRelLocalService.
-			addLayoutPageTemplateStructureRel(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
-				segmentsExperience1.getSegmentsExperienceId(),
-				layoutPageTemplateStructure.getDefaultSegmentsExperienceData(),
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
-
-		SegmentsExperience segmentsExperience2 =
-			SegmentsTestUtil.addSegmentsExperience(
-				_group.getGroupId(), sourceLayout.getPlid());
-
-		_layoutPageTemplateStructureRelLocalService.
-			addLayoutPageTemplateStructureRel(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
-				segmentsExperience2.getSegmentsExperienceId(),
-				layoutPageTemplateStructure.getDefaultSegmentsExperienceData(),
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
-
-		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
-
-		_assertSegmentsExperiences(sourceLayout, targetLayout, 3);
-
-		_segmentsExperienceLocalService.updateSegmentsExperiencePriority(
-			TestPropsValues.getUserId(),
-			segmentsExperience2.getSegmentsExperienceId(), 1);
-
-		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
-
-		_assertSegmentsExperiences(sourceLayout, targetLayout, 3);
+		_testCopyContentLayoutStructureWithSegmentsExperiences();
+		_testCopyContentLayoutStructureWithSegmentsExperiencesToAnotherGroup();
 	}
 
 	@Test
@@ -1911,6 +1869,26 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		}
 	}
 
+	private void _assertSegmentsExperience(
+		SegmentsExperience sourceSegmentsExperience,
+		String segmentsEntryScopeERC, Layout targetLayout) {
+
+		SegmentsExperience targetSegmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				targetLayout.getGroupId(),
+				sourceSegmentsExperience.getSegmentsExperienceKey(),
+				targetLayout.getPlid());
+
+		Assert.assertEquals(
+			targetLayout.getGroupId(), targetSegmentsExperience.getGroupId());
+		Assert.assertEquals(
+			sourceSegmentsExperience.getSegmentsEntryERC(),
+			targetSegmentsExperience.getSegmentsEntryERC());
+		Assert.assertEquals(
+			segmentsEntryScopeERC,
+			targetSegmentsExperience.getSegmentsEntryScopeERC());
+	}
+
 	private void _assertSegmentsExperiences(
 		Layout sourceLayout, Layout targetLayout, int totalCount) {
 
@@ -2115,6 +2093,118 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_assertFragmentEntryLink(
 			null, targetFragmentEntryLinks.get(3), StringPool.BLANK,
 			targetLayout);
+	}
+
+	private void _testCopyContentLayoutStructureWithSegmentsExperiences()
+		throws Exception {
+
+		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout sourceLayout = targetLayout.fetchDraftLayout();
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					_group.getGroupId(), sourceLayout.getPlid());
+
+		SegmentsExperience segmentsExperience1 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), sourceLayout.getPlid());
+
+		_layoutPageTemplateStructureRelLocalService.
+			addLayoutPageTemplateStructureRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+				segmentsExperience1.getSegmentsExperienceId(),
+				layoutPageTemplateStructure.getDefaultSegmentsExperienceData(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		SegmentsExperience segmentsExperience2 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), sourceLayout.getPlid());
+
+		_layoutPageTemplateStructureRelLocalService.
+			addLayoutPageTemplateStructureRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+				segmentsExperience2.getSegmentsExperienceId(),
+				layoutPageTemplateStructure.getDefaultSegmentsExperienceData(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		_assertSegmentsExperiences(sourceLayout, targetLayout, 3);
+
+		_segmentsExperienceLocalService.updateSegmentsExperiencePriority(
+			TestPropsValues.getUserId(),
+			segmentsExperience2.getSegmentsExperienceId(), 1);
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		_assertSegmentsExperiences(sourceLayout, targetLayout, 3);
+	}
+
+	private void _testCopyContentLayoutStructureWithSegmentsExperiencesToAnotherGroup()
+		throws Exception {
+
+		Layout sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					_group.getGroupId(), sourceLayout.getPlid());
+
+		SegmentsExperience segmentsExperience1 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), sourceLayout.getPlid());
+
+		_layoutPageTemplateStructureRelLocalService.
+			addLayoutPageTemplateStructureRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+				segmentsExperience1.getSegmentsExperienceId(),
+				layoutPageTemplateStructure.getDefaultSegmentsExperienceData(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		Group targetGroup = GroupTestUtil.addGroup();
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			targetGroup.getGroupId());
+
+		SegmentsExperience segmentsExperience2 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), segmentsEntry.getExternalReferenceCode(),
+				targetGroup.getExternalReferenceCode(), sourceLayout.getPlid());
+
+		_layoutPageTemplateStructureRelLocalService.
+			addLayoutPageTemplateStructureRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+				segmentsExperience2.getSegmentsExperienceId(),
+				layoutPageTemplateStructure.getDefaultSegmentsExperienceData(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(targetGroup);
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		_assertSegmentsExperience(
+			segmentsExperience1, _group.getExternalReferenceCode(),
+			targetLayout);
+		_assertSegmentsExperience(
+			segmentsExperience2, StringPool.BLANK, targetLayout);
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		_assertSegmentsExperience(
+			segmentsExperience1, _group.getExternalReferenceCode(),
+			targetLayout);
+		_assertSegmentsExperience(
+			segmentsExperience2, StringPool.BLANK, targetLayout);
 	}
 
 	private static final int _NUMBER_FRAGMENT_ENTRY_LINKS = 10;
