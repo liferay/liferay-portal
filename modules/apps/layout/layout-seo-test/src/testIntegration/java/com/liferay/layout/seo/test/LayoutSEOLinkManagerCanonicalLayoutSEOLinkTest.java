@@ -10,6 +10,10 @@ import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -32,6 +36,7 @@ import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -51,10 +56,13 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -234,8 +242,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
 			TestPropsValues.getUserId(), _group.getGroupId(), false,
 			_layout.getLayoutId(), false,
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), "http://example.com"),
+			Collections.singletonMap(LocaleUtil.getDefault(), _CANONICAL_URL),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		LayoutSEOLink canonicalLayoutSEOLink =
@@ -252,8 +259,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
 			TestPropsValues.getUserId(), _group.getGroupId(), false,
 			_layout.getLayoutId(), true,
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), "http://example.com"),
+			Collections.singletonMap(LocaleUtil.getDefault(), _CANONICAL_URL),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		String canonicalURL = _portal.getCanonicalURL(
@@ -263,8 +269,51 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			_layoutSEOLinkManager.getCanonicalLayoutSEOLink(
 				_layout, LocaleUtil.getDefault(), canonicalURL, _themeDisplay);
 
-		Assert.assertEquals(
-			"http://example.com", canonicalLayoutSEOLink.getHref());
+		Assert.assertEquals(_CANONICAL_URL, canonicalLayoutSEOLink.getHref());
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testGetCanonicalLayoutURLDesignLibraryCustomCanonicalURLNotApplied()
+		throws Exception {
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()), null,
+				true, WorkflowConstants.STATUS_APPROVED);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			layout.isPrivateLayout(), layout.getLayoutId(), true,
+			Collections.singletonMap(LocaleUtil.getDefault(), _CANONICAL_URL),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Layout virtualLayout = new VirtualLayout(layout, _group);
+
+		String canonicalURL = _portal.getCanonicalURL(
+			RandomTestUtil.randomString(), _themeDisplay, virtualLayout, false,
+			false);
+
+		LayoutSEOLink canonicalLayoutSEOLink =
+			_layoutSEOLinkManager.getCanonicalLayoutSEOLink(
+				virtualLayout, LocaleUtil.getDefault(), canonicalURL,
+				_themeDisplay);
+
+		Assert.assertEquals(canonicalURL, canonicalLayoutSEOLink.getHref());
+
+		for (LayoutSEOLink layoutSEOLink :
+				_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
+					virtualLayout, LocaleUtil.getDefault(), canonicalURL,
+					Collections.singleton(LocaleUtil.getDefault()))) {
+
+			Assert.assertNotEquals(_CANONICAL_URL, layoutSEOLink.getHref());
+		}
 	}
 
 	@Test
@@ -286,6 +335,49 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 					alternateURLs.getOrDefault(LocaleUtil.CHINA, canonicalURL),
 					canonicalLayoutSEOLink.getHref());
 			});
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testGetLayoutFriendlyURLDesignLibraryDisplayPageDropsVirtualGroupPrefix()
+		throws Exception {
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()), null,
+				true, WorkflowConstants.STATUS_APPROVED);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Layout virtualLayout = new VirtualLayout(layout, _group);
+
+		Assert.assertEquals(
+			layout.getFriendlyURL(), virtualLayout.getFriendlyURL());
+		Assert.assertEquals(
+			layout.getFriendlyURL(LocaleUtil.getDefault()),
+			virtualLayout.getFriendlyURL(LocaleUtil.getDefault()));
+		Assert.assertEquals(
+			layout.getFriendlyURL(),
+			_themeDisplay.getLayoutFriendlyURL(virtualLayout));
+	}
+
+	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntries.add(depotEntry);
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		return depotEntry.getGroup();
 	}
 
 	private JournalArticle _addJournalArticle() throws Exception {
@@ -414,6 +506,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		}
 	}
 
+	private static final String _CANONICAL_URL = "http://example.com";
+
 	private static final String _LAYOUT_SEO_CONFIGURATION_PID =
 		"com.liferay.layout.seo.internal.configuration." +
 			"LayoutSEOCompanyConfiguration";
@@ -432,6 +526,15 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
