@@ -10,6 +10,7 @@ import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -46,10 +47,7 @@ public class SitemapURLProviderHelperImpl implements SitemapURLProviderHelper {
 			return true;
 		}
 
-		LayoutSEOEntry layoutSEOEntry =
-			_layoutSEOEntryLocalService.fetchLayoutSEOEntry(
-				layout.getGroupId(), layout.isPrivateLayout(),
-				layout.getLayoutId());
+		LayoutSEOEntry layoutSEOEntry = _fetchLayoutSEOEntry(layout);
 
 		if ((layoutSEOEntry != null) &&
 			layoutSEOEntry.isCanonicalURLEnabled()) {
@@ -95,6 +93,20 @@ public class SitemapURLProviderHelperImpl implements SitemapURLProviderHelper {
 		}
 
 		return false;
+	}
+
+	private LayoutSEOEntry _fetchLayoutSEOEntry(Layout layout) {
+		if (layout instanceof VirtualLayout) {
+			VirtualLayout virtualLayout = (VirtualLayout)layout;
+
+			if (virtualLayout.isSourceGroupDepot()) {
+				return null;
+			}
+		}
+
+		return _layoutSEOEntryLocalService.fetchLayoutSEOEntry(
+			layout.getGroupId(), layout.isPrivateLayout(),
+			layout.getLayoutId());
 	}
 
 	@Reference
