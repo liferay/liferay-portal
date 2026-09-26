@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend CSS Variables Web
 Bundle-SymbolicName: com.liferay.frontend.css.variables.web
-Bundle-Version: 2.0.16
+Bundle-Version: 2.0.17
 Web-ContextPath: /frontend-css-variables-web
