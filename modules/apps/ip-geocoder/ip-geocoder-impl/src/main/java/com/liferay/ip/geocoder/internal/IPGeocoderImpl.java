@@ -169,10 +169,11 @@ public class IPGeocoderImpl implements IPGeocoder {
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
-		String mockIPGeocoderRemoteAddr =
-			originalHttpServletRequest.getParameter("mockIPGeocoderRemoteAddr");
+		String mockIPGeocoderRemoteAddr = GetterUtil.getString(
+			originalHttpServletRequest.getParameter(
+				"mockIPGeocoderRemoteAddr"));
 
-		if (mockIPGeocoderRemoteAddr != null) {
+		if (Validator.isIPAddress(mockIPGeocoderRemoteAddr)) {
 			return mockIPGeocoderRemoteAddr;
 		}
 

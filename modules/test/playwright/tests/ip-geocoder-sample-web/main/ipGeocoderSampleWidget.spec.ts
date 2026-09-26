@@ -50,12 +50,20 @@ test(
 			});
 
 			await guestPage.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyURL}`
+			);
+
+			const portlet = guestPage.locator('.portlet-ip-geocoder-sample');
+
+			const portletInnerText = await portlet.innerText();
+
+			await guestPage.goto(
 				`/web${site.friendlyUrlPath}${layout.friendlyURL}?mockIPGeocoderRemoteAddr=${encodeURIComponent('<script>alert(1)</script>')}`
 			);
 
-			await expect(
-				guestPage.locator('.portlet-ip-geocoder-sample')
-			).toContainText('IP Address: <script>alert(1)</script>');
+			await expect(portlet).toHaveText(portletInnerText, {
+				useInnerText: true,
+			});
 		}
 		finally {
 			await guestContext.close();
