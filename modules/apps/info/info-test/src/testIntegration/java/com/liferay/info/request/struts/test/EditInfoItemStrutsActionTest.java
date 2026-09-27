@@ -8,6 +8,7 @@ package com.liferay.info.request.struts.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.info.exception.InfoFormPrincipalException;
 import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.form.InfoForm;
@@ -69,6 +70,7 @@ import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -592,6 +594,55 @@ public class EditInfoItemStrutsActionTest {
 		finally {
 			serviceRegistration.unregister();
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-106864")
+	public void testExecuteWithoutUpdatePermission() throws Exception {
+		String stringValue = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _testAddInfoItem(
+			null, null, null, null, null, null, null, null, null, null, null,
+			null, null, stringValue, WorkflowConstants.STATUS_APPROVED);
+
+		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				guestUser)) {
+
+			MockHttpServletResponse mockHttpServletResponse =
+				new MockHttpServletResponse();
+
+			UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+
+			PipingServletResponse pipingServletResponse =
+				new PipingServletResponse(
+					mockHttpServletResponse, unsyncStringWriter);
+
+			UploadPortletRequest uploadPortletRequest =
+				_getUploadPortletRequest(
+					null, null, null, null, objectEntry.getObjectEntryId(),
+					null, null, null, null, null, null, null, null, null, null,
+					null, null, null, WorkflowConstants.STATUS_APPROVED,
+					RandomTestUtil.randomString());
+
+			_processEvents(
+				mockHttpServletResponse, uploadPortletRequest, guestUser);
+
+			_editInfoItemStrutsAction.execute(
+				uploadPortletRequest, pipingServletResponse);
+
+			Assert.assertTrue(
+				SessionErrors.get(uploadPortletRequest, _formItemId) instanceof
+					InfoFormPrincipalException);
+		}
+
+		objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(stringValue, values.get("myText"));
 	}
 
 	@Test
