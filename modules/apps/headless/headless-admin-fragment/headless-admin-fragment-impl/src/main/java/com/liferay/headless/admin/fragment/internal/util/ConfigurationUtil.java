@@ -24,7 +24,11 @@ import com.liferay.headless.admin.fragment.dto.v1_0.FieldSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.SelectField;
+import com.liferay.headless.admin.fragment.dto.v1_0.SelectFragmentConfigurationFieldDefaultValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.SelectTypeOptions;
 import com.liferay.headless.admin.fragment.dto.v1_0.TypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.ValidValue;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
@@ -534,6 +538,18 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "select")) {
+			field = new SelectField() {
+				{
+					setDefaultValue(
+						() -> _toSelectFragmentConfigurationFieldDefaultValue(
+							fieldJSONObject.getString("defaultValue", null)));
+					setTypeOptions(
+						() -> _toSelectTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else {
 			throw new IllegalStateException(
 				StringBundler.concat(
@@ -616,6 +632,14 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(itemSelectorField.getTypeOptions())
+			);
+		}
+		else if (field instanceof SelectField selectField) {
+			fieldJSONObject.put(
+				"defaultValue", _toString(selectField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(selectField.getTypeOptions())
 			);
 		}
 
@@ -920,6 +944,62 @@ public class ConfigurationUtil {
 		return itemValue;
 	}
 
+	private static SelectFragmentConfigurationFieldDefaultValue
+		_toSelectFragmentConfigurationFieldDefaultValue(String value) {
+
+		if (value == null) {
+			return null;
+		}
+
+		SelectFragmentConfigurationFieldDefaultValue
+			selectFragmentConfigurationFieldDefaultValue =
+				new SelectFragmentConfigurationFieldDefaultValue();
+
+		selectFragmentConfigurationFieldDefaultValue.setValue(() -> value);
+
+		return selectFragmentConfigurationFieldDefaultValue;
+	}
+
+	private static SelectTypeOptions _toSelectTypeOptions(
+		JSONObject typeOptionsJSONObject) {
+
+		if (typeOptionsJSONObject == null) {
+			return null;
+		}
+
+		return new SelectTypeOptions() {
+			{
+				setDependency(() -> _toDependencyMap(typeOptionsJSONObject));
+				setValidValues(
+					() -> {
+						JSONArray validValuesJSONArray =
+							typeOptionsJSONObject.getJSONArray("validValues");
+
+						if (validValuesJSONArray == null) {
+							return null;
+						}
+
+						return JSONUtil.toArray(
+							validValuesJSONArray,
+							validValueJSONObject -> _toValidValue(
+								validValueJSONObject),
+							ValidValue.class);
+					});
+			}
+		};
+	}
+
+	private static String _toString(
+		SelectFragmentConfigurationFieldDefaultValue
+			selectFragmentConfigurationFieldDefaultValue) {
+
+		if (selectFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		return selectFragmentConfigurationFieldDefaultValue.getValue();
+	}
+
 	private static TypeOptions _toTypeOptions(
 		JSONObject typeOptionsJSONObject) {
 
@@ -1001,6 +1081,34 @@ public class ConfigurationUtil {
 	}
 
 	private static JSONObject _toTypeOptionsJSONObject(
+		SelectTypeOptions selectTypeOptions) {
+
+		if (selectTypeOptions == null) {
+			return null;
+		}
+
+		JSONObject typeOptionsJSONObject = JSONUtil.put(
+			"dependency",
+			_toDependencyJSONObject(selectTypeOptions.getDependency()));
+
+		ValidValue[] validValues = selectTypeOptions.getValidValues();
+
+		if (ArrayUtil.isNotEmpty(validValues)) {
+			typeOptionsJSONObject.put(
+				"validValues",
+				JSONUtil.toJSONArray(
+					validValues,
+					validValue -> _toValidValueJSONObject(validValue), _log));
+		}
+
+		if (typeOptionsJSONObject.length() == 0) {
+			return null;
+		}
+
+		return typeOptionsJSONObject;
+	}
+
+	private static JSONObject _toTypeOptionsJSONObject(
 		TypeOptions typeOptions) {
 
 		if (typeOptions == null) {
@@ -1015,6 +1123,27 @@ public class ConfigurationUtil {
 		}
 
 		return JSONUtil.put("dependency", dependencyJSONObject);
+	}
+
+	private static ValidValue _toValidValue(JSONObject validValueJSONObject) {
+		if (validValueJSONObject == null) {
+			return null;
+		}
+
+		return new ValidValue() {
+			{
+				setLabel(() -> validValueJSONObject.getString("label", null));
+				setValue(() -> validValueJSONObject.getString("value", null));
+			}
+		};
+	}
+
+	private static JSONObject _toValidValueJSONObject(ValidValue validValue) {
+		return JSONUtil.put(
+			"label", validValue.getLabel()
+		).put(
+			"value", validValue.getValue()
+		);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
