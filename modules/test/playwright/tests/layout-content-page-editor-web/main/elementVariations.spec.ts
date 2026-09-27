@@ -1152,6 +1152,123 @@ test(
 );
 
 test(
+	'Removes the audience from the element variations of a site taken out of its scope',
+	{tag: '@LPD-106899'},
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
+
+		// Create an audience for every site and a second site
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		const audiencesEntry =
+			await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
+				name: audienceName,
+			});
+
+		const otherSite = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		// Create a page with a Heading and a Paragraph fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-paragraph',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Create a variation replacing the heading HTML and another one
+		// hiding the paragraph, both for the audience
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const headingVariationName = 'Replace heading';
+		const paragraphVariationName = 'Hide paragraph';
+		const variationText = 'Variation ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${variationText}</span>`,
+			name: headingVariationName,
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			hide: true,
+			name: paragraphVariationName,
+			pageElementLabel: 'Paragraph (element-text)',
+		});
+
+		// Publish the page and check that the variations are applied
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		const layoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+		const paragraphDefaultText =
+			'A paragraph is a self-contained unit of a discourse';
+
+		await page.goto(layoutURL);
+
+		await expect(page.getByText(variationText)).toBeVisible();
+
+		await expect(page.getByText(paragraphDefaultText)).not.toBeVisible();
+
+		// Restrict the audience scope to the second site
+
+		await apiHelpers.jsonWebServicesAudiencesEntry.updateAudiencesEntry({
+			audiencesEntry,
+			groupERCs: [otherSite.externalReferenceCode],
+		});
+
+		// The page renders unchanged since the variations lost the audience
+
+		await page.goto(layoutURL);
+
+		await expect(page.getByText('Heading Example')).toBeVisible();
+
+		await expect(page.getByText(paragraphDefaultText)).toBeVisible();
+
+		await expect(page.getByText(variationText)).not.toBeVisible();
+
+		// Both variations are marked as missing an audience in the editor
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		await expect(
+			elementVariationsPage
+				.getVariationListItem(headingVariationName)
+				.getByText('Missing Audience')
+		).toBeVisible();
+
+		await expect(
+			elementVariationsPage
+				.getVariationListItem(paragraphVariationName)
+				.getByText('Missing Audience')
+		).toBeVisible();
+
+		await expect(elementVariationsPage.missingAudiencesAlert).toContainText(
+			'There are missing audiences for some variations.'
+		);
+	}
+);
+
+test(
 	'Audiences out of the site scope are not offered for element variations',
 	{tag: '@LPD-107101'},
 	async ({

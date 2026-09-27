@@ -86,4 +86,47 @@ export class JSONWebServicesAudiencesEntryApiHelper {
 			}
 		);
 	}
+
+	async updateAudiencesEntry({
+		audiencesEntry,
+		groupERCs,
+		rules = [],
+	}: {
+		audiencesEntry: AudiencesEntry;
+		groupERCs?: string[];
+		rules?: AudiencesEntryRule[];
+	}): Promise<AudiencesEntry> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append(
+			'audiencesEntryId',
+			String(audiencesEntry.audiencesEntryId)
+		);
+		urlSearchParams.append(
+			'externalReferenceCode',
+			audiencesEntry.externalReferenceCode
+		);
+
+		if (groupERCs) {
+			urlSearchParams.append('groupERCs', JSON.stringify(groupERCs));
+		}
+		else {
+			urlSearchParams.append('-groupERCs', '');
+		}
+
+		urlSearchParams.append(
+			'json',
+			JSON.stringify({conjunction: 'AND', rules})
+		);
+		urlSearchParams.append('name', audiencesEntry.name);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/update-audiences-entry`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
 }
