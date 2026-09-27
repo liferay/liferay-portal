@@ -85,6 +85,41 @@
 					"type": "checkbox"
 				},
 				{
+					"defaultValue": {
+						"cssClass": "brand-color-1",
+						"rgbValue": "#0B5FFF"
+					},
+					"name": "colorPaletteByCSSClassAndRGBValue",
+					"type": "colorPalette"
+				},
+				{
+					"defaultValue": {
+						"color": "primary"
+					},
+					"name": "colorPaletteByColor",
+					"type": "colorPalette"
+				},
+				{
+					"defaultValue": "{\"color\": \"success\"}",
+					"name": "colorPaletteByColorAsString",
+					"type": "colorPalette"
+				},
+				{
+					"defaultValue": {
+						"color": "secondary"
+					},
+					"name": "colorPaletteVisibleWhenCheckboxTrue",
+					"type": "colorPalette",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
 					"defaultValue": "#FFFFFF",
 					"name": "colorPicker",
 					"type": "colorPicker"

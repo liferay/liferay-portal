@@ -70,6 +70,21 @@
 					}
 				},
 				{
+					"defaultValue": {
+						"cssClass": "brand-color-2",
+						"rgbValue": "#FF0000"
+					},
+					"name": "colorPaletteByCSSClassAndRGBValue",
+					"type": "colorPalette"
+				},
+				{
+					"defaultValue": {
+						"color": "danger"
+					},
+					"name": "colorPaletteByColor",
+					"type": "colorPalette"
+				},
+				{
 					"defaultValue": "#000000",
 					"name": "colorPicker",
 					"type": "colorPicker"
