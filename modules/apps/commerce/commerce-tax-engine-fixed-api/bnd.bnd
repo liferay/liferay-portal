@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Tax Engine Fixed API
 Bundle-SymbolicName: com.liferay.commerce.tax.engine.fixed.api
-Bundle-Version: 11.0.1
+Bundle-Version: 11.0.2
 Export-Package:\
 	com.liferay.commerce.tax.engine.fixed.configuration,\
 	com.liferay.commerce.tax.engine.fixed.exception,\
