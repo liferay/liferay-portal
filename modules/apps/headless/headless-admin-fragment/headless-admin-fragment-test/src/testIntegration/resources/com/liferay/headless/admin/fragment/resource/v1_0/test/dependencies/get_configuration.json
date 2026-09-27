@@ -63,6 +63,16 @@
 					},
 					"name": "itemByNonexistentClassPK",
 					"type": "itemSelector"
+				},
+				{
+					"defaultValue": {
+						"className": "com.liferay.journal.model.JournalArticle",
+						"classNameId": "${JOURNAL_ARTICLE_CLASS_NAME_ID}",
+						"classPK": "${NONEXISTENT_CLASS_PK}",
+						"externalReferenceCode": "item-nonexistent-class-pk-erc"
+					},
+					"name": "itemByNonexistentClassPKAndExternalReferenceCode",
+					"type": "itemSelector"
 				}
 			]
 		}
