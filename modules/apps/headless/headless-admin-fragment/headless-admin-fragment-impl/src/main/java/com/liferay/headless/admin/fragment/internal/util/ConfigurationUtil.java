@@ -14,6 +14,9 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.headless.admin.fragment.dto.v1_0.CategoryFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.CategoryTreeNodeSelectorField;
+import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxField;
+import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxFragmentConfigurationFieldDefaultValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxTypeOptions;
 import com.liferay.headless.admin.fragment.dto.v1_0.Configuration;
 import com.liferay.headless.admin.fragment.dto.v1_0.Dependency;
 import com.liferay.headless.admin.fragment.dto.v1_0.Field;
@@ -241,6 +244,25 @@ public class ConfigurationUtil {
 			className, externalReferenceCode, groupId);
 	}
 
+	private static Boolean _toBoolean(
+		CheckboxFragmentConfigurationFieldDefaultValue
+			checkboxFragmentConfigurationFieldDefaultValue) {
+
+		if (checkboxFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		return checkboxFragmentConfigurationFieldDefaultValue.getValue();
+	}
+
+	private static Boolean _toBoolean(JSONObject fieldJSONObject) {
+		if (!fieldJSONObject.has("defaultValue")) {
+			return null;
+		}
+
+		return fieldJSONObject.getBoolean("defaultValue");
+	}
+
 	private static CategoryFragmentConfigurationFieldDefaultValue
 		_toCategoryFragmentConfigurationFieldDefaultValue(
 			ItemExternalReference itemExternalReference) {
@@ -357,6 +379,39 @@ public class ConfigurationUtil {
 		);
 	}
 
+	private static CheckboxFragmentConfigurationFieldDefaultValue
+		_toCheckboxFragmentConfigurationFieldDefaultValue(Boolean value) {
+
+		if (value == null) {
+			return null;
+		}
+
+		CheckboxFragmentConfigurationFieldDefaultValue
+			checkboxFragmentConfigurationFieldDefaultValue =
+				new CheckboxFragmentConfigurationFieldDefaultValue();
+
+		checkboxFragmentConfigurationFieldDefaultValue.setValue(() -> value);
+
+		return checkboxFragmentConfigurationFieldDefaultValue;
+	}
+
+	private static CheckboxTypeOptions _toCheckboxTypeOptions(
+		JSONObject typeOptionsJSONObject) {
+
+		if (typeOptionsJSONObject == null) {
+			return null;
+		}
+
+		return new CheckboxTypeOptions() {
+			{
+				setDependency(() -> _toDependencyMap(typeOptionsJSONObject));
+				setDisplayType(
+					() -> CheckboxTypeOptions.DisplayType.create(
+						typeOptionsJSONObject.getString("displayType")));
+			}
+		};
+	}
+
 	private static Dependency _toDependency(JSONObject dependencyJSONObject) {
 		return new Dependency() {
 			{
@@ -452,6 +507,18 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "checkbox")) {
+			field = new CheckboxField() {
+				{
+					setDefaultValue(
+						() -> _toCheckboxFragmentConfigurationFieldDefaultValue(
+							_toBoolean(fieldJSONObject)));
+					setTypeOptions(
+						() -> _toCheckboxTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else if (Objects.equals(type, "itemSelector")) {
 			field = new ItemSelectorField() {
 				{
@@ -530,6 +597,14 @@ public class ConfigurationUtil {
 				"typeOptions",
 				_toTypeOptionsJSONObject(
 					categoryTreeNodeSelectorField.getTypeOptions())
+			);
+		}
+		else if (field instanceof CheckboxField checkboxField) {
+			fieldJSONObject.put(
+				"defaultValue", _toBoolean(checkboxField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(checkboxField.getTypeOptions())
 			);
 		}
 		else if (field instanceof ItemSelectorField itemSelectorField) {
@@ -864,6 +939,30 @@ public class ConfigurationUtil {
 				setDependency(() -> dependencyMap);
 			}
 		};
+	}
+
+	private static JSONObject _toTypeOptionsJSONObject(
+		CheckboxTypeOptions checkboxTypeOptions) {
+
+		if (checkboxTypeOptions == null) {
+			return null;
+		}
+
+		JSONObject typeOptionsJSONObject = JSONUtil.put(
+			"dependency",
+			_toDependencyJSONObject(checkboxTypeOptions.getDependency()));
+
+		if (checkboxTypeOptions.getDisplayType() != null) {
+			typeOptionsJSONObject.put(
+				"displayType",
+				String.valueOf(checkboxTypeOptions.getDisplayType()));
+		}
+
+		if (typeOptionsJSONObject.length() == 0) {
+			return null;
+		}
+
+		return typeOptionsJSONObject;
 	}
 
 	private static JSONObject _toTypeOptionsJSONObject(
