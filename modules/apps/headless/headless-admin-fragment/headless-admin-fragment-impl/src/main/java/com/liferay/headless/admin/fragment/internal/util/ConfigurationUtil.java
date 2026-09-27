@@ -17,6 +17,8 @@ import com.liferay.headless.admin.fragment.dto.v1_0.CategoryTreeNodeSelectorFiel
 import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxField;
 import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.ColorPaletteField;
+import com.liferay.headless.admin.fragment.dto.v1_0.ColorPaletteFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ColorPickerField;
 import com.liferay.headless.admin.fragment.dto.v1_0.ColorPickerFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.Configuration;
@@ -41,6 +43,7 @@ import com.liferay.headless.admin.fragment.dto.v1_0.TypeOptions;
 import com.liferay.headless.admin.fragment.dto.v1_0.ValidValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.Validation;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.ItemFragmentConfigurationFieldValue;
@@ -220,6 +223,31 @@ public class ConfigurationUtil {
 		}
 
 		return null;
+	}
+
+	private static JSONObject _getDefaultValueJSONObject(
+		JSONObject fieldJSONObject) {
+
+		Object defaultValue = fieldJSONObject.opt("defaultValue");
+
+		if (defaultValue instanceof JSONObject) {
+			return (JSONObject)defaultValue;
+		}
+
+		if (!(defaultValue instanceof String)) {
+			return null;
+		}
+
+		try {
+			return JSONFactoryUtil.createJSONObject((String)defaultValue);
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+
+			return null;
+		}
 	}
 
 	private static String _getScopeExternalReferenceCode(Scope scope) {
@@ -427,6 +455,69 @@ public class ConfigurationUtil {
 		};
 	}
 
+	private static ColorPaletteFragmentConfigurationFieldDefaultValue
+		_toColorPaletteFragmentConfigurationFieldDefaultValue(
+			ColorPaletteValue colorPaletteValue) {
+
+		if (colorPaletteValue == null) {
+			return null;
+		}
+
+		return new ColorPaletteFragmentConfigurationFieldDefaultValue() {
+			{
+				setValue(() -> colorPaletteValue);
+			}
+		};
+	}
+
+	private static JSONObject _toColorPaletteJSONObject(
+		ColorPaletteFragmentConfigurationFieldDefaultValue
+			colorPaletteFragmentConfigurationFieldDefaultValue) {
+
+		if (colorPaletteFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		ColorPaletteValue colorPaletteValue =
+			colorPaletteFragmentConfigurationFieldDefaultValue.getValue();
+
+		if (colorPaletteValue == null) {
+			return null;
+		}
+
+		JSONObject colorPaletteJSONObject = JSONUtil.put(
+			"color", colorPaletteValue.getColor()
+		).put(
+			"cssClass", colorPaletteValue.getCssClass()
+		).put(
+			"rgbValue", colorPaletteValue.getRgbValue()
+		);
+
+		if (colorPaletteJSONObject.length() == 0) {
+			return null;
+		}
+
+		return colorPaletteJSONObject;
+	}
+
+	private static ColorPaletteValue _toColorPaletteValue(
+		JSONObject defaultValueJSONObject) {
+
+		if (JSONUtil.isEmpty(defaultValueJSONObject)) {
+			return null;
+		}
+
+		return new ColorPaletteValue() {
+			{
+				setColor(() -> defaultValueJSONObject.getString("color", null));
+				setCssClass(
+					() -> defaultValueJSONObject.getString("cssClass", null));
+				setRgbValue(
+					() -> defaultValueJSONObject.getString("rgbValue", null));
+			}
+		};
+	}
+
 	private static ColorPickerFragmentConfigurationFieldDefaultValue
 		_toColorPickerFragmentConfigurationFieldDefaultValue(String value) {
 
@@ -546,6 +637,21 @@ public class ConfigurationUtil {
 							_toBoolean(fieldJSONObject)));
 					setTypeOptions(
 						() -> _toCheckboxTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
+		else if (Objects.equals(type, "colorPalette")) {
+			field = new ColorPaletteField() {
+				{
+					setDefaultValue(
+						() ->
+							_toColorPaletteFragmentConfigurationFieldDefaultValue(
+								_toColorPaletteValue(
+									_getDefaultValueJSONObject(
+										fieldJSONObject))));
+					setTypeOptions(
+						() -> _toTypeOptions(
 							fieldJSONObject.getJSONObject("typeOptions")));
 				}
 			};
@@ -688,6 +794,15 @@ public class ConfigurationUtil {
 				_toTypeOptionsJSONObject(checkboxField.getTypeOptions())
 			);
 		}
+		else if (field instanceof ColorPaletteField colorPaletteField) {
+			fieldJSONObject.put(
+				"defaultValue",
+				_toColorPaletteJSONObject(colorPaletteField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(colorPaletteField.getTypeOptions())
+			);
+		}
 		else if (field instanceof ColorPickerField colorPickerField) {
 			fieldJSONObject.put(
 				"defaultValue", _toString(colorPickerField.getDefaultValue())
@@ -805,23 +920,10 @@ public class ConfigurationUtil {
 					fragmentConfigurationFieldValueDTOConverter,
 			FragmentEntry fragmentEntry) {
 
-		Object defaultValue = fieldJSONObject.opt("defaultValue");
+		JSONObject defaultValueJSONObject = _getDefaultValueJSONObject(
+			fieldJSONObject);
 
-		if (defaultValue instanceof String) {
-			try {
-				defaultValue = JSONFactoryUtil.createJSONObject(
-					(String)defaultValue);
-			}
-			catch (JSONException jsonException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(jsonException);
-				}
-
-				return null;
-			}
-		}
-
-		if (!(defaultValue instanceof JSONObject)) {
+		if (defaultValueJSONObject == null) {
 			return null;
 		}
 
@@ -832,7 +934,8 @@ public class ConfigurationUtil {
 					HashMapBuilder.<String, Object>put(
 						"companyId", fragmentEntry.getCompanyId()
 					).put(
-						"fragmentFragmentConfigurationFieldValue", defaultValue
+						"fragmentFragmentConfigurationFieldValue",
+						defaultValueJSONObject
 					).put(
 						"scopeGroupId", fragmentEntry.getGroupId()
 					).build(),
