@@ -92,7 +92,8 @@ public class DesignLibraryUtil {
 			return false;
 		}
 
-		return true;
+		return FeatureFlagManagerUtil.isEnabled(
+			depotEntry.getCompanyId(), "LPD-57283");
 	}
 
 }

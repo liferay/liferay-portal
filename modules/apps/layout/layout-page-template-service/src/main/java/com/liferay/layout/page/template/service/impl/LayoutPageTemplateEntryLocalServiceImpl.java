@@ -36,7 +36,6 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchClassNameException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -1250,9 +1249,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 				LayoutPageTemplateEntryTypeConstants.BASIC, type) &&
 			  !Objects.equals(
 				  LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, type)) ||
-			 !FeatureFlagManagerUtil.isEnabled(
-				 group.getCompanyId(), "LPD-57283") ||
-			 !DesignLibraryUtil.isDesignLibraryScope(group))) {
+			 !DesignLibraryUtil.isDesignLibraryScope(groupId))) {
 
 			throw new LayoutPageTemplateEntryGroupIdException();
 		}
