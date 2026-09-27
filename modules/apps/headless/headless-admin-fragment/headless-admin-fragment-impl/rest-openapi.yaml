@@ -41,6 +41,42 @@ components:
             description:
                 A `categoryTreeNodeSelector` field of a fragment configuration's field set.
             type: object
+        CheckboxField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/CheckboxFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/CheckboxTypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `checkbox` field of a fragment configuration's field set.
+            type: object
+        CheckboxFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `checkbox` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    description:
+                        A flag that indicates whether the field is checked by default. The stored strings `true` and `false` are returned as booleans.
+                    type: boolean
+            type: object
+        CheckboxTypeOptions:
+            allOf:
+                -   $ref: "#/components/schemas/TypeOptions"
+                -   properties:
+                        displayType:
+                            description:
+                                How the field is displayed in the page editor.
+                            enum: [checkbox, toggle]
+                            type: string
+            description:
+                The type-specific options of a `checkbox` fragment configuration field.
+            type: object
         Configuration:
             description:
                 A fragment's configuration, which defines the field sets a page creator can use to customize the fragment.
@@ -88,6 +124,7 @@ components:
             discriminator:
                 mapping:
                     categoryTreeNodeSelector: "#/components/schemas/CategoryTreeNodeSelectorField"
+                    checkbox: "#/components/schemas/CheckboxField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
                 propertyName: type
             properties:
@@ -117,7 +154,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, itemSelector]
+                    enum: [categoryTreeNodeSelector, checkbox, itemSelector]
                     type: string
             required:
                 -   name
