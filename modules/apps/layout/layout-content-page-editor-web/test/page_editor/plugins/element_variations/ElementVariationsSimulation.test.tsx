@@ -29,6 +29,12 @@ const EXPERIENCES = [
 	},
 ];
 
+function loadIframe(iframe: HTMLIFrameElement) {
+	(iframe.contentWindow as any).Liferay = Liferay;
+
+	fireEvent.load(iframe);
+}
+
 async function getSimulationURL() {
 	const iframe = await screen.findByTitle('page-simulation');
 
@@ -125,9 +131,35 @@ describe('ElementVariationsSimulation', () => {
 
 		expect(iframe.parentElement).toHaveAttribute('aria-busy', 'true');
 
-		fireEvent.load(iframe);
+		loadIframe(iframe as HTMLIFrameElement);
 
 		expect(iframe.parentElement).toHaveAttribute('aria-busy', 'false');
+	});
+
+	it('keeps links in the page from navigating', async () => {
+		renderElementVariationsSimulation();
+
+		await userEvent.click(screen.getByTitle('simulation'));
+
+		const iframe = (await screen.findByTitle(
+			'page-simulation'
+		)) as HTMLIFrameElement;
+
+		const iframeDocument = iframe.contentDocument as Document;
+
+		iframeDocument.write('<a href="/other-page">Other page</a>');
+		iframeDocument.close();
+
+		loadIframe(iframe);
+
+		const clickEvent = new MouseEvent('click', {
+			bubbles: true,
+			cancelable: true,
+		});
+
+		iframeDocument.querySelector('a')?.dispatchEvent(clickEvent);
+
+		expect(clickEvent.defaultPrevented).toBe(true);
 	});
 
 	it('has no accessibility violations', async () => {

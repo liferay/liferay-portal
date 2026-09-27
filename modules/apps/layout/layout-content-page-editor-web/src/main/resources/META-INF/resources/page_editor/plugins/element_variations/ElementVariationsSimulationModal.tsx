@@ -8,6 +8,7 @@ import {LanguagePicker, Option, Picker} from '@clayui/core';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
+import {preventIframeNavigation} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import React, {useState} from 'react';
@@ -100,6 +101,8 @@ export default function ElementVariationsSimulationModal({
 	const [loading, setLoading] = useState(true);
 
 	const onIframeLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
+		preventIframeNavigation(event);
+
 		const iframe = event.currentTarget;
 
 		const iframeDocument = iframe.contentDocument;
