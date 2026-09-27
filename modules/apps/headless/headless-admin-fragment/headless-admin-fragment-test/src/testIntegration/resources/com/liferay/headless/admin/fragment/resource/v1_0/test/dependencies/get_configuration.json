@@ -163,6 +163,29 @@
 					"type": "itemSelector"
 				},
 				{
+					"defaultValue": "16px",
+					"name": "length",
+					"type": "length"
+				},
+				{
+					"defaultValue": "auto",
+					"name": "lengthCustom",
+					"type": "length"
+				},
+				{
+					"defaultValue": "50%",
+					"name": "lengthVisibleWhenCheckboxTrue",
+					"type": "length",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
 					"defaultValue": "detailed",
 					"name": "selectWithLabels",
 					"type": "select",

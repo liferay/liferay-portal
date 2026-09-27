@@ -125,6 +125,24 @@
 					"type": "itemSelector"
 				},
 				{
+					"defaultValue": "12px",
+					"name": "length",
+					"type": "length"
+				},
+				{
+					"defaultValue": "2rem",
+					"name": "lengthVisibleWhenCheckboxTrue",
+					"type": "length",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
 					"defaultValue": "detailed",
 					"name": "selectWithLabels",
 					"type": "select",

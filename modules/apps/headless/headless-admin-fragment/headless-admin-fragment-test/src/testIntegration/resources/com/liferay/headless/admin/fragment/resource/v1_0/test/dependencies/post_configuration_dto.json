@@ -154,6 +154,28 @@
 				},
 				{
 					"defaultValue": {
+						"value": "12px"
+					},
+					"name": "length",
+					"type": "length"
+				},
+				{
+					"defaultValue": {
+						"value": "2rem"
+					},
+					"name": "lengthVisibleWhenCheckboxTrue",
+					"type": "length",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
 						"value": "detailed"
 					},
 					"name": "selectWithLabels",
