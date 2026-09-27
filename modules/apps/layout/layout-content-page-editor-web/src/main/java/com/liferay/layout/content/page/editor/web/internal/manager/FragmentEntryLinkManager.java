@@ -179,7 +179,8 @@ public class FragmentEntryLinkManager {
 
 		try {
 			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
+				defaultFragmentRendererContext.
+					getModifiableEditableValuesJSONObject();
 
 			String content = _getContent(
 				defaultFragmentRendererContext, editableValuesJSONObject,
@@ -238,7 +239,8 @@ public class FragmentEntryLinkManager {
 					"editableTypes", Collections.emptyMap()
 				).put(
 					"editableValues",
-					fragmentEntryLink.getEditableValuesJSONObject()
+					defaultFragmentRendererContext.
+						getModifiableEditableValuesJSONObject()
 				).put(
 					"fragmentEntryId", 0
 				).put(

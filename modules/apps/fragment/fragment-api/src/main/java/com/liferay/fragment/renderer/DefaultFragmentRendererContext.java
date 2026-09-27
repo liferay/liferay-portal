@@ -9,6 +9,7 @@ import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -73,6 +74,11 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 	@Override
 	public String getMode() {
 		return _mode;
+	}
+
+	@Override
+	public JSONObject getModifiableEditableValuesJSONObject() {
+		return _fragmentEntryLink.getEditableValuesJSONObject();
 	}
 
 	@Override

@@ -144,8 +144,17 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			JSONObject configurationJSONObject = getConfigurationJSONObject(
 				fragmentRendererContext);
 
-			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
+			JSONObject editableValuesJSONObject = null;
+
+			if (fragmentRendererContext.isEditMode()) {
+				editableValuesJSONObject =
+					fragmentRendererContext.
+						getModifiableEditableValuesJSONObject();
+			}
+			else {
+				editableValuesJSONObject =
+					fragmentEntryLink.getEditableValuesJSONObject();
+			}
 
 			JSONObject itemSelectorJSONObject =
 				(JSONObject)_fragmentEntryConfigurationParser.getFieldValue(
@@ -356,13 +365,13 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 	private JSONObject _getConfigurationValuesJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
 
-		FragmentEntryLink fragmentEntryLink =
-			fragmentRendererContext.getFragmentEntryLink();
-
 		JSONObject editableValuesJSONObject =
-			fragmentEntryLink.getEditableValuesJSONObject();
+			fragmentRendererContext.getModifiableEditableValuesJSONObject();
 
 		if (editableValuesJSONObject == null) {
+			FragmentEntryLink fragmentEntryLink =
+				fragmentRendererContext.getFragmentEntryLink();
+
 			fragmentEntryLink.setEditableValues(_jsonFactory.getNullJSON());
 
 			return _jsonFactory.createJSONObject();

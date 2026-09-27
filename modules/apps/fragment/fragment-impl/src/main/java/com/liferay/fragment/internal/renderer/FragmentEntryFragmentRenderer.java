@@ -452,8 +452,22 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		if (Validator.isNotNull(fragmentEntryLink.getHtml()) ||
 			Validator.isNotNull(fragmentEntryLink.getEditableValues())) {
 
-			html = _fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
-				fragmentEntryLink, defaultFragmentEntryProcessorContext);
+			if (fragmentRendererContext.isEditMode()) {
+				html =
+					_fragmentEntryProcessorRegistry.
+						processFragmentEntryLinkHTML(
+							fragmentRendererContext.
+								getModifiableEditableValuesJSONObject(),
+							fragmentEntryLink,
+							defaultFragmentEntryProcessorContext);
+			}
+			else {
+				html =
+					_fragmentEntryProcessorRegistry.
+						processFragmentEntryLinkHTML(
+							fragmentEntryLink,
+							defaultFragmentEntryProcessorContext);
+			}
 		}
 
 		if (defaultFragmentEntryProcessorContext.isEditMode()) {
