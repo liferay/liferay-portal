@@ -178,6 +178,7 @@ components:
                     itemSelector: "#/components/schemas/ItemSelectorField"
                     length: "#/components/schemas/LengthField"
                     select: "#/components/schemas/SelectField"
+                    targetCollectionDisplay: "#/components/schemas/TargetCollectionDisplayField"
                     text: "#/components/schemas/TextField"
                     url: "#/components/schemas/URLField"
                     videoSelector: "#/components/schemas/VideoSelectorField"
@@ -209,7 +210,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, colorPalette, colorPicker, itemSelector, length, select, text, url, videoSelector]
+                    enum: [categoryTreeNodeSelector, checkbox, colorPalette, colorPicker, itemSelector, length, select, targetCollectionDisplay, text, url, videoSelector]
                     type: string
             required:
                 -   name
@@ -664,6 +665,43 @@ components:
                             type: array
             description:
                 The type-specific options of a `select` fragment configuration field.
+            type: object
+        TargetCollectionDisplayField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/TargetCollectionDisplayFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TargetCollectionDisplayTypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `targetCollectionDisplay` field of a fragment configuration's field set.
+            type: object
+        TargetCollectionDisplayFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `targetCollectionDisplay` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    description:
+                        The page element external reference codes of the collection displays the field targets.
+                    items:
+                        type: string
+                    type: array
+            type: object
+        TargetCollectionDisplayTypeOptions:
+            allOf:
+                -   $ref: "#/components/schemas/TypeOptions"
+                -   properties:
+                        enableCompatibleCollections:
+                            description:
+                                Whether the page editor, once some collection displays are selected in this field, only lets you add collection displays that share at least one supported filter with all of the selected ones. Only the page editor's selector applies it, so the default value is not checked against it.
+                            type: boolean
+            description:
+                The type-specific options of a `targetCollectionDisplay` fragment configuration field.
             type: object
         TextField:
             allOf:
