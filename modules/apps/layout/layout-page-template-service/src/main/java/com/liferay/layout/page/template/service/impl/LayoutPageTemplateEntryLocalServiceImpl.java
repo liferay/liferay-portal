@@ -1249,7 +1249,9 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			((!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.BASIC, type) &&
 			  !Objects.equals(
-				  LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, type)) ||
+				  LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, type) &&
+			  !Objects.equals(
+				  LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, type)) ||
 			 !DesignLibraryUtil.isDesignLibraryScope(groupId))) {
 
 			throw new LayoutPageTemplateEntryGroupIdException();
