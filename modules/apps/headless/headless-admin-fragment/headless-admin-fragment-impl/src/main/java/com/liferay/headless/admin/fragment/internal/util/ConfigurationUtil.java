@@ -35,6 +35,9 @@ import com.liferay.headless.admin.fragment.dto.v1_0.PatternValidation;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectField;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.TargetCollectionDisplayField;
+import com.liferay.headless.admin.fragment.dto.v1_0.TargetCollectionDisplayFragmentConfigurationFieldDefaultValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.TargetCollectionDisplayTypeOptions;
 import com.liferay.headless.admin.fragment.dto.v1_0.TextField;
 import com.liferay.headless.admin.fragment.dto.v1_0.TextFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.TextTypeOptions;
@@ -721,6 +724,19 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "targetCollectionDisplay")) {
+			field = new TargetCollectionDisplayField() {
+				{
+					setDefaultValue(
+						() ->
+							_toTargetCollectionDisplayFragmentConfigurationFieldDefaultValue(
+								fieldJSONObject.getJSONArray("defaultValue")));
+					setTypeOptions(
+						() -> _toTargetCollectionDisplayTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else if (Objects.equals(type, "text")) {
 			field = new TextField() {
 				{
@@ -876,6 +892,18 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(selectField.getTypeOptions())
+			);
+		}
+		else if (field instanceof
+					TargetCollectionDisplayField targetCollectionDisplayField) {
+
+			fieldJSONObject.put(
+				"defaultValue",
+				_toJSONArray(targetCollectionDisplayField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(
+					targetCollectionDisplayField.getTypeOptions())
 			);
 		}
 		else if (field instanceof TextField textField) {
@@ -1194,6 +1222,27 @@ public class ConfigurationUtil {
 		return itemValue;
 	}
 
+	private static JSONArray _toJSONArray(
+		TargetCollectionDisplayFragmentConfigurationFieldDefaultValue
+			targetCollectionDisplayFragmentConfigurationFieldDefaultValue) {
+
+		if (targetCollectionDisplayFragmentConfigurationFieldDefaultValue ==
+				null) {
+
+			return null;
+		}
+
+		String[] values =
+			targetCollectionDisplayFragmentConfigurationFieldDefaultValue.
+				getValue();
+
+		if (values == null) {
+			return null;
+		}
+
+		return JSONFactoryUtil.createJSONArray(values);
+	}
+
 	private static JSONObject _toLayoutJSONObject(
 			long groupId, ItemExternalReference itemExternalReference)
 		throws PortalException {
@@ -1355,6 +1404,47 @@ public class ConfigurationUtil {
 		return textFragmentConfigurationFieldDefaultValue.getValue();
 	}
 
+	private static TargetCollectionDisplayFragmentConfigurationFieldDefaultValue
+		_toTargetCollectionDisplayFragmentConfigurationFieldDefaultValue(
+			JSONArray jsonArray) {
+
+		if (jsonArray == null) {
+			return null;
+		}
+
+		return new TargetCollectionDisplayFragmentConfigurationFieldDefaultValue() {
+			{
+				setValue(() -> JSONUtil.toStringArray(jsonArray));
+			}
+		};
+	}
+
+	private static TargetCollectionDisplayTypeOptions
+		_toTargetCollectionDisplayTypeOptions(
+			JSONObject typeOptionsJSONObject) {
+
+		if (typeOptionsJSONObject == null) {
+			return null;
+		}
+
+		return new TargetCollectionDisplayTypeOptions() {
+			{
+				setDependency(() -> _toDependencyMap(typeOptionsJSONObject));
+				setEnableCompatibleCollections(
+					() -> {
+						if (!typeOptionsJSONObject.has(
+								"enableCompatibleCollections")) {
+
+							return null;
+						}
+
+						return typeOptionsJSONObject.getBoolean(
+							"enableCompatibleCollections");
+					});
+			}
+		};
+	}
+
 	private static TextFragmentConfigurationFieldDefaultValue
 		_toTextFragmentConfigurationFieldDefaultValue(String value) {
 
@@ -1490,6 +1580,29 @@ public class ConfigurationUtil {
 					validValues,
 					validValue -> _toValidValueJSONObject(validValue), _log));
 		}
+
+		if (typeOptionsJSONObject.length() == 0) {
+			return null;
+		}
+
+		return typeOptionsJSONObject;
+	}
+
+	private static JSONObject _toTypeOptionsJSONObject(
+		TargetCollectionDisplayTypeOptions targetCollectionDisplayTypeOptions) {
+
+		if (targetCollectionDisplayTypeOptions == null) {
+			return null;
+		}
+
+		JSONObject typeOptionsJSONObject = JSONUtil.put(
+			"dependency",
+			_toDependencyJSONObject(
+				targetCollectionDisplayTypeOptions.getDependency())
+		).put(
+			"enableCompatibleCollections",
+			targetCollectionDisplayTypeOptions.getEnableCompatibleCollections()
+		);
 
 		if (typeOptionsJSONObject.length() == 0) {
 			return null;
