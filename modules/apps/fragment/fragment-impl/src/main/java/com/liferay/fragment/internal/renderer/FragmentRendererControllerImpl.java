@@ -18,6 +18,7 @@ import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -56,9 +57,19 @@ public class FragmentRendererControllerImpl
 		FragmentRenderer fragmentRenderer = _getFragmentRenderer(
 			fragmentRendererContext.getFragmentEntryLink());
 
-		return _translateConfigurationFields(
+		JSONObject configurationJSONObject =
 			fragmentRenderer.getConfigurationJSONObject(
-				fragmentRendererContext),
+				fragmentRendererContext);
+
+		if ((configurationJSONObject == null) ||
+			!configurationJSONObject.has("fieldSets")) {
+
+			return null;
+		}
+
+		return _translateConfigurationFields(
+			_jsonFactory.safeCreateJSONObject(
+				configurationJSONObject.toString()),
 			fragmentRendererContext.getLocale());
 	}
 
@@ -214,6 +225,9 @@ public class FragmentRendererControllerImpl
 
 	@Reference
 	private FragmentRendererRegistry _fragmentRendererRegistry;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
