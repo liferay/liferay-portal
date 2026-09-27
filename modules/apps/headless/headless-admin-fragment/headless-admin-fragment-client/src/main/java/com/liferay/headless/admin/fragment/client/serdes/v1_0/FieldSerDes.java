@@ -9,6 +9,7 @@ import com.liferay.headless.admin.fragment.client.dto.v1_0.CategoryTreeNodeSelec
 import com.liferay.headless.admin.fragment.client.dto.v1_0.CheckboxField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Field;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemSelectorField;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.SelectField;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -60,6 +61,10 @@ public class FieldSerDes {
 
 			if (typeString.equals("itemSelector")) {
 				return ItemSelectorFieldSerDes.toJSON((ItemSelectorField)field);
+			}
+
+			if (typeString.equals("select")) {
+				return SelectFieldSerDes.toJSON((SelectField)field);
 			}
 
 			throw new IllegalArgumentException("Unknown type " + typeString);
@@ -182,6 +187,10 @@ public class FieldSerDes {
 
 				if (typeString.equals("itemSelector")) {
 					return ItemSelectorField.toDTO(json);
+				}
+
+				if (typeString.equals("select")) {
+					return SelectField.toDTO(json);
 				}
 
 				throw new IllegalArgumentException(
@@ -316,4 +325,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-755198507
+// LIFERAY-REST-BUILDER-HASH:-845258428
