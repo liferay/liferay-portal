@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Segments Web
 Bundle-SymbolicName: com.liferay.segments.web
-Bundle-Version: 3.0.164
+Bundle-Version: 3.0.165
 Web-ContextPath: /segments-web
