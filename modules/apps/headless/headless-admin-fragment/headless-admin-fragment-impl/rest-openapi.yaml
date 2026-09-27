@@ -222,6 +222,7 @@ components:
                     colorPicker: "#/components/schemas/ColorPickerField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
                     length: "#/components/schemas/LengthField"
+                    navigationMenuSelector: "#/components/schemas/NavigationMenuSelectorField"
                     select: "#/components/schemas/SelectField"
                     targetCollectionDisplay: "#/components/schemas/TargetCollectionDisplayField"
                     text: "#/components/schemas/TextField"
@@ -255,7 +256,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, collectionSelector, colorPalette, colorPicker, itemSelector, length, select, targetCollectionDisplay, text, url, videoSelector]
+                    enum: [categoryTreeNodeSelector, checkbox, collectionSelector, colorPalette, colorPicker, itemSelector, length, navigationMenuSelector, select, targetCollectionDisplay, text, url, videoSelector]
                     type: string
             required:
                 -   name
@@ -550,6 +551,30 @@ components:
                     description:
                         A CSS length value, such as `12px` or `50%`, or any CSS expression the page editor's length input accepts as a custom unit, such as `auto`.
                     type: string
+            type: object
+        NavigationMenuFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `navigationMenuSelector` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    $ref: ../../headless-admin-site/headless-admin-site-impl/rest-openapi.yaml#NavigationMenuValue
+                    description:
+                        Either a contextual menu (`ContextualMenu`), a site navigation menu referenced by external reference code (`SiteMenu`), or the site's page hierarchy (`SitePages`).
+            type: object
+        NavigationMenuSelectorField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/NavigationMenuFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `navigationMenuSelector` field of a fragment configuration's field set.
             type: object
         NumberValidation:
             allOf:
