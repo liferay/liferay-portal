@@ -24,6 +24,8 @@ import com.liferay.headless.admin.fragment.dto.v1_0.FieldSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.LengthField;
+import com.liferay.headless.admin.fragment.dto.v1_0.LengthFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.NumberValidation;
 import com.liferay.headless.admin.fragment.dto.v1_0.PatternValidation;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectField;
@@ -545,6 +547,18 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "length")) {
+			field = new LengthField() {
+				{
+					setDefaultValue(
+						() -> _toLengthFragmentConfigurationFieldDefaultValue(
+							fieldJSONObject.getString("defaultValue", null)));
+					setTypeOptions(
+						() -> _toTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else if (Objects.equals(type, "select")) {
 			field = new SelectField() {
 				{
@@ -651,6 +665,14 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(itemSelectorField.getTypeOptions())
+			);
+		}
+		else if (field instanceof LengthField lengthField) {
+			fieldJSONObject.put(
+				"defaultValue", _toString(lengthField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(lengthField.getTypeOptions())
 			);
 		}
 		else if (field instanceof SelectField selectField) {
@@ -971,6 +993,22 @@ public class ConfigurationUtil {
 		return itemValue;
 	}
 
+	private static LengthFragmentConfigurationFieldDefaultValue
+		_toLengthFragmentConfigurationFieldDefaultValue(String value) {
+
+		if (value == null) {
+			return null;
+		}
+
+		LengthFragmentConfigurationFieldDefaultValue
+			lengthFragmentConfigurationFieldDefaultValue =
+				new LengthFragmentConfigurationFieldDefaultValue();
+
+		lengthFragmentConfigurationFieldDefaultValue.setValue(() -> value);
+
+		return lengthFragmentConfigurationFieldDefaultValue;
+	}
+
 	private static SelectFragmentConfigurationFieldDefaultValue
 		_toSelectFragmentConfigurationFieldDefaultValue(String value) {
 
@@ -1014,6 +1052,17 @@ public class ConfigurationUtil {
 					});
 			}
 		};
+	}
+
+	private static String _toString(
+		LengthFragmentConfigurationFieldDefaultValue
+			lengthFragmentConfigurationFieldDefaultValue) {
+
+		if (lengthFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		return lengthFragmentConfigurationFieldDefaultValue.getValue();
 	}
 
 	private static String _toString(
