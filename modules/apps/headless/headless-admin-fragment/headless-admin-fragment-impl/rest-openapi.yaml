@@ -126,6 +126,7 @@ components:
                     categoryTreeNodeSelector: "#/components/schemas/CategoryTreeNodeSelectorField"
                     checkbox: "#/components/schemas/CheckboxField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
+                    length: "#/components/schemas/LengthField"
                     select: "#/components/schemas/SelectField"
                     text: "#/components/schemas/TextField"
                 propertyName: type
@@ -156,7 +157,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, itemSelector, select, text]
+                    enum: [categoryTreeNodeSelector, checkbox, itemSelector, length, select, text]
                     type: string
             required:
                 -   name
@@ -427,6 +428,30 @@ components:
                             type: array
             description:
                 The type-specific options of an `itemSelector` fragment configuration field.
+            type: object
+        LengthField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/LengthFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `length` field of a fragment configuration's field set.
+            type: object
+        LengthFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `length` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    description:
+                        A CSS length value, such as `12px` or `50%`, or any CSS expression the page editor's length input accepts as a custom unit, such as `auto`.
+                    type: string
             type: object
         NumberValidation:
             allOf:
