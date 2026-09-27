@@ -40,9 +40,6 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 					FragmentEntryLocalServiceUtil.
 						fetchFragmentEntryByExternalReferenceCode(
 							getFragmentEntryERC(), groupId);
-
-				fragmentEntryUpdateEntityCacheBiConsumer.accept(
-					this, _fragmentEntry);
 			}
 		}
 
@@ -210,6 +207,27 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		_editableValuesJSONObject = null;
 	}
 
+	@Override
+	public void setFragmentEntryERC(String fragmentEntryERC) {
+		super.setFragmentEntryERC(fragmentEntryERC);
+
+		_fragmentEntry = null;
+	}
+
+	@Override
+	public void setFragmentEntryScopeERC(String fragmentEntryScopeERC) {
+		super.setFragmentEntryScopeERC(fragmentEntryScopeERC);
+
+		_fragmentEntry = null;
+	}
+
+	@Override
+	public void setGroupId(long groupId) {
+		super.setGroupId(groupId);
+
+		_fragmentEntry = null;
+	}
+
 	private static final Snapshot<FragmentCollectionContributorRegistry>
 		_fragmentCollectionContributorRegistrySnapshot = new Snapshot<>(
 			FragmentEntryLinkImpl.class,
@@ -221,7 +239,6 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 	@CacheField(permanent = true, propagateToInterface = true)
 	private transient JSONObject _editableValuesJSONObject;
 
-	@CacheField(permanent = true, propagateToInterface = true)
 	private transient FragmentEntry _fragmentEntry;
 
 }
