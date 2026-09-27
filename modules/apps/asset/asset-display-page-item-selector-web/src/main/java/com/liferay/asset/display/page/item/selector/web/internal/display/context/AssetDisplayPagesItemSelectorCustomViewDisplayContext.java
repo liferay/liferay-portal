@@ -17,21 +17,26 @@ import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollec
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollectionLayoutPageTemplateEntryNameComparator;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryBuilder;
 import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryListBuilder;
 
+import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +63,8 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 
 		_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
 			JavaConstants.JAKARTA_PORTLET_REQUEST);
+		_portletResponse = (PortletResponse)httpServletRequest.getAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
@@ -69,7 +76,7 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 
 		SearchContainer<Object> assetDisplayPageSearchContainer =
 			new SearchContainer<>(
-				_portletRequest, _portletURL, null,
+				_portletRequest, _clonePortletURL(), null,
 				"there-are-no-display-page-templates");
 
 		assetDisplayPageSearchContainer.setId(
@@ -106,10 +113,6 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 		return _assetDisplayPageSearchContainer;
 	}
 
-	public String getItemSelectedEventName() {
-		return _itemSelectedEventName;
-	}
-
 	public List<BreadcrumbEntry> getLayoutPageTemplateBreadcrumbEntries() {
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			LayoutPageTemplateCollectionLocalServiceUtil.
@@ -122,7 +125,7 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 					LanguageUtil.get(_httpServletRequest, "home"));
 				breadcrumbEntry.setURL(
 					PortletURLBuilder.create(
-						_portletURL
+						_clonePortletURL()
 					).setParameter(
 						"layoutPageTemplateCollectionId",
 						LayoutPageTemplateConstants.
@@ -145,7 +148,7 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 							curLayoutPageTemplateCollection.getName()
 						).setURL(
 							PortletURLBuilder.create(
-								_portletURL
+								_clonePortletURL()
 							).setParameter(
 								"layoutPageTemplateCollectionId",
 								curLayoutPageTemplateCollection.
@@ -154,6 +157,10 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 						).build());
 			}
 		).build();
+	}
+
+	public String getItemSelectedEventName() {
+		return _itemSelectedEventName;
 	}
 
 	public long getLayoutPageTemplateCollectionId() {
@@ -195,11 +202,22 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 	}
 
 	public PortletURL getPortletURL() {
-		return _portletURL;
+		return _clonePortletURL();
 	}
 
 	public String getReturnType() {
 		return AssetEntryItemSelectorReturnType.class.getName();
+	}
+
+	private PortletURL _clonePortletURL() {
+		try {
+			return PortletURLUtil.clone(
+				_portletURL,
+				PortalUtil.getLiferayPortletResponse(_portletResponse));
+		}
+		catch (PortletException portletException) {
+			throw new SystemException(portletException);
+		}
 	}
 
 	private long _getGroupId() {
@@ -271,6 +289,7 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 	private String _orderByCol;
 	private String _orderByType;
 	private final PortletRequest _portletRequest;
+	private final PortletResponse _portletResponse;
 	private final PortletURL _portletURL;
 	private final ThemeDisplay _themeDisplay;
 
