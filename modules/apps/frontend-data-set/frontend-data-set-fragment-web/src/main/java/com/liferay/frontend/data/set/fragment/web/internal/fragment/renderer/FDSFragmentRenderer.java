@@ -137,7 +137,8 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 						"L_DATA_SET", fragmentEntryLink.getCompanyId());
 
 			if (fragmentRendererContext.isEditMode()) {
-				_writeClassName(dataSetObjectDefinition, fragmentEntryLink);
+				_writeClassName(
+					dataSetObjectDefinition, fragmentRendererContext);
 			}
 
 			JSONObject configurationJSONObject = getConfigurationJSONObject(
@@ -240,7 +241,7 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			if (fragmentRendererContext.isEditMode()) {
 				if (hasTokens) {
 					_writeAutoResolvedTokenNames(
-						externalReferenceCode, fragmentEntryLink,
+						externalReferenceCode, fragmentRendererContext,
 						httpServletRequest);
 				}
 
@@ -352,7 +353,10 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 	}
 
 	private JSONObject _getConfigurationValuesJSONObject(
-		FragmentEntryLink fragmentEntryLink) {
+		FragmentRendererContext fragmentRendererContext) {
+
+		FragmentEntryLink fragmentEntryLink =
+			fragmentRendererContext.getFragmentEntryLink();
 
 		JSONObject editableValuesJSONObject =
 			fragmentEntryLink.getEditableValuesJSONObject();
@@ -637,11 +641,12 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 	}
 
 	private void _writeAutoResolvedTokenNames(
-		String externalReferenceCode, FragmentEntryLink fragmentEntryLink,
+		String externalReferenceCode,
+		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest) {
 
 		JSONObject configurationValuesJSONObject =
-			_getConfigurationValuesJSONObject(fragmentEntryLink);
+			_getConfigurationValuesJSONObject(fragmentRendererContext);
 
 		try {
 			JSONArray jsonArray = JSONUtil.toJSONArray(
@@ -662,10 +667,13 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 
 	private void _writeClassName(
 		ObjectDefinition dataSetObjectDefinition,
-		FragmentEntryLink fragmentEntryLink) {
+		FragmentRendererContext fragmentRendererContext) {
 
 		if (dataSetObjectDefinition == null) {
 			if (_log.isWarnEnabled()) {
+				FragmentEntryLink fragmentEntryLink =
+					fragmentRendererContext.getFragmentEntryLink();
+
 				_log.warn(
 					"L_DATA_SET object definition was not found for company " +
 						fragmentEntryLink.getCompanyId());
@@ -675,7 +683,7 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		}
 
 		JSONObject configurationValuesJSONObject =
-			_getConfigurationValuesJSONObject(fragmentEntryLink);
+			_getConfigurationValuesJSONObject(fragmentRendererContext);
 
 		JSONObject jsonObject = configurationValuesJSONObject.getJSONObject(
 			"itemSelector");
