@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Trash Web
 Bundle-SymbolicName: com.liferay.trash.web
-Bundle-Version: 5.0.78
+Bundle-Version: 5.0.79
 Web-ContextPath: /trash-web
