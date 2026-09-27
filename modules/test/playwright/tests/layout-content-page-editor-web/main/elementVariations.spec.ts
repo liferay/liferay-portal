@@ -37,7 +37,6 @@ test(
 	{tag: '@LPD-93951'},
 	async ({
 		apiHelpers,
-		audiencesPage,
 		browser,
 		elementVariationsPage,
 		page,
@@ -49,13 +48,9 @@ test(
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
+			rules: [{attribute: 'language', operator: 'eq', value: 'en-US'}],
 		});
 
 		// Create a page with a Heading and a Paragraph fragment
@@ -148,26 +143,14 @@ test(
 test(
 	'Translated HTML and JavaScript fields follow the page language',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create an audience matching the browser name
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Browser Name',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			operator: 'Contains',
-			value: 'Chrome',
 		});
 
 		// Create a page with a Heading fragment
@@ -246,36 +229,21 @@ test(
 test(
 	'Applies the highest priority variation when a visitor matches several audiences',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create two audiences that both match the browser language. The first
-		// created audience ranks higher in the definition order and therefore
-		// takes precedence.
+		// Create two audiences that both match every visitor. The first created
+		// audience ranks higher in the definition order and therefore takes
+		// precedence.
 
 		const firstAudienceName = 'Audience ' + getRandomString();
 		const secondAudienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: firstAudienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: secondAudienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment
@@ -334,34 +302,19 @@ test(
 test(
 	'Applies the manually prioritized audience variation over the definition order',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create two audiences that both match the browser language
+		// Create two audiences that both match every visitor
 
 		const firstAudienceName = 'Audience ' + getRandomString();
 		const secondAudienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: firstAudienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: secondAudienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment
@@ -425,26 +378,14 @@ test(
 test(
 	'Excludes a disabled variation from the page and applies it again once re-enabled',
 	{tag: '@LPD-95644'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create an audience matching the browser language
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment
@@ -529,26 +470,14 @@ test(
 test(
 	'Applies a variation only after the page is published',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create an audience matching the browser language
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment
@@ -606,26 +535,14 @@ test(
 test(
 	'Edits an existing variation and applies the updated payload',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create an audience matching the browser language
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment
@@ -685,25 +602,14 @@ test(
 test(
 	'Deletes a variation from the actions menu',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, pageEditorPage, site}) => {
 
-		// Create an audience matching the browser language
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment
@@ -753,25 +659,14 @@ test(
 test(
 	'Reflects the selected experience content in the preview and page element picker',
 	{tag: '@LPD-101994'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, pageEditorPage, site}) => {
 
 		// Create an audience so element variations can be built
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Paragraph fragment in the default experience
@@ -855,26 +750,14 @@ test(
 test(
 	'Loads each page own variations when navigating between pages',
 	{tag: '@LPD-93951'},
-	async ({
-		apiHelpers,
-		audiencesPage,
-		elementVariationsPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
-		// Create an audience matching the browser language
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create two pages, each with a Heading fragment
@@ -983,7 +866,6 @@ test(
 	{tag: '@LPD-101907'},
 	async ({
 		apiHelpers,
-		audiencesPage,
 		browser,
 		elementVariationsPage,
 		page,
@@ -991,17 +873,12 @@ test(
 		site,
 	}) => {
 
-		// Create an audience matching the browser language
+		// Create an audience matching every visitor
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		// Create a page with a Heading fragment, replace its heading and
@@ -1114,14 +991,9 @@ test(
 
 		const keptAudienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
 		for (const audienceName of [deletedAudienceName, keptAudienceName]) {
-			await audiencesPage.createAudience({
-				attributeName: 'Language',
+			await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 				name: audienceName,
-				value: 'English (United States)',
-				valueType: 'select',
 			});
 		}
 
@@ -1254,25 +1126,13 @@ test(
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
+			groupERCs: [
+				site.externalReferenceCode,
+				otherSite.externalReferenceCode,
+			],
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
-
-		await audiencesPage.openAudience(audienceName);
-
-		await audiencesPage.generalSettingsButton.click();
-
-		await audiencesPage.addSiteToScope(site.name);
-		await audiencesPage.addSiteToScope(otherSite.name);
-
-		await audiencesPage.saveButton.click();
-
-		await waitForAlert(page);
 
 		// Create a variation that uses the audience and publish the page
 
@@ -1450,35 +1310,16 @@ test(
 			name: getRandomString(),
 		});
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
 			name: 'Audience ' + getRandomString(),
-			value: 'English (United States)',
-			valueType: 'select',
 		});
 
 		const audienceName = 'Audience ' + getRandomString();
 
-		await audiencesPage.goto();
-
-		await audiencesPage.createAudience({
-			attributeName: 'Language',
+		await apiHelpers.jsonWebServicesAudiencesEntry.addAudiencesEntry({
+			groupERCs: [otherSite.externalReferenceCode],
 			name: audienceName,
-			value: 'English (United States)',
-			valueType: 'select',
 		});
-
-		await audiencesPage.openAudience(audienceName);
-
-		await audiencesPage.generalSettingsButton.click();
-
-		await audiencesPage.addSiteToScope(otherSite.name);
-
-		await audiencesPage.saveButton.click();
-
-		await waitForAlert(page);
 
 		// The audience is not offered when creating a variation on the site
 

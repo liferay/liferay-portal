@@ -6,6 +6,18 @@
 import {liferayConfig} from '../../liferay.config';
 import {ApiHelpers, DataApiHelpers} from '../ApiHelpers';
 
+type AudiencesEntry = {
+	audiencesEntryId: number;
+	externalReferenceCode: string;
+	name: string;
+};
+
+type AudiencesEntryRule = {
+	attribute: string;
+	operator: string;
+	value: boolean | number | string;
+};
+
 export class JSONWebServicesAudiencesEntryApiHelper {
 	readonly apiHelpers: ApiHelpers | DataApiHelpers;
 	readonly basePath: string;
@@ -13,6 +25,51 @@ export class JSONWebServicesAudiencesEntryApiHelper {
 	constructor(apiHelpers: ApiHelpers | DataApiHelpers) {
 		this.apiHelpers = apiHelpers;
 		this.basePath = '/api/jsonws/audiences.audiencesentry';
+	}
+
+	async addAudiencesEntry({
+		groupERCs,
+		name,
+		rules = [],
+	}: {
+		groupERCs?: string[];
+		name: string;
+		rules?: AudiencesEntryRule[];
+	}): Promise<AudiencesEntry> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('externalReferenceCode', '');
+
+		if (groupERCs) {
+			urlSearchParams.append('groupERCs', JSON.stringify(groupERCs));
+		}
+		else {
+			urlSearchParams.append('-groupERCs', '');
+		}
+
+		urlSearchParams.append(
+			'json',
+			JSON.stringify({conjunction: 'AND', rules})
+		);
+		urlSearchParams.append('name', name);
+
+		const audiencesEntry: AudiencesEntry = await this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/add-audiences-entry`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: audiencesEntry.audiencesEntryId,
+				type: 'audiencesEntry',
+			});
+		}
+
+		return audiencesEntry;
 	}
 
 	async deleteAudiencesEntry(audiencesEntryId: number) {
