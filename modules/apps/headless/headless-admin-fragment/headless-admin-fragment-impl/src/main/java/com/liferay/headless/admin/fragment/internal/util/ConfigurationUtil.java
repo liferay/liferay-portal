@@ -40,14 +40,20 @@ import com.liferay.headless.admin.fragment.dto.v1_0.TextFragmentConfigurationFie
 import com.liferay.headless.admin.fragment.dto.v1_0.TextTypeOptions;
 import com.liferay.headless.admin.fragment.dto.v1_0.TextValidation;
 import com.liferay.headless.admin.fragment.dto.v1_0.TypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.URLField;
+import com.liferay.headless.admin.fragment.dto.v1_0.URLFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ValidValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.Validation;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.HrefURLValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.ItemFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemValue;
+import com.liferay.headless.admin.site.dto.v1_0.SitePageURLValue;
+import com.liferay.headless.admin.site.dto.v1_0.URLFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.URLValue;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemDetails;
@@ -64,7 +70,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -721,6 +729,21 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "url")) {
+			field = new URLField() {
+				{
+					setDefaultValue(
+						() -> _toURLFragmentConfigurationFieldDefaultValue(
+							_toURLValue(
+								fieldJSONObject,
+								fragmentConfigurationFieldValueDTOConverter,
+								fragmentEntry)));
+					setTypeOptions(
+						() -> _toTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else {
 			throw new IllegalStateException(
 				StringBundler.concat(
@@ -844,6 +867,15 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(textField.getTypeOptions())
+			);
+		}
+		else if (field instanceof URLField urlField) {
+			fieldJSONObject.put(
+				"defaultValue",
+				_toURLJSONObject(groupId, urlField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(urlField.getTypeOptions())
 			);
 		}
 
@@ -1136,6 +1168,62 @@ public class ConfigurationUtil {
 		return itemValue;
 	}
 
+	private static JSONObject _toLayoutJSONObject(
+			long groupId, ItemExternalReference itemExternalReference)
+		throws PortalException {
+
+		String scopeExternalReferenceCode =
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				_getScopeExternalReferenceCode(
+					itemExternalReference.getScope()),
+				groupId);
+
+		JSONObject layoutJSONObject = JSONUtil.put(
+			"externalReferenceCode",
+			itemExternalReference.getExternalReferenceCode()
+		).put(
+			"scopeExternalReferenceCode", scopeExternalReferenceCode
+		);
+
+		Long itemGroupId = ScopeUtil.getItemGroupId(
+			CompanyThreadLocal.getCompanyId(), scopeExternalReferenceCode,
+			groupId);
+
+		if (itemGroupId == null) {
+			_logOptionalReference(
+				Layout.class.getName(),
+				itemExternalReference.getExternalReferenceCode(), groupId,
+				scopeExternalReferenceCode);
+
+			return layoutJSONObject;
+		}
+
+		Layout layout =
+			LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
+				itemExternalReference.getExternalReferenceCode(), itemGroupId);
+
+		if (layout == null) {
+			_logOptionalReference(
+				Layout.class.getName(),
+				itemExternalReference.getExternalReferenceCode(), groupId,
+				scopeExternalReferenceCode);
+
+			return layoutJSONObject;
+		}
+
+		return layoutJSONObject.put(
+			"groupId", String.valueOf(layout.getGroupId())
+		).put(
+			"layoutId", String.valueOf(layout.getLayoutId())
+		).put(
+			"layoutUuid", layout.getUuid()
+		).put(
+			"privateLayout", layout.isPrivateLayout()
+		).put(
+			"title", layout.getName(LocaleUtil.getMostRelevantLocale())
+		);
+	}
+
 	private static LengthFragmentConfigurationFieldDefaultValue
 		_toLengthFragmentConfigurationFieldDefaultValue(String value) {
 
@@ -1423,6 +1511,87 @@ public class ConfigurationUtil {
 		}
 
 		return JSONUtil.put("dependency", dependencyJSONObject);
+	}
+
+	private static URLFragmentConfigurationFieldDefaultValue
+		_toURLFragmentConfigurationFieldDefaultValue(URLValue urlValue) {
+
+		if (urlValue == null) {
+			return null;
+		}
+
+		return new URLFragmentConfigurationFieldDefaultValue() {
+			{
+				setValue(() -> urlValue);
+			}
+		};
+	}
+
+	private static JSONObject _toURLJSONObject(
+			long groupId,
+			URLFragmentConfigurationFieldDefaultValue
+				urlFragmentConfigurationFieldDefaultValue)
+		throws PortalException {
+
+		if (urlFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		URLValue urlValue =
+			urlFragmentConfigurationFieldDefaultValue.getValue();
+
+		if (urlValue instanceof HrefURLValue hrefURLValue) {
+			return JSONUtil.put("href", hrefURLValue.getHref());
+		}
+
+		if (!(urlValue instanceof SitePageURLValue sitePageURLValue) ||
+			(sitePageURLValue.getSitePageItemExternalReference() == null)) {
+
+			return null;
+		}
+
+		return JSONUtil.put(
+			"layout",
+			_toLayoutJSONObject(
+				groupId, sitePageURLValue.getSitePageItemExternalReference()));
+	}
+
+	private static URLValue _toURLValue(
+		JSONObject fieldJSONObject,
+		DTOConverter
+			<FragmentConfigurationField, FragmentConfigurationFieldValue>
+				fragmentConfigurationFieldValueDTOConverter,
+		FragmentEntry fragmentEntry) {
+
+		FragmentConfigurationFieldValue fragmentConfigurationFieldValue =
+			_toFragmentConfigurationFieldValue(
+				fieldJSONObject, fragmentConfigurationFieldValueDTOConverter,
+				fragmentEntry);
+
+		if (!(fragmentConfigurationFieldValue instanceof
+				URLFragmentConfigurationFieldValue
+					urlFragmentConfigurationFieldValue)) {
+
+			return null;
+		}
+
+		URLValue urlValue = urlFragmentConfigurationFieldValue.getValue();
+
+		if (!(urlValue instanceof SitePageURLValue sitePageURLValue)) {
+			return urlValue;
+		}
+
+		ItemExternalReference itemExternalReference =
+			sitePageURLValue.getSitePageItemExternalReference();
+
+		if ((itemExternalReference == null) ||
+			Validator.isNull(
+				itemExternalReference.getExternalReferenceCode())) {
+
+			return null;
+		}
+
+		return urlValue;
 	}
 
 	private static ValidValue _toValidValue(JSONObject validValueJSONObject) {
