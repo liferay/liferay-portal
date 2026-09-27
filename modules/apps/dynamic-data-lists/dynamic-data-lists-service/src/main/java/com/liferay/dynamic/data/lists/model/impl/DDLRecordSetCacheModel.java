@@ -7,7 +7,6 @@ package com.liferay.dynamic.data.lists.model.impl;
 
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.petra.lang.HashUtil;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -16,9 +15,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -219,14 +215,6 @@ public class DDLRecordSetCacheModel
 
 		ddlRecordSetImpl.resetOriginalValues();
 
-		try {
-			_ddmFormValuesMethodHandle.invokeExact(
-				ddlRecordSetImpl, ddmFormValues);
-		}
-		catch (Throwable throwable) {
-			ReflectionUtil.throwException(throwable);
-		}
-
 		return ddlRecordSetImpl;
 	}
 
@@ -264,10 +252,6 @@ public class DDLRecordSetCacheModel
 		scope = objectInput.readInt();
 		settings = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
-
-		ddmFormValues =
-			(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
-				objectInput.readObject();
 	}
 
 	@Override
@@ -352,8 +336,6 @@ public class DDLRecordSetCacheModel
 		}
 
 		objectOutput.writeLong(lastPublishDate);
-
-		objectOutput.writeObject(ddmFormValues);
 	}
 
 	public long mvccVersion;
@@ -377,23 +359,6 @@ public class DDLRecordSetCacheModel
 	public int scope;
 	public String settings;
 	public long lastPublishDate;
-	public volatile com.liferay.dynamic.data.mapping.storage.DDMFormValues
-		ddmFormValues;
-
-	private static final MethodHandle _ddmFormValuesMethodHandle;
-
-	static {
-		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
-
-		try {
-			_ddmFormValuesMethodHandle = lookup.findSetter(
-				DDLRecordSetImpl.class, "_ddmFormValues",
-				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			throw new ExceptionInInitializerError(reflectiveOperationException);
-		}
-	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1065237352
+// LIFERAY-SERVICE-BUILDER-HASH:-1540806744

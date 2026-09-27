@@ -569,36 +569,6 @@ public class DDLRecordSetLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the record set's settings as a DDMFormValues object. For more
-	 * information see <code>DDMFormValues</code> in the
-	 * <code>dynamic.data.mapping.api</code> module.
-	 *
-	 * @param recordSet the record set
-	 * @return the record set settings as a DDMFormValues object
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public static com.liferay.dynamic.data.mapping.storage.DDMFormValues
-		getRecordSetSettingsDDMFormValues(DDLRecordSet recordSet) {
-
-		return getService().getRecordSetSettingsDDMFormValues(recordSet);
-	}
-
-	/**
-	 * Returns the record set's settings.
-	 *
-	 * @param recordSet the record set
-	 * @return the record set settings
-	 * @throws PortalException if a portal exception occurred
-	 * @see #getRecordSetSettingsDDMFormValues(DDLRecordSet)
-	 */
-	public static com.liferay.dynamic.data.lists.model.DDLRecordSetSettings
-			getRecordSetSettingsModel(DDLRecordSet recordSet)
-		throws PortalException {
-
-		return getService().getRecordSetSettingsModel(recordSet);
-	}
-
-	/**
 	 * Returns a range of all record sets matching the parameters, including a
 	 * keywords parameter for matching string values to the record set's name or
 	 * description.
@@ -860,4 +830,4 @@ public class DDLRecordSetLocalServiceUtil {
 			DDLRecordSetLocalServiceUtil.class, DDLRecordSetLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1516255055
+// LIFERAY-SERVICE-BUILDER-HASH:-489419630

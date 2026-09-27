@@ -6,7 +6,6 @@
 package com.liferay.dynamic.data.lists.service;
 
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
-import com.liferay.dynamic.data.lists.model.DDLRecordSetSettings;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.function.UnsafeFunction;
@@ -498,32 +497,6 @@ public interface DDLRecordSetLocalService
 		long groupId, long ddmStructureId, boolean andOperator);
 
 	/**
-	 * Returns the record set's settings as a DDMFormValues object. For more
-	 * information see <code>DDMFormValues</code> in the
-	 * <code>dynamic.data.mapping.api</code> module.
-	 *
-	 * @param recordSet the record set
-	 * @return the record set settings as a DDMFormValues object
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMFormValues getRecordSetSettingsDDMFormValues(
-		DDLRecordSet recordSet);
-
-	/**
-	 * Returns the record set's settings.
-	 *
-	 * @param recordSet the record set
-	 * @return the record set settings
-	 * @throws PortalException if a portal exception occurred
-	 * @see #getRecordSetSettingsDDMFormValues(DDLRecordSet)
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDLRecordSetSettings getRecordSetSettingsModel(
-			DDLRecordSet recordSet)
-		throws PortalException;
-
-	/**
 	 * Returns a range of all record sets matching the parameters, including a
 	 * keywords parameter for matching string values to the record set's name or
 	 * description.
@@ -758,4 +731,4 @@ public interface DDLRecordSetLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1474641038
+// LIFERAY-SERVICE-BUILDER-HASH:520787845
