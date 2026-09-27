@@ -17,6 +17,8 @@ import com.liferay.headless.admin.fragment.dto.v1_0.CategoryTreeNodeSelectorFiel
 import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxField;
 import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.CheckboxTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.ColorPickerField;
+import com.liferay.headless.admin.fragment.dto.v1_0.ColorPickerFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.Configuration;
 import com.liferay.headless.admin.fragment.dto.v1_0.Dependency;
 import com.liferay.headless.admin.fragment.dto.v1_0.Field;
@@ -425,6 +427,22 @@ public class ConfigurationUtil {
 		};
 	}
 
+	private static ColorPickerFragmentConfigurationFieldDefaultValue
+		_toColorPickerFragmentConfigurationFieldDefaultValue(String value) {
+
+		if (value == null) {
+			return null;
+		}
+
+		ColorPickerFragmentConfigurationFieldDefaultValue
+			colorPickerFragmentConfigurationFieldDefaultValue =
+				new ColorPickerFragmentConfigurationFieldDefaultValue();
+
+		colorPickerFragmentConfigurationFieldDefaultValue.setValue(() -> value);
+
+		return colorPickerFragmentConfigurationFieldDefaultValue;
+	}
+
 	private static Dependency _toDependency(JSONObject dependencyJSONObject) {
 		return new Dependency() {
 			{
@@ -528,6 +546,20 @@ public class ConfigurationUtil {
 							_toBoolean(fieldJSONObject)));
 					setTypeOptions(
 						() -> _toCheckboxTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
+		else if (Objects.equals(type, "colorPicker")) {
+			field = new ColorPickerField() {
+				{
+					setDefaultValue(
+						() ->
+							_toColorPickerFragmentConfigurationFieldDefaultValue(
+								fieldJSONObject.getString(
+									"defaultValue", null)));
+					setTypeOptions(
+						() -> _toTypeOptions(
 							fieldJSONObject.getJSONObject("typeOptions")));
 				}
 			};
@@ -654,6 +686,14 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(checkboxField.getTypeOptions())
+			);
+		}
+		else if (field instanceof ColorPickerField colorPickerField) {
+			fieldJSONObject.put(
+				"defaultValue", _toString(colorPickerField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(colorPickerField.getTypeOptions())
 			);
 		}
 		else if (field instanceof ItemSelectorField itemSelectorField) {
@@ -1052,6 +1092,17 @@ public class ConfigurationUtil {
 					});
 			}
 		};
+	}
+
+	private static String _toString(
+		ColorPickerFragmentConfigurationFieldDefaultValue
+			colorPickerFragmentConfigurationFieldDefaultValue) {
+
+		if (colorPickerFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		return colorPickerFragmentConfigurationFieldDefaultValue.getValue();
 	}
 
 	private static String _toString(
