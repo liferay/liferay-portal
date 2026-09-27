@@ -43,6 +43,14 @@ public class KaleoDefinitionVersionLocalServiceTest
 				_getVersion(kaleoDefinition.getVersion()));
 
 		Assert.assertEquals("1.0", kaleoDefinitionVersion.getVersion());
+
+		Assert.assertNotNull(kaleoDefinitionVersion.getContentAsXML());
+
+		String content = read("single-approver-workflow-definition.xml");
+
+		kaleoDefinitionVersion.setContent(content);
+
+		Assert.assertEquals(content, kaleoDefinitionVersion.getContentAsXML());
 	}
 
 	@Test(expected = NoSuchDefinitionVersionException.class)
