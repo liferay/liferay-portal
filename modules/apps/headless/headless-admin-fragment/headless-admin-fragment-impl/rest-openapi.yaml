@@ -127,6 +127,7 @@ components:
                     checkbox: "#/components/schemas/CheckboxField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
                     select: "#/components/schemas/SelectField"
+                    text: "#/components/schemas/TextField"
                 propertyName: type
             properties:
                 dataType:
@@ -155,7 +156,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, itemSelector, select]
+                    enum: [categoryTreeNodeSelector, checkbox, itemSelector, select, text]
                     type: string
             required:
                 -   name
@@ -427,6 +428,36 @@ components:
             description:
                 The type-specific options of an `itemSelector` fragment configuration field.
             type: object
+        NumberValidation:
+            allOf:
+                -   $ref: "#/components/schemas/Validation"
+                -   properties:
+                        max:
+                            description:
+                                The maximum value allowed.
+                            format: int64
+                            type: integer
+                        min:
+                            description:
+                                The minimum value allowed.
+                            format: int64
+                            type: integer
+            description:
+                A `number` validation of a `text` fragment configuration field's value.
+            type: object
+        PatternValidation:
+            allOf:
+                -   $ref: "#/components/schemas/Validation"
+                -   properties:
+                        regexp:
+                            description:
+                                The regular expression the field's value must match.
+                            type: string
+            description:
+                A `pattern` validation of a `text` fragment configuration field's value.
+            required:
+                -   regexp
+            type: object
         ResourceFile:
             description:
                 A resource file of a fragment set.
@@ -557,6 +588,62 @@ components:
             description:
                 The type-specific options of a `select` fragment configuration field.
             type: object
+        TextField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/TextFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TextTypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `text` field of a fragment configuration's field set.
+            type: object
+        TextFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `text` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    description:
+                        The field's default text. When the field is localizable, it is a language key that is translated when the fragment is rendered.
+                    type: string
+            type: object
+        TextTypeOptions:
+            allOf:
+                -   $ref: "#/components/schemas/TypeOptions"
+                -   properties:
+                        placeholder:
+                            description:
+                                The placeholder shown when the field is empty.
+                            type: string
+                        validation:
+                            $ref: "#/components/schemas/Validation"
+                            description:
+                                The validation applied to the field's value.
+            description:
+                The type-specific options of a `text` fragment configuration field.
+            type: object
+        TextValidation:
+            allOf:
+                -   $ref: "#/components/schemas/Validation"
+                -   properties:
+                        maxLength:
+                            description:
+                                The maximum length allowed.
+                            format: int64
+                            type: integer
+                        minLength:
+                            description:
+                                The minimum length allowed.
+                            format: int64
+                            type: integer
+            description:
+                An `email`, `text`, or `url` validation of a `text` fragment configuration field's value.
+            type: object
         TypeOptions:
             description:
                 The type-specific options of a fragment configuration field.
@@ -582,6 +669,34 @@ components:
                     type: string
             required:
                 -   value
+            type: object
+        Validation:
+            description:
+                The validation applied to a `text` fragment configuration field's value.
+            discriminator:
+                mapping:
+                    email: "#/components/schemas/TextValidation"
+                    number: "#/components/schemas/NumberValidation"
+                    pattern: "#/components/schemas/PatternValidation"
+                    text: "#/components/schemas/TextValidation"
+                    url: "#/components/schemas/TextValidation"
+                propertyName: type
+            properties:
+                errorMessage:
+                    description:
+                        The message shown when the field's value is not valid.
+                    type: string
+                required:
+                    description:
+                        A flag that indicates whether the field's value is mandatory.
+                    type: boolean
+                type:
+                    description:
+                        The validation's type.
+                    enum: [email, number, pattern, text, url]
+                    type: string
+            required:
+                -   type
             type: object
 info:
     description:
