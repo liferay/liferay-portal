@@ -14,6 +14,7 @@ import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.LengthField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.SelectField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.TextField;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.URLField;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -85,6 +86,10 @@ public class FieldSerDes {
 
 			if (typeString.equals("text")) {
 				return TextFieldSerDes.toJSON((TextField)field);
+			}
+
+			if (typeString.equals("url")) {
+				return URLFieldSerDes.toJSON((URLField)field);
 			}
 
 			throw new IllegalArgumentException("Unknown type " + typeString);
@@ -229,6 +234,10 @@ public class FieldSerDes {
 					return TextField.toDTO(json);
 				}
 
+				if (typeString.equals("url")) {
+					return URLField.toDTO(json);
+				}
+
 				throw new IllegalArgumentException(
 					"Unknown type " + typeString);
 			}
@@ -361,4 +370,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-475784324
+// LIFERAY-REST-BUILDER-HASH:1582338733

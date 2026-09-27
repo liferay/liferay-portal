@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ColorPaletteValue;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.SitePageURLValue;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ColorPaletteValueSerDes {
+public class SitePageURLValueSerDes {
 
-	public static ColorPaletteValue toDTO(String json) {
-		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
-			new ColorPaletteValueJSONParser();
+	public static SitePageURLValue toDTO(String json) {
+		SitePageURLValueJSONParser sitePageURLValueJSONParser =
+			new SitePageURLValueJSONParser();
 
-		return colorPaletteValueJSONParser.parseToDTO(json);
+		return sitePageURLValueJSONParser.parseToDTO(json);
 	}
 
-	public static ColorPaletteValue[] toDTOs(String json) {
-		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
-			new ColorPaletteValueJSONParser();
+	public static SitePageURLValue[] toDTOs(String json) {
+		SitePageURLValueJSONParser sitePageURLValueJSONParser =
+			new SitePageURLValueJSONParser();
 
-		return colorPaletteValueJSONParser.parseToDTOs(json);
+		return sitePageURLValueJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(ColorPaletteValue colorPaletteValue) {
-		if (colorPaletteValue == null) {
+	public static String toJSON(SitePageURLValue sitePageURLValue) {
+		if (sitePageURLValue == null) {
 			return "null";
 		}
 
@@ -47,45 +47,27 @@ public class ColorPaletteValueSerDes {
 
 		sb.append("{");
 
-		if (colorPaletteValue.getColor() != null) {
+		if (sitePageURLValue.getSitePageItemExternalReference() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"color\": ");
+			sb.append("\"sitePageItemExternalReference\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(colorPaletteValue.getColor()));
-
-			sb.append("\"");
+			sb.append(
+				String.valueOf(
+					sitePageURLValue.getSitePageItemExternalReference()));
 		}
 
-		if (colorPaletteValue.getCssClass() != null) {
+		if (sitePageURLValue.getUrlType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"cssClass\": ");
+			sb.append("\"urlType\": ");
 
 			sb.append("\"");
-
-			sb.append(_escape(colorPaletteValue.getCssClass()));
-
-			sb.append("\"");
-		}
-
-		if (colorPaletteValue.getRgbValue() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"rgbValue\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(colorPaletteValue.getRgbValue()));
-
+			sb.append(sitePageURLValue.getUrlType());
 			sb.append("\"");
 		}
 
@@ -95,69 +77,60 @@ public class ColorPaletteValueSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
-			new ColorPaletteValueJSONParser();
+		SitePageURLValueJSONParser sitePageURLValueJSONParser =
+			new SitePageURLValueJSONParser();
 
-		return colorPaletteValueJSONParser.parseToMap(json);
+		return sitePageURLValueJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(
-		ColorPaletteValue colorPaletteValue) {
-
-		if (colorPaletteValue == null) {
+	public static Map<String, String> toMap(SitePageURLValue sitePageURLValue) {
+		if (sitePageURLValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (colorPaletteValue.getColor() == null) {
-			map.put("color", null);
-		}
-		else {
-			map.put("color", String.valueOf(colorPaletteValue.getColor()));
-		}
-
-		if (colorPaletteValue.getCssClass() == null) {
-			map.put("cssClass", null);
+		if (sitePageURLValue.getSitePageItemExternalReference() == null) {
+			map.put("sitePageItemExternalReference", null);
 		}
 		else {
 			map.put(
-				"cssClass", String.valueOf(colorPaletteValue.getCssClass()));
+				"sitePageItemExternalReference",
+				String.valueOf(
+					sitePageURLValue.getSitePageItemExternalReference()));
 		}
 
-		if (colorPaletteValue.getRgbValue() == null) {
-			map.put("rgbValue", null);
+		if (sitePageURLValue.getUrlType() == null) {
+			map.put("urlType", null);
 		}
 		else {
-			map.put(
-				"rgbValue", String.valueOf(colorPaletteValue.getRgbValue()));
+			map.put("urlType", String.valueOf(sitePageURLValue.getUrlType()));
 		}
 
 		return map;
 	}
 
-	public static class ColorPaletteValueJSONParser
-		extends BaseJSONParser<ColorPaletteValue> {
+	public static class SitePageURLValueJSONParser
+		extends BaseJSONParser<SitePageURLValue> {
 
 		@Override
-		protected ColorPaletteValue createDTO() {
-			return new ColorPaletteValue();
+		protected SitePageURLValue createDTO() {
+			return new SitePageURLValue();
 		}
 
 		@Override
-		protected ColorPaletteValue[] createDTOArray(int size) {
-			return new ColorPaletteValue[size];
+		protected SitePageURLValue[] createDTOArray(int size) {
+			return new SitePageURLValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "color")) {
+			if (Objects.equals(
+					jsonParserFieldName, "sitePageItemExternalReference")) {
+
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "cssClass")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "rgbValue")) {
+			else if (Objects.equals(jsonParserFieldName, "urlType")) {
 				return false;
 			}
 
@@ -166,22 +139,23 @@ public class ColorPaletteValueSerDes {
 
 		@Override
 		protected void setField(
-			ColorPaletteValue colorPaletteValue, String jsonParserFieldName,
+			SitePageURLValue sitePageURLValue, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "color")) {
+			if (Objects.equals(
+					jsonParserFieldName, "sitePageItemExternalReference")) {
+
 				if (jsonParserFieldValue != null) {
-					colorPaletteValue.setColor((String)jsonParserFieldValue);
+					sitePageURLValue.setSitePageItemExternalReference(
+						ItemExternalReferenceSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "cssClass")) {
+			else if (Objects.equals(jsonParserFieldName, "urlType")) {
 				if (jsonParserFieldValue != null) {
-					colorPaletteValue.setCssClass((String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "rgbValue")) {
-				if (jsonParserFieldValue != null) {
-					colorPaletteValue.setRgbValue((String)jsonParserFieldValue);
+					sitePageURLValue.setUrlType(
+						SitePageURLValue.UrlType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -271,4 +245,4 @@ public class ColorPaletteValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:308635956
+// LIFERAY-REST-BUILDER-HASH:-1198386944

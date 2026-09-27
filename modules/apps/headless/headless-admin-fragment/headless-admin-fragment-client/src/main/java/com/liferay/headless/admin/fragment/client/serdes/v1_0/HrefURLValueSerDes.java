@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ColorPaletteValue;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.HrefURLValue;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ColorPaletteValueSerDes {
+public class HrefURLValueSerDes {
 
-	public static ColorPaletteValue toDTO(String json) {
-		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
-			new ColorPaletteValueJSONParser();
+	public static HrefURLValue toDTO(String json) {
+		HrefURLValueJSONParser hrefURLValueJSONParser =
+			new HrefURLValueJSONParser();
 
-		return colorPaletteValueJSONParser.parseToDTO(json);
+		return hrefURLValueJSONParser.parseToDTO(json);
 	}
 
-	public static ColorPaletteValue[] toDTOs(String json) {
-		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
-			new ColorPaletteValueJSONParser();
+	public static HrefURLValue[] toDTOs(String json) {
+		HrefURLValueJSONParser hrefURLValueJSONParser =
+			new HrefURLValueJSONParser();
 
-		return colorPaletteValueJSONParser.parseToDTOs(json);
+		return hrefURLValueJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(ColorPaletteValue colorPaletteValue) {
-		if (colorPaletteValue == null) {
+	public static String toJSON(HrefURLValue hrefURLValue) {
+		if (hrefURLValue == null) {
 			return "null";
 		}
 
@@ -47,45 +47,29 @@ public class ColorPaletteValueSerDes {
 
 		sb.append("{");
 
-		if (colorPaletteValue.getColor() != null) {
+		if (hrefURLValue.getHref() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"color\": ");
+			sb.append("\"href\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(colorPaletteValue.getColor()));
+			sb.append(_escape(hrefURLValue.getHref()));
 
 			sb.append("\"");
 		}
 
-		if (colorPaletteValue.getCssClass() != null) {
+		if (hrefURLValue.getUrlType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"cssClass\": ");
+			sb.append("\"urlType\": ");
 
 			sb.append("\"");
-
-			sb.append(_escape(colorPaletteValue.getCssClass()));
-
-			sb.append("\"");
-		}
-
-		if (colorPaletteValue.getRgbValue() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"rgbValue\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(colorPaletteValue.getRgbValue()));
-
+			sb.append(hrefURLValue.getUrlType());
 			sb.append("\"");
 		}
 
@@ -95,69 +79,55 @@ public class ColorPaletteValueSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
-			new ColorPaletteValueJSONParser();
+		HrefURLValueJSONParser hrefURLValueJSONParser =
+			new HrefURLValueJSONParser();
 
-		return colorPaletteValueJSONParser.parseToMap(json);
+		return hrefURLValueJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(
-		ColorPaletteValue colorPaletteValue) {
-
-		if (colorPaletteValue == null) {
+	public static Map<String, String> toMap(HrefURLValue hrefURLValue) {
+		if (hrefURLValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (colorPaletteValue.getColor() == null) {
-			map.put("color", null);
+		if (hrefURLValue.getHref() == null) {
+			map.put("href", null);
 		}
 		else {
-			map.put("color", String.valueOf(colorPaletteValue.getColor()));
+			map.put("href", String.valueOf(hrefURLValue.getHref()));
 		}
 
-		if (colorPaletteValue.getCssClass() == null) {
-			map.put("cssClass", null);
+		if (hrefURLValue.getUrlType() == null) {
+			map.put("urlType", null);
 		}
 		else {
-			map.put(
-				"cssClass", String.valueOf(colorPaletteValue.getCssClass()));
-		}
-
-		if (colorPaletteValue.getRgbValue() == null) {
-			map.put("rgbValue", null);
-		}
-		else {
-			map.put(
-				"rgbValue", String.valueOf(colorPaletteValue.getRgbValue()));
+			map.put("urlType", String.valueOf(hrefURLValue.getUrlType()));
 		}
 
 		return map;
 	}
 
-	public static class ColorPaletteValueJSONParser
-		extends BaseJSONParser<ColorPaletteValue> {
+	public static class HrefURLValueJSONParser
+		extends BaseJSONParser<HrefURLValue> {
 
 		@Override
-		protected ColorPaletteValue createDTO() {
-			return new ColorPaletteValue();
+		protected HrefURLValue createDTO() {
+			return new HrefURLValue();
 		}
 
 		@Override
-		protected ColorPaletteValue[] createDTOArray(int size) {
-			return new ColorPaletteValue[size];
+		protected HrefURLValue[] createDTOArray(int size) {
+			return new HrefURLValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "color")) {
+			if (Objects.equals(jsonParserFieldName, "href")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "cssClass")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "rgbValue")) {
+			else if (Objects.equals(jsonParserFieldName, "urlType")) {
 				return false;
 			}
 
@@ -166,22 +136,19 @@ public class ColorPaletteValueSerDes {
 
 		@Override
 		protected void setField(
-			ColorPaletteValue colorPaletteValue, String jsonParserFieldName,
+			HrefURLValue hrefURLValue, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "color")) {
+			if (Objects.equals(jsonParserFieldName, "href")) {
 				if (jsonParserFieldValue != null) {
-					colorPaletteValue.setColor((String)jsonParserFieldValue);
+					hrefURLValue.setHref((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "cssClass")) {
+			else if (Objects.equals(jsonParserFieldName, "urlType")) {
 				if (jsonParserFieldValue != null) {
-					colorPaletteValue.setCssClass((String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "rgbValue")) {
-				if (jsonParserFieldValue != null) {
-					colorPaletteValue.setRgbValue((String)jsonParserFieldValue);
+					hrefURLValue.setUrlType(
+						HrefURLValue.UrlType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -271,4 +238,4 @@ public class ColorPaletteValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:308635956
+// LIFERAY-REST-BUILDER-HASH:1769495296

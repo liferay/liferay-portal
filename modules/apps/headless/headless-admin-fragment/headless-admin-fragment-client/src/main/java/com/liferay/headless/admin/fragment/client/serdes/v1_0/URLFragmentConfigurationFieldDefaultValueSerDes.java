@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemValue;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.URLFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,22 +22,33 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ItemValueSerDes {
+public class URLFragmentConfigurationFieldDefaultValueSerDes {
 
-	public static ItemValue toDTO(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+	public static URLFragmentConfigurationFieldDefaultValue toDTO(String json) {
+		URLFragmentConfigurationFieldDefaultValueJSONParser
+			urlFragmentConfigurationFieldDefaultValueJSONParser =
+				new URLFragmentConfigurationFieldDefaultValueJSONParser();
 
-		return itemValueJSONParser.parseToDTO(json);
+		return urlFragmentConfigurationFieldDefaultValueJSONParser.parseToDTO(
+			json);
 	}
 
-	public static ItemValue[] toDTOs(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+	public static URLFragmentConfigurationFieldDefaultValue[] toDTOs(
+		String json) {
 
-		return itemValueJSONParser.parseToDTOs(json);
+		URLFragmentConfigurationFieldDefaultValueJSONParser
+			urlFragmentConfigurationFieldDefaultValueJSONParser =
+				new URLFragmentConfigurationFieldDefaultValueJSONParser();
+
+		return urlFragmentConfigurationFieldDefaultValueJSONParser.parseToDTOs(
+			json);
 	}
 
-	public static String toJSON(ItemValue itemValue) {
-		if (itemValue == null) {
+	public static String toJSON(
+		URLFragmentConfigurationFieldDefaultValue
+			urlFragmentConfigurationFieldDefaultValue) {
+
+		if (urlFragmentConfigurationFieldDefaultValue == null) {
 			return "null";
 		}
 
@@ -45,24 +56,14 @@ public class ItemValueSerDes {
 
 		sb.append("{");
 
-		if (itemValue.getItemExternalReference() != null) {
+		if (urlFragmentConfigurationFieldDefaultValue.getValue() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"itemExternalReference\": ");
+			sb.append("\"value\": ");
 
-			sb.append(String.valueOf(itemValue.getItemExternalReference()));
-		}
-
-		if (itemValue.getTemplateReference() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"templateReference\": ");
-
-			sb.append(String.valueOf(itemValue.getTemplateReference()));
+			sb.append(urlFragmentConfigurationFieldDefaultValue.getValue());
 		}
 
 		sb.append("}");
@@ -71,57 +72,55 @@ public class ItemValueSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+		URLFragmentConfigurationFieldDefaultValueJSONParser
+			urlFragmentConfigurationFieldDefaultValueJSONParser =
+				new URLFragmentConfigurationFieldDefaultValueJSONParser();
 
-		return itemValueJSONParser.parseToMap(json);
+		return urlFragmentConfigurationFieldDefaultValueJSONParser.parseToMap(
+			json);
 	}
 
-	public static Map<String, String> toMap(ItemValue itemValue) {
-		if (itemValue == null) {
+	public static Map<String, String> toMap(
+		URLFragmentConfigurationFieldDefaultValue
+			urlFragmentConfigurationFieldDefaultValue) {
+
+		if (urlFragmentConfigurationFieldDefaultValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (itemValue.getItemExternalReference() == null) {
-			map.put("itemExternalReference", null);
+		if (urlFragmentConfigurationFieldDefaultValue.getValue() == null) {
+			map.put("value", null);
 		}
 		else {
 			map.put(
-				"itemExternalReference",
-				String.valueOf(itemValue.getItemExternalReference()));
-		}
-
-		if (itemValue.getTemplateReference() == null) {
-			map.put("templateReference", null);
-		}
-		else {
-			map.put(
-				"templateReference",
-				String.valueOf(itemValue.getTemplateReference()));
+				"value",
+				String.valueOf(
+					urlFragmentConfigurationFieldDefaultValue.getValue()));
 		}
 
 		return map;
 	}
 
-	public static class ItemValueJSONParser extends BaseJSONParser<ItemValue> {
+	public static class URLFragmentConfigurationFieldDefaultValueJSONParser
+		extends BaseJSONParser<URLFragmentConfigurationFieldDefaultValue> {
 
 		@Override
-		protected ItemValue createDTO() {
-			return new ItemValue();
+		protected URLFragmentConfigurationFieldDefaultValue createDTO() {
+			return new URLFragmentConfigurationFieldDefaultValue();
 		}
 
 		@Override
-		protected ItemValue[] createDTOArray(int size) {
-			return new ItemValue[size];
+		protected URLFragmentConfigurationFieldDefaultValue[] createDTOArray(
+			int size) {
+
+			return new URLFragmentConfigurationFieldDefaultValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "itemExternalReference")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "templateReference")) {
+			if (Objects.equals(jsonParserFieldName, "value")) {
 				return false;
 			}
 
@@ -130,21 +129,14 @@ public class ItemValueSerDes {
 
 		@Override
 		protected void setField(
-			ItemValue itemValue, String jsonParserFieldName,
-			Object jsonParserFieldValue) {
+			URLFragmentConfigurationFieldDefaultValue
+				urlFragmentConfigurationFieldDefaultValue,
+			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "itemExternalReference")) {
+			if (Objects.equals(jsonParserFieldName, "value")) {
 				if (jsonParserFieldValue != null) {
-					itemValue.setItemExternalReference(
-						ItemExternalReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "templateReference")) {
-				if (jsonParserFieldValue != null) {
-					itemValue.setTemplateReference(
-						TemplateReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
+					urlFragmentConfigurationFieldDefaultValue.setValue(
+						URLValueSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -234,4 +226,4 @@ public class ItemValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-590462696
+// LIFERAY-REST-BUILDER-HASH:-2011906902
