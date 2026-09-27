@@ -24,11 +24,18 @@ import com.liferay.headless.admin.fragment.dto.v1_0.FieldSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.NumberValidation;
+import com.liferay.headless.admin.fragment.dto.v1_0.PatternValidation;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectField;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.SelectTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.TextField;
+import com.liferay.headless.admin.fragment.dto.v1_0.TextFragmentConfigurationFieldDefaultValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.TextTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.TextValidation;
 import com.liferay.headless.admin.fragment.dto.v1_0.TypeOptions;
 import com.liferay.headless.admin.fragment.dto.v1_0.ValidValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.Validation;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
@@ -550,6 +557,18 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "text")) {
+			field = new TextField() {
+				{
+					setDefaultValue(
+						() -> _toTextFragmentConfigurationFieldDefaultValue(
+							fieldJSONObject.getString("defaultValue", null)));
+					setTypeOptions(
+						() -> _toTextTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else {
 			throw new IllegalStateException(
 				StringBundler.concat(
@@ -640,6 +659,14 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(selectField.getTypeOptions())
+			);
+		}
+		else if (field instanceof TextField textField) {
+			fieldJSONObject.put(
+				"defaultValue", _toString(textField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(textField.getTypeOptions())
 			);
 		}
 
@@ -1000,6 +1027,52 @@ public class ConfigurationUtil {
 		return selectFragmentConfigurationFieldDefaultValue.getValue();
 	}
 
+	private static String _toString(
+		TextFragmentConfigurationFieldDefaultValue
+			textFragmentConfigurationFieldDefaultValue) {
+
+		if (textFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		return textFragmentConfigurationFieldDefaultValue.getValue();
+	}
+
+	private static TextFragmentConfigurationFieldDefaultValue
+		_toTextFragmentConfigurationFieldDefaultValue(String value) {
+
+		if (value == null) {
+			return null;
+		}
+
+		TextFragmentConfigurationFieldDefaultValue
+			textFragmentConfigurationFieldDefaultValue =
+				new TextFragmentConfigurationFieldDefaultValue();
+
+		textFragmentConfigurationFieldDefaultValue.setValue(() -> value);
+
+		return textFragmentConfigurationFieldDefaultValue;
+	}
+
+	private static TextTypeOptions _toTextTypeOptions(
+		JSONObject typeOptionsJSONObject) {
+
+		if (typeOptionsJSONObject == null) {
+			return null;
+		}
+
+		return new TextTypeOptions() {
+			{
+				setDependency(() -> _toDependencyMap(typeOptionsJSONObject));
+				setPlaceholder(
+					() -> typeOptionsJSONObject.getString("placeholder", null));
+				setValidation(
+					() -> _toValidation(
+						typeOptionsJSONObject.getJSONObject("validation")));
+			}
+		};
+	}
+
 	private static TypeOptions _toTypeOptions(
 		JSONObject typeOptionsJSONObject) {
 
@@ -1109,6 +1182,30 @@ public class ConfigurationUtil {
 	}
 
 	private static JSONObject _toTypeOptionsJSONObject(
+		TextTypeOptions textTypeOptions) {
+
+		if (textTypeOptions == null) {
+			return null;
+		}
+
+		JSONObject typeOptionsJSONObject = JSONUtil.put(
+			"dependency",
+			_toDependencyJSONObject(textTypeOptions.getDependency())
+		).put(
+			"placeholder", textTypeOptions.getPlaceholder()
+		).put(
+			"validation",
+			_toValidationJSONObject(textTypeOptions.getValidation())
+		);
+
+		if (typeOptionsJSONObject.length() == 0) {
+			return null;
+		}
+
+		return typeOptionsJSONObject;
+	}
+
+	private static JSONObject _toTypeOptionsJSONObject(
 		TypeOptions typeOptions) {
 
 		if (typeOptions == null) {
@@ -1144,6 +1241,126 @@ public class ConfigurationUtil {
 		).put(
 			"value", validValue.getValue()
 		);
+	}
+
+	private static Validation _toValidation(JSONObject validationJSONObject) {
+		if (validationJSONObject == null) {
+			return null;
+		}
+
+		String type = validationJSONObject.getString("type");
+
+		Validation validation = null;
+
+		if (Objects.equals(type, "number")) {
+			validation = new NumberValidation() {
+				{
+					setMax(
+						() -> {
+							if (!validationJSONObject.has("max")) {
+								return null;
+							}
+
+							return validationJSONObject.getLong("max");
+						});
+					setMin(
+						() -> {
+							if (!validationJSONObject.has("min")) {
+								return null;
+							}
+
+							return validationJSONObject.getLong("min");
+						});
+				}
+			};
+		}
+		else if (Objects.equals(type, "pattern")) {
+			validation = new PatternValidation() {
+				{
+					setRegexp(
+						() -> validationJSONObject.getString("regexp", null));
+				}
+			};
+		}
+		else if (Objects.equals(type, "email") ||
+				 Objects.equals(type, "text") || Objects.equals(type, "url")) {
+
+			validation = new TextValidation() {
+				{
+					setMaxLength(
+						() -> {
+							if (!validationJSONObject.has("maxLength")) {
+								return null;
+							}
+
+							return validationJSONObject.getLong("maxLength");
+						});
+					setMinLength(
+						() -> {
+							if (!validationJSONObject.has("minLength")) {
+								return null;
+							}
+
+							return validationJSONObject.getLong("minLength");
+						});
+				}
+			};
+		}
+
+		if (validation == null) {
+			return null;
+		}
+
+		validation.setErrorMessage(
+			() -> validationJSONObject.getString("errorMessage", null));
+		validation.setRequired(
+			() -> {
+				if (!validationJSONObject.has("required")) {
+					return null;
+				}
+
+				return validationJSONObject.getBoolean("required");
+			});
+		validation.setType(() -> Validation.Type.create(type));
+
+		return validation;
+	}
+
+	private static JSONObject _toValidationJSONObject(Validation validation) {
+		if (validation == null) {
+			return null;
+		}
+
+		JSONObject validationJSONObject = JSONUtil.put(
+			"errorMessage", validation.getErrorMessage()
+		).put(
+			"required", validation.getRequired()
+		).put(
+			"type", validation.getTypeAsString()
+		);
+
+		if (validation instanceof NumberValidation numberValidation) {
+			return validationJSONObject.put(
+				"max", numberValidation.getMax()
+			).put(
+				"min", numberValidation.getMin()
+			);
+		}
+
+		if (validation instanceof PatternValidation patternValidation) {
+			return validationJSONObject.put(
+				"regexp", patternValidation.getRegexp());
+		}
+
+		if (validation instanceof TextValidation textValidation) {
+			return validationJSONObject.put(
+				"maxLength", textValidation.getMaxLength()
+			).put(
+				"minLength", textValidation.getMinLength()
+			);
+		}
+
+		return validationJSONObject;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
