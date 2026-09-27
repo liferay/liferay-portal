@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Sharing Web
 Bundle-SymbolicName: com.liferay.sharing.web
-Bundle-Version: 3.0.103
+Bundle-Version: 3.0.104
 Web-ContextPath: /sharing-web
 -dsannotations-options: inherit
