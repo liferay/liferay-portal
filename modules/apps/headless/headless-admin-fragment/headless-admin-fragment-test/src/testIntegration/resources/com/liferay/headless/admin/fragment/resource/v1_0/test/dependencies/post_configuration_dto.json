@@ -202,6 +202,92 @@
 				},
 				{
 					"defaultValue": {
+						"value": "Default text"
+					},
+					"name": "text",
+					"type": "text"
+				},
+				{
+					"defaultValue": {
+						"value": "submit"
+					},
+					"localizable": true,
+					"name": "textLocalizable",
+					"type": "text"
+				},
+				{
+					"defaultValue": {
+						"value": "Visible text"
+					},
+					"name": "textVisibleWhenText",
+					"type": "text",
+					"typeOptions": {
+						"dependency": {
+							"text": {
+								"type": "equal",
+								"value": "Default text"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": "test@liferay.com"
+					},
+					"name": "textWithEmailValidation",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"type": "email"
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": "5"
+					},
+					"name": "textWithNumberValidation",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"max": 10,
+							"min": 1,
+							"type": "number"
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": "abc"
+					},
+					"name": "textWithPatternValidation",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"regexp": "^[a-z]+$",
+							"type": "pattern"
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": "Valid"
+					},
+					"name": "textWithTextValidation",
+					"type": "text",
+					"typeOptions": {
+						"placeholder": "Type a text",
+						"validation": {
+							"errorMessage": "The text must have between 3 and 20 characters.",
+							"maxLength": 20,
+							"minLength": 3,
+							"required": true,
+							"type": "text"
+						}
+					}
+				},
+				{
+					"defaultValue": {
 						"value": {
 							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
 							"externalReferenceCode": "vocabulary-erc"
