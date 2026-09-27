@@ -231,7 +231,8 @@ public abstract class Field implements Cloneable, Serializable {
 	public static enum Type {
 
 		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
-		CHECKBOX("checkbox"), ITEM_SELECTOR("itemSelector"), SELECT("select");
+		CHECKBOX("checkbox"), ITEM_SELECTOR("itemSelector"), SELECT("select"),
+		TEXT("text");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -263,4 +264,4 @@ public abstract class Field implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1598196059
+// LIFERAY-REST-BUILDER-HASH:-1315731569
