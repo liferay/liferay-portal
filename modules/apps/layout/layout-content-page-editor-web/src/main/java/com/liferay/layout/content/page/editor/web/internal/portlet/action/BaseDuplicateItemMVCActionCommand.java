@@ -80,8 +80,8 @@ public abstract class BaseDuplicateItemMVCActionCommand
 				fragmentEntryLinkLocalService.getFragmentEntryLink(
 					fragmentEntryLinkId);
 
-			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
+			JSONObject editableValuesJSONObject = jsonFactory.createJSONObject(
+				fragmentEntryLink.getEditableValues());
 
 			String portletId = editableValuesJSONObject.getString("portletId");
 

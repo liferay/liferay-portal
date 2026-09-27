@@ -764,8 +764,8 @@ public class FragmentEntryLinkLocalServiceImpl
 		String html = _replaceResources(fragmentEntry, fragmentEntry.getHtml());
 
 		if (!Objects.equals(fragmentEntryLink.getHtml(), html)) {
-			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
+			JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
+				fragmentEntryLink.getEditableValues());
 
 			fragmentEntryLink.setHtml(html);
 

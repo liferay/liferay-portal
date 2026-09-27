@@ -340,8 +340,8 @@ public class LayoutPageTemplateEntryModelListener
 			return;
 		}
 
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLink.getEditableValuesJSONObject();
+		JSONObject editableValuesJSONObject = _jsonFactory.safeCreateJSONObject(
+			fragmentEntryLink.getEditableValues());
 
 		if (editableValuesJSONObject == null) {
 			return;

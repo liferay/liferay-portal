@@ -13,6 +13,7 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.layout.admin.web.internal.info.item.LayoutInfoItemFields;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -133,7 +134,9 @@ public class LayoutInfoItemFieldValuesUpdaterHelper {
 			_updateEditableValuesJSONObject(
 				editableValuesJSONObjects.computeIfAbsent(
 					fragmentEntryLink,
-					FragmentEntryLink::getEditableValuesJSONObject),
+					curFragmentEntryLink ->
+						JSONFactoryUtil.safeCreateJSONObject(
+							curFragmentEntryLink.getEditableValues())),
 				matcher.group("name"), infoFieldValue);
 		}
 
