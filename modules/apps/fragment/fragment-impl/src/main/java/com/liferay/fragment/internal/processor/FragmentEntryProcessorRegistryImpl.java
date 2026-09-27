@@ -252,8 +252,17 @@ public class FragmentEntryProcessorRegistryImpl
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
+
+		if ((editableValuesJSONObject != null) &&
+			(editableValuesJSONObject.length() == 0)) {
+
+			editableValuesJSONObject = _jsonFactory.createJSONObject();
+		}
+
 		return processFragmentEntryLinkHTML(
-			fragmentEntryLink.getEditableValuesJSONObject(), fragmentEntryLink,
+			editableValuesJSONObject, fragmentEntryLink,
 			fragmentEntryProcessorContext);
 	}
 
