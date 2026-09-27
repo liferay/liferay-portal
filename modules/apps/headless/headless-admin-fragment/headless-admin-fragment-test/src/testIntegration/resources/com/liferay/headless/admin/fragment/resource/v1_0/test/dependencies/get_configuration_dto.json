@@ -107,6 +107,35 @@
 				},
 				{
 					"defaultValue": {
+						"value": "#FFFFFF"
+					},
+					"name": "colorPicker",
+					"type": "colorPicker"
+				},
+				{
+					"defaultValue": {
+						"value": "brand-color-1"
+					},
+					"name": "colorPickerToken",
+					"type": "colorPicker"
+				},
+				{
+					"defaultValue": {
+						"value": "#0B5FFF"
+					},
+					"name": "colorPickerVisibleWhenCheckboxTrue",
+					"type": "colorPicker",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
 						"value": {
 							"itemExternalReference": {
 								"className": "com.liferay.journal.model.JournalArticle",

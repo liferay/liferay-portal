@@ -70,6 +70,24 @@
 					}
 				},
 				{
+					"defaultValue": "#000000",
+					"name": "colorPicker",
+					"type": "colorPicker"
+				},
+				{
+					"defaultValue": "brand-color-2",
+					"name": "colorPickerVisibleWhenCheckboxTrue",
+					"type": "colorPicker",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
 					"defaultValue": {
 						"className": "com.liferay.journal.model.JournalArticle",
 						"classNameId": "${JOURNAL_ARTICLE_CLASS_NAME_ID}",
