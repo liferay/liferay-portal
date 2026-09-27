@@ -352,6 +352,92 @@
 				{
 					"defaultValue": {
 						"value": {
+							"href": "https://liferay.dev",
+							"urlType": "Href"
+						}
+					},
+					"name": "urlHref",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"sitePageItemExternalReference": {
+								"className": "com.liferay.portal.kernel.model.Layout",
+								"externalReferenceCode": "layout-erc"
+							},
+							"urlType": "SitePage"
+						}
+					},
+					"name": "urlSitePageByExternalReferenceCode",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"sitePageItemExternalReference": {
+								"className": "com.liferay.portal.kernel.model.Layout",
+								"externalReferenceCode": "layout-erc-and-scope-erc",
+								"scope": {
+									"externalReferenceCode": "layout-scope-erc"
+								}
+							},
+							"urlType": "SitePage"
+						}
+					},
+					"name": "urlSitePageByExternalReferenceCodeAndScope",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"sitePageItemExternalReference": {
+								"className": "com.liferay.portal.kernel.model.Layout",
+								"externalReferenceCode": "${LAYOUT_ERC}"
+							},
+							"urlType": "SitePage"
+						}
+					},
+					"name": "urlSitePageByResolvableExternalReferenceCode",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"sitePageItemExternalReference": {
+								"className": "com.liferay.portal.kernel.model.Layout",
+								"externalReferenceCode": "${LAYOUT_ERC}",
+								"scope": {
+									"externalReferenceCode": "${SITE_EXTERNAL_REFERENCE_CODE}"
+								}
+							},
+							"urlType": "SitePage"
+						}
+					},
+					"name": "urlSitePageByResolvableExternalReferenceCodeAndCurrentSiteScope",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"href": "https://liferay.dev/visible",
+							"urlType": "Href"
+						}
+					},
+					"name": "urlVisibleWhenCheckboxTrue",
+					"type": "url",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": {
 							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
 							"externalReferenceCode": "vocabulary-erc"
 						}

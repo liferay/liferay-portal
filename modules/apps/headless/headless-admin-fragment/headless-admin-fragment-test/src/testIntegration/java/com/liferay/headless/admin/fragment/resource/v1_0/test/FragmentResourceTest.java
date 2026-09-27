@@ -51,11 +51,14 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
@@ -209,8 +212,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188"
+			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107185",
+			"LPD-107186", "LPD-107187", "LPD-107188"
 		}
 	)
 	public void testGetSiteFragment() throws Exception {
@@ -254,8 +257,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188"
+			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107185",
+			"LPD-107186", "LPD-107187", "LPD-107188"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -319,8 +322,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188"
+			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107185",
+			"LPD-107186", "LPD-107187", "LPD-107188"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {
@@ -850,6 +853,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			testGroup.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, LayoutConstants.TYPE_PORTLET, false,
+			StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
 		return HashMapBuilder.put(
 			"CATEGORY_ERC", assetCategory.getExternalReferenceCode()
 		).put(
@@ -866,9 +877,19 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"JOURNAL_ARTICLE_RESOURCE_PRIM_KEY",
 			String.valueOf(journalArticle.getResourcePrimKey())
 		).put(
+			"LAYOUT_ERC", layout.getExternalReferenceCode()
+		).put(
+			"LAYOUT_ID", String.valueOf(layout.getLayoutId())
+		).put(
+			"LAYOUT_NAME", layout.getName(LocaleUtil.getMostRelevantLocale())
+		).put(
+			"LAYOUT_UUID", layout.getUuid()
+		).put(
 			"NONEXISTENT_CLASS_PK", String.valueOf(RandomTestUtil.randomLong())
 		).put(
 			"SITE_EXTERNAL_REFERENCE_CODE", testGroup.getExternalReferenceCode()
+		).put(
+			"SITE_GROUP_ID", String.valueOf(testGroup.getGroupId())
 		).put(
 			"VOCABULARY_ERC", assetVocabulary.getExternalReferenceCode()
 		).put(
@@ -1898,6 +1919,16 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						"class name ", JournalArticle.class.getName(),
 						", external reference code item-erc-and-scope-erc, ",
 						"and scope external reference code item-scope-erc"),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", Layout.class.getName(),
+						", external reference code layout-erc, and null scope ",
+						"with current scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", Layout.class.getName(),
+						", external reference code layout-erc-and-scope-erc, ",
+						"and scope external reference code layout-scope-erc"),
 					StringBundler.concat(
 						"Optional reference generated for missing entity with ",
 						"class name ", AssetVocabulary.class.getName(),
@@ -3473,6 +3504,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Inject
 	private Language _language;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;

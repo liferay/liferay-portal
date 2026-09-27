@@ -293,6 +293,75 @@
 				},
 				{
 					"defaultValue": {
+						"href": "https://liferay.dev"
+					},
+					"name": "urlHref",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"externalReferenceCode": "layout-erc"
+						}
+					},
+					"name": "urlSitePageByExternalReferenceCode",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"externalReferenceCode": "layout-erc-and-scope-erc",
+							"scopeExternalReferenceCode": "layout-scope-erc"
+						}
+					},
+					"name": "urlSitePageByExternalReferenceCodeAndScope",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"externalReferenceCode": "${LAYOUT_ERC}",
+							"groupId": "${SITE_GROUP_ID}",
+							"layoutId": "${LAYOUT_ID}",
+							"layoutUuid": "${LAYOUT_UUID}",
+							"privateLayout": false,
+							"title": "${LAYOUT_NAME}"
+						}
+					},
+					"name": "urlSitePageByResolvableExternalReferenceCode",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"externalReferenceCode": "${LAYOUT_ERC}",
+							"groupId": "${SITE_GROUP_ID}",
+							"layoutId": "${LAYOUT_ID}",
+							"layoutUuid": "${LAYOUT_UUID}",
+							"privateLayout": false,
+							"title": "${LAYOUT_NAME}"
+						}
+					},
+					"name": "urlSitePageByResolvableExternalReferenceCodeAndCurrentSiteScope",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"href": "https://liferay.dev/visible"
+					},
+					"name": "urlVisibleWhenCheckboxTrue",
+					"type": "url",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
 						"categoryTreeNodeType": "Vocabulary",
 						"externalReferenceCode": "vocabulary-erc"
 					},

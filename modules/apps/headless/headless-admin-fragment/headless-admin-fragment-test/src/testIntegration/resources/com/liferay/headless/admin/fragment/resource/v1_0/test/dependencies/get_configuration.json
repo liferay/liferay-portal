@@ -361,6 +361,69 @@
 				},
 				{
 					"defaultValue": {
+						"href": "https://www.liferay.com"
+					},
+					"name": "urlHref",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"externalReferenceCode": "layout-erc"
+						}
+					},
+					"name": "urlSitePageByExternalReferenceCode",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"externalReferenceCode": "layout-erc-and-scope-erc",
+							"scopeExternalReferenceCode": "layout-scope-erc"
+						}
+					},
+					"name": "urlSitePageByExternalReferenceCodeAndScope",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"groupId": "${SITE_GROUP_ID}",
+							"layoutId": "${LAYOUT_ID}",
+							"privateLayout": false
+						}
+					},
+					"name": "urlSitePageByLayoutId",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"layout": {
+							"groupId": "${SITE_GROUP_ID}",
+							"layoutId": "${NONEXISTENT_CLASS_PK}",
+							"privateLayout": false
+						}
+					},
+					"name": "urlSitePageByNonexistentLayoutId",
+					"type": "url"
+				},
+				{
+					"defaultValue": {
+						"href": "https://www.liferay.com/visible"
+					},
+					"name": "urlVisibleWhenCheckboxTrue",
+					"type": "url",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
 						"categoryTreeNodeType": "Vocabulary",
 						"externalReferenceCode": "vocabulary-erc"
 					},
