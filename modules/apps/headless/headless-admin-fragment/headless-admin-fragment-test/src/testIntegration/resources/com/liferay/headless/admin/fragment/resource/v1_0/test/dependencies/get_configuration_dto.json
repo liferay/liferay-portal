@@ -208,6 +208,54 @@
 				},
 				{
 					"defaultValue": {
+						"value": "detailed"
+					},
+					"name": "selectWithLabels",
+					"type": "select",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						},
+						"validValues": [
+							{
+								"label": "Compact",
+								"value": "compact"
+							},
+							{
+								"label": "Detailed",
+								"value": "detailed"
+							}
+						]
+					}
+				},
+				{
+					"defaultValue": {
+						"value": "sm"
+					},
+					"name": "selectWithoutLabels",
+					"type": "select",
+					"typeOptions": {
+						"dependency": {
+							"selectWithLabels": {
+								"type": "not-equal",
+								"value": "compact"
+							}
+						},
+						"validValues": [
+							{
+								"value": "sm"
+							},
+							{
+								"value": "lg"
+							}
+						]
+					}
+				},
+				{
+					"defaultValue": {
 						"value": {
 							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
 							"externalReferenceCode": "vocabulary-erc"

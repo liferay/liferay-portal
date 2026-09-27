@@ -125,6 +125,50 @@
 					"type": "itemSelector"
 				},
 				{
+					"defaultValue": "detailed",
+					"name": "selectWithLabels",
+					"type": "select",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						},
+						"validValues": [
+							{
+								"label": "Compact",
+								"value": "compact"
+							},
+							{
+								"label": "Detailed",
+								"value": "detailed"
+							}
+						]
+					}
+				},
+				{
+					"defaultValue": "lg",
+					"name": "selectWithoutLabels",
+					"type": "select",
+					"typeOptions": {
+						"dependency": {
+							"selectWithLabels": {
+								"type": "not-equal",
+								"value": "compact"
+							}
+						},
+						"validValues": [
+							{
+								"value": "sm"
+							},
+							{
+								"value": "lg"
+							}
+						]
+					}
+				},
+				{
 					"defaultValue": {
 						"categoryTreeNodeType": "Vocabulary",
 						"externalReferenceCode": "vocabulary-erc"
