@@ -8,7 +8,15 @@
 						"externalReferenceCode": "category-erc"
 					},
 					"name": "categoryByExternalReferenceCode",
-					"type": "categoryTreeNodeSelector"
+					"type": "categoryTreeNodeSelector",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
 				},
 				{
 					"defaultValue": {
@@ -50,6 +58,33 @@
 					"type": "categoryTreeNodeSelector"
 				},
 				{
+					"defaultValue": "false",
+					"name": "checkboxFalseAsString",
+					"type": "checkbox",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "not-equal",
+								"value": "false"
+							}
+						},
+						"displayType": "checkbox"
+					}
+				},
+				{
+					"defaultValue": true,
+					"name": "checkboxTrue",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				},
+				{
+					"defaultValue": "true",
+					"name": "checkboxTrueAsString",
+					"type": "checkbox"
+				},
+				{
 					"defaultValue": {
 						"className": "com.liferay.journal.model.JournalArticle",
 						"classNameId": "${JOURNAL_ARTICLE_CLASS_NAME_ID}",
@@ -78,6 +113,12 @@
 					"type": "itemSelector",
 					"typeOptions": {
 						"className": "com.liferay.journal.model.JournalArticle",
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						},
 						"enableSelectTemplate": true,
 						"itemSubtype": "BASIC-WEB-CONTENT",
 						"itemType": "com.liferay.journal.model.JournalArticle",

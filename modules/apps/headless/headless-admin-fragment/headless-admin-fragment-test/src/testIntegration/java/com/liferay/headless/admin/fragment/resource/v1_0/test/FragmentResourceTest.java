@@ -207,7 +207,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@Override
 	@Test
 	@TestInfo(
-		{"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107083"}
+		{
+			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
+			"LPD-107083"
+		}
 	)
 	public void testGetSiteFragment() throws Exception {
 		super.testGetSiteFragment();
@@ -248,7 +251,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@Override
 	@Test
 	@TestInfo(
-		{"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107083"}
+		{
+			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
+			"LPD-107083"
+		}
 	)
 	public void testPostSiteFragment() throws Exception {
 		super.testPostSiteFragment();
@@ -309,7 +315,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@Override
 	@Test
 	@TestInfo(
-		{"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107083"}
+		{
+			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
+			"LPD-107083"
+		}
 	)
 	public void testPutSiteFragment() throws Exception {
 		_testPutSiteFragmentBatch();
