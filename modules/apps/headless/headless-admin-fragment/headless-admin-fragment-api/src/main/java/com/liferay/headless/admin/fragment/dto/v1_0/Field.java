@@ -56,7 +56,15 @@ import java.util.function.Supplier;
 )
 @JsonFilter("Liferay.Vulcan")
 @JsonSubTypes(
-	{@JsonSubTypes.Type(name = "itemSelector", value = ItemSelectorField.class)}
+	{
+		@JsonSubTypes.Type(
+			name = "categoryTreeNodeSelector",
+			value = CategoryTreeNodeSelectorField.class
+		),
+		@JsonSubTypes.Type(
+			name = "itemSelector", value = ItemSelectorField.class
+		)
+	}
 )
 @JsonTypeInfo(
 	include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type",
@@ -531,6 +539,7 @@ public abstract class Field implements Serializable {
 	@GraphQLName("Type")
 	public static enum Type {
 
+		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
 		ITEM_SELECTOR("itemSelector");
 
 		@JsonCreator
@@ -676,4 +685,4 @@ public abstract class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2080319104
+// LIFERAY-REST-BUILDER-HASH:-1346071482

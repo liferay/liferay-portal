@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
+import com.liferay.headless.admin.fragment.client.dto.v1_0.CategoryTreeNodeSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Field;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
@@ -46,6 +47,11 @@ public class FieldSerDes {
 
 		if (type != null) {
 			String typeString = type.toString();
+
+			if (typeString.equals("categoryTreeNodeSelector")) {
+				return CategoryTreeNodeSelectorFieldSerDes.toJSON(
+					(CategoryTreeNodeSelectorField)field);
+			}
 
 			if (typeString.equals("itemSelector")) {
 				return ItemSelectorFieldSerDes.toJSON((ItemSelectorField)field);
@@ -160,6 +166,10 @@ public class FieldSerDes {
 
 			if (type != null) {
 				String typeString = type.toString();
+
+				if (typeString.equals("categoryTreeNodeSelector")) {
+					return CategoryTreeNodeSelectorField.toDTO(json);
+				}
 
 				if (typeString.equals("itemSelector")) {
 					return ItemSelectorField.toDTO(json);
@@ -297,4 +307,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:71519429
+// LIFERAY-REST-BUILDER-HASH:1981459494
