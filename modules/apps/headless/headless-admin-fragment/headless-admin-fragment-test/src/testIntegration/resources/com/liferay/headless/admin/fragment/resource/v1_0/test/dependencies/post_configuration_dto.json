@@ -5,6 +5,52 @@
 				{
 					"defaultValue": {
 						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "category-erc"
+						}
+					},
+					"name": "categoryByExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "category-erc-and-scope-erc",
+							"scope": {
+								"externalReferenceCode": "category-scope-erc"
+							}
+						}
+					},
+					"name": "categoryByExternalReferenceCodeAndScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "${CATEGORY_ERC}"
+						}
+					},
+					"name": "categoryByResolvableExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "${CATEGORY_ERC}",
+							"scope": {
+								"externalReferenceCode": "${SITE_EXTERNAL_REFERENCE_CODE}"
+							}
+						}
+					},
+					"name": "categoryByResolvableExternalReferenceCodeAndCurrentSiteScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
 							"itemExternalReference": {
 								"className": "com.liferay.journal.model.JournalArticle",
 								"externalReferenceCode": "item-erc"
@@ -65,6 +111,52 @@
 					},
 					"name": "itemByResolvableExternalReferenceCodeAndCurrentSiteScope",
 					"type": "itemSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "vocabulary-erc"
+						}
+					},
+					"name": "vocabularyByExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "vocabulary-erc-and-scope-erc",
+							"scope": {
+								"externalReferenceCode": "vocabulary-scope-erc"
+							}
+						}
+					},
+					"name": "vocabularyByExternalReferenceCodeAndScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "${VOCABULARY_ERC}"
+						}
+					},
+					"name": "vocabularyByResolvableExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "${VOCABULARY_ERC}",
+							"scope": {
+								"externalReferenceCode": "${SITE_EXTERNAL_REFERENCE_CODE}"
+							}
+						}
+					},
+					"name": "vocabularyByResolvableExternalReferenceCodeAndCurrentSiteScope",
+					"type": "categoryTreeNodeSelector"
 				}
 			]
 		}

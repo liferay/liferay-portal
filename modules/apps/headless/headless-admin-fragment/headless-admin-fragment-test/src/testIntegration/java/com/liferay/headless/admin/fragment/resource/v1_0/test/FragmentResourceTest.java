@@ -6,6 +6,10 @@
 package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
@@ -202,7 +206,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947"})
+	@TestInfo(
+		{"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107083"}
+	)
 	public void testGetSiteFragment() throws Exception {
 		super.testGetSiteFragment();
 
@@ -241,7 +247,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947"})
+	@TestInfo(
+		{"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107083"}
+	)
 	public void testPostSiteFragment() throws Exception {
 		super.testPostSiteFragment();
 
@@ -300,7 +308,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947"})
+	@TestInfo(
+		{"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107083"}
+	)
 	public void testPutSiteFragment() throws Exception {
 		_testPutSiteFragmentBatch();
 		_testPutSiteFragmentCreateApproved();
@@ -812,11 +822,29 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	}
 
 	private Map<String, String> _getConfigurationValuesMap() throws Exception {
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), testGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), testGroup.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			testGroup.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return HashMapBuilder.put(
+			"CATEGORY_ERC", assetCategory.getExternalReferenceCode()
+		).put(
+			"CATEGORY_ID", String.valueOf(assetCategory.getCategoryId())
+		).put(
+			"CATEGORY_NAME", assetCategory.getName()
+		).put(
 			"JOURNAL_ARTICLE_CLASS_NAME_ID",
 			String.valueOf(PortalUtil.getClassNameId(JournalArticle.class))
 		).put(
@@ -829,6 +857,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"NONEXISTENT_CLASS_PK", String.valueOf(RandomTestUtil.randomLong())
 		).put(
 			"SITE_EXTERNAL_REFERENCE_CODE", testGroup.getExternalReferenceCode()
+		).put(
+			"VOCABULARY_ERC", assetVocabulary.getExternalReferenceCode()
+		).put(
+			"VOCABULARY_ID", String.valueOf(assetVocabulary.getVocabularyId())
+		).put(
+			"VOCABULARY_TITLE",
+			assetVocabulary.getTitle(LocaleUtil.getMostRelevantLocale())
 		).build();
 	}
 
@@ -1832,6 +1867,17 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				Arrays.asList(
 					StringBundler.concat(
 						"Optional reference generated for missing entity with ",
+						"class name ", AssetCategory.class.getName(),
+						", external reference code category-erc, and null ",
+						"scope with current scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetCategory.class.getName(),
+						", external reference code ",
+						"category-erc-and-scope-erc, and scope external ",
+						"reference code category-scope-erc"),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
 						"class name ", JournalArticle.class.getName(),
 						", external reference code item-erc, and null scope ",
 						"with current scope ID ", testGroup.getGroupId()),
@@ -1839,7 +1885,18 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						"Optional reference generated for missing entity with ",
 						"class name ", JournalArticle.class.getName(),
 						", external reference code item-erc-and-scope-erc, ",
-						"and scope external reference code item-scope-erc")),
+						"and scope external reference code item-scope-erc"),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetVocabulary.class.getName(),
+						", external reference code vocabulary-erc, and null ",
+						"scope with current scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetVocabulary.class.getName(),
+						", external reference code ",
+						"vocabulary-erc-and-scope-erc, and scope external ",
+						"reference code vocabulary-scope-erc")),
 				TransformUtil.transform(
 					logCapture.getLogEntries(), LogEntry::getMessage));
 		}
@@ -3387,6 +3444,12 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private static String _thumbnail2Base64;
 	private static byte[] _thumbnail2Bytes;
 	private static String _thumbnail2URL;
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	private FragmentCollection _fragmentCollection;
 

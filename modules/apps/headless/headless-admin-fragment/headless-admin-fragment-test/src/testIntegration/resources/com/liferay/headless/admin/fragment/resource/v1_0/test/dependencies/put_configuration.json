@@ -4,6 +4,54 @@
 			"fields": [
 				{
 					"defaultValue": {
+						"categoryTreeNodeType": "Category",
+						"externalReferenceCode": "category-erc"
+					},
+					"name": "categoryByExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Category",
+						"externalReferenceCode": "category-erc-and-scope-erc",
+						"scopeExternalReferenceCode": "category-scope-erc"
+					},
+					"name": "categoryByExternalReferenceCodeAndScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Category",
+						"externalReferenceCode": "category-as-string-erc",
+						"scopeExternalReferenceCode": "category-as-string-scope-erc"
+					},
+					"name": "categoryByExternalReferenceCodeAndScopeAsString",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeId": "${CATEGORY_ID}",
+						"categoryTreeNodeType": "Category",
+						"externalReferenceCode": "${CATEGORY_ERC}",
+						"title": "${CATEGORY_NAME}"
+					},
+					"name": "categoryById",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"name": "categoryByNonexistentId",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Category",
+						"externalReferenceCode": "category-nonexistent-id-erc"
+					},
+					"name": "categoryByNonexistentIdAndExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
 						"className": "com.liferay.journal.model.JournalArticle",
 						"classNameId": "${JOURNAL_ARTICLE_CLASS_NAME_ID}",
 						"classPK": "${JOURNAL_ARTICLE_RESOURCE_PRIM_KEY}",
@@ -74,6 +122,54 @@
 					},
 					"name": "itemByNonexistentClassPKAndExternalReferenceCode",
 					"type": "itemSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Vocabulary",
+						"externalReferenceCode": "vocabulary-erc"
+					},
+					"name": "vocabularyByExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Vocabulary",
+						"externalReferenceCode": "vocabulary-erc-and-scope-erc",
+						"scopeExternalReferenceCode": "vocabulary-scope-erc"
+					},
+					"name": "vocabularyByExternalReferenceCodeAndScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Vocabulary",
+						"externalReferenceCode": "vocabulary-as-string-erc",
+						"scopeExternalReferenceCode": "vocabulary-as-string-scope-erc"
+					},
+					"name": "vocabularyByExternalReferenceCodeAndScopeAsString",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeId": "${VOCABULARY_ID}",
+						"categoryTreeNodeType": "Vocabulary",
+						"externalReferenceCode": "${VOCABULARY_ERC}",
+						"title": "${VOCABULARY_TITLE}"
+					},
+					"name": "vocabularyById",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"name": "vocabularyByNonexistentId",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"categoryTreeNodeType": "Vocabulary",
+						"externalReferenceCode": "vocabulary-nonexistent-id-erc"
+					},
+					"name": "vocabularyByNonexistentIdAndExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
 				}
 			]
 		}

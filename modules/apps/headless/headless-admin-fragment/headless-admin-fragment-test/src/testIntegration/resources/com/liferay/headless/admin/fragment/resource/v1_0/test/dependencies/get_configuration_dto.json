@@ -5,6 +5,68 @@
 				{
 					"defaultValue": {
 						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "category-erc"
+						}
+					},
+					"name": "categoryByExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "category-erc-and-scope-erc",
+							"scope": {
+								"externalReferenceCode": "category-scope-erc",
+								"type": "Site"
+							}
+						}
+					},
+					"name": "categoryByExternalReferenceCodeAndScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "category-as-string-erc",
+							"scope": {
+								"externalReferenceCode": "category-as-string-scope-erc",
+								"type": "Site"
+							}
+						}
+					},
+					"name": "categoryByExternalReferenceCodeAndScopeAsString",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "${CATEGORY_ERC}"
+						}
+					},
+					"name": "categoryById",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"name": "categoryByNonexistentId",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetCategory",
+							"externalReferenceCode": "category-nonexistent-id-erc"
+						}
+					},
+					"name": "categoryByNonexistentIdAndExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
 							"itemExternalReference": {
 								"className": "com.liferay.journal.model.JournalArticle",
 								"externalReferenceCode": "${JOURNAL_ARTICLE_EXTERNAL_REFERENCE_CODE}"
@@ -96,6 +158,68 @@
 					},
 					"name": "itemByNonexistentClassPKAndExternalReferenceCode",
 					"type": "itemSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "vocabulary-erc"
+						}
+					},
+					"name": "vocabularyByExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "vocabulary-erc-and-scope-erc",
+							"scope": {
+								"externalReferenceCode": "vocabulary-scope-erc",
+								"type": "Site"
+							}
+						}
+					},
+					"name": "vocabularyByExternalReferenceCodeAndScope",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "vocabulary-as-string-erc",
+							"scope": {
+								"externalReferenceCode": "vocabulary-as-string-scope-erc",
+								"type": "Site"
+							}
+						}
+					},
+					"name": "vocabularyByExternalReferenceCodeAndScopeAsString",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "${VOCABULARY_ERC}"
+						}
+					},
+					"name": "vocabularyById",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"name": "vocabularyByNonexistentId",
+					"type": "categoryTreeNodeSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
+							"externalReferenceCode": "vocabulary-nonexistent-id-erc"
+						}
+					},
+					"name": "vocabularyByNonexistentIdAndExternalReferenceCode",
+					"type": "categoryTreeNodeSelector"
 				}
 			]
 		}
