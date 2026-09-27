@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Product Test Utilities
 Bundle-SymbolicName: com.liferay.commerce.product.test.util
-Bundle-Version: 10.2.4
+Bundle-Version: 10.2.5
 Export-Package: com.liferay.commerce.product.test.util
