@@ -179,6 +179,7 @@ components:
                     length: "#/components/schemas/LengthField"
                     select: "#/components/schemas/SelectField"
                     text: "#/components/schemas/TextField"
+                    url: "#/components/schemas/URLField"
                 propertyName: type
             properties:
                 dataType:
@@ -207,7 +208,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, colorPalette, colorPicker, itemSelector, length, select, text]
+                    enum: [categoryTreeNodeSelector, checkbox, colorPalette, colorPicker, itemSelector, length, select, text, url]
                     type: string
             required:
                 -   name
@@ -729,6 +730,30 @@ components:
                     description:
                         The field's visibility conditions, keyed by the name of the field each condition applies to.
                     type: object
+            type: object
+        URLField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/URLFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `url` field of a fragment configuration's field set.
+            type: object
+        URLFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `url` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    $ref: ../../headless-admin-site/headless-admin-site-impl/rest-openapi.yaml#URLValue
+                    description:
+                        Either a manual link (`Href`) or a site page referenced by external reference code (`SitePage`).
             type: object
         ValidValue:
             description:
