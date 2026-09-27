@@ -180,6 +180,7 @@ components:
                     select: "#/components/schemas/SelectField"
                     text: "#/components/schemas/TextField"
                     url: "#/components/schemas/URLField"
+                    videoSelector: "#/components/schemas/VideoSelectorField"
                 propertyName: type
             properties:
                 dataType:
@@ -208,7 +209,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, colorPalette, colorPicker, itemSelector, length, select, text, url]
+                    enum: [categoryTreeNodeSelector, checkbox, colorPalette, colorPicker, itemSelector, length, select, text, url, videoSelector]
                     type: string
             required:
                 -   name
@@ -797,6 +798,30 @@ components:
                     type: string
             required:
                 -   type
+            type: object
+        VideoFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `videoSelector` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    $ref: ../../headless-admin-site/headless-admin-site-impl/rest-openapi.yaml#VideoValue
+                    description:
+                        The selected video's embeddable HTML and title.
+            type: object
+        VideoSelectorField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/VideoFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `videoSelector` field of a fragment configuration's field set.
             type: object
 info:
     description:
