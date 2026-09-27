@@ -5,9 +5,15 @@
 
 package com.liferay.headless.admin.fragment.internal.util;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
+import com.liferay.headless.admin.fragment.dto.v1_0.CategoryFragmentConfigurationFieldDefaultValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.CategoryTreeNodeSelectorField;
 import com.liferay.headless.admin.fragment.dto.v1_0.Configuration;
 import com.liferay.headless.admin.fragment.dto.v1_0.Dependency;
 import com.liferay.headless.admin.fragment.dto.v1_0.Field;
@@ -15,6 +21,8 @@ import com.liferay.headless.admin.fragment.dto.v1_0.FieldSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.dto.v1_0.ItemSelectorTypeOptions;
+import com.liferay.headless.admin.fragment.dto.v1_0.TypeOptions;
+import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.ItemFragmentConfigurationFieldValue;
@@ -35,8 +43,10 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -231,6 +241,122 @@ public class ConfigurationUtil {
 			className, externalReferenceCode, groupId);
 	}
 
+	private static CategoryFragmentConfigurationFieldDefaultValue
+		_toCategoryFragmentConfigurationFieldDefaultValue(
+			ItemExternalReference itemExternalReference) {
+
+		if (itemExternalReference == null) {
+			return null;
+		}
+
+		return new CategoryFragmentConfigurationFieldDefaultValue() {
+			{
+				setValue(() -> itemExternalReference);
+			}
+		};
+	}
+
+	private static JSONObject _toCategoryTreeNodeJSONObject(
+			CategoryFragmentConfigurationFieldDefaultValue
+				categoryFragmentConfigurationFieldDefaultValue,
+			long groupId)
+		throws PortalException {
+
+		if (categoryFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		ItemExternalReference itemExternalReference =
+			categoryFragmentConfigurationFieldDefaultValue.getValue();
+
+		if (itemExternalReference == null) {
+			return null;
+		}
+
+		String categoryTreeNodeType = "Category";
+
+		if (Objects.equals(
+				itemExternalReference.getClassName(),
+				AssetVocabulary.class.getName())) {
+
+			categoryTreeNodeType = "Vocabulary";
+		}
+
+		String scopeExternalReferenceCode =
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				_getScopeExternalReferenceCode(
+					itemExternalReference.getScope()),
+				groupId);
+
+		JSONObject categoryTreeNodeJSONObject = JSONUtil.put(
+			"categoryTreeNodeType", categoryTreeNodeType
+		).put(
+			"externalReferenceCode",
+			itemExternalReference.getExternalReferenceCode()
+		).put(
+			"scopeExternalReferenceCode", scopeExternalReferenceCode
+		);
+
+		Long itemGroupId = ScopeUtil.getItemGroupId(
+			CompanyThreadLocal.getCompanyId(), scopeExternalReferenceCode,
+			groupId);
+
+		if (itemGroupId == null) {
+			_logOptionalReference(
+				itemExternalReference.getClassName(),
+				itemExternalReference.getExternalReferenceCode(), groupId,
+				scopeExternalReferenceCode);
+
+			return categoryTreeNodeJSONObject;
+		}
+
+		if (Objects.equals(categoryTreeNodeType, "Vocabulary")) {
+			AssetVocabulary assetVocabulary =
+				AssetVocabularyLocalServiceUtil.
+					fetchAssetVocabularyByExternalReferenceCode(
+						itemExternalReference.getExternalReferenceCode(),
+						itemGroupId);
+
+			if (assetVocabulary == null) {
+				_logOptionalReference(
+					itemExternalReference.getClassName(),
+					itemExternalReference.getExternalReferenceCode(), groupId,
+					scopeExternalReferenceCode);
+
+				return categoryTreeNodeJSONObject;
+			}
+
+			return categoryTreeNodeJSONObject.put(
+				"categoryTreeNodeId",
+				String.valueOf(assetVocabulary.getVocabularyId())
+			).put(
+				"title",
+				assetVocabulary.getTitle(LocaleUtil.getMostRelevantLocale())
+			);
+		}
+
+		AssetCategory assetCategory =
+			AssetCategoryLocalServiceUtil.
+				fetchAssetCategoryByExternalReferenceCode(
+					itemExternalReference.getExternalReferenceCode(),
+					itemGroupId);
+
+		if (assetCategory == null) {
+			_logOptionalReference(
+				itemExternalReference.getClassName(),
+				itemExternalReference.getExternalReferenceCode(), groupId,
+				scopeExternalReferenceCode);
+
+			return categoryTreeNodeJSONObject;
+		}
+
+		return categoryTreeNodeJSONObject.put(
+			"categoryTreeNodeId", String.valueOf(assetCategory.getCategoryId())
+		).put(
+			"title", assetCategory.getName()
+		);
+	}
+
 	private static Dependency _toDependency(JSONObject dependencyJSONObject) {
 		return new Dependency() {
 			{
@@ -309,7 +435,39 @@ public class ConfigurationUtil {
 
 		String type = fieldJSONObject.getString("type");
 
-		if (!Objects.equals(type, "itemSelector")) {
+		Field field = null;
+
+		if (Objects.equals(type, "categoryTreeNodeSelector")) {
+			field = new CategoryTreeNodeSelectorField() {
+				{
+					setDefaultValue(
+						() -> _toCategoryFragmentConfigurationFieldDefaultValue(
+							_toItemExternalReference(
+								fieldJSONObject,
+								fragmentConfigurationFieldValueDTOConverter,
+								fragmentEntry)));
+					setTypeOptions(
+						() -> _toTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
+		else if (Objects.equals(type, "itemSelector")) {
+			field = new ItemSelectorField() {
+				{
+					setDefaultValue(
+						() -> _toItemFragmentConfigurationFieldDefaultValue(
+							_toItemValue(
+								fieldJSONObject,
+								fragmentConfigurationFieldValueDTOConverter,
+								fragmentEntry)));
+					setTypeOptions(
+						() -> _toItemSelectorTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
+		else {
 			throw new IllegalStateException(
 				StringBundler.concat(
 					"Fragment entry with ID ",
@@ -317,20 +475,6 @@ public class ConfigurationUtil {
 					" has an approved configuration with a field of unknown ",
 					"type ", type));
 		}
-
-		Field field = new ItemSelectorField() {
-			{
-				setDefaultValue(
-					() -> _toItemFragmentConfigurationFieldDefaultValue(
-						_toItemValue(
-							fieldJSONObject,
-							fragmentConfigurationFieldValueDTOConverter,
-							fragmentEntry)));
-				setTypeOptions(
-					() -> _toItemSelectorTypeOptions(
-						fieldJSONObject.getJSONObject("typeOptions")));
-			}
-		};
 
 		field.setDataType(
 			() -> Field.DataType.create(fieldJSONObject.getString("dataType")));
@@ -375,7 +519,20 @@ public class ConfigurationUtil {
 			"type", String.valueOf(field.getType())
 		);
 
-		if (field instanceof ItemSelectorField itemSelectorField) {
+		if (field instanceof
+				CategoryTreeNodeSelectorField categoryTreeNodeSelectorField) {
+
+			fieldJSONObject.put(
+				"defaultValue",
+				_toCategoryTreeNodeJSONObject(
+					categoryTreeNodeSelectorField.getDefaultValue(), groupId)
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(
+					categoryTreeNodeSelectorField.getTypeOptions())
+			);
+		}
+		else if (field instanceof ItemSelectorField itemSelectorField) {
 			fieldJSONObject.put(
 				"defaultValue",
 				_toItemJSONObject(
@@ -504,6 +661,38 @@ public class ConfigurationUtil {
 		}
 
 		return null;
+	}
+
+	private static ItemExternalReference _toItemExternalReference(
+		JSONObject fieldJSONObject,
+		DTOConverter
+			<FragmentConfigurationField, FragmentConfigurationFieldValue>
+				fragmentConfigurationFieldValueDTOConverter,
+		FragmentEntry fragmentEntry) {
+
+		FragmentConfigurationFieldValue fragmentConfigurationFieldValue =
+			_toFragmentConfigurationFieldValue(
+				fieldJSONObject, fragmentConfigurationFieldValueDTOConverter,
+				fragmentEntry);
+
+		if (!(fragmentConfigurationFieldValue instanceof
+				CategoryFragmentConfigurationFieldValue
+					categoryFragmentConfigurationFieldValue)) {
+
+			return null;
+		}
+
+		ItemExternalReference itemExternalReference =
+			categoryFragmentConfigurationFieldValue.getValue();
+
+		if ((itemExternalReference == null) ||
+			Validator.isNull(
+				itemExternalReference.getExternalReferenceCode())) {
+
+			return null;
+		}
+
+		return itemExternalReference;
 	}
 
 	private static ItemFragmentConfigurationFieldDefaultValue
@@ -656,6 +845,27 @@ public class ConfigurationUtil {
 		return itemValue;
 	}
 
+	private static TypeOptions _toTypeOptions(
+		JSONObject typeOptionsJSONObject) {
+
+		if (typeOptionsJSONObject == null) {
+			return null;
+		}
+
+		Map<String, Dependency> dependencyMap = _toDependencyMap(
+			typeOptionsJSONObject);
+
+		if (dependencyMap == null) {
+			return null;
+		}
+
+		return new TypeOptions() {
+			{
+				setDependency(() -> dependencyMap);
+			}
+		};
+	}
+
 	private static JSONObject _toTypeOptionsJSONObject(
 		ItemSelectorTypeOptions itemSelectorTypeOptions) {
 
@@ -689,6 +899,23 @@ public class ConfigurationUtil {
 		}
 
 		return typeOptionsJSONObject;
+	}
+
+	private static JSONObject _toTypeOptionsJSONObject(
+		TypeOptions typeOptions) {
+
+		if (typeOptions == null) {
+			return null;
+		}
+
+		JSONObject dependencyJSONObject = _toDependencyJSONObject(
+			typeOptions.getDependency());
+
+		if (dependencyJSONObject == null) {
+			return null;
+		}
+
+		return JSONUtil.put("dependency", dependencyJSONObject);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
