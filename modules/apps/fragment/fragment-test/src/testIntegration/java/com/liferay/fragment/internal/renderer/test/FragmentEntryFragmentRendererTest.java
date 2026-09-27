@@ -27,6 +27,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.test.util.FragmentTestUtil;
@@ -39,6 +40,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -297,6 +299,25 @@ public class FragmentEntryFragmentRendererTest {
 
 		Assert.assertTrue(content.contains("\"buttonSize\":\"nm\""));
 		Assert.assertTrue(content.contains("\"buttonType\":\"primary\""));
+
+		DefaultFragmentRendererContext defaultFragmentRendererContext =
+			new DefaultFragmentRendererContext(fragmentEntryLink);
+
+		defaultFragmentRendererContext.setLocale(LocaleUtil.SPAIN);
+
+		JSONObject translatedConfigurationJSONObject =
+			_fragmentRendererController.getConfigurationJSONObject(
+				defaultFragmentRendererContext);
+
+		JSONObject configurationJSONObject = JSONFactoryUtil.createJSONObject(
+			fragmentEntryLink.getConfiguration());
+
+		Assert.assertNotEquals(
+			configurationJSONObject.toString(),
+			translatedConfigurationJSONObject.toString());
+		Assert.assertEquals(
+			configurationJSONObject.toString(),
+			String.valueOf(fragmentEntryLink.getConfigurationJSONObject()));
 	}
 
 	@Test
@@ -902,6 +923,9 @@ public class FragmentEntryFragmentRendererTest {
 		filter = "component.name=com.liferay.fragment.internal.renderer.FragmentEntryFragmentRenderer"
 	)
 	private FragmentRenderer _fragmentRenderer;
+
+	@Inject
+	private FragmentRendererController _fragmentRendererController;
 
 	@DeleteAfterTestRun
 	private Group _group;
