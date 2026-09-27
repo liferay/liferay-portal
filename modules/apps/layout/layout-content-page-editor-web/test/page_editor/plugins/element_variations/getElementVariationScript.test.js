@@ -5,33 +5,16 @@
 
 import getElementVariationScript from '../../../../src/main/resources/META-INF/resources/page_editor/plugins/element_variations/getElementVariationScript';
 
-const baseElementVariation = {
-	audienceEntryERC: '',
-	externalReferenceCode: '',
-	hide: false,
-	html: '',
-	js: '',
-	key: 'key',
-	name: 'name',
-	segmentsExperienceERC: '',
-	targetElement: '#banner',
-};
-
 describe('getElementVariationScript', () => {
-	it('targets the element with a querySelector', () => {
-		const script = getElementVariationScript(baseElementVariation);
+	it('runs the custom javascript against the target element', () => {
+		const script = getElementVariationScript({
+			js: 'element.classList.add("featured");',
+			targetElement: '#banner',
+		});
 
 		expect(script).toContain(
 			'const element = document.querySelector("#banner");'
 		);
-	});
-
-	it('inlines the custom javascript', () => {
-		const script = getElementVariationScript({
-			...baseElementVariation,
-			js: 'element.classList.add("featured");',
-		});
-
 		expect(script).toContain('element.classList.add("featured");');
 	});
 });

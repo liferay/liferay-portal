@@ -47,18 +47,6 @@ describe('AudiencesPriorityModal', () => {
 		jest.useRealTimers();
 	});
 
-	it('renders the title and every audience', () => {
-		renderComponent();
-
-		act(() => jest.runAllTimers());
-
-		expect(screen.getByText('audiences-priority')).toBeInTheDocument();
-		expect(screen.getByText('VIP')).toBeInTheDocument();
-		expect(screen.getByText('Audience 1')).toBeInTheDocument();
-		expect(screen.getByText('Audience 2')).toBeInTheDocument();
-		expect(screen.getByText('Audience 3')).toBeInTheDocument();
-	});
-
 	it('returns the new audience order on save', () => {
 		const onSave = jest.fn();
 

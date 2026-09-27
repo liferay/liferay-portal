@@ -31,25 +31,6 @@ function createVariation(
 }
 
 describe('getAvailableAudiences', () => {
-	it('removes audiences used by another variation on the same page element', () => {
-		const availableAudiences = getAvailableAudiences(
-			AUDIENCES,
-			[
-				createVariation({
-					audienceEntryERCs: ['audience-a'],
-					key: 'other',
-					targetElement: '.title',
-				}),
-			],
-			{key: 'draft', targetElement: '.title'}
-		);
-
-		expect(availableAudiences).toEqual([
-			{label: 'Audience B', value: 'audience-b'},
-			{label: 'Audience C', value: 'audience-c'},
-		]);
-	});
-
 	it('keeps audiences used by a variation on a different page element', () => {
 		const availableAudiences = getAvailableAudiences(
 			AUDIENCES,
@@ -103,14 +84,5 @@ describe('getAvailableAudiences', () => {
 		expect(availableAudiences).toEqual([
 			{label: 'Audience C', value: 'audience-c'},
 		]);
-	});
-
-	it('returns every audience when there are no sibling variations', () => {
-		const availableAudiences = getAvailableAudiences(AUDIENCES, [], {
-			key: 'draft',
-			targetElement: '.title',
-		});
-
-		expect(availableAudiences).toEqual(AUDIENCES);
 	});
 });

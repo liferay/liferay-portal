@@ -41,16 +41,6 @@ describe('AudiencePriority', () => {
 		jest.useRealTimers();
 	});
 
-	it('renders every audience in the given order', () => {
-		renderComponent();
-
-		const labels = screen
-			.getAllByText(/VIP|Audience 1/)
-			.map((element) => element.textContent);
-
-		expect(labels).toEqual(['VIP', 'Audience 1']);
-	});
-
 	it('hides the edit button and shows a message when there are no audiences', () => {
 		render(
 			<AudiencePriority

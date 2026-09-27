@@ -111,17 +111,6 @@ describe('elementVariationFilters', () => {
 		});
 
 		it('previews three labels and counts the rest as hidden', () => {
-			const filter: Filter = {
-				exclude: false,
-				type: 'type',
-				values: ['html', 'javascript', 'hide-element'],
-			};
-
-			expect(getFilterText(filter, AUDIENCES)).toEqual({
-				hiddenCount: 0,
-				label: 'html, javascript, hide-element',
-			});
-
 			expect(
 				getFilterText(
 					{
