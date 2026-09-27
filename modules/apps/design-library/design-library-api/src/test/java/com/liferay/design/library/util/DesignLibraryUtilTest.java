@@ -182,6 +182,22 @@ public class DesignLibraryUtilTest {
 			DepotConstants.TYPE_DESIGN_LIBRARY
 		);
 
+		Assert.assertFalse(DesignLibraryUtil.isDesignLibraryScope(group));
+
+		long companyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			depotEntry.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")
+		).thenReturn(
+			true
+		);
+
 		Assert.assertTrue(DesignLibraryUtil.isDesignLibraryScope(group));
 	}
 
@@ -217,6 +233,22 @@ public class DesignLibraryUtilTest {
 			depotEntry.getType()
 		).thenReturn(
 			DepotConstants.TYPE_DESIGN_LIBRARY
+		);
+
+		Assert.assertFalse(DesignLibraryUtil.isDesignLibraryScope(groupId));
+
+		long companyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			depotEntry.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")
+		).thenReturn(
+			true
 		);
 
 		Assert.assertTrue(DesignLibraryUtil.isDesignLibraryScope(groupId));
