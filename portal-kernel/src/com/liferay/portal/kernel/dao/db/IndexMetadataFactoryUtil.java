@@ -30,7 +30,7 @@ public class IndexMetadataFactoryUtil {
 	}
 
 	public static IndexMetadata createIndexMetadata(String createSQL) {
-		boolean unique = createSQL.contains("unique");
+		boolean unique = createSQL.contains("create unique index ");
 
 		int start = createSQL.indexOf("IX_");
 
