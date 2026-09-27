@@ -19,6 +19,7 @@ dependencies {
 	compileOnly project(":apps:headless:headless-admin-user:headless-admin-user-api")
 	compileOnly project(":apps:headless:headless-common-spi")
 	compileOnly project(":apps:info:info-api")
+	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
