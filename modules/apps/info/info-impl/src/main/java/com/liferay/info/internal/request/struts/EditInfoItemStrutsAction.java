@@ -18,6 +18,7 @@ import com.liferay.info.exception.InfoFormInvalidLayoutModeException;
 import com.liferay.info.exception.InfoFormPrincipalException;
 import com.liferay.info.exception.InfoFormUploadRequestSizeException;
 import com.liferay.info.exception.InfoFormValidationException;
+import com.liferay.info.exception.InfoItemPermissionException;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
@@ -35,6 +36,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.creator.InfoItemCreator;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.type.WebURL;
@@ -59,6 +61,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -242,11 +246,16 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				}
 
 				try {
+					infoItem = infoItemObjectProvider.getInfoItem(
+						infoItemIdentifier);
+
+					_checkUpdateInfoItemPermission(
+						className, httpServletRequest, infoItem);
+
 					infoItem =
 						infoItemFieldValuesUpdater.
 							updateFromInfoItemFieldValues(
-								infoItemObjectProvider.getInfoItem(
-									infoItemIdentifier),
+								infoItem,
 								InfoItemFieldValues.builder(
 								).infoFieldValues(
 									new ArrayList<>(infoFieldValues.values())
@@ -453,6 +462,31 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 	protected void activate() {
 		_infoRequestFieldValuesProviderHelper =
 			new InfoRequestFieldValuesProviderHelper(_infoItemServiceRegistry);
+	}
+
+	private void _checkUpdateInfoItemPermission(
+			String className, HttpServletRequest httpServletRequest,
+			Object infoItem)
+		throws InfoItemPermissionException, PrincipalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		InfoItemPermissionProvider<Object> infoItemPermissionProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemPermissionProvider.class, className);
+
+		if ((infoItemPermissionProvider == null) ||
+			!infoItemPermissionProvider.hasPermission(
+				permissionChecker, infoItem, ActionKeys.UPDATE)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, className, 0, ActionKeys.UPDATE);
+		}
 	}
 
 	private Object _createFromInfoItemFieldValues(
