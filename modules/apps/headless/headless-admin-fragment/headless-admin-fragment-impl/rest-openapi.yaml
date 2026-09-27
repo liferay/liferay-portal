@@ -17,6 +17,30 @@ components:
             description:
                 A basic fragment entry.
             type: object
+        CategoryFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `categoryTreeNodeSelector` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    $ref: ../../headless-admin-site/headless-admin-site-impl/rest-openapi.yaml#ItemExternalReference
+                    description:
+                        A reference to the selected category or vocabulary. The `className` distinguishes a category from a vocabulary.
+            type: object
+        CategoryTreeNodeSelectorField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/CategoryFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `categoryTreeNodeSelector` field of a fragment configuration's field set.
+            type: object
         Configuration:
             description:
                 A fragment's configuration, which defines the field sets a page creator can use to customize the fragment.
@@ -63,6 +87,7 @@ components:
                 A customizable field of a fragment configuration's field set.
             discriminator:
                 mapping:
+                    categoryTreeNodeSelector: "#/components/schemas/CategoryTreeNodeSelectorField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
                 propertyName: type
             properties:
@@ -92,7 +117,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [itemSelector]
+                    enum: [categoryTreeNodeSelector, itemSelector]
                     type: string
             required:
                 -   name
