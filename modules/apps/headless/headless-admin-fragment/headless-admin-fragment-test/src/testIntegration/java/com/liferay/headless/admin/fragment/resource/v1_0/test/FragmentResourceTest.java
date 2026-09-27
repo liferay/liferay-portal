@@ -114,6 +114,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.skyscreamer.jsonassert.JSONAssert;
+
 /**
  * @author Rubén Pulido
  */
@@ -503,11 +505,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private void _assertEqualsJSON(String expectedJSON, String actualJSON)
 		throws Exception {
 
-		Assert.assertTrue(
-			actualJSON,
-			JSONUtil.equals(
-				JSONFactoryUtil.createJSONObject(expectedJSON),
-				JSONFactoryUtil.createJSONObject(actualJSON)));
+		JSONAssert.assertEquals(expectedJSON, actualJSON, true);
 	}
 
 	private void _assertExportImportFragments(
