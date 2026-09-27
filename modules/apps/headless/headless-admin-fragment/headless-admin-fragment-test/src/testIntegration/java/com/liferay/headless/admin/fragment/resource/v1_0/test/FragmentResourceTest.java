@@ -213,7 +213,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107185",
-			"LPD-107186", "LPD-107187", "LPD-107188"
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189"
 		}
 	)
 	public void testGetSiteFragment() throws Exception {
@@ -258,7 +258,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107185",
-			"LPD-107186", "LPD-107187", "LPD-107188"
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -323,7 +323,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107185",
-			"LPD-107186", "LPD-107187", "LPD-107188"
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {

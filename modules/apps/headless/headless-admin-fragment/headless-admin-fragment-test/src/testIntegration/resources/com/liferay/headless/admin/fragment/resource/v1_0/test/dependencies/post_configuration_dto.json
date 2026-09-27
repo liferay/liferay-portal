@@ -438,6 +438,63 @@
 				{
 					"defaultValue": {
 						"value": {
+							"html": "<iframe src=\"https://www.youtube.com/embed/video1\"></iframe>",
+							"title": "Video 1"
+						}
+					},
+					"name": "videoSelector",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"html": "<iframe src=\"https://www.youtube.com/embed/video3\"></iframe>",
+							"title": "Video 3"
+						}
+					},
+					"localizable": true,
+					"name": "videoSelectorLocalizable",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"html": "<iframe src=\"https://www.youtube.com/embed/video4\"></iframe>",
+							"title": "Video 4"
+						}
+					},
+					"name": "videoSelectorVisibleWhenCheckboxTrue",
+					"type": "videoSelector",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"title": "Video without HTML"
+						}
+					},
+					"name": "videoSelectorWithoutHTML",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"html": "<iframe src=\"https://www.youtube.com/embed/video5\"></iframe>"
+						}
+					},
+					"name": "videoSelectorWithoutTitle",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
 							"className": "com.liferay.asset.kernel.model.AssetVocabulary",
 							"externalReferenceCode": "vocabulary-erc"
 						}

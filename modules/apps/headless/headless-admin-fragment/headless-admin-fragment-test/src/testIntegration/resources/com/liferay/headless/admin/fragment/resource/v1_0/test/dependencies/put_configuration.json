@@ -424,6 +424,63 @@
 				},
 				{
 					"defaultValue": {
+						"html": "<iframe src=\"https://www.youtube.com/embed/video1\"></iframe>",
+						"title": "Video 1",
+						"type": "com.liferay.item.selector.criteria.VideoEmbeddableHTMLItemSelectorReturnType"
+					},
+					"name": "videoSelector",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"html": "<iframe src=\"https://www.youtube.com/embed/video2\"></iframe>",
+						"title": "Video 2",
+						"type": "com.liferay.item.selector.criteria.VideoEmbeddableHTMLItemSelectorReturnType"
+					},
+					"name": "videoSelectorAsString",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"html": "<iframe src=\"https://www.youtube.com/embed/video3\"></iframe>",
+						"title": "Video 3",
+						"type": "com.liferay.item.selector.criteria.VideoEmbeddableHTMLItemSelectorReturnType"
+					},
+					"localizable": true,
+					"name": "videoSelectorLocalizable",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"html": "<iframe src=\"https://www.youtube.com/embed/video4\"></iframe>",
+						"title": "Video 4",
+						"type": "com.liferay.item.selector.criteria.VideoEmbeddableHTMLItemSelectorReturnType"
+					},
+					"name": "videoSelectorVisibleWhenCheckboxTrue",
+					"type": "videoSelector",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"name": "videoSelectorWithoutHTML",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
+						"html": "<iframe src=\"https://www.youtube.com/embed/video5\"></iframe>",
+						"type": "com.liferay.item.selector.criteria.VideoEmbeddableHTMLItemSelectorReturnType"
+					},
+					"name": "videoSelectorWithoutTitle",
+					"type": "videoSelector"
+				},
+				{
+					"defaultValue": {
 						"categoryTreeNodeType": "Vocabulary",
 						"externalReferenceCode": "vocabulary-erc"
 					},
