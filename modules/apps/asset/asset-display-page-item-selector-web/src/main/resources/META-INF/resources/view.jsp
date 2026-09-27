@@ -19,7 +19,7 @@ AssetDisplayPagesItemSelectorCustomViewManagementToolbarDisplayContext assetDisp
 
 <clay:container-fluid>
 	<liferay-site-navigation:breadcrumb
-		breadcrumbEntries="<%= assetDisplayPagesItemSelectorCustomViewDisplayContext.getLayoutPageTemplateBreadcrumbEntries() %>"
+		breadcrumbEntries="<%= assetDisplayPagesItemSelectorCustomViewDisplayContext.getBreadcrumbEntries() %>"
 	/>
 
 	<liferay-ui:search-container

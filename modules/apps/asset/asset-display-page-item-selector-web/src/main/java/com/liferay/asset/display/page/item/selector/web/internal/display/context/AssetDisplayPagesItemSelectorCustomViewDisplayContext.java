@@ -18,6 +18,7 @@ import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollec
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
@@ -113,13 +114,29 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 		return _assetDisplayPageSearchContainer;
 	}
 
-	public List<BreadcrumbEntry> getLayoutPageTemplateBreadcrumbEntries() {
+	public List<BreadcrumbEntry> getBreadcrumbEntries() {
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			LayoutPageTemplateCollectionLocalServiceUtil.
 				fetchLayoutPageTemplateCollection(
 					getLayoutPageTemplateCollectionId());
 
 		return BreadcrumbEntryListBuilder.add(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-57283"),
+			breadcrumbEntry -> {
+				breadcrumbEntry.setTitle(
+					LanguageUtil.get(
+						_httpServletRequest, "sites-and-libraries"));
+				breadcrumbEntry.setURL(
+					PortletURLBuilder.create(
+						_clonePortletURL()
+					).setParameter(
+						"groupType", "site"
+					).setParameter(
+						"showGroupSelector", true
+					).buildString());
+			}
+		).add(
 			breadcrumbEntry -> {
 				breadcrumbEntry.setTitle(
 					LanguageUtil.get(_httpServletRequest, "home"));
