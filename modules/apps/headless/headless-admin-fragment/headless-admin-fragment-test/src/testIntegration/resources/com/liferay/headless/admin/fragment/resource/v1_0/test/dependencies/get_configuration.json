@@ -288,6 +288,42 @@
 					}
 				},
 				{
+					"defaultValue": [
+						"collection-display-erc"
+					],
+					"name": "targetCollectionDisplay",
+					"type": "targetCollectionDisplay",
+					"typeOptions": {
+						"enableCompatibleCollections": true
+					}
+				},
+				{
+					"defaultValue": [
+						"collection-display-erc-1",
+						"collection-display-erc-2"
+					],
+					"name": "targetCollectionDisplayMultiple",
+					"type": "targetCollectionDisplay",
+					"typeOptions": {
+						"enableCompatibleCollections": false
+					}
+				},
+				{
+					"defaultValue": [
+						"collection-display-visible-erc"
+					],
+					"name": "targetCollectionDisplayVisibleWhenCheckboxTrue",
+					"type": "targetCollectionDisplay",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
 					"defaultValue": "Default text",
 					"name": "text",
 					"type": "text"
