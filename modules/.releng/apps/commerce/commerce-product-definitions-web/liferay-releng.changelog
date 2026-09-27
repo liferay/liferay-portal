@@ -837,3 +837,8 @@ e080ddcb8cbecdf06738a9393efd01efe18e498f^..5021b7a93ff33573eed909684a841bcaab0df
 # Bundle Version 7.0.179
 #
 5021b7a93ff33573eed909684a841bcaab0dfecf^..77fb0cbb9fbfe879cacceee9e65b08c0dbdbe041=LPD-97914 LPD-101827
+
+#
+# Bundle Version 7.0.180
+#
+77fb0cbb9fbfe879cacceee9e65b08c0dbdbe041^..3da62772943b665341ac048317ae53c2a61136ed=LPD-93764 LPD-104150 LPD-105896
