@@ -145,6 +145,13 @@ public class KaleoDefinitionVersionImpl extends KaleoDefinitionVersionBaseImpl {
 		return false;
 	}
 
+	@Override
+	public void setContent(String content) {
+		super.setContent(content);
+
+		_contentAsXML = null;
+	}
+
 	protected int getVersion(String version) {
 		int[] versionParts = StringUtil.split(version, StringPool.PERIOD, 0);
 
