@@ -238,7 +238,7 @@ test(
 
 test(
 	'Applies the highest priority audience variation when a visitor matches several audiences',
-	{tag: '@LPD-93951'},
+	{tag: '@LPD-95644'},
 	async ({apiHelpers, elementVariationsPage, page, pageEditorPage, site}) => {
 
 		// Create two audiences that both match every visitor. The first created
@@ -835,7 +835,7 @@ test(
 
 test(
 	'Warns about the element variations whose audience was deleted',
-	{tag: ['@LPD-104867', '@LPD-107094']},
+	{tag: '@LPD-107094'},
 	async ({
 		apiHelpers,
 		audiencesPage,
