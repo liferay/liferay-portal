@@ -9,6 +9,7 @@ import com.liferay.headless.admin.fragment.client.dto.v1_0.CategoryTreeNodeSelec
 import com.liferay.headless.admin.fragment.client.dto.v1_0.CheckboxField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Field;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemSelectorField;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.LengthField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.SelectField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.TextField;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
@@ -62,6 +63,10 @@ public class FieldSerDes {
 
 			if (typeString.equals("itemSelector")) {
 				return ItemSelectorFieldSerDes.toJSON((ItemSelectorField)field);
+			}
+
+			if (typeString.equals("length")) {
+				return LengthFieldSerDes.toJSON((LengthField)field);
 			}
 
 			if (typeString.equals("select")) {
@@ -192,6 +197,10 @@ public class FieldSerDes {
 
 				if (typeString.equals("itemSelector")) {
 					return ItemSelectorField.toDTO(json);
+				}
+
+				if (typeString.equals("length")) {
+					return LengthField.toDTO(json);
 				}
 
 				if (typeString.equals("select")) {
@@ -334,4 +343,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1728111769
+// LIFERAY-REST-BUILDER-HASH:1428874076
