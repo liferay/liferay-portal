@@ -77,6 +77,30 @@ components:
             description:
                 The type-specific options of a `checkbox` fragment configuration field.
             type: object
+        ColorPickerField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/ColorPickerFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/TypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `colorPicker` field of a fragment configuration's field set.
+            type: object
+        ColorPickerFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `colorPicker` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    description:
+                        The name of a color token from the style book, or an RGB hex color such as `#FFFFFF` when the style book has no color tokens.
+                    type: string
+            type: object
         Configuration:
             description:
                 A fragment's configuration, which defines the field sets a page creator can use to customize the fragment.
@@ -125,6 +149,7 @@ components:
                 mapping:
                     categoryTreeNodeSelector: "#/components/schemas/CategoryTreeNodeSelectorField"
                     checkbox: "#/components/schemas/CheckboxField"
+                    colorPicker: "#/components/schemas/ColorPickerField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
                     length: "#/components/schemas/LengthField"
                     select: "#/components/schemas/SelectField"
@@ -157,7 +182,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, itemSelector, length, select, text]
+                    enum: [categoryTreeNodeSelector, checkbox, colorPicker, itemSelector, length, select, text]
                     type: string
             required:
                 -   name
