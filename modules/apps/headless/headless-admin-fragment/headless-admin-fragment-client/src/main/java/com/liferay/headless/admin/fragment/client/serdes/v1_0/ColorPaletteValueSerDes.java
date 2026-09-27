@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ThumbnailURLReference;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ThumbnailURLReferenceSerDes {
+public class ColorPaletteValueSerDes {
 
-	public static ThumbnailURLReference toDTO(String json) {
-		ThumbnailURLReferenceJSONParser thumbnailURLReferenceJSONParser =
-			new ThumbnailURLReferenceJSONParser();
+	public static ColorPaletteValue toDTO(String json) {
+		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
+			new ColorPaletteValueJSONParser();
 
-		return thumbnailURLReferenceJSONParser.parseToDTO(json);
+		return colorPaletteValueJSONParser.parseToDTO(json);
 	}
 
-	public static ThumbnailURLReference[] toDTOs(String json) {
-		ThumbnailURLReferenceJSONParser thumbnailURLReferenceJSONParser =
-			new ThumbnailURLReferenceJSONParser();
+	public static ColorPaletteValue[] toDTOs(String json) {
+		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
+			new ColorPaletteValueJSONParser();
 
-		return thumbnailURLReferenceJSONParser.parseToDTOs(json);
+		return colorPaletteValueJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(ThumbnailURLReference thumbnailURLReference) {
-		if (thumbnailURLReference == null) {
+	public static String toJSON(ColorPaletteValue colorPaletteValue) {
+		if (colorPaletteValue == null) {
 			return "null";
 		}
 
@@ -47,45 +47,44 @@ public class ThumbnailURLReferenceSerDes {
 
 		sb.append("{");
 
-		if (thumbnailURLReference.getExternalReferenceCode() != null) {
+		if (colorPaletteValue.getColor() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"externalReferenceCode\": ");
+			sb.append("\"color\": ");
 
 			sb.append("\"");
 
-			sb.append(
-				_escape(thumbnailURLReference.getExternalReferenceCode()));
+			sb.append(_escape(colorPaletteValue.getColor()));
 
 			sb.append("\"");
 		}
 
-		if (thumbnailURLReference.getFileBase64() != null) {
+		if (colorPaletteValue.getCssClass() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"fileBase64\": ");
+			sb.append("\"cssClass\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(thumbnailURLReference.getFileBase64()));
+			sb.append(_escape(colorPaletteValue.getCssClass()));
 
 			sb.append("\"");
 		}
 
-		if (thumbnailURLReference.getUrl() != null) {
+		if (colorPaletteValue.getRgbValue() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"url\": ");
+			sb.append("\"rgbValue\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(thumbnailURLReference.getUrl()));
+			sb.append(_escape(colorPaletteValue.getRgbValue()));
 
 			sb.append("\"");
 		}
@@ -96,72 +95,69 @@ public class ThumbnailURLReferenceSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ThumbnailURLReferenceJSONParser thumbnailURLReferenceJSONParser =
-			new ThumbnailURLReferenceJSONParser();
+		ColorPaletteValueJSONParser colorPaletteValueJSONParser =
+			new ColorPaletteValueJSONParser();
 
-		return thumbnailURLReferenceJSONParser.parseToMap(json);
+		return colorPaletteValueJSONParser.parseToMap(json);
 	}
 
 	public static Map<String, String> toMap(
-		ThumbnailURLReference thumbnailURLReference) {
+		ColorPaletteValue colorPaletteValue) {
 
-		if (thumbnailURLReference == null) {
+		if (colorPaletteValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (thumbnailURLReference.getExternalReferenceCode() == null) {
-			map.put("externalReferenceCode", null);
+		if (colorPaletteValue.getColor() == null) {
+			map.put("color", null);
+		}
+		else {
+			map.put("color", String.valueOf(colorPaletteValue.getColor()));
+		}
+
+		if (colorPaletteValue.getCssClass() == null) {
+			map.put("cssClass", null);
 		}
 		else {
 			map.put(
-				"externalReferenceCode",
-				String.valueOf(
-					thumbnailURLReference.getExternalReferenceCode()));
+				"cssClass", String.valueOf(colorPaletteValue.getCssClass()));
 		}
 
-		if (thumbnailURLReference.getFileBase64() == null) {
-			map.put("fileBase64", null);
+		if (colorPaletteValue.getRgbValue() == null) {
+			map.put("rgbValue", null);
 		}
 		else {
 			map.put(
-				"fileBase64",
-				String.valueOf(thumbnailURLReference.getFileBase64()));
-		}
-
-		if (thumbnailURLReference.getUrl() == null) {
-			map.put("url", null);
-		}
-		else {
-			map.put("url", String.valueOf(thumbnailURLReference.getUrl()));
+				"rgbValue", String.valueOf(colorPaletteValue.getRgbValue()));
 		}
 
 		return map;
 	}
 
-	public static class ThumbnailURLReferenceJSONParser
-		extends BaseJSONParser<ThumbnailURLReference> {
+	public static class ColorPaletteValueJSONParser
+		extends BaseJSONParser<ColorPaletteValue> {
 
 		@Override
-		protected ThumbnailURLReference createDTO() {
-			return new ThumbnailURLReference();
+		protected ColorPaletteValue createDTO() {
+			return new ColorPaletteValue();
 		}
 
 		@Override
-		protected ThumbnailURLReference[] createDTOArray(int size) {
-			return new ThumbnailURLReference[size];
+		protected ColorPaletteValue[] createDTOArray(int size) {
+			return new ColorPaletteValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+			if (Objects.equals(jsonParserFieldName, "color")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "fileBase64")) {
+			else if (Objects.equals(jsonParserFieldName, "cssClass")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "url")) {
+			else if (Objects.equals(jsonParserFieldName, "rgbValue")) {
 				return false;
 			}
 
@@ -170,24 +166,22 @@ public class ThumbnailURLReferenceSerDes {
 
 		@Override
 		protected void setField(
-			ThumbnailURLReference thumbnailURLReference,
-			String jsonParserFieldName, Object jsonParserFieldValue) {
+			ColorPaletteValue colorPaletteValue, String jsonParserFieldName,
+			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+			if (Objects.equals(jsonParserFieldName, "color")) {
 				if (jsonParserFieldValue != null) {
-					thumbnailURLReference.setExternalReferenceCode(
-						(String)jsonParserFieldValue);
+					colorPaletteValue.setColor((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "fileBase64")) {
+			else if (Objects.equals(jsonParserFieldName, "cssClass")) {
 				if (jsonParserFieldValue != null) {
-					thumbnailURLReference.setFileBase64(
-						(String)jsonParserFieldValue);
+					colorPaletteValue.setCssClass((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "url")) {
+			else if (Objects.equals(jsonParserFieldName, "rgbValue")) {
 				if (jsonParserFieldValue != null) {
-					thumbnailURLReference.setUrl((String)jsonParserFieldValue);
+					colorPaletteValue.setRgbValue((String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -277,4 +271,4 @@ public class ThumbnailURLReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-90576146
+// LIFERAY-REST-BUILDER-HASH:1495430804

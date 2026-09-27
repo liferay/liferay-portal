@@ -119,4 +119,4 @@ public class ThumbnailURLReference implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1647565404
+// LIFERAY-REST-BUILDER-HASH:-700027140
