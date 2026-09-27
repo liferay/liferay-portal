@@ -10,6 +10,13 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
@@ -37,9 +44,15 @@ import com.liferay.headless.admin.fragment.client.resource.v1_0.FragmentResource
 import com.liferay.headless.admin.fragment.client.serdes.v1_0.ConfigurationSerDes;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
+import com.liferay.info.collection.provider.InfoCollectionProvider;
+import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
+import com.liferay.info.collection.provider.SingleFormVariationInfoCollectionProvider;
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.io.StreamUtil;
@@ -64,6 +77,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -212,8 +226,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107088",
-			"LPD-107185", "LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189"
+			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107087",
+			"LPD-107088", "LPD-107185", "LPD-107186", "LPD-107187",
+			"LPD-107188", "LPD-107189"
 		}
 	)
 	public void testGetSiteFragment() throws Exception {
@@ -257,8 +272,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107088",
-			"LPD-107185", "LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189"
+			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107087",
+			"LPD-107088", "LPD-107185", "LPD-107186", "LPD-107187",
+			"LPD-107188", "LPD-107189"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -322,8 +338,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107087", "LPD-107088",
-			"LPD-107185", "LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189"
+			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107087",
+			"LPD-107088", "LPD-107185", "LPD-107186", "LPD-107187",
+			"LPD-107188", "LPD-107189"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {
@@ -498,6 +515,20 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		try (OutputStream outputStream = httpExchange.getResponseBody()) {
 			outputStream.write(bytes);
 		}
+	}
+
+	private AssetListEntry _addAssetListEntry(Group group) throws Exception {
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				null, TestPropsValues.getUserId(), group.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL,
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		assetListEntry.setAssetEntrySubtype(RandomTestUtil.randomString());
+		assetListEntry.setAssetEntryType(JournalArticle.class.getName());
+
+		return _assetListEntryLocalService.updateAssetListEntry(assetListEntry);
 	}
 
 	private FragmentCollection _addFragmentCollection() throws Exception {
@@ -849,6 +880,24 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
+
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createTextDDMFormField(
+				"repeatableField", true, true, false));
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			testGroup.getGroupId(), JournalArticle.class.getName(), ddmForm);
+
+		InfoCollectionProvider<?> infoCollectionProvider =
+			_infoItemServiceRegistry.getInfoItemService(
+				InfoCollectionProvider.class,
+				"com.liferay.asset.internal.info.collection.provider." +
+					"RecentContentInfoCollectionProvider");
+
+		AssetListEntry irrelevantGroupAssetListEntry = _addAssetListEntry(
+			irrelevantGroup);
+
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			testGroup.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
@@ -861,12 +910,93 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			StringPool.BLANK,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
+		RelatedInfoItemCollectionProvider<?, ?>
+			relatedInfoItemCollectionProvider =
+				_infoItemServiceRegistry.getInfoItemService(
+					RelatedInfoItemCollectionProvider.class,
+					"com.liferay.asset.internal.info.collection.provider." +
+						"RelatedAssetsRelatedInfoItemCollectionProvider");
+
+		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		SingleFormVariationInfoCollectionProvider<?>
+			singleFormVariationInfoCollectionProvider =
+				(SingleFormVariationInfoCollectionProvider<?>)
+					_infoItemServiceRegistry.getInfoItemService(
+						InfoCollectionProvider.class,
+						_objectDefinition.getClassName());
+
+		AssetListEntry testGroupAssetListEntry = _addAssetListEntry(testGroup);
+
 		return HashMapBuilder.put(
+			"ASSET_LIST_ENTRY_CLASS_NAME_ID",
+			String.valueOf(PortalUtil.getClassNameId(AssetListEntry.class))
+		).put(
+			"ASSET_LIST_ENTRY_ERC",
+			testGroupAssetListEntry.getExternalReferenceCode()
+		).put(
+			"ASSET_LIST_ENTRY_ID",
+			String.valueOf(testGroupAssetListEntry.getAssetListEntryId())
+		).put(
+			"ASSET_LIST_ENTRY_ITEM_SUBTYPE",
+			testGroupAssetListEntry.getAssetEntrySubtype()
+		).put(
+			"ASSET_LIST_ENTRY_ITEM_TYPE",
+			testGroupAssetListEntry.getAssetEntryType()
+		).put(
+			"ASSET_LIST_ENTRY_TITLE", testGroupAssetListEntry.getTitle()
+		).put(
 			"CATEGORY_ERC", assetCategory.getExternalReferenceCode()
 		).put(
 			"CATEGORY_ID", String.valueOf(assetCategory.getCategoryId())
 		).put(
 			"CATEGORY_NAME", assetCategory.getName()
+		).put(
+			"COLLECTION_PROVIDER_ITEM_TYPE",
+			infoCollectionProvider.getCollectionItemClassName()
+		).put(
+			"COLLECTION_PROVIDER_RELATED_ITEMS_ITEM_TYPE",
+			relatedInfoItemCollectionProvider.getCollectionItemClassName()
+		).put(
+			"COLLECTION_PROVIDER_RELATED_ITEMS_TITLE",
+			relatedInfoItemCollectionProvider.getLabel(LocaleUtil.getDefault())
+		).put(
+			"COLLECTION_PROVIDER_SINGLE_FORM_VARIATION_ITEM_SUBTYPE",
+			singleFormVariationInfoCollectionProvider.getFormVariationKey()
+		).put(
+			"COLLECTION_PROVIDER_SINGLE_FORM_VARIATION_ITEM_TYPE",
+			singleFormVariationInfoCollectionProvider.
+				getCollectionItemClassName()
+		).put(
+			"COLLECTION_PROVIDER_SINGLE_FORM_VARIATION_KEY",
+			singleFormVariationInfoCollectionProvider.getKey()
+		).put(
+			"COLLECTION_PROVIDER_SINGLE_FORM_VARIATION_TITLE",
+			singleFormVariationInfoCollectionProvider.getLabel(
+				LocaleUtil.getDefault())
+		).put(
+			"COLLECTION_PROVIDER_TITLE",
+			infoCollectionProvider.getLabel(LocaleUtil.getDefault())
+		).put(
+			"DDM_STRUCTURE_KEY", ddmStructure.getStructureKey()
+		).put(
+			"IRRELEVANT_GROUP_ASSET_LIST_ENTRY_ERC",
+			irrelevantGroupAssetListEntry.getExternalReferenceCode()
+		).put(
+			"IRRELEVANT_GROUP_ASSET_LIST_ENTRY_ID",
+			String.valueOf(irrelevantGroupAssetListEntry.getAssetListEntryId())
+		).put(
+			"IRRELEVANT_GROUP_ASSET_LIST_ENTRY_ITEM_SUBTYPE",
+			irrelevantGroupAssetListEntry.getAssetEntrySubtype()
+		).put(
+			"IRRELEVANT_GROUP_ASSET_LIST_ENTRY_ITEM_TYPE",
+			irrelevantGroupAssetListEntry.getAssetEntryType()
+		).put(
+			"IRRELEVANT_GROUP_ASSET_LIST_ENTRY_TITLE",
+			irrelevantGroupAssetListEntry.getTitle()
+		).put(
+			"IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE",
+			irrelevantGroup.getExternalReferenceCode()
 		).put(
 			"JOURNAL_ARTICLE_CLASS_NAME_ID",
 			String.valueOf(PortalUtil.getClassNameId(JournalArticle.class))
@@ -1277,8 +1407,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private String _readConfiguration(
 		String fileName, Map<String, String> valuesMap) {
 
-		return StringUtil.replace(
-			_readConfiguration(fileName), "${", "}", valuesMap);
+		String configuration = StringUtil.replace(
+			_readConfiguration(fileName), "\"#{", "}\"", valuesMap);
+
+		return StringUtil.replace(configuration, "${", "}", valuesMap);
 	}
 
 	private void _testBatchEngineDeleteImportTask() throws Exception {
@@ -1909,6 +2041,48 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						", external reference code ",
 						"category-erc-and-scope-erc, and scope external ",
 						"reference code category-scope-erc"),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetListEntry.class.getName(),
+						", external reference code collection-erc, and null ",
+						"scope with current scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetListEntry.class.getName(),
+						", external reference code ",
+						"collection-erc-and-other-site-scope-erc, and scope ",
+						"external reference code ",
+						irrelevantGroup.getExternalReferenceCode()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetListEntry.class.getName(),
+						", external reference code ",
+						"collection-erc-and-scope-erc, and scope external ",
+						"reference code collection-scope-erc"),
+					StringBundler.concat(
+						"Optional reference generated for missing ",
+						"InfoCollectionProvider with external reference code ",
+						"com.liferay.nonexistent.info.collection.provider.",
+						"NonexistentInfoCollectionProvider and scope ID ",
+						testGroup.getCompanyId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name com.liferay.nonexistent.model.",
+						"NonexistentModel, external reference code ",
+						"collection-subtype-erc, and null scope with current ",
+						"scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name com.liferay.dynamic.data.mapping.model.",
+						"DDMStructure, external reference code ",
+						"collection-nonexistent-subtype-erc, and null scope ",
+						"with current scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", AssetListEntry.class.getName(),
+						", external reference code collection-visible-erc, ",
+						"and null scope with current scope ID ",
+						testGroup.getGroupId()),
 					StringBundler.concat(
 						"Optional reference generated for missing entity with ",
 						"class name ", JournalArticle.class.getName(),
@@ -3492,6 +3666,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Inject
+	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	private FragmentCollection _fragmentCollection;
@@ -3503,10 +3680,16 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Inject
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
+	@Inject
 	private Language _language;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _objectDefinition;
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;

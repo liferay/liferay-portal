@@ -85,6 +85,183 @@
 				{
 					"defaultValue": {
 						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "collection-erc"
+						}
+					},
+					"name": "collectionByExternalReferenceCode",
+					"type": "collectionSelector",
+					"typeOptions": {
+						"itemSubtype": "BASIC-WEB-CONTENT",
+						"itemType": "com.liferay.journal.model.JournalArticle",
+						"numberOfItems": 5
+					}
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "collection-erc-and-other-site-scope-erc",
+							"scope": {
+								"externalReferenceCode": "${IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE}"
+							}
+						}
+					},
+					"name": "collectionByExternalReferenceCodeAndOtherSiteScope",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "collection-erc-and-scope-erc",
+							"scope": {
+								"externalReferenceCode": "collection-scope-erc"
+							}
+						}
+					},
+					"name": "collectionByExternalReferenceCodeAndScope",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "${ASSET_LIST_ENTRY_ERC}"
+						}
+					},
+					"name": "collectionByResolvableExternalReferenceCode",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "${ASSET_LIST_ENTRY_ERC}",
+							"scope": {
+								"externalReferenceCode": "${SITE_EXTERNAL_REFERENCE_CODE}"
+							}
+						}
+					},
+					"name": "collectionByResolvableExternalReferenceCodeAndCurrentSiteScope",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "${IRRELEVANT_GROUP_ASSET_LIST_ENTRY_ERC}",
+							"scope": {
+								"externalReferenceCode": "${IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE}"
+							}
+						}
+					},
+					"name": "collectionByResolvableExternalReferenceCodeAndOtherSiteScope",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.internal.info.collection.provider.RecentContentInfoCollectionProvider",
+							"collectionType": "CollectionProvider"
+						}
+					},
+					"name": "collectionProvider",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.asset.internal.info.collection.provider.RelatedAssetsRelatedInfoItemCollectionProvider",
+							"collectionType": "CollectionProvider"
+						}
+					},
+					"name": "collectionProviderRelatedItems",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "${COLLECTION_PROVIDER_SINGLE_FORM_VARIATION_KEY}",
+							"collectionType": "CollectionProvider"
+						}
+					},
+					"name": "collectionProviderSingleFormVariation",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.nonexistent.info.collection.provider.NonexistentInfoCollectionProvider",
+							"collectionType": "CollectionProvider"
+						}
+					},
+					"name": "collectionProviderUnregistered",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.nonexistent.model.NonexistentModel",
+							"collectionType": "RepeatableFieldsCollectionProvider",
+							"fieldName": "repeatableField",
+							"subTypeExternalReference": {
+								"externalReferenceCode": "collection-subtype-erc"
+							}
+						}
+					},
+					"name": "collectionRepeatableFieldsProviderWithNonexistentItemType",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.journal.model.JournalArticle",
+							"collectionType": "RepeatableFieldsCollectionProvider",
+							"fieldName": "repeatableField",
+							"subTypeExternalReference": {
+								"externalReferenceCode": "collection-nonexistent-subtype-erc"
+							}
+						}
+					},
+					"name": "collectionRepeatableFieldsProviderWithNonexistentSubtype",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"className": "com.liferay.journal.model.JournalArticle",
+							"collectionType": "RepeatableFieldsCollectionProvider",
+							"fieldName": "repeatableField",
+							"subTypeExternalReference": {
+								"externalReferenceCode": "${DDM_STRUCTURE_KEY}"
+							}
+						}
+					},
+					"name": "collectionRepeatableFieldsProviderWithResolvableSubtype",
+					"type": "collectionSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"collectionType": "Collection",
+							"externalReferenceCode": "collection-visible-erc"
+						}
+					},
+					"name": "collectionVisibleWhenCheckboxTrue",
+					"type": "collectionSelector",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
+						"value": {
 							"cssClass": "brand-color-2",
 							"rgbValue": "#FF0000"
 						}
