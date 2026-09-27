@@ -44,6 +44,8 @@ import com.liferay.headless.admin.fragment.dto.v1_0.URLField;
 import com.liferay.headless.admin.fragment.dto.v1_0.URLFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.ValidValue;
 import com.liferay.headless.admin.fragment.dto.v1_0.Validation;
+import com.liferay.headless.admin.fragment.dto.v1_0.VideoFragmentConfigurationFieldDefaultValue;
+import com.liferay.headless.admin.fragment.dto.v1_0.VideoSelectorField;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
@@ -54,6 +56,7 @@ import com.liferay.headless.admin.site.dto.v1_0.ItemValue;
 import com.liferay.headless.admin.site.dto.v1_0.SitePageURLValue;
 import com.liferay.headless.admin.site.dto.v1_0.URLFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.URLValue;
+import com.liferay.headless.admin.site.dto.v1_0.VideoValue;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemDetails;
@@ -61,6 +64,7 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.item.selector.criteria.VideoEmbeddableHTMLItemSelectorReturnType;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -744,6 +748,19 @@ public class ConfigurationUtil {
 				}
 			};
 		}
+		else if (Objects.equals(type, "videoSelector")) {
+			field = new VideoSelectorField() {
+				{
+					setDefaultValue(
+						() -> _toVideoFragmentConfigurationFieldDefaultValue(
+							_toVideoValue(
+								_getDefaultValueJSONObject(fieldJSONObject))));
+					setTypeOptions(
+						() -> _toTypeOptions(
+							fieldJSONObject.getJSONObject("typeOptions")));
+				}
+			};
+		}
 		else {
 			throw new IllegalStateException(
 				StringBundler.concat(
@@ -876,6 +893,15 @@ public class ConfigurationUtil {
 			).put(
 				"typeOptions",
 				_toTypeOptionsJSONObject(urlField.getTypeOptions())
+			);
+		}
+		else if (field instanceof VideoSelectorField videoSelectorField) {
+			fieldJSONObject.put(
+				"defaultValue",
+				_toVideoJSONObject(videoSelectorField.getDefaultValue())
+			).put(
+				"typeOptions",
+				_toTypeOptionsJSONObject(videoSelectorField.getTypeOptions())
 			);
 		}
 
@@ -1733,6 +1759,60 @@ public class ConfigurationUtil {
 		}
 
 		return validationJSONObject;
+	}
+
+	private static VideoFragmentConfigurationFieldDefaultValue
+		_toVideoFragmentConfigurationFieldDefaultValue(VideoValue videoValue) {
+
+		if (videoValue == null) {
+			return null;
+		}
+
+		return new VideoFragmentConfigurationFieldDefaultValue() {
+			{
+				setValue(() -> videoValue);
+			}
+		};
+	}
+
+	private static JSONObject _toVideoJSONObject(
+		VideoFragmentConfigurationFieldDefaultValue
+			videoFragmentConfigurationFieldDefaultValue) {
+
+		if (videoFragmentConfigurationFieldDefaultValue == null) {
+			return null;
+		}
+
+		VideoValue videoValue =
+			videoFragmentConfigurationFieldDefaultValue.getValue();
+
+		if ((videoValue == null) || Validator.isNull(videoValue.getHtml())) {
+			return null;
+		}
+
+		return JSONUtil.put(
+			"html", videoValue.getHtml()
+		).put(
+			"title", videoValue.getTitle()
+		).put(
+			"type", VideoEmbeddableHTMLItemSelectorReturnType.class.getName()
+		);
+	}
+
+	private static VideoValue _toVideoValue(JSONObject defaultValueJSONObject) {
+		if ((defaultValueJSONObject == null) ||
+			(!defaultValueJSONObject.has("html") &&
+			 !defaultValueJSONObject.has("title"))) {
+
+			return null;
+		}
+
+		return new VideoValue() {
+			{
+				setHtml(() -> defaultValueJSONObject.getString("html", null));
+				setTitle(() -> defaultValueJSONObject.getString("title", null));
+			}
+		};
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
