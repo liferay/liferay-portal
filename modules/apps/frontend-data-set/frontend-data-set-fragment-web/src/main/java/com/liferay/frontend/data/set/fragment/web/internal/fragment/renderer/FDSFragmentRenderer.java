@@ -144,10 +144,12 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			JSONObject configurationJSONObject = getConfigurationJSONObject(
 				fragmentRendererContext);
 
+			JSONObject editableValuesJSONObject =
+				fragmentEntryLink.getEditableValuesJSONObject();
+
 			JSONObject itemSelectorJSONObject =
 				(JSONObject)_fragmentEntryConfigurationParser.getFieldValue(
-					configurationJSONObject,
-					fragmentEntryLink.getEditableValuesJSONObject(),
+					configurationJSONObject, editableValuesJSONObject,
 					fragmentRendererContext.getLocale(), "itemSelector");
 
 			String externalReferenceCode = itemSelectorJSONObject.getString(
@@ -222,8 +224,7 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			JSONObject apiURLTokenMappingsJSONObject =
 				_getAPIURLTokenMappingsJSONObject(
 					(String)_fragmentEntryConfigurationParser.getFieldValue(
-						configurationJSONObject,
-						fragmentEntryLink.getEditableValuesJSONObject(),
+						configurationJSONObject, editableValuesJSONObject,
 						fragmentRendererContext.getLocale(),
 						"apiURLTokenMappings"));
 
