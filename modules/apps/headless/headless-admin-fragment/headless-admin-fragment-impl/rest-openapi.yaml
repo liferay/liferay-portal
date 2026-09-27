@@ -126,6 +126,7 @@ components:
                     categoryTreeNodeSelector: "#/components/schemas/CategoryTreeNodeSelectorField"
                     checkbox: "#/components/schemas/CheckboxField"
                     itemSelector: "#/components/schemas/ItemSelectorField"
+                    select: "#/components/schemas/SelectField"
                 propertyName: type
             properties:
                 dataType:
@@ -154,7 +155,7 @@ components:
                 type:
                     description:
                         The field's type.
-                    enum: [categoryTreeNodeSelector, checkbox, itemSelector]
+                    enum: [categoryTreeNodeSelector, checkbox, itemSelector, select]
                     type: string
             required:
                 -   name
@@ -518,6 +519,44 @@ components:
                         The external reference code of the resource folder's parent resource folder, used to reference an existing parent. Takes precedence over `parentResourceFolder` when both are set.
                     type: string
             type: object
+        SelectField:
+            allOf:
+                -   $ref: "#/components/schemas/Field"
+                -   properties:
+                        defaultValue:
+                            $ref: "#/components/schemas/SelectFragmentConfigurationFieldDefaultValue"
+                            description:
+                                The field's default value.
+                        typeOptions:
+                            $ref: "#/components/schemas/SelectTypeOptions"
+                            description:
+                                The field's type-specific options.
+            description:
+                A `select` field of a fragment configuration's field set.
+            type: object
+        SelectFragmentConfigurationFieldDefaultValue:
+            description:
+                The default value of a `select` fragment configuration field. It mirrors the shape of the corresponding fragment configuration field value of the headless admin site API.
+            properties:
+                value:
+                    description:
+                        The `value` of one of the field's `validValues`.
+                    type: string
+            type: object
+        SelectTypeOptions:
+            allOf:
+                -   $ref: "#/components/schemas/TypeOptions"
+                -   properties:
+                        validValues:
+                            description:
+                                The values the field can take.
+                            items:
+                                $ref: "#/components/schemas/ValidValue"
+                            minItems: 1
+                            type: array
+            description:
+                The type-specific options of a `select` fragment configuration field.
+            type: object
         TypeOptions:
             description:
                 The type-specific options of a fragment configuration field.
@@ -528,6 +567,21 @@ components:
                     description:
                         The field's visibility conditions, keyed by the name of the field each condition applies to.
                     type: object
+            type: object
+        ValidValue:
+            description:
+                A value a `select` fragment configuration field can take.
+            properties:
+                label:
+                    description:
+                        The label shown for the value.
+                    type: string
+                value:
+                    description:
+                        The value.
+                    type: string
+            required:
+                -   value
             type: object
 info:
     description:
