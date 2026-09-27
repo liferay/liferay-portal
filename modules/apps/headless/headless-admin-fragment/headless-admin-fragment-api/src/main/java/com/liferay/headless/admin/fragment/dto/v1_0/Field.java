@@ -61,6 +61,7 @@ import java.util.function.Supplier;
 			name = "categoryTreeNodeSelector",
 			value = CategoryTreeNodeSelectorField.class
 		),
+		@JsonSubTypes.Type(name = "checkbox", value = CheckboxField.class),
 		@JsonSubTypes.Type(
 			name = "itemSelector", value = ItemSelectorField.class
 		)
@@ -540,7 +541,7 @@ public abstract class Field implements Serializable {
 	public static enum Type {
 
 		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
-		ITEM_SELECTOR("itemSelector");
+		CHECKBOX("checkbox"), ITEM_SELECTOR("itemSelector");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -685,4 +686,4 @@ public abstract class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1346071482
+// LIFERAY-REST-BUILDER-HASH:-691421475
