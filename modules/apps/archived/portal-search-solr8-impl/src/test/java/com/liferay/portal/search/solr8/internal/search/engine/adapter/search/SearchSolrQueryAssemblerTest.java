@@ -23,7 +23,7 @@ import org.junit.Test;
 /**
  * @author Rodrigo Guedes de Souza
  */
-public class SearchSolrQueryAssemblerImplTest {
+public class SearchSolrQueryAssemblerTest {
 
 	@ClassRule
 	@Rule
