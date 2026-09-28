@@ -44,17 +44,19 @@ public class YouTubeDLVideoExternalShortcutProvider
 			return null;
 		}
 
-		JSONObject jsonObject = _getEmbedJSONObject(url);
-
 		return new DLVideoExternalShortcut() {
 
 			@Override
 			public String getThumbnailURL() {
+				JSONObject jsonObject = _getJSONObject();
+
 				return jsonObject.getString("thumbnail_url");
 			}
 
 			@Override
 			public String getTitle() {
+				JSONObject jsonObject = _getJSONObject();
+
 				return jsonObject.getString("title");
 			}
 
@@ -80,6 +82,16 @@ public class YouTubeDLVideoExternalShortcutProvider
 					"allowfullscreen height=\"315\" frameborder=\"0\" ",
 					"src=\"", iframeSrc, "\" width=\"560\"></iframe>");
 			}
+
+			private JSONObject _getJSONObject() {
+				if (_jsonObject == null) {
+					_jsonObject = _getEmbedJSONObject(url);
+				}
+
+				return _jsonObject;
+			}
+
+			private JSONObject _jsonObject;
 
 		};
 	}

@@ -43,22 +43,26 @@ public class VimeoDLVideoExternalShortcutProvider
 			return null;
 		}
 
-		final JSONObject jsonObject = _getEmbedJSONObject(url);
-
 		return new DLVideoExternalShortcut() {
 
 			@Override
 			public String getDescription() {
+				JSONObject jsonObject = _getJSONObject();
+
 				return jsonObject.getString("description");
 			}
 
 			@Override
 			public String getThumbnailURL() {
+				JSONObject jsonObject = _getJSONObject();
+
 				return jsonObject.getString("thumbnail_url");
 			}
 
 			@Override
 			public String getTitle() {
+				JSONObject jsonObject = _getJSONObject();
+
 				return jsonObject.getString("title");
 			}
 
@@ -75,6 +79,16 @@ public class VimeoDLVideoExternalShortcutProvider
 					vimeoVideoId, "\" webkitallowfullscreen ",
 					"width=\"560\"></iframe>");
 			}
+
+			private JSONObject _getJSONObject() {
+				if (_jsonObject == null) {
+					_jsonObject = _getEmbedJSONObject(url);
+				}
+
+				return _jsonObject;
+			}
+
+			private JSONObject _jsonObject;
 
 		};
 	}
@@ -106,7 +120,7 @@ public class VimeoDLVideoExternalShortcutProvider
 				_log.debug(exception);
 			}
 
-			return null;
+			return _jsonFactory.createJSONObject();
 		}
 	}
 
