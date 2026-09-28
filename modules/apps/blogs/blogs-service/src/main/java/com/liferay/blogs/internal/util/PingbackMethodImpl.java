@@ -306,7 +306,7 @@ public class PingbackMethodImpl implements Method {
 	}
 
 	private String _getExcerpt() throws Exception {
-		String html = _http.URLtoString(_sourceURI);
+		String html = _http.URLtoString(_getOptions());
 
 		Source source = new Source(html);
 
@@ -358,6 +358,15 @@ public class PingbackMethodImpl implements Method {
 		}
 
 		return PropsValues.BLOGS_LINKBACK_EXCERPT_LENGTH;
+	}
+
+	private Http.Options _getOptions() {
+		Http.Options options = new Http.Options();
+
+		options.setFollowRedirects(false);
+		options.setLocation(_sourceURI);
+
+		return options;
 	}
 
 	private String _getParam(Map<String, String[]> params, String name) {
@@ -420,7 +429,7 @@ public class PingbackMethodImpl implements Method {
 		Source source = null;
 
 		try {
-			String html = _http.URLtoString(_sourceURI);
+			String html = _http.URLtoString(_getOptions());
 
 			source = new Source(html);
 		}
