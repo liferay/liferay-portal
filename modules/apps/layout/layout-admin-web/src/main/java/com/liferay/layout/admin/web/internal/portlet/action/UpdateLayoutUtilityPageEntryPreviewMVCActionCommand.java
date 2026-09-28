@@ -6,7 +6,7 @@
 package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
@@ -55,7 +55,7 @@ public class UpdateLayoutUtilityPageEntryPreviewMVCActionCommand
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		Repository repository = _portletFileRepository.fetchPortletRepository(
 			themeDisplay.getScopeGroupId(), LayoutAdminPortletKeys.GROUP_PAGES);
@@ -107,7 +107,7 @@ public class UpdateLayoutUtilityPageEntryPreviewMVCActionCommand
 	}
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private DLFileEntryLocalService _dlFileEntryLocalService;
