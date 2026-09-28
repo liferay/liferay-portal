@@ -18,9 +18,20 @@ function MultiSelectInput({
 	const [inputValue, setInputValue] = useState('');
 
 	const _handleKeyDown = (event) => {
-		if (event.key === 'Enter') {
+		if (event.key === 'Enter' && !inputValue.trim()) {
 			event.preventDefault();
 		}
+	};
+
+	const _handleItemsChange = (items) => {
+		setFieldValue(
+			name,
+			items.map((item) => ({
+				...item,
+				label: item.label.trim(),
+				value: item.value.trim(),
+			}))
+		);
 	};
 
 	return (
@@ -32,8 +43,8 @@ function MultiSelectInput({
 			onBlur={() => {
 				setFieldTouched(name);
 
-				if (inputValue) {
-					setFieldValue(name, [
+				if (inputValue.trim()) {
+					_handleItemsChange([
 						...value,
 						{label: inputValue, value: inputValue},
 					]);
@@ -42,7 +53,7 @@ function MultiSelectInput({
 				}
 			}}
 			onChange={setInputValue}
-			onItemsChange={(value) => setFieldValue(name, value)}
+			onItemsChange={_handleItemsChange}
 			onKeyDown={_handleKeyDown}
 			value={inputValue}
 		/>
