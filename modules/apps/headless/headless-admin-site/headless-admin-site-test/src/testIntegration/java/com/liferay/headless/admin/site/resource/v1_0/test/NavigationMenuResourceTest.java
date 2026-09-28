@@ -352,6 +352,7 @@ public class NavigationMenuResourceTest
 
 		_testPutSiteNavigationMenuWithCompanyGroup();
 		_testPutSiteNavigationMenuWithPermissions();
+		_testPutSiteNavigationMenuWithReorderedNavigationMenuItems();
 	}
 
 	@Override
@@ -455,6 +456,19 @@ public class NavigationMenuResourceTest
 		Assert.assertEquals(type, navigationMenuItem.getType());
 		Assert.assertEquals(
 			useCustomName, navigationMenuItem.getUseCustomName());
+	}
+
+	private void _assertNavigationMenuItemExternalReferenceCodes(
+		NavigationMenuItem[] actualNavigationMenuItems,
+		NavigationMenuItem... expectedNavigationMenuItems) {
+
+		Assert.assertEquals(
+			TransformUtil.transformToList(
+				expectedNavigationMenuItems,
+				NavigationMenuItem::getExternalReferenceCode),
+			TransformUtil.transformToList(
+				actualNavigationMenuItems,
+				NavigationMenuItem::getExternalReferenceCode));
 	}
 
 	private NavigationMenuResource _buildNavigationMenuResource(Locale locale) {
@@ -631,6 +645,24 @@ public class NavigationMenuResourceTest
 				layout1, layout2, nameI18nMap1, nameI18nMap2));
 
 		return navigationMenu;
+	}
+
+	private NavigationMenuItem _randomNavigationMenuItem() {
+		return new NavigationMenuItem() {
+			{
+				defaultLanguageId = LocaleUtil.toLanguageId(
+					LocaleUtil.getDefault());
+				externalReferenceCode = RandomTestUtil.randomString();
+				name = RandomTestUtil.randomString();
+				navigationMenuItemSettings =
+					new URLNavigationMenuItemSettings() {
+						{
+							url = RandomTestUtil.randomString();
+						}
+					};
+				type = "url";
+			}
+		};
 	}
 
 	private NavigationMenuItem[] _randomNavigationMenuItems() {
@@ -1428,6 +1460,78 @@ public class NavigationMenuResourceTest
 							   serviceBuilderRole.getExternalReferenceCode(),
 							   permission.getRoleExternalReferenceCode());
 				}));
+	}
+
+	private void _testPutSiteNavigationMenuWithReorderedNavigationMenuItems()
+		throws Exception {
+
+		NavigationMenu navigationMenu = _randomNavigationMenu(false);
+
+		NavigationMenuItem navigationMenuItem1 = _randomNavigationMenuItem();
+		NavigationMenuItem navigationMenuItem2 = _randomNavigationMenuItem();
+
+		navigationMenu.setNavigationMenuItems(
+			new NavigationMenuItem[] {
+				navigationMenuItem1, navigationMenuItem2
+			});
+
+		NavigationMenu postNavigationMenu =
+			navigationMenuResource.postSiteNavigationMenu(
+				testGroup.getExternalReferenceCode(), navigationMenu);
+
+		NavigationMenuItem navigationMenuItem3 = _randomNavigationMenuItem();
+
+		navigationMenu.setNavigationMenuItems(
+			new NavigationMenuItem[] {
+				navigationMenuItem1, navigationMenuItem3, navigationMenuItem2
+			});
+
+		NavigationMenu putNavigationMenu =
+			navigationMenuResource.putSiteNavigationMenu(
+				testGroup.getExternalReferenceCode(),
+				postNavigationMenu.getExternalReferenceCode(), navigationMenu);
+
+		NavigationMenuItem[] putNavigationMenuItems =
+			putNavigationMenu.getNavigationMenuItems();
+
+		_assertNavigationMenuItemExternalReferenceCodes(
+			putNavigationMenuItems, navigationMenuItem1, navigationMenuItem3,
+			navigationMenuItem2);
+
+		NavigationMenuItem[] postNavigationMenuItems =
+			postNavigationMenu.getNavigationMenuItems();
+
+		Assert.assertEquals(
+			postNavigationMenuItems[0].getId(),
+			putNavigationMenuItems[0].getId());
+		Assert.assertEquals(
+			postNavigationMenuItems[1].getId(),
+			putNavigationMenuItems[2].getId());
+
+		navigationMenuItem2.setNavigationMenuItems(
+			new NavigationMenuItem[] {navigationMenuItem1});
+
+		navigationMenu.setNavigationMenuItems(
+			new NavigationMenuItem[] {navigationMenuItem2});
+
+		putNavigationMenu = navigationMenuResource.putSiteNavigationMenu(
+			testGroup.getExternalReferenceCode(),
+			postNavigationMenu.getExternalReferenceCode(), navigationMenu);
+
+		putNavigationMenuItems = putNavigationMenu.getNavigationMenuItems();
+
+		_assertNavigationMenuItemExternalReferenceCodes(
+			putNavigationMenuItems, navigationMenuItem2);
+
+		NavigationMenuItem[] childNavigationMenuItems =
+			putNavigationMenuItems[0].getNavigationMenuItems();
+
+		_assertNavigationMenuItemExternalReferenceCodes(
+			childNavigationMenuItems, navigationMenuItem1);
+
+		Assert.assertEquals(
+			postNavigationMenuItems[0].getId(),
+			childNavigationMenuItems[0].getId());
 	}
 
 	@Inject
