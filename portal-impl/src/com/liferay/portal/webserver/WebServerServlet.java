@@ -573,6 +573,8 @@ public class WebServerServlet extends HttpServlet {
 						DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
 							uuid, groupId);
 
+					_checkFileEntry(fileEntry, httpServletRequest);
+
 					image = convertFileEntry(igSmallImage, fileEntry);
 				}
 				catch (Exception exception) {
