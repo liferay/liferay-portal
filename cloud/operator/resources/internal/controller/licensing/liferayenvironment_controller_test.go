@@ -12,6 +12,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -21,10 +22,12 @@ import (
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	appsv1 "k8s.io/api/apps/v1"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
+	autoscalingv2 "k8s.io/api/autoscaling/v2"
 	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	unstructured "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
@@ -73,24 +76,402 @@ func (inlineRunner inlineRunner) Run(task func()) {
 	task()
 }
 
+func TestCapReplicaBounds(t *testing.T) {
+	testCases := map[string]struct {
+		autoscaling           *licensingv1alpha1.Autoscaling
+		expectedReplicaBounds replicaBounds
+		replicaCeiling        int32
+	}{
+		"caps the maximum at the replica ceiling": {
+			autoscaling:           &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			expectedReplicaBounds: replicaBounds{Maximum: 3, Minimum: 1},
+			replicaCeiling:        3,
+		},
+		"caps the minimum at the capped maximum": {
+			autoscaling:           &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 5},
+			expectedReplicaBounds: replicaBounds{Maximum: 3, Minimum: 3},
+			replicaCeiling:        3,
+		},
+		"floors the maximum at one replica when the ceiling is zero": {
+			autoscaling:           &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 2},
+			expectedReplicaBounds: replicaBounds{Maximum: 1, Minimum: 1},
+			replicaCeiling:        0,
+		},
+		"keeps bounds within the replica ceiling": {
+			autoscaling:           &licensingv1alpha1.Autoscaling{MaxReplicas: 4, MinReplicas: 2},
+			expectedReplicaBounds: replicaBounds{Maximum: 4, Minimum: 2},
+			replicaCeiling:        5,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			actualReplicaBounds := capReplicaBounds(
+				testCase.autoscaling, testCase.replicaCeiling,
+			)
+
+			if actualReplicaBounds != testCase.expectedReplicaBounds {
+				t.Errorf(
+					"capReplicaBounds = %+v, want %+v",
+					actualReplicaBounds, testCase.expectedReplicaBounds,
+				)
+			}
+		})
+	}
+}
+
+func TestEnforceAutoscalerCeiling(t *testing.T) {
+	testCases := map[string]struct {
+		autoscaling         *licensingv1alpha1.Autoscaling
+		expectedMaxReplicas int32
+		expectedMinReplicas int32
+		liveMaxReplicas     int32
+		liveMinReplicas     int32
+		replicaCeiling      int32
+	}{
+		"caps the maximum at the licensed ceiling": {
+			autoscaling:         &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			expectedMaxReplicas: 3,
+			expectedMinReplicas: 1,
+			liveMaxReplicas:     10,
+			liveMinReplicas:     1,
+			replicaCeiling:      3,
+		},
+		"caps the minimum at the licensed ceiling": {
+			autoscaling:         &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 5},
+			expectedMaxReplicas: 3,
+			expectedMinReplicas: 3,
+			liveMaxReplicas:     10,
+			liveMinReplicas:     5,
+			replicaCeiling:      3,
+		},
+		"floors the maximum at one replica when the ceiling is zero": {
+			autoscaling:         &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 2},
+			expectedMaxReplicas: 1,
+			expectedMinReplicas: 1,
+			liveMaxReplicas:     10,
+			liveMinReplicas:     2,
+			replicaCeiling:      0,
+		},
+		"leaves bounds within the licensed ceiling": {
+			autoscaling:         &licensingv1alpha1.Autoscaling{MaxReplicas: 4, MinReplicas: 2},
+			expectedMaxReplicas: 4,
+			expectedMinReplicas: 2,
+			liveMaxReplicas:     4,
+			liveMinReplicas:     2,
+			replicaCeiling:      5,
+		},
+		"leaves the autoscaler alone without requested bounds": {
+			autoscaling:         nil,
+			expectedMaxReplicas: 10,
+			expectedMinReplicas: 1,
+			liveMaxReplicas:     10,
+			liveMinReplicas:     1,
+			replicaCeiling:      3,
+		},
+		"raises a capped maximum after a license upgrade": {
+			autoscaling:         &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			expectedMaxReplicas: 5,
+			expectedMinReplicas: 1,
+			liveMaxReplicas:     3,
+			liveMinReplicas:     1,
+			replicaCeiling:      5,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "dev",
+					Namespace: "liferay-dev",
+				},
+				Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+					Autoscaling: testCase.autoscaling,
+					WorkloadRef: licensingv1alpha1.WorkloadRef{
+						Name: "dev-liferay",
+					},
+				},
+			}
+
+			liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+				Client: newFakeClient(
+					t,
+					liferayEnvironment,
+					newHorizontalPodAutoscaler(
+						testCase.liveMaxReplicas, testCase.liveMinReplicas, "dev-liferay",
+					),
+					newScaledObject(
+						testCase.liveMaxReplicas, testCase.liveMinReplicas, "dev-liferay",
+					),
+				),
+			}
+
+			if error := liferayEnvironmentReconciler.enforceAutoscalerCeiling(
+				context.Background(), liferayEnvironment, testCase.replicaCeiling,
+			); error != nil {
+				t.Fatalf("Unexpected error from enforceAutoscalerCeiling: %v", error)
+			}
+
+			horizontalPodAutoscaler := getHorizontalPodAutoscaler(
+				liferayEnvironmentReconciler, t,
+			)
+
+			assertReplicasEqual(
+				&horizontalPodAutoscaler.Spec.MaxReplicas,
+				&testCase.expectedMaxReplicas,
+				"horizontalPodAutoscaler.spec.maxReplicas",
+				t,
+			)
+
+			assertReplicasEqual(
+				horizontalPodAutoscaler.Spec.MinReplicas,
+				&testCase.expectedMinReplicas,
+				"horizontalPodAutoscaler.spec.minReplicas",
+				t,
+			)
+
+			scaledObject := getScaledObject(liferayEnvironmentReconciler, t)
+
+			assertScaledObjectReplicaCount(
+				int64(testCase.expectedMaxReplicas),
+				"maxReplicaCount",
+				scaledObject,
+				t,
+			)
+
+			assertScaledObjectReplicaCount(
+				int64(testCase.expectedMinReplicas),
+				"minReplicaCount",
+				scaledObject,
+				t,
+			)
+		})
+	}
+}
+
+func TestEnforceAutoscalerCeilingIgnoresOtherAutoscalers(t *testing.T) {
+	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			Autoscaling: &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
+
+	kedaHorizontalPodAutoscaler := newHorizontalPodAutoscaler(10, 1, "dev-liferay")
+
+	kedaHorizontalPodAutoscaler.Name = "keda-hpa-dev-liferay"
+	kedaHorizontalPodAutoscaler.OwnerReferences = []metav1.OwnerReference{
+		{
+			APIVersion: "keda.sh/v1alpha1",
+			Kind:       "ScaledObject",
+			Name:       "dev-liferay",
+			UID:        "scaled-object-uid",
+		},
+	}
+
+	otherHorizontalPodAutoscaler := newHorizontalPodAutoscaler(10, 1, "other-workload")
+
+	otherHorizontalPodAutoscaler.Name = "other-workload"
+
+	otherScaledObject := newScaledObject(10, 1, "other-workload")
+
+	otherScaledObject.SetName("other-workload")
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+		Client: newFakeClient(
+			t,
+			kedaHorizontalPodAutoscaler,
+			liferayEnvironment,
+			otherHorizontalPodAutoscaler,
+			otherScaledObject,
+		),
+	}
+
+	if error := liferayEnvironmentReconciler.enforceAutoscalerCeiling(
+		context.Background(), liferayEnvironment, 3,
+	); error != nil {
+		t.Fatalf("Unexpected error from enforceAutoscalerCeiling: %v", error)
+	}
+
+	for _, name := range []string{"keda-hpa-dev-liferay", "other-workload"} {
+		horizontalPodAutoscaler := &autoscalingv2.HorizontalPodAutoscaler{}
+
+		if error := liferayEnvironmentReconciler.Get(
+			context.Background(),
+			types.NamespacedName{Name: name, Namespace: "liferay-dev"},
+			horizontalPodAutoscaler,
+		); error != nil {
+			t.Fatalf("Unable to read the autoscaler %q: %v", name, error)
+		}
+
+		if horizontalPodAutoscaler.Spec.MaxReplicas != 10 {
+			t.Errorf(
+				"Autoscaler %q spec.maxReplicas = %d, want 10",
+				name, horizontalPodAutoscaler.Spec.MaxReplicas,
+			)
+		}
+	}
+
+	scaledObject := newScaledObject(0, 0, "")
+
+	if error := liferayEnvironmentReconciler.Get(
+		context.Background(),
+		types.NamespacedName{Name: "other-workload", Namespace: "liferay-dev"},
+		scaledObject,
+	); error != nil {
+		t.Fatalf("Unable to read the scaled object: %v", error)
+	}
+
+	assertScaledObjectReplicaCount(10, "maxReplicaCount", scaledObject, t)
+}
+
+func TestEnforceAutoscalerCeilingSetsMissingScaledObjectBounds(t *testing.T) {
+	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			Autoscaling: &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
+
+	scaledObject := newScaledObject(0, 0, "dev-liferay")
+
+	unstructured.RemoveNestedField(scaledObject.Object, "spec", "maxReplicaCount")
+	unstructured.RemoveNestedField(scaledObject.Object, "spec", "minReplicaCount")
+
+	if error := unstructured.SetNestedField(
+		scaledObject.Object, int64(30), "spec", "pollingInterval",
+	); error != nil {
+		t.Fatalf("Unable to set scaledObject.spec.pollingInterval: %v", error)
+	}
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+		Client: newFakeClient(t, liferayEnvironment, scaledObject),
+	}
+
+	if error := liferayEnvironmentReconciler.enforceAutoscalerCeiling(
+		context.Background(), liferayEnvironment, 3,
+	); error != nil {
+		t.Fatalf("Unexpected error from enforceAutoscalerCeiling: %v", error)
+	}
+
+	scaledObject = getScaledObject(liferayEnvironmentReconciler, t)
+
+	assertScaledObjectReplicaCount(3, "maxReplicaCount", scaledObject, t)
+
+	assertScaledObjectReplicaCount(1, "minReplicaCount", scaledObject, t)
+
+	pollingInterval, found, error := unstructured.NestedInt64(
+		scaledObject.Object, "spec", "pollingInterval",
+	)
+
+	if error != nil || !found || pollingInterval != 30 {
+		t.Errorf(
+			"scaledObject.spec.pollingInterval = %d (found %t, error %v), want 30",
+			pollingInterval, found, error,
+		)
+	}
+}
+
+func TestEnforceAutoscalerCeilingSkipsMissingKEDA(t *testing.T) {
+	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			Autoscaling: &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
+
+	fakeClient := fake.NewClientBuilder().WithInterceptorFuncs(
+		interceptor.Funcs{
+			List: func(
+				context context.Context,
+				writer client.WithWatch,
+				list client.ObjectList,
+				options ...client.ListOption,
+			) error {
+				if _, ok := list.(*unstructured.UnstructuredList); ok {
+					return &meta.NoKindMatchError{
+						GroupKind: scaledObjectGroupVersionKind.GroupKind(),
+					}
+				}
+
+				return writer.List(context, list, options...)
+			},
+		},
+	).WithObjects(
+		liferayEnvironment, newHorizontalPodAutoscaler(10, 1, "dev-liferay"),
+	).WithScheme(
+		newScheme(t),
+	).Build()
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+		Client: fakeClient,
+	}
+
+	if error := liferayEnvironmentReconciler.enforceAutoscalerCeiling(
+		context.Background(), liferayEnvironment, 3,
+	); error != nil {
+		t.Fatalf("Unexpected error from enforceAutoscalerCeiling: %v", error)
+	}
+
+	horizontalPodAutoscaler := getHorizontalPodAutoscaler(liferayEnvironmentReconciler, t)
+
+	if horizontalPodAutoscaler.Spec.MaxReplicas != 3 {
+		t.Errorf(
+			"spec.maxReplicas = %d, want 3",
+			horizontalPodAutoscaler.Spec.MaxReplicas,
+		)
+	}
+}
+
 func TestEnforceReplicaCeiling(t *testing.T) {
 	testCases := map[string]struct {
+		autoscaling       *licensingv1alpha1.Autoscaling
 		desiredReplicas   *int32
 		expectedCondition metav1.ConditionStatus
 		expectedEffective *int32
 		expectedReason    string
 		expectedReplicas  *int32
-		maxClusterNodes   int32
+		replicaCeiling    int32
 		workloadExists    bool
 		workloadReplicas  *int32
 	}{
+		"caps an autoscaling maximum above the licensed maximum": {
+			autoscaling:       &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			desiredReplicas:   nil,
+			expectedCondition: metav1.ConditionFalse,
+			expectedEffective: pointerInt32(2),
+			expectedReason:    "ExceedsLicensedMaximum",
+			expectedReplicas:  pointerInt32(2),
+			replicaCeiling:    3,
+			workloadExists:    true,
+			workloadReplicas:  pointerInt32(2),
+		},
 		"caps replicas above the licensed maximum": {
 			desiredReplicas:   pointerInt32(5),
 			expectedCondition: metav1.ConditionFalse,
 			expectedEffective: pointerInt32(3),
 			expectedReason:    "ExceedsLicensedMaximum",
 			expectedReplicas:  pointerInt32(3),
-			maxClusterNodes:   3,
+			replicaCeiling:    3,
 			workloadExists:    true,
 			workloadReplicas:  pointerInt32(5),
 		},
@@ -100,7 +481,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			expectedEffective: pointerInt32(2),
 			expectedReason:    "ExceedsLicensedMaximum",
 			expectedReplicas:  pointerInt32(2),
-			maxClusterNodes:   2,
+			replicaCeiling:    2,
 			workloadExists:    true,
 			workloadReplicas:  pointerInt32(4),
 		},
@@ -110,7 +491,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			expectedEffective: pointerInt32(1),
 			expectedReason:    "WithinLicensedLimit",
 			expectedReplicas:  pointerInt32(1),
-			maxClusterNodes:   5,
+			replicaCeiling:    5,
 			workloadExists:    true,
 			workloadReplicas:  nil,
 		},
@@ -120,7 +501,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			expectedEffective: pointerInt32(0),
 			expectedReason:    "ExceedsLicensedMaximum",
 			expectedReplicas:  pointerInt32(0),
-			maxClusterNodes:   0,
+			replicaCeiling:    0,
 			workloadExists:    true,
 			workloadReplicas:  pointerInt32(3),
 		},
@@ -130,7 +511,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			expectedEffective: nil,
 			expectedReason:    "WorkloadNotFound",
 			expectedReplicas:  nil,
-			maxClusterNodes:   3,
+			replicaCeiling:    3,
 			workloadExists:    false,
 			workloadReplicas:  nil,
 		},
@@ -140,9 +521,20 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			expectedEffective: pointerInt32(3),
 			expectedReason:    "ExceedsLicensedMaximum",
 			expectedReplicas:  pointerInt32(3),
-			maxClusterNodes:   3,
+			replicaCeiling:    3,
 			workloadExists:    true,
 			workloadReplicas:  pointerInt32(5),
+		},
+		"within the licensed autoscaling limit": {
+			autoscaling:       &licensingv1alpha1.Autoscaling{MaxReplicas: 3, MinReplicas: 1},
+			desiredReplicas:   nil,
+			expectedCondition: metav1.ConditionTrue,
+			expectedEffective: pointerInt32(2),
+			expectedReason:    "WithinLicensedLimit",
+			expectedReplicas:  pointerInt32(2),
+			replicaCeiling:    3,
+			workloadExists:    true,
+			workloadReplicas:  pointerInt32(2),
 		},
 		"within the licensed limit": {
 			desiredReplicas:   pointerInt32(2),
@@ -150,7 +542,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			expectedEffective: pointerInt32(2),
 			expectedReason:    "WithinLicensedLimit",
 			expectedReplicas:  pointerInt32(2),
-			maxClusterNodes:   3,
+			replicaCeiling:    3,
 			workloadExists:    true,
 			workloadReplicas:  pointerInt32(2),
 		},
@@ -164,6 +556,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 					Namespace: "liferay-dev",
 				},
 				Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+					Autoscaling:     testCase.autoscaling,
 					DesiredReplicas: testCase.desiredReplicas,
 					WorkloadRef: licensingv1alpha1.WorkloadRef{
 						Name: "dev-liferay",
@@ -190,7 +583,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			}
 
 			if _, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
-				context.Background(), liferayEnvironment, testCase.maxClusterNodes,
+				context.Background(), liferayEnvironment, testCase.replicaCeiling,
 			); error != nil {
 				t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
 			}
@@ -324,6 +717,104 @@ func TestEnforceReplicaCeilingPersistsCeilingBeforeWritingWorkload(t *testing.T)
 	}
 }
 
+func TestEnforceReplicaCeilingPersistsRefusalWhenAutoscalerUpdateRejected(t *testing.T) {
+	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			Autoscaling: &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1},
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
+
+	statefulSet := &appsv1.StatefulSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev-liferay",
+			Namespace: "liferay-dev",
+		},
+		Spec: appsv1.StatefulSetSpec{
+			Replicas: pointerInt32(5),
+		},
+	}
+
+	fakeClient := fake.NewClientBuilder().WithInterceptorFuncs(
+		interceptor.Funcs{
+			Patch: func(
+				context context.Context,
+				writer client.WithWatch,
+				object client.Object,
+				patch client.Patch,
+				options ...client.PatchOption,
+			) error {
+				if _, ok := object.(*autoscalingv2.HorizontalPodAutoscaler); ok {
+					return errors.NewForbidden(
+						schema.GroupResource{
+							Group:    "autoscaling",
+							Resource: "horizontalpodautoscalers",
+						},
+						"dev-liferay",
+						fmt.Errorf("denied by RBAC"),
+					)
+				}
+
+				return writer.Patch(context, object, patch, options...)
+			},
+		},
+	).WithObjects(
+		liferayEnvironment,
+		newHorizontalPodAutoscaler(10, 1, "dev-liferay"),
+		statefulSet,
+	).WithScheme(
+		newScheme(t),
+	).WithStatusSubresource(
+		&licensingv1alpha1.LiferayEnvironment{},
+	).Build()
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+		Client:            fakeClient,
+		RetryInitialDelay: 30 * time.Second,
+	}
+
+	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context.Background(), liferayEnvironment, 3,
+	)
+
+	if error != nil {
+		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
+	}
+
+	if requeueAfter != 30*time.Second {
+		t.Errorf("requeueAfter = %v, want %v", requeueAfter, 30*time.Second)
+	}
+
+	assertReplicasEqual(
+		getStatefulSet(liferayEnvironmentReconciler, t).Spec.Replicas,
+		pointerInt32(3),
+		"statefulSet.spec.replicas",
+		t,
+	)
+
+	condition := meta.FindStatusCondition(
+		getEnvironment(liferayEnvironmentReconciler, t).Status.Conditions,
+		conditionReplicasCountValid,
+	)
+
+	if condition == nil {
+		t.Fatal("Expected a persisted ReplicasCountValid condition, got none")
+	}
+
+	if condition.Reason != "AutoscalerUpdateRejected" {
+		t.Errorf(
+			"Persisted reason = %q, want %q",
+			condition.Reason, "AutoscalerUpdateRejected",
+		)
+	}
+}
+
 func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testing.T) {
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -421,6 +912,85 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testi
 			"Persisted reason = %q, want %q",
 			condition.Reason, "WorkloadUpdateRejected",
 		)
+	}
+}
+
+func TestEnqueueScaleTargetEnvironments(t *testing.T) {
+	deploymentScaledObject := newScaledObject(10, 1, "dev-liferay")
+
+	unstructured.RemoveNestedField(
+		deploymentScaledObject.Object, "spec", "scaleTargetRef", "kind",
+	)
+
+	testCases := map[string]struct {
+		autoscaler     client.Object
+		expectEnqueued bool
+	}{
+		"horizontal pod autoscaler scaling another workload": {
+			autoscaler:     newHorizontalPodAutoscaler(10, 1, "other-workload"),
+			expectEnqueued: false,
+		},
+		"horizontal pod autoscaler scaling the workload": {
+			autoscaler:     newHorizontalPodAutoscaler(10, 1, "dev-liferay"),
+			expectEnqueued: true,
+		},
+		"scaled object scaling a deployment of the same name": {
+			autoscaler:     deploymentScaledObject,
+			expectEnqueued: false,
+		},
+		"scaled object scaling another workload": {
+			autoscaler:     newScaledObject(10, 1, "other-workload"),
+			expectEnqueued: false,
+		},
+		"scaled object scaling the workload": {
+			autoscaler:     newScaledObject(10, 1, "dev-liferay"),
+			expectEnqueued: true,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+				Client: newFakeClient(
+					t,
+					&licensingv1alpha1.LiferayEnvironment{
+						ObjectMeta: metav1.ObjectMeta{
+							Name:      "dev",
+							Namespace: "liferay-dev",
+						},
+						Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+							WorkloadRef: licensingv1alpha1.WorkloadRef{
+								Name: "dev-liferay",
+							},
+						},
+					},
+				),
+			}
+
+			requests := liferayEnvironmentReconciler.enqueueScaleTargetEnvironments(
+				context.Background(), testCase.autoscaler,
+			)
+
+			var expectedRequests []controllerruntime.Request
+
+			if testCase.expectEnqueued {
+				expectedRequests = []controllerruntime.Request{
+					{
+						NamespacedName: types.NamespacedName{
+							Name:      "dev",
+							Namespace: "liferay-dev",
+						},
+					},
+				}
+			}
+
+			if !slices.Equal(requests, expectedRequests) {
+				t.Errorf(
+					"enqueueScaleTargetEnvironments = %v, want %v",
+					requests, expectedRequests,
+				)
+			}
+		})
 	}
 }
 
@@ -549,6 +1119,10 @@ func TestReconcileDowngradesAfterGracePeriod(t *testing.T) {
 	unreachableSince := metav1.NewTime(time.Now().Add(-8 * 24 * time.Hour))
 
 	environment := activatedEnvironment()
+	environment.Spec.Autoscaling = &licensingv1alpha1.Autoscaling{
+		MaxReplicas: 10,
+		MinReplicas: 2,
+	}
 	environment.Status.ConsecutiveFailures = 50
 	environment.Status.UnreachableSince = &unreachableSince
 
@@ -587,6 +1161,7 @@ func TestReconcileDowngradesAfterGracePeriod(t *testing.T) {
 			},
 		},
 		environment,
+		newHorizontalPodAutoscaler(10, 2, "dev-liferay"),
 	}
 
 	provisioningClient := &stubProvisioning{
@@ -599,6 +1174,22 @@ func TestReconcileDowngradesAfterGracePeriod(t *testing.T) {
 
 	assertReplicasEqual(
 		statefulSet.Spec.Replicas, pointerInt32(1), "statefulSet.spec.replicas", t,
+	)
+
+	horizontalPodAutoscaler := getHorizontalPodAutoscaler(liferayEnvironmentReconciler, t)
+
+	assertReplicasEqual(
+		&horizontalPodAutoscaler.Spec.MaxReplicas,
+		pointerInt32(1),
+		"horizontalPodAutoscaler.spec.maxReplicas",
+		t,
+	)
+
+	assertReplicasEqual(
+		horizontalPodAutoscaler.Spec.MinReplicas,
+		pointerInt32(1),
+		"horizontalPodAutoscaler.spec.minReplicas",
+		t,
 	)
 
 	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
@@ -1902,6 +2493,27 @@ func assertReplicasEqual(actual *int32, expected *int32, field string, t *testin
 	}
 }
 
+func assertScaledObjectReplicaCount(
+	expected int64,
+	field string,
+	scaledObject *unstructured.Unstructured,
+	t *testing.T,
+) {
+	t.Helper()
+
+	actual, found, error := unstructured.NestedInt64(scaledObject.Object, "spec", field)
+
+	if error != nil || !found {
+		t.Errorf("Unexpected scaledObject.spec.%s: missing (%v)", field, error)
+
+		return
+	}
+
+	if actual != expected {
+		t.Errorf("Unexpected scaledObject.spec.%s: got %d, want %d", field, actual, expected)
+	}
+}
+
 func developmentObjects() []client.Object {
 	return []client.Object{
 		&corev1.Namespace{
@@ -1954,8 +2566,50 @@ func getEnvironment(
 	return liferayEnvironment
 }
 
+func getHorizontalPodAutoscaler(
+	liferayEnvironmentReconciler *LiferayEnvironmentReconciler,
+	t *testing.T,
+) *autoscalingv2.HorizontalPodAutoscaler {
+	t.Helper()
+
+	horizontalPodAutoscaler := &autoscalingv2.HorizontalPodAutoscaler{}
+
+	if error := liferayEnvironmentReconciler.Get(
+		context.Background(),
+		types.NamespacedName{
+			Name:      "dev-liferay",
+			Namespace: "liferay-dev",
+		},
+		horizontalPodAutoscaler); error != nil {
+		t.Fatalf("Unable to read the autoscaler: %v", error)
+	}
+
+	return horizontalPodAutoscaler
+}
+
 func getLicenseXML(liferayEnvironmentReconciler *LiferayEnvironmentReconciler, t *testing.T) string {
 	return string(getSecret("dev-entitlements", liferayEnvironmentReconciler, t).Data["license.xml"])
+}
+
+func getScaledObject(
+	liferayEnvironmentReconciler *LiferayEnvironmentReconciler,
+	t *testing.T,
+) *unstructured.Unstructured {
+	t.Helper()
+
+	scaledObject := newScaledObject(0, 0, "")
+
+	if error := liferayEnvironmentReconciler.Get(
+		context.Background(),
+		types.NamespacedName{
+			Name:      "dev-liferay",
+			Namespace: "liferay-dev",
+		},
+		scaledObject); error != nil {
+		t.Fatalf("Unable to read the scaled object: %v", error)
+	}
+
+	return scaledObject
 }
 
 func getSecret(
@@ -2065,6 +2719,54 @@ func newFakeClientEnforcingMax(
 	).Build()
 }
 
+func newHorizontalPodAutoscaler(
+	maxReplicas int32,
+	minReplicas int32,
+	scaleTargetName string,
+) *autoscalingv2.HorizontalPodAutoscaler {
+	return &autoscalingv2.HorizontalPodAutoscaler{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev-liferay",
+			Namespace: "liferay-dev",
+		},
+		Spec: autoscalingv2.HorizontalPodAutoscalerSpec{
+			MaxReplicas: maxReplicas,
+			MinReplicas: &minReplicas,
+			ScaleTargetRef: autoscalingv2.CrossVersionObjectReference{
+				APIVersion: "apps/v1",
+				Kind:       "StatefulSet",
+				Name:       scaleTargetName,
+			},
+		},
+	}
+}
+
+func newScaledObject(
+	maxReplicaCount int32,
+	minReplicaCount int32,
+	scaleTargetName string,
+) *unstructured.Unstructured {
+	scaledObject := &unstructured.Unstructured{
+		Object: map[string]any{
+			"spec": map[string]any{
+				"maxReplicaCount": int64(maxReplicaCount),
+				"minReplicaCount": int64(minReplicaCount),
+				"scaleTargetRef": map[string]any{
+					"apiVersion": "apps/v1",
+					"kind":       "StatefulSet",
+					"name":       scaleTargetName,
+				},
+			},
+		},
+	}
+
+	scaledObject.SetGroupVersionKind(scaledObjectGroupVersionKind)
+	scaledObject.SetName("dev-liferay")
+	scaledObject.SetNamespace("liferay-dev")
+
+	return scaledObject
+}
+
 func newScheme(t *testing.T) *runtime.Scheme {
 	t.Helper()
 
@@ -2078,6 +2780,10 @@ func newScheme(t *testing.T) *runtime.Scheme {
 		t.Fatalf("Unable to register the autoscaling/v1 scheme: %v", error)
 	}
 
+	if error := autoscalingv2.AddToScheme(scheme); error != nil {
+		t.Fatalf("Unable to register the autoscaling/v2 scheme: %v", error)
+	}
+
 	if error := corev1.AddToScheme(scheme); error != nil {
 		t.Fatalf("Unable to register the core/v1 scheme: %v", error)
 	}
@@ -2085,6 +2791,16 @@ func newScheme(t *testing.T) *runtime.Scheme {
 	if error := licensingv1alpha1.AddToScheme(scheme); error != nil {
 		t.Fatalf("Unable to register the licensing scheme: %v", error)
 	}
+
+	scheme.AddKnownTypeWithName(
+		scaledObjectGroupVersionKind, &unstructured.Unstructured{},
+	)
+	scheme.AddKnownTypeWithName(
+		scaledObjectGroupVersionKind.GroupVersion().WithKind(
+			scaledObjectGroupVersionKind.Kind+"List",
+		),
+		&unstructured.UnstructuredList{},
+	)
 
 	return scheme
 }

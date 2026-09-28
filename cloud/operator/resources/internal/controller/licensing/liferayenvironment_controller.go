@@ -26,15 +26,20 @@ import (
 	license "github.com/liferay/liferay-portal/cloud/operator/internal/license"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	appsv1 "k8s.io/api/apps/v1"
+	autoscalingv2 "k8s.io/api/autoscaling/v2"
 	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	unstructured "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	runtime "k8s.io/apimachinery/pkg/runtime"
+	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	record "k8s.io/client-go/tools/record"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
+	handler "sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
 )
@@ -57,6 +62,8 @@ const (
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;patch;update;watch
+// +kubebuilder:rbac:groups=autoscaling,resources=horizontalpodautoscalers,verbs=get;list;patch;watch
+// +kubebuilder:rbac:groups=keda.sh,resources=scaledobjects,verbs=get;list;patch;watch
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
 	request controllerruntime.Request,
@@ -175,7 +182,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
 	manager controllerruntime.Manager,
 ) error {
-	return controllerruntime.NewControllerManagedBy(
+	controllerBuilder := controllerruntime.NewControllerManagedBy(
 		manager,
 	).For(
 		&licensingv1alpha1.LiferayEnvironment{},
@@ -189,9 +196,40 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 		"liferayenvironment",
 	).Owns(
 		&corev1.Secret{},
-	).Complete(
-		liferayEnvironmentReconciler,
+	).Watches(
+		&autoscalingv2.HorizontalPodAutoscaler{},
+		handler.EnqueueRequestsFromMapFunc(
+			liferayEnvironmentReconciler.enqueueScaleTargetEnvironments,
+		),
+		builder.WithPredicates(predicate.GenerationChangedPredicate{}),
 	)
+
+	_, error := manager.GetRESTMapper().RESTMapping(
+		scaledObjectGroupVersionKind.GroupKind(),
+		scaledObjectGroupVersionKind.Version,
+	)
+
+	if meta.IsNoMatchError(error) {
+		manager.GetLogger().Info(
+			"KEDA is not installed; ScaledObjects are not watched",
+		)
+	} else if error != nil {
+		return error
+	} else {
+		scaledObject := &unstructured.Unstructured{}
+
+		scaledObject.SetGroupVersionKind(scaledObjectGroupVersionKind)
+
+		controllerBuilder = controllerBuilder.Watches(
+			scaledObject,
+			handler.EnqueueRequestsFromMapFunc(
+				liferayEnvironmentReconciler.enqueueScaleTargetEnvironments,
+			),
+			builder.WithPredicates(predicate.GenerationChangedPredicate{}),
+		)
+	}
+
+	return controllerBuilder.Complete(liferayEnvironmentReconciler)
 }
 
 func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
@@ -233,6 +271,18 @@ func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
 	}
 }
 
+func capReplicaBounds(
+	autoscaling *licensingv1alpha1.Autoscaling,
+	replicaCeiling int32,
+) replicaBounds {
+	maximum := max(min(autoscaling.MaxReplicas, replicaCeiling), 1)
+
+	return replicaBounds{
+		Maximum: maximum,
+		Minimum: min(autoscaling.MinReplicas, maximum),
+	}
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) clearUnreachable(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
@@ -262,6 +312,30 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) clearUnreachab
 	)
 
 	liferayEnvironment.Status.UnreachableSince = nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceAutoscalerCeiling(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	replicaCeiling int32,
+) error {
+	autoscaling := liferayEnvironment.Spec.Autoscaling
+
+	if autoscaling == nil {
+		return nil
+	}
+
+	replicaBounds := capReplicaBounds(autoscaling, replicaCeiling)
+
+	if error := liferayEnvironmentReconciler.enforceHorizontalPodAutoscalerCeiling(
+		context, liferayEnvironment, replicaBounds,
+	); error != nil {
+		return error
+	}
+
+	return liferayEnvironmentReconciler.enforceScaledObjectCeiling(
+		context, liferayEnvironment, replicaBounds,
+	)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceGracePeriod(
@@ -315,6 +389,63 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceGracePe
 			Type:    conditionGracePeriodExpired,
 		},
 	)
+
+	return nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceHorizontalPodAutoscalerCeiling(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	replicaBounds replicaBounds,
+) error {
+	horizontalPodAutoscalerList := &autoscalingv2.HorizontalPodAutoscalerList{}
+
+	if error := liferayEnvironmentReconciler.List(
+		context,
+		horizontalPodAutoscalerList,
+		client.InNamespace(liferayEnvironment.Namespace),
+	); error != nil {
+		return error
+	}
+
+	for index := range horizontalPodAutoscalerList.Items {
+		horizontalPodAutoscaler := &horizontalPodAutoscalerList.Items[index]
+
+		if isOwnedByScaledObject(horizontalPodAutoscaler) ||
+			!scalesWorkload(
+				horizontalPodAutoscaler.Spec.ScaleTargetRef.Kind,
+				liferayEnvironment,
+				horizontalPodAutoscaler.Spec.ScaleTargetRef.Name,
+			) {
+
+			continue
+		}
+
+		if horizontalPodAutoscaler.Spec.MaxReplicas == replicaBounds.Maximum &&
+			horizontalPodAutoscaler.Spec.MinReplicas != nil &&
+			*horizontalPodAutoscaler.Spec.MinReplicas == replicaBounds.Minimum {
+
+			continue
+		}
+
+		patch := client.MergeFrom(horizontalPodAutoscaler.DeepCopy())
+
+		horizontalPodAutoscaler.Spec.MaxReplicas = replicaBounds.Maximum
+		horizontalPodAutoscaler.Spec.MinReplicas = &replicaBounds.Minimum
+
+		if error := liferayEnvironmentReconciler.Patch(
+			context, horizontalPodAutoscaler, patch, client.FieldOwner(fieldOwner),
+		); error != nil {
+			return error
+		}
+
+		logf.FromContext(context).Info(
+			"Enforced licensed autoscaling ceiling",
+			"autoscaler", horizontalPodAutoscaler.Name,
+			"maxReplicas", replicaBounds.Maximum,
+			"minReplicas", replicaBounds.Minimum,
+		)
+	}
 
 	return nil
 }
@@ -481,7 +612,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-	maxClusterNodes int32,
+	replicaCeiling int32,
 ) (time.Duration, error) {
 	logger := logf.FromContext(context)
 
@@ -523,7 +654,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 
 	desiredReplicas := resolveDesiredReplicas(liferayEnvironment, statefulSet)
 
-	effectiveReplicas := min(desiredReplicas, maxClusterNodes)
+	effectiveReplicas := min(desiredReplicas, replicaCeiling)
 
 	if statefulSet.Spec.Replicas == nil || *statefulSet.Spec.Replicas != effectiveReplicas {
 		liveReplicas := statefulSet.Spec.Replicas
@@ -569,20 +700,55 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			"Enforced licensed replica ceiling",
 			"desiredReplicas", desiredReplicas,
 			"effectiveReplicas", effectiveReplicas,
-			"maxClusterNodes", maxClusterNodes,
+			"replicaCeiling", replicaCeiling,
 			"workload", statefulSet.Name,
 		)
 	}
 
 	liferayEnvironment.Status.EffectiveReplicas = &effectiveReplicas
 
-	if desiredReplicas > maxClusterNodes {
+	if error := liferayEnvironmentReconciler.enforceAutoscalerCeiling(
+		context, liferayEnvironment, replicaCeiling,
+	); error != nil {
+		logger.Error(
+			error, "Unable to enforce the licensed autoscaling ceiling",
+			"replicaCeiling", replicaCeiling,
+			"workload", statefulSet.Name,
+		)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"Unable to cap the autoscaler of StatefulSet %q to %d replicas: %s.",
+					statefulSet.Name, replicaCeiling, error,
+				),
+				Reason: "AutoscalerUpdateRejected",
+				Status: metav1.ConditionFalse,
+				Type:   conditionReplicasCountValid,
+			},
+		)
+
+		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+			return 0, error
+		}
+
+		return liferayEnvironmentReconciler.RetryInitialDelay, nil
+	}
+
+	requestedReplicas := desiredReplicas
+
+	if liferayEnvironment.Spec.Autoscaling != nil {
+		requestedReplicas = liferayEnvironment.Spec.Autoscaling.MaxReplicas
+	}
+
+	if requestedReplicas > replicaCeiling {
 		meta.SetStatusCondition(
 			&liferayEnvironment.Status.Conditions,
 			metav1.Condition{
 				Message: fmt.Sprintf(
 					"Requested %d replicas exceeds the licensed maximum of %d; capping to %d.",
-					desiredReplicas, maxClusterNodes, effectiveReplicas,
+					requestedReplicas, replicaCeiling, replicaCeiling,
 				),
 				Reason: "ExceedsLicensedMaximum",
 				Status: metav1.ConditionFalse,
@@ -603,6 +769,152 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 	)
 
 	return 0, nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceScaledObjectCeiling(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	replicaBounds replicaBounds,
+) error {
+	logger := logf.FromContext(context)
+
+	scaledObjectList := &unstructured.UnstructuredList{}
+
+	scaledObjectList.SetGroupVersionKind(
+		scaledObjectGroupVersionKind.GroupVersion().WithKind(
+			scaledObjectGroupVersionKind.Kind + "List",
+		),
+	)
+
+	if error := liferayEnvironmentReconciler.List(
+		context, scaledObjectList, client.InNamespace(liferayEnvironment.Namespace),
+	); error != nil {
+		if meta.IsNoMatchError(error) {
+			logger.V(1).Info("KEDA is not installed; skipping ScaledObject enforcement")
+
+			return nil
+		}
+
+		return error
+	}
+
+	patchJSON, error := json.Marshal(
+		map[string]any{
+			"spec": map[string]any{
+				"maxReplicaCount": replicaBounds.Maximum,
+				"minReplicaCount": replicaBounds.Minimum,
+			},
+		},
+	)
+
+	if error != nil {
+		return error
+	}
+
+	for index := range scaledObjectList.Items {
+		scaledObject := &scaledObjectList.Items[index]
+
+		scaledObjectSpec, error := readScaledObjectSpec(scaledObject)
+
+		if error != nil {
+			return error
+		}
+
+		if !scalesWorkload(
+			scaledObjectSpec.ScaleTargetRef.Kind,
+			liferayEnvironment,
+			scaledObjectSpec.ScaleTargetRef.Name,
+		) {
+
+			continue
+		}
+
+		if scaledObjectSpec.MaxReplicaCount != nil &&
+			*scaledObjectSpec.MaxReplicaCount == replicaBounds.Maximum &&
+			scaledObjectSpec.MinReplicaCount != nil &&
+			*scaledObjectSpec.MinReplicaCount == replicaBounds.Minimum {
+
+			continue
+		}
+
+		if error := liferayEnvironmentReconciler.Patch(
+			context,
+			scaledObject,
+			client.RawPatch(types.MergePatchType, patchJSON),
+			client.FieldOwner(fieldOwner),
+		); error != nil {
+			return error
+		}
+
+		logger.Info(
+			"Enforced licensed autoscaling ceiling",
+			"autoscaler", scaledObject.GetName(),
+			"maxReplicas", replicaBounds.Maximum,
+			"minReplicas", replicaBounds.Minimum,
+		)
+	}
+
+	return nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enqueueScaleTargetEnvironments(
+	context context.Context,
+	object client.Object,
+) []controllerruntime.Request {
+	var kind string
+	var name string
+
+	switch autoscaler := object.(type) {
+	case *autoscalingv2.HorizontalPodAutoscaler:
+		kind = autoscaler.Spec.ScaleTargetRef.Kind
+		name = autoscaler.Spec.ScaleTargetRef.Name
+	case *unstructured.Unstructured:
+		scaledObjectSpec, error := readScaledObjectSpec(autoscaler)
+
+		if error != nil {
+			logf.FromContext(context).Error(
+				error, "Unable to read the scale target of an autoscaler",
+				"autoscaler", object.GetName(),
+			)
+
+			return nil
+		}
+
+		kind = scaledObjectSpec.ScaleTargetRef.Kind
+		name = scaledObjectSpec.ScaleTargetRef.Name
+	}
+
+	liferayEnvironmentList := &licensingv1alpha1.LiferayEnvironmentList{}
+
+	if error := liferayEnvironmentReconciler.List(
+		context, liferayEnvironmentList, client.InNamespace(object.GetNamespace()),
+	); error != nil {
+		logf.FromContext(context).Error(
+			error, "Unable to list the environments an autoscaler scales",
+			"autoscaler", object.GetName(),
+		)
+
+		return nil
+	}
+
+	var requests []controllerruntime.Request
+
+	for index := range liferayEnvironmentList.Items {
+		liferayEnvironment := &liferayEnvironmentList.Items[index]
+
+		if !scalesWorkload(kind, liferayEnvironment, name) {
+			continue
+		}
+
+		requests = append(requests, controllerruntime.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      liferayEnvironment.Name,
+				Namespace: liferayEnvironment.Namespace,
+			},
+		})
+	}
+
+	return requests
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity(
@@ -931,6 +1243,20 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	return entitlements, controllerruntime.Result{}, nil
 }
 
+func isOwnedByScaledObject(object client.Object) bool {
+	for _, ownerReference := range object.GetOwnerReferences() {
+		if ownerReference.Kind == scaledObjectGroupVersionKind.Kind &&
+			strings.HasPrefix(
+				ownerReference.APIVersion, scaledObjectGroupVersionKind.Group+"/",
+			) {
+
+			return true
+		}
+	}
+
+	return false
+}
+
 func licenseChecksum(licenseXML []byte) string {
 	sum := sha256.Sum256(licenseXML)
 
@@ -1072,6 +1398,28 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivation
 	return string(code), nil
 }
 
+func readScaledObjectSpec(
+	scaledObject *unstructured.Unstructured,
+) (scaledObjectSpec, error) {
+	var scaledObjectSpec scaledObjectSpec
+
+	specMap, _, error := unstructured.NestedMap(scaledObject.Object, "spec")
+
+	if error != nil {
+		return scaledObjectSpec, error
+	}
+
+	if error := runtime.DefaultUnstructuredConverter.FromUnstructured(
+		specMap, &scaledObjectSpec,
+	); error != nil {
+		return scaledObjectSpec, fmt.Errorf(
+			"scaled object %q: %w", scaledObject.GetName(), error,
+		)
+	}
+
+	return scaledObjectSpec, nil
+}
+
 func resolveDesiredReplicas(
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	statefulSet *appsv1.StatefulSet,
@@ -1141,6 +1489,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnviron
 	return string(namespace.UID), nil
 }
 
+func scalesWorkload(
+	kind string,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	name string,
+) bool {
+	return kind == "StatefulSet" && name == liferayEnvironment.Spec.WorkloadRef.Name
+}
+
 type LiferayEnvironmentReconciler struct {
 	client.Client
 
@@ -1152,4 +1508,26 @@ type LiferayEnvironmentReconciler struct {
 	RetryInitialDelay    time.Duration
 	RetryMaxDelay        time.Duration
 	Syncer               *addon.Syncer
+}
+
+type replicaBounds struct {
+	Maximum int32
+	Minimum int32
+}
+
+type scaledObjectScaleTargetRef struct {
+	Kind string `json:"kind,omitempty"`
+	Name string `json:"name"`
+}
+
+type scaledObjectSpec struct {
+	MaxReplicaCount *int32                     `json:"maxReplicaCount,omitempty"`
+	MinReplicaCount *int32                     `json:"minReplicaCount,omitempty"`
+	ScaleTargetRef  scaledObjectScaleTargetRef `json:"scaleTargetRef"`
+}
+
+var scaledObjectGroupVersionKind = schema.GroupVersionKind{
+	Group:   "keda.sh",
+	Kind:    "ScaledObject",
+	Version: "v1alpha1",
 }

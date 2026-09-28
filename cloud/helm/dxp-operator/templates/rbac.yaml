@@ -54,6 +54,15 @@ rules:
             -   update
             -   watch
     -   apiGroups:
+            -   autoscaling
+        resources:
+            -   horizontalpodautoscalers
+        verbs:
+            -   get
+            -   list
+            -   patch
+            -   watch
+    -   apiGroups:
             -   cx.liferay.com
         resources:
             -   clientextensions
@@ -69,6 +78,15 @@ rules:
             -   get
             -   patch
             -   update
+    -   apiGroups:
+            -   keda.sh
+        resources:
+            -   scaledobjects
+        verbs:
+            -   get
+            -   list
+            -   patch
+            -   watch
     -   apiGroups:
             -   licensing.liferay.com
         resources:
