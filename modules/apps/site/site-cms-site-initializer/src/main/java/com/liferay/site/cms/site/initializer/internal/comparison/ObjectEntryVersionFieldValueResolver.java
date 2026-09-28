@@ -160,7 +160,7 @@ public class ObjectEntryVersionFieldValueResolver {
 		String businessType =
 			(objectField == null) ? null : objectField.getBusinessType();
 
-		if (_businessTypes.contains(businessType)) {
+		if (_nondiffableObjectFieldBusinessTypes.contains(businessType)) {
 			StringBundler sb = new StringBundler(6);
 
 			if (!removedDisplayValue.isEmpty()) {
@@ -474,17 +474,18 @@ public class ObjectEntryVersionFieldValueResolver {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryVersionFieldValueResolver.class);
 
-	private static final Set<String> _businessTypes = SetUtil.fromArray(
-		ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-		ObjectFieldConstants.BUSINESS_TYPE_DATE,
-		ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-		ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
-		ObjectFieldConstants.BUSINESS_TYPE_EMAIL_ADDRESS,
-		ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
-		ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
-		ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER,
-		ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
-		ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP);
+	private static final Set<String> _nondiffableObjectFieldBusinessTypes =
+		SetUtil.fromArray(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+			ObjectFieldConstants.BUSINESS_TYPE_DATE,
+			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
+			ObjectFieldConstants.BUSINESS_TYPE_EMAIL_ADDRESS,
+			ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
+			ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER,
+			ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
+			ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP);
 
 	private final DiffHtml _diffHtml;
 	private final DLAppLocalService _dlAppLocalService;
