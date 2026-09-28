@@ -28,8 +28,6 @@ import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 
 import java.util.Objects;
 
-import java.util.Objects;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
