@@ -28,6 +28,7 @@ import com.liferay.batch.engine.internal.task.progress.BatchEngineTaskProgress;
 import com.liferay.batch.engine.internal.task.progress.BatchEngineTaskProgressFactory;
 import com.liferay.batch.engine.internal.util.ErrorMessageUtil;
 import com.liferay.batch.engine.internal.util.ItemIndexThreadLocal;
+import com.liferay.batch.engine.internal.util.PasswordFieldUtil;
 import com.liferay.batch.engine.internal.util.ZipInputStreamUtil;
 import com.liferay.batch.engine.language.LanguageKeyResolver;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
@@ -265,7 +266,8 @@ public class BatchEngineImportTaskExecutorImpl
 							batchEngineImportTask.getCompanyId(),
 							batchEngineImportTask.getUserId(),
 							batchEngineImportTask.getBatchEngineImportTaskId(),
-							item.toString(), itemIndex, errorMessage);
+							PasswordFieldUtil.toString(item), itemIndex,
+							errorMessage);
 
 					_batchEngineImportTaskExceptionHandlers.forEach(
 						batchEngineImportTaskExceptionHandler ->
