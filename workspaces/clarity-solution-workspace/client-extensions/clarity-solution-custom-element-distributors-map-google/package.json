@@ -11,7 +11,7 @@
 		"@vitejs/plugin-react": "^4.2.1",
 		"vite": "^5.2.0"
 	},
-	"name": "clarity-solution-custom-element-distributors-map",
+	"name": "clarity-solution-custom-element-distributors-map-google",
 	"private": true,
 	"scripts": {
 		"build": "vite build",

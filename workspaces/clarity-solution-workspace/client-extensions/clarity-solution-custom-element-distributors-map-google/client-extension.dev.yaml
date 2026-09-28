@@ -1,4 +1,4 @@
-clarity-solution-custom-element-distributors-map:
+clarity-solution-custom-element-distributors-map-google:
     urls:
         -   http://localhost:5173/@vite/client
         -   http://localhost:5173/@vite/refresh.ts

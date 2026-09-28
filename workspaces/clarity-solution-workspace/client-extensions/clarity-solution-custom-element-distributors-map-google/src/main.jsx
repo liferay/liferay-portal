@@ -22,7 +22,7 @@ class WebComponent extends HTMLElement {
 	}
 }
 
-const ELEMENT_ID = 'clarity-solution-custom-element-distributors-map';
+const ELEMENT_ID = 'clarity-solution-custom-element-distributors-map-google';
 
 if (!customElements.get(ELEMENT_ID)) {
 	customElements.define(ELEMENT_ID, WebComponent);

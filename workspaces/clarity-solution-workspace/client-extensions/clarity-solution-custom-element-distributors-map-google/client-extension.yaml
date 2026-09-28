@@ -1,0 +1,15 @@
+assemble:
+    -   from: build/vite
+        into: static
+clarity-solution-custom-element-distributors-map-google:
+    cssURLs:
+        -   "*.css"
+    friendlyURLMapping: clarity-solution-custom-element-distributors-map-google
+    htmlElementName: clarity-solution-custom-element-distributors-map-google
+    instanceable: false
+    name: Clarity Solution Custom Element Distributors Map Google
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        -   "*.js"
+    useESM: true
