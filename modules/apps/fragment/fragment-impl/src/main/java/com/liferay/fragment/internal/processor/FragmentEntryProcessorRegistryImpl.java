@@ -399,12 +399,12 @@ public class FragmentEntryProcessorRegistryImpl
 		PortalCacheHelperUtil.removePortalCache(
 			PortalCacheManagerNames.SINGLE_VM, _DOCUMENT_PORTAL_CACHE_NAME);
 		_cssFragmentEntryProcessors.close();
-		_serviceTrackerMap.close();
 		_documentFragmentEntryProcessors.close();
 		_documentFragmentEntryValidators.close();
 		_fragmentEntryAutocompleteContributors.close();
 		_fragmentEntryProcessors.close();
 		_fragmentEntryValidators.close();
+		_serviceTrackerMap.close();
 	}
 
 	private Document _getDocument(String html) {
