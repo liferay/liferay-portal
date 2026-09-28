@@ -249,12 +249,11 @@ public class DisplayPageTemplateResourceTest
 		Map<String, Map<String, String>> actions =
 			displayPageTemplate.getActions();
 
+		Assert.assertFalse(actions.containsKey("copy"));
+		Assert.assertFalse(actions.containsKey("copyWithPermission"));
 		Assert.assertTrue(actions.containsKey("delete"));
 		Assert.assertTrue(actions.containsKey("get"));
 		Assert.assertTrue(actions.containsKey("permissions"));
-
-		Assert.assertFalse(actions.containsKey("copy"));
-		Assert.assertFalse(actions.containsKey("copyWithPermission"));
 	}
 
 	@Override
