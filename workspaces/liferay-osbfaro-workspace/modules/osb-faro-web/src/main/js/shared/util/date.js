@@ -206,19 +206,35 @@ export function getHourOnlyFormat() {
 
 /**
  * A day+month label followed by the hour (e.g. an "hourly bucket" tooltip:
- * "Aug 9, 2 PM" / "9 ago, 14:30").
+ * "Aug 9, 2 PM" / "9 ago, 14:30"), formatted as one Intl pattern so each
+ * locale picks its own connector between the date and the time.
  */
-const DAY_MONTH_HOUR_FORMAT = new DateFormat(
-	(date) =>
-		`${formatDate(date, DAY_MONTH_FORMAT)}, ${formatDate(
-			date,
-			getHourOnlyFormat()
-		)}`
-);
+export const getDayMonthHourFormat = perLocale((locale) => {
+	if (usesTwelveHourClock()) {
+		return createDateFormat({
+			day: 'numeric',
+			hour: 'numeric',
+			month: 'short',
+		});
+	}
 
-export function getDayMonthHourFormat() {
-	return DAY_MONTH_HOUR_FORMAT;
-}
+	// Pads the hour exactly as TIME_FORMAT does ("09:30" in pt-BR, "9:30" in
+	// es-ES), which timeStyle does not expose through resolvedOptions.
+
+	const {value} = new Intl.DateTimeFormat(locale, {
+		timeStyle: 'short',
+		timeZone: 'UTC',
+	})
+		.formatToParts(Date.UTC(2026, 0, 1, 9))
+		.find(({type}) => type === 'hour');
+
+	return createDateFormat({
+		day: 'numeric',
+		hour: value.length === 2 ? '2-digit' : 'numeric',
+		minute: '2-digit',
+		month: 'short',
+	});
+});
 
 function capitalize(text) {
 	return text.charAt(0).toLocaleUpperCase(getLocale()) + text.slice(1);
