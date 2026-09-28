@@ -2424,9 +2424,12 @@ public class ObjectEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		return updateStatus(
-			userId, objectEntryPersistence.findByPrimaryKey(objectEntryId),
-			status, serviceContext);
+		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
+			objectEntryId);
+
+		objectEntry = objectEntryPersistence.reassociateIfAbsent(objectEntry);
+
+		return updateStatus(userId, objectEntry, status, serviceContext);
 	}
 
 	@Override

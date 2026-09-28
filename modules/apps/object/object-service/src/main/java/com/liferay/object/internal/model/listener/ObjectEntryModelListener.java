@@ -673,6 +673,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
+		rootObjectEntry = _objectEntryPersistence.reassociateIfAbsent(
+			rootObjectEntry);
+
 		rootObjectEntry.setModifiedDate(modifiedDate);
 
 		rootObjectEntry = _objectEntryPersistence.update(rootObjectEntry);
