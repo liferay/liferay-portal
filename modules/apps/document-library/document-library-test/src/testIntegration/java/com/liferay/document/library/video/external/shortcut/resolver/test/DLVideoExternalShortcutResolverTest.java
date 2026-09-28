@@ -157,57 +157,17 @@ public class DLVideoExternalShortcutResolverTest {
 	public void testResolveFromFileVersion() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		Group companyGroup = _groupLocalService.getCompanyGroup(
-			_group.getCompanyId());
-
-		DLFileEntryType dlFileEntryType =
-			_dlFileEntryTypeLocalService.getFileEntryType(
-				companyGroup.getGroupId(), "DL_VIDEO_EXTERNAL_SHORTCUT");
-
-		List<DDMStructure> ddmStructures = DLFileEntryTypeUtil.getDDMStructures(
-			dlFileEntryType);
-
-		DDMStructure ddmStructure = ddmStructures.get(0);
-
-		DDMFormValues ddmFormValues = new DDMFormValues(
-			_ddmBeanTranslator.translate(ddmStructure.getDDMForm()));
-
-		ddmFormValues.addAvailableLocale(LocaleUtil.getSiteDefault());
-		ddmFormValues.addDDMFormFieldValue(
-			_createDDMFormFieldValue("HTML", "<b>HTML</b>"));
-		ddmFormValues.addDDMFormFieldValue(
-			_createDDMFormFieldValue("URL", "https://vimeo.com/VIDEO_ID"));
-		ddmFormValues.setDefaultLocale(LocaleUtil.getSiteDefault());
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
-
-		serviceContext.setAttribute(
-			DDMFormValues.class.getName() + StringPool.POUND +
-				ddmStructure.getStructureId(),
-			ddmFormValues);
-		serviceContext.setAttribute(
-			"fileEntryTypeId", dlFileEntryType.getFileEntryTypeId());
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(),
-			ContentTypes.APPLICATION_VND_LIFERAY_VIDEO_EXTERNAL_SHORTCUT_HTML,
-			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, TestDataConstants.TEST_BYTE_ARRAY, null, null,
-			null, serviceContext);
-
-		DLVideoExternalShortcut dlVideoExternalShortcut =
-			_dlVideoExternalShortcutResolver.resolve(
-				fileEntry.getFileVersion());
-
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<iframe allowfullscreen frameborder=\"0\" height=\"315\" ",
 				"mozallowfullscreen src=\"https://player.vimeo.com/video",
 				"/VIDEO_ID\" webkitallowfullscreen width=\"560\"></iframe>"),
-			dlVideoExternalShortcut.renderHTML(new MockHttpServletRequest()));
+			_renderHTML(
+				_addFileEntry("<b>HTML</b>", "https://vimeo.com/VIDEO_ID")));
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_renderHTML(
+				_addFileEntry("<b>HTML</b>", "https://test.example/VIDEO_ID")));
 	}
 
 	@Test
@@ -313,8 +273,59 @@ public class DLVideoExternalShortcutResolverTest {
 				"<iframe allow=\"autoplay; encrypted-media\" allowfullscreen ",
 				"height=\"315\" frameborder=\"0\" ",
 				"src=\"https://www.youtube.com/embed",
+				"/VIDEO_ID?rel=0&start=61%22%3E%3Cb%3E\" width=\"560\">",
+				"</iframe>"),
+			_renderHTML("https://www.youtube.com/watch?v=VIDEO_ID&t=61\"><b>"));
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<iframe allow=\"autoplay; encrypted-media\" allowfullscreen ",
+				"height=\"315\" frameborder=\"0\" ",
+				"src=\"https://www.youtube.com/embed",
 				"/VIDEO_ID&quot;&gt;&lt;b&gt;?rel=0\" width=\"560\"></iframe>"),
 			_renderHTML("https://www.youtube.com/watch?v=VIDEO_ID\"><b>"));
+	}
+
+	private FileEntry _addFileEntry(String html, String url) throws Exception {
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			_group.getCompanyId());
+
+		DLFileEntryType dlFileEntryType =
+			_dlFileEntryTypeLocalService.getFileEntryType(
+				companyGroup.getGroupId(), "DL_VIDEO_EXTERNAL_SHORTCUT");
+
+		List<DDMStructure> ddmStructures = DLFileEntryTypeUtil.getDDMStructures(
+			dlFileEntryType);
+
+		DDMStructure ddmStructure = ddmStructures.get(0);
+
+		DDMFormValues ddmFormValues = new DDMFormValues(
+			_ddmBeanTranslator.translate(ddmStructure.getDDMForm()));
+
+		ddmFormValues.addAvailableLocale(LocaleUtil.getSiteDefault());
+		ddmFormValues.addDDMFormFieldValue(
+			_createDDMFormFieldValue("HTML", html));
+		ddmFormValues.addDDMFormFieldValue(
+			_createDDMFormFieldValue("URL", url));
+		ddmFormValues.setDefaultLocale(LocaleUtil.getSiteDefault());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAttribute(
+			DDMFormValues.class.getName() + StringPool.POUND +
+				ddmStructure.getStructureId(),
+			ddmFormValues);
+		serviceContext.setAttribute(
+			"fileEntryTypeId", dlFileEntryType.getFileEntryTypeId());
+
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_VND_LIFERAY_VIDEO_EXTERNAL_SHORTCUT_HTML,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, TestDataConstants.TEST_BYTE_ARRAY, null, null,
+			null, serviceContext);
 	}
 
 	private DDMFormFieldValue _createDDMFormFieldValue(
@@ -332,6 +343,19 @@ public class DLVideoExternalShortcutResolverTest {
 		ddmFormFieldValue.setValue(localizedValue);
 
 		return ddmFormFieldValue;
+	}
+
+	private String _renderHTML(FileEntry fileEntry) throws Exception {
+		DLVideoExternalShortcut dlVideoExternalShortcut =
+			_dlVideoExternalShortcutResolver.resolve(
+				fileEntry.getFileVersion());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addHeader("Host", _HOST);
+
+		return dlVideoExternalShortcut.renderHTML(mockHttpServletRequest);
 	}
 
 	private String _renderHTML(String url) {
