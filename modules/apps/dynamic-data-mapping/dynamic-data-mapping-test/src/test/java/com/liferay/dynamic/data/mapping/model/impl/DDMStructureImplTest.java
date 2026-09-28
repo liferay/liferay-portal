@@ -317,6 +317,11 @@ public class DDMStructureImplTest extends BaseDDMTestCase {
 		Assert.assertTrue(childStructure.hasField("field3"));
 		Assert.assertTrue(childStructure.hasField("field4"));
 		Assert.assertFalse(childStructure.hasField("fieldNotFound"));
+
+		parentStructure.setDefinition(childStructure.getDefinition());
+
+		Assert.assertFalse(parentStructure.hasField("field1"));
+		Assert.assertTrue(parentStructure.hasField("field3"));
 	}
 
 	@Test
