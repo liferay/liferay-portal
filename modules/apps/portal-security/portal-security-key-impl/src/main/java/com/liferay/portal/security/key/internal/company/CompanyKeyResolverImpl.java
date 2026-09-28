@@ -5,15 +5,18 @@
 
 package com.liferay.portal.security.key.internal.company;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolver;
+import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -30,6 +33,7 @@ import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 import java.security.Key;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,13 +94,13 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		byte[] keyBytes = null;
 
 		try {
-			WrappedCompanyKey wrappedCompanyKey = WrappedCompanyKey.parse(
-				companyId, keyString);
+			ObjectValuePair<byte[], KeyReference> objectValuePair =
+				_parseCiphertextAndKeyReference(companyId, keyString);
 
 			CryptoServiceResult<byte[]> cryptoServiceResult =
 				_cryptoManager.decrypt(
-					wrappedCompanyKey.getCiphertext(), companyId,
-					wrappedCompanyKey.getKeyReference());
+					objectValuePair.getKey(), companyId,
+					objectValuePair.getValue());
 
 			keyBytes = cryptoServiceResult.getValue();
 
@@ -178,10 +182,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 						companyId);
 			}
 
-			WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
-				cryptoServiceResult.getValue(), keyReference);
-
-			return wrappedCompanyKey.toKeyString();
+			return _toKeyString(cryptoServiceResult.getValue(), keyReference);
 		}
 		catch (CryptoException cryptoException) {
 			throw new CompanyKeyException(
@@ -304,6 +305,77 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		return keyAlgorithm;
 	}
 
+	private ObjectValuePair<byte[], KeyReference>
+		_parseCiphertextAndKeyReference(long companyId, String keyString) {
+
+		if (!CompanyKeyResolverUtil.isWrappedKey(keyString) ||
+			!keyString.endsWith(StringPool.CLOSE_CURLY_BRACE)) {
+
+			throw new CompanyKeyException(
+				"Wrapped key is malformed for company " + companyId);
+		}
+
+		String body = keyString.substring(
+			"${wrappedKey:".length(), keyString.length() - 1);
+
+		int versionIndex = body.indexOf(CharPool.COLON);
+
+		if (versionIndex <= 0) {
+			throw new CompanyKeyException(
+				"Wrapped key is malformed for company " + companyId);
+		}
+
+		String version = body.substring(0, versionIndex);
+
+		if (!version.equals("v1")) {
+			throw new CompanyKeyException(
+				StringBundler.concat(
+					"Wrapped key version ", version,
+					" is not supported for company ", companyId));
+		}
+
+		body = body.substring(versionIndex + 1);
+
+		int colonIndex = body.indexOf(CharPool.COLON);
+		int pipeIndex = body.indexOf(CharPool.PIPE);
+
+		if ((colonIndex <= 0) || (pipeIndex <= (colonIndex + 1)) ||
+			(pipeIndex >= (body.length() - 1))) {
+
+			throw new CompanyKeyException(
+				"Wrapped key is malformed for company " + companyId);
+		}
+
+		byte[] ciphertext = null;
+
+		try {
+			Base64.Decoder decoder = Base64.getDecoder();
+
+			ciphertext = decoder.decode(body.substring(pipeIndex + 1));
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			throw new CompanyKeyException(
+				"Wrapped key ciphertext is not valid Base64 for company " +
+					companyId,
+				illegalArgumentException);
+		}
+
+		try {
+			KeyReference keyReference = new KeyReference(
+				body.substring(colonIndex + 1, pipeIndex),
+				body.substring(0, colonIndex), KeyReference.Type.CRYPTO);
+
+			_validate(keyReference);
+
+			return new ObjectValuePair<>(ciphertext, keyReference);
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			throw new CompanyKeyException(
+				"Wrapped key is malformed for company " + companyId,
+				illegalArgumentException);
+		}
+	}
+
 	private void _putCompanyKeyCacheEntry(
 		long companyId, byte[] keyBytes, String keyString) {
 
@@ -312,6 +384,35 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 
 		if (companyKeyCacheEntry != null) {
 			companyKeyCacheEntry.destroy();
+		}
+	}
+
+	private String _toKeyString(byte[] ciphertext, KeyReference keyReference) {
+		_validate(keyReference);
+
+		Base64.Encoder encoder = Base64.getEncoder();
+
+		return StringBundler.concat(
+			"${wrappedKey:v1:", keyReference.getProviderId(), StringPool.COLON,
+			keyReference.getIdentifier(), StringPool.PIPE,
+			encoder.encodeToString(ciphertext), StringPool.CLOSE_CURLY_BRACE);
+	}
+
+	private void _validate(KeyReference keyReference) {
+		String identifier = keyReference.getIdentifier();
+
+		if ((identifier.indexOf(CharPool.CLOSE_CURLY_BRACE) != -1) ||
+			(identifier.indexOf(CharPool.PIPE) != -1)) {
+
+			throw new IllegalArgumentException(
+				"Identifier contains a reserved character");
+		}
+
+		String providerId = keyReference.getProviderId();
+
+		if (providerId.indexOf(CharPool.PIPE) != -1) {
+			throw new IllegalArgumentException(
+				"Provider ID contains a reserved character");
 		}
 	}
 

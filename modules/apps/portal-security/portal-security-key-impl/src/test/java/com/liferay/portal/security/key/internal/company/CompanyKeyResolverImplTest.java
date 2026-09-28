@@ -29,6 +29,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.security.Key;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -460,21 +461,37 @@ public class CompanyKeyResolverImplTest {
 
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl, RandomTestUtil.randomString());
-
-		String body = StringBundler.concat(
-			_WRAPPED_KEY_PREFIX, _WRAPPED_KEY_VERSION, StringPool.COLON,
-			_KEK_PROVIDER_ID, StringPool.COLON, _KEK_IDENTIFIER);
-
+		_assertUnwrapKeyFails(companyKeyResolverImpl, _WRAPPED_KEY_PREFIX);
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
-			body + StringPool.PIPE + StringPool.CLOSE_CURLY_BRACE);
+			_WRAPPED_KEY_PREFIX + StringPool.CLOSE_CURLY_BRACE);
+
+		String versionPrefix =
+			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION + StringPool.COLON;
+
+		_assertUnwrapKeyFails(companyKeyResolverImpl, versionPrefix);
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl, versionPrefix + ":alias/kek|Y2lwaGVy}");
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl, versionPrefix + "provider:alias/kek|=}");
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
-			StringBundler.concat(
-				body, StringPool.PIPE, StringPool.EQUAL,
-				StringPool.CLOSE_CURLY_BRACE));
+			versionPrefix + "provider:alias/kek|Y2lwaGVy");
 		_assertUnwrapKeyFails(
-			companyKeyResolverImpl, body + "|not valid base64}");
+			companyKeyResolverImpl,
+			versionPrefix + "provider:alias/kek|not base64}");
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl, versionPrefix + "provider:alias/kek|}");
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl, versionPrefix + "provider:alias/kek}");
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			versionPrefix + "provider:ali}as|Y2lwaGVy}");
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl, versionPrefix + "provider:|Y2lwaGVy}");
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			versionPrefix + "pro}vider:alias|Y2lwaGVy}");
 	}
 
 	private void _testUnwrapKeyWithMultipleCompanies() throws Exception {
@@ -506,13 +523,8 @@ public class CompanyKeyResolverImplTest {
 	}
 
 	private void _testUnwrapKeyWithUnsupportedVersion() throws Exception {
-		WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
-			_CIPHERTEXT_1,
-			new KeyReference(
-				_KEK_IDENTIFIER, _KEK_PROVIDER_ID, KeyReference.Type.CRYPTO));
-
 		String keyString = StringUtil.replaceFirst(
-			wrappedCompanyKey.toKeyString(),
+			_toKeyString(_CIPHERTEXT_1),
 			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION,
 			_WRAPPED_KEY_PREFIX.concat("v2"));
 
@@ -539,16 +551,8 @@ public class CompanyKeyResolverImplTest {
 
 		String keyString = companyKeyResolverImpl.wrapKey(_COMPANY_ID_1, _key1);
 
-		WrappedCompanyKey wrappedCompanyKey = WrappedCompanyKey.parse(
-			_COMPANY_ID_1, keyString);
-
-		KeyReference keyReference = wrappedCompanyKey.getKeyReference();
-
-		Assert.assertArrayEquals(
-			_CIPHERTEXT_1, wrappedCompanyKey.getCiphertext());
-
-		Assert.assertEquals(_KEK_IDENTIFIER, keyReference.getIdentifier());
-		Assert.assertEquals(_KEK_PROVIDER_ID, keyReference.getProviderId());
+		Assert.assertEquals(_toKeyString(_CIPHERTEXT_1), keyString);
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
 		ArgumentCaptor<byte[]> argumentCaptor = ArgumentCaptor.forClass(
 			byte[].class);
@@ -563,8 +567,6 @@ public class CompanyKeyResolverImplTest {
 		Assert.assertArrayEquals(_KEY_BYTES_1, _key1.getEncoded());
 		Assert.assertArrayEquals(
 			new byte[_KEY_BYTES_1.length], argumentCaptor.getValue());
-
-		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
@@ -639,12 +641,13 @@ public class CompanyKeyResolverImplTest {
 	}
 
 	private String _toKeyString(byte[] ciphertext) {
-		WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
-			ciphertext,
-			new KeyReference(
-				_KEK_IDENTIFIER, _KEK_PROVIDER_ID, KeyReference.Type.CRYPTO));
+		Base64.Encoder encoder = Base64.getEncoder();
 
-		return wrappedCompanyKey.toKeyString();
+		return StringBundler.concat(
+			_WRAPPED_KEY_PREFIX, _WRAPPED_KEY_VERSION, StringPool.COLON,
+			_KEK_PROVIDER_ID, StringPool.COLON, _KEK_IDENTIFIER,
+			StringPool.PIPE, encoder.encodeToString(ciphertext),
+			StringPool.CLOSE_CURLY_BRACE);
 	}
 
 	private static final byte[] _CIPHERTEXT_1 = RandomTestUtil.randomBytes();
@@ -655,7 +658,9 @@ public class CompanyKeyResolverImplTest {
 
 	private static final long _COMPANY_ID_2 = RandomTestUtil.randomLong();
 
-	private static final String _KEK_IDENTIFIER = RandomTestUtil.randomString();
+	private static final String _KEK_IDENTIFIER =
+		"arn:aws:kms:us-east-1:123456789012:key/" +
+			RandomTestUtil.randomString();
 
 	private static final String _KEK_PROVIDER_ID =
 		RandomTestUtil.randomString();
