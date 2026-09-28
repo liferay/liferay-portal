@@ -40,10 +40,16 @@ public class PortletURLUtilTest {
 	}
 
 	@Test
-	public void testGetRefreshURLEncodesReflectedParameters() {
-		String portletId = RandomTestUtil.randomString();
+	public void testGetRefreshURL() {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.CURRENT_URL, RandomTestUtil.randomString());
 
 		Portlet portlet = Mockito.mock(Portlet.class);
+
+		String portletId = RandomTestUtil.randomString();
 
 		Mockito.when(
 			portlet.getPortletId()
@@ -51,18 +57,16 @@ public class PortletURLUtilTest {
 			portletId
 		);
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.CURRENT_URL, RandomTestUtil.randomString());
 		mockHttpServletRequest.setAttribute(WebKeys.RENDER_PORTLET, portlet);
 
 		String layoutMode = "constructor[prototype][headerJavaScriptPaths][]=x";
-		String settingsScope = "constructor[prototype][dataType]=TEXT";
 
 		mockHttpServletRequest.setParameter("p_l_mode", layoutMode);
+
 		mockHttpServletRequest.setParameter("p_p_id", portletId);
+
+		String settingsScope = "constructor[prototype][dataType]=TEXT";
+
 		mockHttpServletRequest.setParameter("settingsScope", settingsScope);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
