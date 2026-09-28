@@ -123,7 +123,13 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	public void testOnBeforeDelete() throws Exception {
 		_testOnBeforeDelete();
 		_testOnBeforeDeleteWhenDeleteFails();
+
+		Mockito.reset(_secretManager);
+
 		_testOnBeforeDeleteWhenKeyManagerProfileIsInactive();
+
+		_setUpKeyManagerProfileRegistry(_keyManagerProfile);
+
 		_testOnBeforeDeleteWhenPropertiesAreNull();
 		_testOnBeforeDeleteWhenReferenceIsNotAConfiguration();
 	}
@@ -131,14 +137,30 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	@Test
 	public void testOnBeforeSave() throws Exception {
 		_testOnBeforeSave();
+
+		Mockito.clearInvocations(_secretManager);
+
 		_testOnBeforeSaveWhenBundleIsInStaticRegion();
+
+		Mockito.when(
+			_bundle.getLocation()
+		).thenReturn(
+			null
+		);
+
 		_testOnBeforeSaveWhenConfigurationHasNoMetatype();
 		_testOnBeforeSaveWhenKeyManagerProfileIsInactive();
+
+		_setUpKeyManagerProfileRegistry(_keyManagerProfile);
+
 		_testOnBeforeSaveWhenReferenceIsNotAConfiguration();
 		_testOnBeforeSaveWhenReferenceNamesAnotherConfiguration();
 		_testOnBeforeSaveWhenScopeIsCompany();
 		_testOnBeforeSaveWhenScopeIsGroup();
 		_testOnBeforeSaveWhenStoreIsUnavailable();
+
+		Mockito.reset(_secretManager);
+
 		_testOnBeforeSaveWhenValueIsAlreadyStored();
 	}
 
@@ -181,8 +203,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeDelete() throws Exception {
-		setUp();
-
 		KeyReference keyReference = new KeyReference(
 			"config/" + _PID + "/0/credential", "provider",
 			KeyReference.Type.SECRET);
@@ -214,8 +234,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeDeleteWhenDeleteFails() throws Exception {
-		setUp();
-
 		KeyReference keyReference1 = new KeyReference(
 			_IDENTIFIER, "provider", KeyReference.Type.SECRET);
 		KeyReference keyReference2 = new KeyReference(
@@ -259,8 +277,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	private void _testOnBeforeDeleteWhenKeyManagerProfileIsInactive()
 		throws Exception {
 
-		setUp();
-
 		_setUpKeyManagerProfileRegistry(null);
 
 		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
@@ -269,7 +285,11 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeDeleteWhenPropertiesAreNull() throws Exception {
-		setUp();
+		Mockito.when(
+			_configuration.getProperties()
+		).thenReturn(
+			null
+		);
 
 		Mockito.when(
 			_configurationAdmin.listConfigurations("(service.pid=" + _PID + ")")
@@ -284,8 +304,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 	private void _testOnBeforeDeleteWhenReferenceIsNotAConfiguration()
 		throws Exception {
-
-		setUp();
 
 		Mockito.when(
 			_configuration.getProperties()
@@ -307,8 +325,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSave() throws Exception {
-		setUp();
-
 		String host = RandomTestUtil.randomString();
 		String value = RandomTestUtil.randomString();
 
@@ -358,8 +374,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	private void _testOnBeforeSaveWhenBundleIsInStaticRegion()
 		throws Exception {
 
-		setUp();
-
 		Mockito.when(
 			_bundle.getLocation()
 		).thenReturn(
@@ -385,8 +399,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	private void _testOnBeforeSaveWhenConfigurationHasNoMetatype()
 		throws Exception {
 
-		setUp();
-
 		String value = RandomTestUtil.randomString();
 
 		Dictionary<String, Object> properties =
@@ -404,8 +416,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 	private void _testOnBeforeSaveWhenKeyManagerProfileIsInactive()
 		throws Exception {
-
-		setUp();
 
 		_setUpKeyManagerProfileRegistry(null);
 
@@ -427,8 +437,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	private void _testOnBeforeSaveWhenReferenceIsNotAConfiguration()
 		throws Exception {
 
-		setUp();
-
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
 				"credential", "${secretRef:provider:oauth2/1234/clientSecret}"
@@ -443,8 +451,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	private void _testOnBeforeSaveWhenReferenceNamesAnotherConfiguration()
 		throws Exception {
 
-		setUp();
-
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
 				"credential",
@@ -458,8 +464,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSaveWhenScopeIsCompany() throws Exception {
-		setUp();
-
 		long companyId = RandomTestUtil.randomLong();
 
 		AtomicReference<Secret> atomicReference = new AtomicReference<>();
@@ -500,8 +504,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSaveWhenScopeIsGroup() throws Exception {
-		setUp();
-
 		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
@@ -528,8 +530,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSaveWhenStoreIsUnavailable() throws Exception {
-		setUp();
-
 		Mockito.when(
 			_secretManager.putSecret(Mockito.anyLong(), Mockito.any())
 		).thenThrow(
@@ -552,8 +552,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSaveWhenValueIsAlreadyStored() throws Exception {
-		setUp();
-
 		String value = "${secretRef:provider:config/" + _PID + "/0/credential}";
 
 		Dictionary<String, Object> properties =
