@@ -111,6 +111,7 @@ import com.liferay.portal.kernel.portlet.UserAttributes;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.redirect.RedirectURLSettingsUtil;
 import com.liferay.portal.kernel.security.ChecksumUtil;
+import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.security.auth.AlwaysAllowDoAsUser;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.FullNameGenerator;
@@ -277,6 +278,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -5013,6 +5015,12 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public String getUniqueElementId() {
+		return _UNIQUE_ELEMENT_ID_PREFIX.concat(
+			Long.toHexString(_uniqueElementIdCounter.incrementAndGet()));
+	}
+
+	@Override
 	public String getUniqueElementId(
 		HttpServletRequest httpServletRequest, String namespace,
 		String elementId) {
@@ -8614,6 +8622,9 @@ public class PortalImpl implements Portal {
 
 	private static final String _UNICODE_REPLACEMENT_CHARACTER = "\uFFFD";
 
+	private static final String _UNIQUE_ELEMENT_ID_PREFIX =
+		Long.toHexString(SecureRandomUtil.nextLong()) + StringPool.DASH;
+
 	private static final Log _log = LogFactoryUtil.getLog(PortalImpl.class);
 
 	private static final Pattern _bannedResourceIdPattern = Pattern.compile(
@@ -8625,6 +8636,7 @@ public class PortalImpl implements Portal {
 		new ConcurrentHashMap<>();
 	private static final MethodHandler _resetCDNHostsMethodHandler =
 		new MethodHandler(new MethodKey(PortalUtil.class, "resetCDNHosts"));
+	private static final AtomicLong _uniqueElementIdCounter = new AtomicLong();
 	private static final Date _upTime = new Date();
 	private static final Log _webServerServletLog = LogFactoryUtil.getLog(
 		WebServerServlet.class);

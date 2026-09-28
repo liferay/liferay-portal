@@ -12,7 +12,7 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.io.Serializable;
 
@@ -29,7 +29,7 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 	public DefaultFragmentRendererContext(FragmentEntryLink fragmentEntryLink) {
 		_fragmentEntryLink = fragmentEntryLink;
 
-		_fragmentEntryElementId = "fragment-" + PortalUUIDUtil.generate();
+		_fragmentEntryElementId = "fragment-" + PortalUtil.getUniqueElementId();
 	}
 
 	@Override

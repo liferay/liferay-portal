@@ -1497,6 +1497,10 @@ public class PortalUtil {
 		return _portal.getURLWithSessionId(url, sessionId);
 	}
 
+	public static String getUniqueElementId() {
+		return _portal.getUniqueElementId();
+	}
+
 	public static String getUniqueElementId(
 		HttpServletRequest httpServletRequest, String namespace, String id) {
 
