@@ -95,18 +95,17 @@ public class SearchSearchRequestAssemblerTest {
 	private void _assertHighlightQuery(SearchRequest searchRequest) {
 		Query query = searchRequest.query();
 
-		Assert.assertNotNull("No query was assembled", query);
+		Assert.assertNotNull(query);
 		Assert.assertTrue(
 			String.valueOf(query), _countProximityQueries(query) > 0);
 
 		Highlight highlight = searchRequest.highlight();
 
-		Assert.assertNotNull("No highlight was assembled", highlight);
+		Assert.assertNotNull(highlight);
 
 		Query highlightQuery = highlight.highlightQuery();
 
-		Assert.assertNotNull(
-			"No highlight query was assembled", highlightQuery);
+		Assert.assertNotNull(highlightQuery);
 		Assert.assertEquals(
 			String.valueOf(highlightQuery), 0,
 			_countProximityQueries(highlightQuery));
