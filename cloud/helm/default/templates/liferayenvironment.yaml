@@ -13,7 +13,16 @@ spec:
     activationCodeSecretRef:
         key: {{ .Values.licensing.activationCodeSecretKey }}
         name: {{ include "liferay.activationCodeSecretName" . }}
-    {{- if not .Values.autoscaling.enabled }}
+    {{- if .Values.autoscaling.enabled }}
+    autoscaling:
+        {{- if eq .Values.autoscaling.type "keda" }}
+        maxReplicas: {{ .Values.autoscaling.keda.maxReplicaCount }}
+        minReplicas: {{ .Values.autoscaling.keda.minReplicaCount }}
+        {{- else }}
+        maxReplicas: {{ .Values.autoscaling.hpa.maxReplicas }}
+        minReplicas: {{ .Values.autoscaling.hpa.minReplicas }}
+        {{- end }}
+    {{- else }}
     desiredReplicas: {{ .Values.replicaCount }}
     {{- end }}
     {{- with .Values.licensing.dxpVersion }}

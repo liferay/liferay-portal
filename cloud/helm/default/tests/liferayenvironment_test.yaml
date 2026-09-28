@@ -12,6 +12,32 @@ tests:
             licensing.enabled: true
     -   asserts:
             -   equal:
+                    path: spec.autoscaling
+                    value:
+                        maxReplicas: 6
+                        minReplicas: 2
+        it: Carries the HPA bounds the operator clamps to the license
+        set:
+            autoscaling.enabled: true
+            autoscaling.hpa.maxReplicas: 6
+            autoscaling.hpa.minReplicas: 2
+            autoscaling.type: hpa
+            licensing.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.autoscaling
+                    value:
+                        maxReplicas: 8
+                        minReplicas: 3
+        it: Carries the KEDA bounds the operator clamps to the license
+        set:
+            autoscaling.enabled: true
+            autoscaling.keda.maxReplicaCount: 8
+            autoscaling.keda.minReplicaCount: 3
+            autoscaling.type: keda
+            licensing.enabled: true
+    -   asserts:
+            -   equal:
                     path: spec.activationCodeSecretRef.name
                     value: liferay-default-activation
         it: Keeps the activation code reference the custom resource requires
@@ -23,6 +49,13 @@ tests:
                     path: spec.dxpVersion
         it: Leaves the DXP version to the operator unless one is named
         set:
+            licensing.enabled: true
+    -   asserts:
+            -   notExists:
+                    path: spec.desiredReplicas
+        it: Leaves the replica count to the autoscaler when autoscaling is enabled
+        set:
+            autoscaling.enabled: true
             licensing.enabled: true
     -   asserts:
             -   equal:
@@ -44,6 +77,16 @@ tests:
             licensing.enabled: true
             licensing.offline: true
             licensing.offlineActivationBundle: activation-bundle.zip
+    -   asserts:
+            -   equal:
+                    path: spec.desiredReplicas
+                    value: 2
+            -   notExists:
+                    path: spec.autoscaling
+        it: Requests a fixed replica count unless autoscaling is enabled
+        set:
+            licensing.enabled: true
+            replicaCount: 2
     -   asserts:
             -   equal:
                     path: spec.offline
