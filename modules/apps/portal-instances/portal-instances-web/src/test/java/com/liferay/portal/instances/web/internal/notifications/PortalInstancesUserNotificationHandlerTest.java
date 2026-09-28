@@ -6,6 +6,7 @@
 package com.liferay.portal.instances.web.internal.notifications;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instances.constants.PortalInstancesNotificationConstants;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -48,75 +49,130 @@ public class PortalInstancesUserNotificationHandlerTest {
 			_serviceContext.translate(
 				Mockito.anyString(), Mockito.<Object>any())
 		).thenAnswer(
-			invocationOnMock ->
-				invocationOnMock.getArgument(0) + ":" +
-					invocationOnMock.getArgument(1)
+			invocationOnMock -> _toTranslation(
+				invocationOnMock.getArgument(0),
+				invocationOnMock.getArgument(1))
 		);
 	}
 
 	@Test
-	public void testGetBody() throws Exception {
+	public void testGetBodyForTheAddOperation() throws Exception {
 		String portalInstanceId = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
-			StringBundler.concat(
-				"<h2 class=\"title\">the-instance-x-could-not-be-deleted:",
-				portalInstanceId, "</h2><div class=\"body\">",
-				"the-default-instance-cannot-be-deleted</div>"),
+			_toBodyHTML(
+				"please-enter-a-valid-web-id",
+				_toTranslation(
+					"the-instance-x-could-not-be-created", portalInstanceId)),
 			_getBody(
 				_toPayloadJSONObject(
-					"the-default-instance-cannot-be-deleted", portalInstanceId,
+					"please-enter-a-valid-web-id",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+					portalInstanceId,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
-			StringBundler.concat(
-				"<h2 class=\"title\">the-instance-x-was-deleted:",
-				portalInstanceId, "</h2><div class=\"body\">",
-				"the-instance-x-is-no-longer-available:", portalInstanceId,
-				"</div>"),
+			_toBodyHTML(
+				_toTranslation(
+					"the-instance-x-is-ready-to-use", portalInstanceId),
+				_toTranslation("the-instance-x-was-created", portalInstanceId)),
 			_getBody(
 				_toPayloadJSONObject(
-					null, portalInstanceId,
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+					portalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
+	public void testGetBodyForTheDeleteOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toBodyHTML(
+				"the-default-instance-cannot-be-deleted",
+				_toTranslation(
+					"the-instance-x-could-not-be-deleted", portalInstanceId)),
+			_getBody(
+				_toPayloadJSONObject(
+					"the-default-instance-cannot-be-deleted",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
+					portalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toBodyHTML(
+				_toTranslation(
+					"the-instance-x-is-no-longer-available", portalInstanceId),
+				_toTranslation("the-instance-x-was-deleted", portalInstanceId)),
+			_getBody(
+				_toPayloadJSONObject(
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
+					portalInstanceId,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetBodyWithUnknownOperationType() throws Exception {
-		JSONObject payloadJSONObject = _toPayloadJSONObject(
-			null, RandomTestUtil.randomString(),
-			PortalInstancesNotificationConstants.STATUS_SUCCESS);
-
-		payloadJSONObject.put("operationType", RandomTestUtil.randomString());
-
-		_getBody(payloadJSONObject);
+		_getBody(
+			_toPayloadJSONObject(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
+				PortalInstancesNotificationConstants.STATUS_SUCCESS));
 	}
 
 	@Test
-	public void testGetTitle() throws Exception {
+	public void testGetTitleForTheAddOperation() throws Exception {
 		String portalInstanceId = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
-			"the-instance-x-could-not-be-deleted:" + portalInstanceId,
+			_toTranslation(
+				"the-instance-x-could-not-be-created", portalInstanceId),
 			_getTitle(
 				_toPayloadJSONObject(
-					"the-default-instance-cannot-be-deleted", portalInstanceId,
+					"please-enter-a-valid-web-id",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+					portalInstanceId,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
-			"the-instance-x-was-deleted:" + portalInstanceId,
+			_toTranslation("the-instance-x-was-created", portalInstanceId),
 			_getTitle(
 				_toPayloadJSONObject(
-					null, portalInstanceId,
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+					portalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
+	public void testGetTitleForTheDeleteOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toTranslation(
+				"the-instance-x-could-not-be-deleted", portalInstanceId),
+			_getTitle(
+				_toPayloadJSONObject(
+					"the-default-instance-cannot-be-deleted",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
+					portalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toTranslation("the-instance-x-was-deleted", portalInstanceId),
+			_getTitle(
+				_toPayloadJSONObject(
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
+					portalInstanceId,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetTitleWithUnknownOperationType() throws Exception {
-		JSONObject payloadJSONObject = _toPayloadJSONObject(
-			null, RandomTestUtil.randomString(),
-			PortalInstancesNotificationConstants.STATUS_SUCCESS);
-
-		payloadJSONObject.put("operationType", RandomTestUtil.randomString());
-
-		_getTitle(payloadJSONObject);
+		_getTitle(
+			_toPayloadJSONObject(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
+				PortalInstancesNotificationConstants.STATUS_SUCCESS));
 	}
 
 	private String _getBody(JSONObject payloadJSONObject) throws Exception {
@@ -129,19 +185,29 @@ public class PortalInstancesUserNotificationHandlerTest {
 			_toUserNotificationEvent(payloadJSONObject), _serviceContext);
 	}
 
+	private String _toBodyHTML(String body, String title) {
+		return StringBundler.concat(
+			"<h2 class=\"title\">", title, "</h2><div class=\"body\">", body,
+			"</div>");
+	}
+
 	private JSONObject _toPayloadJSONObject(
-		String errorMessageKey, String portalInstanceId, String status) {
+		String errorMessageKey, String operationType, String portalInstanceId,
+		String status) {
 
 		return JSONUtil.put(
 			"errorMessageKey", errorMessageKey
 		).put(
-			"operationType",
-			PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE
+			"operationType", operationType
 		).put(
 			"portalInstanceId", portalInstanceId
 		).put(
 			"status", status
 		);
+	}
+
+	private String _toTranslation(String key, String portalInstanceId) {
+		return StringBundler.concat(key, StringPool.COLON, portalInstanceId);
 	}
 
 	private UserNotificationEvent _toUserNotificationEvent(
