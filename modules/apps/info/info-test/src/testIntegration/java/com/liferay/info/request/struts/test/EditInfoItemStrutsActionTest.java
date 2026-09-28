@@ -612,7 +612,6 @@ public class EditInfoItemStrutsActionTest {
 
 			MockHttpServletResponse mockHttpServletResponse =
 				new MockHttpServletResponse();
-
 			UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
 			PipingServletResponse pipingServletResponse =
