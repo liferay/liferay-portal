@@ -40,6 +40,7 @@ import DefaultPermissionModalContent from '../default_permission/DefaultPermissi
 import openResetAssetPermissionModal from '../default_permission/ResetPermissionModalContent';
 import {handleFindAndReplace} from '../find_and_replace/utils/handleFindAndReplace';
 import AssetTypeInfoPanel from '../info_panel/AssetTypeInfoPanelContent';
+import EditImageModalContent from '../modal/EditImageModalContent';
 import ExportTranslationModalContent from '../modal/ExportTranslationModalContent';
 import AssetNavigationModalContent from '../modal/asset_navigation_view/AssetNavigationModalContent';
 import AddAssetsToProjectModalContent from '../projects/modal/AddAssetsToProjectModalContent';
@@ -538,6 +539,24 @@ export default function AssetsFDSPropsTransformer({
 						`<strong>"${Liferay.Util.escapeHTML(itemData.title)}"</strong>`
 					),
 					url: href,
+				});
+			}
+			else if (action?.data?.id === 'edit-image') {
+				event?.preventDefault();
+
+				openCMSModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						EditImageModalContent({
+							closeModal,
+							file: itemData.embedded.file,
+							loadData,
+							updateURL: itemData.actions.update.href,
+						}),
+					size: 'full-screen',
 				});
 			}
 			else if (

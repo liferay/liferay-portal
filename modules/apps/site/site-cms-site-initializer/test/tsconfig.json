@@ -1,5 +1,5 @@
 {
-	"@generated": "86b5e274f24fe2a180ec272986f5ab9fd681c04b",
+	"@generated": "aeb683f178b76c673300e29863604b7e5c88b163",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -28,6 +28,9 @@
 			],
 			"@liferay/frontend-js-charts-web": [
 				"../../../frontend-js/frontend-js-charts-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/frontend-js-image-editor-web": [
+				"../../../frontend-js/frontend-js-image-editor-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"@liferay/frontend-js-item-selector-web": [
 				"../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
@@ -107,6 +110,9 @@
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-charts-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../frontend-js/frontend-js-image-editor-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"
