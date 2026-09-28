@@ -63,8 +63,8 @@ public class ImageServiceTest {
 
 		UserTestUtil.setUser(UserTestUtil.addUser());
 
-		_assertMustBeCompanyAdmin(_image.getImageId());
 		_assertMustBeCompanyAdmin(_counterLocalService.increment());
+		_assertMustBeCompanyAdmin(_image.getImageId());
 
 		UserTestUtil.setUser(
 			UserTestUtil.addCompanyAdminUser(CompanyTestUtil.addCompany()));
@@ -79,6 +79,7 @@ public class ImageServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException.MustBeCompanyAdmin principalException) {
+			Assert.assertNotNull(principalException);
 		}
 	}
 
