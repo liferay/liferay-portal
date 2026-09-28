@@ -7,7 +7,11 @@ package com.liferay.commerce.media.test;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -25,6 +29,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
@@ -48,6 +53,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -323,25 +330,141 @@ public class CommerceMediaResolverTest {
 				CPAttachmentFileEntryConstants.TYPE_IMAGE, _serviceContext);
 
 		Assert.assertEquals(
-			StringBundler.concat(
-				_portal.getPathModule(), StringPool.SLASH,
-				CommerceMediaConstants.SERVLET_PATH, "/accounts/",
-				_accountEntry.getAccountEntryId(), "/images/",
-				cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
-				"?download=false"),
+			_getURL(
+				_accountEntry.getAccountEntryId(),
+				cpAttachmentFileEntry.getCPAttachmentFileEntryId()),
 			_commerceMediaResolver.getURL(
 				_accountEntry.getAccountEntryId(),
 				cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
+
+		cpAttachmentFileEntry = _addCPAttachmentFileEntry(
+			ContentTypes.IMAGE_JPEG, cpDefinition, "jpg");
+
+		_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		AccountGroup accountGroup =
+			CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+				_group.getCompanyId(), RandomTestUtil.randomString(),
+				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+				_accountEntry.getAccountEntryId(), _serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+
+		String defaultURL = _commerceMediaResolver.getDefaultURL(
+			cpAttachmentFileEntry.getGroupId());
+
+		User user1 = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user1)) {
+
+			Assert.assertEquals(
+				defaultURL,
+				_commerceMediaResolver.getURL(
+					_accountEntry.getAccountEntryId(),
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
+		}
+
+		User user2 = _userLocalService.getGuestUser(_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user2)) {
+
+			Assert.assertEquals(
+				defaultURL,
+				_commerceMediaResolver.getURL(
+					_accountEntry.getAccountEntryId(),
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
+			Assert.assertEquals(
+				defaultURL,
+				_commerceMediaResolver.getURL(
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
+		}
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			_accountEntry.getAccountEntryId(), user1.getUserId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user1)) {
+
+			Assert.assertEquals(
+				_getURL(
+					_accountEntry.getAccountEntryId(),
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()),
+				_commerceMediaResolver.getURL(
+					_accountEntry.getAccountEntryId(),
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
+		}
+
+		accountGroup = _accountGroupLocalService.getDefaultAccountGroup(
+			_group.getCompanyId());
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user2)) {
+
+			Assert.assertEquals(
+				_getURL(
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()),
+				_commerceMediaResolver.getURL(
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
+		}
 	}
 
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
+
+	private CPAttachmentFileEntry _addCPAttachmentFileEntry(
+			String contentType, CPDefinition cpDefinition, String extension)
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, _user.getUserId(), _commerceCatalog.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringBundler.concat(
+				RandomTestUtil.randomString(), StringPool.PERIOD, extension),
+			contentType, RandomTestUtil.randomBytes(), null, null, null,
+			_serviceContext);
+
+		return _cpAttachmentFileEntryLocalService.addCPAttachmentFileEntry(
+			null, _user.getUserId(), _commerceCatalog.getGroupId(),
+			_portal.getClassNameId(CPDefinition.class.getName()),
+			cpDefinition.getCPDefinitionId(), fileEntry.getFileEntryId(), false,
+			null, 1, 1, 2020, 1, 1, 2, 2, 2021, 2, 2, true, true,
+			RandomTestUtil.randomLocaleStringMap(), null, 0D,
+			CPAttachmentFileEntryConstants.TYPE_IMAGE, _serviceContext);
+	}
+
+	private String _getURL(long accountEntryId, long cpAttachmentFileEntryId) {
+		return StringBundler.concat(
+			_portal.getPathModule(), StringPool.SLASH,
+			CommerceMediaConstants.SERVLET_PATH, "/accounts/", accountEntryId,
+			"/images/", cpAttachmentFileEntryId, "?download=false");
+	}
 
 	@DeleteAfterTestRun
 	private AccountEntry _accountEntry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
+
+	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@DeleteAfterTestRun
 	private final List<CPDefinition> _commerceCPDefinitions = new ArrayList<>();
@@ -387,6 +510,9 @@ public class CommerceMediaResolverTest {
 	private CPAttachmentFileEntryLocalService
 		_cpAttachmentFileEntryLocalService;
 
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
 	@DeleteAfterTestRun
 	private CPDefinitionVirtualSetting _cpDefinitionVirtualSetting;
 
@@ -405,5 +531,8 @@ public class CommerceMediaResolverTest {
 
 	private ServiceContext _serviceContext;
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
