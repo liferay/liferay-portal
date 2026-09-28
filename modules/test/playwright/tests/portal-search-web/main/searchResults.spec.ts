@@ -8,6 +8,8 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {instanceSettingsPagesTest} from '../../../fixtures/instanceSettingsPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -359,6 +361,238 @@ test.describe('Multiple Widgets on a Page', () => {
 		});
 	});
 });
+
+const approximateCountsTest = mergeTests(
+	test,
+	featureFlagsTest({'LPD-98858': {enabled: true}}),
+	instanceSettingsPagesTest
+);
+
+approximateCountsTest.describe('Limit Result Count Accuracy', () => {
+	async function addSearchResultsPage(apiHelpers, page, searchPage, site) {
+		const siteLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {type: 'portlet'},
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${siteLayout.friendlyURL}`);
+
+		await searchPage.addPortlet('Search Results', 'Search');
+	}
+
+	approximateCountsTest(
+		'Configures the limit result count accuracy of a widget',
+		{tag: '@LPD-100860'},
+		async ({apiHelpers, page, searchPage, site}) => {
+			await test.step('Build a search page on the site', async () => {
+				await addSearchResultsPage(apiHelpers, page, searchPage, site);
+			});
+
+			const limitCheckbox = searchPage.modalIFrame.getByLabel(
+				'Limit Result Count Accuracy'
+			);
+
+			await test.step('Verify the limit is enabled by default and has no threshold field', async () => {
+				await searchPage.openSearchPortletConfiguration(
+					'Search Results'
+				);
+
+				await expect(limitCheckbox).toBeChecked();
+				await expect(
+					searchPage.modalIFrame.getByRole('spinbutton', {
+						name: 'Result Count Accuracy Threshold',
+					})
+				).not.toBeAttached();
+			});
+
+			await test.step('Disable the limit and save', async () => {
+				await searchPage.selectPortletConfigurationsCheckbox([
+					{
+						label: 'Limit Result Count Accuracy',
+						value: false,
+					},
+				]);
+
+				await searchPage.savePortletConfiguration();
+			});
+
+			await test.step('Verify the limit stays disabled', async () => {
+				await searchPage.openSearchPortletConfiguration(
+					'Search Results'
+				);
+
+				await expect(limitCheckbox).not.toBeChecked();
+			});
+
+			await test.step('Enable the limit and save', async () => {
+				await searchPage.selectPortletConfigurationsCheckbox([
+					{
+						label: 'Limit Result Count Accuracy',
+						value: true,
+					},
+				]);
+
+				await searchPage.savePortletConfiguration();
+			});
+
+			await test.step('Verify the limit stays enabled', async () => {
+				await searchPage.openSearchPortletConfiguration(
+					'Search Results'
+				);
+
+				await expect(limitCheckbox).toBeChecked();
+			});
+		}
+	);
+
+	approximateCountsTest(
+		'Inherits the limit result count accuracy from the instance settings',
+		{tag: '@LPD-100860'},
+		async ({apiHelpers, instanceSettingsPage, page, searchPage, site}) => {
+			try {
+				await test.step('Disable the limit in the instance settings', async () => {
+					await instanceSettingsPage.goToInstanceSetting(
+						'Search',
+						'Search Results'
+					);
+
+					await instanceSettingsPage.checkOption(
+						'Limit Result Count Accuracy',
+						false
+					);
+
+					await instanceSettingsPage.saveAndWaitForAlert();
+				});
+
+				await test.step('Build a search page on the site', async () => {
+					await addSearchResultsPage(
+						apiHelpers,
+						page,
+						searchPage,
+						site
+					);
+				});
+
+				await test.step('Verify a new widget inherits the disabled limit', async () => {
+					await searchPage.openSearchPortletConfiguration(
+						'Search Results'
+					);
+
+					await expect(
+						searchPage.modalIFrame.getByLabel(
+							'Limit Result Count Accuracy'
+						)
+					).not.toBeChecked();
+				});
+			}
+			finally {
+				await test.step('Reset the instance settings', async () => {
+					await instanceSettingsPage.goToInstanceSetting(
+						'Search',
+						'Search Results'
+					);
+
+					await instanceSettingsPage.resetInstanceSetting();
+				});
+			}
+		}
+	);
+});
+
+const approximateCountsDisabledTest = mergeTests(
+	test,
+	featureFlagsTest({'LPD-98858': {enabled: false}}),
+	instanceSettingsPagesTest
+);
+
+approximateCountsDisabledTest.describe(
+	'Limit Result Count Accuracy Without the Feature Flag',
+	() => {
+		approximateCountsDisabledTest(
+			'Shows the limit result count accuracy disabled when the feature flag is off',
+			{tag: '@LPD-100860'},
+			async ({
+				apiHelpers,
+				instanceSettingsPage,
+				page,
+				searchPage,
+				site,
+			}) => {
+				await test.step('Verify the instance settings show the option disabled and unchecked', async () => {
+					await instanceSettingsPage.goToInstanceSetting(
+						'Search',
+						'Search Results'
+					);
+
+					const limitCheckbox = page.getByLabel(
+						'Limit Result Count Accuracy'
+					);
+
+					await expect(limitCheckbox).toBeDisabled();
+					await expect(limitCheckbox).not.toBeChecked();
+					await expect(
+						page.getByText(
+							/This setting requires the .+ feature flag/
+						)
+					).toBeVisible();
+				});
+
+				const siteLayout =
+					await apiHelpers.jsonWebServicesLayout.addLayout({
+						groupId: site.id,
+						options: {type: 'portlet'},
+						title: getRandomString(),
+					});
+
+				const layoutURL = `/web${site.friendlyUrlPath}${siteLayout.friendlyURL}`;
+
+				await test.step('Verify the widget configuration shows the option disabled and unchecked', async () => {
+					await page.goto(layoutURL);
+
+					await searchPage.addPortlet('Search Results', 'Search');
+
+					await searchPage.openSearchPortletConfiguration(
+						'Search Results'
+					);
+
+					const limitCheckbox = searchPage.modalIFrame.getByLabel(
+						'Limit Result Count Accuracy'
+					);
+
+					await expect(limitCheckbox).toBeDisabled();
+					await expect(limitCheckbox).not.toBeChecked();
+					await expect(
+						searchPage.modalIFrame.getByTitle(/feature flag/)
+					).toBeVisible();
+				});
+
+				await test.step('Save the widget configuration', async () => {
+					await searchPage.savePortletConfiguration();
+				});
+
+				await test.step('Verify the widget still inherits the limit once the feature flag is enabled', async () => {
+					await apiHelpers.featureFlag.updateFeatureFlag(
+						'LPD-98858',
+						true
+					);
+
+					await page.goto(layoutURL);
+
+					await searchPage.openSearchPortletConfiguration(
+						'Search Results'
+					);
+
+					await expect(
+						searchPage.modalIFrame.getByLabel(
+							'Limit Result Count Accuracy'
+						)
+					).toBeChecked();
+				});
+			}
+		);
+	}
+);
 
 test.describe('Search Paginator', () => {
 	test('Retains items per page after new keyword search @LPD-19994', async ({
