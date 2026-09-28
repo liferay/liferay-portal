@@ -666,15 +666,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		ObjectEntry rootObjectEntry = _objectEntryLocalService.fetchObjectEntry(
+		ObjectEntry rootObjectEntry = _objectEntryPersistence.fetchByPrimaryKey(
 			objectEntry.getRootObjectEntryId());
 
 		if (rootObjectEntry == null) {
 			return;
 		}
-
-		rootObjectEntry = _objectEntryPersistence.findByPrimaryKey(
-			objectEntry.getRootObjectEntryId());
 
 		rootObjectEntry.setModifiedDate(modifiedDate);
 
