@@ -180,7 +180,18 @@ public class PingbackMethodImpl implements Method {
 				"Pingbacks are disabled");
 		}
 
-		Response response = _validateSource();
+		if (_isSourceURILocalNetwork()) {
+			return XmlRpcUtil.createFault(ACCESS_DENIED, "Access Denied");
+		}
+
+		String html = _getSourceHTML();
+
+		if (html == null) {
+			return XmlRpcUtil.createFault(
+				SOURCE_URI_DOES_NOT_EXIST, "Error accessing source URI");
+		}
+
+		Response response = _validateSource(html);
 
 		if (response != null) {
 			return response;
@@ -192,7 +203,7 @@ public class PingbackMethodImpl implements Method {
 		long classPK = entry.getEntryId();
 
 		String body = StringBundler.concat(
-			"[...] ", _getExcerpt(), " [...] <a href=", _sourceURI, ">",
+			"[...] ", _getExcerpt(html), " [...] <a href=", _sourceURI, ">",
 			_language.get(LocaleUtil.getSiteDefault(), "read-more"), "</a>");
 
 		ServiceContext serviceContext = _buildServiceContext(
@@ -305,9 +316,7 @@ public class PingbackMethodImpl implements Method {
 		return entry;
 	}
 
-	private String _getExcerpt() throws Exception {
-		String html = _http.URLtoString(_getOptions());
-
+	private String _getExcerpt(String html) {
 		Source source = new Source(html);
 
 		source.fullSequentialParse();
@@ -397,6 +406,19 @@ public class PingbackMethodImpl implements Method {
 		return PortletProviderUtil.getPortletId(className, action);
 	}
 
+	private String _getSourceHTML() {
+		try {
+			return _http.URLtoString(_getOptions());
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return null;
+		}
+	}
+
 	private boolean _isPingbackEnabled() {
 		if (_pingbackProperties != null) {
 			return _pingbackProperties.isPingbackEnabled();
@@ -421,26 +443,8 @@ public class PingbackMethodImpl implements Method {
 		return true;
 	}
 
-	private Response _validateSource() throws Exception {
-		if (_isSourceURILocalNetwork()) {
-			return XmlRpcUtil.createFault(ACCESS_DENIED, "Access Denied");
-		}
-
-		Source source = null;
-
-		try {
-			String html = _http.URLtoString(_getOptions());
-
-			source = new Source(html);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			return XmlRpcUtil.createFault(
-				SOURCE_URI_DOES_NOT_EXIST, "Error accessing source URI");
-		}
+	private Response _validateSource(String html) {
+		Source source = new Source(html);
 
 		List<StartTag> startTags = source.getAllStartTags("a");
 
