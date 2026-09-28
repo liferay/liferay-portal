@@ -9353,9 +9353,9 @@ public class ObjectEntryResourceTest {
 	public void testPatchObjectEntryWithAttachmentObjectFieldId()
 		throws Exception {
 
+		_testPatchObjectEntryWithAttachmentObjectField(String::valueOf);
 		_testPatchObjectEntryWithAttachmentObjectField(
 			fileEntryId -> JSONUtil.put("id", fileEntryId));
-		_testPatchObjectEntryWithAttachmentObjectField(String::valueOf);
 	}
 
 	@Test
