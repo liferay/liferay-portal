@@ -2304,9 +2304,14 @@ public class ObjectEntryLocalServiceImpl
 				objectEntry.getObjectEntryId());
 
 		if (objectEntryVersionsCount > 0) {
-			_objectEntryVersionLocalService.
-				updateLatestObjectEntryVersionModifiedDate(
-					modifiedDate, objectEntry.getObjectEntryId());
+			ObjectEntryVersion objectEntryVersion =
+				_objectEntryVersionPersistence.findByObjectEntryId_First(
+					objectEntry.getObjectEntryId(),
+					ObjectEntryVersionVersionComparator.getInstance(false));
+
+			objectEntryVersion.setModifiedDate(modifiedDate);
+
+			_objectEntryVersionPersistence.update(objectEntryVersion);
 		}
 
 		return objectEntry;

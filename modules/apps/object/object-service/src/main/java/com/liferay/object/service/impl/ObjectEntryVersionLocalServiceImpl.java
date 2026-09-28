@@ -322,21 +322,6 @@ public class ObjectEntryVersionLocalServiceImpl
 			objectEntry.getVersion());
 	}
 
-	@Override
-	public ObjectEntryVersion updateLatestObjectEntryVersionModifiedDate(
-			Date modifiedDate, long objectEntryId)
-		throws PortalException {
-
-		ObjectEntryVersion objectEntryVersion =
-			objectEntryVersionPersistence.findByObjectEntryId_First(
-				objectEntryId,
-				ObjectEntryVersionVersionComparator.getInstance(false));
-
-		objectEntryVersion.setModifiedDate(modifiedDate);
-
-		return objectEntryVersionPersistence.update(objectEntryVersion);
-	}
-
 	private boolean _exceedsMaximumVersions(long objectEntryId) {
 		boolean exceedsMaximumVersions = false;
 
