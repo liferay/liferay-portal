@@ -94,7 +94,9 @@ public class RelevantRule implements Comparable<RelevantRule> {
 		String modifiedFilesGlobalExcludes = _getBaseDirTestProperty(
 			"modified.files.global.excludes");
 
-		if (modifiedFilesGlobalExcludes != null) {
+		if ((modifiedFilesGlobalExcludes != null) &&
+			!_isIgnoreGlobalExcludes()) {
+
 			modifiedFilesExcludesPathMatchers.addAll(
 				JenkinsResultsParserUtil.toPathMatchers(
 					_getBaseDirPath() + "/",
@@ -465,6 +467,13 @@ public class RelevantRule implements Comparable<RelevantRule> {
 
 	private PortalGitWorkingDirectory _getPortalGitWorkingDirectory() {
 		return (PortalGitWorkingDirectory)_gitWorkingDirectory;
+	}
+
+	private boolean _isIgnoreGlobalExcludes() {
+		return Boolean.parseBoolean(
+			JenkinsResultsParserUtil.getProperty(
+				getProperties(), "modified.files.ignore.global.excludes",
+				getName(), getTestSuiteName()));
 	}
 
 	private static final Set<String> _moduleDirPaths =
