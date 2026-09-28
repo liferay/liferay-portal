@@ -31,8 +31,7 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "sequential";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Gogo Shell");
 
@@ -100,10 +99,11 @@ definition {
 
 		Navigator.openSpecificURL(url = "http://www.able.com:8080");
 
-		Portlet.viewNoPortletsPresentCP(
-			category = "System",
-			panel = "Control Panel",
-			portlet = "Gogo Shell");
+		ApplicationsMenu.gotoPanel(panel = "Control Panel");
+
+		AssertElementNotPresent(
+			key_portlet = "Gogo Shell",
+			locator1 = "ApplicationsMenu#ROOT_PORTLET");
 	}
 
 	@priority = 4

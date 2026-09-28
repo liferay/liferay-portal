@@ -2,8 +2,7 @@ definition {
 
 	@summary = "Default summary"
 	macro disableCaptchaToCreateNewUserAndSendPassword() {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "System Settings");
 

@@ -2,8 +2,7 @@ definition {
 
 	@summary = "Run a smoke test for OSGI"
 	macro Smoke(appName = null, portletName = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "App Manager");
 

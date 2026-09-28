@@ -44,7 +44,7 @@ Requirements: [Liferay Portal 7.1 GA1](https://github.com/liferay/liferay-portal
 
 1.  When the build is complete, run a full reindex of all search indexes. Go
     to--or refresh-- http://localhost:8080 in your browser. In the left-hand
-    menu, go to *Control Panel* &rarr; *Configuration* &rarr; *Search* and
+    menu, go to *Control Panel* &rarr; *System* &rarr; *Search* and
     click *Execute* next to *Reindex all search indexes*.
 
 Liferay Commerce's features are now available in your Portal instance.

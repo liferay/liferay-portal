@@ -383,8 +383,7 @@ definition {
 
 	@summary = "Default summary"
 	macro goToDigitalSignatureSettings() {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Instance Settings");
 

@@ -183,8 +183,7 @@ definition {
 
 		Navigator.openURL();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Server Administration");
 
@@ -196,8 +195,7 @@ definition {
 			locator1 = "Message#ERROR",
 			value1 = "No Group exists with the primary key");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Server Administration");
 

@@ -46,8 +46,7 @@ definition {
 				userEmailAddress = "test@liferay.com");
 		}
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Server Administration");
 

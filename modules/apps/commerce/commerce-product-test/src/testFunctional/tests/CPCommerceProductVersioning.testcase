@@ -76,8 +76,7 @@ definition {
 		}
 
 		task ("And the admin disable the versioning") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
+			ApplicationsMenu.gotoRootPortlet(
 				panel = "Control Panel",
 				portlet = "System Settings");
 

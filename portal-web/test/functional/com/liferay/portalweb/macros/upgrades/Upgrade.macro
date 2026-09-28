@@ -15,8 +15,7 @@ definition {
 
 		TestUtils.hardRefresh();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Search");
 

@@ -116,8 +116,7 @@ definition {
 		}
 
 		task ("Run check entry scheduler job") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
+			ApplicationsMenu.gotoRootPortlet(
 				panel = "Control Panel",
 				portlet = "Job Scheduler");
 

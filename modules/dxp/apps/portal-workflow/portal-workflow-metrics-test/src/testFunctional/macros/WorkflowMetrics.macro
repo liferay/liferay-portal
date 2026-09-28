@@ -513,8 +513,7 @@ definition {
 
 	@summary = "Default summary"
 	macro createUsersGroovy(numberOfUsers = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Server Administration");
 
@@ -581,8 +580,7 @@ definition {
 	macro executeWorkflowScript(scriptName = null) {
 		var key_scriptName = ${scriptName};
 
-		ApplicationsMenu.gotoPortlet(
-			category = "System",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Server Administration");
 
@@ -1106,8 +1104,7 @@ definition {
 
 	@summary = "Default summary"
 	macro setSLADefinitionsJobInterval(slaJobInterval = null,definitionsJobInterval = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "System Settings");
 

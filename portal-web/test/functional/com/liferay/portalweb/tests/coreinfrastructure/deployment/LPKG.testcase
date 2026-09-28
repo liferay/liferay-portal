@@ -61,9 +61,8 @@ definition {
 		ApplicationsMenu.gotoPanel(panel = "Control Panel");
 
 		AssertElementNotPresent(
-			key_category = "System",
 			key_portlet = "Gogo Shell",
-			locator1 = "ApplicationsMenu#PORTLET");
+			locator1 = "ApplicationsMenu#ROOT_PORTLET");
 
 		Portlet.shutdownServer();
 
@@ -76,9 +75,8 @@ definition {
 		ApplicationsMenu.gotoPanel(panel = "Control Panel");
 
 		AssertElementPresent(
-			key_category = "System",
 			key_portlet = "Gogo Shell",
-			locator1 = "ApplicationsMenu#PORTLET");
+			locator1 = "ApplicationsMenu#ROOT_PORTLET");
 	}
 
 }

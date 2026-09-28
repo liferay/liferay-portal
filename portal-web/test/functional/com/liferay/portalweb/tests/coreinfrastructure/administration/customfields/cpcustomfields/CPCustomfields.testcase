@@ -37,8 +37,7 @@ definition {
 		property osgi.app.includes = "bookmarks";
 		property portal.release = "false";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Custom Fields");
 

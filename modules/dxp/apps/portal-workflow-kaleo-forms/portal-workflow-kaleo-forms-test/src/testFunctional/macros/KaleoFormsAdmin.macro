@@ -486,8 +486,7 @@ definition {
 
 	@summary = "Default summary"
 	macro enableKaleoFormsConfiguration(toggleValue = null) {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Instance Settings");
 
