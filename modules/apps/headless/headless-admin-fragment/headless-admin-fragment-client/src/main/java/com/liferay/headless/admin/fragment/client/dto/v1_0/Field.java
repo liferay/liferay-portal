@@ -233,8 +233,9 @@ public abstract class Field implements Cloneable, Serializable {
 		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
 		CHECKBOX("checkbox"), COLOR_PALETTE("colorPalette"),
 		COLOR_PICKER("colorPicker"), ITEM_SELECTOR("itemSelector"),
-		LENGTH("length"), SELECT("select"), TEXT("text"), URL("url"),
-		VIDEO_SELECTOR("videoSelector");
+		LENGTH("length"), SELECT("select"),
+		TARGET_COLLECTION_DISPLAY("targetCollectionDisplay"), TEXT("text"),
+		URL("url"), VIDEO_SELECTOR("videoSelector");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -266,4 +267,4 @@ public abstract class Field implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1723747484
+// LIFERAY-REST-BUILDER-HASH:1285587236

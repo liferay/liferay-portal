@@ -73,6 +73,10 @@ import java.util.function.Supplier;
 		),
 		@JsonSubTypes.Type(name = "length", value = LengthField.class),
 		@JsonSubTypes.Type(name = "select", value = SelectField.class),
+		@JsonSubTypes.Type(
+			name = "targetCollectionDisplay",
+			value = TargetCollectionDisplayField.class
+		),
 		@JsonSubTypes.Type(name = "text", value = TextField.class),
 		@JsonSubTypes.Type(name = "url", value = URLField.class),
 		@JsonSubTypes.Type(
@@ -556,8 +560,9 @@ public abstract class Field implements Serializable {
 		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
 		CHECKBOX("checkbox"), COLOR_PALETTE("colorPalette"),
 		COLOR_PICKER("colorPicker"), ITEM_SELECTOR("itemSelector"),
-		LENGTH("length"), SELECT("select"), TEXT("text"), URL("url"),
-		VIDEO_SELECTOR("videoSelector");
+		LENGTH("length"), SELECT("select"),
+		TARGET_COLLECTION_DISPLAY("targetCollectionDisplay"), TEXT("text"),
+		URL("url"), VIDEO_SELECTOR("videoSelector");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -702,4 +707,4 @@ public abstract class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1547899495
+// LIFERAY-REST-BUILDER-HASH:-153125638

@@ -13,6 +13,7 @@ import com.liferay.headless.admin.fragment.client.dto.v1_0.Field;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.LengthField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.SelectField;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.TargetCollectionDisplayField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.TextField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.URLField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.VideoSelectorField;
@@ -83,6 +84,11 @@ public class FieldSerDes {
 
 			if (typeString.equals("select")) {
 				return SelectFieldSerDes.toJSON((SelectField)field);
+			}
+
+			if (typeString.equals("targetCollectionDisplay")) {
+				return TargetCollectionDisplayFieldSerDes.toJSON(
+					(TargetCollectionDisplayField)field);
 			}
 
 			if (typeString.equals("text")) {
@@ -236,6 +242,10 @@ public class FieldSerDes {
 					return SelectField.toDTO(json);
 				}
 
+				if (typeString.equals("targetCollectionDisplay")) {
+					return TargetCollectionDisplayField.toDTO(json);
+				}
+
 				if (typeString.equals("text")) {
 					return TextField.toDTO(json);
 				}
@@ -380,4 +390,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-72322754
+// LIFERAY-REST-BUILDER-HASH:776479011
