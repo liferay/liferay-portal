@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -164,6 +165,34 @@ public class CommerceOrderServiceTest {
 				personAccountEntry.getAccountEntryId(),
 				_commerceCurrency.getCode(), 0);
 		}
+
+		int count =
+			_commerceOrderLocalService.
+				getCommerceOrdersCountByCommerceAccountId(
+					businessAccountEntry.getAccountEntryId());
+
+		User guestUser = _userLocalService.getGuestUser(
+			TestPropsValues.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				guestUser, PermissionCheckerFactoryUtil.create(guestUser))) {
+
+			CommerceOrder commerceOrder =
+				_commerceOrderService.addCommerceOrder(
+					_commerceChannel.getGroupId(),
+					businessAccountEntry.getAccountEntryId(),
+					_commerceCurrency.getCode(), 0);
+
+			Assert.assertEquals(
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				commerceOrder.getCommerceAccountId());
+		}
+
+		Assert.assertEquals(
+			count,
+			_commerceOrderLocalService.
+				getCommerceOrdersCountByCommerceAccountId(
+					businessAccountEntry.getAccountEntryId()));
 	}
 
 	@Test
@@ -236,5 +265,8 @@ public class CommerceOrderServiceTest {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
