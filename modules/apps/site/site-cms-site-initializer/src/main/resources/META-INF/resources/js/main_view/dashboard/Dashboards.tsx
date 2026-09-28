@@ -38,10 +38,7 @@ function isTabEnabled(tabId: TabId, administeredSpaceIds: string[]) {
 	}
 
 	if (tabId === 'performance') {
-		return (
-			Boolean(Liferay.FeatureFlags['LPD-58315']) &&
-			Boolean(administeredSpaceIds.length)
-		);
+		return Boolean(administeredSpaceIds.length);
 	}
 
 	return true;
