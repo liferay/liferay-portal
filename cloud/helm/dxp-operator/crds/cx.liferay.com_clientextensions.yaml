@@ -16,7 +16,7 @@ spec:
     scope: Namespaced
     versions:
     -   additionalPrinterColumns:
-        -   jsonPath: .spec.liferayNamespace
+        -   jsonPath: .spec.dxpNamespace
             name: DXP-Namespace
             type: string
         -   jsonPath: .spec.virtualInstanceId
@@ -73,7 +73,7 @@ spec:
                                 type: array
                             domain:
                                 type: string
-                            liferayNamespace:
+                            dxpNamespace:
                                 maxLength: 63
                                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                                 type: string
