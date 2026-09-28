@@ -1069,7 +1069,7 @@ public class LayoutStructureRenderer {
 				relatedItemExternalReferenceCode);
 
 			String formRelationshipStyledLayoutStructureItemContentId =
-				PortalUUIDUtil.generate();
+				PortalUtil.getUniqueElementId();
 
 			if (layoutDisplayPageObjectProvider == null) {
 				_renderFormRelationshipStyledLayoutStructureItemContent(
