@@ -15,7 +15,7 @@
 		).put(
 			"buttonDisplayType", buttonStyle
 		).put(
-			"elementId", uuid
+			"elementId", elementId
 		).put(
 			"field", field
 		).put(

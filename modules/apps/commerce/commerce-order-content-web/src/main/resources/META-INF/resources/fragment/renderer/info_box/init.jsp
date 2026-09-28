@@ -8,10 +8,10 @@
 <%@ taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
-<%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
+<%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
-<%@ page import="java.util.Map" %><%@
-page import="java.util.UUID" %>
+<%@ page import="java.util.Map" %>
 
 <liferay-theme:defineObjects />
 
@@ -19,6 +19,7 @@ page import="java.util.UUID" %>
 Map<String, Object> additionalProps = (Map<String, Object>)request.getAttribute("liferay-commerce:info-box:additionalProps");
 String buttonStyle = (String)request.getAttribute("liferay-commerce:info-box:buttonStyle");
 long commerceOrderId = (long)request.getAttribute("liferay-commerce:info-box:commerceOrderId");
+String elementId = PortalUtil.getUniqueElementId();
 String field = (String)request.getAttribute("liferay-commerce:info-box:field");
 String fieldValue = (String)request.getAttribute("liferay-commerce:info-box:fieldValue");
 String fieldValueType = (String)request.getAttribute("liferay-commerce:info-box:fieldValueType");
@@ -30,5 +31,4 @@ String label = (String)request.getAttribute("liferay-commerce:info-box:label");
 String namespace = (String)request.getAttribute("liferay-commerce:info-box:namespace");
 boolean open = (boolean)request.getAttribute("liferay-commerce:info-box:open");
 boolean readOnly = (boolean)request.getAttribute("liferay-commerce:info-box:readOnly");
-String uuid = String.valueOf(UUID.randomUUID());
 %>
