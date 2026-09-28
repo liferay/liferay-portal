@@ -24,7 +24,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_CITY",
+					"externalReferenceCode": "CITY",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -39,7 +39,7 @@
 				{
 					"DBType": "Double",
 					"businessType": "Decimal",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_LATITUDE",
+					"externalReferenceCode": "LATITUDE",
 					"indexed": true,
 					"label": {
 						"en_US": "Latitude"
@@ -53,7 +53,7 @@
 				{
 					"DBType": "Double",
 					"businessType": "Decimal",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_LONGITUDE",
+					"externalReferenceCode": "LONGITUDE",
 					"indexed": true,
 					"label": {
 						"en_US": "Longitude"
@@ -67,7 +67,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_NAME",
+					"externalReferenceCode": "NAME",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -82,7 +82,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_STATE",
+					"externalReferenceCode": "STATE",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -97,7 +97,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_STREET",
+					"externalReferenceCode": "STREET",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -112,7 +112,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Picklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_TIER",
+					"externalReferenceCode": "TIER",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -128,7 +128,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_ZIP_CODE",
+					"externalReferenceCode": "ZIP_CODE",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {

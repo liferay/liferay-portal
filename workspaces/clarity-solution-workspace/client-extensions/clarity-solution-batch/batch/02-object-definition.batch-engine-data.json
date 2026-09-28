@@ -28,7 +28,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Picklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_ANNUAL_PURCHASE_VOLUME",
+					"externalReferenceCode": "ANNUAL_PURCHASE_VOLUME",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -43,7 +43,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_APPLICANT_EMAIL_ADDRESS",
+					"externalReferenceCode": "APPLICANT_EMAIL_ADDRESS",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -65,7 +65,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_APPLICANT_NAME",
+					"externalReferenceCode": "APPLICANT_NAME",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -81,7 +81,7 @@
 					"DBType": "String",
 					"businessType": "Picklist",
 					"defaultValue": "open",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_APPLICATION_STATE",
+					"externalReferenceCode": "APPLICATION_STATE",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -177,7 +177,7 @@
 				{
 					"DBType": "Long",
 					"businessType": "Attachment",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_BUSINESS_LICENSE",
+					"externalReferenceCode": "BUSINESS_LICENSE",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -213,7 +213,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_BUSINESS_NAME",
+					"externalReferenceCode": "BUSINESS_NAME",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -228,7 +228,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_BUSINESS_PHONE_NUMBER",
+					"externalReferenceCode": "BUSINESS_PHONE_NUMBER",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -242,7 +242,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_BUSINESS_TAX_I_D_NUMBER",
+					"externalReferenceCode": "BUSINESS_TAX_ID_NUMBER",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -258,7 +258,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_BUSINESS_WEBSITE_U_R_L",
+					"externalReferenceCode": "BUSINESS_WEBSITE_URL",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -272,7 +272,7 @@
 				{
 					"DBType": "Clob",
 					"businessType": "LongText",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_COMMENTS",
+					"externalReferenceCode": "COMMENTS",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -292,7 +292,7 @@
 				{
 					"DBType": "String",
 					"businessType": "MultiselectPicklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_DISTRIBUTION_CHANNELS",
+					"externalReferenceCode": "DISTRIBUTION_CHANNELS",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -307,7 +307,7 @@
 				{
 					"DBType": "String",
 					"businessType": "MultiselectPicklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_DISTRIBUTION_REGIONS",
+					"externalReferenceCode": "DISTRIBUTION_REGIONS",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -322,7 +322,7 @@
 				{
 					"DBType": "String",
 					"businessType": "MultiselectPicklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_PRODUCTS_OF_INTEREST",
+					"externalReferenceCode": "PRODUCTS_OF_INTEREST",
 					"indexed": true,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -565,7 +565,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Picklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION_ASSESSMENT_SCORE",
+					"externalReferenceCode": "ASSESSMENT_SCORE",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
@@ -583,7 +583,7 @@
 				{
 					"DBType": "Long",
 					"businessType": "Attachment",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION_ATTACHMENT",
+					"externalReferenceCode": "ATTACHMENT",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
@@ -618,7 +618,7 @@
 				{
 					"DBType": "String",
 					"businessType": "Picklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION_DECISION",
+					"externalReferenceCode": "DECISION",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
@@ -636,7 +636,7 @@
 				{
 					"DBType": "Clob",
 					"businessType": "RichText",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION_INTERVIEW_NOTES",
+					"externalReferenceCode": "INTERVIEW_NOTES",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
@@ -653,7 +653,7 @@
 				{
 					"DBType": "Clob",
 					"businessType": "RichText",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION_RECOMMENDATION_COMMENTS",
+					"externalReferenceCode": "RECOMMENDATION_COMMENTS",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
@@ -670,7 +670,7 @@
 				{
 					"DBType": "String",
 					"businessType": "MultiselectPicklist",
-					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION_RECOMMENDATIONS",
+					"externalReferenceCode": "RECOMMENDATIONS",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",

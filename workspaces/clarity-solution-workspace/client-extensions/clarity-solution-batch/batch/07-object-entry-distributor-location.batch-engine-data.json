@@ -13,7 +13,7 @@
 	"items": [
 		{
 			"city": "Southlake",
-			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_CLEARVIEW_OPTICS",
+			"externalReferenceCode": "DISTRIBUTOR_LOCATION_1",
 			"latitude": 32.945113,
 			"longitude": -97.121117,
 			"name": "ClearView Optics",
@@ -27,7 +27,7 @@
 		},
 		{
 			"city": "Dallas",
-			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_ROKA",
+			"externalReferenceCode": "DISTRIBUTOR_LOCATION_2",
 			"latitude": 32.848092,
 			"longitude": -96.770822,
 			"name": "Roka",
@@ -41,7 +41,7 @@
 		},
 		{
 			"city": "McKinney",
-			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_STANTON_OPTICAL",
+			"externalReferenceCode": "DISTRIBUTOR_LOCATION_3",
 			"latitude": 33.217463,
 			"longitude": -96.660282,
 			"name": "Stanton Optical",
@@ -51,7 +51,7 @@
 		},
 		{
 			"city": "Austin",
-			"externalReferenceCode": "U3A2_DISTRIBUTOR_LOCATION_WARBY_PARKER",
+			"externalReferenceCode": "DISTRIBUTOR_LOCATION_4",
 			"latitude": 30.402968,
 			"longitude": -97.720991,
 			"name": "Warby Parker",
