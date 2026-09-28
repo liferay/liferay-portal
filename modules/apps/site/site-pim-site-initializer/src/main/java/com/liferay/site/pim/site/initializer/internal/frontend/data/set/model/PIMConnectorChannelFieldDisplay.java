@@ -16,18 +16,29 @@ import java.util.Locale;
 public class PIMConnectorChannelFieldDisplay {
 
 	public PIMConnectorChannelFieldDisplay(
-		String channelField, String href, Locale locale, boolean required,
+		String apiURL, String channelField, List<Long> fieldMappingIds,
+		String href, Locale locale, boolean required,
 		List<String> sourceAttributes) {
 
+		_apiURL = apiURL;
 		_channelField = channelField;
+		_fieldMappingIds = fieldMappingIds;
 		_href = href;
 		_locale = locale;
 		_required = required;
 		_sourceAttributes = sourceAttributes;
 	}
 
+	public String getAPIURL() {
+		return _apiURL;
+	}
+
 	public String getChannelField() {
 		return _channelField;
+	}
+
+	public List<Long> getFieldMappingIds() {
+		return _fieldMappingIds;
 	}
 
 	public String getHref() {
@@ -79,7 +90,9 @@ public class PIMConnectorChannelFieldDisplay {
 
 	}
 
+	private final String _apiURL;
 	private final String _channelField;
+	private final List<Long> _fieldMappingIds;
 	private final String _href;
 	private final Locale _locale;
 	private final boolean _required;

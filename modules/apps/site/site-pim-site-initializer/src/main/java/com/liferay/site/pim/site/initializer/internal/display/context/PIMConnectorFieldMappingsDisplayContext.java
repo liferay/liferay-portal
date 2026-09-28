@@ -78,9 +78,9 @@ public class PIMConnectorFieldMappingsDisplayContext {
 
 	public Map<String, String> getContextParams() {
 		return HashMapBuilder.put(
-			"editFieldMappingURL",
+			"editFieldMappingsURL",
 			URLCodec.encodeURL(
-				PIMURLUtil.getEditFieldMappingURL(
+				PIMURLUtil.getEditFieldMappingsURL(
 					String.valueOf(_objectEntryId), _themeDisplay))
 		).put(
 			"objectEntryId", String.valueOf(_objectEntryId)

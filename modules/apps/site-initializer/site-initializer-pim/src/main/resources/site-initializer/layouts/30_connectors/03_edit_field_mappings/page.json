@@ -1,0 +1,25 @@
+{
+	"friendlyURL": "/edit-field-mappings",
+	"hidden": false,
+	"name_i18n": {
+		"en_US": "Edit Field Mappings"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Site Member",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "content"
+}
