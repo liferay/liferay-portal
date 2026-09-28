@@ -47,7 +47,8 @@ public class WorkflowDefinitionGroovyScriptUseDetector {
 						continue;
 					}
 
-					if (Objects.equals(map.get("#value"), "groovy") ||
+					if (Objects.equals(map.get("#value"), "drl") ||
+						Objects.equals(map.get("#value"), "groovy") ||
 						Objects.equals(map.get("#value"), "java")) {
 
 						return true;
