@@ -461,6 +461,13 @@ public class PingbackMethodImplTest {
 		);
 	}
 
+	private Http.Options _getOptions(String location) {
+		return Mockito.argThat(
+			options ->
+				(options != null) && !options.isFollowRedirects() &&
+				location.equals(options.getLocation()));
+	}
+
 	private PingbackMethodImpl _getPingbackMethodImpl() {
 		PingbackMethodImpl pingbackMethodImpl = new PingbackMethodImpl();
 
@@ -485,13 +492,6 @@ public class PingbackMethodImplTest {
 			pingbackMethodImpl, "_userLocalService", _userLocalService);
 
 		return pingbackMethodImpl;
-	}
-
-	private Http.Options _getOptions(String location) {
-		return Mockito.argThat(
-			options ->
-				(options != null) && !options.isFollowRedirects() &&
-				location.equals(options.getLocation()));
 	}
 
 	private void _setUpBlogsEntryLocalService() throws Exception {
