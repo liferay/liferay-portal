@@ -47,13 +47,13 @@ public class TemplateRestrictedClassesTest {
 	}
 
 	@Test
-	public void testRestrictedClasses() throws Exception {
+	public void testGetRestrictedClasses() throws Exception {
 		File tempDirFile = new File(
 			SystemProperties.get(SystemProperties.TMP_DIR));
 
 		_file = new File(tempDirFile, RandomTestUtil.randomString());
 
-		_assertDeniedAccess(
+		_testGetRestrictedClasses(
 			tempDirFile,
 			"${object.toPath().resolve(\"" + _file.getName() +
 				"\").toFile().createNewFile()?c}");
@@ -62,15 +62,17 @@ public class TemplateRestrictedClassesTest {
 
 		Path path = tempDirFile.toPath();
 
-		_assertDeniedAccess(path, "${object.getFileSystem()}");
+		_testGetRestrictedClasses(path, "${object.getFileSystem()}");
 
 		FileSystem fileSystem = path.getFileSystem();
 
-		_assertDeniedAccess(fileSystem, "${object.provider()}");
-		_assertDeniedAccess(fileSystem.provider(), "${object.getScheme()}");
+		_testGetRestrictedClasses(fileSystem, "${object.provider()}");
+		_testGetRestrictedClasses(
+			fileSystem.provider(), "${object.getScheme()}");
 	}
 
-	private void _assertDeniedAccess(Object object, String templateContent)
+	private void _testGetRestrictedClasses(
+			Object object, String templateContent)
 		throws Exception {
 
 		Template template = TemplateManagerUtil.getTemplate(
