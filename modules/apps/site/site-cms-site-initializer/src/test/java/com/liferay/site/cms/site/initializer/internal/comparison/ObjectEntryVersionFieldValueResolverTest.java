@@ -133,22 +133,6 @@ public class ObjectEntryVersionFieldValueResolverTest {
 				_LANGUAGE_ID, _mockObjectField(businessType), null, null));
 	}
 
-	private void _testToDiffHtmlWithoutDiffHtml(String businessType)
-		throws Exception {
-
-		String addedDisplayValue = RandomTestUtil.randomString();
-		String removedDisplayValue = RandomTestUtil.randomString();
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				"<span class=\"diff-html-removed\">", removedDisplayValue,
-				"</span><span class=\"diff-html-added\">", addedDisplayValue,
-				"</span>"),
-			_objectEntryVersionFieldValueResolver.toDiffHtml(
-				addedDisplayValue, _mockObjectField(businessType),
-				removedDisplayValue));
-	}
-
 	private ObjectField _mockObjectField(String businessType) {
 		return _mockObjectField(businessType, null);
 	}
@@ -494,6 +478,22 @@ public class ObjectEntryVersionFieldValueResolverTest {
 			ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL);
 		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP);
+	}
+
+	private void _testToDiffHtmlWithoutDiffHtml(String businessType)
+		throws Exception {
+
+		String addedDisplayValue = RandomTestUtil.randomString();
+		String removedDisplayValue = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<span class=\"diff-html-removed\">", removedDisplayValue,
+				"</span><span class=\"diff-html-added\">", addedDisplayValue,
+				"</span>"),
+			_objectEntryVersionFieldValueResolver.toDiffHtml(
+				addedDisplayValue, _mockObjectField(businessType),
+				removedDisplayValue));
 	}
 
 	private void _testToDisplayValueWithAttachmentObjectField()
