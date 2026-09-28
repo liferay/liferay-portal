@@ -58,6 +58,12 @@ $side-navigation-scope-item-height: 2.75rem;
 		}
 	}
 
+	li:first-child:not(.side-navigation-scope-item, :empty):has(
+			~ .side-navigation-scope-item
+		) {
+		margin-bottom: 0.75rem;
+	}
+
 	.c-slideout-start .sidebar-light {
 		background-color: $light-l1;
 		border-right: 0.5px solid $secondary-l0;
@@ -117,6 +123,10 @@ $side-navigation-scope-item-height: 2.75rem;
 	.side-navigation-scope-item-system .label {
 		background-color: $pink-l5;
 		color: $pink-d2;
+	}
+
+	.side-navigation-scope-zone + .side-navigation-scope-item {
+		margin-top: 1rem;
 	}
 
 	.side-navigation-scope-zone-instance {

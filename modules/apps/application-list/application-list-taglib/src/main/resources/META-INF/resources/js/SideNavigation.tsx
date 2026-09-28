@@ -299,10 +299,12 @@ function SideNavigation({
 												: undefined
 										}
 										className={classNames({
-											'side-navigation-section-item':
-												item.parentLabel,
+											'side-navigation-scope-zone':
+												item.scope,
 											[`side-navigation-scope-zone-${item.scope}`]:
 												item.scope,
+											'side-navigation-section-item':
+												item.parentLabel,
 										})}
 										data-canonical-name={item.canonicalName}
 										href={item.href}
