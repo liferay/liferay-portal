@@ -279,7 +279,7 @@ public class PingbackMethodImplTest {
 		Mockito.verify(
 			_http
 		).URLtoString(
-			_matchOptions(_SOURCE_URI)
+			_getOptions(_SOURCE_URI)
 		);
 
 		Mockito.verifyNoMoreInteractions(_http);
@@ -374,7 +374,7 @@ public class PingbackMethodImplTest {
 	@Test
 	public void testGetExcerptWhenReferrerIsUnavailable() throws Exception {
 		Mockito.when(
-			_http.URLtoString(_matchOptions(_SOURCE_URI))
+			_http.URLtoString(_getOptions(_SOURCE_URI))
 		).thenThrow(
 			IOException.class
 		);
@@ -394,7 +394,7 @@ public class PingbackMethodImplTest {
 			String sourceURL = "http://" + inetAddress.getHostAddress();
 
 			Mockito.when(
-				_http.URLtoString(_matchOptions(sourceURL))
+				_http.URLtoString(_getOptions(sourceURL))
 			).thenReturn(
 				StringBundler.concat(
 					"<body><a href='http://", _TARGET_URI, "'>", _EXCERPT_BODY,
@@ -487,7 +487,7 @@ public class PingbackMethodImplTest {
 		return pingbackMethodImpl;
 	}
 
-	private Http.Options _matchOptions(String location) {
+	private Http.Options _getOptions(String location) {
 		return Mockito.argThat(
 			options ->
 				(options != null) && !options.isFollowRedirects() &&
@@ -726,7 +726,7 @@ public class PingbackMethodImplTest {
 
 	private void _whenHttpURLToString(String returnValue) throws Exception {
 		Mockito.when(
-			_http.URLtoString(_matchOptions(_SOURCE_URI))
+			_http.URLtoString(_getOptions(_SOURCE_URI))
 		).thenReturn(
 			returnValue
 		);
