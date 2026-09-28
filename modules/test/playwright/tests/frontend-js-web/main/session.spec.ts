@@ -12,7 +12,12 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {
+	performLoginViaApi,
+	performLogout,
+	performUserSwitch,
+	userData,
+} from '../../../utils/performLogin';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -118,6 +123,35 @@ test(
 	'Check session timeout banner is disabled when set to 0',
 	{tag: '@LPD-76518'},
 	async ({page}) => {
+		await expect(page.getByText('Due to inactivity')).toBeHidden();
+	}
+);
+
+test(
+	'Check session expired message is not shown when the tab wakes up after the session expired and the warning is disabled',
+	{tag: '@LPD-107298'},
+	async ({page}) => {
+		await page.clock.install();
+
+		await performLogout(page);
+		await performLoginViaApi({page, rememberMe: false, screenName: 'test'});
+
+		await page.waitForFunction(() => (window as any).Liferay.Session);
+
+		const sessionLength = await page.evaluate(
+			() => (window as any).Liferay.Session.sessionLength
+		);
+
+		await page.clock.fastForward(sessionLength + 1000);
+
+		await expect
+			.poll(() =>
+				page.evaluate(
+					() => (window as any).Liferay.Session.sessionState
+				)
+			)
+			.toBe('expired');
+
 		await expect(page.getByText('Due to inactivity')).toBeHidden();
 	}
 );

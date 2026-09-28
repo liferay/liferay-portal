@@ -110,6 +110,7 @@ import {config as frontendJsImageEditorWebConfig} from './tests/frontend-js-imag
 import {config as frontendJsItemSelectorWebConfig} from './tests/frontend-js-item-selector-web/main/config';
 import {config as frontendJsSpaWebConfig} from './tests/frontend-js-spa-web/main/config';
 import {config as frontendJsWebConfig} from './tests/frontend-js-web/main/config';
+import {config as frontendJsWebSessionTimeoutWarningConfig} from './tests/frontend-js-web/session-timeout-warning/config';
 import {config as frontendTaglibClayConfig} from './tests/frontend-taglib-clay/main/config';
 import {config as frontendTaglibConfig} from './tests/frontend-taglib/main/config';
 import {config as frontendTaglibSpaOffConfig} from './tests/frontend-taglib/spa-off/config';
@@ -391,6 +392,7 @@ export default defineConfig({
 		frontendJsItemSelectorWebConfig,
 		frontendJsSpaWebConfig,
 		frontendJsWebConfig,
+		frontendJsWebSessionTimeoutWarningConfig,
 		frontendTaglibClayConfig,
 		frontendTaglibConfig,
 		frontendTaglibSpaOffConfig,
