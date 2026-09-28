@@ -39,6 +39,17 @@ public class OpenAPIResourceTest {
 							"x-filterable",
 							JSONUtil.put("id", JSONUtil.put("type", "id")))
 					).put(
+						"NestedTestEntity",
+						JSONUtil.put(
+							"properties",
+							JSONUtil.put(
+								"password",
+								JSONUtil.put(
+									"format", "password"
+								).put(
+									"type", "string"
+								)))
+					).put(
 						"TestEntity",
 						JSONUtil.put(
 							"x-filterable",
