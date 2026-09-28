@@ -140,11 +140,11 @@ function default_set_up {
 
 	update_learn_resources_dir
 
-	start_default_app_server
-
 	deploy_parent_project_osgi_modules
 
 	deploy_project_osgi_modules
+
+	start_default_app_server
 
 	deploy_parent_project_deploy_folder
 
@@ -260,8 +260,6 @@ function deploy_osgi_modules {
 				local gradlew=$(get_gradlew)
 
 				${gradlew} deploy
-
-				wait_for_portal_log_inactivity ${LIFERAY_HOME}
 			else
 				echo "Unable to find OSGi module in ${osgi_module_dir}."
 			fi
