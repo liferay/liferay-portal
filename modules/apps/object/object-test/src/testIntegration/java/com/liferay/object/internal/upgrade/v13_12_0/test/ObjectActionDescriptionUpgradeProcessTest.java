@@ -88,14 +88,10 @@ public class ObjectActionDescriptionUpgradeProcessTest {
 
 		_multiVMPool.clear();
 
-		// Description is blank
-
 		objectAction1 = _objectActionLocalService.getObjectAction(
 			objectAction1.getObjectActionId());
 
 		Assert.assertEquals(StringPool.BLANK, objectAction1.getDescription());
-
-		// Description is plain text
 
 		objectAction2 = _objectActionLocalService.getObjectAction(
 			objectAction2.getObjectActionId());
@@ -107,8 +103,6 @@ public class ObjectActionDescriptionUpgradeProcessTest {
 				LocaleUtil.fromLanguageId(
 					UpgradeProcessUtil.getDefaultLanguageId(
 						objectAction2.getCompanyId()))));
-
-		// Description is translated
 
 		objectAction3 = _objectActionLocalService.getObjectAction(
 			objectAction3.getObjectActionId());
