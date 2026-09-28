@@ -86,6 +86,23 @@ spec:
                                 -   key
                                 -   name
                                 type: object
+                            autoscaling:
+                                properties:
+                                    maxReplicas:
+                                        format: int32
+                                        minimum: 1
+                                        type: integer
+                                    minReplicas:
+                                        format: int32
+                                        minimum: 0
+                                        type: integer
+                                required:
+                                -   maxReplicas
+                                -   minReplicas
+                                type: object
+                                x-kubernetes-validations:
+                                -   message: minReplicas must not exceed maxReplicas
+                                    rule: self.minReplicas <= self.maxReplicas
                             desiredReplicas:
                                 format: int32
                                 type: integer

@@ -32,6 +32,17 @@ type AppStatus struct {
 	VirtualEntryID int64 `json:"virtualEntryId,omitempty"`
 }
 
+// +kubebuilder:validation:XValidation:message="minReplicas must not exceed maxReplicas",rule="self.minReplicas <= self.maxReplicas"
+type Autoscaling struct {
+	// +kubebuilder:validation:Minimum=1
+	// +kubebuilder:validation:Required
+	MaxReplicas int32 `json:"maxReplicas"`
+
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:validation:Required
+	MinReplicas int32 `json:"minReplicas"`
+}
+
 type LicenseStatus struct {
 	// +optional
 	Checksum string `json:"checksum,omitempty"`
@@ -79,6 +90,9 @@ type LiferayEnvironmentList struct {
 type LiferayEnvironmentSpec struct {
 	// +kubebuilder:validation:Required
 	ActivationCodeSecretRef SecretKeyRef `json:"activationCodeSecretRef"`
+
+	// +optional
+	Autoscaling *Autoscaling `json:"autoscaling,omitempty"`
 
 	// +optional
 	DesiredReplicas *int32 `json:"desiredReplicas,omitempty"`
