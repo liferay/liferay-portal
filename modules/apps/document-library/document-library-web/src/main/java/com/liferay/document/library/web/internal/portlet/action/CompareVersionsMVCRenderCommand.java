@@ -10,7 +10,6 @@ import com.liferay.diff.DiffResult;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
@@ -89,7 +88,7 @@ public class CompareVersionsMVCRenderCommand implements MVCRenderCommand {
 		InputStream sourceInputStream = _getFileVersionInputStream(
 			sourceFileVersion);
 
-		FileVersion targetFileVersion = _dlAppLocalService.getFileVersion(
+		FileVersion targetFileVersion = _dlAppService.getFileVersion(
 			targetFileVersionId);
 
 		InputStream targetInputStream = _getFileVersionInputStream(
@@ -144,9 +143,6 @@ public class CompareVersionsMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private Diff _diff;
-
-	@Reference
-	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private DLAppService _dlAppService;
