@@ -15,6 +15,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.image.ImageToolUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -145,6 +146,40 @@ public class WebServerServletTest {
 	}
 
 	@Test
+	public void testGetImageWithoutDownloadPermission() throws Exception {
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.GUEST,
+			ActionKeys.DOWNLOAD);
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.OWNER,
+			ActionKeys.DOWNLOAD);
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.SITE_MEMBER,
+			ActionKeys.DOWNLOAD);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(WebKeys.USER, _user);
+		mockHttpServletRequest.setParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
+		mockHttpServletRequest.setParameter("uuid", fileEntry.getUuid());
+
+		Assert.assertNull(
+			ReflectionTestUtil.invoke(
+				_webServerServlet, "getImage",
+				new Class<?>[] {HttpServletRequest.class, boolean.class},
+				mockHttpServletRequest, false));
+	}
+
+	@Test
 	public void testGetStatus() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -252,6 +287,61 @@ public class WebServerServletTest {
 		Assert.assertNotEquals(
 			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
 			mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	public void testSendFileWithoutDownloadPermission() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		String title = RandomTestUtil.randomString() + ".txt";
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.GUEST,
+			ActionKeys.DOWNLOAD);
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.OWNER,
+			ActionKeys.DOWNLOAD);
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.SITE_MEMBER,
+			ActionKeys.DOWNLOAD);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(WebKeys.USER, _user);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		try {
+			ReflectionTestUtil.invoke(
+				_webServerServlet, "sendFile",
+				new Class<?>[] {
+					HttpServletRequest.class, HttpServletResponse.class,
+					User.class, long.class, long.class, String.class
+				},
+				mockHttpServletRequest, mockHttpServletResponse, _user,
+				_group.getGroupId(), folder.getFolderId(), title);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(exception instanceof PortalException);
+		}
 	}
 
 	@Test
