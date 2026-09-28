@@ -1730,6 +1730,8 @@ definition {
 	@summary = "Default summary"
 	macro publishExistingWCArticleWithPermissions() {
 		Click(locator1 = "WCEditWebContent#PUBLISH_BUTTON");
+
+		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
 	}
 
 	@summary = "Default summary"
