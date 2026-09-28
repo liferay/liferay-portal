@@ -49,7 +49,13 @@ public class WebServerServletTokenTest {
 	}
 
 	@Test
-	public void testGetTokenIsNotDerivableFromTheImageAlone() {
+	public void testGetToken() {
+		_testGetToken();
+		_testGetTokenWithModifiedImage();
+		_testGetTokenWithNonexistentImage();
+	}
+
+	private void _testGetToken() {
 		Date modifiedDate = _image.getModifiedDate();
 
 		Assert.assertNotEquals(
@@ -62,16 +68,7 @@ public class WebServerServletTokenTest {
 			WebServerServletTokenUtil.getToken(_image.getImageId()));
 	}
 
-	@Test
-	public void testGetTokenWhenImageDoesNotExist() {
-		Assert.assertEquals(
-			StringPool.BLANK,
-			WebServerServletTokenUtil.getToken(
-				CounterLocalServiceUtil.increment()));
-	}
-
-	@Test
-	public void testGetTokenWhenImageIsModified() {
+	private void _testGetTokenWithModifiedImage() {
 		String token = WebServerServletTokenUtil.getToken(_image.getImageId());
 
 		Date modifiedDate = _image.getModifiedDate();
@@ -82,6 +79,13 @@ public class WebServerServletTokenTest {
 
 		Assert.assertNotEquals(
 			token, WebServerServletTokenUtil.getToken(_image.getImageId()));
+	}
+
+	private void _testGetTokenWithNonexistentImage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			WebServerServletTokenUtil.getToken(
+				CounterLocalServiceUtil.increment()));
 	}
 
 	@DeleteAfterTestRun
