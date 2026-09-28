@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
+import {EditConnectorPage} from './EditConnectorPage';
 
 export class ConnectorsPage {
 	readonly dataSetFragmentPage: DataSetPage;
@@ -29,6 +30,24 @@ export class ConnectorsPage {
 			page.getByRole('menuitem', {exact: true, name});
 		this.newConnectorButton = page.getByTestId('fdsCreationActionButton');
 		this.page = page;
+	}
+
+	async createConnector({
+		connector,
+		name,
+	}: {
+		connector: string;
+		name: string;
+	}) {
+		await this.goto();
+
+		await this.newConnectorButton.click();
+
+		const editConnectorPage = new EditConnectorPage(this.page);
+
+		await editConnectorPage.createConnector({connector, name});
+
+		await expect(this.getConnector(name)).toBeVisible();
 	}
 
 	async deleteConnector(name: string) {
