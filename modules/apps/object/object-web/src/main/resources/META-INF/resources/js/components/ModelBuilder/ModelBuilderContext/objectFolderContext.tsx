@@ -35,7 +35,7 @@ const initialState = {
 		ObjectDefinitionNodeData | ObjectRelationshipEdgeData[]
 	>,
 	hasUnsavedObjectFolderItemPositions: false,
-	isLoadingObjectFolder: false,
+	isLoadingObjectFolder: true,
 	leftSidebarItems: [] as LeftSidebarItem[],
 	modelBuilderModals: {} as ModelBuilderModals,
 	nodeHandleConnectable: false,

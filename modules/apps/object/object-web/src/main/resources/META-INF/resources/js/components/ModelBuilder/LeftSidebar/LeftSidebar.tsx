@@ -111,6 +111,7 @@ export default function LeftSidebar() {
 				<ClayButton
 					aria-labelledby={Liferay.Language.get('create-new-object')}
 					className="lfr-objects__model-builder-left-sidebar-body-create-new-object-button"
+					disabled={isLoadingObjectFolder}
 					onClick={() =>
 						dispatch({
 							payload: {
