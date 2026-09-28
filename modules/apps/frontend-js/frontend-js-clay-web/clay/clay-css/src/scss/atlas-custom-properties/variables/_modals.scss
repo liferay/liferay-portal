@@ -180,12 +180,12 @@ $modal-body: map-deep-merge(
 			margin-right: calc(#{$modal-inner-padding} * -1),
 		),
 
-		'.modal-banner-img-start': (
-			margin-top: calc(#{$modal-inner-padding} * -1),
-		),
-
 		'.modal-banner-img-end': (
 			margin-bottom: calc(#{$modal-inner-padding} * -1),
+		),
+
+		'.modal-banner-img-start': (
+			margin-top: calc(#{$modal-inner-padding} * -1),
 		),
 
 		'> .close': (

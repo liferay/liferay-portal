@@ -160,12 +160,12 @@ $cadmin-modal-body: map-deep-merge(
 			margin-right: calc(#{$cadmin-modal-inner-padding} * -1),
 		),
 
-		'.modal-banner-img-start': (
-			margin-top: calc(#{$cadmin-modal-inner-padding} * -1),
-		),
-
 		'.modal-banner-img-end': (
 			margin-bottom: calc(#{$cadmin-modal-inner-padding} * -1),
+		),
+
+		'.modal-banner-img-start': (
+			margin-top: calc(#{$cadmin-modal-inner-padding} * -1),
 		),
 
 		'> .close': (
