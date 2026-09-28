@@ -12,8 +12,13 @@ function Field() {
 }
 
 describe('loadModule', () => {
+	beforeEach(() => {
+		Liferay.FeatureFlags['LPD-48372'] = true;
+	});
+
 	afterEach(() => {
 		delete (Liferay as any).Loader;
+		delete Liferay.FeatureFlags['LPD-48372'];
 	});
 
 	it('loads the default export of an AMD module', async () => {
@@ -51,6 +56,12 @@ describe('loadModule', () => {
 	});
 
 	it('rejects an AMD module when the AMD loader is disabled', async () => {
+		Liferay.FeatureFlags['LPD-48372'] = false;
+
+		(Liferay as any).Loader = {
+			require: jest.fn(),
+		};
+
 		await expect(loadModule(AMD_MODULE_NAME)).rejects.toThrow(
 			`Unable to load AMD module "${AMD_MODULE_NAME}" because the AMD loader is disabled`
 		);
