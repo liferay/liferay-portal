@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Instances API
 Bundle-SymbolicName: com.liferay.portal.instances.api
-Bundle-Version: 12.1.1
+Bundle-Version: 12.2.0
 Export-Package:\
 	com.liferay.portal.instances.constants,\
 	com.liferay.portal.instances.exporter
