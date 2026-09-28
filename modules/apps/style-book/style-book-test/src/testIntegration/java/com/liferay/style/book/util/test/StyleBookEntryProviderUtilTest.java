@@ -178,7 +178,6 @@ public class StyleBookEntryProviderUtilTest {
 
 		_testGetStyleBookEntry(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
 		_testGetStyleBookEntryWhenVirtualLayout();
 	}
 
