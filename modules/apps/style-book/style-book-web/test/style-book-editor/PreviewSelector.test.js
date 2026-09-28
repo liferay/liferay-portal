@@ -5,7 +5,7 @@
 
 import '@testing-library/jest-dom';
 import {useIsMobileDevice} from '@clayui/shared';
-import {fireEvent, render} from '@testing-library/react';
+import {act, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import {LayoutSelector} from '../../src/main/resources/META-INF/resources/js/style-book-editor/LayoutSelector';
@@ -29,6 +29,8 @@ jest.mock(
 	'../../src/main/resources/META-INF/resources/js/style-book-editor/config',
 	() => ({
 		config: {
+			fragmentCollectionPreviewURL: 'http://localhost/preview',
+			namespace: '_ns_',
 			previewOptions: [
 				{
 					data: {
@@ -43,6 +45,7 @@ jest.mock(
 						itemSelectorURL: 'page-item-selector-url',
 						recentLayouts: [
 							{
+								id: '1',
 								name: 'Page 1',
 								private: false,
 								url: 'page-1-url',
@@ -100,12 +103,21 @@ jest.mock(
 						itemSelectorURL: 'fragment-collection-selector-url',
 						recentLayouts: [
 							{
+								fragmentCollectionKey: 'collection-1',
+								groupId: 10,
 								name: 'Fragment Collection 1',
 								private: false,
 								url: 'fragment-collection-1-url',
 							},
+							{
+								fragmentCollectionKey: 'collection-2',
+								groupId: 0,
+								name: 'Fragment Collection 2',
+								private: false,
+								url: 'fragment-collection-2-url',
+							},
 						],
-						totalLayouts: 1,
+						totalLayouts: 5,
 					},
 					type: 'fragmentCollection',
 				},
@@ -124,6 +136,35 @@ const renderPreviewSelector = (layoutType = LAYOUT_TYPES.page) => {
 			<LayoutSelector layoutType={layoutType} />
 		</>
 	);
+};
+
+const renderLayoutSelector = (layoutType, previewLayout) => {
+	return render(
+		<LayoutContextProvider
+			initialState={{previewLayout, previewLayoutType: layoutType}}
+		>
+			<LayoutSelector layoutType={layoutType} />
+		</LayoutContextProvider>
+	);
+};
+
+const pickFromMore = (layoutType, previewLayout, item) => {
+	const renderResult = renderLayoutSelector(layoutType, previewLayout);
+
+	const {getByRole} = renderResult;
+
+	const trigger = getByRole('button');
+
+	fireEvent.click(trigger);
+	fireEvent.click(getByRole('button', {name: 'more'}));
+
+	act(() => {
+		openItemSelector.mock.calls[0][0].callback(item);
+	});
+
+	fireEvent.click(trigger);
+
+	return renderResult;
 };
 
 describe('PreviewSelector', () => {
@@ -215,5 +256,96 @@ describe('PreviewSelector', () => {
 				itemSelectorURL: 'page-item-selector-url',
 			})
 		);
+	});
+
+	describe('restricted page icon', () => {
+		it('is not shown for fragment collections without guest view permission', () => {
+			const {getByRole, queryAllByLabelText} = renderLayoutSelector(
+				LAYOUT_TYPES.fragmentCollection,
+				{name: 'Preview', url: 'preview-url'}
+			);
+
+			fireEvent.click(getByRole('button'));
+
+			expect(queryAllByLabelText('restricted-page')).toHaveLength(0);
+		});
+
+		it('is shown for a page picked from More without guest view permission', () => {
+			const {getByLabelText} = pickFromMore(
+				LAYOUT_TYPES.page,
+				{name: 'Page 1', url: 'page-1-url'},
+				{
+					hasGuestViewPermission: false,
+					value: JSON.stringify({
+						name: 'Restricted Page',
+						plid: 99,
+						previewURL: 'http://localhost/restricted-page',
+					}),
+				}
+			);
+
+			expect(getByLabelText('restricted-page')).toBeInTheDocument();
+		});
+	});
+
+	describe('items picked from More', () => {
+		const fragmentCollectionPreview = {
+			name: 'Fragment Collection 1',
+			url: 'fragment-collection-1-url',
+		};
+
+		it('does not list a fragment collection twice when it matches by key and group', () => {
+			const {getAllByRole} = pickFromMore(
+				LAYOUT_TYPES.fragmentCollection,
+				fragmentCollectionPreview,
+				{
+					value: JSON.stringify({
+						fragmentCollectionKey: 'collection-1',
+						groupId: 10,
+						name: 'Fragment Collection 1',
+					}),
+				}
+			);
+
+			expect(
+				getAllByRole('menuitem').map((menuItem) => menuItem.textContent)
+			).toEqual(['Fragment Collection 1', 'Fragment Collection 2']);
+		});
+
+		it('lists a fragment collection with the same key in another group separately', () => {
+			const {getAllByRole} = pickFromMore(
+				LAYOUT_TYPES.fragmentCollection,
+				fragmentCollectionPreview,
+				{
+					value: JSON.stringify({
+						fragmentCollectionKey: 'collection-1',
+						groupId: 20,
+						name: 'Other Group Collection 1',
+					}),
+				}
+			);
+
+			expect(
+				getAllByRole('menuitem').map((menuItem) => menuItem.textContent)
+			).toEqual(['Other Group Collection 1', 'Fragment Collection 1']);
+		});
+
+		it('does not list a page twice when it matches by id', () => {
+			const {getAllByRole} = pickFromMore(
+				LAYOUT_TYPES.page,
+				{name: 'Page 2', url: 'page-2-url'},
+				{
+					value: JSON.stringify({
+						name: 'Page 1',
+						plid: 1,
+						previewURL: 'http://localhost/page-1-other-url',
+					}),
+				}
+			);
+
+			expect(
+				getAllByRole('menuitem').map((menuItem) => menuItem.textContent)
+			).toEqual(['Page 1', 'Page 2', 'Page 3', 'Page 4']);
+		});
 	});
 });
