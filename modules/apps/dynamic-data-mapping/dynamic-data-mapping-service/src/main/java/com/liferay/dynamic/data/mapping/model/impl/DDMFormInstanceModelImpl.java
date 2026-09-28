@@ -1209,10 +1209,16 @@ public class DDMFormInstanceModelImpl
 			return;
 		}
 
-		DDMFormInstanceModelImpl sourceModelImpl =
-			(DDMFormInstanceModelImpl)source;
-
-		setSettingsDDMFormValues(sourceModelImpl.getSettingsDDMFormValues());
+		try {
+			_ddmFormValuesSetterMethodHandle.invokeExact(
+				(DDMFormInstanceImpl)this,
+				(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
+					_ddmFormValuesGetterMethodHandle.invokeExact(
+						(DDMFormInstanceImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1381,7 +1387,7 @@ public class DDMFormInstanceModelImpl
 
 			ddmFormInstanceCacheModel.ddmFormValues =
 				(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
-					_ddmFormValuesMethodHandle.invokeExact(
+					_ddmFormValuesGetterMethodHandle.invokeExact(
 						(DDMFormInstanceImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -1603,13 +1609,17 @@ public class DDMFormInstanceModelImpl
 					}
 				};
 
-	private static final MethodHandle _ddmFormValuesMethodHandle;
+	private static final MethodHandle _ddmFormValuesGetterMethodHandle;
+	private static final MethodHandle _ddmFormValuesSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_ddmFormValuesMethodHandle = lookup.findGetter(
+			_ddmFormValuesGetterMethodHandle = lookup.findGetter(
+				DDMFormInstanceImpl.class, "_ddmFormValues",
+				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
+			_ddmFormValuesSetterMethodHandle = lookup.findSetter(
 				DDMFormInstanceImpl.class, "_ddmFormValues",
 				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
 		}
@@ -1621,4 +1631,4 @@ public class DDMFormInstanceModelImpl
 	private DDMFormInstance _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2023697018
+// LIFERAY-SERVICE-BUILDER-HASH:-359132391

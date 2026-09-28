@@ -1037,10 +1037,16 @@ public class LayoutPageTemplateStructureRelModelImpl
 			return;
 		}
 
-		LayoutPageTemplateStructureRelModelImpl sourceModelImpl =
-			(LayoutPageTemplateStructureRelModelImpl)source;
-
-		setDataJSONObject(sourceModelImpl.getDataJSONObject());
+		try {
+			_dataJSONObjectSetterMethodHandle.invokeExact(
+				(LayoutPageTemplateStructureRelImpl)this,
+				(com.liferay.portal.kernel.json.JSONObject)
+					_dataJSONObjectGetterMethodHandle.invokeExact(
+						(LayoutPageTemplateStructureRelImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1211,7 +1217,7 @@ public class LayoutPageTemplateStructureRelModelImpl
 		try {
 			layoutPageTemplateStructureRelCacheModel.dataJSONObject =
 				(com.liferay.portal.kernel.json.JSONObject)
-					_dataJSONObjectMethodHandle.invokeExact(
+					_dataJSONObjectGetterMethodHandle.invokeExact(
 						(LayoutPageTemplateStructureRelImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -1443,13 +1449,17 @@ public class LayoutPageTemplateStructureRelModelImpl
 					}
 				};
 
-	private static final MethodHandle _dataJSONObjectMethodHandle;
+	private static final MethodHandle _dataJSONObjectGetterMethodHandle;
+	private static final MethodHandle _dataJSONObjectSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_dataJSONObjectMethodHandle = lookup.findGetter(
+			_dataJSONObjectGetterMethodHandle = lookup.findGetter(
+				LayoutPageTemplateStructureRelImpl.class, "_dataJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+			_dataJSONObjectSetterMethodHandle = lookup.findSetter(
 				LayoutPageTemplateStructureRelImpl.class, "_dataJSONObject",
 				com.liferay.portal.kernel.json.JSONObject.class);
 		}
@@ -1461,4 +1471,4 @@ public class LayoutPageTemplateStructureRelModelImpl
 	private LayoutPageTemplateStructureRel _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-459427796
+// LIFERAY-SERVICE-BUILDER-HASH:1600131950

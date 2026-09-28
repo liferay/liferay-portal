@@ -1196,10 +1196,16 @@ public class DDMStructureLayoutModelImpl
 			return;
 		}
 
-		DDMStructureLayoutModelImpl sourceModelImpl =
-			(DDMStructureLayoutModelImpl)source;
-
-		setDDMFormLayout(sourceModelImpl.getDDMFormLayout());
+		try {
+			_ddmFormLayoutSetterMethodHandle.invokeExact(
+				(DDMStructureLayoutImpl)this,
+				(com.liferay.dynamic.data.mapping.model.DDMFormLayout)
+					_ddmFormLayoutGetterMethodHandle.invokeExact(
+						(DDMStructureLayoutImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1355,7 +1361,7 @@ public class DDMStructureLayoutModelImpl
 
 			ddmStructureLayoutCacheModel.ddmFormLayout =
 				(com.liferay.dynamic.data.mapping.model.DDMFormLayout)
-					_ddmFormLayoutMethodHandle.invokeExact(
+					_ddmFormLayoutGetterMethodHandle.invokeExact(
 						(DDMStructureLayoutImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -1570,13 +1576,17 @@ public class DDMStructureLayoutModelImpl
 					}
 				};
 
-	private static final MethodHandle _ddmFormLayoutMethodHandle;
+	private static final MethodHandle _ddmFormLayoutGetterMethodHandle;
+	private static final MethodHandle _ddmFormLayoutSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_ddmFormLayoutMethodHandle = lookup.findGetter(
+			_ddmFormLayoutGetterMethodHandle = lookup.findGetter(
+				DDMStructureLayoutImpl.class, "_ddmFormLayout",
+				com.liferay.dynamic.data.mapping.model.DDMFormLayout.class);
+			_ddmFormLayoutSetterMethodHandle = lookup.findSetter(
 				DDMStructureLayoutImpl.class, "_ddmFormLayout",
 				com.liferay.dynamic.data.mapping.model.DDMFormLayout.class);
 		}
@@ -1588,4 +1598,4 @@ public class DDMStructureLayoutModelImpl
 	private DDMStructureLayout _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-408088305
+// LIFERAY-SERVICE-BUILDER-HASH:933331960

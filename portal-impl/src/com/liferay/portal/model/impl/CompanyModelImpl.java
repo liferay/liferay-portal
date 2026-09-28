@@ -626,11 +626,20 @@ public class CompanyModelImpl
 			return;
 		}
 
-		CompanyModelImpl sourceModelImpl = (CompanyModelImpl)source;
+		try {
+			_groupIdSetterMethodHandle.invokeExact(
+				(CompanyImpl)this,
+				(long)_groupIdGetterMethodHandle.invokeExact(
+					(CompanyImpl)source));
 
-		setGroupId(sourceModelImpl.getGroupId());
-
-		setVirtualHostname(sourceModelImpl.getVirtualHostname());
+			_virtualHostnameSetterMethodHandle.invokeExact(
+				(CompanyImpl)this,
+				(String)_virtualHostnameGetterMethodHandle.invokeExact(
+					(CompanyImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -746,13 +755,13 @@ public class CompanyModelImpl
 		companyCacheModel.active = isActive();
 
 		try {
-			companyCacheModel.groupId = (long)_groupIdMethodHandle.invokeExact(
-				(CompanyImpl)this);
+			companyCacheModel.groupId =
+				(long)_groupIdGetterMethodHandle.invokeExact((CompanyImpl)this);
 
 			setVirtualHostname(null);
 
 			companyCacheModel.virtualHostname =
-				(String)_virtualHostnameMethodHandle.invokeExact(
+				(String)_virtualHostnameGetterMethodHandle.invokeExact(
 					(CompanyImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -935,7 +944,8 @@ public class CompanyModelImpl
 			}
 		};
 
-	private static final MethodHandle _groupIdMethodHandle;
+	private static final MethodHandle _groupIdGetterMethodHandle;
+	private static final MethodHandle _groupIdSetterMethodHandle;
 
 	protected static final BiConsumer<Company, String>
 		virtualHostnameUpdateEntityCacheBiConsumer =
@@ -953,16 +963,21 @@ public class CompanyModelImpl
 				}
 			};
 
-	private static final MethodHandle _virtualHostnameMethodHandle;
+	private static final MethodHandle _virtualHostnameGetterMethodHandle;
+	private static final MethodHandle _virtualHostnameSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_groupIdMethodHandle = lookup.findGetter(
+			_groupIdGetterMethodHandle = lookup.findGetter(
+				CompanyImpl.class, "_groupId", long.class);
+			_groupIdSetterMethodHandle = lookup.findSetter(
 				CompanyImpl.class, "_groupId", long.class);
 
-			_virtualHostnameMethodHandle = lookup.findGetter(
+			_virtualHostnameGetterMethodHandle = lookup.findGetter(
+				CompanyImpl.class, "_virtualHostname", String.class);
+			_virtualHostnameSetterMethodHandle = lookup.findSetter(
 				CompanyImpl.class, "_virtualHostname", String.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
@@ -973,4 +988,4 @@ public class CompanyModelImpl
 	private Company _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:497011009
+// LIFERAY-SERVICE-BUILDER-HASH:-1754989453

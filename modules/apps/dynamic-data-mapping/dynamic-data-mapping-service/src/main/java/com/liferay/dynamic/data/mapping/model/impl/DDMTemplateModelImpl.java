@@ -1615,9 +1615,15 @@ public class DDMTemplateModelImpl
 			return;
 		}
 
-		DDMTemplateModelImpl sourceModelImpl = (DDMTemplateModelImpl)source;
-
-		setResourceClassName(sourceModelImpl.getResourceClassName());
+		try {
+			_resourceClassNameSetterMethodHandle.invokeExact(
+				(DDMTemplateImpl)this,
+				(String)_resourceClassNameGetterMethodHandle.invokeExact(
+					(DDMTemplateImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1846,7 +1852,7 @@ public class DDMTemplateModelImpl
 			setResourceClassName(null);
 
 			ddmTemplateCacheModel.resourceClassName =
-				(String)_resourceClassNameMethodHandle.invokeExact(
+				(String)_resourceClassNameGetterMethodHandle.invokeExact(
 					(DDMTemplateImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -2111,13 +2117,16 @@ public class DDMTemplateModelImpl
 				}
 			};
 
-	private static final MethodHandle _resourceClassNameMethodHandle;
+	private static final MethodHandle _resourceClassNameGetterMethodHandle;
+	private static final MethodHandle _resourceClassNameSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_resourceClassNameMethodHandle = lookup.findGetter(
+			_resourceClassNameGetterMethodHandle = lookup.findGetter(
+				DDMTemplateImpl.class, "_resourceClassName", String.class);
+			_resourceClassNameSetterMethodHandle = lookup.findSetter(
 				DDMTemplateImpl.class, "_resourceClassName", String.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
@@ -2128,4 +2137,4 @@ public class DDMTemplateModelImpl
 	private DDMTemplate _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1134220627
+// LIFERAY-SERVICE-BUILDER-HASH:2095715267

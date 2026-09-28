@@ -1198,10 +1198,15 @@ public class KaleoDefinitionModelImpl
 			return;
 		}
 
-		KaleoDefinitionModelImpl sourceModelImpl =
-			(KaleoDefinitionModelImpl)source;
-
-		setContentAsXML(sourceModelImpl.getContentAsXML());
+		try {
+			_contentAsXMLSetterMethodHandle.invokeExact(
+				(KaleoDefinitionImpl)this,
+				(String)_contentAsXMLGetterMethodHandle.invokeExact(
+					(KaleoDefinitionImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1375,7 +1380,7 @@ public class KaleoDefinitionModelImpl
 			setContentAsXML(null);
 
 			kaleoDefinitionCacheModel.contentAsXML =
-				(String)_contentAsXMLMethodHandle.invokeExact(
+				(String)_contentAsXMLGetterMethodHandle.invokeExact(
 					(KaleoDefinitionImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -1604,13 +1609,16 @@ public class KaleoDefinitionModelImpl
 				}
 			};
 
-	private static final MethodHandle _contentAsXMLMethodHandle;
+	private static final MethodHandle _contentAsXMLGetterMethodHandle;
+	private static final MethodHandle _contentAsXMLSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_contentAsXMLMethodHandle = lookup.findGetter(
+			_contentAsXMLGetterMethodHandle = lookup.findGetter(
+				KaleoDefinitionImpl.class, "_contentAsXML", String.class);
+			_contentAsXMLSetterMethodHandle = lookup.findSetter(
 				KaleoDefinitionImpl.class, "_contentAsXML", String.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
@@ -1621,4 +1629,4 @@ public class KaleoDefinitionModelImpl
 	private KaleoDefinition _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1596618873
+// LIFERAY-SERVICE-BUILDER-HASH:-1597085216

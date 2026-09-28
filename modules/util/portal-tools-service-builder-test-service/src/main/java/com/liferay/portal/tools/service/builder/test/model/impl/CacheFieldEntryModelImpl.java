@@ -423,10 +423,15 @@ public class CacheFieldEntryModelImpl
 
 	@Override
 	public void copyCacheFields(CacheFieldEntry source) {
-		CacheFieldEntryModelImpl sourceModelImpl =
-			(CacheFieldEntryModelImpl)source;
-
-		setNickname(sourceModelImpl.getNickname());
+		try {
+			_nicknameSetterMethodHandle.invokeExact(
+				(CacheFieldEntryImpl)this,
+				(String)_nicknameGetterMethodHandle.invokeExact(
+					(CacheFieldEntryImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -504,7 +509,7 @@ public class CacheFieldEntryModelImpl
 			setNickname(null);
 
 			cacheFieldEntryCacheModel.nickname =
-				(String)_nicknameMethodHandle.invokeExact(
+				(String)_nicknameGetterMethodHandle.invokeExact(
 					(CacheFieldEntryImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -643,13 +648,16 @@ public class CacheFieldEntryModelImpl
 			}
 		};
 
-	private static final MethodHandle _nicknameMethodHandle;
+	private static final MethodHandle _nicknameGetterMethodHandle;
+	private static final MethodHandle _nicknameSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_nicknameMethodHandle = lookup.findGetter(
+			_nicknameGetterMethodHandle = lookup.findGetter(
+				CacheFieldEntryImpl.class, "_nickname", String.class);
+			_nicknameSetterMethodHandle = lookup.findSetter(
 				CacheFieldEntryImpl.class, "_nickname", String.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
@@ -660,4 +668,4 @@ public class CacheFieldEntryModelImpl
 	private CacheFieldEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2120817222
+// LIFERAY-SERVICE-BUILDER-HASH:-2042961386

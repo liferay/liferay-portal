@@ -850,12 +850,22 @@ public class LayoutSetModelImpl
 			return;
 		}
 
-		LayoutSetModelImpl sourceModelImpl = (LayoutSetModelImpl)source;
+		try {
+			_companyFallbackVirtualHostnameSetterMethodHandle.invokeExact(
+				(LayoutSetImpl)this,
+				(String)
+					_companyFallbackVirtualHostnameGetterMethodHandle.
+						invokeExact((LayoutSetImpl)source));
 
-		setCompanyFallbackVirtualHostname(
-			sourceModelImpl.getCompanyFallbackVirtualHostname());
-
-		setVirtualHostnames(sourceModelImpl.getVirtualHostnames());
+			_virtualHostnamesSetterMethodHandle.invokeExact(
+				(LayoutSetImpl)this,
+				(java.util.NavigableMap<String, String>)
+					_virtualHostnamesGetterMethodHandle.invokeExact(
+						(LayoutSetImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1005,14 +1015,15 @@ public class LayoutSetModelImpl
 			setCompanyFallbackVirtualHostname(null);
 
 			layoutSetCacheModel.companyFallbackVirtualHostname =
-				(String)_companyFallbackVirtualHostnameMethodHandle.invokeExact(
-					(LayoutSetImpl)this);
+				(String)
+					_companyFallbackVirtualHostnameGetterMethodHandle.
+						invokeExact((LayoutSetImpl)this);
 
 			setVirtualHostnames(null);
 
 			layoutSetCacheModel.virtualHostnames =
 				(java.util.NavigableMap<String, String>)
-					_virtualHostnamesMethodHandle.invokeExact(
+					_virtualHostnamesGetterMethodHandle.invokeExact(
 						(LayoutSetImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -1224,7 +1235,9 @@ public class LayoutSetModelImpl
 			};
 
 	private static final MethodHandle
-		_companyFallbackVirtualHostnameMethodHandle;
+		_companyFallbackVirtualHostnameGetterMethodHandle;
+	private static final MethodHandle
+		_companyFallbackVirtualHostnameSetterMethodHandle;
 
 	protected static final BiConsumer
 		<LayoutSet, java.util.NavigableMap<String, String>>
@@ -1243,17 +1256,26 @@ public class LayoutSetModelImpl
 					}
 				};
 
-	private static final MethodHandle _virtualHostnamesMethodHandle;
+	private static final MethodHandle _virtualHostnamesGetterMethodHandle;
+	private static final MethodHandle _virtualHostnamesSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_companyFallbackVirtualHostnameMethodHandle = lookup.findGetter(
-				LayoutSetImpl.class, "_companyFallbackVirtualHostname",
-				String.class);
+			_companyFallbackVirtualHostnameGetterMethodHandle =
+				lookup.findGetter(
+					LayoutSetImpl.class, "_companyFallbackVirtualHostname",
+					String.class);
+			_companyFallbackVirtualHostnameSetterMethodHandle =
+				lookup.findSetter(
+					LayoutSetImpl.class, "_companyFallbackVirtualHostname",
+					String.class);
 
-			_virtualHostnamesMethodHandle = lookup.findGetter(
+			_virtualHostnamesGetterMethodHandle = lookup.findGetter(
+				LayoutSetImpl.class, "_virtualHostnames",
+				java.util.NavigableMap.class);
+			_virtualHostnamesSetterMethodHandle = lookup.findSetter(
 				LayoutSetImpl.class, "_virtualHostnames",
 				java.util.NavigableMap.class);
 		}
@@ -1265,4 +1287,4 @@ public class LayoutSetModelImpl
 	private LayoutSet _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1503212331
+// LIFERAY-SERVICE-BUILDER-HASH:-96186237

@@ -1493,14 +1493,22 @@ public class FragmentEntryLinkModelImpl
 			return;
 		}
 
-		FragmentEntryLinkModelImpl sourceModelImpl =
-			(FragmentEntryLinkModelImpl)source;
+		try {
+			_configurationJSONObjectSetterMethodHandle.invokeExact(
+				(FragmentEntryLinkImpl)this,
+				(com.liferay.portal.kernel.json.JSONObject)
+					_configurationJSONObjectGetterMethodHandle.invokeExact(
+						(FragmentEntryLinkImpl)source));
 
-		setConfigurationJSONObject(
-			sourceModelImpl.getConfigurationJSONObject());
-
-		setEditableValuesJSONObject(
-			sourceModelImpl.getEditableValuesJSONObject());
+			_editableValuesJSONObjectSetterMethodHandle.invokeExact(
+				(FragmentEntryLinkImpl)this,
+				(com.liferay.portal.kernel.json.JSONObject)
+					_editableValuesJSONObjectGetterMethodHandle.invokeExact(
+						(FragmentEntryLinkImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Override
@@ -1747,12 +1755,12 @@ public class FragmentEntryLinkModelImpl
 		try {
 			fragmentEntryLinkCacheModel.configurationJSONObject =
 				(com.liferay.portal.kernel.json.JSONObject)
-					_configurationJSONObjectMethodHandle.invokeExact(
+					_configurationJSONObjectGetterMethodHandle.invokeExact(
 						(FragmentEntryLinkImpl)this);
 
 			fragmentEntryLinkCacheModel.editableValuesJSONObject =
 				(com.liferay.portal.kernel.json.JSONObject)
-					_editableValuesJSONObjectMethodHandle.invokeExact(
+					_editableValuesJSONObjectGetterMethodHandle.invokeExact(
 						(FragmentEntryLinkImpl)this);
 		}
 		catch (Throwable throwable) {
@@ -2025,7 +2033,10 @@ public class FragmentEntryLinkModelImpl
 					}
 				};
 
-	private static final MethodHandle _configurationJSONObjectMethodHandle;
+	private static final MethodHandle
+		_configurationJSONObjectGetterMethodHandle;
+	private static final MethodHandle
+		_configurationJSONObjectSetterMethodHandle;
 
 	protected static final BiConsumer
 		<FragmentEntryLink, com.liferay.portal.kernel.json.JSONObject>
@@ -2046,17 +2057,26 @@ public class FragmentEntryLinkModelImpl
 					}
 				};
 
-	private static final MethodHandle _editableValuesJSONObjectMethodHandle;
+	private static final MethodHandle
+		_editableValuesJSONObjectGetterMethodHandle;
+	private static final MethodHandle
+		_editableValuesJSONObjectSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_configurationJSONObjectMethodHandle = lookup.findGetter(
+			_configurationJSONObjectGetterMethodHandle = lookup.findGetter(
+				FragmentEntryLinkImpl.class, "_configurationJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+			_configurationJSONObjectSetterMethodHandle = lookup.findSetter(
 				FragmentEntryLinkImpl.class, "_configurationJSONObject",
 				com.liferay.portal.kernel.json.JSONObject.class);
 
-			_editableValuesJSONObjectMethodHandle = lookup.findGetter(
+			_editableValuesJSONObjectGetterMethodHandle = lookup.findGetter(
+				FragmentEntryLinkImpl.class, "_editableValuesJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+			_editableValuesJSONObjectSetterMethodHandle = lookup.findSetter(
 				FragmentEntryLinkImpl.class, "_editableValuesJSONObject",
 				com.liferay.portal.kernel.json.JSONObject.class);
 		}
@@ -2068,4 +2088,4 @@ public class FragmentEntryLinkModelImpl
 	private FragmentEntryLink _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1357780800
+// LIFERAY-SERVICE-BUILDER-HASH:-551617630
