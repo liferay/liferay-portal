@@ -6,7 +6,6 @@
 import {Page, expect, mergeTests} from '@playwright/test';
 
 import {analyticsCloudStubTest} from '../../../fixtures/analyticsCloudStubTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {SITE_CMS_SPACE_NAME} from '../../setup/site-cms-site/constants/space';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
@@ -138,14 +137,7 @@ async function mockAnalyticsEndpoints(page: Page) {
 	);
 }
 
-const test = mergeTests(
-	analyticsCloudStubTest,
-	cmsPagesTest,
-	featureFlagsTest({
-		'LPD-58315': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(analyticsCloudStubTest, cmsPagesTest, loginTest());
 
 test(
 	'renders the metrics returned by the analytics endpoints',

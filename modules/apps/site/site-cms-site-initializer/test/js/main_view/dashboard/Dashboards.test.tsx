@@ -74,7 +74,6 @@ function renderDashboards({
 describe('Dashboards', () => {
 	beforeEach(() => {
 		(global as any).Liferay.FeatureFlags = {
-			'LPD-58315': true,
 			'LPD-82226': true,
 		};
 	});
@@ -101,7 +100,6 @@ describe('Dashboards', () => {
 
 	it('shows only the inventory dashboard when the performance tab is the only one gated out', () => {
 		(global as any).Liferay.FeatureFlags = {
-			'LPD-58315': true,
 			'LPD-82226': false,
 		};
 
@@ -127,19 +125,6 @@ describe('Dashboards', () => {
 
 		expect(
 			screen.queryByText('governance-dashboard')
-		).not.toBeInTheDocument();
-	});
-
-	it('hides the performance tab when its feature flag is disabled', () => {
-		(global as any).Liferay.FeatureFlags = {
-			'LPD-58315': false,
-			'LPD-82226': true,
-		};
-
-		renderDashboards();
-
-		expect(
-			screen.queryByRole('button', {name: 'performance'})
 		).not.toBeInTheDocument();
 	});
 });
