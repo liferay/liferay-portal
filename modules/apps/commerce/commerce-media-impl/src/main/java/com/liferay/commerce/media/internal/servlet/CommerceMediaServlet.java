@@ -6,6 +6,8 @@
 package com.liferay.commerce.media.internal.servlet;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.exception.NoSuchEntryException;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.commerce.media.CommerceMediaProvider;
@@ -128,6 +130,21 @@ public class CommerceMediaServlet extends HttpServlet {
 			httpServletRequest, httpServletResponse, contentDisposition);
 	}
 
+	private void _checkPermission(
+			long commerceAccountId, CPDefinition cpDefinition)
+		throws PortalException {
+
+		if (cpDefinition.isAccountGroupFilterEnabled() &&
+			(commerceAccountId != AccountConstants.ACCOUNT_ENTRY_ID_GUEST)) {
+
+			_accountEntryService.getAccountEntry(commerceAccountId);
+		}
+
+		_commerceProductViewPermission.check(
+			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
+			cpDefinition.getCPDefinitionId());
+	}
+
 	private FileEntry _getFileEntry(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
@@ -198,9 +215,7 @@ public class CommerceMediaServlet extends HttpServlet {
 					cpDefinition.getCommerceCatalog(), ActionKeys.VIEW);
 			}
 			else {
-				_commerceProductViewPermission.check(
-					PermissionThreadLocal.getPermissionChecker(),
-					commerceAccountId, cpDefinition.getCPDefinitionId());
+				_checkPermission(commerceAccountId, cpDefinition);
 			}
 
 			return cpDefinition.getGroupId();
@@ -482,7 +497,11 @@ public class CommerceMediaServlet extends HttpServlet {
 
 			FileEntry fileEntry = _getFileEntry(httpServletRequest);
 
-			if (fileEntry == null) {
+			if ((fileEntry == null) ||
+				!_fileEntryModelResourcePermission.contains(
+					PermissionThreadLocal.getPermissionChecker(), fileEntry,
+					ActionKeys.VIEW)) {
+
 				_sendDefaultMediaBytes(
 					groupId, httpServletRequest, httpServletResponse,
 					contentDisposition);
@@ -559,9 +578,7 @@ public class CommerceMediaServlet extends HttpServlet {
 			}
 			else {
 				if (sample) {
-					_commerceProductViewPermission.check(
-						PermissionThreadLocal.getPermissionChecker(),
-						commerceAccountId, cpDefinition.getCPDefinitionId());
+					_checkPermission(commerceAccountId, cpDefinition);
 				}
 				else {
 					_sendError(
@@ -633,7 +650,9 @@ public class CommerceMediaServlet extends HttpServlet {
 				_log.debug(portalException);
 			}
 
-			if (portalException instanceof PrincipalException) {
+			if (portalException instanceof NoSuchEntryException ||
+				portalException instanceof PrincipalException) {
+
 				_sendError(
 					httpServletResponse, HttpServletResponse.SC_UNAUTHORIZED,
 					"You do not have permission to access the requested " +
@@ -651,6 +670,9 @@ public class CommerceMediaServlet extends HttpServlet {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceMediaServlet.class);
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
@@ -702,6 +724,12 @@ public class CommerceMediaServlet extends HttpServlet {
 
 	@Reference
 	private File _file;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.repository.model.FileEntry)"
+	)
+	private ModelResourcePermission<FileEntry>
+		_fileEntryModelResourcePermission;
 
 	@Reference
 	private Portal _portal;
