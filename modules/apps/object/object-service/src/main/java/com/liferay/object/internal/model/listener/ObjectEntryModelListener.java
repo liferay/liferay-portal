@@ -536,26 +536,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		return attributes;
 	}
 
-	private void _reindex(ObjectEntry objectEntry) throws PortalException {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.findByPrimaryKey(
-				objectEntry.getObjectDefinitionId());
-
-		if (!objectDefinition.isEnableIndexSearch()) {
-			return;
-		}
-
-		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(
-			objectDefinition.getClassName());
-
-		try (SafeCloseable safeCloseable =
-				StrictObjectReindexThreadLocal.
-					setStrictObjectReindexWithSafeCloseable(true)) {
-
-			indexer.reindex(objectEntry);
-		}
-	}
-
 	private void _route(
 			String eventType, ObjectEntry originalObjectEntry,
 			ObjectEntry objectEntry)
@@ -700,11 +680,21 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		rootObjectEntry = _objectEntryPersistence.update(rootObjectEntry);
 
-		_reindex(rootObjectEntry);
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionPersistence.findByPrimaryKey(
 				rootObjectEntry.getObjectDefinitionId());
+
+		if (objectDefinition.isEnableIndexSearch()) {
+			Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(
+				objectDefinition.getClassName());
+
+			try (SafeCloseable safeCloseable =
+					StrictObjectReindexThreadLocal.
+						setStrictObjectReindexWithSafeCloseable(true)) {
+
+				indexer.reindex(rootObjectEntry);
+			}
+		}
 
 		if (!objectDefinition.isEnableObjectEntryVersioning()) {
 			return;
