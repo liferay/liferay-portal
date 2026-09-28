@@ -43,6 +43,14 @@ spec:
                     kind: StatefulSet
                     managedFieldsManagers:
                         -   liferay-dxp-operator
+                -   group: autoscaling
+                    kind: HorizontalPodAutoscaler
+                    managedFieldsManagers:
+                        -   liferay-dxp-operator
+                -   group: keda.sh
+                    kind: ScaledObject
+                    managedFieldsManagers:
+                        -   liferay-dxp-operator
             project: liferay-application
             sources:
                 -   {{- include "liferay-platform.chartSource" .Values.liferay | nindent 20 }}
