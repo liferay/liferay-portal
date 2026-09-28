@@ -12,6 +12,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -61,9 +62,11 @@ public class RenderMaxStateLayoutStructureDisplayContext {
 		LayoutStructure layoutStructure = new LayoutStructure();
 
 		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+			layoutStructure.addRootLayoutStructureItem(
+				PortalUtil.getUniqueElementId());
 
 		layoutStructure.addDropZoneLayoutStructureItem(
+			PortalUtil.getUniqueElementId(),
 			rootLayoutStructureItem.getItemId(), 0);
 
 		return layoutStructure;

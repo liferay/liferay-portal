@@ -11,6 +11,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -71,9 +72,11 @@ public class PortletLayoutDisplayContext {
 		LayoutStructure layoutStructure = new LayoutStructure();
 
 		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+			layoutStructure.addRootLayoutStructureItem(
+				PortalUtil.getUniqueElementId());
 
 		layoutStructure.addDropZoneLayoutStructureItem(
+			PortalUtil.getUniqueElementId(),
 			rootLayoutStructureItem.getItemId(), 0);
 
 		return layoutStructure;
