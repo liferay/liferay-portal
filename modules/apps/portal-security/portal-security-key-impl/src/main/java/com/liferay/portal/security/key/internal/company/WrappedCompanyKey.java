@@ -29,7 +29,7 @@ public class WrappedCompanyKey {
 		}
 
 		String body = keyString.substring(
-			_WRAPPED_KEY_PREFIX.length(), keyString.length() - 1);
+			"${wrappedKey:".length(), keyString.length() - 1);
 
 		int versionIndex = body.indexOf(CharPool.COLON);
 
@@ -40,7 +40,7 @@ public class WrappedCompanyKey {
 
 		String version = body.substring(0, versionIndex);
 
-		if (!version.equals(_WRAPPED_KEY_VERSION)) {
+		if (!version.equals("v1")) {
 			throw new CompanyKeyException(
 				StringBundler.concat(
 					"Wrapped key version ", version,
@@ -128,15 +128,10 @@ public class WrappedCompanyKey {
 		Base64.Encoder encoder = Base64.getEncoder();
 
 		return StringBundler.concat(
-			_WRAPPED_KEY_PREFIX, _WRAPPED_KEY_VERSION, StringPool.COLON,
-			_keyReference.getProviderId(), StringPool.COLON,
+			"${wrappedKey:v1:", _keyReference.getProviderId(), StringPool.COLON,
 			_keyReference.getIdentifier(), StringPool.PIPE,
 			encoder.encodeToString(_ciphertext), StringPool.CLOSE_CURLY_BRACE);
 	}
-
-	private static final String _WRAPPED_KEY_PREFIX = "${wrappedKey:";
-
-	private static final String _WRAPPED_KEY_VERSION = "v1";
 
 	private final byte[] _ciphertext;
 	private final KeyReference _keyReference;
