@@ -23,12 +23,17 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"panel.app.order:Integer=300",
+		"panel.app.order:Integer=500",
 		"panel.category.key=" + PanelCategoryKeys.CONTROL_PANEL_OBJECT
 	},
 	service = PanelApp.class
 )
 public class HeadlessBuilderPanelApp extends BasePanelApp {
+
+	@Override
+	public String getIcon() {
+		return "api-web";
+	}
 
 	@Override
 	public Portlet getPortlet() {
