@@ -286,9 +286,8 @@ public class CustomAssetDisplayPageFriendlyURLResolverTest {
 	private void _testGetLayoutDisplayPageObjectProviderLayoutWhenVirtualLayout()
 		throws Exception {
 
-		ObjectEntry objectEntry = _addObjectEntry();
-
 		DepotEntry depotEntry = _addDesignLibraryDepotEntry();
+		ObjectEntry objectEntry = _addObjectEntry();
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntry.getDepotEntryId(), _group.getGroupId());

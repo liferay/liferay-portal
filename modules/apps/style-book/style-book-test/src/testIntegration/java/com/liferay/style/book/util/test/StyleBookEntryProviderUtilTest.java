@@ -300,11 +300,11 @@ public class StyleBookEntryProviderUtilTest {
 	private void _testGetStyleBookEntryWhenVirtualLayout() throws Exception {
 		Group connectedDepotGroup = _addConnectedDepotGroup();
 
-		StyleBookEntry styleBookEntry = _addStyleBookEntry(
-			connectedDepotGroup.getGroupId());
-
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
 			connectedDepotGroup);
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			connectedDepotGroup.getGroupId());
 
 		layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
 

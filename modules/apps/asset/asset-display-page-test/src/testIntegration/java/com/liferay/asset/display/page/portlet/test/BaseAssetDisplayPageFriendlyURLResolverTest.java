@@ -179,21 +179,19 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		ColorScheme layoutColorScheme = layout.getColorScheme();
 		ColorScheme layoutSetColorScheme = layoutSet.getColorScheme();
 
+		Assert.assertEquals(layoutSet.getCss(), layout.getCssText());
 		Assert.assertEquals(
 			layoutSetColorScheme.getColorSchemeId(),
 			layoutColorScheme.getColorSchemeId());
-
-		Assert.assertEquals(layoutSet.getCss(), layout.getCssText());
 
 		Theme layoutSetTheme = layoutSet.getTheme();
 		Theme layoutTheme = layout.getTheme();
 
 		Assert.assertEquals(
-			layoutSetTheme.getThemeId(), layoutTheme.getThemeId());
-
-		Assert.assertEquals(
 			layoutSet.getThemeSetting(_themeSettingKey, "regular"),
 			layout.getThemeSetting(_themeSettingKey, "regular"));
+		Assert.assertEquals(
+			layoutSetTheme.getThemeId(), layoutTheme.getThemeId());
 	}
 
 	private long _getClassNameId() {
@@ -239,9 +237,8 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 	private void _testGetLayoutFriendlyURLCompositeLookAndFeel()
 		throws Exception {
 
-		JournalArticle journalArticle = _addJournalArticle();
-
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
+		JournalArticle journalArticle = _addJournalArticle();
 
 		_addDisplayPageTemplate(
 			designLibraryGroup.getGroupId(), journalArticle);
@@ -260,9 +257,8 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 	private void _testGetLayoutFriendlyURLCompositeLookAndFeelWhenMasterLayout()
 		throws Exception {
 
-		JournalArticle journalArticle = _addJournalArticle();
-
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
+		JournalArticle journalArticle = _addJournalArticle();
 
 		_updateLookAndFeel(designLibraryGroup, _THEME_ID_MINIUM);
 
@@ -277,10 +273,9 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		Layout masterLayout = _layoutLocalService.getLayout(
 			masterLayoutPageTemplateEntry.getPlid());
 
+		String themeSettingValue = RandomTestUtil.randomString();
 		UnicodeProperties typeSettingsUnicodeProperties =
 			masterLayout.getTypeSettingsProperties();
-
-		String themeSettingValue = RandomTestUtil.randomString();
 
 		typeSettingsUnicodeProperties.put(
 			ThemeSettingImpl.namespaceProperty("regular", _themeSettingKey),
@@ -311,22 +306,20 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 	private void _testGetLayoutFriendlyURLCompositeLookAndFeelWhenNotInherited()
 		throws Exception {
 
-		JournalArticle journalArticle = _addJournalArticle();
-
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(), journalArticle);
+		JournalArticle journalArticle = _addJournalArticle();
 
 		LayoutSet designLibraryLayoutSet = _updateLookAndFeel(
 			designLibraryGroup, _THEME_ID_SPEEDWELL);
 
 		_updateLookAndFeel(_group, _THEME_ID_SPEEDWELL);
 
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(), journalArticle);
+
 		ColorScheme designLibraryColorScheme =
 			designLibraryLayoutSet.getColorScheme();
-
 		Layout designLibraryLayout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
 
@@ -348,25 +341,22 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 	private void _testGetLayoutFriendlyURLCompositeLookAndFeelWhenThemeSettingSet()
 		throws Exception {
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
 		JournalArticle journalArticle = _addJournalArticle();
 
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
+		_updateLookAndFeel(designLibraryGroup, _THEME_ID_MINIUM);
+		_updateLookAndFeel(_group, _THEME_ID_SPEEDWELL);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_addDisplayPageTemplate(
 				designLibraryGroup.getGroupId(), journalArticle);
 
-		_updateLookAndFeel(designLibraryGroup, _THEME_ID_MINIUM);
-
-		_updateLookAndFeel(_group, _THEME_ID_SPEEDWELL);
-
 		Layout designLibraryLayout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
 
+		String themeSettingValue = RandomTestUtil.randomString();
 		UnicodeProperties typeSettingsUnicodeProperties =
 			designLibraryLayout.getTypeSettingsProperties();
-
-		String themeSettingValue = RandomTestUtil.randomString();
 
 		typeSettingsUnicodeProperties.put(
 			ThemeSettingImpl.namespaceProperty("regular", _themeSettingKey),
@@ -378,7 +368,6 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		Layout layout = _getLayout(journalArticle);
 
 		Assert.assertTrue(layout instanceof VirtualLayout);
-
 		Assert.assertEquals(
 			themeSettingValue,
 			layout.getThemeSetting(_themeSettingKey, "regular"));
