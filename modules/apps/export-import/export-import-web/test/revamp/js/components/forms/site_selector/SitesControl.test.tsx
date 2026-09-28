@@ -59,11 +59,6 @@ const PREVIEW_SITES_PAGE = JSON.stringify({
 });
 
 describe('SitesControl', () => {
-
-	// The data set can still have a request in flight when a test ends. The
-	// shared teardown takes the mock away, so the answer would arrive at
-	// whichever test runs next and fail it. Every test keeps one installed.
-
 	beforeEach(() => {
 		fetch.resetMocks();
 		fetch.mockResponse(PREVIEW_SITES_PAGE);
@@ -177,11 +172,6 @@ describe('SitesControl', () => {
 			.getAllByRole('columnheader')
 			.map((columnHeader) => columnHeader.textContent);
 
-		// Exporting asks how many sites sit below the one being picked, and has
-		// nothing to say about an instance to import into. The first and last
-		// headers belong to the data set: the select-all box and the control
-		// that hides columns.
-
 		expect(columnHeaders).toEqual([
 			expect.anything(),
 			'title',
@@ -241,9 +231,6 @@ describe('SitesControl', () => {
 		const row = (await screen.findByText('Support')).closest(
 			'tr'
 		) as HTMLElement;
-
-		// A child and its parent are listed side by side, so the path is what
-		// tells them apart
 
 		expect(
 			within(row).getByText('Global / Marketing / Support')
@@ -337,9 +324,6 @@ describe('SitesControl', () => {
 			const row = (await screen.findByText('Support')).closest(
 				'tr'
 			) as HTMLElement;
-
-			// The path is read straight off the site the API answers with, the
-			// same as on the side that works from the file
 
 			expect(
 				within(row).getByText('Global / Marketing / Support')
@@ -442,9 +426,6 @@ describe('SitesControl', () => {
 		);
 
 		await screen.findByText('Support');
-
-		// The data set cannot sort a list handed to it, so offering the control
-		// would be offering something that does nothing
 
 		expect(
 			screen.queryByRole('button', {name: /order\[sort\]/})
