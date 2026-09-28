@@ -466,6 +466,11 @@ public class OpenAPIUtilTest {
 			),
 			"getItemsPage");
 
+		_testGetToolOutputSchema(
+			JSONFactoryUtil.createJSONObject(
+				_read("post_test_v1.0_levels_output.json")),
+			"postLevel");
+
 		Assert.assertNull(_getOutputSchema("patchItem"));
 		Assert.assertNull(_getOutputSchema("postItem"));
 		Assert.assertNull(_getOutputSchema("putItem"));

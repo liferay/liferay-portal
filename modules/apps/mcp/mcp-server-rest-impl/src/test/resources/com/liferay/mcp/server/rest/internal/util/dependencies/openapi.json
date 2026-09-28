@@ -135,6 +135,28 @@
 				"properties": {
 					"name": {
 						"type": "string"
+					},
+					"next": {
+						"$ref": "#/components/schemas/LevelE"
+					}
+				},
+				"type": "object"
+			},
+			"LevelE": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"next": {
+						"$ref": "#/components/schemas/LevelF"
+					}
+				},
+				"type": "object"
+			},
+			"LevelF": {
+				"properties": {
+					"name": {
+						"type": "string"
 					}
 				},
 				"type": "object"
@@ -486,6 +508,17 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/LevelA"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LevelA"
+								}
 							}
 						}
 					}

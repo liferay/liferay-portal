@@ -1255,6 +1255,16 @@ public class OpenAPIUtil {
 		return mediaTypeJSONObject.getJSONObject("schema");
 	}
 
+	private static int _getSchemaMaxDepth(
+		String excludedPropertyAttributeName) {
+
+		if (Objects.equals(excludedPropertyAttributeName, "writeOnly")) {
+			return 5;
+		}
+
+		return 3;
+	}
+
 	private static Object _getSchemaObject(
 		String excludedPropertyAttributeName, JSONObject openAPIJSONObject,
 		Object value, Set<String> visitedRefs) {
@@ -1265,7 +1275,10 @@ public class OpenAPIUtil {
 			if (jsonObject.has("$ref")) {
 				String ref = jsonObject.getString("$ref");
 
-				if (visitedRefs.contains(ref) || (visitedRefs.size() >= 3)) {
+				if (visitedRefs.contains(ref) ||
+					(visitedRefs.size() >= _getSchemaMaxDepth(
+						excludedPropertyAttributeName))) {
+
 					return HashMapBuilder.<String, Object>put(
 						"type", "object"
 					).build();

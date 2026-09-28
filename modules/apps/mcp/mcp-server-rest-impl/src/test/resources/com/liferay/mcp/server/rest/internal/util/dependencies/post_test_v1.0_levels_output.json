@@ -1,0 +1,43 @@
+{
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"next": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"next": {
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"next": {
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"next": {
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"next": {
+											"type": "object"
+										}
+									},
+									"type": "object"
+								}
+							},
+							"type": "object"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		}
+	},
+	"type": "object"
+}
