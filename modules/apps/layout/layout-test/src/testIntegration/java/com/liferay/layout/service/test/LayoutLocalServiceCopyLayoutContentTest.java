@@ -1558,7 +1558,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 	}
 
-	private void _addFragmentEntryLink(
+	private FragmentEntryLink _addFragmentEntryLink(
 			long defaultSegmentsExperienceId, FragmentEntry fragmentEntry,
 			String fragmentEntryScopeERC, Layout layout,
 			LayoutStructure layoutStructure, int position)
@@ -1573,6 +1573,8 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			layoutStructure.getMainItemId(), position);
+
+		return fragmentEntryLink;
 	}
 
 	private FragmentEntryLink _addFragmentEntryLink(
@@ -1685,22 +1687,18 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 	}
 
 	private void _assertFragmentEntryLink(
-		FragmentEntry fragmentEntry, FragmentEntryLink fragmentEntryLink,
-		String fragmentEntryScopeERC, Layout targetLayout) {
-
-		Assert.assertEquals(
-			targetLayout.getGroupId(), fragmentEntryLink.getGroupId());
-		Assert.assertEquals(
-			fragmentEntryScopeERC,
-			fragmentEntryLink.getFragmentEntryScopeERC());
-		Assert.assertEquals(
-			fragmentEntry, fragmentEntryLink.fetchFragmentEntry());
-	}
-
-	private void _assertFragmentEntryLink(
 		FragmentEntryLink expectedFragmentEntryLink,
 		FragmentEntryLink fragmentEntryLink) {
 
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getGroupId(),
+			fragmentEntryLink.getGroupId());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getFragmentEntryERC(),
+			fragmentEntryLink.getFragmentEntryERC());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getFragmentEntryScopeERC(),
+			fragmentEntryLink.getFragmentEntryScopeERC());
 		Assert.assertEquals(
 			expectedFragmentEntryLink.getCss(), fragmentEntryLink.getCss());
 		Assert.assertEquals(
@@ -1995,10 +1993,9 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		long defaultSegmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				sourceLayout.getPlid());
-
 		FragmentEntry fragmentEntry1 = _addFragmentEntry(_group);
 
-		_addFragmentEntryLink(
+		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLink(
 			defaultSegmentsExperienceId, fragmentEntry1, null, sourceLayout,
 			layoutStructure, 0);
 
@@ -2006,7 +2003,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		FragmentEntry fragmentEntry2 = _addFragmentEntry(scopeGroup);
 
-		_addFragmentEntryLink(
+		FragmentEntryLink fragmentEntryLink2 = _addFragmentEntryLink(
 			defaultSegmentsExperienceId, fragmentEntry2,
 			scopeGroup.getExternalReferenceCode(), sourceLayout,
 			layoutStructure, 1);
@@ -2015,7 +2012,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		FragmentEntry fragmentEntry3 = _addFragmentEntry(targetGroup);
 
-		_addFragmentEntryLink(
+		FragmentEntryLink fragmentEntryLink3 = _addFragmentEntryLink(
 			defaultSegmentsExperienceId, fragmentEntry3,
 			targetGroup.getExternalReferenceCode(), sourceLayout,
 			layoutStructure, 2);
@@ -2047,18 +2044,43 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			targetFragmentEntryLinks.toString(), 4,
 			targetFragmentEntryLinks.size());
 
+		FragmentEntryLink expectedFragmentEntryLink1 =
+			(FragmentEntryLink)fragmentEntryLink1.clone();
+
+		expectedFragmentEntryLink1.setGroupId(targetLayout.getGroupId());
+		expectedFragmentEntryLink1.setFragmentEntryScopeERC(
+			_group.getExternalReferenceCode());
+
 		_assertFragmentEntryLink(
-			fragmentEntry1, targetFragmentEntryLinks.get(0),
-			_group.getExternalReferenceCode(), targetLayout);
+			expectedFragmentEntryLink1, targetFragmentEntryLinks.get(0));
+
+		FragmentEntryLink expectedFragmentEntryLink2 =
+			(FragmentEntryLink)fragmentEntryLink2.clone();
+
+		expectedFragmentEntryLink2.setGroupId(targetLayout.getGroupId());
+		expectedFragmentEntryLink2.setFragmentEntryScopeERC(
+			scopeGroup.getExternalReferenceCode());
+
 		_assertFragmentEntryLink(
-			fragmentEntry2, targetFragmentEntryLinks.get(1),
-			scopeGroup.getExternalReferenceCode(), targetLayout);
+			expectedFragmentEntryLink2, targetFragmentEntryLinks.get(1));
+
+		FragmentEntryLink expectedFragmentEntryLink3 =
+			(FragmentEntryLink)fragmentEntryLink3.clone();
+
+		expectedFragmentEntryLink3.setGroupId(targetLayout.getGroupId());
+		expectedFragmentEntryLink3.setFragmentEntryScopeERC(StringPool.BLANK);
+
 		_assertFragmentEntryLink(
-			fragmentEntry3, targetFragmentEntryLinks.get(2), StringPool.BLANK,
-			targetLayout);
+			expectedFragmentEntryLink3, targetFragmentEntryLinks.get(2));
+
+		FragmentEntryLink expectedFragmentEntryLink4 =
+			(FragmentEntryLink)fragmentEntryLink4.clone();
+
+		expectedFragmentEntryLink4.setGroupId(targetLayout.getGroupId());
+		expectedFragmentEntryLink4.setFragmentEntryScopeERC(StringPool.BLANK);
+
 		_assertFragmentEntryLink(
-			null, targetFragmentEntryLinks.get(3), StringPool.BLANK,
-			targetLayout);
+			expectedFragmentEntryLink4, targetFragmentEntryLinks.get(3));
 	}
 
 	private void _testCopyContentLayoutStructureWithSegmentsExperiences()
