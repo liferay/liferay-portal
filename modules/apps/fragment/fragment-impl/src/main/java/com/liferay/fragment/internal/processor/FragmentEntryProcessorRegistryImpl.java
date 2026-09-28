@@ -281,6 +281,24 @@ public class FragmentEntryProcessorRegistryImpl
 
 		Document document = _getDocument(html);
 
+		if (editableValuesJSONObject.length() == 0) {
+			DefaultEditableValuesFragmentEntryProcessor
+				defaultEditableValuesFragmentEntryProcessor =
+					_serviceTrackerMap.getService(
+						FragmentEntryProcessorConstants.
+							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+			if (defaultEditableValuesFragmentEntryProcessor != null) {
+				editableValuesJSONObject.put(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					defaultEditableValuesFragmentEntryProcessor.
+						getDefaultEditableValuesJSONObject(
+							fragmentEntryLink.getConfigurationJSONObject(),
+							document));
+			}
+		}
+
 		for (DocumentFragmentEntryProcessor documentFragmentEntryProcessor :
 				_documentFragmentEntryProcessors) {
 

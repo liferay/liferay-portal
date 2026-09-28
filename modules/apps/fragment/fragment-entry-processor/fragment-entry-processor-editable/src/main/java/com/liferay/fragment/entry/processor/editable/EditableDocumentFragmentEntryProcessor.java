@@ -75,13 +75,6 @@ public class EditableDocumentFragmentEntryProcessor
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
-		if (editableValuesJSONObject.length() == 0) {
-			editableValuesJSONObject.put(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-				_getDefaultEditableValuesJSONObject(document));
-		}
-
 		JSONObject jsonObject = editableValuesJSONObject.getJSONObject(
 			FragmentEntryProcessorConstants.
 				KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
@@ -281,34 +274,6 @@ public class EditableDocumentFragmentEntryProcessor
 	protected void deactivate() {
 		_editableElementMapperServiceTrackerMap.close();
 		_editableElementParserServiceTrackerMap.close();
-	}
-
-	private JSONObject _getDefaultEditableValuesJSONObject(Document document) {
-		JSONObject defaultEditableValuesJSONObject =
-			_jsonFactory.createJSONObject();
-
-		for (Element element :
-				document.select("lfr-editable,*[data-lfr-editable-id]")) {
-
-			EditableElementParser editableElementParser =
-				_getEditableElementParser(element);
-
-			if (editableElementParser == null) {
-				continue;
-			}
-
-			JSONObject defaultValueJSONObject = JSONUtil.put(
-				"config", editableElementParser.getAttributes(element)
-			).put(
-				"defaultValue", editableElementParser.getValue(element)
-			);
-
-			defaultEditableValuesJSONObject.put(
-				EditableFragmentEntryProcessorUtil.getElementId(element),
-				defaultValueJSONObject);
-		}
-
-		return defaultEditableValuesJSONObject;
 	}
 
 	private EditableElementParser _getEditableElementParser(Element element) {
