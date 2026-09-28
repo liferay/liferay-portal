@@ -63,6 +63,9 @@ import java.util.function.Supplier;
 		),
 		@JsonSubTypes.Type(name = "checkbox", value = CheckboxField.class),
 		@JsonSubTypes.Type(
+			name = "collectionSelector", value = CollectionSelectorField.class
+		),
+		@JsonSubTypes.Type(
 			name = "colorPalette", value = ColorPaletteField.class
 		),
 		@JsonSubTypes.Type(
@@ -558,9 +561,9 @@ public abstract class Field implements Serializable {
 	public static enum Type {
 
 		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
-		CHECKBOX("checkbox"), COLOR_PALETTE("colorPalette"),
-		COLOR_PICKER("colorPicker"), ITEM_SELECTOR("itemSelector"),
-		LENGTH("length"), SELECT("select"),
+		CHECKBOX("checkbox"), COLLECTION_SELECTOR("collectionSelector"),
+		COLOR_PALETTE("colorPalette"), COLOR_PICKER("colorPicker"),
+		ITEM_SELECTOR("itemSelector"), LENGTH("length"), SELECT("select"),
 		TARGET_COLLECTION_DISPLAY("targetCollectionDisplay"), TEXT("text"),
 		URL("url"), VIDEO_SELECTOR("videoSelector");
 
@@ -707,4 +710,4 @@ public abstract class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-153125638
+// LIFERAY-REST-BUILDER-HASH:-311206686

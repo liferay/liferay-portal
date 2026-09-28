@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemExternalReference;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.CollectionItemExternalReference;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,28 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ItemExternalReferenceSerDes {
+public class CollectionItemExternalReferenceSerDes {
 
-	public static ItemExternalReference toDTO(String json) {
-		ItemExternalReferenceJSONParser itemExternalReferenceJSONParser =
-			new ItemExternalReferenceJSONParser();
+	public static CollectionItemExternalReference toDTO(String json) {
+		CollectionItemExternalReferenceJSONParser
+			collectionItemExternalReferenceJSONParser =
+				new CollectionItemExternalReferenceJSONParser();
 
-		return itemExternalReferenceJSONParser.parseToDTO(json);
+		return collectionItemExternalReferenceJSONParser.parseToDTO(json);
 	}
 
-	public static ItemExternalReference[] toDTOs(String json) {
-		ItemExternalReferenceJSONParser itemExternalReferenceJSONParser =
-			new ItemExternalReferenceJSONParser();
+	public static CollectionItemExternalReference[] toDTOs(String json) {
+		CollectionItemExternalReferenceJSONParser
+			collectionItemExternalReferenceJSONParser =
+				new CollectionItemExternalReferenceJSONParser();
 
-		return itemExternalReferenceJSONParser.parseToDTOs(json);
+		return collectionItemExternalReferenceJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(ItemExternalReference itemExternalReference) {
-		if (itemExternalReference == null) {
+	public static String toJSON(
+		CollectionItemExternalReference collectionItemExternalReference) {
+
+		if (collectionItemExternalReference == null) {
 			return "null";
 		}
 
@@ -47,7 +51,7 @@ public class ItemExternalReferenceSerDes {
 
 		sb.append("{");
 
-		if (itemExternalReference.getClassName() != null) {
+		if (collectionItemExternalReference.getClassName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -56,12 +60,14 @@ public class ItemExternalReferenceSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(itemExternalReference.getClassName()));
+			sb.append(_escape(collectionItemExternalReference.getClassName()));
 
 			sb.append("\"");
 		}
 
-		if (itemExternalReference.getExternalReferenceCode() != null) {
+		if (collectionItemExternalReference.getExternalReferenceCode() !=
+				null) {
+
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -71,19 +77,33 @@ public class ItemExternalReferenceSerDes {
 			sb.append("\"");
 
 			sb.append(
-				_escape(itemExternalReference.getExternalReferenceCode()));
+				_escape(
+					collectionItemExternalReference.
+						getExternalReferenceCode()));
 
 			sb.append("\"");
 		}
 
-		if (itemExternalReference.getScope() != null) {
+		if (collectionItemExternalReference.getScope() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"scope\": ");
 
-			sb.append(itemExternalReference.getScope());
+			sb.append(collectionItemExternalReference.getScope());
+		}
+
+		if (collectionItemExternalReference.getCollectionType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"collectionType\": ");
+
+			sb.append("\"");
+			sb.append(collectionItemExternalReference.getCollectionType());
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -92,61 +112,77 @@ public class ItemExternalReferenceSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ItemExternalReferenceJSONParser itemExternalReferenceJSONParser =
-			new ItemExternalReferenceJSONParser();
+		CollectionItemExternalReferenceJSONParser
+			collectionItemExternalReferenceJSONParser =
+				new CollectionItemExternalReferenceJSONParser();
 
-		return itemExternalReferenceJSONParser.parseToMap(json);
+		return collectionItemExternalReferenceJSONParser.parseToMap(json);
 	}
 
 	public static Map<String, String> toMap(
-		ItemExternalReference itemExternalReference) {
+		CollectionItemExternalReference collectionItemExternalReference) {
 
-		if (itemExternalReference == null) {
+		if (collectionItemExternalReference == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (itemExternalReference.getClassName() == null) {
+		if (collectionItemExternalReference.getClassName() == null) {
 			map.put("className", null);
 		}
 		else {
 			map.put(
 				"className",
-				String.valueOf(itemExternalReference.getClassName()));
+				String.valueOf(collectionItemExternalReference.getClassName()));
 		}
 
-		if (itemExternalReference.getExternalReferenceCode() == null) {
+		if (collectionItemExternalReference.getExternalReferenceCode() ==
+				null) {
+
 			map.put("externalReferenceCode", null);
 		}
 		else {
 			map.put(
 				"externalReferenceCode",
 				String.valueOf(
-					itemExternalReference.getExternalReferenceCode()));
+					collectionItemExternalReference.
+						getExternalReferenceCode()));
 		}
 
-		if (itemExternalReference.getScope() == null) {
+		if (collectionItemExternalReference.getScope() == null) {
 			map.put("scope", null);
 		}
 		else {
-			map.put("scope", String.valueOf(itemExternalReference.getScope()));
+			map.put(
+				"scope",
+				String.valueOf(collectionItemExternalReference.getScope()));
+		}
+
+		if (collectionItemExternalReference.getCollectionType() == null) {
+			map.put("collectionType", null);
+		}
+		else {
+			map.put(
+				"collectionType",
+				String.valueOf(
+					collectionItemExternalReference.getCollectionType()));
 		}
 
 		return map;
 	}
 
-	public static class ItemExternalReferenceJSONParser
-		extends BaseJSONParser<ItemExternalReference> {
+	public static class CollectionItemExternalReferenceJSONParser
+		extends BaseJSONParser<CollectionItemExternalReference> {
 
 		@Override
-		protected ItemExternalReference createDTO() {
-			return new ItemExternalReference();
+		protected CollectionItemExternalReference createDTO() {
+			return new CollectionItemExternalReference();
 		}
 
 		@Override
-		protected ItemExternalReference[] createDTOArray(int size) {
-			return new ItemExternalReference[size];
+		protected CollectionItemExternalReference[] createDTOArray(int size) {
+			return new CollectionItemExternalReference[size];
 		}
 
 		@Override
@@ -162,18 +198,21 @@ public class ItemExternalReferenceSerDes {
 			else if (Objects.equals(jsonParserFieldName, "scope")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "collectionType")) {
+				return false;
+			}
 
 			return false;
 		}
 
 		@Override
 		protected void setField(
-			ItemExternalReference itemExternalReference,
+			CollectionItemExternalReference collectionItemExternalReference,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "className")) {
 				if (jsonParserFieldValue != null) {
-					itemExternalReference.setClassName(
+					collectionItemExternalReference.setClassName(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -181,15 +220,22 @@ public class ItemExternalReferenceSerDes {
 						jsonParserFieldName, "externalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
-					itemExternalReference.setExternalReferenceCode(
+					collectionItemExternalReference.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "scope")) {
 				if (jsonParserFieldValue != null) {
-					itemExternalReference.setScope(
+					collectionItemExternalReference.setScope(
 						com.liferay.headless.admin.fragment.client.scope.Scope.
 							toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "collectionType")) {
+				if (jsonParserFieldValue != null) {
+					collectionItemExternalReference.setCollectionType(
+						CollectionItemExternalReference.CollectionType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -279,4 +325,4 @@ public class ItemExternalReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:84231705
+// LIFERAY-REST-BUILDER-HASH:1703415730

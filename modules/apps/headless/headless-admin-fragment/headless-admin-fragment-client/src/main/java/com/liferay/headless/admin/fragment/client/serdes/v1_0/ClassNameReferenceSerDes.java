@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.SitePageURLValue;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.ClassNameReference;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class SitePageURLValueSerDes {
+public class ClassNameReferenceSerDes {
 
-	public static SitePageURLValue toDTO(String json) {
-		SitePageURLValueJSONParser sitePageURLValueJSONParser =
-			new SitePageURLValueJSONParser();
+	public static ClassNameReference toDTO(String json) {
+		ClassNameReferenceJSONParser classNameReferenceJSONParser =
+			new ClassNameReferenceJSONParser();
 
-		return sitePageURLValueJSONParser.parseToDTO(json);
+		return classNameReferenceJSONParser.parseToDTO(json);
 	}
 
-	public static SitePageURLValue[] toDTOs(String json) {
-		SitePageURLValueJSONParser sitePageURLValueJSONParser =
-			new SitePageURLValueJSONParser();
+	public static ClassNameReference[] toDTOs(String json) {
+		ClassNameReferenceJSONParser classNameReferenceJSONParser =
+			new ClassNameReferenceJSONParser();
 
-		return sitePageURLValueJSONParser.parseToDTOs(json);
+		return classNameReferenceJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(SitePageURLValue sitePageURLValue) {
-		if (sitePageURLValue == null) {
+	public static String toJSON(ClassNameReference classNameReference) {
+		if (classNameReference == null) {
 			return "null";
 		}
 
@@ -47,27 +47,29 @@ public class SitePageURLValueSerDes {
 
 		sb.append("{");
 
-		if (sitePageURLValue.getSitePageItemExternalReference() != null) {
+		if (classNameReference.getClassName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"sitePageItemExternalReference\": ");
-
-			sb.append(
-				String.valueOf(
-					sitePageURLValue.getSitePageItemExternalReference()));
-		}
-
-		if (sitePageURLValue.getUrlType() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"urlType\": ");
+			sb.append("\"className\": ");
 
 			sb.append("\"");
-			sb.append(sitePageURLValue.getUrlType());
+
+			sb.append(_escape(classNameReference.getClassName()));
+
+			sb.append("\"");
+		}
+
+		if (classNameReference.getCollectionType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"collectionType\": ");
+
+			sb.append("\"");
+			sb.append(classNameReference.getCollectionType());
 			sb.append("\"");
 		}
 
@@ -77,60 +79,60 @@ public class SitePageURLValueSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		SitePageURLValueJSONParser sitePageURLValueJSONParser =
-			new SitePageURLValueJSONParser();
+		ClassNameReferenceJSONParser classNameReferenceJSONParser =
+			new ClassNameReferenceJSONParser();
 
-		return sitePageURLValueJSONParser.parseToMap(json);
+		return classNameReferenceJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(SitePageURLValue sitePageURLValue) {
-		if (sitePageURLValue == null) {
+	public static Map<String, String> toMap(
+		ClassNameReference classNameReference) {
+
+		if (classNameReference == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (sitePageURLValue.getSitePageItemExternalReference() == null) {
-			map.put("sitePageItemExternalReference", null);
+		if (classNameReference.getClassName() == null) {
+			map.put("className", null);
 		}
 		else {
 			map.put(
-				"sitePageItemExternalReference",
-				String.valueOf(
-					sitePageURLValue.getSitePageItemExternalReference()));
+				"className", String.valueOf(classNameReference.getClassName()));
 		}
 
-		if (sitePageURLValue.getUrlType() == null) {
-			map.put("urlType", null);
+		if (classNameReference.getCollectionType() == null) {
+			map.put("collectionType", null);
 		}
 		else {
-			map.put("urlType", String.valueOf(sitePageURLValue.getUrlType()));
+			map.put(
+				"collectionType",
+				String.valueOf(classNameReference.getCollectionType()));
 		}
 
 		return map;
 	}
 
-	public static class SitePageURLValueJSONParser
-		extends BaseJSONParser<SitePageURLValue> {
+	public static class ClassNameReferenceJSONParser
+		extends BaseJSONParser<ClassNameReference> {
 
 		@Override
-		protected SitePageURLValue createDTO() {
-			return new SitePageURLValue();
+		protected ClassNameReference createDTO() {
+			return new ClassNameReference();
 		}
 
 		@Override
-		protected SitePageURLValue[] createDTOArray(int size) {
-			return new SitePageURLValue[size];
+		protected ClassNameReference[] createDTOArray(int size) {
+			return new ClassNameReference[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(
-					jsonParserFieldName, "sitePageItemExternalReference")) {
-
+			if (Objects.equals(jsonParserFieldName, "className")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "urlType")) {
+			else if (Objects.equals(jsonParserFieldName, "collectionType")) {
 				return false;
 			}
 
@@ -139,22 +141,19 @@ public class SitePageURLValueSerDes {
 
 		@Override
 		protected void setField(
-			SitePageURLValue sitePageURLValue, String jsonParserFieldName,
+			ClassNameReference classNameReference, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(
-					jsonParserFieldName, "sitePageItemExternalReference")) {
-
+			if (Objects.equals(jsonParserFieldName, "className")) {
 				if (jsonParserFieldValue != null) {
-					sitePageURLValue.setSitePageItemExternalReference(
-						ItemExternalReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
+					classNameReference.setClassName(
+						(String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "urlType")) {
+			else if (Objects.equals(jsonParserFieldName, "collectionType")) {
 				if (jsonParserFieldValue != null) {
-					sitePageURLValue.setUrlType(
-						SitePageURLValue.UrlType.create(
+					classNameReference.setCollectionType(
+						ClassNameReference.CollectionType.create(
 							(String)jsonParserFieldValue));
 				}
 			}
@@ -245,4 +244,4 @@ public class SitePageURLValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1659078116
+// LIFERAY-REST-BUILDER-HASH:-1870644615

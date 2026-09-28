@@ -7,6 +7,7 @@ package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
 import com.liferay.headless.admin.fragment.client.dto.v1_0.CategoryTreeNodeSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.CheckboxField;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.CollectionSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ColorPaletteField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ColorPickerField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Field;
@@ -64,6 +65,11 @@ public class FieldSerDes {
 
 			if (typeString.equals("checkbox")) {
 				return CheckboxFieldSerDes.toJSON((CheckboxField)field);
+			}
+
+			if (typeString.equals("collectionSelector")) {
+				return CollectionSelectorFieldSerDes.toJSON(
+					(CollectionSelectorField)field);
 			}
 
 			if (typeString.equals("colorPalette")) {
@@ -220,6 +226,10 @@ public class FieldSerDes {
 
 				if (typeString.equals("checkbox")) {
 					return CheckboxField.toDTO(json);
+				}
+
+				if (typeString.equals("collectionSelector")) {
+					return CollectionSelectorField.toDTO(json);
 				}
 
 				if (typeString.equals("colorPalette")) {
@@ -390,4 +400,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:776479011
+// LIFERAY-REST-BUILDER-HASH:-1567055112

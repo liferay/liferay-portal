@@ -6,7 +6,7 @@
 package com.liferay.headless.admin.fragment.client.dto.v1_0;
 
 import com.liferay.headless.admin.fragment.client.function.UnsafeSupplier;
-import com.liferay.headless.admin.fragment.client.serdes.v1_0.ItemExternalReferenceSerDes;
+import com.liferay.headless.admin.fragment.client.serdes.v1_0.CollectionItemExternalReferenceSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,11 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class ItemExternalReference implements Cloneable, Serializable {
+public class CollectionItemExternalReference
+	extends CollectionReference implements Cloneable, Serializable {
 
-	public static ItemExternalReference toDTO(String json) {
-		return ItemExternalReferenceSerDes.toDTO(json);
+	public static CollectionItemExternalReference toDTO(String json) {
+		return CollectionItemExternalReferenceSerDes.toDTO(json);
 	}
 
 	public String getClassName() {
@@ -93,8 +94,10 @@ public class ItemExternalReference implements Cloneable, Serializable {
 	protected com.liferay.headless.admin.fragment.client.scope.Scope scope;
 
 	@Override
-	public ItemExternalReference clone() throws CloneNotSupportedException {
-		return (ItemExternalReference)super.clone();
+	public CollectionItemExternalReference clone()
+		throws CloneNotSupportedException {
+
+		return (CollectionItemExternalReference)super.clone();
 	}
 
 	@Override
@@ -103,14 +106,15 @@ public class ItemExternalReference implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ItemExternalReference)) {
+		if (!(object instanceof CollectionItemExternalReference)) {
 			return false;
 		}
 
-		ItemExternalReference itemExternalReference =
-			(ItemExternalReference)object;
+		CollectionItemExternalReference collectionItemExternalReference =
+			(CollectionItemExternalReference)object;
 
-		return Objects.equals(toString(), itemExternalReference.toString());
+		return Objects.equals(
+			toString(), collectionItemExternalReference.toString());
 	}
 
 	@Override
@@ -121,8 +125,8 @@ public class ItemExternalReference implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return ItemExternalReferenceSerDes.toJSON(this);
+		return CollectionItemExternalReferenceSerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:204597955
+// LIFERAY-REST-BUILDER-HASH:1096583885

@@ -103,4 +103,4 @@ public class ItemValue implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1817026220
+// LIFERAY-REST-BUILDER-HASH:353624816
