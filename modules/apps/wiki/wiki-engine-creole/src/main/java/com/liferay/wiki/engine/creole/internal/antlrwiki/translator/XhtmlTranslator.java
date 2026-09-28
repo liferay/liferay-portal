@@ -259,7 +259,7 @@ public class XhtmlTranslator extends XhtmlTranslationVisitor {
 				_getHeadingMarkup(
 					_page.getTitle(), content, _tableOfContentsHeadingCounts));
 			append("\">");
-			append(content);
+			append(HtmlUtil.escape(content));
 			append("</a>");
 
 			int count = _tableOfContentsHeadingCounts.getOrDefault(content, 0);
@@ -315,11 +315,12 @@ public class XhtmlTranslator extends XhtmlTranslationVisitor {
 			postfix = StringPool.DASH + textCount;
 		}
 
-		return StringUtil.replace(
-			StringBundler.concat(
-				_HEADING_ANCHOR_PREFIX, prefix, StringPool.DASH, text.trim(),
-				postfix),
-			CharPool.SPACE, CharPool.PLUS);
+		return HtmlUtil.escapeAttribute(
+			StringUtil.replace(
+				StringBundler.concat(
+					_HEADING_ANCHOR_PREFIX, prefix, StringPool.DASH,
+					text.trim(), postfix),
+				CharPool.SPACE, CharPool.PLUS));
 	}
 
 	private ResourceBundle _getResourceBundle(Locale locale) {
