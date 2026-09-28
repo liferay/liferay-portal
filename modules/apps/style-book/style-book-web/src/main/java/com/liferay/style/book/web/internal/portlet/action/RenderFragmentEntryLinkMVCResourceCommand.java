@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 
 import jakarta.portlet.ResourceRequest;
@@ -83,7 +82,7 @@ public class RenderFragmentEntryLinkMVCResourceCommand
 		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 		fragmentEntryLink.setJs(fragmentEntry.getJs());
 		fragmentEntryLink.setConfiguration(fragmentEntry.getConfiguration());
-		fragmentEntryLink.setNamespace(PortalUUIDUtil.generate());
+		fragmentEntryLink.setNamespace(_portal.getUniqueElementId());
 
 		String configurationValues = ParamUtil.get(
 			resourceRequest, "configurationValues", StringPool.BLANK);
