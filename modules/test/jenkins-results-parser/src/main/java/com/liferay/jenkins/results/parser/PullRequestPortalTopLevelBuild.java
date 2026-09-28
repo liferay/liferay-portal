@@ -544,6 +544,9 @@ public class PullRequestPortalTopLevelBuild
 			return null;
 		}
 
+		Job.BuildProfile buildProfile = getBuildProfile();
+		String jobName = getJobName();
+
 		String portalUpstreamBranchName = getPortalUpstreamBranchName();
 
 		String branchName = getBranchName();
@@ -552,8 +555,6 @@ public class PullRequestPortalTopLevelBuild
 			portalUpstreamBranchName = branchName;
 		}
 
-		Job.BuildProfile buildProfile = getBuildProfile();
-		String jobName = getJobName();
 		String repositoryName = getBaseGitRepositoryName();
 		String stableTestSuiteName = "stable";
 
