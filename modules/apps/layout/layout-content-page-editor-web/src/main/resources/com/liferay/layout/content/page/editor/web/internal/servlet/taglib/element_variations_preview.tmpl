@@ -1,0 +1,36 @@
+<script ${nonceAttribute} data-element-variations-preview type="module">
+	const ELEMENT_VARIATIONS_URL = new URL(
+		'${elementVariationsURL}',
+		window.location.href
+	);
+
+	try {
+
+		// Resolve the audiences module relative to the element variations the
+		// same way element_variations.js.tpl does, so both share one module
+		// instance and the handlers it registers see the audiences set here
+
+		const {audiences} = await import(
+			new URL(
+				'../../../frontend-js-audiences-web/__liferay__/index.js',
+				ELEMENT_VARIATIONS_URL
+			)
+		);
+
+		const elementVariations = await import(ELEMENT_VARIATIONS_URL);
+
+		elementVariations.register();
+
+		audiences.set(JSON.parse('${audienceEntryERCs}'));
+
+		await audiences.runHandlers();
+	}
+	finally {
+
+		// Let the simulation modal know the page is ready to be shown
+
+		document.documentElement.dataset.elementVariationsPreviewReady = 'true';
+
+		window.dispatchEvent(new Event('elementVariationsPreviewReady'));
+	}
+</script>
