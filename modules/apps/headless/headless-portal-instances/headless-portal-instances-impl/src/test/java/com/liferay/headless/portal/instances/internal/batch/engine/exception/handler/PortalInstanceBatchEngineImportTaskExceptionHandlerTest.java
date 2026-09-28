@@ -9,9 +9,18 @@ import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
+import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
+import com.liferay.portal.kernel.exception.CompanyMxException;
+import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
+import com.liferay.portal.kernel.exception.CompanyWebIdException;
+import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.RequiredCompanyException;
+import com.liferay.portal.kernel.exception.UserEmailAddressException;
+import com.liferay.portal.kernel.exception.UserPasswordException;
+import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
+import com.liferay.portal.kernel.security.auth.FullNameValidator;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -59,7 +68,7 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Mockito.when(
 			_batchEngineImportTask.getOperation()
 		).thenReturn(
-			BatchEngineTaskOperation.CREATE.name()
+			BatchEngineTaskOperation.UPDATE.name()
 		);
 
 		_handle(new RequiredCompanyException(), RandomTestUtil.randomString());
@@ -77,27 +86,49 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 	}
 
 	@Test
-	public void testHandleMapsRequiredCompanyException() throws Exception {
-		_handle(new RequiredCompanyException(), RandomTestUtil.randomString());
-
-		JSONObject payloadJSONObject = _capturePayloadJSONObject();
-
-		Assert.assertEquals(
+	public void testHandleMapsExceptions() throws Exception {
+		_assertErrorMessageKey(
+			"please-enter-a-valid-email-address",
+			new UserEmailAddressException.MustNotBeNull());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-first-middle-and-last-name",
+			new ContactNameException.MustHaveValidFullName(
+				Mockito.mock(FullNameValidator.class)));
+		_assertErrorMessageKey(
+			"please-enter-a-valid-first-name",
+			new ContactNameException.MustHaveFirstName());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-last-name",
+			new ContactNameException.MustHaveLastName());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-mail-domain", new CompanyMxException());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-max-users", new CompanyMaxUsersException());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-middle-name",
+			new ContactNameException.MustHaveMiddleName());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-password",
+			new UserPasswordException.MustHaveMoreNumbers(
+				RandomTestUtil.randomInt()));
+		_assertErrorMessageKey(
+			"please-enter-a-valid-screen-name",
+			new UserScreenNameException.MustNotBeNull());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-virtual-host",
+			new CompanyVirtualHostException());
+		_assertErrorMessageKey(
+			"please-enter-a-valid-web-id", new CompanyWebIdException());
+		_assertErrorMessageKey(
 			"the-default-instance-cannot-be-deleted",
-			payloadJSONObject.getString("errorMessageKey"));
+			new RequiredCompanyException());
 	}
 
 	@Test
 	public void testHandleMapsUnknownExceptionToTheDefaultMessage()
 		throws Exception {
 
-		_handle(new Exception(), RandomTestUtil.randomString());
-
-		JSONObject payloadJSONObject = _capturePayloadJSONObject();
-
-		Assert.assertEquals(
-			"an-unexpected-error-occurred",
-			payloadJSONObject.getString("errorMessageKey"));
+		_assertErrorMessageKey("an-unexpected-error-occurred", new Exception());
 	}
 
 	@Test
@@ -113,6 +144,43 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 		Assert.assertEquals(
 			portalInstanceId, payloadJSONObject.getString("portalInstanceId"));
+	}
+
+	@Test
+	public void testHandleSendsUserNotificationEventForTheAddOperation()
+		throws Exception {
+
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		String portalInstanceId = RandomTestUtil.randomString();
+
+		_handle(new CompanyWebIdException(), portalInstanceId);
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			"ADD", payloadJSONObject.getString("operationType"));
+		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
+		Assert.assertEquals(
+			portalInstanceId, payloadJSONObject.getString("portalInstanceId"));
+	}
+
+	private void _assertErrorMessageKey(
+			String errorMessageKey, Exception exception)
+		throws Exception {
+
+		Mockito.clearInvocations(_userNotificationEventLocalService);
+
+		_handle(exception, RandomTestUtil.randomString());
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			errorMessageKey, payloadJSONObject.getString("errorMessageKey"));
 	}
 
 	private JSONObject _capturePayloadJSONObject() throws Exception {
