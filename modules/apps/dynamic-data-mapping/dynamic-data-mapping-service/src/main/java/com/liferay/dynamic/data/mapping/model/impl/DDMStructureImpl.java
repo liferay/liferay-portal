@@ -605,6 +605,7 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 		super.setDefinition(definition);
 
 		_ddmForm = null;
+		_ddmFormFieldsMap = null;
 	}
 
 	protected List<DDMFormField> filterTransientDDMFormFields(
