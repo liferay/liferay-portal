@@ -7,6 +7,7 @@ import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {ApiHelpers} from '../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import {NotificationsPage} from '../notifications-web/NotificationsPage';
 import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenuPage';
 
 export class VirtualInstancesPage {
@@ -46,7 +47,6 @@ export class VirtualInstancesPage {
 	readonly errorMessagePassword: Locator;
 	readonly newVirtualInstanceButton: Locator;
 	readonly page: Page;
-	readonly successMessage: Locator;
 
 	constructor(page: Page) {
 		this.addInstanceFrame = page.frameLocator(
@@ -133,9 +133,6 @@ export class VirtualInstancesPage {
 			.locator('[data-qa-id="creationMenuNewButton"]')
 			.filter({visible: true});
 		this.page = page;
-		this.successMessage = page.getByText(
-			'Your request completed successfully'
-		);
 	}
 
 	async addNewVirtualInstance(
@@ -161,23 +158,16 @@ export class VirtualInstancesPage {
 			virtualInstanceInitializer
 		);
 
-		await Promise.all([
-			this.addInstanceAddButton.click(),
-			this.page.waitForResponse(
-				(response) => response.url().includes('add_instance'),
-				{timeout: 180 * 1000}
-			),
-		]);
-
-		await this.page.waitForTimeout(1000);
+		await this.submitAddInstanceForm();
 
 		// Only wait for Virtual Instance creation if there are no errors
 
 		if (await this.errorMessage.isHidden()) {
-			await expect(await this.successMessage).toBeVisible({
-				timeout: 180 * 1000,
-			});
-			await this.page.locator('.alert').getByLabel('Close').click();
+			await expect(this.creationStartedMessage(name)).toBeVisible();
+
+			await this.waitForCreationNotification(name);
+
+			await this.goto();
 		}
 	}
 
@@ -206,13 +196,7 @@ export class VirtualInstancesPage {
 			virtualInstanceInitializer
 		);
 
-		await Promise.all([
-			this.addInstanceAddButton.click(),
-			this.page.waitForResponse((response) =>
-				response.url().includes('add_instance')
-			),
-		]);
-		await this.page.waitForTimeout(1000);
+		await this.submitAddInstanceForm();
 
 		await expect(this.errorMessageScreenName).toBeVisible();
 		await expect(this.errorMessageEmailAddress).toBeVisible();
@@ -222,14 +206,11 @@ export class VirtualInstancesPage {
 		await this.addInstanceEmailAddressField.fill(emailAddress);
 		await this.addInstancePasswordField.fill(password);
 
-		await Promise.all([
-			this.addInstanceAddButton.click(),
-			this.page.waitForResponse((response) =>
-				response.url().includes('add_instance')
-			),
-		]);
+		await this.submitAddInstanceForm();
 
-		await this.page.waitForTimeout(1000);
+		await expect(this.creationStartedMessage(name)).toBeVisible();
+
+		await this.waitForCreationNotification(name);
 	}
 
 	private async clickAddInstance() {
@@ -250,6 +231,12 @@ export class VirtualInstancesPage {
 
 	copyInstanceSuccessMessage(webId: string) {
 		return this.page.getByText(`The instance was copied to ${webId}.`);
+	}
+
+	creationStartedMessage(name: string) {
+		return this.page.getByText(
+			`The instance ${name} is being created. You will be notified when it finishes.`
+		);
 	}
 
 	deletionStartedMessage(name: string) {
@@ -278,6 +265,40 @@ export class VirtualInstancesPage {
 
 		await expect(row).toBeVisible();
 
+		await this.waitForVirtualInstance(name, false);
+
+		await this.goto();
+
+		await expect(row).toBeHidden();
+	}
+
+	private async submitAddInstanceForm() {
+		await Promise.all([
+			this.page.waitForResponse(
+				(response) => response.url().includes('add_instance'),
+				{timeout: 180 * 1000}
+			),
+			this.addInstanceAddButton.click(),
+		]);
+
+		await this.page.waitForTimeout(1000);
+	}
+
+	async waitForCreationNotification(name: string) {
+		const notificationsPage = new NotificationsPage(this.page);
+
+		await expect(async () => {
+			await notificationsPage.goto();
+
+			await expect(
+				notificationsPage.getNotificationByTitle(
+					`The instance ${name} was created.`
+				)
+			).toBeVisible({timeout: 10 * 1000});
+		}).toPass({timeout: 300 * 1000});
+	}
+
+	async waitForVirtualInstance(name: string, exists: boolean) {
 		const apiHelpers = new ApiHelpers(this.page);
 
 		const headlessPortalInstance = apiHelpers.headlessPortalInstance;
@@ -295,11 +316,7 @@ export class VirtualInstancesPage {
 				},
 				{intervals: [1000], timeout: 180 * 1000}
 			)
-			.toBe(false);
-
-		await this.goto();
-
-		await expect(row).toBeHidden();
+			.toBe(exists);
 	}
 
 	async exportVirtualInstance(name: string) {

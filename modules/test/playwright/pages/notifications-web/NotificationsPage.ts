@@ -15,10 +15,11 @@ export class NotificationsPage {
 	}
 
 	getNotification(body: string, title: string) {
-		return this.page
-			.locator('.autofit-section')
-			.filter({hasText: body})
-			.filter({hasText: title});
+		return this.getNotificationByTitle(title).filter({hasText: body});
+	}
+
+	getNotificationByTitle(title: string) {
+		return this.page.locator('.autofit-section').filter({hasText: title});
 	}
 
 	async goto() {
