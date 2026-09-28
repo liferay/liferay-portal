@@ -23,6 +23,7 @@ interface ExecItemActionArgs {
 		| 'Download Folder'
 		| 'Duplicate'
 		| 'Edit'
+		| 'Edit Image'
 		| 'Expire'
 		| 'Export for Translation'
 		| 'Import Translation'
