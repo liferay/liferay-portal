@@ -3,8 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export async function loadModule(importDeclaration: string): Promise<any> {
-	const [moduleName, symbolName] = getModuleAndSymbolNames(importDeclaration);
+export async function loadModule(
+	importDeclarationOrAMDModule: string
+): Promise<any> {
+	if (!importDeclarationOrAMDModule.includes(' from ')) {
+		return loadAMDModule(importDeclarationOrAMDModule);
+	}
+
+	const [moduleName, symbolName] = getModuleAndSymbolNames(
+		importDeclarationOrAMDModule
+	);
 
 	// @ts-ignore
 
@@ -24,4 +32,27 @@ function getModuleAndSymbolNames(importDeclaration: string): [string, string] {
 	}
 
 	return [moduleName, symbolName];
+}
+
+function loadAMDModule(moduleName: string): Promise<any> {
+
+	// @ts-ignore
+
+	const Loader = Liferay.Loader;
+
+	if (!Loader) {
+		return Promise.reject(
+			new Error(
+				`Unable to load AMD module "${moduleName}" because the AMD loader is disabled`
+			)
+		);
+	}
+
+	return new Promise((resolve, reject) => {
+		Loader.require(
+			moduleName,
+			(module: any) => resolve(module.default || module),
+			reject
+		);
+	});
 }
