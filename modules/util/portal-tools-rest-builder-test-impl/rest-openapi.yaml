@@ -253,6 +253,9 @@ components:
                     type: integer
                 name:
                     type: string
+                password:
+                    format: password
+                    type: string
                 testEntity:
                     $ref: "#/components/schemas/TestEntity"
             type: object
