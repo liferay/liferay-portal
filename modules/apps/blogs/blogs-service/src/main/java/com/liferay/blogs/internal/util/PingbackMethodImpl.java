@@ -180,7 +180,7 @@ public class PingbackMethodImpl implements Method {
 				"Pingbacks are disabled");
 		}
 
-		if (_isSourceURILocalNetwork()) {
+		if (!_isAllowedSourceURI()) {
 			return XmlRpcUtil.createFault(ACCESS_DENIED, "Access Denied");
 		}
 
@@ -419,19 +419,17 @@ public class PingbackMethodImpl implements Method {
 		}
 	}
 
-	private boolean _isPingbackEnabled() {
-		if (_pingbackProperties != null) {
-			return _pingbackProperties.isPingbackEnabled();
-		}
-
-		return PropsValues.BLOGS_PINGBACK_ENABLED;
-	}
-
-	private boolean _isSourceURILocalNetwork() {
+	private boolean _isAllowedSourceURI() {
 		try {
 			URL url = new URL(_sourceURI);
 
-			return InetAddressUtil.isLocalInetAddress(
+			String protocol = url.getProtocol();
+
+			if (!protocol.equals(Http.HTTP) && !protocol.equals(Http.HTTPS)) {
+				return false;
+			}
+
+			return !InetAddressUtil.isLocalInetAddress(
 				_getInetAddressByName(url.getHost()));
 		}
 		catch (Exception exception) {
@@ -440,7 +438,15 @@ public class PingbackMethodImpl implements Method {
 			}
 		}
 
-		return true;
+		return false;
+	}
+
+	private boolean _isPingbackEnabled() {
+		if (_pingbackProperties != null) {
+			return _pingbackProperties.isPingbackEnabled();
+		}
+
+		return PropsValues.BLOGS_PINGBACK_ENABLED;
 	}
 
 	private Response _validateSource(String html) {
