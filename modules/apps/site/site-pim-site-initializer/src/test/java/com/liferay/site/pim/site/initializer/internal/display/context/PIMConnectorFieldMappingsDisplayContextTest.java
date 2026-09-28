@@ -210,8 +210,11 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 			pimConnectorFieldMappingsDisplayContext.getContextParams();
 
 		Assert.assertEquals(
-			"/web/cms/edit-field-mapping?objectEntryId=" + _OBJECT_ENTRY_ID,
-			URLCodec.decodeURL(contextParams.get("editFieldMappingURL")));
+			StringBundler.concat(
+				"/web/cms/edit-field-mappings?backURL=",
+				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId=",
+				_OBJECT_ENTRY_ID),
+			URLCodec.decodeURL(contextParams.get("editFieldMappingsURL")));
 		Assert.assertEquals(
 			String.valueOf(_OBJECT_ENTRY_ID),
 			contextParams.get("objectEntryId"));

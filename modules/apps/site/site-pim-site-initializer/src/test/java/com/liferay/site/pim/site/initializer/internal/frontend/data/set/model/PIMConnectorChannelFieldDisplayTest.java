@@ -51,6 +51,7 @@ public class PIMConnectorChannelFieldDisplayTest {
 		PIMConnectorChannelFieldDisplay pimConnectorChannelFieldDisplay =
 			new PIMConnectorChannelFieldDisplay(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				Collections.emptyList(), RandomTestUtil.randomString(),
 				LocaleUtil.US, false, Collections.emptyList());
 
 		PIMConnectorChannelFieldDisplay.Status status =
@@ -61,6 +62,7 @@ public class PIMConnectorChannelFieldDisplayTest {
 
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			Collections.emptyList(), RandomTestUtil.randomString(),
 			LocaleUtil.US, true, Collections.emptyList());
 
 		status = pimConnectorChannelFieldDisplay.getStatus();
@@ -70,6 +72,7 @@ public class PIMConnectorChannelFieldDisplayTest {
 
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			Collections.singletonList(1L), RandomTestUtil.randomString(),
 			LocaleUtil.US, false, Collections.singletonList("Name"));
 
 		status = pimConnectorChannelFieldDisplay.getStatus();
@@ -79,6 +82,7 @@ public class PIMConnectorChannelFieldDisplayTest {
 
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			Collections.singletonList(1L), RandomTestUtil.randomString(),
 			LocaleUtil.US, true, Collections.singletonList("Name"));
 
 		status = pimConnectorChannelFieldDisplay.getStatus();
@@ -92,12 +96,14 @@ public class PIMConnectorChannelFieldDisplayTest {
 		PIMConnectorChannelFieldDisplay pimConnectorChannelFieldDisplay =
 			new PIMConnectorChannelFieldDisplay(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				Collections.emptyList(), RandomTestUtil.randomString(),
 				LocaleUtil.US, false, Collections.emptyList());
 
 		Assert.assertFalse(pimConnectorChannelFieldDisplay.isMapped());
 
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			Collections.singletonList(1L), RandomTestUtil.randomString(),
 			LocaleUtil.US, false, Collections.singletonList("Name"));
 
 		Assert.assertTrue(pimConnectorChannelFieldDisplay.isMapped());
