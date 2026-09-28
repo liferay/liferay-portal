@@ -20,6 +20,89 @@ const EMPTY_FILTER = {
 	numberOfMatches: 0,
 };
 
+function addScopeItems(
+	items: Array<SideNavigationItem>,
+	filteredItems: Array<SideNavigationItem>
+): Array<SideNavigationItem> {
+	return filteredItems.flatMap((filteredItem, index) => {
+		if (
+			!filteredItem.scope ||
+			filteredItem.scope === filteredItems[index - 1]?.scope
+		) {
+			return filteredItem;
+		}
+
+		const scopeItem = items.find(
+			(item) => item.scopeMarker && item.scope === filteredItem.scope
+		);
+
+		return scopeItem ? [scopeItem, filteredItem] : filteredItem;
+	});
+}
+
+function filterItems(
+	items: Array<SideNavigationItem>,
+	query: string
+): Required<SideNavigationFilter> {
+	return items.reduce<Required<SideNavigationFilter>>((result, item) => {
+		if (item.scopeMarker && item.scope) {
+			return result;
+		}
+
+		const labelMatches = item.label.toLowerCase().includes(query);
+
+		if (item.items && item.items.length) {
+			const {expandedKeys, items, numberOfMatches} = filterItems(
+				item.items,
+				query
+			);
+
+			if (items.length) {
+				return {
+					expandedKeys: new Set([
+						...result.expandedKeys,
+						...(expandedKeys ?? EMPTY_KEYS_SET),
+						item.id,
+					]),
+
+					items: result.items.concat({
+						...item,
+						items,
+					}),
+					numberOfMatches:
+						result.numberOfMatches +
+						numberOfMatches +
+						(labelMatches ? 1 : 0),
+				};
+			}
+
+			if (labelMatches) {
+				const visibleChildItems = removeFilterOnlyItems(item.items);
+
+				return {
+					expandedKeys: new Set([...result.expandedKeys, item.id]),
+					items: result.items.concat({
+						...item,
+						items: visibleChildItems.length
+							? visibleChildItems
+							: undefined,
+					}),
+					numberOfMatches: result.numberOfMatches + 1,
+				};
+			}
+		}
+		else if (labelMatches) {
+			return {
+				expandedKeys: result.expandedKeys,
+				items: result.items.concat(item),
+				numberOfMatches: result.numberOfMatches + 1,
+			};
+		}
+
+		return result;
+	}, EMPTY_FILTER);
+}
+
 function removeFilterOnlyItems(
 	items?: Array<SideNavigationItem>
 ): Array<SideNavigationItem> {
@@ -70,63 +153,9 @@ export function filterItemsByQuery(
 		return {items: removeFilterOnlyItems(items), numberOfMatches: 0};
 	}
 
-	return items.reduce<Required<SideNavigationFilter>>((result, item) => {
-		if (item.scopeMarker && item.scope) {
-			return result;
-		}
+	const filter = filterItems(items, query);
 
-		const labelMatches = item.label.toLowerCase().includes(query);
-
-		if (item.items && item.items.length) {
-			const {expandedKeys, items, numberOfMatches} = filterItemsByQuery(
-				item.items,
-				query
-			);
-
-			if (items.length) {
-				return {
-					expandedKeys: new Set([
-						...result.expandedKeys,
-						...(expandedKeys ?? EMPTY_KEYS_SET),
-						item.id,
-					]),
-
-					items: result.items.concat({
-						...item,
-						items,
-					}),
-					numberOfMatches:
-						result.numberOfMatches +
-						numberOfMatches +
-						(labelMatches ? 1 : 0),
-				};
-			}
-
-			if (labelMatches) {
-				const visibleChildItems = removeFilterOnlyItems(item.items);
-
-				return {
-					expandedKeys: new Set([...result.expandedKeys, item.id]),
-					items: result.items.concat({
-						...item,
-						items: visibleChildItems.length
-							? visibleChildItems
-							: undefined,
-					}),
-					numberOfMatches: result.numberOfMatches + 1,
-				};
-			}
-		}
-		else if (labelMatches) {
-			return {
-				expandedKeys: result.expandedKeys,
-				items: result.items.concat(item),
-				numberOfMatches: result.numberOfMatches + 1,
-			};
-		}
-
-		return result;
-	}, EMPTY_FILTER);
+	return {...filter, items: addScopeItems(items, filter.items)};
 }
 
 export function useSideNavigationFilter(items: Array<SideNavigationItem>) {

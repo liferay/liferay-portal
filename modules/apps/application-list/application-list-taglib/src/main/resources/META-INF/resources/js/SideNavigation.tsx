@@ -294,9 +294,7 @@ function SideNavigation({
 								return (
 									<ClayVerticalNav.Item
 										aria-describedby={
-											!isFilterActive && item.scope
-												? scopeItemId
-												: undefined
+											item.scope ? scopeItemId : undefined
 										}
 										className={classNames({
 											'side-navigation-scope-zone':
