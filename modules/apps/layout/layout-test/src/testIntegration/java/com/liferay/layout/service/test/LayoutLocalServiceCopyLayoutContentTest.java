@@ -309,50 +309,34 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				sourceLayout.getPlid());
 
-		FragmentEntryLink fragmentEntryLink1 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		LayoutStructureItem fragmentStyledLayoutStructureItem1 =
 			layoutStructure.addFragmentStyledLayoutStructureItem(
 				fragmentEntryLink1.getFragmentEntryLinkId(),
 				containerLayoutStructureItem.getItemId(), 0);
 
-		FragmentEntryLink fragmentEntryLink2 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink2 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink2.getFragmentEntryLinkId(),
 			containerLayoutStructureItem.getItemId(), 0);
 
-		FragmentEntryLink fragmentEntryLink3 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink3 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink3.getFragmentEntryLinkId(),
 			containerLayoutStructureItem.getItemId(), 0);
 
-		FragmentEntryLink fragmentEntryLink4 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink4 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		LayoutStructureItem fragmentStyledLayoutStructureItem4 =
 			layoutStructure.addFragmentStyledLayoutStructureItem(
@@ -392,25 +376,17 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		layoutStructure.deleteLayoutStructureItem(
 			fragmentStyledLayoutStructureItem4.getItemId());
 
-		FragmentEntryLink fragmentEntryLink5 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink5 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink5.getFragmentEntryLinkId(),
 			containerLayoutStructureItem.getItemId(), 0);
 
-		FragmentEntryLink fragmentEntryLink6 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink6 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink6.getFragmentEntryLinkId(),
@@ -1588,19 +1564,29 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			LayoutStructure layoutStructure, int position)
 		throws Exception {
 
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, layout.getUserId(), layout.getGroupId(), null,
-				fragmentEntry.getExternalReferenceCode(), fragmentEntryScopeERC,
-				defaultSegmentsExperienceId, layout.getPlid(), StringPool.BLANK,
-				fragmentEntry.getHtml(), StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, position,
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
-				_serviceContext);
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			defaultSegmentsExperienceId,
+			fragmentEntry.getExternalReferenceCode(), fragmentEntryScopeERC,
+			fragmentEntry.getHtml(), layout, position,
+			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType());
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			layoutStructure.getMainItemId(), position);
+	}
+
+	private FragmentEntryLink _addFragmentEntryLink(
+			long defaultSegmentsExperienceId, String fragmentEntryERC,
+			String fragmentEntryScopeERC, String html, Layout layout,
+			int position, String rendererKey, int type)
+		throws Exception {
+
+		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
+			null, layout.getUserId(), layout.getGroupId(), null,
+			fragmentEntryERC, fragmentEntryScopeERC,
+			defaultSegmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+			html, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, position, rendererKey, type, _serviceContext);
 	}
 
 	private Layout _addFragmentEntryLinkAndGetLayout(
@@ -1950,24 +1936,17 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				sourceLayout.getPlid());
 
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			containerLayoutStructureItem.getItemId(), 0);
 
-		fragmentEntryLink = _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-			null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
-			FragmentConstants.TYPE_COMPONENT, _serviceContext);
+		fragmentEntryLink = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 0, null, FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink.getFragmentEntryLinkId(),
@@ -2041,14 +2020,10 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			targetGroup.getExternalReferenceCode(), sourceLayout,
 			layoutStructure, 2);
 
-		FragmentEntryLink fragmentEntryLink4 =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, sourceLayout.getUserId(), sourceLayout.getGroupId(), null,
-				null, null, defaultSegmentsExperienceId, sourceLayout.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 3,
-				RandomTestUtil.randomString(), FragmentConstants.TYPE_COMPONENT,
-				_serviceContext);
+		FragmentEntryLink fragmentEntryLink4 = _addFragmentEntryLink(
+			defaultSegmentsExperienceId, null, null, StringPool.BLANK,
+			sourceLayout, 3, RandomTestUtil.randomString(),
+			FragmentConstants.TYPE_COMPONENT);
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			fragmentEntryLink4.getFragmentEntryLinkId(),
