@@ -12,7 +12,9 @@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/template" prefix="liferay-template" %>
 
-<%@ page import="com.liferay.portal.kernel.util.Constants" %><%@
+<%@ page import="com.liferay.petra.string.StringPool" %><%@
+page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.search.web.internal.result.display.context.SearchResultSummaryDisplayContext" %><%@
 page import="com.liferay.portal.search.web.internal.search.results.configuration.SearchResultsPortletInstanceConfiguration" %><%@
 page import="com.liferay.portal.search.web.internal.search.results.portlet.SearchResultsPortletDisplayContext" %><%@
@@ -69,6 +71,22 @@ SearchResultsPortletPreferences searchResultsPortletPreferences = new SearchResu
 			<aui:input helpMessage="display-selected-result-in-context-help" label="display-selected-result-in-context" name="<%= PortletPreferencesJspUtil.getInputName(SearchResultsPortletPreferences.PREFERENCE_KEY_VIEW_IN_CONTEXT) %>" type="checkbox" value="<%= searchResultsPortletPreferences.isViewInContext() %>" />
 
 			<aui:input helpMessage="display-results-in-document-form-help" label="display-results-in-document-form" name="<%= PortletPreferencesJspUtil.getInputName(SearchResultsPortletPreferences.PREFERENCE_KEY_DISPLAY_IN_DOCUMENT_FORM) %>" type="checkbox" value="<%= searchResultsPortletPreferences.isDisplayInDocumentForm() %>" />
+
+			<%
+			boolean limitResultCountAccuracyFeatureFlagEnabled = searchResultsPortletDisplayContext.isLimitResultCountAccuracyFeatureFlagEnabled();
+
+			String limitResultCountAccuracyHelpMessage = LanguageUtil.get(request, "limit-result-count-accuracy-help");
+			String limitResultCountAccuracyInputName = SearchResultsPortletPreferences.PREFERENCE_KEY_LIMIT_RESULT_COUNT_ACCURACY;
+
+			if (limitResultCountAccuracyFeatureFlagEnabled) {
+				limitResultCountAccuracyInputName = PortletPreferencesJspUtil.getInputName(limitResultCountAccuracyInputName);
+			}
+			else {
+				limitResultCountAccuracyHelpMessage += StringPool.SPACE + LanguageUtil.format(request, "instance-settings-enable-feature-flag-help", LanguageUtil.get(request, "feature.flag.LPD-98858.title"), false);
+			}
+			%>
+
+			<aui:input disabled="<%= !limitResultCountAccuracyFeatureFlagEnabled %>" helpMessage="<%= limitResultCountAccuracyHelpMessage %>" label="limit-result-count-accuracy" name="<%= limitResultCountAccuracyInputName %>" type="checkbox" value="<%= searchResultsPortletDisplayContext.isLimitResultCountAccuracy() %>" />
 
 			<aui:input label="pagination-start-parameter-name" name="<%= PortletPreferencesJspUtil.getInputName(SearchResultsPortletPreferences.PREFERENCE_KEY_PAGINATION_START_PARAMETER_NAME) %>" value="<%= searchResultsPortletPreferences.getPaginationStartParameterName() %>" />
 

@@ -8,6 +8,7 @@ package com.liferay.portal.search.web.internal.search.results.portlet;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -84,6 +85,20 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 
 	public int getTotalHits() {
 		return _totalHits;
+	}
+
+	public boolean isLimitResultCountAccuracy() {
+		if (!isLimitResultCountAccuracyFeatureFlagEnabled()) {
+			return false;
+		}
+
+		return _searchResultsPortletInstanceConfiguration.
+			limitResultCountAccuracy();
+	}
+
+	public boolean isLimitResultCountAccuracyFeatureFlagEnabled() {
+		return FeatureFlagManagerUtil.isEnabled(
+			_themeDisplay.getCompanyId(), "LPD-98858");
 	}
 
 	public boolean isRenderNothing() {
