@@ -96,8 +96,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanAddEntryWithHighDensityResolution {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Adaptive Media");
 
@@ -485,8 +484,7 @@ definition {
 			virtualHost = "www.able.com",
 			webId = "www.able.com");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Adaptive Media");
 
@@ -502,8 +500,7 @@ definition {
 
 		Navigator.openSpecificURL(url = "http://www.able.com:8080");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
+		ApplicationsMenu.gotoRootPortlet(
 			panel = "Control Panel",
 			portlet = "Adaptive Media");
 
