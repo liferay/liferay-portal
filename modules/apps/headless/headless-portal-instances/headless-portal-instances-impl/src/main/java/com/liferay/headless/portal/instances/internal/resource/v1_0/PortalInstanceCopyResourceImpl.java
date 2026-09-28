@@ -64,19 +64,20 @@ public class PortalInstanceCopyResourceImpl
 		String sourcePortalInstanceId =
 			portalInstanceCopy.getSourcePortalInstanceId();
 
-		Company fromCompany = _companyService.getCompanyByWebId(
+		Company company = _companyService.getCompanyByWebId(
 			sourcePortalInstanceId);
 
-		Long toCompanyId = portalInstanceCopy.getDestinationCompanyId();
+		Long destinationCompanyId =
+			portalInstanceCopy.getDestinationCompanyId();
 
-		if ((toCompanyId != null) && (toCompanyId <= 0)) {
-			toCompanyId = null;
+		if ((destinationCompanyId != null) && (destinationCompanyId <= 0)) {
+			destinationCompanyId = null;
 		}
 
 		try {
 			return _toPortalInstance(
 				_companyService.copyDBPartitionCompany(
-					fromCompany.getCompanyId(), toCompanyId,
+					company.getCompanyId(), destinationCompanyId,
 					portalInstanceCopy.getName(),
 					portalInstanceCopy.getVirtualHost(),
 					portalInstanceCopy.getWebId()));
