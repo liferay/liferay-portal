@@ -206,7 +206,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 	@TestInfo("LPD-106987")
 	public void testCopyContentLayoutStructure() throws Exception {
 		_testCopyContentLayoutStructure();
-		_testCopyContentLayoutStructureToAnotherGroup();
+		_testCopyContentLayoutStructureAcrossGroups();
 	}
 
 	@Test
@@ -257,7 +257,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		throws Exception {
 
 		_testCopyContentLayoutStructureWithSegmentsExperiences();
-		_testCopyContentLayoutStructureWithSegmentsExperiencesToAnotherGroup();
+		_testCopyContentLayoutStructureWithSegmentsExperiencesAcrossGroups();
 	}
 
 	@Test
@@ -1847,8 +1847,8 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 	}
 
 	private void _assertSegmentsExperience(
-		SegmentsExperience sourceSegmentsExperience,
-		String segmentsEntryScopeERC, Layout targetLayout) {
+		String segmentsEntryScopeERC,
+		SegmentsExperience sourceSegmentsExperience, Layout targetLayout) {
 
 		SegmentsExperience targetSegmentsExperience =
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
@@ -1983,7 +1983,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 					_group.getGroupId(), targetLayout.getPlid())));
 	}
 
-	private void _testCopyContentLayoutStructureToAnotherGroup()
+	private void _testCopyContentLayoutStructureAcrossGroups()
 		throws Exception {
 
 		Layout sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
@@ -2100,7 +2100,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_assertSegmentsExperiences(sourceLayout, targetLayout, 3);
 	}
 
-	private void _testCopyContentLayoutStructureWithSegmentsExperiencesToAnotherGroup()
+	private void _testCopyContentLayoutStructureWithSegmentsExperiencesAcrossGroups()
 		throws Exception {
 
 		Layout sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
@@ -2135,18 +2135,18 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
 
 		_assertSegmentsExperience(
-			segmentsExperience1, _group.getExternalReferenceCode(),
+			_group.getExternalReferenceCode(), segmentsExperience1,
 			targetLayout);
 		_assertSegmentsExperience(
-			segmentsExperience2, StringPool.BLANK, targetLayout);
+			StringPool.BLANK, segmentsExperience2, targetLayout);
 
 		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
 
 		_assertSegmentsExperience(
-			segmentsExperience1, _group.getExternalReferenceCode(),
+			_group.getExternalReferenceCode(), segmentsExperience1,
 			targetLayout);
 		_assertSegmentsExperience(
-			segmentsExperience2, StringPool.BLANK, targetLayout);
+			StringPool.BLANK, segmentsExperience2, targetLayout);
 	}
 
 	private static final int _NUMBER_FRAGMENT_ENTRY_LINKS = 10;
