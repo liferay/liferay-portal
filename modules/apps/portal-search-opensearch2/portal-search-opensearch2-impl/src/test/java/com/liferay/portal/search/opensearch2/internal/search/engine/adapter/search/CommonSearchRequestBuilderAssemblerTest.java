@@ -34,7 +34,7 @@ import org.opensearch.client.opensearch.core.SearchRequest;
 /**
  * @author Wade Cao
  */
-public class CommonSearchRequestBuilderAssemblerImplTest {
+public class CommonSearchRequestBuilderAssemblerTest {
 
 	@ClassRule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
