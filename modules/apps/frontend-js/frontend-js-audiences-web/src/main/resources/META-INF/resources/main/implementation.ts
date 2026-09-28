@@ -155,6 +155,15 @@ export async function runHandlers(): Promise<void> {
 	}
 }
 
+export function set(audienceIds: AudienceId[]): void {
+	clear();
+
+	audienceIds.forEach((audienceId, index) => {
+		audiencePriorities.set(audienceId, index);
+		detectedAudiences.add(audienceId);
+	});
+}
+
 export function setLogEnabled(enabled: boolean) {
 	log.enabled = enabled;
 }

@@ -11,6 +11,7 @@ import {
 	on,
 	runDetection,
 	runHandlers,
+	set,
 	setLogEnabled,
 } from './implementation';
 
@@ -126,6 +127,16 @@ export interface AudiencesAPI {
 	 */
 	runHandlers(): Promise<void>;
 
+	/**
+	 * Set the detected audiences without running any detection, replacing the
+	 * previously detected ones.
+	 *
+	 * The order of the given audiences sets their priority, the same way the
+	 * order of an audiences definition does.
+	 * @param audienceIds
+	 */
+	set(audienceIds: AudienceId[]): void;
+
 	setLogEnabled(enabled: boolean): void;
 }
 
@@ -137,5 +148,6 @@ export const audiences: AudiencesAPI = {
 	on,
 	runDetection,
 	runHandlers,
+	set,
 	setLogEnabled,
 };
