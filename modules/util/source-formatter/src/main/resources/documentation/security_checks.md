@@ -7,3 +7,4 @@ JSPXSSVulnerabilitiesCheck | .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds xss 
 JavaDeserializationSecurityCheck | .java | Finds Java serialization vulnerabilities. |
 JavaXMLSecurityCheck | .java | Finds possible XXE or Quadratic Blowup security vulnerabilities. |
 SecretComparisonCheck | .java | Finds secrets compared with a method that returns at the first differing byte. |
+SecretResolverCheck | .java | Finds configuration credentials read without resolving them through `SecretResolver`, see LPD-107260. |

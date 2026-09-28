@@ -293,6 +293,7 @@ ReturnVariableDeclarationAsUsedCheck | [Miscellaneous](miscellaneous_checks.md#m
 SafeCloseableMissingCloseCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing `close()` calls for `SafeCloseable` instances. |
 SealedAndNonsealedModifierCheck | [Performance](performance_checks.md#performance-checks) | Finds usage of `sealed` and `non-sealed`. |
 SecretComparisonCheck | [Security](security_checks.md#security-checks) | Finds secrets compared with a method that returns at the first differing byte. |
+SecretResolverCheck | [Security](security_checks.md#security-checks) | Finds configuration credentials read without resolving them through `SecretResolver`, see LPD-107260. |
 SelfReferenceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases of unnecessary reference to its own class. |
 SemiColonCheck | [Styling](styling_checks.md#styling-checks) | Finds cases of unnecessary semicolon. |
 [ServiceComponentRuntimeCheck](check/service_component_runtime_check.md#servicecomponentruntimecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks `ServiceComponentRuntime` usage in test classes. |

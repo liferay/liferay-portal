@@ -893,6 +893,12 @@
 			<property name="enabled" value="false" />
 			<message key="message.digest.is.equal.use" value="Use &quot;MessageDigest.isEqual&quot; to compare secrets, see LPD-93281" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.SecretResolverCheck">
+			<property name="category" value="Security" />
+			<property name="description" value="Finds configuration credentials read without resolving them through `SecretResolver`, see LPD-107260." />
+			<property name="enabled" value="false" />
+			<message key="resolve.required" value="Resolve &quot;{0}&quot; through &quot;SecretResolver&quot; before using the value, see LPD-107260" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SelfReferenceCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds cases of unnecessary reference to its own class." />
