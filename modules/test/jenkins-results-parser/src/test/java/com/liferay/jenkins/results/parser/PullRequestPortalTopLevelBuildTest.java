@@ -53,7 +53,6 @@ public class PullRequestPortalTopLevelBuildTest
 
 		_testGetPortalUpstreamBranchName(
 			RandomTestUtil.randomString(), null, "");
-
 		_testGetPortalUpstreamBranchName(
 			RandomTestUtil.randomString(), portalUpstreamBranchName,
 			portalUpstreamBranchName);
