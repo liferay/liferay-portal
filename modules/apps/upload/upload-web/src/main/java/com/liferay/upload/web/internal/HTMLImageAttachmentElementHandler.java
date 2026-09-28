@@ -5,11 +5,11 @@
 
 package com.liferay.upload.web.internal;
 
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.upload.AttachmentElementHandler;
@@ -73,9 +73,7 @@ public class HTMLImageAttachmentElementHandler
 	}
 
 	private FileEntry _getFileEntry(Matcher matcher) throws PortalException {
-		long fileEntryId = GetterUtil.getLong(matcher.group(1));
-
-		return PortletFileRepositoryUtil.getPortletFileEntry(fileEntryId);
+		return _dlAppService.getFileEntry(GetterUtil.getLong(matcher.group(1)));
 	}
 
 	private static final String _ATTRIBUTE_LIST_REGEXP =
@@ -97,5 +95,8 @@ public class HTMLImageAttachmentElementHandler
 		target = "(&(format=html)(html.tag.name=img))"
 	)
 	private volatile AttachmentElementReplacer _attachmentElementReplacer;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 }
