@@ -7,11 +7,13 @@ package com.liferay.site.navigation.menu.web.internal.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
@@ -26,8 +28,10 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
@@ -44,6 +48,7 @@ import com.liferay.sites.kernel.util.Sites;
 
 import jakarta.portlet.PortletPreferences;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -136,6 +141,8 @@ public class SiteNavigationMenuExportImportTest
 			SiteNavigationMenuItemTestUtil.addLayoutTypeSiteNavigationMenuItem(
 				_siteNavigationMenu, childLayout1,
 				parentSiteNavigationMenuItem.getSiteNavigationMenuItemId());
+
+		_publishAllLayouts();
 
 		Layout childLayout2 = LayoutTestUtil.addTypePortletLayout(
 			_stagingGroup);
@@ -507,6 +514,109 @@ public class SiteNavigationMenuExportImportTest
 	}
 
 	@Test
+	@TestInfo("LPD-107487")
+	public void testExportImportWithUpdatedSiteNavigationMenuItems()
+		throws Exception {
+
+		_setUpLocalStaging();
+
+		_siteNavigationMenu = SiteNavigationMenuTestUtil.addSiteNavigationMenu(
+			_stagingGroup);
+
+		SiteNavigationMenuItem siteNavigationMenuItem1 =
+			_addURLSiteNavigationMenuItem();
+		SiteNavigationMenuItem siteNavigationMenuItem2 =
+			_addURLSiteNavigationMenuItem();
+
+		_publishAllLayouts();
+
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			null, siteNavigationMenuItem1, siteNavigationMenuItem2);
+
+		SiteNavigationMenuItem siteNavigationMenuItem3 =
+			_addURLSiteNavigationMenuItem();
+
+		_siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			siteNavigationMenuItem3.getSiteNavigationMenuItemId(), 0L, 1);
+
+		_publishAllLayouts();
+
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			null, siteNavigationMenuItem1, siteNavigationMenuItem3,
+			siteNavigationMenuItem2);
+
+		_siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			siteNavigationMenuItem2.getSiteNavigationMenuItemId(), 0L, 0);
+		_siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			siteNavigationMenuItem3.getSiteNavigationMenuItemId(),
+			siteNavigationMenuItem2.getSiteNavigationMenuItemId(), 0);
+
+		_publishAllLayouts();
+
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			null, siteNavigationMenuItem2, siteNavigationMenuItem1);
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			siteNavigationMenuItem2, siteNavigationMenuItem3);
+
+		String name = RandomTestUtil.randomString();
+
+		_siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			TestPropsValues.getUserId(),
+			siteNavigationMenuItem1.getSiteNavigationMenuItemId(),
+			_getURLTypeSettings(name),
+			ServiceContextTestUtil.getServiceContext(
+				_stagingGroup.getGroupId()));
+
+		_publishAllLayouts();
+
+		SiteNavigationMenuItem liveSiteNavigationMenuItem1 =
+			_siteNavigationMenuItemLocalService.
+				getSiteNavigationMenuItemByExternalReferenceCode(
+					siteNavigationMenuItem1.getExternalReferenceCode(),
+					_liveGroup.getGroupId());
+
+		String typeSettings = liveSiteNavigationMenuItem1.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains(name));
+
+		_siteNavigationMenuItemLocalService.deleteSiteNavigationMenuItem(
+			siteNavigationMenuItem1.getSiteNavigationMenuItemId());
+
+		_publishAllLayouts();
+
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			null, siteNavigationMenuItem2);
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			siteNavigationMenuItem2, siteNavigationMenuItem3);
+
+		SiteNavigationMenu siteNavigationMenu =
+			_siteNavigationMenuLocalService.getSiteNavigationMenu(
+				_siteNavigationMenu.getSiteNavigationMenuId());
+
+		siteNavigationMenu.setModifiedDate(new Date(0));
+
+		_siteNavigationMenuLocalService.updateSiteNavigationMenu(
+			siteNavigationMenu);
+
+		SiteNavigationMenuItem siteNavigationMenuItem4 =
+			_addURLSiteNavigationMenuItem();
+
+		Map<String, String[]> parameterMap =
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
+
+		parameterMap.put("last", new String[] {"1"});
+		parameterMap.put(
+			ExportImportDateUtil.RANGE,
+			new String[] {ExportImportDateUtil.RANGE_LAST});
+
+		_publishAllLayouts(parameterMap);
+
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			null, siteNavigationMenuItem2, siteNavigationMenuItem4);
+	}
+
+	@Test
 	@TestInfo("LPD-98716")
 	public void testGetPortletConfigurationWithLocalStaging() throws Exception {
 		_setUpLocalStaging();
@@ -547,6 +657,53 @@ public class SiteNavigationMenuExportImportTest
 			portletInstanceId, portlet, portletPreferences);
 	}
 
+	private SiteNavigationMenuItem _addURLSiteNavigationMenuItem()
+		throws Exception {
+
+		return SiteNavigationMenuItemTestUtil.addSiteNavigationMenuItem(
+			_siteNavigationMenu, SiteNavigationMenuItemTypeConstants.URL,
+			_getURLTypeSettings(RandomTestUtil.randomString()));
+	}
+
+	private void _assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			SiteNavigationMenuItem parentSiteNavigationMenuItem,
+			SiteNavigationMenuItem... siteNavigationMenuItems)
+		throws Exception {
+
+		SiteNavigationMenu liveSiteNavigationMenu =
+			_siteNavigationMenuLocalService.
+				getSiteNavigationMenuByExternalReferenceCode(
+					_siteNavigationMenu.getExternalReferenceCode(),
+					_liveGroup.getGroupId());
+
+		long liveParentSiteNavigationMenuItemId =
+			(parentSiteNavigationMenuItem == null) ? 0L :
+				_getLiveSiteNavigationMenuItemId(parentSiteNavigationMenuItem);
+
+		Assert.assertEquals(
+			TransformUtil.transformToList(
+				siteNavigationMenuItems,
+				SiteNavigationMenuItem::getExternalReferenceCode),
+			TransformUtil.transform(
+				_siteNavigationMenuItemLocalService.getSiteNavigationMenuItems(
+					liveSiteNavigationMenu.getSiteNavigationMenuId(),
+					liveParentSiteNavigationMenuItemId),
+				SiteNavigationMenuItem::getExternalReferenceCode));
+	}
+
+	private long _getLiveSiteNavigationMenuItemId(
+			SiteNavigationMenuItem siteNavigationMenuItem)
+		throws Exception {
+
+		SiteNavigationMenuItem liveSiteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.
+				getSiteNavigationMenuItemByExternalReferenceCode(
+					siteNavigationMenuItem.getExternalReferenceCode(),
+					_liveGroup.getGroupId());
+
+		return liveSiteNavigationMenuItem.getSiteNavigationMenuItemId();
+	}
+
 	private String _getPortletPreferencesXML(String name, String[] values) {
 		StringBundler sb = new StringBundler();
 
@@ -577,10 +734,26 @@ public class SiteNavigationMenuExportImportTest
 		return sb.toString();
 	}
 
+	private String _getURLTypeSettings(String name) {
+		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+
+		return UnicodePropertiesBuilder.put(
+			"defaultLanguageId", languageId
+		).put(
+			"name_" + languageId, name
+		).put(
+			"url", RandomTestUtil.randomString()
+		).buildString();
+	}
+
 	private void _publishAllLayouts() throws Exception {
-		Map<String, String[]> parameterMap =
+		_publishAllLayouts(
 			ExportImportConfigurationParameterMapFactoryUtil.
-				buildParameterMap();
+				buildParameterMap());
+	}
+
+	private void _publishAllLayouts(Map<String, String[]> parameterMap)
+		throws Exception {
 
 		parameterMap.put(
 			PortletDataHandlerKeys.PORTLET_DATA,
