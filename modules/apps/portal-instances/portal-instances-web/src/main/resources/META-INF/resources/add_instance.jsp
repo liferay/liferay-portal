@@ -98,5 +98,10 @@
 </clay:container-fluid>
 
 <liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"successMessage", LanguageUtil.get(request, "the-instance-x-is-being-created-you-will-be-notified-when-it-finishes")
+		).build()
+	%>'
 	module="{AddInstance} from portal-instances-web"
 />

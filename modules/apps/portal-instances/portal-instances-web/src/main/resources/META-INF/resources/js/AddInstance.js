@@ -4,22 +4,53 @@
  */
 
 import {openToast} from 'frontend-js-components-web';
-import {fetch, getOpener} from 'frontend-js-web';
+import {escapeHTML, fetch, getOpener, sub} from 'frontend-js-web';
 
-export default function ({namespace}) {
+export default function ({namespace, successMessage}) {
 	const form = document.getElementById(`${namespace}fm`);
 
 	const content = document.querySelector('.add-instance-content');
 	const loading = document.querySelector('.add-instance-loading');
 
-	const onSubmit = (event) => {
+	let submitting = false;
+
+	const showContent = () => {
+		content.classList.add('d-block');
+		content.classList.remove('d-none');
+		loading.classList.add('d-none');
+		loading.classList.remove('d-flex');
+	};
+
+	const showError = (alertContainer, message) => {
+		showContent();
+
+		openToast({
+			autoClose: false,
+			container: alertContainer,
+			message: escapeHTML(message),
+			toastProps: {
+				onClose: null,
+			},
+			type: 'danger',
+			variant: 'stripe',
+		});
+	};
+
+	const onSubmit = async (event) => {
 		event.preventDefault();
+
+		if (submitting) {
+			return;
+		}
+
+		submitting = true;
 
 		const formData = new FormData(form);
 
 		content.classList.add('d-none');
 		content.classList.remove('d-block');
 		loading.classList.add('d-flex');
+		loading.classList.remove('d-none');
 
 		const alertContainer = document.querySelector(
 			'.add-instance-alert-container'
@@ -29,37 +60,37 @@ export default function ({namespace}) {
 			alertContainer.firstChild.remove();
 		}
 
-		fetch(form.action, {
-			body: formData,
-			method: 'POST',
-		})
-			.then((response) => response.json())
-			.then((response) => {
-				const opener = getOpener();
-
-				if (!response.error) {
-					opener.Liferay.fire('closeModal', {
-						id: `${namespace}addSiteDialog`,
-						redirect: opener.location.href,
-					});
-				}
-				else {
-					content.classList.add('d-block');
-					loading.classList.add('d-none');
-					loading.classList.remove('d-flex');
-
-					openToast({
-						autoClose: false,
-						container: alertContainer,
-						message: response.error,
-						toastProps: {
-							onClose: null,
-						},
-						type: 'danger',
-						variant: 'stripe',
-					});
-				}
+		try {
+			const response = await fetch(form.action, {
+				body: formData,
+				method: 'POST',
 			});
+
+			const {error} = await response.json();
+
+			if (error) {
+				throw new Error(error);
+			}
+
+			const opener = getOpener();
+
+			opener.Liferay.Util.openToast({
+				message: sub(
+					successMessage,
+					escapeHTML(formData.get(`${namespace}webId`))
+				),
+				type: 'info',
+			});
+
+			opener.Liferay.fire('closeModal', {
+				id: `${namespace}addSiteDialog`,
+			});
+		}
+		catch (error) {
+			submitting = false;
+
+			showError(alertContainer, error.message);
+		}
 	};
 
 	form.addEventListener('submit', onSubmit);
