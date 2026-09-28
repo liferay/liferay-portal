@@ -1,0 +1,230 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "Workflow Definition 4"
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "eb0b45b3-be9f-4159-86db-77138355a206"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Begin a workflow."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        295,",
+						"        -14",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "Start",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "Transition Label",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "1c185ec9-ed64-4cad-ac58-2c3b3bcd43bf"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "5dd87399-678f-434c-bed7-29e8749f449b"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "04ad5c21-6503-4d92-84e9-80e0376bd6c0"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Conclude the workflow."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \",terminal\": true,",
+						"    \"xy\": [",
+						"        296,",
+						"        400",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "End",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "5dd87399-678f-434c-bed7-29e8749f449b"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Ask a user to work on the item."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        294.8333435058594,",
+						"        202",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "Action 1"
+								},
+								{
+									"#tag-name": "description"
+								},
+								{
+									"#cdata-value": [
+										"System.out.println(\"Action 1\");"
+									],
+									"#tag-name": "script"
+								},
+								{
+									"#tag-name": "script-language",
+									"#value": "drl"
+								},
+								{
+									"#tag-name": "priority",
+									"#value": "1"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onEntry"
+								}
+							],
+							"#tag-name": "action"
+						}
+					],
+					"#tag-name": "actions"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "user"
+						}
+					],
+					"#tag-name": "assignments"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "Task",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "Transition Label",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "912cd659-65f1-4a2b-b7d3-fcf674edf12d"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "04ad5c21-6503-4d92-84e9-80e0376bd6c0"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "task"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}
