@@ -34,6 +34,12 @@ public class ScriptManagementWebUpgradeStepRegistrator
 			new com.liferay.portal.security.script.management.web.internal.
 				upgrade.v1_1_0.ScriptManagementConfigurationUpgradeProcess(
 					_configurationProvider, _jsonFactory));
+
+		registry.register(
+			"1.1.0", "1.2.0",
+			new com.liferay.portal.security.script.management.web.internal.
+				upgrade.v1_2_0.ScriptManagementConfigurationUpgradeProcess(
+					_configurationProvider, _jsonFactory));
 	}
 
 	@Reference
