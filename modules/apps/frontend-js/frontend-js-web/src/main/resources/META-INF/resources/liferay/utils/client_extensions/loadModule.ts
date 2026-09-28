@@ -35,12 +35,7 @@ function getModuleAndSymbolNames(importDeclaration: string): [string, string] {
 }
 
 function loadAMDModule(moduleName: string): Promise<any> {
-
-	// @ts-ignore
-
-	const Loader = Liferay.Loader;
-
-	if (!Loader) {
+	if (!Liferay.FeatureFlags['LPD-48372']) {
 		return Promise.reject(
 			new Error(
 				`Unable to load AMD module "${moduleName}" because the AMD loader is disabled`
@@ -49,7 +44,10 @@ function loadAMDModule(moduleName: string): Promise<any> {
 	}
 
 	return new Promise((resolve, reject) => {
-		Loader.require(
+
+		// @ts-ignore
+
+		Liferay.Loader.require(
 			moduleName,
 			(module: any) => resolve(module.default || module),
 			reject
