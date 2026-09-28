@@ -70,6 +70,25 @@ public class PortalImplControlPanelFullURLTest {
 	}
 
 	@Test
+	public void testInstancePortlet() throws Exception {
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(_getPortalURL());
+		sb.append(_portalImpl.getPathFriendlyURLPrivateGroup());
+		sb.append(GroupConstants.CONTROL_PANEL_FRIENDLY_URL);
+		sb.append(PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL);
+
+		String portletId = PortletKeys.EXPANDO;
+
+		sb.append(_getQueryString(portletId));
+
+		Assert.assertEquals(
+			sb.toString(),
+			_portalImpl.getControlPanelFullURL(
+				_group.getGroupId(), portletId, null));
+	}
+
+	@Test
 	public void testMyAccountPortlet() throws Exception {
 		StringBundler sb = new StringBundler(5);
 
