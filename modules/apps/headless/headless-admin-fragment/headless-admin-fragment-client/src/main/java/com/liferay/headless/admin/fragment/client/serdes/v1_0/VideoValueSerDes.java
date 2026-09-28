@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemValue;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.VideoValue;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,22 +22,22 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ItemValueSerDes {
+public class VideoValueSerDes {
 
-	public static ItemValue toDTO(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+	public static VideoValue toDTO(String json) {
+		VideoValueJSONParser videoValueJSONParser = new VideoValueJSONParser();
 
-		return itemValueJSONParser.parseToDTO(json);
+		return videoValueJSONParser.parseToDTO(json);
 	}
 
-	public static ItemValue[] toDTOs(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+	public static VideoValue[] toDTOs(String json) {
+		VideoValueJSONParser videoValueJSONParser = new VideoValueJSONParser();
 
-		return itemValueJSONParser.parseToDTOs(json);
+		return videoValueJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(ItemValue itemValue) {
-		if (itemValue == null) {
+	public static String toJSON(VideoValue videoValue) {
+		if (videoValue == null) {
 			return "null";
 		}
 
@@ -45,24 +45,32 @@ public class ItemValueSerDes {
 
 		sb.append("{");
 
-		if (itemValue.getItemExternalReference() != null) {
+		if (videoValue.getHtml() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"itemExternalReference\": ");
+			sb.append("\"html\": ");
 
-			sb.append(String.valueOf(itemValue.getItemExternalReference()));
+			sb.append("\"");
+
+			sb.append(_escape(videoValue.getHtml()));
+
+			sb.append("\"");
 		}
 
-		if (itemValue.getTemplateReference() != null) {
+		if (videoValue.getTitle() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"templateReference\": ");
+			sb.append("\"title\": ");
 
-			sb.append(String.valueOf(itemValue.getTemplateReference()));
+			sb.append("\"");
+
+			sb.append(_escape(videoValue.getTitle()));
+
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -71,57 +79,54 @@ public class ItemValueSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+		VideoValueJSONParser videoValueJSONParser = new VideoValueJSONParser();
 
-		return itemValueJSONParser.parseToMap(json);
+		return videoValueJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(ItemValue itemValue) {
-		if (itemValue == null) {
+	public static Map<String, String> toMap(VideoValue videoValue) {
+		if (videoValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (itemValue.getItemExternalReference() == null) {
-			map.put("itemExternalReference", null);
+		if (videoValue.getHtml() == null) {
+			map.put("html", null);
 		}
 		else {
-			map.put(
-				"itemExternalReference",
-				String.valueOf(itemValue.getItemExternalReference()));
+			map.put("html", String.valueOf(videoValue.getHtml()));
 		}
 
-		if (itemValue.getTemplateReference() == null) {
-			map.put("templateReference", null);
+		if (videoValue.getTitle() == null) {
+			map.put("title", null);
 		}
 		else {
-			map.put(
-				"templateReference",
-				String.valueOf(itemValue.getTemplateReference()));
+			map.put("title", String.valueOf(videoValue.getTitle()));
 		}
 
 		return map;
 	}
 
-	public static class ItemValueJSONParser extends BaseJSONParser<ItemValue> {
+	public static class VideoValueJSONParser
+		extends BaseJSONParser<VideoValue> {
 
 		@Override
-		protected ItemValue createDTO() {
-			return new ItemValue();
+		protected VideoValue createDTO() {
+			return new VideoValue();
 		}
 
 		@Override
-		protected ItemValue[] createDTOArray(int size) {
-			return new ItemValue[size];
+		protected VideoValue[] createDTOArray(int size) {
+			return new VideoValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "itemExternalReference")) {
+			if (Objects.equals(jsonParserFieldName, "html")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "templateReference")) {
+			else if (Objects.equals(jsonParserFieldName, "title")) {
 				return false;
 			}
 
@@ -130,21 +135,17 @@ public class ItemValueSerDes {
 
 		@Override
 		protected void setField(
-			ItemValue itemValue, String jsonParserFieldName,
+			VideoValue videoValue, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "itemExternalReference")) {
+			if (Objects.equals(jsonParserFieldName, "html")) {
 				if (jsonParserFieldValue != null) {
-					itemValue.setItemExternalReference(
-						ItemExternalReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
+					videoValue.setHtml((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "templateReference")) {
+			else if (Objects.equals(jsonParserFieldName, "title")) {
 				if (jsonParserFieldValue != null) {
-					itemValue.setTemplateReference(
-						TemplateReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
+					videoValue.setTitle((String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -234,4 +235,4 @@ public class ItemValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1159860440
+// LIFERAY-REST-BUILDER-HASH:225857542

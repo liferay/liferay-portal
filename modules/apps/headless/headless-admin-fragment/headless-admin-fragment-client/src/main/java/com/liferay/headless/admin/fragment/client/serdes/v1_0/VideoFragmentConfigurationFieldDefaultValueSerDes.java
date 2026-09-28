@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
-import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemValue;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.VideoFragmentConfigurationFieldDefaultValue;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,22 +22,35 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ItemValueSerDes {
+public class VideoFragmentConfigurationFieldDefaultValueSerDes {
 
-	public static ItemValue toDTO(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+	public static VideoFragmentConfigurationFieldDefaultValue toDTO(
+		String json) {
 
-		return itemValueJSONParser.parseToDTO(json);
+		VideoFragmentConfigurationFieldDefaultValueJSONParser
+			videoFragmentConfigurationFieldDefaultValueJSONParser =
+				new VideoFragmentConfigurationFieldDefaultValueJSONParser();
+
+		return videoFragmentConfigurationFieldDefaultValueJSONParser.parseToDTO(
+			json);
 	}
 
-	public static ItemValue[] toDTOs(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+	public static VideoFragmentConfigurationFieldDefaultValue[] toDTOs(
+		String json) {
 
-		return itemValueJSONParser.parseToDTOs(json);
+		VideoFragmentConfigurationFieldDefaultValueJSONParser
+			videoFragmentConfigurationFieldDefaultValueJSONParser =
+				new VideoFragmentConfigurationFieldDefaultValueJSONParser();
+
+		return videoFragmentConfigurationFieldDefaultValueJSONParser.
+			parseToDTOs(json);
 	}
 
-	public static String toJSON(ItemValue itemValue) {
-		if (itemValue == null) {
+	public static String toJSON(
+		VideoFragmentConfigurationFieldDefaultValue
+			videoFragmentConfigurationFieldDefaultValue) {
+
+		if (videoFragmentConfigurationFieldDefaultValue == null) {
 			return "null";
 		}
 
@@ -45,24 +58,14 @@ public class ItemValueSerDes {
 
 		sb.append("{");
 
-		if (itemValue.getItemExternalReference() != null) {
+		if (videoFragmentConfigurationFieldDefaultValue.getValue() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"itemExternalReference\": ");
+			sb.append("\"value\": ");
 
-			sb.append(String.valueOf(itemValue.getItemExternalReference()));
-		}
-
-		if (itemValue.getTemplateReference() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"templateReference\": ");
-
-			sb.append(String.valueOf(itemValue.getTemplateReference()));
+			sb.append(videoFragmentConfigurationFieldDefaultValue.getValue());
 		}
 
 		sb.append("}");
@@ -71,57 +74,55 @@ public class ItemValueSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ItemValueJSONParser itemValueJSONParser = new ItemValueJSONParser();
+		VideoFragmentConfigurationFieldDefaultValueJSONParser
+			videoFragmentConfigurationFieldDefaultValueJSONParser =
+				new VideoFragmentConfigurationFieldDefaultValueJSONParser();
 
-		return itemValueJSONParser.parseToMap(json);
+		return videoFragmentConfigurationFieldDefaultValueJSONParser.parseToMap(
+			json);
 	}
 
-	public static Map<String, String> toMap(ItemValue itemValue) {
-		if (itemValue == null) {
+	public static Map<String, String> toMap(
+		VideoFragmentConfigurationFieldDefaultValue
+			videoFragmentConfigurationFieldDefaultValue) {
+
+		if (videoFragmentConfigurationFieldDefaultValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (itemValue.getItemExternalReference() == null) {
-			map.put("itemExternalReference", null);
+		if (videoFragmentConfigurationFieldDefaultValue.getValue() == null) {
+			map.put("value", null);
 		}
 		else {
 			map.put(
-				"itemExternalReference",
-				String.valueOf(itemValue.getItemExternalReference()));
-		}
-
-		if (itemValue.getTemplateReference() == null) {
-			map.put("templateReference", null);
-		}
-		else {
-			map.put(
-				"templateReference",
-				String.valueOf(itemValue.getTemplateReference()));
+				"value",
+				String.valueOf(
+					videoFragmentConfigurationFieldDefaultValue.getValue()));
 		}
 
 		return map;
 	}
 
-	public static class ItemValueJSONParser extends BaseJSONParser<ItemValue> {
+	public static class VideoFragmentConfigurationFieldDefaultValueJSONParser
+		extends BaseJSONParser<VideoFragmentConfigurationFieldDefaultValue> {
 
 		@Override
-		protected ItemValue createDTO() {
-			return new ItemValue();
+		protected VideoFragmentConfigurationFieldDefaultValue createDTO() {
+			return new VideoFragmentConfigurationFieldDefaultValue();
 		}
 
 		@Override
-		protected ItemValue[] createDTOArray(int size) {
-			return new ItemValue[size];
+		protected VideoFragmentConfigurationFieldDefaultValue[] createDTOArray(
+			int size) {
+
+			return new VideoFragmentConfigurationFieldDefaultValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "itemExternalReference")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "templateReference")) {
+			if (Objects.equals(jsonParserFieldName, "value")) {
 				return false;
 			}
 
@@ -130,21 +131,14 @@ public class ItemValueSerDes {
 
 		@Override
 		protected void setField(
-			ItemValue itemValue, String jsonParserFieldName,
-			Object jsonParserFieldValue) {
+			VideoFragmentConfigurationFieldDefaultValue
+				videoFragmentConfigurationFieldDefaultValue,
+			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "itemExternalReference")) {
+			if (Objects.equals(jsonParserFieldName, "value")) {
 				if (jsonParserFieldValue != null) {
-					itemValue.setItemExternalReference(
-						ItemExternalReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "templateReference")) {
-				if (jsonParserFieldValue != null) {
-					itemValue.setTemplateReference(
-						TemplateReferenceSerDes.toDTO(
-							(String)jsonParserFieldValue));
+					videoFragmentConfigurationFieldDefaultValue.setValue(
+						VideoValueSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -234,4 +228,4 @@ public class ItemValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1159860440
+// LIFERAY-REST-BUILDER-HASH:1464341674

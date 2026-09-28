@@ -246,4 +246,4 @@ public class TemplateReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1920335007
+// LIFERAY-REST-BUILDER-HASH:839942945
