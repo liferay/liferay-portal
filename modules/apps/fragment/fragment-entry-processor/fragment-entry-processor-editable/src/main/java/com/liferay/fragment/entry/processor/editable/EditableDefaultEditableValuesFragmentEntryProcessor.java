@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pavel Savinov
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=2",
+	property = "fragment.entry.processor.key=" + FragmentEntryProcessorConstants.KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
 	service = DefaultEditableValuesFragmentEntryProcessor.class
 )
 public class EditableDefaultEditableValuesFragmentEntryProcessor

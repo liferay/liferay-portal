@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=5",
+	property = "fragment.entry.processor.key=" + FragmentEntryProcessorConstants.KEY_BACKGROUND_IMAGE_FRAGMENT_ENTRY_PROCESSOR,
 	service = DefaultEditableValuesFragmentEntryProcessor.class
 )
 public class BackgroundImageDefaultEditableValuesFragmentEntryProcessor

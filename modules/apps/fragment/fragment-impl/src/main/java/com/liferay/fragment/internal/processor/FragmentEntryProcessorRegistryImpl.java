@@ -21,6 +21,8 @@ import com.liferay.fragment.renderer.FragmentPortletRenderer;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -137,7 +139,7 @@ public class FragmentEntryProcessorRegistryImpl
 
 		for (DefaultEditableValuesFragmentEntryProcessor
 				defaultEditableValuesFragmentEntryProcessor :
-					_defaultEditableValuesFragmentEntryProcessors) {
+					_serviceTrackerMap.values()) {
 
 			JSONObject defaultEditableValuesJSONObject =
 				defaultEditableValuesFragmentEntryProcessor.
@@ -333,13 +335,9 @@ public class FragmentEntryProcessorRegistryImpl
 			Collections.reverseOrder(
 				new PropertyServiceReferenceComparator<>(
 					"fragment.entry.processor.priority")));
-		_defaultEditableValuesFragmentEntryProcessors =
-			ServiceTrackerListFactory.open(
-				bundleContext,
-				DefaultEditableValuesFragmentEntryProcessor.class,
-				Collections.reverseOrder(
-					new PropertyServiceReferenceComparator<>(
-						"fragment.entry.processor.priority")));
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, DefaultEditableValuesFragmentEntryProcessor.class,
+			"fragment.entry.processor.key");
 		_documentFragmentEntryProcessors = ServiceTrackerListFactory.open(
 			bundleContext, DocumentFragmentEntryProcessor.class,
 			Collections.reverseOrder(
@@ -374,7 +372,7 @@ public class FragmentEntryProcessorRegistryImpl
 		PortalCacheHelperUtil.removePortalCache(
 			PortalCacheManagerNames.SINGLE_VM, _DOCUMENT_PORTAL_CACHE_NAME);
 		_cssFragmentEntryProcessors.close();
-		_defaultEditableValuesFragmentEntryProcessors.close();
+		_serviceTrackerMap.close();
 		_documentFragmentEntryProcessors.close();
 		_documentFragmentEntryValidators.close();
 		_fragmentEntryAutocompleteContributors.close();
@@ -457,8 +455,6 @@ public class FragmentEntryProcessorRegistryImpl
 
 	private ServiceTrackerList<CSSFragmentEntryProcessor>
 		_cssFragmentEntryProcessors;
-	private ServiceTrackerList<DefaultEditableValuesFragmentEntryProcessor>
-		_defaultEditableValuesFragmentEntryProcessors;
 	private ServiceTrackerList<DocumentFragmentEntryProcessor>
 		_documentFragmentEntryProcessors;
 	private ServiceTrackerList<DocumentFragmentEntryValidator>
@@ -474,5 +470,9 @@ public class FragmentEntryProcessorRegistryImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	private ServiceTrackerMap
+		<String, DefaultEditableValuesFragmentEntryProcessor>
+			_serviceTrackerMap;
 
 }
