@@ -59,14 +59,14 @@ jobs:
                                 storage \
                                 cp \
                                 "/tmp/${destination_object_basename}" \
-                                "${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/liferay-${{inputs.provider}}-bootstrap/${destination_object_basename}"
+                                "${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/${destination_object_basename}"
 
                         CLOUDSDK_AUTH_ACCESS_TOKEN="${{steps.auth_production.outputs.auth_token}}" \
                             gcloud \
                                 storage \
                                 cp \
                                 "/tmp/${destination_object_basename}.sha256" \
-                                "${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/liferay-${{inputs.provider}}-bootstrap/${destination_object_basename}.sha256"
+                                "${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/${destination_object_basename}.sha256"
 
                         local sha256
 

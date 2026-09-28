@@ -168,43 +168,35 @@ function _get_artifact_values {
 	local configuration_json_file="${1}"
 
 	jq \
-		'.artifacts
-		| "oci://\(.registries.charts)" as $charts_registry
-		| {
-			platformComponents: {
-				repoURL: "\($charts_registry)/liferay-platform-components",
-				targetRevision: .charts."liferay-platform-components",
+		'.artifacts as $artifacts
+		| def field($type; $name; $key):
+			$artifacts[$type][$name][$key] // error("artifacts.\($type).\($name).\($key) is missing");
+		def chart($name):
+			{
+				repoURL: "oci://\(field("charts"; $name; "registry"))/\($name)",
+				targetRevision: field("charts"; $name; "version")
+			};
+		def image($name):
+			{
+				repository: "\(field("images"; $name; "registry"))/\($name)",
+				tag: field("images"; $name; "version")
+			};
+		{
+			platformComponents: (chart("liferay-platform-components") + {
 				values: {
-					infrastructure: {
-						repoURL: "\($charts_registry)/liferay-infrastructure",
-						targetRevision: .charts."liferay-infrastructure"
-					},
-					infrastructureProvider: {
-						repoURL: "\($charts_registry)/liferay-azure-infrastructure-provider",
-						targetRevision: .charts."liferay-azure-infrastructure-provider"
-					},
-					liferay: {
-						repoURL: "\($charts_registry)/liferay-azure",
-						targetRevision: .charts."liferay-azure"
-					},
-					observability: {
-						repoURL: "\($charts_registry)/observability",
-						targetRevision: .charts.observability
-					},
+					infrastructure: chart("liferay-infrastructure"),
+					infrastructureProvider: chart("liferay-azure-infrastructure-provider"),
+					liferay: chart("liferay-azure"),
+					observability: chart("observability"),
 					operatorApplications: {
-						dxpOperator: {
-							repoURL: "\($charts_registry)/liferay-dxp-operator",
-							targetRevision: .charts."liferay-dxp-operator",
+						dxpOperator: (chart("liferay-dxp-operator") + {
 							values: {
-								image: {
-									repository: "\(.registries.images)/liferay-dxp-operator",
-									tag: .images."liferay-dxp-operator"
-								}
+								image: image("liferay-dxp-operator")
 							}
-						}
+						})
 					}
 				}
-			}
+			})
 		}' \
 		"${configuration_json_file}"
 }
@@ -390,8 +382,8 @@ function _install_liferay_platform_chart {
 	local platform_repo_url
 	local platform_target_revision
 
-	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.registries.charts)/liferay-platform"' "${configuration_json_file}")
-	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform"' "${configuration_json_file}")
+	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.charts."liferay-platform".registry // error("artifacts.charts.liferay-platform.registry is missing"))/liferay-platform"' "${configuration_json_file}")
+	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform".version // error("artifacts.charts.liferay-platform.version is missing")' "${configuration_json_file}")
 
 	echo "Applying the Liferay platform root application."
 

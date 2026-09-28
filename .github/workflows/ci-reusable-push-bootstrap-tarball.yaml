@@ -5,6 +5,7 @@ jobs:
     push:
         outputs:
             object_name: ${{steps.vars.outputs.object_name}}
+            sha256: ${{steps.package.outputs.sha256}}
             version: ${{steps.vars.outputs.version}}
         runs-on: ubuntu-latest
         steps:
@@ -18,17 +19,22 @@ jobs:
                         cloud/scripts
                         cloud/terraform/${{inputs.provider}}
                         cloud/terraform/modules
-            -   name: Authenticate to Google Cloud
+            -   id: auth
+                name: Authenticate to Google Cloud
                 uses: google-github-actions/auth@v3
                 with:
-                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
-                    workload_identity_provider: ${{vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_NONPRODUCTION}}
+                    project_id: ${{inputs.is_production && vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION || vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+                    workload_identity_provider: ${{inputs.is_production && vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_PRODUCTION || vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_NONPRODUCTION}}
             -   name: Set up Google Cloud CLI
                 uses: google-github-actions/setup-gcloud@v2
                 with:
-                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+                    project_id: ${{inputs.is_production && vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION || vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+            -   if: ${{!inputs.is_production && inputs.provider == 'azure'}}
+                name: Install ORAS
+                uses: oras-project/setup-oras@v1
             -   env:
                     BOOTSTRAP_STORAGE_PATH_NONPRODUCTION: ${{vars.BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}}
+                    BOOTSTRAP_STORAGE_PATH_PRODUCTION: ${{vars.BOOTSTRAP_STORAGE_PATH_PRODUCTION}}
                 id: vars
                 name: Set up variables
                 run: |
@@ -47,9 +53,14 @@ jobs:
 
                         echo "OBJECT_BASENAME=${object_basename}" >> ${GITHUB_ENV}
 
-                        local object_name
+                        local object_path="${BOOTSTRAP_STORAGE_PATH_PRODUCTION}"
 
-                        object_name="${BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr '/' '-')/liferay-${provider}-bootstrap/${object_basename}"
+                        if [[ "${{inputs.is_production}}" != "true" ]]
+                        then
+                            object_path="${BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr '/' '-')/${GITHUB_SHA::7}"
+                        fi
+
+                        local object_name="${object_path}/${object_basename}"
 
                         echo "OBJECT_NAME=${object_name}" >> ${GITHUB_ENV}
                         echo "object_name=${object_name}" >> ${GITHUB_OUTPUT}
@@ -60,35 +71,8 @@ jobs:
             -   env:
                     CONTAINER_IMAGE_REGISTRY_NONPRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}}
                     HELM_CHART_REGISTRY_NONPRODUCTION: ${{vars.HELM_CHART_REGISTRY_NONPRODUCTION}}
-                if: ${{inputs.is_preview}}
-                name: Point the artifacts at the preview registries
-                run: |
-                    set -o errexit
-                    set -o nounset
-                    set -o pipefail
-
-                    function main {
-                        local config_json_defaults_file="./cloud/scripts/config.json.defaults"
-
-                        local registry_path_suffix
-
-                        registry_path_suffix="$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')/${GITHUB_SHA::7}"
-
-                        local updated_config_json_defaults
-
-                        updated_config_json_defaults=$( \
-                            jq \
-                                --arg charts_registry "${HELM_CHART_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
-                                --arg images_registry "${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
-                                --tab \
-                                '.artifacts.registries.charts = $charts_registry | .artifacts.registries.images = $images_registry' \
-                                "${config_json_defaults_file}")
-
-                        printf '%s' "${updated_config_json_defaults}" > "${config_json_defaults_file}"
-                    }
-
-                    main "${@}"
-            -   name: Package and push bootstrap tarball
+                id: package
+                name: Package and push bootstrap tarball
                 run: |
                     set -o errexit
                     set -o nounset
@@ -127,6 +111,11 @@ jobs:
                             )
                         fi
 
+                        if [[ "${provider}" == "azure" ]] && [[ "${{inputs.is_production}}" != "true" ]]
+                        then
+                            _point_artifacts_at_this_build ./cloud/scripts/config.json.defaults
+                        fi
+
                         tar \
                             --create \
                             --file "/tmp/${OBJECT_BASENAME}" \
@@ -135,6 +124,8 @@ jobs:
                             "${files[@]}"
 
                         (cd /tmp && sha256sum "${OBJECT_BASENAME}" > "${OBJECT_BASENAME}.sha256")
+
+                        echo "sha256=$(cut --delimiter=' ' --fields=1 < "/tmp/${OBJECT_BASENAME}.sha256")" >> ${GITHUB_OUTPUT}
 
                         gcloud \
                             storage \
@@ -149,11 +140,82 @@ jobs:
                             "${OBJECT_NAME}.sha256"
                     }
 
+                    function _get_build_registry {
+                        local type="${1}"
+                        local name="${2}"
+                        local version="${3}"
+
+                        local registry="${HELM_CHART_REGISTRY_NONPRODUCTION}"
+
+                        if [[ "${type}" == "images" ]]
+                        then
+                            registry="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}"
+                        fi
+
+                        registry="${registry}/$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')/${GITHUB_SHA::7}"
+
+                        if oras \
+                                manifest \
+                                fetch \
+                                --password "${{steps.auth.outputs.auth_token}}" \
+                                --username oauth2accesstoken \
+                                "${registry}/${name}:${version}" \
+                                > /dev/null 2>&1
+                        then
+                            echo "${registry}"
+                        fi
+                    }
+
+                    function _point_artifacts_at_this_build {
+                        local config_json_defaults_file="${1}"
+
+                        local name
+                        local type
+                        local version
+
+                        while read -r type name version
+                        do
+                            local registry
+
+                            registry=$(_get_build_registry "${type}" "${name}" "${version}")
+
+                            if [[ -z "${registry}" ]]
+                            then
+                                continue
+                            fi
+
+                            echo "\`${type}.${name}\` points to \`${registry}\`, where this build pushed it." >> "${GITHUB_STEP_SUMMARY}"
+
+                            local updated_config_json_defaults
+
+                            updated_config_json_defaults=$( \
+                                jq \
+                                    --arg name "${name}" \
+                                    --arg registry "${registry}" \
+                                    --arg type "${type}" \
+                                    --tab \
+                                    '.artifacts[$type][$name].registry = $registry' \
+                                    "${config_json_defaults_file}")
+
+                            printf '%s' "${updated_config_json_defaults}" > "${config_json_defaults_file}"
+                        done < <( \
+                            jq \
+                                --raw-output \
+                                '.artifacts
+                                | {charts, images}
+                                | to_entries[]
+                                | .key as $type
+                                | .value
+                                | to_entries[]
+                                | "\($type) \(.key) \(.value.version)"' \
+                                "${config_json_defaults_file}")
+                    }
+
                     main "${@}"
 on:
     workflow_call:
         inputs:
-            is_preview:
+            is_production:
                 default: false
                 required: false
                 type: boolean
@@ -163,6 +225,8 @@ on:
         outputs:
             object_name:
                 value: ${{jobs.push.outputs.object_name}}
+            sha256:
+                value: ${{jobs.push.outputs.sha256}}
             version:
                 value: ${{jobs.push.outputs.version}}
 permissions:

@@ -1,20 +1,40 @@
 {
 	"artifacts": {
 		"charts": {
-			"liferay-azure": "0.1.1",
-			"liferay-azure-infrastructure-provider": "0.1.1",
-			"liferay-dxp-operator": "0.1.2",
-			"liferay-infrastructure": "0.1.1",
-			"liferay-platform": "0.1.2",
-			"liferay-platform-components": "0.1.2",
-			"observability": "1.1.1"
+			"liferay-azure": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "0.1.1"
+			},
+			"liferay-azure-infrastructure-provider": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "0.1.1"
+			},
+			"liferay-dxp-operator": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "0.1.2"
+			},
+			"liferay-infrastructure": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "0.1.1"
+			},
+			"liferay-platform": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "0.1.2"
+			},
+			"liferay-platform-components": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "0.1.2"
+			},
+			"observability": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "1.1.1"
+			}
 		},
 		"images": {
-			"liferay-dxp-operator": "0.1.1"
-		},
-		"registries": {
-			"charts": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-			"images": "us-central1-docker.pkg.dev/external-assets-prd/liferay-cloud-native"
+			"liferay-dxp-operator": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-cloud-native",
+				"version": "0.1.1"
+			}
 		}
 	}
 }

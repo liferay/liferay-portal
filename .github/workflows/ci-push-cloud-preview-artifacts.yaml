@@ -39,7 +39,6 @@ jobs:
                     -   gcp
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
-            is_preview: true
             provider: ${{matrix.provider}}
     push-chart:
         needs: check-repository

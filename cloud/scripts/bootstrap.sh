@@ -85,7 +85,7 @@ function _download_and_extract_files {
 
 	local bucket_name="liferay-cloud-native-bootstrap"
 	local download_base_url="https://cdn.liferay.cloud"
-	local prefix="bootstrap/liferay-${provider}-bootstrap"
+	local prefix="bootstrap"
 
 	if [[ -n ${branch} ]]
 	then
@@ -96,7 +96,7 @@ function _download_and_extract_files {
 
 		sanitized_branch=$(echo "${branch}" | tr '/' '-')
 
-		prefix="bootstrap/${sanitized_branch}/liferay-${provider}-bootstrap"
+		prefix="${prefix}/${sanitized_branch}"
 	fi
 
 	local json
@@ -120,9 +120,10 @@ function _download_and_extract_files {
 	then
 		output_path=$( \
 			jq \
+				--arg name_prefix "/liferay-${provider}-bootstrap-" \
 				--raw-output \
 				'.items
-				| map(select(.name | endswith(".tar.gz")))
+				| map(select(.name | contains($name_prefix) and endswith(".tar.gz")))
 				| sort_by(.updated)
 				| last
 				| .name' <<< "${json}")
@@ -130,10 +131,12 @@ function _download_and_extract_files {
 	else
 		output_path=$( \
 			jq \
-				--arg sn "${prefix}/liferay-${provider}-bootstrap-${version}.tar.gz" \
+				--arg suffix "/liferay-${provider}-bootstrap-${version}.tar.gz" \
 				--raw-output \
-				'.items[]
-				| select(.name == $sn)
+				'.items
+				| map(select(.name | endswith($suffix)))
+				| sort_by(.updated)
+				| last
 				| .name' <<< "${json}")
 	fi
 

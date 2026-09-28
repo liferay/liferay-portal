@@ -285,7 +285,7 @@ function _update_artifact {
 			--arg type "${type}" \
 			--arg version "${version}" \
 			--tab \
-			'.artifacts[$type][$name] = $version'
+			'.artifacts[$type][$name].version = $version'
 }
 
 function _update_default_chart_version {

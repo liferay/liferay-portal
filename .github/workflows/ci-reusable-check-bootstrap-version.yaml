@@ -40,21 +40,30 @@ jobs:
 
                         version=$(jq --raw-output ".\"liferay-${provider}-bootstrap\"" ./cloud/scripts/versions.json)
 
-                        local object_path="${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/liferay-${provider}-bootstrap/liferay-${provider}-bootstrap-${version}.tar.gz"
+                        local object_basename="liferay-${provider}-bootstrap-${version}.tar.gz"
 
-                        if gcloud \
-                                storage \
-                                objects \
-                                describe \
-                                "${object_path}" \
-                                > /dev/null 2>&1
-                        then
-                            echo "\`${object_path}\` is already published. The release candidate will not be pushed." >> "${GITHUB_STEP_SUMMARY}"
+                        local object_path
 
-                            echo "should_release=false" >> ${GITHUB_OUTPUT}
-                        else
-                            echo "should_release=true" >> ${GITHUB_OUTPUT}
-                        fi
+                        for object_path in \
+                            "${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/${object_basename}" \
+                            "${BOOTSTRAP_STORAGE_PATH_PRODUCTION}/liferay-${provider}-bootstrap/${object_basename}"
+                        do
+                            if gcloud \
+                                    storage \
+                                    objects \
+                                    describe \
+                                    "${object_path}" \
+                                    > /dev/null 2>&1
+                            then
+                                echo "\`${object_path}\` is already published. The release candidate will not be pushed." >> "${GITHUB_STEP_SUMMARY}"
+
+                                echo "should_release=false" >> ${GITHUB_OUTPUT}
+
+                                return
+                            fi
+                        done
+
+                        echo "should_release=true" >> ${GITHUB_OUTPUT}
                     }
 
                     main "${@}"
