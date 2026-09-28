@@ -194,9 +194,9 @@ public class PortalInstanceImportResourceTest
 	}
 
 	private PortalInstanceImport _randomPortalInstanceImport(long companyId) {
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		portalInstanceImport.setSchemaName(
 			DBPartitionUtil.getExportedPartitionName(companyId));
@@ -263,9 +263,9 @@ public class PortalInstanceImportResourceTest
 
 		_companyLocalService.exportCompany(companyId);
 
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		portalInstanceImport.setSchemaName(
 			DBPartitionUtil.getExportedPartitionName(companyId));
@@ -326,10 +326,10 @@ public class PortalInstanceImportResourceTest
 	private void _testPostPortalInstanceImportNonexistentDBPartition()
 		throws Exception {
 
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
 		String schemaName = DBPartitionUtil.getExportedPartitionName(
 			RandomTestUtil.randomLong());
-
-		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
 		portalInstanceImport.setSchemaName(schemaName);
 
@@ -365,13 +365,13 @@ public class PortalInstanceImportResourceTest
 			_deleteCompany(companyId);
 		}
 
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		String virtualHost =
 			randomId + "." +
 				StringUtil.toLowerCase(RandomTestUtil.randomString(3));
-
-		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
 		portalInstanceImport.setSchemaName(
 			DBPartitionUtil.getExportedPartitionName(companyId));
@@ -425,12 +425,12 @@ public class PortalInstanceImportResourceTest
 	private void _testPostPortalInstanceImportWithoutOmniadminPermission()
 		throws Exception {
 
-		PortalInstanceImportResource userPortalInstanceImportResource =
-			_createUserPortalInstanceImportResource();
-
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
 		portalInstanceImport.setSchemaName(RandomTestUtil.randomString());
+
+		PortalInstanceImportResource userPortalInstanceImportResource =
+			_createUserPortalInstanceImportResource();
 
 		try {
 			userPortalInstanceImportResource.postPortalInstanceImport(

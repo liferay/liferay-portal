@@ -260,10 +260,10 @@ public class PortalInstanceCopyResourceTest
 	}
 
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
 		Company defaultCompany = _companyLocalService.getCompany(
 			PortalInstancePool.getDefaultCompanyId());
-
-		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
 		portalInstanceCopy.setName(RandomTestUtil.randomString());
 		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
@@ -318,9 +318,9 @@ public class PortalInstanceCopyResourceTest
 	}
 
 	private void _testPostPortalInstanceCopySuccess() throws Exception {
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		portalInstanceCopy.setName(randomId);
 		portalInstanceCopy.setVirtualHost(
@@ -334,12 +334,12 @@ public class PortalInstanceCopyResourceTest
 	private void _testPostPortalInstanceCopySuccessWithDestinationCompanyId()
 		throws Exception {
 
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
 		long destinationCompanyId = CounterLocalServiceUtil.increment(
 			Company.class.getName());
 
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
-		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
 		portalInstanceCopy.setDestinationCompanyId(destinationCompanyId);
 		portalInstanceCopy.setName(randomId);
@@ -414,9 +414,9 @@ public class PortalInstanceCopyResourceTest
 	private void _testPostPortalInstanceCopyWithNonpositiveDestinationCompanyId()
 		throws Exception {
 
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		portalInstanceCopy.setDestinationCompanyId(0L);
 		portalInstanceCopy.setName(randomId);
@@ -431,15 +431,15 @@ public class PortalInstanceCopyResourceTest
 	private void _testPostPortalInstanceCopyWithoutOmniadminPermission()
 		throws Exception {
 
-		PortalInstanceCopyResource userPortalInstanceCopyResource =
-			_createUserPortalInstanceCopyResource();
-
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
 		portalInstanceCopy.setName(RandomTestUtil.randomString());
 		portalInstanceCopy.setSourcePortalInstanceId(_company::getWebId);
 		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
 		portalInstanceCopy.setWebId(RandomTestUtil.randomString());
+
+		PortalInstanceCopyResource userPortalInstanceCopyResource =
+			_createUserPortalInstanceCopyResource();
 
 		try {
 			userPortalInstanceCopyResource.postPortalInstanceCopy(
