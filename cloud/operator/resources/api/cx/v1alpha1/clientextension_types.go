@@ -49,7 +49,7 @@ func init() {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:printcolumn:JSONPath=`.spec.liferayNamespace`,name="DXP-Namespace",type=string
+// +kubebuilder:printcolumn:JSONPath=`.spec.dxpNamespace`,name="DXP-Namespace",type=string
 // +kubebuilder:printcolumn:JSONPath=`.spec.virtualInstanceId`,name="Virtual-Instance",type=string
 // +kubebuilder:printcolumn:JSONPath=`.spec.workloadRef.kind`,name="Workload",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="Delivered")].status`,name="Delivered",type=string
@@ -86,7 +86,7 @@ type ClientExtensionSpec struct {
 	// +kubebuilder:validation:MaxLength=63
 	// +kubebuilder:validation:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
 	// +optional
-	LiferayNamespace string `json:"liferayNamespace,omitempty"`
+	DxpNamespace string `json:"dxpNamespace,omitempty"`
 
 	// +optional
 	ProjectName string `json:"projectName,omitempty"`

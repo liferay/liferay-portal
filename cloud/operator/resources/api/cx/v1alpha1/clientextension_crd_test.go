@@ -39,15 +39,15 @@ func TestCRDAcceptsConfigurationOnlyClientExtension(t *testing.T) {
 	}
 }
 
-func TestCRDAcceptsLiferayNamespace(t *testing.T) {
+func TestCRDAcceptsDxpNamespace(t *testing.T) {
 	testClient := startEnvironment(t)
 
 	clientExtension := validClientExtension("cross-namespace")
 
-	clientExtension.Spec.LiferayNamespace = "liferay-prod"
+	clientExtension.Spec.DxpNamespace = "liferay-prod"
 
 	if error := testClient.Create(context.Background(), clientExtension); error != nil {
-		t.Errorf("Expected a ClientExtension naming Liferay's namespace to be accepted, got %v", error)
+		t.Errorf("Expected a ClientExtension naming the DXP namespace to be accepted, got %v", error)
 	}
 }
 
@@ -121,14 +121,14 @@ func TestCRDRejectsInvalidClientExtensions(t *testing.T) {
 	testCases := map[string]struct {
 		mutate func(object map[string]any)
 	}{
-		"a liferayNamespace longer than a namespace name": {
+		"a dxpNamespace longer than a namespace name": {
 			mutate: func(object map[string]any) {
-				spec(object)["liferayNamespace"] = strings.Repeat("a", 64)
+				spec(object)["dxpNamespace"] = strings.Repeat("a", 64)
 			},
 		},
-		"a liferayNamespace that is not a namespace name": {
+		"a dxpNamespace that is not a namespace name": {
 			mutate: func(object map[string]any) {
-				spec(object)["liferayNamespace"] = "Liferay_Prod"
+				spec(object)["dxpNamespace"] = "Liferay_Prod"
 			},
 		},
 		"a workloadRef with no name": {
