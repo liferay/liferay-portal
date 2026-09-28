@@ -10,11 +10,16 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -136,7 +141,12 @@ public class SiteNavigationMenuItemLocalServiceImpl
 		siteNavigationMenuItem.setOrder(order);
 		siteNavigationMenuItem.setExpandoBridgeAttributes(serviceContext);
 
-		return siteNavigationMenuItemPersistence.update(siteNavigationMenuItem);
+		siteNavigationMenuItem = siteNavigationMenuItemPersistence.update(
+			siteNavigationMenuItem);
+
+		_updateSiteNavigationMenuModifiedDate(siteNavigationMenuId);
+
+		return siteNavigationMenuItem;
 	}
 
 	@Override
@@ -237,7 +247,13 @@ public class SiteNavigationMenuItemLocalServiceImpl
 	public SiteNavigationMenuItem deleteSiteNavigationMenuItem(
 		SiteNavigationMenuItem siteNavigationMenuItem) {
 
-		return siteNavigationMenuItemPersistence.remove(siteNavigationMenuItem);
+		siteNavigationMenuItem = siteNavigationMenuItemPersistence.remove(
+			siteNavigationMenuItem);
+
+		_updateSiteNavigationMenuModifiedDate(
+			siteNavigationMenuItem.getSiteNavigationMenuId());
+
+		return siteNavigationMenuItem;
 	}
 
 	@Override
@@ -256,6 +272,8 @@ public class SiteNavigationMenuItemLocalServiceImpl
 	public void deleteSiteNavigationMenuItems(long siteNavigationMenuId) {
 		siteNavigationMenuItemPersistence.removeBySiteNavigationMenuId(
 			siteNavigationMenuId);
+
+		_updateSiteNavigationMenuModifiedDate(siteNavigationMenuId);
 	}
 
 	@Override
@@ -400,6 +418,9 @@ public class SiteNavigationMenuItemLocalServiceImpl
 			}
 		}
 
+		_updateSiteNavigationMenuModifiedDate(
+			siteNavigationMenuItem.getSiteNavigationMenuId());
+
 		return siteNavigationMenuItem;
 	}
 
@@ -423,7 +444,12 @@ public class SiteNavigationMenuItemLocalServiceImpl
 		siteNavigationMenuItem.setTypeSettings(typeSettings);
 		siteNavigationMenuItem.setOrder(order);
 
-		return siteNavigationMenuItemPersistence.update(siteNavigationMenuItem);
+		siteNavigationMenuItem = siteNavigationMenuItemPersistence.update(
+			siteNavigationMenuItem);
+
+		_updateSiteNavigationMenuModifiedDate(siteNavigationMenuId);
+
+		return siteNavigationMenuItem;
 	}
 
 	@Override
@@ -459,7 +485,45 @@ public class SiteNavigationMenuItemLocalServiceImpl
 		siteNavigationMenuItem.setTypeSettings(typeSettings);
 		siteNavigationMenuItem.setExpandoBridgeAttributes(serviceContext);
 
-		return siteNavigationMenuItemPersistence.update(siteNavigationMenuItem);
+		siteNavigationMenuItem = siteNavigationMenuItemPersistence.update(
+			siteNavigationMenuItem);
+
+		_updateSiteNavigationMenuModifiedDate(
+			siteNavigationMenuItem.getSiteNavigationMenuId());
+
+		return siteNavigationMenuItem;
+	}
+
+	private void _updateSiteNavigationMenuModifiedDate(
+		long siteNavigationMenuId) {
+
+		SiteNavigationMenu siteNavigationMenu =
+			_siteNavigationMenuPersistence.fetchByPrimaryKey(
+				siteNavigationMenuId);
+
+		if (siteNavigationMenu == null) {
+			return;
+		}
+
+		siteNavigationMenu.setModifiedDate(new Date());
+
+		siteNavigationMenu = _siteNavigationMenuPersistence.update(
+			siteNavigationMenu);
+
+		Indexer<SiteNavigationMenu> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(SiteNavigationMenu.class);
+
+		try {
+			indexer.reindex(siteNavigationMenu);
+		}
+		catch (SearchException searchException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to reindex site navigation menu " +
+						siteNavigationMenuId,
+					searchException);
+			}
+		}
 	}
 
 	private void _validate(
@@ -500,6 +564,9 @@ public class SiteNavigationMenuItemLocalServiceImpl
 				"Maximum length of name exceeded");
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SiteNavigationMenuItemLocalServiceImpl.class);
 
 	@Reference
 	private SiteNavigationMenuItemTypeRegistry
