@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.portlet.OmniadminControlPanelEntry;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
-import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -618,7 +617,7 @@ public class EditRolePermissionsNavigationDisplayContext {
 
 			if (navigationItem.id == null) {
 				navigationItem.setId(
-					"NAVIGATION_ITEM" + SecureRandomUtil.nextLong());
+					"NAVIGATION_ITEM" + PortalUtil.getUniqueElementId());
 			}
 
 			return navigationItem;
