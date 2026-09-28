@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.db.DBResourceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -119,8 +120,24 @@ public class CounterDataCleanupPreupgradeProcess
 				}
 
 				if (!dbInspector.hasTable(tableName)) {
-					if (_log.isWarnEnabled()) {
-						_log.warn("Table " + tableName + " does not exist");
+					if (PropsValues.DATABASE_PARTITION_ENABLED &&
+						!CompanyThreadLocal.isDefaultCompany() &&
+						dbInspector.hasView(tableName)) {
+
+						if (_log.isInfoEnabled()) {
+							_log.info(
+								StringBundler.concat(
+									"Skipping counter ", counterName,
+									" because ", tableName,
+									" is a view in a secondary partition"));
+						}
+					}
+					else if (_log.isWarnEnabled()) {
+						_log.warn(
+							StringBundler.concat(
+								"Skipping counter ", counterName,
+								" because table ", tableName,
+								" does not exist"));
 					}
 
 					continue;
