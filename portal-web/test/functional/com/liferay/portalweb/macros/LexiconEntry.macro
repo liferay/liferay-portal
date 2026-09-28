@@ -2,17 +2,21 @@ definition {
 
 	@summary = "Default summary"
 	macro changeDisplayStyle(displayStyle = null) {
-		Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
+		WaitForElementPresent(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
 
-		if (IsElementNotPresent(key_menuItem = StringUtil.upperCaseFirstLetter(${displayStyle}), locator1 = "MenuItem#ANY_MENU_ITEM")) {
-			Refresh();
-
-			WaitForPageLoad();
-
+		if (IsElementNotPresent(key_displayStyle = StringUtil.lowerCase(${displayStyle}), locator1 = "Icon#CURRENT_DISPLAY_STYLE_ACTIVE")) {
 			Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
-		}
 
-		MenuItem.click(menuItem = StringUtil.upperCaseFirstLetter(${displayStyle}));
+			if (IsElementNotPresent(key_menuItem = StringUtil.upperCaseFirstLetter(${displayStyle}), locator1 = "MenuItem#ANY_MENU_ITEM")) {
+				Refresh();
+
+				WaitForPageLoad();
+
+				Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
+			}
+
+			MenuItem.click(menuItem = StringUtil.upperCaseFirstLetter(${displayStyle}));
+		}
 	}
 
 	@summary = "Default summary"
