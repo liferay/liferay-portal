@@ -152,9 +152,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 				"Key has no encoded key material for company " + companyId);
 		}
 
-		byte[] plaintextKeyBytes = Arrays.copyOf(
-			encodedBytes, encodedBytes.length);
-
 		try {
 			List<String> cryptoProviderIds =
 				_cryptoManager.getCryptoProviderIds(companyId);
@@ -173,8 +170,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 				KeyReference.Type.CRYPTO);
 
 			CryptoServiceResult<byte[]> cryptoServiceResult =
-				_cryptoManager.encrypt(
-					companyId, keyReference, plaintextKeyBytes);
+				_cryptoManager.encrypt(companyId, keyReference, encodedBytes);
 
 			if (ArrayUtil.isEmpty(cryptoServiceResult.getValue())) {
 				throw new CompanyKeyException(
@@ -185,11 +181,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
 				cryptoServiceResult.getValue(), keyReference);
 
-			String keyString = wrappedCompanyKey.toKeyString();
-
-			_putCompanyKeyCacheEntry(companyId, encodedBytes, keyString);
-
-			return keyString;
+			return wrappedCompanyKey.toKeyString();
 		}
 		catch (CryptoException cryptoException) {
 			throw new CompanyKeyException(
@@ -198,7 +190,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		}
 		finally {
 			Arrays.fill(encodedBytes, (byte)0);
-			Arrays.fill(plaintextKeyBytes, (byte)0);
 		}
 	}
 

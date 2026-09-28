@@ -663,16 +663,12 @@ public class CompanyKeyResolverImplTest {
 		Assert.assertArrayEquals(
 			new byte[_KEY_BYTES_1.length], argumentCaptor.getValue());
 
-		Assert.assertEquals(
-			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
 		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
-		Mockito.verify(
-			_cryptoManager, Mockito.never()
-		).decrypt(
-			ArgumentMatchers.any(), ArgumentMatchers.anyLong(),
-			ArgumentMatchers.any()
-		);
+		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
+			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
+
+		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
 	}
 
 	private void _testWrapKeyWithEncryptFailure() throws Exception {
