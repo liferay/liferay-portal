@@ -69,6 +69,7 @@ import {CommerceAdminProductDetailsSkusPage} from '../pages/commerce/commerce-pr
 import {CommerceAdminProductDetailsVisibilityPage} from '../pages/commerce/commerce-product-definitions-web/commerceAdminProductDetailsVisibilityPage';
 import {CommerceAdminProductPage} from '../pages/commerce/commerce-product-definitions-web/commerceAdminProductPage';
 import {CommerceSpecificationsPage} from '../pages/commerce/commerce-product-options-web/commerceSpecificationsPage';
+import {VirtualOrderItemContentPage} from '../pages/commerce/commerce-product-type-virtual-order-content-web/virtualOrderItemContentPage';
 import {CommerceAdminShipmentsPage} from '../pages/commerce/commerce-shipment-web/commerceAdminShipmentsPage';
 import {TermsAndConditionDetailsPage} from '../pages/commerce/commerce-term-web/termsAndConditionDetailsPage';
 import {TermsAndConditionsPage} from '../pages/commerce/commerce-term-web/termsAndConditionsPage';
@@ -163,6 +164,7 @@ const commercePagesTest = test.extend<{
 	specificationFacetsPage: SpecificationFacetsPage;
 	termsAndConditionDetailsPage: TermsAndConditionDetailsPage;
 	termsAndConditionsPage: TermsAndConditionsPage;
+	virtualOrderItemContentPage: VirtualOrderItemContentPage;
 }>({
 	attachmentsPage: async ({page}, use) => {
 		await use(new AttachmentsPage(page));
@@ -404,6 +406,9 @@ const commercePagesTest = test.extend<{
 	},
 	termsAndConditionsPage: async ({page}, use) => {
 		await use(new TermsAndConditionsPage(page));
+	},
+	virtualOrderItemContentPage: async ({page}, use) => {
+		await use(new VirtualOrderItemContentPage(page));
 	},
 });
 

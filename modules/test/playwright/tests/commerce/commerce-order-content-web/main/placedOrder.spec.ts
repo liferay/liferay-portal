@@ -16,7 +16,11 @@ import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {systemSettingsPageTest} from '../../../../fixtures/systemSettingsPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../../fixtures/usersAndOrganizationsPagesTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
+import {TProduct} from '../../../../helpers/HeadlessCommerceAdminCatalogApiHelper';
 import {liferayConfig} from '../../../../liferay.config';
+import {CommerceAdminChannelsPage} from '../../../../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
+import {VIRTUAL_ORDER_ITEM_CONTENT_PORTLET_ID} from '../../../../pages/commerce/commerce-product-type-virtual-order-content-web/virtualOrderItemContentPage';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
@@ -25,6 +29,7 @@ import performLogin, {
 	performUserSwitchViaApi,
 	userData,
 } from '../../../../utils/performLogin';
+import getBasicWebContentStructureId from '../../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
@@ -61,6 +66,83 @@ export const test = mergeTests(
 	templatesPageTest,
 	usersAndOrganizationsPagesTest
 );
+
+async function setUpVirtualOrderItemWithTermsOfUse({
+	apiHelpers,
+	commerceAdminChannelsPage,
+	productVirtualSettings,
+	site,
+}: {
+	apiHelpers: DataApiHelpers;
+	commerceAdminChannelsPage: CommerceAdminChannelsPage;
+	productVirtualSettings: TProduct['productVirtualSettings'];
+	site: Site;
+}) {
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName: VIRTUAL_ORDER_ITEM_CONTENT_PORTLET_ID,
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
+
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		productType: 'virtual',
+		productVirtualSettings: {
+			activationStatus: 1,
+			termsOfUseRequired: true,
+			url: 'https://www.liferay.com',
+			...productVirtualSettings,
+		},
+	});
+
+	const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+		.getProduct(product.productId)
+		.then((product) => {
+			return product.skus;
+		});
+
+	const {account, buyerUser} = await createAccountWithBuyerUser(
+		apiHelpers,
+		site.id
+	);
+
+	const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+		accountId: account.id,
+		channelId: channel.id,
+		orderItems: [
+			{
+				quantity: 1,
+				skuId: productSkus[0].id,
+			},
+		],
+		orderStatus: '1',
+	});
+
+	await apiHelpers.headlessCommerceAdminOrder.patchOrder(order.id, {
+		paymentStatus: '0',
+	});
+
+	return {
+		buyerUser,
+		layoutURL: `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+	};
+}
 
 test(
 	'Placed orders widget configuration to display full addresses and phone number',
@@ -2416,5 +2498,140 @@ test(
 		await expect(placedOrdersPage.portlet).not.toContainText('Edit', {
 			useInnerText: true,
 		});
+	}
+);
+
+test(
+	'Terms of use view renders only the terms of use of the virtual order item',
+	{tag: '@LPD-106886'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		site,
+		virtualOrderItemContentPage,
+	}) => {
+		const termsOfUseId = `termsOfUse${getRandomString()}`;
+
+		const {buyerUser, layoutURL} =
+			await setUpVirtualOrderItemWithTermsOfUse({
+				apiHelpers,
+				commerceAdminChannelsPage,
+				productVirtualSettings: {
+					termsOfUseContent: {
+						en_US: `<p><strong id="${termsOfUseId}">Terms of Use</strong></p>`,
+					},
+				},
+				site,
+			});
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		await page.goto(layoutURL);
+
+		await virtualOrderItemContentPage.downloadButton.click();
+
+		await expect(
+			virtualOrderItemContentPage.termsOfUseModalFrame.locator(
+				`[id="${termsOfUseId}"]`
+			)
+		).toHaveText('Terms of Use');
+
+		const imageId = `image${getRandomString()}`;
+
+		await virtualOrderItemContentPage.gotoTermsOfUse(layoutURL, {
+			termsOfUseContent: `<img id="${imageId}" src="x">`,
+		});
+
+		await expect(
+			virtualOrderItemContentPage.termsOfUseContent
+		).toBeVisible();
+		await expect(page.locator(`[id="${imageId}"]`)).toHaveCount(0);
+	}
+);
+
+test(
+	'Terms of use view renders only the terms of use article of the virtual order item',
+	{tag: '@LPD-106886'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		site,
+		virtualOrderItemContentPage,
+	}) => {
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const termsOfUseId = `termsOfUse${getRandomString()}`;
+
+		const termsOfUseStructuredContent =
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				contentFields: [
+					{
+						contentFieldValue: {
+							data: `<p><strong id="${termsOfUseId}">Terms of Use</strong></p>`,
+						},
+						name: 'content',
+					},
+				],
+				contentStructureId: basicWebContentStructureId,
+				datePublished: '2024-01-01T00:00:00Z',
+				siteId: site.id,
+				title: getRandomString(),
+				viewableBy: 'Anyone',
+			});
+
+		const {buyerUser, layoutURL} =
+			await setUpVirtualOrderItemWithTermsOfUse({
+				apiHelpers,
+				commerceAdminChannelsPage,
+				productVirtualSettings: {
+					termsOfUseJournalArticleId: termsOfUseStructuredContent.id,
+				},
+				site,
+			});
+
+		const unrelatedId = `unrelated${getRandomString()}`;
+
+		const unrelatedStructuredContent =
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				contentFields: [
+					{
+						contentFieldValue: {
+							data: `<p id="${unrelatedId}">${getRandomString()}</p>`,
+						},
+						name: 'content',
+					},
+				],
+				contentStructureId: basicWebContentStructureId,
+				datePublished: '2024-01-01T00:00:00Z',
+				siteId: site.id,
+				title: getRandomString(),
+				viewableBy: 'Anyone',
+			});
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		await page.goto(layoutURL);
+
+		await virtualOrderItemContentPage.downloadButton.click();
+
+		await expect(
+			virtualOrderItemContentPage.termsOfUseModalFrame.locator(
+				`[id="${termsOfUseId}"]`
+			)
+		).toHaveText('Terms of Use');
+
+		await virtualOrderItemContentPage.gotoTermsOfUse(layoutURL, {
+			articleId: unrelatedStructuredContent.key,
+			groupId: String(site.id),
+			version: '1.0',
+		});
+
+		await expect(
+			virtualOrderItemContentPage.termsOfUseContent
+		).toBeVisible();
+		await expect(page.locator(`[id="${unrelatedId}"]`)).toHaveCount(0);
 	}
 );
