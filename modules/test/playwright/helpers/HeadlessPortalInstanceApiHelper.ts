@@ -25,6 +25,19 @@ export class HeadlessPortalInstanceApiHelper {
 		);
 	}
 
+	async addVirtualInstancesBatch(
+		portalInstances: {
+			domain: string;
+			portalInstanceId: string;
+			virtualHost: string;
+		}[]
+	): Promise<any> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/portal-instances/batch`,
+			{data: portalInstances}
+		);
+	}
+
 	async deleteVirtualInstance(instanceId: number) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/portal-instances/${instanceId}`
