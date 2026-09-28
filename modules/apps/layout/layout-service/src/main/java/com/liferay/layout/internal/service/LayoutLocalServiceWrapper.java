@@ -1026,7 +1026,8 @@ public class LayoutLocalServiceWrapper
 	}
 
 	private Map<Long, Long> _getSegmentsExperienceIds(
-		long[] segmentsExperiencesIds, Layout targetLayout, User user) {
+			long[] segmentsExperiencesIds, Layout targetLayout, User user)
+		throws Exception {
 
 		Map<Long, Long> segmentsExperienceIdsMap = new HashMap<>();
 
@@ -1058,7 +1059,11 @@ public class LayoutLocalServiceWrapper
 					targetSegmentsExperience.setSegmentsEntryERC(
 						sourceSegmentsExperience.getSegmentsEntryERC());
 					targetSegmentsExperience.setSegmentsEntryScopeERC(
-						sourceSegmentsExperience.getSegmentsEntryScopeERC());
+						_getScopeExternalReferenceCode(
+							sourceSegmentsExperience.getSegmentsEntryERC(),
+							sourceSegmentsExperience.getSegmentsEntryScopeERC(),
+							sourceSegmentsExperience.getGroupId(),
+							targetLayout));
 					targetSegmentsExperience.setNameMap(
 						sourceSegmentsExperience.getNameMap());
 					targetSegmentsExperience.setPriority(minPriority++);
@@ -1077,12 +1082,18 @@ public class LayoutLocalServiceWrapper
 			newSegmentsExperience.setExternalReferenceCode(null);
 			newSegmentsExperience.setSegmentsExperienceId(
 				_counterLocalService.increment());
+			newSegmentsExperience.setGroupId(targetLayout.getGroupId());
 			newSegmentsExperience.setUserId(user.getUserId());
 			newSegmentsExperience.setUserName(user.getFullName());
 			newSegmentsExperience.setCreateDate(
 				serviceContext.getCreateDate(new Date()));
 			newSegmentsExperience.setModifiedDate(
 				serviceContext.getModifiedDate(new Date()));
+			newSegmentsExperience.setSegmentsEntryScopeERC(
+				_getScopeExternalReferenceCode(
+					sourceSegmentsExperience.getSegmentsEntryERC(),
+					sourceSegmentsExperience.getSegmentsEntryScopeERC(),
+					sourceSegmentsExperience.getGroupId(), targetLayout));
 			newSegmentsExperience.setSegmentsExperienceKey(
 				sourceSegmentsExperience.getSegmentsExperienceKey());
 			newSegmentsExperience.setPlid(targetLayout.getPlid());
