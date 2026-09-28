@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import com.liferay.taglib.util.ParamAndPropertyAncestorTagImpl;
 
@@ -198,7 +197,8 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		String componentId = getComponentId();
 
 		if (componentId == null) {
-			componentId = _UNNAMED_COMPONENT_NAME + PortalUUIDUtil.generate();
+			componentId =
+				_UNNAMED_COMPONENT_NAME + PortalUtil.getUniqueElementId();
 		}
 
 		sb.append(componentId);
@@ -271,7 +271,8 @@ public class ComponentTag extends ParamAndPropertyAncestorTagImpl {
 		String componentId = getComponentId();
 
 		if (componentId == null) {
-			componentId = _UNNAMED_COMPONENT_NAME + PortalUUIDUtil.generate();
+			componentId =
+				_UNNAMED_COMPONENT_NAME + PortalUtil.getUniqueElementId();
 		}
 
 		contentSB.append(componentId);
