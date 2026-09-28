@@ -156,6 +156,10 @@ definition {
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
 				type = "content");
+
+			JSONLayout.publishLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Page Name");
 		}
 
 		task ("Add a web content based on Basic Web Content") {
@@ -1720,6 +1724,10 @@ definition {
 				groupName = "Test Site Name",
 				layoutName = "Content Page Name",
 				type = "content");
+
+			JSONLayout.publishLayout(
+				groupName = "Test Site Name",
+				layoutName = "Content Page Name");
 		}
 
 		task ("Add an Asset Publisher widget to page") {

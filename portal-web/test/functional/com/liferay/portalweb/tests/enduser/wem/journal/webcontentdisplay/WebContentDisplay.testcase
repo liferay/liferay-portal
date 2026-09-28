@@ -660,6 +660,10 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 				groupName = "Test Site Name",
 				layoutName = "Test Content Page Name",
 				type = "content");
+
+			JSONLayout.publishLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Content Page Name");
 		}
 
 		task ("Add a web content based on Basic Web Content") {
