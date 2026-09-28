@@ -21,15 +21,18 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
@@ -139,6 +142,14 @@ public class OneToManyObjectFieldFilterStrategy
 					getPersistedModelLocalService(
 						_objectDefinition1.getClassName());
 
+			SystemObjectDefinitionManager systemObjectDefinitionManager =
+				_systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManager(
+						_objectDefinition1.getName());
+
+			Column<?, Long> primaryKeyColumn =
+				systemObjectDefinitionManager.getPrimaryKeyColumn();
+
 			for (int i = 0; i < jsonArray.length(); i++) {
 				PersistedModel persistedModel =
 					persistedModelLocalService.fetchPersistedModel(
@@ -148,11 +159,15 @@ public class OneToManyObjectFieldFilterStrategy
 					continue;
 				}
 
+				BaseModel<?> baseModel = (BaseModel<?>)persistedModel;
+
 				selectionFDSFilterItems.add(
 					new SelectionFDSFilterItem(
 						_objectEntryLocalService.getTitleValue(
 							_objectDefinition1.getObjectDefinitionId(),
-							GetterUtil.getLong(jsonArray.get(i))),
+							MapUtil.getLong(
+								baseModel.getModelAttributes(),
+								primaryKeyColumn.getName())),
 						jsonArray.getLong(i)));
 			}
 
