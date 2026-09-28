@@ -136,11 +136,12 @@
 				/>
 
 				<!--
-				The replaces above only match an export whose target already repeats
-				the source text. An export that leaves the target empty needs the
-				translation written into it, anchored on the source text so that each
-				unit keeps its own value. XLIFF 1.2 writes the target with an
-				xml:lang attribute, so the opening tag is matched loosely.
+				The replaces above only match an export whose target already
+				repeats the source text. An export that leaves the target empty 
+				needs the translation written into it, anchored on the source
+				text so that each unit keeps its own value. XLIFF 1.2 writes the
+				target with an xml:lang attribute, so the opening tag is matched
+				loosely.
 				-->
 
 				<strip-target-tag property="translation.content.source.cdata" value="${translation.content.target.original}" />
