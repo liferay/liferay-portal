@@ -26,7 +26,7 @@ public class CompanyKeyCacheEntryTest {
 	@Test
 	public void testDestroy() {
 		CompanyKeyCacheEntry companyKeyCacheEntry = new CompanyKeyCacheEntry(
-			Long.MAX_VALUE, _KEY_BYTES, RandomTestUtil.randomString());
+			_KEY_BYTES, RandomTestUtil.randomString());
 
 		Assert.assertNotNull(companyKeyCacheEntry.getKeyBytes());
 
@@ -40,7 +40,7 @@ public class CompanyKeyCacheEntryTest {
 		byte[] keyBytes = _KEY_BYTES.clone();
 
 		CompanyKeyCacheEntry companyKeyCacheEntry = new CompanyKeyCacheEntry(
-			Long.MAX_VALUE, keyBytes, RandomTestUtil.randomString());
+			keyBytes, RandomTestUtil.randomString());
 
 		keyBytes[0]++;
 
@@ -60,19 +60,9 @@ public class CompanyKeyCacheEntryTest {
 		String keyString = RandomTestUtil.randomString();
 
 		CompanyKeyCacheEntry companyKeyCacheEntry = new CompanyKeyCacheEntry(
-			Long.MAX_VALUE, _KEY_BYTES, keyString);
+			_KEY_BYTES, keyString);
 
 		Assert.assertEquals(keyString, companyKeyCacheEntry.getKeyString());
-	}
-
-	@Test
-	public void testIsExpired() {
-		CompanyKeyCacheEntry companyKeyCacheEntry = new CompanyKeyCacheEntry(
-			1000, _KEY_BYTES, RandomTestUtil.randomString());
-
-		Assert.assertFalse(companyKeyCacheEntry.isExpired(999));
-		Assert.assertTrue(companyKeyCacheEntry.isExpired(1000));
-		Assert.assertTrue(companyKeyCacheEntry.isExpired(1001));
 	}
 
 	private static final byte[] _KEY_BYTES = RandomTestUtil.randomBytes();

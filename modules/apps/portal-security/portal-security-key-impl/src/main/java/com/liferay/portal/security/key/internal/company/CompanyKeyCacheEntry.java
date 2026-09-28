@@ -12,14 +12,11 @@ import java.util.Arrays;
  */
 public class CompanyKeyCacheEntry {
 
-	public CompanyKeyCacheEntry(
-		long expirationTime, byte[] keyBytes, String keyString) {
-
+	public CompanyKeyCacheEntry(byte[] keyBytes, String keyString) {
 		if (keyBytes == null) {
 			throw new IllegalArgumentException("Key bytes are null");
 		}
 
-		_expirationTime = expirationTime;
 		_keyBytes = Arrays.copyOf(keyBytes, keyBytes.length);
 		_keyString = keyString;
 	}
@@ -42,16 +39,7 @@ public class CompanyKeyCacheEntry {
 		return _keyString;
 	}
 
-	public boolean isExpired(long time) {
-		if (time >= _expirationTime) {
-			return true;
-		}
-
-		return false;
-	}
-
 	private boolean _destroyed;
-	private final long _expirationTime;
 	private final byte[] _keyBytes;
 	private final String _keyString;
 

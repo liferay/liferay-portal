@@ -223,33 +223,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		return new SecretKeySpec(keyBytes, _getKeyAlgorithm());
 	}
 
-	private void _destroyExpiredCompanyKeyCacheEntries() {
-		long time = System.currentTimeMillis();
-
-		_companyKeyCacheEntries.forEach(
-			(companyId, companyKeyCacheEntry) -> {
-				if (companyKeyCacheEntry.isExpired(time) &&
-					_companyKeyCacheEntries.remove(
-						companyId, companyKeyCacheEntry)) {
-
-					companyKeyCacheEntry.destroy();
-				}
-			});
-	}
-
-	private long _getCacheTTLMillis() {
-		KeyManagerConfiguration keyManagerConfiguration =
-			_keyManagerConfiguration;
-
-		if (keyManagerConfiguration == null) {
-			return 0;
-		}
-
-		long cacheTTLSeconds = keyManagerConfiguration.companyKeyCacheTTL();
-
-		return cacheTTLSeconds * 1000;
-	}
-
 	private String _getCompanyKEKIdentifier() {
 		KeyManagerConfiguration keyManagerConfiguration =
 			_keyManagerConfiguration;
@@ -282,9 +255,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			return null;
 		}
 
-		if (companyKeyCacheEntry.isExpired(System.currentTimeMillis()) ||
-			!Objects.equals(companyKeyCacheEntry.getKeyString(), keyString)) {
-
+		if (!Objects.equals(companyKeyCacheEntry.getKeyString(), keyString)) {
 			if (_companyKeyCacheEntries.remove(
 					companyId, companyKeyCacheEntry)) {
 
@@ -336,19 +307,8 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 	private void _putCompanyKeyCacheEntry(
 		long companyId, byte[] keyBytes, String keyString) {
 
-		long cacheTTLMillis = _getCacheTTLMillis();
-
-		if (cacheTTLMillis <= 0) {
-			return;
-		}
-
-		_destroyExpiredCompanyKeyCacheEntries();
-
 		CompanyKeyCacheEntry companyKeyCacheEntry = _companyKeyCacheEntries.put(
-			companyId,
-			new CompanyKeyCacheEntry(
-				System.currentTimeMillis() + cacheTTLMillis, keyBytes,
-				keyString));
+			companyId, new CompanyKeyCacheEntry(keyBytes, keyString));
 
 		if (companyKeyCacheEntry != null) {
 			companyKeyCacheEntry.destroy();
