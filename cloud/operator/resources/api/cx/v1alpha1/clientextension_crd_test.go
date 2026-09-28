@@ -22,7 +22,7 @@ import (
 const (
 	chartDir = "../../../../../helm/dxp-operator"
 
-	crdName = "clientextensions.cx.liferay.com"
+	customResourceDefinitionName = "clientextensions.cx.liferay.com"
 
 	namespace = metav1.NamespaceDefault
 )
@@ -54,21 +54,21 @@ func TestCRDAcceptsLiferayNamespace(t *testing.T) {
 func TestCRDExposesTheColumnsAndShortName(t *testing.T) {
 	testClient := startEnvironment(t)
 
-	var crd apiextensionsv1.CustomResourceDefinition
+	var customResourceDefinition apiextensionsv1.CustomResourceDefinition
 
 	if error := testClient.Get(
-		context.Background(), types.NamespacedName{Name: crdName}, &crd,
+		context.Background(), types.NamespacedName{Name: customResourceDefinitionName}, &customResourceDefinition,
 	); error != nil {
 		t.Fatalf("Unable to get the CRD: %v", error)
 	}
 
-	if !slices.Contains(crd.Spec.Names.ShortNames, "cx") {
-		t.Errorf("Expected the short name %q, got %v", "cx", crd.Spec.Names.ShortNames)
+	if !slices.Contains(customResourceDefinition.Spec.Names.ShortNames, "cx") {
+		t.Errorf("Expected the short name %q, got %v", "cx", customResourceDefinition.Spec.Names.ShortNames)
 	}
 
 	var columns []string
 
-	for _, column := range crd.Spec.Versions[0].AdditionalPrinterColumns {
+	for _, column := range customResourceDefinition.Spec.Versions[0].AdditionalPrinterColumns {
 		columns = append(columns, column.Name)
 	}
 
