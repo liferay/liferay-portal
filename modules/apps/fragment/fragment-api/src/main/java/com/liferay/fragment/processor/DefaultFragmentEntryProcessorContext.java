@@ -11,7 +11,7 @@ import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,7 +41,7 @@ public class DefaultFragmentEntryProcessorContext
 		_mode = mode;
 		_scopeGroupId = scopeGroupId;
 
-		_fragmentElementId = "fragment-" + PortalUUIDUtil.generate();
+		_fragmentElementId = "fragment-" + PortalUtil.getUniqueElementId();
 	}
 
 	@Override
