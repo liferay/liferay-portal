@@ -741,9 +741,9 @@ public class ObjectEntryVersionFieldValueResolverTest {
 					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP),
 				null, primaryKey));
 
-		long objectDefinitionId = RandomTestUtil.randomLong();
 		NoSuchObjectEntryException noSuchObjectEntryException =
 			new NoSuchObjectEntryException();
+		long objectDefinitionId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			_objectEntryLocalService.getTitleValue(
