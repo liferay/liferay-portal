@@ -1466,7 +1466,7 @@ public class AssetListFiltersUtilTest {
 		);
 
 		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getClassName(_CLASS_NAME_ID)
+			() -> PortalUtil.fetchClassName(_CLASS_NAME_ID)
 		).thenReturn(
 			"com.liferay.test.Class" + _CLASS_NAME_ID
 		);
