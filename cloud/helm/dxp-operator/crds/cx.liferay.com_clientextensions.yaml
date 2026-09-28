@@ -87,12 +87,6 @@ spec:
                                 type: string
                             workloadRef:
                                 properties:
-                                    apiVersion:
-                                        default: apps/v1
-                                        enum:
-                                        -   apps/v1
-                                        -   batch/v1
-                                        type: string
                                     kind:
                                         enum:
                                         -   CronJob
