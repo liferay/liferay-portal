@@ -24,7 +24,7 @@ const (
 
 	crdName = "clientextensions.cx.liferay.com"
 
-	namespace = "default"
+	namespace = metav1.NamespaceDefault
 )
 
 func TestCRDAcceptsConfigurationOnlyClientExtension(t *testing.T) {
@@ -48,25 +48,6 @@ func TestCRDAcceptsLiferayNamespace(t *testing.T) {
 
 	if error := testClient.Create(context.Background(), clientExtension); error != nil {
 		t.Errorf("Expected a ClientExtension naming Liferay's namespace to be accepted, got %v", error)
-	}
-}
-
-func TestCRDDefaultsWorkloadAPIVersion(t *testing.T) {
-	testClient := startEnvironment(t)
-
-	clientExtension := validClientExtension("defaulted")
-
-	clientExtension.Spec.WorkloadRef.APIVersion = ""
-
-	if error := testClient.Create(context.Background(), clientExtension); error != nil {
-		t.Fatalf("Unable to create a valid ClientExtension: %v", error)
-	}
-
-	if clientExtension.Spec.WorkloadRef.APIVersion != "apps/v1" {
-		t.Errorf(
-			"Expected workloadRef.apiVersion to default to %q, got %q",
-			"apps/v1", clientExtension.Spec.WorkloadRef.APIVersion,
-		)
 	}
 }
 
@@ -165,11 +146,6 @@ func TestCRDRejectsInvalidClientExtensions(t *testing.T) {
 				spec(object)["virtualInstanceId"] = ""
 			},
 		},
-		"an unsupported workload apiVersion": {
-			mutate: func(object map[string]any) {
-				spec(object)["workloadRef"].(map[string]any)["apiVersion"] = "v1"
-			},
-		},
 		"an unsupported workload kind": {
 			mutate: func(object map[string]any) {
 				spec(object)["workloadRef"].(map[string]any)["kind"] = "StatefulSet"
@@ -217,7 +193,7 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 
-	if (environment != nil) && (environmentError == nil) {
+	if environment != nil {
 		environment.Stop()
 	}
 
@@ -249,15 +225,13 @@ func envtestAssetsDir() string {
 		return assetsDir
 	}
 
-	homeDir, error := os.UserHomeDir()
+	assetsDir, error := envtest.SetupEnvtestDefaultBinaryAssetsDirectory()
 
 	if error != nil {
 		return ""
 	}
 
-	matches, error := filepath.Glob(
-		filepath.Join(homeDir, ".local/share/kubebuilder-envtest/k8s/*"),
-	)
+	matches, error := filepath.Glob(filepath.Join(assetsDir, "*"))
 
 	if error != nil || len(matches) == 0 {
 		return ""
@@ -317,9 +291,8 @@ func validClientExtension(name string) *ClientExtension {
 			ServiceID:         "liferay-sample-cx",
 			VirtualInstanceID: "liferay.com",
 			WorkloadRef: &WorkloadRef{
-				APIVersion: "apps/v1",
-				Kind:       WorkloadKindDeployment,
-				Name:       "liferay-sample-cx",
+				Kind: WorkloadKindDeployment,
+				Name: "liferay-sample-cx",
 			},
 		},
 		TypeMeta: metav1.TypeMeta{

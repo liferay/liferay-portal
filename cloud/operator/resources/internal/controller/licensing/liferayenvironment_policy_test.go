@@ -339,15 +339,13 @@ func envtestAssetsDir(t *testing.T) string {
 		return assetsDir
 	}
 
-	homeDir, error := os.UserHomeDir()
+	assetsDir, error := envtest.SetupEnvtestDefaultBinaryAssetsDirectory()
 
 	if error != nil {
 		return ""
 	}
 
-	matches, error := filepath.Glob(
-		filepath.Join(homeDir, ".local/share/kubebuilder-envtest/k8s/*"),
-	)
+	matches, error := filepath.Glob(filepath.Join(assetsDir, "*"))
 
 	if error != nil || len(matches) == 0 {
 		return ""

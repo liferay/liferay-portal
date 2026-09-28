@@ -112,14 +112,12 @@ function _test {
 		fi
 	done
 
-	go tool setup-envtest use "${_ENVTEST_KUBERNETES_VERSION}" --bin-dir "${_ENVTEST_BIN_DIR}" > /dev/null
+	go tool setup-envtest use "${_ENVTEST_KUBERNETES_VERSION}" > /dev/null
 
 	go test ./...
 }
 
 _CRD_DIR="$(cd .. && pwd)/helm/dxp-operator/crds"
-
-_ENVTEST_BIN_DIR="${HOME}/.local/share/kubebuilder-envtest"
 
 _ENVTEST_KUBERNETES_VERSION="1.32.x"
 

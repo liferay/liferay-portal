@@ -1,7 +1,12 @@
 package v1alpha1
 
 import (
+	"fmt"
+
+	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const AnnotationAllowedClientExtensionNamespaces = "cx.liferay.com/allowed-client-extension-namespaces"
@@ -21,10 +26,23 @@ const (
 )
 
 const (
-	WorkloadKindCronJob    = "CronJob"
-	WorkloadKindDeployment = "Deployment"
-	WorkloadKindJob        = "Job"
+	WorkloadKindCronJob    WorkloadKind = "CronJob"
+	WorkloadKindDeployment WorkloadKind = "Deployment"
+	WorkloadKindJob        WorkloadKind = "Job"
 )
+
+func (workloadRef WorkloadRef) NewObject() (client.Object, error) {
+	switch workloadRef.Kind {
+	case WorkloadKindCronJob:
+		return &batchv1.CronJob{}, nil
+	case WorkloadKindDeployment:
+		return &appsv1.Deployment{}, nil
+	case WorkloadKindJob:
+		return &batchv1.Job{}, nil
+	}
+
+	return nil, fmt.Errorf("unsupported workload kind %q", workloadRef.Kind)
+}
 
 func init() {
 	SchemeBuilder.Register(&ClientExtension{}, &ClientExtensionList{})
@@ -132,15 +150,12 @@ type ConfigurationError struct {
 	PID string `json:"pid,omitempty"`
 }
 
-type WorkloadRef struct {
-	// +kubebuilder:default=apps/v1
-	// +kubebuilder:validation:Enum=apps/v1;batch/v1
-	// +optional
-	APIVersion string `json:"apiVersion,omitempty"`
+// +kubebuilder:validation:Enum=CronJob;Deployment;Job
+type WorkloadKind string
 
-	// +kubebuilder:validation:Enum=CronJob;Deployment;Job
+type WorkloadRef struct {
 	// +kubebuilder:validation:Required
-	Kind string `json:"kind"`
+	Kind WorkloadKind `json:"kind"`
 
 	// +kubebuilder:validation:MinLength=1
 	// +kubebuilder:validation:Required
