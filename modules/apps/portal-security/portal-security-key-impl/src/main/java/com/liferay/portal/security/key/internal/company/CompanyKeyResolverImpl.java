@@ -81,15 +81,46 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 
 	@Override
 	public Key unwrapKey(long companyId, String keyString) {
-		Key key = _getCachedKey(companyId, keyString);
+		Key key = _getKey(companyId, keyString);
 
 		if (key != null) {
 			return key;
 		}
 
-		return _decryptKey(
-			companyId, WrappedCompanyKey.parse(companyId, keyString),
-			keyString);
+		byte[] keyBytes = null;
+
+		try {
+			WrappedCompanyKey wrappedCompanyKey = WrappedCompanyKey.parse(
+				companyId, keyString);
+
+			CryptoServiceResult<byte[]> cryptoServiceResult =
+				_cryptoManager.decrypt(
+					wrappedCompanyKey.getCiphertext(), companyId,
+					wrappedCompanyKey.getKeyReference());
+
+			keyBytes = cryptoServiceResult.getValue();
+
+			if (ArrayUtil.isEmpty(keyBytes)) {
+				throw new CompanyKeyException(
+					StringBundler.concat(
+						"Decrypting the wrapped key returned no key material ",
+						"for company ", companyId));
+			}
+
+			_putCompanyKeyCacheEntry(companyId, keyBytes, keyString);
+
+			return _createKey(keyBytes);
+		}
+		catch (CryptoException cryptoException) {
+			throw new CompanyKeyException(
+				"Unable to decrypt the wrapped key for company " + companyId,
+				cryptoException);
+		}
+		finally {
+			if (keyBytes != null) {
+				Arrays.fill(keyBytes, (byte)0);
+			}
+		}
 	}
 
 	@Override
@@ -114,14 +145,15 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 					"wildcard for company " + companyId);
 		}
 
-		byte[] keyBytes = key.getEncoded();
+		byte[] encodedBytes = key.getEncoded();
 
-		if (ArrayUtil.isEmpty(keyBytes)) {
+		if (ArrayUtil.isEmpty(encodedBytes)) {
 			throw new CompanyKeyException(
 				"Key has no encoded key material for company " + companyId);
 		}
 
-		byte[] plaintextKeyBytes = Arrays.copyOf(keyBytes, keyBytes.length);
+		byte[] plaintextKeyBytes = Arrays.copyOf(
+			encodedBytes, encodedBytes.length);
 
 		try {
 			List<String> cryptoProviderIds =
@@ -144,20 +176,18 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 				_cryptoManager.encrypt(
 					companyId, keyReference, plaintextKeyBytes);
 
-			byte[] ciphertext = cryptoServiceResult.getValue();
-
-			if (ArrayUtil.isEmpty(ciphertext)) {
+			if (ArrayUtil.isEmpty(cryptoServiceResult.getValue())) {
 				throw new CompanyKeyException(
 					"Encrypting the key returned no ciphertext for company " +
 						companyId);
 			}
 
 			WrappedCompanyKey wrappedCompanyKey = new WrappedCompanyKey(
-				ciphertext, keyReference);
+				cryptoServiceResult.getValue(), keyReference);
 
 			String keyString = wrappedCompanyKey.toKeyString();
 
-			_putCompanyKeyCacheEntry(companyId, keyBytes, keyString);
+			_putCompanyKeyCacheEntry(companyId, encodedBytes, keyString);
 
 			return keyString;
 		}
@@ -167,7 +197,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 				cryptoException);
 		}
 		finally {
-			Arrays.fill(keyBytes, (byte)0);
+			Arrays.fill(encodedBytes, (byte)0);
 			Arrays.fill(plaintextKeyBytes, (byte)0);
 		}
 	}
@@ -202,42 +232,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		return new SecretKeySpec(keyBytes, _getKeyAlgorithm());
 	}
 
-	private Key _decryptKey(
-		long companyId, WrappedCompanyKey wrappedCompanyKey, String keyString) {
-
-		byte[] keyBytes = null;
-
-		try {
-			CryptoServiceResult<byte[]> cryptoServiceResult =
-				_cryptoManager.decrypt(
-					wrappedCompanyKey.getCiphertext(), companyId,
-					wrappedCompanyKey.getKeyReference());
-
-			keyBytes = cryptoServiceResult.getValue();
-
-			if (ArrayUtil.isEmpty(keyBytes)) {
-				throw new CompanyKeyException(
-					StringBundler.concat(
-						"Decrypting the wrapped key returned no key material ",
-						"for company ", companyId));
-			}
-
-			_putCompanyKeyCacheEntry(companyId, keyBytes, keyString);
-
-			return _createKey(keyBytes);
-		}
-		catch (CryptoException cryptoException) {
-			throw new CompanyKeyException(
-				"Unable to decrypt the wrapped key for company " + companyId,
-				cryptoException);
-		}
-		finally {
-			if (keyBytes != null) {
-				Arrays.fill(keyBytes, (byte)0);
-			}
-		}
-	}
-
 	private void _destroyExpiredCompanyKeyCacheEntries() {
 		long time = System.currentTimeMillis();
 
@@ -263,28 +257,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		long cacheTTLSeconds = keyManagerConfiguration.companyKeyCacheTTL();
 
 		return cacheTTLSeconds * 1000;
-	}
-
-	private Key _getCachedKey(long companyId, String keyString) {
-		CompanyKeyCacheEntry companyKeyCacheEntry = _getCompanyKeyCacheEntry(
-			companyId, keyString);
-
-		if (companyKeyCacheEntry == null) {
-			return null;
-		}
-
-		byte[] keyBytes = companyKeyCacheEntry.getKeyBytes();
-
-		if (keyBytes == null) {
-			return null;
-		}
-
-		try {
-			return _createKey(keyBytes);
-		}
-		finally {
-			Arrays.fill(keyBytes, (byte)0);
-		}
 	}
 
 	private String _getCompanyKEKIdentifier() {
@@ -332,6 +304,28 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		}
 
 		return companyKeyCacheEntry;
+	}
+
+	private Key _getKey(long companyId, String keyString) {
+		CompanyKeyCacheEntry companyKeyCacheEntry = _getCompanyKeyCacheEntry(
+			companyId, keyString);
+
+		if (companyKeyCacheEntry == null) {
+			return null;
+		}
+
+		byte[] keyBytes = companyKeyCacheEntry.getKeyBytes();
+
+		if (keyBytes == null) {
+			return null;
+		}
+
+		try {
+			return _createKey(keyBytes);
+		}
+		finally {
+			Arrays.fill(keyBytes, (byte)0);
+		}
 	}
 
 	private String _getKeyAlgorithm() {
