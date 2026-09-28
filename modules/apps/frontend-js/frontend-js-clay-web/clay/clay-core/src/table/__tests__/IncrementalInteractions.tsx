@@ -54,6 +54,24 @@ const emptyStateItems = [
 	},
 ];
 
+function getSortIconSymbol(columnHeader: HTMLElement) {
+	return columnHeader.querySelector('use')!.getAttribute('href');
+}
+
+// The stylesheet sizes and colors the sorted column's arrow off these classes.
+
+function getSortStateClass(columnHeader: HTMLElement) {
+	if (columnHeader.classList.contains('order-arrow-up-active')) {
+		return 'up';
+	}
+
+	if (columnHeader.classList.contains('order-arrow-down-active')) {
+		return 'down';
+	}
+
+	return 'none';
+}
+
 describe('Table incremental interactions', () => {
 	afterEach(cleanup);
 
@@ -126,6 +144,12 @@ describe('Table incremental interactions', () => {
 		expect(name!.getAttribute('aria-sort')).toBe('none');
 		expect(type!.getAttribute('aria-sort')).toBe('none');
 
+		expect(getSortIconSymbol(name!)).toBe('#order-arrow');
+		expect(getSortIconSymbol(type!)).toBe('#order-arrow');
+
+		expect(getSortStateClass(name!)).toBe('none');
+		expect(getSortStateClass(type!)).toBe('none');
+
 		const [row1Col1, , , row2Col1, , , row3Col1] = getAllByRole('cell');
 
 		expect(row1Col1!.textContent).toBe('Foo');
@@ -136,6 +160,12 @@ describe('Table incremental interactions', () => {
 
 		expect(name!.getAttribute('aria-sort')).toBe('ascending');
 		expect(type!.getAttribute('aria-sort')).toBe('none');
+
+		expect(getSortIconSymbol(name!)).toBe('#order-arrow-up');
+		expect(getSortIconSymbol(type!)).toBe('#order-arrow');
+
+		expect(getSortStateClass(name!)).toBe('up');
+		expect(getSortStateClass(type!)).toBe('none');
 
 		const [newRow1Col1, , , newRow2Col1, , , newRow3Col1] =
 			getAllByRole('cell');
@@ -214,6 +244,12 @@ describe('Table incremental interactions', () => {
 		expect(name!.getAttribute('aria-sort')).toBe('ascending');
 		expect(type!.getAttribute('aria-sort')).toBe('none');
 
+		expect(getSortIconSymbol(name!)).toBe('#order-arrow-up');
+		expect(getSortIconSymbol(type!)).toBe('#order-arrow');
+
+		expect(getSortStateClass(name!)).toBe('up');
+		expect(getSortStateClass(type!)).toBe('none');
+
 		const [row1Col1, , , row2Col1, , , row3Col1] = getAllByRole('cell');
 
 		expect(row1Col1!.textContent).toBe('Bar');
@@ -224,6 +260,12 @@ describe('Table incremental interactions', () => {
 
 		expect(name!.getAttribute('aria-sort')).toBe('descending');
 		expect(type!.getAttribute('aria-sort')).toBe('none');
+
+		expect(getSortIconSymbol(name!)).toBe('#order-arrow-down');
+		expect(getSortIconSymbol(type!)).toBe('#order-arrow');
+
+		expect(getSortStateClass(name!)).toBe('down');
+		expect(getSortStateClass(type!)).toBe('none');
 
 		const [newRow1Col1, , , newRow2Col1, , , newRow3Col1] =
 			getAllByRole('cell');
@@ -312,6 +354,12 @@ describe('Table incremental interactions', () => {
 
 		expect(name!.getAttribute('aria-sort')).toBe('none');
 		expect(type!.getAttribute('aria-sort')).toBe('ascending');
+
+		expect(getSortIconSymbol(name!)).toBe('#order-arrow');
+		expect(getSortIconSymbol(type!)).toBe('#order-arrow-up');
+
+		expect(getSortStateClass(name!)).toBe('none');
+		expect(getSortStateClass(type!)).toBe('up');
 
 		const [, newRow1Col2, , , newRow2Col2, , , newRow3Col2] =
 			getAllByRole('cell');
