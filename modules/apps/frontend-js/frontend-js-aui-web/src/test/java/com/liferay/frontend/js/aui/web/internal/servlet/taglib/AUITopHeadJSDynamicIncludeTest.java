@@ -5,6 +5,9 @@
 
 package com.liferay.frontend.js.aui.web.internal.servlet.taglib;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -37,50 +40,24 @@ public class AUITopHeadJSDynamicIncludeTest {
 
 	@Test
 	@TestInfo("LPD-104702")
-	public void testIncludeWhenAUIPreloadIsEnabled() throws Exception {
-		Assert.assertTrue(
-			_include(
-				true, true, true
-			).contains(
-				_getScriptURL(_URL_AUI_SANDBOX) +
-					_getScriptURL(_URL_MODULES_DEPRECATED)
-			));
-		Assert.assertTrue(
-			_include(
-				true, true, false
-			).contains(
-				_getScriptURL(_URL_AUI_SANDBOX) +
-					_getScriptURL(_URL_MODULES_DEPRECATED)
-			));
+	public void testInclude() throws Exception {
+
+		// Feature flag disabled
+
+		_assertScripts(_include(false, false, false), false);
+		_assertScripts(_include(false, false, true), false);
+		_assertScripts(_include(false, true, false), false);
+		_assertScripts(_include(false, true, true), false);
+
+		// Feature flag enabled
+
+		_assertScripts(_include(true, false, false), true);
+		_assertScripts(_include(true, false, true), true);
+		_assertScripts(_include(true, true, false), true);
+		_assertScripts(_include(true, true, true), true);
 	}
 
 	@Test
-	@TestInfo("LPD-104702")
-	public void testIncludeWhenDeprecationFeatureFlagIsDisabled()
-		throws Exception {
-
-		String content = _include(false, false, false);
-
-		Assert.assertTrue(content.contains(_getScriptURL(_URL_AUI_SANDBOX)));
-		Assert.assertFalse(content.contains(_URL_MODULES_DEPRECATED));
-	}
-
-	@Test
-	@TestInfo("LPD-104702")
-	public void testIncludeWhenDeprecationFeatureFlagIsEnabled()
-		throws Exception {
-
-		Assert.assertTrue(
-			_include(
-				true, false, false
-			).contains(
-				_getScriptURL(_URL_AUI_SANDBOX) +
-					_getScriptURL(_URL_MODULES_DEPRECATED)
-			));
-	}
-
-	@Test
-	@TestInfo("LPD-104702")
 	public void testRegister() {
 		AUITopHeadJSDynamicInclude auiTopHeadJSDynamicInclude =
 			new AUITopHeadJSDynamicInclude();
@@ -97,9 +74,24 @@ public class AUITopHeadJSDynamicIncludeTest {
 		);
 	}
 
-	private String _getScriptURL(String url) {
-		return "<script data-senna-track=\"permanent\" src=\"" + url +
-			"\" type=\"text/javascript\"></script>\n";
+	private static String _getScript(String url) {
+		return StringBundler.concat(
+			"<script data-senna-track=\"permanent\" src=\"", _CONTEXT_PATH, url,
+			"\" type=\"text/javascript\"></script>");
+	}
+
+	private void _assertScripts(String content, boolean modulesDeprecated) {
+		Assert.assertTrue(content.contains(_AUI_SANDBOX_SCRIPT));
+
+		if (modulesDeprecated) {
+			Assert.assertTrue(content.contains(_MODULES_DEPRECATED_SCRIPT));
+			Assert.assertTrue(
+				content.indexOf(_AUI_SANDBOX_SCRIPT) < content.indexOf(
+					_MODULES_DEPRECATED_SCRIPT));
+		}
+		else {
+			Assert.assertFalse(content.contains(_MODULES_DEPRECATED_SCRIPT));
+		}
 	}
 
 	private String _include(
@@ -107,77 +99,89 @@ public class AUITopHeadJSDynamicIncludeTest {
 			boolean themeJsBarebone)
 		throws Exception {
 
-		AUITopHeadJSDynamicInclude auiTopHeadJSDynamicInclude =
-			new AUITopHeadJSDynamicInclude();
+		try (MockedStatic<ContentSecurityPolicyNonceProviderUtil>
+				contentSecurityPolicyNonceProviderUtilMockedStatic =
+					Mockito.mockStatic(
+						ContentSecurityPolicyNonceProviderUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
 
-		ServletContext servletContext = Mockito.mock(ServletContext.class);
+			contentSecurityPolicyNonceProviderUtilMockedStatic.when(
+				() -> ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
+					Mockito.any())
+			).thenReturn(
+				StringPool.BLANK
+			);
 
-		Mockito.when(
-			servletContext.getContextPath()
-		).thenReturn(
-			_CONTEXT_PATH
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			auiTopHeadJSDynamicInclude, "_servletContext", servletContext);
-
-		ReflectionTestUtil.invoke(
-			auiTopHeadJSDynamicInclude, "_setJSResourcePaths",
-			new Class<?>[] {boolean.class}, enableAUIPreload);
-
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			themeDisplay.getCompanyId()
-		).thenReturn(
-			RandomTestUtil.randomLong()
-		);
-
-		Mockito.when(
-			themeDisplay.isThemeJsBarebone()
-		).thenReturn(
-			themeJsBarebone
-		);
-
-		Mockito.when(
-			themeDisplay.isThemeJsFastLoad()
-		).thenReturn(
-			false
-		);
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
-				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
-
-			mockedStatic.when(
+			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
 					Mockito.anyLong(), Mockito.eq("LPD-57347"))
 			).thenReturn(
 				deprecationFeatureFlagEnabled
 			);
 
+			AUITopHeadJSDynamicInclude auiTopHeadJSDynamicInclude =
+				new AUITopHeadJSDynamicInclude();
+
+			ServletContext servletContext = Mockito.mock(ServletContext.class);
+
+			Mockito.when(
+				servletContext.getContextPath()
+			).thenReturn(
+				_CONTEXT_PATH
+			);
+
+			ReflectionTestUtil.setFieldValue(
+				auiTopHeadJSDynamicInclude, "_servletContext", servletContext);
+
+			ReflectionTestUtil.invoke(
+				auiTopHeadJSDynamicInclude, "_setJSResourcePaths",
+				new Class<?>[] {boolean.class}, enableAUIPreload);
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest();
+
+			ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+			Mockito.when(
+				themeDisplay.getCompanyId()
+			).thenReturn(
+				RandomTestUtil.randomLong()
+			);
+
+			Mockito.when(
+				themeDisplay.isThemeJsBarebone()
+			).thenReturn(
+				themeJsBarebone
+			);
+
+			Mockito.when(
+				themeDisplay.isThemeJsFastLoad()
+			).thenReturn(
+				false
+			);
+
+			mockHttpServletRequest.setAttribute(
+				WebKeys.THEME_DISPLAY, themeDisplay);
+
+			MockHttpServletResponse mockHttpServletResponse =
+				new MockHttpServletResponse();
+
 			auiTopHeadJSDynamicInclude.include(
 				mockHttpServletRequest, mockHttpServletResponse,
 				"/html/common/themes/top_js.jspf#resources");
-		}
 
-		return mockHttpServletResponse.getContentAsString();
+			return mockHttpServletResponse.getContentAsString();
+		}
 	}
+
+	private static final String _AUI_SANDBOX_SCRIPT = _getScript(
+		"/liferay/aui_sandbox.js");
 
 	private static final String _CONTEXT_PATH = "/o/frontend-js-aui-web";
 
-	private static final String _URL_AUI_SANDBOX =
-		_CONTEXT_PATH + "/liferay/aui_sandbox.js";
-
-	private static final String _URL_MODULES_DEPRECATED =
-		_CONTEXT_PATH + "/liferay/modules_deprecated.js";
+	private static final String _MODULES_DEPRECATED_SCRIPT = _getScript(
+		"/liferay/modules_deprecated.js");
 
 }
