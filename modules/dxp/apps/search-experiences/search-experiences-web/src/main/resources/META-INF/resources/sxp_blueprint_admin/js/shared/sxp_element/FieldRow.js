@@ -308,7 +308,7 @@ function FieldRow({
 							displayType="unstyled"
 							monospaced
 							onClick={onDelete}
-							small
+							size="sm"
 						>
 							<ClayIcon symbol="times-circle" />
 						</ClayButton>

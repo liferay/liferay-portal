@@ -149,7 +149,7 @@ const SXPElementList = ({
 												className="add-sxp-element-button disabled"
 												data-tooltip-align="left"
 												displayType="secondary"
-												small
+												size="sm"
 												title={Liferay.Language.get(
 													'query-element-inactive-from-index-help'
 												)}
@@ -167,7 +167,7 @@ const SXPElementList = ({
 											onClick={_handleAddSXPElement(
 												sxpElement
 											)}
-											small
+											size="sm"
 										>
 											{Liferay.Language.get('add')}
 										</ClayButton>

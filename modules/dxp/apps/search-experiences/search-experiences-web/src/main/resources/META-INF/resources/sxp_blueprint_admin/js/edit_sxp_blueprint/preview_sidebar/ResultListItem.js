@@ -88,7 +88,11 @@ function ResultListItem({explanation = '', fields, id, score = 0}) {
 					text={explanation}
 					title={Liferay.Language.get('score-explanation')}
 				>
-					<ClayButton className="score" displayType="unstyled" small>
+					<ClayButton
+						className="score"
+						displayType="unstyled"
+						size="sm"
+					>
 						{score.toFixed(2)}
 					</ClayButton>
 				</PreviewModalWithCopyDownload>

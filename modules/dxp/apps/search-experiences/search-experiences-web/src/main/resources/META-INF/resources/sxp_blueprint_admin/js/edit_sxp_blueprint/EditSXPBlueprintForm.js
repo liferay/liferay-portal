@@ -1179,7 +1179,7 @@ function EditSXPBlueprintForm({
 						data-qa-id={TEST_IDS.PREVIEW_SIDEBAR_BUTTON}
 						displayType="secondary"
 						onClick={_handleToggleSidebar(SIDEBAR_TYPES.PREVIEW)}
-						small
+						size="sm"
 					>
 						{Liferay.Language.get('preview')}
 					</ClayButton>

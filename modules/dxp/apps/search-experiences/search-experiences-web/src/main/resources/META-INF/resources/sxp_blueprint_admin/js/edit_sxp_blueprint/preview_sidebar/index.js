@@ -161,7 +161,7 @@ function PreviewSidebar({
 						disabled={loading}
 						displayType="secondary"
 						onClick={_handleFetch}
-						small
+						size="sm"
 					>
 						{Liferay.Language.get('refresh')}
 					</ClayButton>
@@ -182,7 +182,7 @@ function PreviewSidebar({
 							className="raw-request"
 							disabled={loading}
 							displayType="secondary"
-							small
+							size="sm"
 						>
 							{Liferay.Language.get('view-raw-request')}
 						</ClayButton>
@@ -204,7 +204,7 @@ function PreviewSidebar({
 							className="raw-response"
 							disabled={loading}
 							displayType="secondary"
-							small
+							size="sm"
 						>
 							{Liferay.Language.get('view-raw-response')}
 						</ClayButton>
@@ -248,7 +248,7 @@ function PreviewSidebar({
 								borderless
 								displayType="secondary"
 								monospaced
-								small
+								size="sm"
 								title={Liferay.Language.get(
 									'search-context-attributes'
 								)}
@@ -264,7 +264,7 @@ function PreviewSidebar({
 						displayType="secondary"
 						monospaced
 						onClick={onClose}
-						small
+						size="sm"
 					>
 						<ClayIcon symbol="times" />
 					</ClayButton>
@@ -322,7 +322,7 @@ function PreviewSidebar({
 									className="cancel"
 									displayType="secondary"
 									onClick={onFetchCancel}
-									small
+									size="sm"
 								>
 									{Liferay.Language.get('cancel')}
 								</ClayButton>

@@ -116,7 +116,7 @@ function ManagementToolbar({
 									<ClayButton
 										displayType="secondary"
 										onClick={onUpdateSelected(true)}
-										small
+										size="sm"
 									>
 										{Liferay.Language.get('turn-on')}
 									</ClayButton>
@@ -124,7 +124,7 @@ function ManagementToolbar({
 									<ClayButton
 										displayType="secondary"
 										onClick={onUpdateSelected(false)}
-										small
+										size="sm"
 									>
 										{Liferay.Language.get('turn-off')}
 									</ClayButton>

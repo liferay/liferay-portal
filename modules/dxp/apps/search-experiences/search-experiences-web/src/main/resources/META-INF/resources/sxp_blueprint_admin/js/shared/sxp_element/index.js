@@ -478,7 +478,7 @@ function SXPElement({
 									borderless
 									displayType="secondary"
 									monospaced
-									small
+									size="sm"
 								>
 									<ClayIcon symbol="ellipsis-v" />
 								</ClayButton>

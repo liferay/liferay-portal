@@ -29,7 +29,7 @@ function Sidebar({children, className, onClose, title, visible}) {
 						displayType="secondary"
 						monospaced
 						onClick={onClose}
-						small
+						size="sm"
 					>
 						<ClayIcon symbol="times" />
 					</ClayButton>

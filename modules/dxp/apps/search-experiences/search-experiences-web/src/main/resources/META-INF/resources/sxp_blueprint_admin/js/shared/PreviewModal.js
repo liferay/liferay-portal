@@ -63,7 +63,7 @@ export function PreviewModalWithCopyDownload({
 							className={COPY_BUTTON_CSS_CLASS}
 							data-clipboard-text={text}
 							displayType="secondary"
-							small
+							size="sm"
 						>
 							<span className="inline-item inline-item-before">
 								<ClayIcon symbol="copy" />

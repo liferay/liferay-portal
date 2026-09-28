@@ -69,7 +69,7 @@ function FieldListInput({
 						displayType="secondary"
 						monospaced
 						onClick={_handleFieldRowAdd}
-						small
+						size="sm"
 					>
 						<ClayIcon symbol="plus" />
 					</ClayButton>

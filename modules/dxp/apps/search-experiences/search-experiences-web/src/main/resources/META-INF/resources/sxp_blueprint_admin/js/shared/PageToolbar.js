@@ -356,7 +356,7 @@ export default function PageToolbar({
 									<ClayButton
 										disabled={isSubmitting}
 										onClick={onSubmit}
-										small
+										size="sm"
 										type="submit"
 									>
 										{Liferay.Language.get('save')}

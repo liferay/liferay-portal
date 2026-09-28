@@ -120,7 +120,11 @@ function ErrorListItem({error, onFocusSXPElement}) {
 
 			{!!error.sxpElementId && (
 				<div className="scroll-button">
-					<ClayButton alert onClick={_handleFocusSXPElement} small>
+					<ClayButton
+						alert
+						onClick={_handleFocusSXPElement}
+						size="sm"
+					>
 						{Liferay.Language.get('view-element')}
 					</ClayButton>
 				</div>
@@ -140,7 +144,7 @@ function ErrorListItem({error, onFocusSXPElement}) {
 					)}
 					displayType="unstyled"
 					onClick={_handleCollapse}
-					small
+					size="sm"
 					symbol={collapse ? 'angle-right' : 'angle-down'}
 				/>
 			)}

@@ -631,7 +631,7 @@ function CategorySelectorInput({
 						aria-label={Liferay.Language.get('select')}
 						disabled={disabled}
 						displayType="secondary"
-						small
+						size="sm"
 					>
 						{Liferay.Language.get('select')}
 					</ClayButton>
