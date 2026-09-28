@@ -12,6 +12,7 @@ import com.liferay.commerce.product.type.virtual.order.constants.CommerceVirtual
 import com.liferay.commerce.product.type.virtual.order.content.web.internal.display.context.CommerceVirtualOrderItemContentDisplayContext;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntry;
 import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemLocalService;
+import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemService;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -53,6 +54,7 @@ public class ViewCommerceVirtualOrderItemTermsOfUseMVCRenderCommand
 					new CommerceVirtualOrderItemContentDisplayContext(
 						_commerceChannelLocalService,
 						_commerceVirtualOrderItemLocalService,
+						_commerceVirtualOrderItemService,
 						_commerceVirtualOrderItemFileEntryModelResourcePermission,
 						_cpDefinitionHelper,
 						_cpDefinitionVirtualSettingLocalService,
@@ -85,6 +87,9 @@ public class ViewCommerceVirtualOrderItemTermsOfUseMVCRenderCommand
 	@Reference
 	private CommerceVirtualOrderItemLocalService
 		_commerceVirtualOrderItemLocalService;
+
+	@Reference
+	private CommerceVirtualOrderItemService _commerceVirtualOrderItemService;
 
 	@Reference
 	private CPDefinitionHelper _cpDefinitionHelper;

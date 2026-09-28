@@ -19,7 +19,7 @@ JournalArticleDisplay articleDisplay = commerceVirtualOrderItemContentDisplayCon
 			<%= articleDisplay.getContent() %>
 		</c:when>
 		<c:otherwise>
-			<%= ParamUtil.getString(request, "termsOfUseContent") %>
+			<%= commerceVirtualOrderItemContentDisplayContext.getTermsOfUseContent() %>
 		</c:otherwise>
 	</c:choose>
 </div>
