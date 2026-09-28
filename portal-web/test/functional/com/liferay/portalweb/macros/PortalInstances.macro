@@ -2,6 +2,10 @@ definition {
 
 	@summary = "Default summary"
 	macro addCP(maxUserNumber = null, instanceAdminLastName = null, maxUsers = null, portalInstanceActive = null, instanceAdminFirstName = null, webId = null, mailDomain = null, instanceScreenName = null, instancePassword = null, virtualHost = null, instanceAdminEmail = null) {
+		Notifications.deleteAllNotifications();
+
+		PortalInstances.openVirtualInstancesAdmin();
+
 		LexiconEntry.gotoAdd();
 
 		if (IsElementPresent(key_menuItem = "Add", locator1 = "MenuItem#ANY_MENU_ITEM")) {
@@ -62,9 +66,33 @@ definition {
 
 		Button.clickAdd();
 
-		Alert.viewSuccessMessage();
+		Alert.viewInfoMessageSpecific(infoMessage = "The instance ${webId} is being created. You will be notified when it finishes.");
 
 		WaitForElementNotPresent(locator1 = "IFrame#MODAL_BODY");
+
+		var key_contentBody = "The instance ${webId} is ready to use.";
+
+		var creationPauseCount = 0;
+
+		Navigator.gotoNotifications();
+
+		while ((!(IsElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT"))) && (${creationPauseCount} != 60)) {
+			Pause(value1 = 5000);
+
+			Refresh();
+
+			var creationPauseCount = ${creationPauseCount} + 1;
+
+			echo("Creation pause count: ${creationPauseCount}");
+		}
+
+		AssertElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT");
+
+		PortalInstances.openVirtualInstancesAdmin();
+
+		var key_virtualHost = ${virtualHost};
+
+		AssertElementPresent(locator1 = "PortalInstances#INSTANCE_TABLE_VIRTUAL_HOST");
 	}
 
 	@summary = "Default summary"
