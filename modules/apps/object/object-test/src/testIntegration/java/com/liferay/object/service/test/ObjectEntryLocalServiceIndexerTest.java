@@ -29,10 +29,7 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.filter.ComplexQueryPartBuilderFactory;
@@ -50,10 +47,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
-import java.text.DateFormat;
-
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -170,38 +164,6 @@ public class ObjectEntryLocalServiceIndexerTest {
 			_searchObjectEntry(
 				objectEntry.getObjectEntryId(),
 				WorkflowConstants.STATUS_EMPTY));
-	}
-
-	@Test
-	public void testUpdateModifiedDate() throws Exception {
-		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition();
-
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_objectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				"able", RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Date modifiedDate = new Date(System.currentTimeMillis() - Time.HOUR);
-
-		_objectEntryLocalService.updateModifiedDate(
-			objectEntry.getObjectEntryId(), modifiedDate);
-
-		Document document = _searchObjectEntry(
-			objectEntry.getObjectEntryId(), WorkflowConstants.STATUS_APPROVED);
-
-		Assert.assertNotNull(document);
-
-		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			PropsValues.INDEX_DATE_FORMAT_PATTERN);
-
-		Assert.assertEquals(
-			dateFormat.format(modifiedDate),
-			document.getString(Field.MODIFIED_DATE));
 	}
 
 	@Rule

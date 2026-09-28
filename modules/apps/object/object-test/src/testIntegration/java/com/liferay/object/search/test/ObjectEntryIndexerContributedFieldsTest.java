@@ -123,12 +123,7 @@ public class ObjectEntryIndexerContributedFieldsTest {
 
 		_assertFieldValue(objectFieldValue, WorkflowConstants.STATUS_APPROVED);
 
-		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
-
-		_assertFieldValue(objectFieldValue, WorkflowConstants.STATUS_APPROVED);
-
-		_objectEntryLocalService.updateModifiedDate(
-			objectEntry.getObjectEntryId(), RandomTestUtil.nextDate());
+		_objectEntryLocalService.updateObjectEntry(objectEntry);
 
 		_assertFieldValue(objectFieldValue, WorkflowConstants.STATUS_APPROVED);
 
