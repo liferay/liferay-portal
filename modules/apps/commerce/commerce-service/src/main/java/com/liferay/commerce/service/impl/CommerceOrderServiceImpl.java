@@ -73,11 +73,13 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			long commerceOrderTypeId)
 		throws PortalException {
 
-		_checkPermissions(_getAccountEntry(commerceAccountId), groupId);
+		AccountEntry accountEntry = _getAccountEntry(commerceAccountId);
+
+		_checkPermissions(accountEntry, groupId);
 
 		return commerceOrderLocalService.addCommerceOrder(
-			getUserId(), groupId, commerceAccountId, commerceCurrencyCode,
-			commerceOrderTypeId);
+			getUserId(), groupId, accountEntry.getAccountEntryId(),
+			commerceCurrencyCode, commerceOrderTypeId);
 	}
 
 	@Override
@@ -100,8 +102,14 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		CommerceOrder commerceOrder = commerceOrderPersistence.fetchByERC_C(
 			externalReferenceCode, serviceContext.getCompanyId());
 
+		long accountEntryId = commerceAccountId;
+
 		if (commerceOrder == null) {
-			_checkPermissions(_getAccountEntry(commerceAccountId), groupId);
+			AccountEntry accountEntry = _getAccountEntry(commerceAccountId);
+
+			_checkPermissions(accountEntry, groupId);
+
+			accountEntryId = accountEntry.getAccountEntryId();
 		}
 		else {
 			_commerceOrderModelResourcePermission.check(
@@ -110,7 +118,7 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 
 		return commerceOrderLocalService.addOrUpdateCommerceOrder(
 			externalReferenceCode, getUserId(), groupId, billingAddressId,
-			commerceAccountId, commerceCurrencyCode, commerceOrderTypeId,
+			accountEntryId, commerceCurrencyCode, commerceOrderTypeId,
 			commerceShippingMethodId, shippingAddressId, advanceStatus,
 			commercePaymentMethodKey, name, orderDateMonth, orderDateDay,
 			orderDateYear, orderDateHour, orderDateMinute, orderStatus,
