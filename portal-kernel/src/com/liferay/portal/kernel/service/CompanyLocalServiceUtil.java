@@ -722,6 +722,13 @@ public class CompanyLocalServiceUtil {
 			strangersWithMx, strangersVerify, siteLogo);
 	}
 
+	public static void validateCompany(
+			String webId, String virtualHostname, String mx, int maxUsers)
+		throws PortalException {
+
+		getService().validateCompany(webId, virtualHostname, mx, maxUsers);
+	}
+
 	public static CompanyLocalService getService() {
 		return _service;
 	}
@@ -733,4 +740,4 @@ public class CompanyLocalServiceUtil {
 	private static volatile CompanyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-851174840
+// LIFERAY-SERVICE-BUILDER-HASH:-561410455

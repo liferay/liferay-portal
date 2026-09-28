@@ -813,6 +813,15 @@ public class CompanyLocalServiceWrapper
 	}
 
 	@Override
+	public void validateCompany(
+			String webId, String virtualHostname, String mx, int maxUsers)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_companyLocalService.validateCompany(
+			webId, virtualHostname, mx, maxUsers);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _companyLocalService.getBasePersistence();
 	}
@@ -830,4 +839,4 @@ public class CompanyLocalServiceWrapper
 	private CompanyLocalService _companyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1129647879
+// LIFERAY-SERVICE-BUILDER-HASH:-699430741

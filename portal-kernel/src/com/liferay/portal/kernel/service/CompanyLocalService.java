@@ -605,5 +605,9 @@ public interface CompanyLocalService
 		boolean sendPassword, boolean strangers, boolean strangersWithMx,
 		boolean strangersVerify, boolean siteLogo);
 
+	public void validateCompany(
+			String webId, String virtualHostname, String mx, int maxUsers)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1174259808
+// LIFERAY-SERVICE-BUILDER-HASH:-1452198032
