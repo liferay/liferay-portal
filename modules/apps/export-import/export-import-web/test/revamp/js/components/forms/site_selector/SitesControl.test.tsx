@@ -50,6 +50,12 @@ const renderControl = (
 	return {...renderResult, onChange};
 };
 
+const openDialog = () =>
+	userEvent.click(screen.getByRole('button', {name: 'select-sites'}));
+
+const findRow = async (title: string) =>
+	(await screen.findByText(title)).closest('tr') as HTMLElement;
+
 const PREVIEW_SITES_PAGE = JSON.stringify({
 	items: PREVIEW_SITES,
 	lastPage: 1,
@@ -59,6 +65,17 @@ const PREVIEW_SITES_PAGE = JSON.stringify({
 });
 
 describe('SitesControl', () => {
+	beforeAll(() => {
+		(Liferay.Language.get as jest.Mock).mockImplementation(
+			(key: string) =>
+				({
+					'selected-x': 'Selected {0}',
+					'x-items': '{0} Items',
+					'x-sites-are-selected': '{0} sites are selected.',
+				})[key] ?? key
+		);
+	});
+
 	beforeEach(() => {
 		fetch.resetMocks();
 		fetch.mockResponse(PREVIEW_SITES_PAGE);
@@ -69,7 +86,7 @@ describe('SitesControl', () => {
 
 		expect(screen.getByText('sites')).toBeInTheDocument();
 
-		expect(screen.getByText('x-items')).toBeInTheDocument();
+		expect(screen.getByText('2 Items')).toBeInTheDocument();
 	});
 
 	it('says nothing is selected when nothing is selected', () => {
@@ -81,7 +98,7 @@ describe('SitesControl', () => {
 	it('names the selected sites', () => {
 		renderControl({selectedExternalReferenceCodes: ['erc-support']});
 
-		expect(screen.getByText('selected-x')).toBeInTheDocument();
+		expect(screen.getByText('Selected Support')).toBeInTheDocument();
 	});
 
 	it('names selected sites that go by the same name rather than counting them', () => {
@@ -93,11 +110,9 @@ describe('SitesControl', () => {
 			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
 		});
 
-		expect(screen.getByText('selected-x')).toBeInTheDocument();
-
 		expect(
-			screen.queryByText('x-sites-are-selected')
-		).not.toBeInTheDocument();
+			screen.getByText('Selected Marketing, Marketing')
+		).toBeInTheDocument();
 	});
 
 	it('counts the selected sites when they cannot be named', () => {
@@ -106,7 +121,7 @@ describe('SitesControl', () => {
 			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
 		});
 
-		expect(screen.getByText('x-sites-are-selected')).toBeInTheDocument();
+		expect(screen.getByText('2 sites are selected.')).toBeInTheDocument();
 	});
 
 	it('offers no way to select sites other than the dialog', () => {
@@ -118,9 +133,7 @@ describe('SitesControl', () => {
 	it('opens the dialog from the link', async () => {
 		renderControl();
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 	});
@@ -128,15 +141,11 @@ describe('SitesControl', () => {
 	it('hands the picked sites back to the row', async () => {
 		const {onChange} = renderControl();
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
-		const row = await screen.findByText('Support');
+		const row = await findRow('Support');
 
-		const checkbox = within(row.closest('tr') as HTMLElement).getByRole(
-			'checkbox'
-		);
+		const checkbox = within(row).getByRole('checkbox');
 
 		await userEvent.click(checkbox);
 
@@ -148,23 +157,17 @@ describe('SitesControl', () => {
 	it('reopening keeps what was already picked', async () => {
 		renderControl({selectedExternalReferenceCodes: ['erc-support']});
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
-		const row = await screen.findByText('Support');
+		const row = await findRow('Support');
 
-		expect(
-			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
-		).toBeChecked();
+		expect(within(row).getByRole('checkbox')).toBeChecked();
 	});
 
 	it('reads title, path and child sites when exporting', async () => {
 		renderControl();
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
 		await screen.findByText('Support');
 
@@ -184,9 +187,7 @@ describe('SitesControl', () => {
 	it('reads title, path and exists in instance when importing', async () => {
 		renderControl({process: 'import'});
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
 		await screen.findByText('Support');
 
@@ -206,17 +207,13 @@ describe('SitesControl', () => {
 	it('says whether the instance already has each site', async () => {
 		renderControl({process: 'import'});
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
-		const existingRow = (await screen.findByText('Marketing')).closest(
-			'tr'
-		) as HTMLElement;
+		const existingRow = await findRow('Marketing');
 
 		expect(within(existingRow).getByText('yes')).toBeInTheDocument();
 
-		const newRow = screen.getByText('Support').closest('tr') as HTMLElement;
+		const newRow = await findRow('Support');
 
 		expect(within(newRow).getByText('no')).toBeInTheDocument();
 	});
@@ -224,13 +221,9 @@ describe('SitesControl', () => {
 	it('shows where each site sits', async () => {
 		renderControl();
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
-		const row = (await screen.findByText('Support')).closest(
-			'tr'
-		) as HTMLElement;
+		const row = await findRow('Support');
 
 		expect(
 			within(row).getByText('Global / Marketing / Support')
@@ -238,12 +231,7 @@ describe('SitesControl', () => {
 	});
 
 	describe('reading the sites from the API', () => {
-		const API_URL = '/o/export-import/v1.0/export-preview/sites';
-
-		beforeEach(() => {
-			fetch.resetMocks();
-			fetch.mockResponse(PREVIEW_SITES_PAGE);
-		});
+		const API_URL = '/o/export-import/v1.0/export-preview/preview-sites';
 
 		it('hands the picked sites back to the row', async () => {
 			const {onChange} = renderControl({
@@ -251,15 +239,11 @@ describe('SitesControl', () => {
 				previewSites: undefined,
 			});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
-			const row = await screen.findByText('Support');
+			const row = await findRow('Support');
 
-			await userEvent.click(
-				within(row.closest('tr') as HTMLElement).getByRole('checkbox')
-			);
+			await userEvent.click(within(row).getByRole('checkbox'));
 
 			await userEvent.click(screen.getByRole('button', {name: 'select'}));
 
@@ -272,15 +256,11 @@ describe('SitesControl', () => {
 				previewSites: undefined,
 			});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
-			const row = await screen.findByText('Support');
+			const row = await findRow('Support');
 
-			await userEvent.click(
-				within(row.closest('tr') as HTMLElement).getByRole('checkbox')
-			);
+			await userEvent.click(within(row).getByRole('checkbox'));
 
 			await userEvent.click(screen.getByRole('button', {name: 'select'}));
 
@@ -293,7 +273,9 @@ describe('SitesControl', () => {
 				/>
 			);
 
-			expect(await screen.findByText('selected-x')).toBeInTheDocument();
+			expect(
+				await screen.findByText('Selected Support')
+			).toBeInTheDocument();
 		});
 
 		it('reopening keeps what was already picked', async () => {
@@ -303,27 +285,19 @@ describe('SitesControl', () => {
 				selectedExternalReferenceCodes: ['erc-support'],
 			});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
-			const row = await screen.findByText('Support');
+			const row = await findRow('Support');
 
-			expect(
-				within(row.closest('tr') as HTMLElement).getByRole('checkbox')
-			).toBeChecked();
+			expect(within(row).getByRole('checkbox')).toBeChecked();
 		});
 
 		it('shows where each site sits', async () => {
 			renderControl({apiURL: API_URL, previewSites: undefined});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
-			const row = (await screen.findByText('Support')).closest(
-				'tr'
-			) as HTMLElement;
+			const row = await findRow('Support');
 
 			expect(
 				within(row).getByText('Global / Marketing / Support')
@@ -333,9 +307,7 @@ describe('SitesControl', () => {
 		it('asks the API for the sites in ascending order', async () => {
 			renderControl({apiURL: API_URL, previewSites: undefined});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
 			await screen.findByText('Support');
 
@@ -344,24 +316,10 @@ describe('SitesControl', () => {
 			);
 		});
 
-		it('offers the order of the sites to be changed', async () => {
-			renderControl({apiURL: API_URL, previewSites: undefined});
-
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
-
-			expect(
-				await screen.findByRole('button', {name: /order\[sort\]/})
-			).toBeInTheDocument();
-		});
-
 		it('asks the API for the sites in descending order', async () => {
 			renderControl({apiURL: API_URL, previewSites: undefined});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
 			await userEvent.click(
 				await screen.findByRole('button', {name: /order\[sort\]/})
@@ -381,9 +339,7 @@ describe('SitesControl', () => {
 
 			renderControl({apiURL: API_URL, previewSites: undefined});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-sites'})
-			);
+			await openDialog();
 
 			await userEvent.click(
 				await screen.findByRole('button', {name: /order\[sort\]/})
@@ -404,26 +360,21 @@ describe('SitesControl', () => {
 	it('lists the sites from the file by title', async () => {
 		renderControl({previewSites: [...PREVIEW_SITES].reverse()});
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
 		await screen.findByText('Support');
 
-		const titles = screen
-			.getAllByRole('row')
-			.slice(1)
-			.map((row) => within(row).getAllByRole('cell')[1].textContent);
-
-		expect(titles).toEqual(['Marketing', 'Support']);
+		expect(
+			screen
+				.getAllByText(/^(Marketing|Support)$/)
+				.map((title) => title.textContent)
+		).toEqual(['Marketing', 'Support']);
 	});
 
-	it('leaves the order alone when the sites come from the file', async () => {
+	it('offers no sort control when the sites come from the file', async () => {
 		renderControl();
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'select-sites'})
-		);
+		await openDialog();
 
 		await screen.findByText('Support');
 
