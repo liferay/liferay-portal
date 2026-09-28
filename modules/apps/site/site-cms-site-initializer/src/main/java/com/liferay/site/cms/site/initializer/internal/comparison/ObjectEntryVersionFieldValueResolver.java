@@ -160,7 +160,7 @@ public class ObjectEntryVersionFieldValueResolver {
 		String businessType =
 			(objectField == null) ? null : objectField.getBusinessType();
 
-		if (_atomicBusinessTypes.contains(businessType)) {
+		if (_businessTypes.contains(businessType)) {
 			StringBundler sb = new StringBundler(6);
 
 			if (!removedDisplayValue.isEmpty()) {
@@ -474,7 +474,7 @@ public class ObjectEntryVersionFieldValueResolver {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryVersionFieldValueResolver.class);
 
-	private static final Set<String> _atomicBusinessTypes = SetUtil.fromArray(
+	private static final Set<String> _businessTypes = SetUtil.fromArray(
 		ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 		ObjectFieldConstants.BUSINESS_TYPE_DATE,
 		ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
