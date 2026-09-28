@@ -133,7 +133,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 				_LANGUAGE_ID, _mockObjectField(businessType), null, null));
 	}
 
-	private void _assertToDiffHtmlWithoutDiffHtml(String businessType)
+	private void _testToDiffHtmlWithoutDiffHtml(String businessType)
 		throws Exception {
 
 		String addedDisplayValue = RandomTestUtil.randomString();
@@ -480,19 +480,19 @@ public class ObjectEntryVersionFieldValueResolverTest {
 	}
 
 	private void _testToDiffHtmlWithoutDiffHtml() throws Exception {
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL);
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_EMAIL_ADDRESS);
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_INTEGER);
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER);
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER);
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL);
-		_assertToDiffHtmlWithoutDiffHtml(
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP);
 	}
 
