@@ -40,9 +40,7 @@ public class PortalInstanceExportResourceImpl
 
 		_checkPermission();
 
-		if ((portalInstanceExport == null) ||
-			Validator.isNull(portalInstanceExport.getPortalInstanceId())) {
-
+		if (Validator.isNull(portalInstanceExport.getPortalInstanceId())) {
 			throw new BadRequestException("Portal instance ID is required");
 		}
 

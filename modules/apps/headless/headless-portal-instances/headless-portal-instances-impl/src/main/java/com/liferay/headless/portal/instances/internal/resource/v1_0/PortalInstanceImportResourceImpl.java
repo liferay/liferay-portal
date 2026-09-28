@@ -40,15 +40,11 @@ public class PortalInstanceImportResourceImpl
 
 		_checkPermission();
 
-		if (portalInstanceImport == null) {
-			throw new BadRequestException("Import configuration is required");
+		if (Validator.isNull(portalInstanceImport.getSchemaName())) {
+			throw new BadRequestException("Schema name is required");
 		}
 
 		String schemaName = portalInstanceImport.getSchemaName();
-
-		if (Validator.isNull(schemaName)) {
-			throw new BadRequestException("Schema name is required");
-		}
 
 		try {
 			return _toPortalInstance(

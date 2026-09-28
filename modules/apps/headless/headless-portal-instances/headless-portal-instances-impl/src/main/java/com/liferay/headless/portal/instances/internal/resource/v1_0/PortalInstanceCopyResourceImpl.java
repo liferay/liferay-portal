@@ -40,10 +40,6 @@ public class PortalInstanceCopyResourceImpl
 
 		_checkPermission();
 
-		if (portalInstanceCopy == null) {
-			throw new BadRequestException("Copy configuration is required");
-		}
-
 		if (Validator.isNull(portalInstanceCopy.getName())) {
 			throw new BadRequestException("Name is required");
 		}
