@@ -182,7 +182,7 @@ public class ConfigurationSecretConfigurationModelListener
 			}
 			catch (Exception exception) {
 				FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
-					"configuration-vaulting-failure",
+					"configuration-secret-store-failure",
 					FIPSAuditEvent.Severity.WARNING);
 
 				fipsAuditEvent.put(
@@ -214,7 +214,7 @@ public class ConfigurationSecretConfigurationModelListener
 		FIPSAuditUtil.write(fipsAuditEvent);
 
 		_log.error(
-			"Unable to delete the vaulted secrets of configuration " + pid,
+			"Unable to delete the stored secrets of configuration " + pid,
 			exception);
 	}
 
@@ -248,7 +248,7 @@ public class ConfigurationSecretConfigurationModelListener
 
 			if ((location != null) && location.contains("static=true")) {
 				FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
-					"configuration-vaulting-skipped",
+					"configuration-secret-store-skipped",
 					FIPSAuditEvent.Severity.WARNING);
 
 				fipsAuditEvent.put(
@@ -261,7 +261,7 @@ public class ConfigurationSecretConfigurationModelListener
 						StringBundler.concat(
 							"Configuration ", metaTypePid,
 							" is declared by a static module and its ",
-							"credentials are not vaulted"));
+							"credentials are not stored"));
 				}
 
 				return null;

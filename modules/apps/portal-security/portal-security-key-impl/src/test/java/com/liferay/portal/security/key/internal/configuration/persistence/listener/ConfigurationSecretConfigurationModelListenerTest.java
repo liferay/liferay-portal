@@ -138,8 +138,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		_testOnBeforeSaveWhenReferenceNamesAnotherConfiguration();
 		_testOnBeforeSaveWhenScopeIsCompany();
 		_testOnBeforeSaveWhenScopeIsGroup();
-		_testOnBeforeSaveWhenValueIsAlreadyVaulted();
-		_testOnBeforeSaveWhenVaultIsUnavailable();
+		_testOnBeforeSaveWhenStoreIsUnavailable();
+		_testOnBeforeSaveWhenValueIsAlreadyStored();
 	}
 
 	private ExtendedAttributeDefinition _createExtendedAttributeDefinition(
@@ -527,25 +527,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		);
 	}
 
-	private void _testOnBeforeSaveWhenValueIsAlreadyVaulted() throws Exception {
-		setUp();
-
-		String value = "${secretRef:provider:config/" + _PID + "/0/credential}";
-
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"credential", value
-			).build();
-
-		_configurationSecretConfigurationModelListener.onBeforeSave(
-			_PID, properties);
-
-		Assert.assertEquals(value, properties.get("credential"));
-
-		Mockito.verifyNoInteractions(_secretManager);
-	}
-
-	private void _testOnBeforeSaveWhenVaultIsUnavailable() throws Exception {
+	private void _testOnBeforeSaveWhenStoreIsUnavailable() throws Exception {
 		setUp();
 
 		Mockito.when(
@@ -567,6 +549,24 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 				_PID, properties));
 
 		Assert.assertEquals(value, properties.get("credential"));
+	}
+
+	private void _testOnBeforeSaveWhenValueIsAlreadyStored() throws Exception {
+		setUp();
+
+		String value = "${secretRef:provider:config/" + _PID + "/0/credential}";
+
+		Dictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential", value
+			).build();
+
+		_configurationSecretConfigurationModelListener.onBeforeSave(
+			_PID, properties);
+
+		Assert.assertEquals(value, properties.get("credential"));
+
+		Mockito.verifyNoInteractions(_secretManager);
 	}
 
 	private static final String _FACTORY_SUFFIX = RandomTestUtil.randomString();
