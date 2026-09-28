@@ -55,7 +55,9 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 
 		_companyService.deleteCompany(company.getCompanyId());
 
-		_sendUserNotificationEvent(portalInstanceId);
+		_sendUserNotificationEvent(
+			PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
+			portalInstanceId);
 	}
 
 	@Override
@@ -117,6 +119,44 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 
 		_checkPermission();
 
+		PortalInstance addedPortalInstance = _addPortalInstance(portalInstance);
+
+		_sendUserNotificationEvent(
+			PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+			portalInstance.getPortalInstanceId());
+
+		return addedPortalInstance;
+	}
+
+	@Override
+	public void putPortalInstanceActivate(String portalInstanceId)
+		throws Exception {
+
+		_checkPermission();
+
+		Company company = _companyService.getCompanyByWebId(portalInstanceId);
+
+		_companyService.updateCompany(
+			company.getCompanyId(), company.getVirtualHostname(),
+			company.getMx(), company.getMaxUsers(), true);
+	}
+
+	@Override
+	public void putPortalInstanceDeactivate(String portalInstanceId)
+		throws Exception {
+
+		_checkPermission();
+
+		Company company = _companyService.getCompanyByWebId(portalInstanceId);
+
+		_companyService.updateCompany(
+			company.getCompanyId(), company.getVirtualHostname(),
+			company.getMx(), company.getMaxUsers(), false);
+	}
+
+	private PortalInstance _addPortalInstance(PortalInstance portalInstance)
+		throws Exception {
+
 		Admin admin = portalInstance.getAdmin();
 
 		Long companyId = portalInstance.getCompanyId();
@@ -155,32 +195,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 					maxUsers, active)));
 	}
 
-	@Override
-	public void putPortalInstanceActivate(String portalInstanceId)
-		throws Exception {
-
-		_checkPermission();
-
-		Company company = _companyService.getCompanyByWebId(portalInstanceId);
-
-		_companyService.updateCompany(
-			company.getCompanyId(), company.getVirtualHostname(),
-			company.getMx(), company.getMaxUsers(), true);
-	}
-
-	@Override
-	public void putPortalInstanceDeactivate(String portalInstanceId)
-		throws Exception {
-
-		_checkPermission();
-
-		Company company = _companyService.getCompanyByWebId(portalInstanceId);
-
-		_companyService.updateCompany(
-			company.getCompanyId(), company.getVirtualHostname(),
-			company.getMx(), company.getMaxUsers(), false);
-	}
-
 	private void _checkPermission() throws Exception {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -190,7 +204,9 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		}
 	}
 
-	private void _sendUserNotificationEvent(String portalInstanceId) {
+	private void _sendUserNotificationEvent(
+		String operationType, String portalInstanceId) {
+
 		if (!BatchEngineThreadLocal.isBatchImportInProcess()) {
 			return;
 		}
@@ -201,8 +217,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 				PortalInstancesPortletKeys.PORTAL_INSTANCES,
 				UserNotificationDeliveryConstants.TYPE_WEBSITE,
 				JSONUtil.put(
-					"operationType",
-					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE
+					"operationType", operationType
 				).put(
 					"portalInstanceId", portalInstanceId
 				).put(

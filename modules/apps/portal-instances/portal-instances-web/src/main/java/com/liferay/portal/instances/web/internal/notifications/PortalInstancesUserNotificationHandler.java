@@ -82,6 +82,21 @@ public class PortalInstancesUserNotificationHandler
 		String status = jsonObject.getString("status");
 
 		if (operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_ADD)) {
+
+			if (status.equals(
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
+
+				return serviceContext.translate(
+					"the-instance-x-is-ready-to-use",
+					jsonObject.getString("portalInstanceId"));
+			}
+
+			return serviceContext.translate(
+				jsonObject.getString("errorMessageKey"));
+		}
+
+		if (operationType.equals(
 				PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE)) {
 
 			if (status.equals(
@@ -107,6 +122,22 @@ public class PortalInstancesUserNotificationHandler
 
 		String operationType = jsonObject.getString("operationType");
 		String status = jsonObject.getString("status");
+
+		if (operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_ADD)) {
+
+			if (status.equals(
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
+
+				return serviceContext.translate(
+					"the-instance-x-was-created",
+					jsonObject.getString("portalInstanceId"));
+			}
+
+			return serviceContext.translate(
+				"the-instance-x-could-not-be-created",
+				jsonObject.getString("portalInstanceId"));
+		}
 
 		if (operationType.equals(
 				PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE)) {
