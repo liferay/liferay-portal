@@ -56,17 +56,35 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 			pullRequestPortalTopLevelBuild
 		).getPortalUpstreamBranchName();
 
+		_testNewJob(
+			job, portalUpstreamBranchName, pullRequestPortalTopLevelBuild);
+
+		UpstreamPortalTopLevelBuild upstreamPortalTopLevelBuild = Mockito.mock(
+			UpstreamPortalTopLevelBuild.class);
+
 		Mockito.doReturn(
-			pullRequestPortalTopLevelBuild
+			portalUpstreamBranchName
 		).when(
-			pullRequestPortalTopLevelBuild
+			upstreamPortalTopLevelBuild
+		).getPortalUpstreamBranchName();
+
+		_testNewJob(job, portalUpstreamBranchName, upstreamPortalTopLevelBuild);
+	}
+
+	private void _testNewJob(
+		Job job, String portalUpstreamBranchName, TopLevelBuild topLevelBuild) {
+
+		Mockito.doReturn(
+			topLevelBuild
+		).when(
+			topLevelBuild
 		).getTopLevelBuild();
 
 		try (MockedStatic<GitWorkingDirectoryFactory>
 				gitWorkingDirectoryFactoryMockedStatic = Mockito.mockStatic(
 					GitWorkingDirectoryFactory.class)) {
 
-			testSame(job, JobFactory.newJob(pullRequestPortalTopLevelBuild));
+			testSame(job, JobFactory.newJob(topLevelBuild));
 
 			gitWorkingDirectoryFactoryMockedStatic.verify(
 				() -> GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
