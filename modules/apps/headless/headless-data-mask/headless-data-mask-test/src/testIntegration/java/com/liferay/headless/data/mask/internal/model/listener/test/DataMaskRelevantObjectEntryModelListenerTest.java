@@ -85,17 +85,23 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 				"system data masks",
 			() -> _addSystemDataMaskObjectEntry(objectDefinition));
 
+		ObjectEntry objectEntry = null;
+
 		BatchEngineUnitThreadLocal.setFileName(_DATA_MASK_BATCH_FILE_NAME);
 
 		try {
-			ObjectEntry objectEntry = _addSystemDataMaskObjectEntry(
-				objectDefinition);
+			objectEntry = _addSystemDataMaskObjectEntry(objectDefinition);
 
 			Assert.assertNotNull(
 				_objectEntryLocalService.fetchObjectEntry(
 					objectEntry.getObjectEntryId()));
 		}
 		finally {
+			if (objectEntry != null) {
+				_objectEntryLocalService.deleteObjectEntry(
+					objectEntry.getObjectEntryId());
+			}
+
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
 		}
 	}
@@ -220,6 +226,9 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 
 		Assert.assertEquals("[EMAIL_ADDRESS]", values.get("replacementValue"));
 
+		String originalReplacementValue = (String)values.get(
+			"replacementValue");
+
 		BatchEngineUnitThreadLocal.setFileName(_DATA_MASK_BATCH_FILE_NAME);
 
 		try {
@@ -234,6 +243,9 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 				replacementValue, values.get("replacementValue"));
 		}
 		finally {
+			_updateDataMaskObjectEntry(
+				emailAddressDataMaskObjectEntry, originalReplacementValue);
+
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
 		}
 
