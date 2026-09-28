@@ -10,9 +10,8 @@
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <%@ page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
-
-<%@ page import="java.util.UUID" %>
 
 <liferay-theme:defineObjects />
 
@@ -25,5 +24,5 @@ String value = (String)request.getAttribute("liferay-commerce:product-specificat
 String valueElementType = (String)request.getAttribute("liferay-commerce:product-specification:valueElementType");
 boolean visible = (boolean)request.getAttribute("liferay-commerce:product-specification:visible");
 
-String uuid = String.valueOf(UUID.randomUUID());
+String elementId = PortalUtil.getUniqueElementId();
 %>

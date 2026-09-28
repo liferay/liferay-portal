@@ -7,7 +7,7 @@
 
 <%@ include file="/fragment/renderer/dynamic_field/init.jsp" %>
 
-<div class="<%= namespace %>dynamic-field" id="<%= uuid %>">
+<div class="<%= namespace %>dynamic-field" id="<%= elementId %>">
 	<c:if test="<%= !Validator.isBlank(label) %>">
 		<<%= labelElementType %> class="node-label"><%= HtmlUtil.escape(label) %>:</<%= labelElementType %>>
 	</c:if>
@@ -17,7 +17,7 @@
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"elementId", uuid
+			"elementId", elementId
 		).put(
 			"field", field
 		).put(

@@ -12,18 +12,17 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
-
-<%@ page import="java.util.UUID" %>
 
 <liferay-theme:defineObjects />
 
 <%
+String elementId = PortalUtil.getUniqueElementId();
 String field = (String)request.getAttribute("liferay-commerce:dynamic-field:field");
 String fieldValue = (String)request.getAttribute("liferay-commerce:dynamic-field:fieldValue");
 String label = (String)request.getAttribute("liferay-commerce:dynamic-field:label");
 String labelElementType = (String)request.getAttribute("liferay-commerce:dynamic-field:labelElementType");
 String namespace = (String)request.getAttribute("liferay-commerce:dynamic-field:namespace");
-String uuid = String.valueOf(UUID.randomUUID());
 String valueElementType = (String)request.getAttribute("liferay-commerce:dynamic-field:valueElementType");
 %>

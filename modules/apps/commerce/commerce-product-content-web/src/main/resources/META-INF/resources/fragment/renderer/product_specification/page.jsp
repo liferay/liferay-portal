@@ -8,7 +8,7 @@
 <%@ include file="/fragment/renderer/product_specification/init.jsp" %>
 
 <c:if test="<%= visible %>">
-	<div class="<%= namespace %>product-specification" id="<%= uuid %>">
+	<div class="<%= namespace %>product-specification" id="<%= elementId %>">
 		<c:if test="<%= showLabel && !Validator.isBlank(label) %>">
 			<<%= labelElementType %> class="node-label"><%= HtmlUtil.escape(label) %></<%= labelElementType %>>
 		</c:if>
