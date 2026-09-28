@@ -15,16 +15,20 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManager;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -161,20 +165,29 @@ public class OneToManyObjectFieldFilterStrategyTest {
 
 		long primaryKey1 = RandomTestUtil.randomLong();
 		long primaryKey2 = RandomTestUtil.randomLong();
+		long primaryKey3 = RandomTestUtil.randomLong();
 
 		try (MockedStatic<PersistedModelLocalServiceRegistryUtil>
 				persistedModelLocalServiceRegistryUtilMockedStatic =
 					Mockito.mockStatic(
 						PersistedModelLocalServiceRegistryUtil.class)) {
 
+			String primaryKeyColumnName = RandomTestUtil.randomString();
+
 			Mockito.when(
-				_persistedModelLocalService.fetchPersistedModel(primaryKey1)
+				_user.getModelAttributes()
 			).thenReturn(
-				_persistedModel
+				Collections.singletonMap(primaryKeyColumnName, primaryKey1)
 			);
 
 			Mockito.when(
 				_persistedModelLocalService.fetchPersistedModel(primaryKey2)
+			).thenReturn(
+				_user
+			);
+
+			Mockito.when(
+				_persistedModelLocalService.fetchPersistedModel(primaryKey3)
 			).thenReturn(
 				null
 			);
@@ -188,6 +201,26 @@ public class OneToManyObjectFieldFilterStrategyTest {
 				_persistedModelLocalService
 			);
 
+			Mockito.when(
+				_primaryKeyColumn.getName()
+			).thenReturn(
+				primaryKeyColumnName
+			);
+
+			Mockito.doReturn(
+				_primaryKeyColumn
+			).when(
+				_systemObjectDefinitionManager
+			).getPrimaryKeyColumn();
+
+			Mockito.when(
+				_systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManager(
+						_objectDefinition.getName())
+			).thenReturn(
+				_systemObjectDefinitionManager
+			);
+
 			String titleValue = RandomTestUtil.randomString();
 
 			Mockito.when(
@@ -197,7 +230,7 @@ public class OneToManyObjectFieldFilterStrategyTest {
 				titleValue
 			);
 
-			JSONArray jsonArray = JSONUtil.putAll(primaryKey1, primaryKey2);
+			JSONArray jsonArray = JSONUtil.putAll(primaryKey2, primaryKey3);
 
 			OneToManyObjectFieldFilterStrategy
 				oneToManyObjectFieldFilterStrategy = Mockito.spy(
@@ -206,7 +239,8 @@ public class OneToManyObjectFieldFilterStrategyTest {
 						_objectDefinitionLocalService, _objectEntryLocalService,
 						_relationshipObjectField, _objectFieldLocalService,
 						_objectRelationshipLocalService,
-						_objectViewFilterColumn, null));
+						_objectViewFilterColumn,
+						_systemObjectDefinitionManagerRegistry));
 
 			Mockito.doReturn(
 				jsonArray
@@ -225,7 +259,7 @@ public class OneToManyObjectFieldFilterStrategyTest {
 				selectionFDSFilterItems.get(0);
 
 			Assert.assertEquals(titleValue, selectionFDSFilterItem.getLabel());
-			Assert.assertEquals(primaryKey1, selectionFDSFilterItem.getValue());
+			Assert.assertEquals(primaryKey2, selectionFDSFilterItem.getValue());
 
 			Mockito.verify(
 				_objectEntryLocalService
@@ -236,7 +270,7 @@ public class OneToManyObjectFieldFilterStrategyTest {
 			Mockito.verify(
 				_objectEntryLocalService, Mockito.never()
 			).getTitleValue(
-				objectDefinitionId, primaryKey2
+				objectDefinitionId, primaryKey3
 			);
 		}
 	}
@@ -281,15 +315,25 @@ public class OneToManyObjectFieldFilterStrategyTest {
 	private ObjectViewFilterColumn _objectViewFilterColumn;
 
 	@Mock
-	private PersistedModel _persistedModel;
+	private PersistedModelLocalService _persistedModelLocalService;
 
 	@Mock
-	private PersistedModelLocalService _persistedModelLocalService;
+	private Column<?, Long> _primaryKeyColumn;
 
 	@Mock
 	private ObjectField _relationshipObjectField;
 
 	@Mock
+	private SystemObjectDefinitionManager _systemObjectDefinitionManager;
+
+	@Mock
+	private SystemObjectDefinitionManagerRegistry
+		_systemObjectDefinitionManagerRegistry;
+
+	@Mock
 	private ObjectField _titleObjectField;
+
+	@Mock
+	private User _user;
 
 }
