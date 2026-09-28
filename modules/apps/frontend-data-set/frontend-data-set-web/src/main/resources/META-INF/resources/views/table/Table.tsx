@@ -138,7 +138,7 @@ const Head = ({
 						columnName={field.fieldName}
 						key={field.fieldName}
 						sortable={field.sortable}
-						textValue={field.fieldName}
+						textValue={field.label || field.fieldName}
 					>
 						{field.label || (
 							<span className="sr-only">
