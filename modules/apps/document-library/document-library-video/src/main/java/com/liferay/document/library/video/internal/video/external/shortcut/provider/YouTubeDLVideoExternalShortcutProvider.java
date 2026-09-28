@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -68,8 +69,8 @@ public class YouTubeDLVideoExternalShortcutProvider
 			@Override
 			public String renderHTML(HttpServletRequest httpServletRequest) {
 				String iframeSrc =
-					"https://www.youtube.com/embed/" + youTubeVideoId +
-						"?rel=0";
+					"https://www.youtube.com/embed/" +
+						HtmlUtil.escapeAttribute(youTubeVideoId) + "?rel=0";
 				String start = HttpComponentsUtil.getParameter(url, "t", false);
 
 				if (Validator.isNotNull(start)) {

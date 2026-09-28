@@ -8,6 +8,7 @@ package com.liferay.document.library.video.internal.video.external.shortcut.prov
 import com.liferay.document.library.video.external.shortcut.DLVideoExternalShortcut;
 import com.liferay.document.library.video.external.shortcut.provider.DLVideoExternalShortcutProvider;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -47,8 +48,9 @@ public class TwitchDLVideoExternalShortcutProvider
 					"<iframe allowfullscreen=\"true\" frameborder=\"0\" ",
 					"height=\"315\" ",
 					"src=\"https://player.twitch.tv/?autoplay=false&",
-					videoQueryParam, "&parent=",
-					_portal.getHost(httpServletRequest),
+					HtmlUtil.escapeAttribute(videoQueryParam), "&parent=",
+					HtmlUtil.escapeAttribute(
+						_portal.getHost(httpServletRequest)),
 					"\" scrolling=\"no\" width=\"560\" ></iframe>");
 			}
 
