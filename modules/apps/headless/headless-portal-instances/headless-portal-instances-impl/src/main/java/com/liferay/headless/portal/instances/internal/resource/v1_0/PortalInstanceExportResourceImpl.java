@@ -46,20 +46,23 @@ public class PortalInstanceExportResourceImpl
 			throw new BadRequestException("Portal instance ID is required");
 		}
 
-		String portalInstanceId = portalInstanceExport.getPortalInstanceId();
-
-		Company company = _companyService.getCompanyByWebId(portalInstanceId);
-
 		try {
+			PortalInstanceExport newPortalInstanceExport =
+				new PortalInstanceExport();
+
+			String portalInstanceId =
+				portalInstanceExport.getPortalInstanceId();
+
+			Company company = _companyService.getCompanyByWebId(
+				portalInstanceId);
+
 			String exportedPartitionName =
 				_portalInstanceExporter.exportPortalInstance(
 					company.getCompanyId());
 
-			PortalInstanceExport newPortalInstanceExport =
-				new PortalInstanceExport();
-
 			newPortalInstanceExport.setExportedPartitionName(
 				() -> exportedPartitionName);
+
 			newPortalInstanceExport.setPortalInstanceId(() -> portalInstanceId);
 			newPortalInstanceExport.setSourceCompanyId(company::getCompanyId);
 
@@ -67,7 +70,8 @@ public class PortalInstanceExportResourceImpl
 		}
 		catch (Exception exception) {
 			_log.error(
-				"Unable to export portal instance " + portalInstanceId,
+				"Unable to export portal instance " +
+					portalInstanceExport.getPortalInstanceId(),
 				exception);
 
 			throw exception;
