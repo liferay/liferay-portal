@@ -33,7 +33,7 @@ import org.junit.rules.TestName;
 /**
  * @author Wade Cao
  */
-public class CommonSearchRequestBuilderAssemblerImplTest {
+public class CommonSearchRequestBuilderAssemblerTest {
 
 	@ClassRule
 	public static LiferayUnitTestRule liferayUnitTestRule =
