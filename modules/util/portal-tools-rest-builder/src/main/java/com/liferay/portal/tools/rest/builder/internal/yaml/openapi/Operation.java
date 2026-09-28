@@ -38,8 +38,16 @@ public class Operation {
 		return _tags;
 	}
 
+	public boolean isCalculatedOperationId() {
+		return _calculatedOperationId;
+	}
+
 	public boolean isDeprecated() {
 		return _deprecated;
+	}
+
+	public void setCalculatedOperationId(boolean calculatedOperationId) {
+		_calculatedOperationId = calculatedOperationId;
 	}
 
 	public void setDeprecated(boolean deprecated) {
@@ -70,6 +78,7 @@ public class Operation {
 		_tags = tags;
 	}
 
+	private boolean _calculatedOperationId;
 	private boolean _deprecated;
 	private String _description;
 	private String _operationId;
