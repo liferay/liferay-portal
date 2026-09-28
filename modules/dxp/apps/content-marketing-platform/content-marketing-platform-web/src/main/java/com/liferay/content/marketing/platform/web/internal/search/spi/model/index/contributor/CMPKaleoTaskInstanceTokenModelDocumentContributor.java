@@ -15,6 +15,8 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -55,6 +57,10 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 	private void _contribute(
 			Document document, KaleoTaskInstanceToken kaleoTaskInstanceToken)
 		throws PortalException {
+
+		if (!LicenseManagerUtil.isAppEnabled(App.CMP)) {
+			return;
+		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			kaleoTaskInstanceToken.getClassPK());
