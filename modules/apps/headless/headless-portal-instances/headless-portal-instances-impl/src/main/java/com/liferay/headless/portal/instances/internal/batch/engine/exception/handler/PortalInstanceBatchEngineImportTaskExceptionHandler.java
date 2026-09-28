@@ -12,12 +12,22 @@ import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.portal.instances.constants.PortalInstancesNotificationConstants;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
+import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
+import com.liferay.portal.kernel.exception.CompanyMxException;
+import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
+import com.liferay.portal.kernel.exception.CompanyWebIdException;
+import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.RequiredCompanyException;
+import com.liferay.portal.kernel.exception.UserEmailAddressException;
+import com.liferay.portal.kernel.exception.UserPasswordException;
+import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,9 +49,9 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 			return;
 		}
 
-		String operation = BatchEngineTaskOperation.DELETE.name();
+		String operationType = _getOperationType(batchEngineImportTask);
 
-		if (!operation.equals(batchEngineImportTask.getOperation())) {
+		if (operationType == null) {
 			return;
 		}
 
@@ -55,8 +65,7 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 				JSONUtil.put(
 					"errorMessageKey", _getErrorMessageKey(exception1)
 				).put(
-					"operationType",
-					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE
+					"operationType", operationType
 				).put(
 					"portalInstanceId", portalInstance.getPortalInstanceId()
 				).put(
@@ -72,11 +81,71 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 	}
 
 	private String _getErrorMessageKey(Exception exception) {
+		if (exception instanceof CompanyMaxUsersException) {
+			return "please-enter-a-valid-max-users";
+		}
+
+		if (exception instanceof CompanyMxException) {
+			return "please-enter-a-valid-mail-domain";
+		}
+
+		if (exception instanceof CompanyVirtualHostException) {
+			return "please-enter-a-valid-virtual-host";
+		}
+
+		if (exception instanceof CompanyWebIdException) {
+			return "please-enter-a-valid-web-id";
+		}
+
+		if (exception instanceof ContactNameException.MustHaveFirstName) {
+			return "please-enter-a-valid-first-name";
+		}
+
+		if (exception instanceof ContactNameException.MustHaveLastName) {
+			return "please-enter-a-valid-last-name";
+		}
+
+		if (exception instanceof ContactNameException.MustHaveMiddleName) {
+			return "please-enter-a-valid-middle-name";
+		}
+
+		if (exception instanceof ContactNameException.MustHaveValidFullName) {
+			return "please-enter-a-valid-first-middle-and-last-name";
+		}
+
 		if (exception instanceof RequiredCompanyException) {
 			return "the-default-instance-cannot-be-deleted";
 		}
 
+		if (exception instanceof UserEmailAddressException) {
+			return "please-enter-a-valid-email-address";
+		}
+
+		if (exception instanceof UserPasswordException) {
+			return "please-enter-a-valid-password";
+		}
+
+		if (exception instanceof UserScreenNameException) {
+			return "please-enter-a-valid-screen-name";
+		}
+
 		return "an-unexpected-error-occurred";
+	}
+
+	private String _getOperationType(
+		BatchEngineImportTask batchEngineImportTask) {
+
+		String operation = batchEngineImportTask.getOperation();
+
+		if (Objects.equals(operation, BatchEngineTaskOperation.CREATE.name())) {
+			return PortalInstancesNotificationConstants.OPERATION_TYPE_ADD;
+		}
+
+		if (Objects.equals(operation, BatchEngineTaskOperation.DELETE.name())) {
+			return PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE;
+		}
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
