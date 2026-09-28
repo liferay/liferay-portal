@@ -113,15 +113,25 @@
 	}
 }
 
-.order-arrow-down-active {
-	.order-arrow-arrow-down {
-		fill: $order-arrow-down-active-color;
-	}
-}
+// The sorted column renders a single arrow in place of the neutral pair. That
+// arrow is inset within its viewBox, so it needs a larger box to match the
+// height of the arrows it sits beside. `fill` is `currentColor`, which is
+// inherited and therefore crosses into the `use` element's shadow tree.
 
-.order-arrow-up-active {
-	.order-arrow-arrow-up {
-		fill: $order-arrow-up-active-color;
+.table-head-title {
+	&.order-arrow-down-active {
+		color: $order-arrow-down-active-color;
+	}
+
+	&.order-arrow-up-active {
+		color: $order-arrow-up-active-color;
+	}
+
+	&.order-arrow-down-active,
+	&.order-arrow-up-active {
+		.lexicon-icon {
+			font-size: $order-arrow-active-font-size;
+		}
 	}
 }
 

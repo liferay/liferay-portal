@@ -53,6 +53,8 @@ $lexicon-icon-xl: map-merge(
 
 // .order-arrow
 
+$order-arrow-active-font-size: 1rem !default; // 16px
+
 $order-arrow-down-active-color: rgba($black, 0.9) !default;
 $order-arrow-up-active-color: $order-arrow-down-active-color !default;
 

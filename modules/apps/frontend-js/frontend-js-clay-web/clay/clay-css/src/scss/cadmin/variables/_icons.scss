@@ -25,5 +25,7 @@ $cadmin-collapse-icon-position-top: clay-collapse-icon-align(
 	0.9375em
 ) !default;
 
-$cadmin-order-arrow-down-active-color: $cadmin-gray-500 !default;
+$cadmin-order-arrow-active-font-size: 1rem !default; // 16px
+
+$cadmin-order-arrow-down-active-color: $cadmin-gray-900 !default;
 $cadmin-order-arrow-up-active-color: $cadmin-order-arrow-down-active-color !default;

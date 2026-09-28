@@ -53,7 +53,9 @@ $lexicon-icon-xl: map-merge(
 
 // .order-arrow
 
-$order-arrow-down-active-color: $gray-500 !default;
+$order-arrow-active-font-size: 1rem !default; // 16px
+
+$order-arrow-down-active-color: $gray-900 !default;
 $order-arrow-up-active-color: $order-arrow-down-active-color !default;
 
 // .collapse-icon[href], .collapse-icon[type]
