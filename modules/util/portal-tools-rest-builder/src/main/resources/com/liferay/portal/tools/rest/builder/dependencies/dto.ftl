@@ -183,6 +183,14 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 
 				example = "${freeMarkerTool.getObjectFieldStringValue(propertyType, propertySchema.example)}"
 			</#if>
+
+			<#if stringUtil.equals(propertySchema.format!"", "password")>
+				<#if propertySchema.deprecated || propertySchema.description?? || propertySchema.example??>
+					,
+				</#if>
+
+				format = "password"
+			</#if>
 		)
 
 		<#if !["Boolean", "Boolean[]", "Date", "Date[]", "Double", "Double[]", "Integer", "Integer[]", "Long", "Long[]", "String", "String[]"]?seq_contains(propertyType)>
