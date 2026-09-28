@@ -510,6 +510,7 @@ components:
                         password:
                             description:
                                 This attribute is intended to be used as a means to set, replace, or compare (i.e., filter for equality) a password.
+                            format: password
                             type: string
                             writeOnly: true
                         phoneNumbers:

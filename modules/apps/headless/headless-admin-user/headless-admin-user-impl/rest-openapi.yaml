@@ -1386,6 +1386,7 @@ components:
                 currentPassword:
                     description:
                         The user's current password. Used to authenticate a user when they attempt to update their own password.
+                    format: password
                     type: string
                     writeOnly: true
                 customFields:
@@ -1509,6 +1510,7 @@ components:
                 password:
                     description:
                         The user's password.
+                    format: password
                     type: string
                     writeOnly: true
                 permissions:

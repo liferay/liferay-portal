@@ -27,6 +27,7 @@ components:
                 idp:
                     $ref: "#/components/schemas/Idp"
                 keyStoreCredentialPassword:
+                    format: password
                     type: string
                     writeOnly: true
                 role:
@@ -52,6 +53,7 @@ components:
                     format: int64
                     type: integer
                 keyStoreEncryptionCredentialPassword:
+                    format: password
                     type: string
                     writeOnly: true
                 ldapImportEnabled:
