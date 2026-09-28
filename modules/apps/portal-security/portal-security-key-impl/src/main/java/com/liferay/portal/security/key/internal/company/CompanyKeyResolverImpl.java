@@ -85,7 +85,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 
 	@Override
 	public Key unwrapKey(long companyId, String keyString) {
-		Key key = _getKey(companyId, keyString);
+		Key key = _getCachedKey(companyId, keyString);
 
 		if (key != null) {
 			return key;
@@ -224,6 +224,28 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		return new SecretKeySpec(keyBytes, _getKeyAlgorithm());
 	}
 
+	private Key _getCachedKey(long companyId, String keyString) {
+		CompanyKeyCacheEntry companyKeyCacheEntry = _getCompanyKeyCacheEntry(
+			companyId, keyString);
+
+		if (companyKeyCacheEntry == null) {
+			return null;
+		}
+
+		byte[] keyBytes = companyKeyCacheEntry.getKeyBytes();
+
+		if (keyBytes == null) {
+			return null;
+		}
+
+		try {
+			return _createKey(keyBytes);
+		}
+		finally {
+			Arrays.fill(keyBytes, (byte)0);
+		}
+	}
+
 	private String _getCompanyKEKIdentifier() {
 		KeyManagerConfiguration keyManagerConfiguration =
 			_keyManagerConfiguration;
@@ -267,28 +289,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		}
 
 		return companyKeyCacheEntry;
-	}
-
-	private Key _getKey(long companyId, String keyString) {
-		CompanyKeyCacheEntry companyKeyCacheEntry = _getCompanyKeyCacheEntry(
-			companyId, keyString);
-
-		if (companyKeyCacheEntry == null) {
-			return null;
-		}
-
-		byte[] keyBytes = companyKeyCacheEntry.getKeyBytes();
-
-		if (keyBytes == null) {
-			return null;
-		}
-
-		try {
-			return _createKey(keyBytes);
-		}
-		finally {
-			Arrays.fill(keyBytes, (byte)0);
-		}
 	}
 
 	private String _getKeyAlgorithm() {

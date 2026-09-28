@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.key.internal.company;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
@@ -69,15 +70,15 @@ public class CompanyKeyResolverImplTest {
 				"companyKEKIdentifier", _KEK_IDENTIFIER
 			).build());
 
-		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
-			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
-
 		KeyManagerConfiguration keyManagerConfiguration =
 			ReflectionTestUtil.getFieldValue(
 				companyKeyResolverImpl, "_keyManagerConfiguration");
 
 		Assert.assertEquals(
 			_KEK_IDENTIFIER, keyManagerConfiguration.companyKEKIdentifier());
+
+		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
+			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
 
 		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
 		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
@@ -93,10 +94,10 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyCacheEntry companyKeyCacheEntry = _createCompanyKeyCacheEntry(
 			companyKeyResolverImpl);
 
+		companyKeyResolverImpl.deactivate();
+
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
-
-		companyKeyResolverImpl.deactivate();
 
 		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
 		Assert.assertNull(
@@ -159,7 +160,7 @@ public class CompanyKeyResolverImplTest {
 			CompanyKeyResolverImpl companyKeyResolverImpl)
 		throws Exception {
 
-		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
+		_mockDecrypt(_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
 
 		companyKeyResolverImpl.unwrapKey(
 			_COMPANY_ID_1, _toKeyString(_CIPHERTEXT_1));
@@ -245,7 +246,7 @@ public class CompanyKeyResolverImplTest {
 	}
 
 	private byte[] _mockDecrypt(
-			long companyId, byte[] ciphertext, byte[] keyBytes)
+			byte[] ciphertext, long companyId, byte[] keyBytes)
 		throws Exception {
 
 		byte[] providerKeyBytes = keyBytes.clone();
@@ -381,7 +382,7 @@ public class CompanyKeyResolverImplTest {
 		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		byte[] providerKeyBytes = _mockDecrypt(
-			_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
+			_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
 
 		Assert.assertEquals(
 			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
@@ -403,7 +404,7 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl();
 
-		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
+		_mockDecrypt(_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
 
 		companyKeyResolverImpl.unwrapKey(
 			_COMPANY_ID_1, _toKeyString(_CIPHERTEXT_1));
@@ -418,7 +419,7 @@ public class CompanyKeyResolverImplTest {
 
 		changedCiphertext[0] = (byte)(changedCiphertext[0] + 1);
 
-		_mockDecrypt(_COMPANY_ID_1, changedCiphertext, _KEY_BYTES_1);
+		_mockDecrypt(changedCiphertext, _COMPANY_ID_1, _KEY_BYTES_1);
 
 		Assert.assertEquals(
 			_key1,
@@ -466,32 +467,54 @@ public class CompanyKeyResolverImplTest {
 			companyKeyResolverImpl,
 			_WRAPPED_KEY_PREFIX + StringPool.CLOSE_CURLY_BRACE);
 
-		String versionPrefix =
-			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION + StringPool.COLON;
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION + StringPool.COLON);
 
-		_assertUnwrapKeyFails(companyKeyResolverImpl, versionPrefix);
-		_assertUnwrapKeyFails(
-			companyKeyResolverImpl, versionPrefix + ":alias/kek|Y2lwaGVy}");
-		_assertUnwrapKeyFails(
-			companyKeyResolverImpl, versionPrefix + "provider:alias/kek|=}");
+		String keyString = _toKeyString(_CIPHERTEXT_1);
+
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
-			versionPrefix + "provider:alias/kek|Y2lwaGVy");
+			StringUtil.replaceFirst(
+				keyString, CharPool.CLOSE_CURLY_BRACE, StringPool.BLANK));
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
-			versionPrefix + "provider:alias/kek|not base64}");
-		_assertUnwrapKeyFails(
-			companyKeyResolverImpl, versionPrefix + "provider:alias/kek|}");
-		_assertUnwrapKeyFails(
-			companyKeyResolverImpl, versionPrefix + "provider:alias/kek}");
+			StringUtil.replaceFirst(
+				keyString, CharPool.PIPE, StringPool.BLANK));
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
-			versionPrefix + "provider:ali}as|Y2lwaGVy}");
-		_assertUnwrapKeyFails(
-			companyKeyResolverImpl, versionPrefix + "provider:|Y2lwaGVy}");
+			StringUtil.replaceFirst(
+				keyString, _KEK_IDENTIFIER, StringPool.BLANK));
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
-			versionPrefix + "pro}vider:alias|Y2lwaGVy}");
+			StringUtil.replaceFirst(
+				keyString, _KEK_IDENTIFIER,
+				_KEK_IDENTIFIER + StringPool.CLOSE_CURLY_BRACE));
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			StringUtil.replaceFirst(
+				keyString, _KEK_PROVIDER_ID, StringPool.BLANK));
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			StringUtil.replaceFirst(
+				keyString, _KEK_PROVIDER_ID,
+				_KEK_PROVIDER_ID + StringPool.CLOSE_CURLY_BRACE));
+
+		Base64.Encoder encoder = Base64.getEncoder();
+
+		String ciphertextString = encoder.encodeToString(_CIPHERTEXT_1);
+
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			StringUtil.replaceFirst(keyString, ciphertextString, "not base64"));
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			StringUtil.replaceFirst(
+				keyString, ciphertextString, StringPool.BLANK));
+		_assertUnwrapKeyFails(
+			companyKeyResolverImpl,
+			StringUtil.replaceFirst(
+				keyString, ciphertextString, StringPool.EQUAL));
 	}
 
 	private void _testUnwrapKeyWithMultipleCompanies() throws Exception {
@@ -501,8 +524,8 @@ public class CompanyKeyResolverImplTest {
 		String keyString1 = _toKeyString(_CIPHERTEXT_1);
 		String keyString2 = _toKeyString(_CIPHERTEXT_2);
 
-		_mockDecrypt(_COMPANY_ID_1, _CIPHERTEXT_1, _KEY_BYTES_1);
-		_mockDecrypt(_COMPANY_ID_2, _CIPHERTEXT_2, _KEY_BYTES_2);
+		_mockDecrypt(_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
+		_mockDecrypt(_CIPHERTEXT_2, _COMPANY_ID_2, _KEY_BYTES_2);
 
 		Assert.assertEquals(
 			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString1));
@@ -526,7 +549,7 @@ public class CompanyKeyResolverImplTest {
 		String keyString = StringUtil.replaceFirst(
 			_toKeyString(_CIPHERTEXT_1),
 			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION,
-			_WRAPPED_KEY_PREFIX.concat("v2"));
+			_WRAPPED_KEY_PREFIX + "v2");
 
 		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
@@ -564,7 +587,6 @@ public class CompanyKeyResolverImplTest {
 			argumentCaptor.capture()
 		);
 
-		Assert.assertArrayEquals(_KEY_BYTES_1, _key1.getEncoded());
 		Assert.assertArrayEquals(
 			new byte[_KEY_BYTES_1.length], argumentCaptor.getValue());
 
@@ -658,9 +680,9 @@ public class CompanyKeyResolverImplTest {
 
 	private static final long _COMPANY_ID_2 = RandomTestUtil.randomLong();
 
-	private static final String _KEK_IDENTIFIER =
-		"arn:aws:kms:us-east-1:123456789012:key/" +
-			RandomTestUtil.randomString();
+	private static final String _KEK_IDENTIFIER = StringBundler.concat(
+		"arn:aws:kms:", RandomTestUtil.randomString(), StringPool.COLON,
+		RandomTestUtil.randomLong(), ":key/", RandomTestUtil.randomString());
 
 	private static final String _KEK_PROVIDER_ID =
 		RandomTestUtil.randomString();
