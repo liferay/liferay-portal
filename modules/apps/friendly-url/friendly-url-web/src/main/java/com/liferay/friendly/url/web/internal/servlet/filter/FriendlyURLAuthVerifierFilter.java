@@ -16,7 +16,6 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"filter.init.auth.verifier.PortalSessionAuthVerifier.check.csrf.token=false",
 		"filter.init.auth.verifier.PortalSessionAuthVerifier.urls.includes=/friendly-url/*",
 		"osgi.http.whiteboard.filter.name=com.liferay.friendly.url.web.internal.servlet.filter.FriendlyURLAuthVerifierFilter",
 		"osgi.http.whiteboard.filter.pattern=/friendly-url/*"
