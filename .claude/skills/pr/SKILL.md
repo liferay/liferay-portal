@@ -11,11 +11,23 @@ name: pr
 
 Create a GitHub PR for the current branch, transition the linked Jira tickets to review, and record the PR URL on those tickets.
 
+## Repository Settings
+
+These settings describe this repository. The `pr` skill of another repository may follow this document with settings of its own, and each value it supplies replaces the one below.
+
+| Setting | Value |
+| --- | --- |
+| **Base Branch** | `master` |
+| **Repository** | `liferay/liferay-portal` |
+| **Team Forks** | `liferay-ac`, `liferay-appsec`, `liferay-bpm`, `liferay-commerce`, `liferay-content-management`, `liferay-core-infra`, `liferay-database-infra`, `liferay-devtools`, `liferay-frontend`, `liferay-headless`, `liferay-page-management`, `liferay-platform-experience`, `liferay-search`, `liferay-site-management` |
+
+`${BASE_BRANCH}` below stands for the base branch, and `<repository>` stands for the name of the repository without its organization, such as `liferay-portal`.
+
 ## Preconditions
 
 - At least one commit adds tests. When none do, ask the user for a rationale and refuse to proceed without one. The only exceptions are PRs with no code changes (e.g., language key updates or markdown changes).
 
-- The current branch is a development branch, not `master` or any other protected branch.
+- The current branch is a development branch, not `${BASE_BRANCH}` or any other protected branch.
 
 - The `pr-check` skill must pass. Skip only when `${ARGUMENTS}` contains `--skip-pr-check`. A skip requires a reason: take it from the text following the flag when present, otherwise prompt the user for one. The reason is recorded in the **PR Check** section, which is written for a skip rather than omitted.
 
@@ -31,32 +43,17 @@ A branch may span more than one ticket. Resolve the **ticket set** — every tic
 
 The ticket key follows the pattern `LPD-12345`, `LCD-12345`, `LRCI-1234`, and similar forms (uppercase letters, hyphen, digits).
 
-Collect every distinct ticket key from the subjects of the branch's commits relative to `master`. Each subject is prefixed with its ticket (`LPD-12345 <subject>`); extract every distinct key, in commit order (oldest first). When no commit carries a ticket, prompt the user for one.
+Collect every distinct ticket key from the subjects of the branch's commits relative to `${BASE_BRANCH}`. Each subject is prefixed with its ticket (`LPD-12345 <subject>`); extract every distinct key, in commit order (oldest first). When no commit carries a ticket, prompt the user for one.
 
 ### Target Repository
 
-The target repository defaults to `<fork-owner>/liferay-portal`. When `${ARGUMENTS}` names a different `org/repo`, use that; when it matches an alias below, expand the alias; otherwise, ask the user to choose `<fork-owner>` from one of the team forks:
-
-- `liferay-ac`
-- `liferay-appsec`
-- `liferay-bpm`
-- `liferay-commerce`
-- `liferay-content-management`
-- `liferay-core-infra`
-- `liferay-database-infra`
-- `liferay-devtools`
-- `liferay-frontend`
-- `liferay-headless`
-- `liferay-page-management`
-- `liferay-platform-experience`
-- `liferay-search`
-- `liferay-site-management`
+The target repository defaults to `<fork-owner>/<repository>`. When `${ARGUMENTS}` names a different `org/repo`, use that; when it matches an alias below, expand the alias; otherwise, ask the user to choose `<fork-owner>` from the **Team Forks** setting.
 
 The following short aliases resolve to a target repository:
 
-- `brian` → `brianchandotcom/liferay-portal`
+- `brian` → `brianchandotcom/<repository>`
 
-The PR head is `<github-username>:<branch-name>` (the GitHub username is read from the user's `origin` remote URL — e.g., `git@github.com:brianchandotcom/liferay-portal.git` yields `brianchandotcom`), and the base is `master`.
+The PR head is `<github-username>:<branch-name>` (the GitHub username is read from the user's `origin` remote URL — for example, `git@github.com:brianchandotcom/liferay-portal.git` yields `brianchandotcom`), and the base is `${BASE_BRANCH}`.
 
 ## Expected Output
 
@@ -117,7 +114,7 @@ Create the pull request with `--body-file`, or with `--body` from a quoted-hered
 body_file=$(mktemp)
 
 gh pr create \
-	--base master \
+	--base "${BASE_BRANCH}" \
 	--body-file "${body_file}" \
 	--head <github-username>:<branch-name> \
 	--repo <target-org/repo> \
