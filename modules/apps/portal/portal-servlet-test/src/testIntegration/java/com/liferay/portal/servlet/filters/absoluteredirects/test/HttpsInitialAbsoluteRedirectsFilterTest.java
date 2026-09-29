@@ -6,15 +6,15 @@
 package com.liferay.portal.servlet.filters.absoluteredirects.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.filters.absoluteredirects.AbsoluteRedirectsFilter;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -35,76 +35,69 @@ public class HttpsInitialAbsoluteRedirectsFilterTest {
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
 
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "SESSION_ENABLE_PHISHING_PROTECTION",
-			_SESSION_ENABLE_PHISHING_PROTECTION);
-	}
-
 	@Test
 	public void testDoesNotForceSessionCreationWhenPhishingProtectionIsEnabled()
 		throws Exception {
 
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "SESSION_ENABLE_PHISHING_PROTECTION", true);
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"SESSION_ENABLE_PHISHING_PROTECTION", true)) {
 
-		MockHttpServletRequest mockHttpServletRequest =
-			_createMockHttpServletRequest();
+			MockHttpServletRequest mockHttpServletRequest =
+				_createMockHttpServletRequest(RandomTestUtil.randomBoolean());
 
-		_absoluteRedirectsFilter.doFilterTry(
-			mockHttpServletRequest, new MockHttpServletResponse());
+			_absoluteRedirectsFilter.doFilterTry(
+				mockHttpServletRequest, new MockHttpServletResponse());
 
-		Assert.assertNull(mockHttpServletRequest.getSession(false));
+			Assert.assertNull(mockHttpServletRequest.getSession(false));
+		}
 	}
 
 	@Test
 	public void testPinsHTTPSInitialOnFirstRequestWhenPhishingProtectionIsDisabled()
 		throws Exception {
 
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "SESSION_ENABLE_PHISHING_PROTECTION", false);
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"SESSION_ENABLE_PHISHING_PROTECTION", false)) {
 
-		MockHttpServletRequest insecureMockHttpServletRequest =
-			_createMockHttpServletRequest();
+			MockHttpServletRequest insecureMockHttpServletRequest =
+				_createMockHttpServletRequest(false);
 
-		insecureMockHttpServletRequest.setSecure(false);
+			_absoluteRedirectsFilter.doFilterTry(
+				insecureMockHttpServletRequest, new MockHttpServletResponse());
 
-		_absoluteRedirectsFilter.doFilterTry(
-			insecureMockHttpServletRequest, new MockHttpServletResponse());
+			HttpSession httpSession = insecureMockHttpServletRequest.getSession(
+				false);
 
-		HttpSession httpSession = insecureMockHttpServletRequest.getSession(
-			false);
+			Assert.assertEquals(
+				Boolean.FALSE, httpSession.getAttribute(WebKeys.HTTPS_INITIAL));
 
-		Assert.assertNotNull(httpSession);
-		Assert.assertEquals(
-			Boolean.FALSE, httpSession.getAttribute(WebKeys.HTTPS_INITIAL));
+			MockHttpServletRequest secureMockHttpServletRequest =
+				_createMockHttpServletRequest(true);
 
-		MockHttpServletRequest secureMockHttpServletRequest =
-			_createMockHttpServletRequest();
+			secureMockHttpServletRequest.setSession(httpSession);
 
-		secureMockHttpServletRequest.setSecure(true);
-		secureMockHttpServletRequest.setSession(httpSession);
+			_absoluteRedirectsFilter.doFilterTry(
+				secureMockHttpServletRequest, new MockHttpServletResponse());
 
-		_absoluteRedirectsFilter.doFilterTry(
-			secureMockHttpServletRequest, new MockHttpServletResponse());
-
-		Assert.assertEquals(
-			Boolean.FALSE, httpSession.getAttribute(WebKeys.HTTPS_INITIAL));
+			Assert.assertEquals(
+				Boolean.FALSE, httpSession.getAttribute(WebKeys.HTTPS_INITIAL));
+		}
 	}
 
-	private MockHttpServletRequest _createMockHttpServletRequest() {
+	private MockHttpServletRequest _createMockHttpServletRequest(
+		boolean secure) {
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setServerName("localhost");
 		mockHttpServletRequest.setRequestURI("/web/guest");
+		mockHttpServletRequest.setSecure(secure);
+		mockHttpServletRequest.setServerName("localhost");
 
 		return mockHttpServletRequest;
 	}
-
-	private static final boolean _SESSION_ENABLE_PHISHING_PROTECTION =
-		PropsValues.SESSION_ENABLE_PHISHING_PROTECTION;
 
 	private final AbsoluteRedirectsFilter _absoluteRedirectsFilter =
 		new AbsoluteRedirectsFilter();
