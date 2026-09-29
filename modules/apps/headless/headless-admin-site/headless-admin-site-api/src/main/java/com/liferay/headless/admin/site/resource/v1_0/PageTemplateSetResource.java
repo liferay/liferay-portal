@@ -61,6 +61,12 @@ public interface PageTemplateSetResource {
 			String pageTemplateSetExternalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getDesignLibraryPageTemplateSetPermissionsPage(
+				String designLibraryExternalReferenceCode,
+				String pageTemplateSetExternalReferenceCode, String roleNames)
+		throws Exception;
+
 	public Page<PageTemplateSet> getDesignLibraryPageTemplateSetsPage(
 			String designLibraryExternalReferenceCode, String search,
 			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
@@ -107,6 +113,13 @@ public interface PageTemplateSetResource {
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putDesignLibraryPageTemplateSetPermissionsPage(
+				String designLibraryExternalReferenceCode,
+				String pageTemplateSetExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public PageTemplateSet putSitePageTemplateSet(
@@ -218,4 +231,4 @@ public interface PageTemplateSetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-186538236
+// LIFERAY-REST-BUILDER-HASH:-1040529596

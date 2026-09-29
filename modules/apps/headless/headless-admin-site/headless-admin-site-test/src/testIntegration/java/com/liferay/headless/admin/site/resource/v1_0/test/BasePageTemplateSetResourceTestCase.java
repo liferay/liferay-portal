@@ -334,6 +334,31 @@ public abstract class BasePageTemplateSetResourceTestCase {
 	}
 
 	@Test
+	public void testGetDesignLibraryPageTemplateSetPermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PageTemplateSet postPageTemplateSet =
+			testGetDesignLibraryPageTemplateSetPermissionsPage_addPageTemplateSet();
+
+		Page<Permission> page =
+			pageTemplateSetResource.
+				getDesignLibraryPageTemplateSetPermissionsPage(
+					null, postPageTemplateSet.getExternalReferenceCode(),
+					RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected PageTemplateSet
+			testGetDesignLibraryPageTemplateSetPermissionsPage_addPageTemplateSet()
+		throws Exception {
+
+		return pageTemplateSetResource.postSitePageTemplateSet(
+			testGroup.getExternalReferenceCode(), randomPageTemplateSet());
+	}
+
+	@Test
 	public void testGetDesignLibraryPageTemplateSetsPage() throws Exception {
 		String designLibraryExternalReferenceCode =
 			testGetDesignLibraryPageTemplateSetsPage_getDesignLibraryExternalReferenceCode();
@@ -1405,6 +1430,55 @@ public abstract class BasePageTemplateSetResourceTestCase {
 		return permissionsPageTemplateSetResource.postSitePageTemplateSet(
 			testGetSitePageTemplateSetsPage_getSiteExternalReferenceCode(),
 			pageTemplateSet);
+	}
+
+	@Test
+	public void testPutDesignLibraryPageTemplateSetPermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PageTemplateSet pageTemplateSet =
+			testPutDesignLibraryPageTemplateSetPermissionsPage_addPageTemplateSet();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			pageTemplateSetResource.
+				putDesignLibraryPageTemplateSetPermissionsPageHttpResponse(
+					null, pageTemplateSet.getExternalReferenceCode(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"VIEW"});
+								setRoleName(role.getName());
+							}
+						}
+					}));
+
+		assertHttpResponseStatusCode(
+			404,
+			pageTemplateSetResource.
+				putDesignLibraryPageTemplateSetPermissionsPageHttpResponse(
+					null, pageTemplateSet.getExternalReferenceCode(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"-"});
+								setRoleName("-");
+							}
+						}
+					}));
+	}
+
+	protected PageTemplateSet
+			testPutDesignLibraryPageTemplateSetPermissionsPage_addPageTemplateSet()
+		throws Exception {
+
+		return pageTemplateSetResource.postSitePageTemplateSet(
+			testGroup.getExternalReferenceCode(), randomPageTemplateSet());
 	}
 
 	@Test
@@ -2710,4 +2784,4 @@ public abstract class BasePageTemplateSetResourceTestCase {
 			_pageTemplateSetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2011175014
+// LIFERAY-REST-BUILDER-HASH:-828535300
