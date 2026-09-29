@@ -65,6 +65,7 @@ import com.liferay.object.exception.ObjectDefinitionSystemException;
 import com.liferay.object.exception.ObjectDefinitionValidationException;
 import com.liferay.object.exception.ObjectDefinitionValidationException.ValidationError;
 import com.liferay.object.exception.ObjectDefinitionVersionException;
+import com.liferay.object.exception.ObjectFieldBusinessTypeException;
 import com.liferay.object.exception.ObjectFieldRelationshipTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.RequiredObjectDefinitionException;
@@ -3890,6 +3891,16 @@ public class ObjectDefinitionLocalServiceImpl
 				objectFieldId);
 
 			return;
+		}
+
+		if (objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+			_handleException(
+				new ObjectFieldBusinessTypeException(
+					"Business type location cannot be used as the title " +
+						"object field"),
+				"titleObjectFieldId", objectFieldId);
 		}
 
 		if (Validator.isNotNull(objectField.getRelationshipType())) {
