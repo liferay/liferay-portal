@@ -103,30 +103,58 @@ public class SecretResolverImpl implements SecretResolver {
 	}
 
 	@Override
-	public String store(
-		long companyId, String key, String scope, String value) {
-
+	public String store(long companyId, String identifier, String value) {
 		if (!PropsValues.FIPS_ENABLED || Validator.isNull(value)) {
 			return value;
 		}
 
-		try {
-			if (KeyReferenceUtil.isKeyReference(value)) {
-				_validateKeyReference(key, value);
+		if (!identifier.startsWith(_IDENTIFIER_PREFIX_CONFIGURATION) &&
+			!identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE)) {
+
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Unable to store \"", identifier,
+					"\" because its namespace is not supported"));
+		}
+
+		if (KeyReferenceUtil.isKeyReference(value)) {
+			KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
+				value);
+
+			if (keyReference == null) {
+				return ReflectionUtil.throwException(
+					new SecretException("Unable to parse the key reference"));
+			}
+
+			String referencedIdentifier = keyReference.getIdentifier();
+
+			if (Objects.equals(identifier, referencedIdentifier) ||
+				(identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE) &&
+				 referencedIdentifier.startsWith(
+					 _IDENTIFIER_PREFIX_PREFERENCE) &&
+				 Objects.equals(
+					 StringUtil.extractLast(identifier, CharPool.SLASH),
+					 StringUtil.extractLast(
+						 referencedIdentifier, CharPool.SLASH)))) {
 
 				return value;
 			}
 
-			try (Secret secret = new Secret(
-					new KeyReference(
-						StringBundler.concat(
-							_IDENTIFIER_PREFIX, scope, StringPool.SLASH, key),
-						StringPool.STAR, KeyReference.Type.SECRET),
-					value)) {
+			return ReflectionUtil.throwException(
+				new SecretException(
+					StringBundler.concat(
+						"Unable to store \"", identifier,
+						"\" because it references \"", referencedIdentifier,
+						"\"")));
+		}
 
-				return KeyReferenceUtil.toKeyReferenceString(
-					_secretManager.putSecret(companyId, secret));
-			}
+		try (Secret secret = new Secret(
+				new KeyReference(
+					identifier, StringPool.STAR, KeyReference.Type.SECRET),
+				value)) {
+
+			return KeyReferenceUtil.toKeyReferenceString(
+				_secretManager.putSecret(companyId, secret));
 		}
 		catch (SecretException secretException) {
 			return ReflectionUtil.throwException(secretException);
@@ -145,31 +173,9 @@ public class SecretResolverImpl implements SecretResolver {
 			PortalCacheManagerNames.SINGLE_VM, PORTAL_CACHE_NAME);
 	}
 
-	private void _validateKeyReference(String key, String value)
-		throws SecretException {
+	private static final String _IDENTIFIER_PREFIX_CONFIGURATION = "config/";
 
-		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(value);
-
-		if (keyReference == null) {
-			throw new SecretException("Unable to parse the key reference");
-		}
-
-		String identifier = keyReference.getIdentifier();
-
-		if (identifier.startsWith(_IDENTIFIER_PREFIX) &&
-			Objects.equals(
-				key, StringUtil.extractLast(identifier, CharPool.SLASH))) {
-
-			return;
-		}
-
-		throw new SecretException(
-			StringBundler.concat(
-				"Key \"", key, "\" cannot reference a value belonging to \"",
-				identifier, "\""));
-	}
-
-	private static final String _IDENTIFIER_PREFIX = "preference/";
+	private static final String _IDENTIFIER_PREFIX_PREFERENCE = "preference/";
 
 	@Reference
 	private KeyManagerProfileRegistry _keyManagerProfileRegistry;

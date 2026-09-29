@@ -8,6 +8,7 @@ package com.liferay.portal.settings.web.internal.portlet.action;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.google.places.constants.GooglePlacesWebKeys;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -184,7 +185,9 @@ public class EditCompanyMVCActionCommand extends BaseFormMVCActionCommand {
 		unicodeProperties.setProperty(
 			key,
 			_secretResolver.store(
-				companyId, key, "company/" + companyId,
+				companyId,
+				StringBundler.concat(
+					"preference/company/", companyId, StringPool.SLASH, key),
 				unicodeProperties.getProperty(key)));
 	}
 

@@ -121,10 +121,11 @@ public class IFrameConfigurationAction extends DefaultConfigurationAction {
 		String value = portletPreferences.getValue(name, StringPool.BLANK);
 
 		String storedValue = _secretResolver.store(
-			companyId, name,
+			companyId,
 			StringBundler.concat(
-				"portlet/", themeDisplay.getPlid(), StringPool.SLASH,
-				ParamUtil.getString(portletRequest, "portletResource")),
+				"preference/portlet/", themeDisplay.getPlid(), StringPool.SLASH,
+				ParamUtil.getString(portletRequest, "portletResource"),
+				StringPool.SLASH, name),
 			value);
 
 		if (storedValue.equals(value)) {

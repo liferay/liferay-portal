@@ -7,6 +7,8 @@ package com.liferay.site.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.google.places.constants.GooglePlacesWebKeys;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -85,7 +87,10 @@ public class EditSiteSettingsMVCActionCommand
 		unicodeProperties.setProperty(
 			key,
 			_secretResolver.store(
-				group.getCompanyId(), key, "group/" + group.getGroupId(),
+				group.getCompanyId(),
+				StringBundler.concat(
+					"preference/group/", group.getGroupId(), StringPool.SLASH,
+					key),
 				unicodeProperties.getProperty(key)));
 	}
 

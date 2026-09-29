@@ -15,6 +15,6 @@ public interface SecretResolver {
 
 	public String resolve(long companyId, String value);
 
-	public String store(long companyId, String key, String scope, String value);
+	public String store(long companyId, String identifier, String value);
 
 }
