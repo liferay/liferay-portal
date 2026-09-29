@@ -276,7 +276,7 @@ exports[`LatestActivity renders the component with provided data 1`] = `
   </div>
   <div
     data-live-announcer="true"
-    style="border: 0px; clip-path: inset(50%); height: 1px; margin: 0px -1px -1px 0px; overflow: hidden; padding: 0px; position: absolute; white-space: nowrap; width: 1px;"
+    style="border: 0px; clip-path: inset(50%); height: 1px; margin: 0px -1px -1px 0px; overflow: hidden; padding: 0px; position: fixed; white-space: nowrap; width: 1px;"
   >
     <div
       aria-live="assertive"
