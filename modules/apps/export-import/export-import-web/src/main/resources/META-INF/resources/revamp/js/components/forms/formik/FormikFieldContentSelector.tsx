@@ -4,7 +4,7 @@
  */
 
 import {useField, useFormikContext} from 'formik';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
@@ -52,10 +52,14 @@ export function FormikFieldContentSelector({
 			})
 		: undefined;
 
+	const hasSeededRef = useRef(false);
+
 	useEffect(() => {
-		if (!defaultContentSelection) {
+		if (hasSeededRef.current || !defaultContentSelection) {
 			return;
 		}
+
+		hasSeededRef.current = true;
 
 		setFieldValue(name, defaultContentSelection);
 	}, [name, defaultContentSelection, setFieldValue]);
