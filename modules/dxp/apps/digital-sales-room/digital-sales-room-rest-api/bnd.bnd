@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Digital Sales Room REST API
 Bundle-SymbolicName: com.liferay.digital.sales.room.rest.api
-Bundle-Version: 1.2.3
+Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.digital.sales.room.rest.dto.v1_0,\
 	com.liferay.digital.sales.room.rest.resource.v1_0
