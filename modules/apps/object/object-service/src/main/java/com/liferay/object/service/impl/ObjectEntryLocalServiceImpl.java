@@ -1755,6 +1755,7 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public Map<String, Serializable> getSystemValues(ObjectEntry objectEntry)
 		throws PortalException {
 
