@@ -1,6 +1,38 @@
 definition {
 
 	@summary = "Default summary"
+	macro _assertPortalInstancesDeleted(authenticationMethod = null) {
+		for (var attempt : list "1,2,3,4,5,6,7,8,9,10") {
+			var survivingPortalInstanceIds = HeadlessPortalInstanceAPI._getSurvivingPortalInstanceIds(authenticationMethod = ${authenticationMethod});
+
+			if (${survivingPortalInstanceIds} != "") {
+
+				// Poll while the deletes settle. The headless delete
+				// returns before the instance is gone, so the instance
+				// list is the only state there is to wait on. See
+				// LPD-107498.
+
+				Pause(value1 = 1000);
+			}
+		}
+
+		var survivingPortalInstanceIds = HeadlessPortalInstanceAPI._getSurvivingPortalInstanceIds(authenticationMethod = ${authenticationMethod});
+
+		if (${survivingPortalInstanceIds} != "") {
+
+			// A portal instance survives deletion when it still
+			// holds a site with staging enabled, because disabling
+			// staging throws and the delete rolls back. See
+			// LPD-107498. Without this check the next create returns
+			// "Duplicate portal instance ID", set up runs against the
+			// stale instance as a guest, and every later test in the
+			// shard fails at an unrelated locator.
+
+			fail("Unable to delete the portal instances ${survivingPortalInstanceIds}. They survived deletion and the next set up would reuse them.");
+		}
+	}
+
+	@summary = "Default summary"
 	macro _getPortalInstances(authenticationMethod = null) {
 		var portalURL = JSONCompany.getDefaultPortalURL();
 
@@ -20,6 +52,27 @@ definition {
 		var json = JSONCurlUtil.get(${curl});
 
 		return ${json};
+	}
+
+	@summary = "Default summary"
+	macro _getSurvivingPortalInstanceIds(authenticationMethod = null) {
+		var portalInstanceJson = HeadlessPortalInstanceAPI._getPortalInstances(authenticationMethod = ${authenticationMethod});
+
+		var portalInstanceIds = JSONUtil.getWithJSONPath(${portalInstanceJson}, "$.items..portalInstanceId");
+		var survivingPortalInstanceIds = "";
+
+		for (var portalInstanceId : list ${portalInstanceIds}) {
+			if (${portalInstanceId} != "liferay.com") {
+				if (${survivingPortalInstanceIds} == "") {
+					var survivingPortalInstanceIds = ${portalInstanceId};
+				}
+				else {
+					var survivingPortalInstanceIds = "${survivingPortalInstanceIds}, ${portalInstanceId}";
+				}
+			}
+		}
+
+		return ${survivingPortalInstanceIds};
 	}
 
 	@summary = "Default summary"
@@ -126,6 +179,8 @@ definition {
 						portalInstanceId = ${portalInstanceId});
 				}
 			}
+
+			HeadlessPortalInstanceAPI._assertPortalInstancesDeleted(authenticationMethod = ${authenticationMethod});
 		}
 		else {
 
