@@ -6,6 +6,7 @@
 package com.liferay.document.library.repository.capabilities.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -19,16 +20,23 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -250,6 +258,40 @@ public class LiferayVersioningCapabilityTest {
 	}
 
 	@Test
+	@TestInfo("LPD-107151")
+	public void testLimitsTheNumberOfVersionsPerFileEntryWithoutDeletePermission()
+		throws Exception {
+
+		_withMaximumNumberOfVersionsConfigured(
+			2,
+			() -> {
+				ServiceContext serviceContext =
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId());
+
+				FileEntry fileEntry = _addRandomFileEntry(serviceContext);
+
+				RoleTestUtil.addResourcePermission(
+					RoleConstants.SITE_MEMBER, DLFileEntry.class.getName(),
+					ResourceConstants.SCOPE_GROUP,
+					String.valueOf(_group.getGroupId()), ActionKeys.UPDATE);
+
+				_user = UserTestUtil.addUser(_group.getGroupId());
+
+				UserTestUtil.setUser(_user);
+
+				for (int i = 0; i < 3; i++) {
+					_generateNewVersion(fileEntry, serviceContext);
+				}
+
+				Assert.assertEquals(
+					2,
+					fileEntry.getFileVersionsCount(
+						WorkflowConstants.STATUS_ANY));
+			});
+	}
+
+	@Test
 	public void testNotifiesAboutEachFileVersionDeletion() throws Exception {
 		_withMaximumNumberOfVersionsConfigured(
 			2,
@@ -390,5 +432,8 @@ public class LiferayVersioningCapabilityTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
