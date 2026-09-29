@@ -7,16 +7,16 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
+import com.liferay.object.exception.NoSuchObjectDefinitionException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -102,12 +102,18 @@ public class StructureBuilderDisplayContextTest {
 			baseObjectDefinitionExternalReferenceCode
 		);
 
+		ObjectDefinition objectDefinition = new ObjectDefinition();
+
 		Mockito.when(
-			_objectDefinitionResource.getObjectDefinitionsPage(
-				Mockito.isNull(), Mockito.isNull(), Mockito.any(),
-				Mockito.isNull(), Mockito.isNull())
+			_objectDefinitionResource.
+				getObjectDefinitionByExternalReferenceCode(
+					baseObjectDefinitionExternalReferenceCode)
+		).thenThrow(
+			new NoSuchObjectDefinitionException()
+		).thenThrow(
+			new PrincipalException()
 		).thenReturn(
-			Page.of(Collections.emptyList())
+			objectDefinition
 		);
 
 		Assert.assertNull(
@@ -115,18 +121,10 @@ public class StructureBuilderDisplayContextTest {
 				structureBuilderDisplayContext, "_getBaseObjectDefinition",
 				new Class<?>[0]));
 
-		ObjectDefinition objectDefinition = new ObjectDefinition();
-
-		objectDefinition.setExternalReferenceCode(
-			baseObjectDefinitionExternalReferenceCode);
-
-		Mockito.when(
-			_objectDefinitionResource.getObjectDefinitionsPage(
-				Mockito.isNull(), Mockito.isNull(), Mockito.any(),
-				Mockito.isNull(), Mockito.isNull())
-		).thenReturn(
-			Page.of(Collections.singletonList(objectDefinition))
-		);
+		Assert.assertNull(
+			ReflectionTestUtil.invoke(
+				structureBuilderDisplayContext, "_getBaseObjectDefinition",
+				new Class<?>[0]));
 
 		Assert.assertSame(
 			objectDefinition,
