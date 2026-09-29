@@ -16,11 +16,13 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,8 +35,35 @@ public class ProductTypesCMSStructureObjectFolderContributor
 	implements CMSStructureObjectFolderContributor {
 
 	@Override
+	public String getBaseObjectDefinitionExternalReferenceCode() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96666")) {
+
+			return null;
+		}
+
+		return PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASE_SKU;
+	}
+
+	@Override
+	public String getCreationMenuIcon() {
+		return "shopping-cart";
+	}
+
+	@Override
 	public String getLabel() {
 		return "product";
+	}
+
+	@Override
+	public String getObjectEntryFolderExternalReferenceCode() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96666")) {
+
+			return null;
+		}
+
+		return PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS;
 	}
 
 	@Override
@@ -78,7 +107,9 @@ public class ProductTypesCMSStructureObjectFolderContributor
 					!businessType.equals(
 						ObjectFieldConstants.BUSINESS_TYPE_DATE) &&
 					!businessType.equals(
-						ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
+						ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME) &&
+					!Objects.equals(
+						objectField.getName(), "externalReferenceCode")) {
 
 					return objectField.getName();
 				}
