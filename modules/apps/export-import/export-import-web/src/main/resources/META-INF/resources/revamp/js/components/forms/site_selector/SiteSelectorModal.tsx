@@ -82,14 +82,9 @@ export default function SiteSelectorModal({
 	const {observer, onClose: closeModal} = useModal({onClose});
 
 	const [selectedItems, setSelectedItems] = useState<PreviewSite[]>(() =>
-		selectedExternalReferenceCodes.map(
-			(externalReferenceCode) =>
-				previewSites?.find(
-					(previewSite) =>
-						previewSite.externalReferenceCode ===
-						externalReferenceCode
-				) ?? {externalReferenceCode}
-		)
+		selectedExternalReferenceCodes.map((externalReferenceCode) => ({
+			externalReferenceCode,
+		}))
 	);
 
 	return (
