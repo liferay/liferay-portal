@@ -545,6 +545,63 @@ describe('MultipleFileUploader', () => {
 			await waitFor(() => expect(callOrder).toContain('B.pdf'));
 
 			await waitFor(() => expect(mockUploadComplete).toHaveBeenCalled());
+
+			expect(mockUploadComplete).toHaveBeenCalledTimes(1);
+			expect(mockUploadComplete).toHaveBeenCalledWith({
+				failedFiles: [],
+				successFiles: ['A.pdf', 'B.pdf'],
+			});
+		});
+
+		it('reports a failure that follows a success once every batch finishes', async () => {
+			const user = userEvent.setup();
+
+			const mockBatchRequest = jest
+				.fn()
+				.mockImplementation(({fileData}: {fileData: {name: string}}) =>
+					Promise.resolve(
+						fileData.name === 'B.pdf'
+							? {error: 'failed to upload'}
+							: {}
+					)
+				);
+
+			const sequentialUploadBatches: UploadBatchesCallback = (files) =>
+				files.map((file) => [file]);
+
+			const {container} = render(
+				<MultipleFileUploader
+					{...DEFAULT_PROPS}
+					uploadBatches={sequentialUploadBatches}
+					uploadRequest={mockBatchRequest}
+				/>
+			);
+
+			const input =
+				container.querySelector<HTMLInputElement>(
+					'input[type="file"]'
+				)!;
+
+			await user.upload(input, [
+				createFile('A.pdf', 1024),
+				createFile('B.pdf', 1024),
+			]);
+
+			expect(await screen.findByText('B.pdf')).toBeInTheDocument();
+
+			await user.click(screen.getByRole('button', {name: /upload/i}));
+
+			expect(
+				await screen.findByText('1-files-could-not-be-uploaded')
+			).toBeInTheDocument();
+			expect(screen.getByText('B.pdf')).toBeInTheDocument();
+			expect(screen.getByText('failed to upload')).toBeInTheDocument();
+
+			expect(mockUploadComplete).toHaveBeenCalledTimes(1);
+			expect(mockUploadComplete).toHaveBeenCalledWith({
+				failedFiles: ['B.pdf'],
+				successFiles: ['A.pdf'],
+			});
 		});
 	});
 });
