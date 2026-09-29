@@ -223,4 +223,37 @@ definition {
 		}
 	}
 
+	@summary = "Default summary"
+	macro waitForDownloadedTempFileName(fileNamePattern = null) {
+		var fileName = TestCase.getDownloadedTempFileName(fileNamePattern = ${fileNamePattern});
+
+		for (var attempt : list "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30") {
+			if (${fileName} == "") {
+
+				// Poll once a second while the browser finishes writing
+				// the file. The download happens outside the page, so
+				// there is no event to wait on. See LPD-104196.
+
+				Pause(value1 = "1000");
+
+				var fileName = TestCase.getDownloadedTempFileName(fileNamePattern = ${fileNamePattern});
+			}
+		}
+
+		if (${fileName} == "") {
+			var tempDir = PropsUtil.get("output.dir.name");
+
+			var tempDirExists = FileUtil.exists(${tempDir});
+
+			var files = FileUtil.listFiles(${tempDir});
+
+			// A missing download folder and an empty one both list as
+			// nothing, so report which of the two it is.
+
+			fail("The browser never finished downloading a file matching ${fileNamePattern}. The download folder ${tempDir} exists: ${tempDirExists}. It holds: ${files}");
+		}
+
+		return ${fileName};
+	}
+
 }

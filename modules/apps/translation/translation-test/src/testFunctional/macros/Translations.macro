@@ -18,10 +18,10 @@ definition {
 	@summary = "Default summary"
 	macro assertFileNameFromTempFolder(webContentTitle = null, pageName = null) {
 		if (isSet(pageName)) {
-			var translationZipFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "${pageName}*.zip");
+			var translationZipFileName = TestCase.waitForDownloadedTempFileName(fileNamePattern = "${pageName}*.zip");
 		}
 		else {
-			var translationZipFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "${webContentTitle}*.zip");
+			var translationZipFileName = TestCase.waitForDownloadedTempFileName(fileNamePattern = "${webContentTitle}*.zip");
 		}
 
 		echo("## translationZipFileName: ${translationZipFileName}");
@@ -567,6 +567,16 @@ definition {
 	@summary = "Default summary"
 	macro translateFile(webContentDescription = null, translationZipFileName = null, contentTranslation = null, webContentTitle = null, webContentContent = null, descriptionTranslation = null, encoding = null, operation = null, titleTranslation = null) {
 		var os = OSDetector.isWindows();
+
+		if (${operation} == "unzip") {
+			var downloadedZipFileName = ${translationZipFileName};
+
+			if (${downloadedZipFileName} == "WCGeneralName") {
+				var downloadedZipFileName = "Web Content Article Translations-en_US";
+			}
+
+			TestCase.waitForDownloadedTempFileName(fileNamePattern = "${downloadedZipFileName}.zip");
+		}
 
 		if (contains(${translationFileName}, " ")) {
 			var translationFileName = StringUtil.replace(${translationFileName}, " ", "*");
