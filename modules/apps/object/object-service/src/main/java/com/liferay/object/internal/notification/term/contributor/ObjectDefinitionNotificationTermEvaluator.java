@@ -470,6 +470,24 @@ public class ObjectDefinitionNotificationTermEvaluator
 					objectEntry.getValues(), objectField.getName());
 			}
 		}
+		else if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+			Map<String, Object> entryDTO = (Map<String, Object>)termValues.get(
+				"entryDTO");
+
+			Map<String, Object> properties = (Map<String, Object>)entryDTO.get(
+				"properties");
+
+			Map<String, Object> locationMap =
+				(Map<String, Object>)properties.get(objectField.getName());
+
+			if (MapUtil.isEmpty(locationMap)) {
+				return null;
+			}
+
+			return GetterUtil.getString(locationMap.get("address"));
+		}
 
 		Object termValue = termValues.get(objectField.getName());
 
