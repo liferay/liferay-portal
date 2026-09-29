@@ -173,11 +173,11 @@ public class PortalInstanceExportResourceTest
 	}
 
 	private void _dropExportedSchema(long companyId) throws Exception {
-		DB db = DBManagerUtil.getDB();
-
 		String sql =
 			"drop schema if exists " +
 				DBPartitionUtil.getExportedPartitionName(companyId);
+
+		DB db = DBManagerUtil.getDB();
 
 		if (db.getDBType() == DBType.POSTGRESQL) {
 			sql = sql + " cascade";

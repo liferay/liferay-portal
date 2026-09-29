@@ -264,12 +264,12 @@ public class PortalInstanceCopyResourceTest
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
-		Company defaultCompany = _companyLocalService.getCompany(
-			PortalInstancePool.getDefaultCompanyId());
-
 		portalInstanceCopy.setName(RandomTestUtil.randomString());
 		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
 		portalInstanceCopy.setWebId(RandomTestUtil.randomString());
+
+		Company defaultCompany = _companyLocalService.getCompany(
+			PortalInstancePool.getDefaultCompanyId());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME_PORTAL_INSTANCE_COPY_RESOURCE_IMPL,
@@ -341,9 +341,10 @@ public class PortalInstanceCopyResourceTest
 		long destinationCompanyId = CounterLocalServiceUtil.increment(
 			Company.class.getName());
 
+		portalInstanceCopy.setDestinationCompanyId(destinationCompanyId);
+
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		portalInstanceCopy.setDestinationCompanyId(destinationCompanyId);
 		portalInstanceCopy.setName(randomId);
 		portalInstanceCopy.setVirtualHost(
 			randomId + "." +
@@ -418,9 +419,10 @@ public class PortalInstanceCopyResourceTest
 
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
+		portalInstanceCopy.setDestinationCompanyId(0L);
+
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		portalInstanceCopy.setDestinationCompanyId(0L);
 		portalInstanceCopy.setName(randomId);
 		portalInstanceCopy.setVirtualHost(
 			randomId + "." +

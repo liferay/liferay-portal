@@ -151,11 +151,11 @@ public class PortalInstanceImportResourceTest
 	}
 
 	private void _dropExportedSchema(long companyId) throws Exception {
-		DB db = DBManagerUtil.getDB();
-
 		String sql =
 			"drop schema if exists " +
 				DBPartitionUtil.getExportedPartitionName(companyId);
+
+		DB db = DBManagerUtil.getDB();
 
 		if (db.getDBType() == DBType.POSTGRESQL) {
 			sql = sql + " cascade";
@@ -197,10 +197,11 @@ public class PortalInstanceImportResourceTest
 	private PortalInstanceImport _randomPortalInstanceImport(long companyId) {
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		portalInstanceImport.setSchemaName(
 			DBPartitionUtil.getExportedPartitionName(companyId));
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
 		portalInstanceImport.setVirtualHost(
 			randomId + "." +
 				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
@@ -267,10 +268,11 @@ public class PortalInstanceImportResourceTest
 
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		portalInstanceImport.setSchemaName(
 			DBPartitionUtil.getExportedPartitionName(companyId));
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
 		portalInstanceImport.setVirtualHost(
 			randomId + "." +
 				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
@@ -369,15 +371,17 @@ public class PortalInstanceImportResourceTest
 
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
+		portalInstanceImport.setSchemaName(
+			DBPartitionUtil.getExportedPartitionName(companyId));
+
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		String virtualHost =
 			randomId + "." +
 				StringUtil.toLowerCase(RandomTestUtil.randomString(3));
 
-		portalInstanceImport.setSchemaName(
-			DBPartitionUtil.getExportedPartitionName(companyId));
 		portalInstanceImport.setVirtualHost(virtualHost);
+
 		portalInstanceImport.setWebId(randomId);
 
 		PortalInstance portalInstance =
