@@ -58,6 +58,7 @@ dependencies {
 	compileOnly project(":apps:subscription:subscription-api")
 	compileOnly project(":apps:translation:translation-api")
 	compileOnly project(":apps:trash:trash-api")
+	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
