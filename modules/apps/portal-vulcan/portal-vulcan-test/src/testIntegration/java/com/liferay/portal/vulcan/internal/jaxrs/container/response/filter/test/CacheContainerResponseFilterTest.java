@@ -120,15 +120,7 @@ public class CacheContainerResponseFilterTest {
 	public void testCacheWithCacheableEndpoint() throws Exception {
 		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
 
-		HttpURLConnection httpURLConnection = _openURLConnection("/test");
-
-		Assert.assertEquals(
-			"public, max-age=3600", _getCacheControl(httpURLConnection));
-		Assert.assertEquals(
-			"Accept, Accept-Encoding, Accept-Language, Origin, " +
-				"X-Accept-All-Languages, X-Liferay-Accept-All-Languages, " +
-					"X-Liferay-Data-Masks",
-			httpURLConnection.getHeaderField("Vary"));
+		_assertCacheable("public, max-age=3600", _openURLConnection("/test"));
 	}
 
 	@Test
@@ -139,8 +131,7 @@ public class CacheContainerResponseFilterTest {
 
 		httpURLConnection.setRequestMethod("HEAD");
 
-		Assert.assertEquals(
-			"public, max-age=3600", _getCacheControl(httpURLConnection));
+		_assertCacheable("public, max-age=3600", httpURLConnection);
 	}
 
 	@Test
@@ -155,12 +146,10 @@ public class CacheContainerResponseFilterTest {
 	public void testCacheWithOverlappingCacheableEndpoints() throws Exception {
 		_addCacheableEndpoint(
 			"/test-vulcan-cache/tests/*/nested", "private", 0);
-		_addCacheableEndpoint("/test-vulcan-cache/tests/1/nested", "public", 0);
+		_addCacheableEndpoint("/test-vulcan-cache/tests/2/nested", "public", 0);
 
-		Assert.assertEquals(
-			"public", _getCacheControl(_openURLConnection("/tests/1/nested")));
-		Assert.assertEquals(
-			"private", _getCacheControl(_openURLConnection("/tests/2/nested")));
+		_assertCacheable("private", _openURLConnection("/tests/1/nested"));
+		_assertCacheable("public", _openURLConnection("/tests/2/nested"));
 	}
 
 	@Test
@@ -171,8 +160,7 @@ public class CacheContainerResponseFilterTest {
 			"/test-vulcan-cache/tests/*/nested", "private", 0);
 		_addCacheableEndpoint("/test-vulcan-cache/tests/1/*", "public", 0);
 
-		Assert.assertEquals(
-			"public", _getCacheControl(_openURLConnection("/tests/1/nested")));
+		_assertCacheable("public", _openURLConnection("/tests/1/nested"));
 	}
 
 	@Test
@@ -183,8 +171,7 @@ public class CacheContainerResponseFilterTest {
 		_addCacheableEndpoint(
 			"/test-vulcan-cache/tests/*/nested", "private", 0);
 
-		Assert.assertEquals(
-			"public", _getCacheControl(_openURLConnection("/tests/1/nested")));
+		_assertCacheable("public", _openURLConnection("/tests/1/nested"));
 	}
 
 	@Test
@@ -223,8 +210,7 @@ public class CacheContainerResponseFilterTest {
 	public void testCacheWithoutMaxAge() throws Exception {
 		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 0);
 
-		Assert.assertEquals(
-			"public", _getCacheControl(_openURLConnection("/test")));
+		_assertCacheable("public", _openURLConnection("/test"));
 	}
 
 	public static class TestApplication extends Application {
@@ -302,6 +288,17 @@ public class CacheContainerResponseFilterTest {
 				).put(
 					"path", path
 				).build()));
+	}
+
+	private void _assertCacheable(
+		String cacheControl, HttpURLConnection httpURLConnection) {
+
+		Assert.assertEquals(cacheControl, _getCacheControl(httpURLConnection));
+		Assert.assertEquals(
+			"Accept, Accept-Encoding, Accept-Language, Origin, " +
+				"X-Accept-All-Languages, X-Liferay-Accept-All-Languages, " +
+					"X-Liferay-Data-Masks",
+			httpURLConnection.getHeaderField("Vary"));
 	}
 
 	private void _assertNotCacheable(HttpURLConnection httpURLConnection) {
