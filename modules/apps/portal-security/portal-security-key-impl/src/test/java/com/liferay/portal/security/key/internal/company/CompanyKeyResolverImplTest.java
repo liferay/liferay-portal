@@ -77,10 +77,11 @@ public class CompanyKeyResolverImplTest {
 		Assert.assertEquals(
 			_KEK_IDENTIFIER, keyManagerConfiguration.companyKEKIdentifier());
 
+		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
+
 		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
 
-		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
 		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
 
 		companyKeyResolverImpl.deactivate();
@@ -96,13 +97,14 @@ public class CompanyKeyResolverImplTest {
 
 		companyKeyResolverImpl.deactivate();
 
-		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
-			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
-
 		Assert.assertNull(companyKeyCacheEntry.getKeyBytes());
 		Assert.assertNull(
 			ReflectionTestUtil.getFieldValue(
 				companyKeyResolverImpl, "_keyManagerConfiguration"));
+
+		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
+			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
+
 		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
 	}
 
@@ -185,6 +187,12 @@ public class CompanyKeyResolverImplTest {
 			Collections.singletonList(_KEK_PROVIDER_ID)
 		);
 
+		ReflectionTestUtil.setFieldValue(
+			companyKeyResolverImpl, "_cryptoManager", _cryptoManager);
+
+		ReflectionTestUtil.setFieldValue(
+			companyKeyResolverImpl, "_keyAlgorithm", _KEY_ALGORITHM);
+
 		_keyManagerConfiguration = Mockito.mock(KeyManagerConfiguration.class);
 
 		Mockito.when(
@@ -193,18 +201,13 @@ public class CompanyKeyResolverImplTest {
 			_KEK_IDENTIFIER
 		);
 
-		_keyManagerProfile = Mockito.mock(KeyManagerProfile.class);
-
-		_mockCompanyKEKProviderId(_KEK_PROVIDER_ID);
-
-		ReflectionTestUtil.setFieldValue(
-			companyKeyResolverImpl, "_cryptoManager", _cryptoManager);
-
-		ReflectionTestUtil.setFieldValue(
-			companyKeyResolverImpl, "_keyAlgorithm", _KEY_ALGORITHM);
 		ReflectionTestUtil.setFieldValue(
 			companyKeyResolverImpl, "_keyManagerConfiguration",
 			_keyManagerConfiguration);
+
+		_keyManagerProfile = Mockito.mock(KeyManagerProfile.class);
+
+		_mockCompanyKEKProviderId(_KEK_PROVIDER_ID);
 
 		_keyManagerProfileRegistry = Mockito.mock(
 			KeyManagerProfileRegistry.class);
@@ -379,10 +382,10 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl();
 
-		String keyString = _toKeyString(_CIPHERTEXT_1);
-
 		byte[] providerKeyBytes = _mockDecrypt(
 			_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
+
+		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		Assert.assertEquals(
 			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
@@ -404,22 +407,14 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl();
 
-		_mockDecrypt(_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
-
-		companyKeyResolverImpl.unwrapKey(
-			_COMPANY_ID_1, _toKeyString(_CIPHERTEXT_1));
-
-		Map<Long, CompanyKeyCacheEntry> companyKeyCacheEntries =
-			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
-
-		CompanyKeyCacheEntry companyKeyCacheEntry = companyKeyCacheEntries.get(
-			_COMPANY_ID_1);
-
 		byte[] changedCiphertext = _CIPHERTEXT_1.clone();
 
 		changedCiphertext[0] = (byte)(changedCiphertext[0] + 1);
 
 		_mockDecrypt(changedCiphertext, _COMPANY_ID_1, _KEY_BYTES_1);
+
+		CompanyKeyCacheEntry companyKeyCacheEntry = _createCompanyKeyCacheEntry(
+			companyKeyResolverImpl);
 
 		Assert.assertEquals(
 			_key1,
@@ -442,9 +437,9 @@ public class CompanyKeyResolverImplTest {
 
 		_createCompanyKeyCacheEntry(companyKeyResolverImpl);
 
-		String keyString = _toKeyString(_CIPHERTEXT_1);
-
 		_mockDecryptFailure();
+
+		String keyString = _toKeyString(_CIPHERTEXT_1);
 
 		Assert.assertEquals(
 			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
@@ -521,11 +516,11 @@ public class CompanyKeyResolverImplTest {
 		CompanyKeyResolverImpl companyKeyResolverImpl =
 			_createCompanyKeyResolverImpl();
 
-		String keyString1 = _toKeyString(_CIPHERTEXT_1);
-		String keyString2 = _toKeyString(_CIPHERTEXT_2);
-
 		_mockDecrypt(_CIPHERTEXT_1, _COMPANY_ID_1, _KEY_BYTES_1);
 		_mockDecrypt(_CIPHERTEXT_2, _COMPANY_ID_2, _KEY_BYTES_2);
+
+		String keyString1 = _toKeyString(_CIPHERTEXT_1);
+		String keyString2 = _toKeyString(_CIPHERTEXT_2);
 
 		Assert.assertEquals(
 			_key1, companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString1));
