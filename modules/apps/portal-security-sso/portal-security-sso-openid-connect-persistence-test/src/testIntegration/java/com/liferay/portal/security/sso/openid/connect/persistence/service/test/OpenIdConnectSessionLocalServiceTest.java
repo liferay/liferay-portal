@@ -149,6 +149,17 @@ public class OpenIdConnectSessionLocalServiceTest {
 			Collections.singletonList(openIdConnectSession2),
 			_openIdConnectSessionLocalService.getOpenIdConnectSessions(
 				companyId2, issuer, sessionId));
+
+		String maxLengthSessionId = RandomTestUtil.randomString(255);
+
+		OpenIdConnectSession openIdConnectSession3 = _addOpenIdConnectSession(
+			companyId1, issuer, maxLengthSessionId,
+			RandomTestUtil.randomLong());
+
+		Assert.assertEquals(
+			Collections.singletonList(openIdConnectSession3),
+			_openIdConnectSessionLocalService.getOpenIdConnectSessions(
+				companyId1, issuer, maxLengthSessionId));
 	}
 
 	private OpenIdConnectSession _addOpenIdConnectSession() throws Exception {
