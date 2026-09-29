@@ -102,6 +102,7 @@ export default function Preview({activeSize, open, previewRef}: IPreviewProps) {
 				style={activeSize.id === SIZES.custom.id ? customSize : size}
 			>
 				<iframe
+					id="simulationDeviceIframe"
 					className="border-0 h-100 w-100"
 					onLoad={preventIframeNavigation}
 					src={createIframeURL()}
