@@ -7,7 +7,10 @@ package com.liferay.style.book.web.internal.portlet.action;
 
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
+import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
 import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
@@ -32,7 +36,9 @@ import jakarta.portlet.ActionResponse;
 
 import java.io.File;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -127,26 +133,51 @@ public class ImportStyleBookEntriesMVCActionCommand
 	}
 
 	private List<String> _getFrontendTokenNames(
+		JSONObject frontendTokenDefinitionJSONObject,
+		String frontendTokenDefinitionId) {
+
+		return TransformUtil.transform(
+			FrontendTokenDefinitionUtil.getFrontendTokenNames(
+				frontendTokenDefinitionJSONObject),
+			frontendTokenName ->
+				frontendTokenDefinitionId + StringPool.COLON +
+					frontendTokenName);
+	}
+
+	private List<String> _getFrontendTokenNames(
 		StyleBookEntry styleBookEntry, ThemeDisplay themeDisplay) {
 
-		FrontendTokenDefinition themeFrontendTokenDefinition =
-			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
-				themeDisplay.getCompanyId(), styleBookEntry.getThemeId());
+		List<String> frontendTokenNames = new ArrayList<>();
 
-		JSONObject overrideFrontendTokenDefinitionJSONObject =
-			FrontendTokenDefinitionUtil.parseFrontendTokenDefinitionJSONObject(
-				styleBookEntry.getFrontendTokenDefinition());
+		for (FrontendTokenDefinition frontendTokenDefinition :
+				_frontendTokenDefinitionRegistry.getFrontendTokenDefinitions(
+					themeDisplay.getCompanyId())) {
 
-		if (themeFrontendTokenDefinition == null) {
-			return FrontendTokenDefinitionUtil.getFrontendTokenNames(
-				overrideFrontendTokenDefinitionJSONObject);
+			if (!Objects.equals(
+					frontendTokenDefinition.getThemeId(),
+					styleBookEntry.getThemeId()) &&
+				!Objects.equals(
+					frontendTokenDefinition.getThemeType(),
+					FrontendTokenDefinitionConstants.THEME_TYPE_GLOBAL)) {
+
+				continue;
+			}
+
+			frontendTokenNames.addAll(
+				_getFrontendTokenNames(
+					frontendTokenDefinition.getJSONObject(
+						themeDisplay.getLocale()),
+					frontendTokenDefinition.getThemeId()));
 		}
 
-		return FrontendTokenDefinitionUtil.getFrontendTokenNames(
-			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
-				themeFrontendTokenDefinition.getJSONObject(
-					themeDisplay.getLocale()),
-				overrideFrontendTokenDefinitionJSONObject));
+		frontendTokenNames.addAll(
+			_getFrontendTokenNames(
+				FrontendTokenDefinitionUtil.
+					parseFrontendTokenDefinitionJSONObject(
+						styleBookEntry.getFrontendTokenDefinition()),
+				StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID));
+
+		return frontendTokenNames;
 	}
 
 	private List<StyleBookEntryZipProcessorImportResultEntry>

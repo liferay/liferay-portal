@@ -16,7 +16,9 @@ import com.liferay.exportimport.report.service.ExportImportReportEntryLocalServi
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
+import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
 import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
@@ -214,25 +217,50 @@ public class StylebookEntryStagedModelDataHandler
 	}
 
 	private List<String> _getFrontendTokenNames(
+		JSONObject frontendTokenDefinitionJSONObject,
+		String frontendTokenDefinitionId) {
+
+		return TransformUtil.transform(
+			FrontendTokenDefinitionUtil.getFrontendTokenNames(
+				frontendTokenDefinitionJSONObject),
+			frontendTokenName ->
+				frontendTokenDefinitionId + StringPool.COLON +
+					frontendTokenName);
+	}
+
+	private List<String> _getFrontendTokenNames(
 		PortletDataContext portletDataContext, StyleBookEntry styleBookEntry) {
 
-		FrontendTokenDefinition themeFrontendTokenDefinition =
-			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
-				portletDataContext.getCompanyId(), styleBookEntry.getThemeId());
+		List<String> frontendTokenNames = new ArrayList<>();
 
-		JSONObject overrideFrontendTokenDefinitionJSONObject =
-			FrontendTokenDefinitionUtil.parseFrontendTokenDefinitionJSONObject(
-				styleBookEntry.getFrontendTokenDefinition());
+		for (FrontendTokenDefinition frontendTokenDefinition :
+				_frontendTokenDefinitionRegistry.getFrontendTokenDefinitions(
+					portletDataContext.getCompanyId())) {
 
-		if (themeFrontendTokenDefinition == null) {
-			return FrontendTokenDefinitionUtil.getFrontendTokenNames(
-				overrideFrontendTokenDefinitionJSONObject);
+			if (!Objects.equals(
+					frontendTokenDefinition.getThemeId(),
+					styleBookEntry.getThemeId()) &&
+				!Objects.equals(
+					frontendTokenDefinition.getThemeType(),
+					FrontendTokenDefinitionConstants.THEME_TYPE_GLOBAL)) {
+
+				continue;
+			}
+
+			frontendTokenNames.addAll(
+				_getFrontendTokenNames(
+					frontendTokenDefinition.getJSONObject(LocaleUtil.US),
+					frontendTokenDefinition.getThemeId()));
 		}
 
-		return FrontendTokenDefinitionUtil.getFrontendTokenNames(
-			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
-				themeFrontendTokenDefinition.getJSONObject(LocaleUtil.US),
-				overrideFrontendTokenDefinitionJSONObject));
+		frontendTokenNames.addAll(
+			_getFrontendTokenNames(
+				FrontendTokenDefinitionUtil.
+					parseFrontendTokenDefinitionJSONObject(
+						styleBookEntry.getFrontendTokenDefinition()),
+				StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID));
+
+		return frontendTokenNames;
 	}
 
 	private boolean _hasMissingTokens(

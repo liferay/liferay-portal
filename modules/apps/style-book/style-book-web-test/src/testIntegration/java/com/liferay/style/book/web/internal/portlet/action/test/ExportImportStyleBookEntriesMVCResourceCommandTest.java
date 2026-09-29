@@ -47,6 +47,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upload.test.util.UploadTestUtil;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
@@ -369,7 +370,8 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 				null, TestPropsValues.getUserId(), _sourceGroup.getGroupId(),
 				false, StringPool.BLANK,
 				JSONUtil.put(
-					frontendTokenName,
+					StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID +
+						StringPool.COLON + frontendTokenName,
 					JSONUtil.put("value", RandomTestUtil.randomString())
 				).toString(),
 				RandomTestUtil.randomString(), styleBookEntryKey,
