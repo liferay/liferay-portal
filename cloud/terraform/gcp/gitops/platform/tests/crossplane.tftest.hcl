@@ -101,7 +101,7 @@ run "should_scope_the_manual_network_policies_correctly" {
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == var.master_ipv4_cidr_block
-		error_message="crossplane-webhook-ingress must allow only the GKE control plane's CIDR — namespaceSelector/podSelector can never match traffic from outside the cluster, only ipBlock can"
+		error_message="crossplane-webhook-ingress must keep the GKE control plane's CIDR as its first source — ipBlock is the only selector that can match traffic from outside the cluster, but on GKE it is not sufficient alone, which is what the konnectivity source covers"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].ports[0].port == 9443

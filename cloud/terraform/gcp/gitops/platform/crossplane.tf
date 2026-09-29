@@ -90,25 +90,7 @@ resource "helm_release" "crossplane" {
 						spec={
 							ingress=[
 								{
-									from=[
-										{
-											ipBlock={
-												cidr=var.master_ipv4_cidr_block
-											}
-										},
-										{
-											namespaceSelector={
-												matchLabels={
-													"kubernetes.io/metadata.name"="kube-system"
-												}
-											}
-											podSelector={
-												matchLabels={
-													"k8s-app"="konnectivity-agent"
-												}
-											}
-										},
-									]
+									from=local.webhook_ingress_from
 									ports=[
 										{
 											port=9443
