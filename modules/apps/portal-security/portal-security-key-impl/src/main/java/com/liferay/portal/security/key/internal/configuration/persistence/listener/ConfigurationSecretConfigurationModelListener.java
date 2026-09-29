@@ -25,13 +25,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
-import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Objects;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -156,41 +155,19 @@ public class ConfigurationSecretConfigurationModelListener
 				continue;
 			}
 
-			String identifier = StringBundler.concat(
-				_IDENTIFIER_PREFIX,
-				StringUtil.replace(pid, CharPool.TILDE, CharPool.SLASH),
-				StringPool.SLASH, companyId, StringPool.SLASH, id);
-
-			KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
-				value);
-
-			if (keyReference != null) {
-				_validateKeyReference(identifier, keyReference, pid);
-
-				continue;
-			}
-
-			try (Secret secret = new Secret(
-					new KeyReference(
-						identifier, StringPool.STAR, KeyReference.Type.SECRET),
-					value)) {
-
+			try {
 				properties.put(
 					id,
-					KeyReferenceUtil.toKeyReferenceString(
-						_secretManager.putSecret(companyId, secret)));
+					_secretResolver.store(
+						companyId,
+						StringBundler.concat(
+							_IDENTIFIER_PREFIX,
+							StringUtil.replace(
+								pid, CharPool.TILDE, CharPool.SLASH),
+							StringPool.SLASH, companyId, StringPool.SLASH, id),
+						value));
 			}
 			catch (Exception exception) {
-				FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
-					"configuration-secret-store-failure",
-					FIPSAuditEvent.Severity.WARNING);
-
-				fipsAuditEvent.put(
-					"configuration-pid", GetterUtil.getString(pid));
-				fipsAuditEvent.put("property-id", GetterUtil.getString(id));
-
-				FIPSAuditUtil.write(fipsAuditEvent);
-
 				throw new ConfigurationModelListenerException(
 					exception, Object.class,
 					ConfigurationSecretConfigurationModelListener.class,
@@ -274,22 +251,6 @@ public class ConfigurationSecretConfigurationModelListener
 		return null;
 	}
 
-	private void _validateKeyReference(
-			String identifier, KeyReference keyReference, String pid)
-		throws ConfigurationModelListenerException {
-
-		if (Objects.equals(keyReference.getIdentifier(), identifier)) {
-			return;
-		}
-
-		throw new ConfigurationModelListenerException(
-			StringBundler.concat(
-				"Configuration ", pid,
-				" cannot reference a value it does not own"),
-			Object.class, ConfigurationSecretConfigurationModelListener.class,
-			null);
-	}
-
 	private static final String _IDENTIFIER_PREFIX = "config/";
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -308,5 +269,8 @@ public class ConfigurationSecretConfigurationModelListener
 
 	@Reference
 	private SecretManager _secretManager;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
