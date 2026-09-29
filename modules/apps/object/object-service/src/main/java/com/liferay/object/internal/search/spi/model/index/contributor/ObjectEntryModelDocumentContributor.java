@@ -278,6 +278,21 @@ public class ObjectEntryModelDocumentContributor
 		}
 		else if (StringUtil.equals(
 					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION) &&
+				 (fieldValue instanceof Map)) {
+
+			Map<String, Serializable> locationMap =
+				(Map<String, Serializable>)fieldValue;
+
+			document.addGeoLocation(
+				fieldName + "_geolocation",
+				MapUtil.getDouble(locationMap, "latitude"),
+				MapUtil.getDouble(locationMap, "longitude"));
+
+			fieldValue = MapUtil.getString(locationMap, "address");
+		}
+		else if (StringUtil.equals(
+					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
 
 			fieldValue = HtmlParserUtil.extractText(
