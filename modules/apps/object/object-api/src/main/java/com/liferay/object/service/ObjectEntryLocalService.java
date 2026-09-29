@@ -490,7 +490,7 @@ public interface ObjectEntryLocalService
 			ObjectDefinition objectDefinition, long primaryKey)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(enabled = false)
 	public Map<String, Serializable> getSystemValues(ObjectEntry objectEntry)
 		throws PortalException;
 
@@ -630,4 +630,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-81508022
+// LIFERAY-SERVICE-BUILDER-HASH:1209770734
