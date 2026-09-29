@@ -17,6 +17,7 @@ Use the column for the repository that a remote of this checkout points at (chec
 | Setting | `liferay/liferay-portal` | `liferay/liferay-portal-ee` |
 | --- | --- | --- |
 | **Base Branch** | `master` | `master-private` |
+| **Forward Target** | `brianchandotcom/liferay-portal` | |
 | **Scopes** | branch, portal, workspaces | branch, workspaces |
 | **Skipped Validations** | Workspace Source Format | Source Format |
 | **Rules Commit** | `HEAD` | `master` |
@@ -26,6 +27,8 @@ Use the column for the repository that a remote of this checkout points at (chec
 In `liferay-portal-ee`, this skill and its validations are copied from local `master`, so local `master` is the rules commit there.
 
 `${BASE_BRANCH}` below stands for the **Base Branch** setting, and `${SOURCE_SHA}` stands for the **Rules Commit** setting, which is the commit this document and its validations were read from.
+
+The **Forward Target** is the repository `ci:forward` merges a pull request into, on its own `${BASE_BRANCH}`. `liferay-portal-ee` leaves it empty, which skips every step below that uses it.
 
 ## Preconditions
 
@@ -39,7 +42,21 @@ In `liferay-portal-ee`, this skill and its validations are copied from local `ma
 
 	1. Fast forward local `${BASE_BRANCH}` to the fetched tip. When `${BASE_BRANCH}` is checked out in another worktree, fast forward it there with `git -C <worktree> merge --ff-only <remote>/${BASE_BRANCH}`. Otherwise update it in place with `git fetch <remote> ${BASE_BRANCH}:${BASE_BRANCH}`, which also creates `${BASE_BRANCH}` when it does not exist. Both are fast forward only. When the command fails for any reason, such as a diverged `${BASE_BRANCH}`, a worktree that is not clean, or a denied permission, warn the developer and stop the run. Never continue against a stale base, since every validation would then compare the branch with a base that lacks the latest commits.
 
+	1. When the settings name a forward target, fetch its `${BASE_BRANCH}` from the remote whose URL points at it, or from its GitHub URL when no remote does, and record the tip. Record it only after a successful fetch, since `FETCH_HEAD` otherwise still holds the `${BASE_BRANCH}` fetched above. When the fetch fails, warn the developer that the branch was not checked against the forward target and continue without `${FORWARD_TIP}`.
+
+	```bash
+	git fetch --no-tags <forward remote> ${BASE_BRANCH} && FORWARD_TIP=$(git rev-parse FETCH_HEAD)
+	```
+
 	1. `git rebase <remote>/${BASE_BRANCH}`. On a clean rebase, continue against the rebased branch. On conflict, list the unmerged files (`git diff --diff-filter=U --name-only`) and ask the developer who should resolve the conflicts. When the developer asks you to resolve them, fix the conflicts, `git add` the files, and run `git rebase --continue`. In every other case (the developer resolves them, the conflicts cannot be resolved, or the rebase fails otherwise) run `git rebase --abort` and stop the run.
+
+	1. When `${FORWARD_TIP}` is set, test in memory whether `ci:forward` can merge the branch into it. `git merge-tree` leaves the working tree and the index alone, and `--write-tree` needs Git 2.38 or later.
+
+	```bash
+	git merge-tree --name-only --write-tree "${FORWARD_TIP}" HEAD
+	```
+
+	Exit `0` means the forward merges cleanly, so continue. Exit `1` means `ci:forward` will refuse the pull request. The lines after the first, up to the first blank line, name the conflicted files, and `git log --format='%h %s' "HEAD..${FORWARD_TIP}" -- <files>` names the commits of the forward target that touched them. Stop the run, give the developer both lists, and say what fixes it: rebase onto `${FORWARD_TIP}`, resolve the conflicts, run pr-check again, and send the pull request to the forward target directly. Sent to the repository named by the column in use instead, the pull request carries every commit of the forward target that repository lacks, and CI checks them all as its own. Offer to run the rebase, handle its conflicts the way the step above does, and start pr-check over once it completes. Any other exit, such as an older Git that does not know `--write-tree`, means the forward was not checked, so warn the developer and continue.
 
 - **Skills current in `liferay-portal-ee`.** In `liferay-portal-ee` only, run `git fetch <remote> master`. When `git rev-parse master` differs from `git rev-parse FETCH_HEAD`, the copied skills are stale, so stop the run and tell the developer to copy them again from the latest `master`.
 
