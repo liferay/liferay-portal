@@ -56,7 +56,7 @@ describe('Field Numeric Input Mask', () => {
 
 		userEvent.click(buttonInsideDiv);
 		const disabledOption = document.querySelector(
-			'.dropdown-item[disabled]'
+			'.dropdown-item[aria-disabled="true"]'
 		);
 		expect(disabledOption.innerHTML).toBe('0,00');
 	});
@@ -81,7 +81,7 @@ describe('Field Numeric Input Mask', () => {
 
 		userEvent.click(buttonInsideDiv);
 		const disabledOption = document.querySelector(
-			'.dropdown-item[disabled]'
+			'.dropdown-item[aria-disabled="true"]'
 		);
 
 		expect(disabledOption.innerHTML).toBe('1.000');
