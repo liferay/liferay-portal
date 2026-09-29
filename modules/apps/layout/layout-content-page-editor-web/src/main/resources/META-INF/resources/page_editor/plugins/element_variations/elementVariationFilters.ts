@@ -5,9 +5,9 @@
 
 import {ElementVariation} from './elementVariationsReducer';
 
-export const FILTER_TYPES = ['audience', 'status', 'type'] as const;
+export const FILTER_TYPES = ['audience', 'issue', 'status', 'type'] as const;
 
-export const NO_AUDIENCE_VALUE = 'none';
+export const ISSUE_VALUES = ['missing-audience', 'missing-page-element'];
 
 const PREVIEW_VALUES_COUNT = 3;
 
@@ -27,9 +27,35 @@ export function hasValueInAnyLanguage(
 	return Object.values(localizedValue).some(Boolean);
 }
 
+export function getElementVariationIssues(
+	elementVariation: ElementVariation,
+	editableElementOptions: Option[]
+): string[] {
+	const issues = [];
+
+	if (!elementVariation.audienceEntryERCs.length) {
+		issues.push('missing-audience');
+	}
+
+	if (
+		!editableElementOptions.some(
+			(editableElementOption) =>
+				editableElementOption.value === elementVariation.targetElement
+		)
+	) {
+		issues.push('missing-page-element');
+	}
+
+	return issues;
+}
+
 export function getFilterLabel(type: FilterType): string {
 	if (type === 'audience') {
 		return Liferay.Language.get('audience');
+	}
+
+	if (type === 'issue') {
+		return Liferay.Language.get('issue');
 	}
 
 	if (type === 'status') {
@@ -44,9 +70,19 @@ export function getFilterOptions(
 	audiences: Option[]
 ): Option[] {
 	if (type === 'audience') {
+		return audiences;
+	}
+
+	if (type === 'issue') {
 		return [
-			{label: Liferay.Language.get('none'), value: NO_AUDIENCE_VALUE},
-			...audiences,
+			{
+				label: Liferay.Language.get('missing-audience'),
+				value: 'missing-audience',
+			},
+			{
+				label: Liferay.Language.get('missing-page-element'),
+				value: 'missing-page-element',
+			},
 		];
 	}
 
@@ -84,16 +120,24 @@ export function getFilterText(
 	};
 }
 
-function getVariationValues(
-	type: FilterType,
-	elementVariation: ElementVariation
-): string[] {
+function getVariationValues({
+	editableElementOptions,
+	elementVariation,
+	type,
+}: {
+	editableElementOptions: Option[];
+	elementVariation: ElementVariation;
+	type: FilterType;
+}): string[] {
 	if (type === 'audience') {
-		if (!elementVariation.audienceEntryERCs.length) {
-			return [NO_AUDIENCE_VALUE];
-		}
-
 		return elementVariation.audienceEntryERCs;
+	}
+
+	if (type === 'issue') {
+		return getElementVariationIssues(
+			elementVariation,
+			editableElementOptions
+		);
 	}
 
 	if (type === 'status') {
@@ -139,7 +183,11 @@ function getVariationText({
 
 	const typeOptions = getFilterOptions('type', audiences);
 
-	const typeLabels = getVariationValues('type', elementVariation).map(
+	const typeLabels = getVariationValues({
+		editableElementOptions,
+		elementVariation,
+		type: 'type',
+	}).map(
 		(value) => typeOptions.find((option) => option.value === value)?.label
 	);
 
@@ -175,7 +223,11 @@ export function getFilteredVariations({
 
 	return elementVariations.filter((elementVariation) => {
 		const matchesFilters = filters.every((filter) => {
-			const values = getVariationValues(filter.type, elementVariation);
+			const values = getVariationValues({
+				editableElementOptions,
+				elementVariation,
+				type: filter.type,
+			});
 
 			const matches = filter.values.some((value) =>
 				values.includes(value)

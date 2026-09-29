@@ -31,7 +31,8 @@ import ElementVariationsPreview, {
 import ElementVariationsSimulation from './ElementVariationsSimulation';
 import {
 	Filter,
-	NO_AUDIENCE_VALUE,
+	ISSUE_VALUES,
+	getElementVariationIssues,
 	getFilteredVariations,
 } from './elementVariationFilters';
 import {
@@ -173,8 +174,7 @@ function ElementVariations({
 		document.getElementById(`${portletNamespace}elementVariations`)
 	);
 
-	const [missingAudiencesAlertVisible, setMissingAudiencesAlertVisible] =
-		useState(true);
+	const [issuesAlertVisible, setIssuesAlertVisible] = useState(true);
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -334,26 +334,28 @@ function ElementVariations({
 								searchTerm={searchTerm}
 							/>
 
-							{missingAudiencesAlertVisible &&
+							{issuesAlertVisible &&
+							editableElementOptions &&
 							experienceElementVariations.some(
 								(elementVariation) =>
-									!elementVariation.audienceEntryERCs.length
+									getElementVariationIssues(
+										elementVariation,
+										editableElementOptions
+									).length
 							) ? (
-								<MissingAudiencesAlert
-									onClose={() =>
-										setMissingAudiencesAlertVisible(false)
-									}
+								<IssuesAlert
+									onClose={() => setIssuesAlertVisible(false)}
 									onShowVariations={() => {
 										dispatch({
 											filter: {
 												exclude: false,
-												type: 'audience',
-												values: [NO_AUDIENCE_VALUE],
+												type: 'issue',
+												values: ISSUE_VALUES,
 											},
 											type: 'ADD_FILTER',
 										});
 
-										setMissingAudiencesAlertVisible(false);
+										setIssuesAlertVisible(false);
 									}}
 								/>
 							) : null}
@@ -572,15 +574,12 @@ function Toolbar({
 	);
 }
 
-interface MissingAudiencesAlertProps {
+interface IssuesAlertProps {
 	onClose: () => void;
 	onShowVariations: () => void;
 }
 
-function MissingAudiencesAlert({
-	onClose,
-	onShowVariations,
-}: MissingAudiencesAlertProps) {
+function IssuesAlert({onClose, onShowVariations}: IssuesAlertProps) {
 	return (
 		<ClayAlert
 			closeButtonAriaLabel={Liferay.Language.get('close')}
@@ -590,7 +589,7 @@ function MissingAudiencesAlert({
 			variant="stripe"
 		>
 			{Liferay.Language.get(
-				'there-are-missing-audiences-for-some-variations'
+				'there-are-missing-audiences-or-page-elements-for-some-variations'
 			)}
 
 			<ClayAlert.Footer>
