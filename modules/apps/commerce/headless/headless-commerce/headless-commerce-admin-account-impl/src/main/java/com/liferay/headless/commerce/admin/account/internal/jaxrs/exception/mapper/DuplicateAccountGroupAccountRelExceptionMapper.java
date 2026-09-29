@@ -42,7 +42,7 @@ public class DuplicateAccountGroupAccountRelExceptionMapper
 			Response.Status.CONFLICT,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
-				"the-account-group-account-relation-already-exists"));
+				"the-account-group-relation-already-exists"));
 	}
 
 	@Context

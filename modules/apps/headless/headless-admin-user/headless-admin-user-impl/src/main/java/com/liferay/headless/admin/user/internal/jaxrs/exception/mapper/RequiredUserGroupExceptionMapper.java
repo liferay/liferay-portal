@@ -40,7 +40,7 @@ public class RequiredUserGroupExceptionMapper
 			Response.Status.FORBIDDEN,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
-				"remove-all-users-before-deleting-this-user-group"));
+				"unable-to-delete-a-user-group-that-has-users"));
 	}
 
 	@Context

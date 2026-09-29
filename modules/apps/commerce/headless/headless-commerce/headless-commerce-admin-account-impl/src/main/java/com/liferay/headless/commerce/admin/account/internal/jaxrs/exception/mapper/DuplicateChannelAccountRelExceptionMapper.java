@@ -44,7 +44,7 @@ public class DuplicateChannelAccountRelExceptionMapper
 			Response.Status.CONFLICT,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
-				"the-account-channel-relation-already-exists"));
+				"the-channel-relation-already-exists"));
 	}
 
 	@Context

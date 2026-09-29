@@ -42,7 +42,7 @@ public class UserAccountScreenNameMustNotExceedMaximumLengthExceptionMapper
 			Response.Status.BAD_REQUEST,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
-				"the-user-account-screen-name-is-invalid"));
+				"the-user-account-alternate-name-is-invalid"));
 	}
 
 	@Context

@@ -44,7 +44,7 @@ public class DuplicateShippingOptionAccountRelExceptionMapper
 			Response.Status.CONFLICT,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
-				"the-shipping-option-account-relation-already-exists"));
+				"the-shipping-option-relation-already-exists"));
 	}
 
 	@Context

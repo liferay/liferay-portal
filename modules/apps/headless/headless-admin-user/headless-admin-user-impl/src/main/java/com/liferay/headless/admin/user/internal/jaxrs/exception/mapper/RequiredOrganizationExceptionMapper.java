@@ -40,8 +40,8 @@ public class RequiredOrganizationExceptionMapper
 			Response.Status.FORBIDDEN,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
-				"remove-all-child-organizations-and-users-before-deleting-" +
-					"this-organization"));
+				"unable-to-delete-an-organization-that-has-child-" +
+					"organizations-or-users"));
 	}
 
 	@Context

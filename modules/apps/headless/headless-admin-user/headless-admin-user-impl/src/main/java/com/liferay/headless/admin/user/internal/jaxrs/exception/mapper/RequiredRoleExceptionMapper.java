@@ -35,7 +35,7 @@ public class RequiredRoleExceptionMapper
 	@Override
 	protected Problem getProblem(RequiredRoleException requiredRoleException) {
 		return new Problem(
-			Response.Status.BAD_REQUEST,
+			Response.Status.FORBIDDEN,
 			_language.get(
 				_acceptLanguage.getPreferredLocale(),
 				"unable-to-delete-system-role"));

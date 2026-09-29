@@ -793,10 +793,6 @@ public class AccountEntryLocalServiceImpl
 			AccountEntry accountEntry, String externalReferenceCode)
 		throws PortalException {
 
-		_validate(
-			externalReferenceCode, accountEntry.getName(),
-			accountEntry.getTaxIdNumber());
-
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 
 		return updateAccountEntry(accountEntry);
