@@ -15,6 +15,8 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -120,6 +122,19 @@ public class LayoutSEOEntryLocalServiceImpl
 
 		layoutSEOEntryLocalService.deleteLayoutSEOEntry(
 			layoutSEOEntryPersistence.findByUUID_G(uuid, groupId));
+	}
+
+	@Override
+	public LayoutSEOEntry fetchLayoutSEOEntry(Layout layout) {
+		if (layout instanceof VirtualLayout) {
+			VirtualLayout virtualLayout = (VirtualLayout)layout;
+
+			layout = virtualLayout.getSourceLayout();
+		}
+
+		return layoutSEOEntryPersistence.fetchByG_P_L(
+			layout.getGroupId(), layout.isPrivateLayout(),
+			layout.getLayoutId());
 	}
 
 	@Override
