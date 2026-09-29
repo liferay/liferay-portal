@@ -57,20 +57,17 @@ public class PortalInstanceCopyResourceImpl
 			throw new BadRequestException("Web ID is required");
 		}
 
-		String sourcePortalInstanceId =
-			portalInstanceCopy.getSourcePortalInstanceId();
-
-		Company company = _companyService.getCompanyByWebId(
-			sourcePortalInstanceId);
-
-		Long destinationCompanyId =
-			portalInstanceCopy.getDestinationCompanyId();
-
-		if ((destinationCompanyId != null) && (destinationCompanyId <= 0)) {
-			destinationCompanyId = null;
-		}
-
 		try {
+			Company company = _companyService.getCompanyByWebId(
+				portalInstanceCopy.getSourcePortalInstanceId());
+
+			Long destinationCompanyId =
+				portalInstanceCopy.getDestinationCompanyId();
+
+			if ((destinationCompanyId != null) && (destinationCompanyId <= 0)) {
+				destinationCompanyId = null;
+			}
+
 			return _toPortalInstance(
 				_companyService.copyDBPartitionCompany(
 					company.getCompanyId(), destinationCompanyId,
@@ -80,7 +77,8 @@ public class PortalInstanceCopyResourceImpl
 		}
 		catch (Exception exception) {
 			_log.error(
-				"Unable to copy portal instance " + sourcePortalInstanceId,
+				"Unable to copy portal instance " +
+					portalInstanceCopy.getSourcePortalInstanceId(),
 				exception);
 
 			throw exception;

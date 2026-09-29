@@ -44,18 +44,19 @@ public class PortalInstanceImportResourceImpl
 			throw new BadRequestException("Schema name is required");
 		}
 
-		String schemaName = portalInstanceImport.getSchemaName();
-
 		try {
 			return _toPortalInstance(
 				_companyService.addDBPartitionCompany(
-					schemaName, portalInstanceImport.getName(),
+					portalInstanceImport.getSchemaName(),
+					portalInstanceImport.getName(),
 					portalInstanceImport.getVirtualHost(),
 					portalInstanceImport.getWebId()));
 		}
 		catch (Exception exception) {
 			_log.error(
-				"Unable to import portal instance " + schemaName, exception);
+				"Unable to import portal instance " +
+					portalInstanceImport.getSchemaName(),
+				exception);
 
 			throw exception;
 		}
