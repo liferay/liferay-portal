@@ -1224,7 +1224,7 @@ public class ObjectEntryLocalServiceImpl
 			_getExtensionDynamicObjectDefinitionTableSelectDSLQuery(
 				extensionDynamicObjectDefinitionTable, primaryKey,
 				selectExpressions, systemObjectDefinitionManager),
-			objectFieldBag, selectExpressions);
+			objectFieldBag, selectExpressions, true);
 
 		Object[] row = null;
 
@@ -1862,7 +1862,8 @@ public class ObjectEntryLocalServiceImpl
 
 		Object[] row = _fetchDynamicObjectDefinitionTableRow(
 			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
-			objectFieldBag, objectEntry.getObjectEntryId(), selectExpressions);
+			objectFieldBag, objectEntry.getObjectEntryId(), selectExpressions,
+			true);
 
 		if (row == null) {
 			return Collections.emptyMap();
@@ -2888,7 +2889,7 @@ public class ObjectEntryLocalServiceImpl
 					primaryKey
 				)
 			),
-			objectFieldBag, selectExpressions);
+			objectFieldBag, selectExpressions, true);
 
 		_putLocalizedObjectFieldValues(
 			defaultLanguageId, dynamicObjectDefinitionLocalizationTable, rows,
@@ -4036,7 +4037,7 @@ public class ObjectEntryLocalServiceImpl
 			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
 			DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable,
 			ObjectFieldBag objectFieldBag, long objectEntryId,
-			Expression<?>[] selectExpressions)
+			Expression<?>[] selectExpressions, boolean useFinderCache)
 		throws PortalException {
 
 		List<Object[]> rows = _list(
@@ -4055,7 +4056,7 @@ public class ObjectEntryLocalServiceImpl
 					objectEntryId
 				)
 			),
-			objectFieldBag, selectExpressions);
+			objectFieldBag, selectExpressions, useFinderCache);
 
 		if (ListUtil.isEmpty(rows)) {
 			return null;
@@ -4890,7 +4891,7 @@ public class ObjectEntryLocalServiceImpl
 			).where(
 				foreignKeyColumn.in(primaryKeys)
 			),
-			objectFieldBag, selectExpressions);
+			objectFieldBag, selectExpressions, true);
 
 		Map<Long, List<Object[]>> localizedRowsMap = new HashMap<>();
 
@@ -6437,10 +6438,11 @@ public class ObjectEntryLocalServiceImpl
 
 	private List<Object[]> _list(
 			DSLQuery dslQuery, ObjectFieldBag objectFieldBag,
-			Expression<?>[] selectExpressions)
+			Expression<?>[] selectExpressions, boolean useFinderCache)
 		throws PortalException {
 
-		List<Object> entriesValues = objectEntryPersistence.dslQuery(dslQuery);
+		List<Object> entriesValues = objectEntryPersistence.dslQuery(
+			dslQuery, useFinderCache);
 
 		List<Object[]> results = new ArrayList<>(entriesValues.size());
 
@@ -6579,7 +6581,7 @@ public class ObjectEntryLocalServiceImpl
 				).where(
 					primaryKeyColumn.in(primaryKeysBatch)
 				),
-				objectFieldBag, selectExpressions);
+				objectFieldBag, selectExpressions, true);
 
 			for (Object[] row : rows) {
 				valuesMap.put(
