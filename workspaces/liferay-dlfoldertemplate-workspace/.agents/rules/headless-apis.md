@@ -23,7 +23,7 @@ The tables below list the common endpoints per module — they are not exhaustiv
 | Create display page template | POST | `/sites/{siteExternalReferenceCode}/display-page-templates` |
 | Create master page | POST | `/sites/{siteExternalReferenceCode}/master-pages` |
 
-**Required flag:** `LPD-38869` (on by default) for private layout API. Page-element / page-specification composition additionally requires `LPD-74328`.
+**Required flag:** `LPD-38869` (on by default) for the private layout API. Composing page elements and page specifications additionally requires `LPD-74328`.
 
 **OAuth scope:** `Liferay.Headless.Admin.Site.everything`
 
