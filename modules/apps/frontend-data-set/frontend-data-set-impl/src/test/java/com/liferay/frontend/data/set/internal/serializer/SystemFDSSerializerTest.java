@@ -19,7 +19,6 @@ import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilterContextContributor;
 import com.liferay.frontend.data.set.filter.GroupedFDSFilters;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
-import com.liferay.frontend.data.set.internal.action.FDSBulkActionsRegistryImpl;
 import com.liferay.frontend.data.set.internal.filter.ClientExtensionFDSFilterContextContributor;
 import com.liferay.frontend.data.set.internal.filter.DateRangeFDSFilterContextContributor;
 import com.liferay.frontend.data.set.internal.filter.FDSFilterContextContributorRegistryImpl;
@@ -219,18 +218,6 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		// Different bulk actions
 
-		ServiceTrackerMap
-			<String,
-			 ServiceTrackerCustomizerFactory.ServiceWrapper<FDSBulkActions>>
-				serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-					bundleContext, FDSBulkActions.class,
-					"frontend.data.set.name",
-					ServiceTrackerCustomizerFactory.
-						<FDSBulkActions>serviceWrapper(bundleContext));
-
-		systemFDSSerializer.fdsBulkActionsRegistry =
-			new FDSBulkActionsRegistryImpl(serviceTrackerMap);
-
 		List<FDSActionDropdownItem> fdsActionDropdownItems1 =
 			ListUtil.fromArray(
 				new FDSActionDropdownItem(
@@ -300,8 +287,6 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 				FDS_NAMES[1], httpServletRequest));
 
 		_unregisterServices();
-
-		serviceTrackerMap.close();
 	}
 
 	@Test

@@ -6,10 +6,12 @@
 package com.liferay.frontend.data.set.internal.serializer;
 
 import com.liferay.frontend.data.set.SystemFDSEntry;
+import com.liferay.frontend.data.set.action.FDSBulkActions;
 import com.liferay.frontend.data.set.action.FDSCreationMenu;
 import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.frontend.data.set.filter.GroupedFDSFilters;
 import com.liferay.frontend.data.set.internal.SystemFDSEntryRegistryImpl;
+import com.liferay.frontend.data.set.internal.action.FDSBulkActionsRegistryImpl;
 import com.liferay.frontend.data.set.internal.action.FDSCreationMenuRegistryImpl;
 import com.liferay.frontend.data.set.internal.action.FDSItemsActionsRegistryImpl;
 import com.liferay.frontend.data.set.internal.filter.GroupedFDSFiltersRegistryImpl;
@@ -59,6 +61,18 @@ public abstract class BaseFDSSerializerTestCase {
 	public void setUp() {
 		bundleContext = SystemBundleUtil.getBundleContext();
 
+		systemFDSSerializer.fdsBulkActionsRegistry =
+			new FDSBulkActionsRegistryImpl(
+				(ServiceTrackerMap
+					<String,
+					 ServiceTrackerCustomizerFactory.ServiceWrapper
+						 <FDSBulkActions>>)_registerServiceTrackerMap(
+							 ServiceTrackerMapFactory.openSingleValueMap(
+								 bundleContext, FDSBulkActions.class,
+								 "frontend.data.set.name",
+								 ServiceTrackerCustomizerFactory.
+									 <FDSBulkActions>serviceWrapper(
+										 bundleContext))));
 		systemFDSSerializer.fdsCreationMenuRegistry =
 			new FDSCreationMenuRegistryImpl(
 				(ServiceTrackerMap

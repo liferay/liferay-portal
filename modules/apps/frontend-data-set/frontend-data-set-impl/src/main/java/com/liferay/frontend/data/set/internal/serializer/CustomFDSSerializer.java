@@ -221,9 +221,8 @@ public class CustomFDSSerializer
 	public List<FDSActionDropdownItem> serializeBulkActions(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		// TODO
-
-		return Collections.emptyList();
+		return _systemFDSSerializer.serializeBulkActions(
+			fdsName, httpServletRequest);
 	}
 
 	@Override
