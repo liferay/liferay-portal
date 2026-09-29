@@ -222,7 +222,7 @@ components:
                     readOnly: true
                     type: object
                 businessType:
-                    enum: [Aggregation, Assignee, Attachment, AutoIncrement, Boolean, Date, DateTime, Decimal, EmailAddress, Encrypted, Formula, Integer, LongInteger, LongText, MultiselectPicklist, PhoneNumber, Picklist, PrecisionDecimal, Relationship, RichText, Text]
+                    enum: [Aggregation, Assignee, Attachment, AutoIncrement, Boolean, Date, DateTime, Decimal, EmailAddress, Encrypted, Formula, Integer, Location, LongInteger, LongText, MultiselectPicklist, PhoneNumber, Picklist, PrecisionDecimal, Relationship, RichText, Text]
                     type: string
                 defaultValue:
                     deprecated: true

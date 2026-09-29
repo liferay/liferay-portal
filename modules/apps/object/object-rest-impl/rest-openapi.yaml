@@ -61,6 +61,14 @@ components:
                     readOnly: true
                     type: boolean
             type: object
+        Coordinates:
+            properties:
+                latitude:
+                    format: double
+                    type: number
+                longitude:
+                    format: double
+                    type: number
         FileEntry:
             properties:
                 alternativeText:
@@ -145,6 +153,13 @@ components:
                         type: string
                     readOnly: true
                     type: object
+        Location:
+            properties:
+                address:
+                    type: string
+                coordinates:
+                    $ref: "#/components/schemas/Coordinates"
+            type: object
         ObjectDefinitionBrief:
             properties:
                 classNameId:

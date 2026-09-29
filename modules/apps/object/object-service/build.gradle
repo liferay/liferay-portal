@@ -43,6 +43,7 @@ dependencies {
 	compileOnly project(":apps:layout:layout-content-page-editor-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:list-type:list-type-api")
+	compileOnly project(":apps:map:map-api")
 	compileOnly project(":apps:notification:notification-api")
 	compileOnly project(":apps:object:object-admin-rest-api")
 	compileOnly project(":apps:object:object-api")

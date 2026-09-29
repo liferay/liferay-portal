@@ -36,6 +36,8 @@ public class ObjectFieldConstants {
 
 	public static final String BUSINESS_TYPE_LARGE_FILE = "LargeFile";
 
+	public static final String BUSINESS_TYPE_LOCATION = "Location";
+
 	public static final String BUSINESS_TYPE_LONG_INTEGER = "LongInteger";
 
 	public static final String BUSINESS_TYPE_LONG_TEXT = "LongText";

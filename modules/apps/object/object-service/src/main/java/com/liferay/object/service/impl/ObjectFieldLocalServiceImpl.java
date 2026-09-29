@@ -77,6 +77,7 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
@@ -1805,6 +1806,13 @@ public class ObjectFieldLocalServiceImpl
 			ObjectDefinition objectDefinition, String businessType)
 		throws PortalException {
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-11388") &&
+			businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+			throw new UnsupportedOperationException();
+		}
+
 		if (Objects.equals(
 				objectDefinition.getStorageType(),
 				ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE) &&
@@ -2019,6 +2027,8 @@ public class ObjectFieldLocalServiceImpl
 						ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
 						StringPool.COMMA,
 						ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_LOCATION,
 						StringPool.COMMA,
 						ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
 						StringPool.COMMA,

@@ -18,6 +18,8 @@ public class ObjectDDMFormFieldTypeConstants {
 
 	public static final String EMAIL_ADDRESS = "email-address";
 
+	public static final String LOCATION = "location";
+
 	public static final String MULTISELECT_PICKLIST = "multiselect-picklist";
 
 	public static final String OBJECT_RELATIONSHIP = "object-relationship";
