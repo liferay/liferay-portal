@@ -11,6 +11,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
@@ -184,10 +185,10 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 					themeDisplay.getCompanyId())) {
 
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_fetchDefaultLayoutPageTemplateEntry(
+				LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 					_classNameLocalService.getClassNameId(
 						objectDefinition.getClassName()),
-					designLibraryGroupIds, layoutSet.getGroupId());
+					0, designLibraryGroupIds, layoutSet.getGroupId());
 
 			if ((layoutPageTemplateEntry == null) ||
 				!layoutPageTemplateEntry.isDefaultTemplate()) {
@@ -208,25 +209,6 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 			_visitObjectEntries(
 				element, groupIds, layout, objectDefinition, themeDisplay);
 		}
-	}
-
-	private LayoutPageTemplateEntry _fetchDefaultLayoutPageTemplateEntry(
-		long classNameId, long[] designLibraryGroupIds, long groupId) {
-
-		for (long curGroupId :
-				ArrayUtil.append(new long[] {groupId}, designLibraryGroupIds)) {
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.
-					fetchDefaultLayoutPageTemplateEntry(
-						curGroupId, classNameId, 0);
-
-			if (layoutPageTemplateEntry != null) {
-				return layoutPageTemplateEntry;
-			}
-		}
-
-		return null;
 	}
 
 	private Layout _fetchVisitedLayout(

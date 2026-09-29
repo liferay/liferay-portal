@@ -17,7 +17,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -58,9 +58,10 @@ public class AssetDisplayPageUtil {
 		}
 
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-			_fetchDefaultLayoutPageTemplateEntry(
+			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassTypeId(), groupId);
+				layoutDisplayPageObjectProvider.getClassTypeId(),
+				_getConnectedDesignLibraryGroupIds(groupId), groupId);
 
 		return _getAssetDisplayPage(
 			groupId, layoutDisplayPageObjectProvider.getClassNameId(),
@@ -73,8 +74,9 @@ public class AssetDisplayPageUtil {
 			long groupId, long classNameId, long classPK, long classTypeId) {
 
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-			_fetchDefaultLayoutPageTemplateEntry(
-				classNameId, classTypeId, groupId);
+			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
+				classNameId, classTypeId,
+				_getConnectedDesignLibraryGroupIds(groupId), groupId);
 
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry =
 			LayoutDisplayPageProviderRegistryUtil.
@@ -146,34 +148,6 @@ public class AssetDisplayPageUtil {
 		}
 
 		return false;
-	}
-
-	private static LayoutPageTemplateEntry _fetchDefaultLayoutPageTemplateEntry(
-		long classNameId, long classTypeId, long groupId) {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					groupId, classNameId, classTypeId);
-
-		if (layoutPageTemplateEntry != null) {
-			return layoutPageTemplateEntry;
-		}
-
-		for (long designLibraryGroupId :
-				_getConnectedDesignLibraryGroupIds(groupId)) {
-
-			layoutPageTemplateEntry =
-				LayoutPageTemplateEntryServiceUtil.
-					fetchDefaultLayoutPageTemplateEntry(
-						designLibraryGroupId, classNameId, classTypeId);
-
-			if (layoutPageTemplateEntry != null) {
-				return layoutPageTemplateEntry;
-			}
-		}
-
-		return null;
 	}
 
 	private static LayoutPageTemplateEntry _getAssetDisplayPage(

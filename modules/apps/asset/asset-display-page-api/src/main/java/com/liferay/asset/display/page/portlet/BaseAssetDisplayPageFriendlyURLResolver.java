@@ -36,6 +36,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.layout.seo.template.LayoutSEOTemplateProcessor;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -419,33 +420,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	@Reference
 	protected Portal portal;
 
-	private LayoutPageTemplateEntry _fetchDefaultLayoutPageTemplateEntry(
-		long classNameId, long classTypeId, long groupId) {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryService.fetchDefaultLayoutPageTemplateEntry(
-				groupId, classNameId, classTypeId);
-
-		if (layoutPageTemplateEntry != null) {
-			return layoutPageTemplateEntry;
-		}
-
-		for (long connectedGroupId :
-				getConnectedDesignLibraryGroupIds(groupId)) {
-
-			layoutPageTemplateEntry =
-				layoutPageTemplateEntryService.
-					fetchDefaultLayoutPageTemplateEntry(
-						connectedGroupId, classNameId, classTypeId);
-
-			if (layoutPageTemplateEntry != null) {
-				return layoutPageTemplateEntry;
-			}
-		}
-
-		return null;
-	}
-
 	private <T> AssetEntry _getAssetEntry(
 		T infoItem,
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider) {
@@ -570,9 +544,10 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_fetchDefaultLayoutPageTemplateEntry(
+			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassTypeId(), groupId);
+				layoutDisplayPageObjectProvider.getClassTypeId(),
+				getConnectedDesignLibraryGroupIds(groupId), groupId);
 
 		if (layoutPageTemplateEntry == null) {
 			return null;

@@ -179,29 +179,6 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 		actionableDynamicQuery.performActions();
 	}
 
-	private LayoutPageTemplateEntry _fetchDefaultLayoutPageTemplateEntry(
-		long classNameId, long classTypeId, long[] designLibraryGroupIds,
-		long groupId) {
-
-		String classTypeKey = LayoutPageTemplateEntryUtil.getClassTypeKey(
-			classNameId, classTypeId, groupId);
-
-		for (long curGroupId :
-				ArrayUtil.append(new long[] {groupId}, designLibraryGroupIds)) {
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.
-					fetchDefaultLayoutPageTemplateEntry(
-						curGroupId, classNameId, classTypeKey);
-
-			if (layoutPageTemplateEntry != null) {
-				return layoutPageTemplateEntry;
-			}
-		}
-
-		return null;
-	}
-
 	private Layout _fetchVisitedLayout(
 			long[] designLibraryGroupIds, long groupId, long plid)
 		throws PortalException {
@@ -359,7 +336,7 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 
 		if (assetDisplayPageEntry == null) {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_fetchDefaultLayoutPageTemplateEntry(
+				LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 					classNameId, ddmStructure.getStructureId(),
 					designLibraryGroupIds, groupId);
 

@@ -9,14 +9,46 @@ import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistryUtil;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Mikel Lorza
+ * @author Javier Moral
  */
 public class LayoutPageTemplateEntryUtil {
+
+	public static LayoutPageTemplateEntry fetchDefaultLayoutPageTemplateEntry(
+		long classNameId, long classTypeId, long[] designLibraryGroupIds,
+		long groupId) {
+
+		String classTypeKey = getClassTypeKey(
+			classNameId, classTypeId, groupId);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryLocalServiceUtil.
+				fetchDefaultLayoutPageTemplateEntry(
+					groupId, classNameId, classTypeKey);
+
+		if (layoutPageTemplateEntry != null) {
+			return layoutPageTemplateEntry;
+		}
+
+		for (long designLibraryGroupId : designLibraryGroupIds) {
+			layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchDefaultLayoutPageTemplateEntry(
+						designLibraryGroupId, classNameId, classTypeKey);
+
+			if (layoutPageTemplateEntry != null) {
+				return layoutPageTemplateEntry;
+			}
+		}
+
+		return null;
+	}
 
 	public static long getClassTypeId(
 		LayoutPageTemplateEntry layoutPageTemplateEntry) {
