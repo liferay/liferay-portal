@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.search.QueryTerm;
 import com.liferay.portal.kernel.search.StringQuery;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
+import com.liferay.portal.kernel.search.TermsQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.query.QueryVisitor;
@@ -417,6 +418,20 @@ public class ElasticsearchQueryVisitor implements QueryVisitor<QueryVariant> {
 		builder.term(termRangeQueryBuilder.build());
 
 		return builder.build();
+	}
+
+	@Override
+	public QueryVariant visitQuery(TermsQuery termsQuery) {
+		Float boost = null;
+
+		if (!termsQuery.isDefaultBoost()) {
+			boost = termsQuery.getBoost();
+		}
+
+		List<String> values = termsQuery.getValues();
+
+		return QueryUtil.translateTerms(
+			boost, termsQuery.getField(), values.toArray(new String[0]));
 	}
 
 	@Override
