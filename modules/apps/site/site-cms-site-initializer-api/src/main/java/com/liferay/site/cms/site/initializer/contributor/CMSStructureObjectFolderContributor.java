@@ -17,7 +17,15 @@ public interface CMSStructureObjectFolderContributor {
 		return null;
 	}
 
+	public default String getCreationMenuIcon() {
+		return null;
+	}
+
 	public String getLabel();
+
+	public default String getObjectEntryFolderExternalReferenceCode() {
+		return null;
+	}
 
 	public String getObjectFolderExternalReferenceCode();
 
