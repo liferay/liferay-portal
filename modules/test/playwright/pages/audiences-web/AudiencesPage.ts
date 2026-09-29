@@ -37,7 +37,8 @@ export class AudiencesPage {
 			name: 'ERC',
 		});
 		this.generalSettingsButton = page.getByRole('button', {
-			name: 'General Settings',
+			exact: true,
+			name: 'Settings',
 		});
 		this.nameInput = page.getByPlaceholder('New Audience');
 		this.newAudienceButton = page.getByLabel('New', {exact: true});

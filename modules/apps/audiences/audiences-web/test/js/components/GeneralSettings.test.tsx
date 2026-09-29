@@ -57,13 +57,16 @@ describe('GeneralSettings', () => {
 	it('starts collapsed, expands on interaction, and edits the external reference code', async () => {
 		render(<GeneralSettingsWrapper />);
 
-		const toggle = screen.getByRole('button', {name: 'general-settings'});
+		const toggle = screen.getByRole('button', {name: 'settings'});
 
 		expect(toggle.getAttribute('aria-expanded')).toBe('false');
 
 		await userEvent.click(toggle);
 
 		expect(toggle.getAttribute('aria-expanded')).toBe('true');
+
+		expect(screen.getByText('general')).toBeInTheDocument();
+		expect(screen.getByText('scope')).toBeInTheDocument();
 
 		const input = screen.getByRole('textbox', {
 			name: 'erc',

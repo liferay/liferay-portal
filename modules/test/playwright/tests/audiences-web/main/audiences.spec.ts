@@ -232,7 +232,7 @@ test(
 );
 
 test(
-	'Shows a collapsible General Settings section with an external reference code field',
+	'Shows a collapsible Settings section with an external reference code field',
 	{
 		tag: '@LPD-95291',
 	},
@@ -242,7 +242,8 @@ test(
 		await page.getByLabel('New', {exact: true}).click();
 
 		const generalSettingsToggle = page.getByRole('button', {
-			name: 'General Settings',
+			exact: true,
+			name: 'Settings',
 		});
 
 		const externalReferenceCode = page.getByRole('textbox', {name: 'ERC'});
@@ -285,7 +286,7 @@ test(
 
 		const externalReferenceCode = 'ERC-' + getRandomString();
 
-		await page.getByRole('button', {name: 'General Settings'}).click();
+		await page.getByRole('button', {exact: true, name: 'Settings'}).click();
 
 		await page
 			.getByRole('textbox', {name: 'ERC'})
@@ -306,7 +307,7 @@ test(
 				.locator('button.dropdown-toggle'),
 		});
 
-		await page.getByRole('button', {name: 'General Settings'}).click();
+		await page.getByRole('button', {exact: true, name: 'Settings'}).click();
 
 		await expect(page.getByRole('textbox', {name: 'ERC'})).toHaveValue(
 			externalReferenceCode
@@ -335,7 +336,7 @@ test(
 				.locator('button.dropdown-toggle'),
 		});
 
-		await page.getByRole('button', {name: 'General Settings'}).click();
+		await page.getByRole('button', {exact: true, name: 'Settings'}).click();
 
 		await expect(page.getByRole('textbox', {name: 'ERC'})).toHaveValue(
 			updatedExternalReferenceCode
