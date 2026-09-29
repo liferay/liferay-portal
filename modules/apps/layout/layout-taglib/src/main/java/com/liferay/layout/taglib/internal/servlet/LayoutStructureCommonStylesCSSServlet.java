@@ -331,8 +331,7 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		}
 
 		return _mergeFrontendTokensJSONObjects(
-			_getThemeFrontendTokensJSONObject(
-				groupId, layout, frontendTokenValuesJSONObject),
+			_getThemeFrontendTokensJSONObject(groupId, layout),
 			_getCustomFrontendTokensJSONObject(frontendTokenValuesJSONObject));
 	}
 
@@ -458,7 +457,7 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 	}
 
 	private JSONObject _getThemeFrontendTokensJSONObject(
-		long groupId, Layout layout, JSONObject frontendTokenValuesJSONObject) {
+		long groupId, Layout layout) {
 
 		JSONObject frontendTokensJSONObject = _jsonFactory.createJSONObject();
 
@@ -490,17 +489,6 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 				continue;
 			}
 
-			String value = String.valueOf(
-				frontendToken.<Object>getDefaultValue());
-
-			JSONObject valueJSONObject =
-				frontendTokenValuesJSONObject.getJSONObject(
-					frontendToken.getName());
-
-			if (valueJSONObject != null) {
-				value = valueJSONObject.getString("value");
-			}
-
 			frontendTokensJSONObject.put(
 				frontendToken.getName(),
 				JSONUtil.put(
@@ -512,7 +500,8 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 						return frontendTokenMapping.getValue();
 					}
 				).put(
-					"value", value
+					"value",
+					String.valueOf(frontendToken.<Object>getDefaultValue())
 				));
 		}
 
