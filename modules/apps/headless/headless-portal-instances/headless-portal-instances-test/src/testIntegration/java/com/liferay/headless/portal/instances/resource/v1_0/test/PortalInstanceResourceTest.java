@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.security.auth.Authenticator;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
@@ -51,8 +50,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author István András Dézsi
@@ -804,12 +801,6 @@ public class PortalInstanceResourceTest
 	private static CompanyLocalService _companyLocalService;
 
 	private static PortalInstance _portalInstance;
-
-	@Inject
-	private ConfigurationAdmin _configurationAdmin;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
