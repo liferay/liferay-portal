@@ -165,6 +165,18 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 		return kaleoInstance;
 	}
 
+	@Override
+	public KaleoInstance updateKaleoInstance(
+			long kaleoInstanceId, Map<String, Serializable> workflowContext)
+		throws PortalException {
+
+		_kaleoInstanceModelResourcePermission.check(
+			getPermissionChecker(), kaleoInstanceId, ActionKeys.UPDATE);
+
+		return kaleoInstanceLocalService.updateKaleoInstance(
+			kaleoInstanceId, workflowContext);
+	}
+
 	private String _getVersion(int version) {
 		return version + StringPool.PERIOD + 0;
 	}
