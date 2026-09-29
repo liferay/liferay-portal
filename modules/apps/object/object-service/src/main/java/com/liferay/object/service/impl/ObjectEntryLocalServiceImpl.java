@@ -106,6 +106,7 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.ObjectState;
 import com.liferay.object.model.ObjectStateFlow;
 import com.liferay.object.model.bag.ObjectFieldBag;
+import com.liferay.object.model.impl.ObjectEntryImpl;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTable;
@@ -178,6 +179,7 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -316,6 +318,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -1864,6 +1867,68 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
 			objectFieldBag, objectEntry.getObjectEntryId(), selectExpressions,
 			true);
+
+		if (row == null) {
+			return Collections.emptyMap();
+		}
+
+		return _getValues(
+			objectDefinition, objectEntry, objectFieldBag, row,
+			selectExpressions);
+	}
+
+	@Override
+	public Map<String, Serializable> getValues(
+			ObjectEntry objectEntry,
+			Map<String, Object> dynamicObjectDefinitionTableValues,
+			Consumer<Map<String, Object>>
+				dynamicObjectDefinitionTableValuesConsumer)
+		throws PortalException {
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
+			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
+				false, objectDefinition, _objectFieldLocalService);
+
+		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
+			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
+				true, objectDefinition, _objectFieldLocalService);
+
+		Expression<?>[] selectExpressions = _getSelectExpressions(
+			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
+			objectEntry.getObjectEntryId());
+
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
+		Object[] row = null;
+
+		if (ArrayUtil.exists(
+				selectExpressions,
+				selectExpression -> !(selectExpression instanceof Column))) {
+
+			row = _fetchDynamicObjectDefinitionTableRow(
+				dynamicObjectDefinitionTable,
+				extensionDynamicObjectDefinitionTable, objectFieldBag,
+				objectEntry.getObjectEntryId(), selectExpressions, true);
+		}
+		else {
+			row = _fetchDynamicObjectDefinitionTableRow(
+				dynamicObjectDefinitionTableValues, selectExpressions);
+
+			if (row == null) {
+				row = _fetchDynamicObjectDefinitionTableRow(
+					dynamicObjectDefinitionTable,
+					extensionDynamicObjectDefinitionTable, objectFieldBag,
+					objectEntry.getObjectEntryId(), selectExpressions, false);
+
+				if (row != null) {
+					dynamicObjectDefinitionTableValuesConsumer.accept(
+						_getDynamicObjectDefinitionTableValues(
+							row, selectExpressions));
+				}
+			}
+		}
 
 		if (row == null) {
 			return Collections.emptyMap();
@@ -4054,6 +4119,31 @@ public class ObjectEntryLocalServiceImpl
 		return rows.get(0);
 	}
 
+	private Object[] _fetchDynamicObjectDefinitionTableRow(
+		Map<String, Object> dynamicObjectDefinitionTableValues,
+		Expression<?>[] selectExpressions) {
+
+		if (dynamicObjectDefinitionTableValues == null) {
+			return null;
+		}
+
+		Object[] row = new Object[selectExpressions.length];
+
+		for (int i = 0; i < selectExpressions.length; i++) {
+			Column<?, ?> column = (Column<?, ?>)selectExpressions[i];
+
+			if (!dynamicObjectDefinitionTableValues.containsKey(
+					column.getName())) {
+
+				return null;
+			}
+
+			row[i] = dynamicObjectDefinitionTableValues.get(column.getName());
+		}
+
+		return row;
+	}
+
 	private void _fillDefaultValue(
 		String defaultLanguageId, long objectDefinitionId,
 		Map<String, Serializable> values) {
@@ -4598,6 +4688,21 @@ public class ObjectEntryLocalServiceImpl
 
 		throw new ObjectEntryDefaultLanguageIdException(
 			"Language ID " + defaultLanguageId + " is not available");
+	}
+
+	private Map<String, Object> _getDynamicObjectDefinitionTableValues(
+		Object[] row, Expression<?>[] selectExpressions) {
+
+		Map<String, Object> dynamicObjectDefinitionTableValues =
+			new HashMap<>();
+
+		for (int i = 0; i < selectExpressions.length; i++) {
+			Column<?, ?> column = (Column<?, ?>)selectExpressions[i];
+
+			dynamicObjectDefinitionTableValues.put(column.getName(), row[i]);
+		}
+
+		return dynamicObjectDefinitionTableValues;
 	}
 
 	private DSLQuery _getExtensionDynamicObjectDefinitionTableSelectDSLQuery(
@@ -7781,6 +7886,9 @@ public class ObjectEntryLocalServiceImpl
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				true, objectDefinition, _objectFieldLocalService),
 			insertedValues, objectEntryId, partialUpdate, values);
+
+		EntityCacheUtil.removeResult(
+			ObjectEntryImpl.class, objectEntry.getPrimaryKeyObj());
 
 		_setExternalReferenceCode(objectEntry, values);
 
