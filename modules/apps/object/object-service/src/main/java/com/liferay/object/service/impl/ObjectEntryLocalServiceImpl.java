@@ -1854,19 +1854,11 @@ public class ObjectEntryLocalServiceImpl
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				true, objectDefinition, _objectFieldLocalService);
 
-		Expression<?>[] extensionSelectExpressions = ArrayUtil.remove(
-			_getSelectExpressions(
-				extensionDynamicObjectDefinitionTable,
-				dynamicObjectDefinitionTable, objectEntry.getObjectEntryId(),
-				null, null),
-			extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn());
+		Expression<?>[] selectExpressions = _getSelectExpressions(
+			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
+			objectEntry.getObjectEntryId());
 
 		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
-		Expression<?>[] selectExpressions = ArrayUtil.append(
-			_getSelectExpressions(
-				dynamicObjectDefinitionTable, dynamicObjectDefinitionTable,
-				objectEntry.getObjectEntryId(), null, null),
-			extensionSelectExpressions);
 
 		List<Object[]> rows = _list(
 			DSLQueryFactoryUtil.select(
@@ -5692,6 +5684,25 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionLocalizationTable.getObjectFieldColumns());
 
 		return selectExpressions.toArray(new Expression<?>[0]);
+	}
+
+	private Expression<?>[] _getSelectExpressions(
+			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+			DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable,
+			long objectEntryId)
+		throws PortalException {
+
+		Expression<?>[] extensionSelectExpressions = ArrayUtil.remove(
+			_getSelectExpressions(
+				extensionDynamicObjectDefinitionTable,
+				dynamicObjectDefinitionTable, objectEntryId, null, null),
+			extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn());
+
+		return ArrayUtil.append(
+			_getSelectExpressions(
+				dynamicObjectDefinitionTable, dynamicObjectDefinitionTable,
+				objectEntryId, null, null),
+			extensionSelectExpressions);
 	}
 
 	private Expression<?>[] _getSelectExpressions(
