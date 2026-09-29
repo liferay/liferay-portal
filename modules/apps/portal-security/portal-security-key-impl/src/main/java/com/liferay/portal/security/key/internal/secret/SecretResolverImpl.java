@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -140,6 +142,18 @@ public class SecretResolverImpl implements SecretResolver {
 				return value;
 			}
 
+			FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+				identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE) ?
+					"preference-secret-reference-rejected" :
+						"configuration-secret-reference-rejected",
+				FIPSAuditEvent.Severity.WARNING);
+
+			fipsAuditEvent.put("company-id", companyId);
+			fipsAuditEvent.put("identifier", identifier);
+			fipsAuditEvent.put("rejected-identifier", referencedIdentifier);
+
+			FIPSAuditUtil.write(fipsAuditEvent);
+
 			return ReflectionUtil.throwException(
 				new SecretException(
 					StringBundler.concat(
@@ -156,8 +170,19 @@ public class SecretResolverImpl implements SecretResolver {
 			return KeyReferenceUtil.toKeyReferenceString(
 				_secretManager.putSecret(companyId, secret));
 		}
-		catch (SecretException secretException) {
-			return ReflectionUtil.throwException(secretException);
+		catch (Exception exception) {
+			FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+				identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE) ?
+					"preference-secret-store-failure" :
+						"configuration-secret-store-failure",
+				FIPSAuditEvent.Severity.WARNING);
+
+			fipsAuditEvent.put("company-id", companyId);
+			fipsAuditEvent.put("identifier", identifier);
+
+			FIPSAuditUtil.write(fipsAuditEvent);
+
+			return ReflectionUtil.throwException(exception);
 		}
 	}
 
