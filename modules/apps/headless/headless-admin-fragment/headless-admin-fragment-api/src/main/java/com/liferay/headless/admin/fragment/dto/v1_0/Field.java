@@ -75,6 +75,10 @@ import java.util.function.Supplier;
 			name = "itemSelector", value = ItemSelectorField.class
 		),
 		@JsonSubTypes.Type(name = "length", value = LengthField.class),
+		@JsonSubTypes.Type(
+			name = "navigationMenuSelector",
+			value = NavigationMenuSelectorField.class
+		),
 		@JsonSubTypes.Type(name = "select", value = SelectField.class),
 		@JsonSubTypes.Type(
 			name = "targetCollectionDisplay",
@@ -563,7 +567,8 @@ public abstract class Field implements Serializable {
 		CATEGORY_TREE_NODE_SELECTOR("categoryTreeNodeSelector"),
 		CHECKBOX("checkbox"), COLLECTION_SELECTOR("collectionSelector"),
 		COLOR_PALETTE("colorPalette"), COLOR_PICKER("colorPicker"),
-		ITEM_SELECTOR("itemSelector"), LENGTH("length"), SELECT("select"),
+		ITEM_SELECTOR("itemSelector"), LENGTH("length"),
+		NAVIGATION_MENU_SELECTOR("navigationMenuSelector"), SELECT("select"),
 		TARGET_COLLECTION_DISPLAY("targetCollectionDisplay"), TEXT("text"),
 		URL("url"), VIDEO_SELECTOR("videoSelector");
 
@@ -710,4 +715,4 @@ public abstract class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-311206686
+// LIFERAY-REST-BUILDER-HASH:-771391323

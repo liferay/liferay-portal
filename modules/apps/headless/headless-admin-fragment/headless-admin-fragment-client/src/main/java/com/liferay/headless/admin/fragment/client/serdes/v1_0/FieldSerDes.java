@@ -13,6 +13,7 @@ import com.liferay.headless.admin.fragment.client.dto.v1_0.ColorPickerField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Field;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ItemSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.LengthField;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.NavigationMenuSelectorField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.SelectField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.TargetCollectionDisplayField;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.TextField;
@@ -86,6 +87,11 @@ public class FieldSerDes {
 
 			if (typeString.equals("length")) {
 				return LengthFieldSerDes.toJSON((LengthField)field);
+			}
+
+			if (typeString.equals("navigationMenuSelector")) {
+				return NavigationMenuSelectorFieldSerDes.toJSON(
+					(NavigationMenuSelectorField)field);
 			}
 
 			if (typeString.equals("select")) {
@@ -248,6 +254,10 @@ public class FieldSerDes {
 					return LengthField.toDTO(json);
 				}
 
+				if (typeString.equals("navigationMenuSelector")) {
+					return NavigationMenuSelectorField.toDTO(json);
+				}
+
 				if (typeString.equals("select")) {
 					return SelectField.toDTO(json);
 				}
@@ -400,4 +410,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1567055112
+// LIFERAY-REST-BUILDER-HASH:-67848259

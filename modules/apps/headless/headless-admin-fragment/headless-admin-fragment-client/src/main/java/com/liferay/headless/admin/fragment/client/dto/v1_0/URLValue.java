@@ -119,4 +119,4 @@ public abstract class URLValue implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1642530899
+// LIFERAY-REST-BUILDER-HASH:371932439
