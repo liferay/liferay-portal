@@ -434,3 +434,72 @@ CardStyleModal.args = {
 	size: 'md',
 	title: 'Lorem Ipsum Dolor Sit Amet!',
 };
+export function Stacked() {
+	const first = useModal();
+	const second = useModal();
+
+	return (
+		<>
+			{first.open && (
+				<ClayModal observer={first.observer} size="lg">
+					<ClayModal.Header>First Modal</ClayModal.Header>
+
+					<ClayModal.Body>
+						<p>This is the first modal.</p>
+					</ClayModal.Body>
+
+					<ClayModal.Footer
+						last={
+							<ClayButton.Group spaced>
+								<ClayButton
+									displayType="secondary"
+									onClick={() => first.onOpenChange(false)}
+								>
+									Close
+								</ClayButton>
+
+								<ClayButton
+									onClick={() => second.onOpenChange(true)}
+								>
+									Open Second Modal
+								</ClayButton>
+							</ClayButton.Group>
+						}
+					/>
+				</ClayModal>
+			)}
+
+			{second.open && (
+				<ClayModal observer={second.observer} size="lg">
+					<ClayModal.Header>Second Modal</ClayModal.Header>
+
+					<ClayModal.Body>
+						<p>
+							This is the second modal, stacked on top of the
+							first.
+						</p>
+					</ClayModal.Body>
+
+					<ClayModal.Footer
+						last={
+							<ClayButton.Group spaced>
+								<ClayButton
+									onClick={() => second.onOpenChange(false)}
+								>
+									Close
+								</ClayButton>
+							</ClayButton.Group>
+						}
+					/>
+				</ClayModal>
+			)}
+
+			<ClayButton
+				displayType="primary"
+				onClick={() => first.onOpenChange(true)}
+			>
+				Open First Modal
+			</ClayButton>
+		</>
+	);
+}
