@@ -336,6 +336,137 @@
 					}
 				},
 				{
+					"defaultValue": {
+						"contextualMenu": "children",
+						"title": "${CONTEXTUAL_MENU_CHILDREN_TITLE}"
+					},
+					"name": "navigationMenuContextualChildren",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"contextualMenu": "parent-and-its-siblings",
+						"title": "${CONTEXTUAL_MENU_PARENT_AND_ITS_SIBLINGS_TITLE}"
+					},
+					"name": "navigationMenuContextualParentAndItsSiblings",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"contextualMenu": "self-and-siblings",
+						"title": "${CONTEXTUAL_MENU_SELF_AND_SIBLINGS_TITLE}"
+					},
+					"name": "navigationMenuContextualSelfAndSiblings",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"siteNavigationMenuExternalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}",
+						"siteNavigationMenuId": "${SITE_NAVIGATION_MENU_ID}",
+						"title": "${SITE_NAVIGATION_MENU_NAME}"
+					},
+					"name": "navigationMenuSiteMenu",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"siteNavigationMenuExternalReferenceCode": "${IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_ERC}",
+						"siteNavigationMenuId": "${IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_ID}",
+						"siteNavigationMenuScopeExternalReferenceCode": "${IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE}",
+						"title": "${IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_NAME}"
+					},
+					"name": "navigationMenuSiteMenuFromOtherSite",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"siteNavigationMenuExternalReferenceCode": "site-navigation-menu-nonexistent-erc"
+					},
+					"name": "navigationMenuSiteMenuNonexistent",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"siteNavigationMenuExternalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}",
+						"siteNavigationMenuId": "${SITE_NAVIGATION_MENU_ID}",
+						"title": "${SITE_NAVIGATION_MENU_NAME}"
+					},
+					"name": "navigationMenuSiteMenuWithCurrentSiteScope",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"parentSiteNavigationMenuItemExternalReferenceCode": "site-navigation-menu-nonexistent-parent-item-erc",
+						"siteNavigationMenuExternalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}",
+						"siteNavigationMenuId": "${SITE_NAVIGATION_MENU_ID}",
+						"title": "${SITE_NAVIGATION_MENU_NAME}"
+					},
+					"name": "navigationMenuSiteMenuWithNonexistentParentItem",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"parentSiteNavigationMenuItemExternalReferenceCode": "${SITE_NAVIGATION_MENU_ITEM_ERC}",
+						"parentSiteNavigationMenuItemId": "${SITE_NAVIGATION_MENU_ITEM_ID}",
+						"siteNavigationMenuExternalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}",
+						"siteNavigationMenuId": "${SITE_NAVIGATION_MENU_ID}",
+						"title": "${SITE_NAVIGATION_MENU_ITEM_TITLE}"
+					},
+					"name": "navigationMenuSiteMenuWithParentItem",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"privateLayout": false,
+						"title": "${PAGES_HIERARCHY_TITLE}"
+					},
+					"name": "navigationMenuSitePages",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"privateLayout": true,
+						"title": "${PRIVATE_PAGES_HIERARCHY_TITLE}"
+					},
+					"name": "navigationMenuSitePagesPrivate",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"parentSiteNavigationMenuItemExternalReferenceCode": "layout-nonexistent-parent-page-erc",
+						"privateLayout": false,
+						"title": "${PAGES_HIERARCHY_TITLE}"
+					},
+					"name": "navigationMenuSitePagesWithNonexistentParentPage",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"parentSiteNavigationMenuItemExternalReferenceCode": "${LAYOUT_ERC}",
+						"parentSiteNavigationMenuItemId": "${LAYOUT_PLID}",
+						"privateLayout": false,
+						"title": "${LAYOUT_NAME}"
+					},
+					"name": "navigationMenuSitePagesWithParentPage",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"contextualMenu": "children",
+						"title": "${CONTEXTUAL_MENU_CHILDREN_TITLE}"
+					},
+					"name": "navigationMenuVisibleWhenCheckboxTrue",
+					"type": "navigationMenuSelector",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
 					"defaultValue": "detailed",
 					"name": "selectWithLabels",
 					"type": "select",

@@ -94,6 +94,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.log.LogCapture;
@@ -104,6 +105,13 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.TransformUtil;
+import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
+import com.liferay.site.navigation.model.SiteNavigationMenu;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
+import com.liferay.site.navigation.type.util.SiteNavigationMenuItemTypeRegistryUtil;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -226,9 +234,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107087",
-			"LPD-107088", "LPD-107185", "LPD-107186", "LPD-107187",
-			"LPD-107188", "LPD-107189"
+			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
+			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
+			"LPD-107187", "LPD-107188", "LPD-107189"
 		}
 	)
 	public void testGetSiteFragment() throws Exception {
@@ -272,9 +280,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107087",
-			"LPD-107088", "LPD-107185", "LPD-107186", "LPD-107187",
-			"LPD-107188", "LPD-107189"
+			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
+			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
+			"LPD-107187", "LPD-107188", "LPD-107189"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -338,9 +346,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
-			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107087",
-			"LPD-107088", "LPD-107185", "LPD-107186", "LPD-107187",
-			"LPD-107188", "LPD-107189"
+			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
+			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
+			"LPD-107187", "LPD-107188", "LPD-107189"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {
@@ -882,6 +890,24 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
+		SiteNavigationMenu siteNavigationMenu =
+			_siteNavigationMenuLocalService.addSiteNavigationMenu(
+				null, TestPropsValues.getUserId(), testGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+
+		SiteNavigationMenuItem siteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.addSiteNavigationMenuItem(
+				null, TestPropsValues.getUserId(), testGroup.getGroupId(),
+				siteNavigationMenu.getSiteNavigationMenuId(), 0,
+				SiteNavigationMenuItemTypeConstants.NODE,
+				UnicodePropertiesBuilder.put(
+					"name", RandomTestUtil.randomString()
+				).buildString(),
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+
 		InfoCollectionProvider<?> infoCollectionProvider =
 			_infoItemServiceRegistry.getInfoItemService(
 				InfoCollectionProvider.class,
@@ -915,6 +941,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		AssetListEntry irrelevantGroupAssetListEntry = _addAssetListEntry(
 			irrelevantGroup);
 
+		SiteNavigationMenu irrelevantGroupSiteNavigationMenu =
+			_siteNavigationMenuLocalService.addSiteNavigationMenu(
+				null, TestPropsValues.getUserId(), irrelevantGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					irrelevantGroup.getGroupId()));
+
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			testGroup.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
@@ -926,6 +959,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			StringPool.BLANK, LayoutConstants.TYPE_PORTLET, false,
 			StringPool.BLANK,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		SiteNavigationMenuItemType siteNavigationMenuItemType =
+			SiteNavigationMenuItemTypeRegistryUtil.
+				getSiteNavigationMenuItemType(siteNavigationMenuItem);
 
 		return HashMapBuilder.put(
 			"ASSET_LIST_ENTRY_CLASS_NAME_ID",
@@ -977,6 +1014,17 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"COLLECTION_PROVIDER_TITLE",
 			infoCollectionProvider.getLabel(LocaleUtil.getDefault())
 		).put(
+			"CONTEXTUAL_MENU_CHILDREN_TITLE",
+			_language.get(LocaleUtil.getMostRelevantLocale(), "children")
+		).put(
+			"CONTEXTUAL_MENU_PARENT_AND_ITS_SIBLINGS_TITLE",
+			_language.get(
+				LocaleUtil.getMostRelevantLocale(), "parent-and-its-siblings")
+		).put(
+			"CONTEXTUAL_MENU_SELF_AND_SIBLINGS_TITLE",
+			_language.get(
+				LocaleUtil.getMostRelevantLocale(), "self-and-siblings")
+		).put(
 			"DDM_STRUCTURE_KEY", ddmStructure.getStructureKey()
 		).put(
 			"IRRELEVANT_GROUP_ASSET_LIST_ENTRY_ERC",
@@ -997,6 +1045,16 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE",
 			irrelevantGroup.getExternalReferenceCode()
 		).put(
+			"IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_ERC",
+			irrelevantGroupSiteNavigationMenu.getExternalReferenceCode()
+		).put(
+			"IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_ID",
+			String.valueOf(
+				irrelevantGroupSiteNavigationMenu.getSiteNavigationMenuId())
+		).put(
+			"IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_NAME",
+			irrelevantGroupSiteNavigationMenu.getName()
+		).put(
 			"JOURNAL_ARTICLE_CLASS_NAME_ID",
 			String.valueOf(PortalUtil.getClassNameId(JournalArticle.class))
 		).put(
@@ -1012,13 +1070,49 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		).put(
 			"LAYOUT_NAME", layout.getName(LocaleUtil.getMostRelevantLocale())
 		).put(
+			"LAYOUT_PLID", String.valueOf(layout.getPlid())
+		).put(
 			"LAYOUT_UUID", layout.getUuid()
 		).put(
 			"NONEXISTENT_CLASS_PK", String.valueOf(RandomTestUtil.randomLong())
 		).put(
+			"PAGES_HIERARCHY_TITLE",
+			() -> {
+				if (testGroup.isPrivateLayoutsEnabled()) {
+					return _language.get(
+						LocaleUtil.getMostRelevantLocale(),
+						"public-pages-hierarchy");
+				}
+
+				return _language.get(
+					LocaleUtil.getMostRelevantLocale(), "pages-hierarchy");
+			}
+		).put(
+			"PRIVATE_PAGES_HIERARCHY_TITLE",
+			_language.get(
+				LocaleUtil.getMostRelevantLocale(), "private-pages-hierarchy")
+		).put(
 			"SITE_EXTERNAL_REFERENCE_CODE", testGroup.getExternalReferenceCode()
 		).put(
 			"SITE_GROUP_ID", String.valueOf(testGroup.getGroupId())
+		).put(
+			"SITE_NAVIGATION_MENU_ERC",
+			siteNavigationMenu.getExternalReferenceCode()
+		).put(
+			"SITE_NAVIGATION_MENU_ID",
+			String.valueOf(siteNavigationMenu.getSiteNavigationMenuId())
+		).put(
+			"SITE_NAVIGATION_MENU_ITEM_ERC",
+			siteNavigationMenuItem.getExternalReferenceCode()
+		).put(
+			"SITE_NAVIGATION_MENU_ITEM_ID",
+			String.valueOf(siteNavigationMenuItem.getSiteNavigationMenuItemId())
+		).put(
+			"SITE_NAVIGATION_MENU_ITEM_TITLE",
+			siteNavigationMenuItemType.getTitle(
+				siteNavigationMenuItem, LocaleUtil.getMostRelevantLocale())
+		).put(
+			"SITE_NAVIGATION_MENU_NAME", siteNavigationMenu.getName()
 		).put(
 			"VOCABULARY_ERC", assetVocabulary.getExternalReferenceCode()
 		).put(
@@ -2092,6 +2186,25 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						"class name ", JournalArticle.class.getName(),
 						", external reference code item-erc-and-scope-erc, ",
 						"and scope external reference code item-scope-erc"),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", SiteNavigationMenu.class.getName(),
+						", external reference code ",
+						"site-navigation-menu-nonexistent-erc, and null scope ",
+						"with current scope ID ", testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", SiteNavigationMenuItem.class.getName(),
+						", external reference code ",
+						"site-navigation-menu-nonexistent-parent-item-erc, ",
+						"and null scope with current scope ID ",
+						testGroup.getGroupId()),
+					StringBundler.concat(
+						"Optional reference generated for missing entity with ",
+						"class name ", Layout.class.getName(),
+						", external reference code ",
+						"layout-nonexistent-parent-page-erc, and null scope ",
+						"with current scope ID ", testGroup.getGroupId()),
 					StringBundler.concat(
 						"Optional reference generated for missing entity with ",
 						"class name ", Layout.class.getName(),
@@ -3692,6 +3805,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;
+
+	@Inject
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
+
+	@Inject
+	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

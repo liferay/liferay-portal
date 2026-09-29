@@ -485,6 +485,234 @@
 				},
 				{
 					"defaultValue": {
+						"value": {
+							"contextualMenuType": "Children",
+							"navigationMenuType": "ContextualMenu"
+						}
+					},
+					"name": "navigationMenuContextualChildren",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"contextualMenuType": "ParentAndItsSiblings",
+							"navigationMenuType": "ContextualMenu"
+						}
+					},
+					"name": "navigationMenuContextualParentAndItsSiblings",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"contextualMenuType": "SelfAndSiblings",
+							"navigationMenuType": "ContextualMenu"
+						}
+					},
+					"name": "navigationMenuContextualSelfAndSiblings",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}"
+							},
+							"navigationMenuType": "SiteMenu"
+						}
+					},
+					"name": "navigationMenuSiteMenu",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_ERC}",
+								"scope": {
+									"externalReferenceCode": "${IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE}",
+									"type": "Site"
+								}
+							},
+							"navigationMenuType": "SiteMenu"
+						}
+					},
+					"name": "navigationMenuSiteMenuFromOtherSite",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${IRRELEVANT_GROUP_SITE_NAVIGATION_MENU_ERC}",
+								"scope": {
+									"externalReferenceCode": "${IRRELEVANT_GROUP_EXTERNAL_REFERENCE_CODE}",
+									"type": "Site"
+								}
+							},
+							"navigationMenuType": "SiteMenu"
+						}
+					},
+					"name": "navigationMenuSiteMenuFromOtherSiteWithoutId",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "site-navigation-menu-nonexistent-erc"
+							},
+							"navigationMenuType": "SiteMenu"
+						}
+					},
+					"name": "navigationMenuSiteMenuNonexistent",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}"
+							},
+							"navigationMenuType": "SiteMenu"
+						}
+					},
+					"name": "navigationMenuSiteMenuWithCurrentSiteScope",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}"
+							},
+							"navigationMenuType": "SiteMenu"
+						}
+					},
+					"name": "navigationMenuSiteMenuWithNonexistentParentItem",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}"
+							},
+							"navigationMenuType": "SiteMenu",
+							"parentMenuItemExternalReferenceCode": "${SITE_NAVIGATION_MENU_ITEM_ERC}"
+						}
+					},
+					"name": "navigationMenuSiteMenuWithParentItem",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}"
+							},
+							"navigationMenuType": "SiteMenu",
+							"parentMenuItemExternalReferenceCode": "${SITE_NAVIGATION_MENU_ITEM_ERC}"
+						}
+					},
+					"name": "navigationMenuSiteMenuWithParentItemAndNumericIds",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuItemExternalReference": {
+								"className": "com.liferay.site.navigation.model.SiteNavigationMenu",
+								"externalReferenceCode": "${SITE_NAVIGATION_MENU_ERC}"
+							},
+							"navigationMenuType": "SiteMenu",
+							"parentMenuItemExternalReferenceCode": "${SITE_NAVIGATION_MENU_ITEM_ERC}"
+						}
+					},
+					"name": "navigationMenuSiteMenuWithParentItemAsString",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuType": "SitePages",
+							"pageSetType": "PublicPages"
+						}
+					},
+					"name": "navigationMenuSitePages",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuType": "SitePages",
+							"pageSetType": "PrivatePages"
+						}
+					},
+					"name": "navigationMenuSitePagesPrivate",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuType": "SitePages",
+							"pageSetType": "PublicPages"
+						}
+					},
+					"name": "navigationMenuSitePagesWithNonexistentParentPage",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuType": "SitePages",
+							"pageSetType": "PublicPages",
+							"parentSitePageExternalReferenceCode": "${LAYOUT_ERC}"
+						}
+					},
+					"name": "navigationMenuSitePagesWithNumericParentPage",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuType": "SitePages",
+							"pageSetType": "PublicPages",
+							"parentSitePageExternalReferenceCode": "${LAYOUT_ERC}"
+						}
+					},
+					"name": "navigationMenuSitePagesWithParentPage",
+					"type": "navigationMenuSelector"
+				},
+				{
+					"defaultValue": {
+						"value": {
+							"contextualMenuType": "Children",
+							"navigationMenuType": "ContextualMenu"
+						}
+					},
+					"name": "navigationMenuVisibleWhenCheckboxTrue",
+					"type": "navigationMenuSelector",
+					"typeOptions": {
+						"dependency": {
+							"checkboxTrue": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				},
+				{
+					"defaultValue": {
 						"value": "detailed"
 					},
 					"name": "selectWithLabels",
