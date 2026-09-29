@@ -181,8 +181,6 @@ export default function Modal({
 
 		onOpenChange(false);
 
-		document.body.classList.remove('modal-open');
-
 		const eventHandlers = eventHandlersRef.current;
 
 		eventHandlers.forEach((eventHandler) => {

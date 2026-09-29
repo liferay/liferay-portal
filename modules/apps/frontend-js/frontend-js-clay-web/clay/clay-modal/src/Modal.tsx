@@ -111,6 +111,8 @@ function Modal({
 	useEffect(() => {
 		observer.dispatch(ObserverType.RestoreFocus, document.activeElement);
 		observer.dispatch(ObserverType.Open);
+
+		return () => observer.dispatch(ObserverType.Unmount);
 	}, []);
 	useEffect(() => {
 		if (modalBodyElementRef.current && show && content) {

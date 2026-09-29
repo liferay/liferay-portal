@@ -53,18 +53,34 @@ function delay(fn: Function) {
 
 const modalOpenClassName = 'modal-open';
 
+const modalLockHolders = new Set<object>();
+
+function acquireModalOpenLock(holder: object) {
+	modalLockHolders.add(holder);
+	document.body.classList.add(modalOpenClassName);
+}
+
+function releaseModalOpenLock(holder: object) {
+	modalLockHolders.delete(holder);
+
+	if (modalLockHolders.size === 0) {
+		document.body.classList.remove(modalOpenClassName);
+	}
+}
+
 export function useModal({defaultOpen = false, onClose}: Props = {}): Return {
 	const [open, setOpen] = useState(defaultOpen);
 	const [visible, setVisible] = useState<[boolean, boolean]>([false, false]);
 	const timerIdRef = useRef<NodeJS.Timeout | null>(null);
 	const restoreTriggerRef = useRef<HTMLElement | null>(null);
+	const lockHolderRef = useRef<object>({});
 
 	/**
 	 * Control the close of the modal to create the component's "unmount"
 	 * animation and call the onClose prop with delay.
 	 */
 	const handleCloseModal = () => {
-		document.body.classList.remove(modalOpenClassName);
+		releaseModalOpenLock(lockHolderRef.current);
 		setVisible([false, true]);
 		timerIdRef.current = delay(() => {
 			if (onClose) {
@@ -79,7 +95,7 @@ export function useModal({defaultOpen = false, onClose}: Props = {}): Return {
 		});
 	};
 	const handleOpenModal = () => {
-		document.body.classList.add(modalOpenClassName);
+		acquireModalOpenLock(lockHolderRef.current);
 		setOpen(true);
 		timerIdRef.current = delay(() => setVisible([true, true]));
 	};
@@ -97,6 +113,9 @@ export function useModal({defaultOpen = false, onClose}: Props = {}): Return {
 			case ObserverType.RestoreFocus:
 				restoreTriggerRef.current = payload;
 				break;
+			case ObserverType.Unmount:
+				releaseModalOpenLock(lockHolderRef.current);
+				break;
 			default:
 				break;
 		}
@@ -111,7 +130,7 @@ export function useModal({defaultOpen = false, onClose}: Props = {}): Return {
 	}, []);
 	useEffect(() => {
 		return () => {
-			document.body.classList.remove(modalOpenClassName);
+			releaseModalOpenLock(lockHolderRef.current);
 			if (timerIdRef.current) {
 				clearTimeout(timerIdRef.current);
 			}

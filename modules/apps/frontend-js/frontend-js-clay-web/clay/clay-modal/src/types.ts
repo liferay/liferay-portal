@@ -11,6 +11,7 @@ export enum ObserverType {
 	Close = 0,
 	Open = 1,
 	RestoreFocus = 2,
+	Unmount = 3,
 }
 
 export type Observer = {
