@@ -441,14 +441,6 @@ public class ObjectEntryVersionLocalServiceUtil {
 		return getService().updateLatestObjectEntryVersion(userId, objectEntry);
 	}
 
-	public static ObjectEntryVersion updateLatestObjectEntryVersionModifiedDate(
-			java.util.Date modifiedDate, long objectEntryId)
-		throws PortalException {
-
-		return getService().updateLatestObjectEntryVersionModifiedDate(
-			modifiedDate, objectEntryId);
-	}
-
 	/**
 	 * Updates the object entry version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -475,4 +467,4 @@ public class ObjectEntryVersionLocalServiceUtil {
 			ObjectEntryVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1918791706
+// LIFERAY-SERVICE-BUILDER-HASH:1119793392

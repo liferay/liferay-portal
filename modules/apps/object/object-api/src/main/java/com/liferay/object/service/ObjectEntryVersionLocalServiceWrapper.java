@@ -517,17 +517,6 @@ public class ObjectEntryVersionLocalServiceWrapper
 			userId, objectEntry);
 	}
 
-	@Override
-	public com.liferay.object.model.ObjectEntryVersion
-			updateLatestObjectEntryVersionModifiedDate(
-				java.util.Date modifiedDate, long objectEntryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectEntryVersionLocalService.
-			updateLatestObjectEntryVersionModifiedDate(
-				modifiedDate, objectEntryId);
-	}
-
 	/**
 	 * Updates the object entry version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -566,4 +555,4 @@ public class ObjectEntryVersionLocalServiceWrapper
 	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1552720536
+// LIFERAY-SERVICE-BUILDER-HASH:1207390541

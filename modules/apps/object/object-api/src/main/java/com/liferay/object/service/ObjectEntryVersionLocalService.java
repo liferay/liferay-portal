@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
-import java.util.Date;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -350,10 +349,6 @@ public interface ObjectEntryVersionLocalService
 			long userId, ObjectEntry objectEntry)
 		throws PortalException;
 
-	public ObjectEntryVersion updateLatestObjectEntryVersionModifiedDate(
-			Date modifiedDate, long objectEntryId)
-		throws PortalException;
-
 	/**
 	 * Updates the object entry version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -369,4 +364,4 @@ public interface ObjectEntryVersionLocalService
 		ObjectEntryVersion objectEntryVersion);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1048908681
+// LIFERAY-SERVICE-BUILDER-HASH:-1508052147

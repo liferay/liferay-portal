@@ -838,13 +838,6 @@ public class ObjectEntryLocalServiceUtil {
 			assetLinkEntryIds, priority);
 	}
 
-	public static ObjectEntry updateModifiedDate(
-			long objectEntryId, java.util.Date modifiedDate)
-		throws PortalException {
-
-		return getService().updateModifiedDate(objectEntryId, modifiedDate);
-	}
-
 	public static ObjectEntry updateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			Map<String, Serializable> values,
@@ -918,4 +911,4 @@ public class ObjectEntryLocalServiceUtil {
 			ObjectEntryLocalServiceUtil.class, ObjectEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-742764202
+// LIFERAY-SERVICE-BUILDER-HASH:1126145836

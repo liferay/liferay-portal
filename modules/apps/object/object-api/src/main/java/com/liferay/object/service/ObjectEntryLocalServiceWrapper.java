@@ -958,15 +958,6 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.object.model.ObjectEntry updateModifiedDate(
-			long objectEntryId, java.util.Date modifiedDate)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectEntryLocalService.updateModifiedDate(
-			objectEntryId, modifiedDate);
-	}
-
-	@Override
 	public com.liferay.object.model.ObjectEntry updateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			java.util.Map<String, java.io.Serializable> values,
@@ -1059,4 +1050,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-262356575
+// LIFERAY-SERVICE-BUILDER-HASH:2032867308
