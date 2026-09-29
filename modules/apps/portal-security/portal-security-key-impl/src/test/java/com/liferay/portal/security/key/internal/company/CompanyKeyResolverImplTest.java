@@ -83,8 +83,6 @@ public class CompanyKeyResolverImplTest {
 			_getCompanyKeyCacheEntries(companyKeyResolverImpl);
 
 		Assert.assertTrue(companyKeyCacheEntries.isEmpty());
-
-		companyKeyResolverImpl.deactivate();
 	}
 
 	@Test
@@ -401,7 +399,7 @@ public class CompanyKeyResolverImplTest {
 
 		byte[] changedCiphertext = _CIPHERTEXT_1.clone();
 
-		changedCiphertext[0] = (byte)(changedCiphertext[0] + 1);
+		changedCiphertext[0]++;
 
 		_mockDecrypt(changedCiphertext, _COMPANY_ID_1, _KEY_BYTES_1);
 
@@ -453,7 +451,6 @@ public class CompanyKeyResolverImplTest {
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
 			_WRAPPED_KEY_PREFIX + StringPool.CLOSE_CURLY_BRACE);
-
 		_assertUnwrapKeyFails(
 			companyKeyResolverImpl,
 			_WRAPPED_KEY_PREFIX + _WRAPPED_KEY_VERSION + StringPool.COLON);
