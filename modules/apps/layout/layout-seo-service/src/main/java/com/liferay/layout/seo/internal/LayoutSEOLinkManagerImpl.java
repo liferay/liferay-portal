@@ -9,7 +9,6 @@ import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvide
 import com.liferay.layout.seo.canonical.url.LayoutSEOCanonicalURLProvider;
 import com.liferay.layout.seo.internal.configuration.LayoutSEOGeneralGroupConfiguration;
 import com.liferay.layout.seo.internal.util.AlternateURLMapperProvider;
-import com.liferay.layout.seo.internal.util.VirtualLayoutSEOEntryUtil;
 import com.liferay.layout.seo.kernel.LayoutSEOLink;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
@@ -180,10 +179,10 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 		Locale siteDefaultLocale) {
 
 		LayoutSEOEntry layoutSEOEntry =
-			VirtualLayoutSEOEntryUtil.fetchLayoutSEOEntry(
-				layout, _layoutSEOEntryLocalService);
+			_layoutSEOEntryLocalService.fetchLayoutSEOEntry(layout);
 
 		if ((layoutSEOEntry == null) ||
+			(layoutSEOEntry.getGroupId() != layout.getGroupId()) ||
 			!layoutSEOEntry.isCanonicalURLEnabled() ||
 			MapUtil.isEmpty(layoutSEOEntry.getCanonicalURLMap())) {
 

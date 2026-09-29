@@ -10,7 +10,6 @@ import com.liferay.layout.seo.canonical.url.LayoutSEOCanonicalURLProvider;
 import com.liferay.layout.seo.contributor.LayoutSEOCanonicalURLContributor;
 import com.liferay.layout.seo.internal.configuration.LayoutSEOCompanyConfiguration;
 import com.liferay.layout.seo.internal.util.AlternateURLMapperProvider;
-import com.liferay.layout.seo.internal.util.VirtualLayoutSEOEntryUtil;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -97,10 +96,10 @@ public class LayoutSEOCanonicalURLProviderImpl
 			_language.getAvailableLocales(layout.getGroupId()));
 
 		LayoutSEOEntry layoutSEOEntry =
-			VirtualLayoutSEOEntryUtil.fetchLayoutSEOEntry(
-				layout, _layoutSEOEntryLocalService);
+			_layoutSEOEntryLocalService.fetchLayoutSEOEntry(layout);
 
 		if ((layoutSEOEntry == null) ||
+			(layoutSEOEntry.getGroupId() != layout.getGroupId()) ||
 			!layoutSEOEntry.isCanonicalURLEnabled()) {
 
 			return alternateURLs;
@@ -232,10 +231,10 @@ public class LayoutSEOCanonicalURLProviderImpl
 
 	private String _getLayoutCanonicalURL(Locale locale, Layout layout) {
 		LayoutSEOEntry layoutSEOEntry =
-			VirtualLayoutSEOEntryUtil.fetchLayoutSEOEntry(
-				layout, _layoutSEOEntryLocalService);
+			_layoutSEOEntryLocalService.fetchLayoutSEOEntry(layout);
 
 		if ((layoutSEOEntry == null) ||
+			(layoutSEOEntry.getGroupId() != layout.getGroupId()) ||
 			!layoutSEOEntry.isCanonicalURLEnabled()) {
 
 			return StringPool.BLANK;
