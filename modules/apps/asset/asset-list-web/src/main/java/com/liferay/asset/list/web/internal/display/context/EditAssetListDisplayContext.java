@@ -762,6 +762,26 @@ public class EditAssetListDisplayContext {
 					filterMap.put(key, filterJSONObject.get(key));
 				}
 
+				try {
+					List<Map<String, Object>> selectedItems =
+						_fetchSelectedItems(filterJSONObject);
+
+					if (selectedItems != null) {
+						if (selectedItems.isEmpty()) {
+							continue;
+						}
+
+						filterMap.put("value", selectedItems);
+					}
+				}
+				catch (Exception exception) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to resolve filter " + filterJSONObject,
+							exception);
+					}
+				}
+
 				filtersList.add(filterMap);
 			}
 
@@ -1269,6 +1289,29 @@ public class EditAssetListDisplayContext {
 		return _subtypeFieldsFilterEnabled;
 	}
 
+	private List<Map<String, Object>> _fetchSelectedItems(
+			JSONObject filterJSONObject)
+		throws PortalException {
+
+		if (!_isCommonFieldFilter(filterJSONObject)) {
+			return null;
+		}
+
+		String propertyName = filterJSONObject.getString("propertyName");
+
+		if (Objects.equals(propertyName, "assetCategories")) {
+			return _getAssetCategorySelectedItems(
+				filterJSONObject.getJSONArray("value"));
+		}
+
+		if (Objects.equals(propertyName, "assetTags")) {
+			return _getAssetTagSelectedItems(
+				filterJSONObject.getJSONArray("value"));
+		}
+
+		return null;
+	}
+
 	private List<AssetCategory> _filterAssetCategories(long[] categoryIds) {
 		return TransformUtil.transformToList(
 			categoryIds,
@@ -1302,6 +1345,20 @@ public class EditAssetListDisplayContext {
 			});
 
 		return StringUtil.merge(filteredAssetTagNames);
+	}
+
+	private List<Map<String, Object>> _getAssetCategorySelectedItems(
+		JSONArray valueJSONArray) {
+
+		return TransformUtil.transform(
+			_filterAssetCategories(
+				GetterUtil.getLongValues(
+					JSONUtil.toStringArray(valueJSONArray, "value"))),
+			assetCategory -> HashMapBuilder.<String, Object>put(
+				"label", assetCategory.getTitle(_themeDisplay.getLocale())
+			).put(
+				"value", String.valueOf(assetCategory.getCategoryId())
+			).build());
 	}
 
 	private JSONArray _getAssetListEntrySegmentsEntryRelJSONArray() {
@@ -1360,6 +1417,30 @@ public class EditAssetListDisplayContext {
 					_themeDisplay.getLocale())
 			),
 			_log);
+	}
+
+	private List<Map<String, Object>> _getAssetTagSelectedItems(
+			JSONArray valueJSONArray)
+		throws PortalException {
+
+		long[] groupIds = getReferencedModelsGroupIds();
+
+		return TransformUtil.transformToList(
+			JSONUtil.toStringArray(valueJSONArray, "value"),
+			assetTagName -> {
+				if (ArrayUtil.isEmpty(
+						AssetTagLocalServiceUtil.getTagIds(
+							groupIds, assetTagName))) {
+
+					return null;
+				}
+
+				return HashMapBuilder.<String, Object>put(
+					"label", assetTagName
+				).put(
+					"value", assetTagName
+				).build();
+			});
 	}
 
 	private Long[] _getClassTypeIds(
@@ -1453,6 +1534,16 @@ public class EditAssetListDisplayContext {
 		}
 
 		return typeSettings;
+	}
+
+	private boolean _isCommonFieldFilter(JSONObject filterJSONObject) {
+		if ((filterJSONObject.getLong("classNameId") <= 0) &&
+			(filterJSONObject.getLong("classTypeId") <= 0)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _setDDMStructure() throws Exception {
