@@ -1,9 +1,14 @@
-import NotificationSettingsModal from './NotificationSettingsModal';
+import * as API from 'shared/api';
+import NotificationSettingsModal, {
+	NotificationSettings,
+} from './NotificationSettingsModal';
 import React from 'react';
 import {Frequency} from 'settings/channels/components/EmailReports';
 import {Modal as ModalTypes} from 'shared/types';
 
 interface IManageLifecycleNotificationsModalProps {
+	groupId: string;
+	lifecycleId: string;
 	onClose: ModalTypes.close;
 }
 
@@ -30,23 +35,37 @@ const CHECKBOXES = [
 	},
 ];
 
+const DEFAULT_VALUES: NotificationSettings = {
+	accountStageChanges: false,
+	emailFrequency: Frequency.Monthly,
+	netNewPipelineAccounts: false,
+	newAccounts: false,
+	newAtRiskAccounts: false,
+	newStalledAccounts: false,
+};
+
 const ManageLifecycleNotificationsModal: React.FC<
 	IManageLifecycleNotificationsModalProps
-> = ({onClose}) => (
+> = ({groupId, lifecycleId, onClose}) => (
 	<NotificationSettingsModal
 		checkboxes={CHECKBOXES}
+		defaultValues={DEFAULT_VALUES}
 		description={Liferay.Language.get(
 			'choose-your-preferred-notification-types-and-delivery-frequency-for-both-in-product-and-email-channels.-these-settings-are-personal-and-will-not-affect-other-users'
 		)}
-		initialValues={{
-			accountStageChanges: true,
-			emailFrequency: Frequency.Daily,
-			netNewPipelineAccounts: true,
-			newAccounts: true,
-			newAtRiskAccounts: true,
-			newStalledAccounts: true,
-		}}
+		fetchSavedValues={() =>
+			API.preferences
+				.fetchLifecycleNotifications({groupId, lifecycleId})
+				.then((preferences) => preferences[lifecycleId])
+		}
 		onClose={onClose}
+		onSave={(values: NotificationSettings) =>
+			API.preferences.updateLifecycleNotification({
+				...values,
+				groupId,
+				lifecycleId,
+			})
+		}
 		title={Liferay.Language.get('manage-lifecycle-notifications')}
 	/>
 );

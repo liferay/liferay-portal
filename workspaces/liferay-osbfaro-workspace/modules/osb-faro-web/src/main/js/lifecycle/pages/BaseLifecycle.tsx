@@ -336,7 +336,11 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 											onClick: () =>
 												open(
 													modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL,
-													{onClose: close}
+													{
+														groupId,
+														lifecycleId,
+														onClose: close,
+													}
 												),
 										},
 									]}

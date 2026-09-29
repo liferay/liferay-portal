@@ -28,6 +28,22 @@ export function fetchDefaultChannelId({groupId, scope}) {
 	});
 }
 
+export function fetchLifecycleNotifications({groupId, lifecycleId}) {
+	return sendRequest({
+		data: {lifecycleId},
+		method: 'GET',
+		path: `main/${groupId}/preferences/lifecycle_notification`,
+	});
+}
+
+export function fetchSegmentNotifications({groupId, segmentId}) {
+	return sendRequest({
+		data: {segmentId},
+		method: 'GET',
+		path: `main/${groupId}/preferences/segment_notification`,
+	});
+}
+
 export function fetchUpgradeModalSeen({groupId, scope}) {
 	return sendRequest({
 		data: {scope},
@@ -63,6 +79,50 @@ export function updateEmailReport({channelId, groupId, report}) {
 		data: pickBy({channelId, ...report}),
 		method: 'POST',
 		path: `main/${groupId}/preferences/email_report`,
+	});
+}
+
+export function updateLifecycleNotification({
+	accountStageChanges = undefined,
+	emailFrequency,
+	groupId,
+	lifecycleId,
+	netNewPipelineAccounts = undefined,
+	newAccounts = undefined,
+	newAtRiskAccounts = undefined,
+	newStalledAccounts = undefined,
+}) {
+	return sendRequest({
+		data: pickBy(
+			{
+				accountStageChanges,
+				emailFrequency,
+				lifecycleId,
+				netNewPipelineAccounts,
+				newAccounts,
+				newAtRiskAccounts,
+				newStalledAccounts,
+			},
+			(value) => value !== undefined
+		),
+		method: 'POST',
+		path: `main/${groupId}/preferences/lifecycle_notification`,
+	});
+}
+
+export function updateSegmentNotification({
+	emailFrequency,
+	groupId,
+	newMemberAdded = undefined,
+	segmentId,
+}) {
+	return sendRequest({
+		data: pickBy(
+			{emailFrequency, newMemberAdded, segmentId},
+			(value) => value !== undefined
+		),
+		method: 'POST',
+		path: `main/${groupId}/preferences/segment_notification`,
 	});
 }
 

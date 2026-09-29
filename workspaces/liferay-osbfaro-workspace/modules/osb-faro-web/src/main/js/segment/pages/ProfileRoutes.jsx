@@ -279,7 +279,11 @@ export const SegmentProfileRoutes = ({close, open}) => {
 									onClick: () =>
 										open(
 											modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL,
-											{onClose: close}
+											{
+												groupId,
+												onClose: close,
+												segmentId: id
+											}
 										)
 								},
 								{

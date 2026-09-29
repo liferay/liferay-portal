@@ -419,7 +419,9 @@ export const List: React.FC<IListProps> = ({
 				label: Liferay.Language.get('manage-notifications'),
 				onClick: () =>
 					open(modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL, {
+						groupId,
 						onClose: close,
+						segmentId: id,
 					}),
 			},
 			{

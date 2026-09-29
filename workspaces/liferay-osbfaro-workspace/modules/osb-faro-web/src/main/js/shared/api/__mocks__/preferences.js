@@ -25,6 +25,10 @@ export const fetchDefaultChannelId = jest.fn(() =>
 	Promise.resolve({defaultChannelId: '123456'})
 );
 
+export const fetchLifecycleNotifications = jest.fn(() => Promise.resolve({}));
+
+export const fetchSegmentNotifications = jest.fn(() => Promise.resolve({}));
+
 export const fetchUpgradeModalSeen = jest.fn(() => Promise.resolve(false));
 
 export const updateDefaultChannelId = jest.fn(() =>
@@ -32,3 +36,7 @@ export const updateDefaultChannelId = jest.fn(() =>
 );
 
 export const updateUpgradeModalSeen = jest.fn(() => Promise.resolve(true));
+
+export const updateLifecycleNotification = jest.fn(() => Promise.resolve());
+
+export const updateSegmentNotification = jest.fn(() => Promise.resolve());
