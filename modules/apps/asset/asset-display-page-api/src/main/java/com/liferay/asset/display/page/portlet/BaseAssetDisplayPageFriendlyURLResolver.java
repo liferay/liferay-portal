@@ -14,9 +14,6 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryService;
 import com.liferay.asset.util.LinkedAssetEntryIdsUtil;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.friendly.url.provider.FriendlyURLSeparatorProvider;
 import com.liferay.info.constants.InfoDisplayWebKeys;
@@ -42,9 +39,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -62,7 +57,6 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -276,25 +270,9 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	}
 
 	protected long[] getConnectedDesignLibraryGroupIds(long groupId) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-57283")) {
-
-			return GetterUtil.DEFAULT_LONG_VALUES;
-		}
-
-		DepotEntryLocalService depotEntryLocalService =
-			_depotEntryLocalServiceSnapshot.get();
-
-		if (depotEntryLocalService == null) {
-			return GetterUtil.DEFAULT_LONG_VALUES;
-		}
-
 		try {
-			return ListUtil.toLongArray(
-				depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				DepotEntry::getGroupId);
+			return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
+				CompanyThreadLocal.getCompanyId(), groupId);
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
@@ -638,10 +616,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseAssetDisplayPageFriendlyURLResolver.class);
 
-	private static final Snapshot<DepotEntryLocalService>
-		_depotEntryLocalServiceSnapshot = new Snapshot<>(
-			BaseAssetDisplayPageFriendlyURLResolver.class,
-			DepotEntryLocalService.class);
 	private static final Snapshot<FriendlyURLSeparatorProvider>
 		_friendlyURLSeparatorProviderSnapshot = new Snapshot<>(
 			BaseAssetDisplayPageFriendlyURLResolver.class,
