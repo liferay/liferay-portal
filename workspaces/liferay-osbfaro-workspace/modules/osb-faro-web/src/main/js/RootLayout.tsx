@@ -32,19 +32,21 @@ const RootLayout = () => {
 
 	// The stored cookie decides whether Pendo may start. `trackingConsent` is
 	// not read here: it only re-runs the effect once the banner stores a
-	// decision, so tracking starts without a reload.
+	// decision, so tracking starts without a reload. A loaded workspace is
+	// enough: LDP workspaces carry no corp project, so gating on one would
+	// leave them untracked.
 
 	useEffect(() => {
 		const pendo = new Pendo();
 
 		if (
 			currentUser?.id &&
-			project?.corpProjectName &&
+			project?.groupId &&
 			pendo.getUserConsent() === TrackingConsentValues.Accepted
 		) {
 			pendo.initialize({currentUser, project});
 		}
-	}, [currentUser?.id, project?.corpProjectName, trackingConsent]);
+	}, [currentUser?.id, project?.groupId, trackingConsent]);
 
 	if (loading) {
 		return <Loading />;

@@ -30,12 +30,21 @@ export class Pendo {
 			return;
 		}
 
+		// Workspaces migrated from Analytics Cloud keep the corp project they
+		// were always reported under, so their Pendo account does not change.
+		// LDP workspaces carry no corp project and fall back to the account,
+		// then to the workspace itself, so every workspace gets a stable id.
+
 		const data = {
 			account: {
-				...(project.corpProjectUuid && {
-					id: project.corpProjectUuid,
-				}),
-				name: project.corpProjectName,
+				id:
+					project.corpProjectUuid ||
+					project.accountKey ||
+					String(project.groupId),
+				name:
+					project.corpProjectName ||
+					project.accountName ||
+					project.name,
 				planLevel: project.faroSubscription.get('name'),
 			},
 			visitor: {
