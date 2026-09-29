@@ -8,7 +8,7 @@ Do not narrow the run to the branch diff. The comparison target is resolved from
 
 ## Match
 
-`. &! ^modules/test/jenkins-results-parser/|^modules/test/playwright/|^modules/test/poshi/|^portal-web/test/`
+`. &! ^\.claude/|^modules/test/jenkins-results-parser/|^modules/test/playwright/|^modules/test/poshi/|^portal-web/test/`
 
 ## Command
 
