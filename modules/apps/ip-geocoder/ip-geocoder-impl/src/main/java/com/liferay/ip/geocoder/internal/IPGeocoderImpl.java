@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -166,12 +167,9 @@ public class IPGeocoderImpl implements IPGeocoder {
 		// gov.uk resolves to 151.101.192.144
 		// state.gov resolves to 34.233.79.178
 
-		HttpServletRequest originalHttpServletRequest =
-			_portal.getOriginalServletRequest(httpServletRequest);
-
-		String mockIPGeocoderRemoteAddr = GetterUtil.getString(
-			originalHttpServletRequest.getParameter(
-				"mockIPGeocoderRemoteAddr"));
+		String mockIPGeocoderRemoteAddr = ParamUtil.getString(
+			_portal.getOriginalServletRequest(httpServletRequest),
+			"mockIPGeocoderRemoteAddr");
 
 		if (Validator.isIPAddress(mockIPGeocoderRemoteAddr)) {
 			return mockIPGeocoderRemoteAddr;
