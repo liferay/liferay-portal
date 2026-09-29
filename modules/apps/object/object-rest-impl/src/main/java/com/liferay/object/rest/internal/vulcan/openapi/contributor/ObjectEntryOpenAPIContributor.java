@@ -17,6 +17,7 @@ import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
+import com.liferay.object.rest.dto.v1_0.Location;
 import com.liferay.object.rest.internal.util.ObjectDefinitionUtil;
 import com.liferay.object.rest.internal.vulcan.openapi.contributor.util.OpenAPIContributorUtil;
 import com.liferay.object.rest.openapi.v1_0.ObjectEntryOpenAPIResource;
@@ -872,6 +873,12 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
 				_addSchema(FileEntry.class, entry.getValue(), schemas);
+			}
+			else if (Objects.equals(
+						objectField.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+				_addSchema(Location.class, entry.getValue(), schemas);
 			}
 			else if (Objects.equals(
 						objectField.getBusinessType(),
