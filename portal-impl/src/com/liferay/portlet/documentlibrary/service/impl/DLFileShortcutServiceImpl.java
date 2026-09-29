@@ -7,6 +7,7 @@ package com.liferay.portlet.documentlibrary.service.impl;
 
 import com.liferay.document.library.kernel.exception.FileShortcutPermissionException;
 import com.liferay.document.library.kernel.model.DLFileShortcut;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
@@ -124,19 +125,21 @@ public class DLFileShortcutServiceImpl extends DLFileShortcutServiceBaseImpl {
 
 	@Override
 	public List<DLFileShortcut> getGroupFileShortcuts(long groupId) {
-		return dlFileShortcutPersistence.findByGroupId(groupId);
+		return dlFileShortcutPersistence.filterFindByGroupId(
+			groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	@Override
 	public List<DLFileShortcut> getGroupFileShortcuts(
 		long groupId, int start, int end) {
 
-		return dlFileShortcutPersistence.findByGroupId(groupId, start, end);
+		return dlFileShortcutPersistence.filterFindByGroupId(
+			groupId, start, end, null);
 	}
 
 	@Override
 	public long getGroupFileShortcutsCount(long groupId) {
-		return dlFileShortcutPersistence.countByGroupId(groupId);
+		return dlFileShortcutPersistence.filterCountByGroupId(groupId);
 	}
 
 	@Override
