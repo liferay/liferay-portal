@@ -7,12 +7,13 @@ package com.liferay.design.library.util;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -25,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * @author Lourdes Fernández Besada
  * @author Georgel Pop
+ * @author Javier Moral
  */
 public class DesignLibraryUtil {
 
@@ -36,8 +38,15 @@ public class DesignLibraryUtil {
 			return new long[0];
 		}
 
+		DepotEntryLocalService depotEntryLocalService =
+			_depotEntryLocalServiceSnapshot.get();
+
+		if (depotEntryLocalService == null) {
+			return new long[0];
+		}
+
 		return ListUtil.toLongArray(
-			DepotEntryLocalServiceUtil.getGroupConnectedDepotEntries(
+			depotEntryLocalService.getGroupConnectedDepotEntries(
 				groupId, DepotConstants.TYPE_DESIGN_LIBRARY, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS),
 			DepotEntry::getGroupId);
@@ -46,8 +55,7 @@ public class DesignLibraryUtil {
 	public static String getDesignLibraryResourcesURL(
 		Group depotGroup, HttpServletRequest httpServletRequest) {
 
-		DepotEntry depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
-			depotGroup.getGroupId());
+		DepotEntry depotEntry = _fetchGroupDepotEntry(depotGroup.getGroupId());
 
 		if (depotEntry == null) {
 			return null;
@@ -83,8 +91,7 @@ public class DesignLibraryUtil {
 	}
 
 	public static boolean isDesignLibraryScope(long groupId) {
-		DepotEntry depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
-			groupId);
+		DepotEntry depotEntry = _fetchGroupDepotEntry(groupId);
 
 		if ((depotEntry == null) ||
 			(depotEntry.getType() != DepotConstants.TYPE_DESIGN_LIBRARY)) {
@@ -95,5 +102,20 @@ public class DesignLibraryUtil {
 		return FeatureFlagManagerUtil.isEnabled(
 			depotEntry.getCompanyId(), "LPD-57283");
 	}
+
+	private static DepotEntry _fetchGroupDepotEntry(long groupId) {
+		DepotEntryLocalService depotEntryLocalService =
+			_depotEntryLocalServiceSnapshot.get();
+
+		if (depotEntryLocalService == null) {
+			return null;
+		}
+
+		return depotEntryLocalService.fetchGroupDepotEntry(groupId);
+	}
+
+	private static final Snapshot<DepotEntryLocalService>
+		_depotEntryLocalServiceSnapshot = new Snapshot<>(
+			DesignLibraryUtil.class, DepotEntryLocalService.class);
 
 }
