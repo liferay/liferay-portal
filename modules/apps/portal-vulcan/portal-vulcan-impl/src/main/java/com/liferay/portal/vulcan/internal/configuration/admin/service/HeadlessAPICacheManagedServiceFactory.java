@@ -9,6 +9,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -141,9 +142,6 @@ public class HeadlessAPICacheManagedServiceFactory
 			HeadlessAPICacheCompanyConfiguration
 				headlessAPICacheCompanyConfiguration) {
 
-			_patternParts = StringUtil.split(
-				headlessAPICacheCompanyConfiguration.path(), CharPool.SLASH);
-
 			if (headlessAPICacheCompanyConfiguration.maxAge() <= 0) {
 				_cacheControl =
 					headlessAPICacheCompanyConfiguration.cacheControl();
@@ -155,15 +153,11 @@ public class HeadlessAPICacheManagedServiceFactory
 					headlessAPICacheCompanyConfiguration.maxAge());
 			}
 
-			int wildcardCount = 0;
+			_patternParts = StringUtil.split(
+				headlessAPICacheCompanyConfiguration.path(), CharPool.SLASH);
 
-			for (String patternPart : _patternParts) {
-				if (Objects.equals(patternPart, _WILDCARD)) {
-					wildcardCount++;
-				}
-			}
-
-			_wildcardCount = wildcardCount;
+			_wildcardCount = ArrayUtil.count(
+				_patternParts, CacheableEndpoint::_isWildcard);
 		}
 
 		@Override
@@ -182,16 +176,12 @@ public class HeadlessAPICacheManagedServiceFactory
 			}
 
 			for (int i = 0; i < _patternParts.length; i++) {
-				boolean wildcard = Objects.equals(_patternParts[i], _WILDCARD);
-				boolean otherWildcard = Objects.equals(
-					cacheableEndpoint._patternParts[i], _WILDCARD);
+				int compare = Boolean.compare(
+					_isWildcard(_patternParts[i]),
+					_isWildcard(cacheableEndpoint._patternParts[i]));
 
-				if (wildcard != otherWildcard) {
-					if (wildcard) {
-						return 1;
-					}
-
-					return -1;
+				if (compare != 0) {
+					return compare;
 				}
 			}
 
@@ -208,7 +198,7 @@ public class HeadlessAPICacheManagedServiceFactory
 			}
 
 			for (int i = 0; i < pathParts.length; i++) {
-				if (!Objects.equals(_patternParts[i], _WILDCARD) &&
+				if (!_isWildcard(_patternParts[i]) &&
 					!Objects.equals(pathParts[i], _patternParts[i])) {
 
 					return false;
@@ -216,6 +206,10 @@ public class HeadlessAPICacheManagedServiceFactory
 			}
 
 			return true;
+		}
+
+		private static boolean _isWildcard(String value) {
+			return Objects.equals(value, _WILDCARD);
 		}
 
 		private static final String _WILDCARD = "*";
