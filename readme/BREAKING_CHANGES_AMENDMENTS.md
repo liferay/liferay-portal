@@ -797,3 +797,35 @@ The name field was populated with the fieldReference rather than the field's nam
 
 Consumers that relied on the name field to obtain the fieldReference should read the fieldReference field of ContentField instead.
 ```
+
+----
+
+# 021cb3d141646ffc1ff0b122b810f8570aeb40ce
+
+The commit message is missing a breaking change. The correct message is:
+
+```
+LPD-107356 Regen
+
+# breaking
+
+## What modules/apps/object/object-api/src/main/java/com/liferay/object/service/ObjectEntryLocalService.java
+
+Removed updateModifiedDate(long, Date).
+
+## Why
+
+It existed only for ObjectEntryModelListener, which now writes the root object entry's modified date through the persistence.
+
+----
+
+# breaking
+
+## What modules/apps/object/object-api/src/main/java/com/liferay/object/service/ObjectEntryVersionLocalService.java
+
+Removed updateLatestObjectEntryVersionModifiedDate(Date, long).
+
+## Why
+
+Its only caller was ObjectEntryLocalService.updateModifiedDate.
+```
