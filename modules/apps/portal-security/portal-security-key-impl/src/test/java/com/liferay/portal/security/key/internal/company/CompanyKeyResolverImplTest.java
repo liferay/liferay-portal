@@ -682,7 +682,7 @@ public class CompanyKeyResolverImplTest {
 	private static final String _KEK_PROVIDER_ID =
 		RandomTestUtil.randomString();
 
-	private static final String _KEY_ALGORITHM = "AES";
+	private static final String _KEY_ALGORITHM = RandomTestUtil.randomString();
 
 	private static final byte[] _KEY_BYTES_1 = RandomTestUtil.randomBytes();
 
