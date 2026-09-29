@@ -506,30 +506,24 @@ passwords.encryption.algorithm=NONE</echo>
 				<available file="@{workspace.dir}/gradle/wrapper/gradle-wrapper.properties" />
 				<then>
 					<local name="gradle.wrapper.bin.file.name" />
-					<local name="gradle.wrapper.bin.file.url" />
+					<local name="gradle.wrapper.distributionUrl" />
 
-					<beanshell>
-						<![CDATA[
-							import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+					<loadproperties prefix="gradle.wrapper." srcFile="@{workspace.dir}/gradle/wrapper/gradle-wrapper.properties">
+						<filterchain>
+							<linecontainsregexp>
+								<regexp pattern="^\s*distributionUrl\s*[=:]" />
+							</linecontainsregexp>
+						</filterchain>
+					</loadproperties>
 
-							File gradleWrapperPropertiesFile = new File("@{workspace.dir}" + "/gradle/wrapper/gradle-wrapper.properties");
-
-							Properties gradleWrapperProperties = JenkinsResultsParserUtil.getProperties(new File[] {gradleWrapperPropertiesFile});
-
-							String distributionURL = gradleWrapperProperties.getProperty("distributionUrl");
-
-							project.setProperty("gradle.wrapper.bin.file.name", distributionURL.replaceAll(".*/([^/]+)", "$1"));
-
-							project.setProperty("gradle.wrapper.bin.file.url", distributionURL);
-						]]>
-					</beanshell>
+					<basename file="${gradle.wrapper.distributionUrl}" property="gradle.wrapper.bin.file.name" />
 
 					<if>
-						<matches pattern="https?://" string="${gradle.wrapper.bin.file.url}" />
+						<matches pattern="https?://" string="${gradle.wrapper.distributionUrl}" />
 						<then>
 							<mirrors-get
 								dest="@{workspace.dir}/gradle/wrapper/${gradle.wrapper.bin.file.name}"
-								src="${gradle.wrapper.bin.file.url}"
+								src="${gradle.wrapper.distributionUrl}"
 							/>
 						</then>
 						<elseif>
@@ -538,25 +532,18 @@ passwords.encryption.algorithm=NONE</echo>
 							</not>
 							<then>
 								<execute>
-									cp @{workspace.dir}/gradle/wrapper/${gradle.wrapper.bin.file.url} @{workspace.dir}/gradle/wrapper/${gradle.wrapper.bin.file.name}
+									cp @{workspace.dir}/gradle/wrapper/${gradle.wrapper.distributionUrl} @{workspace.dir}/gradle/wrapper/${gradle.wrapper.bin.file.name}
 								</execute>
 							</then>
 						</elseif>
 					</if>
 
-					<beanshell>
-						<![CDATA[
-							import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
-
-							File gradleWrapperPropertiesFile = new File("@{workspace.dir}" + "/gradle/wrapper/gradle-wrapper.properties");
-
-							Properties gradleWrapperProperties = JenkinsResultsParserUtil.getProperties(new File[] {gradleWrapperPropertiesFile});
-
-							gradleWrapperProperties.setProperty("distributionUrl", "./" + project.getProperty("gradle.wrapper.bin.file.name"));
-
-							JenkinsResultsParserUtil.writePropertiesFile(gradleWrapperPropertiesFile, gradleWrapperProperties, true);
-						]]>
-					</beanshell>
+					<replaceregexp
+						byline="true"
+						file="@{workspace.dir}/gradle/wrapper/gradle-wrapper.properties"
+						match="^(\s*distributionUrl\s*[=:]).*$"
+						replace="\1./${gradle.wrapper.bin.file.name}"
+					/>
 				</then>
 			</if>
 		</sequential>
