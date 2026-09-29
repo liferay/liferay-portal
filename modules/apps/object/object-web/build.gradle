@@ -46,6 +46,7 @@ dependencies {
 	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:learn:learn-api")
 	compileOnly project(":apps:list-type:list-type-api")
+	compileOnly project(":apps:map:map-api")
 	compileOnly project(":apps:notification:notification-api")
 	compileOnly project(":apps:object:object-admin-rest-api")
 	compileOnly project(":apps:object:object-api")

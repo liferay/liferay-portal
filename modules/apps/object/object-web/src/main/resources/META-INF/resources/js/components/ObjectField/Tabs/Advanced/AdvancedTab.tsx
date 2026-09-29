@@ -21,9 +21,11 @@ interface AdvancedTabProps {
 	decimalSeparator: string;
 	defaultValueSidebarElements: SidebarCategory[];
 	errors: ObjectFieldErrors;
+	googleMapsAPIKey?: string;
 	isDefaultStorageType: boolean;
 	isRootDescendantNode: boolean;
 	learnResources: ILearnResourceContext;
+	mapProviderKey?: string;
 	modelBuilder?: boolean;
 	onSubmit?: () => void;
 	readOnlySidebarElements: SidebarCategory[];
@@ -38,9 +40,11 @@ export function AdvancedTab({
 	decimalSeparator,
 	defaultValueSidebarElements,
 	errors,
+	googleMapsAPIKey,
 	isDefaultStorageType,
 	isRootDescendantNode,
 	learnResources,
+	mapProviderKey,
 	modelBuilder = false,
 	onSubmit,
 	readOnlySidebarElements,
@@ -98,7 +102,9 @@ export function AdvancedTab({
 							defaultValueSidebarElements
 						}
 						errors={errors}
+						googleMapsAPIKey={googleMapsAPIKey}
 						learnResources={learnResources}
+						mapProviderKey={mapProviderKey}
 						modelBuilder={modelBuilder}
 						onSubmit={onSubmit}
 						setValues={setValues}

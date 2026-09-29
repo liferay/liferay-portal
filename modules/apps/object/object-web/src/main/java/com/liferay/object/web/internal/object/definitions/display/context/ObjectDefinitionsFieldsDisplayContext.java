@@ -10,6 +10,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.list.type.service.ListTypeDefinitionService;
+import com.liferay.map.util.MapProviderHelperUtil;
 import com.liferay.object.admin.rest.dto.v1_0.util.ObjectFieldUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
@@ -28,12 +29,16 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeFormatter;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.portlet.PortletPreferences;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -187,6 +192,20 @@ public class ObjectDefinitionsFieldsDisplayContext
 		}
 
 		return forbiddenLastCharacters.toArray(new String[0]);
+	}
+
+	public String getGoogleMapsAPIKey() {
+		PortletPreferences companyPortletPreferences =
+			PrefsPropsUtil.getPreferences(objectRequestHelper.getCompanyId());
+
+		return companyPortletPreferences.getValue("googleMapsAPIKey", null);
+	}
+
+	public String getMapProviderKey() {
+		return GetterUtil.getString(
+			MapProviderHelperUtil.getMapProviderKey(
+				objectRequestHelper.getCompanyId()),
+			"OpenStreetMap");
 	}
 
 	public List<Map<String, String>> getObjectFieldBusinessTypeMaps(

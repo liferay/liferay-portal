@@ -23,8 +23,10 @@ interface CustomObjectFolderWrapperProps {
 	forbiddenChars: string[];
 	forbiddenLastChars: string[];
 	forbiddenNames: string[];
+	googleMapsAPIKey?: string;
 	hasDepotEntry?: boolean;
 	learnResourceContext: ILearnResourceContext;
+	mapProviderKey?: string;
 	metadataObjectFieldNames: string[];
 	objectDefinitionPermissionsURL: string;
 	objectDefinitionsStorageTypes: LabelValueObject[];
@@ -49,8 +51,10 @@ export default function CustomObjectFolderWrapper({
 	forbiddenChars,
 	forbiddenLastChars,
 	forbiddenNames,
+	googleMapsAPIKey,
 	hasDepotEntry,
 	learnResourceContext,
+	mapProviderKey,
 	metadataObjectFieldNames,
 	objectDefinitionPermissionsURL,
 	objectDefinitionsStorageTypes,
@@ -72,8 +76,10 @@ export default function CustomObjectFolderWrapper({
 					forbiddenChars,
 					forbiddenLastChars,
 					forbiddenNames,
+					googleMapsAPIKey,
 					hasDepotEntry,
 					learnResourceContext,
+					mapProviderKey,
 					metadataObjectFieldNames,
 					objectDefinitionPermissionsURL,
 					objectDefinitionsStorageTypes,

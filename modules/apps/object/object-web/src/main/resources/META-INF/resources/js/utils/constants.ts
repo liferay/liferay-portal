@@ -12,6 +12,7 @@ export const DEFAULT_VALUE_SUPPORTED_BUSINESS_TYPES = [
 	'Decimal',
 	'EmailAddress',
 	'Integer',
+	'Location',
 	'LongInteger',
 	'LongText',
 	'PhoneNumber',
