@@ -176,9 +176,7 @@ public class PortalInstanceCopyResourceTest
 				expectedCompanyId, copiedPortalInstance.getCompanyId());
 		}
 
-		if (copiedPortalInstance != null) {
-			_deleteCompany(copiedPortalInstance.getCompanyId());
-		}
+		_deleteCompany(copiedPortalInstance.getCompanyId());
 	}
 
 	private PortalInstanceCopyResource _createUserPortalInstanceCopyResource()
