@@ -7,6 +7,7 @@ package com.liferay.invitation.invite.members.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.invitation.invite.members.constants.InviteMembersConstants;
+import com.liferay.invitation.invite.members.exception.MemberRequestInvalidURLException;
 import com.liferay.invitation.invite.members.model.MemberRequest;
 import com.liferay.invitation.invite.members.service.MemberRequestLocalService;
 import com.liferay.invitation.invite.members.service.MemberRequestService;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TeamLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -61,13 +63,14 @@ public class MemberRequestServiceTest {
 	@Test
 	public void testAddMemberRequests() throws Exception {
 		_testAddMemberRequests(
-			PrincipalException.class, 0, 0, UserTestUtil.addUser());
+			PrincipalException.class, 0, 0, _getServiceContext(),
+			UserTestUtil.addUser());
 
 		User user = UserTestUtil.addUser(_group.getGroupId());
 
 		User receiverUser = UserTestUtil.addUser();
 
-		_addMemberRequests(0, 0, receiverUser, user);
+		_addMemberRequests(0, 0, receiverUser, _getServiceContext(), user);
 
 		Assert.assertTrue(
 			_memberRequestLocalService.hasPendingMemberRequest(
@@ -78,12 +81,13 @@ public class MemberRequestServiceTest {
 
 		_testAddMemberRequests(
 			PrincipalException.class, siteAdministratorRole.getRoleId(), 0,
-			user);
+			_getServiceContext(), user);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
 
 		_testAddMemberRequests(
-			PrincipalException.class, role.getRoleId(), 0, user);
+			PrincipalException.class, role.getRoleId(), 0, _getServiceContext(),
+			user);
 
 		Team team = _teamLocalService.addTeam(
 			TestPropsValues.getUserId(), _group.getGroupId(),
@@ -92,13 +96,14 @@ public class MemberRequestServiceTest {
 
 		_testAddMemberRequests(
 			PrincipalException.MustHavePermission.class, 0, team.getTeamId(),
-			user);
+			_getServiceContext(), user);
 
 		user = UserTestUtil.addGroupAdminUser(_group);
 
 		receiverUser = UserTestUtil.addUser();
 
-		_addMemberRequests(role.getRoleId(), 0, receiverUser, user);
+		_addMemberRequests(
+			role.getRoleId(), 0, receiverUser, _getServiceContext(), user);
 
 		MemberRequest memberRequest =
 			_memberRequestLocalService.getMemberRequest(
@@ -109,7 +114,8 @@ public class MemberRequestServiceTest {
 
 		receiverUser = UserTestUtil.addUser();
 
-		_addMemberRequests(0, team.getTeamId(), receiverUser, user);
+		_addMemberRequests(
+			0, team.getTeamId(), receiverUser, _getServiceContext(), user);
 
 		memberRequest = _memberRequestLocalService.getMemberRequest(
 			_group.getGroupId(), receiverUser.getUserId(),
@@ -125,12 +131,48 @@ public class MemberRequestServiceTest {
 			ServiceContextTestUtil.getServiceContext(_otherGroup.getGroupId()));
 
 		_testAddMemberRequests(
-			PrincipalException.class, 0, team.getTeamId(), user);
+			PrincipalException.class, 0, team.getTeamId(), _getServiceContext(),
+			user);
+	}
+
+	@Test
+	@TestInfo("LPD-106189")
+	public void testAddMemberRequestsWithInvalidURL() throws Exception {
+		User user = UserTestUtil.addGroupAdminUser(_group);
+
+		String url = "http://" + RandomTestUtil.randomString() + ".com";
+
+		for (String name :
+				new String[] {"createAccountURL", "loginURL", "redirectURL"}) {
+
+			ServiceContext serviceContext = _getServiceContext();
+
+			serviceContext.setAttribute(name, url);
+
+			_testAddMemberRequests(
+				MemberRequestInvalidURLException.class, 0, 0, serviceContext,
+				user);
+		}
+
+		ServiceContext serviceContext = _getServiceContext();
+
+		serviceContext.setCurrentURL(url);
+
+		_testAddMemberRequests(
+			MemberRequestInvalidURLException.class, 0, 0, serviceContext, user);
+
+		serviceContext = _getServiceContext();
+
+		serviceContext.setAttribute("loginURL", url);
+		serviceContext.setPortalURL(url);
+
+		_testAddMemberRequests(
+			MemberRequestInvalidURLException.class, 0, 0, serviceContext, user);
 	}
 
 	private void _addMemberRequests(
 			long invitedRoleId, long invitedTeamId, User receiverUser,
-			User user)
+			ServiceContext serviceContext, User user)
 		throws Exception {
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -138,7 +180,7 @@ public class MemberRequestServiceTest {
 
 			_memberRequestService.addMemberRequests(
 				_group.getGroupId(), new long[] {receiverUser.getUserId()},
-				invitedRoleId, invitedTeamId, _getServiceContext());
+				invitedRoleId, invitedTeamId, serviceContext);
 		}
 	}
 
@@ -147,41 +189,43 @@ public class MemberRequestServiceTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		serviceContext.setAttribute(
-			"createAccountURL", "http://" + RandomTestUtil.randomString());
+			"createAccountURL",
+			"http://localhost/" + RandomTestUtil.randomString());
 		serviceContext.setAttribute(
-			"loginURL", "http://" + RandomTestUtil.randomString());
+			"loginURL", "http://localhost/" + RandomTestUtil.randomString());
 		serviceContext.setAttribute(
-			"redirectURL", "http://" + RandomTestUtil.randomString());
+			"redirectURL", "http://localhost/" + RandomTestUtil.randomString());
 
 		return serviceContext;
 	}
 
 	private void _testAddMemberRequests(
-			Class<? extends PrincipalException> exceptionClass,
-			long invitedRoleId, long invitedTeamId, User user)
+			Class<? extends Exception> exceptionClass, long invitedRoleId,
+			long invitedTeamId, ServiceContext serviceContext, User user)
 		throws Exception {
 
 		User receiverUser = UserTestUtil.addUser();
 
-		PrincipalException principalException = Assert.assertThrows(
-			PrincipalException.class,
+		Exception exception = Assert.assertThrows(
+			Exception.class,
 			() -> _addMemberRequests(
-				invitedRoleId, invitedTeamId, receiverUser, user));
+				invitedRoleId, invitedTeamId, receiverUser, serviceContext,
+				user));
 
-		Assert.assertEquals(exceptionClass, principalException.getClass());
+		Assert.assertEquals(exceptionClass, exception.getClass());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
-			principalException = Assert.assertThrows(
-				PrincipalException.class,
+			exception = Assert.assertThrows(
+				Exception.class,
 				() -> _memberRequestService.addMemberRequests(
 					_group.getGroupId(),
 					new String[] {receiverUser.getEmailAddress()},
-					invitedRoleId, invitedTeamId, _getServiceContext()));
+					invitedRoleId, invitedTeamId, serviceContext));
 		}
 
-		Assert.assertEquals(exceptionClass, principalException.getClass());
+		Assert.assertEquals(exceptionClass, exception.getClass());
 
 		Assert.assertFalse(
 			_memberRequestLocalService.hasPendingMemberRequest(
