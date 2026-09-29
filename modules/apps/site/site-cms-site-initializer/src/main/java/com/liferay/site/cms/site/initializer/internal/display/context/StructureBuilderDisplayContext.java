@@ -15,6 +15,7 @@ import com.liferay.object.admin.rest.dto.v1_0.util.ObjectDefinitionUtil;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.exception.NoSuchObjectDefinitionException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
@@ -23,9 +24,12 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -243,24 +247,20 @@ public class StructureBuilderDisplayContext {
 				_themeDisplay.getUser()
 			).build();
 
-			Page<ObjectDefinition> page =
-				objectDefinitionResource.getObjectDefinitionsPage(
-					null, null,
-					objectDefinitionResource.toFilter(
-						StringBundler.concat(
-							"externalReferenceCode eq '",
-							baseObjectDefinitionExternalReferenceCode, "'"),
-						Collections.emptyMap()),
-					null, null);
+			try {
+				return objectDefinitionResource.
+					getObjectDefinitionByExternalReferenceCode(
+						baseObjectDefinitionExternalReferenceCode);
+			}
+			catch (NoSuchObjectDefinitionException | PrincipalException
+						exception) {
 
-			List<ObjectDefinition> objectDefinitions = new ArrayList<>(
-				page.getItems());
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
 
-			if (ListUtil.isEmpty(objectDefinitions)) {
 				return null;
 			}
-
-			return objectDefinitions.get(0);
 		}
 
 		return null;
@@ -476,6 +476,9 @@ public class StructureBuilderDisplayContext {
 
 		return jsonObject;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StructureBuilderDisplayContext.class);
 
 	private final List<CMSStructureObjectFolderContributor>
 		_cmsStructureObjectFolderContributors;
