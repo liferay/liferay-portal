@@ -10,6 +10,10 @@ import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.type.TextInfoFieldType;
@@ -48,6 +52,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -92,6 +97,36 @@ public class AssetDisplayPageUtilTest {
 	@After
 	public void tearDown() {
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testGetAssetDisplayPageLayoutPageTemplateEntryWithConnectedDesignLibraryGroup()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		long classNameId = _portal.getClassNameId(
+			objectDefinition.getClassName());
+
+		long classPK = RandomTestUtil.randomLong();
+
+		Assert.assertNull(
+			AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
+				_group.getGroupId(), classNameId, classPK, 0));
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(), classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(
+			defaultLayoutPageTemplateEntry,
+			AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
+				_group.getGroupId(), classNameId, classPK, 0));
 	}
 
 	@Test
@@ -218,6 +253,34 @@ public class AssetDisplayPageUtilTest {
 				AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
 					_group.getGroupId(), infoItemReference));
 		}
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testHasAssetDisplayPageWithConnectedDesignLibraryGroup()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		long classNameId = _portal.getClassNameId(
+			objectDefinition.getClassName());
+
+		long classPK = RandomTestUtil.randomLong();
+
+		Assert.assertFalse(
+			AssetDisplayPageUtil.hasAssetDisplayPage(
+				_group.getGroupId(), classNameId, classPK, 0));
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			designLibraryGroup.getGroupId(), classNameId, null, true,
+			WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertTrue(
+			AssetDisplayPageUtil.hasAssetDisplayPage(
+				_group.getGroupId(), classNameId, classPK, 0));
 	}
 
 	@Test
@@ -403,11 +466,33 @@ public class AssetDisplayPageUtilTest {
 				journalArticle.getDDMStructureId()));
 	}
 
+	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			_depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		return _depotEntry.getGroup();
+	}
+
 	@Inject
 	private AssetDisplayPageEntryLocalService
 		_assetDisplayPageEntryLocalService;
 
 	private long _classNameId;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject(
 		filter = "info.item.capability.key=" + DisplayPageInfoItemCapability.KEY
