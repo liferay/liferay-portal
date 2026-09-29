@@ -346,8 +346,11 @@ public class WebServerServletTest {
 
 	@Test
 	public void testService() throws Exception {
-		_testServiceGroupIdUUID();
-		_testServicePortletFileEntry();
+		_testServiceGroupIdUUID("html", ContentTypes.TEXT_HTML);
+		_testServiceGroupIdUUID("html", ContentTypes.TEXT_PLAIN);
+		_testServiceGroupIdUUID("html", "video/mp4");
+		_testServicePortletFileEntry(ContentTypes.IMAGE_PNG);
+		_testServicePortletFileEntry(ContentTypes.TEXT_HTML);
 	}
 
 	@Test
@@ -1009,12 +1012,14 @@ public class WebServerServletTest {
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 	}
 
-	private void _testServiceGroupIdUUID() throws Exception {
+	private void _testServiceGroupIdUUID(String extension, String mimeType)
+		throws Exception {
+
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".html", ContentTypes.TEXT_HTML,
-			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			RandomTestUtil.randomString() + StringPool.PERIOD + extension,
+			mimeType, TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_testService(
@@ -1022,14 +1027,15 @@ public class WebServerServletTest {
 				"/", fileEntry.getGroupId(), "/", fileEntry.getUuid()));
 	}
 
-	private void _testServicePortletFileEntry() throws Exception {
+	private void _testServicePortletFileEntry(String mimeType)
+		throws Exception {
+
 		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
 			_group.getGroupId(), TestPropsValues.getUserId(),
 			WebServerServletTest.class.getName(), _group.getGroupId(),
 			"TEST_PORTLET", DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			TestDataConstants.TEST_BYTE_ARRAY,
-			RandomTestUtil.randomString() + ".html", ContentTypes.TEXT_HTML,
-			false);
+			RandomTestUtil.randomString() + ".html", mimeType, false);
 
 		_testService(
 			StringBundler.concat(
