@@ -85,13 +85,39 @@ public abstract class PortalGitRepositoryJob
 
 		jobPropertiesFiles.add(
 			new File(gitRepositoryDir, "tools/sdk/build.properties"));
+
 		jobPropertiesFiles.add(new File(gitRepositoryDir, "build.properties"));
-		jobPropertiesFiles.add(new File(gitRepositoryDir, "test.properties"));
+
+		jobPropertiesFiles.add(
+			new File(
+				gitRepositoryDir,
+				JenkinsResultsParserUtil.combine(
+					"build.", Environment.get("HOSTNAME"), ".properties")));
+
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if (upstreamBranchName.endsWith("-private")) {
+			File privatePortalDir = new File(
+				JenkinsResultsParserUtil.getBaseGitRepositoryDir(),
+				"liferay-portal-" + upstreamBranchName);
+
+			jobPropertiesFiles.add(
+				new File(
+					privatePortalDir,
+					JenkinsResultsParserUtil.combine(
+						"test.", Environment.get("HOSTNAME"), ".properties")));
+
+			jobPropertiesFiles.add(
+				new File(privatePortalDir, "test.properties"));
+		}
+
 		jobPropertiesFiles.add(
 			new File(
 				gitRepositoryDir,
 				JenkinsResultsParserUtil.combine(
 					"test.", Environment.get("HOSTNAME"), ".properties")));
+
+		jobPropertiesFiles.add(new File(gitRepositoryDir, "test.properties"));
 	}
 
 }
