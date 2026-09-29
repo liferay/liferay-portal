@@ -10,7 +10,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.object.service.ObjectDefinitionServiceUtil;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -159,7 +159,6 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 	@After
 	public void tearDown() {
 		_objectDefinitionLocalServiceUtilMockedStatic.close();
-		_objectDefinitionServiceUtilMockedStatic.close();
 		_objectEntryLocalServiceUtilMockedStatic.close();
 		_objectRelationshipLocalServiceUtilMockedStatic.close();
 	}
@@ -176,8 +175,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		EditPIMConnectorFieldMappingsDisplayContext
 			editPIMConnectorFieldMappingsDisplayContext =
 				new EditPIMConnectorFieldMappingsDisplayContext(
-					_httpServletRequest, _objectEntryLocalService,
-					_objectFieldLocalService, _pimConnectorRegistry);
+					_httpServletRequest, _objectDefinitionService,
+					_objectEntryLocalService, _objectFieldLocalService,
+					_pimConnectorRegistry);
 
 		Map<String, Object> reactData =
 			editPIMConnectorFieldMappingsDisplayContext.getReactData();
@@ -236,8 +236,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectEntryLocalService,
-				_objectFieldLocalService, _pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionService,
+				_objectEntryLocalService, _objectFieldLocalService,
+				_pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -262,8 +263,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectEntryLocalService,
-				_objectFieldLocalService, _pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionService,
+				_objectEntryLocalService, _objectFieldLocalService,
+				_pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -277,8 +279,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectEntryLocalService,
-				_objectFieldLocalService, _pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionService,
+				_objectEntryLocalService, _objectFieldLocalService,
+				_pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -352,8 +355,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			_OBJECT_DEFINITION_ID
 		);
 
-		_objectDefinitionServiceUtilMockedStatic.when(
-			() -> ObjectDefinitionServiceUtil.getCMSObjectDefinitions(
+		Mockito.when(
+			_objectDefinitionService.getCMSObjectDefinitions(
 				Mockito.anyLong(), Mockito.any())
 		).thenReturn(
 			Collections.singletonList(productTypeObjectDefinition)
@@ -528,9 +531,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 	private final MockedStatic<ObjectDefinitionLocalServiceUtil>
 		_objectDefinitionLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectDefinitionLocalServiceUtil.class);
-	private final MockedStatic<ObjectDefinitionServiceUtil>
-		_objectDefinitionServiceUtilMockedStatic = Mockito.mockStatic(
-			ObjectDefinitionServiceUtil.class);
+	private final ObjectDefinitionService _objectDefinitionService =
+		Mockito.mock(ObjectDefinitionService.class);
 	private final ObjectEntryLocalService _objectEntryLocalService =
 		Mockito.mock(ObjectEntryLocalService.class);
 	private final MockedStatic<ObjectEntryLocalServiceUtil>

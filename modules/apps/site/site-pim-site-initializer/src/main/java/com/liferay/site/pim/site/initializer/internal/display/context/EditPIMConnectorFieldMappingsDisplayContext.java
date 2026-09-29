@@ -8,7 +8,7 @@ package com.liferay.site.pim.site.initializer.internal.display.context;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
-import com.liferay.object.service.ObjectDefinitionServiceUtil;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.string.StringPool;
@@ -44,11 +44,13 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 
 	public EditPIMConnectorFieldMappingsDisplayContext(
 		HttpServletRequest httpServletRequest,
+		ObjectDefinitionService objectDefinitionService,
 		ObjectEntryLocalService objectEntryLocalService,
 		ObjectFieldLocalService objectFieldLocalService,
 		PIMConnectorRegistry pimConnectorRegistry) {
 
 		_httpServletRequest = httpServletRequest;
+		_objectDefinitionService = objectDefinitionService;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectFieldLocalService = objectFieldLocalService;
 		_pimConnectorRegistry = pimConnectorRegistry;
@@ -160,7 +162,7 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 
 	private JSONArray _getObjectDefinitionsJSONArray() throws Exception {
 		return JSONUtil.toJSONArray(
-			ObjectDefinitionServiceUtil.getCMSObjectDefinitions(
+			_objectDefinitionService.getCMSObjectDefinitions(
 				_themeDisplay.getCompanyId(),
 				new String[] {
 					PIMObjectFolderConstants.
@@ -210,6 +212,7 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 
 	private final String _channelField;
 	private final HttpServletRequest _httpServletRequest;
+	private final ObjectDefinitionService _objectDefinitionService;
 	private final long _objectEntryId;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectFieldLocalService _objectFieldLocalService;

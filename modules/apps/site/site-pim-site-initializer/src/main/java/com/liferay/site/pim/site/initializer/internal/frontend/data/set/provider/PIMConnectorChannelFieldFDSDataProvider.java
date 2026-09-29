@@ -197,8 +197,17 @@ public class PIMConnectorChannelFieldFDSDataProvider
 			return Collections.emptyList();
 		}
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		String apiURL = PIMConnectorFieldMappingsUtil.getAPIURL(
+			themeDisplay.getCompanyId());
+
 		String editFieldMappingsURL = ParamUtil.getString(
 			httpServletRequest, "editFieldMappingsURL");
+
+		Locale locale = themeDisplay.getLocale();
 
 		Map<String, List<ObjectEntry>> objectEntriesMap = new HashMap<>();
 
@@ -212,15 +221,6 @@ public class PIMConnectorChannelFieldFDSDataProvider
 
 			objectEntries.add(objectEntry);
 		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Locale locale = themeDisplay.getLocale();
-
-		String apiURL = PIMConnectorFieldMappingsUtil.getAPIURL(
-			themeDisplay.getCompanyId());
 
 		Map<String, String> objectFieldLabelMap = _getObjectFieldLabelMap(
 			themeDisplay.getCompanyId(), locale, objectEntriesMap);
