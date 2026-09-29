@@ -6,14 +6,19 @@
 package com.liferay.document.library.analytics.internal.servlet;
 
 import com.liferay.document.library.analytics.internal.constants.DocumentLibraryAnalyticsConstants;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServlet;
@@ -49,11 +54,13 @@ public class ResolveFileEntryUUIDServlet extends HttpServlet {
 				httpServletResponse,
 				_getFileEntryByUuidAndGroupId(httpServletRequest));
 		}
-		catch (PrincipalException principalException) {
-			_sendError(httpServletResponse, 403, principalException);
-		}
 		catch (Exception exception) {
-			_sendError(httpServletResponse, 500, exception);
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			httpServletResponse.setStatus(
+				HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -61,31 +68,22 @@ public class ResolveFileEntryUUIDServlet extends HttpServlet {
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
+		User user = _portal.getUser(httpServletRequest);
+
+		if (user == null) {
+			user = _userLocalService.getGuestUser(
+				_portal.getCompanyId(httpServletRequest));
+		}
+
+		PrincipalThreadLocal.setName(user.getUserId());
+
+		PermissionThreadLocal.setPermissionChecker(
+			_permissionCheckerFactory.create(user));
+
 		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
 		String uuid = ParamUtil.getString(httpServletRequest, "uuid");
 
-		return _dlAppLocalService.getFileEntryByUuidAndGroupId(uuid, groupId);
-	}
-
-	private void _sendError(
-		HttpServletResponse httpServletResponse, int status,
-		Throwable throwable) {
-
-		try {
-			PrintWriter printWriter = httpServletResponse.getWriter();
-
-			JSONObject jsonObject = JSONUtil.put(
-				"error", throwable.getMessage());
-
-			printWriter.write(jsonObject.toString());
-
-			httpServletResponse.setStatus(status);
-		}
-		catch (IOException ioException) {
-			_log.error(ioException);
-
-			httpServletResponse.setStatus(500);
-		}
+		return _dlAppService.getFileEntryByUuidAndGroupId(uuid, groupId);
 	}
 
 	private void _sendSuccess(
@@ -106,6 +104,15 @@ public class ResolveFileEntryUUIDServlet extends HttpServlet {
 		ResolveFileEntryUUIDServlet.class);
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
+
+	@Reference
+	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
