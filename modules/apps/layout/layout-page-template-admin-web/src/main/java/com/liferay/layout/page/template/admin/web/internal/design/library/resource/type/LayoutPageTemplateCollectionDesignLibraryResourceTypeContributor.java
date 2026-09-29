@@ -129,6 +129,23 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 				"pencil", "edit", LanguageUtil.get(httpServletRequest, "edit"),
 				null, null, "link"),
 			new FDSActionDropdownItem(
+				PortletURLBuilder.create(
+					PortalUtil.getControlPanelPortletURL(
+						httpServletRequest, depotGroup,
+						LayoutPageTemplateAdminPortletKeys.
+							LAYOUT_PAGE_TEMPLATES,
+						0, 0, PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/layout_page_template_admin" +
+						"/view_layout_page_template_collection_permissions"
+				).setParameter(
+					"layoutPageTemplateCollectionExternalReferenceCode",
+					"{embedded.externalReferenceCode}"
+				).buildString(),
+				"password-policies", "permissions",
+				LanguageUtil.get(httpServletRequest, "permissions"), null,
+				"permissions", "modal-permissions"),
+			new FDSActionDropdownItem(
 				"{actions.delete.href}", "trash", "delete",
 				LanguageUtil.get(httpServletRequest, "delete"), "delete",
 				"delete", "async"));
