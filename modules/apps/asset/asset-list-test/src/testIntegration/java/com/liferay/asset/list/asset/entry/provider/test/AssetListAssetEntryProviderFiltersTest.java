@@ -382,7 +382,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 				_getCommonFieldFilterJSONObject(
 					"not-eq", Field.PRIORITY, String.valueOf(priority))),
 			objectEntry2);
-
 		_assertFilteredObjectEntries(
 			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
