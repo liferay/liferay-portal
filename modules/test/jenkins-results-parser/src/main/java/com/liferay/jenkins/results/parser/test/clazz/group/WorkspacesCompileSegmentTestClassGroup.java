@@ -36,19 +36,16 @@ public class WorkspacesCompileSegmentTestClassGroup
 			sb.append(axisIndex);
 			sb.append("=");
 
+			List<String> workspaceNames = new ArrayList<>();
+
 			AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup(
 				axisIndex);
 
-			List<String> workspaceNames = new ArrayList<>();
-
-			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
-				File testClassFile = testClass.getTestClassFile();
-
+			for (File testClassFile : axisTestClassGroup.getTestClassFiles()) {
 				workspaceNames.add(testClassFile.getName());
 			}
 
 			sb.append(JenkinsResultsParserUtil.join(",", workspaceNames));
-
 			sb.append("\n");
 		}
 
