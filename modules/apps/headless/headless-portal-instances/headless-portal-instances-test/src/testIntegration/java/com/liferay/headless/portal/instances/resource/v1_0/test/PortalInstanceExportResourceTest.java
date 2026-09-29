@@ -116,10 +116,6 @@ public class PortalInstanceExportResourceTest
 	@Override
 	@Test
 	public void testPostPortalInstanceExport() throws Exception {
-
-		// The generated test posts a random entity and expects it back, but an
-		// export computes its own result, so it does not apply here
-
 		DB db = DBManagerUtil.getDB();
 
 		Assume.assumeTrue(db.isSupportsDBPartition());
