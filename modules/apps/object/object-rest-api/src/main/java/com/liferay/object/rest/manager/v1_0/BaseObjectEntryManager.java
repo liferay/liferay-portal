@@ -330,7 +330,7 @@ public abstract class BaseObjectEntryManager {
 		Map<String, Object> values = HashMapBuilder.<String, Object>putAll(
 			objectEntryLocalService.getSystemValues(serviceBuilderObjectEntry)
 		).putAll(
-			objectEntryLocalService.getValues(serviceBuilderObjectEntry)
+			serviceBuilderObjectEntry.getValues()
 		).build();
 
 		ObjectFieldUtil.validateReadOnlyObjectFields(
