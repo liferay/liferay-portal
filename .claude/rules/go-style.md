@@ -338,7 +338,7 @@ Three names keep their conventional short form, because the language or the stan
 
 - `ok`, the second result of a comma ok type assertion, map index, or channel receive.
 
-- `t`, the `*testing.T` parameter.
+- `t`, the `*testing.T` parameter of a test function.
 
 ## Statement Grouping
 
