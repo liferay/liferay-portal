@@ -22,7 +22,7 @@ definition {
 
 			DMFolder.tearDownCP();
 
-			User.logoutPG();
+			JSONGroup.deleteGroupByNameIfPresent(groupName = "Site Name");
 		}
 	}
 

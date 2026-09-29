@@ -22,7 +22,11 @@ definition {
 
 			DMDocumentType.tearDownCP();
 
-			User.logoutPG();
+			JSONGroup.deleteGroupByNameIfPresent(groupName = "Site Name");
+
+			JSONGroup.deleteGroupByNameIfPresent(groupName = "Site Name 1");
+
+			JSONGroup.deleteGroupByNameIfPresent(groupName = "Site Name 2");
 		}
 	}
 

@@ -95,6 +95,19 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro deleteGroupByNameIfPresent(groupName = null) {
+		Variables.assertDefined(parameterList = ${groupName});
+
+		var nameCurrentValues = JSONGroupAPI._getNameCurrentValues();
+
+		for (var nameCurrentValue : list ${nameCurrentValues}) {
+			if (${nameCurrentValue} == ${groupName}) {
+				JSONGroup.deleteGroupByName(groupName = ${groupName});
+			}
+		}
+	}
+
+	@summary = "Default summary"
 	macro tearDownNonDefaultGroups() {
 		var nameCurrentValues = JSONGroupAPI._getNameCurrentValues();
 

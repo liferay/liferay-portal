@@ -23,7 +23,7 @@ definition {
 
 			Site.tearDownCP();
 
-			User.logoutPG();
+			JSONGroup.deleteGroupByNameIfPresent(groupName = "Site_1");
 		}
 	}
 
