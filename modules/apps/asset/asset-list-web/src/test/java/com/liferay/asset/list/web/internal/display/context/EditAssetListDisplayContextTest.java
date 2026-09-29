@@ -6,9 +6,12 @@
 package com.liferay.asset.list.web.internal.display.context;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.ClassTypeReader;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.list.model.AssetListEntry;
@@ -24,6 +27,7 @@ import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -32,6 +36,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -40,6 +45,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 
@@ -49,7 +57,10 @@ import jakarta.portlet.PortletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -86,7 +97,7 @@ public class EditAssetListDisplayContextTest {
 		Mockito.when(
 			_themeDisplay.getLocale()
 		).thenReturn(
-			LocaleUtil.US
+			LocaleUtil.getDefault()
 		);
 
 		Mockito.when(
@@ -233,6 +244,302 @@ public class EditAssetListDisplayContextTest {
 	}
 
 	@Test
+	public void testGetFilters() {
+		long[] groupIds = {RandomTestUtil.randomLong()};
+
+		Mockito.when(
+			_portal.getCurrentAndAncestorSiteGroupIds(
+				Mockito.any(long[].class), Mockito.eq(true))
+		).thenReturn(
+			groupIds
+		);
+
+		Mockito.when(
+			_themeDisplay.getScopeGroup()
+		).thenReturn(
+			Mockito.mock(Group.class)
+		);
+
+		try (MockedStatic<AssetCategoryLocalServiceUtil>
+				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetCategoryLocalServiceUtil.class);
+			MockedStatic<AssetTagLocalServiceUtil>
+				assetTagLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetTagLocalServiceUtil.class)) {
+
+			AssetCategory assetCategory1 = _getAssetCategory(
+				RandomTestUtil.randomLong(), RandomTestUtil.randomString());
+
+			assetCategoryLocalServiceUtilMockedStatic.when(
+				() -> AssetCategoryLocalServiceUtil.fetchAssetCategory(
+					assetCategory1.getCategoryId())
+			).thenReturn(
+				assetCategory1
+			);
+
+			AssetCategory assetCategory2 = _getAssetCategory(
+				RandomTestUtil.randomLong(), RandomTestUtil.randomString());
+
+			assetCategoryLocalServiceUtilMockedStatic.when(
+				() -> AssetCategoryLocalServiceUtil.fetchAssetCategory(
+					assetCategory2.getCategoryId())
+			).thenReturn(
+				assetCategory2
+			);
+
+			String assetTagName = RandomTestUtil.randomString();
+
+			assetTagLocalServiceUtilMockedStatic.when(
+				() -> AssetTagLocalServiceUtil.getTagIds(groupIds, assetTagName)
+			).thenReturn(
+				new long[] {RandomTestUtil.randomLong()}
+			);
+
+			JSONArray objectFieldValueJSONArray = JSONUtil.put(
+				JSONUtil.put(
+					"label", RandomTestUtil.randomString()
+				).put(
+					"value", String.valueOf(assetCategory1.getCategoryId())
+				));
+
+			EditAssetListDisplayContext editAssetListDisplayContext =
+				_getEditAssetListDisplayContext(
+					UnicodePropertiesBuilder.put(
+						"filters",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"propertyName", "assetCategories"
+							).put(
+								"value",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"label", RandomTestUtil.randomString()
+									).put(
+										"value",
+										String.valueOf(
+											assetCategory1.getCategoryId())
+									),
+									JSONUtil.put(
+										"value",
+										String.valueOf(
+											assetCategory2.getCategoryId())),
+									JSONUtil.put(
+										"label", RandomTestUtil.randomString()
+									).put(
+										"value",
+										String.valueOf(
+											RandomTestUtil.randomLong())
+									))
+							),
+							JSONUtil.put(
+								"propertyName", "assetTags"
+							).put(
+								"value",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"label", assetTagName
+									).put(
+										"value", assetTagName
+									),
+									JSONUtil.put(
+										"value", RandomTestUtil.randomString()))
+							),
+							JSONUtil.put(
+								"classNameId", RandomTestUtil.randomLong()
+							).put(
+								"propertyName", "assetCategories"
+							).put(
+								"value", objectFieldValueJSONArray
+							)
+						).toString()
+					).build());
+
+			List<Map<String, Object>> filtersList =
+				editAssetListDisplayContext.getFilters();
+
+			Assert.assertEquals(filtersList.toString(), 3, filtersList.size());
+
+			Map<String, Object> assetCategoriesFilterMap = filtersList.get(0);
+
+			Assert.assertEquals(
+				Arrays.asList(
+					HashMapBuilder.<String, Object>put(
+						"label",
+						assetCategory1.getTitle(LocaleUtil.getDefault())
+					).put(
+						"value", String.valueOf(assetCategory1.getCategoryId())
+					).build(),
+					HashMapBuilder.<String, Object>put(
+						"label",
+						assetCategory2.getTitle(LocaleUtil.getDefault())
+					).put(
+						"value", String.valueOf(assetCategory2.getCategoryId())
+					).build()),
+				assetCategoriesFilterMap.get("value"));
+
+			Map<String, Object> assetTagsFilterMap = filtersList.get(1);
+
+			Assert.assertEquals(
+				Collections.singletonList(
+					HashMapBuilder.<String, Object>put(
+						"label", assetTagName
+					).put(
+						"value", assetTagName
+					).build()),
+				assetTagsFilterMap.get("value"));
+
+			Map<String, Object> objectFieldFilterMap = filtersList.get(2);
+
+			Assert.assertEquals(
+				objectFieldValueJSONArray.toString(),
+				String.valueOf(objectFieldFilterMap.get("value")));
+		}
+	}
+
+	@Test
+	public void testGetFiltersWhenAssetCategoryLookupFails() {
+		try (MockedStatic<AssetCategoryLocalServiceUtil>
+				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetCategoryLocalServiceUtil.class);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				EditAssetListDisplayContext.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			long assetCategoryId = RandomTestUtil.randomLong();
+
+			assetCategoryLocalServiceUtilMockedStatic.when(
+				() -> AssetCategoryLocalServiceUtil.fetchAssetCategory(
+					assetCategoryId)
+			).thenThrow(
+				new RuntimeException()
+			);
+
+			JSONArray assetCategoriesValueJSONArray = JSONUtil.put(
+				JSONUtil.put(
+					"label", RandomTestUtil.randomString()
+				).put(
+					"value", String.valueOf(assetCategoryId)
+				));
+
+			String keywords = RandomTestUtil.randomString();
+
+			EditAssetListDisplayContext editAssetListDisplayContext =
+				_getEditAssetListDisplayContext(
+					UnicodePropertiesBuilder.put(
+						"filters",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"propertyName", "assetCategories"
+							).put(
+								"value", assetCategoriesValueJSONArray
+							),
+							JSONUtil.put(
+								"propertyName", "keywords"
+							).put(
+								"value", keywords
+							)
+						).toString()
+					).build());
+
+			List<Map<String, Object>> filtersList =
+				editAssetListDisplayContext.getFilters();
+
+			Assert.assertEquals(filtersList.toString(), 2, filtersList.size());
+
+			Map<String, Object> assetCategoriesFilterMap = filtersList.get(0);
+
+			Assert.assertEquals(
+				assetCategoriesValueJSONArray.toString(),
+				String.valueOf(assetCategoriesFilterMap.get("value")));
+
+			Map<String, Object> keywordsFilterMap = filtersList.get(1);
+
+			Assert.assertEquals(keywords, keywordsFilterMap.get("value"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertTrue(
+				StringUtil.startsWith(
+					logEntry.getMessage(), "Unable to resolve filter "));
+		}
+	}
+
+	@Test
+	public void testGetFiltersWhenOnlyAssetCategoryOrTagIsDeleted() {
+		Mockito.when(
+			_portal.getCurrentAndAncestorSiteGroupIds(
+				Mockito.any(long[].class), Mockito.eq(true))
+		).thenReturn(
+			new long[] {RandomTestUtil.randomLong()}
+		);
+
+		Mockito.when(
+			_themeDisplay.getScopeGroup()
+		).thenReturn(
+			Mockito.mock(Group.class)
+		);
+
+		try (MockedStatic<AssetCategoryLocalServiceUtil>
+				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetCategoryLocalServiceUtil.class);
+			MockedStatic<AssetTagLocalServiceUtil>
+				assetTagLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetTagLocalServiceUtil.class)) {
+
+			String keywords = RandomTestUtil.randomString();
+
+			EditAssetListDisplayContext editAssetListDisplayContext =
+				_getEditAssetListDisplayContext(
+					UnicodePropertiesBuilder.put(
+						"filters",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"propertyName", "assetCategories"
+							).put(
+								"value",
+								JSONUtil.put(
+									JSONUtil.put(
+										"label", RandomTestUtil.randomString()
+									).put(
+										"value",
+										String.valueOf(
+											RandomTestUtil.randomLong())
+									))
+							),
+							JSONUtil.put(
+								"propertyName", "assetTags"
+							).put(
+								"value",
+								JSONUtil.put(
+									JSONUtil.put(
+										"value", RandomTestUtil.randomString()))
+							),
+							JSONUtil.put(
+								"propertyName", "keywords"
+							).put(
+								"value", keywords
+							)
+						).toString()
+					).build());
+
+			List<Map<String, Object>> filtersList =
+				editAssetListDisplayContext.getFilters();
+
+			Assert.assertEquals(filtersList.toString(), 1, filtersList.size());
+
+			Map<String, Object> keywordsFilterMap = filtersList.get(0);
+
+			Assert.assertEquals(
+				"keywords", keywordsFilterMap.get("propertyName"));
+			Assert.assertEquals(keywords, keywordsFilterMap.get("value"));
+		}
+	}
+
+	@Test
 	public void testGetNonexistentClassNameIds() {
 		long classNameId = RandomTestUtil.randomLong();
 		long nonexistentClassNameId = RandomTestUtil.randomLong();
@@ -375,6 +682,24 @@ public class EditAssetListDisplayContextTest {
 		}
 	}
 
+	private AssetCategory _getAssetCategory(long categoryId, String title) {
+		AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
+
+		Mockito.when(
+			assetCategory.getCategoryId()
+		).thenReturn(
+			categoryId
+		);
+
+		Mockito.when(
+			assetCategory.getTitle(LocaleUtil.getDefault())
+		).thenReturn(
+			title
+		);
+
+		return assetCategory;
+	}
+
 	private EditAssetListDisplayContext _getEditAssetListDisplayContext(
 		UnicodeProperties unicodeProperties) {
 
@@ -479,7 +804,7 @@ public class EditAssetListDisplayContextTest {
 			);
 
 			Mockito.when(
-				assetRendererFactory.getTypeName(LocaleUtil.US)
+				assetRendererFactory.getTypeName(LocaleUtil.getDefault())
 			).thenReturn(
 				typeName
 			);
