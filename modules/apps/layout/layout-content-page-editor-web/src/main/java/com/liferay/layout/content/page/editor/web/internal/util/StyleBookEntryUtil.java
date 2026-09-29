@@ -168,10 +168,6 @@ public class StyleBookEntryUtil {
 				themeId + StringPool.COLON + name);
 		}
 
-		if (valueJSONObject == null) {
-			valueJSONObject = frontendTokenValuesJSONObject.getJSONObject(name);
-		}
-
 		String value = StringPool.BLANK;
 
 		if (valueJSONObject != null) {

@@ -537,14 +537,15 @@ public class StyleBookEntryUtilTest {
 			_SUCCESS_COLOR_TOKEN_NAME,
 			_mockStyleBookEntry(JSONFactoryUtil.createJSONObject()));
 		_assertFrontendTokenValue(
-			"#34F787", frontendTokenDefinition, _SUCCESS_COLOR_TOKEN_NAME,
+			_SUCCESS_COLOR_DEFAULT_VALUE, frontendTokenDefinition,
+			_SUCCESS_COLOR_TOKEN_NAME,
 			_mockStyleBookEntry(
 				JSONUtil.put(
 					_SUCCESS_COLOR_TOKEN_NAME,
 					JSONUtil.put("value", "#34F787"))));
 
 		_assertFrontendTokenValue(
-			"#34F787", _mockFrontendTokenDefinition(null),
+			_SUCCESS_COLOR_DEFAULT_VALUE, _mockFrontendTokenDefinition(null),
 			_SUCCESS_COLOR_TOKEN_NAME,
 			_mockStyleBookEntry(
 				JSONUtil.put(
