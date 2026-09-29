@@ -75,10 +75,7 @@ export default function ({
 		defaultTokenDefinitionPriority,
 		fragmentCollectionPreviewURL,
 		frontendTokenDefinitions: filteredFrontendTokenDefinitions,
-		frontendTokens: getFrontendTokens(
-			filteredFrontendTokenDefinitions,
-			themeFrontendTokenDefinitionId
-		),
+		frontendTokens: getFrontendTokens(filteredFrontendTokenDefinitions),
 		isPrivateLayoutsEnabled,
 		namespace,
 		previewOptions,
@@ -132,10 +129,7 @@ function getMostRecentLayout(previewOptions) {
 	return null;
 }
 
-const getFrontendTokens = (
-	frontendTokenDefinitions,
-	themeFrontendTokenDefinitionId
-) => {
+const getFrontendTokens = (frontendTokenDefinitions) => {
 	const tokens = {};
 
 	frontendTokenDefinitions.forEach((definition) => {
@@ -150,22 +144,13 @@ const getFrontendTokens = (
 				for (const token of tokenSet.frontendTokens) {
 					const namespacedName = `${definitionId}:${token.name}`;
 
-					const tokenData = {
+					tokens[namespacedName] = {
 						...token,
 						name: namespacedName,
 						tokenCategoryLabel: category.label,
 						tokenSetLabel: tokenSet.label,
 						value: token.defaultValue,
 					};
-
-					tokens[namespacedName] = tokenData;
-
-					if (definitionId === themeFrontendTokenDefinitionId) {
-						tokens[token.name] = {
-							...tokenData,
-							name: token.name,
-						};
-					}
 				}
 			}
 		}
