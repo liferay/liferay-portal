@@ -23,7 +23,7 @@
 <#list entries as entry>
 	<tr>
 		<td>
-			<a href="${entry.path}">${entry.name}</a>
+			<a href="${entry.path}">${htmlUtil.escape(entry.name)}</a>
 		</td>
 		<td>
 			<#if entry.getModifiedDateString()??>
