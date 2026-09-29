@@ -1869,20 +1869,9 @@ public class ObjectEntryLocalServiceImpl
 			return Collections.emptyMap();
 		}
 
-		Map<String, Serializable> values = _getValues(
-			objectFieldBag, row, selectExpressions);
-
-		_addLocalizedObjectFieldValues(
-			objectEntry.getDefaultLanguageId(),
-			DynamicObjectDefinitionLocalizationTableFactory.create(
-				objectDefinition, _objectFieldLocalService),
-			objectFieldBag, objectEntry.getObjectEntryId(), values);
-		_addObjectRelationshipERCFieldValue(
-			_objectFieldPersistence.findByObjectDefinitionId(
-				objectEntry.getObjectDefinitionId()),
-			values);
-
-		return values;
+		return _getValues(
+			objectDefinition, objectEntry, objectFieldBag, row,
+			selectExpressions);
 	}
 
 	@Override
@@ -5934,6 +5923,28 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		return function.apply(object);
+	}
+
+	private Map<String, Serializable> _getValues(
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			ObjectFieldBag objectFieldBag, Object[] row,
+			Expression<?>[] selectExpressions)
+		throws PortalException {
+
+		Map<String, Serializable> values = _getValues(
+			objectFieldBag, row, selectExpressions);
+
+		_addLocalizedObjectFieldValues(
+			objectEntry.getDefaultLanguageId(),
+			DynamicObjectDefinitionLocalizationTableFactory.create(
+				objectDefinition, _objectFieldLocalService),
+			objectFieldBag, objectEntry.getObjectEntryId(), values);
+		_addObjectRelationshipERCFieldValue(
+			_objectFieldPersistence.findByObjectDefinitionId(
+				objectEntry.getObjectDefinitionId()),
+			values);
+
+		return values;
 	}
 
 	private Map<String, Serializable> _getValues(
