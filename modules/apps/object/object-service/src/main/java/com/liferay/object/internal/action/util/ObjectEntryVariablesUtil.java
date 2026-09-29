@@ -89,6 +89,18 @@ public class ObjectEntryVariablesUtil {
 						"type", valueJSONObject.getString("type")
 					).build());
 			}
+			else if ((objectField != null) &&
+					 objectField.compareBusinessType(
+						 ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+				values.put(
+					jsonObject.getString("name"),
+					HashMapBuilder.put(
+						"address",
+						_evaluate(
+							ddmExpressionFactory, jsonObject, value, variables)
+					).build());
+			}
 			else {
 				values.put(
 					jsonObject.getString("name"),
