@@ -76,11 +76,8 @@ public class DownloadEntriesMVCResourceCommandTest {
 	@Test
 	public void testServeResource() throws Exception {
 		_testServeResourceDownloadEntries();
-
 		_testServeResourceDownloadFolder();
-
 		_testServeResourceDownloadFolderWithoutShortcutTargetPermission();
-
 		_testServeResourceMaxSizeToDownload();
 	}
 
@@ -193,9 +190,9 @@ public class DownloadEntriesMVCResourceCommandTest {
 		Map<String, String> zipEntries = _getZipEntries(
 			_serveResource(mockLiferayResourceRequest));
 
-		Assert.assertEquals(zipEntries.toString(), 2, zipEntries.size());
 		Assert.assertEquals("old", zipEntries.get("Archive/old.txt"));
 		Assert.assertEquals("notes", zipEntries.get("notes.txt"));
+		Assert.assertEquals(zipEntries.toString(), 2, zipEntries.size());
 	}
 
 	private void _testServeResourceDownloadFolder() throws Exception {
@@ -225,12 +222,12 @@ public class DownloadEntriesMVCResourceCommandTest {
 					folder.getFolderId(),
 					"/document_library/download_folder")));
 
-		Assert.assertEquals(zipEntries.toString(), 3, zipEntries.size());
 		Assert.assertEquals("q1", zipEntries.get("2025/q1.txt"));
 		Assert.assertTrue(
 			zipEntries.toString(), zipEntries.containsKey("report.txt"));
 		Assert.assertTrue(
 			zipEntries.toString(), zipEntries.containsKey("report (1).txt"));
+		Assert.assertEquals(zipEntries.toString(), 3, zipEntries.size());
 	}
 
 	private void _testServeResourceDownloadFolderWithoutShortcutTargetPermission()
@@ -269,8 +266,8 @@ public class DownloadEntriesMVCResourceCommandTest {
 						folder.getFolderId(),
 						"/document_library/download_folder")));
 
-			Assert.assertEquals(zipEntries.toString(), 1, zipEntries.size());
 			Assert.assertEquals("visible", zipEntries.get("visible.txt"));
+			Assert.assertEquals(zipEntries.toString(), 1, zipEntries.size());
 		}
 	}
 

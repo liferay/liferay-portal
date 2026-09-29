@@ -235,12 +235,11 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 					ParamUtil.getLong(resourceRequest, "folderId"),
 					themeDisplay));
 
-			PermissionChecker permissionChecker =
-				themeDisplay.getPermissionChecker();
-
 			ZipOutputStream zipOutputStream = new ZipOutputStream(
 				resourceResponse.getPortletOutputStream());
 
+			PermissionChecker permissionChecker =
+				themeDisplay.getPermissionChecker();
 			Set<String> fileNames = new HashSet<>();
 
 			for (FileEntry fileEntry : fileEntries) {
