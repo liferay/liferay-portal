@@ -226,6 +226,12 @@ public class LayoutSEOEntryLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static LayoutSEOEntry fetchLayoutSEOEntry(
+		com.liferay.portal.kernel.model.Layout layout) {
+
+		return getService().fetchLayoutSEOEntry(layout);
+	}
+
 	public static LayoutSEOEntry fetchLayoutSEOEntry(long layoutSEOEntryId) {
 		return getService().fetchLayoutSEOEntry(layoutSEOEntryId);
 	}
@@ -474,4 +480,4 @@ public class LayoutSEOEntryLocalServiceUtil {
 			LayoutSEOEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1464720495
+// LIFERAY-SERVICE-BUILDER-HASH:-1989934448

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -216,6 +217,9 @@ public interface LayoutSEOEntryLocalService
 		DynamicQuery dynamicQuery, Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public LayoutSEOEntry fetchLayoutSEOEntry(Layout layout);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutSEOEntry fetchLayoutSEOEntry(long layoutSEOEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -401,4 +405,4 @@ public interface LayoutSEOEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-428693256
+// LIFERAY-SERVICE-BUILDER-HASH:2067909273

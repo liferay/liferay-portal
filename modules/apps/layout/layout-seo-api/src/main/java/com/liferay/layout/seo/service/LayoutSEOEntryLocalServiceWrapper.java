@@ -247,6 +247,13 @@ public class LayoutSEOEntryLocalServiceWrapper
 	}
 
 	@Override
+	public LayoutSEOEntry fetchLayoutSEOEntry(
+		com.liferay.portal.kernel.model.Layout layout) {
+
+		return _layoutSEOEntryLocalService.fetchLayoutSEOEntry(layout);
+	}
+
+	@Override
 	public LayoutSEOEntry fetchLayoutSEOEntry(long layoutSEOEntryId) {
 		return _layoutSEOEntryLocalService.fetchLayoutSEOEntry(
 			layoutSEOEntryId);
@@ -552,4 +559,4 @@ public class LayoutSEOEntryLocalServiceWrapper
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-583181398
+// LIFERAY-SERVICE-BUILDER-HASH:1108466164
