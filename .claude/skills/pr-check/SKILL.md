@@ -64,7 +64,7 @@ The folder a validation file sits in decides its scope. A validation sees only t
 
 Paths directly under `workspaces` that sit in no workspace, such as the refresh scripts, belong to the portal scope.
 
-In every workspace other than `liferay-sample-workspace`, a changed path that `workspaces/refresh_other_workspaces.sh` regenerates is seen only by [Generated Workspace File](validations/workspaces/generated-file.md). Such a path may change only through a refresh, and building it would only repeat what the sample workspace already checks. A path is regenerated when it does not match the regex that validation builds from the script's `--exclude` patterns. A workspace whose changed paths are all regenerated therefore runs no other workspace validation.
+In every workspace other than `liferay-sample-workspace`, a changed path that `workspaces/refresh_other_workspaces.sh` regenerates is seen only by [Generated Workspace File](validations/workspaces/generated-file.md). Such a path may change only through a refresh, and building it would only repeat what the sample workspace already checks. A path is regenerated when it does not match the regex that validation builds from the script's `--exclude` patterns. A workspace whose changed paths are all regenerated therefore runs no other workspace validation. Generated Workspace File in turn sees only regenerated paths, so it runs only for a workspace where the branch changed a regenerated path.
 
 Run only the validations in the scopes the settings enable, and skip every validation the settings name. When the portal scope is disabled, list every changed path that belongs to no workspace in the Results Summary as unchecked, so that a change nothing examined never reads as a pass.
 
