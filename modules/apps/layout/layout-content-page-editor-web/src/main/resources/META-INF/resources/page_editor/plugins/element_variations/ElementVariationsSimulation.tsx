@@ -8,6 +8,7 @@ import {ReactPortal} from '@liferay/frontend-js-react-web';
 import React, {useMemo, useState} from 'react';
 
 import ElementVariationsSimulationModal from './ElementVariationsSimulationModal';
+import ElementVariationsSimulationNewTabModal from './ElementVariationsSimulationNewTabModal';
 
 type Props = Omit<
 	React.ComponentProps<typeof ElementVariationsSimulationModal>,
@@ -20,7 +21,9 @@ export default function ElementVariationsSimulation(props: Props) {
 		[]
 	);
 
-	const [openModal, setOpenModal] = useState(false);
+	const [openModal, setOpenModal] = useState<'newTab' | 'simulation' | false>(
+		false
+	);
 
 	if (!container || !props.audiences.length) {
 		return null;
@@ -31,17 +34,34 @@ export default function ElementVariationsSimulation(props: Props) {
 			<ReactPortal container={container}>
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('simulation')}
-					className="control-menu-nav-link"
+					className="control-menu-nav-link d-md-inline-flex d-none"
 					displayType="unstyled"
-					onClick={() => setOpenModal(true)}
+					onClick={() => setOpenModal('simulation')}
+					size="sm"
+					symbol="simulation-menu-closed"
+					title={Liferay.Language.get('simulation')}
+				/>
+
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('simulation')}
+					className="control-menu-nav-link d-md-none"
+					displayType="unstyled"
+					onClick={() => setOpenModal('newTab')}
 					size="sm"
 					symbol="simulation-menu-closed"
 					title={Liferay.Language.get('simulation')}
 				/>
 			</ReactPortal>
 
-			{openModal ? (
+			{openModal === 'simulation' ? (
 				<ElementVariationsSimulationModal
+					{...props}
+					onClose={() => setOpenModal(false)}
+				/>
+			) : null}
+
+			{openModal === 'newTab' ? (
+				<ElementVariationsSimulationNewTabModal
 					{...props}
 					onClose={() => setOpenModal(false)}
 				/>
