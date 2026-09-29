@@ -11,9 +11,12 @@ import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,6 +26,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -44,6 +48,9 @@ public class ObjectDefinitionSelectionAllFDSFilterTest {
 		_objectDefinitionSelectionAllFDSFilter =
 			new ObjectDefinitionSelectionAllFDSFilter();
 
+		ReflectionTestUtil.setFieldValue(
+			_objectDefinitionSelectionAllFDSFilter,
+			"_cmsStructureObjectFolderContributors", new ArrayList<>());
 		ReflectionTestUtil.setFieldValue(
 			_objectDefinitionSelectionAllFDSFilter, "language", _language);
 		ReflectionTestUtil.setFieldValue(
@@ -86,6 +93,45 @@ public class ObjectDefinitionSelectionAllFDSFilterTest {
 		Assert.assertEquals(
 			objectDefinitionExternalReferenceCode,
 			objectDefinitionSelectionFDSFilterItem.getValue());
+
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor = Mockito.mock(
+				CMSStructureObjectFolderContributor.class);
+
+		String objectFolderExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		Mockito.when(
+			cmsStructureObjectFolderContributor.
+				getObjectFolderExternalReferenceCode()
+		).thenReturn(
+			objectFolderExternalReferenceCode
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_objectDefinitionSelectionAllFDSFilter,
+			"_cmsStructureObjectFolderContributors",
+			List.of(cmsStructureObjectFolderContributor));
+
+		_objectDefinitionSelectionAllFDSFilter.getSelectionFDSFilterItems(
+			_locale);
+
+		ArgumentCaptor<String[]> argumentCaptor = ArgumentCaptor.forClass(
+			String[].class);
+
+		Mockito.verify(
+			_objectDefinitionService, Mockito.times(2)
+		).getCMSObjectDefinitions(
+			Mockito.anyLong(), argumentCaptor.capture()
+		);
+
+		List<String[]> objectFolderExternalReferenceCodesList =
+			argumentCaptor.getAllValues();
+
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				objectFolderExternalReferenceCodesList.get(1),
+				objectFolderExternalReferenceCode));
 	}
 
 	@Mock
