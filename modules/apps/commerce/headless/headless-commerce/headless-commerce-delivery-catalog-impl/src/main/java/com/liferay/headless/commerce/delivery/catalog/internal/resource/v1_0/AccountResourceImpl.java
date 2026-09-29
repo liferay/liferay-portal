@@ -20,7 +20,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.util.AccountEntryAllowedTypesUtil;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Account;
 import com.liferay.headless.commerce.delivery.catalog.internal.odata.entity.v1_0.AccountEntityModel;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.AccountResource;
@@ -260,7 +260,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			return null;
 		}
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(logoId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(logoId);
 
 		return _file.getBytes(fileEntry.getContentStream());
 	}
@@ -394,7 +394,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private File _file;

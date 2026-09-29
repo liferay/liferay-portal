@@ -12,7 +12,7 @@ import com.liferay.account.exception.DuplicateAccountEntryExternalReferenceCodeE
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelService;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -198,7 +198,7 @@ public class EditAccountEntryMVCActionCommand
 			return null;
 		}
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		return _file.getBytes(fileEntry.getContentStream());
 	}
@@ -218,7 +218,7 @@ public class EditAccountEntryMVCActionCommand
 	private AccountEntryUserRelService _accountEntryUserRelService;
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private File _file;

@@ -22,6 +22,7 @@ import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.exportimport.constants.ExportImportConstants;
@@ -1099,7 +1100,7 @@ public class AccountResourceImpl
 			return null;
 		}
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(logoId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(logoId);
 
 		return _file.getBytes(fileEntry.getContentStream());
 	}
@@ -1480,6 +1481,9 @@ public class AccountResourceImpl
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

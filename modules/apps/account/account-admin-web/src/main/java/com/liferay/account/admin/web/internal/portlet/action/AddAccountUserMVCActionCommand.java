@@ -11,7 +11,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelService;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
@@ -120,8 +120,7 @@ public class AddAccountUserMVCActionCommand
 			long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
 			if (fileEntryId > 0) {
-				FileEntry fileEntry = _dlAppLocalService.getFileEntry(
-					fileEntryId);
+				FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 				portraitBytes = _file.getBytes(fileEntry.getContentStream());
 			}
@@ -185,7 +184,7 @@ public class AddAccountUserMVCActionCommand
 	private AccountEntryUserRelService _accountEntryUserRelService;
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private File _file;

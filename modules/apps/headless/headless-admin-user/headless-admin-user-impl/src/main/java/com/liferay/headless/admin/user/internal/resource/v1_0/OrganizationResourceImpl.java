@@ -13,6 +13,7 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
@@ -1071,7 +1072,7 @@ public class OrganizationResourceImpl
 			return null;
 		}
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(imageId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(imageId);
 
 		return _file.getBytes(fileEntry.getContentStream());
 	}
@@ -1487,6 +1488,9 @@ public class OrganizationResourceImpl
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
