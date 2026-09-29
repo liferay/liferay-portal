@@ -453,7 +453,7 @@ export default function ElementVariationForm({
 								Boolean(elementVariation.targetElement) &&
 								!elementVariation.audienceEntryERCs.length,
 							name: !elementVariation.name,
-							targetElement: !elementVariation.targetElement,
+							targetElement: !selectedTargetElementItem,
 						};
 
 						if (
