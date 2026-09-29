@@ -32,38 +32,32 @@ test(
 		const webContentTitle = getRandomString();
 
 		try {
-			await test.step(
-				'Create a product of the type the New menu offers',
-				async () => {
-					await assetsPage.gotoAll();
+			await test.step('Create a product of the type the New menu offers', async () => {
+				await assetsPage.gotoAll();
 
-					await assetsPage.createContent(PRODUCT_STRUCTURE_LABEL);
+				await assetsPage.createContent(PRODUCT_STRUCTURE_LABEL);
 
-					await spaceSelectorPage.selectSpace(SPACE_NAME);
+				await spaceSelectorPage.selectSpace(SPACE_NAME);
 
-					await productPage.code.fill(getRandomString());
-					await productPage.name.fill(productName);
+				await productPage.code.fill(getRandomString());
+				await productPage.name.fill(productName);
 
-					await contentsPage.saveContent();
-				}
-			);
+				await contentsPage.saveContent();
+			});
 
-			await test.step(
-				'Create a web content so the filter has something to exclude',
-				async () => {
-					await assetsPage.gotoAll();
+			await test.step('Create a web content so the filter has something to exclude', async () => {
+				await assetsPage.gotoAll();
 
-					await assetsPage.createContent('Basic Web Content');
+				await assetsPage.createContent('Basic Web Content');
 
-					await spaceSelectorPage.selectSpace(SPACE_NAME);
+				await spaceSelectorPage.selectSpace(SPACE_NAME);
 
-					await contentsPage.fillData([
-						{label: 'Title', value: webContentTitle},
-					]);
+				await contentsPage.fillData([
+					{label: 'Title', value: webContentTitle},
+				]);
 
-					await contentsPage.saveContent();
-				}
-			);
+				await contentsPage.saveContent();
+			});
 
 			await test.step('Filter the All section by the product type', async () => {
 				await assetsPage.gotoAll();

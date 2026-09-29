@@ -1155,6 +1155,50 @@ public class ActionUtil {
 		return getBaseSpaceURL(themeDisplay) + classPK;
 	}
 
+	public static List<DropdownItem>
+		getStructureObjectFolderCustomDropdownItems(
+			List<CMSStructureObjectFolderContributor>
+				cmsStructureObjectFolderContributors,
+			HttpServletRequest httpServletRequest) {
+
+		List<DropdownItem> dropdownItems = new ArrayList<>();
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					cmsStructureObjectFolderContributors) {
+
+			String objectEntryFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectEntryFolderExternalReferenceCode();
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectEntryFolderExternalReferenceCode) ||
+				Validator.isNull(objectFolderExternalReferenceCode)) {
+
+				continue;
+			}
+
+			dropdownItems.addAll(
+				TransformUtil.transform(
+					ObjectDefinitionServiceUtil.getCMSObjectDefinitions(
+						themeDisplay.getCompanyId(),
+						new String[] {objectFolderExternalReferenceCode}),
+					objectDefinition -> getStructuredContentDropdownItem(
+						httpServletRequest,
+						cmsStructureObjectFolderContributor.
+							getCreationMenuIcon(),
+						null, objectDefinition,
+						objectEntryFolderExternalReferenceCode)));
+		}
+
+		return dropdownItems;
+	}
+
 	public static DropdownItem getStructuredContentDropdownItem(
 		HttpServletRequest httpServletRequest, String icon, String labelKey,
 		ObjectDefinition objectDefinition,
@@ -1217,50 +1261,6 @@ public class ActionUtil {
 		return getStructuredContentDropdownItem(
 			httpServletRequest, icon, labelKey, objectDefinition,
 			objectEntryFolderExternalReferenceCode);
-	}
-
-	public static List<DropdownItem>
-		getStructureObjectFolderCustomDropdownItems(
-			List<CMSStructureObjectFolderContributor>
-				cmsStructureObjectFolderContributors,
-			HttpServletRequest httpServletRequest) {
-
-		List<DropdownItem> dropdownItems = new ArrayList<>();
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		for (CMSStructureObjectFolderContributor
-				cmsStructureObjectFolderContributor :
-					cmsStructureObjectFolderContributors) {
-
-			String objectEntryFolderExternalReferenceCode =
-				cmsStructureObjectFolderContributor.
-					getObjectEntryFolderExternalReferenceCode();
-			String objectFolderExternalReferenceCode =
-				cmsStructureObjectFolderContributor.
-					getObjectFolderExternalReferenceCode();
-
-			if (Validator.isNull(objectEntryFolderExternalReferenceCode) ||
-				Validator.isNull(objectFolderExternalReferenceCode)) {
-
-				continue;
-			}
-
-			dropdownItems.addAll(
-				TransformUtil.transform(
-					ObjectDefinitionServiceUtil.getCMSObjectDefinitions(
-						themeDisplay.getCompanyId(),
-						new String[] {objectFolderExternalReferenceCode}),
-					objectDefinition -> getStructuredContentDropdownItem(
-						httpServletRequest,
-						cmsStructureObjectFolderContributor.
-							getCreationMenuIcon(),
-						null, objectDefinition,
-						objectEntryFolderExternalReferenceCode)));
-		}
-
-		return dropdownItems;
 	}
 
 	public static String getTranslateURL(

@@ -38,36 +38,30 @@ test(
 		try {
 			await productStructuresPage.goto();
 
-			await test.step(
-				'The new structure starts from the base SKU',
-				async () => {
-					await expect(
-						productStructuresPage.getTreeItem('Units of Measure')
-					).toBeVisible();
-					await expect(
-						productStructuresPage.getTreeItem('Details')
-					).toBeVisible();
-				}
-			);
+			await test.step('The new structure starts from the base SKU', async () => {
+				await expect(
+					productStructuresPage.getTreeItem('Units of Measure')
+				).toBeVisible();
+				await expect(
+					productStructuresPage.getTreeItem('Details')
+				).toBeVisible();
+			});
 
-			await test.step(
-				'Add a field to the Units of Measure tab',
-				async () => {
-					await structureBuilderPage.addField('Text', {
-						label: 'Units of Measure',
-					});
+			await test.step('Add a field to the Units of Measure tab', async () => {
+				await structureBuilderPage.addField('Text', {
+					label: 'Units of Measure',
+				});
 
-					await structureBuilderPage.changeFieldSettings({
-						label: fieldLabel,
-						name: fieldName,
-					});
+				await structureBuilderPage.changeFieldSettings({
+					label: fieldLabel,
+					name: fieldName,
+				});
 
-					await structureBuilderPage.checkIsParent({
-						child: {label: fieldLabel},
-						parent: {label: 'Units of Measure'},
-					});
-				}
-			);
+				await structureBuilderPage.checkIsParent({
+					child: {label: fieldLabel},
+					parent: {label: 'Units of Measure'},
+				});
+			});
 
 			await structureBuilderPage.selectStructure();
 
@@ -79,42 +73,37 @@ test(
 
 			await structureBuilderPage.publishStructure();
 
-			await test.step(
-				'A product of the new type shows the field in the Units of Measure tab',
-				async () => {
-					await productsPage.goto();
+			await test.step('A product of the new type shows the field in the Units of Measure tab', async () => {
+				await productsPage.goto();
 
-					await productsPage.openNewProductEditor(
-						'Default',
-						structureLabel
-					);
+				await productsPage.openNewProductEditor(
+					'Default',
+					structureLabel
+				);
 
-					await clickAndExpectToBeVisible({
-						target: productPage.name,
-						trigger: productPage.getTab('Details'),
-					});
+				await clickAndExpectToBeVisible({
+					target: productPage.name,
+					trigger: productPage.getTab('Details'),
+				});
 
-					await productPage.code.fill(getRandomString());
-					await productPage.name.fill(productName);
+				await productPage.code.fill(getRandomString());
+				await productPage.name.fill(productName);
 
-					await clickAndExpectToBeVisible({
-						target: productPage.unitOfMeasureName,
-						trigger: productPage.getTab('Units of Measure'),
-					});
+				await clickAndExpectToBeVisible({
+					target: productPage.unitOfMeasureName,
+					trigger: productPage.getTab('Units of Measure'),
+				});
 
-					await expect(
-						productPage.getField(fieldName)
-					).toBeVisible();
+				await expect(productPage.getField(fieldName)).toBeVisible();
 
-					await productPage.getField(fieldName).fill('Fragile');
+				await productPage.getField(fieldName).fill('Fragile');
 
-					await contentsPage.saveContent();
+				await contentsPage.saveContent();
 
-					await expect(
-						productsPage.getProduct(productName)
-					).toBeVisible();
-				}
-			);
+				await expect(
+					productsPage.getProduct(productName)
+				).toBeVisible();
+			});
 
 			await test.step('The field value is persisted', async () => {
 				await productsPage.goto();
@@ -158,17 +147,14 @@ test(
 		try {
 			await productStructuresPage.goto();
 
-			await test.step(
-				'The new structure starts from the base SKU',
-				async () => {
-					await expect(
-						productStructuresPage.getTreeItem('Details')
-					).toBeVisible();
-					await expect(
-						productStructuresPage.getTreeItem('Units of Measure')
-					).toBeVisible();
-				}
-			);
+			await test.step('The new structure starts from the base SKU', async () => {
+				await expect(
+					productStructuresPage.getTreeItem('Details')
+				).toBeVisible();
+				await expect(
+					productStructuresPage.getTreeItem('Units of Measure')
+				).toBeVisible();
+			});
 
 			await test.step('Add a tab holding a new field', async () => {
 				await productStructuresPage.addTab(tabLabel);
@@ -196,44 +182,41 @@ test(
 
 			await structureBuilderPage.publishStructure();
 
-			await test.step(
-				'A product of the new type renders the new tab and its field',
-				async () => {
-					await productsPage.goto();
+			await test.step('A product of the new type renders the new tab and its field', async () => {
+				await productsPage.goto();
 
-					await productsPage.openNewProductEditor(
-						'Default',
-						structureLabel
-					);
+				await productsPage.openNewProductEditor(
+					'Default',
+					structureLabel
+				);
 
-					await expect(productPage.tabs).toHaveText([
-						'Details',
-						'Units of Measure',
-						tabLabel,
-					]);
+				await expect(productPage.tabs).toHaveText([
+					'Details',
+					'Units of Measure',
+					tabLabel,
+				]);
 
-					await clickAndExpectToBeVisible({
-						target: productPage.name,
-						trigger: productPage.getTab('Details'),
-					});
+				await clickAndExpectToBeVisible({
+					target: productPage.name,
+					trigger: productPage.getTab('Details'),
+				});
 
-					await productPage.code.fill(getRandomString());
-					await productPage.name.fill(productName);
+				await productPage.code.fill(getRandomString());
+				await productPage.name.fill(productName);
 
-					await clickAndExpectToBeVisible({
-						target: productPage.getField(fieldName),
-						trigger: productPage.getTab(tabLabel),
-					});
+				await clickAndExpectToBeVisible({
+					target: productPage.getField(fieldName),
+					trigger: productPage.getTab(tabLabel),
+				});
 
-					await productPage.getField(fieldName).fill('Aisle 3');
+				await productPage.getField(fieldName).fill('Aisle 3');
 
-					await contentsPage.saveContent();
+				await contentsPage.saveContent();
 
-					await expect(
-						productsPage.getProduct(productName)
-					).toBeVisible();
-				}
-			);
+				await expect(
+					productsPage.getProduct(productName)
+				).toBeVisible();
+			});
 		}
 		finally {
 			await productsPage.goto();
