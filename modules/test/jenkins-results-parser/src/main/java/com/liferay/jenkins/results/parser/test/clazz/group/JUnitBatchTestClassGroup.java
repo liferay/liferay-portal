@@ -1091,7 +1091,8 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			File javaTestClassFile = getJavaFileFromFullClassName(
 				fullClassName);
 
-			if (!JenkinsResultsParserUtil.isFileIncluded(
+			if ((javaTestClassFile == null) ||
+				!JenkinsResultsParserUtil.isFileIncluded(
 					null, getPathMatchers(getFilterJobProperties()),
 					javaTestClassFile)) {
 
