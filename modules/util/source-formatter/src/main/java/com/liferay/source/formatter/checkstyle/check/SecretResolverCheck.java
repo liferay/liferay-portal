@@ -96,9 +96,52 @@ public class SecretResolverCheck extends BaseCheck {
 
 		String methodName = getMethodName(detailAST);
 
-		if (_isPasswordAccessor(javaClass, methodName)) {
+		if (_isPasswordAccessor(javaClass, methodName) &&
+			!_isResolvedThroughVariable(detailAST)) {
+
 			log(detailAST, _MSG_RESOLVE_REQUIRED, methodName + "()");
 		}
+	}
+
+	private String _getAssignedVariableName(DetailAST detailAST) {
+		DetailAST assignDetailAST = detailAST.getParent();
+
+		while ((assignDetailAST != null) &&
+			   (assignDetailAST.getType() == TokenTypes.EXPR)) {
+
+			assignDetailAST = assignDetailAST.getParent();
+		}
+
+		if ((assignDetailAST == null) ||
+			(assignDetailAST.getType() != TokenTypes.ASSIGN)) {
+
+			return null;
+		}
+
+		DetailAST parentDetailAST = assignDetailAST.getParent();
+
+		if ((parentDetailAST != null) &&
+			(parentDetailAST.getType() == TokenTypes.VARIABLE_DEF)) {
+
+			DetailAST nameDetailAST = parentDetailAST.findFirstToken(
+				TokenTypes.IDENT);
+
+			if (nameDetailAST != null) {
+				return nameDetailAST.getText();
+			}
+
+			return null;
+		}
+
+		DetailAST firstChildDetailAST = assignDetailAST.getFirstChild();
+
+		if ((firstChildDetailAST != null) &&
+			(firstChildDetailAST.getType() == TokenTypes.IDENT)) {
+
+			return firstChildDetailAST.getText();
+		}
+
+		return null;
 	}
 
 	private synchronized Map<String, String> _getBundleSymbolicNamesMap(
@@ -168,9 +211,10 @@ public class SecretResolverCheck extends BaseCheck {
 
 		String methodName = getMethodName(methodCallDetailAST);
 
-		if (Objects.equals(methodName, "resolve") ||
+		if (Objects.equals(methodName, "isBlank") ||
 			Objects.equals(methodName, "isNotNull") ||
-			Objects.equals(methodName, "isNull")) {
+			Objects.equals(methodName, "isNull") ||
+			Objects.equals(methodName, "resolve")) {
 
 			return true;
 		}
@@ -191,6 +235,58 @@ public class SecretResolverCheck extends BaseCheck {
 			String content = javaTerm.getContent();
 
 			return content.contains("Meta.Type.Password");
+		}
+
+		return false;
+	}
+
+	private boolean _isResolvedThroughVariable(DetailAST detailAST) {
+		String variableName = _getAssignedVariableName(detailAST);
+
+		if (variableName == null) {
+			return false;
+		}
+
+		DetailAST methodDefDetailAST = getParentWithTokenType(
+			detailAST, TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF);
+
+		if (methodDefDetailAST == null) {
+			return false;
+		}
+
+		for (DetailAST methodCallDetailAST :
+				getAllChildTokens(
+					methodDefDetailAST, true, TokenTypes.METHOD_CALL)) {
+
+			if (!Objects.equals(
+					getMethodName(methodCallDetailAST), "resolve")) {
+
+				continue;
+			}
+
+			for (DetailAST parameterExprDetailAST :
+					getParameterExprDetailASTs(methodCallDetailAST)) {
+
+				for (DetailAST identDetailAST :
+						getAllChildTokens(
+							parameterExprDetailAST, true, TokenTypes.IDENT)) {
+
+					DetailAST parentDetailAST = identDetailAST.getParent();
+
+					if ((parentDetailAST != null) &&
+						(parentDetailAST.getType() == TokenTypes.DOT) &&
+						(parentDetailAST.getLastChild() == identDetailAST)) {
+
+						continue;
+					}
+
+					if (Objects.equals(
+							identDetailAST.getText(), variableName)) {
+
+						return true;
+					}
+				}
+			}
 		}
 
 		return false;
