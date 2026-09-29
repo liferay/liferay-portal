@@ -5,7 +5,7 @@
 
 package com.liferay.fragment.web.internal.portlet.action;
 
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryService;
@@ -52,7 +52,7 @@ public class UpdateFragmentEntryPreviewMVCActionCommand
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		FileEntry tempFileEntry = fileEntry;
 
@@ -102,7 +102,7 @@ public class UpdateFragmentEntryPreviewMVCActionCommand
 	}
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private FragmentEntryService _fragmentEntryService;
