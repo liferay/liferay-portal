@@ -53,6 +53,16 @@ function serializeValue(
 	property: FilterProperty | undefined,
 	value: FilterCondition['value']
 ): FilterCondition['value'] {
+	if (
+		(property?.type === 'asset-categories' ||
+			property?.type === 'asset-tags') &&
+		Array.isArray(value)
+	) {
+		return (value as Array<{value: string}>).map((entry) => ({
+			value: entry.value,
+		}));
+	}
+
 	if (property?.type !== 'date-time' || value === null) {
 		return value;
 	}
