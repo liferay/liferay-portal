@@ -5,6 +5,8 @@
 
 package com.liferay.digital.sales.room.analytics.rest.internal.resource.v1_0.factory;
 
+import com.liferay.digital.sales.room.analytics.rest.internal.security.permission.LiberalPermissionChecker;
+import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.SiteHistogramMetricResource;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -25,8 +27,6 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
-import com.liferay.digital.sales.room.analytics.rest.internal.security.permission.LiberalPermissionChecker;
-import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.SiteHistogramMetricResource;
 
 import jakarta.annotation.Generated;
 
@@ -335,4 +335,4 @@ public class SiteHistogramMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-819434616
+// LIFERAY-REST-BUILDER-HASH:-28057533

@@ -235,4 +235,4 @@ public class IdentityActivitySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-424833771
+// LIFERAY-REST-BUILDER-HASH:765993502

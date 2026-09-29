@@ -8,7 +8,6 @@ package com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0;
 import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.VisitFrequency;
 import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
 import com.liferay.digital.sales.room.analytics.rest.client.problem.Problem;
-import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.VisitFrequencySerDes;
 
 import jakarta.annotation.Generated;
 
@@ -208,7 +207,8 @@ public interface VisitFrequencyResource {
 			}
 
 			try {
-				return VisitFrequencySerDes.toDTO(content);
+				return com.liferay.digital.sales.room.analytics.rest.client.
+					serdes.v1_0.VisitFrequencySerDes.toDTO(content);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -289,4 +289,4 @@ public interface VisitFrequencyResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1802884680
+// LIFERAY-REST-BUILDER-HASH:1277525473

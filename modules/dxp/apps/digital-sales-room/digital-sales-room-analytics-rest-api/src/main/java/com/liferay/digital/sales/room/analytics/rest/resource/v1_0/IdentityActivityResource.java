@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.analytics.rest.resource.v1_0;
 
+import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.IdentityActivity;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -13,7 +14,6 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
-import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.IdentityActivity;
 
 import jakarta.annotation.Generated;
 
@@ -133,4 +133,4 @@ public interface IdentityActivityResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-542945775
+// LIFERAY-REST-BUILDER-HASH:-329995096

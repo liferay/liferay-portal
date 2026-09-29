@@ -163,4 +163,4 @@ public class InvitedMember implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1401042955
+// LIFERAY-REST-BUILDER-HASH:-700883315

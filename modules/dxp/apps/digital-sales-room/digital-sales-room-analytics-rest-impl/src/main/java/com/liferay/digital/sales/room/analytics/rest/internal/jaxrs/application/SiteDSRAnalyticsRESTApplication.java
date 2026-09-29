@@ -27,4 +27,4 @@ import org.osgi.service.component.annotations.Component;
 @Generated("")
 public class SiteDSRAnalyticsRESTApplication extends Application {
 }
-// LIFERAY-REST-BUILDER-HASH:-696320314
+// LIFERAY-REST-BUILDER-HASH:1766647087

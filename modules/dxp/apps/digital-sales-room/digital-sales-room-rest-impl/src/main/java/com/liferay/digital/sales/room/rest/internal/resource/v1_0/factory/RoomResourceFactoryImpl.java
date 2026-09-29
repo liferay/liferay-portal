@@ -323,4 +323,4 @@ public class RoomResourceFactoryImpl implements RoomResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:228301270
+// LIFERAY-REST-BUILDER-HASH:-2147398073

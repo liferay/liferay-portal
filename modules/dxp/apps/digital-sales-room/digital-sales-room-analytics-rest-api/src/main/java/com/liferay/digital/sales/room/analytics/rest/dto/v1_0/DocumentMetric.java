@@ -707,4 +707,4 @@ public class DocumentMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1717578390
+// LIFERAY-REST-BUILDER-HASH:-1329213572

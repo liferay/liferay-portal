@@ -305,4 +305,4 @@ public class SiteVisitorBehaviorMetricSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:598123110
+// LIFERAY-REST-BUILDER-HASH:-1136109443

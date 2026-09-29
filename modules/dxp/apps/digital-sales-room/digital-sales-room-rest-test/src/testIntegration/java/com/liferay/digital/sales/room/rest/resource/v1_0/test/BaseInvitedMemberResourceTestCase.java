@@ -465,7 +465,8 @@ public abstract class BaseInvitedMemberResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.digital.sales.room.rest.dto.v1_0.InvitedMember.class)) {
+					com.liferay.digital.sales.room.rest.dto.v1_0.InvitedMember.
+						class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -1093,8 +1094,9 @@ public abstract class BaseInvitedMemberResourceTestCase {
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.digital.sales.room.rest.resource.v1_0.InvitedMemberResource
-		_invitedMemberResource;
+	private
+		com.liferay.digital.sales.room.rest.resource.v1_0.InvitedMemberResource
+			_invitedMemberResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-455330471
+// LIFERAY-REST-BUILDER-HASH:-1715477734

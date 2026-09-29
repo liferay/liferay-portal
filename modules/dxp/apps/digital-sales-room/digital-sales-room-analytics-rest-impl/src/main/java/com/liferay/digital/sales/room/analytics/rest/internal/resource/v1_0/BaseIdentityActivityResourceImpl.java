@@ -5,6 +5,8 @@
 
 package com.liferay.digital.sales.room.analytics.rest.internal.resource.v1_0;
 
+import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.IdentityActivity;
+import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.IdentityActivityResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -19,8 +21,6 @@ import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
-import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.IdentityActivity;
-import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.IdentityActivityResource;
 
 import jakarta.annotation.Generated;
 
@@ -532,4 +532,4 @@ public abstract class BaseIdentityActivityResourceImpl
 		LogFactoryUtil.getLog(BaseIdentityActivityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:182388269
+// LIFERAY-REST-BUILDER-HASH:-1936910940

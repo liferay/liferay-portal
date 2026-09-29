@@ -590,7 +590,8 @@ public abstract class BaseUserAccountResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.digital.sales.room.rest.dto.v1_0.UserAccount.class)) {
+					com.liferay.digital.sales.room.rest.dto.v1_0.UserAccount.
+						class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -1376,8 +1377,9 @@ public abstract class BaseUserAccountResourceTestCase {
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.digital.sales.room.rest.resource.v1_0.UserAccountResource
-		_userAccountResource;
+	private
+		com.liferay.digital.sales.room.rest.resource.v1_0.UserAccountResource
+			_userAccountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1964201755
+// LIFERAY-REST-BUILDER-HASH:-1345239696

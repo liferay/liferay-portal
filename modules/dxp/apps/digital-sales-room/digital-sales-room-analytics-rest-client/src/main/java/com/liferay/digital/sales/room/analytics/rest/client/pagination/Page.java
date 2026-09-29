@@ -324,4 +324,4 @@ public class Page<T> {
 	private long _totalCount;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-890608487
+// LIFERAY-REST-BUILDER-HASH:1415375792

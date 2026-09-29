@@ -251,4 +251,4 @@ public class MetricValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:897982654
+// LIFERAY-REST-BUILDER-HASH:337940446

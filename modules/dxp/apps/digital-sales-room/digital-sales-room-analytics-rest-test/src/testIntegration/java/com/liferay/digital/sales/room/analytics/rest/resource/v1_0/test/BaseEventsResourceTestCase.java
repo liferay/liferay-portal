@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.Events;
+import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
+import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
+import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.EventsResource;
+import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.EventsSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -35,11 +40,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
-import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.Events;
-import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
-import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
-import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.EventsResource;
-import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.EventsSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -315,8 +315,8 @@ public abstract class BaseEventsResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events.
-						class)) {
+					com.liferay.digital.sales.room.analytics.rest.dto.v1_0.
+						Events.class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -761,8 +761,9 @@ public abstract class BaseEventsResourceTestCase {
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.digital.sales.room.analytics.rest.resource.v1_0.EventsResource
-		_eventsResource;
+	private
+		com.liferay.digital.sales.room.analytics.rest.resource.v1_0.
+			EventsResource _eventsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1078464647
+// LIFERAY-REST-BUILDER-HASH:-396101488

@@ -5,6 +5,8 @@
 
 package com.liferay.digital.sales.room.analytics.rest.internal.resource.v1_0;
 
+import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events;
+import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.EventsResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -19,8 +21,6 @@ import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
-import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events;
-import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.EventsResource;
 
 import jakarta.annotation.Generated;
 
@@ -573,4 +573,4 @@ public abstract class BaseEventsResourceImpl implements EventsResource {
 		LogFactoryUtil.getLog(BaseEventsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:375227524
+// LIFERAY-REST-BUILDER-HASH:788591753

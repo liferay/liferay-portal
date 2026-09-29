@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.VisitFrequency;
+import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
+import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
+import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.VisitFrequencyResource;
+import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.VisitFrequencySerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -36,11 +41,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
-import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.VisitFrequency;
-import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
-import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
-import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.VisitFrequencyResource;
-import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.VisitFrequencySerDes;
 
 import jakarta.annotation.Generated;
 
@@ -336,8 +336,8 @@ public abstract class BaseVisitFrequencyResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.digital.sales.room.analytics.rest.dto.v1_0.VisitFrequency.
-						class)) {
+					com.liferay.digital.sales.room.analytics.rest.dto.v1_0.
+						VisitFrequency.class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -805,9 +805,8 @@ public abstract class BaseVisitFrequencyResourceTestCase {
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private
-		com.liferay.digital.sales.room.analytics.rest.resource.v1_0.VisitFrequencyResource
-			_visitFrequencyResource;
+	private com.liferay.digital.sales.room.analytics.rest.resource.v1_0.
+		VisitFrequencyResource _visitFrequencyResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1779397328
+// LIFERAY-REST-BUILDER-HASH:-319285849

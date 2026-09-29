@@ -68,4 +68,4 @@ public class Facet {
 	private List<FacetValue> _facetValues = new ArrayList<>();
 
 }
-// LIFERAY-REST-BUILDER-HASH:678483524
+// LIFERAY-REST-BUILDER-HASH:-107996037

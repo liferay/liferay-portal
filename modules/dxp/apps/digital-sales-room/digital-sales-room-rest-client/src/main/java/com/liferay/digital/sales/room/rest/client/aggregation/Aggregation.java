@@ -28,4 +28,4 @@ public class Aggregation {
 	private Map<String, String> _aggregationTerms = new HashMap<>();
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1470274145
+// LIFERAY-REST-BUILDER-HASH:-1224530646

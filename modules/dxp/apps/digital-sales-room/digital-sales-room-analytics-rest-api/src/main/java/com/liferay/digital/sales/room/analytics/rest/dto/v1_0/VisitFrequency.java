@@ -320,4 +320,4 @@ public class VisitFrequency implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-570961929
+// LIFERAY-REST-BUILDER-HASH:217470167

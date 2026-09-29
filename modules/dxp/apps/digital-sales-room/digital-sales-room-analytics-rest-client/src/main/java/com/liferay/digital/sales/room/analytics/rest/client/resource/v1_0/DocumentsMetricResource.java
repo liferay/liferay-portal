@@ -8,7 +8,6 @@ package com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0;
 import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.DocumentsMetric;
 import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
 import com.liferay.digital.sales.room.analytics.rest.client.problem.Problem;
-import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.DocumentsMetricSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -212,7 +211,8 @@ public interface DocumentsMetricResource {
 			}
 
 			try {
-				return DocumentsMetricSerDes.toDTO(content);
+				return com.liferay.digital.sales.room.analytics.rest.client.
+					serdes.v1_0.DocumentsMetricSerDes.toDTO(content);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -314,4 +314,4 @@ public interface DocumentsMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1058744318
+// LIFERAY-REST-BUILDER-HASH:-374966247

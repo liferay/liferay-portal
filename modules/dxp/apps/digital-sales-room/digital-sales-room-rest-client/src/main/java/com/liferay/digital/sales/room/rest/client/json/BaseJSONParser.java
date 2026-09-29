@@ -646,4 +646,4 @@ public abstract class BaseJSONParser<T> {
 	private char _lastChar;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-503435030
+// LIFERAY-REST-BUILDER-HASH:1361059775

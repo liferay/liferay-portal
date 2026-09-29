@@ -219,4 +219,4 @@ public class LiberalPermissionChecker implements PermissionChecker {
 	private User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:119709982
+// LIFERAY-REST-BUILDER-HASH:844985011

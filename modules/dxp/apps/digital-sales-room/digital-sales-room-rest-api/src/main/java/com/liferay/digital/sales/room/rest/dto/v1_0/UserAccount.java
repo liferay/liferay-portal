@@ -597,4 +597,4 @@ public class UserAccount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1481624977
+// LIFERAY-REST-BUILDER-HASH:110993167

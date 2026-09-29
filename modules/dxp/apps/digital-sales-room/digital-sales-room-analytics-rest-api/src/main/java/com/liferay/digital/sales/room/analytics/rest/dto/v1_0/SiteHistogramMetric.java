@@ -255,4 +255,4 @@ public class SiteHistogramMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1131888363
+// LIFERAY-REST-BUILDER-HASH:457778827

@@ -158,4 +158,4 @@ public class Room implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:145553694
+// LIFERAY-REST-BUILDER-HASH:-842577460

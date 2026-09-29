@@ -518,4 +518,4 @@ public abstract class BaseRoomResourceImpl implements RoomResource {
 		LogFactoryUtil.getLog(BaseRoomResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-153990256
+// LIFERAY-REST-BUILDER-HASH:-1709814496

@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.MostActiveVisitors;
+import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
+import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
+import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.MostActiveVisitorsResource;
+import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.MostActiveVisitorsSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -36,11 +41,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
-import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.MostActiveVisitors;
-import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
-import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
-import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.MostActiveVisitorsResource;
-import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.MostActiveVisitorsSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -825,9 +825,8 @@ public abstract class BaseMostActiveVisitorsResourceTestCase {
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private
-		com.liferay.digital.sales.room.analytics.rest.resource.v1_0.
-			MostActiveVisitorsResource _mostActiveVisitorsResource;
+	private com.liferay.digital.sales.room.analytics.rest.resource.v1_0.
+		MostActiveVisitorsResource _mostActiveVisitorsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1669855183
+// LIFERAY-REST-BUILDER-HASH:919066570

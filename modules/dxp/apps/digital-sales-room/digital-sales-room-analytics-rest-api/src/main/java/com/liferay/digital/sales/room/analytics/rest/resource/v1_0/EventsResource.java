@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.analytics.rest.resource.v1_0;
 
+import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -13,7 +14,6 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
-import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events;
 
 import jakarta.annotation.Generated;
 
@@ -135,4 +135,4 @@ public interface EventsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:880241714
+// LIFERAY-REST-BUILDER-HASH:1093845257

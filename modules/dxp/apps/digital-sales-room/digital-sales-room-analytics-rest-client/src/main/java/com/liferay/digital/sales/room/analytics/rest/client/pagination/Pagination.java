@@ -63,4 +63,4 @@ public class Pagination {
 	private final int _pageSize;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-973791249
+// LIFERAY-REST-BUILDER-HASH:-2135005018

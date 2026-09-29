@@ -947,7 +947,8 @@ public abstract class BaseRoomResourceTestCase {
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.digital.sales.room.rest.resource.v1_0.RoomResource _roomResource;
+	private com.liferay.digital.sales.room.rest.resource.v1_0.RoomResource
+		_roomResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:338024101
+// LIFERAY-REST-BUILDER-HASH:1974345978

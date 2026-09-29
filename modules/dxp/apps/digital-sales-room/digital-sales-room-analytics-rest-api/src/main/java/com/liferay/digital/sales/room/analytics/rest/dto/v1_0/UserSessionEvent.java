@@ -490,4 +490,4 @@ public class UserSessionEvent implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-607962543
+// LIFERAY-REST-BUILDER-HASH:2094507299

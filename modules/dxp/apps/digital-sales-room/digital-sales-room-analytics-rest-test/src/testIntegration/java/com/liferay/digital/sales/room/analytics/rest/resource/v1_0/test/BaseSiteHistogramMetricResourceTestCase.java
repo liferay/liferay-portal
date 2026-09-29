@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.SiteHistogramMetric;
+import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
+import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
+import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.SiteHistogramMetricResource;
+import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.SiteHistogramMetricSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -35,11 +40,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
-import com.liferay.digital.sales.room.analytics.rest.client.dto.v1_0.SiteHistogramMetric;
-import com.liferay.digital.sales.room.analytics.rest.client.http.HttpInvoker;
-import com.liferay.digital.sales.room.analytics.rest.client.pagination.Page;
-import com.liferay.digital.sales.room.analytics.rest.client.resource.v1_0.SiteHistogramMetricResource;
-import com.liferay.digital.sales.room.analytics.rest.client.serdes.v1_0.SiteHistogramMetricSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -804,4 +804,4 @@ public abstract class BaseSiteHistogramMetricResourceTestCase {
 		SiteHistogramMetricResource _siteHistogramMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2143284564
+// LIFERAY-REST-BUILDER-HASH:-292386595
