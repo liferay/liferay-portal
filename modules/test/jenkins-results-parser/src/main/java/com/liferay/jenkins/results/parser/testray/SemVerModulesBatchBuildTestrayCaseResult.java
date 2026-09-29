@@ -90,6 +90,7 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 			String modulePath = testClassMethod.getName();
 
 			modulePath = modulePath.replace(":", "/");
+
 			modulePath = modulePath.replace("/baseline", "");
 
 			modulePaths.add(modulePath);
