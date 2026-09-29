@@ -5,19 +5,25 @@
 
 import {ElementVariation} from './elementVariationsReducer';
 
-export const FILTER_TYPES = ['audience', 'issue', 'status', 'type'] as const;
+type IssueValue = 'missing-audience' | 'missing-page-element';
 
-export const ISSUE_VALUES = ['missing-audience', 'missing-page-element'];
+export type Filter = {exclude: boolean} & (
+	| {type: 'audience'; values: string[]}
+	| {type: 'issue'; values: IssueValue[]}
+	| {type: 'status'; values: Array<'disabled' | 'enabled'>}
+	| {type: 'type'; values: Array<'hide-element' | 'html' | 'javascript'>}
+);
+
+export type FilterType = Filter['type'];
+
+export const FILTER_TYPES: FilterType[] = [
+	'audience',
+	'issue',
+	'status',
+	'type',
+];
 
 const PREVIEW_VALUES_COUNT = 3;
-
-export type FilterType = (typeof FILTER_TYPES)[number];
-
-export type Filter = {
-	exclude: boolean;
-	type: FilterType;
-	values: string[];
-};
 
 type Option = {label: string; value: string};
 
@@ -30,8 +36,8 @@ export function hasValueInAnyLanguage(
 export function getElementVariationIssues(
 	elementVariation: ElementVariation,
 	editableElementOptions: Option[]
-): string[] {
-	const issues = [];
+): IssueValue[] {
+	const issues: IssueValue[] = [];
 
 	if (!elementVariation.audienceEntryERCs.length) {
 		issues.push('missing-audience');
@@ -106,7 +112,9 @@ export function getFilterText(
 ): {hiddenCount: number; label: string} {
 	const options = getFilterOptions(filter.type, audiences);
 
-	const labels = filter.values
+	const filterValues: string[] = filter.values;
+
+	const labels = filterValues
 		.map((value) => options.find((option) => option.value === value)?.label)
 		.filter(Boolean);
 

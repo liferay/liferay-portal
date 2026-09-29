@@ -31,7 +31,6 @@ import ElementVariationsPreview, {
 import ElementVariationsSimulation from './ElementVariationsSimulation';
 import {
 	Filter,
-	ISSUE_VALUES,
 	getElementVariationIssues,
 	getFilteredVariations,
 } from './elementVariationFilters';
@@ -350,7 +349,10 @@ function ElementVariations({
 											filter: {
 												exclude: false,
 												type: 'issue',
-												values: ISSUE_VALUES,
+												values: [
+													'missing-audience',
+													'missing-page-element',
+												],
 											},
 											type: 'ADD_FILTER',
 										});

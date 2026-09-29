@@ -165,7 +165,7 @@ export default function ElementVariationFilterMenu({
 									exclude,
 									type: filterType,
 									values,
-								});
+								} as Filter);
 
 								setActive(false);
 							}}
