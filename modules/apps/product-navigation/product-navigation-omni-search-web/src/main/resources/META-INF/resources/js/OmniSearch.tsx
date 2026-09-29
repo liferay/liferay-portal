@@ -48,9 +48,6 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 	const [visible, setVisible] = useState<boolean>(false);
 
 	const inputRef = useRef<HTMLInputElement>(null);
-	const queryRef = useRef(query);
-
-	queryRef.current = query;
 
 	const {observer} = useModal({
 		onClose: () => setVisible(false),
@@ -89,7 +86,7 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 				icon: result.icon,
 				key: `${section.title}-${index}-${result.title}`,
 				onClick: () => {
-					const trimmedQuery = queryRef.current.trim();
+					const trimmedQuery = query.trim();
 
 					if (trimmedQuery) {
 						setRecentSearches(saveRecentSearch(trimmedQuery));
@@ -104,7 +101,7 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 			key: section.title,
 			label: section.title,
 		}));
-	}, [omniSearchSections, recentSearches]);
+	}, [omniSearchSections, query, recentSearches]);
 
 	const {activeIndex, onInputKeyDown, sectionOffsets} = useKeyboardNavigation(
 		sections,
