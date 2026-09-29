@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -88,14 +87,7 @@ public class SecretResolverImpl implements SecretResolver {
 				return resolvedValue;
 			}
 
-			SecretManager secretManager = _secretManagerSnapshot.get();
-
-			if (secretManager == null) {
-				throw new IllegalStateException(
-					"Secret manager is unavailable");
-			}
-
-			try (Secret secret = secretManager.getSecret(
+			try (Secret secret = _secretManager.getSecret(
 					companyId, keyReference)) {
 
 				resolvedValue = new String(secret.getChars());
@@ -125,13 +117,6 @@ public class SecretResolverImpl implements SecretResolver {
 				return value;
 			}
 
-			SecretManager secretManager = _secretManagerSnapshot.get();
-
-			if (secretManager == null) {
-				throw new IllegalStateException(
-					"Secret manager is unavailable");
-			}
-
 			try (Secret secret = new Secret(
 					new KeyReference(
 						StringBundler.concat(
@@ -140,7 +125,7 @@ public class SecretResolverImpl implements SecretResolver {
 					value)) {
 
 				return KeyReferenceUtil.toKeyReferenceString(
-					secretManager.putSecret(companyId, secret));
+					_secretManager.putSecret(companyId, secret));
 			}
 		}
 		catch (SecretException secretException) {
@@ -186,13 +171,12 @@ public class SecretResolverImpl implements SecretResolver {
 
 	private static final String _IDENTIFIER_PREFIX = "preference/";
 
-	private static final Snapshot<SecretManager> _secretManagerSnapshot =
-		new Snapshot<>(
-			SecretResolverImpl.class, SecretManager.class, null, true);
-
 	@Reference
 	private KeyManagerProfileRegistry _keyManagerProfileRegistry;
 
 	private PortalCache<String, String> _portalCache;
+
+	@Reference
+	private SecretManager _secretManager;
 
 }

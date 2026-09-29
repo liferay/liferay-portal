@@ -9,7 +9,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -54,16 +53,7 @@ public class SecretResolverImplTest {
 		ReflectionTestUtil.setFieldValue(
 			_secretResolverImpl, "_portalCache", _portalCache);
 		ReflectionTestUtil.setFieldValue(
-			SecretResolverImpl.class, "_secretManagerSnapshot",
-			new Snapshot<SecretManager>(
-				SecretResolverImpl.class, SecretManager.class) {
-
-				@Override
-				public SecretManager get() {
-					return _secretManager;
-				}
-
-			});
+			_secretResolverImpl, "_secretManager", _secretManager);
 	}
 
 	@Test
