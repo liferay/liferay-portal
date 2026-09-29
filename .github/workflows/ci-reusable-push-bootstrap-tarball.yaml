@@ -97,6 +97,7 @@ jobs:
                                 cloud/scripts/_azure_common.sh
                                 cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_azure.sh
+                                cloud/scripts/teardown_azure.sh
                                 cloud/terraform/azure/aks/*
                                 cloud/terraform/azure/platform/*
                                 cloud/terraform/modules/argocd/*
