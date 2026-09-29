@@ -70,22 +70,18 @@ export default function SiteSelectorModal({
 	onSubmit,
 	previewSites,
 	process = 'export',
-	selectedExternalReferenceCodes,
+	selectedSites,
 }: {
 	apiURL?: string;
 	onClose: () => void;
-	onSubmit: (previewSites: PreviewSite[]) => void;
+	onSubmit: (selectedSites: PreviewSite[]) => void;
 	previewSites?: PreviewSite[];
 	process?: ExportImportProcess;
-	selectedExternalReferenceCodes: string[];
+	selectedSites: PreviewSite[];
 }) {
 	const {observer, onClose: closeModal} = useModal({onClose});
 
-	const [selectedItems, setSelectedItems] = useState<PreviewSite[]>(() =>
-		selectedExternalReferenceCodes.map((externalReferenceCode) => ({
-			externalReferenceCode,
-		}))
-	);
+	const [selectedItems, setSelectedItems] = useState(selectedSites);
 
 	return (
 		<ClayModal observer={observer} size="full-screen">

@@ -13,23 +13,10 @@ import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SectionTags from '../content_selector/SectionTags';
 import SiteSelectorModal from './SiteSelectorModal';
 
-function toPreviewSitesByExternalReferenceCode(previewSites: PreviewSite[]) {
-	const previewSitesByExternalReferenceCode = new Map<string, PreviewSite>();
-
-	for (const previewSite of previewSites) {
-		const knownPreviewSite = previewSitesByExternalReferenceCode.get(
-			previewSite.externalReferenceCode
-		);
-
-		if (previewSite.descriptiveName || !knownPreviewSite) {
-			previewSitesByExternalReferenceCode.set(
-				previewSite.externalReferenceCode,
-				previewSite
-			);
-		}
-	}
-
-	return previewSitesByExternalReferenceCode;
+function toEntries(sites: PreviewSite[]) {
+	return sites.map(
+		(site) => [site.externalReferenceCode, site] as [string, PreviewSite]
+	);
 }
 
 export default function SitesControl({
@@ -54,19 +41,22 @@ export default function SitesControl({
 	const [
 		knownSitesByExternalReferenceCode,
 		setKnownSitesByExternalReferenceCode,
-	] = useState(() =>
-		toPreviewSitesByExternalReferenceCode(previewSites ?? [])
+	] = useState(() => new Map(toEntries(previewSites ?? [])));
+
+	const selectedSites = selectedExternalReferenceCodes.map(
+		(externalReferenceCode) =>
+			knownSitesByExternalReferenceCode.get(externalReferenceCode) ?? {
+				externalReferenceCode,
+			}
 	);
 
-	const description = selectedExternalReferenceCodes.length
+	const description = selectedSites.length
 		? sub(
 				Liferay.Language.get('selected-x'),
-				selectedExternalReferenceCodes
+				selectedSites
 					.map(
-						(externalReferenceCode) =>
-							knownSitesByExternalReferenceCode.get(
-								externalReferenceCode
-							)?.descriptiveName || externalReferenceCode
+						({descriptiveName, externalReferenceCode}) =>
+							descriptiveName || externalReferenceCode
 					)
 					.join(', ')
 			)
@@ -110,27 +100,25 @@ export default function SitesControl({
 				<SiteSelectorModal
 					apiURL={apiURL}
 					onClose={() => setShowModal(false)}
-					onSubmit={(nextPickedSites) => {
+					onSubmit={(nextSelectedSites) => {
 						setKnownSitesByExternalReferenceCode(
 							(previousKnownSitesByExternalReferenceCode) =>
-								toPreviewSitesByExternalReferenceCode([
-									...previousKnownSitesByExternalReferenceCode.values(),
-									...nextPickedSites,
+								new Map([
+									...previousKnownSitesByExternalReferenceCode,
+									...toEntries(nextSelectedSites),
 								])
 						);
 
 						onChange(
-							nextPickedSites.map(
-								(previewSite) =>
-									previewSite.externalReferenceCode
+							nextSelectedSites.map(
+								({externalReferenceCode}) =>
+									externalReferenceCode
 							)
 						);
 					}}
 					previewSites={previewSites}
 					process={process}
-					selectedExternalReferenceCodes={
-						selectedExternalReferenceCodes
-					}
+					selectedSites={selectedSites}
 				/>
 			)}
 		</>
