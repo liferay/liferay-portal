@@ -71,7 +71,6 @@ describe('SitesControl', () => {
 				({
 					'selected-x': 'Selected {0}',
 					'x-items': '{0} Items',
-					'x-sites-are-selected': '{0} sites are selected.',
 				})[key] ?? key
 		);
 	});
@@ -113,15 +112,6 @@ describe('SitesControl', () => {
 		expect(
 			screen.getByText('Selected Marketing, Marketing')
 		).toBeInTheDocument();
-	});
-
-	it('counts the selected sites when they cannot be named', () => {
-		renderControl({
-			previewSites: undefined,
-			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
-		});
-
-		expect(screen.getByText('2 sites are selected.')).toBeInTheDocument();
 	});
 
 	it('offers no way to select sites other than the dialog', () => {

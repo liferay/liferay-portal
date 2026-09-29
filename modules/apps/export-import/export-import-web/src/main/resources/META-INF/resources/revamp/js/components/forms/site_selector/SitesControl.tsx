@@ -32,24 +32,6 @@ function toPreviewSitesByExternalReferenceCode(previewSites: PreviewSite[]) {
 	return previewSitesByExternalReferenceCode;
 }
 
-function getDescription(selectedCount: number, selectedNames: string[]) {
-	if (!selectedCount) {
-		return Liferay.Language.get('no-sites-are-selected');
-	}
-
-	if (selectedNames.length === selectedCount) {
-		return sub(
-			Liferay.Language.get('selected-x'),
-			selectedNames.join(', ')
-		);
-	}
-
-	return sub(
-		Liferay.Language.get('x-sites-are-selected'),
-		String(selectedCount)
-	);
-}
-
 export default function SitesControl({
 	apiURL,
 	onChange,
@@ -76,19 +58,19 @@ export default function SitesControl({
 		toPreviewSitesByExternalReferenceCode(previewSites ?? [])
 	);
 
-	const selectedCount = selectedExternalReferenceCodes.length;
-
-	const selectedNames = selectedExternalReferenceCodes
-		.map((externalReferenceCode) =>
-			knownSitesByExternalReferenceCode.get(externalReferenceCode)
-		)
-		.filter((previewSite): previewSite is PreviewSite => !!previewSite)
-		.map(
-			(previewSite) =>
-				previewSite.descriptiveName || previewSite.externalReferenceCode
-		);
-
-	const description = getDescription(selectedCount, selectedNames);
+	const description = selectedExternalReferenceCodes.length
+		? sub(
+				Liferay.Language.get('selected-x'),
+				selectedExternalReferenceCodes
+					.map(
+						(externalReferenceCode) =>
+							knownSitesByExternalReferenceCode.get(
+								externalReferenceCode
+							)?.descriptiveName || externalReferenceCode
+					)
+					.join(', ')
+			)
+		: Liferay.Language.get('no-sites-are-selected');
 
 	return (
 		<>
