@@ -239,18 +239,18 @@ export default function MultipleFileUploader({
 						});
 					}
 				})
-			).then(() => {
-				setIsLoading(false);
+			);
+		}
 
-				setFilesToUpload([]);
-				setFailedFiles(failedFiles);
+		setIsLoading(false);
 
-				if (onUploadComplete) {
-					onUploadComplete({
-						failedFiles: failedFiles.map((file) => file.name),
-						successFiles: uploadedFiles,
-					});
-				}
+		setFilesToUpload([]);
+		setFailedFiles(failedFiles);
+
+		if (onUploadComplete) {
+			onUploadComplete({
+				failedFiles: failedFiles.map((file) => file.name),
+				successFiles: uploadedFiles,
 			});
 		}
 	};
