@@ -16,7 +16,7 @@
 			<plugin>
 				<groupId>com.liferay</groupId>
 				<artifactId>com.liferay.portal.tools.rest.builder</artifactId>
-				<version>1.0.482</version>
+				<version>1.0.483</version>
 			</plugin>
 		</plugins>
 	</build>
