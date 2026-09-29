@@ -49,6 +49,13 @@ public class PageTemplateSetActionUtil {
 				ActionKeys.VIEW, contextScopeChecker,
 				layoutPageTemplateCollection, "getDesignLibraryPageTemplateSet",
 				modelResourcePermission, templateParameterMap, uriInfo)
+		).put(
+			"permissions",
+			_addAction(
+				ActionKeys.PERMISSIONS, contextScopeChecker,
+				layoutPageTemplateCollection,
+				"getDesignLibraryPageTemplateSetPermissionsPage",
+				modelResourcePermission, templateParameterMap, uriInfo)
 		).build();
 	}
 

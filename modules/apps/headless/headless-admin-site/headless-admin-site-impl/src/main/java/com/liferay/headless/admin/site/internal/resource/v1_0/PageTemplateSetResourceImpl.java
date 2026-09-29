@@ -31,7 +31,9 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
@@ -39,6 +41,7 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
 import jakarta.ws.rs.NotFoundException;
@@ -108,6 +111,29 @@ public class PageTemplateSetResourceImpl
 					pageTemplateSetExternalReferenceCode,
 					_getDesignLibraryGroupId(
 						designLibraryExternalReferenceCode)));
+	}
+
+	@Override
+	public Page<Permission> getDesignLibraryPageTemplateSetPermissionsPage(
+			String designLibraryExternalReferenceCode,
+			String pageTemplateSetExternalReferenceCode, String roleNames)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
+		String resourceName = getPermissionCheckerResourceName(
+			designLibraryExternalReferenceCode,
+			pageTemplateSetExternalReferenceCode);
+		Long resourceId = getPermissionCheckerResourceId(
+			designLibraryExternalReferenceCode,
+			pageTemplateSetExternalReferenceCode);
+
+		_permissionService.checkPermission(groupId, resourceName, resourceId);
+
+		return _toDesignLibraryPermissionPage(
+			groupId, resourceId, resourceName, roleNames);
 	}
 
 	@Override
@@ -218,6 +244,32 @@ public class PageTemplateSetResourceImpl
 		}
 
 		return _toPageTemplateSet(layoutPageTemplateCollection);
+	}
+
+	@Override
+	public Page<Permission> putDesignLibraryPageTemplateSetPermissionsPage(
+			String designLibraryExternalReferenceCode,
+			String pageTemplateSetExternalReferenceCode,
+			Permission[] permissions)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		super.putSitePageTemplateSetPermissionsPage(
+			designLibraryExternalReferenceCode,
+			pageTemplateSetExternalReferenceCode, permissions);
+
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
+		Long resourceId = getPermissionCheckerResourceId(
+			designLibraryExternalReferenceCode,
+			pageTemplateSetExternalReferenceCode);
+		String resourceName = getPermissionCheckerResourceName(
+			designLibraryExternalReferenceCode,
+			pageTemplateSetExternalReferenceCode);
+
+		return _toDesignLibraryPermissionPage(
+			groupId, resourceId, resourceName, null);
 	}
 
 	@Override
@@ -385,6 +437,28 @@ public class PageTemplateSetResourceImpl
 			layoutPageTemplateCollection);
 	}
 
+	private Page<Permission> _toDesignLibraryPermissionPage(
+			long groupId, Long resourceId, String resourceName,
+			String roleNames)
+		throws Exception {
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getDesignLibraryPageTemplateSetPermissionsPage", null,
+					resourceName, groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putDesignLibraryPageTemplateSetPermissionsPage", null,
+					resourceName, groupId)
+			).build(),
+			resourceId, resourceName, roleNames);
+	}
+
 	private PageTemplateSet _toPageTemplateSet(
 			LayoutPageTemplateCollection layoutPageTemplateCollection)
 		throws Exception {
@@ -430,5 +504,8 @@ public class PageTemplateSetResourceImpl
 	)
 	private DTOConverter<LayoutPageTemplateCollection, PageTemplateSet>
 		_pageTemplateSetDTOConverter;
+
+	@Reference
+	private PermissionService _permissionService;
 
 }
