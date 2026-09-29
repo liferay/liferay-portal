@@ -1,5 +1,5 @@
 {
-	"@generated": "816f25e5bd400a7067cededb01e6ac8662a0f6ce",
+	"@generated": "b970767e1dcc9f877d31313e4d3679c191b4a4aa",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,15 @@
 		"paths": {
 			"@liferay/frontend-js-codemirror-web": [
 				"../../../../../../../frontend-js/frontend-js-codemirror-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/map-common": [
+				"../../../../../../../map/map-common/src/main/resources/META-INF/resources/js/index.js"
+			],
+			"@liferay/map-google-maps": [
+				"../../../../../../../map/map-google-maps/src/main/resources/META-INF/resources/js/index.js"
+			],
+			"@liferay/map-openstreetmap": [
+				"../../../../../../../map/map-openstreetmap/src/main/resources/META-INF/resources/js/index.js"
 			],
 			"frontend-editor-ckeditor-web": [
 				"../../../../../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/js/index.ts"
@@ -48,6 +57,15 @@
 	"references": [
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-codemirror-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../map/map-common/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../map/map-google-maps/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../map/map-openstreetmap/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/tsconfig.json"
