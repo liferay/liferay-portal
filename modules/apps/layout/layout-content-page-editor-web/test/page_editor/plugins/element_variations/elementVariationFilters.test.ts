@@ -5,7 +5,6 @@
 
 import {
 	Filter,
-	ISSUE_VALUES,
 	getFilterOptions,
 	getFilterText,
 	getFilteredVariations,
@@ -218,7 +217,10 @@ describe('elementVariationFilters', () => {
 						{
 							exclude: false,
 							type: 'issue',
-							values: ISSUE_VALUES,
+							values: [
+								'missing-audience',
+								'missing-page-element',
+							],
 						},
 					],
 				})
