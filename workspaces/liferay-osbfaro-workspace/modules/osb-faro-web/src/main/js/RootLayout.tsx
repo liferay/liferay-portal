@@ -4,7 +4,7 @@ import ModalRenderer from 'shared/components/ModalRenderer';
 import React, {Suspense, useEffect, useState} from 'react';
 import TrackingConsentBanner from 'shared/components/TrackingConsentBanner';
 import {FaroEnv} from 'shared/util/constants';
-import {Outlet, useMatch} from 'react-router-dom';
+import {Outlet, ScrollRestoration, useMatch} from 'react-router-dom';
 import {Pendo, TrackingConsentValues} from 'shared/util/pendo';
 import {Project} from 'shared/util/records';
 import {syncAIHubChatbot} from 'shared/util/ai-hub-chatbot';
@@ -52,6 +52,8 @@ const RootLayout = () => {
 
 	return (
 		<>
+			<ScrollRestoration />
+
 			<AlertFeed />
 
 			<ModalRenderer />
