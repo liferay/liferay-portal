@@ -104,9 +104,9 @@ export default function ScopeSettings({
 
 	return (
 		<>
-			<h3 className="c-mt-4 sheet-subtitle">
+			<p className="c-pt-4 sheet-subtitle text-secondary">
 				{Liferay.Language.get('scope')}
-			</h3>
+			</p>
 
 			<ClayCheckbox
 				checked={allSites}

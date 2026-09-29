@@ -90,6 +90,10 @@ $toolbar-height: 55px;
 		position: static;
 		transform: none;
 	}
+
+	.sheet-subtitle {
+		border-bottom-color: $secondary-l2;
+	}
 }
 
 .audience-builder-grip {

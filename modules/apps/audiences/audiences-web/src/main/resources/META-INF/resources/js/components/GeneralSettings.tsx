@@ -46,16 +46,20 @@ export default function GeneralSettings({
 			collapseHeaderClassNames="align-items-center d-flex justify-content-between px-4 py-3"
 			displayTitle={
 				<span className="font-weight-bold text-6">
-					{Liferay.Language.get('general-settings')}
+					{Liferay.Language.get('settings')}
 				</span>
 			}
 			expanded={expanded}
 			onExpandedChange={onExpandedChange}
 			showCollapseIcon
 		>
-			<ClayPanel.Body>
+			<ClayPanel.Body className="c-mt-1">
+				<p className="sheet-subtitle text-secondary">
+					{Liferay.Language.get('general')}
+				</p>
+
 				<ClayForm.Group
-					className={classNames('mb-0', {
+					className={classNames('c-mb-2', {
 						'has-error': !!errorMessage,
 					})}
 				>
