@@ -101,8 +101,15 @@ describe('Toolbar', () => {
 			modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL,
 			expect.objectContaining({
 				columns: [
-					expect.objectContaining({accessor: 'name'}),
-					expect.objectContaining({accessor: 'accountName'})
+					expect.objectContaining({
+						accessor: 'name',
+						className: 'w-50'
+					}),
+					expect.objectContaining({
+						accessor: 'accountName',
+						className: 'w-50',
+						label: 'Account Name'
+					})
 				],
 				entityLabel: 'Individuals',
 				title: 'Segment Membership'
