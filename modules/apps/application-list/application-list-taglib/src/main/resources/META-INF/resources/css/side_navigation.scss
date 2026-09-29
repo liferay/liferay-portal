@@ -1,7 +1,7 @@
 @import 'atlas-custom-properties/_variables';
 @import 'cadmin-variables';
 
-$side-navigation-scope-item-height: 2.75rem;
+$side-navigation-scope-item-height: 2.5rem;
 
 @mixin side-navigation-shimmer {
 	overflow: hidden;
@@ -23,6 +23,9 @@ $side-navigation-scope-item-height: 2.75rem;
 }
 
 .side-navigation-container {
+	--menubar-primary-nav-link-active-class-background-color: #{$blue-l5};
+	--menubar-primary-nav-link-active-class-highlight-background-color: #{$blue-d1};
+	--menubar-primary-nav-link-padding: 0.5rem 1rem;
 	--skeleton-shimmer-color: var(--light-l1);
 
 	a.nav-link {
@@ -61,7 +64,7 @@ $side-navigation-scope-item-height: 2.75rem;
 	li:first-child:not(.side-navigation-scope-item, :empty):has(
 			~ .side-navigation-scope-item
 		) {
-		margin-bottom: 0.75rem;
+		margin-bottom: 1rem;
 	}
 
 	.c-slideout-start .sidebar-light {
@@ -89,6 +92,24 @@ $side-navigation-scope-item-height: 2.75rem;
 		}
 	}
 
+	.nav[role='menu'] > li {
+		margin-top: 0.25rem;
+	}
+
+	.nav[role='menubar'] {
+		$row: 'li:not(.side-navigation-scope-item, :empty)';
+
+		> .side-navigation-scope-item + .side-navigation-scope-zone,
+		> #{$row} + #{$row} {
+			margin-top: 0.25rem;
+		}
+
+		> #{$row} + #{$row}:has(> .collapse-icon),
+		> #{$row}:has(> .collapse-icon) + #{$row} {
+			margin-top: 0.5rem;
+		}
+	}
+
 	.side-navigation-results-skeleton {
 		@include side-navigation-shimmer;
 
@@ -104,7 +125,7 @@ $side-navigation-scope-item-height: 2.75rem;
 		align-items: center;
 		background-color: $light-l1;
 		display: flex;
-		padding: 0.8125rem 1rem;
+		padding: 0.6875rem 1rem;
 		position: sticky;
 		top: 0;
 		z-index: 1;
