@@ -253,6 +253,10 @@ describe('ElementVariationForm', () => {
 			},
 		],
 		['page element', {targetElement: ''}],
+		[
+			'existing page element',
+			{audienceEntryERCs: ['audience-1'], targetElement: '.deleted'},
+		],
 		['audience', {targetElement: '.title'}],
 	])(
 		'shows a required error and blocks saving when no %s is provided',
