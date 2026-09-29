@@ -15,6 +15,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -60,6 +61,12 @@ public class CacheContainerResponseFilterTest {
 			_httpServletRequest);
 		ReflectionTestUtil.setFieldValue(
 			_cacheContainerResponseFilter, "_user", _user);
+
+		Mockito.when(
+			_company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
 
 		Mockito.when(
 			_containerRequestContext.getMethod()
@@ -118,12 +125,93 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testFilterWhenBaseURITrailingSlashIsMissing() throws Exception {
+		Mockito.when(
+			_uriInfo.getBaseUri()
+		).thenReturn(
+			URI.create("http://localhost/o/test-app")
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertCacheable();
+	}
+
+	@Test
+	public void testFilterWhenCacheControlIsNull() throws Exception {
+		Mockito.when(
+			_headlessAPICacheManagedServiceFactory.getCacheControl(
+				Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			null
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenCompanyIsNull() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			_cacheContainerResponseFilter, "_company", null);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenHttpSessionIsNotNull() throws Exception {
+		Mockito.when(
+			_httpServletRequest.getSession(false)
+		).thenReturn(
+			Mockito.mock(HttpSession.class)
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenMethodIsHead() throws Exception {
+		Mockito.when(
+			_containerRequestContext.getMethod()
+		).thenReturn(
+			HttpMethod.HEAD
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertCacheable();
+	}
+
+	@Test
+	public void testFilterWhenMethodIsPost() throws Exception {
+		Mockito.when(
+			_containerRequestContext.getMethod()
+		).thenReturn(
+			HttpMethod.POST
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
 	public void testFilterWhenProductionMode() throws Exception {
 		_cacheContainerResponseFilter.filter(
 			_containerRequestContext, _containerResponseContext);
 
-		Assert.assertEquals(
-			"public, max-age=3600", _headers.getFirst("Cache-Control"));
+		_assertCacheable();
 	}
 
 	@Test
@@ -136,9 +224,81 @@ public class CacheContainerResponseFilterTest {
 				_containerRequestContext, _containerResponseContext);
 		}
 
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenResponseIsUnsuccessful() throws Exception {
+		Mockito.when(
+			_containerResponseContext.getStatusInfo()
+		).thenReturn(
+			Response.Status.NOT_FOUND
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenSetCookieHeaderIsPresent() throws Exception {
+		_headers.putSingle("Set-Cookie", RandomTestUtil.randomString());
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenUserIsNotGuest() throws Exception {
+		Mockito.when(
+			_user.isGuestUser()
+		).thenReturn(
+			false
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
+	public void testFilterWhenUserIsNull() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			_cacheContainerResponseFilter, "_user", null);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	private void _assertCacheable() {
+		Assert.assertEquals(
+			"public, max-age=3600", _headers.getFirst("Cache-Control"));
+		Assert.assertEquals(
+			"Accept, Accept-Encoding, Accept-Language, Origin, " +
+				"X-Accept-All-Languages, X-Liferay-Accept-All-Languages, " +
+					"X-Liferay-Data-Masks",
+			_headers.getFirst("Vary"));
+
+		Mockito.verify(
+			_headlessAPICacheManagedServiceFactory
+		).getCacheControl(
+			_COMPANY_ID, "/test-app/v1.0/test"
+		);
+	}
+
+	private void _assertNotCacheable() {
 		Assert.assertEquals(
 			"no-cache, no-store", _headers.getFirst("Cache-Control"));
+		Assert.assertNull(_headers.getFirst("Vary"));
 	}
+
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private CacheContainerResponseFilter _cacheContainerResponseFilter;
 
