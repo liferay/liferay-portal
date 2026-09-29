@@ -128,6 +128,10 @@ public class SubrepositoryGitRepositoryJob
 
 		checkGitRepositoryDir();
 
+		jobPropertiesFiles.add(
+			new File(
+				gitWorkingDirectory.getWorkingDirectory(), "test.properties"));
+
 		PortalGitWorkingDirectory portalGitWorkingDirectory =
 			getPortalGitWorkingDirectory();
 
@@ -135,10 +139,6 @@ public class SubrepositoryGitRepositoryJob
 			new File(
 				portalGitWorkingDirectory.getWorkingDirectory(),
 				"test.properties"));
-
-		jobPropertiesFiles.add(
-			new File(
-				gitWorkingDirectory.getWorkingDirectory(), "test.properties"));
 
 		try {
 			jobPropertiesFiles.add(
