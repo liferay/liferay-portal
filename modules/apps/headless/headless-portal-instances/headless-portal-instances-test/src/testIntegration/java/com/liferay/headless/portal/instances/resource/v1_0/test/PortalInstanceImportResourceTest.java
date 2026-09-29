@@ -237,15 +237,13 @@ public class PortalInstanceImportResourceTest
 				2, importTaskJSONObject.getInt("processedItemsCount"));
 
 			Assert.assertEquals(
-				Long.valueOf(companyId1),
-				Long.valueOf(
-					_getCompanyIdByVirtualHost(
-						portalInstanceImport1.getVirtualHost())));
+				companyId1,
+				_getCompanyIdByVirtualHost(
+					portalInstanceImport1.getVirtualHost()));
 			Assert.assertEquals(
-				Long.valueOf(companyId2),
-				Long.valueOf(
-					_getCompanyIdByVirtualHost(
-						portalInstanceImport2.getVirtualHost())));
+				companyId2,
+				_getCompanyIdByVirtualHost(
+					portalInstanceImport2.getVirtualHost()));
 		}
 		finally {
 			_deleteCompanyByVirtualHost(portalInstanceImport1.getVirtualHost());
