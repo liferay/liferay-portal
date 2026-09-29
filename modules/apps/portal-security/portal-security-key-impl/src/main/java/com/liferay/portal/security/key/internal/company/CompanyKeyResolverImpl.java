@@ -111,9 +111,15 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 						"for company ", companyId));
 			}
 
-			_putCompanyKeyCacheEntry(companyId, keyBytes, keyString);
+			CompanyKeyCacheEntry companyKeyCacheEntry =
+				_companyKeyCacheEntries.put(
+					companyId, new CompanyKeyCacheEntry(keyBytes, keyString));
 
-			return _createKey(keyBytes);
+			if (companyKeyCacheEntry != null) {
+				companyKeyCacheEntry.destroy();
+			}
+
+			return new SecretKeySpec(keyBytes, _getKeyAlgorithm());
 		}
 		catch (CryptoException cryptoException) {
 			throw new CompanyKeyException(
@@ -220,10 +226,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		_companyKeyCacheEntries.clear();
 	}
 
-	private Key _createKey(byte[] keyBytes) {
-		return new SecretKeySpec(keyBytes, _getKeyAlgorithm());
-	}
-
 	private Key _getCachedKey(long companyId, String keyString) {
 		CompanyKeyCacheEntry companyKeyCacheEntry = _getCompanyKeyCacheEntry(
 			companyId, keyString);
@@ -239,7 +241,7 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 		}
 
 		try {
-			return _createKey(keyBytes);
+			return new SecretKeySpec(keyBytes, _getKeyAlgorithm());
 		}
 		finally {
 			Arrays.fill(keyBytes, (byte)0);
@@ -373,17 +375,6 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 			throw new CompanyKeyException(
 				"Wrapped key is malformed for company " + companyId,
 				illegalArgumentException);
-		}
-	}
-
-	private void _putCompanyKeyCacheEntry(
-		long companyId, byte[] keyBytes, String keyString) {
-
-		CompanyKeyCacheEntry companyKeyCacheEntry = _companyKeyCacheEntries.put(
-			companyId, new CompanyKeyCacheEntry(keyBytes, keyString));
-
-		if (companyKeyCacheEntry != null) {
-			companyKeyCacheEntry.destroy();
 		}
 	}
 
