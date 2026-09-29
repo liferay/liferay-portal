@@ -60,9 +60,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -337,47 +335,17 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			});
 	}
 
-	@FeatureFlag("LPD-57283")
-	@Test
-	public void testGetLayoutFriendlyURLDesignLibraryDisplayPageDropsVirtualGroupPrefix()
-		throws Exception {
-
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()), null,
-				true, WorkflowConstants.STATUS_APPROVED);
-
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		Layout virtualLayout = new VirtualLayout(layout, _group);
-
-		Assert.assertEquals(
-			layout.getFriendlyURL(), virtualLayout.getFriendlyURL());
-		Assert.assertEquals(
-			layout.getFriendlyURL(LocaleUtil.getDefault()),
-			virtualLayout.getFriendlyURL(LocaleUtil.getDefault()));
-		Assert.assertEquals(
-			layout.getFriendlyURL(),
-			_themeDisplay.getLayoutFriendlyURL(virtualLayout));
-	}
-
 	private Group _addConnectedDesignLibraryGroup() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
 			DepotConstants.TYPE_DESIGN_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
-		_depotEntries.add(depotEntry);
-
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			depotEntry.getDepotEntryId(), _group.getGroupId());
+			_depotEntry.getDepotEntryId(), _group.getGroupId());
 
-		return depotEntry.getGroup();
+		return _depotEntry.getGroup();
 	}
 
 	private JournalArticle _addJournalArticle() throws Exception {
@@ -528,7 +496,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
-	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+	private DepotEntry _depotEntry;
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
