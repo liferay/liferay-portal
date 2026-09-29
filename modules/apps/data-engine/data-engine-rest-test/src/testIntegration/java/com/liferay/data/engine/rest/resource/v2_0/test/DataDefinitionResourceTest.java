@@ -72,6 +72,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -1162,22 +1163,21 @@ public class DataDefinitionResourceTest
 		List<String> names = TransformUtil.transform(
 			allDataDefinitionFields, DataDefinitionField::getName);
 
-		Assert.assertEquals(
-			names.toString(), names.size(),
-			SetUtil.fromCollection(
-				names
-			).size());
+		Set<String> namesSet = SetUtil.fromCollection(names);
+
+		Assert.assertEquals(names.toString(), names.size(), namesSet.size());
 
 		List<String> fieldReferences = TransformUtil.transform(
 			allDataDefinitionFields,
 			dataDefinitionField -> MapUtil.getString(
 				dataDefinitionField.getCustomProperties(), "fieldReference"));
 
+		Set<String> fieldReferencesSet = SetUtil.fromCollection(
+			fieldReferences);
+
 		Assert.assertEquals(
 			fieldReferences.toString(), fieldReferences.size(),
-			SetUtil.fromCollection(
-				fieldReferences
-			).size());
+			fieldReferencesSet.size());
 
 		DataDefinitionField fieldsetDataDefinitionField =
 			fieldsetDataDefinition.getDataDefinitionFields()[0];

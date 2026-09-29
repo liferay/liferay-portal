@@ -96,6 +96,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.frutilla.FrutillaRule;
 
@@ -1052,11 +1053,12 @@ public class CPDefinitionLocalServiceTest {
 				targetCPDefinitionOptionValueRels),
 			CPDefinitionOptionValueRel::getExternalReferenceCode);
 
+		Set<String> externalReferenceCodesSet = SetUtil.fromCollection(
+			externalReferenceCodes);
+
 		Assert.assertEquals(
 			externalReferenceCodes.toString(), externalReferenceCodes.size(),
-			SetUtil.fromCollection(
-				externalReferenceCodes
-			).size());
+			externalReferenceCodesSet.size());
 	}
 
 	private void _testAddFutureExpiredCPDefinition() throws Exception {
