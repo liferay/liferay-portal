@@ -10928,18 +10928,33 @@ junit.jvm.override.version=21</echo>
 			<test-action>
 				<local name="workspace.names" />
 
-				<propertycopy from="workspaces.names[workspaces-compile-jdk${batch.jdk.version}][${env.CI_TEST_SUITE}]" name="workspace.names" silent="true" />
-
 				<if>
-					<not>
-						<isset property="workspace.names" />
-					</not>
+					<isset property="modules.test.class.group" />
 					<then>
-						<propertycopy from="workspaces.names[workspaces-compile][${env.CI_TEST_SUITE}]" name="workspace.names" override="true" silent="true" />
+						<propertyregex
+							defaultValue="${modules.test.class.group}"
+							global="true"
+							input="${modules.test.class.group}"
+							override="true"
+							property="workspace.names"
+							regexp="\s+"
+							replace=","
+						/>
 					</then>
-				</if>
+					<else>
+						<beanshell>
+							<![CDATA[
+								import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
-				<property name="workspace.names" value="${workspaces.names[workspaces-compile]}" />
+								Properties properties = new Properties();
+
+								properties.putAll(project.getProperties());
+
+								project.setProperty("workspace.names", JenkinsResultsParserUtil.getProperty(properties, "workspaces.names", false, new String[] {project.getProperty("test.batch.name"), project.getProperty("env.CI_TEST_SUITE")}));
+							]]>
+						</beanshell>
+					</else>
+				</if>
 
 				<for list="${workspace.names}" param="workspace.name">
 					<sequential>
