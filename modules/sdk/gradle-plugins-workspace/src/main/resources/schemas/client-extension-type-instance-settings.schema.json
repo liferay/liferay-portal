@@ -4387,6 +4387,42 @@
 		},
 		{
 			"properties": {
+				"cacheControl": {
+					"default": "public",
+					"description": "Set the cache control policy applied to responses that a guest is allowed to read.",
+					"enum": [
+						"private",
+						"public"
+					],
+					"title": "Cache Control",
+					"type": "string"
+				},
+				"maxAge": {
+					"default": 0,
+					"description": "Set the number of seconds a cached response is considered fresh, up to a maximum of 86400 (24 hours). Revoking guest access or changing content does not clear an already cached response, so choose a value that reflects how quickly the endpoint's guest visibility can change.",
+					"max": 86400,
+					"min": 0,
+					"title": "Max Age",
+					"type": "number"
+				},
+				"path": {
+					"description": "Set the path of the endpoint to cache, relative to /o. The path must start with a slash. An asterisk matches exactly one path segment, such as a path parameter.",
+					"title": "Path",
+					"type": "string"
+				},
+				"pid": {
+					"const": "com.liferay.portal.vulcan.internal.configuration.HeadlessAPICacheCompanyConfiguration",
+					"title": "Headless API Cache"
+				}
+			},
+			"required": [
+				"pid",
+				"path"
+			],
+			"title": "Headless API Cache"
+		},
+		{
+			"properties": {
 				"pageSizeLimit": {
 					"default": 500,
 					"description": "Set the page size limit of elements that can be recovered through REST. Enter a negative number or zero for unlimited page size.",
@@ -5366,6 +5402,7 @@
 				"com.liferay.portal.security.ldap.exportimport.configuration.LDAPExportConfiguration",
 				"com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration",
 				"com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration",
+				"com.liferay.portal.vulcan.internal.configuration.HeadlessAPICacheCompanyConfiguration",
 				"com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration",
 				"com.liferay.portal.vulcan.internal.configuration.VulcanCompanyConfiguration",
 				"com.liferay.product.navigation.personal.menu.configuration.PersonalMenuConfiguration",
