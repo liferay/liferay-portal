@@ -67,6 +67,15 @@ public class ObjectFieldImpl extends ObjectFieldBaseImpl {
 	}
 
 	@Override
+	public String getDefaultDBColumnName() {
+		if (compareBusinessType(ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+			return "address_" + getDBColumnName();
+		}
+
+		return getDBColumnName();
+	}
+
+	@Override
 	public String getDefaultLanguageId() {
 		String xml = getLabel();
 

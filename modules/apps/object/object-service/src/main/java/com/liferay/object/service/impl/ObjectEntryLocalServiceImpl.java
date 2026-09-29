@@ -5264,7 +5264,8 @@ public class ObjectEntryLocalServiceImpl
 				table, objectField.getDBColumnName(), search);
 		}
 
-		Column<?, ?> column = table.getColumn(objectField.getDBColumnName());
+		Column<?, ?> column = table.getColumn(
+			objectField.getDefaultDBColumnName());
 
 		if (column == null) {
 			return null;

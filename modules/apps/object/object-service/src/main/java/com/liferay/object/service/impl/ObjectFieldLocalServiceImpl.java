@@ -530,7 +530,7 @@ public class ObjectFieldLocalServiceImpl
 			Table<?> table = getTable(
 				objectDefinitionId, objectField.getName());
 
-			return table.getColumn(objectField.getDBColumnName());
+			return table.getColumn(objectField.getDefaultDBColumnName());
 		}
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);

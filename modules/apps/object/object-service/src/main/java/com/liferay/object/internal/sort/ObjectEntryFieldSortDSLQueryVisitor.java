@@ -185,7 +185,8 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 			return table.getColumn(objectField.getSortableDBColumnName());
 		}
 
-		Column<?, ?> column = table.getColumn(objectField.getDBColumnName());
+		Column<?, ?> column = table.getColumn(
+			objectField.getDefaultDBColumnName());
 
 		if (column.getSQLType() == Types.CLOB) {
 			return DSLFunctionFactoryUtil.castClobText(
