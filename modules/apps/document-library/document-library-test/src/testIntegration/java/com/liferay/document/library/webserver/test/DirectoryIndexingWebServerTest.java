@@ -83,13 +83,13 @@ public class DirectoryIndexingWebServerTest extends BaseWebServerTestCase {
 			Method.GET, group.getFriendlyURL() + StringPool.SLASH,
 			Collections.emptyMap(), Collections.emptyMap(), null, null);
 
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
 		String content = mockHttpServletResponse.getContentAsString();
 
 		Assert.assertTrue(content, content.contains(HtmlUtil.escape(title)));
 		Assert.assertFalse(content, content.contains(title));
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 	}
 
 	@Override
