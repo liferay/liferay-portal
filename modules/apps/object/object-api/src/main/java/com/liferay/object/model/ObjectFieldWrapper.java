@@ -327,6 +327,11 @@ public class ObjectFieldWrapper
 	}
 
 	@Override
+	public String getDefaultDBColumnName() {
+		return model.getDefaultDBColumnName();
+	}
+
+	@Override
 	public String getDefaultLanguageId() {
 		return model.getDefaultLanguageId();
 	}
@@ -733,6 +738,11 @@ public class ObjectFieldWrapper
 	@Override
 	public boolean hasInsertValues() {
 		return model.hasInsertValues();
+	}
+
+	@Override
+	public boolean hasMultipleDBColumns() {
+		return model.hasMultipleDBColumns();
 	}
 
 	@Override
@@ -1273,4 +1283,4 @@ public class ObjectFieldWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:42078855
+// LIFERAY-SERVICE-BUILDER-HASH:1504834122

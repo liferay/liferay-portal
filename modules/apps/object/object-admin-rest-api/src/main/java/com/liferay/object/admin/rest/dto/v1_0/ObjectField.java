@@ -1739,8 +1739,8 @@ public class ObjectField implements Serializable {
 		BOOLEAN("Boolean"), DATE("Date"), DATE_TIME("DateTime"),
 		DECIMAL("Decimal"), EMAIL_ADDRESS("EmailAddress"),
 		ENCRYPTED("Encrypted"), FORMULA("Formula"), INTEGER("Integer"),
-		LONG_INTEGER("LongInteger"), LONG_TEXT("LongText"),
-		MULTISELECT_PICKLIST("MultiselectPicklist"),
+		LOCATION("Location"), LONG_INTEGER("LongInteger"),
+		LONG_TEXT("LongText"), MULTISELECT_PICKLIST("MultiselectPicklist"),
 		PHONE_NUMBER("PhoneNumber"), PICKLIST("Picklist"),
 		PRECISION_DECIMAL("PrecisionDecimal"), RELATIONSHIP("Relationship"),
 		RICH_TEXT("RichText"), TEXT("Text");
@@ -2044,4 +2044,4 @@ public class ObjectField implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1697783564
+// LIFERAY-REST-BUILDER-HASH:-607699808

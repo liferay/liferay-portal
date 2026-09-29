@@ -13,7 +13,7 @@
 	export class ObjectField {
 			"DBType"?: 'BigDecimal' | 'Boolean' | 'Clob' | 'Date' | 'DateTime' | 'Double' | 'Integer' | 'Long' | 'String';
 			"actions"?: {[key: string]: {[key: string]: string;};};
-			"businessType"?: 'Aggregation' | 'Assignee' | 'Attachment' | 'AutoIncrement' | 'Boolean' | 'Date' | 'DateTime' | 'Decimal' | 'EmailAddress' | 'Encrypted' | 'Formula' | 'Integer' | 'LongInteger' | 'LongText' | 'MultiselectPicklist' | 'PhoneNumber' | 'Picklist' | 'PrecisionDecimal' | 'Relationship' | 'RichText' | 'Text';
+			"businessType"?: 'Aggregation' | 'Assignee' | 'Attachment' | 'AutoIncrement' | 'Boolean' | 'Date' | 'DateTime' | 'Decimal' | 'EmailAddress' | 'Encrypted' | 'Formula' | 'Integer' | 'Location' | 'LongInteger' | 'LongText' | 'MultiselectPicklist' | 'PhoneNumber' | 'Picklist' | 'PrecisionDecimal' | 'Relationship' | 'RichText' | 'Text';
 			"defaultValue"?: string;
 			"description"?: {[key: string]: string;};
 			"externalReferenceCode"?: string;
@@ -60,7 +60,7 @@
 		{
 			baseName: "businessType",
 			name: "businessType",
-			type: "'Aggregation' | 'Assignee' | 'Attachment' | 'AutoIncrement' | 'Boolean' | 'Date' | 'DateTime' | 'Decimal' | 'EmailAddress' | 'Encrypted' | 'Formula' | 'Integer' | 'LongInteger' | 'LongText' | 'MultiselectPicklist' | 'PhoneNumber' | 'Picklist' | 'PrecisionDecimal' | 'Relationship' | 'RichText' | 'Text'",
+			type: "'Aggregation' | 'Assignee' | 'Attachment' | 'AutoIncrement' | 'Boolean' | 'Date' | 'DateTime' | 'Decimal' | 'EmailAddress' | 'Encrypted' | 'Formula' | 'Integer' | 'Location' | 'LongInteger' | 'LongText' | 'MultiselectPicklist' | 'PhoneNumber' | 'Picklist' | 'PrecisionDecimal' | 'Relationship' | 'RichText' | 'Text'",
 		},
 		{
 			baseName: "defaultValue",

@@ -53,6 +53,8 @@ public interface ObjectField extends ObjectFieldModel, PersistedModel {
 
 	public String[] getDBColumnNames();
 
+	public String getDefaultDBColumnName();
+
 	public String getI18nObjectFieldName();
 
 	public ObjectDefinition getObjectDefinition()
@@ -65,6 +67,8 @@ public interface ObjectField extends ObjectFieldModel, PersistedModel {
 	public String getSortableDBColumnName();
 
 	public boolean hasInsertValues();
+
+	public boolean hasMultipleDBColumns();
 
 	public boolean hasUniqueValues();
 
@@ -79,4 +83,4 @@ public interface ObjectField extends ObjectFieldModel, PersistedModel {
 		java.util.List<ObjectFieldSetting> objectFieldSettings);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1845831083
+// LIFERAY-SERVICE-BUILDER-HASH:842194667
