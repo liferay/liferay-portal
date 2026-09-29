@@ -152,7 +152,7 @@ public class PortalInstanceCopyResourceTest
 	}
 
 	private void _assertPostPortalInstanceCopySuccess(
-			PortalInstanceCopy portalInstanceCopy, Long expectedCompanyId)
+			Long expectedCompanyId, PortalInstanceCopy portalInstanceCopy)
 		throws Exception {
 
 		portalInstanceCopy.setSourcePortalInstanceId(_company::getWebId);
@@ -328,7 +328,7 @@ public class PortalInstanceCopyResourceTest
 				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
 		portalInstanceCopy.setWebId(randomId);
 
-		_assertPostPortalInstanceCopySuccess(portalInstanceCopy, null);
+		_assertPostPortalInstanceCopySuccess(null, portalInstanceCopy);
 	}
 
 	private void _testPostPortalInstanceCopySuccessWithDestinationCompanyId()
@@ -350,7 +350,7 @@ public class PortalInstanceCopyResourceTest
 		portalInstanceCopy.setWebId(randomId);
 
 		_assertPostPortalInstanceCopySuccess(
-			portalInstanceCopy, destinationCompanyId);
+			destinationCompanyId, portalInstanceCopy);
 	}
 
 	private void _testPostPortalInstanceCopyWithDBPartitionDisabled()
@@ -424,7 +424,7 @@ public class PortalInstanceCopyResourceTest
 				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
 		portalInstanceCopy.setWebId(randomId);
 
-		_assertPostPortalInstanceCopySuccess(portalInstanceCopy, null);
+		_assertPostPortalInstanceCopySuccess(null, portalInstanceCopy);
 	}
 
 	private void _testPostPortalInstanceCopyWithoutOmniadminPermission()
