@@ -13,7 +13,7 @@
 Run the source formatter in `current-branch` mode:
 
 ```bash
-(cd "${REPO_ROOT}/portal-impl" && ANT_OPTS="-Xmx2560m" ant format-source-current-branch -Dvalidate.commit.messages=true)
+(cd "${REPO_ROOT}/portal-impl" && ANT_OPTS="-Xmx2560m -Dgit.working.branch.name=${MERGE_BASE}" ant format-source-current-branch -Dvalidate.commit.messages=true)
 ```
 
 A nonzero formatter is a finding, and never read it as an environment failure, however much it looks like one: an unfixable violation surfaces as `Unable to execute Gradle task: :portalYarnFormatCurrentBranch` on the last line or two, which is indistinguishable from a broken toolchain and is why the violations have to be read from the middle of the log. The accompanying `finished with non-zero exit value 1` line sits further up, inside the stack trace, and names the node binary by its full path rather than as `command node`, so search it as a substring or not at all.
@@ -30,6 +30,8 @@ Neither pattern is anchored, because Ant prefixes the yarn output with `[exec]` 
 The yarn side does not always run. `portal-impl/build.xml` sets `skip.node.task` when no changed file matches the frontend regex in `build.properties`, which covers `js`, `json`, `jsp`, `jspf`, `scss`, `ts`, and `tsx`, so a diff of none of those skips `downloadNode`, `yarnInstall` and the yarn formatter entirely. An empty yarn search on such a diff means the formatter never ran rather than that it ran clean, and neither is a failure. Say which of the two happened.
 
 `-Dvalidate.commit.messages=true` is passed explicitly because `format-source-current-branch` never sets it and only the `format-source` target does, so the commit message rules CI enforces go unchecked without it. The flag produces no output of its own, and a clean check and a check that never ran print alike, so there is nothing in a normal run to confirm from. When it matters, rerun under `ant -v`, which echoes the `SourceFormatter` argv and shows `validate.commit.messages=true` among it.
+
+`git.working.branch.name` names the commit the formatter diffs from. Without it the formatter takes the newest of `master`, `origin/master`, and `upstream/master`, which on a branch that sits on the forward target formats every commit of the target and checks its commit messages as the branch's own. It goes in `ANT_OPTS` rather than on the command line because the yarn side lists its files through a separate `ant git-util` call that inherits `ANT_OPTS` and nothing else. Pass `${MERGE_BASE}` rather than a branch tip, since the formatter diffs the two trees, and a tip newer than the branch's base shows its later changes reversed.
 
 ## Autocommit
 

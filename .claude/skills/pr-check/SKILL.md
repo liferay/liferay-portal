@@ -48,7 +48,13 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 	git fetch --no-tags <forward remote> ${BASE_BRANCH} && FORWARD_TIP=$(git rev-parse FETCH_HEAD)
 	```
 
-	1. `git rebase <remote>/${BASE_BRANCH}`. On a clean rebase, continue against the rebased branch. On conflict, list the unmerged files (`git diff --diff-filter=U --name-only`) and ask the developer who should resolve the conflicts. When the developer asks you to resolve them, fix the conflicts, `git add` the files, and run `git rebase --continue`. In every other case (the developer resolves them, the conflicts cannot be resolved, or the rebase fails otherwise) run `git rebase --abort` and stop the run.
+	With `${FORWARD_TIP}` set, the branch sits on the forward target when it holds commits of the target that `<remote>/${BASE_BRANCH}` lacks, which this reports by exiting `1`:
+
+	```bash
+	git merge-base --is-ancestor "$(git merge-base HEAD "${FORWARD_TIP}")" "<remote>/${BASE_BRANCH}"
+	```
+
+	1. `git rebase <remote>/${BASE_BRANCH}`, or `git rebase "${FORWARD_TIP}"` for a branch that sits on the forward target, since rebasing it onto `<remote>/${BASE_BRANCH}` can copy the target's commits into it. On a clean rebase, continue against the rebased branch. On conflict, list the unmerged files (`git diff --diff-filter=U --name-only`) and ask the developer who should resolve the conflicts. When the developer asks you to resolve them, fix the conflicts, `git add` the files, and run `git rebase --continue`. In every other case (the developer resolves them, the conflicts cannot be resolved, or the rebase fails otherwise) run `git rebase --abort` and stop the run.
 
 	1. When `${FORWARD_TIP}` is set, test in memory whether `ci:forward` can merge the branch into it. `git merge-tree` leaves the working tree and the index alone, and `--write-tree` needs Git 2.38 or later.
 
@@ -60,14 +66,14 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 
 - **Skills current in `liferay-portal-ee`.** In `liferay-portal-ee` only, run `git fetch <remote> master`. When `git rev-parse master` differs from `git rev-parse FETCH_HEAD`, the copied skills are stale, so stop the run and tell the developer to copy them again from the latest `master`.
 
-- **Diff baseline is local `${BASE_BRANCH}`.** After the rebase, the three dot diff against local `${BASE_BRANCH}` is the baseline.
+- **Diff baseline is `${BASE_REF}`.** That is `${FORWARD_TIP}` for a branch that sits on the forward target, since the target's commits beneath it are not the branch's own, and local `${BASE_BRANCH}` otherwise. After the rebase, the three dot diff against `${BASE_REF}` is the baseline.
 
 - **Diff is nonempty.** When the three dot diff produces no files, exit with a one line message — no validation produces useful signal on a clean branch.
 
 - **No source file hidden from git.** A file the build reads but git never sees passes every validation here and fails CI's clean checkout, as a Sass import of an uncommitted partial once did. The clean tree check above cannot see it when the developer's own ignore rules hide it, in `core.excludesFile` or `.git/info/exclude`, since `git status` honors those. List the ignored files under each changed module, keep those hidden by a rule outside the repository's own `.gitignore` files, and keep the source and build file types among them:
 
 	```bash
-	MERGE_BASE=$(git merge-base HEAD "${BASE_BRANCH}")
+	MERGE_BASE=$(git merge-base HEAD "${BASE_REF}")
 
 	git diff --name-only --no-renames "${MERGE_BASE}...HEAD" \
 		| bash <skill directory>/find_modules.sh "${MERGE_BASE}" \
@@ -110,7 +116,7 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 ### Diff
 
 ```bash
-MERGE_BASE=$(git merge-base HEAD "${BASE_BRANCH}")
+MERGE_BASE=$(git merge-base HEAD "${BASE_REF}")
 
 git diff --name-only --no-renames "${MERGE_BASE}...HEAD"
 ```
@@ -216,7 +222,7 @@ Process each validation in a subagent.
 Run [select_validations.sh](select_validations.sh) beside this document once, from `${REPO_ROOT}`. It prints a line for every validation: `== <file> (<count> paths)` for one that fires, followed by its `## Preconditions` and `## Time Estimate` sections, and `-- <file> (not fired)` for one that does not. A workspace validation names its workspace after the file. A validation fires when `select_paths.sh` prints a path, and a workspace validation is tried once for each workspace the branch changed, as **Routing** describes:
 
 ```bash
-bash <skill directory>/select_validations.sh "$(git merge-base HEAD "${BASE_BRANCH}")"
+bash <skill directory>/select_validations.sh "$(git merge-base HEAD "${BASE_REF}")"
 ```
 
 Leave out the validations the settings skip or whose scope they disable. Sum the time estimates of the rest for the cumulative total, counting a workspace validation once for each workspace it fired for. Add about 3 minutes once when any of them names **Portal Snapshots**, and up to 2 minutes once when any names **Portal Classpath**. Estimate from the path counts the script prints rather than resolving modules, since the total only decides whether to ask the developer.
@@ -370,6 +376,8 @@ After the two passes complete, emit a Results Summary block. It is the canonical
 Capture the tested commit with `git rev-parse HEAD` **after** Pass 2 completes, so the SHA reflects the tree that was actually exercised — including any autocommits the validations made, such as the `<TICKET> SF` source-format commit. This is the commit the `pr` skill pushes as the PR head and the commit the webhook binds the `pr-check` status to, so a reviewer can tell whether the current head is the one that was tested.
 
 The block is the overall state and tested SHA, followed by a table with one row per **matched** validation — the validations that actually ran, in the execution order above, apart from those that returned `NOT APPLICABLE`. A workspace validation has one row for each workspace it ran for, named with the workspace in parentheses, such as `Workspace Compile (liferay-aihub-workspace)`. Validations that did not fire are omitted rather than listed as skipped, so the table reflects only what the diff exercised. When no validation fired, omit the table as well and say so in one line, since a header with no rows reads as a table that failed to render.
+
+When the branch sits on the forward target, follow the header with one line saying the diff was taken from the forward target at `${FORWARD_TIP}` and that the pull request goes to the forward target.
 
 Name every validation that returned `NOT APPLICABLE` on one line beneath the table, such as `Not applicable: HTML Escaping, Structural Smoke.`, and leave the line out when none did. A selection can come back wrongly empty, so without the line a broken selection reads exactly like a diff with nothing in it.
 
