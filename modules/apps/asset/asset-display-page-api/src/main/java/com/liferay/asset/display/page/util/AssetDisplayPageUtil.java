@@ -10,6 +10,7 @@ import com.liferay.asset.display.page.info.display.contributor.LayoutDisplayPage
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalServiceUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
@@ -17,7 +18,11 @@ import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
@@ -52,10 +57,9 @@ public class AssetDisplayPageUtil {
 		}
 
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					groupId, layoutDisplayPageObjectProvider.getClassNameId(),
-					layoutDisplayPageObjectProvider.getClassTypeId());
+			_fetchDefaultLayoutPageTemplateEntry(
+				layoutDisplayPageObjectProvider.getClassNameId(),
+				layoutDisplayPageObjectProvider.getClassTypeId(), groupId);
 
 		return _getAssetDisplayPage(
 			groupId, layoutDisplayPageObjectProvider.getClassNameId(),
@@ -68,9 +72,8 @@ public class AssetDisplayPageUtil {
 			long groupId, long classNameId, long classPK, long classTypeId) {
 
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					groupId, classNameId, classTypeId);
+			_fetchDefaultLayoutPageTemplateEntry(
+				classNameId, classTypeId, groupId);
 
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry =
 			LayoutDisplayPageProviderRegistryUtil.
@@ -144,6 +147,34 @@ public class AssetDisplayPageUtil {
 		return false;
 	}
 
+	private static LayoutPageTemplateEntry _fetchDefaultLayoutPageTemplateEntry(
+		long classNameId, long classTypeId, long groupId) {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryServiceUtil.
+				fetchDefaultLayoutPageTemplateEntry(
+					groupId, classNameId, classTypeId);
+
+		if (layoutPageTemplateEntry != null) {
+			return layoutPageTemplateEntry;
+		}
+
+		for (long designLibraryGroupId :
+				_getConnectedDesignLibraryGroupIds(groupId)) {
+
+			layoutPageTemplateEntry =
+				LayoutPageTemplateEntryServiceUtil.
+					fetchDefaultLayoutPageTemplateEntry(
+						designLibraryGroupId, classNameId, classTypeId);
+
+			if (layoutPageTemplateEntry != null) {
+				return layoutPageTemplateEntry;
+			}
+		}
+
+		return null;
+	}
+
 	private static LayoutPageTemplateEntry _getAssetDisplayPage(
 		long groupId, long classNameId, long classPK,
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry,
@@ -204,5 +235,22 @@ public class AssetDisplayPageUtil {
 
 		return defaultLayoutPageTemplateEntry;
 	}
+
+	private static long[] _getConnectedDesignLibraryGroupIds(long groupId) {
+		try {
+			return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
+				CompanyThreadLocal.getCompanyId(), groupId);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return GetterUtil.DEFAULT_LONG_VALUES;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetDisplayPageUtil.class);
 
 }
