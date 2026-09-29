@@ -44,6 +44,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
 /**
  * @author Anderson Luiz
  * @author Gabriel Lima
@@ -98,7 +101,7 @@ public class StyleBookEntryLocalServiceImplTest {
 		_testUpdateFrontendTokensValues(StringPool.BLANK);
 		_testUpdateFrontendTokensValues(
 			_getFrontendTokensValues(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), _getFrontendTokenName(),
 				RandomTestUtil.randomString()));
 		_testUpdateFrontendTokensValues(null);
 		_testUpdateFrontendTokensValuesWithInvalidCharacters(
@@ -110,6 +113,7 @@ public class StyleBookEntryLocalServiceImplTest {
 			RandomTestUtil.randomString() + StringPool.LESS_THAN +
 				RandomTestUtil.randomString());
 		_testUpdateFrontendTokensValuesWithInvalidJSON();
+		_testUpdateFrontendTokensValuesWithLegacyFrontendTokenName();
 		_testUpdateFrontendTokensValuesWithSameValue();
 	}
 
@@ -167,6 +171,11 @@ public class StyleBookEntryLocalServiceImplTest {
 		).put(
 			"type", "String"
 		);
+	}
+
+	private String _getFrontendTokenName() {
+		return RandomTestUtil.randomString() + StringPool.COLON +
+			RandomTestUtil.randomString();
 	}
 
 	private JSONObject _getFrontendTokenSetJSONObject(
@@ -359,7 +368,7 @@ public class StyleBookEntryLocalServiceImplTest {
 			"{}"
 		);
 
-		String existingName = RandomTestUtil.randomString();
+		String existingName = _getFrontendTokenName();
 		String existingValue = RandomTestUtil.randomString();
 
 		Mockito.when(
@@ -667,7 +676,7 @@ public class StyleBookEntryLocalServiceImplTest {
 
 		_mockStyleBookEntry(styleBookEntryId);
 
-		String key = RandomTestUtil.randomString();
+		String key = _getFrontendTokenName();
 
 		String frontendTokensValues = _getFrontendTokensValues(
 			cssVariableMapping, key, value);
@@ -696,6 +705,53 @@ public class StyleBookEntryLocalServiceImplTest {
 				styleBookEntryId, "{not valid json"));
 	}
 
+	private void _testUpdateFrontendTokensValuesWithLegacyFrontendTokenName()
+		throws Exception {
+
+		long styleBookEntryId = RandomTestUtil.randomLong();
+
+		StyleBookEntry styleBookEntry = _mockStyleBookEntry(styleBookEntryId);
+
+		String cssVariableMapping = RandomTestUtil.randomString();
+		String frontendTokenName = RandomTestUtil.randomString();
+		String value = RandomTestUtil.randomString();
+
+		_styleBookEntryLocalService.updateFrontendTokensValues(
+			styleBookEntryId,
+			JSONUtil.put(
+				frontendTokenName,
+				JSONUtil.put(
+					"cssVariableMapping", cssVariableMapping
+				).put(
+					"value", value
+				)
+			).toString());
+
+		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
+			String.class);
+
+		Mockito.verify(
+			styleBookEntry
+		).setFrontendTokensValues(
+			argumentCaptor.capture()
+		);
+
+		String themeId = styleBookEntry.getThemeId();
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				themeId + StringPool.COLON + frontendTokenName,
+				JSONUtil.put(
+					"cssVariableMapping", cssVariableMapping
+				).put(
+					"tokenDefinitionId", themeId
+				).put(
+					"value", value
+				)
+			).toString(),
+			argumentCaptor.getValue(), JSONCompareMode.STRICT);
+	}
+
 	private void _testUpdateFrontendTokensValuesWithSameValue()
 		throws Exception {
 
@@ -706,7 +762,7 @@ public class StyleBookEntryLocalServiceImplTest {
 		String frontendTokensValues = _getFrontendTokensValues(
 			RandomTestUtil.randomString() + StringPool.LESS_THAN +
 				RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			_getFrontendTokenName(), RandomTestUtil.randomString());
 
 		Mockito.when(
 			styleBookEntry.getFrontendTokensValues()

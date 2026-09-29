@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.style.book.internal.upgrade.v1_10_0.StyleBookEntryFrontendTokensValuesUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_1_0.StyleBookEntryUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_2_0.StyleBookEntryVersionUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_7_0.StyleBookEntryThemeIdUpgradeProcess;
@@ -101,6 +102,10 @@ public class StyleBookServiceUpgradeStepRegistrator
 				"StyleBookEntry", "frontendTokenDefinition TEXT null"),
 			UpgradeProcessFactory.addColumns(
 				"StyleBookEntryVersion", "frontendTokenDefinition TEXT null"));
+
+		registry.register(
+			"1.9.0", "1.10.0",
+			new StyleBookEntryFrontendTokensValuesUpgradeProcess());
 	}
 
 	@Reference
