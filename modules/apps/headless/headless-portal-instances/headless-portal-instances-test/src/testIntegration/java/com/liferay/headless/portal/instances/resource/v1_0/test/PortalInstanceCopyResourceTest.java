@@ -208,11 +208,12 @@ public class PortalInstanceCopyResourceTest
 	}
 
 	private PortalInstanceCopy _randomPortalInstanceCopy() {
-		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
 		portalInstanceCopy.setName(randomId);
+
 		portalInstanceCopy.setSourcePortalInstanceId(_company::getWebId);
 		portalInstanceCopy.setVirtualHost(
 			randomId + "." +
