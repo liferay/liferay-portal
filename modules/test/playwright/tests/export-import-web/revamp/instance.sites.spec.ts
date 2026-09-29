@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
+import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 import {exportAndDownloadLar} from './utils/exportAndDownloadLar';
 
@@ -25,7 +26,7 @@ export const test = mergeTests(
 );
 
 test(
-	'Can import a site from an instance export',
+	'Can import a site with object entries from an instance export',
 	{tag: '@LPD-101408'},
 	async ({
 		apiHelpers,
@@ -38,17 +39,43 @@ test(
 			name: getRandomString(),
 		});
 
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const applicationName = normalizeRestPath(
+			objectDefinition.restContextPath
+		);
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', textField: getRandomString()},
+			applicationName
+		);
+
 		const lar = await test.step('Export the site', async () => {
 			await globalMenuPage.goToApplications('Export');
 
 			await exportImportPage.clickNew();
 
-			await exportImportDataSelectionPage.uncheckAllItems();
+			await exportImportDataSelectionPage.selectOnlyObjectDefinition(
+				objectDefinition.name
+			);
 
 			await exportImportDataSelectionPage.selectGroup(group.name);
 
 			return await exportAndDownloadLar(exportImportPage);
 		});
+
+		await apiHelpers.objectEntry.deleteObjectEntry(
+			applicationName,
+			String(objectEntry.id)
+		);
 
 		await test.step('Import the site', async () => {
 			await globalMenuPage.goToApplications('Import');
@@ -67,5 +94,17 @@ test(
 				},
 			});
 		});
+
+		expect(
+			await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode({
+				applicationName,
+				externalReferenceCode: objectEntry.externalReferenceCode,
+			})
+		).toEqual(
+			expect.objectContaining({
+				externalReferenceCode: objectEntry.externalReferenceCode,
+				textField: objectEntry.textField,
+			})
+		);
 	}
 );
