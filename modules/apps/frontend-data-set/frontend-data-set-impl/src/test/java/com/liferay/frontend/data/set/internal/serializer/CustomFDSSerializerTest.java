@@ -249,8 +249,9 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems = ListUtil.fromArray(
 			new FDSActionDropdownItem(
-				null, ICONS[0], IDS[0], LABELS[0], "delete", "delete",
-				"headless"));
+				null, ICONS[0], IDS[0], LABELS[0],
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString()));
 
 		ServiceRegistration<FDSBulkActions> serviceRegistration =
 			bundleContext.registerService(
