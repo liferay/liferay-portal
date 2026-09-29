@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
@@ -56,7 +57,10 @@ public class JUnitBatchTestClassGroupTest
 		Properties jobProperties = new Properties();
 
 		jobProperties.setProperty(
-			"test.class.names.auto.balance", packagePath + className + ".java");
+			"test.class.names.auto.balance",
+			JenkinsResultsParserUtil.combine(
+				packagePath, className, ".java,", packagePath,
+				"MissingAutoBalanceTest.java"));
 
 		JUnitBatchTestClassGroup jUnitBatchTestClassGroup =
 			new JUnitBatchTestClassGroup(
