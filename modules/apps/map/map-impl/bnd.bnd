@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Map Implementation
+Bundle-SymbolicName: com.liferay.map.impl
+Bundle-Version: 1.0.0
