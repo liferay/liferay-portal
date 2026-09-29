@@ -1,5 +1,11 @@
 # Poshi Runner Change Log
 
+## 1.0.501
+
+### Other
+
+* [LRCI-8217](https://liferay.atlassian.net/browse/LRCI-8217) - Translation export downloads never reach the Poshi download directory in ci:test:content-management
+
 ## 1.0.500
 
 ### WebDriver
