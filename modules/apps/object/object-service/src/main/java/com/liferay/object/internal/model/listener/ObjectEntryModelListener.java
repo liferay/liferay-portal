@@ -27,6 +27,7 @@ import com.liferay.object.model.ObjectViewFilterColumn;
 import com.liferay.object.model.ObjectViewFilterColumnTable;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.object.rest.dto.v1_0.Assignee;
+import com.liferay.object.rest.dto.v1_0.Location;
 import com.liferay.object.search.StrictObjectReindexThreadLocal;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -407,6 +408,31 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 					if (_log.isDebugEnabled()) {
 						_log.debug(portalException);
 					}
+				}
+			}
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+			ObjectFieldBusinessType locationObjectFieldBusinessType =
+				_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION);
+
+			try {
+				Location location =
+					(Location)locationObjectFieldBusinessType.getDTOValue(
+						null, null, null, null, (Serializable)value);
+
+				if (location == null) {
+					return null;
+				}
+
+				return _jsonFactory.createJSONObject(location.toString());
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
 				}
 			}
 		}
