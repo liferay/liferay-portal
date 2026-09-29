@@ -28,6 +28,7 @@ import com.liferay.portal.test.rule.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -199,6 +200,15 @@ public class ObjectRelationshipResourceTest
 
 	@Override
 	@Test
+	public void testPutObjectRelationship() throws Exception {
+		super.testPutObjectRelationship();
+
+		_testPutObjectRelationshipDescription(Collections.emptyMap());
+		_testPutObjectRelationshipDescription(null);
+	}
+
+	@Override
+	@Test
 	public void testPutObjectRelationshipByExternalReferenceCode()
 		throws Exception {
 
@@ -282,6 +292,11 @@ public class ObjectRelationshipResourceTest
 	}
 
 	@Override
+	protected String[] getAdditionalAssertFieldNames() {
+		return new String[] {"description"};
+	}
+
+	@Override
 	protected String[] getIgnoredEntityFieldNames() {
 		return new String[] {
 			"dateCreated", "dateModified", "description", "label", "userId"
@@ -293,6 +308,9 @@ public class ObjectRelationshipResourceTest
 		ObjectRelationship objectRelationship =
 			super.randomObjectRelationship();
 
+		objectRelationship.setDescription(
+			Collections.singletonMap(
+				LocaleUtil.US.toString(), RandomTestUtil.randomString()));
 		objectRelationship.setEdge(false);
 		objectRelationship.setName("a" + RandomTestUtil.randomString());
 		objectRelationship.setObjectDefinitionExternalReferenceCode1(
@@ -449,6 +467,26 @@ public class ObjectRelationshipResourceTest
 		assertEquals(
 			Collections.singletonList(expectedObjectRelationship),
 			(List<ObjectRelationship>)page.getItems());
+	}
+
+	private void _testPutObjectRelationshipDescription(
+			Map<String, String> descriptionMap)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			testPostObjectDefinitionObjectRelationship_addObjectRelationship(
+				randomObjectRelationship());
+
+		Map<String, String> expectedDescriptionMap =
+			objectRelationship.getDescription();
+
+		objectRelationship.setDescription(descriptionMap);
+
+		objectRelationship = objectRelationshipResource.putObjectRelationship(
+			objectRelationship.getId(), objectRelationship);
+
+		Assert.assertEquals(
+			expectedDescriptionMap, objectRelationship.getDescription());
 	}
 
 	private ObjectDefinition _objectDefinition1;

@@ -1625,6 +1625,9 @@ public class ObjectDefinitionResourceTest
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			postObjectDefinition.getId());
+
+		_testPutObjectDefinitionDescription(Collections.emptyMap());
+		_testPutObjectDefinitionDescription(null);
 	}
 
 	@Override
@@ -1899,7 +1902,7 @@ public class ObjectDefinitionResourceTest
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"name", "status"};
+		return new String[] {"description", "name", "status"};
 	}
 
 	@Override
@@ -1920,6 +1923,9 @@ public class ObjectDefinitionResourceTest
 			ObjectDefinitionConstants.
 				CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION +
 					RandomTestUtil.randomString());
+		objectDefinition.setDescription(
+			Collections.singletonMap(
+				LocaleUtil.US.toString(), RandomTestUtil.randomString()));
 		objectDefinition.setEnableLocalization(true);
 		objectDefinition.setLabel(
 			Collections.singletonMap(
@@ -3804,6 +3810,26 @@ public class ObjectDefinitionResourceTest
 		Assert.assertNotNull(
 			_objectFieldLocalService.getObjectField(
 				putObjectDefinition.getId(), aggregationObjectFieldName));
+	}
+
+	private void _testPutObjectDefinitionDescription(
+			Map<String, String> descriptionMap)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionResource.postObjectDefinition(
+				randomObjectDefinition());
+
+		Map<String, String> expectedDescriptionMap =
+			objectDefinition.getDescription();
+
+		objectDefinition.setDescription(descriptionMap);
+
+		objectDefinition = objectDefinitionResource.putObjectDefinition(
+			objectDefinition.getId(), objectDefinition);
+
+		Assert.assertEquals(
+			expectedDescriptionMap, objectDefinition.getDescription());
 	}
 
 	private void _testPutObjectDefinitionWithAllowStandaloneObjectEntry()
