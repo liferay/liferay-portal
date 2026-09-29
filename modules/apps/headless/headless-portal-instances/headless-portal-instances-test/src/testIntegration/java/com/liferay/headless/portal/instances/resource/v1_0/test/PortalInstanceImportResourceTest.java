@@ -8,6 +8,7 @@ package com.liferay.headless.portal.instances.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceImport;
+import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.problem.Problem;
 import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceImportResource;
 import com.liferay.petra.lang.SafeCloseable;
@@ -218,18 +219,19 @@ public class PortalInstanceImportResourceTest
 			_randomPortalInstanceImport(companyId2);
 
 		try {
+			HttpInvoker.HttpResponse httpResponse =
+				portalInstanceImportResource.
+					postPortalInstanceImportBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								String.valueOf(portalInstanceImport1)),
+							JSONFactoryUtil.createJSONObject(
+								String.valueOf(portalInstanceImport2))));
+
 			JSONObject importTaskJSONObject = _waitForFinish(
 				"COMPLETED",
-				JSONFactoryUtil.createJSONObject(
-					portalInstanceImportResource.
-						postPortalInstanceImportBatchHttpResponse(
-							null,
-							JSONUtil.putAll(
-								JSONFactoryUtil.createJSONObject(
-									String.valueOf(portalInstanceImport1)),
-								JSONFactoryUtil.createJSONObject(
-									String.valueOf(portalInstanceImport2)))
-						).getContent()));
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 
 			Assert.assertEquals(
 				2, importTaskJSONObject.getInt("processedItemsCount"));

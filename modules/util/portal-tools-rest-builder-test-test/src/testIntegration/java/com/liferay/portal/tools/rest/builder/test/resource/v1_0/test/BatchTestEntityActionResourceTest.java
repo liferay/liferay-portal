@@ -18,6 +18,7 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.BatchTestEntityAction;
+import com.liferay.portal.tools.rest.builder.test.client.http.HttpInvoker;
 import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.BatchTestEntityActionSerDes;
 
 import java.util.List;
@@ -106,18 +107,19 @@ public class BatchTestEntityActionResourceTest
 					"resource.v1_0.BatchTestEntityActionResourceImpl",
 				LoggerTestUtil.DEBUG)) {
 
+			HttpInvoker.HttpResponse httpResponse =
+				batchTestEntityActionResource.
+					postBatchTestEntityActionBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								batchTestEntityAction1.toString()),
+							JSONFactoryUtil.createJSONObject(
+								batchTestEntityAction2.toString())));
+
 			JSONObject importTaskJSONObject = _waitForFinish(
 				"COMPLETED",
-				JSONFactoryUtil.createJSONObject(
-					batchTestEntityActionResource.
-						postBatchTestEntityActionBatchHttpResponse(
-							null,
-							JSONUtil.putAll(
-								JSONFactoryUtil.createJSONObject(
-									batchTestEntityAction1.toString()),
-								JSONFactoryUtil.createJSONObject(
-									batchTestEntityAction2.toString()))
-						).getContent()));
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 
 			Assert.assertEquals(
 				2, importTaskJSONObject.getInt("processedItemsCount"));

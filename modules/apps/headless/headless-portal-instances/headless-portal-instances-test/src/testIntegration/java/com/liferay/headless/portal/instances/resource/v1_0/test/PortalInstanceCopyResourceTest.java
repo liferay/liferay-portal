@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceCopy;
+import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.problem.Problem;
 import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceCopyResource;
 import com.liferay.petra.lang.SafeCloseable;
@@ -227,18 +228,18 @@ public class PortalInstanceCopyResourceTest
 		PortalInstanceCopy portalInstanceCopy1 = _randomPortalInstanceCopy();
 		PortalInstanceCopy portalInstanceCopy2 = _randomPortalInstanceCopy();
 
+		HttpInvoker.HttpResponse httpResponse =
+			portalInstanceCopyResource.postPortalInstanceCopyBatchHttpResponse(
+				null,
+				JSONUtil.putAll(
+					JSONFactoryUtil.createJSONObject(
+						portalInstanceCopy1.toString()),
+					JSONFactoryUtil.createJSONObject(
+						portalInstanceCopy2.toString())));
+
 		JSONObject importTaskJSONObject = _waitForFinish(
 			"COMPLETED",
-			JSONFactoryUtil.createJSONObject(
-				portalInstanceCopyResource.
-					postPortalInstanceCopyBatchHttpResponse(
-						null,
-						JSONUtil.putAll(
-							JSONFactoryUtil.createJSONObject(
-								portalInstanceCopy1.toString()),
-							JSONFactoryUtil.createJSONObject(
-								portalInstanceCopy2.toString()))
-					).getContent()));
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 
 		Assert.assertEquals(
 			2, importTaskJSONObject.getInt("processedItemsCount"));

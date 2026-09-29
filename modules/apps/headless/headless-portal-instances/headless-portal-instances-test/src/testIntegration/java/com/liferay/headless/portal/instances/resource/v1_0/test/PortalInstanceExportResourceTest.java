@@ -7,6 +7,7 @@ package com.liferay.headless.portal.instances.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceExport;
+import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.problem.Problem;
 import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceExportResource;
 import com.liferay.petra.lang.SafeCloseable;
@@ -324,34 +325,34 @@ public class PortalInstanceExportResourceTest
 		Company company = CompanyTestUtil.addCompany();
 
 		try {
+			HttpInvoker.HttpResponse httpResponse =
+				portalInstanceExportResource.
+					postPortalInstanceExportBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								String.valueOf(
+									_toPortalInstanceExport(
+										_company.getWebId()))),
+							JSONFactoryUtil.createJSONObject(
+								String.valueOf(
+									_toPortalInstanceExport(
+										company.getWebId())))));
+
 			JSONObject importTaskJSONObject = _waitForFinish(
 				"COMPLETED",
-				JSONFactoryUtil.createJSONObject(
-					portalInstanceExportResource.
-						postPortalInstanceExportBatchHttpResponse(
-							null,
-							JSONUtil.putAll(
-								JSONFactoryUtil.createJSONObject(
-									String.valueOf(
-										_toPortalInstanceExport(
-											_company.getWebId()))),
-								JSONFactoryUtil.createJSONObject(
-									String.valueOf(
-										_toPortalInstanceExport(
-											company.getWebId()))))
-						).getContent()));
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 
 			Assert.assertEquals(
 				2, importTaskJSONObject.getInt("processedItemsCount"));
 
-			Assert.assertFalse(
-				_getExportedConfigurationIds(
-					_company.getCompanyId()
-				).isEmpty());
-			Assert.assertFalse(
-				_getExportedConfigurationIds(
-					company.getCompanyId()
-				).isEmpty());
+			List<String> configurationIds1 = _getExportedConfigurationIds(
+				_company.getCompanyId());
+			List<String> configurationIds2 = _getExportedConfigurationIds(
+				company.getCompanyId());
+
+			Assert.assertFalse(configurationIds1.isEmpty());
+			Assert.assertFalse(configurationIds2.isEmpty());
 		}
 		finally {
 			_dropExportedSchema(_company.getCompanyId());
