@@ -10,6 +10,7 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Retryable;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.BaseAntTargetTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.SemVerModulesTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
@@ -76,6 +77,12 @@ public class TestrayFactory {
 			else if (axisTestClassGroup instanceof ModulesAxisTestClassGroup) {
 				if (testClass instanceof BaseAntTargetTestClass) {
 					return new AntTargetBatchBuildTestrayCaseResult(
+						axisTestClassGroup, testClass, testrayBuild,
+						topLevelBuildReport);
+				}
+
+				if (testClass instanceof SemVerModulesTestClass) {
+					return new SemVerModulesBatchBuildTestrayCaseResult(
 						axisTestClassGroup, testClass, testrayBuild,
 						topLevelBuildReport);
 				}

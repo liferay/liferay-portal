@@ -420,7 +420,9 @@ public class TestClassGroupFactory {
 						batchName, portalTestClassJob);
 				}
 			}
-			else if (batchName.startsWith("modules-semantic-versioning")) {
+			else if (batchName.startsWith("modules-semantic-versioning") ||
+					 batchName.startsWith("semantic-versioning")) {
+
 				if (jsonObject != null) {
 					batchTestClassGroup = new SemVerModulesBatchTestClassGroup(
 						jsonObject, portalTestClassJob);
@@ -537,16 +539,6 @@ public class TestClassGroupFactory {
 					batchTestClassGroup =
 						new RESTBuilderModulesBatchTestClassGroup(
 							batchName, portalTestClassJob);
-				}
-			}
-			else if (batchName.startsWith("semantic-versioning")) {
-				if (jsonObject != null) {
-					batchTestClassGroup = new SemanticVersioningTestClassGroup(
-						jsonObject, portalTestClassJob);
-				}
-				else {
-					batchTestClassGroup = new SemanticVersioningTestClassGroup(
-						batchName, portalTestClassJob);
 				}
 			}
 			else if (batchName.startsWith("service-builder")) {
