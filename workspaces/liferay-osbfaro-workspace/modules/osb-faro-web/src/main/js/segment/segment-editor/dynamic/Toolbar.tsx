@@ -166,8 +166,15 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 			columns: isAccountSegment
 				? [accountsListColumns.getAccountName({channelId, groupId})]
 				: [
-						individualsListColumns.name,
-						individualsListColumns.accountName,
+						{
+							...individualsListColumns.name,
+							className: 'w-50',
+						},
+						{
+							...individualsListColumns.accountName,
+							className: 'w-50',
+							label: Liferay.Language.get('account-name'),
+						},
 					],
 			dataSourceFn: this.fetchMembers,
 			entityLabel: isAccountSegment
