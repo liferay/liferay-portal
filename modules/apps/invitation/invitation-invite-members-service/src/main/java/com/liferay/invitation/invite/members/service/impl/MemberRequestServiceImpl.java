@@ -5,18 +5,23 @@
 
 package com.liferay.invitation.invite.members.service.impl;
 
+import com.liferay.invitation.invite.members.exception.MemberRequestInvalidURLException;
 import com.liferay.invitation.invite.members.service.base.MemberRequestServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.UserGroupRolePermissionUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,6 +45,7 @@ public class MemberRequestServiceImpl extends MemberRequestServiceBaseImpl {
 		throws PortalException {
 
 		_check(groupId, invitedRoleId, invitedTeamId);
+		_validateURLs(groupId, serviceContext);
 
 		memberRequestLocalService.addMemberRequests(
 			getUserId(), groupId, receiverUserIds, invitedRoleId, invitedTeamId,
@@ -53,6 +59,7 @@ public class MemberRequestServiceImpl extends MemberRequestServiceBaseImpl {
 		throws PortalException {
 
 		_check(groupId, invitedRoleId, invitedTeamId);
+		_validateURLs(groupId, serviceContext);
 
 		memberRequestLocalService.addMemberRequests(
 			getUserId(), groupId, emailAddresses, invitedRoleId, invitedTeamId,
@@ -84,6 +91,32 @@ public class MemberRequestServiceImpl extends MemberRequestServiceBaseImpl {
 				permissionChecker, groupId, ActionKeys.MANAGE_TEAMS);
 		}
 	}
+
+	private void _validateURL(String url) throws PortalException {
+		if (Validator.isNotNull(url) && (_portal.escapeRedirect(url) == null)) {
+			throw new MemberRequestInvalidURLException(url);
+		}
+	}
+
+	private void _validateURLs(long groupId, ServiceContext serviceContext)
+		throws PortalException {
+
+		Company company = _companyLocalService.getCompany(
+			getPermissionChecker().getCompanyId());
+
+		serviceContext.setPortalURL(company.getPortalURL(groupId));
+
+		_validateURL((String)serviceContext.getAttribute("createAccountURL"));
+		_validateURL((String)serviceContext.getAttribute("loginURL"));
+		_validateURL((String)serviceContext.getAttribute("redirectURL"));
+		_validateURL(serviceContext.getCurrentURL());
+	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private TeamLocalService _teamLocalService;
