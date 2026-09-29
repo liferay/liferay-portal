@@ -51,7 +51,7 @@ spec:
                             -   name: global.deploymentName
                                 value: {{ .Values.deploymentContext.deploymentName | quote }}
                             -   name: global.liferayServiceAccount.create
-                                value: "true"
+                                value: "false"
                             -   name: global.liferayServiceAccount.name
                                 value: liferay-default
                             -   name: global.projectId

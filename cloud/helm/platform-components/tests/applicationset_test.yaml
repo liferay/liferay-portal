@@ -150,6 +150,14 @@ tests:
             observability:
                 enabled: true
     -   asserts:
+            -   contains:
+                    content:
+                        name: global.liferayServiceAccount.create
+                        value: "false"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Leaves the Liferay service account to the infrastructure composition
+    -   asserts:
             -   hasDocuments:
                     count: 0
                 template: templates/application-infrastructure-provider.yaml
