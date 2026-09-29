@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import '_atlas-custom-properties-variables';
 @import 'cadmin-variables';
 
 html#{$cadmin-selector} .cadmin.fds-admin {
@@ -23,20 +23,20 @@ html#{$cadmin-selector} .cadmin.fds-admin {
 			margin-bottom: 12px;
 
 			&.disabled {
-				background-color: #f7f7f7;
+				background-color: $gray-100;
 
 				.list-group-text,
 				.list-group-title,
 				.sticker {
-					background-color: #f7f7f7;
-					color: #757575;
+					background-color: $gray-100;
+					color: $gray-600;
 				}
 			}
 
 			&.selected {
-				background-color: #f0f5ff;
-				border-color: #80acff;
-				box-shadow: 0 2px 4px rgba(39, 40, 51, 0.12);
+				background-color: $primary-l3;
+				border-color: $primary-l1;
+				box-shadow: $box-shadow-sm;
 			}
 
 			.created-label {

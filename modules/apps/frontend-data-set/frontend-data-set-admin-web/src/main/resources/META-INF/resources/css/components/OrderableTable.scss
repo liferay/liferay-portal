@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import '_atlas-custom-properties-variables';
 @import 'cadmin-variables';
 
 html#{$cadmin-selector} .cadmin.fds-admin {
@@ -33,7 +33,7 @@ html#{$cadmin-selector} .cadmin.fds-admin {
 			opacity: 0.5;
 
 			td.drag-handle-cell {
-				background-color: #528eff !important;
+				background-color: $primary-l0 !important;
 			}
 		}
 

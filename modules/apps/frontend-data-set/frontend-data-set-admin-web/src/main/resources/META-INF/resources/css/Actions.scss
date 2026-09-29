@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import '_atlas-custom-properties-variables';
 @import 'cadmin-variables';
 
 html#{$cadmin-selector} {
@@ -9,8 +9,8 @@ html#{$cadmin-selector} {
 		padding-top: 8px;
 
 		&:hover {
-			background-color: #f0f5ff;
-			color: #272833;
+			background-color: $primary-l3;
+			color: $gray-900;
 		}
 	}
 }
@@ -38,7 +38,7 @@ html#{$cadmin-selector} .cadmin.fds-admin .fds-admin-actions .panel-unstyled {
 		font-size: 14px;
 
 		&:last-child {
-			color: #6b6c7e;
+			color: $gray-600;
 			font-weight: 600;
 		}
 	}
