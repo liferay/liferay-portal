@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -52,8 +53,7 @@ public class UpdateLayoutPageTemplateEntryPreviewMVCActionCommand
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
-		FileEntry fileEntry = _portletFileRepository.getPortletFileEntry(
-			fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		FileEntry tempFileEntry = fileEntry;
 
@@ -97,6 +97,9 @@ public class UpdateLayoutPageTemplateEntryPreviewMVCActionCommand
 
 		sendRedirect(actionRequest, actionResponse);
 	}
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
