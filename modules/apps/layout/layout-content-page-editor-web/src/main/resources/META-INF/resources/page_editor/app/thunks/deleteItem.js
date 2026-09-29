@@ -160,6 +160,7 @@ export default function deleteItem({itemIds, selectItems = () => {}}) {
 		) {
 			openConfirmModal({
 				buttonLabel: Liferay.Language.get('delete'),
+				center: true,
 				onConfirm: handleRules,
 				status: 'warning',
 				text: Liferay.Language.get(
