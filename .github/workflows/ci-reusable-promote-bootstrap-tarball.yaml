@@ -79,9 +79,6 @@ jobs:
 on:
     workflow_call:
         inputs:
-            provider:
-                required: true
-                type: string
             source_object_name:
                 required: true
                 type: string

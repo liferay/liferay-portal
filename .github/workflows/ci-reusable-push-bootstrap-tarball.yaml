@@ -29,7 +29,7 @@ jobs:
                 uses: google-github-actions/setup-gcloud@v2
                 with:
                     project_id: ${{inputs.is_production && vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION || vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
-            -   if: ${{!inputs.is_production && inputs.provider == 'azure'}}
+            -   if: ${{inputs.provider == 'azure' && !inputs.is_production}}
                 name: Install ORAS
                 uses: oras-project/setup-oras@v1
             -   env:
@@ -53,14 +53,14 @@ jobs:
 
                         echo "OBJECT_BASENAME=${object_basename}" >> ${GITHUB_ENV}
 
-                        local object_path="${BOOTSTRAP_STORAGE_PATH_PRODUCTION}"
+                        local object_directory="${BOOTSTRAP_STORAGE_PATH_PRODUCTION}"
 
                         if [[ "${{inputs.is_production}}" != "true" ]]
                         then
-                            object_path="${BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr '/' '-')/${GITHUB_SHA::7}"
+                            object_directory="${BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr '/' '-')/${GITHUB_SHA::7}"
                         fi
 
-                        local object_name="${object_path}/${object_basename}"
+                        local object_name="${object_directory}/${object_basename}"
 
                         echo "OBJECT_NAME=${object_name}" >> ${GITHUB_ENV}
                         echo "object_name=${object_name}" >> ${GITHUB_OUTPUT}
@@ -125,7 +125,11 @@ jobs:
 
                         (cd /tmp && sha256sum "${OBJECT_BASENAME}" > "${OBJECT_BASENAME}.sha256")
 
-                        echo "sha256=$(cut --delimiter=' ' --fields=1 < "/tmp/${OBJECT_BASENAME}.sha256")" >> ${GITHUB_OUTPUT}
+                        local sha256
+
+                        sha256=$(cut --delimiter=' ' --fields=1 < "/tmp/${OBJECT_BASENAME}.sha256")
+
+                        echo "sha256=${sha256}" >> ${GITHUB_OUTPUT}
 
                         gcloud \
                             storage \
@@ -142,8 +146,6 @@ jobs:
 
                     function _get_build_registry {
                         local type="${1}"
-                        local name="${2}"
-                        local version="${3}"
 
                         local registry="${HELM_CHART_REGISTRY_NONPRODUCTION}"
 
@@ -152,18 +154,21 @@ jobs:
                             registry="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}"
                         fi
 
-                        registry="${registry}/$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')/${GITHUB_SHA::7}"
+                        echo "${registry}/$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')/${GITHUB_SHA::7}"
+                    }
 
-                        if oras \
-                                manifest \
-                                fetch \
-                                --password "${{steps.auth.outputs.auth_token}}" \
-                                --username oauth2accesstoken \
-                                "${registry}/${name}:${version}" \
-                                > /dev/null 2>&1
-                        then
-                            echo "${registry}"
-                        fi
+                    function _has_artifact {
+                        local name="${1}"
+                        local registry="${2}"
+                        local version="${3}"
+
+                        oras \
+                            manifest \
+                            fetch \
+                            --password "${{steps.auth.outputs.auth_token}}" \
+                            --username oauth2accesstoken \
+                            "${registry}/${name}:${version}" \
+                            > /dev/null 2>&1
                     }
 
                     function _point_artifacts_at_this_build {
@@ -173,18 +178,18 @@ jobs:
                         local type
                         local version
 
-                        while read -r type name version
+                        while read -r name type version
                         do
                             local registry
 
-                            registry=$(_get_build_registry "${type}" "${name}" "${version}")
+                            registry=$(_get_build_registry "${type}")
 
-                            if [[ -z "${registry}" ]]
+                            if ! _has_artifact "${name}" "${registry}" "${version}"
                             then
                                 continue
                             fi
 
-                            echo "\`${type}.${name}\` points to \`${registry}\`, where this build pushed it." >> "${GITHUB_STEP_SUMMARY}"
+                            echo "\`${type}.${name}\` points to \`${registry}\`. This build pushed it there." >> "${GITHUB_STEP_SUMMARY}"
 
                             local updated_config_json_defaults
 
@@ -207,7 +212,7 @@ jobs:
                                 | .key as $type
                                 | .value
                                 | to_entries[]
-                                | "\($type) \(.key) \(.value.version)"' \
+                                | "\(.key) \($type) \(.value.version)"' \
                                 "${config_json_defaults_file}")
                     }
 

@@ -243,7 +243,6 @@ jobs:
             -   push-rc-bootstrap-aws
         uses: ./.github/workflows/ci-reusable-promote-bootstrap-tarball.yaml
         with:
-            provider: aws
             source_object_name: ${{needs.push-rc-bootstrap-aws.outputs.object_name}}
     promote-rc-bootstrap-gcp:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-gcp.result == 'success'}}
@@ -252,7 +251,6 @@ jobs:
             -   push-rc-bootstrap-gcp
         uses: ./.github/workflows/ci-reusable-promote-bootstrap-tarball.yaml
         with:
-            provider: gcp
             source_object_name: ${{needs.push-rc-bootstrap-gcp.outputs.object_name}}
     promote-rc-default:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-default.result == 'success'}}

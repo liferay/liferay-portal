@@ -120,10 +120,10 @@ function _download_and_extract_files {
 	then
 		output_path=$( \
 			jq \
-				--arg name_prefix "/liferay-${provider}-bootstrap-" \
+				--arg provider "${provider}" \
 				--raw-output \
 				'.items
-				| map(select(.name | contains($name_prefix) and endswith(".tar.gz")))
+				| map(select(.name | split("/") | last | startswith("liferay-\($provider)-bootstrap-") and endswith(".tar.gz")))
 				| sort_by(.updated)
 				| last
 				| .name' <<< "${json}")
@@ -131,10 +131,10 @@ function _download_and_extract_files {
 	else
 		output_path=$( \
 			jq \
-				--arg suffix "/liferay-${provider}-bootstrap-${version}.tar.gz" \
+				--arg basename "liferay-${provider}-bootstrap-${version}.tar.gz" \
 				--raw-output \
 				'.items
-				| map(select(.name | endswith($suffix)))
+				| map(select(.name | split("/") | last == $basename))
 				| sort_by(.updated)
 				| last
 				| .name' <<< "${json}")
