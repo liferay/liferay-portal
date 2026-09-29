@@ -57,4 +57,4 @@ public interface MemberRequestService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-781918290
+// LIFERAY-SERVICE-BUILDER-HASH:-1179815554
