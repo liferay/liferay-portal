@@ -18,6 +18,7 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryMetadataLocalService;
 import com.liferay.document.library.kernel.service.DLFileShortcutLocalService;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.service.persistence.DLFileEntryPersistence;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
@@ -253,7 +254,8 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 
 		FileVersion latestFileVersion = fileEntry.getLatestFileVersion();
 
-		_dlAppService.deleteFileVersion(latestFileVersion.getFileVersionId());
+		_dlFileVersionLocalService.deleteDLFileVersion(
+			latestFileVersion.getFileVersionId());
 
 		upgrade();
 
@@ -341,6 +343,9 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 
 	@Inject
 	private DLFileShortcutLocalService _dlFileShortcutLocalService;
+
+	@Inject
+	private DLFileVersionLocalService _dlFileVersionLocalService;
 
 	@Inject
 	private DLFileVersionPreviewLocalService _dlFileVersionPreviewLocalService;
