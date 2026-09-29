@@ -9,12 +9,17 @@ import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__
 import '@testing-library/jest-dom';
 import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {fetch, navigate} from 'frontend-js-web';
+import {fetch, localStorage, navigate} from 'frontend-js-web';
 import React from 'react';
 
 import OmniSearch from '../src/main/resources/META-INF/resources/js/OmniSearch';
+import {
+	getRecentSearches,
+	saveRecentSearch,
+} from '../src/main/resources/META-INF/resources/js/recentSearches';
 
 const RESULTS_URL = '/omni-search-results?p_p_id=foo';
+const STORAGE_KEY = `liferay-omni-search-recent-${Liferay.ThemeDisplay.getUserId()}`;
 
 const RESULTS_RESPONSE = [
 	{
@@ -149,6 +154,7 @@ describe('OmniSearch', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 		mockFetchResponse();
+		localStorage.removeItem(STORAGE_KEY);
 
 		global.Liferay.Browser = {
 			...(global as any).Liferay,
@@ -297,9 +303,75 @@ describe('OmniSearch', () => {
 		}
 	});
 
-	it('has no accessibility violations when the modal is open', async () => {
-		await openModal();
+	it('saves the query when a search result is clicked', async () => {
+		await searchFor('welcome');
 
-		await checkAccessibility({bestPractices: true, context: document.body});
+		await userEvent.click(screen.getByText('Welcome Article'));
+
+		expect(getRecentSearches()).toContain('welcome');
+	});
+
+	describe('recent searches', () => {
+		beforeEach(() => {
+			saveRecentSearch('blogs');
+			saveRecentSearch('documents');
+		});
+
+		it('has no accessibility violations when the modal is open and has recent', async () => {
+			await openModal();
+
+			await checkAccessibility({
+				bestPractices: true,
+				context: document.body,
+			});
+		});
+
+		it('shows saved searches when the modal opens with an empty query', async () => {
+			await openModal();
+
+			expect(screen.getByText('recent-searches')).toBeInTheDocument();
+			expect(screen.getByText('documents')).toBeInTheDocument();
+			expect(screen.getByText('blogs')).toBeInTheDocument();
+		});
+
+		it('fills the input when a recent search is clicked', async () => {
+			const input = await openModal();
+
+			expect(input).toHaveValue('');
+
+			await userEvent.click(screen.getByText('documents'));
+
+			expect(input).toHaveValue('documents');
+		});
+
+		it('removes a recent search when its delete button is clicked', async () => {
+			await openModal();
+
+			await userEvent.click(
+				within(
+					screen.getByText('documents').closest('li') as HTMLElement
+				).getByRole('button', {hidden: true})
+			);
+
+			expect(screen.queryByText('documents')).not.toBeInTheDocument();
+			expect(screen.getByText('blogs')).toBeInTheDocument();
+		});
+
+		it('focuses the delete button when Tab is pressed on a focused recent search', async () => {
+			const input = await openModal();
+
+			await userEvent.keyboard('{ArrowDown}');
+			await userEvent.type(input, '{Tab}');
+
+			await waitFor(() =>
+				expect(
+					within(
+						screen
+							.getByText('documents')
+							.closest('li') as HTMLElement
+					).getByRole('button', {hidden: true})
+				).toHaveFocus()
+			);
+		});
 	});
 });
