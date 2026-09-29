@@ -87,13 +87,13 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 
 		HttpSession httpSession = httpServletRequest.getSession(false);
 
-		Long userId = null;
 		String auditSessionId = null;
+		Long userId = null;
 
 		if (httpSession != null) {
-			userId = (Long)httpSession.getAttribute(WebKeys.USER_ID);
 			auditSessionId = (String)httpSession.getAttribute(
 				WebKeys.AUDIT_SESSION_ID);
+			userId = (Long)httpSession.getAttribute(WebKeys.USER_ID);
 		}
 
 		String userLogin = StringPool.BLANK;
