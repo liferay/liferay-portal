@@ -284,6 +284,17 @@ public class TestClassGroupFactory {
 
 			return new PluginsGulpSegmentTestClassGroup(batchTestClassGroup);
 		}
+		else if (batchTestClassGroup instanceof
+					WorkspacesCompileBatchTestClassGroup) {
+
+			if (jsonObject != null) {
+				return new WorkspacesCompileSegmentTestClassGroup(
+					batchTestClassGroup, jsonObject);
+			}
+
+			return new WorkspacesCompileSegmentTestClassGroup(
+				batchTestClassGroup);
+		}
 
 		if (jsonObject != null) {
 			return new SegmentTestClassGroup(batchTestClassGroup, jsonObject);
