@@ -6096,13 +6096,9 @@ public class ObjectEntryLocalServiceImpl
 			}
 
 			if (columnName.endsWith(StringPool.UNDERLINE)) {
-				String[] parts = StringUtil.split(
-					columnName, StringPool.UNDERLINE);
+				String[] parts = _splitColumnName(columnName);
 
-				if ((parts.length == 2) &&
-					(Objects.equals(parts[0], "classNameId") ||
-					 Objects.equals(parts[0], "classPK"))) {
-
+				if (parts != null) {
 					_putValue(
 						javaTypeClass, parts[0], object,
 						(Map<String, Serializable>)values.computeIfAbsent(
@@ -6959,21 +6955,15 @@ public class ObjectEntryLocalServiceImpl
 		Class<?> javaTypeClass = column.getJavaType();
 
 		if (columnName.endsWith(StringPool.UNDERLINE)) {
-			if (columnName.startsWith("class")) {
-				String[] parts = StringUtil.split(
-					columnName, StringPool.UNDERLINE);
+			String[] parts = _splitColumnName(columnName);
 
-				if ((parts.length == 2) &&
-					(Objects.equals(parts[0], "classNameId") ||
-					 Objects.equals(parts[0], "classPK"))) {
+			if (parts != null) {
+				_putValue(
+					javaTypeClass, parts[0], object,
+					(Map<String, Serializable>)values.computeIfAbsent(
+						parts[1], key -> new HashMap<>()));
 
-					_putValue(
-						javaTypeClass, parts[0], object,
-						(Map<String, Serializable>)values.computeIfAbsent(
-							parts[1], key -> new HashMap<>()));
-
-					return;
-				}
+				return;
 			}
 
 			columnName = columnName.substring(0, columnName.length() - 1);
@@ -7165,20 +7155,21 @@ public class ObjectEntryLocalServiceImpl
 				columnNames, index, insertedValues, preparedStatement,
 				column.getSQLType(), value);
 		}
-		else if (objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
-
+		else if (objectField.hasMultipleDBColumns()) {
 			String columnName = StringUtil.extractFirst(
 				column.getName(), StringPool.UNDERLINE);
 
 			columnNames.set(index - 1, columnName);
+
+			Map<String, Serializable> valueMap =
+				(Map<String, Serializable>)value;
 
 			_setColumn(
 				columnNames, index,
 				(Map<String, Serializable>)insertedValues.computeIfAbsent(
 					objectField.getName(), key -> new HashMap<>()),
 				preparedStatement, column.getSQLType(),
-				MapUtil.getLong((Map<String, Serializable>)value, columnName));
+				valueMap.get(columnName));
 		}
 		else if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED)) {
@@ -7526,6 +7517,23 @@ public class ObjectEntryLocalServiceImpl
 			_classNameLocalService.getClassNameId(
 				objectDefinition.getClassName()),
 			objectEntry.getObjectEntryId());
+	}
+
+	private String[] _splitColumnName(String columnName) {
+		if (columnName.startsWith("address_") ||
+			columnName.startsWith("classNameId_") ||
+			columnName.startsWith("classPK_") ||
+			columnName.startsWith("latitude_") ||
+			columnName.startsWith("longitude_")) {
+
+			String[] parts = StringUtil.split(columnName, StringPool.UNDERLINE);
+
+			if (parts.length == 2) {
+				return parts;
+			}
+		}
+
+		return null;
 	}
 
 	private void _startWorkflowInstance(
@@ -8689,9 +8697,7 @@ public class ObjectEntryLocalServiceImpl
 			throw new ObjectEntryValuesException.Required(
 				objectField.getName());
 		}
-		else if (objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
-
+		else if (objectField.hasMultipleDBColumns()) {
 			if (MapUtil.isEmpty((Map<String, Serializable>)value)) {
 				throw new ObjectEntryValuesException.Required(
 					objectField.getName());
@@ -8826,10 +8832,7 @@ public class ObjectEntryLocalServiceImpl
 			String valueLanguageId)
 		throws PortalException {
 
-		if (StringUtil.equals(
-				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
-
+		if (objectField.hasMultipleDBColumns()) {
 			return;
 		}
 		else if (StringUtil.equals(
