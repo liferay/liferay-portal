@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -507,6 +508,14 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<String, Serializable> getValues(
+			ObjectEntry objectEntry,
+			Map<String, Object> dynamicObjectDefinitionTableValues,
+			Consumer<Map<String, Object>>
+				dynamicObjectDefinitionTableValuesConsumer)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Map<String, Serializable>> getValuesList(
 			long groupId, long companyId, long userId, long objectDefinitionId,
 			Predicate predicate, String search, int start, int end,
@@ -627,4 +636,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1015651931
+// LIFERAY-SERVICE-BUILDER-HASH:414147554

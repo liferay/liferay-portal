@@ -10,8 +10,10 @@ import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryModel;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
@@ -28,6 +30,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -1009,6 +1013,14 @@ public class ObjectEntryModelImpl
 		_statusDate = statusDate;
 	}
 
+	public Map<String, Object> getDynamicObjectDefinitionTableValues() {
+		return null;
+	}
+
+	public void setDynamicObjectDefinitionTableValues(
+		Map<String, Object> dynamicObjectDefinitionTableValues) {
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1275,6 +1287,24 @@ public class ObjectEntryModelImpl
 	}
 
 	@Override
+	public void copyCacheFields(ObjectEntry source) {
+		if (getMvccVersion() != source.getMvccVersion()) {
+			return;
+		}
+
+		try {
+			_dynamicObjectDefinitionTableValuesSetterMethodHandle.invokeExact(
+				(ObjectEntryImpl)this,
+				(Map<String, Object>)
+					_dynamicObjectDefinitionTableValuesGetterMethodHandle.
+						invokeExact((ObjectEntryImpl)source));
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+	}
+
+	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
 			return true;
@@ -1470,6 +1500,16 @@ public class ObjectEntryModelImpl
 		}
 		else {
 			objectEntryCacheModel.statusDate = Long.MIN_VALUE;
+		}
+
+		try {
+			objectEntryCacheModel.dynamicObjectDefinitionTableValues =
+				(Map<String, Object>)
+					_dynamicObjectDefinitionTableValuesGetterMethodHandle.
+						invokeExact((ObjectEntryImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
 		}
 
 		return objectEntryCacheModel;
@@ -1693,7 +1733,48 @@ public class ObjectEntryModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected static final BiConsumer<ObjectEntry, Map<String, Object>>
+		dynamicObjectDefinitionTableValuesUpdateEntityCacheBiConsumer =
+			(objectEntry, dynamicObjectDefinitionTableValues) -> {
+				ObjectEntryCacheModel objectEntryCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						ObjectEntryImpl.class, objectEntry.getPrimaryKey(),
+						ObjectEntryCacheModel.class);
+
+				if ((objectEntryCacheModel != null) &&
+					(objectEntryCacheModel.getMvccVersion() ==
+						objectEntry.getMvccVersion())) {
+
+					objectEntryCacheModel.dynamicObjectDefinitionTableValues =
+						dynamicObjectDefinitionTableValues;
+				}
+			};
+
+	private static final MethodHandle
+		_dynamicObjectDefinitionTableValuesGetterMethodHandle;
+	private static final MethodHandle
+		_dynamicObjectDefinitionTableValuesSetterMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_dynamicObjectDefinitionTableValuesGetterMethodHandle =
+				lookup.findGetter(
+					ObjectEntryImpl.class,
+					"_dynamicObjectDefinitionTableValues", Map.class);
+			_dynamicObjectDefinitionTableValuesSetterMethodHandle =
+				lookup.findSetter(
+					ObjectEntryImpl.class,
+					"_dynamicObjectDefinitionTableValues", Map.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private ObjectEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1138446778
+// LIFERAY-SERVICE-BUILDER-HASH:60534783

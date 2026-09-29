@@ -789,6 +789,19 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.Map<String, java.io.Serializable> getValues(
+			com.liferay.object.model.ObjectEntry objectEntry,
+			java.util.Map<String, Object> dynamicObjectDefinitionTableValues,
+			java.util.function.Consumer<java.util.Map<String, Object>>
+				dynamicObjectDefinitionTableValuesConsumer)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryLocalService.getValues(
+			objectEntry, dynamicObjectDefinitionTableValues,
+			dynamicObjectDefinitionTableValuesConsumer);
+	}
+
+	@Override
 	public java.util.List<java.util.Map<String, java.io.Serializable>>
 			getValuesList(
 				long groupId, long companyId, long userId,
@@ -1050,4 +1063,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2032867308
+// LIFERAY-SERVICE-BUILDER-HASH:225887381

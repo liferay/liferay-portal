@@ -7,6 +7,7 @@ package com.liferay.object.model.impl;
 
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -16,7 +17,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+
 import java.util.Date;
+import java.util.Map;
 
 /**
  * The cache model class for representing ObjectEntry in entity cache.
@@ -239,11 +244,21 @@ public class ObjectEntryCacheModel
 
 		objectEntryImpl.resetOriginalValues();
 
+		try {
+			_dynamicObjectDefinitionTableValuesMethodHandle.invokeExact(
+				objectEntryImpl, dynamicObjectDefinitionTableValues);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return objectEntryImpl;
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
 		externalReferenceCode = objectInput.readUTF();
@@ -280,6 +295,8 @@ public class ObjectEntryCacheModel
 		statusByUserId = objectInput.readLong();
 		statusByUserName = objectInput.readUTF();
 		statusDate = objectInput.readLong();
+
+		dynamicObjectDefinitionTableValues = (Map)objectInput.readObject();
 	}
 
 	@Override
@@ -359,6 +376,8 @@ public class ObjectEntryCacheModel
 		}
 
 		objectOutput.writeLong(statusDate);
+
+		objectOutput.writeObject(dynamicObjectDefinitionTableValues);
 	}
 
 	public long mvccVersion;
@@ -386,6 +405,23 @@ public class ObjectEntryCacheModel
 	public long statusByUserId;
 	public String statusByUserName;
 	public long statusDate;
+	public volatile Map dynamicObjectDefinitionTableValues;
+
+	private static final MethodHandle
+		_dynamicObjectDefinitionTableValuesMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_dynamicObjectDefinitionTableValuesMethodHandle = lookup.findSetter(
+				ObjectEntryImpl.class, "_dynamicObjectDefinitionTableValues",
+				Map.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1715185352
+// LIFERAY-SERVICE-BUILDER-HASH:216255637
