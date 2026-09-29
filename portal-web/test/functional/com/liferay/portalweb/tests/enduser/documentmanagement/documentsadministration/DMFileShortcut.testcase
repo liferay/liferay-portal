@@ -26,7 +26,7 @@ definition {
 
 			DMFolder.tearDownCP();
 
-			User.logoutPG();
+			JSONGroup.deleteGroupByName(groupName = "Site Name");
 		}
 	}
 

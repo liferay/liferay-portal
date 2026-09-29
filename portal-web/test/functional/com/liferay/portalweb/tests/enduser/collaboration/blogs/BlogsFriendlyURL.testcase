@@ -30,7 +30,7 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
-			User.logoutPG();
+			JSONGroup.deleteGroupByName(groupName = "Site Name");
 		}
 	}
 
