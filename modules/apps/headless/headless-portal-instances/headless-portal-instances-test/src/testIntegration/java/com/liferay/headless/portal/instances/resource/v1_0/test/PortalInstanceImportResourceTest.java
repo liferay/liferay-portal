@@ -209,10 +209,12 @@ public class PortalInstanceImportResourceTest
 
 	private void _testPostPortalInstanceImportBatch() throws Exception {
 		long companyId1 = _exportCompany();
-		long companyId2 = _exportCompany();
 
 		PortalInstanceImport portalInstanceImport1 =
 			_randomPortalInstanceImport(companyId1);
+
+		long companyId2 = _exportCompany();
+
 		PortalInstanceImport portalInstanceImport2 =
 			_randomPortalInstanceImport(companyId2);
 
