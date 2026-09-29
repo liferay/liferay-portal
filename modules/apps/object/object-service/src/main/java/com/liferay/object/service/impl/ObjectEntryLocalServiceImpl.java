@@ -369,7 +369,7 @@ public class ObjectEntryLocalServiceImpl
 			if (objectField.isLocalized()) {
 				Map<String, Object> localizedValues =
 					objectFieldBusinessType.getLocalizedValues(
-						objectField, userId, new HashMap<>(values));
+						groupId, objectField, userId, new HashMap<>(values));
 
 				if (localizedValues != null) {
 					values.put(

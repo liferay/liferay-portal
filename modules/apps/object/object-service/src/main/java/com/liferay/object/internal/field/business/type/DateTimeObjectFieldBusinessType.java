@@ -135,7 +135,7 @@ public class DateTimeObjectFieldBusinessType
 
 		if (objectField.isLocalized()) {
 			Map<String, Object> localizedValues = super.getLocalizedValues(
-				objectField, userId, values);
+				null, objectField, userId, values);
 
 			if (localizedValues == null) {
 				return null;
@@ -176,11 +176,12 @@ public class DateTimeObjectFieldBusinessType
 
 	@Override
 	public Map<String, Object> getLocalizedValues(
-			ObjectField objectField, Long userId, Map<String, Object> values)
+			Long groupId, ObjectField objectField, Long userId,
+			Map<String, Object> values)
 		throws PortalException {
 
 		Map<String, Object> localizedValues = super.getLocalizedValues(
-			objectField, userId, values);
+			groupId, objectField, userId, values);
 
 		if (localizedValues == null) {
 			return null;

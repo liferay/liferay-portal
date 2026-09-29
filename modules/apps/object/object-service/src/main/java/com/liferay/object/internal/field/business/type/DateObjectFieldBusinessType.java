@@ -101,7 +101,7 @@ public class DateObjectFieldBusinessType extends BaseObjectFieldBusinessType {
 
 		if (objectField.isLocalized()) {
 			Map<String, Object> localizedValues = super.getLocalizedValues(
-				objectField, userId, values);
+				null, objectField, userId, values);
 
 			if (localizedValues == null) {
 				return null;

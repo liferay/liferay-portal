@@ -3976,7 +3976,8 @@ public class DefaultObjectEntryManagerImpl
 
 				Map<String, Object> localizedValues =
 					objectFieldBusinessType.getLocalizedValues(
-						objectField, serviceContext.getUserId(), properties);
+						getGroupId(objectDefinition, scopeKey), objectField,
+						serviceContext.getUserId(), properties);
 
 				if (localizedValues != null) {
 					values.put(
