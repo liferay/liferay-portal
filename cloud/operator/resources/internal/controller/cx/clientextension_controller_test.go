@@ -99,16 +99,16 @@ func TestReconcileRequiresConsentAcrossNamespaces(t *testing.T) {
 			wantReason: ReasonNamespaceNotPermitted,
 			wantStatus: metav1.ConditionFalse,
 		},
+		"no dxpNamespace needs no consent": {
+			wantPhase:  cxv1alpha1.PhasePending,
+			wantReason: ReasonNamespacePermitted,
+			wantStatus: metav1.ConditionUnknown,
+		},
 		"the DXP namespace itself needs no consent": {
 			dxpNamespace: "able",
 			wantPhase:    cxv1alpha1.PhasePending,
 			wantReason:   ReasonNamespacePermitted,
 			wantStatus:   metav1.ConditionUnknown,
-		},
-		"no dxpNamespace needs no consent": {
-			wantPhase:  cxv1alpha1.PhasePending,
-			wantReason: ReasonNamespacePermitted,
-			wantStatus: metav1.ConditionUnknown,
 		},
 	}
 
@@ -175,12 +175,12 @@ func TestReconcileRetriesWhenTheDxpNamespaceIsUnreadable(t *testing.T) {
 		t, clientExtension,
 	)
 
-	_, error := clientExtensionReconciler.Reconcile(
+	_, reconcileError := clientExtensionReconciler.Reconcile(
 		context.Background(),
 		controllerruntime.Request{NamespacedName: client.ObjectKeyFromObject(clientExtension)},
 	)
 
-	if error == nil {
+	if reconcileError == nil {
 		t.Fatal("Reconcile() error = nil, want the error so the request is retried")
 	}
 

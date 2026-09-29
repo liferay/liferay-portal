@@ -181,16 +181,16 @@ func (clientExtensionReconciler *ClientExtensionReconciler) resolveDxpNamespace(
 
 	var namespace corev1.Namespace
 
-	error := clientExtensionReconciler.Get(
+	getError := clientExtensionReconciler.Get(
 		context, types.NamespacedName{Name: dxpNamespace}, &namespace,
 	)
 
-	if apierrors.IsNotFound(error) {
+	if apierrors.IsNotFound(getError) {
 		return dxpNamespace, ReasonDxpNamespaceNotFound, nil
 	}
 
-	if error != nil {
-		return "", "", error
+	if getError != nil {
+		return "", "", getError
 	}
 
 	if !slices.Contains(PermittedNamespaces(&namespace), clientExtension.Namespace) {
