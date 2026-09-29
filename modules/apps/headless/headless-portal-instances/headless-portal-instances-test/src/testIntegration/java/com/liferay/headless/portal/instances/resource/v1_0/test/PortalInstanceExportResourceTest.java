@@ -344,10 +344,12 @@ public class PortalInstanceExportResourceTest
 
 			List<String> configurationIds1 = _getExportedConfigurationIds(
 				_company.getCompanyId());
+
+			Assert.assertFalse(configurationIds1.isEmpty());
+
 			List<String> configurationIds2 = _getExportedConfigurationIds(
 				company.getCompanyId());
 
-			Assert.assertFalse(configurationIds1.isEmpty());
 			Assert.assertFalse(configurationIds2.isEmpty());
 		}
 		finally {
