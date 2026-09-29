@@ -47,9 +47,9 @@ public class CompanyKeyCacheEntryTest {
 		Assert.assertArrayEquals(
 			_KEY_BYTES, companyKeyCacheEntry.getKeyBytes());
 
-		byte[] returnedKeyBytes = companyKeyCacheEntry.getKeyBytes();
+		keyBytes = companyKeyCacheEntry.getKeyBytes();
 
-		returnedKeyBytes[0]++;
+		keyBytes[0]++;
 
 		Assert.assertArrayEquals(
 			_KEY_BYTES, companyKeyCacheEntry.getKeyBytes());
