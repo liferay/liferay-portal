@@ -104,6 +104,16 @@ public class VirtualHostFilterTest {
 	}
 
 	@Test
+	public void testProcessFilterDoesNotForwardReservedPathAfterVirtualLayoutSeparator() {
+		Assert.assertNull(_getForwardedURL("/~/c/portal/login"));
+		Assert.assertNull(_getForwardedURL("/~/group/site/home"));
+		Assert.assertNull(_getForwardedURL("/~/image/company_logo"));
+		Assert.assertNull(_getForwardedURL("/~/o/headless-delivery/v1.0"));
+		Assert.assertNull(_getForwardedURL("/~/user/name/home"));
+		Assert.assertNull(_getForwardedURL("/~/web/site/home"));
+	}
+
+	@Test
 	public void testProcessFilterDoesNotSetGroupOnRequestForUnknownPath() {
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -243,6 +253,28 @@ public class VirtualHostFilterTest {
 		catch (PortalException portalException) {
 			throw new RuntimeException(portalException);
 		}
+	}
+
+	@Test
+	public void testProcessFilterForwardedURLWithVirtualLayoutSeparator()
+		throws Exception {
+
+		String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
+
+		Assert.assertEquals(
+			"/web" + groupFriendlyURL + "/~/design-library/home",
+			_getForwardedURL("/~/design-library/home"));
+	}
+
+	@Test
+	public void testProcessFilterForwardedURLWithVirtualLayoutSeparatorAndPeriod()
+		throws Exception {
+
+		String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
+
+		Assert.assertEquals(
+			"/web" + groupFriendlyURL + "/~/design-library/home.html",
+			_getForwardedURL("/~/design-library/home.html"));
 	}
 
 	@Test
