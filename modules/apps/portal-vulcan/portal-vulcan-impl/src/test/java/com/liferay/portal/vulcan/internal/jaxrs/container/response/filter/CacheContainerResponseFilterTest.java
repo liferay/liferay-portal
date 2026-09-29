@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
@@ -73,18 +74,6 @@ public class CacheContainerResponseFilterTest {
 		);
 
 		Mockito.when(
-			_uriInfo.getBaseUri()
-		).thenReturn(
-			URI.create("http://localhost/o/test-app/")
-		);
-
-		Mockito.when(
-			_uriInfo.getPath()
-		).thenReturn(
-			"v1.0/test"
-		);
-
-		Mockito.when(
 			_containerResponseContext.getHeaders()
 		).thenReturn(
 			_headers
@@ -94,12 +83,6 @@ public class CacheContainerResponseFilterTest {
 			_containerResponseContext.getStatusInfo()
 		).thenReturn(
 			Response.Status.OK
-		);
-
-		Mockito.when(
-			_user.isGuestUser()
-		).thenReturn(
-			true
 		);
 
 		Mockito.when(
@@ -113,6 +96,24 @@ public class CacheContainerResponseFilterTest {
 			_httpServletRequest.getSession(false)
 		).thenReturn(
 			null
+		);
+
+		Mockito.when(
+			_uriInfo.getBaseUri()
+		).thenReturn(
+			URI.create("http://localhost/o/test-app/")
+		);
+
+		Mockito.when(
+			_uriInfo.getPath()
+		).thenReturn(
+			"v1.0/test"
+		);
+
+		Mockito.when(
+			_user.isGuestUser()
+		).thenReturn(
+			true
 		);
 	}
 
@@ -129,7 +130,7 @@ public class CacheContainerResponseFilterTest {
 	public void testFilterWhenProductionModeIsFalse() throws Exception {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					_STAGING_CT_COLLECTION_ID)) {
+					RandomTestUtil.randomLong())) {
 
 			_cacheContainerResponseFilter.filter(
 				_containerRequestContext, _containerResponseContext);
@@ -138,8 +139,6 @@ public class CacheContainerResponseFilterTest {
 		Assert.assertEquals(
 			"no-cache, no-store", _headers.getFirst("Cache-Control"));
 	}
-
-	private static final long _STAGING_CT_COLLECTION_ID = 1;
 
 	private CacheContainerResponseFilter _cacheContainerResponseFilter;
 
