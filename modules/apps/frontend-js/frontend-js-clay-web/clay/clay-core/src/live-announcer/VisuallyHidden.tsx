@@ -13,7 +13,7 @@ const styles: React.CSSProperties = {
 	margin: '0 -1px -1px 0',
 	overflow: 'hidden',
 	padding: 0,
-	position: 'absolute',
+	position: 'fixed',
 	whiteSpace: 'nowrap',
 	width: '1px',
 };
