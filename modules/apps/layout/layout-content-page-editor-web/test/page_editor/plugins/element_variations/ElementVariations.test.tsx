@@ -62,7 +62,8 @@ const ELEMENT_VARIATIONS = [
 		js: {},
 		name: 'My Variation',
 		segmentsExperienceERC: 'experience-1',
-		targetElement: '.title',
+		targetElement:
+			'.lfr-layout-structure-item-item-1 [data-lfr-editable-id="title-editable"]',
 	},
 ];
 
@@ -144,7 +145,7 @@ describe('ElementVariations', () => {
 		expect(screen.queryByText('missing-audience')).not.toBeInTheDocument();
 		expect(
 			screen.queryByText(
-				'there-are-missing-audiences-for-some-variations'
+				'there-are-missing-audiences-or-page-elements-for-some-variations'
 			)
 		).not.toBeInTheDocument();
 	});
@@ -166,19 +167,41 @@ describe('ElementVariations', () => {
 
 		expect(await screen.findByText('My Variation')).toBeInTheDocument();
 		expect(
-			screen.getByText('there-are-missing-audiences-for-some-variations')
+			screen.getByText(
+				'there-are-missing-audiences-or-page-elements-for-some-variations'
+			)
 		).toBeInTheDocument();
 
 		await userEvent.click(screen.getByText('show-variations'));
 
 		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
 		expect(screen.getByText('Other Variation')).toBeInTheDocument();
-		expect(screen.getByText('none')).toBeInTheDocument();
+		expect(
+			screen.getByText('missing-audience, missing-page-element')
+		).toBeInTheDocument();
 		expect(
 			screen.queryByText(
-				'there-are-missing-audiences-for-some-variations'
+				'there-are-missing-audiences-or-page-elements-for-some-variations'
 			)
 		).not.toBeInTheDocument();
+	});
+
+	it('shows the missing page elements alert when a variation targets a deleted element', async () => {
+		renderElementVariations({
+			elementVariations: [
+				{...ELEMENT_VARIATIONS[0], targetElement: '.deleted'},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+		expect(screen.getByText('missing-page-element')).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'there-are-missing-audiences-or-page-elements-for-some-variations'
+			)
+		).toBeInTheDocument();
 	});
 
 	it('lists the variations without audiences when the site has no audiences left', async () => {
@@ -219,7 +242,7 @@ describe('ElementVariations', () => {
 
 		expect(
 			screen.queryByText(
-				'there-are-missing-audiences-for-some-variations'
+				'there-are-missing-audiences-or-page-elements-for-some-variations'
 			)
 		).not.toBeInTheDocument();
 	});

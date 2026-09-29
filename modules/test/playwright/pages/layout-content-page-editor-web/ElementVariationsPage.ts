@@ -15,9 +15,9 @@ export class ElementVariationsPage {
 	readonly experiencePicker: Locator;
 	readonly hideToggle: Locator;
 	readonly htmlInput: Locator;
+	readonly issuesAlert: Locator;
 	readonly javaScriptInput: Locator;
 	readonly languageSelector: Locator;
-	readonly missingAudiencesAlert: Locator;
 	readonly nameInput: Locator;
 	readonly newVariationButton: Locator;
 	readonly page: Page;
@@ -39,9 +39,9 @@ export class ElementVariationsPage {
 		this.experiencePicker = this.sidebar.getByLabel('Experience');
 		this.hideToggle = page.getByText('Hide Page Element');
 		this.htmlInput = page.getByLabel('HTML', {exact: true});
+		this.issuesAlert = this.sidebar.locator('.alert-warning');
 		this.javaScriptInput = page.getByLabel('JavaScript', {exact: true});
 		this.languageSelector = page.getByLabel('Select a language');
-		this.missingAudiencesAlert = this.sidebar.locator('.alert-warning');
 		this.nameInput = page.getByLabel('Name');
 		this.newVariationButton = page.getByRole('button', {
 			name: 'New Variation',
@@ -110,8 +110,8 @@ export class ElementVariationsPage {
 		await this.sidebar.getByText(name).waitFor();
 	}
 
-	async showMissingAudienceVariations() {
-		await this.missingAudiencesAlert.locator('.alert-footer .btn').click();
+	async showIssueVariations() {
+		await this.issuesAlert.locator('.alert-footer .btn').click();
 	}
 
 	async startElementVariationDraft() {

@@ -895,9 +895,7 @@ test(
 
 		// Every variation has an audience, so there is no warning
 
-		await expect(
-			elementVariationsPage.missingAudiencesAlert
-		).not.toBeVisible();
+		await expect(elementVariationsPage.issuesAlert).not.toBeVisible();
 
 		// Deleting the audience of the first variation warns that a variation
 		// uses it, and cancelling keeps the audience
@@ -938,16 +936,18 @@ test(
 				.getByText('Missing Audience')
 		).not.toBeVisible();
 
-		await expect(elementVariationsPage.missingAudiencesAlert).toContainText(
-			'There are missing audiences for some variations.'
+		await expect(elementVariationsPage.issuesAlert).toContainText(
+			'There are missing audiences or page elements for some variations.'
 		);
 
 		// Show the orphaned variations
 
-		await elementVariationsPage.showMissingAudienceVariations();
+		await elementVariationsPage.showIssueVariations();
 
 		await expect(
-			elementVariationsPage.getAppliedFilter('Audience: None')
+			elementVariationsPage.getAppliedFilter(
+				'Issue: Missing Audience, Missing Page Element'
+			)
 		).toBeVisible();
 
 		await expect(
@@ -958,9 +958,7 @@ test(
 			elementVariationsPage.getVariationListItem(keptVariationName)
 		).not.toBeVisible();
 
-		await expect(
-			elementVariationsPage.missingAudiencesAlert
-		).not.toBeVisible();
+		await expect(elementVariationsPage.issuesAlert).not.toBeVisible();
 
 		await expect(page.getByText('1 Result Found for:')).toBeVisible();
 	}
@@ -1262,8 +1260,8 @@ test(
 				.getByText('Missing Audience')
 		).toBeVisible();
 
-		await expect(elementVariationsPage.missingAudiencesAlert).toContainText(
-			'There are missing audiences for some variations.'
+		await expect(elementVariationsPage.issuesAlert).toContainText(
+			'There are missing audiences or page elements for some variations.'
 		);
 	}
 );
