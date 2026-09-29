@@ -137,25 +137,17 @@ public class CompanyKeyResolverImplTest {
 	private void _assertUnwrapKeyFails(
 		CompanyKeyResolverImpl companyKeyResolverImpl, String keyString) {
 
-		try {
-			companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString);
-
-			Assert.fail();
-		}
-		catch (CompanyKeyException companyKeyException) {
-		}
+		Assert.assertThrows(
+			CompanyKeyException.class,
+			() -> companyKeyResolverImpl.unwrapKey(_COMPANY_ID_1, keyString));
 	}
 
 	private void _assertWrapKeyFails(
 		CompanyKeyResolverImpl companyKeyResolverImpl) {
 
-		try {
-			companyKeyResolverImpl.wrapKey(_COMPANY_ID_1, _key1);
-
-			Assert.fail();
-		}
-		catch (CompanyKeyException companyKeyException) {
-		}
+		Assert.assertThrows(
+			CompanyKeyException.class,
+			() -> companyKeyResolverImpl.wrapKey(_COMPANY_ID_1, _key1));
 	}
 
 	private CompanyKeyCacheEntry _createCompanyKeyCacheEntry(
