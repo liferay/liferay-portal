@@ -18,7 +18,7 @@ export default function SiteSelection({
 	useEffect(() => {
 		getExportPreviewSitesCount(exportPreviewSitesAPIURL).then(
 			(response) => {
-				if (response.error === null) {
+				if (response.data) {
 					setTotalCount(response.data.totalCount);
 				}
 			}
