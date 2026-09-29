@@ -5,7 +5,7 @@
 
 package com.liferay.style.book.web.internal.portlet.action;
 
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -54,7 +54,7 @@ public class UpdateStyleBookEntryPreviewMVCActionCommand
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		FileEntry tempFileEntry = fileEntry;
 
@@ -131,7 +131,7 @@ public class UpdateStyleBookEntryPreviewMVCActionCommand
 		"(bmp|jpeg|jpg|png|tiff)$");
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private Portal _portal;
