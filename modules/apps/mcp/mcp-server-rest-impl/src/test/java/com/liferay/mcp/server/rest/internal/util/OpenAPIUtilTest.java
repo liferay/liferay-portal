@@ -143,10 +143,6 @@ public class OpenAPIUtilTest {
 			JSONUtil.put("sort", "string:asc"), "getItems");
 		_testGetRequest(
 			null, null, "GET",
-			"/v1.0/localized-page?restrictFields=actions%2Cname%2Cname_i18n",
-			JSONFactoryUtil.createJSONObject(), "name", "getLocalizedPage");
-		_testGetRequest(
-			null, null, "GET",
 			"/v1.0/localized?restrictFields=actions%2Cchild.name%2C" +
 				"child.name_i18n",
 			JSONFactoryUtil.createJSONObject(), "child.name", "getLocalized");
@@ -166,6 +162,10 @@ public class OpenAPIUtilTest {
 		_testGetRequest(
 			null, null, "GET", "/v1.0/localized?restrictFields=actions%2Ctitle",
 			JSONFactoryUtil.createJSONObject(), "title", "getLocalized");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/localized-page?restrictFields=actions%2Cname%2Cname_i18n",
+			JSONFactoryUtil.createJSONObject(), "name", "getLocalizedPage");
 		_testGetRequest(
 			JSONUtil.put(
 				"name", "Test"
