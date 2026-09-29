@@ -1860,30 +1860,16 @@ public class ObjectEntryLocalServiceImpl
 
 		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
 
-		List<Object[]> rows = _list(
-			DSLQueryFactoryUtil.select(
-				selectExpressions
-			).from(
-				dynamicObjectDefinitionTable
-			).leftJoinOn(
-				extensionDynamicObjectDefinitionTable,
-				_getExtensionLeftJoinPredicate(
-					dynamicObjectDefinitionTable,
-					extensionDynamicObjectDefinitionTable)
-			).where(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn(
-				).eq(
-					objectEntry.getObjectEntryId()
-				)
-			),
-			objectFieldBag, selectExpressions);
+		Object[] row = _fetchDynamicObjectDefinitionTableRow(
+			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
+			objectFieldBag, objectEntry.getObjectEntryId(), selectExpressions);
 
-		if (ListUtil.isEmpty(rows)) {
+		if (row == null) {
 			return Collections.emptyMap();
 		}
 
 		Map<String, Serializable> values = _getValues(
-			objectFieldBag, rows.get(0), selectExpressions);
+			objectFieldBag, row, selectExpressions);
 
 		_addLocalizedObjectFieldValues(
 			objectEntry.getDefaultLanguageId(),
@@ -4044,6 +4030,38 @@ public class ObjectEntryLocalServiceImpl
 				return payloadJSONObject;
 			},
 			user.getUserId());
+	}
+
+	private Object[] _fetchDynamicObjectDefinitionTableRow(
+			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+			DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable,
+			ObjectFieldBag objectFieldBag, long objectEntryId,
+			Expression<?>[] selectExpressions)
+		throws PortalException {
+
+		List<Object[]> rows = _list(
+			DSLQueryFactoryUtil.select(
+				selectExpressions
+			).from(
+				dynamicObjectDefinitionTable
+			).leftJoinOn(
+				extensionDynamicObjectDefinitionTable,
+				_getExtensionLeftJoinPredicate(
+					dynamicObjectDefinitionTable,
+					extensionDynamicObjectDefinitionTable)
+			).where(
+				dynamicObjectDefinitionTable.getPrimaryKeyColumn(
+				).eq(
+					objectEntryId
+				)
+			),
+			objectFieldBag, selectExpressions);
+
+		if (ListUtil.isEmpty(rows)) {
+			return null;
+		}
+
+		return rows.get(0);
 	}
 
 	private void _fillDefaultValue(
