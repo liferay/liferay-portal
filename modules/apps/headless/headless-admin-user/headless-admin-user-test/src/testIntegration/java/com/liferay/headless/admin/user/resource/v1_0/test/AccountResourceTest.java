@@ -30,6 +30,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.expando.kernel.exception.NoSuchValueException;
 import com.liferay.expando.kernel.model.ExpandoColumn;
@@ -52,6 +53,7 @@ import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
 import com.liferay.headless.admin.user.client.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.admin.user.client.dto.v1_0.TaxonomyCategoryReference;
 import com.liferay.headless.admin.user.client.dto.v1_0.WebUrl;
+import com.liferay.headless.admin.user.client.http.HttpInvoker;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.pagination.Pagination;
 import com.liferay.headless.admin.user.client.permission.Permission;
@@ -105,12 +107,15 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
+
+import jakarta.ws.rs.core.Response;
 
 import java.io.InputStream;
 
@@ -445,6 +450,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		_testPostAccountBatch();
 		_testPostAccountDuplicateExternalReferenceCode();
 		_testPostAccountWithContactInformation();
+		_testPostAccountWithLogo();
 		_testPostAccountWithMoreExternalReferenceCodes();
 		_testPostAccountWithPostalAddressPhoneNumber();
 	}
@@ -836,12 +842,21 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		return _expandoColumnLocalService.updateExpandoColumn(expandoColumn);
 	}
 
-	private FileEntry _addImageFileEntry() throws Exception {
+	private FileEntry _addImageFileEntry(boolean addPermissions)
+		throws Exception {
+
 		Group group = _groupLocalService.getCompanyGroup(
 			_accountGroup.getCompanyId());
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(addPermissions);
+		serviceContext.setAddGuestPermissions(addPermissions);
+
 		LocalRepository localRepository =
-			RepositoryProviderUtil.getLocalRepository(group.getGroupId());
+			RepositoryProviderUtil.getLocalRepository(
+				serviceContext.getScopeGroupId());
 
 		byte[] bytes = FileUtil.getBytes(getClass(), "/images/liferay.png");
 
@@ -853,8 +868,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			StringPool.BLANK, StringPool.BLANK, inputStream, bytes.length, null,
-			null, null,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			null, null, serviceContext);
 	}
 
 	private void _addRoleUsers(
@@ -1744,7 +1758,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		randomPatchAccount.setDefaultShippingAddressId(0L);
 
-		FileEntry fileEntry = _addImageFileEntry();
+		FileEntry fileEntry = _addImageFileEntry(true);
 
 		randomPatchAccount.setLogoExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());
@@ -1942,7 +1956,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		randomPatchAccount.setDefaultShippingAddressId(0L);
 
-		FileEntry fileEntry = _addImageFileEntry();
+		FileEntry fileEntry = _addImageFileEntry(true);
 
 		randomPatchAccount.setLogoExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());
@@ -2640,6 +2654,57 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			postAccount.getAccountContactInformation());
 	}
 
+	private void _testPostAccountWithLogo() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), PortletKeys.PORTAL,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), role.getRoleId(),
+			new String[] {AccountActionKeys.ADD_ACCOUNT_ENTRY});
+
+		User user = _addUser();
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		FileEntry fileEntry = _addImageFileEntry(false);
+
+		Account account = randomAccount();
+
+		account.setLogoExternalReferenceCode(
+			fileEntry.getExternalReferenceCode());
+
+		HttpInvoker.HttpResponse httpResponse =
+			accountResource.postAccountHttpResponse(account);
+
+		Assert.assertEquals(
+			Response.Status.FORBIDDEN.getStatusCode(),
+			httpResponse.getStatusCode());
+
+		account = randomAccount();
+
+		account.setLogoId(fileEntry.getFileEntryId());
+
+		httpResponse = accountResource.postAccountHttpResponse(account);
+
+		Assert.assertEquals(
+			Response.Status.FORBIDDEN.getStatusCode(),
+			httpResponse.getStatusCode());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), DLFileEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(fileEntry.getFileEntryId()), role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		account = accountResource.postAccount(account);
+
+		Assert.assertTrue(account.getLogoId() > 0);
+	}
+
 	private void _testPostAccountWithMoreExternalReferenceCodes()
 		throws Exception {
 
@@ -2664,7 +2729,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		randomAccount.setDefaultShippingAddressId(0L);
 
-		FileEntry fileEntry = _addImageFileEntry();
+		FileEntry fileEntry = _addImageFileEntry(true);
 
 		randomAccount.setLogoExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());
@@ -2888,7 +2953,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		randomPutAccount.setDefaultShippingAddressId(0L);
 
-		FileEntry fileEntry = _addImageFileEntry();
+		FileEntry fileEntry = _addImageFileEntry(true);
 
 		randomPutAccount.setLogoExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());
@@ -3068,7 +3133,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		randomPutAccount.setDefaultShippingAddressId(0L);
 
-		FileEntry fileEntry = _addImageFileEntry();
+		FileEntry fileEntry = _addImageFileEntry(true);
 
 		randomPutAccount.setLogoExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());

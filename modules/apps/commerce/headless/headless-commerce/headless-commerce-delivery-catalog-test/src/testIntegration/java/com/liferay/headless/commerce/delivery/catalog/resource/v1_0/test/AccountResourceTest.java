@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.delivery.catalog.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
@@ -13,22 +14,39 @@ import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelCons
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Account;
+import com.liferay.headless.commerce.delivery.catalog.client.http.HttpInvoker;
 import com.liferay.headless.commerce.delivery.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.delivery.catalog.client.resource.v1_0.AccountResource;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
+
+import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +119,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	public void testPostChannelAccount() throws Exception {
 		super.testPostChannelAccount();
 
+		_testPostChannelAccountWithLogo();
 		_testPostEligibleChannelAccount();
 	}
 
@@ -207,6 +226,65 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 				null));
 	}
 
+	private void _testPostChannelAccountWithLogo() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), PortletKeys.PORTAL,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(testCompany.getCompanyId()), role.getRoleId(),
+			new String[] {AccountActionKeys.ADD_ACCOUNT_ENTRY});
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		AccountResource accountResource = AccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).header(
+			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON
+		).build();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			DLTestUtil.getImageBytes("png"), null, null, null, serviceContext);
+
+		Account account = randomAccount();
+
+		account.setLogoId(fileEntry.getFileEntryId());
+
+		HttpInvoker.HttpResponse httpResponse =
+			accountResource.postChannelAccountHttpResponse(
+				_commerceChannel.getCommerceChannelId(), account);
+
+		Assert.assertEquals(
+			Response.Status.FORBIDDEN.getStatusCode(),
+			httpResponse.getStatusCode());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), DLFileEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(fileEntry.getFileEntryId()), role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		account = accountResource.postChannelAccount(
+			_commerceChannel.getCommerceChannelId(), account);
+
+		Assert.assertTrue(account.getLogoId() > 0);
+	}
+
 	private void _testPostEligibleChannelAccount() throws Exception {
 		_assertProblemException(
 			"NOT_FOUND", null,
@@ -248,9 +326,18 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	private CommerceChannelAccountEntryRelLocalService
 		_commerceChannelAccountEntryRelLocalService;
 
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
 	private ServiceContext _serviceContext;
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
