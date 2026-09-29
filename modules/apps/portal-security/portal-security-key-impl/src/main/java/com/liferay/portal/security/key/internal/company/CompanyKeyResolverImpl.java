@@ -260,14 +260,14 @@ public class CompanyKeyResolverImpl implements CompanyKeyResolver {
 	}
 
 	private String _getCompanyKEKProviderId() {
-		KeyManagerProfile keyManagerProfile =
+		KeyManagerProfile activeKeyManagerProfile =
 			_keyManagerProfileRegistry.getActiveKeyManagerProfile();
 
-		if (keyManagerProfile == null) {
+		if (activeKeyManagerProfile == null) {
 			return null;
 		}
 
-		return keyManagerProfile.getCompanyKEKProviderId();
+		return activeKeyManagerProfile.getCompanyKEKProviderId();
 	}
 
 	private CompanyKeyCacheEntry _getCompanyKeyCacheEntry(
