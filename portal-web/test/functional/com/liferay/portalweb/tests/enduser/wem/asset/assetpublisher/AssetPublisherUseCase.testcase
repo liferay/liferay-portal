@@ -190,6 +190,9 @@ definition {
 				webContentContentEdit = "WC WebContent Content Edit",
 				webContentTitle = "WC WebContent Title",
 				webContentTitleEdit = "WC WebContent Title Edit");
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name");
 		}
 
 		task ("View the edited web content shown in Asset Publisher") {
