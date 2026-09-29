@@ -5,6 +5,7 @@
 
 import {mergeTests, test} from '@playwright/test';
 
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {ConnectorsPage} from '../pages/ConnectorsPage';
@@ -12,7 +13,9 @@ import {EditConnectorPage} from '../pages/EditConnectorPage';
 import {EditFieldMappingsPage} from '../pages/EditFieldMappingsPage';
 import {FieldMappingsPage} from '../pages/FieldMappingsPage';
 import {ProductPage} from '../pages/ProductPage';
+import {ProductStructuresPage} from '../pages/ProductStructuresPage';
 import {ProductsPage} from '../pages/ProductsPage';
+import {SpaceSelectorPage} from '../pages/SpaceSelectorPage';
 
 const pimPages = test.extend<{
 	connectorsPage: ConnectorsPage;
@@ -21,7 +24,9 @@ const pimPages = test.extend<{
 	fieldMappingsPage: FieldMappingsPage;
 	pimSetup;
 	productPage: ProductPage;
+	productStructuresPage: ProductStructuresPage;
 	productsPage: ProductsPage;
+	spaceSelectorPage: SpaceSelectorPage;
 }>({
 	connectorsPage: async ({page}, use) => {
 		await use(new ConnectorsPage(page));
@@ -51,11 +56,23 @@ const pimPages = test.extend<{
 	productPage: async ({page}, use) => {
 		await use(new ProductPage(page));
 	},
+	productStructuresPage: async ({page}, use) => {
+		await use(new ProductStructuresPage(page));
+	},
 	productsPage: async ({page}, use) => {
 		await use(new ProductsPage(page));
 	},
+	spaceSelectorPage: async ({page}, use) => {
+		await use(new SpaceSelectorPage(page));
+	},
 });
 
-const pimPagesTest = mergeTests(loginTest(), pimPages);
+const pimPagesTest = mergeTests(
+	loginTest(),
+	featureFlagsTest({
+		'LPD-96666': {enabled: true},
+	}),
+	pimPages
+);
 
 export {pimPagesTest};

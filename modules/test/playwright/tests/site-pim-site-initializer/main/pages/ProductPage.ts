@@ -56,6 +56,10 @@ export class ProductPage {
 		this.width = getObjectFieldInput('width', page);
 	}
 
+	getField(objectFieldName: string) {
+		return getObjectFieldInput(objectFieldName, this.page);
+	}
+
 	getTab(name: string) {
 		return this.tabs.filter({hasText: name});
 	}

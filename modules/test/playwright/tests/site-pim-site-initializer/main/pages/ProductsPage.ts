@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
@@ -55,8 +55,26 @@ export class ProductsPage {
 		await this.newButton.waitFor({state: 'visible'});
 	}
 
-	async openNewProductEditor(space: string = 'Default') {
-		await this.newButton.click();
+	async openNewProductEditor(space: string = 'Default', type?: string) {
+		if (type) {
+			const menuItem = this.page.getByRole('menuitem', {
+				exact: true,
+				name: type,
+			});
+
+			await expect(async () => {
+				if (!(await menuItem.isVisible())) {
+					await this.newButton.click({timeout: 1000});
+				}
+
+				await expect(menuItem).toBeVisible({timeout: 2000});
+			}).toPass({timeout: 20000});
+
+			await menuItem.click();
+		}
+		else {
+			await this.newButton.click();
+		}
 
 		const shown = await Promise.race([
 			this.generalTab
