@@ -234,7 +234,7 @@ definition {
 				// the file. The download happens outside the page, so
 				// there is no event to wait on. See LPD-104196.
 
-				Pause(value1 = "1000");
+				Pause(value1 = 1000);
 
 				var fileName = TestCase.getDownloadedTempFileName(fileNamePattern = ${fileNamePattern});
 			}
@@ -244,7 +244,6 @@ definition {
 			var tempDir = PropsUtil.get("output.dir.name");
 
 			var tempDirExists = FileUtil.exists(${tempDir});
-
 			var files = FileUtil.listFiles(${tempDir});
 
 			// A missing download folder and an empty one both list as
