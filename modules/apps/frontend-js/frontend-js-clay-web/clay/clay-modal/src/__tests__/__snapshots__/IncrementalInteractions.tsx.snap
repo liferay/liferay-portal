@@ -2,7 +2,7 @@
 
 exports[`ModalProvider -> IncrementalInteractions renders a modal closed when dispatching Close by provider 1`] = `
 <body
-  class="modal-open"
+  class=""
 >
   <div>
     <button

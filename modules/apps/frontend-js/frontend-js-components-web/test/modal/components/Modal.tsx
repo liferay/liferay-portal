@@ -76,6 +76,33 @@ describe('Modal', () => {
 		expect(onCloseCallback).toBeCalled();
 	});
 
+	it('keeps modal-open on the body when one of two open modals closes', () => {
+		render(
+			<>
+				<Modal buttons={[{id: 'firstCancel', type: 'cancel'}]} />
+				<Modal buttons={[{id: 'secondCancel', type: 'cancel'}]} />
+			</>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(document.body).toHaveClass('modal-open');
+
+		fireEvent.click(
+			document.getElementById('secondCancel') as HTMLButtonElement
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(document.body).toHaveClass('modal-open');
+		expect(document.getElementById('firstCancel')).toBeInTheDocument();
+		expect(document.getElementById('secondCancel')).not.toBeInTheDocument();
+	});
+
 	// We are skipping this test because Jest does not support
 	// document.createRange, but will support it in a future version. See more:
 	//
