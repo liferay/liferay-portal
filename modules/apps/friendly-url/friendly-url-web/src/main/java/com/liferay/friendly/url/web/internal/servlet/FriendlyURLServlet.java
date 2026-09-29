@@ -77,14 +77,13 @@ public class FriendlyURLServlet extends HttpServlet {
 		try {
 			String className = _getClassName(httpServletRequest);
 			long classPK = _getClassPK(httpServletRequest);
+			FriendlyURLEntry friendlyURLEntry =
+				_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+					_getEntryId(httpServletRequest));
 
 			InfoItemPermissionProvider infoItemPermissionProvider =
 				_infoItemServiceRegistry.getFirstInfoItemService(
 					InfoItemPermissionProvider.class, className);
-
-			FriendlyURLEntry friendlyURLEntry =
-				_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-					_getEntryId(httpServletRequest));
 
 			if (!infoItemPermissionProvider.hasPermission(
 					_permissionCheckerFactory.create(
@@ -165,14 +164,13 @@ public class FriendlyURLServlet extends HttpServlet {
 		try {
 			String className = _getClassName(httpServletRequest);
 			long classPK = _getClassPK(httpServletRequest);
+			FriendlyURLEntry friendlyURLEntry =
+				_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+					_getEntryId(httpServletRequest));
 
 			InfoItemPermissionProvider<Object> infoItemPermissionProvider =
 				_infoItemServiceRegistry.getFirstInfoItemService(
 					InfoItemPermissionProvider.class, className);
-
-			FriendlyURLEntry friendlyURLEntry =
-				_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-					_getEntryId(httpServletRequest));
 
 			if (!infoItemPermissionProvider.hasPermission(
 					_permissionCheckerFactory.create(
