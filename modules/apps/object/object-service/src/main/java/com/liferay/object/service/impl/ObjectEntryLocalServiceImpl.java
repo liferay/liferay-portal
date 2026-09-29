@@ -6245,12 +6245,14 @@ public class ObjectEntryLocalServiceImpl
 		sb.append(", languageId");
 
 		for (ObjectField objectField : objectFields) {
-			columnNames.add(objectField.getDBColumnName());
+			for (String dbColumnName : objectField.getDBColumnNames()) {
+				columnNames.add(dbColumnName);
 
-			count++;
+				count++;
 
-			sb.append(", ");
-			sb.append(objectField.getDBColumnName());
+				sb.append(", ");
+				sb.append(dbColumnName);
+			}
 		}
 
 		Set<Locale> locales = _getLocales(
@@ -6294,10 +6296,6 @@ public class ObjectEntryLocalServiceImpl
 					Types.VARCHAR, languageId);
 
 				for (ObjectField objectField : objectFields) {
-					Column<?, ?> column =
-						dynamicObjectDefinitionLocalizationTable.getColumn(
-							objectField.getDBColumnName());
-
 					Map<String, Serializable> insertedLocalizedValue =
 						new HashMap<>(1);
 
@@ -6318,18 +6316,21 @@ public class ObjectEntryLocalServiceImpl
 							localizedValue, StringPool.BLANK);
 					}
 
-					_setColumn(
-						column, columnNames, index++, insertedLocalizedValue,
-						objectField, preparedStatement, localizedValue);
+					for (String dbColumnName : objectField.getDBColumnNames()) {
+						_setColumn(
+							dynamicObjectDefinitionLocalizationTable.getColumn(
+								dbColumnName),
+							columnNames, index++, insertedLocalizedValue,
+							objectField, preparedStatement, localizedValue);
+					}
 
 					Map<String, Serializable> localizedValues =
 						(Map<String, Serializable>)insertedValues.getOrDefault(
-							column.getName() + "i18n", new HashMap<>());
+							objectField.getI18nObjectFieldName(),
+							new HashMap<>());
 
 					Serializable insertedLocalizedSerializable =
-						insertedLocalizedValue.get(
-							StringUtil.removeLast(
-								column.getName(), StringPool.UNDERLINE));
+						insertedLocalizedValue.get(objectField.getName());
 
 					if ((insertedLocalizedSerializable instanceof Long) ||
 						Validator.isNotNull(insertedLocalizedSerializable)) {
@@ -6339,8 +6340,8 @@ public class ObjectEntryLocalServiceImpl
 					}
 
 					_putLocalizedValues(
-						column.getName(), defaultLanguageId, localizedValues,
-						insertedValues);
+						objectField.getDBColumnName(), defaultLanguageId,
+						localizedValues, insertedValues);
 				}
 
 				preparedStatement.addBatch();
@@ -6918,6 +6919,35 @@ public class ObjectEntryLocalServiceImpl
 		String columnName, String defaultLanguageId,
 		Map<String, Serializable> localizedValues,
 		Map<String, Serializable> values) {
+
+		String[] parts = _splitColumnName(columnName);
+
+		if (parts != null) {
+			Map<String, Serializable> i18nValues =
+				(Map<String, Serializable>)values.computeIfAbsent(
+					parts[1] + "_i18n", key -> new HashMap<>());
+
+			for (Map.Entry<String, Serializable> entry :
+					localizedValues.entrySet()) {
+
+				Map<String, Serializable> valueMap =
+					(Map<String, Serializable>)i18nValues.computeIfAbsent(
+						entry.getKey(), key -> new HashMap<>());
+
+				valueMap.put(parts[0], entry.getValue());
+			}
+
+			Map<String, Serializable> valueMap =
+				(Map<String, Serializable>)values.computeIfAbsent(
+					parts[1], key -> new HashMap<>());
+
+			valueMap.put(
+				parts[0],
+				localizedValues.getOrDefault(
+					defaultLanguageId, StringPool.BLANK));
+
+			return;
+		}
 
 		values.put(columnName + "i18n", (Serializable)localizedValues);
 		values.put(

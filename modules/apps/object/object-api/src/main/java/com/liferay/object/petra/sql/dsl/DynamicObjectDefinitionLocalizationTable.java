@@ -45,13 +45,15 @@ public class DynamicObjectDefinitionLocalizationTable
 			"languageId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 		for (ObjectField objectField : objectFields) {
-			createColumn(
-				objectField.getDBColumnName(),
-				DynamicObjectDefinitionTableUtil.getJavaClass(
-					objectField.getDBType()),
-				DynamicObjectDefinitionTableUtil.getSQLType(
-					objectField.getDBType()),
-				Column.FLAG_DEFAULT);
+			for (String dbColumnName : objectField.getDBColumnNames()) {
+				createColumn(
+					dbColumnName,
+					DynamicObjectDefinitionTableUtil.getJavaClass(
+						objectField.getDBType()),
+					DynamicObjectDefinitionTableUtil.getSQLType(
+						objectField.getDBType()),
+					Column.FLAG_DEFAULT);
+			}
 		}
 
 		_objectFieldColumns = ListUtil.filter(
@@ -89,12 +91,15 @@ public class DynamicObjectDefinitionLocalizationTable
 		sb.append(" LONG not null, languageId VARCHAR(75) not null");
 
 		for (ObjectField objectField : _objectFields) {
-			sb.append(", ");
-			sb.append(objectField.getDBColumnName());
-			sb.append(" ");
-			sb.append(
-				DynamicObjectDefinitionTableUtil.getDataType(
-					objectField.getBusinessType(), objectField.getDBType()));
+			for (String dbColumnName : objectField.getDBColumnNames()) {
+				sb.append(", ");
+				sb.append(dbColumnName);
+				sb.append(" ");
+				sb.append(
+					DynamicObjectDefinitionTableUtil.getDataType(
+						objectField.getBusinessType(),
+						objectField.getDBType()));
+			}
 		}
 
 		sb.append(", primary key (");

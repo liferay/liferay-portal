@@ -1202,15 +1202,17 @@ public class ObjectEntryDTOConverter
 						dtoConverterContext, objectEntry.getGroupId(),
 						objectField_i18n);
 
-					if (Objects.equals(
+					if (!objectField.compareBusinessType(
+							ObjectFieldConstants.BUSINESS_TYPE_LOCATION) &&
+						(Objects.equals(
 							objectField.getDBType(),
 							ObjectFieldConstants.DB_TYPE_BLOB) ||
-						Objects.equals(
-							objectField.getDBType(),
-							ObjectFieldConstants.DB_TYPE_CLOB) ||
-						Objects.equals(
-							objectField.getDBType(),
-							ObjectFieldConstants.DB_TYPE_STRING)) {
+						 Objects.equals(
+							 objectField.getDBType(),
+							 ObjectFieldConstants.DB_TYPE_CLOB) ||
+						 Objects.equals(
+							 objectField.getDBType(),
+							 ObjectFieldConstants.DB_TYPE_STRING))) {
 
 						serializable = GetterUtil.getString(serializable);
 					}

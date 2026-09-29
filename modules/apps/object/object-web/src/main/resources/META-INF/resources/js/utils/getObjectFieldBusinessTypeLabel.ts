@@ -16,6 +16,7 @@ const objectFieldBusinessTypeLabels = {
 	Encrypted: Liferay.Language.get('encrypted'),
 	Formula: Liferay.Language.get('formula'),
 	Integer: Liferay.Language.get('integer'),
+	Location: Liferay.Language.get('location'),
 	LongInteger: Liferay.Language.get('long-integer'),
 	LongText: Liferay.Language.get('long-text'),
 	MultiselectPicklist: Liferay.Language.get('multiselect-picklist'),

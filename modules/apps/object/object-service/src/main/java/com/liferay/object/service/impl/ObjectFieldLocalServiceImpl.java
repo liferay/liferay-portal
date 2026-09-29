@@ -1444,9 +1444,11 @@ public class ObjectFieldLocalServiceImpl
 		}
 
 		if (objectField.isLocalized()) {
-			_alterTableDropColumn(
-				objectDefinition.getLocalizationDBTableName(),
-				objectField.getDBColumnName());
+			for (String dbColumnName : objectField.getDBColumnNames()) {
+				_alterTableDropColumn(
+					objectDefinition.getLocalizationDBTableName(),
+					dbColumnName);
+			}
 
 			return objectField;
 		}
