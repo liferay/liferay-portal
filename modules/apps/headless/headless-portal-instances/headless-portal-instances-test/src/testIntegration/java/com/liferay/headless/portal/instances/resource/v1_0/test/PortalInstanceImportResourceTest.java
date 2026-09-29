@@ -131,12 +131,9 @@ public class PortalInstanceImportResourceTest
 
 		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
 
-		try {
-			_companyLocalService.deleteCompany(companyId);
-		}
-		finally {
-			PrincipalThreadLocal.setName(name);
-		}
+		_companyLocalService.deleteCompany(companyId);
+
+		PrincipalThreadLocal.setName(name);
 	}
 
 	private void _deleteCompanyByVirtualHost(String virtualHost)
