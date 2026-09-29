@@ -21,8 +21,9 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUt
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
@@ -237,16 +238,22 @@ public class AssetDisplayPageUtil {
 	}
 
 	private static long[] _getConnectedDesignLibraryGroupIds(long groupId) {
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+		if (group == null) {
+			return new long[0];
+		}
+
 		try {
 			return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-				CompanyThreadLocal.getCompanyId(), groupId);
+				group.getCompanyId(), groupId);
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(portalException);
 			}
 
-			return GetterUtil.DEFAULT_LONG_VALUES;
+			return new long[0];
 		}
 	}
 
