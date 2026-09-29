@@ -79,10 +79,12 @@ public class OAuthClientEntryUpgradeProcessTest {
 			db.runSQLTemplate(
 				"alter table OAuthClientEntry add parametersJSON TEXT null;",
 				true);
+
 			db.runSQLTemplate(
 				"update OAuthClientEntry set parametersJSON = " +
 					"authRequestParametersJSON;",
 				true);
+
 			db.runSQLTemplate(
 				"alter table OAuthClientEntry drop column " +
 					"authRequestParametersJSON;",
@@ -108,16 +110,16 @@ public class OAuthClientEntryUpgradeProcessTest {
 						"OAuthClientEntry", "parametersJSON")) {
 
 					db.runSQLTemplate(
-						"alter table OAuthClientEntry drop column " +
-							"parametersJSON;",
-						true);
-					db.runSQLTemplate(
 						"alter table OAuthClientEntry add " +
 							"authRequestParametersJSON VARCHAR(3999) null;",
 						true);
 					db.runSQLTemplate(
 						"alter table OAuthClientEntry add " +
 							"tokenRequestParametersJSON VARCHAR(3999) null;",
+						true);
+					db.runSQLTemplate(
+						"alter table OAuthClientEntry drop column " +
+							"parametersJSON;",
 						true);
 					db.runSQLTemplate(
 						"alter_column_type OAuthClientEntry clientId " +
@@ -156,11 +158,11 @@ public class OAuthClientEntryUpgradeProcessTest {
 		try (Connection connection = DataAccess.getConnection()) {
 			DBInspector dbInspector = new DBInspector(connection);
 
+			Assert.assertFalse(
+				dbInspector.hasColumn("OAuthClientEntry", "parametersJSON"));
 			Assert.assertTrue(
 				dbInspector.hasColumnType(
 					"OAuthClientEntry", "clientId", "VARCHAR(256) null"));
-			Assert.assertFalse(
-				dbInspector.hasColumn("OAuthClientEntry", "parametersJSON"));
 		}
 
 		OAuthClientEntry oAuthClientEntry =
