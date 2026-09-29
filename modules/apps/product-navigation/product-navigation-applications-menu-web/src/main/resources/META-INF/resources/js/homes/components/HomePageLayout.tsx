@@ -53,7 +53,7 @@ const HomePageLayout = ({
 							<ClaySticker
 								borderless
 								displayType="outline"
-								size="xl"
+								size="xxl"
 							>
 								<ClaySticker.Image alt="" src={icon} />
 							</ClaySticker>

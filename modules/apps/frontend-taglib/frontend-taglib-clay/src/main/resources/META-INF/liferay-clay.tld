@@ -1983,6 +1983,12 @@
 		</attribute>
 		<attribute>
 			<description></description>
+			<name>cardType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>cssClass</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

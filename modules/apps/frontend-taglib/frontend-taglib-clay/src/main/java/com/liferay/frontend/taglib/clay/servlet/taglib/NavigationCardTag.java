@@ -39,19 +39,11 @@ public class NavigationCardTag extends BaseCardTag {
 	}
 
 	public String getCardType() {
-		NavigationCard navigationCard = getNavigationCard();
-
-		if (navigationCard == null) {
-			return "template";
+		if (_isCardTypeSet()) {
+			return _getCardType();
 		}
 
-		String cardType = navigationCard.getCardType();
-
-		if (Validator.isNull(cardType)) {
-			return "template";
-		}
-
-		return cardType;
+		return "template";
 	}
 
 	public String getDescription() {
@@ -140,6 +132,11 @@ public class NavigationCardTag extends BaseCardTag {
 		return small;
 	}
 
+	public void setCardType(String cardType) {
+		_cardType = cardType;
+		_cardTypeSet = true;
+	}
+
 	public void setDescription(String description) {
 		_description = description;
 	}
@@ -168,6 +165,8 @@ public class NavigationCardTag extends BaseCardTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_cardType = null;
+		_cardTypeSet = false;
 		_description = null;
 		_imageAlt = null;
 		_imageSrc = null;
@@ -182,7 +181,10 @@ public class NavigationCardTag extends BaseCardTag {
 
 	@Override
 	protected Map<String, Object> prepareProps(Map<String, Object> props) {
-		props.put("cardType", getCardType());
+		if (_isCardTypeSet()) {
+			props.put("cardType", _getCardType());
+		}
+
 		props.put("description", getDescription());
 		props.put("horizontal", isSmall());
 		props.put("imageAlt", getImageAlt());
@@ -325,6 +327,34 @@ public class NavigationCardTag extends BaseCardTag {
 		return SKIP_BODY;
 	}
 
+	private String _getCardType() {
+		if (_cardTypeSet) {
+			return _cardType;
+		}
+
+		NavigationCard navigationCard = getNavigationCard();
+
+		if (navigationCard == null) {
+			return null;
+		}
+
+		String cardType = navigationCard.getCardType();
+
+		if (Validator.isNull(cardType)) {
+			return null;
+		}
+
+		return cardType;
+	}
+
+	private boolean _isCardTypeSet() {
+		if (_cardTypeSet || (_getCardType() != null)) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _writeDescription(
 			JspWriter jspWriter, String displayType, String description)
 		throws Exception {
@@ -341,6 +371,8 @@ public class NavigationCardTag extends BaseCardTag {
 
 	private static final String _ATTRIBUTE_NAMESPACE = "clay:navigation-card:";
 
+	private String _cardType;
+	private boolean _cardTypeSet;
 	private String _description;
 	private String _imageAlt;
 	private String _imageSrc;
