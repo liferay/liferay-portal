@@ -11,7 +11,7 @@ create table OpenIdConnectSession (
 	idToken TEXT null,
 	issuer VARCHAR(255) null,
 	refreshToken VARCHAR(2000) null,
-	sessionId VARCHAR(75) null
+	sessionId VARCHAR(255) null
 );
 
 create table OpenIdConnectUser (
