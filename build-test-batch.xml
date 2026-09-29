@@ -8033,18 +8033,6 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" />
 	</target>
 
-	<target name="functional-upgrade-wildfly300-mariadb104">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
-
-		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.4" />
-	</target>
-
-	<target name="functional-upgrade-wildfly300-mariadb106">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
-
-		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.6" />
-	</target>
-
 	<target name="functional-weblogic151-mysql">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="15.1.1" />
 

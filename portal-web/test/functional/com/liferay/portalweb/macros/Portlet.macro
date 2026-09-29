@@ -859,18 +859,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewPortletOptions(optionsName = null) {
-		MouseOver.mouseOverNotVisible(locator1 = "Portlet#OPTIONS_ICON");
-
-		Click(locator1 = "Portlet#OPTIONS_ICON");
-
-		AssertTextEquals(
-			key_menuItem = ${optionsName},
-			locator1 = "MenuItem#ANY_MENU_ITEM",
-			value1 = ${optionsName});
-	}
-
-	@summary = "Default summary"
 	macro viewPortletOptionsMenulist() {
 		MouseOver.mouseOverNotVisible(locator1 = "Portlet#OPTIONS_ICON");
 

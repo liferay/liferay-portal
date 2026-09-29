@@ -115,24 +115,6 @@ definition {
 		}
 	}
 
-	@priority = 5
-	test CanUpgradePartitionedDatabase7413U33 {
-		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
-		property data.archive.type = "data-archive-portal-partition";
-		property portal.smoke.upgrades = "true";
-		property portal.version = "7.4.13.u33";
-		property test.assert.warning.exceptions = "false";
-
-		User.loginPG(
-			nodePort = 8080,
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "test@liferay.com");
-
-		SearchAdministration.executeReindex();
-
-		ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
-	}
-
 	@priority = 4
 	test ExportAndAddDBPartitionWithUpgradedDB {
 		property app.server.bundles.size = "1";

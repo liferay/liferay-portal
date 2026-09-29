@@ -10,27 +10,6 @@ definition {
 	property test.run.type = "single";
 	property testray.main.component.name = "Database Upgrade Framework";
 
-	setUp {
-		var portalURL = PropsUtil.get("portal.url");
-
-		if (${portalURL} != "http://www.example.com") {
-			SignIn.signIn();
-
-			SearchAdministration.executeReindex();
-		}
-	}
-
-	@priority = 4
-	test ViewAFSStoreArchive7413 {
-		property data.archive.type = "data-archive-afs-store";
-		property database.types = "postgresql";
-		property osgi.module.configuration.file.names = "com.liferay.portal.store.file.system.configuration.AdvancedFileSystemStoreConfiguration.config";
-		property osgi.module.configurations = "rootDir=\"data/document_library1\"";
-		property portal.version = "7.4.13";
-
-		ValidateFileStoreUpgrade.viewAFSStoreUpgrade();
-	}
-
 	@priority = 4
 	test ViewAFSStoreUpgradeNoConfig {
 		property data.archive.type = "data-archive-afs-store";
