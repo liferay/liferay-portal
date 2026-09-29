@@ -41,6 +41,18 @@ async function getSimulationURL() {
 	return new URL(iframe.getAttribute('src') as string);
 }
 
+async function openSimulation() {
+	const [button] = screen.getAllByTitle('simulation');
+
+	await userEvent.click(button);
+}
+
+async function openNewTabSimulation() {
+	const [, button] = screen.getAllByTitle('simulation');
+
+	await userEvent.click(button);
+}
+
 function renderElementVariationsSimulation() {
 	return render(
 		<ElementVariationsSimulation
@@ -93,7 +105,7 @@ describe('ElementVariationsSimulation', () => {
 	it('simulates the first audience of the experience', async () => {
 		renderElementVariationsSimulation();
 
-		await userEvent.click(screen.getByTitle('simulation'));
+		await openSimulation();
 
 		const simulationURL = await getSimulationURL();
 
@@ -109,7 +121,7 @@ describe('ElementVariationsSimulation', () => {
 	it('simulates the selected audience', async () => {
 		renderElementVariationsSimulation();
 
-		await userEvent.click(screen.getByTitle('simulation'));
+		await openSimulation();
 
 		await userEvent.click(await screen.findByLabelText('audience'));
 
@@ -125,7 +137,7 @@ describe('ElementVariationsSimulation', () => {
 	it('shows the page once it finishes loading', async () => {
 		renderElementVariationsSimulation();
 
-		await userEvent.click(screen.getByTitle('simulation'));
+		await openSimulation();
 
 		const iframe = await screen.findByTitle('page-simulation');
 
@@ -139,7 +151,7 @@ describe('ElementVariationsSimulation', () => {
 	it('keeps links in the page from navigating', async () => {
 		renderElementVariationsSimulation();
 
-		await userEvent.click(screen.getByTitle('simulation'));
+		await openSimulation();
 
 		const iframe = (await screen.findByTitle(
 			'page-simulation'
@@ -162,10 +174,44 @@ describe('ElementVariationsSimulation', () => {
 		expect(clickEvent.defaultPrevented).toBe(true);
 	});
 
+	it('simulates in a new tab from the small screen button', async () => {
+		const windowOpen = jest
+			.spyOn(window, 'open')
+			.mockImplementation(() => null);
+
+		renderElementVariationsSimulation();
+
+		await openNewTabSimulation();
+
+		expect(screen.queryByTitle('page-simulation')).not.toBeInTheDocument();
+
+		await userEvent.click(await screen.findByLabelText('audience'));
+
+		await userEvent.click(
+			screen.getByRole('option', {name: 'Loyal Customers'})
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'simulate-in-a-new-tab'})
+		);
+
+		const simulationURL = new URL(windowOpen.mock.calls[0][0] as string);
+
+		expect(simulationURL.searchParams.get('audienceEntryERCs')).toBe(
+			'audience-1'
+		);
+		expect(simulationURL.searchParams.get('languageId')).toBe('en_US');
+		expect(simulationURL.searchParams.get('segmentsExperienceId')).toBe(
+			'1'
+		);
+
+		windowOpen.mockRestore();
+	});
+
 	it('has no accessibility violations', async () => {
 		renderElementVariationsSimulation();
 
-		await userEvent.click(screen.getByTitle('simulation'));
+		await openSimulation();
 
 		await screen.findByTitle('page-simulation');
 
