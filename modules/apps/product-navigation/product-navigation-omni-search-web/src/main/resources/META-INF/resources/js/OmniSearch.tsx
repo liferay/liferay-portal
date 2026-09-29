@@ -13,6 +13,11 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import OmniSearchResultHeader from './OmniSearchResultHeader';
 import OmniSearchResultRow from './OmniSearchResultRow';
+import {
+	deleteRecentSearch,
+	getRecentSearches,
+	saveRecentSearch,
+} from './recentSearches';
 import useKeyboardNavigation, {Section} from './useKeyboardNavigation';
 
 import '../css/OmniSearch.scss';
@@ -38,34 +43,68 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 		OmniSearchSection[] | null
 	>(null);
 	const [query, setQuery] = useState<string>('');
+	const [recentSearches, setRecentSearches] =
+		useState<string[]>(getRecentSearches);
 	const [visible, setVisible] = useState<boolean>(false);
 
 	const inputRef = useRef<HTMLInputElement>(null);
+	const queryRef = useRef(query);
+
+	queryRef.current = query;
 
 	const {observer} = useModal({
 		onClose: () => setVisible(false),
 	});
 
-	const sections: Section[] = useMemo(
-		() =>
-			(omniSearchSections ?? []).map((section) => ({
-				icon: section.icon,
-				items: section.omniSearchResults.map((result, index) => ({
-					description: result.description,
-					icon: result.icon,
-					key: `${section.title}-${index}-${result.title}`,
-					onClick: () => {
-						if (result.url) {
-							navigate(result.url);
-						}
-					},
-					title: result.title,
-				})),
-				key: section.title,
-				label: section.title,
+	const sections: Section[] = useMemo(() => {
+		if (omniSearchSections === null) {
+			if (!recentSearches.length) {
+				return [];
+			}
+
+			return [
+				{
+					icon: 'time',
+					items: recentSearches.map((recentSearch) => ({
+						icon: 'time',
+						key: `recent-${recentSearch}`,
+						onClick: () => setQuery(recentSearch),
+						onDelete: () => {
+							setRecentSearches(deleteRecentSearch(recentSearch));
+
+							inputRef.current?.focus();
+						},
+						title: recentSearch,
+					})),
+					key: 'recent',
+					label: Liferay.Language.get('recent-searches'),
+				},
+			];
+		}
+
+		return omniSearchSections.map((section) => ({
+			icon: section.icon,
+			items: section.omniSearchResults.map((result, index) => ({
+				description: result.description,
+				icon: result.icon,
+				key: `${section.title}-${index}-${result.title}`,
+				onClick: () => {
+					const trimmedQuery = queryRef.current.trim();
+
+					if (trimmedQuery) {
+						setRecentSearches(saveRecentSearch(trimmedQuery));
+					}
+
+					if (result.url) {
+						navigate(result.url);
+					}
+				},
+				title: result.title,
 			})),
-		[omniSearchSections]
-	);
+			key: section.title,
+			label: section.title,
+		}));
+	}, [omniSearchSections, recentSearches]);
 
 	const {activeIndex, onInputKeyDown, sectionOffsets} = useKeyboardNavigation(
 		sections,
@@ -244,6 +283,7 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 													item={item}
 													key={item.key}
 													onClick={item.onClick}
+													onDelete={item.onDelete}
 												/>
 											);
 										})}

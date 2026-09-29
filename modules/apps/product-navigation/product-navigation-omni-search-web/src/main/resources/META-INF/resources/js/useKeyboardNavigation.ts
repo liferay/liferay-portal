@@ -11,6 +11,7 @@ type NavigableItem = {
 	icon: string;
 	key: string;
 	onClick: () => void;
+	onDelete?: () => void;
 	title: string;
 };
 
@@ -92,6 +93,24 @@ export default function useKeyboardNavigation(
 			event.preventDefault();
 
 			navigableItems[activeIndex].onClick();
+		}
+		else if (event.key === 'Tab' && !event.shiftKey && activeIndex >= 0) {
+			if (navigableItems[activeIndex].onDelete) {
+				const activeRow = document.getElementById(
+					`omniSearchOption${activeIndex}`
+				);
+
+				const deleteButton =
+					activeRow?.parentElement?.querySelector<HTMLButtonElement>(
+						'.omni-search-result-delete'
+					);
+
+				if (deleteButton) {
+					event.preventDefault();
+
+					requestAnimationFrame(() => deleteButton.focus());
+				}
+			}
 		}
 	};
 

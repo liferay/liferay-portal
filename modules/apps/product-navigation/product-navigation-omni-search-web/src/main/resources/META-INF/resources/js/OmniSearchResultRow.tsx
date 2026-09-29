@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
 export default function OmniSearchResultRow({
@@ -13,6 +15,7 @@ export default function OmniSearchResultRow({
 	id,
 	item,
 	onClick,
+	onDelete,
 }: {
 	active: boolean;
 	id: string;
@@ -22,11 +25,12 @@ export default function OmniSearchResultRow({
 		title: string;
 	};
 	onClick: () => void;
+	onDelete?: () => void;
 }) {
 	const {description, icon, title} = item;
 
 	return (
-		<li className="omni-search-result-item">
+		<li className="omni-search-result-item" role="none">
 			<button
 				aria-selected={active}
 				className={classNames('btn btn-unstyled omni-search-result', {
@@ -36,7 +40,6 @@ export default function OmniSearchResultRow({
 				id={id}
 				onClick={onClick}
 				role="option"
-				tabIndex={-1}
 				type="button"
 			>
 				<ClaySticker
@@ -58,6 +61,22 @@ export default function OmniSearchResultRow({
 					)}
 				</span>
 			</button>
+
+			{onDelete && (
+				<ClayButtonWithIcon
+					aria-hidden="true"
+					className="omni-search-result-delete"
+					displayType="unstyled"
+					onClick={(event) => {
+						event.stopPropagation();
+						onDelete();
+					}}
+					size="sm"
+					symbol="times-small"
+					tabIndex={-1}
+					title={sub(Liferay.Language.get('remove-x'), title)}
+				/>
+			)}
 		</li>
 	);
 }
