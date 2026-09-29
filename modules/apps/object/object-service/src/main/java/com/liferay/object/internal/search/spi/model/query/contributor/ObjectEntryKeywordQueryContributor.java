@@ -26,10 +26,12 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
+import com.liferay.portal.kernel.search.TermsQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.facet.util.RangeParserUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -44,9 +46,12 @@ import com.liferay.portal.search.spi.model.query.contributor.helper.KeywordQuery
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -160,10 +165,19 @@ public class ObjectEntryKeywordQueryContributor
 
 			try {
 				for (ObjectField objectField : objectFields) {
+					if (_isTextField(objectField)) {
+						continue;
+					}
+
 					_contribute(
-						booleanQuery, defaultLocale, objectField, searchContext,
-						keywords);
+						booleanQuery, defaultLocale, objectField,
+						Collections.singletonList(objectField.getName()),
+						searchContext, keywords);
 				}
+
+				_contributeTextObjectFields(
+					booleanQuery, defaultLocale, objectFields, searchContext,
+					keywords);
 			}
 			catch (ParseException parseException) {
 				throw new SystemException(parseException);
@@ -183,19 +197,13 @@ public class ObjectEntryKeywordQueryContributor
 				_addTerm(booleanQuery, "objectEntryTitle", keywords);
 			}
 
-			for (ObjectField objectField : objectFields) {
-				if (!_isTextField(objectField)) {
-					continue;
-				}
-
-				try {
-					_contribute(
-						booleanQuery, defaultLocale, objectField, searchContext,
-						keywords);
-				}
-				catch (ParseException parseException) {
-					throw new SystemException(parseException);
-				}
+			try {
+				_contributeTextObjectFields(
+					booleanQuery, defaultLocale, objectFields, searchContext,
+					keywords);
+			}
+			catch (ParseException parseException) {
+				throw new SystemException(parseException);
 			}
 
 			for (String token : _tokenizeKeywords(keywords)) {
@@ -218,6 +226,7 @@ public class ObjectEntryKeywordQueryContributor
 					try {
 						_contribute(
 							booleanQuery, defaultLocale, objectField,
+							Collections.singletonList(objectField.getName()),
 							searchContext, token);
 					}
 					catch (ParseException parseException) {
@@ -367,7 +376,8 @@ public class ObjectEntryKeywordQueryContributor
 
 	private void _contribute(
 			BooleanQuery booleanQuery, Locale defaultLocale,
-			ObjectField objectField, SearchContext searchContext, String token)
+			ObjectField objectField, List<String> objectFieldNames,
+			SearchContext searchContext, String token)
 		throws ParseException {
 
 		if ((objectField == null) || !objectField.isIndexed()) {
@@ -562,8 +572,7 @@ public class ObjectEntryKeywordQueryContributor
 			}
 
 			nestedBooleanQuery.add(
-				new TermQuery(
-					"nestedFieldArray.fieldName", objectField.getName()),
+				_createObjectFieldNameQuery(objectFieldNames),
 				BooleanClauseOccur.MUST);
 
 			NestedQuery nestedQuery = new NestedQuery(
@@ -577,6 +586,38 @@ public class ObjectEntryKeywordQueryContributor
 		}
 	}
 
+	private void _contributeTextObjectFields(
+			BooleanQuery booleanQuery, Locale defaultLocale,
+			List<ObjectField> objectFields, SearchContext searchContext,
+			String token)
+		throws ParseException {
+
+		Map<String, List<ObjectField>> textObjectFieldsMap =
+			new LinkedHashMap<>();
+
+		for (ObjectField objectField : objectFields) {
+			if (!_isTextField(objectField)) {
+				continue;
+			}
+
+			List<ObjectField> textObjectFields =
+				textObjectFieldsMap.computeIfAbsent(
+					_getTextObjectFieldGroupKey(objectField),
+					key -> new ArrayList<>());
+
+			textObjectFields.add(objectField);
+		}
+
+		for (List<ObjectField> textObjectFields :
+				textObjectFieldsMap.values()) {
+
+			_contribute(
+				booleanQuery, defaultLocale, textObjectFields.get(0),
+				TransformUtil.transform(textObjectFields, ObjectField::getName),
+				searchContext, token);
+		}
+	}
+
 	private MatchQuery _createMatchQuery(
 		String field, SearchContext searchContext, String value) {
 
@@ -587,6 +628,15 @@ public class ObjectEntryKeywordQueryContributor
 		}
 
 		return matchQuery;
+	}
+
+	private Query _createObjectFieldNameQuery(List<String> objectFieldNames) {
+		if (objectFieldNames.size() == 1) {
+			return new TermQuery(
+				"nestedFieldArray.fieldName", objectFieldNames.get(0));
+		}
+
+		return new TermsQuery("nestedFieldArray.fieldName", objectFieldNames);
 	}
 
 	private String[] _getLocalizedNestedFieldNames(
@@ -610,6 +660,14 @@ public class ObjectEntryKeywordQueryContributor
 		}
 
 		return fieldNames.toArray(new String[0]);
+	}
+
+	private String _getTextObjectFieldGroupKey(ObjectField objectField) {
+		return StringBundler.concat(
+			objectField.getBusinessType(), StringPool.POUND,
+			objectField.getDBType(), StringPool.POUND, objectField.isIndexed(),
+			StringPool.POUND, objectField.isIndexedAsKeyword(),
+			StringPool.POUND, objectField.isLocalized());
 	}
 
 	private String _getToken(
