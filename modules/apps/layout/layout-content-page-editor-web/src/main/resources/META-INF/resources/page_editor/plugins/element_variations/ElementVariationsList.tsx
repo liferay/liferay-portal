@@ -57,13 +57,14 @@ export default function ElementVariationsList({
 				([targetElement, targetElementVariations]) => (
 					<ClayList className="mx-3" key={targetElement}>
 						{[
-							<ClayList.Header className="text-none" key="header">
-								{editableElementOptions.find(
+							<ElementVariationsListHeader
+								editableElementOption={editableElementOptions.find(
 									(editableElementOption) =>
 										editableElementOption.value ===
 										targetElement
-								)?.label ?? targetElement}
-							</ClayList.Header>,
+								)}
+								key="header"
+							/>,
 							...targetElementVariations.map(
 								(elementVariation) => (
 									<ClayList.Item
@@ -198,6 +199,32 @@ export default function ElementVariationsList({
 				)
 			)}
 		</>
+	);
+}
+
+interface ElementVariationsListHeaderProps {
+	editableElementOption?: EditableElementOption;
+}
+
+function ElementVariationsListHeader({
+	editableElementOption,
+}: ElementVariationsListHeaderProps) {
+	if (editableElementOption) {
+		return (
+			<ClayList.Header className="text-none">
+				{editableElementOption.label}
+			</ClayList.Header>
+		);
+	}
+
+	return (
+		<ClayList.Header className="text-none">
+			<span className="text-warning">
+				<ClayIcon className="mr-2" symbol="warning-full" />
+
+				{Liferay.Language.get('missing-page-element')}
+			</span>
+		</ClayList.Header>
 	);
 }
 
