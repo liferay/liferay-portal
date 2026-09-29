@@ -1,5 +1,0 @@
-Bundle-Name: Liferay Site DSR Site Initializer
-Bundle-SymbolicName: com.liferay.site.dsr.site.initializer
-Bundle-Version: 1.0.13
-Web-ContextPath: /site-dsr-site-initializer
--dsannotations-options: inherit

@@ -1,0 +1,14 @@
+apiDir: ../digital-sales-room-analytics-rest-api/src/main/java
+apiPackagePath: com.liferay.digital.sales.room.analytics.rest
+application:
+    baseURI: /site-dsr-analytics-rest
+    className: SiteDSRAnalyticsRESTApplication
+    name: Liferay.Site.DSR.Analytics.REST
+author: Gianmarco Brunialti
+clientDir: ../digital-sales-room-analytics-rest-client/src/main/java
+compatibilityVersion: 16
+forcePredictableOperationId: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../digital-sales-room-analytics-rest-test/src/testIntegration/java

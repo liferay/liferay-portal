@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Digital Sales Room Web
+Bundle-SymbolicName: com.liferay.digital.sales.room.web
+Bundle-Version: 1.0.13
+Web-ContextPath: /digital-sales-room-web
+-dsannotations-options: inherit

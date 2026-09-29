@@ -1,0 +1,16 @@
+apiDir: ../digital-sales-room-rest-api/src/main/java
+apiPackagePath: com.liferay.digital.sales.room.rest
+application:
+    baseURI: /headless-dsr
+    className: HeadlessDSRApplication
+    name: Liferay.Headless.DSR
+author: Stefano Motta
+changeTrackingEnabled: true
+clientDir: ../digital-sales-room-rest-client/src/main/java
+compatibilityVersion: 16
+forcePredictableOperationId: true
+forcePredictableSchemaPropertyName: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../digital-sales-room-rest-test/src/testIntegration/java

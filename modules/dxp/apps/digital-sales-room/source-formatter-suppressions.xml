@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<suppressions>
+	<checkstyle>
+		<suppress checks="UnusedVariableCheck" files="digital-sales-room-web/src/main/java/com/liferay/digital/sales/room/web/internal/instance/lifecycle/DSRInitialRequestPortalInstanceLifecycleListener\.java" />
+	</checkstyle>
+</suppressions>

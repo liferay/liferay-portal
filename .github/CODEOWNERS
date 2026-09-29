@@ -445,6 +445,7 @@ modules/dxp/apps/commerce-avalara/    @liferay-commerce
 modules/dxp/apps/commerce-demo-pack/    @liferay-commerce
 modules/dxp/apps/commerce-punchout/    @liferay-commerce
 modules/dxp/apps/content-marketing-platform/    @liferay-bpm
+modules/dxp/apps/digital-sales-room/    @liferay-commerce
 modules/dxp/apps/document-library-opener/    @liferay-content-management
 modules/dxp/apps/enterprise-product-notification/
 modules/dxp/apps/frontend-theme/    @liferay-platform-experience

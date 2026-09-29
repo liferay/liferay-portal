@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Digital Sales Room Room Site Initializer
+Bundle-SymbolicName: com.liferay.digital.sales.room.room.site.initializer
+Bundle-Version: 1.0.12
+Liferay-Site-Initializer-Name: Digital Sales Room
+Provide-Capability: liferay.site.initializer
+Web-ContextPath: /digital-sales-room-room-site-initializer

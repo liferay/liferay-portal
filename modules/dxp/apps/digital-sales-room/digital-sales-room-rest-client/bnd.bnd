@@ -1,0 +1,9 @@
+Bundle-Name: Liferay Digital Sales Room REST Client
+Bundle-SymbolicName: com.liferay.digital.sales.room.rest.client
+Bundle-Version: 1.2.3
+Export-Package:\
+	com.liferay.digital.sales.room.rest.client.dto.v1_0,\
+	com.liferay.digital.sales.room.rest.client.http,\
+	com.liferay.digital.sales.room.rest.client.pagination,\
+	com.liferay.digital.sales.room.rest.client.resource.v1_0,\
+	com.liferay.digital.sales.room.rest.client.serdes.v1_0

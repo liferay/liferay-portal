@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Headless DSR Test
-Bundle-SymbolicName: com.liferay.headless.dsr.test
-Bundle-Version: 1.0.0
--includeresource: com.liferay.headless.dsr.client.jar=com.liferay.headless.dsr.client-*.jar;lib:=true

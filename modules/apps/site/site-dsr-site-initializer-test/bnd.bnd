@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Site DSR Site Initializer Test
-Bundle-SymbolicName: com.liferay.site.dsr.site.initializer.test
-Bundle-Version: 1.0.0
--includeresource: @jsonassert-[0-9.]*.jar

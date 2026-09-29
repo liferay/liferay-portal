@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Digital Sales Room Analytics REST Implementation
+Bundle-SymbolicName: com.liferay.digital.sales.room.analytics.rest.impl
+Bundle-Version: 1.0.5

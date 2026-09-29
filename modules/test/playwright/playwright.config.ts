@@ -83,6 +83,7 @@ import {config as cookiesBannerWebConfig} from './tests/cookies-banner-web/main/
 import {config as dataCleanupConfig} from './tests/data-cleanup/main/config';
 import {config as depotWebConfig} from './tests/depot-web/main/config';
 import {config as designLibraryWebConfig} from './tests/design-library-web/main/config';
+import {config as digitalSalesRoomWebConfig} from './tests/digital-sales-room-web/main/config';
 import {config as dispatchWebConfig} from './tests/dispatch-web/main/config';
 import {config as documentLibraryWebConfig} from './tests/document-library-web/main/config';
 import {config as dynamicDataMappingFormWebConfig} from './tests/dynamic-data-mapping-form-web/main/config';
@@ -246,7 +247,6 @@ import {config as siteCmsSiteInitializerConfig} from './tests/site-cms-site-init
 import {config as siteCmsSiteInitializerPermissionsConfig} from './tests/site-cms-site-initializer/permissions/config';
 import {config as siteCmsSiteInitializerStructureBuilderConfig} from './tests/site-cms-site-initializer/structure-builder/config';
 import {config as siteCmsStandaloneSiteInitializerConfig} from './tests/site-cms-standalone-site-initializer/main/config';
-import {config as siteDsrSiteInitializerConfig} from './tests/site-dsr-site-initializer/main/config';
 import {config as siteMySitesWebConfig} from './tests/site-my-sites-web/main/config';
 import {config as siteNavigationAdminWebConfig} from './tests/site-navigation-admin-web/main/config';
 import {config as siteNavigationBreadcrumbWebConfig} from './tests/site-navigation-breadcrumb-web/main/config';
@@ -365,6 +365,7 @@ export default defineConfig({
 		customerConfig,
 		depotWebConfig,
 		designLibraryWebConfig,
+		digitalSalesRoomWebConfig,
 		dispatchWebConfig,
 		documentLibraryWebConfig,
 		dynamicDataMappingFormWebConfig,
@@ -526,7 +527,6 @@ export default defineConfig({
 		siteCmsSiteInitializerPermissionsConfig,
 		siteCmsSiteInitializerStructureBuilderConfig,
 		siteCmsStandaloneSiteInitializerConfig,
-		siteDsrSiteInitializerConfig,
 		siteMySitesWebConfig,
 		siteNavigationAdminWebConfig,
 		siteNavigationBreadcrumbWebConfig,

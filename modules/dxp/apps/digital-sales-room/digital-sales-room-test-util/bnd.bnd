@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Digital Sales Room Test Utilities
+Bundle-SymbolicName: com.liferay.digital.sales.room.test.util
+Bundle-Version: 2.0.3
+Export-Package: com.liferay.digital.sales.room.test.util

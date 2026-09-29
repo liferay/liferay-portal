@@ -5,11 +5,11 @@
 
 import {test} from '@playwright/test';
 
-import {DSRAnalyticsPage} from '../pages/site-dsr-site-initializer/DSRAnalyticsPage';
-import {DigitalSalesRoomSettingsPage} from '../pages/site-dsr-site-initializer/DigitalSalesRoomSettingsPage';
-import {DigitalSalesRoomUsersPage} from '../pages/site-dsr-site-initializer/DigitalSalesRoomUsersPage';
-import {DigitalSalesRoomsPage} from '../pages/site-dsr-site-initializer/DigitalSalesRoomsPage';
-import {EditDigitalSalesRoomPage} from '../pages/site-dsr-site-initializer/EditDigitalSalesRoomPage';
+import {DSRAnalyticsPage} from '../pages/digital-sales-room-web/DSRAnalyticsPage';
+import {DigitalSalesRoomSettingsPage} from '../pages/digital-sales-room-web/DigitalSalesRoomSettingsPage';
+import {DigitalSalesRoomUsersPage} from '../pages/digital-sales-room-web/DigitalSalesRoomUsersPage';
+import {DigitalSalesRoomsPage} from '../pages/digital-sales-room-web/DigitalSalesRoomsPage';
+import {EditDigitalSalesRoomPage} from '../pages/digital-sales-room-web/EditDigitalSalesRoomPage';
 
 const digitalSalesRoomPagesTest = test.extend<{
 	digitalSalesRoomSettingsPage: DigitalSalesRoomSettingsPage;

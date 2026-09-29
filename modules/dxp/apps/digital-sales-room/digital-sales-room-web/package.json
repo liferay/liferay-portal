@@ -1,0 +1,77 @@
+{
+	"dependencies": {
+		"@clayui/alert": "^3.166.0",
+		"@clayui/autocomplete": "^3.166.0",
+		"@clayui/badge": "^3.166.0",
+		"@clayui/breadcrumb": "^3.166.0",
+		"@clayui/button": "^3.166.0",
+		"@clayui/card": "^3.166.0",
+		"@clayui/color-picker": "^3.166.0",
+		"@clayui/core": "^3.166.0",
+		"@clayui/data-provider": "^3.166.0",
+		"@clayui/date-picker": "^3.166.0",
+		"@clayui/drop-down": "^3.166.0",
+		"@clayui/empty-state": "^3.166.0",
+		"@clayui/form": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
+		"@clayui/label": "^3.166.0",
+		"@clayui/layout": "^3.166.0",
+		"@clayui/link": "^3.166.0",
+		"@clayui/list": "^3.166.0",
+		"@clayui/loading-indicator": "^3.166.0",
+		"@clayui/management-toolbar": "^3.166.0",
+		"@clayui/modal": "^3.166.0",
+		"@clayui/multi-select": "^3.166.0",
+		"@clayui/nav": "^3.166.0",
+		"@clayui/navigation-bar": "^3.166.0",
+		"@clayui/pagination-bar": "^3.166.0",
+		"@clayui/panel": "^3.166.0",
+		"@clayui/sticker": "^3.166.0",
+		"@clayui/table": "^3.166.0",
+		"@clayui/toolbar": "^3.166.0",
+		"@clayui/tooltip": "^3.166.0",
+		"@liferay/frontend-data-set-web": "*",
+		"@liferay/frontend-js-item-selector-web": "*",
+		"@liferay/frontend-js-react-web": "*",
+		"@liferay/layout-js-components-web": "*",
+		"@liferay/object-js-components-web": "*",
+		"@liferay/site-cms-site-initializer": "*",
+		"classnames": "2.3.1",
+		"eventsource": "4.0.0",
+		"fetch-mock": "12.6.0",
+		"formik": "2.1.4",
+		"frontend-editor-ckeditor-web": "*",
+		"frontend-js-components-web": "*",
+		"frontend-js-web": "*",
+		"hash.js": "1.1.7",
+		"moment": "2.29.4",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-dropzone": "11.4.2",
+		"recharts": "2.8.0",
+		"resize-observer-polyfill": "1.5.1"
+	},
+	"jest": {
+		"setupFiles": [
+			"<rootDir>/jest-setup.config.ts"
+		],
+		"testMatch": [
+			"<rootDir>/src/main/resources/META-INF/resources/tests/js/**/*.spec.*"
+		],
+		"testPathIgnorePatterns": [
+			"<rootDir>/.*/fixtures",
+			"<rootDir>/.*/mocks",
+			"<rootDir>/.*/__mocks__",
+			"<rootDir>/.*/index.tsx"
+		]
+	},
+	"main": "js/index.ts",
+	"name": "@liferay/digital-sales-room-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format",
+		"test": "node-scripts test"
+	},
+	"version": "1.0.13"
+}

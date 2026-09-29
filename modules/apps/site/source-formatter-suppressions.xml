@@ -4,7 +4,6 @@
 	<checkstyle>
 		<suppress checks="PersistenceCallCheck" files="site-memberships-test/src/testIntegration/java/com/liferay/site/memberships/service/persistence/test/UserGroupGroupRoleFinderTest\.java" />
 		<suppress checks="PersistenceCallCheck" files="site-test/src/testIntegration/java/com/liferay/site/service/persistence/test/GroupFinderTest\.java" />
-		<suppress checks="UnusedVariableCheck" files="site-dsr-site-initializer/src/main/java/com/liferay/site/dsr/site/initializer/internal/instance/lifecycle/DSRInitialRequestPortalInstanceLifecycleListener\.java" />
 	</checkstyle>
 	<source-check>
 		<suppress checks="IllegalImportsCheck" files="site-staticexport-impl/src/main/java/com/liferay/site/staticexport/internal/StaticSiteExportDocument\.java" />
