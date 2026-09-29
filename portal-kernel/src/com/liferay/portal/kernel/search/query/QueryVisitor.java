@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.StringQuery;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
+import com.liferay.portal.kernel.search.TermsQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 
 /**
@@ -45,6 +46,10 @@ public interface QueryVisitor<T> {
 	public T visitQuery(TermQuery termQuery);
 
 	public T visitQuery(TermRangeQuery termRangeQuery);
+
+	public default T visitQuery(TermsQuery termsQuery) {
+		return null;
+	}
 
 	public T visitQuery(WildcardQuery wildcardQuery);
 
