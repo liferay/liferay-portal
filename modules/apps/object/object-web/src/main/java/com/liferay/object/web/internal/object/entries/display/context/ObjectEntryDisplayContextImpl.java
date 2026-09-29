@@ -1380,6 +1380,17 @@ public class ObjectEntryDisplayContextImpl
 
 			ddmFormField.setProperty("objectEntryId", objectEntry.getId());
 		}
+		else if (StringUtil.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+			ddmFormField.setProperty("groupId", _getGroupId());
+
+			ObjectDefinition objectDefinition = getObjectDefinition1();
+
+			ddmFormField.setProperty(
+				"objectDefinitionId", objectDefinition.getObjectDefinitionId());
+		}
 
 		ddmFormField.setReadOnly(readOnly);
 

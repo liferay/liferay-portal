@@ -502,6 +502,12 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 		}
 
 		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+			return fieldName + ".address";
+		}
+
+		if (Objects.equals(
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
 			return fieldName + ".name";
