@@ -1674,7 +1674,7 @@ public class PortalImpl implements Portal {
 		Group layoutGroup = layout.getGroup();
 
 		if (forceLayoutFriendlyURL ||
-			(!_hasVirtualGroupFriendlyURLPrefix(layout) &&
+			(!(layout instanceof VirtualLayout) &&
 			 (!layout.isFirstParent() || Validator.isNotNull(parametersURL)) &&
 			 _requiresLayoutFriendlyURL(
 				 groupFriendlyURL, themeDisplay.getLayoutFriendlyURL(layout),
@@ -8408,16 +8408,6 @@ public class PortalImpl implements Portal {
 		}
 
 		return false;
-	}
-
-	private boolean _hasVirtualGroupFriendlyURLPrefix(Layout layout) {
-		if (!(layout instanceof VirtualLayout)) {
-			return false;
-		}
-
-		VirtualLayout virtualLayout = (VirtualLayout)layout;
-
-		return !virtualLayout.isSourceGroupDepot();
 	}
 
 	private boolean _isChangeLanguageGroupFriendlyURL(

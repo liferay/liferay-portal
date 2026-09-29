@@ -472,13 +472,11 @@ public class ThemeDisplay
 
 			layout = virtualLayout.getSourceLayout();
 
-			if (!virtualLayout.isSourceGroupDepot()) {
-				Group group = layout.getGroup();
+			Group group = layout.getGroup();
 
-				return StringBundler.concat(
-					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
-					group.getFriendlyURL(), _getFriendlyURL(layout));
-			}
+			return StringBundler.concat(
+				VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
+				group.getFriendlyURL(), _getFriendlyURL(layout));
 		}
 
 		return _getFriendlyURL(layout);

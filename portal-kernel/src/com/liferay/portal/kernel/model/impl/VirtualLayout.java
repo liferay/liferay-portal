@@ -136,15 +136,27 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public String getFriendlyURL(Locale locale) {
-		if (isSourceGroupDepot()) {
-			if (locale == null) {
-				return _sourceLayout.getFriendlyURL();
-			}
+		StringBundler sb = new StringBundler(3);
 
-			return _sourceLayout.getFriendlyURL(locale);
+		sb.append(VirtualLayoutConstants.CANONICAL_URL_SEPARATOR);
+
+		try {
+			Group group = _sourceLayout.getGroup();
+
+			sb.append(group.getFriendlyURL());
+		}
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 
-		return _getVirtualGroupFriendlyURL(locale);
+		if (locale == null) {
+			sb.append(_sourceLayout.getFriendlyURL());
+		}
+		else {
+			sb.append(_sourceLayout.getFriendlyURL(locale));
+		}
+
+		return sb.toString();
 	}
 
 	@Override
@@ -325,7 +337,7 @@ public class VirtualLayout extends LayoutWrapper {
 			sb.append(layoutURL.substring(0, pos));
 
 			sb.append(_targetGroup.getFriendlyURL());
-			sb.append(_getVirtualGroupFriendlyURL(locale));
+			sb.append(getFriendlyURL(locale));
 
 			pos = layoutURL.indexOf(StringPool.QUESTION);
 
@@ -357,30 +369,6 @@ public class VirtualLayout extends LayoutWrapper {
 
 		return typeSettingsUnicodeProperties.getProperty(
 			StringBundler.concat("lfr-theme:", device, StringPool.COLON, key));
-	}
-
-	private String _getVirtualGroupFriendlyURL(Locale locale) {
-		StringBundler sb = new StringBundler(3);
-
-		sb.append(VirtualLayoutConstants.CANONICAL_URL_SEPARATOR);
-
-		try {
-			Group group = _sourceLayout.getGroup();
-
-			sb.append(group.getFriendlyURL());
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		if (locale == null) {
-			sb.append(_sourceLayout.getFriendlyURL());
-		}
-		else {
-			sb.append(_sourceLayout.getFriendlyURL(locale));
-		}
-
-		return sb.toString();
 	}
 
 	private static final String
