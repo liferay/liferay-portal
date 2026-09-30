@@ -1137,7 +1137,7 @@ definition {
 
 		task ("Assert web content warning message link") {
 			Click(
-				key_warningMessage = "Web Content Title is scheduled and will be displayed on 11/20/00, 1:01 AM.",
+				key_warningMessage = "Web Content Title is scheduled and will be displayed on 11/20/00, 1:01",
 				locator1 = "Message#WARNING_SPECIFIC_LINK");
 		}
 
