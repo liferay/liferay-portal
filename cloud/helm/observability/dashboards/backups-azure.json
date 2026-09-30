@@ -137,6 +137,24 @@
 					},
 					{
 						"matcher": {
+							"id": "byName",
+							"options": "Storage Account"
+						},
+						"properties": [
+							{
+								"id": "links",
+								"value": [
+									{
+										"targetBlank": true,
+										"title": "Open the storage account in the Azure Portal",
+										"url": "https://portal.azure.com/#resource/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}/providers/Microsoft.Storage/storageAccounts/${__value.raw}/overview"
+									}
+								]
+							}
+						]
+					},
+					{
+						"matcher": {
 							"id": "byType",
 							"options": "time"
 						},
