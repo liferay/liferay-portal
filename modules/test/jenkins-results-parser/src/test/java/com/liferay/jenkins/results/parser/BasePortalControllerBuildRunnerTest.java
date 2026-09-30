@@ -111,6 +111,47 @@ public class BasePortalControllerBuildRunnerTest
 	}
 
 	@Test
+	public void testGetCommitLink() {
+		BasePortalControllerBuildRunner<?> basePortalControllerBuildRunner =
+			Mockito.mock(BasePortalControllerBuildRunner.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePortalControllerBuildRunner
+		).getCommitLink(
+			Mockito.any()
+		);
+
+		String sha = RandomTestUtil.randomSHA();
+
+		RemoteGitRef remoteGitRef = Mockito.mock(RemoteGitRef.class);
+
+		Mockito.doReturn(
+			"liferay-portal"
+		).when(
+			remoteGitRef
+		).getRepositoryName();
+
+		Mockito.doReturn(
+			sha
+		).when(
+			remoteGitRef
+		).getSHA();
+
+		Mockito.doReturn(
+			"liferay"
+		).when(
+			remoteGitRef
+		).getUsername();
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"<a href=\"https://github.com/liferay/liferay-portal/commit/",
+				sha, "\">", sha.substring(0, 7), "</a>"),
+			basePortalControllerBuildRunner.getCommitLink(remoteGitRef));
+	}
+
+	@Test
 	public void testPreviousBuildHasRunningInvocation() throws Exception {
 		String controllerBuildURL =
 			"https://test-1-0-aws.liferay.com/job/test-portal-testsuite-" +

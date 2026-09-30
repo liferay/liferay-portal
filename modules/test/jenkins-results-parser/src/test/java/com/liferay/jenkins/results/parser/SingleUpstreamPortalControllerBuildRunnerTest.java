@@ -73,6 +73,29 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 	}
 
 	@Test
+	public void testGetSkippedCommitsDescription() {
+		String portalBranchSHA = RandomTestUtil.randomSHA();
+
+		String portalBranchCommitLink = JenkinsResultsParserUtil.combine(
+			"<a href=\"https://github.com/brianchandotcom/liferay-portal-ee/",
+			"commit/", portalBranchSHA, "\">", portalBranchSHA.substring(0, 7),
+			"</a>");
+
+		_testGetSkippedCommitsDescription(
+			portalBranchCommitLink, null, portalBranchSHA);
+
+		String portalBaseBranchSHA = RandomTestUtil.randomSHA();
+
+		_testGetSkippedCommitsDescription(
+			JenkinsResultsParserUtil.combine(
+				portalBranchCommitLink,
+				" on base <a href=\"https://github.com/",
+				"liferay/liferay-portal/commit/", portalBaseBranchSHA, "\">",
+				portalBaseBranchSHA.substring(0, 7), "</a>"),
+			portalBaseBranchSHA, portalBranchSHA);
+	}
+
+	@Test
 	public void testInvokeBuild() {
 		String portalBaseBranchSHA = RandomTestUtil.randomSHA();
 		String portalBranchSHA = RandomTestUtil.randomSHA();
@@ -218,11 +241,6 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		Mockito.doCallRealMethod(
 		).when(
 			_singleUpstreamPortalControllerBuildRunner
-		).getPortalBranchAbbreviatedSHA();
-
-		Mockito.doCallRealMethod(
-		).when(
-			_singleUpstreamPortalControllerBuildRunner
 		).invokeBuild();
 
 		Mockito.doReturn(
@@ -238,18 +256,6 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		).when(
 			_buildData
 		).getBuildParameters();
-
-		Mockito.doReturn(
-			"liferay-portal-ee"
-		).when(
-			_buildData
-		).getPortalGitHubRepositoryName();
-
-		Mockito.doReturn(
-			"brianchandotcom"
-		).when(
-			_buildData
-		).getPortalGitHubUsername();
 
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
@@ -283,6 +289,32 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		}
 	}
 
+	private RemoteGitRef _mockRemoteGitRef(
+		String repositoryName, String sha, String username) {
+
+		RemoteGitRef remoteGitRef = Mockito.mock(RemoteGitRef.class);
+
+		Mockito.doReturn(
+			repositoryName
+		).when(
+			remoteGitRef
+		).getRepositoryName();
+
+		Mockito.doReturn(
+			sha
+		).when(
+			remoteGitRef
+		).getSHA();
+
+		Mockito.doReturn(
+			username
+		).when(
+			remoteGitRef
+		).getUsername();
+
+		return remoteGitRef;
+	}
+
 	private void _mockSingleUpstreamPortalControllerBuildRunner(
 		String portalBaseBranchSHA, String portalBranchSHA) {
 
@@ -294,8 +326,22 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 			_buildData
 		).getPortalBranchSHA();
 
+		Mockito.doReturn(
+			_mockRemoteGitRef(
+				"liferay-portal-ee", portalBranchSHA, "brianchandotcom")
+		).when(
+			_buildData
+		).getPortalRemoteGitRef();
+
 		_singleUpstreamPortalControllerBuildRunner = Mockito.mock(
 			SingleUpstreamPortalControllerBuildRunner.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			_singleUpstreamPortalControllerBuildRunner
+		).getCommitLink(
+			Mockito.any()
+		);
 
 		Mockito.doCallRealMethod(
 		).when(
@@ -325,25 +371,8 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		RemoteGitRef remoteGitRef = null;
 
 		if (portalBaseBranchSHA != null) {
-			remoteGitRef = Mockito.mock(RemoteGitRef.class);
-
-			Mockito.doReturn(
-				"liferay-portal"
-			).when(
-				remoteGitRef
-			).getRepositoryName();
-
-			Mockito.doReturn(
-				portalBaseBranchSHA
-			).when(
-				remoteGitRef
-			).getSHA();
-
-			Mockito.doReturn(
-				"liferay"
-			).when(
-				remoteGitRef
-			).getUsername();
+			remoteGitRef = _mockRemoteGitRef(
+				"liferay-portal", portalBaseBranchSHA, "liferay");
 		}
 
 		Mockito.doReturn(
@@ -363,6 +392,24 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		).when(
 			_singleUpstreamPortalControllerBuildRunner
 		).getPreviousBuildJSONObjects();
+	}
+
+	private void _testGetSkippedCommitsDescription(
+		String expectedSkippedCommitsDescription, String portalBaseBranchSHA,
+		String portalBranchSHA) {
+
+		_mockSingleUpstreamPortalControllerBuildRunner(
+			portalBaseBranchSHA, portalBranchSHA);
+
+		Mockito.doCallRealMethod(
+		).when(
+			_singleUpstreamPortalControllerBuildRunner
+		).getSkippedCommitsDescription();
+
+		testEquals(
+			expectedSkippedCommitsDescription,
+			_singleUpstreamPortalControllerBuildRunner.
+				getSkippedCommitsDescription());
 	}
 
 	private void _testPreviousBuildHasCurrentSHA(
