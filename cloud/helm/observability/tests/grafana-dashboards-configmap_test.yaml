@@ -179,6 +179,19 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["backups.json"]
+                    pattern: azb-tile-muted azb-tile-row\\" href=\\"#\\"
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: Set centralHub.argoWorkflowsURL in your values.yaml to enable this link.
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Mutes the Argo Workflows link in the Azure restore guide when centralHub.argoWorkflowsURL is not set
+        set:
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["backups.json"]
                     pattern: \[.Data Plane.\] = dataPlane
             -   matchRegex:
                     path: data["backups.json"]
