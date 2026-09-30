@@ -8,6 +8,8 @@ package com.liferay.jenkins.results.parser;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 /**
  * @author Michael Hashimoto
  */
@@ -22,6 +24,35 @@ public class SingleUpstreamPortalControllerBuildRunner
 	@Override
 	protected String getInvocationJobName() {
 		return "test-portal-upstream";
+	}
+
+	protected RemoteGitRef getPortalBaseRemoteGitRef() {
+		if (_portalBaseRemoteGitRef != null) {
+			return _portalBaseRemoteGitRef;
+		}
+
+		String portalBaseGitHubURL = Environment.get("PORTAL_BASE_GITHUB_URL");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalBaseGitHubURL)) {
+			return null;
+		}
+
+		_portalBaseRemoteGitRef = GitUtil.getRemoteGitRef(portalBaseGitHubURL);
+
+		return _portalBaseRemoteGitRef;
+	}
+
+	@Override
+	protected String getSkippedCommitsDescription() {
+		RemoteGitRef portalBaseRemoteGitRef = getPortalBaseRemoteGitRef();
+
+		if (portalBaseRemoteGitRef == null) {
+			return super.getSkippedCommitsDescription();
+		}
+
+		return JenkinsResultsParserUtil.combine(
+			super.getSkippedCommitsDescription(), " on base ",
+			_getPortalBaseCommitLink(portalBaseRemoteGitRef));
 	}
 
 	@Override
@@ -44,6 +75,17 @@ public class SingleUpstreamPortalControllerBuildRunner
 			"JENKINS_GITHUB_BRANCH_USERNAME",
 			buildData.getJenkinsGitHubUsername());
 		invocationParameters.put("PARENT_BUILD_URL", buildData.getBuildURL());
+
+		RemoteGitRef portalBaseRemoteGitRef = getPortalBaseRemoteGitRef();
+
+		if (portalBaseRemoteGitRef != null) {
+			invocationParameters.put(
+				"PORTAL_BASE_GIT_COMMIT", portalBaseRemoteGitRef.getSHA());
+			invocationParameters.put(
+				"PORTAL_BASE_GITHUB_URL",
+				Environment.get("PORTAL_BASE_GITHUB_URL"));
+		}
+
 		invocationParameters.put(
 			"PORTAL_GIT_COMMIT", buildData.getPortalBranchSHA());
 
@@ -116,11 +158,69 @@ public class SingleUpstreamPortalControllerBuildRunner
 			sb.append("\">??? commits</a></li>");
 		}
 
+		if (portalBaseRemoteGitRef != null) {
+			sb.append("<li><strong>Base Git ID:</strong> ");
+			sb.append(_getPortalBaseCommitLink(portalBaseRemoteGitRef));
+			sb.append("</li>");
+		}
+
 		sb.append("</ul>");
 
 		buildData.setBuildDescription(sb.toString());
 
 		updateBuildDescription();
 	}
+
+	@Override
+	protected boolean previousBuildHasCurrentSHA() {
+		RemoteGitRef portalBaseRemoteGitRef = getPortalBaseRemoteGitRef();
+
+		if (portalBaseRemoteGitRef == null) {
+			return super.previousBuildHasCurrentSHA();
+		}
+
+		S buildData = getBuildData();
+
+		String portalBaseBranchSHA = portalBaseRemoteGitRef.getSHA();
+		String portalBranchSHA = buildData.getPortalBranchSHA();
+
+		for (JSONObject previousBuildJSONObject :
+				getPreviousBuildJSONObjects()) {
+
+			String description = previousBuildJSONObject.optString(
+				"description", "");
+
+			if (description.contains("EXPIRE") ||
+				description.contains("SKIPPED")) {
+
+				continue;
+			}
+
+			if (portalBaseBranchSHA.equals(
+					getDescriptionPortalBaseBranchSHA(description)) &&
+				portalBranchSHA.equals(
+					getDescriptionPortalBranchSHA(description))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private String _getPortalBaseCommitLink(
+		RemoteGitRef portalBaseRemoteGitRef) {
+
+		String portalBaseBranchSHA = portalBaseRemoteGitRef.getSHA();
+
+		return JenkinsResultsParserUtil.combine(
+			"<a href=\"https://github.com/",
+			portalBaseRemoteGitRef.getUsername(), "/",
+			portalBaseRemoteGitRef.getRepositoryName(), "/commit/",
+			portalBaseBranchSHA, "\">", portalBaseBranchSHA.substring(0, 7),
+			"</a>");
+	}
+
+	private RemoteGitRef _portalBaseRemoteGitRef;
 
 }

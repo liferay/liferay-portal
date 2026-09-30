@@ -194,6 +194,15 @@ public abstract class BasePortalControllerBuildRunner
 		return false;
 	}
 
+	protected String getDescriptionPortalBaseBranchSHA(String description) {
+		return _getDescriptionBranchSHA(
+			_portalBaseBranchSHAPattern, description);
+	}
+
+	protected String getDescriptionPortalBranchSHA(String description) {
+		return _getDescriptionBranchSHA(_portalBranchSHAPattern, description);
+	}
+
 	protected String getInvocationCohortName() {
 		String invocationCohortName = Environment.get("INVOCATION_COHORT_NAME");
 
@@ -248,6 +257,17 @@ public abstract class BasePortalControllerBuildRunner
 		}
 
 		return null;
+	}
+
+	protected String getSkippedCommitsDescription() {
+		S buildData = getBuildData();
+
+		return JenkinsResultsParserUtil.combine(
+			"<a href=\"https://github.com/",
+			buildData.getPortalGitHubUsername(), "/",
+			buildData.getPortalGitHubRepositoryName(), "/commit/",
+			buildData.getPortalBranchSHA(), "\">",
+			getPortalBranchAbbreviatedSHA(), "</a>");
 	}
 
 	protected abstract void invokeBuild();
@@ -338,12 +358,18 @@ public abstract class BasePortalControllerBuildRunner
 					_portalBranchSHAPattern.matcher(description);
 				Matcher portalGitHubCompareURLMatcher =
 					_portalGitHubCompareURLPattern.matcher(description);
+				Matcher portalBaseBranchSHAMatcher =
+					_portalBaseBranchSHAPattern.matcher(description);
 
 				boolean portalBranchSHAFound = portalBranchSHAMatcher.find();
 				boolean portalGitHubCompareURLFound =
 					portalGitHubCompareURLMatcher.find();
+				boolean portalBaseBranchSHAFound =
+					portalBaseBranchSHAMatcher.find();
 
-				if (portalBranchSHAFound || portalGitHubCompareURLFound) {
+				if (portalBranchSHAFound || portalGitHubCompareURLFound ||
+					portalBaseBranchSHAFound) {
+
 					sb.append("<ul>");
 
 					if (portalBranchSHAFound) {
@@ -355,6 +381,12 @@ public abstract class BasePortalControllerBuildRunner
 					if (portalGitHubCompareURLFound) {
 						sb.append("<li>");
 						sb.append(portalGitHubCompareURLMatcher.group());
+						sb.append("</li>");
+					}
+
+					if (portalBaseBranchSHAFound) {
+						sb.append("<li>");
+						sb.append(portalBaseBranchSHAMatcher.group());
 						sb.append("</li>");
 					}
 
@@ -397,16 +429,25 @@ public abstract class BasePortalControllerBuildRunner
 		}
 	}
 
+	private String _getDescriptionBranchSHA(
+		Pattern pattern, String description) {
+
+		Matcher matcher = pattern.matcher(description);
+
+		if (!matcher.find()) {
+			return null;
+		}
+
+		return matcher.group("branchSHA");
+	}
+
 	private void _updateBuildDescription() {
 		S buildData = getBuildData();
 
 		buildData.setBuildDescription(
 			JenkinsResultsParserUtil.combine(
-				"<strong>SKIPPED</strong> - <a href=\"https://github.com/",
-				buildData.getPortalGitHubUsername(), "/",
-				buildData.getPortalGitHubRepositoryName(),
-				"/commit/", buildData.getPortalBranchSHA(), "\">",
-				getPortalBranchAbbreviatedSHA(), "</a> was already ran"));
+				"<strong>SKIPPED</strong> - ", getSkippedCommitsDescription(),
+				" was already ran"));
 
 		super.updateBuildDescription();
 	}
@@ -420,6 +461,9 @@ public abstract class BasePortalControllerBuildRunner
 	private static final Pattern _jobURLPattern = Pattern.compile(
 		"https://(?<masterHostname>test-\\d+-\\d+)\\.liferay\\.com/job/" +
 			"(?<jobName>[^/\"]+)/?");
+	private static final Pattern _portalBaseBranchSHAPattern = Pattern.compile(
+		"<strong>Base Git ID:</strong> <a href=\"https://github.com/[^/]+/" +
+			"[^/]+/commit/(?<branchSHA>[0-9a-f]{40})\">[0-9a-f]{7}</a>");
 	private static final Pattern _portalBranchSHAPattern = Pattern.compile(
 		"<strong>Git ID:</strong> <a href=\"https://github.com/[^/]+/[^/]+/" +
 			"commit/(?<branchSHA>[0-9a-f]{40})\">[0-9a-f]{7}</a>");
