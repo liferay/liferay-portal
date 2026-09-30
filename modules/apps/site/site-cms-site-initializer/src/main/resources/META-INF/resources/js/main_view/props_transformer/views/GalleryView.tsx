@@ -124,6 +124,7 @@ const GalleryView = ({
 									'select-a-single-file-to-preview-its-content'
 								)}
 								imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state_preview.svg`}
+								imgSrcReducedMotion={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state_preview.svg`}
 								title={Liferay.Language.get(
 									'no-preview-available'
 								)}

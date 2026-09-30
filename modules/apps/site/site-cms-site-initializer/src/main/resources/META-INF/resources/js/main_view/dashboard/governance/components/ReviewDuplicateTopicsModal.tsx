@@ -305,6 +305,7 @@ export default function ReviewDuplicateTopicsModal({
 							'there-are-no-duplicated-topics-in-the-selected-spaces'
 						)}
 						imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state.svg`}
+						imgSrcReducedMotion={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state.svg`}
 						title={Liferay.Language.get('no-duplicated-topics-yet')}
 					/>
 				) : null}

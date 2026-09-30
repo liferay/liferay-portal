@@ -142,6 +142,7 @@ export function AssetConsumption() {
 						'there-are-no-assets-created-in-the-space'
 					)}
 					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state.svg`}
+					imgSrcReducedMotion={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state.svg`}
 					title={Liferay.Language.get('no-assets-yet')}
 				/>
 			);

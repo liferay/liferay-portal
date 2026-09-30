@@ -116,6 +116,7 @@ export default function PreviewBody({
 								'select-a-channel-and-save-as-draft-or-publish-to-see-your-changes-here'
 							)}
 							imgSrc={`${Liferay.ThemeDisplay.getPathContext()}/o/fragment-collection-contributor-inputs/drag_drop_illustration.svg`}
+							imgSrcReducedMotion={`${Liferay.ThemeDisplay.getPathContext()}/o/fragment-collection-contributor-inputs/drag_drop_illustration.svg`}
 							small
 							title={Liferay.Language.get('nothing-to-show-yet')}
 						/>
