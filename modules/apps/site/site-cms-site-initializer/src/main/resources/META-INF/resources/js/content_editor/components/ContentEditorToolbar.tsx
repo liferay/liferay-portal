@@ -163,7 +163,7 @@ export default function ContentEditorToolbar({
 
 		setSuccessMessage(
 			hasWorkflow
-				? Liferay.Language.get('x-was-submitted-for-workflow')
+				? Liferay.Language.get('x-has-been-submitted-for-workflow')
 				: isNew
 					? Liferay.Language.get('x-was-created-successfully')
 					: Liferay.Language.get('x-was-updated-successfully')

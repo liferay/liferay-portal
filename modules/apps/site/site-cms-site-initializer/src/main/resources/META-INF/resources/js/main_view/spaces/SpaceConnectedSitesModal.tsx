@@ -138,7 +138,10 @@ const ConnectableActions = ({
 				items={items}
 				trigger={
 					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('site-actions')}
+						aria-label={sub(
+							Liferay.Language.get('actions-for-x'),
+							site.descriptiveName
+						)}
 						borderless
 						displayType="secondary"
 						size="xs"
