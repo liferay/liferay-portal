@@ -749,11 +749,10 @@ public class LayoutContentVersionLocalServiceTest {
 	private void _testAddLayoutContentVersionWithCommonStyles()
 		throws Exception {
 
+		String backgroundColor1 = "#00FF00";
 		SegmentsExperience segmentsExperience =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperience(
 				_draftLayout.getPlid());
-
-		String backgroundColor1 = "#00FF00";
 
 		String itemId1 = _addContainerToLayout(
 			backgroundColor1, segmentsExperience);
