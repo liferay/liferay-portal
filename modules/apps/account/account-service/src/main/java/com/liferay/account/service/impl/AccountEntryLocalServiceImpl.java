@@ -159,9 +159,9 @@ public class AccountEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		_validate(externalReferenceCode, name, taxIdNumber);
-
 		// Account entry
+
+		_validate(externalReferenceCode, name, taxIdNumber);
 
 		long accountEntryId = counterLocalService.increment();
 
