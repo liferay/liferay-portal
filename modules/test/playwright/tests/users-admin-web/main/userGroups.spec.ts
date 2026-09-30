@@ -84,9 +84,11 @@ test(
 );
 
 test(
-	'Can add and remove user group member',
-	{tag: '@LPD-57361'},
+	'Can add and remove a user group member and delete the user group',
+	{tag: ['@LPD-57361', '@LPD-107687']},
 	async ({apiHelpers, page, userGroupsPage}) => {
+		page.on('dialog', async (dialog) => await dialog.accept());
+
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 		const userGroup = await apiHelpers.headlessAdminUser.postUserGroup();
 
@@ -123,6 +125,28 @@ test(
 		await waitForAlert(page);
 
 		await expect(userGroupsPage.noUsersMessage).toBeVisible();
+
+		await userGroupsPage.backButton.click();
+
+		await (
+			await userGroupsPage.userGroupsTableCheckbox(userGroup.name)
+		).check();
+
+		const [getUsersCountResponse] = await Promise.all([
+			page.waitForResponse((response) =>
+				response.url().includes('get_users_count')
+			),
+			userGroupsPage.deleteButton.click(),
+		]);
+
+		expect(await getUsersCountResponse.text()).toBe('0');
+		expect(getUsersCountResponse.url()).not.toContain('mvcPath');
+
+		await waitForAlert(page);
+
+		await expect(
+			userGroupsPage.userGroupsTableCell(userGroup.name)
+		).not.toBeVisible();
 	}
 );
 

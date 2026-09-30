@@ -41,6 +41,7 @@ export class UserGroupsPage {
 	readonly addUsersIFrameAddButton: Locator;
 	readonly addUsersTable: DataTablePage;
 	readonly assignMembersMenuItem: Locator;
+	readonly backButton: Locator;
 	readonly creationMenuNewButton: Locator;
 	readonly customField: (fieldName: string) => Promise<Locator>;
 	readonly deleteButton: Locator;
@@ -99,6 +100,7 @@ export class UserGroupsPage {
 		this.assignMembersMenuItem = page.getByRole('menuitem', {
 			name: 'Assign Members',
 		});
+		this.backButton = page.getByRole('link', {exact: true, name: 'Back'});
 		this.creationMenuNewButton = page
 			.getByTestId('creationMenuNewButton')
 			.getByText('New');
