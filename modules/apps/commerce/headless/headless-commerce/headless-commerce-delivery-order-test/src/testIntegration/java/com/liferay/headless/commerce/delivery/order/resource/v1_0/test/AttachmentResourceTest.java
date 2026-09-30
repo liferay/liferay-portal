@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
@@ -43,7 +42,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Stefano Motta
  */
-@FeatureFlag("LPD-6252")
 @RunWith(Arquillian.class)
 public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 

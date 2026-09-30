@@ -43,7 +43,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -63,7 +62,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Stefano Motta
  */
-@FeatureFlag("LPD-6252")
 @RunWith(Arquillian.class)
 @Sync
 public class CommerceOrderAttachmentIndexerTest {

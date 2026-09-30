@@ -8,7 +8,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
@@ -24,9 +23,6 @@ export const test = mergeTests(
 	commercePagesTest,
 	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
-	featureFlagsTest({
-		'LPD-6252': {enabled: true},
-	}),
 	globalMenuPagesTest,
 	pageEditorPagesTest,
 	isolatedSiteTest,
