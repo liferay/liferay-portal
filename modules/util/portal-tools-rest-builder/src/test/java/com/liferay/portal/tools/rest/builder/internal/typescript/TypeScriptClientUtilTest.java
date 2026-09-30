@@ -54,6 +54,16 @@ public class TypeScriptClientUtilTest {
 			StringUtil.count(
 				externalChildEntity2, "\"mixinProperty\"?: string;"));
 
+		String testEntity = models.get("TestEntity.ts");
+
+		Assert.assertTrue(
+			testEntity,
+			testEntity.contains(
+				"import {ExternalMixin} from './ExternalMixin';"));
+		Assert.assertTrue(
+			testEntity,
+			testEntity.contains("\"externalMixin\"?: ExternalMixin;"));
+
 		Assert.assertEquals(
 			_generateTypeScriptClient(false), _generateTypeScriptClient(true));
 	}

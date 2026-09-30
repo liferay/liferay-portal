@@ -4,6 +4,8 @@ components:
             properties:
                 externalEntity:
                     $ref: ../external-impl/rest-openapi.yaml#ExternalEntity
+                externalMixin:
+                    $ref: ../external-impl/rest-openapi.yaml#/components/schemas/ExternalMixin
             type: object
 info:
     title: Test
