@@ -17,6 +17,27 @@ tests:
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: completed = iff\(finished, endTime, datetime\(null\)\)\\n\| where \$__timeFilter\(\$\{timeField\}\)
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: "\"label\": \"Time Range Applies To\",\\s+\"name\": \"timeField\""
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: "\"query\": \"Backup Triggered : triggered,Backup Completed : completed\""
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: "\"from\": \"now-14d\""
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Filters the backups to the time range by when they were triggered or completed as the operator picks
+        set:
+            azure.resourceGroupName: liferay-test
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
                     path: data["databases.json"]
                     pattern: "\"query\": \"aws\""
             -   notMatchRegex:
@@ -101,7 +122,7 @@ tests:
                     pattern: "\"subscriptions\": \\[\\s+\"00000000-0000-0000-0000-000000000000\"\\s+\\]"
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: "\"title\": \"Backups \\(Last 14 Days\\)\""
+                    pattern: "\"title\": \"Backups\",\\s+\"transformations\""
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: \[.Backup Triggered.\] = triggered

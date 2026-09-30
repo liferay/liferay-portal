@@ -54,7 +54,7 @@
 				"type": "grafana-azure-monitor-datasource",
 				"uid": "${DS_AZURE_MONITOR}"
 			},
-			"description": "Azure Resource Graph only keeps the last 14 days of backup jobs, so older backups are not listed even if their recovery points have not expired.",
+			"description": "Lists the backups triggered or completed within the time range, as chosen in Time Range Applies To. Azure Resource Graph only keeps the last 14 days of backup jobs, so older backups are not listed even if their recovery points have not expired.",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -200,7 +200,7 @@
 			"targets": [
 				{
 					"azureResourceGraph": {
-						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupjobs'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where properties.operation == 'Backup'\n| extend completed = todatetime(properties.endTime), dataSourceName = tostring(properties.dataSourceName), recoveryPointId = tostring(properties.extendedInfo.targetRecoverPoint.recoveryPointID), status = tostring(properties.status), triggered = todatetime(properties.startTime)\n| mv-expand resourceId = pack_array(tolower(tostring(properties.dataSourceId)), tostring(split(tolower(id), '/backupjobs/')[0])) to typeof(string)\n| join kind=leftouter (\n\tresources\n\t| where type in ('microsoft.dataprotection/backupvaults', 'microsoft.storage/storageaccounts')\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| project dataPlane = tostring(tags['data-plane']), namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])), resourceId = tolower(id)\n) on resourceId\n| summarize dataPlane = max(dataPlane), namespace = max(namespace) by completed, dataSourceName, id, recoveryPointId, status, triggered\n| where namespace == '$environment'\n| extend finished = status != 'InProgress' and isnotnull(completed)\n| extend minutes = iff(finished, max_of(toint(round((completed - triggered) / 1m)), 1), int(null))\n| order by triggered desc\n| project ['Recovery Point ID'] = iff(status in ('Completed', 'CompletedWithWarnings'), recoveryPointId, ''), ['Data Plane'] = dataPlane, ['Storage Account'] = dataSourceName, ['Backup Triggered'] = triggered, ['Backup Completed'] = iff(finished, completed, datetime(null)), Duration = case(not(finished), '', minutes >= 60, strcat(minutes / 60, 'h', iff(minutes % 60 < 10, '0', ''), minutes % 60, 'm'), strcat(minutes, 'm')), Status = case(status in ('Completed', 'CompletedWithWarnings'), 'SUCCEEDED', status == 'InProgress', 'IN PROGRESS', status == 'Failed', 'FAILED', toupper(status))",
+						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupjobs'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where properties.operation == 'Backup'\n| extend endTime = todatetime(properties.endTime), status = tostring(properties.status), triggered = todatetime(properties.startTime)\n| extend finished = status != 'InProgress' and isnotnull(endTime)\n| extend completed = iff(finished, endTime, datetime(null))\n| where $__timeFilter(${timeField})\n| extend dataSourceName = tostring(properties.dataSourceName), recoveryPointId = tostring(properties.extendedInfo.targetRecoverPoint.recoveryPointID)\n| mv-expand resourceId = pack_array(tolower(tostring(properties.dataSourceId)), tostring(split(tolower(id), '/backupjobs/')[0])) to typeof(string)\n| join kind=leftouter (\n\tresources\n\t| where type in ('microsoft.dataprotection/backupvaults', 'microsoft.storage/storageaccounts')\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| project dataPlane = tostring(tags['data-plane']), namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])), resourceId = tolower(id)\n) on resourceId\n| summarize dataPlane = max(dataPlane), namespace = max(namespace) by completed, dataSourceName, finished, id, recoveryPointId, status, triggered\n| where namespace == '$environment'\n| extend minutes = iff(finished, max_of(toint(round((completed - triggered) / 1m)), 1), int(null))\n| order by triggered desc\n| project ['Recovery Point ID'] = iff(status in ('Completed', 'CompletedWithWarnings'), recoveryPointId, ''), ['Data Plane'] = dataPlane, ['Storage Account'] = dataSourceName, ['Backup Triggered'] = triggered, ['Backup Completed'] = completed, Duration = case(not(finished), '', minutes >= 60, strcat(minutes / 60, 'h', iff(minutes % 60 < 10, '0', ''), minutes % 60, 'm'), strcat(minutes, 'm')), Status = case(status in ('Completed', 'CompletedWithWarnings'), 'SUCCEEDED', status == 'InProgress', 'IN PROGRESS', status == 'Failed', 'FAILED', toupper(status))",
 						"resultFormat": "table"
 					},
 					"datasource": {
@@ -214,7 +214,7 @@
 					]
 				}
 			],
-			"title": "Backups (Last 14 Days)",
+			"title": "Backups",
 			"transformations": [
 				{
 					"id": "convertFieldType",
@@ -270,11 +270,35 @@
 				"regexApplyTo": "value",
 				"sort": 1,
 				"type": "query"
+			},
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "Backup Triggered",
+					"value": "triggered"
+				},
+				"description": "Whether the time range matches each backup by when it was triggered or by when it completed. A backup still in progress has not completed, so it only matches by when it was triggered.",
+				"label": "Time Range Applies To",
+				"name": "timeField",
+				"options": [
+					{
+						"selected": true,
+						"text": "Backup Triggered",
+						"value": "triggered"
+					},
+					{
+						"selected": false,
+						"text": "Backup Completed",
+						"value": "completed"
+					}
+				],
+				"query": "Backup Triggered : triggered,Backup Completed : completed",
+				"type": "custom"
 			}
 		]
 	},
 	"time": {
-		"from": "now-7d",
+		"from": "now-14d",
 		"to": "now"
 	},
 	"timepicker": {
