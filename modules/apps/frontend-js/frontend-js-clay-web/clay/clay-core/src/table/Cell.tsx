@@ -197,6 +197,11 @@ export const Cell = React.forwardRef(
 				? sort.direction
 				: null;
 
+		const sortColumnLabel =
+			isSortable && messages['sortColumn'] && textValue
+				? sub(messages['sortColumn'], [textValue])
+				: undefined;
+
 		return (
 			<As
 				{...otherProps}
@@ -270,15 +275,12 @@ export const Cell = React.forwardRef(
 
 						<Layout.ContentCol>
 							<button
-								aria-label={
-									messages['sortColumn'] && textValue
-										? sub(messages['sortColumn'], [
-												textValue,
-											])
-										: undefined
-								}
+								aria-label={sortColumnLabel}
 								className="component-action"
-								title={messages['sortDescription']}
+								title={
+									sortColumnLabel ??
+									messages['sortDescription']
+								}
 								type="button"
 							>
 								<Icon
