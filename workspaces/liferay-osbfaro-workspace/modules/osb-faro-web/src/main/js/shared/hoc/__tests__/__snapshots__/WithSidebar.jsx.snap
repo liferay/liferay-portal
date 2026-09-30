@@ -68,309 +68,344 @@ exports[`withSidebar should render with the sidebar 1`] = `
         <div
           class="sidebar-body"
         >
-          <div
-            class="panel"
+          <nav
+            aria-label="Menu"
+            class="menubar menubar-transparent menubar-vertical-expand-md"
           >
-            <button
-              aria-controls="clay-id-3"
-              aria-expanded="true"
-              class="panel-header panel-header-link show btn btn-unstyled"
-              type="button"
+            <ul
+              aria-orientation="vertical"
+              class="nav nav-stacked"
+              role="menubar"
             >
-              <div
-                class="section-title"
+              <li
+                class="nav-item"
+                role="none"
               >
-                <span>
-                  Touchpoints
-                </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-angle-down icon-root"
-                  role="presentation"
+                <button
+                  aria-controls="clay-id-4"
+                  aria-expanded="true"
+                  class="nav-link collapse-icon btn btn-unstyled"
+                  role="menuitem"
+                  tabindex="-1"
+                  type="button"
                 >
-                  <use
-                    href="#angle-down"
-                  />
-                </svg>
-              </div>
-            </button>
-            <div
-              aria-labelledby="clay-id-3"
-              class="panel-collapse"
-              id="clay-id-3"
-              role="region"
-            >
-              <div
-                class="panel-body"
-              >
+                  <span
+                    class="section-title"
+                  >
+                    Touchpoints
+                  </span>
+                  <span
+                    class="collapse-icon-closed"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-angle-right-small"
+                      focusable="false"
+                      role="presentation"
+                    >
+                      <use
+                        href="#angle-right-small"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="collapse-icon-open"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-angle-down-small"
+                      focusable="false"
+                      role="presentation"
+                    >
+                      <use
+                        href="#angle-down-small"
+                      />
+                    </svg>
+                  </span>
+                </button>
                 <ul
-                  class="nav-list"
+                  class="nav nav-stacked"
+                  id="clay-id-4"
+                  role="menu"
                 >
                   <li
-                    class="sidebar-item-root"
+                    class="nav-item"
+                    role="none"
                   >
                     <a
-                      class="link btn btn-unstyled"
+                      class="nav-link collapsed"
                       href="/workspace/23/1/sites"
+                      role="menuitem"
+                      tabindex="0"
                     >
                       <span
-                        class="link-content-wrapper"
+                        class="icon-wrapper"
                       >
-                        <span
-                          class="icon-wrapper"
+                        <svg
+                          class="lexicon-icon lexicon-icon-sites icon-root"
+                          role="presentation"
                         >
-                          <svg
-                            class="lexicon-icon lexicon-icon-sites icon-root"
-                            role="presentation"
-                          >
-                            <use
-                              href="#sites"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="item-label"
-                        >
-                          Sites
-                        </span>
+                          <use
+                            href="#sites"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="item-label"
+                      >
+                        Sites
                       </span>
                     </a>
                   </li>
                   <li
-                    class="sidebar-item-root"
+                    class="nav-item"
+                    role="none"
                   >
                     <a
-                      class="link btn btn-unstyled"
+                      class="nav-link collapsed"
                       href="/workspace/23/1/assets"
+                      role="menuitem"
+                      tabindex="-1"
                     >
                       <span
-                        class="link-content-wrapper"
+                        class="icon-wrapper"
                       >
-                        <span
-                          class="icon-wrapper"
+                        <svg
+                          class="lexicon-icon lexicon-icon-sheets icon-root"
+                          role="presentation"
                         >
-                          <svg
-                            class="lexicon-icon lexicon-icon-sheets icon-root"
-                            role="presentation"
-                          >
-                            <use
-                              href="#sheets"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="item-label"
-                        >
-                          Assets
-                        </span>
+                          <use
+                            href="#sheets"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="item-label"
+                      >
+                        Assets
                       </span>
                     </a>
                   </li>
                   <li
-                    class="sidebar-item-root"
+                    class="nav-item"
+                    role="none"
                   >
                     <a
-                      class="link btn btn-unstyled"
+                      class="nav-link collapsed"
                       href="/workspace/23/1/event-analysis"
+                      role="menuitem"
+                      tabindex="-1"
                     >
                       <span
-                        class="link-content-wrapper"
+                        class="icon-wrapper"
                       >
-                        <span
-                          class="icon-wrapper"
+                        <svg
+                          class="lexicon-icon lexicon-icon-click icon-root"
+                          role="presentation"
                         >
-                          <svg
-                            class="lexicon-icon lexicon-icon-click icon-root"
-                            role="presentation"
-                          >
-                            <use
-                              href="#click"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="item-label"
-                        >
-                          Events
-                        </span>
+                          <use
+                            href="#click"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="item-label"
+                      >
+                        Events
                       </span>
                     </a>
                   </li>
                 </ul>
-              </div>
-            </div>
-          </div>
-          <div
-            class="panel"
-          >
-            <button
-              aria-controls="clay-id-4"
-              aria-expanded="true"
-              class="panel-header panel-header-link show btn btn-unstyled"
-              type="button"
-            >
-              <div
-                class="section-title"
+              </li>
+              <li
+                class="nav-item"
+                role="none"
               >
-                <span>
-                  People
-                </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-angle-down icon-root"
-                  role="presentation"
+                <button
+                  aria-controls="clay-id-9"
+                  aria-expanded="true"
+                  class="nav-link collapse-icon btn btn-unstyled"
+                  role="menuitem"
+                  tabindex="-1"
+                  type="button"
                 >
-                  <use
-                    href="#angle-down"
-                  />
-                </svg>
-              </div>
-            </button>
-            <div
-              aria-labelledby="clay-id-4"
-              class="panel-collapse"
-              id="clay-id-4"
-              role="region"
-            >
-              <div
-                class="panel-body"
-              >
+                  <span
+                    class="section-title"
+                  >
+                    People
+                  </span>
+                  <span
+                    class="collapse-icon-closed"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-angle-right-small"
+                      focusable="false"
+                      role="presentation"
+                    >
+                      <use
+                        href="#angle-right-small"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="collapse-icon-open"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-angle-down-small"
+                      focusable="false"
+                      role="presentation"
+                    >
+                      <use
+                        href="#angle-down-small"
+                      />
+                    </svg>
+                  </span>
+                </button>
                 <ul
-                  class="nav-list"
+                  class="nav nav-stacked"
+                  id="clay-id-9"
+                  role="menu"
                 >
                   <li
-                    class="sidebar-item-root"
+                    class="nav-item"
+                    role="none"
                   >
                     <a
-                      class="link btn btn-unstyled"
+                      class="nav-link collapsed"
                       href="/workspace/23/1/contacts/segments"
+                      role="menuitem"
+                      tabindex="-1"
                     >
                       <span
-                        class="link-content-wrapper"
+                        class="icon-wrapper"
                       >
-                        <span
-                          class="icon-wrapper"
+                        <svg
+                          class="lexicon-icon lexicon-icon-box-squared icon-root"
+                          role="presentation"
                         >
-                          <svg
-                            class="lexicon-icon lexicon-icon-box-squared icon-root"
-                            role="presentation"
-                          >
-                            <use
-                              href="#box-squared"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="item-label"
-                        >
-                          Segments
-                        </span>
+                          <use
+                            href="#box-squared"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="item-label"
+                      >
+                        Segments
                       </span>
                     </a>
                   </li>
                   <li
-                    class="sidebar-item-root"
+                    class="nav-item"
+                    role="none"
                   >
                     <a
-                      class="link btn btn-unstyled"
+                      class="nav-link collapsed"
                       href="/workspace/23/1/contacts/individuals"
+                      role="menuitem"
+                      tabindex="-1"
                     >
                       <span
-                        class="link-content-wrapper"
+                        class="icon-wrapper"
                       >
-                        <span
-                          class="icon-wrapper"
+                        <svg
+                          class="lexicon-icon lexicon-icon-users icon-root"
+                          role="presentation"
                         >
-                          <svg
-                            class="lexicon-icon lexicon-icon-users icon-root"
-                            role="presentation"
-                          >
-                            <use
-                              href="#users"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="item-label"
-                        >
-                          Individuals
-                        </span>
+                          <use
+                            href="#users"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="item-label"
+                      >
+                        Individuals
                       </span>
                     </a>
                   </li>
                 </ul>
-              </div>
-            </div>
-          </div>
-          <div
-            class="panel"
-          >
-            <button
-              aria-controls="clay-id-5"
-              aria-expanded="true"
-              class="panel-header panel-header-link show btn btn-unstyled"
-              type="button"
-            >
-              <div
-                class="section-title"
+              </li>
+              <li
+                class="nav-item"
+                role="none"
               >
-                <span>
-                  Optimize
-                </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-angle-down icon-root"
-                  role="presentation"
+                <button
+                  aria-controls="clay-id-13"
+                  aria-expanded="true"
+                  class="nav-link collapse-icon btn btn-unstyled"
+                  role="menuitem"
+                  tabindex="-1"
+                  type="button"
                 >
-                  <use
-                    href="#angle-down"
-                  />
-                </svg>
-              </div>
-            </button>
-            <div
-              aria-labelledby="clay-id-5"
-              class="panel-collapse"
-              id="clay-id-5"
-              role="region"
-            >
-              <div
-                class="panel-body"
-              >
+                  <span
+                    class="section-title"
+                  >
+                    Optimize
+                  </span>
+                  <span
+                    class="collapse-icon-closed"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-angle-right-small"
+                      focusable="false"
+                      role="presentation"
+                    >
+                      <use
+                        href="#angle-right-small"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="collapse-icon-open"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-angle-down-small"
+                      focusable="false"
+                      role="presentation"
+                    >
+                      <use
+                        href="#angle-down-small"
+                      />
+                    </svg>
+                  </span>
+                </button>
                 <ul
-                  class="nav-list"
+                  class="nav nav-stacked"
+                  id="clay-id-13"
+                  role="menu"
                 >
                   <li
-                    class="sidebar-item-root"
+                    class="nav-item"
+                    role="none"
                   >
                     <a
-                      class="link btn btn-unstyled"
+                      class="nav-link collapsed"
                       href="/workspace/23/1/tests"
+                      role="menuitem"
+                      tabindex="-1"
                     >
                       <span
-                        class="link-content-wrapper"
+                        class="icon-wrapper"
                       >
-                        <span
-                          class="icon-wrapper"
+                        <svg
+                          class="lexicon-icon lexicon-icon-test icon-root"
+                          role="presentation"
                         >
-                          <svg
-                            class="lexicon-icon lexicon-icon-test icon-root"
-                            role="presentation"
-                          >
-                            <use
-                              href="#test"
-                            />
-                          </svg>
-                        </span>
-                        <span
-                          class="item-label"
-                        >
-                          Tests
-                        </span>
+                          <use
+                            href="#test"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="item-label"
+                      >
+                        Tests
                       </span>
                     </a>
                   </li>
                 </ul>
-              </div>
-            </div>
-          </div>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
