@@ -91,6 +91,19 @@
 				"overrides": [
 					{
 						"matcher": {
+							"id": "byRegexp",
+							"options": ".*"
+						},
+						"properties": [
+							{
+								"id": "links",
+								"value": [
+								]
+							}
+						]
+					},
+					{
+						"matcher": {
 							"id": "byName",
 							"options": "Recovery Point ID"
 						},
