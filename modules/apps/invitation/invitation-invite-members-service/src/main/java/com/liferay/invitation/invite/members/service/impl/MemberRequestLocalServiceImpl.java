@@ -7,7 +7,7 @@ package com.liferay.invitation.invite.members.service.impl;
 
 import com.liferay.invitation.invite.members.constants.InviteMembersConstants;
 import com.liferay.invitation.invite.members.exception.MemberRequestAlreadyUsedException;
-import com.liferay.invitation.invite.members.exception.MemberRequestInvalidUserException;
+import com.liferay.invitation.invite.members.exception.MemberRequestReceiverUserIdException;
 import com.liferay.invitation.invite.members.model.MemberRequest;
 import com.liferay.invitation.invite.members.service.base.MemberRequestLocalServiceBaseImpl;
 import com.liferay.mail.kernel.model.MailMessage;
@@ -464,7 +464,7 @@ public class MemberRequestLocalServiceImpl
 			throw new MemberRequestAlreadyUsedException();
 		}
 		else if (memberRequest.getReceiverUserId() != userId) {
-			throw new MemberRequestInvalidUserException();
+			throw new MemberRequestReceiverUserIdException();
 		}
 	}
 

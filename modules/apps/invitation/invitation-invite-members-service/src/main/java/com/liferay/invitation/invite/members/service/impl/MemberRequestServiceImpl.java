@@ -5,7 +5,7 @@
 
 package com.liferay.invitation.invite.members.service.impl;
 
-import com.liferay.invitation.invite.members.exception.MemberRequestInvalidURLException;
+import com.liferay.invitation.invite.members.exception.MemberRequestServiceContextException;
 import com.liferay.invitation.invite.members.service.base.MemberRequestServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -94,7 +94,7 @@ public class MemberRequestServiceImpl extends MemberRequestServiceBaseImpl {
 
 	private void _validateURL(String url) throws PortalException {
 		if (Validator.isNotNull(url) && (_portal.escapeRedirect(url) == null)) {
-			throw new MemberRequestInvalidURLException(url);
+			throw new MemberRequestServiceContextException(url);
 		}
 	}
 

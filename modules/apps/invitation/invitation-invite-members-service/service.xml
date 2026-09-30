@@ -55,7 +55,7 @@
 	</entity>
 	<exceptions>
 		<exception>MemberRequestAlreadyUsed</exception>
-		<exception>MemberRequestInvalidURL</exception>
-		<exception>MemberRequestInvalidUser</exception>
+		<exception>MemberRequestReceiverUserId</exception>
+		<exception>MemberRequestServiceContext</exception>
 	</exceptions>
 </service-builder>
