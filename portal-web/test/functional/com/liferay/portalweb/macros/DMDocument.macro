@@ -4070,7 +4070,13 @@ definition {
 			}
 
 			for (var category : list ${category}) {
-				AssertTextEquals(
+
+				// The node was just expanded, so its card body also holds
+				// the extension chips nested underneath it. Match on partial
+				// text to read the category and its item count without
+				// requiring the node to have no children. See LPD-107571.
+
+				AssertTextEquals.assertPartialText(
 					key_nodeName = ${category},
 					locator1 = "Treeview#NODE_ITEM",
 					value1 = ${category});
