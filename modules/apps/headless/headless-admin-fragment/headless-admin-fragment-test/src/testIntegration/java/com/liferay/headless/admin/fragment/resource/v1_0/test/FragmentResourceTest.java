@@ -2063,7 +2063,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						"Optional reference generated for missing ",
 						"InfoCollectionProvider with external reference code ",
 						"com.liferay.nonexistent.info.collection.provider.",
-						"NonexistentInfoCollectionProvider and scope ID ",
+						"NonexistentInfoCollectionProvider and company ID ",
 						testGroup.getCompanyId()),
 					StringBundler.concat(
 						"Optional reference generated for missing entity with ",
