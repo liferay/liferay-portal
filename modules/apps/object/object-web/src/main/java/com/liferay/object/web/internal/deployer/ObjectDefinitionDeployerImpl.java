@@ -363,7 +363,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_dlURLHelper, _friendlyURLEntryLocalService,
 					_infoItemFieldReaderFieldSetProvider,
 					_listTypeEntryLocalService, _objectActionLocalService,
-					objectDefinition, _objectDefinitionLocalService,
+					_objectDefinitionLocalService,
 					objectFieldInfoFieldConverter, _objectEntryLocalService,
 					_objectEntryManagerRegistry, _objectEntryService,
 					_objectFieldLocalService,

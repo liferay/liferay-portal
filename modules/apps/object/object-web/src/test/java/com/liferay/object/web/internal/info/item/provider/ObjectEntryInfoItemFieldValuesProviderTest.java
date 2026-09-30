@@ -80,15 +80,6 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			Collections.emptyList()
 		);
 
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
-
-		Mockito.when(
-			objectDefinition.isDefaultStorageType()
-		).thenReturn(
-			false
-		);
-
 		ObjectFieldLocalService objectFieldLocalService = Mockito.mock(
 			ObjectFieldLocalService.class);
 
@@ -117,7 +108,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 				Mockito.mock(FriendlyURLEntryLocalService.class),
 				infoItemFieldReaderFieldSetProvider,
 				Mockito.mock(ListTypeEntryLocalService.class),
-				Mockito.mock(ObjectActionLocalService.class), objectDefinition,
+				Mockito.mock(ObjectActionLocalService.class),
 				Mockito.mock(ObjectDefinitionLocalService.class),
 				Mockito.mock(ObjectFieldInfoFieldConverter.class),
 				Mockito.mock(ObjectEntryLocalService.class),
@@ -140,12 +131,27 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		objectEntry.setExternalReferenceCode(externalReferenceCode);
 		objectEntry.setProperties(Collections.emptyMap());
 
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.isDefaultStorageType()
+		).thenReturn(
+			false
+		);
+
 		ObjectEntry serviceBuilderObjectEntry = Mockito.mock(ObjectEntry.class);
 
 		Mockito.when(
 			serviceBuilderObjectEntry.getObjectEntryId()
 		).thenReturn(
 			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			serviceBuilderObjectEntry.getObjectDefinition()
+		).thenReturn(
+			objectDefinition
 		);
 
 		ServiceContext serviceContext = Mockito.mock(ServiceContext.class);

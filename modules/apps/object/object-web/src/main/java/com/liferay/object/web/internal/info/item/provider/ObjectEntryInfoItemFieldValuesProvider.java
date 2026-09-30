@@ -86,7 +86,6 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		InfoItemFieldReaderFieldSetProvider infoItemFieldReaderFieldSetProvider,
 		ListTypeEntryLocalService listTypeEntryLocalService,
 		ObjectActionLocalService objectActionLocalService,
-		ObjectDefinition objectDefinition,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter,
 		ObjectEntryLocalService objectEntryLocalService,
@@ -110,7 +109,6 @@ public class ObjectEntryInfoItemFieldValuesProvider
 			infoItemFieldReaderFieldSetProvider;
 		_listTypeEntryLocalService = listTypeEntryLocalService;
 		_objectActionLocalService = objectActionLocalService;
-		_objectDefinition = objectDefinition;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectFieldInfoFieldConverter = objectFieldInfoFieldConverter;
 		_objectEntryLocalService = objectEntryLocalService;
@@ -151,15 +149,17 @@ public class ObjectEntryInfoItemFieldValuesProvider
 			return infoItemFieldValues;
 		}
 
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
 		try {
 			infoItemFieldValues = InfoItemFieldValues.builder(
 			).infoFieldValues(
-				_getInfoFieldValues(objectEntry)
+				_getInfoFieldValues(objectDefinition, objectEntry)
 			).infoFieldValues(
 				_displayPageInfoItemFieldSetProvider.getInfoFieldValues(
-					_getInfoItemReference(objectEntry), StringPool.BLANK,
-					ObjectEntry.class.getSimpleName(), objectEntry,
-					themeDisplay)
+					_getInfoItemReference(objectDefinition, objectEntry),
+					StringPool.BLANK, ObjectEntry.class.getSimpleName(),
+					objectEntry, themeDisplay)
 			).infoFieldValues(
 				_infoItemFieldReaderFieldSetProvider.getInfoFieldValues(
 					objectEntry.getModelClassName(), objectEntry)
@@ -167,7 +167,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 				_templateInfoItemFieldSetProvider.getInfoFieldValues(
 					objectEntry.getModelClassName(), objectEntry)
 			).infoItemReference(
-				_getInfoItemReference(objectEntry)
+				_getInfoItemReference(objectDefinition, objectEntry)
 			).build();
 		}
 		catch (Exception exception) {
@@ -184,14 +184,16 @@ public class ObjectEntryInfoItemFieldValuesProvider
 	}
 
 	private List<InfoFieldValue<Object>> _getInfoFieldValues(
-		ObjectEntry objectEntry) {
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
 
 		try {
-			if (_objectDefinition.isDefaultStorageType()) {
-				return _getInfoFieldValuesByDefaultStorageType(objectEntry);
+			if (objectDefinition.isDefaultStorageType()) {
+				return _getInfoFieldValuesByDefaultStorageType(
+					objectDefinition, objectEntry);
 			}
 
-			return _getInfoFieldValuesByObjectEntryManager(objectEntry);
+			return _getInfoFieldValuesByObjectEntryManager(
+				objectDefinition, objectEntry);
 		}
 		catch (Exception exception) {
 			return ReflectionUtil.throwException(exception);
@@ -199,7 +201,8 @@ public class ObjectEntryInfoItemFieldValuesProvider
 	}
 
 	private List<InfoFieldValue<Object>>
-			_getInfoFieldValuesByDefaultStorageType(ObjectEntry objectEntry)
+			_getInfoFieldValuesByDefaultStorageType(
+				ObjectDefinition objectDefinition, ObjectEntry objectEntry)
 		throws Exception {
 
 		List<InfoFieldValue<Object>> objectEntryFieldValues = new ArrayList<>();
@@ -215,12 +218,12 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.getDisplayDateInfoField(
-					_objectDefinition),
+					objectDefinition),
 				_getLocalDateTime(objectEntry.getDisplayDate())));
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.getExpirationDateInfoField(
-					_objectDefinition),
+					objectDefinition),
 				_getLocalDateTime(objectEntry.getExpirationDate())));
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
@@ -241,7 +244,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.getReviewDateInfoField(
-					_objectDefinition),
+					objectDefinition),
 				_getLocalDateTime(objectEntry.getReviewDate())));
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
@@ -252,12 +255,12 @@ public class ObjectEntryInfoItemFieldValuesProvider
 				ObjectEntryInfoItemFields.userProfileImageInfoField,
 				_getWebImage(objectEntry.getUserId())));
 
-		if (_objectDefinition.isEnableCategorization()) {
+		if (objectDefinition.isEnableCategorization()) {
 			try {
 				objectEntryFieldValues.addAll(
 					_assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
 						objectEntry.getCompanyId(),
-						_objectDefinition.getClassName(),
+						objectDefinition.getClassName(),
 						objectEntry.getObjectEntryId()));
 			}
 			catch (NoSuchInfoItemException noSuchInfoItemException) {
@@ -272,7 +275,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		Map<String, Object> properties = new HashMap<>();
 
 		com.liferay.object.rest.dto.v1_0.ObjectEntry dtoObjectEntry =
-			_getObjectEntry(_objectDefinition, objectEntry, themeDisplay);
+			_getObjectEntry(objectDefinition, objectEntry, themeDisplay);
 
 		if (dtoObjectEntry != null) {
 			properties = dtoObjectEntry.getProperties();
@@ -283,7 +286,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 				objectEntry.getDefaultLanguageId(), _dlAppLocalService,
 				_dlURLHelper, _friendlyURLEntryLocalService,
 				_listTypeEntryLocalService, _objectActionLocalService,
-				_objectDefinition, _objectDefinitionLocalService,
+				objectDefinition, _objectDefinitionLocalService,
 				_objectEntryLocalService, _objectEntryManagerRegistry,
 				_objectEntryService, _objectFieldInfoFieldConverter,
 				_objectFieldLocalService,
@@ -295,18 +298,18 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.getFriendlyURLInfoField(
-					_objectDefinition),
+					objectDefinition),
 				() ->
 					ObjectEntryInfoItemValuesProviderUtil.
 						getFriendlyURLInfoFieldValue(
 							_portal.getClassNameId(
-								_objectDefinition.getClassName()),
+								objectDefinition.getClassName()),
 							_friendlyURLEntryLocalService,
 							objectEntry.getObjectEntryId())));
 
 		for (ObjectRelationship objectRelationship :
 				_objectRelationshipLocalService.getObjectRelationships(
-					_objectDefinition.getObjectDefinitionId(),
+					objectDefinition.getObjectDefinitionId(),
 					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
 					false)) {
 
@@ -357,6 +360,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 
 	private List<InfoFieldValue<Object>>
 			_getInfoFieldValuesByObjectEntryManager(
+				ObjectDefinition objectDefinition,
 				ObjectEntry serviceBuilderObjectEntry)
 		throws Exception {
 
@@ -370,7 +374,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 			_getObjectEntry(
-				_objectDefinition, serviceBuilderObjectEntry, themeDisplay);
+				objectDefinition, serviceBuilderObjectEntry, themeDisplay);
 
 		objectEntryFieldValues.add(
 			new InfoFieldValue<>(
@@ -401,7 +405,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 				objectEntry.getDefaultLanguageId(), _dlAppLocalService,
 				_dlURLHelper, _friendlyURLEntryLocalService,
 				_listTypeEntryLocalService, _objectActionLocalService,
-				_objectDefinition, _objectDefinitionLocalService,
+				objectDefinition, _objectDefinitionLocalService,
 				_objectEntryLocalService, _objectEntryManagerRegistry,
 				_objectEntryService, _objectFieldInfoFieldConverter,
 				_objectFieldLocalService,
@@ -414,15 +418,17 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		return objectEntryFieldValues;
 	}
 
-	private InfoItemReference _getInfoItemReference(ObjectEntry objectEntry) {
-		if (_objectDefinition.isDefaultStorageType()) {
+	private InfoItemReference _getInfoItemReference(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
+
+		if (objectDefinition.isDefaultStorageType()) {
 			return new InfoItemReference(
 				objectEntry.getModelClassName(),
 				new ClassPKInfoItemIdentifier(objectEntry.getObjectEntryId()));
 		}
 
 		return new InfoItemReference(
-			_objectDefinition.getClassName(),
+			objectDefinition.getClassName(),
 			new ERCInfoItemIdentifier(objectEntry.getExternalReferenceCode()));
 	}
 
@@ -501,7 +507,6 @@ public class ObjectEntryInfoItemFieldValuesProvider
 		_infoItemFieldReaderFieldSetProvider;
 	private final ListTypeEntryLocalService _listTypeEntryLocalService;
 	private final ObjectActionLocalService _objectActionLocalService;
-	private final ObjectDefinition _objectDefinition;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectEntryManagerRegistry _objectEntryManagerRegistry;
