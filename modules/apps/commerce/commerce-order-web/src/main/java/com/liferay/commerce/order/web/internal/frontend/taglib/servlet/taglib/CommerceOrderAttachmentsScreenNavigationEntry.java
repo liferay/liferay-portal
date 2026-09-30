@@ -10,9 +10,7 @@ import com.liferay.commerce.order.web.internal.display.context.CommerceOrderAtta
 import com.liferay.commerce.order.web.internal.display.context.CommerceOrderEditDisplayContext;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,12 +35,6 @@ public class CommerceOrderAttachmentsScreenNavigationEntry
 	@Override
 	public String getEntryKey() {
 		return getCategoryKey();
-	}
-
-	@Override
-	public boolean isVisible(User user, CommerceOrder commerceOrder) {
-		return FeatureFlagManagerUtil.isEnabled(
-			user.getCompanyId(), "LPD-6252");
 	}
 
 	@Override

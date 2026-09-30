@@ -590,12 +590,6 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_portal.getCompanyId(httpServletRequest), "LPD-6252")) {
-
-			return false;
-		}
-
 		CommerceOrder commerceOrder =
 			CommerceOrderInfoItemUtil.getCommerceOrder(
 				_commerceOrderService, httpServletRequest);

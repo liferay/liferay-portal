@@ -58,11 +58,8 @@ const PurchaseOrderDocumentView = ({
 		const payload = {
 			attachment: await getBase64(file),
 			title: file.name,
+			type: 'purchaseOrderDocument',
 		};
-
-		if (Liferay.FeatureFlags['LPD-6252']) {
-			payload.type = 'purchaseOrderDocument';
-		}
 
 		CommerceServiceProvider.DeliveryCartAPI('v1')
 			.addAttachment(orderId, payload)
@@ -190,7 +187,7 @@ const PurchaseOrderDocumentView = ({
 					!readOnly &&
 					value &&
 					isEditable(field, isOpen) &&
-					(!Liferay.FeatureFlags['LPD-6252'] || isOwner) ? (
+					isOwner ? (
 						<ClayButton.Group className="flex-nowrap">
 							<ClayButtonWithIcon
 								aria-label={sub(
