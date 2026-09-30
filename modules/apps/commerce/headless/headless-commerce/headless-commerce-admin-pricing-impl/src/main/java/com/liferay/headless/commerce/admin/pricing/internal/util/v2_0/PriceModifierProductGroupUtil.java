@@ -98,7 +98,7 @@ public class PriceModifierProductGroupUtil {
 
 		if (!LazyReferencingThreadLocal.isEnabled()) {
 			throw new NoSuchPricingClassException(
-				"Unable to find Product Group with externalReferenceCode: " +
+				"Unable to find product group with external reference code " +
 					productGroupExternalReferenceCode);
 		}
 
