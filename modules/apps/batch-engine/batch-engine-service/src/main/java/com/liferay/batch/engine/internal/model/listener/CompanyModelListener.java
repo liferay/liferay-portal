@@ -9,7 +9,7 @@ import com.liferay.batch.engine.model.BatchEngineExportTask;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineExportTaskLocalService;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -29,39 +29,63 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Override
 	public void onBeforeRemove(Company company) throws ModelListenerException {
-		for (BatchEngineExportTask batchEngineExportTask :
-				_batchEngineExportTaskLocalService.getBatchEngineExportTasks(
-					company.getCompanyId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS)) {
-
-			try {
-				_batchEngineExportTaskLocalService.deleteBatchEngineExportTask(
-					batchEngineExportTask.getBatchEngineExportTaskId());
-			}
-			catch (PortalException portalException) {
-				_log.error(
-					"Unable to delete batch engine export task " +
-						batchEngineExportTask.getBatchEngineExportTaskId(),
-					portalException);
-			}
+		try {
+			_deleteBatchEngineExportTasks(company);
+			_deleteBatchEngineImportTasks(company);
 		}
-
-		for (BatchEngineImportTask batchEngineImportTask :
-				_batchEngineImportTaskLocalService.getBatchEngineImportTasks(
-					company.getCompanyId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS)) {
-
-			try {
-				_batchEngineImportTaskLocalService.deleteBatchEngineImportTask(
-					batchEngineImportTask.getBatchEngineImportTaskId());
-			}
-			catch (PortalException portalException) {
-				_log.error(
-					"Unable to delete batch engine import task " +
-						batchEngineImportTask.getBatchEngineImportTaskId(),
-					portalException);
-			}
+		catch (PortalException portalException) {
+			throw new ModelListenerException(portalException);
 		}
+	}
+
+	private void _deleteBatchEngineExportTasks(Company company)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_batchEngineExportTaskLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setCompanyId(company.getCompanyId());
+		actionableDynamicQuery.setPerformActionMethod(
+			(BatchEngineExportTask batchEngineExportTask) -> {
+				try {
+					_batchEngineExportTaskLocalService.
+						deleteBatchEngineExportTask(
+							batchEngineExportTask.getBatchEngineExportTaskId());
+				}
+				catch (PortalException portalException) {
+					_log.error(
+						"Unable to delete batch engine export task " +
+							batchEngineExportTask.getBatchEngineExportTaskId(),
+						portalException);
+				}
+			});
+
+		actionableDynamicQuery.performActions();
+	}
+
+	private void _deleteBatchEngineImportTasks(Company company)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_batchEngineImportTaskLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setCompanyId(company.getCompanyId());
+		actionableDynamicQuery.setPerformActionMethod(
+			(BatchEngineImportTask batchEngineImportTask) -> {
+				try {
+					_batchEngineImportTaskLocalService.
+						deleteBatchEngineImportTask(
+							batchEngineImportTask.getBatchEngineImportTaskId());
+				}
+				catch (PortalException portalException) {
+					_log.error(
+						"Unable to delete batch engine import task " +
+							batchEngineImportTask.getBatchEngineImportTaskId(),
+						portalException);
+				}
+			});
+
+		actionableDynamicQuery.performActions();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
