@@ -117,44 +117,45 @@ public class SecretResolverImpl implements SecretResolver {
 					"\" because its namespace is not supported"));
 		}
 
-		if (KeyReferenceUtil.isKeyReference(value)) {
-			KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
-				value);
+		try {
+			if (KeyReferenceUtil.isKeyReference(value)) {
+				KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
+					value);
 
-			if (keyReference == null) {
-				return ReflectionUtil.throwException(
-					new SecretException("Unable to parse the key reference"));
-			}
+				if (keyReference == null) {
+					throw new SecretException(
+						"Unable to parse the key reference");
+				}
 
-			String referencedIdentifier = keyReference.getIdentifier();
+				String referencedIdentifier = keyReference.getIdentifier();
 
-			if (Objects.equals(identifier, referencedIdentifier) ||
-				(identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE) &&
-				 referencedIdentifier.startsWith(
-					 _IDENTIFIER_PREFIX_PREFERENCE) &&
-				 Objects.equals(
-					 StringUtil.extractLast(identifier, CharPool.SLASH),
-					 StringUtil.extractLast(
-						 referencedIdentifier, CharPool.SLASH)))) {
+				if (Objects.equals(identifier, referencedIdentifier) ||
+					(identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE) &&
+					 referencedIdentifier.startsWith(
+						 _IDENTIFIER_PREFIX_PREFERENCE) &&
+					 Objects.equals(
+						 StringUtil.extractLast(identifier, CharPool.SLASH),
+						 StringUtil.extractLast(
+							 referencedIdentifier, CharPool.SLASH)))) {
 
-				return value;
-			}
+					return value;
+				}
 
-			return ReflectionUtil.throwException(
-				new SecretException(
+				throw new SecretException(
 					StringBundler.concat(
 						"Unable to store \"", identifier,
 						"\" because it references \"", referencedIdentifier,
-						"\"")));
-		}
+						"\""));
+			}
 
-		try (Secret secret = new Secret(
-				new KeyReference(
-					identifier, StringPool.STAR, KeyReference.Type.SECRET),
-				value)) {
+			try (Secret secret = new Secret(
+					new KeyReference(
+						identifier, StringPool.STAR, KeyReference.Type.SECRET),
+					value)) {
 
-			return KeyReferenceUtil.toKeyReferenceString(
-				_secretManager.putSecret(companyId, secret));
+				return KeyReferenceUtil.toKeyReferenceString(
+					_secretManager.putSecret(companyId, secret));
+			}
 		}
 		catch (SecretException secretException) {
 			return ReflectionUtil.throwException(secretException);
