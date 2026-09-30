@@ -52,7 +52,7 @@ public class SingleUpstreamPortalControllerBuildRunner
 
 		return JenkinsResultsParserUtil.combine(
 			super.getSkippedCommitsDescription(), " on base ",
-			_getPortalBaseCommitLink(portalBaseRemoteGitRef));
+			getCommitLink(portalBaseRemoteGitRef));
 	}
 
 	@Override
@@ -142,15 +142,8 @@ public class SingleUpstreamPortalControllerBuildRunner
 		sb.append(JenkinsResultsParserUtil.getRemoteURL(invocationJobURL));
 		sb.append("\"><strong>IN QUEUE</strong></a>");
 		sb.append("<ul><li><strong>Git ID:</strong> ");
-		sb.append("<a href=\"https://github.com/");
-		sb.append(buildData.getPortalGitHubUsername());
-		sb.append("/");
-		sb.append(buildData.getPortalGitHubRepositoryName());
-		sb.append("/commit/");
-		sb.append(buildData.getPortalBranchSHA());
-		sb.append("\">");
-		sb.append(getPortalBranchAbbreviatedSHA());
-		sb.append("</a></li>");
+		sb.append(getCommitLink(buildData.getPortalRemoteGitRef()));
+		sb.append("</li>");
 
 		if (portalGitHubCompareURL != null) {
 			sb.append("<li><strong>Git Compare:</strong> <a href=\"");
@@ -160,7 +153,7 @@ public class SingleUpstreamPortalControllerBuildRunner
 
 		if (portalBaseRemoteGitRef != null) {
 			sb.append("<li><strong>Base Git ID:</strong> ");
-			sb.append(_getPortalBaseCommitLink(portalBaseRemoteGitRef));
+			sb.append(getCommitLink(portalBaseRemoteGitRef));
 			sb.append("</li>");
 		}
 
@@ -206,19 +199,6 @@ public class SingleUpstreamPortalControllerBuildRunner
 		}
 
 		return false;
-	}
-
-	private String _getPortalBaseCommitLink(
-		RemoteGitRef portalBaseRemoteGitRef) {
-
-		String portalBaseBranchSHA = portalBaseRemoteGitRef.getSHA();
-
-		return JenkinsResultsParserUtil.combine(
-			"<a href=\"https://github.com/",
-			portalBaseRemoteGitRef.getUsername(), "/",
-			portalBaseRemoteGitRef.getRepositoryName(), "/commit/",
-			portalBaseBranchSHA, "\">", portalBaseBranchSHA.substring(0, 7),
-			"</a>");
 	}
 
 	private RemoteGitRef _portalBaseRemoteGitRef;

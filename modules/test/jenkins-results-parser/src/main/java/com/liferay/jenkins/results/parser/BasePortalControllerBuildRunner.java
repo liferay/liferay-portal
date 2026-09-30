@@ -194,6 +194,15 @@ public abstract class BasePortalControllerBuildRunner
 		return false;
 	}
 
+	protected String getCommitLink(RemoteGitRef remoteGitRef) {
+		String sha = remoteGitRef.getSHA();
+
+		return JenkinsResultsParserUtil.combine(
+			"<a href=\"https://github.com/", remoteGitRef.getUsername(), "/",
+			remoteGitRef.getRepositoryName(), "/commit/", sha, "\">",
+			sha.substring(0, 7), "</a>");
+	}
+
 	protected String getDescriptionPortalBaseBranchSHA(String description) {
 		return _getDescriptionBranchSHA(
 			description, _portalBaseBranchSHAPattern);
@@ -262,12 +271,7 @@ public abstract class BasePortalControllerBuildRunner
 	protected String getSkippedCommitsDescription() {
 		S buildData = getBuildData();
 
-		return JenkinsResultsParserUtil.combine(
-			"<a href=\"https://github.com/",
-			buildData.getPortalGitHubUsername(), "/",
-			buildData.getPortalGitHubRepositoryName(), "/commit/",
-			buildData.getPortalBranchSHA(), "\">",
-			getPortalBranchAbbreviatedSHA(), "</a>");
+		return getCommitLink(buildData.getPortalRemoteGitRef());
 	}
 
 	protected abstract void invokeBuild();
