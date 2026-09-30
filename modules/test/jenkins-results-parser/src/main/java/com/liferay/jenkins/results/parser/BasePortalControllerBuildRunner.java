@@ -354,18 +354,18 @@ public abstract class BasePortalControllerBuildRunner
 				sb.append("<strong style=\"color: red\">FAILURE</strong> - ");
 				sb.append(buildURLMatcher.group());
 
+				Matcher portalBaseBranchSHAMatcher =
+					_portalBaseBranchSHAPattern.matcher(description);
 				Matcher portalBranchSHAMatcher =
 					_portalBranchSHAPattern.matcher(description);
 				Matcher portalGitHubCompareURLMatcher =
 					_portalGitHubCompareURLPattern.matcher(description);
-				Matcher portalBaseBranchSHAMatcher =
-					_portalBaseBranchSHAPattern.matcher(description);
 
+				boolean portalBaseBranchSHAFound =
+					portalBaseBranchSHAMatcher.find();
 				boolean portalBranchSHAFound = portalBranchSHAMatcher.find();
 				boolean portalGitHubCompareURLFound =
 					portalGitHubCompareURLMatcher.find();
-				boolean portalBaseBranchSHAFound =
-					portalBaseBranchSHAMatcher.find();
 
 				if (portalBranchSHAFound || portalGitHubCompareURLFound ||
 					portalBaseBranchSHAFound) {
