@@ -339,18 +339,20 @@ public abstract class BasePortalControllerBuildRunner
 				Matcher portalGitHubCompareURLMatcher =
 					_portalGitHubCompareURLPattern.matcher(description);
 
-				if (portalBranchSHAMatcher.find() ||
-					portalGitHubCompareURLMatcher.find()) {
+				boolean portalBranchSHAFound = portalBranchSHAMatcher.find();
+				boolean portalGitHubCompareURLFound =
+					portalGitHubCompareURLMatcher.find();
 
+				if (portalBranchSHAFound || portalGitHubCompareURLFound) {
 					sb.append("<ul>");
 
-					if (portalBranchSHAMatcher.find()) {
+					if (portalBranchSHAFound) {
 						sb.append("<li>");
 						sb.append(portalBranchSHAMatcher.group());
 						sb.append("</li>");
 					}
 
-					if (portalGitHubCompareURLMatcher.find()) {
+					if (portalGitHubCompareURLFound) {
 						sb.append("<li>");
 						sb.append(portalGitHubCompareURLMatcher.group());
 						sb.append("</li>");
