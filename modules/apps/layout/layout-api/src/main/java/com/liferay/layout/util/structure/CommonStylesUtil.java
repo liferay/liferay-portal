@@ -99,7 +99,6 @@ public class CommonStylesUtil {
 
 		JSONObject frontendTokensJSONObject = _getFrontendTokensJSONObject(
 			layout, styleBookEntryPreview);
-
 		List<LayoutStructureItem> layoutStructureItems =
 			layoutStructure.getLayoutStructureItems();
 
