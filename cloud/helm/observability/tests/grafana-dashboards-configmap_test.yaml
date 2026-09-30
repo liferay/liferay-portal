@@ -158,6 +158,18 @@ tests:
                     pattern: resourceGroups/liferay-test/providers/Microsoft.Storage/storageAccounts/\$\{__value.raw\}/overview
             -   matchRegex:
                     path: data["backups.json"]
+                    pattern: "\"name\": \"backupInstance\""
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: "\"name\": \"backupListEndTime\""
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: "\"name\": \"backupVault\""
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: resourceGroups/liferay-test/providers/Microsoft.DataProtection/backupVaults/\$\{backupVault\}/overview
+            -   matchRegex:
+                    path: data["backups.json"]
                     pattern: "\"id\": \"links\",\\s+\"value\": \\[\\s+\\]"
             -   notMatchRegex:
                     path: data["backups.json"]
@@ -188,6 +200,20 @@ tests:
             value: RELEASE-NAME-observability-dashboard-backups
         it: Mutes the Argo Workflows link in the Azure restore guide when centralHub.argoWorkflowsURL is not set
         set:
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: azb-tile azb-tile-row\\" href=\\"https://argo.example.com/workflow-templates/\$\{environment\}/backup-restore-workflow-template\\"
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: azb-tile-muted azb-tile-row
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Opens the backup-restore workflow template from the Azure restore guide when centralHub.argoWorkflowsURL is set
+        set:
+            centralHub.argoWorkflowsURL: https://argo.example.com/
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
