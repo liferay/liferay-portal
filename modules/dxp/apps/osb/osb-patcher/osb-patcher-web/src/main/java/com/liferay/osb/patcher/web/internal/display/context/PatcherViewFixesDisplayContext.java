@@ -8,6 +8,7 @@ package com.liferay.osb.patcher.web.internal.display.context;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -71,8 +72,10 @@ public class PatcherViewFixesDisplayContext {
 		searchContext.setAttribute("key", patcherFix.getKey());
 
 		searchContext.setAttribute("viewSearch", Boolean.TRUE);
+		searchContext.setEnd(QueryUtil.ALL_POS);
 		searchContext.setGroupIds(null);
 		searchContext.setSorts(new Sort("keyVersion", true));
+		searchContext.setStart(QueryUtil.ALL_POS);
 
 		Hits hits = indexer.search(searchContext);
 

@@ -16,6 +16,7 @@ import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.util.JenkinsUtil;
 import com.liferay.osb.patcher.util.PatcherBuildUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -391,8 +392,10 @@ public class PatcherViewBuildsDisplayContext {
 		searchContext.setAttribute("buildsViewSearch", Boolean.TRUE);
 		searchContext.setAttribute("key", patcherBuild.getKey());
 
+		searchContext.setEnd(QueryUtil.ALL_POS);
 		searchContext.setGroupIds(null);
 		searchContext.setSorts(new Sort("keyVersion", true));
+		searchContext.setStart(QueryUtil.ALL_POS);
 
 		Hits hits = indexer.search(searchContext);
 
