@@ -16,6 +16,11 @@
 {{- $_ := set (index $items "backups") "file" "dashboards/backups-aws.json" -}}
 {{- end -}}
 {{- end -}}
+{{- if eq $cloudProvider "azure" -}}
+{{- if hasKey $items "backups" -}}
+{{- $_ := set (index $items "backups") "file" "dashboards/backups-azure.json" -}}
+{{- end -}}
+{{- end -}}
 {{- $activeTileStyle := "ch-tile" -}}
 {{- $mutedTileStyle := "ch-tile-muted" -}}
 {{- $argocdDescription := "Set centralHub.argocdURL in your values.yaml to enable this link." -}}

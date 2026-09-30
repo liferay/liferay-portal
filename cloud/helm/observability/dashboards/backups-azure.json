@@ -1,0 +1,72 @@
+{
+	"annotations": {
+		"list": [
+			{
+				"builtIn": 1,
+				"datasource": {
+					"type": "grafana",
+					"uid": "-- Grafana --"
+				},
+				"enable": true,
+				"hide": true,
+				"iconColor": "rgba(0, 211, 255, 1)",
+				"name": "Annotations & Alerts",
+				"type": "dashboard"
+			}
+		]
+	},
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"links": [
+	],
+	"panels": [
+	],
+	"preload": false,
+	"schemaVersion": 42,
+	"tags": [
+		"Backups",
+		"Liferay"
+	],
+	"templating": {
+		"list": [
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${DS_PROMETHEUS}"
+				},
+				"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+				"label": "Environment",
+				"name": "environment",
+				"options": [
+				],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "/(?<value>.*-(?<text>.*))/",
+				"regexApplyTo": "value",
+				"sort": 1,
+				"type": "query"
+			}
+		]
+	},
+	"time": {
+		"from": "now-7d",
+		"to": "now"
+	},
+	"timepicker": {
+	},
+	"timezone": "browser",
+	"title": "Backups",
+	"uid": "backups",
+	"version": 1,
+	"weekStart": ""
+}
