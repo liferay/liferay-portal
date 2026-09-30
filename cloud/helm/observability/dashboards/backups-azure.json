@@ -91,6 +91,36 @@
 				"overrides": [
 					{
 						"matcher": {
+							"id": "byName",
+							"options": "Status"
+						},
+						"properties": [
+							{
+								"id": "mappings",
+								"value": [
+									{
+										"options": {
+											"FAILED": {
+												"index": 2,
+												"text": "🔴 FAILED"
+											},
+											"IN PROGRESS": {
+												"index": 1,
+												"text": "🟡 IN PROGRESS"
+											},
+											"SUCCEEDED": {
+												"index": 0,
+												"text": "🟢 SUCCEEDED"
+											}
+										},
+										"type": "value"
+									}
+								]
+							}
+						]
+					},
+					{
+						"matcher": {
 							"id": "byType",
 							"options": "time"
 						},
