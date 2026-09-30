@@ -108,9 +108,9 @@ public class TemplateRestrictedVariablesTest {
 				serviceReference);
 
 			try {
-				_assertSAXReaderUtilAccessibility(
+				_testRestrictedSAXReaderUtil(
 					"ACCESSIBLE", false, templateManager);
-				_assertSAXReaderUtilAccessibility(
+				_testRestrictedSAXReaderUtil(
 					"DENIED", true, templateManager);
 			}
 			finally {
@@ -119,7 +119,7 @@ public class TemplateRestrictedVariablesTest {
 		}
 	}
 
-	private void _assertSAXReaderUtilAccessibility(
+	private void _testRestrictedSAXReaderUtil(
 			String expected, boolean restricted,
 			TemplateManager templateManager)
 		throws Exception {
