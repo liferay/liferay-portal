@@ -24,6 +24,7 @@ import {
 	getWorkflowTasksAssignedToMyRoles,
 } from '../../common/services/WorkflowService';
 import {WorkflowTask} from '../../common/types/WorkflowTask';
+import {PAGINATION_BAR_LABELS} from '../../common/utils/constants';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import WorkflowTaskRenderer from '../props_transformer/cell_renderers/WorkflowTaskRenderer';
 
@@ -376,6 +377,7 @@ export default function ViewWorkflowTasks({
 							label: size,
 						}))}
 						ellipsisBuffer={3}
+						labels={PAGINATION_BAR_LABELS}
 						onActiveChange={handlePaginationPageChange}
 						onDeltaChange={handlePaginationDeltaChange}
 						totalItems={workflowTasks.totalCount}
