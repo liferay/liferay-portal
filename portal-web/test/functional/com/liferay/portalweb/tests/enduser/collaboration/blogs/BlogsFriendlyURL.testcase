@@ -208,22 +208,6 @@ definition {
 			groupName = "Site Name",
 			siteURLKey = "site-name");
 
-		BlogsNavigator.gotoFriendlyURLHistory();
-
-		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "hola-adiós");
-
-		PortletEntry.publish();
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/blogs-page/-/blogs/hola-adi%C3%B3s");
-
-		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			friendlyURL = "blogs-entry-title",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
 		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "custom&");
@@ -239,6 +223,22 @@ definition {
 		BlogsEntry.editCustomURL(customURL = "custom-url");
 
 		PortletEntry.publish();
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			friendlyURL = "custom-url",
+			groupName = "Site Name",
+			siteURLKey = "site-name");
+
+		BlogsNavigator.gotoFriendlyURLHistory();
+
+		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "hola-adiós");
+
+		PortletEntry.publish();
+
+		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/blogs-page/-/blogs/hola-adi%C3%B3s");
+
+		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
 
 		BlogsNavigator.openToEditEntryInSite(
 			entryTitle = "Blogs Entry Title",
