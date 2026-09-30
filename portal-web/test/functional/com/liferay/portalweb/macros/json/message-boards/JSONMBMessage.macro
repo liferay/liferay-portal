@@ -208,7 +208,7 @@ definition {
 
 	@summary = "Default summary"
 	macro deleteAllThreads(groupName = null) {
-		Variables.assertDefined(parameterList = "${groupName}");
+		Variables.assertDefined(parameterList = ${groupName});
 
 		var portalURL = JSONCompany.getPortalURL();
 		var groupId = JSONGroupSetter.setGroupId(groupName = ${groupName});
