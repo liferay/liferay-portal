@@ -33,7 +33,6 @@ export class VirtualInstancesPage {
 	readonly copyInstanceVirtualHostField: Locator;
 	readonly copyInstanceWebIdField: Locator;
 	readonly exportInstanceConfirmButton: Locator;
-	readonly exportInstanceSuccessMessage: Locator;
 	readonly importInstanceErrorMessage: Locator;
 	readonly importInstanceNameField: Locator;
 	readonly importInstanceSchemaNameField: Locator;
@@ -97,9 +96,6 @@ export class VirtualInstancesPage {
 		this.exportInstanceConfirmButton = page
 			.getByRole('dialog', {name: 'Export Instance'})
 			.getByRole('button', {exact: true, name: 'Export'});
-		this.exportInstanceSuccessMessage = page.getByText(
-			'The instance was exported to the schema'
-		);
 		this.importInstanceErrorMessage = this.importInstanceFrame.getByText(
 			'Please enter a valid schema name'
 		);
@@ -245,6 +241,12 @@ export class VirtualInstancesPage {
 		);
 	}
 
+	exportStartedMessage(name: string) {
+		return this.page.getByText(
+			`The instance ${name} is being exported. You will be notified when it finishes.`
+		);
+	}
+
 	async deleteVirtualInstance(name: string) {
 		await this.globalMenuPage.goToControlPanel('Virtual Instances');
 
@@ -298,6 +300,33 @@ export class VirtualInstancesPage {
 		}).toPass({timeout: 300 * 1000});
 	}
 
+	async waitForExportNotification(name: string) {
+		const notificationsPage = new NotificationsPage(this.page);
+
+		let schemaName = '';
+
+		await expect(async () => {
+			await notificationsPage.goto();
+
+			const notification = notificationsPage.getNotificationByTitle(
+				`The instance ${name} was exported.`
+			);
+
+			await expect(notification).toBeVisible({timeout: 10 * 1000});
+
+			const body = await notification.innerText();
+
+			const [, matchedSchemaName] =
+				body.match(/schema\s+(lexported_\d+)/) || [];
+
+			expect(matchedSchemaName).toBeTruthy();
+
+			schemaName = matchedSchemaName;
+		}).toPass({timeout: 300 * 1000});
+
+		return schemaName;
+	}
+
 	async waitForVirtualInstance(name: string, exists: boolean) {
 		const apiHelpers = new ApiHelpers(this.page);
 
@@ -319,7 +348,7 @@ export class VirtualInstancesPage {
 			.toBe(exists);
 	}
 
-	async exportVirtualInstance(name: string) {
+	async startVirtualInstanceExport(name: string) {
 		await this.goto();
 
 		const row = this.page.getByRole('row').filter({hasText: name});
@@ -335,21 +364,13 @@ export class VirtualInstancesPage {
 
 		await this.exportInstanceConfirmButton.click();
 
-		let schemaName = '';
+		await expect(this.exportStartedMessage(name)).toBeVisible();
+	}
 
-		await expect(async () => {
-			const successMessage =
-				await this.exportInstanceSuccessMessage.innerText();
+	async exportVirtualInstance(name: string) {
+		await this.startVirtualInstanceExport(name);
 
-			const [, matchedSchemaName] =
-				successMessage.match(/schema\s+(lexported_\d+)/) || [];
-
-			expect(matchedSchemaName).toBeTruthy();
-
-			schemaName = matchedSchemaName;
-		}).toPass({timeout: 180 * 1000});
-
-		return schemaName;
+		return this.waitForExportNotification(name);
 	}
 
 	async goto() {
