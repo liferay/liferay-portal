@@ -80,7 +80,7 @@ SearchContainer<Document> searchContainer = searchResultsPortletDisplayContext.g
 				<c:when test='<%= FeatureFlagManagerUtil.isEnabled(PortalUtil.getCompanyId(request), "LPD-98858") %>'>
 
 					<%
-					SearchResultsPaginatorDisplayContext searchResultsPaginatorDisplayContext = new SearchResultsPaginatorDisplayContext(request, searchContainer);
+					SearchResultsPaginatorDisplayContext searchResultsPaginatorDisplayContext = new SearchResultsPaginatorDisplayContext(request, searchContainer, !searchResultsPortletDisplayContext.isTotalHitsExact());
 					%>
 
 					<c:if test="<%= searchResultsPaginatorDisplayContext.isAvailable() %>">
