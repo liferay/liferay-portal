@@ -142,12 +142,26 @@ public class MemberRequestServiceTest {
 
 		String url = "http://" + RandomTestUtil.randomString() + ".com";
 
-		for (String name :
-				new String[] {"createAccountURL", "loginURL", "redirectURL"}) {
+		for (String invalidURL :
+				new String[] {url, RandomTestUtil.randomString() + ".com"}) {
+
+			for (String name :
+					new String[] {
+						"createAccountURL", "loginURL", "redirectURL"
+					}) {
+
+				ServiceContext serviceContext = _getServiceContext();
+
+				serviceContext.setAttribute(name, invalidURL);
+
+				_testAddMemberRequests(
+					MemberRequestServiceContextException.class, 0, 0,
+					serviceContext, user);
+			}
 
 			ServiceContext serviceContext = _getServiceContext();
 
-			serviceContext.setAttribute(name, url);
+			serviceContext.setCurrentURL(invalidURL);
 
 			_testAddMemberRequests(
 				MemberRequestServiceContextException.class, 0, 0,
@@ -155,14 +169,6 @@ public class MemberRequestServiceTest {
 		}
 
 		ServiceContext serviceContext = _getServiceContext();
-
-		serviceContext.setCurrentURL(url);
-
-		_testAddMemberRequests(
-			MemberRequestServiceContextException.class, 0, 0, serviceContext,
-			user);
-
-		serviceContext = _getServiceContext();
 
 		serviceContext.setAttribute("loginURL", url);
 		serviceContext.setPortalURL(url);
@@ -197,6 +203,7 @@ public class MemberRequestServiceTest {
 			"loginURL", "http://localhost/" + RandomTestUtil.randomString());
 		serviceContext.setAttribute(
 			"redirectURL", "http://localhost/" + RandomTestUtil.randomString());
+		serviceContext.setCurrentURL("/" + RandomTestUtil.randomString());
 
 		return serviceContext;
 	}
