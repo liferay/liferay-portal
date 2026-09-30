@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import com.nimbusds.jose.JWSAlgorithm;
@@ -34,6 +36,8 @@ import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
+
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -190,11 +194,25 @@ public class OpenIdConnectTokenRequestUtilTest {
 			Assert.assertNotNull(nullPointerException);
 		}
 
-		Assert.assertEquals(
-			_oidcTokens,
-			OpenIdConnectTokenRequestUtil.request(
-				_oidcClientInformation, _oidcProviderMetadata, _refreshToken,
-				1000, _TOKEN_REQUEST_PARAMETERS));
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenIdConnectTokenRequestUtil.class.getName(),
+				LoggerTestUtil.DEBUG)) {
+
+			Assert.assertEquals(
+				_oidcTokens,
+				OpenIdConnectTokenRequestUtil.request(
+					_oidcClientInformation, _oidcProviderMetadata,
+					_refreshToken, 1000, _TOKEN_REQUEST_PARAMETERS));
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 1, messages.size());
+
+			Assert.assertEquals(
+				"Requesting tokens from http://localhost:63636 with grant " +
+					"type \"refresh_token\"",
+				messages.get(0));
+		}
 
 		try {
 			OpenIdConnectTokenRequestUtil.request(
