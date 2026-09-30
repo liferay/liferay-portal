@@ -220,7 +220,7 @@ function ElementVariationsListHeader({
 	return (
 		<ClayList.Header className="text-none">
 			<span className="text-warning">
-				<ClayIcon className="mr-2" symbol="warning-full" />
+				<ClayIcon className="mr-2 text-3" symbol="warning-full" />
 
 				{Liferay.Language.get('missing-page-element')}
 			</span>
