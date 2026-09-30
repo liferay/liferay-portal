@@ -141,6 +141,8 @@ definition {
 		while ((IsElementPresent(locator1 = "PortalInstances#INSTANCE_TABLE_VIRTUAL_HOST")) && (${deletionPauseCount} != 60)) {
 			Refresh();
 
+			Pause(value1 = 5000);
+
 			var deletionPauseCount = ${deletionPauseCount} + 1;
 
 			echo("Deletion pause count: ${deletionPauseCount}");
