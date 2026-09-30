@@ -61,4 +61,15 @@ describe('ViewVersionHistoryFDSPropsTransformer', () => {
 
 		expect(isDisabled).toBeUndefined();
 	});
+
+	it('marks the delete item action with the danger class', () => {
+		const [deleteAction, compareAction] =
+			ViewVersionHistoryFDSPropsTransformer({
+				additionalProps: {},
+				itemsActions: [{data: {id: 'delete'}}, {data: {id: 'compare'}}],
+			} as any).itemsActions;
+
+		expect(deleteAction.className).toBe('text-danger');
+		expect(compareAction.className).toBeUndefined();
+	});
 });

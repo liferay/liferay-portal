@@ -238,6 +238,22 @@ describe('AssetsFDSPropsTransformer', () => {
 		expect(result.hideManagementBarInEmptyState).toBe(false);
 	});
 
+	it('marks the delete item action with the danger class', () => {
+		const result = AssetsFDSPropsTransformer({
+			additionalProps: mockAdditionalProps,
+			creationMenu: {primaryItems: []},
+			hideManagementBarInEmptyState: false,
+			id: 'com.liferay.site.cms.site.initializer-contentsSection',
+			itemsActions: [{data: {id: 'delete'}}, {data: {id: 'copy'}}],
+			views: [],
+		});
+
+		const [deleteAction, copyAction] = result.itemsActions;
+
+		expect(deleteAction.className).toBe('text-danger');
+		expect(copyAction.className).toBeUndefined();
+	});
+
 	it('marks the generate with AI creation menu items with the purple class', () => {
 		const result = AssetsFDSPropsTransformer({
 			additionalProps: mockAdditionalProps,
