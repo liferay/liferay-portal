@@ -171,7 +171,7 @@ PortletURL portletURL = viewUserGroupsManagementToolbarDisplayContext.getPortlet
 		});
 	}
 
-	<liferay-portlet:resourceURL id="/users_admin/get_users_count" portletName="<%= UsersAdminPortletKeys.USERS_ADMIN %>" var="getUsersCountResourceURL" />
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/users_admin/get_users_count" portletName="<%= UsersAdminPortletKeys.USERS_ADMIN %>" var="getUsersCountResourceURL" />
 
 	function <portlet:namespace />getUsersCount(className, ids, status, callback) {
 		var url = new URL(
