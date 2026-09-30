@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Digital Sales Room API
 Bundle-SymbolicName: com.liferay.digital.sales.room.api
-Bundle-Version: 3.1.2
+Bundle-Version: 3.2.0
 Export-Package:\
 	com.liferay.digital.sales.room.constants,\
 	com.liferay.digital.sales.room.thread.local,\
