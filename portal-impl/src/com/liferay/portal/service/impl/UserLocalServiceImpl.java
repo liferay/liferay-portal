@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.cache.PortalCacheMapSynchronizeUtil;
+import com.liferay.portal.kernel.cache.transactional.TransactionalPortalCacheUtil;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
@@ -7604,12 +7605,34 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			int[] results = preparedStatement.executeBatch();
 
+			PortalCache<Serializable, Serializable> portalCache =
+				EntityCacheUtil.getPortalCache(UserImpl.class);
+
 			for (int i = 0; i < results.length; i++) {
 				User user = users.get(i);
 
 				if (results[i] == 1) {
-					EntityCacheUtil.putResult(
-						UserImpl.class, user, true, false);
+					Serializable primaryKey = user.getPrimaryKeyObj();
+
+					TransactionalPortalCacheUtil.preparePut(
+						portalCache, primaryKey);
+
+					Serializable result = EntityCacheUtil.getResult(
+						UserImpl.class, primaryKey);
+
+					if (result instanceof User cachedUser) {
+						User cloneUser = (User)user.clone();
+
+						cloneUser.copyCacheFields(cachedUser);
+
+						if (!TransactionalPortalCacheUtil.completePut(
+								portalCache, primaryKey,
+								(Serializable)cloneUser.toCacheModel())) {
+
+							PortalCacheHelperUtil.removeWithoutReplicator(
+								portalCache, primaryKey);
+						}
+					}
 				}
 				else {
 					EntityCacheUtil.removeResult(
