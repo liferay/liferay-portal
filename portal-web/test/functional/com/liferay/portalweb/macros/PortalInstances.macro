@@ -71,12 +71,14 @@ definition {
 		WaitForElementNotPresent(locator1 = "IFrame#MODAL_BODY");
 
 		var key_contentBody = "The instance ${webId} is ready to use.";
-
 		var creationPauseCount = 0;
 
 		Navigator.gotoNotifications();
 
-		while ((!(IsElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT"))) && (${creationPauseCount} != 60)) {
+		while (!(IsElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT")) && (${creationPauseCount} != 60)) {
+
+			// Wait for the asynchronous creation to finish. The instance is listed as soon as its company row commits, so the notification is the only signal that the initialization is done. Needed for LPD-93373.
+
 			Pause(value1 = 5000);
 
 			Refresh();
@@ -140,6 +142,8 @@ definition {
 
 		while ((IsElementPresent(locator1 = "PortalInstances#INSTANCE_TABLE_VIRTUAL_HOST")) && (${deletionPauseCount} != 60)) {
 			Refresh();
+
+			// Wait for the page to settle before checking again, or a mid load page reads as a deleted instance. Needed for LPD-93374.
 
 			Pause(value1 = 5000);
 
