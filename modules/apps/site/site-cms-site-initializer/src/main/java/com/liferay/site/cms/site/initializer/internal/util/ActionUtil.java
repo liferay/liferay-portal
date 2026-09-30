@@ -608,7 +608,6 @@ public class ActionUtil {
 			getFilesCustomDropdownItems(
 				httpServletRequest,
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES));
-
 		customDropdownItems.addAll(
 			getStructureObjectFolderCustomDropdownItems(
 				cmsStructureObjectFolderContributors, httpServletRequest));

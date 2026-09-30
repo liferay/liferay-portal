@@ -102,18 +102,12 @@ public class StructureBuilderDisplayContextTest {
 			baseObjectDefinitionExternalReferenceCode
 		);
 
-		ObjectDefinition objectDefinition = new ObjectDefinition();
-
-		Mockito.when(
-			_objectDefinitionResource.
-				getObjectDefinitionByExternalReferenceCode(
-					baseObjectDefinitionExternalReferenceCode)
-		).thenThrow(
+		Mockito.doThrow(
 			new NoSuchObjectDefinitionException()
-		).thenThrow(
-			new PrincipalException()
-		).thenReturn(
-			objectDefinition
+		).when(
+			_objectDefinitionResource
+		).getObjectDefinitionByExternalReferenceCode(
+			baseObjectDefinitionExternalReferenceCode
 		);
 
 		Assert.assertNull(
@@ -121,10 +115,28 @@ public class StructureBuilderDisplayContextTest {
 				structureBuilderDisplayContext, "_getBaseObjectDefinition",
 				new Class<?>[0]));
 
+		Mockito.doThrow(
+			new PrincipalException()
+		).when(
+			_objectDefinitionResource
+		).getObjectDefinitionByExternalReferenceCode(
+			baseObjectDefinitionExternalReferenceCode
+		);
+
 		Assert.assertNull(
 			ReflectionTestUtil.invoke(
 				structureBuilderDisplayContext, "_getBaseObjectDefinition",
 				new Class<?>[0]));
+
+		ObjectDefinition objectDefinition = new ObjectDefinition();
+
+		Mockito.doReturn(
+			objectDefinition
+		).when(
+			_objectDefinitionResource
+		).getObjectDefinitionByExternalReferenceCode(
+			baseObjectDefinitionExternalReferenceCode
+		);
 
 		Assert.assertSame(
 			objectDefinition,
