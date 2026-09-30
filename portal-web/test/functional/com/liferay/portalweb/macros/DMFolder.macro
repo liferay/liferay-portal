@@ -681,7 +681,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewDetailsInListView(authorName = null, dmFolderName = null, contextualBreadcrumb = null) {
+	macro viewDetailsInListView(dmFolderName = null, contextualBreadcrumb = null) {
 		var key_dmFolderName = ${dmFolderName};
 
 		AssertTextEquals(
@@ -689,8 +689,6 @@ definition {
 			value1 = ${dmFolderName});
 
 		AssertElementPresent(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_FOLDER_ICON");
-
-		var key_authorName = ${authorName};
 
 		AssertElementPresent(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_FOLDER_AUTHOR_AND_DATE");
 

@@ -411,7 +411,6 @@ definition {
 			workflowStatus = "Approved");
 
 		DMFolder.viewDetailsInListView(
-			authorName = "Test Test",
 			contextualBreadcrumb = "Home",
 			dmFolderName = "DM Asset1");
 	}

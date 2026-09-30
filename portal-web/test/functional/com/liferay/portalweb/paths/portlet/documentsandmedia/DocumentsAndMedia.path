@@ -267,7 +267,7 @@
 </tr>
 <tr>
 	<td>DESCRIPTIVE_LIST_FOLDER_AUTHOR_AND_DATE</td>
-	<td>//*[contains(@data-title,'${key_dmFolderName}')]//span[contains(.,'modified') and contains(.,'${key_authorName}')]</td>
+	<td>//*[contains(@data-title,'${key_dmFolderName}')]//span[contains(.,'Modified')]</td>
 	<td></td>
 </tr>
 <tr>
