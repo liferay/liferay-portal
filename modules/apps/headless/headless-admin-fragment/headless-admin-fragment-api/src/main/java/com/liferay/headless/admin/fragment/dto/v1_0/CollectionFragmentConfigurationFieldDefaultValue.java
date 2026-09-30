@@ -66,7 +66,7 @@ public class CollectionFragmentConfigurationFieldDefaultValue
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "A reference to the selected collection (`Collection`), collection provider (`CollectionProvider`, including related items collection providers), or repeatable fields collection provider (`RepeatableFieldsCollectionProvider`). A collection is referenced by external reference code, which survives promoting the fragment across environments."
+		description = "A reference to the selected collection (`Collection`), collection provider (`CollectionProvider`, including related items collection providers), or repeatable fields collection provider (`RepeatableFieldsCollectionProvider`)."
 	)
 	@Valid
 	public CollectionReference getValue() {
@@ -103,7 +103,7 @@ public class CollectionFragmentConfigurationFieldDefaultValue
 	}
 
 	@GraphQLField(
-		description = "A reference to the selected collection (`Collection`), collection provider (`CollectionProvider`, including related items collection providers), or repeatable fields collection provider (`RepeatableFieldsCollectionProvider`). A collection is referenced by external reference code, which survives promoting the fragment across environments."
+		description = "A reference to the selected collection (`Collection`), collection provider (`CollectionProvider`, including related items collection providers), or repeatable fields collection provider (`RepeatableFieldsCollectionProvider`)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected CollectionReference value;
@@ -278,4 +278,4 @@ public class CollectionFragmentConfigurationFieldDefaultValue
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:885770539
+// LIFERAY-REST-BUILDER-HASH:-1413168693
