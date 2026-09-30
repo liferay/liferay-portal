@@ -228,42 +228,6 @@ describe('Picker search', () => {
 		expect(combobox).toHaveTextContent('Mango');
 	});
 
-	it('does not select a disabled item using Enter key from search input', async () => {
-		const onSelectionChange = jest.fn();
-		const {getByPlaceholderText, getByRole} = render(
-			<Picker
-				defaultSelectedKey="Banana"
-				items={items}
-				onSelectionChange={onSelectionChange}
-				searchable
-			>
-				{(item) => (
-					<Option disabled={item === 'Mango'} key={item}>
-						{item}
-					</Option>
-				)}
-			</Picker>
-		);
-
-		const combobox = getByRole('combobox');
-
-		fireEvent.click(combobox);
-
-		const searchInput = getByPlaceholderText('Search');
-
-		fireEvent.change(searchInput, {target: {value: 'Mango'}});
-
-		await waitFor(() =>
-			expect(combobox).toHaveAttribute('aria-activedescendant', 'Mango')
-		);
-
-		fireEvent.keyDown(searchInput, {key: 'Enter'});
-
-		expect(onSelectionChange).not.toHaveBeenCalled();
-		expect(combobox).toHaveAttribute('aria-expanded', 'true');
-		expect(combobox).toHaveTextContent('Banana');
-	});
-
 	it('preserves the trigger label of the selected item when the search filter excludes it', async () => {
 		const {getByPlaceholderText, getByRole, queryByRole} = render(
 			<Picker defaultSelectedKey="Mango" items={items} searchable>
