@@ -273,6 +273,10 @@ public class DownloadEntriesMVCResourceCommandTest {
 			folder.getFolderId(), "download.txt", ContentTypes.TEXT_PLAIN,
 			"download".getBytes(), null, null, null, serviceContext);
 
+		_setResourcePermissions(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId(),
+			ActionKeys.DOWNLOAD, ActionKeys.VIEW);
+
 		FileShortcut fileShortcut = _dlAppLocalService.addFileShortcut(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			folder.getFolderId(), fileEntry.getFileEntryId(), serviceContext);
@@ -280,10 +284,6 @@ public class DownloadEntriesMVCResourceCommandTest {
 		_setResourcePermissions(
 			DLFileShortcut.class.getName(), fileShortcut.getFileShortcutId(),
 			ActionKeys.VIEW);
-
-		_setResourcePermissions(
-			DLFileEntry.class.getName(), fileEntry.getFileEntryId(),
-			ActionKeys.DOWNLOAD, ActionKeys.VIEW);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
