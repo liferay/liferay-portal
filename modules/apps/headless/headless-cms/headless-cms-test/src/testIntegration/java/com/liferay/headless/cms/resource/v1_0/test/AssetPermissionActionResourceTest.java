@@ -89,6 +89,7 @@ public class AssetPermissionActionResourceTest
 	@Override
 	@Test
 	public void testPostAssetPermission() throws Exception {
+		_testPostAssetPermissionWithNullClassName();
 		_testPostAssetPermissionWithTypeResetAssetPermission();
 	}
 
@@ -118,6 +119,18 @@ public class AssetPermissionActionResourceTest
 		return _roleLocalService.addRole(
 			null, userId, null, 0, RoleConstants.CMS_ADMINISTRATOR, null, null,
 			RoleConstants.TYPE_REGULAR, null, null);
+	}
+
+	private void _testPostAssetPermissionWithNullClassName() throws Exception {
+		assertHttpResponseStatusCode(
+			400,
+			assetPermissionActionResource.postAssetPermissionHttpResponse(
+				new ResetAssetPermissionAction() {
+					{
+						setClassPK(RandomTestUtil.randomLong());
+						setType(Type.RESET_ASSET_PERMISSION_ACTION);
+					}
+				}));
 	}
 
 	private void _testPostAssetPermissionWithTypeResetAssetPermission()
