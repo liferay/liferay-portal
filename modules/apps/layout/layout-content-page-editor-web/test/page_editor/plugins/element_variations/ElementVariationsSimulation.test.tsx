@@ -29,8 +29,22 @@ const EXPERIENCES = [
 	},
 ];
 
+function createNavigateEvent({
+	navigationType,
+	url,
+}: {
+	navigationType: string;
+	url: string;
+}) {
+	return Object.assign(new Event('navigate', {cancelable: true}), {
+		destination: {url},
+		navigationType,
+	});
+}
+
 function loadIframe(iframe: HTMLIFrameElement) {
 	(iframe.contentWindow as any).Liferay = Liferay;
+	(iframe.contentWindow as any).navigation = new EventTarget();
 
 	fireEvent.load(iframe);
 }
@@ -148,7 +162,7 @@ describe('ElementVariationsSimulation', () => {
 		expect(iframe.parentElement).toHaveAttribute('aria-busy', 'false');
 	});
 
-	it('keeps links in the page from navigating', async () => {
+	it('keeps the page from navigating to other URLs', async () => {
 		renderElementVariationsSimulation();
 
 		await openSimulation();
@@ -157,21 +171,37 @@ describe('ElementVariationsSimulation', () => {
 			'page-simulation'
 		)) as HTMLIFrameElement;
 
-		const iframeDocument = iframe.contentDocument as Document;
+		loadIframe(iframe);
 
-		iframeDocument.write('<a href="/other-page">Other page</a>');
-		iframeDocument.close();
+		const navigateEvent = createNavigateEvent({
+			navigationType: 'push',
+			url: 'http://localhost/other-page',
+		});
+
+		(iframe.contentWindow as any).navigation.dispatchEvent(navigateEvent);
+
+		expect(navigateEvent.defaultPrevented).toBe(true);
+	});
+
+	it('lets the page reload', async () => {
+		renderElementVariationsSimulation();
+
+		await openSimulation();
+
+		const iframe = (await screen.findByTitle(
+			'page-simulation'
+		)) as HTMLIFrameElement;
 
 		loadIframe(iframe);
 
-		const clickEvent = new MouseEvent('click', {
-			bubbles: true,
-			cancelable: true,
+		const navigateEvent = createNavigateEvent({
+			navigationType: 'reload',
+			url: iframe.src,
 		});
 
-		iframeDocument.querySelector('a')?.dispatchEvent(clickEvent);
+		(iframe.contentWindow as any).navigation.dispatchEvent(navigateEvent);
 
-		expect(clickEvent.defaultPrevented).toBe(true);
+		expect(navigateEvent.defaultPrevented).toBe(false);
 	});
 
 	it('simulates in a new tab from the small screen button', async () => {
