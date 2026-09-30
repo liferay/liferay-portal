@@ -868,6 +868,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	}
 
 	private Map<String, String> _getConfigurationValuesMap() throws Exception {
+		AssetListEntry testGroupAssetListEntry = _addAssetListEntry(testGroup);
+
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), testGroup.getGroupId(),
@@ -880,35 +882,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
-
-		ddmForm.addDDMFormField(
-			DDMFormTestUtil.createTextDDMFormField(
-				"repeatableField", true, true, false));
-
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			testGroup.getGroupId(), JournalArticle.class.getName(), ddmForm);
-
 		InfoCollectionProvider<?> infoCollectionProvider =
 			_infoItemServiceRegistry.getInfoItemService(
 				InfoCollectionProvider.class,
 				"com.liferay.asset.internal.info.collection.provider." +
 					"RecentContentInfoCollectionProvider");
-
-		AssetListEntry irrelevantGroupAssetListEntry = _addAssetListEntry(
-			irrelevantGroup);
-
-		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			testGroup.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		Layout layout = _layoutLocalService.addLayout(
-			null, TestPropsValues.getUserId(), testGroup.getGroupId(), false,
-			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			StringPool.BLANK, LayoutConstants.TYPE_PORTLET, false,
-			StringPool.BLANK,
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		RelatedInfoItemCollectionProvider<?, ?>
 			relatedInfoItemCollectionProvider =
@@ -926,7 +904,29 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						InfoCollectionProvider.class,
 						_objectDefinition.getClassName());
 
-		AssetListEntry testGroupAssetListEntry = _addAssetListEntry(testGroup);
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
+
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createTextDDMFormField(
+				"repeatableField", true, true, false));
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			testGroup.getGroupId(), JournalArticle.class.getName(), ddmForm);
+
+		AssetListEntry irrelevantGroupAssetListEntry = _addAssetListEntry(
+			irrelevantGroup);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			testGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, LayoutConstants.TYPE_PORTLET, false,
+			StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		return HashMapBuilder.put(
 			"ASSET_LIST_ENTRY_CLASS_NAME_ID",
