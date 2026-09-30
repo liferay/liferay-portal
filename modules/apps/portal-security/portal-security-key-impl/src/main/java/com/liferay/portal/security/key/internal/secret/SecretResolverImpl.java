@@ -108,7 +108,7 @@ public class SecretResolverImpl implements SecretResolver {
 			return value;
 		}
 
-		if (!identifier.startsWith(_IDENTIFIER_PREFIX_CONFIGURATION) &&
+		if (!identifier.startsWith("config/") &&
 			!identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE)) {
 
 			throw new IllegalArgumentException(
@@ -173,8 +173,6 @@ public class SecretResolverImpl implements SecretResolver {
 		PortalCacheHelperUtil.removePortalCache(
 			PortalCacheManagerNames.SINGLE_VM, PORTAL_CACHE_NAME);
 	}
-
-	private static final String _IDENTIFIER_PREFIX_CONFIGURATION = "config/";
 
 	private static final String _IDENTIFIER_PREFIX_PREFERENCE = "preference/";
 
