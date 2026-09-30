@@ -1,14 +1,14 @@
 release:
     name: my-release
     namespace: crossplane-system
-set:
-    deploymentContext:
-        crossplaneDataClientId: 11111111-1111-1111-1111-111111111111
-        crossplaneIamClientId: 22222222-2222-2222-2222-222222222222
 suite: Deployment Runtime Configs
 templates:
     -   templates/deployment-runtime-configs.yaml
 tests:
+    -   asserts:
+            -   notExists:
+                    path: spec.serviceAccountTemplate
+        it: Leaves every provider service account to the chart so that providers sharing one never fight over its ownership
     -   asserts:
             -   hasDocuments:
                     count: 9
@@ -18,11 +18,7 @@ tests:
                     value: azure-alertsmanagement-config
             -   documentIndex: 0
                 equal:
-                    path: spec.serviceAccountTemplate.metadata.annotations["azure.workload.identity/client-id"]
-                    value: 11111111-1111-1111-1111-111111111111
-            -   documentIndex: 0
-                equal:
-                    path: spec.serviceAccountTemplate.metadata.name
+                    path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
                     value: crossplane-data
             -   documentIndex: 1
                 equal:
@@ -30,11 +26,7 @@ tests:
                     value: azure-authorization-config
             -   documentIndex: 1
                 equal:
-                    path: spec.serviceAccountTemplate.metadata.annotations["azure.workload.identity/client-id"]
-                    value: 22222222-2222-2222-2222-222222222222
-            -   documentIndex: 1
-                equal:
-                    path: spec.serviceAccountTemplate.metadata.name
+                    path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
                     value: crossplane-iam
             -   documentIndex: 2
                 equal:
@@ -42,11 +34,7 @@ tests:
                     value: azure-dataprotection-config
             -   documentIndex: 2
                 equal:
-                    path: spec.serviceAccountTemplate.metadata.annotations["azure.workload.identity/client-id"]
-                    value: 11111111-1111-1111-1111-111111111111
-            -   documentIndex: 2
-                equal:
-                    path: spec.serviceAccountTemplate.metadata.name
+                    path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
                     value: crossplane-data
             -   documentIndex: 3
                 equal:
@@ -58,10 +46,6 @@ tests:
                     value: "true"
             -   documentIndex: 3
                 equal:
-                    path: spec.serviceAccountTemplate.metadata.annotations["azure.workload.identity/client-id"]
-                    value: 11111111-1111-1111-1111-111111111111
-            -   documentIndex: 3
-                equal:
-                    path: spec.serviceAccountTemplate.metadata.name
+                    path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
                     value: crossplane-data
-        it: Renders one deployment runtime config per provider bound to its workload identity
+        it: Renders one deployment runtime config per provider running as its identity service account
