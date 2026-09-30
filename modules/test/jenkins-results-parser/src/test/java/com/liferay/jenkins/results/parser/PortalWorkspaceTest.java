@@ -99,6 +99,40 @@ public class PortalWorkspaceTest
 	}
 
 	@Test
+	public void testSetBuildProfile() {
+		PortalWorkspace portalWorkspace = Mockito.mock(PortalWorkspace.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspace
+		).getBuildProfile();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspace
+		).setBuildProfile(
+			Mockito.any()
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			portalWorkspace, "jsonObject", new JSONObject());
+
+		portalWorkspace.setBuildProfile(Job.BuildProfile.PORTAL);
+
+		testSame(Job.BuildProfile.PORTAL, portalWorkspace.getBuildProfile());
+
+		Mockito.verify(
+			portalWorkspace
+		).updateBuildDatabase();
+
+		portalWorkspace.setBuildProfile(Job.BuildProfile.PORTAL);
+
+		Mockito.verify(
+			portalWorkspace
+		).updateBuildDatabase();
+	}
+
+	@Test
 	public void testSetPortalUpstreamBranchName() {
 		PortalWorkspace portalWorkspace = Mockito.mock(PortalWorkspace.class);
 
@@ -127,10 +161,24 @@ public class PortalWorkspaceTest
 			portalUpstreamBranchName,
 			portalWorkspaceJSONObject.get("portal_upstream_branch_name"));
 
+		Mockito.verify(
+			portalWorkspace
+		).updateBuildDatabase();
+
+		portalWorkspace.setPortalUpstreamBranchName(portalUpstreamBranchName);
+
+		Mockito.verify(
+			portalWorkspace
+		).updateBuildDatabase();
+
 		portalWorkspace.setPortalUpstreamBranchName(null);
 
 		Assert.assertFalse(
 			portalWorkspaceJSONObject.has("portal_upstream_branch_name"));
+
+		Mockito.verify(
+			portalWorkspace, Mockito.times(2)
+		).updateBuildDatabase();
 	}
 
 	private PortalWorkspace _getPortalWorkspace(
