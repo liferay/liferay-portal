@@ -20,8 +20,10 @@ import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.security.auth.FullNameValidator;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -45,11 +47,28 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			_portalInstanceBatchEngineImportTaskExceptionHandler,
+			"_companyLocalService", _companyLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_portalInstanceBatchEngineImportTaskExceptionHandler,
 			"_userNotificationEventLocalService",
 			_userNotificationEventLocalService);
+
+		Company company = Mockito.mock(Company.class);
+
+		Mockito.when(
+			company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
+			_companyLocalService.getCompanyByWebId(Mockito.anyString())
+		).thenReturn(
+			company
+		);
 
 		Mockito.when(
 			_batchEngineImportTask.getOperation()
@@ -147,7 +166,7 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 			"the-default-instance-cannot-be-exported",
 			new RequiredCompanyException());
 		_assertExportErrorMessageKey(
-			"the-exported-schema-already-exists",
+			"the-exported-schema-x-already-exists",
 			new IllegalArgumentException());
 	}
 
@@ -216,6 +235,9 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 			"EXPORT", payloadJSONObject.getString("operationType"));
 		Assert.assertEquals(
 			portalInstanceId, payloadJSONObject.getString("portalInstanceId"));
+		Assert.assertEquals(
+			"lexported_" + _COMPANY_ID,
+			payloadJSONObject.getString("schemaName"));
 		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 	}
 
@@ -283,10 +305,14 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 			RandomTestUtil.randomString());
 	}
 
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
 	private static final long _USER_ID = RandomTestUtil.randomLong();
 
 	private final BatchEngineImportTask _batchEngineImportTask = Mockito.mock(
 		BatchEngineImportTask.class);
+	private final CompanyLocalService _companyLocalService = Mockito.mock(
+		CompanyLocalService.class);
 	private final PortalInstanceBatchEngineImportTaskExceptionHandler
 		_portalInstanceBatchEngineImportTaskExceptionHandler =
 			new PortalInstanceBatchEngineImportTaskExceptionHandler();

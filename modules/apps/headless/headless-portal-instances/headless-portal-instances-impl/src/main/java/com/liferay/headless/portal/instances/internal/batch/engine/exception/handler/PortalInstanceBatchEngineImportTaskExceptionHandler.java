@@ -11,6 +11,7 @@ import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskException
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
+import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.instances.constants.PortalInstancesNotificationConstants;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.ContactNameException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredCompanyException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
@@ -25,7 +27,9 @@ import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 
 import java.util.Objects;
@@ -66,6 +70,9 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 					"operationType", operationType
 				).put(
 					"portalInstanceId", portalInstanceId
+				).put(
+					"schemaName",
+					_getSchemaName(operationType, portalInstanceId)
 				).put(
 					"status", PortalInstancesNotificationConstants.STATUS_FAILED
 				));
@@ -141,7 +148,7 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 
 	private String _getExportErrorMessageKey(Exception exception) {
 		if (exception instanceof IllegalArgumentException) {
-			return "the-exported-schema-already-exists";
+			return "the-exported-schema-x-already-exists";
 		}
 
 		if (exception instanceof RequiredCompanyException) {
@@ -191,8 +198,37 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 		return portalInstance.getPortalInstanceId();
 	}
 
+	private String _getSchemaName(
+		String operationType, String portalInstanceId) {
+
+		if (!Objects.equals(
+				operationType,
+				PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT)) {
+
+			return null;
+		}
+
+		try {
+			Company company = _companyLocalService.getCompanyByWebId(
+				portalInstanceId);
+
+			return DBPartitionUtil.getExportedPartitionName(
+				company.getCompanyId());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return null;
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortalInstanceBatchEngineImportTaskExceptionHandler.class);
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private UserNotificationEventLocalService

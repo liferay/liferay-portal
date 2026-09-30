@@ -118,14 +118,15 @@ public class PortalInstancesUserNotificationHandlerTest {
 
 		Assert.assertEquals(
 			_toBodyHTML(
-				"the-exported-schema-already-exists",
+				_toTranslation(
+					"the-exported-schema-x-already-exists", schemaName),
 				_toTranslation(
 					"the-instance-x-could-not-be-exported", portalInstanceId)),
 			_getBody(
 				_toPayloadJSONObject(
-					"the-exported-schema-already-exists",
+					"the-exported-schema-x-already-exists",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
-					portalInstanceId, null,
+					portalInstanceId, schemaName,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
 			_toBodyHTML(
@@ -205,7 +206,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				"the-instance-x-could-not-be-exported", portalInstanceId),
 			_getTitle(
 				_toPayloadJSONObject(
-					"the-exported-schema-already-exists",
+					"the-exported-schema-x-already-exists",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
 					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));

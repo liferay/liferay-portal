@@ -59,7 +59,8 @@ test(
 
 			created = true;
 
-			await virtualInstancesPage.exportVirtualInstance(webId);
+			const schemaName =
+				await virtualInstancesPage.exportVirtualInstance(webId);
 
 			await virtualInstancesPage.startVirtualInstanceExport(webId);
 
@@ -68,7 +69,7 @@ test(
 
 				await expect(
 					notificationsPage.getNotification(
-						'The exported schema already exists.',
+						`The exported schema ${schemaName} already exists.`,
 						`The instance ${webId} could not be exported.`
 					)
 				).toBeVisible({timeout: 10 * 1000});

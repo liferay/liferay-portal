@@ -123,7 +123,8 @@ public class PortalInstancesUserNotificationHandler
 			}
 
 			return serviceContext.translate(
-				jsonObject.getString("errorMessageKey"));
+				jsonObject.getString("errorMessageKey"),
+				jsonObject.getString("schemaName"));
 		}
 
 		throw new IllegalArgumentException(
