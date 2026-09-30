@@ -79,6 +79,12 @@ public class LayoutsAdminDisplayContextTest {
 		).thenReturn(
 			_group
 		);
+
+		_groupLocalServiceUtilMockedStatic.when(
+			() -> GroupLocalServiceUtil.getGroup(Mockito.anyLong())
+		).thenReturn(
+			_group
+		);
 	}
 
 	@AfterClass
