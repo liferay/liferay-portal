@@ -260,11 +260,6 @@
 <!--THREAD_TABLE-->
 
 <tr>
-	<td>THREAD_TABLE_ALL_CHECKBOX</td>
-	<td>//div[contains(@id,'mbThreadsSearchContainer')]//input[contains(@name,'allRowIds')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>THREAD_TABLE_REPLIES</td>
 	<td>//span[contains(@title,'${key_replyCount} Replies')]</td>
 	<td></td>
