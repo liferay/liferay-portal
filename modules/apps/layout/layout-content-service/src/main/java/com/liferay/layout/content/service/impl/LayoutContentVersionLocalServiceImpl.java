@@ -309,8 +309,7 @@ public class LayoutContentVersionLocalServiceImpl
 		}
 
 		return StringUtil.replaceFirst(
-			html, "</head>",
-			StringBundler.concat("<style>", css, "</style></head>"));
+			html, "</head>", "<style>" + css + "</style></head>");
 	}
 
 	private void _addLayoutContentVersionPreviews(
