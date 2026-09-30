@@ -11,6 +11,7 @@ import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
@@ -191,6 +192,8 @@ public class DepotEntryAdminSearchProvider {
 
 		searchContext.setAttribute(Field.TYPE, depotEntryType);
 		searchContext.setBooleanClauses(_getBooleanClauses());
+		searchContext.setEnd(QueryUtil.ALL_POS);
+		searchContext.setStart(QueryUtil.ALL_POS);
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
