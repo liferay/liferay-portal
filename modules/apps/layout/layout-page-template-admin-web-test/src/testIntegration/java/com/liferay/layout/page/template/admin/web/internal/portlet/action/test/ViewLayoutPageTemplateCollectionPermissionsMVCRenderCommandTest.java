@@ -121,16 +121,16 @@ public class ViewLayoutPageTemplateCollectionPermissionsMVCRenderCommandTest {
 				"PortletConfigurationPortlet");
 
 		Assert.assertEquals(
+			redirect, LayoutPageTemplateCollection.class.getName(),
+			HttpComponentsUtil.getParameter(
+				redirect, namespace + "modelResource", false));
+		Assert.assertEquals(
 			redirect,
 			String.valueOf(
 				layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId()),
 			HttpComponentsUtil.getParameter(
 				redirect, namespace + "resourcePrimKey", false));
-		Assert.assertEquals(
-			redirect, LayoutPageTemplateCollection.class.getName(),
-			HttpComponentsUtil.getParameter(
-				redirect, namespace + "modelResource", false));
 	}
 
 	private void _testRenderWithUnknownExternalReferenceCode()

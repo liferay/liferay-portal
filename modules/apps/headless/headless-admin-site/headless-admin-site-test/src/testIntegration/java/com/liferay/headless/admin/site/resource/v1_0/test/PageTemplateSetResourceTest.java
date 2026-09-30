@@ -384,10 +384,8 @@ public class PageTemplateSetResourceTest
 		throws Exception {
 
 		Group group = _depotEntry.getGroup();
-
 		PageTemplateSet pageTemplateSet =
 			testPutDesignLibraryPageTemplateSetPermissionsPage_addPageTemplateSet();
-
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		assertHttpResponseStatusCode(

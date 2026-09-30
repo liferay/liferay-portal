@@ -97,10 +97,6 @@ public class
 					_httpServletRequest, _depotEntry,
 					RandomTestUtil.randomString());
 
-		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 4,
-			fdsActionDropdownItems.size());
-
 		_assertFDSActionDropdownItem(
 			fdsActionDropdownItems.get(0), "view", "view", "view", null, null,
 			"link");
@@ -113,6 +109,9 @@ public class
 		_assertFDSActionDropdownItem(
 			fdsActionDropdownItems.get(3), "trash", "delete", "delete",
 			"delete", "delete", "async");
+		Assert.assertEquals(
+			fdsActionDropdownItems.toString(), 4,
+			fdsActionDropdownItems.size());
 
 		Mockito.verify(
 			_liferayPortletURL
