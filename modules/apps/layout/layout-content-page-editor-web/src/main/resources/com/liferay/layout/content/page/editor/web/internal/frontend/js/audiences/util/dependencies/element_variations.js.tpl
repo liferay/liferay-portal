@@ -71,7 +71,7 @@ function getScore(audienceEntryERC) {
 
 	return (
 		sortedAudienceEntryERCs.length +
-		audiences.getPriority(audienceEntryERC)
+		(audiences.getAudienceIndex(audienceEntryERC) ?? Infinity)
 	);
 }
 
