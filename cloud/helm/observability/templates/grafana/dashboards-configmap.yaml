@@ -74,7 +74,13 @@
 {{- $rendered = $rendered | replace "\"${AWS_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/aws-backup.html") (dict "region" $region) | toJson) -}}
 {{- end -}}
 {{- if and (eq $key "backups") (eq $cloudProvider "azure") -}}
-{{- $rendered = $rendered | replace "\"${AZURE_BACKUP_HTML}\"" ($.Files.Get "dashboards/html/azure-backup.html" | toJson) -}}
+{{- $azureBackupCtx := dict "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" "azb-tile-muted" "resourceGroupName" $azureResourceGroupName "subscriptionId" $azureSubscriptionId -}}
+{{- if $.Values.centralHub.argoWorkflowsURL -}}
+{{- $_ := set $azureBackupCtx "argoWfDescription" "Submit the Backup Restore Workflow Template" -}}
+{{- $_ := set $azureBackupCtx "argoWfHref" (printf "%s/workflow-templates/${environment}/backup-restore-workflow-template" (trimSuffix "/" $.Values.centralHub.argoWorkflowsURL)) -}}
+{{- $_ := set $azureBackupCtx "argoWfTileStyle" "azb-tile" -}}
+{{- end -}}
+{{- $rendered = $rendered | replace "\"${AZURE_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/azure-backup.html") $azureBackupCtx | toJson) -}}
 {{- end -}}
 {{- if eq $key "central-hub" -}}
 {{- $centralHubCtx := dict "argocdDescription" $argocdDescription "argocdHref" $argocdHref "argocdTileStyle" $argocdTileStyle "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" $argoWfTileStyle "gitDescription" $gitDescription "gitHref" $gitHref "gitTileStyle" $gitTileStyle -}}

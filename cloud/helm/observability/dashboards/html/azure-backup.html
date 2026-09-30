@@ -64,14 +64,14 @@
 
 			<div class="azb-or">or</div>
 
-			<a class="azb-tile-muted azb-tile-row" href="#" target="_blank">
+			<a class="{{ .argoWfTileStyle }} azb-tile-row" href="{{ .argoWfHref }}" target="_blank">
 				<div class="azb-icon">
 					<img alt="Argo Workflows" class="azb-img" src="https://raw.githubusercontent.com/argoproj/argo-workflows/master/docs/assets/logo.png" />
 				</div>
 
 				<div>
 					<div class="azb-tile-title">Argo Workflows</div>
-					<div class="azb-tile-sub">Set centralHub.argoWorkflowsURL in your values.yaml to enable this link.</div>
+					<div class="azb-tile-sub">{{ .argoWfDescription }}</div>
 				</div>
 			</a>
 		</div>
@@ -79,16 +79,25 @@
 
 	<div class="azb-older">
 		<div class="azb-older-note">
-			Azure Resource Graph only keeps the last 14 days of backup jobs, so recovery points older than that are not listed even if they have not expired. List them with <code>az dataprotection recovery-point list</code> against the backup instance of the active data plane.
+			Azure Resource Graph only keeps the last 14 days of backup jobs, so recovery points older than that are not listed even if they have not expired. List them with this command, which targets the backup instance of the active data plane:
+
+			<code class="azb-code">az dataprotection recovery-point list \
+	--backup-instance-name ${backupInstance} \
+	--end-time ${backupListEndTime} \
+	--output table \
+	--query "[].{ID: name, Time: properties.recoveryPointTime}" \
+	--resource-group {{ .resourceGroupName }} \
+	--subscription {{ .subscriptionId }} \
+	--vault-name ${backupVault}</code>
 		</div>
 
-		<a class="azb-tile" href="https://portal.azure.com/#browse/Microsoft.DataProtection%2FBackupVaults" target="_blank">
+		<a class="azb-tile" href="https://portal.azure.com/#resource/subscriptions/{{ .subscriptionId }}/resourceGroups/{{ .resourceGroupName }}/providers/Microsoft.DataProtection/backupVaults/${backupVault}/overview" target="_blank">
 			<div class="azb-icon">
 				<span class="azb-emoji">🔒</span>
 			</div>
 
-			<div class="azb-tile-title">Backup Vaults</div>
-			<div class="azb-tile-sub">Backup Instances, Jobs and Policies</div>
+			<div class="azb-tile-title">Backup Vault</div>
+			<div class="azb-tile-sub">Backup Instances, Jobs and Policies (${backupVault})</div>
 		</a>
 	</div>
 </div>

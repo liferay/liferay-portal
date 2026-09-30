@@ -708,6 +708,96 @@
 				],
 				"query": "Start time : triggered,Completion time : completed",
 				"type": "custom"
+			},
+			{
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "grafana-azure-monitor-datasource",
+					"uid": "${DS_AZURE_MONITOR}"
+				},
+				"definition": "",
+				"hide": 2,
+				"name": "backupInstance",
+				"options": [
+				],
+				"query": {
+					"azureResourceGraph": {
+						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupinstances'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| extend dataSourceId = tolower(tostring(properties.dataSourceInfo.resourceID))\n| join kind=inner (\n\tresources\n\t| where type == 'microsoft.storage/storageaccounts'\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| where tostring(tags['active']) == 'true'\n\t| project dataSourceId = tolower(id), namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id']))\n) on dataSourceId\n| where namespace == '$environment'\n| project name",
+						"resultFormat": "table"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				},
+				"refresh": 1,
+				"regex": "",
+				"sort": 0,
+				"type": "query"
+			},
+			{
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "grafana-azure-monitor-datasource",
+					"uid": "${DS_AZURE_MONITOR}"
+				},
+				"definition": "",
+				"hide": 2,
+				"name": "backupListEndTime",
+				"options": [
+				],
+				"query": {
+					"azureResourceGraph": {
+						"query": "resources\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| take 1\n| extend cutoff = now() - 14d\n| project endTime = strcat(format_datetime(cutoff, 'yyyy-MM-dd'), 'T', format_datetime(cutoff, 'HH:mm:ss'))",
+						"resultFormat": "table"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				},
+				"refresh": 1,
+				"regex": "",
+				"sort": 0,
+				"type": "query"
+			},
+			{
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "grafana-azure-monitor-datasource",
+					"uid": "${DS_AZURE_MONITOR}"
+				},
+				"definition": "",
+				"hide": 2,
+				"name": "backupVault",
+				"options": [
+				],
+				"query": {
+					"azureResourceGraph": {
+						"query": "resources\n| where type == 'microsoft.dataprotection/backupvaults'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])) == '$environment'\n| project name",
+						"resultFormat": "table"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				},
+				"refresh": 1,
+				"regex": "",
+				"sort": 0,
+				"type": "query"
 			}
 		]
 	},

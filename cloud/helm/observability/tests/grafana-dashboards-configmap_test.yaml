@@ -95,7 +95,7 @@ tests:
                     pattern: join kind=leftouter \(\\n\\tresources\\n\\t\| where type in \(.microsoft.dataprotection/backupvaults., .microsoft.storage/storageaccounts.\)
             -   notMatchRegex:
                     path: data["backups.json"]
-                    pattern: join kind=inner
+                    pattern: backupjobs.[^"]*join kind=inner
         documentSelector:
             path: metadata.name
             value: RELEASE-NAME-observability-dashboard-backups
