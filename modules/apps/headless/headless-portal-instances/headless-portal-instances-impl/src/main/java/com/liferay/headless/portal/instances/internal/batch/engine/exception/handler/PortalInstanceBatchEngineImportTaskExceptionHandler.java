@@ -10,6 +10,7 @@ import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskExceptionHandler;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.portal.instances.constants.PortalInstancesNotificationConstants;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
@@ -45,17 +46,13 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
 		Exception exception1, Object item, String message) {
 
-		if (!(item instanceof PortalInstance)) {
-			return;
-		}
-
-		String operationType = _getOperationType(batchEngineImportTask);
+		String operationType = _getOperationType(batchEngineImportTask, item);
 
 		if (operationType == null) {
 			return;
 		}
 
-		PortalInstance portalInstance = (PortalInstance)item;
+		String portalInstanceId = _getPortalInstanceId(item);
 
 		try {
 			_userNotificationEventLocalService.sendUserNotificationEvents(
@@ -63,11 +60,12 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 				PortalInstancesPortletKeys.PORTAL_INSTANCES,
 				UserNotificationDeliveryConstants.TYPE_WEBSITE,
 				JSONUtil.put(
-					"errorMessageKey", _getErrorMessageKey(exception1)
+					"errorMessageKey",
+					_getErrorMessageKey(exception1, operationType)
 				).put(
 					"operationType", operationType
 				).put(
-					"portalInstanceId", portalInstance.getPortalInstanceId()
+					"portalInstanceId", portalInstanceId
 				).put(
 					"status", PortalInstancesNotificationConstants.STATUS_FAILED
 				));
@@ -75,12 +73,21 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 		catch (Exception exception2) {
 			_log.error(
 				"Unable to send the user notification event for portal " +
-					"instance " + portalInstance.getPortalInstanceId(),
+					"instance " + portalInstanceId,
 				exception2);
 		}
 	}
 
-	private String _getErrorMessageKey(Exception exception) {
+	private String _getErrorMessageKey(
+		Exception exception, String operationType) {
+
+		if (Objects.equals(
+				operationType,
+				PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT)) {
+
+			return _getExportErrorMessageKey(exception);
+		}
+
 		if (exception instanceof CompanyMaxUsersException) {
 			return "please-enter-a-valid-max-users";
 		}
@@ -132,20 +139,56 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 		return "an-unexpected-error-occurred";
 	}
 
+	private String _getExportErrorMessageKey(Exception exception) {
+		if (exception instanceof IllegalArgumentException) {
+			return "the-exported-schema-already-exists";
+		}
+
+		if (exception instanceof RequiredCompanyException) {
+			return "the-default-instance-cannot-be-exported";
+		}
+
+		return "an-unexpected-error-occurred";
+	}
+
 	private String _getOperationType(
-		BatchEngineImportTask batchEngineImportTask) {
+		BatchEngineImportTask batchEngineImportTask, Object item) {
 
 		String operation = batchEngineImportTask.getOperation();
 
 		if (Objects.equals(operation, BatchEngineTaskOperation.CREATE.name())) {
-			return PortalInstancesNotificationConstants.OPERATION_TYPE_ADD;
+			if (item instanceof PortalInstance) {
+				return PortalInstancesNotificationConstants.OPERATION_TYPE_ADD;
+			}
+
+			if (item instanceof PortalInstanceExport) {
+				return PortalInstancesNotificationConstants.
+					OPERATION_TYPE_EXPORT;
+			}
+
+			return null;
 		}
 
-		if (Objects.equals(operation, BatchEngineTaskOperation.DELETE.name())) {
+		if (Objects.equals(operation, BatchEngineTaskOperation.DELETE.name()) &&
+			(item instanceof PortalInstance)) {
+
 			return PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE;
 		}
 
 		return null;
+	}
+
+	private String _getPortalInstanceId(Object item) {
+		if (item instanceof PortalInstanceExport) {
+			PortalInstanceExport portalInstanceExport =
+				(PortalInstanceExport)item;
+
+			return portalInstanceExport.getPortalInstanceId();
+		}
+
+		PortalInstance portalInstance = (PortalInstance)item;
+
+		return portalInstance.getPortalInstanceId();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
