@@ -141,9 +141,9 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 
 		Assert.assertEquals(
 			"DELETE", payloadJSONObject.getString("operationType"));
-		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 		Assert.assertEquals(
 			portalInstanceId, payloadJSONObject.getString("portalInstanceId"));
+		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 	}
 
 	@Test
@@ -164,9 +164,9 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 
 		Assert.assertEquals(
 			"ADD", payloadJSONObject.getString("operationType"));
-		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 		Assert.assertEquals(
 			portalInstanceId, payloadJSONObject.getString("portalInstanceId"));
+		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 	}
 
 	private void _assertErrorMessageKey(
