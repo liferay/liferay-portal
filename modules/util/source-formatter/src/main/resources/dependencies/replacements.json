@@ -6355,6 +6355,41 @@
 		"issueKey": "LPD-105365"
 	},
 	{
+		"from": "PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION",
+		"issueKey": "LPD-106961",
+		"to": "PanelCategoryKeys.CONTROL_PANEL_INSTANCE",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION",
+		"issueKey": "LPD-106961",
+		"to": "PortletCategoryKeys.CONTROL_PANEL_INSTANCE",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bcontrol_panel\\.configuration(?![\\w.-])",
+		"issueKey": "LPD-106961",
+		"to": "control_panel.instance",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bcontrol_panel\\.configuration(?![\\w.-])",
+		"issueKey": "LPD-106961",
+		"to": "control_panel.object",
+		"validExtensions": [
+			"json"
+		]
+	},
+	{
 		"from": "regex:MultiVMPoolUtil\\s*.\\s*getPortalCache\\(\\s*(?<prefixMethodName>[\\s\\S]*?)\\)",
 		"issueKey": "LPS-153962",
 		"newImports": [
