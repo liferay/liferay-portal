@@ -42,7 +42,7 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 			).put(
 				"exportPreviewAPIURL", exportImportProcessDisplayContext.getExportPreviewAPIURL()
 			).put(
-				"exportPreviewSitesAPIURL", exportImportProcessDisplayContext.getExportPreviewSitesAPIURL()
+				"exportPreviewSitesAPIURL", exportImportProcessDisplayContext::getExportPreviewSitesAPIURL
 			).put(
 				"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
 			).put(

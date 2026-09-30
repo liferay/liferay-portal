@@ -50,6 +50,12 @@ const DEFAULT_PROPS = {
 	},
 };
 
+const INSTANCE_PROPS = {
+	exportPreviewSitesAPIURL:
+		'/o/export-import/v1.0/export-preview/preview-sites',
+	siteSelectionEnabled: true,
+};
+
 const renderComponent = (
 	props: Partial<React.ComponentProps<typeof NewExport>> = {}
 ) => render(<NewExport {...DEFAULT_PROPS} {...props} />);
@@ -220,11 +226,7 @@ describe('NewExport', () => {
 	});
 
 	it('asks for an entity type or a site below both, where sites are on offer', async () => {
-		renderComponent({
-			exportPreviewSitesAPIURL:
-				'/o/export-import/v1.0/export-preview/sites',
-			siteSelectionEnabled: true,
-		});
+		renderComponent(INSTANCE_PROPS);
 
 		const nameInput = await screen.findByRole('textbox', {
 			name: /^name/i,
@@ -281,11 +283,7 @@ describe('NewExport', () => {
 			return JSON.stringify(mockPreview);
 		});
 
-		renderComponent({
-			exportPreviewSitesAPIURL:
-				'/o/export-import/v1.0/export-preview/preview-sites',
-			siteSelectionEnabled: true,
-		});
+		renderComponent(INSTANCE_PROPS);
 
 		await userEvent.type(
 			await screen.findByRole('textbox', {name: /^name/i}),

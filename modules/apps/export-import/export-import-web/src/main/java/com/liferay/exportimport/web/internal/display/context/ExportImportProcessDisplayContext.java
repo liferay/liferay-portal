@@ -128,6 +128,10 @@ public class ExportImportProcessDisplayContext {
 	}
 
 	public String getExportPreviewSitesAPIURL() {
+		if (!isSiteSelectionEnabled()) {
+			return null;
+		}
+
 		if (_exportPreviewSitesAPIURL != null) {
 			return _exportPreviewSitesAPIURL;
 		}
