@@ -12,16 +12,16 @@
             -   listitem: "3"
             -   listitem: "4"
             -   listitem:
-                -   button "Show pages 5 through 9"
+                -   button "Show Pages 5 Through 9"
             -   listitem: /\d+/
             -   listitem:
-                -   button "Go to the next page, 2"
+                -   button "Go to the Next Page, 2"
     -   heading "Without DropDown" [level=3]
     -   text: /Showing \d+ - \d+ of \d+/
     -   navigation "Pagination":
         -   list:
             -   listitem:
-                -   button "Go to the previous page, 3"
+                -   button "Go to the Previous Page, 3"
             -   listitem: "1"
             -   listitem: "2"
             -   listitem: "3"
@@ -31,4 +31,4 @@
             -   listitem: "7"
             -   listitem: "8"
             -   listitem:
-                -   button "Go to the next page, 5"
+                -   button "Go to the Next Page, 5"
