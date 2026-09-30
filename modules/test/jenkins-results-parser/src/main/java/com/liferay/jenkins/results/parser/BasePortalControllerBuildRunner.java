@@ -196,11 +196,11 @@ public abstract class BasePortalControllerBuildRunner
 
 	protected String getDescriptionPortalBaseBranchSHA(String description) {
 		return _getDescriptionBranchSHA(
-			_portalBaseBranchSHAPattern, description);
+			description, _portalBaseBranchSHAPattern);
 	}
 
 	protected String getDescriptionPortalBranchSHA(String description) {
-		return _getDescriptionBranchSHA(_portalBranchSHAPattern, description);
+		return _getDescriptionBranchSHA(description, _portalBranchSHAPattern);
 	}
 
 	protected String getInvocationCohortName() {
@@ -430,7 +430,7 @@ public abstract class BasePortalControllerBuildRunner
 	}
 
 	private String _getDescriptionBranchSHA(
-		Pattern pattern, String description) {
+		String description, Pattern pattern) {
 
 		Matcher matcher = pattern.matcher(description);
 
