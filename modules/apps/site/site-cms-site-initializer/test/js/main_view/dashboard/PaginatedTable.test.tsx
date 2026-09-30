@@ -15,6 +15,22 @@ import React from 'react';
 import {InventoryAnalysisDataType} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
 import PaginatedTable from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/PaginatedTable';
 
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/common/utils/constants',
+	() => ({
+		...jest.requireActual<
+			typeof import('../../../../src/main/resources/META-INF/resources/js/common/utils/constants')
+		>(
+			'../../../../src/main/resources/META-INF/resources/js/common/utils/constants'
+		),
+		PAGINATION_BAR_LABELS: {
+			paginationResults: 'Showing {0} to {1} of {2} entries.',
+			perPageItems: '{0} Items',
+			selectPerPageItems: '{0} Items',
+		},
+	})
+);
+
 const mockData: InventoryAnalysisDataType = {
 	inventoryAnalysisItems: [
 		{
@@ -283,7 +299,7 @@ describe('[CMS Dashboard] Components: PaginatedTable', () => {
 
 		await itemsPerPageDropdown.click();
 
-		const option20Items = screen.getByRole('option', {name: '20 items'});
+		const option20Items = screen.getByRole('option', {name: '20 Items'});
 		await option20Items.click();
 
 		const table = screen.getByRole('table');
@@ -303,7 +319,21 @@ describe('[CMS Dashboard] Components: PaginatedTable', () => {
 
 		const totalItems = screen.getByText(/Showing \d+ to \d+ of \d+/);
 
-		expect(totalItems).toHaveTextContent('Showing 1 to 20 of 4050');
+		expect(totalItems).toHaveTextContent(
+			'Showing 1 to 20 of 4050 entries.'
+		);
+	});
+
+	it('displays the translated ellipsis label', () => {
+		render(
+			<WrappedComponent
+				currentStructureTypeLabel="Category"
+				inventoryAnalysisData={mockData}
+				viewType="chart"
+			/>
+		);
+
+		expect(screen.getByTitle('more')).toHaveAttribute('aria-label', 'more');
 	});
 
 	it('displays the correct item range per page', async () => {
@@ -323,7 +353,9 @@ describe('[CMS Dashboard] Components: PaginatedTable', () => {
 
 		const paginationResults = screen.getByText(/Showing \d+ to \d+ of \d+/);
 
-		expect(paginationResults).toHaveTextContent('Showing 1 to 20 of 4050');
+		expect(paginationResults).toHaveTextContent(
+			'Showing 1 to 20 of 4050 entries.'
+		);
 	});
 
 	it('displays the name, count, and assets percentage for each item', async () => {

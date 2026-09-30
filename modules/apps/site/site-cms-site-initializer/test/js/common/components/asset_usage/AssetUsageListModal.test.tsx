@@ -266,5 +266,8 @@ describe('AssetUsageListModal', () => {
 				'some-items-are-being-used-in-other-assets-or-pages.-deleting-them-will-break-those-references-and-cause-broken-links-or-missing-content.-this-action-cannot-be-undone.-are-you-sure-you-want-to-continue?'
 			)
 		).toBeInTheDocument();
+		expect(
+			screen.getByText('showing-x-to-x-of-x-entries')
+		).toBeInTheDocument();
 	});
 });
