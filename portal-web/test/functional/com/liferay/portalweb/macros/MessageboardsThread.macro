@@ -1245,21 +1245,13 @@ definition {
 
 	@summary = "Default summary"
 	macro tearDownCP() {
-		Navigator.openURL();
 
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			portlet = "Message Boards");
+		// Delete through the JSON API rather than the Message Boards admin
+		// page. Driving the UI removed nothing whenever the navigation
+		// above did not land on that page, and reported success anyway,
+		// which is the normal state after a failed test. See LPD-106704.
 
-		if (IsElementPresent.isVisible(locator1 = "MessageBoards#THREAD_TABLE_ALL_CHECKBOX")) {
-			Check(locator1 = "MessageBoards#THREAD_TABLE_ALL_CHECKBOX");
-
-			AssertClick(
-				locator1 = "MessageBoardsAdmin#THREADS_RECYCLE_BIN_BUTTON",
-				value1 = "Delete");
-
-			VerifyElementPresent(locator1 = "Message#SUCCESS");
-		}
+		JSONMBMessage.deleteAllThreads(groupName = "Guest");
 
 		JSONRecycleBin.emptyRecycleBin();
 	}

@@ -207,6 +207,43 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro deleteAllThreads(groupName = null) {
+		Variables.assertDefined(parameterList = "${groupName}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var groupId = JSONGroupSetter.setGroupId(groupName = ${groupName});
+		var userLoginInfo = JSONUtil2.formatJSONUser();
+
+		// Pass the status as ANY rather than APPROVED so a thread left
+		// pending by a workflow is removed too. See LPD-106704.
+
+		var curl = '''
+			${portalURL}/api/jsonws/mb.mbthread/get-threads \
+				-u ${userLoginInfo} \
+				-d groupId=${groupId} \
+				-d categoryId=0 \
+				-d status=-1 \
+				-d "start=-1" \
+				-d "end=-1"
+		''';
+
+		var rootMessageIds = JSONCurlUtil.post(${curl}, "$..['rootMessageId']");
+
+		// Deleting the root message deletes its thread. There is no
+		// mb.mbthread/delete-thread action to call instead.
+
+		for (var rootMessageId : list ${rootMessageIds}) {
+			var deleteCurl = '''
+				${portalURL}/api/jsonws/mb.mbmessage/delete-message \
+					-u ${userLoginInfo} \
+					-d messageId=${rootMessageId} \
+			''';
+
+			com.liferay.poshi.runner.util.JSONCurlUtil.post(${deleteCurl});
+		}
+	}
+
+	@summary = "Default summary"
 	macro deleteCategory(groupName = null, categoryName = null) {
 		Variables.assertDefined(parameterList = "${categoryName},${groupName}");
 
