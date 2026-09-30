@@ -311,9 +311,7 @@ public class LayoutContentVersionLocalServiceTest {
 			_layoutStructureProvider,
 			segmentsExperience.getSegmentsExperienceId());
 
-		return StringBundler.concat(
-			".lfr-layout-structure-item-", jsonObject.getString("addedItemId"),
-			" {\nbackground-color: ", backgroundColor, " !important;\n}\n");
+		return jsonObject.getString("addedItemId");
 	}
 
 	private FragmentEntry _addFragmentEntry() throws Exception {
@@ -545,6 +543,12 @@ public class LayoutContentVersionLocalServiceTest {
 			layoutContentVersionPreviews.size());
 	}
 
+	private String _getContainerCSS(String backgroundColor, String itemId) {
+		return StringBundler.concat(
+			".lfr-layout-structure-item-", itemId, " {\nbackground-color: ",
+			backgroundColor, " !important;\n}\n");
+	}
+
 	private String _getPreviewErrorMessage(Locale locale) {
 		return _language.get(
 			locale,
@@ -749,15 +753,24 @@ public class LayoutContentVersionLocalServiceTest {
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperience(
 				_draftLayout.getPlid());
 
-		String css1 = _addContainerToLayout("#00FF00", segmentsExperience);
+		String backgroundColor1 = "#00FF00";
+
+		String itemId1 = _addContainerToLayout(
+			backgroundColor1, segmentsExperience);
 
 		LayoutContentVersion layoutContentVersion1 = _addLayoutContentVersion(
 			WorkflowConstants.STATUS_APPROVED);
 
-		String css2 = _addContainerToLayout("#FF0000", segmentsExperience);
+		String backgroundColor2 = "#FF0000";
+
+		String itemId2 = _addContainerToLayout(
+			backgroundColor2, segmentsExperience);
 
 		LayoutContentVersion layoutContentVersion2 = _addLayoutContentVersion(
 			WorkflowConstants.STATUS_APPROVED);
+
+		String css1 = _getContainerCSS(backgroundColor1, itemId1);
+		String css2 = _getContainerCSS(backgroundColor2, itemId2);
 
 		String html1 = _getPreviewHTML(
 			layoutContentVersion1, segmentsExperience);
