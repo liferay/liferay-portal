@@ -106,7 +106,7 @@ definition {
 			key_text = "Delete",
 			locator1 = "Modal#MODAL_FOOTER_BUTTON");
 
-		Alert.viewInfoMessage(infoMessage = "The instance ${webId} is being deleted. You will be notified when it finishes.");
+		Alert.viewInfoMessageSpecific(infoMessage = "The instance ${webId} is being deleted. You will be notified when it finishes.");
 
 		var deletionPauseCount = 0;
 
