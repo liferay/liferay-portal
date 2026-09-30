@@ -42,7 +42,7 @@ test(
 				await productPage.code.fill(getRandomString());
 				await productPage.name.fill(productName);
 
-				await contentsPage.saveContent();
+				await productPage.save();
 			});
 
 			await test.step('Create a web content so the filter has something to exclude', async () => {

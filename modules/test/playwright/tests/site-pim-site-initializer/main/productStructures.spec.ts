@@ -24,7 +24,6 @@ test(
 	'Create a product structure from the base SKU and use its own field',
 	{tag: ['@LPD-99448', '@LPD-105922']},
 	async ({
-		contentsPage,
 		productPage,
 		productStructuresPage,
 		productsPage,
@@ -98,7 +97,7 @@ test(
 
 				await productPage.getField(fieldName).fill('Fragile');
 
-				await contentsPage.saveContent();
+				await productPage.save();
 
 				await expect(
 					productsPage.getProduct(productName)
@@ -132,7 +131,6 @@ test(
 	'Create a product structure with its own tab from the base SKU',
 	{tag: ['@LPD-105923']},
 	async ({
-		contentsPage,
 		productPage,
 		productStructuresPage,
 		productsPage,
@@ -194,6 +192,7 @@ test(
 					'Details',
 					'Units of Measure',
 					tabLabel,
+					'Relationships',
 				]);
 
 				await clickAndExpectToBeVisible({
@@ -211,7 +210,7 @@ test(
 
 				await productPage.getField(fieldName).fill('Aisle 3');
 
-				await contentsPage.saveContent();
+				await productPage.save();
 
 				await expect(
 					productsPage.getProduct(productName)

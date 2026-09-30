@@ -9,12 +9,14 @@ import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVis
 
 export class SpaceSelectorPage {
 	readonly dialog: Locator;
+	readonly generalTab: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly spaceSelect: Locator;
 
 	constructor(page: Page) {
 		this.dialog = page.getByRole('dialog');
+		this.generalTab = page.getByRole('tab', {name: 'General'});
 		this.page = page;
 		this.saveButton = this.dialog.getByRole('button', {name: 'Save'});
 		this.spaceSelect = this.dialog.getByLabel('Space');
@@ -25,6 +27,17 @@ export class SpaceSelectorPage {
 	}
 
 	async selectSpace(space: string) {
+		const shown = await Promise.race([
+			this.dialog.waitFor({state: 'visible'}).then(() => 'spaceSelector'),
+			this.generalTab
+				.waitFor({state: 'visible'})
+				.then(() => 'contentEditor'),
+		]);
+
+		if (shown === 'contentEditor') {
+			return;
+		}
+
 		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.getSpaceOption(space),

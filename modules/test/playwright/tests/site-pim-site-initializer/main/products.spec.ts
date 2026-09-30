@@ -22,7 +22,7 @@ const test = mergeTests(
 test(
 	'Create a base SKU',
 	{tag: ['@LPD-98441', '@LPD-99449', '@LPD-99450']},
-	async ({contentsPage, productPage, productsPage}) => {
+	async ({productPage, productsPage}) => {
 		const baseSkuName = getRandomString();
 
 		try {
@@ -50,7 +50,7 @@ test(
 			await productPage.unitOfMeasureName.fill('Box');
 			await productPage.unitOfMeasureSymbol.fill('BX');
 
-			await contentsPage.saveContent();
+			await productPage.save();
 
 			await expect(productsPage.getProduct(baseSkuName)).toBeVisible();
 
@@ -95,6 +95,7 @@ test(
 		await expect(productPage.tabs).toHaveText([
 			'Details',
 			'Units of Measure',
+			'Relationships',
 		]);
 
 		await test.step('The first tab is the one the form opens on', async () => {

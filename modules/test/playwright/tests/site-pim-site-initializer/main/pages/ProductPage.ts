@@ -5,6 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+
 function getObjectFieldInput(objectFieldName: string, page: Page) {
 	return page.locator(`[name="ObjectField_${objectFieldName}"]`);
 }
@@ -16,7 +18,9 @@ export class ProductPage {
 	readonly dimensions: Locator;
 	readonly height: Locator;
 	readonly name: Locator;
+	readonly newButton: Locator;
 	readonly page: Page;
+	readonly publishButton: Locator;
 	readonly tabs: Locator;
 	readonly unitOfMeasureAllowDecimalQuantities: Locator;
 	readonly unitOfMeasureKey: Locator;
@@ -37,7 +41,13 @@ export class ProductPage {
 			.filter({hasText: 'Dimensions'});
 		this.height = getObjectFieldInput('height', page);
 		this.name = getObjectFieldInput('name', page);
+		this.newButton = page
+			.locator('[data-testid="fdsCreationActionButton"]')
+			.first();
 		this.page = page;
+		this.publishButton = page
+			.getByText('Publish', {exact: true})
+			.or(page.getByText('Submit for Workflow', {exact: true}));
 		this.tabs = page
 			.locator('.cms-object-layout-form .component-tabs')
 			.getByRole('tab');
@@ -62,5 +72,12 @@ export class ProductPage {
 
 	getTab(name: string) {
 		return this.tabs.filter({hasText: name});
+	}
+
+	async save() {
+		await clickAndExpectToBeVisible({
+			target: this.newButton,
+			trigger: this.publishButton,
+		});
 	}
 }

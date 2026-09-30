@@ -13,6 +13,7 @@ import {EditConnectorPage} from '../pages/EditConnectorPage';
 import {EditFieldMappingsPage} from '../pages/EditFieldMappingsPage';
 import {FieldMappingsPage} from '../pages/FieldMappingsPage';
 import {ProductPage} from '../pages/ProductPage';
+import {ProductRelationshipsPage} from '../pages/ProductRelationshipsPage';
 import {ProductStructuresPage} from '../pages/ProductStructuresPage';
 import {ProductsPage} from '../pages/ProductsPage';
 import {SpaceSelectorPage} from '../pages/SpaceSelectorPage';
@@ -24,6 +25,7 @@ const pimPages = test.extend<{
 	fieldMappingsPage: FieldMappingsPage;
 	pimSetup;
 	productPage: ProductPage;
+	productRelationshipsPage: ProductRelationshipsPage;
 	productStructuresPage: ProductStructuresPage;
 	productsPage: ProductsPage;
 	spaceSelectorPage: SpaceSelectorPage;
@@ -55,6 +57,9 @@ const pimPages = test.extend<{
 	],
 	productPage: async ({page}, use) => {
 		await use(new ProductPage(page));
+	},
+	productRelationshipsPage: async ({page}, use) => {
+		await use(new ProductRelationshipsPage(page));
 	},
 	productStructuresPage: async ({page}, use) => {
 		await use(new ProductStructuresPage(page));
