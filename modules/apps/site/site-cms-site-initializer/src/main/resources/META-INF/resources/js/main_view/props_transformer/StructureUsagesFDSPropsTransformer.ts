@@ -12,10 +12,13 @@ import confirmAndDeleteEntryAction from './actions/confirmAndDeleteEntryAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import SpaceRendererWithCache from './cell_renderers/SpaceRendererWithCache';
 import TypeRenderer from './cell_renderers/TypeRenderer';
+import styleDeleteAction from './utils/styleDeleteAction';
 
 export default function StructureUsagesFDSPropsTransformer({
+	itemsActions = [],
 	...otherProps
 }: {
+	itemsActions?: any[];
 	otherProps: any;
 }) {
 	return {
@@ -50,6 +53,7 @@ export default function StructureUsagesFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		itemsActions: itemsActions.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			event,

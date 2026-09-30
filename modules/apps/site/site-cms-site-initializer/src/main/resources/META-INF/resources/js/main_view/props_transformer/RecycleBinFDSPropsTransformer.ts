@@ -24,6 +24,7 @@ import restoreItemAction from './actions/restoreItemAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import SpaceRendererWithCache from './cell_renderers/SpaceRendererWithCache';
+import styleDeleteAction from './utils/styleDeleteAction';
 import transformFDSBulkActions from './utils/transformFDSBulkActions';
 
 export default function RecycleBinFDSPropsTransformer({
@@ -91,7 +92,7 @@ export default function RecycleBinFDSPropsTransformer({
 				};
 			}
 
-			return action;
+			return styleDeleteAction(action);
 		}),
 		async onActionDropdownItemClick({
 			action,

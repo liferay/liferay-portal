@@ -30,6 +30,7 @@ import {
 	isScheduleDateActionId,
 	openScheduleDateModal,
 } from './utils/createScheduleDateModalOpener';
+import styleDeleteAction from './utils/styleDeleteAction';
 
 export type DashboardAssetListAdditionalProps = Pick<
 	AdditionalProps,
@@ -144,7 +145,7 @@ export default function getDashboardAssetListFDSProps({
 				};
 			}
 
-			return action;
+			return styleDeleteAction(action);
 		}),
 		async onActionDropdownItemClick({
 			action,

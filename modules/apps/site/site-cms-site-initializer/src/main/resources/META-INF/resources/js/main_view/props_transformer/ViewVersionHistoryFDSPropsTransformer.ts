@@ -21,6 +21,7 @@ import AssetVersionRenderer from './cell_renderers/AssetVersionRenderer';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import VersionRenderer from './cell_renderers/VersionRenderer';
 import {executeAsyncItemAction} from './utils/executeAsyncItemAction';
+import styleDeleteAction from './utils/styleDeleteAction';
 import transformFDSBulkActions from './utils/transformFDSBulkActions';
 
 export default function ViewVersionHistoryFDSPropsTransformer({
@@ -109,7 +110,7 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 				};
 			}
 
-			return action;
+			return styleDeleteAction(action);
 		}),
 		onActionDropdownItemClick({
 			action,

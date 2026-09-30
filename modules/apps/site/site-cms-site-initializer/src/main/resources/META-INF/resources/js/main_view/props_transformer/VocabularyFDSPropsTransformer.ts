@@ -10,6 +10,7 @@ import {openGenericFDSDeleteConfirmationModal} from '../../common/utils/genericO
 import MultipleScopesRenderer from './cell_renderers/MultipleScopesRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import VocabularyRenderer from './cell_renderers/VocabularyRenderer';
+import styleDeleteAction from './utils/styleDeleteAction';
 
 export default function VocabularyFDSPropsTransformer({
 	additionalProps,
@@ -52,16 +53,7 @@ export default function VocabularyFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions.map((action) => {
-			if (action?.data?.id === 'delete') {
-				return {
-					...action,
-					className: 'text-danger',
-				};
-			}
-
-			return action;
-		}),
+		itemsActions: itemsActions.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			itemData,

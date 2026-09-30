@@ -21,16 +21,19 @@ import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import StructureScopeRenderer from './cell_renderers/StructureScopeRenderer';
 import TypeRenderer from './cell_renderers/TypeRenderer';
+import styleDeleteAction from './utils/styleDeleteAction';
 import transformFDSBulkActions from './utils/transformFDSBulkActions';
 
 export default function StructuresFDSPropsTransformer({
 	additionalProps,
 	bulkActions = [],
+	itemsActions = [],
 	...otherProps
 }: {
 	additionalProps?: any;
 	apiURL: string;
 	bulkActions: Array<IBulkActionItem>;
+	itemsActions?: any[];
 	otherProps: any;
 }) {
 	return {
@@ -78,6 +81,7 @@ export default function StructuresFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		itemsActions: itemsActions.map(styleDeleteAction),
 		async onActionDropdownItemClick({
 			action,
 			event,

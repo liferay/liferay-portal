@@ -9,6 +9,7 @@ import {openGenericFDSDeleteConfirmationModal} from '../../common/utils/genericO
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import MoveCategoryModalContent from '../categorization/categories/components/MoveCategoryModalContent';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
+import styleDeleteAction from './utils/styleDeleteAction';
 
 export default function CategoryFDSPropsTransformer({
 	itemsActions = [],
@@ -34,16 +35,7 @@ export default function CategoryFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions.map((action) => {
-			if (action?.data?.id === 'delete') {
-				return {
-					...action,
-					className: 'text-danger',
-				};
-			}
-
-			return action;
-		}),
+		itemsActions: itemsActions.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			itemData,

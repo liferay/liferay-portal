@@ -23,6 +23,7 @@ import manageMembersAction, {
 import SpaceRenderer from './cell_renderers/SpaceRenderer';
 import addOnClickToCreationMenuItems from './utils/addOnClickToCreationMenuItems';
 import {executeAsyncItemAction} from './utils/executeAsyncItemAction';
+import styleDeleteAction from './utils/styleDeleteAction';
 import transformFDSBulkActions from './utils/transformFDSBulkActions';
 
 const ACTIONS = {};
@@ -89,7 +90,7 @@ export default function AllSpacesFDSPropsTransformer({
 				};
 			}
 
-			return action;
+			return styleDeleteAction(action);
 		}),
 		onActionDropdownItemClick: ({
 			action,
