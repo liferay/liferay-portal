@@ -84,7 +84,7 @@ components:
                 value:
                     $ref: ../../headless-admin-site/headless-admin-site-impl/rest-openapi.yaml#CollectionReference
                     description:
-                        A reference to the selected collection (`Collection`), collection provider (`CollectionProvider`, including related items collection providers), or repeatable fields collection provider (`RepeatableFieldsCollectionProvider`). A collection is referenced by external reference code, which survives promoting the fragment across environments.
+                        A reference to the selected collection (`Collection`), collection provider (`CollectionProvider`, including related items collection providers), or repeatable fields collection provider (`RepeatableFieldsCollectionProvider`).
             type: object
         CollectionSelectorField:
             allOf:
