@@ -7,7 +7,7 @@ package com.liferay.invitation.invite.members.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.invitation.invite.members.constants.InviteMembersConstants;
-import com.liferay.invitation.invite.members.exception.MemberRequestInvalidURLException;
+import com.liferay.invitation.invite.members.exception.MemberRequestServiceContextException;
 import com.liferay.invitation.invite.members.model.MemberRequest;
 import com.liferay.invitation.invite.members.service.MemberRequestLocalService;
 import com.liferay.invitation.invite.members.service.MemberRequestService;
@@ -150,8 +150,8 @@ public class MemberRequestServiceTest {
 			serviceContext.setAttribute(name, url);
 
 			_testAddMemberRequests(
-				MemberRequestInvalidURLException.class, 0, 0, serviceContext,
-				user);
+				MemberRequestServiceContextException.class, 0, 0,
+				serviceContext, user);
 		}
 
 		ServiceContext serviceContext = _getServiceContext();
@@ -159,7 +159,8 @@ public class MemberRequestServiceTest {
 		serviceContext.setCurrentURL(url);
 
 		_testAddMemberRequests(
-			MemberRequestInvalidURLException.class, 0, 0, serviceContext, user);
+			MemberRequestServiceContextException.class, 0, 0, serviceContext,
+			user);
 
 		serviceContext = _getServiceContext();
 
@@ -167,7 +168,8 @@ public class MemberRequestServiceTest {
 		serviceContext.setPortalURL(url);
 
 		_testAddMemberRequests(
-			MemberRequestInvalidURLException.class, 0, 0, serviceContext, user);
+			MemberRequestServiceContextException.class, 0, 0, serviceContext,
+			user);
 	}
 
 	private void _addMemberRequests(
