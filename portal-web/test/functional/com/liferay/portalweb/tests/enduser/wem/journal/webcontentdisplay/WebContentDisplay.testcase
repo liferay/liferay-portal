@@ -694,6 +694,7 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 				webContentContentEdit = "WC WebContent Content Edit",
 				webContentTitle = "WC WebContent Title",
 				webContentTitleEdit = "WC WebContent Title Edit");
+
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
 				siteName = "Test Site Name");
