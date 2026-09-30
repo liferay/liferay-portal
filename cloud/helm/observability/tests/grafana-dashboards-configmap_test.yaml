@@ -44,6 +44,21 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["backups.json"]
+                    pattern: type == .microsoft.dataprotection/backupvaults.[\s\S]{0,300}?\) on vaultId
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: on dataSourceId
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Keeps listing the backups of a storage account a restore deleted by scoping them through their vault
+        set:
+            azure.resourceGroupName: liferay-test
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["backups.json"]
                     pattern: AWS Backup Dashboard
             -   notMatchRegex:
                     path: data["backups.json"]
