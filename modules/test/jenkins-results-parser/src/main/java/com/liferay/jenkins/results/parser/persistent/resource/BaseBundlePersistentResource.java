@@ -125,7 +125,12 @@ public abstract class BaseBundlePersistentResource
 			return "Waiting for bundles at " + getProducerBuildURL();
 		}
 		else if (status == Status.IN_QUEUE) {
-			return "In queue at " + _getProducerJobURL();
+			if (JenkinsResultsParserUtil.isNullOrEmpty(_queueItemWhy)) {
+				return "In queue at " + _getProducerJobURL();
+			}
+
+			return JenkinsResultsParserUtil.combine(
+				"In queue at ", _getProducerJobURL(), ": ", _queueItemWhy);
 		}
 		else if (status == Status.SUCCESS) {
 			return "Completed bundles at " + getProducerBuildURL();
@@ -185,6 +190,8 @@ public abstract class BaseBundlePersistentResource
 	}
 
 	protected void start() {
+		_queueItemWhy = null;
+
 		_invokeBuild();
 
 		print("Start building bundles at " + _getProducerJobURL());
@@ -311,6 +318,8 @@ public abstract class BaseBundlePersistentResource
 					producerJenkinsMaster.getQueueItems()) {
 
 				if (queueItem.getId() == producerQueueId) {
+					_queueItemWhy = queueItem.getWhy();
+
 					return;
 				}
 			}
@@ -737,6 +746,7 @@ public abstract class BaseBundlePersistentResource
 	private Build _build;
 	private int _failCount;
 	private int _missingCount;
+	private String _queueItemWhy;
 	private int _redispatchAttempts;
 	private JSONArray _redispatchHistoryJSONArray = new JSONArray();
 	private final TopLevelBuild _topLevelBuild;
