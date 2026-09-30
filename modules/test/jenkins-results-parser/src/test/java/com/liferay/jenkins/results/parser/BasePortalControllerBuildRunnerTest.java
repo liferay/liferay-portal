@@ -160,25 +160,6 @@ public class BasePortalControllerBuildRunnerTest
 			basePortalControllerBuildRunner
 		).getPreviousBuildJSONObjects();
 
-		JSONObject injectedEnvVarsJSONObject = new JSONObject(
-		).put(
-			"envMap",
-			new JSONObject(
-			).put(
-				"BUILD_NUMBER", "12"
-			).put(
-				"HOSTNAME", "test-1-0-aws"
-			).put(
-				"JOB_NAME",
-				"test-portal-testsuite-upstream-controller" +
-					"(master-private_stable)"
-			)
-		);
-		JSONObject resultJSONObject = new JSONObject(
-		).put(
-			"result", "FAILURE"
-		);
-
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
@@ -198,14 +179,30 @@ public class BasePortalControllerBuildRunnerTest
 									controllerBuildURL +
 										"/injectedEnvVars/api/json")) {
 
-								return injectedEnvVarsJSONObject;
+								return new JSONObject(
+								).put(
+									"envMap",
+									new JSONObject(
+									).put(
+										"BUILD_NUMBER", "12"
+									).put(
+										"HOSTNAME", "test-1-0-aws"
+									).put(
+										"JOB_NAME",
+										"test-portal-testsuite-upstream-" +
+											"controller(master-private_stable)"
+									)
+								);
 							}
 
 							if (url.equals(
 									invocationBuildURL +
 										"/api/json?tree=result")) {
 
-								return resultJSONObject;
+								return new JSONObject(
+								).put(
+									"result", "FAILURE"
+								);
 							}
 
 							throw new AssertionError(
