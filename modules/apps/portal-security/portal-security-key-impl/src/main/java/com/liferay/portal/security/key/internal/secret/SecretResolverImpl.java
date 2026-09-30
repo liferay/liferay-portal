@@ -127,16 +127,16 @@ public class SecretResolverImpl implements SecretResolver {
 						"Unable to parse the key reference");
 				}
 
-				String referencedIdentifier = keyReference.getIdentifier();
+				String keyReferenceIdentifier = keyReference.getIdentifier();
 
-				if (Objects.equals(identifier, referencedIdentifier) ||
+				if (Objects.equals(identifier, keyReferenceIdentifier) ||
 					(identifier.startsWith(_IDENTIFIER_PREFIX_PREFERENCE) &&
-					 referencedIdentifier.startsWith(
+					 keyReferenceIdentifier.startsWith(
 						 _IDENTIFIER_PREFIX_PREFERENCE) &&
 					 Objects.equals(
 						 StringUtil.extractLast(identifier, CharPool.SLASH),
 						 StringUtil.extractLast(
-							 referencedIdentifier, CharPool.SLASH)))) {
+							 keyReferenceIdentifier, CharPool.SLASH)))) {
 
 					return value;
 				}
@@ -144,7 +144,7 @@ public class SecretResolverImpl implements SecretResolver {
 				throw new SecretException(
 					StringBundler.concat(
 						"Unable to store \"", identifier,
-						"\" because it references \"", referencedIdentifier,
+						"\" because it references \"", keyReferenceIdentifier,
 						"\""));
 			}
 

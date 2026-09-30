@@ -293,9 +293,9 @@ public class SecretResolverImplTest {
 	}
 
 	private void _assertStoreKeepsValue(
-		String identifier, String referencedIdentifier) {
+		String identifier, String keyReferenceIdentifier) {
 
-		String value = _toKeyReferenceString(referencedIdentifier);
+		String value = _toKeyReferenceString(keyReferenceIdentifier);
 
 		Assert.assertEquals(
 			value,
@@ -306,13 +306,13 @@ public class SecretResolverImplTest {
 	}
 
 	private void _assertStoreRejects(
-		String identifier, String referencedIdentifier) {
+		String identifier, String keyReferenceIdentifier) {
 
 		Assert.assertThrows(
 			SecretException.class,
 			() -> _secretResolverImpl.store(
 				RandomTestUtil.randomLong(), identifier,
-				_toKeyReferenceString(referencedIdentifier)));
+				_toKeyReferenceString(keyReferenceIdentifier)));
 
 		Mockito.verifyNoInteractions(_secretManager);
 	}
