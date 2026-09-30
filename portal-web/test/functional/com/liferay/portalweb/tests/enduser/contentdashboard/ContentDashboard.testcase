@@ -254,7 +254,7 @@ definition {
 				dmDocumentTitle = "DM Document Title Versions",
 				mimeType = "text/plain",
 				repositoryId = ${groupId},
-				sourceFileName = "Document_1.txt");
+				sourceFileName = "Document_2.txt");
 
 			ContentDashboard.createVersionsForDocument(
 				dmDocumentTitle = "DM Document Title Versions",
