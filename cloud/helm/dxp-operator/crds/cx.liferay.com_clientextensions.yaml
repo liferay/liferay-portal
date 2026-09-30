@@ -68,22 +68,28 @@ spec:
                     spec:
                         properties:
                             configs:
-                                items:
-                                    type: string
-                                type: array
+                                additionalProperties:
+                                    type: object
+                                    x-kubernetes-preserve-unknown-fields: true
+                                minProperties: 1
+                                type: object
                             domain:
+                                maxLength: 253
+                                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*(:[0-9]{1,5})?$
                                 type: string
                             dxpNamespace:
                                 maxLength: 63
                                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                                 type: string
-                            projectName:
-                                type: string
                             serviceId:
+                                maxLength: 63
                                 minLength: 1
+                                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                                 type: string
                             virtualInstanceId:
+                                maxLength: 63
                                 minLength: 1
+                                pattern: ^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$
                                 type: string
                             workloadRef:
                                 properties:
@@ -101,6 +107,7 @@ spec:
                                 -   name
                                 type: object
                         required:
+                        -   configs
                         -   serviceId
                         -   virtualInstanceId
                         type: object
@@ -189,10 +196,6 @@ spec:
                                 type: array
                             extInitSecretName:
                                 type: string
-                            extProvisionConfigMapNames:
-                                items:
-                                    type: string
-                                type: array
                             observedGeneration:
                                 format: int64
                                 type: integer

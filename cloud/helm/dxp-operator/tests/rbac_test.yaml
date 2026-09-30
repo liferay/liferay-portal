@@ -43,6 +43,17 @@ tests:
             serviceAccount.name: operator-sa
     -   asserts:
             -   equal:
+                    path: rules[?(@.resources[0]=="configmaps")].verbs
+                    value:
+                        -   get
+                        -   list
+                        -   watch
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Grants only reading ConfigMaps cluster wide
+    -   asserts:
+            -   equal:
                     path: rules[?(@.resources[0]=="clientextensions")].verbs
                     value:
                         -   get

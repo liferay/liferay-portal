@@ -37,6 +37,14 @@ spec:
                             value: {{ .Values.marketplace.mountPath | quote }}
                         -   name: METRICS_ADDRESS
                             value: {{ printf ":%d" (int .Values.metrics.port) | quote }}
+                        -   name: OPERATOR_NAMESPACE
+                            valueFrom:
+                                fieldRef:
+                                    fieldPath: metadata.namespace
+                        -   name: OPERATOR_SERVICE_ACCOUNT
+                            valueFrom:
+                                fieldRef:
+                                    fieldPath: spec.serviceAccountName
                         -   name: PROBE_ADDRESS
                             value: {{ printf ":%d" (int .Values.probes.port) | quote }}
                         -   name: PROVISIONING_BASE_URL

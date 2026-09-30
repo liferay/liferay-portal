@@ -9,32 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestDxpNamespaceDefaultsToClientExtensionNamespace(t *testing.T) {
-	testCases := map[string]struct {
-		dxpNamespace string
-		want         string
-	}{
-		"an empty dxpNamespace is the client extension namespace": {
-			want: "able",
-		},
-		"dxpNamespace is used when set": {
-			dxpNamespace: "liferay-prod",
-			want:         "liferay-prod",
-		},
-	}
-
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			clientExtension := newClientExtension(testCase.dxpNamespace, "sample", "able")
-
-			if got := DxpNamespace(clientExtension); got != testCase.want {
-				t.Errorf("DxpNamespace() = %q, want %q", got, testCase.want)
-			}
-		})
-	}
-}
-
-func TestPermittedNamespacesReadsConsentAnnotation(t *testing.T) {
+func TestAllowedNamespacesReadsAnnotation(t *testing.T) {
 	testCases := map[string]struct {
 		annotations map[string]string
 		want        []string
@@ -59,8 +34,33 @@ func TestPermittedNamespacesReadsConsentAnnotation(t *testing.T) {
 				ObjectMeta: metav1.ObjectMeta{Annotations: testCase.annotations, Name: "liferay-prod"},
 			}
 
-			if got := PermittedNamespaces(namespace); !slices.Equal(got, testCase.want) {
-				t.Errorf("PermittedNamespaces() = %q, want %q", got, testCase.want)
+			if got := allowedNamespaces(namespace); !slices.Equal(got, testCase.want) {
+				t.Errorf("allowedNamespaces() = %q, want %q", got, testCase.want)
+			}
+		})
+	}
+}
+
+func TestDxpNamespaceDefaultsToClientExtensionNamespace(t *testing.T) {
+	testCases := map[string]struct {
+		dxpNamespace string
+		want         string
+	}{
+		"an empty dxpNamespace is the client extension namespace": {
+			want: "able",
+		},
+		"dxpNamespace is used when set": {
+			dxpNamespace: "liferay-prod",
+			want:         "liferay-prod",
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			clientExtension := newClientExtension(testCase.dxpNamespace, "sample", "able")
+
+			if got := effectiveDxpNamespace(clientExtension); got != testCase.want {
+				t.Errorf("effectiveDxpNamespace() = %q, want %q", got, testCase.want)
 			}
 		})
 	}

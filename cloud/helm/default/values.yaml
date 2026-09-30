@@ -44,6 +44,12 @@ autoscaling:
                     query: max(jvm_threads_current{namespace="{{ include "liferay.namespace" . }}"})
                     threshold: "500"
     type: hpa
+clientExtensions:
+    delivery:
+        enabled: false
+        operatorServiceAccount:
+            name: dxp-operator
+            namespace: dxp-operator-system
 configmap:
     annotations: {}
     data: {}

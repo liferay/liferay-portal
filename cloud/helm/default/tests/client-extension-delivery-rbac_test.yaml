@@ -1,0 +1,32 @@
+release:
+    name: liferay-default
+    namespace: liferay-acme-prd
+suite: Client Extension Delivery RBAC
+templates:
+    -   templates/client-extension-delivery-rbac.yaml
+tests:
+    -   asserts:
+            -   isKind:
+                    of: RoleBinding
+            -   equal:
+                    path: metadata.namespace
+                    value: liferay-acme-prd
+            -   equal:
+                    path: roleRef
+                    value:
+                        apiGroup: rbac.authorization.k8s.io
+                        kind: ClusterRole
+                        name: client-extension-delivery-cluster-role
+            -   equal:
+                    path: subjects
+                    value:
+                        -   kind: ServiceAccount
+                            name: dxp-operator
+                            namespace: dxp-operator-system
+        it: Binds the delivery role to the operator in this namespace when enabled
+        set:
+            clientExtensions.delivery.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the binding by default, so DXP accepts no client extensions until it opts in

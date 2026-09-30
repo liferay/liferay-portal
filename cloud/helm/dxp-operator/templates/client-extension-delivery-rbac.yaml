@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: client-extension-delivery-cluster-role
+rules:
+    -   apiGroups:
+            -   ""
+        resources:
+            -   configmaps
+        verbs:
+            -   create
+            -   delete
+            -   patch
+            -   update
+{{- end -}}

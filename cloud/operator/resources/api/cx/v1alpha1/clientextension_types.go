@@ -5,6 +5,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -77,9 +78,12 @@ type ClientExtensionList struct {
 }
 
 type ClientExtensionSpec struct {
-	// +optional
-	Configs []string `json:"configs,omitempty"`
+	// +kubebuilder:validation:MinProperties=1
+	// +kubebuilder:validation:Required
+	Configs map[string]Configuration `json:"configs"`
 
+	// +kubebuilder:validation:MaxLength=253
+	// +kubebuilder:validation:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*(:[0-9]{1,5})?$`
 	// +optional
 	Domain string `json:"domain,omitempty"`
 
@@ -88,14 +92,15 @@ type ClientExtensionSpec struct {
 	// +optional
 	DxpNamespace string `json:"dxpNamespace,omitempty"`
 
-	// +optional
-	ProjectName string `json:"projectName,omitempty"`
-
+	// +kubebuilder:validation:MaxLength=63
 	// +kubebuilder:validation:MinLength=1
+	// +kubebuilder:validation:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
 	// +kubebuilder:validation:Required
 	ServiceID string `json:"serviceId"`
 
+	// +kubebuilder:validation:MaxLength=63
 	// +kubebuilder:validation:MinLength=1
+	// +kubebuilder:validation:Pattern=`^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$`
 	// +kubebuilder:validation:Required
 	VirtualInstanceID string `json:"virtualInstanceId"`
 
@@ -119,9 +124,6 @@ type ClientExtensionStatus struct {
 	ExtInitSecretName string `json:"extInitSecretName,omitempty"`
 
 	// +optional
-	ExtProvisionConfigMapNames []string `json:"extProvisionConfigMapNames,omitempty"`
-
-	// +optional
 	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
 
 	// +kubebuilder:validation:Enum=Degraded;Pending;Ready
@@ -133,6 +135,12 @@ type ClientExtensionStatus struct {
 
 	// +optional
 	WorkloadName string `json:"workloadName,omitempty"`
+}
+
+// +kubebuilder:pruning:PreserveUnknownFields
+// +kubebuilder:validation:Type=object
+type Configuration struct {
+	apiextensionsv1.JSON
 }
 
 type ConfigurationError struct {

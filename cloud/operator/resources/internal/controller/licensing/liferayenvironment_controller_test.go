@@ -883,14 +883,9 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testi
 		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
 	}
 
-	// A refusal must not leave the workload mis-sized until the next heartbeat.
-
 	if requeueAfter != 30*time.Second {
 		t.Errorf("requeueAfter = %v, want %v", requeueAfter, 30*time.Second)
 	}
-
-	// The refusal has to reach the API, not just the caller's copy, since a
-	// caller may return before it persists anything of its own.
 
 	stored := &licensingv1alpha1.LiferayEnvironment{}
 
@@ -1314,6 +1309,43 @@ func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 	}
 }
 
+func TestReconcileOfflineAwaitsMissingBundleFile(t *testing.T) {
+	environment := pendingEnvironment()
+	environment.Spec.Offline = true
+	environment.Spec.OfflineActivationBundle = "bundle.zip"
+
+	liferayEnvironmentReconciler, result := reconcileOfflineActivationBundle(
+		t.TempDir(), t,
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		environment,
+	)
+
+	if result.RequeueAfter != 15*time.Second {
+		t.Errorf("RequeueAfter = %s, want 15s", result.RequeueAfter)
+	}
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	if liferayEnvironment.Status.Phase != "Pending" {
+		t.Errorf("Phase = %q, want Pending", liferayEnvironment.Status.Phase)
+	}
+
+	condition := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionActivated,
+	)
+
+	if condition == nil || condition.Reason != "AwaitingOfflineActivationBundle" {
+		t.Errorf(
+			"Activated condition = %v, want AwaitingOfflineActivationBundle", condition,
+		)
+	}
+}
+
 func TestReconcileOfflineAwaitsOfflineActivationBundle(t *testing.T) {
 	environment := pendingEnvironment()
 	environment.Spec.Offline = true
@@ -1372,43 +1404,6 @@ func TestReconcileOfflineAwaitsOfflineActivationBundle(t *testing.T) {
 
 	if condition.Status != metav1.ConditionFalse {
 		t.Errorf("Activated condition status = %v, want False", condition.Status)
-	}
-}
-
-func TestReconcileOfflineAwaitsMissingBundleFile(t *testing.T) {
-	environment := pendingEnvironment()
-	environment.Spec.Offline = true
-	environment.Spec.OfflineActivationBundle = "bundle.zip"
-
-	liferayEnvironmentReconciler, result := reconcileOfflineActivationBundle(
-		t.TempDir(), t,
-		&corev1.Namespace{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: "liferay-dev",
-				UID:  "dev-namespace-uid",
-			},
-		},
-		environment,
-	)
-
-	if result.RequeueAfter != 15*time.Second {
-		t.Errorf("RequeueAfter = %s, want 15s", result.RequeueAfter)
-	}
-
-	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
-
-	if liferayEnvironment.Status.Phase != "Pending" {
-		t.Errorf("Phase = %q, want Pending", liferayEnvironment.Status.Phase)
-	}
-
-	condition := meta.FindStatusCondition(
-		liferayEnvironment.Status.Conditions, conditionActivated,
-	)
-
-	if condition == nil || condition.Reason != "AwaitingOfflineActivationBundle" {
-		t.Errorf(
-			"Activated condition = %v, want AwaitingOfflineActivationBundle", condition,
-		)
 	}
 }
 
