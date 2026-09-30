@@ -21,6 +21,34 @@
 	"links": [
 	],
 	"panels": [
+		{
+			"fieldConfig": {
+				"defaults": {
+				},
+				"overrides": [
+				]
+			},
+			"gridPos": {
+				"h": 5,
+				"w": 24,
+				"x": 0,
+				"y": 0
+			},
+			"id": 1,
+			"options": {
+				"code": {
+					"language": "plaintext",
+					"showLineNumbers": false,
+					"showMiniMap": false
+				},
+				"content": "${HEADER_HTML}",
+				"mode": "html"
+			},
+			"pluginVersion": "12.4.2",
+			"title": "",
+			"transparent": true,
+			"type": "text"
+		}
 	],
 	"preload": false,
 	"schemaVersion": 42,
