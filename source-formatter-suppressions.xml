@@ -140,6 +140,7 @@
 		<suppress checks="JSPLanguageKeysCheck" files="portal-web/docroot/html/portal/saml/.*" />
 		<suppress checks="LocaleUtilCheck" files="portal-kernel/src/com/liferay/portal/kernel/util/LocaleUtil\.java" />
 		<suppress checks="LocaleUtilCheck" files="portal-kernel/test/unit/com/liferay/portal/kernel/util/LocaleUtilTest\.java" />
+		<suppress checks="MarkdownFileExtensionCheck" files="portal-web/test/functional/com/liferay/portalweb/tests/enduser/collaboration/knowledgebase/dependencies/.*intro\.markdown" />
 		<suppress checks="MethodCallsOrderCheck" files="portal-impl/src/com/liferay/portal/util/PortalImpl\.java" />
 		<suppress checks="MethodCallsOrderCheck" files="portal-impl/test/unit/com/liferay/portal/json/JSONUtilTest\.java" />
 		<suppress checks="PoshiPauseUsageCheck" files="portal-web/test/functional/com/liferay/portalweb/macros/Alert\.macro" />
