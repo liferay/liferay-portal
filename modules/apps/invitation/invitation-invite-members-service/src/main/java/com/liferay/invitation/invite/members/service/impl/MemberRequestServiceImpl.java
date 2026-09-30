@@ -93,7 +93,10 @@ public class MemberRequestServiceImpl extends MemberRequestServiceBaseImpl {
 	}
 
 	private void _validateURL(String url) throws PortalException {
-		if (Validator.isNotNull(url) && (_portal.escapeRedirect(url) == null)) {
+		if (Validator.isNotNull(url) &&
+			(!Validator.isUrl(url, true) ||
+			 (_portal.escapeRedirect(url) == null))) {
+
 			throw new MemberRequestServiceContextException(url);
 		}
 	}
