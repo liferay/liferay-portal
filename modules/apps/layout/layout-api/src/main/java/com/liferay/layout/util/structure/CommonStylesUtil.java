@@ -328,19 +328,6 @@ public class CommonStylesUtil {
 		return Validator.isNotNull(_responsiveTemplates.get(propertyKey));
 	}
 
-	private static JSONObject _createJSONObject(String json) {
-		try {
-			return JSONFactoryUtil.createJSONObject(json);
-		}
-		catch (JSONException jsonException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
-			}
-
-			return JSONFactoryUtil.createJSONObject();
-		}
-	}
-
 	private static String _getCustomCSS(
 		StyledLayoutStructureItem styledLayoutStructureItem,
 		ViewportSize viewportSize) {
@@ -407,8 +394,16 @@ public class CommonStylesUtil {
 			JSONFactoryUtil.createJSONObject();
 
 		if (styleBookEntry != null) {
-			frontendTokenValuesJSONObject = _createJSONObject(
-				styleBookEntry.getFrontendTokensValues());
+			try {
+				frontendTokenValuesJSONObject =
+					JSONFactoryUtil.createJSONObject(
+						styleBookEntry.getFrontendTokensValues());
+			}
+			catch (JSONException jsonException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(jsonException);
+				}
+			}
 		}
 
 		return _mergeFrontendTokensJSONObjects(
