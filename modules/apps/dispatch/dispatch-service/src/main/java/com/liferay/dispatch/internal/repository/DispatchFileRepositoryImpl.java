@@ -12,7 +12,9 @@ import com.liferay.dispatch.repository.DispatchFileRepository;
 import com.liferay.dispatch.repository.DispatchFileValidator;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.kernel.util.DLAppHelperThreadLocal;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -26,6 +28,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.LocalRepository;
 import com.liferay.portal.kernel.repository.RepositoryProvider;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -33,6 +38,8 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEventHierarchyEntryThreadLocal;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -90,15 +97,27 @@ public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 			Company company = _companyLocalService.getCompany(
 				dispatchTrigger.getCompanyId());
 
-			Folder folder = _getFolder(
-				company.getGroupId(), dispatchTrigger.getUserId());
+			Repository repository = _repositoryLocalService.fetchRepository(
+				company.getGroupId(), DispatchPortletKeys.DISPATCH);
+
+			if (repository == null) {
+				return null;
+			}
+
+			DLFolder dlFolder = _dlFolderLocalService.fetchFolder(
+				company.getGroupId(), repository.getDlFolderId(),
+				DispatchConstants.REPOSITORY_FOLDER_NAME);
+
+			if (dlFolder == null) {
+				return null;
+			}
 
 			LocalRepository localRepository =
 				_repositoryProvider.getLocalRepository(
-					folder.getRepositoryId());
+					repository.getRepositoryId());
 
 			return localRepository.fetchFileEntry(
-				folder.getFolderId(), String.valueOf(dispatchTriggerId));
+				dlFolder.getFolderId(), String.valueOf(dispatchTriggerId));
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
@@ -236,11 +255,22 @@ public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						group.getCtCollectionId())) {
 
-				return localRepository.addFolder(
+				Folder folder = localRepository.addFolder(
 					null, userId,
 					DispatchConstants.REPOSITORY_DEFAULT_PARENT_FOLDER_ID,
 					DispatchConstants.REPOSITORY_FOLDER_NAME, StringPool.BLANK,
 					_createServiceContext(null, 0L));
+
+				Role role = _roleLocalService.getRole(
+					group.getCompanyId(), RoleConstants.OWNER);
+
+				_resourcePermissionLocalService.setResourcePermissions(
+					group.getCompanyId(), DLFolder.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(folder.getFolderId()), role.getRoleId(),
+					new String[0]);
+
+				return folder;
 			}
 		}
 	}
@@ -263,13 +293,24 @@ public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 			SafeCloseable safeCloseable2 =
 				DLAppHelperThreadLocal.setEnabledWithSafeCloseable(false)) {
 
-			return _repositoryLocalService.addRepository(
+			repository = _repositoryLocalService.addRepository(
 				null, userId, groupId,
 				_portal.getClassNameId(PortletRepository.class.getName()),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 				DispatchPortletKeys.DISPATCH, StringPool.BLANK,
 				DispatchPortletKeys.DISPATCH, new UnicodeProperties(), true,
 				_createServiceContext(null, 0L));
+
+			Role role = _roleLocalService.getRole(
+				group.getCompanyId(), RoleConstants.OWNER);
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				group.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(repository.getDlFolderId()), role.getRoleId(),
+				new String[0]);
+
+			return repository;
 		}
 	}
 
@@ -283,6 +324,9 @@ public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;
 
 	@Reference
+	private DLFolderLocalService _dlFolderLocalService;
+
+	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
@@ -293,6 +337,12 @@ public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 
 	@Reference
 	private RepositoryProvider _repositoryProvider;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	private ServiceTrackerMap<String, DispatchFileValidator> _serviceTrackerMap;
 
