@@ -6,8 +6,10 @@
 package com.liferay.portal.template.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.Template;
+import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.template.TemplateManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -83,6 +85,56 @@ public class TemplateRestrictedVariablesTest {
 				bundleContext.ungetService(serviceReference);
 			}
 		}
+	}
+
+	@Test
+	public void testRestrictedSAXReaderUtil() throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(
+			TemplateRestrictedVariablesTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Collection<ServiceReference<TemplateManager>> serviceReferences =
+			bundleContext.getServiceReferences(
+				TemplateManager.class,
+				"(language.type=" + TemplateConstants.LANG_TYPE_FTL + ")");
+
+		Assert.assertFalse(serviceReferences.isEmpty());
+
+		for (ServiceReference<TemplateManager> serviceReference :
+				serviceReferences) {
+
+			TemplateManager templateManager = bundleContext.getService(
+				serviceReference);
+
+			try {
+				_assertSAXReaderUtilAccessibility(
+					"ACCESSIBLE", false, templateManager);
+				_assertSAXReaderUtilAccessibility(
+					"DENIED", true, templateManager);
+			}
+			finally {
+				bundleContext.ungetService(serviceReference);
+			}
+		}
+	}
+
+	private void _assertSAXReaderUtilAccessibility(
+			String expected, boolean restricted,
+			TemplateManager templateManager)
+		throws Exception {
+
+		Template template = templateManager.getTemplate(
+			new StringTemplateResource(
+				RandomTestUtil.randomString(),
+				"<#if saxReaderUtil??>ACCESSIBLE<#else>DENIED</#if>"),
+			restricted);
+
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+
+		template.processTemplate(unsyncStringWriter);
+
+		Assert.assertEquals(expected, unsyncStringWriter.toString());
 	}
 
 }
