@@ -335,6 +335,51 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			});
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testGetCanonicalLayoutURLSharedTemplateCustomCanonicalURLNotApplied()
+		throws Exception {
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()), null,
+				true, WorkflowConstants.STATUS_APPROVED);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			TestPropsValues.getUserId(), designLibraryGroup.getGroupId(),
+			layout.isPrivateLayout(), layout.getLayoutId(), true,
+			Collections.singletonMap(LocaleUtil.getDefault(), _CANONICAL_URL),
+			ServiceContextTestUtil.getServiceContext(
+				designLibraryGroup.getGroupId()));
+
+		Layout virtualLayout = new VirtualLayout(layout, _group);
+
+		String canonicalURL = _portal.getCanonicalURL(
+			RandomTestUtil.randomString(), _themeDisplay, virtualLayout, false,
+			false);
+
+		LayoutSEOLink canonicalLayoutSEOLink =
+			_layoutSEOLinkManager.getCanonicalLayoutSEOLink(
+				virtualLayout, LocaleUtil.getDefault(), canonicalURL,
+				_themeDisplay);
+
+		Assert.assertEquals(canonicalURL, canonicalLayoutSEOLink.getHref());
+
+		for (LayoutSEOLink layoutSEOLink :
+				_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
+					virtualLayout, LocaleUtil.getDefault(), canonicalURL,
+					Collections.singleton(LocaleUtil.getDefault()))) {
+
+			Assert.assertNotEquals(_CANONICAL_URL, layoutSEOLink.getHref());
+		}
+	}
+
 	private Group _addConnectedDesignLibraryGroup() throws Exception {
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
