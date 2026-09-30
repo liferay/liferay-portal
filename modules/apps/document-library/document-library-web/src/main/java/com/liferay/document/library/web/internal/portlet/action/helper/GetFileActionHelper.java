@@ -221,10 +221,8 @@ public class GetFileActionHelper {
 
 		String contentDispositionType = null;
 
-		if (ServletResponseUtil.isBrowserExecutableContentType(contentType) ||
-			ServletResponseUtil.isBrowserExecutableContentType(
-				MimeTypesUtil.getExtensionContentType(
-					FileUtil.getExtension(fileName)))) {
+		if (ServletResponseUtil.isBrowserExecutableContentType(
+				contentType, fileName)) {
 
 			contentDispositionType = HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT;
 		}

@@ -72,6 +72,20 @@ public class ServletResponseUtil {
 		return false;
 	}
 
+	public static boolean isBrowserExecutableContentType(
+		String contentType, String fileName) {
+
+		if (isBrowserExecutableContentType(contentType) ||
+			isBrowserExecutableContentType(
+				MimeTypesUtil.getExtensionContentType(
+					FileUtil.getExtension(fileName)))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public static boolean isClientAbortException(IOException ioException) {
 		Class<?> clazz = ioException.getClass();
 

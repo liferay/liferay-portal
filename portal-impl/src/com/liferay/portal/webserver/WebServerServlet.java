@@ -1060,7 +1060,7 @@ public class WebServerServlet extends HttpServlet {
 		String contentDispositionType = null;
 
 		if (ServletResponseUtil.isBrowserExecutableContentType(
-				fileEntry.getMimeType())) {
+				fileEntry.getMimeType(), fileEntry.getTitle())) {
 
 			contentDispositionType = HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT;
 		}
@@ -1278,9 +1278,13 @@ public class WebServerServlet extends HttpServlet {
 
 		String cacheControlValue = HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE;
 
+		boolean browserExecutable =
+			ServletResponseUtil.isBrowserExecutableContentType(
+				contentType, fileName);
+
 		boolean download = ParamUtil.getBoolean(httpServletRequest, "download");
 
-		if (ServletResponseUtil.isBrowserExecutableContentType(contentType)) {
+		if (browserExecutable) {
 			download = true;
 		}
 
@@ -1299,7 +1303,7 @@ public class WebServerServlet extends HttpServlet {
 		_sendObjectEntryAttachmentDownloadMessage(
 			fileEntry, httpServletRequest, user);
 
-		if (isSupportsRangeHeader(contentType)) {
+		if (!browserExecutable && isSupportsRangeHeader(contentType)) {
 			ServletResponseUtil.sendFileWithRangeHeader(
 				httpServletRequest, httpServletResponse, fileName, inputStream,
 				contentLength, contentType);
@@ -1416,7 +1420,10 @@ public class WebServerServlet extends HttpServlet {
 
 		String mimeType = fileEntry.getMimeType();
 
-		if (download || !mimeType.startsWith("image/")) {
+		if (download || !mimeType.startsWith("image/") ||
+			ServletResponseUtil.isBrowserExecutableContentType(
+				mimeType, fileName)) {
+
 			ServletResponseUtil.sendFile(
 				httpServletRequest, httpServletResponse, fileName,
 				fileEntry.getContentStream(), fileEntry.getSize(), mimeType,
