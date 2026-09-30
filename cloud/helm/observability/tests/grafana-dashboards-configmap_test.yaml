@@ -71,31 +71,31 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '"type": "grafana-azure-monitor-datasource",\s+"uid": "azure-monitor"'
+                    pattern: "\"type\": \"grafana-azure-monitor-datasource\",\\s+\"uid\": \"azure-monitor\""
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '"queryType": "Azure Resource Graph"'
+                    pattern: "\"queryType\": \"Azure Resource Graph\""
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: resourceGroup =~ .liferay-test.
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '"subscriptions": \[\s+"00000000-0000-0000-0000-000000000000"\s+\]'
+                    pattern: "\"subscriptions\": \\[\\s+\"00000000-0000-0000-0000-000000000000\"\\s+\\]"
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '"title": "Backups \(Last 14 Days\)"'
+                    pattern: "\"title\": \"Backups \\(Last 14 Days\\)\""
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '\[.Backup Triggered.\] = triggered'
+                    pattern: \[.Backup Triggered.\] = triggered
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '"IN PROGRESS": \{\s+"index": 1,\s+"text": "🟡 IN PROGRESS"'
+                    pattern: "\"IN PROGRESS\": \\{\\s+\"index\": 1,\\s+\"text\": \"🟡 IN PROGRESS\""
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: resourceGroups/liferay-test/providers/Microsoft.Storage/storageAccounts/\$\{__value.raw\}/overview
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: '"id": "links",\s+"value": \[\s+\]'
+                    pattern: "\"id\": \"links\",\\s+\"value\": \\[\\s+\\]"
             -   notMatchRegex:
                     path: data["backups.json"]
                     pattern: \$\{AZURE_
