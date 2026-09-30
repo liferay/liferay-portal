@@ -14,6 +14,7 @@ import com.liferay.digital.sales.room.constants.DSRFolderConstants;
 import com.liferay.digital.sales.room.test.util.DSRLayoutTestUtil;
 import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.digital.sales.room.thread.local.DSRRoomThreadLocal;
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFolder;
@@ -26,6 +27,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -38,6 +40,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -61,6 +64,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -124,6 +129,8 @@ public class ObjectEntryModelListenerTest {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"service.ranking", Integer.MAX_VALUE
 				).build()));
+
+		_user = UserTestUtil.addUser();
 	}
 
 	@After
@@ -147,7 +154,7 @@ public class ObjectEntryModelListenerTest {
 	@Test
 	public void testOnAfterRemove() throws Exception {
 		ObjectEntry objectEntry = _addObjectEntry(
-			"A" + RandomTestUtil.randomString());
+			"A" + RandomTestUtil.randomString(), TestPropsValues.getUserId());
 
 		Assert.assertNotNull(
 			_groupLocalService.fetchGroup(
@@ -165,6 +172,14 @@ public class ObjectEntryModelListenerTest {
 				_classNameLocalService.getClassNameId(
 					_objectDefinition.getClassName()),
 				objectEntry.getObjectEntryId()));
+	}
+
+	@FeatureFlag("LPD-82960")
+	@Test
+	@TestInfo("LPD-97751")
+	public void testOnAfterUpdate() throws Exception {
+		_testOnAfterUpdateWithArchivedRoom();
+		_testOnAfterUpdateWithRestoredRoom();
 	}
 
 	@Test
@@ -195,44 +210,12 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
+	@FeatureFlag(enable = false, value = "LPD-82960")
 	@Test
-	@TestInfo("LPD-102253")
+	@TestInfo({"LPD-97751", "LPD-102253"})
 	public void testOnBeforeUpdate() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry(
-			"A" + RandomTestUtil.randomString());
-
-		try {
-			_objectEntryLocalService.partialUpdateObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-				objectEntry.getObjectEntryFolderId(),
-				HashMapBuilder.<String, Serializable>put(
-					"expirationDate",
-					new Date(System.currentTimeMillis() + Time.DAY)
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			Throwable throwable = modelListenerException.getCause();
-
-			Assert.assertEquals(
-				UnsupportedOperationException.class, throwable.getClass());
-		}
-
-		try {
-			_objectEntryLocalService.expireObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-				ServiceContextTestUtil.getServiceContext());
-
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			Throwable throwable = modelListenerException.getCause();
-
-			Assert.assertEquals(
-				UnsupportedOperationException.class, throwable.getClass());
-		}
+		_testOnBeforeUpdate();
+		_testOnBeforeUpdateWithArchivedRoom();
 	}
 
 	private DLFileEntry _addFileEntry(long folderId, Group group)
@@ -263,10 +246,11 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
-	private ObjectEntry _addObjectEntry(String name) throws Exception {
+	private ObjectEntry _addObjectEntry(String name, long userId)
+		throws Exception {
+
 		return _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_objectDefinition.getObjectDefinitionId(), 0, null,
+			0, userId, _objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"name", name
 			).put(
@@ -288,11 +272,25 @@ public class ObjectEntryModelListenerTest {
 				actionId));
 	}
 
+	private boolean _hasUserSitesGroup(Group group) throws Exception {
+		if (ListUtil.exists(
+				_groupService.getUserSitesGroups(
+					_user.getUserId(), new String[] {Group.class.getName()},
+					QueryUtil.ALL_POS),
+				curGroup -> curGroup.getGroupId() == group.getGroupId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _testOnAfterCreate() throws Exception {
 		String name = StringUtil.toLowerCase(
 			"A" + RandomTestUtil.randomString());
 
-		ObjectEntry objectEntry = _addObjectEntry(name);
+		ObjectEntry objectEntry = _addObjectEntry(
+			name, TestPropsValues.getUserId());
 
 		Group group = _groupLocalService.fetchGroup(
 			TestPropsValues.getCompanyId(),
@@ -370,7 +368,8 @@ public class ObjectEntryModelListenerTest {
 
 	private void _testOnAfterCreateWithDSRRoomThreadLocal() throws Exception {
 		ObjectEntry sourceObjectEntry = _addObjectEntry(
-			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()),
+			TestPropsValues.getUserId());
 
 		Group sourceGroup = _groupLocalService.fetchGroup(
 			TestPropsValues.getCompanyId(),
@@ -397,7 +396,8 @@ public class ObjectEntryModelListenerTest {
 
 		try {
 			objectEntry = _addObjectEntry(
-				StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+				StringUtil.toLowerCase("A" + RandomTestUtil.randomString()),
+				TestPropsValues.getUserId());
 		}
 		finally {
 			DSRRoomThreadLocal.setFileEntryIds(new long[0]);
@@ -508,6 +508,153 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
+	private void _testOnAfterUpdateWithArchivedRoom() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()),
+			_user.getUserId());
+
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+
+		Assert.assertTrue(group.isActive());
+		Assert.assertFalse(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertTrue(_hasUserSitesGroup(group));
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"roomStatus", WorkflowConstants.STATUS_INACTIVE
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertFalse(group.isActive());
+		Assert.assertTrue(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertFalse(_hasUserSitesGroup(group));
+	}
+
+	private void _testOnAfterUpdateWithRestoredRoom() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()),
+			_user.getUserId());
+
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"roomStatus", WorkflowConstants.STATUS_INACTIVE
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertFalse(group.isActive());
+		Assert.assertTrue(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertFalse(_hasUserSitesGroup(group));
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"roomStatus", WorkflowConstants.STATUS_APPROVED
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertTrue(group.isActive());
+		Assert.assertFalse(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertTrue(_hasUserSitesGroup(group));
+	}
+
+	private void _testOnBeforeUpdate() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			"A" + RandomTestUtil.randomString(), TestPropsValues.getUserId());
+
+		try {
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"expirationDate",
+					new Date(System.currentTimeMillis() + Time.DAY)
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Throwable throwable = modelListenerException.getCause();
+
+			Assert.assertEquals(
+				UnsupportedOperationException.class, throwable.getClass());
+		}
+
+		try {
+			_objectEntryLocalService.expireObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Throwable throwable = modelListenerException.getCause();
+
+			Assert.assertEquals(
+				UnsupportedOperationException.class, throwable.getClass());
+		}
+	}
+
+	private void _testOnBeforeUpdateWithArchivedRoom() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()),
+			TestPropsValues.getUserId());
+
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+
+		try {
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"roomStatus", WorkflowConstants.STATUS_INACTIVE
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Throwable throwable = modelListenerException.getCause();
+
+			Assert.assertEquals(
+				UnsupportedOperationException.class, throwable.getClass());
+		}
+
+		Assert.assertFalse(
+			DSRRoomUtil.isArchived(
+				_objectEntryLocalService.getObjectEntry(
+					objectEntry.getObjectEntryId())));
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertTrue(group.isActive());
+	}
+
 	private AccountEntry _accountEntry;
 
 	@Inject
@@ -528,6 +675,9 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private GroupService _groupService;
 
 	@Inject
 	private LayoutSetLocalService _layoutSetLocalService;
@@ -557,6 +707,7 @@ public class ObjectEntryModelListenerTest {
 
 	private final List<ServiceRegistration<?>> _serviceRegistrations =
 		new ArrayList<>();
+	private User _user;
 
 	@Inject
 	private UserGroupRoleLocalService _userGroupRoleLocalService;

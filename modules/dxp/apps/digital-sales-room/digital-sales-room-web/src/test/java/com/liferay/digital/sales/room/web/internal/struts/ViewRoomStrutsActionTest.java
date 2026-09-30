@@ -265,13 +265,7 @@ public class ViewRoomStrutsActionTest {
 		);
 
 		Mockito.when(
-			_permissionChecker.isCompanyAdmin()
-		).thenReturn(
-			false
-		);
-
-		Mockito.when(
-			_permissionChecker.isGroupOwner(Mockito.anyLong())
+			_permissionChecker.isGroupAdmin(Mockito.anyLong())
 		).thenReturn(
 			false
 		);
@@ -291,7 +285,7 @@ public class ViewRoomStrutsActionTest {
 				PrincipalException.MustHavePermission.class.getName()));
 
 		Mockito.when(
-			_permissionChecker.isCompanyAdmin()
+			_permissionChecker.isGroupAdmin(Mockito.anyLong())
 		).thenReturn(
 			true
 		);

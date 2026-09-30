@@ -295,6 +295,8 @@ public class ViewRoomsSectionDisplayContextTest {
 				DSRConstants.DSR_FRIENDLY_URL +
 					"/view_room?mode=edit&siteId={siteId}"
 			).put(
+				"maintenanceModeEnabled", false
+			).put(
 				"ownedSiteIds", Collections.emptyList()
 			).put(
 				"siteTemplates",

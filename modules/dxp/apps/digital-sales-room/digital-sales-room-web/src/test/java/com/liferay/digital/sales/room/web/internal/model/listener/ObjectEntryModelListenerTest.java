@@ -13,6 +13,7 @@ import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -360,7 +361,37 @@ public class ObjectEntryModelListenerTest {
 				new Class<?>[] {ObjectEntry.class, ObjectEntry.class},
 				objectEntry3, objectEntry4);
 
-			dsrRoomUtilMockedStatic.verifyNoInteractions();
+			dsrRoomUtilMockedStatic.verify(
+				() -> DSRRoomUtil.checkPermission(
+					Mockito.any(), Mockito.any(), Mockito.anyString()),
+				Mockito.never());
+		}
+
+		try (MockedStatic<DSRRoomUtil> dsrRoomUtilMockedStatic =
+				Mockito.mockStatic(DSRRoomUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			dsrRoomUtilMockedStatic.when(
+				() -> DSRRoomUtil.isArchived(objectEntry4)
+			).thenReturn(
+				true
+			);
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.anyString())
+			).thenReturn(
+				false
+			);
+
+			Assert.assertThrows(
+				UnsupportedOperationException.class,
+				() -> ReflectionTestUtil.invoke(
+					_objectEntryModelListener, "_onBeforeUpdate",
+					new Class<?>[] {ObjectEntry.class, ObjectEntry.class},
+					objectEntry3, objectEntry4));
 		}
 	}
 
