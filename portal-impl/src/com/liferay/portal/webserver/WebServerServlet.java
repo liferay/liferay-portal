@@ -712,7 +712,9 @@ public class WebServerServlet extends HttpServlet {
 				organization = organizations.get(0);
 			}
 
-			if (organization != null) {
+			if ((organization != null) &&
+				!_isLayoutSetLogo(httpServletRequest, imageId)) {
+
 				String organizationUuidDigest = DigesterUtil.digest(
 					organization.getUuid());
 
@@ -2041,6 +2043,21 @@ public class WebServerServlet extends HttpServlet {
 				StringBundler.concat(
 					"Image ", imageId,
 					" was requested without a valid \"t\" parameter"));
+		}
+
+		return false;
+	}
+
+	private boolean _isLayoutSetLogo(
+		HttpServletRequest httpServletRequest, long imageId) {
+
+		String path = GetterUtil.getString(httpServletRequest.getPathInfo());
+
+		if (path.startsWith("/layout_set_logo") &&
+			(LayoutSetLocalServiceUtil.fetchLayoutSetByLogoId(false, imageId) !=
+				null)) {
+
+			return true;
 		}
 
 		return false;
