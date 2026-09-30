@@ -403,7 +403,8 @@ public abstract class BasePortalControllerBuildRunner
 		buildData.setBuildDescription(
 			JenkinsResultsParserUtil.combine(
 				"<strong>SKIPPED</strong> - <a href=\"https://github.com/",
-				"liferay/", buildData.getPortalGitHubRepositoryName(),
+				buildData.getPortalGitHubUsername(), "/",
+				buildData.getPortalGitHubRepositoryName(),
 				"/commit/", buildData.getPortalBranchSHA(), "\">",
 				getPortalBranchAbbreviatedSHA(), "</a> was already ran"));
 
