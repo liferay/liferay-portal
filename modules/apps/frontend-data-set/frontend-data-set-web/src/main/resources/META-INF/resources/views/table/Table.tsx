@@ -867,6 +867,7 @@ const Table = ({
 					columnsVisibilityHeader:
 						Liferay.Language.get('columns-visibility'),
 					expandable: Liferay.Language.get('expandable'),
+					sortColumn: Liferay.Language.get('sort-by-x'),
 					sortDescription: Liferay.Language.get('sortable-column'),
 					sorting: Liferay.Language.get(
 						'sorted-by-column-x-in-x-order'

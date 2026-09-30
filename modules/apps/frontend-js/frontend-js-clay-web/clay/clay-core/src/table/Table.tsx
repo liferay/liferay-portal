@@ -108,6 +108,7 @@ interface IProps extends React.HTMLAttributes<HTMLTableElement> {
 		columnsVisibilityDescription: string;
 		columnsVisibilityHeader: string;
 		expandable: string;
+		sortColumn?: string;
 		sortDescription: string;
 		sorting: string;
 	};
@@ -208,6 +209,7 @@ export const Table = React.forwardRef(
 					'At least one column must remain visible.',
 				columnsVisibilityHeader: 'Columns Visibility',
 				expandable: 'expandable',
+				sortColumn: 'sort by {0}',
 				sortDescription: 'sortable column',
 				sorting: 'sorted by column {0} in {1} order',
 			},

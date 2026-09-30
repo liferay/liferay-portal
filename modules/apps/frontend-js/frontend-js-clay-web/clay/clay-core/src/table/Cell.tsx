@@ -7,7 +7,7 @@ import Button from '@clayui/button';
 import Icon from '@clayui/icon';
 import Layout from '@clayui/layout';
 import LoadingIndicator from '@clayui/loading-indicator';
-import {Keys} from '@clayui/shared';
+import {Keys, sub} from '@clayui/shared';
 import classNames from 'classnames';
 import React, {useCallback, useState} from 'react';
 
@@ -270,6 +270,13 @@ export const Cell = React.forwardRef(
 
 						<Layout.ContentCol>
 							<button
+								aria-label={
+									messages['sortColumn'] && textValue
+										? sub(messages['sortColumn'], [
+												textValue,
+											])
+										: undefined
+								}
 								className="component-action"
 								title={messages['sortDescription']}
 								type="button"
