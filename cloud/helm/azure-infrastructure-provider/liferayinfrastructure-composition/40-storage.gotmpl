@@ -42,6 +42,7 @@ spec:
         tags:
             {{- merge (dict) $backupTargetTags ($storage.tags | default dict) | toYaml | nindent 12 }}
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+            data-plane: {{ $dataPlane }}
     managementPolicies: {{ $managementPolicies }}
     writeConnectionSecretToRef:
         name: liferay-storage-{{ $dataPlane }}-credentials

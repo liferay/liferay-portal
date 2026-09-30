@@ -751,6 +751,12 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "tags:\\s+\\{\\{- merge \\(dict\\) \\$backupTargetTags [^\\n]+\\s+active: [^\\n]+\\s+data-plane: \\{\\{ \\$dataPlane \\}\\}"
+        it: Tags each storage account with its data plane whatever its restore generation
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "activeDirectoryAuthEnabled: true"
             -   documentIndex: 0
                 matchRegex:
