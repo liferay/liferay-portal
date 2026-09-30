@@ -29,9 +29,10 @@ import jakarta.ws.rs.core.Response;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -86,11 +87,12 @@ public class CacheContainerResponseFilterTest {
 
 	@After
 	public void tearDown() throws Exception {
-		for (String pid : _pids) {
-			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
+		for (Map.Entry<String, String> entry : _factoryPids.entrySet()) {
+			ConfigurationTestUtil.deleteFactoryConfiguration(
+				entry.getKey(), entry.getValue());
 		}
 
-		_pids.clear();
+		_factoryPids.clear();
 
 		_serviceRegistration.unregister();
 	}
@@ -290,34 +292,42 @@ public class CacheContainerResponseFilterTest {
 			String path, String cacheControl, int maxAge, long companyId)
 		throws Exception {
 
-		_pids.add(
+		_addFactoryConfiguration(
+			_FACTORY_PID + ".scoped",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"cacheControl", cacheControl
+			).put(
+				"companyId", companyId
+			).put(
+				"maxAge", maxAge
+			).put(
+				"path", path
+			).build());
+	}
+
+	private void _addFactoryConfiguration(
+			String factoryPid, Dictionary<String, Object> properties)
+		throws Exception {
+
+		_factoryPids.put(
 			ConfigurationTestUtil.createFactoryConfiguration(
-				_FACTORY_PID,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"cacheControl", cacheControl
-				).put(
-					"companyId", companyId
-				).put(
-					"maxAge", maxAge
-				).put(
-					"path", path
-				).build()));
+				factoryPid, properties),
+			factoryPid);
 	}
 
 	private void _addSystemCacheableEndpoint(
 			String path, String cacheControl, int maxAge)
 		throws Exception {
 
-		_pids.add(
-			ConfigurationTestUtil.createFactoryConfiguration(
-				_FACTORY_PID,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"cacheControl", cacheControl
-				).put(
-					"maxAge", maxAge
-				).put(
-					"path", path
-				).build()));
+		_addFactoryConfiguration(
+			_FACTORY_PID,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"cacheControl", cacheControl
+			).put(
+				"maxAge", maxAge
+			).put(
+				"path", path
+			).build());
 	}
 
 	private void _assertCacheable(
@@ -364,7 +374,7 @@ public class CacheContainerResponseFilterTest {
 		"com.liferay.portal.vulcan.internal.configuration." +
 			"HeadlessAPICacheCompanyConfiguration";
 
-	private final List<String> _pids = new ArrayList<>();
+	private final Map<String, String> _factoryPids = new HashMap<>();
 	private ServiceRegistration<Application> _serviceRegistration;
 
 }
