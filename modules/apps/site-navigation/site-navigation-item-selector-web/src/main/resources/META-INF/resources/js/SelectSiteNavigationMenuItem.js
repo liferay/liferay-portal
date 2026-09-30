@@ -48,7 +48,6 @@ const SelectSiteNavigationMenuItem = ({itemSelectorSaveEvent, nodes}) => {
 			data: {
 				selectSiteNavigationMenuItemExternalReferenceCode:
 					item.externalReferenceCode ?? item.id,
-				selectSiteNavigationMenuItemId: item.id,
 				selectSiteNavigationMenuItemName: item.name,
 			},
 		});
