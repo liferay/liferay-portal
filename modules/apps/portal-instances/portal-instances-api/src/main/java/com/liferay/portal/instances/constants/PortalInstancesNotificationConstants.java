@@ -14,6 +14,8 @@ public class PortalInstancesNotificationConstants {
 
 	public static final String OPERATION_TYPE_DELETE = "DELETE";
 
+	public static final String OPERATION_TYPE_EXPORT = "EXPORT";
+
 	public static final String STATUS_FAILED = "FAILED";
 
 	public static final String STATUS_SUCCESS = "SUCCESS";

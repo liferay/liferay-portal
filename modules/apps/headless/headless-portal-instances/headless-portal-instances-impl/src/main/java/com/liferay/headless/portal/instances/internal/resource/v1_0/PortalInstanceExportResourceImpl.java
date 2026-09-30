@@ -6,8 +6,11 @@
 package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
+import com.liferay.headless.portal.instances.internal.notifications.PortalInstanceNotificationUtil;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceExportResource;
+import com.liferay.portal.instances.constants.PortalInstancesNotificationConstants;
 import com.liferay.portal.instances.exporter.PortalInstanceExporter;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -64,6 +67,8 @@ public class PortalInstanceExportResourceImpl
 			newPortalInstanceExport.setPortalInstanceId(() -> portalInstanceId);
 			newPortalInstanceExport.setSourceCompanyId(company::getCompanyId);
 
+			_sendUserNotificationEvent(portalInstanceId, exportedPartitionName);
+
 			return newPortalInstanceExport;
 		}
 		catch (Exception exception) {
@@ -83,6 +88,23 @@ public class PortalInstanceExportResourceImpl
 		if (!permissionChecker.isOmniadmin()) {
 			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
 		}
+	}
+
+	private void _sendUserNotificationEvent(
+		String portalInstanceId, String schemaName) {
+
+		PortalInstanceNotificationUtil.sendUserNotificationEvent(
+			contextUser.getUserId(),
+			JSONUtil.put(
+				"operationType",
+				PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT
+			).put(
+				"portalInstanceId", portalInstanceId
+			).put(
+				"schemaName", schemaName
+			).put(
+				"status", PortalInstancesNotificationConstants.STATUS_SUCCESS
+			));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

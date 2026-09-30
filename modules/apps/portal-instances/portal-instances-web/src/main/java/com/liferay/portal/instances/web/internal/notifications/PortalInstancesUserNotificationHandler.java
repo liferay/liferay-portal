@@ -111,6 +111,21 @@ public class PortalInstancesUserNotificationHandler
 				jsonObject.getString("errorMessageKey"));
 		}
 
+		if (operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT)) {
+
+			if (status.equals(
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
+
+				return serviceContext.translate(
+					"the-instance-was-exported-to-the-schema-x",
+					jsonObject.getString("schemaName"));
+			}
+
+			return serviceContext.translate(
+				jsonObject.getString("errorMessageKey"));
+		}
+
 		throw new IllegalArgumentException(
 			StringBundler.concat(
 				"No portal instances user notification found for operation ",
@@ -152,6 +167,22 @@ public class PortalInstancesUserNotificationHandler
 
 			return serviceContext.translate(
 				"the-instance-x-could-not-be-deleted",
+				jsonObject.getString("portalInstanceId"));
+		}
+
+		if (operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT)) {
+
+			if (status.equals(
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
+
+				return serviceContext.translate(
+					"the-instance-x-was-exported",
+					jsonObject.getString("portalInstanceId"));
+			}
+
+			return serviceContext.translate(
+				"the-instance-x-could-not-be-exported",
 				jsonObject.getString("portalInstanceId"));
 		}
 
