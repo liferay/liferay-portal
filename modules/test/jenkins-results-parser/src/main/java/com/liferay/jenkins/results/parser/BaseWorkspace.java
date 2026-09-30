@@ -332,6 +332,13 @@ public abstract class BaseWorkspace implements Workspace {
 		_validateKeys();
 	}
 
+	protected void updateBuildDatabase() {
+		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+
+		buildDatabase.putWorkspace(
+			_primaryWorkspaceGitRepository.getDirectoryName(), this);
+	}
+
 	protected static final ThreadPoolExecutor threadPoolExecutor =
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(16, true);
 

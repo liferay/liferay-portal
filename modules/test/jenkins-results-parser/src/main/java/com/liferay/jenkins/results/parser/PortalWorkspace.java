@@ -13,6 +13,7 @@ import java.nio.file.PathMatcher;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.json.JSONObject;
 
@@ -114,7 +115,15 @@ public class PortalWorkspace extends BaseWorkspace {
 			throw new RuntimeException("Invalid build profile " + buildProfile);
 		}
 
-		jsonObject.put("build_profile", buildProfile.toString());
+		String buildProfileString = buildProfile.toString();
+
+		if (buildProfileString.equals(jsonObject.optString("build_profile"))) {
+			return;
+		}
+
+		jsonObject.put("build_profile", buildProfileString);
+
+		updateBuildDatabase();
 	}
 
 	public void setCommitOSBAsahModule(boolean commitOSBAsahModule) {
@@ -130,7 +139,16 @@ public class PortalWorkspace extends BaseWorkspace {
 	}
 
 	public void setPortalUpstreamBranchName(String portalUpstreamBranchName) {
+		if (Objects.equals(
+				portalUpstreamBranchName,
+				jsonObject.optString("portal_upstream_branch_name", null))) {
+
+			return;
+		}
+
 		jsonObject.put("portal_upstream_branch_name", portalUpstreamBranchName);
+
+		updateBuildDatabase();
 	}
 
 	@Override

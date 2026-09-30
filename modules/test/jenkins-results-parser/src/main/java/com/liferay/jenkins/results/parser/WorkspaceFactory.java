@@ -73,8 +73,6 @@ public class WorkspaceFactory {
 			Workspace workspace = _workspaces.get(gitDirectoryName);
 
 			if (workspace != null) {
-				buildDatabase.putWorkspace(gitDirectoryName, workspace);
-
 				return workspace;
 			}
 
