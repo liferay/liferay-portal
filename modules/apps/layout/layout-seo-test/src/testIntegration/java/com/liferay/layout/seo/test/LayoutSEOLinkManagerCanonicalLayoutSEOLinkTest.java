@@ -110,6 +110,37 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testGetAlternateURLsDesignLibraryDisplayPageMatchesCanonicalURL()
+		throws Exception {
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()), null,
+				true, WorkflowConstants.STATUS_APPROVED);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Layout virtualLayout = new VirtualLayout(layout, _group);
+
+		String canonicalURL = _portal.getCanonicalURL(
+			RandomTestUtil.randomString(), _themeDisplay, virtualLayout, true,
+			false);
+
+		Map<Locale, String> alternateURLs = _portal.getAlternateURLs(
+			canonicalURL, _themeDisplay, virtualLayout,
+			Collections.singleton(LocaleUtil.getSiteDefault()));
+
+		Assert.assertEquals(
+			alternateURLs.toString(), canonicalURL,
+			alternateURLs.get(LocaleUtil.getSiteDefault()));
+	}
+
 	@Test
 	public void testGetCanonicalAssetDisplayPageURL() throws Exception {
 		JournalArticle journalArticle = _addJournalArticle();
