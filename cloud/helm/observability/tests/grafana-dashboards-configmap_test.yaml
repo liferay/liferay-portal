@@ -24,7 +24,7 @@ tests:
                     pattern: "\"label\": \"Time Range Applies To\",\\s+\"name\": \"timeField\""
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: "\"query\": \"Backup Triggered : triggered,Backup Completed : completed\""
+                    pattern: "\"query\": \"Start time : triggered,Completion time : completed\""
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: "\"from\": \"now-14d\""

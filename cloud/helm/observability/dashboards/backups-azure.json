@@ -274,7 +274,7 @@
 			{
 				"allowCustomValue": false,
 				"current": {
-					"text": "Backup Triggered",
+					"text": "Start time",
 					"value": "triggered"
 				},
 				"description": "Whether the time range matches each backup by when it was triggered or by when it completed. A backup still in progress has not completed, so it only matches by when it was triggered.",
@@ -283,16 +283,16 @@
 				"options": [
 					{
 						"selected": true,
-						"text": "Backup Triggered",
+						"text": "Start time",
 						"value": "triggered"
 					},
 					{
 						"selected": false,
-						"text": "Backup Completed",
+						"text": "Completion time",
 						"value": "completed"
 					}
 				],
-				"query": "Backup Triggered : triggered,Backup Completed : completed",
+				"query": "Start time : triggered,Completion time : completed",
 				"type": "custom"
 			}
 		]
