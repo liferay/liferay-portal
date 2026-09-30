@@ -105,8 +105,8 @@ public class HTMLImageAttachmentElementHandlerTest {
 			fileEntryId, "\" />");
 	}
 
-	private DLAppService _dlAppService = Mockito.mock(DLAppService.class);
-	private HTMLImageAttachmentElementHandler
+	private final DLAppService _dlAppService = Mockito.mock(DLAppService.class);
+	private final HTMLImageAttachmentElementHandler
 		_htmlImageAttachmentElementHandler =
 			new HTMLImageAttachmentElementHandler();
 
