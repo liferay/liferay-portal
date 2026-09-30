@@ -13,7 +13,9 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,6 +32,20 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Before
+	public void setUp() {
+		_companyThreadLocalMockedStatic = Mockito.mockStatic(
+			CompanyThreadLocal.class);
+		_exportImportThreadLocalMockedStatic = Mockito.mockStatic(
+			ExportImportThreadLocal.class);
+	}
+
+	@After
+	public void tearDown() {
+		_companyThreadLocalMockedStatic.close();
+		_exportImportThreadLocalMockedStatic.close();
+	}
 
 	@Test
 	public void testProcess() {
@@ -174,11 +190,8 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 
 	private final BatchEngineContentProcessor _batchEngineContentProcessor =
 		new ClientExtensionPortletIdBatchEngineContentProcessorImpl();
-	private final MockedStatic<CompanyThreadLocal>
-		_companyThreadLocalMockedStatic = Mockito.mockStatic(
-			CompanyThreadLocal.class);
-	private final MockedStatic<ExportImportThreadLocal>
-		_exportImportThreadLocalMockedStatic = Mockito.mockStatic(
-			ExportImportThreadLocal.class);
+	private MockedStatic<CompanyThreadLocal> _companyThreadLocalMockedStatic;
+	private MockedStatic<ExportImportThreadLocal>
+		_exportImportThreadLocalMockedStatic;
 
 }
