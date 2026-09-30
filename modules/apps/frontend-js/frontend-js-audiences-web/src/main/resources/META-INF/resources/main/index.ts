@@ -7,7 +7,7 @@ import {
 	clear,
 	clearHandlers,
 	get,
-	getPriority,
+	getAudienceIndex,
 	on,
 	runDetection,
 	runHandlers,
@@ -94,7 +94,16 @@ export interface AudiencesAPI {
 	clear(): void;
 	clearHandlers(): void;
 	get(): Set<AudienceId>;
-	getPriority(audienceId: AudienceId): number;
+
+	/**
+	 * Returns the audience position in the -possibly filtered
+	 * ({@see RunDetectionOptions#filterAudiences})- audiences declaration. This
+	 * position can be used as a precedence value, for example.
+	 * @param audienceId
+	 * @returns the audience index or `undefined` if it was not declared or the filter function discarded it
+	 */
+	getAudienceIndex(audienceId: AudienceId): number | undefined;
+
 	on(audienceId: AudienceId, handler: Handler): void;
 
 	/**
@@ -144,7 +153,7 @@ export const audiences: AudiencesAPI = {
 	clear,
 	clearHandlers,
 	get,
-	getPriority,
+	getAudienceIndex,
 	on,
 	runDetection,
 	runHandlers,

@@ -173,8 +173,8 @@ describe('implementation', () => {
 		it('sets the priorities in the given order', () => {
 			audiences.set(['b', 'a']);
 
-			expect(audiences.getPriority('a')).toBe(1);
-			expect(audiences.getPriority('b')).toBe(0);
+			expect(audiences.getAudienceIndex('a')).toBe(1);
+			expect(audiences.getAudienceIndex('b')).toBe(0);
 		});
 
 		it('runs the handlers of the audiences it sets', async () => {
@@ -193,23 +193,23 @@ describe('implementation', () => {
 		});
 	});
 
-	describe('getPriority', () => {
+	describe('getAudienceIndex', () => {
 		it('reflects the definition order', async () => {
 			mockAudiencesDefinition(['a', 'b', 'c']);
 
 			await audiences.runDetection(DEFINITION_URL);
 
-			expect(audiences.getPriority('a')).toBe(0);
-			expect(audiences.getPriority('b')).toBe(1);
-			expect(audiences.getPriority('c')).toBe(2);
+			expect(audiences.getAudienceIndex('a')).toBe(0);
+			expect(audiences.getAudienceIndex('b')).toBe(1);
+			expect(audiences.getAudienceIndex('c')).toBe(2);
 		});
 
-		it('returns Infinity for an audience absent from the definition', async () => {
+		it('returns undefined for an audience absent from the definition', async () => {
 			mockAudiencesDefinition(['a']);
 
 			await audiences.runDetection(DEFINITION_URL);
 
-			expect(audiences.getPriority('missing')).toBe(Infinity);
+			expect(audiences.getAudienceIndex('missing')).toBeUndefined();
 		});
 
 		it('refreshes the priorities on a second runDetection', async () => {
@@ -217,15 +217,15 @@ describe('implementation', () => {
 
 			await audiences.runDetection(DEFINITION_URL);
 
-			expect(audiences.getPriority('a')).toBe(0);
-			expect(audiences.getPriority('b')).toBe(1);
+			expect(audiences.getAudienceIndex('a')).toBe(0);
+			expect(audiences.getAudienceIndex('b')).toBe(1);
 
 			mockAudiencesDefinition(['b', 'a']);
 
 			await audiences.runDetection(DEFINITION_URL);
 
-			expect(audiences.getPriority('b')).toBe(0);
-			expect(audiences.getPriority('a')).toBe(1);
+			expect(audiences.getAudienceIndex('b')).toBe(0);
+			expect(audiences.getAudienceIndex('a')).toBe(1);
 		});
 	});
 });

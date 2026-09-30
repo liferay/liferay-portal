@@ -18,12 +18,12 @@ import type {
 
 // Global state variables for Audiences module
 
-const audiencePriorities: Map<AudienceId, number> = new Map();
+const audienceIndexes: Map<AudienceId, number> = new Map();
 const detectedAudiences = new Set<AudienceId>();
 const handlers: Map<AudienceId, Handler[]> = new Map();
 
 export function clear(): void {
-	audiencePriorities.clear();
+	audienceIndexes.clear();
 	detectedAudiences.clear();
 }
 
@@ -35,8 +35,8 @@ export function get(): Set<AudienceId> {
 	return new Set(detectedAudiences);
 }
 
-export function getPriority(audienceId: AudienceId): number {
-	return audiencePriorities.get(audienceId) ?? Infinity;
+export function getAudienceIndex(audienceId: AudienceId): number | undefined {
+	return audienceIndexes.get(audienceId);
 }
 
 export async function runDetection(
@@ -69,7 +69,7 @@ export async function runDetection(
 			: audiencesDefinition.audiences;
 
 		for (let i = 0; i < audiences.length; i++) {
-			audiencePriorities.set(audiences[i].id, i);
+			audienceIndexes.set(audiences[i].id, i);
 		}
 
 		// Run the detection and update detected audiences
@@ -159,7 +159,7 @@ export function set(audienceIds: AudienceId[]): void {
 	clear();
 
 	audienceIds.forEach((audienceId, index) => {
-		audiencePriorities.set(audienceId, index);
+		audienceIndexes.set(audienceId, index);
 		detectedAudiences.add(audienceId);
 	});
 }
