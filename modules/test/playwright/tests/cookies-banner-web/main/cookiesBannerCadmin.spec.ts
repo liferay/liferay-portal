@@ -85,24 +85,44 @@ test(
 			await page.locator('.cookies-banner').waitFor({state: 'visible'});
 		});
 
-		await test.step('Verify the banner card is not transparent and has a shadow', async () => {
-			const banner = page.locator('.cookies-banner');
+		const banner = page.locator('.cookies-banner');
 
+		let lightBackgroundColor: string;
+		let lightColor: string;
+
+		await test.step('Verify the banner card is not transparent and has a shadow', async () => {
 			await expect(banner).not.toHaveCSS(
 				'background-color',
 				'rgba(0, 0, 0, 0)'
 			);
 
 			await expect(banner).not.toHaveCSS('box-shadow', 'none');
+
+			[lightBackgroundColor, lightColor] = await banner.evaluate(
+				(element) => {
+					const {backgroundColor, color} = getComputedStyle(element);
+
+					return [backgroundColor, color];
+				}
+			);
 		});
 
 		await test.step('Verify the banner card adapts to dark mode', async () => {
-			await page.emulateMedia({colorScheme: 'dark'});
+			await page.evaluate(() => {
+				document.documentElement.dataset.colorScheme = 'dark';
+			});
 
-			await expect(page.locator('.cookies-banner')).not.toHaveCSS(
+			await expect(banner).not.toHaveCSS(
 				'background-color',
-				'rgb(255, 255, 255)'
+				'rgba(0, 0, 0, 0)'
 			);
+
+			await expect(banner).not.toHaveCSS(
+				'background-color',
+				lightBackgroundColor
+			);
+
+			await expect(banner).not.toHaveCSS('color', lightColor);
 		});
 	}
 );
