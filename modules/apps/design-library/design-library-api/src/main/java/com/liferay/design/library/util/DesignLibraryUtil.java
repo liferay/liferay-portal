@@ -7,6 +7,8 @@ package com.liferay.design.library.util;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -18,7 +20,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
@@ -33,16 +34,9 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class DesignLibraryUtil {
 
-	public static long[] getConnectedDesignLibraryGroupIds(long groupId) {
-		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-
-		if (group == null) {
-			return new long[0];
-		}
-
+	public static long[] fetchConnectedDesignLibraryGroupIds(long groupId) {
 		try {
-			return getConnectedDesignLibraryGroupIds(
-				group.getCompanyId(), groupId);
+			return getConnectedDesignLibraryGroupIds(groupId);
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
@@ -53,11 +47,14 @@ public class DesignLibraryUtil {
 		}
 	}
 
-	public static long[] getConnectedDesignLibraryGroupIds(
-			long companyId, long groupId)
+	public static long[] getConnectedDesignLibraryGroupIds(long groupId)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-57283")) {
+
 			return new long[0];
 		}
 
@@ -97,12 +94,31 @@ public class DesignLibraryUtil {
 	}
 
 	public static boolean isConnectedDesignLibraryGroupId(
-			long companyId, long designLibraryGroupId, long groupId)
-		throws PortalException {
+		long designLibraryGroupId, long groupId) {
 
-		return ArrayUtil.contains(
-			getConnectedDesignLibraryGroupIds(companyId, groupId),
-			designLibraryGroupId);
+		if (!isDesignLibraryScope(designLibraryGroupId)) {
+			return false;
+		}
+
+		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService =
+			_depotEntryGroupRelLocalServiceSnapshot.get();
+
+		if (depotEntryGroupRelLocalService == null) {
+			return false;
+		}
+
+		DepotEntry depotEntry = _fetchGroupDepotEntry(designLibraryGroupId);
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			depotEntryGroupRelLocalService.
+				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+					depotEntry.getDepotEntryId(), groupId);
+
+		if (depotEntryGroupRel != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public static boolean isDesignLibraryScope(Group group) {
@@ -140,6 +156,9 @@ public class DesignLibraryUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		DesignLibraryUtil.class);
 
+	private static final Snapshot<DepotEntryGroupRelLocalService>
+		_depotEntryGroupRelLocalServiceSnapshot = new Snapshot<>(
+			DesignLibraryUtil.class, DepotEntryGroupRelLocalService.class);
 	private static final Snapshot<DepotEntryLocalService>
 		_depotEntryLocalServiceSnapshot = new Snapshot<>(
 			DesignLibraryUtil.class, DepotEntryLocalService.class);

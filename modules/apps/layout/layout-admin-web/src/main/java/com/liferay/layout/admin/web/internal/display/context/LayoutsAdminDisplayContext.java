@@ -1631,7 +1631,6 @@ public class LayoutsAdminDisplayContext {
 
 		for (long designLibraryGroupId :
 				DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-					themeDisplay.getCompanyId(),
 					themeDisplay.getScopeGroupId())) {
 
 			_addLayoutPageTemplateCollectionVerticalNavItems(

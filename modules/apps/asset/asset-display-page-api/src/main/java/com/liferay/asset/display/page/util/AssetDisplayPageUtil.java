@@ -56,7 +56,7 @@ public class AssetDisplayPageUtil {
 			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				layoutDisplayPageObjectProvider.getClassNameId(),
 				layoutDisplayPageObjectProvider.getClassTypeId(),
-				DesignLibraryUtil.getConnectedDesignLibraryGroupIds(groupId),
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(groupId),
 				groupId);
 
 		return _getAssetDisplayPage(
@@ -72,7 +72,7 @@ public class AssetDisplayPageUtil {
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				classNameId, classTypeId,
-				DesignLibraryUtil.getConnectedDesignLibraryGroupIds(groupId),
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(groupId),
 				groupId);
 
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry =

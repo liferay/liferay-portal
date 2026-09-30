@@ -35,7 +35,6 @@ public class LayoutPageTemplatePortletUtil {
 			(layoutPageTemplateCollection.getGroupId() ==
 				themeDisplay.getScopeGroupId()) ||
 			!DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-				themeDisplay.getCompanyId(),
 				layoutPageTemplateCollection.getGroupId(),
 				themeDisplay.getScopeGroupId())) {
 

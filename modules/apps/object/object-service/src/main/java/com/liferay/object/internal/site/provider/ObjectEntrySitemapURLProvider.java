@@ -177,7 +177,7 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 
 		long[] designLibraryGroupIds =
 			DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-				themeDisplay.getCompanyId(), layoutSet.getGroupId());
+				layoutSet.getGroupId());
 		long[] groupIds = _getGroupIds(layoutSet.getGroupId());
 
 		for (ObjectDefinition objectDefinition :

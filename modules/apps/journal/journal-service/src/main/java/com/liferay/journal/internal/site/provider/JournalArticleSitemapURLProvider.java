@@ -164,7 +164,7 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 
 		long[] designLibraryGroupIds =
 			DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-				themeDisplay.getCompanyId(), layoutSet.getGroupId());
+				layoutSet.getGroupId());
 		String portalURL = _portal.getPortalURL(layoutSet, themeDisplay);
 		Set<String> processedArticleIds = new HashSet<>();
 		Set<Locale> siteAvailableLocales = _language.getAvailableLocales(
@@ -470,7 +470,7 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 
 		long[] designLibraryGroupIds =
 			DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-				themeDisplay.getCompanyId(), layoutSet.getGroupId());
+				layoutSet.getGroupId());
 		String portalURL = _portal.getPortalURL(layoutSet, themeDisplay);
 		Set<String> processedArticleIds = new HashSet<>();
 		Set<Locale> siteAvailableLocales = _language.getAvailableLocales(

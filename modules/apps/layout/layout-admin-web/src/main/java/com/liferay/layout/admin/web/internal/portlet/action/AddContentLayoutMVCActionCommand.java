@@ -126,7 +126,6 @@ public class AddContentLayoutMVCActionCommand
 					if ((layoutPageTemplateEntry != null) &&
 						(layoutPageTemplateEntry.getGroupId() != groupId) &&
 						!DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-							themeDisplay.getCompanyId(),
 							layoutPageTemplateEntry.getGroupId(), groupId)) {
 
 						throw new PrincipalException.MustHavePermission(

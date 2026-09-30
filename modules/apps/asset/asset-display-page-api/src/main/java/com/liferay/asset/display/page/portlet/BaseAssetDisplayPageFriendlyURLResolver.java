@@ -268,7 +268,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	}
 
 	protected long[] getConnectedDesignLibraryGroupIds(long groupId) {
-		return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(groupId);
+		return DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(groupId);
 	}
 
 	protected LayoutDisplayPageObjectProvider<?>
@@ -335,7 +335,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 
 		if ((layout == null) || (layout.getGroupId() == groupId) ||
 			!DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-				layout.getCompanyId(), layout.getGroupId(), groupId)) {
+				layout.getGroupId(), groupId)) {
 
 			return layout;
 		}
