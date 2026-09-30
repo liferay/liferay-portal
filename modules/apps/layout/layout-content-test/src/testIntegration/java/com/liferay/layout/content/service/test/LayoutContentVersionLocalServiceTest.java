@@ -24,9 +24,11 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
+import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
@@ -138,6 +140,7 @@ public class LayoutContentVersionLocalServiceTest {
 		_testAddLayoutContentVersion();
 
 		_testAddLayoutContentVersionPublishLayout();
+		_testAddLayoutContentVersionWithCommonStyles();
 		_testAddLayoutContentVersionWithExternalReferenceCodeTooLong();
 		_testAddLayoutContentVersionWithNullExternalReferenceCode();
 		_testAddLayoutContentVersionWithNullNameMap();
@@ -296,6 +299,23 @@ public class LayoutContentVersionLocalServiceTest {
 				layoutContentVersion.getLayoutContentVersionId(), null));
 	}
 
+	private String _addContainerToLayout(
+			String backgroundColor, SegmentsExperience segmentsExperience)
+		throws Exception {
+
+		JSONObject jsonObject = ContentLayoutTestUtil.addItemToLayout(
+			JSONUtil.put(
+				"styles", JSONUtil.put("backgroundColor", backgroundColor)
+			).toString(),
+			LayoutDataItemTypeConstants.TYPE_CONTAINER, _draftLayout,
+			_layoutStructureProvider,
+			segmentsExperience.getSegmentsExperienceId());
+
+		return StringBundler.concat(
+			".lfr-layout-structure-item-", jsonObject.getString("addedItemId"),
+			" {\nbackground-color: ", backgroundColor, " !important;\n}\n");
+	}
+
 	private FragmentEntry _addFragmentEntry() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -436,7 +456,7 @@ public class LayoutContentVersionLocalServiceTest {
 
 				Assert.assertFalse(html, html.contains("\"signInURL\":\"\""));
 				Assert.assertTrue(html, html.contains("/company_logo"));
-				Assert.assertTrue(
+				Assert.assertFalse(
 					html, html.contains("/o/layout-common-styles/main.css"));
 				Assert.assertTrue(html, html.contains(css));
 				Assert.assertTrue(
@@ -530,6 +550,21 @@ public class LayoutContentVersionLocalServiceTest {
 			locale,
 			"this-preview-is-not-available.-an-error-occurred-while-" +
 				"generating-the-preview-when-this-version-was-created");
+	}
+
+	private String _getPreviewHTML(
+			LayoutContentVersion layoutContentVersion,
+			SegmentsExperience segmentsExperience)
+		throws Exception {
+
+		LayoutContentVersionPreview layoutContentVersionPreview =
+			_layoutContentVersionPreviewLocalService.
+				fetchLayoutContentVersionPreview(
+					layoutContentVersion.getLayoutContentVersionId(),
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					segmentsExperience.getExternalReferenceCode());
+
+		return layoutContentVersionPreview.getHtml();
 	}
 
 	private String _getRandomPortalURL() {
@@ -707,6 +742,36 @@ public class LayoutContentVersionLocalServiceTest {
 			portalURL);
 	}
 
+	private void _testAddLayoutContentVersionWithCommonStyles()
+		throws Exception {
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperience(
+				_draftLayout.getPlid());
+
+		String css1 = _addContainerToLayout("#00FF00", segmentsExperience);
+
+		LayoutContentVersion layoutContentVersion1 = _addLayoutContentVersion(
+			WorkflowConstants.STATUS_APPROVED);
+
+		String css2 = _addContainerToLayout("#FF0000", segmentsExperience);
+
+		LayoutContentVersion layoutContentVersion2 = _addLayoutContentVersion(
+			WorkflowConstants.STATUS_APPROVED);
+
+		String html1 = _getPreviewHTML(
+			layoutContentVersion1, segmentsExperience);
+
+		Assert.assertTrue(html1, html1.contains(css1));
+		Assert.assertFalse(html1, html1.contains(css2));
+
+		String html2 = _getPreviewHTML(
+			layoutContentVersion2, segmentsExperience);
+
+		Assert.assertTrue(html2, html2.contains(css1));
+		Assert.assertTrue(html2, html2.contains(css2));
+	}
+
 	private void _testAddLayoutContentVersionWithExternalReferenceCodeTooLong() {
 		int maxLength = ModelHintsUtil.getMaxLength(
 			LayoutContentVersion.class.getName(), "externalReferenceCode");
@@ -824,6 +889,9 @@ public class LayoutContentVersionLocalServiceTest {
 	@Inject
 	private LayoutContentVersionPreviewLocalService
 		_layoutContentVersionPreviewLocalService;
+
+	@Inject
+	private LayoutStructureProvider _layoutStructureProvider;
 
 	@Inject
 	private LayoutUtilityPageEntryLocalService

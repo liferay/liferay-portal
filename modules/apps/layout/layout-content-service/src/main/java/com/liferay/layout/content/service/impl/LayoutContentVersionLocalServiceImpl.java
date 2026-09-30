@@ -16,8 +16,11 @@ import com.liferay.layout.content.service.base.LayoutContentVersionLocalServiceB
 import com.liferay.layout.content.util.comparator.LayoutContentVersionVersionComparator;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.layout.util.structure.CommonStylesUtil;
+import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -37,6 +40,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -299,6 +303,16 @@ public class LayoutContentVersionLocalServiceImpl
 		return StringPool.BLANK;
 	}
 
+	private String _addCommonStylesCSS(String css, String html) {
+		if (Validator.isNull(css)) {
+			return html;
+		}
+
+		return StringUtil.replaceFirst(
+			html, "</head>",
+			StringBundler.concat("<style>", css, "</style></head>"));
+	}
+
 	private void _addLayoutContentVersionPreviews(
 		Layout layout, LayoutContentVersion layoutContentVersion, long userId) {
 
@@ -310,6 +324,14 @@ public class LayoutContentVersionLocalServiceImpl
 				ServiceContextThreadLocal.getServiceContext();
 
 			_initThemeDisplay(serviceContext.getRequest(), layout);
+
+			DynamicServletRequest dynamicServletRequest =
+				new DynamicServletRequest(serviceContext.getRequest());
+
+			dynamicServletRequest.setParameter(
+				"disableCommonStyles", Boolean.TRUE.toString());
+
+			serviceContext.setRequest(dynamicServletRequest);
 
 			for (SegmentsExperience segmentsExperience :
 					_segmentsExperienceLocalService.getSegmentsExperiences(
@@ -335,16 +357,28 @@ public class LayoutContentVersionLocalServiceImpl
 		SegmentsExperience segmentsExperience, ServiceContext serviceContext,
 		long userId) {
 
+		String css = null;
+
+		LayoutStructure layoutStructure =
+			_layoutStructureProvider.getLayoutStructure(
+				layout.getPlid(), segmentsExperience.getSegmentsExperienceId());
+
+		if (layoutStructure != null) {
+			css = CommonStylesUtil.getCSS(layout, layoutStructure, false);
+		}
+
 		for (Locale locale :
 				_language.getAvailableLocales(layout.getGroupId())) {
 
 			String html = null;
 
 			try {
-				html = _layoutPreviewRenderer.render(
-					layout, locale,
-					segmentsExperience.getSegmentsExperienceId(),
-					serviceContext);
+				html = _addCommonStylesCSS(
+					css,
+					_layoutPreviewRenderer.render(
+						layout, locale,
+						segmentsExperience.getSegmentsExperienceId(),
+						serviceContext));
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
@@ -542,6 +576,9 @@ public class LayoutContentVersionLocalServiceImpl
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
+
+	@Reference
+	private LayoutStructureProvider _layoutStructureProvider;
 
 	@Reference
 	private Portal _portal;
