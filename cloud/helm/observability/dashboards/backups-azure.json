@@ -92,6 +92,22 @@
 					{
 						"matcher": {
 							"id": "byName",
+							"options": "Recovery Point ID"
+						},
+						"properties": [
+							{
+								"id": "custom.inspect",
+								"value": true
+							},
+							{
+								"id": "custom.minWidth",
+								"value": 280
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
 							"options": "Status"
 						},
 						"properties": [
