@@ -44,10 +44,13 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: type == .microsoft.dataprotection/backupvaults.[\s\S]{0,300}?\) on vaultId
+                    pattern: pack_array\(tolower\(tostring\(properties.dataSourceId\)\), tostring\(split\(tolower\(id\), ./backupjobs/.\)\[0\]\)\)
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: join kind=leftouter \(\\n\\tresources\\n\\t\| where type in \(.microsoft.dataprotection/backupvaults., .microsoft.storage/storageaccounts.\)
             -   notMatchRegex:
                     path: data["backups.json"]
-                    pattern: on dataSourceId
+                    pattern: join kind=inner
         documentSelector:
             path: metadata.name
             value: RELEASE-NAME-observability-dashboard-backups
@@ -124,6 +127,24 @@ tests:
             path: metadata.name
             value: RELEASE-NAME-observability-dashboard-backups
         it: Lists the backups from Azure Resource Graph when the cloud provider is Azure
+        set:
+            azure.resourceGroupName: liferay-test
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: \[.Data Plane.\] = dataPlane
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: dataPlane = tostring\(tags\[.data-plane.\]\)
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: backupInstanceFriendlyName
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Reads the data plane from the storage account tag so a restored generation keeps it
         set:
             azure.resourceGroupName: liferay-test
             azure.subscriptionId: 00000000-0000-0000-0000-000000000000
