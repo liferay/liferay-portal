@@ -33,12 +33,15 @@ public abstract class BaseWorkspace implements Workspace {
 	}
 
 	@Override
-	public List<WorkspaceGitRepository> getWorkspaceGitRepositories() {
+	public synchronized List<WorkspaceGitRepository>
+		getWorkspaceGitRepositories() {
+
 		if (_workspaceGitRepositories != null) {
 			return new ArrayList<>(_workspaceGitRepositories.values());
 		}
 
-		_workspaceGitRepositories = new HashMap<>();
+		Map<String, WorkspaceGitRepository> workspaceGitRepositories =
+			new HashMap<>();
 
 		String workspaceRepositoryDirNames = jsonObject.getString(
 			"workspace_repository_dir_names");
@@ -46,7 +49,9 @@ public abstract class BaseWorkspace implements Workspace {
 		if (JenkinsResultsParserUtil.isNullOrEmpty(
 				workspaceRepositoryDirNames)) {
 
-			return new ArrayList<>(_workspaceGitRepositories.values());
+			_workspaceGitRepositories = workspaceGitRepositories;
+
+			return new ArrayList<>(workspaceGitRepositories.values());
 		}
 
 		List<Callable<WorkspaceGitRepository>> callables = new ArrayList<>();
@@ -74,18 +79,17 @@ public abstract class BaseWorkspace implements Workspace {
 				"getWorkspaceGitRepositories");
 
 		try {
-			List<WorkspaceGitRepository> workspaceGitRepositories =
-				parallelExecutor.execute();
-
 			for (WorkspaceGitRepository workspaceGitRepository :
-					workspaceGitRepositories) {
+					parallelExecutor.execute()) {
 
-				_workspaceGitRepositories.put(
+				workspaceGitRepositories.put(
 					workspaceGitRepository.getDirectoryName(),
 					workspaceGitRepository);
 			}
 
-			return new ArrayList<>(_workspaceGitRepositories.values());
+			_workspaceGitRepositories = workspaceGitRepositories;
+
+			return new ArrayList<>(workspaceGitRepositories.values());
 		}
 		catch (TimeoutException timeoutException) {
 			throw new RuntimeException(timeoutException);
@@ -93,7 +97,7 @@ public abstract class BaseWorkspace implements Workspace {
 	}
 
 	@Override
-	public WorkspaceGitRepository getWorkspaceGitRepository(
+	public synchronized WorkspaceGitRepository getWorkspaceGitRepository(
 		String repositoryDirName) {
 
 		if (_workspaceGitRepositories == null) {
