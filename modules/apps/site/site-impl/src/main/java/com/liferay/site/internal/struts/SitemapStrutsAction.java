@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -121,6 +122,10 @@ public class SitemapStrutsAction implements StrutsAction {
 				layoutSet.isPrivateLayout(), themeDisplay);
 
 			if (inputStream == null) {
+				httpServletResponse.setHeader(
+					HttpHeaders.CACHE_CONTROL,
+					HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
+
 				httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
 
 				return null;
