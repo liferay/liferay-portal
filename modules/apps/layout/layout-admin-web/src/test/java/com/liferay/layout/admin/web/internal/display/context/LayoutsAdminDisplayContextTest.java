@@ -642,7 +642,7 @@ public class LayoutsAdminDisplayContextTest {
 
 			designLibraryUtilMockedStatic.when(
 				() -> DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-					Mockito.anyLong(), Mockito.eq(groupId))
+					groupId)
 			).thenReturn(
 				new long[] {designLibraryGroupId}
 			);

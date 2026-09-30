@@ -78,8 +78,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 
 			designLibraryUtilMockedStatic.when(
 				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
-					Mockito.anyLong())
+					Mockito.eq(designLibraryGroupId), Mockito.anyLong())
 			).thenReturn(
 				true
 			);
@@ -139,8 +138,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 
 			designLibraryUtilMockedStatic.when(
 				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
-					Mockito.anyLong())
+					Mockito.eq(designLibraryGroupId), Mockito.anyLong())
 			).thenReturn(
 				true
 			);
@@ -366,8 +364,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 
 			designLibraryUtilMockedStatic.when(
 				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
-					Mockito.anyLong())
+					Mockito.eq(designLibraryGroupId), Mockito.anyLong())
 			).thenReturn(
 				true
 			);
@@ -482,8 +479,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 
 			designLibraryUtilMockedStatic.when(
 				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
-					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
-					Mockito.anyLong())
+					Mockito.eq(designLibraryGroupId), Mockito.anyLong())
 			).thenReturn(
 				true
 			);
