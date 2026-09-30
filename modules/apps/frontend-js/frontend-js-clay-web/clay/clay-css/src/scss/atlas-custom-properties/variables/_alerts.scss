@@ -207,14 +207,14 @@ $alert-link: map-deep-merge(
 
 // .alert-indicator
 
-$alert-indicator-font-size: 1.25rem !default;
+$alert-indicator-font-size: 1rem !default;
 
 $alert-indicator: () !default;
 $alert-indicator: map-deep-merge(
 	(
 		font-size: $alert-indicator-font-size,
 		line-height: 1,
-		vertical-align: 8%,
+		vertical-align: clay-unset,
 
 		lead: (
 			margin-left: $alert-lead-spacer-x,
