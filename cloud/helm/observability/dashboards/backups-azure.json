@@ -50,6 +50,34 @@
 			"type": "text"
 		},
 		{
+			"fieldConfig": {
+				"defaults": {
+				},
+				"overrides": [
+				]
+			},
+			"gridPos": {
+				"h": 19,
+				"w": 24,
+				"x": 0,
+				"y": 21
+			},
+			"id": 8,
+			"options": {
+				"code": {
+					"language": "plaintext",
+					"showLineNumbers": false,
+					"showMiniMap": false
+				},
+				"content": "${AZURE_BACKUP_HTML}",
+				"mode": "html"
+			},
+			"pluginVersion": "12.4.2",
+			"title": "",
+			"transparent": true,
+			"type": "text"
+		},
+		{
 			"datasource": {
 				"type": "grafana-azure-monitor-datasource",
 				"uid": "${DS_AZURE_MONITOR}"

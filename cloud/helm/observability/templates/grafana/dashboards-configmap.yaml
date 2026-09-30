@@ -73,6 +73,9 @@
 {{- if and (eq $key "backups") (eq $cloudProvider "aws") -}}
 {{- $rendered = $rendered | replace "\"${AWS_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/aws-backup.html") (dict "region" $region) | toJson) -}}
 {{- end -}}
+{{- if and (eq $key "backups") (eq $cloudProvider "azure") -}}
+{{- $rendered = $rendered | replace "\"${AZURE_BACKUP_HTML}\"" ($.Files.Get "dashboards/html/azure-backup.html" | toJson) -}}
+{{- end -}}
 {{- if eq $key "central-hub" -}}
 {{- $centralHubCtx := dict "argocdDescription" $argocdDescription "argocdHref" $argocdHref "argocdTileStyle" $argocdTileStyle "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" $argoWfTileStyle "gitDescription" $gitDescription "gitHref" $gitHref "gitTileStyle" $gitTileStyle -}}
 {{- $rendered = $rendered | replace "\"${CENTRAL_HUB_HTML}\"" (tpl ($.Files.Get "dashboards/html/central-hub.html") $centralHubCtx | toJson) -}}
