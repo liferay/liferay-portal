@@ -355,8 +355,7 @@ public class ConfigurationUtil {
 
 		if (repeatableFieldsInfoItemFormProvider == null) {
 			_logOptionalReference(
-				RepeatableFieldsInfoItemFormProvider.class, className,
-				CompanyThreadLocal.getCompanyId());
+				RepeatableFieldsInfoItemFormProvider.class, className);
 
 			return null;
 		}
@@ -368,8 +367,7 @@ public class ConfigurationUtil {
 
 			if (infoForm == null) {
 				_logOptionalReference(
-					InfoForm.class, infoItemFormVariation.getKey(),
-					CompanyThreadLocal.getCompanyId());
+					InfoForm.class, infoItemFormVariation.getKey());
 
 				return null;
 			}
@@ -377,9 +375,7 @@ public class ConfigurationUtil {
 			InfoField infoField = infoForm.getInfoField(fieldName);
 
 			if (infoField == null) {
-				_logOptionalReference(
-					InfoField.class, fieldName,
-					CompanyThreadLocal.getCompanyId());
+				_logOptionalReference(InfoField.class, fieldName);
 
 				return null;
 			}
@@ -391,8 +387,7 @@ public class ConfigurationUtil {
 		catch (NoSuchFormVariationException noSuchFormVariationException) {
 			_logOptionalReference(
 				InfoForm.class,
-				itemExternalReference.getExternalReferenceCode(),
-				CompanyThreadLocal.getCompanyId());
+				itemExternalReference.getExternalReferenceCode());
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(noSuchFormVariationException);
@@ -411,7 +406,7 @@ public class ConfigurationUtil {
 	}
 
 	private static void _logOptionalReference(
-		Class<?> modelClass, String modelExternalReferenceCode, long scopeId) {
+		Class<?> modelClass, String modelExternalReferenceCode) {
 
 		if (_log.isWarnEnabled()) {
 			StringBundler sb = new StringBundler(6);
@@ -420,14 +415,11 @@ public class ConfigurationUtil {
 			sb.append(modelClass.getSimpleName());
 			sb.append(" with external reference code ");
 			sb.append(modelExternalReferenceCode);
-			sb.append(" and scope ID ");
-			sb.append(scopeId);
+			sb.append(" and company ID ");
+			sb.append(CompanyThreadLocal.getCompanyId());
 
 			_log.warn(sb.toString());
 		}
-
-		EmptyModelManagerUtil.reportMissingReference(
-			modelClass.getName(), modelExternalReferenceCode, scopeId);
 	}
 
 	private static void _logOptionalReference(
@@ -641,9 +633,7 @@ public class ConfigurationUtil {
 			_getInfoCollectionProvider(className, infoItemServiceRegistry);
 
 		if (infoCollectionProvider == null) {
-			_logOptionalReference(
-				InfoCollectionProvider.class, className,
-				CompanyThreadLocal.getCompanyId());
+			_logOptionalReference(InfoCollectionProvider.class, className);
 
 			return JSONUtil.put(
 				"key", className
