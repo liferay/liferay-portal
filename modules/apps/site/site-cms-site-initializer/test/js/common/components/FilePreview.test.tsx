@@ -107,5 +107,9 @@ describe('FilePreview', () => {
 		);
 
 		expect(container.querySelector('iframe')).not.toBeInTheDocument();
+
+		expect(
+			document.querySelector('img[src*="_reduced_motion"]')
+		).not.toBeInTheDocument();
 	});
 });

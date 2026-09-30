@@ -168,6 +168,10 @@ describe('[CMS Dashboard] ReviewDuplicateTopicsModal', () => {
 		).toBeInTheDocument();
 
 		expect(mockFrontendDataSet).not.toHaveBeenCalled();
+
+		expect(
+			document.querySelector('img[src*="_reduced_motion"]')
+		).not.toBeInTheDocument();
 	});
 
 	it('keeps the search out of the dashboard URL', async () => {

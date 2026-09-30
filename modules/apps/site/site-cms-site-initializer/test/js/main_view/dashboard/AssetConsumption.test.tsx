@@ -74,5 +74,9 @@ describe('AssetConsumption', () => {
 		renderComponent();
 
 		expect(await screen.findByText('no-assets-yet')).toBeInTheDocument();
+
+		expect(
+			document.querySelector('img[src*="_reduced_motion"]')
+		).not.toBeInTheDocument();
 	});
 });

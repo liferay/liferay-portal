@@ -207,6 +207,10 @@ describe('GalleryView', () => {
 			screen.getByText('select-a-single-file-to-preview-its-content')
 		).toBeInTheDocument();
 		expect(screen.getByText('no-preview-available')).toBeInTheDocument();
+
+		expect(
+			document.querySelector('img[src*="_reduced_motion"]')
+		).not.toBeInTheDocument();
 	});
 
 	it('changes the preview when a thumbnail is focused and Enter key is pressed', () => {
