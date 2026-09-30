@@ -181,7 +181,7 @@
 			},
 			"gridPos": {
 				"h": 16,
-				"w": 24,
+				"w": 15,
 				"x": 0,
 				"y": 5
 			},
@@ -235,6 +235,388 @@
 				}
 			],
 			"type": "table"
+		},
+		{
+			"datasource": {
+				"type": "grafana-azure-monitor-datasource",
+				"uid": "${DS_AZURE_MONITOR}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							}
+						]
+					},
+					"unit": "none"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byRegexp",
+							"options": ".*"
+						},
+						"properties": [
+							{
+								"id": "links",
+								"value": [
+								]
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 6,
+				"w": 3,
+				"x": 15,
+				"y": 5
+			},
+			"id": 4,
+			"options": {
+				"colorMode": "background",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "horizontal",
+				"percentChangeColorMode": "standard",
+				"reduceOptions": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "12.4.2",
+			"targets": [
+				{
+					"azureResourceGraph": {
+						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupjobs'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where properties.operation == 'Backup'\n| extend startTime = todatetime(properties.startTime), status = tostring(properties.status)\n| where $__timeFilter(startTime)\n| mv-expand resourceId = pack_array(tolower(tostring(properties.dataSourceId)), tostring(split(tolower(id), '/backupjobs/')[0])) to typeof(string)\n| join kind=leftouter (\n\tresources\n\t| where type in ('microsoft.dataprotection/backupvaults', 'microsoft.storage/storageaccounts')\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| project namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])), resourceId = tolower(id)\n) on resourceId\n| summarize namespace = max(namespace) by id, status\n| where namespace == '$environment'\n| where status in ('Completed', 'CompletedWithWarnings')\n| summarize ['Successful Runs'] = count()",
+						"resultFormat": "table"
+					},
+					"datasource": {
+						"type": "grafana-azure-monitor-datasource",
+						"uid": "${DS_AZURE_MONITOR}"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				}
+			],
+			"title": "Successful Runs",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "grafana-azure-monitor-datasource",
+				"uid": "${DS_AZURE_MONITOR}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							}
+						]
+					},
+					"unit": "none"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byRegexp",
+							"options": ".*"
+						},
+						"properties": [
+							{
+								"id": "links",
+								"value": [
+								]
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 6,
+				"w": 3,
+				"x": 18,
+				"y": 5
+			},
+			"id": 5,
+			"options": {
+				"colorMode": "background",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "horizontal",
+				"percentChangeColorMode": "standard",
+				"reduceOptions": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "12.4.2",
+			"targets": [
+				{
+					"azureResourceGraph": {
+						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupjobs'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where properties.operation == 'Backup'\n| extend startTime = todatetime(properties.startTime), status = tostring(properties.status)\n| where $__timeFilter(startTime)\n| mv-expand resourceId = pack_array(tolower(tostring(properties.dataSourceId)), tostring(split(tolower(id), '/backupjobs/')[0])) to typeof(string)\n| join kind=leftouter (\n\tresources\n\t| where type in ('microsoft.dataprotection/backupvaults', 'microsoft.storage/storageaccounts')\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| project namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])), resourceId = tolower(id)\n) on resourceId\n| summarize namespace = max(namespace) by id, status\n| where namespace == '$environment'\n| where status == 'Failed'\n| summarize ['Failed Runs'] = count()",
+						"resultFormat": "table"
+					},
+					"datasource": {
+						"type": "grafana-azure-monitor-datasource",
+						"uid": "${DS_AZURE_MONITOR}"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				}
+			],
+			"title": "Failed Runs",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "grafana-azure-monitor-datasource",
+				"uid": "${DS_AZURE_MONITOR}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							}
+						]
+					},
+					"unit": "none"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byRegexp",
+							"options": ".*"
+						},
+						"properties": [
+							{
+								"id": "links",
+								"value": [
+								]
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 6,
+				"w": 3,
+				"x": 21,
+				"y": 5
+			},
+			"id": 6,
+			"options": {
+				"colorMode": "background",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "horizontal",
+				"percentChangeColorMode": "standard",
+				"reduceOptions": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "12.4.2",
+			"targets": [
+				{
+					"azureResourceGraph": {
+						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupjobs'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where properties.operation == 'Backup'\n| extend startTime = todatetime(properties.startTime), status = tostring(properties.status)\n| where $__timeFilter(startTime)\n| mv-expand resourceId = pack_array(tolower(tostring(properties.dataSourceId)), tostring(split(tolower(id), '/backupjobs/')[0])) to typeof(string)\n| join kind=leftouter (\n\tresources\n\t| where type in ('microsoft.dataprotection/backupvaults', 'microsoft.storage/storageaccounts')\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| project namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])), resourceId = tolower(id)\n) on resourceId\n| summarize namespace = max(namespace) by id, status\n| where namespace == '$environment'\n| where status != 'InProgress'\n| summarize ['Total Runs'] = count()",
+						"resultFormat": "table"
+					},
+					"datasource": {
+						"type": "grafana-azure-monitor-datasource",
+						"uid": "${DS_AZURE_MONITOR}"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				}
+			],
+			"title": "Total Runs",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "grafana-azure-monitor-datasource",
+				"uid": "${DS_AZURE_MONITOR}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							},
+							{
+								"color": "orange",
+								"value": ""
+							},
+							{
+								"color": "red",
+								"value": 16
+							}
+						]
+					},
+					"unit": "percent"
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byRegexp",
+							"options": ".*"
+						},
+						"properties": [
+							{
+								"id": "links",
+								"value": [
+								]
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 10,
+				"w": 9,
+				"x": 15,
+				"y": 11
+			},
+			"id": 7,
+			"options": {
+				"minVizHeight": 75,
+				"minVizWidth": 75,
+				"orientation": "auto",
+				"reduceOptions": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showThresholdLabels": false,
+				"showThresholdMarkers": true,
+				"sizing": "auto"
+			},
+			"pluginVersion": "12.4.2",
+			"targets": [
+				{
+					"azureResourceGraph": {
+						"query": "recoveryservicesresources\n| where type == 'microsoft.dataprotection/backupvaults/backupjobs'\n| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n| where properties.operation == 'Backup'\n| extend startTime = todatetime(properties.startTime), status = tostring(properties.status)\n| where $__timeFilter(startTime)\n| mv-expand resourceId = pack_array(tolower(tostring(properties.dataSourceId)), tostring(split(tolower(id), '/backupjobs/')[0])) to typeof(string)\n| join kind=leftouter (\n\tresources\n\t| where type in ('microsoft.dataprotection/backupvaults', 'microsoft.storage/storageaccounts')\n\t| where resourceGroup =~ '${AZURE_RESOURCE_GROUP}'\n\t| project namespace = strcat('liferay-', tostring(tags['project-id']), '-', tostring(tags['environment-id'])), resourceId = tolower(id)\n) on resourceId\n| summarize namespace = max(namespace) by id, status\n| where namespace == '$environment'\n| summarize failed = countif(status == 'Failed'), total = countif(status != 'InProgress')\n| project ['Backup Failure Rate'] = iff(total == 0, real(null), 100.0 * failed / total)",
+						"resultFormat": "table"
+					},
+					"datasource": {
+						"type": "grafana-azure-monitor-datasource",
+						"uid": "${DS_AZURE_MONITOR}"
+					},
+					"queryType": "Azure Resource Graph",
+					"refId": "A",
+					"subscriptions": [
+						"${AZURE_SUBSCRIPTION_ID}"
+					]
+				}
+			],
+			"title": "Backup Failure Rate",
+			"type": "gauge"
 		}
 	],
 	"preload": false,
