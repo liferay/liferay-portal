@@ -35,7 +35,7 @@ jest.mock('frontend-js-web', () => {
 	};
 });
 
-const renderComponent = (isNew = false) => {
+const renderComponent = ({hasWorkflow = false, isNew = false} = {}) => {
 	return render(
 		<>
 			<ContentEditorToolbar
@@ -44,7 +44,7 @@ const renderComponent = (isNew = false) => {
 				displayDate="2025-10-31T13:00"
 				getPreviewDataURL="getPreviewDataURL"
 				groupId={0}
-				hasWorkflow={false}
+				hasWorkflow={hasWorkflow}
 				headerTitle="New Content edit"
 				isNew={isNew}
 				title="New Content"
@@ -80,6 +80,10 @@ describe('ContentEditorToolbar', () => {
 			},
 			Language: {
 				get: jest.fn((key) => {
+					if (key === 'x-has-been-submitted-for-workflow') {
+						return '{0} has been submitted for workflow.';
+					}
+
 					if (key === 'x-was-created-successfully') {
 						return '{0} was created successfully';
 					}
@@ -149,7 +153,7 @@ describe('ContentEditorToolbar', () => {
 	});
 
 	it('shows created message when publishing a new entry with ctrl + alt + Enter', () => {
-		renderComponent(true);
+		renderComponent({isNew: true});
 
 		const form = screen.getByTestId('form') as HTMLFormElement;
 
@@ -171,6 +175,33 @@ describe('ContentEditorToolbar', () => {
 		expect(sessionStorage.setItem).toHaveBeenCalledWith(
 			'com.liferay.site.cms.site.initializer.successMessage',
 			'<strong>My Test Content</strong> was created successfully',
+			'NECESSARY'
+		);
+	});
+
+	it('shows submitted for workflow message when publishing an entry with workflow with ctrl + alt + Enter', () => {
+		renderComponent({hasWorkflow: true});
+
+		const form = screen.getByTestId('form') as HTMLFormElement;
+
+		form.checkValidity = jest.fn(() => true);
+
+		form.addEventListener('submit', (event: Event) =>
+			event.preventDefault()
+		);
+
+		document.body.dispatchEvent(
+			new KeyboardEvent('keydown', {
+				altKey: true,
+				bubbles: true,
+				ctrlKey: true,
+				key: 'Enter',
+			})
+		);
+
+		expect(sessionStorage.setItem).toHaveBeenCalledWith(
+			'com.liferay.site.cms.site.initializer.successMessage',
+			'<strong>My Test Content</strong> has been submitted for workflow.',
 			'NECESSARY'
 		);
 	});

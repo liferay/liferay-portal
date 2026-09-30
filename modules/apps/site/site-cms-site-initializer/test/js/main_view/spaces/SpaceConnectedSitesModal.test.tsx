@@ -421,7 +421,7 @@ describe('SpaceConnectedSitesModal', () => {
 				await screen.findByText('Connected Site 1')
 			).closest('li')!;
 			const actionsButton = within(site1Row).getByRole('button', {
-				name: 'site-actions',
+				name: 'actions-for-x',
 			});
 
 			await userEvent.click(actionsButton);
@@ -458,7 +458,7 @@ describe('SpaceConnectedSitesModal', () => {
 				await screen.findByText('Connected Site 1')
 			).closest('li')!;
 			const actionsButton = within(site1Row).getByRole('button', {
-				name: 'site-actions',
+				name: 'actions-for-x',
 			});
 
 			await userEvent.click(actionsButton);
@@ -482,7 +482,7 @@ describe('SpaceConnectedSitesModal', () => {
 			).toBeInTheDocument();
 
 			const actionsButton = within(site1Row).getByRole('button', {
-				name: 'site-actions',
+				name: 'actions-for-x',
 			});
 			await userEvent.click(actionsButton);
 			await userEvent.click(
@@ -522,7 +522,7 @@ describe('SpaceConnectedSitesModal', () => {
 			).toBeInTheDocument();
 
 			const actionsButton = within(site1Row).getByRole('button', {
-				name: 'site-actions',
+				name: 'actions-for-x',
 			});
 			await userEvent.click(actionsButton);
 			await userEvent.click(
@@ -824,7 +824,7 @@ describe('SpaceConnectedSitesModal', () => {
 				)
 			).closest('li')!;
 			const actionsButton = within(templateRow).getByRole('button', {
-				name: 'site-actions',
+				name: 'actions-for-x',
 			});
 
 			await userEvent.click(actionsButton);
@@ -882,7 +882,7 @@ describe('SpaceConnectedSitesModal', () => {
 				.getByText('Connected Site 1')
 				.closest('li')!;
 			expect(
-				within(site1Row).queryByRole('button', {name: 'site-actions'})
+				within(site1Row).queryByRole('button', {name: 'actions-for-x'})
 			).not.toBeInTheDocument();
 		});
 	});
