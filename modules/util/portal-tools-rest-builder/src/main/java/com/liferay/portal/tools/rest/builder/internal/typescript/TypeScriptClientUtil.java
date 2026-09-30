@@ -729,18 +729,8 @@ public class TypeScriptClientUtil {
 		}
 
 		if (schema.getReference() != null) {
-			String dataType = null;
-
-			String schemaReference = schema.getReference();
-
-			if (schemaReference.startsWith("#")) {
-				dataType = schemaReference.substring(
-					schemaReference.lastIndexOf('/') + 1);
-			}
-			else {
-				dataType = schemaReference.substring(
-					schemaReference.lastIndexOf('#') + 1);
-			}
+			String dataType = OpenAPIParserUtil.getReferenceName(
+				schema.getReference());
 
 			dataTypes.add(dataType);
 
