@@ -8,9 +8,7 @@ package com.liferay.portal.vulcan.internal.jaxrs.container.response.filter.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -95,10 +93,6 @@ public class CacheContainerResponseFilterTest {
 		_pids.clear();
 
 		_serviceRegistration.unregister();
-
-		if (_company != null) {
-			CompanyLocalServiceUtil.deleteCompany(_company.getCompanyId());
-		}
 	}
 
 	@Test
@@ -108,10 +102,9 @@ public class CacheContainerResponseFilterTest {
 
 	@Test
 	public void testCacheWithAnotherCompany() throws Exception {
-		_company = CompanyTestUtil.addCompany();
-
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/test", "public", 3600, _company.getCompanyId());
+			"/test-vulcan-cache/test", "public", 3600,
+			RandomTestUtil.nextLong());
 
 		_assertNotCacheable(_openURLConnection("/test"));
 	}
@@ -334,7 +327,6 @@ public class CacheContainerResponseFilterTest {
 		"com.liferay.portal.vulcan.internal.configuration." +
 			"HeadlessAPICacheCompanyConfiguration";
 
-	private Company _company;
 	private final List<String> _pids = new ArrayList<>();
 	private ServiceRegistration<Application> _serviceRegistration;
 
