@@ -235,7 +235,7 @@ definition {
 		User.openUsersAdmin();
 
 		User.assignAssetLibraryRole(
-			roleTitle = "Asset Library Content Reviewer",
+			roleTitle = "Space Content Reviewer",
 			userScreenName = "usersn");
 
 		DepotNavigator.openDepotAdmin();
@@ -672,7 +672,7 @@ definition {
 		User.openUsersAdmin();
 
 		User.assignAssetLibraryRole(
-			roleTitle = "Asset Library Content Reviewer",
+			roleTitle = "Space Content Reviewer",
 			userScreenName = "usersn");
 
 		DepotNavigator.openDepotWorkflowAdmin(depotName = "Test Depot Name");

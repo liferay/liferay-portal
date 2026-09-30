@@ -182,7 +182,7 @@ definition {
 		RoleNavigator.gotoRoleType(roleType = "Space");
 
 		AssertTextEquals(
-			key_itemName = "Asset Library Connected Site Member",
+			key_itemName = "Space Connected Site Member",
 			locator1 = "ListGroupItem#ITEM_SUB_INFO",
 			value1 = "This role is automatically assigned.");
 
