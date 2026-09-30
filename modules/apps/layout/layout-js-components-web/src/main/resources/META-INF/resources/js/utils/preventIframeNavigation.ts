@@ -11,17 +11,32 @@ export default function preventIframeNavigation(
 	const iframe = event.target as HTMLIFrameElement;
 
 	const iframeWin = iframe.contentWindow;
-	const iframeDoc = iframeWin?.document;
 
-	iframeDoc?.addEventListener('click', (clickEvent) => {
-		const target = clickEvent.target as HTMLElement;
+	iframeWin?.addEventListener(
+		'click',
+		(clickEvent) => {
+			const target = clickEvent.target as HTMLElement;
 
-		const link = target.closest('a');
+			if (target.closest('.sign-in')) {
+				clickEvent.preventDefault();
+				clickEvent.stopImmediatePropagation();
+			}
+		},
+		true
+	);
 
-		if (link && link.href) {
-			clickEvent.preventDefault();
+	(iframeWin as any)?.navigation?.addEventListener(
+		'navigate',
+		(navigateEvent: any) => {
+			if (
+				navigateEvent.cancelable &&
+				navigateEvent.navigationType !== 'reload' &&
+				navigateEvent.destination.url !== iframe.src
+			) {
+				navigateEvent.preventDefault();
+			}
 		}
-	});
+	);
 
 	(iframeWin as any)?.Liferay.on('beforeNavigate', (navigationEvent: any) => {
 		navigationEvent.preventDefault();
