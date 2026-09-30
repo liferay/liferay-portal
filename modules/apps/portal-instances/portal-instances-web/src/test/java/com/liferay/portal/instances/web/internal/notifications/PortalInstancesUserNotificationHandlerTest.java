@@ -68,7 +68,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					"please-enter-a-valid-web-id",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
-					portalInstanceId,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
 			_toBodyHTML(
@@ -79,7 +79,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					null,
 					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
-					portalInstanceId,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
@@ -96,7 +96,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					"the-default-instance-cannot-be-deleted",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
-					portalInstanceId,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
 			_toBodyHTML(
@@ -107,7 +107,37 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					null,
 					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
-					portalInstanceId,
+					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
+	public void testGetBodyForTheExportOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+		String schemaName = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toBodyHTML(
+				"the-exported-schema-already-exists",
+				_toTranslation(
+					"the-instance-x-could-not-be-exported", portalInstanceId)),
+			_getBody(
+				_toPayloadJSONObject(
+					"the-exported-schema-already-exists",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
+					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toBodyHTML(
+				_toTranslation(
+					"the-instance-was-exported-to-the-schema-x", schemaName),
+				_toTranslation(
+					"the-instance-x-was-exported", portalInstanceId)),
+			_getBody(
+				_toPayloadJSONObject(
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
+					portalInstanceId, schemaName,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
@@ -116,7 +146,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 		_getBody(
 			_toPayloadJSONObject(
 				null, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
 				PortalInstancesNotificationConstants.STATUS_SUCCESS));
 	}
 
@@ -131,7 +161,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					"please-enter-a-valid-web-id",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
-					portalInstanceId,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
 			_toTranslation("the-instance-x-was-created", portalInstanceId),
@@ -139,7 +169,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					null,
 					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
-					portalInstanceId,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
@@ -154,7 +184,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					"the-default-instance-cannot-be-deleted",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
-					portalInstanceId,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
 			_toTranslation("the-instance-x-was-deleted", portalInstanceId),
@@ -162,7 +192,30 @@ public class PortalInstancesUserNotificationHandlerTest {
 				_toPayloadJSONObject(
 					null,
 					PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
-					portalInstanceId,
+					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
+	public void testGetTitleForTheExportOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toTranslation(
+				"the-instance-x-could-not-be-exported", portalInstanceId),
+			_getTitle(
+				_toPayloadJSONObject(
+					"the-exported-schema-already-exists",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
+					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toTranslation("the-instance-x-was-exported", portalInstanceId),
+			_getTitle(
+				_toPayloadJSONObject(
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
+					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
@@ -171,7 +224,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 		_getTitle(
 			_toPayloadJSONObject(
 				null, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
 				PortalInstancesNotificationConstants.STATUS_SUCCESS));
 	}
 
@@ -193,7 +246,7 @@ public class PortalInstancesUserNotificationHandlerTest {
 
 	private JSONObject _toPayloadJSONObject(
 		String errorMessageKey, String operationType, String portalInstanceId,
-		String status) {
+		String schemaName, String status) {
 
 		return JSONUtil.put(
 			"errorMessageKey", errorMessageKey
@@ -202,12 +255,14 @@ public class PortalInstancesUserNotificationHandlerTest {
 		).put(
 			"portalInstanceId", portalInstanceId
 		).put(
+			"schemaName", schemaName
+		).put(
 			"status", status
 		);
 	}
 
-	private String _toTranslation(String key, String portalInstanceId) {
-		return StringBundler.concat(key, StringPool.COLON, portalInstanceId);
+	private String _toTranslation(String key, String argument) {
+		return StringBundler.concat(key, StringPool.COLON, argument);
 	}
 
 	private UserNotificationEvent _toUserNotificationEvent(
