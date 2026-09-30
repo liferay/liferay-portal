@@ -128,7 +128,10 @@ public class OpenIdConnectTokenRequestUtil {
 		httpRequest.setReadTimeout(timeout);
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Query: " + httpRequest.getQuery());
+			_log.debug(
+				StringBundler.concat(
+					"Requesting tokens from ", uri, " with grant type \"",
+					authorizationCodeGrant.getType(), "\""));
 		}
 
 		try {
