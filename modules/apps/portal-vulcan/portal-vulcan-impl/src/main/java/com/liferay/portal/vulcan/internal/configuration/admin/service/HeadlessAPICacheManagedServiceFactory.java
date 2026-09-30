@@ -51,22 +51,15 @@ public class HeadlessAPICacheManagedServiceFactory
 	}
 
 	public String getCacheControl(long companyId, String path) {
-		List<CacheableEndpoint> cacheableEndpoints = _cacheableEndpoints.get(
-			companyId);
-
-		if (ListUtil.isEmpty(cacheableEndpoints)) {
-			return null;
-		}
-
 		String[] pathParts = StringUtil.split(path, CharPool.SLASH);
 
-		for (CacheableEndpoint cacheableEndpoint : cacheableEndpoints) {
-			if (cacheableEndpoint.matches(pathParts)) {
-				return cacheableEndpoint.getCacheControl();
-			}
+		String cacheControl = _getCacheControl(companyId, pathParts);
+
+		if (cacheControl != null) {
+			return cacheControl;
 		}
 
-		return null;
+		return _getCacheControl(CompanyConstants.SYSTEM, pathParts);
 	}
 
 	@Override
@@ -78,12 +71,6 @@ public class HeadlessAPICacheManagedServiceFactory
 	public void updated(String pid, Dictionary<String, ?> dictionary) {
 		long companyId = GetterUtil.getLong(
 			dictionary.get("companyId"), CompanyConstants.SYSTEM);
-
-		if (companyId == CompanyConstants.SYSTEM) {
-			deleted(pid);
-
-			return;
-		}
 
 		Dictionary<String, ?> oldDictionary = _dictionaries.put(
 			pid, dictionary);
@@ -98,6 +85,23 @@ public class HeadlessAPICacheManagedServiceFactory
 		}
 
 		_updateCacheableEndpoints(companyId);
+	}
+
+	private String _getCacheControl(long companyId, String[] pathParts) {
+		List<CacheableEndpoint> cacheableEndpoints = _cacheableEndpoints.get(
+			companyId);
+
+		if (ListUtil.isEmpty(cacheableEndpoints)) {
+			return null;
+		}
+
+		for (CacheableEndpoint cacheableEndpoint : cacheableEndpoints) {
+			if (cacheableEndpoint.matches(pathParts)) {
+				return cacheableEndpoint.getCacheControl();
+			}
+		}
+
+		return null;
 	}
 
 	private void _updateCacheableEndpoints(long companyId) {

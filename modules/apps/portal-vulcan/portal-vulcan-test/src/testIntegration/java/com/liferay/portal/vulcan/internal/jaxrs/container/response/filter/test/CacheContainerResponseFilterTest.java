@@ -193,6 +193,27 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testCacheWithSystemCacheableEndpoint() throws Exception {
+		_addSystemCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+
+		_assertCacheable("public, max-age=3600", _openURLConnection("/test"));
+	}
+
+	@Test
+	public void testCacheWithSystemCacheableEndpointAndCompanyCacheableEndpoint()
+		throws Exception {
+
+		_addCacheableEndpoint("/test-vulcan-cache/test", "private", 0);
+		_addSystemCacheableEndpoint(
+			"/test-vulcan-cache/tests/*/nested", "public", 3600);
+		_addSystemCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+
+		_assertCacheable("private", _openURLConnection("/test"));
+		_assertCacheable(
+			"public, max-age=3600", _openURLConnection("/tests/1/nested"));
+	}
+
+	@Test
 	public void testCacheWithUnsuccessfulResponse() throws Exception {
 		_addCacheableEndpoint("/test-vulcan-cache/not-found", "public", 3600);
 
@@ -276,6 +297,22 @@ public class CacheContainerResponseFilterTest {
 					"cacheControl", cacheControl
 				).put(
 					"companyId", companyId
+				).put(
+					"maxAge", maxAge
+				).put(
+					"path", path
+				).build()));
+	}
+
+	private void _addSystemCacheableEndpoint(
+			String path, String cacheControl, int maxAge)
+		throws Exception {
+
+		_pids.add(
+			ConfigurationTestUtil.createFactoryConfiguration(
+				_FACTORY_PID,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"cacheControl", cacheControl
 				).put(
 					"maxAge", maxAge
 				).put(
