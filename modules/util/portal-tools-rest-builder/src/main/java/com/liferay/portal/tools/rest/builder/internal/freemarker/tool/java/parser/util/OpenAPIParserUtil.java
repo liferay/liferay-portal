@@ -244,8 +244,7 @@ public class OpenAPIParserUtil {
 			getExternalReferences(openAPIYAML));
 
 		while ((externalReference = queue.poll()) != null) {
-			File externalFile = _resolveExternalFile(
-				baseDir, externalReference);
+			File externalFile = resolveExternalFile(baseDir, externalReference);
 
 			if (!visitedPaths.add(externalFile.getPath())) {
 				continue;
@@ -331,7 +330,7 @@ public class OpenAPIParserUtil {
 			for (String externalReference :
 					getExternalReferences(openAPIYAML)) {
 
-				File externalFile = _resolveExternalFile(
+				File externalFile = resolveExternalFile(
 					baseDir, externalReference);
 
 				if (!visitedPaths.add(externalFile.getPath())) {
@@ -624,6 +623,22 @@ public class OpenAPIParserUtil {
 			});
 	}
 
+	public static File resolveExternalFile(
+			String baseDir, String externalReference)
+		throws IOException {
+
+		String path = externalReference.substring(
+			0, externalReference.indexOf("#"));
+
+		File externalFile = new File(path);
+
+		if (!externalFile.isAbsolute()) {
+			externalFile = new File(baseDir, path);
+		}
+
+		return externalFile.getCanonicalFile();
+	}
+
 	private static void _addExternalReferences(
 		Map<String, Content> contents, Set<String> externalReferences,
 		Map<String, Schema> schemas) {
@@ -763,22 +778,6 @@ public class OpenAPIParserUtil {
 		}
 
 		return null;
-	}
-
-	private static File _resolveExternalFile(
-			String baseDir, String externalReference)
-		throws IOException {
-
-		String path = externalReference.substring(
-			0, externalReference.indexOf("#"));
-
-		File externalFile = new File(path);
-
-		if (!externalFile.isAbsolute()) {
-			externalFile = new File(baseDir, path);
-		}
-
-		return externalFile.getCanonicalFile();
 	}
 
 	private static final Map<OpenAPIYAML, List<String>> _externalReferencesMap =

@@ -303,10 +303,8 @@ public class TypeScriptClientUtil {
 			Schema parentSchema = allOfSchemas.get(0);
 
 			if (parentSchema.getReference() != null) {
-				String parentSchemaReference = parentSchema.getReference();
-
-				parentClass = parentSchemaReference.substring(
-					parentSchemaReference.lastIndexOf('/') + 1);
+				parentClass = OpenAPIParserUtil.getReferenceName(
+					parentSchema.getReference());
 
 				importClasses.add(parentClass);
 
@@ -647,18 +645,8 @@ public class TypeScriptClientUtil {
 				continue;
 			}
 
-			String referencedSchemaName = null;
-
-			if (local) {
-				referencedSchemaName = reference.substring(
-					reference.lastIndexOf("/") + 1);
-			}
-			else {
-				referencedSchemaName = reference.split("#")[1];
-
-				referencedSchemaName = referencedSchemaName.substring(
-					referencedSchemaName.lastIndexOf("/") + 1);
-			}
+			String referencedSchemaName = OpenAPIParserUtil.getReferenceName(
+				reference);
 
 			File referencedYAMLFile = null;
 
@@ -669,12 +657,13 @@ public class TypeScriptClientUtil {
 				String parentDir = configYAML.getBaseDir();
 
 				if (Validator.isNotNull(parentYAMLPath)) {
-					parentDir = parentYAMLPath.substring(
-						0, parentYAMLPath.lastIndexOf("/") + 1);
+					File parentYAMLFile = new File(parentYAMLPath);
+
+					parentDir = parentYAMLFile.getParent();
 				}
 
-				referencedYAMLFile = new File(
-					parentDir, reference.split("#")[0]);
+				referencedYAMLFile = OpenAPIParserUtil.resolveExternalFile(
+					parentDir, reference);
 			}
 
 			files.add(referencedYAMLFile);
@@ -719,8 +708,7 @@ public class TypeScriptClientUtil {
 			return null;
 		}
 
-		String referenceName = reference.substring(
-			reference.lastIndexOf('/') + 1);
+		String referenceName = OpenAPIParserUtil.getReferenceName(reference);
 
 		if (referenceName.equals(parentClass)) {
 			return null;
