@@ -15,11 +15,13 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,16 +61,13 @@ public class UpgradeOSGiCommandsTest {
 
 		String bundleSymbolicName = bundle.getSymbolicName();
 
-		Class<?> upgradeExecutorClass = _upgradeExecutor.getClass();
-		Class<?> upgradeOSGiCommandsClass = _upgradeOSGiCommands.getClass();
+		Class<?> clazz = _upgradeExecutor.getClass();
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"UPGRADE_DATABASE_AUTO_RUN", false, false);
-			LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-				upgradeExecutorClass.getName(), LoggerTestUtil.OFF);
-			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-				upgradeOSGiCommandsClass.getName(), LoggerTestUtil.OFF)) {
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				clazz.getName(), LoggerTestUtil.OFF)) {
 
 			_registerFailingUpgradeStepRegistrator(bundle);
 
@@ -143,16 +142,26 @@ public class UpgradeOSGiCommandsTest {
 			_registerRecoveringUpgradeStepRegistrator(bundle);
 
 			Class<?> upgradeExecutorClass = _upgradeExecutor.getClass();
-			Class<?> upgradeOSGiCommandsClass = _upgradeOSGiCommands.getClass();
 
-			try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-					upgradeExecutorClass.getName(), LoggerTestUtil.OFF);
-				LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-					upgradeOSGiCommandsClass.getName(), LoggerTestUtil.OFF)) {
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					upgradeExecutorClass.getName(), LoggerTestUtil.ERROR)) {
 
-				ReflectionTestUtil.invoke(
+				String message = ReflectionTestUtil.invoke(
 					_upgradeOSGiCommands, "execute",
 					new Class<?>[] {String.class}, bundleSymbolicName);
+
+				Assert.assertEquals(
+					"The upgrade of module " + bundleSymbolicName + " failed",
+					message);
+
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(message, logEntry.getMessage());
 			}
 
 			Release release = _releaseLocalService.fetchRelease(
