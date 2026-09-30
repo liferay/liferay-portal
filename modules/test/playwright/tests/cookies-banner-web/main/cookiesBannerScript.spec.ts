@@ -5,11 +5,13 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
+import {WebContentPage} from '../../../pages/journal-web/WebContentPage';
 import getRandomString from '../../../utils/getRandomString';
-import {waitForAlert} from '../../../utils/waitForAlert';
-import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {
 	clearConsentCookies,
 	resetConsentManagerConfiguration,
@@ -17,10 +19,18 @@ import {
 } from './utils/consentManagerConfigurationHelper';
 
 export const test = mergeTests(
-	journalPagesTest,
+	dataApiHelpersTest,
+	isolatedSiteTest,
 	loginTest(),
 	systemSettingsPageTest
 );
+
+const CONTENT =
+	'<h1 id="test">HTML Example</h1>\n' +
+	'\n' +
+	'<script type="text/plain" data-third-party-cookie="CONSENT_TYPE_FUNCTIONAL">\n' +
+	'      document.getElementById(\'test\').style.backgroundColor = "#ff0000"\n' +
+	'</script>';
 
 test.afterEach(async ({systemSettingsPage}) => {
 	await test.step('Reset Consent Manager Configuration', async () => {
@@ -35,7 +45,9 @@ test.afterEach(async ({systemSettingsPage}) => {
 test(
 	'Cookie Banner Script',
 	{tag: '@LPD-25701'},
-	async ({journalEditArticlePage, page}) => {
+	async ({apiHelpers, page, site}) => {
+		const title = getRandomString();
+
 		await test.step('Enable Third Party Cookies', async () => {
 			await updateConsentManagerConfiguration(page, {
 				enabled: true,
@@ -43,7 +55,23 @@ test(
 			});
 		});
 
-		await test.step('Created Web Content with script and check script loads', async () => {
+		await test.step('Create Web Content with script', async () => {
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				contentFields: [
+					{
+						contentFieldValue: {data: CONTENT},
+						name: 'content',
+					},
+				],
+				contentStructureId:
+					await getBasicWebContentStructureId(apiHelpers),
+				datePublished: '2026-01-01T00:00:00Z',
+				siteId: site.id,
+				title,
+			});
+		});
+
+		await test.step('Accept all cookies', async () => {
 			await page.goto('/');
 
 			await page
@@ -55,55 +83,20 @@ test(
 			await acceptAll.waitFor({state: 'visible'});
 
 			await acceptAll.click();
+		});
 
-			const openProductButton = page.getByLabel('Open Product Menu');
+		await test.step('Check script loads in the Web Content preview', async () => {
+			const webContentPage = new WebContentPage(page);
 
-			if (await openProductButton.isVisible()) {
-				await openProductButton.click();
-			}
+			await webContentPage.goto(site.friendlyUrlPath);
 
-			await journalEditArticlePage.goto();
-
-			const randomTitle = getRandomString();
-
-			await journalEditArticlePage.fillTitle(randomTitle);
-
-			const sourceButton = page.getByLabel('Source', {exact: true});
-
-			await sourceButton.click();
-
-			const sourceEditor = page.locator("textarea[autocorrect='off']");
-
-			await sourceEditor.waitFor({state: 'visible'});
-
-			await sourceEditor.fill(
-				'<h1 id="test">HTML Example</h1>\n' +
-					'\n' +
-					'<script type="text/plain" data-third-party-cookie="CONSENT_TYPE_FUNCTIONAL">\n' +
-					'      document.getElementById(\'test\').style.backgroundColor = "#ff0000"\n' +
-					'</script>'
-			);
-
-			await journalEditArticlePage.publishArticle();
-
-			await waitForAlert(
-				page,
-				`Success:${randomTitle} was created successfully.`
-			);
-
-			const webContentPage = page.getByRole('heading', {
-				name: 'Web Content',
+			const actionsButton = page.getByRole('button', {
+				name: `Actions for ${title}`,
 			});
 
-			await webContentPage.waitFor({state: 'visible'});
+			await actionsButton.waitFor({state: 'visible'});
 
-			const editWebContentButton = page.locator(
-				`button[aria-label="Actions for ${randomTitle}"]`
-			);
-
-			await editWebContentButton.waitFor({state: 'visible'});
-
-			await editWebContentButton.click();
+			await actionsButton.click();
 
 			const previewButton = page.getByRole('menuitem', {name: 'Preview'});
 
@@ -112,7 +105,7 @@ test(
 			await previewButton.click();
 
 			const htmlFragment = page
-				.frameLocator(`iframe[title="${randomTitle}"]`)
+				.frameLocator(`iframe[title="${title}"]`)
 				.getByRole('heading', {name: 'HTML Example'});
 
 			await htmlFragment.waitFor({state: 'visible'});
