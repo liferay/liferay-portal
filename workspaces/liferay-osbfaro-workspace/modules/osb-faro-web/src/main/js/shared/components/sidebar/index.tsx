@@ -5,7 +5,6 @@ import Panel from '@clayui/panel';
 import React from 'react';
 import SidebarItem from './SidebarItem';
 import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
-import {DEVELOPER_MODE} from 'shared/util/constants';
 import {Map} from 'immutable';
 import {matchPath} from 'react-router-dom';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -194,32 +193,6 @@ const Sidebar: React.FC<ISidebarProps> = ({
 						);
 					})}
 				</div>
-
-				{DEVELOPER_MODE && (
-					<div className="sidebar-footer">
-						<div className="divider" />
-
-						<ul className="nav-list">
-							<SidebarItem
-								active={
-									!!matchPath(
-										{
-											end: false,
-											path: Routes.UI_KIT,
-										},
-										activePathname
-									)
-								}
-								href={toRoute(Routes.UI_KIT, {
-									channelId,
-									groupId,
-								})}
-								icon="code"
-								label="UI Kit"
-							/>
-						</ul>
-					</div>
-				)}
 			</div>
 		</div>
 	);

@@ -43,7 +43,6 @@ export const PAGES = 'pages';
 export const SEGMENTS = 'segments';
 export const SETTINGS = 'settings';
 export const TOUCHPOINTS = 'pages';
-export const UI_KIT = 'ui-kit';
 export const USERS = 'users';
 
 /* Filter Key Constants */
@@ -249,7 +248,6 @@ export const Routes = buildRoutes({
 									TESTS_OVERVIEW: '/overview/:id',
 								},
 							},
-							UI_KIT: '/ui-kit/:name?',
 						},
 					},
 					SETTINGS: {

@@ -6,7 +6,6 @@ import React, {lazy, Suspense, useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
-import {DEVELOPER_MODE} from 'shared/util/constants';
 import {DownloadReportProvider} from 'shared/components/download-report/DownloadReportContext';
 import {
 	matchPath,
@@ -40,10 +39,6 @@ const withChannelId = (WrappedComponent) => (props) => {
 		<WrappedComponent {...props} channelId={match?.params?.channelId} />
 	);
 };
-
-const UIKit = lazy(() =>
-	import(/* webpackChunkName: "UIKit" */ '../../ui-kit/pages/index')
-);
 
 /* No Properties Available */
 const NoPropertiesAvailable = lazy(() =>
@@ -430,13 +425,6 @@ const AppSidebarRoutes = ({LDPEnabled, currentUser, groupId}) => {
 								}
 								path=":channelId?"
 							/>
-
-							{DEVELOPER_MODE && (
-								<Route
-									element={<BundleRouter data={UIKit} />}
-									path=":channelId?/ui-kit/:name?"
-								/>
-							)}
 
 							<Route element={<ErrorPage />} path="*" />
 						</RouterRoutes>
