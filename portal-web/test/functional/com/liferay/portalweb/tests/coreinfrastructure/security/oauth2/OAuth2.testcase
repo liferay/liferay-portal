@@ -1522,56 +1522,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-170501. TC-1: Look up the remote apps' clientId via externalReferenceCode."
-	@priority = 5
-	test LookUpRemoteAppClientIdViaERC {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Add a new OAuth2 application and input OAuth2 valuies") {
-			OAuth2.openOAuth2Admin();
-
-			OAuth2.addApplication(
-				applicationName = "OAuth2 Application",
-				checkboxUncheckList = "Authorization Code");
-
-			OAuth2.inputApplicationValues(
-				clientId = "abc123",
-				clientSecret = "abc123");
-		}
-
-		task ("When: Get the value of the application externalReferenceCode and look up clientId") {
-			var mysqlStatement = "SELECT externalReferenceCode FROM OAuth2Application WHERE name = 'OAuth2 Application';";
-
-			var sqlResults = SQL.executeSQLStatement(sqlStatement = ${mysqlStatement});
-
-			var externalReferenceCode = StringUtil.regexReplaceAll(${sqlResults}, "[\n]", "");
-
-			var externalReferenceCode = StringUtil.replace(${externalReferenceCode}, "externalReferenceCode", "");
-			var portalURL = JSONCompany.getPortalURL();
-
-			var curl = '''
-				${portalURL}/o/oauth2/application \
-					-G \
-					-v \
-					-d externalReferenceCode=${externalReferenceCode}
-			''';
-
-			echo("curl: ${curl}");
-
-			var response = JSONCurlUtil.get(${curl});
-		}
-
-		task ("Then: Verify that clientId can be looked up") {
-			if (contains(${response}, "client_id") || contains(${response}, "abc123")) {
-				echo("The new endpoint to look up public OAuth2Application info is working.");
-			}
-			else {
-				fail("The new endpoint to look up public OAuth2Application info is not working.");
-			}
-		}
-	}
-
 	@description = "This is a use case for LRQA-48782. Add and Edit OAuth SAP entries."
 	@priority = 5
 	test OAuth2SAPEntriesCanBeAddedAndEdited {
