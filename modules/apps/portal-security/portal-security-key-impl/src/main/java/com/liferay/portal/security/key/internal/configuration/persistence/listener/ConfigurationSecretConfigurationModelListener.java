@@ -168,6 +168,16 @@ public class ConfigurationSecretConfigurationModelListener
 						value));
 			}
 			catch (Exception exception) {
+				FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+					"configuration-secret-store-failure",
+					FIPSAuditEvent.Severity.WARNING);
+
+				fipsAuditEvent.put(
+					"configuration-pid", GetterUtil.getString(pid));
+				fipsAuditEvent.put("property-id", GetterUtil.getString(id));
+
+				FIPSAuditUtil.write(fipsAuditEvent);
+
 				throw new ConfigurationModelListenerException(
 					exception, Object.class,
 					ConfigurationSecretConfigurationModelListener.class,

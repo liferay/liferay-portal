@@ -13,8 +13,11 @@ import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeSer
 import com.liferay.portal.configuration.metatype.definitions.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
@@ -33,7 +36,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -155,9 +160,65 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 		_setUpKeyManagerProfileRegistry(_keyManagerProfile);
 
+		_testOnBeforeSaveWhenReferenceIsRejected();
 		_testOnBeforeSaveWhenScopeIsCompany();
 		_testOnBeforeSaveWhenScopeIsGroup();
 		_testOnBeforeSaveWhenStoreFails();
+	}
+
+	private void _assertOnBeforeSaveFails(String value) throws Exception {
+		SecretException secretException = new SecretException(
+			RandomTestUtil.randomString());
+
+		Mockito.when(
+			_secretResolver.store(
+				Mockito.anyLong(), Mockito.anyString(), Mockito.eq(value))
+		).thenAnswer(
+			invocationOnMock -> {
+				throw secretException;
+			}
+		);
+
+		Dictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential", value
+			).build();
+
+		try (MockedStatic<FIPSAuditUtil> fipsAuditUtilMockedStatic =
+				Mockito.mockStatic(FIPSAuditUtil.class)) {
+
+			ConfigurationModelListenerException
+				configurationModelListenerException = Assert.assertThrows(
+					ConfigurationModelListenerException.class,
+					() ->
+						_configurationSecretConfigurationModelListener.
+							onBeforeSave(_PID, properties));
+
+			Assert.assertSame(
+				secretException,
+				configurationModelListenerException.getCause());
+
+			ArgumentCaptor<FIPSAuditEvent> argumentCaptor =
+				ArgumentCaptor.forClass(FIPSAuditEvent.class);
+
+			fipsAuditUtilMockedStatic.verify(
+				() -> FIPSAuditUtil.write(argumentCaptor.capture()));
+
+			FIPSAuditEvent fipsAuditEvent = argumentCaptor.getValue();
+
+			Assert.assertEquals(
+				"configuration-secret-store-failure",
+				fipsAuditEvent.getEventType());
+			Assert.assertEquals(
+				HashMapBuilder.<String, Object>put(
+					"configuration-pid", _PID
+				).put(
+					"property-id", "credential"
+				).build(),
+				fipsAuditEvent.getFields());
+		}
+
+		Assert.assertEquals(value, properties.get("credential"));
 	}
 
 	private ExtendedAttributeDefinition _createExtendedAttributeDefinition(
@@ -411,6 +472,11 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		Mockito.verifyNoInteractions(_secretResolver);
 	}
 
+	private void _testOnBeforeSaveWhenReferenceIsRejected() throws Exception {
+		_assertOnBeforeSaveFails(
+			"${secretRef:provider:config/com.liferay.other/0/credential}");
+	}
+
 	private void _testOnBeforeSaveWhenScopeIsCompany() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 		String value = RandomTestUtil.randomString();
@@ -461,36 +527,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSaveWhenStoreFails() throws Exception {
-		SecretException secretException = new SecretException(
-			RandomTestUtil.randomString());
-
-		Mockito.when(
-			_secretResolver.store(
-				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> {
-				throw secretException;
-			}
-		);
-
-		String value = RandomTestUtil.randomString();
-
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"credential", value
-			).build();
-
-		ConfigurationModelListenerException
-			configurationModelListenerException = Assert.assertThrows(
-				ConfigurationModelListenerException.class,
-				() ->
-					_configurationSecretConfigurationModelListener.onBeforeSave(
-						_PID, properties));
-
-		Assert.assertSame(
-			secretException, configurationModelListenerException.getCause());
-
-		Assert.assertEquals(value, properties.get("credential"));
+		_assertOnBeforeSaveFails(RandomTestUtil.randomString());
 	}
 
 	private static final String _FACTORY_SUFFIX = RandomTestUtil.randomString();
