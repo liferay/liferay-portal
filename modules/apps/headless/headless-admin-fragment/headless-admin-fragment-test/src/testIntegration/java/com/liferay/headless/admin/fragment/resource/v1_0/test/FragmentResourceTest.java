@@ -22,6 +22,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryVersion;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.fragment.client.constant.v1_0.FieldType;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ApprovedFragmentVersion;
@@ -217,13 +218,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-95281"})
+	@TestInfo({"LPD-88395", "LPD-95281", "LPD-107706"})
 	public void testDeleteSiteFragment() throws Exception {
 		super.testDeleteSiteFragment();
 
 		_testDeleteSiteFragment(false, true);
 		_testDeleteSiteFragment(true, false);
 		_testDeleteSiteFragment(true, true);
+		_testDeleteSiteFragmentInUseProblemException();
 		_testDeleteSiteFragmentNonexistent();
 		_testDeleteSiteFragmentWithFormFragment();
 		_testDeleteSiteFragmentWithoutPermissionsProblemException();
@@ -282,7 +284,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
 			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188", "LPD-107189"
+			"LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -291,6 +293,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentApproved();
 		_testPostSiteFragmentApprovedAndDraft();
 		_testPostSiteFragmentApprovedConfiguration();
+		_testPostSiteFragmentApprovedConfigurationInvalidProblemException();
+		_testPostSiteFragmentApprovedHTMLInvalidProblemException();
 		_testPostSiteFragmentBatch();
 		_testPostSiteFragmentDraft();
 		_testPostSiteFragmentDraftConfiguration();
@@ -305,6 +309,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentFragmentSetNonexistingProblemException();
 		_testPostSiteFragmentFragmentSetNullProblemException();
 		_testPostSiteFragmentMarketplace();
+		_testPostSiteFragmentNameInvalidProblemException();
 		_testPostSiteFragmentThumbnailURLReferenceExternalReferenceCode();
 		_testPostSiteFragmentThumbnailURLReferenceExternalReferenceCodeAndFileBase64();
 		_testPostSiteFragmentThumbnailURLReferenceExternalReferenceCodeEmptyAndFileBase64();
@@ -348,7 +353,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
 			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188", "LPD-107189"
+			"LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {
@@ -366,7 +371,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateApprovedAddDraftModifyApproved();
 		_testPutSiteFragmentUpdateApprovedAndDraftToDraftProblemException();
 		_testPutSiteFragmentUpdateApprovedAndDraftToEmptyProblemException();
+		_testPutSiteFragmentUpdateApprovedConfigurationInvalidProblemException();
 		_testPutSiteFragmentUpdateApprovedConfigurationUnmodified();
+		_testPutSiteFragmentUpdateApprovedHTMLInvalidProblemException();
 		_testPutSiteFragmentUpdateApprovedModifyApproved();
 		_testPutSiteFragmentUpdateApprovedModifyApprovedAndDraft();
 		_testPutSiteFragmentUpdateApprovedToDraftProblemException();
@@ -379,6 +386,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateFragmentSetNonexisting();
 		_testPutSiteFragmentUpdateFragmentSetNonexistingProblemException();
 		_testPutSiteFragmentUpdateFragmentSetNull();
+		_testPutSiteFragmentUpdateNameInvalidProblemException();
 		_testPutSiteFragmentUpdateThumbnailURLReferenceExternalReferenceCode();
 		_testPutSiteFragmentUpdateThumbnailURLReferenceExternalReferenceCodeAndFileBase64();
 		_testPutSiteFragmentUpdateThumbnailURLReferenceFileBase64();
@@ -1159,6 +1167,15 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		return null;
 	}
 
+	private String _getHTMLWithDuplicateEditableIds() {
+		String editableId = RandomTestUtil.randomString();
+
+		return StringBundler.concat(
+			"<lfr-editable id=\"", editableId,
+			"\" type=\"text\"></lfr-editable><lfr-editable id=\"", editableId,
+			"\" type=\"text\"></lfr-editable>");
+	}
+
 	private FragmentResource _getUserWithoutPermissionsFragmentResource()
 		throws Exception {
 
@@ -1619,6 +1636,42 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			_fragmentEntryLocalService.getVersions(fragmentEntry);
 
 		Assert.assertTrue(fragmentEntryVersions.isEmpty());
+	}
+
+	private void _testDeleteSiteFragmentInUseProblemException()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				postFragment.getExternalReferenceCode(),
+				testGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, LayoutConstants.TYPE_CONTENT, false,
+			StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		_fragmentEntryLinkLocalService.addFragmentEntryLink(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(), null, 0, layout.getPlid(),
+			fragmentEntry.getCss(), fragmentEntry.getHtml(),
+			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+			StringPool.BLANK, StringPool.BLANK, 0, StringPool.BLANK,
+			fragmentEntry.getType(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		_assertProblemException(
+			"the-fragment-cannot-be-deleted-because-it-is-required-by-one-or-" +
+				"more-pages-or-page-templates",
+			() -> fragmentResource.deleteSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				postFragment.getExternalReferenceCode()));
 	}
 
 	private void _testDeleteSiteFragmentNonexistent() throws Exception {
@@ -2232,6 +2285,39 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
+	private void _testPostSiteFragmentApprovedConfigurationInvalidProblemException()
+		throws Exception {
+
+		Fragment fragment = _randomFragment(true, false);
+
+		ApprovedFragmentVersion approvedFragmentVersion =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion.setConfiguration(
+			ConfigurationSerDes.toDTO(
+				_readConfiguration("configuration_invalid_dto.json")));
+
+		_assertProblemException(
+			"fragment-configuration-is-invalid",
+			() -> _postSiteFragment(fragment));
+	}
+
+	private void _testPostSiteFragmentApprovedHTMLInvalidProblemException()
+		throws Exception {
+
+		Fragment fragment = _randomFragment(true, false);
+
+		ApprovedFragmentVersion approvedFragmentVersion =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion.setHtml(_getHTMLWithDuplicateEditableIds());
+
+		_assertProblemException(
+			"fragment-html-is-invalid", () -> _postSiteFragment(fragment));
+	}
+
 	private void _testPostSiteFragmentBatch() throws Exception {
 		_testPostSiteFragmentBatchWithLazyReferencingDisabled();
 		_testPostSiteFragmentBatchWithLazyReferencingEnabled();
@@ -2567,6 +2653,17 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			Assert.assertEquals(
 				fragmentVersion.getJs(), curFragmentEntry.getJs());
 		}
+	}
+
+	private void _testPostSiteFragmentNameInvalidProblemException()
+		throws Exception {
+
+		Fragment fragment = _randomFragment(true, false);
+
+		fragment.setName(RandomTestUtil.randomString() + StringPool.PERIOD);
+
+		_assertProblemException(
+			"name-is-invalid", () -> _postSiteFragment(fragment));
 	}
 
 	private void _testPostSiteFragmentSetFragmentApproved() throws Exception {
@@ -3249,6 +3346,29 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"at-least-one-fragment-entry-version-is-required");
 	}
 
+	private void _testPutSiteFragmentUpdateApprovedConfigurationInvalidProblemException()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		Fragment fragment = _randomFragment(
+			true, false, postFragment.getExternalReferenceCode(),
+			postFragment.getKey());
+
+		ApprovedFragmentVersion approvedFragmentVersion =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion.setConfiguration(
+			ConfigurationSerDes.toDTO(
+				_readConfiguration("configuration_invalid_dto.json")));
+
+		_testPutSiteFragmentProblemException(
+			postFragment.getExternalReferenceCode(), fragment,
+			"fragment-configuration-is-invalid");
+	}
+
 	private void _testPutSiteFragmentUpdateApprovedConfigurationUnmodified()
 		throws Exception {
 
@@ -3273,6 +3393,27 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_assertEqualsJSON(
 			_readConfiguration("put_configuration.json", valuesMap),
 			fragmentEntry.getConfiguration());
+	}
+
+	private void _testPutSiteFragmentUpdateApprovedHTMLInvalidProblemException()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		Fragment fragment = _randomFragment(
+			true, false, postFragment.getExternalReferenceCode(),
+			postFragment.getKey());
+
+		ApprovedFragmentVersion approvedFragmentVersion =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion.setHtml(_getHTMLWithDuplicateEditableIds());
+
+		_testPutSiteFragmentProblemException(
+			postFragment.getExternalReferenceCode(), fragment,
+			"fragment-html-is-invalid");
 	}
 
 	private void _testPutSiteFragmentUpdateApprovedModifyApproved()
@@ -3493,6 +3634,23 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Assert.assertEquals(
 			_fragmentCollection.getExternalReferenceCode(),
 			putFragment.getFragmentSetExternalReferenceCode());
+	}
+
+	private void _testPutSiteFragmentUpdateNameInvalidProblemException()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		Fragment fragment = _randomFragment(
+			true, false, postFragment.getExternalReferenceCode(),
+			postFragment.getKey());
+
+		fragment.setName(RandomTestUtil.randomString() + StringPool.PERIOD);
+
+		_testPutSiteFragmentProblemException(
+			postFragment.getExternalReferenceCode(), fragment,
+			"name-is-invalid");
 	}
 
 	private void _testPutSiteFragmentUpdateThumbnailURLReferenceExternalReferenceCode()
@@ -3788,6 +3946,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
+
+	@Inject
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;

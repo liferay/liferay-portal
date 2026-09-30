@@ -1,0 +1,20 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"name": "checkbox",
+					"type": "checkbox",
+					"typeOptions": {
+						"dependency": {
+							"checkbox": {
+								"type": "equal",
+								"value": "true"
+							}
+						}
+					}
+				}
+			]
+		}
+	]
+}
