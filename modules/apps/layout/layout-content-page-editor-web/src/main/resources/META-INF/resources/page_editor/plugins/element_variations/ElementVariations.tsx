@@ -185,6 +185,34 @@ function ElementVariations({
 		hideProductMenuIfPresent({onHide: () => setSidebarOpen(true)});
 	}, []);
 
+	useEffect(() => {
+		const controlMenuContainer = document.querySelector(
+			'.control-menu-container'
+		);
+
+		if (!controlMenuContainer || !open) {
+			return;
+		}
+
+		const keepControlMenuInteractive = () => {
+			if (controlMenuContainer.hasAttribute('inert')) {
+				controlMenuContainer.removeAttribute('inert');
+			}
+		};
+
+		keepControlMenuInteractive();
+
+		const mutationObserver = new MutationObserver(
+			keepControlMenuInteractive
+		);
+
+		mutationObserver.observe(controlMenuContainer, {
+			attributeFilter: ['inert'],
+		});
+
+		return () => mutationObserver.disconnect();
+	}, [open]);
+
 	const createElementVariationDraft = () =>
 		dispatch({
 			draftElementVariation: createElementVariation(experienceKey),
