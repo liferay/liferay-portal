@@ -468,14 +468,9 @@ public class VirtualHostFilter extends BasePortalFilter {
 	}
 
 	private String _decodeCanonicalURLSeparator(String friendlyURL) {
-		if (!friendlyURL.startsWith(_ENCODED_CANONICAL_URL_SEPARATOR_SLASH)) {
-			return friendlyURL;
-		}
-
-		String path = friendlyURL.substring(
-			_ENCODED_CANONICAL_URL_SEPARATOR_SLASH.length());
-
-		return _CANONICAL_URL_SEPARATOR_SLASH + path;
+		return StringUtil.replace(
+			friendlyURL, _ENCODED_CANONICAL_URL_SEPARATOR_SLASH,
+			_CANONICAL_URL_SEPARATOR_SLASH);
 	}
 
 	private String _findLanguageId(String friendlyURL) {
