@@ -126,6 +126,18 @@ definition {
 			site = "false",
 			siteURLKey = "site-name-staging");
 
+		Blogs.expandPanel(panel = "Friendly URL");
+
+		BlogsEntry.addCustomURL(customURL = "new-custom-url");
+
+		PortletEntry.publish();
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name (Staging)",
+			site = "false",
+			siteURLKey = "site-name-staging");
+
 		BlogsNavigator.gotoFriendlyURLHistory();
 
 		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "custom-url");
@@ -146,7 +158,7 @@ definition {
 
 		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
 
-		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/blogs-entry-title");
+		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/new-custom-url");
 
 		BlogsEntry.viewEntryPG(
 			entryContent = "Blogs Entry Content",
