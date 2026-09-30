@@ -135,6 +135,9 @@ tests:
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: "\"id\": \"links\",\\s+\"value\": \\[\\s+\\]"
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: where \$__timeFilter\(startTime\)[^"]*summarize \[.Failed Runs.\] = count\(\)
             -   notMatchRegex:
                     path: data["backups.json"]
                     pattern: \$\{AZURE_
