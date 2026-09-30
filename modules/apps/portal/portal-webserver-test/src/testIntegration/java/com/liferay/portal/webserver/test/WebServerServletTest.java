@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.ImageConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -48,6 +50,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -124,6 +127,8 @@ public class WebServerServletTest {
 	@Test
 	public void testGetImage() throws Exception {
 		_testGetImage();
+		_testGetImageWithOrganizationPrivateLayoutSetLogo();
+		_testGetImageWithOrganizationPublicLayoutSetLogo();
 		_testGetImageWithPrivateLayoutIconWithoutViewPermission();
 		_testGetImageWithPrivateLayoutSetLogoWithoutViewPermission();
 		_testGetImageWithPublicLayoutIconWithoutViewPermission();
@@ -138,6 +143,8 @@ public class WebServerServletTest {
 		_testGetImageIdWithInvalidProperty();
 		_testGetImageIdWithNegativeImageId();
 		_testGetImageIdWithNonexistentCompany();
+		_testGetImageIdWithOrganizationPrivateLayoutSetLogo();
+		_testGetImageIdWithOrganizationPublicLayoutSetLogo();
 		_testGetImageIdWithOtherImageToken();
 		_testGetImageIdWithoutImageToken();
 		_testGetImageIdWithScreenNamePortrait();
@@ -508,6 +515,32 @@ public class WebServerServletTest {
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
+	private void _addLayoutSet(Organization organization, boolean privateLayout)
+		throws Exception {
+
+		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+			organization.getGroupId(), privateLayout);
+
+		layoutSet.setLogoId(organization.getLogoId());
+
+		_layoutSetLocalService.updateLayoutSet(layoutSet);
+
+		_addLayout(organization.getGroup(), privateLayout);
+	}
+
+	private Organization _addOrganization() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization(true);
+
+		organization = _organizationLocalService.updateLogo(
+			organization.getOrganizationId(),
+			ImageToolUtil.getBytes(
+				new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB), "png"));
+
+		_organizations.add(organization);
+
+		return organization;
+	}
+
 	private User _addPortraitUser() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -862,6 +895,45 @@ public class WebServerServletTest {
 		Assert.assertEquals(0, _getImageId(imageId));
 	}
 
+	private void _testGetImageIdWithOrganizationPrivateLayoutSetLogo()
+		throws Exception {
+
+		Organization organization = _addOrganization();
+
+		_addLayoutSet(organization, true);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createImageMockHttpServletRequest(
+				organization.getLogoId(),
+				WebServerServletTokenUtil.getToken(organization.getLogoId()));
+
+		mockHttpServletRequest.setPathInfo("/layout_set_logo");
+
+		Assert.assertEquals(0, _getImageId(mockHttpServletRequest));
+	}
+
+	private void _testGetImageIdWithOrganizationPublicLayoutSetLogo()
+		throws Exception {
+
+		Organization organization = _addOrganization();
+
+		_addLayoutSet(organization, false);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createImageMockHttpServletRequest(
+				organization.getLogoId(),
+				WebServerServletTokenUtil.getToken(organization.getLogoId()));
+
+		mockHttpServletRequest.setPathInfo("/layout_set_logo");
+
+		Assert.assertEquals(
+			organization.getLogoId(), _getImageId(mockHttpServletRequest));
+
+		mockHttpServletRequest.setPathInfo("/organization_logo");
+
+		Assert.assertEquals(0, _getImageId(mockHttpServletRequest));
+	}
+
 	private void _testGetImageIdWithOtherImageToken() throws Exception {
 		long logoId = _addPrivateLayoutSetLogoId(_group);
 
@@ -904,6 +976,49 @@ public class WebServerServletTest {
 
 	private void _testGetImageIdWithoutImageToken() throws Exception {
 		Assert.assertEquals(0, _getImageId(_addPrivateLayoutSetLogoId(_group)));
+	}
+
+	private void _testGetImageWithOrganizationPrivateLayoutSetLogo()
+		throws Exception {
+
+		Organization organization = _addOrganization();
+
+		_addLayoutSet(organization, true);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createImageMockHttpServletRequest(
+				organization.getLogoId(),
+				WebServerServletTokenUtil.getToken(organization.getLogoId()));
+
+		mockHttpServletRequest.setPathInfo("/layout_set_logo");
+
+		Assert.assertNull(
+			ReflectionTestUtil.invoke(
+				_webServerServlet, "getImage",
+				new Class<?>[] {HttpServletRequest.class, boolean.class},
+				mockHttpServletRequest, false));
+	}
+
+	private void _testGetImageWithOrganizationPublicLayoutSetLogo()
+		throws Exception {
+
+		Organization organization = _addOrganization();
+
+		_addLayoutSet(organization, false);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createImageMockHttpServletRequest(
+				organization.getLogoId(),
+				WebServerServletTokenUtil.getToken(organization.getLogoId()));
+
+		mockHttpServletRequest.setPathInfo("/layout_set_logo");
+
+		Image image = ReflectionTestUtil.invoke(
+			_webServerServlet, "getImage",
+			new Class<?>[] {HttpServletRequest.class, boolean.class},
+			mockHttpServletRequest, false);
+
+		Assert.assertEquals(organization.getLogoId(), image.getImageId());
 	}
 
 	private void _testGetImageWithPrivateLayoutIconWithoutViewPermission()
@@ -1107,6 +1222,12 @@ public class WebServerServletTest {
 
 	@Inject
 	private LayoutSetLocalService _layoutSetLocalService;
+
+	@Inject
+	private OrganizationLocalService _organizationLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Organization> _organizations = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private User _regularUser;
