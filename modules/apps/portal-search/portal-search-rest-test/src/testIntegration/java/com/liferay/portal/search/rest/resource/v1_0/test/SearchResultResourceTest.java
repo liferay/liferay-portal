@@ -1109,7 +1109,7 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE,
 				WorkflowConstants.STATUS_APPROVED);
 
-		SearchPage<SearchResult> searchPage;
+		SearchPage<SearchResult> searchPage = null;
 
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(

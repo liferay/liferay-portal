@@ -126,10 +126,8 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter1 = new TestDTOConverter();
 		DTOConverter<?, ?> dtoConverter2 = new TestDTOConverter();
-
 		String type1 = RandomTestUtil.randomString();
 		String type2 = RandomTestUtil.randomString();
 
@@ -312,9 +310,7 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter = new TestDTOConverter();
-
 		String type1 = RandomTestUtil.randomString();
 		String type2 = RandomTestUtil.randomString();
 
@@ -342,10 +338,8 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter1 = new TestDTOConverter();
 		DTOConverter<?, ?> dtoConverter2 = new TestDTOConverter();
-
 		String type1 = RandomTestUtil.randomString();
 		String type2 = RandomTestUtil.randomString();
 
@@ -374,10 +368,8 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter1 = new TestDTOConverter();
 		DTOConverter<?, ?> dtoConverter2 = new TestDTOConverter();
-
 		String type = RandomTestUtil.randomString();
 
 		try (AutoCloseable autoCloseable1 = _registerDTOConverterWithTypes(
@@ -403,7 +395,6 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		String type = RandomTestUtil.randomString();
 
 		try (AutoCloseable autoCloseable1 = _registerDTOConverterWithTypes(
@@ -432,9 +423,7 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter = new TestDTOConverter();
-
 		String type = RandomTestUtil.randomString();
 
 		try (AutoCloseable autoCloseable1 =
@@ -464,7 +453,6 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter = new TestDTOConverter();
 
 		try (AutoCloseable autoCloseable = _registerDTOConverter(
@@ -485,11 +473,9 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
+		String type = RandomTestUtil.randomString();
 		DTOConverter<?, ?> typedDTOConverter = new TestDTOConverter();
 		DTOConverter<?, ?> untypedDTOConverter = new TestDTOConverter();
-
-		String type = RandomTestUtil.randomString();
 
 		try (AutoCloseable autoCloseable1 = _registerDTOConverterWithTypes(
 				dtoClassName, typedDTOConverter, type);
