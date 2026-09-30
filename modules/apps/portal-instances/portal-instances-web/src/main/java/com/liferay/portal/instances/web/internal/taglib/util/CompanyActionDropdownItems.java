@@ -93,8 +93,10 @@ public class CompanyActionDropdownItems {
 								).setActionName(
 									"/portal_instances/export_instance"
 								).setParameter(
-									"companyId", _company.getCompanyId()
+									"portalInstanceId", _company.getWebId()
 								).buildString());
+							dropdownItem.putData(
+								"portalInstanceId", _company.getWebId());
 							dropdownItem.setLabel(
 								LanguageUtil.get(
 									_httpServletRequest, "export"));

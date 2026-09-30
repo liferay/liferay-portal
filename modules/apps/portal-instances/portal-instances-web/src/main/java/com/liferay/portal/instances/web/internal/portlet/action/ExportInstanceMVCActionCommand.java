@@ -5,24 +5,41 @@
 
 package com.liferay.portal.instances.web.internal.portlet.action;
 
+import com.liferay.batch.engine.jaxrs.uri.BatchEngineUriInfo;
+import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceExportResource;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
-import com.liferay.portal.instances.exporter.PortalInstanceExporter;
-import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResourceFactory;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+import org.osgi.service.component.ComponentServiceObjects;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceScope;
 
 /**
  * @author Jorge Avalos
@@ -41,46 +58,119 @@ public class ExportInstanceMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long companyId = ParamUtil.getLong(actionRequest, "companyId");
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 		try {
-			String exportedPartitionName =
-				_portalInstanceExporter.exportPortalInstance(companyId);
-
-			JSONPortletResponseUtil.writeJSON(
-				actionRequest, actionResponse,
-				JSONUtil.put(
-					"successMessage",
-					_language.format(
-						actionRequest.getLocale(),
-						"the-instance-was-exported-to-the-schema-x",
-						exportedPartitionName)));
+			_exportPortalInstance(actionRequest);
 		}
 		catch (Exception exception) {
-			_log.error(
-				"Unable to export portal instance " + companyId, exception);
+			_log.error(exception);
 
-			JSONPortletResponseUtil.writeJSON(
-				actionRequest, actionResponse,
-				JSONUtil.put(
-					"error",
-					_language.format(
-						actionRequest.getLocale(),
-						"export-failed-with-message-x",
-						HtmlUtil.escape(
-							GetterUtil.getString(exception.getMessage())))));
+			jsonObject.put(
+				"error",
+				_language.get(
+					actionRequest.getLocale(), "an-unexpected-error-occurred"));
 		}
 
-		hideDefaultSuccessMessage(actionRequest);
+		JSONPortletResponseUtil.writeJSON(
+			actionRequest, actionResponse, jsonObject);
+	}
+
+	private void _exportPortalInstance(ActionRequest actionRequest)
+		throws Exception {
+
+		PortalInstanceExportResource portalInstanceExportResource =
+			_componentServiceObjects.getService();
+
+		try {
+			portalInstanceExportResource.setContextAcceptLanguage(
+				_getAcceptLanguage(actionRequest));
+			portalInstanceExportResource.setContextCompany(
+				_portal.getCompany(actionRequest));
+			portalInstanceExportResource.setContextHttpServletRequest(
+				_getHttpServletRequest(actionRequest));
+			portalInstanceExportResource.setContextUriInfo(
+				new BatchEngineUriInfo.Builder(
+				).build());
+			portalInstanceExportResource.setContextUser(
+				_portal.getUser(actionRequest));
+			portalInstanceExportResource.setVulcanBatchEngineImportTaskResource(
+				_vulcanBatchEngineImportTaskResourceFactory.create());
+
+			portalInstanceExportResource.postPortalInstanceExportBatch(
+				null,
+				Collections.singletonList(
+					HashMapBuilder.put(
+						"portalInstanceId",
+						ParamUtil.getString(actionRequest, "portalInstanceId")
+					).build()));
+		}
+		finally {
+			_componentServiceObjects.ungetService(portalInstanceExportResource);
+		}
+	}
+
+	private AcceptLanguage _getAcceptLanguage(ActionRequest actionRequest) {
+		Locale locale = _portal.getLocale(actionRequest);
+
+		return new AcceptLanguage() {
+
+			@Override
+			public List<Locale> getLocales() {
+				return Collections.singletonList(locale);
+			}
+
+			@Override
+			public String getPreferredLanguageId() {
+				return LocaleUtil.toLanguageId(locale);
+			}
+
+			@Override
+			public Locale getPreferredLocale() {
+				return locale;
+			}
+
+		};
+	}
+
+	private HttpServletRequest _getHttpServletRequest(
+		ActionRequest actionRequest) {
+
+		return new HttpServletRequestWrapper(
+			_portal.getHttpServletRequest(actionRequest)) {
+
+			@Override
+			public String getHeader(String name) {
+				if (StringUtil.equalsIgnoreCase(
+						name, HttpHeaders.CONTENT_TYPE)) {
+
+					return ContentTypes.APPLICATION_JSON;
+				}
+
+				return super.getHeader(name);
+			}
+
+		};
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ExportInstanceMVCActionCommand.class);
 
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<PortalInstanceExportResource>
+		_componentServiceObjects;
+
+	@Reference
+	private JSONFactory _jsonFactory;
+
 	@Reference
 	private Language _language;
 
 	@Reference
-	private PortalInstanceExporter _portalInstanceExporter;
+	private Portal _portal;
+
+	@Reference
+	private VulcanBatchEngineImportTaskResourceFactory
+		_vulcanBatchEngineImportTaskResourceFactory;
 
 }

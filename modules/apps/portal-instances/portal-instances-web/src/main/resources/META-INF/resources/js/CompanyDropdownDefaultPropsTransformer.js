@@ -10,20 +10,11 @@ import openCopyCompanyModal from './openCopyCompanyModal';
 import openDeleteCompanyModal from './openDeleteCompanyModal';
 import openExportCompanyModal from './openExportCompanyModal';
 
-const pendingExportURLs = new Set();
-
 const getErrorMessage = (response) =>
 	response.json().then(
 		({title}) => title || response.statusText,
 		() => response.statusText
 	);
-
-const showUnexpectedErrorToast = () => {
-	openToast({
-		message: Liferay.Language.get('an-unexpected-error-occurred'),
-		type: 'danger',
-	});
-};
 
 const ACTIONS = {
 	copyDBPartitionCompany(itemData, portletNamespace) {
@@ -72,52 +63,39 @@ const ACTIONS = {
 	},
 
 	exportInstance(itemData) {
-		if (pendingExportURLs.has(itemData.exportURL)) {
-			openToast({
-				message: Liferay.Language.get(
-					'exporting-an-instance-is-already-in-progress'
-				),
-				type: 'info',
-			});
-
-			return;
-		}
-
 		openExportCompanyModal({
-			onExport: () => {
-				pendingExportURLs.add(itemData.exportURL);
-
-				fetch(itemData.exportURL, {method: 'POST'})
-					.then((response) => {
-						if (!response.ok) {
-							throw new Error(response.status);
-						}
-
-						return response.json();
-					})
-					.then((responseJSON) => {
-						if (responseJSON.successMessage) {
-							openToast({
-								message: responseJSON.successMessage,
-								type: 'success',
-							});
-						}
-						else if (responseJSON.error) {
-							openToast({
-								message: responseJSON.error,
-								type: 'danger',
-							});
-						}
-						else {
-							showUnexpectedErrorToast();
-						}
-					})
-					.catch(() => {
-						showUnexpectedErrorToast();
-					})
-					.finally(() => {
-						pendingExportURLs.delete(itemData.exportURL);
+			onExport: async () => {
+				try {
+					const response = await fetch(itemData.exportURL, {
+						method: 'POST',
 					});
+
+					if (!response.ok) {
+						throw new Error(await getErrorMessage(response));
+					}
+
+					const responseJSON = await response.json();
+
+					if (responseJSON.error) {
+						throw new Error(responseJSON.error);
+					}
+
+					openToast({
+						message: sub(
+							Liferay.Language.get(
+								'the-instance-x-is-being-exported-you-will-be-notified-when-it-finishes'
+							),
+							escapeHTML(itemData.portalInstanceId)
+						),
+						type: 'info',
+					});
+				}
+				catch (error) {
+					openToast({
+						message: escapeHTML(error.message),
+						type: 'danger',
+					});
+				}
 			},
 		});
 	},
