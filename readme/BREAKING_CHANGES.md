@@ -1997,3 +1997,36 @@ When reading, treat `description` as a map keyed by language ID (for example, `{
 ### Why was this change made?
 
 The description is authored by administrators and surfaces in the generated OpenAPI document that AI clients consume, so it has to carry a language rather than a single untagged string. Every other administrator authored text on the same resource was already localized; the description was the remaining exception.
+
+---------------------------------------
+
+## Removed the Configuration Panel Category
+- **Date:** 2026-Sep-30
+- **JIRA Ticket:** [LPD-106961](https://liferay.atlassian.net/browse/LPD-106961)
+
+### What changed?
+
+The Control Panel no longer has a Configuration category. Its applications moved into the System and Instance scopes, and the `control_panel.configuration` panel category is deleted. `PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION` and `PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION` are both removed.
+
+### Who is affected?
+
+This affects administrators with a custom object in Configuration. The object is moved to Control Panel > Objects by an upgrade process, not deleted.
+
+This also affects developers whose module or client extension names a removed constant or its literal key value. A panel app registered under the old key is left out of the menu until it is pointed at a scope that exists.
+
+This also affects portlets that declare `control_panel.configuration` as their control panel entry category. The upgrade source processor rewrites that value in Java and JSP, but a WAR plugin that declares it in `liferay-portlet.xml` must be updated by hand to `control_panel.instance` or `control_panel.system`. A portlet that declares the legacy `configuration`, `portal` or `server` value is not affected: `configuration` and `portal` are mapped to the Instance scope, and `server` to the System scope.
+
+### How should I update my code?
+
+Point the removed key at the scope the application belongs to:
+
+| Removed Key | Replacement |
+| --- | --- |
+| `PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION` | `PanelCategoryKeys.CONTROL_PANEL_INSTANCE` or `PanelCategoryKeys.CONTROL_PANEL_SYSTEM` |
+| `PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION` | `PortletCategoryKeys.CONTROL_PANEL_INSTANCE` or `PortletCategoryKeys.CONTROL_PANEL_SYSTEM` |
+
+Use the Instance key for an application that applies to one virtual instance, and the System key for one that applies to the whole installation. In a JSON object definition payload, a `panelCategoryKey` of `control_panel.configuration` should be rewritten to `control_panel.object`, which is where the upgrade process moves a stored object definition.
+
+### Why was this change made?
+
+Configuration mixed settings that apply to the whole installation with settings that apply to one virtual instance. The Control Panel root is rebuilt around that distinction as a System scope and an Instance scope, which left Configuration empty.
