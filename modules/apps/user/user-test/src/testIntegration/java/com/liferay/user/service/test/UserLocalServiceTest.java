@@ -1654,6 +1654,47 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateLastLoginKeepsUserGroupIds() throws Throwable {
+		User user = UserTestUtil.addUser();
+
+		user.setLoginDate(new Date());
+		user.setLastLoginDate(new Date());
+
+		EntityCacheUtil.removeResult(UserImpl.class, user.getUserId());
+
+		_updateLastLogin(user);
+
+		Assert.assertNull(
+			EntityCacheUtil.getResult(UserImpl.class, user.getUserId()));
+
+		user = _userLocalService.getUser(user.getUserId());
+
+		Assert.assertArrayEquals(new long[0], user.getUserGroupIds());
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		User reloadedUser = _userLocalService.getUser(user.getUserId());
+
+		Assert.assertArrayEquals(
+			new long[] {userGroup.getUserGroupId()},
+			reloadedUser.getUserGroupIds());
+
+		user.setLoginDate(new Date());
+
+		_updateLastLogin(user);
+
+		User cachedUser = (User)EntityCacheUtil.getResult(
+			UserImpl.class, user.getUserId());
+
+		Assert.assertEquals(user.getLoginDate(), cachedUser.getLoginDate());
+		Assert.assertArrayEquals(
+			new long[] {userGroup.getUserGroupId()},
+			cachedUser.getUserGroupIds());
+	}
+
+	@Test
 	public void testUpdatePassword() throws Exception {
 		User user = UserTestUtil.addUser();
 		String password = RandomTestUtil.randomString(
