@@ -1460,12 +1460,16 @@ public class WebServerServlet extends HttpServlet {
 		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
 		String uuid = ParamUtil.getString(httpServletRequest, "uuid");
 
+		String contentDispositionType = null;
+
 		if ((groupId > 0) && Validator.isNotNull(uuid) &&
-			ServletResponseUtil.isBrowserExecutableContentType(contentType)) {
+			ServletResponseUtil.isBrowserExecutableContentType(
+				contentType, fileName)) {
+
+			contentDispositionType = HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT;
 
 			httpServletResponse.setHeader(
-				HttpHeaders.CONTENT_DISPOSITION,
-				HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT);
+				HttpHeaders.CONTENT_DISPOSITION, contentDispositionType);
 		}
 
 		byte[] bytes = getImageBytes(httpServletRequest, image);
@@ -1474,7 +1478,7 @@ public class WebServerServlet extends HttpServlet {
 			if (Validator.isNotNull(fileName)) {
 				ServletResponseUtil.sendFile(
 					httpServletRequest, httpServletResponse, fileName, bytes,
-					contentType);
+					contentType, contentDispositionType);
 			}
 			else {
 				ServletResponseUtil.write(httpServletResponse, bytes);
