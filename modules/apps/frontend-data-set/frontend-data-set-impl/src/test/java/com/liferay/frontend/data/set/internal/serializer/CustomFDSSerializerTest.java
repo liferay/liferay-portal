@@ -36,13 +36,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.URLDecoder;
 
@@ -254,21 +251,7 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 				RandomTestUtil.randomString()));
 
 		ServiceRegistration<FDSBulkActions> serviceRegistration =
-			bundleContext.registerService(
-				FDSBulkActions.class,
-				new FDSBulkActions() {
-
-					@Override
-					public List<FDSActionDropdownItem>
-						getFDSActionDropdownItems(
-							HttpServletRequest httpServletRequest) {
-
-						return fdsActionDropdownItems;
-					}
-
-				},
-				MapUtil.singletonDictionary(
-					"frontend.data.set.name", FDS_NAMES[0]));
+			registerFDSBulkActions(fdsActionDropdownItems, FDS_NAMES[0]);
 
 		Assert.assertEquals(
 			fdsActionDropdownItems,

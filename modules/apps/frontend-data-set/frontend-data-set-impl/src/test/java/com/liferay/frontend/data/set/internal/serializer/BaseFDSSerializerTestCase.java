@@ -18,6 +18,7 @@ import com.liferay.frontend.data.set.internal.filter.GroupedFDSFiltersRegistryIm
 import com.liferay.frontend.data.set.internal.sort.FDSSortsRegistryImpl;
 import com.liferay.frontend.data.set.internal.view.FDSViewContextContributorRegistryImpl;
 import com.liferay.frontend.data.set.internal.view.FDSViewRegistryImpl;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.sort.FDSSorts;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.FDSViewContextContributor;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -51,6 +53,7 @@ import org.junit.Before;
 import org.mockito.Mockito;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Daniel Sanz
@@ -214,6 +217,24 @@ public abstract class BaseFDSSerializerTestCase {
 
 		ResourceBundleLoaderUtil.setPortalResourceBundleLoader(
 			resourceBundleLoader);
+	}
+
+	protected ServiceRegistration<FDSBulkActions> registerFDSBulkActions(
+		List<FDSActionDropdownItem> fdsActionDropdownItems, String fdsName) {
+
+		return bundleContext.registerService(
+			FDSBulkActions.class,
+			new FDSBulkActions() {
+
+				@Override
+				public List<FDSActionDropdownItem> getFDSActionDropdownItems(
+					HttpServletRequest httpServletRequest) {
+
+					return fdsActionDropdownItems;
+				}
+
+			},
+			MapUtil.singletonDictionary("frontend.data.set.name", fdsName));
 	}
 
 	protected static final String API_URL_PARAMETERS =
