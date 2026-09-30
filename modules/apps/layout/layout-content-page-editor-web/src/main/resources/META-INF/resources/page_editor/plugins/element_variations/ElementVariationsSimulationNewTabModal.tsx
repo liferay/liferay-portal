@@ -76,7 +76,7 @@ export default function ElementVariationsSimulationNewTabModal({
 				{Liferay.Language.get('page-simulation')}
 			</ClayModal.Header>
 
-			<ClayModal.Body>
+			<ClayModal.Body className="py-4">
 				<div className="form-group">
 					<label htmlFor={experienceId}>
 						{Liferay.Language.get('experience')}
