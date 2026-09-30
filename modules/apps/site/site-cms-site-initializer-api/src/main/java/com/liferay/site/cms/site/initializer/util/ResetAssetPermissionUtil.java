@@ -55,7 +55,9 @@ public class ResetAssetPermissionUtil {
 			RoleLocalService roleLocalService)
 		throws Exception {
 
-		if (className.startsWith(ObjectDefinition.class.getName())) {
+		if (StringUtil.startsWith(
+				className, ObjectDefinition.class.getName())) {
+
 			ObjectEntry objectEntry = objectEntryLocalService.getObjectEntry(
 				classPK);
 
@@ -95,7 +97,7 @@ public class ResetAssetPermissionUtil {
 				objectEntryJSONObject, objectEntry.getObjectEntryId(),
 				resourcePermissionLocalService, roleLocalService);
 		}
-		else if (className.equals(ObjectEntryFolder.class.getName())) {
+		else if (Objects.equals(className, ObjectEntryFolder.class.getName())) {
 			ObjectEntryFolder objectEntryFolder =
 				objectEntryFolderLocalService.getObjectEntryFolder(classPK);
 
