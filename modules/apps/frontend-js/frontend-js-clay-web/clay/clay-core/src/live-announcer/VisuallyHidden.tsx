@@ -13,7 +13,7 @@ const styles: React.CSSProperties = {
 	margin: '0 -1px -1px 0',
 	overflow: 'hidden',
 	padding: 0,
-	position: 'fixed',
+	position: 'absolute',
 	whiteSpace: 'nowrap',
 	width: '1px',
 };
@@ -30,7 +30,7 @@ export const VisuallyHidden = React.forwardRef<HTMLDivElement, Props>(
 				{...props}
 				data-live-announcer={liveAnnouncer}
 				ref={ref}
-				style={styles}
+				style={liveAnnouncer ? {...styles, position: 'fixed'} : styles}
 			>
 				{children}
 			</div>
