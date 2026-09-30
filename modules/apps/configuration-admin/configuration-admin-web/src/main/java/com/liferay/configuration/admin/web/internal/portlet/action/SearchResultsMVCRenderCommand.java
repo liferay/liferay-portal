@@ -18,6 +18,7 @@ import com.liferay.configuration.admin.web.internal.util.ConfigurationEntryItera
 import com.liferay.configuration.admin.web.internal.util.ConfigurationEntryRetriever;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationModelRetriever;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -190,7 +191,9 @@ public class SearchResultsMVCRenderCommand implements MVCRenderCommand {
 
 		searchContext.setAndSearch(false);
 		searchContext.setCompanyId(CompanyConstants.SYSTEM);
+		searchContext.setEnd(QueryUtil.ALL_POS);
 		searchContext.setLocale(locale);
+		searchContext.setStart(QueryUtil.ALL_POS);
 
 		if (Validator.isNotNull(keywords)) {
 			searchContext.setKeywords(keywords);
