@@ -156,8 +156,6 @@ public class MasterPageResourceImpl
 
 	@Override
 	public MasterPage getItem(Long id) throws Exception {
-		EnabledUtil.checkEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntry(id);
 
