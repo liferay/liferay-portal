@@ -332,9 +332,9 @@ public class CPAssetCategoriesNavigationDisplayContext {
 			categoryId = assetCategory.getCategoryId();
 		}
 
-		List<AssetCategory> categories = getAssetCategories();
+		List<AssetCategory> assetCategories = getAssetCategories();
 
-		if (categories.isEmpty()) {
+		if (assetCategories.isEmpty()) {
 			return StringPool.BLANK;
 		}
 
@@ -343,7 +343,8 @@ public class CPAssetCategoriesNavigationDisplayContext {
 		sb.append("<div class=\"lfr-asset-category-list-container\">");
 		sb.append("<ul class=\"lfr-asset-category-list\">");
 
-		_buildCategoriesNavigation(categories, categoryId, themeDisplay, sb);
+		_buildCategoriesNavigation(
+			assetCategories, categoryId, themeDisplay, sb);
 
 		sb.append("</ul></div>");
 
@@ -361,11 +362,11 @@ public class CPAssetCategoriesNavigationDisplayContext {
 	}
 
 	private void _buildCategoriesNavigation(
-			List<AssetCategory> categories, long categoryId,
+			List<AssetCategory> assetCategories, long categoryId,
 			ThemeDisplay themeDisplay, StringBundler sb)
 		throws Exception {
 
-		for (AssetCategory assetCategory : categories) {
+		for (AssetCategory assetCategory : assetCategories) {
 			List<AssetCategory> childAssetCategories = getChildAssetCategories(
 				assetCategory.getCategoryId());
 
