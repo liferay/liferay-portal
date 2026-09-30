@@ -147,7 +147,18 @@ definition {
 			var responseToParse = JSONCurlUtil.get(${curl});
 		}
 
-		var fieldValue = JSONUtil.getWithJSONPath(${responseToParse}, "$..${fieldName}");
+		var jsonPath = "$..${fieldName}";
+
+		// Every comment and blog posting embeds a creator whose external
+		// reference code defaults to a UUID, so the recursive path returns
+		// it alongside the entity's own code. Read the code from the page
+		// items instead. See LPD-107646.
+
+		if (${fieldName} == "externalReferenceCode") {
+			var jsonPath = "$.items[*].externalReferenceCode";
+		}
+
+		var fieldValue = JSONUtil.getWithJSONPath(${responseToParse}, ${jsonPath});
 
 		return ${fieldValue};
 	}
