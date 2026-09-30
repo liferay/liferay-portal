@@ -1339,13 +1339,11 @@ public class PortalImpl implements Portal {
 
 				layout = virtualLayout.getSourceLayout();
 
-				if (!virtualLayout.isSourceGroupDepot()) {
-					Group group = layout.getGroup();
+				Group group = layout.getGroup();
 
-					groupFriendlyURLPrefix =
-						VirtualLayoutConstants.CANONICAL_URL_SEPARATOR.concat(
-							group.getFriendlyURL());
-				}
+				groupFriendlyURLPrefix =
+					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR.concat(
+						group.getFriendlyURL());
 			}
 		}
 

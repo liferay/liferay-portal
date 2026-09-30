@@ -51,7 +51,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public ColorScheme getColorScheme() throws PortalException {
-		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getColorScheme();
 		}
 
@@ -66,7 +66,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public String getCssText() throws PortalException {
-		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getCssText();
 		}
 
@@ -83,7 +83,7 @@ public class VirtualLayout extends LayoutWrapper {
 	public String getDefaultThemeSetting(
 		String key, String device, boolean inheritLookAndFeel) {
 
-		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getDefaultThemeSetting(
 				key, device, inheritLookAndFeel);
 		}
@@ -122,7 +122,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public List<Portlet> getEmbeddedPortlets() {
-		if (isSourceGroupDepot()) {
+		if (_isSourceGroupDepot()) {
 			return super.getEmbeddedPortlets(getSourceGroupId());
 		}
 
@@ -246,7 +246,7 @@ public class VirtualLayout extends LayoutWrapper {
 
 	@Override
 	public Theme getTheme() throws PortalException {
-		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getTheme();
 		}
 
@@ -268,7 +268,7 @@ public class VirtualLayout extends LayoutWrapper {
 	public String getThemeSetting(
 		String key, String device, boolean inheritLookAndFeel) {
 
-		if (!isSourceGroupDepot() || !isInheritLookAndFeel()) {
+		if (!_isSourceGroupDepot() || !isInheritLookAndFeel()) {
 			return super.getThemeSetting(key, device, inheritLookAndFeel);
 		}
 
@@ -283,23 +283,6 @@ public class VirtualLayout extends LayoutWrapper {
 
 	public long getVirtualGroupId() {
 		return _targetGroup.getGroupId();
-	}
-
-	public boolean isSourceGroupDepot() {
-		if (_sourceGroupDepot == null) {
-			try {
-				Group group = _sourceLayout.getGroup();
-
-				_sourceGroupDepot = group.isDepot();
-			}
-			catch (Exception exception) {
-				_log.error(exception);
-
-				_sourceGroupDepot = Boolean.FALSE;
-			}
-		}
-
-		return _sourceGroupDepot;
 	}
 
 	@Override
@@ -369,6 +352,23 @@ public class VirtualLayout extends LayoutWrapper {
 
 		return typeSettingsUnicodeProperties.getProperty(
 			StringBundler.concat("lfr-theme:", device, StringPool.COLON, key));
+	}
+
+	private boolean _isSourceGroupDepot() {
+		if (_sourceGroupDepot == null) {
+			try {
+				Group group = _sourceLayout.getGroup();
+
+				_sourceGroupDepot = group.isDepot();
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+
+				_sourceGroupDepot = Boolean.FALSE;
+			}
+		}
+
+		return _sourceGroupDepot;
 	}
 
 	private static final String
