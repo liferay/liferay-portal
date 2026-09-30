@@ -294,8 +294,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		KeyReference keyReference1 = new KeyReference(
 			"config/" + _PID + "/0/credential", "provider",
 			KeyReference.Type.SECRET);
-		KeyReference keyReference2 = new KeyReference(
-			"config/" + _PID + "/0/host", "provider", KeyReference.Type.SECRET);
 
 		Mockito.doThrow(
 			SecretException.class
@@ -304,6 +302,9 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		).deleteSecret(
 			CompanyConstants.SYSTEM, keyReference1
 		);
+
+		KeyReference keyReference2 = new KeyReference(
+			"config/" + _PID + "/0/host", "provider", KeyReference.Type.SECRET);
 
 		Mockito.when(
 			_configuration.getProperties()
@@ -382,17 +383,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSave() throws Exception {
-		String host = RandomTestUtil.randomString();
-		String value = RandomTestUtil.randomString();
-
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"credential", value
-			).put(
-				"host", host
-			).build();
-
 		String storedValue = RandomTestUtil.randomString();
+		String value = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_secretResolver.store(
@@ -401,6 +393,15 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		).thenReturn(
 			storedValue
 		);
+
+		String host = RandomTestUtil.randomString();
+
+		Dictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential", value
+			).put(
+				"host", host
+			).build();
 
 		_configurationSecretConfigurationModelListener.onBeforeSave(
 			_PID, properties);
