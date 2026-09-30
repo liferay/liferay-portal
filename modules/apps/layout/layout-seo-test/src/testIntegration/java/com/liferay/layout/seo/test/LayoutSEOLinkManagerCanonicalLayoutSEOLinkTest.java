@@ -28,6 +28,7 @@ import com.liferay.layout.seo.kernel.LayoutSEOLink;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.LayoutFriendlyURLRandomizerBumper;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
@@ -36,10 +37,12 @@ import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -50,6 +53,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -60,6 +64,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -108,6 +113,61 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		_serviceContext.setRequest(mockHttpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testGetAlternateURLsDesignLibraryContainingLayoutFriendlyURL()
+		throws Exception {
+
+		String friendlyURL = StringPool.SLASH.concat(
+			RandomTestUtil.randomString(
+				LayoutFriendlyURLRandomizerBumper.INSTANCE));
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		designLibraryGroup = _groupLocalService.updateFriendlyURL(
+			designLibraryGroup.getGroupId(), friendlyURL.concat("-designs"));
+
+		String spainFriendlyURL = friendlyURL.concat("-es");
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			designLibraryGroup.getGroupId(), false,
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN, spainFriendlyURL
+			).put(
+				LocaleUtil.US, friendlyURL
+			).build());
+
+		_group = GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), Arrays.asList(LocaleUtil.SPAIN, LocaleUtil.US),
+			LocaleUtil.US);
+
+		Layout virtualLayout = new VirtualLayout(layout, _group);
+
+		Map<Locale, String> alternateURLs = _portal.getAlternateURLs(
+			_portal.getCanonicalURL(
+				RandomTestUtil.randomString(), _themeDisplay, virtualLayout,
+				true, false),
+			_themeDisplay, virtualLayout,
+			Collections.singleton(LocaleUtil.SPAIN));
+
+		String alternateURL = alternateURLs.get(LocaleUtil.SPAIN);
+
+		Assert.assertTrue(
+			alternateURL,
+			alternateURL.contains(
+				StringBundler.concat(
+					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
+					designLibraryGroup.getFriendlyURL(), StringPool.SLASH)));
+		Assert.assertTrue(
+			alternateURL,
+			alternateURL.endsWith(layout.getFriendlyURL(LocaleUtil.SPAIN)));
 	}
 
 	@FeatureFlag("LPD-57283")
@@ -582,6 +642,9 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private Layout _layout;
 
