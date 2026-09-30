@@ -2337,25 +2337,10 @@ public class UserLocalServiceTest {
 	}
 
 	private void _testUpdateLastLogin(User user) throws Throwable {
-		AopInvocationHandler aopInvocationHandler =
-			ProxyUtil.fetchInvocationHandler(
-				_userLocalService, AopInvocationHandler.class);
-
-		ServiceWrapper<UserLocalService> serviceWrapper =
-			(ServiceWrapper<UserLocalService>)aopInvocationHandler.getTarget();
-
-		UserLocalServiceImpl userLocalServiceImpl =
-			(UserLocalServiceImpl)serviceWrapper.getWrappedService();
-
 		user.setLoginDate(new Date());
 		user.setLastLoginDate(new Date());
 
-		TransactionInvokerUtil.invoke(
-			TransactionConfig.Factory.create(
-				Propagation.SUPPORTS, new Class<?>[] {Exception.class}),
-			() -> ReflectionTestUtil.invoke(
-				userLocalServiceImpl, "_updateLastLogin",
-				new Class<?>[] {List.class}, Collections.singletonList(user)));
+		_updateLastLogin(user);
 
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
@@ -2476,6 +2461,25 @@ public class UserLocalServiceTest {
 			_passwordPolicyLocalService.updatePasswordPolicy(
 				updatedPasswordPolicy);
 		};
+	}
+
+	private void _updateLastLogin(User user) throws Throwable {
+		AopInvocationHandler aopInvocationHandler =
+			ProxyUtil.fetchInvocationHandler(
+				_userLocalService, AopInvocationHandler.class);
+
+		ServiceWrapper<UserLocalService> serviceWrapper =
+			(ServiceWrapper<UserLocalService>)aopInvocationHandler.getTarget();
+
+		UserLocalServiceImpl userLocalServiceImpl =
+			(UserLocalServiceImpl)serviceWrapper.getWrappedService();
+
+		TransactionInvokerUtil.invoke(
+			TransactionConfig.Factory.create(
+				Propagation.SUPPORTS, new Class<?>[] {Exception.class}),
+			() -> ReflectionTestUtil.invoke(
+				userLocalServiceImpl, "_updateLastLogin",
+				new Class<?>[] {List.class}, Collections.singletonList(user)));
 	}
 
 	private SafeCloseable _updateSecuritySendPasswordResetLinkWithSafeCloseable(
