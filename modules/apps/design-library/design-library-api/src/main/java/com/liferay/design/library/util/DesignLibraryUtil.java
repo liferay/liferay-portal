@@ -12,9 +12,12 @@ import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -29,6 +32,26 @@ import jakarta.servlet.http.HttpServletRequest;
  * @author Javier Moral
  */
 public class DesignLibraryUtil {
+
+	public static long[] getConnectedDesignLibraryGroupIds(long groupId) {
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+		if (group == null) {
+			return new long[0];
+		}
+
+		try {
+			return getConnectedDesignLibraryGroupIds(
+				group.getCompanyId(), groupId);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return new long[0];
+		}
+	}
 
 	public static long[] getConnectedDesignLibraryGroupIds(
 			long companyId, long groupId)
@@ -113,6 +136,9 @@ public class DesignLibraryUtil {
 
 		return depotEntryLocalService.fetchGroupDepotEntry(groupId);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DesignLibraryUtil.class);
 
 	private static final Snapshot<DepotEntryLocalService>
 		_depotEntryLocalServiceSnapshot = new Snapshot<>(

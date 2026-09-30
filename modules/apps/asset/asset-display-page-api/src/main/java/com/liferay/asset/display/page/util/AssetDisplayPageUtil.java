@@ -18,12 +18,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
@@ -61,7 +56,8 @@ public class AssetDisplayPageUtil {
 			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				layoutDisplayPageObjectProvider.getClassNameId(),
 				layoutDisplayPageObjectProvider.getClassTypeId(),
-				_getConnectedDesignLibraryGroupIds(groupId), groupId);
+				DesignLibraryUtil.getConnectedDesignLibraryGroupIds(groupId),
+				groupId);
 
 		return _getAssetDisplayPage(
 			groupId, layoutDisplayPageObjectProvider.getClassNameId(),
@@ -76,7 +72,8 @@ public class AssetDisplayPageUtil {
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				classNameId, classTypeId,
-				_getConnectedDesignLibraryGroupIds(groupId), groupId);
+				DesignLibraryUtil.getConnectedDesignLibraryGroupIds(groupId),
+				groupId);
 
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry =
 			LayoutDisplayPageProviderRegistryUtil.
@@ -210,28 +207,5 @@ public class AssetDisplayPageUtil {
 
 		return defaultLayoutPageTemplateEntry;
 	}
-
-	private static long[] _getConnectedDesignLibraryGroupIds(long groupId) {
-		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-
-		if (group == null) {
-			return new long[0];
-		}
-
-		try {
-			return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-				group.getCompanyId(), groupId);
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-
-			return new long[0];
-		}
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetDisplayPageUtil.class);
 
 }

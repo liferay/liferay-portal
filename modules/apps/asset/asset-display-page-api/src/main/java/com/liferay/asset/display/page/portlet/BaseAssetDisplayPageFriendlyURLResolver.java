@@ -49,13 +49,11 @@ import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -270,17 +268,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	}
 
 	protected long[] getConnectedDesignLibraryGroupIds(long groupId) {
-		try {
-			return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
-				CompanyThreadLocal.getCompanyId(), groupId);
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-
-			return GetterUtil.DEFAULT_LONG_VALUES;
-		}
+		return DesignLibraryUtil.getConnectedDesignLibraryGroupIds(groupId);
 	}
 
 	protected LayoutDisplayPageObjectProvider<?>
