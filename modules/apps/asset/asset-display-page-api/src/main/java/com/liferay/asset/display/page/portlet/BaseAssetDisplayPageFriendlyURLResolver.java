@@ -267,10 +267,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			layoutDisplayPageObjectProvider.getClassPK());
 	}
 
-	protected long[] getConnectedDesignLibraryGroupIds(long groupId) {
-		return DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(groupId);
-	}
-
 	protected LayoutDisplayPageObjectProvider<?>
 		getLayoutDisplayPageObjectProvider(
 			LayoutDisplayPageProvider<?> layoutDisplayPageProvider,
@@ -513,7 +509,8 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
 				layoutDisplayPageObjectProvider.getClassNameId(),
 				layoutDisplayPageObjectProvider.getClassTypeId(),
-				getConnectedDesignLibraryGroupIds(groupId), groupId);
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(groupId),
+				groupId);
 
 		if (layoutPageTemplateEntry == null) {
 			return null;

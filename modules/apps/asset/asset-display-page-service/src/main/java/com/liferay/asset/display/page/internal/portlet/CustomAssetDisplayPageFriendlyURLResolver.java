@@ -6,6 +6,7 @@
 package com.liferay.asset.display.page.internal.portlet;
 
 import com.liferay.asset.display.page.portlet.BaseAssetDisplayPageFriendlyURLResolver;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
@@ -148,7 +149,8 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 		}
 
 		for (long connectedGroupId :
-				getConnectedDesignLibraryGroupIds(groupId)) {
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+					groupId)) {
 
 			layout = layoutLocalService.fetchLayoutByFriendlyURL(
 				connectedGroupId, false, friendlyURL);

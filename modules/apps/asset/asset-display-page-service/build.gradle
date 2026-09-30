@@ -12,6 +12,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-display-page-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
+	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-api")
