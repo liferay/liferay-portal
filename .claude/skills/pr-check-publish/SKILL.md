@@ -32,7 +32,7 @@ gh pr view \
 	"<pr-url>"
 ```
 
-A session can hold runs of several branches, so use the Results Summary whose tested SHA is that head. When none matches, abort without posting, and name the head and every tested SHA. A run of any other commit records a status that the pull request never shows.
+A session can hold runs of several branches, so use the Results Summary whose tested SHA is that head. When none matches, abort without posting and name the head SHA and every tested SHA. Posting a run of any other commit would record its status on a commit that the pull request does not show.
 
 ## Expected Output
 

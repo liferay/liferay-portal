@@ -21,7 +21,7 @@ These settings describe this repository. The `pr` skill of another repository ma
 | **Repository** | `liferay/liferay-portal` |
 | **Team Forks** | `liferay-ac`, `liferay-appsec`, `liferay-bpm`, `liferay-commerce`, `liferay-content-management`, `liferay-core-infra`, `liferay-database-infra`, `liferay-devtools`, `liferay-frontend`, `liferay-headless`, `liferay-page-management`, `liferay-platform-experience`, `liferay-search`, `liferay-site-management` |
 
-`${BASE_BRANCH}` below stands for the base branch, and `<repository>` stands for the name of the repository without its organization, such as `liferay-portal`.
+Below, `${BASE_BRANCH}` stands for the **Base Branch** setting, and `<repository>` stands for the **Repository** setting without its organization, such as `liferay-portal`.
 
 ## Preconditions
 
