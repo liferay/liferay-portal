@@ -2162,8 +2162,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 						"Optional reference generated for missing entity with ",
 						"class name com.liferay.nonexistent.model.",
 						"NonexistentModel, external reference code ",
-						"collection-subtype-erc, and null scope with current ",
-						"scope ID ", testGroup.getGroupId()),
+						"collection-nonexistent-item-type-subtype-erc, and ",
+						"null scope with current scope ID ",
+						testGroup.getGroupId()),
 					StringBundler.concat(
 						"Optional reference generated for missing entity with ",
 						"class name com.liferay.dynamic.data.mapping.model.",

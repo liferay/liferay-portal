@@ -182,7 +182,7 @@
 				{
 					"defaultValue": {
 						"fieldName": "repeatableField",
-						"itemSubtypeKey": "collection-subtype-erc",
+						"itemSubtypeKey": "collection-nonexistent-item-type-subtype-erc",
 						"itemType": "com.liferay.nonexistent.model.NonexistentModel",
 						"key": "com.liferay.info.collection.provider.RepeatableFieldInfoItemCollectionProvider",
 						"type": "com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType"

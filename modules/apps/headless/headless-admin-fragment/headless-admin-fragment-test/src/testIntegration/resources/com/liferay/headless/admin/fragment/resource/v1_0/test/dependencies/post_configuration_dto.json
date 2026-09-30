@@ -206,7 +206,7 @@
 							"collectionType": "RepeatableFieldsCollectionProvider",
 							"fieldName": "repeatableField",
 							"subTypeExternalReference": {
-								"externalReferenceCode": "collection-subtype-erc"
+								"externalReferenceCode": "collection-nonexistent-item-type-subtype-erc"
 							}
 						}
 					},
