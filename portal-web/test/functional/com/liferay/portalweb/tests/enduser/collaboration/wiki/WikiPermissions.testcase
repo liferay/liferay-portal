@@ -93,6 +93,8 @@ definition {
 			numberOfWikiPages = 0,
 			wikiNodeName = "Wiki Node Name Edit");
 
+		WikiNavigator.openWikiAdmin(siteURLKey = "guest");
+
 		WikiNode.deleteCP(wikiNodeName = "Wiki Node Name Edit");
 
 		WikiNode.viewNoCP(wikiNodeName = "Wiki Node Name Edit");
