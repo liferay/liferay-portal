@@ -10,7 +10,6 @@ import com.liferay.fragment.entry.processor.helper.LayoutReferenceResolver;
 import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
-import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.list.renderer.InfoListRendererRegistry;
 import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
@@ -52,12 +51,6 @@ public class ServletContextUtil {
 
 	public static FragmentRendererController getFragmentRendererController() {
 		return _fragmentRendererControllerSnapshot.get();
-	}
-
-	public static FrontendTokenDefinitionRegistry
-		getFrontendTokenDefinitionRegistry() {
-
-		return _frontendTokenDefinitionRegistrySnapshot.get();
 	}
 
 	public static InfoItemServiceRegistry getInfoItemServiceRegistry() {
@@ -148,9 +141,6 @@ public class ServletContextUtil {
 	private static final Snapshot<FragmentRendererController>
 		_fragmentRendererControllerSnapshot = new Snapshot<>(
 			ServletContextUtil.class, FragmentRendererController.class);
-	private static final Snapshot<FrontendTokenDefinitionRegistry>
-		_frontendTokenDefinitionRegistrySnapshot = new Snapshot<>(
-			ServletContextUtil.class, FrontendTokenDefinitionRegistry.class);
 	private static final Snapshot<InfoItemServiceRegistry>
 		_infoItemServiceRegistrySnapshot = new Snapshot<>(
 			ServletContextUtil.class, InfoItemServiceRegistry.class);

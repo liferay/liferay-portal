@@ -1,13 +1,14 @@
 /**
- * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.layout.taglib.internal.servlet;
+package com.liferay.layout.util.structure;
 
 import com.liferay.frontend.token.definition.FrontendTokenMapping;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.constants.StyleBookConstants;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,29 +25,27 @@ import org.junit.Test;
 /**
  * @author Gabriel Lima
  */
-public class LayoutStructureCommonStylesCSSServletTest {
+public class CommonStylesUtilTest {
 
 	@ClassRule
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@Before
+	public void setUp() {
+		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
+
+		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+	}
+
 	@Test
 	public void testGetCustomFrontendTokensJSONObject() {
-		LayoutStructureCommonStylesCSSServlet
-			layoutStructureCommonStylesCSSServlet =
-				new LayoutStructureCommonStylesCSSServlet();
-
-		ReflectionTestUtil.setFieldValue(
-			layoutStructureCommonStylesCSSServlet, "_jsonFactory",
-			new JSONFactoryImpl());
-
 		String cssVariable = RandomTestUtil.randomString();
 		String name = RandomTestUtil.randomString();
 
 		JSONObject customFrontendTokensJSONObject = ReflectionTestUtil.invoke(
-			layoutStructureCommonStylesCSSServlet,
-			"_getCustomFrontendTokensJSONObject",
+			CommonStylesUtil.class, "_getCustomFrontendTokensJSONObject",
 			new Class<?>[] {JSONObject.class},
 			JSONUtil.put(
 				_getCustomFrontendTokenKey(name),
