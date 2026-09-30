@@ -80,11 +80,11 @@ public class UpstreamPortalTopLevelBuildTest
 
 		String branchName = RandomTestUtil.randomString();
 
-		_testGetWorkspaceWithPortalBase(branchName, "build", false);
-		_testGetWorkspaceWithPortalBase(branchName + "-private", null, false);
-		_testGetWorkspaceWithPortalBase(branchName + "-private", "build", true);
+		_testGetWorkspaceWithPortalBase(branchName + "-private", false, null);
+		_testGetWorkspaceWithPortalBase(branchName + "-private", true, "build");
 		_testGetWorkspaceWithPortalBase(
-			branchName + "-private", "controller", true);
+			branchName + "-private", true, "controller");
+		_testGetWorkspaceWithPortalBase(branchName, false, "build");
 	}
 
 	private UpstreamPortalTopLevelBuild _getUpstreamPortalTopLevelBuild(
@@ -163,7 +163,7 @@ public class UpstreamPortalTopLevelBuildTest
 	}
 
 	private void _testGetWorkspaceWithPortalBase(
-		String branchName, String parameterSource, boolean expectedConfigured) {
+		String branchName, boolean expectedConfigured, String parameterSource) {
 
 		Map<String, Workspace> workspaces = ReflectionTestUtil.getFieldValue(
 			WorkspaceFactory.class, "_workspaces");
@@ -218,19 +218,19 @@ public class UpstreamPortalTopLevelBuildTest
 
 		if (parameterBuild != null) {
 			Mockito.doReturn(
-				portalBaseGitCommit
-			).when(
-				parameterBuild
-			).getParameterValue(
-				"PORTAL_BASE_GIT_COMMIT"
-			);
-
-			Mockito.doReturn(
 				portalBaseGitHubURL
 			).when(
 				parameterBuild
 			).getParameterValue(
 				"PORTAL_BASE_GITHUB_URL"
+			);
+
+			Mockito.doReturn(
+				portalBaseGitCommit
+			).when(
+				parameterBuild
+			).getParameterValue(
+				"PORTAL_BASE_GIT_COMMIT"
 			);
 		}
 

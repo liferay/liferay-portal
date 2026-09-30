@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.lang.reflect.Method;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,11 +81,11 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 			portalBaseBranchSHA, portalBranchSHA);
 
 		testEquals(
-			portalBaseBranchSHA,
-			invocationParameters.get("PORTAL_BASE_GIT_COMMIT"));
-		testEquals(
 			_PORTAL_BASE_GITHUB_URL,
 			invocationParameters.get("PORTAL_BASE_GITHUB_URL"));
+		testEquals(
+			portalBaseBranchSHA,
+			invocationParameters.get("PORTAL_BASE_GIT_COMMIT"));
 
 		String buildDescription = _getBuildDescription();
 
@@ -99,9 +101,9 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		invocationParameters = _invokeBuild(null, portalBranchSHA);
 
 		Assert.assertFalse(
-			invocationParameters.containsKey("PORTAL_BASE_GIT_COMMIT"));
-		Assert.assertFalse(
 			invocationParameters.containsKey("PORTAL_BASE_GITHUB_URL"));
+		Assert.assertFalse(
+			invocationParameters.containsKey("PORTAL_BASE_GIT_COMMIT"));
 
 		buildDescription = _getBuildDescription();
 
@@ -121,25 +123,23 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		String portalBranchSHA = RandomTestUtil.randomSHA();
 
 		_testPreviousBuildHasCurrentSHA(
-			portalBaseBranchSHA, portalBranchSHA,
-			_getDescription(portalBranchSHA, portalBaseBranchSHA), true);
+			"EXPIRE" + _getDescription(portalBaseBranchSHA, portalBranchSHA),
+			false, portalBaseBranchSHA, portalBranchSHA);
 		_testPreviousBuildHasCurrentSHA(
-			portalBaseBranchSHA, portalBranchSHA,
-			_getDescription(portalBranchSHA, otherSHA), false);
+			"SKIPPED" + _getDescription(portalBaseBranchSHA, portalBranchSHA),
+			false, portalBaseBranchSHA, portalBranchSHA);
 		_testPreviousBuildHasCurrentSHA(
-			portalBaseBranchSHA, portalBranchSHA,
-			_getDescription(otherSHA, portalBaseBranchSHA), false);
+			_getDescription(null, portalBranchSHA), false, portalBaseBranchSHA,
+			portalBranchSHA);
 		_testPreviousBuildHasCurrentSHA(
-			portalBaseBranchSHA, portalBranchSHA,
-			_getDescription(portalBranchSHA, null), false);
+			_getDescription(otherSHA, portalBranchSHA), false,
+			portalBaseBranchSHA, portalBranchSHA);
 		_testPreviousBuildHasCurrentSHA(
-			portalBaseBranchSHA, portalBranchSHA,
-			"EXPIRE" + _getDescription(portalBranchSHA, portalBaseBranchSHA),
-			false);
+			_getDescription(portalBaseBranchSHA, otherSHA), false,
+			portalBaseBranchSHA, portalBranchSHA);
 		_testPreviousBuildHasCurrentSHA(
-			portalBaseBranchSHA, portalBranchSHA,
-			"SKIPPED" + _getDescription(portalBranchSHA, portalBaseBranchSHA),
-			false);
+			_getDescription(portalBaseBranchSHA, portalBranchSHA), true,
+			portalBaseBranchSHA, portalBranchSHA);
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		).getPortalBranchAbbreviatedSHA();
 
 		_setPreviousBuildDescription(
-			_getDescription(portalBranchSHA, RandomTestUtil.randomSHA()));
+			_getDescription(RandomTestUtil.randomSHA(), portalBranchSHA));
 
 		Assert.assertTrue(
 			_singleUpstreamPortalControllerBuildRunner.
@@ -175,7 +175,7 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 	}
 
 	private String _getDescription(
-		String portalBranchSHA, String portalBaseBranchSHA) {
+		String portalBaseBranchSHA, String portalBranchSHA) {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -240,34 +240,35 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		).getBuildParameters();
 
 		Mockito.doReturn(
-			"brianchandotcom"
-		).when(
-			_buildData
-		).getPortalGitHubUsername();
-
-		Mockito.doReturn(
 			"liferay-portal-ee"
 		).when(
 			_buildData
 		).getPortalGitHubRepositoryName();
 
+		Mockito.doReturn(
+			"brianchandotcom"
+		).when(
+			_buildData
+		).getPortalGitHubUsername();
+
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
-					Mockito.CALLS_REAL_METHODS)) {
+					invocation -> {
+						Method method = invocation.getMethod();
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				() -> JenkinsResultsParserUtil.getRemoteURL(_INVOCATION_JOB_URL)
-			).thenReturn(
-				_INVOCATION_JOB_URL
-			);
+						String methodName = method.getName();
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				() -> JenkinsResultsParserUtil.invokeJenkinsBuild(
-					Mockito.eq(_INVOCATION_JOB_URL), Mockito.anyMap())
-			).thenReturn(
-				1L
-			);
+						if (methodName.equals("getRemoteURL")) {
+							return invocation.getArgument(0);
+						}
+
+						if (methodName.equals("invokeJenkinsBuild")) {
+							return 1L;
+						}
+
+						return invocation.callRealMethod();
+					})) {
 
 			_singleUpstreamPortalControllerBuildRunner.invokeBuild();
 
@@ -296,12 +297,6 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		_singleUpstreamPortalControllerBuildRunner = Mockito.mock(
 			SingleUpstreamPortalControllerBuildRunner.class);
 
-		Mockito.doReturn(
-			_buildData
-		).when(
-			_singleUpstreamPortalControllerBuildRunner
-		).getBuildData();
-
 		Mockito.doCallRealMethod(
 		).when(
 			_singleUpstreamPortalControllerBuildRunner
@@ -316,22 +311,33 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 			Mockito.any()
 		);
 
+		Mockito.doCallRealMethod(
+		).when(
+			_singleUpstreamPortalControllerBuildRunner
+		).previousBuildHasCurrentSHA();
+
+		Mockito.doReturn(
+			_buildData
+		).when(
+			_singleUpstreamPortalControllerBuildRunner
+		).getBuildData();
+
 		RemoteGitRef remoteGitRef = null;
 
 		if (portalBaseBranchSHA != null) {
 			remoteGitRef = Mockito.mock(RemoteGitRef.class);
 
 			Mockito.doReturn(
-				portalBaseBranchSHA
-			).when(
-				remoteGitRef
-			).getSHA();
-
-			Mockito.doReturn(
 				"liferay-portal"
 			).when(
 				remoteGitRef
 			).getRepositoryName();
+
+			Mockito.doReturn(
+				portalBaseBranchSHA
+			).when(
+				remoteGitRef
+			).getSHA();
 
 			Mockito.doReturn(
 				"liferay"
@@ -345,11 +351,6 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 		).when(
 			_singleUpstreamPortalControllerBuildRunner
 		).getPortalBaseRemoteGitRef();
-
-		Mockito.doCallRealMethod(
-		).when(
-			_singleUpstreamPortalControllerBuildRunner
-		).previousBuildHasCurrentSHA();
 	}
 
 	private void _setPreviousBuildDescription(String description) {
@@ -365,8 +366,8 @@ public class SingleUpstreamPortalControllerBuildRunnerTest
 	}
 
 	private void _testPreviousBuildHasCurrentSHA(
-		String portalBaseBranchSHA, String portalBranchSHA, String description,
-		boolean expected) {
+		String description, boolean expected, String portalBaseBranchSHA,
+		String portalBranchSHA) {
 
 		_mockSingleUpstreamPortalControllerBuildRunner(
 			portalBaseBranchSHA, portalBranchSHA);

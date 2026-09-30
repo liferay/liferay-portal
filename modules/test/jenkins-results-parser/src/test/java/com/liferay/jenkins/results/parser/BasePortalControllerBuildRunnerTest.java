@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.lang.reflect.Method;
+
 import java.util.Arrays;
 
 import org.json.JSONArray;
@@ -158,54 +160,64 @@ public class BasePortalControllerBuildRunnerTest
 			basePortalControllerBuildRunner
 		).getPreviousBuildJSONObjects();
 
+		JSONObject injectedEnvVarsJSONObject = new JSONObject(
+		).put(
+			"envMap",
+			new JSONObject(
+			).put(
+				"BUILD_NUMBER", "12"
+			).put(
+				"HOSTNAME", "test-1-0-aws"
+			).put(
+				"JOB_NAME",
+				"test-portal-testsuite-upstream-controller" +
+					"(master-private_stable)"
+			)
+		);
+		JSONObject resultJSONObject = new JSONObject(
+		).put(
+			"result", "FAILURE"
+		);
+
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
-					Mockito.CALLS_REAL_METHODS)) {
+					invocation -> {
+						Method method = invocation.getMethod();
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				() -> JenkinsResultsParserUtil.getLocalURL(Mockito.anyString())
-			).thenAnswer(
-				invocation -> invocation.getArgument(0)
-			);
+						String methodName = method.getName();
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				() -> JenkinsResultsParserUtil.toJSONObject(
-					invocationBuildURL + "/api/json?tree=result")
-			).thenReturn(
-				new JSONObject(
-				).put(
-					"result", "FAILURE"
-				)
-			);
+						if (methodName.equals("getLocalURL")) {
+							return invocation.getArgument(0);
+						}
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				() -> JenkinsResultsParserUtil.toJSONObject(
-					controllerBuildURL + "/injectedEnvVars/api/json")
-			).thenReturn(
-				new JSONObject(
-				).put(
-					"envMap",
-					new JSONObject(
-					).put(
-						"BUILD_NUMBER", "12"
-					).put(
-						"HOSTNAME", "test-1-0-aws"
-					).put(
-						"JOB_NAME",
-						"test-portal-testsuite-upstream-controller" +
-							"(master-private_stable)"
-					)
-				)
-			);
+						if (methodName.equals("toJSONObject")) {
+							String url = invocation.getArgument(0);
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				() -> JenkinsResultsParserUtil.updateBuildDescription(
-					Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(),
-					Mockito.anyString())
-			).thenAnswer(
-				invocation -> null
-			);
+							if (url.equals(
+									controllerBuildURL +
+										"/injectedEnvVars/api/json")) {
+
+								return injectedEnvVarsJSONObject;
+							}
+
+							if (url.equals(
+									invocationBuildURL +
+										"/api/json?tree=result")) {
+
+								return resultJSONObject;
+							}
+
+							throw new AssertionError(
+								"No output set for URL: " + url);
+						}
+
+						if (methodName.equals("updateBuildDescription")) {
+							return null;
+						}
+
+						return invocation.callRealMethod();
+					})) {
 
 			Assert.assertFalse(
 				basePortalControllerBuildRunner.
