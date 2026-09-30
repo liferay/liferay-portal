@@ -120,7 +120,7 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 	1. Go to `liferay-sample-workspace` and type `./gradlew :client-extensions:liferay-sample-etc-cron:deployDev`.
 
-	1. Login to Liferay and go to Control Panel > Configuration > OAuth 2 Administration. Select `Liferay Sample Etc Cron`.
+	1. Login to Liferay and go to Control Panel > Security > OAuth 2 Administration. Select `Liferay Sample Etc Cron`.
 
 	1. Copy the client secret. Open `liferay-sample-workspace/client-extensions/liferay-sample-etc-cron/src/main/resources/application-default.properties` and replace `liferay-sample-etc-cron.oauth2.headless.server.client.secret=myfancypassword` with the real client secret.
 
