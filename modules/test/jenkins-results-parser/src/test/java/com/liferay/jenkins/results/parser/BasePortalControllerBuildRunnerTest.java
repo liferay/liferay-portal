@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.verification.VerificationMode;
 
@@ -104,6 +106,130 @@ public class BasePortalControllerBuildRunnerTest
 			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
 			Mockito.contains("queue/api/json")
 		);
+	}
+
+	@Test
+	public void testPreviousBuildHasRunningInvocation() throws Exception {
+		String controllerBuildURL =
+			"https://test-1-0-aws.liferay.com/job/test-portal-testsuite-" +
+				"upstream-controller(master-private_stable)/12/";
+		String invocationBuildURL =
+			"https://test-1-41.liferay.com/job/test-portal-testsuite-" +
+				"upstream(master-private)/34/";
+
+		String portalBaseBranchSHA = RandomTestUtil.randomSHA();
+		String portalBranchSHA = RandomTestUtil.randomSHA();
+
+		String portalBaseBranchSHAItem = JenkinsResultsParserUtil.combine(
+			"<strong>Base Git ID:</strong> <a href=\"https://github.com/",
+			"liferay/liferay-portal/commit/", portalBaseBranchSHA, "\">",
+			portalBaseBranchSHA.substring(0, 7), "</a>");
+		String portalBranchSHAItem = JenkinsResultsParserUtil.combine(
+			"<strong>Git ID:</strong> <a href=\"https://github.com/",
+			"brianchandotcom/liferay-portal-ee/commit/", portalBranchSHA, "\">",
+			portalBranchSHA.substring(0, 7), "</a>");
+		String portalGitHubCompareURLItem = JenkinsResultsParserUtil.combine(
+			"<strong>Git Compare:</strong> <a href=\"https://github.com/",
+			"brianchandotcom/liferay-portal-ee/compare/a...b\">3 commits</a>");
+
+		BasePortalControllerBuildRunner<?> basePortalControllerBuildRunner =
+			Mockito.mock(BasePortalControllerBuildRunner.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePortalControllerBuildRunner
+		).previousBuildHasRunningInvocation();
+
+		Mockito.doReturn(
+			Arrays.asList(
+				new JSONObject(
+				).put(
+					"description",
+					JenkinsResultsParserUtil.combine(
+						"<strong>IN PROGRESS</strong> - <a href=\"",
+						invocationBuildURL, "\">Build URL</a><ul><li>",
+						portalBranchSHAItem, "</li><li>",
+						portalGitHubCompareURLItem, "</li><li>",
+						portalBaseBranchSHAItem, "</li></ul>")
+				).put(
+					"url", controllerBuildURL
+				))
+		).when(
+			basePortalControllerBuildRunner
+		).getPreviousBuildJSONObjects();
+
+		try (MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				() -> JenkinsResultsParserUtil.getLocalURL(Mockito.anyString())
+			).thenAnswer(
+				invocation -> invocation.getArgument(0)
+			);
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				() -> JenkinsResultsParserUtil.toJSONObject(
+					invocationBuildURL + "/api/json?tree=result")
+			).thenReturn(
+				new JSONObject(
+				).put(
+					"result", "FAILURE"
+				)
+			);
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				() -> JenkinsResultsParserUtil.toJSONObject(
+					controllerBuildURL + "/injectedEnvVars/api/json")
+			).thenReturn(
+				new JSONObject(
+				).put(
+					"envMap",
+					new JSONObject(
+					).put(
+						"BUILD_NUMBER", "12"
+					).put(
+						"HOSTNAME", "test-1-0-aws"
+					).put(
+						"JOB_NAME",
+						"test-portal-testsuite-upstream-controller" +
+							"(master-private_stable)"
+					)
+				)
+			);
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				() -> JenkinsResultsParserUtil.updateBuildDescription(
+					Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(),
+					Mockito.anyString())
+			).thenAnswer(
+				invocation -> null
+			);
+
+			Assert.assertFalse(
+				basePortalControllerBuildRunner.
+					previousBuildHasRunningInvocation());
+
+			ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
+				String.class);
+
+			jenkinsResultsParserUtilMockedStatic.verify(
+				() -> JenkinsResultsParserUtil.updateBuildDescription(
+					argumentCaptor.capture(), Mockito.eq(12),
+					Mockito.eq(
+						"test-portal-testsuite-upstream-controller" +
+							"(master-private_stable)"),
+					Mockito.eq("test-1-0-aws")));
+
+			testEquals(
+				JenkinsResultsParserUtil.combine(
+					"<strong style=\"color: red\">FAILURE</strong> - ",
+					invocationBuildURL, "<ul><li>", portalBranchSHAItem,
+					"</li><li>", portalGitHubCompareURLItem, "</li><li>",
+					portalBaseBranchSHAItem, "</li></ul>"),
+				argumentCaptor.getValue());
+		}
 	}
 
 	@Test
