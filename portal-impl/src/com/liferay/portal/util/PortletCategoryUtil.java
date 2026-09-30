@@ -62,16 +62,18 @@ public class PortletCategoryUtil {
 			return PortletCategoryKeys.CONTROL_PANEL_APPS;
 		}
 		else if (Objects.equals(legacyPortletCategoryKey, "configuration") ||
-				 Objects.equals(legacyPortletCategoryKey, "portal") ||
-				 Objects.equals(legacyPortletCategoryKey, "server")) {
+				 Objects.equals(legacyPortletCategoryKey, "portal")) {
 
-			return PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION;
+			return PortletCategoryKeys.CONTROL_PANEL_INSTANCE;
 		}
 		else if (Objects.equals(legacyPortletCategoryKey, "content")) {
 			return PortletCategoryKeys.SITE_ADMINISTRATION_CONTENT;
 		}
 		else if (Objects.equals(legacyPortletCategoryKey, "my")) {
 			return PortletCategoryKeys.USER_MY_ACCOUNT;
+		}
+		else if (Objects.equals(legacyPortletCategoryKey, "server")) {
+			return PortletCategoryKeys.CONTROL_PANEL_SYSTEM;
 		}
 		else if (Objects.equals(legacyPortletCategoryKey, "sites")) {
 			return PortletCategoryKeys.CONTROL_PANEL_SITES;

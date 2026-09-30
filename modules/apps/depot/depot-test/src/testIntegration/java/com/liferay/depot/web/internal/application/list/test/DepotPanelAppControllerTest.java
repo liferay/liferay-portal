@@ -163,8 +163,7 @@ public class DepotPanelAppControllerTest {
 		_assertIsDisplayed(
 			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_APPS);
 		_assertIsDisplayed(
-			_depotEntry.getGroupId(),
-			PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION);
+			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_INSTANCE);
 		_assertIsDisplayed(
 			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_SITES);
 		_assertIsDisplayed(

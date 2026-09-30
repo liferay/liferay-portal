@@ -12,7 +12,6 @@ public class PortletCategoryKeys {
 
 	public static final String[] ALL = {
 		PortletCategoryKeys.CONTROL_PANEL_APPS,
-		PortletCategoryKeys.CONTROL_PANEL_CONFIGURATION,
 		PortletCategoryKeys.CONTROL_PANEL_INSTANCE,
 		PortletCategoryKeys.CONTROL_PANEL_SITES,
 		PortletCategoryKeys.CONTROL_PANEL_SYSTEM,
@@ -21,9 +20,6 @@ public class PortletCategoryKeys {
 	};
 
 	public static final String CONTROL_PANEL_APPS = "control_panel.apps";
-
-	public static final String CONTROL_PANEL_CONFIGURATION =
-		"control_panel.configuration";
 
 	public static final String CONTROL_PANEL_INSTANCE =
 		"control_panel.instance";
