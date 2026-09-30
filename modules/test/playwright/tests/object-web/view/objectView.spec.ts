@@ -201,7 +201,9 @@ test('assert that the user is able to use the ERC field in Sort, on the Custom V
 		entry2
 	);
 
-	await page.getByTitle('Sortable Column').click();
+	await page
+		.getByRole('button', {name: 'Sort by External Reference Code'})
+		.click();
 
 	await expect(page.locator('.cell-externalReferenceCode').nth(1)).toHaveText(
 		entry2
