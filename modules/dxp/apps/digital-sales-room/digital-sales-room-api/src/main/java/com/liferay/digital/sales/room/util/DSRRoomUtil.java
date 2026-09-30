@@ -96,6 +96,16 @@ public class DSRRoomUtil {
 			String.class);
 	}
 
+	public static boolean isArchived(Group group) {
+		ObjectEntry objectEntry = _fetchObjectEntry(group);
+
+		if (objectEntry == null) {
+			return false;
+		}
+
+		return isArchived(objectEntry);
+	}
+
 	public static boolean isArchived(ObjectEntry objectEntry) {
 		if (MapUtil.getInteger(objectEntry.getValues(), "roomStatus") ==
 				WorkflowConstants.STATUS_INACTIVE) {
@@ -113,26 +123,8 @@ public class DSRRoomUtil {
 			return false;
 		}
 
-		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-
-		if (group == null) {
-			return false;
-		}
-
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionLocalServiceUtil.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DSR_ROOM", group.getCompanyId());
-
-		if ((objectDefinition == null) ||
-			!Objects.equals(
-				group.getClassName(), objectDefinition.getClassName())) {
-
-			return false;
-		}
-
-		ObjectEntry objectEntry = ObjectEntryLocalServiceUtil.fetchObjectEntry(
-			group.getClassPK());
+		ObjectEntry objectEntry = _fetchObjectEntry(
+			GroupLocalServiceUtil.fetchGroup(groupId));
 
 		if (objectEntry == null) {
 			return false;
@@ -149,6 +141,26 @@ public class DSRRoomUtil {
 		}
 
 		return isArchived(objectEntry);
+	}
+
+	private static ObjectEntry _fetchObjectEntry(Group group) {
+		if (group == null) {
+			return null;
+		}
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DSR_ROOM", group.getCompanyId());
+
+		if ((objectDefinition == null) ||
+			!Objects.equals(
+				group.getClassName(), objectDefinition.getClassName())) {
+
+			return null;
+		}
+
+		return ObjectEntryLocalServiceUtil.fetchObjectEntry(group.getClassPK());
 	}
 
 }

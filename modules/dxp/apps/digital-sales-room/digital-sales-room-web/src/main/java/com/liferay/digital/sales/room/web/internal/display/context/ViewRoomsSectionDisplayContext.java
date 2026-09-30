@@ -16,6 +16,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -82,6 +83,10 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 				DSRConstants.DSR_FRIENDLY_URL,
 				"/view_room?mode=edit&siteId={siteId}")
+		).put(
+			"maintenanceModeEnabled",
+			() -> FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-82960")
 		).put(
 			"ownedSiteIds",
 			() -> {

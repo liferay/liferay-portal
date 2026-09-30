@@ -97,9 +97,7 @@ public class ViewRoomStrutsAction implements StrutsAction {
 				PermissionChecker permissionChecker =
 					themeDisplay.getPermissionChecker();
 
-				if (!permissionChecker.isCompanyAdmin() &&
-					!permissionChecker.isGroupOwner(group.getGroupId())) {
-
+				if (!permissionChecker.isGroupAdmin(group.getGroupId())) {
 					SessionErrors.add(
 						httpServletRequest,
 						PrincipalException.MustHavePermission.class);

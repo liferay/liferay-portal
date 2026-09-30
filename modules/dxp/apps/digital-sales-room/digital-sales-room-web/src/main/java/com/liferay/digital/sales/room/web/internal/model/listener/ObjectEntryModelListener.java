@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextM
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Role;
@@ -68,6 +70,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.liveusers.LiveUsers;
@@ -303,6 +306,16 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
+	private Group _fetchGroup(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
+
+		return _groupLocalService.fetchGroup(
+			objectEntry.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+	}
+
 	private User _getAdministratorUser(long companyId) throws Exception {
 		List<User> users = _userLocalService.getUsersByRoleName(
 			companyId, RoleConstants.ADMINISTRATOR, 0, 1);
@@ -489,23 +502,104 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if (!Objects.equals(
-				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM") ||
-			(Objects.equals(
-				MapUtil.getString(originalObjectEntry.getValues(), "name"),
-				MapUtil.getString(objectEntry.getValues(), "name")) &&
-			 Objects.equals(
-				 MapUtil.getString(
-					 originalObjectEntry.getValues(), "friendlyURL"),
-				 MapUtil.getString(objectEntry.getValues(), "friendlyURL")))) {
+				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
 
 			return;
 		}
 
-		Group group = _groupLocalService.fetchGroup(
-			objectEntry.getCompanyId(),
-			_classNameLocalService.getClassNameId(
-				objectDefinition.getClassName()),
-			objectEntry.getObjectEntryId());
+		_partialUpdateObjectEntry(
+			objectDefinition, objectEntry, originalObjectEntry);
+		_updateGroup(objectDefinition, objectEntry, originalObjectEntry);
+	}
+
+	private void _onBeforeCreate(ObjectEntry objectEntry) {
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if (!Objects.equals(
+				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
+
+			return;
+		}
+
+		if (DSRUtil.isExpired()) {
+			throw new UnsupportedOperationException(
+				"Unable to create a digital sales room because the license " +
+					"has expired");
+		}
+
+		if (objectEntry.getExpirationDate() != null) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private void _onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if (!Objects.equals(
+				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
+
+			return;
+		}
+
+		if ((objectEntry.getStatus() == WorkflowConstants.STATUS_EXPIRED) ||
+			(objectEntry.getExpirationDate() != null)) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		if (DSRRoomUtil.isArchived(objectEntry) &&
+			!DSRRoomUtil.isArchived(originalObjectEntry) &&
+			!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-82960")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		Map<String, Serializable> originalValues =
+			originalObjectEntry.getValues();
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		for (Map.Entry<String, Serializable> entry : values.entrySet()) {
+			String name = entry.getKey();
+
+			if (Objects.equals(name, "archiveDate") ||
+				Objects.equals(name, "initialized") ||
+				Objects.equals(name, "roomStatus")) {
+
+				continue;
+			}
+
+			if (!Objects.equals(entry.getValue(), originalValues.get(name))) {
+				DSRRoomUtil.checkPermission(
+					originalObjectEntry,
+					PermissionThreadLocal.getPermissionChecker(),
+					ActionKeys.UPDATE);
+
+				return;
+			}
+		}
+	}
+
+	private void _partialUpdateObjectEntry(
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			ObjectEntry originalObjectEntry)
+		throws Exception {
+
+		if (Objects.equals(
+				MapUtil.getString(
+					originalObjectEntry.getValues(), "friendlyURL"),
+				MapUtil.getString(objectEntry.getValues(), "friendlyURL")) &&
+			Objects.equals(
+				MapUtil.getString(originalObjectEntry.getValues(), "name"),
+				MapUtil.getString(objectEntry.getValues(), "name"))) {
+
+			return;
+		}
+
+		Group group = _fetchGroup(objectDefinition, objectEntry);
 
 		if (group == null) {
 			return;
@@ -553,69 +647,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			new ServiceContext());
 	}
 
-	private void _onBeforeCreate(ObjectEntry objectEntry) {
-		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
-
-		if (!Objects.equals(
-				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
-
-			return;
-		}
-
-		if (DSRUtil.isExpired()) {
-			throw new UnsupportedOperationException(
-				"Unable to create a digital sales room because the license " +
-					"has expired");
-		}
-
-		if (objectEntry.getExpirationDate() != null) {
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	private void _onBeforeUpdate(
-			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
-		throws Exception {
-
-		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
-
-		if (!Objects.equals(
-				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
-
-			return;
-		}
-
-		if ((objectEntry.getStatus() == WorkflowConstants.STATUS_EXPIRED) ||
-			(objectEntry.getExpirationDate() != null)) {
-
-			throw new UnsupportedOperationException();
-		}
-
-		Map<String, Serializable> originalValues =
-			originalObjectEntry.getValues();
-		Map<String, Serializable> values = objectEntry.getValues();
-
-		for (Map.Entry<String, Serializable> entry : values.entrySet()) {
-			String name = entry.getKey();
-
-			if (Objects.equals(name, "archiveDate") ||
-				Objects.equals(name, "initialized") ||
-				Objects.equals(name, "roomStatus")) {
-
-				continue;
-			}
-
-			if (!Objects.equals(entry.getValue(), originalValues.get(name))) {
-				DSRRoomUtil.checkPermission(
-					originalObjectEntry,
-					PermissionThreadLocal.getPermissionChecker(),
-					ActionKeys.UPDATE);
-
-				return;
-			}
-		}
-	}
-
 	private void _updateFragmentEntryLink(Group group) {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
@@ -659,6 +690,48 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				_log.error(portalException);
 			}
 		}
+	}
+
+	private void _updateGroup(
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			ObjectEntry originalObjectEntry)
+		throws Exception {
+
+		boolean archived = DSRRoomUtil.isArchived(objectEntry);
+
+		if (archived == DSRRoomUtil.isArchived(originalObjectEntry)) {
+			return;
+		}
+
+		Group group = _fetchGroup(objectDefinition, objectEntry);
+
+		if (group == null) {
+			return;
+		}
+
+		UnicodeProperties unicodeProperties = group.getTypeSettingsProperties();
+
+		if (archived) {
+			unicodeProperties.setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString());
+		}
+		else {
+			unicodeProperties.remove(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE);
+		}
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(objectEntry.getCompanyId());
+		serviceContext.setUserId(objectEntry.getUserId());
+
+		_groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
+			group.getDescriptionMap(), group.getType(),
+			unicodeProperties.toString(), group.isManualMembership(),
+			group.getMembershipRestriction(), group.getFriendlyURL(),
+			group.isInheritContent(), !archived, serviceContext);
 	}
 
 	private static final String _RENDERER_KEY =

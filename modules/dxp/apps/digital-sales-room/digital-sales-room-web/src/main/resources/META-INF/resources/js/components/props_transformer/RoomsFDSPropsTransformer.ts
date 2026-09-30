@@ -186,6 +186,28 @@ export default function RoomsFDSPropsTransformer({
 			if (action.data.id === 'archive') {
 				event?.preventDefault();
 
+				if (!additionalProps.maintenanceModeEnabled) {
+					openModal({
+						bodyHTML: Liferay.Language.get(
+							'please-enable-the-site-level-maintenance-mode-feature-flag-to-archive-this-room'
+						),
+						buttons: [
+							{
+								autoFocus: true,
+								displayType: 'secondary',
+								label: Liferay.Language.get('close'),
+								type: 'cancel',
+							},
+						],
+						status: 'warning',
+						title: Liferay.Language.get(
+							'archiving-is-not-available'
+						),
+					});
+
+					return;
+				}
+
 				openModal({
 					bodyHTML: Liferay.Language.get(
 						'archive-digital-sales-room-confirmation-body'

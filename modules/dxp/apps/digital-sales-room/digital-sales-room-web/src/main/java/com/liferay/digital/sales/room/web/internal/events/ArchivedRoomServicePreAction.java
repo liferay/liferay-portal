@@ -95,8 +95,7 @@ public class ArchivedRoomServicePreAction extends Action {
 			PermissionThreadLocal.getPermissionChecker();
 
 		if ((permissionChecker != null) &&
-			(permissionChecker.isCompanyAdmin() ||
-			 permissionChecker.isGroupOwner(group.getGroupId()))) {
+			permissionChecker.isGroupAdmin(group.getGroupId())) {
 
 			return;
 		}
