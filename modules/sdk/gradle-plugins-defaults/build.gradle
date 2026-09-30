@@ -16,7 +16,7 @@ tasks.eclipse {
 dependencies {
 	api group: "com.github.jk1", name: "gradle-license-report", version: "2.0"
 	api group: "com.gradle.publish", name: "plugin-publish-plugin", version: "0.11.0"
-	api group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.1.240"
+	api group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.1.241"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.app.javadoc.builder", version: "1.2.7"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.baseline", version: "7.0.9"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.cache", version: "1.0.22"
@@ -25,7 +25,7 @@ dependencies {
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.go", version: "2.0.4"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.jsdoc", version: "2.0.82"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.patcher", version: "1.0.25"
-	api group: "com.liferay", name: "com.liferay.gradle.plugins.poshi.runner", version: "4.0.29"
+	api group: "com.liferay", name: "com.liferay.gradle.plugins.poshi.runner", version: "4.0.30"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.testray", version: "1.0.24"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.whip", version: "1.0.12"
 	api group: "gradle.plugin.com.github.maiflai", name: "gradle-scalatest", version: "0.25"
