@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -33,6 +34,7 @@ import jakarta.portlet.PortletSession;
 import java.io.Serializable;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -120,8 +122,27 @@ public class DeleteWorkflowInstanceMVCActionCommand
 		long workflowInstanceId = ParamUtil.getLong(
 			actionRequest, "workflowInstanceId");
 
-		return WorkflowInstanceManagerUtil.getWorkflowInstance(
-			themeDisplay.getCompanyId(), workflowInstanceId);
+		if (!Objects.equals(
+				_portal.getPortletId(actionRequest),
+				WorkflowPortletKeys.USER_WORKFLOW)) {
+
+			return WorkflowInstanceManagerUtil.getWorkflowInstance(
+				themeDisplay.getCompanyId(), workflowInstanceId);
+		}
+
+		WorkflowInstance workflowInstance =
+			WorkflowInstanceManagerUtil.getWorkflowInstance(
+				themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+				workflowInstanceId);
+
+		if (workflowInstance == null) {
+			throw new PrincipalException.MustHavePermission(
+				themeDisplay.getPermissionChecker(),
+				WorkflowInstance.class.getName(), workflowInstanceId,
+				ActionKeys.DELETE);
+		}
+
+		return workflowInstance;
 	}
 
 	private void _updateEntryStatus(Map<String, Serializable> workflowContext)
