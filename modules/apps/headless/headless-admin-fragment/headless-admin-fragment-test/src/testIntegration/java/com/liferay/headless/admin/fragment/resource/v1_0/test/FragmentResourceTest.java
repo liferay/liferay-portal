@@ -887,7 +887,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				InfoCollectionProvider.class,
 				"com.liferay.asset.internal.info.collection.provider." +
 					"RecentContentInfoCollectionProvider");
-
 		RelatedInfoItemCollectionProvider<?, ?>
 			relatedInfoItemCollectionProvider =
 				_infoItemServiceRegistry.getInfoItemService(
