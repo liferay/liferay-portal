@@ -8,6 +8,7 @@ package com.liferay.headless.portal.instances.internal.batch.engine.exception.ha
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
@@ -86,6 +87,14 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 	}
 
 	@Test
+	public void testHandleIgnoresTheExportItemForTheDeleteOperation() {
+		_handleExport(
+			new IllegalArgumentException(), RandomTestUtil.randomString());
+
+		Mockito.verifyNoInteractions(_userNotificationEventLocalService);
+	}
+
+	@Test
 	public void testHandleMapsExceptions() throws Exception {
 		_assertErrorMessageKey(
 			"please-enter-a-valid-email-address",
@@ -122,6 +131,24 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		_assertErrorMessageKey(
 			"the-default-instance-cannot-be-deleted",
 			new RequiredCompanyException());
+	}
+
+	@Test
+	public void testHandleMapsExportExceptions() throws Exception {
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		_assertExportErrorMessageKey(
+			"an-unexpected-error-occurred", new Exception());
+		_assertExportErrorMessageKey(
+			"the-default-instance-cannot-be-exported",
+			new RequiredCompanyException());
+		_assertExportErrorMessageKey(
+			"the-exported-schema-already-exists",
+			new IllegalArgumentException());
 	}
 
 	@Test
@@ -169,6 +196,29 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 	}
 
+	@Test
+	public void testHandleSendsUserNotificationEventForTheExportOperation()
+		throws Exception {
+
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		String portalInstanceId = RandomTestUtil.randomString();
+
+		_handleExport(new IllegalArgumentException(), portalInstanceId);
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			"EXPORT", payloadJSONObject.getString("operationType"));
+		Assert.assertEquals(
+			portalInstanceId, payloadJSONObject.getString("portalInstanceId"));
+		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
+	}
+
 	private void _assertErrorMessageKey(
 			String errorMessageKey, Exception exception)
 		throws Exception {
@@ -176,6 +226,20 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Mockito.clearInvocations(_userNotificationEventLocalService);
 
 		_handle(exception, RandomTestUtil.randomString());
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			errorMessageKey, payloadJSONObject.getString("errorMessageKey"));
+	}
+
+	private void _assertExportErrorMessageKey(
+			String errorMessageKey, Exception exception)
+		throws Exception {
+
+		Mockito.clearInvocations(_userNotificationEventLocalService);
+
+		_handleExport(exception, RandomTestUtil.randomString());
 
 		JSONObject payloadJSONObject = _capturePayloadJSONObject();
 
@@ -206,6 +270,16 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 
 		_portalInstanceBatchEngineImportTaskExceptionHandler.handle(
 			_batchEngineImportTask, null, exception, portalInstance,
+			RandomTestUtil.randomString());
+	}
+
+	private void _handleExport(Exception exception, String portalInstanceId) {
+		PortalInstanceExport portalInstanceExport = new PortalInstanceExport();
+
+		portalInstanceExport.setPortalInstanceId(() -> portalInstanceId);
+
+		_portalInstanceBatchEngineImportTaskExceptionHandler.handle(
+			_batchEngineImportTask, null, exception, portalInstanceExport,
 			RandomTestUtil.randomString());
 	}
 
