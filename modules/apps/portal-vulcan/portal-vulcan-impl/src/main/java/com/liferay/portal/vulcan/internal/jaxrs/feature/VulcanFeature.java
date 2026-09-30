@@ -247,7 +247,7 @@ public class VulcanFeature implements Feature {
 	private Language _language;
 
 	@Reference(
-		target = "(service.pid=com.liferay.portal.vulcan.internal.configuration.HeadlessAPICacheCompanyConfiguration)"
+		target = "(component.name=com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory)"
 	)
 	private ManagedServiceFactory _managedServiceFactory;
 
