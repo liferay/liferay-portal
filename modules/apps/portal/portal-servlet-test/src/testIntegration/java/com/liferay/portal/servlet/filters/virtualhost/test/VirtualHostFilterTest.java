@@ -278,6 +278,20 @@ public class VirtualHostFilterTest {
 	}
 
 	@Test
+	public void testProcessFilterForwardedURLWithVirtualLayoutSeparatorAndPeriodAndPathContext()
+		throws Exception {
+
+		_pathContext = _PATH_PROXY + _PATH_CONTEXT;
+		_pathProxy = _PATH_PROXY;
+
+		String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
+
+		Assert.assertEquals(
+			"/web" + groupFriendlyURL + "/~/design-library/home.html",
+			_getForwardedURL(_PATH_CONTEXT + "/~/design-library/home.html"));
+	}
+
+	@Test
 	public void testProcessFilterForwardsUnknownDocumentsURL() {
 		Assert.assertNotNull(
 			_getForwardedDLURL(
