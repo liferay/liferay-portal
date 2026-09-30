@@ -30,6 +30,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBu
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -583,9 +584,9 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		searchContext.setAttribute(Field.STATUS, status);
 		searchContext.setAttribute(
 			"formInstanceId", _ddmFormInstance.getFormInstanceId());
-		searchContext.setEnd(searchContext.getEnd());
+		searchContext.setEnd(QueryUtil.ALL_POS);
 		searchContext.setKeywords(getKeywords());
-		searchContext.setStart(searchContext.getStart());
+		searchContext.setStart(QueryUtil.ALL_POS);
 
 		return searchContext;
 	}
