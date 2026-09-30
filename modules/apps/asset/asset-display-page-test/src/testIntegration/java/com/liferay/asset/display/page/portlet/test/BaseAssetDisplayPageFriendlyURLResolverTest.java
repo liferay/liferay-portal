@@ -19,6 +19,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.ColorScheme;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURLComposite;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -39,6 +41,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -88,13 +91,14 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 
 	@FeatureFlag("LPD-57283")
 	@Test
-	@TestInfo({"LPD-104242", "LPD-107030"})
+	@TestInfo({"LPD-104242", "LPD-107030", "LPD-107075"})
 	public void testGetLayoutFriendlyURLComposite() throws Exception {
 		_testGetLayoutFriendlyURLComposite();
 		_testGetLayoutFriendlyURLCompositeLookAndFeel();
 		_testGetLayoutFriendlyURLCompositeLookAndFeelWhenMasterLayout();
 		_testGetLayoutFriendlyURLCompositeLookAndFeelWhenNotInherited();
 		_testGetLayoutFriendlyURLCompositeLookAndFeelWhenThemeSettingSet();
+		_testGetLayoutFriendlyURLCompositeVirtualGroup();
 		_testGetLayoutFriendlyURLCompositeWhenDisconnected();
 		_testGetLayoutFriendlyURLCompositeWhenNoDisplayPage();
 	}
@@ -371,6 +375,45 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		Assert.assertEquals(
 			themeSettingValue,
 			layout.getThemeSetting(_themeSettingKey, "regular"));
+	}
+
+	private void _testGetLayoutFriendlyURLCompositeVirtualGroup()
+		throws Exception {
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
+		JournalArticle journalArticle = _addJournalArticle();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addDisplayPageTemplate(
+				designLibraryGroup.getGroupId(), journalArticle);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Layout virtualLayout = _getLayout(journalArticle);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
+				designLibraryGroup.getFriendlyURL(), layout.getFriendlyURL()),
+			virtualLayout.getFriendlyURL());
+		Assert.assertEquals(
+			StringBundler.concat(
+				VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
+				designLibraryGroup.getFriendlyURL(),
+				layout.getFriendlyURL(LocaleUtil.getDefault())),
+			virtualLayout.getFriendlyURL(LocaleUtil.getDefault()));
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setLocale(LocaleUtil.getDefault());
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				VirtualLayoutConstants.CANONICAL_URL_SEPARATOR,
+				designLibraryGroup.getFriendlyURL(),
+				themeDisplay.getLayoutFriendlyURL(layout)),
+			themeDisplay.getLayoutFriendlyURL(virtualLayout));
 	}
 
 	private void _testGetLayoutFriendlyURLCompositeWhenDisconnected()
