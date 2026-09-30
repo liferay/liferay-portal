@@ -43,6 +43,78 @@ tests:
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: AWS Backup Dashboard
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: grafana-azure-monitor-datasource
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Keeps the AWS Backup console links when the cloud provider is AWS
+        set:
+            aws.region: us-east-1
+            cloudProvider: aws
+    -   asserts:
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: kube_customresource_liferay_backup_status_condition
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: grafana-azure-monitor-datasource
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Keeps the LiferayBackup metrics when the cloud provider is GCP
+        set:
+            cloudProvider: gcp
+    -   asserts:
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '"type": "grafana-azure-monitor-datasource",\s+"uid": "azure-monitor"'
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '"queryType": "Azure Resource Graph"'
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: resourceGroup =~ .liferay-test.
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '"subscriptions": \[\s+"00000000-0000-0000-0000-000000000000"\s+\]'
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '"title": "Backups \(Last 14 Days\)"'
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '\[.Backup Triggered.\] = triggered'
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '"IN PROGRESS": \{\s+"index": 1,\s+"text": "🟡 IN PROGRESS"'
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: resourceGroups/liferay-test/providers/Microsoft.Storage/storageAccounts/\$\{__value.raw\}/overview
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: '"id": "links",\s+"value": \[\s+\]'
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: \$\{AZURE_
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: kube_customresource_liferay_backup
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: resourceGroups/liferay-test/overview
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Lists the backups from Azure Resource Graph when the cloud provider is Azure
+        set:
+            azure.resourceGroupName: liferay-test
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
                     path: data["databases.json"]
                     pattern: "\"apiVersion\": \"dashboard.grafana.app/v2beta1\""
             -   matchRegex:
