@@ -430,6 +430,37 @@ public class WebServerServletTest {
 		Assert.assertEquals(
 			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT,
 			mockHttpServletResponse.getHeader(HttpHeaders.CONTENT_DISPOSITION));
+
+		Image image4 = ImageLocalServiceUtil.createImage(0);
+
+		image4.setType(ImageConstants.TYPE_PNG);
+		image4.setTextObj(TestDataConstants.TEST_BYTE_ARRAY);
+
+		mockHttpServletRequest = new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter(
+			"fileName", RandomTestUtil.randomString() + ".html");
+		mockHttpServletRequest.setParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
+		mockHttpServletRequest.setParameter(
+			"uuid", RandomTestUtil.randomString());
+
+		mockHttpServletResponse = new MockHttpServletResponse();
+
+		ReflectionTestUtil.invoke(
+			_webServerServlet, "writeImage",
+			new Class<?>[] {
+				Image.class, HttpServletRequest.class, HttpServletResponse.class
+			},
+			image4, mockHttpServletRequest, mockHttpServletResponse);
+
+		String contentDisposition = mockHttpServletResponse.getHeader(
+			HttpHeaders.CONTENT_DISPOSITION);
+
+		Assert.assertTrue(
+			contentDisposition,
+			contentDisposition.startsWith(
+				HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT));
 	}
 
 	private FileEntry _addFileEntry() throws Exception {
