@@ -13,6 +13,9 @@ import com.liferay.batch.engine.service.BatchEngineExportTaskLocalService;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
@@ -36,25 +39,8 @@ public class BatchEngineTaskCleanerSchedulerJobConfiguration
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 		return () -> {
-			for (BatchEngineExportTask batchEngineExportTask :
-					_batchEngineExportTaskLocalService.
-						getBatchEngineExportTasks(
-							BatchEngineTaskExecuteStatus.COMPLETED.
-								toString())) {
-
-				_batchEngineExportTaskLocalService.deleteBatchEngineExportTask(
-					batchEngineExportTask.getBatchEngineExportTaskId());
-			}
-
-			for (BatchEngineImportTask batchEngineImportTask :
-					_batchEngineImportTaskLocalService.
-						getBatchEngineImportTasks(
-							BatchEngineTaskExecuteStatus.COMPLETED.
-								toString())) {
-
-				_batchEngineImportTaskLocalService.deleteBatchEngineImportTask(
-					batchEngineImportTask.getBatchEngineImportTaskId());
-			}
+			_deleteCompletedBatchEngineExportTasks();
+			_deleteCompletedBatchEngineImportTasks();
 		};
 	}
 
@@ -72,6 +58,44 @@ public class BatchEngineTaskCleanerSchedulerJobConfiguration
 		_triggerConfiguration = TriggerConfiguration.createTriggerConfiguration(
 			batchEngineTaskConfiguration.completedTasksCleanerScanInterval(),
 			TimeUnit.DAY);
+	}
+
+	private void _deleteCompletedBatchEngineExportTasks()
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_batchEngineExportTaskLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"executeStatus",
+					BatchEngineTaskExecuteStatus.COMPLETED.toString())));
+		actionableDynamicQuery.setPerformActionMethod(
+			(BatchEngineExportTask batchEngineExportTask) ->
+				_batchEngineExportTaskLocalService.deleteBatchEngineExportTask(
+					batchEngineExportTask.getBatchEngineExportTaskId()));
+
+		actionableDynamicQuery.performActions();
+	}
+
+	private void _deleteCompletedBatchEngineImportTasks()
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_batchEngineImportTaskLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"executeStatus",
+					BatchEngineTaskExecuteStatus.COMPLETED.toString())));
+		actionableDynamicQuery.setPerformActionMethod(
+			(BatchEngineImportTask batchEngineImportTask) ->
+				_batchEngineImportTaskLocalService.deleteBatchEngineImportTask(
+					batchEngineImportTask.getBatchEngineImportTaskId()));
+
+		actionableDynamicQuery.performActions();
 	}
 
 	@Reference
