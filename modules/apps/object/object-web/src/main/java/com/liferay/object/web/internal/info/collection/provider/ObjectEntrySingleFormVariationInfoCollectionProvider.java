@@ -49,11 +49,13 @@ import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.web.internal.util.ObjectEntryUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -114,6 +116,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		GroupLocalService groupLocalService,
 		ListTypeEntryLocalService listTypeEntryLocalService,
 		ObjectDefinition objectDefinition,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,
 		ObjectEntryManagerRegistry objectEntryManagerRegistry,
 		ObjectFieldLocalService objectFieldLocalService,
@@ -125,12 +128,18 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		_assetVocabularyLocalService = assetVocabularyLocalService;
 		_groupLocalService = groupLocalService;
 		_listTypeEntryLocalService = listTypeEntryLocalService;
-		_objectDefinition = objectDefinition;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectEntryManagerRegistry = objectEntryManagerRegistry;
 		_objectFieldLocalService = objectFieldLocalService;
 		_objectLayoutLocalService = objectLayoutLocalService;
 		_objectScopeProviderRegistry = objectScopeProviderRegistry;
+
+		_className = objectDefinition.getClassName();
+		_companyId = objectDefinition.getCompanyId();
+		_objectDefinitionId = objectDefinition.getObjectDefinitionId();
+		_scope = objectDefinition.getScope();
+		_storageType = objectDefinition.getStorageType();
 	}
 
 	@Override
@@ -138,33 +147,38 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		CollectionQuery collectionQuery) {
 
 		try {
-			if (_objectDefinition.isDefaultStorageType() &&
-				_objectDefinition.isEnableObjectEntryVersioning()) {
+			ObjectDefinition objectDefinition =
+				_objectDefinitionLocalService.getObjectDefinition(
+					_objectDefinitionId);
+
+			if (objectDefinition.isDefaultStorageType() &&
+				objectDefinition.isEnableObjectEntryVersioning()) {
 
 				return _getCollectionInfoPageByApprovedObjectEntries(
-					collectionQuery);
+					collectionQuery, objectDefinition);
 			}
 
-			if (!_objectDefinition.isAccountEntryRestricted() &&
-				_objectDefinition.isDefaultStorageType() &&
-				_objectDefinition.isEnableIndexSearch()) {
+			if (!objectDefinition.isAccountEntryRestricted() &&
+				objectDefinition.isDefaultStorageType() &&
+				objectDefinition.isEnableIndexSearch()) {
 
 				return _getCollectionInfoPageByIndexer(collectionQuery);
 			}
 
-			return _getCollectionInfoPageByObjectEntryManager(collectionQuery);
+			return _getCollectionInfoPageByObjectEntryManager(
+				collectionQuery, objectDefinition);
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(
 				"Unable to get object entries for object definition " +
-					_objectDefinition.getObjectDefinitionId(),
+					_objectDefinitionId,
 				exception);
 		}
 	}
 
 	@Override
 	public String getCollectionItemClassName() {
-		return _objectDefinition.getClassName();
+		return _className;
 	}
 
 	@Override
@@ -189,7 +203,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 				unsafeConsumer -> {
 					for (ObjectField objectField :
 							_objectFieldLocalService.getObjectFields(
-								_objectDefinition.getObjectDefinitionId())) {
+								_objectDefinitionId)) {
 
 						if (!(Objects.equals(
 								objectField.getDBType(),
@@ -233,17 +247,26 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 	@Override
 	public String getFormVariationKey() {
-		return String.valueOf(_objectDefinition.getObjectDefinitionId());
+		return String.valueOf(_objectDefinitionId);
 	}
 
 	@Override
 	public String getKey() {
-		return _objectDefinition.getClassName();
+		return _className;
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _objectDefinition.getPluralLabel(locale);
+		try {
+			ObjectDefinition objectDefinition =
+				_objectDefinitionLocalService.getObjectDefinition(
+					_objectDefinitionId);
+
+			return objectDefinition.getPluralLabel(locale);
+		}
+		catch (PortalException portalException) {
+			return ReflectionUtil.throwException(portalException);
+		}
 	}
 
 	@Override
@@ -253,9 +276,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 	@Override
 	public boolean isAvailable() {
-		if (_objectDefinition.getCompanyId() !=
-				CompanyThreadLocal.getCompanyId()) {
-
+		if (_companyId != CompanyThreadLocal.getCompanyId()) {
 			return false;
 		}
 
@@ -305,8 +326,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		searchContext.setAttribute(
 			Field.STATUS, WorkflowConstants.STATUS_APPROVED);
-		searchContext.setAttribute(
-			"objectDefinitionId", _objectDefinition.getObjectDefinitionId());
+		searchContext.setAttribute("objectDefinitionId", _objectDefinitionId);
 		searchContext.setBooleanClauses(_getBooleanClauses(collectionQuery));
 		searchContext.setCompanyId(serviceContext.getCompanyId());
 
@@ -339,10 +359,6 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		return searchContext;
 	}
 
-	private ObjectDefinition _cloneObjectDefinition() {
-		return (ObjectDefinition)_objectDefinition.clone();
-	}
-
 	private List<AssetVocabulary> _getAssetVocabularies(
 		ServiceContext serviceContext) {
 
@@ -354,8 +370,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 							serviceContext.getScopeGroupId())),
 				assetVocabulary ->
 					assetVocabulary.isAssociatedToClassNameIdAndClassTypePK(
-						PortalUtil.getClassNameId(
-							_objectDefinition.getClassName()),
+						PortalUtil.getClassNameId(_className),
 						AssetCategoryConstants.ALL_CLASS_TYPE_PK));
 		}
 		catch (PortalException portalException) {
@@ -373,8 +388,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		BooleanQuery booleanQuery = new BooleanQuery();
 
 		List<ObjectField> objectFields =
-			_objectFieldLocalService.getObjectFields(
-				_objectDefinition.getObjectDefinitionId());
+			_objectFieldLocalService.getObjectFields(_objectDefinitionId);
 
 		Map<String, String[]> configuration =
 			collectionQuery.getConfiguration();
@@ -417,7 +431,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	}
 
 	private InfoPage<ObjectEntry> _getCollectionInfoPageByApprovedObjectEntries(
-			CollectionQuery collectionQuery)
+			CollectionQuery collectionQuery, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ServiceContext serviceContext =
@@ -430,12 +444,11 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
 				_objectEntryManagerRegistry.getObjectEntryManager(
-					_objectDefinition.getCompanyId(),
-					_objectDefinition.getStorageType()));
+					_companyId, _storageType));
 
 		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			defaultObjectEntryManager.getApprovedObjectEntries(
-				themeDisplay.getCompanyId(), _cloneObjectDefinition(),
+				themeDisplay.getCompanyId(), objectDefinition,
 				scopeGroup.getGroupKey(), null,
 				new DefaultDTOConverterContext(
 					false, null, null, null, null, themeDisplay.getLocale(),
@@ -451,7 +464,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 			TransformUtil.transform(
 				new ArrayList<>(objectEntriesPage.getItems()),
 				objectEntry -> ObjectEntryUtil.toObjectEntry(
-					_objectDefinition, objectEntry)),
+					objectDefinition, objectEntry)),
 			collectionQuery.getPagination(),
 			(int)objectEntriesPage.getTotalCount());
 	}
@@ -461,7 +474,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		throws Exception {
 
 		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(
-			_objectDefinition.getClassName());
+			_className);
 
 		Hits hits = indexer.search(_buildSearchContext(collectionQuery));
 
@@ -478,13 +491,12 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	}
 
 	private InfoPage<ObjectEntry> _getCollectionInfoPageByObjectEntryManager(
-			CollectionQuery collectionQuery)
+			CollectionQuery collectionQuery, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntryManager objectEntryManager =
 			_objectEntryManagerRegistry.getObjectEntryManager(
-				_objectDefinition.getCompanyId(),
-				_objectDefinition.getStorageType());
+				_companyId, _storageType);
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -498,7 +510,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 			Page<ObjectEntry> objectEntriesPage =
 				defaultObjectEntryManager.getServiceBuilderObjectEntries(
-					themeDisplay.getCompanyId(), _cloneObjectDefinition(),
+					themeDisplay.getCompanyId(), objectDefinition,
 					scopeGroup.getGroupKey(),
 					new DefaultDTOConverterContext(
 						false, null, null, null, null, themeDisplay.getLocale(),
@@ -518,7 +530,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			objectEntryManager.getObjectEntries(
-				themeDisplay.getCompanyId(), _cloneObjectDefinition(),
+				themeDisplay.getCompanyId(), objectDefinition,
 				scopeGroup.getGroupKey(), null,
 				new DefaultDTOConverterContext(
 					false, null, null, null, null, themeDisplay.getLocale(),
@@ -534,7 +546,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 			TransformUtil.transform(
 				new ArrayList<>(objectEntriesPage.getItems()),
 				objectEntry -> ObjectEntryUtil.toObjectEntry(
-					_objectDefinition, objectEntry)),
+					objectDefinition, objectEntry)),
 			collectionQuery.getPagination(),
 			(int)objectEntriesPage.getTotalCount());
 	}
@@ -567,8 +579,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		StringBundler sb = new StringBundler();
 
 		List<ObjectField> objectFields =
-			_objectFieldLocalService.getObjectFields(
-				_objectDefinition.getObjectDefinitionId());
+			_objectFieldLocalService.getObjectFields(_objectDefinitionId);
 
 		for (Map.Entry<String, String[]> entry : configuration.entrySet()) {
 			if (Validator.isNull(entry.getValue()[0])) {
@@ -605,8 +616,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 	private long[] _getGroupIds() throws Exception {
 		ObjectScopeProvider objectScopeProvider =
-			_objectScopeProviderRegistry.getObjectScopeProvider(
-				_objectDefinition.getScope());
+			_objectScopeProviderRegistry.getObjectScopeProvider(_scope);
 
 		if (!objectScopeProvider.isGroupAware()) {
 			return new long[0];
@@ -622,10 +632,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		groupIds.add(groupId);
 
-		if (StringUtil.equals(
-				_objectDefinition.getScope(),
-				ObjectDefinitionConstants.SCOPE_DEPOT)) {
-
+		if (StringUtil.equals(_scope, ObjectDefinitionConstants.SCOPE_DEPOT)) {
 			groupIds.addAll(
 				TransformUtil.transform(
 					DepotEntryLocalServiceUtil.getGroupConnectedDepotEntries(
@@ -639,8 +646,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 	private InfoField<?> _getInfoField() {
 		if (!StringUtil.equals(
-				_objectDefinition.getStorageType(),
-				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT) ||
+				_storageType, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT) ||
 			!_hasCategorizationObjectLayoutBox()) {
 
 			return null;
@@ -649,12 +655,10 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		long groupId = 0;
 
 		if (StringUtil.equals(
-				_objectDefinition.getScope(),
-				ObjectDefinitionConstants.SCOPE_COMPANY)) {
+				_scope, ObjectDefinitionConstants.SCOPE_COMPANY)) {
 
 			try {
-				Group group = _groupLocalService.getCompanyGroup(
-					_objectDefinition.getCompanyId());
+				Group group = _groupLocalService.getCompanyGroup(_companyId);
 
 				groupId = group.getGroupId();
 			}
@@ -694,8 +698,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 	private List<InfoFieldSetEntry> _getInfoFieldSetEntries() {
 		if (!StringUtil.equals(
-				_objectDefinition.getStorageType(),
-				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT) ||
+				_storageType, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT) ||
 			!_hasCategorizationObjectLayoutBox()) {
 
 			return Collections.emptyList();
@@ -795,7 +798,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	private boolean _hasCategorizationObjectLayoutBox() {
 		ObjectLayout objectLayout =
 			_objectLayoutLocalService.fetchDefaultObjectLayout(
-				_objectDefinition.getObjectDefinitionId());
+				_objectDefinitionId);
 
 		if (objectLayout == null) {
 			return false;
@@ -832,13 +835,18 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	private final AssetCategoryLocalService _assetCategoryLocalService;
 	private final AssetTagLocalService _assetTagLocalService;
 	private final AssetVocabularyLocalService _assetVocabularyLocalService;
+	private final String _className;
+	private final long _companyId;
 	private final GroupLocalService _groupLocalService;
 	private final ListTypeEntryLocalService _listTypeEntryLocalService;
-	private final ObjectDefinition _objectDefinition;
+	private final long _objectDefinitionId;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectEntryManagerRegistry _objectEntryManagerRegistry;
 	private final ObjectFieldLocalService _objectFieldLocalService;
 	private final ObjectLayoutLocalService _objectLayoutLocalService;
 	private final ObjectScopeProviderRegistry _objectScopeProviderRegistry;
+	private final String _scope;
+	private final String _storageType;
 
 }
