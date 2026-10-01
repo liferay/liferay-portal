@@ -150,6 +150,18 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				setPromoPrice(cpInstance::getPromoPrice);
 				setPublished(cpInstance::isPublished);
 				setPurchasable(cpInstance::isPurchasable);
+				setReplacementProductExternalReferenceCode(
+					() -> {
+						if (replacementCPInstance == null) {
+							return null;
+						}
+
+						CPDefinition replacementCPDefinition =
+							replacementCPInstance.getCPDefinition();
+
+						return replacementCPDefinition.
+							getCProductExternalReferenceCode();
+					});
 				setReplacementSkuExternalReferenceCode(
 					() -> {
 						if (replacementCPInstance == null) {

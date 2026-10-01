@@ -48,8 +48,11 @@ public class ProductOptionUtil {
 		}
 		else if (LazyReferencingThreadLocal.isEnabled()) {
 			cpOption = cpOptionService.getOrAddEmptyCPOption(
-				optionExternalReferenceCode, productOption.getFieldType(),
-				GetterUtil.get(productOption.getSkuContributor(), false));
+				optionExternalReferenceCode,
+				LanguageUtils.getLocalizedMap(productOption.getName()),
+				productOption.getFieldType(),
+				GetterUtil.get(productOption.getSkuContributor(), false),
+				productOption.getKey());
 		}
 		else {
 			cpOption = cpOptionService.fetchCPOptionByExternalReferenceCode(

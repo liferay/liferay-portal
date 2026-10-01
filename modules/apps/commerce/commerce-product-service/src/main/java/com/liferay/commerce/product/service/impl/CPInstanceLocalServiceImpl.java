@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -81,6 +82,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -340,6 +342,9 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 				externalReferenceCode, serviceContext.getCompanyId());
 
 			if (cpInstance != null) {
+				_updateEmptyCPInstanceOptionValueRels(
+					cpInstance, json, serviceContext);
+
 				return cpInstanceLocalService.updateCPInstance(
 					externalReferenceCode, cpInstance.getCPInstanceId(), sku,
 					gtin, manufacturerPartNumber, purchasable, width, height,
@@ -2016,6 +2021,37 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 		}
 
 		return cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds;
+	}
+
+	private void _updateEmptyCPInstanceOptionValueRels(
+			CPInstance cpInstance, String json, ServiceContext serviceContext)
+		throws PortalException {
+
+		if (!LazyReferencingThreadLocal.isEnabled() ||
+			(cpInstance.getStatus() != WorkflowConstants.STATUS_EMPTY)) {
+
+			return;
+		}
+
+		CPDefinitionOptionRelLocalService cpDefinitionOptionRelLocalService =
+			_cpDefinitionOptionRelLocalServiceSnapshot.get();
+
+		Map<Long, List<Long>>
+			cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds =
+				cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelCPDefinitionOptionValueRelIds(
+						cpInstance.getCPDefinitionId(), json);
+
+		if (MapUtil.isEmpty(
+				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds)) {
+
+			return;
+		}
+
+		_cpInstanceOptionValueRelLocalService.updateCPInstanceOptionValueRels(
+			cpInstance.getGroupId(), cpInstance.getCompanyId(),
+			serviceContext.getUserId(), cpInstance.getCPInstanceId(),
+			cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds);
 	}
 
 	private void _validate(

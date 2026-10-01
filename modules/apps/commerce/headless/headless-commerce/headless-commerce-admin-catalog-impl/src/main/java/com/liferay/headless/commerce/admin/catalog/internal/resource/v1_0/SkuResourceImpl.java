@@ -374,6 +374,11 @@ public class SkuResourceImpl
 				_getOrAddEmptyCPDefinition(sku), externalReferenceCode, sku);
 		}
 
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			return _addOrUpdateSKU(
+				cpInstance.getCPDefinition(), externalReferenceCode, sku);
+		}
+
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpInstance.getGroupId());
 
@@ -590,18 +595,22 @@ public class SkuResourceImpl
 
 		CPInstance cpInstance = SkuUtil.addOrUpdateCPInstance(
 			cpDefinition, _cpDefinitionOptionRelService,
-			_cpDefinitionOptionValueRelService, _cpInstanceService,
-			_cpOptionService, externalReferenceCode, sku, serviceContext);
+			_cpDefinitionOptionValueRelService, _cpDefinitionService,
+			_cpInstanceService, _cpOptionService, externalReferenceCode,
+			serviceContext, sku);
 
 		serviceContext.setExpandoBridgeAttributes(null);
 
-		SkuUtil.updateCommercePriceEntries(
-			_commercePriceEntryLocalService, _commercePriceListLocalService,
-			_configurationProvider, cpInstance,
-			(BigDecimal)GetterUtil.get(sku.getPrice(), cpInstance.getPrice()),
-			(BigDecimal)GetterUtil.get(
-				sku.getPromoPrice(), cpInstance.getPromoPrice()),
-			StringPool.BLANK, serviceContext);
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			SkuUtil.updateCommercePriceEntries(
+				_commercePriceEntryLocalService, _commercePriceListLocalService,
+				_configurationProvider, cpInstance,
+				(BigDecimal)GetterUtil.get(
+					sku.getPrice(), cpInstance.getPrice()),
+				(BigDecimal)GetterUtil.get(
+					sku.getPromoPrice(), cpInstance.getPromoPrice()),
+				StringPool.BLANK, serviceContext);
+		}
 
 		_updateNestedResources(sku, cpInstance, serviceContext);
 
@@ -1016,13 +1025,16 @@ public class SkuResourceImpl
 
 		serviceContext.setExpandoBridgeAttributes(null);
 
-		SkuUtil.updateCommercePriceEntries(
-			_commercePriceEntryLocalService, _commercePriceListLocalService,
-			_configurationProvider, cpInstance,
-			(BigDecimal)GetterUtil.get(sku.getPrice(), cpInstance.getPrice()),
-			(BigDecimal)GetterUtil.get(
-				sku.getPromoPrice(), cpInstance.getPromoPrice()),
-			StringPool.BLANK, serviceContext);
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			SkuUtil.updateCommercePriceEntries(
+				_commercePriceEntryLocalService, _commercePriceListLocalService,
+				_configurationProvider, cpInstance,
+				(BigDecimal)GetterUtil.get(
+					sku.getPrice(), cpInstance.getPrice()),
+				(BigDecimal)GetterUtil.get(
+					sku.getPromoPrice(), cpInstance.getPromoPrice()),
+				StringPool.BLANK, serviceContext);
+		}
 
 		_updateNestedResources(sku, cpInstance, serviceContext);
 

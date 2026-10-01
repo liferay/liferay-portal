@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -936,8 +937,12 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
-		_validatePriceableCPDefinitionOptionValue(
-			cpDefinitionOptionValueRel, cpDefinitionOptionRel.getPriceType());
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			_validatePriceableCPDefinitionOptionValue(
+				cpDefinitionOptionValueRel,
+				cpDefinitionOptionRel.getPriceType());
+		}
 
 		cpDefinitionOptionValueRel =
 			cpDefinitionOptionValueRelPersistence.update(

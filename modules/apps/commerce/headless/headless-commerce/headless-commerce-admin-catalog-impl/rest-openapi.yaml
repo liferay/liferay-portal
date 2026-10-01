@@ -3645,6 +3645,11 @@ components:
                         Whether the SKU can be added to an order; indexed for filtering and defaults to true on create.
                     example: true
                     type: boolean
+                replacementProductExternalReferenceCode:
+                    description:
+                        External reference code of the product that owns the replacement SKU; on read the value mirrors the replacement product's external reference code, and on write it is used only during an import to create the replacement SKU when it does not exist yet.
+                    example: AB-34098-789-N
+                    type: string
                 replacementSkuExternalReferenceCode:
                     description:
                         External reference code of the replacement SKU that customers are redirected to when this SKU is discontinued; on read the value mirrors the replacement's external reference code, and on write it is honored only when `discontinued` is true.
