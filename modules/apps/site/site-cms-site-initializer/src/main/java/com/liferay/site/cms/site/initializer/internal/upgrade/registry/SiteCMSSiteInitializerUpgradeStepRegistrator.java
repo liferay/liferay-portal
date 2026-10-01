@@ -23,7 +23,7 @@ import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSDefaultP
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSObjectRelationshipEdgeUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0.CMSBulkActionTaskTaskResultUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_1.CMSObjectFolderPermissionsUpgradeProcess;
-import com.liferay.site.cms.site.initializer.internal.upgrade.v3_1_0.CMSAdministratorRoleUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_2.CMSAdministratorRoleUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -66,7 +66,7 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 				_roleLocalService));
 
 		registry.register(
-			"3.0.1", "3.1.0",
+			"3.0.1", "3.0.2",
 			new CMSAdministratorRoleUpgradeProcess(
 				_companyLocalService, _roleLocalService));
 	}

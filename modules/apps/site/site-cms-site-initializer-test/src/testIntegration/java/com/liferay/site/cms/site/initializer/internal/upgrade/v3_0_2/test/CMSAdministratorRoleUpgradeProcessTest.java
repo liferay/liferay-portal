@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.site.cms.site.initializer.internal.upgrade.v3_1_0.test;
+package com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_2.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
@@ -108,7 +108,7 @@ public class CMSAdministratorRoleUpgradeProcessTest {
 	}
 
 	private static final String _CLASS_NAME =
-		"com.liferay.site.cms.site.initializer.internal.upgrade.v3_1_0." +
+		"com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_2." +
 			"CMSAdministratorRoleUpgradeProcess";
 
 	private static final String _EXTERNAL_REFERENCE_CODE =
