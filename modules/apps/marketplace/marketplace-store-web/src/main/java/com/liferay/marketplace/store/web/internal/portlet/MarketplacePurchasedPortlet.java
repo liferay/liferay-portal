@@ -16,6 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Joan Kim
  */
 @Component(
+	enabled = false,
 	property = {
 		"com.liferay.portlet.css-class-wrapper=marketplace-portlet",
 		"com.liferay.portlet.display-category=category.hidden",
