@@ -27,13 +27,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.time.DateUtils;
 
+import org.codehaus.groovy.ast.ClassCodeVisitorSupport;
+import org.codehaus.groovy.ast.ClassNode;
+import org.codehaus.groovy.ast.MethodNode;
+import org.codehaus.groovy.ast.expr.MethodCallExpression;
+import org.codehaus.groovy.ast.expr.StaticMethodCallExpression;
+import org.codehaus.groovy.ast.stmt.Statement;
+import org.codehaus.groovy.classgen.GeneratorContext;
+import org.codehaus.groovy.control.CompilePhase;
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.SourceUnit;
+import org.codehaus.groovy.control.customizers.CompilationCustomizer;
 import org.codehaus.groovy.control.customizers.SecureASTCustomizer;
 import org.codehaus.groovy.syntax.Types;
 
@@ -317,6 +328,8 @@ public class UserSegmentsEntryMembershipChecker {
 		"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	};
 
+	private static final Set<String> _allowedMethodNames = Set.of(
+		"indexOf", "parse", "toLowerCase");
 	private static final Map<String, Class<?>> _cachedScriptClasses =
 		new ConcurrentHashMap<>();
 	private static final Pattern _containsOperationPattern = Pattern.compile(
@@ -329,9 +342,13 @@ public class UserSegmentsEntryMembershipChecker {
 	private static final Map<String, String> _fieldNames = HashMapBuilder.put(
 		"dateModified", "modifiedDate"
 	).build();
+
 	private static final GroovyShell _groovyShell = new GroovyShell(
 		new CompilerConfiguration() {
 			{
+				addCompilationCustomizers(
+					new MethodNameCompilationCustomizer());
+
 				addCompilationCustomizers(
 					new SecureASTCustomizer() {
 						{
@@ -360,6 +377,7 @@ public class UserSegmentsEntryMembershipChecker {
 					});
 			}
 		});
+
 	private static final Pattern _inOperationPattern = Pattern.compile(
 		"((?:customField/)?\\w+)\\s+in\\s+\\(\\s*" +
 			"('[^']*'(?:\\s*,\\s*'[^']*')*)\\s*\\)");
@@ -395,5 +413,74 @@ public class UserSegmentsEntryMembershipChecker {
 		"'([^')]*)'|false|true|CLASS_PK|" +
 			"'{0,1}\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}.\\d{3})" +
 				"{0,1}((Z)|((\\+|-)(\\d*))){0,1}'{0,1}");
+
+	private static class MethodNameClassCodeVisitor
+		extends ClassCodeVisitorSupport {
+
+		public MethodNameClassCodeVisitor(SourceUnit sourceUnit) {
+			_sourceUnit = sourceUnit;
+		}
+
+		@Override
+		public void visitMethodCallExpression(
+			MethodCallExpression methodCallExpression) {
+
+			_checkMethodName(methodCallExpression.getMethodAsString());
+
+			super.visitMethodCallExpression(methodCallExpression);
+		}
+
+		@Override
+		public void visitStaticMethodCallExpression(
+			StaticMethodCallExpression staticMethodCallExpression) {
+
+			_checkMethodName(staticMethodCallExpression.getMethod());
+
+			super.visitStaticMethodCallExpression(staticMethodCallExpression);
+		}
+
+		@Override
+		protected SourceUnit getSourceUnit() {
+			return _sourceUnit;
+		}
+
+		private void _checkMethodName(String methodName) {
+			if (!_allowedMethodNames.contains(methodName)) {
+				throw new SecurityException(
+					"Method \"" + methodName + "\" is not allowed");
+			}
+		}
+
+		private final SourceUnit _sourceUnit;
+
+	}
+
+	private static class MethodNameCompilationCustomizer
+		extends CompilationCustomizer {
+
+		public MethodNameCompilationCustomizer() {
+			super(CompilePhase.CANONICALIZATION);
+		}
+
+		@Override
+		public void call(
+			SourceUnit sourceUnit, GeneratorContext generatorContext,
+			ClassNode classNode) {
+
+			MethodNameClassCodeVisitor methodNameClassCodeVisitor =
+				new MethodNameClassCodeVisitor(sourceUnit);
+
+			for (MethodNode methodNode :
+					classNode.getDeclaredMethods("evaluate")) {
+
+				Statement statement = methodNode.getCode();
+
+				if (statement != null) {
+					statement.visit(methodNameClassCodeVisitor);
+				}
+			}
+		}
+
+	}
 
 }
