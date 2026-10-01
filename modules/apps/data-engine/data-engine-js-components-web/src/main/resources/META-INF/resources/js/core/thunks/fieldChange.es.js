@@ -45,6 +45,17 @@ const getEditedPages = ({
 					};
 				}
 
+				// A nonlocalizable field has no value translations, so writing
+				// one under the editing language would make the field look
+				// localized, which hides the translation-is-disabled help icon.
+
+				if (!field.localizable) {
+					return {
+						...field,
+						value,
+					};
+				}
+
 				// The value shown for a locale with no translation of its
 				// own is the default locale's, so compare against that to
 				// avoid recording an edit the user never made.
