@@ -335,6 +335,15 @@ public abstract class BaseBundlePersistentResource
 				return;
 			}
 
+			JenkinsMaster.QueueItem leftQueueItem =
+				producerJenkinsMaster.getQueueItem(producerQueueId);
+
+			if ((leftQueueItem != null) && leftQueueItem.isCancelled()) {
+				_reinvokeCancelledQueueItem();
+
+				return;
+			}
+
 			String producerBuildURL = JenkinsResultsParserUtil.getBuildURL(
 				_JOB_NAME, producerJenkinsMaster, producerQueueId);
 
@@ -707,6 +716,28 @@ public abstract class BaseBundlePersistentResource
 				_getProducerJobURL()));
 	}
 
+	private void _reinvokeCancelledQueueItem() {
+		if (_cancelledReinvocationCount >= _MAX_CANCELLED_REINVOCATION_COUNT) {
+			print("No cancelled queue item reinvocation attempts remaining");
+
+			return;
+		}
+
+		_cancelledReinvocationCount++;
+
+		print(
+			JenkinsResultsParserUtil.combine(
+				"Reinvoking bundles (",
+				String.valueOf(_cancelledReinvocationCount), " of ",
+				String.valueOf(_MAX_CANCELLED_REINVOCATION_COUNT),
+				") after queue item ", String.valueOf(getProducerQueueId()),
+				" was cancelled at ", _getProducerJobURL()));
+
+		_missingCount = 0;
+
+		start();
+	}
+
 	private void _reinvokeQueueItem(
 		JenkinsMaster.QueueItem queueItem, long queueDuration) {
 
@@ -789,6 +820,8 @@ public abstract class BaseBundlePersistentResource
 
 	private static final String _JOB_VARIANT = "app-server-bundle-builder";
 
+	private static final int _MAX_CANCELLED_REINVOCATION_COUNT = 10;
+
 	private static final int _MAX_FAIL_COUNT = 2;
 
 	private static final int _MAX_MISSING_COUNT = 2;
@@ -807,6 +840,7 @@ public abstract class BaseBundlePersistentResource
 		"https?://(?<cohortName>test-\\d+)(\\.liferay\\.com)?");
 
 	private Build _build;
+	private int _cancelledReinvocationCount;
 	private int _failCount;
 	private int _missingCount;
 	private String _queueItemWhy;

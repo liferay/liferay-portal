@@ -636,7 +636,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	public QueueItem getQueueItem(long queueId) {
 		String queueItemAPIURL = JenkinsResultsParserUtil.combine(
 			getURL(), "/queue/item/", String.valueOf(queueId),
-			"/api/json?tree=actions[parameters[name,value]],",
+			"/api/json?tree=actions[parameters[name,value]],cancelled,",
 			"id,inQueueSince,task[name,url],url,why");
 
 		try {
@@ -1299,6 +1299,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 		public String getWhy() {
 			return _jsonObject.optString("why");
+		}
+
+		public boolean isCancelled() {
+			return _jsonObject.optBoolean("cancelled");
 		}
 
 		public boolean isValidQueueItem() {
