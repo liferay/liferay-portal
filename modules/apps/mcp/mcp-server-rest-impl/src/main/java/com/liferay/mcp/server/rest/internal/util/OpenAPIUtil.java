@@ -1275,9 +1275,11 @@ public class OpenAPIUtil {
 			if (jsonObject.has("$ref")) {
 				String ref = jsonObject.getString("$ref");
 
+				int schemaMaxDepth = _getSchemaMaxDepth(
+					excludedPropertyAttributeName);
+
 				if (visitedRefs.contains(ref) ||
-					(visitedRefs.size() >= _getSchemaMaxDepth(
-						excludedPropertyAttributeName))) {
+					(visitedRefs.size() >= schemaMaxDepth)) {
 
 					return HashMapBuilder.<String, Object>put(
 						"type", "object"
