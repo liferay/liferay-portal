@@ -241,6 +241,7 @@
 				"type": "grafana-azure-monitor-datasource",
 				"uid": "${DS_AZURE_MONITOR}"
 			},
+			"description": "Counts the backups that succeeded within the time range, as chosen in Time Range Applies To. Azure Resource Graph only keeps the last 14 days of backup jobs, so older backups are not counted.",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -335,6 +336,7 @@
 				"type": "grafana-azure-monitor-datasource",
 				"uid": "${DS_AZURE_MONITOR}"
 			},
+			"description": "Counts the backups that failed or were cancelled within the time range, as chosen in Time Range Applies To. Azure Resource Graph only keeps the last 14 days of backup jobs, so older backups are not counted.",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -429,6 +431,7 @@
 				"type": "grafana-azure-monitor-datasource",
 				"uid": "${DS_AZURE_MONITOR}"
 			},
+			"description": "Counts the backups that finished within the time range, as chosen in Time Range Applies To. Azure Resource Graph only keeps the last 14 days of backup jobs, so older backups are not counted. Backups still in progress are not counted.",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
@@ -523,6 +526,7 @@
 				"type": "grafana-azure-monitor-datasource",
 				"uid": "${DS_AZURE_MONITOR}"
 			},
+			"description": "Shows the share of finished backups that failed or were cancelled within the time range, as chosen in Time Range Applies To. Azure Resource Graph only keeps the last 14 days of backup jobs, so older backups are not counted.",
 			"fieldConfig": {
 				"defaults": {
 					"color": {
