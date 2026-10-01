@@ -12,11 +12,14 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Map;
 
 /**
  * @author Alessio Antonio Rendina
@@ -26,7 +29,8 @@ public class SkuUtil {
 	public static CPInstance fetchCPInstance(
 			CPDefinitionService cpDefinitionService,
 			CPInstanceService cpInstanceService, long groupId,
-			String productExternalReferenceCode, String productType,
+			String productExternalReferenceCode,
+			Map<String, String> productName, String productType,
 			ServiceContext serviceContext, String skuExternalReferenceCode,
 			long skuId)
 		throws PortalException {
@@ -70,6 +74,7 @@ public class SkuUtil {
 		CPDefinition cpDefinition =
 			cpDefinitionService.getOrAddEmptyCPDefinition(
 				productExternalReferenceCode, groupId,
+				LanguageUtils.getLocalizedMap(productName),
 				GetterUtil.getString(productType, SimpleCPTypeConstants.NAME));
 
 		return cpInstanceService.getOrAddEmptyCPInstance(

@@ -123,8 +123,8 @@ public class DiscountSkuUtil {
 		CPInstance cpInstance = SkuUtil.fetchCPInstance(
 			cpDefinitionService, cpInstanceService, groupId,
 			discountSku.getProductExternalReferenceCode(),
-			discountSku.getProductType(), serviceContext,
-			skuExternalReferenceCode,
+			discountSku.getProductName(), discountSku.getProductType(),
+			serviceContext, skuExternalReferenceCode,
 			GetterUtil.getLong(discountSku.getSkuId()));
 
 		if (cpInstance == null) {

@@ -330,6 +330,10 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition = cpDefinitionPersistence.update(cpDefinition);
 
 		if (_emptyModelManager.isEmptyModel()) {
+			_addCPDefinitionLocalizedFields(
+				user.getCompanyId(), cpDefinitionId, cProduct.getCProductId(),
+				nameMap, null, null, null, null, null);
+
 			_cProductLocalService.updatePublishedCPDefinitionId(
 				cProduct.getCProductId(), cpDefinition.getCPDefinitionId());
 
@@ -2035,7 +2039,7 @@ public class CPDefinitionLocalServiceImpl
 	@Override
 	public CPDefinition getOrAddEmptyCPDefinition(
 			String externalReferenceCode, long companyId, long userId,
-			long groupId, String productTypeName)
+			long groupId, Map<Locale, String> nameMap, String productTypeName)
 		throws PortalException {
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar();
@@ -2053,9 +2057,7 @@ public class CPDefinitionLocalServiceImpl
 				calendar.get(Calendar.DATE), calendar.get(Calendar.HOUR_OF_DAY),
 				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.YEAR), 0, 0, 0, 0, 0, false, 0, false, 0,
-				null, null, null,
-				Collections.singletonMap(
-					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, null, null, _getNameMap(externalReferenceCode, nameMap),
 				true, productTypeName, false, false, false, 0, null, false, 0,
 				null, null, false, false, null, 0, 0,
 				WorkflowConstants.STATUS_EMPTY, serviceContext),
@@ -3328,6 +3330,17 @@ public class CPDefinitionLocalServiceImpl
 	private String _getIndexFieldName(String optionKey, String languageId) {
 		return StringBundler.concat(
 			languageId, "_ATTRIBUTE_", optionKey, "_VALUES_NAMES");
+	}
+
+	private Map<Locale, String> _getNameMap(
+		String externalReferenceCode, Map<Locale, String> nameMap) {
+
+		if (MapUtil.isEmpty(nameMap)) {
+			return Collections.singletonMap(
+				LocaleUtil.getSiteDefault(), externalReferenceCode);
+		}
+
+		return nameMap;
 	}
 
 	private Map<Locale, String> _getUniqueUrlTitles(

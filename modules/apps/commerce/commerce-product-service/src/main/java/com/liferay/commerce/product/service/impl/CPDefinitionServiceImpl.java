@@ -346,7 +346,8 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 
 	@Override
 	public CPDefinition getOrAddEmptyCPDefinition(
-			String externalReferenceCode, long groupId, String productTypeName)
+			String externalReferenceCode, long groupId,
+			Map<Locale, String> nameMap, String productTypeName)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -365,7 +366,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 
 		return cpDefinitionLocalService.getOrAddEmptyCPDefinition(
 			externalReferenceCode, permissionChecker.getCompanyId(),
-			permissionChecker.getUserId(), groupId, productTypeName);
+			permissionChecker.getUserId(), groupId, nameMap, productTypeName);
 	}
 
 	@Override

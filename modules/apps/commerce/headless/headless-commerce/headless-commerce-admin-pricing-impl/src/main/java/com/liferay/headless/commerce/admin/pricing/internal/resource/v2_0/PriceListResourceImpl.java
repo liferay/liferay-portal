@@ -587,7 +587,7 @@ public class PriceListResourceImpl
 				CPInstance cpInstance = SkuUtil.fetchCPInstance(
 					_cpDefinitionService, _cpInstanceService,
 					commercePriceList.getGroupId(),
-					priceEntry.getProductExternalReferenceCode(),
+					priceEntry.getProductExternalReferenceCode(), null,
 					priceEntry.getProductType(), serviceContext,
 					priceEntry.getSkuExternalReferenceCode(),
 					GetterUtil.getLong(priceEntry.getSkuId()));

@@ -116,6 +116,7 @@ public class DiscountProductUtil {
 		CPDefinition cpDefinition =
 			cpDefinitionService.getOrAddEmptyCPDefinition(
 				productExternalReferenceCode, commerceCatalog.getGroupId(),
+				null,
 				GetterUtil.getString(
 					discountProduct.getProductType(),
 					SimpleCPTypeConstants.NAME));

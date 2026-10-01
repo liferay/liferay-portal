@@ -641,7 +641,7 @@ public class SkuResourceImpl
 
 		return _cpDefinitionService.getOrAddEmptyCPDefinition(
 			sku.getProductExternalReferenceCode(), commerceCatalog.getGroupId(),
-			sku.getProductType());
+			null, sku.getProductType());
 	}
 
 	private Page<Sku> _getSkusPage(

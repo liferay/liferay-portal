@@ -84,7 +84,7 @@ public class ProductUtil {
 		}
 
 		return cpDefinitionService.getOrAddEmptyCPDefinition(
-			externalReferenceCode, groupId,
+			externalReferenceCode, groupId, null,
 			GetterUtil.getString(productTypeName, SimpleCPTypeConstants.NAME));
 	}
 

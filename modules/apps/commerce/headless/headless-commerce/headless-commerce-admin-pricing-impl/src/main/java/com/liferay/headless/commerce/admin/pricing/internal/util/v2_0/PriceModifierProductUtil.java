@@ -119,6 +119,7 @@ public class PriceModifierProductUtil {
 		CPDefinition cpDefinition =
 			cpDefinitionService.getOrAddEmptyCPDefinition(
 				productExternalReferenceCode, commerceCatalog.getGroupId(),
+				null,
 				GetterUtil.getString(
 					priceModifierProduct.getProductType(),
 					SimpleCPTypeConstants.NAME));
