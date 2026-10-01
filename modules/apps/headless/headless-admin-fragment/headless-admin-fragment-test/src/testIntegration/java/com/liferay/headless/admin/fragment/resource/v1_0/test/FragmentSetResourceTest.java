@@ -235,7 +235,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 		_assertProblemException(
 			"BAD_REQUEST",
-			_language.get(LocaleUtil.getDefault(), "name-is-invalid"),
+			_language.get(
+				LocaleUtil.getDefault(), "fragment-set-name-is-invalid"),
 			() -> fragmentSetResource.postSiteFragmentSet(
 				testGroup.getExternalReferenceCode(), invalidNameFragmentSet));
 
@@ -325,7 +326,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 		_assertProblemException(
 			"BAD_REQUEST",
-			_language.get(LocaleUtil.getDefault(), "name-is-invalid"),
+			_language.get(
+				LocaleUtil.getDefault(), "fragment-set-name-is-invalid"),
 			() -> fragmentSetResource.putSiteFragmentSet(
 				testGroup.getExternalReferenceCode(),
 				nullNameFragmentSet.getExternalReferenceCode(),
