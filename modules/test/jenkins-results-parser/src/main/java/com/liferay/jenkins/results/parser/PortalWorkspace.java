@@ -141,7 +141,7 @@ public class PortalWorkspace extends BaseWorkspace {
 	public void setPortalUpstreamBranchName(String portalUpstreamBranchName) {
 		if (Objects.equals(
 				portalUpstreamBranchName,
-				jsonObject.optString("portal_upstream_branch_name", null))) {
+				jsonObject.optString("portal_upstream_branch_name"))) {
 
 			return;
 		}

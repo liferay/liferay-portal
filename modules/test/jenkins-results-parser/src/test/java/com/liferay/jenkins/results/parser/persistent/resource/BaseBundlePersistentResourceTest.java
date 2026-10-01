@@ -239,6 +239,16 @@ public class BaseBundlePersistentResourceTest
 		BaseBundlePersistentResource baseBundlePersistentResource =
 			Mockito.mock(BaseBundlePersistentResource.class);
 
+		Mockito.doCallRealMethod(
+		).when(
+			baseBundlePersistentResource
+		).getStatusMessage();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBundlePersistentResource
+		).update();
+
 		Mockito.doReturn(
 			new JSONObject()
 		).when(
@@ -263,21 +273,11 @@ public class BaseBundlePersistentResourceTest
 			baseBundlePersistentResource
 		).getStatus();
 
-		Mockito.doCallRealMethod(
-		).when(
-			baseBundlePersistentResource
-		).getStatusMessage();
-
 		Mockito.doReturn(
 			true
 		).when(
 			baseBundlePersistentResource
 		).isController();
-
-		Mockito.doCallRealMethod(
-		).when(
-			baseBundlePersistentResource
-		).update();
 
 		return baseBundlePersistentResource;
 	}

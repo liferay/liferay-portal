@@ -255,8 +255,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		JenkinsMaster.QueueItem queueItem = _jenkinsMaster.getQueueItem(7800);
 
-		Assert.assertEquals(executableURL, queueItem.getExecutableURL());
 		Assert.assertEquals(7800, queueItem.getId());
+		Assert.assertEquals(executableURL, queueItem.getExecutableURL());
 
 		Assert.assertTrue(queueItem.isCancelled());
 	}

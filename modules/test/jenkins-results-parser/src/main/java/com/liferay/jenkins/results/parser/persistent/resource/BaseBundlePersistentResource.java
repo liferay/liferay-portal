@@ -329,7 +329,7 @@ public abstract class BaseBundlePersistentResource
 						queueItem.getInQueueSince();
 
 				if (queueDuration > _MAX_QUEUE_DURATION) {
-					_reinvokeQueueItem(queueItem, queueDuration);
+					_reinvokeQueueItem(queueDuration, queueItem);
 				}
 
 				return;
@@ -747,7 +747,7 @@ public abstract class BaseBundlePersistentResource
 	}
 
 	private void _reinvokeQueueItem(
-		JenkinsMaster.QueueItem queueItem, long queueDuration) {
+		long queueDuration, JenkinsMaster.QueueItem queueItem) {
 
 		if (_queueReinvocationCount >= _MAX_QUEUE_REINVOCATION_COUNT) {
 			print("No queue reinvocation attempts remaining");

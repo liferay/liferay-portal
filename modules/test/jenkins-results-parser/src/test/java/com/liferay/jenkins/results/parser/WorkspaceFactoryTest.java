@@ -50,11 +50,11 @@ public class WorkspaceFactoryTest
 			JenkinsResultsParserUtil.class, "_gitWorkingDirectoriesJSONArray",
 			new JSONArray());
 
-		String repositoryName = RandomTestUtil.randomString();
-		Workspace workspace = Mockito.mock(Workspace.class);
-
 		Map<String, Workspace> workspaces = ReflectionTestUtil.getFieldValue(
 			WorkspaceFactory.class, "_workspaces");
+
+		String repositoryName = RandomTestUtil.randomString();
+		Workspace workspace = Mockito.mock(Workspace.class);
 
 		workspaces.put(repositoryName, workspace);
 
