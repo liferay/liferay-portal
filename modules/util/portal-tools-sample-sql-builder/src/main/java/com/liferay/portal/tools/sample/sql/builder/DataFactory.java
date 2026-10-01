@@ -8991,7 +8991,8 @@ public class DataFactory {
 		// Other fields
 
 		userModel.setContactId(_counter.get());
-		userModel.setPassword("test");
+		userModel.setPassword("{NONE}test");
+		userModel.setPasswordEncrypted(true);
 		userModel.setPasswordModifiedDate(new Date());
 		userModel.setReminderQueryQuestion("What is your screen name?");
 		userModel.setReminderQueryAnswer(screenName);
