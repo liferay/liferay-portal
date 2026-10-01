@@ -5,8 +5,11 @@
 
 package com.liferay.headless.commerce.admin.pricing.resource.v2_0.test;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -15,9 +18,12 @@ import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.model.CommercePriceListChannelRel;
+import com.liferay.commerce.price.list.model.CommercePriceListDiscountRel;
 import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListChannelRelLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceListDiscountRelLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListOrderTypeRelLocalService;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalService;
 import com.liferay.commerce.pricing.constants.CommercePriceModifierConstants;
@@ -29,6 +35,7 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
@@ -39,7 +46,9 @@ import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.Creator;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListAccount;
+import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListAccountGroup;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListChannel;
+import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListDiscount;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.TierPrice;
@@ -62,6 +71,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -229,13 +239,23 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 	public void testPostPriceList() throws Exception {
 		super.testPostPriceList();
 
+		_testPostPriceListWithCatalogBasePriceListWhenLazyReferencingEnabled();
 		_testPostPriceListWithCreator();
 		_testPostPriceListWithExistingIds();
+		_testPostPriceListWithLazyReferencedRels();
 		_testPostPriceListWithLazyReferencingDisabled();
 		_testPostPriceListWithLazyReferencingEnabled();
 		_testPostPriceListWithPriceModifierWhenLazyReferencingEnabled();
 		_testPostPriceListWithSamePriceListAccount();
 		_testPostPriceListWithSamePriceListChannel();
+	}
+
+	@Override
+	@Test
+	public void testPutPriceListByExternalReferenceCode() throws Exception {
+		super.testPutPriceListByExternalReferenceCode();
+
+		_testPutPriceListByExternalReferenceCodeWithLazyReferencedPriceListDiscount();
 	}
 
 	@Override
@@ -357,6 +377,8 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 				catalogCurrencyExternalReferenceCode =
 					_commerceCurrency.getExternalReferenceCode();
 				catalogExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				currencyCode = _commerceCurrency.getCode();
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -564,6 +586,36 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 			priceListAccount.getPriceListExternalReferenceCode());
 	}
 
+	private void _testPostPriceListWithCatalogBasePriceListWhenLazyReferencingEnabled()
+		throws Exception {
+
+		PriceList postPriceList = null;
+
+		PriceList priceList = randomPriceList();
+
+		priceList.setCatalogBasePriceList(true);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			postPriceList = priceListResource.postPriceList(priceList);
+		}
+
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.
+				fetchCatalogBaseCommercePriceListByType(
+					_commerceCatalog.getGroupId(),
+					CommercePriceListConstants.TYPE_PRICE_LIST);
+
+		Assert.assertEquals(
+			commercePriceList.getExternalReferenceCode(),
+			postPriceList.getExternalReferenceCode());
+		Assert.assertEquals(
+			commercePriceList.getCommercePriceListId(),
+			GetterUtil.getLong(postPriceList.getId()));
+	}
+
 	private void _testPostPriceListWithCreator() throws Exception {
 		String password = RandomTestUtil.randomString();
 		User user = UserTestUtil.addOmniadminUser();
@@ -681,6 +733,78 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 			priceModifier1.getTitle(), commercePriceModifier.getTitle());
 	}
 
+	private void _testPostPriceListWithLazyReferencedRels() throws Exception {
+		PriceList priceList = randomPriceList();
+
+		PriceListAccountGroup priceListAccountGroup =
+			new PriceListAccountGroup() {
+				{
+					accountGroupExternalReferenceCode = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+				}
+			};
+
+		priceList.setPriceListAccountGroups(
+			new PriceListAccountGroup[] {priceListAccountGroup});
+
+		PriceListAccount priceListAccount = new PriceListAccount() {
+			{
+				accountExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				accountType = PriceListAccount.AccountType.PERSON;
+			}
+		};
+
+		priceList.setPriceListAccounts(
+			new PriceListAccount[] {priceListAccount});
+
+		PriceListChannel priceListChannel = new PriceListChannel() {
+			{
+				channelExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+			}
+		};
+
+		priceList.setPriceListChannels(
+			new PriceListChannel[] {priceListChannel});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			priceListResource.postPriceList(priceList);
+		}
+
+		AccountEntry accountEntry =
+			_accountEntryLocalService.getAccountEntryByExternalReferenceCode(
+				priceListAccount.getAccountExternalReferenceCode(),
+				testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, accountEntry.getStatus());
+		Assert.assertEquals(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON, accountEntry.getType());
+
+		AccountGroup accountGroup =
+			_accountGroupLocalService.getAccountGroupByExternalReferenceCode(
+				priceListAccountGroup.getAccountGroupExternalReferenceCode(),
+				testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, accountGroup.getStatus());
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.
+				getCommerceChannelByExternalReferenceCode(
+					priceListChannel.getChannelExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		_commerceChannels.add(commerceChannel);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, commerceChannel.getStatus());
+	}
+
 	private void _testPostPriceListWithLazyReferencingDisabled()
 		throws Exception {
 
@@ -756,6 +880,8 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 		Assert.assertEquals(
 			_commerceCurrency.getCode(),
 			commerceCatalog.getCommerceCurrencyCode());
+		Assert.assertEquals(
+			priceList.getCatalogName(), commerceCatalog.getName());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
 
@@ -938,10 +1064,62 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 		Assert.assertEquals(2, commercePriceListChannelRel.getOrder());
 	}
 
+	private void _testPutPriceListByExternalReferenceCodeWithLazyReferencedPriceListDiscount()
+		throws Exception {
+
+		PriceList putPriceList = null;
+
+		PriceList priceList = randomPriceList();
+
+		PriceListDiscount priceListDiscount = new PriceListDiscount() {
+			{
+				discountExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				order = RandomTestUtil.randomInt();
+			}
+		};
+
+		priceList.setPriceListDiscounts(
+			new PriceListDiscount[] {priceListDiscount});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			priceListResource.putPriceListByExternalReferenceCode(
+				priceList.getExternalReferenceCode(), priceList);
+
+			priceListDiscount.setOrder(
+				GetterUtil.getInteger(priceListDiscount.getOrder()) + 1);
+
+			putPriceList =
+				priceListResource.putPriceListByExternalReferenceCode(
+					priceList.getExternalReferenceCode(), priceList);
+		}
+
+		List<CommercePriceListDiscountRel> commercePriceListDiscountRels =
+			_commercePriceListDiscountRelLocalService.
+				getCommercePriceListDiscountRels(putPriceList.getId());
+
+		Assert.assertEquals(
+			commercePriceListDiscountRels.toString(), 1,
+			commercePriceListDiscountRels.size());
+
+		CommercePriceListDiscountRel commercePriceListDiscountRel =
+			commercePriceListDiscountRels.get(0);
+
+		Assert.assertEquals(
+			GetterUtil.getInteger(priceListDiscount.getOrder()),
+			commercePriceListDiscountRel.getOrder());
+	}
+
 	private AccountEntry _accountEntry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
@@ -950,6 +1128,9 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@DeleteAfterTestRun
 	private List<CommerceChannel> _commerceChannels = new ArrayList<>();
@@ -968,6 +1149,13 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 	@Inject
 	private CommercePriceListChannelRelLocalService
 		_commercePriceListChannelRelLocalService;
+
+	@Inject
+	private CommercePriceListDiscountRelLocalService
+		_commercePriceListDiscountRelLocalService;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Inject
 	private CommercePriceListOrderTypeRelLocalService

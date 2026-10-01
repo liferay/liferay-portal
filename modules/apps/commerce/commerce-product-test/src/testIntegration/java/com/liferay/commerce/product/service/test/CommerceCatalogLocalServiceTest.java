@@ -105,11 +105,12 @@ public class CommerceCatalogLocalServiceTest {
 	@Test
 	public void testGetOrAddEmptyCommerceCatalog() throws Exception {
 		String externalReferenceCode = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
 
 		try {
 			_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 				externalReferenceCode, TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), "USD");
+				TestPropsValues.getUserId(), name, "USD");
 
 			Assert.fail();
 		}
@@ -125,18 +126,19 @@ public class CommerceCatalogLocalServiceTest {
 			commerceCatalog =
 				_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 					externalReferenceCode, TestPropsValues.getCompanyId(),
-					TestPropsValues.getUserId(), "USD");
+					TestPropsValues.getUserId(), name, "USD");
 
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
 			Assert.assertEquals(
 				externalReferenceCode,
 				commerceCatalog.getExternalReferenceCode());
+			Assert.assertEquals(name, commerceCatalog.getName());
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
 
 			CommerceCatalog resolvedCommerceCatalog =
 				_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 					externalReferenceCode, TestPropsValues.getCompanyId(),
-					TestPropsValues.getUserId(), "USD");
+					TestPropsValues.getUserId(), name, "USD");
 
 			Assert.assertEquals(
 				commerceCatalog.getCommerceCatalogId(),
