@@ -36,6 +36,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.SkuUnitOfMeasure;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.SkuVirtualSettings;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.SkuVirtualSettingsFileEntry;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.SkuResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -186,6 +187,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		_testPostProductIdSkuWithOptionIdKey();
 		_testPostProductIdSkuWithOptionKey();
 		_testPostProductIdSkuWithSkuVirtualSettings();
+		_testPostProductIdSkuWithSkuVirtualSettingsWhenLazyReferencingEnabled();
 		_testPostProductIdSkuWithTermsOfUseJournalArticleExternalReferenceCode();
 		_testPostProductIdSkuWithTermsOfUseJournalArticleGroupExternalReferenceCode();
 	}
@@ -993,6 +995,59 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		Assert.assertEquals(
 			postSkuVirtualSettings.getUseSample(),
 			randomSkuVirtualSettings.getUseSample());
+	}
+
+	private void _testPostProductIdSkuWithSkuVirtualSettingsWhenLazyReferencingEnabled()
+		throws Exception {
+
+		Sku postSku = null;
+
+		Sku randomSku = randomSku();
+
+		randomSku.setSkuVirtualSettings(
+			new SkuVirtualSettings() {
+				{
+					override = true;
+					skuVirtualSettingsFileEntries =
+						new SkuVirtualSettingsFileEntry[] {
+							new SkuVirtualSettingsFileEntry() {
+								{
+									url = "https://liferay.com";
+									version = RandomTestUtil.randomString();
+								}
+							}
+						};
+					url = "https://liferay.com";
+				}
+			});
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		SkuResource skuResource = SkuResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "skuVirtualSettings"
+		).build();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			postSku = skuResource.postProductIdSku(
+				_cpDefinition.getCProductId(), randomSku);
+		}
+
+		SkuVirtualSettings skuVirtualSettings = postSku.getSkuVirtualSettings();
+
+		SkuVirtualSettingsFileEntry[] skuVirtualSettingsFileEntries =
+			skuVirtualSettings.getSkuVirtualSettingsFileEntries();
+
+		Assert.assertEquals(
+			Arrays.toString(skuVirtualSettingsFileEntries), 1,
+			skuVirtualSettingsFileEntries.length);
 	}
 
 	private void _testPostProductIdSkuWithTermsOfUseJournalArticleExternalReferenceCode()

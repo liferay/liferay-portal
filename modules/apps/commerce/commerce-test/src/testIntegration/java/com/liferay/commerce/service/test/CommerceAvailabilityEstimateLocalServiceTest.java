@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -72,8 +71,8 @@ public class CommerceAvailabilityEstimateLocalServiceTest {
 			"A NoSuchAvailabilityEstimateException is thrown while lazy " +
 				"referencing is disabled"
 		).and(
-			"An empty stub with the given external reference code is " +
-				"returned while lazy referencing is enabled"
+			"An empty stub with the given external reference code and title " +
+				"is returned while lazy referencing is enabled"
 		).and(
 			"The same commerce availability estimate is resolved on " +
 				"subsequent requests"
@@ -82,12 +81,13 @@ public class CommerceAvailabilityEstimateLocalServiceTest {
 		);
 
 		String externalReferenceCode = RandomTestUtil.randomString();
+		Map<Locale, String> titleMap = RandomTestUtil.randomLocaleStringMap();
 
 		try {
 			_commerceAvailabilityEstimateLocalService.
 				getOrAddEmptyCommerceAvailabilityEstimate(
 					externalReferenceCode, _user.getCompanyId(),
-					_user.getUserId());
+					_user.getUserId(), titleMap);
 
 			Assert.fail();
 		}
@@ -106,24 +106,22 @@ public class CommerceAvailabilityEstimateLocalServiceTest {
 				_commerceAvailabilityEstimateLocalService.
 					getOrAddEmptyCommerceAvailabilityEstimate(
 						externalReferenceCode, _user.getCompanyId(),
-						_user.getUserId());
+						_user.getUserId(), titleMap);
 
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_EMPTY,
-				commerceAvailabilityEstimate.getStatus());
 			Assert.assertEquals(
 				externalReferenceCode,
 				commerceAvailabilityEstimate.getExternalReferenceCode());
 			Assert.assertEquals(
-				externalReferenceCode,
-				commerceAvailabilityEstimate.getTitle(
-					LocaleUtil.getSiteDefault()));
+				WorkflowConstants.STATUS_EMPTY,
+				commerceAvailabilityEstimate.getStatus());
+			Assert.assertEquals(
+				titleMap, commerceAvailabilityEstimate.getTitleMap());
 
 			CommerceAvailabilityEstimate resolvedCommerceAvailabilityEstimate =
 				_commerceAvailabilityEstimateLocalService.
 					getOrAddEmptyCommerceAvailabilityEstimate(
 						externalReferenceCode, _user.getCompanyId(),
-						_user.getUserId());
+						_user.getUserId(), titleMap);
 
 			Assert.assertEquals(
 				commerceAvailabilityEstimate.
@@ -145,10 +143,10 @@ public class CommerceAvailabilityEstimateLocalServiceTest {
 			WorkflowConstants.STATUS_EMPTY,
 			commerceAvailabilityEstimate.getStatus());
 
-		Map<Locale, String> titleMap =
+		Map<Locale, String> updatedTitleMap =
 			commerceAvailabilityEstimate.getTitleMap();
 
-		Assert.assertFalse(titleMap.isEmpty());
+		Assert.assertFalse(updatedTitleMap.isEmpty());
 	}
 
 	@Rule

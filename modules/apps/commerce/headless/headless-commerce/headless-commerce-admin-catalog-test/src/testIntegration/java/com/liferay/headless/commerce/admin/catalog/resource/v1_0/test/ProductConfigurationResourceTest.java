@@ -20,8 +20,11 @@ import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CPDAvailabilityEstimateLocalService;
 import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalService;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -34,6 +37,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -276,6 +280,7 @@ public class ProductConfigurationResourceTest
 		_testPatchProductConfigurationWithAvailabilityEstimate();
 		_testPatchProductConfigurationWithAvailabilityEstimateERCPrecedence();
 		_testPatchProductConfigurationWithAvailabilityEstimateIdFallback();
+		_testPatchProductConfigurationWithLazyReferencedAvailabilityEstimate();
 		_testPatchProductConfigurationWithoutAvailabilityEstimate();
 		_testPatchProductConfigurationWithUnresolvableAvailabilityEstimateERC();
 	}
@@ -688,6 +693,53 @@ public class ProductConfigurationResourceTest
 
 		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
 			_commerceAvailabilityEstimate2, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductConfigurationWithLazyReferencedAvailabilityEstimate()
+		throws Exception {
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			RandomTestUtil.randomString());
+		productConfiguration.setAvailabilityEstimateName(
+			LanguageUtils.getLanguageIdMap(
+				RandomTestUtil.randomLocaleStringMap()));
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			productConfigurationResource.patchProductConfiguration(
+				postProductConfiguration.getId(), productConfiguration);
+		}
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			_commerceAvailabilityEstimateLocalService.
+				getCommerceAvailabilityEstimateByExternalReferenceCode(
+					productConfiguration.
+						getAvailabilityEstimateExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY,
+			commerceAvailabilityEstimate.getStatus());
+		Assert.assertEquals(
+			productConfiguration.getAvailabilityEstimateName(),
+			LanguageUtils.getLanguageIdMap(
+				commerceAvailabilityEstimate.getTitleMap()));
+
+		ProductConfiguration getProductConfiguration =
+			productConfigurationResource.getProductConfiguration(
+				postProductConfiguration.getId());
+
+		Assert.assertEquals(
+			productConfiguration.getAvailabilityEstimateName(),
+			getProductConfiguration.getAvailabilityEstimateName());
 	}
 
 	private void _testPatchProductConfigurationWithUnresolvableAvailabilityEstimateERC()
