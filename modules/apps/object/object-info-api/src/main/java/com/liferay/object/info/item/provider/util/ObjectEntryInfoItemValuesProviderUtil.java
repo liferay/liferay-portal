@@ -46,7 +46,6 @@ import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.UnsafeSupplierValue;
@@ -128,7 +127,6 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 			ObjectEntryManagerRegistry objectEntryManagerRegistry,
 			ObjectEntryService objectEntryService,
 			ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter,
-			ObjectFieldLocalService objectFieldLocalService,
 			List<ObjectField> objectFields,
 			ObjectRelationshipLocalService objectRelationshipLocalService,
 			ObjectScopeProviderRegistry objectScopeProviderRegistry,

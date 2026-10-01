@@ -234,7 +234,7 @@ public class SystemObjectEntryInfoItemFieldValuesProvider
 				_objectActionLocalService, _objectDefinition,
 				_objectDefinitionLocalService, _objectEntryLocalService,
 				_objectEntryManagerRegistry, _objectEntryService,
-				_objectFieldInfoFieldConverter, _objectFieldLocalService,
+				_objectFieldInfoFieldConverter,
 				_objectFieldLocalService.getObjectFields(
 					_objectDefinition.getObjectDefinitionId()),
 				_objectRelationshipLocalService, _objectScopeProviderRegistry,
