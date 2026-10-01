@@ -170,14 +170,20 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			com.liferay.object.model.ObjectEntry
 				serviceBuilderRelatedObjectEntry = null;
+			ObjectDefinition relatedSystemObjectDefinition = null;
 
 			if (serviceBuilderObjectEntry != null) {
 				serviceBuilderRelatedObjectEntry =
 					serviceBuilderObjectEntry.getRelatedObjectEntry(
 						objectField.getName());
+				relatedSystemObjectDefinition =
+					serviceBuilderObjectEntry.getRelatedSystemObjectDefinition(
+						objectField.getName());
 			}
 
-			if (serviceBuilderRelatedObjectEntry == null) {
+			if ((serviceBuilderRelatedObjectEntry == null) &&
+				(relatedSystemObjectDefinition == null)) {
+
 				long objectEntryId = GetterUtil.getLong(
 					values.get(objectField.getName()));
 
@@ -189,8 +195,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			ObjectDefinition parentObjectDefinition =
 				_getParentObjectDefinition(
-					objectDefinitionLocalService, objectField,
-					objectRelationship, serviceBuilderObjectEntry,
+					objectDefinitionLocalService, objectRelationship,
+					relatedSystemObjectDefinition,
 					serviceBuilderRelatedObjectEntry);
 
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
@@ -736,21 +742,15 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 	private static ObjectDefinition _getParentObjectDefinition(
 			ObjectDefinitionLocalService objectDefinitionLocalService,
-			ObjectField objectField, ObjectRelationship objectRelationship,
-			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry,
+			ObjectRelationship objectRelationship,
+			ObjectDefinition relatedSystemObjectDefinition,
 			com.liferay.object.model.ObjectEntry
 				serviceBuilderRelatedObjectEntry)
 		throws Exception {
 
 		if (serviceBuilderRelatedObjectEntry == null) {
-			if (serviceBuilderObjectEntry != null) {
-				ObjectDefinition relatedSystemObjectDefinition =
-					serviceBuilderObjectEntry.getRelatedSystemObjectDefinition(
-						objectField.getName());
-
-				if (relatedSystemObjectDefinition != null) {
-					return relatedSystemObjectDefinition;
-				}
+			if (relatedSystemObjectDefinition != null) {
+				return relatedSystemObjectDefinition;
 			}
 
 			return objectDefinitionLocalService.getObjectDefinition(
