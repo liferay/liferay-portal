@@ -54,8 +54,8 @@ public class NonceUtil {
 		long timestamp = System.currentTimeMillis();
 
 		String nonce = DigesterUtil.digestHex(
-			DigesterUtil.MD5, remoteAddress, String.valueOf(timestamp),
-			companyKey);
+			PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 : DigesterUtil.MD5,
+			remoteAddress, String.valueOf(timestamp), companyKey);
 
 		_nonceDelayQueue.put(new NonceDelayed(nonce));
 

@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class HttpAuthorizationHeader {
 
+	public static final String AUTH_PARAMETER_NAME_ALGORITHM = "algorithm";
+
 	public static final String AUTH_PARAMETER_NAME_NONCE = "nonce";
 
 	public static final String AUTH_PARAMETER_NAME_PASSWORD = "password";

@@ -1788,13 +1788,16 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return 0;
 		}
 
+		String algorithm =
+			PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 : DigesterUtil.MD5;
+
 		String[] digestArray = StringUtil.split(user.getDigest());
 
 		for (String ha1 : digestArray) {
-			String ha2 = DigesterUtil.digestHex(DigesterUtil.MD5, method, uri);
+			String ha2 = DigesterUtil.digestHex(algorithm, method, uri);
 
 			String curResponse = DigesterUtil.digestHex(
-				DigesterUtil.MD5, ha1, nonce, ha2);
+				algorithm, ha1, nonce, ha2);
 
 			if (response.equals(curResponse)) {
 				resetFailedLoginAttempts(user);

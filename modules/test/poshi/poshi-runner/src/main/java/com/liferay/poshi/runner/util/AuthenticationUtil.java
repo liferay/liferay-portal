@@ -6,6 +6,7 @@
 package com.liferay.poshi.runner.util;
 
 import com.liferay.poshi.core.util.CharPool;
+import com.liferay.poshi.core.util.PropsUtil;
 import com.liferay.poshi.core.util.StringUtil;
 
 import java.math.BigInteger;
@@ -38,8 +39,14 @@ public class AuthenticationUtil {
 			String.format("%16s", timeCountHex), CharPool.SPACE,
 			CharPool.NUMBER_0);
 
+		String algorithm = "HmacSHA1";
+
+		if (Boolean.parseBoolean(PropsUtil.get("fips.enabled"))) {
+			algorithm = "HmacSHA256";
+		}
+
 		try {
-			Mac mac = Mac.getInstance(_ALGORITHM_HMAC_SHA1);
+			Mac mac = Mac.getInstance(algorithm);
 
 			mac.init(new SecretKeySpec(Base32.decode(secretKey), "RAW"));
 
@@ -65,17 +72,14 @@ public class AuthenticationUtil {
 		}
 		catch (InvalidKeyException invalidKeyException) {
 			throw new IllegalArgumentException(
-				"Invalid secret key for algorithm " + _ALGORITHM_HMAC_SHA1,
+				"Invalid secret key for algorithm " + algorithm,
 				invalidKeyException);
 		}
 		catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new IllegalArgumentException(
-				"Invalid algorithm " + _ALGORITHM_HMAC_SHA1,
-				noSuchAlgorithmException);
+				"Invalid algorithm " + algorithm, noSuchAlgorithmException);
 		}
 	}
-
-	private static final String _ALGORITHM_HMAC_SHA1 = "HmacSHA1";
 
 	private static final int _DIGITS_TIME_BASED_OTP = 6;
 
