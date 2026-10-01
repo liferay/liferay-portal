@@ -6,11 +6,22 @@
 package com.liferay.portal.security.auth;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.auth.http.HttpAuthManagerUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.util.PortalInstances;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.security.MessageDigest;
 
 import java.util.Map;
 
@@ -21,7 +32,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Tomas Polesovsky
@@ -32,6 +47,57 @@ public class HttpAuthManagerUtilTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGenerateChallengeDigest() throws Exception {
+		Company company = Mockito.mock(Company.class);
+
+		Mockito.when(
+			company.getKey()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		try (MockedStatic<CompanyLocalServiceUtil>
+				companyLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					CompanyLocalServiceUtil.class);
+			MockedStatic<PortalInstances> portalInstancesMockedStatic =
+				Mockito.mockStatic(PortalInstances.class)) {
+
+			companyLocalServiceUtilMockedStatic.when(
+				() -> CompanyLocalServiceUtil.getCompanyById(Mockito.anyLong())
+			).thenReturn(
+				company
+			);
+
+			portalInstancesMockedStatic.when(
+				() -> PortalInstances.getCompanyId(
+					Mockito.any(HttpServletRequest.class))
+			).thenReturn(
+				RandomTestUtil.randomLong()
+			);
+
+			FIPSModeTestUtil.assertAlgorithmSwitch(
+				DigesterUtil.MD5, MessageDigest.class, DigesterUtil.SHA_256,
+				MessageDigest::getInstance,
+				() -> {
+					MockHttpServletResponse mockHttpServletResponse =
+						new MockHttpServletResponse();
+
+					HttpAuthManagerUtil.generateChallenge(
+						new MockHttpServletRequest(), mockHttpServletResponse,
+						new HttpAuthorizationHeader(
+							HttpAuthorizationHeader.SCHEME_DIGEST));
+
+					String wwwAuthenticate = mockHttpServletResponse.getHeader(
+						HttpHeaders.WWW_AUTHENTICATE);
+
+					Assert.assertEquals(
+						wwwAuthenticate, PropsValues.FIPS_ENABLED,
+						wwwAuthenticate.contains("algorithm=\"SHA-256\""));
+				});
+		}
+	}
 
 	@Test
 	public void testLPS88011() {

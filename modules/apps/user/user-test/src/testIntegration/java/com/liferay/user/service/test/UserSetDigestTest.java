@@ -6,6 +6,7 @@
 package com.liferay.user.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -16,9 +17,12 @@ import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -64,6 +68,22 @@ public class UserSetDigestTest {
 	}
 
 	@Test
+	public void testAuthenticateForDigest() throws Exception {
+		User user = _testAddUserWithWorkflowHelper(
+			RandomTestUtil.randomString(), _generateRandomEmailAddress());
+
+		_assertAuthenticateForDigest(DigesterUtil.MD5, user.getUserId());
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_assertAuthenticateForDigest(
+				DigesterUtil.SHA_256, user.getUserId());
+		}
+	}
+
+	@Test
 	public void testDigestIsEmptyAfterCreatingUser() throws Exception {
 		User user = _testAddUserWithWorkflowHelper(
 			RandomTestUtil.randomString(), _generateRandomEmailAddress());
@@ -71,6 +91,36 @@ public class UserSetDigestTest {
 		String digest = user.getDigest();
 
 		Assert.assertTrue(digest.isEmpty());
+	}
+
+	private void _assertAuthenticateForDigest(String algorithm, long userId)
+		throws Exception {
+
+		User user = _userLocalService.getUser(userId);
+
+		String plainTextPassword = RandomTestUtil.randomString();
+
+		user.setDigest(user.getDigest(plainTextPassword));
+
+		user = _userLocalService.updateUser(user);
+
+		String ha1 = DigesterUtil.digestHex(
+			algorithm, String.valueOf(user.getUserId()), Portal.PORTAL_REALM,
+			plainTextPassword);
+
+		String method = "GET";
+		String uri = "/" + RandomTestUtil.randomString();
+
+		String ha2 = DigesterUtil.digestHex(algorithm, method, uri);
+
+		String nonce = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			user.getUserId(),
+			_userLocalService.authenticateForDigest(
+				user.getCompanyId(), String.valueOf(user.getUserId()),
+				Portal.PORTAL_REALM, nonce, method, uri,
+				DigesterUtil.digestHex(algorithm, ha1, nonce, ha2)));
 	}
 
 	private String _generateRandomEmailAddress() {
