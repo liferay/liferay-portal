@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 export class UserLoginPage {
 	readonly authenticationFailedAlert: Locator;
@@ -54,6 +54,18 @@ export class UserLoginPage {
 			.getByRole('button', {name: 'Sign In'})
 			.first();
 		this.userProfileMenuButton = page.getByTitle('User Profile Menu');
+	}
+
+	async agreeToTermsOfUseIfRequired() {
+		await expect(async () => {
+			if (await this.iAgreeButton.isVisible()) {
+				await this.iAgreeButton.click();
+			}
+
+			await expect(this.userProfileMenuButton).toBeVisible({
+				timeout: 3000,
+			});
+		}).toPass({timeout: 30000});
 	}
 
 	async goto() {

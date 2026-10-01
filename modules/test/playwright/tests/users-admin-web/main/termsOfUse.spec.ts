@@ -31,15 +31,7 @@ test.afterEach(
 
 		await page.goto('/');
 
-		await expect(async () => {
-			if (await userLoginPage.iAgreeButton.isVisible()) {
-				await userLoginPage.iAgreeButton.click();
-			}
-
-			await expect(page.getByTitle('User Profile Menu')).toBeVisible({
-				timeout: 3000,
-			});
-		}).toPass({timeout: 30000});
+		await userLoginPage.agreeToTermsOfUseIfRequired();
 
 		await termsOfUseInstanceSettingsPage.goto();
 
@@ -62,28 +54,25 @@ test(
 		userLoginPage,
 	}) => {
 		await test.step('Enable terms of use', async () => {
-			if (await userLoginPage.iAgreeButton.isVisible()) {
-				await userLoginPage.iAgreeButton.click();
-
-				await expect(page.getByTitle('User Profile Menu')).toBeVisible({
-					timeout: 30000,
-				});
-			}
+			await userLoginPage.agreeToTermsOfUseIfRequired();
 
 			await termsOfUseInstanceSettingsPage.goto();
 
 			await termsOfUseInstanceSettingsPage.termsOfUseRequiredCheckbox.check();
+
+			const saveResponsePromise = page.waitForResponse(
+				(response) =>
+					response.url().includes('InstanceSettingsPortlet') &&
+					response.request().method() === 'POST'
+			);
+
 			await termsOfUseInstanceSettingsPage.saveButton.click();
 
-			await page.waitForLoadState('networkidle');
+			await saveResponsePromise;
 
-			if (await userLoginPage.iAgreeButton.isVisible()) {
-				await userLoginPage.iAgreeButton.click();
+			await page.goto('/');
 
-				await expect(page.getByTitle('User Profile Menu')).toBeVisible({
-					timeout: 30000,
-				});
-			}
+			await userLoginPage.agreeToTermsOfUseIfRequired();
 
 			await termsOfUseInstanceSettingsPage.goto();
 
@@ -96,7 +85,7 @@ test(
 			await termsOfUseInstanceSettingsPage.termsOfUseRequiredCheckbox.uncheck();
 			await termsOfUseInstanceSettingsPage.saveButton.click();
 
-			await page.waitForLoadState('networkidle');
+			await waitForAlert(page);
 
 			await expect(
 				termsOfUseInstanceSettingsPage.termsOfUseRequiredCheckbox
