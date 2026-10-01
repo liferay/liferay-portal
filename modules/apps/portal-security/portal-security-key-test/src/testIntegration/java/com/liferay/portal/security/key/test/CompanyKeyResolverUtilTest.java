@@ -71,13 +71,13 @@ public class CompanyKeyResolverUtilTest {
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
+		_testCompanyCryptoProvider = new TestCompanyCryptoProvider();
+
 		_serviceRegistration = bundleContext.registerService(
 			CryptoProvider.class, _testCompanyCryptoProvider,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"crypto.provider.id", TestCompanyCryptoProvider.PROVIDER_ID
 			).build());
-
-		_testCompanyCryptoProvider = new TestCompanyCryptoProvider();
 	}
 
 	@After
