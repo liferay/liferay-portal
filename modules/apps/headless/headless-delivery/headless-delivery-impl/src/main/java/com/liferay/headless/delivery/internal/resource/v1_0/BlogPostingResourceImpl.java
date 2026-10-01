@@ -26,6 +26,7 @@ import com.liferay.headless.delivery.resource.v1_0.BlogPostingResource;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
@@ -119,10 +120,11 @@ public class BlogPostingResourceImpl extends BaseBlogPostingResourceImpl {
 
 		return DisplayPageRendererUtil.toHTML(
 			BlogsEntry.class.getName(), 0, displayPageKey,
-			blogsEntry.getGroupId(), contextHttpServletRequest,
-			contextHttpServletResponse, blogsEntry, _infoItemServiceRegistry,
-			_layoutDisplayPageProviderRegistry, _layoutService,
-			_layoutPageTemplateEntryService);
+			blogsEntry.getGroupId(), contextHttpServletResponse, blogsEntry,
+			contextAcceptLanguage.getPreferredLocale(), contextUser,
+			_infoItemServiceRegistry, _layoutDisplayPageProviderRegistry,
+			_layoutService, _layoutPageTemplateEntryService,
+			_layoutServiceContextHelper);
 	}
 
 	@Override
@@ -504,6 +506,9 @@ public class BlogPostingResourceImpl extends BaseBlogPostingResourceImpl {
 
 	@Reference
 	private LayoutService _layoutService;
+
+	@Reference
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Reference
 	private Portal _portal;

@@ -46,6 +46,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringPool;
@@ -286,10 +287,11 @@ public class DocumentResourceImpl extends BaseDocumentResourceImpl {
 
 		return DisplayPageRendererUtil.toHTML(
 			FileEntry.class.getName(), _getDDMStructureId(fileEntry),
-			displayPageKey, fileEntry.getGroupId(), contextHttpServletRequest,
-			contextHttpServletResponse, fileEntry, _infoItemServiceRegistry,
-			_layoutDisplayPageProviderRegistry, _layoutService,
-			_layoutPageTemplateEntryService);
+			displayPageKey, fileEntry.getGroupId(), contextHttpServletResponse,
+			fileEntry, contextAcceptLanguage.getPreferredLocale(), contextUser,
+			_infoItemServiceRegistry, _layoutDisplayPageProviderRegistry,
+			_layoutService, _layoutPageTemplateEntryService,
+			_layoutServiceContextHelper);
 	}
 
 	@Override
@@ -1214,6 +1216,9 @@ public class DocumentResourceImpl extends BaseDocumentResourceImpl {
 
 	@Reference
 	private LayoutService _layoutService;
+
+	@Reference
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Reference
 	private Portal _portal;

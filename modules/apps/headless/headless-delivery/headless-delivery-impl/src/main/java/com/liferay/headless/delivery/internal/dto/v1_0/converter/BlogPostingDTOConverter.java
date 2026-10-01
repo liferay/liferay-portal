@@ -27,6 +27,7 @@ import com.liferay.headless.delivery.internal.resource.v1_0.BaseBlogPostingResou
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -145,6 +146,7 @@ public class BlogPostingDTOConverter
 						blogsEntry, _infoItemServiceRegistry,
 						_layoutDisplayPageProviderRegistry, _layoutService,
 						_layoutPageTemplateEntryService,
+						_layoutServiceContextHelper,
 						"getBlogPostingRenderedContentByDisplayPageDisplay" +
 							"PageKey"));
 				setSiteId(blogsEntry::getGroupId);
@@ -226,6 +228,9 @@ public class BlogPostingDTOConverter
 
 	@Reference
 	private LayoutService _layoutService;
+
+	@Reference
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Reference
 	private Portal _portal;
