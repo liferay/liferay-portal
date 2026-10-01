@@ -20,7 +20,7 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
-import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
+import com.liferay.portal.kernel.encryptor.CompanyKeyUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -656,11 +656,11 @@ public class DBUpgrader {
 			company -> {
 				long companyId = company.getCompanyId();
 
-				String serializedKey = CompanyKeyResolverUtil.wrapKey(
+				String serializedKey = CompanyKeyUtil.wrapKey(
 					companyId, EncryptorUtil.generateKey());
 
-				if (CompanyKeyResolverUtil.isWrappedKey(company.getKey()) &&
-					!CompanyKeyResolverUtil.isWrappedKey(serializedKey)) {
+				if (CompanyKeyUtil.isWrappedKey(company.getKey()) &&
+					!CompanyKeyUtil.isWrappedKey(serializedKey)) {
 
 					throw new IllegalStateException(
 						"Unable to wrap the regenerated key for company " +
