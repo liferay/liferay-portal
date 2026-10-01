@@ -161,6 +161,43 @@ test(
 );
 
 test(
+	'My Workflow Tasks filter stays inside its card at narrow widths',
+	{tag: '@LPD-102090'},
+	async ({homePage, page}) => {
+		await homePage.goto();
+
+		const card = page.locator('.container-fluid-max', {
+			has: homePage.workflowTaskFilterButton,
+		});
+
+		for (const width of [880, 800]) {
+			await page.setViewportSize({height: 900, width});
+
+			await expect(homePage.workflowTaskFilterButton).toBeVisible();
+
+			await expect(async () => {
+				const buttonBox =
+					await homePage.workflowTaskFilterButton.boundingBox();
+				const cardBox = await card.boundingBox();
+
+				expect(buttonBox.x).toBeGreaterThanOrEqual(cardBox.x);
+				expect(buttonBox.x + buttonBox.width).toBeLessThanOrEqual(
+					cardBox.x + cardBox.width
+				);
+			}).toPass({timeout: 5000});
+
+			expect(
+				await page.evaluate(
+					() =>
+						document.documentElement.scrollWidth >
+						document.documentElement.clientWidth
+				)
+			).toBe(false);
+		}
+	}
+);
+
+test(
 	'Can manage my workflow tasks',
 	{tag: '@LPD-58790'},
 	async ({
