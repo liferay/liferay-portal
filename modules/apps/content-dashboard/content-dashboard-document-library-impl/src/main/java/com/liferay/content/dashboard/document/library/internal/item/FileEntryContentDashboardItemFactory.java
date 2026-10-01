@@ -14,11 +14,11 @@ import com.liferay.content.dashboard.item.action.ContentDashboardItemVersionActi
 import com.liferay.content.dashboard.item.type.ContentDashboardItemSubtypeFactory;
 import com.liferay.content.dashboard.item.type.ContentDashboardItemSubtypeFactoryRegistry;
 import com.liferay.document.library.display.context.DLDisplayContextProvider;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryMetadataLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.portal.kernel.exception.NoSuchModelException;

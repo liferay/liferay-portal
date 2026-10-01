@@ -9,7 +9,7 @@ import com.liferay.adaptive.media.image.item.selector.AMImageURLItemSelectorRetu
 import com.liferay.adaptive.media.image.media.query.Condition;
 import com.liferay.adaptive.media.image.media.query.MediaQuery;
 import com.liferay.adaptive.media.image.media.query.MediaQueryProvider;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.item.selector.ItemSelectorReturnTypeResolver;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;

@@ -5,8 +5,8 @@
 
 package com.liferay.headless.form.internal.resource.v1_0;
 
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.headless.form.dto.v1_0.FormDocument;
 import com.liferay.headless.form.dto.v1_0.util.FormDocumentUtil;
 import com.liferay.headless.form.resource.v1_0.FormDocumentResource;

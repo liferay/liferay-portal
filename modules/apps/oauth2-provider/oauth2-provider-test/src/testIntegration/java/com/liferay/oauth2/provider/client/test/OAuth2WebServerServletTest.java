@@ -6,8 +6,8 @@
 package com.liferay.oauth2.provider.client.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.internal.test.TestPreviewURLApplication;
 import com.liferay.petra.string.StringBundler;

@@ -5,8 +5,8 @@
 
 package com.liferay.document.library.internal.helper;
 
-import com.liferay.document.library.util.DLFileEntryJSONHelper;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLFileEntryJSONHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;

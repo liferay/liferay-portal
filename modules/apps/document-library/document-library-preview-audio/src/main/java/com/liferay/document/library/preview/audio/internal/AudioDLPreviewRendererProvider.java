@@ -6,6 +6,7 @@
 package com.liferay.document.library.preview.audio.internal;
 
 import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
 import com.liferay.document.library.kernel.processor.AudioProcessor;
 import com.liferay.document.library.kernel.processor.DLProcessor;
@@ -17,7 +18,6 @@ import com.liferay.document.library.preview.exception.DLFileEntryPreviewGenerati
 import com.liferay.document.library.preview.exception.DLPreviewGenerationInProcessException;
 import com.liferay.document.library.preview.exception.DLPreviewSizeException;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileVersion;

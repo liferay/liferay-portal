@@ -6,13 +6,13 @@
 package com.liferay.document.library.video.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
 import com.liferay.document.library.kernel.processor.DLProcessor;
 import com.liferay.document.library.kernel.processor.VideoProcessor;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.preview.exception.DLFileEntryPreviewGenerationException;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.document.library.video.internal.constants.DLVideoPortletKeys;
 import com.liferay.document.library.video.internal.constants.DLVideoWebKeys;
 import com.liferay.petra.function.transform.TransformUtil;

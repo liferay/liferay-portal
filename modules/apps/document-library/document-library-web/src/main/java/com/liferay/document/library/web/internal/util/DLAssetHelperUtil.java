@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.web.internal.util;
 
-import com.liferay.document.library.util.DLAssetHelper;
+import com.liferay.document.library.helper.DLAssetHelper;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;

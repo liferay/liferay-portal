@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.video.internal.video.renderer;
 
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.video.external.shortcut.DLVideoExternalShortcut;
 import com.liferay.document.library.video.external.shortcut.resolver.DLVideoExternalShortcutResolver;
 import com.liferay.document.library.video.renderer.DLVideoRenderer;

@@ -7,8 +7,8 @@ package com.liferay.headless.delivery.internal.resource.v1_0;
 
 import com.liferay.blogs.constants.BlogsConstants;
 import com.liferay.blogs.service.BlogsEntryService;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.headless.delivery.dto.v1_0.BlogPostingImage;
 import com.liferay.headless.delivery.dto.v1_0.util.ContentValueUtil;
 import com.liferay.headless.delivery.internal.odata.entity.v1_0.BlogPostingImageEntityModel;

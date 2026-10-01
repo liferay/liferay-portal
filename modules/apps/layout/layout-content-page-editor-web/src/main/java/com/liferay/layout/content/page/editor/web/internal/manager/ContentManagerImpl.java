@@ -21,7 +21,7 @@ import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.asset.util.AssetPublisherAddItemHolder;
 import com.liferay.document.library.constants.DLPortletKeys;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;

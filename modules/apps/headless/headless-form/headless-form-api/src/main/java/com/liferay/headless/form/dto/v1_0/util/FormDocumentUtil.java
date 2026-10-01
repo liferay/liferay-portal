@@ -5,7 +5,7 @@
 
 package com.liferay.headless.form.dto.v1_0.util;
 
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.headless.form.dto.v1_0.FormDocument;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 

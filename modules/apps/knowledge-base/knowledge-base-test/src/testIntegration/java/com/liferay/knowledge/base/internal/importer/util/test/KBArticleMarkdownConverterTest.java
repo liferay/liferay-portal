@@ -6,7 +6,7 @@
 package com.liferay.knowledge.base.internal.importer.util.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.knowledge.base.markdown.converter.MarkdownConverter;
 import com.liferay.knowledge.base.markdown.converter.factory.MarkdownConverterFactory;
 import com.liferay.portal.kernel.module.util.BundleUtil;

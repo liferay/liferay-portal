@@ -5,7 +5,7 @@
 
 package com.liferay.headless.delivery.internal.resource.v1_0;
 
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.headless.delivery.dto.v1_0.MessageBoardAttachment;
 import com.liferay.headless.delivery.dto.v1_0.util.ContentValueUtil;
 import com.liferay.headless.delivery.resource.v1_0.MessageBoardAttachmentResource;

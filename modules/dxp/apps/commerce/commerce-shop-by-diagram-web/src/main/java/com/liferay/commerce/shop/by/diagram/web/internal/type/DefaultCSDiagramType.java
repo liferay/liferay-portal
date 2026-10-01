@@ -21,7 +21,7 @@ import com.liferay.commerce.shop.by.diagram.model.CSDiagramSetting;
 import com.liferay.commerce.shop.by.diagram.type.CSDiagramType;
 import com.liferay.commerce.shop.by.diagram.web.internal.constants.CSDiagramFDSNames;
 import com.liferay.commerce.shop.by.diagram.web.internal.util.CSDiagramSettingUtil;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;

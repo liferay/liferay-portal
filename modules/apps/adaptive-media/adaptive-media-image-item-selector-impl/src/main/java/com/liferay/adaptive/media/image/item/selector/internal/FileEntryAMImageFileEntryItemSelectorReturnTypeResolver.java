@@ -6,7 +6,7 @@
 package com.liferay.adaptive.media.image.item.selector.internal;
 
 import com.liferay.adaptive.media.image.item.selector.AMImageFileEntryItemSelectorReturnType;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.item.selector.ItemSelectorReturnTypeResolver;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;

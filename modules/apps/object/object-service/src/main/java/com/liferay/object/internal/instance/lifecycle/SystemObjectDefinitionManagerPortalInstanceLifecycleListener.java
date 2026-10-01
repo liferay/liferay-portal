@@ -5,8 +5,8 @@
 
 package com.liferay.object.internal.instance.lifecycle;
 
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.info.collection.provider.InfoCollectionProvider;

@@ -7,7 +7,7 @@ package com.liferay.content.dashboard.document.library.internal.item.action;
 
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.document.library.constants.DLPortletKeys;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;

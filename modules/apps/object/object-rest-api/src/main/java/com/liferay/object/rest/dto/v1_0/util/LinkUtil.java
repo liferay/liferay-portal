@@ -5,9 +5,9 @@
 
 package com.liferay.object.rest.dto.v1_0.util;
 
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;

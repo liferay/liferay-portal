@@ -6,9 +6,9 @@
 package com.liferay.headless.form.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.headless.form.client.dto.v1_0.FormDocument;
 import com.liferay.headless.form.dto.v1_0.util.FormDocumentUtil;
 import com.liferay.portal.kernel.service.ServiceContext;

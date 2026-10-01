@@ -16,7 +16,7 @@ import com.liferay.commerce.shop.by.diagram.service.CSDiagramSettingLocalService
 import com.liferay.commerce.shop.by.diagram.type.CSDiagramType;
 import com.liferay.commerce.shop.by.diagram.type.CSDiagramTypeRegistry;
 import com.liferay.commerce.shop.by.diagram.web.internal.util.CSDiagramSettingUtil;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;

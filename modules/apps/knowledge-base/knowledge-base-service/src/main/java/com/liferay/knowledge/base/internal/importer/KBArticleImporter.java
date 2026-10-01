@@ -6,7 +6,7 @@
 package com.liferay.knowledge.base.internal.importer;
 
 import com.liferay.asset.kernel.exception.AssetCategoryException;
-import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.knowledge.base.constants.KBArticleConstants;
 import com.liferay.knowledge.base.constants.KBFolderConstants;
 import com.liferay.knowledge.base.exception.KBArticleImportException;

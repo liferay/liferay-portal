@@ -5,10 +5,10 @@
 
 package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.util.DLValidator;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.item.selector.ItemSelectorUploadResponseHandler;

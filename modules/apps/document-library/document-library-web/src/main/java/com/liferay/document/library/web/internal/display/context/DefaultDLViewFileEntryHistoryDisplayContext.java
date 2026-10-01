@@ -6,8 +6,8 @@
 package com.liferay.document.library.web.internal.display.context;
 
 import com.liferay.document.library.display.context.DLViewFileEntryHistoryDisplayContext;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.versioning.VersioningStrategy;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.document.library.web.internal.display.context.helper.DLPortletInstanceSettingsHelper;
 import com.liferay.document.library.web.internal.display.context.helper.DLRequestHelper;
 import com.liferay.document.library.web.internal.display.context.logic.UIItemsBuilder;

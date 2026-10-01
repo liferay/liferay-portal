@@ -5,8 +5,8 @@
 
 package com.liferay.layout.seo.web.internal.frontend.taglib.servlet.taglib;
 
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.info.item.InfoItemServiceRegistry;

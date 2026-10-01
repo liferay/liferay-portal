@@ -7,6 +7,7 @@ package com.liferay.document.library.internal.helper;
 
 import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.processor.ImageProcessorUtil;
 import com.liferay.document.library.kernel.processor.PDFProcessorUtil;
@@ -15,7 +16,6 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.util.DL;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
 import com.liferay.document.library.url.provider.DLFileVersionURLProvider;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;

@@ -6,11 +6,11 @@
 package com.liferay.headless.admin.user.internal.dto.v1_0.converter;
 
 import com.liferay.document.library.display.context.DLMimeTypeDisplayContext;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.headless.admin.user.dto.v1_0.FileEntry;
 import com.liferay.headless.admin.user.dto.v1_0.Link;
 import com.liferay.headless.admin.user.dto.v1_0.SharedAsset;

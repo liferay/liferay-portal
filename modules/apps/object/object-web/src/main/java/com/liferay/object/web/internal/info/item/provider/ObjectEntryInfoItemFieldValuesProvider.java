@@ -6,8 +6,8 @@
 package com.liferay.object.web.internal.info.item.provider;
 
 import com.liferay.asset.info.item.provider.AssetEntryInfoItemFieldSetProvider;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.field.InfoField;

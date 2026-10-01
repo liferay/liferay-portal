@@ -9,6 +9,7 @@ Export-Package:\
 	com.liferay.document.library.display.context,\
 	com.liferay.document.library.exception,\
 	com.liferay.document.library.exportimport.data.handler,\
+	com.liferay.document.library.helper,\
 	com.liferay.document.library.icon.provider,\
 	com.liferay.document.library.item.selector.criterion,\
 	com.liferay.document.library.model,\
