@@ -35,6 +35,7 @@ import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
@@ -207,9 +208,11 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					objectEntry.getDefaultLanguageId();
 			}
 
+			ObjectFieldBag objectFieldBag =
+				parentObjectDefinition.getObjectFieldBag();
+
 			for (ObjectField relatedObjectField :
-					objectFieldLocalService.getObjectFields(
-						parentObjectDefinition.getObjectDefinitionId())) {
+					objectFieldBag.getObjectFields()) {
 
 				if (relatedObjectField.isMetadata()) {
 					continue;
