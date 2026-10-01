@@ -53,6 +53,17 @@ public class PortalInstancesUserNotificationHandlerTest {
 				invocationOnMock.getArgument(0),
 				invocationOnMock.getArgument(1))
 		);
+
+		Mockito.when(
+			_serviceContext.translate(
+				Mockito.anyString(), Mockito.<Object>any(),
+				Mockito.<Object>any())
+		).thenAnswer(
+			invocationOnMock -> _toTranslation(
+				invocationOnMock.getArgument(0),
+				invocationOnMock.getArgument(1),
+				invocationOnMock.getArgument(2))
+		);
 	}
 
 	@Test
@@ -80,6 +91,35 @@ public class PortalInstancesUserNotificationHandlerTest {
 					null,
 					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
 					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
+	public void testGetBodyForTheCopyOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+		String sourcePortalInstanceId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toBodyHTML(
+				"please-enter-a-valid-destination-company-id",
+				_toTranslation(
+					"the-instance-x-could-not-be-copied-to-y",
+					sourcePortalInstanceId, portalInstanceId)),
+			_getBody(
+				_toCopyPayloadJSONObject(
+					"please-enter-a-valid-destination-company-id",
+					portalInstanceId, sourcePortalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toBodyHTML(
+				_toTranslation(
+					"the-instance-x-is-ready-to-use", portalInstanceId),
+				_toTranslation(
+					"the-instance-x-was-copied-to-y", sourcePortalInstanceId,
+					portalInstanceId)),
+			_getBody(
+				_toCopyPayloadJSONObject(
+					null, portalInstanceId, sourcePortalInstanceId,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
@@ -206,6 +246,30 @@ public class PortalInstancesUserNotificationHandlerTest {
 	}
 
 	@Test
+	public void testGetTitleForTheCopyOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+		String sourcePortalInstanceId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toTranslation(
+				"the-instance-x-could-not-be-copied-to-y",
+				sourcePortalInstanceId, portalInstanceId),
+			_getTitle(
+				_toCopyPayloadJSONObject(
+					"please-enter-a-valid-destination-company-id",
+					portalInstanceId, sourcePortalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toTranslation(
+				"the-instance-x-was-copied-to-y", sourcePortalInstanceId,
+				portalInstanceId),
+			_getTitle(
+				_toCopyPayloadJSONObject(
+					null, portalInstanceId, sourcePortalInstanceId,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
 	public void testGetTitleForTheDeleteOperation() throws Exception {
 		String portalInstanceId = RandomTestUtil.randomString();
 
@@ -301,6 +365,24 @@ public class PortalInstancesUserNotificationHandlerTest {
 			"</div>");
 	}
 
+	private JSONObject _toCopyPayloadJSONObject(
+		String errorMessageKey, String portalInstanceId,
+		String sourcePortalInstanceId, String status) {
+
+		return JSONUtil.put(
+			"errorMessageKey", errorMessageKey
+		).put(
+			"operationType",
+			PortalInstancesNotificationConstants.OPERATION_TYPE_COPY
+		).put(
+			"portalInstanceId", portalInstanceId
+		).put(
+			"sourcePortalInstanceId", sourcePortalInstanceId
+		).put(
+			"status", status
+		);
+	}
+
 	private JSONObject _toPayloadJSONObject(
 		String errorMessageKey, String operationType, String portalInstanceId,
 		String schemaName, String status) {
@@ -320,6 +402,13 @@ public class PortalInstancesUserNotificationHandlerTest {
 
 	private String _toTranslation(String key, String argument) {
 		return StringBundler.concat(key, StringPool.COLON, argument);
+	}
+
+	private String _toTranslation(
+		String key, String argument1, String argument2) {
+
+		return StringBundler.concat(
+			key, StringPool.COLON, argument1, StringPool.COLON, argument2);
 	}
 
 	private UserNotificationEvent _toUserNotificationEvent(
