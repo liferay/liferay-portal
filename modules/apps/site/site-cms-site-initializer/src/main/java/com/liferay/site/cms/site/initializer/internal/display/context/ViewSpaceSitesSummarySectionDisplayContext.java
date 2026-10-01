@@ -112,17 +112,22 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 	}
 
 	public Map<String, Object> getHeaderProps() throws Exception {
-		return SpaceSummaryHeaderUtil.getSpaceSummaryHeaderProps(
-			getAPIURL(), null, _httpServletRequest, "view-all-sites",
-			HashMapBuilder.<String, Object>put(
-				"hasConnectSitesPermission", _hasConnectSitesPermission()
-			).build(),
-			HashMapBuilder.<String, Object>put(
-				"action", "open-sites-modal"
-			).put(
-				"externalReferenceCode", _externalReferenceCode
-			).build(),
-			_getSpaceSitesHeaderTitle(), StringPool.BLANK);
+		Map<String, Object> headerProps =
+			SpaceSummaryHeaderUtil.getSpaceSummaryHeaderProps(
+				getAPIURL(), null, _httpServletRequest, "view-all-sites",
+				HashMapBuilder.<String, Object>put(
+					"hasConnectSitesPermission", _hasConnectSitesPermission()
+				).build(),
+				HashMapBuilder.<String, Object>put(
+					"action", "open-sites-modal"
+				).put(
+					"externalReferenceCode", _externalReferenceCode
+				).build(),
+				"sites", StringPool.BLANK);
+
+		headerProps.put("totalCount", _getSitesCount());
+
+		return headerProps;
 	}
 
 	private FDSActionDropdownItem _getSearchableFDSActionDropdownItem(
@@ -145,12 +150,15 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 		return fdsActionDropdownItem;
 	}
 
+	private int _getSitesCount() throws Exception {
+		return _depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
+			_depotEntryService.getGroupDepotEntry(_groupId));
+	}
+
 	private String _getSpaceSitesHeaderTitle() throws Exception {
 		return StringBundler.concat(
 			_language.get(_httpServletRequest, "sites"), StringPool.SPACE,
-			StringPool.OPEN_PARENTHESIS,
-			_depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
-				_depotEntryService.getGroupDepotEntry(_groupId)),
+			StringPool.OPEN_PARENTHESIS, _getSitesCount(),
 			StringPool.CLOSE_PARENTHESIS);
 	}
 

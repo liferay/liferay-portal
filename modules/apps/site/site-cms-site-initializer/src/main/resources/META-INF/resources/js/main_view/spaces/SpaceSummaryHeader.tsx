@@ -49,6 +49,7 @@ interface SpaceSummaryHeaderProps {
 	permissions?: SpaceSummaryHeaderPermissions;
 	spaceModalProps?: SpaceModalPropsType;
 	title: string;
+	totalCount?: number;
 	url: string;
 }
 
@@ -60,9 +61,11 @@ export default function SpaceSummaryHeader({
 	permissions,
 	spaceModalProps,
 	title,
+	totalCount,
 	url,
 }: SpaceSummaryHeaderProps) {
 	const [active, setActive] = useState(false);
+	const [count, setCount] = useState(totalCount);
 	const [showViewAll, setShowViewAll] = useState(false);
 
 	const loadData = () => window.location.reload();
@@ -81,6 +84,10 @@ export default function SpaceSummaryHeader({
 			totalCount: number;
 		}>(apiURL)
 			.then((response) => {
+				if (response.data) {
+					setCount(response.data.totalCount);
+				}
+
 				setShowViewAll(Boolean(response.data?.totalCount));
 			})
 			.catch(() => setShowViewAll(false));
@@ -195,7 +202,9 @@ export default function SpaceSummaryHeader({
 
 	return (
 		<div className="align-items-center d-flex justify-content-between">
-			<h2 className="font-weight-semi-bold m-0 text-4">{title}</h2>
+			<h2 className="font-weight-semi-bold m-0 text-4">
+				{totalCount === undefined ? title : `${title} (${count})`}
+			</h2>
 
 			<div className="align-items-center d-flex">
 				{showViewAll &&
