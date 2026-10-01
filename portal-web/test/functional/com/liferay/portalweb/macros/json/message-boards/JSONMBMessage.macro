@@ -238,7 +238,7 @@ definition {
 				-u ${userLoginInfo} \
 				-d groupId=${groupId} \
 				-d categoryId=0 \
-				-d status=-1 \
+				-d "status=-1" \
 				-d "start=-1" \
 				-d "end=-1"
 		''';
