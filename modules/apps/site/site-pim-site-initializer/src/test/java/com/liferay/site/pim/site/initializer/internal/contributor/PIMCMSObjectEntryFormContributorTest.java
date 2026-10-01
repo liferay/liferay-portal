@@ -36,14 +36,6 @@ public class PIMCMSObjectEntryFormContributorTest {
 
 	@Before
 	public void setUp() {
-		ReflectionTestUtil.setFieldValue(
-			_pimCMSObjectEntryFormContributor,
-			"_layoutPageTemplateStructureLocalService",
-			_layoutPageTemplateStructureLocalService);
-		ReflectionTestUtil.setFieldValue(
-			_pimCMSObjectEntryFormContributor,
-			"_segmentsExperienceLocalService", _segmentsExperienceLocalService);
-
 		Mockito.when(
 			_objectDefinition.getCompanyId()
 		).thenReturn(
@@ -55,6 +47,14 @@ public class PIMCMSObjectEntryFormContributorTest {
 		).thenReturn(
 			RandomTestUtil.randomString()
 		);
+
+		ReflectionTestUtil.setFieldValue(
+			_pimCMSObjectEntryFormContributor,
+			"_layoutPageTemplateStructureLocalService",
+			_layoutPageTemplateStructureLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_pimCMSObjectEntryFormContributor,
+			"_segmentsExperienceLocalService", _segmentsExperienceLocalService);
 	}
 
 	@Test
