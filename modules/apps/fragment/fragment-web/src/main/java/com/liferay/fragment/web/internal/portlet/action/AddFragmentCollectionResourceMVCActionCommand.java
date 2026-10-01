@@ -6,6 +6,7 @@
 package com.liferay.fragment.web.internal.portlet.action;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionService;
@@ -59,7 +60,7 @@ public class AddFragmentCollectionResourceMVCActionCommand
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
@@ -114,6 +115,9 @@ public class AddFragmentCollectionResourceMVCActionCommand
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private FragmentCollectionService _fragmentCollectionService;
