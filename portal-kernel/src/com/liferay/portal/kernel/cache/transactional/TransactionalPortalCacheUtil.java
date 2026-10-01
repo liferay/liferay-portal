@@ -461,7 +461,7 @@ public class TransactionalPortalCacheUtil {
 			else {
 				doCommit(
 					_invalidationSequence.invalidate(
-						_regionName, startSequence, super._removeAll,
+						_regionName, _sequence, super._removeAll,
 						super._uncommittedMap.keySet()));
 			}
 		}
@@ -493,6 +493,7 @@ public class TransactionalPortalCacheUtil {
 		}
 
 		private final String _regionName;
+		private final long _sequence = _invalidationSequence.getSequence();
 
 	}
 

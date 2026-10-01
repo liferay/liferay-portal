@@ -101,7 +101,7 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
-	public void testCommitAfterWriterCommit() {
+	public void testCommitAfterWriterCommitBeforePut() {
 		_setEnableTransactionalCache(true);
 
 		TransactionalPortalCache<String, String> transactionalPortalCache =
@@ -115,7 +115,7 @@ public class TransactionalPortalCacheTest {
 
 		TransactionalPortalCacheUtil.commit(false);
 
-		Assert.assertNull(_portalCache.get(_KEY_1));
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
 	}
 
 	@Test
