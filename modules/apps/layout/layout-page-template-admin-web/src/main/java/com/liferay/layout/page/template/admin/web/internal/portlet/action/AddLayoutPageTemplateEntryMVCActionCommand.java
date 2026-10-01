@@ -110,9 +110,6 @@ public class AddLayoutPageTemplateEntryMVCActionCommand
 			LayoutPageTemplateEntry layoutPageTemplateEntry)
 		throws PortalException {
 
-		Layout draftLayout = _layoutLocalService.fetchDraftLayout(
-			layoutPageTemplateEntry.getPlid());
-
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -132,6 +129,9 @@ public class AddLayoutPageTemplateEntryMVCActionCommand
 				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
 				PortletRequest.RENDER_PHASE);
 		}
+
+		Layout draftLayout = _layoutLocalService.fetchDraftLayout(
+			layoutPageTemplateEntry.getPlid());
 
 		return HttpComponentsUtil.addParameters(
 			_portal.getLayoutFullURL(draftLayout, themeDisplay), "p_l_back_url",
