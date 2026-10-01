@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Cristina González
  */
 @Component(
+	enabled = false,
 	property = "repository.target.class.name=com.liferay.sharepoint.soap.repository.SharepointWSRepository",
 	service = RepositoryFactory.class
 )

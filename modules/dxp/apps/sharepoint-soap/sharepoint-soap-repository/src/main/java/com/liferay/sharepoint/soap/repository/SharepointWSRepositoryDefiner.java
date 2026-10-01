@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Cristina González
  */
-@Component(service = RepositoryDefiner.class)
+@Component(enabled = false, service = RepositoryDefiner.class)
 public class SharepointWSRepositoryDefiner extends BaseRepositoryDefiner {
 
 	@Override
