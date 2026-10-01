@@ -63,7 +63,7 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 			return "No upgrade processes registered for " + bundleSymbolicName;
 		}
 
-		List<UpgradeInfo> upgradeInfos = null;
+		List<UpgradeInfo> upgradeInfos;
 
 		try {
 			upgradeInfos = _upgradeExecutor.getUpgradeInfos(bundleSymbolicName);
