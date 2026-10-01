@@ -190,6 +190,15 @@ public abstract class BaseBundlePersistentResource
 		);
 	}
 
+	@Override
+	protected void setStatus(Status status) {
+		if (status != Status.IN_QUEUE) {
+			_queueItemWhy = null;
+		}
+
+		super.setStatus(status);
+	}
+
 	protected void start() {
 		_queueItemWhy = null;
 

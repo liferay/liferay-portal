@@ -9,6 +9,7 @@ import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.JenkinsStopBuildUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 
 import java.util.Collections;
 
@@ -25,6 +26,41 @@ import org.mockito.Mockito;
  */
 public class BaseBundlePersistentResourceTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testSetStatus() {
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getBaseBundlePersistentResource(
+				Mockito.mock(JenkinsMaster.class), RandomTestUtil.randomLong());
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBundlePersistentResource
+		).setStatus(
+			Mockito.any()
+		);
+
+		String why = RandomTestUtil.randomString();
+
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_queueItemWhy", why);
+
+		baseBundlePersistentResource.setStatus(
+			PersistentResource.Status.IN_QUEUE);
+
+		String statusMessage = baseBundlePersistentResource.getStatusMessage();
+
+		Assert.assertTrue(statusMessage, statusMessage.endsWith(": " + why));
+
+		baseBundlePersistentResource.setStatus(
+			PersistentResource.Status.IN_PROGRESS);
+		baseBundlePersistentResource.setStatus(
+			PersistentResource.Status.IN_QUEUE);
+
+		statusMessage = baseBundlePersistentResource.getStatusMessage();
+
+		Assert.assertFalse(statusMessage, statusMessage.contains(why));
+	}
 
 	@Test
 	public void testUpdateCancelledQueueItem() {
@@ -117,6 +153,20 @@ public class BaseBundlePersistentResourceTest
 			MockedStatic<JenkinsStopBuildUtil>
 				jenkinsStopBuildUtilMockedStatic = Mockito.mockStatic(
 					JenkinsStopBuildUtil.class)) {
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				() -> JenkinsResultsParserUtil.combine(Mockito.<String[]>any())
+			).thenAnswer(
+				invocation -> {
+					StringBuilder sb = new StringBuilder();
+
+					for (Object argument : invocation.getArguments()) {
+						sb.append(argument);
+					}
+
+					return sb.toString();
+				}
+			);
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
