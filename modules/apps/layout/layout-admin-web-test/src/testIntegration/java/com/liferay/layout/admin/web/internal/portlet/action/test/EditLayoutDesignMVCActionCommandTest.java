@@ -23,8 +23,10 @@ import com.liferay.portal.kernel.exception.LayoutNameException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -33,13 +35,16 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -332,6 +337,58 @@ public class EditLayoutDesignMVCActionCommandTest {
 				draftLayout.getTypeSettingsProperty(
 					LayoutTypeSettingsConstants.
 						KEY_DESIGN_CONFIGURATION_MODIFIED)));
+	}
+
+	@Test
+	@TestInfo("LPD-107747")
+	public void testUpdateLayoutWithIconWithoutPermissions() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			FileUtil.getBytes(getClass(), "dependencies/dxp_logo.png"), null,
+			null, null, serviceContext);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
+			new MockMultipartHttpServletRequest();
+
+		mockMultipartHttpServletRequest.addParameter(
+			"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
+		mockMultipartHttpServletRequest.setContentType(
+			"multipart/form-data;boundary=" + System.currentTimeMillis());
+
+		User user = UserTestUtil.addGroupAdminUser(_group);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> ReflectionTestUtil.invoke(
+					_mvcActionCommand, "_updateLayout",
+					new Class<?>[] {
+						ActionRequest.class, ActionResponse.class,
+						UploadPortletRequest.class
+					},
+					_getMockActionRequest(draftLayout),
+					new MockActionResponse(),
+					UploadTestUtil.createUploadPortletRequest(
+						UploadTestUtil.createUploadServletRequest(
+							mockMultipartHttpServletRequest, null, null),
+						null, RandomTestUtil.randomString())));
+		}
 	}
 
 	private MockActionRequest _getMockActionRequest(Layout layout)
