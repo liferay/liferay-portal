@@ -10,6 +10,17 @@
 	<#else>
 		${languageUtil.format(locale, "x-results-for-x", [totalHitsLabel, "<strong>" + htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()) + "</strong>"], false)}
 	</#if>
+
+	<#if !searchResultsPortletDisplayContext.isTotalHitsExact()>
+		<span
+			aria-label="${languageUtil.get(locale, 'approximate-result-count-help')}"
+			class="c-ml-1 inline-item lfr-portal-tooltip text-secondary"
+			tabindex="0"
+			title="${languageUtil.get(locale, 'approximate-result-count-help')}"
+		>
+			<@clay["icon"] symbol="info-circle" />
+		</span>
+	</#if>
 </div>
 
 <div class="display-list">
