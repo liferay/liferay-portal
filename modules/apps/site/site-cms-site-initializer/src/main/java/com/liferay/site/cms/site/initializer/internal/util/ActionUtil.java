@@ -47,6 +47,7 @@ import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.field.attachment.AttachmentManager;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -79,6 +80,7 @@ import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -95,6 +97,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -1318,17 +1321,48 @@ public class ActionUtil {
 		return StringPool.BLANK;
 	}
 
+	public static long getUploadMaximumFileSize(ThemeDisplay themeDisplay) {
+		long maximumFileSize = PropsValues.JSON_STRING_MAX_LENGTH / 4 * 3;
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", themeDisplay.getCompanyId());
+
+		if (objectDefinition == null) {
+			return maximumFileSize;
+		}
+
+		ObjectField objectField = ObjectFieldLocalServiceUtil.fetchObjectField(
+			objectDefinition.getObjectDefinitionId(), "file");
+
+		if (objectField == null) {
+			return maximumFileSize;
+		}
+
+		AttachmentManager attachmentManager = _attachmentManagerSnapshot.get();
+
+		return Math.min(
+			attachmentManager.getMaximumFileSize(
+				objectField.getObjectFieldId(), themeDisplay.isSignedIn()),
+			maximumFileSize);
+	}
+
 	public static DropdownItem getUploadMultipleFilesDropdownItem(
 		HttpServletRequest httpServletRequest,
 		String parentObjectEntryFolderExternalReferenceCode) {
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		return DropdownItemBuilder.putData(
 			"action", "uploadMultipleFiles"
 		).putData(
-			"baseAssetLibraryViewURL",
-			getBaseSpaceURL(
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY))
+			"baseAssetLibraryViewURL", getBaseSpaceURL(themeDisplay)
+		).putData(
+			"maxFileSize",
+			String.valueOf(getUploadMaximumFileSize(themeDisplay))
 		).putData(
 			"parentObjectEntryFolderExternalReferenceCode",
 			parentObjectEntryFolderExternalReferenceCode
@@ -2387,6 +2421,9 @@ public class ActionUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 
+	private static final Snapshot<AttachmentManager>
+		_attachmentManagerSnapshot = new Snapshot<>(
+			ActionUtil.class, AttachmentManager.class);
 	private static final ServiceTrackerList<CMSObjectEntryFormContributor>
 		_cmsObjectEntryFormContributors;
 	private static final Object _compareContentLayoutLock = new Object();

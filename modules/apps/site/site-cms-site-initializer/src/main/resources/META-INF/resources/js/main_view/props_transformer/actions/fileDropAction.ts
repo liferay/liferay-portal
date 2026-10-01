@@ -32,6 +32,7 @@ export default function fileDropAction(
 		candidateAssetLibraries,
 		documentClassName,
 		loadData,
+		maxFileSize,
 		objectEntryLinkProps,
 		parentObjectEntryFolderExternalReferenceCode,
 		redirect,
@@ -50,6 +51,7 @@ export default function fileDropAction(
 				name: file.name,
 				size: file.size,
 			})),
+			maxFileSize,
 			parentObjectEntryFolderExternalReferenceCode: dropTarget
 				? dropTarget.embedded?.externalReferenceCode
 				: parentObjectEntryFolderExternalReferenceCode,

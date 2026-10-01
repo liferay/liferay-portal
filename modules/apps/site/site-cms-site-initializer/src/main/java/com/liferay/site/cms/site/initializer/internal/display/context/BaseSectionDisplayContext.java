@@ -242,6 +242,9 @@ public abstract class BaseSectionDisplayContext {
 					_dlConfiguration);
 			}
 		).put(
+			"maxFileSize",
+			String.valueOf(ActionUtil.getUploadMaximumFileSize(themeDisplay))
+		).put(
 			"objectDefinitionCssClasses",
 			SectionDisplayContextUtil.getObjectDefinitionCssClasses()
 		).put(

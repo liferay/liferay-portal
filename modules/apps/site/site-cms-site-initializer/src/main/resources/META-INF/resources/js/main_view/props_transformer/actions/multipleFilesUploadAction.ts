@@ -19,6 +19,7 @@ export type MultipleFileUploaderData = Partial<ObjectEntryLinkContext> & {
 	assetLibraries: AssetLibrary[];
 	baseAssetLibraryViewURL: string;
 	documentClassName?: string;
+	maxFileSize?: string;
 	parentObjectEntryFolderExternalReferenceCode: string;
 };
 

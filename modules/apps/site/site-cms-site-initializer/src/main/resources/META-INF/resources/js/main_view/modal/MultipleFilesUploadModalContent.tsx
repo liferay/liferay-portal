@@ -33,6 +33,7 @@ export default function MultipleFilesUploadModalContent({
 	documentClassName,
 	filesToUpload,
 	loadData,
+	maxFileSize,
 	onModalClose,
 	parentObjectEntryFolderExternalReferenceCode,
 	...linkFields
@@ -42,6 +43,7 @@ export default function MultipleFilesUploadModalContent({
 	documentClassName?: string;
 	filesToUpload?: FileData[];
 	loadData?: () => void;
+	maxFileSize?: string;
 	onModalClose: () => void;
 	parentObjectEntryFolderExternalReferenceCode: string;
 }) {
@@ -196,6 +198,7 @@ export default function MultipleFilesUploadModalContent({
 			<MultipleFileUploader
 				filesToUpload={filesToUpload}
 				formValidation={formValidation}
+				maxFileSize={Number(maxFileSize) || undefined}
 				onModalClose={onModalClose}
 				onUploadComplete={onUploadComplete}
 				scopeSelectorElement={
