@@ -182,8 +182,6 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		DDMForm ddmForm = _formInstance.getDDMForm();
 
-		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
-
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
 		String alt = RandomTestUtil.randomString();
@@ -231,7 +229,7 @@ public class DDMFormValuesExportImportContentProcessorTest {
 			"uuid", _fileEntry.getUuid()
 		);
 
-		for (DDMFormField ddmFormField : ddmFormFields) {
+		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
 			ddmFormValues.addDDMFormFieldValue(
 				DDMFormValuesTestUtil.createLocalizedDDMFormFieldValue(
 					ddmFormField.getName(), jsonObject1.toString()));
@@ -341,8 +339,6 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		DDMForm ddmForm = _formInstance.getDDMForm();
 
-		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
-
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
 		JSONObject jsonObject1 = JSONUtil.put(
@@ -357,7 +353,7 @@ public class DDMFormValuesExportImportContentProcessorTest {
 			"uuid", _fileEntry.getUuid()
 		);
 
-		for (DDMFormField ddmFormField : ddmFormFields) {
+		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
 			ddmFormValues.addDDMFormFieldValue(
 				DDMFormValuesTestUtil.createLocalizedDDMFormFieldValue(
 					ddmFormField.getName(), jsonObject1.toString()));
