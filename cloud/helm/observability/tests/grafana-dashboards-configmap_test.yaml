@@ -4,6 +4,30 @@ templates:
 tests:
     -   asserts:
             -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: where \$__timeFilter\(\$\{timeField\}\)\\n\| where status in \(.Cancelled., .Completed., .CompletedWithWarnings., .Failed.\)\\n[^"]*where status in \(.Completed., .CompletedWithWarnings.\)\\n\| summarize \[.Successful Runs.\] = count\(\)
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: where \$__timeFilter\(\$\{timeField\}\)\\n\| where status in \(.Cancelled., .Completed., .CompletedWithWarnings., .Failed.\)\\n[^"]*where status !in \(.Completed., .CompletedWithWarnings.\)\\n\| summarize \[.Failed Runs.\] = count\(\)
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: where \$__timeFilter\(\$\{timeField\}\)\\n\| where status in \(.Cancelled., .Completed., .CompletedWithWarnings., .Failed.\)\\n[^"]*where namespace == .\$environment.\\n\| summarize \[.Total Runs.\] = count\(\)
+            -   matchRegex:
+                    path: data["backups.json"]
+                    pattern: where \$__timeFilter\(\$\{timeField\}\)\\n\| where status in \(.Cancelled., .Completed., .CompletedWithWarnings., .Failed.\)\\n[^"]*summarize failed = countif\(status !in \(.Completed., .CompletedWithWarnings.\)\), total = count\(\)\\n\| project \[.Backup Failure Rate.\] = iff\(total == 0, real\(null\), 100.0 \* failed / total\)
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: \$__timeFilter\(startTime\)
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-backups
+        it: Counts the finished backups that match the table for the job health tiles
+        set:
+            azure.resourceGroupName: liferay-test
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
                     path: data["kubernetes-workloads.json"]
                     pattern: kube_pod_container_status_restarts_total\{[^}]*\}\\n  - kube_pod_container_status_restarts_total\{[^}]*\} offset \$__interval
             -   notMatchRegex:
@@ -135,9 +159,6 @@ tests:
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: "\"id\": \"links\",\\s+\"value\": \\[\\s+\\]"
-            -   matchRegex:
-                    path: data["backups.json"]
-                    pattern: where \$__timeFilter\(startTime\)[^"]*summarize \[.Failed Runs.\] = count\(\)
             -   notMatchRegex:
                     path: data["backups.json"]
                     pattern: \$\{AZURE_
