@@ -1562,7 +1562,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @see    AuthPipeline
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public int authenticateByEmailAddress(
 			long companyId, String emailAddress, String password,
 			Map<String, String[]> headerMap, Map<String, String[]> parameterMap,
@@ -1594,7 +1594,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @see    AuthPipeline
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public int authenticateByScreenName(
 			long companyId, String screenName, String password,
 			Map<String, String[]> headerMap, Map<String, String[]> parameterMap,
@@ -1626,7 +1626,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * @see    AuthPipeline
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public int authenticateByUserId(
 			long companyId, long userId, String password,
 			Map<String, String[]> headerMap, Map<String, String[]> parameterMap,
@@ -1697,7 +1697,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return 0;
 		}
 
-		user = _checkPasswordPolicy(user);
+		user = (User)user.clone();
+
+		try {
+			user = _checkPasswordPolicy(user);
+		}
+		finally {
+			user = _updateUser(user);
+		}
 
 		if (!PropsValues.BASIC_AUTH_PASSWORD_REQUIRED) {
 			return user.getUserId();
@@ -1721,7 +1728,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			userPassword.getBytes(StandardCharsets.UTF_8));
 
 		if (encPasswordMatches || passwordMatches) {
-			resetFailedLoginAttempts(user);
+			_updateUser(resetFailedLoginAttempts(user));
 
 			return user.getUserId();
 		}
@@ -1778,7 +1785,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return 0;
 		}
 
-		user = _checkPasswordPolicy(user);
+		user = (User)user.clone();
+
+		try {
+			user = _checkPasswordPolicy(user);
+		}
+		finally {
+			user = _updateUser(user);
+		}
 
 		// Verify digest
 
@@ -1798,7 +1812,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				DigesterUtil.MD5, ha1, nonce, ha2);
 
 			if (response.equals(curResponse)) {
-				resetFailedLoginAttempts(user);
+				_updateUser(resetFailedLoginAttempts(user));
 
 				return user.getUserId();
 			}
@@ -1821,7 +1835,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 */
 	@Override
 	public void checkLockout(User user) throws PortalException {
-		doCheckLockout(user, user.getPasswordPolicy());
+		try {
+			doCheckLockout(user, user.getPasswordPolicy());
+		}
+		finally {
+			_updateUser(user);
+		}
 	}
 
 	/**
@@ -1901,7 +1920,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 */
 	@Override
 	public void checkPasswordExpired(User user) throws PortalException {
-		doCheckPasswordExpired(user, user.getPasswordPolicy());
+		try {
+			doCheckPasswordExpired(user, user.getPasswordPolicy());
+		}
+		finally {
+			_updateUser(user);
+		}
 	}
 
 	/**
@@ -6095,11 +6119,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return Authenticator.FAILURE;
 		}
 
+		user = (User)user.clone();
+
 		if (!user.isPasswordEncrypted()) {
 			user.setPassword(PasswordEncryptorUtil.encrypt(user.getPassword()));
 			user.setPasswordEncrypted(true);
-
-			user = userPersistence.update(user);
 		}
 
 		// Authenticate against the User_ table
@@ -6123,8 +6147,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					user.setPassword(
 						PasswordEncryptorUtil.encrypt(
 							password, user.getPassword(), true));
-
-					user = userPersistence.update(user);
 				}
 
 				authResult = Authenticator.SUCCESS;
@@ -6159,6 +6181,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				user = _checkPasswordPolicy(user);
 			}
 			catch (PortalException portalException) {
+				_updateUser(user);
+
 				handleAuthenticationFailure(
 					companyId, authType, login, user, headerMap, parameterMap);
 
@@ -6169,13 +6193,15 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		// Execute code triggered by authentication failure
 
 		if (authResult == Authenticator.FAILURE) {
+			_updateUser(user);
+
 			authResult = handleAuthenticationFailure(
 				companyId, authType, login, user, headerMap, parameterMap);
 
 			user = userPersistence.fetchByPrimaryKey(user.getUserId());
 		}
 		else {
-			user = resetFailedLoginAttempts(user);
+			user = _updateUser(resetFailedLoginAttempts(user));
 		}
 
 		if (resultsMap != null) {
@@ -6304,8 +6330,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			if (graceLoginCount < passwordPolicy.getGraceLimit()) {
 				user.setGraceLoginCount(++graceLoginCount);
-
-				user = userPersistence.update(user);
 			}
 			else {
 				throw new PasswordExpiredException();
@@ -6322,8 +6346,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			User guestUser = getGuestUser(user.getCompanyId());
 
 			user.setPasswordReset(contact.getUserId() != guestUser.getUserId());
-
-			user = userPersistence.update(user);
 		}
 
 		return user;
@@ -6741,14 +6763,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	protected User resetFailedLoginAttempts(User user) {
-		return resetFailedLoginAttempts(user, false);
-	}
-
-	protected User resetFailedLoginAttempts(User user, boolean forceUpdate) {
-		if (forceUpdate || (user.getFailedLoginAttempts() > 0)) {
+		if (user.getFailedLoginAttempts() > 0) {
 			user.setFailedLoginAttempts(0);
-
-			user = userPersistence.update(user);
 		}
 
 		return user;
@@ -7552,8 +7568,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				(elapsedTime > requiredElapsedTime)) {
 
 				user.setFailedLoginAttempts(0);
-
-				user = userPersistence.update(user);
 			}
 		}
 
@@ -7572,8 +7586,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 				user.setLockout(false);
 				user.setLockoutDate(null);
-
-				user = userPersistence.update(user);
 			}
 		}
 
@@ -7687,6 +7699,16 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				userPersistence.closeSession(session);
 			}
 		}
+	}
+
+	private User _updateUser(User user) {
+		UserModelImpl userModelImpl = (UserModelImpl)user;
+
+		if (userModelImpl.getColumnBitmask() == 0) {
+			return user;
+		}
+
+		return userLocalService.updateUser(user);
 	}
 
 	private static final String _PASSWORDS_ENCRYPTION_ALGORITHM =
