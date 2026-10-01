@@ -13,8 +13,53 @@ import getRandomString from '../../../utils/getRandomString';
 const test = mergeTests(apiHelpersTest, loginTest(), virtualInstancesPagesTest);
 
 test(
+	'LPD-93375 Copying an instance to a nonnumeric company ID shows an error',
+	{tag: '@LPD-93375'},
+	async ({virtualInstancesPage}) => {
+		test.setTimeout(360000);
+
+		const name = getRandomString();
+
+		let created = false;
+
+		try {
+			await virtualInstancesPage.addNewVirtualInstance(name);
+
+			created = true;
+
+			await virtualInstancesPage.openCopyVirtualInstanceModal(name);
+
+			await virtualInstancesPage.submitCopyVirtualInstance({
+				destinationCompanyId: getRandomString(),
+				name: getRandomString(),
+				virtualHost: getRandomString(),
+				webId: getRandomString(),
+			});
+
+			await expect(
+				virtualInstancesPage.copyInstanceErrorMessage
+			).toBeVisible();
+		}
+		finally {
+
+			// A failed copy leaves the modal open, which blocks navigation
+
+			if (
+				await virtualInstancesPage.copyInstanceCancelButton.isVisible()
+			) {
+				await virtualInstancesPage.copyInstanceCancelButton.click();
+			}
+
+			if (created) {
+				await virtualInstancesPage.deleteVirtualInstance(name);
+			}
+		}
+	}
+);
+
+test(
 	'LPD-92620 Copying an instance to an existing company ID shows an error',
-	{tag: '@LPD-92620'},
+	{tag: ['@LPD-92620', '@LPD-93375']},
 	async ({apiHelpers, virtualInstancesPage}) => {
 		test.setTimeout(360000);
 
@@ -64,10 +109,10 @@ test(
 );
 
 test(
-	'LPD-92620 Copying an instance shows the copy success message',
-	{tag: '@LPD-92620'},
+	'LPD-92620 Copying an instance notifies the user when it finishes',
+	{tag: ['@LPD-92620', '@LPD-93375']},
 	async ({virtualInstancesPage}) => {
-		test.setTimeout(360000);
+		test.setTimeout(2 * 180 * 1000);
 
 		const name = getRandomString();
 		const copyWebId = getRandomString();
@@ -87,14 +132,15 @@ test(
 			await virtualInstancesPage.submitCopyVirtualInstance({
 				destinationCompanyId: '',
 				name: copyWebId,
-				timeout: 180 * 1000,
 				virtualHost: copyWebId,
 				webId: copyWebId,
 			});
 
 			await expect(
-				virtualInstancesPage.copyInstanceSuccessMessage(copyWebId)
+				virtualInstancesPage.copyStartedMessage(copyWebId)
 			).toBeVisible();
+
+			await virtualInstancesPage.waitForCopyNotification(name, copyWebId);
 
 			copied = true;
 		}

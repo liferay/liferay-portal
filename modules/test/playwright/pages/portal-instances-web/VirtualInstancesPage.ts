@@ -225,8 +225,10 @@ export class VirtualInstancesPage {
 		}
 	}
 
-	copyInstanceSuccessMessage(webId: string) {
-		return this.page.getByText(`The instance was copied to ${webId}.`);
+	copyStartedMessage(webId: string) {
+		return this.page.getByText(
+			`The instance is being copied to ${webId}. You will be notified when it finishes.`
+		);
 	}
 
 	creationStartedMessage(name: string) {
@@ -290,6 +292,20 @@ export class VirtualInstancesPage {
 		]);
 
 		await this.page.waitForTimeout(1000);
+	}
+
+	async waitForCopyNotification(sourceName: string, webId: string) {
+		const notificationsPage = new NotificationsPage(this.page);
+
+		await expect(async () => {
+			await notificationsPage.goto();
+
+			await expect(
+				notificationsPage.getNotificationByTitle(
+					`The instance ${sourceName} was copied to ${webId}.`
+				)
+			).toBeVisible({timeout: 10 * 1000});
+		}).toPass({timeout: 300 * 1000});
 	}
 
 	async waitForCreationNotification(name: string) {
