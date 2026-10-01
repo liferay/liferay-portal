@@ -1,6 +1,22 @@
 definition {
 
 	@summary = "Default summary"
+	macro _deleteMessage(messageId = null) {
+		Variables.assertDefined(parameterList = ${messageId});
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userLoginInfo = JSONUtil2.formatJSONUser();
+
+		var curl = '''
+			${portalURL}/api/jsonws/mb.mbmessage/delete-message \
+				-u ${userLoginInfo} \
+				-d messageId=${messageId} \
+		''';
+
+		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});
+	}
+
+	@summary = "Default summary"
 	macro addAttachmentToMessage(groupName = null, fileName = null, threadSubject = null, mimeType = null, categoryName = null) {
 		var messageId = JSONMBMessage.getMessageIdByName(
 			categoryName = ${categoryName},
@@ -233,13 +249,7 @@ definition {
 		// mb.mbthread/delete-thread action to call instead.
 
 		for (var rootMessageId : list ${rootMessageIds}) {
-			var deleteCurl = '''
-				${portalURL}/api/jsonws/mb.mbmessage/delete-message \
-					-u ${userLoginInfo} \
-					-d messageId=${rootMessageId} \
-			''';
-
-			com.liferay.poshi.runner.util.JSONCurlUtil.post(${deleteCurl});
+			JSONMBMessage._deleteMessage(messageId = ${rootMessageId});
 		}
 	}
 
@@ -270,16 +280,8 @@ definition {
 			categoryName = ${categoryName},
 			groupName = ${groupName},
 			threadSubject = ${threadSubject});
-		var portalURL = JSONCompany.getPortalURL();
-		var userLoginInfo = JSONUtil2.formatJSONUser();
 
-		var curl = '''
-			${portalURL}/api/jsonws/mb.mbmessage/delete-message \
-				-u ${userLoginInfo} \
-				-d messageId=${messageId} \
-		''';
-
-		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});
+		JSONMBMessage._deleteMessage(messageId = ${messageId});
 	}
 
 	@summary = "Default summary"
