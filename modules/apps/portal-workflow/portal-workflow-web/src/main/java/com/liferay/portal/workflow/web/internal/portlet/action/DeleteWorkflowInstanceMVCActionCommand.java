@@ -122,9 +122,9 @@ public class DeleteWorkflowInstanceMVCActionCommand
 		long workflowInstanceId = ParamUtil.getLong(
 			actionRequest, "workflowInstanceId");
 
-		if (!Objects.equals(
+		if (Objects.equals(
 				_portal.getPortletId(actionRequest),
-				WorkflowPortletKeys.USER_WORKFLOW)) {
+				WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW_INSTANCE)) {
 
 			return WorkflowInstanceManagerUtil.getWorkflowInstance(
 				themeDisplay.getCompanyId(), workflowInstanceId);
