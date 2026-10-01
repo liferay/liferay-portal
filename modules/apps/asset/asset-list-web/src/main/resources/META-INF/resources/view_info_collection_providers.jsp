@@ -60,7 +60,7 @@ InfoCollectionProviderDisplayContext infoCollectionProviderDisplayContext = (Inf
 			</liferay-ui:search-container-column-text>
 
 			<%
-			InfoCollectionProviderActionDropdownItems infoCollectionProviderActionDropdownItems = new InfoCollectionProviderActionDropdownItems(infoCollectionProvider, liferayPortletRequest, liferayPortletResponse);
+			InfoCollectionProviderActionDropdownItems infoCollectionProviderActionDropdownItems = new InfoCollectionProviderActionDropdownItems(infoCollectionProvider, infoCollectionProviderDisplayContext.getTitle(infoCollectionProvider), liferayPortletRequest, liferayPortletResponse);
 			%>
 
 			<liferay-ui:search-container-column-text>

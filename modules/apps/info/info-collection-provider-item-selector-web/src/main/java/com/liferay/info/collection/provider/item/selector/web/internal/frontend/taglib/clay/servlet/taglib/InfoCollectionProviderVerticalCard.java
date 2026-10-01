@@ -33,13 +33,14 @@ public class InfoCollectionProviderVerticalCard extends BaseVerticalCard {
 
 	public InfoCollectionProviderVerticalCard(
 		InfoCollectionProvider<?> infoCollectionProvider,
-		InfoItemServiceRegistry infoItemServiceRegistry,
+		InfoItemServiceRegistry infoItemServiceRegistry, String label,
 		RenderRequest renderRequest, RowChecker rowChecker) {
 
 		super(null, renderRequest, rowChecker);
 
 		_infoCollectionProvider = infoCollectionProvider;
 		_infoItemServiceRegistry = infoItemServiceRegistry;
+		_label = label;
 	}
 
 	@Override
@@ -107,7 +108,7 @@ public class InfoCollectionProviderVerticalCard extends BaseVerticalCard {
 
 	@Override
 	public String getTitle() {
-		return _infoCollectionProvider.getLabel(themeDisplay.getLocale());
+		return _label;
 	}
 
 	@Override
@@ -164,5 +165,6 @@ public class InfoCollectionProviderVerticalCard extends BaseVerticalCard {
 
 	private final InfoCollectionProvider<?> _infoCollectionProvider;
 	private final InfoItemServiceRegistry _infoItemServiceRegistry;
+	private final String _label;
 
 }

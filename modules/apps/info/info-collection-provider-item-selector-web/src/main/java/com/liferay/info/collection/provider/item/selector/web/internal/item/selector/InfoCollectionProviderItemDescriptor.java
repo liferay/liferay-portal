@@ -13,12 +13,8 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
 
@@ -29,13 +25,12 @@ public class InfoCollectionProviderItemDescriptor
 	implements ItemSelectorViewDescriptor.ItemDescriptor {
 
 	public InfoCollectionProviderItemDescriptor(
-		HttpServletRequest httpServletRequest,
 		InfoCollectionProvider<?> infoCollectionProvider,
-		InfoItemServiceRegistry infoItemServiceRegistry) {
+		InfoItemServiceRegistry infoItemServiceRegistry, String label) {
 
-		_httpServletRequest = httpServletRequest;
 		_infoCollectionProvider = infoCollectionProvider;
 		_infoItemServiceRegistry = infoItemServiceRegistry;
+		_label = label;
 	}
 
 	@Override
@@ -72,15 +67,7 @@ public class InfoCollectionProviderItemDescriptor
 		).put(
 			"key", _infoCollectionProvider.getKey()
 		).put(
-			"title",
-			() -> {
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)_httpServletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
-
-				return _infoCollectionProvider.getLabel(
-					themeDisplay.getLocale());
-			}
+			"title", _label
 		).toString();
 	}
 
@@ -99,12 +86,12 @@ public class InfoCollectionProviderItemDescriptor
 		RenderRequest renderRequest, RowChecker rowChecker) {
 
 		return new InfoCollectionProviderVerticalCard(
-			_infoCollectionProvider, _infoItemServiceRegistry, renderRequest,
-			rowChecker);
+			_infoCollectionProvider, _infoItemServiceRegistry, _label,
+			renderRequest, rowChecker);
 	}
 
-	private final HttpServletRequest _httpServletRequest;
 	private final InfoCollectionProvider<?> _infoCollectionProvider;
 	private final InfoItemServiceRegistry _infoItemServiceRegistry;
+	private final String _label;
 
 }

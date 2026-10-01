@@ -29,8 +29,10 @@ import java.io.IOException;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -73,6 +75,8 @@ public class InfoCollectionProviderItemSelectorView
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)servletRequest;
 
+		Map<InfoCollectionProvider<?>, String> labels = new HashMap<>();
+
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			servletRequest, servletResponse,
 			infoCollectionProviderItemSelectorCriterion, portletURL,
@@ -81,14 +85,15 @@ public class InfoCollectionProviderItemSelectorView
 				httpServletRequest, portletURL,
 				_getInfoCollectionProviders(
 					httpServletRequest,
-					infoCollectionProviderItemSelectorCriterion),
-				_infoItemServiceRegistry));
+					infoCollectionProviderItemSelectorCriterion, labels),
+				_infoItemServiceRegistry, labels));
 	}
 
 	private List<InfoCollectionProvider<?>> _getInfoCollectionProviders(
 		HttpServletRequest httpServletRequest,
 		InfoCollectionProviderItemSelectorCriterion
-			infoCollectionProviderItemSelectorCriterion) {
+			infoCollectionProviderItemSelectorCriterion,
+		Map<InfoCollectionProvider<?>, String> labels) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -98,18 +103,13 @@ public class InfoCollectionProviderItemSelectorView
 				InfoCollectionProviderItemSelectorCriterion.Type.
 					SUPPORTED_INFO_FRAMEWORK_COLLECTIONS) {
 
-			return Collections.unmodifiableList(
-				ListUtil.sort(
-					ListUtil.filter(
-						_infoItemServiceRegistry.getAllInfoItemServices(
-							(Class<InfoCollectionProvider<?>>)
-								(Class<?>)InfoCollectionProvider.class),
-						InfoCollectionProvider::isAvailable),
-					Comparator.comparing(
-						infoCollectionProvider ->
-							infoCollectionProvider.getLabel(
-								themeDisplay.getLocale()),
-						String.CASE_INSENSITIVE_ORDER)));
+			return _sortByLabel(
+				ListUtil.filter(
+					_infoItemServiceRegistry.getAllInfoItemServices(
+						(Class<InfoCollectionProvider<?>>)
+							(Class<?>)InfoCollectionProvider.class),
+					InfoCollectionProvider::isAvailable),
+				labels, themeDisplay.getLocale());
 		}
 
 		String itemType =
@@ -122,18 +122,33 @@ public class InfoCollectionProviderItemSelectorView
 			itemType = AssetEntry.class.getName();
 		}
 
+		return _sortByLabel(
+			ListUtil.filter(
+				_infoItemServiceRegistry.getAllInfoItemServices(
+					(Class<InfoCollectionProvider<?>>)
+						(Class<?>)InfoCollectionProvider.class,
+					itemType),
+				InfoCollectionProvider::isAvailable),
+			labels, themeDisplay.getLocale());
+	}
+
+	private List<InfoCollectionProvider<?>> _sortByLabel(
+		List<InfoCollectionProvider<?>> infoCollectionProviders,
+		Map<InfoCollectionProvider<?>, String> labels, Locale locale) {
+
+		for (InfoCollectionProvider<?> infoCollectionProvider :
+				infoCollectionProviders) {
+
+			labels.put(
+				infoCollectionProvider,
+				infoCollectionProvider.getLabel(locale));
+		}
+
 		return Collections.unmodifiableList(
 			ListUtil.sort(
-				ListUtil.filter(
-					_infoItemServiceRegistry.getAllInfoItemServices(
-						(Class<InfoCollectionProvider<?>>)
-							(Class<?>)InfoCollectionProvider.class,
-						itemType),
-					InfoCollectionProvider::isAvailable),
+				infoCollectionProviders,
 				Comparator.comparing(
-					infoCollectionProvider -> infoCollectionProvider.getLabel(
-						themeDisplay.getLocale()),
-					String.CASE_INSENSITIVE_ORDER)));
+					labels::get, String.CASE_INSENSITIVE_ORDER)));
 	}
 
 	private static final List<ItemSelectorReturnType>

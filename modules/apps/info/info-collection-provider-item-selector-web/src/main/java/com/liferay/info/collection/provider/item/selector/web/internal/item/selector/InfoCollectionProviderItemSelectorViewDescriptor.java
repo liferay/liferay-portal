@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -34,11 +35,13 @@ public class InfoCollectionProviderItemSelectorViewDescriptor
 	public InfoCollectionProviderItemSelectorViewDescriptor(
 		HttpServletRequest httpServletRequest, PortletURL portletURL,
 		List<InfoCollectionProvider<?>> infoCollectionProviders,
-		InfoItemServiceRegistry infoItemServiceRegistry) {
+		InfoItemServiceRegistry infoItemServiceRegistry,
+		Map<InfoCollectionProvider<?>, String> labels) {
 
 		super(httpServletRequest, portletURL, infoCollectionProviders);
 
 		_infoItemServiceRegistry = infoItemServiceRegistry;
+		_labels = labels;
 	}
 
 	@Override
@@ -46,8 +49,8 @@ public class InfoCollectionProviderItemSelectorViewDescriptor
 		InfoCollectionProvider<?> infoCollectionProvider) {
 
 		return new InfoCollectionProviderItemDescriptor(
-			httpServletRequest, infoCollectionProvider,
-			_infoItemServiceRegistry);
+			infoCollectionProvider, _infoItemServiceRegistry,
+			_labels.get(infoCollectionProvider));
 	}
 
 	@Override
@@ -85,8 +88,7 @@ public class InfoCollectionProviderItemSelectorViewDescriptor
 				filteredInfoCollectionProviders,
 				infoCollectionProvider -> {
 					String label = StringUtil.toLowerCase(
-						infoCollectionProvider.getLabel(
-							themeDisplay.getLocale()));
+						_labels.get(infoCollectionProvider));
 
 					return label.contains(StringUtil.toLowerCase(keywords));
 				});
@@ -98,5 +100,6 @@ public class InfoCollectionProviderItemSelectorViewDescriptor
 	}
 
 	private final InfoItemServiceRegistry _infoItemServiceRegistry;
+	private final Map<InfoCollectionProvider<?>, String> _labels;
 
 }

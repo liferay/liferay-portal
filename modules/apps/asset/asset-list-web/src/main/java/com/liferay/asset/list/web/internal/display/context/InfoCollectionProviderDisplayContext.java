@@ -29,7 +29,9 @@ import jakarta.portlet.RenderResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jürgen Kappler
@@ -76,7 +78,9 @@ public class InfoCollectionProviderDisplayContext {
 	}
 
 	public String getTitle(InfoCollectionProvider<?> infoCollectionProvider) {
-		return infoCollectionProvider.getLabel(_themeDisplay.getLocale());
+		return _titles.computeIfAbsent(
+			infoCollectionProvider,
+			key -> key.getLabel(_themeDisplay.getLocale()));
 	}
 
 	private List<InfoCollectionProvider<?>> _getInfoCollectionProviders() {
@@ -89,9 +93,7 @@ public class InfoCollectionProviderDisplayContext {
 			ListUtil.filter(
 				infoCollectionProviders, InfoCollectionProvider::isAvailable),
 			Comparator.comparing(
-				infoCollectionProvider -> infoCollectionProvider.getLabel(
-					_themeDisplay.getLocale()),
-				String.CASE_INSENSITIVE_ORDER));
+				this::getTitle, String.CASE_INSENSITIVE_ORDER));
 	}
 
 	private PortletURL _getPortletURL() {
@@ -122,5 +124,7 @@ public class InfoCollectionProviderDisplayContext {
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;
+	private final Map<InfoCollectionProvider<?>, String> _titles =
+		new HashMap<>();
 
 }

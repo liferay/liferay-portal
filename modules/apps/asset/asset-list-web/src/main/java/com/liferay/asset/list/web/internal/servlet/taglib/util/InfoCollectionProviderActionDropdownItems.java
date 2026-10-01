@@ -31,10 +31,12 @@ public class InfoCollectionProviderActionDropdownItems {
 
 	public InfoCollectionProviderActionDropdownItems(
 		InfoCollectionProvider<?> infoCollectionProvider,
+		String infoCollectionProviderTitle,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
 		_infoCollectionProvider = infoCollectionProvider;
+		_infoCollectionProviderTitle = infoCollectionProviderTitle;
 		_liferayPortletResponse = liferayPortletResponse;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
@@ -69,8 +71,7 @@ public class InfoCollectionProviderActionDropdownItems {
 		return dropdownItem -> {
 			dropdownItem.putData("action", "viewInfoCollectionProviderItems");
 			dropdownItem.putData(
-				"infoCollectionProviderTitle",
-				_infoCollectionProvider.getLabel(_themeDisplay.getLocale()));
+				"infoCollectionProviderTitle", _infoCollectionProviderTitle);
 			dropdownItem.putData(
 				"viewInfoCollectionProviderItemsURL",
 				String.valueOf(viewInfoCollectionProviderItemsURL));
@@ -82,6 +83,7 @@ public class InfoCollectionProviderActionDropdownItems {
 
 	private final HttpServletRequest _httpServletRequest;
 	private final InfoCollectionProvider<?> _infoCollectionProvider;
+	private final String _infoCollectionProviderTitle;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ThemeDisplay _themeDisplay;
 
