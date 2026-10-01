@@ -156,11 +156,11 @@ describe('Modal -> IncrementalInteractions', () => {
 	it('open the modal', () => {
 		const {container, getByLabelText} = render(<ModalWithState />);
 
-		expect(document.body.classList).not.toContain('modal-open');
+		expect(document.body).not.toHaveClass('modal-open');
 
 		fireEvent.click(getByLabelText('button'), {});
 
-		expect(document.body.classList).toContain('modal-open');
+		expect(document.body).toHaveClass('modal-open');
 		expect(
 			container.querySelector('.modal-backdrop.fade.show')
 		).toBeDefined();
@@ -172,11 +172,11 @@ describe('Modal -> IncrementalInteractions', () => {
 	it('open the modal with useModal state', () => {
 		const {container, getByLabelText} = render(<ModalWithHookState />);
 
-		expect(document.body.classList).not.toContain('modal-open');
+		expect(document.body).not.toHaveClass('modal-open');
 
 		fireEvent.click(getByLabelText('button'), {});
 
-		expect(document.body.classList).toContain('modal-open');
+		expect(document.body).toHaveClass('modal-open');
 		expect(
 			container.querySelector('.modal-backdrop.fade.show')
 		).toBeDefined();
@@ -204,9 +204,11 @@ describe('Modal -> IncrementalInteractions', () => {
 		fireEvent.mouseDown(modalEl!);
 		fireEvent.mouseUp(modalEl!);
 
-		expect(document.body.classList).not.toContain('modal-open');
-		expect(document.querySelector(backdropElSelector)).toBeNull();
-		expect(document.querySelector(modalElSelector)).toBeNull();
+		expect(document.body).not.toHaveClass('modal-open');
+		expect(
+			document.querySelector(backdropElSelector)
+		).not.toBeInTheDocument();
+		expect(document.querySelector(modalElSelector)).not.toBeInTheDocument();
 	});
 
 	it('do not close modal when event is prevented by clicking on overlay', () => {
@@ -241,7 +243,7 @@ describe('Modal -> IncrementalInteractions', () => {
 
 		fireEvent.click(modalEl!, {});
 
-		expect(document.body.classList).toContain('modal-open');
+		expect(document.body).toHaveClass('modal-open');
 		expect(document.querySelector(backdropElSelector)).toBeDefined();
 		expect(document.querySelector(modalElSelector)).toBeDefined();
 	});
@@ -264,9 +266,11 @@ describe('Modal -> IncrementalInteractions', () => {
 
 		fireEvent.keyDown(container, {key: 'Escape'});
 
-		expect(document.body.classList).not.toContain('modal-open');
-		expect(document.querySelector(backdropElSelector)).toBeNull();
-		expect(document.querySelector(modalElSelector)).toBeNull();
+		expect(document.body).not.toHaveClass('modal-open');
+		expect(
+			document.querySelector(backdropElSelector)
+		).not.toBeInTheDocument();
+		expect(document.querySelector(modalElSelector)).not.toBeInTheDocument();
 	});
 
 	it('close the modal when clicking on the close button of the Header component', () => {
@@ -292,9 +296,11 @@ describe('Modal -> IncrementalInteractions', () => {
 
 		fireEvent.click(buttonHeaderCloseEl);
 
-		expect(document.body.classList).not.toContain('modal-open');
-		expect(document.querySelector(backdropElSelector)).toBeNull();
-		expect(document.querySelector(modalElSelector)).toBeNull();
+		expect(document.body).not.toHaveClass('modal-open');
+		expect(
+			document.querySelector(backdropElSelector)
+		).not.toBeInTheDocument();
+		expect(document.querySelector(modalElSelector)).not.toBeInTheDocument();
 	});
 
 	it('close the modal when click on the button of Footer component', () => {
@@ -338,9 +344,11 @@ describe('Modal -> IncrementalInteractions', () => {
 
 		fireEvent.click(buttonFooterCloseEl);
 
-		expect(document.body.classList).not.toContain('modal-open');
-		expect(document.querySelector(backdropElSelector)).toBeNull();
-		expect(document.querySelector(modalElSelector)).toBeNull();
+		expect(document.body).not.toHaveClass('modal-open');
+		expect(
+			document.querySelector(backdropElSelector)
+		).not.toBeInTheDocument();
+		expect(document.querySelector(modalElSelector)).not.toBeInTheDocument();
 	});
 });
 
@@ -402,8 +410,8 @@ describe('ModalProvider -> IncrementalInteractions', () => {
 			jest.runAllTimers();
 		});
 
-		expect(document.querySelector('modal-header')).toBeNull();
-		expect(document.querySelector('modal-footer')).toBeNull();
+		expect(document.querySelector('modal-header')).not.toBeInTheDocument();
+		expect(document.querySelector('modal-footer')).not.toBeInTheDocument();
 	});
 
 	it('renders a modal when dispatching Open by provider', () => {
