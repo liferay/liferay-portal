@@ -121,10 +121,20 @@ public class AddLayoutPageTemplateEntryMVCActionCommand
 			return HttpComponentsUtil.addParameters(
 				_portal.getLayoutFullURL(draftLayout, themeDisplay),
 				"p_l_back_url",
-				DesignLibraryUtil.getDesignLibraryResourcesURL(
-					scopeGroup, _portal.getHttpServletRequest(actionRequest)),
+				PortletURLBuilder.create(
+					_portal.getControlPanelPortletURL(
+						actionRequest, scopeGroup,
+						LayoutPageTemplateAdminPortletKeys.
+							LAYOUT_PAGE_TEMPLATES,
+						0, 0, PortletRequest.RENDER_PHASE)
+				).setTabs1(
+					"page-templates"
+				).setParameter(
+					"layoutPageTemplateCollectionId",
+					layoutPageTemplateEntry.getLayoutPageTemplateCollectionId()
+				).buildString(),
 				"p_l_back_url_title",
-				scopeGroup.getDescriptiveName(themeDisplay.getLocale()),
+				_language.get(themeDisplay.getLocale(), "page-templates"),
 				"p_l_mode", Constants.EDIT);
 		}
 
