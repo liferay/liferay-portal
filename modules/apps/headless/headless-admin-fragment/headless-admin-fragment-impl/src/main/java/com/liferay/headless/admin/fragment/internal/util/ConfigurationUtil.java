@@ -2105,18 +2105,29 @@ public class ConfigurationUtil {
 			return siteMenuJSONObject;
 		}
 
+		siteMenuJSONObject.put(
+			"parentSiteNavigationMenuItemId",
+			String.valueOf(
+				siteNavigationMenuItem.getSiteNavigationMenuItemId()));
+
 		SiteNavigationMenuItemType siteNavigationMenuItemType =
 			SiteNavigationMenuItemTypeRegistryUtil.
 				getSiteNavigationMenuItemType(siteNavigationMenuItem);
 
+		if (siteNavigationMenuItemType == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"No site navigation menu item type is registered for " +
+						siteNavigationMenuItem.getType());
+			}
+
+			return siteMenuJSONObject;
+		}
+
 		return siteMenuJSONObject.put(
-			"parentSiteNavigationMenuItemId",
-			String.valueOf(siteNavigationMenuItem.getSiteNavigationMenuItemId())
-		).put(
 			"title",
 			siteNavigationMenuItemType.getTitle(
-				siteNavigationMenuItem, LocaleUtil.getMostRelevantLocale())
-		);
+				siteNavigationMenuItem, LocaleUtil.getMostRelevantLocale()));
 	}
 
 	private static JSONObject _toSitePagesJSONObject(
