@@ -76,8 +76,7 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 
 	@Test
 	public void testOnBeforeSaveWithInvalidPath() throws Exception {
-		_assertInvalidPath(
-			"headless-api-cacheable-endpoint-path-required", StringPool.BLANK);
+		_assertInvalidPath("path-cannot-be-empty", StringPool.BLANK);
 	}
 
 	@Test

@@ -66,8 +66,7 @@ public class HeadlessAPICacheCompanyConfigurationModelListener
 		if (Validator.isBlank(path)) {
 			throw new ConfigurationModelListenerException(
 				ResourceBundleUtil.getString(
-					_getResourceBundle(),
-					"headless-api-cacheable-endpoint-path-required"),
+					_getResourceBundle(), "path-cannot-be-empty"),
 				HeadlessAPICacheCompanyConfiguration.class, getClass(),
 				dictionary);
 		}
