@@ -8,6 +8,9 @@ import {Locator, Page, expect} from '@playwright/test';
 import {liferayConfig} from '../../liferay.config';
 import {waitForAlert} from '../../utils/waitForAlert';
 
+const accountSettingsPageURL =
+	'/group/control_panel/manage?p_p_id=com_liferay_my_account_web_portlet_MyAccountPortlet';
+
 export class AccountSettingsPage {
 	readonly accountSettingsMenuItem: Locator;
 	readonly consentManagerMenuItem: Locator;
@@ -95,11 +98,24 @@ export class AccountSettingsPage {
 	}
 
 	async goToAccountSettings() {
-		await this.userPersonalMenuButton.click();
+		if (
+			this.page
+				.url()
+				.includes(
+					'p_p_id=com_liferay_my_account_web_portlet_MyAccountPortlet'
+				)
+		) {
+			await this.page.goto(
+				`${liferayConfig.environment.baseUrl}${accountSettingsPageURL}`
+			);
+		}
+		else {
+			await this.userPersonalMenuButton.click();
 
-		await expect(this.accountSettingsMenuItem).toBeVisible();
+			await expect(this.accountSettingsMenuItem).toBeVisible();
 
-		await this.accountSettingsMenuItem.click();
+			await this.accountSettingsMenuItem.click();
+		}
 
 		await expect(this.userDisplayData).toBeVisible();
 	}
@@ -152,9 +168,6 @@ export class AccountSettingsPage {
 		if (navigate) {
 
 			// do not use `goToAccountSettings`, so this works in multiple locales
-
-			const accountSettingsPageURL =
-				'/group/control_panel/manage?p_p_id=com_liferay_my_account_web_portlet_MyAccountPortlet';
 
 			await this.page.goto(
 				`${liferayConfig.environment.baseUrl}${accountSettingsPageURL}`
