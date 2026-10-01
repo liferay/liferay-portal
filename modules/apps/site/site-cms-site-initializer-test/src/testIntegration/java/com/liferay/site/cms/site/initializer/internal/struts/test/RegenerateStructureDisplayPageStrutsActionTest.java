@@ -28,6 +28,7 @@ import com.liferay.object.model.ObjectLayoutBox;
 import com.liferay.object.model.ObjectLayoutColumn;
 import com.liferay.object.model.ObjectLayoutRow;
 import com.liferay.object.model.ObjectLayoutTab;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutLocalService;
@@ -40,6 +41,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -154,8 +156,9 @@ public class RegenerateStructureDisplayPageStrutsActionTest {
 
 	@FeatureFlag("LPD-96666")
 	@Test
-	@TestInfo({"LPD-99448", "LPD-102262"})
+	@TestInfo({"LPD-99448", "LPD-102262", "LPD-102524"})
 	public void testExecute() throws Exception {
+		_testExecuteWithBasicDocument();
 		_testExecuteWithObjectLayout();
 		_testExecuteWithoutUpdatePermission();
 	}
@@ -266,6 +269,55 @@ public class RegenerateStructureDisplayPageStrutsActionTest {
 		return mockHttpServletRequest;
 	}
 
+	private void _testExecuteWithBasicDocument() throws Exception {
+		Group group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				group.getGroupId(),
+				_portal.getClassNameId(objectDefinition.getClassName()), null,
+				false, WorkflowConstants.STATUS_APPROVED);
+
+		Layout draftLayout = _layoutLocalService.fetchDraftLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_execute(group, draftLayout);
+
+		List<FragmentEntryLink> fragmentEntryLinks = _getFragmentEntryLinks(
+			group, draftLayout, _RENDERER_KEY_PARAGRAPH);
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			fragmentEntryLink.getEditableValues());
+
+		JSONObject editableFragmentEntryProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		JSONObject elementTextJSONObject =
+			editableFragmentEntryProcessorJSONObject.getJSONObject(
+				"element-text");
+
+		Assert.assertEquals(
+			LanguageUtil.get(
+				LocaleUtil.getDefault(),
+				"for-now-the-file-is-only-reachable-through-the-friendly-url-" +
+					"of-the-default-language"),
+			elementTextJSONObject.getString(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())));
+	}
+
 	private void _testExecuteWithObjectLayout() throws Exception {
 		Group group = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
@@ -312,6 +364,12 @@ public class RegenerateStructureDisplayPageStrutsActionTest {
 
 		List<FragmentEntryLink> fragmentEntryLinks = _getFragmentEntryLinks(
 			group, layout, _RENDERER_KEY_ACCORDION);
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 0, fragmentEntryLinks.size());
+
+		fragmentEntryLinks = _getFragmentEntryLinks(
+			group, layout, _RENDERER_KEY_PARAGRAPH);
 
 		Assert.assertEquals(
 			fragmentEntryLinks.toString(), 0, fragmentEntryLinks.size());
@@ -436,6 +494,9 @@ public class RegenerateStructureDisplayPageStrutsActionTest {
 	private static final String _RENDERER_KEY_ACCORDION =
 		"BASIC_COMPONENT-accordion";
 
+	private static final String _RENDERER_KEY_PARAGRAPH =
+		"BASIC_COMPONENT-paragraph";
+
 	private static final String _RENDERER_KEY_TABS = "BASIC_COMPONENT-tabs";
 
 	private static Company _company;
@@ -463,6 +524,9 @@ public class RegenerateStructureDisplayPageStrutsActionTest {
 	private LayoutLocalService _layoutLocalService;
 
 	private ObjectDefinition _objectDefinition;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectDefinitionSettingLocalService

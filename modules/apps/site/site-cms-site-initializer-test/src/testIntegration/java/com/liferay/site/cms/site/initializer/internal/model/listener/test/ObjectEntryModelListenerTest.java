@@ -30,19 +30,28 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.friendly.url.resolver.FileEntryFriendlyURLResolver;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
+import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -51,7 +60,9 @@ import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -514,6 +525,173 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.VIEW));
 	}
 
+	@Test
+	@TestInfo("LPD-102524")
+	public void testOnAfterUpdateWhenDisplayDateIsReached() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), StringUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), StringUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		ObjectEntry objectEntry = _addBasicDocumentObjectEntry(
+			new Date(System.currentTimeMillis() + Time.DAY),
+			depotEntry.getGroupId(), urlTitle);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_SCHEDULED, objectEntry.getStatus());
+
+		Assert.assertEquals(
+			0, _resolveFileEntryId(depotEntry.getGroupId(), urlTitle));
+
+		objectEntry.setDisplayDate(
+			new Date(System.currentTimeMillis() - Time.MINUTE));
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		objectEntry = _objectEntryLocalService.getObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectEntry.getStatus());
+
+		Assert.assertEquals(
+			_getFileEntryId(objectEntry),
+			_resolveFileEntryId(depotEntry.getGroupId(), urlTitle));
+	}
+
+	@Test
+	@TestInfo("LPD-102524")
+	public void testOnAfterUpdateWhenStatusIsApproved() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), StringUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), StringUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		ObjectEntry objectEntry = _addBasicDocumentObjectEntry(
+			null, depotEntry.getGroupId(), urlTitle);
+
+		long fileEntryId = _getFileEntryId(objectEntry);
+
+		ServiceContext serviceContext = _getServiceContext(
+			depotEntry.getGroupId(), urlTitle);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"file",
+				() -> {
+					FileEntry fileEntry = _addTempFileEntry(
+						depotEntry.getGroupId());
+
+					return fileEntry.getFileEntryId();
+				}
+			).put(
+				"title_i18n", values.get("title_i18n")
+			).build(),
+			serviceContext);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, objectEntry.getStatus());
+		Assert.assertNotEquals(fileEntryId, _getFileEntryId(objectEntry));
+
+		Assert.assertEquals(
+			fileEntryId,
+			_resolveFileEntryId(depotEntry.getGroupId(), urlTitle));
+
+		objectEntry = _objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
+
+		Assert.assertEquals(
+			_getFileEntryId(objectEntry),
+			_resolveFileEntryId(depotEntry.getGroupId(), urlTitle));
+	}
+
+	private ObjectEntry _addBasicDocumentObjectEntry(
+			Date displayDate, long groupId, String urlTitle)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.
+				getObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
+					groupId, TestPropsValues.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			groupId, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			objectEntryFolder.getObjectEntryFolderId(),
+			LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+			HashMapBuilder.<String, Serializable>put(
+				"displayDate", displayDate
+			).put(
+				"file",
+				() -> {
+					FileEntry fileEntry = _addTempFileEntry(groupId);
+
+					return fileEntry.getFileEntryId();
+				}
+			).put(
+				"title_i18n",
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					RandomTestUtil.randomString()
+				).build()
+			).build(),
+			_getServiceContext(groupId, urlTitle));
+	}
+
+	private FileEntry _addTempFileEntry(long groupId) throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		return TempFileEntryUtil.addTempFileEntry(
+			groupId, TestPropsValues.getUserId(),
+			objectDefinition.getPortletId(),
+			TempFileEntryUtil.getTempFileName(
+				RandomTestUtil.randomString() + ".txt"),
+			FileUtil.createTempFile(RandomTestUtil.randomBytes()),
+			ContentTypes.TEXT_PLAIN);
+	}
+
+	private long _getFileEntryId(ObjectEntry objectEntry) throws Exception {
+		objectEntry = _objectEntryLocalService.getObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		return GetterUtil.getLong(values.get("file"));
+	}
+
 	private Role _getOrAddCMSAdministratorRole(long companyId, long userId)
 		throws Exception {
 
@@ -529,6 +707,34 @@ public class ObjectEntryModelListenerTest {
 			RoleConstants.TYPE_REGULAR, null, null);
 	}
 
+	private ServiceContext _getServiceContext(long groupId, String urlTitle)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(groupId);
+
+		serviceContext.setAttribute(
+			"friendlyUrlMap",
+			HashMapBuilder.put(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault()), urlTitle
+			).build());
+
+		return serviceContext;
+	}
+
+	private long _resolveFileEntryId(long groupId, String urlTitle)
+		throws Exception {
+
+		FileEntry fileEntry = _fileEntryFriendlyURLResolver.resolveFriendlyURL(
+			groupId, urlTitle);
+
+		if (fileEntry == null) {
+			return 0;
+		}
+
+		return fileEntry.getFileEntryId();
+	}
+
 	private Role _cmsAdministratorRole;
 
 	@Inject
@@ -536,6 +742,9 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Inject
+	private FileEntryFriendlyURLResolver _fileEntryFriendlyURLResolver;
 
 	@Inject(
 		filter = "filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
