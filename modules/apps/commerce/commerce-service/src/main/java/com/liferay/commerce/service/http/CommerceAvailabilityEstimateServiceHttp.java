@@ -305,7 +305,8 @@ public class CommerceAvailabilityEstimateServiceHttp {
 
 	public static com.liferay.commerce.model.CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
-				HttpPrincipal httpPrincipal, String externalReferenceCode)
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				java.util.Map<java.util.Locale, String> titleMap)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -315,7 +316,7 @@ public class CommerceAvailabilityEstimateServiceHttp {
 				_getOrAddEmptyCommerceAvailabilityEstimateParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode);
+				methodKey, externalReferenceCode, titleMap);
 
 			Object returnObj = null;
 
@@ -425,7 +426,7 @@ public class CommerceAvailabilityEstimateServiceHttp {
 		};
 	private static final Class<?>[]
 		_getOrAddEmptyCommerceAvailabilityEstimateParameterTypes6 =
-			new Class[] {String.class};
+			new Class[] {String.class, java.util.Map.class};
 	private static final Class<?>[]
 		_updateCommerceAvailabilityEstimateParameterTypes7 = new Class[] {
 			String.class, long.class, java.util.Map.class, double.class,
@@ -433,4 +434,4 @@ public class CommerceAvailabilityEstimateServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1847468056
+// LIFERAY-SERVICE-BUILDER-HASH:227495726

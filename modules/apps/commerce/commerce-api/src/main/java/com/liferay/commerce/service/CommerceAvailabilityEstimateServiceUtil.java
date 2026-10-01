@@ -87,11 +87,12 @@ public class CommerceAvailabilityEstimateServiceUtil {
 
 	public static CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
-				String externalReferenceCode)
+				String externalReferenceCode,
+				Map<java.util.Locale, String> titleMap)
 		throws PortalException {
 
 		return getService().getOrAddEmptyCommerceAvailabilityEstimate(
-			externalReferenceCode);
+			externalReferenceCode, titleMap);
 	}
 
 	/**
@@ -126,4 +127,4 @@ public class CommerceAvailabilityEstimateServiceUtil {
 			CommerceAvailabilityEstimateService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-915011880
+// LIFERAY-SERVICE-BUILDER-HASH:-1783751655

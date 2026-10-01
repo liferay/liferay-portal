@@ -307,7 +307,8 @@ public interface CommerceAvailabilityEstimateLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
-				String externalReferenceCode, long companyId, long userId)
+				String externalReferenceCode, long companyId, long userId,
+				Map<Locale, String> titleMap)
 		throws PortalException;
 
 	/**
@@ -346,4 +347,4 @@ public interface CommerceAvailabilityEstimateLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:752216987
+// LIFERAY-SERVICE-BUILDER-HASH:1615138873

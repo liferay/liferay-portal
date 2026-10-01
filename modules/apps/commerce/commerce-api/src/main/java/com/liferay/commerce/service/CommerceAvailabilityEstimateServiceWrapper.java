@@ -99,11 +99,13 @@ public class CommerceAvailabilityEstimateServiceWrapper
 	@Override
 	public com.liferay.commerce.model.CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
-				String externalReferenceCode)
+				String externalReferenceCode,
+				java.util.Map<java.util.Locale, String> titleMap)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceAvailabilityEstimateService.
-			getOrAddEmptyCommerceAvailabilityEstimate(externalReferenceCode);
+			getOrAddEmptyCommerceAvailabilityEstimate(
+				externalReferenceCode, titleMap);
 	}
 
 	/**
@@ -150,4 +152,4 @@ public class CommerceAvailabilityEstimateServiceWrapper
 		_commerceAvailabilityEstimateService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:342748220
+// LIFERAY-SERVICE-BUILDER-HASH:-1712433589
