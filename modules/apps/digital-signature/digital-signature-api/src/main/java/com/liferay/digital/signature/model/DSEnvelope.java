@@ -44,6 +44,10 @@ public class DSEnvelope {
 		return emailSubject;
 	}
 
+	public LocalDateTime getExpireLocalDateTime() {
+		return expireLocalDateTime;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -78,6 +82,10 @@ public class DSEnvelope {
 
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
+	}
+
+	public void setExpireLocalDateTime(LocalDateTime expireLocalDateTime) {
+		this.expireLocalDateTime = expireLocalDateTime;
 	}
 
 	public void setName(String name) {
@@ -132,6 +140,7 @@ public class DSEnvelope {
 	protected List<DSRecipient> dsRecipients;
 	protected String emailBlurb;
 	protected String emailSubject;
+	protected LocalDateTime expireLocalDateTime;
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;

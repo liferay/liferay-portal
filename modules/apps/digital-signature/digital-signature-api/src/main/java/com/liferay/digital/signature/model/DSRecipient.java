@@ -8,6 +8,8 @@ package com.liferay.digital.signature.model;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -27,6 +29,10 @@ public class DSRecipient {
 
 	public String getName() {
 		return name;
+	}
+
+	public LocalDateTime getSentLocalDateTime() {
+		return sentLocalDateTime;
 	}
 
 	public String getStatus() {
@@ -51,6 +57,10 @@ public class DSRecipient {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setSentLocalDateTime(LocalDateTime sentLocalDateTime) {
+		this.sentLocalDateTime = sentLocalDateTime;
 	}
 
 	public void setStatus(String status) {
@@ -81,6 +91,7 @@ public class DSRecipient {
 	protected String dsRecipientId;
 	protected String emailAddress;
 	protected String name;
+	protected LocalDateTime sentLocalDateTime;
 	protected String status;
 	protected JSONObject tabsJSONObject;
 
