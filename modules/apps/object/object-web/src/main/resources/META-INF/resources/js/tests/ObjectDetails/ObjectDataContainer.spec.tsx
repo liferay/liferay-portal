@@ -36,22 +36,6 @@ const renderComponent = (customProps = {}) =>
 	);
 
 describe('Object definition description', () => {
-	beforeEach(() => {
-		Liferay.FeatureFlags['LPD-80279'] = true;
-	});
-
-	afterEach(() => {
-		Liferay.FeatureFlags['LPD-80279'] = false;
-	});
-
-	it('does not render when the feature flag is disabled', () => {
-		Liferay.FeatureFlags['LPD-80279'] = false;
-
-		renderComponent();
-
-		expect(screen.queryByLabelText('description')).not.toBeInTheDocument();
-	});
-
 	it('does not render when the object definition is an unmodifiable system object', () => {
 		renderComponent({
 			values: {

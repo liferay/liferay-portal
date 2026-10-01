@@ -13,7 +13,6 @@ import path from 'node:path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {editObjectDefinitionPagesTest} from '../../../fixtures/editObjectDefinitionPagesTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
@@ -41,13 +40,6 @@ export const test = mergeTests(
 	objectPagesTest,
 	rolesPagesTest,
 	scriptManagementPagesTest
-);
-
-const descriptionTest = mergeTests(
-	test,
-	featureFlagsTest({
-		'LPD-80279': {enabled: true},
-	})
 );
 
 let createdObjectDefinition: ObjectDefinition;
@@ -3982,8 +3974,8 @@ test.describe('Object Action with oldValue Function', () => {
 	);
 });
 
-descriptionTest.describe('Manage object action descriptions', () => {
-	descriptionTest(
+test.describe('Manage object action descriptions', () => {
+	test(
 		'can manage description through Objects Admin',
 		{tag: '@LPD-103749'},
 		async ({apiHelpers, editObjectActionPage, viewObjectActionsPage}) => {
@@ -4052,7 +4044,7 @@ descriptionTest.describe('Manage object action descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'keeps the description of each language',
 		{tag: '@LPD-103749'},
 		async ({apiHelpers, editObjectActionPage, viewObjectActionsPage}) => {

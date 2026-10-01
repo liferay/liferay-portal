@@ -125,14 +125,6 @@ describe('Object field description', () => {
 		objectRelationshipId: undefined,
 	};
 
-	beforeEach(() => {
-		Liferay.FeatureFlags['LPD-80279'] = true;
-	});
-
-	afterEach(() => {
-		Liferay.FeatureFlags['LPD-80279'] = false;
-	});
-
 	const unmodifiableSystemObjectDefinition = {
 		modifiable: false,
 		system: true,
@@ -150,14 +142,6 @@ describe('Object field description', () => {
 				}}
 			/>
 		);
-
-		expect(screen.queryByLabelText('description')).not.toBeInTheDocument();
-	});
-
-	it('does not render when the feature flag is disabled', () => {
-		Liferay.FeatureFlags['LPD-80279'] = false;
-
-		render(<ObjectFieldFormBase {...descriptionProps} />);
 
 		expect(screen.queryByLabelText('description')).not.toBeInTheDocument();
 	});

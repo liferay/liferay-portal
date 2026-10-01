@@ -250,32 +250,30 @@ export function ObjectRelationshipFormBase({
 				value={values.name}
 			/>
 
-			{Liferay.FeatureFlags['LPD-80279'] &&
-				editingObjectRelationship &&
-				!values.system && (
-					<InputLocalized
-						component="textarea"
-						disabled={descriptionDisabled}
-						error={errors.description}
-						helpMessage={Liferay.Language.get(
-							'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
-						)}
-						id="lfr-objects__object-relationship-form-base-description"
-						label={Liferay.Language.get('description')}
-						onBlur={async (event) => {
-							event.stopPropagation();
+			{editingObjectRelationship && !values.system && (
+				<InputLocalized
+					component="textarea"
+					disabled={descriptionDisabled}
+					error={errors.description}
+					helpMessage={Liferay.Language.get(
+						'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+					)}
+					id="lfr-objects__object-relationship-form-base-description"
+					label={Liferay.Language.get('description')}
+					onBlur={async (event) => {
+						event.stopPropagation();
 
-							if (autoSave && onSubmit) {
-								await onSubmit();
-							}
-						}}
-						onChange={(description) => setValues({description})}
-						placeholder=""
-						translations={
-							(values.description ?? {}) as LocalizedValue<string>
+						if (autoSave && onSubmit) {
+							await onSubmit();
 						}
-					/>
-				)}
+					}}
+					onChange={(description) => setValues({description})}
+					placeholder=""
+					translations={
+						(values.description ?? {}) as LocalizedValue<string>
+					}
+				/>
+			)}
 
 			<SingleSelect
 				className={className}

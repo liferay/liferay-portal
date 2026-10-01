@@ -245,7 +245,6 @@ export default function ObjectFieldFormBase({
 		values.listTypeDefinitionId !== 0;
 
 	const showDescription =
-		Liferay.FeatureFlags['LPD-80279'] &&
 		editingObjectField &&
 		!metadataObjectFieldNames.includes(values.name as string) &&
 		!(

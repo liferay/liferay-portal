@@ -62,13 +62,6 @@ const cmsTest = mergeTests(
 	})
 );
 
-const descriptionTest = mergeTests(
-	test,
-	featureFlagsTest({
-		'LPD-80279': {enabled: true},
-	})
-);
-
 test.describe('Manage object definitions through Model Builder', () => {
 	test.beforeEach(({page}) => {
 		page.setViewportSize({height: 1080, width: 1920});
@@ -3218,8 +3211,8 @@ cmsTest.describe('Manage enableFormContainer configuration', () => {
 	);
 });
 
-descriptionTest.describe('Manage object definition descriptions', () => {
-	descriptionTest(
+test.describe('Manage object definition descriptions', () => {
+	test(
 		'can add description through Model Builder',
 		{tag: '@LPD-103747'},
 		async ({
@@ -3277,7 +3270,7 @@ descriptionTest.describe('Manage object definition descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'can manage description through Objects Admin',
 		{tag: '@LPD-103747'},
 		async ({apiHelpers, editObjectDetailsPage, page}) => {
@@ -3336,7 +3329,7 @@ descriptionTest.describe('Manage object definition descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'keeps the description of each language',
 		{tag: '@LPD-103747'},
 		async ({apiHelpers, editObjectDetailsPage, page}) => {

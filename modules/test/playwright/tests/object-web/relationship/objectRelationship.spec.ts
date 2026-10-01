@@ -14,7 +14,6 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {ObjectRelationshipFormPage} from '../../../pages/object-web/object-relationship/ObjectRelationshipFormPage';
@@ -29,13 +28,6 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	loginTest(),
 	objectPagesTest
-);
-
-const descriptionTest = mergeTests(
-	test,
-	featureFlagsTest({
-		'LPD-80279': {enabled: true},
-	})
 );
 
 test.beforeEach(({page}) => {
@@ -5502,8 +5494,8 @@ test.describe('View relationship hierarchy labels', () => {
 	);
 });
 
-descriptionTest.describe('Manage object relationship descriptions', () => {
-	descriptionTest(
+test.describe('Manage object relationship descriptions', () => {
+	test(
 		'can add description through Model Builder',
 		{tag: '@LPD-103748'},
 		async ({
@@ -5607,7 +5599,7 @@ descriptionTest.describe('Manage object relationship descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'can manage description through Objects Admin',
 		{tag: '@LPD-103748'},
 		async ({apiHelpers, objectRelationshipsPage, page}) => {
@@ -5703,7 +5695,7 @@ descriptionTest.describe('Manage object relationship descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'mirrors the description to the reverse self relationship',
 		{tag: '@LPD-103748'},
 		async ({apiHelpers, objectRelationshipsPage, page}) => {

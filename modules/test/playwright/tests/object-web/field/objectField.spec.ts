@@ -43,13 +43,6 @@ const cmsTest = mergeTests(
 	})
 );
 
-const descriptionTest = mergeTests(
-	test,
-	featureFlagsTest({
-		'LPD-80279': {enabled: true},
-	})
-);
-
 cmsTest.describe('Manage object field attachment storage locations', () => {
 	cmsTest(
 		'can create field with CMS storage types',
@@ -4224,8 +4217,8 @@ test.describe('Manage object fields default value properties', () => {
 	);
 });
 
-descriptionTest.describe('Manage object field descriptions', () => {
-	descriptionTest(
+test.describe('Manage object field descriptions', () => {
+	test(
 		'can add description through Model Builder',
 		{tag: '@LPD-103747'},
 		async ({
@@ -4295,7 +4288,7 @@ descriptionTest.describe('Manage object field descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'can manage description through Objects Admin',
 		{tag: '@LPD-103747'},
 		async ({apiHelpers, objectFieldsPage}) => {
@@ -4353,7 +4346,7 @@ descriptionTest.describe('Manage object field descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'does not show the description for a framework metadata field',
 		{tag: '@LPD-103747'},
 		async ({
@@ -4427,7 +4420,7 @@ descriptionTest.describe('Manage object field descriptions', () => {
 		}
 	);
 
-	descriptionTest(
+	test(
 		'shows the relationship description on the child foreign key field',
 		{tag: '@LPD-103748'},
 		async ({apiHelpers, objectFieldsPage}) => {

@@ -100,7 +100,7 @@ export function ObjectDataContainer({
 				translations={values.pluralLabel as LocalizedValue<string>}
 			/>
 
-			{Liferay.FeatureFlags['LPD-80279'] && !isReadOnly && (
+			{!isReadOnly && (
 				<InputLocalized
 					component="textarea"
 					disabled={noPermissionOrLinked}
