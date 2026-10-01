@@ -9,6 +9,7 @@ import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ import java.util.Set;
  */
 public interface PersistedModelLocalService {
 
+	@Transactional(enabled = false)
 	public default PersistedModel createPersistedModel(
 			Serializable primaryKeyObj)
 		throws PortalException {
@@ -31,24 +33,24 @@ public interface PersistedModelLocalService {
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public default <T> T dslQuery(DSLQuery dslQuery) {
 		return dslQuery(dslQuery, true);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public default <T> T dslQuery(DSLQuery dslQuery, boolean useFinderCache) {
 		BasePersistence<?> basePersistence = getBasePersistence();
 
 		return (T)basePersistence.dslQuery(dslQuery, useFinderCache);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public default int dslQueryCount(DSLQuery dslQuery) {
 		return dslQueryCount(dslQuery, true);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public default int dslQueryCount(
 		DSLQuery dslQuery, boolean useFinderCache) {
 
@@ -57,6 +59,7 @@ public interface PersistedModelLocalService {
 		return count.intValue();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public default PersistedModel fetchPersistedModel(
 		Serializable primaryKeyObj) {
 
@@ -65,6 +68,7 @@ public interface PersistedModelLocalService {
 		return (PersistedModel)basePersistence.fetchByPrimaryKey(primaryKeyObj);
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public default <T extends PersistedModel> Map<Serializable, T>
 		fetchPersistedModels(Set<Serializable> primaryKeys) {
 
@@ -74,10 +78,12 @@ public interface PersistedModelLocalService {
 			primaryKeys);
 	}
 
+	@Transactional(enabled = false)
 	public default BasePersistence<?> getBasePersistence() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
