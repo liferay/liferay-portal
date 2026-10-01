@@ -6,10 +6,8 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.info;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.redirect.OAuth2RedirectURIInterpolator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -84,12 +82,6 @@ public class OAuth2ProviderApplicationInfo {
 				"client_id", oAuth2Application.getClientId()
 			).put(
 				"homePageURL", oAuth2Application.getHomePageURL()
-			).put(
-				"redirectURIs",
-				_jsonFactory.createJSONArray(
-					OAuth2RedirectURIInterpolator.interpolateRedirectURIsList(
-						httpServletRequest,
-						oAuth2Application.getRedirectURIsList(), _portal))
 			).toString()
 		).build();
 	}
@@ -129,9 +121,6 @@ public class OAuth2ProviderApplicationInfo {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2ProviderApplicationInfo.class);
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;

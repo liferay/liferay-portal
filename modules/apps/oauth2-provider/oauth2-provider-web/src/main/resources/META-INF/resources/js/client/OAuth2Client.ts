@@ -329,7 +329,7 @@ export async function FromUserAgentApplication(
 		clientId: userAgentApplication.clientId,
 		debug,
 		homePageURL: userAgentApplication.homePageURL,
-		redirectURIs: userAgentApplication.redirectURIs,
+		redirectURIs: [getBuiltInRedirectURL()],
 		tokenURL: getTokenURL(),
 	});
 }
@@ -339,7 +339,11 @@ export function getAuthorizeURL() {
 }
 
 export function getBuiltInRedirectURL() {
-	return Liferay.ThemeDisplay.getPathContext() + '/o/oauth2/redirect';
+	return (
+		window.location.origin +
+		Liferay.ThemeDisplay.getPathContext() +
+		'/o/oauth2/redirect'
+	);
 }
 
 export function getIntrospectURL() {
@@ -362,6 +366,5 @@ export async function getUserAgentApplication(externalReferenceCode: string) {
 	return {
 		clientId: data.client_id as string,
 		homePageURL: data.homePageURL as string,
-		redirectURIs: data.redirectURIs as Array<string>,
 	};
 }
