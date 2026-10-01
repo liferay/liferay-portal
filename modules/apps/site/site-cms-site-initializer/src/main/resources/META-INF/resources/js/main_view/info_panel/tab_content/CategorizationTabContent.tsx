@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 
 import {IAssetObjectEntry} from '../../../common/types/AssetType';
+import {ASSET_STATUS} from '../../../common/utils/constants';
 import {displayErrorToast} from '../../../common/utils/toastUtil';
 import AssetCategorizationSections from '../components/AssetCategorizationSections';
 import {AssetTypeInfoPanelContext} from '../context';
@@ -107,7 +108,10 @@ const CategorizationTabContent = () => {
 		<AssetCategorizationSections
 			assetLibraryId={assetLibrary.groupId}
 			cmsGroupId={cmsGroupId}
-			hasUpdatePermission={hasUpdatePermission}
+			hasUpdatePermission={
+				hasUpdatePermission &&
+				currentAsset.status?.label !== ASSET_STATUS.EXPIRED
+			}
 			objectEntry={currentAsset}
 			updateObjectEntry={updateObjectEntry}
 		/>
