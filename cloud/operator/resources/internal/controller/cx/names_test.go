@@ -41,7 +41,7 @@ func TestAllowedNamespacesReadsAnnotation(t *testing.T) {
 	}
 }
 
-func TestDxpNamespaceDefaultsToClientExtensionNamespace(t *testing.T) {
+func TestEffectiveDxpNamespaceDefaultsToClientExtensionNamespace(t *testing.T) {
 	testCases := map[string]struct {
 		dxpNamespace string
 		want         string
