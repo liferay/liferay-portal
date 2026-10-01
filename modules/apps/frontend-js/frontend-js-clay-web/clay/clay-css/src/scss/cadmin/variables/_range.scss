@@ -61,8 +61,10 @@ $cadmin-clay-range-input: map-deep-merge(
 
 		clay-range-thumb: (
 			background-color: $cadmin-white,
+			border-color: $cadmin-secondary-l2,
 			border-radius: 100px,
-			border-width: 0px,
+			border-style: solid,
+			border-width: 1px,
 			box-shadow:
 				unquote('0 1px 5px -1px hsl(from #{$cadmin-black} h s l / 0.3)'),
 			height: 24px,

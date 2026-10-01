@@ -70,9 +70,10 @@ $clay-range-input: map-deep-merge(
 
 		clay-range-thumb: (
 			background-color: var(--clay-range-thumb-background-color, $white),
-			border: var(--clay-range-thumb-border),
+			border-color: var(--clay-range-thumb-border-color, $secondary-l2),
 			border-radius: var(--clay-range-thumb-border-radius, 100px),
-			border-width: var(--clay-range-thumb-border-width, 0),
+			border-style: var(--clay-range-thumb-border-style, solid),
+			border-width: var(--clay-range-thumb-border-width, 1px),
 			box-shadow:
 				var(
 					--clay-range-thumb-box-shadow,
