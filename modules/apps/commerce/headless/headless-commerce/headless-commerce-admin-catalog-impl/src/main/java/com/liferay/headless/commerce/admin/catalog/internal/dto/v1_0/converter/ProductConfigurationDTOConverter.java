@@ -21,6 +21,7 @@ import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -39,6 +40,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -101,6 +103,8 @@ public class ProductConfigurationDTOConverter
 		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
 			() -> _getAvailabilityEstimateExternalReferenceCode(
 				cpConfigurationEntry));
+		productConfiguration.setAvailabilityEstimateName(
+			() -> _getAvailabilityEstimateName(cpConfigurationEntry));
 		productConfiguration.setDifferences(
 			() -> _getDifferences(cpConfigurationEntry, dtoConverterContext));
 		productConfiguration.setEntityExternalReferenceCode(
@@ -200,6 +204,22 @@ public class ProductConfigurationDTOConverter
 		}
 
 		return commerceAvailabilityEstimate.getExternalReferenceCode();
+	}
+
+	private Map<String, String> _getAvailabilityEstimateName(
+		CPConfigurationEntry cpConfigurationEntry) {
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			_commerceAvailabilityEstimateLocalService.
+				fetchCommerceAvailabilityEstimate(
+					cpConfigurationEntry.getCommerceAvailabilityEstimateId());
+
+		if (commerceAvailabilityEstimate == null) {
+			return null;
+		}
+
+		return LanguageUtils.getLanguageIdMap(
+			commerceAvailabilityEstimate.getTitleMap());
 	}
 
 	private String[] _getDifferences(

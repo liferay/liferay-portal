@@ -13,6 +13,7 @@ import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -79,7 +80,9 @@ public class ProductConfigurationUtil {
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
 			commerceAvailabilityEstimateService.
 				getOrAddEmptyCommerceAvailabilityEstimate(
-					externalReferenceCode);
+					externalReferenceCode,
+					LanguageUtils.getLocalizedMap(
+						productConfiguration.getAvailabilityEstimateName()));
 
 		return commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId();
 	}

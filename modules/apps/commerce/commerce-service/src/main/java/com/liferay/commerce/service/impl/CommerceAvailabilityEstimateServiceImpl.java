@@ -125,7 +125,7 @@ public class CommerceAvailabilityEstimateServiceImpl
 	@Override
 	public CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
-				String externalReferenceCode)
+				String externalReferenceCode, Map<Locale, String> titleMap)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -145,7 +145,7 @@ public class CommerceAvailabilityEstimateServiceImpl
 		return commerceAvailabilityEstimateLocalService.
 			getOrAddEmptyCommerceAvailabilityEstimate(
 				externalReferenceCode, permissionChecker.getCompanyId(),
-				permissionChecker.getUserId());
+				permissionChecker.getUserId(), titleMap);
 	}
 
 	@Override

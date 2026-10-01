@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -156,7 +157,8 @@ public class CommerceAvailabilityEstimateLocalServiceImpl
 	@Override
 	public CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
-				String externalReferenceCode, long companyId, long userId)
+				String externalReferenceCode, long companyId, long userId,
+				Map<Locale, String> titleMap)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -170,9 +172,8 @@ public class CommerceAvailabilityEstimateLocalServiceImpl
 				commerceAvailabilityEstimateLocalService.
 					addCommerceAvailabilityEstimate(
 						externalReferenceCode,
-						Collections.singletonMap(
-							LocaleUtil.getSiteDefault(), externalReferenceCode),
-						0, serviceContext),
+						_getTitleMap(externalReferenceCode, titleMap), 0,
+						serviceContext),
 			externalReferenceCode,
 			this::fetchCommerceAvailabilityEstimateByExternalReferenceCode,
 			this::getCommerceAvailabilityEstimateByExternalReferenceCode,
@@ -205,6 +206,17 @@ public class CommerceAvailabilityEstimateLocalServiceImpl
 
 		return commerceAvailabilityEstimatePersistence.update(
 			commerceAvailabilityEstimate);
+	}
+
+	private Map<Locale, String> _getTitleMap(
+		String externalReferenceCode, Map<Locale, String> titleMap) {
+
+		if (MapUtil.isEmpty(titleMap)) {
+			return Collections.singletonMap(
+				LocaleUtil.getSiteDefault(), externalReferenceCode);
+		}
+
+		return titleMap;
 	}
 
 	@Reference
