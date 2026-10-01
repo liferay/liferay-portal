@@ -1,3 +1,4 @@
+@import 'atlas-custom-properties/_variables';
 @import 'atlas-variables';
 
 .taglib-image-selector {
@@ -43,7 +44,7 @@
 		}
 
 		.progressbar {
-			background: #b0b4bb;
+			background: $gray-500;
 			border-radius: 0;
 			height: 6px;
 			margin: 5px auto;
@@ -164,7 +165,7 @@
 	}
 
 	.change-image-controls {
-		background: #fff;
+		background: $white;
 		bottom: 10px;
 		padding: 10px;
 		position: absolute;
@@ -184,7 +185,7 @@
 	}
 
 	.selection-status {
-		background: #fff;
+		background: $white;
 		border-radius: 30px;
 		left: 50%;
 		opacity: 0;
