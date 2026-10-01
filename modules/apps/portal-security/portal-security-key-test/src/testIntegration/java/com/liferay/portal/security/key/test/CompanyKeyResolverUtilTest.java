@@ -76,6 +76,8 @@ public class CompanyKeyResolverUtilTest {
 			HashMapDictionaryBuilder.<String, Object>put(
 				"crypto.provider.id", TestCompanyCryptoProvider.PROVIDER_ID
 			).build());
+
+		_testCompanyCryptoProvider = new TestCompanyCryptoProvider();
 	}
 
 	@After
@@ -191,7 +193,6 @@ public class CompanyKeyResolverUtilTest {
 	private Company _legacyCompany;
 
 	private ServiceRegistration<CryptoProvider> _serviceRegistration;
-	private TestCompanyCryptoProvider _testCompanyCryptoProvider =
-		new TestCompanyCryptoProvider();
+	private TestCompanyCryptoProvider _testCompanyCryptoProvider;
 
 }
