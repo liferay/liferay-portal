@@ -1,0 +1,17 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": {
+						"value": {
+							"navigationMenuType": "ContextualMenu"
+						}
+					},
+					"name": "navigationMenu",
+					"type": "navigationMenuSelector"
+				}
+			]
+		}
+	]
+}

@@ -293,6 +293,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentApproved();
 		_testPostSiteFragmentApprovedAndDraft();
 		_testPostSiteFragmentApprovedConfiguration();
+		_testPostSiteFragmentApprovedConfigurationInvalidContextualMenuTypeNullProblemException();
 		_testPostSiteFragmentApprovedConfigurationInvalidProblemException();
 		_testPostSiteFragmentApprovedHTMLInvalidProblemException();
 		_testPostSiteFragmentBatch();
@@ -371,6 +372,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateApprovedAddDraftModifyApproved();
 		_testPutSiteFragmentUpdateApprovedAndDraftToDraftProblemException();
 		_testPutSiteFragmentUpdateApprovedAndDraftToEmptyProblemException();
+		_testPutSiteFragmentUpdateApprovedConfigurationInvalidContextualMenuTypeNullProblemException();
 		_testPutSiteFragmentUpdateApprovedConfigurationInvalidProblemException();
 		_testPutSiteFragmentUpdateApprovedConfigurationUnmodified();
 		_testPutSiteFragmentUpdateApprovedHTMLInvalidProblemException();
@@ -2285,6 +2287,26 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
+	private void _testPostSiteFragmentApprovedConfigurationInvalidContextualMenuTypeNullProblemException()
+		throws Exception {
+
+		Fragment fragment = _randomFragment(true, false);
+
+		ApprovedFragmentVersion approvedFragmentVersion =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion.setConfiguration(
+			ConfigurationSerDes.toDTO(
+				_readConfiguration(
+					"configuration_invalid_contextual_menu_type_null_dto." +
+						"json")));
+
+		_assertProblemException(
+			"a-contextual-menu-type-is-required",
+			() -> _postSiteFragment(fragment));
+	}
+
 	private void _testPostSiteFragmentApprovedConfigurationInvalidProblemException()
 		throws Exception {
 
@@ -3344,6 +3366,31 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				false, false, postFragment.getExternalReferenceCode(),
 				postFragment.getKey()),
 			"at-least-one-fragment-entry-version-is-required");
+	}
+
+	private void _testPutSiteFragmentUpdateApprovedConfigurationInvalidContextualMenuTypeNullProblemException()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		Fragment fragment = _randomFragment(
+			true, false, postFragment.getExternalReferenceCode(),
+			postFragment.getKey());
+
+		ApprovedFragmentVersion approvedFragmentVersion =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion.setConfiguration(
+			ConfigurationSerDes.toDTO(
+				_readConfiguration(
+					"configuration_invalid_contextual_menu_type_null_dto." +
+						"json")));
+
+		_testPutSiteFragmentProblemException(
+			postFragment.getExternalReferenceCode(), fragment,
+			"a-contextual-menu-type-is-required");
 	}
 
 	private void _testPutSiteFragmentUpdateApprovedConfigurationInvalidProblemException()
