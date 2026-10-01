@@ -189,7 +189,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			ObjectDefinition parentObjectDefinition =
 				_getParentObjectDefinition(
-					objectDefinitionLocalService, objectRelationship,
+					objectDefinitionLocalService, objectField,
+					objectRelationship, serviceBuilderObjectEntry,
 					serviceBuilderRelatedObjectEntry);
 
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
@@ -735,12 +736,23 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 	private static ObjectDefinition _getParentObjectDefinition(
 			ObjectDefinitionLocalService objectDefinitionLocalService,
-			ObjectRelationship objectRelationship,
+			ObjectField objectField, ObjectRelationship objectRelationship,
+			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry,
 			com.liferay.object.model.ObjectEntry
 				serviceBuilderRelatedObjectEntry)
 		throws Exception {
 
 		if (serviceBuilderRelatedObjectEntry == null) {
+			if (serviceBuilderObjectEntry != null) {
+				ObjectDefinition relatedSystemObjectDefinition =
+					serviceBuilderObjectEntry.getRelatedSystemObjectDefinition(
+						objectField.getName());
+
+				if (relatedSystemObjectDefinition != null) {
+					return relatedSystemObjectDefinition;
+				}
+			}
+
 			return objectDefinitionLocalService.getObjectDefinition(
 				objectRelationship.getObjectDefinitionId1());
 		}
