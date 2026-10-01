@@ -55,6 +55,7 @@ import com.liferay.headless.delivery.client.dto.v1_0.ContentField;
 import com.liferay.headless.delivery.client.dto.v1_0.ContentFieldValue;
 import com.liferay.headless.delivery.client.dto.v1_0.Geo;
 import com.liferay.headless.delivery.client.dto.v1_0.RelatedContent;
+import com.liferay.headless.delivery.client.dto.v1_0.RenderedContent;
 import com.liferay.headless.delivery.client.dto.v1_0.StructuredContent;
 import com.liferay.headless.delivery.client.dto.v1_0.StructuredContentLink;
 import com.liferay.headless.delivery.client.pagination.Page;
@@ -63,6 +64,7 @@ import com.liferay.headless.delivery.client.problem.Problem;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResource;
 import com.liferay.headless.delivery.dto.v1_0.util.DDMValueUtil;
 import com.liferay.headless.delivery.dynamic.data.mapping.DDMFormFieldUtil;
+import com.liferay.headless.delivery.resource.v1_0.test.util.DisplayPageTestUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -71,6 +73,7 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -81,6 +84,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -89,6 +93,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -96,7 +101,9 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.template.TemplateConstants;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -128,6 +135,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -487,8 +495,99 @@ public class StructuredContentResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-106119")
 	public void testGetStructuredContentRenderedContentByDisplayPageDisplayPageKey()
 		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			testGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			HashMapBuilder.put(
+				LocaleUtil.GERMANY, "Deutscher Titel"
+			).put(
+				LocaleUtil.US, "English Title"
+			).build(),
+			null,
+			HashMapBuilder.put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			LocaleUtil.US, false, true,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTestUtil.addDisplayPageTemplate(
+				testGroup.getGroupId(), JournalArticle.class.getName(),
+				journalArticle.getDDMStructureKey());
+
+		String html = _getRenderedContentByDisplayPage(
+			journalArticle, layoutPageTemplateEntry, LocaleUtil.GERMANY);
+
+		Assert.assertTrue(html, html.contains("Deutscher Titel"));
+		Assert.assertTrue(html, html.contains("lang=\"de-DE\""));
+
+		StructuredContentResource structuredContentResource =
+			StructuredContentResource.builder(
+			).authentication(
+				"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+			).locale(
+				LocaleUtil.GERMANY
+			).parameters(
+				"nestedFields", "renderedContentValue"
+			).build();
+
+		StructuredContent structuredContent =
+			structuredContentResource.getStructuredContent(
+				journalArticle.getResourcePrimKey());
+
+		RenderedContent renderedContent = null;
+
+		for (RenderedContent curRenderedContent :
+				structuredContent.getRenderedContents()) {
+
+			if (Objects.equals(
+					curRenderedContent.getContentTemplateId(),
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryKey())) {
+
+				renderedContent = curRenderedContent;
+			}
+		}
+
+		html = renderedContent.getRenderedContentValue();
+
+		Assert.assertTrue(html, html.contains("Deutscher Titel"));
+		Assert.assertTrue(html, html.contains("lang=\"de-DE\""));
+
+		Group guestGroup = GroupLocalServiceUtil.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
+
+		String typeSettings = guestGroup.getTypeSettings();
+
+		GroupTestUtil.updateDisplaySettings(
+			guestGroup.getGroupId(), Collections.singleton(LocaleUtil.US),
+			LocaleUtil.US);
+
+		try {
+			html = _getRenderedContentByDisplayPage(
+				journalArticle, layoutPageTemplateEntry, LocaleUtil.GERMANY);
+
+			Assert.assertTrue(html, html.contains("Deutscher Titel"));
+			Assert.assertTrue(html, html.contains("lang=\"de-DE\""));
+		}
+		finally {
+			GroupLocalServiceUtil.updateGroup(
+				guestGroup.getGroupId(), typeSettings);
+		}
+
+		GroupTestUtil.updateDisplaySettings(
+			testGroup.getGroupId(), Collections.singleton(LocaleUtil.US),
+			LocaleUtil.US);
+
+		html = _getRenderedContentByDisplayPage(
+			journalArticle, layoutPageTemplateEntry, LocaleUtil.GERMANY);
+
+		Assert.assertTrue(html, html.contains("English Title"));
+		Assert.assertTrue(html, html.contains("lang=\"en-US\""));
 	}
 
 	@Override
@@ -1241,6 +1340,20 @@ public class StructuredContentResourceTest
 		calendar.set(Calendar.MILLISECOND, 0);
 
 		return calendar.getTime();
+	}
+
+	private String _getRenderedContentByDisplayPage(
+			JournalArticle journalArticle,
+			LayoutPageTemplateEntry layoutPageTemplateEntry, Locale locale)
+		throws Exception {
+
+		StructuredContentResource structuredContentResource =
+			_buildStructureContentResource(locale);
+
+		return structuredContentResource.
+			getStructuredContentRenderedContentByDisplayPageDisplayPageKey(
+				journalArticle.getResourcePrimKey(),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryKey());
 	}
 
 	private String _randomColor() {

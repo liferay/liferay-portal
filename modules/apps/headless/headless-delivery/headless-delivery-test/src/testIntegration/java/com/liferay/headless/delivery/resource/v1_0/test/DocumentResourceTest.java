@@ -28,6 +28,8 @@ import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.headless.delivery.client.permission.Permission;
 import com.liferay.headless.delivery.client.resource.v1_0.DocumentResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.DocumentSerDes;
+import com.liferay.headless.delivery.resource.v1_0.test.util.DisplayPageTestUtil;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -37,6 +39,7 @@ import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -44,6 +47,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -186,8 +190,31 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-106119")
 	public void testGetDocumentRenderedContentByDisplayPageDisplayPageKey()
 		throws Exception {
+
+		Document document = testGetDocument_addDocument();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTestUtil.addDisplayPageTemplate(
+				testGroup.getGroupId(), FileEntry.class.getName(), null);
+
+		DocumentResource documentResource = DocumentResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.GERMANY
+		).build();
+
+		String html =
+			documentResource.
+				getDocumentRenderedContentByDisplayPageDisplayPageKey(
+					document.getId(),
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryKey());
+
+		Assert.assertTrue(html, html.contains(document.getTitle()));
+		Assert.assertTrue(html, html.contains("lang=\"de-DE\""));
 	}
 
 	@Ignore
