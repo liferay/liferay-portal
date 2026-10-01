@@ -6,13 +6,17 @@
 package com.liferay.jenkins.results.parser.persistent.resource;
 
 import com.liferay.jenkins.results.parser.JenkinsMaster;
+import com.liferay.jenkins.results.parser.JenkinsStopBuildUtil;
+import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.util.Collections;
 
 import org.json.JSONObject;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -20,6 +24,86 @@ import org.mockito.Mockito;
  */
 public class BaseBundlePersistentResourceTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testUpdateInQueue() throws Exception {
+		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
+		long queueId = RandomTestUtil.randomLong();
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getBaseBundlePersistentResource(jenkinsMaster, queueId);
+
+		JenkinsMaster.QueueItem queueItem = Mockito.mock(
+			JenkinsMaster.QueueItem.class);
+
+		Mockito.doReturn(
+			queueId
+		).when(
+			queueItem
+		).getId();
+
+		Mockito.doReturn(
+			System.currentTimeMillis()
+		).when(
+			queueItem
+		).getInQueueSince();
+
+		Mockito.doReturn(
+			jenkinsMaster
+		).when(
+			queueItem
+		).getJenkinsMaster();
+
+		String why = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			why
+		).when(
+			queueItem
+		).getWhy();
+
+		Mockito.doReturn(
+			Collections.singletonList(queueItem)
+		).when(
+			jenkinsMaster
+		).getQueueItems();
+
+		try (MockedStatic<JenkinsStopBuildUtil>
+				jenkinsStopBuildUtilMockedStatic = Mockito.mockStatic(
+					JenkinsStopBuildUtil.class)) {
+
+			baseBundlePersistentResource.update();
+
+			String statusMessage =
+				baseBundlePersistentResource.getStatusMessage();
+
+			Assert.assertTrue(
+				statusMessage, statusMessage.endsWith(": " + why));
+
+			Mockito.verify(
+				baseBundlePersistentResource, Mockito.never()
+			).start();
+
+			Mockito.doReturn(
+				System.currentTimeMillis() - (1000 * 60 * 31)
+			).when(
+				queueItem
+			).getInQueueSince();
+
+			for (int i = 0; i < 3; i++) {
+				baseBundlePersistentResource.update();
+			}
+
+			jenkinsStopBuildUtilMockedStatic.verify(
+				() -> JenkinsStopBuildUtil.cancelQueueItem(
+					jenkinsMaster, queueId),
+				Mockito.times(2));
+
+			Mockito.verify(
+				baseBundlePersistentResource, Mockito.times(2)
+			).start();
+		}
+	}
 
 	@Test
 	public void testUpdateMissingQueueItem() {
