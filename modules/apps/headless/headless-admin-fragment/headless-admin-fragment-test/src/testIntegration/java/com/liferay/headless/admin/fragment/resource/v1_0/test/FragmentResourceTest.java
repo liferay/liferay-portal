@@ -2685,7 +2685,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		fragment.setName(RandomTestUtil.randomString() + StringPool.PERIOD);
 
 		_assertProblemException(
-			"name-is-invalid", () -> _postSiteFragment(fragment));
+			"fragment-name-is-invalid", () -> _postSiteFragment(fragment));
 	}
 
 	private void _testPostSiteFragmentSetFragmentApproved() throws Exception {
@@ -3697,7 +3697,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		_testPutSiteFragmentProblemException(
 			postFragment.getExternalReferenceCode(), fragment,
-			"name-is-invalid");
+			"fragment-name-is-invalid");
 	}
 
 	private void _testPutSiteFragmentUpdateThumbnailURLReferenceExternalReferenceCode()
