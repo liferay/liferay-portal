@@ -375,7 +375,7 @@ public interface UserLocalService
 	 that login does not exist.
 	 * @see AuthPipeline
 	 */
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public int authenticateByEmailAddress(
 			long companyId, String emailAddress, String password,
 			Map<String, String[]> headerMap, Map<String, String[]> parameterMap,
@@ -401,7 +401,7 @@ public interface UserLocalService
 	 that login does not exist.
 	 * @see AuthPipeline
 	 */
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public int authenticateByScreenName(
 			long companyId, String screenName, String password,
 			Map<String, String[]> headerMap, Map<String, String[]> parameterMap,
@@ -427,7 +427,7 @@ public interface UserLocalService
 	 that login does not exist.
 	 * @see AuthPipeline
 	 */
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public int authenticateByUserId(
 			long companyId, long userId, String password,
 			Map<String, String[]> headerMap, Map<String, String[]> parameterMap,
@@ -2492,4 +2492,4 @@ public interface UserLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:90030289
+// LIFERAY-SERVICE-BUILDER-HASH:-1521364222
