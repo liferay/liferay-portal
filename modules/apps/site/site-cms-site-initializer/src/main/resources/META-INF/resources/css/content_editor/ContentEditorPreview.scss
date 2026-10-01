@@ -1,3 +1,4 @@
+@import '_atlas-custom-properties-variables';
 @import 'cadmin-variables';
 @import 'variables';
 
@@ -26,7 +27,7 @@
 			display: none;
 		}
 
-		background: white;
+		background: $white;
 		height: calc(100% - $contentEditorToolbarHeight);
 		max-width: calc(100vw - 500px);
 		position: fixed;
