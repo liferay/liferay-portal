@@ -316,6 +316,9 @@ test(
 		await page.getByRole('menuitem', {name: 'Disconnect'}).click();
 
 		await expect(globalSiteLocator).not.toBeVisible();
+		await expect(
+			page.getByRole('heading', {name: 'Sites (0)'})
+		).toBeVisible();
 	}
 );
 

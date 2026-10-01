@@ -4,10 +4,12 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen, waitFor} from '@testing-library/react';
+import {act, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
+import {DISPLAY_UPDATED} from '../../../../src/main/resources/META-INF/resources/js/common/utils/events';
 import manageConnectedSitesAction from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/actions/manageConnectedSitesAction';
 import manageMembersAction from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/actions/manageMembersAction';
 import SpaceSummaryHeader, {
@@ -271,6 +273,65 @@ describe('SpaceSummaryHeader', () => {
 				);
 			}
 		);
+	});
+
+	describe('totalCount', () => {
+		const props = {
+			...defaultProps,
+			title: 'Sites',
+			totalCount: 2,
+		};
+
+		afterEach(() => {
+			jest.restoreAllMocks();
+		});
+
+		it('renders the total count next to the title', async () => {
+			(ApiHelper.get as jest.Mock).mockResolvedValueOnce({
+				data: {totalCount: 2},
+				error: null,
+			});
+
+			render(<SpaceSummaryHeader {...props} />);
+
+			expect(
+				screen.getByRole('heading', {name: 'Sites (2)'})
+			).toBeInTheDocument();
+
+			expect(
+				await screen.findByRole('button', {name: defaultProps.label})
+			).toBeInTheDocument();
+
+			expect(
+				screen.getByRole('heading', {name: 'Sites (2)'})
+			).toBeInTheDocument();
+		});
+
+		it('updates the total count when the data set is updated', async () => {
+			(ApiHelper.get as jest.Mock)
+				.mockResolvedValueOnce({data: {totalCount: 2}, error: null})
+				.mockResolvedValueOnce({data: {totalCount: 1}, error: null});
+
+			const onSpy = jest.spyOn(Liferay, 'on');
+
+			render(<SpaceSummaryHeader {...props} />);
+
+			expect(
+				await screen.findByRole('button', {name: defaultProps.label})
+			).toBeInTheDocument();
+
+			const [, onDisplayUpdated] = onSpy.mock.calls.find(
+				([eventName]) => eventName === DISPLAY_UPDATED
+			) as [string, () => void];
+
+			act(() => {
+				onDisplayUpdated();
+			});
+
+			expect(
+				await screen.findByRole('heading', {name: 'Sites (1)'})
+			).toBeInTheDocument();
+		});
 	});
 
 	it('does not call manageMembersAction if action is not "open-members-modal"', async () => {
