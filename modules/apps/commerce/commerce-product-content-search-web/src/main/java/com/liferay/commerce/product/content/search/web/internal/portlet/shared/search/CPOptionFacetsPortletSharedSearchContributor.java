@@ -203,8 +203,10 @@ public class CPOptionFacetsPortletSharedSearchContributor
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setCompanyId(themeDisplay.getCompanyId());
+		searchContext.setEnd(0);
 		searchContext.setLayout(themeDisplay.getLayout());
 		searchContext.setLocale(themeDisplay.getLocale());
+		searchContext.setStart(0);
 		searchContext.setTimeZone(themeDisplay.getTimeZone());
 		searchContext.setUserId(themeDisplay.getUserId());
 
