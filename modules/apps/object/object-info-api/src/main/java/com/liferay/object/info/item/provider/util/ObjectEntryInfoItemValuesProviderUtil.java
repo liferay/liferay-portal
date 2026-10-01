@@ -169,10 +169,6 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					fetchObjectRelationshipByObjectFieldId2(
 						objectField.getObjectFieldId());
 
-			ObjectDefinition parentObjectDefinition =
-				objectDefinitionLocalService.getObjectDefinition(
-					objectRelationship.getObjectDefinitionId1());
-
 			com.liferay.object.model.ObjectEntry
 				serviceBuilderRelatedObjectEntry = null;
 
@@ -191,6 +187,10 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 						objectEntryLocalService.fetchObjectEntry(objectEntryId);
 				}
 			}
+
+			ObjectDefinition parentObjectDefinition =
+				objectDefinitionLocalService.getObjectDefinition(
+					objectRelationship.getObjectDefinitionId1());
 
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
 				parentObjectDefinition, objectEntryManagerRegistry,
