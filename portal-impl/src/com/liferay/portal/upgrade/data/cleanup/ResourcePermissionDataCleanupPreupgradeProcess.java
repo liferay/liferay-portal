@@ -11,8 +11,10 @@ import com.liferay.portal.kernel.db.DBResourceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.permission.ResourceActionsImpl;
 
@@ -101,7 +103,19 @@ public class ResourcePermissionDataCleanupPreupgradeProcess
 					}
 
 					if (!dbInspector.hasTable(tableName)) {
-						if (_log.isWarnEnabled()) {
+						if (PropsValues.DATABASE_PARTITION_ENABLED &&
+							!CompanyThreadLocal.isDefaultCompany() &&
+							dbInspector.hasView(tableName)) {
+
+							if (_log.isInfoEnabled()) {
+								_log.info(
+									StringBundler.concat(
+										"Skipping class name ", name,
+										" because ", tableName,
+										" is a view in a secondary partition"));
+							}
+						}
+						else if (_log.isWarnEnabled()) {
 							_log.warn("Table " + tableName + " does not exist");
 						}
 
