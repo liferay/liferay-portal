@@ -142,13 +142,10 @@ public class UpgradeOSGiCommandsTest {
 
 			_registerRecoveringUpgradeStepRegistrator(bundle);
 
-			Class<?> upgradeExecutorClass = _upgradeExecutor.getClass();
-			Class<?> upgradeOSGiCommandsClass = _upgradeOSGiCommands.getClass();
+			Class<?> clazz = _upgradeOSGiCommands.getClass();
 
-			try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-					upgradeExecutorClass.getName(), LoggerTestUtil.OFF);
-				LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-					upgradeOSGiCommandsClass.getName(), LoggerTestUtil.OFF)) {
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					clazz.getName(), LoggerTestUtil.OFF)) {
 
 				ReflectionTestUtil.invoke(
 					_upgradeOSGiCommands, "execute",
@@ -169,6 +166,8 @@ public class UpgradeOSGiCommandsTest {
 			_serviceRegistration.unregister();
 
 			_registerFailingUpgradeStepRegistrator(bundle);
+
+			Class<?> upgradeExecutorClass = _upgradeExecutor.getClass();
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 					upgradeExecutorClass.getName(), LoggerTestUtil.OFF)) {
