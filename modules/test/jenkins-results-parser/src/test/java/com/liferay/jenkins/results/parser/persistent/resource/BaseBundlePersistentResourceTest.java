@@ -179,6 +179,60 @@ public class BaseBundlePersistentResourceTest
 		).start();
 	}
 
+	@Test
+	public void testUpdateStartedQueueItem() {
+		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
+		long queueId = RandomTestUtil.randomLong();
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getBaseBundlePersistentResource(jenkinsMaster, queueId);
+
+		JenkinsMaster.QueueItem queueItem = Mockito.mock(
+			JenkinsMaster.QueueItem.class);
+
+		String executableURL =
+			"https://" + RandomTestUtil.randomString() +
+				"/job/app-server-bundle-builder/1/";
+
+		Mockito.doReturn(
+			executableURL
+		).when(
+			queueItem
+		).getExecutableURL();
+
+		Mockito.doReturn(
+			queueItem
+		).when(
+			jenkinsMaster
+		).getQueueItem(
+			queueId
+		);
+
+		Mockito.doReturn(
+			Collections.emptyList()
+		).when(
+			jenkinsMaster
+		).getQueueItems();
+
+		baseBundlePersistentResource.update();
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).setProducerBuildURL(
+			executableURL
+		);
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).setStatus(
+			PersistentResource.Status.IN_PROGRESS
+		);
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.never()
+		).start();
+	}
+
 	private BaseBundlePersistentResource _getBaseBundlePersistentResource(
 		JenkinsMaster jenkinsMaster, long queueId) {
 
