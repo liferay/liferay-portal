@@ -233,6 +233,7 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 		_testPostPriceListWithExistingIds();
 		_testPostPriceListWithLazyReferencingDisabled();
 		_testPostPriceListWithLazyReferencingEnabled();
+		_testPostPriceListWithPriceModifierWhenLazyReferencingEnabled();
 		_testPostPriceListWithSamePriceListAccount();
 		_testPostPriceListWithSamePriceListChannel();
 	}
@@ -793,6 +794,45 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 				fetchCommercePriceListOrderTypeRel(
 					postPriceList.getId(),
 					emptyCommerceOrderType.getCommerceOrderTypeId()));
+	}
+
+	private void _testPostPriceListWithPriceModifierWhenLazyReferencingEnabled()
+		throws Exception {
+
+		PriceList priceList = randomPriceList();
+
+		PriceModifier priceModifier = new PriceModifier() {
+			{
+				active = true;
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				modifierAmount = BigDecimal.ONE;
+				modifierType =
+					CommercePriceModifierConstants.MODIFIER_TYPE_PERCENTAGE;
+				priority = RandomTestUtil.randomDouble();
+				target = CommercePriceModifierConstants.TARGET_CATALOG;
+				title = RandomTestUtil.randomString();
+			}
+		};
+
+		priceList.setPriceModifiers(new PriceModifier[] {priceModifier});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			priceListResource.postPriceList(priceList);
+		}
+
+		CommercePriceModifier commercePriceModifier =
+			_commercePriceModifierLocalService.
+				getCommercePriceModifierByExternalReferenceCode(
+					priceModifier.getExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			priceModifier.getPriority(), commercePriceModifier.getPriority(),
+			0);
 	}
 
 	private void _testPostPriceListWithSamePriceListAccount() throws Exception {

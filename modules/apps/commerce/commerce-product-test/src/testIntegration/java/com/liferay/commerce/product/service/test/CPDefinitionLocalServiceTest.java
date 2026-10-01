@@ -96,6 +96,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.frutilla.FrutillaRule;
@@ -792,8 +794,9 @@ public class CPDefinitionLocalServiceTest {
 			"A NoSuchCProductException is thrown while lazy referencing is " +
 				"disabled"
 		).and(
-			"An empty stub paired with a product carrying the given external " +
-				"reference code is returned while lazy referencing is enabled"
+			"An empty stub with the given name, paired with a product " +
+				"carrying the given external reference code, is returned " +
+					"while lazy referencing is enabled"
 		).and(
 			"The same product definition is resolved on subsequent requests"
 		).and(
@@ -803,12 +806,13 @@ public class CPDefinitionLocalServiceTest {
 		);
 
 		String externalReferenceCode = RandomTestUtil.randomString();
+		Map<Locale, String> nameMap = RandomTestUtil.randomLocaleStringMap();
 
 		try {
 			_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
 				externalReferenceCode, TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
-				SimpleCPTypeConstants.NAME);
+				nameMap, SimpleCPTypeConstants.NAME);
 
 			Assert.fail();
 		}
@@ -824,17 +828,21 @@ public class CPDefinitionLocalServiceTest {
 			cpDefinition = _cpDefinitionLocalService.getOrAddEmptyCPDefinition(
 				externalReferenceCode, TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
-				SimpleCPTypeConstants.NAME);
+				nameMap, SimpleCPTypeConstants.NAME);
 
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
 			Assert.assertEquals(
 				externalReferenceCode,
 				cpDefinition.getCProductExternalReferenceCode());
 			Assert.assertEquals(
+				nameMap,
+				_cpDefinitionLocalService.getCPDefinitionNameMap(
+					cpDefinition.getCPDefinitionId()));
+			Assert.assertEquals(
 				SimpleCPTypeConstants.NAME, cpDefinition.getProductTypeName());
-			Assert.assertEquals(1, cpDefinition.getVersion());
 			Assert.assertFalse(cpDefinition.isPublished());
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
+			Assert.assertEquals(1, cpDefinition.getVersion());
 
 			CProduct cProduct = _cProductLocalService.getCProduct(
 				cpDefinition.getCProductId());
@@ -849,7 +857,7 @@ public class CPDefinitionLocalServiceTest {
 				_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
 					externalReferenceCode, TestPropsValues.getCompanyId(),
 					TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
-					SimpleCPTypeConstants.NAME);
+					nameMap, SimpleCPTypeConstants.NAME);
 
 			Assert.assertEquals(
 				cpDefinition.getCPDefinitionId(),
@@ -876,6 +884,8 @@ public class CPDefinitionLocalServiceTest {
 		long cpTaxCategoryId = cpDefinition.getCPTaxCategoryId();
 
 		Date displayDate = cpDefinition.getDisplayDate();
+		Map<Locale, String> updatedNameMap =
+			RandomTestUtil.randomLocaleStringMap(LocaleUtil.US);
 
 		cpDefinition = _cpDefinitionLocalService.updateCPDefinition(
 			cpDefinitionId, cpTaxCategoryId, false, false, null, 0,
@@ -883,10 +893,8 @@ public class CPDefinitionLocalServiceTest {
 			displayDate.getHours(), displayDate.getMinutes(),
 			displayDate.getMonth(), displayDate.getYear(), 0, 0, 0, 0, 0, true,
 			0, false, Collections.emptyMap(), Collections.emptyMap(),
-			Collections.emptyMap(),
-			RandomTestUtil.randomLocaleStringMap(LocaleUtil.US), true, true,
-			false, false, 0, Collections.emptyMap(), false, false,
-			Collections.emptyMap(), 0, 0,
+			Collections.emptyMap(), updatedNameMap, true, true, false, false, 0,
+			Collections.emptyMap(), false, false, Collections.emptyMap(), 0, 0,
 			ServiceContextTestUtil.getServiceContext(
 				_commerceCatalog.getGroupId()));
 
@@ -894,6 +902,10 @@ public class CPDefinitionLocalServiceTest {
 		Assert.assertNotEquals(
 			WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
 		Assert.assertEquals(1, cpDefinition.getVersion());
+
+		Assert.assertEquals(
+			updatedNameMap,
+			_cpDefinitionLocalService.getCPDefinitionNameMap(cpDefinitionId));
 	}
 
 	@Test

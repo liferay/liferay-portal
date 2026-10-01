@@ -5,6 +5,9 @@
 
 package com.liferay.headless.commerce.admin.pricing.resource.v2_0.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -19,11 +22,13 @@ import com.liferay.commerce.discount.service.CommerceDiscountOrderTypeRelLocalSe
 import com.liferay.commerce.discount.service.CommerceDiscountRelLocalService;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleLocalService;
 import com.liferay.commerce.model.CommerceOrderType;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
@@ -36,6 +41,7 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.Creator;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.Discount;
+import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.DiscountAccount;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.DiscountChannel;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.DiscountProduct;
@@ -47,6 +53,7 @@ import com.liferay.headless.commerce.admin.pricing.client.problem.Problem;
 import com.liferay.headless.commerce.admin.pricing.client.resource.v2_0.DiscountResource;
 import com.liferay.headless.commerce.admin.pricing.client.resource.v2_0.DiscountRuleResource;
 import com.liferay.headless.commerce.core.util.DateConfig;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.SystemEvent;
@@ -62,6 +69,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -200,8 +208,11 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 
 		_testPostDiscountWithCreator();
 		_testPostDiscountWithExistingIds();
+		_testPostDiscountWithLazyReferencedAccount();
+		_testPostDiscountWithLazyReferencedSku();
 		_testPostDiscountWithLazyReferencingDisabled();
 		_testPostDiscountWithLazyReferencingEnabled();
+		_testPostDiscountWithLevelWhenLazyReferencingEnabled();
 		_testPostDiscountWithSkuUnitOfMeasure();
 		_testPostDiscountWithTargetKey();
 		_testPostDiscountWithTypeSettingsValue();
@@ -529,6 +540,125 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 			randomDiscountRule1.getName(), commerceDiscountRule.getName());
 	}
 
+	private void _testPostDiscountWithLazyReferencedAccount() throws Exception {
+		Discount discount = randomDiscount();
+
+		DiscountAccount discountAccount = new DiscountAccount() {
+			{
+				accountExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				accountType = DiscountAccount.AccountType.PERSON;
+			}
+		};
+
+		discount.setDiscountAccounts(new DiscountAccount[] {discountAccount});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			discountResource.postDiscount(discount);
+		}
+
+		CommerceDiscount commerceDiscount =
+			_commerceDiscountLocalService.
+				fetchCommerceDiscountByExternalReferenceCode(
+					discount.getExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		_commerceDiscounts.add(commerceDiscount);
+
+		AccountEntry accountEntry =
+			_accountEntryLocalService.getAccountEntryByExternalReferenceCode(
+				discountAccount.getAccountExternalReferenceCode(),
+				testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, accountEntry.getStatus());
+		Assert.assertEquals(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON, accountEntry.getType());
+	}
+
+	private void _testPostDiscountWithLazyReferencedSku() throws Exception {
+		Discount discount = randomDiscount();
+
+		DiscountSku discountSku = new DiscountSku();
+
+		discountSku.setCatalogCurrencyCode(_commerceCurrency.getCode());
+		discountSku.setCatalogCurrencyExternalReferenceCode(
+			_commerceCurrency.getExternalReferenceCode());
+		discountSku.setCatalogExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		discountSku.setProductExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		discountSku.setProductName(
+			LanguageUtils.getLanguageIdMap(
+				RandomTestUtil.randomLocaleStringMap()));
+		discountSku.setProductType(SimpleCPTypeConstants.NAME);
+		discountSku.setSkuExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		discountSku.setUnitOfMeasureKey(RandomTestUtil.randomString());
+
+		discount.setDiscountSkus(new DiscountSku[] {discountSku});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			discountResource.postDiscount(discount);
+
+			CPInstance cpInstance =
+				_cpInstanceLocalService.getCPInstanceByExternalReferenceCode(
+					discountSku.getSkuExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+			CPTestUtil.addCPInstanceUnitOfMeasure(
+				cpInstance.getGroupId(), cpInstance.getCPInstanceId(),
+				RandomTestUtil.randomString(), BigDecimal.ONE,
+				cpInstance.getSku());
+		}
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.
+				fetchCommerceCatalogByExternalReferenceCode(
+					discountSku.getCatalogExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		_commerceCatalogs.add(commerceCatalog);
+
+		CommerceDiscount commerceDiscount =
+			_commerceDiscountLocalService.
+				fetchCommerceDiscountByExternalReferenceCode(
+					discount.getExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		_commerceDiscounts.add(commerceDiscount);
+
+		List<CommerceDiscountRel> commerceDiscountRels =
+			_commerceDiscountRelLocalService.getCommerceDiscountRels(
+				commerceDiscount.getCommerceDiscountId(),
+				CPInstance.class.getName());
+
+		CommerceDiscountRel commerceDiscountRel = commerceDiscountRels.get(0);
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			commerceDiscountRel.getTypeSettingsUnicodeProperties();
+
+		Assert.assertEquals(
+			discountSku.getUnitOfMeasureKey(),
+			typeSettingsUnicodeProperties.getProperty("unitOfMeasureKey"));
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.
+				getCPDefinitionByCProductExternalReferenceCode(
+					discountSku.getProductExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			discountSku.getProductName(),
+			LanguageUtils.getLanguageIdMap(cpDefinition.getNameMap()));
+	}
+
 	private void _testPostDiscountWithLazyReferencingDisabled()
 		throws Exception {
 
@@ -735,6 +865,34 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 		_commerceDiscountLocalService.deleteCommerceDiscount(commerceDiscount);
 	}
 
+	private void _testPostDiscountWithLevelWhenLazyReferencingEnabled()
+		throws Exception {
+
+		Discount discount = randomDiscount();
+
+		discount.setLevel(CommerceDiscountConstants.LEVEL_L2);
+		discount.setPercentageLevel1((BigDecimal)null);
+		discount.setPercentageLevel2(BigDecimal.TEN);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			discountResource.postDiscount(discount);
+		}
+
+		CommerceDiscount commerceDiscount =
+			_commerceDiscountLocalService.
+				fetchCommerceDiscountByExternalReferenceCode(
+					discount.getExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		_commerceDiscounts.add(commerceDiscount);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(BigDecimal.TEN, commerceDiscount.getLevel2()));
+	}
+
 	private void _testPostDiscountWithSkuUnitOfMeasure() throws Exception {
 		_cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
 			testGroup.getGroupId(), BigDecimal.TEN);
@@ -877,6 +1035,9 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 	}
 
 	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
 	@Inject
@@ -917,6 +1078,9 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 
 	@DeleteAfterTestRun
 	private List<CommerceOrderType> _commerceOrderTypes = new ArrayList<>();
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private CPInstance _cpInstance;
