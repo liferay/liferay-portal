@@ -9,6 +9,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,8 @@ public class URLUtil {
 
 	public static void download(URL url, Path path, String sha1)
 		throws Exception {
+
+		FIPSModeValidator.validateAlgorithm(DigesterUtil.SHA_1);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(StringBundler.concat("Downloading ", url, " to ", path));

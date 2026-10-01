@@ -5,7 +5,10 @@
 
 package com.liferay.portal.kernel.util;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.net.URL;
@@ -25,6 +28,25 @@ public class URLUtilTest {
 	public void testDownloadAndInstallJar() throws Exception {
 		_testDownload(_SHA1_REAL);
 		_testDownload(_SHA1_FAKE);
+
+		Path tempFilePath = Files.createTempFile(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			FIPSModeTestUtil.assertSecurityException(
+				"Algorithm \"SHA-1\" is not allowed in FIPS mode",
+				() -> URLUtil.download(
+					URLUtilTest.class.getResource("dependencies/test.jar"),
+					tempFilePath, _SHA1_REAL));
+
+			Assert.assertEquals(0, Files.size(tempFilePath));
+		}
+		finally {
+			Files.deleteIfExists(tempFilePath);
+		}
 	}
 
 	private void _testDownload(String sha1) throws Exception {
