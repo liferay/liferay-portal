@@ -130,7 +130,7 @@ public class ProductGroupProductUtil {
 			commerceCurrencyService, productGroupProduct, serviceContext);
 
 		return commerceCatalogService.getOrAddEmptyCommerceCatalog(
-			catalogExternalReferenceCode, commerceCurrency.getCode());
+			catalogExternalReferenceCode, null, commerceCurrency.getCode());
 	}
 
 	private static CommerceCurrency _getCommerceCurrency(

@@ -26,7 +26,7 @@ public class CatalogUtil {
 	public static CommerceCatalog getCommerceCatalog(
 			long catalogId, String catalogCurrencyCode,
 			String catalogCurrencyExternalReferenceCode,
-			String catalogExternalReferenceCode,
+			String catalogExternalReferenceCode, String catalogName,
 			CommerceCatalogService commerceCatalogService,
 			CommerceCurrencyService commerceCurrencyService,
 			ServiceContext serviceContext)
@@ -66,7 +66,8 @@ public class CatalogUtil {
 			commerceCurrencyService, serviceContext);
 
 		return commerceCatalogService.getOrAddEmptyCommerceCatalog(
-			catalogExternalReferenceCode, commerceCurrency.getCode());
+			catalogExternalReferenceCode, catalogName,
+			commerceCurrency.getCode());
 	}
 
 	private static CommerceCurrency _getCommerceCurrency(

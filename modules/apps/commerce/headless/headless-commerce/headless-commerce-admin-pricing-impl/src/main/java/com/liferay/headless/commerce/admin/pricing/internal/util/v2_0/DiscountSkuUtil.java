@@ -113,7 +113,7 @@ public class DiscountSkuUtil {
 			CommerceCatalog commerceCatalog = CatalogUtil.getCommerceCatalog(
 				0, discountSku.getCatalogCurrencyCode(),
 				discountSku.getCatalogCurrencyExternalReferenceCode(),
-				discountSku.getCatalogExternalReferenceCode(),
+				discountSku.getCatalogExternalReferenceCode(), null,
 				commerceCatalogService, commerceCurrencyService,
 				serviceContext);
 

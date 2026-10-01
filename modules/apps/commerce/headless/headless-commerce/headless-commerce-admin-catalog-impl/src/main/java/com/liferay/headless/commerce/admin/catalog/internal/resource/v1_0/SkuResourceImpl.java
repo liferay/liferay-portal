@@ -644,7 +644,7 @@ public class SkuResourceImpl
 
 			commerceCatalog =
 				_commerceCatalogService.getOrAddEmptyCommerceCatalog(
-					sku.getCatalogExternalReferenceCode(),
+					sku.getCatalogExternalReferenceCode(), null,
 					commerceCurrency.getCode());
 		}
 

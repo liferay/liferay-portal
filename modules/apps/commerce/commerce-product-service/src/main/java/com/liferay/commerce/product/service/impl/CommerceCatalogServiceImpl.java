@@ -143,7 +143,8 @@ public class CommerceCatalogServiceImpl extends CommerceCatalogServiceBaseImpl {
 
 	@Override
 	public CommerceCatalog getOrAddEmptyCommerceCatalog(
-			String externalReferenceCode, String commerceCurrencyCode)
+			String externalReferenceCode, String name,
+			String commerceCurrencyCode)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -165,7 +166,7 @@ public class CommerceCatalogServiceImpl extends CommerceCatalogServiceBaseImpl {
 
 		return commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 			externalReferenceCode, permissionChecker.getCompanyId(),
-			permissionChecker.getUserId(), commerceCurrencyCode);
+			permissionChecker.getUserId(), name, commerceCurrencyCode);
 	}
 
 	@Override

@@ -292,7 +292,8 @@ public class PriceListResourceImpl
 			priceList.getCatalogCurrencyCode(),
 			priceList.getCatalogCurrencyExternalReferenceCode(),
 			priceList.getCatalogExternalReferenceCode(),
-			_commerceCatalogService, _commerceCurrencyService, serviceContext);
+			priceList.getCatalogName(), _commerceCatalogService,
+			_commerceCurrencyService, serviceContext);
 
 		CommerceCurrency commerceCurrency = _getCommerceCurrency(priceList);
 

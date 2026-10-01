@@ -343,7 +343,7 @@ public class CommerceCatalogLocalServiceImpl
 	@Override
 	public CommerceCatalog getOrAddEmptyCommerceCatalog(
 			String externalReferenceCode, long companyId, long userId,
-			String commerceCurrencyCode)
+			String name, String commerceCurrencyCode)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -356,7 +356,8 @@ public class CommerceCatalogLocalServiceImpl
 			() -> commerceCatalogLocalService.addCommerceCatalog(
 				externalReferenceCode,
 				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-				externalReferenceCode, commerceCurrencyCode,
+				GetterUtil.get(name, externalReferenceCode),
+				commerceCurrencyCode,
 				LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()), false,
 				serviceContext),
 			externalReferenceCode,

@@ -223,7 +223,7 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 			GetterUtil.getLong(priceList.getCatalogId()),
 			priceList.getCatalogCurrencyCode(),
 			priceList.getCatalogCurrencyExternalReferenceCode(),
-			priceList.getCatalogExternalReferenceCode(),
+			priceList.getCatalogExternalReferenceCode(), null,
 			_commerceCatalogService, _commerceCurrencyService, serviceContext);
 
 		CommerceCurrency commerceCurrency = _getCommerceCurrency(priceList);
