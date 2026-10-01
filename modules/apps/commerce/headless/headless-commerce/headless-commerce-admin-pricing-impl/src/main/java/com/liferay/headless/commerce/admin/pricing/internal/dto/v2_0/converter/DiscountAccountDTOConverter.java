@@ -52,6 +52,9 @@ public class DiscountAccountDTOConverter
 				setAccountExternalReferenceCode(
 					accountEntry::getExternalReferenceCode);
 				setAccountId(accountEntry::getAccountEntryId);
+				setAccountType(
+					() -> DiscountAccount.AccountType.create(
+						accountEntry.getType()));
 				setActions(dtoConverterContext::getActions);
 				setDiscountAccountId(
 					commerceDiscountAccountRel::

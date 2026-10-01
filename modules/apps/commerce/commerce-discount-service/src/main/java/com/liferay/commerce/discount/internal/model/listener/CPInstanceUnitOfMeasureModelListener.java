@@ -11,6 +11,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -37,7 +38,9 @@ public class CPInstanceUnitOfMeasureModelListener
 					getCPInstanceUnitOfMeasuresCount(
 						cpInstanceUnitOfMeasure.getCPInstanceId());
 
-			if (cpInstanceUnitOfMeasuresCount == 1) {
+			if ((cpInstanceUnitOfMeasuresCount == 1) &&
+				!LazyReferencingThreadLocal.isEnabled()) {
+
 				List<CommerceDiscountRel> commerceDiscountRels =
 					_commerceDiscountRelLocalService.getCommerceDiscountRels(
 						_classNameLocalService.getClassNameId(

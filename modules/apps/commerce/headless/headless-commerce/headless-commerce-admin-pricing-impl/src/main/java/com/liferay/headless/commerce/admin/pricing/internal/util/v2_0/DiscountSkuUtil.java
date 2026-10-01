@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author Alessio Antonio Rendina
@@ -58,8 +59,12 @@ public class DiscountSkuUtil {
 		String unitOfMeasureKey = discountSku.getUnitOfMeasureKey();
 
 		if (unitOfMeasureKey != null) {
-			cpInstanceUnitOfMeasureLocalService.getCPInstanceUnitOfMeasure(
-				cpInstance.getCPInstanceId(), unitOfMeasureKey);
+			if (!LazyReferencingThreadLocal.isEnabled() ||
+				(cpInstance.getStatus() != WorkflowConstants.STATUS_EMPTY)) {
+
+				cpInstanceUnitOfMeasureLocalService.getCPInstanceUnitOfMeasure(
+					cpInstance.getCPInstanceId(), unitOfMeasureKey);
+			}
 
 			typeSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
 				HashMapBuilder.put(

@@ -60,6 +60,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -338,13 +339,13 @@ public class CommerceDiscountLocalServiceImpl
 				commerceDiscount.setLevel1(level1);
 			}
 			else if (level.equals(CommerceDiscountConstants.LEVEL_L2)) {
-				commerceDiscount.setLevel2(level1);
+				commerceDiscount.setLevel2(_getLevel(level2, level1));
 			}
 			else if (level.equals(CommerceDiscountConstants.LEVEL_L3)) {
-				commerceDiscount.setLevel3(level1);
+				commerceDiscount.setLevel3(_getLevel(level3, level1));
 			}
 			else if (level.equals(CommerceDiscountConstants.LEVEL_L4)) {
-				commerceDiscount.setLevel4(level1);
+				commerceDiscount.setLevel4(_getLevel(level4, level1));
 			}
 		}
 		else {
@@ -1874,6 +1875,14 @@ public class CommerceDiscountLocalServiceImpl
 			predicate.and(
 				_toTargetPredicate(
 					cpDefinitionId, cpInstanceId, unitOfMeasureKey)));
+	}
+
+	private BigDecimal _getLevel(BigDecimal level, BigDecimal level1) {
+		if ((level1 == null) && LazyReferencingThreadLocal.isEnabled()) {
+			return level;
+		}
+
+		return level1;
 	}
 
 	private boolean _isWorkflowEnabled(

@@ -404,6 +404,18 @@ public class PriceListResourceImpl
 			currencyExternalReferenceCode, priceList.getCurrencyCode());
 	}
 
+	private double _getPriceModifierPriority(
+		PriceList priceList, PriceModifier priceModifier) {
+
+		if (LazyReferencingThreadLocal.isEnabled() &&
+			(priceModifier.getPriority() != null)) {
+
+			return priceModifier.getPriority();
+		}
+
+		return GetterUtil.get(priceList.getPriority(), 0D);
+	}
+
 	private PriceList _toPriceList(CommercePriceList commercePriceList)
 		throws Exception {
 
@@ -528,7 +540,7 @@ public class PriceListResourceImpl
 							priceModifier.getTitle(), priceModifier.getTarget(),
 							priceModifier.getModifierAmount(),
 							priceModifier.getModifierType(),
-							GetterUtil.get(priceList.getPriority(), 0D),
+							_getPriceModifierPriority(priceList, priceModifier),
 							GetterUtil.getBoolean(
 								priceModifier.getActive(), true),
 							displayDateConfig.getMonth(),

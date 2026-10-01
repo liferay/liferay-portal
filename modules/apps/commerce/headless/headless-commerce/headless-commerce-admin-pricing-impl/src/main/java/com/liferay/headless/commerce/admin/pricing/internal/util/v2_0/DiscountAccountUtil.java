@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.discount.model.CommerceDiscount;
@@ -85,14 +84,17 @@ public class DiscountAccountUtil {
 			}
 		}
 
-		if (!LazyReferencingThreadLocal.isEnabled()) {
+		DiscountAccount.AccountType accountType =
+			discountAccount.getAccountType();
+
+		if (!LazyReferencingThreadLocal.isEnabled() || (accountType == null)) {
 			return accountEntryService.getAccountEntryByExternalReferenceCode(
 				accountExternalReferenceCode, serviceContext.getCompanyId());
 		}
 
 		return accountEntryService.getOrAddEmptyAccountEntry(
 			accountExternalReferenceCode, accountExternalReferenceCode,
-			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
+			accountType.getValue());
 	}
 
 }
