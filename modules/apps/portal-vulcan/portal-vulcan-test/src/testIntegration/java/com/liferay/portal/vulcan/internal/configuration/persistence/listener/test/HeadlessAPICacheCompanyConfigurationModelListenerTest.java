@@ -6,10 +6,12 @@
 package com.liferay.portal.vulcan.internal.configuration.persistence.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -75,7 +77,64 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 
 	@Test
 	public void testOnBeforeSaveWithInvalidPath() throws Exception {
-		_assertInvalidPath(StringPool.BLANK);
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-required", StringPool.BLANK);
+	}
+
+	@Test
+	public void testOnBeforeSaveWithPathContainingEmptySegment()
+		throws Exception {
+
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-segment-must-be-a-literal-" +
+				"or-an-asterisk",
+			"/captcha//v1.0/captcha/challenge");
+	}
+
+	@Test
+	public void testOnBeforeSaveWithPathContainingFragment() throws Exception {
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-must-not-contain-a-query-" +
+				"string-or-a-fragment",
+			"/captcha/v1.0/captcha/challenge#fragment");
+	}
+
+	@Test
+	public void testOnBeforeSaveWithPathContainingPartialWildcard()
+		throws Exception {
+
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-segment-must-be-a-literal-" +
+				"or-an-asterisk",
+			"/captcha/v1.0/**/challenge");
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-segment-must-be-a-literal-" +
+				"or-an-asterisk",
+			"/captcha/v1.0/captcha/chal*");
+	}
+
+	@Test
+	public void testOnBeforeSaveWithPathContainingQueryString()
+		throws Exception {
+
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-must-not-contain-a-query-" +
+				"string-or-a-fragment",
+			"/captcha/v1.0/captcha/challenge?pageSize=1");
+	}
+
+	@Test
+	public void testOnBeforeSaveWithPathContainingWildcards() throws Exception {
+		_configurationModelListener.onBeforeSave(
+			StringPool.BLANK, _createDictionary("public", 0));
+		_configurationModelListener.onBeforeSave(
+			StringPool.BLANK,
+			_createDictionary(
+				"public", 0, "/headless-delivery/v1.0/blog-postings/*/"));
+		_configurationModelListener.onBeforeSave(
+			StringPool.BLANK,
+			_createDictionary(
+				"public", 0, "/headless-delivery/v1.0/sites/*/blog-postings"));
 	}
 
 	@Test
@@ -168,43 +227,37 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 		}
 	}
 
-	private void _assertInvalidPath(String path) throws Exception {
-		try {
-			_configurationModelListener.onBeforeSave(
-				StringPool.BLANK,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"cacheControl", "public"
-				).put(
-					"maxAge", 0
-				).put(
-					"path", path
-				).build());
-
-			Assert.fail();
-		}
-		catch (ConfigurationModelListenerException
-					configurationModelListenerException) {
-
-			String message = configurationModelListenerException.getMessage();
-
-			Assert.assertTrue(
-				message,
-				message.contains(
-					_language.get(
-						LocaleUtil.US,
-						"headless-api-cacheable-endpoint-path-required")));
-		}
+	private void _assertInvalidPath(String key, String path) {
+		AssertUtils.assertFailure(
+			ConfigurationModelListenerException.class,
+			StringBundler.concat(
+				"The listener com.liferay.portal.vulcan.internal.",
+				"configuration.persistence.listener.",
+				"HeadlessAPICacheCompanyConfigurationModelListener was unable ",
+				"to save configuration com.liferay.portal.vulcan.internal.",
+				"configuration.HeadlessAPICacheCompanyConfiguration: ",
+				_language.get(LocaleUtil.US, key)),
+			() -> _configurationModelListener.onBeforeSave(
+				StringPool.BLANK, _createDictionary("public", 0, path)));
 	}
 
 	private Dictionary<String, Object> _createDictionary(
 		String cacheControl, int maxAge) {
+
+		return _createDictionary(
+			cacheControl, maxAge,
+			StringPool.SLASH + RandomTestUtil.randomString());
+	}
+
+	private Dictionary<String, Object> _createDictionary(
+		String cacheControl, int maxAge, String path) {
 
 		return HashMapDictionaryBuilder.<String, Object>put(
 			"cacheControl", cacheControl
 		).put(
 			"maxAge", maxAge
 		).put(
-			"path", StringPool.SLASH + RandomTestUtil.randomString()
+			"path", path
 		).build();
 	}
 
