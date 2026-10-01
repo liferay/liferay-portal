@@ -60,8 +60,10 @@ public class FolderTitleLookupImpl implements FolderTitleLookup {
 		SearchContext searchContext = SearchContextFactory.getInstance(
 			_httpServletRequest);
 
+		searchContext.setEnd(1);
 		searchContext.setGroupIds(new long[0]);
 		searchContext.setKeywords(StringPool.BLANK);
+		searchContext.setStart(0);
 
 		return searchContext;
 	}
