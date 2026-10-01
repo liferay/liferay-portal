@@ -73,7 +73,10 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Diagram;
@@ -952,6 +955,10 @@ public class ProductResourceImpl
 			GetterUtil.getDouble(productShippingConfiguration.getWidth()),
 			productStatus, serviceContext);
 
+		if (ExportImportThreadLocal.isImportInProcess()) {
+			_setMainFriendlyURLEntry(cpDefinition, urlTitleMap);
+		}
+
 		if ((product.getActive() != null) && !product.getActive()) {
 			Map<String, Serializable> workflowContext = new HashMap<>();
 
@@ -1247,6 +1254,49 @@ public class ProductResourceImpl
 		}
 
 		return productTaxConfiguration.getTaxable();
+	}
+
+	private void _setMainFriendlyURLEntry(
+		CPDefinition cpDefinition, Map<String, String> urlTitleMap) {
+
+		FriendlyURLEntry mainFriendlyURLEntry = null;
+
+		long classNameId = _classNameLocalService.getClassNameId(
+			CProduct.class);
+
+		if (urlTitleMap != null) {
+			mainFriendlyURLEntry =
+				_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+					contextCompany.getGroupId(), classNameId,
+					urlTitleMap.get(cpDefinition.getDefaultLanguageId()));
+		}
+
+		if ((mainFriendlyURLEntry != null) &&
+			(mainFriendlyURLEntry.getClassPK() !=
+				cpDefinition.getCProductId())) {
+
+			mainFriendlyURLEntry = null;
+		}
+
+		if (mainFriendlyURLEntry == null) {
+			for (FriendlyURLEntry friendlyURLEntry :
+					_friendlyURLEntryLocalService.getFriendlyURLEntries(
+						contextCompany.getGroupId(), classNameId,
+						cpDefinition.getCProductId())) {
+
+				if ((mainFriendlyURLEntry == null) ||
+					(friendlyURLEntry.getFriendlyURLEntryId() >
+						mainFriendlyURLEntry.getFriendlyURLEntryId())) {
+
+					mainFriendlyURLEntry = friendlyURLEntry;
+				}
+			}
+		}
+
+		if (mainFriendlyURLEntry != null) {
+			_friendlyURLEntryLocalService.setMainFriendlyURLEntry(
+				mainFriendlyURLEntry);
+		}
 	}
 
 	private Product _toProduct(Long cpDefinitionId) throws Exception {
@@ -2181,6 +2231,9 @@ public class ProductResourceImpl
 
 	@Reference
 	private ExpandoTableLocalService _expandoTableLocalService;
+
+	@Reference
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

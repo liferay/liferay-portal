@@ -19,6 +19,7 @@ import com.liferay.headless.commerce.admin.catalog.internal.util.FileEntryUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleService;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
@@ -143,6 +144,20 @@ public class ProductVirtualSettingsUtil {
 				null) {
 
 			return cpDefinitionVirtualSetting;
+		}
+
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			for (CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry :
+					cpDefinitionVirtualSetting.
+						getCPDVirtualSettingFileEntries()) {
+
+				cpdVirtualSettingFileEntryService.
+					deleteCPDVirtualSettingFileEntry(
+						CPDefinition.class.getName(),
+						cpDefinitionVirtualSetting.getClassPK(),
+						cpdVirtualSettingFileEntry.
+							getCPDefinitionVirtualSettingFileEntryId());
+			}
 		}
 
 		for (ProductVirtualSettingsFileEntry productVirtualSettingsFileEntry :

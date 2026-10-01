@@ -60,6 +60,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -206,7 +207,9 @@ public class AttachmentUtil {
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
 			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
-			GetterUtil.get(attachmentBase64.getNeverExpire(), false),
+			_isNeverExpire(
+				attachmentBase64.getExpirationDate(),
+				attachmentBase64.getNeverExpire()),
 			GetterUtil.get(attachmentBase64.getGalleryEnabled(), true),
 			getTitleMap(null, attachmentBase64.getTitle()),
 			_getJSON(
@@ -274,7 +277,9 @@ public class AttachmentUtil {
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
 			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
-			GetterUtil.get(attachmentUrl.getNeverExpire(), false),
+			_isNeverExpire(
+				attachmentUrl.getExpirationDate(),
+				attachmentUrl.getNeverExpire()),
 			GetterUtil.get(attachmentUrl.getGalleryEnabled(), true),
 			getTitleMap(null, attachmentUrl.getTitle()),
 			_getJSON(
@@ -421,7 +426,8 @@ public class AttachmentUtil {
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
 			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
-			GetterUtil.get(attachment.getNeverExpire(), false),
+			_isNeverExpire(
+				attachment.getExpirationDate(), attachment.getNeverExpire()),
 			GetterUtil.get(attachment.getGalleryEnabled(), true),
 			getTitleMap(null, attachment.getTitle()),
 			_getJSON(
@@ -549,7 +555,8 @@ public class AttachmentUtil {
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
 			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
-			GetterUtil.get(attachment.getNeverExpire(), false),
+			_isNeverExpire(
+				attachment.getExpirationDate(), attachment.getNeverExpire()),
 			GetterUtil.get(attachment.getGalleryEnabled(), true),
 			getTitleMap(cpAttachmentFileEntry, attachment.getTitle()), options,
 			GetterUtil.getDouble(
@@ -685,6 +692,22 @@ public class AttachmentUtil {
 		}
 
 		return jsonArray.toString();
+	}
+
+	private static boolean _isNeverExpire(
+		Date expirationDate, Boolean neverExpire) {
+
+		if (neverExpire != null) {
+			return neverExpire;
+		}
+
+		if (LazyReferencingThreadLocal.isEnabled() &&
+			(expirationDate == null)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final String _TEMP_FILE_NAME =
