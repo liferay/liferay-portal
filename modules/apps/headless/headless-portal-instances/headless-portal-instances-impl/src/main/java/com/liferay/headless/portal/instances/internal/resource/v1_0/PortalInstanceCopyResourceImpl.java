@@ -7,7 +7,10 @@ package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceCopy;
+import com.liferay.headless.portal.instances.internal.notifications.PortalInstanceNotificationUtil;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceCopyResource;
+import com.liferay.portal.instances.constants.PortalInstancesNotificationConstants;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -68,12 +71,18 @@ public class PortalInstanceCopyResourceImpl
 				destinationCompanyId = null;
 			}
 
-			return _toPortalInstance(
+			PortalInstance portalInstance = _toPortalInstance(
 				_companyService.copyDBPartitionCompany(
 					company.getCompanyId(), destinationCompanyId,
 					portalInstanceCopy.getName(),
 					portalInstanceCopy.getVirtualHost(),
 					portalInstanceCopy.getWebId()));
+
+			_sendUserNotificationEvent(
+				portalInstance.getPortalInstanceId(),
+				portalInstanceCopy.getSourcePortalInstanceId());
+
+			return portalInstance;
 		}
 		catch (Exception exception) {
 			_log.error(
@@ -92,6 +101,23 @@ public class PortalInstanceCopyResourceImpl
 		if (!permissionChecker.isOmniadmin()) {
 			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
 		}
+	}
+
+	private void _sendUserNotificationEvent(
+		String portalInstanceId, String sourcePortalInstanceId) {
+
+		PortalInstanceNotificationUtil.sendUserNotificationEvent(
+			contextUser.getUserId(),
+			JSONUtil.put(
+				"operationType",
+				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY
+			).put(
+				"portalInstanceId", portalInstanceId
+			).put(
+				"sourcePortalInstanceId", sourcePortalInstanceId
+			).put(
+				"status", PortalInstancesNotificationConstants.STATUS_SUCCESS
+			));
 	}
 
 	private PortalInstance _toPortalInstance(Company company) {

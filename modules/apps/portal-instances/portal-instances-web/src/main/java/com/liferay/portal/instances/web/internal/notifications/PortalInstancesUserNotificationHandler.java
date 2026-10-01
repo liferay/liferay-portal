@@ -82,7 +82,9 @@ public class PortalInstancesUserNotificationHandler
 		String status = jsonObject.getString("status");
 
 		if (operationType.equals(
-				PortalInstancesNotificationConstants.OPERATION_TYPE_ADD)) {
+				PortalInstancesNotificationConstants.OPERATION_TYPE_ADD) ||
+			operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY)) {
 
 			if (status.equals(
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
@@ -167,6 +169,24 @@ public class PortalInstancesUserNotificationHandler
 
 			return serviceContext.translate(
 				"the-instance-x-could-not-be-created",
+				jsonObject.getString("portalInstanceId"));
+		}
+
+		if (operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY)) {
+
+			if (status.equals(
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
+
+				return serviceContext.translate(
+					"the-instance-x-was-copied-to-y",
+					jsonObject.getString("sourcePortalInstanceId"),
+					jsonObject.getString("portalInstanceId"));
+			}
+
+			return serviceContext.translate(
+				"the-instance-x-could-not-be-copied-to-y",
+				jsonObject.getString("sourcePortalInstanceId"),
 				jsonObject.getString("portalInstanceId"));
 		}
 

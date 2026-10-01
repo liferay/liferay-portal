@@ -12,6 +12,8 @@ public class PortalInstancesNotificationConstants {
 
 	public static final String OPERATION_TYPE_ADD = "ADD";
 
+	public static final String OPERATION_TYPE_COPY = "COPY";
+
 	public static final String OPERATION_TYPE_DELETE = "DELETE";
 
 	public static final String OPERATION_TYPE_EXPORT = "EXPORT";
