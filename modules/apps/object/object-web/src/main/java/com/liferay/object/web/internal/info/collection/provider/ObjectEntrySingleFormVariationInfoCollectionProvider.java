@@ -793,17 +793,11 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	}
 
 	private boolean _hasCategorizationObjectLayoutBox() {
-		ObjectLayout objectLayout = null;
-
-		try {
-			objectLayout = _objectLayoutLocalService.getDefaultObjectLayout(
+		ObjectLayout objectLayout =
+			_objectLayoutLocalService.fetchDefaultObjectLayout(
 				_objectDefinition.getObjectDefinitionId());
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
 
+		if (objectLayout == null) {
 			return false;
 		}
 
