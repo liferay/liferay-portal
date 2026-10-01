@@ -247,6 +247,12 @@ export class VirtualInstancesPage {
 		);
 	}
 
+	importStartedMessage(schemaName: string) {
+		return this.page.getByText(
+			`The instance is being imported from the schema ${schemaName}. You will be notified when it finishes.`
+		);
+	}
+
 	async deleteVirtualInstance(name: string) {
 		await this.globalMenuPage.goToControlPanel('Virtual Instances');
 
@@ -327,6 +333,20 @@ export class VirtualInstancesPage {
 		return schemaName;
 	}
 
+	async waitForImportNotification(name: string) {
+		const notificationsPage = new NotificationsPage(this.page);
+
+		await expect(async () => {
+			await notificationsPage.goto();
+
+			await expect(
+				notificationsPage.getNotificationByTitle(
+					`The instance ${name} was imported.`
+				)
+			).toBeVisible({timeout: 10 * 1000});
+		}).toPass({timeout: 300 * 1000});
+	}
+
 	async waitForVirtualInstance(name: string, exists: boolean) {
 		const apiHelpers = new ApiHelpers(this.page);
 
@@ -375,10 +395,6 @@ export class VirtualInstancesPage {
 
 	async goto() {
 		await this.globalMenuPage.goToControlPanel('Virtual Instances');
-	}
-
-	importInstanceSuccessMessage(webId: string) {
-		return this.page.getByText(`The instance was imported to ${webId}.`);
 	}
 
 	async openCopyVirtualInstanceModal(name: string) {
