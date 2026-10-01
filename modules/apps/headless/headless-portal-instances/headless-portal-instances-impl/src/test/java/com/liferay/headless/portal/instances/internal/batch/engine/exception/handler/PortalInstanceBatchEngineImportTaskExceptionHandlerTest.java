@@ -9,9 +9,11 @@ import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
+import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.ContactNameException;
@@ -114,6 +116,15 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 	}
 
 	@Test
+	public void testHandleIgnoresTheImportItemForTheDeleteOperation() {
+		_handleImport(
+			new IllegalArgumentException(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		Mockito.verifyNoInteractions(_userNotificationEventLocalService);
+	}
+
+	@Test
 	public void testHandleMapsExceptions() throws Exception {
 		_assertErrorMessageKey(
 			"please-enter-a-valid-email-address",
@@ -168,6 +179,65 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		_assertExportErrorMessageKey(
 			"the-exported-schema-x-already-exists",
 			new IllegalArgumentException());
+	}
+
+	@Test
+	public void testHandleMapsImportExceptions() throws Exception {
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		_assertImportErrorMessageKey(
+			"an-instance-for-this-schema-already-exists",
+			new IllegalArgumentException(
+				"Database partition " + RandomTestUtil.randomString()));
+		_assertImportErrorMessageKey(
+			"an-unexpected-error-occurred", new Exception());
+		_assertImportErrorMessageKey(
+			"an-unexpected-error-occurred", new IllegalArgumentException());
+		_assertImportErrorMessageKey(
+			"an-unexpected-error-occurred",
+			new UnsupportedOperationException());
+		_assertImportErrorMessageKey(
+			"database-partitioning-must-be-enabled",
+			new UnsupportedOperationException(
+				"Database partitioning must be enabled"));
+		_assertImportErrorMessageKey(
+			"importing-an-instance-is-already-in-progress",
+			new UnsupportedOperationException(
+				"Company in import process company ID is not null"));
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-name", new CompanyNameException());
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-name",
+			new Exception(new CompanyNameException()));
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-schema-name",
+			new IllegalArgumentException(
+				"Company ID " + RandomTestUtil.randomLong() +
+					" is the default company ID"));
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-schema-name",
+			new IllegalArgumentException(
+				"Invalid schema name " + RandomTestUtil.randomString()));
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-virtual-host",
+			new CompanyVirtualHostException());
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-virtual-host",
+			new Exception(new CompanyVirtualHostException()));
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-web-id", new CompanyWebIdException());
+		_assertImportErrorMessageKey(
+			"please-enter-a-valid-web-id",
+			new Exception(new CompanyWebIdException()));
+		_assertImportErrorMessageKey(
+			"the-exported-schema-does-not-exist",
+			new IllegalArgumentException(
+				"Unable to insert the database partition " +
+					RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -241,6 +311,37 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 	}
 
+	@Test
+	public void testHandleSendsUserNotificationEventForTheImportOperation()
+		throws Exception {
+
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		String schemaName = RandomTestUtil.randomString();
+		String webId = RandomTestUtil.randomString();
+
+		_handleImport(new CompanyWebIdException(), schemaName, webId);
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			"please-enter-a-valid-web-id",
+			payloadJSONObject.getString("errorMessageKey"));
+		Assert.assertEquals(
+			"IMPORT", payloadJSONObject.getString("operationType"));
+		Assert.assertEquals(
+			webId, payloadJSONObject.getString("portalInstanceId"));
+		Assert.assertEquals(
+			schemaName, payloadJSONObject.getString("schemaName"));
+		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
+
+		Mockito.verifyNoInteractions(_companyLocalService);
+	}
+
 	private void _assertErrorMessageKey(
 			String errorMessageKey, Exception exception)
 		throws Exception {
@@ -262,6 +363,22 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Mockito.clearInvocations(_userNotificationEventLocalService);
 
 		_handleExport(exception, RandomTestUtil.randomString());
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			errorMessageKey, payloadJSONObject.getString("errorMessageKey"));
+	}
+
+	private void _assertImportErrorMessageKey(
+			String errorMessageKey, Exception exception)
+		throws Exception {
+
+		Mockito.clearInvocations(_userNotificationEventLocalService);
+
+		_handleImport(
+			exception, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		JSONObject payloadJSONObject = _capturePayloadJSONObject();
 
@@ -302,6 +419,19 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 
 		_portalInstanceBatchEngineImportTaskExceptionHandler.handle(
 			_batchEngineImportTask, null, exception, portalInstanceExport,
+			RandomTestUtil.randomString());
+	}
+
+	private void _handleImport(
+		Exception exception, String schemaName, String webId) {
+
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		portalInstanceImport.setSchemaName(() -> schemaName);
+		portalInstanceImport.setWebId(() -> webId);
+
+		_portalInstanceBatchEngineImportTaskExceptionHandler.handle(
+			_batchEngineImportTask, null, exception, portalInstanceImport,
 			RandomTestUtil.randomString());
 	}
 
