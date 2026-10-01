@@ -104,16 +104,22 @@ export const waitForLoadingToBeRemoved = async (
 	);
 };
 
-export const clickFirstSelectableDay = () => {
-	const days = Array.prototype.slice.call(
-		document.body.querySelectorAll('.day-root')
-	);
-
-	fireEvent.click(
-		days.find(
+const findFirstSelectableDay = () =>
+	Array.prototype.slice
+		.call(document.body.querySelectorAll('.day-root'))
+		.find(
 			(day) => !day.disabled && !day.classList.contains('outside-month')
-		)
-	);
+		);
+
+// A picker capped at yesterday has no selectable day in the current month on
+// its first day, so the previous month is used instead.
+
+export const clickFirstSelectableDay = () => {
+	if (!findFirstSelectableDay()) {
+		fireEvent.click(getByTestId(document.body, 'previous-month'));
+	}
+
+	fireEvent.click(findFirstSelectableDay());
 };
 
 export const selectDropdownItem = (labelText) => {
