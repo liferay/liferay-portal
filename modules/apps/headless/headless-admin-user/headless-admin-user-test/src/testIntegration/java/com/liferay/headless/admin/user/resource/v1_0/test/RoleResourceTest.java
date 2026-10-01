@@ -1593,7 +1593,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			httpResponse.getContent());
 
 		Assert.assertEquals(
-			"The role subtype is invalid", jsonObject.getString("title"));
+			"The role subtype is invalid.", jsonObject.getString("title"));
 
 		randomRole.setSubtype(DepotRolesConstants.SUBTYPE_SPACE);
 

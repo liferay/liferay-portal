@@ -983,7 +983,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_setUpTestUserAccountResource();
 
 		_assertProblem(
-			"The user account password is invalid",
+			"The user account password is invalid.",
 			() -> _regularUserAccountResource.patchUserAccountHttpResponse(
 				_regularUserAccount.getId(),
 				new UserAccount() {
@@ -1224,7 +1224,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_regularUserAccount.setPassword(newPassword);
 
 		_assertProblem(
-			"The user account password is invalid",
+			"The user account password is invalid.",
 			() -> _regularUserAccountResource.putUserAccountHttpResponse(
 				_regularUserAccount.getId(), _regularUserAccount));
 
@@ -1283,7 +1283,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_regularUserAccount.setPassword(newPassword);
 
 		_assertProblem(
-			"The user account password is invalid",
+			"The user account password is invalid.",
 			() ->
 				_regularUserAccountResource.
 					putUserAccountByExternalReferenceCodeHttpResponse(
@@ -2545,6 +2545,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		UserAccountResource userAccountResource = UserAccountResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
@@ -2635,6 +2638,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		UserAccountResource otherUserAccountResource = builder.authentication(
 			otherUser.getEmailAddress(), "test"
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
@@ -3132,7 +3138,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				Problem problem = problemException.getProblem();
 
 				Assert.assertEquals(
-					"The captcha value is invalid", problem.getTitle());
+					"The captcha value is invalid.", problem.getTitle());
 			}
 
 			captcha = captchaResource.getCaptchaChallenge();

@@ -826,7 +826,7 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals(
-				"The account group name is invalid", problem.getTitle());
+				"The account group name is invalid.", problem.getTitle());
 		}
 	}
 
@@ -847,7 +847,7 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals(
-				"The account group name is invalid", problem.getTitle());
+				"The account group name is invalid.", problem.getTitle());
 		}
 	}
 

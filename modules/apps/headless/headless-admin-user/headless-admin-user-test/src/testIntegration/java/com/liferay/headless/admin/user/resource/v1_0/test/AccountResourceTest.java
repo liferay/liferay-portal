@@ -2619,9 +2619,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals(
-				problem.getTitle(),
 				"An account already exists with the same external reference " +
-					"code");
+					"code.",
+				problem.getTitle());
 		}
 	}
 
