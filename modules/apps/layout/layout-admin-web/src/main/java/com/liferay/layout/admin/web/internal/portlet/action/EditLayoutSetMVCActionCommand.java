@@ -8,7 +8,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.constants.LayoutScreenNavigationEntryConstants;
 import com.liferay.petra.string.StringPool;
@@ -263,7 +263,7 @@ public class EditLayoutSetMVCActionCommand extends BaseMVCActionCommand {
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
 		if (fileEntryId > 0) {
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+			FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 			logoBytes = FileUtil.getBytes(fileEntry.getContentStream());
 		}
@@ -356,7 +356,7 @@ public class EditLayoutSetMVCActionCommand extends BaseMVCActionCommand {
 		_clientExtensionEntryRelLocalService;
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
