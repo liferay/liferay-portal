@@ -23,6 +23,11 @@ public class JavaParserTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testJavaLogVariableDefinition() throws Exception {
+		test("JavaLogVariableDefinition.testjava");
+	}
+
+	@Test
 	public void testJavaModifierStrictfp() throws Exception {
 		test("JavaModifierStrictfp.testjava");
 	}

@@ -1,0 +1,32 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import java.util.List;
+
+/**
+ * @author Alan Huang
+ */
+public class JavaLogVariableDefinition {
+
+	public List<String> getClusteringFields() {
+		if (_log.isDebugEnabled()) {
+			_log.debug("Get clustering fields");
+		}
+
+		return _clusteringFields;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JavaLogVariableDefinition.class);
+
+	private static final List<String> _clusteringFields = List.of(
+		"channelId", "dataSourceId", "individualId", "identityId");
+
+}
