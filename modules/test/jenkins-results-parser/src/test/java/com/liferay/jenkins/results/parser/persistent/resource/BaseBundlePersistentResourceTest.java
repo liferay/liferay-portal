@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.persistent.resource;
 
 import com.liferay.jenkins.results.parser.JenkinsMaster;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.JenkinsStopBuildUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
@@ -82,8 +83,10 @@ public class BaseBundlePersistentResourceTest
 			queueItem
 		).getId();
 
+		long currentTimeMillis = System.currentTimeMillis();
+
 		Mockito.doReturn(
-			System.currentTimeMillis()
+			currentTimeMillis - (1000 * 60 * 30)
 		).when(
 			queueItem
 		).getInQueueSince();
@@ -108,9 +111,18 @@ public class BaseBundlePersistentResourceTest
 			jenkinsMaster
 		).getQueueItems();
 
-		try (MockedStatic<JenkinsStopBuildUtil>
+		try (MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class, Mockito.CALLS_REAL_METHODS);
+			MockedStatic<JenkinsStopBuildUtil>
 				jenkinsStopBuildUtilMockedStatic = Mockito.mockStatic(
 					JenkinsStopBuildUtil.class)) {
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				JenkinsResultsParserUtil::getCurrentTimeMillis
+			).thenReturn(
+				currentTimeMillis
+			);
 
 			baseBundlePersistentResource.update();
 
@@ -125,7 +137,7 @@ public class BaseBundlePersistentResourceTest
 			).start();
 
 			Mockito.doReturn(
-				System.currentTimeMillis() - (1000 * 60 * 31)
+				currentTimeMillis - (1000 * 60 * 30) - 1
 			).when(
 				queueItem
 			).getInQueueSince();
