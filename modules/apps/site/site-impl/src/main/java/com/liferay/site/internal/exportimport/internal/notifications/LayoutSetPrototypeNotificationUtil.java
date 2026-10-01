@@ -69,7 +69,21 @@ public class LayoutSetPrototypeNotificationUtil {
 	public static Long[] getLayoutSetGroupIds(
 		Map<String, Serializable> taskContextMap) {
 
-		return (Long[])taskContextMap.get(_LAYOUT_SET_GROUP_IDS);
+		Object[] layoutSetGroupIds = (Object[])taskContextMap.get(
+			_LAYOUT_SET_GROUP_IDS);
+
+		if (layoutSetGroupIds == null) {
+			return null;
+		}
+
+		return TransformUtil.transform(
+			layoutSetGroupIds,
+			object -> {
+				Number number = (Number)object;
+
+				return number.longValue();
+			},
+			Long.class);
 	}
 
 	public static long getLayoutSetPrototypeId(
