@@ -1,0 +1,37 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Cluster Bootstrap NetworkPolicies
+templates:
+    -   templates/networkpolicy-cluster-bootstrap.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: cluster-bootstrap-system
+            -   equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
+            -   equal:
+                    path: spec.podSelector
+                    value: {}
+            -   notExists:
+                    path: spec.ingress
+            -   equal:
+                    path: spec.policyTypes
+                    value:
+                        -   Ingress
+        documentSelector:
+            path: metadata.name
+            value: default-deny-ingress
+        it: Denies every ingress by default, namespace-wide
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the NetworkPolicy when the bootstrap is disabled
+        set:
+            clusterBootstrap.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+        it: Renders exactly the namespace-wide default-deny
