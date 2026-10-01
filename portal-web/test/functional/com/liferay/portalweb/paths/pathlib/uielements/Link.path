@@ -177,7 +177,7 @@
 </tr>
 <tr>
 	<td>UNSUBSCRIBE</td>
-	<td>//a/span[contains(@class,'taglib-text') and contains(.,'Unsubscribe')]</td>
+	<td>//a[@aria-label='Unsubscribe']</td>
 	<td></td>
 </tr>
 <tr>

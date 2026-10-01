@@ -232,9 +232,7 @@ The DM file [$DOCUMENT_TITLE$] has been added to Home folder.
 
 		Click(locator1 = "Icon#INFO_DM");
 
-		AssertTextEquals(
-			locator1 = "Link#UNSUBSCRIBE",
-			value1 = "Unsubscribe");
+		AssertElementPresent(locator1 = "Link#UNSUBSCRIBE");
 
 		User.logoutAndLoginPG(
 			userLoginEmailAddress = "test@liferay.com",
