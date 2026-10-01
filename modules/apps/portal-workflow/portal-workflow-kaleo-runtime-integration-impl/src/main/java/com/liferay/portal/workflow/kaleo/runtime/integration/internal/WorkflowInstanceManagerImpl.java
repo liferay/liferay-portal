@@ -7,6 +7,7 @@ package com.liferay.portal.workflow.kaleo.runtime.integration.internal;
 
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -77,6 +78,13 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 		catch (Exception exception) {
 			throw new WorkflowException(exception);
 		}
+	}
+
+	@Override
+	public WorkflowInstance getWorkflowInstance(long workflowInstanceId)
+		throws PortalException {
+
+		return _workflowEngine.getWorkflowInstance(workflowInstanceId);
 	}
 
 	@Override

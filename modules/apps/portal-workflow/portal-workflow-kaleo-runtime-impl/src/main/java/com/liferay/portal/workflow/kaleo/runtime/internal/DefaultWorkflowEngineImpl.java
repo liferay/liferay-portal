@@ -297,6 +297,14 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	public WorkflowInstance getWorkflowInstance(long workflowInstanceId)
+		throws PortalException {
+
+		return _kaleoWorkflowModelConverter.toWorkflowInstance(
+			_kaleoInstanceService.getKaleoInstance(workflowInstanceId));
+	}
+
+	@Override
 	public WorkflowInstance getWorkflowInstance(
 			long workflowInstanceId, ServiceContext serviceContext)
 		throws WorkflowException {

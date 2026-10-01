@@ -11,7 +11,6 @@ import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowInstanceSubmit;
 import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.ObjectReviewedUtil;
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowInstanceResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
-import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -19,7 +18,6 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowInstanceManager;
 import com.liferay.portal.kernel.workflow.WorkflowNode;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -57,20 +55,8 @@ public class WorkflowInstanceResourceImpl
 	public WorkflowInstance getWorkflowInstance(Long workflowInstanceId)
 		throws Exception {
 
-		try {
-			return _toWorkflowInstance(
-				_workflowInstanceManager.getWorkflowInstance(
-					contextCompany.getCompanyId(), workflowInstanceId));
-		}
-		catch (WorkflowException workflowException) {
-			Throwable throwable = workflowException.getCause();
-
-			if (throwable instanceof NoSuchModelException) {
-				throw (NoSuchModelException)throwable;
-			}
-
-			throw workflowException;
-		}
+		return _toWorkflowInstance(
+			_workflowInstanceManager.getWorkflowInstance(workflowInstanceId));
 	}
 
 	@Override

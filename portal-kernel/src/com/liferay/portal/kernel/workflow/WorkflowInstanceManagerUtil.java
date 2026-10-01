@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.workflow;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
@@ -43,6 +44,15 @@ public class WorkflowInstanceManagerUtil {
 
 		return workflowInstanceManager.getNextTransitionNames(
 			companyId, userId, workflowInstanceId);
+	}
+
+	public static WorkflowInstance getWorkflowInstance(long workflowInstanceId)
+		throws PortalException {
+
+		WorkflowInstanceManager workflowInstanceManager =
+			_workflowInstanceManagerSnapshot.get();
+
+		return workflowInstanceManager.getWorkflowInstance(workflowInstanceId);
 	}
 
 	public static WorkflowInstance getWorkflowInstance(

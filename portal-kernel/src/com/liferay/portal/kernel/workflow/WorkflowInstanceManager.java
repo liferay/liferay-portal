@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.workflow;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
 
@@ -31,6 +32,12 @@ public interface WorkflowInstanceManager {
 	public List<WorkflowTransition> getNextWorkflowTransitions(
 			long companyId, long userId, long workflowInstanceId)
 		throws WorkflowException;
+
+	public default WorkflowInstance getWorkflowInstance(long workflowInstanceId)
+		throws PortalException {
+
+		throw new UnsupportedOperationException();
+	}
 
 	public WorkflowInstance getWorkflowInstance(
 			long companyId, long workflowInstanceId)
