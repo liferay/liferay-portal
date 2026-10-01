@@ -203,6 +203,7 @@ function MenuInner<T extends Record<string, unknown> | string | number>(
 			alignmentByViewport: true,
 			alignmentPosition: 5,
 			autoBestAlign: true,
+			constrainHeight: true,
 			isOpen: active,
 			ref: menuRef,
 			triggerRef,
