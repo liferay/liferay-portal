@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -38,6 +39,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.frutilla.FrutillaRule;
 
@@ -260,9 +263,9 @@ public class CPOptionLocalServiceTest {
 			"A NoSuchCPOptionException is thrown while lazy referencing is " +
 				"disabled"
 		).and(
-			"An empty stub with the given external reference code, commerce " +
-				"option type, and SKU contributor attribute is returned " +
-					"while lazy referencing is enabled"
+			"An empty stub with the given external reference code, name, " +
+				"commerce option type, SKU contributor attribute, and key is " +
+					"returned while lazy referencing is enabled"
 		).and(
 			"The same product option is resolved on subsequent requests"
 		).and(
@@ -272,12 +275,14 @@ public class CPOptionLocalServiceTest {
 		String defaultCommerceOptionTypeKey =
 			CPTestUtil.getDefaultCommerceOptionTypeKey(true);
 		String externalReferenceCode = RandomTestUtil.randomString();
+		String key = StringUtil.toLowerCase(RandomTestUtil.randomString());
+		Map<Locale, String> nameMap = RandomTestUtil.randomLocaleStringMap();
 
 		try {
 			_cpOptionLocalService.getOrAddEmptyCPOption(
 				externalReferenceCode, _serviceContext.getCompanyId(),
-				_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
-				true);
+				_serviceContext.getUserId(), nameMap,
+				defaultCommerceOptionTypeKey, true, key);
 
 			Assert.fail();
 		}
@@ -292,23 +297,25 @@ public class CPOptionLocalServiceTest {
 
 			cpOption = _cpOptionLocalService.getOrAddEmptyCPOption(
 				externalReferenceCode, _serviceContext.getCompanyId(),
-				_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
-				true);
+				_serviceContext.getUserId(), nameMap,
+				defaultCommerceOptionTypeKey, true, key);
 
 			Assert.assertEquals(
 				defaultCommerceOptionTypeKey,
 				cpOption.getCommerceOptionTypeKey());
 			Assert.assertEquals(
 				externalReferenceCode, cpOption.getExternalReferenceCode());
+			Assert.assertEquals(key, cpOption.getKey());
+			Assert.assertEquals(nameMap, cpOption.getNameMap());
+			Assert.assertTrue(cpOption.isSkuContributor());
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
-			Assert.assertTrue(cpOption.isSkuContributor());
 
 			CPOption resolvedCPOption =
 				_cpOptionLocalService.getOrAddEmptyCPOption(
 					externalReferenceCode, _serviceContext.getCompanyId(),
-					_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
-					true);
+					_serviceContext.getUserId(), nameMap,
+					defaultCommerceOptionTypeKey, true, key);
 
 			Assert.assertEquals(
 				cpOption.getCPOptionId(), resolvedCPOption.getCPOptionId());
@@ -347,7 +354,8 @@ public class CPOptionLocalServiceTest {
 
 			_cpOptionLocalService.getOrAddEmptyCPOption(
 				RandomTestUtil.randomString(), _serviceContext.getCompanyId(),
-				_serviceContext.getUserId(), "checkbox", true);
+				_serviceContext.getUserId(), null, "checkbox", true,
+				RandomTestUtil.randomString());
 		}
 	}
 

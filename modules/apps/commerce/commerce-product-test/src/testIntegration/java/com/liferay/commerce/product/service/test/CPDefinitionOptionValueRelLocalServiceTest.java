@@ -1006,6 +1006,60 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionValueRel.isPreselected(), null, BigDecimal.ONE);
 	}
 
+	@Test
+	public void testUpdateStaticPriceTypeCPDefinitionOptionValueRelWithoutPriceWhenLazyReferencingEnabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Update an option value without passing price while lazy " +
+				"referencing is enabled"
+		).given(
+			"An option with static price type set"
+		).when(
+			"The option value is updated"
+		).then(
+			"The price is not required"
+		);
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_addCPDefinitionWithOptionValue();
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionValueRel.getCPDefinitionOptionRel();
+
+		_cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
+			cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			cpDefinitionOptionRel.getCPOptionId(),
+			cpDefinitionOptionRel.getNameMap(),
+			cpDefinitionOptionRel.getDescriptionMap(),
+			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
+			cpDefinitionOptionRel.getInfoItemServiceKey(),
+			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDefinedExternally(),
+			cpDefinitionOptionRel.isFacetable(),
+			cpDefinitionOptionRel.isRequired(),
+			cpDefinitionOptionRel.isSkuContributor(),
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC,
+			cpDefinitionOptionRel.getTypeSettings(), _serviceContext);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			cpDefinitionOptionValueRel = _updateCPDefinitionOptionValueRel(
+				cpDefinitionOptionValueRel, cpInstance.getCPInstanceId(),
+				cpDefinitionOptionValueRel.isPreselected(), null,
+				BigDecimal.ONE);
+		}
+
+		Assert.assertEquals(
+			cpInstance.getCPInstanceUuid(),
+			cpDefinitionOptionValueRel.getCPInstanceUuid());
+		Assert.assertNull(cpDefinitionOptionValueRel.getPrice());
+	}
+
 	@Test(expected = CPDefinitionOptionValueRelQuantityException.class)
 	public void testValidateCPDefinitionOptionValueRelDynamicFail()
 		throws Exception {

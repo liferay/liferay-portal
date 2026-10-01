@@ -484,8 +484,8 @@ public class CPDefinitionOptionRelLocalServiceTest {
 
 			CPOption cpOption = _cpOptionLocalService.getOrAddEmptyCPOption(
 				RandomTestUtil.randomString(), _serviceContext.getCompanyId(),
-				_serviceContext.getUserId(), defaultCommerceOptionTypeKey,
-				false);
+				_serviceContext.getUserId(), null, defaultCommerceOptionTypeKey,
+				false, RandomTestUtil.randomString());
 
 			Assert.assertEquals(
 				defaultCommerceOptionTypeKey,

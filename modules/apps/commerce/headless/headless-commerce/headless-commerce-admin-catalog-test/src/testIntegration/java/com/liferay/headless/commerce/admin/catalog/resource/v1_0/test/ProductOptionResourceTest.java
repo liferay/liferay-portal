@@ -511,6 +511,9 @@ public class ProductOptionResourceTest
 				testCompany.getCompanyId());
 
 		Assert.assertEquals(
+			productOption.getName(),
+			LanguageUtils.getLanguageIdMap(cpOption.getNameMap()));
+		Assert.assertEquals(
 			WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
 
 		ProductOption postProductOption = _getLastProductOption(
