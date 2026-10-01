@@ -388,6 +388,14 @@ public class UserSegmentsEntryMembershipCheckerTest {
 				"not (userId eq '2')", _userAttributes));
 	}
 
+	@Test
+	public void testIsMemberWithDisallowedMethodCall() throws Exception {
+		Assert.assertThrows(
+			Exception.class,
+			() -> UserSegmentsEntryMembershipChecker.isMember(
+				"''.getClass()", _userAttributes));
+	}
+
 	private static final DateFormat _dateFormat = new SimpleDateFormat(
 		"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 

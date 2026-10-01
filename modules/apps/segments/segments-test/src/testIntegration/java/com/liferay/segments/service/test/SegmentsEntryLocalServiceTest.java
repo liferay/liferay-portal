@@ -41,6 +41,7 @@ import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.exception.LockedSegmentsEntryException;
 import com.liferay.segments.exception.RequiredSegmentsEntryException;
+import com.liferay.segments.exception.SegmentsEntryCriteriaException;
 import com.liferay.segments.exception.SegmentsEntryKeyException;
 import com.liferay.segments.exception.SegmentsEntryNameException;
 import com.liferay.segments.model.SegmentsEntry;
@@ -97,6 +98,7 @@ public class SegmentsEntryLocalServiceTest {
 		_testAddSegmentsEntryWithoutName();
 		_testAddSegmentsEntryWithExistingKey();
 		_testAddSegmentsEntryWithExistingKeyInAncestorGroup();
+		_testAddSegmentsEntryWithInvalidModelCriteria();
 		_testAddSegmentsEntryWithType();
 	}
 
@@ -573,6 +575,23 @@ public class SegmentsEntryLocalServiceTest {
 			() -> SegmentsTestUtil.addSegmentsEntry(
 				childGroup.getGroupId(), segmentsEntryKey,
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+	}
+
+	private void _testAddSegmentsEntryWithInvalidModelCriteria()
+		throws Exception {
+
+		Criteria criteria = new Criteria();
+
+		criteria.addCriterion(
+			"user", Criteria.Type.MODEL, "''.getClass()",
+			Criteria.Conjunction.AND);
+
+		AssertUtils.assertFailure(
+			SegmentsEntryCriteriaException.class, null,
+			() -> SegmentsTestUtil.addSegmentsEntry(
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				CriteriaSerializer.serialize(criteria)));
 	}
 
 	private void _testAddSegmentsEntryWithReferredSource() throws Exception {
