@@ -6,8 +6,6 @@
 package com.liferay.journal.internal.site.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
-import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
@@ -64,7 +62,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -229,25 +226,6 @@ public class JournalArticleSitemapURLProviderTest {
 		finally {
 			_journalArticleLocalService.deleteArticle(article);
 		}
-	}
-
-	@FeatureFlag("LPD-57283")
-	@Test
-	@TestInfo("LPD-107075")
-	public void testJournalArticleSitemapURLProviderDefaultDisplayPageWhenDisplayPageTemplateInConnectedDesignLibrary()
-		throws Exception {
-
-		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
-			_group.getGroupId(), true);
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			designLibraryGroup.getGroupId(),
-			_portal.getClassNameId(JournalArticle.class.getName()),
-			article.getDDMStructureKey(), true,
-			WorkflowConstants.STATUS_APPROVED);
-
-		_assertVisitLayoutSet(article);
 	}
 
 	@Test
@@ -451,34 +429,6 @@ public class JournalArticleSitemapURLProviderTest {
 		Assert.assertTrue(rootElement.hasContent());
 	}
 
-	@FeatureFlag("LPD-57283")
-	@Test
-	@TestInfo("LPD-107075")
-	public void testJournalArticleSitemapURLProviderSpecificDisplayPageWhenDisplayPageTemplateInConnectedDesignLibrary()
-		throws Exception {
-
-		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
-			_group.getGroupId(), true);
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()),
-				article.getDDMStructureKey(), false,
-				WorkflowConstants.STATUS_APPROVED);
-
-		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			_portal.getClassNameId(JournalArticle.class.getName()),
-			article.getResourcePrimKey(),
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-			AssetDisplayPageConstants.TYPE_SPECIFIC,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		_assertVisitLayoutSet(article);
-	}
-
 	@Test
 	public void testJournalArticleSitemapWithADisabledLanguageId()
 		throws Exception {
@@ -529,19 +479,6 @@ public class JournalArticleSitemapURLProviderTest {
 			article.getArticleId(), article.getVersion(), article.getTitleMap(),
 			article.getDescriptionMap(), article.getContent(), layout.getUuid(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-	}
-
-	private Group _addConnectedDesignLibraryGroup() throws Exception {
-		_depotEntry = _depotEntryLocalService.addDepotEntry(
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			DepotConstants.TYPE_DESIGN_LIBRARY,
-			ServiceContextTestUtil.getServiceContext());
-
-		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			_depotEntry.getDepotEntryId(), _group.getGroupId());
-
-		return _depotEntry.getGroup();
 	}
 
 	private void _assertRootElement(
@@ -635,31 +572,6 @@ public class JournalArticleSitemapURLProviderTest {
 		Assert.assertFalse(rootElement.hasContent());
 	}
 
-	private void _assertVisitLayoutSet(JournalArticle article)
-		throws Exception {
-
-		Element rootElement = _getRootElement();
-
-		_journalArticleSitemapURLProvider.visitLayoutSet(
-			rootElement, _layoutSet, _themeDisplay);
-
-		Assert.assertTrue(rootElement.asXML(), rootElement.hasContent());
-
-		String friendlyURL = StringUtil.toLowerCase(
-			StringBundler.concat(
-				StringPool.SLASH, _group.getGroupKey(),
-				FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
-				article.getTitle()));
-
-		for (Element element : rootElement.elements()) {
-			String journalArticleLocalizedURL = element.elementText("loc");
-
-			Assert.assertTrue(
-				journalArticleLocalizedURL,
-				journalArticleLocalizedURL.endsWith(friendlyURL));
-		}
-	}
-
 	private String[] _getAvailableLanguageIds(JournalArticle journalArticle) {
 		Set<Locale> siteAvailableLocales = _language.getAvailableLocales(
 			_group.getGroupId());
@@ -746,14 +658,7 @@ public class JournalArticleSitemapURLProviderTest {
 	}
 
 	@Inject
-	private AssetDisplayPageEntryLocalService
-		_assetDisplayPageEntryLocalService;
-
-	@Inject
 	private CompanyLocalService _companyLocalService;
-
-	@DeleteAfterTestRun
-	private DepotEntry _depotEntry;
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;

@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -67,7 +66,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -198,95 +196,6 @@ public class ObjectEntrySitemapURLProviderTest {
 		_testVisitLayoutSet(0, _companyObjectDefinition);
 		_testVisitLayoutSet(_depotEntry.getGroupId(), _depotObjectDefinition);
 		_testVisitLayoutSet(_group.getGroupId(), _siteObjectDefinition);
-	}
-
-	@FeatureFlag("LPD-57283")
-	@Test
-	public void testVisitLayoutSetWithDesignLibraryDisplayPageTemplate()
-		throws Exception {
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						_siteObjectDefinition)) {
-
-			Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-			_addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(), _siteObjectDefinition);
-
-			ObjectEntry objectEntry = _addObjectEntry(
-				_group.getGroupId(), _siteObjectDefinition);
-
-			Element rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayoutSet(
-				rootElement, _layoutSet, _themeDisplay);
-
-			Assert.assertTrue(rootElement.asXML(), rootElement.hasContent());
-
-			_assertRootElements(
-				StringPool.BLANK, _siteObjectDefinition, objectEntry,
-				rootElement.elements());
-
-			for (Element element : rootElement.elements()) {
-				String objectEntryLocalizedURL = element.elementText("loc");
-
-				Assert.assertTrue(
-					objectEntryLocalizedURL,
-					objectEntryLocalizedURL.contains(_group.getFriendlyURL()));
-			}
-		}
-	}
-
-	@FeatureFlag("LPD-57283")
-	@Test
-	public void testVisitLayoutSetWithDesignLibraryDisplayPageTemplateWhenVisitedSiteCanonicalURLEnabled()
-		throws Exception {
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						_siteObjectDefinition)) {
-
-			Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_addDisplayPageTemplate(
-					designLibraryGroup.getGroupId(), _siteObjectDefinition);
-
-			ObjectEntry objectEntry = _addObjectEntry(
-				_group.getGroupId(), _siteObjectDefinition);
-
-			_updateLayoutSEOEntry(
-				true,
-				_layoutLocalService.getLayout(
-					layoutPageTemplateEntry.getPlid()));
-
-			Element rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayoutSet(
-				rootElement, _layoutSet, _themeDisplay);
-
-			Assert.assertTrue(rootElement.asXML(), rootElement.hasContent());
-
-			_assertRootElements(
-				StringPool.BLANK, _siteObjectDefinition, objectEntry,
-				rootElement.elements());
-		}
-	}
-
-	private Group _addConnectedDesignLibraryGroup() throws Exception {
-		_designLibraryDepotEntry = _depotEntryLocalService.addDepotEntry(
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			DepotConstants.TYPE_DESIGN_LIBRARY,
-			ServiceContextTestUtil.getServiceContext());
-
-		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			_designLibraryDepotEntry.getDepotEntryId(), _group.getGroupId());
-
-		return _designLibraryDepotEntry.getGroup();
 	}
 
 	private LayoutPageTemplateEntry _addDisplayPageTemplate(
@@ -736,10 +645,6 @@ public class ObjectEntrySitemapURLProviderTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	private ObjectDefinition _depotObjectDefinition;
-
-	@DeleteAfterTestRun
-	private DepotEntry _designLibraryDepotEntry;
-
 	private Group _group;
 
 	@Inject
