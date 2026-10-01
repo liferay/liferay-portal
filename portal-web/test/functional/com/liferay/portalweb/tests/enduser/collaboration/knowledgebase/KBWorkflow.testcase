@@ -185,7 +185,7 @@ definition {
 		KBAdmin.openKBAdmin(siteURLKey = "guest");
 
 		KBArticle.addArticleWithScheduledDate(
-			increaseMinutes = 2,
+			increaseMinutes = 6,
 			kbArticleContent = "Knowledge Base Article Content",
 			kbArticleTitle = "Knowledge Base Article Title",
 			workflowEnabled = "true");
@@ -214,11 +214,16 @@ definition {
 			listEntry = "Knowledge Base Article Title",
 			listEntryLabel = "Scheduled");
 
-		// We need to wait for the system time to pass by 1 minute in order to verify the scheduled article is published. There is currently no easy way to manipulate the system time in CI for automation. 1 minute is the shortest value we can set while ensuring the stability of the test. See LPS-188060.
+		while ((IsElementNotPresent(key_listEntry = "Knowledge Base Article Title", key_listEntryLabel = "Approved", locator1 = "LexiconList#LIST_ENTRY_LABEL")) && (maxIterations = "16")) {
 
-		Pause(value1 = 120000);
+			// The article publishes once its scheduled date passes and
+			// the check interval runs. There is no way to move the system
+			// time on CI, so poll for it. See LPS-188060.
 
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
+			Pause(value1 = 30000);
+
+			KBAdmin.openKBAdmin(siteURLKey = "guest");
+		}
 
 		LexiconList.viewListEntryLabel(
 			listEntry = "Knowledge Base Article Title",
