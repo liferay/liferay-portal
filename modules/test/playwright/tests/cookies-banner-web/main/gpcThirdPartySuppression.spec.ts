@@ -8,6 +8,7 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {consentManagerConfigurationPageTest} from '../../../fixtures/consentManagerConfigurationPageTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
+import {liferayConfig} from '../../../liferay.config';
 import {
 	clearConsentCookies,
 	resetAllConsentManagerConfigurations,
@@ -51,9 +52,8 @@ async function findEmittedThirdPartyCookiesScript(page: Page) {
 async function preSeedConsentCookies(page: Page) {
 	await page.context().addCookies(
 		CONSENT_TYPES.map((name) => ({
-			domain: 'localhost',
 			name,
-			path: '/',
+			url: liferayConfig.environment.baseUrl,
 			value: 'true',
 		}))
 	);
@@ -87,7 +87,9 @@ test.describe('with Sec-GPC: 1 header and admin honoring GPC', () => {
 			await expect
 				.poll(
 					async () => {
-						const cookies = await page.context().cookies();
+						const cookies = await page
+							.context()
+							.cookies(liferayConfig.environment.baseUrl);
 
 						return cookies
 							.filter((cookie) =>
