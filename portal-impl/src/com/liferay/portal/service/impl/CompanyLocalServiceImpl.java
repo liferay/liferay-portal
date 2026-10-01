@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.db.partition.DBPartition;
-import com.liferay.portal.kernel.encryptor.CompanyKeyUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
@@ -244,8 +243,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			DBPartitionUtil.setDefaultCompanyId(company.getCompanyId());
 		}
 
-		String key = _generateKey(companyId);
-
 		boolean newDBPartitionAdded = DBPartitionUtil.addDBPartition(companyId);
 
 		Callable<Company> callable = () -> {
@@ -278,7 +275,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 			// Company info
 
-			updatedCompany.setKey(key);
+			try {
+				updatedCompany.setKey(
+					EncryptorUtil.serializeKey(EncryptorUtil.generateKey()));
+			}
+			catch (EncryptorException encryptorException) {
+				throw new SystemException(encryptorException);
+			}
 
 			_companyInfoPersistence.update(updatedCompany.getCompanyInfo());
 
@@ -555,14 +558,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	public void checkCompanyKey(long companyId) throws PortalException {
 		Company company = companyPersistence.findByPrimaryKey(companyId);
 
-		if (Validator.isNotNull(company.getKey())) {
+		if (company.getKeyObj() != null) {
 			return;
 		}
 
 		try {
 			company.setKey(
-				CompanyKeyUtil.serializeKey(
-					companyId, EncryptorUtil.generateKey()));
+				EncryptorUtil.serializeKey(EncryptorUtil.generateKey()));
 		}
 		catch (EncryptorException encryptorException) {
 			throw new SystemException(encryptorException);
@@ -2496,16 +2498,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 				return null;
 			});
-	}
-
-	private String _generateKey(long companyId) {
-		try {
-			return CompanyKeyUtil.serializeKey(
-				companyId, EncryptorUtil.generateKey());
-		}
-		catch (EncryptorException encryptorException) {
-			throw new SystemException(encryptorException);
-		}
 	}
 
 	private long _getNextCompanyId() {
