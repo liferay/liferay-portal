@@ -26,6 +26,52 @@ public class BaseBundlePersistentResourceTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testUpdateCancelledQueueItem() {
+		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
+		long queueId = RandomTestUtil.randomLong();
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getBaseBundlePersistentResource(jenkinsMaster, queueId);
+
+		JenkinsMaster.QueueItem queueItem = Mockito.mock(
+			JenkinsMaster.QueueItem.class);
+
+		Mockito.doReturn(
+			true
+		).when(
+			queueItem
+		).isCancelled();
+
+		Mockito.doReturn(
+			queueItem
+		).when(
+			jenkinsMaster
+		).getQueueItem(
+			queueId
+		);
+
+		Mockito.doReturn(
+			Collections.emptyList()
+		).when(
+			jenkinsMaster
+		).getQueueItems();
+
+		baseBundlePersistentResource.update();
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).start();
+
+		for (int i = 0; i < 10; i++) {
+			baseBundlePersistentResource.update();
+		}
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.times(10)
+		).start();
+	}
+
+	@Test
 	public void testUpdateInQueue() throws Exception {
 		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
 		long queueId = RandomTestUtil.randomLong();

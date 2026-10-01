@@ -237,6 +237,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		setUrlReaderOutput(
 			new JSONObject(
 			).put(
+				"cancelled", true
+			).put(
 				"id", 7800
 			).toString(),
 			"http://test-9-1/queue/item/7800/api/json", urlReader);
@@ -244,6 +246,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		JenkinsMaster.QueueItem queueItem = _jenkinsMaster.getQueueItem(7800);
 
 		Assert.assertEquals(7800, queueItem.getId());
+
+		Assert.assertTrue(queueItem.isCancelled());
 	}
 
 	@Test
