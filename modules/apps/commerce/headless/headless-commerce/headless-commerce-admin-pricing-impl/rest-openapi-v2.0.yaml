@@ -1759,6 +1759,15 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                accountType:
+                    description:
+                        Type of the account named by `accountExternalReferenceCode`. An import needs it to create the account as an empty stub when the account does not exist yet, because the type cannot be changed after an account is created.
+                    enum:
+                        -   business
+                        -   guest
+                        -   person
+                        -   supplier
+                    type: string
                 actions:
                     additionalProperties:
                         additionalProperties:

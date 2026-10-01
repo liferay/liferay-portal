@@ -12,7 +12,7 @@ import com.liferay.commerce.price.list.model.CommercePriceListCommerceAccountGro
 import com.liferay.commerce.price.list.service.CommercePriceListCommerceAccountGroupRelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccountGroup;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -30,26 +30,13 @@ public class PriceListAccountGroupUtil {
 				PriceListAccountGroup priceListAccountGroup,
 				CommercePriceList commercePriceList,
 				ServiceContextHelper serviceContextHelper)
-		throws PortalException {
+		throws Exception {
 
 		ServiceContext serviceContext = serviceContextHelper.getServiceContext(
 			commercePriceList.getGroupId());
 
-		AccountGroup accountGroup;
-
-		if (Validator.isNull(
-				priceListAccountGroup.getAccountGroupExternalReferenceCode())) {
-
-			accountGroup = accountGroupService.getAccountGroup(
-				priceListAccountGroup.getAccountGroupId());
-		}
-		else {
-			accountGroup =
-				accountGroupService.getAccountGroupByExternalReferenceCode(
-					priceListAccountGroup.
-						getAccountGroupExternalReferenceCode(),
-					serviceContext.getCompanyId());
-		}
+		AccountGroup accountGroup = _getAccountGroup(
+			accountGroupService, priceListAccountGroup, serviceContext);
 
 		CommercePriceListCommerceAccountGroupRel
 			commercePriceListCommerceAccountGroupRel =
@@ -71,6 +58,31 @@ public class PriceListAccountGroupUtil {
 				accountGroup.getAccountGroupId(),
 				GetterUtil.get(priceListAccountGroup.getOrder(), 0),
 				serviceContext);
+	}
+
+	private static AccountGroup _getAccountGroup(
+			AccountGroupService accountGroupService,
+			PriceListAccountGroup priceListAccountGroup,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		String accountGroupExternalReferenceCode =
+			priceListAccountGroup.getAccountGroupExternalReferenceCode();
+
+		if (Validator.isNull(accountGroupExternalReferenceCode)) {
+			return accountGroupService.getAccountGroup(
+				priceListAccountGroup.getAccountGroupId());
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return accountGroupService.getAccountGroupByExternalReferenceCode(
+				accountGroupExternalReferenceCode,
+				serviceContext.getCompanyId());
+		}
+
+		return accountGroupService.getOrAddEmptyAccountGroup(
+			accountGroupExternalReferenceCode,
+			accountGroupExternalReferenceCode);
 	}
 
 }

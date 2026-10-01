@@ -13,6 +13,7 @@ import com.liferay.commerce.price.list.service.CommercePriceListAccountRelServic
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccount;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,20 +35,8 @@ public class PriceListAccountUtil {
 		ServiceContext serviceContext = serviceContextHelper.getServiceContext(
 			commercePriceList.getGroupId());
 
-		AccountEntry accountEntry;
-
-		if (Validator.isNull(
-				priceListAccount.getAccountExternalReferenceCode())) {
-
-			accountEntry = accountEntryService.getAccountEntry(
-				priceListAccount.getAccountId());
-		}
-		else {
-			accountEntry =
-				accountEntryService.getAccountEntryByExternalReferenceCode(
-					priceListAccount.getAccountExternalReferenceCode(),
-					serviceContext.getCompanyId());
-		}
+		AccountEntry accountEntry = _getAccountEntry(
+			accountEntryService, priceListAccount, serviceContext);
 
 		CommercePriceListAccountRel commercePriceListAccountRel =
 			commercePriceListAccountRelService.fetchCommercePriceListAccountRel(
@@ -66,6 +55,32 @@ public class PriceListAccountUtil {
 				commercePriceList.getCommercePriceListId(),
 				accountEntry.getAccountEntryId(),
 				GetterUtil.get(priceListAccount.getOrder(), 0), serviceContext);
+	}
+
+	private static AccountEntry _getAccountEntry(
+			AccountEntryService accountEntryService,
+			PriceListAccount priceListAccount, ServiceContext serviceContext)
+		throws PortalException {
+
+		String accountExternalReferenceCode =
+			priceListAccount.getAccountExternalReferenceCode();
+
+		if (Validator.isNull(accountExternalReferenceCode)) {
+			return accountEntryService.getAccountEntry(
+				priceListAccount.getAccountId());
+		}
+
+		PriceListAccount.AccountType accountType =
+			priceListAccount.getAccountType();
+
+		if (!LazyReferencingThreadLocal.isEnabled() || (accountType == null)) {
+			return accountEntryService.getAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		return accountEntryService.getOrAddEmptyAccountEntry(
+			accountExternalReferenceCode, accountExternalReferenceCode,
+			accountType.getValue());
 	}
 
 }

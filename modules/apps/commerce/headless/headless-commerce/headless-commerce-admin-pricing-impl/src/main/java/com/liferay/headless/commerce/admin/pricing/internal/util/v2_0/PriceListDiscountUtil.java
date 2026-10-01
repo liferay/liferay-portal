@@ -40,10 +40,9 @@ public class PriceListDiscountUtil {
 			commerceDiscountService, priceListDiscount, serviceContext);
 
 		CommercePriceListDiscountRel commercePriceListDiscountRel =
-			commercePriceListDiscountRelService.
-				fetchCommercePriceListDiscountRel(
-					commercePriceList.getCommercePriceListId(),
-					commerceDiscount.getCommerceDiscountId());
+			_fetchCommercePriceListDiscountRel(
+				commerceDiscount, commercePriceList,
+				commercePriceListDiscountRelService);
 
 		if (commercePriceListDiscountRel != null) {
 			commercePriceListDiscountRelService.
@@ -58,6 +57,36 @@ public class PriceListDiscountUtil {
 				commerceDiscount.getCommerceDiscountId(),
 				GetterUtil.get(priceListDiscount.getOrder(), 0),
 				serviceContext);
+	}
+
+	private static CommercePriceListDiscountRel
+			_fetchCommercePriceListDiscountRel(
+				CommerceDiscount commerceDiscount,
+				CommercePriceList commercePriceList,
+				CommercePriceListDiscountRelService
+					commercePriceListDiscountRelService)
+		throws PortalException {
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return commercePriceListDiscountRelService.
+				fetchCommercePriceListDiscountRel(
+					commercePriceList.getCommercePriceListId(),
+					commerceDiscount.getCommerceDiscountId());
+		}
+
+		for (CommercePriceListDiscountRel commercePriceListDiscountRel :
+				commercePriceListDiscountRelService.
+					getCommercePriceListDiscountRels(
+						commercePriceList.getCommercePriceListId())) {
+
+			if (commercePriceListDiscountRel.getCommerceDiscountId() ==
+					commerceDiscount.getCommerceDiscountId()) {
+
+				return commercePriceListDiscountRel;
+			}
+		}
+
+		return null;
 	}
 
 	private static CommerceDiscount _getCommerceDiscount(

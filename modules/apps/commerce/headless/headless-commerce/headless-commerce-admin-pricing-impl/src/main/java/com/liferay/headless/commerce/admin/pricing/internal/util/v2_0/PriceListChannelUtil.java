@@ -14,6 +14,7 @@ import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListChannel;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -35,27 +36,8 @@ public class PriceListChannelUtil {
 		ServiceContext serviceContext = serviceContextHelper.getServiceContext(
 			commercePriceList.getGroupId());
 
-		CommerceChannel commerceChannel;
-
-		if (Validator.isNull(
-				priceListChannel.getChannelExternalReferenceCode())) {
-
-			commerceChannel = commerceChannelService.getCommerceChannel(
-				priceListChannel.getChannelId());
-		}
-		else {
-			commerceChannel =
-				commerceChannelService.
-					fetchCommerceChannelByExternalReferenceCode(
-						priceListChannel.getChannelExternalReferenceCode(),
-						serviceContext.getCompanyId());
-
-			if (commerceChannel == null) {
-				throw new NoSuchChannelException(
-					"Unable to find channel with external reference code " +
-						priceListChannel.getChannelExternalReferenceCode());
-			}
-		}
+		CommerceChannel commerceChannel = _getCommerceChannel(
+			commerceChannelService, priceListChannel, serviceContext);
 
 		CommercePriceListChannelRel commercePriceListChannelRel =
 			commercePriceListChannelRelService.fetchCommercePriceListChannelRel(
@@ -74,6 +56,39 @@ public class PriceListChannelUtil {
 				commercePriceList.getCommercePriceListId(),
 				commerceChannel.getCommerceChannelId(),
 				GetterUtil.get(priceListChannel.getOrder(), 0), serviceContext);
+	}
+
+	private static CommerceChannel _getCommerceChannel(
+			CommerceChannelService commerceChannelService,
+			PriceListChannel priceListChannel, ServiceContext serviceContext)
+		throws PortalException {
+
+		String channelExternalReferenceCode =
+			priceListChannel.getChannelExternalReferenceCode();
+
+		if (Validator.isNull(channelExternalReferenceCode)) {
+			return commerceChannelService.getCommerceChannel(
+				priceListChannel.getChannelId());
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			CommerceChannel commerceChannel =
+				commerceChannelService.
+					fetchCommerceChannelByExternalReferenceCode(
+						channelExternalReferenceCode,
+						serviceContext.getCompanyId());
+
+			if (commerceChannel != null) {
+				return commerceChannel;
+			}
+
+			throw new NoSuchChannelException(
+				"Unable to find channel with external reference code " +
+					channelExternalReferenceCode);
+		}
+
+		return commerceChannelService.getOrAddEmptyCommerceChannel(
+			channelExternalReferenceCode);
 	}
 
 }

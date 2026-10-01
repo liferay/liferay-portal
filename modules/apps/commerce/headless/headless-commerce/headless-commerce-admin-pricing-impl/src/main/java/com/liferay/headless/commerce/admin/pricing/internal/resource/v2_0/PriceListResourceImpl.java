@@ -301,9 +301,14 @@ public class PriceListResourceImpl
 		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
 			priceList.getExpirationDate(), serviceContext.getTimeZone());
 
+		long catalogBaseCommercePriceListId =
+			_getCatalogBaseCommercePriceListId(
+				commerceCatalog, externalReferenceCode, priceList);
+
 		CommercePriceList commercePriceList =
 			_commercePriceListService.addOrUpdateCommercePriceList(
-				externalReferenceCode, commerceCatalog.getGroupId(), 0L,
+				externalReferenceCode, commerceCatalog.getGroupId(),
+				catalogBaseCommercePriceListId,
 				GetterUtil.get(priceList.getParentPriceListId(), 0L),
 				GetterUtil.get(priceList.getCatalogBasePriceList(), false),
 				commerceCurrency.getCode(), displayDateConfig.getDay(),
@@ -320,6 +325,13 @@ public class PriceListResourceImpl
 					priceList.getTypeAsString(),
 					CommercePriceListConstants.TYPE_PRICE_LIST),
 				serviceContext);
+
+		if (catalogBaseCommercePriceListId > 0) {
+			commercePriceList =
+				_commercePriceListService.updateExternalReferenceCode(
+					commercePriceList, externalReferenceCode,
+					serviceContext.getCompanyId());
+		}
 
 		// Expando
 
@@ -369,6 +381,40 @@ public class PriceListResourceImpl
 				"UPDATE", commercePriceList.getCommercePriceListId(),
 				"patchPriceList", _commercePriceListModelResourcePermission)
 		).build();
+	}
+
+	private long _getCatalogBaseCommercePriceListId(
+			CommerceCatalog commerceCatalog, String externalReferenceCode,
+			PriceList priceList)
+		throws Exception {
+
+		if (!LazyReferencingThreadLocal.isEnabled() ||
+			!GetterUtil.get(priceList.getCatalogBasePriceList(), false)) {
+
+			return 0;
+		}
+
+		CommercePriceList commercePriceList =
+			_commercePriceListService.
+				fetchCommercePriceListByExternalReferenceCode(
+					externalReferenceCode, commerceCatalog.getCompanyId());
+
+		if (commercePriceList != null) {
+			return 0;
+		}
+
+		commercePriceList =
+			_commercePriceListService.fetchCatalogBaseCommercePriceListByType(
+				commerceCatalog.getGroupId(),
+				GetterUtil.get(
+					priceList.getTypeAsString(),
+					CommercePriceListConstants.TYPE_PRICE_LIST));
+
+		if (commercePriceList == null) {
+			return 0;
+		}
+
+		return commercePriceList.getCommercePriceListId();
 	}
 
 	private CommerceCurrency _getCommerceCurrency(PriceList priceList)

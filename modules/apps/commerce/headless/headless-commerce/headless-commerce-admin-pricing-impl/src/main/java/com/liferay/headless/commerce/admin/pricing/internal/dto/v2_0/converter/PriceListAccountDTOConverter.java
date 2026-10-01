@@ -52,6 +52,9 @@ public class PriceListAccountDTOConverter
 				setAccountExternalReferenceCode(
 					accountEntry::getExternalReferenceCode);
 				setAccountId(accountEntry::getAccountEntryId);
+				setAccountType(
+					() -> PriceListAccount.AccountType.create(
+						accountEntry.getType()));
 				setActions(dtoConverterContext::getActions);
 				setOrder(commercePriceListAccountRel::getOrder);
 				setPriceListAccountId(
