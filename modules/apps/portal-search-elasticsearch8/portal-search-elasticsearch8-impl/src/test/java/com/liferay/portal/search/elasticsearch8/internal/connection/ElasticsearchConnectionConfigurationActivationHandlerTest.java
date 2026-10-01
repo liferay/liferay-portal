@@ -54,9 +54,18 @@ public class ElasticsearchConnectionConfigurationActivationHandlerTest {
 		ReflectionTestUtil.setFieldValue(
 			_elasticsearchConnectionConfigurationActivationHandler, "http",
 			_http);
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
+
 		ReflectionTestUtil.setFieldValue(
 			_elasticsearchConnectionConfigurationActivationHandler,
-			"_secretResolver", (SecretResolver)(companyId, value) -> value);
+			"_secretResolver", secretResolver);
 
 		_configurableUtilMockedStatic.when(
 			() -> ConfigurableUtil.createConfigurable(
