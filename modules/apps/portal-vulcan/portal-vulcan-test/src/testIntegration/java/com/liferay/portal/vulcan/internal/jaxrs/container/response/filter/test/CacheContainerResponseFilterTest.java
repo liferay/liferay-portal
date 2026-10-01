@@ -6,8 +6,10 @@
 package com.liferay.portal.vulcan.internal.jaxrs.container.response.filter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -190,6 +192,31 @@ public class CacheContainerResponseFilterTest {
 		httpURLConnection.setRequestMethod("POST");
 
 		_assertNotCacheable(httpURLConnection);
+	}
+
+	@Test
+	public void testCacheWithReverseProxy() throws Exception {
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
+
+		try (SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"WEB_SERVER_FORWARDED_HOST_ENABLED", true);
+			SafeCloseable safeCloseable2 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"WEB_SERVER_FORWARDED_PORT_ENABLED", true);
+			SafeCloseable safeCloseable3 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"WEB_SERVER_FORWARDED_PROTOCOL_ENABLED", true)) {
+
+			HttpURLConnection httpURLConnection = _openURLConnection("/test");
+
+			httpURLConnection.addRequestProperty(
+				"X-Forwarded-Host", "127.0.0.1");
+			httpURLConnection.addRequestProperty("X-Forwarded-Port", "443");
+			httpURLConnection.addRequestProperty("X-Forwarded-Proto", "https");
+
+			_assertCacheable("public, max-age=3600", httpURLConnection);
+		}
 	}
 
 	@Test

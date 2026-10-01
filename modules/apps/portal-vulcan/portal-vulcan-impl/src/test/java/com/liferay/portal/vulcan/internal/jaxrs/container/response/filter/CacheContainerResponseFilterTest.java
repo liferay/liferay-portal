@@ -169,6 +169,20 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testFilterWhenContextPathIsPresent() throws Exception {
+		Mockito.when(
+			_uriInfo.getBaseUri()
+		).thenReturn(
+			URI.create("http://localhost/liferay/o/test-app/")
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertCacheable();
+	}
+
+	@Test
 	public void testFilterWhenHttpSessionIsNotNull() throws Exception {
 		Mockito.when(
 			_httpServletRequest.getSession(false)
