@@ -373,5 +373,43 @@ describe('OmniSearch', () => {
 				).toHaveFocus()
 			);
 		});
+
+		it('moves selection down and refocuses the input when ArrowDown is pressed on the delete button', async () => {
+			const input = await openModal();
+
+			await userEvent.keyboard('{ArrowDown}');
+			await userEvent.type(input, '{Tab}');
+
+			const deleteButton = within(
+				screen.getByText('documents').closest('li') as HTMLElement
+			).getByRole('button', {hidden: true});
+
+			await waitFor(() => expect(deleteButton).toHaveFocus());
+
+			await userEvent.keyboard('{ArrowDown}');
+
+			expect(input).toHaveFocus();
+
+			const options = screen.getAllByRole('option');
+
+			expect(options[1]).toHaveClass('active');
+		});
+
+		it('returns focus to the input after a recent search is deleted via the delete button', async () => {
+			const input = await openModal();
+
+			await userEvent.keyboard('{ArrowDown}');
+			await userEvent.type(input, '{Tab}');
+
+			const deleteButton = within(
+				screen.getByText('documents').closest('li') as HTMLElement
+			).getByRole('button', {hidden: true});
+
+			await waitFor(() => expect(deleteButton).toHaveFocus());
+
+			await userEvent.click(deleteButton);
+
+			await waitFor(() => expect(input).toHaveFocus());
+		});
 	});
 });
