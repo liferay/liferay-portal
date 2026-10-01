@@ -52,11 +52,19 @@ public class CompanyKeyResolverUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_keyManagerConfigurationTemporarySwapper =
-			new ConfigurationTemporarySwapper(
-				_KEY_MANAGER_CONFIGURATION_PID,
-				_getKeyManagerConfigurationProperties(
-					TestCompanyCryptoProvider.KEY_IDENTIFIER));
+		Bundle bundle = FrameworkUtil.getBundle(
+			CompanyKeyResolverUtilTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_testCompanyCryptoProvider = new TestCompanyCryptoProvider();
+
+		_serviceRegistration = bundleContext.registerService(
+			CryptoProvider.class, _testCompanyCryptoProvider,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"crypto.provider.id", TestCompanyCryptoProvider.PROVIDER_ID
+			).build());
+
 		_keyManagerCustomProfileConfigurationTemporarySwapper =
 			new ConfigurationTemporarySwapper(
 				"com.liferay.portal.security.key.internal.profile." +
@@ -66,16 +74,11 @@ public class CompanyKeyResolverUtilTest {
 					TestCompanyCryptoProvider.PROVIDER_ID
 				).build());
 
-		Bundle bundle = FrameworkUtil.getBundle(
-			CompanyKeyResolverUtilTest.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		_serviceRegistration = bundleContext.registerService(
-			CryptoProvider.class, _testCompanyCryptoProvider,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"crypto.provider.id", TestCompanyCryptoProvider.PROVIDER_ID
-			).build());
+		_keyManagerConfigurationTemporarySwapper =
+			new ConfigurationTemporarySwapper(
+				_KEY_MANAGER_CONFIGURATION_PID,
+				_getKeyManagerConfigurationProperties(
+					TestCompanyCryptoProvider.KEY_IDENTIFIER));
 	}
 
 	@After
@@ -141,9 +144,9 @@ public class CompanyKeyResolverUtilTest {
 		Company persistedCompany = CompanyLocalServiceUtil.getCompany(
 			_company.getCompanyId());
 
+		Assert.assertEquals(key, persistedCompany.getKeyObj());
 		Assert.assertTrue(
 			CompanyKeyResolverUtil.isWrappedKey(persistedCompany.getKey()));
-		Assert.assertEquals(key, persistedCompany.getKeyObj());
 
 		_saveKeyManagerConfiguration(StringPool.BLANK);
 
@@ -151,10 +154,10 @@ public class CompanyKeyResolverUtilTest {
 
 		String keyString = _legacyCompany.getKey();
 
-		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(keyString));
 		Assert.assertEquals(
 			EncryptorUtil.deserializeKey(keyString),
 			_legacyCompany.getKeyObj());
+		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(keyString));
 	}
 
 	private Dictionary<String, Object> _getKeyManagerConfigurationProperties(
@@ -191,7 +194,6 @@ public class CompanyKeyResolverUtilTest {
 	private Company _legacyCompany;
 
 	private ServiceRegistration<CryptoProvider> _serviceRegistration;
-	private TestCompanyCryptoProvider _testCompanyCryptoProvider =
-		new TestCompanyCryptoProvider();
+	private TestCompanyCryptoProvider _testCompanyCryptoProvider;
 
 }
