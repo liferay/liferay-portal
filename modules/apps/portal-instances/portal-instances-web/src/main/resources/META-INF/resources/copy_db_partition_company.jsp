@@ -46,5 +46,10 @@
 </clay:container-fluid>
 
 <liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"successMessage", LanguageUtil.get(request, "the-instance-is-being-copied-to-x-you-will-be-notified-when-it-finishes")
+		).build()
+	%>'
 	module="{CopyDBPartitionCompany} from portal-instances-web"
 />

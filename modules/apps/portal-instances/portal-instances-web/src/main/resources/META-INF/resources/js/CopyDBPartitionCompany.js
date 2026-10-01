@@ -4,9 +4,9 @@
  */
 
 import {openToast} from 'frontend-js-components-web';
-import {fetch, getOpener} from 'frontend-js-web';
+import {escapeHTML, fetch, getOpener, sub} from 'frontend-js-web';
 
-export default function ({namespace}) {
+export default function ({namespace, successMessage}) {
 	const form = document.getElementById(`${namespace}fm`);
 
 	const content = document.querySelector(
@@ -16,22 +16,45 @@ export default function ({namespace}) {
 		'.copy-db-partition-company-loading'
 	);
 
-	let isSubmitting = false;
+	let submitting = false;
 
-	const onSubmit = (event) => {
+	const showContent = () => {
+		content.classList.add('d-block');
+		content.classList.remove('d-none');
+		loading.classList.add('d-none');
+		loading.classList.remove('d-flex');
+	};
+
+	const showError = (alertContainer, message) => {
+		showContent();
+
+		openToast({
+			autoClose: false,
+			container: alertContainer,
+			message: escapeHTML(message),
+			toastProps: {
+				onClose: null,
+			},
+			type: 'danger',
+			variant: 'stripe',
+		});
+	};
+
+	const onSubmit = async (event) => {
 		event.preventDefault();
 
-		if (isSubmitting) {
+		if (submitting) {
 			return;
 		}
 
-		isSubmitting = true;
+		submitting = true;
 
 		const formData = new FormData(form);
 
 		content.classList.add('d-none');
 		content.classList.remove('d-block');
 		loading.classList.add('d-flex');
+		loading.classList.remove('d-none');
 
 		const alertContainer = document.querySelector(
 			'.copy-db-partition-company-alert-container'
@@ -41,57 +64,41 @@ export default function ({namespace}) {
 			alertContainer.firstChild.remove();
 		}
 
-		const showError = (message) => {
-			isSubmitting = false;
-
-			content.classList.add('d-block');
-			content.classList.remove('d-none');
-			loading.classList.add('d-none');
-			loading.classList.remove('d-flex');
-
-			openToast({
-				autoClose: false,
-				container: alertContainer,
-				message,
-				toastProps: {
-					onClose: null,
-				},
-				type: 'danger',
-				variant: 'stripe',
+		try {
+			const response = await fetch(form.action, {
+				body: formData,
+				method: 'POST',
 			});
-		};
 
-		fetch(form.action, {
-			body: formData,
-			method: 'POST',
-		})
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(response.status);
-				}
+			if (!response.ok) {
+				throw new Error(
+					Liferay.Language.get('an-unexpected-error-occurred')
+				);
+			}
 
-				return response.json();
-			})
-			.then((responseJSON) => {
-				if (responseJSON.companyId) {
-					const opener = getOpener();
+			const {error} = await response.json();
 
-					opener.Liferay.fire('closeModal', {
-						redirect: opener.location.href,
-					});
-				}
-				else if (responseJSON.error) {
-					showError(responseJSON.error);
-				}
-				else {
-					showError(
-						Liferay.Language.get('an-unexpected-error-occurred')
-					);
-				}
-			})
-			.catch(() => {
-				showError(Liferay.Language.get('an-unexpected-error-occurred'));
+			if (error) {
+				throw new Error(error);
+			}
+
+			const opener = getOpener();
+
+			opener.Liferay.Util.openToast({
+				message: sub(
+					successMessage,
+					escapeHTML(formData.get(`${namespace}webId`))
+				),
+				type: 'info',
 			});
+
+			opener.Liferay.fire('closeModal');
+		}
+		catch (error) {
+			submitting = false;
+
+			showError(alertContainer, error.message);
+		}
 	};
 
 	form.addEventListener('submit', onSubmit);
