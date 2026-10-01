@@ -451,7 +451,8 @@ public class ObjectEntryLocalServiceImpl
 
 		defaultLanguageId = _getDefaultLanguageId(defaultLanguageId, groupId);
 
-		_fillDefaultValue(defaultLanguageId, objectDefinitionId, values);
+		_fillDefaultValue(
+			defaultLanguageId, groupId, objectDefinitionId, values);
 
 		_contributeValues(groupId, objectDefinition, userId, values);
 
@@ -4147,7 +4148,7 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private void _fillDefaultValue(
-		String defaultLanguageId, long objectDefinitionId,
+		String defaultLanguageId, long groupId, long objectDefinitionId,
 		Map<String, Serializable> values) {
 
 		for (ObjectField objectField :
@@ -4173,23 +4174,46 @@ public class ObjectEntryLocalServiceImpl
 			Object value = ObjectFieldSettingUtil.getDefaultValue(
 				_ddmExpressionFactory, objectField, (Map)values);
 
-			if (value != null) {
-				values.put(objectField.getName(), (Serializable)value);
+			if (value == null) {
+				continue;
+			}
 
-				if (!objectField.isLocalized()) {
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION)) {
+
+				ObjectFieldBusinessType objectFieldBusinessType =
+					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						objectField.getBusinessType());
+
+				try {
+					value = objectFieldBusinessType.getValue(
+						groupId, objectField, 0,
+						Map.of(objectField.getName(), value));
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+
 					continue;
 				}
+			}
 
-				if (localizedValues.isEmpty()) {
-					values.put(
-						objectField.getI18nObjectFieldName(),
-						HashMapBuilder.put(
-							defaultLanguageId, value
-						).build());
-				}
-				else {
-					localizedValues.putIfAbsent(defaultLanguageId, value);
-				}
+			values.put(objectField.getName(), (Serializable)value);
+
+			if (!objectField.isLocalized()) {
+				continue;
+			}
+
+			if (localizedValues.isEmpty()) {
+				values.put(
+					objectField.getI18nObjectFieldName(),
+					HashMapBuilder.put(
+						defaultLanguageId, value
+					).build());
+			}
+			else {
+				localizedValues.putIfAbsent(defaultLanguageId, value);
 			}
 		}
 	}
@@ -7848,7 +7872,7 @@ public class ObjectEntryLocalServiceImpl
 
 		if (!partialUpdate) {
 			_fillDefaultValue(
-				objectEntry.getDefaultLanguageId(),
+				objectEntry.getDefaultLanguageId(), objectEntry.getGroupId(),
 				objectDefinition.getObjectDefinitionId(), values);
 		}
 
