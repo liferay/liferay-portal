@@ -282,7 +282,7 @@ export default function ViewWorkflowTasks({
 
 	return (
 		<div className="container-fluid-max p-2 p-sm-3">
-			<div className="align-items-center d-flex justify-content-between mb-4">
+			<div className="align-items-center d-flex flex-wrap justify-content-between mb-4">
 				<span
 					aria-level={2}
 					className="font-weight-semi-bold mr-3 text-4"
@@ -291,21 +291,28 @@ export default function ViewWorkflowTasks({
 					{Liferay.Language.get('my-workflow-tasks')}
 				</span>
 
-				<div className="align-items-xl-center d-flex flex-column flex-xl-row">
+				<div className="align-items-xl-center d-flex flex-column flex-xl-row mw-100">
 					<ClayDropdown
-						className="filter-dropdown"
+						className="filter-dropdown mw-100"
 						closeOnClick
 						hasLeftSymbols
 						trigger={
-							<ClayButton displayType="secondary" size="sm">
-								<span>
+							<ClayButton
+								className="align-items-center d-flex mw-100"
+								displayType="secondary"
+								size="sm"
+							>
+								<span
+									className="text-truncate"
+									title={selectedItem.label}
+								>
 									{selectedItem.label}
-
-									<ClayIcon
-										className="ml-2"
-										symbol="caret-bottom"
-									/>
 								</span>
+
+								<ClayIcon
+									className="flex-shrink-0 ml-2"
+									symbol="caret-bottom"
+								/>
 							</ClayButton>
 						}
 					>
