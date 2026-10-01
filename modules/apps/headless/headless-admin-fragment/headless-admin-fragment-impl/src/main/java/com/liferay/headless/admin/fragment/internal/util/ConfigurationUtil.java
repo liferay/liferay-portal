@@ -964,7 +964,10 @@ public class ConfigurationUtil {
 			contextualMenuNavigationMenuValue.getContextualMenuType());
 
 		if (contextualMenu == null) {
-			return null;
+			throw new IllegalArgumentException(
+				LanguageUtil.get(
+					LocaleUtil.getMostRelevantLocale(),
+					"a-contextual-menu-type-is-required"));
 		}
 
 		return JSONUtil.put(
