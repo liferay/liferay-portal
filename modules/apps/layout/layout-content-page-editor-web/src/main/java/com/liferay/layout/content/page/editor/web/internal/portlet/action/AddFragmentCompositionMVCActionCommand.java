@@ -5,7 +5,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
@@ -179,7 +179,7 @@ public class AddFragmentCompositionMVCActionCommand
 			ServiceContext serviceContext, ThemeDisplay themeDisplay)
 		throws Exception {
 
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		Repository repository =
 			PortletFileRepositoryUtil.fetchPortletRepository(
@@ -204,7 +204,7 @@ public class AddFragmentCompositionMVCActionCommand
 	}
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private FragmentCollectionManager _fragmentCollectionManager;
