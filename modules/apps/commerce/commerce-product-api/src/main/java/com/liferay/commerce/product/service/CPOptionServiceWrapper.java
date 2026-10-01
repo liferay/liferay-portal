@@ -106,12 +106,14 @@ public class CPOptionServiceWrapper
 
 	@Override
 	public CPOption getOrAddEmptyCPOption(
-			String externalReferenceCode, String commerceOptionTypeKey,
-			boolean skuContributor)
+			String externalReferenceCode,
+			java.util.Map<java.util.Locale, String> nameMap,
+			String commerceOptionTypeKey, boolean skuContributor, String key)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpOptionService.getOrAddEmptyCPOption(
-			externalReferenceCode, commerceOptionTypeKey, skuContributor);
+			externalReferenceCode, nameMap, commerceOptionTypeKey,
+			skuContributor, key);
 	}
 
 	/**
@@ -171,4 +173,4 @@ public class CPOptionServiceWrapper
 	private CPOptionService _cpOptionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-770772235
+// LIFERAY-SERVICE-BUILDER-HASH:-342135763
