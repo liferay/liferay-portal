@@ -275,14 +275,18 @@ public abstract class BaseFailureMessageGenerator
 			if (truncateTop) {
 				start = end - CHARS_CONSOLE_TEXT_SNIPPET_SIZE_MAX;
 
-				start = consoleText.indexOf("\n", start);
+				int newlineStart = consoleText.indexOf("\n", start);
+
+				if ((newlineStart != -1) && (newlineStart < end)) {
+					start = newlineStart;
+				}
 			}
 			else {
 				end = start + CHARS_CONSOLE_TEXT_SNIPPET_SIZE_MAX;
 
 				int newlineEnd = consoleText.lastIndexOf("\n", end);
 
-				if (newlineEnd != -1) {
+				if (newlineEnd > start) {
 					end = newlineEnd;
 				}
 			}
