@@ -6,7 +6,7 @@ import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Map} from 'immutable';
 import {matchPath} from 'react-router-dom';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
-import {VerticalNav} from '@clayui/core';
+import {SidePanel, VerticalNav} from '@clayui/core';
 
 interface ISidebarNavItem {
 	icon: string;
@@ -31,7 +31,9 @@ interface ISidebarProps {
 	className?: string;
 	collapsed: boolean;
 	collapsedSections: Map<string, boolean>;
+	containerRef: React.RefObject<HTMLElement>;
 	groupId: string;
+	onCollapsedChange: (collapsed: boolean) => void;
 	onSectionToggle: (sectionKey: string, collapsed: boolean) => void;
 }
 
@@ -45,12 +47,18 @@ const isSection = (entry: SidebarNavEntry): entry is ISidebarNavSection =>
 
 const renderNavItem = (entry: SidebarNavEntry) =>
 	isSection(entry) ? (
-		<VerticalNav.Item items={entry.items}>
-			<span className="section-title">{entry.label}</span>
+		<VerticalNav.Item
+			className="mb-4"
+			items={entry.items}
+			textValue={entry.label}
+		>
+			<span className="font-weight-semi-bold section-title text-2 text-uppercase">
+				{entry.label}
+			</span>
 		</VerticalNav.Item>
 	) : (
-		<VerticalNav.Item href={entry.url}>
-			<span className="icon-wrapper">
+		<VerticalNav.Item href={entry.url} textValue={entry.label}>
+			<span className="mr-2 sticker">
 				<ClayIcon className="icon-root" symbol={entry.icon} />
 			</span>
 
@@ -65,7 +73,9 @@ const Sidebar: React.FC<ISidebarProps> = ({
 	className,
 	collapsed = false,
 	collapsedSections = Map(),
+	containerRef,
 	groupId,
+	onCollapsedChange,
 	onSectionToggle,
 }) => {
 	const LDPEnabled = useLDPEnabled({groupId});
@@ -203,30 +213,39 @@ const Sidebar: React.FC<ISidebarProps> = ({
 	};
 
 	return (
-		<div className={getCN('sidebar-root', className, {collapsed})}>
-			<div className="sidebar-menu">
-				<div className="sidebar-header">
-					<ChannelsMenu
-						channels={channels}
-						defaultChannelId={channelId}
-						groupId={groupId}
-					/>
-				</div>
-
-				<div className="sidebar-body">
-					<VerticalNav<SidebarNavEntry>
-						active={activeItem?.id}
-						aria-label={Liferay.Language.get('menu')}
-						expandedKeys={expandedKeys}
-						items={sidebarSections}
-						onExpandedChange={handleExpandedChange}
-						stacked
-					>
-						{renderNavItem}
-					</VerticalNav>
-				</div>
+		<SidePanel
+			aria-label={Liferay.Language.get('menu')}
+			className={getCN('shadow-none sidebar-root', className)}
+			closeOnEscape={false}
+			containerRef={containerRef}
+			direction="left"
+			onOpenChange={(open) => onCollapsedChange(!open)}
+			open={!collapsed}
+			panelWidth={280}
+			position="fixed"
+		>
+			<div className="my-4 px-3 py-0 sidebar-header">
+				<ChannelsMenu
+					channels={channels}
+					defaultChannelId={channelId}
+					groupId={groupId}
+				/>
 			</div>
-		</div>
+
+			<SidePanel.Body className="p-0">
+				<VerticalNav<SidebarNavEntry>
+					active={activeItem?.id}
+					aria-label={Liferay.Language.get('menu')}
+					displayType="primary"
+					expandedKeys={expandedKeys}
+					items={sidebarSections}
+					onExpandedChange={handleExpandedChange}
+					stacked
+				>
+					{renderNavItem}
+				</VerticalNav>
+			</SidePanel.Body>
+		</SidePanel>
 	);
 };
 

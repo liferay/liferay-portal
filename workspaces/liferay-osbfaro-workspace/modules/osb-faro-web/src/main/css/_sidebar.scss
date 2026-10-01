@@ -1,174 +1,73 @@
+// Clay reserves a fixed 320px for a pushing side panel regardless of its
+// `panelWidth`, so the content that follows the sidebar's slideout is offset
+// by the sidebar's own width instead. Below `lg` Clay overlays the panel and
+// stops pushing, which is left untouched.
+
+@media (min-width: 992px) {
+	.c-slideout:has(> .sidebar-root) + .c-slideout-push-start {
+		padding-left: $sidebarOpenWidth;
+	}
+}
+
 .sidebar-root {
-	background: $lightL1;
+	background-color: $lightL1;
 	border-right: 1px solid $cadmin-secondary-l2;
-	height: calc(100% - #{$toolbarHeight});
-	left: 0;
-	overflow: hidden;
-	position: fixed;
-	top: $toolbarHeight;
-	width: $sidebarOpenWidth;
-	z-index: 1000;
 
-	@media (prefers-reduced-motion: no-preference) {
-		transition:
-			visibility 0.5s ease,
-			width 0.5s ease;
-	}
+	// Clay sizes the primary menubar links through fixed values rather than
+	// custom properties, so the rows are reshaped here to keep their 40px
+	// height and the sidebar gutter.
 
-	&.collapsed {
-		visibility: hidden;
-		width: 0;
-	}
-
-	.sidebar-menu {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		width: $sidebarOpenWidth;
-	}
-
-	// The menubar Clay wraps the navigation in caps itself at 250px, which
-	// leaves every item short of the sidebar's own width.
-
-	.menubar {
-		margin: 0;
-		max-width: none;
-		padding: 0;
-	}
-
-	.nav {
-		flex-direction: column;
-		list-style: none;
-		margin: 0;
-		padding-left: 0;
-	}
-
-	// Clay styles the transparent variant through the compound selector
-	// `.menubar-vertical-expand-md.menubar-transparent .nav-link`, so matching
-	// its specificity is what keeps these declarations in effect.
-
-	.menubar.menubar-transparent .nav-link {
+	.nav-link {
 		align-items: center;
-		border-radius: 0;
-		color: $dark;
 		display: flex;
-		font-size: $fontSizeSmall;
-		font-weight: $fontWeightRegular;
 		height: 40px;
-		letter-spacing: normal;
 		line-height: normal;
-		margin-bottom: 0;
 		padding: 0 $sidebarGutter;
-		position: relative;
-		transition:
-			border-color 0.15s ease-out,
-			background-color 0.15s ease-out,
-			color 0.15s ease-out;
-		width: 100%;
 
-		// Clay draws an indicator bar of its own here, 3px on hover and 4px on
-		// the active item. The sidebar marks the active item with a border
-		// instead, so the two would otherwise stack into one wider band.
-
-		&::before {
-			content: none;
-		}
-
-		&:active,
-		&:focus,
-		&:active:focus {
-			color: $dark;
-			text-decoration: none;
-		}
-
-		&:active,
-		&:focus {
-			background: $secondaryHover;
-		}
-
-		&:active:focus {
-			background: $lightL1;
-		}
+		// Hover matches the CMS sidebar: Clay's 2px highlight, recolored along
+		// with the background.
 
 		&:hover {
-			background: $secondaryHover;
-			color: $dark;
-			font-weight: $fontWeightRegular;
-			text-decoration: none;
+			background-color: $light;
+
+			&::before {
+				background-color: $secondary;
+			}
 		}
 
 		&.active {
-			background: $light;
-			border-left: 4px solid $primary;
-			color: $dark;
-			font-weight: $fontWeightSemiBold;
-			padding-left: calc(#{$sidebarGutter} - 4px);
+			background-color: $light;
+
+			&::before {
+				background-color: $primary;
+				width: 4px;
+			}
+		}
+
+		// Section headers keep the compact, letter-spaced look and leave the
+		// hover and expanded states unmarked.
+
+		&.collapse-icon {
+			height: auto;
+			letter-spacing: 0.5px;
+			line-height: 1.2;
+			padding: 8px $sidebarGutter;
 
 			&:hover {
-				color: $dark;
-				font-weight: $fontWeightSemiBold;
-				text-decoration: none;
+				background-color: transparent;
+			}
+
+			&::before {
+				content: none;
+			}
+
+			.collapse-icon-closed,
+			.collapse-icon-open {
+				color: $mainLighten28;
+				font-size: 0.75rem;
+				right: $sidebarGutter;
+				top: calc(50% - 0.5em);
 			}
 		}
-	}
-
-	.icon-wrapper {
-		align-items: center;
-		display: flex;
-		height: 32px;
-		justify-content: center;
-		margin-right: 8px;
-		width: 32px;
-	}
-
-	.sidebar-body {
-		flex-grow: 1;
-		overflow-y: auto;
-		padding: 0;
-
-		// A section is the item that owns a nested list, so its header is the
-		// `nav-link` one level above the items it holds.
-
-		> .menubar > .nav > .nav-item {
-			margin-bottom: 24px;
-
-			> .nav-link {
-				font-size: $fontSizeExtraSmall;
-				font-weight: $fontWeightSemiBold;
-				height: auto;
-				justify-content: space-between;
-				letter-spacing: 0.5px;
-				padding: 8px $sidebarGutter;
-				text-transform: uppercase;
-				white-space: nowrap;
-
-				&:active,
-				&:active:focus,
-				&:focus,
-				&:hover {
-					background: transparent;
-					font-weight: $fontWeightSemiBold;
-				}
-
-				// Clay absolutely positions the collapse icon and reserves
-				// 45px of padding for it, which would override the gutter.
-				// Letting the icon flow keeps both insets on `$sidebarGutter`.
-
-				.collapse-icon-closed,
-				.collapse-icon-open {
-					color: $mainLighten28;
-					font-size: 0.75rem;
-					height: auto;
-					position: static;
-					width: auto;
-				}
-			}
-		}
-	}
-
-	.sidebar-header {
-		align-items: center;
-		margin: 24px 0;
-		padding: 0 $sidebarGutter;
 	}
 }

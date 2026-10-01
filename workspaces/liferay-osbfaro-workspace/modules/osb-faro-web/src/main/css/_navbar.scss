@@ -40,6 +40,6 @@
 	}
 }
 
-.nav-link.active:after {
+.navbar-nav .nav-link.active:after {
 	background-color: $primary !important;
 }

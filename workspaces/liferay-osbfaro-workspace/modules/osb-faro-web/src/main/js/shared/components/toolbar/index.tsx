@@ -40,7 +40,7 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 	return (
 		<ClayToolbar
 			className={getCN(
-				'align-items-center bg-white fixed-top toolbar-root',
+				'align-items-center bg-white sticky-top toolbar-root',
 				className
 			)}
 		>

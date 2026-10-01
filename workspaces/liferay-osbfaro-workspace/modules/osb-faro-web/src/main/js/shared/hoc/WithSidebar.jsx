@@ -3,7 +3,6 @@ import autobind from 'autobind-decorator';
 import checkProjectState from './CheckProjectState';
 import checkSegmentLink from './CheckSegmentLink';
 import checkValidChannel from './CheckValidChannel';
-import getCN from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Sidebar from 'shared/components/sidebar';
@@ -82,12 +81,10 @@ export default compose(
 				location: PropTypes.object
 			};
 
-			state = {
-				showTransition: false
-			};
-
 			constructor(props, {channelDispatch}) {
 				super(props);
+
+				this._contentRef = React.createRef();
 
 				const {
 					channels,
@@ -124,12 +121,6 @@ export default compose(
 				});
 			}
 
-			componentDidMount() {
-				this.setState({
-					showTransition: true
-				});
-			}
-
 			componentDidUpdate(prevProps) {
 				const {channelDispatch} = this.context;
 
@@ -154,6 +145,13 @@ export default compose(
 			}
 
 			@autobind
+			handleCollapsedChange(collapsed) {
+				const {collapseSidebar, currentUser} = this.props;
+
+				collapseSidebar({collapsed, currentUserId: currentUser.id});
+			}
+
+			@autobind
 			handleSectionToggle(sectionKey, collapsed) {
 				const {collapseSidebar, currentUser} = this.props;
 
@@ -175,32 +173,30 @@ export default compose(
 						groupId,
 						location,
 						...otherProps
-					},
-					state: {showTransition}
+					}
 				} = this;
 
-				const classes = getCN('with-sidebar-root', className, {
-					'has-sidebar': showTransition,
-					'sidebar-collapsed': collapsed
-				});
-
 				return (
-					<div className={classes}>
+					<div className={className}>
 						<Sidebar
 							activePathname={location.pathname}
 							channelId={selectedChannel && selectedChannel.id}
 							channels={channels}
 							collapsed={collapsed}
 							collapsedSections={collapsedSections}
+							containerRef={this._contentRef}
 							groupId={groupId}
+							onCollapsedChange={this.handleCollapsedChange}
 							onSectionToggle={this.handleSectionToggle}
 						/>
 
-						<WrappedComponent
-							{...otherProps}
-							currentUser={currentUser}
-							groupId={groupId}
-						/>
+						<div ref={this._contentRef}>
+							<WrappedComponent
+								{...otherProps}
+								currentUser={currentUser}
+								groupId={groupId}
+							/>
+						</div>
 					</div>
 				);
 			}

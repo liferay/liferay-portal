@@ -11,407 +11,426 @@ exports[`withSidebar should render loading 1`] = `
 
 exports[`withSidebar should render with the sidebar 1`] = `
 <div>
-  <div
-    class="with-sidebar-root has-sidebar"
-  >
+  <div>
     <div
-      class="sidebar-root"
+      class="c-slideout c-slideout-fixed c-slideout-push c-slideout-start"
+      style="top: 0px;"
     >
       <div
-        class="sidebar-menu"
+        aria-label="Menu"
+        class="sidebar shadow-none sidebar-root sidebar-light c-slideout-show"
+        id="clay-id-1"
+        style="width: 280px;"
+        tabindex="-1"
       >
         <div
-          class="sidebar-header"
+          class="c-focus-trap"
         >
+          <span
+            data-focus-scope-start="true"
+          />
           <div
-            class="channels-menu-root"
+            class="my-4 px-3 py-0 sidebar-header"
           >
             <div
-              class="channels-menu-label"
+              class="channels-menu-root"
             >
-              Property
-            </div>
-            <button
-              aria-activedescendant=""
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-label="Property"
-              class="rounded-lg d-flex justify-content-between align-items-center btn btn-block btn-secondary"
-              role="combobox"
-              tabindex="0"
-              type="button"
-            >
-              Channel 1
-              <svg
-                class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
-                role="presentation"
+              <div
+                class="channels-menu-label"
               >
-                <use
-                  href="#caret-double"
-                />
-              </svg>
-            </button>
-            <div
-              class="channels-menu-icon"
-            >
-              <svg
-                class="lexicon-icon lexicon-icon-sites icon-root"
-                role="presentation"
+                Property
+              </div>
+              <button
+                aria-activedescendant=""
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-label="Property"
+                class="rounded-lg d-flex justify-content-between align-items-center btn btn-block btn-secondary"
+                role="combobox"
+                tabindex="0"
+                type="button"
               >
-                <use
-                  href="#sites"
-                />
-              </svg>
+                Channel 1
+                <svg
+                  class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
+                  role="presentation"
+                >
+                  <use
+                    href="#caret-double"
+                  />
+                </svg>
+              </button>
+              <div
+                class="channels-menu-icon"
+              >
+                <svg
+                  class="lexicon-icon lexicon-icon-sites icon-root"
+                  role="presentation"
+                >
+                  <use
+                    href="#sites"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="sidebar-body"
-        >
-          <nav
-            aria-label="Menu"
-            class="menubar menubar-transparent menubar-vertical-expand-md"
+          <div
+            class="sidebar-body p-0"
           >
-            <ul
-              aria-orientation="vertical"
-              class="nav nav-stacked"
-              role="menubar"
+            <nav
+              aria-label="Menu"
+              class="menubar menubar-primary"
             >
-              <li
-                class="nav-item"
-                role="none"
+              <ul
+                aria-orientation="vertical"
+                class="nav nav-stacked"
+                role="menubar"
               >
-                <button
-                  aria-controls="clay-id-4"
-                  aria-expanded="true"
-                  class="nav-link collapse-icon btn btn-unstyled"
-                  role="menuitem"
-                  tabindex="-1"
-                  type="button"
+                <li
+                  class="nav-item mb-4"
+                  role="none"
                 >
-                  <span
-                    class="section-title"
+                  <button
+                    aria-controls="clay-id-6"
+                    aria-expanded="true"
+                    class="nav-link collapse-icon btn btn-unstyled"
+                    role="menuitem"
+                    tabindex="-1"
+                    type="button"
                   >
-                    Touchpoints
-                  </span>
-                  <span
-                    class="collapse-icon-closed"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-angle-right-small"
-                      focusable="false"
-                      role="presentation"
+                    <span
+                      class="font-weight-semi-bold section-title text-2 text-uppercase"
                     >
-                      <use
-                        href="#angle-right-small"
-                      />
-                    </svg>
-                  </span>
-                  <span
-                    class="collapse-icon-open"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-angle-down-small"
-                      focusable="false"
-                      role="presentation"
+                      Touchpoints
+                    </span>
+                    <span
+                      class="collapse-icon-closed"
                     >
-                      <use
-                        href="#angle-down-small"
-                      />
-                    </svg>
-                  </span>
-                </button>
-                <ul
-                  class="nav nav-stacked"
-                  id="clay-id-4"
-                  role="menu"
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-right-small"
+                        focusable="false"
+                        role="presentation"
+                      >
+                        <use
+                          href="#angle-right-small"
+                        />
+                      </svg>
+                    </span>
+                    <span
+                      class="collapse-icon-open"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-down-small"
+                        focusable="false"
+                        role="presentation"
+                      >
+                        <use
+                          href="#angle-down-small"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                  <ul
+                    class="nav nav-stacked"
+                    id="clay-id-6"
+                    role="menu"
+                  >
+                    <li
+                      class="nav-item"
+                      role="none"
+                    >
+                      <a
+                        class="nav-link collapsed"
+                        href="/workspace/23/1/sites"
+                        role="menuitem"
+                        tabindex="0"
+                      >
+                        <span
+                          class="mr-2 sticker"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-sites icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#sites"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Sites
+                        </span>
+                      </a>
+                    </li>
+                    <li
+                      class="nav-item"
+                      role="none"
+                    >
+                      <a
+                        class="nav-link collapsed"
+                        href="/workspace/23/1/assets"
+                        role="menuitem"
+                        tabindex="-1"
+                      >
+                        <span
+                          class="mr-2 sticker"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-sheets icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#sheets"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Assets
+                        </span>
+                      </a>
+                    </li>
+                    <li
+                      class="nav-item"
+                      role="none"
+                    >
+                      <a
+                        class="nav-link collapsed"
+                        href="/workspace/23/1/event-analysis"
+                        role="menuitem"
+                        tabindex="-1"
+                      >
+                        <span
+                          class="mr-2 sticker"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-click icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#click"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Events
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li
+                  class="nav-item mb-4"
+                  role="none"
                 >
-                  <li
-                    class="nav-item"
-                    role="none"
+                  <button
+                    aria-controls="clay-id-11"
+                    aria-expanded="true"
+                    class="nav-link collapse-icon btn btn-unstyled"
+                    role="menuitem"
+                    tabindex="-1"
+                    type="button"
                   >
-                    <a
-                      class="nav-link collapsed"
-                      href="/workspace/23/1/sites"
-                      role="menuitem"
-                      tabindex="0"
+                    <span
+                      class="font-weight-semi-bold section-title text-2 text-uppercase"
                     >
-                      <span
-                        class="icon-wrapper"
+                      People
+                    </span>
+                    <span
+                      class="collapse-icon-closed"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-right-small"
+                        focusable="false"
+                        role="presentation"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-sites icon-root"
-                          role="presentation"
-                        >
-                          <use
-                            href="#sites"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
+                        <use
+                          href="#angle-right-small"
+                        />
+                      </svg>
+                    </span>
+                    <span
+                      class="collapse-icon-open"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-down-small"
+                        focusable="false"
+                        role="presentation"
                       >
-                        Sites
-                      </span>
-                    </a>
-                  </li>
-                  <li
-                    class="nav-item"
-                    role="none"
+                        <use
+                          href="#angle-down-small"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                  <ul
+                    class="nav nav-stacked"
+                    id="clay-id-11"
+                    role="menu"
                   >
-                    <a
-                      class="nav-link collapsed"
-                      href="/workspace/23/1/assets"
-                      role="menuitem"
-                      tabindex="-1"
+                    <li
+                      class="nav-item"
+                      role="none"
                     >
-                      <span
-                        class="icon-wrapper"
+                      <a
+                        class="nav-link collapsed"
+                        href="/workspace/23/1/contacts/segments"
+                        role="menuitem"
+                        tabindex="-1"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-sheets icon-root"
-                          role="presentation"
+                        <span
+                          class="mr-2 sticker"
                         >
-                          <use
-                            href="#sheets"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Assets
-                      </span>
-                    </a>
-                  </li>
-                  <li
-                    class="nav-item"
-                    role="none"
-                  >
-                    <a
-                      class="nav-link collapsed"
-                      href="/workspace/23/1/event-analysis"
-                      role="menuitem"
-                      tabindex="-1"
+                          <svg
+                            class="lexicon-icon lexicon-icon-box-squared icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#box-squared"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Segments
+                        </span>
+                      </a>
+                    </li>
+                    <li
+                      class="nav-item"
+                      role="none"
                     >
-                      <span
-                        class="icon-wrapper"
+                      <a
+                        class="nav-link collapsed"
+                        href="/workspace/23/1/contacts/individuals"
+                        role="menuitem"
+                        tabindex="-1"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-click icon-root"
-                          role="presentation"
+                        <span
+                          class="mr-2 sticker"
                         >
-                          <use
-                            href="#click"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Events
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li
-                class="nav-item"
-                role="none"
-              >
-                <button
-                  aria-controls="clay-id-9"
-                  aria-expanded="true"
-                  class="nav-link collapse-icon btn btn-unstyled"
-                  role="menuitem"
-                  tabindex="-1"
-                  type="button"
+                          <svg
+                            class="lexicon-icon lexicon-icon-users icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#users"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Individuals
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li
+                  class="nav-item mb-4"
+                  role="none"
                 >
-                  <span
-                    class="section-title"
+                  <button
+                    aria-controls="clay-id-15"
+                    aria-expanded="true"
+                    class="nav-link collapse-icon btn btn-unstyled"
+                    role="menuitem"
+                    tabindex="-1"
+                    type="button"
                   >
-                    People
-                  </span>
-                  <span
-                    class="collapse-icon-closed"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-angle-right-small"
-                      focusable="false"
-                      role="presentation"
+                    <span
+                      class="font-weight-semi-bold section-title text-2 text-uppercase"
                     >
-                      <use
-                        href="#angle-right-small"
-                      />
-                    </svg>
-                  </span>
-                  <span
-                    class="collapse-icon-open"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-angle-down-small"
-                      focusable="false"
-                      role="presentation"
+                      Optimize
+                    </span>
+                    <span
+                      class="collapse-icon-closed"
                     >
-                      <use
-                        href="#angle-down-small"
-                      />
-                    </svg>
-                  </span>
-                </button>
-                <ul
-                  class="nav nav-stacked"
-                  id="clay-id-9"
-                  role="menu"
-                >
-                  <li
-                    class="nav-item"
-                    role="none"
-                  >
-                    <a
-                      class="nav-link collapsed"
-                      href="/workspace/23/1/contacts/segments"
-                      role="menuitem"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="icon-wrapper"
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-right-small"
+                        focusable="false"
+                        role="presentation"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-box-squared icon-root"
-                          role="presentation"
+                        <use
+                          href="#angle-right-small"
+                        />
+                      </svg>
+                    </span>
+                    <span
+                      class="collapse-icon-open"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-down-small"
+                        focusable="false"
+                        role="presentation"
+                      >
+                        <use
+                          href="#angle-down-small"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                  <ul
+                    class="nav nav-stacked"
+                    id="clay-id-15"
+                    role="menu"
+                  >
+                    <li
+                      class="nav-item"
+                      role="none"
+                    >
+                      <a
+                        class="nav-link collapsed"
+                        href="/workspace/23/1/tests"
+                        role="menuitem"
+                        tabindex="-1"
+                      >
+                        <span
+                          class="mr-2 sticker"
                         >
-                          <use
-                            href="#box-squared"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Segments
-                      </span>
-                    </a>
-                  </li>
-                  <li
-                    class="nav-item"
-                    role="none"
-                  >
-                    <a
-                      class="nav-link collapsed"
-                      href="/workspace/23/1/contacts/individuals"
-                      role="menuitem"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="icon-wrapper"
-                      >
-                        <svg
-                          class="lexicon-icon lexicon-icon-users icon-root"
-                          role="presentation"
+                          <svg
+                            class="lexicon-icon lexicon-icon-test icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#test"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
                         >
-                          <use
-                            href="#users"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Individuals
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li
-                class="nav-item"
-                role="none"
-              >
-                <button
-                  aria-controls="clay-id-13"
-                  aria-expanded="true"
-                  class="nav-link collapse-icon btn btn-unstyled"
-                  role="menuitem"
-                  tabindex="-1"
-                  type="button"
-                >
-                  <span
-                    class="section-title"
-                  >
-                    Optimize
-                  </span>
-                  <span
-                    class="collapse-icon-closed"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-angle-right-small"
-                      focusable="false"
-                      role="presentation"
-                    >
-                      <use
-                        href="#angle-right-small"
-                      />
-                    </svg>
-                  </span>
-                  <span
-                    class="collapse-icon-open"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-angle-down-small"
-                      focusable="false"
-                      role="presentation"
-                    >
-                      <use
-                        href="#angle-down-small"
-                      />
-                    </svg>
-                  </span>
-                </button>
-                <ul
-                  class="nav nav-stacked"
-                  id="clay-id-13"
-                  role="menu"
-                >
-                  <li
-                    class="nav-item"
-                    role="none"
-                  >
-                    <a
-                      class="nav-link collapsed"
-                      href="/workspace/23/1/tests"
-                      role="menuitem"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="icon-wrapper"
-                      >
-                        <svg
-                          class="lexicon-icon lexicon-icon-test icon-root"
-                          role="presentation"
-                        >
-                          <use
-                            href="#test"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Tests
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
+                          Tests
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <span
+            data-focus-scope-end="true"
+          />
         </div>
       </div>
     </div>
-    <p>
-      bizbaz
-    </p>
+    <div
+      aria-hidden="true"
+      class="c-slideout-push-start c-slideout-container"
+      data-aria-hidden="true"
+    >
+      <p>
+        bizbaz
+      </p>
+    </div>
   </div>
 </div>
 `;

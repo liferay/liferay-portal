@@ -9,6 +9,7 @@ import {Provider} from 'react-redux';
 const defaultProps = {
 	activePathname: '',
 	channelId: '123',
+	containerRef: React.createRef(),
 	groupId: '23'
 };
 
@@ -36,8 +37,8 @@ describe('Sidebar', () => {
 			</Provider>
 		);
 
-		expect(container.querySelector('.sidebar-root')).toHaveClass(
-			'collapsed'
+		expect(container.querySelector('.sidebar-root')).toHaveAttribute(
+			'inert'
 		);
 	});
 
