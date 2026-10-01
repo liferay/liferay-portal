@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -117,34 +118,25 @@ public class AddLayoutPageTemplateEntryMVCActionCommand
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
 
+		PortletURL portletURL = null;
+
 		if (DesignLibraryUtil.isDesignLibraryScope(scopeGroup)) {
-			return HttpComponentsUtil.addParameters(
-				_portal.getLayoutFullURL(draftLayout, themeDisplay),
-				"p_l_back_url",
-				PortletURLBuilder.create(
-					_portal.getControlPanelPortletURL(
-						actionRequest, scopeGroup,
-						LayoutPageTemplateAdminPortletKeys.
-							LAYOUT_PAGE_TEMPLATES,
-						0, 0, PortletRequest.RENDER_PHASE)
-				).setTabs1(
-					"page-templates"
-				).setParameter(
-					"layoutPageTemplateCollectionId",
-					layoutPageTemplateEntry.getLayoutPageTemplateCollectionId()
-				).buildString(),
-				"p_l_back_url_title",
-				_language.get(themeDisplay.getLocale(), "page-templates"),
-				"p_l_mode", Constants.EDIT);
+			portletURL = _portal.getControlPanelPortletURL(
+				actionRequest, scopeGroup,
+				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, 0, 0,
+				PortletRequest.RENDER_PHASE);
+		}
+		else {
+			portletURL = PortletURLFactoryUtil.create(
+				actionRequest,
+				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
+				PortletRequest.RENDER_PHASE);
 		}
 
 		return HttpComponentsUtil.addParameters(
 			_portal.getLayoutFullURL(draftLayout, themeDisplay), "p_l_back_url",
 			PortletURLBuilder.create(
-				PortletURLFactoryUtil.create(
-					actionRequest,
-					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
-					PortletRequest.RENDER_PHASE)
+				portletURL
 			).setTabs1(
 				"page-templates"
 			).setParameter(
