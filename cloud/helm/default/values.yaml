@@ -511,6 +511,10 @@ service:
             port: 7800
             protocol: TCP
             targetPort: cluster
+        -   name: cluster-tx
+            port: 7801
+            protocol: TCP
+            targetPort: cluster-tx
         -   name: http
             port: 8080
             protocol: TCP
@@ -608,9 +612,12 @@ volumeMounts:
     -   mountPath: /opt/liferay/tomcat/work
         name: liferay-persistent-volume
         subPath: tomcat/work
-    -   mountPath: /opt/liferay/unicast.xml
+    -   mountPath: /opt/liferay/unicast-control.xml
         name: liferay-configmap
-        subPath: unicast.xml
+        subPath: unicast-control.xml
+    -   mountPath: /opt/liferay/unicast-transport.xml
+        name: liferay-configmap
+        subPath: unicast-transport.xml
     -   mountPath: /opt/liferay/work
         name: liferay-persistent-volume
         subPath: liferay/work

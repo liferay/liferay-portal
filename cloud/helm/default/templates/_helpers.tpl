@@ -70,3 +70,10 @@ app.kubernetes.io/name: {{ include "liferay.name" . }}
 {{- default "default" .Values.global.liferayServiceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "liferay.servicePort" -}}
+{{- $portName := .portName -}}
+{{- range .ports -}}
+{{- if eq .name $portName -}}{{ .port }}{{- end -}}
+{{- end -}}
+{{- end }}
