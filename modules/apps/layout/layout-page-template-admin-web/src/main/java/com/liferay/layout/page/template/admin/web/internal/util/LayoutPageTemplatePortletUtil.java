@@ -13,10 +13,14 @@ import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollec
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollectionNameComparator;
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateEntryCreateDateComparator;
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateEntryNameComparator;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -68,6 +72,17 @@ public class LayoutPageTemplatePortletUtil {
 		return LayoutPageTemplateCollectionLocalServiceUtil.
 			fetchLayoutPageTemplateCollectionByExternalReferenceCode(
 				externalReferenceCode, groupId);
+	}
+
+	public static String getBackURL(
+		RenderResponse renderResponse, ThemeDisplay themeDisplay) {
+
+		String backURL = HttpComponentsUtil.removeParameter(
+			themeDisplay.getURLCurrent(),
+			renderResponse.getNamespace() + "backURL");
+
+		return HttpComponentsUtil.removeParameter(
+			backURL, renderResponse.getNamespace() + "redirect");
 	}
 
 	public static OrderByComparator<LayoutPageTemplateCollection>

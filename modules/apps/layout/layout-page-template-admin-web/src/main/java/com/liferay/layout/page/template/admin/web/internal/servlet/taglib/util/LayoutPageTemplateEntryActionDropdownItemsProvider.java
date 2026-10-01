@@ -17,6 +17,7 @@ import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminP
 import com.liferay.layout.page.template.admin.web.internal.configuration.LayoutPageTemplateAdminWebConfiguration;
 import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
+import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.item.selector.LayoutPageTemplateCollectionItemSelectorCriterion;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -358,7 +359,9 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 			dropdownItem.setHref(
 				HttpComponentsUtil.addParameters(
 					PortalUtil.getLayoutFullURL(_draftLayout, _themeDisplay),
-					"p_l_back_url", _themeDisplay.getURLCurrent(),
+					"p_l_back_url",
+					LayoutPageTemplatePortletUtil.getBackURL(
+						_renderResponse, _themeDisplay),
 					"p_l_back_url_title", portletDisplay.getTitle(), "p_l_mode",
 					Constants.EDIT));
 			dropdownItem.setIcon("pencil");
