@@ -30,7 +30,7 @@ public class FragmentNameExceptionProblemMapper
 
 			@Override
 			public String getDetail(Locale locale) {
-				return _language.get(locale, "name-is-invalid");
+				return _language.get(locale, "fragment-name-is-invalid");
 			}
 
 			@Override
@@ -40,7 +40,7 @@ public class FragmentNameExceptionProblemMapper
 
 			@Override
 			public String getTitle(Locale locale) {
-				return _language.get(locale, "name-is-invalid");
+				return _language.get(locale, "fragment-name-is-invalid");
 			}
 
 			@Override
