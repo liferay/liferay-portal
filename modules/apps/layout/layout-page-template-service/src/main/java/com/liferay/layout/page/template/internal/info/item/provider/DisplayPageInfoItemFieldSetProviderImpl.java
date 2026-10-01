@@ -281,7 +281,7 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 							layoutPageTemplateEntry.
 								getLayoutPageTemplateEntryId()))
 				).name(
-					layoutPageTemplateEntry.getName()
+					_getName(layoutPageTemplateEntry, scopeGroupId)
 				).externalUniqueId(
 					_getExternalUniqueId(
 						layoutPageTemplateEntry.getExternalReferenceCode())
@@ -329,7 +329,8 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 							layoutPageTemplateEntry.
 								getLayoutPageTemplateEntryId()))
 				).name(
-					layoutPageTemplateEntry.getName()
+					_getName(
+						layoutPageTemplateEntry, themeDisplay.getScopeGroupId())
 				).attribute(
 					URLInfoFieldType.NOFOLLOW, Boolean.TRUE
 				).externalUniqueId(
@@ -348,7 +349,8 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 					_getUniqueId(
 						layoutPageTemplateEntry.getLayoutPageTemplateEntryKey())
 				).name(
-					layoutPageTemplateEntry.getName()
+					_getName(
+						layoutPageTemplateEntry, themeDisplay.getScopeGroupId())
 				).attribute(
 					URLInfoFieldType.NOFOLLOW, Boolean.TRUE
 				).externalUniqueId(
@@ -400,6 +402,18 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 		return InfoLocalizedValue.singleValue(
 			layoutPageTemplateEntry.getName());
+	}
+
+	private String _getName(
+		LayoutPageTemplateEntry layoutPageTemplateEntry, long scopeGroupId) {
+
+		if (layoutPageTemplateEntry.getGroupId() == scopeGroupId) {
+			return layoutPageTemplateEntry.getName();
+		}
+
+		return _getUniqueId(
+			String.valueOf(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()));
 	}
 
 	private String _getURLSeparator() {
