@@ -195,8 +195,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			ObjectDefinition parentObjectDefinition =
 				_getParentObjectDefinition(
-					objectDefinitionLocalService, objectRelationship,
-					relatedSystemObjectDefinition,
+					objectDefinition, objectDefinitionLocalService,
+					objectRelationship, relatedSystemObjectDefinition,
 					serviceBuilderRelatedObjectEntry);
 
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
@@ -741,6 +741,7 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 	}
 
 	private static ObjectDefinition _getParentObjectDefinition(
+			ObjectDefinition objectDefinition,
 			ObjectDefinitionLocalService objectDefinitionLocalService,
 			ObjectRelationship objectRelationship,
 			ObjectDefinition relatedSystemObjectDefinition,
@@ -751,6 +752,12 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 		if (serviceBuilderRelatedObjectEntry == null) {
 			if (relatedSystemObjectDefinition != null) {
 				return relatedSystemObjectDefinition;
+			}
+
+			if (objectRelationship.getObjectDefinitionId1() ==
+					objectDefinition.getObjectDefinitionId()) {
+
+				return objectDefinition;
 			}
 
 			return objectDefinitionLocalService.getObjectDefinition(
