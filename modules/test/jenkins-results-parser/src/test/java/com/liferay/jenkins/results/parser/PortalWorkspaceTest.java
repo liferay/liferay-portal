@@ -117,18 +117,28 @@ public class PortalWorkspaceTest
 		ReflectionTestUtil.setFieldValue(
 			portalWorkspace, "jsonObject", new JSONObject());
 
-		portalWorkspace.setBuildProfile(Job.BuildProfile.PORTAL);
-
-		testSame(Job.BuildProfile.PORTAL, portalWorkspace.getBuildProfile());
-
 		Mockito.verify(
-			portalWorkspace
+			portalWorkspace, Mockito.never()
 		).updateBuildDatabase();
 
 		portalWorkspace.setBuildProfile(Job.BuildProfile.PORTAL);
 
 		Mockito.verify(
 			portalWorkspace
+		).updateBuildDatabase();
+
+		testSame(Job.BuildProfile.PORTAL, portalWorkspace.getBuildProfile());
+
+		portalWorkspace.setBuildProfile(Job.BuildProfile.PORTAL);
+
+		Mockito.verify(
+			portalWorkspace
+		).updateBuildDatabase();
+
+		portalWorkspace.setBuildProfile(Job.BuildProfile.DXP);
+
+		Mockito.verify(
+			portalWorkspace, Mockito.times(2)
 		).updateBuildDatabase();
 	}
 
@@ -153,17 +163,21 @@ public class PortalWorkspaceTest
 
 		String portalUpstreamBranchName = RandomTestUtil.randomString();
 
+		Mockito.verify(
+			portalWorkspace, Mockito.never()
+		).updateBuildDatabase();
+
 		portalWorkspace.setPortalUpstreamBranchName(portalUpstreamBranchName);
+
+		Mockito.verify(
+			portalWorkspace
+		).updateBuildDatabase();
 
 		JSONObject portalWorkspaceJSONObject = portalWorkspace.getJSONObject();
 
 		testEquals(
 			portalUpstreamBranchName,
 			portalWorkspaceJSONObject.get("portal_upstream_branch_name"));
-
-		Mockito.verify(
-			portalWorkspace
-		).updateBuildDatabase();
 
 		portalWorkspace.setPortalUpstreamBranchName(portalUpstreamBranchName);
 
