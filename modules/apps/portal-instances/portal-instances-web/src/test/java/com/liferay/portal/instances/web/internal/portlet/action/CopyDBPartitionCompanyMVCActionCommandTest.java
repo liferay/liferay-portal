@@ -5,43 +5,43 @@
 
 package com.liferay.portal.instances.web.internal.portlet.action;
 
+import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceCopyResource;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.service.CompanyService;
-import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.portlet.MockActionRequest;
-import com.liferay.portal.kernel.test.portlet.MockActionResponse;
-import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResourceFactory;
 
 import jakarta.portlet.ActionRequest;
-import jakarta.portlet.ActionResponse;
-import jakarta.portlet.PortletRequest;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
 
-import org.junit.After;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+
+import org.osgi.service.component.ComponentServiceObjects;
 
 /**
  * @author Jorge Avalos
@@ -53,352 +53,438 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
+		_setParameter(
+			"destinationCompanyId", String.valueOf(_DESTINATION_COMPANY_ID));
+		_setParameter("name", _NAME);
+		_setParameter("sourceCompanyId", String.valueOf(_SOURCE_COMPANY_ID));
+		_setParameter("virtualHostname", _VIRTUAL_HOST);
+		_setParameter("webId", _WEB_ID);
+
 		Mockito.when(
-			_company.getCompanyId()
+			_sourceCompany.getCompanyId()
 		).thenReturn(
-			_COMPANY_ID
+			_SOURCE_COMPANY_ID
 		);
 
 		Mockito.when(
-			_company.getWebId()
+			_sourceCompany.getMx()
 		).thenReturn(
-			_COMPANY_WEB_ID
+			_SOURCE_MX
 		);
 
 		Mockito.when(
-			_language.format(
-				Mockito.nullable(Locale.class), Mockito.anyString(),
-				Mockito.<Object>any())
-		).thenAnswer(
-			invocationOnMock ->
-				invocationOnMock.getArgument(1) + ":" +
-					invocationOnMock.getArgument(2)
+			_sourceCompany.getWebId()
+		).thenReturn(
+			_SOURCE_WEB_ID
 		);
 
 		Mockito.when(
-			_language.get(Mockito.nullable(Locale.class), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
+			_componentServiceObjects.getService()
+		).thenReturn(
+			_portalInstanceCopyResource
 		);
-
-		_jsonPortletResponseUtilMockedStatic = Mockito.mockStatic(
-			JSONPortletResponseUtil.class);
-
-		_jsonPortletResponseUtilMockedStatic.when(
-			() -> JSONPortletResponseUtil.writeJSON(
-				Mockito.any(ActionRequest.class),
-				Mockito.any(ActionResponse.class),
-				Mockito.any(JSONObject.class))
-		).then(
-			invocationOnMock -> {
-				_jsonObject = invocationOnMock.getArgument(2);
-
-				return null;
-			}
-		);
-
-		_sessionMessagesMockedStatic = Mockito.mockStatic(
-			SessionMessages.class);
 
 		ReflectionTestUtil.setFieldValue(
-			_copyDBPartitionCompanyMVCActionCommand, "_companyService",
-			_companyService);
+			_copyDBPartitionCompanyMVCActionCommand, "_companyLocalService",
+			_companyLocalService);
 		ReflectionTestUtil.setFieldValue(
-			_copyDBPartitionCompanyMVCActionCommand, "_language", _language);
+			_copyDBPartitionCompanyMVCActionCommand, "_componentServiceObjects",
+			_componentServiceObjects);
 		ReflectionTestUtil.setFieldValue(
 			_copyDBPartitionCompanyMVCActionCommand, "_portal", _portal);
-	}
+		ReflectionTestUtil.setFieldValue(
+			_copyDBPartitionCompanyMVCActionCommand,
+			"_vulcanBatchEngineImportTaskResourceFactory",
+			_vulcanBatchEngineImportTaskResourceFactory);
 
-	@After
-	public void tearDown() {
-		_jsonPortletResponseUtilMockedStatic.close();
-		_sessionMessagesMockedStatic.close();
-	}
-
-	@Test
-	public void testClearedHiddenDefaultSuccessMessageOnSuccess()
-		throws Exception {
-
-		_sessionMessagesMockedStatic.when(
-			() -> SessionMessages.contains(
-				Mockito.any(PortletRequest.class), Mockito.anyString())
+		Mockito.when(
+			_portal.getCompany(_actionRequest)
 		).thenReturn(
-			true
+			Mockito.mock(Company.class)
 		);
 
-		_assertCopyDBPartitionCompany(
-			_DESTINATION_COMPANY_ID, _getMockActionRequest());
-
-		_sessionMessagesMockedStatic.verify(
-			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)));
-	}
-
-	@Test
-	public void testDestinationCompanyIdOnSuccess() throws Exception {
-		_assertCopyDBPartitionCompany(
-			_DESTINATION_COMPANY_ID, _getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForBlankField() throws Exception {
-		_assertError(
-			"please-enter-a-valid-name",
-			_getMockActionRequest("name", StringPool.SPACE));
-		_assertError(
-			"please-enter-a-valid-virtual-host",
-			_getMockActionRequest("virtualHostname", StringPool.SPACE));
-		_assertError(
-			"please-enter-a-valid-web-id",
-			_getMockActionRequest("webId", StringPool.SPACE));
-
-		Mockito.verifyNoInteractions(_companyService);
-	}
-
-	@Test
-	public void testErrorForCompanyException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(new CompanyNameException());
-
-		_assertError("please-enter-a-valid-name", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(new CompanyVirtualHostException());
-
-		_assertError(
-			"please-enter-a-valid-virtual-host", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(new CompanyWebIdException());
-
-		_assertError("please-enter-a-valid-web-id", _getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForIllegalArgumentException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(
-			new IllegalArgumentException(
-				"Company ID " + _SOURCE_COMPANY_ID +
-					" is the default company ID"));
-
-		_assertError(
-			"the-default-instance-cannot-be-copied", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(
-			new IllegalArgumentException(
-				"Company ID " + _DESTINATION_COMPANY_ID + " already exists"));
-
-		_assertError(
-			"please-enter-a-valid-destination-company-id",
-			_getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForInvalidDestinationCompanyId() throws Exception {
-		String suffix = RandomTestUtil.randomString(
-			NumericStringRandomizerBumper.INSTANCE);
-
-		_assertError(
-			"please-enter-a-valid-destination-company-id",
-			_getMockActionRequest(
-				"destinationCompanyId", _DESTINATION_COMPANY_ID + suffix));
-
-		_assertError(
-			"please-enter-a-valid-destination-company-id",
-			_getMockActionRequest(
-				"destinationCompanyId",
-				StringPool.DASH + RandomTestUtil.randomLong()));
-		_assertError(
-			"please-enter-a-valid-destination-company-id",
-			_getMockActionRequest(
-				"destinationCompanyId", "9" + Long.MAX_VALUE));
-
-		Mockito.verifyNoInteractions(_companyService);
-	}
-
-	@Test
-	public void testErrorForUnmappedException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(new RuntimeException());
-
-		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(
-			new PrincipalException.MustBeOmniadmin(_permissionChecker));
-
-		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForUnsupportedOperationException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(
-			new UnsupportedOperationException(
-				"Database partitioning must be enabled"));
-
-		_assertError(
-			"database-partitioning-must-be-enabled", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(
-			new UnsupportedOperationException(
-				"Company in copy process company ID is not null"));
-
-		_assertError(
-			"copying-an-instance-is-already-in-progress",
-			_getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(new UnsupportedOperationException());
-
-		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForWrappedCompanyException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(
-			new PortalException(new CompanyNameException()));
-
-		_assertError("please-enter-a-valid-name", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(
-			new PortalException(new CompanyVirtualHostException()));
-
-		_assertError(
-			"please-enter-a-valid-virtual-host", _getMockActionRequest());
-
-		_setUpFailedCopyDBPartitionCompany(
-			new PortalException(new CompanyWebIdException()));
-
-		_assertError("please-enter-a-valid-web-id", _getMockActionRequest());
-	}
-
-	@Test
-	public void testNullDestinationCompanyIdOnSuccess() throws Exception {
-		_assertCopyDBPartitionCompany(
-			null,
-			_getMockActionRequest("destinationCompanyId", StringPool.BLANK));
-	}
-
-	@Test
-	public void testPaddedDestinationCompanyIdOnSuccess() throws Exception {
-		_assertCopyDBPartitionCompany(
-			_DESTINATION_COMPANY_ID,
-			_getMockActionRequest(
-				"destinationCompanyId",
-				StringPool.SPACE + _DESTINATION_COMPANY_ID + StringPool.SPACE));
-	}
-
-	@Test
-	public void testUnclearedHiddenDefaultSuccessMessageOnSuccess()
-		throws Exception {
-
-		_sessionMessagesMockedStatic.when(
-			() -> SessionMessages.contains(
-				Mockito.any(PortletRequest.class), Mockito.anyString())
+		Mockito.when(
+			_portal.getHttpServletRequest(_actionRequest)
 		).thenReturn(
-			false
+			_httpServletRequest
 		);
 
-		_assertCopyDBPartitionCompany(
-			_DESTINATION_COMPANY_ID, _getMockActionRequest());
+		Mockito.when(
+			_portal.getLocale(_actionRequest)
+		).thenReturn(
+			LocaleUtil.US
+		);
 
-		_sessionMessagesMockedStatic.verify(
-			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)),
-			Mockito.never());
+		Mockito.when(
+			_portal.getUser(_actionRequest)
+		).thenReturn(
+			Mockito.mock(User.class)
+		);
+
+		Mockito.when(
+			_vulcanBatchEngineImportTaskResourceFactory.create()
+		).thenReturn(
+			_vulcanBatchEngineImportTaskResource
+		);
 	}
 
-	private void _assertCopyDBPartitionCompany(
-			Long destinationCompanyId, MockActionRequest mockActionRequest)
+	@Test
+	public void testCopyPortalInstanceForcesTheJSONContentType()
 		throws Exception {
 
 		Mockito.when(
-			_companyService.copyDBPartitionCompany(
-				_SOURCE_COMPANY_ID, destinationCompanyId, _NAME,
-				_VIRTUAL_HOSTNAME, _WEB_ID)
+			_httpServletRequest.getHeader("X-Other")
 		).thenReturn(
-			_company
+			"delegated"
 		);
 
-		_copyDBPartitionCompanyMVCActionCommand.doProcessAction(
-			mockActionRequest, new MockActionResponse());
+		_copyPortalInstance();
 
-		Assert.assertEquals(_COMPANY_ID, _jsonObject.getLong("companyId"));
-
-		Assert.assertEquals(0, _hideDefaultSuccessMessageCount);
-
-		Assert.assertFalse(_jsonObject.has("error"));
+		ArgumentCaptor<HttpServletRequest> argumentCaptor =
+			ArgumentCaptor.forClass(HttpServletRequest.class);
 
 		Mockito.verify(
-			_companyService
-		).copyDBPartitionCompany(
-			_SOURCE_COMPANY_ID, destinationCompanyId, _NAME, _VIRTUAL_HOSTNAME,
-			_WEB_ID
+			_portalInstanceCopyResource
+		).setContextHttpServletRequest(
+			argumentCaptor.capture()
 		);
 
-		_jsonPortletResponseUtilMockedStatic.verify(
-			() -> JSONPortletResponseUtil.writeJSON(
-				Mockito.any(ActionRequest.class),
-				Mockito.any(ActionResponse.class), Mockito.eq(_jsonObject)));
+		HttpServletRequest httpServletRequest = argumentCaptor.getValue();
 
-		_sessionMessagesMockedStatic.verify(
-			() -> SessionMessages.add(
-				mockActionRequest, "requestProcessed",
-				"the-instance-was-copied-to-x:" + _COMPANY_WEB_ID));
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_JSON,
+			httpServletRequest.getHeader(HttpHeaders.CONTENT_TYPE));
+		Assert.assertEquals(
+			"delegated", httpServletRequest.getHeader("X-Other"));
 	}
 
-	private void _assertError(
-			String expectedError, MockActionRequest mockActionRequest)
+	@Test
+	public void testCopyPortalInstanceSendsThePortalInstanceCopy()
 		throws Exception {
 
-		_hideDefaultSuccessMessageCount = 0;
+		_copyPortalInstance();
 
-		_copyDBPartitionCompanyMVCActionCommand.doProcessAction(
-			mockActionRequest, new MockActionResponse());
+		ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(
+			Object.class);
 
-		Assert.assertEquals(expectedError, _jsonObject.getString("error"));
-		Assert.assertEquals(1, _hideDefaultSuccessMessageCount);
-		Assert.assertFalse(_jsonObject.has("companyId"));
+		Mockito.verify(
+			_portalInstanceCopyResource
+		).postPortalInstanceCopyBatch(
+			Mockito.isNull(), argumentCaptor.capture()
+		);
 
-		_jsonPortletResponseUtilMockedStatic.verify(
-			() -> JSONPortletResponseUtil.writeJSON(
-				Mockito.any(ActionRequest.class),
-				Mockito.any(ActionResponse.class), Mockito.eq(_jsonObject)));
+		List<Map<String, Object>> maps =
+			(List<Map<String, Object>>)argumentCaptor.getValue();
+
+		Assert.assertEquals(maps.toString(), 1, maps.size());
+
+		Map<String, Object> map = maps.get(0);
+
+		Assert.assertEquals(
+			_DESTINATION_COMPANY_ID, map.get("destinationCompanyId"));
+		Assert.assertEquals(_NAME, map.get("name"));
+		Assert.assertEquals(_SOURCE_WEB_ID, map.get("sourcePortalInstanceId"));
+		Assert.assertEquals(_VIRTUAL_HOST, map.get("virtualHost"));
+		Assert.assertEquals(_WEB_ID, map.get("webId"));
 	}
 
-	private MockActionRequest _getMockActionRequest() {
-		MockActionRequest mockActionRequest = new MockActionRequest();
-
-		mockActionRequest.addParameter(
-			"destinationCompanyId", String.valueOf(_DESTINATION_COMPANY_ID));
-		mockActionRequest.addParameter("name", _NAME);
-		mockActionRequest.addParameter(
-			"sourceCompanyId", String.valueOf(_SOURCE_COMPANY_ID));
-		mockActionRequest.addParameter("virtualHostname", _VIRTUAL_HOSTNAME);
-		mockActionRequest.addParameter("webId", _WEB_ID);
-		mockActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, Mockito.mock(ThemeDisplay.class));
-
-		return mockActionRequest;
-	}
-
-	private MockActionRequest _getMockActionRequest(String key, String value) {
-		MockActionRequest mockActionRequest = _getMockActionRequest();
-
-		mockActionRequest.setParameter(key, value);
-
-		return mockActionRequest;
-	}
-
-	private void _setUpFailedCopyDBPartitionCompany(Exception exception)
+	@Test
+	public void testCopyPortalInstanceSetsThePreferredLocale()
 		throws Exception {
 
+		_copyPortalInstance();
+
+		ArgumentCaptor<AcceptLanguage> argumentCaptor = ArgumentCaptor.forClass(
+			AcceptLanguage.class);
+
+		Mockito.verify(
+			_portalInstanceCopyResource
+		).setContextAcceptLanguage(
+			argumentCaptor.capture()
+		);
+
+		AcceptLanguage acceptLanguage = argumentCaptor.getValue();
+
+		Assert.assertEquals(LocaleUtil.US, acceptLanguage.getPreferredLocale());
+	}
+
+	@Test
+	public void testCopyPortalInstanceSetsTheVulcanBatchEngineResource()
+		throws Exception {
+
+		_copyPortalInstance();
+
+		Mockito.verify(
+			_portalInstanceCopyResource
+		).setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource
+		);
+	}
+
+	@Test
+	public void testCopyPortalInstanceUngetsTheService() throws Exception {
+		_copyPortalInstance();
+
+		Mockito.verify(
+			_componentServiceObjects
+		).ungetService(
+			_portalInstanceCopyResource
+		);
+	}
+
+	@Test
+	public void testCopyPortalInstanceUngetsTheServiceWhenTheBatchFails()
+		throws Exception {
+
+		Mockito.when(
+			_portalInstanceCopyResource.postPortalInstanceCopyBatch(
+				Mockito.isNull(), Mockito.any())
+		).thenThrow(
+			new IllegalStateException()
+		);
+
+		try {
+			_copyPortalInstance();
+
+			Assert.fail();
+		}
+		catch (IllegalStateException illegalStateException) {
+		}
+
+		Mockito.verify(
+			_componentServiceObjects
+		).ungetService(
+			_portalInstanceCopyResource
+		);
+	}
+
+	@Test
+	public void testGetDestinationCompanyId() {
+		Assert.assertEquals(
+			Long.valueOf(_DESTINATION_COMPANY_ID), _getDestinationCompanyId());
+
+		_setParameter(
+			"destinationCompanyId",
+			StringPool.SPACE + _DESTINATION_COMPANY_ID + StringPool.SPACE);
+
+		Assert.assertEquals(
+			Long.valueOf(_DESTINATION_COMPANY_ID), _getDestinationCompanyId());
+
+		_setParameter("destinationCompanyId", StringPool.BLANK);
+
+		Assert.assertNull(_getDestinationCompanyId());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetDestinationCompanyIdWithANonnumericValue() {
+		_setParameter("destinationCompanyId", "abc");
+
+		_getDestinationCompanyId();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetDestinationCompanyIdWithAnOverflowingValue() {
+		_setParameter("destinationCompanyId", "99999999999999999999");
+
+		_getDestinationCompanyId();
+	}
+
+	@Test
+	public void testGetErrorMessageKey() {
+		Assert.assertEquals(
+			"an-unexpected-error-occurred",
+			_getErrorMessageKey(new Exception()));
+		Assert.assertEquals(
+			"please-enter-a-valid-destination-company-id",
+			_getErrorMessageKey(new IllegalArgumentException()));
+		Assert.assertEquals(
+			"please-enter-a-valid-name",
+			_getErrorMessageKey(new CompanyNameException()));
+		Assert.assertEquals(
+			"please-enter-a-valid-virtual-host",
+			_getErrorMessageKey(new CompanyVirtualHostException()));
+		Assert.assertEquals(
+			"please-enter-a-valid-web-id",
+			_getErrorMessageKey(new CompanyWebIdException()));
+		Assert.assertEquals(
+			"the-default-instance-cannot-be-copied",
+			_getErrorMessageKey(
+				new IllegalArgumentException(
+					"Company ID " + _SOURCE_COMPANY_ID +
+						" is the default company ID")));
+	}
+
+	@Test
+	public void testValidateCompany() throws Exception {
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(RandomTestUtil.randomLong())) {
+
+			_validateCompany();
+		}
+
+		Mockito.verify(
+			_companyLocalService
+		).validateCompany(
+			_WEB_ID, _VIRTUAL_HOST, _SOURCE_MX, 0
+		);
+	}
+
+	@Test
+	public void testValidateCompanyWithABlankDestinationCompanyId()
+		throws Exception {
+
+		_setParameter("destinationCompanyId", StringPool.BLANK);
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(
+					RandomTestUtil.randomLong(), _DESTINATION_COMPANY_ID)) {
+
+			_validateCompany();
+		}
+	}
+
+	@Test(expected = CompanyNameException.class)
+	public void testValidateCompanyWithABlankName() throws Exception {
+		_setParameter("name", StringPool.BLANK);
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(RandomTestUtil.randomLong())) {
+
+			_validateCompany();
+		}
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testValidateCompanyWithAnExistingDestinationCompanyId()
+		throws Exception {
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(
+					RandomTestUtil.randomLong(), _DESTINATION_COMPANY_ID)) {
+
+			_validateCompany();
+		}
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testValidateCompanyWithAnInvalidDestinationCompanyId()
+		throws Exception {
+
+		_setParameter("destinationCompanyId", RandomTestUtil.randomString());
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(RandomTestUtil.randomLong())) {
+
+			_validateCompany();
+		}
+	}
+
+	@Test(expected = CompanyWebIdException.class)
+	public void testValidateCompanyWithAnInvalidWebId() throws Exception {
 		Mockito.doThrow(
-			exception
+			new CompanyWebIdException()
 		).when(
-			_companyService
-		).copyDBPartitionCompany(
-			Mockito.anyLong(), Mockito.nullable(Long.class),
-			Mockito.anyString(), Mockito.anyString(), Mockito.anyString()
+			_companyLocalService
+		).validateCompany(
+			_WEB_ID, _VIRTUAL_HOST, _SOURCE_MX, 0
+		);
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(RandomTestUtil.randomLong())) {
+
+			_validateCompany();
+		}
+	}
+
+	@Test
+	public void testValidateCompanyWithTheDefaultSourceCompany()
+		throws Exception {
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(_SOURCE_COMPANY_ID)) {
+
+			_validateCompany();
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"Company ID " + _SOURCE_COMPANY_ID +
+					" is the default company ID",
+				illegalArgumentException.getMessage());
+		}
+
+		Mockito.verifyNoInteractions(_companyLocalService);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testValidateCompanyWithZeroDestinationCompanyId()
+		throws Exception {
+
+		_setParameter("destinationCompanyId", "0");
+
+		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+				_mockPortalInstancePool(RandomTestUtil.randomLong())) {
+
+			_validateCompany();
+		}
+	}
+
+	private void _copyPortalInstance() throws Exception {
+		ReflectionTestUtil.invoke(
+			_copyDBPartitionCompanyMVCActionCommand, "_copyPortalInstance",
+			new Class<?>[] {ActionRequest.class, Company.class}, _actionRequest,
+			_sourceCompany);
+	}
+
+	private Long _getDestinationCompanyId() {
+		return ReflectionTestUtil.invoke(
+			_copyDBPartitionCompanyMVCActionCommand, "_getDestinationCompanyId",
+			new Class<?>[] {ActionRequest.class}, _actionRequest);
+	}
+
+	private String _getErrorMessageKey(Exception exception) {
+		return ReflectionTestUtil.invoke(
+			_copyDBPartitionCompanyMVCActionCommand, "_getErrorMessageKey",
+			new Class<?>[] {Exception.class}, exception);
+	}
+
+	private MockedStatic<PortalInstancePool> _mockPortalInstancePool(
+		long defaultCompanyId, long... companyIds) {
+
+		MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+			Mockito.mockStatic(PortalInstancePool.class);
+
+		portalInstancePoolMockedStatic.when(
+			PortalInstancePool::getCompanyIds
+		).thenReturn(
+			companyIds
+		);
+
+		portalInstancePoolMockedStatic.when(
+			PortalInstancePool::getDefaultCompanyId
+		).thenReturn(
+			defaultCompanyId
+		);
+
+		return portalInstancePoolMockedStatic;
+	}
+
+	private void _setParameter(String name, String value) {
+		Mockito.when(
+			_actionRequest.getParameter(name)
+		).thenReturn(
+			value
 		);
 	}
 
-	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
-
-	private static final String _COMPANY_WEB_ID = RandomTestUtil.randomString();
+	private void _validateCompany() throws Exception {
+		ReflectionTestUtil.invoke(
+			_copyDBPartitionCompanyMVCActionCommand, "_validateCompany",
+			new Class<?>[] {ActionRequest.class, Company.class}, _actionRequest,
+			_sourceCompany);
+	}
 
 	private static final long _DESTINATION_COMPANY_ID =
 		RandomTestUtil.randomLong();
@@ -407,36 +493,34 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 
 	private static final long _SOURCE_COMPANY_ID = RandomTestUtil.randomLong();
 
-	private static final String _VIRTUAL_HOSTNAME =
-		RandomTestUtil.randomString();
+	private static final String _SOURCE_MX = RandomTestUtil.randomString();
+
+	private static final String _SOURCE_WEB_ID = RandomTestUtil.randomString();
+
+	private static final String _VIRTUAL_HOST = RandomTestUtil.randomString();
 
 	private static final String _WEB_ID = RandomTestUtil.randomString();
 
-	private final Company _company = Mockito.mock(Company.class);
-	private final CompanyService _companyService = Mockito.mock(
-		CompanyService.class);
-
+	private final ActionRequest _actionRequest = Mockito.mock(
+		ActionRequest.class);
+	private final CompanyLocalService _companyLocalService = Mockito.mock(
+		CompanyLocalService.class);
+	private final ComponentServiceObjects<PortalInstanceCopyResource>
+		_componentServiceObjects = Mockito.mock(ComponentServiceObjects.class);
 	private final CopyDBPartitionCompanyMVCActionCommand
 		_copyDBPartitionCompanyMVCActionCommand =
-			new CopyDBPartitionCompanyMVCActionCommand() {
-
-				@Override
-				protected void hideDefaultSuccessMessage(
-					PortletRequest portletRequest) {
-
-					_hideDefaultSuccessMessageCount++;
-				}
-
-			};
-
-	private int _hideDefaultSuccessMessageCount;
-	private JSONObject _jsonObject;
-	private MockedStatic<JSONPortletResponseUtil>
-		_jsonPortletResponseUtilMockedStatic;
-	private final Language _language = Mockito.mock(Language.class);
-	private final PermissionChecker _permissionChecker = Mockito.mock(
-		PermissionChecker.class);
+			new CopyDBPartitionCompanyMVCActionCommand();
+	private final HttpServletRequest _httpServletRequest = Mockito.mock(
+		HttpServletRequest.class);
 	private final Portal _portal = Mockito.mock(Portal.class);
-	private MockedStatic<SessionMessages> _sessionMessagesMockedStatic;
+	private final PortalInstanceCopyResource _portalInstanceCopyResource =
+		Mockito.mock(PortalInstanceCopyResource.class);
+	private final Company _sourceCompany = Mockito.mock(Company.class);
+	private final VulcanBatchEngineImportTaskResource
+		_vulcanBatchEngineImportTaskResource = Mockito.mock(
+			VulcanBatchEngineImportTaskResource.class);
+	private final VulcanBatchEngineImportTaskResourceFactory
+		_vulcanBatchEngineImportTaskResourceFactory = Mockito.mock(
+			VulcanBatchEngineImportTaskResourceFactory.class);
 
 }
