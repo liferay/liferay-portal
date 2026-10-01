@@ -1669,6 +1669,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		_assertProblemException(
+			"CONFLICT",
 			"the-fragment-cannot-be-deleted-because-it-is-required-by-one-or-" +
 				"more-pages-or-page-templates",
 			() -> fragmentResource.deleteSiteFragment(
