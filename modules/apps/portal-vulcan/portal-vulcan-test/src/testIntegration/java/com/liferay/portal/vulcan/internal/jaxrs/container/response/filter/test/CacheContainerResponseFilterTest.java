@@ -15,7 +15,9 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.internal.test.util.URLConnectionUtil;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -127,6 +129,16 @@ public class CacheContainerResponseFilterTest {
 		httpURLConnection.setRequestMethod("HEAD");
 
 		_assertCacheable("public, max-age=3600", httpURLConnection);
+	}
+
+	@Test
+	public void testCacheWithHttpServletResponseCookie() throws Exception {
+		_addCacheableEndpoint(
+			"/test-vulcan-cache/with-http-servlet-response-cookie", "public",
+			3600);
+
+		_assertNotCacheable(
+			_openURLConnection("/with-http-servlet-response-cookie"));
 	}
 
 	@Test
@@ -268,6 +280,14 @@ public class CacheContainerResponseFilterTest {
 					"1"
 				).build()
 			).build();
+		}
+
+		@GET
+		@Path("/with-http-servlet-response-cookie")
+		public void withHttpServletResponseCookie(
+			@Context HttpServletResponse httpServletResponse) {
+
+			httpServletResponse.addCookie(new Cookie("TEST_COOKIE", "1"));
 		}
 
 		@GET

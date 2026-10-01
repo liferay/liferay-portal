@@ -15,6 +15,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import jakarta.ws.rs.HttpMethod;
@@ -59,6 +60,9 @@ public class CacheContainerResponseFilterTest {
 		ReflectionTestUtil.setFieldValue(
 			_cacheContainerResponseFilter, "_httpServletRequest",
 			_httpServletRequest);
+		ReflectionTestUtil.setFieldValue(
+			_cacheContainerResponseFilter, "_httpServletResponse",
+			_httpServletResponse);
 		ReflectionTestUtil.setFieldValue(
 			_cacheContainerResponseFilter, "_user", _user);
 
@@ -252,6 +256,22 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testFilterWhenSetCookieHeaderIsPresentInHttpServletResponse()
+		throws Exception {
+
+		Mockito.when(
+			_httpServletResponse.containsHeader("Set-Cookie")
+		).thenReturn(
+			true
+		);
+
+		_cacheContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		_assertNotCacheable();
+	}
+
+	@Test
 	public void testFilterWhenUserIsNotGuest() throws Exception {
 		Mockito.when(
 			_user.isGuestUser()
@@ -320,6 +340,9 @@ public class CacheContainerResponseFilterTest {
 
 	@Mock
 	private HttpServletRequest _httpServletRequest;
+
+	@Mock
+	private HttpServletResponse _httpServletResponse;
 
 	@Mock
 	private UriInfo _uriInfo;
