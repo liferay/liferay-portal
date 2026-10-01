@@ -2883,7 +2883,9 @@ test.describe('Create Object Fields', () => {
 			})
 		).toBeVisible({visible});
 		await expect(
-			objectFieldsPage.iframeLocator.getByText('Language')
+			objectFieldsPage.iframeLocator
+				.locator('label')
+				.filter({hasText: /^LanguageMandatory$/})
 		).toBeVisible({visible});
 		await expect(
 			objectFieldsPage.iframeLocator.getByRole('radio', {
@@ -3072,9 +3074,7 @@ test.describe('Create Object Fields', () => {
 					.getByLabel('Label')
 					.fill('Updated Label');
 
-				await objectFieldsPage.iframeLocator
-					.getByTitle('en_US')
-					.click();
+				await objectFieldsPage.labelLocalizationButton.click();
 				await objectFieldsPage.iframeLocator
 					.getByRole('option', {name: 'pt_BR'})
 					.click();
@@ -3142,9 +3142,7 @@ test.describe('Create Object Fields', () => {
 			await test.step('Verify that translated Label is updated', async () => {
 				await objectFieldsPage.openObjectField('Updated Label');
 
-				await objectFieldsPage.iframeLocator
-					.getByTitle('en_US')
-					.click();
+				await objectFieldsPage.labelLocalizationButton.click();
 				await objectFieldsPage.iframeLocator
 					.getByRole('option', {name: 'pt_BR'})
 					.click();
@@ -3190,9 +3188,7 @@ test.describe('Create Object Fields', () => {
 					.getByLabel('Label')
 					.fill('New Updated Label');
 
-				await objectFieldsPage.iframeLocator
-					.getByTitle('en_US')
-					.click();
+				await objectFieldsPage.labelLocalizationButton.click();
 				await objectFieldsPage.iframeLocator
 					.getByRole('option', {name: 'pt_BR'})
 					.click();
@@ -3232,9 +3228,7 @@ test.describe('Create Object Fields', () => {
 			await test.step('Verify that translated Label is updated', async () => {
 				await objectFieldsPage.openObjectField('New Updated Label');
 
-				await objectFieldsPage.iframeLocator
-					.getByTitle('en_US')
-					.click();
+				await objectFieldsPage.labelLocalizationButton.click();
 				await objectFieldsPage.iframeLocator
 					.getByRole('option', {name: 'pt_BR'})
 					.click();
