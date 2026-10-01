@@ -786,7 +786,21 @@ export class PageEditorPage {
 
 		const iframe = this.page.frameLocator('iframe[title="Select"]');
 
+		const iframeElement = await this.page
+			.locator('iframe[title="Select"]')
+			.elementHandle();
+
+		const frame = await iframeElement.contentFrame();
+
 		await iframe.getByRole('link', {name: type}).click();
+
+		await frame.waitForURL((url) =>
+			url.searchParams
+				.get(
+					'_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_selectedTab'
+				)
+				?.endsWith(`_${type}`)
+		);
 
 		// Filter Collection in case there are multiple pages
 
