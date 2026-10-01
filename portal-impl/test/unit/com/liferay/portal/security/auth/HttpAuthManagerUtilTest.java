@@ -5,10 +5,17 @@
 
 package com.liferay.portal.security.auth;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.auth.http.HttpAuthManagerUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -21,7 +28,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Tomas Polesovsky
@@ -32,6 +43,42 @@ public class HttpAuthManagerUtilTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGenerateChallenge() throws Exception {
+		try (MockedStatic<CompanyLocalServiceUtil>
+				companyLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					CompanyLocalServiceUtil.class)) {
+
+			Company company = Mockito.mock(Company.class);
+
+			Mockito.when(
+				company.getKey()
+			).thenReturn(
+				RandomTestUtil.randomString()
+			);
+
+			companyLocalServiceUtilMockedStatic.when(
+				() -> CompanyLocalServiceUtil.getCompanyById(Mockito.anyLong())
+			).thenReturn(
+				company
+			);
+
+			String digestChallenge = _generateDigestChallenge();
+
+			Assert.assertFalse(digestChallenge.contains("algorithm="));
+
+			try (SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"FIPS_ENABLED", true)) {
+
+				digestChallenge = _generateDigestChallenge();
+
+				Assert.assertTrue(
+					digestChallenge.endsWith(", algorithm=SHA-256"));
+			}
+		}
+	}
 
 	@Test
 	public void testLPS88011() {
@@ -188,6 +235,23 @@ public class HttpAuthManagerUtilTest {
 			HttpHeaders.AUTHORIZATION, "Unsupported");
 
 		HttpAuthManagerUtil.parse(mockHttpServletRequest);
+	}
+
+	private String _generateDigestChallenge() {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.COMPANY_ID, CompanyConstants.SYSTEM);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		HttpAuthManagerUtil.generateChallenge(
+			mockHttpServletRequest, mockHttpServletResponse,
+			new HttpAuthorizationHeader(HttpAuthorizationHeader.SCHEME_DIGEST));
+
+		return mockHttpServletResponse.getHeader(HttpHeaders.WWW_AUTHENTICATE);
 	}
 
 	private void _testParseBasic(
