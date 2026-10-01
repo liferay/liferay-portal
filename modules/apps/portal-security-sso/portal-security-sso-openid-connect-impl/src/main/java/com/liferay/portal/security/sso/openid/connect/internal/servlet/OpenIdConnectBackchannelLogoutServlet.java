@@ -12,6 +12,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEventFactory;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
@@ -22,6 +25,7 @@ import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdCo
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectUserLocalService;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -74,11 +78,28 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		}
 
 		try {
-			List<OpenIdConnectSession> openIdConnectSessions = null;
-
 			SignedJWT signedJWT = SignedJWT.parse(logoutToken);
 
 			JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
+
+			JWSHeader jwsHeader = signedJWT.getHeader();
+
+			JWSAlgorithm jwsAlgorithm = jwsHeader.getAlgorithm();
+
+			try {
+				FIPSModeValidator.validateJWSAlgorithm(jwsAlgorithm.getName());
+			}
+			catch (SecurityException securityException) {
+				FIPSAuditUtil.write(
+					FIPSAuditEventFactory.createFederationTokenRejected(
+						httpServletRequest.getRequestURI(),
+						jwsAlgorithm.getName(), jwtClaimsSet.getIssuer(),
+						"OIDC"));
+
+				throw securityException;
+			}
+
+			List<OpenIdConnectSession> openIdConnectSessions = null;
 
 			String sessionId = jwtClaimsSet.getClaimAsString("sid");
 
@@ -121,14 +142,11 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 						"logout token");
 			}
 
-			JWSHeader jwsHeader = signedJWT.getHeader();
-
 			LogoutTokenValidator logoutTokenValidator =
 				new LogoutTokenValidator(
 					new Issuer(jwtClaimsSet.getIssuer()),
 					new ClientID(audienceOpenIdConnectSession.getClientId()),
-					jwsHeader.getAlgorithm(),
-					getJWKSURL(audienceOpenIdConnectSession));
+					jwsAlgorithm, getJWKSURL(audienceOpenIdConnectSession));
 
 			logoutTokenValidator.validate(signedJWT);
 

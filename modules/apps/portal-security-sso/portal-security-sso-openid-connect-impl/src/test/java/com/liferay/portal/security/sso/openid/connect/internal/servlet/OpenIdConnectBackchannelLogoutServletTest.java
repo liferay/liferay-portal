@@ -5,8 +5,12 @@
 
 package com.liferay.portal.security.sso.openid.connect.internal.servlet;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
@@ -18,6 +22,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
@@ -41,7 +46,9 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -92,6 +99,13 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 	public void testDoPost() throws Exception {
 		_testDoPost(StringPool.BLANK);
 		_testDoPost(_SESSION_ID);
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_testDoPost(_SESSION_ID);
+		}
 	}
 
 	@Test
@@ -101,6 +115,67 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		SignedJWT signedJWT = _createSignedJWT(true, _SESSION_ID);
 
 		_testDoPostWithInvalidToken(signedJWT.serialize());
+	}
+
+	@Test
+	public void testDoPostWithNotAllowedJWSAlgorithm() throws Exception {
+		SignedJWT signedJWT = new SignedJWT(
+			new JWSHeader(JWSAlgorithm.HS256),
+			new JWTClaimsSet.Builder(
+			).issuer(
+				_ISSUER_URL
+			).build());
+
+		signedJWT.sign(new MACSigner(RandomTestUtil.randomString(32)));
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter(
+			"logout_token", signedJWT.serialize());
+		mockHttpServletRequest.setRequestURI(RandomTestUtil.randomString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		try (MockedStatic<FIPSAuditUtil> fipsAuditUtilMockedStatic =
+				Mockito.mockStatic(FIPSAuditUtil.class);
+			SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_openIdConnectBackchannelLogoutServlet.doPost(
+				mockHttpServletRequest, mockHttpServletResponse);
+
+			ArgumentCaptor<FIPSAuditEvent> argumentCaptor =
+				ArgumentCaptor.forClass(FIPSAuditEvent.class);
+
+			fipsAuditUtilMockedStatic.verify(
+				() -> FIPSAuditUtil.write(argumentCaptor.capture()));
+
+			FIPSAuditEvent fipsAuditEvent = argumentCaptor.getValue();
+
+			Assert.assertEquals(
+				"federation-token-rejected", fipsAuditEvent.getEventType());
+			Assert.assertEquals(
+				HashMapBuilder.<String, Object>put(
+					"receiving-endpoint", mockHttpServletRequest.getRequestURI()
+				).put(
+					"rejected-value", JWSAlgorithm.HS256.getName()
+				).put(
+					"token-issuer", _ISSUER_URL
+				).put(
+					"token-type", "OIDC"
+				).build(),
+				fipsAuditEvent.getFields());
+		}
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_BAD_REQUEST,
+			mockHttpServletResponse.getStatus());
+
+		Mockito.verifyNoInteractions(
+			_openIdConnectSessionLocalService, _openIdConnectUserLocalService);
 	}
 
 	private SignedJWT _createSignedJWT(boolean logoutToken, String sessionId)
