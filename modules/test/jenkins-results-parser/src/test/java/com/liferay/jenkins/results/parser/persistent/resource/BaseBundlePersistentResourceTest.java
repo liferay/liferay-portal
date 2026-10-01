@@ -240,9 +240,7 @@ public class BaseBundlePersistentResourceTest
 		JenkinsMaster.QueueItem queueItem = Mockito.mock(
 			JenkinsMaster.QueueItem.class);
 
-		String executableURL =
-			"https://" + RandomTestUtil.randomString() +
-				"/job/app-server-bundle-builder/1/";
+		String executableURL = "https://" + RandomTestUtil.randomString();
 
 		Mockito.doReturn(
 			executableURL
