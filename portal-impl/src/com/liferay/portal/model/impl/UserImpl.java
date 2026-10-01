@@ -197,8 +197,8 @@ public class UserImpl extends UserBaseImpl {
 	@Override
 	public String getDigest(String password) {
 		return DigesterUtil.digestHex(
-			DigesterUtil.MD5, String.valueOf(getUserId()), Portal.PORTAL_REALM,
-			password);
+			PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 : DigesterUtil.MD5,
+			String.valueOf(getUserId()), Portal.PORTAL_REALM, password);
 	}
 
 	/**

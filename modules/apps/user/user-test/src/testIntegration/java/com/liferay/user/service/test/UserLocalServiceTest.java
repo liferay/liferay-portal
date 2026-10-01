@@ -534,6 +534,37 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testAuthenticateForDigest() throws Exception {
+		String method = RandomTestUtil.randomString();
+		String nonce = RandomTestUtil.randomString();
+		String password = RandomTestUtil.randomString();
+		String uriString = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser();
+
+		Assert.assertEquals(
+			user.getUserId(),
+			_authenticateForDigest(
+				DigesterUtil.MD5, method, nonce, password, uriString, user));
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			Assert.assertEquals(
+				0,
+				_authenticateForDigest(
+					DigesterUtil.MD5, method, nonce, password, uriString,
+					user));
+			Assert.assertEquals(
+				user.getUserId(),
+				_authenticateForDigest(
+					DigesterUtil.SHA_256, method, nonce, password, uriString,
+					user));
+		}
+	}
+
+	@Test
 	public void testAuthenticationWhenUserDoesNotExist() throws Exception {
 		Assert.assertEquals(
 			Authenticator.DNE,
@@ -2170,6 +2201,27 @@ public class UserLocalServiceTest {
 		Assert.assertEquals(ldapUser ? 1 : -1, user.getLdapServerId());
 		Assert.assertTrue(user.isPasswordReset());
 		Assert.assertNotNull(user.getPasswordPolicy());
+	}
+
+	private long _authenticateForDigest(
+			String algorithm, String method, String nonce, String password,
+			String uriString, User user)
+		throws Exception {
+
+		user.setDigest(user.getDigest(password));
+
+		user = _userLocalService.updateUser(user);
+
+		String ha1 = DigesterUtil.digestHex(
+			algorithm, String.valueOf(user.getUserId()), Portal.PORTAL_REALM,
+			password);
+
+		String ha2 = DigesterUtil.digestHex(algorithm, method, uriString);
+
+		return _userLocalService.authenticateForDigest(
+			user.getCompanyId(), String.valueOf(user.getUserId()),
+			Portal.PORTAL_REALM, nonce, method, uriString,
+			DigesterUtil.digestHex(algorithm, ha1, nonce, ha2));
 	}
 
 	private String _getUpdatePasswordURL(String content) {
