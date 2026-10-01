@@ -3136,6 +3136,9 @@ public class ObjectEntryLocalServiceImpl
 						getBaseModelExternalReferenceCodes(primaryKeys);
 
 				for (ObjectEntry objectEntry : objectEntries) {
+					objectEntry.setRelatedSystemObjectDefinition(
+						objectField.getName(), objectDefinition);
+
 					Map<String, Serializable> values = objectEntry.getValues();
 
 					String externalReferenceCode = externalReferenceCodes.get(
