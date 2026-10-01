@@ -61,7 +61,7 @@ export class ExportImportPage {
 			exact: true,
 			name: 'Clear',
 		});
-		this.completedLabel = page.getByText('completed');
+		this.completedLabel = page.getByText('Completed...', {exact: true});
 		this.continueButton = page.getByRole('button', {name: 'Continue'});
 		this.downloadMenuItem = page.getByRole('menuitem', {
 			exact: true,
