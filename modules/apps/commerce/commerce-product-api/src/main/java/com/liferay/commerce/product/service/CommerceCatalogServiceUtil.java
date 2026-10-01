@@ -80,11 +80,12 @@ public class CommerceCatalogServiceUtil {
 	}
 
 	public static CommerceCatalog getOrAddEmptyCommerceCatalog(
-			String externalReferenceCode, String commerceCurrencyCode)
+			String externalReferenceCode, String name,
+			String commerceCurrencyCode)
 		throws PortalException {
 
 		return getService().getOrAddEmptyCommerceCatalog(
-			externalReferenceCode, commerceCurrencyCode);
+			externalReferenceCode, name, commerceCurrencyCode);
 	}
 
 	/**
@@ -138,4 +139,4 @@ public class CommerceCatalogServiceUtil {
 			CommerceCatalogServiceUtil.class, CommerceCatalogService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1724127820
+// LIFERAY-SERVICE-BUILDER-HASH:2008369175

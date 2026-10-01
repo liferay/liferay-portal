@@ -437,11 +437,12 @@ public class CommerceCatalogLocalServiceWrapper
 	@Override
 	public CommerceCatalog getOrAddEmptyCommerceCatalog(
 			String externalReferenceCode, long companyId, long userId,
-			String commerceCurrencyCode)
+			String name, String commerceCurrencyCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
-			externalReferenceCode, companyId, userId, commerceCurrencyCode);
+			externalReferenceCode, companyId, userId, name,
+			commerceCurrencyCode);
 	}
 
 	/**
@@ -569,4 +570,4 @@ public class CommerceCatalogLocalServiceWrapper
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1566552675
+// LIFERAY-SERVICE-BUILDER-HASH:-1939600952

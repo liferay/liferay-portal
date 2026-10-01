@@ -78,7 +78,8 @@ public interface CommerceCatalogService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceCatalog getOrAddEmptyCommerceCatalog(
-			String externalReferenceCode, String commerceCurrencyCode)
+			String externalReferenceCode, String name,
+			String commerceCurrencyCode)
 		throws PortalException;
 
 	/**
@@ -107,4 +108,4 @@ public interface CommerceCatalogService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:512418921
+// LIFERAY-SERVICE-BUILDER-HASH:-315395064

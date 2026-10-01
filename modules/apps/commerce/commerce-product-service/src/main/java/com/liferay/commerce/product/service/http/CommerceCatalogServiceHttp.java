@@ -338,7 +338,7 @@ public class CommerceCatalogServiceHttp {
 	public static com.liferay.commerce.product.model.CommerceCatalog
 			getOrAddEmptyCommerceCatalog(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				String commerceCurrencyCode)
+				String name, String commerceCurrencyCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -348,7 +348,7 @@ public class CommerceCatalogServiceHttp {
 				_getOrAddEmptyCommerceCatalogParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, commerceCurrencyCode);
+				methodKey, externalReferenceCode, name, commerceCurrencyCode);
 
 			Object returnObj = null;
 
@@ -576,7 +576,7 @@ public class CommerceCatalogServiceHttp {
 		new Class[] {long.class, int.class, int.class};
 	private static final Class<?>[]
 		_getOrAddEmptyCommerceCatalogParameterTypes7 = new Class[] {
-			String.class, String.class
+			String.class, String.class, String.class
 		};
 	private static final Class<?>[] _searchParameterTypes8 = new Class[] {
 		long.class, String.class, int.class, int.class,
@@ -595,4 +595,4 @@ public class CommerceCatalogServiceHttp {
 			new Class[] {String.class, long.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:438772409
+// LIFERAY-SERVICE-BUILDER-HASH:-1695693436
