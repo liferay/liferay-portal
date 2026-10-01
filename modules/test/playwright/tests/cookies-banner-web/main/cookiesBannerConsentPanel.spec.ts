@@ -421,6 +421,10 @@ test(
 
 		await saveOrUpdateConfiguration(systemSettingsPage.page);
 
+		await acceptAllButton.click();
+
+		await expect(acceptAllButton).not.toBeVisible();
+
 		const imageButton = systemSettingsPage.page.locator(
 			'#_com_liferay_cookies_banner_web_portlet_CookiesBannerPortlet_floatingIconButton'
 		);
