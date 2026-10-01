@@ -210,10 +210,10 @@ public class SitemapStrutsActionTest {
 			MockHttpServletResponse mockHttpServletResponse = _executeRequest(
 				null, null);
 
-			Assert.assertEquals(404, mockHttpServletResponse.getStatus());
 			Assert.assertEquals(
 				HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE,
 				mockHttpServletResponse.getHeader(HttpHeaders.CACHE_CONTROL));
+			Assert.assertEquals(404, mockHttpServletResponse.getStatus());
 		}
 	}
 
