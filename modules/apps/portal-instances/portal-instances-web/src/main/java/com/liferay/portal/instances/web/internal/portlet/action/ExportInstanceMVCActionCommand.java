@@ -82,32 +82,29 @@ public class ExportInstanceMVCActionCommand extends BaseMVCActionCommand {
 		PortalInstanceExportResource portalInstanceExportResource =
 			_componentServiceObjects.getService();
 
-		try {
-			portalInstanceExportResource.setContextAcceptLanguage(
-				_getAcceptLanguage(actionRequest));
-			portalInstanceExportResource.setContextCompany(
-				_portal.getCompany(actionRequest));
-			portalInstanceExportResource.setContextHttpServletRequest(
-				_getHttpServletRequest(actionRequest));
-			portalInstanceExportResource.setContextUriInfo(
-				new BatchEngineUriInfo.Builder(
-				).build());
-			portalInstanceExportResource.setContextUser(
-				_portal.getUser(actionRequest));
-			portalInstanceExportResource.setVulcanBatchEngineImportTaskResource(
-				_vulcanBatchEngineImportTaskResourceFactory.create());
+		portalInstanceExportResource.setContextAcceptLanguage(
+			_getAcceptLanguage(actionRequest));
+		portalInstanceExportResource.setContextCompany(
+			_portal.getCompany(actionRequest));
+		portalInstanceExportResource.setContextHttpServletRequest(
+			_getHttpServletRequest(actionRequest));
+		portalInstanceExportResource.setContextUriInfo(
+			new BatchEngineUriInfo.Builder(
+			).build());
+		portalInstanceExportResource.setContextUser(
+			_portal.getUser(actionRequest));
+		portalInstanceExportResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResourceFactory.create());
 
-			portalInstanceExportResource.postPortalInstanceExportBatch(
-				null,
-				Collections.singletonList(
-					HashMapBuilder.put(
-						"portalInstanceId",
-						ParamUtil.getString(actionRequest, "portalInstanceId")
-					).build()));
-		}
-		finally {
-			_componentServiceObjects.ungetService(portalInstanceExportResource);
-		}
+		portalInstanceExportResource.postPortalInstanceExportBatch(
+			null,
+			Collections.singletonList(
+				HashMapBuilder.put(
+					"portalInstanceId",
+					ParamUtil.getString(actionRequest, "portalInstanceId")
+				).build()));
+
+		_componentServiceObjects.ungetService(portalInstanceExportResource);
 	}
 
 	private AcceptLanguage _getAcceptLanguage(ActionRequest actionRequest) {
