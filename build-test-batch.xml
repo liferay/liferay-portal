@@ -9850,6 +9850,10 @@ ${output.content}</echo>
 		<run-playwright-js-test database.type="db2" />
 	</target>
 
+	<target name="playwright-js-upgrade-tomcat101-db2115">
+		<run-playwright-js-test database.type="db2" />
+	</target>
+
 	<target name="playwright-js-upgrade-tomcat101-mariadb106">
 		<run-playwright-js-test database.type="mariadb" />
 	</target>
