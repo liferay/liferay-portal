@@ -5,14 +5,17 @@
 
 package com.liferay.site.cms.site.initializer.internal.upgrade.registry;
 
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -24,6 +27,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSDefaultPermissionsUpgradeProcess;
@@ -32,6 +36,7 @@ import com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0.CMSBulkActi
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_1.CMSObjectFolderPermissionsUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_2.CMSAdministratorRoleUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_3.CMSFileTypeDisplayPageUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_4.CMSFileTypeFriendlyURLUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -88,6 +93,14 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 				_layoutPageTemplateStructureLocalService,
 				_objectDefinitionLocalService, _objectFolderLocalService,
 				_segmentsExperienceLocalService));
+
+		registry.register(
+			"3.0.3", "3.0.4",
+			new CMSFileTypeFriendlyURLUpgradeProcess(
+				_classNameLocalService, _companyLocalService,
+				_dlFileEntryLocalService, _friendlyURLEntryLocalService,
+				_friendlyURLNormalizer, _objectDefinitionLocalService,
+				_objectEntryLocalService, _objectFolderLocalService));
 	}
 
 	@Reference(target = "(fragment.collection.key=BASIC_COMPONENT)")
@@ -100,6 +113,9 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
 	)
@@ -107,6 +123,12 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Reference
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
@@ -127,6 +149,9 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 
 	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
