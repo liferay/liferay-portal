@@ -120,11 +120,10 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	public void testGetAlternateURLsDesignLibraryContainingLayoutFriendlyURL()
 		throws Exception {
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
 		String friendlyURL = StringPool.SLASH.concat(
 			RandomTestUtil.randomString(
 				LayoutFriendlyURLRandomizerBumper.INSTANCE));
-
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
 
 		designLibraryGroup = _groupLocalService.updateFriendlyURL(
 			designLibraryGroup.getGroupId(), friendlyURL.concat("-designs"));
