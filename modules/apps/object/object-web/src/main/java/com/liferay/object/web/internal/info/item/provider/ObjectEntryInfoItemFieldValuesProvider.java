@@ -32,6 +32,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
@@ -281,6 +282,8 @@ public class ObjectEntryInfoItemFieldValuesProvider
 			properties = dtoObjectEntry.getProperties();
 		}
 
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
 		objectEntryFieldValues.addAll(
 			ObjectEntryInfoItemValuesProviderUtil.getInfoFieldValues(
 				objectEntry.getDefaultLanguageId(), _dlAppLocalService,
@@ -289,9 +292,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 				objectDefinition, _objectDefinitionLocalService,
 				_objectEntryLocalService, _objectEntryManagerRegistry,
 				_objectEntryService, _objectFieldInfoFieldConverter,
-				_objectFieldLocalService,
-				_objectFieldLocalService.getObjectFields(
-					objectEntry.getObjectDefinitionId()),
+				_objectFieldLocalService, objectFieldBag.getObjectFields(),
 				_objectRelationshipLocalService, _objectScopeProviderRegistry,
 				_portal, objectEntry, themeDisplay, properties));
 
