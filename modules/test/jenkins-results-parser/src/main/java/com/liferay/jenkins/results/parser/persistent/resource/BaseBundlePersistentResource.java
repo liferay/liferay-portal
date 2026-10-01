@@ -348,7 +348,20 @@ public abstract class BaseBundlePersistentResource
 			if (_missingCount >= _MAX_MISSING_COUNT) {
 				_missingCount = 0;
 
-				print("Reinvoking bundles after missing queue item");
+				if (_queueReinvocationCount >= _MAX_QUEUE_REINVOCATION_COUNT) {
+					print("No queue reinvocation attempts remaining");
+
+					return;
+				}
+
+				_queueReinvocationCount++;
+
+				print(
+					JenkinsResultsParserUtil.combine(
+						"Reinvoking bundles (",
+						String.valueOf(_queueReinvocationCount), " of ",
+						String.valueOf(_MAX_QUEUE_REINVOCATION_COUNT),
+						") after missing queue item"));
 
 				start();
 			}
@@ -734,6 +747,8 @@ public abstract class BaseBundlePersistentResource
 
 	private static final int _MAX_MISSING_COUNT = 2;
 
+	private static final int _MAX_QUEUE_REINVOCATION_COUNT = 2;
+
 	private static final int _MAX_REDISPATCH_ATTEMPTS = 1;
 
 	private static final int _MAX_TRANSIENT_REINVOCATION_COUNT = 2;
@@ -747,6 +762,7 @@ public abstract class BaseBundlePersistentResource
 	private int _failCount;
 	private int _missingCount;
 	private String _queueItemWhy;
+	private int _queueReinvocationCount;
 	private int _redispatchAttempts;
 	private JSONArray _redispatchHistoryJSONArray = new JSONArray();
 	private final TopLevelBuild _topLevelBuild;
