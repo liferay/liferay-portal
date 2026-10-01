@@ -23,6 +23,7 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
+	compileOnly project(":apps:friendly-url:friendly-url-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
