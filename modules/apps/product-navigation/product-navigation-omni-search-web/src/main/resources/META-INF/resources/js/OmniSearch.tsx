@@ -103,10 +103,8 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 		}));
 	}, [omniSearchSections, query, recentSearches]);
 
-	const {activeIndex, onInputKeyDown, sectionOffsets} = useKeyboardNavigation(
-		sections,
-		() => setVisible(true)
-	);
+	const {activeIndex, onDeleteKeyDown, onInputKeyDown, sectionOffsets} =
+		useKeyboardNavigation(sections, () => setVisible(true), inputRef);
 
 	useEffect(() => {
 		if (!visible) {
@@ -281,6 +279,11 @@ export default function OmniSearch({resultsURL}: {resultsURL: string}) {
 													key={item.key}
 													onClick={item.onClick}
 													onDelete={item.onDelete}
+													onDeleteKeyDown={
+														item.onDelete
+															? onDeleteKeyDown
+															: undefined
+													}
 												/>
 											);
 										})}

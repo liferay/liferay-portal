@@ -16,6 +16,7 @@ export default function OmniSearchResultRow({
 	item,
 	onClick,
 	onDelete,
+	onDeleteKeyDown,
 }: {
 	active: boolean;
 	id: string;
@@ -26,6 +27,7 @@ export default function OmniSearchResultRow({
 	};
 	onClick: () => void;
 	onDelete?: () => void;
+	onDeleteKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
 }) {
 	const {description, icon, title} = item;
 
@@ -71,6 +73,7 @@ export default function OmniSearchResultRow({
 						event.stopPropagation();
 						onDelete();
 					}}
+					onKeyDown={onDeleteKeyDown}
 					size="sm"
 					symbol="times-small"
 					tabIndex={-1}
