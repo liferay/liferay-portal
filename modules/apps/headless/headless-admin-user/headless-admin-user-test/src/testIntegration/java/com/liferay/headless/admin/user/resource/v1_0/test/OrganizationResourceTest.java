@@ -436,10 +436,10 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		super.testPostOrganization();
 
 		_testPostOrganizationBatch();
-		_testPostOrganizationWithCustomFields();
 		_testPostOrganizationWithCommentOverMaximumLength();
-		_testPostOrganizationWithNameOverMaximumLength();
+		_testPostOrganizationWithCustomFields();
 		_testPostOrganizationWithImage();
+		_testPostOrganizationWithNameOverMaximumLength();
 	}
 
 	@Override
