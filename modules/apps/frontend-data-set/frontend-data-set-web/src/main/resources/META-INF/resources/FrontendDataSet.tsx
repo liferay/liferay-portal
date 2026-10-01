@@ -829,9 +829,6 @@ const FrontendDataSetContent = ({
 
 		const configInURL: Partial<IConfigInURL> | null = readConfigFromURL(id);
 
-		const globalFDSStateSearchQuery = globalFDSState.search.query;
-		const urlSearchQuery = configInURL?.q;
-
 		const hasActiveFilterInURL = Boolean(configInURL?.filters?.length);
 		const hasActiveFilterInState = globalFDSState.filters.some(
 			(filter: IBaseFilterState) => filter.active
@@ -851,18 +848,6 @@ const FrontendDataSetContent = ({
 
 				return false;
 			});
-
-		const shouldUpdateSearch =
-			(urlSearchQuery ?? '') !== (globalFDSStateSearchQuery ?? '') &&
-			(urlSearchQuery || globalFDSStateSearchQuery);
-
-		// Search as you type commits a query on every pause in the typing, so
-		// the query replaces the current history entry rather than adding one
-		// and Back leaves the page instead of walking the partial queries. A
-		// search that only runs on Enter is one deliberate action and keeps
-		// its entry.
-
-		const shouldReplaceSearch = shouldUpdateSearch && searchAsYouType;
 
 		const updateConfig: Partial<IConfigInURL> = {};
 
@@ -886,7 +871,18 @@ const FrontendDataSetContent = ({
 				: undefined;
 		}
 
-		if (shouldUpdateSearch && !shouldReplaceSearch) {
+		const globalFDSStateSearchQuery = globalFDSState.search.query;
+		const urlSearchQuery = configInURL?.q;
+
+		const shouldUpdateSearch =
+			(urlSearchQuery ?? '') !== (globalFDSStateSearchQuery ?? '') &&
+			(urlSearchQuery || globalFDSStateSearchQuery);
+
+		const overrideConfigInURLBehaviorForSearch =
+			searchAsYouType &&
+			configInURLBehavior === EConfigInURLBehavior.PUSH;
+
+		if (shouldUpdateSearch && !overrideConfigInURLBehaviorForSearch) {
 			updateConfig[EConfigInURLKeys.SEARCH_PARAM] =
 				globalFDSState.search.query;
 		}
@@ -895,11 +891,7 @@ const FrontendDataSetContent = ({
 			updateConfigInURL(updateConfig);
 		}
 
-		// The search goes in a write of its own so that the keys above keep the
-		// behavior the Data Set runs on, and last so that the entry it replaces
-		// already carries them
-
-		if (shouldReplaceSearch) {
+		if (shouldUpdateSearch && overrideConfigInURLBehaviorForSearch) {
 			updateConfigInURL(
 				{
 					[EConfigInURLKeys.SEARCH_PARAM]:
@@ -920,6 +912,7 @@ const FrontendDataSetContent = ({
 		}
 	}, [
 		appliedCustomConfigs,
+		configInURLBehavior,
 		connectionFilters,
 		filteringOwnerAppId,
 		globalFDSState,

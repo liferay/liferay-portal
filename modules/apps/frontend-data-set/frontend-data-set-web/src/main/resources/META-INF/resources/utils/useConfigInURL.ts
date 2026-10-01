@@ -94,11 +94,6 @@ export function useUpdateConfig({
 		) =>
 			updateConfig({
 				config,
-
-				// A single write may ask for a weaker behavior than the one the
-				// Data Set runs on, never a stronger one, so a Data Set that
-				// keeps its configuration out of the URL keeps every key out
-
 				configInURLBehavior:
 					configInURLBehavior === EConfigInURLBehavior.OFF
 						? configInURLBehavior
