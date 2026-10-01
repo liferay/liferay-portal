@@ -16,6 +16,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ACE_EDITOR_MODAL</td>
+	<td>//div[contains(@class,'modal-content')]//textarea[contains(@class,'ace_text')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ANY</td>
 	<td>//textarea[contains(@name,'${key_text}') or contains(@title,'${key_text}')]</td>
 	<td></td>

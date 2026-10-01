@@ -145,12 +145,21 @@ definition {
 				locator1 = "Icon#ANY");
 		}
 
-		Type.typeAceEditor(
-			locator1 = "TextArea#ACE_EDITOR",
-			value1 = ${entryContent});
-
 		if (${viewMode} == "Fullscreen") {
+
+			// Full screen opens the editor in a modal while the inline
+			// editor stays on the page behind it, so type into the modal.
+
+			Type.typeAceEditor(
+				locator1 = "TextArea#ACE_EDITOR_MODAL",
+				value1 = ${entryContent});
+
 			Button.clickDone();
+		}
+		else {
+			Type.typeAceEditor(
+				locator1 = "TextArea#ACE_EDITOR",
+				value1 = ${entryContent});
 		}
 	}
 
