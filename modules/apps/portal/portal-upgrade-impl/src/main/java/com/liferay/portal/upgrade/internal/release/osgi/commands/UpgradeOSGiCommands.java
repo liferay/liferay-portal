@@ -63,27 +63,13 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 			return "No upgrade processes registered for " + bundleSymbolicName;
 		}
 
-		List<UpgradeInfo> upgradeInfos;
-
-		try {
-			upgradeInfos = _upgradeExecutor.getUpgradeInfos(bundleSymbolicName);
-		}
-		catch (Throwable throwable) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(throwable);
-			}
-
-			return ReleaseManagerUtil.getFailedModuleMessage(
-				bundleSymbolicName);
-		}
-
 		TeeLoggingUtil.runWithTeeLogging(
 			() -> {
 				try {
 					_upgradeExecutor.execute(
 						BundleUtil.getBundle(
 							_bundleContext, bundleSymbolicName),
-						upgradeInfos);
+						_upgradeExecutor.getUpgradeInfos(bundleSymbolicName));
 				}
 				catch (Throwable throwable) {
 					_log.error(
@@ -262,24 +248,11 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 			for (String upgradableBundleSymbolicName :
 					upgradableBundleSymbolicNames) {
 
-				List<UpgradeInfo> upgradeInfos = null;
-
 				try {
-					upgradeInfos = _upgradeExecutor.getUpgradeInfos(
-						upgradableBundleSymbolicName);
-				}
-				catch (Throwable throwable) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(throwable);
-					}
+					List<UpgradeInfo> upgradeInfos =
+						_upgradeExecutor.getUpgradeInfos(
+							upgradableBundleSymbolicName);
 
-					upgradeThrewExceptionBundleSymbolicNames.add(
-						upgradableBundleSymbolicName);
-
-					continue;
-				}
-
-				try {
 					_upgradeExecutor.execute(
 						BundleUtil.getBundle(
 							_bundleContext, upgradableBundleSymbolicName),
