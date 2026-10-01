@@ -561,7 +561,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		try {
 			company.setKey(
-				CompanyKeyUtil.wrapKey(companyId, EncryptorUtil.generateKey()));
+				CompanyKeyUtil.serializeKey(
+					companyId, EncryptorUtil.generateKey()));
 		}
 		catch (EncryptorException encryptorException) {
 			throw new SystemException(encryptorException);
@@ -2499,7 +2500,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 	private String _generateKey(long companyId) {
 		try {
-			return CompanyKeyUtil.wrapKey(
+			return CompanyKeyUtil.serializeKey(
 				companyId, EncryptorUtil.generateKey());
 		}
 		catch (EncryptorException encryptorException) {

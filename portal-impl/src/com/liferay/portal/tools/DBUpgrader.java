@@ -656,7 +656,7 @@ public class DBUpgrader {
 			company -> {
 				long companyId = company.getCompanyId();
 
-				String serializedKey = CompanyKeyUtil.wrapKey(
+				String serializedKey = CompanyKeyUtil.serializeKey(
 					companyId, EncryptorUtil.generateKey());
 
 				if (CompanyKeyUtil.isWrappedKey(company.getKey()) &&

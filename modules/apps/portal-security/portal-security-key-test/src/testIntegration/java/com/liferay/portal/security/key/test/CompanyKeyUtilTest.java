@@ -90,40 +90,42 @@ public class CompanyKeyUtilTest {
 	}
 
 	@Test
-	public void testUnwrapKey() throws Exception {
+	public void testDeserializeKey() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 		Key key = EncryptorUtil.generateKey();
 
-		String wrappedKey = CompanyKeyUtil.wrapKey(companyId, key);
+		String serializedKey = CompanyKeyUtil.serializeKey(companyId, key);
 
 		_saveKeyManagerConfiguration(TestCompanyCryptoProvider.KEY_IDENTIFIER);
 
 		int decryptCount = _testCompanyCryptoProvider.getDecryptCount();
 
-		Key unwrappedKey = CompanyKeyUtil.unwrapKey(companyId, wrappedKey);
+		Key deserializedKey = CompanyKeyUtil.deserializeKey(
+			companyId, serializedKey);
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
-		Assert.assertEquals(key, unwrappedKey);
+		Assert.assertEquals(key, deserializedKey);
 
-		unwrappedKey = CompanyKeyUtil.unwrapKey(companyId, wrappedKey);
+		deserializedKey = CompanyKeyUtil.deserializeKey(
+			companyId, serializedKey);
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
-		Assert.assertEquals(key, unwrappedKey);
+		Assert.assertEquals(key, deserializedKey);
 
 		key = EncryptorUtil.generateKey();
 
-		unwrappedKey = CompanyKeyUtil.unwrapKey(
+		deserializedKey = CompanyKeyUtil.deserializeKey(
 			companyId, EncryptorUtil.serializeKey(key));
 
 		Assert.assertEquals(
 			decryptCount + 1, _testCompanyCryptoProvider.getDecryptCount());
-		Assert.assertEquals(key, unwrappedKey);
+		Assert.assertEquals(key, deserializedKey);
 	}
 
 	@Test
-	public void testWrapKey() throws Exception {
+	public void testSerializeKey() throws Exception {
 		_company = CompanyTestUtil.addCompany();
 
 		Assert.assertTrue(CompanyKeyUtil.isWrappedKey(_company.getKey()));
