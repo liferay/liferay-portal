@@ -129,6 +129,22 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class ActionUtil {
 
+	public static void addFriendlyURLHelpLayoutStructureItem(
+		long fragmentEntryLinkId, LayoutStructure layoutStructure,
+		String parentItemId, int position) {
+
+		LayoutStructureItem layoutStructureItem =
+			layoutStructure.addFragmentStyledLayoutStructureItem(
+				fragmentEntryLinkId, parentItemId, position);
+
+		layoutStructureItem.updateItemConfig(
+			JSONUtil.put(
+				"cssClasses", JSONUtil.put("text-secondary")
+			).put(
+				"styles", JSONUtil.put("marginBottom", "5")
+			));
+	}
+
 	public static void deleteCompareContentLayoutPageTemplateEntry(
 			long classNameId, long groupId)
 		throws PortalException {
@@ -297,6 +313,14 @@ public class ActionUtil {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
 				layout.getCompanyId(), layoutPageTemplateEntry.getClassName());
+
+		if (CMSFileTypeUtil.hasFileObjectField(objectDefinition)) {
+			_addFriendlyURLHelpFragmentEntryLink(
+				addedFragmentEntryLinks, fragmentEntryLinkService,
+				fragmentRendererRegistry, layout, layoutStructure,
+				formStyledLayoutStructureItem, segmentsExperienceId,
+				serviceContext);
+		}
 
 		InfoFieldSet infoFieldSet = (InfoFieldSet)infoForm.getInfoFieldSetEntry(
 			objectDefinition.getName());
@@ -1068,6 +1092,27 @@ public class ActionUtil {
 		return dropdownItems;
 	}
 
+	public static String getFriendlyURLHelpEditableValues(long companyId) {
+		JSONObject elementTextJSONObject = JSONFactoryUtil.createJSONObject();
+
+		for (Locale locale :
+				LanguageUtil.getCompanyAvailableLocales(companyId)) {
+
+			elementTextJSONObject.put(
+				LocaleUtil.toLanguageId(locale),
+				LanguageUtil.get(
+					locale,
+					"for-now-the-file-is-only-reachable-through-the-friendly-" +
+						"url-of-the-default-language"));
+		}
+
+		return JSONUtil.toString(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put("element-text", elementTextJSONObject)));
+	}
+
 	public static DropdownItem getGenerateContentWithAIDropdownItem(
 		HttpServletRequest httpServletRequest) {
 
@@ -1584,6 +1629,32 @@ public class ActionUtil {
 			fragmentEntry.getHtml(), fragmentEntry.getJs(),
 			fragmentEntry.getConfiguration(), editableValues, StringPool.BLANK,
 			0, contributedRendererKey, fragmentEntry.getType(), serviceContext);
+	}
+
+	private static void _addFriendlyURLHelpFragmentEntryLink(
+			List<FragmentEntryLink> addedFragmentEntryLinks,
+			FragmentEntryLinkService fragmentEntryLinkService,
+			FragmentRendererRegistry fragmentRendererRegistry, Layout layout,
+			LayoutStructure layoutStructure,
+			LayoutStructureItem parentLayoutStructureItem,
+			long segmentsExperienceId, ServiceContext serviceContext)
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			getFriendlyURLHelpEditableValues(layout.getCompanyId()),
+			"BASIC_COMPONENT-paragraph", fragmentEntryLinkService,
+			fragmentRendererRegistry, layout, segmentsExperienceId,
+			serviceContext);
+
+		if (fragmentEntryLink == null) {
+			return;
+		}
+
+		addFriendlyURLHelpLayoutStructureItem(
+			fragmentEntryLink.getFragmentEntryLinkId(), layoutStructure,
+			parentLayoutStructureItem.getItemId(), -1);
+
+		addedFragmentEntryLinks.add(fragmentEntryLink);
 	}
 
 	private static void _addInfoFieldFragmentEntryLink(
