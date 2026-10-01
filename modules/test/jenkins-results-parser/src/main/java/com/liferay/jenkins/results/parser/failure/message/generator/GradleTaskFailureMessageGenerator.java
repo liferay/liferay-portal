@@ -47,11 +47,11 @@ public class GradleTaskFailureMessageGenerator
 
 		int start = consoleText.length();
 
-		int scanStart = _getScanStart(consoleText);
+		int regionStart = _getRegionStart(consoleText);
 
 		Matcher javaErrorMatcher = _javaErrorPattern.matcher(consoleText);
 
-		javaErrorMatcher.region(scanStart, consoleText.length());
+		javaErrorMatcher.region(regionStart, consoleText.length());
 
 		if (javaErrorMatcher.find()) {
 			String snippet = javaErrorMatcher.group();
@@ -65,7 +65,7 @@ public class GradleTaskFailureMessageGenerator
 
 		Matcher taskFailedMatcher = _taskFailedPattern.matcher(consoleText);
 
-		taskFailedMatcher.region(scanStart, consoleText.length());
+		taskFailedMatcher.region(regionStart, consoleText.length());
 
 		if (taskFailedMatcher.find()) {
 			String snippet = taskFailedMatcher.group(1);
@@ -105,25 +105,23 @@ public class GradleTaskFailureMessageGenerator
 		return Dom4JUtil.toCodeSnippetElement(sb.toString());
 	}
 
-	private int _getScanStart(String consoleText) {
-		int scanStart =
-			consoleText.length() - _CHARS_CONSOLE_TEXT_SCAN_SIZE_MAX;
+	private int _getRegionStart(String consoleText) {
+		int start = consoleText.length() - _MAXIMUM_REGION_SIZE;
 
-		if (scanStart <= 0) {
+		if (start <= 0) {
 			return 0;
 		}
 
-		int newlineIndex = consoleText.indexOf("\n", scanStart);
+		int index = consoleText.indexOf("\n", start);
 
-		if (newlineIndex != -1) {
-			return newlineIndex;
+		if (index != -1) {
+			return index;
 		}
 
-		return scanStart;
+		return start;
 	}
 
-	private static final int _CHARS_CONSOLE_TEXT_SCAN_SIZE_MAX =
-		1024 * 1024 * 5;
+	private static final int _MAXIMUM_REGION_SIZE = 1024 * 1024 * 5;
 
 	private static final String _TOKEN_WHAT_WENT_WRONG = "* What went wrong:";
 
