@@ -1267,9 +1267,10 @@ test(
 			],
 			'Control Panel': [
 				'Accounts',
-				'Configuration',
 				'General Permissions',
 				'Marketplace',
+				'Notifications',
+				'Object',
 				'Security',
 				'Sites',
 				'System',
