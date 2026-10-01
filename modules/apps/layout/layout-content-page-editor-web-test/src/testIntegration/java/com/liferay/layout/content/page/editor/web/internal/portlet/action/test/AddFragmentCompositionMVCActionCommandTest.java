@@ -386,7 +386,6 @@ public class AddFragmentCompositionMVCActionCommandTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				RandomTestUtil.randomString(), StringPool.BLANK,
 				_serviceContext);
-
 		String html =
 			"<div> data-lfr-editable-id=\"${fragmentEntryLinkNamespace}-" +
 				"element-text\"\n\tdata-lfr-editable-type=\"text\">\n" +
