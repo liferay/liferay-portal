@@ -637,6 +637,32 @@ public class Sku implements Cloneable, Serializable {
 
 	protected Boolean purchasable;
 
+	public String getReplacementProductExternalReferenceCode() {
+		return replacementProductExternalReferenceCode;
+	}
+
+	public void setReplacementProductExternalReferenceCode(
+		String replacementProductExternalReferenceCode) {
+
+		this.replacementProductExternalReferenceCode =
+			replacementProductExternalReferenceCode;
+	}
+
+	public void setReplacementProductExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			replacementProductExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			replacementProductExternalReferenceCode =
+				replacementProductExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String replacementProductExternalReferenceCode;
+
 	public String getReplacementSkuExternalReferenceCode() {
 		return replacementSkuExternalReferenceCode;
 	}
@@ -952,4 +978,4 @@ public class Sku implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1732903855
+// LIFERAY-REST-BUILDER-HASH:1908031600

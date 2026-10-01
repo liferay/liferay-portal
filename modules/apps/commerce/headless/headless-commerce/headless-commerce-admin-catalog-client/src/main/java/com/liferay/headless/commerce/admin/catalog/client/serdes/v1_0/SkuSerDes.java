@@ -398,6 +398,21 @@ public class SkuSerDes {
 			sb.append(sku.getPurchasable());
 		}
 
+		if (sku.getReplacementProductExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"replacementProductExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(sku.getReplacementProductExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (sku.getReplacementSkuExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -807,6 +822,16 @@ public class SkuSerDes {
 			map.put("purchasable", String.valueOf(sku.getPurchasable()));
 		}
 
+		if (sku.getReplacementProductExternalReferenceCode() == null) {
+			map.put("replacementProductExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"replacementProductExternalReferenceCode",
+				String.valueOf(
+					sku.getReplacementProductExternalReferenceCode()));
+		}
+
 		if (sku.getReplacementSkuExternalReferenceCode() == null) {
 			map.put("replacementSkuExternalReferenceCode", null);
 		}
@@ -1022,6 +1047,12 @@ public class SkuSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "purchasable")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"replacementProductExternalReferenceCode")) {
+
 				return false;
 			}
 			else if (Objects.equals(
@@ -1258,6 +1289,15 @@ public class SkuSerDes {
 			}
 			else if (Objects.equals(
 						jsonParserFieldName,
+						"replacementProductExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					sku.setReplacementProductExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
 						"replacementSkuExternalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
@@ -1447,4 +1487,4 @@ public class SkuSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2091687032
+// LIFERAY-REST-BUILDER-HASH:-2128807821

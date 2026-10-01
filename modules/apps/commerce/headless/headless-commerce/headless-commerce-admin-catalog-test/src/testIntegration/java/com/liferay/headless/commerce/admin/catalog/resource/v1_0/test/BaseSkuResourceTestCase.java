@@ -223,6 +223,7 @@ public abstract class BaseSkuResourceTestCase {
 		sku.setManufacturerPartNumber(regex);
 		sku.setProductExternalReferenceCode(regex);
 		sku.setProductType(regex);
+		sku.setReplacementProductExternalReferenceCode(regex);
 		sku.setReplacementSkuExternalReferenceCode(regex);
 		sku.setSku(regex);
 		sku.setUnitOfMeasureKey(regex);
@@ -244,6 +245,8 @@ public abstract class BaseSkuResourceTestCase {
 		Assert.assertEquals(regex, sku.getManufacturerPartNumber());
 		Assert.assertEquals(regex, sku.getProductExternalReferenceCode());
 		Assert.assertEquals(regex, sku.getProductType());
+		Assert.assertEquals(
+			regex, sku.getReplacementProductExternalReferenceCode());
 		Assert.assertEquals(
 			regex, sku.getReplacementSkuExternalReferenceCode());
 		Assert.assertEquals(regex, sku.getSku());
@@ -2385,6 +2388,17 @@ public abstract class BaseSkuResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"replacementProductExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (sku.getReplacementProductExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"replacementSkuExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -2904,6 +2918,20 @@ public abstract class BaseSkuResourceTestCase {
 			if (Objects.equals("purchasable", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						sku1.getPurchasable(), sku2.getPurchasable())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"replacementProductExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						sku1.getReplacementProductExternalReferenceCode(),
+						sku2.getReplacementProductExternalReferenceCode())) {
 
 					return false;
 				}
@@ -3753,6 +3781,52 @@ public abstract class BaseSkuResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("replacementProductExternalReferenceCode")) {
+			Object object = sku.getReplacementProductExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("replacementSkuExternalReferenceCode")) {
 			Object object = sku.getReplacementSkuExternalReferenceCode();
 
@@ -4101,6 +4175,8 @@ public abstract class BaseSkuResourceTestCase {
 					RandomTestUtil.randomString());
 				published = RandomTestUtil.randomBoolean();
 				purchasable = RandomTestUtil.randomBoolean();
+				replacementProductExternalReferenceCode =
+					StringUtil.toLowerCase(RandomTestUtil.randomString());
 				replacementSkuExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				replacementSkuId = RandomTestUtil.randomLong();
@@ -4382,4 +4458,4 @@ public abstract class BaseSkuResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:996750539
+// LIFERAY-REST-BUILDER-HASH:-502824503

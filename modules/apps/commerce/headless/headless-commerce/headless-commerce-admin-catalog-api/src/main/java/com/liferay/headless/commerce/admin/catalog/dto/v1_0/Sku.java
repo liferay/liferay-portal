@@ -1384,6 +1384,58 @@ public class Sku implements Serializable {
 	private Supplier<Boolean> _purchasableSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the product that owns the replacement SKU; on read the value mirrors the replacement product's external reference code, and on write it is used only during an import to create the replacement SKU when it does not exist yet.",
+		example = "AB-34098-789-N"
+	)
+	public String getReplacementProductExternalReferenceCode() {
+		if (_replacementProductExternalReferenceCodeSupplier != null) {
+			replacementProductExternalReferenceCode =
+				_replacementProductExternalReferenceCodeSupplier.get();
+
+			_replacementProductExternalReferenceCodeSupplier = null;
+		}
+
+		return replacementProductExternalReferenceCode;
+	}
+
+	public void setReplacementProductExternalReferenceCode(
+		String replacementProductExternalReferenceCode) {
+
+		this.replacementProductExternalReferenceCode =
+			replacementProductExternalReferenceCode;
+
+		_replacementProductExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setReplacementProductExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			replacementProductExternalReferenceCodeUnsafeSupplier) {
+
+		_replacementProductExternalReferenceCodeSupplier = () -> {
+			try {
+				return replacementProductExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the product that owns the replacement SKU; on read the value mirrors the replacement product's external reference code, and on write it is used only during an import to create the replacement SKU when it does not exist yet."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String replacementProductExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _replacementProductExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "External reference code of the replacement SKU that customers are redirected to when this SKU is discontinued; on read the value mirrors the replacement's external reference code, and on write it is honored only when `discontinued` is true.",
 		example = "SKU0111"
 	)
@@ -2419,6 +2471,23 @@ public class Sku implements Serializable {
 			sb.append(purchasable);
 		}
 
+		String replacementProductExternalReferenceCode =
+			getReplacementProductExternalReferenceCode();
+
+		if (replacementProductExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"replacementProductExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(replacementProductExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		String replacementSkuExternalReferenceCode =
 			getReplacementSkuExternalReferenceCode();
 
@@ -2739,4 +2808,4 @@ public class Sku implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1780686763
+// LIFERAY-REST-BUILDER-HASH:-1464844205
