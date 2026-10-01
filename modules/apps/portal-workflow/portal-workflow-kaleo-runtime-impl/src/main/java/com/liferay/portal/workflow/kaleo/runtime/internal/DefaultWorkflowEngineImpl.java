@@ -590,8 +590,9 @@ public class DefaultWorkflowEngineImpl
 		throws WorkflowException {
 
 		try {
-			KaleoInstance kaleoInstance = _updateContext(
-				workflowInstanceId, workflowContext);
+			KaleoInstance kaleoInstance =
+				_kaleoInstanceService.updateKaleoInstance(
+					workflowInstanceId, workflowContext);
 
 			KaleoInstanceToken kaleoInstanceToken =
 				kaleoInstance.getRootKaleoInstanceToken(serviceContext);
