@@ -4,6 +4,7 @@
  */
 
 import {
+	DisplayType,
 	IBulkActionItem,
 	IInternalRenderer,
 	IView,
@@ -22,6 +23,7 @@ import {
 	ISearchAssetObjectEntry,
 } from '../../common/types/AssetType';
 import {
+	ASSET_STATUS_TO_DISPLAY_TYPE,
 	CMSSiteInitializerFDSNames,
 	NO_VALUE,
 	OBJECT_ENTRY_CLASS_NAME,
@@ -214,6 +216,17 @@ export default function AssetsFDSPropsTransformer({
 			schema: {
 				description: 'description',
 				image: 'imageURL',
+				labels: [
+					{
+						displayTypeKey: 'embedded.status.label',
+						displayTypeValues:
+							ASSET_STATUS_TO_DISPLAY_TYPE as Record<
+								string,
+								DisplayType
+							>,
+						value: 'embedded.status.label_i18n',
+					},
+				],
 				link: '',
 				sticker: '',
 				symbol: '',
