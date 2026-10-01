@@ -119,7 +119,9 @@ public class AnalyticsUsersUtil {
 
 		searchContext.setAttribute(
 			SearchContextAttributes.ATTRIBUTE_KEY_EMPTY_SEARCH, Boolean.TRUE);
+		searchContext.setEnd(0);
 		searchContext.setEntryClassNames(new String[] {User.class.getName()});
+		searchContext.setStart(0);
 
 		QueryConfig queryConfig = searchContext.getQueryConfig();
 
