@@ -50,12 +50,6 @@ public class BaseBundlePersistentResourceTest
 			queueId
 		);
 
-		Mockito.doReturn(
-			Collections.emptyList()
-		).when(
-			jenkinsMaster
-		).getQueueItems();
-
 		baseBundlePersistentResource.update();
 
 		Mockito.verify(
@@ -158,12 +152,6 @@ public class BaseBundlePersistentResourceTest
 		BaseBundlePersistentResource baseBundlePersistentResource =
 			_getBaseBundlePersistentResource(jenkinsMaster, -1);
 
-		Mockito.doReturn(
-			Collections.emptyList()
-		).when(
-			jenkinsMaster
-		).getQueueItems();
-
 		baseBundlePersistentResource.update();
 
 		Mockito.verify(
@@ -207,12 +195,6 @@ public class BaseBundlePersistentResourceTest
 		).getQueueItem(
 			queueId
 		);
-
-		Mockito.doReturn(
-			Collections.emptyList()
-		).when(
-			jenkinsMaster
-		).getQueueItems();
 
 		baseBundlePersistentResource.update();
 
