@@ -38,8 +38,9 @@ public class GradleTaskFailureMessageGeneratorTest
 	public void testGetMessageElementJavaError() {
 		Element messageElement =
 			_gradleTaskFailureMessageGenerator.getMessageElement(
-				"Starting build\n" + _JAVA_ERROR_LINE +
-					"\n  symbol: class Bar\n1 error\n");
+				JenkinsResultsParserUtil.combine(
+					"Starting build\n", _JAVA_ERROR_LINE,
+					"\n  symbol: class Bar\n1 error\n"));
 
 		Assert.assertNotNull(messageElement);
 
@@ -52,7 +53,8 @@ public class GradleTaskFailureMessageGeneratorTest
 	public void testGetMessageElementJavaErrorAfterLongLine() {
 		Element messageElement =
 			_gradleTaskFailureMessageGenerator.getMessageElement(
-				_getLongLine() + "\n" + _JAVA_ERROR_LINE + "\n1 error\n");
+				JenkinsResultsParserUtil.combine(
+					_getLongLine(), "\n", _JAVA_ERROR_LINE, "\n1 error\n"));
 
 		Assert.assertNotNull(messageElement);
 
@@ -62,11 +64,12 @@ public class GradleTaskFailureMessageGeneratorTest
 	}
 
 	@Test
-	public void testGetMessageElementJavaErrorBeforeScanSizeMax() {
+	public void testGetMessageElementJavaErrorBeforeMaximumRegionSize() {
 		Assert.assertNull(
 			_gradleTaskFailureMessageGenerator.getMessageElement(
-				_JAVA_ERROR_LINE + "\n" +
-					_getLines(_CHARS_CONSOLE_TEXT_SCAN_SIZE_MAX + 1)));
+				JenkinsResultsParserUtil.combine(
+					_JAVA_ERROR_LINE, "\n",
+					_getLines(_MAXIMUM_REGION_SIZE + 1))));
 	}
 
 	@Test(timeout = 10000)
@@ -84,7 +87,7 @@ public class GradleTaskFailureMessageGeneratorTest
 
 		for (int i = 0; i < 250; i++) {
 			sb.append("\n");
-			sb.append(_repeat(" ", 20000));
+			sb.append(_repeat(20000, " "));
 		}
 
 		sb.append("\n");
@@ -102,16 +105,16 @@ public class GradleTaskFailureMessageGeneratorTest
 	}
 
 	private String _getLines(int length) {
-		String line = _repeat("y", 99) + "\n";
+		String line = _repeat(99, "y") + "\n";
 
-		return _repeat(line, (length / 100) + 1);
+		return _repeat((length / 100) + 1, line);
 	}
 
 	private String _getLongLine() {
-		return _repeat("[####    ] 50%\r", 300000);
+		return _repeat(300000, "[####    ] 50%\r");
 	}
 
-	private String _repeat(String string, int count) {
+	private String _repeat(int count, String string) {
 		StringBuilder sb = new StringBuilder(string.length() * count);
 
 		for (int i = 0; i < count; i++) {
@@ -121,11 +124,11 @@ public class GradleTaskFailureMessageGeneratorTest
 		return sb.toString();
 	}
 
-	private static final int _CHARS_CONSOLE_TEXT_SCAN_SIZE_MAX =
-		1024 * 1024 * 5;
-
 	private static final String _JAVA_ERROR_LINE =
 		"/opt/dev/Foo.java:12: error: cannot find symbol";
+
+	private static final int _MAXIMUM_REGION_SIZE =
+		GradleTaskFailureMessageGenerator.MAXIMUM_REGION_SIZE;
 
 	private final GradleTaskFailureMessageGenerator
 		_gradleTaskFailureMessageGenerator =

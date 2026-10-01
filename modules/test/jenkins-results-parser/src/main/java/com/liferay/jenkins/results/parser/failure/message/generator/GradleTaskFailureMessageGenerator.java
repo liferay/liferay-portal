@@ -47,9 +47,9 @@ public class GradleTaskFailureMessageGenerator
 
 		int start = consoleText.length();
 
-		int regionStart = _getRegionStart(consoleText);
-
 		Matcher javaErrorMatcher = _javaErrorPattern.matcher(consoleText);
+
+		int regionStart = _getRegionStart(consoleText);
 
 		javaErrorMatcher.region(regionStart, consoleText.length());
 
@@ -105,8 +105,10 @@ public class GradleTaskFailureMessageGenerator
 		return Dom4JUtil.toCodeSnippetElement(sb.toString());
 	}
 
+	protected static final int MAXIMUM_REGION_SIZE = 1024 * 1024 * 5;
+
 	private int _getRegionStart(String consoleText) {
-		int start = consoleText.length() - _MAXIMUM_REGION_SIZE;
+		int start = consoleText.length() - MAXIMUM_REGION_SIZE;
 
 		if (start <= 0) {
 			return 0;
@@ -120,8 +122,6 @@ public class GradleTaskFailureMessageGenerator
 
 		return start;
 	}
-
-	private static final int _MAXIMUM_REGION_SIZE = 1024 * 1024 * 5;
 
 	private static final String _TOKEN_WHAT_WENT_WRONG = "* What went wrong:";
 
