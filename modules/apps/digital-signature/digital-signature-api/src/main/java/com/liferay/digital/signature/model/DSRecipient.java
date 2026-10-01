@@ -39,6 +39,10 @@ public class DSRecipient {
 		return status;
 	}
 
+	public LocalDateTime getStatusLocalDateTime() {
+		return statusLocalDateTime;
+	}
+
 	public JSONObject getTabsJSONObject() {
 		return tabsJSONObject;
 	}
@@ -67,6 +71,10 @@ public class DSRecipient {
 		this.status = status;
 	}
 
+	public void setStatusLocalDateTime(LocalDateTime statusLocalDateTime) {
+		this.statusLocalDateTime = statusLocalDateTime;
+	}
+
 	public void setTabsJSONObject(JSONObject tabsJSONObject) {
 		this.tabsJSONObject = tabsJSONObject;
 	}
@@ -93,6 +101,7 @@ public class DSRecipient {
 	protected String name;
 	protected LocalDateTime sentLocalDateTime;
 	protected String status;
+	protected LocalDateTime statusLocalDateTime;
 	protected JSONObject tabsJSONObject;
 
 }

@@ -60,6 +60,10 @@ public class DSEnvelope {
 		return status;
 	}
 
+	public LocalDateTime getStatusChangedLocalDateTime() {
+		return statusChangedLocalDateTime;
+	}
+
 	public void setCreatedLocalDateTime(LocalDateTime createdLocalDateTime) {
 		this.createdLocalDateTime = createdLocalDateTime;
 	}
@@ -98,6 +102,12 @@ public class DSEnvelope {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public void setStatusChangedLocalDateTime(
+		LocalDateTime statusChangedLocalDateTime) {
+
+		this.statusChangedLocalDateTime = statusChangedLocalDateTime;
 	}
 
 	public JSONObject toJSONObject() {
@@ -144,6 +154,7 @@ public class DSEnvelope {
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;
+	protected LocalDateTime statusChangedLocalDateTime;
 
 	private static final Log _log = LogFactoryUtil.getLog(DSEnvelope.class);
 

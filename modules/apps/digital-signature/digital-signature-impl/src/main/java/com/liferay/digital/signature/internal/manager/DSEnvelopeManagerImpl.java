@@ -202,10 +202,22 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 					sentLocalDateTime = _toLocalDateTime(
 						signerJSONObject.getString("sentDateTime"));
 					status = signerJSONObject.getString("status");
+					statusLocalDateTime = _getStatusLocalDateTime(
+						signerJSONObject);
 					tabsJSONObject = signerJSONObject.getJSONObject("tabs");
 				}
 			},
 			_log);
+	}
+
+	private LocalDateTime _getStatusLocalDateTime(JSONObject signerJSONObject) {
+		String signedDateTime = signerJSONObject.getString("signedDateTime");
+
+		if (Validator.isNotNull(signedDateTime)) {
+			return _toLocalDateTime(signedDateTime);
+		}
+
+		return _toLocalDateTime(signerJSONObject.getString("declinedDateTime"));
 	}
 
 	private void _setDSEnvelopeCustomField(
@@ -255,6 +267,8 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 				expireLocalDateTime = _toLocalDateTime(
 					jsonObject.getString("expireDateTime"));
 				status = jsonObject.getString("status");
+				statusChangedLocalDateTime = _toLocalDateTime(
+					jsonObject.getString("statusChangedDateTime"));
 			}
 		};
 
