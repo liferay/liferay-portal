@@ -64,9 +64,9 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 	@Test
 	public void testOnBeforeSaveWithInvalidCacheControl() throws Exception {
 		_assertInvalidCacheControl(StringPool.BLANK);
+		_assertInvalidCacheControl("Public");
 		_assertInvalidCacheControl("no-store");
 		_assertInvalidCacheControl("public, immutable");
-		_assertInvalidCacheControl("Public");
 	}
 
 	@Test

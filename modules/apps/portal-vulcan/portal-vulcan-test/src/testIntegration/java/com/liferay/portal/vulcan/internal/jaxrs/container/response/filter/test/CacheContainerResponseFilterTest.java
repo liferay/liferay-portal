@@ -107,22 +107,22 @@ public class CacheContainerResponseFilterTest {
 	@Test
 	public void testCacheWithAnotherCompany() throws Exception {
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/test", "public", 3600,
-			RandomTestUtil.nextLong());
+			"public", RandomTestUtil.nextLong(), 3600,
+			"/test-vulcan-cache/test");
 
 		_assertNotCacheable(_openURLConnection("/test"));
 	}
 
 	@Test
 	public void testCacheWithCacheableEndpoint() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
 
 		_assertCacheable("public, max-age=3600", _openURLConnection("/test"));
 	}
 
 	@Test
 	public void testCacheWithHeadRequest() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
 
 		HttpURLConnection httpURLConnection = _openURLConnection("/test");
 
@@ -134,8 +134,8 @@ public class CacheContainerResponseFilterTest {
 	@Test
 	public void testCacheWithHttpServletResponseCookie() throws Exception {
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/with-http-servlet-response-cookie", "public",
-			3600);
+			"public", 3600,
+			"/test-vulcan-cache/with-http-servlet-response-cookie");
 
 		_assertNotCacheable(
 			_openURLConnection("/with-http-servlet-response-cookie"));
@@ -144,7 +144,7 @@ public class CacheContainerResponseFilterTest {
 	@Test
 	public void testCacheWithHttpSession() throws Exception {
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/with-http-session", "public", 3600);
+			"public", 3600, "/test-vulcan-cache/with-http-session");
 
 		_assertNotCacheable(_openURLConnection("/with-http-session"));
 	}
@@ -152,8 +152,8 @@ public class CacheContainerResponseFilterTest {
 	@Test
 	public void testCacheWithOverlappingCacheableEndpoints() throws Exception {
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/tests/*/nested", "private", 0);
-		_addCacheableEndpoint("/test-vulcan-cache/tests/2/nested", "public", 0);
+			"private", 0, "/test-vulcan-cache/tests/*/nested");
+		_addCacheableEndpoint("public", 0, "/test-vulcan-cache/tests/2/nested");
 
 		_assertCacheable("private", _openURLConnection("/tests/1/nested"));
 		_assertCacheable("public", _openURLConnection("/tests/2/nested"));
@@ -164,8 +164,8 @@ public class CacheContainerResponseFilterTest {
 		throws Exception {
 
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/tests/*/nested", "private", 0);
-		_addCacheableEndpoint("/test-vulcan-cache/tests/1/*", "public", 0);
+			"private", 0, "/test-vulcan-cache/tests/*/nested");
+		_addCacheableEndpoint("public", 0, "/test-vulcan-cache/tests/1/*");
 
 		_assertCacheable("public", _openURLConnection("/tests/1/nested"));
 	}
@@ -174,16 +174,16 @@ public class CacheContainerResponseFilterTest {
 	public void testCacheWithOverlappingCacheableEndpointsAndEqualWildcardCountInReverseOrder()
 		throws Exception {
 
-		_addCacheableEndpoint("/test-vulcan-cache/tests/1/*", "public", 0);
+		_addCacheableEndpoint("public", 0, "/test-vulcan-cache/tests/1/*");
 		_addCacheableEndpoint(
-			"/test-vulcan-cache/tests/*/nested", "private", 0);
+			"private", 0, "/test-vulcan-cache/tests/*/nested");
 
 		_assertCacheable("public", _openURLConnection("/tests/1/nested"));
 	}
 
 	@Test
 	public void testCacheWithPostRequest() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
 
 		HttpURLConnection httpURLConnection = _openURLConnection("/test");
 
@@ -194,21 +194,21 @@ public class CacheContainerResponseFilterTest {
 
 	@Test
 	public void testCacheWithSetCookie() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/with-cookie", "public", 3600);
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/with-cookie");
 
 		_assertNotCacheable(_openURLConnection("/with-cookie"));
 	}
 
 	@Test
 	public void testCacheWithSignedInUser() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
 
 		_assertNotCacheable(_openAuthenticatedURLConnection("/test"));
 	}
 
 	@Test
 	public void testCacheWithSystemCacheableEndpoint() throws Exception {
-		_addSystemCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+		_addSystemCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
 
 		_assertCacheable("public, max-age=3600", _openURLConnection("/test"));
 	}
@@ -217,10 +217,10 @@ public class CacheContainerResponseFilterTest {
 	public void testCacheWithSystemCacheableEndpointAndCompanyCacheableEndpoint()
 		throws Exception {
 
-		_addCacheableEndpoint("/test-vulcan-cache/test", "private", 0);
+		_addCacheableEndpoint("private", 0, "/test-vulcan-cache/test");
+		_addSystemCacheableEndpoint("public", 3600, "/test-vulcan-cache/test");
 		_addSystemCacheableEndpoint(
-			"/test-vulcan-cache/tests/*/nested", "public", 3600);
-		_addSystemCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+			"public", 3600, "/test-vulcan-cache/tests/*/nested");
 
 		_assertCacheable("private", _openURLConnection("/test"));
 		_assertCacheable(
@@ -229,14 +229,14 @@ public class CacheContainerResponseFilterTest {
 
 	@Test
 	public void testCacheWithUnsuccessfulResponse() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/not-found", "public", 3600);
+		_addCacheableEndpoint("public", 3600, "/test-vulcan-cache/not-found");
 
 		_assertNotCacheable(_openURLConnection("/not-found"));
 	}
 
 	@Test
 	public void testCacheWithoutMaxAge() throws Exception {
-		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 0);
+		_addCacheableEndpoint("public", 0, "/test-vulcan-cache/test");
 
 		_assertCacheable("public", _openURLConnection("/test"));
 	}
@@ -301,15 +301,15 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	private void _addCacheableEndpoint(
-			String path, String cacheControl, int maxAge)
+			String cacheControl, int maxAge, String path)
 		throws Exception {
 
 		_addCacheableEndpoint(
-			path, cacheControl, maxAge, TestPropsValues.getCompanyId());
+			cacheControl, TestPropsValues.getCompanyId(), maxAge, path);
 	}
 
 	private void _addCacheableEndpoint(
-			String path, String cacheControl, int maxAge, long companyId)
+			String cacheControl, long companyId, int maxAge, String path)
 		throws Exception {
 
 		_addFactoryConfiguration(
@@ -336,7 +336,7 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	private void _addSystemCacheableEndpoint(
-			String path, String cacheControl, int maxAge)
+			String cacheControl, int maxAge, String path)
 		throws Exception {
 
 		_addFactoryConfiguration(
