@@ -125,7 +125,7 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 				).build(),
 				"sites", StringPool.BLANK);
 
-		headerProps.put("totalCount", _getSitesCount());
+		headerProps.put("totalCount", _getDepotEntryGroupRelsCount());
 
 		return headerProps;
 	}
@@ -150,7 +150,7 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 		return fdsActionDropdownItem;
 	}
 
-	private int _getSitesCount() throws Exception {
+	private int _getDepotEntryGroupRelsCount() throws Exception {
 		return _depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
 			_depotEntryService.getGroupDepotEntry(_groupId));
 	}
@@ -158,7 +158,7 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 	private String _getSpaceSitesHeaderTitle() throws Exception {
 		return StringBundler.concat(
 			_language.get(_httpServletRequest, "sites"), StringPool.SPACE,
-			StringPool.OPEN_PARENTHESIS, _getSitesCount(),
+			StringPool.OPEN_PARENTHESIS, _getDepotEntryGroupRelsCount(),
 			StringPool.CLOSE_PARENTHESIS);
 	}
 
