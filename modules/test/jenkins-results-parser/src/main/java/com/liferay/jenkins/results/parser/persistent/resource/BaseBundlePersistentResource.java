@@ -335,17 +335,25 @@ public abstract class BaseBundlePersistentResource
 				return;
 			}
 
+			String producerBuildURL = null;
+
 			JenkinsMaster.QueueItem leftQueueItem =
 				producerJenkinsMaster.getQueueItem(producerQueueId);
 
-			if ((leftQueueItem != null) && leftQueueItem.isCancelled()) {
-				_reinvokeCancelledQueueItem();
+			if (leftQueueItem != null) {
+				if (leftQueueItem.isCancelled()) {
+					_reinvokeCancelledQueueItem();
 
-				return;
+					return;
+				}
+
+				producerBuildURL = leftQueueItem.getExecutableURL();
 			}
 
-			String producerBuildURL = JenkinsResultsParserUtil.getBuildURL(
-				_JOB_NAME, producerJenkinsMaster, producerQueueId);
+			if (!JenkinsResultsParserUtil.isURL(producerBuildURL)) {
+				producerBuildURL = JenkinsResultsParserUtil.getBuildURL(
+					_JOB_NAME, producerJenkinsMaster, producerQueueId);
+			}
 
 			if (JenkinsResultsParserUtil.isURL(producerBuildURL)) {
 				setStatus(Status.IN_PROGRESS);

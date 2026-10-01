@@ -637,7 +637,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		String queueItemAPIURL = JenkinsResultsParserUtil.combine(
 			getURL(), "/queue/item/", String.valueOf(queueId),
 			"/api/json?tree=actions[parameters[name,value]],cancelled,",
-			"id,inQueueSince,task[name,url],url,why");
+			"executable[url],id,inQueueSince,task[name,url],url,why");
 
 		try {
 			String response = JenkinsResultsParserUtil.toString(
@@ -1215,6 +1215,17 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			}
 
 			return null;
+		}
+
+		public String getExecutableURL() {
+			JSONObject executableJSONObject = _jsonObject.optJSONObject(
+				"executable");
+
+			if (executableJSONObject == null) {
+				return null;
+			}
+
+			return executableJSONObject.optString("url", null);
 		}
 
 		public long getId() {
