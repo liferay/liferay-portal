@@ -7,10 +7,12 @@ import {Browser, expect, test} from '@playwright/test';
 
 import {liferayConfig} from '../../../liferay.config';
 import {DocumentLibraryPage} from '../../../pages/document-library-web/DocumentLibraryPage';
+import {DocumentLibraryViewFileEntryPage} from '../../../pages/document-library-web/DocumentLibraryViewFileEntryPage';
 import {WebContentPage} from '../../../pages/journal-web/WebContentPage';
 import {RolesPage} from '../../../pages/roles-admin-web/RolesPage';
 import {EditUserPage} from '../../../pages/users-admin-web/EditUserPage';
 import {UsersAndOrganizationsPage} from '../../../pages/users-admin-web/UsersAndOrganizationsPage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {performLoginViaApi} from '../../../utils/performLogin';
 
 /**
@@ -56,8 +58,6 @@ export async function viewUpgradedPartition({
 		webContentContent,
 		webContentTitle,
 	} = partition;
-
-	const absentScreenName = absentPartition.screenName;
 
 	const baseURL = `http://${virtualHostName}:${liferayConfig.environment.port}`;
 
@@ -106,7 +106,7 @@ export async function viewUpgradedPartition({
 			await usersAndOrganizationsPage.goto();
 
 			await usersAndOrganizationsPage.usersDataTable.search(
-				absentScreenName
+				absentPartition.screenName
 			);
 
 			await expect(
@@ -121,15 +121,19 @@ export async function viewUpgradedPartition({
 
 			await rolesPage.rolesTable.search(roleTitle);
 
-			const {row} = await rolesPage.rolesTable.row(1, roleTitle, true);
+			await expect(
+				page.getByText(`1 Result Found for "${roleTitle}"`, {
+					exact: true,
+				})
+			).toBeVisible();
 
-			await expect(row).toContainText('Regular');
+			const roleLink = rolesPage.rolesTable.valueLink(roleTitle);
 
-			const cellLink = await rolesPage.rolesTable.cellLink(roleTitle);
+			await expect(roleLink).toBeVisible();
 
-			await cellLink.click();
+			await roleLink.click();
 
-			await expect(page.getByLabel('Title')).toHaveValue(roleTitle);
+			await expect(rolesPage.rolePage.titleInput).toHaveValue(roleTitle);
 		});
 
 		await test.step(`View this partition's document on ${virtualHostName}`, async () => {
@@ -139,15 +143,25 @@ export async function viewUpgradedPartition({
 
 			await page.getByRole('link', {name: documentTitle}).click();
 
-			await expect(
-				page.getByText(documentTitle, {exact: true})
-			).toBeVisible();
+			const headerTitle = page.getByTestId('headerTitle');
 
-			await page.locator('a[href*=infoPanel]').click();
+			await expect(headerTitle).toBeVisible();
 
-			const sidebarHeader = page.locator('.sidebar-header');
+			await expect(headerTitle).toHaveText(documentTitle);
 
-			await expect(sidebarHeader).toBeVisible();
+			const documentLibraryViewFileEntryPage =
+				new DocumentLibraryViewFileEntryPage(page);
+
+			const sidebarHeader =
+				documentLibraryViewFileEntryPage.infoPanel.locator(
+					'.sidebar-header'
+				);
+
+			await clickAndExpectToBeVisible({
+				target: sidebarHeader,
+				timeout: 5000,
+				trigger: documentLibraryViewFileEntryPage.infoButton,
+			});
 
 			await expect(sidebarHeader).toContainText(documentTitle);
 		});
@@ -167,7 +181,13 @@ export async function viewUpgradedPartition({
 				has: page.getByText('content', {exact: true}),
 			});
 
-			await expect(contentField).toContainText(webContentContent);
+			const contentEditor = contentField
+				.frameLocator('iframe[title="editor"]')
+				.getByRole('textbox');
+
+			await expect(contentEditor).toBeVisible();
+
+			await expect(contentEditor).toContainText(webContentContent);
 		});
 	}
 	finally {
