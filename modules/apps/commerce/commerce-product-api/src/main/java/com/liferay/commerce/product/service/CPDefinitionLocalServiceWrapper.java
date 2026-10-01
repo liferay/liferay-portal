@@ -805,11 +805,13 @@ public class CPDefinitionLocalServiceWrapper
 	@Override
 	public CPDefinition getOrAddEmptyCPDefinition(
 			String externalReferenceCode, long companyId, long userId,
-			long groupId, String productTypeName)
+			long groupId, java.util.Map<java.util.Locale, String> nameMap,
+			String productTypeName)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionLocalService.getOrAddEmptyCPDefinition(
-			externalReferenceCode, companyId, userId, groupId, productTypeName);
+			externalReferenceCode, companyId, userId, groupId, nameMap,
+			productTypeName);
 	}
 
 	/**
@@ -1175,4 +1177,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1666409241
+// LIFERAY-SERVICE-BUILDER-HASH:1012378590

@@ -845,7 +845,8 @@ public class CPDefinitionServiceHttp {
 	public static com.liferay.commerce.product.model.CPDefinition
 			getOrAddEmptyCPDefinition(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long groupId, String productTypeName)
+				long groupId, java.util.Map<java.util.Locale, String> nameMap,
+				String productTypeName)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -854,7 +855,8 @@ public class CPDefinitionServiceHttp {
 				_getOrAddEmptyCPDefinitionParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, productTypeName);
+				methodKey, externalReferenceCode, groupId, nameMap,
+				productTypeName);
 
 			Object returnObj = null;
 
@@ -1663,7 +1665,9 @@ public class CPDefinitionServiceHttp {
 			long.class
 		};
 	private static final Class<?>[] _getOrAddEmptyCPDefinitionParameterTypes17 =
-		new Class[] {String.class, long.class, String.class};
+		new Class[] {
+			String.class, long.class, java.util.Map.class, String.class
+		};
 	private static final Class<?>[] _getUrlTitleMapParameterTypes18 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getUrlTitleMapAsXMLParameterTypes19 =
@@ -1736,4 +1740,4 @@ public class CPDefinitionServiceHttp {
 		new Class[] {long.class, long.class, boolean.class, boolean.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-348661124
+// LIFERAY-SERVICE-BUILDER-HASH:-983756494

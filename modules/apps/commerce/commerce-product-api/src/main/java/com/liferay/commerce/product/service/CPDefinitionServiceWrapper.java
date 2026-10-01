@@ -272,11 +272,13 @@ public class CPDefinitionServiceWrapper
 
 	@Override
 	public CPDefinition getOrAddEmptyCPDefinition(
-			String externalReferenceCode, long groupId, String productTypeName)
+			String externalReferenceCode, long groupId,
+			java.util.Map<java.util.Locale, String> nameMap,
+			String productTypeName)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionService.getOrAddEmptyCPDefinition(
-			externalReferenceCode, groupId, productTypeName);
+			externalReferenceCode, groupId, nameMap, productTypeName);
 	}
 
 	/**
@@ -492,4 +494,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-8494158
+// LIFERAY-SERVICE-BUILDER-HASH:644371511

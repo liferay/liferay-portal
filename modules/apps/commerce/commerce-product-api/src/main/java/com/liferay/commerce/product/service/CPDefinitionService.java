@@ -178,7 +178,8 @@ public interface CPDefinitionService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinition getOrAddEmptyCPDefinition(
-			String externalReferenceCode, long groupId, String productTypeName)
+			String externalReferenceCode, long groupId,
+			Map<Locale, String> nameMap, String productTypeName)
 		throws PortalException;
 
 	/**
@@ -284,4 +285,4 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2001575465
+// LIFERAY-SERVICE-BUILDER-HASH:-1099460396
