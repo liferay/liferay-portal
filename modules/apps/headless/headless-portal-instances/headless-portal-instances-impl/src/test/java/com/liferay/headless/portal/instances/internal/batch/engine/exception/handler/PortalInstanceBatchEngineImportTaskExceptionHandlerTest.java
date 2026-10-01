@@ -8,6 +8,7 @@ package com.liferay.headless.portal.instances.internal.batch.engine.exception.ha
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceCopy;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
@@ -108,6 +109,15 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 	}
 
 	@Test
+	public void testHandleIgnoresTheCopyItemForTheDeleteOperation() {
+		_handleCopy(
+			new IllegalArgumentException(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		Mockito.verifyNoInteractions(_userNotificationEventLocalService);
+	}
+
+	@Test
 	public void testHandleIgnoresTheExportItemForTheDeleteOperation() {
 		_handleExport(
 			new IllegalArgumentException(), RandomTestUtil.randomString());
@@ -122,6 +132,58 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 			RandomTestUtil.randomString());
 
 		Mockito.verifyNoInteractions(_userNotificationEventLocalService);
+	}
+
+	@Test
+	public void testHandleMapsCopyExceptions() throws Exception {
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		_assertCopyErrorMessageKey(
+			"an-unexpected-error-occurred", new Exception());
+		_assertCopyErrorMessageKey(
+			"an-unexpected-error-occurred",
+			new UnsupportedOperationException());
+		_assertCopyErrorMessageKey(
+			"copying-an-instance-is-already-in-progress",
+			new UnsupportedOperationException(
+				"Company in copy process company ID is not null"));
+		_assertCopyErrorMessageKey(
+			"database-partitioning-must-be-enabled",
+			new UnsupportedOperationException(
+				"Database partitioning must be enabled"));
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-destination-company-id",
+			new IllegalArgumentException());
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-destination-company-id",
+			new IllegalArgumentException(
+				"Company ID " + RandomTestUtil.randomLong() +
+					" already exists"));
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-name", new CompanyNameException());
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-name",
+			new Exception(new CompanyNameException()));
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-virtual-host",
+			new CompanyVirtualHostException());
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-virtual-host",
+			new Exception(new CompanyVirtualHostException()));
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-web-id", new CompanyWebIdException());
+		_assertCopyErrorMessageKey(
+			"please-enter-a-valid-web-id",
+			new Exception(new CompanyWebIdException()));
+		_assertCopyErrorMessageKey(
+			"the-default-instance-cannot-be-copied",
+			new IllegalArgumentException(
+				"Company ID " + RandomTestUtil.randomLong() +
+					" is the default company ID"));
 	}
 
 	@Test
@@ -286,6 +348,38 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 	}
 
 	@Test
+	public void testHandleSendsUserNotificationEventForTheCopyOperation()
+		throws Exception {
+
+		Mockito.when(
+			_batchEngineImportTask.getOperation()
+		).thenReturn(
+			BatchEngineTaskOperation.CREATE.name()
+		);
+
+		String sourcePortalInstanceId = RandomTestUtil.randomString();
+		String webId = RandomTestUtil.randomString();
+
+		_handleCopy(new CompanyWebIdException(), sourcePortalInstanceId, webId);
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			"please-enter-a-valid-web-id",
+			payloadJSONObject.getString("errorMessageKey"));
+		Assert.assertEquals(
+			"COPY", payloadJSONObject.getString("operationType"));
+		Assert.assertEquals(
+			webId, payloadJSONObject.getString("portalInstanceId"));
+		Assert.assertEquals(
+			sourcePortalInstanceId,
+			payloadJSONObject.getString("sourcePortalInstanceId"));
+		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
+
+		Mockito.verifyNoInteractions(_companyLocalService);
+	}
+
+	@Test
 	public void testHandleSendsUserNotificationEventForTheExportOperation()
 		throws Exception {
 
@@ -340,6 +434,22 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 		Assert.assertEquals("FAILED", payloadJSONObject.getString("status"));
 
 		Mockito.verifyNoInteractions(_companyLocalService);
+	}
+
+	private void _assertCopyErrorMessageKey(
+			String errorMessageKey, Exception exception)
+		throws Exception {
+
+		Mockito.clearInvocations(_userNotificationEventLocalService);
+
+		_handleCopy(
+			exception, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		JSONObject payloadJSONObject = _capturePayloadJSONObject();
+
+		Assert.assertEquals(
+			errorMessageKey, payloadJSONObject.getString("errorMessageKey"));
 	}
 
 	private void _assertErrorMessageKey(
@@ -409,6 +519,20 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandlerTest {
 
 		_portalInstanceBatchEngineImportTaskExceptionHandler.handle(
 			_batchEngineImportTask, null, exception, portalInstance,
+			RandomTestUtil.randomString());
+	}
+
+	private void _handleCopy(
+		Exception exception, String sourcePortalInstanceId, String webId) {
+
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		portalInstanceCopy.setSourcePortalInstanceId(
+			() -> sourcePortalInstanceId);
+		portalInstanceCopy.setWebId(() -> webId);
+
+		_portalInstanceBatchEngineImportTaskExceptionHandler.handle(
+			_batchEngineImportTask, null, exception, portalInstanceCopy,
 			RandomTestUtil.randomString());
 	}
 
