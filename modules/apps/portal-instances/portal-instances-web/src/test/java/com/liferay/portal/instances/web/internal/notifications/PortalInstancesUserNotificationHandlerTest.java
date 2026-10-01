@@ -142,6 +142,37 @@ public class PortalInstancesUserNotificationHandlerTest {
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
+	@Test
+	public void testGetBodyForTheImportOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+		String schemaName = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toBodyHTML(
+				"the-exported-schema-does-not-exist",
+				_toTranslation(
+					"the-instance-could-not-be-imported-from-the-schema-x",
+					schemaName)),
+			_getBody(
+				_toPayloadJSONObject(
+					"the-exported-schema-does-not-exist",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_IMPORT,
+					null, schemaName,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toBodyHTML(
+				_toTranslation(
+					"the-instance-x-is-ready-to-use", portalInstanceId),
+				_toTranslation(
+					"the-instance-x-was-imported", portalInstanceId)),
+			_getBody(
+				_toPayloadJSONObject(
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_IMPORT,
+					portalInstanceId, schemaName,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetBodyWithUnknownOperationType() throws Exception {
 		_getBody(
@@ -217,6 +248,31 @@ public class PortalInstancesUserNotificationHandlerTest {
 					null,
 					PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT,
 					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
+	}
+
+	@Test
+	public void testGetTitleForTheImportOperation() throws Exception {
+		String portalInstanceId = RandomTestUtil.randomString();
+		String schemaName = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			_toTranslation(
+				"the-instance-could-not-be-imported-from-the-schema-x",
+				schemaName),
+			_getTitle(
+				_toPayloadJSONObject(
+					"the-exported-schema-does-not-exist",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_IMPORT,
+					null, schemaName,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toTranslation("the-instance-x-was-imported", portalInstanceId),
+			_getTitle(
+				_toPayloadJSONObject(
+					null,
+					PortalInstancesNotificationConstants.OPERATION_TYPE_IMPORT,
+					portalInstanceId, schemaName,
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)));
 	}
 
