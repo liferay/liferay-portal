@@ -21,6 +21,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.rs.client", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.rs.security.jose.jaxrs", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "org.mockito", name: "mockito-core", version: "1.10.8"
+	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-liferay-api")
 	testIntegrationImplementation project(":apps:object:object-api")
