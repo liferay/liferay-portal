@@ -10,6 +10,7 @@ import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskExceptionHandler;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceCopy;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
@@ -77,6 +78,8 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 					"schemaName",
 					_getSchemaName(item, operationType, portalInstanceId)
 				).put(
+					"sourcePortalInstanceId", _getSourcePortalInstanceId(item)
+				).put(
 					"status", PortalInstancesNotificationConstants.STATUS_FAILED
 				));
 		}
@@ -88,8 +91,65 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 		}
 	}
 
+	private String _getCopyErrorMessageKey(Exception exception) {
+		if (exception instanceof IllegalArgumentException) {
+			String message = GetterUtil.getString(exception.getMessage());
+
+			if (message.endsWith(" is the default company ID")) {
+				return "the-default-instance-cannot-be-copied";
+			}
+
+			return "please-enter-a-valid-destination-company-id";
+		}
+
+		if (exception instanceof UnsupportedOperationException) {
+			String message = GetterUtil.getString(exception.getMessage());
+
+			if (message.equals(
+					"Company in copy process company ID is not null")) {
+
+				return "copying-an-instance-is-already-in-progress";
+			}
+
+			if (message.equals("Database partitioning must be enabled")) {
+				return "database-partitioning-must-be-enabled";
+			}
+
+			return "an-unexpected-error-occurred";
+		}
+
+		Throwable throwable = exception.getCause();
+
+		if ((exception instanceof CompanyNameException) ||
+			(throwable instanceof CompanyNameException)) {
+
+			return "please-enter-a-valid-name";
+		}
+
+		if ((exception instanceof CompanyVirtualHostException) ||
+			(throwable instanceof CompanyVirtualHostException)) {
+
+			return "please-enter-a-valid-virtual-host";
+		}
+
+		if ((exception instanceof CompanyWebIdException) ||
+			(throwable instanceof CompanyWebIdException)) {
+
+			return "please-enter-a-valid-web-id";
+		}
+
+		return "an-unexpected-error-occurred";
+	}
+
 	private String _getErrorMessageKey(
 		Exception exception, String operationType) {
+
+		if (Objects.equals(
+				operationType,
+				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY)) {
+
+			return _getCopyErrorMessageKey(exception);
+		}
 
 		if (Objects.equals(
 				operationType,
@@ -240,6 +300,10 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 				return PortalInstancesNotificationConstants.OPERATION_TYPE_ADD;
 			}
 
+			if (item instanceof PortalInstanceCopy) {
+				return PortalInstancesNotificationConstants.OPERATION_TYPE_COPY;
+			}
+
 			if (item instanceof PortalInstanceExport) {
 				return PortalInstancesNotificationConstants.
 					OPERATION_TYPE_EXPORT;
@@ -263,6 +327,12 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 	}
 
 	private String _getPortalInstanceId(Object item) {
+		if (item instanceof PortalInstanceCopy) {
+			PortalInstanceCopy portalInstanceCopy = (PortalInstanceCopy)item;
+
+			return portalInstanceCopy.getWebId();
+		}
+
 		if (item instanceof PortalInstanceExport) {
 			PortalInstanceExport portalInstanceExport =
 				(PortalInstanceExport)item;
@@ -313,6 +383,16 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 
 			return null;
 		}
+	}
+
+	private String _getSourcePortalInstanceId(Object item) {
+		if (item instanceof PortalInstanceCopy) {
+			PortalInstanceCopy portalInstanceCopy = (PortalInstanceCopy)item;
+
+			return portalInstanceCopy.getSourcePortalInstanceId();
+		}
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
