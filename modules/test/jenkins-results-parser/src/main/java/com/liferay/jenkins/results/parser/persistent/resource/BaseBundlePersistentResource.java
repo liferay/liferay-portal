@@ -346,17 +346,17 @@ public abstract class BaseBundlePersistentResource
 
 			String producerBuildURL = null;
 
-			JenkinsMaster.QueueItem leftQueueItem =
+			JenkinsMaster.QueueItem queueItem =
 				producerJenkinsMaster.getQueueItem(producerQueueId);
 
-			if (leftQueueItem != null) {
-				if (leftQueueItem.isCancelled()) {
+			if (queueItem != null) {
+				if (queueItem.isCancelled()) {
 					_reinvokeCancelledQueueItem();
 
 					return;
 				}
 
-				producerBuildURL = leftQueueItem.getExecutableURL();
+				producerBuildURL = queueItem.getExecutableURL();
 			}
 
 			if (!JenkinsResultsParserUtil.isURL(producerBuildURL)) {
