@@ -110,8 +110,7 @@ public class TemplateRestrictedVariablesTest {
 			try {
 				_testRestrictedSAXReaderUtil(
 					"ACCESSIBLE", false, templateManager);
-				_testRestrictedSAXReaderUtil(
-					"DENIED", true, templateManager);
+				_testRestrictedSAXReaderUtil("DENIED", true, templateManager);
 			}
 			finally {
 				bundleContext.ungetService(serviceReference);
