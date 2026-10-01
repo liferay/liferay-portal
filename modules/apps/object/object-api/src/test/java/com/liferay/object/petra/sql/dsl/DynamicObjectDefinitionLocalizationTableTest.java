@@ -63,9 +63,9 @@ public class DynamicObjectDefinitionLocalizationTableTest {
 		String dbColumnName = RandomTestUtil.randomString();
 
 		Mockito.when(
-			objectField.getDBColumnName()
+			objectField.getDBColumnNames()
 		).thenReturn(
-			dbColumnName
+			new String[] {dbColumnName}
 		);
 
 		Mockito.when(

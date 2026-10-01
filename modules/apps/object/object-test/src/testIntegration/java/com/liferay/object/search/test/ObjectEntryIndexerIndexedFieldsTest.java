@@ -7,6 +7,7 @@ package com.liferay.object.search.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.field.builder.LocationObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.filter.ComplexQueryPartBuilderFactory;
+import com.liferay.portal.search.geolocation.GeoLocationPoint;
 import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.query.QueriesUtil;
@@ -35,6 +37,7 @@ import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.search.test.rule.SearchTestRule;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -43,6 +46,7 @@ import java.io.Serializable;
 
 import java.text.DateFormat;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -149,10 +153,66 @@ public class ObjectEntryIndexerIndexedFieldsTest {
 		Assert.assertEquals(1, searchResponse.getTotalHits());
 	}
 
+	@FeatureFlag("LPD-11388")
+	@Test
+	public void testIndexedLocationObjectField() throws Exception {
+		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Collections.singletonList(
+				new LocationObjectFieldBuilder(
+				).indexed(
+					true
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"location"
+				).build()));
+
+		String address = RandomTestUtil.randomString();
+		double latitude = RandomTestUtil.randomDouble();
+		double longitude = RandomTestUtil.randomDouble();
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			_objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			"en_US",
+			HashMapBuilder.<String, Serializable>put(
+				"location",
+				HashMapBuilder.<String, Serializable>put(
+					"address", address
+				).put(
+					"latitude", latitude
+				).put(
+					"longitude", longitude
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		SearchResponse searchResponse = _searcher.search(
+			_searchRequestBuilderFactory.builder(
+			).companyId(
+				TestPropsValues.getCompanyId()
+			).entryClassNames(
+				_objectDefinition.getClassName()
+			).queryString(
+				address
+			).build());
+
+		Assert.assertEquals(1, searchResponse.getTotalHits());
+
+		Document document = _getDocument(objectEntry.getObjectEntryId());
+
+		GeoLocationPoint geoLocationPoint = document.getGeoLocationPoint(
+			"location_geolocation");
+
+		Assert.assertEquals(latitude, geoLocationPoint.getLatitude(), 0.0001);
+		Assert.assertEquals(longitude, geoLocationPoint.getLongitude(), 0.0001);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	private String _getIndexedDisplayDate(long objectEntryId) throws Exception {
+	private Document _getDocument(long objectEntryId) throws Exception {
 		SearchResponse searchResponse = _searcher.search(
 			_searchRequestBuilderFactory.builder(
 			).companyId(
@@ -178,7 +238,11 @@ public class ObjectEntryIndexerIndexedFieldsTest {
 
 		SearchHit searchHit = searchHitsList.get(0);
 
-		Document document = searchHit.getDocument();
+		return searchHit.getDocument();
+	}
+
+	private String _getIndexedDisplayDate(long objectEntryId) throws Exception {
+		Document document = _getDocument(objectEntryId);
 
 		return document.getString(Field.DISPLAY_DATE);
 	}

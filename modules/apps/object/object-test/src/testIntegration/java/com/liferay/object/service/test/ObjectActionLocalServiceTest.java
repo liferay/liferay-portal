@@ -28,6 +28,8 @@ import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.test.util.ExpandoTestUtil;
+import com.liferay.map.geocoder.GeocoderResult;
+import com.liferay.map.test.util.GeocoderTestUtil;
 import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.notification.constants.NotificationRecipientSettingConstants;
@@ -63,7 +65,9 @@ import com.liferay.object.exception.ObjectActionSystemException;
 import com.liferay.object.exception.ObjectActionTriggerKeyException;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.field.builder.AutoIncrementObjectFieldBuilder;
+import com.liferay.object.field.builder.LocationObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectAction;
@@ -86,6 +90,7 @@ import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -2530,6 +2535,83 @@ public class ObjectActionLocalServiceTest {
 		}
 	}
 
+	@FeatureFlag("LPD-11388")
+	@Test
+	public void testExecuteObjectActionWithLocationObjectField()
+		throws Exception {
+
+		GeocoderResult geocoderResult = new GeocoderResult(
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble());
+
+		try (SafeCloseable safeCloseable =
+				GeocoderTestUtil.swapWithSafeCloseable(
+					geocoderResult,
+					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_LOCATION))) {
+
+			ObjectFieldUtil.addCustomObjectField(
+				new LocationObjectFieldBuilder(
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"location"
+				).objectDefinitionId(
+					_objectDefinition.getObjectDefinitionId()
+				).userId(
+					TestPropsValues.getUserId()
+				).build());
+
+			_objectDefinition = _publishCustomObjectDefinition();
+
+			String address = RandomTestUtil.randomString();
+
+			ObjectAction objectAction = _addObjectAction(
+				StringPool.BLANK,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				RandomTestUtil.randomString(),
+				ObjectActionExecutorConstants.KEY_UPDATE_OBJECT_ENTRY,
+				ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+				UnicodePropertiesBuilder.put(
+					"objectDefinitionId",
+					_objectDefinition.getObjectDefinitionId()
+				).put(
+					"predefinedValues",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"inputAsValue", true
+						).put(
+							"name", "location"
+						).put(
+							"value", address
+						)
+					).toString()
+				).build(),
+				false);
+
+			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"firstName", RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Map<String, Serializable> values = objectEntry.getValues();
+
+			Assert.assertEquals(
+				address,
+				MapUtil.getString(
+					(Map<String, Serializable>)values.get("location"),
+					"address"));
+
+			_objectActionLocalService.deleteObjectAction(objectAction);
+		}
+	}
+
 	@Test
 	public void testExecuteObjectActionWithUnmodifiableSystemObjectDefinition()
 		throws Exception {
@@ -4341,6 +4423,9 @@ public class ObjectActionLocalServiceTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldBusinessTypeRegistry _objectFieldBusinessTypeRegistry;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;

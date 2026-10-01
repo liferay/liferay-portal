@@ -61,7 +61,7 @@ public class ObjectFieldBusinessTypeTest {
 		Assert.assertEquals(
 			new HashMap<>(),
 			testObjectFieldBusinessType.getLocalizedValues(
-				_objectField, RandomTestUtil.randomLong(),
+				null, _objectField, RandomTestUtil.randomLong(),
 				Collections.singletonMap(
 					i18nObjectFieldName, new HashMap<>())));
 
@@ -69,7 +69,7 @@ public class ObjectFieldBusinessTypeTest {
 
 		try {
 			testObjectFieldBusinessType.getLocalizedValues(
-				_objectField, RandomTestUtil.randomLong(),
+				null, _objectField, RandomTestUtil.randomLong(),
 				Collections.singletonMap(
 					i18nObjectFieldName, RandomTestUtil.randomLong()));
 
@@ -91,13 +91,14 @@ public class ObjectFieldBusinessTypeTest {
 
 		Assert.assertNull(
 			testObjectFieldBusinessType.getLocalizedValues(
-				_objectField, RandomTestUtil.randomLong(), new HashMap<>()));
+				null, _objectField, RandomTestUtil.randomLong(),
+				new HashMap<>()));
 
 		// Null value
 
 		Assert.assertNull(
 			testObjectFieldBusinessType.getLocalizedValues(
-				_objectField, RandomTestUtil.randomLong(),
+				null, _objectField, RandomTestUtil.randomLong(),
 				Collections.singletonMap(i18nObjectFieldName, null)));
 	}
 

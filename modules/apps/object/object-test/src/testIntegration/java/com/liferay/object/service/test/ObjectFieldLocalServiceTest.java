@@ -386,7 +386,7 @@ public class ObjectFieldLocalServiceTest {
 			ObjectFieldLocalizedException.class,
 			StringBundler.concat(
 				"Only Attachment,Boolean,Date,DateTime,Decimal,Integer,",
-				"LongInteger,LongText,MultiselectPicklist,Picklist,",
+				"Location,LongInteger,LongText,MultiselectPicklist,Picklist,",
 				"PrecisionDecimal,RichText and Text business types support ",
 				"localization"),
 			() -> ObjectDefinitionTestUtil.addCustomObjectDefinition(
@@ -1429,6 +1429,9 @@ public class ObjectFieldLocalServiceTest {
 				Objects.equals(
 					objectFieldBusinessType.getName(),
 					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED) ||
+				Objects.equals(
+					objectFieldBusinessType.getName(),
+					ObjectFieldConstants.BUSINESS_TYPE_LOCATION) ||
 				Objects.equals(
 					objectFieldBusinessType.getName(),
 					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||

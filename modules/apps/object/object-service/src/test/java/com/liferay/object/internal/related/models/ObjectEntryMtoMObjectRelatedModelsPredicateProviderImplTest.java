@@ -183,9 +183,9 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImplTest
 		ObjectField objectField = Mockito.mock(ObjectField.class);
 
 		Mockito.when(
-			objectField.getDBColumnName()
+			objectField.getDBColumnNames()
 		).thenReturn(
-			"name_"
+			new String[] {"name_"}
 		);
 
 		Mockito.when(

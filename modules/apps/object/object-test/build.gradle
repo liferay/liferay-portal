@@ -49,6 +49,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-seo-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
+	testIntegrationImplementation project(":apps:map:map-api")
+	testIntegrationImplementation project(":apps:map:map-test-util")
 	testIntegrationImplementation project(":apps:notification:notification-api")
 	testIntegrationImplementation project(":apps:notification:notification-test-util")
 	testIntegrationImplementation project(":apps:object:object-admin-rest-api")

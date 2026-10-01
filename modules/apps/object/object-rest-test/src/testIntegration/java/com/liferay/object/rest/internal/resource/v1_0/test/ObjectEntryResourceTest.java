@@ -49,6 +49,8 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.map.geocoder.GeocoderResult;
+import com.liferay.map.test.util.GeocoderTestUtil;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
@@ -64,9 +66,11 @@ import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
+import com.liferay.object.field.builder.LocationObjectFieldBuilder;
 import com.liferay.object.field.builder.LongTextObjectFieldBuilder;
 import com.liferay.object.field.builder.RichTextObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
@@ -10875,6 +10879,147 @@ public class ObjectEntryResourceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	@FeatureFlag("LPD-11388")
+	@Test
+	public void testPostCustomObjectEntryWithLocalizedLocationObjectField()
+		throws Exception {
+
+		GeocoderResult geocoderResult = new GeocoderResult(
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble());
+
+		try (SafeCloseable safeCloseable =
+				GeocoderTestUtil.swapWithSafeCloseable(
+					geocoderResult,
+					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_LOCATION))) {
+
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionTestUtil.publishObjectDefinition(
+					Collections.singletonList(
+						new LocationObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).localized(
+							true
+						).name(
+							"location"
+						).build()));
+
+			String address = RandomTestUtil.randomString();
+			double latitude = RandomTestUtil.randomDouble();
+			double longitude = RandomTestUtil.randomDouble();
+
+			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"location_i18n",
+					JSONUtil.put(
+						"en_US", JSONUtil.put("address", address)
+					).put(
+						"pt_BR",
+						JSONUtil.put(
+							"coordinates",
+							JSONUtil.put(
+								"latitude", latitude
+							).put(
+								"longitude", longitude
+							))
+					)
+				).toString(),
+				objectDefinition.getRESTContextPath(), Http.Method.POST);
+
+			JSONObject i18nJSONObject = jsonObject.getJSONObject(
+				"location_i18n");
+
+			_assertLocationJSONObject(
+				address, geocoderResult.getLatitude(),
+				geocoderResult.getLongitude(),
+				i18nJSONObject.getJSONObject("en_US"));
+			_assertLocationJSONObject(
+				geocoderResult.getAddress(), latitude, longitude,
+				i18nJSONObject.getJSONObject("pt_BR"));
+		}
+	}
+
+	@FeatureFlag("LPD-11388")
+	@Test
+	public void testPostCustomObjectEntryWithLocationObjectField()
+		throws Exception {
+
+		GeocoderResult geocoderResult = new GeocoderResult(
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble());
+
+		try (SafeCloseable safeCloseable =
+				GeocoderTestUtil.swapWithSafeCloseable(
+					geocoderResult,
+					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_LOCATION))) {
+
+			String defaultValue = RandomTestUtil.randomString();
+
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionTestUtil.publishObjectDefinition(
+					Collections.singletonList(
+						new LocationObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).name(
+							"location"
+						).objectFieldSettings(
+							Arrays.asList(
+								new ObjectFieldSettingBuilder(
+								).name(
+									ObjectFieldSettingConstants.
+										NAME_DEFAULT_VALUE
+								).value(
+									JSONUtil.put(
+										"address", defaultValue
+									).toString()
+								).build(),
+								new ObjectFieldSettingBuilder(
+								).name(
+									ObjectFieldSettingConstants.
+										NAME_DEFAULT_VALUE_TYPE
+								).value(
+									ObjectFieldSettingConstants.
+										VALUE_INPUT_AS_VALUE
+								).build())
+						).build()));
+
+			String address = RandomTestUtil.randomString();
+
+			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"location", JSONUtil.put("address", address)
+				).toString(),
+				objectDefinition.getRESTContextPath(), Http.Method.POST);
+
+			_assertLocationJSONObject(
+				address, geocoderResult.getLatitude(),
+				geocoderResult.getLongitude(),
+				jsonObject.getJSONObject("location"));
+
+			_objectValidationRuleLocalService.addObjectValidationRule(
+				StringUtil.randomString(), TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(), true,
+				ObjectValidationRuleConstants.ENGINE_TYPE_DDM,
+				LocalizedMapUtil.getLocalizedMap("Field must not be empty"),
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
+				"not(isEmpty(location))", false, Collections.emptyList());
+
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				String.valueOf(_jsonFactory.createJSONObject()),
+				objectDefinition.getRESTContextPath(), Http.Method.POST);
+
+			_assertLocationJSONObject(
+				defaultValue, geocoderResult.getLatitude(),
+				geocoderResult.getLongitude(),
+				jsonObject.getJSONObject("location"));
+		}
+	}
+
 	@Test
 	public void testPostCustomObjectEntryWithManyToOneRelationshipPriorities()
 		throws Exception {
@@ -16447,6 +16592,24 @@ public class ObjectEntryResourceTest {
 				String.valueOf(jsonObject2.get(objectFieldName)),
 				JSONCompareMode.STRICT);
 		}
+	}
+
+	private void _assertLocationJSONObject(
+		String expectedAddress, double expectedLatitude,
+		double expectedLongitude, JSONObject locationJSONObject) {
+
+		Assert.assertEquals(
+			expectedAddress, locationJSONObject.getString("address"));
+
+		JSONObject coordinatesJSONObject = locationJSONObject.getJSONObject(
+			"coordinates");
+
+		Assert.assertEquals(
+			expectedLatitude, coordinatesJSONObject.getDouble("latitude"),
+			0.0001);
+		Assert.assertEquals(
+			expectedLongitude, coordinatesJSONObject.getDouble("longitude"),
+			0.0001);
 	}
 
 	private void _assertNestedFieldsFieldsInRelationships(
@@ -22899,6 +23062,9 @@ public class ObjectEntryResourceTest {
 
 	@Inject
 	private ObjectEntryService _objectEntryService;
+
+	@Inject
+	private ObjectFieldBusinessTypeRegistry _objectFieldBusinessTypeRegistry;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;

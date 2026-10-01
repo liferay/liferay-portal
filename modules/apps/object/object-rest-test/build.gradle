@@ -26,6 +26,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-delivery:headless-delivery-api")
 	testIntegrationImplementation project(":apps:headless:headless-object:headless-object-api")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
+	testIntegrationImplementation project(":apps:map:map-api")
+	testIntegrationImplementation project(":apps:map:map-test-util")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
 	testIntegrationImplementation project(":apps:object:object-admin-rest-api")
 	testIntegrationImplementation project(":apps:object:object-api")

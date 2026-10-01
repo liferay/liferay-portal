@@ -53,6 +53,28 @@ public class ObjectFieldImplTest {
 	}
 
 	@Test
+	public void testGetDBColumnNames() {
+		ObjectField objectField = _getLocationObjectField();
+
+		Assert.assertArrayEquals(
+			new String[] {
+				"address_" + objectField.getDBColumnName(),
+				"latitude_" + objectField.getDBColumnName(),
+				"longitude_" + objectField.getDBColumnName()
+			},
+			objectField.getDBColumnNames());
+	}
+
+	@Test
+	public void testGetDefaultDBColumnName() {
+		ObjectField objectField = _getLocationObjectField();
+
+		Assert.assertEquals(
+			"address_" + objectField.getDBColumnName(),
+			objectField.getDefaultDBColumnName());
+	}
+
+	@Test
 	public void testGetDefaultLanguageId() {
 		ObjectField objectField = new ObjectFieldImpl();
 
@@ -82,6 +104,23 @@ public class ObjectFieldImplTest {
 		_testGetReadOnly(
 			ObjectFieldConstants.READ_ONLY_TRUE,
 			ObjectFieldConstants.READ_ONLY_TRUE);
+	}
+
+	@Test
+	public void testHasMultipleDBColumns() {
+		ObjectField objectField = _getLocationObjectField();
+
+		Assert.assertTrue(objectField.hasMultipleDBColumns());
+	}
+
+	private ObjectField _getLocationObjectField() {
+		ObjectField objectField = new ObjectFieldImpl();
+
+		objectField.setBusinessType(
+			ObjectFieldConstants.BUSINESS_TYPE_LOCATION);
+		objectField.setDBColumnName(RandomTestUtil.randomString());
+
+		return objectField;
 	}
 
 	private void _testGetAttachmentDownloadActionKey(

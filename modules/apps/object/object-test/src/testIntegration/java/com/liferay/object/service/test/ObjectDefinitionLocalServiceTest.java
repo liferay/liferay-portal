@@ -66,6 +66,7 @@ import com.liferay.object.exception.ObjectDefinitionSystemException;
 import com.liferay.object.exception.ObjectDefinitionValidationException;
 import com.liferay.object.exception.ObjectDefinitionValidationException.ValidationError;
 import com.liferay.object.exception.ObjectDefinitionVersionException;
+import com.liferay.object.exception.ObjectFieldBusinessTypeException;
 import com.liferay.object.exception.ObjectFieldLabelException;
 import com.liferay.object.exception.ObjectFieldListTypeDefinitionIdException;
 import com.liferay.object.exception.ObjectFieldNameException;
@@ -76,6 +77,7 @@ import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.BooleanObjectFieldBuilder;
 import com.liferay.object.field.builder.DateObjectFieldBuilder;
 import com.liferay.object.field.builder.DateTimeObjectFieldBuilder;
+import com.liferay.object.field.builder.LocationObjectFieldBuilder;
 import com.liferay.object.field.builder.LongIntegerObjectFieldBuilder;
 import com.liferay.object.field.builder.ObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
@@ -192,6 +194,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -4733,6 +4736,7 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectFolderLocalService.deleteObjectFolder(objectFolder);
 	}
 
+	@FeatureFlag("LPD-11388")
 	@Test
 	public void testUpdateTitleObjectFieldId() throws Exception {
 		ObjectDefinition objectDefinition =
@@ -4749,6 +4753,29 @@ public class ObjectDefinitionLocalServiceTest {
 		catch (NoSuchObjectFieldException noSuchObjectFieldException) {
 			Assert.assertNotNull(noSuchObjectFieldException);
 		}
+
+		ObjectDefinition finalObjectDefinition = objectDefinition;
+
+		AssertUtils.assertFailure(
+			ObjectFieldBusinessTypeException.class,
+			"Business type location cannot be used as the title object field",
+			() -> {
+				ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+					new LocationObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						StringUtil.randomId()
+					).objectDefinitionId(
+						finalObjectDefinition.getObjectDefinitionId()
+					).userId(
+						TestPropsValues.getUserId()
+					).build());
+
+				_objectDefinitionLocalService.updateTitleObjectFieldId(
+					finalObjectDefinition.getObjectDefinitionId(),
+					objectField.getObjectFieldId());
+			});
 
 		ObjectField objectField1 = _objectFieldLocalService.getObjectField(
 			objectDefinition.getObjectDefinitionId(), "externalReferenceCode");
