@@ -342,6 +342,15 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 	}
 
 	@Override
+	public WorkflowInstance updateContext(
+			long workflowInstanceId, Map<String, Serializable> workflowContext)
+		throws PortalException {
+
+		return _workflowEngine.updateContext(
+			workflowInstanceId, workflowContext);
+	}
+
+	@Override
 	public WorkflowInstance updateWorkflowContext(
 			long companyId, long workflowInstanceId,
 			Map<String, Serializable> workflowContext)

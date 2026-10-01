@@ -262,6 +262,17 @@ public class WorkflowInstanceManagerUtil {
 			waitForCompletion);
 	}
 
+	public static WorkflowInstance updateContext(
+			long workflowInstanceId, Map<String, Serializable> workflowContext)
+		throws PortalException {
+
+		WorkflowInstanceManager workflowInstanceManager =
+			_workflowInstanceManagerSnapshot.get();
+
+		return workflowInstanceManager.updateContext(
+			workflowInstanceId, workflowContext);
+	}
+
 	public static WorkflowInstance updateWorkflowContext(
 			long companyId, long workflowInstanceId,
 			Map<String, Serializable> workflowContext)

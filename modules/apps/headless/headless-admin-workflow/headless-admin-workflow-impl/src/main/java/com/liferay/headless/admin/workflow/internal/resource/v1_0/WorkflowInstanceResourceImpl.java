@@ -93,8 +93,8 @@ public class WorkflowInstanceResourceImpl
 		throws Exception {
 
 		return _toWorkflowInstance(
-			_workflowInstanceManager.updateWorkflowContext(
-				contextCompany.getCompanyId(), workflowInstanceId,
+			_workflowInstanceManager.updateContext(
+				workflowInstanceId,
 				_getWorkflowContext(
 					workflowInstance.getContext(), workflowInstanceId)));
 	}

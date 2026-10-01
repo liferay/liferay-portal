@@ -163,6 +163,10 @@ public interface WorkflowEngine {
 		throws WorkflowException;
 
 	public WorkflowInstance updateContext(
+			long workflowInstanceId, Map<String, Serializable> workflowContext)
+		throws PortalException;
+
+	public WorkflowInstance updateContext(
 			long workflowInstanceId, Map<String, Serializable> workflowContext,
 			ServiceContext serviceContext)
 		throws WorkflowException;

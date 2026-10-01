@@ -165,6 +165,13 @@ public interface WorkflowInstanceManager {
 		throw new UnsupportedOperationException();
 	}
 
+	public default WorkflowInstance updateContext(
+			long workflowInstanceId, Map<String, Serializable> workflowContext)
+		throws PortalException {
+
+		throw new UnsupportedOperationException();
+	}
+
 	public WorkflowInstance updateWorkflowContext(
 			long companyId, long workflowInstanceId,
 			Map<String, Serializable> workflowContext)
