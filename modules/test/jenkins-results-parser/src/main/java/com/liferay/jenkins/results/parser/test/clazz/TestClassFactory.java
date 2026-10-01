@@ -516,11 +516,19 @@ public class TestClassFactory {
 			long duration = System.currentTimeMillis() - start;
 
 			if (duration > 500) {
+				String testClassName = testClassMethodName;
+
+				if (testClassFile != null) {
+					testClassName = testClassFile.toString();
+				}
+				else if (jsonObject != null) {
+					testClassName = jsonObject.optString("file");
+				}
+
 				System.out.println(
 					JenkinsResultsParserUtil.combine(
 						"[", batchTestClassGroup.getBatchName(),
-						"] Created test class for ", testClassFile.toString(),
-						" in ",
+						"] Created test class for ", testClassName, " in ",
 						JenkinsResultsParserUtil.toDurationString(duration)));
 			}
 		}

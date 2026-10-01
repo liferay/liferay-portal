@@ -5,13 +5,18 @@
 
 package com.liferay.jenkins.results.parser.test.clazz;
 
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
+import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroupTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.JUnitBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.ModulesJUnitBatchTestClassGroup;
 
 import java.io.File;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,6 +53,33 @@ public class TestClassFactoryTest
 			jUnitBatchTestClassGroup, modulesJUnitBatchTestClassGroup);
 		_testNewTestClass(
 			modulesJUnitBatchTestClassGroup, jUnitBatchTestClassGroup);
+	}
+
+	@Test
+	public void testNewTestClassJSONObject() {
+		JSONObject jsonObject = new JSONObject() {
+
+			@Override
+			public String getString(String key) {
+				JenkinsResultsParserUtil.sleep(600);
+
+				return super.getString(key);
+			}
+
+		};
+
+		String fileName = RandomTestUtil.randomString();
+
+		jsonObject.put(
+			"file", fileName
+		).put(
+			"methods", new JSONArray()
+		);
+
+		TestClass testClass = TestClassFactory.newTestClass(
+			Mockito.mock(BatchTestClassGroup.class), jsonObject);
+
+		testEquals(new File(fileName), testClass.getTestClassFile());
 	}
 
 	@Rule
