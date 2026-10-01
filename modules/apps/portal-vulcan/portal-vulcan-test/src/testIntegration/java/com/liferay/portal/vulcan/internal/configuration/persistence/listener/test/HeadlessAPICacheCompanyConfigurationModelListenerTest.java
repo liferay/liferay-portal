@@ -23,7 +23,6 @@ import java.util.Dictionary;
 import java.util.Locale;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -139,32 +138,9 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 
 	@Test
 	public void testOnBeforeSaveWithPathMissingLeadingSlash() throws Exception {
-		try {
-			_configurationModelListener.onBeforeSave(
-				StringPool.BLANK,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"cacheControl", "public"
-				).put(
-					"maxAge", 0
-				).put(
-					"path", "captcha/v1.0/captcha/challenge"
-				).build());
-
-			Assert.fail();
-		}
-		catch (ConfigurationModelListenerException
-					configurationModelListenerException) {
-
-			String message = configurationModelListenerException.getMessage();
-
-			Assert.assertTrue(
-				message,
-				message.contains(
-					_language.get(
-						LocaleUtil.US,
-						"headless-api-cacheable-endpoint-path-must-start-" +
-							"with-a-slash")));
-		}
+		_assertInvalidPath(
+			"headless-api-cacheable-endpoint-path-must-start-with-a-slash",
+			"captcha/v1.0/captcha/challenge");
 	}
 
 	@Test
@@ -183,51 +159,9 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 		_assertInvalidCacheControl("no-store");
 	}
 
-	private void _assertInvalidCacheControl(String cacheControl)
-		throws Exception {
+	private void _assertFailure(
+		Dictionary<String, Object> dictionary, String key) {
 
-		try {
-			_configurationModelListener.onBeforeSave(
-				StringPool.BLANK, _createDictionary(cacheControl, 0));
-
-			Assert.fail();
-		}
-		catch (ConfigurationModelListenerException
-					configurationModelListenerException) {
-
-			String message = configurationModelListenerException.getMessage();
-
-			Assert.assertTrue(
-				message,
-				message.contains(
-					_language.get(
-						LocaleUtil.US,
-						"cache-control-must-be-public-or-private")));
-		}
-	}
-
-	private void _assertInvalidMaxAge(int maxAge) throws Exception {
-		try {
-			_configurationModelListener.onBeforeSave(
-				StringPool.BLANK, _createDictionary("public", maxAge));
-
-			Assert.fail();
-		}
-		catch (ConfigurationModelListenerException
-					configurationModelListenerException) {
-
-			String message = configurationModelListenerException.getMessage();
-
-			Assert.assertTrue(
-				message,
-				message.contains(
-					_language.get(
-						LocaleUtil.US,
-						"headless-api-cache-max-age-out-of-range")));
-		}
-	}
-
-	private void _assertInvalidPath(String key, String path) {
 		AssertUtils.assertFailure(
 			ConfigurationModelListenerException.class,
 			StringBundler.concat(
@@ -238,7 +172,23 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 				"configuration.HeadlessAPICacheCompanyConfiguration: ",
 				_language.get(LocaleUtil.US, key)),
 			() -> _configurationModelListener.onBeforeSave(
-				StringPool.BLANK, _createDictionary("public", 0, path)));
+				StringPool.BLANK, dictionary));
+	}
+
+	private void _assertInvalidCacheControl(String cacheControl) {
+		_assertFailure(
+			_createDictionary(cacheControl, 0),
+			"cache-control-must-be-public-or-private");
+	}
+
+	private void _assertInvalidMaxAge(int maxAge) {
+		_assertFailure(
+			_createDictionary("public", maxAge),
+			"headless-api-cache-max-age-out-of-range");
+	}
+
+	private void _assertInvalidPath(String key, String path) {
+		_assertFailure(_createDictionary("public", 0, path), key);
 	}
 
 	private Dictionary<String, Object> _createDictionary(
