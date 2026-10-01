@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {OBJECT_ENTRY_CLASS_NAME} from '../../../../src/main/resources/META-INF/resources/js/common/utils/constants';
+import {
+	ASSET_STATUS_TO_DISPLAY_TYPE,
+	OBJECT_ENTRY_CLASS_NAME,
+} from '../../../../src/main/resources/META-INF/resources/js/common/utils/constants';
 import {openCMSModal} from '../../../../src/main/resources/META-INF/resources/js/common/utils/openCMSModal';
 import openResetAssetPermissionModal from '../../../../src/main/resources/META-INF/resources/js/main_view/default_permission/ResetPermissionModalContent';
 import AssetNavigationModalContent from '../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent';
 import AssetsFDSPropsTransformer from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/AssetsFDSPropsTransformer';
 import ACTIONS from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/actions/creationMenuActions';
 import shareAction from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/actions/shareAction';
+import transformViewsItemProps from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/utils/transformViewsItemProps';
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	replaceTokens: jest.fn(),
@@ -224,6 +228,35 @@ describe('AssetsFDSPropsTransformer', () => {
 		});
 
 		expect(result.hideManagementBarInEmptyState).toBe(true);
+	});
+
+	it('shows the status label on the gallery view cards', () => {
+		AssetsFDSPropsTransformer({
+			additionalProps: {...mockAdditionalProps, galleryViewEnabled: true},
+			creationMenu: {primaryItems: []},
+			id: 'com.liferay.site.cms.site.initializer-filesSection',
+			views: [],
+		});
+
+		expect(transformViewsItemProps).toHaveBeenCalledWith(
+			expect.objectContaining({
+				views: [
+					expect.objectContaining({
+						name: 'gallery',
+						schema: expect.objectContaining({
+							labels: [
+								{
+									displayTypeKey: 'embedded.status.label',
+									displayTypeValues:
+										ASSET_STATUS_TO_DISPLAY_TYPE,
+									value: 'embedded.status.label_i18n',
+								},
+							],
+						}),
+					}),
+				],
+			})
+		);
 	});
 
 	it('honors hideManagementBarInEmptyState in the All Section', () => {
