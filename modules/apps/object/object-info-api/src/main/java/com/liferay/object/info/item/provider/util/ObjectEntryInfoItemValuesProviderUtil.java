@@ -189,8 +189,9 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 			}
 
 			ObjectDefinition parentObjectDefinition =
-				objectDefinitionLocalService.getObjectDefinition(
-					objectRelationship.getObjectDefinitionId1());
+				_getParentObjectDefinition(
+					objectDefinitionLocalService, objectRelationship,
+					serviceBuilderRelatedObjectEntry);
 
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
 				parentObjectDefinition, objectEntryManagerRegistry,
@@ -729,6 +730,21 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 			).values(
 				listTypeEntry.getNameMap()
 			).build());
+	}
+
+	private static ObjectDefinition _getParentObjectDefinition(
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			ObjectRelationship objectRelationship,
+			com.liferay.object.model.ObjectEntry
+				serviceBuilderRelatedObjectEntry)
+		throws Exception {
+
+		if (serviceBuilderRelatedObjectEntry == null) {
+			return objectDefinitionLocalService.getObjectDefinition(
+				objectRelationship.getObjectDefinitionId1());
+		}
+
+		return serviceBuilderRelatedObjectEntry.getObjectDefinition();
 	}
 
 	private static WebImage _getWebImage(
