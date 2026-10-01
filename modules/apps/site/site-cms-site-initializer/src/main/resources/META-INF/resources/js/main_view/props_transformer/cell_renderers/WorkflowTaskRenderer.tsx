@@ -47,7 +47,7 @@ const WorkflowTaskRenderer = ({itemData}: {itemData: WorkflowTask}) => {
 							>
 								{itemData.objectReviewed.assetTitle}
 							</a>,
-							itemData.name,
+							itemData.label,
 						]
 					)}
 				</p>

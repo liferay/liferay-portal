@@ -16,6 +16,7 @@ export interface WorkflowTask {
 	completed: boolean;
 	dateDue: string;
 	id: string;
+	label: string;
 	myWorkflowTasksURL: string;
 	name: string;
 	objectReviewed: {
