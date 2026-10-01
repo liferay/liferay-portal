@@ -95,7 +95,7 @@ tests:
                     pattern: join kind=leftouter \(\\n\\tresources\\n\\t\| where type in \(.microsoft.dataprotection/backupvaults., .microsoft.storage/storageaccounts.\)
             -   notMatchRegex:
                     path: data["backups.json"]
-                    pattern: backupjobs.[^"]*join kind=inner
+                    pattern: join kind=inner
         documentSelector:
             path: metadata.name
             value: RELEASE-NAME-observability-dashboard-backups
@@ -158,7 +158,10 @@ tests:
                     pattern: resourceGroups/liferay-test/providers/Microsoft.Storage/storageAccounts/\$\{__value.raw\}/overview
             -   matchRegex:
                     path: data["backups.json"]
-                    pattern: "\"name\": \"backupInstance\""
+                    pattern: az dataprotection backup-instance list[^<]*--vault-name \$\{backupVault\}[^<]*\| xargs -I % az dataprotection recovery-point list[^<]*--backup-instance-name %
+            -   notMatchRegex:
+                    path: data["backups.json"]
+                    pattern: \$\{backupInstance\}
             -   matchRegex:
                     path: data["backups.json"]
                     pattern: "\"name\": \"backupListEndTime\""
