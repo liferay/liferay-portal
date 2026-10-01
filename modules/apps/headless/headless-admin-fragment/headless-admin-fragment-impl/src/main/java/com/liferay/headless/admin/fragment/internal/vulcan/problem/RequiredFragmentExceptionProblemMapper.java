@@ -38,7 +38,7 @@ public class RequiredFragmentExceptionProblemMapper
 
 			@Override
 			public Status getStatus() {
-				return Status.BAD_REQUEST;
+				return Status.CONFLICT;
 			}
 
 			@Override
