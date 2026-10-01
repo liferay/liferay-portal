@@ -97,7 +97,7 @@ test.describe('Manage object definitions through Model Builder', () => {
 		await modelBuilderDiagramPage.fitViewButton.click();
 
 		await modelBuilderDiagramPage.objectDefinitionNodes
-			.filter({hasText: commerceOrderItemLabel})
+			.getByText(commerceOrderItemLabel, {exact: true})
 			.click();
 
 		await expect(
