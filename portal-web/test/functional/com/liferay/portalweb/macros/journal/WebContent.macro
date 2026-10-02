@@ -1049,10 +1049,9 @@ definition {
 		WebContent.addCP(webContentTitle = ${webContentTitleEdit});
 
 		if (isSet(webContentContentEdit)) {
-			Type(
-				key_fieldLabel = "Content",
-				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
-				value1 = ${webContentContentEdit});
+			CKEditor.addContentInWebContent(
+				content = ${webContentContentEdit},
+				fieldLabel = "Content");
 		}
 
 		if (isSet(webContentWebContent)) {
