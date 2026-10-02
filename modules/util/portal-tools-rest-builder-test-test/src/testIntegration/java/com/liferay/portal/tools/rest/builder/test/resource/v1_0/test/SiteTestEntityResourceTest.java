@@ -235,7 +235,7 @@ public class SiteTestEntityResourceTest
 	}
 
 	private SiteTestEntityResource _createSiteTestEntityResource(
-			String importStrategy, String updateStrategy)
+			String... parameters)
 		throws Exception {
 
 		User testCompanyAdminUser = UserTestUtil.getAdminUser(
@@ -250,10 +250,8 @@ public class SiteTestEntityResourceTest
 			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
-		).parameter(
-			"importStrategy", importStrategy
-		).parameter(
-			"updateStrategy", updateStrategy
+		).parameters(
+			parameters
 		).build();
 	}
 
@@ -278,6 +276,41 @@ public class SiteTestEntityResourceTest
 									siteTestEntity.toString()))
 						).getContent()));
 		}
+
+		String description = RandomTestUtil.randomString();
+
+		siteTestEntity.setDescription(description);
+
+		SiteTestEntity randomSiteTestEntity = randomSiteTestEntity();
+
+		Page<SiteTestEntity> page =
+			siteTestEntityResource.getSiteSiteTestEntitiesPage(
+				testGroup.getGroupId());
+
+		SiteTestEntityResource siteTestEntityResource =
+			_createSiteTestEntityResource("createStrategy", "UPSERT");
+
+		_waitForFinish(
+			"COMPLETED", true,
+			JSONFactoryUtil.createJSONObject(
+				siteTestEntityResource.postSiteSiteTestEntityBatchHttpResponse(
+					testGroup.getGroupId(), null,
+					JSONUtil.putAll(
+						JSONFactoryUtil.createJSONObject(
+							siteTestEntity.toString()),
+						JSONFactoryUtil.createJSONObject(
+							randomSiteTestEntity.toString()))
+				).getContent()));
+
+		_assertSiteSiteTestEntitiesCount(
+			String.valueOf(testGroup.getGroupId()), page.getTotalCount() + 1);
+
+		SiteTestEntity actualSiteTestEntity =
+			siteTestEntityResource.getSiteSiteTestEntityByExternalReferenceCode(
+				testGroup.getGroupId(),
+				siteTestEntity.getExternalReferenceCode());
+
+		Assert.assertEquals(description, actualSiteTestEntity.getDescription());
 	}
 
 	private void _testPutSiteTestEntityBatch() throws Exception {
@@ -297,7 +330,9 @@ public class SiteTestEntityResourceTest
 				LoggerTestUtil.ERROR)) {
 
 			SiteTestEntityResource siteTestEntityResource =
-				_createSiteTestEntityResource("ON_ERROR_CONTINUE", "UPDATE");
+				_createSiteTestEntityResource(
+					"importStrategy", "ON_ERROR_CONTINUE", "updateStrategy",
+					"UPDATE");
 
 			_waitForFinish(
 				"COMPLETED", true,

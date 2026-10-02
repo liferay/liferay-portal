@@ -22,45 +22,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 5
-	test CanCreateAndUpdateBlogPostingWithBatchPostCreateStrategyUpsert {
-		property portal.acceptance = "true";
-
-		task ("Given I use POST with parameter createStrategy set to UPSERT to create two blog posts") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I repeat the same request changing all the parameters of the second blog post") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2,
-				testCase = "updateOneBlogPosting");
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("And Then the 3 blog postings are visible as created") {
-			var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated();
-
-			TestUtils.assertEquals(
-				actual = ${actualNumberOfBlogPostings},
-				expected = 3);
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 5
 	test CanCreateBaseCommentWithBatchPostCreateStrategyInsert {
 		property portal.acceptance = "true";
 
@@ -95,36 +56,6 @@ definition {
 			TestUtils.assertEquals(
 				actual = ${blogCommentsText},
 				expected = "<p>commentText1</p>,<p>commentText2</p>");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 5
-	test CanCreateBlogPostingWithBatchPostCreateStrategyUpsert {
-		property portal.acceptance = "true";
-
-		task ("Given I use POST with parameter createStrategy set to UPSERT to create two blog posts") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("And Then the 2 blog postings are created") {
-			var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated();
-
-			TestUtils.assertEquals(
-				actual = ${actualNumberOfBlogPostings},
-				expected = 2);
 		}
 	}
 
@@ -251,44 +182,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 5
-	test CanUpdateBlogPostingWithBatchPostCreateStrategyUpsertWhenOneOfThemAlreadyExisting {
-		property portal.acceptance = "true";
-
-		task ("Given I use POST with parameter createStrategy set to UPSERT to create two blog posts") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I repeat the same request again") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("And Then the number of blog posting exiting is correct") {
-			var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated();
-
-			TestUtils.assertEquals(
-				actual = ${actualNumberOfBlogPostings},
-				expected = 2);
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 5
 	test CanUpdateOneFieldOfBlogPostingWithBatchPutPartialUpdate {
 		property portal.acceptance = "true";
 
@@ -324,44 +217,6 @@ definition {
 			TestUtils.assertEquals(
 				actual = ${blogPostingHeadline},
 				expected = "Updated Headline");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
-	test CanUpdateWithBatchPostCreateStrategyUpsertBlogPostingCreatedWithBatchPostCreateStrategyInsert {
-		property portal.acceptance = "true";
-
-		task ("Given I use POST with parameter createStrategy set to INSERT to create two blog posts") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I use POST with parameter createStrategy set to UPSERT with the same data") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("And Then the 2 blog postings are visible as created") {
-			var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated();
-
-			TestUtils.assertEquals(
-				actual = ${actualNumberOfBlogPostings},
-				expected = 2);
 		}
 	}
 
