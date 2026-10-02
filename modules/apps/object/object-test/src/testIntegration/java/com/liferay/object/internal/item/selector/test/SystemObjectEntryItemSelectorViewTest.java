@@ -169,6 +169,17 @@ public class SystemObjectEntryItemSelectorViewTest {
 			Assert.assertEquals(
 				user.getEmailAddress(),
 				itemDescriptor.getTitle(LocaleUtil.getDefault()));
+
+			objectField = _objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(), "name");
+
+			_objectDefinitionLocalService.updateTitleObjectFieldId(
+				objectDefinition.getObjectDefinitionId(),
+				objectField.getObjectFieldId());
+
+			Assert.assertEquals(
+				user.getFullName(),
+				itemDescriptor.getTitle(LocaleUtil.getDefault()));
 		}
 		finally {
 			_objectDefinitionLocalService.updateTitleObjectFieldId(

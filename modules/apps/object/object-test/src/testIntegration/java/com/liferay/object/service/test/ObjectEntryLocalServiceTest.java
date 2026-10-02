@@ -6445,6 +6445,45 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetSystemModelAttributes() throws Exception {
+
+		// Localized value from the DTO
+
+		CommerceCatalog commerceCatalog = CPTestUtil.getSystemCommerceCatalog(
+			TestPropsValues.getCompanyId());
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			commerceCatalog.getGroupId());
+
+		Map<String, Object> systemModelAttributes =
+			_objectEntryLocalService.getSystemModelAttributes(
+				_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+					TestPropsValues.getCompanyId(),
+					CPDefinition.class.getName()),
+				cpDefinition.getCProductId());
+
+		Assert.assertEquals(
+			cpDefinition.getName(), systemModelAttributes.get("name"));
+
+		_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
+
+		// Unlocalized values from the DTO and the model
+
+		User user = UserTestUtil.addUser();
+
+		systemModelAttributes =
+			_objectEntryLocalService.getSystemModelAttributes(
+				_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+					TestPropsValues.getCompanyId(), User.class.getName()),
+				user.getUserId());
+
+		Assert.assertEquals(
+			user.getFullName(), systemModelAttributes.get("name"));
+		Assert.assertEquals(
+			user.getStatus(), systemModelAttributes.get("status"));
+	}
+
+	@Test
 	public void testGetTitleValue() throws Exception {
 
 		// Modifiable custom object definition
