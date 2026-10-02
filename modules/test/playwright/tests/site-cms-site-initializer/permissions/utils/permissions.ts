@@ -22,7 +22,7 @@ export async function clickMenuItem(
 					exact: true,
 					name: menuitem,
 				})
-				.click({timeout: 1000});
+				.click();
 		}
 		else {
 			await (await getTableRowByText(page, objectName))
@@ -31,7 +31,7 @@ export async function clickMenuItem(
 
 			await handleClickMenuItem(menuitem, page);
 		}
-	}).toPass();
+	}).toPass({timeout: 10000});
 }
 
 export async function createSpace(page, spaceName: string) {
@@ -82,7 +82,7 @@ export async function handleClickMenuItem(menuitem: string, page) {
 					name: menuitem,
 				})
 				.and(page.locator(':not([aria-haspopup="true"])'))
-				.click({timeout: 1000});
+				.click();
 		}
 		else {
 			await page
@@ -90,7 +90,7 @@ export async function handleClickMenuItem(menuitem: string, page) {
 					exact: true,
 					name: menuitem,
 				})
-				.click({timeout: 1000});
+				.click();
 		}
 	}).toPass({timeout: 5000});
 }
