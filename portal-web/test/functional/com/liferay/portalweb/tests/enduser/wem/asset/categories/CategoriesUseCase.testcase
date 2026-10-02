@@ -487,21 +487,24 @@ definition {
 			}
 		}
 
-		task ("Cannot add multiple categories") {
+		task ("Pick both categories for a web content") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 			WebContentNavigator.gotoAddCP();
 
 			WebContent.addWithMultipleCategories(
-				allowMultipleCategories = "false",
 				categoryNameList = "Category Name 1,Category Name 2",
 				vocabularyName = "Vocabulary Name",
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
+		}
 
-			WebContent.viewCategorizationCategoryCP(
-				categoryNameList = "Category Name 1,Category Name 2",
-				webContentTitle = "Web Content Title");
+		task ("View only the last category picked was kept") {
+			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+
+			WebContent.viewCategorizationCategoryCP(categoryNameList = "Category Name 2");
+
+			WebContent.viewCategorizationCategoryNotVisibleCP(categoryNameList = "Category Name 1");
 		}
 	}
 
