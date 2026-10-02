@@ -14,7 +14,6 @@ import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
-import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
 import com.liferay.exportimport.kernel.background.task.constants.LayoutSetPrototypeBackgroundTaskConstants;
@@ -52,6 +51,8 @@ import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.LayoutParentLayoutIdException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -95,7 +96,6 @@ import com.liferay.portal.kernel.service.ResourcePermissionServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -496,65 +496,41 @@ public class LayoutSetPrototypePropagationTest
 
 		long userId = TestPropsValues.getUserId();
 
-		com.liferay.portal.background.task.model.BackgroundTask backgroundTask =
-			_backgroundTaskLocalService.createBackgroundTask(
-				_counterLocalService.increment());
+		try (SafeCloseable safeCloseable = _registerServiceWithSafeCloseable(
+				BackgroundTaskExecutor.class,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"background.task.executor.class.name",
+					BackgroundTaskExecutorNames.
+						LAYOUT_SET_PROTOTYPE_MERGE_BACKGROUND_TASK_EXECUTOR
+				).put(
+					"service.ranking", 1000
+				).build(),
+				new TestBackgroundTaskExecutor(Collections.emptyMap()) {
 
-		backgroundTask.setGroupId(group.getGroupId());
-		backgroundTask.setCompanyId(group.getCompanyId());
-		backgroundTask.setUserId(userId);
-		backgroundTask.setTaskExecutorClassName(
-			BackgroundTaskExecutorNames.
-				LAYOUT_SET_PROTOTYPE_MERGE_BACKGROUND_TASK_EXECUTOR);
+					@Override
+					public BackgroundTaskResult execute(
+						BackgroundTask backgroundTask) {
 
-		Bundle bundle = FrameworkUtil.getBundle(
-			_layoutSetPrototypeMergeBackgroundTaskStatusMessageListener.
-				getClass());
+						Session session =
+							_backgroundTaskSessionFactory.getCurrentSession();
 
-		backgroundTask.setTaskContextMap(
-			ReflectionTestUtil.invoke(
-				bundle.loadClass(
-					"com.liferay.site.internal.exportimport.internal." +
-						"notifications.LayoutSetPrototypeNotificationUtil"),
-				"buildTaskContextMap",
-				new Class<?>[] {
-					List.class, LayoutSetPrototype.class, boolean.class,
-					long.class
-				},
-				Collections.singletonList(group.getPublicLayoutSet()),
-				_layoutSetPrototype, false, userId));
+						session.flush();
 
-		backgroundTask.setCompleted(true);
-		backgroundTask.setCompletionDate(new Date());
-		backgroundTask.setStatus(BackgroundTaskConstants.STATUS_SUCCESSFUL);
+						session.clear();
 
-		backgroundTask = _backgroundTaskLocalService.updateBackgroundTask(
-			backgroundTask);
+						_backgroundTaskPersistence.clearCache();
 
-		_backgroundTaskPersistence.clearCache(backgroundTask);
+						return super.execute(backgroundTask);
+					}
 
-		long timestamp = System.currentTimeMillis();
+				})) {
 
-		Message message = new Message();
+			long timestamp = System.currentTimeMillis();
 
-		message.put(
-			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
-			backgroundTask.getBackgroundTaskId());
-		message.put("status", BackgroundTaskConstants.STATUS_SUCCESSFUL);
-		message.put(
-			"taskExecutorClassName", backgroundTask.getTaskExecutorClassName());
+			_sites.mergeLayoutSetPrototypeLayouts(_layoutSetPrototype, userId);
 
-		_layoutSetPrototypeMergeBackgroundTaskStatusMessageListener.receive(
-			message);
-
-		_assertNotification("successful", timestamp, userId);
-
-		List<com.liferay.portal.background.task.model.BackgroundTask>
-			backgroundTasks = _backgroundTaskLocalService.getBackgroundTasks(
-				group.getGroupId(), backgroundTask.getTaskExecutorClassName());
-
-		Assert.assertEquals(
-			backgroundTasks.toString(), 0, backgroundTasks.size());
+			_assertNotification("successful", timestamp, userId);
+		}
 	}
 
 	@Test
@@ -1931,8 +1907,10 @@ public class LayoutSetPrototypePropagationTest
 	@Inject
 	private BackgroundTaskPersistence _backgroundTaskPersistence;
 
-	@Inject
-	private CounterLocalService _counterLocalService;
+	@Inject(
+		filter = "origin.bundle.symbolic.name=com.liferay.portal.background.task.service"
+	)
+	private SessionFactory _backgroundTaskSessionFactory;
 
 	@DeleteAfterTestRun
 	private CTCollection _ctCollection;
@@ -1968,12 +1946,6 @@ public class LayoutSetPrototypePropagationTest
 
 	@DeleteAfterTestRun
 	private Layout _layoutSetPrototypeLayout;
-
-	@Inject(
-		filter = "component.name=com.liferay.site.internal.exportimport.internal.messaging.LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener"
-	)
-	private MessageListener
-		_layoutSetPrototypeMergeBackgroundTaskStatusMessageListener;
 
 	private String _portletId;
 
