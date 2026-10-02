@@ -61,45 +61,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 4
-	test CannotUpdateExternalReferenceCodeWithBatchPutUpdateStrategyUpdate {
-		property portal.acceptance = "true";
-
-		task ("Given blog post created") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				numberOfBlogPostings = 1);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I use PUT '/blog-postings/batch' with parameter createStrategy set to UPDATE with non existing externalReferenceCode as one of the updated fields") {
-			var importTaskId = BlogPostingAPI.getIdOfUpdatedBlogPostingBatchEngineImportTask(
-				numberOfBlogPostings = 1,
-				testCase = "updateAllFields",
-				updateStrategy = "UPDATE");
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: COMPLETED") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("Then all the fields are updated except the externalRefferenceCode") {
-			var blogPostingData = BlogPostingAPI.getBlogPostingDataToString();
-
-			TestUtils.assertEquals(
-				actual = ${blogPostingData},
-				expected = "headlineUpdated,articleBodyUpdated,erc0");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
 	test MessageErrorIsThrownWhenMethodNotImplemented {
 		property portal.acceptance = "true";
 

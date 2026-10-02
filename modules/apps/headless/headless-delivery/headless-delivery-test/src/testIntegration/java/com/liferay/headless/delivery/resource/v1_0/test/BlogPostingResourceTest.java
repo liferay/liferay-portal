@@ -160,6 +160,8 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefCategorySiteKeyNonnull();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefCategoryNamei18n();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefNonsiteBlog();
+
+		_testPutBlogPostingExternalReferenceCode();
 	}
 
 	@Override
@@ -296,6 +298,17 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 
 		return testGetSiteBlogPostingsPage_addBlogPosting(
 			testGroup.getGroupId(), randomBlogPosting);
+	}
+
+	private void _testPutBlogPostingExternalReferenceCode() throws Exception {
+		BlogPosting postBlogPosting = testPutBlogPosting_addBlogPosting();
+
+		BlogPosting putBlogPosting = blogPostingResource.putBlogPosting(
+			postBlogPosting.getId(), randomBlogPosting());
+
+		Assert.assertEquals(
+			postBlogPosting.getExternalReferenceCode(),
+			putBlogPosting.getExternalReferenceCode());
 	}
 
 	private void _testPutBlogPostingSuccessTaxonomyCategoryBriefCategoryNamei18n()
