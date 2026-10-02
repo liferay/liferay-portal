@@ -116,30 +116,26 @@ public class LayoutPageTemplateDisplayContext {
 			return _layoutPageTemplateCollectionId;
 		}
 
-		long defaultLayoutPageTemplateCollectionId = 0;
-
-		List<LayoutPageTemplateCollection> layoutPageTemplateCollections =
-			getLayoutPageTemplateCollections();
-
-		if (ListUtil.isNotEmpty(layoutPageTemplateCollections)) {
-			LayoutPageTemplateCollection layoutPageTemplateCollection =
-				layoutPageTemplateCollections.get(0);
-
-			defaultLayoutPageTemplateCollectionId =
-				layoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId();
-		}
-
 		long layoutPageTemplateCollectionId = GetterUtil.getLong(
 			_httpServletRequest.getAttribute(
 				LayoutPageTemplateAdminWebKeys.
-					LAYOUT_PAGE_TEMPLATE_COLLECTION_ID),
-			ParamUtil.getLong(
-				_httpServletRequest, "layoutPageTemplateCollectionId"));
+					LAYOUT_PAGE_TEMPLATE_COLLECTION_ID));
+
+		if (layoutPageTemplateCollectionId <= 0) {
+			LayoutPageTemplateCollection layoutPageTemplateCollection =
+				LayoutPageTemplatePortletUtil.fetchLayoutPageTemplateCollection(
+					_httpServletRequest, _themeDisplay.getScopeGroupId());
+
+			if (layoutPageTemplateCollection != null) {
+				layoutPageTemplateCollectionId =
+					layoutPageTemplateCollection.
+						getLayoutPageTemplateCollectionId();
+			}
+		}
 
 		if (layoutPageTemplateCollectionId <= 0) {
 			layoutPageTemplateCollectionId =
-				defaultLayoutPageTemplateCollectionId;
+				_getDefaultLayoutPageTemplateCollectionId();
 		}
 
 		_layoutPageTemplateCollectionId = layoutPageTemplateCollectionId;
@@ -383,6 +379,20 @@ public class LayoutPageTemplateDisplayContext {
 		return LayoutPageTemplatePermission.contains(
 			_themeDisplay.getPermissionChecker(),
 			_themeDisplay.getSiteGroupId(), actionId);
+	}
+
+	private long _getDefaultLayoutPageTemplateCollectionId() {
+		List<LayoutPageTemplateCollection> layoutPageTemplateCollections =
+			getLayoutPageTemplateCollections();
+
+		if (ListUtil.isEmpty(layoutPageTemplateCollections)) {
+			return 0;
+		}
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			layoutPageTemplateCollections.get(0);
+
+		return layoutPageTemplateCollection.getLayoutPageTemplateCollectionId();
 	}
 
 	private final HttpServletRequest _httpServletRequest;
