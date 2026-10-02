@@ -9,6 +9,7 @@ import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.processor.util.FragmentEntryHtmlParserUtil;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -30,7 +31,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -100,7 +100,7 @@ public class RenderFragmentEntryStrutsAction implements StrutsAction {
 			return null;
 		}
 
-		Document document = Jsoup.parse(content);
+		Document document = FragmentEntryHtmlParserUtil.parse(content);
 
 		Element bodyElement = document.body();
 

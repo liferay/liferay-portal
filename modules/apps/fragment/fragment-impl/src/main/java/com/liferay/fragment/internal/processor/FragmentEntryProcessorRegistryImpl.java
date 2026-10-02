@@ -17,6 +17,7 @@ import com.liferay.fragment.processor.FragmentEntryProcessor;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.processor.FragmentEntryValidator;
+import com.liferay.fragment.processor.util.FragmentEntryHtmlParserUtil;
 import com.liferay.fragment.renderer.FragmentPortletRenderer;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
@@ -49,7 +50,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -411,14 +411,7 @@ public class FragmentEntryProcessorRegistryImpl
 		Document document = _documentPortalCache.get(html);
 
 		if (document == null) {
-			document = Jsoup.parseBodyFragment(html);
-
-			Document.OutputSettings outputSettings =
-				new Document.OutputSettings();
-
-			outputSettings.prettyPrint(false);
-
-			document.outputSettings(outputSettings);
+			document = FragmentEntryHtmlParserUtil.parseBodyFragment(html);
 
 			_documentPortalCache.put(html, document);
 		}
