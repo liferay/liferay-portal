@@ -12,9 +12,11 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageTemplatesPagesTest} from '../../../fixtures/pageTemplatesPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import getRandomString from '../../../utils/getRandomString';
+import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
 
 const test = mergeTests(
 	dataApiHelpersTest,
+	designLibrariesPageTest,
 	featureFlagsTest({
 		'LPD-57283': {enabled: true},
 	}),
@@ -25,10 +27,19 @@ const test = mergeTests(
 );
 
 test(
-	'Can add a page from a content page template of a connected design library',
-	{tag: ['@LPD-105565', '@LPD-105566', '@LPD-106766', '@LPD-106987']},
+	'Can open the page template sets and add a page from a template',
+	{
+		tag: [
+			'@LPD-105565',
+			'@LPD-105566',
+			'@LPD-106766',
+			'@LPD-106987',
+			'@LPD-107947',
+		],
+	},
 	async ({
 		apiHelpers,
+		designLibrariesPage,
 		page,
 		pageEditorPage,
 		pageTemplatesPage,
@@ -55,29 +66,16 @@ test(
 			site.externalReferenceCode
 		);
 
-		// Add a fragment to the design library
+		// Add an empty page template set
 
-		const fragmentCollectionName = getRandomString();
+		const emptyLayoutPageTemplateCollectionName = getRandomString();
 
-		const fragmentCollection =
-			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
-				{
-					groupId: String(designLibrary.siteId),
-					name: fragmentCollectionName,
-				}
-			);
-
-		const fragmentEntryName = getRandomString();
-		const fragmentEntryText = getRandomString();
-
-		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
-			fragmentCollectionId: String(
-				fragmentCollection.fragmentCollectionId
-			),
-			groupId: String(designLibrary.siteId),
-			html: `<p>${fragmentEntryText}</p>`,
-			name: fragmentEntryName,
-		});
+		await apiHelpers.jsonWebServicesLayoutPageTemplateCollection.addLayoutPageTemplateCollection(
+			{
+				groupId: String(designLibrary.siteId),
+				name: emptyLayoutPageTemplateCollectionName,
+			}
+		);
 
 		// Add a content page template to the design library
 
@@ -102,9 +100,63 @@ test(
 			}
 		);
 
-		// Add a heading and the fragment to the template, and publish it
+		// Check each template set opens its own content
 
-		await pageTemplatesPage.goto(designLibrary.friendlyURL);
+		await designLibrariesPage.goToPageTemplateCollection(
+			designLibraryName,
+			emptyLayoutPageTemplateCollectionName
+		);
+
+		await expect(
+			page.getByRole('heading', {
+				name: emptyLayoutPageTemplateCollectionName,
+			})
+		).toBeVisible();
+
+		await expect(
+			page.getByText('There are no page templates.')
+		).toBeVisible();
+
+		await designLibrariesPage.goToPageTemplateCollection(
+			designLibraryName,
+			layoutPageTemplateCollectionName
+		);
+
+		await expect(
+			page.getByRole('heading', {name: layoutPageTemplateCollectionName})
+		).toBeVisible();
+
+		await expect(
+			page
+				.locator('.card-type-asset')
+				.filter({hasText: layoutPageTemplateEntryName})
+		).toBeVisible();
+
+		// Add a fragment to the design library
+
+		const fragmentCollectionName = getRandomString();
+
+		const fragmentCollection =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: String(designLibrary.siteId),
+					name: fragmentCollectionName,
+				}
+			);
+
+		const fragmentEntryName = getRandomString();
+		const fragmentEntryText = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId: String(
+				fragmentCollection.fragmentCollectionId
+			),
+			groupId: String(designLibrary.siteId),
+			html: `<p>${fragmentEntryText}</p>`,
+			name: fragmentEntryName,
+		});
+
+		// Add a heading and the fragment to the template, and publish it
 
 		await pageTemplatesPage.clickAction(
 			'Edit',

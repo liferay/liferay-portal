@@ -136,6 +136,17 @@ export class DesignLibrariesPage extends POM {
 		await designLibraryLink.click();
 	}
 
+	async goToPageTemplateCollection(
+		designLibraryName: string,
+		pageTemplateCollectionName: string
+	) {
+		await this.goToDesignLibrary(designLibraryName);
+
+		await this.page
+			.getByRole('link', {exact: true, name: pageTemplateCollectionName})
+			.click();
+	}
+
 	override async waitFor() {
 		await this.page
 			.locator('.data-set-content-wrapper')
