@@ -82,6 +82,18 @@ public class DiscountAccountSerDes {
 			sb.append(discountAccount.getAccountId());
 		}
 
+		if (discountAccount.getAccountType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+			sb.append(discountAccount.getAccountType());
+			sb.append("\"");
+		}
+
 		if (discountAccount.getActions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -171,6 +183,15 @@ public class DiscountAccountSerDes {
 				"accountId", String.valueOf(discountAccount.getAccountId()));
 		}
 
+		if (discountAccount.getAccountType() == null) {
+			map.put("accountType", null);
+		}
+		else {
+			map.put(
+				"accountType",
+				String.valueOf(discountAccount.getAccountType()));
+		}
+
 		if (discountAccount.getActions() == null) {
 			map.put("actions", null);
 		}
@@ -234,6 +255,9 @@ public class DiscountAccountSerDes {
 			else if (Objects.equals(jsonParserFieldName, "accountId")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
 				return true;
 			}
@@ -275,6 +299,13 @@ public class DiscountAccountSerDes {
 				if (jsonParserFieldValue != null) {
 					discountAccount.setAccountId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				if (jsonParserFieldValue != null) {
+					discountAccount.setAccountType(
+						DiscountAccount.AccountType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
@@ -390,4 +421,4 @@ public class DiscountAccountSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-920852968
+// LIFERAY-REST-BUILDER-HASH:-446658134

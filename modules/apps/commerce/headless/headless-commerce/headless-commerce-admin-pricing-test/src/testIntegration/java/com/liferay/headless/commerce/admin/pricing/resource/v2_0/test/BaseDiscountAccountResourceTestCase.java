@@ -1193,6 +1193,14 @@ public abstract class BaseDiscountAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("accountType", additionalAssertFieldName)) {
+				if (discountAccount.getAccountType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("actions", additionalAssertFieldName)) {
 				if (discountAccount.getActions() == null) {
 					valid = false;
@@ -1383,6 +1391,17 @@ public abstract class BaseDiscountAccountResourceTestCase {
 				if (!Objects.deepEquals(
 						discountAccount1.getAccountId(),
 						discountAccount2.getAccountId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("accountType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discountAccount1.getAccountType(),
+						discountAccount2.getAccountType())) {
 
 					return false;
 				}
@@ -1599,6 +1618,11 @@ public abstract class BaseDiscountAccountResourceTestCase {
 		}
 
 		if (entityFieldName.equals("accountId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("accountType")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1968,4 +1992,4 @@ public abstract class BaseDiscountAccountResourceTestCase {
 		DiscountAccountResource _discountAccountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:663427877
+// LIFERAY-REST-BUILDER-HASH:1051716491

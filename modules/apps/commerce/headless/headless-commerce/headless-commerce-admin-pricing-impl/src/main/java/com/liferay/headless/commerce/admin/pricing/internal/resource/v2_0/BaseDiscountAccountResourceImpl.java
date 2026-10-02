@@ -281,7 +281,7 @@ public abstract class BaseDiscountAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/by-externalReferenceCode/{externalReferenceCode}/discount-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "discountExternalReferenceCode": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/by-externalReferenceCode/{externalReferenceCode}/discount-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "accountType": ___, "discountExternalReferenceCode": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates discount account link for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
@@ -321,7 +321,7 @@ public abstract class BaseDiscountAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "discountExternalReferenceCode": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "accountType": ___, "discountExternalReferenceCode": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates discount account link for Discount by ID."
@@ -1117,4 +1117,4 @@ public abstract class BaseDiscountAccountResourceImpl
 		LogFactoryUtil.getLog(BaseDiscountAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:300128735
+// LIFERAY-REST-BUILDER-HASH:448897599
