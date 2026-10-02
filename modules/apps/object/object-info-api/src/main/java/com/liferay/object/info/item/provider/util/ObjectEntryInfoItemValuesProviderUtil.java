@@ -174,9 +174,13 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					objectRelationship.getObjectDefinitionId1());
 
 			com.liferay.object.model.ObjectEntry
+				serviceBuilderRelatedObjectEntry = null;
+
+			if (serviceBuilderObjectEntry != null) {
 				serviceBuilderRelatedObjectEntry =
 					serviceBuilderObjectEntry.getRelatedObjectEntry(
 						objectField.getName());
+			}
 
 			if (serviceBuilderRelatedObjectEntry == null) {
 				long objectEntryId = GetterUtil.getLong(
