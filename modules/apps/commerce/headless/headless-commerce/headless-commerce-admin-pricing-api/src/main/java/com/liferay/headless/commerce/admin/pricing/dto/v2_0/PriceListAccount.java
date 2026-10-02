@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.admin.pricing.dto.v2_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -196,6 +199,64 @@ public class PriceListAccount implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Long> _accountIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Type of the account named by `accountExternalReferenceCode`. An import needs it to create the account as an empty stub when the account does not exist yet, because the type cannot be changed after an account is created."
+	)
+	@JsonGetter("accountType")
+	@Valid
+	public AccountType getAccountType() {
+		if (_accountTypeSupplier != null) {
+			accountType = _accountTypeSupplier.get();
+
+			_accountTypeSupplier = null;
+		}
+
+		return accountType;
+	}
+
+	@JsonIgnore
+	public String getAccountTypeAsString() {
+		AccountType accountType = getAccountType();
+
+		if (accountType == null) {
+			return null;
+		}
+
+		return accountType.toString();
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
+
+		_accountTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAccountType(
+		UnsafeSupplier<AccountType, Exception> accountTypeUnsafeSupplier) {
+
+		_accountTypeSupplier = () -> {
+			try {
+				return accountTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Type of the account named by `accountExternalReferenceCode`. An import needs it to create the account as an empty stub when the account does not exist yet, because the type cannot be changed after an account is created."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected AccountType accountType;
+
+	@JsonIgnore
+	private Supplier<AccountType> _accountTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
@@ -502,6 +563,20 @@ public class PriceListAccount implements Serializable {
 			sb.append(accountId);
 		}
 
+		AccountType accountType = getAccountType();
+
+		if (accountType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+			sb.append(accountType);
+			sb.append("\"");
+		}
+
 		Map<String, Map<String, String>> actions = getActions();
 
 		if (actions != null) {
@@ -578,6 +653,45 @@ public class PriceListAccount implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("AccountType")
+	public static enum AccountType {
+
+		BUSINESS("business"), GUEST("guest"), PERSON("person"),
+		SUPPLIER("supplier");
+
+		@JsonCreator
+		public static AccountType create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (AccountType accountType : values()) {
+				if (Objects.equals(accountType.getValue(), value)) {
+					return accountType;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private AccountType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
@@ -689,4 +803,4 @@ public class PriceListAccount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1693108008
+// LIFERAY-REST-BUILDER-HASH:-631545804

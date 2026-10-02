@@ -82,6 +82,18 @@ public class PriceListAccountSerDes {
 			sb.append(priceListAccount.getAccountId());
 		}
 
+		if (priceListAccount.getAccountType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+			sb.append(priceListAccount.getAccountType());
+			sb.append("\"");
+		}
+
 		if (priceListAccount.getActions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -181,6 +193,15 @@ public class PriceListAccountSerDes {
 				"accountId", String.valueOf(priceListAccount.getAccountId()));
 		}
 
+		if (priceListAccount.getAccountType() == null) {
+			map.put("accountType", null);
+		}
+		else {
+			map.put(
+				"accountType",
+				String.valueOf(priceListAccount.getAccountType()));
+		}
+
 		if (priceListAccount.getActions() == null) {
 			map.put("actions", null);
 		}
@@ -252,6 +273,9 @@ public class PriceListAccountSerDes {
 			else if (Objects.equals(jsonParserFieldName, "accountId")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
 				return true;
 			}
@@ -299,6 +323,13 @@ public class PriceListAccountSerDes {
 				if (jsonParserFieldValue != null) {
 					priceListAccount.setAccountId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				if (jsonParserFieldValue != null) {
+					priceListAccount.setAccountType(
+						PriceListAccount.AccountType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
@@ -423,4 +454,4 @@ public class PriceListAccountSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1551135367
+// LIFERAY-REST-BUILDER-HASH:909356499

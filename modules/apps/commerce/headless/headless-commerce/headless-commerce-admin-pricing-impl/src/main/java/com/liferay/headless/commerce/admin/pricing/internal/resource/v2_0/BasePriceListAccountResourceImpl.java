@@ -281,7 +281,7 @@ public abstract class BasePriceListAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/by-externalReferenceCode/{externalReferenceCode}/price-list-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "order": ___, "priceListExternalReferenceCode": ___, "priceListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/by-externalReferenceCode/{externalReferenceCode}/price-list-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "accountType": ___, "order": ___, "priceListExternalReferenceCode": ___, "priceListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates price list account link for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
@@ -322,7 +322,7 @@ public abstract class BasePriceListAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-list-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "order": ___, "priceListExternalReferenceCode": ___, "priceListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-list-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "accountType": ___, "order": ___, "priceListExternalReferenceCode": ___, "priceListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates price list account link for PriceList by ID."
@@ -1111,4 +1111,4 @@ public abstract class BasePriceListAccountResourceImpl
 		LogFactoryUtil.getLog(BasePriceListAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-248559780
+// LIFERAY-REST-BUILDER-HASH:397414332
