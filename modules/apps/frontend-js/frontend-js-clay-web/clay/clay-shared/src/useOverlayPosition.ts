@@ -92,7 +92,10 @@ function defaultOffset(points: AlignPoints) {
 
 const VERTICAL_FLIP = {b: 't', t: 'b'} as const;
 
-const constrainedSources = new WeakSet<HTMLElement>();
+const constrainedSources = new WeakMap<
+	HTMLElement,
+	{constrained: string; previous: string}
+>();
 
 function constrainHeightToViewport(
 	points: AlignPoints,
@@ -100,8 +103,12 @@ function constrainHeightToViewport(
 	targetElement: HTMLElement,
 	getOffset: (points: AlignPoints) => [number, number]
 ): AlignPoints {
-	if (constrainedSources.has(sourceElement)) {
-		sourceElement.style.maxHeight = '';
+	const constrainedSource = constrainedSources.get(sourceElement);
+
+	if (constrainedSource) {
+		if (sourceElement.style.maxHeight === constrainedSource.constrained) {
+			sourceElement.style.maxHeight = constrainedSource.previous;
+		}
 
 		constrainedSources.delete(sourceElement);
 	}
@@ -143,9 +150,14 @@ function constrainHeightToViewport(
 		return points;
 	}
 
-	sourceElement.style.maxHeight = `${space}px`;
+	const constrained = `${space}px`;
 
-	constrainedSources.add(sourceElement);
+	constrainedSources.set(sourceElement, {
+		constrained,
+		previous: sourceElement.style.maxHeight,
+	});
+
+	sourceElement.style.maxHeight = constrained;
 
 	return spaceBelow >= spaceAbove ? belowPoints : abovePoints;
 }
