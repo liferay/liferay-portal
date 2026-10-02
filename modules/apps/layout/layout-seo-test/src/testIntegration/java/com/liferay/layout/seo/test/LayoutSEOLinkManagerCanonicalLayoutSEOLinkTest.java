@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -471,6 +472,9 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	}
 
 	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),

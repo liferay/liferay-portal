@@ -66,6 +66,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -1736,6 +1737,9 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 	}
 
 	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
