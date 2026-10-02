@@ -33,7 +33,7 @@ public class EditableFragmentEntryProcessorUtilTest {
 		_testGetEditableTypesWithEditableTag();
 	}
 
-	private void _assertEditableTypesOrder(String html) {
+	private void _testGetEditableTypes(String html) {
 		Map<String, String> editableTypes =
 			EditableFragmentEntryProcessorUtil.getEditableTypes(html);
 
@@ -44,7 +44,7 @@ public class EditableFragmentEntryProcessorUtilTest {
 	}
 
 	private void _testGetEditableTypesWithEditableIdAttribute() {
-		_assertEditableTypesOrder(
+		_testGetEditableTypes(
 			StringBundler.concat(
 				"<div><div data-lfr-editable-id=\"title\" ",
 				"data-lfr-editable-type=\"text\"></div><div ",
@@ -61,7 +61,7 @@ public class EditableFragmentEntryProcessorUtilTest {
 	}
 
 	private void _testGetEditableTypesWithEditableTag() {
-		_assertEditableTypesOrder(
+		_testGetEditableTypes(
 			StringBundler.concat(
 				"<div><lfr-editable id=\"title\" type=\"text\"></lfr-editable>",
 				"<lfr-editable id=\"image\" type=\"image\"></lfr-editable>",
