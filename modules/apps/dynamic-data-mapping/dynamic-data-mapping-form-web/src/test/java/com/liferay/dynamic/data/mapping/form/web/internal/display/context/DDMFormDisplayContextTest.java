@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.portlet.MockRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockRenderResponse;
@@ -78,6 +79,7 @@ import jakarta.portlet.RenderRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -439,6 +441,27 @@ public class DDMFormDisplayContextTest {
 
 		Assert.assertEquals(
 			expectedDDMFormFieldOptions, actualDDMFormFieldOptions);
+	}
+
+	@Test
+	public void testGetErrorMessages() throws Exception {
+		RenderRequest renderRequest = _mockRenderRequest();
+
+		SessionErrors.add(
+			renderRequest, IllegalStateException.class,
+			new IllegalStateException("<b>Illegal State Exception</b>"));
+		SessionErrors.add(
+			renderRequest, PortalException.class,
+			new PortalException("Portal Exception"));
+
+		DDMFormDisplayContext ddmFormDisplayContext =
+			_createDDMFormDisplayContext(renderRequest);
+
+		Assert.assertEquals(
+			Collections.singletonMap(
+				IllegalStateException.class.getName(),
+				"&lt;b&gt;Illegal State Exception&lt;/b&gt;"),
+			ddmFormDisplayContext.getErrorMessages());
 	}
 
 	@Test
