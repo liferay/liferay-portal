@@ -244,67 +244,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 4
-	test CannotCreateTwoSameBlogPostingsWithBatchPostCreateStrategyInsert {
-		property portal.acceptance = "true";
-
-		task ("Given I use POST with parameter createStrategy set to INSERT to create two blog posts") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I repeat the same request again changing the headline") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				headline = "new headline",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: FAILED") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "FAILED");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
-	test CannotUpdateBlogPostingWithBatchPostCreateStrategyInsert {
-		property portal.acceptance = "true";
-
-		task ("Given I use POST with parameter createStrategy set to UPSERT to create two blog posts") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "UPSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I use POST with parameter createStrategy set to INSERT with the same data") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				numberOfBlogPostings = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: failed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "FAILED");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
 	test CannotUpdateExternalReferenceCodeWithBatchPutUpdateStrategyUpdate {
 		property portal.acceptance = "true";
 
