@@ -112,8 +112,6 @@ public class GradleTaskFailureMessageGeneratorTest
 					"Starting build\n", _JAVA_ERROR_LINE,
 					"\n  symbol: class Bar\n1 error\n"));
 
-		Assert.assertNotNull(messageElement);
-
 		String text = messageElement.getText();
 
 		Assert.assertTrue(text, text.startsWith(_JAVA_ERROR_LINE));
@@ -125,8 +123,6 @@ public class GradleTaskFailureMessageGeneratorTest
 			_gradleTaskFailureMessageGenerator.getMessageElement(
 				JenkinsResultsParserUtil.combine(
 					_getLongLine(), "\n", _JAVA_ERROR_LINE, "\n1 error\n"));
-
-		Assert.assertNotNull(messageElement);
 
 		String text = messageElement.getText();
 
@@ -317,8 +313,6 @@ public class GradleTaskFailureMessageGeneratorTest
 		Element messageElement =
 			_gradleTaskFailureMessageGenerator.getMessageElement(sb.toString());
 
-		Assert.assertNotNull(messageElement);
-
 		String text = messageElement.getText();
 
 		Assert.assertTrue(text, text.contains(taskFailedLine.trim()));
@@ -357,8 +351,6 @@ public class GradleTaskFailureMessageGeneratorTest
 		Element messageElement =
 			_gradleTaskFailureMessageGenerator.getMessageElement(consoleText);
 
-		Assert.assertNotNull(messageElement);
-
 		return messageElement.getText();
 	}
 
@@ -393,9 +385,6 @@ public class GradleTaskFailureMessageGeneratorTest
 
 			return;
 		}
-
-		Assert.assertNotNull(message);
-		Assert.assertNotNull(messageElement);
 
 		String text = messageElement.getText();
 
