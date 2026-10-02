@@ -10,9 +10,12 @@ import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.headless.delivery.client.dto.v1_0.Comment;
+import com.liferay.headless.delivery.client.pagination.Page;
+import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -23,6 +26,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.junit.Assert;
@@ -592,6 +596,14 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 	@Test
 	public void testGraphQLPostStructuredContentComment() throws Exception {
 		super.testGraphQLPostStructuredContentComment();
+	}
+
+	@Override
+	@Test
+	public void testPostBlogPostingComment() throws Exception {
+		super.testPostBlogPostingComment();
+
+		_testPostBlogPostingCommentBatch();
 	}
 
 	@Override
@@ -1288,6 +1300,31 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 		}
 
 		return text;
+	}
+
+	private void _testPostBlogPostingCommentBatch() throws Exception {
+		Long blogPostingId = testGetBlogPostingCommentsPage_getBlogPostingId();
+
+		Comment comment1 = randomComment();
+		Comment comment2 = randomComment();
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(
+				commentResource.postBlogPostingCommentBatchHttpResponse(
+					blogPostingId, null,
+					JSONUtil.putAll(
+						JSONUtil.put("text", comment1.getText()),
+						JSONUtil.put("text", comment2.getText()))
+				).getContent()));
+
+		Page<Comment> page = commentResource.getBlogPostingCommentsPage(
+			blogPostingId, null, null, null, Pagination.of(1, 2), null);
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertContains(comment1, (List<Comment>)page.getItems());
+		assertContains(comment2, (List<Comment>)page.getItems());
 	}
 
 	private BlogsEntry _blogsEntry;

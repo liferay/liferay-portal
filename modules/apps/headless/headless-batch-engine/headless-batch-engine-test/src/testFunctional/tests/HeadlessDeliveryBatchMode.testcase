@@ -21,45 +21,6 @@ definition {
 	}
 
 	@disable-webdriver = "true"
-	@priority = 5
-	test CanCreateBaseCommentWithBatchPostCreateStrategyInsert {
-		property portal.acceptance = "true";
-
-		task ("Given a blogPosting created") {
-			var blogPostingId = BlogPostingAPI.getIdOfCreatedBlogPosting(
-				articleBody = "myArticleBody",
-				headline = "headline of my blog posting");
-		}
-
-		task ("When I use POST headless-delivery/v1.0/blog-postings/{blogPostingId}/comments/batch?createStrategy=INSERT to create two base comments") {
-			var importTaskId = CommentAPI.getIdOfCreateNCommentsInBlogPostingBatchEngineImportTask(
-				blogPostingId = ${blogPostingId},
-				createStrategy = "INSERT",
-				numberOfCommentsToCreate = 2);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("And Then the blog comments are created properly") {
-			var blogCommentsText = CommentAPI.getFieldValueOfBlogPostingComments(
-				blogPostingId = ${blogPostingId},
-				fieldName = "text");
-
-			TestUtils.assertEquals(
-				actual = ${blogCommentsText},
-				expected = "<p>commentText1</p>,<p>commentText2</p>");
-		}
-	}
-
-	@disable-webdriver = "true"
 	@priority = 4
 	test MessageErrorIsThrownWhenMethodNotImplemented {
 		property portal.acceptance = "true";
