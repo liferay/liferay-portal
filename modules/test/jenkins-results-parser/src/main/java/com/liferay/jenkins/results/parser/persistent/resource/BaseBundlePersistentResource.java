@@ -385,7 +385,9 @@ public abstract class BaseBundlePersistentResource
 			if (_missingCount >= _MAX_MISSING_COUNT) {
 				_missingCount = 0;
 
-				if (_queueReinvocationCount >= _MAX_QUEUE_REINVOCATION_COUNT) {
+				if (_queueReinvocationsCount >=
+						_MAX_QUEUE_REINVOCATIONS_COUNT) {
+
 					print("No queue reinvocation attempts remaining");
 
 					setStatus(Status.FAILED);
@@ -395,13 +397,13 @@ public abstract class BaseBundlePersistentResource
 					return;
 				}
 
-				_queueReinvocationCount++;
+				_queueReinvocationsCount++;
 
 				print(
 					JenkinsResultsParserUtil.combine(
 						"Reinvoking bundles (",
-						String.valueOf(_queueReinvocationCount), " of ",
-						String.valueOf(_MAX_QUEUE_REINVOCATION_COUNT),
+						String.valueOf(_queueReinvocationsCount), " of ",
+						String.valueOf(_MAX_QUEUE_REINVOCATIONS_COUNT),
 						") after missing queue item"));
 
 				start();
@@ -738,7 +740,9 @@ public abstract class BaseBundlePersistentResource
 	}
 
 	private void _reinvokeCancelledQueueItem() {
-		if (_cancelledReinvocationCount >= _MAX_CANCELLED_REINVOCATION_COUNT) {
+		if (_cancelledReinvocationsCount >=
+				_MAX_CANCELLED_REINVOCATIONS_COUNT) {
+
 			print("No cancelled queue item reinvocation attempts remaining");
 
 			setStatus(Status.FAILED);
@@ -748,13 +752,13 @@ public abstract class BaseBundlePersistentResource
 			return;
 		}
 
-		_cancelledReinvocationCount++;
+		_cancelledReinvocationsCount++;
 
 		print(
 			JenkinsResultsParserUtil.combine(
 				"Reinvoking bundles (",
-				String.valueOf(_cancelledReinvocationCount), " of ",
-				String.valueOf(_MAX_CANCELLED_REINVOCATION_COUNT),
+				String.valueOf(_cancelledReinvocationsCount), " of ",
+				String.valueOf(_MAX_CANCELLED_REINVOCATIONS_COUNT),
 				") after queue item ", String.valueOf(getProducerQueueId()),
 				" was cancelled at ", _getProducerJobURL()));
 
@@ -766,19 +770,19 @@ public abstract class BaseBundlePersistentResource
 	private void _reinvokeQueueItem(
 		long queueDuration, JenkinsMaster.QueueItem queueItem) {
 
-		if (_queueReinvocationCount >= _MAX_QUEUE_REINVOCATION_COUNT) {
+		if (_queueReinvocationsCount >= _MAX_QUEUE_REINVOCATIONS_COUNT) {
 			print("No queue reinvocation attempts remaining");
 
 			return;
 		}
 
-		_queueReinvocationCount++;
+		_queueReinvocationsCount++;
 
 		print(
 			JenkinsResultsParserUtil.combine(
-				"Reinvoking bundles (", String.valueOf(_queueReinvocationCount),
-				" of ", String.valueOf(_MAX_QUEUE_REINVOCATION_COUNT),
-				") after ",
+				"Reinvoking bundles (",
+				String.valueOf(_queueReinvocationsCount), " of ",
+				String.valueOf(_MAX_QUEUE_REINVOCATIONS_COUNT), ") after ",
 				JenkinsResultsParserUtil.toDurationString(queueDuration),
 				" in queue at ", _getProducerJobURL(), ": ",
 				queueItem.getWhy()));
@@ -845,7 +849,7 @@ public abstract class BaseBundlePersistentResource
 
 	private static final String _JOB_VARIANT = "app-server-bundle-builder";
 
-	private static final int _MAX_CANCELLED_REINVOCATION_COUNT = 10;
+	private static final int _MAX_CANCELLED_REINVOCATIONS_COUNT = 10;
 
 	private static final int _MAX_FAIL_COUNT = 2;
 
@@ -853,7 +857,7 @@ public abstract class BaseBundlePersistentResource
 
 	private static final long _MAX_QUEUE_DURATION = 1000 * 60 * 30;
 
-	private static final int _MAX_QUEUE_REINVOCATION_COUNT = 2;
+	private static final int _MAX_QUEUE_REINVOCATIONS_COUNT = 2;
 
 	private static final int _MAX_REDISPATCH_ATTEMPTS = 1;
 
@@ -865,11 +869,11 @@ public abstract class BaseBundlePersistentResource
 		"https?://(?<cohortName>test-\\d+)(\\.liferay\\.com)?");
 
 	private Build _build;
-	private int _cancelledReinvocationCount;
+	private int _cancelledReinvocationsCount;
 	private int _failCount;
 	private int _missingCount;
 	private String _queueItemWhy;
-	private int _queueReinvocationCount;
+	private int _queueReinvocationsCount;
 	private int _redispatchAttempts;
 	private JSONArray _redispatchHistoryJSONArray = new JSONArray();
 	private final TopLevelBuild _topLevelBuild;
