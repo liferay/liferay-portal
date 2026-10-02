@@ -7,6 +7,8 @@
 		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/DocumentFragmentEntryProcessor.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/DocumentFragmentEntryValidator.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/PortletRegistry.java" />
+		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/util/FragmentEntryHtmlParserUtil.java" />
+		<suppress checks="IllegalImportsCheck" files="fragment-api/src/test/java/com/liferay/fragment/processor/util/FragmentEntryHtmlParserUtilTest.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-entry-processor/fragment-entry-processor-api/src/main/java/com/liferay/fragment/entry/processor/editable/mapper/EditableElementMapper.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-entry-processor/fragment-entry-processor-api/src/main/java/com/liferay/fragment/entry/processor/editable/parser/EditableElementParser.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-entry-processor/fragment-entry-processor-api/src/main/java/com/liferay/fragment/entry/processor/util/AnalyticsAttributesUtil.java" />
