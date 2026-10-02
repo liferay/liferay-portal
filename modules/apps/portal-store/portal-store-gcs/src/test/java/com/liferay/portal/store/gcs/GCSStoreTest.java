@@ -49,9 +49,16 @@ public class GCSStoreTest {
 
 		_gcsStore = new GCSStore();
 
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
+
 		ReflectionTestUtil.setFieldValue(
-			_gcsStore, "_secretResolver",
-			(SecretResolver)(companyId, value) -> value);
+			_gcsStore, "_secretResolver", secretResolver);
 
 		Mockito.when(
 			ConfigurableUtil.createConfigurable(

@@ -238,9 +238,16 @@ public class IBMS3StoreUnitTest {
 		try {
 			IBMS3Store ibmS3Store = new IBMS3Store();
 
+			SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+			Mockito.when(
+				secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+			).thenAnswer(
+				invocation -> invocation.getArgument(1)
+			);
+
 			ReflectionTestUtil.setFieldValue(
-				ibmS3Store, "_secretResolver",
-				(SecretResolver)(companyId, value) -> value);
+				ibmS3Store, "_secretResolver", secretResolver);
 
 			ibmS3Store.activate(Collections.emptyMap());
 

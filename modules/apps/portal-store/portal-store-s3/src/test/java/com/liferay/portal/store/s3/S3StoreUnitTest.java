@@ -235,9 +235,16 @@ public class S3StoreUnitTest {
 		try {
 			S3Store s3Store = new S3Store();
 
+			SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+			Mockito.when(
+				secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+			).thenAnswer(
+				invocation -> invocation.getArgument(1)
+			);
+
 			ReflectionTestUtil.setFieldValue(
-				s3Store, "_secretResolver",
-				(SecretResolver)(companyId, value) -> value);
+				s3Store, "_secretResolver", secretResolver);
 
 			s3Store.activate(Collections.emptyMap());
 

@@ -69,9 +69,18 @@ public class CompletePaymentAuthorizeNetServletTest {
 			_completePaymentAuthorizeNetServlet, "_jsonFactory", _jsonFactory);
 		ReflectionTestUtil.setFieldValue(
 			_completePaymentAuthorizeNetServlet, "_portal", _portal);
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
+
 		ReflectionTestUtil.setFieldValue(
 			_completePaymentAuthorizeNetServlet, "_secretResolver",
-			(SecretResolver)(companyId, value) -> value);
+			secretResolver);
 	}
 
 	@Test

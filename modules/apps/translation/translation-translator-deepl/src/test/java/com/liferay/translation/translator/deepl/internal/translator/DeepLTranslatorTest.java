@@ -218,9 +218,17 @@ public class DeepLTranslatorTest {
 			_deepLTranslator, "_http", _setUpHttp());
 		ReflectionTestUtil.setFieldValue(
 			_deepLTranslator, "_jsonFactory", new JSONFactoryImpl());
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
+
 		ReflectionTestUtil.setFieldValue(
-			_deepLTranslator, "_secretResolver",
-			(SecretResolver)(companyId, value) -> value);
+			_deepLTranslator, "_secretResolver", secretResolver);
 	}
 
 	private Http _setUpHttp() throws Exception {

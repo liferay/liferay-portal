@@ -116,9 +116,17 @@ public class AzureTranslatorTest {
 			_azureTranslator, "_http", _setUpHttp());
 		ReflectionTestUtil.setFieldValue(
 			_azureTranslator, "_jsonFactory", new JSONFactoryImpl());
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
+
 		ReflectionTestUtil.setFieldValue(
-			_azureTranslator, "_secretResolver",
-			(SecretResolver)(companyId, value) -> value);
+			_azureTranslator, "_secretResolver", secretResolver);
 	}
 
 	private ConfigurationProvider _setUpConfigurationProvider(
