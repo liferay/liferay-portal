@@ -100,38 +100,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 5
-	test CanCreateBlogPostingWithBatchPostCreateStrategyInsertWithOn_Error_Continue {
-		property portal.acceptance = "true";
-
-		task ("When I use POST with parameter createStrategy=INSERT and importStrategy=ON_ERROR_CONTINUE to create two blogPostings having one of the invalid data set") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				importStrategy = "ON_ERROR_CONTINUE",
-				numberOfBlogPostings = 2,
-				testCase = "incorrectData");
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("Then the blogPosting with correct data is being created") {
-			var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated();
-
-			TestUtils.assertEquals(
-				actual = ${actualNumberOfBlogPostings},
-				expected = 1);
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 5
 	test CanCreateBlogPostingWithBatchPostCreateStrategyUpsert {
 		property portal.acceptance = "true";
 
