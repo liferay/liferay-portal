@@ -2,5 +2,7 @@ dependencies {
 	testIntegrationImplementation group: "com.nimbusds", name: "oauth2-oidc-sdk", version: "11.13"
 	testIntegrationImplementation group: "net.minidev", name: "json-smart", version: "2.4.10"
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
