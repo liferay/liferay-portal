@@ -41,10 +41,12 @@ public class GradleTaskFailureMessageGeneratorTest
 
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
-				"\n[####    ] 50%\r", javaErrorLine, "\n1 error\n"),
+				"\n[####    ] 50%\r", javaErrorLine, "\n",
+				RandomTestUtil.randomString(), "\n"),
 			"[####    ] 50%\r" + javaErrorLine);
 		_testGetMessageElement(
-			JenkinsResultsParserUtil.combine(javaErrorLine, "\n1 error\n"),
+			JenkinsResultsParserUtil.combine(
+				javaErrorLine, "\n", RandomTestUtil.randomString(), "\n"),
 			javaErrorLine);
 
 		String taskFailedLine = _getTaskFailedLine();
@@ -58,24 +60,22 @@ public class GradleTaskFailureMessageGeneratorTest
 
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
-				"FAILURE: Build failed with an exception.\n\n",
-				whatWentWrongBlock, "\n* Try:\n", RandomTestUtil.randomString(),
-				"\n"),
+				RandomTestUtil.randomString(), "\n\n", whatWentWrongBlock,
+				"\n* Try:\n", RandomTestUtil.randomString(), "\n"),
 			whatWentWrongBlock.trim());
 
 		String whereBlock = JenkinsResultsParserUtil.combine(
-			"* Where:\nBuild file '/opt/dev/", RandomTestUtil.randomString(),
-			"/build.gradle' line: 12\n");
+			"* Where:\n", RandomTestUtil.randomString(), "\n");
 
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
-				"FAILURE: Build failed with an exception.\n\n", whereBlock,
-				"\n", whatWentWrongBlock),
+				RandomTestUtil.randomString(), "\n\n", whereBlock, "\n",
+				whatWentWrongBlock),
 			whereBlock.trim(), whatWentWrongBlock.trim());
 
 		String lfConsoleText = JenkinsResultsParserUtil.combine(
-			RandomTestUtil.randomString(), "\n", javaErrorLine, "\n1 error\n",
-			taskFailedLine, "\n");
+			RandomTestUtil.randomString(), "\n", javaErrorLine, "\n",
+			RandomTestUtil.randomString(), "\n", taskFailedLine, "\n");
 
 		String crlfConsoleText = lfConsoleText.replace("\n", "\r\n");
 
@@ -168,7 +168,7 @@ public class GradleTaskFailureMessageGeneratorTest
 		String javaErrorLine = _getJavaErrorLine();
 
 		String javaErrorConsoleText = JenkinsResultsParserUtil.combine(
-			javaErrorLine, "\n1 error\n");
+			javaErrorLine, "\n", RandomTestUtil.randomString(), "\n");
 
 		String javaErrorText = _getText(javaErrorConsoleText);
 
@@ -326,7 +326,8 @@ public class GradleTaskFailureMessageGeneratorTest
 
 	private String _getJavaErrorLine() {
 		return JenkinsResultsParserUtil.combine(
-			"/opt/dev/", RandomTestUtil.randomString(), "/Foo.java:",
+			"/", RandomTestUtil.randomString(), "/",
+			RandomTestUtil.randomString(), ".java:",
 			String.valueOf(RandomTestUtil.randomInt() & Integer.MAX_VALUE),
 			": error: ", RandomTestUtil.randomString());
 	}
