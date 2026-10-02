@@ -211,6 +211,18 @@ boolean limitToOneSubmissionPerUser = DDMFormInstanceSubmissionLimitStatusUtil.i
 
 						<liferay-ui:error exception="<%= StorageException.class %>" message="there-was-an-error-when-accessing-the-data-storage" />
 
+						<%
+						Map<String, String> errorMessages = ddmFormDisplayContext.getErrorMessages();
+
+						for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
+						%>
+
+							<liferay-ui:error key="<%= entry.getKey() %>" message="<%= entry.getValue() %>" translateMessage="<%= false %>" />
+
+						<%
+						}
+						%>
+
 						<liferay-ui:error-principal />
 
 						<c:if test="<%= formShared || preview %>">
