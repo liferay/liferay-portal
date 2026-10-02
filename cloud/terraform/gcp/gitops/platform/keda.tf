@@ -26,7 +26,7 @@ resource "helm_release" "keda" {
 						kind="NetworkPolicy"
 						metadata={
 							labels=local.common_labels
-							name="keda-external-metrics-ingress"
+							name="keda-admission-webhooks-ingress"
 						}
 						spec={
 							ingress=[
@@ -34,7 +34,7 @@ resource "helm_release" "keda" {
 									from=local.webhook_ingress_from
 									ports=[
 										{
-											port=6443
+											port=9443
 											protocol="TCP"
 										},
 									]
@@ -42,7 +42,7 @@ resource "helm_release" "keda" {
 							]
 							podSelector={
 								matchLabels={
-									"app"="keda-operator-metrics-apiserver"
+									"app"="keda-admission-webhooks"
 								}
 							}
 							policyTypes=["Ingress"]
@@ -84,7 +84,7 @@ resource "helm_release" "keda" {
 						kind="NetworkPolicy"
 						metadata={
 							labels=local.common_labels
-							name="keda-metricsservice-ingress"
+							name="keda-operator-ingress"
 						}
 						spec={
 							ingress=[
@@ -119,7 +119,7 @@ resource "helm_release" "keda" {
 						kind="NetworkPolicy"
 						metadata={
 							labels=local.common_labels
-							name="keda-webhook-ingress"
+							name="keda-operator-metrics-apiserver-ingress"
 						}
 						spec={
 							ingress=[
@@ -127,7 +127,7 @@ resource "helm_release" "keda" {
 									from=local.webhook_ingress_from
 									ports=[
 										{
-											port=9443
+											port=6443
 											protocol="TCP"
 										},
 									]
@@ -135,7 +135,7 @@ resource "helm_release" "keda" {
 							]
 							podSelector={
 								matchLabels={
-									"app"="keda-admission-webhooks"
+									"app"="keda-operator-metrics-apiserver"
 								}
 							}
 							policyTypes=["Ingress"]
