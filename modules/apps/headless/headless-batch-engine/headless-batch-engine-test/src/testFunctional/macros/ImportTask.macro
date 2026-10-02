@@ -22,71 +22,12 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _updateSitePage() {
-		var portalURL = JSONCompany.getPortalURL();
-		var siteId = JSONGroupAPI._getGroupIdByNameNoSelenium(
-			groupName = "Guest",
-			site = "true");
-		var userPassword = PropsUtil.get("default.admin.password");
-
-		var curl = '''
-			${portalURL}/o/headless-batch-engine/v1.0/import-task/com.liferay.headless.delivery.dto.v1_0.SitePage \
-				-u test@liferay.com:${userPassword} \
-				-H Content-Type: application/json \
-				-d [
-					{
-						"title": "this is my title"
-					}
-				]
-		''';
-
-		var curl = JSONCurlUtil.put(${curl});
-
-		return ${curl};
-	}
-
-	@summary = "Default summary"
-	macro getErrorMessageOfImportTaskById(importTaskId = null) {
-		var response = ImportTask._getImportTaskById(importTaskId = ${importTaskId});
-
-		var errorMessage = JSONUtil.getWithJSONPath(${response}, "$.errorMessage");
-
-		return ${errorMessage};
-	}
-
-	@summary = "Default summary"
-	macro getIdOfUpdateSitePageBatchEngineImportTask() {
-		var response = ImportTask._updateSitePage();
-
-		var importTaskId = JSONPathUtil.getIdValue(response = ${response});
-
-		return ${importTaskId};
-	}
-
-	@summary = "Default summary"
 	macro getStatusOfImportTaskById(importTaskId = null) {
 		var response = ImportTask._getImportTaskById(importTaskId = ${importTaskId});
 
 		var importTaskStatus = JSONUtil.getWithJSONPath(${response}, "$.executeStatus");
 
 		return ${importTaskStatus};
-	}
-
-	@summary = "Default summary"
-	macro waitForTaskToFinish(importTaskId = null) {
-		var counter = 0;
-		var maxRetries = 10;
-		var status = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-		while ((${counter} != ${maxRetries}) && (${status} != "COMPLETED") && (${status} != "FAILED")) {
-			var counter = ${counter} + 1;
-
-			// Wait for the import task to finish. Needed for LPD-82599.
-
-			Pause(value1 = 500);
-
-			var status = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-		}
 	}
 
 }
