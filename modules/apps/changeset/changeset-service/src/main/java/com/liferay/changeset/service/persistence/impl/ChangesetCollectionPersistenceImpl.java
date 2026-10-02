@@ -16,17 +16,14 @@ import com.liferay.changeset.service.persistence.impl.constants.ChangesetPersist
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
-import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 
 import java.io.Serializable;
@@ -34,7 +31,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -72,269 +68,6 @@ public class ChangesetCollectionPersistenceImpl
 
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
 		FINDER_CLASS_NAME_ENTITY + ".List2";
-
-	private CollectionPersistenceFinder
-		<ChangesetCollection, NoSuchCollectionException>
-			_collectionPersistenceFinderByGroupId;
-
-	/**
-	 * Returns an ordered range of all the changeset collections where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ChangesetCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of changeset collections
-	 * @param end the upper bound of the range of changeset collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching changeset collections
-	 */
-	@Override
-	public List<ChangesetCollection> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<ChangesetCollection> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGroupId.find(
-			finderCache, new Object[] {groupId}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection
-	 * @throws NoSuchCollectionException if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection findByGroupId_First(
-			long groupId,
-			OrderByComparator<ChangesetCollection> orderByComparator)
-		throws NoSuchCollectionException {
-
-		return _collectionPersistenceFinderByGroupId.findFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection, or <code>null</code> if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection fetchByGroupId_First(
-		long groupId,
-		OrderByComparator<ChangesetCollection> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.fetchFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the changeset collections where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	@Override
-	public void removeByGroupId(long groupId) {
-		_collectionPersistenceFinderByGroupId.remove(
-			finderCache, new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of changeset collections where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching changeset collections
-	 */
-	@Override
-	public int countByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.count(
-			finderCache, new Object[] {groupId});
-	}
-
-	private CollectionPersistenceFinder
-		<ChangesetCollection, NoSuchCollectionException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the changeset collections where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ChangesetCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of changeset collections
-	 * @param end the upper bound of the range of changeset collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching changeset collections
-	 */
-	@Override
-	public List<ChangesetCollection> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<ChangesetCollection> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection
-	 * @throws NoSuchCollectionException if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection findByCompanyId_First(
-			long companyId,
-			OrderByComparator<ChangesetCollection> orderByComparator)
-		throws NoSuchCollectionException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection, or <code>null</code> if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection fetchByCompanyId_First(
-		long companyId,
-		OrderByComparator<ChangesetCollection> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the changeset collections where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of changeset collections where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching changeset collections
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder
-		<ChangesetCollection, NoSuchCollectionException>
-			_collectionPersistenceFinderByG_U;
-
-	/**
-	 * Returns an ordered range of all the changeset collections where groupId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ChangesetCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of changeset collections
-	 * @param end the upper bound of the range of changeset collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching changeset collections
-	 */
-	@Override
-	public List<ChangesetCollection> findByG_U(
-		long groupId, long userId, int start, int end,
-		OrderByComparator<ChangesetCollection> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_U.find(
-			finderCache, new Object[] {groupId, userId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where groupId = &#63; and userId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection
-	 * @throws NoSuchCollectionException if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection findByG_U_First(
-			long groupId, long userId,
-			OrderByComparator<ChangesetCollection> orderByComparator)
-		throws NoSuchCollectionException {
-
-		return _collectionPersistenceFinderByG_U.findFirst(
-			finderCache, new Object[] {groupId, userId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where groupId = &#63; and userId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection, or <code>null</code> if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection fetchByG_U_First(
-		long groupId, long userId,
-		OrderByComparator<ChangesetCollection> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_U.fetchFirst(
-			finderCache, new Object[] {groupId, userId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the changeset collections where groupId = &#63; and userId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 */
-	@Override
-	public void removeByG_U(long groupId, long userId) {
-		_collectionPersistenceFinderByG_U.remove(
-			finderCache, new Object[] {groupId, userId});
-	}
-
-	/**
-	 * Returns the number of changeset collections where groupId = &#63; and userId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @return the number of matching changeset collections
-	 */
-	@Override
-	public int countByG_U(long groupId, long userId) {
-		return _collectionPersistenceFinderByG_U.count(
-			finderCache, new Object[] {groupId, userId});
-	}
 
 	private UniquePersistenceFinder
 		<ChangesetCollection, NoSuchCollectionException>
@@ -399,97 +132,6 @@ public class ChangesetCollectionPersistenceImpl
 	public int countByG_N(long groupId, String name) {
 		return _uniquePersistenceFinderByG_N.count(
 			finderCache, new Object[] {groupId, name});
-	}
-
-	private CollectionPersistenceFinder
-		<ChangesetCollection, NoSuchCollectionException>
-			_collectionPersistenceFinderByC_N;
-
-	/**
-	 * Returns an ordered range of all the changeset collections where companyId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ChangesetCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param start the lower bound of the range of changeset collections
-	 * @param end the upper bound of the range of changeset collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching changeset collections
-	 */
-	@Override
-	public List<ChangesetCollection> findByC_N(
-		long companyId, String name, int start, int end,
-		OrderByComparator<ChangesetCollection> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_N.find(
-			finderCache, new Object[] {companyId, name}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where companyId = &#63; and name = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection
-	 * @throws NoSuchCollectionException if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection findByC_N_First(
-			long companyId, String name,
-			OrderByComparator<ChangesetCollection> orderByComparator)
-		throws NoSuchCollectionException {
-
-		return _collectionPersistenceFinderByC_N.findFirst(
-			finderCache, new Object[] {companyId, name}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first changeset collection in the ordered set where companyId = &#63; and name = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching changeset collection, or <code>null</code> if a matching changeset collection could not be found
-	 */
-	@Override
-	public ChangesetCollection fetchByC_N_First(
-		long companyId, String name,
-		OrderByComparator<ChangesetCollection> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_N.fetchFirst(
-			finderCache, new Object[] {companyId, name}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the changeset collections where companyId = &#63; and name = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 */
-	@Override
-	public void removeByC_N(long companyId, String name) {
-		_collectionPersistenceFinderByC_N.remove(
-			finderCache, new Object[] {companyId, name});
-	}
-
-	/**
-	 * Returns the number of changeset collections where companyId = &#63; and name = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @return the number of matching changeset collections
-	 */
-	@Override
-	public int countByC_N(long companyId, String name) {
-		return _collectionPersistenceFinderByC_N.count(
-			finderCache, new Object[] {companyId, name});
 	}
 
 	public ChangesetCollectionPersistenceImpl() {
@@ -698,89 +340,6 @@ public class ChangesetCollectionPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByGroupId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_CHANGESETCOLLECTION_WHERE,
-				_SQL_COUNT_CHANGESETCOLLECTION_WHERE,
-				ChangesetCollectionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"changesetCollection.", "groupId", FinderColumn.Type.LONG,
-					"=", true, true, ChangesetCollection::getGroupId));
-
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_CHANGESETCOLLECTION_WHERE,
-				_SQL_COUNT_CHANGESETCOLLECTION_WHERE,
-				ChangesetCollectionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"changesetCollection.", "companyId", FinderColumn.Type.LONG,
-					"=", true, true, ChangesetCollection::getCompanyId));
-
-		_collectionPersistenceFinderByG_U = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "userId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"groupId", "userId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"groupId", "userId"}, false),
-			_SQL_SELECT_CHANGESETCOLLECTION_WHERE,
-			_SQL_COUNT_CHANGESETCOLLECTION_WHERE,
-			ChangesetCollectionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"changesetCollection.", "groupId", FinderColumn.Type.LONG, "=",
-				true, true, ChangesetCollection::getGroupId),
-			new FinderColumn<>(
-				"changesetCollection.", "userId", FinderColumn.Type.LONG, "=",
-				true, true, ChangesetCollection::getUserId));
-
 		_uniquePersistenceFinderByG_N = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -793,35 +352,6 @@ public class ChangesetCollectionPersistenceImpl
 			new FinderColumn<>(
 				"changesetCollection.", "groupId", FinderColumn.Type.LONG, "=",
 				true, true, ChangesetCollection::getGroupId),
-			new FinderColumn<>(
-				"changesetCollection.", "name", FinderColumn.Type.STRING, "=",
-				true, true, ChangesetCollection::getName));
-
-		_collectionPersistenceFinderByC_N = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_N",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "name"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_N",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "name"}, 0, 2, true, null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_N",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "name"}, 0, 2, false, null),
-			_SQL_SELECT_CHANGESETCOLLECTION_WHERE,
-			_SQL_COUNT_CHANGESETCOLLECTION_WHERE,
-			ChangesetCollectionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"changesetCollection.", "companyId", FinderColumn.Type.LONG,
-				"=", true, true, ChangesetCollection::getCompanyId),
 			new FinderColumn<>(
 				"changesetCollection.", "name", FinderColumn.Type.STRING, "=",
 				true, true, ChangesetCollection::getName));
@@ -868,17 +398,11 @@ public class ChangesetCollectionPersistenceImpl
 	@Reference
 	protected FinderCache finderCache;
 
-	private static final String _ENTITY_ALIAS_PREFIX =
-		ChangesetCollectionModelImpl.ENTITY_ALIAS + ".";
-
 	private static final String _SQL_SELECT_CHANGESETCOLLECTION =
 		"SELECT changesetCollection FROM ChangesetCollection changesetCollection";
 
 	private static final String _SQL_SELECT_CHANGESETCOLLECTION_WHERE =
 		"SELECT changesetCollection FROM ChangesetCollection changesetCollection WHERE ";
-
-	private static final String _SQL_COUNT_CHANGESETCOLLECTION_WHERE =
-		"SELECT COUNT(changesetCollection) FROM ChangesetCollection changesetCollection WHERE ";
 
 	@Override
 	protected FinderCache getFinderCache() {
@@ -886,4 +410,4 @@ public class ChangesetCollectionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:707617064
+// LIFERAY-SERVICE-BUILDER-HASH:2136611629
