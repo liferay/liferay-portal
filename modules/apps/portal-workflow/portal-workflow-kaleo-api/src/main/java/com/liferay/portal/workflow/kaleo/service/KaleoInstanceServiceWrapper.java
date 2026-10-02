@@ -42,6 +42,13 @@ public class KaleoInstanceServiceWrapper
 			workflowContext, serviceContext, waitForCompletion);
 	}
 
+	@Override
+	public KaleoInstance getKaleoInstance(long kaleoInstanceId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kaleoInstanceService.getKaleoInstance(kaleoInstanceId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -50,6 +57,16 @@ public class KaleoInstanceServiceWrapper
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _kaleoInstanceService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public KaleoInstance updateKaleoInstance(
+			long kaleoInstanceId,
+			java.util.Map<String, java.io.Serializable> workflowContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kaleoInstanceService.updateKaleoInstance(
+			kaleoInstanceId, workflowContext);
 	}
 
 	@Override
@@ -65,4 +82,4 @@ public class KaleoInstanceServiceWrapper
 	private KaleoInstanceService _kaleoInstanceService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:479928371
+// LIFERAY-SERVICE-BUILDER-HASH:608162959

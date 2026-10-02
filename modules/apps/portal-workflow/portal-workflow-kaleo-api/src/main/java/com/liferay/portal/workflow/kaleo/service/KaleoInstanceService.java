@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 
@@ -52,6 +53,10 @@ public interface KaleoInstanceService extends BaseService {
 			ServiceContext serviceContext, boolean waitForCompletion)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public KaleoInstance getKaleoInstance(long kaleoInstanceId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -59,5 +64,9 @@ public interface KaleoInstanceService extends BaseService {
 	 */
 	public String getOSGiServiceIdentifier();
 
+	public KaleoInstance updateKaleoInstance(
+			long kaleoInstanceId, Map<String, Serializable> workflowContext)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1054869763
+// LIFERAY-SERVICE-BUILDER-HASH:-1598118701

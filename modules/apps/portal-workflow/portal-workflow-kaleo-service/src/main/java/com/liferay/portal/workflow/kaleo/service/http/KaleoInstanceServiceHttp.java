@@ -89,6 +89,90 @@ public class KaleoInstanceServiceHttp {
 		}
 	}
 
+	public static com.liferay.portal.workflow.kaleo.model.KaleoInstance
+			getKaleoInstance(HttpPrincipal httpPrincipal, long kaleoInstanceId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				KaleoInstanceServiceUtil.class, "getKaleoInstance",
+				_getKaleoInstanceParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, kaleoInstanceId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.portal.workflow.kaleo.model.KaleoInstance)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoInstance
+			updateKaleoInstance(
+				HttpPrincipal httpPrincipal, long kaleoInstanceId,
+				java.util.Map<String, java.io.Serializable> workflowContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				KaleoInstanceServiceUtil.class, "updateKaleoInstance",
+				_updateKaleoInstanceParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, kaleoInstanceId, workflowContext);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.portal.workflow.kaleo.model.KaleoInstance)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		KaleoInstanceServiceHttp.class);
 
@@ -98,6 +182,10 @@ public class KaleoInstanceServiceHttp {
 			com.liferay.portal.kernel.service.ServiceContext.class,
 			boolean.class
 		};
+	private static final Class<?>[] _getKaleoInstanceParameterTypes1 =
+		new Class[] {long.class};
+	private static final Class<?>[] _updateKaleoInstanceParameterTypes2 =
+		new Class[] {long.class, java.util.Map.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1992008160
+// LIFERAY-SERVICE-BUILDER-HASH:1136246755
