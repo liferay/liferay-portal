@@ -40,6 +40,7 @@ export interface AIChat {
 	getContextRef: React.MutableRefObject<(() => ChatContext) | undefined>;
 	giveThumbsUp: (index: number, item: Message) => void;
 	isGenerating: boolean;
+	lastMessageRef: React.RefObject<HTMLDivElement>;
 	markFeedbackGiven: (index: number) => void;
 	message: string;
 	messages: Message[];
@@ -111,6 +112,7 @@ export default function useAIChat({
 	const chatbotExternalReferenceCodeRef = useRef<string | undefined>(
 		chatbotExternalReferenceCode
 	);
+	const lastMessageRef = useRef<HTMLDivElement | null>(null);
 	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 	const sourceLanguageIdRef = useRef<string>(
 		Liferay.ThemeDisplay.getLanguageId()
@@ -207,7 +209,40 @@ export default function useAIChat({
 	}, []);
 
 	useEffect(() => {
-		scrollToBottom();
+		const lastMessage = messages.at(-1);
+
+		if (
+			isGenerating ||
+			generatingBalloons.length ||
+			!lastMessage ||
+			lastMessage.sender === 'user'
+		) {
+			scrollToBottom();
+
+			return;
+		}
+
+		if (lastMessage.images?.length) {
+			const previousMessage = messages.at(-2);
+
+			if (previousMessage?.sender === 'user' || !previousMessage?.text) {
+				scrollToBottom();
+
+				return;
+			}
+
+			lastMessageRef.current?.previousElementSibling?.scrollIntoView?.({
+				behavior: 'smooth',
+				block: 'start',
+			});
+
+			return;
+		}
+
+		lastMessageRef.current?.scrollIntoView?.({
+			behavior: 'smooth',
+			block: 'start',
+		});
 	}, [generatingBalloons, isGenerating, messages, scrollToBottom]);
 
 	useEffect(() => {
@@ -606,6 +641,7 @@ export default function useAIChat({
 		getContextRef,
 		giveThumbsUp,
 		isGenerating: isGenerating || !!generatingBalloons.length,
+		lastMessageRef,
 		markFeedbackGiven,
 		message,
 		messages,
