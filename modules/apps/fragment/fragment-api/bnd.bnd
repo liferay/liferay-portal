@@ -14,6 +14,7 @@ Export-Package:\
 	com.liferay.fragment.listener,\
 	com.liferay.fragment.model,\
 	com.liferay.fragment.processor,\
+	com.liferay.fragment.processor.util,\
 	com.liferay.fragment.renderer,\
 	com.liferay.fragment.renderer.constants,\
 	com.liferay.fragment.renderer.util,\
