@@ -130,6 +130,11 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 		return headerProps;
 	}
 
+	private int _getDepotEntryGroupRelsCount() throws Exception {
+		return _depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
+			_depotEntryService.getGroupDepotEntry(_groupId));
+	}
+
 	private FDSActionDropdownItem _getSearchableFDSActionDropdownItem(
 		boolean searchable) {
 
@@ -148,11 +153,6 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 			"{\"searchable\": " + searchable + "}");
 
 		return fdsActionDropdownItem;
-	}
-
-	private int _getDepotEntryGroupRelsCount() throws Exception {
-		return _depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
-			_depotEntryService.getGroupDepotEntry(_groupId));
 	}
 
 	private String _getSpaceSitesHeaderTitle() throws Exception {
