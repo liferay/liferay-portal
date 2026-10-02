@@ -234,54 +234,50 @@ public class SystemObjectEntryInfoItemFieldValuesProviderTest {
 				"type", "business"
 			).build());
 
-		try {
-			ObjectRelationship objectRelationship =
-				ObjectRelationshipTestUtil.addObjectRelationship(
-					_objectRelationshipLocalService, objectDefinition,
-					_objectDefinition);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition,
+				_objectDefinition);
 
-			String parentTitle = RandomTestUtil.randomString();
+		String parentTitle = RandomTestUtil.randomString();
 
-			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-				0, TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null,
-				HashMapBuilder.<String, Serializable>put(
-					"parentTitle", parentTitle
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"parentTitle", parentTitle
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 
-			ObjectRelationshipTestUtil.relateObjectEntries(
-				objectEntry.getObjectEntryId(), accountEntryId,
-				objectRelationship, TestPropsValues.getUserId());
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			objectEntry.getObjectEntryId(), accountEntryId, objectRelationship,
+			TestPropsValues.getUserId());
 
-			InfoItemFieldValuesProvider<SystemObjectEntry>
-				infoItemFieldValuesProvider =
-					_infoItemServiceRegistry.getFirstInfoItemService(
-						InfoItemFieldValuesProvider.class,
-						_objectDefinition.getClassName() + StringPool.POUND +
-							_objectDefinition.getObjectDefinitionId());
-
-			InfoItemObjectProvider<SystemObjectEntry> infoItemObjectProvider =
+		InfoItemFieldValuesProvider<SystemObjectEntry>
+			infoItemFieldValuesProvider =
 				_infoItemServiceRegistry.getFirstInfoItemService(
-					InfoItemObjectProvider.class,
+					InfoItemFieldValuesProvider.class,
 					_objectDefinition.getClassName() + StringPool.POUND +
 						_objectDefinition.getObjectDefinitionId());
 
-			_assertInfoFieldValue(
-				parentTitle, "parentTitle",
-				infoItemFieldValuesProvider.getInfoItemFieldValues(
-					infoItemObjectProvider.getInfoItem(
-						new ClassPKInfoItemIdentifier(accountEntryId))));
-		}
-		finally {
-			_accountEntryLocalService.deleteAccountEntry(accountEntryId);
+		InfoItemObjectProvider<SystemObjectEntry> infoItemObjectProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemObjectProvider.class,
+				_objectDefinition.getClassName() + StringPool.POUND +
+					_objectDefinition.getObjectDefinitionId());
 
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition.getObjectDefinitionId());
-		}
+		_assertInfoFieldValue(
+			parentTitle, "parentTitle",
+			infoItemFieldValuesProvider.getInfoItemFieldValues(
+				infoItemObjectProvider.getInfoItem(
+					new ClassPKInfoItemIdentifier(accountEntryId))));
+
+		_accountEntryLocalService.deleteAccountEntry(accountEntryId);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	private void _assertInfoFieldValue(
