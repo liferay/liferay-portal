@@ -5,7 +5,6 @@
 
 package com.liferay.changeset.service.impl;
 
-import com.liferay.changeset.exception.NoSuchEntryException;
 import com.liferay.changeset.model.ChangesetCollection;
 import com.liferay.changeset.model.ChangesetEntry;
 import com.liferay.changeset.service.base.ChangesetEntryLocalServiceBaseImpl;
@@ -34,16 +33,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class ChangesetEntryLocalServiceImpl
 	extends ChangesetEntryLocalServiceBaseImpl {
-
-	@Override
-	public ChangesetEntry addChangesetEntry(
-			long userId, long changesetCollectionId, long classNameId,
-			long classPK)
-		throws PortalException {
-
-		return addChangesetEntry(
-			userId, changesetCollectionId, null, classNameId, classPK);
-	}
 
 	@Override
 	public ChangesetEntry addChangesetEntry(
@@ -178,12 +167,6 @@ public class ChangesetEntryLocalServiceImpl
 	}
 
 	@Override
-	public long getChangesetEntriesCount(long changesetCollectionId) {
-		return changesetEntryPersistence.countByChangesetCollectionId(
-			changesetCollectionId);
-	}
-
-	@Override
 	public long getChangesetEntriesCount(
 		long changesetCollectionId, long classNameId) {
 
@@ -211,15 +194,6 @@ public class ChangesetEntryLocalServiceImpl
 		}
 
 		return dynamicQueryCount(dynamicQuery);
-	}
-
-	@Override
-	public ChangesetEntry getChangesetEntry(
-			long changesetCollectionId, long classNameId, long classPK)
-		throws NoSuchEntryException {
-
-		return changesetEntryPersistence.findByC_C_C(
-			changesetCollectionId, classNameId, classPK);
 	}
 
 	@Reference

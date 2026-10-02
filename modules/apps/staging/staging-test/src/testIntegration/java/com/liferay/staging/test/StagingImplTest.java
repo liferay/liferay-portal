@@ -416,15 +416,18 @@ public class StagingImplTest {
 				stagingGroup.getGroupId(),
 				StagingConstants.RANGE_FROM_LAST_PUBLISH_DATE_CHANGESET_NAME);
 
+		long layoutClassNameId = PortalUtil.getClassNameId(Layout.class);
+
 		long count = _changesetEntryLocalService.getChangesetEntriesCount(
-			changesetCollection.getChangesetCollectionId());
+			changesetCollection.getChangesetCollectionId(), layoutClassNameId);
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(stagingGroup);
 
 		Assert.assertEquals(
 			count + 1,
 			_changesetEntryLocalService.getChangesetEntriesCount(
-				changesetCollection.getChangesetCollectionId()));
+				changesetCollection.getChangesetCollectionId(),
+				layoutClassNameId));
 
 		List<String> portletIds = new ArrayList<>();
 
@@ -446,7 +449,8 @@ public class StagingImplTest {
 		Assert.assertEquals(
 			count,
 			_changesetEntryLocalService.getChangesetEntriesCount(
-				changesetCollection.getChangesetCollectionId()));
+				changesetCollection.getChangesetCollectionId(),
+				layoutClassNameId));
 	}
 
 	@Test
