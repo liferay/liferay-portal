@@ -202,6 +202,7 @@ import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.ratings.kernel.service.RatingsStatsLocalService;
 import com.liferay.social.kernel.model.SocialRelation;
 import com.liferay.social.kernel.service.SocialActivityLocalService;
+import com.liferay.social.kernel.service.SocialRelationLocalService;
 import com.liferay.social.kernel.service.SocialRequestLocalService;
 import com.liferay.social.kernel.service.persistence.SocialRelationPersistence;
 import com.liferay.users.admin.kernel.file.uploads.UserFileUploadsSettings;
@@ -2144,6 +2145,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		// Social
 
 		_socialActivityLocalService.deleteUserActivities(user.getUserId());
+		_socialRelationLocalService.deleteRelations(user.getUserId());
 		_socialRequestLocalService.deleteReceiverUserRequests(user.getUserId());
 		_socialRequestLocalService.deleteUserRequests(user.getUserId());
 
@@ -7814,6 +7816,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 	@BeanReference(type = SocialActivityLocalService.class)
 	private SocialActivityLocalService _socialActivityLocalService;
+
+	@BeanReference(type = SocialRelationLocalService.class)
+	private SocialRelationLocalService _socialRelationLocalService;
 
 	@BeanReference(type = SocialRelationPersistence.class)
 	private SocialRelationPersistence _socialRelationPersistence;
