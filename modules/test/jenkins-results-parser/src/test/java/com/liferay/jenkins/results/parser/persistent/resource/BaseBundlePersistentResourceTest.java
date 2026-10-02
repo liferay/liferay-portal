@@ -93,13 +93,35 @@ public class BaseBundlePersistentResourceTest
 			baseBundlePersistentResource
 		).start();
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 9; i++) {
 			baseBundlePersistentResource.update();
 		}
 
 		Mockito.verify(
 			baseBundlePersistentResource, Mockito.times(10)
 		).start();
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.never()
+		).setStatus(
+			PersistentResource.Status.FAILED
+		);
+
+		baseBundlePersistentResource.update();
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.times(10)
+		).start();
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).setStatus(
+			PersistentResource.Status.FAILED
+		);
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).save();
 	}
 
 	@Test
@@ -220,13 +242,35 @@ public class BaseBundlePersistentResourceTest
 			baseBundlePersistentResource, Mockito.never()
 		).start();
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 4; i++) {
 			baseBundlePersistentResource.update();
 		}
 
 		Mockito.verify(
 			baseBundlePersistentResource, Mockito.times(2)
 		).start();
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.never()
+		).setStatus(
+			PersistentResource.Status.FAILED
+		);
+
+		baseBundlePersistentResource.update();
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.times(2)
+		).start();
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).setStatus(
+			PersistentResource.Status.FAILED
+		);
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).save();
 	}
 
 	@Test
