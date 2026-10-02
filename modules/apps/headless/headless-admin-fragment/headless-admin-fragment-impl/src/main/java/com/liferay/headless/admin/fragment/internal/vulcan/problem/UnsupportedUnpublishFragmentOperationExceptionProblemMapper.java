@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
-import com.liferay.fragment.exception.RequiredFragmentEntryVersionException;
+import com.liferay.fragment.exception.UnsupportedUnpublishFragmentEntryOperationException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
@@ -19,20 +19,21 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(service = ProblemMapper.class)
-public class RequiredFragmentEntryVersionExceptionProblemMapper
-	implements ProblemMapper<RequiredFragmentEntryVersionException> {
+public class UnsupportedUnpublishFragmentOperationExceptionProblemMapper
+	implements ProblemMapper
+		<UnsupportedUnpublishFragmentEntryOperationException> {
 
 	@Override
 	public Problem getProblem(
-		RequiredFragmentEntryVersionException
-			requiredFragmentEntryVersionException) {
+		UnsupportedUnpublishFragmentEntryOperationException
+			unsupportedUnpublishFragmentEntryOperationException) {
 
 		return new Problem() {
 
 			@Override
 			public String getDetail(Locale locale) {
 				return _language.get(
-					locale, "at-least-one-fragment-entry-version-is-required");
+					locale, "unpublishing-a-fragment-entry-is-not-supported");
 			}
 
 			@Override
@@ -43,12 +44,13 @@ public class RequiredFragmentEntryVersionExceptionProblemMapper
 			@Override
 			public String getTitle(Locale locale) {
 				return _language.get(
-					locale, "at-least-one-fragment-entry-version-is-required");
+					locale, "unpublishing-a-fragment-entry-is-not-supported");
 			}
 
 			@Override
 			public String getType() {
-				return RequiredFragmentEntryVersionException.class.getName();
+				return UnsupportedUnpublishFragmentEntryOperationException.
+					class.getName();
 			}
 
 		};

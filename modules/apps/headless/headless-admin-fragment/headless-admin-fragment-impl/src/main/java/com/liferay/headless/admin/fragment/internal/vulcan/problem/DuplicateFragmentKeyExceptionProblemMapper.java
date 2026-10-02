@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
-import com.liferay.fragment.exception.FragmentEntryFieldTypesException;
+import com.liferay.fragment.exception.DuplicateFragmentEntryKeyException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
@@ -19,35 +19,40 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(service = ProblemMapper.class)
-public class FragmentEntryFieldTypesExceptionProblemMapper
-	implements ProblemMapper<FragmentEntryFieldTypesException> {
+public class DuplicateFragmentKeyExceptionProblemMapper
+	implements ProblemMapper<DuplicateFragmentEntryKeyException> {
 
 	@Override
 	public Problem getProblem(
-		FragmentEntryFieldTypesException fragmentEntryFieldTypesException) {
+		DuplicateFragmentEntryKeyException duplicateFragmentEntryKeyException) {
+
+		String fragmentEntryKey =
+			duplicateFragmentEntryKeyException.getFragmentEntryKey();
 
 		return new Problem() {
 
 			@Override
 			public String getDetail(Locale locale) {
-				return _language.get(
-					locale, "the-form-fragment-field-types-are-invalid");
+				return _language.format(
+					locale, "a-fragment-entry-with-the-key-x-already-exists",
+					fragmentEntryKey);
 			}
 
 			@Override
 			public Status getStatus() {
-				return Status.BAD_REQUEST;
+				return Status.CONFLICT;
 			}
 
 			@Override
 			public String getTitle(Locale locale) {
-				return _language.get(
-					locale, "the-form-fragment-field-types-are-invalid");
+				return _language.format(
+					locale, "a-fragment-entry-with-the-key-x-already-exists",
+					fragmentEntryKey);
 			}
 
 			@Override
 			public String getType() {
-				return FragmentEntryFieldTypesException.class.getName();
+				return DuplicateFragmentEntryKeyException.class.getName();
 			}
 
 		};

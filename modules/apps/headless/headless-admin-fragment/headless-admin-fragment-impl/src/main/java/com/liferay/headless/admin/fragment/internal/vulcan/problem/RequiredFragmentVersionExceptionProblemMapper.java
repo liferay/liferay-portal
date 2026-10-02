@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
-import com.liferay.fragment.exception.FragmentCollectionNameException;
+import com.liferay.fragment.exception.RequiredFragmentEntryVersionException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
@@ -19,18 +19,20 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(service = ProblemMapper.class)
-public class FragmentCollectionNameExceptionProblemMapper
-	implements ProblemMapper<FragmentCollectionNameException> {
+public class RequiredFragmentVersionExceptionProblemMapper
+	implements ProblemMapper<RequiredFragmentEntryVersionException> {
 
 	@Override
 	public Problem getProblem(
-		FragmentCollectionNameException fragmentCollectionNameException) {
+		RequiredFragmentEntryVersionException
+			requiredFragmentEntryVersionException) {
 
 		return new Problem() {
 
 			@Override
 			public String getDetail(Locale locale) {
-				return _language.get(locale, "fragment-set-name-is-invalid");
+				return _language.get(
+					locale, "at-least-one-fragment-entry-version-is-required");
 			}
 
 			@Override
@@ -40,12 +42,13 @@ public class FragmentCollectionNameExceptionProblemMapper
 
 			@Override
 			public String getTitle(Locale locale) {
-				return _language.get(locale, "fragment-set-name-is-invalid");
+				return _language.get(
+					locale, "at-least-one-fragment-entry-version-is-required");
 			}
 
 			@Override
 			public String getType() {
-				return FragmentCollectionNameException.class.getName();
+				return RequiredFragmentEntryVersionException.class.getName();
 			}
 
 		};

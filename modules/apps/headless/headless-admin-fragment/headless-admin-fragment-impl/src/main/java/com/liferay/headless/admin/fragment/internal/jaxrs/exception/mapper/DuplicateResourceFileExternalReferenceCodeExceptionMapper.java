@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.jaxrs.exception.mapper;
 
-import com.liferay.fragment.exception.DuplicateFragmentEntryExternalReferenceCodeException;
+import com.liferay.document.library.kernel.exception.DuplicateFileEntryExternalReferenceCodeException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
@@ -25,18 +25,18 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Admin.Fragment)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Admin.Fragment.DuplicateFragmentEntryExternalReferenceCodeExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Admin.Fragment.DuplicateResourceFileExternalReferenceCodeExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
-public class DuplicateFragmentEntryExternalReferenceCodeExceptionMapper
+public class DuplicateResourceFileExternalReferenceCodeExceptionMapper
 	extends BaseExceptionMapper
-		<DuplicateFragmentEntryExternalReferenceCodeException> {
+		<DuplicateFileEntryExternalReferenceCodeException> {
 
 	@Override
 	protected Problem getProblem(
-		DuplicateFragmentEntryExternalReferenceCodeException
-			duplicateFragmentEntryExternalReferenceCodeException) {
+		DuplicateFileEntryExternalReferenceCodeException
+			duplicateFileEntryExternalReferenceCodeException) {
 
 		return new Problem(
 			Response.Status.CONFLICT,
