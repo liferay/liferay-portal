@@ -5,6 +5,7 @@
 
 package com.liferay.oauth.client.persistence.service.impl;
 
+import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration;
 import com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientEntryException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthRequestParametersJSONException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthServerWellKnownURIException;
@@ -16,14 +17,20 @@ import com.liferay.oauth.client.persistence.model.OAuthClientEntryTable;
 import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
 import com.liferay.oauth.client.persistence.service.base.OAuthClientEntryLocalServiceBaseImpl;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -36,9 +43,11 @@ import com.nimbusds.oauth2.sdk.util.JSONObjectUtils;
 import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
 
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URI;
 
 import java.util.List;
+import java.util.Objects;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -303,6 +312,123 @@ public class OAuthClientEntryLocalServiceImpl
 		return oAuthClientEntryPersistence.update(oAuthClientEntry);
 	}
 
+	private boolean _isHostAllowed(String[] allowedHosts, String host) {
+		if (ArrayUtil.isEmpty(allowedHosts)) {
+			return true;
+		}
+
+		for (String allowedHost : allowedHosts) {
+			String normalizedAllowedHost = _normalizeHost(allowedHost);
+
+			if (Objects.equals(normalizedAllowedHost, StringPool.STAR) ||
+				StringUtil.equalsIgnoreCase(normalizedAllowedHost, host)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _isLocalInetAddress(InetAddress inetAddress) {
+		if (InetAddressUtil.isLocalInetAddress(inetAddress)) {
+			return true;
+		}
+
+		byte[] address = inetAddress.getAddress();
+
+		if (address.length == 4) {
+			if ((address[0] == 100) && ((address[1] & 0xc0) == 0x40)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if ((address[0] & 0xfe) == 0xfc) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isURIAllowed(long companyId, URI uri) {
+		try {
+			String scheme = StringUtil.toLowerCase(uri.getScheme());
+
+			if (!Objects.equals(scheme, Http.HTTP) &&
+				!Objects.equals(scheme, Http.HTTPS)) {
+
+				return false;
+			}
+
+			String host = _normalizeHost(uri.getHost());
+
+			if (Validator.isNull(host)) {
+				return false;
+			}
+
+			OAuthClientCompanyConfiguration oAuthClientCompanyConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					OAuthClientCompanyConfiguration.class, companyId);
+
+			if (!_isHostAllowed(
+					oAuthClientCompanyConfiguration.authServerHostsAllowed(),
+					host)) {
+
+				return false;
+			}
+
+			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+				host);
+
+			if (inetAddress.isMulticastAddress()) {
+				return false;
+			}
+
+			if (oAuthClientCompanyConfiguration.
+					authServerLocalNetworkAccessEnabled()) {
+
+				return true;
+			}
+
+			return !_isLocalInetAddress(inetAddress);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return false;
+	}
+
+	private String _normalizeHost(String host) {
+		if (Validator.isBlank(host)) {
+			return StringPool.BLANK;
+		}
+
+		host = host.trim();
+
+		if (host.startsWith(StringPool.OPEN_BRACKET)) {
+			int index = host.indexOf(StringPool.CLOSE_BRACKET);
+
+			if (index > 1) {
+				return host.substring(1, index);
+			}
+
+			return host;
+		}
+
+		int index = host.indexOf(StringPool.COLON);
+
+		if ((index > 0) && (host.indexOf(StringPool.COLON, index + 1) < 0)) {
+			return host.substring(0, index);
+		}
+
+		return host;
+	}
+
 	private ClientInformation _parseClientInformation(
 			String authServerWellKnownURI, String infoJSON)
 		throws PortalException {
@@ -358,19 +484,46 @@ public class OAuthClientEntryLocalServiceImpl
 				return;
 			}
 
-			Http.Options httpOptions = new Http.Options();
+			URI uri = new URI(authServerWellKnownURI);
 
-			httpOptions.setCookieSpec(Http.CookieSpec.STANDARD);
-			httpOptions.setLocation(authServerWellKnownURI);
+			for (int i = 0; i <= _MAXIMUM_REDIRECTS; i++) {
+				if (!_isURIAllowed(companyId, uri)) {
+					if (_log.isWarnEnabled()) {
+						_log.warn("Refusing to request disallowed URI " + uri);
+					}
 
-			_http.URLtoString(httpOptions);
+					throw new OAuthClientEntryAuthServerWellKnownURIException(
+						"Disallowed authorization server well-known URI");
+				}
 
-			Http.Response httpResponse = httpOptions.getResponse();
+				Http.Options httpOptions = new Http.Options();
 
-			if (httpResponse.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				throw new OAuthClientEntryAuthServerWellKnownURIException(
-					"Response code: " + httpResponse.getResponseCode());
+				httpOptions.setCookieSpec(Http.CookieSpec.STANDARD);
+				httpOptions.setFollowRedirects(false);
+				httpOptions.setLocation(uri.toString());
+
+				_http.URLtoString(httpOptions);
+
+				Http.Response httpResponse = httpOptions.getResponse();
+
+				if (httpResponse.getResponseCode() ==
+						HttpURLConnection.HTTP_OK) {
+
+					return;
+				}
+
+				String redirect = httpResponse.getRedirect();
+
+				if (Validator.isNull(redirect)) {
+					throw new OAuthClientEntryAuthServerWellKnownURIException(
+						"Response code: " + httpResponse.getResponseCode());
+				}
+
+				uri = uri.resolve(redirect);
 			}
+
+			throw new OAuthClientEntryAuthServerWellKnownURIException(
+				"Too many redirects");
 		}
 		catch (Exception exception) {
 			throw new OAuthClientEntryAuthServerWellKnownURIException(
@@ -556,6 +709,14 @@ public class OAuthClientEntryLocalServiceImpl
 				exception.getMessage(), exception);
 		}
 	}
+
+	private static final int _MAXIMUM_REDIRECTS = 5;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		OAuthClientEntryLocalServiceImpl.class);
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private Http _http;
