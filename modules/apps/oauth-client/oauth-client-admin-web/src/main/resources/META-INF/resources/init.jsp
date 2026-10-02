@@ -23,6 +23,7 @@ page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthCl
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientEntriesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientPRLocalMetadataManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.servlet.taglib.util.OAuthClientPRLocalMetadataActionDropdownItemsProvider" %><%@
+page import="com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration" %><%@
 page import="com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants" %><%@
 page import="com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientASLocalMetadataException" %><%@
 page import="com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientEntryException" %><%@
@@ -59,6 +60,7 @@ page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
+page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %>
 
 <%@ page import="jakarta.portlet.PortletURL" %>
