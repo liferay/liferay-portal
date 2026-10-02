@@ -953,8 +953,7 @@ public class PortalImpl implements Portal {
 						1, domain,
 						domain.length() - (allowedDomain.length() - 1),
 						allowedDomain.length() - 1) ||
-					 allowedDomain.regionMatches(
-						 2, domain, 0, domain.length()))) {
+					 domain.equals(allowedDomain.substring(2)))) {
 
 					return url;
 				}
