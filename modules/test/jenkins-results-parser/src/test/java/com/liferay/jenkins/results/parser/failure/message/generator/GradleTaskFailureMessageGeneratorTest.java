@@ -193,16 +193,15 @@ public class GradleTaskFailureMessageGeneratorTest
 						javaErrorConsoleText)));
 		}
 
+		String text = _getText(
+			JenkinsResultsParserUtil.combine(
+				javaErrorConsoleText,
+				_getExactLines(
+					_MAXIMUM_REGION_SIZE - javaErrorConsoleText.length())));
+
 		Assert.assertEquals(
 			javaErrorText.substring(0, javaErrorLine.length()),
-			_getText(
-				JenkinsResultsParserUtil.combine(
-					javaErrorConsoleText,
-					_getExactLines(
-						_MAXIMUM_REGION_SIZE - javaErrorConsoleText.length()))
-			).substring(
-				0, javaErrorLine.length()
-			));
+			text.substring(0, javaErrorLine.length()));
 
 		String whatWentWrongBlock = _getWhatWentWrongBlock();
 
@@ -236,7 +235,7 @@ public class GradleTaskFailureMessageGeneratorTest
 			RandomTestUtil.randomString(), "\n", javaErrorLine,
 			_repeat(_MAXIMUM_REGION_SIZE - javaErrorLine.length() + 5, "z"));
 
-		String text = _getText(consoleText);
+		text = _getText(consoleText);
 
 		Assert.assertTrue(text, text.startsWith(javaErrorLine.substring(5)));
 	}
