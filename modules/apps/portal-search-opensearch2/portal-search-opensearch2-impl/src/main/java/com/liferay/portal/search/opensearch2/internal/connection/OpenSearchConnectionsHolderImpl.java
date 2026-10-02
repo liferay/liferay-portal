@@ -153,7 +153,7 @@ public class OpenSearchConnectionsHolderImpl
 		).port(
 			openSearchConnectionConfiguration.proxyPort()
 		).userName(
-			openSearchConnectionConfiguration.proxyHost()
+			openSearchConnectionConfiguration.proxyUserName()
 		).build();
 	}
 
