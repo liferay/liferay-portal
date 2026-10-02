@@ -20,40 +20,27 @@ run "should_honor_a_custom_keda_namespace" {
 		keda_namespace="autoscaling"
 	}
 }
-run "should_honor_custom_master_cidr_and_observability_config" {
+run "should_honor_a_custom_master_cidr" {
 	assert {
 		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == "10.1.2.0/28"
 		error_message="A custom master_ipv4_cidr_block must flow into keda-admission-webhooks-ingress"
 	}
 	assert {
-		condition=length([for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].from) == 2
-		error_message="keda-admission-webhooks-ingress must allow two sources: the control plane CIDR and the konnectivity agents"
-	}
-	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].from[1].podSelector.matchLabels["k8s-app"] == "konnectivity-agent"
-		error_message="keda-admission-webhooks-ingress must allow the kube-system konnectivity-agent pods — on GKE the API server reaches in-cluster services through them, so the call arrives from an agent pod IP and never from master_ipv4_cidr_block; verified on a live cluster for the sibling components"
-	}
-	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
-		error_message="A custom observability_config.namespace must flow into keda-metrics-ingress"
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].from == local.webhook_ingress_from
+		error_message="keda-admission-webhooks-ingress must allow exactly local.webhook_ingress_from — asserting only the podSelector would miss a dropped kube-system namespaceSelector, which would leave the peer matching konnectivity-agent pods inside keda-system, of which there are none, so the API server would be blocked while every assertion still passed"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == "10.1.2.0/28"
 		error_message="A custom master_ipv4_cidr_block must flow into keda-operator-metrics-apiserver-ingress"
 	}
 	assert {
-		condition=length([for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].from) == 2
-		error_message="keda-operator-metrics-apiserver-ingress must allow two sources: the control plane CIDR and the konnectivity agents"
-	}
-	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].from[1].podSelector.matchLabels["k8s-app"] == "konnectivity-agent"
-		error_message="keda-operator-metrics-apiserver-ingress must allow the kube-system konnectivity-agent pods — on GKE the API server reaches in-cluster services through them, so the call arrives from an agent pod IP and never from master_ipv4_cidr_block; the APIService v1beta1.external.metrics.k8s.io is proxied by kube-apiserver through the same tunnel as an admission webhook"
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].from == local.webhook_ingress_from
+		error_message="keda-operator-metrics-apiserver-ingress must allow exactly local.webhook_ingress_from — asserting only the podSelector would miss a dropped kube-system namespaceSelector, which would leave the peer matching konnectivity-agent pods inside keda-system, of which there are none, so the API server would be blocked while every assertion still passed"
 	}
 	command=plan
 	variables {
 		keda_enabled=true
 		master_ipv4_cidr_block="10.1.2.0/28"
-		observability_config={namespace="custom-observability"}
 	}
 }
 run "should_install_keda_when_enabled" {
@@ -76,8 +63,8 @@ run "should_install_keda_when_enabled" {
 }
 run "should_scope_the_manual_network_policies_correctly" {
 	assert {
-		condition=length(yamldecode(helm_release.keda[0].values[0]).extraObjects) == 5
-		error_message="Five extra manifests are expected: the namespace-wide default-deny, the external metrics ingress, the metrics ingress, the operator's metricsservice ingress, and the admission webhook ingress — the KEDA chart's own NetworkPolicy templates are left disabled, so every policy here has to be written by hand"
+		condition=length(yamldecode(helm_release.keda[0].values[0]).extraObjects) == 4
+		error_message="Four extra manifests are expected, in this order: default-deny-ingress, keda-admission-webhooks-ingress, keda-operator-ingress, keda-operator-metrics-apiserver-ingress — the KEDA chart's own NetworkPolicy templates are left disabled, so every policy here has to be written by hand"
 	}
 	assert {
 		condition=alltrue([for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o.kind == "NetworkPolicy"])
@@ -105,15 +92,15 @@ run "should_scope_the_manual_network_policies_correctly" {
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].ports[0].port == 9443
-		error_message="keda-admission-webhooks-ingress must reference the webhook port by number, not by name — the container port 9443 is named http while the Service in front names the same port https, and a NetworkPolicy resolves the container port name, so https would match nothing; the chart defaults failurePolicy to Ignore, so the dropped calls would admit invalid ScaledObjects with no error anywhere"
+		error_message="keda-admission-webhooks-ingress must reference the webhook port by number, not by name — the container port 9443 is named http while the Service in front names the same port https, and a NetworkPolicy resolves the container port name, so https would match nothing; the chart defaults failurePolicy to Ignore, so the dropped calls would admit invalid ScaledObjects with no error anywhere; webhooks.port is pinned in the same values so a chart upgrade cannot move it"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-metrics-ingress"][0].spec.podSelector == {}
-		error_message="keda-metrics-ingress must apply to every pod in the namespace — only the metrics apiserver declares a metrics container port today, so the rule is inert on the operator and the webhook, and it covers them automatically if prometheus.operator.enabled or prometheus.webhooks.enabled is ever turned on"
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].from[1].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "kube-system"
+		error_message="keda-admission-webhooks-ingress must name kube-system on the konnectivity peer as a literal. Comparing the whole list to local.webhook_ingress_from cannot catch this: it checks the rendered value against the local that produced it, so editing the local moves both sides and the assertion still passes. Dropping this selector would leave the peer matching konnectivity-agent pods inside keda-system, of which there are none, and the API server would be blocked silently"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-metrics-ingress"][0].spec.ingress[0].ports[0].port == "metrics"
-		error_message="keda-metrics-ingress must scope its allow to the metrics-named port"
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.ingress[0].from[1].podSelector.matchLabels["k8s-app"] == "konnectivity-agent"
+		error_message="keda-admission-webhooks-ingress must name the konnectivity-agent pods as a literal, for the same reason the namespaceSelector above is asserted literally"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-ingress"][0].spec.podSelector.matchLabels == {"app" = "keda-operator"}
@@ -133,11 +120,27 @@ run "should_scope_the_manual_network_policies_correctly" {
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].ports[0].port == 6443
-		error_message="keda-operator-metrics-apiserver-ingress must allow the aggregation layer on the container port 6443, not the Service port 443, because a NetworkPolicy matches the port on the pod rather than on the Service"
+		error_message="keda-operator-metrics-apiserver-ingress must allow the aggregation layer on the container port 6443, not the Service port 443, because a NetworkPolicy matches the port on the pod rather than on the Service; service.portHttpsTarget is pinned in the same values so the chart cannot move it out from under this rule"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].from[1].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "kube-system"
+		error_message="keda-operator-metrics-apiserver-ingress must name kube-system on the konnectivity peer as a literal. Comparing the whole list to local.webhook_ingress_from cannot catch this: it checks the rendered value against the local that produced it, so editing the local moves both sides and the assertion still passes. Dropping this selector would leave the peer matching konnectivity-agent pods inside keda-system, of which there are none, and the API server would be blocked silently"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.ingress[0].from[1].podSelector.matchLabels["k8s-app"] == "konnectivity-agent"
+		error_message="keda-operator-metrics-apiserver-ingress must name the konnectivity-agent pods as a literal, for the same reason the namespaceSelector above is asserted literally"
 	}
 	assert {
 		condition=yamldecode(helm_release.keda[0].values[0]).networkPolicy.enabled == false
 		error_message="The KEDA chart's own NetworkPolicy templates must stay disabled — they allow ingress from an empty namespaceSelector, meaning every namespace in the cluster, on 9666, 6443 and 9443, which would reopen the cross-namespace ingress this set closes, and they would add an Egress policyType the hand-written policies deliberately omit"
+	}
+	assert {
+		condition=yamldecode(helm_release.keda[0].values[0]).service.portHttpsTarget == 6443
+		error_message="service.portHttpsTarget must be pinned to 6443 so the metrics apiserver container port cannot drift away from keda-operator-metrics-apiserver-ingress on a chart upgrade"
+	}
+	assert {
+		condition=yamldecode(helm_release.keda[0].values[0]).webhooks.port == 9443
+		error_message="webhooks.port must be pinned to 9443 so the admission webhook container port cannot drift away from keda-admission-webhooks-ingress on a chart upgrade; the chart leaves it empty by default and relies on the binary's default"
 	}
 	command=plan
 	variables {

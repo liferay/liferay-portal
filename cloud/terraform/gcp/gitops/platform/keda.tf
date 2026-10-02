@@ -53,37 +53,6 @@ resource "helm_release" "keda" {
 						kind="NetworkPolicy"
 						metadata={
 							labels=local.common_labels
-							name="keda-metrics-ingress"
-						}
-						spec={
-							ingress=[
-								{
-									from=[
-										{
-											namespaceSelector={
-												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_config.namespace
-												}
-											}
-										},
-									]
-									ports=[
-										{
-											port="metrics"
-											protocol="TCP"
-										},
-									]
-								},
-							]
-							podSelector={}
-							policyTypes=["Ingress"]
-						}
-					},
-					{
-						apiVersion="networking.k8s.io/v1"
-						kind="NetworkPolicy"
-						metadata={
-							labels=local.common_labels
 							name="keda-operator-ingress"
 						}
 						spec={
@@ -144,6 +113,12 @@ resource "helm_release" "keda" {
 				]
 				networkPolicy={
 					enabled=false
+				}
+				service={
+					portHttpsTarget=6443
+				}
+				webhooks={
+					port=9443
 				}
 			}),
 	]
