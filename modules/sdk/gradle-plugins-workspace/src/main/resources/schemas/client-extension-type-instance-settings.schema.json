@@ -2851,6 +2851,32 @@
 		},
 		{
 			"properties": {
+				"authServerHostsAllowed": {
+					"description": "Input a list of comma delimited host names that an authorization server well-known URI may point to. Input a blank list or an asterisk to allow any host. A host that resolves to a local network address also requires local network access.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Authorization Server Hosts Allowed",
+					"type": "array"
+				},
+				"authServerLocalNetworkAccessEnabled": {
+					"default": false,
+					"description": "Enable requesting an authorization server well-known URI that resolves to a local network address. Leave this disabled unless the authorization server requires it.",
+					"title": "Authorization Server Local Network Access Enabled",
+					"type": "boolean"
+				},
+				"pid": {
+					"const": "com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration",
+					"title": "OAuth 2 Client Configuration"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "OAuth 2 Client Configuration"
+		},
+		{
+			"properties": {
 				"allowedGrantTypes": {
 					"default": "",
 					"description": "Open registration allows only the \"grant_types\" listed here (for example, \"authorization_code\", \"refresh_token\"), or \"*\" for any grant type. An empty list rejects all open registrations.",
@@ -5378,6 +5404,7 @@
 				"com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIPAddressConfiguration",
 				"com.liferay.multi.factor.authentication.sample.internal.configuration.MFASampleConfiguration",
 				"com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration",
+				"com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration",
 				"com.liferay.oauth2.provider.rest.internal.configuration.OAuth2DynamicRegistrationConfiguration",
 				"com.liferay.oauth2.provider.rest.internal.configuration.OAuth2InAssertionConfiguration",
 				"com.liferay.oauth2.provider.rest.internal.endpoint.authorize.configuration.AuthorizeScreenConfiguration",
