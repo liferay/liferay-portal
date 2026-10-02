@@ -5,7 +5,6 @@
 
 package com.liferay.changeset.service;
 
-import com.liferay.changeset.exception.NoSuchCollectionException;
 import com.liferay.changeset.model.ChangesetCollection;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -225,10 +224,6 @@ public interface ChangesetCollectionLocalService
 			long changesetCollectionId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ChangesetCollection getChangesetCollection(long groupId, String name)
-		throws NoSuchCollectionException;
-
 	/**
 	 * Returns a range of all the changeset collections.
 	 *
@@ -285,4 +280,4 @@ public interface ChangesetCollectionLocalService
 		ChangesetCollection changesetCollection);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1924628822
+// LIFERAY-SERVICE-BUILDER-HASH:1960354217

@@ -251,13 +251,6 @@ public class ChangesetCollectionLocalServiceUtil {
 		return getService().getChangesetCollection(changesetCollectionId);
 	}
 
-	public static ChangesetCollection getChangesetCollection(
-			long groupId, String name)
-		throws com.liferay.changeset.exception.NoSuchCollectionException {
-
-		return getService().getChangesetCollection(groupId, name);
-	}
-
 	/**
 	 * Returns a range of all the changeset collections.
 	 *
@@ -335,4 +328,4 @@ public class ChangesetCollectionLocalServiceUtil {
 			ChangesetCollectionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1706049166
+// LIFERAY-SERVICE-BUILDER-HASH:1070033204

@@ -55,15 +55,6 @@ public class ChangesetEntryLocalServiceUtil {
 	}
 
 	public static ChangesetEntry addChangesetEntry(
-			long userId, long changesetCollectionId, long classNameId,
-			long classPK)
-		throws PortalException {
-
-		return getService().addChangesetEntry(
-			userId, changesetCollectionId, classNameId, classPK);
-	}
-
-	public static ChangesetEntry addChangesetEntry(
 			long userId, long changesetCollectionId,
 			String classExternalReferenceCode, long classNameId, long classPK)
 		throws PortalException {
@@ -309,10 +300,6 @@ public class ChangesetEntryLocalServiceUtil {
 		return getService().getChangesetEntriesCount();
 	}
 
-	public static long getChangesetEntriesCount(long changesetCollectionId) {
-		return getService().getChangesetEntriesCount(changesetCollectionId);
-	}
-
 	public static long getChangesetEntriesCount(
 		long changesetCollectionId, long classNameId) {
 
@@ -338,14 +325,6 @@ public class ChangesetEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getChangesetEntry(changesetEntryId);
-	}
-
-	public static ChangesetEntry getChangesetEntry(
-			long changesetCollectionId, long classNameId, long classPK)
-		throws com.liferay.changeset.exception.NoSuchEntryException {
-
-		return getService().getChangesetEntry(
-			changesetCollectionId, classNameId, classPK);
 	}
 
 	public static
@@ -399,4 +378,4 @@ public class ChangesetEntryLocalServiceUtil {
 			ChangesetEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:811917661
+// LIFERAY-SERVICE-BUILDER-HASH:-183084480

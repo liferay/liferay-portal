@@ -48,16 +48,6 @@ public class ChangesetEntryLocalServiceWrapper
 
 	@Override
 	public com.liferay.changeset.model.ChangesetEntry addChangesetEntry(
-			long userId, long changesetCollectionId, long classNameId,
-			long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _changesetEntryLocalService.addChangesetEntry(
-			userId, changesetCollectionId, classNameId, classPK);
-	}
-
-	@Override
-	public com.liferay.changeset.model.ChangesetEntry addChangesetEntry(
 			long userId, long changesetCollectionId,
 			String classExternalReferenceCode, long classNameId, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -349,12 +339,6 @@ public class ChangesetEntryLocalServiceWrapper
 	}
 
 	@Override
-	public long getChangesetEntriesCount(long changesetCollectionId) {
-		return _changesetEntryLocalService.getChangesetEntriesCount(
-			changesetCollectionId);
-	}
-
-	@Override
 	public long getChangesetEntriesCount(
 		long changesetCollectionId, long classNameId) {
 
@@ -384,15 +368,6 @@ public class ChangesetEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _changesetEntryLocalService.getChangesetEntry(changesetEntryId);
-	}
-
-	@Override
-	public com.liferay.changeset.model.ChangesetEntry getChangesetEntry(
-			long changesetCollectionId, long classNameId, long classPK)
-		throws com.liferay.changeset.exception.NoSuchEntryException {
-
-		return _changesetEntryLocalService.getChangesetEntry(
-			changesetCollectionId, classNameId, classPK);
 	}
 
 	@Override
@@ -460,4 +435,4 @@ public class ChangesetEntryLocalServiceWrapper
 	private ChangesetEntryLocalService _changesetEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-236575965
+// LIFERAY-SERVICE-BUILDER-HASH:563032832
