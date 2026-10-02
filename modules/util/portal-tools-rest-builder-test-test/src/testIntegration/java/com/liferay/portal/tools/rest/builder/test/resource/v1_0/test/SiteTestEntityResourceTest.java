@@ -331,8 +331,31 @@ public class SiteTestEntityResourceTest
 
 			SiteTestEntityResource siteTestEntityResource =
 				_createSiteTestEntityResource(
-					"importStrategy", "ON_ERROR_CONTINUE", "updateStrategy",
+					"importStrategy", "ON_ERROR_FAIL", "updateStrategy",
 					"UPDATE");
+
+			_waitForFinish(
+				"FAILED", true,
+				JSONFactoryUtil.createJSONObject(
+					siteTestEntityResource.putSiteTestEntityBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								randomSiteTestEntity.toString()),
+							JSONFactoryUtil.createJSONObject(
+								postSiteTestEntity.toString()))
+					).getContent()));
+
+			SiteTestEntity actualSiteTestEntity =
+				siteTestEntityResource.getSiteTestEntity(
+					postSiteTestEntity.getId());
+
+			Assert.assertNotEquals(
+				description, actualSiteTestEntity.getDescription());
+
+			siteTestEntityResource = _createSiteTestEntityResource(
+				"importStrategy", "ON_ERROR_CONTINUE", "updateStrategy",
+				"UPDATE");
 
 			_waitForFinish(
 				"COMPLETED", true,
@@ -359,6 +382,57 @@ public class SiteTestEntityResourceTest
 				getSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
 					testGroup.getGroupId(),
 					randomSiteTestEntity.getExternalReferenceCode()));
+
+		Page<SiteTestEntity> page =
+			siteTestEntityResource.getSiteSiteTestEntitiesPage(
+				testGroup.getGroupId());
+
+		String partialUpdateDescription = RandomTestUtil.randomString();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			SiteTestEntityResource siteTestEntityResource =
+				_createSiteTestEntityResource(
+					"importStrategy", "ON_ERROR_FAIL", "updateStrategy",
+					"PARTIAL_UPDATE");
+
+			_waitForFinish(
+				"COMPLETED", true,
+				JSONFactoryUtil.createJSONObject(
+					siteTestEntityResource.putSiteTestEntityBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"description", partialUpdateDescription
+							).put(
+								"id", postSiteTestEntity.getId()
+							))
+					).getContent()));
+
+			_waitForFinish(
+				"FAILED", true,
+				JSONFactoryUtil.createJSONObject(
+					siteTestEntityResource.putSiteTestEntityBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONUtil.put("id", RandomTestUtil.randomLong()))
+					).getContent()));
+		}
+
+		actualSiteTestEntity = siteTestEntityResource.getSiteTestEntity(
+			postSiteTestEntity.getId());
+
+		Assert.assertEquals(
+			partialUpdateDescription, actualSiteTestEntity.getDescription());
+		Assert.assertEquals(
+			postSiteTestEntity.getExternalReferenceCode(),
+			actualSiteTestEntity.getExternalReferenceCode());
+
+		_assertSiteSiteTestEntitiesCount(
+			String.valueOf(testGroup.getGroupId()), page.getTotalCount());
 	}
 
 	private JSONObject _waitForFinish(

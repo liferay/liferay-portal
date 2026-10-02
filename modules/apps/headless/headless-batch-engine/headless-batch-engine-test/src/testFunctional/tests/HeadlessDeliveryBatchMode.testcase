@@ -61,88 +61,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 4
-	test CannotCreateBlogPostingWithBatchPutPartialUpdate {
-		property portal.acceptance = "true";
-
-		task ("When I use PUT 'blog-postings/batch?updateStrategy=PARTIAL_UPDATE with non existing id") {
-			var importTaskId = BlogPostingAPI.getIdOfUpdatedBlogPostingBatchEngineImportTask(
-				numberOfBlogPostings = 1,
-				testCase = "nonExistingId",
-				updateStrategy = "PARTIAL_UPDATE");
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: FAILED") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "FAILED");
-		}
-
-		task ("And Then blogPosting is not created ") {
-			var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated(response = ${response});
-
-			TestUtils.assertEquals(
-				actual = ${actualNumberOfBlogPostings},
-				expected = 0);
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
-	test CannotCreateBlogPostingWithBatchPutUpdateStrategyUpdate {
-		property portal.acceptance = "true";
-
-		task ("Given blog post created") {
-			var importTaskId = BlogPostingAPI.getIdOfCreateNBlogPostingBatchEngineImportTask(
-				createStrategy = "INSERT",
-				numberOfBlogPostings = 1);
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("When I use PUT '/blog-postings/batch' with parameter createStrategy set to UPDATE with non existing externalReferenceCode as one of the updated fields") {
-			var importTaskId = BlogPostingAPI.getIdOfUpdatedBlogPostingBatchEngineImportTask(
-				numberOfBlogPostings = 1,
-				testCase = "updateOneBlogPosting",
-				updateStrategy = "UPDATE");
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: FAILED") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "FAILED");
-		}
-
-		task ("And Then none of the blogPostings is created/updated") {
-			var response = BlogPostingAPI.getBlogPostings();
-
-			task ("no new blog posting created") {
-				var actualNumberOfBlogPostings = BlogPostingAPI.getNumberOfBlogPostingsCreated(response = ${response});
-
-				TestUtils.assertEquals(
-					actual = ${actualNumberOfBlogPostings},
-					expected = 1);
-			}
-
-			task ("exisitng blog posting not updated") {
-				var blogPostingData = BlogPostingAPI.getBlogPostingDataToString(response = ${response});
-
-				TestUtils.assertEquals(
-					actual = ${blogPostingData},
-					expected = "headline0,articleBody0,erc0");
-			}
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
 	test CannotUpdateExternalReferenceCodeWithBatchPutUpdateStrategyUpdate {
 		property portal.acceptance = "true";
 
@@ -177,46 +95,6 @@ definition {
 			TestUtils.assertEquals(
 				actual = ${blogPostingData},
 				expected = "headlineUpdated,articleBodyUpdated,erc0");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 5
-	test CanUpdateOneFieldOfBlogPostingWithBatchPutPartialUpdate {
-		property portal.acceptance = "true";
-
-		task ("Given a blogPosting created") {
-			var blogPostingId = BlogPostingAPI.getIdOfCreatedBlogPosting(
-				articleBody = "Blog Content",
-				headline = "Blog Headline");
-		}
-
-		task ("When I use PUT 'http://localhost:8080/o/headless-delivery/v1.0/blog-postings/batch?updateStrategy=PARTIAL_UPDATE with created blogPostingId body parameter and one other body parameter to update ") {
-			var importTaskId = BlogPostingAPI.getIdOfUpdateOneBlogPostingBodyParameter(
-				blogPostingId = ${blogPostingId},
-				bodyParameterKey = "headline",
-				bodyParameterValue = "Updated Headline",
-				updateStrategy = "PARTIAL_UPDATE");
-
-			ImportTask.waitForTaskToFinish(importTaskId = ${importTaskId});
-		}
-
-		task ("Then I receive executeStatus: completed") {
-			var executeStatus = ImportTask.getStatusOfImportTaskById(importTaskId = ${importTaskId});
-
-			TestUtils.assertEquals(
-				actual = ${executeStatus},
-				expected = "COMPLETED");
-		}
-
-		task ("And Then the blog article body is updated") {
-			var response = BlogPostingAPI.getBlogPostings();
-
-			var blogPostingHeadline = JSONUtil.getWithJSONPath(${response}, "$.items.[0].headline");
-
-			TestUtils.assertEquals(
-				actual = ${blogPostingHeadline},
-				expected = "Updated Headline");
 		}
 	}
 
