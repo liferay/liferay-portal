@@ -135,6 +135,13 @@ definition {
 	macro selectCategories(modalTitle = null, categoryNameList = null) {
 		AssetCategorization.gotoSelectCategory();
 
+		// Some category selectors, such as the web content filter, render
+		// the tree inside an item selector iframe.
+
+		if (IsElementPresent(locator1 = "IFrame#MODAL_BODY")) {
+			SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		}
+
 		Portlet.expandTree();
 
 		for (var categoryName : list ${categoryNameList}) {
