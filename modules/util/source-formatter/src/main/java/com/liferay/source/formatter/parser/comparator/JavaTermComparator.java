@@ -25,9 +25,9 @@ import java.util.regex.Pattern;
  */
 public class JavaTermComparator implements Comparator<JavaTerm> {
 
-	public JavaTermComparator(String customSQLContent, boolean caseSensitive) {
-		_customSQLContent = customSQLContent;
+	public JavaTermComparator(boolean caseSensitive, String customSQLContent) {
 		_caseSensitive = caseSensitive;
+		_customSQLContent = customSQLContent;
 	}
 
 	@Override

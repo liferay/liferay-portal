@@ -108,8 +108,8 @@ public class JavaTermOrderCheck extends BaseJavaTermCheck {
 		}
 
 		JavaTermComparator javaTermComparator = new JavaTermComparator(
-			customSQLContent,
-			isAttributeValue(_CASE_SENSITIVE_KEY, absolutePath, true));
+			isAttributeValue(_CASE_SENSITIVE_KEY, absolutePath, true),
+			customSQLContent);
 
 		JavaTerm previousJavaTerm = null;
 
