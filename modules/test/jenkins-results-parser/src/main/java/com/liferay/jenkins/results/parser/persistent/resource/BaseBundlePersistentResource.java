@@ -388,6 +388,10 @@ public abstract class BaseBundlePersistentResource
 				if (_queueReinvocationCount >= _MAX_QUEUE_REINVOCATION_COUNT) {
 					print("No queue reinvocation attempts remaining");
 
+					setStatus(Status.FAILED);
+
+					save();
+
 					return;
 				}
 
@@ -736,6 +740,10 @@ public abstract class BaseBundlePersistentResource
 	private void _reinvokeCancelledQueueItem() {
 		if (_cancelledReinvocationCount >= _MAX_CANCELLED_REINVOCATION_COUNT) {
 			print("No cancelled queue item reinvocation attempts remaining");
+
+			setStatus(Status.FAILED);
+
+			save();
 
 			return;
 		}
