@@ -307,12 +307,10 @@ definition {
 				key_fieldFieldLabel = "Estado",
 				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 
-			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,Estado,ItemPais") {
-				FormFields.addRepeatableField(
-					fieldName = ${fieldName},
-					index = 1,
+			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,EstadoFieldSet,ItemPaisFieldSet") {
+				Click(
 					key_fieldName = ${fieldName},
-					key_repeatableFieldNumber = 1);
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP_ADD_BUTTON");
 
 				DataEngine.assertFieldInFieldsGroupRepeated(
 					fieldName = ${fieldName},
@@ -331,22 +329,18 @@ definition {
 				key_fieldFieldLabel = "Estado",
 				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 
-			Click(
-				key_fieldName = "ItemPais",
-				key_index = 4,
-				locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
-
-			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,Estado") {
+			for (var fieldName : list "ItemPaisFieldSet,ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,EstadoFieldSet") {
 				Click(
 					key_fieldName = ${fieldName},
 					key_index = 2,
-					locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP_REMOVE_BUTTON");
 			}
 
-			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,ItensDeGenero,Estado,ItemPais") {
+			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,EstadoFieldSet,ItemPaisFieldSet") {
 				AssertElementNotPresent(
 					key_fieldName = ${fieldName},
-					locator1 = "DDMField#REMOVE_REPEATED_FIELD");
+					key_index = 2,
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP");
 			}
 
 			WebContent.publishExistingWCArticleWithPermissions();

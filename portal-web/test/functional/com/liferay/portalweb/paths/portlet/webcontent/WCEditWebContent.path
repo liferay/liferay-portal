@@ -291,7 +291,17 @@
 </tr>
 <tr>
 	<td>REPEATED_FIELD_IN_FIELDS_GROUP</td>
-	<td>xpath=(//div[contains(@data-field-name, '${key_fieldName}')]/div[contains(@class,'repeatable')][@draggable='true'])[${key_index}]</td>
+	<td>xpath=((//div[@data-field-name='${key_fieldName}'])[1]/div[contains(@class,'repeatable')])[${key_index}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPEATED_FIELD_IN_FIELDS_GROUP_ADD_BUTTON</td>
+	<td>xpath=((//div[@data-field-name='${key_fieldName}'])[1]//button[contains(@class,'ddm-form-field-repeatable-add-button')])[last()]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>REPEATED_FIELD_IN_FIELDS_GROUP_REMOVE_BUTTON</td>
+	<td>xpath=(((//div[@data-field-name='${key_fieldName}'])[1]/div[contains(@class,'repeatable')])[${key_index}]//button[contains(@class,'ddm-form-field-repeatable-delete-button')])[last()]</td>
 	<td></td>
 </tr>
 <tr>

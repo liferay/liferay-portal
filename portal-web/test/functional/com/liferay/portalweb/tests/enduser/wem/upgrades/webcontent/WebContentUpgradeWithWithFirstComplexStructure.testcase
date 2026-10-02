@@ -234,13 +234,13 @@ definition {
 				key_fieldFieldLabel = "Imagem Aba 01",
 				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 
-			for (var fieldName : list "Logo,Beneficio,Companhia,JeitoIdentificar,Destino,DescricaoOpPar,CompanhiaOperadora") {
-				FormFields.addRepeatableField(
+			for (var fieldName : list "LogoFieldSet,Beneficio,Companhia,JeitoIdentificarFieldSet,Destino,DescricaoOpPar,CompanhiaOperadoraFieldSet") {
+				Click(
 					key_fieldName = ${fieldName},
-					key_repeatableFieldNumber = 1);
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP_ADD_BUTTON");
 			}
 
-			for (var fieldName : list "Logo,Beneficio,Companhia,JeitoIdentificar,Destino,DescricaoOpPar,CompanhiaOperadora") {
+			for (var fieldName : list "LogoFieldSet,Beneficio,Companhia,JeitoIdentificarFieldSet,Destino,DescricaoOpPar,CompanhiaOperadoraFieldSet") {
 				DataEngine.assertFieldInFieldsGroupRepeated(
 					fieldName = ${fieldName},
 					index = 1);
@@ -252,29 +252,18 @@ definition {
 		}
 
 		task ("Duplicate fields and then remove duplicates") {
-			for (var fieldName : list "Logo,Beneficio,Companhia,JeitoIdentificar") {
+			for (var fieldName : list "LogoFieldSet,Beneficio,Companhia,JeitoIdentificarFieldSet,CompanhiaOperadoraFieldSet,Destino,DescricaoOpPar") {
 				Click(
 					key_fieldName = ${fieldName},
 					key_index = 2,
-					locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP_REMOVE_BUTTON");
 			}
 
-			Click(
-				key_fieldName = "CompanhiaOperadora",
-				key_index = 6,
-				locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
-
-			for (var fieldName : list "Destino,DescricaoOpPar") {
-				Click(
-					key_fieldName = ${fieldName},
-					key_index = 2,
-					locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
-			}
-
-			for (var fieldName : list "Logo,Beneficio,Companhia,JeitoIdentificar,CompanhiaOperadora,DescricaoOpPar,Destino") {
+			for (var fieldName : list "LogoFieldSet,Beneficio,Companhia,JeitoIdentificarFieldSet,Destino,DescricaoOpPar,CompanhiaOperadoraFieldSet") {
 				AssertElementNotPresent(
 					key_fieldName = ${fieldName},
-					locator1 = "DDMField#REMOVE_REPEATED_FIELD");
+					key_index = 2,
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP");
 			}
 		}
 	}
