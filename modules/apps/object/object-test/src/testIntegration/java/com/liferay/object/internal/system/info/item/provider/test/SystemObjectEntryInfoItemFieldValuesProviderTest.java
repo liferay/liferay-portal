@@ -16,18 +16,26 @@ import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.object.system.SystemObjectEntry;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -51,7 +59,10 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.io.Serializable;
+
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -196,6 +207,83 @@ public class SystemObjectEntryInfoItemFieldValuesProviderTest {
 			accountEntry.getUserName(), "author", infoItemFieldValues);
 	}
 
+	@Test
+	public void testSystemObjectEntryInfoItemFieldValuesProviderWithObjectRelationship()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"parentTitle"
+					).build()));
+
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager(_objectDefinition.getName());
+
+		long accountEntryId = systemObjectDefinitionManager.addBaseModel(
+			false, TestPropsValues.getUser(),
+			HashMapBuilder.<String, Object>put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"type", "business"
+			).build());
+
+		try {
+			ObjectRelationship objectRelationship =
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, objectDefinition,
+					_objectDefinition);
+
+			String parentTitle = RandomTestUtil.randomString();
+
+			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"parentTitle", parentTitle
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			ObjectRelationshipTestUtil.relateObjectEntries(
+				objectEntry.getObjectEntryId(), accountEntryId,
+				objectRelationship, TestPropsValues.getUserId());
+
+			InfoItemFieldValuesProvider<SystemObjectEntry>
+				infoItemFieldValuesProvider =
+					_infoItemServiceRegistry.getFirstInfoItemService(
+						InfoItemFieldValuesProvider.class,
+						_objectDefinition.getClassName() + StringPool.POUND +
+							_objectDefinition.getObjectDefinitionId());
+
+			InfoItemObjectProvider<SystemObjectEntry> infoItemObjectProvider =
+				_infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemObjectProvider.class,
+					_objectDefinition.getClassName() + StringPool.POUND +
+						_objectDefinition.getObjectDefinitionId());
+
+			_assertInfoFieldValue(
+				parentTitle, "parentTitle",
+				infoItemFieldValuesProvider.getInfoItemFieldValues(
+					infoItemObjectProvider.getInfoItem(
+						new ClassPKInfoItemIdentifier(accountEntryId))));
+		}
+		finally {
+			_accountEntryLocalService.deleteAccountEntry(accountEntryId);
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition.getObjectDefinitionId());
+		}
+	}
+
 	private void _assertInfoFieldValue(
 		Object expectedValue, String infoFieldName,
 		InfoItemFieldValues infoItemFieldValues) {
@@ -264,6 +352,9 @@ public class SystemObjectEntryInfoItemFieldValuesProviderTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
+
 	private ObjectField _objectField;
 
 	@Inject
@@ -271,6 +362,9 @@ public class SystemObjectEntryInfoItemFieldValuesProviderTest {
 
 	@Inject
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject
 	private SystemObjectDefinitionManagerRegistry
