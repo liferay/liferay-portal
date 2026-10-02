@@ -372,7 +372,7 @@ test.describe('Collection Display', () => {
 				);
 
 				await expect(
-					page.getByLabel('Collection', {exact: true})
+					page.getByRole('textbox', {exact: true, name: 'Collection'})
 				).toHaveValue(objectDefinition.label['en_US']);
 			});
 		}
