@@ -2515,17 +2515,21 @@ public class ObjectActionLocalServiceTest {
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
 			).name(
-				"name"
+				StringUtil.randomId()
 			).objectDefinitionId(
 				objectDefinition.getObjectDefinitionId()
 			).userId(
 				TestPropsValues.getUserId()
 			).build());
 
+		String objectFieldValue = RandomTestUtil.randomString();
+
 		_objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(), true,
-			"oldValue(\"name\") == \"Paul\"",
+			StringBundler.concat(
+				"oldValue(\"", objectField.getName(), "\") == \"",
+				objectFieldValue, "\""),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -2553,7 +2557,7 @@ public class ObjectActionLocalServiceTest {
 			HashMapBuilder.putAll(
 				values
 			).put(
-				"name", "Paul"
+				objectField.getName(), objectFieldValue
 			).build());
 
 		Assert.assertNull(_argumentsList.poll());
@@ -2563,7 +2567,7 @@ public class ObjectActionLocalServiceTest {
 			HashMapBuilder.putAll(
 				values
 			).put(
-				"name", RandomTestUtil.randomString()
+				objectField.getName(), RandomTestUtil.randomString()
 			).build());
 
 		Assert.assertNotNull(_argumentsList.poll());
