@@ -549,4 +549,6 @@ portal-kernel/src/com/liferay/portal/kernel/verify/    @liferay-database-infra
 portal-kernel/test/unit/com/liferay/portal/kernel/dao/db/    @liferay-database-infra
 portal-kernel/test/unit/com/liferay/portal/kernel/upgrade/    @liferay-database-infra
 util-taglib/    @liferay-frontend
-workspaces/liferay-marketplace-workspace/    @liferay-commerce
+workspaces/liferay-customer-workspace/    @liferay-one
+workspaces/liferay-marketplace-workspace/    @liferay-one
+workspaces/liferay-one-workspace/    @liferay-one
