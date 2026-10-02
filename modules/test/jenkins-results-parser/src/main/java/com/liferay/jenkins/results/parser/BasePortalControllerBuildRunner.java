@@ -371,8 +371,8 @@ public abstract class BasePortalControllerBuildRunner
 				boolean portalGitHubCompareURLFound =
 					portalGitHubCompareURLMatcher.find();
 
-				if (portalBranchSHAFound || portalGitHubCompareURLFound ||
-					portalBaseBranchSHAFound) {
+				if (portalBaseBranchSHAFound || portalBranchSHAFound ||
+					portalGitHubCompareURLFound) {
 
 					sb.append("<ul>");
 

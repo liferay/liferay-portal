@@ -18,10 +18,6 @@ public class PortalTopLevelBuildDataTest
 
 	@Test
 	public void testGetPortalRemoteGitRef() {
-		String portalGitHubURL =
-			"https://github.com/liferay/liferay-portal/tree/" +
-				RandomTestUtil.randomString();
-
 		PortalTopLevelBuildData portalTopLevelBuildData = Mockito.mock(
 			PortalTopLevelBuildData.class);
 
@@ -37,22 +33,26 @@ public class PortalTopLevelBuildDataTest
 			Mockito.any()
 		);
 
+		String portalGitHubURL =
+			"https://github.com/liferay/liferay-portal/tree/" +
+				RandomTestUtil.randomString();
+
 		Mockito.doReturn(
 			portalGitHubURL
 		).when(
 			portalTopLevelBuildData
 		).getPortalGitHubURL();
 
-		RemoteGitRef lookedUpRemoteGitRef = Mockito.mock(RemoteGitRef.class);
-		RemoteGitRef storedRemoteGitRef = Mockito.mock(RemoteGitRef.class);
-
 		String sha = RandomTestUtil.randomSHA();
+		RemoteGitRef storedRemoteGitRef = Mockito.mock(RemoteGitRef.class);
 
 		Mockito.doReturn(
 			sha
 		).when(
 			storedRemoteGitRef
 		).getSHA();
+
+		RemoteGitRef lookedUpRemoteGitRef = Mockito.mock(RemoteGitRef.class);
 
 		try (MockedStatic<GitUtil> gitUtilMockedStatic = Mockito.mockStatic(
 				GitUtil.class)) {

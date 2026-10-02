@@ -122,8 +122,6 @@ public class BasePortalControllerBuildRunnerTest
 			Mockito.any()
 		);
 
-		String sha = RandomTestUtil.randomSHA();
-
 		RemoteGitRef remoteGitRef = Mockito.mock(RemoteGitRef.class);
 
 		Mockito.doReturn(
@@ -131,6 +129,8 @@ public class BasePortalControllerBuildRunnerTest
 		).when(
 			remoteGitRef
 		).getRepositoryName();
+
+		String sha = RandomTestUtil.randomSHA();
 
 		Mockito.doReturn(
 			sha
@@ -153,6 +153,14 @@ public class BasePortalControllerBuildRunnerTest
 
 	@Test
 	public void testPreviousBuildHasRunningInvocation() throws Exception {
+		BasePortalControllerBuildRunner<?> basePortalControllerBuildRunner =
+			Mockito.mock(BasePortalControllerBuildRunner.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePortalControllerBuildRunner
+		).previousBuildHasRunningInvocation();
+
 		String controllerBuildURL =
 			"https://test-1-0-aws.liferay.com/job/test-portal-testsuite-" +
 				"upstream-controller(master-private_stable)/12/";
@@ -161,27 +169,22 @@ public class BasePortalControllerBuildRunnerTest
 				"upstream(master-private)/34/";
 
 		String portalBaseBranchSHA = RandomTestUtil.randomSHA();
-		String portalBranchSHA = RandomTestUtil.randomSHA();
 
 		String portalBaseBranchSHAItem = JenkinsResultsParserUtil.combine(
 			"<strong>Base Git ID:</strong> <a href=\"https://github.com/",
 			"liferay/liferay-portal/commit/", portalBaseBranchSHA, "\">",
 			portalBaseBranchSHA.substring(0, 7), "</a>");
+
+		String portalBranchSHA = RandomTestUtil.randomSHA();
+
 		String portalBranchSHAItem = JenkinsResultsParserUtil.combine(
 			"<strong>Git ID:</strong> <a href=\"https://github.com/",
 			"brianchandotcom/liferay-portal-ee/commit/", portalBranchSHA, "\">",
 			portalBranchSHA.substring(0, 7), "</a>");
+
 		String portalGitHubCompareURLItem = JenkinsResultsParserUtil.combine(
 			"<strong>Git Compare:</strong> <a href=\"https://github.com/",
 			"brianchandotcom/liferay-portal-ee/compare/a...b\">3 commits</a>");
-
-		BasePortalControllerBuildRunner<?> basePortalControllerBuildRunner =
-			Mockito.mock(BasePortalControllerBuildRunner.class);
-
-		Mockito.doCallRealMethod(
-		).when(
-			basePortalControllerBuildRunner
-		).previousBuildHasRunningInvocation();
 
 		Mockito.doReturn(
 			Arrays.asList(

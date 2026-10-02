@@ -80,11 +80,11 @@ public class UpstreamPortalTopLevelBuildTest
 
 		String branchName = RandomTestUtil.randomString();
 
+		_testGetWorkspaceWithPortalBase(branchName, false, "build");
 		_testGetWorkspaceWithPortalBase(branchName + "-private", false, null);
 		_testGetWorkspaceWithPortalBase(branchName + "-private", true, "build");
 		_testGetWorkspaceWithPortalBase(
 			branchName + "-private", true, "controller");
-		_testGetWorkspaceWithPortalBase(branchName, false, "build");
 	}
 
 	private UpstreamPortalTopLevelBuild _getUpstreamPortalTopLevelBuild(
@@ -196,11 +196,6 @@ public class UpstreamPortalTopLevelBuildTest
 			upstreamPortalTopLevelBuild
 		).getBaseGitRepositoryName();
 
-		String portalBaseGitCommit = RandomTestUtil.randomSHA();
-		String portalBaseGitHubURL =
-			"https://github.com/liferay/liferay-portal/tree/" +
-				RandomTestUtil.randomString();
-
 		BaseBuild parameterBuild = null;
 
 		if (Objects.equals(parameterSource, "build")) {
@@ -215,6 +210,11 @@ public class UpstreamPortalTopLevelBuildTest
 				upstreamPortalTopLevelBuild
 			).getControllerBuild();
 		}
+
+		String portalBaseGitCommit = RandomTestUtil.randomSHA();
+		String portalBaseGitHubURL =
+			"https://github.com/liferay/liferay-portal/tree/" +
+				RandomTestUtil.randomString();
 
 		if (parameterBuild != null) {
 			Mockito.doReturn(

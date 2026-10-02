@@ -104,8 +104,8 @@ public class PortalTopLevelBuildData
 
 		super(runId, jobName, buildURL);
 
-		setPortalRemoteGitRef(GitUtil.getRemoteGitRef(_getPortalGitHubURL()));
 		setPortalGitHubURL(_getPortalGitHubURL());
+		setPortalRemoteGitRef(GitUtil.getRemoteGitRef(_getPortalGitHubURL()));
 		setPortalUpstreamBranchName(_getPortalUpstreamBranchName());
 
 		validateKeys(_REQUIRED_KEYS);
