@@ -54,9 +54,11 @@ public class ProxyConfig {
 			ProxyConfig proxyConfig = new ProxyConfig();
 
 			proxyConfig._host = getHost();
+			proxyConfig._password = _password;
 			proxyConfig._port = getPort();
 			proxyConfig._shouldApplyConfig = shouldApplyConfig();
 			proxyConfig._shouldApplyCredentials = shouldApplyCredentials();
+			proxyConfig._userName = _userName;
 
 			return proxyConfig;
 		}
