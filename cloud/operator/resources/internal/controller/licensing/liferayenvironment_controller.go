@@ -18,6 +18,7 @@ import (
 	"maps"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -39,28 +40,32 @@ import (
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
+	controller "sigs.k8s.io/controller-runtime/pkg/controller"
 	handler "sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
+	source "sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 const (
-	conditionActivated             = "Activated"
-	conditionAddOnsReady           = "AddOnsReady"
-	conditionGracePeriodExpired    = "GracePeriodExpired"
-	conditionLicenseValid          = "LicenseValid"
-	conditionProvisioningReachable = "ProvisioningReachable"
-	conditionReplicasCountValid    = "ReplicasCountValid"
-	entitlementsSecretSuffix       = "-entitlements"
-	environmentLabel               = "licensing.liferay.com/environment"
-	fieldOwner                     = "liferay-dxp-operator"
-	gracePeriodReplicaCeiling      = 1
-	identitySecretSuffix           = "-identity"
+	conditionActivated                       = "Activated"
+	conditionAddOnsReady                     = "AddOnsReady"
+	conditionGracePeriodExpired              = "GracePeriodExpired"
+	conditionLicenseValid                    = "LicenseValid"
+	conditionProvisioningReachable           = "ProvisioningReachable"
+	conditionReplicasCountValid              = "ReplicasCountValid"
+	entitlementsSecretSuffix                 = "-entitlements"
+	environmentLabel                         = "licensing.liferay.com/environment"
+	fieldOwner                               = "liferay-dxp-operator"
+	gracePeriodReplicaCeiling                = 1
+	identitySecretSuffix                     = "-identity"
+	scaledObjectCustomResourceDefinitionName = "scaledobjects.keda.sh"
 )
 
 // +kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
+// +kubebuilder:rbac:groups=apiextensions.k8s.io,resources=customresourcedefinitions,verbs=get;list;watch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups=autoscaling,resources=horizontalpodautoscalers,verbs=get;list;patch;watch
 // +kubebuilder:rbac:groups=keda.sh,resources=scaledobjects,verbs=get;list;patch;watch
@@ -182,7 +187,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
 	manager controllerruntime.Manager,
 ) error {
-	controllerBuilder := controllerruntime.NewControllerManagedBy(
+	customResourceDefinition := &metav1.PartialObjectMetadata{}
+
+	customResourceDefinition.SetGroupVersionKind(customResourceDefinitionGroupVersionKind)
+
+	liferayEnvironmentController, error := controllerruntime.NewControllerManagedBy(
 		manager,
 	).For(
 		&licensingv1alpha1.LiferayEnvironment{},
@@ -202,34 +211,32 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 			liferayEnvironmentReconciler.enqueueScaleTargetEnvironments,
 		),
 		builder.WithPredicates(predicate.GenerationChangedPredicate{}),
-	)
-
-	_, error := manager.GetRESTMapper().RESTMapping(
-		scaledObjectGroupVersionKind.GroupKind(),
-		scaledObjectGroupVersionKind.Version,
-	)
-
-	if meta.IsNoMatchError(error) {
-		manager.GetLogger().Info(
-			"KEDA is not installed; ScaledObjects are not watched",
-		)
-	} else if error != nil {
-		return error
-	} else {
-		scaledObject := &unstructured.Unstructured{}
-
-		scaledObject.SetGroupVersionKind(scaledObjectGroupVersionKind)
-
-		controllerBuilder = controllerBuilder.Watches(
-			scaledObject,
-			handler.EnqueueRequestsFromMapFunc(
-				liferayEnvironmentReconciler.enqueueScaleTargetEnvironments,
+	).Watches(
+		customResourceDefinition,
+		handler.EnqueueRequestsFromMapFunc(
+			liferayEnvironmentReconciler.ensureScaledObjectWatch,
+		),
+		builder.WithPredicates(
+			predicate.NewPredicateFuncs(
+				func(object client.Object) bool {
+					return object.GetName() == scaledObjectCustomResourceDefinitionName
+				},
 			),
-			builder.WithPredicates(predicate.GenerationChangedPredicate{}),
-		)
+		),
+	).Build(
+		liferayEnvironmentReconciler,
+	)
+
+	if error != nil {
+		return error
 	}
 
-	return controllerBuilder.Complete(liferayEnvironmentReconciler)
+	liferayEnvironmentReconciler.scaledObjectWatch = &scaledObjectWatch{
+		controller: liferayEnvironmentController,
+		manager:    manager,
+	}
+
+	return nil
 }
 
 func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
@@ -1016,6 +1023,59 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureNamespac
 	return liferayEnvironmentReconciler.Update(context, namespace)
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureScaledObjectWatch(
+	context context.Context,
+	object client.Object,
+) []controllerruntime.Request {
+	scaledObjectWatch := liferayEnvironmentReconciler.scaledObjectWatch
+
+	scaledObjectWatch.mutex.Lock()
+
+	defer scaledObjectWatch.mutex.Unlock()
+
+	if scaledObjectWatch.added {
+		return nil
+	}
+
+	logger := logf.FromContext(context)
+
+	if _, error := scaledObjectWatch.manager.GetRESTMapper().RESTMapping(
+		scaledObjectGroupVersionKind.GroupKind(),
+		scaledObjectGroupVersionKind.Version,
+	); error != nil {
+		if !meta.IsNoMatchError(error) {
+			logger.Error(error, "Unable to resolve the ScaledObject API")
+		}
+
+		return nil
+	}
+
+	scaledObject := &unstructured.Unstructured{}
+
+	scaledObject.SetGroupVersionKind(scaledObjectGroupVersionKind)
+
+	if error := scaledObjectWatch.controller.Watch(
+		source.Kind(
+			scaledObjectWatch.manager.GetCache(),
+			client.Object(scaledObject),
+			handler.EnqueueRequestsFromMapFunc(
+				liferayEnvironmentReconciler.enqueueScaleTargetEnvironments,
+			),
+			predicate.GenerationChangedPredicate{},
+		),
+	); error != nil {
+		logger.Error(error, "Unable to watch ScaledObjects")
+
+		return nil
+	}
+
+	scaledObjectWatch.added = true
+
+	logger.Info("Watching ScaledObjects", "customResourceDefinition", object.GetName())
+
+	return nil
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) environmentDir(
 	namespace string,
 ) string {
@@ -1508,6 +1568,8 @@ type LiferayEnvironmentReconciler struct {
 	RetryInitialDelay    time.Duration
 	RetryMaxDelay        time.Duration
 	Syncer               *addon.Syncer
+
+	scaledObjectWatch *scaledObjectWatch
 }
 
 type replicaBounds struct {
@@ -1526,8 +1588,22 @@ type scaledObjectSpec struct {
 	ScaleTargetRef  scaledObjectScaleTargetRef `json:"scaleTargetRef"`
 }
 
-var scaledObjectGroupVersionKind = schema.GroupVersionKind{
-	Group:   "keda.sh",
-	Kind:    "ScaledObject",
-	Version: "v1alpha1",
+type scaledObjectWatch struct {
+	added      bool
+	controller controller.Controller
+	manager    controllerruntime.Manager
+	mutex      sync.Mutex
 }
+
+var (
+	customResourceDefinitionGroupVersionKind = schema.GroupVersionKind{
+		Group:   "apiextensions.k8s.io",
+		Kind:    "CustomResourceDefinition",
+		Version: "v1",
+	}
+	scaledObjectGroupVersionKind = schema.GroupVersionKind{
+		Group:   "keda.sh",
+		Kind:    "ScaledObject",
+		Version: "v1alpha1",
+	}
+)

@@ -31,11 +31,15 @@ import (
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	record "k8s.io/client-go/tools/record"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 	fake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 	interceptor "sigs.k8s.io/controller-runtime/pkg/client/interceptor"
+	controllerconfig "sigs.k8s.io/controller-runtime/pkg/config"
+	envtest "sigs.k8s.io/controller-runtime/pkg/envtest"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
 func (stubProvisioning *stubProvisioning) Activate(
@@ -2431,6 +2435,202 @@ func TestResolveDesiredReplicas(t *testing.T) {
 	}
 }
 
+func TestSetupWithManagerWatchesScaledObjects(t *testing.T) {
+	testCases := map[string]struct {
+		installBeforeStart bool
+	}{
+		"watches scaled objects when keda is installed after the manager starts": {
+			installBeforeStart: false,
+		},
+		"watches scaled objects when keda is installed before the manager starts": {
+			installBeforeStart: true,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			assetsDir := envtestAssetsDir(t)
+
+			if assetsDir == "" {
+				t.Skip(
+					"Set KUBEBUILDER_ASSETS, or install the envtest binaries with setup-envtest, to run this test",
+				)
+			}
+
+			testEnvironment := &envtest.Environment{
+				BinaryAssetsDirectory: assetsDir,
+				CRDDirectoryPaths:     []string{filepath.Join(chartDir, "crds")},
+				ErrorIfCRDPathMissing: true,
+			}
+
+			config, error := testEnvironment.Start()
+
+			if error != nil {
+				t.Fatalf("Unable to start the test environment: %v", error)
+			}
+
+			t.Cleanup(func() {
+				if error := testEnvironment.Stop(); error != nil {
+					t.Errorf("Unable to stop the test environment: %v", error)
+				}
+			})
+
+			scheme := runtime.NewScheme()
+
+			if error := clientgoscheme.AddToScheme(scheme); error != nil {
+				t.Fatalf("Unable to register the client-go scheme: %v", error)
+			}
+
+			if error := licensingv1alpha1.AddToScheme(scheme); error != nil {
+				t.Fatalf("Unable to register the licensing scheme: %v", error)
+			}
+
+			setUpClient, error := client.New(config, client.Options{Scheme: scheme})
+
+			if error != nil {
+				t.Fatalf("Unable to build a client: %v", error)
+			}
+
+			namespace := &corev1.Namespace{
+				ObjectMeta: metav1.ObjectMeta{Name: "liferay-dev"},
+			}
+
+			if error := setUpClient.Create(context.Background(), namespace); error != nil {
+				t.Fatalf("Unable to create the namespace: %v", error)
+			}
+
+			statefulSet := newWorkload("liferay-dev")
+			statefulSet.Spec.Replicas = pointerInt32(1)
+
+			if error := setUpClient.Create(context.Background(), statefulSet); error != nil {
+				t.Fatalf("Unable to create the workload: %v", error)
+			}
+
+			liferayEnvironment := activatedEnvironment()
+			liferayEnvironment.Spec.Autoscaling = &licensingv1alpha1.Autoscaling{
+				MaxReplicas: 10,
+				MinReplicas: 1,
+			}
+
+			activatedAt := liferayEnvironment.Status.ActivatedAt
+
+			if error := setUpClient.Create(context.Background(), liferayEnvironment); error != nil {
+				t.Fatalf("Unable to create the environment: %v", error)
+			}
+
+			liferayEnvironment.Status.ActivatedAt = activatedAt
+
+			if error := setUpClient.Status().Update(
+				context.Background(), liferayEnvironment,
+			); error != nil {
+				t.Fatalf("Unable to activate the environment: %v", error)
+			}
+
+			if testCase.installBeforeStart {
+				installScaledObjectCustomResourceDefinition(setUpClient, t)
+			}
+
+			skipNameValidation := true
+
+			manager, error := controllerruntime.NewManager(
+				config,
+				controllerruntime.Options{
+					Controller: controllerconfig.Controller{
+						SkipNameValidation: &skipNameValidation,
+					},
+					HealthProbeBindAddress: "0",
+					Metrics:                metricsserver.Options{BindAddress: "0"},
+					Scheme:                 scheme,
+				},
+			)
+
+			if error != nil {
+				t.Fatalf("Unable to build the manager: %v", error)
+			}
+
+			provisioningClient := &stubProvisioning{
+				entitlements: &provisioning.Entitlements{
+					LicenseXML: []byte(virtualClusterLicenseXML(
+						"Friday, March 2, 2029 12:00:00 AM GMT", 3, string(namespace.UID),
+					)),
+					MaxClusterNodes: 3,
+				},
+			}
+
+			liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+				Client:               manager.GetClient(),
+				GracePeriod:          7 * 24 * time.Hour,
+				HeartbeatInterval:    time.Hour,
+				MarketplaceMountPath: t.TempDir(),
+				Provisioning:         provisioningClient,
+				Recorder:             record.NewFakeRecorder(100),
+				RetryInitialDelay:    30 * time.Second,
+				RetryMaxDelay:        30 * time.Minute,
+				Syncer: addon.NewSyncer(
+					provisioningClient, 15*time.Second, 30*time.Second, 30*time.Minute,
+					inlineRunner{},
+				),
+			}
+
+			if error := liferayEnvironmentReconciler.SetupWithManager(manager); error != nil {
+				t.Fatalf("Unable to set up the controller: %v", error)
+			}
+
+			startManager(manager, t)
+
+			awaitCondition(
+				func() bool {
+					var stored licensingv1alpha1.LiferayEnvironment
+
+					if error := setUpClient.Get(
+						context.Background(),
+						types.NamespacedName{Name: "dev", Namespace: "liferay-dev"},
+						&stored,
+					); error != nil {
+						return false
+					}
+
+					return stored.Status.Phase == "Ready"
+				},
+				"the environment to finish its first reconcile",
+				t,
+			)
+
+			if !testCase.installBeforeStart {
+				installScaledObjectCustomResourceDefinition(setUpClient, t)
+			}
+
+			if error := setUpClient.Create(
+				context.Background(), newScaledObject(10, 1, "dev-liferay"),
+			); error != nil {
+				t.Fatalf("Unable to create the scaled object: %v", error)
+			}
+
+			awaitCondition(
+				func() bool {
+					scaledObject := newScaledObject(0, 0, "")
+
+					if error := setUpClient.Get(
+						context.Background(),
+						types.NamespacedName{Name: "dev-liferay", Namespace: "liferay-dev"},
+						scaledObject,
+					); error != nil {
+						return false
+					}
+
+					maxReplicaCount, _, _ := unstructured.NestedInt64(
+						scaledObject.Object, "spec", "maxReplicaCount",
+					)
+
+					return maxReplicaCount == 3
+				},
+				"the scaled object to be capped at the licensed ceiling",
+				t,
+			)
+		})
+	}
+}
+
 func activatedEnvironment() *licensingv1alpha1.LiferayEnvironment {
 	activatedAt := metav1.Now()
 
@@ -2511,6 +2711,20 @@ func assertScaledObjectReplicaCount(
 
 	if actual != expected {
 		t.Errorf("Unexpected scaledObject.spec.%s: got %d, want %d", field, actual, expected)
+	}
+}
+
+func awaitCondition(condition func() bool, description string, t *testing.T) {
+	t.Helper()
+
+	deadline := time.Now().Add(60 * time.Second)
+
+	for !condition() {
+		if time.Now().After(deadline) {
+			t.Fatalf("Timed out waiting for %s", description)
+		}
+
+		time.Sleep(200 * time.Millisecond)
 	}
 }
 
@@ -2651,6 +2865,75 @@ func getStatefulSet(
 	}
 
 	return statefulSet
+}
+
+func installScaledObjectCustomResourceDefinition(setUpClient client.Client, t *testing.T) {
+	t.Helper()
+
+	customResourceDefinition := &unstructured.Unstructured{
+		Object: map[string]any{
+			"spec": map[string]any{
+				"group": "keda.sh",
+				"names": map[string]any{
+					"kind":     "ScaledObject",
+					"listKind": "ScaledObjectList",
+					"plural":   "scaledobjects",
+					"singular": "scaledobject",
+				},
+				"scope": "Namespaced",
+				"versions": []any{
+					map[string]any{
+						"name": "v1alpha1",
+						"schema": map[string]any{
+							"openAPIV3Schema": map[string]any{
+								"type":                                 "object",
+								"x-kubernetes-preserve-unknown-fields": true,
+							},
+						},
+						"served":  true,
+						"storage": true,
+					},
+				},
+			},
+		},
+	}
+
+	customResourceDefinition.SetGroupVersionKind(customResourceDefinitionGroupVersionKind)
+	customResourceDefinition.SetName(scaledObjectCustomResourceDefinitionName)
+
+	if error := setUpClient.Create(context.Background(), customResourceDefinition); error != nil {
+		t.Fatalf("Unable to install the ScaledObject CRD: %v", error)
+	}
+
+	awaitCondition(
+		func() bool {
+			stored := &unstructured.Unstructured{}
+
+			stored.SetGroupVersionKind(customResourceDefinitionGroupVersionKind)
+
+			if error := setUpClient.Get(
+				context.Background(),
+				types.NamespacedName{Name: scaledObjectCustomResourceDefinitionName},
+				stored,
+			); error != nil {
+				return false
+			}
+
+			conditions, _, _ := unstructured.NestedSlice(stored.Object, "status", "conditions")
+
+			for _, condition := range conditions {
+				fields, ok := condition.(map[string]any)
+
+				if ok && fields["type"] == "Established" && fields["status"] == "True" {
+					return true
+				}
+			}
+
+			return false
+		},
+		"the ScaledObject CRD to be established",
+		t,
+	)
 }
 
 func newFakeClient(t *testing.T, objects ...client.Object) client.Client {
@@ -2913,6 +3196,26 @@ func reconcileOfflineActivationBundle(
 	}
 
 	return liferayEnvironmentReconciler, reconcile(liferayEnvironmentReconciler, t)
+}
+
+func startManager(manager controllerruntime.Manager, t *testing.T) {
+	t.Helper()
+
+	managerContext, cancel := context.WithCancel(context.Background())
+
+	managerErrors := make(chan error, 1)
+
+	go func() {
+		managerErrors <- manager.Start(managerContext)
+	}()
+
+	t.Cleanup(func() {
+		cancel()
+
+		if error := <-managerErrors; error != nil {
+			t.Errorf("Unexpected error from the manager: %v", error)
+		}
+	})
 }
 
 func virtualClusterLicenseXML(

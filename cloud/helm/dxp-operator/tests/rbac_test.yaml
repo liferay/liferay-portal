@@ -125,7 +125,7 @@ tests:
         it: Omits the service account annotations by default
     -   asserts:
             -   lengthEqual:
-                    count: 12
+                    count: 13
                     path: rules
             -   contains:
                     content:
@@ -161,6 +161,17 @@ tests:
                             -   list
                             -   patch
                             -   update
+                            -   watch
+                    path: rules
+            -   contains:
+                    content:
+                        apiGroups:
+                            -   apiextensions.k8s.io
+                        resources:
+                            -   customresourcedefinitions
+                        verbs:
+                            -   get
+                            -   list
                             -   watch
                     path: rules
             -   contains:
