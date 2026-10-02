@@ -28,22 +28,8 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="G_U" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
-		</finder>
 		<finder name="G_N" return-type="ChangesetCollection" unique="true">
 			<finder-column name="groupId" />
-			<finder-column name="name" />
-		</finder>
-		<finder name="C_N" return-type="Collection">
-			<finder-column name="companyId" />
 			<finder-column name="name" />
 		</finder>
 	</entity>
@@ -74,18 +60,8 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="ChangesetCollectionId" return-type="Collection">
 			<finder-column name="changesetCollectionId" />
-		</finder>
-		<finder name="G_C" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
 		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="changesetCollectionId" />
