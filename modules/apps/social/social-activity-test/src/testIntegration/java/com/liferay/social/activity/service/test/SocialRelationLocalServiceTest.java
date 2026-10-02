@@ -186,6 +186,32 @@ public class SocialRelationLocalServiceTest {
 	}
 
 	@Test
+	public void testDeleteUser() throws Exception {
+		User user1 = UserTestUtil.addUser();
+		User user2 = UserTestUtil.addUser();
+
+		SocialRelationLocalServiceUtil.addRelation(
+			user1.getUserId(), user2.getUserId(),
+			SocialRelationConstants.TYPE_BI_FRIEND);
+		SocialRelationLocalServiceUtil.addRelation(
+			user1.getUserId(), user2.getUserId(),
+			SocialRelationConstants.TYPE_UNI_PARENT);
+
+		UserLocalServiceUtil.deleteUser(user1);
+
+		Assert.assertEquals(
+			0,
+			SocialRelationLocalServiceUtil.getInverseRelationsCount(
+				user2.getUserId(), SocialRelationConstants.TYPE_UNI_PARENT));
+		Assert.assertEquals(
+			0,
+			SocialRelationLocalServiceUtil.getRelationsCount(
+				user2.getUserId(), SocialRelationConstants.TYPE_BI_FRIEND));
+
+		UserLocalServiceUtil.deleteUser(user2);
+	}
+
+	@Test
 	public void testGetMultipleGroups() throws Exception {
 		User dlc3User = UserLocalServiceUtil.getUserByScreenName(
 			TestPropsValues.getCompanyId(), "dlc3");
