@@ -1804,12 +1804,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return 0;
 		}
 
-		String[] digestArray = StringUtil.split(user.getDigest());
-
 		String algorithm =
 			PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 : DigesterUtil.MD5;
 
 		String ha2 = DigesterUtil.digestHex(algorithm, method, uri);
+
+		String[] digestArray = StringUtil.split(user.getDigest());
 
 		for (String ha1 : digestArray) {
 			String curResponse = DigesterUtil.digestHex(
