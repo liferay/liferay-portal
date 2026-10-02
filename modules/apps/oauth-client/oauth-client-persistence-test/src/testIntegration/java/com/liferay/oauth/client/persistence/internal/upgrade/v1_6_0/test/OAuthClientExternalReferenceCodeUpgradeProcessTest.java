@@ -6,25 +6,26 @@
 package com.liferay.oauth.client.persistence.internal.upgrade.v1_6_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration;
 import com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants;
 import com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
 import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.oauth.client.test.util.OpenIdConnectProviderHttpServer;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.BaseExternalReferenceCodeUpgradeProcessTestCase;
-
-import java.io.IOException;
 
 import org.junit.runner.RunWith;
 
@@ -57,7 +58,15 @@ public class OAuthClientExternalReferenceCodeUpgradeProcessTest
 			"client_id", RandomTestUtil.randomString());
 
 		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer()) {
+				new OpenIdConnectProviderHttpServer();
+			CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						OAuthClientCompanyConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"authServerLocalNetworkAccessEnabled", true
+						).build())) {
 
 			return new ExternalReferenceCodeModel[] {
 				_oAuthClientEntryLocalService.addOAuthClientEntry(
@@ -70,8 +79,11 @@ public class OAuthClientExternalReferenceCodeUpgradeProcessTest
 					jsonObject.toString())
 			};
 		}
-		catch (IOException ioException) {
-			throw new PortalException(ioException);
+		catch (PortalException portalException) {
+			throw portalException;
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
 		}
 	}
 

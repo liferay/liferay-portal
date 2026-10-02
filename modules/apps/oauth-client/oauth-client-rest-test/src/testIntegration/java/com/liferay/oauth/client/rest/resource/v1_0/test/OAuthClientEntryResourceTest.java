@@ -6,11 +6,15 @@
 package com.liferay.oauth.client.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration;
 import com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants;
 import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientEntry;
 import com.liferay.oauth.client.test.util.OpenIdConnectProviderHttpServer;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 
@@ -30,12 +34,24 @@ public class OAuthClientEntryResourceTest
 	public static void setUpClass() throws Exception {
 		BaseOAuthClientEntryResourceTestCase.setUpClass();
 
+		_companyConfigurationTemporarySwapper =
+			new CompanyConfigurationTemporarySwapper(
+				TestPropsValues.getCompanyId(),
+				OAuthClientCompanyConfiguration.class.getName(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"authServerLocalNetworkAccessEnabled", true
+				).build());
+
 		_openIdConnectProviderHttpServer =
 			new OpenIdConnectProviderHttpServer();
 	}
 
 	@AfterClass
-	public static void tearDownClass() {
+	public static void tearDownClass() throws Exception {
+		if (_companyConfigurationTemporarySwapper != null) {
+			_companyConfigurationTemporarySwapper.close();
+		}
+
 		if (_openIdConnectProviderHttpServer != null) {
 			_openIdConnectProviderHttpServer.close();
 		}
@@ -131,6 +147,8 @@ public class OAuthClientEntryResourceTest
 			randomOAuthClientEntry());
 	}
 
+	private static CompanyConfigurationTemporarySwapper
+		_companyConfigurationTemporarySwapper;
 	private static OpenIdConnectProviderHttpServer
 		_openIdConnectProviderHttpServer;
 

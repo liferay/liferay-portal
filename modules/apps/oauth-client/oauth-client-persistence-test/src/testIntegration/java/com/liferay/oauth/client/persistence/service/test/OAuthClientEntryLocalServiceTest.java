@@ -6,6 +6,7 @@
 package com.liferay.oauth.client.persistence.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration;
 import com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants;
 import com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientEntryException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthRequestParametersJSONException;
@@ -14,11 +15,14 @@ import com.liferay.oauth.client.persistence.exception.OAuthClientEntryOIDCUserIn
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.oauth.client.test.util.OpenIdConnectProviderHttpServer;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -43,7 +47,15 @@ public class OAuthClientEntryLocalServiceTest {
 	@Test
 	public void testAddOAuthClientEntry() throws Exception {
 		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer()) {
+				new OpenIdConnectProviderHttpServer();
+			CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						OAuthClientCompanyConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"authServerLocalNetworkAccessEnabled", true
+						).build())) {
 
 			String authRequestParametersJSON = JSONUtil.put(
 				"response_type", "code"
@@ -150,7 +162,7 @@ public class OAuthClientEntryLocalServiceTest {
 				() -> _oAuthClientEntryLocalService.addOAuthClientEntry(
 					null, TestPropsValues.getUserId(),
 					authRequestParametersJSON,
-					"http://" + RandomTestUtil.randomString() +
+					Http.HTTP_WITH_SLASH + RandomTestUtil.randomString() +
 						"/.well-known/openid-configuration",
 					customClaimsJSON, infoJSON, "email",
 					OAuthClientEntryConstants.METADATA_CACHE_TIME_DEFAULT,
@@ -171,6 +183,52 @@ public class OAuthClientEntryLocalServiceTest {
 					OAuthClientEntryConstants.TOKEN_CONNECTION_TIMEOUT_DEFAULT,
 					tokenRequestParametersJSON));
 		}
+	}
+
+	@Test(expected = OAuthClientEntryAuthServerWellKnownURIException.class)
+	public void testAddOAuthClientEntryWithLocalNetworkAccessDisabled()
+		throws Exception {
+
+		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
+				new OpenIdConnectProviderHttpServer()) {
+
+			_addOAuthClientEntry(openIdConnectProviderHttpServer.getURL());
+		}
+	}
+
+	private OAuthClientEntry _addOAuthClientEntry(String authServerWellKnownURI)
+		throws Exception {
+
+		return _oAuthClientEntryLocalService.addOAuthClientEntry(
+			null, TestPropsValues.getUserId(),
+			JSONUtil.put(
+				"response_type", "code"
+			).put(
+				"scope", "openid email profile"
+			).toString(),
+			authServerWellKnownURI, "{}",
+			JSONUtil.put(
+				"client_id", RandomTestUtil.randomString()
+			).put(
+				"client_name", RandomTestUtil.randomString()
+			).put(
+				"client_secret", RandomTestUtil.randomString()
+			).put(
+				"grant_types",
+				JSONUtil.putAll("authorization_code", "refresh_token")
+			).put(
+				"response_types", JSONUtil.putAll("code")
+			).put(
+				"scope", "openid email profile"
+			).toString(),
+			"email", OAuthClientEntryConstants.METADATA_CACHE_TIME_DEFAULT,
+			OAuthClientEntryConstants.OIDC_USER_INFO_MAPPER_JSON,
+			OAuthClientEntryConstants.TOKEN_CONNECTION_TIMEOUT_DEFAULT,
+			JSONUtil.put(
+				"grant_type", "authorization_code"
+			).put(
+				"scope", "openid email profile"
+			).toString());
 	}
 
 	@Inject

@@ -6,10 +6,12 @@
 package com.liferay.oauth.client.persistence.internal.upgrade.v1_4_1.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.oauth.client.test.util.OpenIdConnectProviderHttpServer;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -17,6 +19,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -59,7 +62,15 @@ public class OAuthClientEntryUpgradeProcessTest {
 	@Test
 	public void testUpgrade() throws Exception {
 		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer()) {
+				new OpenIdConnectProviderHttpServer();
+			CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						OAuthClientCompanyConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"authServerLocalNetworkAccessEnabled", true
+						).build())) {
 
 			String clientId1 = RandomTestUtil.randomString();
 			String discoveryEndpoint = openIdConnectProviderHttpServer.getURL();
@@ -89,21 +100,24 @@ public class OAuthClientEntryUpgradeProcessTest {
 					oAuthClientEntry1);
 
 			String clientId2 = RandomTestUtil.randomString();
-			String issuerURL = "http://" + RandomTestUtil.randomString();
-			String tokenEndpoint = "http://" + RandomTestUtil.randomString();
+			String issuerURL =
+				Http.HTTP_WITH_SLASH + RandomTestUtil.randomString();
+			String tokenEndpoint =
+				Http.HTTP_WITH_SLASH + RandomTestUtil.randomString();
 
 			_pid2 = ConfigurationTestUtil.createFactoryConfiguration(
 				"com.liferay.portal.security.sso.openid.connect.internal." +
 					"configuration.OpenIdConnectProviderConfiguration",
 				HashMapDictionaryBuilder.<String, Object>put(
 					"authorizationEndpoint",
-					"http://" + RandomTestUtil.randomString()
+					Http.HTTP_WITH_SLASH + RandomTestUtil.randomString()
 				).put(
 					"companyId", TestPropsValues.getCompanyId()
 				).put(
 					"issuerURL", issuerURL
 				).put(
-					"jwksURI", "http://" + RandomTestUtil.randomString()
+					"jwksURI",
+					Http.HTTP_WITH_SLASH + RandomTestUtil.randomString()
 				).put(
 					"matcherField", "screenName"
 				).put(
@@ -114,7 +128,7 @@ public class OAuthClientEntryUpgradeProcessTest {
 					"tokenEndpoint", tokenEndpoint
 				).put(
 					"userInfoEndpoint",
-					"http://" + RandomTestUtil.randomString()
+					Http.HTTP_WITH_SLASH + RandomTestUtil.randomString()
 				).build());
 
 			OAuthClientEntry oAuthClientEntry2 =
