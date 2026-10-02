@@ -25,8 +25,9 @@ import java.util.regex.Pattern;
  */
 public class JavaTermComparator implements Comparator<JavaTerm> {
 
-	public JavaTermComparator(String customSQLContent) {
+	public JavaTermComparator(String customSQLContent, boolean caseSensitive) {
 		_customSQLContent = customSQLContent;
+		_caseSensitive = caseSensitive;
 	}
 
 	@Override
@@ -93,11 +94,22 @@ public class JavaTermComparator implements Comparator<JavaTerm> {
 			}
 		}
 
+		if (!_caseSensitive && (name1.compareToIgnoreCase(name2) != 0)) {
+			NaturalOrderStringComparator naturalOrderStringComparator =
+				new NaturalOrderStringComparator(true, false);
+
+			return naturalOrderStringComparator.compare(name1, name2);
+		}
+
 		if (name1.compareTo(name2) != 0) {
 			NaturalOrderStringComparator naturalOrderStringComparator =
 				new NaturalOrderStringComparator(true, true);
 
-			return naturalOrderStringComparator.compare(name1, name2);
+			if (_caseSensitive) {
+				return naturalOrderStringComparator.compare(name1, name2);
+			}
+
+			return -naturalOrderStringComparator.compare(name1, name2);
 		}
 
 		return _compareParameterTypes(javaTerm1, javaTerm2);
@@ -372,6 +384,7 @@ public class JavaTermComparator implements Comparator<JavaTerm> {
 	private static final Pattern _sqlKeyPattern = Pattern.compile(
 		"\"\\.([^\"]+)\";\n");
 
+	private final boolean _caseSensitive;
 	private final String _customSQLContent;
 
 }

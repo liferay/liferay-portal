@@ -108,7 +108,8 @@ public class JavaTermOrderCheck extends BaseJavaTermCheck {
 		}
 
 		JavaTermComparator javaTermComparator = new JavaTermComparator(
-			customSQLContent);
+			customSQLContent,
+			isAttributeValue(_CASE_SENSITIVE_KEY, absolutePath, true));
 
 		JavaTerm previousJavaTerm = null;
 
@@ -144,5 +145,7 @@ public class JavaTermOrderCheck extends BaseJavaTermCheck {
 
 		return javaClass.getContent();
 	}
+
+	private static final String _CASE_SENSITIVE_KEY = "caseSensitive";
 
 }
