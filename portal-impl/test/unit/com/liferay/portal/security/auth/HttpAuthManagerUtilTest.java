@@ -64,18 +64,17 @@ public class HttpAuthManagerUtilTest {
 				company
 			);
 
-			String digestChallenge = _generateDigestChallenge();
+			String challenge = _generateChallenge();
 
-			Assert.assertFalse(digestChallenge.contains("algorithm="));
+			Assert.assertFalse(challenge.contains("algorithm="));
 
 			try (SafeCloseable safeCloseable =
 					PropsValuesTestUtil.swapWithSafeCloseable(
 						"FIPS_ENABLED", true)) {
 
-				digestChallenge = _generateDigestChallenge();
+				challenge = _generateChallenge();
 
-				Assert.assertTrue(
-					digestChallenge.endsWith(", algorithm=SHA-256"));
+				Assert.assertTrue(challenge.endsWith(", algorithm=SHA-256"));
 			}
 		}
 	}
@@ -237,7 +236,7 @@ public class HttpAuthManagerUtilTest {
 		HttpAuthManagerUtil.parse(mockHttpServletRequest);
 	}
 
-	private String _generateDigestChallenge() {
+	private String _generateChallenge() {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
