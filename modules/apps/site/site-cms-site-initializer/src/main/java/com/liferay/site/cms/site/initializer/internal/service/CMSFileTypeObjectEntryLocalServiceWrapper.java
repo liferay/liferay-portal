@@ -5,11 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.service;
 
-import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
-import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
-import com.liferay.friendly.url.model.FriendlyURLEntry;
-import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.object.exception.ObjectValidationRuleEngineException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -20,12 +15,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.cms.site.initializer.internal.util.CMSFileTypeUtil;
@@ -75,7 +67,8 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 			groupId, userId, objectDefinitionId, objectEntryFolderId,
 			defaultLanguageId, values, serviceContext);
 
-		_updateFileEntryFriendlyURL(objectDefinition, objectEntry);
+		CMSFileTypeUtil.updateFileEntryFriendlyURL(
+			objectDefinition, objectEntry);
 
 		return objectEntry;
 	}
@@ -89,12 +82,7 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 		ObjectEntry objectEntry = super.copyObjectEntry(
 			userId, objectEntryId, objectEntryFolderId, values, serviceContext);
 
-		ObjectDefinition objectDefinition = _fetchFileTypeObjectDefinition(
-			objectEntry.getObjectDefinitionId());
-
-		if (objectDefinition != null) {
-			_updateFileEntryFriendlyURL(objectDefinition, objectEntry);
-		}
+		_updateFileEntryFriendlyURL(objectEntry);
 
 		return objectEntry;
 	}
@@ -123,7 +111,8 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 		objectEntry = super.partialUpdateObjectEntry(
 			userId, objectEntryId, objectEntryFolderId, values, serviceContext);
 
-		_updateFileEntryFriendlyURL(objectDefinition, objectEntry);
+		CMSFileTypeUtil.updateFileEntryFriendlyURL(
+			objectDefinition, objectEntry);
 
 		return objectEntry;
 	}
@@ -152,7 +141,36 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 		objectEntry = super.updateObjectEntry(
 			userId, objectEntryId, objectEntryFolderId, values, serviceContext);
 
-		_updateFileEntryFriendlyURL(objectDefinition, objectEntry);
+		CMSFileTypeUtil.updateFileEntryFriendlyURL(
+			objectDefinition, objectEntry);
+
+		return objectEntry;
+	}
+
+	@Override
+	public ObjectEntry updateStatus(
+			long userId, long objectEntryId, int status,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		ObjectEntry objectEntry = super.updateStatus(
+			userId, objectEntryId, status, serviceContext);
+
+		_updateFileEntryFriendlyURL(objectEntry);
+
+		return objectEntry;
+	}
+
+	@Override
+	public ObjectEntry updateStatus(
+			long userId, ObjectEntry objectEntry, int status,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		objectEntry = super.updateStatus(
+			userId, objectEntry, status, serviceContext);
+
+		_updateFileEntryFriendlyURL(objectEntry);
 
 		return objectEntry;
 	}
@@ -173,90 +191,26 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 		return objectDefinition;
 	}
 
-	private FriendlyURLEntry _fetchFriendlyURLEntry(
-		long groupId, long classNameId, String urlTitle) {
-
-		return _friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-			groupId, classNameId,
-			FriendlyURLEntryConstants.
-				FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-			urlTitle);
-	}
-
-	private void _updateFileEntryFriendlyURL(
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
+	private void _updateFileEntryFriendlyURL(ObjectEntry objectEntry)
 		throws PortalException {
 
-		Map<String, Serializable> values = objectEntry.getValues();
+		ObjectDefinition objectDefinition = _fetchFileTypeObjectDefinition(
+			objectEntry.getObjectDefinitionId());
 
-		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
-			GetterUtil.getLong(values.get("file")));
-
-		if (!CMSFileTypeUtil.isObjectEntryAttachment(
-				dlFileEntry, objectDefinition,
-				objectEntry.getObjectEntryId())) {
-
-			return;
+		if (objectDefinition != null) {
+			CMSFileTypeUtil.updateFileEntryFriendlyURL(
+				objectDefinition, objectEntry);
 		}
-
-		FriendlyURLEntry objectEntryFriendlyURLEntry =
-			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
-				_classNameLocalService.getClassNameId(
-					objectDefinition.getClassName()),
-				objectEntry.getObjectEntryId());
-
-		if (objectEntryFriendlyURLEntry == null) {
-			return;
-		}
-
-		String urlTitle = objectEntryFriendlyURLEntry.getUrlTitle(
-			objectEntry.getDefaultLanguageId());
-
-		if (Validator.isNull(urlTitle)) {
-			return;
-		}
-
-		long fileEntryClassNameId = _classNameLocalService.getClassNameId(
-			FileEntry.class);
-
-		FriendlyURLEntry fileEntryFriendlyURLEntry =
-			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
-				fileEntryClassNameId, dlFileEntry.getFileEntryId());
-
-		if ((fileEntryFriendlyURLEntry != null) &&
-			urlTitle.equals(fileEntryFriendlyURLEntry.getUrlTitle())) {
-
-			return;
-		}
-
-		FriendlyURLEntry friendlyURLEntry = _fetchFriendlyURLEntry(
-			dlFileEntry.getGroupId(), fileEntryClassNameId, urlTitle);
-
-		if ((friendlyURLEntry != null) &&
-			(friendlyURLEntry.getClassPK() != dlFileEntry.getFileEntryId())) {
-
-			if (!CMSFileTypeUtil.isObjectEntryAttachment(
-					_dlFileEntryLocalService.fetchDLFileEntry(
-						friendlyURLEntry.getClassPK()),
-					objectDefinition, objectEntry.getObjectEntryId())) {
-
-				return;
-			}
-
-			_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
-				dlFileEntry.getGroupId(), fileEntryClassNameId,
-				friendlyURLEntry.getClassPK());
-		}
-
-		_friendlyURLEntryLocalService.addFriendlyURLEntry(
-			dlFileEntry.getGroupId(), fileEntryClassNameId,
-			dlFileEntry.getFileEntryId(), urlTitle, new ServiceContext());
 	}
 
 	private void _validateFriendlyURL(
 			long groupId, String languageId, ObjectDefinition objectDefinition,
 			long objectEntryId, ServiceContext serviceContext)
 		throws PortalException {
+
+		if (!objectDefinition.isEnableFriendlyURLCustomization()) {
+			return;
+		}
 
 		Map<String, String> friendlyUrlMap =
 			(Map<String, String>)serviceContext.getAttribute("friendlyUrlMap");
@@ -275,30 +229,10 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 
 		friendlyURL = friendlyURL.replaceAll("/+", StringPool.SLASH);
 
-		if (Validator.isNull(friendlyURL)) {
-			return;
-		}
-
-		String urlTitle = _friendlyURLNormalizer.normalizeWithEncoding(
-			friendlyURL);
-
-		FriendlyURLEntry objectEntryFriendlyURLEntry = _fetchFriendlyURLEntry(
-			groupId,
-			_classNameLocalService.getClassNameId(
-				objectDefinition.getClassName()),
-			urlTitle);
-
-		FriendlyURLEntry fileEntryFriendlyURLEntry = _fetchFriendlyURLEntry(
-			groupId, _classNameLocalService.getClassNameId(FileEntry.class),
-			urlTitle);
-
-		if (((objectEntryFriendlyURLEntry == null) ||
-			 (objectEntryFriendlyURLEntry.getClassPK() == objectEntryId)) &&
-			((fileEntryFriendlyURLEntry == null) ||
-			 CMSFileTypeUtil.isObjectEntryAttachment(
-				 _dlFileEntryLocalService.fetchDLFileEntry(
-					 fileEntryFriendlyURLEntry.getClassPK()),
-				 objectDefinition, objectEntryId))) {
+		if (Validator.isNull(friendlyURL) ||
+			CMSFileTypeUtil.isUrlTitleAvailable(
+				groupId, objectDefinition, objectEntryId,
+				_friendlyURLNormalizer.normalizeWithEncoding(friendlyURL))) {
 
 			return;
 		}
@@ -313,15 +247,6 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 								"enter-a-unique-friendly-url"),
 						null, "objectEntryFriendlyURL"))));
 	}
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private DLFileEntryLocalService _dlFileEntryLocalService;
-
-	@Reference
-	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Reference
 	private FriendlyURLNormalizer _friendlyURLNormalizer;

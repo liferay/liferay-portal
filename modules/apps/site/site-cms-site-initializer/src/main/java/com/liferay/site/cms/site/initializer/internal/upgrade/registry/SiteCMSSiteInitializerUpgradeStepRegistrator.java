@@ -5,10 +5,8 @@
 
 package com.liferay.site.cms.site.initializer.internal.upgrade.registry;
 
-import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
-import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -27,7 +25,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSDefaultPermissionsUpgradeProcess;
@@ -97,9 +94,7 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 		registry.register(
 			"3.0.3", "3.0.4",
 			new CMSFileTypeFriendlyURLUpgradeProcess(
-				_classNameLocalService, _companyLocalService,
-				_dlFileEntryLocalService, _friendlyURLEntryLocalService,
-				_friendlyURLNormalizer, _objectDefinitionLocalService,
+				_companyLocalService, _objectDefinitionLocalService,
 				_objectEntryLocalService, _objectFolderLocalService));
 	}
 
@@ -113,9 +108,6 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
-	@Reference
-	private DLFileEntryLocalService _dlFileEntryLocalService;
-
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
 	)
@@ -123,12 +115,6 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
-
-	@Reference
-	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
-
-	@Reference
-	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
