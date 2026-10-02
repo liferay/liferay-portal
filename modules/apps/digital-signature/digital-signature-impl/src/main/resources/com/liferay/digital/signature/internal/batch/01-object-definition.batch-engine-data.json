@@ -25,10 +25,25 @@
 			"name": "DSRequest",
 			"objectFields": [
 				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "EMAIL_BODY",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Email Body"
+					},
+					"name": "emailBody",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
 					"externalReferenceCode": "EMAIL_SUBJECT",
-					"indexed": false,
+					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
 					"label": {
@@ -98,6 +113,21 @@
 					"state": false,
 					"system": true,
 					"type": "DateTime"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "SITE_ID",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Site ID"
+					},
+					"name": "siteId",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long"
 				}
 			],
 			"objectRelationships": [
