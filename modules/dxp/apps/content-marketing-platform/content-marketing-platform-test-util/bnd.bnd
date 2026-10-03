@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Content Marketing Platform Test Utilities
 Bundle-SymbolicName: com.liferay.content.marketing.platform.test.util
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Export-Package: com.liferay.content.marketing.platform.test.util
