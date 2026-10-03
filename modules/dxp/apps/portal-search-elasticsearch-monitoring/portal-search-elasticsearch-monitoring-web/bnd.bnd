@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search Elasticsearch Monitoring Web
 Bundle-SymbolicName: com.liferay.portal.search.elasticsearch.monitoring.web
-Bundle-Version: 2.0.31
+Bundle-Version: 2.0.32
 Liferay-Enterprise-App: dxp.only=true;product.id=22b7e30f-34d4-4a63-9696-56987ad66e4e
 Liferay-RTL-Support-Required: false
 Web-ContextPath: /portal-search-elasticsearch-monitoring
