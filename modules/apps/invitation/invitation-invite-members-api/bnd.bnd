@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Invitation Invite Members API
 Bundle-SymbolicName: com.liferay.invitation.invite.members.api
-Bundle-Version: 11.0.0
+Bundle-Version: 11.0.1
 Export-Package:\
 	com.liferay.invitation.invite.members.constants,\
 	com.liferay.invitation.invite.members.exception,\
