@@ -95,8 +95,8 @@ public class ResourcePermissionDataCleanupPreupgradeProcessTest
 					messages.contains(
 						StringBundler.concat(
 							"Skipping class name ", Company.class.getName(),
-							" because Company is a view in a secondary ",
-							"partition")));
+							" because the table Company is a view in a ",
+							"secondary partition")));
 				Assert.assertFalse(
 					messages.contains("Table Company does not exist"));
 			}

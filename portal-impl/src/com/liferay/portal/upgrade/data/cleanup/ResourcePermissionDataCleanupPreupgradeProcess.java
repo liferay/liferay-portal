@@ -111,7 +111,7 @@ public class ResourcePermissionDataCleanupPreupgradeProcess
 								_log.info(
 									StringBundler.concat(
 										"Skipping class name ", name,
-										" because ", tableName,
+										" because the table ", tableName,
 										" is a view in a secondary partition"));
 							}
 						}
