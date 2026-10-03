@@ -503,7 +503,6 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 				LocaleUtil.getSiteDefault()),
 			"LayoutPageTemplateEntry_" + layoutPageTemplateEntryId,
 			"LayoutPageTemplateEntry_" + layoutPageTemplateEntryId);
-
 		_assertInfoField(
 			"LayoutPageTemplateEntry__ERC__" +
 				_layoutPageTemplateEntry.getExternalReferenceCode(),
