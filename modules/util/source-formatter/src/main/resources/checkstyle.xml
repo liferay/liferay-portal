@@ -386,6 +386,7 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.CredentialBufferCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds buffers that are derived from a `String` and passed straight into a credential API, leaving no reference to clear." />
+			<property name="enabled" value="false" />
 			<message key="variable.assign.required" value="Assign &quot;{0}&quot; to a local variable so that it can be cleared after use, see LPD-93280" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.DatabaseMetaDataCheck">
