@@ -189,16 +189,6 @@ public abstract class BaseVerifyProcessTestCase {
 		}
 	}
 
-	protected void updateIndex(
-			String indexName, String tableName, boolean unique,
-			String... columnNames)
-		throws Exception {
-
-		dropIndex(indexName, tableName);
-
-		addIndex(indexName, tableName, unique, columnNames);
-	}
-
 	protected void updatePrimaryKey(
 			String tableName, String... primaryKeyColumnNames)
 		throws Exception {
