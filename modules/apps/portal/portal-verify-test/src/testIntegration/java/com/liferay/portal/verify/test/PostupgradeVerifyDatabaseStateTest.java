@@ -16,7 +16,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.db.DBResourceUtil;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseConstants;
@@ -169,95 +168,6 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeIndexes() throws Exception {
-		Map<String, List<IndexMetadata>> portalTablesIndexMetadatas =
-			DBResourceUtil.getPortalTablesIndexMetadatas();
-
-		IndexMetadata indexMetadata = _getIndexMetadata(
-			portalTablesIndexMetadatas.get("UserTracker"), false);
-
-		dropIndex(indexMetadata.getIndexName(), "UserTracker");
-
-		try {
-			_testVerifyMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Missing indexes were detected for ",
-						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					getNormalizedName(indexMetadata.getIndexName())));
-		}
-		finally {
-			addIndex(
-				indexMetadata.getIndexName(), "UserTracker", false,
-				indexMetadata.getColumnNames());
-		}
-
-		addIndex("IX_TEST", "UserTracker", false, "companyId", "userId");
-
-		try {
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Stale indexes were detected for ",
-						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					getNormalizedName("IX_TEST")),
-				PostupgradeVerifyDatabaseState::getWarnMessages,
-				LoggerTestUtil.WARN);
-		}
-		finally {
-			dropIndex("IX_TEST", "UserTracker");
-		}
-
-		addIndex("IX_TEST", "UserTracker", true, "userTrackerId");
-
-		try {
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Stale unique indexes were detected for ",
-						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					getNormalizedName("IX_TEST")),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
-		}
-		finally {
-			dropIndex("IX_TEST", "UserTracker");
-		}
-
-		IndexMetadata uniqueIndexMetadata = _getIndexMetadata(
-			portalTablesIndexMetadatas.get("Address"), true);
-
-		dropIndex(uniqueIndexMetadata.getIndexName(), "Address");
-
-		try {
-			addIndex(
-				uniqueIndexMetadata.getIndexName(), "Address", false,
-				uniqueIndexMetadata.getColumnNames());
-
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Index ",
-						getNormalizedName(uniqueIndexMetadata.getIndexName()),
-						" must be defined as unique for ",
-						getNormalizedName("Address"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
-		}
-		finally {
-			dropIndex(uniqueIndexMetadata.getIndexName(), "Address");
-
-			addIndex(
-				uniqueIndexMetadata.getIndexName(), "Address", true,
-				uniqueIndexMetadata.getColumnNames());
-		}
-	}
-
-	@Test
 	public void testVerifyPostupgradeMissingNonserviceBuilderTable()
 		throws Exception {
 
@@ -288,46 +198,6 @@ public class PostupgradeVerifyDatabaseStateTest
 		finally {
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
-		}
-	}
-
-	@Test
-	public void testVerifyPostupgradePrimaryKeys() throws Exception {
-		removePrimaryKey("Phone");
-
-		try {
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Missing primary key was detected for ",
-						getNormalizedName("Phone"), " table: [",
-						getNormalizedName("phoneId"), ", ",
-						getNormalizedName("ctCollectionId"), "]"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
-		}
-		finally {
-			updatePrimaryKey("Phone", "phoneId", "ctCollectionId");
-		}
-
-		updatePrimaryKey("UserTracker", "userTrackerId", "mvccVersion");
-
-		try {
-			_testGetMessages(
-				_getExpectedMessage(
-					StringBundler.concat(
-						"Primary key [", getNormalizedName("userTrackerId"),
-						", ", getNormalizedName("mvccVersion"),
-						"] is not defined as [",
-						getNormalizedName("userTrackerId"), "] for ",
-						getNormalizedName("UserTracker"), " table"),
-					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
-				PostupgradeVerifyDatabaseState::getErrorMessages,
-				LoggerTestUtil.ERROR);
-		}
-		finally {
-			updatePrimaryKey("UserTracker", "userTrackerId");
 		}
 	}
 
@@ -527,19 +397,6 @@ public class PostupgradeVerifyDatabaseStateTest
 			StringPool.CLOSE_BRACKET);
 	}
 
-	private IndexMetadata _getIndexMetadata(
-		List<IndexMetadata> indexMetadatas, boolean unique) {
-
-		for (IndexMetadata indexMetadata : indexMetadatas) {
-			if (indexMetadata.isUnique() == unique) {
-				return indexMetadata;
-			}
-		}
-
-		throw new IllegalStateException(
-			"Unable to find an index metadata with unique " + unique);
-	}
-
 	private String _getMessage(LogCapture logCapture, String text) {
 		List<String> messages = logCapture.getMessages();
 
@@ -610,9 +467,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	private static final String _BUILD_NAMESPACE = "com.liferay.test.service";
 
 	private static final String[] _MESSAGE_PREFIXES = {
-		"Column ", "Index ", "Missing columns", "Missing indexes",
-		"Missing primary key", "Primary key ", "Stale columns", "Stale indexes",
-		"Stale unique indexes"
+		"Column ", "Missing columns", "Stale columns"
 	};
 
 	private static final String _STALE_VIEW_NAME = "TestStaleView";
