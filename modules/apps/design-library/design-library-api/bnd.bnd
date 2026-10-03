@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Design Library API
 Bundle-SymbolicName: com.liferay.design.library.api
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.1
 Export-Package:\
 	com.liferay.design.library.constants,\
 	com.liferay.design.library.resource.type,\
