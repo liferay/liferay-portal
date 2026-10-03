@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Content Marketing Platform Site Initializer
 Bundle-SymbolicName: com.liferay.content.marketing.platform.site.initializer
-Bundle-Version: 1.0.12
+Bundle-Version: 1.0.13
 Liferay-Client-Extension-Batch: com/liferay/content/marketing/platform/site/initializer/internal/batch
 Liferay-Site-Initializer-Name: CMP
 Provide-Capability: liferay.site.initializer
