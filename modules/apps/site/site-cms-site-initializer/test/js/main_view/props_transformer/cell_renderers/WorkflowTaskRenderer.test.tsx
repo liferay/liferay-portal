@@ -36,7 +36,6 @@ describe('WorkflowTaskRenderer', () => {
 			completed: false,
 			dateDue: '',
 			id: '1',
-			label: 'Revisión',
 			myWorkflowTasksURL:
 				'http://www.test.com/myWorkflowTasks?p_p_id=com_liferay_portal_workflow_task_web_portlet_MyWorkflowTaskPortlet',
 			name: 'review',
@@ -53,7 +52,7 @@ describe('WorkflowTaskRenderer', () => {
 		);
 
 		expect(container.querySelector('.list-group-text')).toHaveTextContent(
-			'Test User te envió Test Content para Revisión en el flujo de trabajo.'
+			'Test User te envió Test Content para review en el flujo de trabajo.'
 		);
 
 		const link = screen.getByRole('link', {name: 'Test Content'});
