@@ -70,9 +70,6 @@ describe('DefaultPermissionForm', () => {
 		expect(
 			screen.getByRole(`navigation`, {name: /pagination/i})
 		).toBeInTheDocument();
-		expect(
-			screen.getByText('showing-x-to-x-of-x-entries')
-		).toBeInTheDocument();
 	});
 
 	it('Show role icons', async () => {

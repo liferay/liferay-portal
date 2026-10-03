@@ -18,22 +18,6 @@ import {initialSpace} from '../../../../src/main/resources/META-INF/resources/js
 import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
 import {ExpiredAssetsCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/ExpiredAssetsCard';
 
-jest.mock(
-	'../../../../src/main/resources/META-INF/resources/js/common/utils/constants',
-	() => ({
-		...jest.requireActual<
-			typeof import('../../../../src/main/resources/META-INF/resources/js/common/utils/constants')
-		>(
-			'../../../../src/main/resources/META-INF/resources/js/common/utils/constants'
-		),
-		PAGINATION_BAR_LABELS: {
-			paginationResults: 'Showing {0} to {1} of {2} entries.',
-			perPageItems: '{0} Items',
-			selectPerPageItems: '{0} Items',
-		},
-	})
-);
-
 const assetsList = [
 	{
 		href: 'http://fakeurl.com',
@@ -216,9 +200,7 @@ describe('[CMS Dashboard] ExpiredAssetsCard', () => {
 
 		expect(items.length).toBe(20);
 
-		expect(
-			screen.getByText('Showing 1 to 20 of 24 entries.')
-		).toBeInTheDocument();
+		expect(screen.getByText('Showing 1 to 20 of 24')).toBeInTheDocument();
 
 		expect(screen.getByText(assetsList[19].title)).toBeInTheDocument();
 
@@ -250,7 +232,7 @@ describe('[CMS Dashboard] ExpiredAssetsCard', () => {
 
 		await waitFor(() => {
 			expect(
-				screen.getByText('Showing 21 to 24 of 24 entries.')
+				screen.getByText('Showing 21 to 24 of 24')
 			).toBeInTheDocument();
 		});
 

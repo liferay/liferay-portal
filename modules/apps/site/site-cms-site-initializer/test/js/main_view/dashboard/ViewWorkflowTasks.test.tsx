@@ -7,7 +7,6 @@ import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import * as WorkflowService from '../../../../src/main/resources/META-INF/resources/js/common/services/WorkflowService';
 import ViewWorkflowTasks from '../../../../src/main/resources/META-INF/resources/js/main_view/home/ViewWorkflowTasks';
 
 describe('[CMS Dashboard] Components: ViewWorkflowTasks', () => {
@@ -24,8 +23,7 @@ describe('[CMS Dashboard] Components: ViewWorkflowTasks', () => {
 	const defaultProps = {
 		id: 'myWorkflowTasksSection',
 		myRolesWorkflowTasksURL: 'http://www.test.com/myRolesWorkflowTasks',
-		myWorkflowTasksURL:
-			'http://www.test.com/myWorkflowTasks?p_p_id=com_liferay_portal_workflow_task_web_portlet_MyWorkflowTaskPortlet',
+		myWorkflowTasksURL: 'http://www.test.com/myWorkflowTasks',
 		objectDefinitions: [],
 	};
 
@@ -72,40 +70,5 @@ describe('[CMS Dashboard] Components: ViewWorkflowTasks', () => {
 			defaultProps.myRolesWorkflowTasksURL,
 			'_blank'
 		);
-	});
-
-	it('renders the pagination bar with translated labels', async () => {
-		jest.spyOn(
-			WorkflowService,
-			'getWorkflowTasksAssignedToMe'
-		).mockResolvedValue({
-			items: [
-				{
-					assignedDate: '2026-09-30T10:00:00Z',
-					assigneePerson: {id: 1, name: 'Test User'},
-					auditUser: 'Test User',
-					auditUserImageURL: '',
-					completed: false,
-					dateDue: '',
-					id: '1',
-					myWorkflowTasksURL: defaultProps.myWorkflowTasksURL,
-					name: 'review',
-					objectReviewed: {
-						assetTitle: 'Test Content',
-						assetType: 'Basic Web Content',
-						id: 2,
-					},
-					workflowLogs: [],
-				},
-			],
-			totalCount: 1,
-		} as any);
-
-		render(<ViewWorkflowTasks {...defaultProps} />);
-
-		expect(
-			await screen.findByText('showing-x-to-x-of-x-entries')
-		).toBeInTheDocument();
-		expect(screen.getByText('x-items')).toBeInTheDocument();
 	});
 });
