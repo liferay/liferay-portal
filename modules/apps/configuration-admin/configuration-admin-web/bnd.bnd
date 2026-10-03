@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Configuration Admin Web
 Bundle-SymbolicName: com.liferay.configuration.admin.web
-Bundle-Version: 5.0.117
+Bundle-Version: 5.0.118
 Web-ContextPath: /configuration-admin-web
 -dsannotations-options: inherit
