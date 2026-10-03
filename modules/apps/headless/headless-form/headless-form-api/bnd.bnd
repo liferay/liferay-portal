@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Form API
 Bundle-SymbolicName: com.liferay.headless.form.api
-Bundle-Version: 17.0.0
+Bundle-Version: 17.0.1
 Export-Package:\
 	com.liferay.headless.form.dto.v1_0,\
 	com.liferay.headless.form.dto.v1_0.util,\
