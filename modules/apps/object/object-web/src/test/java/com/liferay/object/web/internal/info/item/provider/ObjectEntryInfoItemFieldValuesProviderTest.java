@@ -131,6 +131,14 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		objectEntry.setExternalReferenceCode(externalReferenceCode);
 		objectEntry.setProperties(Collections.emptyMap());
 
+		ObjectEntry serviceBuilderObjectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			serviceBuilderObjectEntry.getObjectEntryId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
 
@@ -138,14 +146,6 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			objectDefinition.isDefaultStorageType()
 		).thenReturn(
 			false
-		);
-
-		ObjectEntry serviceBuilderObjectEntry = Mockito.mock(ObjectEntry.class);
-
-		Mockito.when(
-			serviceBuilderObjectEntry.getObjectEntryId()
-		).thenReturn(
-			RandomTestUtil.randomLong()
 		);
 
 		Mockito.when(
