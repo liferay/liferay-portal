@@ -321,98 +321,6 @@ public class TranslationEntryPersistenceImpl
 			finderCache, new Object[] {uuid, companyId});
 	}
 
-	private CollectionPersistenceFinder<TranslationEntry, NoSuchEntryException>
-		_collectionPersistenceFinderByC_C;
-
-	/**
-	 * Returns an ordered range of all the translation entries where classNameId = &#63; and classPK = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>TranslationEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param start the lower bound of the range of translation entries
-	 * @param end the upper bound of the range of translation entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching translation entries
-	 */
-	@Override
-	public List<TranslationEntry> findByC_C(
-		long classNameId, long classPK, int start, int end,
-		OrderByComparator<TranslationEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_C.find(
-			finderCache, new Object[] {classNameId, classPK}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first translation entry in the ordered set where classNameId = &#63; and classPK = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching translation entry
-	 * @throws NoSuchEntryException if a matching translation entry could not be found
-	 */
-	@Override
-	public TranslationEntry findByC_C_First(
-			long classNameId, long classPK,
-			OrderByComparator<TranslationEntry> orderByComparator)
-		throws NoSuchEntryException {
-
-		return _collectionPersistenceFinderByC_C.findFirst(
-			finderCache, new Object[] {classNameId, classPK},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first translation entry in the ordered set where classNameId = &#63; and classPK = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching translation entry, or <code>null</code> if a matching translation entry could not be found
-	 */
-	@Override
-	public TranslationEntry fetchByC_C_First(
-		long classNameId, long classPK,
-		OrderByComparator<TranslationEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_C.fetchFirst(
-			finderCache, new Object[] {classNameId, classPK},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the translation entries where classNameId = &#63; and classPK = &#63; from the database.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 */
-	@Override
-	public void removeByC_C(long classNameId, long classPK) {
-		_collectionPersistenceFinderByC_C.remove(
-			finderCache, new Object[] {classNameId, classPK});
-	}
-
-	/**
-	 * Returns the number of translation entries where classNameId = &#63; and classPK = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @return the number of matching translation entries
-	 */
-	@Override
-	public int countByC_C(long classNameId, long classPK) {
-		return _collectionPersistenceFinderByC_C.count(
-			finderCache, new Object[] {classNameId, classPK});
-	}
-
 	private UniquePersistenceFinder<TranslationEntry, NoSuchEntryException>
 		_uniquePersistenceFinderByC_C_L;
 
@@ -867,35 +775,6 @@ public class TranslationEntryPersistenceImpl
 					"translationEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, TranslationEntry::getCompanyId));
 
-		_collectionPersistenceFinderByC_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"classNameId", "classPK"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"classNameId", "classPK"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"classNameId", "classPK"}, false),
-			_SQL_SELECT_TRANSLATIONENTRY_WHERE,
-			_SQL_COUNT_TRANSLATIONENTRY_WHERE,
-			TranslationEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"", null,
-			new FinderColumn<>(
-				"translationEntry.", "classNameId", FinderColumn.Type.LONG, "=",
-				true, true, TranslationEntry::getClassNameId),
-			new FinderColumn<>(
-				"translationEntry.", "classPK", FinderColumn.Type.LONG, "=",
-				true, true, TranslationEntry::getClassPK));
-
 		_uniquePersistenceFinderByC_C_L = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -985,4 +864,4 @@ public class TranslationEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1280984199
+// LIFERAY-SERVICE-BUILDER-HASH:-464877843

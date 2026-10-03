@@ -240,14 +240,6 @@ public class TranslationEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_C() throws Exception {
-		_persistence.countByC_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByC_C(0L, 0L);
-	}
-
-	@Test
 	public void testCountByC_C_L() throws Exception {
 		_persistence.countByC_C_L(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "");
@@ -638,4 +630,4 @@ public class TranslationEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:637822852
+// LIFERAY-SERVICE-BUILDER-HASH:1079119388
