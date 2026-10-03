@@ -65,19 +65,18 @@ public class CommerceOrderAttachmentUpgradeProcessTest {
 			CommerceOrderAttachmentUpgradeProcessTest.class);
 
 		_group = GroupTestUtil.addGroup();
-
-		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
-			_group.getCompanyId());
-
-		_commerceChannel = CommerceTestUtil.addCommerceChannel(
-			_group.getGroupId(), _commerceCurrency.getCode());
-
 		_user = UserTestUtil.addUser();
 
 		_accountEntry = CommerceAccountTestUtil.addPersonAccountEntry(
 			_user.getUserId(),
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId()));
+
+		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
+			_group.getCompanyId());
+
+		_commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_group.getGroupId(), _commerceCurrency.getCode());
 
 		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
