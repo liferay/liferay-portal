@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {createPortletURL, dateUtils, sub} from 'frontend-js-web';
+import {createPortletURL, dateUtils} from 'frontend-js-web';
 import React from 'react';
 
 import {WorkflowTask} from '../../../common/types/WorkflowTask';
@@ -28,28 +28,19 @@ const WorkflowTaskRenderer = ({itemData}: {itemData: WorkflowTask}) => {
 
 			<div className="autofit-col autofit-col-expand mt-3">
 				<p className="list-group-text text-3 text-dark">
-					{sub(
-						Liferay.Language.get(
-							'x-sent-you-x-for-x-in-the-workflow'
-						),
-						[
-							itemData.auditUser,
-							<a
-								className="font-weight-bold text-decoration-underline"
-								href={createPortletURL(
-									itemData.myWorkflowTasksURL,
-									{
-										mvcPath: '/edit_workflow_task.jsp',
-										workflowTaskId: itemData.id,
-									}
-								).toString()}
-								key="assetTitle"
-							>
-								{itemData.objectReviewed.assetTitle}
-							</a>,
-							itemData.name,
-						]
-					)}
+					{`${itemData.auditUser} sent you `}
+
+					<a
+						className="font-weight-bold text-decoration-underline"
+						href={createPortletURL(itemData.myWorkflowTasksURL, {
+							mvcPath: '/edit_workflow_task.jsp',
+							workflowTaskId: itemData.id,
+						}).toString()}
+					>
+						{itemData.objectReviewed.assetTitle}
+					</a>
+
+					{` for ${itemData.name} in the workflow.`}
 				</p>
 
 				<p className="text-3 text-secondary">

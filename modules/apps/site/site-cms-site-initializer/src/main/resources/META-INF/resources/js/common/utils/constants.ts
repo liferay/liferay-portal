@@ -26,12 +26,6 @@ export const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 export const NO_VALUE = '--';
 
-export const PAGINATION_BAR_LABELS = {
-	paginationResults: Liferay.Language.get('showing-x-to-x-of-x-entries'),
-	perPageItems: Liferay.Language.get('x-items'),
-	selectPerPageItems: Liferay.Language.get('x-items'),
-};
-
 export const UPCOMING_REVIEWS_THRESHOLD_MONTHS = 1;
 
 export const ASSET_STATUS = {

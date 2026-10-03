@@ -8,7 +8,6 @@ import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {sub} from 'frontend-js-web';
 import React, {useMemo} from 'react';
 
-import {PAGINATION_BAR_LABELS} from '../../../../common/utils/constants';
 import {InventoryAnalysisDataType} from './InventoryAnalysisCard';
 
 import type {WeightFont} from '@clayui/core/src/typography/Heading';
@@ -215,11 +214,7 @@ const PaginatedTable: React.FC<IPaginatedTable> = ({
 				className="mt-3"
 				deltas={deltas}
 				ellipsisBuffer={3}
-				ellipsisProps={{
-					'aria-label': Liferay.Language.get('more'),
-					'title': Liferay.Language.get('more'),
-				}}
-				labels={PAGINATION_BAR_LABELS}
+				ellipsisProps={{'aria-label': 'More', 'title': 'More'}}
 				onActiveChange={handlePageChange}
 				onDeltaChange={handleDeltaChange}
 				totalItems={

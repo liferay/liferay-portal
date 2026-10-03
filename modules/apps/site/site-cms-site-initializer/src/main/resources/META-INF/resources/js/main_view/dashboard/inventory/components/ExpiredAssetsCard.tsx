@@ -14,7 +14,6 @@ import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useState} from 'react';
 
 import ApiHelper from '../../../../common/services/ApiHelper';
-import {PAGINATION_BAR_LABELS} from '../../../../common/utils/constants';
 import {openCMSModal} from '../../../../common/utils/openCMSModal';
 import {BaseCard} from '../../common/BaseCard';
 import {Item} from '../../common/filters/FilterDropdown';
@@ -294,7 +293,6 @@ function ExpiredAssetsCard() {
 						'aria-label': Liferay.Language.get('more'),
 						'title': Liferay.Language.get('more'),
 					}}
-					labels={PAGINATION_BAR_LABELS}
 					onActiveChange={handlePageChange}
 					onDeltaChange={handleDeltaChange}
 					totalItems={expiredAssetsList?.totalCount || 0}

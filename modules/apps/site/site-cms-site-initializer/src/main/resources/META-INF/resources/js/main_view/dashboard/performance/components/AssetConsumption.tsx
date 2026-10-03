@@ -12,7 +12,6 @@ import {toThousands} from '@liferay/analytics-reports-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import {PAGINATION_BAR_LABELS} from '../../../../common/utils/constants';
 import {BaseCard} from '../../common/BaseCard';
 import PickerTrigger from '../../common/PickerTrigger';
 import {AllCategoriesDropdown} from '../../common/filters/AllCategoriesDropdown';
@@ -264,7 +263,6 @@ export function AssetConsumption() {
 					className="mt-3"
 					deltas={DELTAS}
 					ellipsisBuffer={3}
-					labels={PAGINATION_BAR_LABELS}
 					onActiveChange={setPage}
 					onDeltaChange={(delta) => {
 						setPage(1);

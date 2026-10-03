@@ -13,7 +13,6 @@ import ClayTable from '@clayui/table';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 
-import {PAGINATION_BAR_LABELS} from '../../common/utils/constants';
 import {
 	CheckedRoleActions,
 	DefaultPermissionFormProps,
@@ -283,7 +282,6 @@ export default function DefaultPermissionForm({
 									label: size,
 								}))}
 								ellipsisBuffer={3}
-								labels={PAGINATION_BAR_LABELS}
 								onActiveChange={handlePaginationPageChange}
 								onDeltaChange={handlePaginationDeltaChange}
 								totalItems={filteredRoles.length}

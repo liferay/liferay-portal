@@ -16,7 +16,6 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {PAGINATION_BAR_LABELS} from '../../utils/constants';
 import {openCMSModal} from '../../utils/openCMSModal';
 import {AssetIcon, MimeTypes} from '../AssetIcon';
 import {BulkActionItem, BulkActionItemResponse} from './types';
@@ -537,7 +536,6 @@ const AssetUsageListModal: React.FC<IAssetUsageListModalProps> = ({
 								(data?.totalCount ?? 0) / pageSize - 5 > 999
 							}
 							ellipsisBuffer={3}
-							labels={PAGINATION_BAR_LABELS}
 							onActiveChange={async (newPage: number) => {
 								if (
 									data &&
