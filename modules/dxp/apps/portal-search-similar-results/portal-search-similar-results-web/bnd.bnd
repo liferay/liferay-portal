@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Search Similar Results Web
 Bundle-SymbolicName: com.liferay.portal.search.similar.results.web
-Bundle-Version: 3.0.64
+Bundle-Version: 3.0.65
 Web-ContextPath: /portal-search-similar-results-web
