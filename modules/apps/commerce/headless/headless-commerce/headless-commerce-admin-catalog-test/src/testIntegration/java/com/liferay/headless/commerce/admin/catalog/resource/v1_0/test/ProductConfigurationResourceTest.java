@@ -281,8 +281,8 @@ public class ProductConfigurationResourceTest
 		_testPatchProductConfigurationWithAvailabilityEstimateERCPrecedence();
 		_testPatchProductConfigurationWithAvailabilityEstimateIdFallback();
 		_testPatchProductConfigurationWithLazyReferencedAvailabilityEstimate();
-		_testPatchProductConfigurationWithoutAvailabilityEstimate();
 		_testPatchProductConfigurationWithUnresolvableAvailabilityEstimateERC();
+		_testPatchProductConfigurationWithoutAvailabilityEstimate();
 	}
 
 	@Override
