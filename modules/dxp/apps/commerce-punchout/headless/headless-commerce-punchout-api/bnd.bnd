@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Punch Out API
 Bundle-SymbolicName: com.liferay.headless.commerce.punchout.api
-Bundle-Version: 14.0.6
+Bundle-Version: 14.0.7
 Export-Package:\
 	com.liferay.headless.commerce.punchout.dto.v1_0,\
 	com.liferay.headless.commerce.punchout.helper,\
