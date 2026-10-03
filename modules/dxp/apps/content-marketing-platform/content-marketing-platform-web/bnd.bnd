@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Content Marketing Platform Web
 Bundle-SymbolicName: com.liferay.content.marketing.platform.web
-Bundle-Version: 1.0.15
+Bundle-Version: 1.0.16
 Web-ContextPath: /content-marketing-platform-web
 -dsannotations-options: inherit
