@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Collection Filter Category
 Bundle-SymbolicName: com.liferay.fragment.collection.filter.category
-Bundle-Version: 1.0.80
+Bundle-Version: 1.0.81
 Web-ContextPath: /fragment-collection-filter-category
