@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Content Marketing Platform REST API
 Bundle-SymbolicName: com.liferay.content.marketing.platform.rest.api
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Export-Package:\
 	com.liferay.content.marketing.platform.rest.dto.v1_0,\
 	com.liferay.content.marketing.platform.rest.resource.v1_0
