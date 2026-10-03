@@ -43,13 +43,13 @@
 				{
 					"DBType": "DateTime",
 					"businessType": "DateTime",
-					"externalReferenceCode": "EXPIRATION_DATE",
+					"externalReferenceCode": "REQUEST_EXPIRATION_DATE",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "Expiration Date"
+						"en_US": "Request Expiration Date"
 					},
-					"name": "expirationDateTime",
+					"name": "requestExpirationDate",
 					"objectFieldSettings": [
 						{
 							"name": "timeStorage",
@@ -81,13 +81,13 @@
 				{
 					"DBType": "DateTime",
 					"businessType": "DateTime",
-					"externalReferenceCode": "STATUS_DATE",
+					"externalReferenceCode": "REQUEST_STATUS_DATE",
 					"indexed": false,
 					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "Status Date"
+						"en_US": "Request Status Date"
 					},
-					"name": "statusDateTime",
+					"name": "requestStatusDate",
 					"objectFieldSettings": [
 						{
 							"name": "timeStorage",
@@ -264,6 +264,27 @@
 				{
 					"DBType": "DateTime",
 					"businessType": "DateTime",
+					"externalReferenceCode": "REQUEST_RECIPIENT_STATUS_DATE",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Request Recipient Status Date"
+					},
+					"name": "requestRecipientStatusDate",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime"
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
 					"externalReferenceCode": "SENT_DATE",
 					"indexed": false,
 					"indexedAsKeyword": false,
@@ -298,36 +319,15 @@
 					"type": "Integer"
 				},
 				{
-					"DBType": "DateTime",
-					"businessType": "DateTime",
-					"externalReferenceCode": "STATUS_DATE",
-					"indexed": false,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Status Date"
-					},
-					"name": "statusDateTime",
-					"objectFieldSettings": [
-						{
-							"name": "timeStorage",
-							"value": "convertToUTC"
-						}
-					],
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "DateTime"
-				},
-				{
 					"DBType": "Long",
 					"businessType": "Relationship",
-					"externalReferenceCode": "USER_TO_DS_REQUEST_RECIPIENT",
+					"externalReferenceCode": "USER_TO_DS_REQUEST_RECIPIENTS",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "User to DS Request Recipient"
+						"en_US": "User to DS Request Recipients"
 					},
-					"name": "r_userToDSRequestRecipient_userId",
+					"name": "r_userToDSRequestRecipients_userId",
 					"objectDefinitionExternalReferenceCode1": "L_USER",
 					"objectFieldSettings": [
 						{
@@ -336,10 +336,10 @@
 						},
 						{
 							"name": "objectRelationshipERCObjectFieldName",
-							"value": "r_userToDSRequestRecipient_userERC"
+							"value": "r_userToDSRequestRecipients_userERC"
 						}
 					],
-					"objectRelationshipExternalReferenceCode": "L_USER_TO_L_DS_REQUEST_RECIPIENT",
+					"objectRelationshipExternalReferenceCode": "L_USER_TO_L_DS_REQUEST_RECIPIENTS",
 					"relationshipType": "oneToMany",
 					"required": false,
 					"system": true,
