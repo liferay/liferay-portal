@@ -1,6 +1,6 @@
 Bundle-Name: Liferay SAML Web
 Bundle-SymbolicName: com.liferay.saml.web
-Bundle-Version: 5.0.97
+Bundle-Version: 5.0.98
 Import-Package:\
 	javax.net.ssl;resolution:=optional,\
 	\
