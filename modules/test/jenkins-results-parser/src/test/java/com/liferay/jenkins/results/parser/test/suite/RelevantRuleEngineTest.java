@@ -54,14 +54,14 @@ public class RelevantRuleEngineTest extends BaseRelevantRuleTestCase {
 
 	@Test
 	public void testIgnoreGlobalExcludes() {
+		List<String> actualRelevantRuleNames = new ArrayList<>();
+
 		RelevantRuleEngine relevantRuleEngine = getRelevantRuleEngine();
 
 		List<RelevantRule> relevantRules =
 			relevantRuleEngine.getMatchingRelevantRules(
 				Collections.singletonList(
 					new File(getBaseDir(), "modules/module-1/file_1.pw")));
-
-		List<String> actualRelevantRuleNames = new ArrayList<>();
 
 		for (RelevantRule relevantRule : relevantRules) {
 			actualRelevantRuleNames.add(relevantRule.getName());
