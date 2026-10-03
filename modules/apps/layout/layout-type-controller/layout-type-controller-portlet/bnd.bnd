@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout Type Controller Portlet
 Bundle-SymbolicName: com.liferay.layout.type.controller.portlet
-Bundle-Version: 2.0.33
+Bundle-Version: 2.0.34
 Web-ContextPath: /layout-type-controller-portlet
 -dsannotations-options: inherit
