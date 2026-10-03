@@ -1,6 +1,6 @@
 Bundle-Name: Liferay IP Geocoder Implementation
 Bundle-SymbolicName: com.liferay.ip.geocoder.impl
-Bundle-Version: 1.0.18
+Bundle-Version: 1.0.19
 Import-Package:\
 	!org.apache.http.impl.auth.*,\
 	\
