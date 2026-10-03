@@ -216,7 +216,7 @@ tests:
             value: RELEASE-NAME-observability-dashboard-backups
         it: Opens the backup-restore workflow template from the Azure restore guide when centralHub.argoWorkflowsURL is set
         set:
-            centralHub.argoWorkflowsURL: https://argo.example.com/
+            centralHub.argoWorkflowsURL: https://argo.example.com
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
