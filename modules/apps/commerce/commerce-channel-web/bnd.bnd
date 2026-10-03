@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Channel Web
 Bundle-SymbolicName: com.liferay.commerce.channel.web
-Bundle-Version: 4.0.113
+Bundle-Version: 4.0.114
 Web-ContextPath: /commerce-channel-web
 -dsannotations-options: inherit
