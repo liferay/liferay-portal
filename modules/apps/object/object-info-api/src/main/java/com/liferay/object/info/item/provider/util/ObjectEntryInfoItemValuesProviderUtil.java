@@ -168,21 +168,21 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					fetchObjectRelationshipByObjectFieldId2(
 						objectField.getObjectFieldId());
 
+			ObjectDefinition relatedSystemObjectDefinition = null;
 			com.liferay.object.model.ObjectEntry
 				serviceBuilderRelatedObjectEntry = null;
-			ObjectDefinition relatedSystemObjectDefinition = null;
 
 			if (serviceBuilderObjectEntry != null) {
-				serviceBuilderRelatedObjectEntry =
-					serviceBuilderObjectEntry.getRelatedObjectEntry(
-						objectField.getName());
 				relatedSystemObjectDefinition =
 					serviceBuilderObjectEntry.getRelatedSystemObjectDefinition(
 						objectField.getName());
+				serviceBuilderRelatedObjectEntry =
+					serviceBuilderObjectEntry.getRelatedObjectEntry(
+						objectField.getName());
 			}
 
-			if ((serviceBuilderRelatedObjectEntry == null) &&
-				(relatedSystemObjectDefinition == null)) {
+			if ((relatedSystemObjectDefinition == null) &&
+				(serviceBuilderRelatedObjectEntry == null)) {
 
 				long objectEntryId = GetterUtil.getLong(
 					values.get(objectField.getName()));
