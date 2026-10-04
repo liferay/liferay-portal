@@ -61,7 +61,7 @@ components:
             type: object
 info:
     description:
-        "SAML configuration. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.saml.admin.rest.client', and version '1.0.21'."
+        "SAML configuration. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.saml.admin.rest.client', and version '1.0.22'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
