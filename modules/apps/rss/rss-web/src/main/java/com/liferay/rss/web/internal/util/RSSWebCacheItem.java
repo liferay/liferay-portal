@@ -7,9 +7,12 @@ package com.liferay.rss.web.internal.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webcache.WebCacheException;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
 import com.liferay.rss.web.internal.configuration.RSSWebCacheConfiguration;
@@ -17,12 +20,9 @@ import com.liferay.rss.web.internal.configuration.RSSWebCacheConfiguration;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
-
-import java.util.Objects;
 
 /**
  * @author Brian Wing Shun Chan
@@ -71,20 +71,48 @@ public class RSSWebCacheItem implements WebCacheItem {
 		return Time.MINUTE * _rssWebCacheConfiguration.feedTime();
 	}
 
-	private InputStream _readURL() throws IOException {
-		URL url = new URL(_url);
+	private InputStream _readURL() throws Exception {
+		String urlString = _url;
 
-		if (Objects.equals(url.getProtocol(), "file")) {
-			return url.openStream();
+		for (int i = 0; i <= _MAX_REDIRECTS; i++) {
+			URL url = new URL(urlString);
+
+			if (!HttpComponentsUtil.hasHttpProtocol(urlString) ||
+				InetAddressUtil.isLocalInetAddress(
+					InetAddressUtil.getInetAddressByName(url.getHost()))) {
+
+				throw new Exception(
+					"Only external HTTP or HTTPS URLs are allowed: " +
+						urlString);
+			}
+
+			Http.Options options = new Http.Options();
+
+			options.setFollowRedirects(false);
+			options.setLocation(urlString);
+			options.setTimeout(PropsValues.RSS_CONNECTION_TIMEOUT);
+
+			InputStream inputStream = HttpUtil.URLtoInputStream(options);
+
+			Http.Response response = options.getResponse();
+
+			String redirect = response.getRedirect();
+
+			if (Validator.isNull(redirect)) {
+				return inputStream;
+			}
+
+			inputStream.close();
+
+			urlString = String.valueOf(new URL(url, redirect));
 		}
 
-		Http.Options options = new Http.Options();
-
-		options.setLocation(_url);
-		options.setTimeout(PropsValues.RSS_CONNECTION_TIMEOUT);
-
-		return HttpUtil.URLtoInputStream(options);
+		throw new Exception(
+			"Unable to exceed maximum number of allowed URL redirects: " +
+				_url);
 	}
+
+	private static final int _MAX_REDIRECTS = 5;
 
 	private final RSSWebCacheConfiguration _rssWebCacheConfiguration;
 	private final String _url;
