@@ -422,8 +422,8 @@ public class TaxonomyVocabularyResourceTest
 				multiValued = RandomTestUtil.randomBoolean();
 				name = RandomTestUtil.randomString();
 				numberOfTaxonomyCategories = 0;
-				projects = testGroup.isCMS() ?
-					new Project[] {_randomProjectAssetLibrary()} : null;
+				projects =
+					testGroup.isCMS() ? new Project[] {_randomProject()} : null;
 				siteId = testGroup.getGroupId();
 				visibilityType = VisibilityType.PUBLIC;
 			}
@@ -456,7 +456,7 @@ public class TaxonomyVocabularyResourceTest
 		Assert.assertEquals(Long.valueOf(expected), function.apply(array[0]));
 	}
 
-	private Project _randomProjectAssetLibrary() throws Exception {
+	private Project _randomProject() throws Exception {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(), null,
 			DepotConstants.TYPE_PROJECT,
@@ -896,7 +896,7 @@ public class TaxonomyVocabularyResourceTest
 	private void _testPutTaxonomyVocabularyResetsProjectScope()
 		throws Exception {
 
-		Project project = _randomProjectAssetLibrary();
+		Project project = _randomProject();
 
 		TaxonomyVocabulary randomTaxonomyVocabulary =
 			randomTaxonomyVocabulary();
