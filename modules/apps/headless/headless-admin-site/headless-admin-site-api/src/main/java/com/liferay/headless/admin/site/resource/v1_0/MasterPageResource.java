@@ -47,9 +47,33 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface MasterPageResource {
 
+	public void deleteDesignLibraryMasterPage(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
 	public void deleteSiteMasterPage(
 			String siteExternalReferenceCode,
 			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public MasterPage getDesignLibraryMasterPage(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getDesignLibraryMasterPagePermissionsPage(
+				String designLibraryExternalReferenceCode,
+				String masterPageExternalReferenceCode, String roleNames)
+		throws Exception;
+
+	public Page<MasterPage> getDesignLibraryMasterPagesPage(
+			String designLibraryExternalReferenceCode, String search,
+			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public MasterPage getSiteMasterPage(
@@ -76,6 +100,26 @@ public interface MasterPageResource {
 			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
 
+	public MasterPage postDesignLibraryMasterPageCopy(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public MasterPage postDesignLibraryMasterPageCopyWithPermission(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public MasterPage postDesignLibraryMasterPageMarkAsDefault(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public MasterPage postDesignLibraryMasterPageUnmarkAsDefault(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
 	public MasterPage postSiteMasterPage(
 			String siteExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
@@ -95,6 +139,13 @@ public interface MasterPageResource {
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putDesignLibraryMasterPagePermissionsPage(
+				String designLibraryExternalReferenceCode,
+				String masterPageExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public MasterPage putSiteMasterPage(
@@ -205,4 +256,4 @@ public interface MasterPageResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:901324235
+// LIFERAY-REST-BUILDER-HASH:-688386953

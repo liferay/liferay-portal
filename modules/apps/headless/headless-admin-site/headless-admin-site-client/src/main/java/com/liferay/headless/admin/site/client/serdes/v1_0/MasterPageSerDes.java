@@ -53,6 +53,16 @@ public class MasterPageSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (masterPage.getActions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"actions\": ");
+
+			sb.append(_toJSON(masterPage.getActions()));
+		}
+
 		if (masterPage.getCreator() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -291,6 +301,13 @@ public class MasterPageSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (masterPage.getActions() == null) {
+			map.put("actions", null);
+		}
+		else {
+			map.put("actions", String.valueOf(masterPage.getActions()));
+		}
+
 		if (masterPage.getCreator() == null) {
 			map.put("creator", null);
 		}
@@ -423,7 +440,10 @@ public class MasterPageSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				return true;
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -482,7 +502,13 @@ public class MasterPageSerDes {
 			MasterPage masterPage, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				if (jsonParserFieldValue != null) {
+					masterPage.setActions(
+						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				if (jsonParserFieldValue != null) {
 					masterPage.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
@@ -698,4 +724,4 @@ public class MasterPageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-859129066
+// LIFERAY-REST-BUILDER-HASH:-1918909483
