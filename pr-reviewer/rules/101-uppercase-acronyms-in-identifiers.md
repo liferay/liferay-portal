@@ -8,4 +8,18 @@ Defer to the casing of the actual class or standard the identifier refers to. Th
 
 A violation is an identifier introduced in the diff that capitalizes only the first letter of an acronym, such as `Json`, `Api`, `Url`, `Xml`, `Html`, `Sql`, or `Ddm`, unless that spelling matches the class or standard the name refers to (as with `JsonNode`).
 
-**Example:** commit `97469ec` renamed `mergeToJsonObject` to `mergeToJSONObject`; `2b917f7` renamed `getGitHubApiUrl` to `getGitHubAPIURL`; `8587510` renamed `expectedXmlNdc` to `expectedXMLNDC`.
+**Example:** commit `97469ec` renamed `mergeToJsonObject` to `mergeToJSONObject`; `2b917f7` renamed `getGitHubApiUrl` to `getGitHubAPIURL`; `8587510` renamed `expectedXmlNdc` to `expectedXMLNDC`. The same fix applies to a method you define and to the calls that use it.
+
+```diff
+-public String getUrl() {
++public String getURL() {
+ 	return _url;
+ }
+```
+
+```diff
+-foo.getHtmlContent();
+-bar.parseXmlString();
++foo.getHTMLContent();
++bar.parseXMLString();
+```

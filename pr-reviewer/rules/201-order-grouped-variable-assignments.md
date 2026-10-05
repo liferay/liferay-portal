@@ -11,6 +11,15 @@ Two ordering principles apply:
 
 This rule applies only to assignments that are already grouped into a consecutive block. It does not require grouping assignments that are better declared at their first use, and it never overrides a necessary dependency order: when one assignment uses the value of another, the dependency wins over alphabetical order.
 
+A grouped block of Java local declarations sorts the same way, and this is where the rule meets rule 203. Since rule 203 declares each local as it is used, locals form a grouped block only when they are used together, as when they all feed one call; inside such a block this rule's alphabetical order wins, and between blocks rule 203's order of use wins.
+
 A violation is a block of consecutive, independent assignments left in an order that is not alphabetical, or a derived assignment sorted ahead of or interleaved with the variables it depends on instead of being grouped after them.
 
-**Example:** https://github.com/brianchandotcom/liferay-portal/pull/175376 — in the phone-number-input fragment a block of `[#assign]` statements was in arbitrary order and was sorted alphabetically (`countryA2`, `countrySource`, `defaultLanguageId`, `disabled`, ...). The derived `fixed = countrySource == "fixed"` was then moved out of the sorted block and placed after it, next to the `[#if fixed ...]` that uses it, because it depends on `countrySource`.
+**Example:** https://github.com/brianchandotcom/liferay-portal/pull/175376 — in the `phone-number-input` fragment a block of `[#assign]` statements was in arbitrary order and was sorted alphabetically (`countryA2`, `countrySource`, `defaultLanguageId`, `disabled`, ...). The derived `fixed = countrySource == "fixed"` was then moved out of the sorted block and placed after it, next to the `[#if fixed ...]` that uses it, because it depends on `countrySource`. A grouped pair of Java locals that fed the same call was sorted the same way.
+
+```diff
+-Map<X, Y> beta = new HashMap<>();
+-
+ boolean alpha = check();
++Map<X, Y> beta = new HashMap<>();
+```

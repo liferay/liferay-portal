@@ -1,6 +1,6 @@
 # Helm Unit Test Order
 
-Checks that the cases in a `helm unittest` suite sort alphabetically by their `it` description, as Rule 48 of the `format-source` skill requires. Nothing else enforces that order. The suites themselves run in `ci-test-cloud-helm-chart.yaml`, so this validation only reads the files.
+Checks that the cases in a `helm unittest` suite sort alphabetically by their `it` description, as rule 209 in `pr-reviewer/rules` requires. Nothing else enforces that order. The suites themselves run in `ci-test-cloud-helm-chart.yaml`, so this validation only reads the files.
 
 ## Match
 
