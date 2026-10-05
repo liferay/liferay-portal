@@ -122,18 +122,19 @@ Verified on a self hosted 2026.Q2 bundle. Treat Groovy as unavailable until prov
 
 Also bound: `creator`, `currentDate`, `currentUserId`, `currentUserExternalReferenceCode`, `groupId`, `id` (the entry ID), and `entryDTO`. Guard optional fields with `binding.hasVariable("<name>")` — referencing an absent one throws `MissingPropertyException`. Source: `ObjectEntryVariablesUtil`.
 
-### `objectAction` (Client Extension)
+### `function#<cet-erc>` (Client Extension)
 
-Calls a deployed `objectAction` CET microservice.
-
-Required `parameters`:
+Calls a deployed `objectAction` CET microservice. The executor key is `function#` plus the CET entry's ERC, and `parameters` is empty:
 
 ```json
 {
-	"clientExtensionEntryExternalReferenceCode": "<cet-erc>",
-	"objectActionExecutorKey": "objectAction"
+	"objectActionExecutorKey": "function#<cet-erc>",
+	"parameters": {
+	}
 }
 ```
+
+A bare `"objectAction"` key with the ERC in `parameters` also saves with a `200` but never fires. See `skills/manage-object-logic/SKILL.md` → "Object Action — Client Extension".
 
 The microservice receives a POST with the object entry payload and a Bearer token. Implement via `scaffold-client-extension` with type `objectAction`.
 

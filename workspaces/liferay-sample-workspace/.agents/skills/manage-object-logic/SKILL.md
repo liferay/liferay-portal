@@ -43,7 +43,7 @@ Consult `rules/object-actions-catalog.md` for the full catalog. Summary:
 | `updateObjectEntry` | Entry ID + field map | Updates an entry in the same or another object |
 | Webhook | URL + secret | HTTP POST to external endpoint |
 | Groovy Script | Script body | Self hosted or PaaS **and** script execution enabled — off by default, see `rules/object-actions-catalog.md`. Probe before designing around it |
-| Client Extension | CET `objectAction` or `workflowAction` externalReferenceCode | Calls a deployed microservice |
+| Client Extension | Executor key `function#<cet-erc>` of a deployed `objectAction` CET | Calls a deployed microservice |
 
 ### Object Action — Notification (Site Initializer, Preferred)
 
@@ -275,10 +275,9 @@ curl \
 		"active": true,
 		"label": {"en_US": "<ActionLabel>"},
 		"name": "<actionName>",
-		"objectActionExecutorKey": "objectAction",
+		"objectActionExecutorKey": "function#<cet-erc>",
 		"objectActionTriggerKey": "onAfterAdd",
 		"parameters": {
-			"clientExtensionEntryExternalReferenceCode": "<cet-erc>"
 		}
 	}' \
 	--header "Content-Type: application/json" \
@@ -288,7 +287,11 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-The executor key for a Client Extension action is `"objectAction"` (not `"groovy"` — that key is only for the inline Groovy executor). See `rules/object-actions-catalog.md`.
+**The executor key is `function#` plus the `objectAction` CET entry's ERC**, the key under which `FunctionObjectActionExecutorImpl` registers each deployed CET. Verified end to end on 2026.Q1: the action ran, the CET received the POST, and the action's status read `success`. A bare `"objectAction"` key with the ERC in `parameters` also saves with a `200`, so a successful save proves nothing. Read the action's `status.label` after triggering it: `never-ran` means it has not fired.
+
+The CET receives the entry twice: as the persistence model under `objectEntry` (custom fields in `values`, `createDate` as a date string), and as the REST DTO under `objectEntryDTO<ObjectName>` (custom fields in `properties`, `dateCreated` as **epoch milliseconds**, not ISO 8601). There is no `modelDTO<ObjectName>` key for a custom object.
+
+A callback to `/o/c/<plural>` needs the **object's own scope** on the CET's OAuth application, not `Liferay.Headless.Object.everything`. See `rules/oauth-scopes.md`.
 
 ### Kaleo Workflow
 
