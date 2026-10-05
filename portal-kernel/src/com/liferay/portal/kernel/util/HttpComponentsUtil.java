@@ -518,6 +518,18 @@ public class HttpComponentsUtil {
 		return Validator.isNotNull(getDomain(url));
 	}
 
+	public static boolean hasHttpProtocol(String url) {
+		String protocol = getProtocol(url);
+
+		if (StringUtil.equalsIgnoreCase(protocol, Http.HTTP) ||
+			StringUtil.equalsIgnoreCase(protocol, Http.HTTPS)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public static boolean hasProtocol(String url) {
 		if (Validator.isNull(url) || (url.indexOf(CharPool.COLON) == -1)) {
 			return false;
