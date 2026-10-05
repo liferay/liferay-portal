@@ -1,6 +1,7 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
+	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:portal:portal-json-validator")
 	compileOnly project(":core:petra:petra-function")
