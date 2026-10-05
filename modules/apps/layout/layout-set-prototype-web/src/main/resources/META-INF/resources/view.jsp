@@ -9,31 +9,6 @@
 
 <liferay-ui:error exception="<%= RequiredLayoutSetPrototypeException.class %>" message="you-cannot-delete-site-templates-that-are-used-by-a-site" />
 
-<%
-String executeLayoutSetPrototypeSyncErrorMessage = (String)SessionMessages.get(renderRequest, "executeLayoutSetPrototypeSyncErrorMessage");
-String executeLayoutSetPrototypeSyncInfoMessage = (String)SessionMessages.get(renderRequest, "executeLayoutSetPrototypeSyncInfoMessage");
-%>
-
-<c:if test="<%= executeLayoutSetPrototypeSyncErrorMessage != null %>">
-	<aui:script>
-		Liferay.Util.openToast({
-			message:
-				'<%= UnicodeFormatter.toString(executeLayoutSetPrototypeSyncErrorMessage) %>',
-			type: 'danger',
-		});
-	</aui:script>
-</c:if>
-
-<c:if test="<%= executeLayoutSetPrototypeSyncInfoMessage != null %>">
-	<aui:script>
-		Liferay.Util.openToast({
-			message:
-				'<%= UnicodeFormatter.toString(executeLayoutSetPrototypeSyncInfoMessage) %>',
-			type: 'info',
-		});
-	</aui:script>
-</c:if>
-
 <clay:management-toolbar
 	managementToolbarDisplayContext="<%= new LayoutSetPrototypeManagementToolbarDisplayContext(request, layoutSetPrototypeDisplayContext, liferayPortletRequest, liferayPortletResponse, layoutSetPrototypeDisplayContext.getSearchContainer()) %>"
 	propsTransformer="{LayoutSetPrototypeManagementToolbarPropsTransformer} from layout-set-prototype-web"

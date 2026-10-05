@@ -8,16 +8,15 @@ package com.liferay.layout.set.prototype.web.internal.servlet.taglib.util;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
-import com.liferay.change.tracking.configuration.helper.CTSettingsConfigurationHelper;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
+import com.liferay.layout.set.prototype.web.internal.util.SiteTemplateSyncUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -88,8 +87,7 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 						if (FeatureFlagManagerUtil.isEnabled(
 								_themeDisplay.getCompanyId(), "LPD-82107")) {
 
-							add(
-								_getExecuteLayoutSetPrototypeSyncUnsafeConsumer());
+							add(_getViewSiteTemplateSyncUnsafeConsumer());
 						}
 					}
 					else if (!_layoutSetPrototype.isActive()) {
@@ -190,44 +188,6 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
-		_getExecuteLayoutSetPrototypeSyncUnsafeConsumer() {
-
-		return dropdownItem -> {
-			dropdownItem.putData("action", "executeLayoutSetPrototypeSync");
-			dropdownItem.putData(
-				"executeLayoutSetPrototypeSyncURL",
-				PortletURLBuilder.createActionURL(
-					_renderResponse
-				).setActionName(
-					"executeLayoutSetPrototypeSync"
-				).setRedirect(
-					_themeDisplay.getURLCurrent()
-				).setParameter(
-					"layoutSetPrototypeId",
-					_layoutSetPrototype.getLayoutSetPrototypeId()
-				).buildString());
-
-			if (!FeatureFlagManagerUtil.isEnabled(
-					_themeDisplay.getCompanyId(), "LPD-104837")) {
-
-				CTSettingsConfigurationHelper ctSettingsConfigurationHelper =
-					_ctSettingsConfigurationHelperSnapshot.get();
-
-				dropdownItem.putData(
-					"publicationsEnabled",
-					String.valueOf(
-						ctSettingsConfigurationHelper.isEnabled(
-							_themeDisplay.getCompanyId())));
-			}
-
-			dropdownItem.setIcon("reload");
-			dropdownItem.setLabel(
-				LanguageUtil.get(
-					_httpServletRequest, "execute-site-template-sync"));
-		};
-	}
-
-	private UnsafeConsumer<DropdownItem, Exception>
 			_getPermissionsActionUnsafeConsumer()
 		throws Exception {
 
@@ -268,10 +228,36 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 		).buildPortletURL();
 	}
 
-	private static final Snapshot<CTSettingsConfigurationHelper>
-		_ctSettingsConfigurationHelperSnapshot = new Snapshot<>(
-			LayoutSetPrototypeActionDropdownItemsProvider.class,
-			CTSettingsConfigurationHelper.class);
+	private UnsafeConsumer<DropdownItem, Exception>
+		_getViewSiteTemplateSyncUnsafeConsumer() {
+
+		return dropdownItem -> {
+			if (SiteTemplateSyncUtil.isPublicationsEnabled(
+					_themeDisplay.getCompanyId())) {
+
+				dropdownItem.putData(
+					"action", "openSiteTemplateSyncUnavailableModal");
+			}
+			else {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_renderResponse
+					).setMVCRenderCommandName(
+						"/layout_set_prototype/view_site_template_sync"
+					).setRedirect(
+						_themeDisplay.getURLCurrent()
+					).setParameter(
+						"layoutSetPrototypeId",
+						_layoutSetPrototype.getLayoutSetPrototypeId()
+					).buildString());
+			}
+
+			dropdownItem.setIcon("reload");
+			dropdownItem.setLabel(
+				LanguageUtil.get(
+					_httpServletRequest, "execute-site-template-sync"));
+		};
+	}
 
 	private final HttpServletRequest _httpServletRequest;
 	private final LayoutSetPrototype _layoutSetPrototype;

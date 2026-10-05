@@ -37,38 +37,21 @@ const ACTIONS = {
 		});
 	},
 
-	executeLayoutSetPrototypeSync(itemData) {
-		if (itemData.publicationsEnabled === 'true') {
-			openModal({
-				bodyHTML: Liferay.Language.get(
-					'site-template-sync-cannot-be-run-with-publications-enabled'
-				),
-				buttons: [
-					{
-						autoFocus: true,
-						displayType: 'secondary',
-						label: Liferay.Language.get('close'),
-						type: 'cancel',
-					},
-				],
-				role: 'alertdialog',
-				status: 'warning',
-				title: Liferay.Language.get('site-template-sync'),
-			});
-
-			return;
-		}
-
-		openConfirmModal({
-			message: Liferay.Language.get('site-template-sync-help'),
-			onConfirm: (isConfirmed) => {
-				if (isConfirmed) {
-					submitForm(
-						document.hrefFm,
-						itemData.executeLayoutSetPrototypeSyncURL
-					);
-				}
-			},
+	openSiteTemplateSyncUnavailableModal() {
+		openModal({
+			bodyHTML: Liferay.Language.get(
+				'site-template-sync-cannot-be-run-with-publications-enabled'
+			),
+			buttons: [
+				{
+					autoFocus: true,
+					displayType: 'secondary',
+					label: Liferay.Language.get('close'),
+					type: 'cancel',
+				},
+			],
+			role: 'alertdialog',
+			status: 'warning',
 			title: Liferay.Language.get('site-template-sync'),
 		});
 	},

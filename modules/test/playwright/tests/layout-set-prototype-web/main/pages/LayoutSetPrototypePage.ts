@@ -87,9 +87,16 @@ export class LayoutSetPrototypePage {
 			trigger: this.rowActions(templateName),
 		});
 
-		this.page.once('dialog', (dialog) => dialog.accept());
-
 		await this.executeSyncMenuItem.click();
+
+		await this.page
+			.getByRole('button', {exact: true, name: 'Sync'})
+			.click();
+
+		await this.page
+			.getByRole('dialog')
+			.getByRole('button', {name: 'Sync Sites'})
+			.click();
 
 		await expect(
 			this.page.getByText(

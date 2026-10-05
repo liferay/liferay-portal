@@ -11,11 +11,7 @@ import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.layout.set.prototype.constants.LayoutSetPrototypePortletKeys;
 import com.liferay.portal.kernel.exception.NoSuchLayoutSetPrototypeException;
 import com.liferay.portal.kernel.exception.RequiredLayoutSetPrototypeException;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -25,15 +21,10 @@ import com.liferay.portal.kernel.service.LayoutSetPrototypeService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.servlet.SessionMessages;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.sites.kernel.util.Sites;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -114,62 +105,6 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 		for (long curLayoutSetPrototypeId : layoutSetPrototypeIds) {
 			layoutSetPrototypeService.deleteLayoutSetPrototype(
 				curLayoutSetPrototypeId);
-		}
-	}
-
-	public void executeLayoutSetPrototypeSync(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
-
-		// TODO LPD-89751 Check permissions before proceeding with the sync
-
-		long layoutSetPrototypeId = ParamUtil.getLong(
-			actionRequest, "layoutSetPrototypeId");
-
-		LayoutSetPrototype layoutSetPrototype =
-			layoutSetPrototypeService.fetchLayoutSetPrototype(
-				layoutSetPrototypeId);
-
-		if (layoutSetPrototype == null) {
-			return;
-		}
-
-		hideDefaultSuccessMessage(actionRequest);
-
-		try {
-			Sites sites = _sitesSnapshot.get();
-
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-			sites.mergeLayoutSetPrototypeLayouts(
-				layoutSetPrototype, themeDisplay.getUserId());
-
-			Locale locale = _getLocale(actionRequest);
-
-			SessionMessages.add(
-				actionRequest, "executeLayoutSetPrototypeSyncInfoMessage",
-				LanguageUtil.format(
-					locale,
-					"the-sync-of-the-site-template-x-started-you-will-" +
-						"receive-a-notification-when-the-process-is-complete",
-					HtmlUtil.escape(layoutSetPrototype.getName(locale)),
-					false));
-		}
-		catch (Exception exception) {
-			_log.error(
-				"Unable to start site template sync for " +
-					layoutSetPrototypeId,
-				exception);
-
-			hideDefaultErrorMessage(actionRequest);
-
-			SessionMessages.add(
-				actionRequest, "executeLayoutSetPrototypeSyncErrorMessage",
-				LanguageUtil.get(
-					_getLocale(actionRequest),
-					"an-error-occurred-while-executing-the-site-template-" +
-						"sync"));
 		}
 	}
 
@@ -305,22 +240,5 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 
 	@Reference
 	protected PanelAppRegistry panelAppRegistry;
-
-	private Locale _getLocale(ActionRequest actionRequest) {
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		if (themeDisplay == null) {
-			return actionRequest.getLocale();
-		}
-
-		return themeDisplay.getLocale();
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutSetPrototypePortlet.class);
-
-	private static final Snapshot<Sites> _sitesSnapshot = new Snapshot<>(
-		LayoutSetPrototypePortlet.class, Sites.class);
 
 }

@@ -150,12 +150,6 @@ test(
 				)
 			).toBeVisible();
 
-			await expect(
-				page.getByText(
-					'This will apply changes from your site template to linked sites'
-				)
-			).toBeHidden();
-
 			// Close the dialog so it does not block the navigation that
 			// disables publications during cleanup
 
@@ -167,6 +161,11 @@ test(
 				.click();
 
 			await expect(dialog).toBeHidden();
+
+			await expect(page).not.toHaveURL(/view_site_template_sync/);
+			await expect(
+				page.getByRole('button', {exact: true, name: 'Sync'})
+			).toBeHidden();
 		}
 		finally {
 			await changeTrackingPage.enablePublications(false);
@@ -258,7 +257,7 @@ test(
 test(
 	'Execute Site Template Sync escapes the Site Template name in its messages',
 	{tag: '@LPD-109105'},
-	async ({apiHelpers, globalMenuPage, layoutSetPrototypePage, page}) => {
+	async ({apiHelpers, globalMenuPage, layoutSetPrototypePage}) => {
 
 		// Create a Site Template whose name contains markup
 
@@ -278,23 +277,10 @@ test(
 
 		await globalMenuPage.goToControlPanel('Site Templates');
 
-		await clickAndExpectToBeVisible({
-			target: layoutSetPrototypePage.executeSyncMenuItem,
-			trigger: layoutSetPrototypePage.rowActions(siteTemplateName),
-		});
-
-		page.once('dialog', (dialog) => dialog.accept());
-
-		await layoutSetPrototypePage.executeSyncMenuItem.click();
-
 		// The start toast and the completion notification show the name as
 		// literal text
 
-		await expect(
-			page.getByText(
-				`The sync of the site template ${siteTemplateName} started. You will receive a notification when the process is complete.`
-			)
-		).toBeVisible();
+		await layoutSetPrototypePage.executeSync(siteTemplateName);
 
 		await layoutSetPrototypePage.waitForSyncSuccessNotification(
 			siteTemplateName
