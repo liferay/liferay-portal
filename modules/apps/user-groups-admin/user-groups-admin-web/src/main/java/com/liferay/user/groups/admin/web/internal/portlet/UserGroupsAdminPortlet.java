@@ -6,6 +6,8 @@
 package com.liferay.user.groups.admin.web.internal.portlet;
 
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.DuplicateUserGroupException;
 import com.liferay.portal.kernel.exception.NoSuchUserGroupException;
 import com.liferay.portal.kernel.exception.RequiredUserGroupException;
@@ -154,6 +156,18 @@ public class UserGroupsAdminPortlet extends MVCPortlet {
 		renderRequest.setAttribute(ItemSelector.class.getName(), _itemSelector);
 
 		super.render(renderRequest, renderResponse);
+	}
+
+	@Override
+	protected boolean callActionMethod(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws PortletException {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
+
+			return super.callActionMethod(actionRequest, actionResponse);
+		}
 	}
 
 	@Override
