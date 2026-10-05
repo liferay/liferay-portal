@@ -50,6 +50,14 @@ public class MasterPageDTOConverter
 
 		return new MasterPage() {
 			{
+				setActions(
+					() -> {
+						if (dtoConverterContext == null) {
+							return null;
+						}
+
+						return dtoConverterContext.getActions();
+					});
 				setCreator(
 					() -> CreatorUtil.toCreator(
 						layoutPageTemplateEntry.getUserId(),
