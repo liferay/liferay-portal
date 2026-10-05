@@ -3476,6 +3476,8 @@ public class LayoutPersistenceImpl
 		dbColumnNames.put("system", "system_");
 		dbColumnNames.put("masterLayoutPageTemplateEntryERC", "masterLPTEERC");
 		dbColumnNames.put(
+			"masterLayoutPageTemplateEntryScopeERC", "masterLPTESERC");
+		dbColumnNames.put(
 			"portletLayoutPageTemplateEntryERC", "portletLPTEERC");
 		dbColumnNames.put(
 			"portletLayoutPageTemplateEntryScopeERC", "portletLPTESERC");
@@ -3830,6 +3832,7 @@ public class LayoutPersistenceImpl
 		ctMergeColumnNames.add("faviconFileEntryERC");
 		ctMergeColumnNames.add("faviconFileEntryScopeERC");
 		ctMergeColumnNames.add("masterLPTEERC");
+		ctMergeColumnNames.add("masterLPTESERC");
 		ctMergeColumnNames.add("portletLPTEERC");
 		ctMergeColumnNames.add("portletLPTESERC");
 		ctMergeColumnNames.add("portletLPTELE");
@@ -4615,6 +4618,7 @@ public class LayoutPersistenceImpl
 		new String[] {
 			"uuid", "type", "hidden", "system",
 			"masterLayoutPageTemplateEntryERC",
+			"masterLayoutPageTemplateEntryScopeERC",
 			"portletLayoutPageTemplateEntryERC",
 			"portletLayoutPageTemplateEntryScopeERC",
 			"portletLayoutPageTemplateEntryLinkEnabled"
@@ -4626,4 +4630,4 @@ public class LayoutPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1696260543
+// LIFERAY-SERVICE-BUILDER-HASH:33595996
