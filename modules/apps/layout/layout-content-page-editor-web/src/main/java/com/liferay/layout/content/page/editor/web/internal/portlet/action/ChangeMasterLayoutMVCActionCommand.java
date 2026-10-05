@@ -67,6 +67,8 @@ public class ChangeMasterLayoutMVCActionCommand
 
 		String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
 			actionRequest, "masterLayoutPageTemplateEntryERC");
+		String masterLayoutPageTemplateEntryScopeERC = ParamUtil.getString(
+			actionRequest, "masterLayoutPageTemplateEntryScopeERC");
 
 		Layout layout = _layoutLocalService.fetchLayout(themeDisplay.getPlid());
 
@@ -74,9 +76,10 @@ public class ChangeMasterLayoutMVCActionCommand
 			themeDisplay.getPermissionChecker(), layout);
 
 		Layout updatedLayout =
-			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			_layoutLocalService.updateMasterLayoutPageTemplateEntry(
 				layout.getGroupId(), layout.isPrivateLayout(),
-				layout.getLayoutId(), masterLayoutPageTemplateEntryERC);
+				layout.getLayoutId(), masterLayoutPageTemplateEntryERC,
+				masterLayoutPageTemplateEntryScopeERC);
 
 		if (layout.isDraftLayout()) {
 			UnicodeProperties layoutTypeSettingsUnicodeProperties =
