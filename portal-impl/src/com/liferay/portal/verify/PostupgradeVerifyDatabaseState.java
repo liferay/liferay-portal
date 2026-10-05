@@ -690,13 +690,26 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			Map<String, List<String>> warnMessagesMap)
 		throws Exception {
 
-		Map<String, List<String>> errorIndexMessagesMap =
-			new ConcurrentSkipListMap<>();
-		Map<String, List<IndexMetadata>> indexMetadatasMap =
-			_indexMetadatasMapDCLSingleton.getSingleton(
+		Map<String, List<IndexMetadata>> indexMetadatasMap;
+
+		try {
+			indexMetadatasMap = _indexMetadatasMapDCLSingleton.getSingleton(
 				() -> _getDefinitionsMap(
 					DBResourceUtil::getModuleTablesIndexMetadatas,
 					DBResourceUtil.getPortalTablesIndexMetadatas()));
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			String message = "Unable to get the declared indexes";
+
+			_errorMessages.add(message);
+
+			_log.error(message, illegalArgumentException);
+
+			return;
+		}
+
+		Map<String, List<String>> errorIndexMessagesMap =
+			new ConcurrentSkipListMap<>();
 		Map<String, String> tablesServletContextNames =
 			_tablesServletContextNamesDCLSingleton.getSingleton(
 				DBResourceUtil::getTablesServletContextNames);

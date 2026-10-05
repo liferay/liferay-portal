@@ -41,6 +41,11 @@ public class IndexMetadataFactoryUtil {
 
 		int end = createSQL.indexOf(CharPool.SPACE, start + 3);
 
+		if (end < 0) {
+			throw new IllegalArgumentException(
+				"Unable to find index name end " + createSQL);
+		}
+
 		String indexName = createSQL.substring(start, end);
 
 		start = createSQL.indexOf("on ", end + 1);
