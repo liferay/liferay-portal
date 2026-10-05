@@ -42,6 +42,23 @@ import org.osgi.service.component.annotations.Reference;
 public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 
 	@Override
+	public KaleoDefinition activateKaleoDefinition(
+			String name, int version, ServiceContext serviceContext)
+		throws PortalException {
+
+		KaleoDefinition kaleoDefinition =
+			kaleoDefinitionPersistence.findByC_N_V(
+				serviceContext.getCompanyId(), name, version);
+
+		_checkPermissions(
+			_getGroupId(
+				kaleoDefinition.getGroupId(), kaleoDefinition.getScope()));
+
+		return _kaleoDefinitionLocalService.activateKaleoDefinition(
+			name, version, serviceContext);
+	}
+
+	@Override
 	public KaleoDefinition addKaleoDefinition(
 			String externalReferenceCode, String name, String title,
 			String description, String content, String scope, boolean system,
@@ -53,6 +70,23 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 		return _kaleoDefinitionLocalService.addKaleoDefinition(
 			externalReferenceCode, name, title, description, content, scope,
 			system, version, serviceContext);
+	}
+
+	@Override
+	public KaleoDefinition deactivateKaleoDefinition(
+			String name, int version, ServiceContext serviceContext)
+		throws PortalException {
+
+		KaleoDefinition kaleoDefinition =
+			kaleoDefinitionPersistence.findByC_N_V(
+				serviceContext.getCompanyId(), name, version);
+
+		_checkPermissions(
+			_getGroupId(
+				kaleoDefinition.getGroupId(), kaleoDefinition.getScope()));
+
+		return _kaleoDefinitionLocalService.deactivateKaleoDefinition(
+			name, version, serviceContext);
 	}
 
 	@Override
