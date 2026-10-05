@@ -20,9 +20,11 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.client.pagination.Page;
+import com.liferay.headless.admin.site.client.permission.Permission;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.MasterPageResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.AssetTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.FileEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
@@ -40,32 +42,43 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -97,6 +110,9 @@ import org.junit.runner.RunWith;
 /**
  * @author Rubén Pulido
  */
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-57283"), @FeatureFlag("LPD-81022")}
+)
 @RunWith(Arquillian.class)
 public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
@@ -134,6 +150,16 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-81022")
+	public void testDeleteDesignLibraryMasterPage() throws Exception {
+		super.testDeleteDesignLibraryMasterPage();
+
+		_testDeleteDesignLibraryMasterPageInUseProblemException();
+		_testDeleteDesignLibraryMasterPageWithFeatureFlagDisabledProblemException();
 	}
 
 	@Override
@@ -176,6 +202,72 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			() -> masterPageResource.deleteSiteMasterPage(
 				irrelevantGroup.getExternalReferenceCode(),
 				liveGroupMasterPage.getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-81022")
+	public void testGetDesignLibraryMasterPage() throws Exception {
+		super.testGetDesignLibraryMasterPage();
+
+		_testGetDesignLibraryMasterPageActions();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-81022")
+	public void testGetDesignLibraryMasterPagePermissionsPage()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+
+		Page<Permission> page =
+			masterPageResource.getDesignLibraryMasterPagePermissionsPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(), RoleConstants.GUEST);
+
+		DesignLibraryTestUtil.assertDesignLibraryPermissionActionHrefs(
+			page.getActions());
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortDateTime()
+		throws Exception {
+
+		super.testGetDesignLibraryMasterPagesPageWithSortDateTime();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortDouble()
+		throws Exception {
+
+		super.testGetDesignLibraryMasterPagesPageWithSortDouble();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortInteger()
+		throws Exception {
+
+		super.testGetDesignLibraryMasterPagesPageWithSortInteger();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortString()
+		throws Exception {
+
+		super.testGetDesignLibraryMasterPagesPageWithSortString();
 	}
 
 	@Override
@@ -352,6 +444,81 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-81022")
+	public void testPostDesignLibraryMasterPageCopy() throws Exception {
+		_testPostDesignLibraryMasterPageCopy();
+		_testPostDesignLibraryMasterPageCopyDraftProblemException();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-81022")
+	public void testPostDesignLibraryMasterPageCopyWithPermission()
+		throws Exception {
+
+		_testPostDesignLibraryMasterPageCopyWithPermission();
+		_testPostDesignLibraryMasterPageCopyWithPermissionDraftProblemException();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-81022")
+	public void testPostDesignLibraryMasterPageMarkAsDefault()
+		throws Exception {
+
+		_testPostDesignLibraryMasterPageMarkAsDefault();
+		_testPostDesignLibraryMasterPageMarkAsDefaultDraftProblemException();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-81022")
+	public void testPostDesignLibraryMasterPageUnmarkAsDefault()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		_assertProblemException(
+			"CONFLICT", "The master page is not the default",
+			() -> masterPageResource.postDesignLibraryMasterPageUnmarkAsDefault(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode()));
+
+		MasterPage defaultMasterPage =
+			masterPageResource.postDesignLibraryMasterPageMarkAsDefault(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> actions =
+			defaultMasterPage.getActions();
+
+		Map<String, String> unmarkAsDefaultAction = actions.get(
+			"unmarkAsDefault");
+
+		String unmarkAsDefaultHref = unmarkAsDefaultAction.get("href");
+
+		Assert.assertTrue(unmarkAsDefaultHref.endsWith("/unmark-as-default"));
+
+		MasterPage nondefaultMasterPage =
+			masterPageResource.postDesignLibraryMasterPageUnmarkAsDefault(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Assert.assertFalse(nondefaultMasterPage.getMarkedAsDefault());
+
+		actions = nondefaultMasterPage.getActions();
+
+		Assert.assertTrue(actions.containsKey("markAsDefault"));
+		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
+	}
+
+	@Override
+	@Test
 	@TestInfo({"LPD-92443", "LPD-107149"})
 	public void testPostSiteMasterPage() throws Exception {
 		super.testPostSiteMasterPage();
@@ -423,6 +590,42 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-81022")
+	public void testPutDesignLibraryMasterPagePermissionsPage()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		Page<Permission> page =
+			masterPageResource.putDesignLibraryMasterPagePermissionsPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {ActionKeys.VIEW});
+							setRoleName(role.getName());
+						}
+					}
+				});
+
+		DesignLibraryTestUtil.assertDesignLibraryPermissionActionHrefs(
+			page.getActions());
+
+		Assert.assertTrue(
+			_hasViewPermission(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(), role.getName()));
+	}
+
+	@Override
+	@Test
 	@TestInfo({"LPD-86817", "LPD-92443"})
 	public void testPutSiteMasterPage() throws Exception {
 		_testPutSiteMasterPage(randomMasterPage());
@@ -484,6 +687,71 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	}
 
 	@Override
+	protected MasterPage testDeleteDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return _addDesignLibraryMasterPage(
+			_getDesignLibraryExternalReferenceCode(),
+			WorkflowConstants.STATUS_DRAFT);
+	}
+
+	@Override
+	protected String
+			testDeleteDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected MasterPage testGetDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return _addDesignLibraryMasterPage(
+			_getDesignLibraryExternalReferenceCode(),
+			WorkflowConstants.STATUS_DRAFT);
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected MasterPage testGetDesignLibraryMasterPagesPage_addMasterPage(
+			String designLibraryExternalReferenceCode, MasterPage masterPage)
+		throws Exception {
+
+		return _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryMasterPagesPage_getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		if (_irrelevantDesignLibraryGroup == null) {
+			_irrelevantDesignLibraryGroup =
+				DesignLibraryTestUtil.addDesignLibraryGroup(
+					testGroup.getGroupId());
+		}
+
+		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
+	}
+
+	@Override
 	protected MasterPage testGetSiteMasterPagesPage_addMasterPage(
 			String siteExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
@@ -507,6 +775,41 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		return testGetSiteMasterPagesPage_addMasterPage(
 			testGroup.getExternalReferenceCode(), masterPage);
+	}
+
+	private MasterPage _addDesignLibraryMasterPage(
+			String designLibraryExternalReferenceCode, int status)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			designLibraryExternalReferenceCode, TestPropsValues.getCompanyId());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryTestUtil.getMasterLayoutPageTemplateEntry(
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId()),
+				status);
+
+		return masterPageResource.getDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			layoutPageTemplateEntry.getExternalReferenceCode());
+	}
+
+	private void _addViewPermission(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode, Role role)
+		throws Exception {
+
+		masterPageResource.putDesignLibraryMasterPagePermissionsPage(
+			designLibraryExternalReferenceCode, masterPageExternalReferenceCode,
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {ActionKeys.VIEW});
+						setRoleName(role.getName());
+					}
+				}
+			});
 	}
 
 	private void _assertContentPageSpecificationPageElements(
@@ -776,6 +1079,15 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		return pageElement;
 	}
 
+	private String _getDesignLibraryExternalReferenceCode() throws Exception {
+		if (_designLibraryGroup == null) {
+			_designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+				testGroup.getGroupId());
+		}
+
+		return _designLibraryGroup.getExternalReferenceCode();
+	}
+
 	private MasterPage _getMasterPage(
 			Boolean markedAsDefault, String masterPageExternalReferenceCode,
 			String thumbnailExternalReferenceCode, String thumbnailURL)
@@ -847,6 +1159,22 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		).parameters(
 			"nestedFields", "pageSpecifications,thumbnailURLReference"
 		).build();
+	}
+
+	private boolean _hasViewPermission(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode, String roleName)
+		throws Exception {
+
+		Page<Permission> page =
+			masterPageResource.getDesignLibraryMasterPagePermissionsPage(
+				designLibraryExternalReferenceCode,
+				masterPageExternalReferenceCode, roleName);
+
+		return ListUtil.exists(
+			(List<Permission>)page.getItems(),
+			permission -> ArrayUtil.contains(
+				permission.getActionIds(), ActionKeys.VIEW));
 	}
 
 	private MasterPage _postMasterPageWithPageSpecificationsWithCustomFields()
@@ -964,6 +1292,102 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		masterPage.setThumbnailURLReference(thumbnailURLReference);
 
 		return masterPage;
+	}
+
+	private void _testDeleteDesignLibraryMasterPageInUseProblemException()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryTestUtil.getBasicLayoutPageTemplateEntry(
+				ServiceContextTestUtil.getServiceContext(
+					_designLibraryGroup.getGroupId(),
+					TestPropsValues.getUserId()));
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			masterPage.getExternalReferenceCode());
+
+		_assertProblemException(
+			"CONFLICT", "The master page is used by one or more pages",
+			() -> masterPageResource.deleteDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode()));
+
+		Assert.assertNotNull(
+			_layoutPageTemplateEntryLocalService.
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+					masterPage.getExternalReferenceCode(),
+					_designLibraryGroup.getGroupId()));
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry);
+
+		masterPageResource.deleteDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			masterPage.getExternalReferenceCode());
+
+		Assert.assertNull(
+			_layoutPageTemplateEntryLocalService.
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+					masterPage.getExternalReferenceCode(),
+					_designLibraryGroup.getGroupId()));
+	}
+
+	private void _testDeleteDesignLibraryMasterPageWithFeatureFlagDisabledProblemException()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-81022"),
+					Boolean.FALSE.toString())) {
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				"Feature flag LPD-81022 is disabled for company " +
+					testCompany.getCompanyId(),
+				() -> masterPageResource.deleteDesignLibraryMasterPage(
+					designLibraryExternalReferenceCode,
+					masterPage.getExternalReferenceCode()));
+		}
+
+		Assert.assertNotNull(
+			_layoutPageTemplateEntryLocalService.
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+					masterPage.getExternalReferenceCode(),
+					_designLibraryGroup.getGroupId()));
+	}
+
+	private void _testGetDesignLibraryMasterPageActions() throws Exception {
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			_getDesignLibraryExternalReferenceCode(),
+			WorkflowConstants.STATUS_DRAFT);
+
+		Map<String, Map<String, String>> actions = masterPage.getActions();
+
+		Assert.assertFalse(actions.containsKey("copy"));
+		Assert.assertFalse(actions.containsKey("copyWithPermission"));
+		Assert.assertTrue(actions.containsKey("delete"));
+		Assert.assertTrue(actions.containsKey("get"));
+		Assert.assertFalse(actions.containsKey("markAsDefault"));
+		Assert.assertTrue(actions.containsKey("permissions"));
+		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
 	}
 
 	private void _testGetSiteMasterPage(MasterPage masterPage)
@@ -1262,6 +1686,187 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
+	}
+
+	private void _testPostDesignLibraryMasterPageCopy() throws Exception {
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		Map<String, Map<String, String>> actions = masterPage.getActions();
+
+		Map<String, String> copyAction = actions.get("copy");
+
+		String copyHref = copyAction.get("href");
+
+		Assert.assertTrue(copyHref.contains("/design-libraries/"));
+		Assert.assertTrue(copyHref.endsWith("/copy"));
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_addViewPermission(
+			designLibraryExternalReferenceCode,
+			masterPage.getExternalReferenceCode(), role);
+
+		MasterPage copiedMasterPage =
+			masterPageResource.postDesignLibraryMasterPageCopy(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Assert.assertNotEquals(
+			masterPage.getExternalReferenceCode(),
+			copiedMasterPage.getExternalReferenceCode());
+		Assert.assertTrue(
+			StringUtil.startsWith(
+				copiedMasterPage.getName(), masterPage.getName()));
+		Assert.assertFalse(
+			_hasViewPermission(
+				designLibraryExternalReferenceCode,
+				copiedMasterPage.getExternalReferenceCode(), role.getName()));
+	}
+
+	private void _testPostDesignLibraryMasterPageCopyDraftProblemException()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage draftMasterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+
+		_assertProblemException(
+			"BAD_REQUEST", "A draft master page cannot be copied",
+			() -> masterPageResource.postDesignLibraryMasterPageCopy(
+				designLibraryExternalReferenceCode,
+				draftMasterPage.getExternalReferenceCode()));
+	}
+
+	private void _testPostDesignLibraryMasterPageCopyWithPermission()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		Map<String, Map<String, String>> actions = masterPage.getActions();
+
+		Map<String, String> copyWithPermissionAction = actions.get(
+			"copyWithPermission");
+
+		String copyWithPermissionHref = copyWithPermissionAction.get("href");
+
+		Assert.assertTrue(
+			copyWithPermissionHref.endsWith("/copy-with-permission"));
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_addViewPermission(
+			designLibraryExternalReferenceCode,
+			masterPage.getExternalReferenceCode(), role);
+
+		MasterPage copiedMasterPage =
+			masterPageResource.postDesignLibraryMasterPageCopyWithPermission(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Assert.assertNotEquals(
+			masterPage.getExternalReferenceCode(),
+			copiedMasterPage.getExternalReferenceCode());
+		Assert.assertTrue(
+			_hasViewPermission(
+				designLibraryExternalReferenceCode,
+				copiedMasterPage.getExternalReferenceCode(), role.getName()));
+
+		actions = copiedMasterPage.getActions();
+
+		Assert.assertFalse(actions.containsKey("copy"));
+		Assert.assertFalse(actions.containsKey("copyWithPermission"));
+	}
+
+	private void _testPostDesignLibraryMasterPageCopyWithPermissionDraftProblemException()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage draftMasterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+
+		_assertProblemException(
+			"BAD_REQUEST", "A draft master page cannot be copied",
+			() ->
+				masterPageResource.
+					postDesignLibraryMasterPageCopyWithPermission(
+						designLibraryExternalReferenceCode,
+						draftMasterPage.getExternalReferenceCode()));
+	}
+
+	private void _testPostDesignLibraryMasterPageMarkAsDefault()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertFalse(masterPage.getMarkedAsDefault());
+
+		Map<String, Map<String, String>> actions = masterPage.getActions();
+
+		Assert.assertTrue(actions.containsKey("markAsDefault"));
+		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
+
+		Map<String, String> markAsDefaultAction = actions.get("markAsDefault");
+
+		String markAsDefaultHref = markAsDefaultAction.get("href");
+
+		Assert.assertTrue(markAsDefaultHref.endsWith("/mark-as-default"));
+
+		MasterPage defaultMasterPage =
+			masterPageResource.postDesignLibraryMasterPageMarkAsDefault(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Assert.assertTrue(defaultMasterPage.getMarkedAsDefault());
+
+		actions = defaultMasterPage.getActions();
+
+		Assert.assertFalse(actions.containsKey("markAsDefault"));
+		Assert.assertTrue(actions.containsKey("unmarkAsDefault"));
+
+		_assertProblemException(
+			"CONFLICT", "The master page already is the default",
+			() -> masterPageResource.postDesignLibraryMasterPageMarkAsDefault(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode()));
+	}
+
+	private void _testPostDesignLibraryMasterPageMarkAsDefaultDraftProblemException()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage draftMasterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, WorkflowConstants.STATUS_DRAFT);
+
+		Map<String, Map<String, String>> actions = draftMasterPage.getActions();
+
+		Assert.assertFalse(actions.containsKey("markAsDefault"));
+
+		_assertProblemException(
+			"CONFLICT", "The default master page must be published first.",
+			() -> masterPageResource.postDesignLibraryMasterPageMarkAsDefault(
+				designLibraryExternalReferenceCode,
+				draftMasterPage.getExternalReferenceCode()));
 	}
 
 	private void _testPostMasterPageThumbnailURLReferenceProblemException(
@@ -1945,8 +2550,15 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	private static String _thumbnail2URL;
 	private static ThumbnailHttpServer _thumbnailHttpServer;
 
+	private Group _designLibraryGroup;
+
 	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	private Group _irrelevantDesignLibraryGroup;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
