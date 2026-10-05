@@ -109,6 +109,10 @@ public class MasterPageResourceImpl
 		int masterLayoutsCount = _layoutLocalService.getMasterLayoutsCount(
 			groupId, masterPageExternalReferenceCode);
 
+		masterLayoutsCount += _layoutLocalService.getMasterLayoutsCount(
+			contextCompany.getCompanyId(), masterPageExternalReferenceCode,
+			designLibraryExternalReferenceCode);
+
 		if (masterLayoutsCount > 0) {
 			throw new RequiredLayoutPageTemplateEntryException(
 				"The master page is used by one or more pages");
