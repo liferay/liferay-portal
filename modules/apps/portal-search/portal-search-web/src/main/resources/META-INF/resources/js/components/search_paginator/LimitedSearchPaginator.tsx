@@ -27,15 +27,10 @@ interface ILimitedPaginationProps {
 	label: string;
 
 	/**
-	 * The last page the total accounts for. When the total is a floor, pages
-	 * may exist beyond it, so this only bounds which pages can be linked.
+	 * The last page the total accounts for. When the total is a floor, results
+	 * may exist beyond it, but no page past it is linked.
 	 */
 	lastKnownPage: number;
-
-	/**
-	 * Whether results exist past `lastKnownPage`.
-	 */
-	moreItemsAvailable: boolean;
 
 	/**
 	 * How many pages are visible to the user in the limited band.
@@ -49,7 +44,6 @@ const LimitedPagination = ({
 	hrefConstructor,
 	label,
 	lastKnownPage,
-	moreItemsAvailable,
 	visiblePageCount,
 }: ILimitedPaginationProps) => {
 	const firstVisiblePage = Math.max(
@@ -70,11 +64,11 @@ const LimitedPagination = ({
 
 	const hasPreviousPage = activePage > 1;
 
-	// Paging forward stays available past the last page that has been counted,
-	// because an approximate total is a floor: the results behind it are real,
-	// they merely have not been counted.
+	// Paging forward stops at the last page that has been counted, even when an
+	// approximate total means results exist past it. Those results are reached
+	// by refining the search, not by paging.
 
-	const hasNextPage = activePage < lastKnownPage || moreItemsAvailable;
+	const hasNextPage = activePage < lastKnownPage;
 
 	return (
 		<Pagination aria-label={label}>
@@ -137,22 +131,15 @@ interface IProps extends ISearchPaginatorProps {
  * which leaves the real last page unknown. Nothing here links an end page or
  * enumerates the pages behind an ellipsis; it renders a window around the
  * active page instead, sliding to keep that page in the middle and clamping at
- * the start. The forward arrow is then the only sign that more may follow.
- *
- * It is still correct for an exact total, where the arrow disables on the last
- * page like any other paginator.
+ * the start. The forward arrow disables on the last page the total accounts
+ * for, whether that total is exact or approximate.
  */
 const LimitedSearchPaginator = ({
 	visiblePageCount = DEFAULT_VISIBLE_PAGE_COUNT,
 	...otherProps
 }: IProps) => {
-	const {
-		activeDelta,
-		activePage,
-		paginationURLTemplate,
-		totalItems,
-		totalItemsApproximate = false,
-	} = otherProps;
+	const {activeDelta, activePage, paginationURLTemplate, totalItems} =
+		otherProps;
 
 	return (
 		<SearchPaginatorBar {...otherProps}>
@@ -162,7 +149,6 @@ const LimitedSearchPaginator = ({
 				hrefConstructor={createHrefConstructor(paginationURLTemplate)}
 				label={Liferay.Language.get('pagination')}
 				lastKnownPage={Math.ceil(totalItems / activeDelta)}
-				moreItemsAvailable={totalItemsApproximate}
 				visiblePageCount={visiblePageCount}
 			/>
 		</SearchPaginatorBar>
