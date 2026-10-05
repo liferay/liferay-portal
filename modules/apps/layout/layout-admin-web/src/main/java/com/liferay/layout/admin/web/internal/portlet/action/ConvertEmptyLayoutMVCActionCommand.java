@@ -7,6 +7,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.handler.LayoutExceptionRequestHandlerUtil;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
@@ -87,6 +88,11 @@ public class ConvertEmptyLayoutMVCActionCommand
 					layoutPageTemplateEntryLayout.
 						getMasterLayoutPageTemplateEntryERC();
 
+				serviceContext.setAttribute(
+					"masterLayoutPageTemplateEntryScopeERC",
+					MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeERC(
+						layout.getGroupId(), layoutPageTemplateEntryLayout));
+
 				if (layoutPageTemplateEntry.getType() ==
 						LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE) {
 
@@ -123,6 +129,13 @@ public class ConvertEmptyLayoutMVCActionCommand
 					masterLayoutPageTemplateEntryERC =
 						masterLayoutPageTemplateEntry.
 							getExternalReferenceCode();
+
+					serviceContext.setAttribute(
+						"masterLayoutPageTemplateEntryScopeERC",
+						MasterLayoutUtil.
+							getMasterLayoutPageTemplateEntryScopeERC(
+								layout.getGroupId(),
+								masterLayoutPageTemplateEntry));
 				}
 			}
 

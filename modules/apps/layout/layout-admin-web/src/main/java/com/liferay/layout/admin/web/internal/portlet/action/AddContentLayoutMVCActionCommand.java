@@ -9,6 +9,7 @@ import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.handler.LayoutExceptionRequestHandlerUtil;
 import com.liferay.layout.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
@@ -146,6 +147,12 @@ public class AddContentLayoutMVCActionCommand
 						masterLayoutPageTemplateEntryERC =
 							layoutPageTemplateEntryLayout.
 								getMasterLayoutPageTemplateEntryERC();
+
+						serviceContext.setAttribute(
+							"masterLayoutPageTemplateEntryScopeERC",
+							MasterLayoutUtil.
+								getMasterLayoutPageTemplateEntryScopeERC(
+									groupId, layoutPageTemplateEntryLayout));
 					}
 				}
 
