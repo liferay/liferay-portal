@@ -18,6 +18,7 @@ import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerChoice;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.SyncProcessRequest;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
@@ -258,6 +259,8 @@ public class ParameterMapUtilTest {
 				"preview of this scope",
 			_toPortletDataHandler("unknown", null));
 		_assertBadRequest(
+			"Portlet data handlers must not contain null values", null);
+		_assertBadRequest(
 			"The choice \"z\" is not one of the choices of the control \"" +
 				_CONTROL_NAME_CHOICE + "\"",
 			_toPortletDataHandler(
@@ -295,6 +298,32 @@ public class ParameterMapUtilTest {
 				_PORTLET_DATA_HANDLER_NAME, null,
 				_toPortletDataHandlerBoolean(_CONTROL_NAME_BOOLEAN, true),
 				_toPortletDataHandlerBoolean(_CONTROL_NAME_BOOLEAN, true)));
+	}
+
+	@Test
+	public void testToParameterMapWithSyncProcessRequest() {
+		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
+			_toSyncProcessRequest(
+				_toPortletDataHandler(
+					PortletDataHandlerUtil.
+						PORTLET_DATA_HANDLER_NAME_LOOK_AND_FEEL,
+					null,
+					_toPortletDataHandlerBoolean(
+						PortletDataHandlerKeys.LOGO, true))),
+			_getAvailablePortletDataHandlers());
+
+		Assert.assertArrayEquals(
+			new String[] {"true"},
+			parameterMap.get(PortletDataHandlerKeys.FAVICON));
+
+		parameterMap = ParameterMapUtil.toParameterMap(
+			_toSyncProcessRequest(
+				_toPortletDataHandler(_PORTLET_DATA_HANDLER_NAME, null)),
+			_getAvailablePortletDataHandlers());
+
+		Assert.assertArrayEquals(
+			new String[] {"false"},
+			parameterMap.get(PortletDataHandlerKeys.FAVICON));
 	}
 
 	@Test
@@ -649,6 +678,16 @@ public class ParameterMapUtilTest {
 			PortletDataHandlerControl.Type.TREE_SELECTION);
 
 		return portletDataHandlerTreeSelection;
+	}
+
+	private SyncProcessRequest _toSyncProcessRequest(
+		PortletDataHandler... portletDataHandlers) {
+
+		SyncProcessRequest syncProcessRequest = new SyncProcessRequest();
+
+		syncProcessRequest.setPortletDataHandlers(portletDataHandlers);
+
+		return syncProcessRequest;
 	}
 
 	private User _toUser() {

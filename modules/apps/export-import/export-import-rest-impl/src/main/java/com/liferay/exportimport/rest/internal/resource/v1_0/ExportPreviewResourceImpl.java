@@ -20,8 +20,13 @@ import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -85,6 +90,22 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 				contextCompany.getCompanyId(), siteExternalReferenceCode,
 				portletId),
 			hours, portletId, sitePageExternalReferenceCode, startDate);
+	}
+
+	@Override
+	public ExportPreview getSiteTemplateExportPreview(Long siteTemplateId)
+		throws Exception {
+
+		LayoutSetPrototype layoutSetPrototype =
+			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
+				siteTemplateId);
+
+		LayoutSetPrototypePermissionUtil.check(
+			PermissionThreadLocal.getPermissionChecker(), siteTemplateId,
+			ActionKeys.UPDATE);
+
+		return _getExportPreview(
+			null, null, layoutSetPrototype.getGroup(), null, null, null, null);
 	}
 
 	private ExportPreview _getExportPreview(
@@ -158,6 +179,9 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;
+
+	@Reference
+	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
 
 	@Reference
 	private PortletDataContextFactory _portletDataContextFactory;

@@ -460,19 +460,31 @@ public class PortletDataHandlerUtil {
 					setLabel(() -> LanguageUtil.get(locale, "look-and-feel"));
 					setName(() -> PORTLET_DATA_HANDLER_NAME_LOOK_AND_FEEL);
 					setPortletDataHandlerControls(
-						() -> new PortletDataHandlerControl[] {
-							_toLookAndFeelPortletDataHandlerBoolean(
-								PortletDataHandlerKeys.THEME_REFERENCE,
-								"theme-settings", locale),
-							_toLookAndFeelPortletDataHandlerBoolean(
-								PortletDataHandlerKeys.LOGO, "logo", locale),
-							_toLookAndFeelPortletDataHandlerBoolean(
-								PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
-								"site-pages-settings", locale),
-							_toLookAndFeelPortletDataHandlerBoolean(
-								PortletDataHandlerKeys.
-									LAYOUT_SET_PROTOTYPE_SETTINGS,
-								"site-template-settings", locale)
+						() -> {
+							PortletDataHandlerControl[]
+								portletDataHandlerControls = {
+									_toLookAndFeelPortletDataHandlerBoolean(
+										PortletDataHandlerKeys.THEME_REFERENCE,
+										"theme-settings", locale),
+									_toLookAndFeelPortletDataHandlerBoolean(
+										PortletDataHandlerKeys.LOGO, "logo",
+										locale),
+									_toLookAndFeelPortletDataHandlerBoolean(
+										PortletDataHandlerKeys.
+											LAYOUT_SET_SETTINGS,
+										"site-pages-settings", locale)
+								};
+
+							if (group.isLayoutSetPrototype()) {
+								return portletDataHandlerControls;
+							}
+
+							return ArrayUtil.append(
+								portletDataHandlerControls,
+								_toLookAndFeelPortletDataHandlerBoolean(
+									PortletDataHandlerKeys.
+										LAYOUT_SET_PROTOTYPE_SETTINGS,
+									"site-template-settings", locale));
 						});
 					setSectionKey(
 						() -> ExportImportConstants.SECTION_KEY_SITE_BUILDER);

@@ -20,6 +20,7 @@ import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerChoice;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.SyncProcessRequest;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -340,6 +341,39 @@ public class ParameterMapUtil {
 			new String[] {
 				String.valueOf(
 					GetterUtil.getBoolean(publishProcessRequest.getRatings()))
+			});
+
+		return parameterMap;
+	}
+
+	public static Map<String, String[]> toParameterMap(
+		SyncProcessRequest syncProcessRequest,
+		PortletDataHandler[] portletDataHandlers) {
+
+		Map<String, String[]> parameterMap = _getDefaultParameterMap(false);
+
+		_putPortletDataHandlers(
+			portletDataHandlers, parameterMap,
+			syncProcessRequest.getPortletDataHandlers());
+
+		parameterMap.put(
+			PortletDataHandlerKeys.COMMENTS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(syncProcessRequest.getComments()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.FAVICON,
+			new String[] {
+				String.valueOf(
+					MapUtil.getBoolean(
+						parameterMap, PortletDataHandlerKeys.LOGO))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.RATINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(syncProcessRequest.getRatings()))
 			});
 
 		return parameterMap;
@@ -681,6 +715,11 @@ public class ParameterMapUtil {
 		}
 
 		for (PortletDataHandler portletDataHandler : portletDataHandlers) {
+			if (portletDataHandler == null) {
+				throw new BadRequestException(
+					"Portlet data handlers must not contain null values");
+			}
+
 			String name = portletDataHandler.getName();
 
 			PortletDataHandler availablePortletDataHandler =
