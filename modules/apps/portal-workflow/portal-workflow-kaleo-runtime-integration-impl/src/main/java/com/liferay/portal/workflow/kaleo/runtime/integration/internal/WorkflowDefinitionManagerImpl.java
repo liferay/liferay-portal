@@ -397,7 +397,7 @@ public class WorkflowDefinitionManagerImpl
 			serviceContext.setUserId(userId);
 
 			if (active) {
-				_kaleoDefinitionLocalService.activateKaleoDefinition(
+				_kaleoDefinitionService.activateKaleoDefinition(
 					name, version, serviceContext);
 			}
 			else {
@@ -410,7 +410,7 @@ public class WorkflowDefinitionManagerImpl
 						workflowDefinitionLinks);
 				}
 
-				_kaleoDefinitionLocalService.deactivateKaleoDefinition(
+				_kaleoDefinitionService.deactivateKaleoDefinition(
 					name, version, serviceContext);
 			}
 
