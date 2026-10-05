@@ -38,10 +38,8 @@ public class RenderedPageUtil {
 			_getLayoutPageTemplateEntry(
 				layout, layoutPageTemplateEntryLocalService, portal);
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					layout.getMasterLayoutPageTemplateEntryERC(),
-					layout.getGroupId());
+			_getMasterLayoutPageTemplateEntry(
+				layout, layoutPageTemplateEntryLocalService);
 
 		return new RenderedPage() {
 			{
@@ -142,6 +140,21 @@ public class RenderedPageUtil {
 
 		return layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 			layout.getClassPK());
+	}
+
+	private static LayoutPageTemplateEntry _getMasterLayoutPageTemplateEntry(
+		Layout layout,
+		LayoutPageTemplateEntryLocalService
+			layoutPageTemplateEntryLocalService) {
+
+		long masterLayoutPlid = layout.getMasterLayoutPlid();
+
+		if (masterLayoutPlid <= 0) {
+			return null;
+		}
+
+		return layoutPageTemplateEntryLocalService.
+			fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 	}
 
 }

@@ -25,11 +25,17 @@ public class RenderMaxStateLayoutStructureDisplayContext {
 			return _layoutStructure;
 		}
 
+		long masterLayoutPlid = layout.getMasterLayoutPlid();
+
+		if (masterLayoutPlid <= 0) {
+			_layoutStructure = _getDefaultMasterLayoutStructure();
+
+			return _layoutStructure;
+		}
+
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					layout.getMasterLayoutPageTemplateEntryERC(),
-					layout.getGroupId());
+				fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 
 		if (masterLayoutPageTemplateEntry == null) {
 			_layoutStructure = _getDefaultMasterLayoutStructure();
