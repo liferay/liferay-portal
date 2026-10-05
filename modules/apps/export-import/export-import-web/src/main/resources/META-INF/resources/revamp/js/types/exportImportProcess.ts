@@ -6,7 +6,7 @@
 import {AssetLibrary, Site} from './exportImportPreview';
 import {PortletDataHandler} from './portletDataHandler';
 
-export type ExportImportProcess = 'export' | 'import' | 'publish';
+export type ExportImportProcess = 'export' | 'import' | 'publish' | 'sync';
 
 export type DateFilter =
 	| {endDate?: string; startDate?: string; type: 'DateRange'}
@@ -119,4 +119,10 @@ export interface ScheduledPublishProcessRequest {
 	scheduleEndDate?: string;
 	scheduleStartDate?: string;
 	timeZoneId?: string;
+}
+
+export interface SyncProcessRequest {
+	comments?: boolean;
+	portletDataHandlers: PortletDataHandler[];
+	ratings?: boolean;
 }

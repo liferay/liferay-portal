@@ -13,6 +13,7 @@ export {NewStaticSiteExport} from '../revamp/js/pages/export/NewStaticSiteExport
 export {NewImport} from '../revamp/js/pages/import/NewImport';
 export {ViewImportReportEntryDetail} from '../revamp/js/pages/import/report/ViewImportReportEntryDetail';
 export {NewPublish} from '../revamp/js/pages/publish/NewPublish';
+export {NewSiteTemplateSync} from '../revamp/js/pages/sync/NewSiteTemplateSync';
 export {default as formatDate} from '../revamp/js/utils/formatDate';
 
 // @ts-ignore

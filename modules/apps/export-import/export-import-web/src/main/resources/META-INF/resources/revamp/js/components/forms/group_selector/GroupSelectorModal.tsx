@@ -17,7 +17,7 @@ import {ExportImportProcess} from '../../../types/exportImportProcess';
 
 type Field = {expand?: boolean; fieldName: string; label: string};
 
-type GroupProcess = Exclude<ExportImportProcess, 'publish'>;
+type GroupProcess = Exclude<ExportImportProcess, 'publish' | 'sync'>;
 
 const SORTS = [
 	{

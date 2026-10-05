@@ -40,6 +40,9 @@ const COMMENTS_AND_RATINGS_SUBTITLES: Record<ExportImportProcess, string> = {
 	publish: Liferay.Language.get(
 		'for-each-of-the-selected-content-types,-publish-their'
 	),
+	sync: Liferay.Language.get(
+		'for-each-of-the-selected-content-types,-sync-their'
+	),
 };
 
 export type SectionSelection = Record<string, PortletDataHandlerSelection>;

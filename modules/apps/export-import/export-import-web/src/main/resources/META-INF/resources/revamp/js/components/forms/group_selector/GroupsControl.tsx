@@ -45,7 +45,7 @@ export default function GroupsControl({
 	apiURL?: string;
 	groups?: Group[];
 	onChange: (externalReferenceCodes: string[]) => void;
-	process?: Exclude<ExportImportProcess, 'publish'>;
+	process?: Exclude<ExportImportProcess, 'publish' | 'sync'>;
 	selectedExternalReferenceCodes: string[];
 	totalCount?: number;
 	type: GroupType;

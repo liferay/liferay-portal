@@ -227,6 +227,7 @@ export function NewExport({
 								portletDataHandlerSections,
 								contentSelection
 							)}
+							process="export"
 							subtitle={Liferay.Language.get(
 								'select-and-filter-the-data-you-want-to-include-in-your-export'
 							)}

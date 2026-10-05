@@ -147,6 +147,10 @@ async function post<T>(url: string, body: unknown): Promise<RequestResult<T>> {
 			method: 'POST',
 		});
 
+		if (response.status === 204) {
+			return {data: {} as T, error: null};
+		}
+
 		const responseData = await response.json();
 
 		if (response.ok) {

@@ -6,7 +6,6 @@
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
-import {ExportImportProcess} from '../types/exportImportProcess';
 import {PortletDataHandlerSection} from '../types/portletDataHandler';
 import {PageTreeModalConfiguration} from './PageTreeModal';
 import SectionHeader from './SectionHeader';
@@ -19,68 +18,80 @@ import {
 
 const LABEL_ID = 'dataSelection-label';
 
-export default function DataSelection({
-	commentsAndRatingsEnabled = false,
-	deletionCount = 0,
-	deletionsDescription,
-	deletionsLabel,
-	itemsCount,
-	lastPublishDate,
-	loading = false,
-	onApplyFilter,
-	pageTreeModalConfiguration,
-	permissionsDescription,
-	permissionsLabel,
-	portletDataHandlerSections,
-	process = 'export',
-	subtitle,
-	timeZoneId,
-}: {
+type Props = {
 	commentsAndRatingsEnabled?: boolean;
-	deletionCount?: number;
-	deletionsDescription: string;
-	deletionsLabel: string;
-	itemsCount?: number;
-	lastPublishDate?: string;
 	loading?: boolean;
-	onApplyFilter: (dateFilterValues: DateFilterValues) => void;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
-	permissionsDescription: string;
-	permissionsLabel: string;
 	portletDataHandlerSections: PortletDataHandlerSection[];
-	process?: ExportImportProcess;
 	subtitle: string;
 	timeZoneId: string;
-}) {
+	title?: string;
+} & (
+	| {
+			deletionCount?: number;
+			deletionsDescription: string;
+			deletionsLabel: string;
+			itemsCount?: number;
+			lastPublishDate?: string;
+			onApplyFilter: (dateFilterValues: DateFilterValues) => void;
+			permissionsDescription: string;
+			permissionsLabel: string;
+			process: 'export' | 'publish';
+	  }
+	| {
+			deletionCount?: never;
+			deletionsDescription?: never;
+			deletionsLabel?: never;
+			itemsCount?: never;
+			lastPublishDate?: never;
+			onApplyFilter?: never;
+			permissionsDescription?: never;
+			permissionsLabel?: never;
+			process: 'sync';
+	  }
+);
+
+export default function DataSelection(props: Props) {
+	const {
+		commentsAndRatingsEnabled = false,
+		loading = false,
+		pageTreeModalConfiguration,
+		portletDataHandlerSections,
+		process,
+		subtitle,
+		timeZoneId,
+		title = Liferay.Language.get('data-selection'),
+	} = props;
+
 	return (
 		<>
-			<SectionHeader
-				id={LABEL_ID}
-				subtitle={subtitle}
-				title={Liferay.Language.get('data-selection')}
-			/>
+			<SectionHeader id={LABEL_ID} subtitle={subtitle} title={title} />
 
-			<FormikFieldCheckbox
-				description={permissionsDescription}
-				label={permissionsLabel}
-				name="permissions"
-			/>
+			{props.process !== 'sync' && (
+				<>
+					<FormikFieldCheckbox
+						description={props.permissionsDescription}
+						label={props.permissionsLabel}
+						name="permissions"
+					/>
 
-			{deletionCount > 0 && (
-				<FormikFieldCheckbox
-					description={deletionsDescription}
-					label={deletionsLabel}
-					name="deletions"
-				/>
+					{!!props.deletionCount && (
+						<FormikFieldCheckbox
+							description={props.deletionsDescription}
+							label={props.deletionsLabel}
+							name="deletions"
+						/>
+					)}
+
+					<FormikFieldDateFilter
+						itemsCount={props.itemsCount}
+						lastPublishDate={props.lastPublishDate}
+						name="dateFilterValues"
+						onApplyFilter={props.onApplyFilter}
+						timeZoneId={timeZoneId}
+					/>
+				</>
 			)}
-
-			<FormikFieldDateFilter
-				itemsCount={itemsCount}
-				lastPublishDate={lastPublishDate}
-				name="dateFilterValues"
-				onApplyFilter={onApplyFilter}
-				timeZoneId={timeZoneId}
-			/>
 
 			<div className="sr-only" role="status">
 				{loading

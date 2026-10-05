@@ -10,5 +10,7 @@
 <liferay-ui:error-header />
 
 <liferay-ui:error exception="<%= NoSuchLayoutSetPrototypeException.class %>" message="the-page-template-could-not-be-found" />
+<liferay-ui:error exception="<%= UnsupportedOperationException.class %>" message="the-site-template-sync-is-not-available" />
+<liferay-ui:error key="publicationsEnabled" message="site-template-sync-cannot-be-run-with-publications-enabled" />
 
 <liferay-ui:error-principal />
