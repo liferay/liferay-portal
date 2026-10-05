@@ -921,6 +921,21 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		sourceUnicodeProperties.putAll(typeSettingsUnicodeProperties);
 
+		long masterLayoutPlid = 0;
+
+		if (groupId == sourceLayout.getGroupId()) {
+			masterLayoutPlid = sourceLayout.getMasterLayoutPlid();
+		}
+
+		String masterLayoutPageTemplateEntryScopeERC =
+			sourceLayout.getMasterLayoutPageTemplateEntryScopeERC();
+
+		if (masterLayoutPlid > 0) {
+			serviceContext.setAttribute(
+				"masterLayoutPageTemplateEntryScopeERC",
+				masterLayoutPageTemplateEntryScopeERC);
+		}
+
 		Layout targetLayout = layoutLocalService.addLayout(
 			null, userId, groupId, privateLayout,
 			sourceLayout.getParentLayoutId(), sourceLayout.getClassNameId(),
@@ -938,6 +953,22 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			_resourceLocalService.copyModelResources(
 				sourceLayout.getCompanyId(), Layout.class.getName(),
 				sourceLayout.getPlid(), targetLayout.getPlid());
+		}
+
+		if ((masterLayoutPlid <= 0) &&
+			Validator.isNotNull(masterLayoutPageTemplateEntryScopeERC)) {
+
+			Layout draftLayout = targetLayout.fetchDraftLayout();
+
+			if (draftLayout != null) {
+				draftLayout.setMasterLayoutPageTemplateEntryScopeERC(
+					masterLayoutPageTemplateEntryScopeERC);
+
+				layoutLocalService.updateLayout(draftLayout);
+			}
+
+			targetLayout.setMasterLayoutPageTemplateEntryScopeERC(
+				masterLayoutPageTemplateEntryScopeERC);
 		}
 
 		UnicodeProperties targetUnicodeProperties =
