@@ -2420,6 +2420,28 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			groupId, masterLayoutPageTemplateEntryERC);
 	}
 
+	@Override
+	public int getMasterLayoutsCount(
+		long companyId, String masterLayoutPageTemplateEntryERC,
+		String masterLayoutPageTemplateEntryScopeERC) {
+
+		return dslQueryCount(
+			DSLQueryFactoryUtil.count(
+			).from(
+				LayoutTable.INSTANCE
+			).where(
+				LayoutTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					LayoutTable.INSTANCE.masterLayoutPageTemplateEntryERC.eq(
+						masterLayoutPageTemplateEntryERC)
+				).and(
+					LayoutTable.INSTANCE.masterLayoutPageTemplateEntryScopeERC.
+						eq(masterLayoutPageTemplateEntryScopeERC)
+				)
+			));
+	}
+
 	/**
 	 * Returns the layout ID to use for the next layout.
 	 *
