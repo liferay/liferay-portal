@@ -3,7 +3,6 @@ release:
     namespace: observability
 set:
     cloudProvider: gcp
-    networkPolicy.enabled: true
 suite: Observability NetworkPolicies
 templates:
     -   templates/networkpolicy.yaml
@@ -63,4 +62,4 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 2
-        it: Renders exactly the frontend allow and the namespace-wide default-deny
+        it: Renders exactly the frontend allow and the namespace-wide default-deny by default
