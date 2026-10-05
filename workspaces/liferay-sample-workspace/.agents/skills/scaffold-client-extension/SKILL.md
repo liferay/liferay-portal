@@ -128,7 +128,7 @@ client-extensions/<name>/
     .serviceScheme: http
     name: <WorkspaceId> OAuth
     scopes:
-        - Liferay.Headless.Object.everything
+        - c_<name>.everything
     type: oAuthApplicationUserAgent
 
 <workspace-id>-<name>:

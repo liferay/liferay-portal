@@ -111,7 +111,7 @@ Liferay sends the `X-Liferay-Token` header with each call for the CET to verify 
 
 Call `setup-oauth` to add the companion `oAuthApplicationHeadlessServer` entry to `client-extension.yaml`. The entry manager needs scopes to call back into Liferay when it must resolve related objects or write audit entries.
 
-Minimum scope: `Liferay.Headless.Object.everything`. Add `Liferay.Object.Admin.REST.everything` if the entry manager needs to inspect or modify the object definition itself.
+Minimum scope: the per object scope (`c_<name>.everything`) for each object it calls back into; `Liferay.Headless.Object.everything` does not grant `/o/c` (see `rules/oauth-scopes.md`). Add `Liferay.Object.Admin.REST.everything` if the entry manager needs to inspect or modify the object definition itself.
 
 ### Deploy
 

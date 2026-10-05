@@ -22,7 +22,7 @@ Generate the companion OAuth application entry inside `client-extension.yaml` an
 Consult `rules/oauth-scopes.md` for the full scope table. Pick the minimum set that covers what the CET calls.
 
 Examples:
-- Object action that reads and writes entries: `Liferay.Headless.Admin.User.everything`, `Liferay.Headless.Object.everything`
+- Object action that reads and writes entries: `c_<name>.everything` for each object it calls
 - Site initializer that creates pages and content: `Liferay.Headless.Admin.Site.everything`, `Liferay.Headless.Admin.Content.everything`
 - Batch data import only: `Liferay.Headless.Batch.Engine.everything`
 

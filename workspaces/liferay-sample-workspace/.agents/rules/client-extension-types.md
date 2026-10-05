@@ -57,11 +57,11 @@ These CETs expose an HTTP endpoint that Liferay calls inbound. They require an `
 
 | Type | Purpose | Required YAML Fields | OAuth |
 | --- | --- | --- | --- |
-| `objectAction` | Handler called when an object action fires | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Object.everything` |
-| `objectValidationRule` | Server side validation for object entries | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Object.everything` |
-| `objectEntryManager` | Full storage backend for an `ext-Service` object | `objectDefinitionRestContextPath`, `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Object.everything` |
-| `workflowAction` | Handler called at a Kaleo workflow action node | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Admin.Workflow.everything` |
-| `notificationType` | Custom notification channel (e.g. SMS, push) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Object.everything` |
+| `objectAction` | Handler called when an object action fires | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
+| `objectValidationRule` | Server side validation for object entries | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
+| `objectEntryManager` | Full storage backend for an `ext-Service` object | `objectDefinitionRestContextPath`, `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
+| `workflowAction` | Handler called at a Kaleo workflow action node | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Admin.Workflow.everything` if it transitions the task, plus `c_<name>.everything` for each object it calls |
+| `notificationType` | Custom notification channel (e.g. SMS, push) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `captcha` | Custom CAPTCHA provider | `resourcePath` | No |
 | `commercePaymentIntegration` | Custom payment gateway | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes |
 | `commerceShippingEngine` | Custom shipping rate calculator | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes |
@@ -120,7 +120,7 @@ These CETs import bulk data or initialize a full site.
     .serviceScheme: http
     name: <WorkspaceId> OAuth
     scopes:
-        - Liferay.Headless.Object.everything
+        - c_<name>.everything
     type: oAuthApplicationUserAgent
 
 <workspace-id>-on-create:

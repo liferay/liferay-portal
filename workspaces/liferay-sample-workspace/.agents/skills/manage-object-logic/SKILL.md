@@ -314,6 +314,8 @@ curl \
 
 After creating, associate the workflow with the object definition. The reliable path is the Control Panel (Objects → \<Definition\> → Actions → Workflow). There is **no** `workflow-definitions/{id}/assign-to-object` endpoint; programmatic association is done through the `workflow-definition-links` resource (`POST /o/headless-admin-workflow/v1.0/workflow-definitions/<id>/workflow-definition-links`) — confirm the request body against the OpenAPI spec (`get-openapi` MCP tool, or `GET /o/headless-admin-workflow/v1.0/openapi.json`) before scripting it, as the link payload (workflow, class name, type pk) is version sensitive.
 
+A `workflowAction` CET receives a `transitionURL` in its payload, and it is relative (`/o/headless-admin-workflow/v1.0/workflow-tasks/<id>/change-transition`). Prefix the portal URL before posting `{"transitionName": "<name>"}`. The call needs `Liferay.Headless.Admin.Workflow.everything`. Verified on 2026.Q1.
+
 ### Verify Object Actions
 
 ```bash
