@@ -439,8 +439,6 @@ public class EditLayoutDesignMVCActionCommandTest {
 
 		mockMultipartHttpServletRequest.addParameter(
 			"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
 
 		User user = UserTestUtil.addGroupAdminUser(_group);
 
@@ -449,18 +447,8 @@ public class EditLayoutDesignMVCActionCommandTest {
 
 			Assert.assertThrows(
 				PrincipalException.class,
-				() -> ReflectionTestUtil.invoke(
-					_mvcActionCommand, "_updateLayout",
-					new Class<?>[] {
-						ActionRequest.class, ActionResponse.class,
-						UploadPortletRequest.class
-					},
-					_getMockActionRequest(draftLayout),
-					new MockActionResponse(),
-					UploadTestUtil.createUploadPortletRequest(
-						UploadTestUtil.createUploadServletRequest(
-							mockMultipartHttpServletRequest, null, null),
-						null, RandomTestUtil.randomString())));
+				() -> _updateLayout(
+					draftLayout, mockMultipartHttpServletRequest));
 		}
 	}
 
@@ -527,23 +515,7 @@ public class EditLayoutDesignMVCActionCommandTest {
 			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
-			new MockMultipartHttpServletRequest();
-
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
-
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_updateLayout",
-			new Class<?>[] {
-				ActionRequest.class, ActionResponse.class,
-				UploadPortletRequest.class
-			},
-			_getMockActionRequest(draftLayout), new MockActionResponse(),
-			UploadTestUtil.createUploadPortletRequest(
-				UploadTestUtil.createUploadServletRequest(
-					mockMultipartHttpServletRequest, null, null),
-				null, RandomTestUtil.randomString()));
+		_updateLayout(draftLayout, new MockMultipartHttpServletRequest());
 
 		Layout updatedDraftLayout = _layoutLocalService.fetchLayout(
 			draftLayout.getPlid());
