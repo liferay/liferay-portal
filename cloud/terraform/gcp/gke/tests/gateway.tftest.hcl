@@ -110,6 +110,10 @@ run "should_scope_the_envoy_gateway_network_policies_correctly" {
 		error_message="envoy-gateway-ingress must allow the kube-system konnectivity-agent pods — on GKE the API server reaches in-cluster webhooks through them, so the call arrives from an agent pod IP and never from master_ipv4_cidr_block; the topology injector defaults failurePolicy to Ignore, so a dropped call fails silently and adds a 10s timeout to every pod binding in the namespace"
 	}
 	assert {
+		condition=kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[0].from[1].namespace_selector[0].match_labels["kubernetes.io/metadata.name"] == "kube-system"
+		error_message="envoy-gateway-ingress must name kube-system on the konnectivity peer as a literal. Asserting only the podSelector leaves the peer matching konnectivity-agent pods inside envoy-gateway-system, of which there are none, so the API server would be blocked while every assertion still passed — the topology injector defaults failurePolicy to Ignore, so that failure is silent"
+	}
+	assert {
 		condition=kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[0].ports[0].port == "9443"
 		error_message="envoy-gateway-ingress must allow the webhook on 9443"
 	}
