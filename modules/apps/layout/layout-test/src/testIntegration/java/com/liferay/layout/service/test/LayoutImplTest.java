@@ -6,12 +6,18 @@
 package com.liferay.layout.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -23,6 +29,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -35,6 +42,7 @@ import com.liferay.portal.model.impl.ThemeSettingImpl;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,7 +65,9 @@ public class LayoutImplTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,31 +78,13 @@ public class LayoutImplTest {
 		_layout = LayoutTestUtil.addTypePortletLayout(_group);
 	}
 
+	@FeatureFlag("LPD-57283")
 	@Test
-	@TestInfo("LPD-72415")
+	@TestInfo({"LPD-72415", "LPD-81022"})
 	public void testGetMasterLayoutPlid() throws Exception {
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE,
-				WorkflowConstants.STATUS_APPROVED);
-
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		layout = _layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
-			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		Assert.assertEquals(
-			masterLayoutPageTemplateEntry.getPlid(),
-			layout.getMasterLayoutPlid());
+		_testGetMasterLayoutPlid();
+		_testGetMasterLayoutPlidWithDesignLibrary();
+		_testGetMasterLayoutPlidWithStagedDesignLibrary();
 	}
 
 	@Test
@@ -499,12 +491,159 @@ public class LayoutImplTest {
 		Assert.assertEquals(themeId, theme.getThemeId());
 	}
 
+	private void _testGetMasterLayoutPlid() throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		layout = _layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+	}
+
+	private void _testGetMasterLayoutPlidWithDesignLibrary() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			_group.getCompanyId(), true, "LPD-57283");
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				depotEntry.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout masterLayout = _addMasterLayout(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		Layout layout = _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			_layout.getGroupId(), _layout.isPrivateLayout(),
+			_layout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(), null);
+
+		Assert.assertEquals(
+			masterLayout.getPlid(), layout.getMasterLayoutPlid());
+
+		Group depotGroup = depotEntry.getGroup();
+
+		layout = _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			_layout.getGroupId(), _layout.isPrivateLayout(),
+			_layout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			depotGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			depotGroup.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+
+		Assert.assertEquals(
+			1,
+			_layoutLocalService.getMasterLayoutsCount(
+				_group.getCompanyId(),
+				masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+				depotGroup.getExternalReferenceCode()));
+
+		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel);
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		Assert.assertEquals(0, layout.getMasterLayoutPlid());
+
+		Assert.assertThrows(
+			MasterLayoutException.class,
+			() -> _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+				_layout.getGroupId(), _layout.isPrivateLayout(),
+				_layout.getLayoutId(),
+				masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+				depotGroup.getExternalReferenceCode()));
+	}
+
+	private void _testGetMasterLayoutPlidWithStagedDesignLibrary()
+		throws Exception {
+
+		GroupTestUtil.enableLocalStaging(_group);
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		Group stagingGroup = _group.getStagingGroup();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), stagingGroup.getGroupId());
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				depotEntry.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+		Group depotGroup = depotEntry.getGroup();
+
+		Assert.assertThrows(
+			MasterLayoutException.class,
+			() -> _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+				_layout.getGroupId(), _layout.isPrivateLayout(),
+				_layout.getLayoutId(),
+				masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+				depotGroup.getExternalReferenceCode()));
+
+		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
+			stagingGroup);
+
+		stagingLayout = _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			stagingLayout.getGroupId(), stagingLayout.isPrivateLayout(),
+			stagingLayout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			depotGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			depotGroup.getExternalReferenceCode(),
+			stagingLayout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			stagingLayout.getMasterLayoutPlid());
+	}
+
 	@SuppressWarnings("deprecation")
 	private static final String[] _TYPES = {
 		LayoutConstants.TYPE_CONTROL_PANEL, LayoutConstants.TYPE_EMBEDDED,
 		LayoutConstants.TYPE_LINK_TO_LAYOUT, LayoutConstants.TYPE_PANEL,
 		LayoutConstants.TYPE_PORTLET, LayoutConstants.TYPE_URL
 	};
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
