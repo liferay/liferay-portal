@@ -2348,6 +2348,19 @@ components:
             description:
                 A page with common elements (header, footer, ...) used for all or several pages of a site.
             properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            description:
+                                The action's properties.
+                            type: string
+                        description:
+                            The action's name.
+                        type: object
+                    description:
+                        The actions and their permissions for this master page.
+                    readOnly: true
+                    type: object
                 creator:
                     $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
                     # @review
@@ -5545,6 +5558,415 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
             tags: ["DisplayPageTemplate"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages":
+        get:
+            # @review
+            description:
+                Retrieves the master pages of a design library.
+            operationId: getDesignLibraryMasterPagesPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: aggregationTerms
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/MasterPage"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/MasterPage"
+                                type: array
+            tags: ["MasterPage"]
+        post:
+            # @review
+            description:
+                Adds a new master page to a design library.
+            operationId: postDesignLibraryMasterPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/MasterPage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/MasterPage"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes a specific master page of a design library.
+            operationId: deleteDesignLibraryMasterPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["MasterPage"]
+        get:
+            # @review
+            description:
+                Retrieves a specific master page of a design library.
+            operationId: getDesignLibraryMasterPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+        patch:
+            # @review
+            description:
+                Updates only the fields received in the request body, leaving any other fields untouched.
+            operationId: patchDesignLibraryMasterPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/MasterPage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/MasterPage"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+        put:
+            # @review
+            description:
+                Updates the master page of a design library with the given external reference code, or creates it if it does not exist.
+            operationId: putDesignLibraryMasterPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/MasterPage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/MasterPage"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/copy":
+        post:
+            # @review
+            description:
+                Copies a specific master page of a design library, leaving the copy with the default permissions.
+            operationId: postDesignLibraryMasterPageCopy
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/copy-with-permission":
+        post:
+            # @review
+            description:
+                Copies a specific master page of a design library, carrying the source's permissions into the copy.
+            operationId: postDesignLibraryMasterPageCopyWithPermission
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/mark-as-default":
+        post:
+            # @review
+            description:
+                Marks a master page of a design library as the default.
+            operationId: postDesignLibraryMasterPageMarkAsDefault
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/permissions":
+        get:
+            operationId: getDesignLibraryMasterPagePermissionsPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["MasterPage"]
+        put:
+            operationId: putDesignLibraryMasterPagePermissionsPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["MasterPage"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/unmark-as-default":
+        post:
+            # @review
+            description:
+                Stops a master page of a design library from being the default.
+            operationId: postDesignLibraryMasterPageUnmarkAsDefault
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: masterPageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MasterPage"
+            tags: ["MasterPage"]
     "/design-libraries/{designLibraryExternalReferenceCode}/page-template-sets":
         get:
             # @review
