@@ -5,11 +5,15 @@
 
 package com.liferay.headless.admin.workflow.internal.jaxrs.exception.mapper;
 
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Providers;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -28,8 +32,25 @@ public class WorkflowExceptionMapper
 	extends BaseExceptionMapper<WorkflowException> {
 
 	@Override
+	public Response toResponse(WorkflowException workflowException) {
+		Throwable throwable = workflowException.getCause();
+
+		if (throwable instanceof PrincipalException) {
+			ExceptionMapper<PrincipalException> exceptionMapper =
+				_providers.getExceptionMapper(PrincipalException.class);
+
+			return exceptionMapper.toResponse((PrincipalException)throwable);
+		}
+
+		return super.toResponse(workflowException);
+	}
+
+	@Override
 	protected Problem getProblem(WorkflowException workflowException) {
 		return new Problem(workflowException);
 	}
+
+	@Context
+	private Providers _providers;
 
 }
