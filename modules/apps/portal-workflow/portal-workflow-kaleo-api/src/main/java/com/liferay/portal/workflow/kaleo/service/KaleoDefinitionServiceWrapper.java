@@ -29,6 +29,16 @@ public class KaleoDefinitionServiceWrapper
 	}
 
 	@Override
+	public KaleoDefinition activateKaleoDefinition(
+			String name, int version,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kaleoDefinitionService.activateKaleoDefinition(
+			name, version, serviceContext);
+	}
+
+	@Override
 	public KaleoDefinition addKaleoDefinition(
 			String externalReferenceCode, String name, String title,
 			String description, String content, String scope, boolean system,
@@ -39,6 +49,16 @@ public class KaleoDefinitionServiceWrapper
 		return _kaleoDefinitionService.addKaleoDefinition(
 			externalReferenceCode, name, title, description, content, scope,
 			system, version, serviceContext);
+	}
+
+	@Override
+	public KaleoDefinition deactivateKaleoDefinition(
+			String name, int version,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kaleoDefinitionService.deactivateKaleoDefinition(
+			name, version, serviceContext);
 	}
 
 	@Override
@@ -127,4 +147,4 @@ public class KaleoDefinitionServiceWrapper
 	private KaleoDefinitionService _kaleoDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1493128664
+// LIFERAY-SERVICE-BUILDER-HASH:-995624232
