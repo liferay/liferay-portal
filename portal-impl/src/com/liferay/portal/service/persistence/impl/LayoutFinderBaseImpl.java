@@ -35,6 +35,8 @@ public class LayoutFinderBaseImpl
 		dbColumnNames.put("system", "system_");
 		dbColumnNames.put("masterLayoutPageTemplateEntryERC", "masterLPTEERC");
 		dbColumnNames.put(
+			"masterLayoutPageTemplateEntryScopeERC", "masterLPTESERC");
+		dbColumnNames.put(
 			"portletLayoutPageTemplateEntryERC", "portletLPTEERC");
 		dbColumnNames.put(
 			"portletLayoutPageTemplateEntryScopeERC", "portletLPTESERC");
@@ -74,4 +76,4 @@ public class LayoutFinderBaseImpl
 		LayoutFinderBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1268205714
+// LIFERAY-SERVICE-BUILDER-HASH:-1936939330

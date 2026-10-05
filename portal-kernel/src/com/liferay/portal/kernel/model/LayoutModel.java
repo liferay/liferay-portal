@@ -1089,6 +1089,22 @@ public interface LayoutModel
 		String masterLayoutPageTemplateEntryERC);
 
 	/**
+	 * Returns the master layout page template entry scope erc of this layout.
+	 *
+	 * @return the master layout page template entry scope erc of this layout
+	 */
+	@AutoEscape
+	public String getMasterLayoutPageTemplateEntryScopeERC();
+
+	/**
+	 * Sets the master layout page template entry scope erc of this layout.
+	 *
+	 * @param masterLayoutPageTemplateEntryScopeERC the master layout page template entry scope erc of this layout
+	 */
+	public void setMasterLayoutPageTemplateEntryScopeERC(
+		String masterLayoutPageTemplateEntryScopeERC);
+
+	/**
 	 * Returns the portlet layout page template entry erc of this layout.
 	 *
 	 * @return the portlet layout page template entry erc of this layout
@@ -1354,4 +1370,4 @@ public interface LayoutModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1420689731
+// LIFERAY-SERVICE-BUILDER-HASH:-1468265367
