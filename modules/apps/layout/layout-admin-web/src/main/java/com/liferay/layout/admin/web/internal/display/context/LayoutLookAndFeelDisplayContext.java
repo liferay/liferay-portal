@@ -17,6 +17,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.layout.admin.constants.LayoutScreenNavigationEntryConstants;
 import com.liferay.layout.admin.web.internal.item.selector.MasterLayoutPageTemplateEntryItemSelectorCriterion;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
 import com.liferay.style.book.model.StyleBookEntry;
@@ -152,6 +154,12 @@ public class LayoutLookAndFeelDisplayContext {
 
 				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
 
+				if (Validator.isNotNull(
+						selLayout.getMasterLayoutPageTemplateEntryScopeERC())) {
+
+					return StringPool.BLANK;
+				}
+
 				Layout masterLayout = LayoutLocalServiceUtil.getLayout(
 					selLayout.getMasterLayoutPlid());
 
@@ -181,6 +189,19 @@ public class LayoutLookAndFeelDisplayContext {
 
 				return StringPool.BLANK;
 			}
+		).put(
+			"masterLayoutPageTemplateEntryScopeERC",
+			() -> {
+				if (hasMasterLayout()) {
+					Layout selLayout =
+						_layoutsAdminDisplayContext.getSelLayout();
+
+					return GetterUtil.getString(
+						selLayout.getMasterLayoutPageTemplateEntryScopeERC());
+				}
+
+				return StringPool.BLANK;
+			}
 		).build();
 	}
 
@@ -202,7 +223,9 @@ public class LayoutLookAndFeelDisplayContext {
 					fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 
 			if (layoutPageTemplateEntry != null) {
-				masterLayoutName = layoutPageTemplateEntry.getName();
+				masterLayoutName = MasterLayoutUtil.getMasterLayoutName(
+					selLayout.getGroupId(), layoutPageTemplateEntry,
+					_themeDisplay.getLocale());
 			}
 		}
 
