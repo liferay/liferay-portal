@@ -50,6 +50,11 @@ public class SiteNavigationMenuWebUpgradeStepRegistrator
 			"1.0.3", "1.0.4",
 			new com.liferay.site.navigation.menu.web.internal.upgrade.v1_0_4.
 				UpgradePortletPreferences(_layoutLocalService));
+
+		registry.register(
+			"1.0.4", "1.0.5",
+			new com.liferay.site.navigation.menu.web.internal.upgrade.v1_0_5.
+				UpgradePortletPreferences(_layoutLocalService));
 	}
 
 	@Reference
