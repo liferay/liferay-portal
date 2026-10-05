@@ -177,6 +177,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Go Source Format](validations/portal/go-source-format.md)
 
+1. [PR Reviewer](validations/pr-reviewer.md)
+
 1. [Module Registration](validations/portal/module-registration.md)
 
 1. [Portlet Title](validations/portal/portlet-title.md)
