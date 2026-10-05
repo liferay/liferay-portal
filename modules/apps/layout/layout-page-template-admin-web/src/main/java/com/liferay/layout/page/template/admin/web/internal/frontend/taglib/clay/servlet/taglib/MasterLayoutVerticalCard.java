@@ -13,9 +13,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
 import com.liferay.layout.page.template.admin.web.internal.servlet.taglib.util.MasterLayoutActionDropdownItemsProvider;
-import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -170,12 +169,16 @@ public class MasterLayoutVerticalCard
 	@Override
 	public String getStickerIcon() {
 		if (_layoutPageTemplateEntry.getLayoutPageTemplateEntryId() <= 0) {
+			long[] designLibraryGroupIds =
+				LayoutPageTemplateEntryUtil.
+					fetchMasterLayoutDesignLibraryGroupIds(
+						_themeDisplay.getCompanyId(),
+						_themeDisplay.getScopeGroupId());
+
 			LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-				LayoutPageTemplateEntryServiceUtil.
-					fetchDefaultLayoutPageTemplateEntry(
-						_themeDisplay.getScopeGroupId(),
-						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-						WorkflowConstants.STATUS_APPROVED);
+				LayoutPageTemplateEntryUtil.
+					fetchDefaultMasterLayoutPageTemplateEntry(
+						designLibraryGroupIds, _themeDisplay.getScopeGroupId());
 
 			if (defaultLayoutPageTemplateEntry == null) {
 				return "check-circle";

@@ -19,6 +19,7 @@ import com.liferay.layout.page.template.admin.web.internal.security.permission.r
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -472,12 +473,17 @@ public class MasterLayoutActionDropdownItemsProvider {
 
 			String name = "Blank";
 
+			long[] designLibraryGroupIds =
+				LayoutPageTemplateEntryUtil.
+					fetchMasterLayoutDesignLibraryGroupIds(
+						_layoutPageTemplateEntry.getCompanyId(),
+						_layoutPageTemplateEntry.getGroupId());
+
 			LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-				LayoutPageTemplateEntryServiceUtil.
-					fetchDefaultLayoutPageTemplateEntry(
-						_layoutPageTemplateEntry.getGroupId(),
-						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-						WorkflowConstants.STATUS_APPROVED);
+				LayoutPageTemplateEntryUtil.
+					fetchDefaultMasterLayoutPageTemplateEntry(
+						designLibraryGroupIds,
+						_layoutPageTemplateEntry.getGroupId());
 
 			if (defaultLayoutPageTemplateEntry != null) {
 				name = defaultLayoutPageTemplateEntry.getName();
