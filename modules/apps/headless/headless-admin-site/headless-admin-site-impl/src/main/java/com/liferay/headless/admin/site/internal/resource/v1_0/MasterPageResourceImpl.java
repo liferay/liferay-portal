@@ -451,23 +451,12 @@ public class MasterPageResourceImpl
 			String masterPageExternalReferenceCode)
 		throws Exception {
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
-					masterPageExternalReferenceCode,
-					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
-
-		if (!Objects.equals(
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				layoutPageTemplateEntry.getType())) {
-
-			throw new IllegalArgumentException(
-				"The external reference code does not point to a master page");
-		}
-
-		return _toMasterPage(layoutPageTemplateEntry);
+		return _toMasterPage(
+			_getLayoutPageTemplateEntry(
+				masterPageExternalReferenceCode,
+				GroupUtil.getGroupId(
+					true, contextCompany.getCompanyId(),
+					siteExternalReferenceCode)));
 	}
 
 	@Override
