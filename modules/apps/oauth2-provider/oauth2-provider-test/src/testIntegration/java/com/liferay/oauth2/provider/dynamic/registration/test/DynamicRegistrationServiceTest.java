@@ -754,6 +754,61 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		}
 	}
 
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testRegisterSetsResourceAction() throws Exception {
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		Invocation.Builder invocationBuilder = authorize(
+			registerWebTarget.request(),
+			_getToken(_getDynamicRegistratorOAuth2Application()));
+
+		JSONObject jsonObject = _createAuthenticatedRegistrationJSONObject(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		Response response = invocationBuilder.method(
+			"post", Entity.json(jsonObject.toString()));
+
+		Assert.assertEquals(201, response.getStatus());
+
+		jsonObject.put(
+			"response_types",
+			Collections.singletonList(OAuthConstants.TOKEN_RESPONSE_TYPE));
+
+		response = invocationBuilder.method(
+			"post", Entity.json(jsonObject.toString()));
+
+		Assert.assertEquals(400, response.getStatus());
+
+		AuditMessage addAuditMessage = _fetchAuditMessage(
+			"DYNAMIC_REGISTRATION_ADD");
+
+		Assert.assertEquals(
+			"instance.oauth2application.register",
+			addAuditMessage.getResourceAction());
+		Assert.assertEquals(
+			"oauth2application", addAuditMessage.getResourceType());
+
+		AuditMessage rejectAuditMessage = _fetchAuditMessage(
+			"DYNAMIC_REGISTRATION_REJECT");
+
+		Assert.assertEquals(
+			"instance.oauth2application.register_reject",
+			rejectAuditMessage.getResourceAction());
+		Assert.assertEquals(
+			"oauth2application", rejectAuditMessage.getResourceType());
+
+		_testRegisterWithInvalidBearerToken(RandomTestUtil.randomString());
+
+		rejectAuditMessage = _fetchAuditMessage("DYNAMIC_REGISTRATION_REJECT");
+
+		Assert.assertEquals(
+			"instance.oauth2application.register_reject",
+			rejectAuditMessage.getResourceAction());
+		Assert.assertEquals(
+			"oauth2application", rejectAuditMessage.getResourceType());
+	}
+
 	@Test
 	public void testRegisterWithAuthenticationInOpenMode() throws Exception {
 		WebTarget registerWebTarget = getRegisterWebTarget();

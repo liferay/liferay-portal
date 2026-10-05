@@ -76,6 +76,7 @@ public abstract class BaseModelListenerTestCase {
 			cmpProjectObjectEntry.getObjectEntryId(),
 			GetterUtil.getLong(auditMessage.getClassPK()));
 		Assert.assertEquals(expectedEventType, auditMessage.getEventType());
+		Assert.assertEquals("objectentry", auditMessage.getResourceType());
 
 		_auditMessages.clear();
 	}

@@ -12,6 +12,8 @@ import com.liferay.change.tracking.constants.CTRoleConstants;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.on.demand.user.ticket.generator.CTOnDemandUserTicketGenerator;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
@@ -27,11 +29,16 @@ import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -75,8 +82,36 @@ public class CTOnDemandUserTicketGeneratorTest {
 
 		Assert.assertTrue(ctCollection.isShareable());
 
-		Ticket ticket = _ctOnDemandUserTicketGenerator.generate(
-			ctCollection.getCtCollectionId());
+		List<AuditMessage> auditMessages = new ArrayList<>();
+
+		AuditRouter auditRouter =
+			(AuditRouter)ReflectionTestUtil.getAndSetFieldValue(
+				_ctOnDemandUserTicketGenerator, "_auditRouter",
+				ProxyUtil.newProxyInstance(
+					AuditRouter.class.getClassLoader(),
+					new Class<?>[] {AuditRouter.class},
+					(proxy, method, arguments) -> {
+						auditMessages.add((AuditMessage)arguments[0]);
+
+						return null;
+					}));
+
+		Ticket ticket = null;
+
+		try {
+			ticket = _ctOnDemandUserTicketGenerator.generate(
+				ctCollection.getCtCollectionId());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_ctOnDemandUserTicketGenerator, "_auditRouter", auditRouter);
+		}
+
+		Assert.assertEquals(auditMessages.toString(), 1, auditMessages.size());
+
+		AuditMessage auditMessage = auditMessages.get(0);
+
+		Assert.assertEquals("grant_on_demand_access", auditMessage.getAction());
 
 		Assert.assertEquals(
 			CTCollection.class.getName(), ticket.getClassName());

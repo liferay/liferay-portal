@@ -56,6 +56,19 @@ public class AuditMessageTest {
 		Assert.assertEquals(requestId, auditMessage.getRequestId());
 		Assert.assertTrue(auditMessage.isRequestIdGenerated());
 
+		String action = RandomTestUtil.randomString();
+		String resourceType = RandomTestUtil.randomString();
+
+		auditMessage = new AuditMessage(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+			RandomTestUtil.randomString(), action,
+			JSONFactoryUtil.createJSONObject(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), resourceType);
+
+		Assert.assertEquals(action, auditMessage.getAction());
+		Assert.assertEquals(resourceType, auditMessage.getResourceType());
+
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
 	}
 
@@ -71,11 +84,16 @@ public class AuditMessageTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
+		String action = RandomTestUtil.randomString();
+
+		auditMessage.setAction(action);
+
 		JSONObject jsonObject = auditMessage.toJSONObject();
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 			"yyyyMMddkkmmssSSS");
 
+		Assert.assertEquals(action, jsonObject.getString("action"));
 		Assert.assertEquals(groupId, jsonObject.getLong("groupId"));
 		Assert.assertEquals(
 			dateFormat.format(timestampDate),
@@ -89,6 +107,7 @@ public class AuditMessageTest {
 
 		auditMessage = new AuditMessage(jsonObject.toString());
 
+		Assert.assertEquals(action, auditMessage.getAction());
 		Assert.assertEquals(groupId, auditMessage.getGroupId());
 		Assert.assertNotNull(auditMessage.getTimestampDate());
 	}

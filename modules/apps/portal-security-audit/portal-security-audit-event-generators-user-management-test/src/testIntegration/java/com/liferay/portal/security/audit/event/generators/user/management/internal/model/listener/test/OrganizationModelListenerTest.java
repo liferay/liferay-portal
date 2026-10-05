@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Assert;
@@ -32,6 +33,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class OrganizationModelListenerTest extends BaseModelListenerTestCase {
 
+	@FeatureFlag("LPD-6417")
 	@Test
 	public void testOnBeforeAddAssociation() throws Exception {
 		_company = CompanyTestUtil.addCompany();
@@ -53,6 +55,9 @@ public class OrganizationModelListenerTest extends BaseModelListenerTestCase {
 			User.class.getName(), EventTypes.ASSIGN);
 
 		Assert.assertEquals(_user.getCompanyId(), auditMessage.getCompanyId());
+		Assert.assertEquals(
+			"instance.organization.assign", auditMessage.getResourceAction());
+		Assert.assertEquals("organization", auditMessage.getResourceType());
 	}
 
 	@Test

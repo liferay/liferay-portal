@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -16,10 +17,12 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Assert;
@@ -32,6 +35,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class UserGroupModelListenerTest extends BaseModelListenerTestCase {
 
+	@FeatureFlag("LPD-6417")
 	@Test
 	public void testOnBeforeAddAssociation() throws Exception {
 		_company = CompanyTestUtil.addCompany();
@@ -52,6 +56,23 @@ public class UserGroupModelListenerTest extends BaseModelListenerTestCase {
 			User.class.getName(), EventTypes.ASSIGN);
 
 		Assert.assertEquals(_user.getCompanyId(), auditMessage.getCompanyId());
+		Assert.assertEquals(
+			"instance.usergroup.assign", auditMessage.getResourceAction());
+		Assert.assertEquals("usergroup", auditMessage.getResourceType());
+
+		_group = GroupTestUtil.addGroup();
+
+		auditMessages.clear();
+
+		_userGroupLocalService.addGroupUserGroups(
+			_group.getGroupId(), new long[] {_userGroup.getUserGroupId()});
+
+		auditMessage = fetchAuditMessage(
+			Group.class.getName(), EventTypes.ASSIGN);
+
+		Assert.assertEquals(
+			"instance.usergroup.assign", auditMessage.getResourceAction());
+		Assert.assertEquals("usergroup", auditMessage.getResourceType());
 	}
 
 	@Test
@@ -79,6 +100,9 @@ public class UserGroupModelListenerTest extends BaseModelListenerTestCase {
 
 	@DeleteAfterTestRun
 	private Company _company;
+
+	@DeleteAfterTestRun
+	private Group _group;
 
 	@DeleteAfterTestRun
 	private User _user;

@@ -21,4 +21,5 @@ dependencies {
 	compileOnly project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-spi")
 	compileOnly project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-timebased-otp-api")
 	compileOnly project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-web")
+	testImplementation project(":core:petra:petra-lang")
 }

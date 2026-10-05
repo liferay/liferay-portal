@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -200,6 +201,18 @@ public class LoginPostActionTest {
 				unprotectedAuditSessionId,
 				_getAuditSessionId(unprotectedMockHttpServletRequest));
 		}
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testRunSetsResourceAction() throws Exception {
+		_run(_createMockHttpServletRequest());
+
+		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+		Assert.assertEquals(
+			"instance.user.login", auditMessage.getResourceAction());
+		Assert.assertEquals("user", auditMessage.getResourceType());
 	}
 
 	private MockHttpServletRequest _createMockHttpServletRequest()

@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.ArrayList;
@@ -71,6 +72,37 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 		_deleteWorkflowDefinitionLink();
 	}
 
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testOnBeforeCreate() throws Exception {
+		_user = UserTestUtil.addUser();
+
+		AuditMessage auditMessage = fetchAuditMessage(
+			User.class.getName(), EventTypes.ADD);
+
+		Assert.assertEquals(
+			"instance.user.add", auditMessage.getResourceAction());
+		Assert.assertEquals("user", auditMessage.getResourceType());
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testOnBeforeRemove() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		auditMessages.clear();
+
+		_userLocalService.deleteUser(user);
+
+		AuditMessage auditMessage = fetchAuditMessage(
+			User.class.getName(), EventTypes.DELETE);
+
+		Assert.assertEquals(
+			"instance.user.delete", auditMessage.getResourceAction());
+		Assert.assertEquals("user", auditMessage.getResourceType());
+	}
+
+	@FeatureFlag("LPD-6417")
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
 		_testOnBeforeUpdate();
@@ -252,6 +284,11 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 		Assert.assertEquals(
 			_user.getCompanyId(),
 			agreedToTermsOfUseAuditMessage.getCompanyId());
+		Assert.assertEquals(
+			"instance.user.agree_to_terms_of_use",
+			agreedToTermsOfUseAuditMessage.getResourceAction());
+		Assert.assertEquals(
+			"user", agreedToTermsOfUseAuditMessage.getResourceType());
 
 		auditMessages.clear();
 
@@ -265,6 +302,13 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			Assert.assertNotEquals(
 				EventTypes.AGREED_TO_TERMS_OF_USE, auditMessage.getEventType());
 		}
+
+		AuditMessage updateAuditMessage = fetchAuditMessage(
+			User.class.getName(), EventTypes.UPDATE);
+
+		Assert.assertEquals(
+			"instance.user.update", updateAuditMessage.getResourceAction());
+		Assert.assertEquals("user", updateAuditMessage.getResourceType());
 
 		_userLocalService.deleteUser(_user);
 

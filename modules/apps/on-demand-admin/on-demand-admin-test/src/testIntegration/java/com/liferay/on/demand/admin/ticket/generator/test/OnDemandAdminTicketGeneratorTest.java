@@ -10,6 +10,8 @@ import com.liferay.on.demand.admin.constants.OnDemandAdminActionKeys;
 import com.liferay.on.demand.admin.constants.OnDemandAdminConstants;
 import com.liferay.on.demand.admin.constants.OnDemandAdminPortletKeys;
 import com.liferay.on.demand.admin.ticket.generator.OnDemandAdminTicketGenerator;
+import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -20,14 +22,19 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -62,8 +69,36 @@ public class OnDemandAdminTicketGeneratorTest {
 
 		Company company = CompanyTestUtil.addCompany();
 
-		Ticket ticket = _onDemandAdminTicketGenerator.generate(
-			company, null, user);
+		List<AuditMessage> auditMessages = new ArrayList<>();
+
+		AuditRouter auditRouter =
+			(AuditRouter)ReflectionTestUtil.getAndSetFieldValue(
+				_onDemandAdminTicketGenerator, "_auditRouter",
+				ProxyUtil.newProxyInstance(
+					AuditRouter.class.getClassLoader(),
+					new Class<?>[] {AuditRouter.class},
+					(proxy, method, arguments) -> {
+						auditMessages.add((AuditMessage)arguments[0]);
+
+						return null;
+					}));
+
+		Ticket ticket = null;
+
+		try {
+			ticket = _onDemandAdminTicketGenerator.generate(
+				company, null, user);
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_onDemandAdminTicketGenerator, "_auditRouter", auditRouter);
+		}
+
+		Assert.assertEquals(auditMessages.toString(), 1, auditMessages.size());
+
+		AuditMessage auditMessage = auditMessages.get(0);
+
+		Assert.assertEquals("grant_on_demand_access", auditMessage.getAction());
 
 		Assert.assertEquals(
 			TicketConstants.TYPE_ON_DEMAND_ADMIN_LOGIN, ticket.getType());
