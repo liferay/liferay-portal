@@ -16,11 +16,13 @@ export default function MasterLayoutConfiguration({
 	isReadOnly,
 	masterLayoutName,
 	masterLayoutPageTemplateEntryERC,
+	masterLayoutPageTemplateEntryScopeERC,
 	portletNamespace,
 }) {
 	const [masterLayout, setMasterLayout] = useState({
 		erc: masterLayoutPageTemplateEntryERC,
 		name: masterLayoutName,
+		scopeERC: masterLayoutPageTemplateEntryScopeERC,
 	});
 
 	const handleChangeMasterButtonClick = () => {
@@ -37,6 +39,8 @@ export default function MasterLayoutConfiguration({
 					setMasterLayout({
 						erc: itemValue.masterLayoutPageTemplateEntryERC,
 						name: itemValue.name,
+						scopeERC:
+							itemValue.masterLayoutPageTemplateEntryScopeERC,
 					});
 				}
 			},
@@ -86,6 +90,12 @@ export default function MasterLayoutConfiguration({
 				name={`${portletNamespace}masterLayoutPageTemplateEntryERC`}
 				type="hidden"
 				value={masterLayout.erc}
+			/>
+
+			<input
+				name={`${portletNamespace}masterLayoutPageTemplateEntryScopeERC`}
+				type="hidden"
+				value={masterLayout.scopeERC}
 			/>
 
 			<label htmlFor={`${portletNamespace}masterLayout`}>
