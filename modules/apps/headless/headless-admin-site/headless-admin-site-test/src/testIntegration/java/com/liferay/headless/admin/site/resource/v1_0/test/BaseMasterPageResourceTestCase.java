@@ -224,6 +224,45 @@ public abstract class BaseMasterPageResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteDesignLibraryMasterPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage masterPage =
+			testDeleteDesignLibraryMasterPage_addMasterPage();
+
+		assertHttpResponseStatusCode(
+			204,
+			masterPageResource.deleteDesignLibraryMasterPageHttpResponse(
+				testDeleteDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				masterPage.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			masterPageResource.getDesignLibraryMasterPageHttpResponse(
+				testDeleteDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				masterPage.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			masterPageResource.getDesignLibraryMasterPageHttpResponse(
+				testDeleteDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				"-"));
+	}
+
+	protected MasterPage testDeleteDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	protected String
+			testDeleteDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeleteSiteMasterPage() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MasterPage masterPage = testDeleteSiteMasterPage_addMasterPage();
@@ -256,6 +295,490 @@ public abstract class BaseMasterPageResourceTestCase {
 		throws Exception {
 
 		return testGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPage() throws Exception {
+		MasterPage postMasterPage =
+			testGetDesignLibraryMasterPage_addMasterPage();
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				testGetDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode());
+
+		assertEquals(postMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage testGetDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	protected String
+			testGetDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagePermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage postMasterPage =
+			testGetDesignLibraryMasterPagePermissionsPage_addMasterPage();
+
+		Page<Permission> page =
+			masterPageResource.getDesignLibraryMasterPagePermissionsPage(
+				null, postMasterPage.getExternalReferenceCode(),
+				RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected MasterPage
+			testGetDesignLibraryMasterPagePermissionsPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPage() throws Exception {
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode();
+		String irrelevantDesignLibraryExternalReferenceCode =
+			testGetDesignLibraryMasterPagesPage_getIrrelevantDesignLibraryExternalReferenceCode();
+
+		Page<MasterPage> page =
+			masterPageResource.getDesignLibraryMasterPagesPage(
+				designLibraryExternalReferenceCode, null, null, null,
+				Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantDesignLibraryExternalReferenceCode != null) {
+			MasterPage irrelevantMasterPage =
+				testGetDesignLibraryMasterPagesPage_addMasterPage(
+					irrelevantDesignLibraryExternalReferenceCode,
+					randomIrrelevantMasterPage());
+
+			page = masterPageResource.getDesignLibraryMasterPagesPage(
+				irrelevantDesignLibraryExternalReferenceCode, null, null, null,
+				Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantMasterPage, (List<MasterPage>)page.getItems());
+			assertValid(
+				page,
+				testGetDesignLibraryMasterPagesPage_getExpectedActions(
+					irrelevantDesignLibraryExternalReferenceCode));
+		}
+
+		MasterPage masterPage1 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		MasterPage masterPage2 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		page = masterPageResource.getDesignLibraryMasterPagesPage(
+			designLibraryExternalReferenceCode, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(masterPage1, (List<MasterPage>)page.getItems());
+		assertContains(masterPage2, (List<MasterPage>)page.getItems());
+		assertValid(
+			page,
+			testGetDesignLibraryMasterPagesPage_getExpectedActions(
+				designLibraryExternalReferenceCode));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetDesignLibraryMasterPagesPage_getExpectedActions(
+				String designLibraryExternalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage1 = randomMasterPage();
+
+		masterPage1 = testGetDesignLibraryMasterPagesPage_addMasterPage(
+			designLibraryExternalReferenceCode, masterPage1);
+
+		for (EntityField entityField : entityFields) {
+			Page<MasterPage> page =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null,
+					getFilterString(entityField, "between", masterPage1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(masterPage1),
+				(List<MasterPage>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetDesignLibraryMasterPagesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage1 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage masterPage2 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		for (EntityField entityField : entityFields) {
+			Page<MasterPage> page =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null,
+					getFilterString(entityField, operator, masterPage1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(masterPage1),
+				(List<MasterPage>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithPagination()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode();
+
+		Page<MasterPage> masterPagesPage =
+			masterPageResource.getDesignLibraryMasterPagesPage(
+				designLibraryExternalReferenceCode, null, null, null, null,
+				null);
+
+		int totalCount = GetterUtil.getInteger(masterPagesPage.getTotalCount());
+
+		MasterPage masterPage1 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		MasterPage masterPage2 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		MasterPage masterPage3 =
+			testGetDesignLibraryMasterPagesPage_addMasterPage(
+				designLibraryExternalReferenceCode, randomMasterPage());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<MasterPage> page1 =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(masterPage1, (List<MasterPage>)page1.getItems());
+
+			Page<MasterPage> page2 =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(masterPage2, (List<MasterPage>)page2.getItems());
+
+			Page<MasterPage> page3 =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(masterPage3, (List<MasterPage>)page3.getItems());
+		}
+		else {
+			Page<MasterPage> page1 =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, totalCount + 2), null);
+
+			List<MasterPage> masterPages1 = (List<MasterPage>)page1.getItems();
+
+			Assert.assertEquals(
+				masterPages1.toString(), totalCount + 2, masterPages1.size());
+
+			Page<MasterPage> page2 =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<MasterPage> masterPages2 = (List<MasterPage>)page2.getItems();
+
+			Assert.assertEquals(
+				masterPages2.toString(), 1, masterPages2.size());
+
+			Page<MasterPage> page3 =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(masterPage1, (List<MasterPage>)page3.getItems());
+			assertContains(masterPage2, (List<MasterPage>)page3.getItems());
+			assertContains(masterPage3, (List<MasterPage>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortDateTime()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, masterPage1, masterPage2) -> {
+				BeanTestUtil.setProperty(
+					masterPage1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortDouble()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, masterPage1, masterPage2) -> {
+				BeanTestUtil.setProperty(
+					masterPage1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					masterPage2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortInteger()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, masterPage1, masterPage2) -> {
+				BeanTestUtil.setProperty(masterPage1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(masterPage2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryMasterPagesPageWithSortString()
+		throws Exception {
+
+		testGetDesignLibraryMasterPagesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, masterPage1, masterPage2) -> {
+				Class<?> clazz = masterPage1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						masterPage1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						masterPage2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						masterPage1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						masterPage2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						masterPage1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						masterPage2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetDesignLibraryMasterPagesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer<EntityField, MasterPage, MasterPage, Exception>
+				unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage1 = randomMasterPage();
+		MasterPage masterPage2 = randomMasterPage();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(entityField, masterPage1, masterPage2);
+		}
+
+		masterPage1 = testGetDesignLibraryMasterPagesPage_addMasterPage(
+			designLibraryExternalReferenceCode, masterPage1);
+
+		masterPage2 = testGetDesignLibraryMasterPagesPage_addMasterPage(
+			designLibraryExternalReferenceCode, masterPage2);
+
+		Page<MasterPage> page =
+			masterPageResource.getDesignLibraryMasterPagesPage(
+				designLibraryExternalReferenceCode, null, null, null, null,
+				null);
+
+		for (EntityField entityField : entityFields) {
+			Page<MasterPage> ascPage =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(masterPage1, (List<MasterPage>)ascPage.getItems());
+			assertContains(masterPage2, (List<MasterPage>)ascPage.getItems());
+
+			Page<MasterPage> descPage =
+				masterPageResource.getDesignLibraryMasterPagesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(masterPage2, (List<MasterPage>)descPage.getItems());
+			assertContains(masterPage1, (List<MasterPage>)descPage.getItems());
+		}
+	}
+
+	protected MasterPage testGetDesignLibraryMasterPagesPage_addMasterPage(
+			String designLibraryExternalReferenceCode, MasterPage masterPage)
+		throws Exception {
+
+		return masterPageResource.postDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode, masterPage);
+	}
+
+	protected String
+			testGetDesignLibraryMasterPagesPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetDesignLibraryMasterPagesPage_getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return null;
 	}
 
 	@Test
@@ -735,6 +1258,39 @@ public abstract class BaseMasterPageResourceTestCase {
 	}
 
 	@Test
+	public void testPatchDesignLibraryMasterPage() throws Exception {
+		MasterPage postMasterPage =
+			testPatchDesignLibraryMasterPage_addMasterPage();
+
+		MasterPage randomPatchMasterPage = randomPatchMasterPage();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage patchMasterPage =
+			masterPageResource.patchDesignLibraryMasterPage(
+				null, postMasterPage.getExternalReferenceCode(),
+				randomPatchMasterPage);
+
+		MasterPage expectedPatchMasterPage = postMasterPage.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchMasterPage, expectedPatchMasterPage);
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				null, patchMasterPage.getExternalReferenceCode());
+
+		assertEquals(expectedPatchMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage testPatchDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	@Test
 	public void testPatchSiteMasterPage() throws Exception {
 		MasterPage postMasterPage = testPatchSiteMasterPage_addMasterPage();
 
@@ -762,6 +1318,113 @@ public abstract class BaseMasterPageResourceTestCase {
 
 		return masterPageResource.postSiteMasterPage(
 			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	@Test
+	public void testPostDesignLibraryMasterPage() throws Exception {
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage postMasterPage =
+			testPostDesignLibraryMasterPage_addMasterPage(randomMasterPage);
+
+		assertEquals(randomMasterPage, postMasterPage);
+		assertValid(postMasterPage);
+	}
+
+	protected MasterPage testPostDesignLibraryMasterPage_addMasterPage(
+			MasterPage masterPage)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostDesignLibraryMasterPageCopy() throws Exception {
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage postMasterPage =
+			testPostDesignLibraryMasterPageCopy_addMasterPage(randomMasterPage);
+
+		assertEquals(randomMasterPage, postMasterPage);
+		assertValid(postMasterPage);
+	}
+
+	protected MasterPage testPostDesignLibraryMasterPageCopy_addMasterPage(
+			MasterPage masterPage)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostDesignLibraryMasterPageCopyWithPermission()
+		throws Exception {
+
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage postMasterPage =
+			testPostDesignLibraryMasterPageCopyWithPermission_addMasterPage(
+				randomMasterPage);
+
+		assertEquals(randomMasterPage, postMasterPage);
+		assertValid(postMasterPage);
+	}
+
+	protected MasterPage
+			testPostDesignLibraryMasterPageCopyWithPermission_addMasterPage(
+				MasterPage masterPage)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostDesignLibraryMasterPageMarkAsDefault()
+		throws Exception {
+
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage postMasterPage =
+			testPostDesignLibraryMasterPageMarkAsDefault_addMasterPage(
+				randomMasterPage);
+
+		assertEquals(randomMasterPage, postMasterPage);
+		assertValid(postMasterPage);
+	}
+
+	protected MasterPage
+			testPostDesignLibraryMasterPageMarkAsDefault_addMasterPage(
+				MasterPage masterPage)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostDesignLibraryMasterPageUnmarkAsDefault()
+		throws Exception {
+
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage postMasterPage =
+			testPostDesignLibraryMasterPageUnmarkAsDefault_addMasterPage(
+				randomMasterPage);
+
+		assertEquals(randomMasterPage, postMasterPage);
+		assertValid(postMasterPage);
+	}
+
+	protected MasterPage
+			testPostDesignLibraryMasterPageUnmarkAsDefault_addMasterPage(
+				MasterPage masterPage)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -805,6 +1468,94 @@ public abstract class BaseMasterPageResourceTestCase {
 		return permissionsMasterPageResource.postSiteMasterPage(
 			testGetSiteMasterPagesPage_getSiteExternalReferenceCode(),
 			masterPage);
+	}
+
+	@Test
+	public void testPutDesignLibraryMasterPage() throws Exception {
+		MasterPage postMasterPage =
+			testPutDesignLibraryMasterPage_addMasterPage();
+
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage putMasterPage =
+			masterPageResource.putDesignLibraryMasterPage(
+				testPutDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), randomMasterPage);
+
+		assertEquals(randomMasterPage, putMasterPage);
+		assertValid(putMasterPage);
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				testPutDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				putMasterPage.getExternalReferenceCode());
+
+		assertEquals(randomMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage testPutDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	protected String
+			testPutDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutDesignLibraryMasterPagePermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage masterPage =
+			testPutDesignLibraryMasterPagePermissionsPage_addMasterPage();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			masterPageResource.
+				putDesignLibraryMasterPagePermissionsPageHttpResponse(
+					null, masterPage.getExternalReferenceCode(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"VIEW"});
+								setRoleName(role.getName());
+							}
+						}
+					}));
+
+		assertHttpResponseStatusCode(
+			404,
+			masterPageResource.
+				putDesignLibraryMasterPagePermissionsPageHttpResponse(
+					null, masterPage.getExternalReferenceCode(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"-"});
+								setRoleName("-");
+							}
+						}
+					}));
+	}
+
+	protected MasterPage
+			testPutDesignLibraryMasterPagePermissionsPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
 	}
 
 	@Test
@@ -1068,6 +1819,14 @@ public abstract class BaseMasterPageResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (masterPage.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (masterPage.getCreator() == null) {
@@ -1341,6 +2100,17 @@ public abstract class BaseMasterPageResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)masterPage1.getActions(),
+						(Map)masterPage2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -1662,6 +2432,11 @@ public abstract class BaseMasterPageResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
@@ -2303,4 +3078,4 @@ public abstract class BaseMasterPageResourceTestCase {
 		_masterPageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-772465156
+// LIFERAY-REST-BUILDER-HASH:-848852363
