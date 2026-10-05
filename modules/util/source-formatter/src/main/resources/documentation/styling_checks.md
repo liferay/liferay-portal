@@ -59,9 +59,8 @@ HTMLWhitespaceCheck | .html or .path | Finds missing and unnecessary whitespace 
 [IfStatementCheck](check/if_statement_check.md#ifstatementcheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds empty if-statements and consecutive if-statements with identical bodies. |
 [InstanceInitializerCheck](check/instance_initializer_check.md#instanceinitializercheck) | .java | Performs several checks on class instance initializer. |
 InstanceofOrderCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Check the order of `instanceof` calls. |
-JSONBatchEngineDataFileCheck | .ipynb, .json, or .npmbridgerc | Remove elements in `*.batch-engine-data.json` files. |
+JSONBatchEngineDataFileCheck | .ipynb, .json, or .npmbridgerc | Checks the `className` of object definitions, removes default values, and sorts `objectFields` in `*.batch-engine-data.json` files. |
 JSONCommerceCatalogFileCheck | .ipynb, .json, or .npmbridgerc | Sorts `*.options.json`, `*.products.json`, and `*.products.specifications.json` files. |
-JSONObjectDefinitionFileCheck | .ipynb, .json, or .npmbridgerc | Applies rules to enforce consistency in code style. |
 JSONPageFileCheck | .ipynb, .json, or .npmbridgerc | Sorts by `roleName` in `page.json` files. |
 JSONPortletResponseUtilCheck | .java | Checks if `JSONPortletResponseUtil.writeJSON ` should come before method calling `hideDefaultSuccessMessage`. |
 JSONReplacementsFileCheck | .ipynb, .json, or .npmbridgerc | Sorts by `issueKey`, `from` and `to` in `replacements.json` file. |

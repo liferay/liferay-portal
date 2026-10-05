@@ -1213,7 +1213,7 @@
 
 		<check name="JSONBatchEngineDataFileCheck">
 			<category name="Styling" />
-			<description name="Remove elements in `*.batch-engine-data.json` files." />
+			<description name="Checks the `className` of object definitions, removes default values, and sorts `objectFields` in `*.batch-engine-data.json` files." />
 		</check>
 		<check name="JSONCommerceCatalogFileCheck">
 			<category name="Styling" />
@@ -1223,10 +1223,6 @@
 			<category name="Bug Prevention" />
 			<description name="Finds incorrect use of deprecated packages in `package.json` files." />
 			<property name="deprecatedPackageNames" value="@clayui/checkbox,liferay-module-config-generator,metal-cli" />
-		</check>
-		<check name="JSONObjectDefinitionFileCheck">
-			<category name="Styling" />
-			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="JSONPackageJSONBNDVersionCheck">
 			<category name="Bug Prevention" />
