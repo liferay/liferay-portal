@@ -1,0 +1,44 @@
+release:
+    name: obs
+    namespace: observability
+set:
+    cloudProvider: gcp
+    gcp.projectId: liferay-test
+suite: GMP frontend
+templates:
+    -   templates/gcp/frontend.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].ports[0].containerPort
+                    value: 9090
+            -   equal:
+                    path: spec.template.spec.containers[0].ports[0].name
+                    value: web
+            -   isSubset:
+                    content:
+                        app.kubernetes.io/component: frontend
+                        app.kubernetes.io/instance: obs
+                        app.kubernetes.io/name: observability
+                    path: spec.template.metadata.labels
+        documentSelector:
+            path: kind
+            value: Deployment
+        it: Declares the port name and the labels the NetworkPolicy selects, since a rename leaves the rule inert and empties every Grafana dashboard
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the frontend on a cloud other than GCP
+        set:
+            cloudProvider: aws
+    -   asserts:
+            -   equal:
+                    path: spec.ports[0].port
+                    value: 9090
+            -   equal:
+                    path: spec.ports[0].targetPort
+                    value: web
+        documentSelector:
+            path: kind
+            value: Service
+        it: Routes the service to the named port the datasource URL resolves through

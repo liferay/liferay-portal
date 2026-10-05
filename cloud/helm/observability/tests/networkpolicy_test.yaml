@@ -1,0 +1,66 @@
+release:
+    name: obs
+    namespace: observability
+set:
+    cloudProvider: gcp
+    networkPolicy.enabled: true
+suite: Observability NetworkPolicies
+templates:
+    -   templates/networkpolicy.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: observability
+            -   equal:
+                    path: spec.podSelector.matchLabels
+                    value:
+                        app.kubernetes.io/component: frontend
+                        app.kubernetes.io/instance: obs
+                        app.kubernetes.io/name: observability
+            -   equal:
+                    path: spec.ingress[0].from[0].podSelector.matchLabels
+                    value:
+                        app.kubernetes.io/instance: obs
+                        app.kubernetes.io/name: grafana
+            -   lengthEqual:
+                    count: 1
+                    path: spec.ingress[0].from
+            -   equal:
+                    path: spec.ingress[0].ports[0]
+                    value:
+                        port: web
+                        protocol: TCP
+        documentSelector:
+            path: metadata.name
+            value: obs-observability-frontend-ingress
+        it: Allows only Grafana to reach the GMP frontend, which serves its only datasource
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: observability
+            -   equal:
+                    path: spec.podSelector
+                    value: {}
+            -   notExists:
+                    path: spec.ingress
+        documentSelector:
+            path: metadata.name
+            value: default-deny-ingress
+        it: Denies every other ingress by default, namespace-wide
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits both policies on a cloud other than GCP, where alloy scrapes from inside the namespace
+        set:
+            cloudProvider: aws
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits both policies when networkPolicy is disabled
+        set:
+            networkPolicy.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+        it: Renders exactly the frontend allow and the namespace-wide default-deny

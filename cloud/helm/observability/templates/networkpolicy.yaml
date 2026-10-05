@@ -1,0 +1,37 @@
+{{- if and .Values.networkPolicy.enabled (eq (include "observability.cloudProvider" .) "gcp") -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-frontend-ingress" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    ingress:
+        -   from:
+                -   podSelector:
+                        matchLabels:
+                            app.kubernetes.io/instance: {{ .Release.Name }}
+                            app.kubernetes.io/name: grafana
+            ports:
+                -   port: web
+                    protocol: TCP
+    podSelector:
+        matchLabels:
+            {{- include "observability.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: frontend
+    policyTypes:
+        -   Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: default-deny-ingress
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    podSelector: {}
+    policyTypes:
+        -   Ingress
+{{- end -}}

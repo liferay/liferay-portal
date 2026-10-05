@@ -755,6 +755,13 @@ kube-state-metrics:
     serviceAccount:
         automountServiceAccountToken: false
 nameOverride: ""
+networkPolicy:
+    # -- Restrict ingress in the observability namespace to a namespace-wide default-deny plus
+    # the Grafana to GMP frontend allow. GCP only: the scrape source here is the Google Managed
+    # Prometheus collector in gmp-system, while AWS and Azure scrape with alloy from inside this
+    # namespace and AWS additionally needs alloy to reach rds-exporter, which carries no policy
+    # of its own. Enabling this on those clouds would cut that scrape silently.
+    enabled: false
 prometheus-node-exporter:
     enabled: true
     extraArgs:
