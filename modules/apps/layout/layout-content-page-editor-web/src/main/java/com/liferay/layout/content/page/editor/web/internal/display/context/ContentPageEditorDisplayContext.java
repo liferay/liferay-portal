@@ -60,6 +60,7 @@ import com.liferay.layout.page.template.info.item.capability.EditPageInfoItemCap
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateEntryNameComparator;
 import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.layout.util.structure.CommonStylesUtil;
@@ -100,6 +101,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -1898,6 +1900,14 @@ public class ContentPageEditorDisplayContext {
 
 				return layout.getMasterLayoutPageTemplateEntryERC();
 			}
+		).put(
+			"masterLayoutPageTemplateEntryScopeERC",
+			() -> {
+				Layout layout = themeDisplay.getLayout();
+
+				return GetterUtil.getString(
+					layout.getMasterLayoutPageTemplateEntryScopeERC());
+			}
 		);
 	}
 
@@ -1928,7 +1938,7 @@ public class ContentPageEditorDisplayContext {
 		return _masterLayoutStructure;
 	}
 
-	private List<Map<String, Object>> _getMasterLayouts() {
+	private List<Map<String, Object>> _getMasterLayouts() throws Exception {
 		ArrayList<Map<String, Object>> masterLayouts = new ArrayList<>();
 
 		masterLayouts.add(
@@ -1962,6 +1972,49 @@ public class ContentPageEditorDisplayContext {
 				).put(
 					"name", layoutPageTemplateEntry.getName()
 				).build());
+		}
+
+		for (long designLibraryGroupId :
+				LayoutPageTemplateEntryUtil.
+					fetchMasterLayoutDesignLibraryGroupIds(
+						themeDisplay.getCompanyId(),
+						themeDisplay.getScopeGroupId())) {
+
+			Group designLibraryGroup = GroupLocalServiceUtil.getGroup(
+				designLibraryGroupId);
+
+			List<LayoutPageTemplateEntry>
+				designLibraryLayoutPageTemplateEntries =
+					_layoutPageTemplateEntryService.
+						getLayoutPageTemplateEntries(
+							designLibraryGroupId,
+							LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+							WorkflowConstants.STATUS_APPROVED,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+							LayoutPageTemplateEntryNameComparator.getInstance(
+								true));
+
+			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
+					designLibraryLayoutPageTemplateEntries) {
+
+				masterLayouts.add(
+					HashMapBuilder.<String, Object>put(
+						"imagePreviewURL",
+						layoutPageTemplateEntry.getImagePreviewURL(themeDisplay)
+					).put(
+						"masterLayoutPageTemplateEntryERC",
+						layoutPageTemplateEntry.getExternalReferenceCode()
+					).put(
+						"masterLayoutPageTemplateEntryScopeERC",
+						designLibraryGroup.getExternalReferenceCode()
+					).put(
+						"name", layoutPageTemplateEntry.getName()
+					).put(
+						"subtitle",
+						designLibraryGroup.getDescriptiveName(
+							themeDisplay.getLocale())
+					).build());
+			}
 		}
 
 		return masterLayouts;
