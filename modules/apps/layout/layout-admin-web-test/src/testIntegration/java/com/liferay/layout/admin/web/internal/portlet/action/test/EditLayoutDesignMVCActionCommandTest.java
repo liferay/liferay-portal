@@ -6,6 +6,10 @@
 package com.liferay.layout.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -16,6 +20,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -40,6 +45,7 @@ import com.liferay.portal.kernel.test.portlet.MockActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -58,6 +64,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -339,6 +346,72 @@ public class EditLayoutDesignMVCActionCommandTest {
 						KEY_DESIGN_CONFIGURATION_MODIFIED)));
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	@TestInfo("LPD-81022")
+	public void testUpdateLayoutWithDesignLibraryMasterLayout()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			_group.getCompanyId(), true, "LPD-57283");
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				depotEntry.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Group depotGroup = depotEntry.getGroup();
+
+		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
+			new MockMultipartHttpServletRequest();
+
+		mockMultipartHttpServletRequest.addParameter(
+			"masterLayoutPageTemplateEntryERC",
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+		mockMultipartHttpServletRequest.addParameter(
+			"masterLayoutPageTemplateEntryScopeERC",
+			depotGroup.getExternalReferenceCode());
+
+		_updateLayout(draftLayout, mockMultipartHttpServletRequest);
+
+		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
+
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			draftLayout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			depotGroup.getExternalReferenceCode(),
+			draftLayout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			draftLayout.getMasterLayoutPlid());
+
+		_updateLayout(draftLayout, new MockMultipartHttpServletRequest());
+
+		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
+
+		Assert.assertEquals(
+			depotGroup.getExternalReferenceCode(),
+			draftLayout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			draftLayout.getMasterLayoutPlid());
+	}
+
 	@Test
 	@TestInfo("LPD-107747")
 	public void testUpdateLayoutWithIconWithoutPermissions() throws Exception {
@@ -499,11 +572,38 @@ public class EditLayoutDesignMVCActionCommandTest {
 			updatedDraftLayout.getStyleBookEntryERC());
 	}
 
+	private void _updateLayout(
+			Layout layout,
+			MockMultipartHttpServletRequest mockMultipartHttpServletRequest)
+		throws Exception {
+
+		mockMultipartHttpServletRequest.setContentType(
+			"multipart/form-data;boundary=" + System.currentTimeMillis());
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_updateLayout",
+			new Class<?>[] {
+				ActionRequest.class, ActionResponse.class,
+				UploadPortletRequest.class
+			},
+			_getMockActionRequest(layout), new MockActionResponse(),
+			UploadTestUtil.createUploadPortletRequest(
+				UploadTestUtil.createUploadServletRequest(
+					mockMultipartHttpServletRequest, null, null),
+				null, RandomTestUtil.randomString()));
+	}
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
