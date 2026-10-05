@@ -411,7 +411,7 @@ public class PostupgradeVerifyDatabaseStateTest
 			dropIndex("IX_TEST", "UserTracker");
 		}
 
-		addIndex("IX_TEST", "UserTracker", true, "userTrackerId");
+		addIndex("IX_TEST", "UserTracker", true, "userTrackerId", "companyId");
 
 		try {
 			_testGetMessages(
