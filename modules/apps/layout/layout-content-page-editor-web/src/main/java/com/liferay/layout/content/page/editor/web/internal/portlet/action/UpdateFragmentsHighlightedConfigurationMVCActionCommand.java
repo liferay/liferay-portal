@@ -18,19 +18,13 @@ import com.liferay.layout.content.page.editor.web.internal.constants.ContentPage
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
-import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
@@ -46,7 +40,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -168,7 +161,8 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 				WebKeys.THEME_DISPLAY);
 
 		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem =
-			_getMasterDropZoneLayoutStructureItem(themeDisplay);
+			LayoutStructureUtil.getMasterDropZoneLayoutStructureItem(
+				themeDisplay.getLayout());
 
 		Map<String, JSONObject> highlightedFragmentJSONObjects =
 			new TreeMap<>();
@@ -346,44 +340,6 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 		return _layoutElementMaps;
 	}
 
-	private DropZoneLayoutStructureItem _getMasterDropZoneLayoutStructureItem(
-		ThemeDisplay themeDisplay) {
-
-		Layout layout = themeDisplay.getLayout();
-
-		if (Validator.isNull(layout.getMasterLayoutPageTemplateEntryERC())) {
-			return null;
-		}
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					layout.getMasterLayoutPageTemplateEntryERC(),
-					layout.getGroupId());
-
-		if (masterLayoutPageTemplateEntry == null) {
-			return null;
-		}
-
-		try {
-			LayoutStructure masterLayoutStructure =
-				LayoutStructureUtil.getLayoutStructure(
-					masterLayoutPageTemplateEntry.getGroupId(),
-					masterLayoutPageTemplateEntry.getPlid(),
-					SegmentsExperienceConstants.KEY_DEFAULT);
-
-			return (DropZoneLayoutStructureItem)
-				masterLayoutStructure.getDropZoneLayoutStructureItem();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get master layout structure", exception);
-			}
-		}
-
-		return null;
-	}
-
 	private boolean _isAllowedFragmentEntryKey(
 		String fragmentEntryKey,
 		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem) {
@@ -461,9 +417,6 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 				highlightedFragmentEntryKeys, httpServletRequest));
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		UpdateFragmentsHighlightedConfigurationMVCActionCommand.class);
-
 	@Reference
 	private FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
@@ -490,10 +443,6 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 	private Language _language;
 
 	private Map<String, Map<String, Object>> _layoutElementMaps;
-
-	@Reference
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private Portal _portal;
