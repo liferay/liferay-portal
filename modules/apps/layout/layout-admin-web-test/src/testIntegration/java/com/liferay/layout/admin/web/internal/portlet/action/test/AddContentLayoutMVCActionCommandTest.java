@@ -75,7 +75,7 @@ public class AddContentLayoutMVCActionCommandTest {
 
 	@FeatureFlag("LPD-57283")
 	@Test
-	@TestInfo("LPD-105567")
+	@TestInfo({"LPD-81022", "LPD-105567"})
 	public void testAddContentLayoutFromDesignLibrary() throws Exception {
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			_group.getCompanyId(), true, "LPD-57283");
@@ -98,8 +98,25 @@ public class AddContentLayoutMVCActionCommandTest {
 				_group.getGroupId(), false,
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID));
 
+		Group designLibraryGroup = _addDesignLibraryGroup(true);
+
 		LayoutPageTemplateEntry connectedLayoutPageTemplateEntry =
-			_addLayoutPageTemplateEntry(_addDesignLibraryGroup(true));
+			_addLayoutPageTemplateEntry(designLibraryGroup);
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				designLibraryGroup.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout layoutPageTemplateEntryLayout = _layoutLocalService.getLayout(
+			connectedLayoutPageTemplateEntry.getPlid());
+
+		_layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			layoutPageTemplateEntryLayout.getGroupId(),
+			layoutPageTemplateEntryLayout.isPrivateLayout(),
+			layoutPageTemplateEntryLayout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(), null);
 
 		_mvcActionCommand.processAction(
 			_getMockLiferayPortletActionRequest(
@@ -113,6 +130,24 @@ public class AddContentLayoutMVCActionCommandTest {
 		Assert.assertEquals(
 			connectedLayoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 			layout.getClassPK());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			designLibraryGroup.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertEquals(
+			designLibraryGroup.getExternalReferenceCode(),
+			draftLayout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			draftLayout.getMasterLayoutPlid());
 	}
 
 	private Group _addDesignLibraryGroup(boolean connected) throws Exception {
