@@ -13,6 +13,8 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -48,6 +50,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import org.junit.Assert;
 import org.junit.Assume;
@@ -55,6 +62,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Mariano Álvaro Sáiz
@@ -272,6 +284,20 @@ public class PostupgradeVerifyDatabaseStateTest
 			updateIndex(
 				indexMetadata.getIndexName(), "UserTracker", false,
 				indexMetadata.getColumnNames());
+		}
+	}
+
+	@Test
+	public void testVerifyPostupgradeMalformedIndexes() throws Exception {
+		Bundle bundle = _installBundle("create wrong index");
+
+		try {
+			_testGetMessages(
+				PostupgradeVerifyDatabaseState::getErrorMessages,
+				LoggerTestUtil.ERROR, "Unable to get the declared indexes");
+		}
+		finally {
+			bundle.uninstall();
 		}
 	}
 
@@ -614,6 +640,52 @@ public class PostupgradeVerifyDatabaseStateTest
 		return messages.toString();
 	}
 
+	private Bundle _installBundle(String indexesSQL) throws Exception {
+		try (UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+				new UnsyncByteArrayOutputStream()) {
+
+			try (JarOutputStream jarOutputStream = new JarOutputStream(
+					unsyncByteArrayOutputStream)) {
+
+				Manifest manifest = new Manifest();
+
+				Attributes attributes = manifest.getMainAttributes();
+
+				attributes.putValue(Constants.BUNDLE_MANIFESTVERSION, "2");
+				attributes.putValue(
+					Constants.BUNDLE_SYMBOLICNAME, _BUNDLE_SYMBOLIC_NAME);
+				attributes.putValue(Constants.BUNDLE_VERSION, "1.0.0");
+				attributes.putValue("Liferay-Require-SchemaVersion", "1.0.0");
+				attributes.putValue("Manifest-Version", "1");
+
+				jarOutputStream.putNextEntry(
+					new ZipEntry(JarFile.MANIFEST_NAME));
+
+				manifest.write(jarOutputStream);
+
+				jarOutputStream.closeEntry();
+
+				jarOutputStream.putNextEntry(
+					new ZipEntry("META-INF/sql/indexes.sql"));
+
+				jarOutputStream.write(indexesSQL.getBytes());
+
+				jarOutputStream.closeEntry();
+			}
+
+			Bundle bundle = FrameworkUtil.getBundle(
+				PostupgradeVerifyDatabaseStateTest.class);
+
+			BundleContext bundleContext = bundle.getBundleContext();
+
+			return bundleContext.installBundle(
+				_BUNDLE_SYMBOLIC_NAME,
+				new UnsyncByteArrayInputStream(
+					unsyncByteArrayOutputStream.unsafeGetByteArray(), 0,
+					unsyncByteArrayOutputStream.size()));
+		}
+	}
+
 	private void _testGetMessages(
 			Function<PostupgradeVerifyDatabaseState, List<String>> function,
 			String priority, String... expectedMessages)
@@ -668,6 +740,9 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	private static final String _BUILD_NAMESPACE = "com.liferay.test.service";
+
+	private static final String _BUNDLE_SYMBOLIC_NAME =
+		"com.liferay." + RandomTestUtil.randomString();
 
 	private static final String[] _MESSAGE_PREFIXES = {
 		"Column ", "Index ", "Missing columns", "Missing indexes",

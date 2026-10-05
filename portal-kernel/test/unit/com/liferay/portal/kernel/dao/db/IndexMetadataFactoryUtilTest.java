@@ -35,6 +35,15 @@ public class IndexMetadataFactoryUtilTest {
 			"create unique index IX_1 on Table1 (column1);");
 
 		Assert.assertTrue(indexMetadata.isUnique());
+
+		IllegalArgumentException illegalArgumentException = Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> IndexMetadataFactoryUtil.createIndexMetadata(
+				"create index IX_1"));
+
+		Assert.assertEquals(
+			"Unable to find index name end create index IX_1",
+			illegalArgumentException.getMessage());
 	}
 
 }
