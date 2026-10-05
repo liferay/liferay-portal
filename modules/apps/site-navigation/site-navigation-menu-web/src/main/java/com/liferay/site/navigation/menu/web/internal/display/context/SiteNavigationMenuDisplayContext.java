@@ -228,21 +228,15 @@ public class SiteNavigationMenuDisplayContext {
 		}
 		else {
 			Layout rootLayout =
-				LayoutLocalServiceUtil.fetchLayoutByUuidAndGroupId(
+				LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
 					rootMenuItemExternalReferenceCode,
-					_themeDisplay.getScopeGroupId(), false);
-
-			if (rootLayout == null) {
-				rootLayout = LayoutLocalServiceUtil.fetchLayoutByUuidAndGroupId(
-					rootMenuItemExternalReferenceCode,
-					_themeDisplay.getScopeGroupId(), true);
-			}
+					_themeDisplay.getScopeGroupId());
 
 			if (rootLayout == null) {
 				return StringPool.BLANK;
 			}
 
-			_rootMenuItemId = rootMenuItemExternalReferenceCode;
+			_rootMenuItemId = rootLayout.getUuid();
 		}
 
 		return _rootMenuItemId;

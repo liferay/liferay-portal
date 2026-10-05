@@ -242,6 +242,8 @@ public class SiteNavigationMenuItemItemSelectorViewDisplayContext {
 			}
 
 			jsonObject.put(
+				"externalReferenceCode", layout.getExternalReferenceCode()
+			).put(
 				"icon", "page"
 			).put(
 				"id", layout.getUuid()

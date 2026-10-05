@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -55,6 +56,7 @@ public class SiteNavigationMenuDisplayContextTest {
 	public static void tearDownClass() {
 		_configurationProviderUtilMockedStatic.close();
 		_groupLocalServiceUtilMockedStatic.close();
+		_layoutLocalServiceUtilMockedStatic.close();
 		_siteNavigationMenuItemLocalServiceUtilMockedStatic.close();
 		_siteNavigationMenuLocalServiceUtilMockedStatic.close();
 	}
@@ -253,6 +255,32 @@ public class SiteNavigationMenuDisplayContextTest {
 				SiteNavigationMenuItemLocalServiceUtil.
 					fetchSiteNavigationMenuItemByExternalReferenceCode(
 						rootMenuItemExternalReferenceCode, group.getGroupId()));
+	}
+
+	@Test
+	@TestInfo("LPD-108372")
+	public void testGetRootMenuItemIdWithLayoutExternalReferenceCode()
+		throws ConfigurationException {
+
+		String rootMenuItemExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		_setUpSiteNavigationMenuPortletInstanceConfigurationRootMenuItem(
+			rootMenuItemExternalReferenceCode, null);
+
+		String uuid = RandomTestUtil.randomString();
+
+		_setUpLayoutLocalServiceUtil(uuid);
+
+		SiteNavigationMenuDisplayContext siteNavigationMenuDisplayContext =
+			new SiteNavigationMenuDisplayContext(_httpServletRequest);
+
+		Assert.assertEquals(
+			uuid, siteNavigationMenuDisplayContext.getRootMenuItemId());
+
+		_layoutLocalServiceUtilMockedStatic.verify(
+			() -> LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
+				rootMenuItemExternalReferenceCode, _group.getGroupId()));
 	}
 
 	@Test
@@ -486,6 +514,23 @@ public class SiteNavigationMenuDisplayContextTest {
 		);
 	}
 
+	private void _setUpLayoutLocalServiceUtil(String uuid) {
+		Layout layout = Mockito.mock(Layout.class);
+
+		Mockito.when(
+			layout.getUuid()
+		).thenReturn(
+			uuid
+		);
+
+		_layoutLocalServiceUtilMockedStatic.when(
+			() -> LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
+				Mockito.anyString(), Mockito.anyLong())
+		).thenReturn(
+			layout
+		);
+	}
+
 	private void _setUpLayoutPageTemplateEntry(int type) {
 		Mockito.when(
 			_layoutPageTemplateEntry.getType()
@@ -673,6 +718,9 @@ public class SiteNavigationMenuDisplayContextTest {
 	private static final MockedStatic<GroupLocalServiceUtil>
 		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			GroupLocalServiceUtil.class);
+	private static final MockedStatic<LayoutLocalServiceUtil>
+		_layoutLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			LayoutLocalServiceUtil.class);
 	private static final MockedStatic<SiteNavigationMenuItemLocalServiceUtil>
 		_siteNavigationMenuItemLocalServiceUtilMockedStatic =
 			Mockito.mockStatic(SiteNavigationMenuItemLocalServiceUtil.class);
