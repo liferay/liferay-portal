@@ -840,6 +840,48 @@ components:
                     type: integer
                 label:
                     type: string
+        SyncProcess:
+            description:
+                The site template sync started on the sites linked to a site template.
+            properties:
+                siteTemplateId:
+                    description:
+                        The ID of the synced site template.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                siteTemplateName:
+                    description:
+                        The name of the synced site template.
+                    readOnly: true
+                    type: string
+            required:
+                -   siteTemplateId
+                -   siteTemplateName
+            type: object
+        SyncProcessRequest:
+            description:
+                The data selection to sync from a site template to its linked sites.
+            properties:
+                comments:
+                    default: false
+                    description:
+                        Whether to sync the comments of the selected content.
+                    type: boolean
+                portletDataHandlers:
+                    description:
+                        The portlet data handlers to sync, taken from the site template's export preview.
+                    items:
+                        $ref: "#/components/schemas/PortletDataHandler"
+                    type: array
+                ratings:
+                    default: false
+                    description:
+                        Whether to sync the ratings of the selected content.
+                    type: boolean
+            required:
+                -   portletDataHandlers
+            type: object
         Type:
             properties:
                 code:
@@ -850,7 +892,7 @@ components:
             type: object
 info:
     description:
-        "Exports, imports, and publishes the content of the instance, a site, an asset library, or one of their portlets. Get the preview first, then send its portlet data handlers back in the process request with the controls you want. Only the handlers and controls in the request are processed. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.13'."
+        "Exports, imports, and publishes the content of the instance, a site, an asset library, or one of their portlets, and syncs a site template to its sites. Get the preview first, then send its portlet data handlers back in the process request with the controls you want. Only the handlers and controls in the request are processed. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.13'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -1931,6 +1973,60 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ReportEntry"
             tags: ["ReportEntry"]
+    "/site-templates/{siteTemplateId}/export-preview":
+        get:
+            description:
+                Retrieves the exportable data of the specified site template.
+            operationId: getSiteTemplateExportPreview
+            parameters:
+                -   in: path
+                    name: siteTemplateId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ExportPreview"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ExportPreview"
+            tags: ["ExportPreview"]
+            x-feature-flag: LPD-82107
+    "/site-templates/{siteTemplateId}/sync-processes":
+        post:
+            description:
+                Starts a site template sync that propagates the selected data of the specified site template to every site linked to it.
+            operationId: postSiteTemplateSyncProcess
+            parameters:
+                -   in: path
+                    name: siteTemplateId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SyncProcessRequest"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SyncProcessRequest"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SyncProcess"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SyncProcess"
+            tags: ["SyncProcess"]
+            x-feature-flag: LPD-82107
     "/sites/{siteExternalReferenceCode}/export-preview":
         get:
             description:
