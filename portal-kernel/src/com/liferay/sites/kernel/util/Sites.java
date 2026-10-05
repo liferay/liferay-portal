@@ -92,6 +92,11 @@ public interface Sites {
 			LayoutSetPrototype layoutSetPrototype, long userId)
 		throws Exception;
 
+	public void mergeLayoutSetPrototypeLayouts(
+			LayoutSetPrototype layoutSetPrototype, long userId,
+			long[] layoutIds, Map<String, String[]> parameterMap)
+		throws Exception;
+
 	public void updateLayoutSetPrototypesLinks(
 			Group group, boolean mergeLayoutSetPrototype,
 			long publicLayoutSetPrototypeId, long privateLayoutSetPrototypeId,
