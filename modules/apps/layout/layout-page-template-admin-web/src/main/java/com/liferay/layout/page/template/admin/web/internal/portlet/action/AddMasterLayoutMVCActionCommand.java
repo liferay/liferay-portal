@@ -5,8 +5,10 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
+import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
@@ -106,6 +108,13 @@ public class AddMasterLayoutMVCActionCommand extends BaseMVCActionCommand {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		if (DesignLibraryUtil.isDesignLibraryScope(
+				themeDisplay.getScopeGroup())) {
+
+			return LayoutPageTemplatePortletUtil.getDesignLibraryRedirectURL(
+				actionRequest, draftLayout, themeDisplay);
+		}
 
 		return HttpComponentsUtil.addParameters(
 			_portal.getLayoutFullURL(draftLayout, themeDisplay), "p_l_back_url",
