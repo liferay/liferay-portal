@@ -4,40 +4,11 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import ClayIcon from '@clayui/icon';
-import {ContentLabel} from '@clayui/label';
-import ClaySticker from '@clayui/sticker';
 import {useId} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import {Option, OptionsList} from './OptionsList';
-
-function DesignLibraryScopedStyleBookSubtitle({designLibraryName, id}) {
-	return (
-		<ContentLabel
-			aria-label={sub(
-				Liferay.Language.get('style-book-from-x-design-library'),
-				designLibraryName
-			)}
-			className="mt-1"
-			displayType="content-5"
-			id={id}
-			large
-			withClose={false}
-		>
-			<ContentLabel.ItemBefore>
-				<ClaySticker className="bg-white rounded" inline size="xs">
-					<ClayIcon symbol="books" />
-				</ClaySticker>
-			</ContentLabel.ItemBefore>
-
-			<ContentLabel.ItemExpand>
-				{designLibraryName}
-			</ContentLabel.ItemExpand>
-		</ContentLabel>
-	);
-}
+import {DesignLibrarySubtitle, Option, OptionsList} from './OptionsList';
 
 function StyleBookOption({onSelectStyleBook, selectedStyleBook, styleBook}) {
 	const isActive =
@@ -74,7 +45,13 @@ function StyleBookOption({onSelectStyleBook, selectedStyleBook, styleBook}) {
 			isActive={isActive}
 			onClick={onClick}
 			subtitle={
-				<DesignLibraryScopedStyleBookSubtitle
+				<DesignLibrarySubtitle
+					ariaLabel={sub(
+						Liferay.Language.get(
+							'style-book-from-x-design-library'
+						),
+						styleBook.subtitle
+					)}
 					designLibraryName={styleBook.subtitle}
 					id={subtitleId}
 				/>

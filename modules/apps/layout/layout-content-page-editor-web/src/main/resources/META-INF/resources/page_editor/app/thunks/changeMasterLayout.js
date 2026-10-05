@@ -6,10 +6,14 @@
 import changeMasterLayoutAction from '../actions/changeMasterLayout';
 import LayoutService from '../services/LayoutService';
 
-export default function changeMasterLayout({masterLayoutPageTemplateEntryERC}) {
+export default function changeMasterLayout({
+	masterLayoutPageTemplateEntryERC,
+	masterLayoutPageTemplateEntryScopeERC,
+}) {
 	return (dispatch) => {
 		return LayoutService.changeMasterLayout({
 			masterLayoutPageTemplateEntryERC,
+			masterLayoutPageTemplateEntryScopeERC,
 			onNetworkStatus: dispatch,
 		}).then((data = {}) => {
 			dispatch(
@@ -17,6 +21,7 @@ export default function changeMasterLayout({masterLayoutPageTemplateEntryERC}) {
 					fragmentEntryLinks: data.fragmentEntryLinks,
 					masterLayoutData: data.masterLayoutData,
 					masterLayoutPageTemplateEntryERC,
+					masterLayoutPageTemplateEntryScopeERC,
 				})
 			);
 

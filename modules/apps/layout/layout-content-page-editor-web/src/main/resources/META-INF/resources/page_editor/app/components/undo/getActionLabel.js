@@ -37,6 +37,21 @@ import {
 import {UNDO_TYPES} from '../../config/constants/undoTypes';
 import {config} from '../../config/index';
 import getSegmentsExperienceName from '../../utils/getSegmentsExperienceName';
+import isSameMasterLayout from '../../utils/isSameMasterLayout';
+
+function getMasterLayoutName(
+	masterLayoutPageTemplateEntryERC,
+	masterLayoutPageTemplateEntryScopeERC
+) {
+	const masterLayout = config.masterLayouts.find((masterLayout) =>
+		isSameMasterLayout(masterLayout, {
+			masterLayoutPageTemplateEntryERC,
+			masterLayoutPageTemplateEntryScopeERC,
+		})
+	);
+
+	return masterLayout.name;
+}
 
 export default function getActionLabel(
 	action,
@@ -53,19 +68,17 @@ export default function getActionLabel(
 			return type === UNDO_TYPES.undo
 				? sub(
 						Liferay.Language.get('select-x-master-layout'),
-						config.masterLayouts.find(
-							(masterLayout) =>
-								masterLayout.masterLayoutPageTemplateEntryERC ===
-								action.nextMasterLayoutPageTemplateEntryERC
-						).name
+						getMasterLayoutName(
+							action.nextMasterLayoutPageTemplateEntryERC,
+							action.nextMasterLayoutPageTemplateEntryScopeERC
+						)
 					)
 				: sub(
 						Liferay.Language.get('select-x-master-layout'),
-						config.masterLayouts.find(
-							(masterLayout) =>
-								masterLayout.masterLayoutPageTemplateEntryERC ===
-								action.masterLayoutPageTemplateEntryERC
-						).name
+						getMasterLayoutName(
+							action.masterLayoutPageTemplateEntryERC,
+							action.masterLayoutPageTemplateEntryScopeERC
+						)
 					);
 
 		case DELETE_ITEM:
