@@ -66,6 +66,19 @@ public class PortalReleasePortalTopLevelBuild
 			return _portalRelease;
 		}
 
+		if (Boolean.parseBoolean(
+				getParameterValue("TEST_PORTAL_RELEASE_STANDALONE"))) {
+
+			_portalRelease = _getStandalonePortalRelease();
+
+			BuildDatabase buildDatabase = getBuildDatabase();
+
+			buildDatabase.putPortalRelease(
+				_portalRelease.getPortalVersion(), _portalRelease);
+
+			return _portalRelease;
+		}
+
 		String tomcatURLString = getParameterValue(
 			"TEST_PORTAL_RELEASE_TOMCAT_URL");
 
@@ -238,6 +251,41 @@ public class PortalReleasePortalTopLevelBuild
 		sb.append(portalBranchName);
 
 		return sb.toString();
+	}
+
+	private PortalRelease _getStandalonePortalRelease() {
+		String tomcatURLString = getParameterValue(
+			"TEST_PORTAL_RELEASE_TOMCAT_URL");
+
+		if (!JenkinsResultsParserUtil.isURL(tomcatURLString)) {
+			throw new RuntimeException(
+				"TEST_PORTAL_RELEASE_TOMCAT_URL is required when " +
+					"TEST_PORTAL_RELEASE_STANDALONE is true");
+		}
+
+		try {
+			URL portalReleaseTomcatURL = new URL(tomcatURLString);
+
+			if (!PortalRelease.isStandaloneBundleURL(portalReleaseTomcatURL)) {
+				throw new RuntimeException(
+					JenkinsResultsParserUtil.combine(
+						"Invalid standalone bundle URL ", tomcatURLString,
+						". The file name must match liferay-dxp-tomcat-",
+						"<version>-<component>-standalone-<timestamp>.",
+						"(7z|tar.gz|zip)."));
+			}
+
+			PortalRelease portalRelease = PortalReleaseFactory.newPortalRelease(
+				portalReleaseTomcatURL);
+
+			portalRelease.setPortalBundleTomcatURL(portalReleaseTomcatURL);
+			portalRelease.setStandalone(true);
+
+			return portalRelease;
+		}
+		catch (MalformedURLException malformedURLException) {
+			throw new RuntimeException(malformedURLException);
+		}
 	}
 
 	private static final Pattern _pattern = Pattern.compile(

@@ -34,6 +34,13 @@ public class PortalRelease {
 		return matcher.matches();
 	}
 
+	public static boolean isStandaloneBundleURL(URL bundleURL) {
+		Matcher matcher = _standaloneBundleURLPattern.matcher(
+			bundleURL.toString());
+
+		return matcher.matches();
+	}
+
 	public PortalRelease(URL bundlesBaseURL, String portalVersion) {
 		if (bundlesBaseURL == null) {
 			throw new RuntimeException("Bundles base URL is null");
@@ -94,6 +101,8 @@ public class PortalRelease {
 			"portal_version", _portalVersion
 		).put(
 			"portal_war_url_string", _portalWarURLString
+		).put(
+			"standalone", _standalone
 		);
 
 		return jsonObject;
@@ -271,6 +280,10 @@ public class PortalRelease {
 		return "master";
 	}
 
+	public boolean isStandalone() {
+		return _standalone;
+	}
+
 	public void setPluginsWarZipURL(URL pluginsWarZipURL) {
 		if (pluginsWarZipURL == null) {
 			_pluginsWarZipURLString = null;
@@ -379,6 +392,24 @@ public class PortalRelease {
 
 		_portalWarURLString = JenkinsResultsParserUtil.getLocalURL(
 			portalWarURL.toString());
+	}
+
+	public void setStandalone(boolean standalone) {
+		_standalone = standalone;
+
+		if (!standalone) {
+			return;
+		}
+
+		_pluginsWarZipURLString = null;
+		_portalBundleGlassFishURLString = null;
+		_portalBundleJBossURLString = null;
+		_portalBundleWildFlyURLString = null;
+		_portalDependenciesZipURLString = null;
+		_portalOSGiZipURLString = null;
+		_portalSQLZipURLString = null;
+		_portalToolsZipURLString = null;
+		_portalWarURLString = null;
 	}
 
 	protected static URL getBundlesBaseURL(String portalVersion) {
@@ -494,6 +525,7 @@ public class PortalRelease {
 		_portalVersion = jsonObject.getString("portal_version");
 		_portalWarURLString = jsonObject.optString(
 			"portal_war_url_string", null);
+		_standalone = jsonObject.optBoolean("standalone");
 
 		_initializeURLs();
 	}
@@ -642,6 +674,10 @@ public class PortalRelease {
 	}
 
 	private void _initializeURLs() {
+		if (_standalone) {
+			return;
+		}
+
 		String pluginsWarZipURLString = _getURLStringFromBuildProperties(
 			"plugins.war.zip.url");
 
@@ -811,6 +847,9 @@ public class PortalRelease {
 		"href=\\\"[^\\\"]*(?<fileName>liferay-[^\\\"]+\\.war)\\\"");
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile(_QUARTERLY_RELEASE_VERSION_REGEX);
+	private static final Pattern _standaloneBundleURLPattern = Pattern.compile(
+		"https?://.+/liferay-dxp-tomcat-.+-(?<component>[a-z]+)-standalone-" +
+			"\\d+\\.(7z|tar\\.gz|zip)");
 	private static final Pattern _tomcatBundlePropertyPattern = Pattern.compile(
 		"portal.bundle.tomcat\\[(?<portalVersion>.+)\\]");
 	private static final Pattern _tomcatBundleURLPattern = Pattern.compile(
@@ -830,5 +869,6 @@ public class PortalRelease {
 	private String _portalToolsZipURLString;
 	private final String _portalVersion;
 	private String _portalWarURLString;
+	private boolean _standalone;
 
 }
