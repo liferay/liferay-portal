@@ -31,13 +31,13 @@ Stand up a working Liferay Workspace from zero, or diagnose a workspace that loo
 
 #### Configure MCP Before Starting the Server
 
-If the Liferay MCP server is supported in your DXP version (see `skills/mcp-server/SKILL.md`), configure it **now**, before starting Liferay. CLI agents load MCP settings at startup only — configuring it after the server is already running means the agent will need to restart, costing another full server boot. Do it in this order:
+If the Liferay MCP server is supported in your DXP version (see `skills/mcp-server/SKILL.md`), set it up **now**, before starting Liferay. CLI agents load MCP settings at startup only, and the portal reads its feature flags at boot — getting either half wrong after the server is running costs another full server boot. Do it in this order:
 
-1. Follow the enablement and client configuration steps in `skills/mcp-server/SKILL.md`.
+1. Load `skills/mcp-server/SKILL.md` and run its "Audit the Current State First" table. Do not skip it because an MCP entry already appears in the agent's server list — that entry is only the client half and proves nothing about the portal's `LPD-63311` flag, which a fresh bundle never has.
 
-1. Prompt the user to exit and restart their CLI session.
+1. Complete only the steps the audit shows missing. Enable the flag in the configuration the bundle will boot with. Fix or add the client entry if needed.
 
-1. After restarting, verify the MCP server entry appears in your client's server list. A disconnected or failed status is expected — the server is not running yet. If the entry is absent, recheck the MCP configuration before proceeding.
+1. If the client configuration changed, prompt the user to exit and restart their CLI session, then verify the MCP server entry appears in the client's server list. A disconnected or failed status is expected — the server is not running yet. If the entry is absent, recheck the MCP configuration before proceeding.
 
 1. Then continue below to start the Liferay server.
 
@@ -119,9 +119,9 @@ Prompt the user to log into `http://localhost:${PORT}` as `test@liferay.com` / `
 
 Do not automate the browser login flow — Liferay's login form structure varies across versions and automation is brittle.
 
-### MCP Connection Check (When MCP Is Configured)
+### MCP Connection Check (When MCP Is Supported)
 
-With the server running, verify the MCP connection using your client's built in connection test (see `skills/mcp-server/SKILL.md`). If it returns 401/403, stop and ask the user for updated credentials. If MCP tools are not visible, ensure the CLI session was restarted after configuration.
+With the server running, first run the endpoint probe in `skills/mcp-server/SKILL.md` → "Audit the Current State First". A `404` means `LPD-63311` is not in effect on the portal, whatever the agent's server list shows — enable it and restart Liferay before going further. The probe does not check credentials; only a tool call does (see `skills/mcp-server/SKILL.md` → "Audit the Current State First"). Then run the tool call in `skills/mcp-server/SKILL.md` → "Connection Check". If it reports `Status code: 401` or `403`, stop and ask the user for updated credentials. If MCP tools are not visible, ensure the CLI session was restarted after configuration.
 
 Only fall back to direct REST APIs if MCP has been configured correctly and is still returning errors. "Not yet configured" is not a valid fallback condition — configure it first.
 
@@ -138,6 +138,7 @@ If the user prompts for setup assistance, guide them through these steps one by 
 - HTTP request to `http://localhost:${PORT}` returns 200
 - User can sign in with the default credentials
 - BasicAuth verifier configured (if doing local REST/MCP work)
+- MCP endpoint probe returns 200 and the MCP server is connected in the agent (when MCP is supported)
 - First login bootstrap complete (or skipped via preboot flag settings)
 
 ## References

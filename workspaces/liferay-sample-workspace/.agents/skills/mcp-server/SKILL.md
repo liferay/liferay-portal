@@ -19,6 +19,37 @@ name: mcp-server
 
 ## Setup
 
+### Audit the Current State First
+
+MCP needs three independent pieces, and having one says nothing about the others. An MCP entry in the agent's server list is only the client half — the portal does not serve `/o/mcp` until `LPD-63311` is enabled on its side. Check every row before deciding what to do, and never mark MCP as set up from any single row:
+
+| Piece | How to Check | If Missing |
+| --- | --- | --- |
+| Portal feature flag | Look for `feature.flag.LPD-63311=true` in the sources listed under "Verifying State" in `rules/feature-flags-catalog.md` — for Tomcat that includes `bundles/portal-ext.properties`, the copy the running portal actually reads. For Docker, check the env var or `configs/docker` per `skills/feature-flags/SKILL.md`. When the server is up, confirm with the probe below. | Enable the Feature Flag (below) |
+| Client configuration | Read the agent's MCP config for a Liferay entry. Confirm the URL matches the DXP version (see Endpoint URL by DXP Version) and the transport is Streamable HTTP on 2026.Q1 and later. | Add or fix the entry, then Restart the CLI Session |
+| Loaded into the session | The entry appears in the agent's MCP server list. Before the portal is running, a disconnected or failed status is expected. | Restart the CLI Session |
+
+Report the state of each row to the user, then do only the steps for rows that are missing. When the client half is already correct and loaded, no CLI restart is needed — only the flag and a portal restart.
+
+When the portal is running, probe the endpoint directly. This is the only check that proves the flag is in effect, because a flag in a file the portal never read looks identical to one that took. The probe below targets the Streamable HTTP endpoint of 2026.Q1 and later. On 2025.Q4 the endpoint is `/o/mcp/sse` (see Endpoint URL by DXP Version), which this probe does not cover; rely on the client's connection test there.
+
+```bash
+curl \
+	--data '{"id": 1, "jsonrpc": "2.0", "method": "initialize", "params": {"capabilities": {}, "clientInfo": {"name": "probe", "version": "0"}, "protocolVersion": "2025-03-26"}}' \
+	--header "Accept: application/json, text/event-stream" \
+	--header "Content-Type: application/json" \
+	--output /dev/null \
+	--request POST \
+	--silent \
+	--url "http://localhost:${PORT}/o/mcp" \
+	--user "test@liferay.com:test" \
+	--write-out "%{http_code}\n"
+```
+
+A `200` means the portal is serving MCP. A `404` means nothing is registered at that path: the flag is not in effect, or the URL does not match the DXP version.
+
+The probe says nothing about credentials. Verified on 2026.Q1 with valid credentials, wrong credentials, and none: every call returned `200` with the flag on and `404` with it off. Connecting and listing tools also succeed with any credentials. Only a tool call checks them: `call-http-endpoint` on `/headless-admin-user/v1.0/my-user-account` returns the user with valid credentials, and `Status code: 401` (wrong) or `403` (none) inside a `200` response otherwise. Verified on 2026.Q1.
+
 ### Enable the Feature Flag
 
 Enable `LPD-63311` in the active configuration. Use `skills/feature-flags/SKILL.md` for the per environment mechanism (Tomcat / Docker prebuilt / Docker custom) and the env var encoding scheme.
@@ -40,7 +71,7 @@ Basic auth with base64-encoded credentials. Default: `test@liferay.com` / `test`
 
 ### Connection Check
 
-Use your MCP client's built in connection test. If it returns 401/403, stop and ask the user for updated credentials — do not edit these rule files.
+Make one tool call: `call-http-endpoint` with `GET /headless-admin-user/v1.0/my-user-account`. The client's built in connection test is not enough, because connecting and listing tools succeed with any credentials. If the result reports `Status code: 401` or `403`, stop and ask the user for updated credentials — do not edit these rule files.
 
 ## MCP First Workflow
 
