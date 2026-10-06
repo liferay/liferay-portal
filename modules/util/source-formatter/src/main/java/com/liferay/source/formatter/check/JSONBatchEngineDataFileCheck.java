@@ -160,23 +160,22 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 			String fileName, String absolutePath, JSONObject jsonObject)
 		throws Exception {
 
-		JSONArray jsonArray = jsonObject.getJSONArray("items");
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
-		if (jsonArray == null) {
+		if (itemsJSONArray == null) {
 			return jsonObject;
 		}
 
+		List<Object> objects = JSONUtil.toObjectList(itemsJSONArray);
+
+		itemsJSONArray = new JSONArrayImpl();
+
 		List<String> allItemsDefaultValues = getAttributeValues(
 			_ALL_ITEMS_DEFAULT_VALUES_KEY, absolutePath);
-
-		boolean objectDefinition = _isObjectDefinition(jsonObject);
-
 		List<String> objectDefinitionItemsDefaultValues = getAttributeValues(
 			_OBJECT_DEFINITION_ITEMS_DEFAULT_VALUES_KEY, absolutePath);
 
-		List<Object> objects = JSONUtil.toObjectList(jsonArray);
-
-		jsonArray = new JSONArrayImpl();
+		boolean objectDefinition = _isObjectDefinition(jsonObject);
 
 		for (Object object : objects) {
 			JSONObject itemJSONObject = (JSONObject)object;
@@ -190,10 +189,10 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 				_sortObjectFields(itemJSONObject);
 			}
 
-			jsonArray.put(itemJSONObject);
+			itemsJSONArray.put(itemJSONObject);
 		}
 
-		jsonObject.put("items", jsonArray);
+		jsonObject.put("items", itemsJSONArray);
 
 		return jsonObject;
 	}
