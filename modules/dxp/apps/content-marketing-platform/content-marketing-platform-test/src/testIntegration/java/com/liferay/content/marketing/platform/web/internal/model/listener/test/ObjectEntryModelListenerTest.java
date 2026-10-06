@@ -432,6 +432,66 @@ public class ObjectEntryModelListenerTest {
 				cmpTaskLinkObjectEntry.getObjectEntryId()));
 	}
 
+	@Test
+	public void testOnBeforeUpdate() throws Exception {
+
+		// A member of the linked asset's space can repoint the link to another
+		// asset in that space
+
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
+
+		User user = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
+
+		_userLocalService.addGroupUser(
+			_depotEntry.getGroupId(), user.getUserId());
+
+		ObjectEntry cmpTaskLinkObjectEntry =
+			CMPTestUtil.addCMPTaskLinkObjectEntry(
+				cmpTaskObjectEntry,
+				CMPTestUtil.addCMSBasicWebContentObjectEntry(
+					_depotEntry, RandomTestUtil.randomString()),
+				user.getUserId());
+
+		Assert.assertNotNull(
+			_updateLinkedObjectEntry(
+				cmpTaskLinkObjectEntry,
+				CMPTestUtil.addCMSBasicWebContentObjectEntry(
+					_depotEntry, RandomTestUtil.randomString()),
+				user.getUserId()));
+
+		// A user who is not a member of the linked asset's space cannot repoint
+		// the link to that asset
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		try {
+			_updateLinkedObjectEntry(
+				cmpTaskLinkObjectEntry,
+				CMPTestUtil.addCMSBasicWebContentObjectEntry(
+					depotEntry, RandomTestUtil.randomString()),
+				user.getUserId());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Throwable throwable = modelListenerException.getCause();
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"User ", user.getUserId(), " must be a member of space ",
+					depotEntry.getGroupId(), " to link its assets"),
+				throwable.getMessage());
+		}
+	}
+
 	private void _assertCompletionRate(
 			ObjectEntry cmpProjectObjectEntry, int expectedCompletionRate)
 		throws Exception {
@@ -869,6 +929,28 @@ public class ObjectEntryModelListenerTest {
 			cmpProjectObjectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"description", description
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _updateLinkedObjectEntry(
+			ObjectEntry linkObjectEntry, ObjectEntry linkedObjectEntry,
+			long userId)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroup(
+			linkedObjectEntry.getGroupId());
+
+		return _objectEntryLocalService.partialUpdateObjectEntry(
+			userId, linkObjectEntry.getObjectEntryId(),
+			linkObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode",
+				linkedObjectEntry.getExternalReferenceCode()
+			).put(
+				"className", linkedObjectEntry.getModelClassName()
+			).put(
+				"groupExternalReferenceCode", group.getExternalReferenceCode()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 	}
