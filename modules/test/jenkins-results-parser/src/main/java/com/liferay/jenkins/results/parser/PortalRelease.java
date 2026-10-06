@@ -526,8 +526,6 @@ public class PortalRelease {
 		_portalWarURLString = jsonObject.optString(
 			"portal_war_url_string", null);
 		_standalone = jsonObject.optBoolean("standalone");
-
-		_initializeURLs();
 	}
 
 	protected PortalRelease(String portalVersion) {
@@ -674,10 +672,6 @@ public class PortalRelease {
 	}
 
 	private void _initializeURLs() {
-		if (_standalone) {
-			return;
-		}
-
 		String pluginsWarZipURLString = _getURLStringFromBuildProperties(
 			"plugins.war.zip.url");
 
