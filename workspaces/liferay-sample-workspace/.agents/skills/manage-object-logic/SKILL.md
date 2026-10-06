@@ -93,10 +93,14 @@ A `batch` CET can create it in two ways:
 Verified on 2026.Q1 with a `function#` executor: the action was created on the named definition, fired, and read `success`, and the definition's fields were untouched.
 
 - **`parameters.externalReferenceCode` is the object definition's ERC**, not the action's. `objectDefinitionId` works too, but it is a numeric ID and differs per environment. `objectDefinitionExternalReferenceCode` is rejected.
-- **Use `INSERT`.** `UPSERT` returns `500` for `ObjectAction`. Give each item a fixed `externalReferenceCode`: a redeploy then leaves exactly one action instead of a duplicate.
+- **Use `INSERT`.** `UPSERT` is rejected for `ObjectAction`, so do not copy it from the `ObjectDefinition` batch in `client-extensions/liferay-sample-batch`. In a `batch` CET the rejection is silent: the log shows `Illegal create strategy UPSERT` at `WARN`, no import task starts, and the bundle still reaches `STARTED`. Give each item a fixed `externalReferenceCode`: a redeploy then leaves exactly one action instead of a duplicate. That redeploy logs `Unable to update batch engine import task` at `ERROR` with `DuplicateObjectActionExternalReferenceCodeException`, or `DuplicateObjectFieldExternalReferenceCodeException` for an `ObjectField` batch — the expected outcome, not a failure. Verified on 2026.Q1.
 - **Deploy the `objectAction` CET first.** The executor must exist when the batch runs.
 - **Use a separate project.** `batch` and microservice CETs cannot share a project (`rules/client-extension-types.md`), so the action batch is a sibling of the microservice project.
 - **The batch needs `Liferay.Headless.Batch.Engine.everything`** on its `oAuthApplicationHeadlessServer`. On a local bundle that scope alone imported both `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
+
+#### Adding a Field the Action Needs
+
+The same standalone form adds a field to a definition owned elsewhere, without replacing it: `className` `com.liferay.object.admin.rest.dto.v1_0.ObjectField`, the same `externalReferenceCode` parameter naming the definition, and one raw `ObjectField` per item (`businessType`, `DBType`, `externalReferenceCode`, `label`, `name`, `required`). Verified on 2026.Q1: the field was added and the existing fields were untouched. Number the files so the field batch sorts before the action batch.
 
 #### `objectActions` Inside an `ObjectDefinition` Batch
 
@@ -240,6 +244,8 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
+To send through a `notificationType` CET instead of email, set `"type"` to `function#<cet-erc>`. The bare ERC is rejected with a `500`. A `function#` template also needs a `recipients` array; without one the save fails with a `500` (`createNotificationRecipientSettings`). Every template needs `editorType`, whatever its type. Delivery leaves no notification queue entry, so confirm it in the CET's log. Verified on 2026.Q1.
+
 That shape mails a **portal user**. A public form has no user — the address was typed into a field — so `recipientType: "user"` is wrong there and there is no `recipients` block to carry the address.
 
 #### Mailing an Address Held in a Field (Public Forms)
@@ -346,11 +352,19 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-**The executor key is `function#` plus the `objectAction` CET entry's ERC**, the key under which `FunctionObjectActionExecutorImpl` registers each deployed CET. Verified end to end on 2026.Q1: the action ran, the CET received the POST, and the action's status read `success`. A bare `"objectAction"` key with the ERC in `parameters` also saves with a `200`, so a successful save proves nothing. Read the action's `status.label` after triggering it: `never-ran` means it has not fired.
+**The executor key is `function#` plus the `objectAction` CET entry's ERC**, the key under which `FunctionObjectActionExecutorImpl` registers each deployed CET. Verified end to end on 2026.Q1: the action ran, the CET received the POST, and the action's status read `success`. A bare `"objectAction"` key with the ERC in `parameters` also saves with a `200`, so a successful save proves nothing. Confirm that the action fired from the CET's own log. `status.label` is not reliable: one action reached the CET four times and still read `never-ran`. Verified on 2026.Q1.
 
 The CET receives the entry twice: as the persistence model under `objectEntry` (custom fields in `values`, `createDate` as a date string), and as the REST DTO under `objectEntryDTO<ObjectName>` (custom fields in `properties`, `dateCreated` as **epoch milliseconds**, not ISO 8601). There is no `modelDTO<ObjectName>` key for a custom object.
 
+**The payload does not say which site the entry came from.** For a company scoped object, `objectEntry.groupId` is `0` and the DTO carries no site, and there is no HTTP request context to read a referrer from. Verified on 2026.Q1 with an entry submitted from a site page. When the action needs the originating site, capture it at submit time: add a field to the object (see "Adding a Field the Action Needs" above) and have the form send it. `Liferay.ThemeDisplay` exposes no site name, only IDs and URLs — `getPortalURL()` plus the `/web/<site>` prefix of `getLayoutRelativeURL()` gives a readable site URL.
+
+A related value the payload carries only as a foreign key, such as the parent entry's name, can be fetched with the bearer token the CET receives, provided the OAuth application has that object's scope (`rules/oauth-scopes.md`). The token is the triggering user's, so a Guest submission fetches as Guest.
+
 A callback to `/o/c/<plural>` needs the **object's own scope** on the CET's OAuth application, not `Liferay.Headless.Object.everything`. See `rules/oauth-scopes.md`.
+
+**Respond before calling back.** An `onAfterAdd` action runs inside the transaction that adds the entry, and Liferay waits for the CET's response before it commits. On Hypersonic, a callback to `/o/c` made before the CET responds waits on that transaction, and the add waits on the callback, so the request hangs. Verified on 2026.Q1. Answer Liferay first, then make the callback.
+
+The same hang was seen once without any callback, on the first add after creating two actions on Hypersonic. Liferay never called the CET; the add waited on its own action status update. A portal restart cleared it, and it did not recur. If an add hangs with nothing in the CET log, restart the portal.
 
 ### Kaleo Workflow
 
