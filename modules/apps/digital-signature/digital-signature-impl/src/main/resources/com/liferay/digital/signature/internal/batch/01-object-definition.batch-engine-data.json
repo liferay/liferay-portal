@@ -117,13 +117,13 @@
 				{
 					"DBType": "Long",
 					"businessType": "LongInteger",
-					"externalReferenceCode": "SITE_ID",
+					"externalReferenceCode": "SITE_GROUP_ID",
 					"indexed": false,
 					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "Site ID"
+						"en_US": "Site Group ID"
 					},
-					"name": "siteId",
+					"name": "siteGroupId",
 					"required": false,
 					"state": false,
 					"system": true,
