@@ -302,6 +302,20 @@ public class CollectionPersistenceFinder
 			ListUtil.subList(result, start, end));
 	}
 
+	private boolean _isAllArrayableLengthOne(Object[] values) {
+		if (_arrayableIndexes == null) {
+			return false;
+		}
+
+		for (int index : _arrayableIndexes) {
+			if (Array.getLength(values[index]) != 1) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private boolean _isMultiElementArrayable(Object[] values) {
 		if (_arrayableIndexes == null) {
 			return false;
@@ -418,14 +432,8 @@ public class CollectionPersistenceFinder
 	}
 
 	private boolean _unwrapIfAllArrayableLengthOne(Object[] values) {
-		if (_arrayableIndexes == null) {
+		if (!_isAllArrayableLengthOne(values)) {
 			return false;
-		}
-
-		for (int index : _arrayableIndexes) {
-			if (Array.getLength(values[index]) != 1) {
-				return false;
-			}
 		}
 
 		for (int index : _arrayableIndexes) {
