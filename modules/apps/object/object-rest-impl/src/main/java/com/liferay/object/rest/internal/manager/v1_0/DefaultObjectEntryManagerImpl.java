@@ -15,6 +15,7 @@ import com.liferay.exportimport.attachment.ExportImportAttachmentManager;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.comment.ObjectEntryComment;
+import com.liferay.object.configuration.ObjectConfiguration;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -92,6 +93,7 @@ import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -134,6 +136,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -181,8 +184,10 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 
 import java.text.ParseException;
 
@@ -3380,26 +3385,26 @@ public class DefaultObjectEntryManagerImpl
 				URL url = _exportImportAttachmentManager.getURL(
 					fileEntry.getFileURL());
 
-				if (Objects.equals(url.getProtocol(), "file")) {
-					throw new UnsupportedOperationException(
-						StringBundler.concat(
-							"Unable to download file from ",
-							fileEntry.getFileURL(), ", unsupported protocol: ",
-							url.getProtocol()));
-				}
+				_validateFileURL(
+					objectField.getCompanyId(), fileEntry.getFileURL(), url);
 
 				URLConnection urlConnection = url.openConnection();
 
-				if ((urlConnection instanceof
-						HttpURLConnection httpURLConnection) &&
-					(httpURLConnection.getResponseCode() !=
-						HttpURLConnection.HTTP_OK)) {
+				if (urlConnection instanceof
+						HttpURLConnection httpURLConnection) {
 
-					throw new IllegalArgumentException(
-						StringBundler.concat(
-							"Unable to download file from ",
-							fileEntry.getFileURL(), ", unexpected HTTP code: ",
-							httpURLConnection.getResponseCode()));
+					httpURLConnection.setInstanceFollowRedirects(false);
+
+					if (httpURLConnection.getResponseCode() !=
+							HttpURLConnection.HTTP_OK) {
+
+						throw new IllegalArgumentException(
+							StringBundler.concat(
+								"Unable to download file from ",
+								fileEntry.getFileURL(),
+								" because of unexpected HTTP response code ",
+								httpURLConnection.getResponseCode()));
+					}
 				}
 
 				fileContent = StreamUtil.toByteArray(
@@ -4337,6 +4342,77 @@ public class DefaultObjectEntryManagerImpl
 			serviceContext);
 	}
 
+	private void _validateFileURL(long companyId, String fileURL, URL url)
+		throws Exception {
+
+		String protocol = url.getProtocol();
+
+		if (Objects.equals(protocol, "lar")) {
+			return;
+		}
+
+		if (!Objects.equals(protocol, Http.HTTP) &&
+			!Objects.equals(protocol, Http.HTTPS)) {
+
+			throw new UnsupportedOperationException(
+				StringBundler.concat(
+					"Unable to download file from ", fileURL,
+					" because protocol ", protocol, " is not supported"));
+		}
+
+		String host = url.getHost();
+
+		if (Validator.isBlank(host)) {
+			throw new IllegalArgumentException(
+				"Unable to download file from " + fileURL +
+					" because host is not defined");
+		}
+
+		ObjectConfiguration objectConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				ObjectConfiguration.class, companyId);
+
+		String[] attachmentFileURLHostsAllowed =
+			objectConfiguration.attachmentFileURLHostsAllowed();
+
+		if (ArrayUtil.isNotEmpty(attachmentFileURLHostsAllowed) &&
+			!ArrayUtil.contains(attachmentFileURLHostsAllowed, host, true)) {
+
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Unable to download file from ", fileURL, " because host ",
+					host, " is not allowed"));
+		}
+
+		if (objectConfiguration.attachmentFileURLLocalNetworkAccessEnabled()) {
+			return;
+		}
+
+		try {
+			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+				host);
+
+			if ((inetAddress == null) ||
+				InetAddressUtil.isLocalInetAddress(inetAddress)) {
+
+				throw new IllegalArgumentException(
+					StringBundler.concat(
+						"Unable to download file from ", fileURL,
+						" because host ", host, " is not allowed"));
+			}
+		}
+		catch (UnknownHostException unknownHostException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(unknownHostException);
+			}
+
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Unable to download file from ", fileURL, " because host ",
+					host, " is unknown"));
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultObjectEntryManagerImpl.class);
 
@@ -4348,6 +4424,9 @@ public class DefaultObjectEntryManagerImpl
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
