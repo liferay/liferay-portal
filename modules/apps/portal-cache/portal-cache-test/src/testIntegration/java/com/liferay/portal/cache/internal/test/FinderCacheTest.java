@@ -10,12 +10,16 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionWrapper;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TicketLocalService;
+import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
 import com.liferay.portal.kernel.service.persistence.TicketPersistence;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -27,6 +31,7 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -54,6 +59,84 @@ public class FinderCacheTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testCountWithOneElementArrayableValue() throws Throwable {
+		long companyId = TestPropsValues.getCompanyId();
+		String name = RandomTestUtil.randomString();
+		String primKey1 = RandomTestUtil.randomString();
+		String primKey2 = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			0,
+			_resourcePermissionLocalService.getResourcePermissionsCount(
+				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey1));
+
+		Object[] finderArgs = {
+			companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey1
+		};
+
+		Assert.assertEquals(
+			0L,
+			_finderCache.getResult(
+				_resourcePermissionCountFinderPath, finderArgs,
+				_resourcePermissionPersistence));
+
+		TransactionConfig transactionConfig = TransactionConfig.Factory.create(
+			Propagation.REQUIRED, new Class<?>[] {Exception.class});
+
+		TransactionInvokerUtil.invoke(
+			transactionConfig,
+			(Callable<Void>)() -> {
+				_addResourcePermission(companyId, name, primKey2);
+
+				Assert.assertEquals(
+					0L,
+					_finderCache.getResult(
+						_resourcePermissionCountFinderPath, finderArgs,
+						_resourcePermissionPersistence));
+
+				_addResourcePermission(companyId, name, primKey1);
+
+				Assert.assertEquals(
+					1L,
+					_finderCache.getResult(
+						_resourcePermissionCountFinderPath, finderArgs,
+						_resourcePermissionPersistence));
+
+				return null;
+			});
+
+		String[] primKeys = ArrayUtil.sortedUnique(
+			new String[] {primKey1, primKey2});
+
+		Assert.assertEquals(
+			2,
+			(int)TransactionInvokerUtil.invoke(
+				transactionConfig,
+				(Callable<Integer>)
+					() -> _resourcePermissionPersistence.countByC_N_S_P(
+						companyId, name, ResourceConstants.SCOPE_INDIVIDUAL,
+						primKeys)));
+
+		Object[] arrayableFinderArgs = {
+			companyId, name, ResourceConstants.SCOPE_INDIVIDUAL,
+			StringUtil.merge(primKeys)
+		};
+
+		Assert.assertEquals(
+			2L,
+			_finderCache.getResult(
+				_resourcePermissionArrayableCountFinderPath,
+				arrayableFinderArgs, _resourcePermissionPersistence));
+
+		_addResourcePermission(companyId, name, RandomTestUtil.randomString());
+
+		Assert.assertNull(
+			_finderCache.getResult(
+				_resourcePermissionArrayableCountFinderPath,
+				arrayableFinderArgs, _resourcePermissionPersistence));
+	}
 
 	@Test
 	public void testPutResult() throws Throwable {
@@ -432,6 +515,24 @@ public class FinderCacheTest {
 		Assert.assertEquals(tickets.toString(), 2, tickets.size());
 	}
 
+	private void _addResourcePermission(
+		long companyId, String name, String primKey) {
+
+		ResourcePermission resourcePermission =
+			_resourcePermissionLocalService.createResourcePermission(
+				RandomTestUtil.nextLong());
+
+		resourcePermission.setCompanyId(companyId);
+		resourcePermission.setName(name);
+		resourcePermission.setScope(ResourceConstants.SCOPE_INDIVIDUAL);
+		resourcePermission.setPrimKey(primKey);
+		resourcePermission.setRoleId(RandomTestUtil.nextLong());
+
+		_resourcePermissions.add(
+			_resourcePermissionLocalService.addResourcePermission(
+				resourcePermission));
+	}
+
 	private Ticket _addTicket(long classPK, ServiceContext serviceContext)
 		throws Exception {
 
@@ -463,12 +564,42 @@ public class FinderCacheTest {
 			Long.class.getName(), Long.class.getName(), Long.class.getName()
 		},
 		new String[] {"companyId", "classNameId", "classPK"}, true);
+	private static final FinderPath
+		_resourcePermissionArrayableCountFinderPath = new FinderPath(
+			"com.liferay.portal.model.impl.ResourcePermissionImpl.List1",
+			"countByC_N_S_P",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), String.class.getName()
+			},
+			new String[] {"companyId", "name", "scope", "primKey"}, 0, 10,
+			false, null);
+	private static final FinderPath _resourcePermissionCountFinderPath =
+		new FinderPath(
+			"com.liferay.portal.model.impl.ResourcePermissionImpl.List2",
+			"countByC_N_S_P",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), String.class.getName()
+			},
+			new String[] {"companyId", "name", "scope", "primKey"}, 0, 10,
+			false, null);
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
 	@Inject
 	private FinderCache _finderCache;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private ResourcePermissionPersistence _resourcePermissionPersistence;
+
+	@DeleteAfterTestRun
+	private final List<ResourcePermission> _resourcePermissions =
+		new ArrayList<>();
 
 	@Inject
 	private TicketLocalService _ticketLocalService;
