@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -110,6 +109,7 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 		Map<String, Object> breadcrumbProps =
 			(Map<String, Object>)additionalProps.get("breadcrumbProps");
 
+		Assert.assertNotNull(breadcrumbProps);
 		Assert.assertNotNull(breadcrumbProps.get("breadcrumbItems"));
 
 		Assert.assertEquals(
@@ -199,9 +199,7 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 	}
 
 	@Test
-	public void testGetCreationMenuSearchAPIURLFiltersBySpaceMembership()
-		throws Exception {
-
+	public void testGetCreationMenuFiltersBySpaceMembership() throws Exception {
 		DepotEntry memberDepotEntry = _addDepotEntry();
 		DepotEntry nonmemberDepotEntry = _addDepotEntry();
 
@@ -225,25 +223,14 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 
 		String searchAPIURL = (String)selectData.get("searchAPIURL");
 
-		String groupIdsPrefix = "groupIds/any(g:g in (";
-
-		int index = searchAPIURL.indexOf(groupIdsPrefix);
-
-		Assert.assertTrue(searchAPIURL, index != -1);
-
-		String[] groupIds = StringUtil.split(
-			searchAPIURL.substring(
-				index + groupIdsPrefix.length(),
-				searchAPIURL.indexOf("))", index)));
-
 		Assert.assertTrue(
 			searchAPIURL,
-			ArrayUtil.contains(
-				groupIds, String.valueOf(memberDepotEntry.getGroupId())));
-		Assert.assertFalse(
-			searchAPIURL,
-			ArrayUtil.contains(
-				groupIds, String.valueOf(nonmemberDepotEntry.getGroupId())));
+			searchAPIURL.contains(
+				"groupIds/any(g:g in (" + memberDepotEntry.getGroupId() +
+					"))"));
+
+		_depotEntryLocalService.deleteDepotEntry(memberDepotEntry);
+		_depotEntryLocalService.deleteDepotEntry(nonmemberDepotEntry);
 
 		_userLocalService.deleteUser(user);
 	}
