@@ -123,6 +123,14 @@ public class AssetTagGroupRelLocalServiceUtil {
 		getService().deleteAssetTagGroupRelsByTagId(tagId);
 	}
 
+	public static void deleteAssetTagGroupRelsByTagIdAndDepotEntryType(
+			long tagId, int depotEntryType)
+		throws PortalException {
+
+		getService().deleteAssetTagGroupRelsByTagIdAndDepotEntryType(
+			tagId, depotEntryType);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -417,4 +425,4 @@ public class AssetTagGroupRelLocalServiceUtil {
 	private static volatile AssetTagGroupRelLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-307302363
+// LIFERAY-SERVICE-BUILDER-HASH:139069871
