@@ -31,6 +31,9 @@ public class FDSSampleFDSNames {
 	public static final String EMPTY =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-empty";
 
+	public static final String FDS_VISUALIZATION_MODE_CET =
+		FDSSamplePortletKeys.FDS_SAMPLE + "-fdsVisualizationModeCET";
+
 	public static final String HIDDEN_EXCLUDE_TOGGLE =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-hiddenExcludeToggle";
 

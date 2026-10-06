@@ -88,6 +88,12 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "single-selection");
 							navigationItem.setLabel("Single Selection");
 						});
+					add(
+						navigationItem -> {
+							navigationItem.setActive(navigation.equals("fds-visualization-mode-cet"));
+							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "fds-visualization-mode-cet");
+							navigationItem.setLabel("Visualization Mode Client Extension");
+						});
 				}
 			}
 		%>'
@@ -126,6 +132,9 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 		</c:when>
 		<c:when test='<%= navigation.equals("single-selection") %>'>
 			<liferay-util:include page="/partials/single_selection.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:when test='<%= navigation.equals("fds-visualization-mode-cet") %>'>
+			<liferay-util:include page="/partials/fds_visualization_mode_cet.jsp" servletContext="<%= application %>" />
 		</c:when>
 		<c:otherwise>
 			<liferay-util:include page="/partials/advanced.jsp" servletContext="<%= application %>" />

@@ -5,6 +5,7 @@
 
 package com.liferay.frontend.data.set.sample.web.internal.portlet;
 
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSamplePortletKeys;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleWebKeys;
 import com.liferay.frontend.data.set.sample.web.internal.display.context.FDSSampleDisplayContext;
@@ -87,7 +88,8 @@ public class FDSSamplePortlet extends MVCPortlet {
 		renderRequest.setAttribute(
 			FDSSampleWebKeys.FDS_SAMPLE_DISPLAY_CONTEXT,
 			new FDSSampleDisplayContext(
-				_portal.getHttpServletRequest(renderRequest), renderResponse));
+				_cetManager, _portal.getHttpServletRequest(renderRequest),
+				renderResponse));
 
 		super.doDispatch(renderRequest, renderResponse);
 	}
@@ -204,6 +206,9 @@ public class FDSSamplePortlet extends MVCPortlet {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FDSSamplePortlet.class);
+
+	@Reference
+	private CETManager _cetManager;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

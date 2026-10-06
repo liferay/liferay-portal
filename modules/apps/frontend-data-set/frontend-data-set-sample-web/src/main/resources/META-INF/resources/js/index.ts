@@ -9,6 +9,7 @@ import ControlledFrontendDataSet from './ControlledFrontendDataSet';
 import CustomAuthorTableCell from './CustomAuthorTableCell';
 import CustomInternalViewPropsTransformer from './CustomInternalViewPropsTransformer';
 import EmptyPropsTransformer from './EmptyPropsTransformer';
+import FDSVisualizationModeCETPropsTransformer from './FDSVisualizationModeCETPropsTransformer';
 import GreenCheckColorTableCell from './GreenCheckColorTableCell';
 import HiddenExcludeTogglePropsTransformer from './HiddenExcludeTogglePropsTransformer';
 import ReactFrontendDataSet from './ReactFrontendDataSet';
@@ -31,4 +32,5 @@ export {
 	HiddenExcludeTogglePropsTransformer,
 	ReactFrontendDataSet,
 	SingleSelectionPropsTransformer,
+	FDSVisualizationModeCETPropsTransformer,
 };

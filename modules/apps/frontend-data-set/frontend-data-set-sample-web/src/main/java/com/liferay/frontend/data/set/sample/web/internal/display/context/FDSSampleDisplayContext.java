@@ -5,17 +5,26 @@
 
 package com.liferay.frontend.data.set.sample.web.internal.display.context;
 
+import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
+import com.liferay.client.extension.type.FDSVisualizationModeCET;
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.sample.web.internal.display.context.helper.FDSRequestHelper;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Javier Gamarra
@@ -24,8 +33,10 @@ import java.util.Map;
 public class FDSSampleDisplayContext {
 
 	public FDSSampleDisplayContext(
-		HttpServletRequest httpServletRequest, RenderResponse renderResponse) {
+		CETManager cetManager, HttpServletRequest httpServletRequest,
+		RenderResponse renderResponse) {
 
+		_cetManager = cetManager;
 		_renderResponse = renderResponse;
 
 		_fdsRequestHelper = new FDSRequestHelper(httpServletRequest);
@@ -61,6 +72,68 @@ public class FDSSampleDisplayContext {
 		).build();
 	}
 
+	public Map<String, Object> getFDSVisualizationModeCETAdditionalProps()
+		throws Exception {
+
+		FDSVisualizationModeCET fdsVisualizationModeCET =
+			_getFDSVisualizationModeCET();
+
+		if (fdsVisualizationModeCET == null) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"fdsVisualizationModeCET",
+			HashMapBuilder.put(
+				"externalReferenceCode",
+				fdsVisualizationModeCET.getExternalReferenceCode()
+			).put(
+				"icon", fdsVisualizationModeCET.getIcon()
+			).put(
+				"label",
+				fdsVisualizationModeCET.getName(_fdsRequestHelper.getLocale())
+			).put(
+				"url", fdsVisualizationModeCET.getURL()
+			).build()
+		).build();
+	}
+
+	private FDSVisualizationModeCET _getFDSVisualizationModeCET()
+		throws Exception {
+
+		// Use the UI client extension if available
+
+		List<FDSVisualizationModeCET> fdsVisualizationModeCETs =
+			(List)_cetManager.getCETs(
+				CompanyThreadLocal.getCompanyId(), null,
+				ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE,
+				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
+
+		for (FDSVisualizationModeCET fdsVisualizationModeCET :
+				fdsVisualizationModeCETs) {
+
+			if (!fdsVisualizationModeCET.isReadOnly()) {
+				return fdsVisualizationModeCET;
+			}
+		}
+
+		// Use the workspace client extension if available
+
+		for (FDSVisualizationModeCET fdsVisualizationModeCET :
+				fdsVisualizationModeCETs) {
+
+			if (Objects.equals(
+					fdsVisualizationModeCET.getExternalReferenceCode(),
+					"LXC:liferay-sample-fds-visualization-mode")) {
+
+				return fdsVisualizationModeCET;
+			}
+		}
+
+		return null;
+	}
+
+	private final CETManager _cetManager;
 	private final FDSRequestHelper _fdsRequestHelper;
 	private final RenderResponse _renderResponse;
 
