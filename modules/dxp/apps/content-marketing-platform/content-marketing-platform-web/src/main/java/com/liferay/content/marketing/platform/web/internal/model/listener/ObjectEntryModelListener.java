@@ -166,6 +166,19 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
+	@Override
+	public void onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		try {
+			_validateLinkedObjectEntrySpaceMembership(objectEntry);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
+
 	private void _addUserGroupRoles(
 			long companyId, long groupId, long originalUserId,
 			List<String> roleNames, long userId)
