@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -142,7 +142,15 @@ public class SessionMaps {
 				return;
 			}
 
-			map = new HashMap<>();
+			synchronized (SessionMaps.class) {
+				map = _getMap(httpSession, mapKey);
+
+				if (map == null) {
+					map = new ConcurrentHashMap<>();
+
+					httpSession.setAttribute(mapKey, map);
+				}
+			}
 		}
 
 		consumer.accept(map);
