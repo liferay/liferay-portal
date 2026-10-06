@@ -84,6 +84,34 @@ run "should_honor_a_custom_gateway_namespace" {
 		gateway_namespace="custom-gw"
 	}
 }
+run "should_honor_a_custom_metrics_scrape_namespace" {
+	assert {
+		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress[0].from[0].namespace_selector[0].match_labels["kubernetes.io/metadata.name"] == "custom-scrape"
+		error_message="envoy-gateway-metrics-ingress must honor a custom metrics_scrape_config.namespace. GKE fixes the managed collection namespace at gmp-system today, but alloy scrapes the same Envoy pods from inside the observability namespace on the other clouds, so the source has to be overridable rather than literal"
+	}
+	command=plan
+	variables {
+		metrics_scrape_config={
+			namespace="custom-scrape"
+		}
+	}
+}
+run "should_omit_the_metrics_rule_when_scraping_is_disabled" {
+	assert {
+		condition=length(kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress) == 0
+		error_message="envoy-gateway-metrics-ingress must declare no ingress rule when metrics_scrape_config.enabled is false, leaving the namespace-wide deny in force rather than admitting a scraper that is not deployed"
+	}
+	assert {
+		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.metadata[0].name == "envoy-gateway-metrics-ingress"
+		error_message="envoy-gateway-metrics-ingress must still be created when scraping is disabled, so that enabling it later adds a rule rather than a resource"
+	}
+	command=plan
+	variables {
+		metrics_scrape_config={
+			enabled=false
+		}
+	}
+}
 run "should_scope_the_envoy_gateway_network_policies_correctly" {
 	assert {
 		condition=length(kubernetes_network_policy_v1.default_deny_ingress.spec[0].ingress) == 0
@@ -127,7 +155,7 @@ run "should_scope_the_envoy_gateway_network_policies_correctly" {
 	}
 	assert {
 		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress[0].from[0].namespace_selector[0].match_labels["kubernetes.io/metadata.name"] == "gmp-system"
-		error_message="envoy-gateway-metrics-ingress must allow the GMP collector namespace — a ClusterPodMonitoring selects app.kubernetes.io/managed-by=envoy-gateway and does reach the proxy pods, so omitting this is a confirmed scrape regression"
+		error_message="envoy-gateway-metrics-ingress must default to the GMP collector namespace, which GKE fixes at gmp-system whenever managed_prometheus is enabled on the cluster — a ClusterPodMonitoring selects app.kubernetes.io/managed-by=envoy-gateway and does reach the proxy pods, so omitting this is a confirmed scrape regression"
 	}
 	assert {
 		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress[0].ports[0].port == "19001"

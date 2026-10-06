@@ -36,6 +36,15 @@ variable "max_node_count" {
 	default=4
 	type=number
 }
+variable "metrics_scrape_config" {
+	default={}
+	type=object(
+		{
+			enabled=optional(bool, true)
+			namespace=optional(string, "gmp-system")
+		}
+	)
+}
 variable "min_node_count" {
 	default=1
 	type=number

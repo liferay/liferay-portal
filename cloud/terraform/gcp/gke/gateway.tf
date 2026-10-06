@@ -117,18 +117,21 @@ resource "kubernetes_network_policy_v1" "envoy_gateway_metrics_ingress" {
 		namespace=var.gateway_namespace
 	}
 	spec {
-		ingress {
-			from {
-				namespace_selector {
-					match_labels={
-						"kubernetes.io/metadata.name"="gmp-system"
+		dynamic "ingress" {
+			content {
+				from {
+					namespace_selector {
+						match_labels={
+							"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
+						}
 					}
 				}
+				ports {
+					port="19001"
+					protocol="TCP"
+				}
 			}
-			ports {
-				port="19001"
-				protocol="TCP"
-			}
+			for_each=var.metrics_scrape_config.enabled ? [1] : []
 		}
 		pod_selector {
 		}
