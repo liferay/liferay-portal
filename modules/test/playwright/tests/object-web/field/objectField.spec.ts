@@ -26,6 +26,14 @@ import {waitForSearchToBeReady} from '../../../utils/waitForSearchToBeReady';
 import {AsyncArray} from '../utils/AsyncArray';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
+import {
+	GEOCODED_ADDRESS,
+	GEOCODED_COORDINATES,
+	dragMapPin,
+	getLocationFieldContainer,
+	getLocationValueInput,
+	interceptMapRequests,
+} from '../utils/location';
 import {postAggregationObjectDefinitions} from '../utils/postAggregationObjectDefinitions';
 import {postListTypeDefinitionListTypeEntries} from '../utils/postListTypeDefinitionListTypeEntries';
 
@@ -40,6 +48,13 @@ const cmsTest = mergeTests(
 	test,
 	featureFlagsTest({
 		'LPD-11235': {enabled: false},
+	})
+);
+
+const locationTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-11388': {enabled: true},
 	})
 );
 
@@ -4210,6 +4225,100 @@ test.describe('Manage object fields default value properties', () => {
 		}
 	);
 });
+
+locationTest(
+	'can create a default value for a location field',
+	{tag: ['@LPD-106851']},
+	async ({apiHelpers, objectFieldsPage, page, viewObjectEntriesPage}) => {
+		await interceptMapRequests(page);
+
+		const objectFields = generateObjectFields({
+			objectFieldBusinessTypes: ['Location'],
+		});
+
+		const objectFieldLabel = objectFields[0].label!['en_US'];
+
+		let objectDefinition: ObjectDefinition;
+
+		await test.step('Create an object definition with a location field', async () => {
+			objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+		});
+
+		await test.step('Pick a default value on the map and save the field', async () => {
+			await objectFieldsPage.goto(objectDefinition.label['en_US']);
+
+			await objectFieldsPage.openObjectField(objectFieldLabel);
+
+			await objectFieldsPage.advancedTab.click();
+
+			await objectFieldsPage.useDefaultValueToggle.check();
+
+			await dragMapPin(
+				objectFieldsPage.iframeLocator.locator(
+					'.object-field__location-map'
+				),
+				page
+			);
+
+			await objectFieldsPage.editFieldSaveButton.click();
+
+			await waitForAlert(
+				page,
+				'The object field was updated successfully'
+			);
+		});
+
+		await test.step('Verify the default value is saved on the field', async () => {
+			const {items} =
+				await apiHelpers.objectAdmin.getAllObjectDefinitionsFields(
+					objectDefinition.id
+				);
+
+			const objectField = items.find(
+				(field: {label: {en_US: string}}) =>
+					field.label.en_US === objectFieldLabel
+			);
+
+			const defaultValueSetting = objectField.objectFieldSettings.find(
+				(setting: {name: string}) => setting.name === 'defaultValue'
+			);
+
+			const defaultValue = JSON.parse(defaultValueSetting.value);
+
+			expect(defaultValue.address).toBe(GEOCODED_ADDRESS);
+			expect(defaultValue.coordinates.latitude).toBe(
+				GEOCODED_COORDINATES.latitude
+			);
+			expect(defaultValue.coordinates.longitude).toBe(
+				GEOCODED_COORDINATES.longitude
+			);
+		});
+
+		await test.step('Verify the default value is applied to a new entry', async () => {
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await expect(
+				getLocationValueInput(
+					getLocationFieldContainer(objectFields[0].name!, page),
+					objectFields[0].name!
+				)
+			).toHaveValue(new RegExp(GEOCODED_ADDRESS));
+		});
+	}
+);
 
 test.describe('Manage object field descriptions', () => {
 	test(

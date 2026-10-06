@@ -28,6 +28,13 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
+import {
+	GEOCODED_ADDRESS,
+	dragMapPin,
+	getLocationFieldContainer,
+	getLocationValueInput,
+	interceptMapRequests,
+} from '../utils/location';
 import {postListTypeDefinitionListTypeEntries} from '../utils/postListTypeDefinitionListTypeEntries';
 
 export const test = mergeTests(
@@ -37,6 +44,7 @@ export const test = mergeTests(
 	isolatedSiteTest,
 	editObjectDefinitionPagesTest,
 	featureFlagsTest({
+		'LPD-11388': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	formsPagesTest,
@@ -638,6 +646,110 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await expect(emailInput).toHaveValue(catalanEmail);
 	});
+
+	test(
+		'Location fields',
+		{tag: ['@LPD-106851']},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			await interceptMapRequests(page);
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					{
+						businessType: 'Location',
+						localized: true,
+					},
+					'Location',
+				],
+			});
+
+			const localizedFieldContainer = getLocationFieldContainer(
+				objectFields[0].name!,
+				page
+			);
+			const nonlocalizedFieldContainer = getLocationFieldContainer(
+				objectFields[1].name!,
+				page
+			);
+
+			let objectDefinition: ObjectDefinition;
+
+			await test.step('Create a localization-enabled object definition with location fields', async () => {
+				const objectDefinitionAPIClient =
+					await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+				const {body} =
+					await objectDefinitionAPIClient.postObjectDefinition({
+						active: true,
+						enableLocalization: true,
+						label: {en_US: getRandomString()},
+						name: 'ObjectDefinitionName' + getRandomInt(),
+						objectFields,
+						pluralLabel: {en_US: 'NewObject'},
+						portlet: true,
+						scope: 'company',
+						status: {code: 0},
+					});
+
+				objectDefinition = body;
+
+				apiHelpers.data.push({
+					id: objectDefinition.id,
+					type: 'objectDefinition',
+				});
+			});
+
+			await test.step('Navigate to the object definition and add an entry', async () => {
+				await viewObjectEntriesPage.goto(objectDefinition.className!);
+
+				await viewObjectEntriesPage.clickAddObjectEntry(
+					objectDefinition.label!['en_US']
+				);
+			});
+
+			await test.step('Verify only the localized field has a locales dropdown', async () => {
+				await expect(
+					localizedFieldContainer.getByRole('button', {name: 'en-us'})
+				).toBeVisible();
+
+				await expect(
+					nonlocalizedFieldContainer.getByRole('button', {
+						name: 'en-us',
+					})
+				).toBeHidden();
+			});
+
+			await test.step('Pick a location on the nonlocalized field', async () => {
+				await dragMapPin(
+					nonlocalizedFieldContainer.locator(
+						'.object-field__location-map'
+					),
+					page
+				);
+
+				await expect(
+					getLocationValueInput(
+						nonlocalizedFieldContainer,
+						objectFields[1].name!
+					)
+				).toHaveValue(new RegExp(GEOCODED_ADDRESS));
+			});
+
+			await test.step('Verify the nonlocalized field keeps the translation-disabled icon in another language', async () => {
+				await page.getByRole('button', {name: 'en-us'}).first().click();
+
+				await page
+					.getByRole('menuitem', {name: 'português (Brasil)'})
+					.click();
+
+				await expect(
+					nonlocalizedFieldContainer.getByTitle(
+						'Translation is disabled for this field.'
+					)
+				).toBeVisible();
+			});
+		}
+	);
 
 	test('Multiselect Picklist fields', async ({
 		apiHelpers,
