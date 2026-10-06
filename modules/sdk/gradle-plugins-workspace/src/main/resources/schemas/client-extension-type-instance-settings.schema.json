@@ -2978,6 +2978,20 @@
 		},
 		{
 			"properties": {
+				"attachmentFileURLHostsAllowed": {
+					"description": "List the host names that an object entry attachment may be downloaded from through its file URL. Leave the list blank for any host. A host that resolves to a local network address also requires local network access.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Attachment File URL Hosts Allowed",
+					"type": "array"
+				},
+				"attachmentFileURLLocalNetworkAccessEnabled": {
+					"default": false,
+					"description": "Download object entry attachments from a file URL that resolves to a local network address. Leave this disabled unless importing entries from a portal on the internal network requires it, because it lets an attacker use the portal to reach services on the internal network.",
+					"title": "Attachment File URL Local Network Access Enabled",
+					"type": "boolean"
+				},
 				"duration": {
 					"default": 1,
 					"title": "Duration",
