@@ -789,7 +789,7 @@ public class PortalRelease {
 	}
 
 	private static final String _PORTAL_VERSION_REGEX =
-		"(?<portalVersion>\\d\\.([u\\d\\.]+)(-ee)?(-dxp-\\d+)?" +
+		"(?<portalVersion>\\d\\.([u\\d\\.]+)(-u\\d+)?(-ee)?(-dxp-\\d+)?" +
 			"(\\-(ep|ga|rc|sp)\\d+)?)";
 
 	private static final String _QUARTERLY_RELEASE_VERSION_REGEX =
