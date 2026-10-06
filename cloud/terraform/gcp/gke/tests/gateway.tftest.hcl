@@ -142,8 +142,8 @@ run "should_scope_the_envoy_gateway_network_policies_correctly" {
 		error_message="envoy-gateway-ingress must name kube-system on the konnectivity peer as a literal. Asserting only the podSelector leaves the peer matching konnectivity-agent pods inside envoy-gateway-system, of which there are none, so the API server would be blocked while every assertion still passed — the topology injector defaults failurePolicy to Ignore, so that failure is silent"
 	}
 	assert {
-		condition=kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[0].ports[0].port == "9443"
-		error_message="envoy-gateway-ingress must allow the webhook on 9443"
+		condition=kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[0].ports[0].port == "webhook"
+		error_message="envoy-gateway-ingress must allow the webhook by its declared container port name. The control plane names it webhook at 9443, and a name follows the chart if upstream moves the port, where a literal would silently point at a dead number"
 	}
 	assert {
 		condition=length(kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].from[0].pod_selector[0].match_labels) == 2 && kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].from[0].pod_selector[0].match_labels["app.kubernetes.io/managed-by"] == "envoy-gateway" && kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].from[0].pod_selector[0].match_labels["app.kubernetes.io/name"] == "envoy"
@@ -151,15 +151,19 @@ run "should_scope_the_envoy_gateway_network_policies_correctly" {
 	}
 	assert {
 		condition=length(kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].ports) == 3
-		error_message="envoy-gateway-ingress must allow xDS on 18000 plus ratelimit 18001 and wasm 18002; neither is configured today, and including them costs nothing while removing two latent silent failures"
+		error_message="envoy-gateway-ingress must allow xDS plus ratelimit and wasm; neither of the latter is configured today, and including them costs nothing while removing two latent silent failures"
+	}
+	assert {
+		condition=kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].ports[0].port == "grpc" && kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].ports[1].port == "ratelimit" && kubernetes_network_policy_v1.envoy_gateway_ingress.spec[0].ingress[1].ports[2].port == "wasm"
+		error_message="envoy-gateway-ingress must name the three xDS ports as the control plane declares them, grpc 18000, ratelimit 18001 and wasm 18002, so the rule follows a port change in the chart instead of pointing at a stale number"
 	}
 	assert {
 		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress[0].from[0].namespace_selector[0].match_labels["kubernetes.io/metadata.name"] == "gmp-system"
 		error_message="envoy-gateway-metrics-ingress must default to the GMP collector namespace, which GKE fixes at gmp-system whenever managed_prometheus is enabled on the cluster — a ClusterPodMonitoring selects app.kubernetes.io/managed-by=envoy-gateway and does reach the proxy pods, so omitting this is a confirmed scrape regression"
 	}
 	assert {
-		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress[0].ports[0].port == "19001"
-		error_message="envoy-gateway-metrics-ingress must scope its allow to 19001"
+		condition=kubernetes_network_policy_v1.envoy_gateway_metrics_ingress.spec[0].ingress[0].ports[0].port == "metrics"
+		error_message="envoy-gateway-metrics-ingress must scope its allow to the metrics port by name. Both the control plane and the generated proxies declare metrics at 19001, and a named port resolves per pod against the container declaration, so a pod that stopped declaring it would lose the allow rather than have a stale number allowed against it"
 	}
 	assert {
 		condition=kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].from[0].ip_block[0].cidr == "0.0.0.0/0"

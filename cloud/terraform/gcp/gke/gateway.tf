@@ -72,7 +72,7 @@ resource "kubernetes_network_policy_v1" "envoy_gateway_ingress" {
 				}
 			}
 			ports {
-				port="9443"
+				port="webhook"
 				protocol="TCP"
 			}
 		}
@@ -86,15 +86,15 @@ resource "kubernetes_network_policy_v1" "envoy_gateway_ingress" {
 				}
 			}
 			ports {
-				port="18000"
+				port="grpc"
 				protocol="TCP"
 			}
 			ports {
-				port="18001"
+				port="ratelimit"
 				protocol="TCP"
 			}
 			ports {
-				port="18002"
+				port="wasm"
 				protocol="TCP"
 			}
 		}
@@ -127,7 +127,7 @@ resource "kubernetes_network_policy_v1" "envoy_gateway_metrics_ingress" {
 					}
 				}
 				ports {
-					port="19001"
+					port="metrics"
 					protocol="TCP"
 				}
 			}
