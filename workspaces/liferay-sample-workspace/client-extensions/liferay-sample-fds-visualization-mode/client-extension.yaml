@@ -1,0 +1,8 @@
+assemble:
+    -   from: build/static
+        into: static
+liferay-sample-fds-visualization-mode:
+    icon: date-time
+    name: Liferay Sample Frontend Data Set Timeline
+    type: fdsVisualizationMode
+    url: index.*.js

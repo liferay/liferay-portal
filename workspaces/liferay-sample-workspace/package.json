@@ -29,6 +29,7 @@
 			"client-extensions/liferay-sample-etc-node",
 			"client-extensions/liferay-sample-fds-cell-renderer",
 			"client-extensions/liferay-sample-fds-filter",
+			"client-extensions/liferay-sample-fds-visualization-mode",
 			"client-extensions/liferay-sample-js-import-maps-entry",
 			"client-extensions/liferay-sample-theme-css-1",
 			"client-extensions/liferay-sample-theme-css-2",
