@@ -75,6 +75,11 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 	}
 
 	@Override
+	public String getCreationItemsGroupLabel(Locale locale) {
+		return LanguageUtil.get(locale, "page-templates");
+	}
+
+	@Override
 	public String getDefaultActionId() {
 		return "view";
 	}
