@@ -148,11 +148,6 @@ resource "kubernetes_network_policy_v1" "envoy_proxy_ingress" {
 	}
 	spec {
 		ingress {
-			from {
-				ip_block {
-					cidr="0.0.0.0/0"
-				}
-			}
 		}
 		pod_selector {
 			match_labels={

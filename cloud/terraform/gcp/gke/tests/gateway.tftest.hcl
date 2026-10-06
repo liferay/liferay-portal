@@ -166,8 +166,8 @@ run "should_scope_the_envoy_gateway_network_policies_correctly" {
 		error_message="envoy-gateway-metrics-ingress must scope its allow to the metrics port by name. Both the control plane and the generated proxies declare metrics at 19001, and a named port resolves per pod against the container declaration, so a pod that stopped declaring it would lose the allow rather than have a stale number allowed against it"
 	}
 	assert {
-		condition=kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].from[0].ip_block[0].cidr == "0.0.0.0/0"
-		error_message="envoy-proxy-ingress must allow the public internet — these pods sit behind a LoadBalancer with externalTrafficPolicy Local, so the real client IP arrives and no namespaceSelector can express it"
+		condition=length(kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].from) == 0
+		error_message="envoy-proxy-ingress must declare NO from peers, which admits every source. An ipBlock of 0.0.0.0/0 looks equivalent and is not: it is IPv4 only, and on Dataplane V2 Cilium resolves a CIDR peer to the world identity, so in-cluster pods are not matched by it and hairpin traffic to the gateway is dropped"
 	}
 	assert {
 		condition=length(kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].ports) == 0
