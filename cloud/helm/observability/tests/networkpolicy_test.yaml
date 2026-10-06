@@ -55,11 +55,5 @@ tests:
             cloudProvider: aws
     -   asserts:
             -   hasDocuments:
-                    count: 0
-        it: Omits both policies when networkPolicy is disabled
-        set:
-            networkPolicy.enabled: false
-    -   asserts:
-            -   hasDocuments:
                     count: 2
-        it: Renders exactly the frontend allow and the namespace-wide default-deny by default
+        it: Renders exactly the frontend allow and the namespace-wide default-deny, unconditionally on GCP

@@ -755,8 +755,6 @@ kube-state-metrics:
     serviceAccount:
         automountServiceAccountToken: false
 nameOverride: ""
-networkPolicy:
-    enabled: true
 prometheus-node-exporter:
     enabled: true
     extraArgs:

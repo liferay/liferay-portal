@@ -1,4 +1,4 @@
-{{- if and .Values.networkPolicy.enabled (eq (include "observability.cloudProvider" .) "gcp") -}}
+{{- if eq (include "observability.cloudProvider" .) "gcp" -}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
