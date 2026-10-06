@@ -15,11 +15,10 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -335,8 +334,7 @@ public class ObjectEntryModelListenerTest {
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 
-		// A user who is not a member of the linked asset's space cannot link
-		// the asset
+		// A member of the linked asset's space can link the asset
 
 		ObjectEntry cmsBasicWebContentObjectEntry =
 			CMPTestUtil.addCMSBasicWebContentObjectEntry(
@@ -344,33 +342,37 @@ public class ObjectEntryModelListenerTest {
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
-		User user = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
+		User user1 = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
+
+		_userLocalService.addGroupUser(
+			_depotEntry.getGroupId(), user1.getUserId());
+
+		Assert.assertNotNull(
+			CMPTestUtil.addCMPTaskLinkObjectEntry(
+				cmpTaskObjectEntry, cmsBasicWebContentObjectEntry,
+				user1.getUserId()));
+
+		// A user who is not a member of the linked asset's space cannot link
+		// the asset
+
+		User user2 = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
 
 		try {
-			_addCMPTaskLinkObjectEntry(
+			CMPTestUtil.addCMPTaskLinkObjectEntry(
 				cmpTaskObjectEntry, cmsBasicWebContentObjectEntry,
-				user.getUserId());
+				user2.getUserId());
 
 			Assert.fail();
 		}
 		catch (ModelListenerException modelListenerException) {
 			Throwable throwable = modelListenerException.getCause();
 
-			String message = throwable.getMessage();
-
-			Assert.assertTrue(
-				message, message.contains("must be a member of space"));
+			Assert.assertEquals(
+				StringBundler.concat(
+					"User ", user2.getUserId(), " must be a member of space ",
+					_depotEntry.getGroupId(), " to link its assets"),
+				throwable.getMessage());
 		}
-
-		// A member of the linked asset's space can link the asset
-
-		_userLocalService.addGroupUser(
-			_depotEntry.getGroupId(), user.getUserId());
-
-		Assert.assertNotNull(
-			_addCMPTaskLinkObjectEntry(
-				cmpTaskObjectEntry, cmsBasicWebContentObjectEntry,
-				user.getUserId()));
 	}
 
 	@Test
@@ -428,36 +430,6 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
 				cmpTaskLinkObjectEntry.getObjectEntryId()));
-	}
-
-	private ObjectEntry _addCMPTaskLinkObjectEntry(
-			ObjectEntry cmpTaskObjectEntry, ObjectEntry linkedObjectEntry,
-			long userId)
-		throws Exception {
-
-		Group group = _groupLocalService.getGroup(
-			linkedObjectEntry.getGroupId());
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
-
-		return _objectEntryLocalService.addObjectEntry(
-			cmpTaskObjectEntry.getGroupId(), userId,
-			objectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"classExternalReferenceCode",
-				linkedObjectEntry.getExternalReferenceCode()
-			).put(
-				"className", linkedObjectEntry.getModelClassName()
-			).put(
-				"groupExternalReferenceCode", group.getExternalReferenceCode()
-			).put(
-				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
-				cmpTaskObjectEntry.getObjectEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _assertCompletionRate(
@@ -928,9 +900,6 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

@@ -58,7 +58,8 @@ public class CMPTestUtil {
 
 		return _addObjectEntry(
 			null, "L_CMP_PROJECT_LINK", cmpProjectObjectEntry,
-			"r_cmpProjectToCMPProjectLinks_c_cmpProjectId");
+			"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
+			cmpProjectObjectEntry.getUserId());
 	}
 
 	public static ObjectEntry addCMPProjectLinkObjectEntry(
@@ -67,7 +68,8 @@ public class CMPTestUtil {
 
 		return _addObjectEntry(
 			linkedObjectEntry, "L_CMP_PROJECT_LINK", cmpProjectObjectEntry,
-			"r_cmpProjectToCMPProjectLinks_c_cmpProjectId");
+			"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
+			cmpProjectObjectEntry.getUserId());
 	}
 
 	public static ObjectEntry addCMPProjectObjectEntry()
@@ -130,7 +132,8 @@ public class CMPTestUtil {
 
 		return _addObjectEntry(
 			null, "L_CMP_TASK_LINK", cmpTaskObjectEntry,
-			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId");
+			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+			cmpTaskObjectEntry.getUserId());
 	}
 
 	public static ObjectEntry addCMPTaskLinkObjectEntry(
@@ -139,7 +142,18 @@ public class CMPTestUtil {
 
 		return _addObjectEntry(
 			linkedObjectEntry, "L_CMP_TASK_LINK", cmpTaskObjectEntry,
-			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId");
+			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+			cmpTaskObjectEntry.getUserId());
+	}
+
+	public static ObjectEntry addCMPTaskLinkObjectEntry(
+			ObjectEntry cmpTaskObjectEntry, ObjectEntry linkedObjectEntry,
+			long userId)
+		throws PortalException {
+
+		return _addObjectEntry(
+			linkedObjectEntry, "L_CMP_TASK_LINK", cmpTaskObjectEntry,
+			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId", userId);
 	}
 
 	public static ObjectEntry addCMPTaskObjectEntry() throws PortalException {
@@ -254,7 +268,8 @@ public class CMPTestUtil {
 	private static ObjectEntry _addObjectEntry(
 			ObjectEntry linkedObjectEntry,
 			String objectDefinitionExternalReferenceCode,
-			ObjectEntry objectEntry, String relationshipObjectFieldName)
+			ObjectEntry objectEntry, String relationshipObjectFieldName,
+			long userId)
 		throws PortalException {
 
 		String classExternalReferenceCode = RandomTestUtil.randomString();
@@ -279,7 +294,7 @@ public class CMPTestUtil {
 					TestPropsValues.getCompanyId());
 
 		return ObjectEntryLocalServiceUtil.addObjectEntry(
-			objectEntry.getGroupId(), objectEntry.getUserId(),
+			objectEntry.getGroupId(), userId,
 			objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				relationshipObjectFieldName, objectEntry.getObjectEntryId()
