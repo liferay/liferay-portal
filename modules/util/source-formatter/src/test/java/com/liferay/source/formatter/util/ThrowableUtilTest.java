@@ -19,15 +19,13 @@ public class ThrowableUtilTest {
 
 	@Test(timeout = 5000)
 	public void testGetNestedThrowableWhenCyclic() {
-		Exception exception1 = new Exception();
+		Exception exception = new Exception();
 
-		Exception exception2 = new Exception(exception1);
-
-		exception1.initCause(exception2);
+		exception.initCause(new Exception(exception));
 
 		Assert.assertNull(
 			ThrowableUtil.getNestedThrowable(
-				exception1, UnsupportedClassVersionError.class));
+				exception, UnsupportedClassVersionError.class));
 	}
 
 	@Test
