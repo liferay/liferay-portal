@@ -9,6 +9,8 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Rodrigo Paulino
  */
@@ -19,7 +21,22 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	id = "com.liferay.object.configuration.ObjectConfiguration",
 	localization = "content/Language", name = "object-configuration-name"
 )
+@ProviderType
 public interface ObjectConfiguration {
+
+	@Meta.AD(
+		description = "attachment-file-url-hosts-allowed-description",
+		name = "attachment-file-url-hosts-allowed", required = false
+	)
+	public String[] attachmentFileURLHostsAllowed();
+
+	@Meta.AD(
+		deflt = "false",
+		description = "attachment-file-url-local-network-access-enabled-description",
+		name = "attachment-file-url-local-network-access-enabled",
+		required = false
+	)
+	public boolean attachmentFileURLLocalNetworkAccessEnabled();
 
 	@Meta.AD(deflt = "1", name = "duration", required = false)
 	public long duration();
