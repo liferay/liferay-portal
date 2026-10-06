@@ -54,7 +54,7 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 
 	const toolbar: string | [string[]] = config.toolbar;
 
-	const buttonName = 'AICreator';
+	const buttonName = 'Subscript';
 	let transformedConfig: any;
 
 	if (typeof toolbar === 'string') {
@@ -76,12 +76,7 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 		};
 	}
 
-	const extraPlugins: string = config.extraPlugins;
-
-	return {
-		...transformedConfig,
-		extraPlugins: extraPlugins ? `${extraPlugins},aicreator` : 'aicreator',
-	};
+	return transformedConfig;
 };
 
 const editorTransformer: EditorTransformer<any> = {
