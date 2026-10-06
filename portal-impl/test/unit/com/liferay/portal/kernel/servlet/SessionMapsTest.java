@@ -7,17 +7,24 @@ package com.liferay.portal.kernel.servlet;
 
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 
 import org.junit.Assert;
@@ -53,6 +60,62 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 		Assert.assertEquals(
 			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY2));
+	}
+
+	@Test
+	public void testAddConcurrently() throws Exception {
+		Map<String, Object> attributes = new ConcurrentHashMap<>();
+		CountDownLatch countDownLatch1 = new CountDownLatch(2);
+		CountDownLatch countDownLatch2 = new CountDownLatch(1);
+
+		HttpSession sharedHttpSession = (HttpSession)ProxyUtil.newProxyInstance(
+			HttpSession.class.getClassLoader(),
+			new Class<?>[] {HttpSession.class},
+			(proxy, method, args) -> {
+				String methodName = method.getName();
+
+				if (methodName.equals("getAttribute")) {
+					Object attribute = attributes.get(args[0]);
+
+					countDownLatch1.countDown();
+
+					countDownLatch2.await();
+
+					return attribute;
+				}
+
+				if (methodName.equals("setAttribute")) {
+					attributes.put((String)args[0], args[1]);
+				}
+
+				return null;
+			});
+
+		FutureTask<Void> futureTask1 = new FutureTask<>(
+			() -> SessionMaps.add(sharedHttpSession, _MAP_KEY, KEY1, VALUE1),
+			null);
+		FutureTask<Void> futureTask2 = new FutureTask<>(
+			() -> SessionMaps.add(sharedHttpSession, _MAP_KEY, KEY2, VALUE2),
+			null);
+
+		Thread thread1 = new Thread(futureTask1);
+		Thread thread2 = new Thread(futureTask2);
+
+		thread1.start();
+		thread2.start();
+
+		countDownLatch1.await();
+
+		countDownLatch2.countDown();
+
+		futureTask1.get();
+		futureTask2.get();
+
+		Map<String, Object> map = (Map<String, Object>)attributes.get(_MAP_KEY);
+
+		Assert.assertEquals(VALUE1, map.get(KEY1));
+		Assert.assertEquals(VALUE2, map.get(KEY2));
+		Assert.assertTrue(map instanceof ConcurrentHashMap);
 	}
 
 	@Test
