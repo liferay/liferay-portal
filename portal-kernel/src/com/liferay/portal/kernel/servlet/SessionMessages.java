@@ -18,7 +18,6 @@ import jakarta.portlet.PortletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -97,7 +96,7 @@ public class SessionMessages {
 			_log.debug("Adding key " + key);
 		}
 
-		_sessionMaps.add(httpSession, _CLASS_NAME, key, key);
+		SessionMaps.add(httpSession, _CLASS_NAME, key, key);
 	}
 
 	public static void add(HttpSession httpSession, String key, Object value) {
@@ -113,7 +112,7 @@ public class SessionMessages {
 				exception);
 		}
 
-		_sessionMaps.add(httpSession, _CLASS_NAME, key, value);
+		SessionMaps.add(httpSession, _CLASS_NAME, key, value);
 	}
 
 	public static void add(PortletRequest portletRequest, Class<?> clazz) {
@@ -134,7 +133,7 @@ public class SessionMessages {
 					portletRequest.getWindowID()));
 		}
 
-		_sessionMaps.add(
+		SessionMaps.add(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest), key,
 			key);
 	}
@@ -156,7 +155,7 @@ public class SessionMessages {
 				exception);
 		}
 
-		_sessionMaps.add(
+		SessionMaps.add(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest), key,
 			value);
 	}
@@ -166,11 +165,11 @@ public class SessionMessages {
 	}
 
 	public static void clear(HttpSession httpSession) {
-		_sessionMaps.clear(httpSession, _CLASS_NAME);
+		SessionMaps.clear(httpSession, _CLASS_NAME);
 	}
 
 	public static void clear(PortletRequest portletRequest) {
-		_sessionMaps.clear(
+		SessionMaps.clear(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest));
 	}
 
@@ -210,7 +209,7 @@ public class SessionMessages {
 	}
 
 	public static boolean contains(HttpSession httpSession, String key) {
-		return _sessionMaps.contains(httpSession, _CLASS_NAME, key);
+		return SessionMaps.contains(httpSession, _CLASS_NAME, key);
 	}
 
 	public static boolean contains(
@@ -232,7 +231,7 @@ public class SessionMessages {
 	}
 
 	public static boolean contains(PortletRequest portletRequest, String key) {
-		return _sessionMaps.contains(
+		return SessionMaps.contains(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest),
 			key);
 	}
@@ -254,7 +253,7 @@ public class SessionMessages {
 	}
 
 	public static Object get(HttpSession httpSession, String key) {
-		return _sessionMaps.get(httpSession, _CLASS_NAME, key);
+		return SessionMaps.get(httpSession, _CLASS_NAME, key);
 	}
 
 	public static Object get(PortletRequest portletRequest, Class<?> clazz) {
@@ -262,7 +261,7 @@ public class SessionMessages {
 	}
 
 	public static Object get(PortletRequest portletRequest, String key) {
-		return _sessionMaps.get(
+		return SessionMaps.get(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest),
 			key);
 	}
@@ -272,11 +271,11 @@ public class SessionMessages {
 	}
 
 	public static boolean isEmpty(HttpSession httpSession) {
-		return _sessionMaps.isEmpty(httpSession, _CLASS_NAME);
+		return SessionMaps.isEmpty(httpSession, _CLASS_NAME);
 	}
 
 	public static boolean isEmpty(PortletRequest portletRequest) {
-		return _sessionMaps.isEmpty(
+		return SessionMaps.isEmpty(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest));
 	}
 
@@ -287,11 +286,11 @@ public class SessionMessages {
 	}
 
 	public static Iterator<String> iterator(HttpSession httpSession) {
-		return _sessionMaps.iterator(httpSession, _CLASS_NAME);
+		return SessionMaps.iterator(httpSession, _CLASS_NAME);
 	}
 
 	public static Iterator<String> iterator(PortletRequest portletRequest) {
-		return _sessionMaps.iterator(
+		return SessionMaps.iterator(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest));
 	}
 
@@ -300,11 +299,11 @@ public class SessionMessages {
 	}
 
 	public static Set<String> keySet(HttpSession httpSession) {
-		return _sessionMaps.keySet(httpSession, _CLASS_NAME);
+		return SessionMaps.keySet(httpSession, _CLASS_NAME);
 	}
 
 	public static Set<String> keySet(PortletRequest portletRequest) {
-		return _sessionMaps.keySet(
+		return SessionMaps.keySet(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest));
 	}
 
@@ -331,7 +330,7 @@ public class SessionMessages {
 	public static void remove(
 		HttpServletRequest httpServletRequest, Class<?> clazz) {
 
-		_sessionMaps.remove(
+		SessionMaps.remove(
 			_getPortalHttpSession(httpServletRequest), _CLASS_NAME,
 			clazz.getName());
 	}
@@ -339,7 +338,7 @@ public class SessionMessages {
 	public static void remove(
 		HttpServletRequest httpServletRequest, String key) {
 
-		_sessionMaps.remove(
+		SessionMaps.remove(
 			_getPortalHttpSession(httpServletRequest), _CLASS_NAME, key);
 	}
 
@@ -348,11 +347,11 @@ public class SessionMessages {
 	}
 
 	public static int size(HttpSession httpSession) {
-		return _sessionMaps.size(httpSession, _CLASS_NAME);
+		return SessionMaps.size(httpSession, _CLASS_NAME);
 	}
 
 	public static int size(PortletRequest portletRequest) {
-		return _sessionMaps.size(
+		return SessionMaps.size(
 			_getPortalHttpSession(portletRequest), _getKey(portletRequest));
 	}
 
@@ -392,8 +391,5 @@ public class SessionMessages {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SessionMessages.class);
-
-	private static final SessionMaps _sessionMaps = new SessionMaps(
-		HashMap::new);
 
 }

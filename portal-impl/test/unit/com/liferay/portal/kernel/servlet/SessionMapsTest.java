@@ -14,7 +14,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,75 +38,80 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 
 	@Test
 	public void testAdd() {
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE2);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE2);
 
 		Assert.assertEquals(
-			VALUE1, _sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+			VALUE1, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 		Assert.assertEquals(
-			VALUE2, _sessionMaps.get(httpSession, _MAP_KEY, KEY2));
+			VALUE2, SessionMaps.get(httpSession, _MAP_KEY, KEY2));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE3);
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE3);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE3);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE3);
 
 		Assert.assertEquals(
-			VALUE3, _sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 		Assert.assertEquals(
-			VALUE3, _sessionMaps.get(httpSession, _MAP_KEY, KEY2));
+			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY2));
 	}
 
 	@Test
 	public void testClear() {
-		_sessionMaps.clear(httpSession, _MAP_KEY);
+		SessionMaps.clear(httpSession, _MAP_KEY);
 
-		Assert.assertNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
-		Assert.assertNotNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNotNull(SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 
-		_sessionMaps.clear(httpSession, _MAP_KEY);
+		SessionMaps.clear(httpSession, _MAP_KEY);
 
-		Assert.assertNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(httpSession, _MAP_KEY, KEY1));
+	}
+
+	@Test
+	public void testConstructor() {
+		new SessionMaps();
 	}
 
 	@Test
 	public void testContains() {
 		Assert.assertFalse(
 			"SessionMaps should not contain " + KEY1,
-			_sessionMaps.contains(httpSession, _MAP_KEY, KEY1));
+			SessionMaps.contains(httpSession, _MAP_KEY, KEY1));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
 		Assert.assertTrue(
 			"SessionMaps should contain " + KEY1,
-			_sessionMaps.contains(httpSession, _MAP_KEY, KEY1));
+			SessionMaps.contains(httpSession, _MAP_KEY, KEY1));
 		Assert.assertFalse(
 			"SessionMaps should not contain " + KEY2,
-			_sessionMaps.contains(httpSession, _MAP_KEY, KEY2));
+			SessionMaps.contains(httpSession, _MAP_KEY, KEY2));
 	}
 
 	@Test
 	public void testGet() {
-		Assert.assertNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
 		Assert.assertEquals(
-			VALUE1, _sessionMaps.get(httpSession, _MAP_KEY, KEY1));
-		Assert.assertNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY2));
+			VALUE1, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(httpSession, _MAP_KEY, KEY2));
 	}
 
 	@Test
 	public void testInvalidatedSession() {
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
 		httpSessionInvocationHandler.setInvalidated(true);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				SessionMaps.class.getName(), LoggerTestUtil.ERROR)) {
 
-			Assert.assertTrue(_sessionMaps.isEmpty(httpSession, _MAP_KEY));
+			Assert.assertTrue(SessionMaps.isEmpty(httpSession, _MAP_KEY));
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -115,7 +119,7 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 
 			logCapture.resetPriority(Level.FINE.toString());
 
-			Assert.assertTrue(_sessionMaps.isEmpty(httpSession, _MAP_KEY));
+			Assert.assertTrue(SessionMaps.isEmpty(httpSession, _MAP_KEY));
 
 			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
 
@@ -131,41 +135,40 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 	public void testIsEmpty() {
 		Assert.assertTrue(
 			"The map should be empty when it does not exist in session",
-			_sessionMaps.isEmpty(httpSession, _MAP_KEY));
+			SessionMaps.isEmpty(httpSession, _MAP_KEY));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
 		Assert.assertFalse(
 			"The map should not be empty",
-			_sessionMaps.isEmpty(httpSession, _MAP_KEY));
+			SessionMaps.isEmpty(httpSession, _MAP_KEY));
 	}
 
 	@Test
 	public void testIteratorAndKeySet() {
 		Assert.assertEquals(
-			Collections.emptySet(), _sessionMaps.keySet(httpSession, _MAP_KEY));
+			Collections.emptySet(), SessionMaps.keySet(httpSession, _MAP_KEY));
 		Assert.assertEquals(
 			Collections.emptyIterator(),
-			_sessionMaps.iterator(httpSession, _MAP_KEY));
+			SessionMaps.iterator(httpSession, _MAP_KEY));
 
 		Set<String> expectedKeys = new HashSet<>(
 			Arrays.asList(KEY1, KEY2, KEY3));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE2);
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY3, VALUE3);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE2);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY3, VALUE3);
 
 		// Key set
 
 		Assert.assertEquals(
-			expectedKeys, _sessionMaps.keySet(httpSession, _MAP_KEY));
+			expectedKeys, SessionMaps.keySet(httpSession, _MAP_KEY));
 
 		// Iterator
 
 		Set<String> iteratorKeys = new HashSet<>();
 
-		Iterator<String> iterator = _sessionMaps.iterator(
-			httpSession, _MAP_KEY);
+		Iterator<String> iterator = SessionMaps.iterator(httpSession, _MAP_KEY);
 
 		while (iterator.hasNext()) {
 			iteratorKeys.add(iterator.next());
@@ -176,42 +179,40 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 
 	@Test
 	public void testNullSession() {
-		_sessionMaps.add(null, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(null, _MAP_KEY, KEY1, VALUE1);
 
-		Assert.assertNull(null, _sessionMaps.get(null, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(null, _MAP_KEY, KEY1));
 	}
 
 	@Test
 	public void testRemove() {
-		_sessionMaps.remove(httpSession, _MAP_KEY, KEY1);
+		SessionMaps.remove(httpSession, _MAP_KEY, KEY1);
 
-		Assert.assertNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
 		Assert.assertEquals(
-			VALUE1, _sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+			VALUE1, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 
-		_sessionMaps.remove(httpSession, _MAP_KEY, KEY1);
+		SessionMaps.remove(httpSession, _MAP_KEY, KEY1);
 
-		Assert.assertNull(_sessionMaps.get(httpSession, _MAP_KEY, KEY1));
+		Assert.assertNull(SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 	}
 
 	@Test
 	public void testSize() {
-		Assert.assertEquals(0, _sessionMaps.size(httpSession, _MAP_KEY));
+		Assert.assertEquals(0, SessionMaps.size(httpSession, _MAP_KEY));
 
-		_sessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 
-		Assert.assertEquals(1, _sessionMaps.size(httpSession, _MAP_KEY));
+		Assert.assertEquals(1, SessionMaps.size(httpSession, _MAP_KEY));
 
-		_sessionMaps.clear(httpSession, _MAP_KEY);
+		SessionMaps.clear(httpSession, _MAP_KEY);
 
-		Assert.assertEquals(0, _sessionMaps.size(httpSession, _MAP_KEY));
+		Assert.assertEquals(0, SessionMaps.size(httpSession, _MAP_KEY));
 	}
 
 	private static final String _MAP_KEY = SessionMapsTest.class.getName();
-
-	private final SessionMaps _sessionMaps = new SessionMaps(HashMap::new);
 
 }
