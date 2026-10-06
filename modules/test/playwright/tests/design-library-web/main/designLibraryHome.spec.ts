@@ -9,7 +9,9 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
 import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
 
 const test = mergeTests(
@@ -23,7 +25,7 @@ const test = mergeTests(
 
 test(
 	'Shows the revamped per-library home with members and connected sites',
-	{tag: '@LPD-99371'},
+	{tag: ['@LPD-108834', '@LPD-99371']},
 	async ({apiHelpers, designLibrariesPage, page}) => {
 		const designLibraryName = getRandomString();
 
@@ -51,6 +53,47 @@ test(
 				await expect(
 					page.getByRole('button', {name: 'Add Asset'})
 				).toBeVisible();
+			});
+
+			await test.step('Add Asset groups the creation actions of each asset type', async () => {
+				const fragmentsMenuItem = page.getByRole('menuitem', {
+					exact: true,
+					name: 'Fragments',
+				});
+
+				await clickAndExpectToBeVisible({
+					target: fragmentsMenuItem,
+					trigger: page.getByRole('button', {name: 'Add Asset'}),
+				});
+
+				const newContentPageTemplateMenuItem = page.getByRole(
+					'menuitem',
+					{name: 'New Content Page Template'}
+				);
+
+				await hoverAndExpectToBeVisible({
+					target: newContentPageTemplateMenuItem,
+					trigger: page.getByRole('menuitem', {
+						exact: true,
+						name: 'Page Templates',
+					}),
+				});
+				await hoverAndExpectToBeVisible({
+					target: page.getByRole('menuitem', {
+						name: 'New Basic Fragment',
+					}),
+					trigger: fragmentsMenuItem,
+				});
+
+				await expect(newContentPageTemplateMenuItem).toBeHidden();
+
+				await expect(async () => {
+					await page.keyboard.press('Escape');
+
+					await expect(fragmentsMenuItem).toBeHidden({
+						timeout: 500,
+					});
+				}).toPass();
 			});
 
 			await test.step('Members section shows the owner and the Users and User Groups tabs', async () => {

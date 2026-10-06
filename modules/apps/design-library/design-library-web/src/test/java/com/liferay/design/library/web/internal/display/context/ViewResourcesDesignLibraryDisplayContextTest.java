@@ -231,6 +231,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-108834")
 	public void testGetFDSAdditionalProps() throws Exception {
 		_setUpPortletURLMocks();
 
@@ -245,6 +246,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		Assert.assertEquals("style-book-color", resourceType.get("color"));
 		Assert.assertNull(resourceType.get("creationItems"));
+		Assert.assertNull(resourceType.get("creationItemsGroupLabel"));
 		Assert.assertEquals("edit", resourceType.get("defaultActionId"));
 		Assert.assertEquals(_CLASS_NAME_3, resourceType.get("entryClassName"));
 		Assert.assertEquals("style-book", resourceType.get("key"));
@@ -254,6 +256,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-108834")
 	public void testGetFDSAdditionalPropsAddsCreationItemsWithAddPermission()
 		throws Exception {
 
@@ -264,12 +267,10 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		List<Map<String, Object>> resourceTypes = _getResourceTypes();
 
+		Map<String, Object> resourceType = resourceTypes.get(0);
+
 		List<Map<String, Object>> creationItems =
-			(List<Map<String, Object>>)resourceTypes.get(
-				0
-			).get(
-				"creationItems"
-			);
+			(List<Map<String, Object>>)resourceType.get("creationItems");
 
 		Assert.assertEquals(creationItems.toString(), 1, creationItems.size());
 
@@ -277,6 +278,10 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		Assert.assertEquals("style-book-add", creationItem.get("id"));
 		Assert.assertEquals("style-book-add-label", creationItem.get("label"));
+
+		Assert.assertEquals(
+			"style-book-creation-items-group-label",
+			resourceType.get("creationItemsGroupLabel"));
 	}
 
 	@Test
@@ -474,6 +479,13 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 					key + "-add", key + "-add-label",
 					"{Modal} from " + key + "-web",
 					Collections.singletonMap("backURL", "backURL")))
+		);
+
+		Mockito.when(
+			designLibraryResourceTypeContributor.getCreationItemsGroupLabel(
+				Mockito.any(Locale.class))
+		).thenReturn(
+			key + "-creation-items-group-label"
 		);
 
 		Mockito.when(
