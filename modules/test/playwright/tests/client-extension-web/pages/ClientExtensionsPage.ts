@@ -37,7 +37,9 @@ export class ClientExtensionsPage extends POM {
 	constructor(page: Page) {
 		super(page, PORTLET_URL);
 
-		this.addNewClientExtensionButton = page.getByTitle('New');
+		this.addNewClientExtensionButton = page
+			.getByTestId('managementToolbar')
+			.getByRole('button', {name: 'New'});
 		this.configuredFromTableHeader = page.getByLabel('Configured From', {
 			exact: true,
 		});
