@@ -41,7 +41,7 @@ resource "kubernetes_network_policy_v1" "default_deny_ingress" {
 	spec {
 		pod_selector {
 		}
-		policy_types=["Ingress",]
+		policy_types=["Ingress"]
 	}
 }
 resource "kubernetes_network_policy_v1" "envoy_gateway_ingress" {
@@ -105,7 +105,7 @@ resource "kubernetes_network_policy_v1" "envoy_gateway_ingress" {
 				"control-plane"="envoy-gateway"
 			}
 		}
-		policy_types=["Ingress",]
+		policy_types=["Ingress"]
 	}
 }
 resource "kubernetes_network_policy_v1" "envoy_gateway_metrics_ingress" {
@@ -135,7 +135,7 @@ resource "kubernetes_network_policy_v1" "envoy_gateway_metrics_ingress" {
 		}
 		pod_selector {
 		}
-		policy_types=["Ingress",]
+		policy_types=["Ingress"]
 	}
 }
 resource "kubernetes_network_policy_v1" "envoy_proxy_ingress" {
@@ -155,7 +155,7 @@ resource "kubernetes_network_policy_v1" "envoy_proxy_ingress" {
 				"app.kubernetes.io/name"="envoy"
 			}
 		}
-		policy_types=["Ingress",]
+		policy_types=["Ingress"]
 	}
 }
 resource "kubernetes_pod_disruption_budget_v1" "envoy_proxy_pdb" {
