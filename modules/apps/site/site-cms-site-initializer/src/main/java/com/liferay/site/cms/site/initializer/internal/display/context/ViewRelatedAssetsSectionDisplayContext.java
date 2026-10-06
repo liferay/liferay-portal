@@ -128,15 +128,14 @@ public class ViewRelatedAssetsSectionDisplayContext
 				() -> {
 					String additionalAPIURLParameters =
 						SectionDisplayContextUtil.getAdditionalAPIURLParameters(
-							SectionDisplayContextUtil.appendGroupIds(
+							appendGroupIds(
 								appendStatus(
 									StringBundler.concat(
 										"(cmsSection eq 'contents' or ",
 										"cmsSection eq 'files') and not (",
 										getRelatedObjectEntriesFilterString(),
 										") and objectDefinitionId gt 0 and ",
-										"rootDescendantNode eq false")),
-								httpServletRequest),
+										"rootDescendantNode eq false"))),
 							httpServletRequest, null);
 
 					return "/o/search/v1.0/search?" +
