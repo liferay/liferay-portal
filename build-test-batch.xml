@@ -3836,7 +3836,6 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 								<matches pattern="(file|https?)://" string="${test.portal.bundle.war.url}" />
 								<matches pattern="(file|https?)://" string="${test.portal.bundle.zip.url}" />
 							</or>
-							<matches pattern="(file|https?)://" string="${test.sql.zip.url}" />
 							<contains string="${env.JOB_NAME}" substring="-release" />
 						</and>
 						<then>
