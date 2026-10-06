@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -261,6 +263,34 @@ public class PortalReleasePortalTopLevelBuild
 			throw new RuntimeException(
 				"TEST_PORTAL_RELEASE_TOMCAT_URL is required when " +
 					"TEST_PORTAL_RELEASE_STANDALONE is true");
+		}
+
+		List<String> releaseFileParameterNames = new ArrayList<>();
+
+		for (String parameterName :
+				new String[] {
+					"TEST_PORTAL_RELEASE_DEPENDENCIES_URL",
+					"TEST_PORTAL_RELEASE_OSGI_URL",
+					"TEST_PORTAL_RELEASE_SQL_URL",
+					"TEST_PORTAL_RELEASE_TOOLS_URL",
+					"TEST_PORTAL_RELEASE_WAR_URL"
+				}) {
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					getParameterValue(parameterName))) {
+
+				releaseFileParameterNames.add(parameterName);
+			}
+		}
+
+		if (!releaseFileParameterNames.isEmpty()) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"A standalone release takes only ",
+					"TEST_PORTAL_RELEASE_TOMCAT_URL. Remove ",
+					JenkinsResultsParserUtil.join(
+						", ", releaseFileParameterNames),
+					"."));
 		}
 
 		try {
