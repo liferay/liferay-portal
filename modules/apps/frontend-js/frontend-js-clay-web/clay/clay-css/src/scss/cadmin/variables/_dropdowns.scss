@@ -144,7 +144,6 @@ $cadmin-dropdown-item-base: map-deep-merge(
 
 		active-class: (
 			font-weight: $cadmin-dropdown-link-active-font-weight,
-			pointer-events: none,
 
 			c-kbd-inline: (
 				color: $cadmin-dropdown-link-active-color,

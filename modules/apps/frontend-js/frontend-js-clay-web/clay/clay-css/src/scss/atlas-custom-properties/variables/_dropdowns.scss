@@ -233,7 +233,6 @@ $dropdown-item-base: map-deep-merge(
 
 		active-class: (
 			font-weight: $dropdown-link-active-font-weight,
-			pointer-events: none,
 
 			c-kbd-inline: (
 				color: $dropdown-link-active-color,
