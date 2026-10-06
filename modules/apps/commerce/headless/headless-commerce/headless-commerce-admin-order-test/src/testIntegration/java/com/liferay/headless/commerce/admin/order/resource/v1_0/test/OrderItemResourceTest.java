@@ -6,13 +6,18 @@
 package com.liferay.headless.commerce.admin.order.resource.v1_0.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.media.constants.CommerceMediaConstants;
+import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
@@ -28,6 +33,7 @@ import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrde
 import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemLocalService;
 import com.liferay.commerce.product.type.virtual.order.util.CommerceVirtualOrderItemChecker;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingLocalService;
+import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
@@ -41,12 +47,21 @@ import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.headless.commerce.admin.order.client.custom.field.CustomField;
 import com.liferay.headless.commerce.admin.order.client.custom.field.CustomValue;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;
+import com.liferay.headless.commerce.admin.order.client.problem.Problem;
+import com.liferay.headless.commerce.admin.order.client.resource.v1_0.OrderItemResource;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.RegionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -54,7 +69,9 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
@@ -116,6 +133,16 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 			testGroup.getGroupId(), _user.getUserId(),
 			_accountEntry.getAccountEntryId(),
 			_commerceCurrency.getCommerceCurrencyId());
+
+		_country = _countryLocalService.addCountry(
+			null, "XY", "XYZ", true, true, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextDouble(), true, true, false, _serviceContext);
+
+		_region = _regionLocalService.addRegion(
+			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
+			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
+			_serviceContext);
 	}
 
 	@Ignore
@@ -162,6 +189,14 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 	@Test
 	public void testPatchOrderItemByExternalReferenceCode() throws Exception {
 		super.testPatchOrderItemByExternalReferenceCode();
+	}
+
+	@Override
+	@Test
+	public void testPostOrderIdOrderItem() throws Exception {
+		super.testPostOrderIdOrderItem();
+
+		_testPostOrderIdOrderItemWithInvalidShippingAddress();
 	}
 
 	@Override
@@ -287,6 +322,20 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 			_commerceOrder.getExternalReferenceCode(), randomOrderItem());
 	}
 
+	private CommerceAddress _addCommerceAddress(long accountEntryId)
+		throws Exception {
+
+		return _commerceAddressLocalService.addCommerceAddress(
+			RandomTestUtil.randomString(), AccountEntry.class.getName(),
+			accountEntryId, _country.getCountryId(), _region.getRegionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
+			RandomTestUtil.randomString(), _serviceContext);
+	}
+
 	private OrderItem _addCommerceOrderItem(OrderItem orderItem)
 		throws Exception {
 
@@ -359,6 +408,33 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 		};
 	}
 
+	private CommerceAddress _addInvalidCommerceAddress() throws Exception {
+		User user = UserTestUtil.addUser(testCompany);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(), null,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					user.getUserId()));
+
+		return _addCommerceAddress(accountEntry.getAccountEntryId());
+	}
+
+	private void _assertProblemException(
+			String expectedStatus, OrderItem orderItem,
+			UnsafeConsumer<OrderItem, Exception> unsafeConsumer)
+		throws Exception {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> unsafeConsumer.accept(orderItem));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals(expectedStatus, problem.getStatus());
+	}
+
 	private OrderItem _getOrderItem(long fileEntryId, String url)
 		throws Exception {
 
@@ -401,7 +477,6 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 					RandomTestUtil.randomInt());
 				shippingAddressExternalReferenceCode =
 					RandomTestUtil.randomString();
-				shippingAddressId = RandomTestUtil.randomLong();
 				sku = cpInstance.getSku();
 				skuExternalReferenceCode =
 					cpInstance.getExternalReferenceCode();
@@ -411,6 +486,30 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 					RandomTestUtil.randomString());
 			}
 		};
+	}
+
+	private OrderItemResource _getOrderItemResource() throws Exception {
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			_accountEntry.getAccountEntryId(), user.getUserId());
+
+		_roleLocalService.addUserRole(
+			user.getUserId(),
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR
+			).getRoleId());
+
+		return OrderItemResource.builder(
+		).authentication(
+			user.getEmailAddress(), _PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _testGetOrderItemWithFileEntry() throws Exception {
@@ -517,13 +616,70 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 		Assert.assertNotNull(patchOrderItem.getCustomFields());
 	}
 
+	private void _testPostOrderIdOrderItemWithInvalidShippingAddress()
+		throws Exception {
+
+		CommerceAddress commerceAddress1 = _addInvalidCommerceAddress();
+		OrderItemResource orderItemResource = _getOrderItemResource();
+		OrderItem randomOrderItem = randomOrderItem();
+
+		_assertProblemException(
+			"FORBIDDEN",
+			new OrderItem() {
+				{
+					quantity = randomOrderItem.getQuantity();
+					shippingAddressId = commerceAddress1.getCommerceAddressId();
+					skuId = randomOrderItem.getSkuId();
+				}
+			},
+			postOrderItem -> orderItemResource.postOrderIdOrderItem(
+				_commerceOrder.getCommerceOrderId(), postOrderItem));
+		_assertProblemException(
+			"FORBIDDEN",
+			new OrderItem() {
+				{
+					quantity = randomOrderItem.getQuantity();
+					shippingAddressExternalReferenceCode =
+						commerceAddress1.getExternalReferenceCode();
+					skuId = randomOrderItem.getSkuId();
+				}
+			},
+			postOrderItem -> orderItemResource.postOrderIdOrderItem(
+				_commerceOrder.getCommerceOrderId(), postOrderItem));
+
+		CommerceAddress commerceAddress2 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId());
+
+		OrderItem postOrderItem = orderItemResource.postOrderIdOrderItem(
+			_commerceOrder.getCommerceOrderId(),
+			new OrderItem() {
+				{
+					quantity = randomOrderItem.getQuantity();
+					shippingAddressId = commerceAddress2.getCommerceAddressId();
+					skuId = randomOrderItem.getSkuId();
+				}
+			});
+
+		Assert.assertEquals(
+			Long.valueOf(commerceAddress2.getCommerceAddressId()),
+			postOrderItem.getShippingAddressId());
+	}
+
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
 	private AccountEntry _accountEntry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
+
+	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	private CommerceCatalog _commerceCatalog;
 	private CommerceChannel _commerceChannel;
@@ -548,6 +704,11 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 	private CommerceVirtualOrderItemLocalService
 		_commerceVirtualOrderItemLocalService;
 
+	private Country _country;
+
+	@Inject
+	private CountryLocalService _countryLocalService;
+
 	@Inject
 	private CPDefinitionVirtualSettingLocalService
 		_cpDefinitionVirtualSettingLocalService;
@@ -564,7 +725,18 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 	@Inject
 	private Portal _portal;
 
+	private Region _region;
+
+	@Inject
+	private RegionLocalService _regionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	private ServiceContext _serviceContext;
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
