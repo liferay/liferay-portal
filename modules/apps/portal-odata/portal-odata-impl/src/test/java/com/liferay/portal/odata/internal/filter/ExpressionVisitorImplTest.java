@@ -686,6 +686,48 @@ public class ExpressionVisitorImplTest {
 	}
 
 	@Test
+	public void testVisitMethodExpressionWithContains() {
+		Map<String, EntityField> entityFieldsMap =
+			_entityModel.getEntityFieldsMap();
+
+		EntityField entityField = entityFieldsMap.get("title");
+
+		String value = "title1";
+
+		QueryFilter queryFilter =
+			(QueryFilter)_expressionVisitorImpl.visitMethodExpression(
+				Arrays.asList(Arrays.array(entityField, value)),
+				MethodExpression.Type.CONTAINS);
+
+		WildcardQuery wildcardQuery = (WildcardQuery)queryFilter.getQuery();
+
+		QueryTerm queryTerm = wildcardQuery.getQueryTerm();
+
+		Assert.assertEquals(entityField.getName(), queryTerm.getField());
+		Assert.assertEquals("*" + value + "*", queryTerm.getValue());
+	}
+
+	@Test
+	public void testVisitMethodExpressionWithContainsAndWildcardCharacters() {
+		Map<String, EntityField> entityFieldsMap =
+			_entityModel.getEntityFieldsMap();
+
+		EntityField entityField = entityFieldsMap.get("title");
+
+		QueryFilter queryFilter =
+			(QueryFilter)_expressionVisitorImpl.visitMethodExpression(
+				Arrays.asList(Arrays.array(entityField, "ti*tle?1\\")),
+				MethodExpression.Type.CONTAINS);
+
+		WildcardQuery wildcardQuery = (WildcardQuery)queryFilter.getQuery();
+
+		QueryTerm queryTerm = wildcardQuery.getQueryTerm();
+
+		Assert.assertEquals(entityField.getName(), queryTerm.getField());
+		Assert.assertEquals("*ti\\*tle\\?1\\\\*", queryTerm.getValue());
+	}
+
+	@Test
 	public void testVisitMethodExpressionWithNow() throws ParseException {
 		Date initialDate = new Date();
 
@@ -734,6 +776,26 @@ public class ExpressionVisitorImplTest {
 
 		Assert.assertEquals(entityField.getName(), queryTerm.getField());
 		Assert.assertEquals(value + "*", queryTerm.getValue());
+	}
+
+	@Test
+	public void testVisitMethodExpressionWithStartsWithAndWildcardCharacters() {
+		Map<String, EntityField> entityFieldsMap =
+			_entityModel.getEntityFieldsMap();
+
+		EntityField entityField = entityFieldsMap.get("title");
+
+		QueryFilter queryFilter =
+			(QueryFilter)_expressionVisitorImpl.visitMethodExpression(
+				Arrays.asList(Arrays.array(entityField, "ti*tle?1\\")),
+				MethodExpression.Type.STARTS_WITH);
+
+		WildcardQuery wildcardQuery = (WildcardQuery)queryFilter.getQuery();
+
+		QueryTerm queryTerm = wildcardQuery.getQueryTerm();
+
+		Assert.assertEquals(entityField.getName(), queryTerm.getField());
+		Assert.assertEquals("ti\\*tle\\?1\\\\*", queryTerm.getValue());
 	}
 
 	@Test
