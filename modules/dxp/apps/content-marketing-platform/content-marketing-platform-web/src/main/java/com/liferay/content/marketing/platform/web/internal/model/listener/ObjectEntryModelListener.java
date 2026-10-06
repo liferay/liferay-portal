@@ -73,6 +73,8 @@ import com.liferay.site.cms.site.initializer.util.CMSObjectEntryUtil;
 import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
+import jakarta.validation.ValidationException;
+
 import java.io.Serializable;
 
 import java.util.Collections;
@@ -723,7 +725,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		throw new PortalException(
+		throw new ValidationException(
 			StringBundler.concat(
 				"User ", objectEntry.getUserId(), " must be a member of space ",
 				group.getGroupId(), " to link its assets"));
