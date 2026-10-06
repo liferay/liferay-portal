@@ -298,12 +298,22 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 	private Filter _contains(
 		EntityField entityField, Object fieldValue, Locale locale) {
 
+		String value = _escapeWildcardCharacters(
+			entityField.getFilterableValue(fieldValue));
+
 		return new QueryFilter(
 			_nestedFieldQueryHelper.getQuery(
 				entityField.getFilterableName(locale),
-				fieldName -> new WildcardQuery(
-					fieldName,
-					"*" + entityField.getFilterableValue(fieldValue) + "*")));
+				fieldName -> new WildcardQuery(fieldName, "*" + value + "*")));
+	}
+
+	private String _escapeWildcardCharacters(String value) {
+		return StringUtil.replace(
+			value,
+			new String[] {
+				StringPool.BACK_SLASH, StringPool.QUESTION, StringPool.STAR
+			},
+			new String[] {StringPool.DOUBLE_BACK_SLASH, "\\?", "\\*"});
 	}
 
 	private Filter _getANDFilter(Filter leftFilter, Filter rightFilter) {
@@ -559,12 +569,13 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 	private Filter _startsWith(
 		EntityField entityField, Object fieldValue, Locale locale) {
 
+		String value = _escapeWildcardCharacters(
+			entityField.getFilterableValue(fieldValue));
+
 		return new QueryFilter(
 			_nestedFieldQueryHelper.getQuery(
 				entityField.getFilterableName(locale),
-				fieldName -> new WildcardQuery(
-					fieldName,
-					entityField.getFilterableValue(fieldValue) + "*")));
+				fieldName -> new WildcardQuery(fieldName, value + "*")));
 	}
 
 	private final EntityModel _entityModel;
