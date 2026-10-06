@@ -289,6 +289,39 @@
 	},
 	{
 		"description": "This is a description.",
+		"name": "fdsVisualizationMode",
+		"properties": [
+			{
+				"name": "description",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "icon",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"name": "name",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "https://www.liferay.com",
+				"name": "sourceCodeURL",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"name": "type",
+				"type": "CETProperty.Type.String"
+			},
+			{
+				"default": "",
+				"name": "url",
+				"type": "CETProperty.Type.URL"
+			}
+		]
+	},
+	{
+		"description": "This is a description.",
 		"name": "globalCSS",
 		"properties": [
 			{

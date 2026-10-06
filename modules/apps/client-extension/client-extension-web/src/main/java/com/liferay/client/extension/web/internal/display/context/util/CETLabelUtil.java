@@ -77,6 +77,13 @@ public class CETLabelUtil {
 			return "fds-filter";
 		}
 		else if (Objects.equals(
+					type,
+					ClientExtensionEntryConstants.
+						TYPE_FDS_VISUALIZATION_MODE)) {
+
+			return "fds-visualization-mode";
+		}
+		else if (Objects.equals(
 					type, ClientExtensionEntryConstants.TYPE_GLOBAL_CSS)) {
 
 			return "css";

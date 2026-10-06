@@ -53,15 +53,10 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 						ClientExtensionAdminWebKeys.
 							EDIT_CLIENT_EXTENSION_ENTRY_DISPLAY_CONTEXT);
 
-		if (editClientExtensionEntryDisplayContext != null) {
-			CET cet = editClientExtensionEntryDisplayContext.getCET();
+		if ((editClientExtensionEntryDisplayContext != null) &&
+			_isBeta(editClientExtensionEntryDisplayContext.getCET())) {
 
-			if (Objects.equals(
-					cet.getType(),
-					ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER)) {
-
-				return true;
-			}
+			return true;
 		}
 
 		ViewClientExtensionEntryDisplayContext
@@ -71,15 +66,10 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 						ClientExtensionAdminWebKeys.
 							VIEW_CLIENT_EXTENSION_ENTRY_DISPLAY_CONTEXT);
 
-		if (viewClientExtensionEntryDisplayContext != null) {
-			CET cet = viewClientExtensionEntryDisplayContext.getCET();
+		if ((viewClientExtensionEntryDisplayContext != null) &&
+			_isBeta(viewClientExtensionEntryDisplayContext.getCET())) {
 
-			if (Objects.equals(
-					cet.getType(),
-					ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER)) {
-
-				return true;
-			}
+			return true;
 		}
 
 		return false;
@@ -88,6 +78,20 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 	@Override
 	protected ServletContext getServletContext() {
 		return _servletContext;
+	}
+
+	private boolean _isBeta(CET cet) {
+		if (Objects.equals(
+				cet.getType(),
+				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER) ||
+			Objects.equals(
+				cet.getType(),
+				ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference(

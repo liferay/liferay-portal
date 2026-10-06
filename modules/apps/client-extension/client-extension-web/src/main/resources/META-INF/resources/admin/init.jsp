@@ -18,6 +18,7 @@ page import="com.liferay.client.extension.type.CustomElementCET" %><%@
 page import="com.liferay.client.extension.type.EditorConfigContributorCET" %><%@
 page import="com.liferay.client.extension.type.FDSCellRendererCET" %><%@
 page import="com.liferay.client.extension.type.FDSFilterCET" %><%@
+page import="com.liferay.client.extension.type.FDSVisualizationModeCET" %><%@
 page import="com.liferay.client.extension.type.GlobalCSSCET" %><%@
 page import="com.liferay.client.extension.type.GlobalJSCET" %><%@
 page import="com.liferay.client.extension.type.IFrameCET" %><%@
