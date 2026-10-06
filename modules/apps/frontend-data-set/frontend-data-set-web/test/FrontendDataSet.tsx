@@ -160,6 +160,40 @@ describe('FrontendDataSet', () => {
 		expect(screen.getByText('newer')).toBeInTheDocument();
 	});
 
+	it('shows an error when a visualization mode client extension fails to load', async () => {
+		const consoleErrorSpy = jest
+			.spyOn(console, 'error')
+			.mockImplementation(() => {});
+
+		fetch.mockResponse(itemsResponse(['Blue']));
+
+		render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				views={[
+					{
+						contentRenderer: 'clientExtension',
+						contentRendererClientExtension: true,
+						contentRendererModuleURL:
+							'default from ./__lib__/missingVisualizationMode',
+						default: true,
+						label: 'Timeline',
+						name: 'timeline',
+					},
+				]}
+			/>
+		);
+
+		expect(
+			await screen.findByText(
+				'this-visualization-mode-could-not-be-displayed'
+			)
+		).toBeInTheDocument();
+
+		consoleErrorSpy.mockRestore();
+	});
+
 	it('keeps a stable onSearch identity across renders', async () => {
 		const requests = mockPendingRequests();
 
