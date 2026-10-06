@@ -156,6 +156,10 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 	}
 
 	private boolean _hasDLFileVersion(FileVersion fileVersion) {
+		if (!(fileVersion.getModel() instanceof DLFileVersion)) {
+			return true;
+		}
+
 		DLFileVersion dlFileVersion =
 			_dlFileVersionLocalService.fetchDLFileVersion(
 				fileVersion.getFileVersionId());
