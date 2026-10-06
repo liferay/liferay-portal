@@ -192,6 +192,11 @@ public class ViewResourcesDesignLibraryDisplayContext
 						"creationItems",
 						_toCreationItemMaps(
 							designLibraryResourceCreationItems));
+					resourceType.put(
+						"creationItemsGroupLabel",
+						designLibraryResourceTypeContributor.
+							getCreationItemsGroupLabel(
+								themeDisplay.getLocale()));
 				}
 			}
 

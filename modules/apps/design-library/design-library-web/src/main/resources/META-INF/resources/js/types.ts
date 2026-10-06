@@ -64,6 +64,7 @@ export type DesignLibraryResourceCreationItem = {
 export interface DesignLibraryResourceType {
 	color: string;
 	creationItems?: DesignLibraryResourceCreationItem[];
+	creationItemsGroupLabel?: string;
 	defaultActionId: string;
 	entryClassName: string;
 	key: string;

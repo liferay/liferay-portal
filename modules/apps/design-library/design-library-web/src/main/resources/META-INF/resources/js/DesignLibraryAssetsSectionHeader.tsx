@@ -8,7 +8,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 
-import getCreationMenuItems from './getCreationMenuItems';
+import getGroupedCreationMenuItems from './getGroupedCreationMenuItems';
 import {DesignLibraryResourceType} from './types';
 
 export default function DesignLibraryAssetsSectionHeader({
@@ -16,7 +16,7 @@ export default function DesignLibraryAssetsSectionHeader({
 }: {
 	resourceTypes?: DesignLibraryResourceType[];
 }) {
-	const creationItems = getCreationMenuItems(resourceTypes);
+	const groupedCreationMenuItems = getGroupedCreationMenuItems(resourceTypes);
 
 	return (
 		<div className="align-items-center d-flex justify-content-between mb-3">
@@ -24,9 +24,9 @@ export default function DesignLibraryAssetsSectionHeader({
 				{Liferay.Language.get('design-assets')}
 			</h2>
 
-			{!!creationItems.length && (
+			{!!groupedCreationMenuItems.length && (
 				<ClayDropDownWithItems
-					items={creationItems}
+					items={groupedCreationMenuItems}
 					trigger={
 						<ClayButton displayType="secondary" size="sm">
 							<ClayIcon
