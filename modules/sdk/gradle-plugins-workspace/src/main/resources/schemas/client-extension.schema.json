@@ -205,6 +205,14 @@
 					],
 					"description": "Description for fdsFilter"
 				},
+				"fdsVisualizationMode": {
+					"allOf": [
+						{
+							"$ref": "#/definitions/propertySets/properties/url"
+						}
+					],
+					"description": "Description for fdsVisualizationMode"
+				},
 				"globalCSS": {
 					"allOf": [
 						{
@@ -517,6 +525,14 @@
 					}
 				},
 				{
+					"$ref": "#/definitions/types/properties/fdsVisualizationMode",
+					"properties": {
+						"type": {
+							"const": "fdsVisualizationMode"
+						}
+					}
+				},
+				{
 					"$ref": "#/definitions/types/properties/globalCSS",
 					"properties": {
 						"type": {
@@ -667,6 +683,7 @@
 						"editorConfigContributor",
 						"fdsCellRenderer",
 						"fdsFilter",
+						"fdsVisualizationMode",
 						"globalCSS",
 						"globalJS",
 						"iframe",
