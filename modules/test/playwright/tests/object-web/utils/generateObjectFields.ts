@@ -177,6 +177,12 @@ function getObjectFieldSpecificProperties(
 				listTypeDefinitionExternalReferenceCode,
 				type: 'String',
 			};
+		case 'Location':
+			return {
+				DBType: 'Clob',
+				businessType: 'Location',
+				type: 'Clob',
+			};
 		case 'Picklist':
 			return {
 				DBType: 'String',
