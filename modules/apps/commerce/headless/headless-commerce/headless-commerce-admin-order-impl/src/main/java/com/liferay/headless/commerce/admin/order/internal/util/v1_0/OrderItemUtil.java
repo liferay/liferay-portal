@@ -128,6 +128,10 @@ public class OrderItemUtil {
 			}
 		}
 
+		if (shippingAddressId > 0) {
+			commerceAddressService.getCommerceAddress(shippingAddressId);
+		}
+
 		String deliveryGroupName = GetterUtil.getString(
 			orderItem.getDeliveryGroupName());
 
@@ -363,6 +367,10 @@ public class OrderItemUtil {
 			else if (commerceOrderItem != null) {
 				shippingAddressId = commerceOrderItem.getShippingAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		String deliveryGroupName = GetterUtil.getString(

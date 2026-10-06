@@ -313,6 +313,10 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			}
 		}
 
+		if (billingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(billingAddressId);
+		}
+
 		AccountEntry accountEntry = null;
 
 		if (order.getAccountId() != null) {
@@ -356,6 +360,10 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			if (commerceAddress != null) {
 				shippingAddressId = commerceAddress.getCommerceAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
@@ -752,6 +760,10 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			}
 		}
 
+		if (billingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(billingAddressId);
+		}
+
 		long commerceShippingMethodId =
 			commerceOrder.getCommerceShippingMethodId();
 
@@ -780,6 +792,10 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			else {
 				shippingAddressId = commerceAddress.getCommerceAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		commerceOrder = _commerceOrderEngine.updateCommerceOrder(
