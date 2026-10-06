@@ -1374,6 +1374,7 @@ information.
 			<junit dir="${project.dir}" fork="on" forkmode="@{forkmode}" haltonfailure="${junit.halt.on.failure}" jvm="${junit.jvm.bin}" outputtoformatters="false" printsummary="on" showoutput="true">
 				<sysproperty if:true="${aspectj.weaver.enabled}" key="aspectj.agent" value="${aspectj.agent}" />
 				<sysproperty key="catalina.base" value="." />
+				<sysproperty if:set="ignore.errors.file.name" key="ignore.errors.file.name" value="${ignore.errors.file.name}" />
 				<sysproperty file="woven-classes" key="junit.aspectj.dump" />
 				<sysproperty key="junit.code.coverage" value="${junit.code.coverage}" />
 				<sysproperty if:true="${jvm.debug}" key="jvm.debug" value="true" />
