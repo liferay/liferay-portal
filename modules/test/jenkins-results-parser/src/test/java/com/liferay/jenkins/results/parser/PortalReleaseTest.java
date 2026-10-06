@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.net.URL;
+
 import java.util.Collections;
 import java.util.Properties;
 
@@ -87,6 +89,114 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 				null,
 				unsetPortalReleaseJSONObject.optString(urlFieldName, null));
 		}
+	}
+
+	@Test
+	public void testIsStandaloneBundleURL() throws Exception {
+		_testIsStandaloneBundleURL(
+			false,
+			"liferay-dxp-osgi-7.4.13-u154-cms-standalone-1791273379.zip");
+		_testIsStandaloneBundleURL(
+			false, "liferay-dxp-tomcat-2026.q2.3-1780905368.7z");
+		_testIsStandaloneBundleURL(
+			false, "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z");
+		_testIsStandaloneBundleURL(
+			false,
+			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z.MD5");
+		_testIsStandaloneBundleURL(
+			false, "liferay-dxp-tomcat-7.4.13-u154-cms-standalone.7z");
+		_testIsStandaloneBundleURL(
+			true,
+			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z");
+		_testIsStandaloneBundleURL(
+			true,
+			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.tar.gz");
+		_testIsStandaloneBundleURL(
+			true,
+			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.zip");
+	}
+
+	@Test
+	public void testSetStandalone() throws Exception {
+		mockEnvironment(Collections.<String, String>emptyMap());
+
+		Properties buildProperties = new Properties();
+
+		String[] propertyNames = {
+			"plugins.war.zip.url", "portal.bundle.glassfish",
+			"portal.bundle.jboss", "portal.bundle.tomcat",
+			"portal.bundle.wildfly", "portal.dependencies.zip.url",
+			"portal.osgi.zip.url", "portal.sql.zip.url", "portal.tools.zip.url",
+			"portal.war.url"
+		};
+
+		for (String propertyName : propertyNames) {
+			buildProperties.setProperty(
+				propertyName + "[7.4.13]",
+				"https://" + RandomTestUtil.randomString());
+		}
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"bundles_base_url", "https://" + RandomTestUtil.randomString()
+		).put(
+			"portal_version", "7.4.13"
+		);
+
+		PortalRelease portalRelease = new PortalRelease(jsonObject);
+
+		portalRelease.setPortalBundleTomcatURL(
+			new URL(
+				JenkinsResultsParserUtil.combine(
+					"https://", RandomTestUtil.randomString(),
+					"/liferay-dxp-tomcat-7.4.13-u154-cms-standalone-",
+					"1791273379.7z")));
+		portalRelease.setStandalone(true);
+
+		JSONObject portalReleaseJSONObject = portalRelease.getJSONObject();
+
+		PortalRelease jsonPortalRelease = new PortalRelease(
+			portalReleaseJSONObject);
+
+		testEquals(
+			portalRelease.getPortalBundleTomcatURL(),
+			jsonPortalRelease.getPortalBundleTomcatURL());
+		testEquals(true, jsonPortalRelease.isStandalone());
+
+		JSONObject jsonPortalReleaseJSONObject =
+			jsonPortalRelease.getJSONObject();
+
+		String[] urlFieldNames = {
+			"plugins_war_zip_url_string", "portal_bundle_glassfish_url_string",
+			"portal_bundle_jboss_url_string",
+			"portal_bundle_wildfly_url_string",
+			"portal_dependencies_zip_url_string", "portal_osgi_zip_url_string",
+			"portal_sql_zip_url_string", "portal_tools_zip_url_string",
+			"portal_war_url_string"
+		};
+
+		for (String urlFieldName : urlFieldNames) {
+			testEquals(
+				null,
+				jsonPortalReleaseJSONObject.optString(urlFieldName, null));
+			testEquals(
+				null, portalReleaseJSONObject.optString(urlFieldName, null));
+		}
+	}
+
+	private void _testIsStandaloneBundleURL(boolean expected, String fileName)
+		throws Exception {
+
+		testEquals(
+			expected,
+			PortalRelease.isStandaloneBundleURL(
+				new URL(
+					JenkinsResultsParserUtil.combine(
+						"https://", RandomTestUtil.randomString(), "/",
+						fileName))));
 	}
 
 }
