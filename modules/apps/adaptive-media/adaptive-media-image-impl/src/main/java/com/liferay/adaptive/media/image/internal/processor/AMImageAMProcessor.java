@@ -15,7 +15,11 @@ import com.liferay.adaptive.media.image.scaler.AMImageScalerRegistry;
 import com.liferay.adaptive.media.image.service.AMImageEntryLocalService;
 import com.liferay.adaptive.media.image.validator.AMImageValidator;
 import com.liferay.adaptive.media.processor.AMProcessor;
+import com.liferay.document.library.kernel.model.DLFileVersion;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.FileVersionWrapper;
@@ -68,7 +72,9 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 	public void process(FileVersion fileVersion, String configurationEntryUuid)
 		throws PortalException {
 
-		if (!_amImageValidator.isProcessingSupported(fileVersion)) {
+		if (!_amImageValidator.isProcessingSupported(fileVersion) ||
+			!_hasDLFileVersion(fileVersion)) {
+
 			return;
 		}
 
@@ -117,6 +123,11 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 					amImageScaledImage.getWidth(), inputStream,
 					amImageScaledImage.getSize());
 			}
+
+			if (!_hasDLFileVersion(fileVersion)) {
+				_amImageEntryLocalService.deleteAMImageEntryFileVersion(
+					fileVersion);
+			}
 		}
 		catch (IOException ioException) {
 			throw new AMRuntimeException.IOException(ioException);
@@ -144,6 +155,24 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 		};
 	}
 
+	private boolean _hasDLFileVersion(FileVersion fileVersion) {
+		DLFileVersion dlFileVersion =
+			_dlFileVersionLocalService.fetchDLFileVersion(
+				fileVersion.getFileVersionId());
+
+		if (dlFileVersion != null) {
+			return true;
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				"File version " + fileVersion.getFileVersionId() +
+					" was deleted");
+		}
+
+		return false;
+	}
+
 	private boolean _isUpdateImageEntry(
 			AMImageEntry amImageEntry, FileVersion fileVersion)
 		throws PortalException {
@@ -168,6 +197,9 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 		return false;
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		AMImageAMProcessor.class);
+
 	@Reference
 	private AMImageConfigurationHelper _amImageConfigurationHelper;
 
@@ -179,5 +211,8 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 
 	@Reference
 	private AMImageValidator _amImageValidator;
+
+	@Reference
+	private DLFileVersionLocalService _dlFileVersionLocalService;
 
 }
