@@ -147,27 +147,16 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				"A signature request requires a DocuSign envelope ID");
 		}
 
-		ObjectDefinition documentObjectDefinition = _fetchObjectDefinition(
-			companyId, "L_DS_REQUEST_DOCUMENT");
-		ObjectDefinition recipientObjectDefinition = _fetchObjectDefinition(
-			companyId, "L_DS_REQUEST_RECIPIENT");
-		ObjectDefinition requestObjectDefinition =
+		ObjectDefinition dsRequestObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_DS_REQUEST", companyId);
-
-		if ((documentObjectDefinition == null) ||
-			(recipientObjectDefinition == null) ||
-			(requestObjectDefinition == null)) {
-
-			return;
-		}
 
 		ServiceContext serviceContext = _getServiceContext(
 			companyId, groupId, userId);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			0, userId, requestObjectDefinition.getObjectDefinitionId(),
+			0, userId, dsRequestObjectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -176,7 +165,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				"externalReferenceCode", dsEnvelope.getDSEnvelopeId()
 			).put(
 				"requestExpirationDate",
-				_toDate(dsEnvelope.getExpireLocalDateTime())
+				() -> _toDate(dsEnvelope.getExpireLocalDateTime())
 			).put(
 				"requestStatus", _getDSRequestStatus(dsEnvelope)
 			).put(
@@ -184,9 +173,15 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			).build(),
 			serviceContext);
 
+		ObjectDefinition dsRequestDocumentObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_DS_REQUEST_DOCUMENT", companyId);
+
 		for (long fileEntryId : fileEntryIds) {
 			_objectEntryLocalService.addObjectEntry(
-				0, userId, documentObjectDefinition.getObjectDefinitionId(),
+				0, userId,
+				dsRequestDocumentObjectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -199,10 +194,15 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				serviceContext);
 		}
 
+		ObjectDefinition dsRequestRecipientObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_DS_REQUEST_RECIPIENT", companyId);
+
 		for (DSRecipient dsRecipient : dsEnvelope.getDSRecipients()) {
 			_objectEntryLocalService.addObjectEntry(
 				0, userId,
-				recipientObjectDefinition.getObjectDefinitionId(),
+				dsRequestRecipientObjectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -220,18 +220,11 @@ public class DSRequestManagerImpl implements DSRequestManager {
 					"requestRecipientStatus",
 					_getDSRequestRecipientStatus(dsRecipient)
 				).put(
-					"sentDate", _toDate(dsRecipient.getSentLocalDateTime())
+					"sentDate",
+					() -> _toDate(dsRecipient.getSentLocalDateTime())
 				).build(),
 				serviceContext);
 		}
-	}
-
-	private ObjectDefinition _fetchObjectDefinition(
-		long companyId, String externalReferenceCode) {
-
-		return _objectDefinitionLocalService.
-			fetchObjectDefinitionByExternalReferenceCode(
-				externalReferenceCode, companyId);
 	}
 
 	private String _getDSRequestRecipientStatus(DSRecipient dsRecipient) {
