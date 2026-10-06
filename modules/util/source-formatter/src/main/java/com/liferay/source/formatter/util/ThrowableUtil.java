@@ -16,11 +16,13 @@ public class ThrowableUtil {
 	public static <T extends Throwable> T getNestedThrowable(
 		Throwable throwable, Class<T> throwableClass) {
 
+		if (throwable == null) {
+			return null;
+		}
+
 		List<Throwable> throwables = new ArrayList<>();
 
-		if (throwable != null) {
-			throwables.add(throwable);
-		}
+		throwables.add(throwable);
 
 		for (int i = 0; (i < throwables.size()) && (i < _MAX_THROWABLE_COUNT);
 			 i++) {
