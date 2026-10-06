@@ -756,12 +756,6 @@ kube-state-metrics:
         automountServiceAccountToken: false
 nameOverride: ""
 networkPolicy:
-    # -- Restrict ingress in the observability namespace to a namespace-wide default-deny plus
-    # the Grafana to GMP frontend allow, which is the only flow the deny has to leave open. The
-    # template renders on GCP alone, because AWS and Azure scrape with alloy from inside this
-    # namespace and AWS additionally needs alloy to reach rds-exporter, which carries no policy
-    # of its own, so a namespace-wide deny would cut that scrape silently. Set this to false to
-    # opt a GCP environment out.
     enabled: true
 prometheus-node-exporter:
     enabled: true
