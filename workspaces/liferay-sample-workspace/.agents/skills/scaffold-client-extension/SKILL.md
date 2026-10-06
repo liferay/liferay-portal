@@ -172,6 +172,56 @@ server.port=8081
 liferay.oauth.application.external.reference.code=<workspace-id>-oauth
 ```
 
+#### Every Microservice Project Needs a `Dockerfile` and `LCP.json`
+
+The project templates above list only source files, but `createClientExtensionConfig` refuses a microservice project without both, even for a purely local deploy:
+
+```text
+Required file "Dockerfile" not found in project "<name>"
+Required file "LCP.json" not found in project "<name>"
+```
+
+Copy them from the matching sample — `client-extensions/liferay-sample-etc-node` or `liferay-sample-etc-spring-boot` — and change the port in `LCP.json` to the one in `.serviceAddress`. Verified on 2026.Q1 with a Node project.
+
+#### Run a Microservice Locally
+
+Deploying registers the CET with Liferay; it does not start the service. The deploy writes the service's configuration into `bundles/routes/default/<project>` and the portal's into `bundles/routes/default/dxp`. Point the samples' config loader at both.
+
+**Start the service detached from the agent's session.** It has to keep running after the agent finishes or goes down — object actions keep firing at it, and anything that fires while it is down fails and is not retried. An agent's own background execution ties the process to the session, so it dies with it. Start it in a new session with `setsid nohup`, logging to the bundle's log directory (for Node, after `npm install` in the project):
+
+```bash
+WORKSPACE=$(pwd)
+
+setsid \
+	nohup \
+	env \
+	LIFERAY_ROUTES_CLIENT_EXTENSION="${WORKSPACE}/bundles/routes/default/<project>" \
+	LIFERAY_ROUTES_DXP="${WORKSPACE}/bundles/routes/default/dxp" \
+	node \
+	"${WORKSPACE}/client-extensions/<project>/app.js" \
+	> "${WORKSPACE}/bundles/logs/<project>.log" 2>&1 < /dev/null &
+```
+
+Run it from the workspace root. Stop an earlier copy first — a second one fails to bind the port and exits, leaving the old code serving:
+
+```bash
+pkill -f "[n]ode ${WORKSPACE}/client-extensions/<project>/app.js"
+```
+
+The `[n]` keeps the pattern from matching the shell that runs the command. Without it, `pkill` also kills that shell, because its own command line contains the pattern.
+
+Then confirm both that it answers and that it no longer belongs to the agent:
+
+```bash
+curl \
+	--silent \
+	--url "http://localhost:<port>/ready"
+
+ps -o pid=,ppid=,sid=,args= -p "$(pgrep -d , -f "[n]ode ${WORKSPACE}/client-extensions/<project>/app.js")"
+```
+
+`READY` means it is up. `ps` prints one line per copy; more than one line means an earlier copy is still running. The process must be its own session leader — its `pid` equals its `sid` — and its parent must not be the agent's process. If either check fails, the service stops when the session does. It does not survive a reboot; restart it the same way after one.
+
 #### `siteInitializer`
 
 ```yaml
