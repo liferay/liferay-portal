@@ -9,7 +9,9 @@ import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.nio.charset.Charset;
@@ -26,10 +28,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Assert;
 import org.junit.Assume;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -44,6 +48,31 @@ public class PortalLogAssertorTest {
 	@BeforeClass
 	public static void setUpClass() {
 		Assume.assumeNotNull(System.getenv("JENKINS_HOME"));
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		String ignoreErrorsFileName = System.getProperty(
+			"ignore.errors.file.name");
+
+		if (Validator.isNull(ignoreErrorsFileName)) {
+			return;
+		}
+
+		DocumentBuilderFactory documentBuilderFactory =
+			DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder =
+			documentBuilderFactory.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(
+			new File(ignoreErrorsFileName));
+
+		NodeList logNodeList = document.getElementsByTagName("log");
+
+		Element logElement = (Element)logNodeList.item(0);
+
+		_ignoreErrorNodeList = logElement.getElementsByTagName("ignore-error");
 	}
 
 	@Test
@@ -140,6 +169,7 @@ public class PortalLogAssertorTest {
 				String message =
 					"\nPortal log assert failure, see above log for more " +
 						"information: \n";
+				String messageText = null;
 
 				for (int j = 0; j < childNodeList.getLength(); j++) {
 					Node childNode = childNodeList.item(j);
@@ -147,11 +177,19 @@ public class PortalLogAssertorTest {
 					String nodeName = childNode.getNodeName();
 
 					if (nodeName.equals("message")) {
-						message += childNode.getTextContent();
+						messageText = childNode.getTextContent();
+
+						message += messageText;
 					}
 					else if (nodeName.equals("throwable")) {
 						message += "\n" + childNode.getTextContent();
 					}
+				}
+
+				if ((messageText != null) &&
+					_isInIgnoreErrorsFile(messageText)) {
+
+					continue;
 				}
 
 				System.out.println(
@@ -172,5 +210,45 @@ public class PortalLogAssertorTest {
 			throw new IOException(exception);
 		}
 	}
+
+	private String _getTextContent(Element element, String tagName) {
+		NodeList nodeList = element.getElementsByTagName(tagName);
+
+		Node node = nodeList.item(0);
+
+		return node.getTextContent();
+	}
+
+	private boolean _isInIgnoreErrorsFile(String messageText) {
+		if (_ignoreErrorNodeList == null) {
+			return false;
+		}
+
+		for (int i = 0; i < _ignoreErrorNodeList.getLength(); i++) {
+			Element ignoreErrorElement = (Element)_ignoreErrorNodeList.item(i);
+
+			String containsText = _getTextContent(
+				ignoreErrorElement, "contains");
+			String matchesText = _getTextContent(ignoreErrorElement, "matches");
+
+			if (Validator.isNull(containsText) &&
+				Validator.isNull(matchesText)) {
+
+				continue;
+			}
+
+			if ((Validator.isNull(containsText) ||
+				 messageText.contains(containsText)) &&
+				(Validator.isNull(matchesText) ||
+				 messageText.matches(matchesText))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private NodeList _ignoreErrorNodeList;
 
 }

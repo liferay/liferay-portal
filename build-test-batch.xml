@@ -3865,7 +3865,14 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 											<contains string="${playwright.project.name}" substring="upgrade" />
 										</or>
 										<then>
+											<local name="ignore.errors.file.name" />
+
+											<condition property="ignore.errors.file.name" value="${project.dir}/portal-web/test-ignorable-error-lines.xml">
+												<contains string="${playwright.project.name}" substring="upgrade" />
+											</condition>
+
 											<ant dir="portal-kernel" inheritAll="false" target="test-class">
+												<property if:set="ignore.errors.file.name" name="ignore.errors.file.name" value="${ignore.errors.file.name}" />
 												<property name="test.class" value="PortalLogAssertorTest" />
 											</ant>
 										</then>

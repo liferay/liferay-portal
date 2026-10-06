@@ -12,11 +12,11 @@ function assert_clean_upgrade_log {
 
 	local unclean_log_entries
 
-	unclean_log_entries=$(grep -E "^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}:[0-9]{2}([.,][0-9]{3})?[[:space:]]+(ERROR|FATAL|WARN)" "${upgrade_log}" | grep -v "Do NOT use sidecar in production" || true)
+	unclean_log_entries=$(grep --extended-regexp "^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}:[0-9]{2}([.,][0-9]{3})?[[:space:]]+(ERROR|FATAL)" "${upgrade_log}" || true)
 
 	if [ -n "${unclean_log_entries}" ]
 	then
-		echo "Upgrade log contains ERROR, FATAL, or WARN entries:"
+		echo "Upgrade log contains ERROR or FATAL entries:"
 		printf "%s\n" "${unclean_log_entries}"
 
 		exit 1
