@@ -7,6 +7,8 @@ package com.liferay.digital.signature.internal.manager;
 
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
+import com.liferay.digital.signature.constants.DSRequestConstants;
+import com.liferay.digital.signature.constants.DSRequestRecipientConstants;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.manager.DSRequestManager;
 import com.liferay.digital.signature.model.DSEnvelope;
@@ -259,21 +261,21 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	private String _getDSRequestRecipientStatus(DSRecipient dsRecipient) {
 		String status = StringUtil.toLowerCase(dsRecipient.getStatus());
 
-		if (ArrayUtil.contains(_REQUEST_RECIPIENT_STATUSES, status)) {
+		if (ArrayUtil.contains(DSRequestRecipientConstants.STATUSES, status)) {
 			return status;
 		}
 
-		return "sent";
+		return DSRequestRecipientConstants.STATUS_SENT;
 	}
 
 	private String _getDSRequestStatus(DSEnvelope dsEnvelope) {
 		String status = StringUtil.toLowerCase(dsEnvelope.getStatus());
 
-		if (ArrayUtil.contains(_REQUEST_STATUSES, status)) {
+		if (ArrayUtil.contains(DSRequestConstants.STATUSES, status)) {
 			return status;
 		}
 
-		return "sent";
+		return DSRequestConstants.STATUS_SENT;
 	}
 
 	private ServiceContext _getServiceContext(
@@ -382,14 +384,6 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
-
-	private static final String[] _REQUEST_RECIPIENT_STATUSES = {
-		"completed", "created", "declined", "sent", "signed"
-	};
-
-	private static final String[] _REQUEST_STATUSES = {
-		"completed", "created", "declined", "sent", "voided"
-	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DSRequestManagerImpl.class);
