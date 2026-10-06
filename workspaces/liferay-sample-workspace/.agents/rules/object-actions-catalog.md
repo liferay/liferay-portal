@@ -140,7 +140,7 @@ The microservice receives a POST with the object entry payload and a Bearer toke
 
 ## REST Payload Shape
 
-Object action definition body:
+Object action definition body. The same shape is an item in a `batch` CET file with `className` `com.liferay.object.admin.rest.dto.v1_0.ObjectAction`, the preferred way to ship an action — see `skills/manage-object-logic/SKILL.md` → "Deliver the Object Action as a Client Extension":
 
 ```json
 {

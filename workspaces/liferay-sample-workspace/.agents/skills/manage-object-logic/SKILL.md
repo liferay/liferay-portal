@@ -45,6 +45,63 @@ Consult `rules/object-actions-catalog.md` for the full catalog. Summary:
 | Groovy Script | Script body | Self hosted or PaaS **and** script execution enabled — off by default, see `rules/object-actions-catalog.md`. Probe before designing around it |
 | Client Extension | Executor key `function#<cet-erc>` of a deployed `objectAction` CET | Calls a deployed microservice |
 
+### Deliver the Object Action as a Client Extension (Preferred)
+
+Two different things share the name. The **`objectAction` CET** is the code to run; deploying it only registers an executor, `function#<cet-erc>`, and attaches it to nothing. Its `client-extension.yaml` names no object and no trigger. The **object action** is a record on the object definition — object, trigger, executor — and nothing fires until it exists.
+
+Deliver that record as a client extension too, so a fresh environment gets it by deploying, not by replaying REST calls. The REST recipes below are for one off changes to a running instance.
+
+A `batch` CET can create it in two ways:
+
+| `className` | How | Use When |
+| --- | --- | --- |
+| `com.liferay.object.admin.rest.dto.v1_0.ObjectAction` | One file of actions, the definition named by ERC | The definition is owned elsewhere — another batch, the UI, a site initializer |
+| `com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition` | `objectActions` inside the full definition | This batch already owns the whole definition |
+
+#### Standalone `ObjectAction` Batch
+
+```json
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectAction",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "INSERT",
+			"externalReferenceCode": "<OBJECT_DEFINITION_ERC>",
+			"importStrategy": "ON_ERROR_FAIL"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"active": true,
+			"conditionExpression": "",
+			"externalReferenceCode": "<ACTION_ERC>",
+			"label": {
+				"en_US": "<Action Label>"
+			},
+			"name": "<actionName>",
+			"objectActionExecutorKey": "function#<cet-erc>",
+			"objectActionTriggerKey": "onAfterAdd",
+			"parameters": {
+			}
+		}
+	]
+}
+```
+
+Verified on 2026.Q1 with a `function#` executor: the action was created on the named definition, fired, and read `success`, and the definition's fields were untouched.
+
+- **`parameters.externalReferenceCode` is the object definition's ERC**, not the action's. `objectDefinitionId` works too, but it is a numeric ID and differs per environment. `objectDefinitionExternalReferenceCode` is rejected.
+- **Use `INSERT`.** `UPSERT` returns `500` for `ObjectAction`. Give each item a fixed `externalReferenceCode`: a redeploy then leaves exactly one action instead of a duplicate.
+- **Deploy the `objectAction` CET first.** The executor must exist when the batch runs.
+- **Use a separate project.** `batch` and microservice CETs cannot share a project (`rules/client-extension-types.md`), so the action batch is a sibling of the microservice project.
+- **The batch needs `Liferay.Headless.Batch.Engine.everything`** on its `oAuthApplicationHeadlessServer`. On a local bundle that scope alone imported both `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
+
+#### `objectActions` Inside an `ObjectDefinition` Batch
+
+`client-extensions/liferay-sample-batch` shows this shape. An `ObjectDefinition` import **replaces the whole definition**: omit `objectFields` and the import tries to delete the existing fields. Verified on 2026.Q1, where it failed only because the field was the definition's last custom one. Use this form only in the batch that already carries the complete definition; never write a partial definition just to add an action.
+
 ### Object Action — Notification (Site Initializer, Preferred)
 
 When the object lives in a site initializer, author the template **and** its action in the tree so the whole thing survives delete and redeploy. The REST recipe further down is for one off changes to a running instance.
@@ -245,6 +302,8 @@ curl \
 
 ### Object Action — Webhook
 
+This is the live recipe. To ship it, put the same body in a `batch` CET as above.
+
 ```bash
 curl \
 	--data '{
@@ -267,7 +326,7 @@ curl \
 
 ### Object Action — Client Extension
 
-First deploy the `objectAction` CET via `scaffold-client-extension`. Then reference its `externalReferenceCode`:
+First deploy the `objectAction` CET via `scaffold-client-extension`. Then create the object action that references it — preferably as a `batch` CET (see "Deliver the Object Action as a Client Extension" above). For a one off change to a running instance:
 
 ```bash
 curl \
