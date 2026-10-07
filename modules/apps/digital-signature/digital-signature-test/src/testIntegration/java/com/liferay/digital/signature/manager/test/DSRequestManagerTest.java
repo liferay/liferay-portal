@@ -246,6 +246,12 @@ public class DSRequestManagerTest {
 		_testUpdateDSRequest(
 			DSRequestConstants.STATUS_COMPLETED, localDateTime.plusDays(1),
 			"completed", localDateTime);
+		_testUpdateDSRequest(
+			DSRequestConstants.STATUS_EXPIRED, localDateTime, "voided",
+			localDateTime);
+		_testUpdateDSRequest(
+			DSRequestConstants.STATUS_VOIDED, localDateTime.plusDays(1),
+			"voided", localDateTime);
 
 		_testUpdateDSRequestWhenObjectEntryIsNotDSRequest();
 	}
