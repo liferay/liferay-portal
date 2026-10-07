@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jürgen Kappler
+ * @author Thiago Buarque
  */
 @Component(service = UpgradeStepRegistrator.class)
 public class StyleBookServiceUpgradeStepRegistrator
@@ -106,6 +107,16 @@ public class StyleBookServiceUpgradeStepRegistrator
 		registry.register(
 			"1.9.0", "1.10.0",
 			new StyleBookEntryFrontendTokensValuesUpgradeProcess());
+
+		registry.register(
+			"1.10.0", "1.11.0",
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntry", "status INTEGER"),
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntryVersion", "status INTEGER"),
+			UpgradeProcessFactory.runSQL(
+				"update StyleBookEntry set status = 0",
+				"update StyleBookEntryVersion set status = 0"));
 	}
 
 	@Reference
