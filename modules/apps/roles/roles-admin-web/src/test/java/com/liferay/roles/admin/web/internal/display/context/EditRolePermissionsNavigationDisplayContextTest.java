@@ -5,6 +5,10 @@
 
 package com.liferay.roles.admin.web.internal.display.context;
 
+import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
+import com.liferay.depot.constants.DepotPortletKeys;
+import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -69,151 +73,210 @@ public class EditRolePermissionsNavigationDisplayContextTest {
 
 	@Test
 	public void testHasObjectDefinitionValidDomain() {
-		Mockito.when(
-			_role.getSubtype()
-		).thenReturn(
-			null
-		);
-
-		Mockito.when(
-			_role.getType()
-		).thenReturn(
-			RoleConstants.TYPE_DEPOT
-		);
-
-		Assert.assertTrue(
-			_invokeHasObjectDefinitionValidDomain(
-				Mockito.mock(ObjectDefinition.class)));
-
-		Mockito.when(
-			_role.getSubtype()
-		).thenReturn(
-			"space"
-		);
-
 		try (MockedStatic<FeatureFlagManagerUtil>
 				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-					FeatureFlagManagerUtil.class);
-			MockedStatic<ObjectDefinitionSettingUtil>
-				objectDefinitionSettingUtilMockedStatic = Mockito.mockStatic(
-					ObjectDefinitionSettingUtil.class)) {
+					FeatureFlagManagerUtil.class)) {
 
 			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.anyString())
+				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-96750")
 			).thenReturn(
 				false
 			);
 
-			Assert.assertTrue(
-				_invokeHasObjectDefinitionValidDomain(
-					Mockito.mock(ObjectDefinition.class)));
-
-			objectDefinitionSettingUtilMockedStatic.when(
-				() -> ObjectDefinitionSettingUtil.getValue(
-					Mockito.eq(ObjectDefinitionSettingConstants.NAME_DOMAIN),
-					Mockito.any())
-			).thenReturn(
-				null
-			);
+			_mockRole(RoleConstants.TYPE_DEPOT, null);
 
 			Assert.assertTrue(
 				_invokeHasObjectDefinitionValidDomain(
-					Mockito.mock(ObjectDefinition.class)));
+					DepotRolesConstants.SUBTYPE_PROJECT,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
 
-			objectDefinitionSettingUtilMockedStatic.when(
-				() -> ObjectDefinitionSettingUtil.getValue(
-					Mockito.eq(ObjectDefinitionSettingConstants.NAME_DOMAIN),
-					Mockito.any())
-			).thenReturn(
-				"project"
-			);
+			_mockRole(
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_PROJECT);
 
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					null, ObjectDefinitionConstants.SCOPE_COMPANY));
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					DepotRolesConstants.SUBTYPE_PROJECT,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
 			Assert.assertFalse(
 				_invokeHasObjectDefinitionValidDomain(
-					Mockito.mock(ObjectDefinition.class)));
-
-			objectDefinitionSettingUtilMockedStatic.when(
-				() -> ObjectDefinitionSettingUtil.getValue(
-					Mockito.eq(ObjectDefinitionSettingConstants.NAME_DOMAIN),
-					Mockito.any())
-			).thenReturn(
-				"space"
-			);
-
-			Assert.assertTrue(
-				_invokeHasObjectDefinitionValidDomain(
-					Mockito.mock(ObjectDefinition.class)));
-		}
-
-		Mockito.when(
-			_role.getSubtype()
-		).thenReturn(
-			"design-library"
-		);
-
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-					FeatureFlagManagerUtil.class);
-			MockedStatic<ObjectDefinitionSettingUtil>
-				objectDefinitionSettingUtilMockedStatic = Mockito.mockStatic(
-					ObjectDefinitionSettingUtil.class)) {
+					DepotRolesConstants.SUBTYPE_SPACE,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
 
 			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-57283")
+				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-96750")
 			).thenReturn(
 				true
 			);
 
-			objectDefinitionSettingUtilMockedStatic.when(
-				() -> ObjectDefinitionSettingUtil.getValue(
-					Mockito.eq(ObjectDefinitionSettingConstants.NAME_DOMAIN),
-					Mockito.any())
-			).thenReturn(
-				"project"
-			);
+			_mockRole(RoleConstants.TYPE_DEPOT, null);
 
 			Assert.assertFalse(
 				_invokeHasObjectDefinitionValidDomain(
-					Mockito.mock(ObjectDefinition.class)));
+					null, ObjectDefinitionConstants.SCOPE_COMPANY));
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					null, ObjectDefinitionConstants.SCOPE_DEPOT));
+			Assert.assertFalse(
+				_invokeHasObjectDefinitionValidDomain(
+					DepotRolesConstants.SUBTYPE_PROJECT,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					DepotRolesConstants.SUBTYPE_SPACE,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
+
+			_mockRole(
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_PROJECT);
+
+			Assert.assertFalse(
+				_invokeHasObjectDefinitionValidDomain(
+					null, ObjectDefinitionConstants.SCOPE_DEPOT));
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					DepotRolesConstants.SUBTYPE_PROJECT,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
+			Assert.assertFalse(
+				_invokeHasObjectDefinitionValidDomain(
+					DepotRolesConstants.SUBTYPE_SPACE,
+					ObjectDefinitionConstants.SCOPE_DEPOT));
+
+			_mockRole(
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_SPACE);
+
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					null, ObjectDefinitionConstants.SCOPE_DEPOT));
+
+			_mockRole(RoleConstants.TYPE_REGULAR, null);
+
+			Assert.assertTrue(
+				_invokeHasObjectDefinitionValidDomain(
+					null, ObjectDefinitionConstants.SCOPE_COMPANY));
+		}
+	}
+
+	@Test
+	public void testIsSiteAndAssetLibraryAdministrationPortlet() {
+		String portletId = RandomTestUtil.randomString();
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-96750")
+			).thenReturn(
+				false
+			);
+
+			_mockRole(
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_PROJECT);
+
+			Assert.assertTrue(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(portletId));
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-96750")
+			).thenReturn(
+				true
+			);
+
+			_mockRole(RoleConstants.TYPE_DEPOT, null);
+
+			Assert.assertTrue(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(portletId));
+
+			_mockRole(
+				RoleConstants.TYPE_DEPOT,
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY);
+
+			Assert.assertTrue(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(
+					AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN));
+			Assert.assertFalse(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(portletId));
+
+			_mockRole(
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_PROJECT);
+
+			Assert.assertFalse(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(
+					AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN));
+			Assert.assertTrue(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(
+					DepotPortletKeys.DEPOT_SETTINGS));
+			Assert.assertFalse(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(portletId));
+
+			_mockRole(
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_SPACE);
+
+			Assert.assertTrue(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(portletId));
+
+			_mockRole(
+				RoleConstants.TYPE_REGULAR, RandomTestUtil.randomString());
+
+			Assert.assertTrue(
+				_invokeIsSiteAndAssetLibraryAdministrationPortlet(portletId));
+		}
+	}
+
+	private boolean _invokeHasObjectDefinitionValidDomain(
+		String domain, String scope) {
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getScope()
+		).thenReturn(
+			scope
+		);
+
+		try (MockedStatic<ObjectDefinitionSettingUtil>
+				objectDefinitionSettingUtilMockedStatic = Mockito.mockStatic(
+					ObjectDefinitionSettingUtil.class)) {
 
 			objectDefinitionSettingUtilMockedStatic.when(
 				() -> ObjectDefinitionSettingUtil.getValue(
 					Mockito.eq(ObjectDefinitionSettingConstants.NAME_DOMAIN),
 					Mockito.any())
 			).thenReturn(
-				"design-library"
+				domain
 			);
 
-			Assert.assertTrue(
-				_invokeHasObjectDefinitionValidDomain(
-					Mockito.mock(ObjectDefinition.class)));
+			return ReflectionTestUtil.invoke(
+				_editRolePermissionsNavigationDisplayContext,
+				"_hasObjectDefinitionValidDomain",
+				new Class<?>[] {ObjectDefinition.class}, objectDefinition);
 		}
+	}
 
+	private boolean _invokeIsSiteAndAssetLibraryAdministrationPortlet(
+		String portletId) {
+
+		return ReflectionTestUtil.invoke(
+			_editRolePermissionsNavigationDisplayContext,
+			"_isSiteAndAssetLibraryAdministrationPortlet",
+			new Class<?>[] {String.class}, portletId);
+	}
+
+	private void _mockRole(int type, String subtype) {
 		Mockito.when(
 			_role.getSubtype()
 		).thenReturn(
-			null
+			subtype
 		);
 
 		Mockito.when(
 			_role.getType()
 		).thenReturn(
-			RoleConstants.TYPE_REGULAR
+			type
 		);
-
-		Assert.assertTrue(
-			_invokeHasObjectDefinitionValidDomain(
-				Mockito.mock(ObjectDefinition.class)));
-	}
-
-	private boolean _invokeHasObjectDefinitionValidDomain(
-		ObjectDefinition objectDefinition) {
-
-		return ReflectionTestUtil.invoke(
-			_editRolePermissionsNavigationDisplayContext,
-			"_hasObjectDefinitionValidDomain",
-			new Class<?>[] {ObjectDefinition.class}, objectDefinition);
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();

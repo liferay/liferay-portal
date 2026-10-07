@@ -15,6 +15,8 @@ export class RoleDefinePermissionsPage {
 	readonly loading: Locator;
 	readonly menuItem: (name: string, exact?: boolean) => Locator;
 	readonly menuItemByTestId: (id: string) => Locator;
+	readonly navigation: Locator;
+	readonly noResultsMessage: Locator;
 	readonly noRoleMessage: Locator;
 	readonly page: Page;
 	readonly permissionCheckbox: (
@@ -66,14 +68,17 @@ export class RoleDefinePermissionsPage {
 		});
 		this.loading = page.getByText('Loading');
 		this.menuItem = (name: string, exact = false) => {
-			return page
-				.getByTestId('editRolePermissionsNavigation')
-				.getByRole('menuitem', {exact, name})
-				.first();
+			return this.navigation.getByRole('menuitem', {exact, name}).first();
 		};
 		this.menuItemByTestId = (id: string) => {
 			return page.getByTestId(id).getByRole('menuitem');
 		};
+		this.navigation = page.locator(
+			'[data-qa-id="editRolePermissionsNavigation"]'
+		);
+		this.noResultsMessage = this.navigation.getByText(
+			'There are no results.'
+		);
 		this.noRoleMessage = page.getByText(
 			'This role does not have any permissions'
 		);
@@ -128,9 +133,7 @@ export class RoleDefinePermissionsPage {
 				.filter({hasText: title});
 		};
 		this.saveButton = page.getByRole('button', {exact: true, name: 'Save'});
-		this.searchInput = page
-			.getByTestId('editRolePermissionsNavigation')
-			.getByPlaceholder('Search');
+		this.searchInput = this.navigation.getByPlaceholder('Search');
 		this.selectAllCheckbox = (resourceName) =>
 			page
 				.getByText(resourceName)

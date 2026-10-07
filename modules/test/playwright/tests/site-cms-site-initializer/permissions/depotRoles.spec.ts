@@ -152,8 +152,14 @@ test(
 
 test(
 	'Define Permissions tree filters object definitions by depot role subtype',
-	{tag: '@LPD-88820'},
-	async ({apiHelpers, page, rolePage, rolesPage}) => {
+	{tag: ['@LPD-88820', '@LPD-101954']},
+	async ({
+		apiHelpers,
+		page,
+		roleDefinePermissionsPage,
+		rolePage,
+		rolesPage,
+	}) => {
 		const objectMenuItem = (id: number) =>
 			page.locator(`[data-qa-id="object_${id}"]`);
 
@@ -207,6 +213,12 @@ test(
 		);
 		await expect(objectMenuItem(spaceObjectDefinition.id!)).toBeVisible();
 
+		await roleDefinePermissionsPage.searchInput.fill('Web Content');
+
+		await expect(
+			roleDefinePermissionsPage.menuItem('Web Content', true)
+		).toBeVisible();
+
 		await rolesPage.goto();
 		await rolesPage.rolesLink('Space').click();
 		await rolesPage.selectRole(projectRole.name);
@@ -215,6 +227,18 @@ test(
 
 		await expect(objectMenuItem(projectObjectDefinition.id!)).toBeVisible();
 		await expect(objectMenuItem(spaceObjectDefinition.id!)).toHaveCount(0);
+
+		await roleDefinePermissionsPage.searchInput.fill(
+			'Asset Library Settings'
+		);
+
+		await expect(
+			roleDefinePermissionsPage.menuItem('Asset Library Settings', true)
+		).toBeVisible();
+
+		await roleDefinePermissionsPage.searchInput.fill('Web Content');
+
+		await expect(roleDefinePermissionsPage.noResultsMessage).toBeVisible();
 	}
 );
 
