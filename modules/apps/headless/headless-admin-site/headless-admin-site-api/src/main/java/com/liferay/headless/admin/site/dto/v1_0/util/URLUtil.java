@@ -12,6 +12,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.InetAddressUtil;
@@ -76,6 +77,15 @@ public class URLUtil {
 					ConfigurationProviderUtil.getCompanyConfiguration(
 						URLFetchSecurityCompanyConfiguration.class,
 						CompanyThreadLocal.getCompanyId());
+
+			String[] urlHostsAllowed =
+				urlFetchSecurityCompanyConfiguration.urlHostsAllowed();
+
+			if (ArrayUtil.isNotEmpty(urlHostsAllowed) &&
+				!ArrayUtil.contains(urlHostsAllowed, host, true)) {
+
+				return false;
+			}
 
 			if (urlFetchSecurityCompanyConfiguration.
 					urlLocalNetworkAccessEnabled()) {
