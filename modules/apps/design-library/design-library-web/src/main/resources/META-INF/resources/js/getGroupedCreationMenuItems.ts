@@ -15,18 +15,18 @@ export default function getGroupedCreationMenuItems(
 	resourceTypes: DesignLibraryResourceType[]
 ): CreationMenuItems {
 	return resourceTypes.flatMap<CreationMenuItems[number]>((resourceType) => {
-		const items = getCreationMenuItems([resourceType]);
+		const creationMenuItems = getCreationMenuItems([resourceType]);
 
-		if (items.length > 1) {
+		if (creationMenuItems.length > 1) {
 			return [
 				{
-					items,
+					items: creationMenuItems,
 					label: resourceType.creationItemsGroupLabel,
 					type: 'contextual',
 				},
 			];
 		}
 
-		return items;
+		return creationMenuItems;
 	});
 }
