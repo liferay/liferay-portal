@@ -63,10 +63,21 @@ public class MBSubscriptionSender
 
 			smtpAccount.setHost(mailingList.getOutServerName());
 			smtpAccount.setUser(mailingList.getOutUserName());
-			smtpAccount.setPassword(
-				MBMailingListPasswordUtil.getPassword(
-					mailingList.getCategoryId(), mailingList.getCompanyId(),
-					"outPassword", mailingList.getOutPassword()));
+
+			try {
+				smtpAccount.setPassword(
+					MBMailingListPasswordUtil.getPassword(
+						mailingList.getCategoryId(), mailingList.getCompanyId(),
+						"outPassword", mailingList.getOutPassword()));
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to resolve the outgoing mail server credential " +
+						"for mailing list ID " + mailingList.getMailingListId(),
+					exception);
+
+				return;
+			}
 
 			setSMTPAccount(smtpAccount);
 		}
