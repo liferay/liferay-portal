@@ -20,10 +20,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -133,32 +135,53 @@ public class AssetVocabularyUtil {
 		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
 			new AssetVocabularySettingsHelper(assetVocabulary.getSettings());
 
-		Set<Long> filteredClassNameIds = new LinkedHashSet<>(classNameIds);
+		Set<Long> unregisteredClassNameIds = new LinkedHashSet<>(classNameIds);
 
 		Set<Long> registeredClassNameIds = SetUtil.fromArray(
 			assetVocabularySettingsHelper.getRegisteredClassNameIds());
 
-		filteredClassNameIds.removeAll(registeredClassNameIds);
+		unregisteredClassNameIds.removeAll(registeredClassNameIds);
 
 		assetVocabularySettingsHelper.setRegisteredClassNameIds(
-			ArrayUtil.toLongArray(filteredClassNameIds));
+			ArrayUtil.toLongArray(unregisteredClassNameIds));
 
-		Set<Long> selectedClassNameIds = SetUtil.fromArray(
-			assetVocabulary.getSelectedClassNameIds());
+		List<Long> newClassNameIds = new ArrayList<>();
+		List<Long> newClassTypePKs = new ArrayList<>();
+		List<Boolean> newDepotRequireds = new ArrayList<>();
+		List<Boolean> newRequireds = new ArrayList<>();
 
-		selectedClassNameIds.addAll(filteredClassNameIds);
+		long[] selectedClassNameIds = assetVocabulary.getSelectedClassNameIds();
+		long[] selectedClassTypePKs = assetVocabulary.getSelectedClassTypePKs();
 
-		long[] classTypePKs = new long[selectedClassNameIds.size()];
-		boolean[] requireds = new boolean[selectedClassNameIds.size()];
+		for (int i = 0; i < selectedClassNameIds.length; i++) {
+			newClassNameIds.add(selectedClassNameIds[i]);
+			newClassTypePKs.add(selectedClassTypePKs[i]);
+			newDepotRequireds.add(
+				assetVocabularySettingsHelper.
+					isClassNameIdAndClassTypePKDepotRequired(
+						selectedClassNameIds[i], selectedClassTypePKs[i]));
+			newRequireds.add(
+				assetVocabularySettingsHelper.
+					isClassNameIdAndClassTypePKRequired(
+						selectedClassNameIds[i], selectedClassTypePKs[i]));
+		}
 
-		for (int i = 0; i < selectedClassNameIds.size(); i++) {
-			classTypePKs[i] = AssetCategoryConstants.ALL_CLASS_TYPE_PK;
-			requireds[i] = false;
+		for (long unregisteredClassNameId : unregisteredClassNameIds) {
+			if (newClassNameIds.contains(unregisteredClassNameId)) {
+				continue;
+			}
+
+			newClassNameIds.add(unregisteredClassNameId);
+			newClassTypePKs.add(AssetCategoryConstants.ALL_CLASS_TYPE_PK);
+			newDepotRequireds.add(false);
+			newRequireds.add(false);
 		}
 
 		assetVocabularySettingsHelper.setClassNameIdsAndClassTypePKs(
-			ArrayUtil.toArray(selectedClassNameIds.toArray(new Long[0])),
-			classTypePKs, requireds);
+			ArrayUtil.toArray(newClassNameIds.toArray(new Long[0])),
+			ArrayUtil.toArray(newClassTypePKs.toArray(new Long[0])),
+			ArrayUtil.toArray(newDepotRequireds.toArray(new Boolean[0])),
+			ArrayUtil.toArray(newRequireds.toArray(new Boolean[0])));
 
 		return assetVocabularySettingsHelper;
 	}
