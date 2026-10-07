@@ -9991,10 +9991,39 @@ create database lportal${databases.size} encoding = 'UTF8';</echo>
 							</then>
 						</if>
 
-						<copy
-							file="${sql.dir}${sql.file}"
-							tofile="create.sql"
-						/>
+						<if>
+							<or>
+								<available file="${sql.dir}${sql.file}" />
+								<not>
+									<or>
+										<equals arg1="${database.type}" arg2="mariadb" />
+										<equals arg1="${database.type}" arg2="mysql" />
+										<equals arg1="${database.type}" arg2="postgresql" />
+									</or>
+								</not>
+							</or>
+							<then>
+								<copy
+									file="${sql.dir}${sql.file}"
+									tofile="create.sql"
+								/>
+							</then>
+							<elseif>
+								<equals arg1="${database.type}" arg2="postgresql" />
+								<then>
+									<echo file="create.sql">
+drop database if exists lportal;
+
+create database lportal encoding = 'UTF8';</echo>
+								</then>
+							</elseif>
+							<else>
+								<echo file="create.sql">
+drop database if exists lportal;
+
+create database lportal character set utf8mb4;</echo>
+							</else>
+						</if>
 					</else>
 				</if>
 
