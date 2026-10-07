@@ -1166,9 +1166,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			ThumbnailURLReference thumbnailURLReference)
 		throws Exception {
 
-		PageTemplate pageTemplate = randomPageTemplate();
-
-		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+		PageTemplate pageTemplate = _randomPageTemplate(thumbnailURLReference);
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
@@ -1726,15 +1724,13 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			String expectedTitle, String externalReferenceCode, String url)
 		throws Exception {
 
-		PageTemplate pageTemplate = randomPageTemplate();
-
 		ThumbnailURLReference thumbnailURLReference =
 			new ThumbnailURLReference();
 
 		thumbnailURLReference.setExternalReferenceCode(externalReferenceCode);
 		thumbnailURLReference.setUrl(url);
 
-		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+		PageTemplate pageTemplate = _randomPageTemplate(thumbnailURLReference);
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
@@ -1952,12 +1948,10 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			_thumbnail1Bytes, fileEntry.getExternalReferenceCode(),
 			postPageTemplate);
 
-		pageTemplate = randomPageTemplate();
-
 		ThumbnailURLReference thumbnailURLReference =
 			ThumbnailURLReferenceUtil.getRandomThumbnailURLReference();
 
-		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+		pageTemplate = _randomPageTemplate(thumbnailURLReference);
 
 		try {
 			testPostSitePageTemplateSetPageTemplate_addPageTemplate(
@@ -2071,16 +2065,13 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 	private void _testPostSitePageTemplateWithThumbnailURLReferenceURL()
 		throws Exception {
 
-		String externalReferenceCode = RandomTestUtil.randomString();
-
 		ThumbnailURLReference thumbnailURLReference =
-			new ThumbnailURLReference();
-
-		thumbnailURLReference.setExternalReferenceCode(externalReferenceCode);
-		thumbnailURLReference.setUrl(_thumbnail1URL);
+			ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+				_thumbnail1URL);
 
 		_postSitePageTemplateAndAssertThumbnailURLReference(
-			_thumbnail1Bytes, externalReferenceCode, thumbnailURLReference);
+			_thumbnail1Bytes, thumbnailURLReference.getExternalReferenceCode(),
+			thumbnailURLReference);
 	}
 
 	private void _testPostSitePageTemplateWithThumbnailURLReferenceURLFetchSecurity()
