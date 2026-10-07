@@ -82,7 +82,7 @@ import toggleControls from '../../../../../apps/frontend-js/frontend-js-web/src/
 import toggleDisabled from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/util/toggle_disabled';
 import toggleRadio from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/util/toggle_radio';
 import toggleSelectBox from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/util/toggle_select_box';
-import loadClientExtensions from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/utils/client_extensions/loadClientExtensions';
+import {loadClientExtensions} from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/utils/client_extensions/loadClientExtensions';
 import loadEditorClientExtensions from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/utils/client_extensions/loadEditorClientExtensions';
 import {loadModule} from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/utils/client_extensions/loadModule';
 import zIndex from '../../../../../apps/frontend-js/frontend-js-web/src/main/resources/META-INF/resources/liferay/zIndex';
