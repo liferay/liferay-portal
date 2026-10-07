@@ -18,6 +18,7 @@ Defaults change between quarterly releases. Reverify against the running portal 
 | `LPD-52006` | off | beta | Object entry folders (nested folder structure) | `manage-objects` | `LPD-17564` |
 | `LPD-32867` | off | beta | Content provider integration for dynamic content sets (headless-delivery) | (informational) | none |
 | `LPD-36010` | on | deprecation | Legacy object behavior toggle | (informational) | none |
+| `LPS-135430` | off | release | Any `storageType` on an object definition created over REST, including `function#<cet-erc>` for an `objectEntryManager` CET | `integrate-external-data`, `manage-objects` | none |
 
 ## How to Read This Table
 

@@ -14,7 +14,7 @@ The Object Entry Manager pattern lets Liferay Objects delegate storage and retri
 - "Connect this object to our Salesforce data"
 - "Back this object with an external REST API"
 - "I want Liferay to display records from an external system"
-- Called by `manage-objects` when `storageType: ext-Service` is specified
+- Called by `manage-objects` when an object needs external storage
 
 ## Architecture
 
@@ -22,25 +22,30 @@ The Object Entry Manager pattern lets Liferay Objects delegate storage and retri
 Browser / Portal UI
         │
         ▼
-Liferay Object (storageType: ext-Service)
+Liferay Object (storageType: function#<cet-erc>)
         │  delegates CRUD
         ▼
 objectEntryManager CET  ←→  External REST API / DB
 ```
 
-The CET implements an HTTP server that handles five operations Liferay calls:
+The CET implements an HTTP server that handles the calls below. `<objectERC>` is the object definition's external reference code, and `<entryERC>` is the entry's:
 
-| Liferay Call | CET Endpoint |
+| `/o/c/<plural>` Call | CET Receives |
 | --- | --- |
-| Create entry | `POST /` |
-| Read entry | `GET /<id>` |
-| Update entry | `PUT /<id>` |
-| Delete entry | `DELETE /<id>` |
-| List entries (paged) | `GET /` with `?page=&pageSize=&filter=` |
+| List entries | `GET <resourcePath>/<objectERC>?companyId=…&languageId=…&page=…&pageSize=…&scopeKey=…&userId=…` |
+| Create entry | `POST <resourcePath>/<objectERC>` |
+| Read entry by ERC | `GET <resourcePath>/<objectERC>/<entryERC>` |
+| Update entry by ERC | `PUT <resourcePath>/<objectERC>/<entryERC>` |
+| Patch entry by ERC | `GET`, then `PUT`, on the same path |
+| Delete entry by ERC | `DELETE <resourcePath>/<objectERC>/<entryERC>` |
+
+Entries are addressed by ERC only. A call by numeric ID, such as `GET /o/c/<plural>/<id>`, returns `400 UnsupportedOperationException` and never reaches the CET. Verified on 2026.Q1.
+
+`POST` and `PUT` bodies are wrapped: `{"companyId": …, "languageId": …, "objectEntry": {…}, "scopeKey": …, "userId": …}`. Read the fields from `objectEntry`. Its `externalReferenceCode` is `null` on a `PUT`, so take the ERC from the path, and `null` on a `POST` without one, so generate it. Verified on 2026.Q1.
 
 ## Workflow
 
-### Define the Object With `ext-Service` Storage
+### Define the Object With External Storage
 
 ```bash
 curl \
@@ -58,7 +63,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Use `"storageType": "salesforce"` for native Salesforce integration, or `"storageType": "ext-Service"` for the custom CET pattern. For `ext-Service`, proceed to **Scaffold the `objectEntryManager` CET**.
+Use `"storageType": "salesforce"` for native Salesforce integration, or `"storageType": "function#<cet-erc>"` for the custom CET pattern, where `<cet-erc>` is the key of the `objectEntryManager` entry. Any `storageType` sent over REST needs feature flag `LPS-135430`, which is off by default. Without it the create returns `400 ObjectDefinitionStorageTypeException` for every value. For the CET pattern, proceed to **Scaffold the `objectEntryManager` CET**.
 
 ### Scaffold the `objectEntryManager` CET
 
@@ -68,16 +73,13 @@ Minimum `client-extension.yaml` entry:
 
 ```yaml
 <workspace-id>-entry-manager:
-  baseURL: "http://host.docker.internal:<microservice-port>"
-  name: <Name> Entry Manager
-  oAuthApplicationHeadlessServerExternalReferenceCode: <workspace-id>-oauth
-  objectDefinitionRestContextPath: "/o/c/<pluralLabel>"
-  type: objectEntryManager
+    name: <Name> Entry Manager
+    oAuth2ApplicationExternalReferenceCode: <workspace-id>-oauth
+    resourcePath: /object/entry/manager
+    type: objectEntryManager
 ```
 
-Where:
-- `baseURL` is the address Liferay uses to reach the microservice (use `host.docker.internal` in Docker environments)
-- `objectDefinitionRestContextPath` matches the published object's plural label
+The entry takes only these keys. Liferay reaches the microservice at the OAuth entry's `.serviceAddress` plus `resourcePath`. `client-extensions/liferay-sample-etc-spring-boot` shows a working example.
 
 ### Implement the Microservice
 
@@ -105,17 +107,17 @@ The microservice must respond to the five endpoints above. Use any stack (Spring
 }
 ```
 
-Liferay sends the `X-Liferay-Token` header with each call for the CET to verify authenticity.
+Liferay authenticates each call with an `Authorization: Bearer <JWT>` header, issued for the CET's OAuth application. Verify it as `client-extensions/liferay-sample-etc-spring-boot` does. Liferay sends no other token header. Verified on 2026.Q1.
 
 ### Wire OAuth
 
-Call `setup-oauth` to add the companion `oAuthApplicationHeadlessServer` entry to `client-extension.yaml`. The entry manager needs scopes to call back into Liferay when it must resolve related objects or write audit entries.
+Call `setup-oauth` to add the companion `oAuthApplicationUserAgent` entry to `client-extension.yaml`. The entry manager needs scopes to call back into Liferay when it must resolve related objects or write audit entries.
 
 Minimum scope: the per object scope (`c_<name>.everything`) for each object it calls back into; `Liferay.Headless.Object.everything` does not grant `/o/c` (see `rules/oauth-scopes.md`). Add `Liferay.Object.Admin.REST.everything` if the entry manager needs to inspect or modify the object definition itself.
 
 ### Deploy
 
-Run `deploy-and-verify` from the client extension root. Then start the microservice separately on the port declared in `baseURL`.
+Run `deploy-and-verify` from the client extension root. Then start the microservice separately on the port in the OAuth entry's `.serviceAddress`.
 
 ### Verify
 
@@ -144,9 +146,9 @@ Check the microservice logs to confirm Liferay forwarded the calls. If entries a
 
 | Symptom | Check |
 | --- | --- |
-| 500 on entry creation | Microservice unreachable at `baseURL`; check network and port |
-| 401 from microservice | `X-Liferay-Token` validation failing; verify the token algorithm |
-| CET not linked to object | `objectDefinitionRestContextPath` must match exactly; redeploy after fix |
+| 500 on entry creation | Microservice unreachable at the OAuth entry's `.serviceAddress`; check network and port |
+| 401 from microservice | Bearer JWT validation failing. The token is `RS256`, signed by the single key at `/o/oauth2/jwks`, and carries no `kid`, so do not require a `kid` match. `aud` and `client_id` match the `.oauth2.user.agent.audience` and `.oauth2.user.agent.client.id` routes. Verified on 2026.Q1 |
+| `400 ObjectDefinitionStorageTypeException` on create | Enable `LPS-135430`, and set `storageType` to `function#<cet-erc>` |
 | Empty list from Liferay | Microservice returns nonenvelope JSON; wrap in the Headless page envelope |
 
 ## Success Signal

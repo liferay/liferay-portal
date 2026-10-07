@@ -59,7 +59,7 @@ These CETs expose an HTTP endpoint that Liferay calls inbound. They require an `
 | --- | --- | --- | --- |
 | `objectAction` | Handler called when an object action fires | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `objectValidationRule` | Server side validation for object entries | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
-| `objectEntryManager` | Full storage backend for an `ext-Service` object | `objectDefinitionRestContextPath`, `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
+| `objectEntryManager` | Full storage backend for an object with `storageType` `function#<cet-erc>` | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `workflowAction` | Handler called at a Kaleo workflow action node | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Admin.Workflow.everything` if it transitions the task, plus `c_<name>.everything` for each object it calls |
 | `notificationType` | Custom notification channel (e.g. SMS, push) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `captcha` | Custom CAPTCHA provider | `resourcePath` | No |
