@@ -8,6 +8,8 @@ package com.liferay.commerce.avalara.connector.web.internal.portlet.action;
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
 import com.liferay.commerce.avalara.connector.web.internal.constants.CommerceAvalaraPortletKeys;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -20,6 +22,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -88,7 +91,16 @@ public class EditCommerceAvalaraConnectorMVCActionCommand
 
 		String licenseKey = ParamUtil.getString(actionRequest, "licenseKey");
 
-		modifiableSettings.setValue("licenseKey", licenseKey);
+		modifiableSettings.setValue(
+			"licenseKey",
+			_secretResolver.store(
+				themeDisplay.getCompanyId(),
+				StringBundler.concat(
+					"preference/company/", themeDisplay.getCompanyId(),
+					StringPool.SLASH,
+					CommerceAvalaraConnectorConfiguration.class.getName(),
+					"/licenseKey"),
+				licenseKey));
 
 		String serviceURL = ParamUtil.getString(actionRequest, "serviceURL");
 
@@ -111,5 +123,8 @@ public class EditCommerceAvalaraConnectorMVCActionCommand
 
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
