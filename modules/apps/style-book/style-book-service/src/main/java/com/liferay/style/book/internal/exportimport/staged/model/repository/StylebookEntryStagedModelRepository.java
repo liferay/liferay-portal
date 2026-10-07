@@ -130,6 +130,13 @@ public class StylebookEntryStagedModelRepository
 			StyleBookEntry styleBookEntry)
 		throws PortalException {
 
+		ServiceContext serviceContext = portletDataContext.createServiceContext(
+			styleBookEntry);
+
+		if (portletDataContext.isDataStrategyMirror()) {
+			serviceContext.setUuid(styleBookEntry.getUuid());
+		}
+
 		return _styleBookEntryLocalService.updateStyleBookEntry(
 			portletDataContext.getUserId(styleBookEntry.getUserUuid()),
 			styleBookEntry.getStyleBookEntryId(),
@@ -138,7 +145,7 @@ public class StylebookEntryStagedModelRepository
 			styleBookEntry.getFrontendTokensValues(), styleBookEntry.getName(),
 			styleBookEntry.getStyleBookEntryKey(),
 			styleBookEntry.getPreviewFileEntryId(), styleBookEntry.getThemeId(),
-			portletDataContext.createServiceContext(styleBookEntry));
+			serviceContext);
 	}
 
 	@Reference

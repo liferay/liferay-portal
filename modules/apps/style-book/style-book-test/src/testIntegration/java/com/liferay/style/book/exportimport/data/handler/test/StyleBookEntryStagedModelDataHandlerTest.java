@@ -13,10 +13,12 @@ import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase
 import com.liferay.frontend.token.definition.FrontendToken;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.StagedModel;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.style.book.constants.StyleBookConstants;
@@ -50,6 +53,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  * @author Petteri Karttunen
+ * @author Thiago Buarque
  */
 @RunWith(Arquillian.class)
 public class StyleBookEntryStagedModelDataHandlerTest
@@ -113,6 +117,109 @@ public class StyleBookEntryStagedModelDataHandlerTest
 
 		Assert.assertNull(
 			_getWarningExportImportReportEntry(liveGroup.getGroupId()));
+	}
+
+	@Test
+	public void testExportImportCompletesEmptyStyleBookEntry()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		StyleBookEntry emptyStyleBookEntry = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			emptyStyleBookEntry =
+				_styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
+					externalReferenceCode, TestPropsValues.getUserId(),
+					liveGroup.getGroupId(), RandomTestUtil.randomString());
+		}
+
+		int styleBookEntriesCount =
+			_styleBookEntryLocalService.getStyleBookEntriesCount(
+				liveGroup.getGroupId());
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				stagingGroup.getGroupId(), false, StringPool.BLANK,
+				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		exportImportStagedModel(styleBookEntry);
+
+		StyleBookEntry importedStyleBookEntry = (StyleBookEntry)getStagedModel(
+			styleBookEntry.getUuid(), liveGroup);
+
+		Assert.assertEquals(
+			emptyStyleBookEntry.getStyleBookEntryId(),
+			importedStyleBookEntry.getStyleBookEntryId());
+		Assert.assertEquals(
+			externalReferenceCode,
+			importedStyleBookEntry.getExternalReferenceCode());
+		Assert.assertEquals(
+			styleBookEntry.getName(), importedStyleBookEntry.getName());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			importedStyleBookEntry.getStatus());
+		Assert.assertEquals(
+			styleBookEntry.getThemeId(), importedStyleBookEntry.getThemeId());
+
+		exportImportStagedModel(styleBookEntry);
+
+		Assert.assertEquals(
+			styleBookEntriesCount,
+			_styleBookEntryLocalService.getStyleBookEntriesCount(
+				liveGroup.getGroupId()));
+	}
+
+	@Test
+	public void testExportImportCompletesEmptyStyleBookEntryWithDuplicateName()
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		_styleBookEntryLocalService.addStyleBookEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			liveGroup.getGroupId(), false, StringPool.BLANK, StringPool.BLANK,
+			name, StringPool.BLANK, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				liveGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			_styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				liveGroup.getGroupId(), RandomTestUtil.randomString());
+		}
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				stagingGroup.getGroupId(), false, StringPool.BLANK,
+				StringPool.BLANK, name, StringPool.BLANK,
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		exportImportStagedModel(styleBookEntry);
+
+		StyleBookEntry importedStyleBookEntry = (StyleBookEntry)getStagedModel(
+			styleBookEntry.getUuid(), liveGroup);
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			importedStyleBookEntry.getExternalReferenceCode());
+		Assert.assertEquals(name + " (1)", importedStyleBookEntry.getName());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			importedStyleBookEntry.getStatus());
 	}
 
 	@Test
