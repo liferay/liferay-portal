@@ -30,6 +30,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTe
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailHttpServer;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -883,8 +884,12 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
-		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
-			testGroup.getExternalReferenceCode(), masterPage);
+		MasterPage postMasterPage =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> masterPageResource.postSiteMasterPage(
+						testGroup.getExternalReferenceCode(), masterPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -909,9 +914,13 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
-		MasterPage putMasterPage = masterPageResource.putSiteMasterPage(
-			testGroup.getExternalReferenceCode(),
-			masterPage.getExternalReferenceCode(), masterPage);
+		MasterPage putMasterPage =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> masterPageResource.putSiteMasterPage(
+						testGroup.getExternalReferenceCode(),
+						masterPage.getExternalReferenceCode(), masterPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =

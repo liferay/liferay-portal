@@ -21,6 +21,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPage
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailHttpServer;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
@@ -734,8 +735,12 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		UtilityPageResource utilityPageResource = _getUtilityPageResource();
 
-		UtilityPage postUtilityPage = utilityPageResource.postSiteUtilityPage(
-			testGroup.getExternalReferenceCode(), utilityPage);
+		UtilityPage postUtilityPage =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> utilityPageResource.postSiteUtilityPage(
+						testGroup.getExternalReferenceCode(), utilityPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -761,9 +766,13 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		UtilityPageResource utilityPageResource = _getUtilityPageResource();
 
-		UtilityPage putUtilityPage = utilityPageResource.putSiteUtilityPage(
-			testGroup.getExternalReferenceCode(),
-			utilityPage.getExternalReferenceCode(), utilityPage);
+		UtilityPage putUtilityPage =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> utilityPageResource.putSiteUtilityPage(
+						testGroup.getExternalReferenceCode(),
+						utilityPage.getExternalReferenceCode(), utilityPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =
