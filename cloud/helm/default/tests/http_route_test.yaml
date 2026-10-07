@@ -1,0 +1,45 @@
+suite: HTTP Route
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].backendRefs
+                    value:
+                        -   group: ""
+                            kind: Service
+                            name: liferay-default
+                            port: 8080
+                            weight: 1
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute-a-example-com
+        it: Spells out the backend reference fields on every per hostname route
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hostnames:
+                -   a.example.com
+                -   b.example.com
+            network.perHostnameRoutes: true
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].backendRefs
+                    value:
+                        -   group: ""
+                            kind: Service
+                            name: liferay-default
+                            port: 8080
+                            weight: 1
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Spells out the backend reference fields the API server defaults
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
