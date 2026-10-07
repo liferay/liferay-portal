@@ -6,7 +6,10 @@
 package com.liferay.portal.security.key.secret;
 
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
+
+import java.util.Objects;
 
 /**
  * @author Pedro Victor Silvestre
@@ -25,6 +28,20 @@ public class SecretResolverUtil {
 		}
 
 		return secretResolver.resolve(companyId, value);
+	}
+
+	public static String resolve(
+		long companyId, String identifier, String value) {
+
+		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(value);
+
+		if ((keyReference == null) ||
+			!Objects.equals(identifier, keyReference.getIdentifier())) {
+
+			return value;
+		}
+
+		return resolve(companyId, value);
 	}
 
 	private static final Snapshot<SecretResolver> _secretResolverSnapshot =

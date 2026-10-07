@@ -63,10 +63,30 @@ public class SecretResolverUtilTest {
 		Assert.assertSame(
 			resolvedValue, SecretResolverUtil.resolve(companyId, value));
 
+		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(value);
+
+		Assert.assertSame(
+			resolvedValue,
+			SecretResolverUtil.resolve(
+				companyId, keyReference.getIdentifier(), value));
+
+		Assert.assertSame(
+			value,
+			SecretResolverUtil.resolve(
+				companyId, RandomTestUtil.randomString(), value));
+
 		String plainValue = RandomTestUtil.randomString();
 
 		Assert.assertSame(
 			plainValue, SecretResolverUtil.resolve(companyId, plainValue));
+		Assert.assertSame(
+			plainValue,
+			SecretResolverUtil.resolve(
+				companyId, RandomTestUtil.randomString(), plainValue));
+
+		Assert.assertNull(
+			SecretResolverUtil.resolve(
+				companyId, RandomTestUtil.randomString(), null));
 
 		Mockito.verify(
 			secretResolver, Mockito.never()
