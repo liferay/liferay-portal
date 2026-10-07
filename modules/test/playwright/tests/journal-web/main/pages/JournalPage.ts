@@ -235,6 +235,32 @@ export class JournalPage {
 		await waitForAlert(this.page, `was created successfully.`);
 	}
 
+	async publishSelectedElements({confirm = true}: {confirm?: boolean} = {}) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				name: 'Publish Selected Elements',
+			}),
+			trigger: this.page
+				.locator('.management-bar')
+				.getByRole('button', {name: 'Actions'}),
+		});
+
+		const dialog = this.page.getByRole('dialog');
+
+		await expect(
+			dialog.getByText(
+				'Are you sure you want to publish the selected entities?'
+			)
+		).toBeVisible();
+
+		await dialog
+			.getByRole('button', {name: confirm ? 'Publish to Live' : 'Cancel'})
+			.click();
+
+		await expect(dialog).toBeHidden();
+	}
+
 	async selectItem(index: number) {
 		await this.page
 			.locator(
@@ -242,6 +268,16 @@ export class JournalPage {
 			)
 			.locator('input[type=checkbox]')
 			.click();
+	}
+
+	async selectItemByTitle(title: string) {
+		await this.page
+			.locator(
+				'[id^="_com_liferay_journal_web_portlet_JournalPortlet_articles_"]',
+				{hasText: title}
+			)
+			.getByRole('checkbox')
+			.check();
 	}
 
 	async selectPage(index: number) {
