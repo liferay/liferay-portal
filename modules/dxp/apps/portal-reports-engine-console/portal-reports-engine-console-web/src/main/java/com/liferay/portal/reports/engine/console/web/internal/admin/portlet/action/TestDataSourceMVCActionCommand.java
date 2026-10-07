@@ -14,14 +14,10 @@ import com.liferay.portal.reports.engine.console.constants.ReportsEngineConsoleP
 import com.liferay.portal.reports.engine.console.model.Source;
 import com.liferay.portal.reports.engine.console.service.SourceService;
 import com.liferay.portal.reports.engine.console.util.ReportsEngineConsoleUtil;
-import com.liferay.portal.security.key.KeyReference;
-import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,28 +45,14 @@ public class TestDataSourceMVCActionCommand extends BaseMVCActionCommand {
 
 		ReportsEngineConsoleUtil.validateJDBCConnection(
 			source.getDriverClassName(), source.getDriverUrl(),
-			source.getDriverUserName(), _getDriverPassword(source));
-	}
-
-	private String _getDriverPassword(Source source) {
-		String driverPassword = source.getDriverPassword();
-
-		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
-			driverPassword);
-
-		if ((keyReference == null) ||
-			!Objects.equals(
-				keyReference.getIdentifier(),
+			source.getDriverUserName(),
+			SecretResolverUtil.resolve(
+				source.getCompanyId(),
 				StringBundler.concat(
 					Source.class.getSimpleName(), StringPool.SLASH,
 					source.getCompanyId(), StringPool.SLASH,
-					source.getSourceId()))) {
-
-			return driverPassword;
-		}
-
-		return SecretResolverUtil.resolve(
-			source.getCompanyId(), driverPassword);
+					source.getSourceId()),
+				source.getDriverPassword()));
 	}
 
 	@Reference

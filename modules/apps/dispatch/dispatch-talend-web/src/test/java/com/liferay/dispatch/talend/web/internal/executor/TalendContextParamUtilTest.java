@@ -63,12 +63,16 @@ public class TalendContextParamUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		long dispatchTriggerId = RandomTestUtil.randomLong();
 		String name = RandomTestUtil.randomString();
+
+		String keyReferenceString = _getKeyReferenceString(
+			companyId, dispatchTriggerId, name);
+
 		String value = RandomTestUtil.randomString();
 
 		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			value
 		);
@@ -76,44 +80,20 @@ public class TalendContextParamUtilTest {
 		Assert.assertEquals(
 			value,
 			TalendContextParamUtil.getValue(
-				companyId, dispatchTriggerId, name,
-				_getKeyReferenceString(companyId, dispatchTriggerId, name)));
+				companyId, dispatchTriggerId, name, keyReferenceString));
 		Assert.assertEquals(
-			value,
+			keyReferenceString,
 			TalendContextParamUtil.getValue(
-				companyId, dispatchTriggerId, name, value));
+				companyId, dispatchTriggerId, RandomTestUtil.randomString(),
+				keyReferenceString));
 
-		String keyReferenceString = _getKeyReferenceString(
+		keyReferenceString = _getKeyReferenceString(
 			companyId, dispatchTriggerId, "JAVA_OPTS");
 
 		Assert.assertEquals(
 			keyReferenceString,
 			TalendContextParamUtil.getValue(
 				companyId, dispatchTriggerId, "JAVA_OPTS", keyReferenceString));
-
-		keyReferenceString = _getKeyReferenceString(
-			companyId + 1, dispatchTriggerId, name);
-
-		Assert.assertEquals(
-			keyReferenceString,
-			TalendContextParamUtil.getValue(
-				companyId, dispatchTriggerId, name, keyReferenceString));
-
-		keyReferenceString = _getKeyReferenceString(
-			companyId, dispatchTriggerId + 1, name);
-
-		Assert.assertEquals(
-			keyReferenceString,
-			TalendContextParamUtil.getValue(
-				companyId, dispatchTriggerId, name, keyReferenceString));
-
-		keyReferenceString = _getKeyReferenceString(
-			companyId, dispatchTriggerId, RandomTestUtil.randomString());
-
-		Assert.assertEquals(
-			keyReferenceString,
-			TalendContextParamUtil.getValue(
-				companyId, dispatchTriggerId, name, keyReferenceString));
 	}
 
 	private String _getKeyReferenceString(

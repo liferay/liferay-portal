@@ -8,8 +8,6 @@ package com.liferay.dispatch.talend.web.internal.executor;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.security.key.KeyReference;
-import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.util.Objects;
@@ -26,20 +24,13 @@ public class TalendContextParamUtil {
 			return value;
 		}
 
-		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(value);
-
-		if ((keyReference == null) ||
-			!Objects.equals(
-				keyReference.getIdentifier(),
-				StringBundler.concat(
-					DispatchTrigger.class.getSimpleName(), StringPool.SLASH,
-					companyId, StringPool.SLASH, dispatchTriggerId,
-					StringPool.SLASH, name))) {
-
-			return value;
-		}
-
-		return SecretResolverUtil.resolve(companyId, value);
+		return SecretResolverUtil.resolve(
+			companyId,
+			StringBundler.concat(
+				DispatchTrigger.class.getSimpleName(), StringPool.SLASH,
+				companyId, StringPool.SLASH, dispatchTriggerId,
+				StringPool.SLASH, name),
+			value);
 	}
 
 }

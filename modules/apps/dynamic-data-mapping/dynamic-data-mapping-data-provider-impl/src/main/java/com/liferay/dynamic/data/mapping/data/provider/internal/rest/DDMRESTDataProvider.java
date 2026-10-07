@@ -42,8 +42,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.key.KeyReference;
-import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.io.ByteArrayInputStream;
@@ -60,7 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -421,6 +418,14 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 			return ddmDataProviderResponse;
 		}
 
+		String password = SecretResolverUtil.resolve(
+			ddmDataProviderInstance.getCompanyId(),
+			StringBundler.concat(
+				DDMDataProviderInstance.class.getSimpleName(), StringPool.SLASH,
+				ddmDataProviderInstance.getCompanyId(), StringPool.SLASH,
+				ddmDataProviderInstance.getDataProviderInstanceId()),
+			ddmRESTDataProviderSettings.password());
+
 		JSONWebServiceClient jsonWebServiceClient =
 			_jsonWebServiceClientFactory.getInstance(
 				HashMapBuilder.<String, Object>put(
@@ -460,10 +465,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 				).put(
 					"login", ddmRESTDataProviderSettings.username()
 				).put(
-					"password",
-					_getPassword(
-						ddmDataProviderInstance,
-						ddmRESTDataProviderSettings.password())
+					"password", password
 				).put(
 					"protocol", uri.getScheme()
 				).put(
@@ -509,28 +511,6 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 		}
 
 		return ddmDataProviderResponse;
-	}
-
-	private String _getPassword(
-		DDMDataProviderInstance ddmDataProviderInstance, String password) {
-
-		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
-			password);
-
-		if ((keyReference == null) ||
-			!Objects.equals(
-				keyReference.getIdentifier(),
-				StringBundler.concat(
-					DDMDataProviderInstance.class.getSimpleName(),
-					StringPool.SLASH, ddmDataProviderInstance.getCompanyId(),
-					StringPool.SLASH,
-					ddmDataProviderInstance.getDataProviderInstanceId()))) {
-
-			return password;
-		}
-
-		return SecretResolverUtil.resolve(
-			ddmDataProviderInstance.getCompanyId(), password);
 	}
 
 	private String _normalizePath(String path) {

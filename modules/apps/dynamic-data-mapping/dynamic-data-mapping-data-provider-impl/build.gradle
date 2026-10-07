@@ -24,6 +24,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 }

@@ -61,14 +61,17 @@ public class MBMailingListPasswordUtilTest {
 	@Test
 	public void testGetPassword() {
 		long categoryId = RandomTestUtil.randomLong();
-
 		long companyId = RandomTestUtil.randomLong();
+
+		String keyReferenceString = _getKeyReferenceString(
+			categoryId, companyId, "inPassword");
+
 		String password = RandomTestUtil.randomString();
 
 		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			password
 		);
@@ -76,41 +79,15 @@ public class MBMailingListPasswordUtilTest {
 		Assert.assertEquals(
 			password,
 			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, "inPassword",
-				_getKeyReferenceString(categoryId, companyId, "inPassword")));
-		Assert.assertEquals(
-			password,
-			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, "outPassword",
-				_getKeyReferenceString(categoryId, companyId, "outPassword")));
-		Assert.assertEquals(
-			password,
-			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, "inPassword", password));
-
-		String keyReferenceString = _getKeyReferenceString(
-			categoryId + 1, companyId, "inPassword");
-
-		Assert.assertEquals(
-			keyReferenceString,
-			MBMailingListPasswordUtil.getPassword(
 				categoryId, companyId, "inPassword", keyReferenceString));
-
-		keyReferenceString = _getKeyReferenceString(
-			categoryId, companyId + 1, "inPassword");
-
-		Assert.assertEquals(
-			keyReferenceString,
-			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, "inPassword", keyReferenceString));
-
-		keyReferenceString = _getKeyReferenceString(
-			categoryId, companyId, "inPassword");
-
 		Assert.assertEquals(
 			keyReferenceString,
 			MBMailingListPasswordUtil.getPassword(
 				categoryId, companyId, "outPassword", keyReferenceString));
+		Assert.assertEquals(
+			keyReferenceString,
+			MBMailingListPasswordUtil.getPassword(
+				categoryId + 1, companyId, "inPassword", keyReferenceString));
 	}
 
 	private String _getKeyReferenceString(

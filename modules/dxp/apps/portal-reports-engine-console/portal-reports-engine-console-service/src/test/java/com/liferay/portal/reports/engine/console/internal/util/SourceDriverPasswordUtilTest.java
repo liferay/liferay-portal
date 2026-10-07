@@ -61,13 +61,16 @@ public class SourceDriverPasswordUtilTest {
 	@Test
 	public void testGetDriverPassword() {
 		long companyId = RandomTestUtil.randomLong();
-		String driverPassword = RandomTestUtil.randomString();
 		long sourceId = RandomTestUtil.randomLong();
+
+		String keyReferenceString = _getKeyReferenceString(companyId, sourceId);
+
+		String driverPassword = RandomTestUtil.randomString();
 
 		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			driverPassword
 		);
@@ -75,27 +78,11 @@ public class SourceDriverPasswordUtilTest {
 		Assert.assertEquals(
 			driverPassword,
 			SourceDriverPasswordUtil.getDriverPassword(
-				companyId, _getKeyReferenceString(companyId, sourceId),
-				sourceId));
-		Assert.assertEquals(
-			driverPassword,
-			SourceDriverPasswordUtil.getDriverPassword(
-				companyId, driverPassword, sourceId));
-
-		String keyReferenceString = _getKeyReferenceString(
-			companyId + 1, sourceId);
-
+				companyId, keyReferenceString, sourceId));
 		Assert.assertEquals(
 			keyReferenceString,
 			SourceDriverPasswordUtil.getDriverPassword(
-				companyId, keyReferenceString, sourceId));
-
-		keyReferenceString = _getKeyReferenceString(companyId, sourceId + 1);
-
-		Assert.assertEquals(
-			keyReferenceString,
-			SourceDriverPasswordUtil.getDriverPassword(
-				companyId, keyReferenceString, sourceId));
+				companyId, keyReferenceString, sourceId + 1));
 	}
 
 	private String _getKeyReferenceString(long companyId, long sourceId) {

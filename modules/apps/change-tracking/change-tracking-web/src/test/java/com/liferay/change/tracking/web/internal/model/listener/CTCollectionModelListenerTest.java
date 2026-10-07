@@ -8,14 +8,18 @@ package com.liferay.change.tracking.web.internal.model.listener;
 import com.liferay.change.tracking.model.CTRemote;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -24,6 +28,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -59,33 +64,28 @@ public class CTCollectionModelListenerTest {
 	}
 
 	@Test
-	public void testGetClientSecret() {
+	public void testGetToken() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
-		String clientSecret = RandomTestUtil.randomString();
 		long ctRemoteId = RandomTestUtil.randomLong();
+
+		String keyReferenceString = _getKeyReferenceString(
+			companyId, ctRemoteId);
+
+		String clientSecret = RandomTestUtil.randomString();
 
 		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			clientSecret
 		);
 
-		_testGetClientSecret(
-			_getKeyReferenceString(companyId, ctRemoteId), companyId,
-			ctRemoteId, clientSecret);
-		_testGetClientSecret(clientSecret, companyId, ctRemoteId, clientSecret);
-
-		String keyReferenceString = _getKeyReferenceString(
-			companyId + 1, ctRemoteId);
-
-		_testGetClientSecret(
-			keyReferenceString, companyId, ctRemoteId, keyReferenceString);
+		_testGetToken(keyReferenceString, companyId, ctRemoteId, clientSecret);
 
 		keyReferenceString = _getKeyReferenceString(companyId, ctRemoteId + 1);
 
-		_testGetClientSecret(
+		_testGetToken(
 			keyReferenceString, companyId, ctRemoteId, keyReferenceString);
 	}
 
@@ -98,9 +98,10 @@ public class CTCollectionModelListenerTest {
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 
-	private void _testGetClientSecret(
-		String clientSecret, long companyId, long ctRemoteId,
-		String expectedClientSecret) {
+	private void _testGetToken(
+			String clientSecret, long companyId, long ctRemoteId,
+			String expectedClientSecret)
+		throws Exception {
 
 		CTRemote ctRemote = Mockito.mock(CTRemote.class);
 
@@ -122,11 +123,41 @@ public class CTCollectionModelListenerTest {
 			ctRemoteId
 		);
 
-		Assert.assertEquals(
-			expectedClientSecret,
-			ReflectionTestUtil.invoke(
-				new CTCollectionModelListener(), "_getClientSecret",
-				new Class<?>[] {CTRemote.class}, ctRemote));
+		CTCollectionModelListener ctCollectionModelListener =
+			new CTCollectionModelListener();
+
+		Http http = Mockito.mock(Http.class);
+
+		Mockito.when(
+			http.URLtoString(Mockito.any(Http.Options.class))
+		).thenReturn(
+			"{}"
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			ctCollectionModelListener, "_http", http);
+
+		ReflectionTestUtil.setFieldValue(
+			ctCollectionModelListener, "_jsonFactory", new JSONFactoryImpl());
+
+		ReflectionTestUtil.invoke(
+			ctCollectionModelListener, "_getToken",
+			new Class<?>[] {CTRemote.class}, ctRemote);
+
+		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
+			Http.Options.class);
+
+		Mockito.verify(
+			http
+		).URLtoString(
+			argumentCaptor.capture()
+		);
+
+		Http.Options options = argumentCaptor.getValue();
+
+		Map<String, String> parts = options.getParts();
+
+		Assert.assertEquals(expectedClientSecret, parts.get("client_secret"));
 	}
 
 	private SecretResolver _secretResolver;

@@ -5,9 +5,17 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.internal.rest;
 
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderInputParametersSettings;
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderInstanceSettings;
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderRequest;
+import com.liferay.dynamic.data.mapping.data.provider.configuration.DDMDataProviderConfiguration;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.json.web.service.client.JSONWebServiceClient;
+import com.liferay.portal.json.web.service.client.JSONWebServiceClientFactory;
+import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -21,6 +29,8 @@ import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +38,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -80,55 +91,32 @@ public class DDMRESTDataProviderTest {
 	}
 
 	@Test
-	public void testGetPassword() {
+	public void testGetData() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 		long dataProviderInstanceId = RandomTestUtil.randomLong();
+
+		String keyReferenceString = _getKeyReferenceString(
+			companyId, dataProviderInstanceId);
+
 		String password = RandomTestUtil.randomString();
 
 		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			password
 		);
 
-		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
-			DDMDataProviderInstance.class);
-
-		Mockito.when(
-			ddmDataProviderInstance.getCompanyId()
-		).thenReturn(
-			companyId
-		);
-
-		Mockito.when(
-			ddmDataProviderInstance.getDataProviderInstanceId()
-		).thenReturn(
-			dataProviderInstanceId
-		);
-
-		Assert.assertEquals(
-			password,
-			_getPassword(
-				ddmDataProviderInstance,
-				_getKeyReferenceString(companyId, dataProviderInstanceId)));
-		Assert.assertEquals(
-			password, _getPassword(ddmDataProviderInstance, password));
-
-		String keyReferenceString = _getKeyReferenceString(
-			companyId + 1, dataProviderInstanceId);
-
-		Assert.assertEquals(
-			keyReferenceString,
-			_getPassword(ddmDataProviderInstance, keyReferenceString));
+		_testGetData(
+			companyId, dataProviderInstanceId, password, keyReferenceString);
 
 		keyReferenceString = _getKeyReferenceString(
 			companyId, dataProviderInstanceId + 1);
 
-		Assert.assertEquals(
-			keyReferenceString,
-			_getPassword(ddmDataProviderInstance, keyReferenceString));
+		_testGetData(
+			companyId, dataProviderInstanceId, keyReferenceString,
+			keyReferenceString);
 	}
 
 	@Test
@@ -172,13 +160,126 @@ public class DDMRESTDataProviderTest {
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 
-	private String _getPassword(
-		DDMDataProviderInstance ddmDataProviderInstance, String password) {
+	private void _testGetData(
+			long companyId, long dataProviderInstanceId,
+			String expectedPassword, String password)
+		throws Exception {
 
-		return ReflectionTestUtil.invoke(
-			_ddmrestDataProvider, "_getPassword",
-			new Class<?>[] {DDMDataProviderInstance.class, String.class},
-			ddmDataProviderInstance, password);
+		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
+			DDMDataProviderInstance.class);
+
+		Mockito.when(
+			ddmDataProviderInstance.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		Mockito.when(
+			ddmDataProviderInstance.getDataProviderInstanceId()
+		).thenReturn(
+			dataProviderInstanceId
+		);
+
+		DDMDataProviderInstanceService ddmDataProviderInstanceService =
+			Mockito.mock(DDMDataProviderInstanceService.class);
+
+		String ddmDataProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			ddmDataProviderInstanceService.fetchDataProviderInstanceByUuid(
+				ddmDataProviderId)
+		).thenReturn(
+			ddmDataProviderInstance
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_ddmDataProviderInstanceService",
+			ddmDataProviderInstanceService);
+
+		DDMRESTDataProviderSettings ddmRESTDataProviderSettings = Mockito.mock(
+			DDMRESTDataProviderSettings.class);
+
+		Mockito.when(
+			ddmRESTDataProviderSettings.inputParameters()
+		).thenReturn(
+			new DDMDataProviderInputParametersSettings[0]
+		);
+
+		Mockito.when(
+			ddmRESTDataProviderSettings.password()
+		).thenReturn(
+			password
+		);
+
+		Mockito.when(
+			ddmRESTDataProviderSettings.url()
+		).thenReturn(
+			"http://" + RandomTestUtil.randomString()
+		);
+
+		DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings =
+			Mockito.mock(DDMDataProviderInstanceSettings.class);
+
+		Mockito.when(
+			ddmDataProviderInstanceSettings.getSettings(
+				ddmDataProviderInstance, DDMRESTDataProviderSettings.class)
+		).thenReturn(
+			ddmRESTDataProviderSettings
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_ddmDataProviderInstanceSettings",
+			ddmDataProviderInstanceSettings);
+
+		JSONWebServiceClient jsonWebServiceClient = Mockito.mock(
+			JSONWebServiceClient.class);
+
+		Mockito.when(
+			jsonWebServiceClient.doGet(
+				Mockito.anyString(), Mockito.any(String[].class))
+		).thenReturn(
+			"{}"
+		);
+
+		JSONWebServiceClientFactory jsonWebServiceClientFactory = Mockito.mock(
+			JSONWebServiceClientFactory.class);
+
+		Mockito.when(
+			jsonWebServiceClientFactory.getInstance(
+				Mockito.anyMap(), Mockito.eq(false))
+		).thenReturn(
+			jsonWebServiceClient
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_jsonWebServiceClientFactory",
+			jsonWebServiceClientFactory);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_ddmDataProviderConfiguration",
+			Mockito.mock(DDMDataProviderConfiguration.class));
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_portalCache",
+			Mockito.mock(PortalCache.class));
+
+		_ddmrestDataProvider.getData(
+			DDMDataProviderRequest.Builder.newBuilder(
+			).withDDMDataProviderId(
+				ddmDataProviderId
+			).build());
+
+		ArgumentCaptor<Map<String, Object>> argumentCaptor =
+			ArgumentCaptor.forClass(Map.class);
+
+		Mockito.verify(
+			jsonWebServiceClientFactory
+		).getInstance(
+			argumentCaptor.capture(), Mockito.eq(false)
+		);
+
+		Map<String, Object> properties = argumentCaptor.getValue();
+
+		Assert.assertEquals(expectedPassword, properties.get("password"));
 	}
 
 	private static final String _PROXY_HOST = RandomTestUtil.randomString();

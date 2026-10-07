@@ -68,26 +68,21 @@ public class WebhookObjectActionExecutorImplTest {
 	public void testExecute() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 		long objectActionId = RandomTestUtil.randomLong();
+
+		String keyReferenceString = _getKeyReferenceString(
+			companyId, objectActionId);
+
 		String secret = RandomTestUtil.randomString();
 
 		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			secret
 		);
 
-		_testExecute(
-			companyId, secret, objectActionId,
-			_getKeyReferenceString(companyId, objectActionId));
-		_testExecute(companyId, secret, objectActionId, secret);
-
-		String keyReferenceString = _getKeyReferenceString(
-			companyId + 1, objectActionId);
-
-		_testExecute(
-			companyId, keyReferenceString, objectActionId, keyReferenceString);
+		_testExecute(companyId, secret, objectActionId, keyReferenceString);
 
 		keyReferenceString = _getKeyReferenceString(
 			companyId, objectActionId + 1);

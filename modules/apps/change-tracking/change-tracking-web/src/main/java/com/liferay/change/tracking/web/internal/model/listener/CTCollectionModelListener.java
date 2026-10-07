@@ -17,11 +17,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.security.key.KeyReference;
-import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
-
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -126,27 +122,6 @@ public class CTCollectionModelListener extends BaseModelListener<CTCollection> {
 		).build();
 	}
 
-	private String _getClientSecret(CTRemote ctRemote) {
-		String clientSecret = ctRemote.getClientSecret();
-
-		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
-			clientSecret);
-
-		if ((keyReference == null) ||
-			!Objects.equals(
-				keyReference.getIdentifier(),
-				StringBundler.concat(
-					CTRemote.class.getSimpleName(), StringPool.SLASH,
-					ctRemote.getCompanyId(), StringPool.SLASH,
-					ctRemote.getCtRemoteId()))) {
-
-			return clientSecret;
-		}
-
-		return SecretResolverUtil.resolve(
-			ctRemote.getCompanyId(), clientSecret);
-	}
-
 	private String _getToken(CTRemote ctRemote) throws Exception {
 		Http.Options options = new Http.Options();
 
@@ -154,7 +129,15 @@ public class CTCollectionModelListener extends BaseModelListener<CTCollection> {
 		options.setPost(true);
 
 		options.addPart("client_id", ctRemote.getClientId());
-		options.addPart("client_secret", _getClientSecret(ctRemote));
+		options.addPart(
+			"client_secret",
+			SecretResolverUtil.resolve(
+				ctRemote.getCompanyId(),
+				StringBundler.concat(
+					CTRemote.class.getSimpleName(), StringPool.SLASH,
+					ctRemote.getCompanyId(), StringPool.SLASH,
+					ctRemote.getCtRemoteId()),
+				ctRemote.getClientSecret()));
 		options.addPart("grant_type", "client_credentials");
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
