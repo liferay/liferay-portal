@@ -13,11 +13,15 @@ import {getScopeExternalReferenceCode} from './getScopeExternalReferenceCode';
  * the check. An item without Space data, or in the project's own library,
  * passes.
  */
-export function isSpaceMember(
-	assetLibraries: AssetLibrary[] | undefined,
-	itemData: any,
-	projectGroupExternalReferenceCode?: string
-): boolean {
+export function isSpaceMember({
+	assetLibraries,
+	itemData,
+	projectGroupExternalReferenceCode,
+}: {
+	assetLibraries: AssetLibrary[] | undefined;
+	itemData: any;
+	projectGroupExternalReferenceCode?: string;
+}): boolean {
 	const scopeExternalReferenceCode = getScopeExternalReferenceCode(itemData);
 
 	if (

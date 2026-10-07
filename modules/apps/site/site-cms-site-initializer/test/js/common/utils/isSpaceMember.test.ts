@@ -13,19 +13,25 @@ describe('isSpaceMember', () => {
 
 	it('allows a folder from a Space in the asset libraries list', () => {
 		expect(
-			isSpaceMember(assetLibraries, {
-				embedded: {scope: {externalReferenceCode: 'SPACE_A'}},
-				entryClassName: OBJECT_ENTRY_FOLDER_CLASS_NAME,
+			isSpaceMember({
+				assetLibraries,
+				itemData: {
+					embedded: {scope: {externalReferenceCode: 'SPACE_A'}},
+					entryClassName: OBJECT_ENTRY_FOLDER_CLASS_NAME,
+				},
 			})
 		).toBe(true);
 	});
 
 	it('allows an asset from a Space in the asset libraries list', () => {
 		expect(
-			isSpaceMember(assetLibraries, {
-				embedded: {
-					systemProperties: {
-						scope: {externalReferenceCode: 'SPACE_A'},
+			isSpaceMember({
+				assetLibraries,
+				itemData: {
+					embedded: {
+						systemProperties: {
+							scope: {externalReferenceCode: 'SPACE_A'},
+						},
 					},
 				},
 			})
@@ -34,26 +40,29 @@ describe('isSpaceMember', () => {
 
 	it("allows an asset from the project's own library", () => {
 		expect(
-			isSpaceMember(
+			isSpaceMember({
 				assetLibraries,
-				{
+				itemData: {
 					embedded: {
 						systemProperties: {
 							scope: {externalReferenceCode: 'PROJECT_A'},
 						},
 					},
 				},
-				'PROJECT_A'
-			)
+				projectGroupExternalReferenceCode: 'PROJECT_A',
+			})
 		).toBe(true);
 	});
 
 	it('allows an asset when the asset libraries list is missing', () => {
 		expect(
-			isSpaceMember(undefined, {
-				embedded: {
-					systemProperties: {
-						scope: {externalReferenceCode: 'SPACE_B'},
+			isSpaceMember({
+				assetLibraries: undefined,
+				itemData: {
+					embedded: {
+						systemProperties: {
+							scope: {externalReferenceCode: 'SPACE_B'},
+						},
 					},
 				},
 			})
@@ -61,22 +70,24 @@ describe('isSpaceMember', () => {
 	});
 
 	it('allows an asset without Space data', () => {
-		expect(isSpaceMember(assetLibraries, {embedded: {}})).toBe(true);
+		expect(isSpaceMember({assetLibraries, itemData: {embedded: {}}})).toBe(
+			true
+		);
 	});
 
 	it('denies an asset from a Space outside the asset libraries list', () => {
 		expect(
-			isSpaceMember(
+			isSpaceMember({
 				assetLibraries,
-				{
+				itemData: {
 					embedded: {
 						systemProperties: {
 							scope: {externalReferenceCode: 'SPACE_B'},
 						},
 					},
 				},
-				'PROJECT_A'
-			)
+				projectGroupExternalReferenceCode: 'PROJECT_A',
+			})
 		).toBe(false);
 	});
 });
