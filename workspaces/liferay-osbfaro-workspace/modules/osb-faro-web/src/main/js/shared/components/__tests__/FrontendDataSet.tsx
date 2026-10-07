@@ -34,14 +34,8 @@ const mockFetch = (items: unknown[]) => {
 	return fetch;
 };
 
-const enableSnapshotsFeatureFlags = () => {
-	Liferay.FeatureFlags['LPS-164563'] = true;
-};
-
 afterEach(() => {
 	cleanup();
-
-	delete Liferay.FeatureFlags['LPS-164563'];
 
 	lastProps = undefined;
 });
@@ -120,8 +114,6 @@ describe('columns.nameAndLinkRenderer', () => {
 });
 
 describe('useSnapshots', () => {
-	beforeEach(enableSnapshotsFeatureFlags);
-
 	it('should return null while the snapshots are still loading', () => {
 		mockFetch([]);
 
@@ -171,19 +163,6 @@ describe('useSnapshots', () => {
 		await waitFor(() => expect(result.current).toEqual([]));
 	});
 
-	it('should not fetch when the feature flags are disabled', () => {
-		Liferay.FeatureFlags['LPS-164563'] = false;
-
-		const fetch = mockFetch([]);
-
-		const {result} = renderHook(() =>
-			useSnapshots('accounts-list-dataset')
-		);
-
-		expect(fetch).not.toHaveBeenCalled();
-		expect(result.current).toEqual([]);
-	});
-
 	it('should return an empty array and not fetch when disabled through the second argument', () => {
 		const fetch = mockFetch([]);
 
@@ -208,8 +187,6 @@ describe('FrontendDataSet (snapshots wrapper)', () => {
 		});
 
 		it('should not fetch snapshots and disable them on the base FrontendDataSet', () => {
-			enableSnapshotsFeatureFlags();
-
 			const fetch = mockFetch([]);
 
 			render(<FrontendDataSet id="assetTable" views={[]} />);
@@ -220,8 +197,6 @@ describe('FrontendDataSet (snapshots wrapper)', () => {
 	});
 
 	describe('when snapshotsEnabled is true', () => {
-		beforeEach(enableSnapshotsFeatureFlags);
-
 		it('should render the loading indicator while the snapshots are still loading', () => {
 			Liferay.Util = {
 				fetch: jest.fn(() => new Promise(() => {})),
