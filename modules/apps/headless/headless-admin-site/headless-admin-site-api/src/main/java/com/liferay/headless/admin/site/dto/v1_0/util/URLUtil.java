@@ -49,7 +49,12 @@ public class URLUtil {
 						" because of restricted host ", host));
 			}
 
-			return HttpUtil.URLtoByteArray(url.toString());
+			Http.Options options = new Http.Options();
+
+			options.setFollowRedirects(false);
+			options.setLocation(url.toString());
+
+			return HttpUtil.URLtoByteArray(options);
 		}
 
 		if (Objects.equals(protocol, "lar")) {
