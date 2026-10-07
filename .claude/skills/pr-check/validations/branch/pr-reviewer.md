@@ -18,14 +18,7 @@ The exit status is the verdict. `0` is a clean diff, so report **PASS** and quot
 
 Apply the fixes. For each violation, read the rule file `pr-reviewer/rules/<rule>-*.md` and the code around the line, then make the change the `fix` describes. A `fix` that starts with `Verify:` is one the reviewer was not sure about, so confirm it against the rule and the surrounding code first, and leave the code alone when the rule does not apply. Skip a `fix` that SourceFormatter would revert; the reviewer marks those with `SourceFormatter is authoritative`. Never edit a file that carries an `@generated` marker.
 
-When at least one fix was applied, commit as the **Autocommit** section says, then run the formatter over the branch so the fixes match the formatting the Source Format validation already established, and amend anything it changes into that commit:
-
-```bash
-(cd "${REPO_ROOT}/portal-impl" && ANT_OPTS="-Xmx2560m" ant format-source-current-branch > "${LOG_FORMAT}" 2>&1)
-(cd "${REPO_ROOT}" && git add --update && git commit --amend --no-edit)
-```
-
-Then review once more:
+When at least one fix was applied, commit as the **Autocommit** section says, then review once more:
 
 ```bash
 (cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2>&1)
@@ -49,10 +42,10 @@ When `git status --porcelain` is nonempty after the fixes, stage the tracked mod
 
 ## Notes
 
-Run **after** Source Format and Go Source Format, so the reviewer sees the formatted tree and its own commit only carries rule fixes.
+Run **after** the drift validations, so the reviewer sees the regenerated tree, and **before** Source Format, Workspace Source Format, and Go Source Format, so that the formatters format the fixes. That holds in `liferay-portal-ee` too, which has no `portal-impl` to run `format-source-current-branch` from.
 
 The reviewer calls the model once per rule group, in parallel, and every group reads the rules that apply to it in full, so the cost is mostly fixed per run rather than per line.
 
 ## Time Estimate
 
-~1-3 min for the review, plus ~2-4 min for the formatter when fixes were applied.
+~1-3 min for each review, and it reviews twice when it applies fixes.

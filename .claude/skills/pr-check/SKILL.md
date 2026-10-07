@@ -171,13 +171,13 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Generated Workspace File](validations/workspaces/generated-file.md)
 
+1. [PR Reviewer](validations/branch/pr-reviewer.md)
+
 1. [Source Format](validations/branch/source-format.md)
 
 1. [Workspace Source Format](validations/workspaces/source-format.md)
 
 1. [Go Source Format](validations/portal/go-source-format.md)
-
-1. [PR Reviewer](validations/branch/pr-reviewer.md)
 
 1. [Module Registration](validations/portal/module-registration.md)
 
