@@ -20,7 +20,20 @@ public class RoleRecipient extends Recipient {
 		_roleId = roleId;
 		_roleType = roleType;
 
+		_roleExternalReferenceCode = null;
 		_roleName = null;
+	}
+
+	public RoleRecipient(
+		String roleExternalReferenceCode, long roleId, String roleName,
+		String roleType) {
+
+		super(RecipientType.ROLE);
+
+		_roleExternalReferenceCode = roleExternalReferenceCode;
+		_roleId = roleId;
+		_roleName = roleName;
+		_roleType = roleType;
 	}
 
 	public RoleRecipient(String roleName, String roleType) {
@@ -28,6 +41,8 @@ public class RoleRecipient extends Recipient {
 
 		_roleName = roleName;
 		_roleType = roleType;
+
+		_roleExternalReferenceCode = null;
 	}
 
 	@Override
@@ -51,6 +66,10 @@ public class RoleRecipient extends Recipient {
 		return true;
 	}
 
+	public String getRoleExternalReferenceCode() {
+		return _roleExternalReferenceCode;
+	}
+
 	public long getRoleId() {
 		return _roleId;
 	}
@@ -65,6 +84,10 @@ public class RoleRecipient extends Recipient {
 
 	@Override
 	public int hashCode() {
+		if (Validator.isNotNull(_roleExternalReferenceCode)) {
+			return _roleExternalReferenceCode.hashCode();
+		}
+
 		if (Validator.isNotNull(_roleName)) {
 			return _roleName.hashCode();
 		}
@@ -83,6 +106,7 @@ public class RoleRecipient extends Recipient {
 	}
 
 	private boolean _autoCreate;
+	private final String _roleExternalReferenceCode;
 	private long _roleId;
 	private final String _roleName;
 	private final String _roleType;

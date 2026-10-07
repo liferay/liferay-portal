@@ -397,16 +397,24 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 				"role");
 
 			for (Element roleAssignmentElement : roleAssignmentElements) {
+				String name = roleAssignmentElement.elementTextTrim("name");
+				String roleExternalReferenceCode =
+					roleAssignmentElement.elementTextTrim(
+						"role-external-reference-code");
 				long roleId = GetterUtil.getLong(
 					roleAssignmentElement.elementTextTrim("role-id"));
 				String roleType = GetterUtil.getString(
 					roleAssignmentElement.elementTextTrim("role-type"),
 					RoleConstants.TYPE_REGULAR_LABEL);
-				String name = roleAssignmentElement.elementTextTrim("name");
 
 				RoleAssignment roleAssignment = null;
 
-				if (Validator.isNotNull(name)) {
+				if (Validator.isNotNull(roleExternalReferenceCode)) {
+					roleAssignment = new RoleAssignment(
+						roleExternalReferenceCode, roleId, name,
+						roleAssignmentElement.elementTextTrim("role-type"));
+				}
+				else if (Validator.isNotNull(name)) {
 					roleAssignment = new RoleAssignment(name, roleType);
 
 					roleAssignment.setAutoCreate(
@@ -794,6 +802,9 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 				"role");
 
 			for (Element roleReceipientElement : roleReceipientElements) {
+				String roleExternalReferenceCode =
+					roleReceipientElement.elementTextTrim(
+						"role-external-reference-code");
 				long roleId = GetterUtil.getLong(
 					roleReceipientElement.elementTextTrim("role-id"));
 				String roleType = GetterUtil.getString(
@@ -802,7 +813,13 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 				RoleRecipient roleRecipient = null;
 
-				if (roleId > 0) {
+				if (Validator.isNotNull(roleExternalReferenceCode)) {
+					roleRecipient = new RoleRecipient(
+						roleExternalReferenceCode, roleId,
+						roleReceipientElement.elementTextTrim("name"),
+						roleReceipientElement.elementTextTrim("role-type"));
+				}
+				else if (roleId > 0) {
 					roleRecipient = new RoleRecipient(roleId, roleType);
 				}
 				else {
