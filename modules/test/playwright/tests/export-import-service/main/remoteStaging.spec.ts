@@ -521,3 +521,65 @@ test(
 		}
 	}
 );
+
+test(
+	'Only the selected web contents are published to the remote site with the Publish Selected Elements action',
+	{tag: ['@LPD-55093', '@LPS-190015']},
+	async ({apiHelpers, journalPage, remoteApiHelpers, remotePage}) => {
+		test.slow();
+
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: 'site-' + getRandomString(),
+		});
+
+		const remoteSite = await remoteApiHelpers.headlessAdminSite.postSite({
+			name: 'remote-site-' + getRandomString(),
+		});
+
+		await apiHelpers.jsonWebServicesStaging.enableRemoteStaging({
+			groupId: site.id,
+			remoteGroupId: remoteSite.id,
+			remotePort,
+		});
+
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const [selectedTitle1, selectedTitle2, unselectedTitle] = [
+			getRandomString(),
+			getRandomString(),
+			getRandomString(),
+		];
+
+		for (const title of [selectedTitle1, selectedTitle2, unselectedTitle]) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: title},
+			});
+		}
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		for (const title of [selectedTitle1, selectedTitle2]) {
+			await journalPage.selectItemByTitle(title);
+		}
+
+		await journalPage.publishSelectedElements();
+
+		await remotePage.goto(
+			`/group${remoteSite.friendlyUrlPath}${PORTLET_URLS.journal}`
+		);
+
+		for (const title of [selectedTitle1, selectedTitle2]) {
+			await reloadUntilVisible({
+				myLocator: remotePage.getByText(title, {exact: true}),
+				page: remotePage,
+			});
+		}
+
+		await expect(
+			remotePage.getByText(unselectedTitle, {exact: true})
+		).toBeHidden();
+	}
+);
