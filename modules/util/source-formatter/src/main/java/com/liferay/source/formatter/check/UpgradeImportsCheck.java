@@ -104,6 +104,12 @@ public class UpgradeImportsCheck extends BaseFileCheck {
 			String className)
 		throws Exception {
 
+		if (StringUtil.endsWith(newClassName, className) &&
+			StringUtil.endsWith(matcher.group(), newClassName)) {
+
+			return false;
+		}
+
 		if (!StringUtil.equalsIgnoreCase(matcher.group(), newClassName) &&
 			!StringUtil.equals(matcher.group(), newClassNameVariableName) &&
 			!StringUtil.equalsIgnoreCase(
