@@ -611,12 +611,7 @@ Use the `settings` block to switch off the stock theme chrome when a master page
     .serviceScheme: http
     name: <WorkspaceId> Site OAuth
     scopes:
-        - Liferay.Headless.Admin.Site.everything
-        - Liferay.Headless.Admin.Content.everything
-        - Liferay.Object.Admin.REST.everything
-        - Liferay.Headless.Object.everything
-        - Liferay.Headless.Admin.User.everything
-        - Liferay.Headless.Batch.Engine.everything
+        - Liferay.Headless.Site.everything
     type: oAuthApplicationHeadlessServer
 ```
 

@@ -235,11 +235,7 @@ ps -o pid=,ppid=,sid=,args= -p "$(pgrep -d , -f "[n]ode ${WORKSPACE}/client-exte
 <workspace-id>-site-oauth:
   name: <Site Name> OAuth
   scopes:
-    - Liferay.Headless.Admin.Site.everything
-    - Liferay.Headless.Admin.Content.everything
-    - Liferay.Object.Admin.REST.everything
-    - Liferay.Headless.Object.everything
-    - Liferay.Headless.Admin.User.everything
+    - Liferay.Headless.Site.everything
   type: oAuthApplicationHeadlessServer
 ```
 

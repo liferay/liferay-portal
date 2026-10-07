@@ -4,7 +4,7 @@
 
 This card lists the `Liferay.*` scope strings used in OAuth companion entries in `client-extension.yaml`. Two OAuth CET types carry scopes, and which to use depends on the direction of the call:
 
-- **`oAuthApplicationHeadlessServer`** — used by `siteInitializer` and `batch` CETs, where the CET calls into Liferay's Headless APIs using a service account token.
+- **`oAuthApplicationHeadlessServer`** — used by `siteInitializer` and `batch` CETs. On Liferay Cloud, a job uses its service account token to upload the CET: a site initializer through `PUT /o/headless-site/v1.0/sites/by-external-reference-code/<erc>`, a batch through `/o/headless-batch-engine`. On a local bundle the zip is processed inside the portal, and the scopes are not used. Verified on 2026.Q1.
 - **`oAuthApplicationUserAgent`** — used by microservice CETs (`objectAction`, `objectValidationRule`, `objectEntryManager`, `notificationType`, `workflowAction`, etc.), where Liferay calls the microservice and passes a user delegated token that the microservice can use to call back into Liferay.
 
 The scope strings in the table below apply to both types — only the companion CET type differs.
@@ -25,7 +25,7 @@ Liferay's object work spans two distinct REST modules with distinct scopes:
 
 **`Liferay.Headless.Object.everything` does not grant `/o/c/<plural>`.** Verified on 2026.Q1: a CET token that carried it got `403` with an empty body on `GET /o/c/events/<id>`, and the same call succeeded once `c_event.everything.read` was added. Write the scope in lowercase. How Liferay treats other casing depends on the OAuth CET type, and neither type fails the deploy. On `oAuthApplicationUserAgent`, `C_Event.everything` and `C_Event.everything.read` were **dropped from the issued token**, which still carried only the scopes Liferay recognized. On `oAuthApplicationHeadlessServer`, the same mixed case scope was lowercased in the token and granted access. Verified on 2026.Q1. Read the `scope` claim of a real token before trusting a scope list.
 
-A microservice CET that reads or writes object entries needs the per object scope for every object it calls. Verified on 2026.Q1 for `objectAction`, `objectValidationRule`, `notificationType`, `workflowAction`, and `objectEntryManager`, each through a real CET call: the token Liferay passed got `403` on `GET` and `POST` with `Liferay.Headless.Object.everything`, and `200` with the object's own scope. A site initializer that also defines new objects needs `Liferay.Object.Admin.REST.everything` as well.
+A microservice CET that reads or writes object entries needs the per object scope for every object it calls. Verified on 2026.Q1 for `objectAction`, `objectValidationRule`, `notificationType`, `workflowAction`, and `objectEntryManager`, each through a real CET call: the token Liferay passed got `403` on `GET` and `POST` with `Liferay.Headless.Object.everything`, and `200` with the object's own scope.
 
 ## Scope Table
 
@@ -50,21 +50,20 @@ A microservice CET that reads or writes object entries needs the per object scop
 | `objectEntryManager` | The per object scope (`c_<name>.everything`, or `.read` if it only reads) for each object the handler calls back into |
 | `notificationType` | The per object scope (`c_<name>.everything`, or `.read` if it only reads) for each object the handler calls back into |
 | `workflowAction` | `Liferay.Headless.Admin.Workflow.everything` if the handler transitions the task through the payload's `transitionURL`, plus the per object scope for each object it calls back into |
-| `siteInitializer` | `Liferay.Headless.Admin.Site.everything`, `Liferay.Headless.Admin.Content.everything`, `Liferay.Object.Admin.REST.everything`, `Liferay.Headless.Object.everything`, `Liferay.Headless.Admin.User.everything` |
+| `siteInitializer` | `Liferay.Headless.Site.everything`. The upload got `403` with `Admin.Site`, `Admin.Content`, `Object.Admin.REST`, and `Admin.User`, and `200` with `Headless.Site` alone |
 | Commerce CETs | Granular per Commerce subdomain — e.g. `Liferay.Headless.Commerce.Admin.Channel.everything`, `Liferay.Headless.Commerce.Admin.Order.everything`, `Liferay.Headless.Commerce.Admin.Catalog.everything`. Verify the exact subdomain against the relevant `headless-commerce-admin-*` module's `rest-config.yaml`. |
 
 ## How Scopes Appear in `client-extension.yaml`
 
 ```yaml
-# The siteInitializer / batch CET calls INTO Liferay using a service account token
+# The siteInitializer CET: on Liferay Cloud, a job uses this service account token to upload the site initializer
 
 <workspace-id>-site-oauth:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: <WorkspaceId> Site OAuth
     scopes:
-        - Liferay.Headless.Admin.Site.everything
-        - Liferay.Object.Admin.REST.everything
+        - Liferay.Headless.Site.everything
     type: oAuthApplicationHeadlessServer
 
 # The objectAction / workflowAction / notificationType CETs — Liferay calls the microservice

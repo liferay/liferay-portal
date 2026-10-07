@@ -23,7 +23,7 @@ Consult `rules/oauth-scopes.md` for the full scope table. Pick the minimum set t
 
 Examples:
 - Object action that reads and writes entries: `c_<name>.everything` for each object it calls
-- Site initializer that creates pages and content: `Liferay.Headless.Admin.Site.everything`, `Liferay.Headless.Admin.Content.everything`
+- Site initializer: `Liferay.Headless.Site.everything`
 - Batch data import only: `Liferay.Headless.Batch.Engine.everything`
 
 ### Add the OAuth Application Entry to `client-extension.yaml`

@@ -84,7 +84,7 @@ These CETs import bulk data or initialize a full site.
 | Type | Purpose | Required YAML Fields | OAuth |
 | --- | --- | --- | --- |
 | `batch` | Headless Batch Engine data import (JSON files) | `oAuthApplicationHeadlessServer` | Yes — `Liferay.Headless.Batch.Engine.everything` |
-| `siteInitializer` | Full site setup: pages, fragments, objects, roles, content | `oAuthApplicationHeadlessServer` | Yes — multiple scopes |
+| `siteInitializer` | Full site setup: pages, fragments, objects, roles, content | `oAuthApplicationHeadlessServer` | Yes — `Liferay.Headless.Site.everything` |
 
 ## Minimal `client-extension.yaml` Examples
 
@@ -145,11 +145,7 @@ These CETs import bulk data or initialize a full site.
     .serviceScheme: http
     name: <WorkspaceId> Site OAuth
     scopes:
-        - Liferay.Headless.Admin.Site.everything
-        - Liferay.Headless.Admin.Content.everything
-        - Liferay.Object.Admin.REST.everything
-        - Liferay.Headless.Object.everything
-        - Liferay.Headless.Admin.User.everything
+        - Liferay.Headless.Site.everything
     type: oAuthApplicationHeadlessServer
 ```
 
