@@ -11,6 +11,7 @@ import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PrimitiveIntList;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -38,17 +39,14 @@ public class AutoBatchPreparedStatementUtil {
 	public static PreparedStatement autoBatch(Connection connection, String sql)
 		throws SQLException {
 
-		DatabaseMetaData databaseMetaData = connection.getMetaData();
+		return _autoBatch(connection, sql, false);
+	}
 
-		if (databaseMetaData.supportsBatchUpdates()) {
-			return (PreparedStatement)ProxyUtil.newProxyInstance(
-				ClassLoader.getSystemClassLoader(), _INTERFACES,
-				new BatchInvocationHandler(connection, sql));
-		}
+	public static PreparedStatement autoBatchWithResults(
+			Connection connection, String sql)
+		throws SQLException {
 
-		return (PreparedStatement)ProxyUtil.newProxyInstance(
-			ClassLoader.getSystemClassLoader(), _INTERFACES,
-			new NoBatchInvocationHandler(connection, sql));
+		return _autoBatch(connection, sql, true);
 	}
 
 	public static PreparedStatement concurrentAutoBatch(
@@ -66,6 +64,23 @@ public class AutoBatchPreparedStatementUtil {
 		return (PreparedStatement)ProxyUtil.newProxyInstance(
 			ClassLoader.getSystemClassLoader(), _INTERFACES,
 			new ConcurrentNoBatchInvocationHandler(connection, sql));
+	}
+
+	private static PreparedStatement _autoBatch(
+			Connection connection, String sql, boolean withResults)
+		throws SQLException {
+
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+		if (databaseMetaData.supportsBatchUpdates()) {
+			return (PreparedStatement)ProxyUtil.newProxyInstance(
+				ClassLoader.getSystemClassLoader(), _INTERFACES,
+				new BatchInvocationHandler(connection, sql, withResults));
+		}
+
+		return (PreparedStatement)ProxyUtil.newProxyInstance(
+			ClassLoader.getSystemClassLoader(), _INTERFACES,
+			new NoBatchInvocationHandler(connection, sql, withResults));
 	}
 
 	private static final int _HIBERNATE_JDBC_BATCH_SIZE = GetterUtil.getInteger(
@@ -109,7 +124,7 @@ public class AutoBatchPreparedStatementUtil {
 			if (++_count >= _HIBERNATE_JDBC_BATCH_SIZE) {
 				_count = 0;
 
-				localPreparedStatement.executeBatch();
+				addRowCounts(localPreparedStatement.executeBatch());
 			}
 		}
 
@@ -121,14 +136,16 @@ public class AutoBatchPreparedStatementUtil {
 				PreparedStatement localPreparedStatement =
 					getPreparedStatement();
 
-				localPreparedStatement.executeBatch();
+				addRowCounts(localPreparedStatement.executeBatch());
 			}
 
-			return null;
+			return super.doExecuteBatch();
 		}
 
-		private BatchInvocationHandler(Connection connection, String sql) {
-			super(connection, sql);
+		private BatchInvocationHandler(
+			Connection connection, String sql, boolean withResults) {
+
+			super(connection, sql, withResults);
 		}
 
 		private int _count;
@@ -268,11 +285,17 @@ public class AutoBatchPreparedStatementUtil {
 	private static class NoBatchInvocationHandler
 		extends PreparedStatementInvocationHandler {
 
+		protected void addRowCounts(int... rowCounts) {
+			if (_primitiveIntList != null) {
+				_primitiveIntList.addAll(rowCounts);
+			}
+		}
+
 		@Override
 		protected void doAddBatch() throws SQLException {
 			PreparedStatement localPreparedStatement = getPreparedStatement();
 
-			localPreparedStatement.executeUpdate();
+			addRowCounts(localPreparedStatement.executeUpdate());
 		}
 
 		@Override
@@ -284,12 +307,28 @@ public class AutoBatchPreparedStatementUtil {
 
 		@Override
 		protected int[] doExecuteBatch() throws SQLException {
-			return null;
+			if (_primitiveIntList == null) {
+				return null;
+			}
+
+			int[] rowCounts = _primitiveIntList.getArray();
+
+			_primitiveIntList = new PrimitiveIntList();
+
+			return rowCounts;
 		}
 
-		private NoBatchInvocationHandler(Connection connection, String sql) {
+		private NoBatchInvocationHandler(
+			Connection connection, String sql, boolean withResults) {
+
 			super(connection, sql);
+
+			if (withResults) {
+				_primitiveIntList = new PrimitiveIntList();
+			}
 		}
+
+		private PrimitiveIntList _primitiveIntList;
 
 	}
 

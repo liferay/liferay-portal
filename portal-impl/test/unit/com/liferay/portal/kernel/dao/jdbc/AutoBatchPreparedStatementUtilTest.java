@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PrimitiveIntList;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -86,6 +87,14 @@ public class AutoBatchPreparedStatementUtilTest {
 	@After
 	public void tearDown() {
 		_serviceRegistration.unregister();
+	}
+
+	@Test
+	public void testAutoBatchWithResults() throws Exception {
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "2");
+
+		_testAutoBatchWithResults(false);
+		_testAutoBatchWithResults(true);
 	}
 
 	@Test
@@ -651,6 +660,37 @@ public class AutoBatchPreparedStatementUtilTest {
 		}
 	}
 
+	private void _testAutoBatchWithResults(boolean supportBatchUpdates)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatchWithResults(
+					(Connection)ProxyUtil.newProxyInstance(
+						ClassLoader.getSystemClassLoader(),
+						new Class<?>[] {Connection.class},
+						new ConnectionInvocationHandler(
+							new PreparedStatementInvocationHandler(
+								supportBatchUpdates))),
+					StringPool.BLANK)) {
+
+			Assert.assertArrayEquals(
+				new int[0], preparedStatement.executeBatch());
+
+			preparedStatement.addBatch();
+			preparedStatement.addBatch();
+			preparedStatement.addBatch();
+
+			Assert.assertArrayEquals(
+				new int[] {1, 2, 3}, preparedStatement.executeBatch());
+
+			preparedStatement.addBatch();
+			preparedStatement.addBatch();
+
+			Assert.assertArrayEquals(
+				new int[] {4, 5}, preparedStatement.executeBatch());
+		}
+	}
+
 	private ServiceRegistration<?> _serviceRegistration;
 
 	private static class ConnectionInvocationHandler
@@ -732,9 +772,13 @@ public class AutoBatchPreparedStatementUtilTest {
 
 			_methods.add(method);
 
-			if (method.equals(PreparedStatement.class.getMethod("addBatch")) ||
-				method.equals(PreparedStatement.class.getMethod("close"))) {
+			if (method.equals(PreparedStatement.class.getMethod("addBatch"))) {
+				_primitiveIntList.add(++_rowCount);
 
+				return null;
+			}
+
+			if (method.equals(PreparedStatement.class.getMethod("close"))) {
 				return null;
 			}
 
@@ -749,7 +793,11 @@ public class AutoBatchPreparedStatementUtilTest {
 					throw _runtimeException;
 				}
 
-				return new int[0];
+				int[] rowCounts = _primitiveIntList.getArray();
+
+				_primitiveIntList = new PrimitiveIntList();
+
+				return rowCounts;
 			}
 
 			if (method.equals(
@@ -759,7 +807,7 @@ public class AutoBatchPreparedStatementUtilTest {
 					throw _runtimeException;
 				}
 
-				return 0;
+				return ++_rowCount;
 			}
 
 			throw new UnsupportedOperationException();
@@ -776,6 +824,8 @@ public class AutoBatchPreparedStatementUtilTest {
 		}
 
 		private final List<Method> _methods = new ArrayList<>();
+		private PrimitiveIntList _primitiveIntList = new PrimitiveIntList();
+		private int _rowCount;
 		private RuntimeException _runtimeException;
 		private final boolean _supportBatchUpdates;
 
