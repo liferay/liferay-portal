@@ -6,6 +6,11 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.FavIcon;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
@@ -18,6 +23,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.scope.Scope;
+import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
@@ -33,18 +39,31 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -71,6 +90,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Rubén Pulido
+ * @author Thiago Buarque
  */
 @FeatureFlags(
 	featureFlags = {
@@ -399,6 +419,10 @@ public class PageSpecificationResourceTest
 			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
 			layoutPageTemplateEntry.getExternalReferenceCode(), serviceContext);
 
+		_testPutSitePageSpecificationWithMissingDesignLibraryStyleBookEntry(
+			serviceContext);
+		_testPutSitePageSpecificationWithMissingStyleBookEntry(serviceContext);
+		_testPutSitePageSpecificationWithoutManagePermission(serviceContext);
 		_testPutSitePageSpecificationWithStyleBookEntryScopeERC(serviceContext);
 	}
 
@@ -888,6 +912,50 @@ public class PageSpecificationResourceTest
 		widgetPageSpecification.setSettings(() -> settings);
 	}
 
+	private void _putSitePageSpecification(
+			Layout draftLayout, boolean lazyReferencingEnabled,
+			PageSpecificationResource pageSpecificationResource,
+			String styleBookEntryExternalReferenceCode,
+			com.liferay.portal.vulcan.scope.Scope styleBookEntryScope)
+		throws Exception {
+
+		com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification
+			contentPageSpecification =
+				(com.liferay.headless.admin.site.dto.v1_0.
+					ContentPageSpecification)
+						pageSpecificationResource.getSitePageSpecification(
+							testGroup.getExternalReferenceCode(),
+							draftLayout.getExternalReferenceCode());
+
+		com.liferay.headless.admin.site.dto.v1_0.Settings settings =
+			contentPageSpecification.getSettings();
+
+		settings.setStyleBookItemExternalReference(
+			new com.liferay.headless.admin.site.dto.v1_0.
+				ItemExternalReference() {
+
+				{
+					setExternalReferenceCode(
+						() -> styleBookEntryExternalReferenceCode);
+					setScope(() -> styleBookEntryScope);
+				}
+			});
+
+		contentPageSpecification.setStatus(
+			com.liferay.headless.admin.site.dto.v1_0.PageSpecification.Status.
+				DRAFT);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(
+					lazyReferencingEnabled)) {
+
+			pageSpecificationResource.putSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				draftLayout.getExternalReferenceCode(),
+				contentPageSpecification);
+		}
+	}
+
 	private void _testDeleteSitePageSpecification(
 			Layout layout, ServiceContext serviceContext)
 		throws Exception {
@@ -1259,6 +1327,117 @@ public class PageSpecificationResourceTest
 		_assertPutSiteContentPageSpecification(draftLayout, serviceContext);
 	}
 
+	private void
+			_testPutSitePageSpecificationWithMissingDesignLibraryStyleBookEntry(
+				ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT, serviceContext);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			DepotConstants.TYPE_DESIGN_LIBRARY, serviceContext);
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), testGroup.getGroupId());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Group group = depotEntry.getGroup();
+
+		_putSitePageSpecification(
+			draftLayout, true,
+			_pageSpecificationResourceFactory.create(
+			).user(
+				TestPropsValues.getUser()
+			).build(),
+			externalReferenceCode,
+			com.liferay.portal.vulcan.scope.Scope.ofReference(
+				group.getExternalReferenceCode(),
+				com.liferay.portal.vulcan.scope.Scope.Type.ASSET_LIBRARY));
+
+		Assert.assertNull(
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					externalReferenceCode, testGroup.getGroupId()));
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					externalReferenceCode, group.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, styleBookEntry.getStatus());
+
+		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
+
+		Assert.assertEquals(
+			externalReferenceCode, draftLayout.getStyleBookEntryERC());
+		Assert.assertEquals(
+			group.getExternalReferenceCode(),
+			draftLayout.getStyleBookEntryScopeERC());
+	}
+
+	private void _testPutSitePageSpecificationWithMissingStyleBookEntry(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT, serviceContext);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		PageSpecificationResource pageSpecificationResource =
+			_pageSpecificationResourceFactory.create(
+			).user(
+				TestPropsValues.getUser()
+			).build();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		_putSitePageSpecification(
+			draftLayout, true, pageSpecificationResource, externalReferenceCode,
+			null);
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					externalReferenceCode, testGroup.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, styleBookEntry.getStatus());
+
+		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
+
+		Assert.assertEquals(
+			externalReferenceCode, draftLayout.getStyleBookEntryERC());
+
+		Assert.assertEquals(
+			"classic_WAR_classictheme", styleBookEntry.getThemeId());
+
+		externalReferenceCode = RandomTestUtil.randomString();
+
+		_putSitePageSpecification(
+			draftLayout, false, pageSpecificationResource,
+			externalReferenceCode, null);
+
+		Assert.assertNull(
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					externalReferenceCode, testGroup.getGroupId()));
+
+		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
+
+		Assert.assertEquals(
+			externalReferenceCode, draftLayout.getStyleBookEntryERC());
+	}
+
 	private void _testPutSitePageSpecificationWithStyleBookEntryScopeERC(
 			ServiceContext serviceContext)
 		throws Exception {
@@ -1329,6 +1508,74 @@ public class PageSpecificationResourceTest
 			draftLayout.getStyleBookEntryScopeERC());
 	}
 
+	private void _testPutSitePageSpecificationWithoutManagePermission(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT, serviceContext);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		User user = UserTestUtil.addUser();
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			Layout.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(testCompany.getCompanyId()), ActionKeys.UPDATE);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		PageSpecificationResource pageSpecificationResource =
+			_pageSpecificationResourceFactory.create(
+			).user(
+				user
+			).build();
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(serviceContext);
+
+		_putSitePageSpecification(
+			draftLayout, true, pageSpecificationResource,
+			styleBookEntry.getExternalReferenceCode(), null);
+
+		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
+
+		Assert.assertEquals(
+			styleBookEntry.getExternalReferenceCode(),
+			draftLayout.getStyleBookEntryERC());
+
+		try {
+			_putSitePageSpecification(
+				draftLayout, true, pageSpecificationResource,
+				RandomTestUtil.randomString(), null);
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+		}
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			_putSitePageSpecification(
+				draftLayout, true, pageSpecificationResource,
+				externalReferenceCode, null);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
+
+		StyleBookEntry emptyStyleBookEntry =
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					externalReferenceCode, testGroup.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, emptyStyleBookEntry.getStatus());
+	}
+
 	private Layout _updateLayout(Layout layout, ServiceContext serviceContext)
 		throws Exception {
 
@@ -1350,6 +1597,12 @@ public class PageSpecificationResourceTest
 			serviceContext);
 	}
 
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
 	private LayoutContentVersion _layoutContentVersion;
 
 	@Inject
@@ -1366,11 +1619,17 @@ public class PageSpecificationResourceTest
 		_layoutPageTemplateEntryLocalService;
 
 	@Inject
+	private PageSpecificationResource.Factory _pageSpecificationResourceFactory;
+
+	@Inject
 	private SegmentsExperienceService _segmentsExperienceService;
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 	private Layout _testGroupLayout;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

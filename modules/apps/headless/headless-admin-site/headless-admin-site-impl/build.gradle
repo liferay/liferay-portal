@@ -22,6 +22,7 @@ dependencies {
 	compileOnly project(":apps:fragment:fragment-collection-filter-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
+	compileOnly project(":apps:frontend-token:frontend-token-definition-api")
 	compileOnly project(":apps:google-places:google-places-api")
 	compileOnly project(":apps:headless:headless-admin-site:headless-admin-site-api")
 	compileOnly project(":apps:headless:headless-admin-taxonomy:headless-admin-taxonomy-api")

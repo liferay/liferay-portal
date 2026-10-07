@@ -13,6 +13,8 @@ import com.liferay.expando.kernel.util.ExpandoUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
+import com.liferay.frontend.token.definition.FrontendTokenDefinition;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.headless.admin.site.dto.v1_0.BasicWidgetPageWidgetInstance;
 import com.liferay.headless.admin.site.dto.v1_0.ClientExtension;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
@@ -50,6 +52,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CustomizedPages;
@@ -60,6 +63,7 @@ import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
@@ -80,12 +84,14 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
+import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
+import com.liferay.style.book.service.StyleBookEntryServiceUtil;
 
 import java.io.Serializable;
 
@@ -102,6 +108,7 @@ import java.util.Objects;
 
 /**
  * @author Lourdes Fernández Besada
+ * @author Thiago Buarque
  */
 public class LayoutUtil {
 
@@ -631,6 +638,65 @@ public class LayoutUtil {
 			layout, serviceContext, widgetPageSpecification);
 	}
 
+	private static void _addEmptyStyleBookEntryOrLogReference(
+			Layout layout, StyleBookEntryReference styleBookEntryReference,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		String styleBookEntryERC =
+			styleBookEntryReference.getStyleBookEntryERC();
+
+		if (Validator.isNull(styleBookEntryERC)) {
+			return;
+		}
+
+		Long groupId = styleBookEntryReference.getGroupId();
+
+		if (groupId != null) {
+			StyleBookEntry styleBookEntry =
+				StyleBookEntryLocalServiceUtil.
+					fetchStyleBookEntryByExternalReferenceCode(
+						styleBookEntryERC, groupId);
+
+			if (styleBookEntry != null) {
+				return;
+			}
+
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				FrontendTokenDefinitionRegistry
+					frontendTokenDefinitionRegistry =
+						_frontendTokenDefinitionRegistrySnapshot.get();
+
+				FrontendTokenDefinition frontendTokenDefinition =
+					frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
+						layout);
+
+				String themeId = null;
+
+				if (frontendTokenDefinition != null) {
+					themeId = frontendTokenDefinition.getThemeId();
+				}
+
+				if (ExportImportThreadLocal.isImportInProcess()) {
+					StyleBookEntryLocalServiceUtil.getOrAddEmptyStyleBookEntry(
+						styleBookEntryERC, serviceContext.getUserId(), groupId,
+						themeId);
+				}
+				else {
+					StyleBookEntryServiceUtil.getOrAddEmptyStyleBookEntry(
+						styleBookEntryERC, groupId, themeId);
+				}
+
+				return;
+			}
+		}
+
+		LogUtil.logOptionalReference(
+			StyleBookEntry.class.getName(), styleBookEntryERC,
+			styleBookEntryReference.getScope(),
+			serviceContext.getScopeGroupId());
+	}
+
 	private static void _addPortletLookAndFeelToConfigurationMap(
 		long groupId, Map<String, Object> map,
 		WidgetLookAndFeelConfig widgetLookAndFeelConfig) {
@@ -795,7 +861,7 @@ public class LayoutUtil {
 		throws Exception {
 
 		if (settings == null) {
-			return new StyleBookEntryReference(null, null);
+			return new StyleBookEntryReference(null, null, null, null);
 		}
 
 		ItemExternalReference itemExternalReference =
@@ -805,7 +871,7 @@ public class LayoutUtil {
 			Validator.isNull(
 				itemExternalReference.getExternalReferenceCode())) {
 
-			return new StyleBookEntryReference(null, null);
+			return new StyleBookEntryReference(null, null, null, null);
 		}
 
 		String styleBookEntryScopeERC =
@@ -816,27 +882,15 @@ public class LayoutUtil {
 			FeatureFlagManagerUtil.checkEnabled(companyId, "LPD-57283");
 		}
 
-		StyleBookEntry styleBookEntry = null;
-
 		Long groupId = ItemScopeUtil.getItemGroupId(
 			companyId, itemExternalReference.getScope(), scopeGroupId);
 
 		if (groupId != null) {
-			styleBookEntry =
-				StyleBookEntryLocalServiceUtil.
-					fetchStyleBookEntryByExternalReferenceCode(
-						itemExternalReference.getExternalReferenceCode(),
-						StagingUtil.getLiveGroupId(groupId));
-		}
-
-		if (styleBookEntry == null) {
-			LogUtil.logOptionalReference(
-				StyleBookEntry.class.getName(),
-				itemExternalReference.getExternalReferenceCode(),
-				itemExternalReference.getScope(), scopeGroupId);
+			groupId = StagingUtil.getLiveGroupId(groupId);
 		}
 
 		return new StyleBookEntryReference(
+			groupId, itemExternalReference.getScope(),
 			itemExternalReference.getExternalReferenceCode(),
 			styleBookEntryScopeERC);
 	}
@@ -1160,7 +1214,12 @@ public class LayoutUtil {
 		layout = LayoutLocalServiceUtil.updateIconImage(
 			layout.getPlid(), _getIconImageByteArray(settings));
 
-		return _updateLookAndFeel(layout, settings);
+		layout = _updateLookAndFeel(layout, settings);
+
+		_addEmptyStyleBookEntryOrLogReference(
+			layout, styleBookEntryReference, serviceContext);
+
+		return layout;
 	}
 
 	private static Layout _updateLayout(
@@ -1444,14 +1503,28 @@ public class LayoutUtil {
 		ListUtil.fromArray(
 			"portletSetupUseCustomTitle", "portletSetupPortletDecoratorId",
 			"portletSetupCss");
+	private static final Snapshot<FrontendTokenDefinitionRegistry>
+		_frontendTokenDefinitionRegistrySnapshot = new Snapshot<>(
+			LayoutUtil.class, FrontendTokenDefinitionRegistry.class);
 
 	private static class StyleBookEntryReference {
 
 		public StyleBookEntryReference(
-			String styleBookEntryERC, String styleBookEntryScopeERC) {
+			Long groupId, Scope scope, String styleBookEntryERC,
+			String styleBookEntryScopeERC) {
 
+			_groupId = groupId;
+			_scope = scope;
 			_styleBookEntryERC = styleBookEntryERC;
 			_styleBookEntryScopeERC = styleBookEntryScopeERC;
+		}
+
+		public Long getGroupId() {
+			return _groupId;
+		}
+
+		public Scope getScope() {
+			return _scope;
 		}
 
 		public String getStyleBookEntryERC() {
@@ -1462,6 +1535,8 @@ public class LayoutUtil {
 			return _styleBookEntryScopeERC;
 		}
 
+		private final Long _groupId;
+		private final Scope _scope;
 		private final String _styleBookEntryERC;
 		private final String _styleBookEntryScopeERC;
 
