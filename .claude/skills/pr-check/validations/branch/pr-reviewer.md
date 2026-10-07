@@ -11,6 +11,9 @@ Reviews the branch diff against the rules in `pr-reviewer/rules`, which hold the
 Review the branch diff against the rules in `pr-reviewer/rules`:
 
 ```bash
+LOG=$(mktemp)
+LOG_ERROR=$(mktemp)
+
 (cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG}" 2> "${LOG_ERROR}")
 ```
 
@@ -21,6 +24,8 @@ Apply the fixes. For each violation, read the rule file `pr-reviewer/rules/<rule
 When at least one fix was applied, commit as the **Autocommit** section says, then review once more:
 
 ```bash
+LOG_RERUN=$(mktemp)
+
 (cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2>&1)
 ```
 
