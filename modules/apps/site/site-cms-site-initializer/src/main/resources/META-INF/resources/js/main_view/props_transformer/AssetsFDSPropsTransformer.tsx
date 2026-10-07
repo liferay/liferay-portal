@@ -290,36 +290,34 @@ export default function AssetsFDSPropsTransformer({
 				} as IInternalRenderer,
 				{
 					component: ({actions, itemData, options}) => {
+						const spaceMember = isSpaceMember({
+							assetLibraries: additionalProps.assetLibraries,
+							itemData,
+							projectGroupExternalReferenceCode:
+								additionalProps.projectGroupExternalReferenceCode,
+						});
+
+						// Pass no actions to non-members so the title renders
+						// as plain text instead of an edit or view link
+
 						const simpleActionLink = (
 							<SimpleActionLinkRenderer
-								actions={actions}
+								actions={spaceMember ? actions : []}
 								additionalProps={additionalProps}
 								itemData={itemData}
-								onViewClick={
-									isSpaceMember({
-										assetLibraries:
-											additionalProps.assetLibraries,
-										itemData,
-										projectGroupExternalReferenceCode:
-											additionalProps.projectGroupExternalReferenceCode,
-									})
-										? (item) => {
-												openCMSModal({
-													contentComponent: () =>
-														AssetNavigationModalContent(
-															{
-																additionalProps,
-																contentViewURL:
-																	additionalProps.contentViewURL,
-																currentIndex: 0,
-																items: [item],
-															}
-														),
-													size: 'full-screen',
-												});
-											}
-										: undefined
-								}
+								onViewClick={(item) => {
+									openCMSModal({
+										contentComponent: () =>
+											AssetNavigationModalContent({
+												additionalProps,
+												contentViewURL:
+													additionalProps.contentViewURL,
+												currentIndex: 0,
+												items: [item],
+											}),
+										size: 'full-screen',
+									});
+								}}
 								options={options}
 								systemIconLabel={Liferay.Language.get(
 									'system-default-structure'
@@ -444,13 +442,30 @@ export default function AssetsFDSPropsTransformer({
 						isEditableImage(
 							item,
 							additionalProps.editableImageMIMETypes
-						),
+						) &&
+						isSpaceMember({
+							assetLibraries: additionalProps.assetLibraries,
+							itemData: item,
+							projectGroupExternalReferenceCode:
+								additionalProps.projectGroupExternalReferenceCode,
+						}),
 				};
 			}
-			else if (
-				action?.data?.id === 'actionLink' ||
-				action?.data?.id === 'update-dates-menu'
-			) {
+			else if (action?.data?.id === 'actionLink') {
+				return {
+					...action,
+					isVisible: (item: any) =>
+						item?.entryClassName !==
+							OBJECT_ENTRY_FOLDER_CLASS_NAME &&
+						isSpaceMember({
+							assetLibraries: additionalProps.assetLibraries,
+							itemData: item,
+							projectGroupExternalReferenceCode:
+								additionalProps.projectGroupExternalReferenceCode,
+						}),
+				};
+			}
+			else if (action?.data?.id === 'update-dates-menu') {
 				return {
 					...action,
 					isVisible: (item: any) =>
@@ -469,7 +484,13 @@ export default function AssetsFDSPropsTransformer({
 							item?.entryClassName !==
 								OBJECT_ENTRY_FOLDER_CLASS_NAME &&
 								!item?.embedded?.file
-						),
+						) &&
+						isSpaceMember({
+							assetLibraries: additionalProps.assetLibraries,
+							itemData: item,
+							projectGroupExternalReferenceCode:
+								additionalProps.projectGroupExternalReferenceCode,
+						}),
 				};
 			}
 			else if (action?.data?.id === 'view-content') {
