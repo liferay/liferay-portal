@@ -256,9 +256,9 @@
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.AutoBatchPreparedStatementUtilCheck">
 			<property name="category" value="Bug Prevention" />
-			<property name="description" value="Finds cases where `AutoBatchPreparedStatementUtil.autoBatch` or `AutoBatchPreparedStatementUtil.concurrentAutoBatch` should be used." />
+			<property name="description" value="Finds cases where `AutoBatchPreparedStatementUtil.autoBatch`, `AutoBatchPreparedStatementUtil.autoBatchWithResults`, or `AutoBatchPreparedStatementUtil.concurrentAutoBatch` should be used." />
 			<property name="enabled" value="false" />
-			<message key="auto.batch.prepared.statement.util.use" value="Use &quot;AutoBatchPreparedStatementUtil.autoBatch&quot; or &quot;AutoBatchPreparedStatementUtil.concurrentAutoBatch&quot; to create a prepared statement when using &quot;preparedStatement.executeBatch()&quot;" />
+			<message key="auto.batch.prepared.statement.util.use" value="Use &quot;AutoBatchPreparedStatementUtil.autoBatch&quot;, &quot;AutoBatchPreparedStatementUtil.autoBatchWithResults&quot;, or &quot;AutoBatchPreparedStatementUtil.concurrentAutoBatch&quot; to create a prepared statement when using &quot;preparedStatement.executeBatch()&quot;" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.BatchableUpdateCheck">
 			<property name="category" value="Performance" />

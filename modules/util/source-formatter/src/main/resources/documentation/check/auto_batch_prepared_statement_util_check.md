@@ -1,8 +1,11 @@
 ## AutoBatchPreparedStatementUtilCheck
 
-Use `AutoBatchPreparedStatementUtil.autoBatch` or
+Use `AutoBatchPreparedStatementUtil.autoBatch`,
+`AutoBatchPreparedStatementUtil.autoBatchWithResults`, or
 `AutoBatchPreparedStatementUtil.concurrentAutoBatch` to create a prepared
-statement when using `preparedStatement.executeBatch()`.
+statement when using `preparedStatement.executeBatch()`. Use
+`AutoBatchPreparedStatementUtil.autoBatchWithResults` when the result of
+`executeBatch()` is read, because the other two return `null`.
 
 ### Example
 

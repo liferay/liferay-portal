@@ -68,6 +68,7 @@ public class AutoBatchPreparedStatementUtilCheck extends BaseCheck {
 
 		if (StringUtil.equals(names.get(0), "AutoBatchPreparedStatementUtil") &&
 			(StringUtil.equals(names.get(1), "autoBatch") ||
+			 StringUtil.equals(names.get(1), "autoBatchWithResults") ||
 			 StringUtil.equals(names.get(1), "concurrentAutoBatch"))) {
 
 			return;

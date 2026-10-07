@@ -179,7 +179,8 @@ public class CompanyIterationCheck extends BaseCheck {
 	private static final Map<String, Set<String>> _methodNamesMap =
 		HashMapBuilder.<String, Set<String>>put(
 			"AutoBatchPreparedStatementUtil",
-			SetUtil.fromArray("autoBatch", "concurrentAutoBatch")
+			SetUtil.fromArray(
+				"autoBatch", "autoBatchWithResults", "concurrentAutoBatch")
 		).put(
 			"connection", SetUtil.fromArray("prepareCall", "prepareStatement")
 		).build();

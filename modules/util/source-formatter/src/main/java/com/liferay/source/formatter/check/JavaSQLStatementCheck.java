@@ -307,6 +307,7 @@ public class JavaSQLStatementCheck extends BaseFileCheck {
 
 	private static final String[] _METHOD_NAMES = {
 		"AutoBatchPreparedStatementUtil.autoBatch",
+		"AutoBatchPreparedStatementUtil.autoBatchWithResults",
 		"AutoBatchPreparedStatementUtil.concurrentAutoBatch",
 		"connection.prepareStatement", "runSQL", "StringBundler.concat"
 	};

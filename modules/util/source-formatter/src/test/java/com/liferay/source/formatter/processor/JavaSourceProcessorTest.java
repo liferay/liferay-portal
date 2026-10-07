@@ -251,7 +251,8 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 		test(
 			"ExecuteBatchWithoutAutoBatchPreparedStatementUtil.testjava",
 			StringBundler.concat(
-				"Use \"AutoBatchPreparedStatementUtil.autoBatch\" or \"",
+				"Use \"AutoBatchPreparedStatementUtil.autoBatch\", \"",
+				"AutoBatchPreparedStatementUtil.autoBatchWithResults\", or \"",
 				"AutoBatchPreparedStatementUtil.concurrentAutoBatch\" to ",
 				"create a prepared statement when using \"preparedStatement.",
 				"executeBatch()\""),

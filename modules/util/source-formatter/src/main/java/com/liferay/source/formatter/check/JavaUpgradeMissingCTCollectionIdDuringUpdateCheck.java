@@ -213,6 +213,7 @@ public class JavaUpgradeMissingCTCollectionIdDuringUpdateCheck
 
 	private static final String[] _METHOD_NAMES = {
 		"AutoBatchPreparedStatementUtil.autoBatch(",
+		"AutoBatchPreparedStatementUtil.autoBatchWithResults(",
 		"AutoBatchPreparedStatementUtil.concurrentAutoBatch(",
 		"connection.prepareStatement(", "StringBundler.concat("
 	};
