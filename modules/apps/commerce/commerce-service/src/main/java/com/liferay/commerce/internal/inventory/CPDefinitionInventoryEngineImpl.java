@@ -15,9 +15,12 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.service.CPDAvailabilityEstimateLocalService;
 import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.math.BigDecimal;
@@ -47,7 +50,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -60,9 +66,6 @@ public class CPDefinitionInventoryEngineImpl
 			return ArrayUtil.toStringArray(
 				cpDefinitionInventory.getAllowedOrderQuantitiesArray());
 		}
-
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
 
 		return ArrayUtil.toStringArray(
 			cpConfigurationEntry.getAllowedOrderQuantitiesArray());
@@ -109,7 +112,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -123,9 +129,6 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.getMaxOrderQuantity();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.getMaxOrderQuantity();
 	}
 
@@ -134,7 +137,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -148,9 +154,6 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.getMinOrderQuantity();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.getMinOrderQuantity();
 	}
 
@@ -159,7 +162,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -172,9 +178,6 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.getMinStockQuantity();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.getMinStockQuantity();
 	}
 
@@ -183,7 +186,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -197,9 +203,6 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.getMultipleOrderQuantity();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.getMultipleOrderQuantity();
 	}
 
@@ -208,7 +211,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -221,9 +227,6 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.isBackOrders();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.isBackOrders();
 	}
 
@@ -232,7 +235,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -245,9 +251,6 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.isDisplayAvailability();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.isDisplayAvailability();
 	}
 
@@ -256,7 +259,10 @@ public class CPDefinitionInventoryEngineImpl
 			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
 
-		if (cpConfigurationListId == 0) {
+		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
+			cpConfigurationListId, cpInstance);
+
+		if (cpConfigurationEntry == null) {
 			CPDefinitionInventory cpDefinitionInventory =
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
@@ -269,15 +275,18 @@ public class CPDefinitionInventoryEngineImpl
 			return cpDefinitionInventory.isDisplayStockQuantity();
 		}
 
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId, cpInstance.getCPDefinition());
-
 		return cpConfigurationEntry.isDisplayStockQuantity();
 	}
 
 	private CPConfigurationEntry _fetchCPConfigurationEntry(
-			long cpConfigurationListId, CPDefinition cpDefinition)
+			long cpConfigurationListId, CPInstance cpInstance)
 		throws PortalException {
+
+		if (cpConfigurationListId == 0) {
+			return null;
+		}
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
 		CPConfigurationEntry cpConfigurationEntry =
 			cpDefinition.fetchCPConfigurationEntry(cpConfigurationListId);
@@ -287,8 +296,19 @@ public class CPDefinitionInventoryEngineImpl
 				cpDefinition.fetchMasterCPConfigurationEntry();
 		}
 
+		if ((cpConfigurationEntry == null) && _log.isWarnEnabled()) {
+			_log.warn(
+				StringBundler.concat(
+					"Unable to find a commerce product configuration entry ",
+					"for commerce product definition ",
+					cpDefinition.getCPDefinitionId()));
+		}
+
 		return cpConfigurationEntry;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CPDefinitionInventoryEngineImpl.class);
 
 	@Reference
 	private CPDefinitionInventoryLocalService
