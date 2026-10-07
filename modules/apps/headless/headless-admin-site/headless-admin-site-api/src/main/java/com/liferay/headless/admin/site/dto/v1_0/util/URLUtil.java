@@ -60,21 +60,58 @@ public class URLUtil {
 	private static byte[] _getByteArray(URL url, String urlString)
 		throws Exception {
 
-		String host = url.getHost();
+		for (int i = 0; i <= _MAX_REDIRECTS; i++) {
+			String protocol = url.getProtocol();
 
-		if (!_isAllowedHost(host)) {
-			throw new UnsupportedOperationException(
-				StringBundler.concat(
-					"Unable to download file from ", urlString,
-					" because of restricted host ", host));
+			if (!Objects.equals(protocol, Http.HTTP) &&
+				!Objects.equals(protocol, Http.HTTPS)) {
+
+				throw new UnsupportedOperationException(
+					StringBundler.concat(
+						"Unable to download file from ", url,
+						" because of unsupported protocol ", protocol));
+			}
+
+			String host = url.getHost();
+
+			if (!_isAllowedHost(host)) {
+				throw new UnsupportedOperationException(
+					StringBundler.concat(
+						"Unable to download file from ", url,
+						" because of restricted host ", host));
+			}
+
+			Http.Options options = new Http.Options();
+
+			options.setFollowRedirects(false);
+			options.setLocation(url.toString());
+
+			byte[] bytes = HttpUtil.URLtoByteArray(options);
+
+			String redirectLocation = _getRedirectLocation(
+				options.getResponse());
+
+			if (Validator.isNull(redirectLocation)) {
+				return bytes;
+			}
+
+			url = new URL(url, redirectLocation);
 		}
 
-		Http.Options options = new Http.Options();
+		throw new UnsupportedOperationException(
+			StringBundler.concat(
+				"Unable to download file from ", urlString,
+				" because of too many redirects"));
+	}
 
-		options.setFollowRedirects(false);
-		options.setLocation(url.toString());
+	private static String _getRedirectLocation(Http.Response response) {
+		int responseCode = response.getResponseCode();
 
-		return HttpUtil.URLtoByteArray(options);
+		if ((responseCode < 300) || (responseCode >= 400)) {
+			return null;
+		}
+
+		return response.getHeader("Location");
 	}
 
 	private static boolean _isAllowedHost(String host) {
@@ -121,6 +158,8 @@ public class URLUtil {
 
 		return false;
 	}
+
+	private static final int _MAX_REDIRECTS = 5;
 
 	private static final Log _log = LogFactoryUtil.getLog(URLUtil.class);
 
