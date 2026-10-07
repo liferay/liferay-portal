@@ -15,6 +15,8 @@ import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemDetails;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
+import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.layout.type.controller.display.page.internal.constants.DisplayPageLayoutTypeControllerWebKeys;
 import com.liferay.layout.type.controller.display.page.internal.display.context.EditDisplayPageMenuDisplayContext;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -126,8 +128,13 @@ public class EditDisplayPageMenuProductNavigationControlMenuEntry
 		InfoItemDetails infoItemDetails =
 			(InfoItemDetails)httpServletRequest.getAttribute(
 				InfoDisplayWebKeys.INFO_ITEM_DETAILS);
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			(LayoutDisplayPageObjectProvider<?>)httpServletRequest.getAttribute(
+				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
 
-		if (infoItemDetails == null) {
+		if ((infoItemDetails == null) ||
+			(layoutDisplayPageObjectProvider == null)) {
+
 			return false;
 		}
 
