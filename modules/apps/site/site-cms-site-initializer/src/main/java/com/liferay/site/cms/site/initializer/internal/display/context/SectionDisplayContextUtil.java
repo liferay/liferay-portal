@@ -71,6 +71,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -192,14 +193,18 @@ public class SectionDisplayContextUtil {
 			}
 		}
 
+		List<Long> depotEntryGroupIds =
+			DepotEntryLocalServiceUtil.getDepotEntryGroupIds(
+				themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+				DepotConstants.TYPE_SPACE);
+
+		if (ListUtil.isEmpty(depotEntryGroupIds)) {
+			depotEntryGroupIds = Collections.singletonList(-1L);
+		}
+
 		return StringBundler.concat(
 			filterString, " and groupIds/any(g:g in (",
-			StringUtil.merge(
-				DepotEntryLocalServiceUtil.getDepotEntryGroupIds(
-					themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-					DepotConstants.TYPE_SPACE),
-				StringPool.COMMA),
-			"))");
+			StringUtil.merge(depotEntryGroupIds, StringPool.COMMA), "))");
 	}
 
 	public static String appendStatus(String filterString) {
