@@ -104,7 +104,6 @@ public class CMSFileTypeFriendlyURLUpgradeProcessTest {
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
-
 		_objectEntryFolder =
 			_objectEntryFolderLocalService.
 				getObjectEntryFolderByExternalReferenceCode(
