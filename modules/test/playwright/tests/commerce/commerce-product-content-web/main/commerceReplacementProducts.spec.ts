@@ -351,46 +351,61 @@ test(
 		await performLogout(page);
 		await performLoginViaApi({page, screenName: user.alternateName});
 
-		await page.goto(`/web/${site.name}/p/u-joint`);
+		try {
+			await page.goto(`/web/${site.name}/p/u-joint`);
 
-		await expect(productDetailsPage.addToCartButton).toBeDisabled();
-		await expect(
-			commerceThemeMiniumCatalogPage.quantitySelector(
-				page.locator('.product-detail')
-			)
-		).toBeDisabled();
+			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(
+					page.locator('.product-detail')
+				)
+			).toBeDisabled();
+			await expect(
+				productDetailsPage.replacementProductButton
+			).toBeVisible();
 
-		await expect(productDetailsPage.replacementProductButton).toBeVisible();
+			await productDetailsPage.replacementProductButton.click();
 
-		await productDetailsPage.replacementProductButton.click();
+			await expect(page).toHaveURL(/\/p\/abs-sensor/);
+			await expect(productDetailsPage.unitOfMeasureSelect).toHaveValue(
+				'UOM2KEY'
+			);
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(
+					page.locator('.product-detail')
+				)
+			).toHaveValue('1.5');
 
-		await expect(page).toHaveURL(/\/p\/abs-sensor/);
-		await expect(productDetailsPage.unitOfMeasureSelect).toHaveValue(
-			'UOM2KEY'
-		);
-		await expect(
-			commerceThemeMiniumCatalogPage.quantitySelector(
-				page.locator('.product-detail')
-			)
-		).toHaveValue('1.5');
+			await commerceMiniCartPage.quickAddToCart('MIN55861');
 
-		await commerceMiniCartPage.quickAddToCart('MIN55861');
+			const cartItem = commerceMiniCartPage.miniCartItem('MIN93015');
 
-		const cartItem = commerceMiniCartPage.miniCartItem('MIN93015');
+			await expect(cartItem).toBeVisible();
+			await expect(cartItem.getByText('UOM2KEY')).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(cartItem)
+			).toHaveValue('1.5');
+			await expect(cartItem.getByText('$ 30.00')).toBeVisible();
+			await expect(
+				commerceMiniCartPage.miniCartReplacementInfoMessage
+			).toBeVisible();
+			await expect(
+				commerceMiniCartPage.miniCartItemReplacementLabel('MIN93015')
+			).toBeVisible();
+			await expect(
+				cartItem.getByTitle('Replacement Product for MIN55861.')
+			).toBeVisible();
+		}
+		finally {
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
 
-		await expect(cartItem).toBeVisible();
-		await expect(cartItem.getByText('UOM2KEY')).toBeVisible();
-		await expect(
-			commerceThemeMiniumCatalogPage.quantitySelector(cartItem)
-		).toHaveValue('1.5');
-		await expect(cartItem.getByText('$ 30.00')).toBeVisible();
-
-		await expect(
-			commerceMiniCartPage.miniCartReplacementInfoMessage
-		).toBeVisible();
-		await expect(
-			commerceMiniCartPage.miniCartItemReplacementLabel('MIN93015')
-		).toBeVisible();
+			for (const order of orders.items ?? []) {
+				if (order.accountId === account.id) {
+					apiHelpers.data.push({id: order.id, type: 'order'});
+				}
+			}
+		}
 	}
 );
 
