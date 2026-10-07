@@ -9,6 +9,7 @@ import com.liferay.adaptive.media.processor.AMAsyncProcessor;
 import com.liferay.adaptive.media.web.internal.constants.AMDestinationNames;
 import com.liferay.adaptive.media.web.internal.messaging.AMProcessorCommand;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -74,6 +75,8 @@ public final class AMAsyncProcessorImpl<M, T>
 
 		message.put("className", _clazz.getName());
 		message.put("command", AMProcessorCommand.CLEAN_UP);
+		message.put(
+			"ctCollectionId", CTCollectionThreadLocal.getCTCollectionId());
 		message.put("model", model);
 
 		if (Validator.isNotNull(modelId)) {
@@ -112,6 +115,8 @@ public final class AMAsyncProcessorImpl<M, T>
 
 		message.put("className", _clazz.getName());
 		message.put("command", AMProcessorCommand.PROCESS);
+		message.put(
+			"ctCollectionId", CTCollectionThreadLocal.getCTCollectionId());
 		message.put("model", model);
 
 		if (Validator.isNotNull(modelId)) {
