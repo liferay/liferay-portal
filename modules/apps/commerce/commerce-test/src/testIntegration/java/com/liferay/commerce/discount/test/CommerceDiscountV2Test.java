@@ -133,6 +133,101 @@ public class CommerceDiscountV2Test {
 	}
 
 	@Test
+	public void testAccountDiscount() throws Exception {
+		frutillaRule.scenario(
+			"When a discount has an account associated to it, it will be " +
+				"applied only to that account"
+		).given(
+			"A product with a base price"
+		).and(
+			"A discount associated to one of the two accounts of a user"
+		).when(
+			"I try to get the final price of the product for each account"
+		).then(
+			"The final price will be discounted only for the account " +
+				"associated to the discount"
+		);
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.addCommerceCatalog(
+				null, RandomTestUtil.randomString(),
+				_commerceCurrency.getCode(), LocaleUtil.US.getDisplayLanguage(),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
+				commerceCatalog.getGroupId());
+
+		CommercePriceEntry commercePriceEntry =
+			CommercePriceEntryTestUtil.addCommercePriceEntry(
+				StringPool.BLANK, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(),
+				BigDecimal.valueOf(50));
+
+		CommerceDiscount commerceDiscount =
+			CommerceDiscountTestUtil.addAccountCommerceDiscount(
+				_group.getGroupId(), _accountEntry.getAccountEntryId(),
+				CommerceDiscountConstants.LEVEL_L1,
+				cpDefinition.getCPDefinitionId());
+
+		commerceDiscount.setLevel1(BigDecimal.valueOf(20));
+
+		commerceDiscount = _commerceDiscountLocalService.updateCommerceDiscount(
+			commerceDiscount);
+
+		CommerceContext commerceContext = new TestCommerceContext(
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
+
+		CommerceProductPrice commerceProductPrice =
+			_commerceProductPriceCalculation.getCommerceProductPrice(
+				cpInstance.getCPInstanceId(), BigDecimal.ONE, StringPool.BLANK,
+				commerceContext);
+
+		CommerceMoney finalPriceCommerceMoney =
+			commerceProductPrice.getFinalPrice();
+
+		BigDecimal actualPrice = finalPriceCommerceMoney.getPrice();
+
+		BigDecimal expectedPrice = _subtractPercentage(
+			commercePriceEntry.getPrice(), commerceDiscount.getLevel1());
+
+		Assert.assertEquals(
+			expectedPrice.stripTrailingZeros(),
+			actualPrice.stripTrailingZeros());
+
+		_businessAccountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		commerceContext = new TestCommerceContext(
+			_businessAccountEntry, _commerceCurrency, _commerceChannel, _user,
+			_group, null);
+
+		commerceProductPrice =
+			_commerceProductPriceCalculation.getCommerceProductPrice(
+				cpInstance.getCPInstanceId(), BigDecimal.ONE, StringPool.BLANK,
+				commerceContext);
+
+		finalPriceCommerceMoney = commerceProductPrice.getFinalPrice();
+
+		actualPrice = finalPriceCommerceMoney.getPrice();
+
+		expectedPrice = commercePriceEntry.getPrice();
+
+		Assert.assertEquals(
+			expectedPrice.stripTrailingZeros(),
+			actualPrice.stripTrailingZeros());
+	}
+
+	@Test
 	public void testAccountGroupDiscount() throws Exception {
 		frutillaRule.scenario(
 			"When a discount has an account groups associated to it, it will " +
@@ -1781,6 +1876,9 @@ public class CommerceDiscountV2Test {
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@DeleteAfterTestRun
+	private AccountEntry _businessAccountEntry;
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
