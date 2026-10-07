@@ -30,6 +30,7 @@
 		<column name="previewFileEntryId" type="long" />
 		<column name="styleBookEntryKey" type="String" />
 		<column name="themeId" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
@@ -58,19 +59,22 @@
 			<finder-column name="groupId" />
 			<finder-column name="styleBookEntryKey" />
 		</finder>
-		<finder name="G_T" return-type="Collection">
+		<finder name="G_T_NotS" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="themeId" />
+			<finder-column comparator="!=" name="status" />
 		</finder>
-		<finder name="G_D_T" return-type="Collection">
+		<finder name="G_D_T_NotS" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="defaultStyleBookEntry" />
 			<finder-column name="themeId" />
+			<finder-column comparator="!=" name="status" />
 		</finder>
-		<finder name="G_LikeN_T" return-type="Collection">
+		<finder name="G_LikeN_T_NotS" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column comparator="LIKE" name="name" />
 			<finder-column name="themeId" />
+			<finder-column comparator="!=" name="status" />
 		</finder>
 	</entity>
 	<exceptions>
