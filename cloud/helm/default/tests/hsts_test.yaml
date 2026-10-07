@@ -1,0 +1,52 @@
+suite: HSTS
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   notExists:
+                    path: spec.rules[0].filters
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Omits the Strict-Transport-Security header when disabled
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hsts.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].filters
+                    value:
+                        -   responseHeaderModifier:
+                                set:
+                                    -   name: Strict-Transport-Security
+                                        value: max-age=31536000; includeSubDomains; preload
+                            type: ResponseHeaderModifier
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Sets the Strict-Transport-Security header by default
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].filters[0].responseHeaderModifier.set[0].name
+                    value: Strict-Transport-Security
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute-a-example-com
+        it: Sets the Strict-Transport-Security header on every per hostname route
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hostnames:
+                -   a.example.com
+                -   b.example.com
+            network.perHostnameRoutes: true

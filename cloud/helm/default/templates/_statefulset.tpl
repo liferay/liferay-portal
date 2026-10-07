@@ -311,6 +311,14 @@ spec:
         -   backendRefs:
                 -   name: {{ include "liferay.name" $ctx.root }}{{ $suffix }}
                     port: {{ $backendPort }}
+            {{- if $ctx.statefulset.network.hsts.enabled }}
+            filters:
+                -   responseHeaderModifier:
+                        set:
+                            -   name: Strict-Transport-Security
+                                value: max-age=31536000; includeSubDomains; preload
+                    type: ResponseHeaderModifier
+            {{- end }}
             matches:
                 -   path:
                         type: PathPrefix
@@ -356,6 +364,14 @@ spec:
         -   backendRefs:
                 -   name: {{ include "liferay.name" .root }}{{ $suffix }}
                     port: {{ $backendPort }}
+            {{- if .statefulset.network.hsts.enabled }}
+            filters:
+                -   responseHeaderModifier:
+                        set:
+                            -   name: Strict-Transport-Security
+                                value: max-age=31536000; includeSubDomains; preload
+                    type: ResponseHeaderModifier
+            {{- end }}
             matches:
                 -   path:
                         type: PathPrefix
