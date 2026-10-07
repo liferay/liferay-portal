@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -69,7 +69,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
 
 		SegmentsExperience segmentsExperience = _getSegmentsExperience(
@@ -111,7 +111,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
 
 		SegmentsExperience segmentsExperience = _getSegmentsExperience(
@@ -160,7 +160,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
 
 		SegmentsExperience segmentsExperience = _getSegmentsExperience(
@@ -202,7 +202,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
 
 		SegmentsExperience segmentsExperience = _getSegmentsExperience(
@@ -240,7 +240,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
 
 		SegmentsExperience segmentsExperience = _getSegmentsExperience(
@@ -291,7 +291,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
 
 		SegmentsExperience segmentsExperience = _getSegmentsExperience(
@@ -484,11 +484,11 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference
-	private LayoutLocalService _layoutLocalService;
-
-	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutService _layoutService;
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
