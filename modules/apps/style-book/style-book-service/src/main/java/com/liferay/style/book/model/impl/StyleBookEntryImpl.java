@@ -16,10 +16,13 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipWriter;
+import com.liferay.style.book.model.StyleBookEntryVersion;
 
 /**
  * @author Eudaldo Alonso
+ * @author Thiago Buarque
  */
 public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 
@@ -44,6 +47,24 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	@Override
+	public int getStatus() {
+		if (isHead()) {
+			return super.getStatus();
+		}
+
+		return WorkflowConstants.STATUS_DRAFT;
+	}
+
+	@Override
+	public void populateVersionModel(
+		StyleBookEntryVersion styleBookEntryVersion) {
+
+		super.populateVersionModel(styleBookEntryVersion);
+
+		styleBookEntryVersion.setStatus(super.getStatus());
 	}
 
 	@Override

@@ -156,6 +156,19 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 	}
 
 	@Override
+	public StyleBookEntry getOrAddEmptyStyleBookEntry(
+			String externalReferenceCode, long groupId, String themeId)
+		throws Exception {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
+
+		return styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
+			externalReferenceCode, getUserId(), groupId, themeId);
+	}
+
+	@Override
 	public List<StyleBookEntry> getStyleBookEntries(
 			long groupId, int start, int end,
 			OrderByComparator<StyleBookEntry> orderByComparator)
@@ -359,7 +372,7 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 			long styleBookEntryId, boolean defaultStyleBookEntry,
 			String frontendTokenDefinition, String frontendTokensValues,
 			String name, String styleBookEntryKey, long previewFileEntryId,
-			ServiceContext serviceContext)
+			String themeId, ServiceContext serviceContext)
 		throws PortalException {
 
 		StyleBookEntry styleBookEntry =
@@ -372,7 +385,7 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 		return styleBookEntryLocalService.updateStyleBookEntry(
 			getUserId(), styleBookEntryId, defaultStyleBookEntry,
 			frontendTokenDefinition, frontendTokensValues, name,
-			styleBookEntryKey, previewFileEntryId, serviceContext);
+			styleBookEntryKey, previewFileEntryId, themeId, serviceContext);
 	}
 
 	@Override
