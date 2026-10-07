@@ -26,6 +26,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
@@ -45,14 +46,19 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURLComposite;
 import com.liferay.portal.kernel.model.LayoutQueryStringComposite;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -112,6 +118,17 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			InfoDisplayWebKeys.INFO_ITEM_DETAILS,
 			infoItemDetailsProvider.getInfoItemDetails(infoItem));
 
+		Layout layout = getLayoutDisplayPageObjectProviderLayout(
+			groupId, friendlyURL, layoutDisplayPageObjectProvider,
+			layoutDisplayPageProvider);
+
+		if (!_hasViewPermission(
+				infoItem, layoutDisplayPageObjectProvider, requestContext)) {
+
+			return portal.getLayoutActualURL(layout, mainPath) +
+				layoutQueryStringComposite.getQueryString();
+		}
+
 		httpServletRequest.setAttribute(
 			LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
 			layoutDisplayPageObjectProvider);
@@ -128,10 +145,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			LinkedAssetEntryIdsUtil.addLinkedAssetEntryId(
 				httpServletRequest, assetEntry.getEntryId());
 		}
-
-		Layout layout = getLayoutDisplayPageObjectProviderLayout(
-			groupId, friendlyURL, layoutDisplayPageObjectProvider,
-			layoutDisplayPageProvider);
 
 		String mappedDescription = layout.getTypeSettingsProperty(
 			"mapped-description");
@@ -205,7 +218,11 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			groupId, friendlyURL, layoutDisplayPageObjectProvider,
 			layoutDisplayPageProvider);
 
-		if (!useOriginalFriendlyURL()) {
+		if (!useOriginalFriendlyURL() ||
+			!_hasViewPermission(
+				layoutDisplayPageObjectProvider.getDisplayObject(),
+				layoutDisplayPageObjectProvider, requestContext)) {
+
 			return new LayoutFriendlyURLComposite(layout, friendlyURL, false);
 		}
 
@@ -572,6 +589,29 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		return friendlyURL.substring(0, pos);
 	}
 
+	private PermissionChecker _getPermissionChecker(
+			Map<String, Object> requestContext)
+		throws PortalException {
+
+		HttpServletRequest httpServletRequest =
+			(HttpServletRequest)requestContext.get("request");
+
+		if (httpServletRequest == null) {
+			return PermissionThreadLocal.getPermissionChecker();
+		}
+
+		User user = portal.getUser(httpServletRequest);
+
+		if (user == null) {
+			UserLocalService userLocalService = _userLocalServiceSnapshot.get();
+
+			user = userLocalService.getGuestUser(
+				portal.getCompanyId(httpServletRequest));
+		}
+
+		return PermissionThreadLocal.getPermissionChecker(user, false);
+	}
+
 	private String _getURLSeparator(String friendlyURL) {
 		List<String> paths = StringUtil.split(friendlyURL, CharPool.SLASH);
 
@@ -598,6 +638,56 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		return StringPool.BLANK;
 	}
 
+	private boolean _hasViewPermission(
+		Object infoItem,
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
+		Map<String, Object> requestContext) {
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionChecker permissionChecker = _getPermissionChecker(
+				requestContext);
+
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+			InfoItemPermissionProvider<Object> infoItemPermissionProvider =
+				infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemPermissionProvider.class,
+					layoutDisplayPageObjectProvider.getClassName());
+
+			if (infoItemPermissionProvider != null) {
+				return infoItemPermissionProvider.hasPermission(
+					permissionChecker, infoItem, ActionKeys.VIEW);
+			}
+
+			AssetRendererFactory<?> assetRendererFactory =
+				AssetRendererFactoryRegistryUtil.
+					getAssetRendererFactoryByClassName(
+						layoutDisplayPageObjectProvider.getClassName());
+
+			if (assetRendererFactory == null) {
+				return true;
+			}
+
+			return assetRendererFactory.hasPermission(
+				permissionChecker, layoutDisplayPageObjectProvider.getClassPK(),
+				ActionKeys.VIEW);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return false;
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseAssetDisplayPageFriendlyURLResolver.class);
 
@@ -609,5 +699,9 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		_groupLocalServiceSnapshot = new Snapshot<>(
 			BaseAssetDisplayPageFriendlyURLResolver.class,
 			GroupLocalService.class);
+	private static final Snapshot<UserLocalService> _userLocalServiceSnapshot =
+		new Snapshot<>(
+			BaseAssetDisplayPageFriendlyURLResolver.class,
+			UserLocalService.class);
 
 }
