@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.style.book.internal.upgrade.v1_10_0.StyleBookEntryFrontendTokensValuesUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_10_1.StyleBookEntryDefaultStyleBookEntryUpgradeProcess;
@@ -112,6 +113,18 @@ public class StyleBookServiceUpgradeStepRegistrator
 		registry.register(
 			"1.10.0", "1.10.1",
 			new StyleBookEntryDefaultStyleBookEntryUpgradeProcess());
+
+		registry.register(
+			"1.10.1", "1.11.0",
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntry", "status INTEGER"),
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntryVersion", "status INTEGER"),
+			UpgradeProcessFactory.runSQL(
+				"update StyleBookEntry set status = " +
+					WorkflowConstants.STATUS_APPROVED,
+				"update StyleBookEntryVersion set status = " +
+					WorkflowConstants.STATUS_APPROVED));
 	}
 
 	@Reference
