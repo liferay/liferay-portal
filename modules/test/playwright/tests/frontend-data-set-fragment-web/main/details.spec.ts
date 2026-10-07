@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {accountSettingsPagesTest} from '../../../fixtures/accountSettingsPagesTest';
 import {dataSetManagerApiHelpersTest} from '../../../fixtures/dataSetManagerApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
@@ -16,9 +15,6 @@ import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 export const test = mergeTests(
 	accountSettingsPagesTest,
 	dataSetManagerApiHelpersTest,
-	featureFlagsTest({
-		'LPS-164563': {enabled: true},
-	}),
 	isolatedLayoutTest({publish: false}),
 	loginTest(),
 	dataSetFragmentPageTest
