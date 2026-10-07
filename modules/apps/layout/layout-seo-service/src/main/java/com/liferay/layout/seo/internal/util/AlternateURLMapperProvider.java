@@ -6,7 +6,6 @@
 package com.liferay.layout.seo.internal.util;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
-import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
@@ -49,13 +48,7 @@ public class AlternateURLMapperProvider {
 			(LayoutDisplayPageObjectProvider<?>)httpServletRequest.getAttribute(
 				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
 
-		if ((layoutDisplayPageObjectProvider != null) &&
-			AssetDisplayPageUtil.hasAssetDisplayPage(
-				layoutDisplayPageObjectProvider.getGroupId(),
-				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassPK(),
-				layoutDisplayPageObjectProvider.getClassTypeId())) {
-
+		if (layoutDisplayPageObjectProvider != null) {
 			return new AlternateURLMapperProvider.
 				AssetDisplayPageAlternateURLMapper(
 					_assetDisplayPageFriendlyURLProvider,
@@ -145,16 +138,19 @@ public class AlternateURLMapperProvider {
 				String url, Locale locale, ThemeDisplay themeDisplay)
 			throws PortalException {
 
-			if (_layoutDisplayPageObjectProvider == null) {
+			String friendlyURL =
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					new InfoItemReference(
+						_layoutDisplayPageObjectProvider.getClassName(),
+						new ClassPKInfoItemIdentifier(
+							_layoutDisplayPageObjectProvider.getClassPK())),
+					locale, themeDisplay);
+
+			if (Validator.isNull(friendlyURL)) {
 				return url;
 			}
 
-			return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-				new InfoItemReference(
-					_layoutDisplayPageObjectProvider.getClassName(),
-					new ClassPKInfoItemIdentifier(
-						_layoutDisplayPageObjectProvider.getClassPK())),
-				locale, themeDisplay);
+			return friendlyURL;
 		}
 
 		private String _getPortalURL(ThemeDisplay themeDisplay) {
