@@ -21,11 +21,8 @@ import com.liferay.portal.kernel.repository.model.FileEntryWrapper;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.FileVersionWrapper;
 import com.liferay.portal.kernel.repository.registry.RepositoryEventRegistry;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.InputStream;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -43,14 +40,8 @@ public abstract class BaseCapability
 			RepositoryEventType.Add.class, FileEntry.class,
 			this::_updateAdaptiveMedia);
 		repositoryEventRegistry.registerRepositoryEventListener(
-			RepositoryEventType.Delete.class, FileEntry.class,
-			this::_deleteAdaptiveMedia);
-		repositoryEventRegistry.registerRepositoryEventListener(
 			RepositoryEventType.Update.class, FileEntry.class,
 			this::_updateAdaptiveMedia);
-		repositoryEventRegistry.registerRepositoryEventListener(
-			RepositoryEventType.Delete.class, FileVersion.class,
-			this::_deleteAdaptiveMedia);
 	}
 
 	@Reference
@@ -61,46 +52,6 @@ public abstract class BaseCapability
 
 	@Reference
 	protected InputStreamSanitizer inputStreamSanitizer;
-
-	private void _deleteAdaptiveMedia(FileEntry fileEntry) {
-		if (ExportImportThreadLocal.isImportInProcess()) {
-			return;
-		}
-
-		try {
-			AMAsyncProcessor<FileVersion, ?> amAsyncProcessor =
-				amAsyncProcessorLocator.locateForClass(FileVersion.class);
-
-			List<FileVersion> fileVersions = fileEntry.getFileVersions(
-				WorkflowConstants.STATUS_ANY);
-
-			for (FileVersion fileVersion : fileVersions) {
-				amAsyncProcessor.triggerCleanUp(
-					fileVersion,
-					String.valueOf(fileVersion.getFileVersionId()));
-			}
-		}
-		catch (PortalException portalException) {
-			throw new RuntimeException(portalException);
-		}
-	}
-
-	private void _deleteAdaptiveMedia(FileVersion fileVersion) {
-		if (ExportImportThreadLocal.isImportInProcess()) {
-			return;
-		}
-
-		try {
-			AMAsyncProcessor<FileVersion, ?> amAsyncProcessor =
-				amAsyncProcessorLocator.locateForClass(FileVersion.class);
-
-			amAsyncProcessor.triggerCleanUp(
-				fileVersion, String.valueOf(fileVersion.getFileVersionId()));
-		}
-		catch (PortalException portalException) {
-			throw new RuntimeException(portalException);
-		}
-	}
 
 	private void _updateAdaptiveMedia(FileEntry fileEntry) {
 		if (!DLAppHelperThreadLocal.isEnabled() ||
