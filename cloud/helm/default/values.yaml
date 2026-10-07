@@ -130,6 +130,7 @@ customInitContainers:
 
                             mkdir --parents \
                                 /temp/liferay \
+                                /temp/liferay/deploy \
                                 /temp/liferay/logs \
                                 /temp/liferay/metrics \
                                 /temp/liferay/reports \
@@ -214,7 +215,7 @@ customInitContainers:
 
                             sed --in-place '/<Engine/r'<(echo "${SERVER_XML_CLUSTER}") /temp/tomcat/conf/server.xml
 
-                            if [ -d /opt/liferay/deploy ] && [ -z "$(ls --all /temp/liferay/deploy/*license* 2>/dev/null)" ]
+                            if [ -d /opt/liferay/deploy ] && [ -n "$(ls --almost-all /opt/liferay/deploy 2>/dev/null)" ] && [ -z "$(ls --all /temp/liferay/deploy/*license* 2>/dev/null)" ]
                             then
                                 if [ ! -d /temp/liferay/data/license ] || [ -z "$(ls --all /temp/liferay/data/license/*.li 2>/dev/null)" ]
                                 then
