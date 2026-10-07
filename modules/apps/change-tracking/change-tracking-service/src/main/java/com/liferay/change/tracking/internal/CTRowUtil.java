@@ -62,7 +62,7 @@ public class CTRowUtil {
 			try (PreparedStatement preparedStatement1 =
 					connection.prepareStatement(selectSQL);
 				PreparedStatement preparedStatement2 =
-					AutoBatchPreparedStatementUtil.autoBatch(
+					AutoBatchPreparedStatementUtil.autoBatchWithResults(
 						connection, sb.toString());
 				ResultSet resultSet = preparedStatement1.executeQuery()) {
 

@@ -7601,7 +7601,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		throws SQLException {
 
 		try (PreparedStatement preparedStatement =
-				AutoBatchPreparedStatementUtil.autoBatch(
+				AutoBatchPreparedStatementUtil.autoBatchWithResults(
 					connection,
 					CustomSQLUtil.get(
 						UserLocalServiceImpl.class.getName() +

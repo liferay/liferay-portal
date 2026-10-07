@@ -313,7 +313,7 @@ public class CTServicePublisher<T extends CTModel<T>> {
 		}
 
 		try (PreparedStatement preparedStatement =
-				AutoBatchPreparedStatementUtil.autoBatch(
+				AutoBatchPreparedStatementUtil.autoBatchWithResults(
 					connection, sb.toString())) {
 
 			int batchCount = 0;
