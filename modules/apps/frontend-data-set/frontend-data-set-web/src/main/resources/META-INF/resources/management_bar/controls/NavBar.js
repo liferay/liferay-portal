@@ -76,9 +76,7 @@ function NavBar({creationMenu, showFilters, showSearch}) {
 					</ManagementToolbar.Item>
 				)}
 
-				{Liferay.FeatureFlags['LPS-164563'] && snapshotsEnabled && (
-					<SnapshotsControls />
-				)}
+				{snapshotsEnabled && <SnapshotsControls />}
 
 				{views?.length > 1 && (
 					<ManagementToolbar.Item>
