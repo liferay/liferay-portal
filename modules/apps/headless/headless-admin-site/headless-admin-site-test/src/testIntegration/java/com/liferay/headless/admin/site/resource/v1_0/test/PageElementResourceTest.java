@@ -281,8 +281,10 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	public void testGetSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
-		_testGetSitePageSpecificationPageExperiencePageElement();
+		super.testGetSitePageSpecificationPageExperiencePageElement();
+
 		_testGetSitePageSpecificationPageExperiencePageElementWithMismatchedPageSpecification();
+		_testGetSitePageSpecificationPageExperiencePageElementWithNonexistentPageElement();
 		_testGetSitePageSpecificationPageExperiencePageElementWithNonexistentPageExperience();
 		_testGetSitePageSpecificationPageExperiencePageElementWithOrphanedFragmentEntryLink();
 		_testGetSitePageSpecificationPageExperiencePageElementWithPageRoot();
@@ -485,6 +487,31 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	protected PageElement randomPageElement() throws Exception {
 		return _randomPageElement(
 			PageElementDefinition.Type.CONTAINER, StringPool.BLANK);
+	}
+
+	@Override
+	protected PageElement
+			testGetSitePageSpecificationPageExperiencePageElement_addPageElement()
+		throws Exception {
+
+		return testPostSitePageSpecificationPageExperiencePageElement_addPageElement(
+			randomPageElement());
+	}
+
+	@Override
+	protected String
+			testGetSitePageSpecificationPageExperiencePageElement_getPageExperienceExternalReferenceCode()
+		throws Exception {
+
+		return testGetSitePageSpecificationPageExperiencePageElementsPage_getPageExperienceExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGetSitePageSpecificationPageExperiencePageElement_getPageSpecificationExternalReferenceCode()
+		throws Exception {
+
+		return _draftLayout.getExternalReferenceCode();
 	}
 
 	@Override
@@ -2278,42 +2305,6 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		return pageElement;
 	}
 
-	private void _testGetSitePageSpecificationPageExperiencePageElement()
-		throws Exception {
-
-		PageElement postPageElement =
-			testPostSitePageSpecificationPageExperiencePageElement_addPageElement(
-				randomPageElement());
-
-		SegmentsExperience segmentsExperience =
-			_segmentsExperienceLocalService.fetchSegmentsExperience(
-				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
-				_layout.getPlid());
-
-		PageElement getPageElement =
-			pageElementResource.
-				getSitePageSpecificationPageExperiencePageElement(
-					testGroup.getExternalReferenceCode(),
-					_draftLayout.getExternalReferenceCode(),
-					segmentsExperience.getExternalReferenceCode(),
-					postPageElement.getExternalReferenceCode());
-
-		assertEquals(postPageElement, getPageElement);
-		assertValid(getPageElement);
-
-		String pageElementExternalReferenceCode = RandomTestUtil.randomString();
-
-		ProblemExceptionTestUtil.assertProblemException(
-			"NOT_FOUND", null,
-			() ->
-				pageElementResource.
-					getSitePageSpecificationPageExperiencePageElement(
-						testGroup.getExternalReferenceCode(),
-						_draftLayout.getExternalReferenceCode(),
-						segmentsExperience.getExternalReferenceCode(),
-						pageElementExternalReferenceCode));
-	}
-
 	private void _testGetSitePageSpecificationPageExperiencePageElementPageElementsPageWithNonexistentPageElement()
 		throws Exception {
 
@@ -2348,6 +2339,25 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		ProblemExceptionTestUtil.assertProblemException(
 			"BAD_REQUEST",
 			"The page experience does not belong to this page specification",
+			() ->
+				pageElementResource.
+					getSitePageSpecificationPageExperiencePageElement(
+						testGroup.getExternalReferenceCode(),
+						_draftLayout.getExternalReferenceCode(),
+						segmentsExperience.getExternalReferenceCode(),
+						RandomTestUtil.randomString()));
+	}
+
+	private void _testGetSitePageSpecificationPageExperiencePageElementWithNonexistentPageElement()
+		throws Exception {
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
 			() ->
 				pageElementResource.
 					getSitePageSpecificationPageExperiencePageElement(

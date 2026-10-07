@@ -79,8 +79,10 @@ public class PageExperienceResourceTest
 	@Override
 	@Test
 	public void testGetSitePageExperience() throws Exception {
-		_testGetSitePageExperience();
+		super.testGetSitePageExperience();
+
 		_testGetSitePageExperienceWithMissingLayoutStructureRel();
+		_testGetSitePageExperienceWithNonexistentPageExperience();
 	}
 
 	@Override
@@ -229,6 +231,14 @@ public class PageExperienceResourceTest
 	}
 
 	@Override
+	protected PageExperience testGetSitePageExperience_addPageExperience()
+		throws Exception {
+
+		return testPostSitePageSpecificationPageExperience_addPageExperience(
+			randomPageExperience());
+	}
+
+	@Override
 	protected PageExperience
 			testGetSitePageSpecificationPageExperiencesPage_addPageExperience(
 				String siteExternalReferenceCode,
@@ -365,29 +375,6 @@ public class PageExperienceResourceTest
 			2, pageExperience3.getExternalReferenceCode());
 	}
 
-	private void _testGetSitePageExperience() throws Exception {
-		PageExperience postPageExperience =
-			testPostSitePageSpecificationPageExperience_addPageExperience(
-				randomPageExperience());
-
-		PageExperience getPageExperience =
-			pageExperienceResource.getSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
-
-		assertEquals(postPageExperience, getPageExperience);
-		assertValid(getPageExperience);
-
-		String pageExperienceExternalReferenceCode =
-			RandomTestUtil.randomString();
-
-		ProblemExceptionTestUtil.assertProblemException(
-			"NOT_FOUND", null,
-			() -> pageExperienceResource.getSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				pageExperienceExternalReferenceCode));
-	}
-
 	private void _testGetSitePageExperienceWithMissingLayoutStructureRel()
 		throws Exception {
 
@@ -400,6 +387,19 @@ public class PageExperienceResourceTest
 			() -> pageExperienceResource.getSitePageExperience(
 				testGroup.getExternalReferenceCode(),
 				segmentsExperience.getExternalReferenceCode()));
+	}
+
+	private void _testGetSitePageExperienceWithNonexistentPageExperience()
+		throws Exception {
+
+		String pageExperienceExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				pageExperienceExternalReferenceCode));
 	}
 
 	private void _testPatchSitePageExperience() throws Exception {
