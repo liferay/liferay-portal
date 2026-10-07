@@ -38,8 +38,10 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
+import com.liferay.site.cms.site.initializer.internal.util.CMSFileTypeUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 import com.liferay.site.cms.site.initializer.util.CMSObjectEntryUtil;
 
@@ -84,6 +86,14 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 					objectEntry.getObjectEntryFolderId()) {
 
 				_setResourcePermissions(objectEntry);
+			}
+
+			if ((originalObjectEntry.getStatus() !=
+					WorkflowConstants.STATUS_APPROVED) &&
+				(objectEntry.getStatus() ==
+					WorkflowConstants.STATUS_APPROVED)) {
+
+				_updateFileEntryFriendlyURL(objectEntry);
 			}
 
 			Indexer<KaleoTaskInstanceToken> indexer =
@@ -228,6 +238,19 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				ArrayUtil.filter(
 					JSONUtil.toStringArray(jsonArray),
 					action -> resourceActions.contains(action)));
+		}
+	}
+
+	private void _updateFileEntryFriendlyURL(ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		if (CMSFileTypeUtil.hasFileObjectField(objectDefinition)) {
+			CMSFileTypeUtil.updateFileEntryFriendlyURL(
+				objectDefinition, objectEntry);
 		}
 	}
 

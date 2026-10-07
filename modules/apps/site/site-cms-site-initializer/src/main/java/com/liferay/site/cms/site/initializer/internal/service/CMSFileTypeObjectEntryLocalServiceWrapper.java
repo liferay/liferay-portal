@@ -74,20 +74,6 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 	}
 
 	@Override
-	public ObjectEntry copyObjectEntry(
-			long userId, long objectEntryId, long objectEntryFolderId,
-			Map<String, Serializable> values, ServiceContext serviceContext)
-		throws PortalException {
-
-		ObjectEntry objectEntry = super.copyObjectEntry(
-			userId, objectEntryId, objectEntryFolderId, values, serviceContext);
-
-		_updateFileEntryFriendlyURL(objectEntry);
-
-		return objectEntry;
-	}
-
-	@Override
 	public ObjectEntry partialUpdateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			Map<String, Serializable> values, ServiceContext serviceContext)
@@ -147,34 +133,6 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 		return objectEntry;
 	}
 
-	@Override
-	public ObjectEntry updateStatus(
-			long userId, long objectEntryId, int status,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		ObjectEntry objectEntry = super.updateStatus(
-			userId, objectEntryId, status, serviceContext);
-
-		_updateFileEntryFriendlyURL(objectEntry);
-
-		return objectEntry;
-	}
-
-	@Override
-	public ObjectEntry updateStatus(
-			long userId, ObjectEntry objectEntry, int status,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		objectEntry = super.updateStatus(
-			userId, objectEntry, status, serviceContext);
-
-		_updateFileEntryFriendlyURL(objectEntry);
-
-		return objectEntry;
-	}
-
 	private ObjectDefinition _fetchFileTypeObjectDefinition(
 		long objectDefinitionId) {
 
@@ -189,18 +147,6 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 		}
 
 		return objectDefinition;
-	}
-
-	private void _updateFileEntryFriendlyURL(ObjectEntry objectEntry)
-		throws PortalException {
-
-		ObjectDefinition objectDefinition = _fetchFileTypeObjectDefinition(
-			objectEntry.getObjectDefinitionId());
-
-		if (objectDefinition != null) {
-			CMSFileTypeUtil.updateFileEntryFriendlyURL(
-				objectDefinition, objectEntry);
-		}
 	}
 
 	private void _validateFriendlyURL(
