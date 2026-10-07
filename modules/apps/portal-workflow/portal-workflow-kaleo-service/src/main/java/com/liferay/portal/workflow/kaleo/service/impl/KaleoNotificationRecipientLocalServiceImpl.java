@@ -124,7 +124,16 @@ public class KaleoNotificationRecipientLocalServiceImpl
 
 			Role role = null;
 
-			if (Validator.isNotNull(roleRecipient.getRoleName())) {
+			if (Validator.isNotNull(
+					roleRecipient.getRoleExternalReferenceCode())) {
+
+				role = RoleUtil.getOrAddEmptyRole(
+					roleRecipient.getRoleExternalReferenceCode(),
+					roleRecipient.getRoleType(), serviceContext);
+
+				roleType = role.getType();
+			}
+			else if (Validator.isNotNull(roleRecipient.getRoleName())) {
 				roleType = RoleUtil.getRoleType(roleRecipient.getRoleType());
 
 				role = RoleUtil.getRole(

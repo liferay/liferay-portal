@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
 import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 
@@ -34,6 +35,24 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Michael C. Han
  */
 public class RoleUtil {
+
+	public static Role getOrAddEmptyRole(
+			String externalReferenceCode, String roleType,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		if (Validator.isNull(roleType) ||
+			(getRoleType(roleType) == RoleConstants.TYPE_ACCOUNT)) {
+
+			return RoleLocalServiceUtil.getRoleByExternalReferenceCode(
+				externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		return RoleLocalServiceUtil.getOrAddEmptyRole(
+			externalReferenceCode, serviceContext.getCompanyId(),
+			serviceContext.getUserId(), Role.class.getName(), 0,
+			externalReferenceCode, getRoleType(roleType));
+	}
 
 	public static Role getRole(
 			String name, int roleType, boolean autoCreate,
