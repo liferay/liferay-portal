@@ -9,11 +9,7 @@ import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.frontend.data.set.constants.FDSAdminPortletKeys;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -43,19 +39,6 @@ public class FDSAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getPortletId() {
 		return FDSAdminPortletKeys.FDS_ADMIN;
-	}
-
-	@Override
-	public boolean isShow(PermissionChecker permissionChecker, Group group)
-		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPS-164563")) {
-
-			return false;
-		}
-
-		return super.isShow(permissionChecker, group);
 	}
 
 	@Reference(

@@ -46,16 +46,6 @@ public interface CETFactory {
 
 	public final Map<String, String> FEATURE_FLAG_KEYS = HashMapBuilder.put(
 
-		// feature.flag.LPS-164563
-
-		ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER, "LPS-164563"
-	).put(
-
-		// feature.flag.LPS-164563
-
-		ClientExtensionEntryConstants.TYPE_FDS_FILTER, "LPS-164563"
-	).put(
-
 		// feature.flag.LPS-177027
 
 		ClientExtensionEntryConstants.TYPE_STATIC_CONTENT, "LPS-177027"
