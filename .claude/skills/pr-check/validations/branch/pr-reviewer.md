@@ -1,8 +1,6 @@
 # PR Reviewer
 
-## Trigger
-
-Always. The reviewer drops generated files, frontend sources, generated locale files, and lock files itself, and exits at once when nothing is left, so a diff of only those costs one command.
+Reviews the branch diff against the rules in `pr-reviewer/rules`, which hold the conventions the source formatter does not enforce, and applies the fixes the reviewer returns. The reviewer drops generated files, frontend sources, generated locale files, and lock files itself, and exits at once when nothing is left, so a diff of only those costs one command.
 
 ## Match
 
