@@ -290,6 +290,24 @@ The field sits on the child but is named for the **parent**, first letter lowerc
 
 Do **not** copy `"system": true` from portal internal initializers (seo-studio, ai-hub) — it makes the object or picklist nonmodifiable.
 
+### `object-entries/<name>.json`
+
+One file per object. `objectDefinitionName` names the object, with or without the `C_` prefix, and `object-entries` (hyphenated) holds raw `ObjectEntry` DTOs:
+
+```json
+{
+	"object-entries": [
+		{
+			"externalReferenceCode": "EVENT_LAUNCH",
+			"title": "Launch"
+		}
+	],
+	"objectDefinitionName": "Event"
+}
+```
+
+A bare JSON array fails with `A JSONObject text must begin with '{'` and rolls back the site. A misspelled key, such as `objectEntries`, is skipped silently and logs `Invoking addOrUpdateObjectEntries took 0 ms`. Entries are written inside the portal, so the initializer's OAuth scopes do not apply to them. Verified on 2026.Q1.
+
 ## `resource-permissions.json`
 
 A flat array of grants, applied by the `addOrUpdateResourcePermissions` handler. This is how an object becomes visible to Guest — required before an object backed Collection renders anything on a public page.
