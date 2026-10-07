@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Luis Ortiz
+ * @author Thiago Buarque
  */
 @RunWith(Arquillian.class)
 public class StyleBookEntryIndexerReindexTest {
@@ -108,7 +109,8 @@ public class StyleBookEntryIndexerReindexTest {
 		_styleBookEntryLocalService.updateStyleBookEntry(
 			TestPropsValues.getUserId(), styleBookEntryId, true,
 			styleBookEntry.getFrontendTokenDefinition(), frontendTokensValues,
-			newName, styleBookEntryKey, 0L, _serviceContext);
+			newName, styleBookEntryKey, 0L, styleBookEntry.getThemeId(),
+			_serviceContext);
 
 		_assertFieldValue(Field.NAME, newName, styleBookEntryKey);
 
