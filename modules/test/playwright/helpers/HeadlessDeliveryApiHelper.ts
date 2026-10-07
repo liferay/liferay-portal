@@ -337,11 +337,13 @@ export class HeadlessDeliveryApiHelper {
 		headline,
 		siteId,
 		taxonomyCategoryIds,
+		viewableBy,
 	}: {
 		articleBody: string;
 		headline: string;
 		siteId: string;
 		taxonomyCategoryIds?: number[];
+		viewableBy?: 'Anyone' | 'Members' | 'Owner';
 	}): Promise<MessageBoardThread> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/message-board-threads`,
@@ -350,6 +352,7 @@ export class HeadlessDeliveryApiHelper {
 					articleBody,
 					headline,
 					taxonomyCategoryIds,
+					viewableBy,
 				},
 				failOnStatusCode: true,
 			}
