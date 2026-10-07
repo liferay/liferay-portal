@@ -377,7 +377,6 @@ describe('FrontendDataSet', () => {
 		let onApply: jest.Mock;
 
 		beforeEach(() => {
-			Liferay.FeatureFlags['LPS-164563'] = true;
 
 			// The connection detaches this handle as it disconnects
 
@@ -386,8 +385,6 @@ describe('FrontendDataSet', () => {
 
 		afterEach(() => {
 			connection?.disconnect();
-
-			delete Liferay.FeatureFlags['LPS-164563'];
 
 			(Liferay.on as jest.Mock).mockReturnValue(undefined);
 		});

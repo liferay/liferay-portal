@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -44,7 +43,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Juanjo Fernandez
  */
-@FeatureFlag("LPS-164563")
 @RunWith(Arquillian.class)
 public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 
