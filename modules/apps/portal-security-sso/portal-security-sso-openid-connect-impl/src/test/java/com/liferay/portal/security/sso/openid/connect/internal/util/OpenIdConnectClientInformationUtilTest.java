@@ -14,14 +14,18 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
+
+import java.util.Dictionary;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -31,6 +35,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.Mockito;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Caio Farias
@@ -44,6 +51,19 @@ public class OpenIdConnectClientInformationUtilTest {
 
 	@Before
 	public void setUp() {
+		_configurationAdminSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+			OpenIdConnectClientInformationUtil.class,
+			"_configurationAdminSnapshot",
+			new Snapshot<ConfigurationAdmin>(
+				OpenIdConnectClientInformationUtil.class,
+				ConfigurationAdmin.class) {
+
+				@Override
+				public ConfigurationAdmin get() {
+					return _configurationAdmin;
+				}
+
+			});
 		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
@@ -63,6 +83,9 @@ public class OpenIdConnectClientInformationUtilTest {
 	@After
 	public void tearDown() {
 		ReflectionTestUtil.setFieldValue(
+			OpenIdConnectClientInformationUtil.class,
+			"_configurationAdminSnapshot", _configurationAdminSnapshot);
+		ReflectionTestUtil.setFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			_secretResolverSnapshot);
 		ReflectionTestUtil.setFieldValue(
@@ -73,10 +96,6 @@ public class OpenIdConnectClientInformationUtilTest {
 	public void testGetOIDCClientInformation() throws Exception {
 		String clientSecret = RandomTestUtil.randomString();
 		long companyId = RandomTestUtil.randomLong();
-		long guestUserId = RandomTestUtil.randomLong();
-		long oAuthClientEntryId = RandomTestUtil.randomLong();
-
-		_secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
 			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
@@ -87,6 +106,8 @@ public class OpenIdConnectClientInformationUtilTest {
 		UserLocalService userLocalService = ReflectionTestUtil.getFieldValue(
 			UserLocalServiceUtil.class, "_service");
 
+		long guestUserId = RandomTestUtil.randomLong();
+
 		Mockito.when(
 			userLocalService.getGuestUserId(companyId)
 		).thenReturn(
@@ -95,10 +116,53 @@ public class OpenIdConnectClientInformationUtilTest {
 
 		String keyReferenceString = _getKeyReferenceString(
 			RandomTestUtil.randomString());
+		String otherKeyReferenceString = _getKeyReferenceString(
+			RandomTestUtil.randomString());
+		String systemKeyReferenceString = _getKeyReferenceString(
+			RandomTestUtil.randomString());
+
+		Configuration[] configurations = {
+			_getConfiguration(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"companyId", companyId
+				).put(
+					"openIdConnectClientSecret", keyReferenceString
+				).build()),
+			_getConfiguration(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"companyId", companyId + 1
+				).put(
+					"openIdConnectClientSecret", otherKeyReferenceString
+				).build()),
+			_getConfiguration(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"openIdConnectClientSecret", systemKeyReferenceString
+				).build())
+		};
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations(
+				StringBundler.concat(
+					"(|(service.factoryPid=",
+					OpenIdConnectProviderConfiguration.class.getName(),
+					")(service.factoryPid=",
+					OpenIdConnectProviderConfiguration.class.getName(),
+					".scoped))"))
+		).thenReturn(
+			configurations
+		);
+
+		long oAuthClientEntryId = RandomTestUtil.randomLong();
 
 		_testGetOIDCClientInformation(
 			keyReferenceString, companyId, clientSecret, oAuthClientEntryId,
 			guestUserId);
+		_testGetOIDCClientInformation(
+			otherKeyReferenceString, companyId, otherKeyReferenceString,
+			oAuthClientEntryId, guestUserId);
+		_testGetOIDCClientInformation(
+			systemKeyReferenceString, companyId, clientSecret,
+			oAuthClientEntryId, guestUserId);
 		_testGetOIDCClientInformation(
 			keyReferenceString, companyId, keyReferenceString,
 			oAuthClientEntryId, guestUserId + 1);
@@ -112,6 +176,30 @@ public class OpenIdConnectClientInformationUtilTest {
 		_testGetOIDCClientInformation(
 			clientSecret, companyId, clientSecret, oAuthClientEntryId,
 			guestUserId + 1);
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations(Mockito.anyString())
+		).thenReturn(
+			null
+		);
+
+		_testGetOIDCClientInformation(
+			keyReferenceString, companyId, keyReferenceString,
+			oAuthClientEntryId, guestUserId);
+	}
+
+	private Configuration _getConfiguration(
+		Dictionary<String, Object> properties) {
+
+		Configuration configuration = Mockito.mock(Configuration.class);
+
+		Mockito.when(
+			configuration.getProperties()
+		).thenReturn(
+			properties
+		);
+
+		return configuration;
 	}
 
 	private String _getKeyReferenceString(String identifier) {
@@ -166,7 +254,11 @@ public class OpenIdConnectClientInformationUtilTest {
 		Assert.assertEquals(expectedClientSecret, secret.getValue());
 	}
 
-	private SecretResolver _secretResolver;
+	private final ConfigurationAdmin _configurationAdmin = Mockito.mock(
+		ConfigurationAdmin.class);
+	private Snapshot<ConfigurationAdmin> _configurationAdminSnapshot;
+	private final SecretResolver _secretResolver = Mockito.mock(
+		SecretResolver.class);
 	private Snapshot<SecretResolver> _secretResolverSnapshot;
 	private UserLocalService _userLocalService;
 
