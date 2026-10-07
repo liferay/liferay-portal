@@ -64,6 +64,8 @@ public class OpenIdConnectClientInformationUtilTest {
 				}
 
 			});
+		_originalUserLocalService = ReflectionTestUtil.getAndSetFieldValue(
+			UserLocalServiceUtil.class, "_service", _userLocalService);
 		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
@@ -75,9 +77,6 @@ public class OpenIdConnectClientInformationUtilTest {
 				}
 
 			});
-		_userLocalService = ReflectionTestUtil.getAndSetFieldValue(
-			UserLocalServiceUtil.class, "_service",
-			Mockito.mock(UserLocalService.class));
 	}
 
 	@After
@@ -89,7 +88,7 @@ public class OpenIdConnectClientInformationUtilTest {
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			_secretResolverSnapshot);
 		ReflectionTestUtil.setFieldValue(
-			UserLocalServiceUtil.class, "_service", _userLocalService);
+			UserLocalServiceUtil.class, "_service", _originalUserLocalService);
 	}
 
 	@Test
@@ -103,13 +102,10 @@ public class OpenIdConnectClientInformationUtilTest {
 			clientSecret
 		);
 
-		UserLocalService userLocalService = ReflectionTestUtil.getFieldValue(
-			UserLocalServiceUtil.class, "_service");
-
 		long guestUserId = RandomTestUtil.randomLong();
 
 		Mockito.when(
-			userLocalService.getGuestUserId(companyId)
+			_userLocalService.getGuestUserId(companyId)
 		).thenReturn(
 			guestUserId
 		);
@@ -257,9 +253,11 @@ public class OpenIdConnectClientInformationUtilTest {
 	private final ConfigurationAdmin _configurationAdmin = Mockito.mock(
 		ConfigurationAdmin.class);
 	private Snapshot<ConfigurationAdmin> _configurationAdminSnapshot;
+	private UserLocalService _originalUserLocalService;
 	private final SecretResolver _secretResolver = Mockito.mock(
 		SecretResolver.class);
 	private Snapshot<SecretResolver> _secretResolverSnapshot;
-	private UserLocalService _userLocalService;
+	private final UserLocalService _userLocalService = Mockito.mock(
+		UserLocalService.class);
 
 }

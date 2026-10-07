@@ -40,10 +40,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,28 +59,6 @@ public class AsahFaroBackendClientImplTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
-
-	@BeforeClass
-	public static void setUpClass() {
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			new Snapshot<SecretResolver>(
-				SecretResolverUtil.class, SecretResolver.class) {
-
-				@Override
-				public SecretResolver get() {
-					return _secretResolver;
-				}
-
-			});
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -104,6 +81,14 @@ public class AsahFaroBackendClientImplTest {
 		);
 
 		_setUpPortalUtil();
+		_setUpSecretResolverUtil();
+	}
+
+	@After
+	public void tearDown() {
+		ReflectionTestUtil.setFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			_secretResolverSnapshot);
 	}
 
 	@Test
@@ -490,7 +475,8 @@ public class AsahFaroBackendClientImplTest {
 			new AsahFaroBackendClientImpl(_analyticsSettingsManager, http);
 
 		asahFaroBackendClient.getIndividualSegmentResults(
-			companyId, 1, 100, Collections.emptyList());
+			companyId, RandomTestUtil.randomInt(), RandomTestUtil.randomInt(),
+			Collections.emptyList());
 
 		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
 			Http.Options.class);
@@ -683,11 +669,24 @@ public class AsahFaroBackendClientImplTest {
 		portalUtil.setPortal(portal);
 	}
 
-	private static final SecretResolver _secretResolver = Mockito.mock(
-		SecretResolver.class);
-	private static Snapshot<SecretResolver> _secretResolverSnapshot;
+	private void _setUpSecretResolverUtil() {
+		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+			SecretResolverUtil.class, "_secretResolverSnapshot",
+			new Snapshot<SecretResolver>(
+				SecretResolverUtil.class, SecretResolver.class) {
+
+				@Override
+				public SecretResolver get() {
+					return _secretResolver;
+				}
+
+			});
+	}
 
 	private AnalyticsConfiguration _analyticsConfiguration;
 	private AnalyticsSettingsManager _analyticsSettingsManager;
+	private final SecretResolver _secretResolver = Mockito.mock(
+		SecretResolver.class);
+	private Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }

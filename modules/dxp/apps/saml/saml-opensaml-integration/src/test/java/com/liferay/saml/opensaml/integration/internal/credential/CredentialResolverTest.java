@@ -134,10 +134,12 @@ public class CredentialResolverTest extends BaseSamlTestCase {
 			keyStoreEncryptionCredentialPassword
 		);
 
-		Credential credential = credentialResolver.resolveSingle(
-			new CriteriaSet(
-				new EntityIdCriterion(SP_ENTITY_ID),
-				new UsageCriterion(UsageType.ENCRYPTION)));
+		CriteriaSet criteriaSet = new CriteriaSet();
+
+		criteriaSet.add(new EntityIdCriterion(SP_ENTITY_ID));
+		criteriaSet.add(new UsageCriterion(UsageType.ENCRYPTION));
+
+		Credential credential = credentialResolver.resolveSingle(criteriaSet);
 
 		Assert.assertEquals(privateKey, credential.getPrivateKey());
 		Assert.assertEquals(UsageType.ENCRYPTION, credential.getUsageType());

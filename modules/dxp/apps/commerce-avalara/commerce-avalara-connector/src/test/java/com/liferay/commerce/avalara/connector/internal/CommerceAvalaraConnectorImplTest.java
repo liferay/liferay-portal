@@ -32,7 +32,7 @@ public class CommerceAvalaraConnectorImplTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetLicenseKey() {
+	public void testResolveLicenseKey() {
 		long companyId = RandomTestUtil.randomLong();
 		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
 			new KeyReference(
@@ -41,12 +41,6 @@ public class CommerceAvalaraConnectorImplTest {
 		String licenseKey = RandomTestUtil.randomString();
 
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
-
-		Mockito.when(
-			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
-		);
 
 		Mockito.when(
 			secretResolver.resolve(companyId, keyReferenceString)
@@ -65,21 +59,10 @@ public class CommerceAvalaraConnectorImplTest {
 
 			Assert.assertEquals(
 				licenseKey,
-				_getLicenseKey(
-					commerceAvalaraConnectorImpl, keyReferenceString));
-			Assert.assertEquals(
-				licenseKey,
-				_getLicenseKey(commerceAvalaraConnectorImpl, licenseKey));
+				ReflectionTestUtil.invoke(
+					commerceAvalaraConnectorImpl, "_resolveLicenseKey",
+					new Class<?>[] {String.class}, keyReferenceString));
 		}
-	}
-
-	private String _getLicenseKey(
-		CommerceAvalaraConnectorImpl commerceAvalaraConnectorImpl,
-		String licenseKey) {
-
-		return ReflectionTestUtil.invoke(
-			commerceAvalaraConnectorImpl, "_getLicenseKey",
-			new Class<?>[] {String.class}, licenseKey);
 	}
 
 }
