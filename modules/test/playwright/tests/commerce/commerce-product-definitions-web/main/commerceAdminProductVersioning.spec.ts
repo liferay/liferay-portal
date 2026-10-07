@@ -155,8 +155,8 @@ test('LPD-84993 Editing the Configuration tab and clicking Publish carries the c
 });
 
 test(
-	'Save as Draft asks for confirmation when the product already has a draft',
-	{tag: '@LPD-106110'},
+	'Save as Draft and Convert to Draft ask for confirmation on a product with a draft',
+	{tag: ['@COMMERCE-9553', '@LPD-106110', '@LPD-108633']},
 	async ({
 		apiHelpers,
 		commerceAdminProductDetailsPage,
@@ -195,6 +195,27 @@ test(
 			}),
 			commerceAdminProductDetailsPage.saveAsDraft(),
 		]);
+
+		await commerceAdminProductPage.searchProduct(product.name['en_US']);
+
+		await expect(
+			commerceAdminProductPage.productsTableRowWithStatus(
+				product.name['en_US'],
+				'Approved'
+			)
+		).toBeVisible();
+		await expect(
+			commerceAdminProductPage.productsTableRowWithStatus(
+				product.name['en_US'],
+				'Draft'
+			)
+		).toBeVisible();
+
+		await page.goto(productURL);
+
+		expect(await commerceAdminProductDetailsPage.convertToDraft()).toBe(
+			'Converting the product status to draft will remove the product from the product catalog. Do you wish to proceed?'
+		);
 
 		await apiHelpers.headlessCommerceAdminCatalog.deleteProductByVersion(
 			product.productId,
@@ -379,5 +400,97 @@ test(
 			product.productId,
 			1
 		);
+	}
+);
+
+test(
+	'A versioned product can be duplicated and deleted from the product list',
+	{tag: ['@COMMERCE-9941', '@LPD-108633']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				productStatus: 2,
+			});
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			String(product.productId),
+			{name: product.name, productStatus: 0}
+		);
+
+		const productName = product.name['en_US'];
+
+		const copyName = `Copy of ${productName}`;
+
+		try {
+			await test.step('Duplicate the product', async () => {
+				await commerceAdminProductPage.gotoProduct(productName);
+
+				await commerceAdminProductDetailsPage.duplicate(catalog.name);
+
+				await expect(
+					commerceAdminProductDetailsPage.productTitle(copyName)
+				).toBeVisible();
+
+				await commerceAdminProductDetailsPage.publishLink.click();
+
+				await waitForAlert(page);
+
+				await expect(
+					commerceAdminProductDetailsPage.workflowStatusLabel(
+						'Approved'
+					)
+				).toBeVisible();
+			});
+
+			await test.step('Delete the product from the product list', async () => {
+				await commerceAdminProductPage.searchProduct(productName);
+
+				for (const name of [productName, copyName]) {
+					await expect(
+						commerceAdminProductPage.productsTableRowWithStatus(
+							name,
+							'Approved'
+						)
+					).toBeVisible();
+				}
+
+				await commerceAdminProductPage.deleteProduct(
+					productName,
+					'Approved'
+				);
+
+				await expect(
+					commerceAdminProductPage.productsTableRowWithStatus(
+						copyName,
+						'Approved'
+					)
+				).toBeVisible();
+			});
+		}
+		finally {
+			for (const name of [productName, copyName]) {
+				const leftoverProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+						name,
+						{catalogId: catalog.id}
+					);
+
+				if (leftoverProduct) {
+					apiHelpers.data.push({
+						id: leftoverProduct.productId,
+						type: 'product',
+					});
+				}
+			}
+		}
 	}
 );
