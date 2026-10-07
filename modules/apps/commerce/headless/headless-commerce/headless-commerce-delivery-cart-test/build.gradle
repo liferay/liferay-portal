@@ -17,6 +17,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-discount-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-inventory-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-media-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-order-rule-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-payment-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-payment-test-util")

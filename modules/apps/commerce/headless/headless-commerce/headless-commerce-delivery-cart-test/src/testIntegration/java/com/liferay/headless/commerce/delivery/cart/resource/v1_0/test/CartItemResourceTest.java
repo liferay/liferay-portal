@@ -14,6 +14,7 @@ import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
+import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
@@ -208,6 +209,7 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 	public void testPostCartItem() throws Exception {
 		super.testPostCartItem();
 
+		_testPostCartItemDefaultImage();
 		_testPostCartItemToGuestOrderWithGuestCheckoutDisabledOnB2BChannel();
 	}
 
@@ -669,6 +671,22 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 			patchCartItem.getShippingAddressId());
 	}
 
+	private void _testPostCartItemDefaultImage() throws Exception {
+		CPInstance cpInstance = _addCPInstance(false);
+
+		CartItem cartItem = cartItemResource.postCartItem(
+			_commerceOrder.getCommerceOrderId(), _randomCartItem(cpInstance));
+
+		String adaptiveMediaImageHTMLTag =
+			cartItem.getAdaptiveMediaImageHTMLTag();
+
+		String defaultURL = _commerceMediaResolver.getDefaultURL(
+			cpInstance.getGroupId());
+
+		Assert.assertTrue(
+			adaptiveMediaImageHTMLTag.contains("src=\"" + defaultURL + "\""));
+	}
+
 	private void _testPostCartItemToGuestOrderWithGuestCheckoutDisabledOnB2BChannel()
 		throws Exception {
 
@@ -791,6 +809,9 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CommerceInventoryWarehouse _commerceInventoryWarehouse;
+
+	@Inject
+	private CommerceMediaResolver _commerceMediaResolver;
 
 	@DeleteAfterTestRun
 	private CommerceOrder _commerceOrder;
