@@ -21,8 +21,12 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.servlet.BrowserSnifferUtil;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.Filter;
@@ -31,11 +35,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPOutputStream;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -79,6 +86,11 @@ public class FrontendResourceFilter extends BasePortalFilter {
 
 	@Activate
 	protected void activate() {
+		_gZipCompressionLevel = GetterUtil.getInteger(
+			PropsUtil.get(PropsKeys.GZIP_COMPRESSION_LEVEL),
+			Deflater.DEFAULT_COMPRESSION);
+		_gZipEnabled = GetterUtil.getBoolean(PropsUtil.get(_GZIP_FILTER));
+
 		List<FrontendResourceRequestHandler> frontendResourceRequestHandlers =
 			new ArrayList<>();
 
@@ -196,11 +208,45 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		httpServletResponse.setCharacterEncoding(StringPool.UTF8);
 		httpServletResponse.setContentType(frontendResource.getContentType());
 
+		GZIPOutputStream gzipOutputStream = null;
+
+		if (_gZipEnabled) {
+			httpServletResponse.addHeader("Vary", HttpHeaders.ACCEPT_ENCODING);
+
+			if (BrowserSnifferUtil.acceptsGzip(httpServletRequest)) {
+				httpServletResponse.setHeader(
+					HttpHeaders.CONTENT_ENCODING, "gzip");
+
+				gzipOutputStream = _createGZipOutputStream(
+					httpServletResponse.getOutputStream());
+			}
+		}
+
 		try (InputStream inputStream = frontendResource.getInputStream()) {
-			StreamUtil.transfer(
-				inputStream, httpServletResponse.getOutputStream(), false);
+			if (gzipOutputStream == null) {
+				StreamUtil.transfer(
+					inputStream, httpServletResponse.getOutputStream(), false);
+			}
+			else {
+				StreamUtil.transfer(inputStream, gzipOutputStream, false);
+
+				gzipOutputStream.finish();
+			}
 		}
 	}
+
+	private GZIPOutputStream _createGZipOutputStream(OutputStream outputStream)
+		throws Exception {
+
+		return new GZIPOutputStream(outputStream) {
+			{
+				def.setLevel(_gZipCompressionLevel);
+			}
+		};
+	}
+
+	private static final String _GZIP_FILTER =
+		"com.liferay.portal.servlet.filters.gzip.GZipFilter";
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
@@ -208,6 +254,8 @@ public class FrontendResourceFilter extends BasePortalFilter {
 	private final AtomicReference<List<FrontendResourceRequestHandler>>
 		_frontendResourceRequestHandlers = new AtomicReference<>(
 			Collections.emptyList());
+	private int _gZipCompressionLevel;
+	private boolean _gZipEnabled;
 
 	@Reference
 	private HashedFilesRegistry _hashedFilesRegistry;
