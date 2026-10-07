@@ -18,7 +18,6 @@ export const test = mergeTests(
 	customDataSetsPageTest,
 	featureFlagsTest({
 		'LPD-38564': {enabled: true},
-		'LPS-164563': {enabled: true},
 	}),
 	loginTest()
 );

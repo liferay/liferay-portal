@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataSetManagerApiHelpersTest} from '../../../fixtures/dataSetManagerApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
@@ -15,9 +14,6 @@ import {visualizationModesPageTest} from './fixtures/visualizationModesPageTest'
 
 export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
-	featureFlagsTest({
-		'LPS-164563': {enabled: true},
-	}),
 	loginTest(),
 	dataSetManagerSetupTest,
 	settingsPageTest,

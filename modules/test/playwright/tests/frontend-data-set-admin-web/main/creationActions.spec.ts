@@ -24,7 +24,6 @@ export const test = mergeTests(
 	actionsPageTest,
 	dataSetManagerApiHelpersTest,
 	featureFlagsTest({
-		'LPS-164563': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
