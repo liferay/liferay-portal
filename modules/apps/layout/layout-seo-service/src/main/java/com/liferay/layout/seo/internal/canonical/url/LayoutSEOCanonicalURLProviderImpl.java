@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -128,8 +127,7 @@ public class LayoutSEOCanonicalURLProviderImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_alternateURLMapperProvider = new AlternateURLMapperProvider(
-			_assetDisplayPageFriendlyURLProvider, _classNameLocalService,
-			_portal);
+			_assetDisplayPageFriendlyURLProvider, _portal);
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, LayoutSEOCanonicalURLContributor.class,
@@ -248,9 +246,6 @@ public class LayoutSEOCanonicalURLProviderImpl
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

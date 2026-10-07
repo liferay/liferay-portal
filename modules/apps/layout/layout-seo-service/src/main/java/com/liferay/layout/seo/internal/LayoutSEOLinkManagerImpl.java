@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -165,8 +164,7 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 	@Activate
 	protected void activate() {
 		_alternateURLMapperProvider = new AlternateURLMapperProvider(
-			_assetDisplayPageFriendlyURLProvider, _classNameLocalService,
-			_portal);
+			_assetDisplayPageFriendlyURLProvider, _portal);
 	}
 
 	@Deactivate
@@ -360,9 +358,6 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
