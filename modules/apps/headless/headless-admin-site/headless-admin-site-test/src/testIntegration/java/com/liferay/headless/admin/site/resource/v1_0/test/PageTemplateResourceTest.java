@@ -34,6 +34,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplat
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.SettingsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailHttpServer;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
@@ -1032,17 +1033,6 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			siteExternalReferenceCode, null, null, null, null, null);
 
 		return page.getTotalCount();
-	}
-
-	private ThumbnailURLReference _getThumbnailURLReference(String url) {
-		ThumbnailURLReference thumbnailURLReference =
-			new ThumbnailURLReference();
-
-		thumbnailURLReference.setExternalReferenceCode(
-			RandomTestUtil.randomString());
-		thumbnailURLReference.setUrl(url);
-
-		return thumbnailURLReference;
 	}
 
 	private ContentPageTemplate _getUpdatedContentPageTemplate(
@@ -2098,89 +2088,22 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
-		ThumbnailURLReference thumbnailURLReference1 =
-			_getThumbnailURLReference(_thumbnail1URL);
-
-		PageTemplate pageTemplate1 = _randomPageTemplate(
-			thumbnailURLReference1);
-
-		URLFetchSecurityCompanyConfigurationUtil.swap(
-			new String[0], false,
-			() -> {
-				_assertProblemException(
-					"BAD_REQUEST",
-					"Unable to download file from " + _thumbnail1URL +
-						" because of restricted host 127.0.0.1",
-					() -> pageTemplateResource.postSitePageTemplate(
-						testGroup.getExternalReferenceCode(), pageTemplate1));
-
-				return null;
-			});
-		URLFetchSecurityCompanyConfigurationUtil.swap(
-			new String[] {"example.test"}, false,
-			() -> {
-				_assertProblemException(
-					"BAD_REQUEST",
-					"Unable to download file from " + _thumbnail1URL +
-						" because of restricted host 127.0.0.1",
-					() -> pageTemplateResource.postSitePageTemplate(
-						testGroup.getExternalReferenceCode(), pageTemplate1));
-
-				return null;
-			});
-		URLFetchSecurityCompanyConfigurationUtil.swap(
-			new String[] {"127.0.0.1"}, false,
-			() -> {
-				_assertProblemException(
-					"BAD_REQUEST",
-					"Unable to download file from " + _thumbnail1URL +
-						" because of restricted host 127.0.0.1",
-					() -> pageTemplateResource.postSitePageTemplate(
-						testGroup.getExternalReferenceCode(), pageTemplate1));
-
-				return null;
-			});
-		URLFetchSecurityCompanyConfigurationUtil.swap(
-			new String[0], true,
-			() -> {
+		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
+			(thumbnailURLReference, pageTemplate) ->
 				_assertThumbnailURLReference(
-					_thumbnail1Bytes,
-					thumbnailURLReference1.getExternalReferenceCode(),
-					pageTemplateResource.postSitePageTemplate(
-						testGroup.getExternalReferenceCode(), pageTemplate1));
-
-				return null;
-			});
-
-		ThumbnailURLReference thumbnailURLReference2 =
-			_getThumbnailURLReference(_thumbnail2URL);
-
-		PageTemplate pageTemplate2 = _randomPageTemplate(
-			thumbnailURLReference2);
-
-		URLFetchSecurityCompanyConfigurationUtil.swap(
-			new String[] {"example.test"}, true,
-			() -> {
-				_assertProblemException(
-					"BAD_REQUEST",
-					"Unable to download file from " + _thumbnail2URL +
-						" because of restricted host 127.0.0.1",
-					() -> pageTemplateResource.postSitePageTemplate(
-						testGroup.getExternalReferenceCode(), pageTemplate2));
-
-				return null;
-			});
-		URLFetchSecurityCompanyConfigurationUtil.swap(
-			new String[] {"127.0.0.1"}, true,
-			() -> {
-				_assertThumbnailURLReference(
-					_thumbnail2Bytes,
-					thumbnailURLReference2.getExternalReferenceCode(),
-					pageTemplateResource.postSitePageTemplate(
-						testGroup.getExternalReferenceCode(), pageTemplate2));
-
-				return null;
-			});
+					_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
+						_thumbnail1Bytes : _thumbnail2Bytes,
+					thumbnailURLReference.getExternalReferenceCode(),
+					pageTemplate),
+			_randomPageTemplate(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)),
+			_randomPageTemplate(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail2URL)),
+			PageTemplate::getThumbnailURLReference,
+			pageTemplate -> pageTemplateResource.postSitePageTemplate(
+				testGroup.getExternalReferenceCode(), pageTemplate));
 	}
 
 	private void _testPostSitePageTemplateWithThumbnailURLReferenceURLUnsupportedProtocolProblemException()
