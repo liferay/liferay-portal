@@ -81,6 +81,7 @@ public class GroupExporter {
 			groupElement.addAttribute(
 				"child-groups-count",
 				String.valueOf(_exportImportHelper.getChildGroupsCount(group)));
+			groupElement.addAttribute("depot", String.valueOf(group.isDepot()));
 			groupElement.addAttribute(
 				"descriptive-name", group.getDescriptiveName(locale));
 			groupElement.addAttribute(

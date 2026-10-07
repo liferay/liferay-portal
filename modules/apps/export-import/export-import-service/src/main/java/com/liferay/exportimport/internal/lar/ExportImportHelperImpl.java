@@ -1783,6 +1783,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 		return new ExportImportGroup(
 			GetterUtil.getInteger(element.attributeValue("child-groups-count")),
+			GetterUtil.getBoolean(element.attributeValue("depot")),
 			element.attributeValue("descriptive-name"), externalReferenceCode,
 			GetterUtil.getLong(element.attributeValue("group-id")),
 			element.attributeValue("parent-group-external-reference-code"),
