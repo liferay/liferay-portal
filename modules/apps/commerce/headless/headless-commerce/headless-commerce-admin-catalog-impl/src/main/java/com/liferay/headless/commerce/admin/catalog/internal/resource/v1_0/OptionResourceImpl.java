@@ -191,6 +191,12 @@ public class OptionResourceImpl
 			_cpOptionService.fetchCPOptionByExternalReferenceCode(
 				externalReferenceCode, contextCompany.getCompanyId());
 
+		if (cpOption == null) {
+			throw new NoSuchCPOptionException(
+				"Unable to find option with external reference code " +
+					externalReferenceCode);
+		}
+
 		return _toOption(cpOption.getCPOptionId());
 	}
 
