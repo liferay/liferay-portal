@@ -63,13 +63,6 @@ public class AsahFaroBackendClientImplTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		Mockito.when(
-			_secretResolver.resolve(
-				Mockito.anyLong(), Mockito.nullable(String.class))
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
-		);
-
 		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(

@@ -778,13 +778,6 @@ public abstract class BaseSamlTestCase {
 	private void _setupSecretResolver() {
 		secretResolver = Mockito.mock(SecretResolver.class);
 
-		Mockito.when(
-			secretResolver.resolve(
-				Mockito.anyLong(), Mockito.nullable(String.class))
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
-		);
-
 		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
