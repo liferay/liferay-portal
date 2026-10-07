@@ -171,9 +171,8 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 			return;
 		}
 
-		friendlyURL = friendlyURL.replaceAll("^/+", StringPool.BLANK);
-
 		friendlyURL = friendlyURL.replaceAll("/+", StringPool.SLASH);
+		friendlyURL = friendlyURL.replaceAll("^/+", StringPool.BLANK);
 
 		if (Validator.isNull(friendlyURL) ||
 			CMSFileTypeUtil.isUrlTitleAvailable(
