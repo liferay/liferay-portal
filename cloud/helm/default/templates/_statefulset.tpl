@@ -324,8 +324,10 @@ spec:
                         type: PathPrefix
                         value: /
             {{- with $ctx.statefulset.network.sessionPersistence }}
+            {{- if or (not (hasKey . "enabled")) .enabled }}
             sessionPersistence:
-                {{- toYaml . | nindent 16 }}
+                {{- omit . "enabled" | toYaml | nindent 16 }}
+            {{- end }}
             {{- end }}
             {{- with $ctx.statefulset.network.timeouts }}
             timeouts:
@@ -377,8 +379,10 @@ spec:
                         type: PathPrefix
                         value: /
             {{- with .statefulset.network.sessionPersistence }}
+            {{- if or (not (hasKey . "enabled")) .enabled }}
             sessionPersistence:
-                {{- toYaml . | nindent 16 }}
+                {{- omit . "enabled" | toYaml | nindent 16 }}
+            {{- end }}
             {{- end }}
             {{- with .statefulset.network.timeouts }}
             timeouts:

@@ -60,6 +60,39 @@ tests:
             network.gatewayName: test-gateway
             network.sessionPersistence: null
     -   asserts:
+            -   notExists:
+                    path: spec.rules[0].sessionPersistence
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute-a-example-com
+        it: Can be turned off with the enabled flag on every per hostname route
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hostnames:
+                -   a.example.com
+                -   b.example.com
+            network.perHostnameRoutes: true
+            network.sessionPersistence.enabled: false
+    -   asserts:
+            -   notExists:
+                    path: spec.rules[0].sessionPersistence
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Can be turned off with the enabled flag while preserving other fields
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.sessionPersistence:
+                cookieConfig:
+                    lifetimeType: Session
+                enabled: false
+                sessionName: LIFERAY_SESSION
+                type: Cookie
+    -   asserts:
             -   equal:
                     path: spec.rules[0].sessionPersistence
                     value:
@@ -107,3 +140,25 @@ tests:
         set:
             network.enabled: true
             network.gatewayName: test-gateway
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].sessionPersistence
+                    value:
+                        cookieConfig:
+                            lifetimeType: Session
+                        sessionName: LIFERAY_SESSION
+                        type: Cookie
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Strips the enabled flag from the rendered field when opting in
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.sessionPersistence:
+                cookieConfig:
+                    lifetimeType: Session
+                enabled: true
+                sessionName: LIFERAY_SESSION
+                type: Cookie
