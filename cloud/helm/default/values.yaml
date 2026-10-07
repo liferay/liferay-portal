@@ -52,6 +52,9 @@ clientExtensions:
             namespace: dxp-operator-system
     policy:
         allowedNamespaces: []
+cluster:
+    sessionReplication:
+        transportTimeoutMs: 300000
 configmap:
     annotations: {}
     data: {}
@@ -206,7 +209,7 @@ customInitContainers:
                                     <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
                                         <Transport
                                             className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"
-                                            timeout="300000"
+                                            timeout="{{ dig "sessionReplication" "transportTimeoutMs" 300000 (.cluster | default dict) }}"
                                         />
                                     </Sender>
                                 </Channel>
