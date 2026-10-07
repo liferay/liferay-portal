@@ -24,6 +24,7 @@ import com.liferay.commerce.internal.upgrade.v15_0_3.OrderAdministratorRoleUpgra
 import com.liferay.commerce.internal.upgrade.v15_1_0.util.CommerceOrderAttachmentTable;
 import com.liferay.commerce.internal.upgrade.v15_1_4.CommerceAvailabilityEstimateExternalReferenceCodeUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v15_1_5.CommerceOrderAttachmentUpgradeProcess;
+import com.liferay.commerce.internal.upgrade.v15_1_6.CPConfigurationEntryUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v1_2_0.CommerceSubscriptionUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v2_0_0.CommercePaymentMethodUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v2_1_0.CPDAvailabilityEstimateUpgradeProcess;
@@ -56,6 +57,7 @@ import com.liferay.commerce.model.impl.CommerceOrderModelImpl;
 import com.liferay.commerce.model.impl.CommerceShipmentItemModelImpl;
 import com.liferay.commerce.model.impl.CommerceShippingMethodModelImpl;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
@@ -926,6 +928,14 @@ public class CommerceServiceUpgradeStepRegistrator
 			new CommerceOrderAttachmentUpgradeProcess(
 				_classNameLocalService, _resourceLocalService));
 
+		registry.register(
+			"15.1.5", "15.1.6",
+			new CPConfigurationEntryUpgradeProcess(
+				_classNameLocalService, _cpConfigurationEntryLocalService,
+				_cpConfigurationEntrySettingLocalService,
+				_cpConfigurationListLocalService, _cpInstanceLocalService,
+				_ctCollectionLocalService, _userLocalService));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce upgrade step registrator finished");
 		}
@@ -986,6 +996,10 @@ public class CommerceServiceUpgradeStepRegistrator
 
 	@Reference
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
+
+	@Reference
+	private CPConfigurationEntrySettingLocalService
+		_cpConfigurationEntrySettingLocalService;
 
 	@Reference
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;
