@@ -1208,7 +1208,7 @@ public class TaxonomyCategoryResourceTest
 
 		page = taxonomyCategoryResource.getAssetLibraryTaxonomyCategoriesPage(
 			depotEntry1.getDepotEntryId(), null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
