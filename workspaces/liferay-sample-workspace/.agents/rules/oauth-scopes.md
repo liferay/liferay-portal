@@ -50,7 +50,6 @@ A microservice CET that reads or writes object entries needs the per object scop
 | `objectEntryManager` | The per object scope (`c_<name>.everything`, or `.read` if it only reads) for each object the handler calls back into |
 | `notificationType` | The per object scope (`c_<name>.everything`, or `.read` if it only reads) for each object the handler calls back into |
 | `workflowAction` | `Liferay.Headless.Admin.Workflow.everything` if the handler transitions the task through the payload's `transitionURL`, plus the per object scope for each object it calls back into |
-| `batchEngineDataImportTaskExecutor` | `Liferay.Headless.Batch.Engine.everything`, `Liferay.Headless.Object.everything` |
 | `siteInitializer` | `Liferay.Headless.Admin.Site.everything`, `Liferay.Headless.Admin.Content.everything`, `Liferay.Object.Admin.REST.everything`, `Liferay.Headless.Object.everything`, `Liferay.Headless.Admin.User.everything` |
 | Commerce CETs | Granular per Commerce subdomain — e.g. `Liferay.Headless.Commerce.Admin.Channel.everything`, `Liferay.Headless.Commerce.Admin.Order.everything`, `Liferay.Headless.Commerce.Admin.Catalog.everything`. Verify the exact subdomain against the relevant `headless-commerce-admin-*` module's `rest-config.yaml`. |
 

@@ -1,6 +1,6 @@
 ---
 
-description: Create and configure the OAuth 2.0 application that a client extension needs to call Liferay Headless APIs, and the browser side client a fragment or widget needs to call a CET. Use when a CET of type objectAction, workflowAction, notificationType, batchEngineDataImportTaskExecutor, siteInitializer, or any backend CET requires authenticated API access, or when browser code must call a client extension with a token. Called by scaffold-client-extension automatically when the CET type requires OAuth.
+description: Create and configure the OAuth 2.0 application that a client extension needs to call Liferay Headless APIs, and the browser side client a fragment or widget needs to call a CET. Use when a CET of type objectAction, workflowAction, notificationType, siteInitializer, or any backend CET requires authenticated API access, or when browser code must call a client extension with a token. Called by scaffold-client-extension automatically when the CET type requires OAuth.
 name: setup-oauth
 
 ---
