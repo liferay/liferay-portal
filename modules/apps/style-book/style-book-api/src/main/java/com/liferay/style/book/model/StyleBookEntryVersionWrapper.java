@@ -57,6 +57,7 @@ public class StyleBookEntryVersionWrapper
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
 		attributes.put("styleBookEntryKey", getStyleBookEntryKey());
 		attributes.put("themeId", getThemeId());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -186,6 +187,12 @@ public class StyleBookEntryVersionWrapper
 
 		if (themeId != null) {
 			setThemeId(themeId);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -322,6 +329,16 @@ public class StyleBookEntryVersionWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the status of this style book entry version.
+	 *
+	 * @return the status of this style book entry version
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -555,6 +572,16 @@ public class StyleBookEntryVersionWrapper
 	}
 
 	/**
+	 * Sets the status of this style book entry version.
+	 *
+	 * @param status the status of this style book entry version
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the style book entry ID of this style book entry version.
 	 *
 	 * @param styleBookEntryId the style book entry ID of this style book entry version
@@ -691,4 +718,4 @@ public class StyleBookEntryVersionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:633940839
+// LIFERAY-SERVICE-BUILDER-HASH:-623779409

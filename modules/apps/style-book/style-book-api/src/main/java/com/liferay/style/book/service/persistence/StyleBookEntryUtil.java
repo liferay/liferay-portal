@@ -1561,7 +1561,21 @@ public class StyleBookEntryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63;.
+	 * Returns all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long groupId, String themeId, int status) {
+
+		return getPersistence().findByG_T_NotS(groupId, themeId, status);
+	}
+
+	/**
+	 * Returns a range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -1569,113 +1583,43 @@ public class StyleBookEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long groupId, String themeId, int status, int start, int end) {
+
+		return getPersistence().findByG_T_NotS(
+			groupId, themeId, status, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_T(
-		long groupId, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByG_T(
-			groupId, themeId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching style book entry
-	 * @throws NoSuchEntryException if a matching style book entry could not be found
-	 */
-	public static StyleBookEntry findByG_T_First(
-			long groupId, String themeId,
-			OrderByComparator<StyleBookEntry> orderByComparator)
-		throws com.liferay.style.book.exception.NoSuchEntryException {
-
-		return getPersistence().findByG_T_First(
-			groupId, themeId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
-	 */
-	public static StyleBookEntry fetchByG_T_First(
-		long groupId, String themeId,
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long groupId, String themeId, int status, int start, int end,
 		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_T_First(
-			groupId, themeId, orderByComparator);
+		return getPersistence().findByG_T_NotS(
+			groupId, themeId, status, start, end, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63;, optionally using the finder cache.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(
-		long[] groupIds, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByG_T(
-			groupIds, themeId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Removes all the style book entries where groupId = &#63; and themeId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 */
-	public static void removeByG_T(long groupId, String themeId) {
-		getPersistence().removeByG_T(groupId, themeId);
-	}
-
-	/**
-	 * Returns the number of style book entries where groupId = &#63; and themeId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @return the number of matching style book entries
-	 */
-	public static int countByG_T(long groupId, String themeId) {
-		return getPersistence().countByG_T(groupId, themeId);
-	}
-
-	/**
-	 * Returns the number of style book entries where groupId = any &#63; and themeId = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @return the number of matching style book entries
-	 */
-	public static int countByG_T(long[] groupIds, String themeId) {
-		return getPersistence().countByG_T(groupIds, themeId);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -1683,61 +1627,61 @@ public class StyleBookEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param themeId the theme ID
-	 * @param head the head
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long groupId, String themeId, boolean head, int start, int end,
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long groupId, String themeId, int status, int start, int end,
 		OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_T_Head(
-			groupId, themeId, head, start, end, orderByComparator,
+		return getPersistence().findByG_T_NotS(
+			groupId, themeId, status, start, end, orderByComparator,
 			useFinderCache);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param themeId the theme ID
-	 * @param head the head
+	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry
 	 * @throws NoSuchEntryException if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry findByG_T_Head_First(
-			long groupId, String themeId, boolean head,
+	public static StyleBookEntry findByG_T_NotS_First(
+			long groupId, String themeId, int status,
 			OrderByComparator<StyleBookEntry> orderByComparator)
 		throws com.liferay.style.book.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_T_Head_First(
-			groupId, themeId, head, orderByComparator);
+		return getPersistence().findByG_T_NotS_First(
+			groupId, themeId, status, orderByComparator);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param themeId the theme ID
-	 * @param head the head
+	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry fetchByG_T_Head_First(
-		long groupId, String themeId, boolean head,
+	public static StyleBookEntry fetchByG_T_NotS_First(
+		long groupId, String themeId, int status,
 		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_T_Head_First(
-			groupId, themeId, head, orderByComparator);
+		return getPersistence().fetchByG_T_NotS_First(
+			groupId, themeId, status, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and head = &#63;, optionally using the finder cache.
+	 * Returns all the style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -1745,6 +1689,199 @@ public class StyleBookEntryUtil {
 	 *
 	 * @param groupIds the group IDs
 	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long[] groupIds, String themeId, int status) {
+
+		return getPersistence().findByG_T_NotS(groupIds, themeId, status);
+	}
+
+	/**
+	 * Returns a range of all the style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long[] groupIds, String themeId, int status, int start, int end) {
+
+		return getPersistence().findByG_T_NotS(
+			groupIds, themeId, status, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long[] groupIds, String themeId, int status, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getPersistence().findByG_T_NotS(
+			groupIds, themeId, status, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS(
+		long[] groupIds, String themeId, int status, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByG_T_NotS(
+			groupIds, themeId, status, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Removes all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 */
+	public static void removeByG_T_NotS(
+		long groupId, String themeId, int status) {
+
+		getPersistence().removeByG_T_NotS(groupId, themeId, status);
+	}
+
+	/**
+	 * Returns the number of style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the number of matching style book entries
+	 */
+	public static int countByG_T_NotS(
+		long groupId, String themeId, int status) {
+
+		return getPersistence().countByG_T_NotS(groupId, themeId, status);
+	}
+
+	/**
+	 * Returns the number of style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the number of matching style book entries
+	 */
+	public static int countByG_T_NotS(
+		long[] groupIds, String themeId, int status) {
+
+		return getPersistence().countByG_T_NotS(groupIds, themeId, status);
+	}
+
+	/**
+	 * Returns all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @return the matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long groupId, String themeId, int status, boolean head) {
+
+		return getPersistence().findByG_T_NotS_Head(
+			groupId, themeId, status, head);
+	}
+
+	/**
+	 * Returns a range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long groupId, String themeId, int status, boolean head, int start,
+		int end) {
+
+		return getPersistence().findByG_T_NotS_Head(
+			groupId, themeId, status, head, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long groupId, String themeId, int status, boolean head, int start,
+		int end, OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getPersistence().findByG_T_NotS_Head(
+			groupId, themeId, status, head, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
@@ -1752,59 +1889,213 @@ public class StyleBookEntryUtil {
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long[] groupIds, String themeId, boolean head, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator,
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long groupId, String themeId, int status, boolean head, int start,
+		int end, OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_T_Head(
-			groupIds, themeId, head, start, end, orderByComparator,
+		return getPersistence().findByG_T_NotS_Head(
+			groupId, themeId, status, head, start, end, orderByComparator,
 			useFinderCache);
 	}
 
 	/**
-	 * Removes all the style book entries where groupId = &#63; and themeId = &#63; and head = &#63; from the database.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching style book entry
+	 * @throws NoSuchEntryException if a matching style book entry could not be found
 	 */
-	public static void removeByG_T_Head(
-		long groupId, String themeId, boolean head) {
+	public static StyleBookEntry findByG_T_NotS_Head_First(
+			long groupId, String themeId, int status, boolean head,
+			OrderByComparator<StyleBookEntry> orderByComparator)
+		throws com.liferay.style.book.exception.NoSuchEntryException {
 
-		getPersistence().removeByG_T_Head(groupId, themeId, head);
+		return getPersistence().findByG_T_NotS_Head_First(
+			groupId, themeId, status, head, orderByComparator);
 	}
 
 	/**
-	 * Returns the number of style book entries where groupId = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
-	 * @return the number of matching style book entries
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
 	 */
-	public static int countByG_T_Head(
-		long groupId, String themeId, boolean head) {
+	public static StyleBookEntry fetchByG_T_NotS_Head_First(
+		long groupId, String themeId, int status, boolean head,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().countByG_T_Head(groupId, themeId, head);
+		return getPersistence().fetchByG_T_NotS_Head_First(
+			groupId, themeId, status, head, orderByComparator);
 	}
 
 	/**
-	 * Returns the number of style book entries where groupId = any &#63; and themeId = &#63; and head = &#63;.
+	 * Returns all the style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
 	 *
 	 * @param groupIds the group IDs
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
-	 * @return the number of matching style book entries
+	 * @return the matching style book entries
 	 */
-	public static int countByG_T_Head(
-		long[] groupIds, String themeId, boolean head) {
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long[] groupIds, String themeId, int status, boolean head) {
 
-		return getPersistence().countByG_T_Head(groupIds, themeId, head);
+		return getPersistence().findByG_T_NotS_Head(
+			groupIds, themeId, status, head);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
+	 * Returns a range of all the style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long[] groupIds, String themeId, int status, boolean head, int start,
+		int end) {
+
+		return getPersistence().findByG_T_NotS_Head(
+			groupIds, themeId, status, head, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long[] groupIds, String themeId, int status, boolean head, int start,
+		int end, OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getPersistence().findByG_T_NotS_Head(
+			groupIds, themeId, status, head, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_T_NotS_Head(
+		long[] groupIds, String themeId, int status, boolean head, int start,
+		int end, OrderByComparator<StyleBookEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByG_T_NotS_Head(
+			groupIds, themeId, status, head, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Removes all the style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 */
+	public static void removeByG_T_NotS_Head(
+		long groupId, String themeId, int status, boolean head) {
+
+		getPersistence().removeByG_T_NotS_Head(groupId, themeId, status, head);
+	}
+
+	/**
+	 * Returns the number of style book entries where groupId = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @return the number of matching style book entries
+	 */
+	public static int countByG_T_NotS_Head(
+		long groupId, String themeId, int status, boolean head) {
+
+		return getPersistence().countByG_T_NotS_Head(
+			groupId, themeId, status, head);
+	}
+
+	/**
+	 * Returns the number of style book entries where groupId = any &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @return the number of matching style book entries
+	 */
+	public static int countByG_T_NotS_Head(
+		long[] groupIds, String themeId, int status, boolean head) {
+
+		return getPersistence().countByG_T_NotS_Head(
+			groupIds, themeId, status, head);
+	}
+
+	/**
+	 * Returns all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param defaultStyleBookEntry the default style book entry
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_D_T_NotS(
+		long groupId, boolean defaultStyleBookEntry, String themeId,
+		int status) {
+
+		return getPersistence().findByG_D_T_NotS(
+			groupId, defaultStyleBookEntry, themeId, status);
+	}
+
+	/**
+	 * Returns a range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -1813,88 +2104,163 @@ public class StyleBookEntryUtil {
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_D_T_NotS(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
+		int start, int end) {
+
+		return getPersistence().findByG_D_T_NotS(
+			groupId, defaultStyleBookEntry, themeId, status, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param defaultStyleBookEntry the default style book entry
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_D_T_NotS(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
+		int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getPersistence().findByG_D_T_NotS(
+			groupId, defaultStyleBookEntry, themeId, status, start, end,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param defaultStyleBookEntry the default style book entry
+	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_D_T(
-		long groupId, boolean defaultStyleBookEntry, String themeId, int start,
-		int end, OrderByComparator<StyleBookEntry> orderByComparator,
+	public static List<StyleBookEntry> findByG_D_T_NotS(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
+		int start, int end, OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_D_T(
-			groupId, defaultStyleBookEntry, themeId, start, end,
+		return getPersistence().findByG_D_T_NotS(
+			groupId, defaultStyleBookEntry, themeId, status, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry
 	 * @throws NoSuchEntryException if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry findByG_D_T_First(
+	public static StyleBookEntry findByG_D_T_NotS_First(
 			long groupId, boolean defaultStyleBookEntry, String themeId,
-			OrderByComparator<StyleBookEntry> orderByComparator)
+			int status, OrderByComparator<StyleBookEntry> orderByComparator)
 		throws com.liferay.style.book.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_D_T_First(
-			groupId, defaultStyleBookEntry, themeId, orderByComparator);
+		return getPersistence().findByG_D_T_NotS_First(
+			groupId, defaultStyleBookEntry, themeId, status, orderByComparator);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry fetchByG_D_T_First(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
+	public static StyleBookEntry fetchByG_D_T_NotS_First(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
 		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_D_T_First(
-			groupId, defaultStyleBookEntry, themeId, orderByComparator);
+		return getPersistence().fetchByG_D_T_NotS_First(
+			groupId, defaultStyleBookEntry, themeId, status, orderByComparator);
 	}
 
 	/**
-	 * Removes all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; from the database.
+	 * Removes all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 */
-	public static void removeByG_D_T(
-		long groupId, boolean defaultStyleBookEntry, String themeId) {
+	public static void removeByG_D_T_NotS(
+		long groupId, boolean defaultStyleBookEntry, String themeId,
+		int status) {
 
-		getPersistence().removeByG_D_T(groupId, defaultStyleBookEntry, themeId);
+		getPersistence().removeByG_D_T_NotS(
+			groupId, defaultStyleBookEntry, themeId, status);
 	}
 
 	/**
-	 * Returns the number of style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
+	 * Returns the number of style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @return the number of matching style book entries
 	 */
-	public static int countByG_D_T(
-		long groupId, boolean defaultStyleBookEntry, String themeId) {
+	public static int countByG_D_T_NotS(
+		long groupId, boolean defaultStyleBookEntry, String themeId,
+		int status) {
 
-		return getPersistence().countByG_D_T(
-			groupId, defaultStyleBookEntry, themeId);
+		return getPersistence().countByG_D_T_NotS(
+			groupId, defaultStyleBookEntry, themeId, status);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param defaultStyleBookEntry the default style book entry
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @return the matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_D_T_NotS_Head(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
+		boolean head) {
+
+		return getPersistence().findByG_D_T_NotS_Head(
+			groupId, defaultStyleBookEntry, themeId, status, head);
+	}
+
+	/**
+	 * Returns a range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -1903,6 +2269,58 @@ public class StyleBookEntryUtil {
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_D_T_NotS_Head(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
+		boolean head, int start, int end) {
+
+		return getPersistence().findByG_D_T_NotS_Head(
+			groupId, defaultStyleBookEntry, themeId, status, head, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param defaultStyleBookEntry the default style book entry
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_D_T_NotS_Head(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
+		boolean head, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getPersistence().findByG_D_T_NotS_Head(
+			groupId, defaultStyleBookEntry, themeId, status, head, start, end,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param defaultStyleBookEntry the default style book entry
+	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
@@ -1910,104 +2328,113 @@ public class StyleBookEntryUtil {
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_D_T_Head(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
+	public static List<StyleBookEntry> findByG_D_T_NotS_Head(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
 		boolean head, int start, int end,
 		OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_D_T_Head(
-			groupId, defaultStyleBookEntry, themeId, head, start, end,
+		return getPersistence().findByG_D_T_NotS_Head(
+			groupId, defaultStyleBookEntry, themeId, status, head, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry
 	 * @throws NoSuchEntryException if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry findByG_D_T_Head_First(
+	public static StyleBookEntry findByG_D_T_NotS_Head_First(
 			long groupId, boolean defaultStyleBookEntry, String themeId,
-			boolean head, OrderByComparator<StyleBookEntry> orderByComparator)
+			int status, boolean head,
+			OrderByComparator<StyleBookEntry> orderByComparator)
 		throws com.liferay.style.book.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_D_T_Head_First(
-			groupId, defaultStyleBookEntry, themeId, head, orderByComparator);
+		return getPersistence().findByG_D_T_NotS_Head_First(
+			groupId, defaultStyleBookEntry, themeId, status, head,
+			orderByComparator);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry fetchByG_D_T_Head_First(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
+	public static StyleBookEntry fetchByG_D_T_NotS_Head_First(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
 		boolean head, OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_D_T_Head_First(
-			groupId, defaultStyleBookEntry, themeId, head, orderByComparator);
+		return getPersistence().fetchByG_D_T_NotS_Head_First(
+			groupId, defaultStyleBookEntry, themeId, status, head,
+			orderByComparator);
 	}
 
 	/**
-	 * Removes all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63; from the database.
+	 * Removes all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 */
-	public static void removeByG_D_T_Head(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
+	public static void removeByG_D_T_NotS_Head(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
 		boolean head) {
 
-		getPersistence().removeByG_D_T_Head(
-			groupId, defaultStyleBookEntry, themeId, head);
+		getPersistence().removeByG_D_T_NotS_Head(
+			groupId, defaultStyleBookEntry, themeId, status, head);
 	}
 
 	/**
-	 * Returns the number of style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the number of style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param defaultStyleBookEntry the default style book entry
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @return the number of matching style book entries
 	 */
-	public static int countByG_D_T_Head(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
+	public static int countByG_D_T_NotS_Head(
+		long groupId, boolean defaultStyleBookEntry, String themeId, int status,
 		boolean head) {
 
-		return getPersistence().countByG_D_T_Head(
-			groupId, defaultStyleBookEntry, themeId, head);
+		return getPersistence().countByG_D_T_NotS_Head(
+			groupId, defaultStyleBookEntry, themeId, status, head);
 	}
 
 	/**
-	 * Returns all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @return the matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long groupId, String name, String themeId) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long groupId, String name, String themeId, int status) {
 
-		return getPersistence().findByG_LikeN_T(groupId, name, themeId);
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupId, name, themeId, status);
 	}
 
 	/**
-	 * Returns a range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns a range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2016,19 +2443,21 @@ public class StyleBookEntryUtil {
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @return the range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long groupId, String name, String themeId, int start, int end) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long groupId, String name, String themeId, int status, int start,
+		int end) {
 
-		return getPersistence().findByG_LikeN_T(
-			groupId, name, themeId, start, end);
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupId, name, themeId, status, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2037,21 +2466,22 @@ public class StyleBookEntryUtil {
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long groupId, String name, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long groupId, String name, String themeId, int status, int start,
+		int end, OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().findByG_LikeN_T(
-			groupId, name, themeId, start, end, orderByComparator);
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupId, name, themeId, status, start, end, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2060,60 +2490,63 @@ public class StyleBookEntryUtil {
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long groupId, String name, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator,
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long groupId, String name, String themeId, int status, int start,
+		int end, OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_LikeN_T(
-			groupId, name, themeId, start, end, orderByComparator,
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupId, name, themeId, status, start, end, orderByComparator,
 			useFinderCache);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry
 	 * @throws NoSuchEntryException if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry findByG_LikeN_T_First(
-			long groupId, String name, String themeId,
+	public static StyleBookEntry findByG_LikeN_T_NotS_First(
+			long groupId, String name, String themeId, int status,
 			OrderByComparator<StyleBookEntry> orderByComparator)
 		throws com.liferay.style.book.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_LikeN_T_First(
-			groupId, name, themeId, orderByComparator);
+		return getPersistence().findByG_LikeN_T_NotS_First(
+			groupId, name, themeId, status, orderByComparator);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry fetchByG_LikeN_T_First(
-		long groupId, String name, String themeId,
+	public static StyleBookEntry fetchByG_LikeN_T_NotS_First(
+		long groupId, String name, String themeId, int status,
 		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_LikeN_T_First(
-			groupId, name, themeId, orderByComparator);
+		return getPersistence().fetchByG_LikeN_T_NotS_First(
+			groupId, name, themeId, status, orderByComparator);
 	}
 
 	/**
-	 * Returns all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2122,16 +2555,18 @@ public class StyleBookEntryUtil {
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @return the matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long[] groupIds, String name, String themeId) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long[] groupIds, String name, String themeId, int status) {
 
-		return getPersistence().findByG_LikeN_T(groupIds, name, themeId);
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupIds, name, themeId, status);
 	}
 
 	/**
-	 * Returns a range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63;.
+	 * Returns a range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2140,237 +2575,254 @@ public class StyleBookEntryUtil {
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @return the range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long[] groupIds, String name, String themeId, int start, int end) {
-
-		return getPersistence().findByG_LikeN_T(
-			groupIds, name, themeId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long[] groupIds, String name, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_LikeN_T(
-			groupIds, name, themeId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63;, optionally using the finder cache.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_LikeN_T(
-		long[] groupIds, String name, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByG_LikeN_T(
-			groupIds, name, themeId, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Removes all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param themeId the theme ID
-	 */
-	public static void removeByG_LikeN_T(
-		long groupId, String name, String themeId) {
-
-		getPersistence().removeByG_LikeN_T(groupId, name, themeId);
-	}
-
-	/**
-	 * Returns the number of style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param themeId the theme ID
-	 * @return the number of matching style book entries
-	 */
-	public static int countByG_LikeN_T(
-		long groupId, String name, String themeId) {
-
-		return getPersistence().countByG_LikeN_T(groupId, name, themeId);
-	}
-
-	/**
-	 * Returns the number of style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param name the name
-	 * @param themeId the theme ID
-	 * @return the number of matching style book entries
-	 */
-	public static int countByG_LikeN_T(
-		long[] groupIds, String name, String themeId) {
-
-		return getPersistence().countByG_LikeN_T(groupIds, name, themeId);
-	}
-
-	/**
-	 * Returns all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long groupId, String name, String themeId, boolean head) {
-
-		return getPersistence().findByG_LikeN_T_Head(
-			groupId, name, themeId, head);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param name the name
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long groupId, String name, String themeId, boolean head, int start,
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long[] groupIds, String name, String themeId, int status, int start,
 		int end) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupId, name, themeId, head, start, end);
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupIds, name, themeId, status, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns an ordered range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
 	 * </p>
 	 *
-	 * @param groupId the group ID
+	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
-	 * @param head the head
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long groupId, String name, String themeId, boolean head, int start,
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long[] groupIds, String name, String themeId, int status, int start,
 		int end, OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupId, name, themeId, head, start, end, orderByComparator);
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupIds, name, themeId, status, start, end, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;, optionally using the finder cache.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
 	 * </p>
 	 *
-	 * @param groupId the group ID
+	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
-	 * @param head the head
+	 * @param status the status
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long groupId, String name, String themeId, boolean head, int start,
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS(
+		long[] groupIds, String name, String themeId, int status, int start,
 		int end, OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupId, name, themeId, head, start, end, orderByComparator,
+		return getPersistence().findByG_LikeN_T_NotS(
+			groupIds, name, themeId, status, start, end, orderByComparator,
 			useFinderCache);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Removes all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
+	 */
+	public static void removeByG_LikeN_T_NotS(
+		long groupId, String name, String themeId, int status) {
+
+		getPersistence().removeByG_LikeN_T_NotS(groupId, name, themeId, status);
+	}
+
+	/**
+	 * Returns the number of style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the number of matching style book entries
+	 */
+	public static int countByG_LikeN_T_NotS(
+		long groupId, String name, String themeId, int status) {
+
+		return getPersistence().countByG_LikeN_T_NotS(
+			groupId, name, themeId, status);
+	}
+
+	/**
+	 * Returns the number of style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @return the number of matching style book entries
+	 */
+	public static int countByG_LikeN_T_NotS(
+		long[] groupIds, String name, String themeId, int status) {
+
+		return getPersistence().countByG_LikeN_T_NotS(
+			groupIds, name, themeId, status);
+	}
+
+	/**
+	 * Returns all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @return the matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long groupId, String name, String themeId, int status, boolean head) {
+
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupId, name, themeId, status, head);
+	}
+
+	/**
+	 * Returns a range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @return the range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long groupId, String name, String themeId, int status, boolean head,
+		int start, int end) {
+
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupId, name, themeId, status, head, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long groupId, String name, String themeId, int status, boolean head,
+		int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupId, name, themeId, status, head, start, end,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
+	 * @param head the head
+	 * @param start the lower bound of the range of style book entries
+	 * @param end the upper bound of the range of style book entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching style book entries
+	 */
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long groupId, String name, String themeId, int status, boolean head,
+		int start, int end, OrderByComparator<StyleBookEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupId, name, themeId, status, head, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry
 	 * @throws NoSuchEntryException if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry findByG_LikeN_T_Head_First(
-			long groupId, String name, String themeId, boolean head,
+	public static StyleBookEntry findByG_LikeN_T_NotS_Head_First(
+			long groupId, String name, String themeId, int status, boolean head,
 			OrderByComparator<StyleBookEntry> orderByComparator)
 		throws com.liferay.style.book.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_LikeN_T_Head_First(
-			groupId, name, themeId, head, orderByComparator);
+		return getPersistence().findByG_LikeN_T_NotS_Head_First(
+			groupId, name, themeId, status, head, orderByComparator);
 	}
 
 	/**
-	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the first style book entry in the ordered set where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching style book entry, or <code>null</code> if a matching style book entry could not be found
 	 */
-	public static StyleBookEntry fetchByG_LikeN_T_Head_First(
-		long groupId, String name, String themeId, boolean head,
+	public static StyleBookEntry fetchByG_LikeN_T_NotS_Head_First(
+		long groupId, String name, String themeId, int status, boolean head,
 		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_LikeN_T_Head_First(
-			groupId, name, themeId, head, orderByComparator);
+		return getPersistence().fetchByG_LikeN_T_NotS_Head_First(
+			groupId, name, themeId, status, head, orderByComparator);
 	}
 
 	/**
-	 * Returns all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2379,18 +2831,20 @@ public class StyleBookEntryUtil {
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @return the matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long[] groupIds, String name, String themeId, boolean head) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long[] groupIds, String name, String themeId, int status,
+		boolean head) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupIds, name, themeId, head);
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupIds, name, themeId, status, head);
 	}
 
 	/**
-	 * Returns a range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns a range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2399,21 +2853,22 @@ public class StyleBookEntryUtil {
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @return the range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long[] groupIds, String name, String themeId, boolean head, int start,
-		int end) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long[] groupIds, String name, String themeId, int status, boolean head,
+		int start, int end) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupIds, name, themeId, head, start, end);
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupIds, name, themeId, status, head, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns an ordered range of all the style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2422,22 +2877,25 @@ public class StyleBookEntryUtil {
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long[] groupIds, String name, String themeId, boolean head, int start,
-		int end, OrderByComparator<StyleBookEntry> orderByComparator) {
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long[] groupIds, String name, String themeId, int status, boolean head,
+		int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupIds, name, themeId, head, start, end, orderByComparator);
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupIds, name, themeId, status, head, start, end,
+			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;, optionally using the finder cache.
+	 * Returns an ordered range of all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
@@ -2446,6 +2904,7 @@ public class StyleBookEntryUtil {
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @param start the lower bound of the range of style book entries
 	 * @param end the upper bound of the range of style book entries (not inclusive)
@@ -2453,60 +2912,65 @@ public class StyleBookEntryUtil {
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching style book entries
 	 */
-	public static List<StyleBookEntry> findByG_LikeN_T_Head(
-		long[] groupIds, String name, String themeId, boolean head, int start,
-		int end, OrderByComparator<StyleBookEntry> orderByComparator,
+	public static List<StyleBookEntry> findByG_LikeN_T_NotS_Head(
+		long[] groupIds, String name, String themeId, int status, boolean head,
+		int start, int end, OrderByComparator<StyleBookEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_LikeN_T_Head(
-			groupIds, name, themeId, head, start, end, orderByComparator,
-			useFinderCache);
+		return getPersistence().findByG_LikeN_T_NotS_Head(
+			groupIds, name, themeId, status, head, start, end,
+			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Removes all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63; from the database.
+	 * Removes all the style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 */
-	public static void removeByG_LikeN_T_Head(
-		long groupId, String name, String themeId, boolean head) {
+	public static void removeByG_LikeN_T_NotS_Head(
+		long groupId, String name, String themeId, int status, boolean head) {
 
-		getPersistence().removeByG_LikeN_T_Head(groupId, name, themeId, head);
+		getPersistence().removeByG_LikeN_T_NotS_Head(
+			groupId, name, themeId, status, head);
 	}
 
 	/**
-	 * Returns the number of style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the number of style book entries where groupId = &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @return the number of matching style book entries
 	 */
-	public static int countByG_LikeN_T_Head(
-		long groupId, String name, String themeId, boolean head) {
+	public static int countByG_LikeN_T_NotS_Head(
+		long groupId, String name, String themeId, int status, boolean head) {
 
-		return getPersistence().countByG_LikeN_T_Head(
-			groupId, name, themeId, head);
+		return getPersistence().countByG_LikeN_T_NotS_Head(
+			groupId, name, themeId, status, head);
 	}
 
 	/**
-	 * Returns the number of style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and head = &#63;.
+	 * Returns the number of style book entries where groupId = any &#63; and name LIKE &#63; and themeId = &#63; and status &ne; &#63; and head = &#63;.
 	 *
 	 * @param groupIds the group IDs
 	 * @param name the name
 	 * @param themeId the theme ID
+	 * @param status the status
 	 * @param head the head
 	 * @return the number of matching style book entries
 	 */
-	public static int countByG_LikeN_T_Head(
-		long[] groupIds, String name, String themeId, boolean head) {
+	public static int countByG_LikeN_T_NotS_Head(
+		long[] groupIds, String name, String themeId, int status,
+		boolean head) {
 
-		return getPersistence().countByG_LikeN_T_Head(
-			groupIds, name, themeId, head);
+		return getPersistence().countByG_LikeN_T_NotS_Head(
+			groupIds, name, themeId, status, head);
 	}
 
 	/**
@@ -3561,355 +4025,6 @@ public class StyleBookEntryUtil {
 	}
 
 	/**
-	 * Returns all the style book entries where groupId = &#63; and themeId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(long groupId, String themeId) {
-		return getPersistence().findByG_T(groupId, themeId);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(
-		long groupId, String themeId, int start, int end) {
-
-		return getPersistence().findByG_T(groupId, themeId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(
-		long groupId, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_T(
-			groupId, themeId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the style book entries where groupId = any &#63; and themeId = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(
-		long[] groupIds, String themeId) {
-
-		return getPersistence().findByG_T(groupIds, themeId);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = any &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(
-		long[] groupIds, String themeId, int start, int end) {
-
-		return getPersistence().findByG_T(groupIds, themeId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = any &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T(
-		long[] groupIds, String themeId, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_T(
-			groupIds, themeId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the style book entries where groupId = &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long groupId, String themeId, boolean head) {
-
-		return getPersistence().findByG_T_Head(groupId, themeId, head);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long groupId, String themeId, boolean head, int start, int end) {
-
-		return getPersistence().findByG_T_Head(
-			groupId, themeId, head, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long groupId, String themeId, boolean head, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_T_Head(
-			groupId, themeId, head, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the style book entries where groupId = any &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long[] groupIds, String themeId, boolean head) {
-
-		return getPersistence().findByG_T_Head(groupIds, themeId, head);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = any &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long[] groupIds, String themeId, boolean head, int start, int end) {
-
-		return getPersistence().findByG_T_Head(
-			groupIds, themeId, head, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = any &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_T_Head(
-		long[] groupIds, String themeId, boolean head, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_T_Head(
-			groupIds, themeId, head, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param defaultStyleBookEntry the default style book entry
-	 * @param themeId the theme ID
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_D_T(
-		long groupId, boolean defaultStyleBookEntry, String themeId) {
-
-		return getPersistence().findByG_D_T(
-			groupId, defaultStyleBookEntry, themeId);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param defaultStyleBookEntry the default style book entry
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_D_T(
-		long groupId, boolean defaultStyleBookEntry, String themeId, int start,
-		int end) {
-
-		return getPersistence().findByG_D_T(
-			groupId, defaultStyleBookEntry, themeId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param defaultStyleBookEntry the default style book entry
-	 * @param themeId the theme ID
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_D_T(
-		long groupId, boolean defaultStyleBookEntry, String themeId, int start,
-		int end, OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_D_T(
-			groupId, defaultStyleBookEntry, themeId, start, end,
-			orderByComparator);
-	}
-
-	/**
-	 * Returns all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param defaultStyleBookEntry the default style book entry
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @return the matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_D_T_Head(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
-		boolean head) {
-
-		return getPersistence().findByG_D_T_Head(
-			groupId, defaultStyleBookEntry, themeId, head);
-	}
-
-	/**
-	 * Returns a range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param defaultStyleBookEntry the default style book entry
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @return the range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_D_T_Head(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
-		boolean head, int start, int end) {
-
-		return getPersistence().findByG_D_T_Head(
-			groupId, defaultStyleBookEntry, themeId, head, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the style book entries where groupId = &#63; and defaultStyleBookEntry = &#63; and themeId = &#63; and head = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.style.book.model.impl.StyleBookEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param defaultStyleBookEntry the default style book entry
-	 * @param themeId the theme ID
-	 * @param head the head
-	 * @param start the lower bound of the range of style book entries
-	 * @param end the upper bound of the range of style book entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching style book entries
-	 */
-	public static List<StyleBookEntry> findByG_D_T_Head(
-		long groupId, boolean defaultStyleBookEntry, String themeId,
-		boolean head, int start, int end,
-		OrderByComparator<StyleBookEntry> orderByComparator) {
-
-		return getPersistence().findByG_D_T_Head(
-			groupId, defaultStyleBookEntry, themeId, head, start, end,
-			orderByComparator);
-	}
-
-	/**
 	 * Returns all the style book entries where externalReferenceCode = &#63; and groupId = &#63;.
 	 *
 	 * @param externalReferenceCode the external reference code
@@ -3975,4 +4090,4 @@ public class StyleBookEntryUtil {
 	private static volatile StyleBookEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1422934630
+// LIFERAY-SERVICE-BUILDER-HASH:-99108888

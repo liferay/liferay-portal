@@ -27,6 +27,7 @@
 		<field name="themeId" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.style.book.model.StyleBookEntryVersion">
 		<field name="mvccVersion" type="long" />
@@ -55,5 +56,6 @@
 		<field name="themeId" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="status" type="int" />
 	</model>
 </model-hints>

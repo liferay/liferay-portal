@@ -154,6 +154,8 @@ public class StyleBookEntryPersistenceTest {
 
 		newStyleBookEntry.setThemeId(RandomTestUtil.randomString());
 
+		newStyleBookEntry.setStatus(RandomTestUtil.nextInt());
+
 		newStyleBookEntry = _persistence.update(newStyleBookEntry);
 
 		_styleBookEntries.add(newStyleBookEntry);
@@ -214,6 +216,8 @@ public class StyleBookEntryPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntry.getThemeId(),
 			newStyleBookEntry.getThemeId());
+		Assert.assertEquals(
+			existingStyleBookEntry.getStatus(), newStyleBookEntry.getStatus());
 	}
 
 	@Test
@@ -248,6 +252,7 @@ public class StyleBookEntryPersistenceTest {
 		draftStyleBookEntry.setStyleBookEntryKey(
 			styleBookEntry.getStyleBookEntryKey());
 		draftStyleBookEntry.setThemeId(styleBookEntry.getThemeId());
+		draftStyleBookEntry.setStatus(styleBookEntry.getStatus());
 
 		_styleBookEntries.add(_persistence.update(draftStyleBookEntry));
 
@@ -297,6 +302,7 @@ public class StyleBookEntryPersistenceTest {
 			draftStyleBookEntry.getStyleBookEntryKey());
 		Assert.assertEquals(
 			styleBookEntry.getThemeId(), draftStyleBookEntry.getThemeId());
+		Assert.assertEquals(2, draftStyleBookEntry.getStatus());
 	}
 
 	@Test(
@@ -347,6 +353,8 @@ public class StyleBookEntryPersistenceTest {
 		styleBookEntry2.setStyleBookEntryKey(RandomTestUtil.randomString());
 
 		styleBookEntry2.setThemeId(RandomTestUtil.randomString());
+
+		styleBookEntry2.setStatus(RandomTestUtil.nextInt());
 
 		_styleBookEntries.add(_persistence.update(styleBookEntry2));
 	}
@@ -543,100 +551,108 @@ public class StyleBookEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_T() throws Exception {
-		_persistence.countByG_T(RandomTestUtil.nextLong(), "");
+	public void testCountByG_T_NotS() throws Exception {
+		_persistence.countByG_T_NotS(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt());
 
-		_persistence.countByG_T(0L, "null");
+		_persistence.countByG_T_NotS(0L, "null", 0);
 
-		_persistence.countByG_T(0L, (String)null);
+		_persistence.countByG_T_NotS(0L, (String)null, 0);
 	}
 
 	@Test
-	public void testCountByG_TArrayable() throws Exception {
-		_persistence.countByG_T(
+	public void testCountByG_T_NotSArrayable() throws Exception {
+		_persistence.countByG_T_NotS(
 			new long[] {RandomTestUtil.nextLong(), 0L},
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), RandomTestUtil.nextInt());
 	}
 
 	@Test
-	public void testCountByG_T_Head() throws Exception {
-		_persistence.countByG_T_Head(
-			RandomTestUtil.nextLong(), "", RandomTestUtil.randomBoolean());
+	public void testCountByG_T_NotS_Head() throws Exception {
+		_persistence.countByG_T_NotS_Head(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean());
 
-		_persistence.countByG_T_Head(
-			0L, "null", RandomTestUtil.randomBoolean());
+		_persistence.countByG_T_NotS_Head(
+			0L, "null", 0, RandomTestUtil.randomBoolean());
 
-		_persistence.countByG_T_Head(
-			0L, (String)null, RandomTestUtil.randomBoolean());
+		_persistence.countByG_T_NotS_Head(
+			0L, (String)null, 0, RandomTestUtil.randomBoolean());
 	}
 
 	@Test
-	public void testCountByG_T_HeadArrayable() throws Exception {
-		_persistence.countByG_T_Head(
+	public void testCountByG_T_NotS_HeadArrayable() throws Exception {
+		_persistence.countByG_T_NotS_Head(
 			new long[] {RandomTestUtil.nextLong(), 0L},
-			RandomTestUtil.randomString(), RandomTestUtil.randomBoolean());
+			RandomTestUtil.randomString(), RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean());
 	}
 
 	@Test
-	public void testCountByG_D_T() throws Exception {
-		_persistence.countByG_D_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
-
-		_persistence.countByG_D_T(0L, RandomTestUtil.randomBoolean(), "null");
-
-		_persistence.countByG_D_T(
-			0L, RandomTestUtil.randomBoolean(), (String)null);
-	}
-
-	@Test
-	public void testCountByG_D_T_Head() throws Exception {
-		_persistence.countByG_D_T_Head(
+	public void testCountByG_D_T_NotS() throws Exception {
+		_persistence.countByG_D_T_NotS(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "",
+			RandomTestUtil.nextInt());
+
+		_persistence.countByG_D_T_NotS(
+			0L, RandomTestUtil.randomBoolean(), "null", 0);
+
+		_persistence.countByG_D_T_NotS(
+			0L, RandomTestUtil.randomBoolean(), (String)null, 0);
+	}
+
+	@Test
+	public void testCountByG_D_T_NotS_Head() throws Exception {
+		_persistence.countByG_D_T_NotS_Head(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "",
+			RandomTestUtil.nextInt(), RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_D_T_NotS_Head(
+			0L, RandomTestUtil.randomBoolean(), "null", 0,
 			RandomTestUtil.randomBoolean());
 
-		_persistence.countByG_D_T_Head(
-			0L, RandomTestUtil.randomBoolean(), "null",
-			RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_D_T_Head(
-			0L, RandomTestUtil.randomBoolean(), (String)null,
+		_persistence.countByG_D_T_NotS_Head(
+			0L, RandomTestUtil.randomBoolean(), (String)null, 0,
 			RandomTestUtil.randomBoolean());
 	}
 
 	@Test
-	public void testCountByG_LikeN_T() throws Exception {
-		_persistence.countByG_LikeN_T(RandomTestUtil.nextLong(), "", "");
+	public void testCountByG_LikeN_T_NotS() throws Exception {
+		_persistence.countByG_LikeN_T_NotS(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextInt());
 
-		_persistence.countByG_LikeN_T(0L, "null", "null");
+		_persistence.countByG_LikeN_T_NotS(0L, "null", "null", 0);
 
-		_persistence.countByG_LikeN_T(0L, (String)null, (String)null);
+		_persistence.countByG_LikeN_T_NotS(0L, (String)null, (String)null, 0);
 	}
 
 	@Test
-	public void testCountByG_LikeN_TArrayable() throws Exception {
-		_persistence.countByG_LikeN_T(
-			new long[] {RandomTestUtil.nextLong(), 0L},
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-	}
-
-	@Test
-	public void testCountByG_LikeN_T_Head() throws Exception {
-		_persistence.countByG_LikeN_T_Head(
-			RandomTestUtil.nextLong(), "", "", RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_LikeN_T_Head(
-			0L, "null", "null", RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_LikeN_T_Head(
-			0L, (String)null, (String)null, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByG_LikeN_T_HeadArrayable() throws Exception {
-		_persistence.countByG_LikeN_T_Head(
+	public void testCountByG_LikeN_T_NotSArrayable() throws Exception {
+		_persistence.countByG_LikeN_T_NotS(
 			new long[] {RandomTestUtil.nextLong(), 0L},
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextInt());
+	}
+
+	@Test
+	public void testCountByG_LikeN_T_NotS_Head() throws Exception {
+		_persistence.countByG_LikeN_T_NotS_Head(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextInt(),
 			RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_LikeN_T_NotS_Head(
+			0L, "null", "null", 0, RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_LikeN_T_NotS_Head(
+			0L, (String)null, (String)null, 0, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByG_LikeN_T_NotS_HeadArrayable() throws Exception {
+		_persistence.countByG_LikeN_T_NotS_Head(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextInt(), RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -698,7 +714,7 @@ public class StyleBookEntryPersistenceTest {
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "defaultStyleBookEntry", true, "name", true,
 			"previewFileEntryId", true, "styleBookEntryKey", true, "themeId",
-			true);
+			true, "status", true);
 	}
 
 	@Test
@@ -1046,6 +1062,8 @@ public class StyleBookEntryPersistenceTest {
 
 		styleBookEntry.setThemeId(RandomTestUtil.randomString());
 
+		styleBookEntry.setStatus(RandomTestUtil.nextInt());
+
 		_styleBookEntries.add(_persistence.update(styleBookEntry));
 
 		return styleBookEntry;
@@ -1057,4 +1075,4 @@ public class StyleBookEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-357568069
+// LIFERAY-SERVICE-BUILDER-HASH:128744827

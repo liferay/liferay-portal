@@ -50,9 +50,12 @@ public interface StyleBookEntry extends PersistedModel, StyleBookEntryModel {
 	public String getImagePreviewURL(
 		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay);
 
+	public void populateVersionModel(
+		StyleBookEntryVersion styleBookEntryVersion);
+
 	public void populateZipWriter(
 			com.liferay.portal.kernel.zip.ZipWriter zipWriter, String path)
 		throws Exception;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1136805504
+// LIFERAY-SERVICE-BUILDER-HASH:-1894427784
