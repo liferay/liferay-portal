@@ -40,21 +40,7 @@ public class URLUtil {
 		if (Objects.equals(protocol, Http.HTTP) ||
 			Objects.equals(protocol, Http.HTTPS)) {
 
-			String host = url.getHost();
-
-			if (!_isAllowedHost(host)) {
-				throw new UnsupportedOperationException(
-					StringBundler.concat(
-						"Unable to download file from ", urlString,
-						" because of restricted host ", host));
-			}
-
-			Http.Options options = new Http.Options();
-
-			options.setFollowRedirects(false);
-			options.setLocation(url.toString());
-
-			return HttpUtil.URLtoByteArray(options);
+			return _getByteArray(url, urlString);
 		}
 
 		if (Objects.equals(protocol, "lar")) {
@@ -69,6 +55,26 @@ public class URLUtil {
 			StringBundler.concat(
 				"Unable to download file from ", urlString,
 				" because of unsupported protocol ", protocol));
+	}
+
+	private static byte[] _getByteArray(URL url, String urlString)
+		throws Exception {
+
+		String host = url.getHost();
+
+		if (!_isAllowedHost(host)) {
+			throw new UnsupportedOperationException(
+				StringBundler.concat(
+					"Unable to download file from ", urlString,
+					" because of restricted host ", host));
+		}
+
+		Http.Options options = new Http.Options();
+
+		options.setFollowRedirects(false);
+		options.setLocation(url.toString());
+
+		return HttpUtil.URLtoByteArray(options);
 	}
 
 	private static boolean _isAllowedHost(String host) {
