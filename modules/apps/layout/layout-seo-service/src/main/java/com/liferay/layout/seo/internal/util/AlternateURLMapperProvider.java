@@ -42,6 +42,11 @@ public class AlternateURLMapperProvider {
 	public AlternateURLMapperProvider.AlternateURLMapper getAlternateURLMapper(
 		HttpServletRequest httpServletRequest) {
 
+		if (httpServletRequest == null) {
+			return new AlternateURLMapperProvider.DefaultPageAlternateURLMapper(
+				_portal);
+		}
+
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			(LayoutDisplayPageObjectProvider<?>)httpServletRequest.getAttribute(
 				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
