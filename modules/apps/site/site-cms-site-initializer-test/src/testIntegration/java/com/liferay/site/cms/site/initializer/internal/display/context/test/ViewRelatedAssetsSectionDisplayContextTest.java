@@ -200,28 +200,18 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 
 	@Test
 	public void testGetCreationMenuFiltersBySpaceMembership() throws Exception {
+
+		// A member of a space sees assets from that space only
+
 		DepotEntry memberDepotEntry = _addDepotEntry();
 		DepotEntry nonmemberDepotEntry = _addDepotEntry();
 
-		User user = UserTestUtil.addUser();
+		User user1 = UserTestUtil.addUser();
 
 		_userLocalService.addGroupUser(
-			memberDepotEntry.getGroupId(), user.getUserId());
+			memberDepotEntry.getGroupId(), user1.getUserId());
 
-		CreationMenu creationMenu = ReflectionTestUtil.invoke(
-			_getViewRelatedAssetsSectionDisplayContext(
-				getMockHttpServletRequest(user)),
-			"getCreationMenu", new Class<?>[0]);
-
-		List<DropdownItem> dropdownItems = (List<DropdownItem>)creationMenu.get(
-			"primaryItems");
-
-		DropdownItem selectDropdownItem = dropdownItems.get(1);
-
-		Map<String, Object> selectData =
-			(Map<String, Object>)selectDropdownItem.get("data");
-
-		String searchAPIURL = (String)selectData.get("searchAPIURL");
+		String searchAPIURL = _getSearchAPIURL(user1);
 
 		Assert.assertTrue(
 			searchAPIURL,
@@ -229,10 +219,20 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 				"groupIds/any(g:g in (" + memberDepotEntry.getGroupId() +
 					"))"));
 
+		// A user who is not a member of any space sees no space's assets
+
+		User user2 = UserTestUtil.addUser();
+
+		searchAPIURL = _getSearchAPIURL(user2);
+
+		Assert.assertTrue(
+			searchAPIURL, searchAPIURL.contains("groupIds/any(g:g in (-1))"));
+
 		_depotEntryLocalService.deleteDepotEntry(memberDepotEntry);
 		_depotEntryLocalService.deleteDepotEntry(nonmemberDepotEntry);
 
-		_userLocalService.deleteUser(user);
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
 	}
 
 	@Test
@@ -274,6 +274,23 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private String _getSearchAPIURL(User user) throws Exception {
+		CreationMenu creationMenu = ReflectionTestUtil.invoke(
+			_getViewRelatedAssetsSectionDisplayContext(
+				getMockHttpServletRequest(user)),
+			"getCreationMenu", new Class<?>[0]);
+
+		List<DropdownItem> dropdownItems = (List<DropdownItem>)creationMenu.get(
+			"primaryItems");
+
+		DropdownItem selectDropdownItem = dropdownItems.get(1);
+
+		Map<String, Object> selectData =
+			(Map<String, Object>)selectDropdownItem.get("data");
+
+		return (String)selectData.get("searchAPIURL");
 	}
 
 	private Object _getViewRelatedAssetsSectionDisplayContext(
