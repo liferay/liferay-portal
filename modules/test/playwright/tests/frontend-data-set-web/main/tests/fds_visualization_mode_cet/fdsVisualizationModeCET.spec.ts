@@ -27,6 +27,16 @@ test.beforeEach(async ({fdsSamplePage, page, site}) => {
 });
 
 test(
+	'Table renders its client extension cells next to a visualization mode client extension',
+	{tag: '@LPD-107931'},
+	async ({fdsSamplePage}) => {
+		await expect(
+			fdsSamplePage.table.container.locator('td.cell-color').first()
+		).toContainText('🍏');
+	}
+);
+
+test(
 	'Visualization mode client extension shows the items of the data set',
 	{tag: '@LPD-107931'},
 	async ({fdsSamplePage, page}) => {

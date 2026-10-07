@@ -160,6 +160,40 @@ describe('FrontendDataSet', () => {
 		expect(screen.getByText('newer')).toBeInTheDocument();
 	});
 
+	it('renders client extension cells when a view without fields follows the table', async () => {
+		fetch.mockResponse(itemsResponse(['Blue']));
+
+		render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				views={[
+					{
+						...VIEWS[0],
+						schema: {
+							fields: [
+								{
+									contentRendererClientExtension: true,
+									contentRendererModuleURL: `default from ${require.resolve('./__lib__/cellRenderer')}`,
+									fieldName: 'name',
+									label: 'Name',
+								},
+							],
+						},
+					},
+					{
+						contentRenderer: 'clientExtension',
+						contentRendererClientExtension: true,
+						label: 'Timeline',
+						name: 'timeline',
+					},
+				]}
+			/>
+		);
+
+		expect(await screen.findByText('Rendered Blue')).toBeInTheDocument();
+	});
+
 	it('shows an error when a visualization mode client extension fails to load', async () => {
 		const consoleErrorSpy = jest
 			.spyOn(console, 'error')

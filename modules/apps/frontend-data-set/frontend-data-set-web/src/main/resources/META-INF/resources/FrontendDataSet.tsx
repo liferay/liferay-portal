@@ -1063,28 +1063,27 @@ const FrontendDataSetContent = ({
 				>,
 				view: IView
 			) => {
-				if (view.schema && 'fields' in view.schema) {
-					if (!view.schema.fields.length) {
-						return clientExtensionDefinitions;
-					}
+				const fields =
+					view.schema && 'fields' in view.schema
+						? view.schema.fields
+						: undefined;
 
-					const clientExtensionFields = view.schema.fields.filter(
-						(field: IField) =>
-							!!field.contentRendererClientExtension
-					);
-
-					for (const field of clientExtensionFields) {
-						clientExtensionDefinitions.push({
-							context: field,
-							importDeclaration: field.contentRendererModuleURL,
-						});
-					}
-
+				if (!Array.isArray(fields)) {
 					return clientExtensionDefinitions;
 				}
-				else {
-					return [];
+
+				const clientExtensionFields = fields.filter(
+					(field: IField) => !!field.contentRendererClientExtension
+				);
+
+				for (const field of clientExtensionFields) {
+					clientExtensionDefinitions.push({
+						context: field,
+						importDeclaration: field.contentRendererModuleURL,
+					});
 				}
+
+				return clientExtensionDefinitions;
 			},
 			[]
 		);
