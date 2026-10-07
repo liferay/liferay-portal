@@ -17,6 +17,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.Settings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
+import com.liferay.headless.admin.site.client.resource.v1_0.PageSpecificationResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
@@ -36,15 +37,20 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -106,6 +112,7 @@ public class PageSpecificationResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-107120")
 	public void testDeleteSitePageSpecification() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -158,6 +165,9 @@ public class PageSpecificationResourceTest
 			() -> pageSpecificationResource.deleteSitePageSpecification(
 				testGroup.getExternalReferenceCode(),
 				layoutPageTemplateEntry.getExternalReferenceCode()));
+
+		_testDeleteSitePageSpecificationWithoutUpdatePermission(
+			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext));
 	}
 
 	@Override
@@ -921,6 +931,34 @@ public class PageSpecificationResourceTest
 			WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 		_assertDeleteSitePageSpecification(draftLayout);
+	}
+
+	private void _testDeleteSitePageSpecificationWithoutUpdatePermission(
+			Layout layout)
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		PageSpecificationResource pageSpecificationResource =
+			PageSpecificationResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		_assertProblemException(
+			"FORBIDDEN", "Forbidden",
+			() -> pageSpecificationResource.deleteSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				draftLayout.getExternalReferenceCode()));
 	}
 
 	private void _testGetSitePageSpecification(

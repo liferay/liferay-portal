@@ -105,6 +105,8 @@ import com.liferay.headless.admin.site.client.dto.v1_0.URLImageValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetInstance;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetInstancePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPermission;
+import com.liferay.headless.admin.site.client.pagination.Page;
+import com.liferay.headless.admin.site.client.resource.v1_0.PageElementResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
 import com.liferay.headless.admin.site.client.serdes.v1_0.PageElementSerDes;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.FragmentConfigurationFieldValueTestUtil;
@@ -146,6 +148,7 @@ import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -158,8 +161,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -168,6 +173,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -277,7 +283,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-96206")
+	@TestInfo({"LPD-96206", "LPD-107120"})
 	public void testGetSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
@@ -288,11 +294,12 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		_testGetSitePageSpecificationPageExperiencePageElementWithNonexistentPageExperience();
 		_testGetSitePageSpecificationPageExperiencePageElementWithOrphanedFragmentEntryLink();
 		_testGetSitePageSpecificationPageExperiencePageElementWithPageRoot();
+		_testGetSitePageSpecificationPageExperiencePageElementWithoutViewPermission();
 	}
 
 	@Override
 	@Test
-	@TestInfo("LPD-96206")
+	@TestInfo({"LPD-96206", "LPD-107120"})
 	public void testGetSitePageSpecificationPageExperiencePageElementPageElementsPage()
 		throws Exception {
 
@@ -300,6 +307,18 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			testGetSitePageSpecificationPageExperiencePageElementPageElementsPage();
 
 		_testGetSitePageSpecificationPageExperiencePageElementPageElementsPageWithNonexistentPageElement();
+		_testGetSitePageSpecificationPageExperiencePageElementPageElementsPageWithoutViewPermission();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-107120")
+	public void testGetSitePageSpecificationPageExperiencePageElementsPage()
+		throws Exception {
+
+		super.testGetSitePageSpecificationPageExperiencePageElementsPage();
+
+		_testGetSitePageSpecificationPageExperiencePageElementsPageWithoutViewPermission();
 	}
 
 	@Override
@@ -343,7 +362,9 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-83090", "LPD-85565", "LPD-96206", "LPD-104316"})
+	@TestInfo(
+		{"LPD-83090", "LPD-85565", "LPD-96206", "LPD-104316", "LPD-107120"}
+	)
 	public void testPostSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
@@ -377,6 +398,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		_testPostSitePageSpecificationPageExperiencePageElementWithoutExternalReferenceCode();
 		_testPostSitePageSpecificationPageExperiencePageElementWithoutFormContainerReference();
 		_testPostSitePageSpecificationPageExperiencePageElementWithoutPageElementDefinition();
+		_testPostSitePageSpecificationPageExperiencePageElementWithoutViewPermission();
 	}
 
 	@Override
@@ -1980,6 +2002,22 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		return pageElement;
 	}
 
+	private PageElementResource _getPageElementResource() throws Exception {
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return PageElementResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private FragmentInlineValue _getRandomFragmentInlineValue() {
 		return new FragmentInlineValue() {
 			{
@@ -2305,6 +2343,13 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		return pageElement;
 	}
 
+	private void _removeGuestViewPermission() throws Exception {
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_layout.getPlid()), ActionKeys.VIEW);
+	}
+
 	private void _testGetSitePageSpecificationPageExperiencePageElementPageElementsPageWithNonexistentPageElement()
 		throws Exception {
 
@@ -2314,6 +2359,44 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				_layout.getPlid());
 
 		String pageElementExternalReferenceCode = RandomTestUtil.randomString();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() ->
+				pageElementResource.
+					getSitePageSpecificationPageExperiencePageElementPageElementsPage(
+						testGroup.getExternalReferenceCode(),
+						_draftLayout.getExternalReferenceCode(),
+						segmentsExperience.getExternalReferenceCode(),
+						pageElementExternalReferenceCode, null));
+	}
+
+	private void _testGetSitePageSpecificationPageExperiencePageElementPageElementsPageWithoutViewPermission()
+		throws Exception {
+
+		PageElement pageElement =
+			testGetSitePageSpecificationPageExperiencePageElement_addPageElement();
+
+		String pageElementExternalReferenceCode =
+			testGetSitePageSpecificationPageExperiencePageElementPageElementsPage_getPageElementExternalReferenceCode();
+		PageElementResource pageElementResource = _getPageElementResource();
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		Page<PageElement> pageElementsPage =
+			pageElementResource.
+				getSitePageSpecificationPageExperiencePageElementPageElementsPage(
+					testGroup.getExternalReferenceCode(),
+					_draftLayout.getExternalReferenceCode(),
+					segmentsExperience.getExternalReferenceCode(),
+					pageElementExternalReferenceCode, null);
+
+		assertContains(
+			pageElement, (List<PageElement>)pageElementsPage.getItems());
+
+		_removeGuestViewPermission();
 
 		ProblemExceptionTestUtil.assertProblemException(
 			"NOT_FOUND", null,
@@ -2444,6 +2527,74 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						_draftLayout.getExternalReferenceCode(),
 						segmentsExperience.getExternalReferenceCode(),
 						mainItemId));
+	}
+
+	private void _testGetSitePageSpecificationPageExperiencePageElementWithoutViewPermission()
+		throws Exception {
+
+		PageElementResource pageElementResource = _getPageElementResource();
+		PageElement postPageElement =
+			testGetSitePageSpecificationPageExperiencePageElement_addPageElement();
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		PageElement getPageElement =
+			pageElementResource.
+				getSitePageSpecificationPageExperiencePageElement(
+					testGroup.getExternalReferenceCode(),
+					_draftLayout.getExternalReferenceCode(),
+					segmentsExperience.getExternalReferenceCode(),
+					postPageElement.getExternalReferenceCode());
+
+		assertEquals(postPageElement, getPageElement);
+
+		_removeGuestViewPermission();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() ->
+				pageElementResource.
+					getSitePageSpecificationPageExperiencePageElement(
+						testGroup.getExternalReferenceCode(),
+						_draftLayout.getExternalReferenceCode(),
+						segmentsExperience.getExternalReferenceCode(),
+						postPageElement.getExternalReferenceCode()));
+	}
+
+	private void _testGetSitePageSpecificationPageExperiencePageElementsPageWithoutViewPermission()
+		throws Exception {
+
+		PageElement pageElement =
+			testGetSitePageSpecificationPageExperiencePageElement_addPageElement();
+
+		PageElementResource pageElementResource = _getPageElementResource();
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		Page<PageElement> pageElementsPage =
+			pageElementResource.
+				getSitePageSpecificationPageExperiencePageElementsPage(
+					testGroup.getExternalReferenceCode(),
+					_draftLayout.getExternalReferenceCode(),
+					segmentsExperience.getExternalReferenceCode(), null);
+
+		assertContains(
+			pageElement, (List<PageElement>)pageElementsPage.getItems());
+
+		_removeGuestViewPermission();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() ->
+				pageElementResource.
+					getSitePageSpecificationPageExperiencePageElementsPage(
+						testGroup.getExternalReferenceCode(),
+						_draftLayout.getExternalReferenceCode(),
+						segmentsExperience.getExternalReferenceCode(), null));
 	}
 
 	private void _testMissingOptionalReference(
@@ -3192,6 +3343,38 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						_draftLayout.getExternalReferenceCode(),
 						segmentsExperience.getExternalReferenceCode(),
 						pageElement));
+	}
+
+	private void _testPostSitePageSpecificationPageExperiencePageElementWithoutViewPermission()
+		throws Exception {
+
+		_removeGuestViewPermission();
+
+		PageElementResource pageElementResource = _getPageElementResource();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"FORBIDDEN", "Forbidden",
+			() ->
+				pageElementResource.
+					postSitePageSpecificationPageExperiencePageElement(
+						testGroup.getExternalReferenceCode(),
+						_draftLayout.getExternalReferenceCode(),
+						RandomTestUtil.randomString(), randomPageElement()));
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"FORBIDDEN", "Forbidden",
+			() ->
+				pageElementResource.
+					postSitePageSpecificationPageExperiencePageElement(
+						testGroup.getExternalReferenceCode(),
+						_draftLayout.getExternalReferenceCode(),
+						segmentsExperience.getExternalReferenceCode(),
+						randomPageElement()));
 	}
 
 	private PageElement _testPutSitePageSpecificationPageExperiencePageElement(
