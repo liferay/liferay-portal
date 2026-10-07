@@ -121,10 +121,10 @@ public class AutoBatchPreparedStatementUtil {
 				PreparedStatement localPreparedStatement =
 					getPreparedStatement();
 
-				return localPreparedStatement.executeBatch();
+				localPreparedStatement.executeBatch();
 			}
 
-			return new int[0];
+			return null;
 		}
 
 		private BatchInvocationHandler(Connection connection, String sql) {
@@ -159,7 +159,7 @@ public class AutoBatchPreparedStatementUtil {
 				executeAsync(PreparedStatement::executeBatch);
 			}
 
-			return new int[0];
+			return null;
 		}
 
 		private ConcurrentBatchInvocationHandler(
@@ -209,7 +209,7 @@ public class AutoBatchPreparedStatementUtil {
 
 		@Override
 		protected int[] doExecuteBatch() throws SQLException {
-			return new int[0];
+			return null;
 		}
 
 		protected void executeAsync(
@@ -284,7 +284,7 @@ public class AutoBatchPreparedStatementUtil {
 
 		@Override
 		protected int[] doExecuteBatch() throws SQLException {
-			return new int[0];
+			return null;
 		}
 
 		private NoBatchInvocationHandler(Connection connection, String sql) {

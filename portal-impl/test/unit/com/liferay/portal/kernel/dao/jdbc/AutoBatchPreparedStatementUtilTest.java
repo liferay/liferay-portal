@@ -367,8 +367,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 			// Calling executeBatch does nothing
 
-			Assert.assertArrayEquals(
-				new int[0], preparedStatement.executeBatch());
+			Assert.assertNull(preparedStatement.executeBatch());
 			Assert.assertTrue(methods.toString(), methods.isEmpty());
 
 			// Other methods like execute pass through
@@ -428,8 +427,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 			// Calling executeBatch does nothing
 
-			Assert.assertArrayEquals(
-				new int[0], preparedStatement.executeBatch());
+			Assert.assertNull(preparedStatement.executeBatch());
 			Assert.assertTrue(methods.toString(), methods.isEmpty());
 
 			// Other methods like execute pass through
@@ -471,8 +469,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 			// Protection for executing empty batch
 
-			Assert.assertArrayEquals(
-				new int[0], preparedStatement.executeBatch());
+			Assert.assertNull(preparedStatement.executeBatch());
 			Assert.assertTrue(methods.toString(), methods.isEmpty());
 			Assert.assertEquals(
 				Integer.valueOf(0),
@@ -576,8 +573,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 			// Protection for executing empty batch
 
-			Assert.assertArrayEquals(
-				new int[0], preparedStatement.executeBatch());
+			Assert.assertNull(preparedStatement.executeBatch());
 			Assert.assertTrue(methods.toString(), methods.isEmpty());
 			Assert.assertEquals(
 				Integer.valueOf(0),
