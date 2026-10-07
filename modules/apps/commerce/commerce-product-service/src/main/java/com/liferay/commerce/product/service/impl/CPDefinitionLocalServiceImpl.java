@@ -19,6 +19,7 @@ import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
+import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.exception.CPDefinitionDeliveryMaxSubscriptionCyclesException;
@@ -33,6 +34,7 @@ import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameExcepti
 import com.liferay.commerce.product.exception.CPDefinitionSubscriptionLengthException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
+import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLink;
@@ -67,6 +69,7 @@ import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.service.base.CPDefinitionLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPAttachmentFileEntryPersistence;
 import com.liferay.commerce.product.service.persistence.CPConfigurationEntryPersistence;
+import com.liferay.commerce.product.service.persistence.CPConfigurationEntrySettingPersistence;
 import com.liferay.commerce.product.service.persistence.CPConfigurationListPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionLinkPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
@@ -642,6 +645,8 @@ public class CPDefinitionLocalServiceImpl
 			_cpAttachmentFileEntryPersistence.update(newCPAttachmentFileEntry);
 		}
 
+		_cloneCPConfigurationEntries(originalCPDefinition, newCPDefinition);
+
 		List<CPDefinitionLink> cpDefinitionLinks =
 			_cpDefinitionLinkPersistence.findByCPDefinitionId(cpDefinitionId);
 
@@ -1014,46 +1019,7 @@ public class CPDefinitionLocalServiceImpl
 			_cpAttachmentFileEntryPersistence.update(newCPAttachmentFileEntry);
 		}
 
-		CPConfigurationList masterCPConfigurationList =
-			_cpConfigurationListPersistence.findByG_M_First(
-				sourceCPDefinition.getGroupId(), true, null);
-
-		CPConfigurationEntry cpConfigurationEntry =
-			_cpConfigurationEntryPersistence.fetchByC_C_C(
-				_classNameLocalService.getClassNameId(
-					CPDefinition.class.getName()),
-				sourceCPDefinitionId, masterCPConfigurationList.getGroupId());
-
-		if (cpConfigurationEntry != null) {
-			_cpConfigurationEntryLocalService.addCPConfigurationEntry(
-				null, cpConfigurationEntry.getUserId(),
-				cpConfigurationEntry.getGroupId(),
-				cpConfigurationEntry.getClassNameId(),
-				cpConfigurationEntry.getClassPK(),
-				cpConfigurationEntry.getCPConfigurationListId(),
-				cpConfigurationEntry.getCPTaxCategoryId(),
-				cpConfigurationEntry.getAllowedOrderQuantities(),
-				cpConfigurationEntry.isBackOrders(),
-				cpConfigurationEntry.getCommerceAvailabilityEstimateId(),
-				cpConfigurationEntry.getCPDefinitionInventoryEngine(),
-				cpConfigurationEntry.getDepth(),
-				cpConfigurationEntry.isDisplayAvailability(),
-				cpConfigurationEntry.isDisplayStockQuantity(),
-				cpConfigurationEntry.isFreeShipping(),
-				cpConfigurationEntry.getHeight(),
-				cpConfigurationEntry.getLowStockActivity(),
-				cpConfigurationEntry.getMaxOrderQuantity(),
-				cpConfigurationEntry.getMinOrderQuantity(),
-				cpConfigurationEntry.getMinStockQuantity(),
-				cpConfigurationEntry.getMultipleOrderQuantity(),
-				cpConfigurationEntry.isPurchasable(),
-				cpConfigurationEntry.isShippable(),
-				cpConfigurationEntry.getShippingExtraPrice(),
-				cpConfigurationEntry.isShipSeparately(),
-				cpConfigurationEntry.isTaxExempt(),
-				cpConfigurationEntry.getWeight(),
-				cpConfigurationEntry.getWidth());
-		}
+		_cloneCPConfigurationEntries(sourceCPDefinition, targetCPDefinition);
 
 		List<CPDefinitionLink> cpDefinitionLinks =
 			_cpDefinitionLinkPersistence.findByCPDefinitionId(
@@ -3165,6 +3131,115 @@ public class CPDefinitionLocalServiceImpl
 		}
 	}
 
+	private void _cloneCPConfigurationEntries(
+			CPDefinition sourceCPDefinition, CPDefinition targetCPDefinition)
+		throws PortalException {
+
+		String indexIds = null;
+		CPConfigurationList masterCPConfigurationList = null;
+
+		if (sourceCPDefinition.getGroupId() !=
+				targetCPDefinition.getGroupId()) {
+
+			masterCPConfigurationList =
+				_cpConfigurationListPersistence.findByG_M_First(
+					targetCPDefinition.getGroupId(), true, null);
+
+			long masterCPConfigurationListId =
+				masterCPConfigurationList.getCPConfigurationListId();
+
+			indexIds = StringUtil.merge(
+				ArrayUtil.filter(
+					TransformUtil.transformToLongArray(
+						_cpConfigurationListPersistence.findByG_C(
+							targetCPDefinition.getGroupId(),
+							targetCPDefinition.getCompanyId()),
+						CPConfigurationList::getCPConfigurationListId),
+					curCPConfigurationListId ->
+						curCPConfigurationListId !=
+							masterCPConfigurationListId),
+				StringPool.COMMA);
+		}
+
+		for (CPConfigurationEntry cpConfigurationEntry :
+				_cpConfigurationEntryPersistence.findByC_C(
+					_classNameLocalService.getClassNameId(CPDefinition.class),
+					sourceCPDefinition.getCPDefinitionId())) {
+
+			long cpConfigurationListId =
+				cpConfigurationEntry.getCPConfigurationListId();
+
+			if (masterCPConfigurationList != null) {
+				CPConfigurationList cpConfigurationList =
+					_cpConfigurationListPersistence.findByPrimaryKey(
+						cpConfigurationListId);
+
+				if (!cpConfigurationList.isMaster()) {
+					continue;
+				}
+
+				cpConfigurationListId =
+					masterCPConfigurationList.getCPConfigurationListId();
+			}
+
+			CPConfigurationEntry newCPConfigurationEntry =
+				(CPConfigurationEntry)cpConfigurationEntry.clone();
+
+			newCPConfigurationEntry.setUuid(PortalUUIDUtil.generate());
+			newCPConfigurationEntry.setExternalReferenceCode(null);
+			newCPConfigurationEntry.setCPConfigurationEntryId(
+				counterLocalService.increment());
+			newCPConfigurationEntry.setGroupId(targetCPDefinition.getGroupId());
+			newCPConfigurationEntry.setClassPK(
+				targetCPDefinition.getCPDefinitionId());
+			newCPConfigurationEntry.setCPConfigurationListId(
+				cpConfigurationListId);
+
+			newCPConfigurationEntry = _cpConfigurationEntryPersistence.update(
+				newCPConfigurationEntry);
+
+			_cloneCPConfigurationEntrySetting(
+				cpConfigurationEntry, newCPConfigurationEntry,
+				CPConfigurationEntrySettingConstants.TYPE_CHANGE_LOG, null);
+			_cloneCPConfigurationEntrySetting(
+				cpConfigurationEntry, newCPConfigurationEntry,
+				CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS, indexIds);
+		}
+
+		_reindexCPConfigurationEntries(targetCPDefinition);
+	}
+
+	private void _cloneCPConfigurationEntrySetting(
+		CPConfigurationEntry cpConfigurationEntry,
+		CPConfigurationEntry newCPConfigurationEntry, int type, String value) {
+
+		CPConfigurationEntrySetting cpConfigurationEntrySetting =
+			_cpConfigurationEntrySettingPersistence.fetchByC_T(
+				cpConfigurationEntry.getCPConfigurationEntryId(), type);
+
+		if (cpConfigurationEntrySetting == null) {
+			return;
+		}
+
+		CPConfigurationEntrySetting newCPConfigurationEntrySetting =
+			(CPConfigurationEntrySetting)cpConfigurationEntrySetting.clone();
+
+		newCPConfigurationEntrySetting.setUuid(PortalUUIDUtil.generate());
+		newCPConfigurationEntrySetting.setCPConfigurationEntrySettingId(
+			counterLocalService.increment());
+		newCPConfigurationEntrySetting.setGroupId(
+			newCPConfigurationEntry.getGroupId());
+		newCPConfigurationEntrySetting.setCPConfigurationEntryId(
+			newCPConfigurationEntry.getCPConfigurationEntryId());
+
+		if (value != null) {
+			newCPConfigurationEntrySetting.setValue(value);
+		}
+
+		_cpConfigurationEntrySettingPersistence.update(
+			newCPConfigurationEntrySetting);
+	}
+
 	private Predicate _getAccountGroupPredicate(long[] accountGroupIds) {
 		Predicate accountGroupFilterPredicate =
 			CPDefinitionTable.INSTANCE.accountGroupFilterEnabled.eq(false);
@@ -3394,6 +3469,18 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		return false;
+	}
+
+	private void _reindexCPConfigurationEntries(CPDefinition cpDefinition)
+		throws PortalException {
+
+		Indexer<CPConfigurationEntry> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(CPConfigurationEntry.class);
+
+		indexer.reindex(
+			_cpConfigurationEntryPersistence.findByC_C(
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpDefinition.getCPDefinitionId()));
 	}
 
 	private void _reindexCPDefinition(long cpDefinitionId)
@@ -3768,6 +3855,10 @@ public class CPDefinitionLocalServiceImpl
 
 	@Reference
 	private CPConfigurationEntryPersistence _cpConfigurationEntryPersistence;
+
+	@Reference
+	private CPConfigurationEntrySettingPersistence
+		_cpConfigurationEntrySettingPersistence;
 
 	@Reference
 	private CPConfigurationListPersistence _cpConfigurationListPersistence;
