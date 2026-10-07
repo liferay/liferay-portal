@@ -32,6 +32,22 @@ describe('isSpaceMember', () => {
 		).toBe(true);
 	});
 
+	it("allows an asset from the project's own library", () => {
+		expect(
+			isSpaceMember(
+				assetLibraries,
+				{
+					embedded: {
+						systemProperties: {
+							scope: {externalReferenceCode: 'PROJECT_A'},
+						},
+					},
+				},
+				'PROJECT_A'
+			)
+		).toBe(true);
+	});
+
 	it('allows an asset when the asset libraries list is missing', () => {
 		expect(
 			isSpaceMember(undefined, {
@@ -50,13 +66,17 @@ describe('isSpaceMember', () => {
 
 	it('denies an asset from a Space outside the asset libraries list', () => {
 		expect(
-			isSpaceMember(assetLibraries, {
-				embedded: {
-					systemProperties: {
-						scope: {externalReferenceCode: 'SPACE_B'},
+			isSpaceMember(
+				assetLibraries,
+				{
+					embedded: {
+						systemProperties: {
+							scope: {externalReferenceCode: 'SPACE_B'},
+						},
 					},
 				},
-			})
+				'PROJECT_A'
+			)
 		).toBe(false);
 	});
 });
