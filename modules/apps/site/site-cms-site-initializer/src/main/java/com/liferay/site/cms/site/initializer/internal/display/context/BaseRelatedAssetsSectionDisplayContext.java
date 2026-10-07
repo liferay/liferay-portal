@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -68,6 +69,14 @@ public abstract class BaseRelatedAssetsSectionDisplayContext
 			if (_log.isDebugEnabled()) {
 				_log.debug(portalException);
 			}
+		}
+
+		Group group = groupLocalService.fetchGroup(objectEntry.getGroupId());
+
+		if (group != null) {
+			additionalProps.put(
+				"projectGroupExternalReferenceCode",
+				group.getExternalReferenceCode());
 		}
 
 		return additionalProps;

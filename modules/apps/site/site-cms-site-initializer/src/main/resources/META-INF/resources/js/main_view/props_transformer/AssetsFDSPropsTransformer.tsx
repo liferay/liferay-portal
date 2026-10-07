@@ -119,6 +119,7 @@ export type AdditionalProps = {
 	objectDefinitionIcons: Record<string, string>;
 	objectEntryFolderExternalReferenceCode: string;
 	parentObjectEntryFolderExternalReferenceCode: string;
+	projectGroupExternalReferenceCode?: string;
 	redirect: string;
 	rootObjectEntryFolderExternalReferenceCode: string;
 	showAdditionalItemInfo?: boolean;
@@ -297,7 +298,8 @@ export default function AssetsFDSPropsTransformer({
 								onViewClick={
 									isSpaceMember(
 										additionalProps.assetLibraries,
-										itemData
+										itemData,
+										additionalProps.projectGroupExternalReferenceCode
 									)
 										? (item) => {
 												openCMSModal({
@@ -477,7 +479,11 @@ export default function AssetsFDSPropsTransformer({
 								OBJECT_ENTRY_FOLDER_CLASS_NAME &&
 								!item?.embedded?.file
 						) &&
-						isSpaceMember(additionalProps.assetLibraries, item),
+						isSpaceMember(
+							additionalProps.assetLibraries,
+							item,
+							additionalProps.projectGroupExternalReferenceCode
+						),
 					target: 'event',
 				};
 			}
@@ -490,7 +496,11 @@ export default function AssetsFDSPropsTransformer({
 							item?.entryClassName !==
 								OBJECT_ENTRY_FOLDER_CLASS_NAME
 						) &&
-						isSpaceMember(additionalProps.assetLibraries, item),
+						isSpaceMember(
+							additionalProps.assetLibraries,
+							item,
+							additionalProps.projectGroupExternalReferenceCode
+						),
 					target: 'event',
 				};
 			}
@@ -726,7 +736,11 @@ export default function AssetsFDSPropsTransformer({
 					(item: any) =>
 						item?.entryClassName !==
 							OBJECT_ENTRY_FOLDER_CLASS_NAME &&
-						isSpaceMember(additionalProps.assetLibraries, item)
+						isSpaceMember(
+							additionalProps.assetLibraries,
+							item,
+							additionalProps.projectGroupExternalReferenceCode
+						)
 				);
 
 				const currentItemPos = filteredItems.findIndex(

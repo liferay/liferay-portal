@@ -10,15 +10,21 @@ import {getScopeExternalReferenceCode} from './getScopeExternalReferenceCode';
  * Checks whether the current user is a member of the item's Space. The asset
  * libraries list holds the Spaces the user is a member of (every Space for
  * CMS administrators), so an item scoped to a Space outside the list fails
- * the check. An item without Space data passes.
+ * the check. An item without Space data, or in the project's own library,
+ * passes.
  */
 export function isSpaceMember(
 	assetLibraries: AssetLibrary[] | undefined,
-	itemData: any
+	itemData: any,
+	projectGroupExternalReferenceCode?: string
 ): boolean {
 	const scopeExternalReferenceCode = getScopeExternalReferenceCode(itemData);
 
-	if (!assetLibraries || !scopeExternalReferenceCode) {
+	if (
+		!assetLibraries ||
+		!scopeExternalReferenceCode ||
+		scopeExternalReferenceCode === projectGroupExternalReferenceCode
+	) {
 		return true;
 	}
 
