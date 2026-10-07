@@ -11,7 +11,7 @@ Reviews the branch diff against the rules in `pr-reviewer/rules`, which hold the
 Review the branch diff against the rules in `pr-reviewer/rules`:
 
 ```bash
-(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "$(git merge-base HEAD master)..HEAD" > "${LOG}" 2> "${LOG_ERROR}")
+(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG}" 2> "${LOG_ERROR}")
 ```
 
 The exit status is the verdict. `0` is a clean diff, so report **PASS** and quote the `reviewed_files` count. `2` means the reviewer could not run, most often because the `claude` CLI is not on the PATH, so report **NOT VERIFIED** and quote `${LOG_ERROR}`. `1` means violations, and the log holds them as JSON, one object per violation with `file`, `line`, `rule`, `message`, and `fix`.
@@ -28,7 +28,7 @@ When at least one fix was applied, commit as the **Autocommit** section says, th
 Then review once more:
 
 ```bash
-(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "$(git merge-base HEAD master)..HEAD" > "${LOG_RERUN}" 2>&1)
+(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2>&1)
 ```
 
 Report **PASS** when the rerun exits `0`. Report **FAIL** when it still finds violations, and return them as the note below. Do not start a second round of fixes, since a violation the first round did not resolve needs the developer's judgment, and a loop of automated rounds can chase a false positive indefinitely.
