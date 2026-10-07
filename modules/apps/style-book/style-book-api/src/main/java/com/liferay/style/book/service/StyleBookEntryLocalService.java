@@ -311,6 +311,12 @@ public interface StyleBookEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public StyleBookEntry getOrAddEmptyStyleBookEntry(
+			String externalReferenceCode, long userId, long groupId,
+			String themeId)
+		throws Exception;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -492,7 +498,7 @@ public interface StyleBookEntryLocalService
 			long userId, long styleBookEntryId, boolean defaultStyleBookEntry,
 			String frontendTokenDefinition, String frontendTokensValues,
 			String name, String styleBookEntryKey, long previewFileEntryId,
-			ServiceContext serviceContext)
+			String themeId, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -533,4 +539,4 @@ public interface StyleBookEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1817163494
+// LIFERAY-SERVICE-BUILDER-HASH:447538805
