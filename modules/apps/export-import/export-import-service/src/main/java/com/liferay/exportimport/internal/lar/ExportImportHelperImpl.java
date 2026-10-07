@@ -306,6 +306,21 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 				excludeDataAlwaysStaged, groupId);
 		}
 
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-41307") &&
+			_isSpaceDepotEntry(groupId)) {
+
+			return ListUtil.filter(
+				_getPortlets(
+					companyId, new DataLevel[] {DataLevel.SITE},
+					excludeDataAlwaysStaged, groupId),
+				portlet -> {
+					PortletDataHandler portletDataHandler =
+						portlet.getPortletDataHandlerInstance();
+
+					return portletDataHandler.isBatch();
+				});
+		}
+
 		return _getPortlets(
 			companyId, new DataLevel[] {DataLevel.SITE},
 			excludeDataAlwaysStaged, groupId);
