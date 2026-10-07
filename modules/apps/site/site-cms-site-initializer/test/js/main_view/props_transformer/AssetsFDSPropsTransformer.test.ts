@@ -515,11 +515,14 @@ describe('AssetsFDSPropsTransformer', () => {
 
 		const memberItem = buildItem(1, 'SPACE_A');
 
+		const titleActions = [{data: {id: 'actionLink'}, href: '/edit'}];
+
 		const getTransformedProps = (itemsActions: any[] = []) =>
 			AssetsFDSPropsTransformer({
 				additionalProps: {
 					...mockAdditionalProps,
 					assetLibraries: memberAssetLibraries,
+					editableImageMIMETypes: ['image/png'],
 				},
 				creationMenu: {primaryItems: []},
 				hideManagementBarInEmptyState: false,
@@ -537,7 +540,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			);
 
 			return (titleRenderer as any).component({
-				actions: [],
+				actions: titleActions,
 				itemData,
 				options: {actionId: 'actionLink'},
 				value: 'title',
@@ -558,10 +561,10 @@ describe('AssetsFDSPropsTransformer', () => {
 			(getScopeExternalReferenceCode as jest.Mock).mockReset();
 		});
 
-		it('does not pass a view click handler for an asset from another Space', () => {
-			expect(
-				getTitleRendererElement(lockedItem).props.onViewClick
-			).toBeUndefined();
+		it('does not pass actions to the title for an asset from another Space', () => {
+			expect(getTitleRendererElement(lockedItem).props.actions).toEqual(
+				[]
+			);
 		});
 
 		it('excludes assets from other Spaces from the asset navigation modal', async () => {
@@ -580,6 +583,53 @@ describe('AssetsFDSPropsTransformer', () => {
 			expect(AssetNavigationModalContent).toHaveBeenCalledWith(
 				expect.objectContaining({currentIndex: 0, items: [memberItem]})
 			);
+		});
+
+		it('hides the edit action for an asset from another Space', () => {
+			const {itemsActions} = getTransformedProps([
+				{data: {id: 'actionLink'}},
+			]);
+
+			const [editAction] = itemsActions;
+
+			expect(editAction.isVisible(lockedItem)).toBe(false);
+			expect(editAction.isVisible(memberItem)).toBe(true);
+		});
+
+		it('hides the edit image action for an asset from another Space', () => {
+			const {itemsActions} = getTransformedProps([
+				{data: {id: 'edit-image'}},
+			]);
+
+			const [editImageAction] = itemsActions;
+
+			const imageFile = {link: {href: 'url'}, mimeType: 'image/png'};
+
+			expect(
+				editImageAction.isVisible({
+					...lockedItem,
+					embedded: {...lockedItem.embedded, file: imageFile},
+				})
+			).toBe(false);
+			expect(
+				editImageAction.isVisible({
+					...memberItem,
+					embedded: {...memberItem.embedded, file: imageFile},
+				})
+			).toBe(true);
+		});
+
+		it('hides the translation actions for an asset from another Space', () => {
+			const {itemsActions} = getTransformedProps([
+				{data: {id: 'export-for-translation'}},
+				{data: {id: 'import-translation'}},
+				{data: {id: 'translate'}},
+			]);
+
+			itemsActions.forEach((translationAction: any) => {
+				expect(translationAction.isVisible(lockedItem)).toBe(false);
+				expect(translationAction.isVisible(memberItem)).toBe(true);
+			});
 		});
 
 		it('hides the view content action for an asset from another Space', () => {
@@ -614,10 +664,10 @@ describe('AssetsFDSPropsTransformer', () => {
 			expect(viewFileAction.isVisible(memberFileItem)).toBe(true);
 		});
 
-		it('passes a view click handler for an asset from a Space the user is a member of', () => {
-			expect(
-				getTitleRendererElement(memberItem).props.onViewClick
-			).toEqual(expect.any(Function));
+		it('passes actions to the title for an asset from a Space the user is a member of', () => {
+			expect(getTitleRendererElement(memberItem).props.actions).toBe(
+				titleActions
+			);
 		});
 	});
 });
