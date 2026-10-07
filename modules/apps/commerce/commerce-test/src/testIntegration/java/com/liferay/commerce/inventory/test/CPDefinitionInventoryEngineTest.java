@@ -98,6 +98,18 @@ public class CPDefinitionInventoryEngineTest {
 	}
 
 	@Test
+	public void testGetAllowedOrderQuantitiesWithoutCPConfigurationEntry()
+		throws Exception {
+
+		_fallBackToCPDefinitionInventory();
+
+		Assert.assertArrayEquals(
+			new String[] {"2", "4"},
+			_cpDefinitionInventoryEngine.getAllowedOrderQuantities(
+				_cpConfigurationList.getCPConfigurationListId(), _cpInstance));
+	}
+
+	@Test
 	public void testGetMaxOrderQuantity() throws Exception {
 		BigDecimal maxOrderQuantity =
 			_cpDefinitionInventoryEngine.getMaxOrderQuantity(0, _cpInstance);
@@ -123,6 +135,21 @@ public class CPDefinitionInventoryEngineTest {
 		Assert.assertTrue(
 			BigDecimalUtil.eq(
 				maxOrderQuantity, cpConfigurationEntry.getMaxOrderQuantity()));
+	}
+
+	@Test
+	public void testGetMaxOrderQuantityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				cpDefinitionInventory.getMaxOrderQuantity(),
+				_cpDefinitionInventoryEngine.getMaxOrderQuantity(
+					_cpConfigurationList.getCPConfigurationListId(),
+					_cpInstance)));
 	}
 
 	@Test
@@ -154,6 +181,21 @@ public class CPDefinitionInventoryEngineTest {
 	}
 
 	@Test
+	public void testGetMinOrderQuantityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				cpDefinitionInventory.getMinOrderQuantity(),
+				_cpDefinitionInventoryEngine.getMinOrderQuantity(
+					_cpConfigurationList.getCPConfigurationListId(),
+					_cpInstance)));
+	}
+
+	@Test
 	public void testGetMinStockQuantity() throws Exception {
 		BigDecimal minStockQuantity =
 			_cpDefinitionInventoryEngine.getMinStockQuantity(0, _cpInstance);
@@ -179,6 +221,21 @@ public class CPDefinitionInventoryEngineTest {
 		Assert.assertTrue(
 			BigDecimalUtil.eq(
 				minStockQuantity, cpConfigurationEntry.getMinStockQuantity()));
+	}
+
+	@Test
+	public void testGetMinStockQuantityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				cpDefinitionInventory.getMinStockQuantity(),
+				_cpDefinitionInventoryEngine.getMinStockQuantity(
+					_cpConfigurationList.getCPConfigurationListId(),
+					_cpInstance)));
 	}
 
 	@Test
@@ -211,6 +268,83 @@ public class CPDefinitionInventoryEngineTest {
 			BigDecimalUtil.eq(
 				multipleOrderQuantity,
 				cpConfigurationEntry.getMultipleOrderQuantity()));
+	}
+
+	@Test
+	public void testGetMultipleOrderQuantityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				cpDefinitionInventory.getMultipleOrderQuantity(),
+				_cpDefinitionInventoryEngine.getMultipleOrderQuantity(
+					_cpConfigurationList.getCPConfigurationListId(),
+					_cpInstance)));
+	}
+
+	@Test
+	public void testIsBackOrderAllowedWithoutCPConfigurationEntry()
+		throws Exception {
+
+		_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			_cpDefinitionInventoryEngine.isBackOrderAllowed(
+				_cpConfigurationList.getCPConfigurationListId(), _cpInstance));
+	}
+
+	@Test
+	public void testIsDisplayAvailabilityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			_cpDefinitionInventoryEngine.isDisplayAvailability(
+				_cpConfigurationList.getCPConfigurationListId(), _cpInstance));
+	}
+
+	@Test
+	public void testIsDisplayStockQuantityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		_fallBackToCPDefinitionInventory();
+
+		Assert.assertTrue(
+			_cpDefinitionInventoryEngine.isDisplayStockQuantity(
+				_cpConfigurationList.getCPConfigurationListId(), _cpInstance));
+	}
+
+	private CPDefinitionInventory _fallBackToCPDefinitionInventory()
+		throws Exception {
+
+		_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
+			_classNameLocalService.getClassNameId(CPDefinition.class),
+			_cpInstance.getCPDefinitionId(), true);
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_cpDefinitionInventoryLocalService.
+				fetchCPDefinitionInventoryByCPDefinitionId(
+					_cpInstance.getCPDefinitionId());
+
+		cpDefinitionInventory.setDisplayAvailability(true);
+		cpDefinitionInventory.setDisplayStockQuantity(true);
+		cpDefinitionInventory.setMinStockQuantity(
+			BigDecimal.valueOf(RandomTestUtil.randomInt()));
+		cpDefinitionInventory.setBackOrders(true);
+		cpDefinitionInventory.setMinOrderQuantity(
+			BigDecimal.valueOf(RandomTestUtil.randomInt()));
+		cpDefinitionInventory.setMaxOrderQuantity(
+			BigDecimal.valueOf(RandomTestUtil.randomInt()));
+		cpDefinitionInventory.setAllowedOrderQuantities("2 4");
+		cpDefinitionInventory.setMultipleOrderQuantity(
+			BigDecimal.valueOf(RandomTestUtil.randomInt()));
+
+		return _cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
+			cpDefinitionInventory);
 	}
 
 	@Inject

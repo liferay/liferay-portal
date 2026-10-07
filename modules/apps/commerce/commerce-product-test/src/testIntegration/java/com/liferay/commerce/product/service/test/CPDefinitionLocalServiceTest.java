@@ -16,9 +16,12 @@ import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
+import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
+import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLocalization;
@@ -33,6 +36,7 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -74,6 +78,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -483,6 +488,141 @@ public class CPDefinitionLocalServiceTest {
 	public void testAddFutureExpiredCPDefinition() throws Exception {
 		_testAddFutureExpiredCPDefinition();
 		_testAddFutureExpiredCPDefinitionWithStatusExpired();
+	}
+
+	@Test
+	public void testCloneCPDefinitionCPConfigurationEntries() throws Exception {
+		frutillaRule.scenario(
+			"Duplicate a product that carries configuration entries"
+		).given(
+			"A product with a master configuration entry and an entry in a " +
+				"child configuration list"
+		).when(
+			"The product is duplicated in the same catalog and in another " +
+				"catalog"
+		).then(
+			"The duplicate in the same catalog carries a copy of both entries"
+		).and(
+			"The duplicate in the other catalog carries a copy of the master " +
+				"entry in the master configuration list of that catalog"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		CPConfigurationEntry masterCPConfigurationEntry =
+			cpDefinition.fetchMasterCPConfigurationEntry();
+
+		masterCPConfigurationEntry.setDisplayAvailability(true);
+		masterCPConfigurationEntry.setMaxOrderQuantity(
+			BigDecimal.valueOf(RandomTestUtil.randomInt()));
+
+		masterCPConfigurationEntry =
+			_cpConfigurationEntryLocalService.updateCPConfigurationEntry(
+				masterCPConfigurationEntry);
+
+		CPConfigurationList cpConfigurationList = _addCPConfigurationList(
+			_commerceCatalog.getGroupId());
+
+		long classNameId = _portal.getClassNameId(CPDefinition.class);
+
+		_cpConfigurationEntryLocalService.addCPConfigurationEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			cpConfigurationList.getGroupId(), classNameId,
+			cpDefinition.getCPDefinitionId(),
+			cpConfigurationList.getCPConfigurationListId(), 0, "1,234.00",
+			RandomTestUtil.randomBoolean(), 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomString(),
+			BigDecimal.valueOf(RandomTestUtil.randomInt()),
+			BigDecimal.valueOf(RandomTestUtil.randomInt()),
+			BigDecimal.valueOf(RandomTestUtil.randomInt()),
+			BigDecimal.valueOf(RandomTestUtil.randomInt()),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble());
+
+		CPDefinition newCPDefinition1 =
+			_cpDefinitionLocalService.cloneCPDefinition(
+				TestPropsValues.getUserId(), cpDefinition.getCPDefinitionId(),
+				_commerceCatalog.getGroupId(), _serviceContext);
+
+		List<CPConfigurationEntry> newCPConfigurationEntries =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				classNameId, newCPDefinition1.getCPDefinitionId());
+
+		Assert.assertEquals(
+			newCPConfigurationEntries.toString(), 2,
+			newCPConfigurationEntries.size());
+
+		List<CPConfigurationEntry> cpConfigurationEntries =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				classNameId, cpDefinition.getCPDefinitionId());
+
+		for (CPConfigurationEntry cpConfigurationEntry :
+				cpConfigurationEntries) {
+
+			CPConfigurationEntry newCPConfigurationEntry =
+				_cpConfigurationEntryLocalService.fetchCPConfigurationEntry(
+					classNameId, newCPDefinition1.getCPDefinitionId(),
+					cpConfigurationEntry.getCPConfigurationListId());
+
+			_assertCPConfigurationEntry(
+				cpConfigurationEntry, newCPConfigurationEntry);
+
+			Assert.assertEquals(
+				_getIndexIds(cpConfigurationEntry),
+				_getIndexIds(newCPConfigurationEntry));
+		}
+
+		CommerceCatalog commerceCatalog =
+			CommerceCatalogLocalServiceUtil.addCommerceCatalog(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
+				LocaleUtil.US.getDisplayLanguage(), _serviceContext);
+
+		cpConfigurationList = _addCPConfigurationList(
+			commerceCatalog.getGroupId());
+
+		CPDefinition newCPDefinition2 =
+			_cpDefinitionLocalService.cloneCPDefinition(
+				TestPropsValues.getUserId(), cpDefinition.getCPDefinitionId(),
+				commerceCatalog.getGroupId(), _serviceContext);
+
+		newCPConfigurationEntries =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				classNameId, newCPDefinition2.getCPDefinitionId());
+
+		Assert.assertEquals(
+			newCPConfigurationEntries.toString(), 1,
+			newCPConfigurationEntries.size());
+
+		CPConfigurationEntry newCPConfigurationEntry =
+			newCPConfigurationEntries.get(0);
+
+		CPConfigurationList masterCPConfigurationList =
+			_cpConfigurationListLocalService.getMasterCPConfigurationList(
+				commerceCatalog.getGroupId());
+
+		Assert.assertEquals(
+			masterCPConfigurationList.getCPConfigurationListId(),
+			newCPConfigurationEntry.getCPConfigurationListId());
+
+		Assert.assertEquals(
+			commerceCatalog.getGroupId(), newCPConfigurationEntry.getGroupId());
+		Assert.assertEquals(
+			String.valueOf(cpConfigurationList.getCPConfigurationListId()),
+			_getIndexIds(newCPConfigurationEntry));
+
+		_assertCPConfigurationEntry(
+			masterCPConfigurationEntry, newCPConfigurationEntry);
+
+		_cpDefinitionLocalService.deleteCPDefinition(newCPDefinition2);
+
+		CommerceCatalogLocalServiceUtil.deleteCommerceCatalog(commerceCatalog);
 	}
 
 	@Test
@@ -1034,6 +1174,45 @@ public class CPDefinitionLocalServiceTest {
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
+	private CPConfigurationList _addCPConfigurationList(long groupId)
+		throws Exception {
+
+		CPConfigurationList masterCPConfigurationList =
+			_cpConfigurationListLocalService.getMasterCPConfigurationList(
+				groupId);
+
+		return _cpConfigurationListLocalService.addCPConfigurationList(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
+			masterCPConfigurationList.getCPConfigurationListId(), false,
+			RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0, 0,
+			true, _serviceContext);
+	}
+
+	private void _assertCPConfigurationEntry(
+		CPConfigurationEntry expectedCPConfigurationEntry,
+		CPConfigurationEntry actualCPConfigurationEntry) {
+
+		Assert.assertEquals(
+			expectedCPConfigurationEntry.getAllowedOrderQuantities(),
+			actualCPConfigurationEntry.getAllowedOrderQuantities());
+		Assert.assertNotEquals(
+			expectedCPConfigurationEntry.getCPConfigurationEntryId(),
+			actualCPConfigurationEntry.getCPConfigurationEntryId());
+		Assert.assertEquals(
+			expectedCPConfigurationEntry.getCPDefinitionInventoryEngine(),
+			actualCPConfigurationEntry.getCPDefinitionInventoryEngine());
+		Assert.assertEquals(
+			expectedCPConfigurationEntry.isDisplayAvailability(),
+			actualCPConfigurationEntry.isDisplayAvailability());
+		Assert.assertNotEquals(
+			expectedCPConfigurationEntry.getExternalReferenceCode(),
+			actualCPConfigurationEntry.getExternalReferenceCode());
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				expectedCPConfigurationEntry.getMaxOrderQuantity(),
+				actualCPConfigurationEntry.getMaxOrderQuantity()));
+	}
+
 	private void _assertPublished(CPDefinition cpDefinition) throws Exception {
 		cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinition.getCPDefinitionId());
@@ -1103,6 +1282,16 @@ public class CPDefinitionLocalServiceTest {
 			TestPropsValues.getUserId(), clonedCPDefinition.getCPDefinitionId(),
 			WorkflowConstants.STATUS_APPROVED, _serviceContext,
 			Collections.emptyMap());
+	}
+
+	private String _getIndexIds(CPConfigurationEntry cpConfigurationEntry) {
+		CPConfigurationEntrySetting cpConfigurationEntrySetting =
+			_cpConfigurationEntrySettingLocalService.
+				fetchCPConfigurationEntrySetting(
+					cpConfigurationEntry.getCPConfigurationEntryId(),
+					CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
+
+		return cpConfigurationEntrySetting.getValue();
 	}
 
 	private void _testAddFutureExpiredCPDefinition() throws Exception {
@@ -1305,6 +1494,21 @@ public class CPDefinitionLocalServiceTest {
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
 						cpDefinition3.getCPDefinitionId()));
+
+			List<CPConfigurationEntry> cpConfigurationEntries =
+				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+					_portal.getClassNameId(CPDefinition.class),
+					cpDefinition3.getCPDefinitionId());
+
+			Assert.assertEquals(
+				cpConfigurationEntries.toString(), 2,
+				cpConfigurationEntries.size());
+
+			Assert.assertNotNull(
+				cpDefinition3.fetchCPConfigurationEntry(
+					cpConfigurationList.getCPConfigurationListId()));
+			Assert.assertNotNull(
+				cpDefinition3.fetchMasterCPConfigurationEntry());
 		}
 	}
 
@@ -2842,6 +3046,10 @@ public class CPDefinitionLocalServiceTest {
 
 	@Inject
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
+
+	@Inject
+	private CPConfigurationEntrySettingLocalService
+		_cpConfigurationEntrySettingLocalService;
 
 	@Inject
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;
