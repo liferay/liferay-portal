@@ -836,3 +836,72 @@ test('Content selection is empty after initial publication to live when using th
 
 	expect(contentItems.size).toEqual(0);
 });
+
+test(
+	'Only the selected web contents are published to live with the Publish Selected Elements action, and none when it is canceled',
+	{tag: ['@LPD-55093', '@LPS-190015']},
+	async ({apiHelpers, journalPage, page}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: 'site-' + getRandomString(),
+		});
+
+		await enableLocalStaging(apiHelpers, page, site);
+
+		const stagingSite =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+				`${site.friendlyUrlPath}-staging`
+			);
+
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const [selectedTitle1, selectedTitle2, unselectedTitle] = [
+			getRandomString(),
+			getRandomString(),
+			getRandomString(),
+		];
+
+		for (const title of [selectedTitle1, selectedTitle2, unselectedTitle]) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: stagingSite.id,
+				titleMap: {en_US: title},
+			});
+		}
+
+		await journalPage.goto(stagingSite.friendlyUrlPath);
+
+		for (const title of [selectedTitle1, selectedTitle2]) {
+			await journalPage.selectItemByTitle(title);
+		}
+
+		await journalPage.publishSelectedElements({confirm: false});
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		for (const title of [selectedTitle1, selectedTitle2, unselectedTitle]) {
+			await expect(page.getByText(title, {exact: true})).toBeHidden();
+		}
+
+		await journalPage.goto(stagingSite.friendlyUrlPath);
+
+		for (const title of [selectedTitle1, selectedTitle2]) {
+			await journalPage.selectItemByTitle(title);
+		}
+
+		await journalPage.publishSelectedElements();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		for (const title of [selectedTitle1, selectedTitle2]) {
+			await reloadUntilVisible({
+				myLocator: page.getByText(title, {exact: true}),
+				page,
+			});
+		}
+
+		await expect(
+			page.getByText(unselectedTitle, {exact: true})
+		).toBeHidden();
+	}
+);
