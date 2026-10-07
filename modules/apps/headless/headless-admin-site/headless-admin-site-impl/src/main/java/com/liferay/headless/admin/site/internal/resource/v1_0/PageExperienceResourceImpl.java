@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -95,13 +96,19 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			String pageExperienceExternalReferenceCode)
 		throws Exception {
 
-		return _toPageExperience(
+		SegmentsExperience segmentsExperience =
 			_segmentsExperienceService.
 				getSegmentsExperienceByExternalReferenceCode(
 					pageExperienceExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode)));
+						siteExternalReferenceCode));
+
+		_layoutPermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			segmentsExperience.getPlid(), ActionKeys.VIEW);
+
+		return _toPageExperience(segmentsExperience);
 	}
 
 	@Override
@@ -110,7 +117,7 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			String pageSpecificationExternalReferenceCode)
 		throws Exception {
 
-		Layout layout = _layoutLocalService.fetchLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.fetchLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode,
 			GroupUtil.getGroupId(
 				true, contextCompany.getCompanyId(),
@@ -138,7 +145,7 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageExperience.getPageSpecificationExternalReferenceCode(),
 			groupId);
 
@@ -161,7 +168,7 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			pageExperience.getPageSpecificationExternalReferenceCode(),
 			groupId);
 
@@ -309,6 +316,9 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 
 	@Reference
 	private LayoutPermission _layoutPermission;
+
+	@Reference
+	private LayoutService _layoutService;
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
