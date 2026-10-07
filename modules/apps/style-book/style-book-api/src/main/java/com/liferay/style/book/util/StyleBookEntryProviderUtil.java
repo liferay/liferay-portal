@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
 
@@ -100,6 +101,12 @@ public class StyleBookEntryProviderUtil {
 					fetchStyleBookEntryByExternalReferenceCode(
 						layout.getStyleBookEntryERC(),
 						StagingUtil.getLiveGroupId(groupId));
+		}
+
+		if ((styleBookEntry != null) &&
+			(styleBookEntry.getStatus() == WorkflowConstants.STATUS_EMPTY)) {
+
+			styleBookEntry = null;
 		}
 
 		if ((styleBookEntry == null) && _log.isWarnEnabled()) {

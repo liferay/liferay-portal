@@ -11,6 +11,9 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
@@ -23,6 +26,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -141,6 +145,57 @@ public class StyleBookEntryProviderUtilTest {
 			styleBookEntries.contains(parentStyleBookEntry));
 	}
 
+	@Test
+	public void testGetStyleBookEntriesWithEmptyStyleBookEntry()
+		throws Exception {
+
+		String themeId = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			_group.getGroupId(), themeId);
+
+		StyleBookEntry emptyStyleBookEntry = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			emptyStyleBookEntry =
+				_styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
+					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					_group.getGroupId(), themeId);
+		}
+
+		Assert.assertEquals(
+			ListUtil.fromArray(styleBookEntry),
+			StyleBookEntryProviderUtil.getStyleBookEntries(
+				_group.getCompanyId(), _group.getGroupId(), themeId));
+		Assert.assertEquals(
+			1,
+			StyleBookEntryProviderUtil.getStyleBookEntriesCount(
+				_group.getCompanyId(), _group.getGroupId(), null, themeId));
+		Assert.assertEquals(
+			0,
+			StyleBookEntryProviderUtil.getStyleBookEntriesCount(
+				_group.getCompanyId(), _group.getGroupId(),
+				emptyStyleBookEntry.getName(), themeId));
+
+		List<StyleBookEntry> styleBookEntries =
+			_styleBookEntryLocalService.getStyleBookEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
+
+		Assert.assertTrue(
+			styleBookEntries.toString(),
+			styleBookEntries.contains(emptyStyleBookEntry));
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			emptyStyleBookEntry.getStyleBookEntryId(), true);
+
+		Assert.assertNull(
+			_styleBookEntryLocalService.fetchDefaultStyleBookEntry(
+				_group.getGroupId(), themeId));
+	}
+
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
 	@TestInfo({"LPD-88081", "LPD-107030"})
@@ -178,6 +233,19 @@ public class StyleBookEntryProviderUtilTest {
 
 		_testGetStyleBookEntry(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			_styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				_group.getGroupId(), _THEME_ID_CLASSIC);
+		}
+
+		_testGetStyleBookEntry(null, externalReferenceCode, null);
+
 		_testGetStyleBookEntryWhenVirtualLayout();
 	}
 

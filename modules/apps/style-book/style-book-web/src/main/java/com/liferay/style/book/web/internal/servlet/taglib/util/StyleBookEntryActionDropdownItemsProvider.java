@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProviderUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
@@ -35,6 +36,7 @@ import java.util.List;
 
 /**
  * @author Eudaldo Alonso
+ * @author Thiago Buarque
  */
 public class StyleBookEntryActionDropdownItemsProvider {
 
@@ -112,7 +114,10 @@ public class StyleBookEntryActionDropdownItemsProvider {
 						},
 						_getDiscardDraftStyleBookEntryActionUnsafeConsumer()
 					).add(
-						() -> !_styleBookEntry.isDefaultStyleBookEntry(),
+						() ->
+							!_styleBookEntry.isDefaultStyleBookEntry() &&
+							(_styleBookEntry.getStatus() !=
+								WorkflowConstants.STATUS_EMPTY),
 						_getMarkAsDefaultStyleBookEntryActionUnsafeConsumer()
 					).add(
 						_getRenameStyleBookEntrytActionUnsafeConsumer()
