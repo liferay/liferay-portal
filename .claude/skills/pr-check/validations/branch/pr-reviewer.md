@@ -25,11 +25,12 @@ When at least one fix was applied, commit as the **Autocommit** section says, th
 
 ```bash
 LOG_RERUN=$(mktemp)
+LOG_RERUN_ERROR=$(mktemp)
 
-(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2>&1)
+(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2> "${LOG_RERUN_ERROR}")
 ```
 
-Report **PASS** when the rerun exits `0`. Report **FAIL** when it still finds violations, and return them as the note below. Do not start a second round of fixes, since a violation the first round did not resolve needs the developer's judgment, and a loop of automated rounds can chase a false positive indefinitely.
+Report **PASS** when the rerun exits `0`. Report **NOT VERIFIED** when it exits `2`, quote `${LOG_RERUN_ERROR}`, and say in the note that the fixes in the `<TICKET> Apply pr-reviewer rules` commit were not reviewed again. Keep that commit, since each fix in it was checked against its rule before it was applied. Report **FAIL** when the rerun exits `1`, and return its violations as the note below. Do not start a second round of fixes, since a violation the first round did not resolve needs the developer's judgment, and a loop of automated rounds can chase a false positive indefinitely.
 
 ```markdown
 **The pr-reviewer rules still flag this branch.** Apply each fix below, or leave the code as it is when a violation is a false positive and say so in the PR description.
