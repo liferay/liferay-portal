@@ -5,7 +5,13 @@
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {render, screen, waitFor, within} from '@testing-library/react';
+import {
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
@@ -40,7 +46,6 @@ const lookAndFeelControlNames = [
 	'THEME_REFERENCE',
 	'LOGO',
 	'LAYOUT_SET_SETTINGS',
-	'LAYOUT_SET_PROTOTYPE_SETTINGS',
 ];
 
 const lookAndFeelPortletDataHandler = toMockLookAndFeelPortletDataHandler(
@@ -64,12 +69,24 @@ const renderComponent = (
 	props: Partial<React.ComponentProps<typeof NewSiteTemplateSync>> = {}
 ) => render(<NewSiteTemplateSync {...DEFAULT_PROPS} {...props} />);
 
-const submitSync = async () => {
+const openConfirmation = async () => {
 	const syncButton = screen.getByRole('button', {name: /^sync$/i});
 
 	await waitFor(() => expect(syncButton).toBeEnabled());
 
 	await userEvent.click(syncButton);
+
+	await screen.findByText('sync-linked-sites');
+
+	return screen.getByRole('dialog');
+};
+
+const submitSync = async () => {
+	const dialog = await openConfirmation();
+
+	await userEvent.click(
+		within(dialog).getByRole('button', {name: 'sync-sites'})
+	);
 };
 
 describe('NewSiteTemplateSync', () => {
@@ -152,6 +169,43 @@ describe('NewSiteTemplateSync', () => {
 		expect(await screen.findByText('Boom')).toBeInTheDocument();
 	});
 
+	it('asks for confirmation before syncing', async () => {
+		renderComponent({syncPreview: mockPreview});
+
+		const dialog = await openConfirmation();
+
+		expect(getSyncCall()).toBeUndefined();
+
+		await userEvent.click(
+			within(dialog).getByRole('button', {name: 'sync-sites'})
+		);
+
+		await waitFor(() => expect(getSyncCall()).toBeDefined());
+	});
+
+	it('syncs once when the confirmation is clicked twice', async () => {
+		renderComponent({syncPreview: mockPreview});
+
+		const dialog = await openConfirmation();
+
+		const syncSitesButton = within(dialog).getByRole('button', {
+			name: 'sync-sites',
+		});
+
+		fireEvent.click(syncSitesButton);
+		fireEvent.click(syncSitesButton);
+
+		await waitFor(() => expect(Liferay.Util.navigate).toHaveBeenCalled());
+
+		expect(
+			fetch.mock.calls.filter(
+				([url, init]) =>
+					String(url).includes('sync-processes') &&
+					init?.method === 'POST'
+			)
+		).toHaveLength(1);
+	});
+
 	it('syncs all private pages and the look and feel by default and goes back', async () => {
 		renderComponent({syncPreview: previewWithPages});
 
@@ -204,11 +258,11 @@ describe('NewSiteTemplateSync', () => {
 		);
 	});
 
-	it('shows the error toast and stays on the page when the sync fails', async () => {
+	it('shows the escaped error toast and stays on the page when the sync fails', async () => {
 		fetch.mockResponse(async (request) => {
 			if (request.url.includes('sync-processes')) {
 				return {
-					body: JSON.stringify({title: 'Sync in progress'}),
+					body: JSON.stringify({title: 'No page <x>'}),
 					init: {status: 400},
 				};
 			}
@@ -224,7 +278,7 @@ describe('NewSiteTemplateSync', () => {
 
 		await waitFor(() =>
 			expect(Liferay.Util.openToast).toHaveBeenCalledWith({
-				message: 'Sync in progress',
+				message: 'No page &lt;x&gt;',
 				type: 'danger',
 			})
 		);

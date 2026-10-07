@@ -5,8 +5,8 @@
 
 import ClayAlert from '@clayui/alert';
 import {Form, Formik} from 'formik';
-import {sub} from 'frontend-js-web';
-import React from 'react';
+import {escapeHTML, sub} from 'frontend-js-web';
+import React, {useState} from 'react';
 
 import DataSelection from '../../components/DataSelection';
 import Footer from '../../components/Footer';
@@ -22,6 +22,7 @@ import {
 } from '../../utils/contentSelection';
 import {navigateToProcesses} from '../../utils/navigateToProcesses';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
+import SyncConfirmationModal from './components/SyncConfirmationModal';
 
 type SyncFormValues = {
 	contentSelection: ContentSelection | null | undefined;
@@ -52,6 +53,8 @@ export function NewSiteTemplateSync({
 		syncPreview
 	);
 
+	const [confirming, setConfirming] = useState(false);
+
 	if (error) {
 		return <ClayAlert displayType="danger">{error}</ClayAlert>;
 	}
@@ -81,7 +84,7 @@ export function NewSiteTemplateSync({
 
 				if (result.error) {
 					Liferay.Util.openToast({
-						message: result.error,
+						message: escapeHTML(result.error),
 						type: 'danger',
 					});
 
@@ -94,7 +97,7 @@ export function NewSiteTemplateSync({
 						Liferay.Language.get(
 							'the-sync-of-the-site-template-x-started-you-will-receive-a-notification-when-the-process-is-complete'
 						),
-						siteTemplateName
+						escapeHTML(siteTemplateName)
 					),
 					backURL
 				);
@@ -113,7 +116,14 @@ export function NewSiteTemplateSync({
 				const contentSelection = formik.values.contentSelection;
 
 				return (
-					<Form noValidate>
+					<Form
+						noValidate
+						onSubmit={(event) => {
+							event.preventDefault();
+
+							setConfirming(true);
+						}}
+					>
 						<ClayAlert
 							className="mt-4"
 							displayType="info"
@@ -154,6 +164,14 @@ export function NewSiteTemplateSync({
 							backURL={backURL}
 							continueDisabled={!contentSelection}
 						/>
+
+						{confirming && (
+							<SyncConfirmationModal
+								onClose={() => setConfirming(false)}
+								onConfirm={formik.submitForm}
+								siteTemplateName={siteTemplateName}
+							/>
+						)}
 					</Form>
 				);
 			}}
