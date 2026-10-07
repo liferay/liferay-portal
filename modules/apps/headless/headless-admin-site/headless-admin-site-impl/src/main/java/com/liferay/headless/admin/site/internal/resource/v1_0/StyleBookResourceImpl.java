@@ -390,7 +390,7 @@ public class StyleBookResourceImpl
 				_getPreviewFileEntryId(
 					groupId,
 					styleBook.getPreviewFileEntryExternalReferenceCode()),
-				_getServiceContext(groupId)));
+				styleBook.getThemeId(), _getServiceContext(groupId)));
 	}
 
 	@Override
@@ -425,7 +425,7 @@ public class StyleBookResourceImpl
 				_getPreviewFileEntryId(
 					groupId,
 					styleBook.getPreviewFileEntryExternalReferenceCode()),
-				_getServiceContext(groupId)));
+				styleBook.getThemeId(), _getServiceContext(groupId)));
 	}
 
 	private void _checkFeatureFlag() {

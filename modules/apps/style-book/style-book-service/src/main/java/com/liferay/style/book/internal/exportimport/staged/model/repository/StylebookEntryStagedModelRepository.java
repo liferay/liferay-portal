@@ -21,6 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pavel Savinov
+ * @author Thiago Buarque
  */
 @Component(
 	property = "model.class.name=com.liferay.style.book.model.StyleBookEntry",
@@ -136,7 +137,7 @@ public class StylebookEntryStagedModelRepository
 			styleBookEntry.getFrontendTokenDefinition(),
 			styleBookEntry.getFrontendTokensValues(), styleBookEntry.getName(),
 			styleBookEntry.getStyleBookEntryKey(),
-			styleBookEntry.getPreviewFileEntryId(),
+			styleBookEntry.getPreviewFileEntryId(), styleBookEntry.getThemeId(),
 			portletDataContext.createServiceContext(styleBookEntry));
 	}
 
