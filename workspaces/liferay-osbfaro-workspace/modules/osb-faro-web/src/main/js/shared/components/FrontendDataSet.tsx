@@ -41,11 +41,13 @@ const CONFIG_IN_URL_OFF = 'off' as EConfigInURLBehavior;
 
 const {cur, delta, deltaValues} = FaroConstants.pagination;
 
-// The data set prefixes every empty state image with the theme's images path
-// (/o/<theme>/images), so step out of it to reach the image osb-faro-web serves.
+// Paths relative to the theme's images directory, where the data set looks them
+// up. The data set falls back to the search state image when none is given.
 
-export const SATELLITE_EMPTY_STATE_IMAGE =
-	'/../../osb-faro-web/images/states/satellite.svg';
+export const EMPTY_STATE_IMAGE = '/states/empty_state.svg';
+
+export const EMPTY_STATE_REDUCED_MOTION_IMAGE =
+	'/states/empty_state_reduced_motion.svg';
 
 export const rangeSelectors = [
 	{

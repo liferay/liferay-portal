@@ -13,9 +13,10 @@ import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {
+	EMPTY_STATE_IMAGE,
+	EMPTY_STATE_REDUCED_MOTION_IMAGE,
 	FrontendDataSet,
 	pagination,
-	SATELLITE_EMPTY_STATE_IMAGE,
 } from 'shared/components/FrontendDataSet';
 import {getAssetDescriptorByRESTType} from 'assets/descriptors';
 import {getMimeType} from 'assets/components/mime-type';
@@ -501,7 +502,9 @@ const List = () => {
 						emptyState={{
 							description:
 								assetsEmptyStateDescription as unknown as string,
-							image: SATELLITE_EMPTY_STATE_IMAGE,
+							image: EMPTY_STATE_IMAGE,
+							imageReducedMotion:
+								EMPTY_STATE_REDUCED_MOTION_IMAGE,
 							title: Liferay.Language.get('no-assets-were-found'),
 						}}
 						filters={filters}
