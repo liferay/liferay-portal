@@ -18,8 +18,13 @@
 
 		<aui:script>
 			document.addEventListener('DOMContentLoaded', () => {
-				document.querySelector('#liferayAUICSS')?.remove();
-				document.querySelector('#liferayThemeCSS')?.remove();
+				for (const id of ['liferayAUICSS', 'liferayThemeCSS']) {
+					const link = document.getElementById(id);
+
+					if (link) {
+						link.disabled = true;
+					}
+				}
 			});
 		</aui:script>
 	</c:when>
