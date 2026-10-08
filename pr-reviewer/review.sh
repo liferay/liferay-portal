@@ -98,7 +98,7 @@ function main {
 
 	work_dir=$(mktemp --directory)
 
-	trap "rm --force --recursive ${work_dir}" EXIT
+	trap "rm -fr ${work_dir}" EXIT
 
 	local diff_file=${work_dir}/review.diff
 
@@ -181,11 +181,11 @@ function main {
 
 	local reviewed_rules
 
-	reviewed_rules=$(echo ${reviewed_rule_files} | tr " " "\n" | xargs --no-run-if-empty basename --multiple | cut --characters=1-3 | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')
+	reviewed_rules=$(echo ${reviewed_rule_files} | tr " " "\n" | sed -e "s#.*/##" | cut -c 1-3 | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')
 
 	local pid
 
-	for pid in "${pids[@]}"
+	for pid in ${pids[@]+"${pids[@]}"}
 	do
 		wait ${pid} || true
 	done
@@ -212,7 +212,7 @@ function main {
 
 	if ls ${work_dir}/*.failed > /dev/null 2>&1
 	then
-		echo "Unable to review the diff because these groups returned no verdict: $(basename --multiple --suffix=.failed ${work_dir}/*.failed | tr "\n" " ")" >&2
+		echo "Unable to review the diff because these groups returned no verdict: $(basename -a -s .failed ${work_dir}/*.failed | tr "\n" " ")" >&2
 
 		exit 2
 	fi
@@ -346,9 +346,9 @@ function _print_report {
 
 	local reviewed_files_count
 
-	reviewed_files_count=$(echo "${reviewed_files}" | wc --lines)
+	reviewed_files_count=$(($(echo "${reviewed_files}" | wc -l)))
 
-	echo "Reviewed ${reviewed_files_count} file(s) for ${diff_label} against $(ls ${rules_dir}/*.md | wc --lines) rules in $(_get_group_labels | wc --lines) group(s), $(echo "${merged_json}" | jq --raw-output '"\(.tokens.input + .tokens.cache_write + .tokens.cache_read) input tokens (\(.tokens.cache_read) read from the cache), \(.tokens.output) output tokens, and $\(.cost * 100 | round / 100)"')."
+	echo "Reviewed ${reviewed_files_count} file(s) for ${diff_label} against $(($(ls ${rules_dir}/*.md | wc -l))) rules in $(($(_get_group_labels | wc -l))) group(s), $(echo "${merged_json}" | jq --raw-output '"\(.tokens.input + .tokens.cache_write + .tokens.cache_read) input tokens (\(.tokens.cache_read) read from the cache), \(.tokens.output) output tokens, and $\(.cost * 100 | round / 100)"')."
 	echo ""
 
 	echo "${merged_json}" | jq --raw-output '.groups | to_entries[] | "  \(.key): \(.value.violations) violation(s), \(.value.chance)% chance, \(.value.seconds)s"'
@@ -450,7 +450,7 @@ $(cat ${diff_file})"
 
 	if ! echo "${raw}" | jq --exit-status ".structured_output | has(\"violations\")" > /dev/null 2>&1
 	then
-		echo "The ${group_label} group returned no verdict: $(echo "${raw}" | jq --raw-output '.result // .error // empty' 2> /dev/null | head --bytes=300)" >&2
+		echo "The ${group_label} group returned no verdict: $(echo "${raw}" | jq --raw-output '.result // .error // empty' 2> /dev/null | head -c 300)" >&2
 
 		touch ${work_dir}/${group_label}.failed
 
@@ -501,7 +501,7 @@ function _write_diff_file {
 	# them, matching run.sh.
 	#
 
-	for reviewed_file in $(git diff --name-only ${diff_args} -- . "${excludes[@]}")
+	for reviewed_file in $(git diff --name-only ${diff_args} -- . ${excludes[@]+"${excludes[@]}"})
 	do
 		if git grep --ignore-case --quiet "@generated" ${grep_ref} -- ":(top)${reviewed_file}" 2> /dev/null
 		then
@@ -509,7 +509,7 @@ function _write_diff_file {
 		fi
 	done
 
-	git diff --unified=1 ${diff_args} -- . "${excludes[@]}" | awk \
+	git diff --unified=1 ${diff_args} -- . ${excludes[@]+"${excludes[@]}"} | awk \
 		-v generated_files="${generated_files}|" \
 		-v ignored_filenames="${_IGNORED_FILENAMES}" \
 		-v ignored_patterns="${_IGNORED_PATTERNS}" \
