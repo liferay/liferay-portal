@@ -781,25 +781,17 @@ public class StyleBookEntryLocalServiceImpl
 		StyleBookEntry styleBookEntry =
 			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
 
-		if (!styleBookEntry.isHead()) {
-			throw new IllegalArgumentException(
-				"Unable to update draft style book entry " + styleBookEntryId);
+		if (styleBookEntry != null) {
+			styleBookEntry = fetchPublished(styleBookEntry);
 		}
 
-		boolean emptyStyleBookEntry = false;
-
-		if (styleBookEntry.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			if (Validator.isNull(themeId)) {
-				throw new StyleBookEntryThemeIdException.MustNotBeNull();
-			}
-
-			emptyStyleBookEntry = true;
-		}
-		else {
-			themeId = styleBookEntry.getThemeId();
+		if (styleBookEntry == null) {
+			return null;
 		}
 
-		_validate(styleBookEntry.getGroupId(), name, styleBookEntryId);
+		_validate(
+			styleBookEntry.getGroupId(), name,
+			styleBookEntry.getStyleBookEntryId());
 
 		_validateFrontendTokenDefinition(frontendTokenDefinition);
 
@@ -833,53 +825,38 @@ public class StyleBookEntryLocalServiceImpl
 		styleBookEntry.setPreviewFileEntryId(previewFileEntryId);
 		styleBookEntry.setStyleBookEntryKey(styleBookEntryKey);
 
-		if (emptyStyleBookEntry) {
-			StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
+		if (Validator.isNull(themeId)) {
+			throw new StyleBookEntryThemeIdException.MustNotBeNull();
+		}
 
-			if (draftStyleBookEntry != null) {
-				styleBookEntryLocalService.deleteDraft(draftStyleBookEntry);
-			}
+		styleBookEntry.setThemeId(themeId);
 
+		if (defaultStyleBookEntry) {
+			_unsetDefaultStyleBookEntries(
+				styleBookEntry.getGroupId(),
+				styleBookEntry.getStyleBookEntryId(), themeId);
+		}
+
+		styleBookEntry.setDefaultStyleBookEntry(defaultStyleBookEntry);
+
+		if (styleBookEntry.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			String uuid = serviceContext.getUuid();
 
 			if (Validator.isNotNull(uuid)) {
 				styleBookEntry.setUuid(uuid);
 			}
 
-			styleBookEntry.setThemeId(themeId);
 			styleBookEntry.setStatus(_solveEmptyModel(styleBookEntry));
 		}
 
-		if (defaultStyleBookEntry) {
-			_unsetDefaultStyleBookEntries(
-				styleBookEntry.getGroupId(), styleBookEntryId,
-				styleBookEntry.getThemeId());
+		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
 
-			styleBookEntry.setDefaultStyleBookEntry(true);
-
-			_updateDraftDefaultStyleBookEntry(true, styleBookEntry);
+		if (draftStyleBookEntry != null) {
+			styleBookEntryLocalService.deleteDraft(draftStyleBookEntry);
 		}
 
-		styleBookEntry = styleBookEntryPersistence.update(
-			styleBookEntry, serviceContext);
-
-		if (!emptyStyleBookEntry) {
-			return styleBookEntry;
-		}
-
-		List<StyleBookEntryVersion> styleBookEntryVersions = getVersions(
-			styleBookEntry);
-
-		styleBookEntry = styleBookEntryLocalService.publishDraft(
-			getDraft(styleBookEntry));
-
-		for (StyleBookEntryVersion styleBookEntryVersion :
-				styleBookEntryVersions) {
-
-			deleteVersion(styleBookEntryVersion);
-		}
-
-		return styleBookEntry;
+		return _deleteStyleBookEntryVersions(
+			styleBookEntryPersistence.update(styleBookEntry, serviceContext));
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -893,7 +870,17 @@ public class StyleBookEntryLocalServiceImpl
 		StyleBookEntry styleBookEntry =
 			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
 
-		_validate(styleBookEntry.getGroupId(), name, styleBookEntryId);
+		if (styleBookEntry != null) {
+			styleBookEntry = fetchPublished(styleBookEntry);
+		}
+
+		if (styleBookEntry == null) {
+			return null;
+		}
+
+		_validate(
+			styleBookEntry.getGroupId(), name,
+			styleBookEntry.getStyleBookEntryId());
 
 		_validateFrontendTokenDefinition(frontendTokenDefinition);
 
@@ -912,16 +899,11 @@ public class StyleBookEntryLocalServiceImpl
 		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
 
 		if (draftStyleBookEntry != null) {
-			draftStyleBookEntry.setModifiedDate(new Date());
-			draftStyleBookEntry.setFrontendTokenDefinition(
-				frontendTokenDefinition);
-			draftStyleBookEntry.setFrontendTokensValues(frontendTokensValues);
-			draftStyleBookEntry.setName(name);
-
-			updateDraft(draftStyleBookEntry);
+			styleBookEntryLocalService.deleteDraft(draftStyleBookEntry);
 		}
 
-		return styleBookEntryPersistence.update(styleBookEntry, serviceContext);
+		return _deleteStyleBookEntryVersions(
+			styleBookEntryPersistence.update(styleBookEntry, serviceContext));
 	}
 
 	private long _copyStyleBookEntryPreviewFileEntry(
@@ -964,6 +946,25 @@ public class StyleBookEntryLocalServiceImpl
 			false);
 
 		return fileEntry.getFileEntryId();
+	}
+
+	private StyleBookEntry _deleteStyleBookEntryVersions(
+			StyleBookEntry styleBookEntry)
+		throws PortalException {
+
+		List<StyleBookEntryVersion> styleBookEntryVersions = getVersions(
+			styleBookEntry);
+
+		styleBookEntry = styleBookEntryLocalService.publishDraft(
+			getDraft(styleBookEntry));
+
+		for (StyleBookEntryVersion styleBookEntryVersion :
+				styleBookEntryVersions) {
+
+			deleteVersion(styleBookEntryVersion);
+		}
+
+		return styleBookEntry;
 	}
 
 	private String _getEmptyStyleBookEntryName(
