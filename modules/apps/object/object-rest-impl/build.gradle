@@ -26,6 +26,7 @@ dependencies {
 	compileOnly project(":apps:headless:headless-delivery:headless-delivery-api")
 	compileOnly project(":apps:headless:headless-object:headless-object-api")
 	compileOnly project(":apps:list-type:list-type-api")
+	compileOnly project(":apps:oauth2-provider:oauth2-provider-api")
 	compileOnly project(":apps:object:object-admin-rest-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:object:object-rest-api")
