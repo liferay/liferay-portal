@@ -29,6 +29,10 @@ public class AccountLifecycleStage {
 		return _displayOrder;
 	}
 
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
+	}
+
 	public String getId() {
 		return _id;
 	}
@@ -63,6 +67,10 @@ public class AccountLifecycleStage {
 		_displayOrder = displayOrder;
 	}
 
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		_externalReferenceCode = externalReferenceCode;
+	}
+
 	public void setId(String id) {
 		_id = id;
 	}
@@ -83,6 +91,7 @@ public class AccountLifecycleStage {
 	private AccountLifecycleStageRule _accountLifecycleStageRule;
 	private String _description;
 	private Integer _displayOrder;
+	private String _externalReferenceCode;
 	private String _id;
 	private Integer _maxDuration;
 	private String _segmentId;

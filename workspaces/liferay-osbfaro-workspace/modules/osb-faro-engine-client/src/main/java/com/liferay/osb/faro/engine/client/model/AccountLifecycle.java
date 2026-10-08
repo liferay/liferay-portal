@@ -17,6 +17,10 @@ public class AccountLifecycle {
 		return _description;
 	}
 
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
+	}
+
 	public String getId() {
 		return _id;
 	}
@@ -45,6 +49,10 @@ public class AccountLifecycle {
 		_description = description;
 	}
 
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		_externalReferenceCode = externalReferenceCode;
+	}
+
 	public void setId(String id) {
 		_id = id;
 	}
@@ -68,6 +76,7 @@ public class AccountLifecycle {
 	}
 
 	private String _description;
+	private String _externalReferenceCode;
 	private String _id;
 	private String _name;
 	private Date _processedDate;
