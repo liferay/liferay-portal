@@ -92,9 +92,11 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	@Override
 	@Test
 	public void testGetAssetLibraryRolesPage() throws Exception {
-		_testGetAssetLibraryRolesPage(
-			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
-		_testGetAssetLibraryRolesPage(DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+		super.testGetAssetLibraryRolesPage();
+
+		_testGetAssetLibraryRolesPageWithAssetLibraryAdministratorRole();
+		_testGetAssetLibraryRolesPageWithAssetLibraryMemberRole();
+		_testGetAssetLibraryRolesPageWithAssignMembersPermission();
 		_testGetAssetLibraryRolesPageWithSubtype();
 	}
 
@@ -279,7 +281,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			password, RandomTestUtil.randomString() + "@liferay.com",
 			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
 			ServiceContextTestUtil.getServiceContext());
 
 		com.liferay.portal.kernel.model.Role serviceBuilderRole =
@@ -324,6 +327,16 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		).build();
 	}
 
+	private List<String> _getRoleNames(RoleResource roleResource)
+		throws Exception {
+
+		Page<Role> rolesPage = roleResource.getAssetLibraryRolesPage(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			Pagination.of(1, 100));
+
+		return TransformUtil.transform(rolesPage.getItems(), Role::getName);
+	}
+
 	private RoleResource _getRoleResource(String roleName) throws Exception {
 		String password = RandomTestUtil.randomString();
 
@@ -360,27 +373,44 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		return _roleLocalService.getRole(testCompany.getCompanyId(), roleName);
 	}
 
-	private void _testGetAssetLibraryRolesPage(String roleName)
+	private void _testGetAssetLibraryRolesPageWithAssetLibraryAdministratorRole()
 		throws Exception {
 
-		RoleResource roleResource = _getRoleResource(roleName);
+		List<String> roleNames = _getRoleNames(
+			_getRoleResource(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR));
 
-		Page<Role> rolesPage = roleResource.getAssetLibraryRolesPage(
-			testDepotEntryGroup.getExternalReferenceCode(),
-			Pagination.of(1, 10));
+		Assert.assertFalse(
+			roleNames.toString(),
+			roleNames.contains(
+				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR));
+		Assert.assertTrue(
+			roleNames.toString(),
+			roleNames.contains(
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER));
+		Assert.assertTrue(
+			roleNames.toString(),
+			roleNames.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
+	}
 
-		List<String> names = TransformUtil.transform(
-			rolesPage.getItems(), Role::getName);
+	private void _testGetAssetLibraryRolesPageWithAssetLibraryMemberRole()
+		throws Exception {
 
+		List<String> roleNames = _getRoleNames(
+			_getRoleResource(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
+
+		Assert.assertEquals(roleNames.toString(), 0, roleNames.size());
+	}
+
+	private void _testGetAssetLibraryRolesPageWithAssignMembersPermission()
+		throws Exception {
+
+		List<String> roleNames = _getRoleNames(
+			_getDepotEntryRoleResource(ActionKeys.ASSIGN_MEMBERS));
+
+		Assert.assertEquals(roleNames.toString(), 1, roleNames.size());
 		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR));
-		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
-		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_OWNER));
+			roleNames.toString(),
+			roleNames.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
 	}
 
 	private void _testGetAssetLibraryRolesPageWithSubtype() throws Exception {
@@ -459,13 +489,13 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				user.getExternalReferenceCode(),
 				_toRoles(assetLibraryMemberServiceBuilderRole));
 
-		List<String> names = TransformUtil.transform(
+		List<String> roleNames = TransformUtil.transform(
 			rolesPage.getItems(), Role::getName);
 
-		Assert.assertEquals(names.toString(), 1, names.size());
+		Assert.assertEquals(roleNames.toString(), 1, roleNames.size());
 		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
+			roleNames.toString(),
+			roleNames.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
 
 		com.liferay.portal.kernel.model.Role
 			assetLibraryContentReviewerServiceBuilderRole =
@@ -526,13 +556,14 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				user.getExternalReferenceCode(),
 				_toRoles(assetLibraryContentReviewerServiceBuilderRole));
 
-		List<String> names = TransformUtil.transform(
+		List<String> roleNames = TransformUtil.transform(
 			rolesPage.getItems(), Role::getName);
 
-		Assert.assertEquals(names.toString(), 1, names.size());
+		Assert.assertEquals(roleNames.toString(), 1, roleNames.size());
 		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER));
+			roleNames.toString(),
+			roleNames.contains(
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER));
 	}
 
 	private void _testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission()

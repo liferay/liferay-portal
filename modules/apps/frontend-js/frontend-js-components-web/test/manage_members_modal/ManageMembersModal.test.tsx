@@ -388,6 +388,52 @@ describe('ManageMembersModal', () => {
 		});
 	});
 
+	it('disables the role menu for a member with a role the user cannot assign', async () => {
+		mockMembersAPI({
+			usersByPage: {
+				1: page([
+					{
+						...ALICE,
+						roles: [
+							{
+								externalReferenceCode:
+									'L_ASSET_LIBRARY_ADMINISTRATOR',
+								id: 13,
+								name: 'Administrator',
+							},
+						],
+					},
+				]),
+			},
+		});
+
+		renderModal();
+
+		await waitFor(() =>
+			expect(screen.getByText('Alice Adams')).toBeInTheDocument()
+		);
+
+		expect(
+			screen.getByRole('button', {name: 'Administrator'})
+		).toBeDisabled();
+	});
+
+	it('keeps the role menu enabled for a member with an excluded role the user can assign', async () => {
+		mockMembersAPI({
+			usersByPage: {
+				1: page([{...ALICE, roles: [ROLES[0], ROLES[2]]}]),
+			},
+		});
+
+		renderModal();
+
+		await waitFor(() =>
+			expect(screen.getByText('Alice Adams')).toBeInTheDocument()
+		);
+
+		expect(screen.getByRole('button', {name: 'Member'})).toBeEnabled();
+	});
+
 	it('removes a user through the API', async () => {
 		renderModal();
 
