@@ -148,7 +148,7 @@ function AddToCartButton({
 					return;
 				}
 
-				const {orderTypes = []} = Liferay?.CommerceContext;
+				const {orderTypes = []} = Liferay.CommerceContext;
 
 				let orderTypeId = null;
 

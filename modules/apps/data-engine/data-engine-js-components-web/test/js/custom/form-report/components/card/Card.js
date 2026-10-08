@@ -35,7 +35,7 @@ describe('Card', () => {
 	it('renders the summary when summary is true', () => {
 		const summary = {
 			average: 2701550114.2,
-			max: 99978663563345345,
+			max: 99978663563345340,
 			min: 1029376736,
 			sum: 1.35077506376,
 		};

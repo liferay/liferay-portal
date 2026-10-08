@@ -1205,17 +1205,13 @@ export default function ChangeTrackingRenderView({
 						</td>
 					</tr>
 					<tr className="publications-render-view-divider table-divider">
-						{
-							<td className="publications-render-view-divider">
-								{Liferay.Language.get('production')}
-							</td>
-						}
+						<td className="publications-render-view-divider">
+							{Liferay.Language.get('production')}
+						</td>
 
-						{
-							<td className="publications-render-view-divider">
-								{state.renderData.rightTitle}
-							</td>
-						}
+						<td className="publications-render-view-divider">
+							{state.renderData.rightTitle}
+						</td>
 					</tr>
 				</>
 			);

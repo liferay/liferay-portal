@@ -550,7 +550,7 @@ const FrontendDataSetContent = ({
 		const remainingNewSorts = [...newSorts];
 
 		return [
-			...oldSorts?.map((sort: TSort) => {
+			...oldSorts.map((sort: TSort) => {
 				const activeSortIndex = remainingNewSorts?.findIndex(
 					(activeSort: TSort) => {
 						return activeSort.key === sort.key;

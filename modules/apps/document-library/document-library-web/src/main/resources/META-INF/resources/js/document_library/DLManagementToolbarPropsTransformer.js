@@ -379,7 +379,7 @@ export default function propsTransformer({
 
 		const [selectedModelClassName, selectedFileEntries] = map
 			.entries()
-			?.next().value;
+			.next().value;
 
 		const permissionsURL = permissionsURLs[selectedModelClassName];
 

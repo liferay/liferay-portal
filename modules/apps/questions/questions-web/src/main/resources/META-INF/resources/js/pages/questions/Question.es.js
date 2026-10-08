@@ -297,7 +297,7 @@ const Question = ({
 			setAnswers({
 				...answers,
 				items: [
-					...answers.items?.filter(
+					...answers.items.filter(
 						(otherAnswer) => answer.id !== otherAnswer.id
 					),
 				],

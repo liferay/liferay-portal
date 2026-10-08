@@ -13,7 +13,7 @@ const Notifications = (props) => {
 	const {accountEntryId} = useContext(DefinitionBuilderContext);
 	const {selectedItem} = useContext(DiagramBuilderContext);
 
-	const {notifications} = selectedItem?.data;
+	const {notifications} = selectedItem.data;
 	const [sections, setSections] = useState([{identifier: `${Date.now()}-0`}]);
 
 	useEffect(() => {

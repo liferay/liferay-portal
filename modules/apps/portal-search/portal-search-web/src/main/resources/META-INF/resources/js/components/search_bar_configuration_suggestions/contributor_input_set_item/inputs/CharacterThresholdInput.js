@@ -13,7 +13,8 @@ function CharacterThresholdInput({index, onBlur, onChange, touched, value}) {
 	return (
 		<ClayInput.GroupItem
 			className={getCN({
-				'has-error': typeof value !== undefined && value < 0 && touched,
+				'has-error':
+					typeof value !== 'undefined' && value < 0 && touched,
 			})}
 		>
 			<label htmlFor={`characterThreshold${index}`}>

@@ -7,8 +7,7 @@ import React from 'react';
 
 const PrettyPrintArray = ({value}) => (
 	<span>
-		{'['}
-
+		[
 		{value.map((item, i) => (
 			<React.Fragment key={i}>
 				<span className="badge badge-pill badge-secondary">{item}</span>
@@ -16,8 +15,7 @@ const PrettyPrintArray = ({value}) => (
 				{i + 1 !== value.length && ', '}
 			</React.Fragment>
 		))}
-
-		{']'}
+		]
 	</span>
 );
 

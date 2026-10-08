@@ -18,7 +18,7 @@ const Actions = (props) => {
 		scriptManagementConfigurationPortletURL,
 	} = useContext(DefinitionBuilderContext);
 
-	const {actions} = selectedItem?.data;
+	const {actions} = selectedItem.data;
 	const [sections, setSections] = useState([{identifier: `${Date.now()}-0`}]);
 
 	useEffect(() => {

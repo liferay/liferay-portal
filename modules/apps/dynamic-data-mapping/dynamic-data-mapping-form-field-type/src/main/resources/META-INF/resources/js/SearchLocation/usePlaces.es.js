@@ -141,7 +141,7 @@ const usePlaces = ({
 			const element = document.getElementById(elementId);
 
 			if (autoCompleteDropdown && element === document.activeElement) {
-				const {height, top} = element?.getBoundingClientRect();
+				const {height, top} = element.getBoundingClientRect();
 				const scrollTop =
 					window.pageYOffset || document.documentElement.scrollTop;
 

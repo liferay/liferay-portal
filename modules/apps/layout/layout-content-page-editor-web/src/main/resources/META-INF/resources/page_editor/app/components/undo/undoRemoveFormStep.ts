@@ -57,7 +57,7 @@ function undoAction({
 						.map((itemId) => {
 							const item = layoutData.items[itemId];
 
-							if ('fragmentEntryLinkId' in item?.config) {
+							if ('fragmentEntryLinkId' in item.config) {
 								return item?.config?.fragmentEntryLinkId;
 							}
 

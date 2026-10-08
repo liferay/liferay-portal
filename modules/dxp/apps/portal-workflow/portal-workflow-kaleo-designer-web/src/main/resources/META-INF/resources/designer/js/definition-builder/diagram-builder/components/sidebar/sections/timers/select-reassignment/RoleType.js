@@ -34,7 +34,7 @@ const RoleType = ({subSectionIdentifier, subSectionsLength, ...otherProps}) => {
 		},
 	});
 
-	const {autoCreate, roleName, roleType} = otherProps?.restProps;
+	const {autoCreate, roleName, roleType} = otherProps.restProps;
 
 	useEffect(() => {
 		retrieveAccountRoles(accountEntryId)

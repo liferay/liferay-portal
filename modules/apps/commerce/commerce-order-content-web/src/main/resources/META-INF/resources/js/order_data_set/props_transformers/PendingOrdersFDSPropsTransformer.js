@@ -37,8 +37,7 @@ const checkImportStatus = (loadData, props, selectedCarts, task) => {
 						type: 'success',
 					});
 
-					const {orderId: activeCart} =
-						Liferay?.CommerceContext?.order;
+					const {orderId: activeCart} = Liferay.CommerceContext.order;
 
 					const includesActiveCart = !!selectedCarts.find(
 						({id}) => id === activeCart

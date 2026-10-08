@@ -74,7 +74,7 @@ const getThumbnailProps = (item: any) => {
 	}
 
 	if (item.embedded?.file) {
-		const {alternativeText, name, thumbnailURL} = item.embedded?.file;
+		const {alternativeText, name, thumbnailURL} = item.embedded.file;
 
 		if (thumbnailURL) {
 			return {
