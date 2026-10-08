@@ -530,6 +530,80 @@ test('Can only update Picklist permissions when PERMISSIONS permission is grante
 	});
 });
 
+test(
+	'Can publish an object definition with the Publish Object Definition permission',
+	{tag: '@LPD-109321'},
+	async ({
+		apiHelpers,
+		editObjectDetailsPage,
+		page,
+		viewObjectDefinitionsPage,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 2},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectDefinitionLabel = objectDefinition.label['en_US'];
+
+		await test.step('Switch to a user with the Publish Object Definition permission', async () => {
+			const user = await createUserWithPermissions(apiHelpers, [
+				{
+					actionIds: ['ACCESS_IN_CONTROL_PANEL', 'VIEW'],
+					resourceName:
+						'com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet',
+				},
+				{
+					actionIds: ['PUBLISH_OBJECT_DEFINITION'],
+					resourceName: 'com.liferay.object',
+				},
+				{
+					actionIds: ['UPDATE', 'VIEW'],
+					resourceName: 'com.liferay.object.model.ObjectDefinition',
+				},
+			]);
+
+			await performUserSwitch(page, user.alternateName);
+		});
+
+		await test.step('Publish the object definition', async () => {
+			await editObjectDetailsPage.goto(objectDefinitionLabel);
+
+			await editObjectDetailsPage.waitForDetailsFormLoaded();
+
+			await expect(editObjectDetailsPage.publishButton).toBeEnabled();
+
+			await editObjectDetailsPage.publishButton.click();
+
+			await waitForAlert(
+				page,
+				'Success:The object was published successfully.'
+			);
+
+			await expect(editObjectDetailsPage.publishButton).toBeHidden();
+		});
+
+		await test.step('Verify the object definition is listed as Approved', async () => {
+			await viewObjectDefinitionsPage.goto();
+
+			await viewObjectDefinitionsPage.searchObjectDefinition(
+				objectDefinitionLabel
+			);
+
+			await expect(
+				page
+					.getByRole('row', {name: objectDefinitionLabel})
+					.getByText('Approved', {exact: true})
+			).toBeVisible();
+		});
+	}
+);
+
 test('Can restrict site-scoped object portlet to the site where the role permission is granted', async ({
 	apiHelpers,
 	page,
