@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.StringParser;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.java.parser.JavaParser;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
+import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.exception.UpgradeCatchAllException;
 import com.liferay.source.formatter.parser.JavaClass;
 import com.liferay.source.formatter.parser.JavaClassParser;
@@ -916,6 +917,14 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 			for (int i = 0; i < fromParameters.size(); i++) {
 				String parameterName = parameterNames.get(i);
 
+				if (SourceUtil.isLiteralString(parameterName.trim()) &&
+					!StringUtil.equals(fromParameters.get(i), "String")) {
+
+					valid = false;
+
+					break;
+				}
+
 				String variableTypeName = getVariableTypeName(
 					javaMethodContent, null, newContent, fileName,
 					StringParser.escapeRegex(parameterName.trim()), true,
@@ -1126,7 +1135,14 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		else if (!_newMessage) {
 			Set<String> keys = jsonObject.keySet();
 
-			if (keys.contains("hasMessage")) {
+			String from = jsonObject.getString("from");
+
+			boolean validatedSignature =
+				from.contains(StringPool.OPEN_PARENTHESIS) &&
+				!from.startsWith("regex:") &&
+				!jsonObject.getBoolean("skipParametersValidation");
+
+			if (keys.contains("hasMessage") && !validatedSignature) {
 				Pattern pattern = _getPattern(jsonObject);
 
 				Matcher matcher = pattern.matcher(content);
