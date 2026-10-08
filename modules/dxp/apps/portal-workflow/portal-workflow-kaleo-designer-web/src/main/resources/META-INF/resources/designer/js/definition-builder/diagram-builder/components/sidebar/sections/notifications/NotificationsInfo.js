@@ -148,7 +148,9 @@ const NotificationsInfo = ({
 			newRecipients[notificationIndex][0] = {
 				...newRecipients[notificationIndex][0],
 				assignmentType: ['roleId'],
+				roleExternalReferenceCode: role.externalReferenceCode,
 				roleId: role.id,
+				roleType: role.roleType,
 				sectionsData: {
 					id: role.id,
 					name: role.name,

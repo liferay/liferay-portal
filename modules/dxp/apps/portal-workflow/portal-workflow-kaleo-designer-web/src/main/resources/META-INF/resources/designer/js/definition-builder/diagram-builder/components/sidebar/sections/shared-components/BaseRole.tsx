@@ -52,7 +52,7 @@ export default function BaseRole({
 			setLoading(true);
 
 			const params = new URLSearchParams({
-				fields: 'id,name,roleType',
+				fields: 'externalReferenceCode,id,name,roleType',
 				pageSize: '-1',
 			});
 

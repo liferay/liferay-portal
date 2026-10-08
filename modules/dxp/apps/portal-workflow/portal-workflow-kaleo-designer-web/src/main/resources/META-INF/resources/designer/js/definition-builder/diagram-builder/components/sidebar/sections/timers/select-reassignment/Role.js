@@ -15,6 +15,8 @@ const Role = ({actionData, actionSectionsIndex, setActionSections}) => {
 			const updatedSections = [...currentSections];
 
 			updatedSections[actionSectionsIndex].assignmentType = 'roleId';
+			updatedSections[actionSectionsIndex].roleExternalReferenceCode =
+				role.externalReferenceCode;
 			updatedSections[actionSectionsIndex].roleId = role.id;
 			updatedSections[actionSectionsIndex].name = role.name;
 			updatedSections[actionSectionsIndex].roleType = role.roleType;
