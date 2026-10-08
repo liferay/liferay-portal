@@ -53,8 +53,10 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 		JSONObject jsonObject = new JSONObjectImpl(content);
 
-		jsonObject.remove("actions");
-		jsonObject.remove("facets");
+		List<String> rootDefaultValues = getAttributeValues(
+			_ROOT_DEFAULT_VALUES_KEY, absolutePath);
+
+		_removeDefaultValues(rootDefaultValues, jsonObject);
 
 		jsonObject = _checkConfiguration(absolutePath, jsonObject);
 		jsonObject = _checkItems(fileName, absolutePath, jsonObject);
@@ -387,6 +389,8 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 	private static final String _OBJECT_DEFINITION_ITEMS_DEFAULT_VALUES_KEY =
 		"objectDefinitionItemsDefaultValues";
+
+	private static final String _ROOT_DEFAULT_VALUES_KEY = "rootDefaultValues";
 
 	private String _classNameRegex;
 
