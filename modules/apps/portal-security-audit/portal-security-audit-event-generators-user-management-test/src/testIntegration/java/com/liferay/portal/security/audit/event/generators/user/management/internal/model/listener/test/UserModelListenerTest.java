@@ -38,6 +38,7 @@ import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.Inject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -148,10 +149,10 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			auditRequestContext.getSessionID());
 	}
 
-	private void _assertUpdateAuditMessages(
+	private void _assertUpdateAuditMessage(
 		AuditRequestContext expectedAuditRequestContext) {
 
-		boolean found = false;
+		List<AuditMessage> updateAuditMessages = new ArrayList<>();
 
 		for (AuditMessage auditMessage : auditMessages) {
 			if (!Objects.equals(
@@ -165,34 +166,36 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 				continue;
 			}
 
-			found = true;
-
-			Assert.assertEquals(
-				expectedAuditRequestContext.getClientHost(),
-				auditMessage.getClientHost());
-			Assert.assertEquals(
-				expectedAuditRequestContext.getClientIP(),
-				auditMessage.getClientIP());
-			Assert.assertEquals(
-				expectedAuditRequestContext.getServerName(),
-				auditMessage.getServerName());
-			Assert.assertEquals(
-				expectedAuditRequestContext.getServerPort(),
-				auditMessage.getServerPort());
-			Assert.assertEquals(
-				expectedAuditRequestContext.getSessionID(),
-				auditMessage.getSessionID());
-			Assert.assertEquals(
-				expectedAuditRequestContext.getRealUserId(),
-				auditMessage.getUserId());
-
-			JSONObject additionalInfoJSONObject =
-				auditMessage.getAdditionalInfo();
-
-			Assert.assertFalse(additionalInfoJSONObject.has("doAsUserId"));
+			updateAuditMessages.add(auditMessage);
 		}
 
-		Assert.assertTrue(auditMessages.toString(), found);
+		Assert.assertEquals(
+			updateAuditMessages.toString(), 1, updateAuditMessages.size());
+
+		AuditMessage auditMessage = updateAuditMessages.get(0);
+
+		Assert.assertEquals(
+			expectedAuditRequestContext.getClientHost(),
+			auditMessage.getClientHost());
+		Assert.assertEquals(
+			expectedAuditRequestContext.getClientIP(),
+			auditMessage.getClientIP());
+		Assert.assertEquals(
+			expectedAuditRequestContext.getServerName(),
+			auditMessage.getServerName());
+		Assert.assertEquals(
+			expectedAuditRequestContext.getServerPort(),
+			auditMessage.getServerPort());
+		Assert.assertEquals(
+			expectedAuditRequestContext.getSessionID(),
+			auditMessage.getSessionID());
+		Assert.assertEquals(
+			expectedAuditRequestContext.getRealUserId(),
+			auditMessage.getUserId());
+
+		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
+
+		Assert.assertFalse(additionalInfoJSONObject.has("doAsUserId"));
 	}
 
 	private AuditRequestContext _createAuditRequestContext() throws Exception {
@@ -309,7 +312,7 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			_assertAuditRequestContext(
 				AuditRequestContextThreadLocal.getAuditRequestContext(),
 				auditRequestContext);
-			_assertUpdateAuditMessages(
+			_assertUpdateAuditMessage(
 				AuditRequestContextThreadLocal.getAuditRequestContext());
 		}
 		finally {
@@ -354,7 +357,7 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			_assertAuditRequestContext(
 				AuditRequestContextThreadLocal.getAuditRequestContext(),
 				auditRequestContext);
-			_assertUpdateAuditMessages(
+			_assertUpdateAuditMessage(
 				AuditRequestContextThreadLocal.getAuditRequestContext());
 		}
 
@@ -397,7 +400,7 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			_assertAuditRequestContext(
 				AuditRequestContextThreadLocal.getAuditRequestContext(),
 				auditRequestContext);
-			_assertUpdateAuditMessages(
+			_assertUpdateAuditMessage(
 				AuditRequestContextThreadLocal.getAuditRequestContext());
 		}
 	}
