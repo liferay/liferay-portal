@@ -96,6 +96,10 @@ components:
             type: object
         ExportProcessRequest:
             properties:
+                assetLibraryExternalReferenceCodes:
+                    items:
+                        type: string
+                    type: array
                 comments:
                     default: false
                     type: boolean
@@ -167,6 +171,11 @@ components:
                         $ref: "#/components/schemas/PortletDataHandler"
                     readOnly: true
                     type: array
+                previewAssetLibraries:
+                    items:
+                        $ref: "#/components/schemas/PreviewAssetLibrary"
+                    readOnly: true
+                    type: array
                 sites:
                     description:
                         The sites the file contains, when it was exported from an instance.
@@ -220,6 +229,10 @@ components:
             type: object
         ImportProcessRequest:
             properties:
+                assetLibraryExternalReferenceCodes:
+                    items:
+                        type: string
+                    type: array
                 comments:
                     default: false
                     type: boolean
@@ -494,6 +507,20 @@ components:
                             type: array
             description:
                 Represents a control that selects items of a tree by external reference code. The most specific rule wins, in the order of an item list, a subtree list, the closest ancestor's subtree list, and the selectAll flag. An included list wins over the excluded one at the same level. The pages control takes the external reference codes of the Headless Admin Site API's site pages.
+            type: object
+        PreviewAssetLibrary:
+            properties:
+                descriptiveName:
+                    readOnly: true
+                    type: string
+                existsInInstance:
+                    description:
+                        Whether the instance being imported into already has an asset library of the same external reference code. Set only when previewing a file to import.
+                    readOnly: true
+                    type: boolean
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
             type: object
         ProcessProgress:
             properties:
@@ -1159,6 +1186,42 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ExportPreview"
             tags: ["ExportPreview"]
+    "/export-preview/preview-asset-libraries":
+        get:
+            description:
+                Retrieves the asset libraries that can be exported.
+            operationId: getExportPreviewPreviewAssetLibrariesPage
+            parameters:
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PreviewAssetLibrary"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PreviewAssetLibrary"
+                                type: array
+            tags: ["PreviewAssetLibrary"]
     "/export-preview/sites":
         get:
             description:
