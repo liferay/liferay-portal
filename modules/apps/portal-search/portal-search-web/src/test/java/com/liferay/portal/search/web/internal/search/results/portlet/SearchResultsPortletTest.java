@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.searcher.SearchRequest;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.summary.Summary;
@@ -131,6 +132,12 @@ public class SearchResultsPortletTest {
 		Assert.assertEquals(
 			"/search?delta=10",
 			String.valueOf(searchContainer.getIteratorURL()));
+	}
+
+	@Test
+	public void testTotalHitsExact() throws Exception {
+		_testTotalHitsExact(true, TotalHitsRelation.EQ);
+		_testTotalHitsExact(false, TotalHitsRelation.GTE);
 	}
 
 	protected void render() throws IOException, PortletException {
@@ -423,6 +430,38 @@ public class SearchResultsPortletTest {
 		).fetchUser(
 			Mockito.anyLong()
 		);
+	}
+
+	private void _testTotalHitsExact(
+			boolean expectedTotalHitsExact, TotalHitsRelation totalHitsRelation)
+		throws Exception {
+
+		int totalHits = RandomTestUtil.randomInt();
+
+		Mockito.doReturn(
+			totalHits
+		).when(
+			_searchResponse
+		).getTotalHits();
+
+		Mockito.doReturn(
+			totalHitsRelation
+		).when(
+			_searchResponse
+		).getTotalHitsRelation();
+
+		_renderRequest = _createRenderRequest();
+
+		render();
+
+		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
+			_getDisplayContext();
+
+		Assert.assertEquals(
+			totalHits, searchResultsPortletDisplayContext.getTotalHits());
+		Assert.assertEquals(
+			expectedTotalHitsExact,
+			searchResultsPortletDisplayContext.isTotalHitsExact());
 	}
 
 	private static MockedStatic<ConfigurationProviderUtil>
