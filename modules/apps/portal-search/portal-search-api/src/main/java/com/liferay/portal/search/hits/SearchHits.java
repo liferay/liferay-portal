@@ -36,19 +36,32 @@ public class SearchHits implements Serializable {
 		return _totalHits;
 	}
 
+	public TotalHitsRelation getTotalHitsRelation() {
+		return _totalHitsRelation;
+	}
+
 	protected SearchHits(
 		float maxScore, List<SearchHit> searchHits, long searchTime,
 		long totalHits) {
+
+		this(maxScore, searchHits, searchTime, totalHits, TotalHitsRelation.EQ);
+	}
+
+	protected SearchHits(
+		float maxScore, List<SearchHit> searchHits, long searchTime,
+		long totalHits, TotalHitsRelation totalHitsRelation) {
 
 		_maxScore = maxScore;
 		_searchHits = searchHits;
 		_searchTime = searchTime;
 		_totalHits = totalHits;
+		_totalHitsRelation = totalHitsRelation;
 	}
 
 	private final float _maxScore;
 	private final List<SearchHit> _searchHits;
 	private final long _searchTime;
 	private final long _totalHits;
+	private final TotalHitsRelation _totalHitsRelation;
 
 }

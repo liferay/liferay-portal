@@ -11,6 +11,7 @@ import com.liferay.portal.search.aggregation.AggregationResult;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.groupby.GroupByResponse;
 import com.liferay.portal.search.hits.SearchHits;
+import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.stats.StatsResponse;
 
 import java.util.Collection;
@@ -88,6 +89,15 @@ public interface SearchResponse {
 	public Map<String, StatsResponse> getStatsResponseMap();
 
 	public int getTotalHits();
+
+	/**
+	 * Returns how {@link #getTotalHits()} relates to the actual number of
+	 * matching documents. {@link TotalHitsRelation#GTE} means the search
+	 * engine stopped counting at a limit, so the total is a lower bound.
+	 *
+	 * @return the total hits relation
+	 */
+	public TotalHitsRelation getTotalHitsRelation();
 
 	public void withFacetContext(Consumer<FacetContext> facetContextConsumer);
 
