@@ -6,6 +6,9 @@
 package com.liferay.exportimport.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
@@ -15,6 +18,7 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
+import com.liferay.exportimport.rest.client.dto.v1_0.PreviewAssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
@@ -175,7 +179,8 @@ public class ImportPreviewResourceTest
 
 	@FeatureFlags(
 		featureFlags = {
-			@FeatureFlag(value = "LPD-57655"), @FeatureFlag("LPD-85946")
+			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
+			@FeatureFlag("LPD-85946")
 		}
 	)
 	@Override
@@ -228,6 +233,7 @@ public class ImportPreviewResourceTest
 				objectDefinition);
 		}
 
+		_testPostImportPreviewWithAssetLibraries();
 		_testPostImportPreviewWithoutSites();
 		_testPostImportPreviewWithSiteMissingFromInstance();
 		_testPostImportPreviewWithSites();
@@ -435,6 +441,27 @@ public class ImportPreviewResourceTest
 		return null;
 	}
 
+	private PreviewAssetLibrary _getPreviewAssetLibrary(
+		ImportPreview importPreview, String externalReferenceCode) {
+
+		PreviewAssetLibrary[] previewAssetLibraries =
+			importPreview.getPreviewAssetLibraries();
+
+		if (previewAssetLibraries == null) {
+			return null;
+		}
+
+		for (PreviewAssetLibrary previewAssetLibrary : previewAssetLibraries) {
+			if (externalReferenceCode.equals(
+					previewAssetLibrary.getExternalReferenceCode())) {
+
+				return previewAssetLibrary;
+			}
+		}
+
+		return null;
+	}
+
 	private Site _getSite(
 		ImportPreview importPreview, String externalReferenceCode) {
 
@@ -486,6 +513,45 @@ public class ImportPreviewResourceTest
 		_addObjectEntry(groupId, objectDefinition);
 
 		return objectDefinition;
+	}
+
+	private void _testPostImportPreviewWithAssetLibraries() throws Exception {
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotGroup = depotEntry.getGroup();
+
+		Group group = GroupTestUtil.addGroup();
+
+		ImportPreview importPreview = _postImportPreview(
+			_exportLayoutAsFile(companyGroup.getGroupId(), _depotGroup, group));
+
+		PreviewAssetLibrary previewAssetLibrary = _getPreviewAssetLibrary(
+			importPreview, _depotGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			_depotGroup.getDescriptiveName(),
+			previewAssetLibrary.getDescriptiveName());
+		Assert.assertTrue(previewAssetLibrary.getExistsInInstance());
+
+		Assert.assertNull(
+			_getPreviewAssetLibrary(
+				importPreview, group.getExternalReferenceCode()));
+		Assert.assertNull(
+			_getSite(
+				importPreview, _depotGroup.getExternalReferenceCode()));
+		Assert.assertNotNull(
+			_getSite(importPreview, group.getExternalReferenceCode()));
 	}
 
 	private void _testPostImportPreviewWithInvalidFile(
@@ -574,6 +640,8 @@ public class ImportPreviewResourceTest
 		ImportPreview importPreview = _postImportPreview(
 			_exportLayoutAsFile(companyGroup.getGroupId()));
 
+		Assert.assertTrue(
+			ArrayUtil.isEmpty(importPreview.getPreviewAssetLibraries()));
 		Assert.assertTrue(ArrayUtil.isEmpty(importPreview.getSites()));
 	}
 
@@ -644,6 +712,12 @@ public class ImportPreviewResourceTest
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@DeleteAfterTestRun
+	private Group _depotGroup;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
