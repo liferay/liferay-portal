@@ -333,14 +333,14 @@ public class PortalImplEscapeRedirectTest {
 
 		Assert.assertNull(_portalImpl.escapeRedirect("http://liferay.com"));
 		Assert.assertNull(
-			_portalImpl.escapeRedirect(
-				"https://liferay.com:1234/a/b;c=d?e=f&g=h#x=y"));
-		Assert.assertNull(
-			_portalImpl.escapeRedirect("http://test.liferay.comsuffix"));
+			_portalImpl.escapeRedirect("http://prefixtest.liferay.com"));
 		Assert.assertNull(
 			_portalImpl.escapeRedirect("http://test.liferay.com.suffix"));
 		Assert.assertNull(
-			_portalImpl.escapeRedirect("http://prefixtest.liferay.com"));
+			_portalImpl.escapeRedirect("http://test.liferay.comsuffix"));
+		Assert.assertNull(
+			_portalImpl.escapeRedirect(
+				"https://liferay.com:1234/a/b;c=d?e=f&g=h#x=y"));
 	}
 
 	private static final String _HOSTNAME_PORTAL_DOMAIN =
