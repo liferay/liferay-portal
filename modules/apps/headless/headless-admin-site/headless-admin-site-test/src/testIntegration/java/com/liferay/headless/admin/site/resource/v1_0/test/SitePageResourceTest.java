@@ -29,6 +29,7 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.headless.admin.site.client.custom.field.CustomField;
+import com.liferay.headless.admin.site.client.dto.v1_0.AdvancedStylingConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.BasicFragmentInstancePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
@@ -323,6 +324,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					RandomTestUtil.randomString()
 				).buildString()));
 
+		_testGetSiteSitePageWithWidgetPageTypeWithAdvancedStylingConfig();
 		_testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
 	}
 
@@ -2600,6 +2602,83 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePageResource.getSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteSitePageWithWidgetPageTypeWithAdvancedStylingConfig()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		String customCSS = RandomTestUtil.randomString();
+		String customCSSClassName = RandomTestUtil.randomString();
+
+		LayoutTestUtil.addPortletToLayout(
+			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"portletSetupCss",
+				() -> {
+					JSONObject advancedDataJSONObject = JSONUtil.put(
+						"customCSS", customCSS);
+
+					advancedDataJSONObject.put(
+						"customCSSClassName", customCSSClassName);
+
+					JSONObject jsonObject = JSONUtil.put(
+						"advancedData", advancedDataJSONObject);
+
+					return new String[] {jsonObject.toString()};
+				}
+			).build());
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
+			_getWidgetPageWidgetInstances(sitePage);
+
+		Assert.assertEquals(
+			widgetPageWidgetInstances.toString(), 1,
+			widgetPageWidgetInstances.size());
+
+		WidgetPageWidgetInstance widgetPageWidgetInstance =
+			widgetPageWidgetInstances.get(0);
+
+		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+			widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
+
+		AdvancedStylingConfig advancedStylingConfig =
+			widgetLookAndFeelConfig.getAdvancedStylingConfig();
+
+		Assert.assertNotNull(
+			widgetPageWidgetInstance.toString(), advancedStylingConfig);
+		Assert.assertEquals(customCSS, advancedStylingConfig.getCustomCSS());
+		Assert.assertEquals(
+			customCSSClassName, advancedStylingConfig.getCustomCSSClassNames());
+
+		Layout malformedLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		LayoutTestUtil.addPortletToLayout(
+			malformedLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"portletSetupCss", new String[] {RandomTestUtil.randomString()}
+			).build());
+
+		sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			malformedLayout.getExternalReferenceCode());
+
+		widgetPageWidgetInstances = _getWidgetPageWidgetInstances(sitePage);
+
+		widgetPageWidgetInstance = widgetPageWidgetInstances.get(0);
+
+		widgetLookAndFeelConfig =
+			widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
+
+		Assert.assertNull(widgetLookAndFeelConfig.getAdvancedStylingConfig());
 	}
 
 	private void _testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()

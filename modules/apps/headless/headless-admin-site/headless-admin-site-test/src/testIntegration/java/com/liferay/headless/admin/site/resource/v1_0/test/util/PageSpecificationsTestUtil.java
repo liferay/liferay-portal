@@ -13,6 +13,7 @@ import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
 import com.liferay.headless.admin.site.client.custom.field.CustomField;
 import com.liferay.headless.admin.site.client.custom.field.CustomValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.AdvancedStylingConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.BasicWidgetPageWidgetInstance;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.EmbeddedPageSpecification;
@@ -1170,6 +1171,15 @@ public class PageSpecificationsTestUtil {
 	private static WidgetLookAndFeelConfig _getWidgetLookAndFeelConfig() {
 		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
 			new WidgetLookAndFeelConfig();
+
+		AdvancedStylingConfig advancedStylingConfig =
+			new AdvancedStylingConfig();
+
+		advancedStylingConfig.setCustomCSS(RandomTestUtil.randomString());
+		advancedStylingConfig.setCustomCSSClassNames(
+			RandomTestUtil.randomString());
+
+		widgetLookAndFeelConfig.setAdvancedStylingConfig(advancedStylingConfig);
 
 		GeneralConfig generalConfig = new GeneralConfig();
 
