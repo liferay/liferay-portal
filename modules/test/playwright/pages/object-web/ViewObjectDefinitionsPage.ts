@@ -219,11 +219,7 @@ export class ViewObjectDefinitionsPage {
 	async exportObjectDefinition(objectDefinitionLabel: string) {
 		await this.goto();
 
-		await this.searchInput.fill(objectDefinitionLabel);
-
-		await waitForSearchToBeReady(this.page);
-
-		await this._submitSearch(objectDefinitionLabel);
+		await this.searchObjectDefinition(objectDefinitionLabel);
 
 		const downloadPromise = this.page.waitForEvent('download');
 
@@ -323,6 +319,14 @@ export class ViewObjectDefinitionsPage {
 			.getByRole('listitem')
 			.filter({hasText: objectFolderLabel})
 			.click({timeout: options?.timeout});
+	}
+
+	async searchObjectDefinition(objectDefinitionLabel: string) {
+		await this.searchInput.fill(objectDefinitionLabel);
+
+		await waitForSearchToBeReady(this.page);
+
+		await this._submitSearch(objectDefinitionLabel);
 	}
 
 	private async _submitSearch(objectDefinitionLabel: string) {
