@@ -32,9 +32,9 @@ liferay-default:
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD
                 value: ${env.DATABASE_PASSWORD}
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
-                value: jdbc:postgresql://${env.DATABASE_ENDPOINT}:${env.DATABASE_PORT}/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
+                value: jdbc:postgresql://${env.DATABASE_ENDPOINT}:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
-                value: ${env.DATABASE_USERNAME}
+                value: liferay
             -   name: LIFERAY_NETWORK_HOST_ADDRESSES
                 value: $(SEARCH_URL)
             -   name: LIFERAY_OPENSEARCH_PASSWORD
@@ -45,11 +45,13 @@ liferay-default:
                 value: "true"
     customEnvFrom:
         x-liferay-aws-database:
+            -   configMapRef:
+                    name: database-server-details
             -   secretRef:
-                    name: database-connection-details
+                    name: database-app-password
         x-liferay-aws-doclib:
             -   secretRef:
-                    name: doclib-connection-details
+                    name: document-library-connection-details
         x-liferay-aws-search-config:
             -   configMapRef:
                     name: liferay-search-env-aws

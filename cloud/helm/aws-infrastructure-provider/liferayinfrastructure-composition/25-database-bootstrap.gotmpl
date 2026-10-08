@@ -1,0 +1,184 @@
+{{- $databaseAppRole := "liferay" -}}
+{{- $databaseOwnerRole := "liferay_shared_owner" }}
+
+{{- if $activeDatabaseAddress }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-job-{{ $activeDataPlane }}
+    labels:
+        app: liferay
+        component: database-bootstrap
+        dataPlane: {{ $activeDataPlane }}
+        environmentId: {{ $environmentId }}
+        projectId: {{ $projectId }}
+    name: {{ $baseName }}-database-bootstrap-{{ $activeDataPlane }}
+    namespace: {{ $namespace }}
+spec:
+    forProvider:
+        manifest:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+                labels:
+                    app: liferay
+                    component: database-bootstrap
+                    dataPlane: {{ $activeDataPlane }}
+                    environmentId: {{ $environmentId }}
+                    projectId: {{ $projectId }}
+                name: database-bootstrap-{{ $activeDataPlane }}
+                namespace: {{ $namespace }}
+            spec:
+                template:
+                    spec:
+                        automountServiceAccountToken: false
+                        containers:
+                            -   args:
+                                    -   |
+                                            set -o errexit
+                                            set -o nounset
+
+                                            function main {
+                                                _wait_for_server
+
+                                                psql \
+                                                    --dbname lportal \
+                                                    --set ON_ERROR_STOP=1 \
+                                                    --set pw="${LIFERAY_PASSWORD}" <<EOF
+                                            DO \$\$
+
+                                            BEGIN
+                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ $databaseOwnerRole }}')
+                                                THEN
+                                                    CREATE ROLE {{ $databaseOwnerRole }} NOLOGIN;
+                                                END IF;
+                                            END \$\$;
+
+                                            GRANT {{ $databaseOwnerRole }} TO "${PGUSER}";
+
+                                            ALTER DATABASE lportal OWNER TO {{ $databaseOwnerRole }};
+
+                                            GRANT USAGE, CREATE ON SCHEMA public TO {{ $databaseOwnerRole }};
+
+                                            DO \$\$
+
+                                            BEGIN
+                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ $databaseAppRole }}')
+                                                THEN
+                                                    CREATE ROLE {{ $databaseAppRole }} LOGIN;
+                                                END IF;
+                                            END \$\$;
+
+                                            ALTER ROLE {{ $databaseAppRole }} WITH LOGIN PASSWORD :'pw';
+
+                                            GRANT CONNECT, TEMPORARY ON DATABASE lportal TO "{{ $databaseAppRole }}";
+
+                                            GRANT {{ $databaseOwnerRole }} TO "{{ $databaseAppRole }}";
+
+                                            ALTER ROLE "{{ $databaseAppRole }}" SET ROLE {{ $databaseOwnerRole }};
+                                            EOF
+
+                                                _verify_login
+                                            }
+
+                                            function _verify_login {
+                                                local password="${LIFERAY_PASSWORD}"
+                                                local timeout=$(($(date +%s) + 600))
+
+                                                until PGCONNECT_TIMEOUT=10 PGPASSWORD="${password}" psql \
+                                                    --command "SELECT 1" \
+                                                    --dbname lportal \
+                                                    --username "{{ $databaseAppRole }}" >/dev/null 2>&1
+                                                do
+                                                    if [ $(date +%s) -ge ${timeout} ]
+                                                    then
+                                                        echo "{{ $databaseAppRole }} could not be authenticated" >&2
+
+                                                        exit 1
+                                                    fi
+
+                                                    sleep 2
+                                                done
+
+                                                echo "{{ $databaseAppRole }} authenticated successfully"
+                                            }
+
+                                            function _wait_for_server {
+                                                local timeout=$(($(date +%s) + 600))
+
+                                                until pg_isready --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}"
+                                                do
+                                                    if [ $(date +%s) -ge ${timeout} ]
+                                                    then
+                                                        echo "${PGHOST} did not become ready" >&2
+
+                                                        exit 1
+                                                    fi
+
+                                                    sleep 2
+                                                done
+                                            }
+
+                                            main
+                                command:
+                                    -   /bin/sh
+                                    -   -c
+                                env:
+                                    -   name: LIFERAY_PASSWORD
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: DATABASE_PASSWORD
+                                                name: database-app-password
+                                    -   name: PGHOST
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: address
+                                                name: liferay-database-{{ $activeDataPlane }}-credentials
+                                    -   name: PGPASSWORD
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: password
+                                                name: liferay-database-{{ $activeDataPlane }}-credentials
+                                    -   name: PGPORT
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: port
+                                                name: liferay-database-{{ $activeDataPlane }}-credentials
+                                    -   name: PGSSLMODE
+                                        value: require
+                                    -   name: PGUSER
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: username
+                                                name: liferay-database-{{ $activeDataPlane }}-credentials
+                                image: postgres:18-alpine
+                                name: sql-runner
+                                resources:
+                                    limits:
+                                        cpu: 200m
+                                        memory: 256Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 128Mi
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    readOnlyRootFilesystem: true
+                                    runAsNonRoot: true
+                                    runAsUser: 1000
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                        restartPolicy: OnFailure
+                        securityContext:
+                            fsGroup: 1000
+                            runAsNonRoot: true
+                            seccompProfile:
+                                type: RuntimeDefault
+    managementPolicies: ["Create", "Observe", "Delete"]
+    readiness:
+        celQuery: object.status.succeeded == 1
+        policy: DeriveFromCelQuery
+{{- end }}

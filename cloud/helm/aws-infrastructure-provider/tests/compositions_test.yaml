@@ -9,6 +9,20 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: database-bootstrap-job-\\{\\{ \\$activeDataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "key: DATABASE_PASSWORD\\s+name: database-app-password"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "key: username\\s+name: liferay-database-\\{\\{ \\$activeDataPlane \\}\\}-credentials"
+        it: Bootstraps the application role on the active data plane with the generated password
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "splitList \":\" \\$backup\\.timeOfDay"
             -   documentIndex: 0
                 matchRegex:
@@ -137,8 +151,28 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$activeDatabaseAddress := dig \\(printf \"database-%s\" \\$activeDataPlane\\) \"resource\" \"status\" \"atProvider\" \"address\""
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$isDatabaseReady \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+crossplane\\.io/external-name: \\{\\{ \\$baseName \\}\\}-database-server-details-configmap[\\s\\S]+?DATABASE_ENDPOINT: \\{\\{ \\$activeDatabaseAddress \\| quote \\}\\}\\s+kind: ConfigMap"
+        it: Publishes the active data plane's database address only once the data plane is bootstrapped
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "if and \\(gt \\$clusterSubnetIdsCount 1\\) \\(mod \\(int \\$opensearch\\.instanceCount\\) \\$clusterSubnetIdsCount\\)"
         it: Rejects an OpenSearch node count the cluster zones cannot spread evenly
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$condition := dig \\(printf \"database-bootstrap-job-%s\" \\$activeDataPlane\\) \"resource\" \"status\" \"conditions\""
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$isDatabaseReady := and \\(ne \\$activeDatabaseAddress \"\"\\) \\$isDatabaseBootstrapped"
+        it: Reports the database ready only once the active data plane is bootstrapped
     -   asserts:
             -   documentIndex: 0
                 matchRegex:

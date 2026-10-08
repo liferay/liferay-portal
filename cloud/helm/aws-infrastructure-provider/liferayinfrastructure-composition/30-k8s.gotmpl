@@ -1,19 +1,20 @@
-{{- $observedResources := .observed.resources | default dict -}}
-
-{{- $observedDatabase := dig (printf "database-%s" $activeDataPlane) (dict) $observedResources -}}
+{{- $backupRestoreRoleArn := dig "backup-restore-role" "resource" "status" "atProvider" "arn" "" $observedResources -}}
+{{- $liferayRoleArn := dig "liferay-role" "resource" "status" "atProvider" "arn" "" $observedResources -}}
 {{- $observedSearch := dig "search" (dict) $observedResources -}}
 {{- $observedStorage := dig (printf "storage-%s" $activeDataPlane) (dict) $observedResources -}}
 
-{{- $backupRestoreRoleArn := dig "backup-restore-role" "resource" "status" "atProvider" "arn" "" $observedResources -}}
-{{- $databaseAddress := dig "resource" "status" "atProvider" "address" "" $observedDatabase | toString -}}
-{{- $databasePassword := dig "connectionDetails" "password" "" $observedDatabase | toString | b64dec -}}
-{{- $databasePort := dig "resource" "status" "atProvider" "port" "" $observedDatabase | toString -}}
 {{- $doclibBucketName := dig "resource" "metadata" "annotations" "crossplane.io/external-name" "" $observedStorage | toString -}}
-{{- $liferayRoleArn := dig "liferay-role" "resource" "status" "atProvider" "arn" "" $observedResources -}}
 {{- $searchEndpoint := dig "resource" "status" "atProvider" "endpoint" "" $observedSearch | toString -}}
 {{- $searchPassword := dig "connectionDetails" "attribute.advanced_security_options.0.master_user_options.0.master_user_password" "" $observedSearch | toString | b64dec -}}
 
-{{- $isDatabaseReady := and (ne $databaseAddress "") (ne $databasePassword "") (ne $databasePort "") -}}
+{{- $isDatabaseBootstrapped := false -}}
+{{- range $condition := dig (printf "database-bootstrap-job-%s" $activeDataPlane) "resource" "status" "conditions" (list) $observedResources -}}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") -}}
+        {{- $isDatabaseBootstrapped = true -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $isDatabaseReady := and (ne $activeDatabaseAddress "") $isDatabaseBootstrapped -}}
 {{- $isDoclibReady := ne $doclibBucketName "" -}}
 {{- $isSearchReady := or (not $opensearchEnabled) (and (ne $searchEndpoint "") (ne $searchPassword "")) }}
 {{- if $liferayRoleArn }}
@@ -147,38 +148,35 @@ spec:
             type: Opaque
     managementPolicies: {{ $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson }}
 {{- end }}
-{{- if and $databaseAddress $databasePort }}
+{{- if $isDatabaseReady }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-database-connection-details-secret
-        gotemplating.fn.crossplane.io/composition-resource-name: database-connection-details-secret
+        crossplane.io/external-name: {{ $baseName }}-database-server-details-configmap
+        gotemplating.fn.crossplane.io/composition-resource-name: database-server-details-configmap
     labels:
         app: liferay
-        component: database-connection-details-secret
+        component: database-server-details-configmap
         environmentId: {{ $environmentId }}
         projectId: {{ $projectId }}
-    name: {{ $baseName }}-database-connection-details-secret
+    name: {{ $baseName }}-database-server-details-configmap
     namespace: {{ $namespace }}
 spec:
     forProvider:
         manifest:
             apiVersion: v1
             data:
-                DATABASE_ENDPOINT: {{ $databaseAddress | b64enc | quote }}
-                DATABASE_PASSWORD: {{ $databasePassword | b64enc | quote }}
-                DATABASE_PORT: {{ $databasePort | default 5432 | b64enc | quote }}
-                DATABASE_USERNAME: {{ $databaseUsername | b64enc | quote }}
-            kind: Secret
+                DATABASE_ENDPOINT: {{ $activeDatabaseAddress | quote }}
+            kind: ConfigMap
             metadata:
                 labels:
                     app: liferay
-                    component: database-connection-details-secret
+                    component: database-server-details-configmap
                     environmentId: {{ $environmentId }}
                     projectId: {{ $projectId }}
-                name: database-connection-details
+                name: database-server-details
                 namespace: {{ $namespace }}
                 ownerReferences:
                     -   apiVersion: liferay.com/v1alpha1
@@ -187,7 +185,6 @@ spec:
                         kind: LiferayInfrastructure
                         name: {{ $xr.metadata.name }}
                         uid: {{ $xr.metadata.uid }}
-            type: Opaque
     managementPolicies: {{ $managementPolicies }}
 {{- end }}
 {{- if and $searchEndpoint $searchPassword }}
@@ -238,14 +235,14 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-doclib-connection-details-secret
-        gotemplating.fn.crossplane.io/composition-resource-name: doclib-connection-details-secret
+        crossplane.io/external-name: {{ $baseName }}-document-library-connection-details-secret
+        gotemplating.fn.crossplane.io/composition-resource-name: document-library-connection-details-secret
     labels:
         app: liferay
-        component: doclib-connection-details-secret
+        component: document-library-connection-details-secret
         environmentId: {{ $environmentId }}
         projectId: {{ $projectId }}
-    name: {{ $baseName }}-doclib-connection-details-secret
+    name: {{ $baseName }}-document-library-connection-details-secret
     namespace: {{ $namespace }}
 spec:
     forProvider:
@@ -258,10 +255,10 @@ spec:
             metadata:
                 labels:
                     app: liferay
-                    component: doclib-connection-details-secret
+                    component: document-library-connection-details-secret
                     environmentId: {{ $environmentId }}
                     projectId: {{ $projectId }}
-                name: doclib-connection-details
+                name: document-library-connection-details
                 namespace: {{ $namespace }}
                 ownerReferences:
                     -   apiVersion: liferay.com/v1alpha1

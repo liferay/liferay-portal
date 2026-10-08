@@ -1,5 +1,6 @@
 {{- $databaseUsername := "liferay_database_admin" -}}
 {{- $env := index .context "apiextensions.crossplane.io/environment" -}}
+{{- $observedResources := .observed.resources | default dict -}}
 {{- $searchUsername := "liferay_search_admin" -}}
 {{- $xr := .observed.composite.resource -}}
 
@@ -21,6 +22,7 @@
 {{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $projectId (printf "%s-%s-%s" $env.accountId $env.deploymentName $projectId | sha256sum | trunc 6)) -}}
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
 
+{{- $activeDatabaseAddress := dig (printf "database-%s" $activeDataPlane) "resource" "status" "atProvider" "address" "" $observedResources | toString -}}
 {{- $baseName := printf "%.18s-%s" $projectIdFull (printf "%s-%s-%s" $env.accountId $env.deploymentName $projectIdFull | sha256sum | trunc 6) -}}
 
 {{- $searchName := printf "%.21s-search" $baseName -}}
