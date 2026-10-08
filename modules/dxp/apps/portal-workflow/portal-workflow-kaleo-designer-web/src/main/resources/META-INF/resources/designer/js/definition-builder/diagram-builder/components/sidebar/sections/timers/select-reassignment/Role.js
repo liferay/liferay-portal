@@ -5,7 +5,7 @@
 
 import React, {useEffect} from 'react';
 
-import {retrieveRoleById} from '../../../../../../util/fetchUtil';
+import {retrieveRole} from '../../../../../../util/fetchUtil';
 import SidebarPanel from '../../../SidebarPanel';
 import BaseRole from '../../shared-components/BaseRole';
 
@@ -27,7 +27,10 @@ const Role = ({actionData, actionSectionsIndex, setActionSections}) => {
 
 	useEffect(() => {
 		if (actionData.roleId && !actionData.name) {
-			retrieveRoleById(actionData.roleId)
+			retrieveRole(
+				actionData.roleExternalReferenceCode,
+				actionData.roleId
+			)
 				.then((response) => response.json())
 				.then((response) => {
 					setActionSections((currentSections) => {
