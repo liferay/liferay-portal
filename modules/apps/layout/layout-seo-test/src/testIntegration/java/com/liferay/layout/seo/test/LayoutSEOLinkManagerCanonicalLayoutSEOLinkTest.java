@@ -238,7 +238,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	}
 
 	@Test
-	public void testGetCanonicalAssetDisplayPageURLCustomDisplayPage()
+	public void testGetCanonicalAssetDisplayPageURLCustomAssetDisplayPage()
 		throws Exception {
 
 		JournalArticle journalArticle = _addJournalArticle();
@@ -256,7 +256,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
-		String url = _getCustomDisplayPageURL(
+		String url = _getCustomAssetDisplayPageURL(
 			classNameId, journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
@@ -278,7 +278,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	}
 
 	@Test
-	public void testGetCanonicalAssetDisplayPageURLCustomDisplayPageNoneAssetDisplayPageEntry()
+	public void testGetCanonicalAssetDisplayPageURLCustomAssetDisplayPageNoneAssetDisplayPageEntry()
 		throws Exception {
 
 		JournalArticle journalArticle = _addJournalArticle();
@@ -296,7 +296,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
-		String url = _getCustomDisplayPageURL(
+		String url = _getCustomAssetDisplayPageURL(
 			classNameId, journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
@@ -315,13 +315,13 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	@Test
 	@TestInfo("LPD-108942")
 	public void testGetCanonicalLayoutSEOLink() throws Exception {
-		_testGetCanonicalLayoutSEOLinkCustomDisplayPage(
+		_testGetCanonicalLayoutSEOLinkCustomAssetDisplayPage(
 			_addConnectedDepotGroup(DepotConstants.TYPE_ASSET_LIBRARY));
-		_testGetCanonicalLayoutSEOLinkCustomDisplayPage(
+		_testGetCanonicalLayoutSEOLinkCustomAssetDisplayPage(
 			_addConnectedDepotGroup(DepotConstants.TYPE_SPACE));
-		_testGetCanonicalLayoutSEOLinkCustomDisplayPage(
+		_testGetCanonicalLayoutSEOLinkCustomAssetDisplayPage(
 			_groupLocalService.getCompanyGroup(_group.getCompanyId()));
-		_testGetCanonicalLayoutSEOLinkDesignLibraryCustomDisplayPage();
+		_testGetCanonicalLayoutSEOLinkDesignLibraryCustomAssetDisplayPage();
 		_testGetCanonicalLayoutSEOLinkNoDisplayPage();
 	}
 
@@ -522,12 +522,12 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
-		String url = _getCustomDisplayPageURL(
+		String url = _getCustomAssetDisplayPageURL(
 			classNameId, journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
 
-		String customDisplayPageFriendlyURL =
+		String customAssetDisplayPageFriendlyURL =
 			FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET +
 				layout.getFriendlyURL(LocaleUtil.US);
 
@@ -546,7 +546,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 					String href = layoutSEOLink.getHref();
 
 					Assert.assertFalse(
-						href, href.contains(customDisplayPageFriendlyURL));
+						href, href.contains(customAssetDisplayPageFriendlyURL));
 				}
 			});
 	}
@@ -612,7 +612,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			_serviceContext);
 	}
 
-	private String _getCustomDisplayPageURL(
+	private String _getCustomAssetDisplayPageURL(
 			long classNameId, JournalArticle journalArticle, Layout layout,
 			ThemeDisplay themeDisplay)
 		throws Exception {
@@ -693,7 +693,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 	}
 
-	private void _testGetCanonicalLayoutSEOLinkCustomDisplayPage(Group group)
+	private void _testGetCanonicalLayoutSEOLinkCustomAssetDisplayPage(
+			Group group)
 		throws Exception {
 
 		JournalArticle journalArticle = _addJournalArticle(
@@ -720,7 +721,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
-		String url = _getCustomDisplayPageURL(
+		String url = _getCustomAssetDisplayPageURL(
 			classNameId, journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
@@ -741,7 +742,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			});
 	}
 
-	private void _testGetCanonicalLayoutSEOLinkDesignLibraryCustomDisplayPage()
+	private void _testGetCanonicalLayoutSEOLinkDesignLibraryCustomAssetDisplayPage()
 		throws Exception {
 
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
@@ -774,7 +775,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(
 			journalArticle, virtualLayout);
 
-		String url = _getCustomDisplayPageURL(
+		String url = _getCustomAssetDisplayPageURL(
 			classNameId, journalArticle, virtualLayout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
@@ -820,7 +821,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
-		String url = _getCustomDisplayPageURL(
+		String url = _getCustomAssetDisplayPageURL(
 			classNameId, journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
