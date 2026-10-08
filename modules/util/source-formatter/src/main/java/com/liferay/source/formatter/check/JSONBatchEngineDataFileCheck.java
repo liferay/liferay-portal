@@ -53,9 +53,9 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 		JSONObject jsonObject = new JSONObjectImpl(content);
 
-		_removeRootDefaultValues(absolutePath, jsonObject);
-		_removeConfigurationDefaultValues(absolutePath, jsonObject);
 		_formatItems(fileName, absolutePath, jsonObject);
+		_removeConfigurationDefaultValues(absolutePath, jsonObject);
+		_removeRootDefaultValues(absolutePath, jsonObject);
 
 		return JSONUtil.toString(jsonObject);
 	}
