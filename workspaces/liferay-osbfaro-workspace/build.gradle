@@ -18,15 +18,6 @@ buildDockerImage {
 	images = ["liferay/com-liferay-osb-faro:${tag}"]
 }
 
-task buildTheme(type: Exec)
-
-buildTheme {
-	commandLine "${project.buildDir}/node/bin/node", "${project.buildDir}/node/lib/node_modules/npm/bin/npm-cli.js", "run", "build"
-	dependsOn yarnInstall
-	environment "PATH", "${project.buildDir}/node/bin:${System.getenv('PATH') ?: ''}"
-	workingDir "modules/osb-faro-theme"
-}
-
 createDockerfile {
 	def extFile = file(faroEnvironmentName == "local" ? "modules/osb-faro-docker/local/Dockerfile.ext" : "modules/osb-faro-docker/cloud/Dockerfile.ext")
 
@@ -42,8 +33,6 @@ createDockerfile {
 }
 
 dockerDeploy {
-	dependsOn buildTheme
-
 	doLast {
 		copy {
 			exclude "cloud"
@@ -54,12 +43,6 @@ dockerDeploy {
 		copy {
 			from "modules/osb-faro-docker/scripts/100_liferay_image_setup.sh"
 			into "${buildDir}/docker"
-		}
-
-		copy {
-			from "modules/osb-faro-theme/dist"
-			include "*.war"
-			into "${buildDir}/docker/deploy"
 		}
 
 		if (faroEnvironmentName != "local") {

@@ -1,5 +1,0 @@
-*.lar
-/.web_bundle_build
-/build_gradle
-/dist
-/liferay-theme.json
