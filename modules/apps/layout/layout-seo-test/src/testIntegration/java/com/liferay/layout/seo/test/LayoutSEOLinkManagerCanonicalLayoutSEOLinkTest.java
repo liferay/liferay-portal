@@ -315,7 +315,12 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	@Test
 	@TestInfo("LPD-108942")
 	public void testGetCanonicalLayoutSEOLink() throws Exception {
-		_testGetCanonicalLayoutSEOLinkCustomDisplayPage();
+		_testGetCanonicalLayoutSEOLinkCustomDisplayPage(
+			_addConnectedDepotGroup(DepotConstants.TYPE_ASSET_LIBRARY));
+		_testGetCanonicalLayoutSEOLinkCustomDisplayPage(
+			_addConnectedDepotGroup(DepotConstants.TYPE_SPACE));
+		_testGetCanonicalLayoutSEOLinkCustomDisplayPage(
+			_groupLocalService.getCompanyGroup(_group.getCompanyId()));
 		_testGetCanonicalLayoutSEOLinkDesignLibraryCustomDisplayPage();
 		_testGetCanonicalLayoutSEOLinkNoDisplayPage();
 	}
@@ -577,13 +582,17 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		Locale locale = LocaleUtil.getSiteDefault();
 
-		return JournalTestUtil.addArticle(
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			groupId, JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
 			true, RandomTestUtil.randomLocaleStringMap(locale),
 			RandomTestUtil.randomLocaleStringMap(locale),
 			RandomTestUtil.randomLocaleStringMap(locale), null, locale, null,
 			false, false, serviceContext);
+
+		_journalArticles.add(journalArticle);
+
+		return journalArticle;
 	}
 
 	private AssetDisplayPageEntry _addJournalArticleAssetDisplayPageEntry(
@@ -684,10 +693,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 	}
 
-	private void _testGetCanonicalLayoutSEOLinkCustomDisplayPage()
+	private void _testGetCanonicalLayoutSEOLinkCustomDisplayPage(Group group)
 		throws Exception {
-
-		Group group = _addConnectedDepotGroup(DepotConstants.TYPE_SPACE);
 
 		JournalArticle journalArticle = _addJournalArticle(
 			group.getGroupId(),
@@ -878,6 +885,9 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@DeleteAfterTestRun
+	private final List<JournalArticle> _journalArticles = new ArrayList<>();
 
 	private Layout _layout;
 
