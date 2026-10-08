@@ -7,10 +7,11 @@ package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordService;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -29,33 +30,41 @@ import org.osgi.service.component.annotations.Reference;
 	service = MVCActionCommand.class
 )
 public class DeleteFormInstanceRecordMVCActionCommand
-	extends BaseTransactionalMVCActionCommand {
+	extends BaseMVCActionCommand {
 
 	@Override
-	protected void doTransactionalCommand(
+	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-
-		long[] deleteFormInstanceRecordIds = null;
 
 		long formInstanceRecordId = ParamUtil.getLong(
 			actionRequest, "formInstanceRecordId");
 
 		if (formInstanceRecordId > 0) {
-			deleteFormInstanceRecordIds = new long[] {formInstanceRecordId};
-		}
-		else {
-			deleteFormInstanceRecordIds = StringUtil.split(
-				ParamUtil.getString(
-					actionRequest, "deleteFormInstanceRecordIds"),
-				0L);
+			_ddmFormInstanceRecordService.deleteFormInstanceRecord(
+				formInstanceRecordId);
+
+			return;
 		}
 
-		for (long deleteFormInstanceRecordId : deleteFormInstanceRecordIds) {
-			_ddmFormInstanceRecordService.deleteFormInstanceRecord(
-				deleteFormInstanceRecordId);
+		for (long deleteFormInstanceRecordId :
+				ParamUtil.getLongValues(
+					actionRequest, "deleteFormInstanceRecordIds")) {
+
+			try {
+				_ddmFormInstanceRecordService.deleteFormInstanceRecord(
+					deleteFormInstanceRecordId);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(exception);
+				}
+			}
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DeleteFormInstanceRecordMVCActionCommand.class);
 
 	@Reference
 	private DDMFormInstanceRecordService _ddmFormInstanceRecordService;
