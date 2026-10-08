@@ -75,9 +75,17 @@ const Timers = ({setContentName, setErrors}) => {
 						else if (
 							reassignments.assignmentType[0] === 'roleId'
 						) {
+							reassignments.roleExternalReferenceCode =
+								filteredTimerActions.map(
+									({roleExternalReferenceCode}) =>
+										roleExternalReferenceCode
+								)[0];
 							reassignments.roleId = filteredTimerActions.map(
 								({roleId}) => roleId
 							);
+							reassignments.roleType = filteredTimerActions.map(
+								({roleType}) => roleType
+							)[0];
 						}
 						else if (
 							reassignments.assignmentType[0] ===
@@ -243,9 +251,15 @@ const Timers = ({setContentName, setErrors}) => {
 					)[1];
 				}
 				else if (section.assignmentType === 'roleId') {
+					section.roleExternalReferenceCode = data.find(
+						(entry) => entry[0] === 'roleExternalReferenceCode'
+					)?.[1];
 					section.roleId = data.find(
 						(entry) => entry[0] === 'roleId'
 					)[1];
+					section.roleType = data.find(
+						(entry) => entry[0] === 'roleType'
+					)?.[1];
 				}
 				else if (section.assignmentType === 'scriptedAssignment') {
 					section.assignmentType = 'scriptedReassignment';
