@@ -6,7 +6,9 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.dynamic.registration.container.request.filter;
 
 import com.liferay.oauth2.provider.constants.OAuth2ApplicationConstants;
+import com.liferay.oauth2.provider.constants.OAuth2AuthorizationConstants;
 import com.liferay.oauth2.provider.constants.OAuth2ProviderActionKeys;
+import com.liferay.oauth2.provider.exception.NoSuchOAuth2AuthorizationException;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.rest.internal.configuration.OAuth2DynamicRegistrationConfiguration;
@@ -65,6 +67,7 @@ import java.security.Principal;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
@@ -403,6 +406,15 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		OAuth2Authorization oAuth2Authorization =
 			_oAuth2AuthorizationLocalService.
 				getOAuth2AuthorizationByAccessTokenContent(accessTokenContent);
+
+		if (Objects.equals(
+				oAuth2Authorization.getAccessTokenContent(),
+				OAuth2AuthorizationConstants.
+					ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN)) {
+
+			throw new NoSuchOAuth2AuthorizationException(
+				"Access token is revoked");
+		}
 
 		JwtClaims jwtClaims = new JwtClaims();
 
