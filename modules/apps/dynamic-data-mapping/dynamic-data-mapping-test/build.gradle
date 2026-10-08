@@ -6,6 +6,7 @@ dependencies {
 	testImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	testImplementation project(":apps:bulk:bulk-selection-api")
 	testImplementation project(":apps:depot:depot-api")
 	testImplementation project(":apps:document-library:document-library-api")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
