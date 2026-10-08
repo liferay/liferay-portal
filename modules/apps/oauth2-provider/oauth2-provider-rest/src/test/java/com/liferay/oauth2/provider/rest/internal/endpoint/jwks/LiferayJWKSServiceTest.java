@@ -85,6 +85,8 @@ public class LiferayJWKSServiceTest {
 				publicJsonWebKey.asMap()
 			).putAll(
 				privateJsonWebKey.asMap()
+			).put(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()
 			).build());
 
 		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(

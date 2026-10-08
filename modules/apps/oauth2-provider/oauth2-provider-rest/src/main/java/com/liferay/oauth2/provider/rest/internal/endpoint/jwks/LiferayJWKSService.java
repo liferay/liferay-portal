@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.cxf.rs.security.jose.jwk.JsonWebKey;
@@ -58,6 +59,8 @@ public class LiferayJWKSService extends JwksService {
 
 	@Activate
 	protected void activate(Map<String, Object> properties) throws Exception {
+		Map<String, Object> jsonWebKeyProperties = new HashMap<>();
+
 		OAuth2AuthorizationServerConfiguration
 			oAuth2AuthorizationServerConfiguration =
 				ConfigurableUtil.createConfigurable(
@@ -69,10 +72,27 @@ public class LiferayJWKSService extends JwksService {
 				oAuth2AuthorizationServerConfiguration.
 					jwtAccessTokenSigningJSONWebKey()));
 
+		for (String publicPropertyName : _PUBLIC_PROPERTY_NAMES) {
+			Object value = jsonWebKey.getKeyProperty(publicPropertyName);
+
+			if (value != null) {
+				jsonWebKeyProperties.put(publicPropertyName, value);
+			}
+		}
+
 		_jsonWebKeys = new JsonWebKeys(
-			JwkUtils.stripPrivateParameters(
-				Collections.singletonList(jsonWebKey)));
+			Collections.singletonList(new JsonWebKey(jsonWebKeyProperties)));
 	}
+
+	private static final String[] _PUBLIC_PROPERTY_NAMES = {
+		JsonWebKey.EC_CURVE, JsonWebKey.EC_X_COORDINATE,
+		JsonWebKey.EC_Y_COORDINATE, JsonWebKey.KEY_ALGO, JsonWebKey.KEY_ID,
+		JsonWebKey.KEY_OPERATIONS, JsonWebKey.KEY_TYPE,
+		JsonWebKey.PUBLIC_KEY_USE, JsonWebKey.RSA_MODULUS,
+		JsonWebKey.RSA_PUBLIC_EXP, JsonWebKey.X509_CHAIN,
+		JsonWebKey.X509_THUMBPRINT, JsonWebKey.X509_THUMBPRINT_SHA256,
+		JsonWebKey.X509_URL
+	};
 
 	private JsonWebKeys _jsonWebKeys;
 
