@@ -64,6 +64,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.configuration.URLFetchSecurityCompanyConfiguration;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -1232,15 +1233,16 @@ public class LiferayOAuthDataProvider
 	private OAuthJoseJwtProducer _createJwtAccessTokenProducer() {
 		OAuthJoseJwtProducer oAuthJoseJwtProducer = new OAuthJoseJwtProducer();
 
-		OAuth2JWKValidatorUtil.validateJWK(
+		String jwtAccessTokenSigningJSONWebKey = _secretResolver.resolve(
+			CompanyConstants.SYSTEM,
 			_oAuth2AuthorizationServerConfiguration.
 				jwtAccessTokenSigningJSONWebKey());
 
+		OAuth2JWKValidatorUtil.validateJWK(jwtAccessTokenSigningJSONWebKey);
+
 		oAuthJoseJwtProducer.setSignatureProvider(
 			JwsUtils.getSignatureProvider(
-				JwkUtils.readJwkKey(
-					_oAuth2AuthorizationServerConfiguration.
-						jwtAccessTokenSigningJSONWebKey())));
+				JwkUtils.readJwkKey(jwtAccessTokenSigningJSONWebKey)));
 
 		return oAuthJoseJwtProducer;
 	}
@@ -1920,6 +1922,9 @@ public class LiferayOAuthDataProvider
 
 	@Reference
 	private ScopeLocator _scopeLocator;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference
 	private ServerAuthorizationCodeGrantProvider

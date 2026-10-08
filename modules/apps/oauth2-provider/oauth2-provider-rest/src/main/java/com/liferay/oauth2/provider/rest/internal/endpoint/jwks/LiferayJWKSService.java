@@ -7,6 +7,8 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.jwks;
 
 import com.liferay.oauth2.provider.rest.internal.configuration.OAuth2AuthorizationServerConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -17,6 +19,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.cxf.rs.security.jose.jwk.JsonWebKey;
 import org.apache.cxf.rs.security.jose.jwk.JsonWebKeys;
 import org.apache.cxf.rs.security.jose.jwk.JwkUtils;
 import org.apache.cxf.rs.security.oauth2.services.JwksService;
@@ -24,6 +27,7 @@ import org.apache.cxf.rs.security.oauth2.services.JwksService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Raymond Augé
@@ -59,14 +63,20 @@ public class LiferayJWKSService extends JwksService {
 				ConfigurableUtil.createConfigurable(
 					OAuth2AuthorizationServerConfiguration.class, properties);
 
+		JsonWebKey jsonWebKey = JwkUtils.readJwkKey(
+			_secretResolver.resolve(
+				CompanyConstants.SYSTEM,
+				oAuth2AuthorizationServerConfiguration.
+					jwtAccessTokenSigningJSONWebKey()));
+
 		_jsonWebKeys = new JsonWebKeys(
 			JwkUtils.stripPrivateParameters(
-				Collections.singletonList(
-					JwkUtils.readJwkKey(
-						oAuth2AuthorizationServerConfiguration.
-							jwtAccessTokenSigningJSONWebKey()))));
+				Collections.singletonList(jsonWebKey)));
 	}
 
 	private JsonWebKeys _jsonWebKeys;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
