@@ -55,6 +55,7 @@ export default function ManagementToolbarFilterAndOrder({
 				return (
 					<CheckboxGroup
 						{...props}
+						key={key}
 						onAdd={(value) => {
 							setLocalFilters((prevFilters) => {
 								const values = prevFilters[key] || [];
@@ -87,6 +88,7 @@ export default function ManagementToolbarFilterAndOrder({
 							},
 							...props.items,
 						]}
+						key={key}
 						onChange={(value) => {
 							setLocalFilters((prevFilters) => ({
 								...prevFilters,

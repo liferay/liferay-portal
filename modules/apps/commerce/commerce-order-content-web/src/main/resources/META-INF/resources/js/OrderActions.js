@@ -233,6 +233,7 @@ function OrderActions({
 								restrictedNotesPermission:
 									manageRestrictedNotesPermission,
 							}}
+							key={action.name}
 							style={{
 								displayType: 'primary',
 								size: 'md',

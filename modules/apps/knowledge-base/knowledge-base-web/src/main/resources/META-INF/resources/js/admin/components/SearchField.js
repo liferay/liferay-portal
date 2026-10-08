@@ -25,9 +25,9 @@ const highlithKeywordInText = (text, keyword) => {
 
 	return (
 		<span>
-			{parts.map((part) =>
+			{parts.map((part, index) =>
 				part.toLowerCase() === keyword.toLowerCase() ? (
-					<b>{part}</b>
+					<b key={index}>{part}</b>
 				) : (
 					part
 				)

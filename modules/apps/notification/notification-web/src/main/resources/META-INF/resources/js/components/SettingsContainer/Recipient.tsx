@@ -237,6 +237,7 @@ export function Recipient({
 								disabled={disabled}
 								error={error}
 								id={`${id}${name}`}
+								key={type}
 								label={label}
 								name={name as 'roleName' | 'userGroupName'}
 								onRecipientsChange={(recipients) =>
