@@ -6,6 +6,12 @@
 import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
+type TAccountAddressChannel = {
+	accountAddressChannelId?: number;
+	addressChannelId?: number;
+	addressId?: number;
+};
+
 type TDefaultProductDisplayPage = {
 	pageUuid: string;
 };
@@ -33,6 +39,12 @@ export class HeadlessCommerceAdminChannelApiHelper {
 	constructor(apiHelpers: ApiHelpers | DataApiHelpers) {
 		this.apiHelpers = apiHelpers;
 		this.basePath = 'headless-commerce-admin-channel/v1.0/';
+	}
+
+	async deleteAccountAddressChannel(accountAddressChannelId: number) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/account-address-channels/${accountAddressChannelId}`
+		);
 	}
 
 	async deleteChannel(channelId: number) {
@@ -64,6 +76,21 @@ export class HeadlessCommerceAdminChannelApiHelper {
 			`${this.apiHelpers.baseUrl}${this.basePath}/channels/${channel.id}`,
 			{
 				accountId,
+			}
+		);
+	}
+
+	async postAccountAddressChannel(
+		addressId: number,
+		channelId: number
+	): Promise<TAccountAddressChannel> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/account-addresses/${addressId}/account-address-channels`,
+			{
+				data: {
+					addressChannelId: channelId,
+					addressId,
+				},
 			}
 		);
 	}
