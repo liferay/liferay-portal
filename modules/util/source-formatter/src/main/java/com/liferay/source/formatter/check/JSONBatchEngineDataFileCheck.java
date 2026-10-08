@@ -58,8 +58,8 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 		_removeDefaultValues(rootDefaultValues, jsonObject);
 
-		jsonObject = _checkConfiguration(absolutePath, jsonObject);
-		jsonObject = _checkItems(fileName, absolutePath, jsonObject);
+		_checkConfiguration(absolutePath, jsonObject);
+		_checkItems(fileName, absolutePath, jsonObject);
 
 		return JSONUtil.toString(jsonObject);
 	}
@@ -133,14 +133,14 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 				"NamePattern\" in \"ObjectDefinitionClassNameProcessorImpl\"");
 	}
 
-	private JSONObject _checkConfiguration(
+	private void _checkConfiguration(
 		String absolutePath, JSONObject jsonObject) {
 
 		JSONObject configurationJSONObject = jsonObject.getJSONObject(
 			"configuration");
 
 		if (configurationJSONObject == null) {
-			return jsonObject;
+			return;
 		}
 
 		List<String> configurationDefaultValues = getAttributeValues(
@@ -150,18 +150,16 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 			configurationDefaultValues, configurationJSONObject);
 
 		jsonObject.put("configuration", configurationJSONObject);
-
-		return jsonObject;
 	}
 
-	private JSONObject _checkItems(
+	private void _checkItems(
 			String fileName, String absolutePath, JSONObject jsonObject)
 		throws Exception {
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
 		if (itemsJSONArray == null) {
-			return jsonObject;
+			return;
 		}
 
 		List<Object> objects = JSONUtil.toObjectList(itemsJSONArray);
@@ -191,8 +189,6 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 		}
 
 		jsonObject.put("items", itemsJSONArray);
-
-		return jsonObject;
 	}
 
 	private synchronized String _getClassNameRegex() throws Exception {
