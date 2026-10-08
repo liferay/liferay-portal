@@ -34,11 +34,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -276,6 +278,8 @@ public class ImportPreviewResourceTest
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
 		}
+
+		_testPostSiteImportPreviewWithLayoutSetPrototypeGroup();
 	}
 
 	private long _addLayoutWithPortlet(Group group, String portletId)
@@ -574,10 +578,35 @@ public class ImportPreviewResourceTest
 		Assert.assertTrue(additionCount > 0);
 	}
 
+	private void _testPostSiteImportPreviewWithLayoutSetPrototypeGroup()
+		throws Exception {
+
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		Group group = _layoutSetPrototype.getGroup();
+
+		ObjectDefinition objectDefinition = _publishObjectDefinitionWithEntries(
+			group.getGroupId(), ObjectDefinitionConstants.SCOPE_SITE);
+
+		_testPostImportPreviewWithObjectEntries(
+			group.getGroupId(), objectDefinition,
+			file -> importPreviewResource.postSiteImportPreview(
+				group.getExternalReferenceCode(), 0L, null, null,
+				HashMapBuilder.put(
+					"file", file
+				).build()));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
 	@Inject
 	private GroupLocalService _groupLocalService;
 
 	private ImportPreviewResource _importPreviewResource;
+
+	@DeleteAfterTestRun
+	private LayoutSetPrototype _layoutSetPrototype;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

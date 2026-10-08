@@ -680,6 +680,31 @@ describe('NewExport', () => {
 			);
 		});
 
+		it('exports all private pages by default when the private layout is the default', async () => {
+			renderComponent({
+				exportPreview: previewWithPagePicker,
+				pageTreeModalConfiguration: {
+					...DEFAULT_PROPS.pageTreeModalConfiguration,
+					defaultPrivateLayout: true,
+				},
+			});
+
+			await typeFileName();
+
+			await submitExport();
+
+			await waitFor(() =>
+				expect(getExportRequest().requestPortletDataHandlers).toEqual([
+					{
+						name: LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
+						requestPortletDataHandlerControls: [
+							{name: 'privateLayoutPages'},
+						],
+					},
+				])
+			);
+		});
+
 		it('hides the visibility radios and exports a public page subset through the modal', async () => {
 			renderComponent({exportPreview: previewWithPagePicker});
 

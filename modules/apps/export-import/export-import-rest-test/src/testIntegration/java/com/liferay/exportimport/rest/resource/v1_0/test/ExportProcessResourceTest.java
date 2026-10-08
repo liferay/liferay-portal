@@ -30,6 +30,7 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
@@ -42,11 +43,14 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -475,6 +479,8 @@ public class ExportProcessResourceTest
 					exportProcessRequest));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_testPostSiteExportProcessWithLayoutSetPrototypeGroup();
 	}
 
 	@Override
@@ -679,36 +685,14 @@ public class ExportProcessResourceTest
 	}
 
 	private void _assertExportedLayouts(
-			String controlName,
+			String controlName, long groupId,
 			UnsafeFunction<ExportProcessRequest, ExportProcess, Exception>
 				unsafeFunction,
 			Layout... layouts)
 		throws Exception {
 
 		ExportProcess exportProcess = unsafeFunction.apply(
-			new ExportProcessRequest() {
-				{
-					name = RandomTestUtil.randomString();
-
-					setRequestPortletDataHandlers(
-						new RequestPortletDataHandler[] {
-							new RequestPortletDataHandler() {
-								{
-									name = "PORTLET_DATA_" + _PORTLET_ID;
-
-									setRequestPortletDataHandlerControls(
-										new RequestPortletDataHandlerControl[] {
-											new RequestPortletDataHandlerControl() {
-												{
-													name = controlName;
-												}
-											}
-										});
-								}
-							}
-						});
-				}
-			});
+			_getLayoutSetExportProcessRequest(controlName));
 
 		ExportImportTestUtil.retryAssert(
 			1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
@@ -727,7 +711,7 @@ public class ExportProcessResourceTest
 				exportProcess.getId()),
 			"com.liferay.headless.admin.site.internal.resource.v1_0." +
 				"SitePageResourceImpl",
-			testGroup.getGroupId(), layouts, Layout::getExternalReferenceCode);
+			groupId, layouts, Layout::getExternalReferenceCode);
 	}
 
 	private long _getCompanyGroupId() throws Exception {
@@ -763,6 +747,37 @@ public class ExportProcessResourceTest
 			externalReferenceCode, testCompany.getCompanyId());
 
 		return group.getGroupId();
+	}
+
+	private ExportProcessRequest _getLayoutSetExportProcessRequest(
+		String... controlNames) {
+
+		return new ExportProcessRequest() {
+			{
+				name = RandomTestUtil.randomString();
+
+				setRequestPortletDataHandlers(
+					new RequestPortletDataHandler[] {
+						new RequestPortletDataHandler() {
+							{
+								name = "PORTLET_DATA_" + _PORTLET_ID;
+
+								setRequestPortletDataHandlerControls(
+									TransformUtil.transform(
+										controlNames,
+										controlName ->
+											new RequestPortletDataHandlerControl() {
+												{
+													name = controlName;
+												}
+											},
+										RequestPortletDataHandlerControl.
+											class));
+							}
+						}
+					});
+			}
+		};
 	}
 
 	private ExportProcess _postExportProcess(
@@ -960,38 +975,11 @@ public class ExportProcessResourceTest
 			testGroup, false, false);
 
 		_assertExportedLayouts(
-			"privateLayoutPages", unsafeFunction, privateLayout);
+			"privateLayoutPages", testGroup.getGroupId(), unsafeFunction,
+			privateLayout);
 		_assertExportedLayouts(
-			"publicLayoutPages", unsafeFunction, publicLayout);
-
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest() {
-			{
-				name = RandomTestUtil.randomString();
-
-				setRequestPortletDataHandlers(
-					new RequestPortletDataHandler[] {
-						new RequestPortletDataHandler() {
-							{
-								name = "PORTLET_DATA_" + _PORTLET_ID;
-
-								setRequestPortletDataHandlerControls(
-									new RequestPortletDataHandlerControl[] {
-										new RequestPortletDataHandlerControl() {
-											{
-												name = "publicLayoutPages";
-											}
-										},
-										new RequestPortletDataHandlerControl() {
-											{
-												name = "privateLayoutPages";
-											}
-										}
-									});
-							}
-						}
-					});
-			}
-		};
+			"publicLayoutPages", testGroup.getGroupId(), unsafeFunction,
+			publicLayout);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
@@ -999,7 +987,10 @@ public class ExportProcessResourceTest
 				LoggerTestUtil.WARN)) {
 
 			assertHttpResponseStatusCode(
-				400, httpResponseUnsafeFunction.apply(exportProcessRequest));
+				400,
+				httpResponseUnsafeFunction.apply(
+					_getLayoutSetExportProcessRequest(
+						"publicLayoutPages", "privateLayoutPages")));
 		}
 	}
 
@@ -1108,6 +1099,39 @@ public class ExportProcessResourceTest
 		}
 	}
 
+	private void _testPostSiteExportProcessWithLayoutSetPrototypeGroup()
+		throws Exception {
+
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		Group group = _layoutSetPrototype.getGroup();
+
+		LayoutTestUtil.addTypePortletLayout(group, true);
+
+		List<Layout> layouts = _layoutLocalService.getLayouts(
+			group.getGroupId(), true);
+
+		_assertExportedLayouts(
+			"privateLayoutPages", group.getGroupId(),
+			exportProcessRequest -> exportProcessResource.postSiteExportProcess(
+				group.getExternalReferenceCode(), 0L, null,
+				exportProcessRequest),
+			layouts.toArray(new Layout[0]));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				exportProcessResource.postSiteExportProcessHttpResponse(
+					group.getExternalReferenceCode(), 0L, null,
+					_getLayoutSetExportProcessRequest("publicLayoutPages")));
+		}
+	}
+
 	private static final String _PORTLET_ID =
 		"com_liferay_layout_admin_web_portlet_LayoutSetLayoutsPortlet";
 
@@ -1123,6 +1147,12 @@ public class ExportProcessResourceTest
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
+	@DeleteAfterTestRun
+	private LayoutSetPrototype _layoutSetPrototype;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

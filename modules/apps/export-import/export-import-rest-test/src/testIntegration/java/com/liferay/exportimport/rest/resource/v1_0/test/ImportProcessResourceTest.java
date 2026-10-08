@@ -48,12 +48,14 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstant
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -413,6 +415,8 @@ public class ImportProcessResourceTest
 				).build()),
 			importProcessRequest -> importProcessResource.postSiteImportProcess(
 				externalReferenceCode, 0L, null, importProcessRequest));
+
+		_testPostSiteImportProcessWithLayoutSetPrototypeGroup();
 	}
 
 	@Override
@@ -1011,6 +1015,55 @@ public class ImportProcessResourceTest
 		}
 	}
 
+	private void _testPostSiteImportProcessWithLayoutSetPrototypeGroup()
+		throws Exception {
+
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		Group group = _layoutSetPrototype.getGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			group, false, false);
+
+		File file = _exportLayoutAsFile(
+			group.getGroupId(), false, new long[] {layout.getLayoutId()});
+
+		_layoutLocalService.deleteLayout(
+			layout, ServiceContextTestUtil.getServiceContext());
+
+		String externalReferenceCode = group.getExternalReferenceCode();
+
+		_importPreviewResource.postSiteImportPreview(
+			externalReferenceCode, 0L, null, null,
+			HashMapBuilder.put(
+				"file", file
+			).build());
+
+		ImportProcess importProcess =
+			importProcessResource.postSiteImportProcess(
+				externalReferenceCode, 0L, null, new ImportProcessRequest());
+
+		ExportImportTestUtil.retryAssert(
+			1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
+			() -> {
+				BackgroundTask backgroundTask =
+					_backgroundTaskLocalService.getBackgroundTask(
+						importProcess.getId());
+
+				Assert.assertEquals(
+					BackgroundTaskConstants.STATUS_SUCCESSFUL,
+					backgroundTask.getStatus());
+			});
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByUuidAndGroupId(
+				layout.getUuid(), group.getGroupId(), true));
+		Assert.assertNull(
+			_layoutLocalService.fetchLayoutByUuidAndGroupId(
+				layout.getUuid(), group.getGroupId(), false));
+	}
+
 	private static final String _STATUS_MESSAGE =
 		"java.lang.NullPointerException\n\tat com.liferay.exportimport." +
 			"internal.controller.LayoutImportController.importFile(" +
@@ -1029,6 +1082,9 @@ public class ImportProcessResourceTest
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@DeleteAfterTestRun
+	private LayoutSetPrototype _layoutSetPrototype;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

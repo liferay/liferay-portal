@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -258,6 +259,8 @@ public class ExportPreviewResourceTest
 			portletId);
 		_testGetSiteExportPreviewWithGroupPermissions(
 			externalReferenceCode, plid, portletId);
+
+		_testGetSiteExportPreviewWithLayoutSetPrototypeGroup();
 	}
 
 	private LayoutPageTemplateCollection _addBasicLayoutPageTemplateCollection()
@@ -740,6 +743,38 @@ public class ExportPreviewResourceTest
 				basicLayoutPageTemplateCollection);
 	}
 
+	private void _testGetSiteExportPreviewWithLayoutSetPrototypeGroup()
+		throws Exception {
+
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		Group group = _layoutSetPrototype.getGroup();
+
+		LayoutTestUtil.addTypePortletLayout(group, true);
+
+		PreviewPortletDataHandler previewPortletDataHandler =
+			_getPreviewPortletDataHandler(
+				exportPreviewResource.getSiteExportPreview(
+					group.getExternalReferenceCode(), null, null, 0L, null,
+					null),
+				"PORTLET_DATA_com_liferay_layout_admin_web_portlet_" +
+					"LayoutSetLayoutsPortlet");
+
+		Assert.assertNull(
+			_getChoice(previewPortletDataHandler, "publicLayoutPages"));
+
+		Choice choice = _getChoice(
+			previewPortletDataHandler, "privateLayoutPages");
+
+		Assert.assertEquals(
+			_layoutLocalService.getLayoutsCount(group, true),
+			GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(
+			choice.getAdditionCount(),
+			previewPortletDataHandler.getAdditionCount());
+	}
+
 	private ObjectDefinition _companyObjectDefinition;
 	private ObjectDefinition _depotObjectDefinition;
 	private ExportPreviewResource _exportPreviewResource;
@@ -754,6 +789,9 @@ public class ExportPreviewResourceTest
 	@Inject
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@DeleteAfterTestRun
+	private LayoutSetPrototype _layoutSetPrototype;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
