@@ -23,6 +23,7 @@ import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHitBuilder;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.hits.SearchHitsBuilder;
+import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.opensearch2.internal.util.ConversionUtil;
 import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
 
@@ -70,6 +71,8 @@ public class HitsMetadataTranslator {
 			ConversionUtil.toFloat(hitsMetadata.maxScore(), 0.0F)
 		).totalHits(
 			totalHits.value()
+		).totalHitsRelation(
+			_translate(totalHits.relation())
 		).build();
 	}
 
@@ -145,6 +148,20 @@ public class HitsMetadataTranslator {
 				_populateHighlightFields(highlightFields, innerHit);
 			}
 		}
+	}
+
+	private TotalHitsRelation _translate(
+		org.opensearch.client.opensearch.core.search.TotalHitsRelation
+			totalHitsRelation) {
+
+		if (totalHitsRelation ==
+				org.opensearch.client.opensearch.core.search.TotalHitsRelation.
+					Gte) {
+
+			return TotalHitsRelation.GTE;
+		}
+
+		return TotalHitsRelation.EQ;
 	}
 
 	private Document _translateDocument(
