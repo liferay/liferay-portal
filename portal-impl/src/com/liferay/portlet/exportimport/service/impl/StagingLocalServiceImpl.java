@@ -17,6 +17,7 @@ import com.liferay.exportimport.kernel.exception.RemoteExportException;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.MissingReferences;
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
@@ -379,6 +380,10 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap();
 
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS,
+			new String[] {Boolean.FALSE.toString()});
+
 		if (liveGroup.hasPrivateLayouts()) {
 			StagingUtil.publishLayouts(
 				userId, liveGroup.getGroupId(), stagingGroup.getGroupId(), true,
@@ -387,6 +392,10 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			parameterMap =
 				ExportImportConfigurationParameterMapFactoryUtil.
 					buildParameterMap();
+
+			parameterMap.put(
+				PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS,
+				new String[] {Boolean.FALSE.toString()});
 		}
 
 		if (liveGroup.hasPublicLayouts() || !liveGroup.hasPrivateLayouts()) {
