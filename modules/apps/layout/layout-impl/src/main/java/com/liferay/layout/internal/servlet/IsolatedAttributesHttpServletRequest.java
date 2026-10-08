@@ -31,10 +31,6 @@ public class IsolatedAttributesHttpServletRequest
 
 	@Override
 	public Object getAttribute(String name) {
-		if (RequestDispatcherAttributeNames.contains(name)) {
-			return super.getAttribute(name);
-		}
-
 		Object value = _attributes.get(name);
 
 		if (value == _nullValue) {
@@ -82,9 +78,8 @@ public class IsolatedAttributesHttpServletRequest
 		if (RequestDispatcherAttributeNames.contains(name)) {
 			super.removeAttribute(name);
 		}
-		else {
-			_attributes.put(name, _nullValue);
-		}
+
+		_attributes.put(name, _nullValue);
 	}
 
 	@Override
@@ -92,13 +87,12 @@ public class IsolatedAttributesHttpServletRequest
 		if (RequestDispatcherAttributeNames.contains(name)) {
 			super.setAttribute(name, value);
 		}
-		else {
-			if (value == null) {
-				value = _nullValue;
-			}
 
-			_attributes.put(name, value);
+		if (value == null) {
+			value = _nullValue;
 		}
+
+		_attributes.put(name, value);
 	}
 
 	private static final Object _nullValue = new Object();
