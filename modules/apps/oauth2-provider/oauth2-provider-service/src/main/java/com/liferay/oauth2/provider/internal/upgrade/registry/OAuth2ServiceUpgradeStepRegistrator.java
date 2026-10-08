@@ -9,6 +9,7 @@ import com.liferay.oauth2.provider.internal.upgrade.v2_0_0.OAuth2ApplicationScop
 import com.liferay.oauth2.provider.internal.upgrade.v3_2_0.OAuth2ApplicationFeatureUpgradeProcess;
 import com.liferay.oauth2.provider.internal.upgrade.v4_1_0.OAuth2ApplicationClientAuthenticationMethodUpgradeProcess;
 import com.liferay.oauth2.provider.internal.upgrade.v4_2_1.OAuth2ScopeGrantRemoveCompanyIdFromObjectsRelatedUpgradeProcess;
+import com.liferay.oauth2.provider.internal.upgrade.v5_0_1.DeleteStaleOAuth2ScopeGrantsUpgradeProcess;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.UserConstants;
@@ -154,6 +155,9 @@ public class OAuth2ServiceUpgradeStepRegistrator
 			"4.2.8", "5.0.0",
 			new com.liferay.oauth2.provider.internal.upgrade.v5_0_0.
 				OAuth2ApplicationIndexedColumnSizeUpgradeProcess());
+
+		registry.register(
+			"5.0.0", "5.0.1", new DeleteStaleOAuth2ScopeGrantsUpgradeProcess());
 	}
 
 	@Reference
