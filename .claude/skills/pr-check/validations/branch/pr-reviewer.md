@@ -17,7 +17,7 @@ LOG_ERROR=$(mktemp)
 (cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG}" 2> "${LOG_ERROR}")
 ```
 
-The exit status is the verdict. `0` is a clean diff, so report **PASS** and quote the `reviewed_files` count. `2` means the reviewer could not run, most often because the `claude` CLI is not on the PATH, so report **NOT VERIFIED** and quote `${LOG_ERROR}`. `1` means violations, and the log holds them as JSON, one object per violation with `file`, `line`, `rule`, `message`, and `fix`.
+The exit status is the verdict. `0` with a nonempty `reviewed_files` list is a clean diff, so report **PASS** and quote how many files the list holds. `0` with an empty list means that every changed file was generated, frontend, or ignored, so report **NOT VERIFIED** and say that the reviewer had nothing to review. `2` means the reviewer could not run, most often because the `claude` CLI is not on the PATH, so report **NOT VERIFIED** and quote `${LOG_ERROR}`. `1` means violations, and the log holds one JSON object whose `violations` array has an entry for each violation, with `file`, `line`, `rule`, `message`, and `fix`.
 
 Apply the fixes. For each violation, read the rule file `pr-reviewer/rules/<rule>-*.md` and the code around the line, then make the change the `fix` describes. A `fix` that starts with `Verify:` is one the reviewer was not sure about, so confirm it against the rule and the surrounding code first, and leave the code alone when the rule does not apply. Skip a `fix` that SourceFormatter would revert; the reviewer marks those with `SourceFormatter is authoritative`. Never edit a file that carries an `@generated` marker.
 
