@@ -179,13 +179,13 @@ function Placeholder({field, index, nestedFieldIndex}) {
 			className={classnames('lfr-forms__form-view-ddm-target', {
 				'lfr-forms__form-view-ddm-target-over': overTarget && canDrop,
 			})}
-			droppable="true"
+			data-droppable="true"
 			ref={(element) => {
 				dropRef(element);
 				ref.current = element;
 			}}
 		>
-			<span droppable="true" />
+			<span data-droppable="true" />
 		</div>
 	);
 }

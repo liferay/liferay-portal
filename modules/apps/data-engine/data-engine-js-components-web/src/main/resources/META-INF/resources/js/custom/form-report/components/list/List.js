@@ -77,10 +77,10 @@ export default function List({data, field, summary, totalEntries, type}) {
 				{Array.isArray(data) &&
 					data.map((value, index) => (
 						<li
+							data-index={index}
 							id={`${portletNamespace}_entry_${
 								field ? field.name : 'slidebar'
 							}_${index}`}
-							index={index}
 							key={index}
 							tabIndex={0}
 						>

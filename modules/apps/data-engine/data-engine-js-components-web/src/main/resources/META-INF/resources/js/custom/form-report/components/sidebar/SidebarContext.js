@@ -56,7 +56,7 @@ const SidebarContextProvider = ({
 				target,
 				'#' + portletNamespace + 'sidebar-reports'
 			);
-			const index = Number(target.getAttribute('index'));
+			const index = Number(target.getAttribute('data-index'));
 			const indexLastElement = sidebarState.totalEntries - 1;
 			const closeButtonId = `${portletNamespace}close-sidebar`;
 			const isCloseButton = target.id === closeButtonId;

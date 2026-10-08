@@ -473,7 +473,7 @@ function TimePicker({
 										)}
 										data-testid="ampm"
 										disabled={disabled}
-										max-length="2"
+										maxLength={2}
 										onFocus={() =>
 											handleInputFocus(TimeType.ampm)
 										}

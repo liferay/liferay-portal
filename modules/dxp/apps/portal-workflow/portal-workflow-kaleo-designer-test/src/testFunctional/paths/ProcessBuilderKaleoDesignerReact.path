@@ -184,7 +184,7 @@
 </tr>
 <tr>
 	<td>NODE_POSITION</td>
-	<td>//div[@class='react-flow']//span[contains(text(),'${key_nodeLabel}')]/../../..//div[@xpos='${key_nodeXPosition}' and @ypos='${key_nodeYPosition}']</td>
+	<td>//div[@class='react-flow']//span[contains(text(),'${key_nodeLabel}')]/../../..//div[@data-xpos='${key_nodeXPosition}' and @data-ypos='${key_nodeYPosition}']</td>
 	<td></td>
 </tr>
 

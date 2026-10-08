@@ -9,36 +9,36 @@ exports[`List renders 1`] = `
       class="entries-list"
     >
       <li
+        data-index="0"
         id="undefined_entry_fieldName_0"
-        index="0"
         tabindex="0"
       >
         label1
       </li>
       <li
+        data-index="1"
         id="undefined_entry_fieldName_1"
-        index="1"
         tabindex="0"
       >
         label2
       </li>
       <li
+        data-index="2"
         id="undefined_entry_fieldName_2"
-        index="2"
         tabindex="0"
       >
         label3
       </li>
       <li
+        data-index="3"
         id="undefined_entry_fieldName_3"
-        index="3"
         tabindex="0"
       >
         label4
       </li>
       <li
+        data-index="4"
         id="undefined_entry_fieldName_4"
-        index="4"
         tabindex="0"
       >
         label5

@@ -25,13 +25,13 @@ export default function BaseNode({
 	className,
 	description,
 	descriptionSidebar,
-	dragHandle,
+	dragHandle: _dragHandle,
 	httpMethod,
 	icon,
 	id,
 	inputVariables,
-	isConnectable,
-	isDragging,
+	isConnectable: _isConnectable,
+	isDragging: _isDragging,
 	javaDelegate,
 	label,
 	newNode,
@@ -43,8 +43,8 @@ export default function BaseNode({
 	requestBody,
 	script,
 	scriptLanguage,
-	sourcePosition,
-	targetPosition,
+	sourcePosition: _sourcePosition,
+	targetPosition: _targetPosition,
 	taskTimers,
 	timeout,
 	tools,
@@ -217,9 +217,8 @@ export default function BaseNode({
 
 			<div
 				className={`node ${nodeTypeClassName}`}
-				draghandle={dragHandle}
-				isconnectable={isConnectable?.toString()}
-				isdragging={isDragging?.toString()}
+				data-xpos={xPos}
+				data-ypos={yPos}
 				onClick={() => {
 					if (!descriptionSidebar) {
 						setSelectedItem({
@@ -250,13 +249,9 @@ export default function BaseNode({
 						});
 					}
 				}}
-				sourceposition={sourcePosition}
 				style={{
 					position: displayBorderArea ? 'absolute' : 'unset',
 				}}
-				targetposition={targetPosition}
-				xpos={xPos}
-				ypos={yPos}
 				{...otherProps}
 			>
 				{descriptionSidebar && (
