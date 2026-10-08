@@ -115,7 +115,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 				dropdownItem.putData("action", "deleteRecords");
 				dropdownItem.setIcon("times-circle");
 				dropdownItem.setLabel(
-					getLocalizedMessage(_renderRequest.getLocale(), "delete"));
+					LanguageUtil.get(_renderRequest.getLocale(), "delete"));
 				dropdownItem.setQuickAction(true);
 			}
 		).build();
@@ -230,13 +230,6 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		return _ddmFormInstance;
 	}
 
-	public List<Long> getDDMFormInstanceRecordIds() {
-		return TransformUtil.transform(
-			_ddmFormInstanceRecordLocalService.getFormInstanceRecords(
-				_ddmFormInstance.getFormInstanceId()),
-			DDMFormInstanceRecord::getFormInstanceRecordId);
-	}
-
 	public Locale getDefaultLocale(DDMFormInstanceRecord ddmFormInstanceRecord)
 		throws Exception {
 
@@ -257,14 +250,10 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 			TransformUtil.transformToArray(
 				Arrays.asList(
 					StringUtil.split(columnValues, StringPool.COMMA_AND_SPACE)),
-				value -> getLocalizedMessage(
+				value -> LanguageUtil.get(
 					themeDisplay.getLocale(), value.toLowerCase()),
 				String.class),
 			StringPool.COMMA_AND_SPACE);
-	}
-
-	public String getLocalizedMessage(Locale locale, String key) {
-		return LanguageUtil.get(locale, key);
 	}
 
 	public List<NavigationItem> getNavigationItems() {
@@ -313,8 +302,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 				dropdownItem.setActive(orderByCol.equals(getOrderByCol()));
 				dropdownItem.setHref(getPortletURL(), "orderByCol", orderByCol);
 				dropdownItem.setLabel(
-					getLocalizedMessage(
-						_renderRequest.getLocale(), orderByCol));
+					LanguageUtil.get(_renderRequest.getLocale(), orderByCol));
 			}
 		).build();
 	}

@@ -19,7 +19,9 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
 taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<%@ page import="com.liferay.dynamic.data.mapping.exception.FormInstanceNameException" %><%@
+<%@ page import="com.liferay.bulk.selection.BulkSelectionRunner" %><%@
+page import="com.liferay.bulk.selection.util.BulkSelectionRunnerUtil" %><%@
+page import="com.liferay.dynamic.data.mapping.exception.FormInstanceNameException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.FormInstanceSettingsRedirectURLException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.FormInstanceSettingsStorageTypeException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.StorageException" %><%@
@@ -56,6 +58,7 @@ page import="com.liferay.portal.kernel.json.JSONObject" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
+page import="com.liferay.portal.kernel.servlet.SessionMessages" %><%@
 page import="com.liferay.portal.kernel.upload.FileItem" %><%@
 page import="com.liferay.portal.kernel.upload.LiferayFileItemException" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@

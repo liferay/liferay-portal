@@ -9,6 +9,7 @@ export {default as DDMFormAdminManagementToolbarPropsTransformer} from './DDMFor
 export {default as DDMFormViewFormInstanceRecordsManagementToolbarPropsTransformer} from './DDMFormViewFormInstanceRecordsManagementToolbarPropsTransformer';
 export {default as FormView} from './FormView';
 
+export {default as BulkStatus} from './components/BulkStatus';
 export {default as DefaultPage} from './components/DefaultPage';
 export {default as ExportForm} from './components/export-form/ExportForm';
 export {default as ShowPartialResultsAlert} from './util/ShowPartialResultsAlert';
