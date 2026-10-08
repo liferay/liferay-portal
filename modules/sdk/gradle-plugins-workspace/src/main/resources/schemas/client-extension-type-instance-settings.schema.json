@@ -3760,6 +3760,26 @@
 		},
 		{
 			"properties": {
+				"pid": {
+					"const": "com.liferay.portal.security.configuration.URLFetchSecurityCompanyConfiguration"
+				},
+				"urlHostsAllowed": {
+					"items": {
+						"type": "string"
+					},
+					"type": "array"
+				},
+				"urlLocalNetworkAccessEnabled": {
+					"default": false,
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"pid"
+			]
+		},
+		{
+			"properties": {
 				"idleTimeout": {
 					"default": 15,
 					"title": "Session Idle Timeout",
@@ -5394,6 +5414,7 @@
 				"com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration",
 				"com.liferay.portal.security.auto.login.internal.basic.auth.header.configuration.BasicAuthHeaderAutoLoginConfiguration",
 				"com.liferay.portal.security.configuration.BasicAuthHeaderSupportConfiguration",
+				"com.liferay.portal.security.configuration.URLFetchSecurityCompanyConfiguration",
 				"com.liferay.portal.security.fips.configuration.FIPSSessionConfiguration",
 				"com.liferay.portal.security.iframe.sanitizer.configuration.IFrameConfiguration",
 				"com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration",
