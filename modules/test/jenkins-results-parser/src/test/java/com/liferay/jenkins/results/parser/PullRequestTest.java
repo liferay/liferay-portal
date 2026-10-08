@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.File;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
@@ -13,6 +15,10 @@ import org.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import org.mockito.ArgumentMatchers;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Kenji Heigel
@@ -54,6 +60,30 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetUpstreamRemoteGitBranch() {
+		String ownerUsername = RandomTestUtil.randomString();
+		String repositoryName = RandomTestUtil.randomString();
+
+		PullRequest pullRequest = _newPullRequest(
+			RandomTestUtil.randomInt(), ownerUsername, repositoryName);
+
+		try (MockedStatic<GitUtil> gitUtilMockedStatic = Mockito.mockStatic(
+				GitUtil.class)) {
+
+			pullRequest.getUpstreamRemoteGitBranch();
+
+			gitUtilMockedStatic.verify(
+				() -> GitUtil.getRemoteGitBranch(
+					ArgumentMatchers.eq("master"),
+					ArgumentMatchers.any(File.class),
+					ArgumentMatchers.eq(
+						JenkinsResultsParserUtil.combine(
+							"git@github.com:", ownerUsername, "/",
+							repositoryName, ".git"))));
+		}
+	}
+
+	@Test
 	public void testHasRequiredCompletedTestSuites() throws Exception {
 		PullRequest pullRequest = _newPullRequestWithRequiredTestSuites(
 			"required.completed.suites");
@@ -85,6 +115,40 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 		Iterator<String> iterator = pullRequestsJSONObject.keys();
 
 		return PullRequestFactory.newPullRequest(iterator.next(), null);
+	}
+
+	private PullRequest _newPullRequest(
+		int number, String ownerUsername, String repositoryName) {
+
+		String htmlURL = JenkinsResultsParserUtil.combine(
+			"https://github.com/", ownerUsername, "/", repositoryName, "/pull/",
+			String.valueOf(number));
+
+		return PullRequestFactory.newPullRequest(
+			new JSONObject(
+			).put(
+				"base",
+				new JSONObject(
+				).put(
+					"ref", "master"
+				).put(
+					"repo",
+					new JSONObject(
+					).put(
+						"name", repositoryName
+					).put(
+						"owner",
+						new JSONObject(
+						).put(
+							"login", ownerUsername
+						)
+					)
+				)
+			).put(
+				"html_url", htmlURL
+			).put(
+				"number", number
+			));
 	}
 
 	private PullRequest _newPullRequestWithRequiredTestSuites(
