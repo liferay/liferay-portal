@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.cms.site.initializer.internal.util.CMSFileTypeUtil;
 
@@ -52,16 +51,6 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 				groupId, userId, objectDefinitionId, objectEntryFolderId,
 				defaultLanguageId, values, serviceContext);
 		}
-
-		String languageId = defaultLanguageId;
-
-		if (Validator.isNull(languageId)) {
-			languageId = _language.getLanguageId(
-				_portal.getSiteDefaultLocale(groupId));
-		}
-
-		_validateFriendlyURL(
-			groupId, languageId, objectDefinition, 0, serviceContext);
 
 		ObjectEntry objectEntry = super.addObjectEntry(
 			groupId, userId, objectDefinitionId, objectEntryFolderId,
@@ -201,8 +190,5 @@ public class CMSFileTypeObjectEntryLocalServiceWrapper
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private Portal _portal;
 
 }
