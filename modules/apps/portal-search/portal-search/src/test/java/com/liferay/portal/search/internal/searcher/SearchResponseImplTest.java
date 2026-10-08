@@ -8,6 +8,8 @@ package com.liferay.portal.search.internal.searcher;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.search.hits.SearchHits;
+import com.liferay.portal.search.hits.SearchHitsBuilder;
+import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -55,6 +57,32 @@ public class SearchResponseImplTest {
 			searchResponse.getSearchHits(), _instanceOf(SearchHits.class));
 		_assertIs(searchResponse.getStatsResponseMap(), _emptyMap());
 		_assertIs(searchResponse.getTotalHits(), _zeroInt());
+		_assertIs(
+			searchResponse.getTotalHitsRelation(), same(TotalHitsRelation.EQ));
+	}
+
+	@Test
+	public void testTotalHitsRelationComesFromSearchHits() {
+		SearchResponseImpl searchResponseImpl = new SearchResponseImpl(
+			new SearchContext());
+
+		SearchHitsBuilder searchHitsBuilder = new SearchHitsBuilder();
+
+		searchResponseImpl.setSearchHits(
+			searchHitsBuilder.totalHitsRelation(
+				TotalHitsRelation.GTE
+			).build());
+
+		Assert.assertEquals(
+			TotalHitsRelation.GTE, searchResponseImpl.getTotalHitsRelation());
+
+		searchResponseImpl.setSearchHits(
+			searchHitsBuilder.totalHitsRelation(
+				TotalHitsRelation.EQ
+			).build());
+
+		Assert.assertEquals(
+			TotalHitsRelation.EQ, searchResponseImpl.getTotalHitsRelation());
 	}
 
 	protected static Consumer<List<?>> emptyList() {

@@ -408,6 +408,7 @@ public class DefaultSearchResultPermissionFilter
 		searchHitsBuilder.maxScore(searchHits.getMaxScore());
 		searchHitsBuilder.searchTime(searchHits.getSearchTime());
 		searchHitsBuilder.totalHits(hits.getLength());
+		searchHitsBuilder.totalHitsRelation(searchHits.getTotalHitsRelation());
 
 		searchResponseImpl.setSearchHits(searchHitsBuilder.build());
 	}
