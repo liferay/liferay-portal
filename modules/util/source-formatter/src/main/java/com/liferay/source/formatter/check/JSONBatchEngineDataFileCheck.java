@@ -56,7 +56,7 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 		jsonObject.remove("actions");
 		jsonObject.remove("facets");
 
-		jsonObject = _checkConfiguration(jsonObject);
+		jsonObject = _checkConfiguration(absolutePath, jsonObject);
 		jsonObject = _checkItems(fileName, absolutePath, jsonObject);
 
 		return JSONUtil.toString(jsonObject);
@@ -131,7 +131,9 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 				"NamePattern\" in \"ObjectDefinitionClassNameProcessorImpl\"");
 	}
 
-	private JSONObject _checkConfiguration(JSONObject jsonObject) {
+	private JSONObject _checkConfiguration(
+		String absolutePath, JSONObject jsonObject) {
+
 		JSONObject configurationJSONObject = jsonObject.getJSONObject(
 			"configuration");
 
@@ -139,17 +141,11 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 			return jsonObject;
 		}
 
-		configurationJSONObject.remove("companyId");
+		List<String> configurationDefaultValues = getAttributeValues(
+			_CONFIGURATION_DEFAULT_VALUES_KEY, absolutePath);
 
-		boolean multiCompany = configurationJSONObject.getBoolean(
-			"multiCompany");
-
-		if (!multiCompany) {
-			configurationJSONObject.remove("multiCompany");
-		}
-
-		configurationJSONObject.remove("userId");
-		configurationJSONObject.remove("version");
+		_removeDefaultValues(
+			configurationDefaultValues, configurationJSONObject);
 
 		jsonObject.put("configuration", configurationJSONObject);
 
@@ -385,6 +381,9 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 	private static final String _ALLOWED_UNMATCHED_CLASS_NAME_FILE_NAMES_KEY =
 		"allowedUnmatchedClassNameFileNames";
+
+	private static final String _CONFIGURATION_DEFAULT_VALUES_KEY =
+		"configurationDefaultValues";
 
 	private static final String _OBJECT_DEFINITION_ITEMS_DEFAULT_VALUES_KEY =
 		"objectDefinitionItemsDefaultValues";
