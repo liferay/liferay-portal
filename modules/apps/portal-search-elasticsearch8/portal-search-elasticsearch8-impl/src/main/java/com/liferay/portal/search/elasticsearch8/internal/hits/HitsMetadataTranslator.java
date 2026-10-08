@@ -34,6 +34,7 @@ import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHitBuilder;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.hits.SearchHitsBuilder;
+import com.liferay.portal.search.hits.TotalHitsRelation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,6 +73,8 @@ public class HitsMetadataTranslator {
 			ConversionUtil.toFloat(hitsMetadata.maxScore(), 0.0F)
 		).totalHits(
 			totalHits.value()
+		).totalHitsRelation(
+			_translate(totalHits.relation())
 		).build();
 	}
 
@@ -148,6 +151,20 @@ public class HitsMetadataTranslator {
 				_populateHighlightFields(highlightFields, innerHit);
 			}
 		}
+	}
+
+	private TotalHitsRelation _translate(
+		co.elastic.clients.elasticsearch.core.search.TotalHitsRelation
+			totalHitsRelation) {
+
+		if (totalHitsRelation ==
+				co.elastic.clients.elasticsearch.core.search.TotalHitsRelation.
+					Gte) {
+
+			return TotalHitsRelation.GTE;
+		}
+
+		return TotalHitsRelation.EQ;
 	}
 
 	private Document _translateDocument(
