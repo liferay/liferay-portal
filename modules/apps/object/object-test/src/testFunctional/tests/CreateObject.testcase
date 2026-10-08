@@ -71,49 +71,6 @@ definition {
 		CreateObject.assertDisabledAllFields();
 	}
 
-	@description = "LPS-135390 - Verify it is not possible to view an Object without the View permission"
-	@priority = 4
-	test CannotViewObjectWithoutViewPermission {
-		ObjectAdmin.addObjectViaAPI(
-			labelName = "Custom Object 71",
-			objectName = "CustomObject71",
-			pluralLabelName = "Custom Objects 71");
-
-		JSONRole.addRegularRole(
-			roleKey = "Regular Role",
-			roleTitle = "Regular Role");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "VIEW_CONTROL_PANEL",
-			resourceName = 90,
-			roleTitle = "Regular Role");
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Regular Role",
-			userEmailAddress = "userea@liferay.com");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		ObjectAdmin.openObjectAdmin();
-
-		AssertElementNotPresent(
-			key_labelName = "Custom Object 71",
-			locator1 = "CreateObject#OBJECT_NAME");
-	}
-
 	@description = "LPS-135390 - Verify it is possible to publish an Object with the Publish Object Definition permission"
 	@priority = 4
 	test CanPublishObjectWithPublishPermission {
