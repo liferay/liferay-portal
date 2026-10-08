@@ -7,6 +7,14 @@ export function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
+export function getRequestBody(method) {
+	const [, init] = fetch.mock.calls.findLast(
+		([, init]) => init?.method === method
+	);
+
+	return JSON.parse(init.body);
+}
+
 export function processFakeRequestData(url, items, queriedItems) {
 	url = new URL(url, Liferay.ThemeDisplay.getPortalURL());
 

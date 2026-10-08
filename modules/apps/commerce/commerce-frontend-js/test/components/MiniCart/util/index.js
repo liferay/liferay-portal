@@ -4,6 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
+import {openToast} from 'frontend-js-components-web';
 
 import {
 	DEFAULT_ORDER_DETAILS_PORTLET_ID,
@@ -11,15 +12,27 @@ import {
 } from '../../../../src/main/resources/META-INF/resources/components/mini_cart/util/constants';
 import {
 	filterOptions,
+	getCorrectedQuantity,
 	hasErrors,
 	parseOptions,
 	summaryDataMapper,
 } from '../../../../src/main/resources/META-INF/resources/components/mini_cart/util/index';
 import {regenerateOrderDetailURL} from '../../../../src/main/resources/META-INF/resources/utilities/regenerateOrderDetailURL';
+import {BASE_CHANNEL_PRODUCT_CONFIGURATION} from '../../fixtures/productFixtures';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/ServiceProvider/index'
 );
+
+jest.mock('frontend-js-components-web', () => ({
+	...jest.requireActual('frontend-js-components-web'),
+	openToast: jest.fn(),
+}));
+
+jest.mock('frontend-js-web', () => ({
+	...jest.requireActual('frontend-js-web'),
+	sub: (key, ...values) => [key, ...values].join(' '),
+}));
 
 describe('MiniCart tests_utilities', () => {
 	describe('filterOptions', () => {
@@ -39,6 +52,171 @@ describe('MiniCart tests_utilities', () => {
 			expect(filterOptions('/fail]')).toEqual([]);
 			expect(filterOptions(null)).toEqual([]);
 		});
+	});
+
+	describe('getCorrectedQuantity', () => {
+		const SKU = 'MIN55860';
+
+		const getCartItems = (cartQuantity) =>
+			cartQuantity ? [{quantity: cartQuantity, sku: SKU}] : [];
+
+		beforeEach(() => {
+			openToast.mockClear();
+		});
+
+		it.each([
+			[
+				'the minimum order quantity when the SKU is not in the cart',
+				{minOrderQuantity: 3},
+				0,
+				3,
+			],
+			[
+				'the first multiple above the minimum order quantity when the multiple order quantity is lower than the minimum',
+				{minOrderQuantity: 6, multipleOrderQuantity: 5},
+				0,
+				10,
+			],
+			[
+				'the multiple order quantity when it is higher than the minimum order quantity',
+				{minOrderQuantity: 4, multipleOrderQuantity: 5},
+				0,
+				5,
+			],
+			[
+				'one unit when the SKU is already in the cart and no quantity rule is set',
+				{},
+				1,
+				1,
+			],
+			[
+				'the multiple order quantity when the SKU is already in the cart',
+				{multipleOrderQuantity: 3},
+				3,
+				3,
+			],
+			[
+				'the first allowed quantity when the SKU is not in the cart',
+				{allowedOrderQuantities: [3, 7]},
+				0,
+				3,
+			],
+			[
+				'the quantity that reaches the next allowed quantity when the SKU is already in the cart',
+				{allowedOrderQuantities: [3, 7]},
+				3,
+				4,
+			],
+			[
+				'the first allowed quantity that reaches the minimum order quantity',
+				{allowedOrderQuantities: [7, 8], minOrderQuantity: 8},
+				0,
+				8,
+			],
+			[
+				'the quantity that reaches the next allowed quantity that is a multiple of the multiple order quantity',
+				{allowedOrderQuantities: [5, 6, 10], multipleOrderQuantity: 5},
+				5,
+				5,
+			],
+		])(
+			'returns %s',
+			(
+				_description,
+				productConfiguration,
+				cartQuantity,
+				expectedQuantity
+			) => {
+				expect(
+					getCorrectedQuantity(
+						{
+							...BASE_CHANNEL_PRODUCT_CONFIGURATION,
+							...productConfiguration,
+						},
+						SKU,
+						getCartItems(cartQuantity)
+					)
+				).toBe(expectedQuantity);
+				expect(openToast).not.toHaveBeenCalled();
+			}
+		);
+
+		it('ignores the quantity of the other SKUs in the cart', () => {
+			expect(
+				getCorrectedQuantity(
+					{
+						...BASE_CHANNEL_PRODUCT_CONFIGURATION,
+						allowedOrderQuantities: [3, 7],
+					},
+					SKU,
+					[{quantity: 7, sku: 'MIN55861'}]
+				)
+			).toBe(3);
+			expect(openToast).not.toHaveBeenCalled();
+		});
+
+		it.each([
+			[
+				'the SKU in the cart already has the last allowed quantity',
+				{allowedOrderQuantities: [3, 7]},
+				7,
+				'the-maximum-allowed-quantity-for-x-is-x MIN55860 7',
+			],
+			[
+				'the next allowed quantity exceeds the maximum order quantity',
+				{allowedOrderQuantities: [6, 8], maxOrderQuantity: 7},
+				6,
+				'max-quantity-per-order-is-x 7',
+			],
+			[
+				'every allowed quantity exceeds the maximum order quantity',
+				{allowedOrderQuantities: [8, 9], maxOrderQuantity: 7},
+				0,
+				'max-quantity-per-order-is-x 7',
+			],
+			[
+				'every allowed quantity is lower than the minimum order quantity',
+				{allowedOrderQuantities: [6, 7], minOrderQuantity: 8},
+				0,
+				'the-minimum-quantity-is-x 8',
+			],
+			[
+				'no further allowed quantity is a multiple of the multiple order quantity',
+				{allowedOrderQuantities: [5, 6, 10], multipleOrderQuantity: 5},
+				10,
+				'the-product-quantity-is-not-valid',
+			],
+			[
+				'adding the multiple order quantity exceeds the maximum order quantity',
+				{maxOrderQuantity: 6, multipleOrderQuantity: 5},
+				5,
+				'max-quantity-per-order-is-x 6',
+			],
+			[
+				'the multiple order quantity exceeds the maximum order quantity',
+				{maxOrderQuantity: 4, multipleOrderQuantity: 5},
+				0,
+				'max-quantity-per-order-is-x 4',
+			],
+		])(
+			'shows an error and returns zero when %s',
+			(_description, productConfiguration, cartQuantity, message) => {
+				expect(
+					getCorrectedQuantity(
+						{
+							...BASE_CHANNEL_PRODUCT_CONFIGURATION,
+							...productConfiguration,
+						},
+						SKU,
+						getCartItems(cartQuantity)
+					)
+				).toBe(0);
+				expect(openToast).toHaveBeenCalledWith({
+					message,
+					type: 'danger',
+				});
+			}
+		);
 	});
 
 	describe('hasErrors', () => {
