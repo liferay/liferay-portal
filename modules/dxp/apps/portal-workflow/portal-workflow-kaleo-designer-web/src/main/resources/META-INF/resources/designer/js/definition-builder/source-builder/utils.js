@@ -103,7 +103,7 @@ export function parseReassignments(node) {
 				item['resource-actions'][0]['resource-action'];
 		}
 		else if (item['roles']) {
-			if (item['roles'][0]['role']?.['role-type']) {
+			if (item['roles'][0]['role']?.['name']) {
 				assignments.assignmentType = ['roleType'];
 
 				assignments.autoCreate = [];
@@ -351,7 +351,10 @@ export function parseNotifications(node) {
 
 		const roles = item['recipients']?.[0]?.['roles'];
 
-		if (item['role-type'] || roles?.['role-type']) {
+		if (
+			(item['role-name'] || roles?.['name']) &&
+			(item['role-type'] || roles?.['role-type'])
+		) {
 			const autoCreate = item['auto-create'] || roles?.['auto-create'];
 			const roleName = item['role-name'] || roles?.['name'];
 			const roleType = item['role-type'] || roles?.['role-type'];
