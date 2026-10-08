@@ -5,8 +5,12 @@
 
 package com.liferay.oauth2.provider.rest.internal.configuration;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.IOException;
 
@@ -53,13 +57,28 @@ public class OAuth2AuthorizationServerConfigurationGenerator {
 					rsaJsonWebKey.setAlgorithm("RS256");
 					rsaJsonWebKey.setKeyId("authServer");
 
-					return rsaJsonWebKey.toJson(
-						JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE);
+					return _secretResolver.store(
+						CompanyConstants.SYSTEM,
+						StringBundler.concat(
+							"config/",
+							OAuth2AuthorizationServerConfiguration.class.
+								getName(),
+							StringPool.SLASH, CompanyConstants.SYSTEM,
+							"/oauth2.authorization.server.jwt.access.token.",
+							"signing.json.web.key"),
+						rsaJsonWebKey.toJson(
+							JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
 				}
 			).build());
 	}
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED)
+	private ModuleServiceLifecycle _moduleServiceLifecycle;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
