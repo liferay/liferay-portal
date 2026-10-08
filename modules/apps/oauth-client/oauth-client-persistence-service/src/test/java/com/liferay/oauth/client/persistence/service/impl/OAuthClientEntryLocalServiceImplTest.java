@@ -229,7 +229,11 @@ public class OAuthClientEntryLocalServiceImplTest {
 			OAuthClientEntryAuthServerWellKnownURIException.class,
 			() -> _validateAuthServerWellKnownURI(
 				_getWellKnownURI(
-					_getRandomHost(2, _HOST_PREFIX_CARRIER_GRADE_NAT)),
+					_getRandomHost(
+						2,
+						StringBundler.concat(
+							"100.", RandomTestUtil.randomInt(64, 127),
+							StringPool.PERIOD))),
 				_createOAuthClientEntryLocalServiceImpl(null, false, http)));
 
 		Mockito.verifyNoInteractions(http);
@@ -368,7 +372,11 @@ public class OAuthClientEntryLocalServiceImplTest {
 		Assert.assertThrows(
 			OAuthClientEntryAuthServerWellKnownURIException.class,
 			() -> _validateAuthServerWellKnownURI(
-				_getWellKnownURI(_getRandomHost(3, _HOST_PREFIX_MULTICAST)),
+				_getWellKnownURI(
+					_getRandomHost(
+						3,
+						RandomTestUtil.randomInt(224, 239) +
+							StringPool.PERIOD)),
 				_createOAuthClientEntryLocalServiceImpl(null, true, http)));
 
 		Mockito.verifyNoInteractions(http);
@@ -513,13 +521,9 @@ public class OAuthClientEntryLocalServiceImplTest {
 			new Class<?>[] {String.class}, tokenRequestParametersJSON);
 	}
 
-	private static final String _HOST_PREFIX_CARRIER_GRADE_NAT = "100.64.";
-
 	private static final String _HOST_PREFIX_LINK_LOCAL = "169.254.";
 
 	private static final String _HOST_PREFIX_LOOPBACK = "127.";
-
-	private static final String _HOST_PREFIX_MULTICAST = "224.";
 
 	private static final String _HOST_PREFIX_PRIVATE = "10.";
 
