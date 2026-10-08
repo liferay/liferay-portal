@@ -41,6 +41,12 @@ const CONFIG_IN_URL_OFF = 'off' as EConfigInURLBehavior;
 
 const {cur, delta, deltaValues} = FaroConstants.pagination;
 
+// The data set prefixes every empty state image with the theme's images path
+// (/o/<theme>/images), so step out of it to reach the image osb-faro-web serves.
+
+export const SATELLITE_EMPTY_STATE_IMAGE =
+	'/../../osb-faro-web/images/states/satellite.svg';
+
 export const rangeSelectors = [
 	{
 		label: Liferay.Language.get('last-24-hours'),

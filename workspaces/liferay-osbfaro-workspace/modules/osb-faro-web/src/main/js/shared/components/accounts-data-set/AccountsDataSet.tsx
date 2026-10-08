@@ -7,6 +7,7 @@ import {
 	FrontendDataSet,
 	pagination,
 	rangeSelectors,
+	SATELLITE_EMPTY_STATE_IMAGE,
 } from 'shared/components/FrontendDataSet';
 import {
 	LifecycleStages,
@@ -148,7 +149,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					description: Liferay.Language.get(
 						'no-accounts-were-synced-from-the-connected-data-sources'
 					),
-					image: '/states/satellite.svg',
+					image: SATELLITE_EMPTY_STATE_IMAGE,
 					title: Liferay.Language.get('no-accounts-found'),
 				}}
 				filters={[
