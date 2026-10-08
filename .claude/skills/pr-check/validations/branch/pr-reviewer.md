@@ -30,7 +30,7 @@ LOG_RERUN_ERROR=$(mktemp)
 (cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2> "${LOG_RERUN_ERROR}")
 ```
 
-Report **PASS** when the rerun exits `0`. Report **NOT VERIFIED** when it exits `2`, quote `${LOG_RERUN_ERROR}`, and say in the note that the fixes in the `<TICKET> Apply pr-reviewer rules` commit were not reviewed again. Keep that commit, since each fix in it was checked against its rule before it was applied. Report **FAIL** when the rerun exits `1`, and return its violations as the note below. Do not start a second round of fixes, since a violation the first round did not resolve needs the developer's judgment, and a loop of automated rounds can chase a false positive indefinitely.
+Report **PASS** when the rerun exits `0`. Report **NOT VERIFIED** when it exits `2`, quote `${LOG_RERUN_ERROR}`, and say in the note that the fixes in the `<TICKET> Apply pr-reviewer rules` commit were not reviewed again. Keep that commit, since each fix in it was checked against its rule before it was applied. When the rerun exits `1`, judge each violation it flags the way the first round does, by reading the rule file and the code around the line, but apply no fix. A violation you already dismissed in the same file under the same rule stays dismissed. Report **FAIL** when at least one violation still applies, and return those violations as the note below. Report **PASS** when you dismissed every one. Do not start a second round of fixes, since a violation the first round did not resolve needs the developer's judgment, and a loop of automated rounds can chase a false positive indefinitely.
 
 ```markdown
 **The pr-reviewer rules still flag this branch.** Apply each fix below, or leave the code as it is when a violation is a false positive and say so in the PR description.
@@ -40,7 +40,17 @@ Report **PASS** when the rerun exits `0`. Report **NOT VERIFIED** when it exits 
 | <file> | <line> | <rule> | <message> | <fix> |
 ```
 
-Report **FAIL** with the same note when the reviewer found violations and none could be applied.
+When no fix was applied, skip the rerun. Report **FAIL** with the same note when at least one violation applies and could not be fixed, and report **PASS** when you dismissed every violation as a false positive.
+
+Whenever you dismissed a violation, return the dismissed violations as the note below, with a **PASS** as well as a **FAIL**, so that the developer can confirm each one:
+
+```markdown
+**The pr-check judged these pr-reviewer violations to be false positives.** Confirm each one, and say so in the PR description.
+
+| File | Line | Rule | Violation | Reason |
+| --- | --- | --- | --- | --- |
+| <file> | <line> | <rule> | <message> | <why the rule does not apply> |
+```
 
 ## Autocommit
 
