@@ -36,6 +36,7 @@
 	%>
 
 	<clay:alert
+		dismissible="<%= true %>"
 		displayType="warning"
 	>
 		<pre><%= HtmlUtil.escape(StringUtil.merge(warnMessages, StringPool.NEW_LINE)) %></pre>
