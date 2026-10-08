@@ -359,6 +359,19 @@ public class StagedLayoutSetStagedModelDataHandler
 				continue;
 			}
 
+			if (portletDataContext.getSourceGroupId() !=
+					portletDataContext.getGroupId()) {
+
+				Layout sourceLayout =
+					_layoutLocalService.fetchLayoutByUuidAndGroupId(
+						layout.getUuid(), portletDataContext.getSourceGroupId(),
+						layout.isPrivateLayout());
+
+				if (sourceLayout != null) {
+					continue;
+				}
+			}
+
 			try {
 				_layoutLocalService.deleteLayout(layout, serviceContext);
 			}
