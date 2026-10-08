@@ -13,7 +13,9 @@ export class ExportImportDataSelectionPage {
 	readonly page: Page;
 	readonly section: Locator;
 	readonly selectSitesButton: Locator;
+	readonly selectSpacesButton: Locator;
 	readonly siteSelectorDialog: Locator;
+	readonly spaceSelectorDialog: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -21,8 +23,14 @@ export class ExportImportDataSelectionPage {
 		this.selectSitesButton = page.getByRole('button', {
 			name: 'Select Sites',
 		});
+		this.selectSpacesButton = page.getByRole('button', {
+			name: 'Select Spaces',
+		});
 		this.siteSelectorDialog = page.getByRole('dialog', {
 			name: 'Select Sites',
+		});
+		this.spaceSelectorDialog = page.getByRole('dialog', {
+			name: 'Select Spaces',
 		});
 
 		this.collapseSectionButton = (name) =>
@@ -84,29 +92,11 @@ export class ExportImportDataSelectionPage {
 	}
 
 	async selectGroup(groupName: string) {
-		await this.selectSitesButton.click();
-
-		const searchbox = this.siteSelectorDialog.getByRole('searchbox', {
-			name: 'Search',
-		});
-
-		await searchbox.fill(groupName);
-		await searchbox.press('Enter');
-
-		await this.siteSelectorDialog
-			.getByRole('row', {name: groupName})
-			.getByRole('checkbox')
-			.check();
-
-		await this.siteSelectorDialog
-			.getByRole('button', {exact: true, name: 'Select'})
-			.click();
-
-		await expect(this.siteSelectorDialog).toBeHidden();
-
-		await expect(
-			this.page.getByText(`Selected ${groupName}`)
-		).toBeVisible();
+		await this._selectItem(
+			groupName,
+			this.selectSitesButton,
+			this.siteSelectorDialog
+		);
 	}
 
 	async selectOnlyObjectDefinition(label: string) {
@@ -117,7 +107,43 @@ export class ExportImportDataSelectionPage {
 		await this.section.getByRole('checkbox', {name: label}).check();
 	}
 
+	async selectSpace(spaceName: string) {
+		await this._selectItem(
+			spaceName,
+			this.selectSpacesButton,
+			this.spaceSelectorDialog
+		);
+	}
+
 	async waitForContent() {
 		await this.section.getByRole('checkbox').first().waitFor();
+	}
+
+	private async _selectItem(
+		name: string,
+		selectButton: Locator,
+		selectorDialog: Locator
+	) {
+		await selectButton.click();
+
+		const searchbox = selectorDialog.getByRole('searchbox', {
+			name: 'Search',
+		});
+
+		await searchbox.fill(name);
+		await searchbox.press('Enter');
+
+		await selectorDialog
+			.getByRole('row', {name})
+			.getByRole('checkbox')
+			.check();
+
+		await selectorDialog
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await expect(selectorDialog).toBeHidden();
+
+		await expect(this.page.getByText(`Selected ${name}`)).toBeVisible();
 	}
 }
