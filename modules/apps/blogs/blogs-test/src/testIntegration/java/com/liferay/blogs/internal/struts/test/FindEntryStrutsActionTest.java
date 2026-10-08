@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -51,7 +52,7 @@ public class FindEntryStrutsActionTest {
 	}
 
 	@Test
-	public void testAllowedDomainsCanRedirect() throws Exception {
+	public void testExecute() throws Exception {
 		ConfigurationTestUtil.saveConfiguration(
 			_PID,
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -60,11 +61,20 @@ public class FindEntryStrutsActionTest {
 				"securityMode", "domain"
 			).build());
 
+		Assert.assertEquals(
+			"https://mail.google.com", _execute("https://mail.google.com"));
+		Assert.assertNotEquals(
+			"https://google.co", _execute("https://google.co"));
+	}
+
+	private String _execute(String noSuchEntryRedirect) throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.addParameter(
-			"noSuchEntryRedirect", "https://mail.google.com");
+			"noSuchEntryRedirect", noSuchEntryRedirect);
+		mockHttpServletRequest.setRequestURI(
+			"/" + RandomTestUtil.randomString());
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -79,9 +89,7 @@ public class FindEntryStrutsActionTest {
 		_editInfoItemStrutsAction.execute(
 			mockHttpServletRequest, mockHttpServletResponse);
 
-		Assert.assertEquals(
-			"https://mail.google.com",
-			mockHttpServletResponse.getRedirectedUrl());
+		return mockHttpServletResponse.getRedirectedUrl();
 	}
 
 	private static final String _PID =

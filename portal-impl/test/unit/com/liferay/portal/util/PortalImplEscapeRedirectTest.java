@@ -334,6 +334,8 @@ public class PortalImplEscapeRedirectTest {
 		Assert.assertNull(_portalImpl.escapeRedirect("http://liferay.com"));
 		Assert.assertNull(
 			_portalImpl.escapeRedirect("http://prefixtest.liferay.com"));
+		Assert.assertNull(_portalImpl.escapeRedirect("http://test.liferay"));
+		Assert.assertNull(_portalImpl.escapeRedirect("http://test.liferay.co"));
 		Assert.assertNull(
 			_portalImpl.escapeRedirect("http://test.liferay.com.suffix"));
 		Assert.assertNull(
