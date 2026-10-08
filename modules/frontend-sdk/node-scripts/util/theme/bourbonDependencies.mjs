@@ -1,27 +1,25 @@
 /**
- * SPDX-FileCopyrightText: © 2017 Liferay, Inc. <https://liferay.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-'use strict';
+import fs from 'fs';
+import bourbon from 'node-bourbon';
+import path from 'path';
 
-const fs = require('fs-extra');
-const bourbon = require('node-bourbon');
-const path = require('path');
+import project from './project.mjs';
+import {resolveDependency} from './themeUtil.mjs';
 
-const project = require('../../lib/project');
-const themeUtil = require('../../lib/util');
-
-const formatPath = function (filePath) {
+function formatPath(filePath) {
 	return filePath.replace(/\\/g, '/');
-};
+}
 
-exports.createBourbonFile = function () {
+export function createBourbonFile() {
 	const {pathSrc} = project.options;
 
 	const bourbonPath = bourbon.includePaths[0];
 
-	const tmpDirPath = project.tmpdir().asNative;
+	const tmpDirPath = project.tmpdir();
 
 	const bourbonFilePath = path.join(tmpDirPath, '_bourbon.scss');
 
@@ -29,7 +27,7 @@ exports.createBourbonFile = function () {
 
 	const deprecatedMixinsFilePath = path.join(
 		project.dir,
-		pathSrc.asNative,
+		pathSrc,
 		'css',
 		'_deprecated_mixins.scss'
 	);
@@ -40,9 +38,7 @@ exports.createBourbonFile = function () {
 		bourbonFile.push('";');
 	}
 
-	const mixinsPath =
-		themeUtil.getCustomDependencyPath('liferay-frontend-common-css') ||
-		path.dirname(require.resolve('liferay-frontend-common-css'));
+	const mixinsPath = resolveDependency('liferay-frontend-common-css');
 
 	bourbonFile.push('@import "');
 	bourbonFile.push(formatPath(path.join(bourbonPath, 'bourbon')));
@@ -56,4 +52,4 @@ exports.createBourbonFile = function () {
 	fs.writeFileSync(bourbonFilePath, bourbonFile.join(''));
 
 	return tmpDirPath;
-};
+}

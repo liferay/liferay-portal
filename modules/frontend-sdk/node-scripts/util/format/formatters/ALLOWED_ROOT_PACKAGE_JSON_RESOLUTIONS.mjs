@@ -21,13 +21,11 @@
  */
 export default {
 
-	// Neither chain requires a version this high on its own, so these entries hold websocket-driver
+	// The chain does not require a version this high on its own, so this entry holds websocket-driver
 	// up until the packages that pull it in start requiring it themselves.
 	//
 	// See https://liferay.atlassian.net/browse/LPD-102337 for more information.
 
-	'liferay-theme-tasks/**/websocket-driver':
-		'Holds the LiveReload server of the theme gulp tasks at a version the tiny-lr chain does not require on its own.',
 	'webpack-dev-server/**/websocket-driver':
 		'Holds the sockjs transports of the AMD loader dev server at a version the sockjs chain does not require on its own.',
 };

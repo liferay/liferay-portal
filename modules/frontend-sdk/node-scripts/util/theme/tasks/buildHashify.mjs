@@ -3,28 +3,30 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-/* eslint-disable no-undef */
+import fs from 'fs';
+import path from 'path';
 
-'use strict';
+import calculateFileHash from '../../calculateFileHash.mjs';
+import project from '../project.mjs';
 
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
+/**
+ * before:build:war
+ *
+ * Adds a content hash to the name of every CSS and JS file of the build so
+ * that browsers can cache them forever.
+ */
+export default async function buildHashify() {
+	const {pathBuild} = project.options;
 
-function hookFn(gulp) {
-	gulp.hook('before:build:war', (done) => {
-		collectFiles('.css').forEach(hashify);
-		collectFiles('.js').forEach(hashify);
-
-		done();
-	});
+	for (const filePath of [
+		...collectFiles('.css', pathBuild),
+		...collectFiles('.js', pathBuild),
+	]) {
+		await hashify(filePath);
+	}
 }
 
 function collectFiles(extension, dir) {
-	if (!dir) {
-		dir = './build';
-	}
-
 	const files = [];
 
 	for (const dirent of fs.readdirSync(dir, {withFileTypes: true})) {
@@ -39,10 +41,10 @@ function collectFiles(extension, dir) {
 	return files;
 }
 
-function hashify(filePath) {
+async function hashify(filePath) {
 	const content = fs.readFileSync(filePath, 'utf-8');
 
-	const hash = calculateFileHash(content);
+	const hash = await calculateFileHash(content);
 
 	const fileName = path.basename(filePath);
 
@@ -53,33 +55,3 @@ function hashify(filePath) {
 
 	fs.renameSync(filePath, `${path.dirname(filePath)}/${hashedFileName}`);
 }
-
-function calculateFileHash(content) {
-
-	// Calculate hash (MD5 is enough because we don't need to be crypto-safe)
-
-	let blob = crypto.createHash('md5').update(content).digest();
-
-	// Truncate hash to make URL shorter
-
-	blob = blob.slice(0, 8);
-
-	// Convert bytes to base64 and replace non alphabetic base64 chars
-	// (+, /) by URL friendly chars
-
-	let hash = blob.toString('base64');
-
-	hash = hash.replaceAll('+', '$');
-	hash = hash.replaceAll('/', '@');
-
-	// Remove the trailing = signs. Since they are base64 padding markers they
-	// can be discarded for the purposes of creating a collision resistant hash
-
-	hash = hash.replaceAll('=', '');
-
-	return hash;
-}
-
-module.exports = {
-	hookFn,
-};

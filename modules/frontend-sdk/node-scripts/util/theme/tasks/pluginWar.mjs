@@ -1,28 +1,54 @@
 /**
- * SPDX-FileCopyrightText: © 2017 Liferay, Inc. <https://liferay.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-'use strict';
+import fastGlob from 'fast-glob';
+import fs from 'fs';
+import path from 'path';
+import {pipeline} from 'stream/promises';
+import yazl from 'yazl';
 
-const zip = require('gulp-zip');
+import project from '../project.mjs';
 
-const project = require('../../lib/project');
+/**
+ * plugin:war
+ */
+export default async function pluginWar() {
+	const {distName, pathDist, rootDir} = project.options;
 
-module.exports = function () {
-	const {gulp} = project;
-	const {runSequence} = gulp;
-
-	gulp.task('plugin:war', () => {
-		const {options} = project;
-
-		return gulp
-			.src(options.rootDir.join('**/*').asPosix)
-			.pipe(zip(options.distName + '.war'))
-			.pipe(gulp.dest(options.pathDist.asNative));
+	const entries = await fastGlob('**/*', {
+		cwd: rootDir,
+		markDirectories: true,
+		onlyFiles: false,
 	});
 
-	gulp.task('build', (done) => {
-		runSequence('plugin:version', 'plugin:war', done);
-	});
-};
+	const zipFile = new yazl.ZipFile();
+
+	for (const entry of entries.sort()) {
+		const filePath = path.join(rootDir, entry);
+
+		const stat = fs.statSync(filePath);
+
+		const options = {
+			mode: stat.mode,
+			mtime: stat.mtime,
+		};
+
+		if (entry.endsWith('/')) {
+			zipFile.addEmptyDirectory(entry, options);
+		}
+		else {
+			zipFile.addBuffer(fs.readFileSync(filePath), entry, options);
+		}
+	}
+
+	zipFile.end();
+
+	fs.mkdirSync(pathDist, {recursive: true});
+
+	await pipeline(
+		zipFile.outputStream,
+		fs.createWriteStream(path.join(pathDist, distName + '.war'))
+	);
+}

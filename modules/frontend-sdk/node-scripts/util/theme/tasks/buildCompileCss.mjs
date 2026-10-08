@@ -1,189 +1,171 @@
 /**
- * SPDX-FileCopyrightText: © 2017 Liferay, Inc. <https://liferay.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-'use strict';
+import fastGlob from 'fast-glob';
+import fs from 'fs';
+import {createRequire} from 'module';
+import path from 'path';
+import postcss from 'postcss';
 
-const colors = require('ansi-colors');
-const log = require('fancy-log');
-const fs = require('fs');
-const postcss = require('gulp-postcss');
-const _ = require('lodash');
-const path = require('path');
+import print from '../../print.mjs';
+import {createBourbonFile} from '../bourbonDependencies.mjs';
+import project from '../project.mjs';
+import compileSass from '../sass.mjs';
+import {initSourceMap, writeSourceMap} from '../sourceMaps.mjs';
+import {resolveDependency} from '../themeUtil.mjs';
 
-const project = require('../../../lib/project');
-const themeUtil = require('../../../lib/util');
-const {createBourbonFile} = require('../../lib/bourbon_dependencies');
+const require = createRequire(import.meta.url);
 
-module.exports = function () {
-	const {gulp, options} = project;
-	const {pathBuild} = options;
+/**
+ * build:compile-css
+ */
+export default async function buildCompileCss() {
+	const {options} = project;
 
-	const handleScssError = (error) => {
-		if (project.watching) {
-			log(error);
+	const sassOptions = getSassOptions(options.sassOptions, {
+		dartSass: true,
+		includePaths: getSassIncludePaths(),
+		sourceMap: true,
+	});
 
-			this.emit('end');
+	if (!sassOptions.dartSass) {
+		throw new Error(
+			'Compiling themes with node-sass is not supported: remove the ' +
+				'dartSass option from liferayTheme.sassOptions in package.json'
+		);
+	}
+
+	const postCSSConfig = getPostCSSConfig();
+
+	const cssBuild = path.join(options.pathBuild, '_css');
+
+	const files = await fastGlob('!(_)*.scss', {cwd: cssBuild});
+
+	for (const relativePath of files.sort()) {
+		const filePath = path.resolve(cssBuild, relativePath);
+
+		const scss = fs.readFileSync(filePath, 'utf8');
+
+		let sourceMap;
+
+		if (sassOptions.sourceMap) {
+			sourceMap = initSourceMap(relativePath, scss);
 		}
-		else {
-			throw error;
-		}
-	};
 
-	gulp.task('build:compile-css', (callback) => {
-		const {options} = project;
+		const compiled = compileSass(filePath, scss, sassOptions);
 
-		const sassOptions = getSassOptions(options.sassOptions, {
-			dartSass: true,
-			includePaths: getSassIncludePaths(),
-			sourceMap: true,
-		});
+		const cssFilePath = compiled.filePath;
 
-		let nodeSass;
+		let {contents} = compiled;
 
-		if (!sassOptions.dartSass) {
-			try {
-				nodeSass = require('node-sass');
-			}
-			catch (_error) {
-				console.error(
-					'`node-sass` is not found. Try installing it first `npm install node-sass`.'
+		if (postCSSConfig) {
+
+			// Sass prepends a BOM to compressed output with non-ASCII chars,
+			// which the final CSS loses anyway, so remove it to avoid shifting
+			// the source map columns
+
+			const result = await postcss(postCSSConfig.plugins).process(
+				contents.replace(/^\uFEFF/, ''),
+				{
+					...postCSSConfig.options,
+					from: cssFilePath,
+					map: sourceMap ? {annotation: false} : false,
+					to: cssFilePath,
+				}
+			);
+
+			contents = result.css;
+
+			if (sourceMap) {
+				const cssRelativePath = path.relative(cssBuild, cssFilePath);
+
+				sourceMap = result.map.toJSON();
+
+				sourceMap.file = cssRelativePath;
+				sourceMap.sources = sourceMap.sources.map((source) =>
+					path.join(path.dirname(cssRelativePath), source)
 				);
 			}
 		}
 
-		const gulpIf = require('gulp-if');
-		const gulpSass = sassOptions.dartSass
-			? require('./sass')
-			: require('gulp-sass')(nodeSass);
-		const gulpSourceMaps = require('gulp-sourcemaps');
-
-		const postCSSOptions = getPostCSSOptions(options.postcss);
-
-		const cssBuild = pathBuild.join('_css');
-
-		const srcPath = cssBuild.join('!(_)*.scss');
-
-		gulp.src(srcPath.asPosix)
-			.pipe(gulpIf(sassOptions.sourceMap, gulpSourceMaps.init()))
-			.pipe(gulpSass(sassOptions))
-			.pipe(
-				gulpIf(postCSSOptions.enabled, postcss(postCSSOptions.plugins))
-			)
-			.on('error', handleScssError)
-			.pipe(gulpIf(sassOptions.sourceMap, gulpSourceMaps.write('.')))
-			.pipe(gulp.dest(cssBuild.asNative))
-			.on('end', callback);
-	});
-};
-
-function concatBourbonIncludePaths(includePaths) {
-	return includePaths.concat(createBourbonFile());
-}
-
-/**
- * Returns the string `file` if a file with that name exists, and
- * `false` otherwise.
- *
- * Example:
- *
- *     > exists('package.json')
- *     'package.json'
- */
-function exists(file) {
-	return fs.existsSync(file) && file;
-}
-
-/**
- * Returns a string indicating which of the standard methods for
- * configuring PostCSS applies to the current theme, if any. Otherwise,
- * returns `false`.
- */
-function getPostCSSRC() {
-	const pkgJson = project.pkgJson;
-
-	return (
-		(Object.prototype.hasOwnProperty.call(pkgJson, 'postcss') &&
-			'package.json "postcss"') ||
-		exists('.postcssrc') ||
-		exists('.postcssrc.js') ||
-		exists('.postcssrc.json') ||
-		exists('.postcssrc.yml') ||
-		exists('postcss.config.js')
-	);
-}
-
-function getPostCSSOptions(config) {
-	const postCSSOptions = {
-		enabled: false,
-	};
-
-	const rc = getPostCSSRC();
-
-	if (_.isArray(config) && !!config.length) {
-		if (rc) {
-			throw new Error(
-				'PostCSS must be configured in only one place but it was ' +
-					'configured in both "liferayTheme" properties of the ' +
-					`package.json and also in ${rc}`
+		if (sourceMap) {
+			contents = writeSourceMap(
+				cssBuild,
+				cssFilePath,
+				contents,
+				sourceMap
 			);
 		}
 
-		postCSSOptions.enabled = true;
-
-		postCSSOptions.plugins = config.map((pluginDependency) =>
-			// eslint-disable-next-line @liferay/no-dynamic-require
-			require(pluginDependency)
-		);
+		fs.writeFileSync(cssFilePath, contents);
 	}
-	else if (rc) {
-		postCSSOptions.enabled = true;
+}
+
+function getPostCSSConfig() {
+	const configFilePath = path.join(project.dir, 'postcss.config.js');
+
+	if (!fs.existsSync(configFilePath)) {
+		return;
 	}
 
-	return postCSSOptions;
+	const configRequire = createRequire(configFilePath);
+
+	const config = configRequire(configFilePath);
+
+	let plugins = config.plugins || [];
+
+	if (!Array.isArray(plugins)) {
+		plugins = Object.entries(plugins)
+			.filter(([, pluginOptions]) => pluginOptions !== false)
+			.map(([pluginName, pluginOptions]) => {
+				const plugin = configRequire(pluginName);
+
+				return pluginOptions && Object.keys(pluginOptions).length
+					? plugin(pluginOptions)
+					: plugin();
+			});
+	}
+
+	return {
+		options: config.options || {},
+		plugins,
+	};
 }
 
 function getSassIncludePaths() {
-	let includePaths = [
-		themeUtil.getCustomDependencyPath('liferay-frontend-common-css') ||
-			path.dirname(require.resolve('liferay-frontend-common-css')),
+	const includePaths = [
+		resolveDependency('liferay-frontend-common-css'),
+		createBourbonFile(),
+		path.dirname(require.resolve('compass-mixins')),
 	];
 
-	includePaths = concatBourbonIncludePaths(includePaths);
-	includePaths.push(path.dirname(require.resolve('compass-mixins')));
+	const {sassIncludePaths} = project.options;
 
-	const argv = themeUtil.getArgv();
-	if (argv['sass-include-paths']) {
-		const customPaths = argv['sass-include-paths']
+	if (sassIncludePaths) {
+		const customPaths = sassIncludePaths
 			.split(',')
 			.map((item) => path.resolve(item));
-		log(
-			'using custom SASS include paths:',
-			colors.magenta(customPaths.join(', '))
-		);
+
+		print(1, `using custom SASS include paths: ${customPaths.join(', ')}`);
+
 		includePaths.push(...customPaths);
 	}
 
 	const themeNodeModules = path.resolve('node_modules');
+
 	if (fs.existsSync(themeNodeModules)) {
 		includePaths.push(themeNodeModules);
 	}
 
 	if (project.workspaceDir) {
-		includePaths.push(project.workspaceDir.join('node_modules').asNative);
+		includePaths.push(path.join(project.workspaceDir, 'node_modules'));
 	}
 
 	return includePaths;
 }
 
 function getSassOptions(sassOptions, defaults) {
-	if (_.isFunction(sassOptions)) {
-		sassOptions = sassOptions(defaults);
-	}
-	else {
-		sassOptions = _.assign(defaults, sassOptions);
-	}
-
-	return sassOptions;
+	return Object.assign(defaults, sassOptions);
 }

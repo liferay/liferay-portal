@@ -1,71 +1,41 @@
 /**
- * SPDX-FileCopyrightText: © 2017 Liferay, Inc. <https://liferay.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-'use strict';
+import project from './project.mjs';
+import {getBaseThemeGlob} from './themeInspector.mjs';
+import {resolveDependency} from './themeUtil.mjs';
 
-const _ = require('lodash');
-const path = require('path');
+/**
+ * Returns the base theme dependencies as a list of `{cwd, glob}` objects,
+ * ordered so that later ones override earlier ones.
+ */
+export default function getBaseThemeDependencies() {
+	const {themeConfig} = project;
+	const {baseTheme} = themeConfig;
 
-const project = require('../../lib/project');
-const util = require('../../lib/util');
-const {getBaseThemeGlob, getLiferayThemeJSON} = require('./theme_inspector');
+	const glob = getBaseThemeGlob(themeConfig);
 
-function getBaseThemeDependencies(
-	baseThemePath = project.dir,
-	dependencies = []
-) {
-	const {baseTheme} = getLiferayThemeJSON(baseThemePath);
-	const baseThemeGlob = getBaseThemeGlob(baseThemePath);
+	const dependencies = [
+		{
+			cwd: resolveDependency('liferay-frontend-theme-unstyled'),
+			glob,
+		},
+	];
 
-	dependencies = _.uniq(
-		dependencies.concat([
-			path.join(
-				util.resolveDependency('liferay-frontend-theme-unstyled'),
-				baseThemeGlob
-			),
-		])
-	);
-
-	if (_.isObject(baseTheme)) {
-		baseThemePath = path.join(
-			baseThemePath,
-			'node_modules',
-			baseTheme.name
-		);
-
-		dependencies = getBaseThemeDependencies(baseThemePath, dependencies);
-
-		dependencies.push(path.resolve(baseThemePath, 'src', '**', '*'));
-
-		return dependencies;
+	if (baseTheme === 'styled') {
+		dependencies.push({
+			cwd: resolveDependency('liferay-frontend-theme-styled'),
+			glob,
+		});
 	}
-	else if (baseTheme === 'styled' || baseTheme === 'admin') {
-		dependencies.splice(
-			1,
-			0,
-			path.join(
-				util.resolveDependency('liferay-frontend-theme-styled'),
-				baseThemeGlob
-			)
+	else if (baseTheme !== 'unstyled') {
+		throw new Error(
+			`Unsupported base theme ${JSON.stringify(baseTheme)}: only ` +
+				`'styled' and 'unstyled' are supported`
 		);
-
-		if (baseTheme === 'admin') {
-			dependencies.splice(
-				2,
-				0,
-				path.join(
-					util.resolveDependency('liferay-frontend-theme-admin-web'),
-					baseThemeGlob
-				)
-			);
-		}
-
-		return dependencies;
 	}
 
 	return dependencies;
 }
-
-module.exports = getBaseThemeDependencies;

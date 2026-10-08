@@ -26,7 +26,7 @@ const COMMANDS = {
 	},
 	'build:theme': {
 		description: `
-		Build a theme project with liferay-theme-tasks and gulp.
+		Builds a theme project.
 `,
 		script: './bundle/theme.mjs',
 	},

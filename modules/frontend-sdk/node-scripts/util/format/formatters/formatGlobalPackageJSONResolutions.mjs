@@ -57,7 +57,7 @@ export default async function formatGlobalPackageJSONResolutions(packageJSONs) {
 		print(
 			2,
 			`Name the path to the dependency through at least one of its parents, for example`,
-			print.underline(`'liferay-theme-tasks/**/websocket-driver'`),
+			print.underline(`'webpack-dev-server/**/websocket-driver'`),
 			`instead of`,
 			print.underline(`'websocket-driver'`),
 			`(see ${SELECTIVE_RESOLUTIONS_URL})\n`

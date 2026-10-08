@@ -19,7 +19,6 @@
 	},
 	"private": true,
 	"resolutions": {
-		"liferay-theme-tasks/**/websocket-driver": "0.7.5",
 		"webpack-dev-server/**/websocket-driver": "0.7.5"
 	},
 	"scripts": {

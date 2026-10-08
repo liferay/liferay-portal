@@ -4,7 +4,7 @@
 		"node-scripts": "./bin.js"
 	},
 	"com.liferay": {
-		"sha256": "68af64f080f21deb87027d60ebaa9702c7c38b25253488fdde774469f45d9d37"
+		"sha256": "4f950bdb19ad2564bea96525918132aa02c138cb63c0ff0883d25667a99e9f5c"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-dynamic-import": "7.27.1",
@@ -26,6 +26,7 @@
 		"autoprefixer": "9.8.8",
 		"babel-eslint": "10.1.0",
 		"babel-jest": "27.5.1",
+		"compass-mixins": "0.12.12",
 		"cosmiconfig": "9.0.0",
 		"deepmerge": "4.3.1",
 		"esbuild": "0.21.5",
@@ -35,14 +36,14 @@
 		"estraverse": "5.3.0",
 		"execa": "9.1.0",
 		"fast-glob": "3.3.3",
-		"gulp": "4.0.2",
 		"jest": "27.5.1",
 		"jest-axe": "10.0.0",
 		"jest-fetch-mock": "3.0.3",
 		"jest-junit": "17.0.0",
-		"liferay-theme-tasks": "11.5.6",
+		"liferay-frontend-common-css": "1.0.4",
 		"micromatch": "4.0.2",
 		"minimist": "1.2.8",
+		"node-bourbon": "4.2.3",
 		"postcss": "8.5.29",
 		"postcss-scss": "4.0.9",
 		"prettier": "3.2.5",
@@ -55,12 +56,14 @@
 		"sonda": "0.7.1",
 		"stylelint": "16.26.1",
 		"tar": "7.5.22",
+		"terser": "5.46.0",
 		"typescript": "4.7.4",
-		"unzipper": "0.12.5"
+		"unzipper": "0.12.5",
+		"xml2js": "0.4.23",
+		"yazl": "2.5.1"
 	},
 	"exports": {
-		".": "./index.js",
-		"./theme": "./api/exports/theme.js"
+		".": "./index.js"
 	},
 	"name": "@liferay/node-scripts",
 	"scripts": {

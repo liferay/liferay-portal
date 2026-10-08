@@ -1,15 +1,10 @@
 /**
- * SPDX-FileCopyrightText: © 2021 Liferay, Inc. <https://liferay.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-const chalk = require('chalk');
-const path = require('path');
-const PluginError = require('plugin-error');
-const sass = require('sass');
-const through = require('through2');
-
-const PLUGIN_NAME = 'sass';
+import path from 'path';
+import * as sass from 'sass';
 
 function replaceExtension(filePath, newExt) {
 	const newFileName =
@@ -18,70 +13,46 @@ function replaceExtension(filePath, newExt) {
 	return path.join(path.dirname(filePath), newFileName);
 }
 
-module.exports = (options) =>
-	through.obj((file, enc, callback) => {
-		if (file.isNull()) {
-			return callback(null, file);
-		}
+/**
+ * Compiles a `.scss` file.
+ *
+ * @param {string} filePath path of the `.scss` file
+ * @param {string} contents contents of the `.scss` file
+ * @param {object} options sass options
+ * @return {{contents: string, filePath: string}} the compiled CSS and its path
+ */
+export default function compileSass(filePath, contents, options) {
+	const outFile = replaceExtension(filePath, '.css');
 
-		if (file.isStream()) {
-			return callback(
-				new PluginError(PLUGIN_NAME, 'Streaming not supported')
-			);
-		}
+	if (!contents.length) {
+		return {contents, filePath: outFile};
+	}
 
-		if (path.basename(file.path).indexOf('_') === 0) {
-			return callback();
-		}
+	const includePaths = [path.dirname(filePath), ...options.includePaths];
 
-		if (!file.contents.length) {
-			file.path = replaceExtension(file.path, '.css');
+	try {
+		const {css} = sass.renderSync({
+			file: filePath,
+			includePaths,
+			outFile,
+			outputStyle:
+				process.env.NODE_ENV === 'production'
+					? 'compressed'
+					: 'expanded',
+			sourceMap: options.sourceMap,
+		});
 
-			return callback(null, file);
-		}
+		return {contents: css.toString(), filePath: outFile};
+	}
+	catch (error) {
+		const errorFilePath =
+			(error.file === 'stdin' ? filePath : error.file) || filePath;
 
-		try {
-			const includePaths = [
-				path.dirname(file.path),
-				...options.includePaths,
-			];
+		error.message = [
+			path.relative(process.cwd(), errorFilePath),
+			error.formatted,
+		].join('\n');
 
-			const outFile = replaceExtension(file.path, '.css');
-
-			const {css} = sass.renderSync({
-				file: file.path,
-				includePaths,
-				outFile,
-				outputStyle:
-					process.env.NODE_ENV === 'production'
-						? 'compressed'
-						: 'expanded',
-				sourceMap: options.sourceMap,
-			});
-
-			file.contents = css;
-			file.path = outFile;
-
-			if (file.stat) {
-				file.stat.atime = file.stat.mtime = file.stat.ctime = new Date();
-			}
-
-			callback(null, file);
-		}
-		catch (error) {
-			const filePath =
-				(error.file === 'stdin' ? file.path : error.file) || file.path;
-			const relativePath = path.relative(process.cwd(), filePath);
-			const message = [
-				chalk.underline(relativePath),
-				error.formatted,
-			].join('\n');
-
-			error.messageFormatted = message;
-			error.messageOriginal = error.message;
-			error.message = message;
-			error.relativePath = relativePath;
-
-			return callback(new PluginError(PLUGIN_NAME, error));
-		}
-	});
+		throw error;
+	}
+}
