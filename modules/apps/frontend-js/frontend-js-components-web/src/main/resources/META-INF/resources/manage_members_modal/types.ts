@@ -28,11 +28,6 @@ export type RoleExternalReferenceCode =
 	| 'L_PROJECT_MANAGER'
 	| 'L_PROJECT_MEMBER';
 
-export interface UserRole {
-	id: number;
-	name: string;
-}
-
 export interface UserAccount {
 	emailAddress: string;
 	externalReferenceCode: string;
@@ -40,7 +35,7 @@ export interface UserAccount {
 	image?: string;
 	imageId: string;
 	name: string;
-	roles: UserRole[];
+	roles: Role[];
 }
 
 export interface UserGroup {
@@ -48,7 +43,7 @@ export interface UserGroup {
 	id: string;
 	name: string;
 	numberOfUserAccounts?: string;
-	roles: UserRole[];
+	roles: Role[];
 }
 
 export interface Page<T> {

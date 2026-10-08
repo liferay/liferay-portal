@@ -27,6 +27,7 @@ export enum ActionTypes {
 }
 
 export interface State {
+	assignableRoleIds: number[];
 	error: Error | null;
 	groups: {
 		items: UserGroup[];
@@ -47,6 +48,7 @@ export interface State {
 export type Action =
 	| {
 			payload: {
+				assignableRoleIds: number[];
 				groups: {items: UserGroup[]; lastPage: number};
 				roles: Role[];
 				users: {items: UserAccount[]; lastPage: number};
@@ -113,6 +115,7 @@ export type Action =
 	  };
 
 export const initialState: State = {
+	assignableRoleIds: [],
 	error: null,
 	groups: {
 		items: [],
@@ -140,6 +143,7 @@ export function reducer(state: State, action: Action): State {
 		case ActionTypes.FetchSuccess:
 			return {
 				...state,
+				assignableRoleIds: action.payload.assignableRoleIds,
 				groups: {
 					...state.groups,
 					items: action.payload.groups.items,

@@ -4,6 +4,7 @@
  */
 
 export interface UserRole {
+	externalReferenceCode: string;
 	id: number;
 	name: string;
 }

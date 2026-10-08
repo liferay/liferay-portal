@@ -45,6 +45,7 @@ export function useMembers(
 				membersService.getRoles({
 					externalReferenceCode,
 					fields: ['externalReferenceCode', 'id', 'name'].join(','),
+					pageSize: -1,
 				}),
 			]);
 
@@ -53,6 +54,7 @@ export function useMembers(
 
 			dispatch({
 				payload: {
+					assignableRoleIds: allRoles.items.map((role) => role.id),
 					groups,
 					roles: allRoles.items.filter(
 						(role) =>

@@ -14,6 +14,7 @@ import {MembersPermissionSelect} from './MembersPermissionSelect';
 import {Role, RoleExternalReferenceCode, UserAccount, UserGroup} from './types';
 
 interface MemberListItemProps {
+	assignableRoleIds: number[];
 	currentUserId?: string;
 	defaultRole?: Role;
 	hasAssignMembersPermission: boolean;
@@ -27,6 +28,7 @@ interface MemberListItemProps {
 }
 
 export function MemberListItem({
+	assignableRoleIds,
 	currentUserId,
 	defaultRole,
 	hasAssignMembersPermission,
@@ -52,6 +54,9 @@ export function MemberListItem({
 					: defaultRole
 						? [defaultRole.name]
 						: [];
+				const unassignableRoles = item.roles.filter(
+					(role) => !assignableRoleIds.includes(role.id)
+				);
 				const classes = cx(
 					'align-items-center d-flex justify-content-between',
 					{
@@ -119,12 +124,15 @@ export function MemberListItem({
 							<div className="align-items-center c-gap-2 d-flex">
 								<MembersPermissionSelect
 									defaultRole={defaultRole}
-									disabled={isCurrentUser}
+									disabled={
+										isCurrentUser ||
+										!!unassignableRoles.length
+									}
 									onChange={(newRoles) => {
 										onUpdateItemRoles(item, newRoles);
 									}}
 									roleNames={roleNames}
-									roles={roles}
+									roles={[...unassignableRoles, ...roles]}
 									selectedRoles={selectedRoles}
 								/>
 

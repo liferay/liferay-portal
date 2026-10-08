@@ -52,6 +52,7 @@ export function ManageMembersList({
 		updateMemberRoles,
 	} = useMembers(config, externalReferenceCode, pageSize, onChange);
 	const {
+		assignableRoleIds,
 		groups,
 		isFetching: isFetchingMembers,
 		isSearching,
@@ -170,6 +171,7 @@ export function ManageMembersList({
 					>
 						{selectedOption === MemberType.USERS ? (
 							<MemberListItem
+								assignableRoleIds={assignableRoleIds}
 								currentUserId={currentUserId}
 								defaultRole={defaultRole}
 								hasAssignMembersPermission={
@@ -193,6 +195,7 @@ export function ManageMembersList({
 							/>
 						) : (
 							<MemberListItem
+								assignableRoleIds={assignableRoleIds}
 								defaultRole={defaultRole}
 								hasAssignMembersPermission={
 									hasAssignMembersPermission

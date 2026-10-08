@@ -130,12 +130,14 @@ export function getMembers({
 export function getRoles({
 	externalReferenceCode,
 	fields,
+	pageSize,
 }: {
 	externalReferenceCode: string;
 	fields?: string;
+	pageSize?: number;
 }): Promise<Page<Role>> {
 	return request(`/${externalReferenceCode}/roles`, {
-		params: toParams({fields}),
+		params: toParams({fields, pageSize}),
 	});
 }
 
