@@ -8,10 +8,12 @@ function main {
 	while IFS= read -r path
 	do
 		local marker_files="bnd.bnd build.xml gulpfile.js src/main/resources/application.properties"
+		local themes=true
 
 		if echo "${path}" | grep --extended-regexp "^workspaces/[^/]+-workspace/" > /dev/null
 		then
 			marker_files="bnd.bnd client-extension.yaml"
+			themes=false
 		fi
 
 		local dir
@@ -22,7 +24,8 @@ function main {
 		while [[ ${dir} != . ]] &&
 			  [[ ${dir} != / ]]
 		do
-			if _has_marker_file "${dir}" "${marker_files}" "${1}"
+			if _has_marker_file "${dir}" "${marker_files}" "${1}" ||
+			   { [[ ${themes} == true ]] && _is_theme "${dir}" "${1}"; }
 			then
 				module=${dir}
 			fi
@@ -64,6 +67,22 @@ function _has_marker_file {
 	done
 
 	return 1
+}
+
+function _is_theme {
+	if [[ ${1} == modules ]]
+	then
+		return 1
+	fi
+
+	if [[ -d ${1} ]]
+	then
+		grep --quiet '"liferayTheme"' "${1}/package.json" 2> /dev/null
+
+		return
+	fi
+
+	git show "${2}:${1}/package.json" 2> /dev/null | grep --quiet '"liferayTheme"'
 }
 
 main "${@}"

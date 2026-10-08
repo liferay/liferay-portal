@@ -8,11 +8,15 @@ package com.liferay.gradle.plugins;
 import com.liferay.gradle.plugins.internal.util.FileUtil;
 import com.liferay.gradle.plugins.internal.util.GradleUtil;
 
+import groovy.json.JsonSlurper;
+
 import java.io.File;
 import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
+import java.util.Map;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -20,6 +24,8 @@ import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
@@ -119,6 +125,27 @@ public class LiferayPlugin implements Plugin<Project> {
 	}
 
 	private boolean _isTheme(Project project) {
+		File packageJSONFile = project.file("package.json");
+
+		if (packageJSONFile.exists()) {
+			try {
+				JsonSlurper jsonSlurper = new JsonSlurper();
+
+				Object object = jsonSlurper.parse(packageJSONFile);
+
+				if (object instanceof Map) {
+					Map<?, ?> packageJSONMap = (Map<?, ?>)object;
+
+					if (packageJSONMap.containsKey("liferayTheme")) {
+						return true;
+					}
+				}
+			}
+			catch (Exception exception) {
+				_logger.warn("Unable to parse {}", packageJSONFile, exception);
+			}
+		}
+
 		File gulpFile = project.file("gulpfile.js");
 
 		if (!gulpFile.exists()) {
@@ -137,5 +164,8 @@ public class LiferayPlugin implements Plugin<Project> {
 
 		return gulpFileContent.contains("require('liferay-theme-tasks')");
 	}
+
+	private static final Logger _logger = Logging.getLogger(
+		LiferayPlugin.class);
 
 }

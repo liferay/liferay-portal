@@ -9,6 +9,8 @@ import com.liferay.gradle.plugins.defaults.internal.util.GradlePluginsDefaultsUt
 import com.liferay.gradle.plugins.defaults.internal.util.GradleUtil;
 import com.liferay.gradle.util.Validator;
 
+import groovy.json.JsonSlurper;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -23,12 +25,15 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.initialization.ProjectDescriptor;
 import org.gradle.api.initialization.Settings;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 
 /**
  * @author Andrea Di Giorgi
@@ -133,7 +138,7 @@ public class LiferaySettingsPlugin implements Plugin<Settings> {
 			return ProjectDirType.SPRING_BOOT;
 		}
 
-		if (Files.exists(dirPath.resolve("gulpfile.js"))) {
+		if (_isTheme(dirPath)) {
 			return ProjectDirType.THEME;
 		}
 
@@ -251,6 +256,31 @@ public class LiferaySettingsPlugin implements Plugin<Settings> {
 			});
 	}
 
+	private boolean _isTheme(Path dirPath) {
+		Path packageJSONPath = dirPath.resolve("package.json");
+
+		if (Files.exists(packageJSONPath)) {
+			try {
+				JsonSlurper jsonSlurper = new JsonSlurper();
+
+				Object object = jsonSlurper.parse(packageJSONPath.toFile());
+
+				if (object instanceof Map) {
+					Map<?, ?> packageJSONMap = (Map<?, ?>)object;
+
+					if (packageJSONMap.containsKey("liferayTheme")) {
+						return true;
+					}
+				}
+			}
+			catch (Exception exception) {
+				_logger.warn("Unable to parse {}", packageJSONPath, exception);
+			}
+		}
+
+		return Files.exists(dirPath.resolve("gulpfile.js"));
+	}
+
 	private boolean _startsWith(Path path, Iterable<Path> parentPaths) {
 		for (Path parentPath : parentPaths) {
 			if (path.startsWith(parentPath)) {
@@ -260,6 +290,9 @@ public class LiferaySettingsPlugin implements Plugin<Settings> {
 
 		return false;
 	}
+
+	private static final Logger _logger = Logging.getLogger(
+		LiferaySettingsPlugin.class);
 
 	private static enum ProjectDirType {
 
