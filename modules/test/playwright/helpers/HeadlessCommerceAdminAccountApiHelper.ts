@@ -6,6 +6,12 @@
 import getRandomString from '../utils/getRandomString';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
+type TAccountChannelEntry = {
+	channelId?: number;
+	classPK?: number;
+	id?: number;
+};
+
 type TAddress = {
 	city?: string;
 	countryISOCode?: string;
@@ -32,6 +38,30 @@ export class HeadlessCommerceAdminAccountApiHelper {
 	constructor(apiHelpers: ApiHelpers | DataApiHelpers) {
 		this.apiHelpers = apiHelpers;
 		this.basePath = 'headless-commerce-admin-account/v1.0';
+	}
+
+	async postAccountChannelBillingAddress(
+		accountId: number,
+		accountChannelEntry: TAccountChannelEntry
+	): Promise<TAccountChannelEntry> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/${accountId}/account-channel-billing-addresses`,
+			{
+				data: accountChannelEntry,
+			}
+		);
+	}
+
+	async postAccountChannelShippingAddress(
+		accountId: number,
+		accountChannelEntry: TAccountChannelEntry
+	): Promise<TAccountChannelEntry> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/${accountId}/account-channel-shipping-addresses`,
+			{
+				data: accountChannelEntry,
+			}
+		);
 	}
 
 	async postAddress(accountEntryId: number, address?: TAddress) {
