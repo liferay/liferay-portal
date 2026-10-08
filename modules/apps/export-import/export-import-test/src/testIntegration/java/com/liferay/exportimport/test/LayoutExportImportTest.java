@@ -26,7 +26,11 @@ import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSe
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.exception.LARTypeException;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEvent;
+import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListener;
+import com.liferay.exportimport.kernel.lifecycle.constants.ExportImportLifecycleConstants;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
@@ -131,6 +135,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -138,6 +143,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Eduardo García
@@ -291,6 +301,84 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		finally {
 			importedGroup = originalImportedGroup;
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-108615")
+	public void testEnableLocalStagingKeepsLayoutAddedToStagingGroupDuringPublication()
+		throws Exception {
+
+		LayoutTestUtil.addTypePortletLayout(group);
+
+		AtomicReference<Layout> stagingLayoutAtomicReference =
+			new AtomicReference<>();
+
+		Bundle bundle = FrameworkUtil.getBundle(LayoutExportImportTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<ExportImportLifecycleListener> serviceRegistration =
+			bundleContext.registerService(
+				ExportImportLifecycleListener.class,
+				new ExportImportLifecycleListener() {
+
+					@Override
+					public boolean isParallel() {
+						return false;
+					}
+
+					@Override
+					public void onExportImportLifecycleEvent(
+							ExportImportLifecycleEvent
+								exportImportLifecycleEvent)
+						throws Exception {
+
+						if (exportImportLifecycleEvent.getCode() !=
+								ExportImportLifecycleConstants.
+									EVENT_LAYOUT_IMPORT_STARTED) {
+
+							return;
+						}
+
+						List<Serializable> attributes =
+							exportImportLifecycleEvent.getAttributes();
+
+						PortletDataContext portletDataContext =
+							(PortletDataContext)attributes.get(0);
+
+						if ((portletDataContext.getSourceGroupId() !=
+								group.getGroupId()) ||
+							(stagingLayoutAtomicReference.get() != null)) {
+
+							return;
+						}
+
+						stagingLayoutAtomicReference.set(
+							LayoutTestUtil.addTypePortletLayout(
+								portletDataContext.getGroupId()));
+					}
+
+				},
+				null);
+
+		try {
+			GroupTestUtil.enableLocalStaging(group);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Layout stagingLayout = stagingLayoutAtomicReference.get();
+
+		Assert.assertNotNull(stagingLayout);
+
+		Group stagingGroup = group.getStagingGroup();
+
+		Assert.assertEquals(
+			stagingGroup.getGroupId(), stagingLayout.getGroupId());
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayout(stagingLayout.getPlid()));
 	}
 
 	@Test
@@ -1598,6 +1686,37 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			importedLayout2.getPriority() > importedLayout3.getPriority());
 	}
 
+	@Test
+	@TestInfo("LPD-108615")
+	public void testPublishToLiveKeepsLiveLayoutWithDifferentExternalReferenceCode()
+		throws Exception {
+
+		GroupTestUtil.enableLocalStaging(group);
+
+		Group stagingGroup = group.getStagingGroup();
+
+		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
+			stagingGroup);
+
+		_publishToLive(stagingGroup);
+
+		Layout liveLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			stagingLayout.getUuid(), group.getGroupId(), false);
+
+		Assert.assertEquals(
+			stagingLayout.getExternalReferenceCode(),
+			liveLayout.getExternalReferenceCode());
+
+		liveLayout.setExternalReferenceCode(RandomTestUtil.randomString());
+
+		liveLayout = _layoutLocalService.updateLayout(liveLayout);
+
+		_publishToLive(stagingGroup);
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayout(liveLayout.getPlid()));
+	}
+
 	protected void testAvailableLocales(
 			Collection<Locale> sourceAvailableLocales,
 			Collection<Locale> targetAvailableLocales, boolean expectFailure)
@@ -1783,6 +1902,15 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 		ExportImportLocalServiceUtil.importLayouts(
 			exportImportConfiguration, larFile);
+	}
+
+	private void _publishToLive(Group stagingGroup) throws Exception {
+		StagingUtil.publishLayouts(
+			TestPropsValues.getUserId(),
+			ExportImportConfigurationFactory.
+				buildDefaultLocalPublishingExportImportConfiguration(
+					TestPropsValues.getUser(), stagingGroup.getGroupId(),
+					stagingGroup.getLiveGroupId(), false));
 	}
 
 	private void _testExportImportLayoutUtilityPageEntryWithPreviewFileEntry()
