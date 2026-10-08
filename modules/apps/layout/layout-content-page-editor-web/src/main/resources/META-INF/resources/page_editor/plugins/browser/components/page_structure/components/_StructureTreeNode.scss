@@ -17,6 +17,7 @@ html#{$cadmin-selector} {
 				width: initial;
 
 				&.treeview-link {
+					border-radius: 4px;
 					width: fit-content;
 				}
 
@@ -29,14 +30,13 @@ html#{$cadmin-selector} {
 				}
 
 				&--active.treeview-link:not(:focus) {
-					box-shadow: inset 0 0 0 1px $cadmin-primary-l1;
-					color: $gray-800;
+					background-color: $cadmin-primary-l3;
+					box-shadow: inset 0 0 0 1px $cadmin-primary;
+					color: $cadmin-gray-800;
 				}
 
-				&--hovered.treeview-link,
-				&--active.treeview-link {
-					background-color: $cadmin-primary-l3;
-					border-radius: 4px;
+				&--hovered.treeview-link {
+					box-shadow: inset 0 0 0 1px $cadmin-secondary-l0;
 				}
 
 				&--master-item.treeview-link {
@@ -71,17 +71,17 @@ html#{$cadmin-selector} {
 			}
 
 			&.drag-over-bottom {
-				box-shadow: 0 1px 0 0 $cadmin-primary-l1;
+				box-shadow: 0 1px 0 0 $cadmin-primary;
 			}
 
 			&.drag-over-top {
-				box-shadow: 0 -1px 0 0 $cadmin-primary-l1;
+				box-shadow: 0 -1px 0 0 $cadmin-primary;
 			}
 
 			&.drag-over-middle {
 				background-color: $cadmin-primary-l3;
 				border-radius: 4px;
-				box-shadow: 0 0 0 1px $cadmin-primary-l1;
+				box-shadow: 0 0 0 1px $cadmin-primary;
 			}
 
 			&.dragged {
