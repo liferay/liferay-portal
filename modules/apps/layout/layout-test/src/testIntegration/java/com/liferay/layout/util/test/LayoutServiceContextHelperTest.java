@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -69,8 +70,8 @@ public class LayoutServiceContextHelperTest {
 	@Test
 	@TestInfo(
 		{
-			"LPD-79722", "LPD-99386", "LPD-102690", "LPD-103697", "LPD-105674",
-			"LPD-105885"
+			"LPD-79722", "LPD-99386", "LPD-102690", "LPD-103697", "LPD-103742",
+			"LPD-105674", "LPD-105885"
 		}
 	)
 	public void testGetServiceContextAutoCloseable() throws Exception {
@@ -97,19 +98,35 @@ public class LayoutServiceContextHelperTest {
 							_layoutServiceContextHelper.
 								getServiceContextAutoCloseable(layout)) {
 
+						ServiceContext currentServiceContext =
+							ServiceContextThreadLocal.getServiceContext();
+
+						HttpServletRequest currentHttpServletRequest =
+							currentServiceContext.getRequest();
+
+						String includeServletPath =
+							RandomTestUtil.randomString();
+
+						currentHttpServletRequest.setAttribute(
+							JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH,
+							includeServletPath);
+
 						openCountDownLatch.countDown();
 
 						Assert.assertTrue(
 							otherOpenCountDownLatch.await(1, TimeUnit.MINUTES));
-
-						ServiceContext currentServiceContext =
-							ServiceContextThreadLocal.getServiceContext();
 
 						ThemeDisplay themeDisplay =
 							currentServiceContext.getThemeDisplay();
 
 						Assert.assertEquals(
 							layout.getPlid(), themeDisplay.getPlid());
+
+						Assert.assertEquals(
+							includeServletPath,
+							currentHttpServletRequest.getAttribute(
+								JavaConstants.
+									JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
 					}
 					finally {
 						openCountDownLatch.countDown();
