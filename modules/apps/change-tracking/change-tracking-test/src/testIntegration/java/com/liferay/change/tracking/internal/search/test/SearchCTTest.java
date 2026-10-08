@@ -17,6 +17,7 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -419,6 +420,8 @@ public class SearchCTTest {
 							"ALL");
 					}
 
+					searchContext.setEnd(QueryUtil.ALL_POS);
+					searchContext.setStart(QueryUtil.ALL_POS);
 					searchContext.setUserId(_group.getCreatorUserId());
 				}
 			);
