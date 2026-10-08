@@ -1,6 +1,6 @@
 ---
 
-description: Set up the Liferay MCP server, manage CLI session restart ordering, and diagnose MCP specific failure modes (transport version switch, connection lifecycle, auth split, 204 false alarms, token limit exceeded). Use when the user asks to enable or set up MCP, when an MCP tool call returns errors, or before performing content/page/object operations where MCP is preferred over raw REST.
+description: Set up the Liferay MCP server, manage CLI session restart ordering, and diagnose MCP specific failure modes (transport version switch, connection lifecycle, auth split, 204 false alarms, unencoded query strings, token limit exceeded). Use when the user asks to enable or set up MCP, when an MCP tool call returns errors, or before performing content/page/object operations where MCP is preferred over raw REST.
 name: mcp-server
 
 ---
@@ -100,6 +100,18 @@ The MCP `call-http-endpoint` tool throws `MCP error -32603: text must not be nul
 **Affected operations include**: publishing a page specification, checking out a CT collection, and any other endpoint that intentionally returns no response body.
 
 **Workaround**: after a 204 MCP error, follow up with a GET to confirm the operation succeeded before assuming failure or retrying.
+
+### Encode the Query String Yourself
+
+`call-http-endpoint` sends `path` as written and does not URL encode it. An OData `filter` with spaces or quotes fails before it reaches the API:
+
+```text
+Invalid URI: http://localhost:8080/o/object-admin/v1.0/object-definitions?filter=name eq 'Event'
+```
+
+Liferay also logs each failure at `ERROR` from `MCPServerServlet`, so these failures show up when you scan the log for deployment errors.
+
+Encode spaces as `%20` and single quotes as `%27`: `?filter=name%20eq%20%27Event%27`. Commas need no encoding, so `?fields=id,name` works as written. Verified on 2026.Q1.
 
 ### Endpoint Discovery With `get-openapi`
 
