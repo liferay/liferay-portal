@@ -356,6 +356,51 @@ public class ImportPreview implements Serializable {
 	@JsonIgnore
 	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public PreviewAssetLibrary[] getPreviewAssetLibraries() {
+		if (_previewAssetLibrariesSupplier != null) {
+			previewAssetLibraries = _previewAssetLibrariesSupplier.get();
+
+			_previewAssetLibrariesSupplier = null;
+		}
+
+		return previewAssetLibraries;
+	}
+
+	public void setPreviewAssetLibraries(
+		PreviewAssetLibrary[] previewAssetLibraries) {
+
+		this.previewAssetLibraries = previewAssetLibraries;
+
+		_previewAssetLibrariesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPreviewAssetLibraries(
+		UnsafeSupplier<PreviewAssetLibrary[], Exception>
+			previewAssetLibrariesUnsafeSupplier) {
+
+		_previewAssetLibrariesSupplier = () -> {
+			try {
+				return previewAssetLibrariesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected PreviewAssetLibrary[] previewAssetLibraries;
+
+	@JsonIgnore
+	private Supplier<PreviewAssetLibrary[]> _previewAssetLibrariesSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The sites the file contains, when it was exported from an instance."
 	)
@@ -538,6 +583,29 @@ public class ImportPreview implements Serializable {
 			sb.append("]");
 		}
 
+		PreviewAssetLibrary[] previewAssetLibraries =
+			getPreviewAssetLibraries();
+
+		if (previewAssetLibraries != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"previewAssetLibraries\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < previewAssetLibraries.length; i++) {
+				sb.append(String.valueOf(previewAssetLibraries[i]));
+
+				if ((i + 1) < previewAssetLibraries.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Site[] sites = getSites();
 
 		if (sites != null) {
@@ -682,4 +750,4 @@ public class ImportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1576045759
+// LIFERAY-REST-BUILDER-HASH:230685577

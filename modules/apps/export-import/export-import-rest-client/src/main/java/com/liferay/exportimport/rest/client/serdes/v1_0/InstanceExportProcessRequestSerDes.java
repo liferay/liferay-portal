@@ -53,6 +53,37 @@ public class InstanceExportProcessRequestSerDes {
 
 		sb.append("{");
 
+		if (instanceExportProcessRequest.
+				getAssetLibraryExternalReferenceCodes() != null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"assetLibraryExternalReferenceCodes\": ");
+
+			sb.append("[");
+
+			for (int i = 0;
+				 i < instanceExportProcessRequest.
+					 getAssetLibraryExternalReferenceCodes().length;
+				 i++) {
+
+				sb.append(
+					_toJSON(
+						instanceExportProcessRequest.
+							getAssetLibraryExternalReferenceCodes()[i]));
+
+				if ((i + 1) < instanceExportProcessRequest.
+						getAssetLibraryExternalReferenceCodes().length) {
+
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (instanceExportProcessRequest.getComments() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -193,6 +224,19 @@ public class InstanceExportProcessRequestSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (instanceExportProcessRequest.
+				getAssetLibraryExternalReferenceCodes() == null) {
+
+			map.put("assetLibraryExternalReferenceCodes", null);
+		}
+		else {
+			map.put(
+				"assetLibraryExternalReferenceCodes",
+				String.valueOf(
+					instanceExportProcessRequest.
+						getAssetLibraryExternalReferenceCodes()));
+		}
+
 		if (instanceExportProcessRequest.getComments() == null) {
 			map.put("comments", null);
 		}
@@ -283,7 +327,13 @@ public class InstanceExportProcessRequestSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "comments")) {
+			if (Objects.equals(
+					jsonParserFieldName,
+					"assetLibraryExternalReferenceCodes")) {
+
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "comments")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateFilter")) {
@@ -318,7 +368,17 @@ public class InstanceExportProcessRequestSerDes {
 			InstanceExportProcessRequest instanceExportProcessRequest,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "comments")) {
+			if (Objects.equals(
+					jsonParserFieldName,
+					"assetLibraryExternalReferenceCodes")) {
+
+				if (jsonParserFieldValue != null) {
+					instanceExportProcessRequest.
+						setAssetLibraryExternalReferenceCodes(
+							toStrings((Object[])jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "comments")) {
 				if (jsonParserFieldValue != null) {
 					instanceExportProcessRequest.setComments(
 						(Boolean)jsonParserFieldValue);
@@ -476,4 +536,4 @@ public class InstanceExportProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-694412064
+// LIFERAY-REST-BUILDER-HASH:2068852805
