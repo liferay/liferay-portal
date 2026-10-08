@@ -58,10 +58,12 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 		CPOptionValue cpOptionValue = cpOptionValuePersistence.fetchByERC_C(
 			externalReferenceCode, serviceContext.getCompanyId());
 
-		if (cpOptionValue == null) {
-			_cpOptionModelResourcePermission.check(
-				getPermissionChecker(), cpOptionId, ActionKeys.UPDATE);
+		if (cpOptionValue != null) {
+			cpOptionId = cpOptionValue.getCPOptionId();
 		}
+
+		_cpOptionModelResourcePermission.check(
+			getPermissionChecker(), cpOptionId, ActionKeys.UPDATE);
 
 		return cpOptionValueLocalService.addOrUpdateCPOptionValue(
 			externalReferenceCode, cpOptionId, nameMap, priority, key,
@@ -185,7 +187,7 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionValue.getCPOptionId(),
-			ActionKeys.VIEW);
+			ActionKeys.UPDATE);
 
 		return cpOptionValueLocalService.updateCPOptionValue(
 			cpOptionValue.getCPOptionValueId(), nameMap, priority, key,

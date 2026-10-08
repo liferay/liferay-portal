@@ -55,7 +55,7 @@ public class CPDAvailabilityEstimateServiceImpl
 			long commerceAvailabilityEstimateId)
 		throws PortalException {
 
-		_checkCommerceCatalog(cpDefinitionId, ActionKeys.VIEW);
+		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
 
 		CPDefinition cpDefinition = cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);

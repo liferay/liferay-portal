@@ -71,7 +71,7 @@ public class CPDefinitionSpecificationOptionValueServiceImpl
 
 		_checkCommerceCatalog(
 			cpDefinitionSpecificationOptionValue.getCPDefinitionId(),
-			ActionKeys.VIEW);
+			ActionKeys.UPDATE);
 
 		cpDefinitionSpecificationOptionValueLocalService.
 			deleteCPDefinitionSpecificationOptionValue(

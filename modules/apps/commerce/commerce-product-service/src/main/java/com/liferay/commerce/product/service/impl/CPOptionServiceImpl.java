@@ -76,6 +76,10 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 				getPermissionChecker(), null,
 				CPActionKeys.ADD_COMMERCE_PRODUCT_OPTION);
 		}
+		else {
+			_cpOptionModelResourcePermission.check(
+				getPermissionChecker(), cpOption, ActionKeys.UPDATE);
+		}
 
 		return cpOptionLocalService.addOrUpdateCPOption(
 			externalReferenceCode, getUserId(), nameMap, descriptionMap,

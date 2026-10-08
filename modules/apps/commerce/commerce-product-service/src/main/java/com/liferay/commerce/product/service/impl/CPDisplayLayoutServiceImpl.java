@@ -50,7 +50,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		GroupPermissionUtil.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_LAYOUT);
 
-		_checkCPDisplayLayout(clazz.getName(), classPK, ActionKeys.VIEW);
+		_checkCPDisplayLayout(clazz.getName(), classPK, ActionKeys.UPDATE);
 
 		return cpDisplayLayoutLocalService.addCPDisplayLayout(
 			getUserId(), groupId, clazz, classPK, layoutPageTemplateEntryUuid,
@@ -85,7 +85,10 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		if (cpDisplayLayout != null) {
 			if (Validator.isNotNull(cpDisplayLayout.getLayoutUuid())) {
 				LayoutPermissionUtil.check(
-					getPermissionChecker(), _getLayout(cpDisplayLayout),
+					getPermissionChecker(),
+					_getLayout(
+						cpDisplayLayout.getGroupId(),
+						cpDisplayLayout.getLayoutUuid()),
 					ActionKeys.VIEW);
 			}
 
@@ -106,7 +109,10 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 
 		if (Validator.isNotNull(cpDisplayLayout.getLayoutUuid())) {
 			LayoutPermissionUtil.check(
-				getPermissionChecker(), _getLayout(cpDisplayLayout),
+				getPermissionChecker(),
+				_getLayout(
+					cpDisplayLayout.getGroupId(),
+					cpDisplayLayout.getLayoutUuid()),
 				ActionKeys.VIEW);
 		}
 
@@ -139,14 +145,22 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		CPDisplayLayout cpDisplayLayout =
 			cpDisplayLayoutPersistence.findByPrimaryKey(cpDisplayLayoutId);
 
+		GroupPermissionUtil.check(
+			getPermissionChecker(), cpDisplayLayout.getGroupId(),
+			ActionKeys.ADD_LAYOUT);
+
 		if (Validator.isNotNull(layoutUuid)) {
-			LayoutPermissionUtil.check(
-				getPermissionChecker(), _getLayout(cpDisplayLayout),
-				ActionKeys.VIEW);
+			Layout layout = _getLayout(
+				cpDisplayLayout.getGroupId(), layoutUuid);
+
+			if (layout != null) {
+				LayoutPermissionUtil.check(
+					getPermissionChecker(), layout, ActionKeys.VIEW);
+			}
 		}
 
 		_checkCPDisplayLayout(
-			cpDisplayLayout.getClassName(), classPK, ActionKeys.VIEW);
+			cpDisplayLayout.getClassName(), classPK, ActionKeys.UPDATE);
 
 		return cpDisplayLayoutLocalService.updateCPDisplayLayout(
 			cpDisplayLayout.getCPDisplayLayoutId(), classPK,
@@ -178,18 +192,15 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		}
 	}
 
-	private Layout _getLayout(CPDisplayLayout cpDisplayLayout) {
+	private Layout _getLayout(long groupId, String layoutUuid) {
 		Layout layout = _layoutLocalService.fetchLayout(
-			cpDisplayLayout.getLayoutUuid(), cpDisplayLayout.getGroupId(),
-			false);
+			layoutUuid, groupId, false);
 
 		if (layout != null) {
 			return layout;
 		}
 
-		return _layoutLocalService.fetchLayout(
-			cpDisplayLayout.getLayoutUuid(), cpDisplayLayout.getGroupId(),
-			true);
+		return _layoutLocalService.fetchLayout(layoutUuid, groupId, true);
 	}
 
 	@Reference
