@@ -18,6 +18,7 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.exception.ObjectValidationRuleEngineException;
+import com.liferay.object.field.attachment.AttachmentManager;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.model.ObjectDefinition;
@@ -28,6 +29,7 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.validation.rule.ObjectValidationRuleResult;
@@ -112,34 +114,21 @@ public class CMSFileTypeObjectEntryLocalServiceWrapperTest {
 	public void testAddObjectEntry() throws Exception {
 		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		ObjectEntry objectEntry = _addObjectEntry(urlTitle);
+		long fileEntryId = _getFileEntryId(_addObjectEntry(urlTitle));
 
-		Assert.assertEquals(
-			_getFileEntryId(objectEntry), _resolveFileEntryId(urlTitle));
+		Assert.assertEquals(fileEntryId, _resolveFileEntryId(urlTitle));
 
-		objectEntry = _addObjectEntry(null);
+		ObjectEntry objectEntry = _addObjectEntry(null);
 
 		Assert.assertEquals(
 			_getFileEntryId(objectEntry),
 			_resolveFileEntryId(_getObjectEntryUrlTitle(objectEntry)));
 
-		try {
-			_addObjectEntry(urlTitle);
+		_assertObjectEntryUrlTitle(_addObjectEntry(urlTitle), urlTitle + "-1");
+		_assertObjectEntryUrlTitle(
+			_addObjectEntry(null, urlTitle), urlTitle + "-2");
 
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			_assertFriendlyURLIsInUse(modelListenerException);
-		}
-
-		try {
-			_addObjectEntry(null, urlTitle);
-
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			_assertFriendlyURLIsInUse(modelListenerException);
-		}
+		Assert.assertEquals(fileEntryId, _resolveFileEntryId(urlTitle));
 
 		String fileEntryUrlTitle = StringUtil.toLowerCase(
 			RandomTestUtil.randomString());
@@ -151,26 +140,13 @@ public class CMSFileTypeObjectEntryLocalServiceWrapperTest {
 			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
 			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
 
-		try {
-			_addObjectEntry(fileEntryUrlTitle);
-
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			_assertFriendlyURLIsInUse(modelListenerException);
-		}
-
-		objectEntry = _addObjectEntry(
-			LocaleUtil.toLanguageId(LocaleUtil.getDefault()), fileEntryUrlTitle,
-			null);
-
-		String objectEntryUrlTitle = _getObjectEntryUrlTitle(objectEntry);
-
-		Assert.assertEquals(fileEntryUrlTitle + "-1", objectEntryUrlTitle);
-
-		Assert.assertEquals(
-			_getFileEntryId(objectEntry),
-			_resolveFileEntryId(objectEntryUrlTitle));
+		_assertObjectEntryUrlTitle(
+			_addObjectEntry(fileEntryUrlTitle), fileEntryUrlTitle + "-1");
+		_assertObjectEntryUrlTitle(
+			_addObjectEntry(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+				fileEntryUrlTitle, null),
+			fileEntryUrlTitle + "-2");
 
 		Assert.assertEquals(
 			fileEntry.getFileEntryId(), _resolveFileEntryId(fileEntryUrlTitle));
@@ -207,14 +183,50 @@ public class CMSFileTypeObjectEntryLocalServiceWrapperTest {
 			GetterUtil.getLong(values.get("file")),
 			_resolveFileEntryId(urlTitle));
 
-		try {
-			_addObjectEntry(urlTitle);
+		_assertObjectEntryUrlTitle(_addObjectEntry(urlTitle), urlTitle + "-1");
 
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			_assertFriendlyURLIsInUse(modelListenerException);
-		}
+		Assert.assertEquals(
+			GetterUtil.getLong(values.get("file")),
+			_resolveFileEntryId(urlTitle));
+	}
+
+	@Test
+	@TestInfo("LPD-102524")
+	public void testAddObjectEntryWithFileEntryUrlTitle() throws Exception {
+		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			_objectDefinition.getObjectDefinitionId(), "file");
+
+		FileEntry fileEntry = _attachmentManager.getOrAddFileEntry(
+			TestPropsValues.getCompanyId(), null, RandomTestUtil.randomBytes(),
+			urlTitle + ".txt", _depotEntry.getGroupId(),
+			objectField.getObjectFieldId(),
+			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
+
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(), _resolveFileEntryId(urlTitle));
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			_depotEntry.getGroupId(), TestPropsValues.getUserId(),
+			_objectDefinition.getObjectDefinitionId(),
+			_objectEntryFolder.getObjectEntryFolderId(),
+			LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+			HashMapBuilder.<String, Serializable>put(
+				"file", fileEntry.getFileEntryId()
+			).put(
+				"title_i18n",
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					RandomTestUtil.randomString()
+				).build()
+			).build(),
+			_getServiceContext(urlTitle));
+
+		_assertObjectEntryUrlTitle(objectEntry, urlTitle);
+
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(), _getFileEntryId(objectEntry));
 	}
 
 	@Test
@@ -430,6 +442,15 @@ public class CMSFileTypeObjectEntryLocalServiceWrapperTest {
 			objectValidationRuleResult.getObjectFieldName());
 	}
 
+	private void _assertObjectEntryUrlTitle(
+			ObjectEntry objectEntry, String urlTitle)
+		throws Exception {
+
+		Assert.assertEquals(urlTitle, _getObjectEntryUrlTitle(objectEntry));
+		Assert.assertEquals(
+			_getFileEntryId(objectEntry), _resolveFileEntryId(urlTitle));
+	}
+
 	private ObjectField _createAttachmentObjectField(
 		String name, boolean system) {
 
@@ -557,6 +578,9 @@ public class CMSFileTypeObjectEntryLocalServiceWrapperTest {
 	}
 
 	@Inject
+	private AttachmentManager _attachmentManager;
+
+	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
@@ -589,6 +613,9 @@ public class CMSFileTypeObjectEntryLocalServiceWrapperTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Inject
 	private ObjectFolderLocalService _objectFolderLocalService;
