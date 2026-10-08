@@ -267,6 +267,8 @@ public class AccountFaroController extends BaseFaroController {
 			List<Map<String, String>> items = TransformUtil.transform(
 				accountLifecycle.getStages(),
 				stage -> HashMapBuilder.put(
+					"externalReferenceCode", stage.getExternalReferenceCode()
+				).put(
 					"id", stage.getId()
 				).put(
 					"stageType", stage.getStageType()

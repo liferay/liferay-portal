@@ -114,7 +114,9 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 						accountLifecycleStage.getStageType(), lifecycleStage)) {
 
 					return StringBundler.concat(
-						"(lifecycleStatus in ('", accountLifecycleStage.getId(),
+						"(lifecycleStatus@",
+						accountLifecycle.getExternalReferenceCode(), " in ('",
+						accountLifecycleStage.getExternalReferenceCode(),
 						"'))");
 				}
 			}
