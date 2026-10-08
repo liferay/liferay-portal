@@ -53,13 +53,9 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 		JSONObject jsonObject = new JSONObjectImpl(content);
 
-		List<String> rootDefaultValues = getAttributeValues(
-			_ROOT_DEFAULT_VALUES_KEY, absolutePath);
-
-		_removeDefaultValues(rootDefaultValues, jsonObject);
-
-		_checkConfiguration(absolutePath, jsonObject);
-		_checkItems(fileName, absolutePath, jsonObject);
+		_removeRootDefaultValues(absolutePath, jsonObject);
+		_removeConfigurationDefaultValues(absolutePath, jsonObject);
+		_formatItems(fileName, absolutePath, jsonObject);
 
 		return JSONUtil.toString(jsonObject);
 	}
@@ -133,26 +129,7 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 				"NamePattern\" in \"ObjectDefinitionClassNameProcessorImpl\"");
 	}
 
-	private void _checkConfiguration(
-		String absolutePath, JSONObject jsonObject) {
-
-		JSONObject configurationJSONObject = jsonObject.getJSONObject(
-			"configuration");
-
-		if (configurationJSONObject == null) {
-			return;
-		}
-
-		List<String> configurationDefaultValues = getAttributeValues(
-			_CONFIGURATION_DEFAULT_VALUES_KEY, absolutePath);
-
-		_removeDefaultValues(
-			configurationDefaultValues, configurationJSONObject);
-
-		jsonObject.put("configuration", configurationJSONObject);
-	}
-
-	private void _checkItems(
+	private void _formatItems(
 			String fileName, String absolutePath, JSONObject jsonObject)
 		throws Exception {
 
@@ -334,6 +311,25 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 		return false;
 	}
 
+	private void _removeConfigurationDefaultValues(
+		String absolutePath, JSONObject jsonObject) {
+
+		JSONObject configurationJSONObject = jsonObject.getJSONObject(
+			"configuration");
+
+		if (configurationJSONObject == null) {
+			return;
+		}
+
+		List<String> configurationDefaultValues = getAttributeValues(
+			_CONFIGURATION_DEFAULT_VALUES_KEY, absolutePath);
+
+		_removeDefaultValues(
+			configurationDefaultValues, configurationJSONObject);
+
+		jsonObject.put("configuration", configurationJSONObject);
+	}
+
 	private void _removeDefaultValues(
 		List<String> defaultValues, JSONObject jsonObject) {
 
@@ -358,6 +354,15 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 				jsonObject.remove(key);
 			}
 		}
+	}
+
+	private void _removeRootDefaultValues(
+		String absolutePath, JSONObject jsonObject) {
+
+		List<String> rootDefaultValues = getAttributeValues(
+			_ROOT_DEFAULT_VALUES_KEY, absolutePath);
+
+		_removeDefaultValues(rootDefaultValues, jsonObject);
 	}
 
 	private void _sortObjectFields(JSONObject jsonObject) {
