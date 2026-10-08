@@ -238,13 +238,17 @@ test(
 
 test(
 	'Verify Consent Panel keeps previously accepted cookies when saving again',
-	{tag: '@LPD-101997'},
-	async ({page}) => {
+	{tag: ['@LPD-101997', '@LPD-109445']},
+	async ({page, systemSettingsPage}) => {
 		const configurationFrame = page.frameLocator(
 			'#cookiesBannerConfiguration iframe'
 		);
 
-		const [functionalCookieKey, performanceCookieKey] = cookieKeys;
+		const [
+			functionalCookieKey,
+			performanceCookieKey,
+			personalizationCookieKey,
+		] = cookieKeys;
 
 		await test.step('Accept only Functional Cookies', async () => {
 			await page.goto('/');
@@ -300,6 +304,53 @@ test(
 				page
 			);
 		});
+
+		await test.step('Hide Functional and Personalization Cookies from the end user', async () => {
+			await hideConsentCookieTypesFromEndUser(
+				['Functional', 'Personalization'],
+				systemSettingsPage
+			);
+		});
+
+		await test.step('Accept Selected without the hidden cookie types', async () => {
+			await page.goto('/');
+
+			await openConsentPanelFromFloatingIcon(page);
+
+			await expect(
+				configurationFrame.locator(
+					`[data-cookie-key="${performanceCookieKey}"]`
+				)
+			).toBeEnabled();
+
+			await expect(
+				configurationFrame.locator(
+					`[data-cookie-key="${functionalCookieKey}"]`
+				)
+			).toHaveCount(0);
+			await expect(
+				configurationFrame.locator(
+					`[data-cookie-key="${personalizationCookieKey}"]`
+				)
+			).toHaveCount(0);
+
+			await page.getByRole('button', {name: 'Accept Selected'}).click();
+		});
+
+		await test.step('Verify the hidden cookie types are declined', async () => {
+			await expectCookieValue(functionalCookieKey, page, 'false');
+			await expectCookieValue(performanceCookieKey, page, 'true');
+			await expectCookieValue(personalizationCookieKey, page, 'false');
+		});
+
+		await test.step('Verify the Cookie Banner stays hidden on another page', async () => {
+			await page.goto('/');
+
+			await expect(page.locator('.cookies-banner')).toHaveAttribute(
+				'style',
+				/display: none/
+			);
+		});
 	}
 );
 
@@ -331,8 +382,8 @@ test(
 
 test(
 	'Verify Cookie Preferences can be saved from the new Consent Manager page',
-	{tag: '@LPD-60007'},
-	async ({accountSettingsPage, page}) => {
+	{tag: ['@LPD-60007', '@LPD-109445']},
+	async ({accountSettingsPage, page, systemSettingsPage}) => {
 		await test.step('Enable all cookie types', async () => {
 			await accountSettingsPage.goToDataAndPrivacy();
 
@@ -369,6 +420,49 @@ test(
 				expect(actualCookie).toBeDefined();
 				expect(actualCookie.value).toEqual('true');
 			}
+		});
+
+		await test.step('Hide Functional and Personalization Cookies from the end user', async () => {
+			await hideConsentCookieTypesFromEndUser(
+				['Functional', 'Personalization'],
+				systemSettingsPage
+			);
+		});
+
+		await test.step('Accept Selected without the hidden cookie types', async () => {
+			await accountSettingsPage.goToDataAndPrivacy();
+
+			await accountSettingsPage.page
+				.getByText('Consent Manager')
+				.first()
+				.waitFor();
+
+			if (await accountSettingsPage.consentManagerMenuItem.isVisible()) {
+				await accountSettingsPage.consentManagerMenuItem.click();
+			}
+
+			const [
+				functionalCookieKey,
+				performanceCookieKey,
+				personalizationCookieKey,
+			] = cookieKeys;
+
+			await expect(
+				page.locator(`[data-cookie-key="${performanceCookieKey}"]`)
+			).toBeEnabled();
+
+			await expect(
+				page.locator(`[data-cookie-key="${functionalCookieKey}"]`)
+			).toHaveCount(0);
+			await expect(
+				page.locator(`[data-cookie-key="${personalizationCookieKey}"]`)
+			).toHaveCount(0);
+
+			await page.getByRole('button', {name: 'Accept Selected'}).click();
+
+			await expectCookieValue(functionalCookieKey, page, 'false');
+			await expectCookieValue(performanceCookieKey, page, 'true');
+			await expectCookieValue(personalizationCookieKey, page, 'false');
 		});
 	}
 );
@@ -878,6 +972,42 @@ async function expectCookieConsentPanelButtons(locator: Locator) {
 	await expect(buttons[0]).toContainText('Use Necessary Cookies Only');
 	await expect(buttons[1]).toContainText('Accept Selected');
 	await expect(buttons[2]).toContainText('Accept All');
+}
+
+async function expectCookieValue(cookieKey: string, page: Page, value: string) {
+	await expect
+		.poll(
+			async () =>
+				(await page.context().cookies()).find(
+					(cookie) => cookie.name === cookieKey
+				)?.value
+		)
+		.toEqual(value);
+}
+
+async function hideConsentCookieTypesFromEndUser(
+	cookieTypeNames: string[],
+	systemSettingsPage
+) {
+	await systemSettingsPage.goToSystemSetting('Privacy', 'Consent Manager');
+
+	const page = systemSettingsPage.page;
+
+	await page
+		.locator('#main-content')
+		.getByRole('menuitem', {exact: true, name: 'Cookie Panel'})
+		.click();
+
+	await page.getByLabel('Cookie Policy Link').fill('http://example.com');
+
+	for (const cookieTypeName of cookieTypeNames) {
+		await page
+			.getByLabel('Hide from end-user')
+			.nth(cookieHeadingNames.indexOf(`${cookieTypeName} Cookies`))
+			.check();
+	}
+
+	await saveOrUpdateConfiguration(page);
 }
 
 async function openConsentPanelFromFloatingIcon(page: Page) {
