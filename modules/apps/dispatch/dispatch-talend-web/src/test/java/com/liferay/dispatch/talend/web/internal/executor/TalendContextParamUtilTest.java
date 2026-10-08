@@ -69,8 +69,6 @@ public class TalendContextParamUtilTest {
 
 		String value = RandomTestUtil.randomString();
 
-		_secretResolver = Mockito.mock(SecretResolver.class);
-
 		Mockito.when(
 			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
@@ -81,6 +79,7 @@ public class TalendContextParamUtilTest {
 			value,
 			TalendContextParamUtil.getValue(
 				companyId, dispatchTriggerId, name, keyReferenceString));
+
 		Assert.assertEquals(
 			keyReferenceString,
 			TalendContextParamUtil.getValue(
@@ -108,7 +107,8 @@ public class TalendContextParamUtilTest {
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 
-	private SecretResolver _secretResolver;
+	private final SecretResolver _secretResolver = Mockito.mock(
+		SecretResolver.class);
 	private Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }

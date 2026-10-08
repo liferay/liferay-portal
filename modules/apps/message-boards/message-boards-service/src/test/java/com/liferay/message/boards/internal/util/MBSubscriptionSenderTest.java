@@ -110,8 +110,12 @@ public class MBSubscriptionSenderTest {
 			mailingListId
 		);
 
-		String keyReferenceString = _getKeyReferenceString(
-			categoryId, companyId);
+		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
+			new KeyReference(
+				StringBundler.concat(
+					MBMailingList.class.getSimpleName(), StringPool.SLASH,
+					companyId, StringPool.SLASH, categoryId, "/outPassword"),
+				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 
 		Mockito.when(
 			mbMailingList.getOutPassword()
@@ -185,15 +189,6 @@ public class MBSubscriptionSenderTest {
 		}
 
 		Assert.assertFalse(mbSubscriptionSender.hasSubscribers());
-	}
-
-	private String _getKeyReferenceString(long categoryId, long companyId) {
-		return KeyReferenceUtil.toKeyReferenceString(
-			new KeyReference(
-				StringBundler.concat(
-					MBMailingList.class.getSimpleName(), StringPool.SLASH,
-					companyId, StringPool.SLASH, categoryId, "/outPassword"),
-				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 
 	private final MBMailingListLocalService _mbMailingListLocalService =

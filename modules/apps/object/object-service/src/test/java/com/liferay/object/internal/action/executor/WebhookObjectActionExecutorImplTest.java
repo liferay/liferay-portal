@@ -74,8 +74,6 @@ public class WebhookObjectActionExecutorImplTest {
 
 		String secret = RandomTestUtil.randomString();
 
-		_secretResolver = Mockito.mock(SecretResolver.class);
-
 		Mockito.when(
 			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
@@ -140,7 +138,8 @@ public class WebhookObjectActionExecutorImplTest {
 		Assert.assertEquals(expectedSecret, headers.get("x-api-key"));
 	}
 
-	private SecretResolver _secretResolver;
+	private final SecretResolver _secretResolver = Mockito.mock(
+		SecretResolver.class);
 	private Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }

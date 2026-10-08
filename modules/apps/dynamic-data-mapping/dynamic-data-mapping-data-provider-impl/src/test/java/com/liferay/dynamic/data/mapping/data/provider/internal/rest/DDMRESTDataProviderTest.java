@@ -100,8 +100,6 @@ public class DDMRESTDataProviderTest {
 
 		String password = RandomTestUtil.randomString();
 
-		_secretResolver = Mockito.mock(SecretResolver.class);
-
 		Mockito.when(
 			_secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
@@ -289,7 +287,8 @@ public class DDMRESTDataProviderTest {
 	private final DDMRESTDataProvider _ddmrestDataProvider =
 		new DDMRESTDataProvider();
 	private final Http _http = Mockito.mock(Http.class);
-	private SecretResolver _secretResolver;
+	private final SecretResolver _secretResolver = Mockito.mock(
+		SecretResolver.class);
 	private Snapshot<SecretResolver> _secretResolverSnapshot;
 	private final MockedStatic<SystemProperties> _systemPropertiesMockedStatic =
 		Mockito.mockStatic(SystemProperties.class);
