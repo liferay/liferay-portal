@@ -11,6 +11,10 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		task ("Enable Message Boards") {
+			MessageboardsPortlet.enableMessageBoards();
+		}
 	}
 
 	tearDown {
