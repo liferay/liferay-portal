@@ -9,6 +9,8 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Localization;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.aggregation.bucket.Bucket;
 import com.liferay.portal.search.aggregation.bucket.IncludeExcludeClause;
@@ -19,6 +21,7 @@ import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.util.CMSOutboundLinksUtil;
 
 import java.util.ArrayList;
@@ -61,7 +64,9 @@ public class BrokenLinkAssetSearcherTest {
 				_getAggregations(includeExcludeClauses),
 				_getObjectEntryLocalService(),
 				_getSearcher(includeExcludeClauses, outboundLinks),
-				_getSearchRequestBuilderFactory());
+				_getSearchRequestBuilderFactory(
+					Mockito.mock(
+						SearchRequestBuilder.class, Mockito.RETURNS_SELF)));
 
 		Long[] spaceGroupIds = {RandomTestUtil.randomLong()};
 
@@ -83,6 +88,41 @@ public class BrokenLinkAssetSearcherTest {
 
 		Assert.assertEquals(
 			includeExcludeClauses.toString(), 35, includeExcludeClauses.size());
+	}
+
+	@Test
+	@TestInfo("LPD-109248")
+	public void testSearch() {
+		_setUpLocalizationUtil();
+
+		SearchRequestBuilder searchRequestBuilder = Mockito.mock(
+			SearchRequestBuilder.class, Mockito.RETURNS_SELF);
+
+		BrokenLinkAssetSearcher brokenLinkAssetSearcher =
+			new BrokenLinkAssetSearcher(
+				Mockito.mock(Aggregations.class),
+				Mockito.mock(ObjectEntryLocalService.class),
+				Mockito.mock(Searcher.class),
+				_getSearchRequestBuilderFactory(searchRequestBuilder));
+
+		brokenLinkAssetSearcher.search(
+			RandomTestUtil.randomLong(),
+			new Long[] {RandomTestUtil.randomLong()},
+			RandomTestUtil.randomString(),
+			Collections.singleton(RandomTestUtil.randomString()),
+			Pagination.of(501, 20), null, null);
+
+		Mockito.verify(
+			searchRequestBuilder
+		).from(
+			10000
+		);
+
+		Mockito.verify(
+			searchRequestBuilder
+		).size(
+			20
+		);
 	}
 
 	private Aggregations _getAggregations(
@@ -131,14 +171,16 @@ public class BrokenLinkAssetSearcherTest {
 		return objectEntryLocalService;
 	}
 
-	private SearchRequestBuilderFactory _getSearchRequestBuilderFactory() {
+	private SearchRequestBuilderFactory _getSearchRequestBuilderFactory(
+		SearchRequestBuilder searchRequestBuilder) {
+
 		SearchRequestBuilderFactory searchRequestBuilderFactory = Mockito.mock(
 			SearchRequestBuilderFactory.class);
 
 		Mockito.when(
 			searchRequestBuilderFactory.builder()
 		).thenReturn(
-			Mockito.mock(SearchRequestBuilder.class, Mockito.RETURNS_SELF)
+			searchRequestBuilder
 		);
 
 		return searchRequestBuilderFactory;
@@ -201,6 +243,12 @@ public class BrokenLinkAssetSearcherTest {
 		);
 
 		return searcher;
+	}
+
+	private void _setUpLocalizationUtil() {
+		LocalizationUtil localizationUtil = new LocalizationUtil();
+
+		localizationUtil.setLocalization(Mockito.mock(Localization.class));
 	}
 
 	private static final int _SIZE = 3;
