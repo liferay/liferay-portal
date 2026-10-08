@@ -108,28 +108,14 @@ public class BrokenLinkAssetSearcher {
 		SearchRequestBuilder searchRequestBuilder = _getSearchRequestBuilder(
 			companyId, groupIds, outboundLinkTokens);
 
-		int startPosition = Math.min(
-			pagination.getStartPosition(), _MAX_RESULT_WINDOW);
-
-		if ((pagination.getStartPosition() >= _MAX_RESULT_WINDOW) &&
-			_log.isWarnEnabled()) {
-
-			_log.warn(
-				StringBundler.concat(
-					"Requested start position ", pagination.getStartPosition(),
-					" reaches the maximum result window ", _MAX_RESULT_WINDOW,
-					", so the page is empty"));
-		}
-
 		searchRequestBuilder.addSelectedFieldNames(
 			"outboundLinks", Field.ENTRY_CLASS_PK, "objectDefinitionId",
 			"objectEntryTitle",
 			Field.getLocalizedName(languageId, "objectEntryTitle")
 		).from(
-			startPosition
+			pagination.getStartPosition()
 		).size(
-			Math.min(
-				pagination.getPageSize(), _MAX_RESULT_WINDOW - startPosition)
+			pagination.getPageSize()
 		);
 
 		if (ArrayUtil.isNotEmpty(sorts)) {
@@ -479,8 +465,6 @@ public class BrokenLinkAssetSearcher {
 	private static final int _EXTERNAL_REFERENCE_CODES_CHUNK_SIZE = 1000;
 
 	private static final int _MAX_OUTBOUND_LINKS = 10000;
-
-	private static final int _MAX_RESULT_WINDOW = 10000;
 
 	private static final String
 		_OBJECT_ENTRY_EXTERNAL_REFERENCE_CODE_TOKEN_PREFIX =
