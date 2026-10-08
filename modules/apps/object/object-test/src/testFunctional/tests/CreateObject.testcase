@@ -262,31 +262,4 @@ definition {
 			valueScope = "Company");
 	}
 
-	@description = "LPS-137874 - Verify that Objects created on a Virtual Instance are not displayed on the Forms Settings, Collection Providers and Display Page Template of the Main Instance and vice versa"
-	@ignore = "Test Stub"
-	@priority = 4
-	test FormCollectionProvidersDisplayPageDisplayOnlyItsInstanceObjects {
-
-		// TODO LPS-141684 FormCollectionProvidersDisplayPageDisplayOnlyItsInstanceObjects pending implementation
-
-	}
-
-	@description = "LPS-137741 - Verify that Objects created on a Virtual Instance are not displayed on the Object Admin of the Main Instance and vice versa"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ObjectAdminDisplaysOnlyItsInstanceObjects {
-
-		// TODO LPS-141682 ObjectAdminDisplaysOnlyItsInstanceObjects pending implementation
-
-	}
-
-	@description = "LPS-137741 - Verify that Objects created on a Virtual Instance are not displayed on the Panel of the Main Instance and vice versa"
-	@ignore = "Test Stub"
-	@priority = 4
-	test PanelDisplaysOnlyItsInstanceObjects {
-
-		// TODO LPS-141683 PanelDisplaysOnlyItsInstanceObjects pending implementation
-
-	}
-
 }
