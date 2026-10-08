@@ -5,6 +5,8 @@
  */
 --%>
 
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
@@ -28,7 +30,6 @@ page import="com.liferay.osb.faro.web.internal.constants.FaroPreferencesConstant
 page import="com.liferay.osb.faro.web.internal.constants.FaroWebKeys" %><%@
 page import="com.liferay.osb.faro.web.internal.constants.UserConstants" %><%@
 page import="com.liferay.osb.faro.web.internal.util.JSONUtil" %><%@
-page import="com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil" %><%@
 page import="com.liferay.portal.kernel.model.User" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@

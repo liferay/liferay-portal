@@ -7,35 +7,26 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-String nonceAttribute = ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(request);
+<c:choose>
+	<c:when test="<%= themeDisplay.isSignedIn() %>">
+		<aui:link href='<%= PortalUtil.getStaticResourceURL(request, "/o/osb-faro-web/css/fonts.css") %>' rel="stylesheet" type="text/css" />
+		<aui:link href='<%= PortalUtil.getStaticResourceURL(request, "/o/osb-faro-web/dist/main.css") %>' rel="stylesheet" type="text/css" />
 
-if (themeDisplay.isSignedIn()) {
-%>
+		<div id="faroApp"></div>
 
-	<link href="<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, "/o/osb-faro-web/css/fonts.css")) %>" <%= nonceAttribute %> rel="stylesheet" type="text/css" />
-	<link href="<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, "/o/osb-faro-web/dist/main.css")) %>" <%= nonceAttribute %> rel="stylesheet" type="text/css" />
+		<aui:script src='<%= PortalUtil.getStaticResourceURL(request, "/o/osb-faro-web/dist/main.js") %>' type="module"></aui:script>
 
-	<div id="faroApp"></div>
-
-	<script defer <%= nonceAttribute %> src="<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, "/o/osb-faro-web/dist/main.js")) %>" type="module"></script>
-
-	<script <%= nonceAttribute %>>
-		document.addEventListener('DOMContentLoaded', () => {
-			document.querySelector('#liferayAUICSS')?.remove();
-			document.querySelector('#liferayThemeCSS')?.remove();
-		});
-	</script>
-
-<%
-}
-else {
-%>
-
-	<script <%= nonceAttribute %>>
-		window.location.href = '<%= HtmlUtil.escapeJS(themeDisplay.getURLSignIn() + "?redirect=" + URLCodec.encodeURL(PortalUtil.getCurrentURL(request))) %>';
-	</script>
-
-<%
-}
-%>
+		<aui:script>
+			document.addEventListener('DOMContentLoaded', () => {
+				document.querySelector('#liferayAUICSS')?.remove();
+				document.querySelector('#liferayThemeCSS')?.remove();
+			});
+		</aui:script>
+	</c:when>
+	<c:otherwise>
+		<aui:script>
+			window.location.href =
+				'<%= HtmlUtil.escapeJS(themeDisplay.getURLSignIn() + "?redirect=" + URLCodec.encodeURL(PortalUtil.getCurrentURL(request))) %>';
+		</aui:script>
+	</c:otherwise>
+</c:choose>
