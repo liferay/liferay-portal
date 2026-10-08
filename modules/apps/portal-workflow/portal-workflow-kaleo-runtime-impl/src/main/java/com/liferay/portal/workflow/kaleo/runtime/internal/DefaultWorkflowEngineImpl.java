@@ -168,7 +168,8 @@ public class DefaultWorkflowEngineImpl
 		try {
 			_checkPermissions(scope, serviceContext);
 
-			Definition definition = _workflowModelParser.parse(inputStream);
+			Definition definition = _workflowModelParser.parse(
+				serviceContext.getCompanyId(), inputStream);
 
 			if (_workflowValidator != null) {
 				_workflowValidator.validate(definition);

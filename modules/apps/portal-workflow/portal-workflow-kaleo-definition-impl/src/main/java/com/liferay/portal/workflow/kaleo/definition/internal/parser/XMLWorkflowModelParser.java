@@ -5,8 +5,11 @@
 
 package com.liferay.portal.workflow.kaleo.definition.internal.parser;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -91,6 +94,55 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 	}
 
 	@Override
+	public Definition parse(long companyId, InputStream inputStream)
+		throws WorkflowException {
+
+		try {
+			Document document = SAXReaderUtil.read(
+				WorkflowDefinitionContentUtil.toXML(
+					StringUtil.read(inputStream)),
+				_validate);
+
+			for (Element element :
+					TransformUtil.transform(
+						document.selectNodes("//*[local-name()='role']"),
+						node -> (Element)node)) {
+
+				if (Validator.isNotNull(
+						element.elementTextTrim(
+							"role-external-reference-code"))) {
+
+					continue;
+				}
+
+				long roleId = GetterUtil.getLong(
+					element.elementTextTrim("role-id"));
+
+				Role role = _roleLocalService.fetchRole(roleId);
+
+				if ((role == null) || (role.getCompanyId() != companyId)) {
+					continue;
+				}
+
+				element.clearContent();
+
+				_addTextElement(
+					element, "role-external-reference-code",
+					role.getExternalReferenceCode());
+				_addTextElement(element, "role-type", role.getTypeLabel());
+
+				_addTextElement(element, "role-id", String.valueOf(roleId));
+			}
+
+			return _parse(document);
+		}
+		catch (Exception exception) {
+			throw new WorkflowDefinitionFileException(
+				"Unable to parse definition", exception);
+		}
+	}
+
+	@Override
 	public Definition parse(String content) throws WorkflowException {
 		try {
 			Document document = SAXReaderUtil.read(
@@ -112,6 +164,14 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 	@Activate
 	protected void activate(Map<String, Object> properties) {
 		_validate = GetterUtil.getBoolean(properties.get("validating"), true);
+	}
+
+	private void _addTextElement(
+		Element element, String elementName, String text) {
+
+		Element childElement = element.addElement(elementName);
+
+		childElement.addText(text);
 	}
 
 	private String _normalizeJSONArrayJSON(String json) throws Exception {
@@ -1244,6 +1304,9 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	private boolean _validate;
 
