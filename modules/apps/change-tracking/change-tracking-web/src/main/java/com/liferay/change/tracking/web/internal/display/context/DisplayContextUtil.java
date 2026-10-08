@@ -13,6 +13,7 @@ import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -76,6 +77,8 @@ public class DisplayContextUtil {
 					searchContext.setAttribute(
 						"ctCollectionId", ctCollectionId);
 					searchContext.setAttribute("showHideable", Boolean.TRUE);
+					searchContext.setEnd(QueryUtil.ALL_POS);
+					searchContext.setStart(QueryUtil.ALL_POS);
 				}
 			);
 
@@ -127,6 +130,8 @@ public class DisplayContextUtil {
 					searchContext.setAttribute(
 						"ctCollectionId", ctCollectionId);
 					searchContext.setAttribute("showHideable", showHideable);
+					searchContext.setEnd(QueryUtil.ALL_POS);
+					searchContext.setStart(QueryUtil.ALL_POS);
 
 					BooleanQuery booleanQuery = new BooleanQuery();
 
@@ -191,6 +196,8 @@ public class DisplayContextUtil {
 					searchContext.setAttribute(
 						"ctCollectionId", ctCollectionId);
 					searchContext.setAttribute("showHideable", showHideable);
+					searchContext.setEnd(QueryUtil.ALL_POS);
+					searchContext.setStart(QueryUtil.ALL_POS);
 				}
 			);
 

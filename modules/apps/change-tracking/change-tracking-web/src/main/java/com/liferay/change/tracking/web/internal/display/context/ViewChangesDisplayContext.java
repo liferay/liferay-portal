@@ -43,6 +43,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.sql.CTSQLModeThreadLocal;
 import com.liferay.portal.kernel.dao.orm.ORMException;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -1438,6 +1439,8 @@ public class ViewChangesDisplayContext {
 					searchContext.setAttribute(
 						"ctCollectionId", ctCollectionId);
 					searchContext.setAttribute("showHideable", showHideable);
+					searchContext.setEnd(QueryUtil.ALL_POS);
+					searchContext.setStart(QueryUtil.ALL_POS);
 
 					if (groupId == -1) {
 						BooleanQuery booleanQuery = new BooleanQuery();
