@@ -36,6 +36,13 @@ public interface SitemapConfigurationManager {
 	public boolean includeCategoriesGroupEnabled(long companyId, long groupId)
 		throws ConfigurationException;
 
+	public boolean includeCommerceProductsCompanyEnabled(long companyId)
+		throws ConfigurationException;
+
+	public boolean includeCommerceProductsGroupEnabled(
+			long companyId, long groupId)
+		throws ConfigurationException;
+
 	public boolean includePagesCompanyEnabled(long companyId)
 		throws ConfigurationException;
 
@@ -65,12 +72,14 @@ public interface SitemapConfigurationManager {
 			boolean cachedGenerationEnabled, long companyId,
 			long[] companySitemapGroupIds,
 			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
-			boolean includePages, boolean includeWebContent,
-			boolean xmlSitemapIndexEnabled, String xmlSitemapIndexMode)
+			boolean includeCommerceProducts, boolean includePages,
+			boolean includeWebContent, boolean xmlSitemapIndexEnabled,
+			String xmlSitemapIndexMode)
 		throws ConfigurationException;
 
 	public void saveSitemapGroupConfiguration(
-			long groupId, boolean includeCategories, boolean includePages,
+			long groupId, boolean includeCategories,
+			boolean includeCommerceProducts, boolean includePages,
 			boolean includeWebContent)
 		throws ConfigurationException;
 

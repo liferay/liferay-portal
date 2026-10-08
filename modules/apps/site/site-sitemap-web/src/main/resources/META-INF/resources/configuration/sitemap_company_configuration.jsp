@@ -393,6 +393,21 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			expand="<%= true %>"
 		>
 			<clay:checkbox
+				checked="<%= sitemapCompanyConfigurationDisplayContext.includeCommerceProducts() %>"
+				id='<%= liferayPortletResponse.getNamespace() + "includeCommerceProducts" %>'
+				label='<%= LanguageUtil.get(request, "commerce-product-urls") %>'
+				name='<%= liferayPortletResponse.getNamespace() + "includeCommerceProducts" %>'
+			/>
+		</clay:content-col>
+	</clay:content-row>
+
+	<clay:content-row
+		cssClass="c-mt-2"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<clay:checkbox
 				checked="<%= sitemapCompanyConfigurationDisplayContext.includeCategories() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "includeCategories" %>'
 				label='<%= LanguageUtil.get(request, "category-urls") %>'

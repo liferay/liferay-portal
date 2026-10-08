@@ -276,6 +276,11 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
+	public boolean includeCommerceProducts() throws ConfigurationException {
+		return _sitemapConfigurationManager.
+			includeCommerceProductsCompanyEnabled(_themeDisplay.getCompanyId());
+	}
+
 	public boolean includePages() throws ConfigurationException {
 		return _sitemapConfigurationManager.includePagesCompanyEnabled(
 			_themeDisplay.getCompanyId());

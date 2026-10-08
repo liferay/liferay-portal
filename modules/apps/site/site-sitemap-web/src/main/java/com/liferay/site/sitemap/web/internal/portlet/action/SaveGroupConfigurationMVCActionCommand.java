@@ -59,6 +59,7 @@ public class SaveGroupConfigurationMVCActionCommand
 		_sitemapConfigurationManager.saveSitemapGroupConfiguration(
 			themeDisplay.getScopeGroupId(),
 			ParamUtil.getBoolean(actionRequest, "includeCategories"),
+			ParamUtil.getBoolean(actionRequest, "includeCommerceProducts"),
 			ParamUtil.getBoolean(actionRequest, "includePages"),
 			ParamUtil.getBoolean(actionRequest, "includeWebContent"));
 

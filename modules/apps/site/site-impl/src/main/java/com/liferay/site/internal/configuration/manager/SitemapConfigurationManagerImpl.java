@@ -128,6 +128,33 @@ public class SitemapConfigurationManagerImpl
 	}
 
 	@Override
+	public boolean includeCommerceProductsCompanyEnabled(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.includeCommerceProducts();
+	}
+
+	@Override
+	public boolean includeCommerceProductsGroupEnabled(
+			long companyId, long groupId)
+		throws ConfigurationException {
+
+		if (!includeCommerceProductsCompanyEnabled(companyId)) {
+			return false;
+		}
+
+		SitemapGroupConfiguration sitemapGroupConfiguration =
+			_configurationProvider.getGroupConfiguration(
+				SitemapGroupConfiguration.class, companyId, groupId);
+
+		return sitemapGroupConfiguration.includeCommerceProducts();
+	}
+
+	@Override
 	public boolean includePagesCompanyEnabled(long companyId)
 		throws ConfigurationException {
 
@@ -239,8 +266,9 @@ public class SitemapConfigurationManagerImpl
 			boolean cachedGenerationEnabled, long companyId,
 			long[] companySitemapGroupIds,
 			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
-			boolean includePages, boolean includeWebContent,
-			boolean xmlSitemapIndexEnabled, String xmlSitemapIndexMode)
+			boolean includeCommerceProducts, boolean includePages,
+			boolean includeWebContent, boolean xmlSitemapIndexEnabled,
+			String xmlSitemapIndexMode)
 		throws ConfigurationException {
 
 		_configurationProvider.saveCompanyConfiguration(
@@ -255,6 +283,8 @@ public class SitemapConfigurationManagerImpl
 			).put(
 				"includeCategories", includeCategories
 			).put(
+				"includeCommerceProducts", includeCommerceProducts
+			).put(
 				"includePages", includePages
 			).put(
 				"includeWebContent", includeWebContent
@@ -267,7 +297,8 @@ public class SitemapConfigurationManagerImpl
 
 	@Override
 	public void saveSitemapGroupConfiguration(
-			long groupId, boolean includeCategories, boolean includePages,
+			long groupId, boolean includeCategories,
+			boolean includeCommerceProducts, boolean includePages,
 			boolean includeWebContent)
 		throws ConfigurationException {
 
@@ -277,6 +308,8 @@ public class SitemapConfigurationManagerImpl
 			SitemapGroupConfiguration.class, group.getCompanyId(), groupId,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"includeCategories", includeCategories
+			).put(
+				"includeCommerceProducts", includeCommerceProducts
 			).put(
 				"includePages", includePages
 			).put(

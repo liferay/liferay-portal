@@ -109,6 +109,46 @@ SitemapGroupConfigurationDisplayContext sitemapGroupConfigurationDisplayContext 
 </clay:sheet-section>
 
 <clay:sheet-section
+	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "commerceProductsTitle" %>'
+	role="group"
+>
+	<clay:content-row
+		containerElement="h3"
+		cssClass="c-mb-3 sheet-subtitle"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<span class="heading-text text-secondary" id="<portlet:namespace />commerceProductsTitle"><liferay-ui:message key="products" /></span>
+		</clay:content-col>
+	</clay:content-row>
+
+	<clay:content-row
+		cssClass="c-mt-2"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<c:if test="<%= sitemapGroupConfigurationDisplayContext.isIncludeCommerceProductsDisabled() %>">
+				<clay:alert
+					message="enabling-the-inclusion-of-commerce-product-urls-in-the-xml-sitemap-must-first-be-enabled-from-instance-settings"
+				/>
+			</c:if>
+
+			<clay:checkbox
+				checked="<%= sitemapGroupConfigurationDisplayContext.includeCommerceProducts() %>"
+				disabled="<%= sitemapGroupConfigurationDisplayContext.isIncludeCommerceProductsDisabled() %>"
+				id='<%= liferayPortletResponse.getNamespace() + "includeCommerceProducts" %>'
+				label='<%= LanguageUtil.get(request, "include-commerce-product-urls-in-the-xml-sitemap") %>'
+				name='<%= liferayPortletResponse.getNamespace() + "includeCommerceProducts" %>'
+			/>
+
+			<p class="c-mb-0 c-mt-2 small text-secondary"><liferay-ui:message key="when-this-configuration-is-enabled,-search-engines-will-be-notified-that-commerce-product-URLs-are-available-for-crawling" /></p>
+		</clay:content-col>
+	</clay:content-row>
+</clay:sheet-section>
+
+<clay:sheet-section
 	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "categoriesTitle" %>'
 	role="group"
 >

@@ -30,6 +30,13 @@ public interface SitemapGroupConfiguration {
 	public boolean includeCategories();
 
 	@Meta.AD(
+		deflt = "true",
+		name = "include-commerce-product-urls-in-the-xml-sitemap",
+		required = false
+	)
+	public boolean includeCommerceProducts();
+
+	@Meta.AD(
 		deflt = "true", name = "include-page-urls-in-the-xml-sitemap",
 		required = false
 	)

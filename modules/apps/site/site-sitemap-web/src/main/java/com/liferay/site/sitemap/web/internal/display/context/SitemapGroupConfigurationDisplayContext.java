@@ -27,6 +27,11 @@ public class SitemapGroupConfigurationDisplayContext {
 			_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId());
 	}
 
+	public boolean includeCommerceProducts() throws ConfigurationException {
+		return _sitemapConfigurationManager.includeCommerceProductsGroupEnabled(
+			_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId());
+	}
+
 	public boolean includePages() throws ConfigurationException {
 		return _sitemapConfigurationManager.includePagesGroupEnabled(
 			_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId());
@@ -52,6 +57,25 @@ public class SitemapGroupConfigurationDisplayContext {
 		}
 
 		return _includeCategoriesDisabled;
+	}
+
+	public boolean isIncludeCommerceProductsDisabled()
+		throws ConfigurationException {
+
+		if (_includeCommerceProductsDisabled != null) {
+			return _includeCommerceProductsDisabled;
+		}
+
+		if (_sitemapConfigurationManager.includeCommerceProductsCompanyEnabled(
+				_themeDisplay.getCompanyId())) {
+
+			_includeCommerceProductsDisabled = false;
+		}
+		else {
+			_includeCommerceProductsDisabled = true;
+		}
+
+		return _includeCommerceProductsDisabled;
 	}
 
 	public boolean isIncludePagesDisabled() throws ConfigurationException {
@@ -89,6 +113,7 @@ public class SitemapGroupConfigurationDisplayContext {
 	}
 
 	private Boolean _includeCategoriesDisabled;
+	private Boolean _includeCommerceProductsDisabled;
 	private Boolean _includePagesDisabled;
 	private Boolean _includeWebContentDisabled;
 	private final SitemapConfigurationManager _sitemapConfigurationManager;

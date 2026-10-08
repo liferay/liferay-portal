@@ -93,6 +93,7 @@ public class SaveCompanyConfigurationMVCActionCommand
 			_getCompanySitemapGroupIds(actionRequest),
 			_getCompanySitemapObjectDefinitionIds(actionRequest, companyId),
 			ParamUtil.getBoolean(actionRequest, "includeCategories"),
+			ParamUtil.getBoolean(actionRequest, "includeCommerceProducts"),
 			ParamUtil.getBoolean(actionRequest, "includePages"),
 			ParamUtil.getBoolean(actionRequest, "includeWebContent"),
 			xmlSitemapIndexEnabled, xmlSitemapIndexMode);
