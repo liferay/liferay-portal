@@ -3201,7 +3201,10 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 							/>
 
 							<parallel failonany="true" threadcount="${parallel.thread.count}">
-								<ant dir="portal-test" inheritAll="false" target="jar" />
+								<ant dir="portal-test" inheritAll="false" target="jar">
+									<property name="baseline.jar.report.level" value="off" />
+								</ant>
+
 								<ant dir="support-tomcat" inheritAll="false" target="compile" />
 								<ant dir="util-bridges" inheritAll="false" target="compile" />
 
