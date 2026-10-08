@@ -5,8 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_3;
 
-import com.liferay.fragment.contributor.FragmentCollectionContributor;
-import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -44,8 +43,6 @@ import java.util.Objects;
 public class CMSFileTypeDisplayPageUpgradeProcess extends UpgradeProcess {
 
 	public CMSFileTypeDisplayPageUpgradeProcess(
-		FragmentCollectionContributor
-			basicComponentFragmentCollectionContributor,
 		ClassNameLocalService classNameLocalService,
 		CompanyLocalService companyLocalService,
 		FragmentEntryLinkLocalService fragmentEntryLinkLocalService,
@@ -58,8 +55,6 @@ public class CMSFileTypeDisplayPageUpgradeProcess extends UpgradeProcess {
 		ObjectFolderLocalService objectFolderLocalService,
 		SegmentsExperienceLocalService segmentsExperienceLocalService) {
 
-		_basicComponentFragmentCollectionContributor =
-			basicComponentFragmentCollectionContributor;
 		_classNameLocalService = classNameLocalService;
 		_companyLocalService = companyLocalService;
 		_fragmentEntryLinkLocalService = fragmentEntryLinkLocalService;
@@ -83,35 +78,13 @@ public class CMSFileTypeDisplayPageUpgradeProcess extends UpgradeProcess {
 			Layout layout, long segmentsExperienceId)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry = null;
-
-		for (FragmentEntry basicComponentFragmentEntry :
-				_basicComponentFragmentCollectionContributor.
-					getFragmentEntries()) {
-
-			if (Objects.equals(
-					basicComponentFragmentEntry.getFragmentEntryKey(),
-					"BASIC_COMPONENT-paragraph")) {
-
-				fragmentEntry = basicComponentFragmentEntry;
-
-				break;
-			}
-		}
-
-		if (fragmentEntry == null) {
-			return null;
-		}
-
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, layout.getUserId(), layout.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(), null,
-			segmentsExperienceId, layout.getPlid(), fragmentEntry.getCss(),
-			fragmentEntry.getHtml(), fragmentEntry.getJs(),
-			fragmentEntry.getConfiguration(),
+			null, layout.getUserId(), layout.getGroupId(), null, null, null,
+			segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			ActionUtil.getFriendlyURLHelpEditableValues(layout.getCompanyId()),
-			StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
-			fragmentEntry.getType(), new ServiceContext());
+			StringPool.BLANK, 0, "BASIC_COMPONENT-paragraph",
+			FragmentConstants.TYPE_COMPONENT, new ServiceContext());
 	}
 
 	private void _upgradeCompany(long companyId) throws PortalException {
@@ -185,10 +158,6 @@ public class CMSFileTypeDisplayPageUpgradeProcess extends UpgradeProcess {
 				_addFriendlyURLHelpFragmentEntryLink(
 					layout, segmentsExperienceId);
 
-			if (friendlyURLHelpFragmentEntryLink == null) {
-				return;
-			}
-
 			LayoutStructureItem parentLayoutStructureItem =
 				layoutStructure.getLayoutStructureItem(
 					layoutStructureItem.getParentItemId());
@@ -242,8 +211,6 @@ public class CMSFileTypeDisplayPageUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private final FragmentCollectionContributor
-		_basicComponentFragmentCollectionContributor;
 	private final ClassNameLocalService _classNameLocalService;
 	private final CompanyLocalService _companyLocalService;
 	private final FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;

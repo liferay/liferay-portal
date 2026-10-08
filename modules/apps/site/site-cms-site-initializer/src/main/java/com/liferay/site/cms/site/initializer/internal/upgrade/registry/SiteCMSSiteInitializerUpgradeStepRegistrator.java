@@ -5,7 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.upgrade.registry;
 
-import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
@@ -83,7 +82,6 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 		registry.register(
 			"3.0.2", "3.0.3",
 			new CMSFileTypeDisplayPageUpgradeProcess(
-				_basicComponentFragmentCollectionContributor,
 				_classNameLocalService, _companyLocalService,
 				_fragmentEntryLinkLocalService, _groupLocalService,
 				_layoutLocalService, _layoutPageTemplateEntryLocalService,
@@ -97,10 +95,6 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 				_companyLocalService, _objectDefinitionLocalService,
 				_objectEntryLocalService, _objectFolderLocalService));
 	}
-
-	@Reference(target = "(fragment.collection.key=BASIC_COMPONENT)")
-	private FragmentCollectionContributor
-		_basicComponentFragmentCollectionContributor;
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
