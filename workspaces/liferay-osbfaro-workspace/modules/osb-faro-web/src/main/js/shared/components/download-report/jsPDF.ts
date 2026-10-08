@@ -1,9 +1,7 @@
-import FaroConstants, {LanguageIds} from 'shared/util/constants';
+import {LanguageIds} from 'shared/util/constants';
 import JSPDF from 'jspdf';
 import {formatDate} from './utils';
 import {isJapaneseLang} from 'shared/util/lang';
-
-const {pathThemeRoot} = FaroConstants;
 
 export enum Size {
 	ExtraSmall = 'extra-small',
@@ -60,7 +58,7 @@ export const fontMapper: {
 	};
 } = {
 	[LanguageIds.Japanese]: {
-		path: `${pathThemeRoot}/fonts/noto-sans-jp-bold.ttf`,
+		path: '/o/osb-faro-web/fonts/noto-sans-jp-bold.ttf',
 		style: ['NotoSansJP', 'bold'],
 		test: isJapaneseLang,
 	},
