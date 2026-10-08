@@ -103,8 +103,19 @@ public class OAuthClientEntryLocalServiceImplTest {
 		OAuthClientEntryLocalServiceImpl oAuthClientEntryLocalServiceImpl =
 			new OAuthClientEntryLocalServiceImpl();
 
+		ConfigurationProvider configurationProvider = Mockito.mock(
+			ConfigurationProvider.class);
+
 		OAuthClientCompanyConfiguration oAuthClientCompanyConfiguration =
 			Mockito.mock(OAuthClientCompanyConfiguration.class);
+
+		Mockito.when(
+			configurationProvider.getCompanyConfiguration(
+				Mockito.eq(OAuthClientCompanyConfiguration.class),
+				Mockito.anyLong())
+		).thenReturn(
+			oAuthClientCompanyConfiguration
+		);
 
 		Mockito.when(
 			oAuthClientCompanyConfiguration.authServerHostsAllowed()
@@ -117,17 +128,6 @@ public class OAuthClientEntryLocalServiceImplTest {
 				authServerLocalNetworkAccessEnabled()
 		).thenReturn(
 			authServerLocalNetworkAccessEnabled
-		);
-
-		ConfigurationProvider configurationProvider = Mockito.mock(
-			ConfigurationProvider.class);
-
-		Mockito.when(
-			configurationProvider.getCompanyConfiguration(
-				Mockito.eq(OAuthClientCompanyConfiguration.class),
-				Mockito.anyLong())
-		).thenReturn(
-			oAuthClientCompanyConfiguration
 		);
 
 		ReflectionTestUtil.setFieldValue(
