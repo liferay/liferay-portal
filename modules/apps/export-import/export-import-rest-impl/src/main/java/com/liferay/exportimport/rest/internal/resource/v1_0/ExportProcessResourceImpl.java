@@ -411,7 +411,15 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 				"Unable to request both private and public pages");
 		}
 
-		if (privateLayout && !group.isPrivateLayoutsEnabled()) {
+		if (group.isLayoutSetPrototype()) {
+			if (publicLayout) {
+				throw new BadRequestException(
+					"Site templates do not have public pages");
+			}
+
+			privateLayout = true;
+		}
+		else if (privateLayout && !group.isPrivateLayoutsEnabled()) {
 			throw new BadRequestException("Private pages are not enabled");
 		}
 

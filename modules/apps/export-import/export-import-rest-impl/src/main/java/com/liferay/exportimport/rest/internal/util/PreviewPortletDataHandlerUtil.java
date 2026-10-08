@@ -102,16 +102,10 @@ public class PreviewPortletDataHandlerUtil {
 			return;
 		}
 
-		long publicLayoutAdditionCount = Math.max(
-			0L, portletDataHandler.getExportModelCount(publicManifestSummary));
-
-		long privateLayoutAdditionCount = 0;
-
-		if (privateManifestSummary != null) {
-			privateLayoutAdditionCount = Math.max(
-				0L,
-				portletDataHandler.getExportModelCount(privateManifestSummary));
-		}
+		long privateLayoutAdditionCount = _getExportModelCount(
+			privateManifestSummary, portletDataHandler);
+		long publicLayoutAdditionCount = _getExportModelCount(
+			publicManifestSummary, portletDataHandler);
 
 		if ((privateLayoutAdditionCount == 0) &&
 			(privateLayoutDeletionCount == 0) &&
@@ -120,8 +114,6 @@ public class PreviewPortletDataHandlerUtil {
 
 			return;
 		}
-
-		long finalPrivateLayoutAdditionCount = privateLayoutAdditionCount;
 
 		String sectionKey = portletDataHandler.getSectionKey();
 
@@ -136,8 +128,22 @@ public class PreviewPortletDataHandlerUtil {
 		previewPortletDataHandlers.add(
 			new PreviewPortletDataHandler() {
 				{
-					setAdditionCount(() -> publicLayoutAdditionCount);
-					setDeletionCount(() -> publicLayoutDeletionCount);
+					setAdditionCount(
+						() -> {
+							if (publicManifestSummary == null) {
+								return privateLayoutAdditionCount;
+							}
+
+							return publicLayoutAdditionCount;
+						});
+					setDeletionCount(
+						() -> {
+							if (publicManifestSummary == null) {
+								return privateLayoutDeletionCount;
+							}
+
+							return publicLayoutDeletionCount;
+						});
 					setDescription(
 						() -> portletDataHandler.getDescription(locale));
 					setLabel(
@@ -158,12 +164,12 @@ public class PreviewPortletDataHandlerUtil {
 					setPreviewPortletDataHandlerControls(
 						() -> new PreviewPortletDataHandlerControl[] {
 							_toPreviewPortletDataHandlerChoice(
-								locale, portlet,
-								finalPrivateLayoutAdditionCount,
+								locale, portlet, privateLayoutAdditionCount,
 								privateLayoutDeletionCount,
 								privateManifestSummary != null,
 								publicLayoutAdditionCount,
-								publicLayoutDeletionCount)
+								publicLayoutDeletionCount,
+								publicManifestSummary != null)
 						});
 					setTag(() -> portletDataHandler.getTag(locale));
 				}
@@ -315,7 +321,10 @@ public class PreviewPortletDataHandlerUtil {
 				long privateDeletionSystemEventsCount = 0;
 				ManifestSummary privateManifestSummary = null;
 
-				if (!portletScoped && group.isPrivateLayoutsEnabled()) {
+				if (!portletScoped &&
+					(group.isLayoutSetPrototype() ||
+					 group.isPrivateLayoutsEnabled())) {
+
 					DateRange privateDateRange =
 						ExportImportDateUtil.getDateRange(
 							parameterMap, groupId, true, plid, null, locale,
@@ -351,7 +360,8 @@ public class PreviewPortletDataHandlerUtil {
 					previewPortletDataHandlersMap,
 					privateDeletionSystemEventsCount, privateManifestSummary,
 					publicDeletionSystemEventsCount,
-					portletDataContext.getManifestSummary());
+					group.isLayoutSetPrototype() ? null :
+						portletDataContext.getManifestSummary());
 			}
 			else {
 				addPreviewPortletDataHandler(
@@ -419,6 +429,18 @@ public class PreviewPortletDataHandlerUtil {
 			PreviewPortletDataHandlerSection.class);
 	}
 
+	private static long _getExportModelCount(
+		ManifestSummary manifestSummary,
+		PortletDataHandler portletDataHandler) {
+
+		if (manifestSummary == null) {
+			return 0;
+		}
+
+		return Math.max(
+			0L, portletDataHandler.getExportModelCount(manifestSummary));
+	}
+
 	private static PreviewPortletDataHandler _toPreviewPortletDataHandler(
 		long modelAdditionCount, Locale locale, ManifestSummary manifestSummary,
 		long modelDeletionCount, Portlet portlet,
@@ -458,7 +480,8 @@ public class PreviewPortletDataHandlerUtil {
 		_toPreviewPortletDataHandlerChoice(
 			Locale locale, Portlet portlet, long privateLayoutAdditionCount,
 			long privateLayoutDeletionCount, boolean privateLayoutsEnabled,
-			long publicLayoutAdditionCount, long publicLayoutDeletionCount) {
+			long publicLayoutAdditionCount, long publicLayoutDeletionCount,
+			boolean publicLayoutsEnabled) {
 
 		return new PreviewPortletDataHandlerChoice() {
 			{
@@ -466,19 +489,22 @@ public class PreviewPortletDataHandlerUtil {
 					() -> {
 						List<Choice> choices = new ArrayList<>();
 
-						choices.add(
-							new Choice() {
-								{
-									setAdditionCount(
-										() -> publicLayoutAdditionCount);
-									setDeletionCount(
-										() -> publicLayoutDeletionCount);
-									setLabel(
-										() -> LanguageUtil.get(
-											locale, "public-pages"));
-									setName(() -> PUBLIC_PAGES_CONTROL_NAME);
-								}
-							});
+						if (publicLayoutsEnabled) {
+							choices.add(
+								new Choice() {
+									{
+										setAdditionCount(
+											() -> publicLayoutAdditionCount);
+										setDeletionCount(
+											() -> publicLayoutDeletionCount);
+										setLabel(
+											() -> LanguageUtil.get(
+												locale, "public-pages"));
+										setName(
+											() -> PUBLIC_PAGES_CONTROL_NAME);
+									}
+								});
+						}
 
 						if (privateLayoutsEnabled) {
 							choices.add(
@@ -499,7 +525,14 @@ public class PreviewPortletDataHandlerUtil {
 
 						return choices.toArray(new Choice[0]);
 					});
-				setDefaultChoice(() -> PUBLIC_PAGES_CONTROL_NAME);
+				setDefaultChoice(
+					() -> {
+						if (publicLayoutsEnabled) {
+							return PUBLIC_PAGES_CONTROL_NAME;
+						}
+
+						return PRIVATE_PAGES_CONTROL_NAME;
+					});
 				setLabel(() -> PortalUtil.getPortletTitle(portlet, locale));
 				setName(() -> "layoutSet");
 				setType(() -> PreviewPortletDataHandlerControl.Type.CHOICE);

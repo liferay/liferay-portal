@@ -63,7 +63,10 @@ public class GroupUtil {
 		Group group = GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
 			externalReferenceCode, companyId);
 
-		if ((group == null) || (!group.isCMS() && !group.isSite())) {
+		if ((group == null) ||
+			(!group.isCMS() && !group.isLayoutSetPrototype() &&
+			 !group.isSite())) {
+
 			throw new NotFoundException();
 		}
 

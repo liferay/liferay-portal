@@ -360,7 +360,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			_exportImportConfigurationSettingsMapFactory.
 				buildImportLayoutSettingsMap(
 					contextUser.getUserId(), groupId,
-					_isPrivateLayout(fileEntry), null, parameterMap,
+					group.isLayoutSetPrototype() || _isPrivateLayout(fileEntry),
+					null, parameterMap,
 					contextAcceptLanguage.getPreferredLocale(),
 					contextUser.getTimeZone());
 
