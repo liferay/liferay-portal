@@ -173,7 +173,12 @@ public class ParameterMapUtil {
 		String[] siteExternalReferenceCodes) {
 
 		siteExternalReferenceCodes = ArrayUtil.filter(
-			siteExternalReferenceCodes, Validator::isNotNull);
+			ArrayUtil.append(
+				GetterUtil.getStringValues(
+					parameterMap.get(
+						PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES)),
+				GetterUtil.getStringValues(siteExternalReferenceCodes)),
+			Validator::isNotNull);
 
 		if (ArrayUtil.isNotEmpty(siteExternalReferenceCodes)) {
 			parameterMap.put(
@@ -205,6 +210,10 @@ public class ParameterMapUtil {
 				String.valueOf(
 					GetterUtil.getBoolean(exportProcessRequest.getDeletions()))
 			});
+
+		putSiteExternalReferenceCodes(
+			parameterMap,
+			exportProcessRequest.getAssetLibraryExternalReferenceCodes());
 
 		parameterMap.put(
 			PortletDataHandlerKeys.PERMISSIONS,
@@ -256,6 +265,10 @@ public class ParameterMapUtil {
 				String.valueOf(
 					GetterUtil.getBoolean(importProcessRequest.getDeletions()))
 			});
+
+		putSiteExternalReferenceCodes(
+			parameterMap,
+			importProcessRequest.getAssetLibraryExternalReferenceCodes());
 
 		parameterMap.put(
 			PortletDataHandlerKeys.PERMISSIONS,
