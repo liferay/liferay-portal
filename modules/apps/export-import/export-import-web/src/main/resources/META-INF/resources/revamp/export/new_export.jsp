@@ -56,6 +56,8 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 					).put(
 						"exportPreviewAPIURL", exportImportProcessDisplayContext.getExportPreviewAPIURL()
 					).put(
+						"exportPreviewAssetLibrariesAPIURL", exportImportProcessDisplayContext::getExportPreviewAssetLibrariesAPIURL
+					).put(
 						"exportPreviewSitesAPIURL", exportImportProcessDisplayContext::getExportPreviewSitesAPIURL
 					).put(
 						"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()

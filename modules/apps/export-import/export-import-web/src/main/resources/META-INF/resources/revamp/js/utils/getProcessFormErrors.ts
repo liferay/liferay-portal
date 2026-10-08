@@ -18,12 +18,13 @@ export function getProcessFormErrors(
 	}
 
 	if (
+		!values.assetLibraryExternalReferenceCodes?.length &&
 		!values.contentSelection &&
 		!values.siteExternalReferenceCodes?.length
 	) {
 		if (siteSelectionEnabled) {
 			errors.selection = Liferay.Language.get(
-				'please-select-at-least-one-entity-type-or-site-to-continue'
+				'please-select-at-least-one-entity-type-site-or-space-to-continue'
 			);
 		}
 		else {

@@ -28,9 +28,11 @@ import {
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
 import {navigateToProcesses} from '../../utils/navigateToProcesses';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
+import AssetLibrarySelection from './components/AssetLibrarySelection';
 import SiteSelection from './components/SiteSelection';
 
 type ExportFormValues = {
+	assetLibraryExternalReferenceCodes: string[];
 	contentSelection: ContentSelection | null | undefined;
 	dateFilterValues: DateFilterValues;
 	deletions: boolean;
@@ -44,6 +46,7 @@ export function NewExport({
 	commentsAndRatingsEnabled = false,
 	exportPreview,
 	exportPreviewAPIURL,
+	exportPreviewAssetLibrariesAPIURL,
 	exportPreviewSitesAPIURL,
 	exportProcessAPIURL,
 	pageTreeModalConfiguration,
@@ -54,6 +57,7 @@ export function NewExport({
 	commentsAndRatingsEnabled?: boolean;
 	exportPreview?: Preview;
 	exportPreviewAPIURL: string;
+	exportPreviewAssetLibrariesAPIURL?: string;
 	exportPreviewSitesAPIURL?: string;
 	exportProcessAPIURL: string;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
@@ -72,6 +76,7 @@ export function NewExport({
 	);
 
 	const initialFormValues: ExportFormValues = {
+		assetLibraryExternalReferenceCodes: [],
 		contentSelection: undefined,
 		dateFilterValues: {range: Range.All},
 		deletions: false,
@@ -87,6 +92,8 @@ export function NewExport({
 				const result = await postExportProcess({
 					exportProcessRequest: {
 						...toProcessRequestFlags(values.contentSelection),
+						assetLibraryExternalReferenceCodes:
+							values.assetLibraryExternalReferenceCodes,
 						dateFilter: appliedDateFilterRef.current,
 						deletions: values.deletions,
 						name: values.name,
@@ -156,6 +163,16 @@ export function NewExport({
 										exportPreviewSitesAPIURL
 									}
 								/>
+
+								{exportPreviewAssetLibrariesAPIURL && (
+									<div className="mt-4">
+										<AssetLibrarySelection
+											exportPreviewAssetLibrariesAPIURL={
+												exportPreviewAssetLibrariesAPIURL
+											}
+										/>
+									</div>
+								)}
 							</ScopeSection>
 						)}
 
@@ -201,7 +218,8 @@ export function NewExport({
 							timeZoneId={timeZoneId}
 						/>
 
-						{(formik.touched.contentSelection ||
+						{(formik.touched.assetLibraryExternalReferenceCodes ||
+							formik.touched.contentSelection ||
 							formik.touched.siteExternalReferenceCodes) &&
 							selectionError && (
 								<ClayAlert

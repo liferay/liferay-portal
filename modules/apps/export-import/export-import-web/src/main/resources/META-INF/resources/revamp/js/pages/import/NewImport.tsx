@@ -62,12 +62,14 @@ export function NewImport({
 
 			<WizardStep
 				initialValues={{
+					assetLibraryExternalReferenceCodes: [],
 					contentSelection: undefined,
 					deletions: false,
 					permissions: false,
 					siteExternalReferenceCodes: [],
 				}}
 				isStepValid={(values) =>
+					!!values.assetLibraryExternalReferenceCodes?.length ||
 					!!values.contentSelection ||
 					!!values.siteExternalReferenceCodes?.length
 				}
@@ -103,6 +105,8 @@ export function NewImport({
 					const result = await postImportProcess({
 						importProcessRequest: {
 							...toProcessRequestFlags(contentSelection),
+							assetLibraryExternalReferenceCodes:
+								values.assetLibraryExternalReferenceCodes,
 							dataStrategy: values.dataStrategy as DataStrategy,
 							deletions: !!values.deletions,
 							name: values.name,

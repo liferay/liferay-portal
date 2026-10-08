@@ -6,7 +6,7 @@
 import {FormikValues, useFormikContext} from 'formik';
 import React from 'react';
 
-import {Site} from '../../../types/exportImportPreview';
+import {GroupType, Site} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SitesControl from '../site_selector/SitesControl';
 
@@ -16,12 +16,14 @@ export function FormikFieldSites({
 	process,
 	sites,
 	totalCount,
+	type,
 }: {
 	apiURL?: string;
 	name: string;
 	process?: ExportImportProcess;
 	sites?: Site[];
 	totalCount?: number;
+	type?: GroupType;
 }) {
 	const {setFieldTouched, setFieldValue, values} =
 		useFormikContext<FormikValues>();
@@ -37,6 +39,7 @@ export function FormikFieldSites({
 			selectedExternalReferenceCodes={values[name] ?? []}
 			sites={sites}
 			totalCount={totalCount}
+			type={type}
 		/>
 	);
 }

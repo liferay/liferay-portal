@@ -139,6 +139,24 @@ public class ExportImportProcessDisplayContext {
 		return _exportPreviewAPIURL;
 	}
 
+	public String getExportPreviewAssetLibrariesAPIURL() {
+		if (!isSiteSelectionEnabled() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				_group.getCompanyId(), "LPD-41307")) {
+
+			return null;
+		}
+
+		if (_exportPreviewAssetLibrariesAPIURL != null) {
+			return _exportPreviewAssetLibrariesAPIURL;
+		}
+
+		_exportPreviewAssetLibrariesAPIURL = _getResourceAPIURL(
+			"/export-preview/preview-asset-libraries");
+
+		return _exportPreviewAssetLibrariesAPIURL;
+	}
+
 	public JSONObject getExportPreviewJSONObject() {
 		if (_exportPreviewJSONObject != null) {
 			return _exportPreviewJSONObject;
@@ -363,6 +381,7 @@ public class ExportImportProcessDisplayContext {
 	private final String _backMVCRenderCommandName;
 	private String _backURL;
 	private String _exportPreviewAPIURL;
+	private String _exportPreviewAssetLibrariesAPIURL;
 	private JSONObject _exportPreviewJSONObject;
 	private final ExportPreviewResource.Factory _exportPreviewResourceFactory;
 	private String _exportPreviewSitesAPIURL;

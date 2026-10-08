@@ -13,6 +13,7 @@ import {
 } from '../../../components/forms/formik';
 import {ImportPreview} from '../../../types/exportImportPreview';
 import {toPortletDataHandlerSections} from '../../../utils/contentSelection';
+import AssetLibrarySelection from './AssetLibrarySelection';
 import FileSummary from './FileSummary';
 import SiteSelection from './SiteSelection';
 
@@ -35,15 +36,29 @@ export default function DataSelectionStep({
 		<>
 			<FileSummary importPreview={importPreview} />
 
-			{siteSelectionEnabled && !!importPreview.sites?.length && (
-				<ScopeSection
-					subtitle={Liferay.Language.get(
-						'import-complete-sites-from-your-file,-including-all-their-pages,-content,-and-settings'
-					)}
-				>
-					<SiteSelection sites={importPreview.sites} />
-				</ScopeSection>
-			)}
+			{siteSelectionEnabled &&
+				(!!importPreview.sites?.length ||
+					!!importPreview.previewAssetLibraries?.length) && (
+					<ScopeSection
+						subtitle={Liferay.Language.get(
+							'import-complete-sites-from-your-file,-including-all-their-pages,-content,-and-settings'
+						)}
+					>
+						{!!importPreview.sites?.length && (
+							<SiteSelection sites={importPreview.sites} />
+						)}
+
+						{!!importPreview.previewAssetLibraries?.length && (
+							<div className="mt-4">
+								<AssetLibrarySelection
+									previewAssetLibraries={
+										importPreview.previewAssetLibraries
+									}
+								/>
+							</div>
+						)}
+					</ScopeSection>
+				)}
 
 			<SectionHeader
 				id={labelId}

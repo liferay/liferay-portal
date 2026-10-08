@@ -9,10 +9,23 @@ import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
 import React, {useId, useState} from 'react';
 
-import {Site} from '../../../types/exportImportPreview';
+import {GroupType, Site} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SectionTags from '../content_selector/SectionTags';
 import SiteSelectorModal from './SiteSelectorModal';
+
+const LABELS = {
+	assetLibrary: {
+		empty: Liferay.Language.get('no-spaces-are-selected'),
+		select: Liferay.Language.get('select-spaces'),
+		title: Liferay.Language.get('spaces'),
+	},
+	site: {
+		empty: Liferay.Language.get('no-sites-are-selected'),
+		select: Liferay.Language.get('select-sites'),
+		title: Liferay.Language.get('sites'),
+	},
+};
 
 function toEntries(sites: Site[]) {
 	return sites.map(
@@ -27,6 +40,7 @@ export default function SitesControl({
 	selectedExternalReferenceCodes,
 	sites,
 	totalCount,
+	type = 'site',
 }: {
 	apiURL?: string;
 	onChange: (externalReferenceCodes: string[]) => void;
@@ -34,6 +48,7 @@ export default function SitesControl({
 	selectedExternalReferenceCodes: string[];
 	sites?: Site[];
 	totalCount?: number;
+	type?: GroupType;
 }) {
 	const descriptionId = useId();
 
@@ -61,13 +76,13 @@ export default function SitesControl({
 					)
 					.join(', ')
 			)
-		: Liferay.Language.get('no-sites-are-selected');
+		: LABELS[type].empty;
 
 	return (
 		<>
 			<ClayLayout.ContentRow verticalAlign="center">
 				<Text size={6} weight="bold">
-					{Liferay.Language.get('sites')}
+					{LABELS[type].title}
 				</Text>
 
 				<SectionTags additionCount={totalCount} />
@@ -84,7 +99,7 @@ export default function SitesControl({
 				outline
 				size="sm"
 			>
-				{Liferay.Language.get('select-sites')}
+				{LABELS[type].select}
 			</ClayButton>
 
 			{showModal && (
@@ -110,6 +125,8 @@ export default function SitesControl({
 					process={process}
 					selectedSites={selectedSites}
 					sites={sites}
+					title={LABELS[type].select}
+					type={type}
 				/>
 			)}
 		</>

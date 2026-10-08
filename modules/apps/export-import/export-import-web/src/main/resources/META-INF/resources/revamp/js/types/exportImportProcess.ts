@@ -22,6 +22,7 @@ export interface ExportProcess {
 }
 
 export interface ExportProcessRequest {
+	assetLibraryExternalReferenceCodes?: string[];
 	comments?: boolean;
 	dateFilter?: DateFilter;
 	deletions?: boolean;
@@ -60,6 +61,7 @@ export interface ImportProcess {
 }
 
 export interface ImportProcessRequest {
+	assetLibraryExternalReferenceCodes?: string[];
 	comments?: boolean;
 	dataStrategy?: DataStrategy;
 	deletions?: boolean;

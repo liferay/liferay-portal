@@ -41,6 +41,8 @@ export default function FileSelectionStep({
 		}
 
 		if (!currentFile) {
+			setFieldValue('assetLibraryExternalReferenceCodes', []);
+			setFieldTouched('assetLibraryExternalReferenceCodes', false, false);
 			setFieldValue('contentSelection', undefined);
 			setFieldTouched('contentSelection', false, false);
 			setFieldValue('siteExternalReferenceCodes', []);
