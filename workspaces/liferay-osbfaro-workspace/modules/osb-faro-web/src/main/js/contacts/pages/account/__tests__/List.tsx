@@ -168,10 +168,12 @@ describe('List', () => {
 			renderList();
 		});
 
-		it('should render the FrontendDataSet component', () => {
+		it('should render the FrontendDataSet component', async () => {
 			renderList();
 
-			expect(screen.getByTestId('fds-component')).toBeInTheDocument();
+			expect(
+				await screen.findByTestId('fds-component')
+			).toBeInTheDocument();
 		});
 
 		it('should withhold the data set until the field catalog resolves, without blanking the page', async () => {
@@ -187,24 +189,30 @@ describe('List', () => {
 			expect(screen.queryByTestId('fds-component')).toBeNull();
 		});
 
-		it('should still render the data set when the field catalog request fails', () => {
+		it('should still render the data set when the field catalog request fails', async () => {
 			mockedUseRequest.mockImplementation(
 				useRequestImpl({catalogError: true})
 			);
 
 			renderList();
 
-			expect(screen.getByTestId('fds-component')).toBeInTheDocument();
+			expect(
+				await screen.findByTestId('fds-component')
+			).toBeInTheDocument();
 		});
 
-		it('should render the FrontendDataSet with id "accounts-list-dataset"', () => {
+		it('should render the FrontendDataSet with id "accounts-list-dataset"', async () => {
 			renderList();
 
-			expect(screen.getByTestId('fds-component')).toHaveAttribute('id');
+			expect(await screen.findByTestId('fds-component')).toHaveAttribute(
+				'id'
+			);
 		});
 
-		it('should preload the rangeKey filter with Last 30 Days by default', () => {
+		it('should preload the rangeKey filter with Last 30 Days by default', async () => {
 			renderList();
+
+			await screen.findByTestId('fds-component');
 
 			const rangeKeyFilter = lastFilters?.find(
 				(f) => f.id === 'rangeKey'
