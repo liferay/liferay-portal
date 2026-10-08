@@ -62,9 +62,10 @@ public class MBMailingListPasswordUtilTest {
 	public void testGetPassword() {
 		long categoryId = RandomTestUtil.randomLong();
 		long companyId = RandomTestUtil.randomLong();
+		String name = RandomTestUtil.randomString();
 
 		String keyReferenceString = _getKeyReferenceString(
-			categoryId, companyId, "inPassword");
+			categoryId, companyId, name);
 
 		String password = RandomTestUtil.randomString();
 
@@ -79,15 +80,16 @@ public class MBMailingListPasswordUtilTest {
 		Assert.assertEquals(
 			password,
 			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, "inPassword", keyReferenceString));
+				categoryId, companyId, name, keyReferenceString));
 		Assert.assertEquals(
 			keyReferenceString,
 			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, "outPassword", keyReferenceString));
+				categoryId, companyId, RandomTestUtil.randomString(),
+				keyReferenceString));
 		Assert.assertEquals(
 			keyReferenceString,
 			MBMailingListPasswordUtil.getPassword(
-				categoryId + 1, companyId, "inPassword", keyReferenceString));
+				categoryId + 1, companyId, name, keyReferenceString));
 	}
 
 	private String _getKeyReferenceString(

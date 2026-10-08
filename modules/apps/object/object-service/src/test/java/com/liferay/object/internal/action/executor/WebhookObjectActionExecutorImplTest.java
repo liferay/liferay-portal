@@ -105,10 +105,10 @@ public class WebhookObjectActionExecutorImplTest {
 			String secret)
 		throws Exception {
 
-		Http http = Mockito.mock(Http.class);
-
 		WebhookObjectActionExecutorImpl webhookObjectActionExecutorImpl =
 			new WebhookObjectActionExecutorImpl();
+
+		Http http = Mockito.mock(Http.class);
 
 		ReflectionTestUtil.setFieldValue(
 			webhookObjectActionExecutorImpl, "_http", http);

@@ -84,19 +84,17 @@ public class MBSubscriptionSenderTest {
 
 	@Test
 	public void testAddMailingListSubscriber() {
-		long categoryId = RandomTestUtil.randomLong();
-		long companyId = RandomTestUtil.randomLong();
-
-		String keyReferenceString = _getKeyReferenceString(
-			categoryId, companyId);
-
 		MBMailingList mbMailingList = Mockito.mock(MBMailingList.class);
+
+		long categoryId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			mbMailingList.getCategoryId()
 		).thenReturn(
 			categoryId
 		);
+
+		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			mbMailingList.getCompanyId()
@@ -111,6 +109,9 @@ public class MBSubscriptionSenderTest {
 		).thenReturn(
 			mailingListId
 		);
+
+		String keyReferenceString = _getKeyReferenceString(
+			categoryId, companyId);
 
 		Mockito.when(
 			mbMailingList.getOutPassword()
