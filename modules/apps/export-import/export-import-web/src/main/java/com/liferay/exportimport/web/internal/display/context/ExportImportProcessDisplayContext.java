@@ -5,6 +5,7 @@
 
 package com.liferay.exportimport.web.internal.display.context;
 
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
 import com.liferay.exportimport.util.ScopeUtil;
@@ -25,9 +26,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -38,6 +41,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Daniel Raposo
@@ -222,6 +226,22 @@ public class ExportImportProcessDisplayContext {
 
 	public String getImportTitle() {
 		return _getTitle("new-import-process");
+	}
+
+	public Map<String, Object> getPageTreeModalConfiguration() {
+		Group liveGroup = StagingUtil.getLiveGroup(_group);
+
+		return HashMapBuilder.<String, Object>put(
+			"defaultPrivateLayout", liveGroup.isLayoutSetPrototype()
+		).put(
+			"groupId", liveGroup.getGroupId()
+		).put(
+			"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
+		).put(
+			"privateLayoutsAvailable",
+			!_staticSite && !liveGroup.isLayoutSetPrototype() &&
+			liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
+		).build();
 	}
 
 	public Scope getScope() {

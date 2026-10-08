@@ -131,7 +131,11 @@ export default function PortletDataControl({
 				selected
 					? undefined
 					: getPortletDataHandlerSelection(
-							previewPortletDataHandlerControl
+							previewPortletDataHandlerControl,
+							{
+								privateLayout:
+									pageTreeModalConfiguration?.defaultPrivateLayout,
+							}
 						)
 			),
 		selected,

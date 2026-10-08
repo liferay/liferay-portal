@@ -99,14 +99,17 @@ export default function LayoutSetControl({
 	pageTreeModalConfiguration,
 	portletDataHandlerSelection,
 }: Props) {
-	const {privateLayoutsAvailable, ...modalConfiguration} =
-		pageTreeModalConfiguration;
+	const {
+		defaultPrivateLayout = false,
+		privateLayoutsAvailable,
+		...modalConfiguration
+	} = pageTreeModalConfiguration;
 
 	const checkboxId = useId();
 
 	const [showModal, setShowModal] = useState(false);
 
-	const {layoutIds = [], privateLayout = false} = (
+	const {layoutIds = [], privateLayout = defaultPrivateLayout} = (
 		typeof portletDataHandlerSelection === 'object'
 			? portletDataHandlerSelection
 			: {}

@@ -48,6 +48,7 @@ export function FormikFieldContentSelector({
 		? getFullDataSelection(previewPortletDataHandlerSections, {
 				commentsAndRatingsEnabled,
 				lookAndFeelEnabled,
+				privateLayout: pageTreeModalConfiguration?.defaultPrivateLayout,
 				showDeletions,
 			})
 		: undefined;

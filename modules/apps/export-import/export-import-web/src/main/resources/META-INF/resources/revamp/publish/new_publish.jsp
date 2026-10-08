@@ -32,7 +32,7 @@ if (liveGroup == null) {
 	liveGroup = group;
 }
 
-PublishProcessDisplayContext publishProcessDisplayContext = new PublishProcessDisplayContext(liveGroup, locale);
+PublishProcessDisplayContext publishProcessDisplayContext = new PublishProcessDisplayContext(liveGroup, locale, publishSourceGroup);
 
 renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishProcessId));
 %>
@@ -59,14 +59,7 @@ renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishPr
 			).put(
 				"lookAndFeelEnabled", publishProcessDisplayContext.isLookAndFeelEnabled()
 			).put(
-				"pageTreeModalConfiguration",
-				HashMapBuilder.<String, Object>put(
-					"groupId", publishSourceGroup.getGroupId()
-				).put(
-					"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
-				).put(
-					"privateLayoutsAvailable", publishSourceGroup.isPrivateLayoutsEnabled() && publishSourceGroup.hasPrivateLayouts()
-				).build()
+				"pageTreeModalConfiguration", publishProcessDisplayContext.getPageTreeModalConfiguration()
 			).put(
 				"processesBackURL", HttpComponentsUtil.setParameter(backURL, liferayPortletResponse.getNamespace() + "tabs1", "processes")
 			).put(

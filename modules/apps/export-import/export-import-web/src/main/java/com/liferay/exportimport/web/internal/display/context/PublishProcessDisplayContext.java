@@ -21,8 +21,10 @@ import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.TimeZoneComparator;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
@@ -30,6 +32,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -39,9 +42,24 @@ import java.util.TreeSet;
  */
 public class PublishProcessDisplayContext {
 
-	public PublishProcessDisplayContext(Group liveGroup, Locale locale) {
+	public PublishProcessDisplayContext(
+		Group liveGroup, Locale locale, Group publishSourceGroup) {
+
 		_liveGroup = liveGroup;
 		_locale = locale;
+		_publishSourceGroup = publishSourceGroup;
+	}
+
+	public Map<String, Object> getPageTreeModalConfiguration() {
+		return HashMapBuilder.<String, Object>put(
+			"groupId", _publishSourceGroup.getGroupId()
+		).put(
+			"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
+		).put(
+			"privateLayoutsAvailable",
+			_publishSourceGroup.isPrivateLayoutsEnabled() &&
+			_publishSourceGroup.hasPrivateLayouts()
+		).build();
 	}
 
 	public String getPublishPreviewAPIURL() {
@@ -157,5 +175,6 @@ public class PublishProcessDisplayContext {
 
 	private final Group _liveGroup;
 	private final Locale _locale;
+	private final Group _publishSourceGroup;
 
 }

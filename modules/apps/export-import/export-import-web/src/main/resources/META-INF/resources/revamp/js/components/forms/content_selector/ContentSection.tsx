@@ -180,6 +180,8 @@ export default function ContentSection({
 									{
 										commentsAndRatingsEnabled,
 										lookAndFeelEnabled,
+										privateLayout:
+											pageTreeModalConfiguration?.defaultPrivateLayout,
 									}
 								)
 					)
