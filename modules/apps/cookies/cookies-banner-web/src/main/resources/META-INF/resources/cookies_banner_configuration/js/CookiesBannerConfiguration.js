@@ -124,6 +124,25 @@ export default function ({
 				);
 			});
 
+			optionalConsentCookieTypeNames
+				.filter(
+					(optionalConsentCookieTypeName) =>
+						!toggleSwitches.some(
+							(toggleSwitch) =>
+								toggleSwitch.dataset.cookieKey ===
+								optionalConsentCookieTypeName
+						)
+				)
+				.forEach((optionalConsentCookieTypeName) => {
+					setCookie(
+						dissentRenewalPeriod,
+						optionalConsentCookieTypeName,
+						storeConsentCheckbox?.checked,
+						dissentRenewalPeriodTimeUnit,
+						'false'
+					);
+				});
+
 			requiredConsentCookieTypeNames.forEach(
 				(requiredConsentCookieTypeName) => {
 					setCookie(

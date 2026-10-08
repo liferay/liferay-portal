@@ -248,11 +248,13 @@ export default function ({
 							const storeConsent =
 								isConfigurationStoreConsentChecked();
 
-							Array.from(
+							const toggleSwitches = Array.from(
 								configurationIframeWindow?.document.querySelectorAll(
 									`#${configurationNamespacePrefix}cookiesBannerConfigurationForm [data-cookie-key]`
 								) || []
-							).forEach((toggleSwitch) => {
+							);
+
+							toggleSwitches.forEach((toggleSwitch) => {
 								let renewalPeriod = consentRenewalPeriod;
 								let timeUnit = consentRenewalPeriodTimeUnit;
 
@@ -269,6 +271,26 @@ export default function ({
 									toggleSwitch.checked ? 'true' : 'false'
 								);
 							});
+
+							optionalConsentCookieTypeNames
+								.filter(
+									(optionalConsentCookieTypeName) =>
+										!toggleSwitches.some(
+											(toggleSwitch) =>
+												toggleSwitch.dataset
+													.cookieKey ===
+												optionalConsentCookieTypeName
+										)
+								)
+								.forEach((optionalConsentCookieTypeName) => {
+									setCookie(
+										dissentRenewalPeriod,
+										optionalConsentCookieTypeName,
+										storeConsent,
+										dissentRenewalPeriodTimeUnit,
+										'false'
+									);
+								});
 
 							requiredConsentCookieTypeNames.forEach(
 								(requiredConsentCookieTypeName) => {
