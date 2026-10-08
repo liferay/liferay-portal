@@ -5,6 +5,7 @@
  */
 --%>
 
+<%@ page import="com.liferay.commerce.account.model.CommerceAccountGroup" %>
 <%@ page import="com.liferay.frontend.taglib.clay.data.Pagination" %>
 <%@ page import="com.liferay.frontend.taglib.clay.data.set.ClayDataSetDisplayView" %>
 <%@ page import="com.liferay.frontend.taglib.clay.data.set.view.table.BaseTableClayDataSetDisplayView" %>
@@ -51,6 +52,10 @@ public static ClayTableSchema getClayTableSchema() {
 }
 
 private ClayTableSchemaBuilderFactory _clayTableSchemaBuilderFactory;
+
+String ariaPagination = StringPool.BLANK;
+
+CommerceAccountGroup commerceAccountGroup = null;
 %>
 
 <div class="js-search-filter-settings">

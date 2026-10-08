@@ -9,6 +9,8 @@ import com.liferay.mail.kernel.model.MailMessage;
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * @author Jessyca Ferreira
  */
@@ -19,6 +21,8 @@ public class LPD_61575 {
 
 		mailMessage.addFileAttachment(file, nameFile);
 		mailMessage.addFileAttachment(null, nameFile);
+		mailMessage.addFileAttachment(
+			"test.txt", FileUtils.openInputStream(file));
 	}
 
 }

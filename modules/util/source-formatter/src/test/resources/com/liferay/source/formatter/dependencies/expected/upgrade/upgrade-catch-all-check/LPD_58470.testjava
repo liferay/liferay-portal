@@ -18,7 +18,7 @@ public class LPD_58470 {
 		File file, ServiceContext serviceContext) {
 
 		DLAppLocalServiceUtil.addFileEntry(
-			"123", repositoryId, folderId, sourceFileName, mimeType, title,
+			getId(), repositoryId, folderId, sourceFileName, mimeType, title,
 			description, changeLog, file, serviceContext);
 		DLAppLocalServiceUtil.addFileEntry(null, userId, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, file, null, null, null, serviceContext);
 		_dlAppLocalService.addFileEntry(null, userId, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, file, null, null, null, serviceContext);
@@ -30,7 +30,7 @@ public class LPD_58470 {
 		InputStream inputStream, long size, ServiceContext serviceContext) {
 
 		DLAppLocalServiceUtil.addFileEntry(
-			"123", repositoryId, folderId, sourceFileName, mimeType, title,
+			getId(), repositoryId, folderId, sourceFileName, mimeType, title,
 			description, changeLog, inputStream, size, serviceContext);
 		DLAppLocalServiceUtil.addFileEntry(null, userId, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, inputStream, size, null, null, null, serviceContext);
 		_dlAppLocalService.addFileEntry(null, userId, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, inputStream, size, null, null, null, serviceContext);
@@ -42,7 +42,7 @@ public class LPD_58470 {
 		byte[] bytes, ServiceContext serviceContext) {
 
 		DLAppServiceUtil.addFileEntry(
-			"123", folderId, sourceFileName, mimeType, title, description,
+			getId(), folderId, sourceFileName, mimeType, title, description,
 			changeLog, bytes, serviceContext);
 		DLAppServiceUtil.addFileEntry(null, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, bytes, null, null, null, serviceContext);
 		_dlAppService.addFileEntry(null, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, bytes, null, null, null, serviceContext);
@@ -55,7 +55,7 @@ public class LPD_58470 {
 		ServiceContext serviceContext) {
 
 		DLAppLocalServiceUtil.updateFileEntry(
-			"123", fileEntryId, sourceFileName, mimeType, title, description,
+			getId(), fileEntryId, sourceFileName, mimeType, title, description,
 			changeLog, dlVersionNumberIncrease, file, serviceContext);
 		DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, file, null, null, null, serviceContext);
 		_dlAppLocalService.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, file, null, null, null, serviceContext);
@@ -68,7 +68,7 @@ public class LPD_58470 {
 		InputStream inputStream, long size, ServiceContext serviceContext) {
 
 		DLAppLocalServiceUtil.updateFileEntry(
-			"123", fileEntryId, sourceFileName, mimeType, title, description,
+			getId(), fileEntryId, sourceFileName, mimeType, title, description,
 			changeLog, dlVersionNumberIncrease, inputStream, size,
 			serviceContext);
 		DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, inputStream, size, null, null, null, serviceContext);
@@ -81,7 +81,7 @@ public class LPD_58470 {
 		File file, ServiceContext serviceContext) {
 
 		DLAppServiceUtil.addFileEntry(
-			"123", folderId, sourceFileName, mimeType, title, description,
+			getId(), folderId, sourceFileName, mimeType, title, description,
 			changeLog, file, serviceContext);
 		DLAppServiceUtil.addFileEntry(null, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, file, null, null, null, serviceContext);
 		_dlAppService.addFileEntry(null, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, file, null, null, null, serviceContext);
@@ -93,7 +93,7 @@ public class LPD_58470 {
 		InputStream inputStream, long size, ServiceContext serviceContext) {
 
 		DLAppServiceUtil.addFileEntry(
-			"123", folderId, sourceFileName, mimeType, title, description,
+			getId(), folderId, sourceFileName, mimeType, title, description,
 			changeLog, inputStream, size, serviceContext);
 		DLAppServiceUtil.addFileEntry(null, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, inputStream, size, null, null, null, serviceContext);
 		_dlAppService.addFileEntry(null, repositoryId, folderId, sourceFileName, mimeType, title, null, description, changeLog, inputStream, size, null, null, null, serviceContext);
@@ -106,7 +106,7 @@ public class LPD_58470 {
 		ServiceContext serviceContext) {
 
 		DLAppServiceUtil.updateFileEntry(
-			"123", sourceFileName, mimeType, title, description, changeLog,
+			getId(), sourceFileName, mimeType, title, description, changeLog,
 			dlVersionNumberIncrease, bytes, serviceContext);
 		DLAppServiceUtil.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, bytes, null, null, null, serviceContext);
 		_dlAppService.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, bytes, null, null, null, serviceContext);
@@ -119,13 +119,13 @@ public class LPD_58470 {
 		ServiceContext serviceContext) {
 
 		DLAppServiceUtil.updateFileEntry(
-			"123", sourceFileName, mimeType, title, description, changeLog,
+			getId(), sourceFileName, mimeType, title, description, changeLog,
 			dlVersionNumberIncrease, file, serviceContext);
 		DLAppServiceUtil.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, file, null, null, null, serviceContext);
 		_dlAppService.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, file, null, null, null, serviceContext);
 
 		DLAppServiceUtil.updateFileEntryAndCheckIn(
-			"123", sourceFileName, mimeType, title, description, changeLog,
+			getId(), sourceFileName, mimeType, title, description, changeLog,
 			dlVersionNumberIncrease, file, serviceContext);
 		DLAppServiceUtil.updateFileEntryAndCheckIn(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, file, null, null, null, serviceContext);
 		_dlAppService.updateFileEntryAndCheckIn(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, file, null, null, null, serviceContext);
@@ -138,13 +138,13 @@ public class LPD_58470 {
 		InputStream inputStream, long size, ServiceContext serviceContext) {
 
 		DLAppServiceUtil.updateFileEntry(
-			"123", sourceFileName, mimeType, title, description, changeLog,
+			getId(), sourceFileName, mimeType, title, description, changeLog,
 			dlVersionNumberIncrease, inputStream, size, serviceContext);
 		DLAppServiceUtil.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, inputStream, size, null, null, null, serviceContext);
 		_dlAppService.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, inputStream, size, null, null, null, serviceContext);
 
 		DLAppServiceUtil.updateFileEntryAndCheckIn(
-			"123", sourceFileName, mimeType, title, description, changeLog,
+			getId(), sourceFileName, mimeType, title, description, changeLog,
 			dlVersionNumberIncrease, inputStream, size, serviceContext);
 		DLAppServiceUtil.updateFileEntryAndCheckIn(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, inputStream, size, null, null, null, serviceContext);
 		_dlAppService.updateFileEntryAndCheckIn(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, inputStream, size, null, null, null, serviceContext);

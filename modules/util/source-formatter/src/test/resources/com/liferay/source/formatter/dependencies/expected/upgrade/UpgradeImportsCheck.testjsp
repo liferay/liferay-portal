@@ -5,6 +5,7 @@
  */
 --%>
 
+<%@ page import="com.liferay.account.model.AccountGroup" %>
 <%@ page import="com.liferay.frontend.data.set.provider.search.FDSPagination" %>
 <%@ page import="com.liferay.frontend.data.set.view.FDSView" %>
 <%@ page import="com.liferay.frontend.data.set.view.table.BaseTableFDSView" %>
@@ -51,6 +52,10 @@ public static FDSTableSchema getFDSTableSchema() {
 }
 
 private FDSTableSchemaBuilderFactory _fDSTableSchemaBuilderFactory;
+
+String ariaFDSPagination = StringPool.BLANK;
+
+AccountGroup accountGroup = null;
 %>
 
 <div class="js-search-filter-settings">
