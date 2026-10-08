@@ -68,9 +68,17 @@ const config = {
 			},
 		},
 	],
-	parser: 'babel-eslint',
+	parser: '@babel/eslint-parser',
 	parserOptions: {
+		babelOptions: {
+			babelrc: false,
+			configFile: false,
+			parserOpts: {
+				plugins: ['flow', 'jsx'],
+			},
+		},
 		ecmaVersion: 2018,
+		requireConfigFile: false,
 		sourceType: 'module',
 	},
 	plugins: [

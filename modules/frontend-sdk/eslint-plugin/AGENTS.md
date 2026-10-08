@@ -66,7 +66,7 @@ Implementation expectations:
 
 Use parser-matrix testing via `MultiTester` to reduce parser-specific regressions:
 - `espree`
-- `babel-eslint`
+- `@babel/eslint-parser`
 - `@typescript-eslint/parser`
 
 Unit test pattern:

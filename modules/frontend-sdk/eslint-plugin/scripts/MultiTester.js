@@ -5,14 +5,15 @@
 
 const {RuleTester} = require('eslint');
 
+const generalConfig = require('../configs/general');
+
 /**
  * Wrapper for ESLint's RuleTester class that runs tests against:
  *
  * -   The default "espree" parser.
  *
- * -   "babel-eslint", that we use in liferay-portal:
- *
- *      https://github.com/liferay/liferay-frontend-projects/blob/c6a0257953f/projects/npm-tools/packages/npm-scripts/src/config/eslint.config.js#L48
+ * -   "@babel/eslint-parser", that we use in liferay-portal (see the
+ *      `parser` in configs/general.js).
  *
  * -    `@typescript-eslint/parser`, that we use in Clay:
  *
@@ -24,12 +25,17 @@ class MultiTester extends RuleTester {
 
 		this._liferay = {
 			parsers: {
-				'babel-eslint': new RuleTester({
+				babel: new RuleTester({
 					...options,
-					parser: require.resolve('babel-eslint'),
+					parser: require.resolve('@babel/eslint-parser'),
+					parserOptions: {
+						...options?.parserOptions,
+						babelOptions: generalConfig.parserOptions.babelOptions,
+						requireConfigFile: false,
+					},
 				}),
-				'espree': new RuleTester(options),
-				'typescript': new RuleTester({
+				espree: new RuleTester(options),
+				typescript: new RuleTester({
 					...options,
 					parser: require.resolve('@typescript-eslint/parser'),
 				}),
