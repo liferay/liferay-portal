@@ -119,7 +119,7 @@ public class JournalContentExportImportTest
 	}
 
 	@Test
-	@TestInfo("LPD-103207")
+	@TestInfo("LPD-108852")
 	public void testExportImportSelectedArticleWithLayoutStaging()
 		throws Exception {
 
@@ -135,11 +135,16 @@ public class JournalContentExportImportTest
 			ExportImportThreadLocal.setLayoutStagingInProcess(false);
 		}
 
-		Assert.assertNull(
+		JournalArticle importedArticle =
 			_journalArticleLocalService.
 				fetchLatestArticleByExternalReferenceCode(
 					importedGroup.getGroupId(),
-					article.getExternalReferenceCode()));
+					article.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			article.getTitle(LocaleUtil.getSiteDefault()),
+			importedArticle.getTitle(LocaleUtil.getSiteDefault()));
+		Assert.assertEquals(article.getContent(), importedArticle.getContent());
 	}
 
 	@Test

@@ -63,6 +63,46 @@ public class StagingDataPortletPreferencesTest
 		new LiferayIntegrationTestRule();
 
 	@Test
+	@TestInfo("LPD-108852")
+	public void testJournalArticleIsPublishedViaWebContentDisplayWithPortletDataDisabled()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			stagingGroup.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		LayoutTestUtil.addPortletToLayout(
+			stagingLayout, JournalContentPortletKeys.JOURNAL_CONTENT,
+			HashMapBuilder.put(
+				"articleExternalReferenceCode",
+				new String[] {journalArticle.getExternalReferenceCode()}
+			).put(
+				"groupExternalReferenceCode",
+				new String[] {stagingGroup.getExternalReferenceCode()}
+			).build());
+
+		Map<String, String[]> parameterMap =
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
+
+		parameterMap.put(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.FALSE.toString()});
+
+		parameterMap.put(
+			PortletDataHandlerKeys.PORTLET_DATA_ALL,
+			new String[] {Boolean.FALSE.toString()});
+
+		publishLayouts(parameterMap);
+
+		Assert.assertNotNull(
+			_journalArticleLocalService.
+				fetchLatestArticleByExternalReferenceCode(
+					liveGroup.getGroupId(),
+					journalArticle.getExternalReferenceCode()));
+	}
+
+	@Test
 	public void testJournalContentDataPortletPreferences() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			stagingGroup.getGroupId(), RandomTestUtil.randomString(),
