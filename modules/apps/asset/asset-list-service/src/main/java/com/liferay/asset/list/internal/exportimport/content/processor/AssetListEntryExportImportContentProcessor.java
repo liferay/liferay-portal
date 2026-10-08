@@ -267,6 +267,9 @@ public class AssetListEntryExportImportContentProcessor
 		Map<Long, Long> ddmStructureIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
 				DDMStructure.class);
+		Map<Long, Long> dlFileEntryTypeIds =
+			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+				DLFileEntryType.class);
 
 		List<AssetRendererFactory<?>> assetRendererFactories =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
@@ -278,6 +281,19 @@ public class AssetListEntryExportImportContentProcessor
 			Class<?> clazz = _assetRendererFactoryClassProvider.getClass(
 				assetRendererFactory);
 
+			long anyClassType = GetterUtil.getLong(
+				unicodeProperties.getProperty(
+					"anyClassType" + clazz.getSimpleName()));
+
+			if (anyClassType != 0L) {
+				unicodeProperties.setProperty(
+					"anyClassType" + clazz.getSimpleName(),
+					String.valueOf(
+						_getClassTypeId(
+							anyClassType, ddmStructureIds,
+							dlFileEntryTypeIds)));
+			}
+
 			String[] classTypeIds = StringUtil.split(
 				unicodeProperties.getProperty(
 					"classTypeIds" + clazz.getSimpleName()));
@@ -285,10 +301,6 @@ public class AssetListEntryExportImportContentProcessor
 			if (ArrayUtil.isEmpty(classTypeIds)) {
 				continue;
 			}
-
-			Map<Long, Long> dlFileEntryTypeIds =
-				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-					DLFileEntryType.class);
 
 			unicodeProperties.setProperty(
 				"classTypeIds" + clazz.getSimpleName(),
@@ -298,21 +310,6 @@ public class AssetListEntryExportImportContentProcessor
 						classTypeId -> _getClassTypeId(
 							GetterUtil.getLong(classTypeId), ddmStructureIds,
 							dlFileEntryTypeIds))));
-
-			long anyClassType = GetterUtil.getLong(
-				unicodeProperties.getProperty(
-					"anyClassType" + clazz.getSimpleName()));
-
-			if (anyClassType == 0L) {
-				continue;
-			}
-
-			long newAnyClassType = _getClassTypeId(
-				anyClassType, ddmStructureIds, dlFileEntryTypeIds);
-
-			unicodeProperties.setProperty(
-				"anyClassType" + clazz.getSimpleName(),
-				String.valueOf(newAnyClassType));
 		}
 
 		JSONArray filtersJSONArray = _toFiltersJSONArray(
