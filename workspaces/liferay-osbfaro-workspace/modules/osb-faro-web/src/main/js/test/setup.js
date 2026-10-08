@@ -45,6 +45,12 @@ global.Liferay = {
 		},
 		get: lang,
 	},
+	Util: {
+		fetch: () =>
+			Promise.resolve({
+				json: () => Promise.resolve({items: []}),
+			}),
+	},
 };
 
 global.localStorage = (() => {

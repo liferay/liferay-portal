@@ -4,7 +4,8 @@ import {FrontendDataSet} from 'shared/components/FrontendDataSet';
 
 /**
  * Resolves the lazily loaded FrontendDataSet once, so the assertions in a suite
- * can stay synchronous.
+ * can stay synchronous. A data set with `snapshotsEnabled` still mounts only
+ * after its snapshots are fetched, so tests rendering one must wait for it.
  *
  * `shared/components/FrontendDataSet` loads the data set with `React.lazy`, so
  * the first render in a file resolves it a microtask late and anything asserted
