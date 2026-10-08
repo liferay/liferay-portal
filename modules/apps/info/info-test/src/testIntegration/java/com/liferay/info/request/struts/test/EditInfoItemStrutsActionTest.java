@@ -974,6 +974,40 @@ public class EditInfoItemStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-109228")
+	public void testUpdateInfoItemWithObjectFieldNamePrefix() throws Exception {
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, _user.getUserId(), _objectDefinition.getObjectDefinitionId(), 0,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"myText", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		String attachmentAuthor = RandomTestUtil.randomString();
+
+		Assert.assertNull(
+			_execute(
+				HashMapBuilder.<String, List<String>>put(
+					"classPK",
+					Collections.singletonList(
+						String.valueOf(objectEntry.getObjectEntryId()))
+				).put(
+					"ObjectField_myAttachmentAuthor_en_US",
+					Collections.singletonList(attachmentAuthor)
+				).build()));
+
+		objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(attachmentAuthor, values.get("myAttachmentAuthor"));
+		Assert.assertEquals(0, GetterUtil.getLong(values.get("myAttachment")));
+	}
+
+	@Test
 	public void testUpdateInfoItemWithWrongRedirect() throws Exception {
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
 			new MockMultipartHttpServletRequest();
@@ -1167,6 +1201,14 @@ public class EditInfoItemStrutsActionTest {
 				true
 			).name(
 				"myLocalizedMultiselectPicklist"
+			).build(),
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).localized(
+				true
+			).name(
+				"myAttachmentAuthor"
 			).build(),
 			ObjectFieldUtil.createObjectField(
 				ObjectFieldConstants.BUSINESS_TYPE_DATE,
