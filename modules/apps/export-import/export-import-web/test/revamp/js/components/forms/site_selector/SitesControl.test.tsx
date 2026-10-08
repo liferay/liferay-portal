@@ -217,6 +217,70 @@ describe('SitesControl', () => {
 		).toBeInTheDocument();
 	});
 
+	describe('selecting spaces', () => {
+		it('names the section and its empty state after spaces', () => {
+			renderControl({type: 'assetLibrary'});
+
+			expect(screen.getByText('spaces')).toBeInTheDocument();
+			expect(
+				screen.getByText('no-spaces-are-selected')
+			).toBeInTheDocument();
+		});
+
+		it('opens a dialog for selecting spaces', async () => {
+			renderControl({type: 'assetLibrary'});
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'select-spaces'})
+			);
+
+			expect(
+				await screen.findByRole('dialog', {name: 'select-spaces'})
+			).toBeInTheDocument();
+		});
+
+		it('reads only the title when exporting', async () => {
+			renderControl({type: 'assetLibrary'});
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'select-spaces'})
+			);
+
+			await screen.findByText('Support');
+
+			const columnHeaders = screen
+				.getAllByRole('columnheader')
+				.map((columnHeader) => columnHeader.textContent);
+
+			expect(columnHeaders).toEqual([
+				expect.anything(),
+				'title',
+				'manage-columns-visibility',
+			]);
+		});
+
+		it('reads title and exists in instance when importing', async () => {
+			renderControl({process: 'import', type: 'assetLibrary'});
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'select-spaces'})
+			);
+
+			await screen.findByText('Support');
+
+			const columnHeaders = screen
+				.getAllByRole('columnheader')
+				.map((columnHeader) => columnHeader.textContent);
+
+			expect(columnHeaders).toEqual([
+				expect.anything(),
+				'title',
+				'exists-in-instance',
+				'manage-columns-visibility',
+			]);
+		});
+	});
+
 	describe('reading the sites from the API', () => {
 		const API_URL = '/o/export-import/v1.0/export-preview/sites';
 

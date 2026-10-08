@@ -498,6 +498,79 @@ describe('NewImport', () => {
 		).not.toBeChecked();
 	});
 
+	it('hides the spaces section when the file has no spaces', async () => {
+		await goToDataSelectionStep({siteSelectionEnabled: true});
+
+		await screen.findByRole('checkbox', {name: 'Design'});
+
+		expect(
+			screen.queryByRole('button', {name: 'select-spaces'})
+		).not.toBeInTheDocument();
+	});
+
+	it('imports only the spaces selected in the spaces section', async () => {
+		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
+			Promise.resolve({
+				data: {
+					...mockImportPreview,
+					previewAssetLibraries: [
+						{
+							descriptiveName: 'Book',
+							existsInInstance: false,
+							externalReferenceCode: 'erc-book',
+						},
+					],
+				},
+				error: null,
+			})
+		);
+
+		fetch.mockResponse(JSON.stringify({id: 1}));
+
+		await goToDataSelectionStep({siteSelectionEnabled: true});
+
+		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
+			await user.click(screen.getByRole('checkbox', {name}));
+		}
+
+		await user.click(screen.getByRole('button', {name: 'select-spaces'}));
+
+		const row = await screen.findByText('Book');
+
+		await user.click(
+			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
+		);
+		await user.click(screen.getByRole('button', {name: 'select'}));
+
+		await waitFor(() => {
+			expect(
+				screen.getByRole('button', {name: /continue/i})
+			).toBeEnabled();
+		});
+
+		await user.click(screen.getByRole('button', {name: /continue/i}));
+
+		await user.click(await screen.findByRole('button', {name: /^import$/}));
+
+		await waitFor(() =>
+			expect(
+				fetch.mock.calls.find(([url]) =>
+					String(url).includes('import-processes')
+				)
+			).toBeDefined()
+		);
+
+		const [, init] = fetch.mock.calls.find(([url]) =>
+			String(url).includes('import-processes')
+		)!;
+
+		expect(JSON.parse(String(init?.body))).toMatchObject({
+			assetLibraryExternalReferenceCodes: ['erc-book'],
+			portletDataHandlers: [],
+			sites: [],
+		});
+	});
+
 	it('renders the Comments and Ratings block inside the Site Content section when commentsAndRatingsEnabled is true', async () => {
 		await goToDataSelectionStep({commentsAndRatingsEnabled: true});
 

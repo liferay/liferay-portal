@@ -56,6 +56,8 @@ const DEFAULT_PROPS = {
 };
 
 const INSTANCE_PROPS = {
+	exportPreviewAssetLibrariesAPIURL:
+		'/o/export-import/v1.0/export-preview/preview-asset-libraries',
 	exportPreviewSitesAPIURL: '/o/export-import/v1.0/export-preview/sites',
 	siteSelectionEnabled: true,
 };
@@ -266,7 +268,7 @@ describe('NewExport', () => {
 		expect(dataSelectionGroup).not.toHaveAttribute('aria-invalid');
 	});
 
-	it('asks for an entity type or a site below both, where sites are on offer', async () => {
+	it('asks for an entity type, a site or a space below all of them, where sites are on offer', async () => {
 		renderComponent(INSTANCE_PROPS);
 
 		const nameInput = await screen.findByRole('textbox', {
@@ -283,7 +285,7 @@ describe('NewExport', () => {
 		);
 
 		const alert = await screen.findByText(
-			'please-select-at-least-one-entity-type-or-site-to-continue'
+			'please-select-at-least-one-entity-type-site-or-space-to-continue'
 		);
 
 		const dataSelectionGroup = screen.getByRole('group', {
@@ -301,6 +303,67 @@ describe('NewExport', () => {
 					Node.DOCUMENT_POSITION_FOLLOWING
 			).toBeTruthy();
 		}
+	});
+
+	it('keeps the entity types deselected after exporting only spaces', async () => {
+		fetch.mockResponse(async (request) => {
+			if (request.url.includes('preview-asset-libraries')) {
+				return JSON.stringify({
+					items: [
+						{
+							descriptiveName: 'Book',
+							externalReferenceCode: 'erc-book',
+						},
+					],
+					lastPage: 1,
+					page: 1,
+					pageSize: 20,
+					totalCount: 1,
+				});
+			}
+
+			if (request.method === 'POST') {
+				return JSON.stringify({exportImportConfigurationId: 1});
+			}
+
+			return JSON.stringify(mockPreview);
+		});
+
+		renderComponent(INSTANCE_PROPS);
+
+		await userEvent.type(
+			await screen.findByRole('textbox', {name: /^name/i}),
+			'test-file'
+		);
+
+		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
+			await userEvent.click(screen.getByRole('checkbox', {name}));
+		}
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'select-spaces'})
+		);
+
+		const row = await screen.findByText('Book');
+
+		await userEvent.click(
+			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
+		);
+		await userEvent.click(screen.getByRole('button', {name: 'select'}));
+
+		const exportButton = screen.getByRole('button', {name: /^export$/i});
+
+		await waitFor(() => expect(exportButton).toBeEnabled());
+
+		await userEvent.click(exportButton);
+
+		await waitFor(() => expect(getExportCall()).toBeDefined());
+
+		expect(JSON.parse(String(getExportCall()?.[1]?.body))).toMatchObject({
+			assetLibraryExternalReferenceCodes: ['erc-book'],
+			portletDataHandlers: [],
+			sites: [],
+		});
 	});
 
 	it('keeps the entity types deselected after exporting only sites', async () => {
