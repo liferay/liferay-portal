@@ -802,3 +802,57 @@ test(
 		});
 	}
 );
+
+test(
+	'Cannot update an object definition without the Update permission',
+	{tag: '@LPD-109321'},
+	async ({apiHelpers, editObjectDetailsPage, page}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 2},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await test.step('Switch to a user without the Update permission', async () => {
+			const user = await createUserWithPermissions(apiHelpers, [
+				{
+					actionIds: ['ACCESS_IN_CONTROL_PANEL', 'VIEW'],
+					resourceName:
+						'com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet',
+				},
+				{
+					actionIds: ['VIEW'],
+					resourceName: 'com.liferay.object.model.ObjectDefinition',
+				},
+			]);
+
+			await performUserSwitch(page, user.alternateName);
+		});
+
+		await test.step('Verify the details form is disabled', async () => {
+			await editObjectDetailsPage.goto(objectDefinition.label['en_US']);
+
+			await expect(editObjectDetailsPage.labelInput).toHaveValue(
+				objectDefinition.label['en_US']
+			);
+
+			await expect(editObjectDetailsPage.nameInput).toBeDisabled();
+
+			await expect(editObjectDetailsPage.labelInput).toBeDisabled();
+
+			await expect(editObjectDetailsPage.pluralLabelInput).toBeDisabled();
+
+			await expect(editObjectDetailsPage.scopeCombobox).toBeDisabled();
+
+			await expect(
+				editObjectDetailsPage.panelLinkCombobox
+			).toBeDisabled();
+
+			await expect(editObjectDetailsPage.saveButton).toBeDisabled();
+		});
+	}
+);
