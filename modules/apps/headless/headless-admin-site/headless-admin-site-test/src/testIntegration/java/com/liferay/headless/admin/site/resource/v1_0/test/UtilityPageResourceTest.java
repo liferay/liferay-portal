@@ -1067,7 +1067,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
@@ -1249,7 +1250,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			"http://invalid.example.test/" + RandomTestUtil.randomString();
 
 		_testPostUtilityPageThumbnailURLReferenceProblemException(
-			"Unable to download file from " + url,
+			"Unable to download file from " + url +
+				" because of restricted host invalid.example.test",
 			RandomTestUtil.randomString(), url);
 	}
 
@@ -1499,7 +1501,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}

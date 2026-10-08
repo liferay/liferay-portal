@@ -1695,7 +1695,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
@@ -1947,7 +1948,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
@@ -2346,7 +2348,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
