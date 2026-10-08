@@ -519,7 +519,7 @@ public class StyleBookEntryLocalServiceImpl
 			draftStyleBookEntry.setDefaultStyleBookEntry(
 				publishedStyleBookEntry.isDefaultStyleBookEntry());
 			draftStyleBookEntry.setStatus(
-				_solveEmptyModel(publishedStyleBookEntry));
+				_solveEmptyStyleBookEntry(publishedStyleBookEntry));
 		}
 
 		return super.publishDraft(draftStyleBookEntry);
@@ -846,7 +846,7 @@ public class StyleBookEntryLocalServiceImpl
 				styleBookEntry.setUuid(uuid);
 			}
 
-			styleBookEntry.setStatus(_solveEmptyModel(styleBookEntry));
+			styleBookEntry.setStatus(_solveEmptyStyleBookEntry(styleBookEntry));
 		}
 
 		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
@@ -1020,7 +1020,7 @@ public class StyleBookEntryLocalServiceImpl
 		return layoutSet.getThemeId();
 	}
 
-	private int _solveEmptyModel(StyleBookEntry styleBookEntry) {
+	private int _solveEmptyStyleBookEntry(StyleBookEntry styleBookEntry) {
 		return _emptyModelManager.solveEmptyModel(
 			styleBookEntry.getExternalReferenceCode(),
 			StyleBookEntry.class.getName(), styleBookEntry.getCompanyId(),
