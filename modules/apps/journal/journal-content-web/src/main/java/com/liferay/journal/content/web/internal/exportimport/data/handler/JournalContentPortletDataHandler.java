@@ -71,7 +71,10 @@ public class JournalContentPortletDataHandler extends BasePortletDataHandler {
 	@Activate
 	protected void activate() {
 		setDataLevel(DataLevel.PORTLET_INSTANCE);
-		setDataPortletPreferences("articleId", "ddmTemplateKey", "groupId");
+		setDataPortletPreferences(
+			"articleExternalReferenceCode", "articleId",
+			"ddmTemplateExternalReferenceCode", "ddmTemplateKey",
+			"groupExternalReferenceCode", "groupId");
 		setExportPortletDataHandlerControls(
 			new PortletDataHandlerBoolean(
 				null, "selected-web-content", true, true, null,

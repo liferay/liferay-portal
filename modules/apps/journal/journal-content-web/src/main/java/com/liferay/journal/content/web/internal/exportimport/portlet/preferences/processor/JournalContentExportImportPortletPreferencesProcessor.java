@@ -73,7 +73,11 @@ public class JournalContentExportImportPortletPreferencesProcessor
 
 	@Override
 	public boolean isPublishDisplayedContent() {
-		return ExportImportThreadLocal.isPortletStagingInProcess();
+
+		// isPortletStagingInProcess is too narrow; page-level staging sets
+		// isLayoutStagingInProcess instead, so isStagingInProcess covers both.
+
+		return ExportImportThreadLocal.isStagingInProcess();
 	}
 
 	@Override
