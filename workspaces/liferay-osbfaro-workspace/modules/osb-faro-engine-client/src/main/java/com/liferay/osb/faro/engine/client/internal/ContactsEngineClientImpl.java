@@ -946,14 +946,21 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public List<AccountLifecycle> getAccountLifecycles(FaroProject faroProject)
+	public List<AccountLifecycle> getAccountLifecycles(
+			FaroProject faroProject, Long channelId)
 		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject);
+
+		if (Validator.isNotNull(channelId)) {
+			uriVariables.put("channelId", channelId);
+		}
 
 		return get(
 			faroProject, Rels.ACCOUNT_LIFECYCLES,
 			new ParameterizedTypeReference<List<AccountLifecycle>>() {
 			},
-			getUriVariables(faroProject));
+			uriVariables);
 	}
 
 	@Override

@@ -106,11 +106,13 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 	@GET
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public List<AccountLifecycle> getAccountLifecycles(
-			@PathParam("groupId") long groupId)
+			@PathParam("groupId") long groupId,
+			@QueryParam("channelId") Long channelId)
 		throws Exception {
 
 		return contactsEngineClient.getAccountLifecycles(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId));
+			faroProjectLocalService.getFaroProjectByGroupId(groupId),
+			channelId);
 	}
 
 	@GET

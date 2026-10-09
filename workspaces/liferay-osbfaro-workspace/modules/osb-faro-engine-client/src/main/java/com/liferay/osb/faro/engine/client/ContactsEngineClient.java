@@ -243,7 +243,8 @@ public interface ContactsEngineClient {
 			FaroProject faroProject, String accountLifecycleId, String id)
 		throws FaroEngineClientException;
 
-	public List<AccountLifecycle> getAccountLifecycles(FaroProject faroProject)
+	public List<AccountLifecycle> getAccountLifecycles(
+			FaroProject faroProject, Long channelId)
 		throws FaroEngineClientException;
 
 	public List<AccountMetric> getAccountMetrics(
