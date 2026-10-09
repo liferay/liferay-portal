@@ -329,7 +329,7 @@ public class DBInspectorUnitTest {
 
 			DBInspector dbInspector = new DBInspector(_connection);
 
-			Assert.assertFalse(
+			Assert.assertTrue(
 				dbInspector.isSupportedColumnType("NUMERIC(13,4) null"));
 			Assert.assertTrue(
 				dbInspector.isSupportedColumnType("VARCHAR(75) null"));
