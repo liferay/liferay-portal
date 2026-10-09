@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
@@ -22,9 +21,6 @@ import {
 
 const baseTest = mergeTests(
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-63311': {enabled: true},
-	}),
 	loginTest(),
 	mcpServerWebPagesTest
 );
