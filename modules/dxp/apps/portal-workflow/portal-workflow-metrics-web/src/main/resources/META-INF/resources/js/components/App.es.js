@@ -96,7 +96,7 @@ const App = (props) => {
 	return (
 		<AppContextProvider {...props}>
 			<FilterContextProvider>
-				<HashRouter>
+				<HashRouter useTransitions={false}>
 					<HeaderController basePath="/processes" />
 
 					<div className="portal-workflow-metrics-app">
