@@ -37,7 +37,7 @@ describe('The BaseRole component should', () => {
 		});
 
 		expect(frontendJSWebFetchSpier).toHaveBeenCalledWith(
-			'/o/headless-admin-user/v1.0/roles?fields=id%2Cname%2CroleType&pageSize=-1',
+			'/o/headless-admin-user/v1.0/roles?fields=externalReferenceCode%2Cid%2Cname%2CroleType&pageSize=-1',
 			expect.any(Object)
 		);
 	});
