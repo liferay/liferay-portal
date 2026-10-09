@@ -1084,14 +1084,11 @@ test('LPD-33783 Pending orders table displays correct fields', async ({
 		'Amount',
 	];
 
-	tableHeaderLabels.forEach((tableHeaderLabel) => {
-		expect(
-			page.getByRole('columnheader', {
-				exact: true,
-				name: tableHeaderLabel,
-			})
+	for (const tableHeaderLabel of tableHeaderLabels) {
+		await expect(
+			page.getByRole('columnheader', {name: tableHeaderLabel})
 		).toBeVisible();
-	});
+	}
 });
 
 test(
