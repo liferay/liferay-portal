@@ -326,6 +326,79 @@ test('Can search assignees and steps in Performance by Assignee and Step views',
 	});
 });
 
+test(
+	'Clear All resets the process status filter on the All Items page',
+	{tag: '@LPD-81439'},
+	async ({
+		allItemsPage,
+		apiHelpers,
+		metricsPage,
+		page,
+		site,
+		workflowPage,
+		workflowTasksPage,
+	}) => {
+		const completedBlogTitle = `Blog ${getRandomString()}`;
+		const pendingBlogTitle = `Blog ${getRandomString()}`;
+
+		await test.step('assign the Single Approver workflow to Blogs Entry', async () => {
+			await workflowPage.goto(site.friendlyUrlPath);
+
+			await workflowPage.changeWorkflow('Blogs Entry', 'Single Approver');
+		});
+
+		await test.step('create two blog entries and approve one of them', async () => {
+			for (const headline of [completedBlogTitle, pendingBlogTitle]) {
+				await apiHelpers.headlessDelivery.postBlog(site.id, {headline});
+			}
+
+			await workflowTasksPage.goToAssignedToMyRoles(site.friendlyUrlPath);
+
+			await workflowTasksPage.assignToMe(completedBlogTitle);
+
+			await workflowTasksPage.assignedToMeLink.click();
+
+			await workflowTasksPage.approve(completedBlogTitle);
+		});
+
+		const completedRow = page
+			.getByRole('row')
+			.filter({hasText: `Blogs Entry: ${completedBlogTitle}`});
+
+		const pendingRow = page
+			.getByRole('row')
+			.filter({hasText: `Blogs Entry: ${pendingBlogTitle}`});
+
+		await test.step('open the pending items from the metrics dashboard', async () => {
+			await metricsPage.goTo(site.friendlyUrlPath);
+
+			await metricsPage.chooseProcess('Single Approver');
+
+			await metricsPage.viewAllPendingItems();
+
+			await expect(allItemsPage.pendingFilterLabel).toBeVisible();
+
+			await expect(async () => {
+				await page.reload({timeout: 10_000});
+
+				await expect(pendingRow).toBeVisible({timeout: 5_000});
+
+				await expect(completedRow).not.toBeVisible({timeout: 5_000});
+			}).toPass({timeout: 60_000});
+		});
+
+		await test.step('clear all filters and assert both items are displayed', async () => {
+			await page.getByRole('button', {name: 'Clear All'}).click();
+
+			await expect(completedRow).toBeVisible();
+
+			await expect(allItemsPage.pendingFilterLabel).not.toBeVisible();
+
+			await expect(pendingRow).toBeVisible();
+		});
+	}
+);
+
 test('Columns on the All Items page display correct info for a pending instance', async ({
 	apiHelpers,
 	metricsPage,
