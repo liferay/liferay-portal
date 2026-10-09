@@ -10,21 +10,4 @@
 		margin: 0 auto;
 		width: 120px;
 	}
-
-	.form-body {
-		flex: 1;
-		min-height: 0;
-		position: relative;
-	}
-}
-
-@media (max-width: $maxPageWidth + $sidebarOpenWidth) {
-	body.open .segments-root {
-		.contributor-builder-root.editing
-			.criteria-builder-section-main
-			.contributor-container
-			.container-fluid {
-			padding-left: $criteriaSidebarWidth;
-		}
-	}
 }

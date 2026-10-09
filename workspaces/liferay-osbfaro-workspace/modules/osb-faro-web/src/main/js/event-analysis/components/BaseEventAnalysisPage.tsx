@@ -262,6 +262,32 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 		setType(type);
 	};
 
+	// Built outside the form's render prop so typing the title does not re-render them
+
+	const conditionsPanel = (
+		<BaseEditPage.Sidebar position="left">
+			<ConditionsPanel
+				event={event ?? undefined}
+				onEventChange={onEventChange}
+			/>
+		</BaseEditPage.Sidebar>
+	);
+
+	const editor = (
+		<ClayLayout.ContainerFluid className="page-container pb-4" size="xl">
+			<EventAnalysisEditor
+				channelId={channelId}
+				compareToPrevious={compareToPrevious}
+				event={event}
+				onCompareToPreviousChange={onCompareToPreviousChange}
+				onRangeSelectorsChange={onRangeSelectorsChange}
+				onTypeChange={onTypeChange}
+				rangeSelectors={rangeSelectors!}
+				type={type}
+			/>
+		</ClayLayout.ContainerFluid>
+	);
+
 	return (
 		<BaseEditPage documentTitle={Liferay.Language.get('event-analysis')}>
 			<div
@@ -335,47 +361,37 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 									/>
 								</BaseEditPage.Toolbar>
 
-								<Form.Form id={FORM_ID} onSubmit={handleSubmit}>
-									<NavigationWarning
-										when={
-											!submitted &&
-											hasChanges &&
-											!isSubmitting
-										}
-									/>
+								<BaseEditPage.Body>
+									{conditionsPanel}
 
-									<ClayLayout.ContainerFluid
-										className="pb-4 pt-4"
-										size="xl"
-									>
-										<EventAnalysisTitle />
-									</ClayLayout.ContainerFluid>
-								</Form.Form>
+									<div>
+										<Form.Form
+											id={FORM_ID}
+											onSubmit={handleSubmit}
+										>
+											<NavigationWarning
+												when={
+													!submitted &&
+													hasChanges &&
+													!isSubmitting
+												}
+											/>
+
+											<ClayLayout.ContainerFluid
+												className="pb-4 pt-4"
+												size="xl"
+											>
+												<EventAnalysisTitle />
+											</ClayLayout.ContainerFluid>
+										</Form.Form>
+
+										{editor}
+									</div>
+								</BaseEditPage.Body>
 							</>
 						);
 					}}
 				</Form>
-
-				<ConditionsPanel
-					event={event ?? undefined}
-					onEventChange={onEventChange}
-				/>
-
-				<ClayLayout.ContainerFluid
-					className="page-container pb-4"
-					size="xl"
-				>
-					<EventAnalysisEditor
-						channelId={channelId}
-						compareToPrevious={compareToPrevious}
-						event={event}
-						onCompareToPreviousChange={onCompareToPreviousChange}
-						onRangeSelectorsChange={onRangeSelectorsChange}
-						onTypeChange={onTypeChange}
-						rangeSelectors={rangeSelectors!}
-						type={type}
-					/>
-				</ClayLayout.ContainerFluid>
 			</div>
 		</BaseEditPage>
 	);

@@ -12,7 +12,7 @@ import {mergeRef} from 'shared/util/util';
 const ConditionsDropArea: React.FC<{children: React.ReactNode}> = ({
 	children,
 }) => {
-	const panelRef = useRef<HTMLElement>(null);
+	const panelRef = useRef<HTMLDivElement>(null);
 
 	const [, drop] = useDrop({
 		accept: [SortableChipTypes.Breakdown, SortableChipTypes.Filter],
@@ -44,12 +44,12 @@ const ConditionsDropArea: React.FC<{children: React.ReactNode}> = ({
 	}, [dragging]);
 
 	return (
-		<aside
-			className="bg-white border-right event-analysis-conditions-panel"
+		<div
+			className="event-analysis-conditions-panel h-100"
 			ref={mergeRef(drop, panelRef)}
 		>
 			{children}
-		</aside>
+		</div>
 	);
 };
 

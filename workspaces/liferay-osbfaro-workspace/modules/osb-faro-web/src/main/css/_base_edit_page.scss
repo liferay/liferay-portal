@@ -1,0 +1,22 @@
+.base-edit-page-body {
+	display: flex;
+	flex: 1 1 auto;
+	min-height: 0;
+
+	> :not(.base-edit-page-sidebar) {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+}
+
+.base-edit-page-sidebar {
+	flex: 0 0 $criteriaSidebarWidth;
+}
+
+.base-edit-page-sidebar-left {
+	order: -1;
+}
+
+.base-edit-page-sidebar-right {
+	order: 1;
+}

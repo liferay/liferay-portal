@@ -471,7 +471,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 
 							return (
 								<Form.Form
-									className="contributor-builder-root d-flex editing flex-column"
+									className="contributor-builder-root d-flex flex-column"
 									onSubmit={handleSubmit}
 								>
 									<NavigationWarning
@@ -500,8 +500,8 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 										}
 										sequential={!!sequential}
 									>
-										<div className="form-body">
-											<div className="criteria-builder-section-sidebar">
+										<BaseEditPage.Body>
+											<BaseEditPage.Sidebar position="left">
 												<CriteriaSidebar
 													channelId={channelId}
 													criteriaString={
@@ -514,7 +514,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 													}
 													type={type}
 												/>
-											</div>
+											</BaseEditPage.Sidebar>
 
 											<div className="criteria-builder-section-main">
 												<div className="contributor-container">
@@ -626,7 +626,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 													</div>
 												</div>
 											</div>
-										</div>
+										</BaseEditPage.Body>
 									</KeyboardMovementProvider>
 								</Form.Form>
 							);

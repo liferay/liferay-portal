@@ -1,13 +1,7 @@
 .criteria-sidebar-root {
-	background-color: $white;
-	border: 1px solid $cadmin-secondary-l2;
-	border-top-width: 0;
 	display: flex;
 	flex-flow: column;
 	height: 100%;
-	left: 0;
-	position: absolute;
-	width: $criteriaSidebarWidth;
 
 	.property-subgroup-label {
 		border-bottom: 1px solid $mainLighten74;

@@ -1,54 +1,27 @@
 .contributor-builder-root {
 	height: 100%;
 
-	.criteria-builder-section-main,
-	.criteria-builder-section-sidebar {
-		transition: all 0.5s ease;
-	}
-
 	.criteria-builder-section-main {
-		display: flex;
 		height: 100%;
-		padding-right: 0;
-		width: 100%;
+		overflow: auto;
 
-		.contributor-container {
-			height: 100%;
-			left: 0;
-			overflow: auto;
-			position: absolute;
-			width: 100%;
+		.contributor-container .container-fluid {
+			padding: 0;
 
-			.container-fluid {
-				height: 100%;
-				padding: 0;
-				transition: all 0.5s ease;
+			.content-wrapper {
+				padding: 24px;
+				position: relative;
 
-				.content-wrapper {
-					padding: 24px;
+				> .conjunction-button {
+					margin: 16px 0;
+				}
 
-					> .conjunction-button {
-						margin: 16px 0;
-					}
-
-					.empty-contributors {
-						background: $secondaryHover;
-						border: 2px dashed $mainLighten65;
-					}
+				.empty-contributors {
+					background: $secondaryHover;
+					border: 2px dashed $mainLighten65;
 				}
 			}
 		}
-	}
-
-	.criteria-builder-section-sidebar {
-		height: 100%;
-		left: 0;
-		overflow: hidden;
-		position: absolute;
-		top: 0;
-		visibility: hidden;
-		width: 0;
-		z-index: 10;
 	}
 
 	.drag-icon {
@@ -68,37 +41,5 @@
 		cursor: pointer;
 		font-weight: 600;
 		padding: 16px 32px;
-	}
-
-	&.editing {
-		.criteria-builder-section-main {
-			padding-left: $criteriaSidebarWidth;
-
-			.contributor-container .container-fluid {
-				padding-left: $criteriaSidebarWidth;
-
-				.content-wrapper {
-					position: relative;
-				}
-			}
-
-			@media (min-width: $maxPageWidth) {
-				.contributor-container .container-fluid {
-					padding-left: calc(
-						#{$criteriaSidebarWidth} - ((100% - #{$maxPageWidth}) /
-									2)
-					);
-
-					.content-wrapper {
-						padding-left: 32px;
-					}
-				}
-			}
-		}
-
-		.criteria-builder-section-sidebar {
-			visibility: visible;
-			width: $criteriaSidebarWidth;
-		}
 	}
 }
