@@ -9,9 +9,14 @@ import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.io.Serializable;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Michele Vigilante
@@ -34,6 +39,20 @@ public class DSRUtil {
 		}
 
 		return days;
+	}
+
+	public static String getFriendlyURL(Map<String, Serializable> values) {
+		String friendlyURL = MapUtil.getString(values, "friendlyURL");
+
+		if (Validator.isNull(friendlyURL)) {
+			friendlyURL = MapUtil.getString(values, "name");
+		}
+
+		if (Validator.isNotNull(friendlyURL) && !friendlyURL.startsWith("/")) {
+			return "/" + friendlyURL;
+		}
+
+		return friendlyURL;
 	}
 
 	public static boolean isExpired() {
