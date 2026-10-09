@@ -243,6 +243,16 @@ Populate `site-initializer` per `rules/site-initializer-format.md`.
 
 `siteExternalReferenceCode` uniquely identifies the site so rerunning the initializer updates it rather than creating a duplicate. Derive it from the site name in kebab-case.
 
+#### `batch`
+
+Copy [liferay-sample-batch](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-batch) from GitHub into `client-extensions/<name>`. Rename the top level keys and each `name` in `client-extension.yaml`, and replace the files in `batch/` with your own.
+
+**Keep the sample's `assemble` block.** Without it the `batch/` directory is left out of the zip. The build succeeds, the bundle reaches `STARTED`, and nothing is imported. The signal is `assembleClientExtension NO-SOURCE` in the build output, or no `Started batch engine import task` line in the log after `STARTED`. Confirm the files made it in with `unzip -l dist/<name>.zip`. Verified on 2026.Q1.
+
+Files import in filename order, so number them so that dependencies come first. Each file is one envelope, in the shape of the sample's files. On a local bundle the import runs inside the portal, and `Liferay.Headless.Batch.Engine.everything` alone was enough for `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
+
+A batch project needs no `Dockerfile` or `LCP.json`; the build and import succeed without them, as in the sample. Only microservice projects require them. Verified on 2026.Q1.
+
 ### Wire OAuth When Required
 
 If `rules/client-extension-types.md` shows "Yes" in the OAuth column, call `setup-oauth` to add the companion `oAuthApplicationHeadlessServer` entry. The OAuth entry must appear in the same `client-extension.yaml` file.
