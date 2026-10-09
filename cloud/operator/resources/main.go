@@ -82,16 +82,24 @@ func main() {
 		os.Exit(1)
 	}
 
+	var reconcilers []controller.Reconciler
+
+	if config.ClientExtensionsEnabled {
+		reconcilers = append(
+			reconcilers,
+			&cx.ClientExtensionReconciler{
+				APIReader:      manager.GetAPIReader(),
+				Client:         manager.GetClient(),
+				Recorder:       manager.GetEventRecorderFor("clientextension-controller"),
+				ServiceAccount: config.OperatorNamespace + "/" + config.OperatorServiceAccount,
+			},
+		)
+	}
+
 	provisioningClient := provisioning.NewHTTPClient(config.ProvisioningBaseURL)
 
-	if error := controller.SetupWithManager(
-		manager,
-		&cx.ClientExtensionReconciler{
-			APIReader:      manager.GetAPIReader(),
-			Client:         manager.GetClient(),
-			Recorder:       manager.GetEventRecorderFor("clientextension-controller"),
-			ServiceAccount: config.OperatorNamespace + "/" + config.OperatorServiceAccount,
-		},
+	reconcilers = append(
+		reconcilers,
 		&licensing.LiferayEnvironmentReconciler{
 			Client:                  manager.GetClient(),
 			ExpirationGracePeriod:   config.ExpirationGracePeriod,
@@ -107,7 +115,9 @@ func main() {
 				config.RetryInitialDelay, config.RetryMaxDelay, addon.GoRunner{},
 			),
 		},
-	); error != nil {
+	)
+
+	if error := controller.SetupWithManager(manager, reconcilers...); error != nil {
 		controller.SetupLog.Error(error, "Unable to set up controllers")
 
 		os.Exit(1)
@@ -115,6 +125,7 @@ func main() {
 
 	controller.SetupLog.Info(
 		"Starting manager",
+		"clientExtensionsEnabled", config.ClientExtensionsEnabled,
 		"heartbeatInterval", config.HeartbeatInterval,
 		"metricsAddress", config.MetricsAddress,
 		"probeAddress", config.ProbeAddress,
@@ -129,6 +140,7 @@ func main() {
 }
 
 type config struct {
+	ClientExtensionsEnabled bool          `env:"CLIENT_EXTENSIONS_ENABLED" envDefault:"false"`
 	Debug                   bool          `env:"DEBUG" envDefault:"false"`
 	DownloadPollInterval    time.Duration `env:"DOWNLOAD_POLL_INTERVAL" envDefault:"15s"`
 	ExpirationGracePeriod   time.Duration `env:"EXPIRATION_GRACE_PERIOD" envDefault:"2160h"`

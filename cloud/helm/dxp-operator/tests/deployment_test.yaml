@@ -219,6 +219,13 @@ tests:
         it: Omits the volumes and volume mounts by default
     -   asserts:
             -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="CLIENT_EXTENSIONS_ENABLED")].value
+                    value: "true"
+        it: Passes the ClientExtension controller switch as a quoted environment variable
+        set:
+            clientExtensions.enabled: true
+    -   asserts:
+            -   equal:
                     path: spec.template.spec.containers[0].env[?(@.name=="OPERATOR_NAMESPACE")].valueFrom.fieldRef.fieldPath
                     value: metadata.namespace
             -   equal:

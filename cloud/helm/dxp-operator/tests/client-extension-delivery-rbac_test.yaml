@@ -24,3 +24,9 @@ tests:
                                 -   patch
                                 -   update
         it: Defines the ConfigMap writes DXP grants in its own namespace
+        set:
+            clientExtensions.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the delivery cluster role by default

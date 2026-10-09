@@ -7,6 +7,17 @@
 			"description": "Pod affinity for the operator.",
 			"type": "object"
 		},
+		"clientExtensions": {
+			"additionalProperties": false,
+			"description": "ClientExtension controller.",
+			"properties": {
+				"enabled": {
+					"description": "Runs the ClientExtension controller and creates its RBAC.",
+					"type": "boolean"
+				}
+			},
+			"type": "object"
+		},
 		"customEnv": {
 			"additionalProperties": {
 				"type": [

@@ -39,6 +39,12 @@ tests:
             heartbeatInterval: 10 minutes
     -   asserts:
             -   failedTemplate:
+                    errorPattern: clientExtensions
+        it: Rejects a non-boolean ClientExtension controller switch
+        set:
+            clientExtensions.enabled: "yes"
+    -   asserts:
+            -   failedTemplate:
                     errorPattern: maxDelayy
         it: Rejects an unknown key inside a values object
         set:

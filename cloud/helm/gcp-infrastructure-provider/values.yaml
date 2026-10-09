@@ -29,6 +29,8 @@ gateway:
 global:
     gcp: {}
 liferay-dxp-operator:
+    clientExtensions:
+        enabled: true
     enabled: true
     fullnameOverride: dxp-operator
     marketplace:

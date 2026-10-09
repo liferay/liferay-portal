@@ -1,4 +1,6 @@
 affinity: {}
+clientExtensions:
+    enabled: false
 customEnv: {}
 customLabels: {}
 customVolumeMounts: {}

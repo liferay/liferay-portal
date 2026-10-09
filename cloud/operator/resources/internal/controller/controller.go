@@ -8,7 +8,7 @@ import (
 
 func SetupWithManager(
 	manager controllerruntime.Manager,
-	reconcilers ...reconciler,
+	reconcilers ...Reconciler,
 ) error {
 	for _, reconciler := range reconcilers {
 		if error := reconciler.SetupWithManager(manager); error != nil {
@@ -21,7 +21,7 @@ func SetupWithManager(
 	return nil
 }
 
-type reconciler interface {
+type Reconciler interface {
 	SetupWithManager(manager controllerruntime.Manager) error
 }
 

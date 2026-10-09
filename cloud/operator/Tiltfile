@@ -247,6 +247,7 @@ k8s_yaml(
         name="liferay-dxp-operator",
         namespace="liferay-system",
         set=[
+            "clientExtensions.enabled=true",
             "debug=true",
             "expirationGracePeriod=30m",
             "heartbeatInterval=30s",

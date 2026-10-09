@@ -25,6 +25,8 @@ spec:
             {{- end }}
             containers:
                 -   env:
+                        -   name: CLIENT_EXTENSIONS_ENABLED
+                            value: {{ .Values.clientExtensions.enabled | quote }}
                         -   name: DEBUG
                             value: {{ .Values.debug | quote }}
                         -   name: DOWNLOAD_POLL_INTERVAL

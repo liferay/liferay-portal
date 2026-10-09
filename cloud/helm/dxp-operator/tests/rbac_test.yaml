@@ -6,6 +6,27 @@ templates:
     -   templates/rbac.yaml
 tests:
     -   asserts:
+            -   exists:
+                    path: rules[?(@.resources[0]=="clientextensions")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="clientextensions/finalizers")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="clientextensions/status")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="configmaps")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="cronjobs")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="deployments")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="jobs")]
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Adds the ClientExtension rules when the ClientExtension controller is enabled
+        set:
+            clientExtensions.enabled: true
+    -   asserts:
             -   equal:
                     path: metadata.annotations
                     value:
@@ -52,6 +73,8 @@ tests:
             path: kind
             value: ClusterRole
         it: Grants only reading ConfigMaps cluster wide
+        set:
+            clientExtensions.enabled: true
     -   asserts:
             -   equal:
                     path: rules[?(@.resources[0]=="clientextensions/finalizers")].verbs
@@ -67,6 +90,8 @@ tests:
             path: kind
             value: ClusterRole
         it: Grants the verbs each ClientExtension subresource needs
+        set:
+            clientExtensions.enabled: true
     -   asserts:
             -   equal:
                     path: rules[?(@.resources[0]=="liferayenvironments")].verbs
@@ -124,15 +149,31 @@ tests:
             serviceAccount.create: false
     -   asserts:
             -   notExists:
+                    path: rules[?(@.resources[0]=="clientextensions")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="clientextensions/finalizers")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="clientextensions/status")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="configmaps")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="cronjobs")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="deployments")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="jobs")]
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Omits the ClientExtension rules by default
+    -   asserts:
+            -   notExists:
                     path: metadata.annotations
         documentSelector:
             path: kind
             value: ServiceAccount
         it: Omits the service account annotations by default
     -   asserts:
-            -   lengthEqual:
-                    count: 17
-                    path: rules
             -   contains:
                     content:
                         apiGroups:
