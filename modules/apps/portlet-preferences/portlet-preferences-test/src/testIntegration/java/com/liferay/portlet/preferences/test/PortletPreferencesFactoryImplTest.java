@@ -15,8 +15,10 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.portlet.Portlet;
@@ -34,6 +36,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Jorge Ferrer
@@ -87,6 +91,26 @@ public class PortletPreferencesFactoryImplTest
 
 		Assert.assertArrayEquals(
 			portletPreferences.getValues(name, null), values);
+	}
+
+	@Test
+	public void testGetPortalPreferences() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setSignedIn(true);
+		themeDisplay.setUser(TestPropsValues.getUser());
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		Assert.assertSame(
+			portletPreferencesFactory.getPortalPreferences(
+				mockHttpServletRequest),
+			portletPreferencesFactory.getPortalPreferences(
+				mockHttpServletRequest));
 	}
 
 	@Test
