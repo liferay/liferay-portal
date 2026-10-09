@@ -2758,6 +2758,8 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 			String taskNameSuffix = portalToolName.substring(25, length - 8);
 
+			taskNameSuffix = taskNameSuffix.replace(".", "");
+
 			String buildTaskName = "build" + taskNameSuffix;
 
 			Gradle gradle = project.getGradle();
