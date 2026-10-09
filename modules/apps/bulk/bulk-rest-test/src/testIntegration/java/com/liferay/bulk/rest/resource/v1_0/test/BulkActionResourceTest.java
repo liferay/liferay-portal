@@ -197,6 +197,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_testPostBulkActionItemPreviewPage(_depotEntry1, "RECYCLE_BIN");
 		_testPostBulkActionItemPreviewPage(_depotEntry2, "PERMANENT_DELETION");
 		_testPostBulkActionItemPreviewPageWithNonexistentClassPK();
+		_testPostBulkActionItemPreviewPageWithTrashedItems();
 	}
 
 	private DepotEntry _addDepotEntry(boolean trashEnabled) throws Exception {
@@ -494,8 +495,8 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		ObjectEntryFolder contentObjectEntryFolder =
 			_objectEntryFolderLocalService.
 				getObjectEntryFolderByExternalReferenceCode(
-					"L_CONTENTS", depotEntry.getGroupId(),
-					testCompany.getCompanyId());
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+					depotEntry.getGroupId(), testCompany.getCompanyId());
 
 		ObjectEntryFolder objectEntryFolder1 = _addObjectEntryFolder(
 			depotEntry.getGroupId(),
@@ -738,6 +739,78 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 			items.get(0), objectEntryFolder2.getObjectEntryFolderId(),
 			expectedDeletionType, 0L, null, objectEntryFolder2.getName(),
 			"FOLDER", null);
+	}
+
+	private void _testPostBulkActionItemPreviewPageWithTrashedItems()
+		throws Exception {
+
+		ObjectEntryFolder contentObjectEntryFolder =
+			_objectEntryFolderLocalService.
+				getObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+					_depotEntry1.getGroupId(), testCompany.getCompanyId());
+
+		_serviceContext.setAttribute(
+			"friendlyUrlMap", new HashMap<String, String>());
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			_depotEntry1.getGroupId(),
+			contentObjectEntryFolder.getObjectEntryFolderId());
+
+		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
+			testGroup.getGroupId(), StringPool.BLANK,
+			_portal.getClassNameId(
+				_cmsBasicWebContentObjectDefinition.getClassName()),
+			objectEntry.getObjectEntryId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomInt(), RandomTestUtil.randomInt(),
+			_serviceContext);
+
+		objectEntry = _objectEntryLocalService.moveObjectEntryToTrash(
+			TestPropsValues.getUserId(), objectEntry, _serviceContext);
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.moveObjectEntryFolderToTrash(
+				TestPropsValues.getUserId(),
+				_addObjectEntryFolder(
+					_depotEntry1.getGroupId(),
+					contentObjectEntryFolder.getObjectEntryFolderId()),
+				_serviceContext);
+
+		BulkAction bulkAction = new DeleteObjectBulkSelectionAction();
+
+		bulkAction.setBulkActionItems(
+			new BulkActionItem[] {
+				_toBulkActionItem(
+					_cmsBasicWebContentObjectDefinition.getClassName(),
+					objectEntry),
+				_toBulkActionItem(objectEntryFolder)
+			});
+
+		SelectionScope selectionScope = new SelectionScope();
+
+		selectionScope.setSelectAll(false);
+
+		bulkAction.setSelectionScope(selectionScope);
+
+		bulkAction.setType(BulkAction.Type.DELETE_OBJECT_BULK_SELECTION_ACTION);
+
+		Page<BulkActionItem> page =
+			bulkActionResource.postBulkActionItemPreviewPage(
+				false, null, null, Pagination.of(1, 10), "usages:asc",
+				bulkAction);
+
+		List<BulkActionItem> items = ListUtil.fromCollection(page.getItems());
+
+		Assert.assertEquals(items.toString(), 2, items.size());
+
+		_assertBulkActionItem(
+			items.get(0), objectEntryFolder.getObjectEntryFolderId(),
+			"PERMANENT_DELETION", 0L, null, objectEntryFolder.getName(),
+			"FOLDER", null);
+		_assertBulkActionItem(
+			items.get(1), objectEntry.getObjectEntryId(), "PERMANENT_DELETION",
+			null, "basic-web-content", objectEntry.getTitleValue(_LANGUAGE_ID),
+			"ASSET", 1L);
 	}
 
 	private void _testPostBulkActionWithTypeAddObjectToProject()

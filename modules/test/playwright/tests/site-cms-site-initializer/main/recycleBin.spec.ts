@@ -170,6 +170,8 @@ test(
 
 			await page.getByLabel('Delete').waitFor({state: 'visible'});
 
+			await expect(page.locator('.modal')).toHaveCSS('opacity', '1');
+
 			await checkAccessibility({
 				page,
 				selectors: ['.modal-content'],
