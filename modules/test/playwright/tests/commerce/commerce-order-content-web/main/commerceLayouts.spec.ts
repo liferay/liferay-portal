@@ -3362,6 +3362,8 @@ test(
 			.click();
 		await commerceLayoutsPage.createNewOrderButton.click();
 
+		await page.waitForURL(/\/order\/\d+/);
+
 		await globalMenuPage.goToSite(site.name);
 
 		await commerceLayoutsPage
