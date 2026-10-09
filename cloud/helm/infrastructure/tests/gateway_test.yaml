@@ -84,7 +84,7 @@ tests:
                     protocol: HTTPS
     -   asserts:
             -   failedTemplate:
-                    errorMessage: 'The value "gateway.accessControl.allowedCIDRs" contains an invalid CIDR: 10.0.0.0/33'
+                    errorMessage: "The value \"gateway.accessControl.allowedCIDRs\" contains an invalid CIDR: 10.0.0.0/33"
         it: Fails when an allowed CIDR is malformed
         set:
             gateway.accessControl.allowedCIDRs:
