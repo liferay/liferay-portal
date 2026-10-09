@@ -18,6 +18,7 @@ import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -65,7 +66,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		Results<com.liferay.osb.faro.engine.client.model.Account> results =
 			_contactsEngineClient.getAccounts(
 				faroProject, channelId,
-				_getLifecycleStageFilterString(faroProject, lifecycleStage),
+				_getLifecycleStageFilterString(
+					faroProject, channelId, lifecycleStage),
 				true, search, rangeEnd, TimeRange.getRangeKey(rangeKey),
 				rangeStart, null, FaroPaginationUtil.getCur(pagination),
 				FaroPaginationUtil.getDelta(pagination),
@@ -84,14 +86,15 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	}
 
 	private String _getLifecycleStageFilterString(
-		FaroProject faroProject, String lifecycleStage) {
+		FaroProject faroProject, String channelId, String lifecycleStage) {
 
 		if (Validator.isNull(lifecycleStage)) {
 			return null;
 		}
 
 		List<AccountLifecycle> accountLifecycles =
-			_contactsEngineClient.getAccountLifecycles(faroProject);
+			_contactsEngineClient.getAccountLifecycles(
+				faroProject, GetterUtil.getLong(channelId));
 
 		if (ListUtil.isEmpty(accountLifecycles)) {
 			throw new IllegalArgumentException(
