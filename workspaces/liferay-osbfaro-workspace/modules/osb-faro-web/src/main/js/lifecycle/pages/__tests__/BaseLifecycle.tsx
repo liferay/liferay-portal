@@ -118,20 +118,20 @@ const useRequestImpl =
 		processedDate?: number | null;
 		totalCount?: number;
 	} = {}) =>
-	({variables}: {variables?: {[key: string]: any}} = {}) =>
-		variables?.channelId !== undefined
+	({dataSourceFn}: {dataSourceFn?: unknown} = {}) =>
+		dataSourceFn === API.lifecycle.fetchLifecycles
 			? {
-					data: buildAccountMetrics(totalCount),
-					error: false,
-					loading: metricsLoading,
-				}
-			: {
 					data: lifecycles.map((lifecycle) => ({
 						processedDate,
 						...lifecycle,
 					})),
 					error: false,
 					loading: false,
+				}
+			: {
+					data: buildAccountMetrics(totalCount),
+					error: false,
+					loading: metricsLoading,
 				};
 
 const store = mockStore();
