@@ -19,6 +19,14 @@ readOnlyRootFilesystem: false
 {{- printf "%s-elasticsearch" .Release.Namespace -}}
 {{- end -}}
 
+{{- define "liferay.validateCIDR" -}}
+{{- $ipv4 := "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])/(3[0-2]|[12]?[0-9])$" -}}
+{{- $ipv6 := "^[0-9A-Fa-f:]*:[0-9A-Fa-f:]*/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$" -}}
+{{- if not (or (regexMatch $ipv4 (toString .)) (regexMatch $ipv6 (toString .))) -}}
+{{- fail (printf "The value %q contains an invalid CIDR: %s" "gateway.accessControl.allowedCIDRs" (toString .)) -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "liferay.validateDNS1123Name" -}}
 {{- if not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$" .) -}}
 {{- fail (printf "Name is not DNS-1123 compliant: %s" .) -}}

@@ -84,6 +84,14 @@ tests:
                     protocol: HTTPS
     -   asserts:
             -   failedTemplate:
+                    errorMessage: 'The value "gateway.accessControl.allowedCIDRs" contains an invalid CIDR: 10.0.0.0/33'
+        it: Fails when an allowed CIDR is malformed
+        set:
+            gateway.accessControl.allowedCIDRs:
+                -   10.0.0.0/33
+            gateway.accessControl.enabled: true
+    -   asserts:
+            -   failedTemplate:
                     errorPattern: The web endpoint uses port 80 without a hostname, which collides with the implicit http listener
         it: Fails when an endpoint claims port 80 without a hostname
         set:

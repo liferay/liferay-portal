@@ -3,6 +3,11 @@
 {{- if and $gateway.accessControl.enabled (not $gateway.accessControl.allowedCIDRs) }}
 {{- fail (printf "The value %q must not be empty when %q is true" "gateway.accessControl.allowedCIDRs" "gateway.accessControl.enabled") }}
 {{- end }}
+{{- if $gateway.accessControl.enabled }}
+{{- range $gateway.accessControl.allowedCIDRs }}
+{{- include "liferay.validateCIDR" . }}
+{{- end }}
+{{- end }}
 {{- range $name, $endpoint := .Values.endpoints }}
 {{- include "liferay.validateEndpoint" (dict "endpoint" $endpoint "name" $name) }}
 {{- end }}
