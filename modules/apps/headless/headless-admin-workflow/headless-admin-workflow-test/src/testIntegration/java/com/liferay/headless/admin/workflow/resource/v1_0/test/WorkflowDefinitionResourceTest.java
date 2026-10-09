@@ -764,10 +764,18 @@ public class WorkflowDefinitionResourceTest
 			JSONObject workflowDefinitionJSONObject)
 		throws Exception {
 
-		return HTTPTestUtil.invokeToJSONObject(
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			workflowDefinitionJSONObject.toString(),
 			"headless-admin-workflow/v1.0/workflow-definitions",
 			Http.Method.POST);
+
+		WorkflowDefinition workflowDefinition = WorkflowDefinitionSerDes.toDTO(
+			jsonObject.toString());
+
+		_workflowDefinitions.put(
+			workflowDefinition.getName(), workflowDefinition);
+
+		return jsonObject;
 	}
 
 	private void _testPostWorkflowDefinitionSaveWithScope() throws Exception {
