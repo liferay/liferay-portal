@@ -88,6 +88,33 @@ jobs:
                     }
 
                     main "${@}"
+            -   name: Check ClientExtension controller is disabled
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local logs
+
+                        logs=$(kubectl logs deployment/liferay-dxp-operator --namespace dxp-operator-system)
+
+                        if [[ ${logs} == *cx.ClientExtensionReconciler* ]]
+                        then
+                            echo "The operator started the ClientExtension controller although it is disabled." >&2
+
+                            exit 1
+                        fi
+
+                        if [[ ${logs} != *licensing.LiferayEnvironmentReconciler* ]]
+                        then
+                            echo "The operator did not start the LiferayEnvironment controller." >&2
+
+                            exit 1
+                        fi
+                    }
+
+                    main "${@}"
             -   if: ${{failure()}}
                 name: Print operator events
                 run: kubectl get events --namespace dxp-operator-system
