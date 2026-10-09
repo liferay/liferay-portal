@@ -35,6 +35,12 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if and \\$opensearchEnabled \\$cmkEnabled \\}\\}\\s+---\\s+apiVersion: kms\\.aws\\.m\\.upbound\\.io/v1beta1\\s+kind: Alias"
+        it: Creates the search key only when the search engine is OpenSearch and customer managed keys are enabled
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "deleteAfter: \\{\\{ \\$backup\\.retentionDays \\}\\}"
         it: Deletes each recovery point after the retention period
     -   asserts:

@@ -69,7 +69,7 @@ spec:
         region: {{ $env.region }}
     managementPolicies: {{ $managementPolicies }}
 {{- end }}
-{{- if and $opensearch $cmkEnabled }}
+{{- if and $opensearchEnabled $cmkEnabled }}
 ---
 apiVersion: kms.aws.m.upbound.io/v1beta1
 kind: Alias
