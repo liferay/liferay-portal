@@ -77,12 +77,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    data-file="ac_api.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_api"
-                    />
-                  </svg>
+                  />
                 </span>
                 APIs
               </a>
@@ -99,12 +96,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-definitions icon-root"
+                    data-file="definitions.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#definitions"
-                    />
-                  </svg>
+                  />
                 </span>
                 Definitions
               </a>
@@ -121,12 +115,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    data-file="data_privacy_lock.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#data_privacy_lock"
-                    />
-                  </svg>
+                  />
                 </span>
                 Data Control & Privacy
               </a>
@@ -143,12 +134,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    data-file="faro_data_source.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#faro_data_source"
-                    />
-                  </svg>
+                  />
                 </span>
                 Data Sources
               </a>
@@ -165,12 +153,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    data-file="ac_star.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_star"
-                    />
-                  </svg>
+                  />
                 </span>
                 Recommendations
               </a>
@@ -198,12 +183,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-user_management icon-root"
+                    data-file="user_management.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#user_management"
-                    />
-                  </svg>
+                  />
                 </span>
                 User Management
               </a>
@@ -220,12 +202,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    data-file="ac_page.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_page"
-                    />
-                  </svg>
+                  />
                 </span>
                 Properties
               </a>
@@ -242,12 +221,9 @@ exports[`View should render a CSV data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-usage icon-root"
+                    data-file="usage.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#usage"
-                    />
-                  </svg>
+                  />
                 </span>
                 Subscription & Usage
               </a>
@@ -456,12 +432,9 @@ exports[`View should render a CSV data-source page 1`] = `
                   >
                     <svg
                       class="lexicon-icon lexicon-icon-faro_connection_success_ovals icon-root"
+                      data-file="faro_connection_success_ovals.svg"
                       role="presentation"
-                    >
-                      <use
-                        href="#faro_connection_success_ovals"
-                      />
-                    </svg>
+                    />
                   </div>
                   <div
                     class="form-group-item"
@@ -584,12 +557,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    data-file="ac_api.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_api"
-                    />
-                  </svg>
+                  />
                 </span>
                 APIs
               </a>
@@ -606,12 +576,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-definitions icon-root"
+                    data-file="definitions.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#definitions"
-                    />
-                  </svg>
+                  />
                 </span>
                 Definitions
               </a>
@@ -628,12 +595,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    data-file="data_privacy_lock.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#data_privacy_lock"
-                    />
-                  </svg>
+                  />
                 </span>
                 Data Control & Privacy
               </a>
@@ -650,12 +614,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    data-file="faro_data_source.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#faro_data_source"
-                    />
-                  </svg>
+                  />
                 </span>
                 Data Sources
               </a>
@@ -672,12 +633,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    data-file="ac_star.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_star"
-                    />
-                  </svg>
+                  />
                 </span>
                 Recommendations
               </a>
@@ -705,12 +663,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-user_management icon-root"
+                    data-file="user_management.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#user_management"
-                    />
-                  </svg>
+                  />
                 </span>
                 User Management
               </a>
@@ -727,12 +682,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    data-file="ac_page.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_page"
-                    />
-                  </svg>
+                  />
                 </span>
                 Properties
               </a>
@@ -749,12 +701,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-usage icon-root"
+                    data-file="usage.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#usage"
-                    />
-                  </svg>
+                  />
                 </span>
                 Subscription & Usage
               </a>
@@ -1397,12 +1346,9 @@ exports[`View should render a Liferay data-source page 1`] = `
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
+                        data-file="ac_satellite.svg"
                         role="presentation"
-                      >
-                        <use
-                          href="#ac_satellite"
-                        />
-                      </svg>
+                      />
                     </div>
                     <div
                       class="h4 no-results-title"
@@ -1516,12 +1462,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    data-file="ac_api.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_api"
-                    />
-                  </svg>
+                  />
                 </span>
                 APIs
               </a>
@@ -1538,12 +1481,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-definitions icon-root"
+                    data-file="definitions.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#definitions"
-                    />
-                  </svg>
+                  />
                 </span>
                 Definitions
               </a>
@@ -1560,12 +1500,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    data-file="data_privacy_lock.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#data_privacy_lock"
-                    />
-                  </svg>
+                  />
                 </span>
                 Data Control & Privacy
               </a>
@@ -1582,12 +1519,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    data-file="faro_data_source.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#faro_data_source"
-                    />
-                  </svg>
+                  />
                 </span>
                 Data Sources
               </a>
@@ -1604,12 +1538,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    data-file="ac_star.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_star"
-                    />
-                  </svg>
+                  />
                 </span>
                 Recommendations
               </a>
@@ -1637,12 +1568,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-user_management icon-root"
+                    data-file="user_management.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#user_management"
-                    />
-                  </svg>
+                  />
                 </span>
                 User Management
               </a>
@@ -1659,12 +1587,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    data-file="ac_page.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#ac_page"
-                    />
-                  </svg>
+                  />
                 </span>
                 Properties
               </a>
@@ -1681,12 +1606,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                 >
                   <svg
                     class="lexicon-icon lexicon-icon-usage icon-root"
+                    data-file="usage.svg"
                     role="presentation"
-                  >
-                    <use
-                      href="#usage"
-                    />
-                  </svg>
+                  />
                 </span>
                 Subscription & Usage
               </a>
@@ -2335,12 +2257,9 @@ exports[`View should render a Salesforce data-source page 1`] = `
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
+                        data-file="ac_satellite.svg"
                         role="presentation"
-                      >
-                        <use
-                          href="#ac_satellite"
-                        />
-                      </svg>
+                      />
                     </div>
                     <div
                       class="h4 no-results-title"

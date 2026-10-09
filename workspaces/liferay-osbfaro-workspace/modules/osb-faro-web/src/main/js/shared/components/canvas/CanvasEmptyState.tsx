@@ -1,5 +1,5 @@
-import emptyStateReducedMotionURL from '../../../../images/states/empty_state_reduced_motion.svg';
-import emptyStateURL from '../../../../images/states/empty_state.svg';
+import emptyStateReducedMotionURL from '../../../../images/states/empty_state_reduced_motion.svg?url';
+import emptyStateURL from '../../../../images/states/empty_state.svg?url';
 import getCN from 'classnames';
 import React, {useSyncExternalStore} from 'react';
 import {Heading, Text} from '@clayui/core';

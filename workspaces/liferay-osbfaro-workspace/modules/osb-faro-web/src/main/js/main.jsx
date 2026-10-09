@@ -2,7 +2,6 @@ import '@clayui/css/lib/css/atlas.css';
 
 import '../css/main.scss';
 import './external-scripts';
-import './sprite';
 
 import App from './App';
 

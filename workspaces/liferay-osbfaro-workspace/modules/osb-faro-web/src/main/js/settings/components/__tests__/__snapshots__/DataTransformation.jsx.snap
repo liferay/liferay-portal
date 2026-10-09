@@ -27,21 +27,15 @@ exports[`DataTransformation should render 1`] = `
       >
         <svg
           class="lexicon-icon lexicon-icon-faro_connection_success_ovals icon-root"
+          data-file="faro_connection_success_ovals.svg"
           role="presentation"
-        >
-          <use
-            href="#faro_connection_success_ovals"
-          />
-        </svg>
+        />
         0 fields mapped.
         <svg
           class="lexicon-icon lexicon-icon-faro_connection_error_ovals icon-root"
+          data-file="faro_connection_error_ovals.svg"
           role="presentation"
-        >
-          <use
-            href="#faro_connection_error_ovals"
-          />
-        </svg>
+        />
         1 fields not mapped.
       </p>
       <div
@@ -122,12 +116,9 @@ exports[`DataTransformation should render 1`] = `
           >
             <svg
               class="lexicon-icon lexicon-icon-faro_connection_error_ovals icon-root"
+              data-file="faro_connection_error_ovals.svg"
               role="presentation"
-            >
-              <use
-                href="#faro_connection_error_ovals"
-              />
-            </svg>
+            />
           </div>
           <div
             class="form-group-item"

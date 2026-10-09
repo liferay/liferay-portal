@@ -1,5 +1,5 @@
-import acFaviconURL from '../../../images/favicons/ac_favicon.svg';
-import ldpFaviconURL from '../../../images/favicons/ldp_favicon.svg';
+import acFaviconURL from '../../../images/favicons/ac_favicon.svg?url';
+import ldpFaviconURL from '../../../images/favicons/ldp_favicon.svg?url';
 import React from 'react';
 import {useEffect} from 'react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';

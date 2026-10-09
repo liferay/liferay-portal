@@ -10,6 +10,7 @@ import {
 } from '@apollo/client';
 
 import {ClayIconSpriteContext} from '@clayui/icon';
+import {CLAY_ICONS_SPRITEMAP} from 'shared/components/Icon';
 import {ClayLinkContext} from '@clayui/link';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {RouterProvider} from 'react-router-dom';
@@ -30,7 +31,7 @@ const App = () => {
 		<ApolloProvider client={client}>
 			<ApolloProviderHooks client={client}>
 				<Provider store={store}>
-					<ClayIconSpriteContext.Provider value="/o/osb-faro-web/dist/sprite.svg">
+					<ClayIconSpriteContext.Provider value={CLAY_ICONS_SPRITEMAP}>
 						<ClayLinkContext.Provider value={RouterLink}>
 							<UnassignedSegmentsProvider>
 								<OnboardingContext.Provider

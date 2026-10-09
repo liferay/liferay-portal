@@ -67,12 +67,9 @@ exports[`AssociatedSegmentsCard should render 1`] = `
               >
                 <svg
                   class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
+                  data-file="individual_dynamic_segment.svg"
                   role="presentation"
-                >
-                  <use
-                    href="#individual_dynamic_segment"
-                  />
-                </svg>
+                />
               </div>
             </div>
             <div
@@ -109,12 +106,9 @@ exports[`AssociatedSegmentsCard should render 1`] = `
               >
                 <svg
                   class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
+                  data-file="individual_dynamic_segment.svg"
                   role="presentation"
-                >
-                  <use
-                    href="#individual_dynamic_segment"
-                  />
-                </svg>
+                />
               </div>
             </div>
             <div

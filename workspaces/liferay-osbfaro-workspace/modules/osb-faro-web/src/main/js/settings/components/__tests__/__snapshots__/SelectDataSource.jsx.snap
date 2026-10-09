@@ -23,12 +23,9 @@ exports[`SelectDataSource should render 1`] = `
           >
             <svg
               class="lexicon-icon lexicon-icon-csv_logo icon-root icon-size-xxxl"
+              data-file="csv_logo.svg"
               role="presentation"
-            >
-              <use
-                href="#csv_logo"
-              />
-            </svg>
+            />
           </div>
           <div
             class="details"
@@ -53,12 +50,9 @@ exports[`SelectDataSource should render 1`] = `
           >
             <svg
               class="lexicon-icon lexicon-icon-liferay_logo icon-root icon-size-xxxl"
+              data-file="liferay_logo.svg"
               role="presentation"
-            >
-              <use
-                href="#liferay_logo"
-              />
-            </svg>
+            />
           </div>
           <div
             class="details"
@@ -94,12 +88,9 @@ exports[`SelectDataSource should render 1`] = `
           >
             <svg
               class="lexicon-icon lexicon-icon-salesforce_logo icon-root icon-size-xxl"
+              data-file="salesforce_logo.svg"
               role="presentation"
-            >
-              <use
-                href="#salesforce_logo"
-              />
-            </svg>
+            />
           </div>
           <div
             class="details"

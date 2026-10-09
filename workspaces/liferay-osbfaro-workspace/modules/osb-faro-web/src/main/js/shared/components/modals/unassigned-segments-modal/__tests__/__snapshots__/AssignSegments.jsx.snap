@@ -60,12 +60,9 @@ exports[`AssignSegments should render 1`] = `
                         >
                           <svg
                             class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                            data-file="order_arrow_ascending.svg"
                             role="presentation"
-                          >
-                            <use
-                              href="#order_arrow_ascending"
-                            />
-                          </svg>
+                          />
                         </button>
                       </div>
                     </button>

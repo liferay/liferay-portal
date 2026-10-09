@@ -16,12 +16,9 @@ exports[`WorkspacesBasePage should render 1`] = `
       >
         <svg
           class="lexicon-icon lexicon-icon-liferay_logo icon-root liferay-logo"
+          data-file="liferay_logo.svg"
           role="presentation"
-        >
-          <use
-            href="#liferay_logo"
-          />
-        </svg>
+        />
         <span
           class="sr-only"
         >
@@ -72,12 +69,9 @@ exports[`WorkspacesBasePage should render 1`] = `
           >
             <svg
               class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
+              data-file="ac_logo.svg"
               role="presentation"
-            >
-              <use
-                href="#ac_logo"
-              />
-            </svg>
+            />
             <span
               class="logo-text"
             >

@@ -30,12 +30,9 @@ exports[`IssueSubmitted should render 1`] = `
   >
     <svg
       class="lexicon-icon lexicon-icon-ac_no_sites icon-root icon-size-xxxl my-5"
+      data-file="ac_no_sites.svg"
       role="presentation"
-    >
-      <use
-        href="#ac_no_sites"
-      />
-    </svg>
+    />
     <h3>
       Message Received
     </h3>

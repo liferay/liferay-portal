@@ -36,28 +36,19 @@ exports[`ConnectDXPModal renders 1`] = `
         >
           <svg
             class="lexicon-icon lexicon-icon-dxp_icon icon-root icon-size-xl"
+            data-file="dxp_icon.svg"
             role="presentation"
-          >
-            <use
-              href="#dxp_icon"
-            />
-          </svg>
+          />
           <svg
             class="lexicon-icon lexicon-icon-ac_horizontal_arrows arrows icon-root icon-size-lg"
+            data-file="ac_horizontal_arrows.svg"
             role="presentation"
-          >
-            <use
-              href="#ac_horizontal_arrows"
-            />
-          </svg>
+          />
           <svg
             class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-xl logo-disconnected"
+            data-file="ac_logo.svg"
             role="presentation"
-          >
-            <use
-              href="#ac_logo"
-            />
-          </svg>
+          />
         </div>
         <div
           class="text-center mb-4"

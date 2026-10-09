@@ -39,12 +39,9 @@ exports[`Workspace Empty State should render 1`] = `
       >
         <svg
           class="lexicon-icon lexicon-icon-ac_integration icon-root"
+          data-file="ac_integration.svg"
           role="presentation"
-        >
-          <use
-            href="#ac_integration"
-          />
-        </svg>
+        />
         <p>
           Do more with our Business & Enterprise Plans
         </p>
@@ -64,12 +61,9 @@ exports[`Workspace Empty State should render 1`] = `
       >
         <svg
           class="lexicon-icon lexicon-icon-ac_page_analytics icon-root"
+          data-file="ac_page_analytics.svg"
           role="presentation"
-        >
-          <use
-            href="#ac_page_analytics"
-          />
-        </svg>
+        />
         <p>
           90 Day Full Feature Trial
         </p>

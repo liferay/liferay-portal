@@ -31,13 +31,10 @@ exports[`ConfigureWorkspace renders 1`] = `
       >
         <svg
           class="lexicon-icon lexicon-icon-analytics_onboarding_welcome icon-root"
+          data-file="analytics_onboarding_welcome.svg"
           role="presentation"
           style="font-size: 10rem;"
-        >
-          <use
-            href="#analytics_onboarding_welcome"
-          />
-        </svg>
+        />
       </div>
       <div
         class="text-center mb-4"

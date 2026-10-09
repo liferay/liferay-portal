@@ -109,12 +109,9 @@ exports[`EventList should render 1`] = `
                   >
                     <svg
                       class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                      data-file="order_arrow_ascending.svg"
                       role="presentation"
-                    >
-                      <use
-                        href="#order_arrow_ascending"
-                      />
-                    </svg>
+                    />
                   </button>
                 </div>
               </a>
@@ -236,12 +233,9 @@ exports[`EventList should render 1`] = `
                   >
                     <svg
                       class="lexicon-icon lexicon-icon-ac_hidden icon-root"
+                      data-file="ac_hidden.svg"
                       role="presentation"
-                    >
-                      <use
-                        href="#ac_hidden"
-                      />
-                    </svg>
+                    />
                   </button>
                 </div>
               </span>

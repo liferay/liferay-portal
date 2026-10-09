@@ -608,12 +608,9 @@ exports[`AudienceReport should render 1`] = `
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-ac_segment analytics-bar-chart-html-icon icon-root"
+                        data-file="ac_segment.svg"
                         role="presentation"
-                      >
-                        <use
-                          href="#ac_segment"
-                        />
-                      </svg>
+                      />
                       <div
                         class="text-truncate w-100"
                       >

@@ -18,9 +18,9 @@ describe('SegmentSticker', () => {
 			<SegmentSticker segmentType={SegmentTypes.Batch} />
 		);
 
-		expect(container.querySelector('use')).toHaveAttribute(
-			'href',
-			'#individual_dynamic_segment'
+		expect(container.querySelector('svg')).toHaveAttribute(
+			'data-file',
+			'individual_dynamic_segment.svg'
 		);
 	});
 

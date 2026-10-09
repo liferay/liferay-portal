@@ -637,6 +637,7 @@ module.exports = {
 		},
 	},
 	moduleNameMapper: {
+		'^(.+\\.svg)\\?url$': '$1',
 		'^@clayui/icon-runtime$': '@clayui/icon',
 		'^@liferay/frontend-data-set-web$':
 			'<rootDir>/src/main/js/test/__mocks__/@liferay/frontend-data-set-web.js',
@@ -686,5 +687,5 @@ module.exports = {
 		'^.+\\.svg$': '<rootDir>/src/main/js/test/svgTransformer.js',
 		'^.+\\.tsx?$': ['ts-jest', {tsconfig: 'tsconfig.test.json'}],
 	},
-	transformIgnorePatterns: ['/node_modules/'],
+	transformIgnorePatterns: ['/node_modules/(?!.+\\.svg$)'],
 };

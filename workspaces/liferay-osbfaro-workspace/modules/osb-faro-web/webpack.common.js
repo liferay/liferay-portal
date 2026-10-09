@@ -4,7 +4,6 @@ const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const NormalizeCharsetPlugin = require('postcss-normalize-charset');
 const path = require('path');
-const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const webpack = require('webpack');
 
 const PUBLIC_PATH = '/o/osb-faro-web/dist/';
@@ -14,18 +13,6 @@ function resolveModule(name = '') {
 }
 
 const include = [resolveModule()];
-
-const FAVICONS_DIR = path.resolve(
-	__dirname,
-	'src',
-	'main',
-	'images',
-	'favicons'
-);
-
-const STATES_DIR = path.resolve(__dirname, 'src', 'main', 'images', 'states');
-
-const ASSET_SVG_DIRS = [FAVICONS_DIR, STATES_DIR];
 
 const config = {
 	entry: [
@@ -152,45 +139,82 @@ const config = {
 				],
 			},
 			{
-
-				// Favicons and empty state illustrations are referenced by URL,
-				// so they are emitted as standalone files instead of sprite
-				// symbols. The illustrations also keep their own style rules,
-				// which would collide with other symbols inside the sprite.
-
-				include: ASSET_SVG_DIRS,
-				test: /\.svg$/,
-				type: 'asset/resource',
-			},
-			{
-				exclude: ASSET_SVG_DIRS,
-				test: /\.svg$/,
-				use: [
+				oneOf: [
 					{
-						loader: 'svg-sprite-loader',
-						options: {
-							extract: true,
-							spriteFilename: 'sprite.svg',
+
+						// An SVG imported with `?url`, such as the favicons and
+						// the Clay sprite, is emitted as a standalone file.
+
+						generator: {
+							filename: 'images/[name].[contenthash:8][ext]',
 						},
+						resourceQuery: /url/,
+						type: 'asset/resource',
 					},
 					{
-						loader: 'svgo-loader',
-						options: {
-							plugins: [
-								{
-									name: 'preset-default',
-									params: {
-										overrides: {
-											removeUselessStrokeAndFill: false,
+
+						// So is an SVG the CSS references as a background. Its
+						// dimensions are removed, as they were when it lived
+						// in the sprite, so that it scales to the element.
+
+						generator: {
+							filename: 'images/[name].[contenthash:8][ext]',
+						},
+						issuer: /\.s?css$/,
+						type: 'asset/resource',
+						use: [
+							{
+								loader: 'svgo-loader',
+								options: {
+									plugins: [
+										{
+											name: 'preset-default',
+											params: {
+												overrides: {
+													removeUselessStrokeAndFill: false,
+												},
+											},
 										},
+										'removeDimensions',
+										'removeTitle',
+									],
+								},
+							},
+						],
+					},
+					{
+
+						// Every other SVG the app imports is an Analytics Cloud
+						// icon, bundled as a React component.
+
+						use: [
+							{
+								loader: '@svgr/webpack',
+								options: {
+									dimensions: false,
+									ref: true,
+									svgoConfig: {
+										plugins: [
+											{
+												name: 'preset-default',
+												params: {
+													overrides: {
+														removeUselessStrokeAndFill: false,
+														removeViewBox: false,
+													},
+												},
+											},
+											'prefixIds',
+											'removeDimensions',
+											'removeTitle',
+										],
 									},
 								},
-								'removeDimensions',
-								'removeTitle',
-							],
-						},
+							},
+						],
 					},
 				],
+				test: /\.svg$/,
 			},
 			{
 				test: /\.(eot|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
@@ -215,7 +239,6 @@ const config = {
 			},
 			logger: 'webpack-infrastructure',
 		}),
-		new SpriteLoaderPlugin(),
 		new webpack.DefinePlugin({
 			FARO_ENV: JSON.stringify(process.env.FARO_ENVIRONMENT_NAME || ''),
 		}),

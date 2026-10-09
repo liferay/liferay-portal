@@ -1,20 +1,22 @@
 .onboarding-modal-root {
 	.icon {
+		background-position: center;
 		background-repeat: no-repeat;
+		background-size: contain;
 		height: 300px;
 		margin-bottom: 32px;
 		text-align: center;
 
 		&.analytics-onboarding-welcome-usage-icon {
-			background-image: url(/o/osb-faro-web/dist/sprite.svg#analytics_onboarding_welcome-usage);
+			background-image: url('../images/analytics_onboarding_welcome.svg');
 		}
 
 		&.analytics-invite-user-icon {
-			background-image: url(/o/osb-faro-web/dist/sprite.svg#ac_invite-usage);
+			background-image: url('../images/backgrounds/ac_invite.svg');
 		}
 
 		&.analytics-onboarding-ready-to-use {
-			background-image: url(/o/osb-faro-web/dist/sprite.svg#ac_ready_to_use-usage);
+			background-image: url('../images/backgrounds/ac_ready_to_use.svg');
 		}
 	}
 

@@ -201,12 +201,9 @@ exports[`Suppressed User List should render 1`] = `
                       >
                         <svg
                           class="lexicon-icon lexicon-icon-order_arrow_descending icon-root"
+                          data-file="order_arrow_descending.svg"
                           role="presentation"
-                        >
-                          <use
-                            href="#order_arrow_descending"
-                          />
-                        </svg>
+                        />
                       </button>
                     </div>
                   </a>

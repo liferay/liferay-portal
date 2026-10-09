@@ -138,12 +138,9 @@ exports[`CrossPageSelect should render the selected list when the user presses t
                   >
                     <svg
                       class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                      data-file="order_arrow_ascending.svg"
                       role="presentation"
-                    >
-                      <use
-                        href="#order_arrow_ascending"
-                      />
-                    </svg>
+                    />
                   </button>
                 </div>
               </a>
@@ -378,12 +375,9 @@ exports[`CrossPageSelect should render the server data list by default 1`] = `
                   >
                     <svg
                       class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                      data-file="order_arrow_ascending.svg"
                       role="presentation"
-                    >
-                      <use
-                        href="#order_arrow_ascending"
-                      />
-                    </svg>
+                    />
                   </button>
                 </div>
               </a>
