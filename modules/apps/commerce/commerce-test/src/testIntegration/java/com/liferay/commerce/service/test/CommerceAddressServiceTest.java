@@ -368,6 +368,16 @@ public class CommerceAddressServiceTest {
 		Assert.assertTrue(
 			ArrayUtil.contains(
 				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+
+		_commerceChannelRelLocalService.deleteCommerceChannelRels(
+			Address.class.getName(), commerceAddress1.getCommerceAddressId());
+
+		commerceAddressIds = _getBillingCommerceAddressIds(
+			commerceChannel2.getCommerceChannelId());
+
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
 	}
 
 	@Test
@@ -572,6 +582,16 @@ public class CommerceAddressServiceTest {
 		Assert.assertTrue(
 			ArrayUtil.contains(
 				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+
+		_commerceChannelRelLocalService.deleteCommerceChannelRels(
+			Address.class.getName(), commerceAddress1.getCommerceAddressId());
+
+		commerceAddressIds = _getShippingCommerceAddressIds(
+			commerceChannel2.getCommerceChannelId());
+
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
 	}
 
 	@Test
