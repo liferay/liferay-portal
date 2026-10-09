@@ -52,10 +52,10 @@ public class DBInspectorTest {
 				"VARCHAR(75) null, typeBigDecimal BIGDECIMAL, typeBlob BLOB, ",
 				"typeBoolean BOOLEAN, typeDate DATE null, typeDouble DOUBLE, ",
 				"typeInteger INTEGER, typeLong LONG null, typeLongDefault ",
-				"LONG default 10 not null, typeSBlob SBLOB, typeString STRING ",
-				"null, typeText TEXT null, typeVarchar VARCHAR(75) null, ",
-				"typeVarcharDefault VARCHAR(10) default 'testValue' not ",
-				"null)"));
+				"LONG default 10 not null, typeNumeric NUMERIC(13,4) null, ",
+				"typeSBlob SBLOB, typeString STRING null, typeText TEXT null, ",
+				"typeVarchar VARCHAR(75) null, typeVarcharDefault VARCHAR(10) ",
+				"default 'testValue' not null)"));
 	}
 
 	@AfterClass
@@ -101,6 +101,15 @@ public class DBInspectorTest {
 				_TABLE_NAME, "typeLongDefault", "LONG default 15 not null"));
 		Assert.assertFalse(
 			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeNumeric", "NUMERIC(10,4) null"));
+		Assert.assertFalse(
+			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeNumeric", "NUMERIC(13,2) null"));
+		Assert.assertFalse(
+			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeNumeric", "NUMERIC(13,4) not null"));
+		Assert.assertFalse(
+			_dbInspector.hasColumnType(
 				_TABLE_NAME, "typeVarchar", "STRING null"));
 		Assert.assertFalse(
 			_dbInspector.hasColumnType(
@@ -142,6 +151,9 @@ public class DBInspectorTest {
 		Assert.assertTrue(
 			_dbInspector.hasColumnType(
 				_TABLE_NAME, "typeLongDefault", "LONG default 10 not null"));
+		Assert.assertTrue(
+			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeNumeric", "NUMERIC(13,4) null"));
 		Assert.assertTrue(
 			_dbInspector.hasColumnType(_TABLE_NAME, "typeSBlob", "SBLOB null"));
 		Assert.assertTrue(

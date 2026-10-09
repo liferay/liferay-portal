@@ -154,6 +154,65 @@ public class DBInspectorUnitTest {
 	}
 
 	@Test
+	public void testHasColumnType() throws Exception {
+		try (MockedStatic<DBManagerUtil> dbManagerUtilMockedStatic =
+				Mockito.mockStatic(DBManagerUtil.class)) {
+
+			DB db = Mockito.mock(DB.class);
+
+			dbManagerUtilMockedStatic.when(
+				DBManagerUtil::getDB
+			).thenReturn(
+				db
+			);
+
+			Mockito.when(
+				db.getSQLType("CHAR")
+			).thenReturn(
+				null
+			);
+
+			Mockito.when(
+				db.getSQLType("NUMERIC")
+			).thenReturn(
+				null
+			);
+
+			Mockito.when(
+				db.getSQLTypeDecimalDigits("NUMERIC")
+			).thenReturn(
+				null
+			);
+
+			Mockito.when(
+				db.getSQLTypeSize("NUMERIC")
+			).thenReturn(
+				null
+			);
+
+			_mockTable(_TABLE_NAME, _COLUMN_NAME, true);
+
+			Mockito.when(
+				_resultSet.getInt("NULLABLE")
+			).thenReturn(
+				DatabaseMetaData.columnNullable
+			);
+
+			_testHasColumnType(1, "CHAR(1) null", Types.CHAR, 0, false);
+			_testHasColumnType(
+				13, "NUMERIC(13,4) null", Types.DECIMAL, 4, true);
+			_testHasColumnType(
+				13, "NUMERIC(13,4) null", Types.NUMERIC, 4, true);
+			_testHasColumnType(
+				13, "NUMERIC(13,4) null", Types.DOUBLE, 4, false);
+			_testHasColumnType(
+				13, "NUMERIC(13,4) null", Types.NUMERIC, 2, false);
+			_testHasColumnType(
+				10, "NUMERIC(13,4) null", Types.NUMERIC, 4, false);
+		}
+	}
+
+	@Test
 	public void testHasIndexIsCaseInsensitive() throws Exception {
 		try (MockedStatic<DBManagerUtil> dbManagerUtilMockedStatic =
 				Mockito.mockStatic(DBManagerUtil.class)) {
@@ -322,6 +381,12 @@ public class DBInspectorUnitTest {
 			);
 
 			Mockito.when(
+				db.getSQLType("numeric")
+			).thenReturn(
+				null
+			);
+
+			Mockito.when(
 				db.getSQLType("VARCHAR")
 			).thenReturn(
 				Types.VARCHAR
@@ -329,8 +394,18 @@ public class DBInspectorUnitTest {
 
 			DBInspector dbInspector = new DBInspector(_connection);
 
+			Assert.assertFalse(
+				dbInspector.isSupportedColumnType("NUMERIC null"));
+			Assert.assertFalse(
+				dbInspector.isSupportedColumnType("NUMERIC(13,4)X null"));
+			Assert.assertTrue(
+				dbInspector.isSupportedColumnType("NUMERIC(13, 4) null"));
+			Assert.assertTrue(
+				dbInspector.isSupportedColumnType("NUMERIC(13,4)"));
 			Assert.assertTrue(
 				dbInspector.isSupportedColumnType("NUMERIC(13,4) null"));
+			Assert.assertTrue(
+				dbInspector.isSupportedColumnType("numeric(13,4) null"));
 			Assert.assertTrue(
 				dbInspector.isSupportedColumnType("VARCHAR(75) null"));
 		}
@@ -378,6 +453,36 @@ public class DBInspectorUnitTest {
 		).thenReturn(
 			hasColumn
 		);
+	}
+
+	private void _testHasColumnType(
+			int columnSize, String columnType, int dataType, int decimalDigits,
+			boolean hasColumnType)
+		throws Exception {
+
+		Mockito.when(
+			_resultSet.getInt("COLUMN_SIZE")
+		).thenReturn(
+			columnSize
+		);
+
+		Mockito.when(
+			_resultSet.getInt("DATA_TYPE")
+		).thenReturn(
+			dataType
+		);
+
+		Mockito.when(
+			_resultSet.getInt("DECIMAL_DIGITS")
+		).thenReturn(
+			decimalDigits
+		);
+
+		DBInspector dbInspector = new DBInspector(_connection);
+
+		Assert.assertEquals(
+			hasColumnType,
+			dbInspector.hasColumnType(_TABLE_NAME, _COLUMN_NAME, columnType));
 	}
 
 	private static final String _CATALOG_NAME = "test_catalog";
