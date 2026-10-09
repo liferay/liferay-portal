@@ -299,9 +299,25 @@ public class PortletPreferencesFactoryImpl
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		return getPortalPreferences(
+		PortalPreferences portalPreferences =
+			(PortalPreferences)httpServletRequest.getAttribute(
+				WebKeys.REQUEST_PORTAL_PREFERENCES);
+
+		if ((portalPreferences != null) &&
+			(portalPreferences.getUserId() == themeDisplay.getUserId()) &&
+			(portalPreferences.isSignedIn() == themeDisplay.isSignedIn())) {
+
+			return portalPreferences;
+		}
+
+		portalPreferences = getPortalPreferences(
 			httpServletRequest.getSession(), themeDisplay.getUserId(),
 			themeDisplay.isSignedIn());
+
+		httpServletRequest.setAttribute(
+			WebKeys.REQUEST_PORTAL_PREFERENCES, portalPreferences);
+
+		return portalPreferences;
 	}
 
 	@Override

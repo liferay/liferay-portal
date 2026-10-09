@@ -556,6 +556,9 @@ public interface WebKeys {
 	public static final String RENDERING_MAINTENANCE_UTILITY_PAGE =
 		"RENDERING_MAINTENANCE_UTILITY_PAGE";
 
+	public static final String REQUEST_PORTAL_PREFERENCES =
+		"LIFERAY_SHARED_REQUEST_PORTAL_PREFERENCES";
+
 	public static final String REQUESTED_LAYOUT = "REQUESTED_LAYOUT";
 
 	public static final String RESOURCE_BUNDLE_LOADER =
