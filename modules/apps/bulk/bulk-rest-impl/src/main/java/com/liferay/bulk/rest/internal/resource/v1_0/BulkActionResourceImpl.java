@@ -84,6 +84,7 @@ import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.search.rest.dto.v1_0.SearchResult;
 import com.liferay.portal.search.rest.resource.v1_0.SearchResultResource;
@@ -543,8 +544,12 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		throw new UnsupportedOperationException();
 	}
 
-	private String _getDeletionType(long groupId) throws PortalException {
-		if (_trashHelper.isTrashEnabled(groupId)) {
+	private String _getDeletionType(long groupId, int status)
+		throws PortalException {
+
+		if ((status != WorkflowConstants.STATUS_IN_TRASH) &&
+			_trashHelper.isTrashEnabled(groupId)) {
+
 			return "RECYCLE_BIN";
 		}
 
@@ -1110,7 +1115,9 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 		bulkActionItem.setAttributes(
 			() -> HashMapBuilder.<String, Object>put(
-				"deletionType", () -> _getDeletionType(objectEntry.getGroupId())
+				"deletionType",
+				() -> _getDeletionType(
+					objectEntry.getGroupId(), objectEntry.getStatus())
 			).put(
 				"mimeType", _getMimeType(objectDefinition, objectEntry)
 			).put(
@@ -1141,7 +1148,9 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		bulkActionItem.setAttributes(
 			() -> HashMapBuilder.<String, Object>put(
 				"deletionType",
-				() -> _getDeletionType(objectEntryFolder.getGroupId())
+				() -> _getDeletionType(
+					objectEntryFolder.getGroupId(),
+					objectEntryFolder.getStatus())
 			).put(
 				"itemsCount",
 				() -> {
