@@ -109,35 +109,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 4
-	test CanReturnChildAndParentWithPostChildUserInManyToManyRelationship {
-		property portal.acceptance = "true";
-
-		task ("When with postUserAccount to create a userAccount and two related students") {
-			var response = UserAccountAPI.createUserAccountAndRelatedObjects(
-				alternateName = "user1",
-				emailAddress = "user1@liferay.com",
-				familyName = "user1fn",
-				givenName = "user1gn",
-				nestedField = "studentsUsers",
-				numberOfRelatedObjectEntries = 2,
-				relatedEntryFieldName = "name");
-		}
-
-		task ("Then in response I can retrieve detailed information of the newly created user and two students in studentsUsers") {
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "user1",
-				objectJsonPath = "$.alternateName",
-				response = ${response});
-
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "name0,name1",
-				objectJsonPath = "$.studentsUsers[*].name",
-				response = ${response});
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
 	test CanReturnCustomObjectsWithPostSubjectInManyToOneRelationshipWithItself {
 		property portal.acceptance = "true";
 

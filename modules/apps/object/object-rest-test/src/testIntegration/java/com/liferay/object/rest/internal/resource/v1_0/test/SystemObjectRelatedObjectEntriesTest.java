@@ -461,6 +461,17 @@ public class SystemObjectRelatedObjectEntriesTest {
 		_testPostSystemObjectEntryWithNestedCustomObjectEntries(
 			false, objectRelationship);
 
+		// Many to many relationship with the custom object as the parent
+
+		objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
+			_objectDefinition, _userSystemObjectDefinition, _user.getUserId(),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		_objectRelationships.add(objectRelationship);
+
+		_testPostSystemObjectEntryWithNestedCustomObjectEntries(
+			false, objectRelationship);
+
 		// Many to one relationship
 
 		objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
