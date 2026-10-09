@@ -15,21 +15,23 @@
 @if (variable-exists(cadmin-c-dark)) {
 	html#{$cadmin-selector} {
 		&[data-color-scheme='dark']:root .cadmin {
+			color-scheme: dark;
+
 			@include clay-css($cadmin-c-dark);
 		}
 	}
 }
 
-@if (variable-exists(cadmin-c-dark-high-contrast)) {
-	html#{$cadmin-selector}[data-color-scheme='dark']:root {
+@if (variable-exists(cadmin-c-high-contrast)) {
+	html#{$cadmin-selector}:root {
 		.cadmin {
 			@media (prefers-contrast: more) {
-				@include clay-css($cadmin-c-dark-high-contrast);
+				@include clay-css($cadmin-c-high-contrast);
 			}
 		}
 
 		&[data-prefers-contrast='more'] .cadmin {
-			@include clay-css($cadmin-c-dark-high-contrast);
+			@include clay-css($cadmin-c-high-contrast);
 		}
 	}
 }

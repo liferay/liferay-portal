@@ -1,7 +1,7 @@
 // Scrollbars are painted in every color scheme, so that a surface keeps the
 // same scrollbar when the color scheme toggle is used. No scheme selector is
 // needed: the `--scrollbar-*` tokens are declared on `:root` and resolve per
-// scheme on their own, and the dark high contrast palette narrows them further
+// scheme on their own, and the high contrast palette narrows them further
 // where it applies.
 //
 // Styling any `::-webkit-scrollbar` pseudo-element opts the element out of the

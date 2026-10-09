@@ -10,18 +10,18 @@
 
 html:root {
 	@include clay-css($c-root);
+
+	@media (prefers-contrast: more) {
+		@include clay-css($c-high-contrast);
+	}
+
+	&[data-prefers-contrast='more'] {
+		@include clay-css($c-high-contrast);
+	}
 }
 
 html[data-color-scheme='dark']:root {
 	@include clay-css($c-dark);
-
-	@media (prefers-contrast: more) {
-		@include clay-css($c-dark-high-contrast);
-	}
-
-	&[data-prefers-contrast='more'] {
-		@include clay-css($c-dark-high-contrast);
-	}
 }
 
 // Interim Dark Mode fix: the legacy empty-state illustrations are grayscale

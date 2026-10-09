@@ -33,18 +33,20 @@
 @if (variable-exists(c-dark)) {
 	[data-color-scheme='dark']:root,
 	:root [data-color-scheme='dark'] {
+		color-scheme: dark;
+
 		@include clay-css($c-dark);
 	}
 }
 
-@if (variable-exists(c-dark-high-contrast)) {
-	html[data-color-scheme='dark']:root {
+@if (variable-exists(c-high-contrast)) {
+	html:root {
 		@media (prefers-contrast: more) {
-			@include clay-css($c-dark-high-contrast);
+			@include clay-css($c-high-contrast);
 		}
 
 		&[data-prefers-contrast='more'] {
-			@include clay-css($c-dark-high-contrast);
+			@include clay-css($c-high-contrast);
 		}
 	}
 }

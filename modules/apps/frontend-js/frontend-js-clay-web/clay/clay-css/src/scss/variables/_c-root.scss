@@ -3,7 +3,7 @@
 $c-root: () !default;
 $c-root: map-merge(
 	(
-		color-scheme: light dark,
+		color-scheme: light,
 
 		--c-empty-state-primary: #0b5fff,
 		--c-empty-state-primary-d1: #0053f0,
@@ -52,4 +52,29 @@ $c-dark-high-contrast: map-deep-merge(
 		--c-empty-state-white: #111116,
 	),
 	$c-dark-high-contrast
+);
+
+$c-high-contrast: () !default;
+$c-high-contrast: map-deep-merge(
+	(
+		--c-empty-state-primary: light-dark(#002875, #b3cdff),
+		--c-empty-state-primary-d1: light-dark(#002161, #c7daff),
+		--c-empty-state-primary-d2: light-dark(#001133, #f0f5ff),
+		--c-empty-state-primary-l0: light-dark(#0058ff, #003eb2),
+		--c-empty-state-primary-l1: light-dark(#387dff, #00318f),
+		--c-empty-state-primary-l2: light-dark(#70a0ff, #002366),
+		--c-empty-state-primary-l3: light-dark(#f5f8ff, #001a4d),
+		--c-empty-state-purple: light-dark(#5f00a3, #e1b8ff),
+		--c-empty-state-purple-d1: light-dark(#4b0080, #ecd1ff),
+		--c-empty-state-purple-d2: light-dark(#390061, #ecd1ff),
+		--c-empty-state-purple-d3: light-dark(#210038, #ecd1ff),
+		--c-empty-state-purple-d4: light-dark(#0f001a, #f5ebff),
+		--c-empty-state-purple-l1: light-dark(#a11fff, #9b0fff),
+		--c-empty-state-purple-l2: light-dark(#bd61ff, #7f00db),
+		--c-empty-state-purple-l3: light-dark(#cc99ff, #6e00bd),
+		--c-empty-state-purple-l4: light-dark(#debdff, #590099),
+		--c-empty-state-purple-l5: light-dark(#f7f0ff, #3c0066),
+		--c-empty-state-white: light-dark(#ffffff, #070b13),
+	),
+	$c-high-contrast
 );

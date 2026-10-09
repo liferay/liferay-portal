@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -118,5 +118,100 @@ test(
 			});
 
 		expect(cadminWhite).toBe('rgb(255, 255, 255)');
+	}
+);
+
+async function getResolvedColor(locator: Locator, value: string) {
+	return locator.evaluate((element, value) => {
+		const child = document.createElement('div');
+
+		child.style.color = value;
+
+		element.appendChild(child);
+
+		const color = getComputedStyle(child).color;
+
+		child.remove();
+
+		return color;
+	}, value);
+}
+
+test(
+	'High contrast class applies the high contrast palette in both color schemes',
+	{tag: '@LPD-108865'},
+	async ({page}) => {
+		await page.goto('/group/control_panel/manage');
+
+		const body = page.locator('body');
+		const cadmin = page.locator('.cadmin').first();
+
+		await body.evaluate((element) =>
+			element.classList.add('c-prefers-high-contrast')
+		);
+
+		await test.step('Light color scheme', async () => {
+			await expect(page.locator('html')).toHaveAttribute(
+				'data-color-scheme',
+				'light'
+			);
+
+			await expect(body).toHaveCSS(
+				'background-color',
+				'rgb(255, 255, 255)'
+			);
+
+			expect(await getResolvedColor(body, 'var(--link-color)')).toBe(
+				'rgb(0, 40, 117)'
+			);
+
+			expect(
+				await getResolvedColor(cadmin, 'var(--cadmin-link-color)')
+			).toBe('rgb(0, 40, 117)');
+		});
+
+		await test.step('Dark color scheme', async () => {
+			await page
+				.locator('html')
+				.evaluate((element) =>
+					element.setAttribute('data-color-scheme', 'dark')
+				);
+
+			await expect(body).toHaveCSS('background-color', 'rgb(17, 17, 22)');
+
+			expect(await getResolvedColor(body, 'var(--link-color)')).toBe(
+				'rgb(179, 205, 255)'
+			);
+
+			expect(
+				await getResolvedColor(cadmin, 'var(--cadmin-link-color)')
+			).toBe('rgb(179, 205, 255)');
+		});
+	}
+);
+
+test(
+	'Light high contrast palette applies on light pages when the OS prefers more contrast',
+	{tag: '@LPD-108865'},
+	async ({page}) => {
+		await page.emulateMedia({colorScheme: 'light', contrast: 'more'});
+
+		await page.goto('/group/control_panel/manage');
+
+		await expect(page.locator('html')).toHaveAttribute(
+			'data-color-scheme',
+			'light'
+		);
+
+		expect(
+			await getResolvedColor(page.locator('body'), 'var(--link-color)')
+		).toBe('rgb(0, 40, 117)');
+
+		expect(
+			await getResolvedColor(
+				page.locator('.cadmin').first(),
+				'var(--cadmin-link-color)'
+			)
+		).toBe('rgb(0, 40, 117)');
 	}
 );
