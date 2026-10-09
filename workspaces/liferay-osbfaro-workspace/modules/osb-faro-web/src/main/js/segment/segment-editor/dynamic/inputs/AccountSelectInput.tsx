@@ -4,6 +4,7 @@ import {getPropertyValue, setPropertyValue} from '../utils/custom-inputs';
 import {ISegmentEditorCustomInputBase} from '../utils/types';
 import {Option, Picker} from '@clayui/core';
 import {useLifecycleStageOptions} from 'shared/hooks/useLifecycleStageOptions';
+import {useParams} from 'react-router-dom';
 
 interface IAccountSelectProps extends ISegmentEditorCustomInputBase {
 	groupId: string;
@@ -18,7 +19,9 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 	property,
 	value,
 }) => {
-	const {options} = useLifecycleStageOptions({groupId});
+	const {channelId} = useParams<{channelId: string}>();
+
+	const {options} = useLifecycleStageOptions({channelId, groupId});
 
 	return (
 		<div className="account-select-input-root criteria-statement">

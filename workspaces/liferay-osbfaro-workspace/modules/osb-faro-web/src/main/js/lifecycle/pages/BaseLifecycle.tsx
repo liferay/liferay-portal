@@ -179,7 +179,7 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 
 	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {groupId: groupId!},
+		variables: {channelId, groupId: groupId!},
 	});
 
 	const lifecycle = lifecycles?.[0];

@@ -29,13 +29,16 @@ export interface ILifecycleDetail extends ILifecycle {
 }
 
 interface IFetchLifecycles {
+	channelId?: string;
 	groupId: string;
 }
 
 export async function fetchLifecycles({
+	channelId,
 	groupId,
 }: IFetchLifecycles): Promise<ILifecycle[]> {
 	return sendRequest({
+		data: {channelId},
 		method: 'GET',
 		path: `contacts/${groupId}/account-lifecycle`,
 	});
@@ -176,11 +179,14 @@ export async function fetchLifecycleStages({
 }
 
 export async function fetchAccountLifecycles({
+	channelId,
 	groupId,
 }: {
+	channelId?: string;
 	groupId: string;
 }): Promise<IAccountLifecycle[]> {
 	return sendRequest({
+		data: {channelId},
 		method: 'GET',
 		path: `contacts/${groupId}/account-lifecycle`,
 	});

@@ -7,9 +7,12 @@ const LifecycleStageDisplay: React.FC<{label: string; value: string}> = ({
 	label,
 	value,
 }) => {
-	const {groupId = ''} = useParams<{groupId: string}>();
+	const {channelId, groupId = ''} = useParams<{
+		channelId: string;
+		groupId: string;
+	}>();
 
-	const {loading, options} = useLifecycleStageOptions({groupId});
+	const {loading, options} = useLifecycleStageOptions({channelId, groupId});
 
 	const option = options.find(({value: stageId}) => stageId === value);
 

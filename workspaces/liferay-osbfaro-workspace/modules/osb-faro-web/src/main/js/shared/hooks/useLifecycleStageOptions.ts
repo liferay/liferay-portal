@@ -7,13 +7,15 @@ import {
 import {useRequest} from 'shared/hooks/useRequest';
 
 export const useLifecycleStageOptions = ({
+	channelId,
 	groupId,
 }: {
+	channelId?: string;
 	groupId: string;
 }): {loading: boolean; options: {label: string; value: string}[]} => {
 	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
 		dataSourceFn: API.lifecycle.fetchAccountLifecycles,
-		variables: {groupId},
+		variables: {channelId, groupId},
 	});
 
 	const lifecycle = lifecycles?.[0];
