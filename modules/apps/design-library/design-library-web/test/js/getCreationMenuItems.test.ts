@@ -5,7 +5,12 @@
 
 import getCreationMenuItems from '../../src/main/resources/META-INF/resources/js/getCreationMenuItems';
 
+const mockNavigate = jest.fn();
 const mockOpenCreationModal = jest.fn();
+
+jest.mock('frontend-js-web', () => ({
+	navigate: (url: string) => mockNavigate(url),
+}));
 
 jest.mock(
 	'../../src/main/resources/META-INF/resources/js/openCreationModal',
@@ -64,6 +69,23 @@ const FRAGMENT = {
 	symbol: 'cards2',
 };
 
+const DISPLAY_PAGE_TEMPLATE = {
+	color: 'blue',
+	creationItems: [
+		{
+			href: 'http://localhost/select_display_page_master_layout',
+			id: 'add-display-page-template',
+			label: 'new-display-page-template',
+		},
+	],
+	defaultActionId: 'edit',
+	entryClassName:
+		'com.liferay.layout.page.template.model.LayoutPageTemplateEntry',
+	key: 'display-page-template',
+	label: 'Display Page Template',
+	symbol: 'web-content',
+};
+
 describe('getCreationMenuItems', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -96,13 +118,24 @@ describe('getCreationMenuItems', () => {
 		).toEqual(['new-basic-fragment', 'new-fragment-set']);
 	});
 
-	it('opens the creation modal for the clicked item', () => {
-		const [styleBookItem] = getCreationMenuItems([STYLE_BOOK]);
+	it('opens the creation modal or the link of the clicked item', () => {
+		const [styleBookItem, displayPageTemplateItem] = getCreationMenuItems([
+			STYLE_BOOK,
+			DISPLAY_PAGE_TEMPLATE,
+		]);
 
 		styleBookItem.onClick();
 
 		expect(mockOpenCreationModal).toHaveBeenCalledWith(
 			STYLE_BOOK_CREATION_ITEM
 		);
+		expect(mockNavigate).not.toHaveBeenCalled();
+
+		displayPageTemplateItem.onClick();
+
+		expect(mockNavigate).toHaveBeenCalledWith(
+			'http://localhost/select_display_page_master_layout'
+		);
+		expect(mockOpenCreationModal).toHaveBeenCalledTimes(1);
 	});
 });
