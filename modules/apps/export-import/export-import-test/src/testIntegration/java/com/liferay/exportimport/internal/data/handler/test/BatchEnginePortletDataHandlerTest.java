@@ -64,10 +64,13 @@ import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.constants.NotificationPortletKeys;
 import com.liferay.notification.constants.NotificationRecipientConstants;
 import com.liferay.notification.constants.NotificationRecipientSettingConstants;
+import com.liferay.notification.constants.NotificationTemplateConstants;
 import com.liferay.notification.context.NotificationContext;
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
+import com.liferay.notification.model.NotificationTemplateAttachment;
+import com.liferay.notification.service.NotificationTemplateAttachmentLocalService;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.test.util.NotificationTemplateUtil;
 import com.liferay.notification.util.NotificationRecipientSettingUtil;
@@ -79,7 +82,9 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.definition.notification.term.util.ObjectDefinitionNotificationTermUtil;
 import com.liferay.object.exception.NoSuchObjectEntryException;
+import com.liferay.object.field.builder.EmailAddressObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
@@ -1977,6 +1982,283 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
+	public void testExportImportNotificationTemplatesWithMissingAttachmentObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		NotificationContext notificationContext =
+			NotificationTemplateUtil.createNotificationContext(
+				TestPropsValues.getUser(),
+				objectDefinition.getObjectDefinitionId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				NotificationTemplateConstants.EDITOR_TYPE_RICH_TEXT,
+				Collections.singletonList(
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.
+								NAME_USER_SCREEN_NAME,
+							user.getScreenName())),
+				RandomTestUtil.randomString(),
+				NotificationConstants.TYPE_USER_NOTIFICATION,
+				TransformUtil.transform(
+					_getAttachmentObjectFields(objectDefinition),
+					ObjectField::getObjectFieldId));
+
+		NotificationTemplate notificationTemplate =
+			notificationContext.getNotificationTemplate();
+
+		notificationTemplate.setRecipientType(
+			NotificationRecipientConstants.TYPE_USER);
+
+		notificationTemplate =
+			_notificationTemplateLocalService.addNotificationTemplate(
+				notificationContext);
+
+		File larFile = _exportNotificationTemplates();
+
+		_notificationTemplateLocalService.deleteNotificationTemplate(
+			notificationTemplate);
+
+		_userLocalService.deleteUser(user);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectDefinition.getObjectDefinitionId(),
+			_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA);
+
+		String objectFieldExternalReferenceCode =
+			objectField.getExternalReferenceCode();
+
+		objectField.setExternalReferenceCode(RandomTestUtil.randomString());
+
+		_objectFieldLocalService.updateObjectField(objectField);
+
+		ExportImportConfiguration exportImportConfiguration =
+			_importNotificationTemplates(larFile, null);
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		NotificationTemplate importedNotificationTemplate =
+			_getNotificationTemplate(
+				notificationTemplate.getExternalReferenceCode());
+
+		_notificationTemplates.add(importedNotificationTemplate);
+
+		_assertNotificationRecipientSettings(importedNotificationTemplate);
+		_assertObjectNotificationTemplate(
+			objectDefinition,
+			Collections.singletonList(
+				_objectFieldLocalService.getObjectField(
+					objectDefinition.getObjectDefinitionId(),
+					_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER)),
+			importedNotificationTemplate);
+
+		ExportImportReportEntry exportImportReportEntry =
+			_getExportImportReportEntry(
+				notificationTemplate.getExternalReferenceCode(),
+				exportImportConfiguration);
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(NotificationTemplate.class), 0,
+			notificationTemplate.getExternalReferenceCode(), 0,
+			"notification-template",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_WARNING,
+			exportImportReportEntry);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				LanguageUtil.format(
+					LocaleUtil.getDefault(),
+					"the-following-object-fields-do-not-exist-and-were-" +
+						"removed-from-the-attachments-of-the-notification-" +
+							"template-x-x",
+					new Object[] {
+						objectFieldExternalReferenceCode,
+						notificationTemplate.getName(LocaleUtil.getDefault())
+					}),
+				StringPool.SPACE,
+				LanguageUtil.format(
+					LocaleUtil.getDefault(),
+					"the-following-users-do-not-exist-and-were-removed-from-" +
+						"the-recipients-of-notification-template-x-x",
+					new Object[] {
+						user.getScreenName(),
+						notificationTemplate.getName(LocaleUtil.getDefault())
+					})),
+			exportImportReportEntry.getErrorMessage());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
+	@Test
+	public void testExportImportNotificationTemplatesWithMissingObjectDefinition()
+		throws Exception {
+
+		// First: import without the object definition
+
+		ObjectDefinition objectDefinition1 = _addEmailObjectDefinition();
+
+		NotificationTemplate notificationTemplate =
+			_addObjectNotificationTemplate(objectDefinition1);
+
+		Map<String, Object> notificationRecipientSettingsMap =
+			_getNotificationRecipientSettingsMap(notificationTemplate);
+
+		File larFile1 = _exportNotificationTemplates();
+		File larFile2 = new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeObjectDefinitions(
+		).executeExport();
+
+		_notificationTemplateLocalService.deleteNotificationTemplate(
+			notificationTemplate);
+
+		String objectDefinitionExternalReferenceCode =
+			objectDefinition1.getExternalReferenceCode();
+
+		objectDefinition1.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
+		objectDefinition1 =
+			_objectDefinitionLocalService.updateObjectDefinition(
+				objectDefinition1);
+
+		ExportImportConfiguration exportImportConfiguration =
+			_importNotificationTemplates(larFile1, null);
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 2,
+			exportImportReportEntries.size());
+
+		ObjectDefinition objectDefinition2 =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinitionExternalReferenceCode,
+					TestPropsValues.getCompanyId());
+
+		_objectDefinitions.add(objectDefinition2);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, objectDefinition2.getStatus());
+
+		NotificationTemplate importedNotificationTemplate =
+			_getNotificationTemplate(
+				notificationTemplate.getExternalReferenceCode());
+
+		_notificationTemplates.add(importedNotificationTemplate);
+
+		_assertNotificationRecipientSettings(
+			notificationRecipientSettingsMap, importedNotificationTemplate);
+		_assertObjectNotificationTemplate(
+			objectDefinition2, Collections.emptyList(),
+			importedNotificationTemplate);
+
+		ExportImportReportEntry exportImportReportEntry1 =
+			_getExportImportReportEntry(
+				objectDefinitionExternalReferenceCode,
+				exportImportConfiguration);
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(ObjectDefinition.class), 0,
+			objectDefinitionExternalReferenceCode, 0,
+			ObjectDefinition.class.getName(),
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_EMPTY,
+			exportImportReportEntry1);
+
+		ExportImportReportEntry exportImportReportEntry2 =
+			_getExportImportReportEntry(
+				notificationTemplate.getExternalReferenceCode(),
+				exportImportConfiguration);
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(NotificationTemplate.class), 0,
+			notificationTemplate.getExternalReferenceCode(), 0,
+			"notification-template",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_WARNING,
+			exportImportReportEntry2);
+
+		Assert.assertEquals(
+			LanguageUtil.format(
+				LocaleUtil.getDefault(),
+				"the-following-object-fields-do-not-exist-and-were-removed-" +
+					"from-the-attachments-of-the-notification-template-x-x",
+				new Object[] {
+					StringUtil.merge(
+						TransformUtil.transform(
+							_getAttachmentObjectFields(objectDefinition1),
+							ObjectField::getExternalReferenceCode),
+						StringPool.COMMA_AND_SPACE),
+					notificationTemplate.getName(LocaleUtil.getDefault())
+				}),
+			exportImportReportEntry2.getErrorMessage());
+
+		// Second: import of the object definition
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeObjectDefinitions(
+		).withLARFile(
+			larFile2
+		).executeImport();
+
+		objectDefinition2 = _objectDefinitionLocalService.getObjectDefinition(
+			objectDefinition2.getObjectDefinitionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectDefinition2.getStatus());
+
+		exportImportReportEntry1 =
+			_exportImportReportEntryLocalService.getExportImportReportEntry(
+				exportImportReportEntry1.getExportImportReportEntryId());
+
+		Assert.assertEquals(
+			ExportImportReportEntryConstants.STATUS_RESOLVED,
+			exportImportReportEntry1.getStatus());
+
+		_assertObjectNotificationTemplate(
+			objectDefinition2, Collections.emptyList(),
+			_getNotificationTemplate(
+				notificationTemplate.getExternalReferenceCode()));
+
+		// Third: reimport of the notification templates
+
+		_importNotificationTemplates(larFile1, null);
+
+		importedNotificationTemplate = _getNotificationTemplate(
+			notificationTemplate.getExternalReferenceCode());
+
+		_assertNotificationTemplate(
+			notificationTemplate, importedNotificationTemplate);
+		_assertObjectNotificationTemplate(
+			objectDefinition2, _getAttachmentObjectFields(objectDefinition2),
+			importedNotificationTemplate);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
+	@Test
 	public void testExportImportNotificationTemplatesWithMissingOriginalCreator()
 		throws Exception {
 
@@ -2398,6 +2680,94 @@ public class BatchEnginePortletDataHandlerTest {
 					notificationTemplate2.getName(LocaleUtil.getDefault())
 				}),
 			exportImportReportEntry2.getErrorMessage());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
+	@Test
+	public void testExportImportNotificationTemplatesWithObjectDefinition()
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _addEmailObjectDefinition();
+
+		NotificationTemplate notificationTemplate =
+			_addObjectNotificationTemplate(objectDefinition);
+
+		Map<String, Object> notificationRecipientSettingsMap =
+			_getNotificationRecipientSettingsMap(notificationTemplate);
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeNotificationTemplates(
+		).withIncludeObjectDefinitions(
+		).executeExport();
+
+		List<JSONObject> notificationTemplateJSONObjects = ListUtil.filter(
+			JSONUtil.toList(
+				_getExportedObjectEntriesJSONArray(
+					_FILE_NAME_PREFIX_NOTIFICATION_TEMPLATES, larFile,
+					_getCompanyGroupId()),
+				notificationTemplateJSONObject ->
+					notificationTemplateJSONObject),
+			notificationTemplateJSONObject -> Objects.equals(
+				notificationTemplate.getExternalReferenceCode(),
+				notificationTemplateJSONObject.getString(
+					"externalReferenceCode")));
+
+		Assert.assertEquals(
+			notificationTemplateJSONObjects.toString(), 1,
+			notificationTemplateJSONObjects.size());
+
+		JSONObject notificationTemplateJSONObject =
+			notificationTemplateJSONObjects.get(0);
+
+		Assert.assertEquals(
+			TransformUtil.transform(
+				_getAttachmentObjectFields(objectDefinition),
+				ObjectField::getExternalReferenceCode),
+			JSONUtil.toStringList(
+				notificationTemplateJSONObject.getJSONArray(
+					"attachmentObjectFieldExternalReferenceCodes")));
+		Assert.assertEquals(
+			objectDefinition.getExternalReferenceCode(),
+			notificationTemplateJSONObject.getString(
+				"objectDefinitionExternalReferenceCode"));
+
+		_notificationTemplateLocalService.deleteNotificationTemplate(
+			notificationTemplate);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeNotificationTemplates(
+		).withIncludeObjectDefinitions(
+		).withLARFile(
+			larFile
+		).executeImport();
+
+		ObjectDefinition importedObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_objectDefinitions.add(importedObjectDefinition);
+
+		NotificationTemplate importedNotificationTemplate =
+			_getNotificationTemplate(
+				notificationTemplate.getExternalReferenceCode());
+
+		_notificationTemplates.add(importedNotificationTemplate);
+
+		_assertNotificationRecipientSettings(
+			notificationRecipientSettingsMap, importedNotificationTemplate);
+		_assertNotificationTemplate(
+			notificationTemplate, importedNotificationTemplate);
+		_assertObjectNotificationTemplate(
+			importedObjectDefinition,
+			_getAttachmentObjectFields(importedObjectDefinition),
+			importedNotificationTemplate);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
@@ -4628,6 +4998,25 @@ public class BatchEnginePortletDataHandlerTest {
 				NotificationRecipientConstants.TYPE_ROLE));
 	}
 
+	private ObjectDefinition _addEmailObjectDefinition() throws Exception {
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectFieldUtil.addCustomObjectField(
+			new EmailAddressObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				_OBJECT_FIELD_NAME_EMAIL
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		return objectDefinition;
+	}
+
 	private FileEntry _addImageFileEntry(long groupId) throws Exception {
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), groupId,
@@ -4981,6 +5370,58 @@ public class BatchEnginePortletDataHandlerTest {
 		}
 
 		return objectFields;
+	}
+
+	private NotificationTemplate _addObjectNotificationTemplate(
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		String objectFieldTermName1 =
+			ObjectDefinitionNotificationTermUtil.getObjectFieldTermName(
+				objectDefinition.getShortName(), _OBJECT_FIELD_NAME_TEXT);
+		String objectFieldTermName2 =
+			ObjectDefinitionNotificationTermUtil.getObjectFieldTermName(
+				objectDefinition.getShortName(), _OBJECT_FIELD_NAME_EMAIL);
+
+		NotificationTemplate notificationTemplate =
+			_notificationTemplateLocalService.addNotificationTemplate(
+				NotificationTemplateUtil.createNotificationContext(
+					TestPropsValues.getUser(),
+					objectDefinition.getObjectDefinitionId(),
+					objectFieldTermName1 + " [%UNKNOWN_BODY_TERM%]",
+					RandomTestUtil.randomString(),
+					NotificationTemplateConstants.EDITOR_TYPE_RICH_TEXT,
+					Arrays.asList(
+						NotificationRecipientSettingUtil.
+							createNotificationRecipientSetting(
+								NotificationRecipientSettingConstants.NAME_FROM,
+								"[%CURRENT_USER_EMAIL_ADDRESS%]"),
+						NotificationRecipientSettingUtil.
+							createNotificationRecipientSetting(
+								NotificationRecipientSettingConstants.
+									NAME_FROM_NAME,
+								LocalizedMapUtil.getLocalizedMap(
+									"[%CURRENT_USER_FIRST_NAME%]")),
+						NotificationRecipientSettingUtil.
+							createNotificationRecipientSetting(
+								NotificationRecipientSettingConstants.NAME_TO,
+								LocalizedMapUtil.getLocalizedMap(
+									objectFieldTermName2 +
+										", [%UNKNOWN_RECIPIENT_TERM%]")),
+						NotificationRecipientSettingUtil.
+							createNotificationRecipientSetting(
+								NotificationRecipientSettingConstants.
+									NAME_TO_TYPE,
+								NotificationRecipientConstants.TYPE_TERM)),
+					"[%UNKNOWN_SUBJECT_TERM%]",
+					NotificationConstants.TYPE_EMAIL,
+					TransformUtil.transform(
+						_getAttachmentObjectFields(objectDefinition),
+						ObjectField::getObjectFieldId)));
+
+		_notificationTemplates.add(notificationTemplate);
+
+		return notificationTemplate;
 	}
 
 	private PLOEntry _addPLOEntry(long userId, String languageId)
@@ -5459,6 +5900,24 @@ public class BatchEnginePortletDataHandlerTest {
 		}
 	}
 
+	private void _assertObjectNotificationTemplate(
+		ObjectDefinition expectedObjectDefinition,
+		List<ObjectField> expectedObjectFields,
+		NotificationTemplate notificationTemplate) {
+
+		Assert.assertEquals(
+			expectedObjectDefinition.getObjectDefinitionId(),
+			notificationTemplate.getObjectDefinitionId());
+		Assert.assertEquals(
+			TransformUtil.transform(
+				expectedObjectFields, ObjectField::getObjectFieldId),
+			TransformUtil.transform(
+				_notificationTemplateAttachmentLocalService.
+					getNotificationTemplateAttachments(
+						notificationTemplate.getNotificationTemplateId()),
+				NotificationTemplateAttachment::getObjectFieldId));
+	}
+
 	private void _assertPLOEntry(PLOEntry ploEntry, long userId)
 		throws Exception {
 
@@ -5593,6 +6052,19 @@ public class BatchEnginePortletDataHandlerTest {
 
 		return _workflowDefinitionManager.getWorkflowDefinition(
 			kaleoDefinition.getKaleoDefinitionId());
+	}
+
+	private List<ObjectField> _getAttachmentObjectFields(
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		return Arrays.asList(
+			_objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(),
+				_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA),
+			_objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(),
+				_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER));
 	}
 
 	private JSONArray _getClassExternalReferenceCodesJSONArray(
@@ -6844,6 +7316,9 @@ public class BatchEnginePortletDataHandlerTest {
 	private static final String _OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER =
 		"xAttachment3" + RandomTestUtil.randomString();
 
+	private static final String _OBJECT_FIELD_NAME_EMAIL =
+		"xEmail" + RandomTestUtil.randomString();
+
 	private static final String _OBJECT_FIELD_NAME_RICH_TEXT =
 		"xRichText" + RandomTestUtil.randomString();
 
@@ -6937,6 +7412,10 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@Inject
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
+
+	@Inject
+	private NotificationTemplateAttachmentLocalService
+		_notificationTemplateAttachmentLocalService;
 
 	@Inject
 	private NotificationTemplateLocalService _notificationTemplateLocalService;
