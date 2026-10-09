@@ -16,9 +16,7 @@ gateway:
         enabled: true
     className: liferay-gateway-class
     clientTrafficPolicySpec:
-        clientIPDetection:
-            xForwardedFor:
-                numTrustedHops: 1
+        enableProxyProtocol: true
     name: liferay-example-dev-gateway
 license:
     externalSecretKey: liferay-licenses-liferay-example
