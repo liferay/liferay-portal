@@ -181,11 +181,11 @@ Required file "Dockerfile" not found in project "<name>"
 Required file "LCP.json" not found in project "<name>"
 ```
 
-Copy them from the matching sample — `client-extensions/liferay-sample-etc-node` or `liferay-sample-etc-spring-boot` — and change the port in `LCP.json` to the one in `.serviceAddress`. Verified on 2026.Q1 with a Node project.
+Copy them from the matching sample on GitHub — [liferay-sample-etc-node](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-node) or [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) — and change the port in `LCP.json` to the one in `.serviceAddress`. Verified on 2026.Q1 with a Node project.
 
 #### Run a Microservice Locally
 
-Deploying registers the CET with Liferay; it does not start the service. The deploy writes the service's configuration into `bundles/routes/default/<project>` and the portal's into `bundles/routes/default/dxp`. Point the samples' config loader at both.
+Deploying registers the CET with Liferay; it does not start the service. The deploy writes the service's configuration into `bundles/routes/default/<project>` and the portal's into `bundles/routes/default/dxp`. Point the service's config loader at both, as the [samples](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions) do.
 
 **Start the service detached from the agent's session.** It has to keep running after the agent finishes or goes down — object actions keep firing at it, and anything that fires while it is down fails and is not retried. An agent's own background execution ties the process to the session, so it dies with it. Start it in a new session with `setsid nohup`, logging to the bundle's log directory (for Node, after `npm install` in the project):
 

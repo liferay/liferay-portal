@@ -79,7 +79,7 @@ Minimum `client-extension.yaml` entry:
     type: objectEntryManager
 ```
 
-The entry takes only these keys. Liferay reaches the microservice at the OAuth entry's `.serviceAddress` plus `resourcePath`. `client-extensions/liferay-sample-etc-spring-boot` shows a working example.
+The entry takes only these keys. Liferay reaches the microservice at the OAuth entry's `.serviceAddress` plus `resourcePath`. [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) on GitHub shows a working example.
 
 ### Implement the Microservice
 
@@ -107,7 +107,7 @@ The microservice must respond to the five endpoints above. Use any stack (Spring
 }
 ```
 
-Liferay authenticates each call with an `Authorization: Bearer <JWT>` header, issued for the CET's OAuth application. Verify it as `client-extensions/liferay-sample-etc-spring-boot` does. Liferay sends no other token header. Verified on 2026.Q1.
+Liferay authenticates each call with an `Authorization: Bearer <JWT>` header, issued for the CET's OAuth application. Verify it as [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) does. Liferay sends no other token header. Verified on 2026.Q1.
 
 ### Wire OAuth
 

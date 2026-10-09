@@ -658,7 +658,7 @@ The current `Site` DTO uses `templateKey` (not `templateExternalReferenceCode`);
 
 ## References
 
-- Sample site initializer: `workspaces/liferay-sample-workspace/client-extensions/liferay-sample-site-initializer`
-- Production site initializer: `modules/apps/site-initializer/site-initializer-cms`
+- Sample site initializer: [liferay-sample-site-initializer](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-site-initializer)
+- Production site initializer: [site-initializer-cms](https://github.com/liferay/liferay-portal/tree/master/modules/apps/site-initializer/site-initializer-cms)
 - CET type details: `rules/client-extension-types.md`
 - OAuth scopes: `rules/oauth-scopes.md`
