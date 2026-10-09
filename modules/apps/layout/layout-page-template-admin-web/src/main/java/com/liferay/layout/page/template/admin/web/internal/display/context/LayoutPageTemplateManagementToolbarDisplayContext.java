@@ -136,7 +136,9 @@ public class LayoutPageTemplateManagementToolbarDisplayContext
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
 				if (DesignLibraryUtil.isDesignLibraryScope(
-						_themeDisplay.getScopeGroup())) {
+						_themeDisplay.getScopeGroup()) &&
+					!FeatureFlagManagerUtil.isEnabled(
+						_themeDisplay.getCompanyId(), "LPD-81022")) {
 
 					dropdownItem.putData(
 						"action", "addLayoutPageTemplateEntry");
