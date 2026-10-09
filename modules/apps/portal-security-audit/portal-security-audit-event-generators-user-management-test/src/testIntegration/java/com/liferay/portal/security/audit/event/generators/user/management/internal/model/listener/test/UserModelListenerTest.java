@@ -204,8 +204,6 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 		auditRequestContext.setClientHost(RandomTestUtil.randomString());
 		auditRequestContext.setClientIP(RandomTestUtil.randomString());
 		auditRequestContext.setRealUserId(TestPropsValues.getUserId());
-		auditRequestContext.setRequestURL(
-			"http://" + RandomTestUtil.randomString() + "/path");
 		auditRequestContext.setServerName(RandomTestUtil.randomString());
 		auditRequestContext.setServerPort(RandomTestUtil.randomInt());
 		auditRequestContext.setSessionID(RandomTestUtil.randomString());
