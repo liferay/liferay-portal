@@ -13,6 +13,7 @@ import com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.js.loader.modules.extender.esm.ESImportUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -195,7 +196,9 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		_setUpPortletURLMocks();
 
 		_setUpRegistry(
-			_mockContributor(false, _CLASS_NAME_1, "fragment", null));
+			_mockContributor(
+				false, _CLASS_NAME_1, "fragment", Collections.emptyMap(),
+				null));
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			_viewResourcesDesignLibraryDisplayContext.
@@ -223,7 +226,9 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		_setUpPortletURLMocks();
 
-		_setUpRegistry(_mockContributor(false, _CLASS_NAME_2, "master", "3"));
+		_setUpRegistry(
+			_mockContributor(
+				false, _CLASS_NAME_2, "master", Collections.emptyMap(), "3"));
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			_viewResourcesDesignLibraryDisplayContext.
@@ -243,7 +248,9 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		_setUpPortletURLMocks();
 
 		_setUpRegistry(
-			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
+			_mockContributor(
+				false, _CLASS_NAME_3, "style-book", Collections.emptyMap(),
+				null));
 
 		List<Map<String, Object>> resourceTypes = _getResourceTypes();
 
@@ -263,28 +270,50 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	}
 
 	@Test
-	@TestInfo("LPD-108834")
+	@TestInfo({"LPD-108834", "LPD-109440"})
 	public void testGetFDSAdditionalPropsAddsCreationItemsWithAddPermission()
 		throws Exception {
 
 		_setUpPortletURLMocks();
 
-		_setUpRegistry(
-			_mockContributor(true, _CLASS_NAME_3, "style-book", null));
+		String backURL = RandomTestUtil.randomString();
 
-		List<Map<String, Object>> resourceTypes = _getResourceTypes();
+		_setUpRegistry(
+			_mockContributor(
+				true, _CLASS_NAME_3, "style-book",
+				Collections.singletonMap("backURL", backURL), null));
+
+		List<Map<String, Object>> resourceTypes = _executeWithESImport(
+			new ESImport("/o/style-book-web/index.js", "Modal"),
+			"{Modal} from style-book-web", this::_getResourceTypes);
 
 		Map<String, Object> resourceType = resourceTypes.get(0);
 
 		List<Map<String, Object>> creationItems =
 			(List<Map<String, Object>>)resourceType.get("creationItems");
 
-		Assert.assertEquals(creationItems.toString(), 1, creationItems.size());
+		Assert.assertEquals(creationItems.toString(), 2, creationItems.size());
 
-		Map<String, Object> creationItem = creationItems.get(0);
+		Map<String, Object> creationItem1 = creationItems.get(0);
 
-		Assert.assertEquals("style-book-add", creationItem.get("id"));
-		Assert.assertEquals("style-book-add-label", creationItem.get("label"));
+		Assert.assertFalse(creationItem1.containsKey("href"));
+		Assert.assertEquals("style-book-add", creationItem1.get("id"));
+		Assert.assertEquals("style-book-add-label", creationItem1.get("label"));
+		Assert.assertEquals(
+			"{Modal} from /o/style-book-web/index.js",
+			creationItem1.get("module"));
+		Assert.assertEquals(
+			Collections.singletonMap("backURL", backURL),
+			creationItem1.get("moduleProps"));
+
+		Map<String, Object> creationItem2 = creationItems.get(1);
+
+		Assert.assertEquals("/style-book", creationItem2.get("href"));
+		Assert.assertEquals("style-book-select", creationItem2.get("id"));
+		Assert.assertEquals(
+			"style-book-select-label", creationItem2.get("label"));
+		Assert.assertFalse(creationItem2.containsKey("module"));
+		Assert.assertFalse(creationItem2.containsKey("moduleProps"));
 
 		Assert.assertEquals(
 			"style-book-creation-items-group-label",
@@ -300,7 +329,9 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			_viewResourcesDesignLibraryDisplayContext.hasContentAccess());
 
 		_setUpRegistry(
-			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
+			_mockContributor(
+				false, _CLASS_NAME_3, "style-book", Collections.emptyMap(),
+				null));
 
 		Assert.assertTrue(
 			_viewResourcesDesignLibraryDisplayContext.hasContentAccess());
@@ -309,6 +340,62 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	private FDSActionDropdownItem _createFDSActionDropdownItem(String key) {
 		return new FDSActionDropdownItem(
 			"/" + key, null, "edit", key + "-edit", "get", null, "link");
+	}
+
+	private <T> T _executeWithESImport(
+			ESImport esImport, String module,
+			UnsafeSupplier<T, Exception> unsafeSupplier)
+		throws Exception {
+
+		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory =
+			Mockito.mock(AbsolutePortalURLBuilderFactory.class);
+		AbsolutePortalURLBuilder absolutePortalURLBuilder = Mockito.mock(
+			AbsolutePortalURLBuilder.class);
+
+		Mockito.when(
+			absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
+				_mockHttpServletRequest)
+		).thenReturn(
+			absolutePortalURLBuilder
+		);
+
+		Snapshot<AbsolutePortalURLBuilderFactory>
+			absolutePortalURLBuilderFactorySnapshot =
+				ReflectionTestUtil.getFieldValue(
+					ViewResourcesDesignLibraryDisplayContext.class,
+					"_absolutePortalURLBuilderFactorySnapshot");
+
+		ReflectionTestUtil.setFieldValue(
+			ViewResourcesDesignLibraryDisplayContext.class,
+			"_absolutePortalURLBuilderFactorySnapshot",
+			new Snapshot<AbsolutePortalURLBuilderFactory>(
+				ViewResourcesDesignLibraryDisplayContext.class,
+				AbsolutePortalURLBuilderFactory.class) {
+
+				@Override
+				public AbsolutePortalURLBuilderFactory get() {
+					return absolutePortalURLBuilderFactory;
+				}
+
+			});
+
+		try (MockedStatic<ESImportUtil> esImportUtilMockedStatic =
+				Mockito.mockStatic(ESImportUtil.class)) {
+
+			esImportUtilMockedStatic.when(
+				() -> ESImportUtil.getESImport(absolutePortalURLBuilder, module)
+			).thenReturn(
+				esImport
+			);
+
+			return unsafeSupplier.get();
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				ViewResourcesDesignLibraryDisplayContext.class,
+				"_absolutePortalURLBuilderFactorySnapshot",
+				absolutePortalURLBuilderFactorySnapshot);
+		}
 	}
 
 	private List<String> _getBreadcrumbPropsActionItemsLabels(
@@ -464,7 +551,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private DesignLibraryResourceTypeContributor _mockContributor(
 			boolean addPermission, String entryClassName, String key,
-			String type)
+			Map<String, Object> moduleProps, String type)
 		throws Exception {
 
 		DesignLibraryResourceTypeContributor
@@ -481,11 +568,12 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			designLibraryResourceTypeContributor.getCreationItems(
 				Mockito.any(), Mockito.any(), Mockito.any())
 		).thenReturn(
-			Collections.singletonList(
+			Arrays.asList(
 				new DesignLibraryResourceCreationItem(
 					key + "-add", key + "-add-label",
-					"{Modal} from " + key + "-web",
-					Collections.singletonMap("backURL", "backURL")))
+					"{Modal} from " + key + "-web", moduleProps),
+				new DesignLibraryResourceCreationItem(
+					"/" + key, key + "-select", key + "-select-label"))
 		);
 
 		Mockito.when(
@@ -688,8 +776,11 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private void _testGetAPIURL() throws Exception {
 		_setUpRegistry(
-			_mockContributor(false, _CLASS_NAME_1, "fragment", null),
-			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
+			_mockContributor(
+				false, _CLASS_NAME_1, "fragment", Collections.emptyMap(), null),
+			_mockContributor(
+				false, _CLASS_NAME_3, "style-book", Collections.emptyMap(),
+				null));
 
 		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
@@ -707,8 +798,11 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private void _testGetAPIURLNarrowsByClassNameId() throws Exception {
 		_setUpRegistry(
-			_mockContributor(false, _CLASS_NAME_1, "fragment", null),
-			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
+			_mockContributor(
+				false, _CLASS_NAME_1, "fragment", Collections.emptyMap(), null),
+			_mockContributor(
+				false, _CLASS_NAME_3, "style-book", Collections.emptyMap(),
+				null));
 
 		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
@@ -722,8 +816,11 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private void _testGetAPIURLNarrowsByType() throws Exception {
 		_setUpRegistry(
-			_mockContributor(false, _CLASS_NAME_2, "master", "3"),
-			_mockContributor(false, _CLASS_NAME_2, "display-page", "1"));
+			_mockContributor(
+				false, _CLASS_NAME_2, "master", Collections.emptyMap(), "3"),
+			_mockContributor(
+				false, _CLASS_NAME_2, "display-page", Collections.emptyMap(),
+				"1"));
 
 		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
@@ -739,7 +836,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	private void _testGetFDSActionDropdownItemsWithModule() throws Exception {
 		DesignLibraryResourceTypeContributor
 			designLibraryResourceTypeContributor = _mockContributor(
-				false, _CLASS_NAME_2, "master", "3");
+				false, _CLASS_NAME_2, "master", Collections.emptyMap(), "3");
 
 		FDSActionDropdownItem renameFDSActionDropdownItem =
 			_createFDSActionDropdownItem("master");
@@ -756,70 +853,24 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		_setUpRegistry(designLibraryResourceTypeContributor);
 
-		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory =
-			Mockito.mock(AbsolutePortalURLBuilderFactory.class);
-		AbsolutePortalURLBuilder absolutePortalURLBuilder = Mockito.mock(
-			AbsolutePortalURLBuilder.class);
-
-		Mockito.when(
-			absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
-				_mockHttpServletRequest)
-		).thenReturn(
-			absolutePortalURLBuilder
-		);
-
-		Snapshot<AbsolutePortalURLBuilderFactory>
-			absolutePortalURLBuilderFactorySnapshot =
-				ReflectionTestUtil.getFieldValue(
-					ViewResourcesDesignLibraryDisplayContext.class,
-					"_absolutePortalURLBuilderFactorySnapshot");
-
-		ReflectionTestUtil.setFieldValue(
-			ViewResourcesDesignLibraryDisplayContext.class,
-			"_absolutePortalURLBuilderFactorySnapshot",
-			new Snapshot<AbsolutePortalURLBuilderFactory>(
-				ViewResourcesDesignLibraryDisplayContext.class,
-				AbsolutePortalURLBuilderFactory.class) {
-
-				@Override
-				public AbsolutePortalURLBuilderFactory get() {
-					return absolutePortalURLBuilderFactory;
-				}
-
-			});
-
-		try (MockedStatic<ESImportUtil> esImportUtilMockedStatic =
-				Mockito.mockStatic(ESImportUtil.class)) {
-
-			esImportUtilMockedStatic.when(
-				() -> ESImportUtil.getESImport(
-					absolutePortalURLBuilder,
-					"{RenameModal} from layout-page-template-admin-web")
-			).thenReturn(
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			_executeWithESImport(
 				new ESImport(
-					"/o/layout-page-template-admin-web/index.js", "RenameModal")
-			);
+					"/o/layout-page-template-admin-web/index.js",
+					"RenameModal"),
+				"{RenameModal} from layout-page-template-admin-web",
+				_viewResourcesDesignLibraryDisplayContext::
+					getFDSActionDropdownItems);
 
-			List<FDSActionDropdownItem> fdsActionDropdownItems =
-				_viewResourcesDesignLibraryDisplayContext.
-					getFDSActionDropdownItems();
+		FDSActionDropdownItem fdsActionDropdownItem =
+			fdsActionDropdownItems.get(0);
 
-			FDSActionDropdownItem fdsActionDropdownItem =
-				fdsActionDropdownItems.get(0);
+		Map<String, Object> data =
+			(Map<String, Object>)fdsActionDropdownItem.get("data");
 
-			Map<String, Object> data =
-				(Map<String, Object>)fdsActionDropdownItem.get("data");
-
-			Assert.assertEquals(
-				"{RenameModal} from /o/layout-page-template-admin-web/index.js",
-				data.get("module"));
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				ViewResourcesDesignLibraryDisplayContext.class,
-				"_absolutePortalURLBuilderFactorySnapshot",
-				absolutePortalURLBuilderFactorySnapshot);
-		}
+		Assert.assertEquals(
+			"{RenameModal} from /o/layout-page-template-admin-web/index.js",
+			data.get("module"));
 	}
 
 	private static final String _CLASS_NAME_1 =
