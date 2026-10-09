@@ -138,48 +138,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 4
-	test CanReturnUpdatedChildAndParentsWithPatchChildUserInManyToManyRelationship {
-		property portal.acceptance = "true";
-
-		task ("And Given with postUserAccount to create a userAccount and two related students") {
-			var response = UserAccountAPI.createUserAccountAndRelatedObjects(
-				alternateName = "user1",
-				emailAddress = "user1@liferay.com",
-				familyName = "user1fn",
-				givenName = "user1gn",
-				nestedField = "studentsUsers",
-				numberOfRelatedObjectEntries = 2,
-				relatedEntryExternalReferenceCode = "studentErc",
-				relatedEntryFieldName = "name");
-		}
-
-		task ("When with patchUserAccount and userAccountId to update the existing user including studentsUsers with a new student and an existing student with its externalReferenceCode") {
-			var userAccountId = JSONPathUtil.getIdValue(response = ${response});
-
-			var response = UserAccountAPI.partialUpdateUserAccountAndRelatedObjects(
-				emailAddress = "userpartiallyupdated@liferay.com",
-				nestedField = "studentsUsers",
-				numberOfRelatedObjectEntries = 3,
-				relatedEntryExternalReferenceCode = "studentErc",
-				relatedEntryFieldName = "name",
-				userAccountId = ${userAccountId});
-		}
-
-		task ("Then in repsonse I can retrieve detailed information of the updated user and three related students") {
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "userpartiallyupdated@liferay.com",
-				objectJsonPath = "$.emailAddress",
-				response = ${response});
-
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "name0-update,name1-update,name2-update",
-				objectJsonPath = "$.studentsUsers[*].name",
-				response = ${response});
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
 	test CanReturnUpdatedChildAndParentWithPatchChildStudentInOneToManyRelationship {
 		property portal.acceptance = "true";
 

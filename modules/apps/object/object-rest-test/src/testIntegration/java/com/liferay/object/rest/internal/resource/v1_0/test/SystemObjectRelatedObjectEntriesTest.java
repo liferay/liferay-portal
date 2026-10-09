@@ -397,6 +397,35 @@ public class SystemObjectRelatedObjectEntriesTest {
 	}
 
 	@Test
+	public void testPatchSystemObjectEntryWithNestedCustomObjectEntries()
+		throws Exception {
+
+		// Many to many relationship
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_userSystemObjectDefinition, _objectDefinition,
+				_user.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		_objectRelationships.add(objectRelationship);
+
+		_testPatchSystemObjectEntryWithNestedCustomObjectEntries(
+			objectRelationship);
+
+		// One to many relationship
+
+		objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
+			_userSystemObjectDefinition, _objectDefinition, _user.getUserId(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_objectRelationships.add(objectRelationship);
+
+		_testPatchSystemObjectEntryWithNestedCustomObjectEntries(
+			objectRelationship);
+	}
+
+	@Test
 	public void testPostSystemObjectEntryWithInvalidNestedCustomObjectEntries()
 		throws Exception {
 
@@ -948,6 +977,68 @@ public class SystemObjectRelatedObjectEntriesTest {
 		_assertNestedFieldsInRelationships(
 			0, GetterUtil.getInteger(nestedFieldDepth, 1), jsonObject,
 			nestedFieldName, objectFieldNamesAndObjectFieldValues, type);
+	}
+
+	private void _testPatchSystemObjectEntryWithNestedCustomObjectEntries(
+			ObjectRelationship objectRelationship)
+		throws Exception {
+
+		int objectFieldValue = RandomTestUtil.randomInt();
+
+		JSONObject jsonObject = UserAccountTestUtil.addUserAccountJSONObject(
+			_userSystemObjectDefinitionManager,
+			HashMapBuilder.<String, Serializable>put(
+				objectRelationship.getName(),
+				JSONUtil.putAll(
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+					).put(
+						_OBJECT_FIELD_NAME_2, objectFieldValue
+					).put(
+						"externalReferenceCode", _ERC_VALUE_1
+					))
+			).build());
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				objectRelationship.getName(),
+				JSONUtil.putAll(
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_1, _NEW_OBJECT_FIELD_VALUE_1
+					).put(
+						"externalReferenceCode", _ERC_VALUE_1
+					),
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_1, _NEW_OBJECT_FIELD_VALUE_2
+					).put(
+						"externalReferenceCode", _ERC_VALUE_2
+					))
+			).toString(),
+			StringBundler.concat(
+				_getLocation(), StringPool.SLASH, jsonObject.getString("id")),
+			Http.Method.PATCH);
+
+		JSONArray nestedObjectEntriesJSONArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(2, nestedObjectEntriesJSONArray.length());
+
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_1, _NEW_OBJECT_FIELD_VALUE_1
+				).put(
+					_OBJECT_FIELD_NAME_2, objectFieldValue
+				).put(
+					"externalReferenceCode", _ERC_VALUE_1
+				),
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_1, _NEW_OBJECT_FIELD_VALUE_2
+				).put(
+					"externalReferenceCode", _ERC_VALUE_2
+				)
+			).toString(),
+			nestedObjectEntriesJSONArray.toString(), JSONCompareMode.LENIENT);
 	}
 
 	private void _testPostSystemObjectEntryWithInvalidNestedCustomObjectEntries(
