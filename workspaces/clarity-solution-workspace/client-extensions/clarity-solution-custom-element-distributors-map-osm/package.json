@@ -9,8 +9,8 @@
 	"devDependencies": {
 		"@types/react": "^18.2.0",
 		"@types/react-dom": "^18.2.0",
-		"@vitejs/plugin-react": "^4.2.1",
-		"vite": "^5.2.0"
+		"@vitejs/plugin-react": "^4.7.0",
+		"vite": "^6.4.4"
 	},
 	"name": "clarity-solution-custom-element-distributors-map-osm",
 	"private": true,

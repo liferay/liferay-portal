@@ -2,7 +2,7 @@
 	"dependencies": {
 	},
 	"devDependencies": {
-		"vite": "^5.2.0"
+		"vite": "^6.4.4"
 	},
 	"exports": {
 		".": {
@@ -16,5 +16,6 @@
 		"dev": "vite",
 		"preview": "vite preview"
 	},
+	"type": "module",
 	"version": "0.0.0"
 }
