@@ -113,7 +113,7 @@ tests:
                     path: spec.provider.kubernetes.envoyDeployment.pod
             -   documentIndex: 0
                 notExists:
-                    path: spec.provider.kubernetes.envoyService
+                    path: spec.provider.kubernetes.envoyService.annotations
             -   documentIndex: 2
                 equal:
                     path: spec.gatewayClassName

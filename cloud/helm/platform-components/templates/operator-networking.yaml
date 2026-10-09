@@ -85,11 +85,12 @@ spec:
                         {{- toYaml . | nindent 24 }}
                 {{- end }}
                 replicas: {{ $envoyProxy.replicas }}
-            {{- with $envoyProxy.serviceAnnotations }}
             envoyService:
+                {{- with $envoyProxy.serviceAnnotations }}
                 annotations:
                     {{- toYaml . | nindent 20 }}
-            {{- end }}
+                {{- end }}
+                externalTrafficPolicy: Local
         type: Kubernetes
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
