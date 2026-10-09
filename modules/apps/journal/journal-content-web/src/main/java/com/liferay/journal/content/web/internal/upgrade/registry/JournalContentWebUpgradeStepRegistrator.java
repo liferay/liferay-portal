@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -54,21 +55,30 @@ public class JournalContentWebUpgradeStepRegistrator
 
 		registry.register(
 			"1.1.1", "1.1.2",
-			UpgradeProcessFactory.runSQL(
-				StringBundler.concat(
-					"delete from PortletPreferenceValue where exists( select ",
-					"1 from PortletPreferences inner join Layout on ",
-					"PortletPreferences.plid=Layout.plid inner join Group_ on ",
-					"Layout.groupId = Group_.groupId where ",
-					"PortletPreferenceValue.portletPreferencesId=",
-					"PortletPreferences.portletPreferencesId and ",
-					"PortletPreferences.portletId like ",
-					"'com_liferay_journal_content_web_portlet_",
-					"JournalContentPortlet_INSTANCE_%' and ",
-					"PortletPreferenceValue.name like ",
-					"'groupExternalReferenceCode' and Group_.",
-					"externalReferenceCode=PortletPreferenceValue.",
-					"smallValue)")));
+			_getDeleteGroupExternalReferenceCodeUpgradeProcess("groupId"));
+
+		registry.register(
+			"1.1.2", "1.1.3",
+			_getDeleteGroupExternalReferenceCodeUpgradeProcess("liveGroupId"));
+	}
+
+	private UpgradeProcess _getDeleteGroupExternalReferenceCodeUpgradeProcess(
+		String groupIdColumnName) {
+
+		return UpgradeProcessFactory.runSQL(
+			StringBundler.concat(
+				"delete from PortletPreferenceValue where exists( select 1 ",
+				"from PortletPreferences inner join Layout on ",
+				"PortletPreferences.plid=Layout.plid inner join Group_ on ",
+				"Layout.groupId = Group_.", groupIdColumnName, " where ",
+				"PortletPreferenceValue.portletPreferencesId=",
+				"PortletPreferences.portletPreferencesId and ",
+				"PortletPreferences.portletId like ",
+				"'com_liferay_journal_content_web_portlet_",
+				"JournalContentPortlet_INSTANCE_%' and ",
+				"PortletPreferenceValue.name like ",
+				"'groupExternalReferenceCode' and Group_.",
+				"externalReferenceCode=PortletPreferenceValue.smallValue)"));
 	}
 
 	@Reference
