@@ -6,19 +6,14 @@
 package com.liferay.change.tracking.web.internal.model.listener;
 
 import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
-import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,19 +39,9 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Override
 	public void onBeforeRemove(Company company) {
-		List<CTCollection> ctCollections =
-			_ctCollectionLocalService.getCTCollections(
-				company.getCompanyId(), WorkflowConstants.STATUS_ANY,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
 		try {
-			for (CTCollection ctCollection : ctCollections) {
-				if (ctCollection.getStatus() !=
-						WorkflowConstants.STATUS_APPROVED) {
-
-					_ctCollectionLocalService.deleteCTCollection(ctCollection);
-				}
-			}
+			_ctCollectionLocalService.deleteCompanyCTCollections(
+				company.getCompanyId());
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
