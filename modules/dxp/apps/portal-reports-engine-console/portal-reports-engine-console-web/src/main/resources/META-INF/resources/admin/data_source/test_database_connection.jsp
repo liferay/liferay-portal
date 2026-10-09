@@ -19,8 +19,8 @@ if (Validator.isNull(driverPassword)) {
 
 	Source source = SourceLocalServiceUtil.fetchSource(sourceId);
 
-	if (source != null) {
-		driverPassword = source.getDriverPassword();
+	if ((source != null) && SourcePermissionChecker.contains(permissionChecker, source, ActionKeys.UPDATE)) {
+		driverPassword = SecretResolverUtil.resolve(source.getCompanyId(), StringBundler.concat(Source.class.getSimpleName(), StringPool.SLASH, source.getCompanyId(), StringPool.SLASH, source.getSourceId()), source.getDriverPassword());
 	}
 }
 

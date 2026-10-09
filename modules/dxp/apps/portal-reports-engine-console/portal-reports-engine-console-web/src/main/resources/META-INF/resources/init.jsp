@@ -75,6 +75,7 @@ page import="com.liferay.portal.reports.engine.console.web.internal.permission.A
 page import="com.liferay.portal.reports.engine.console.web.internal.permission.DefinitionPermissionChecker" %><%@
 page import="com.liferay.portal.reports.engine.console.web.internal.permission.EntryPermissionChecker" %><%@
 page import="com.liferay.portal.reports.engine.console.web.internal.permission.SourcePermissionChecker" %><%@
+page import="com.liferay.portal.security.key.secret.SecretResolverUtil" %><%@
 page import="com.liferay.taglib.search.ResultRow" %>
 
 <%@ page import="jakarta.portlet.PortletURL" %><%@
