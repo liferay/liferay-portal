@@ -19,7 +19,7 @@ buildscript {
 apply plugin: "com.liferay.node"
 
 node {
-	nodeVersion = "20.12.2"
+	nodeVersion = "20.20.2"
 }
 
 task runPlaywright(type: ExecuteNodeScriptTask)

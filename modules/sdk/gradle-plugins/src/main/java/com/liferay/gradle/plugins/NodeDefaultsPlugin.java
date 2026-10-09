@@ -181,9 +181,9 @@ public class NodeDefaultsPlugin extends BaseDefaultsPlugin<NodePlugin> {
 		}
 	}
 
-	private static final String _NODE_VERSION = "20.12.2";
+	private static final String _NODE_VERSION = "20.20.2";
 
-	private static final String _NPM_VERSION = "10.5.0";
+	private static final String _NPM_VERSION = "10.8.2";
 
 	private static final String _SASS_BINARY_SITE_ARG = "--sass-binary-site=";
 
