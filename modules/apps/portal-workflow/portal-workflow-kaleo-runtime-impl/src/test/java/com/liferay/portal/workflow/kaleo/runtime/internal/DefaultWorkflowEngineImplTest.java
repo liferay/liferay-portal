@@ -87,7 +87,7 @@ public class DefaultWorkflowEngineImplTest {
 		Mockito.verify(
 			workflowModelParser, Mockito.never()
 		).parse(
-			Mockito.any(InputStream.class)
+			Mockito.anyLong(), Mockito.any(InputStream.class)
 		);
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
