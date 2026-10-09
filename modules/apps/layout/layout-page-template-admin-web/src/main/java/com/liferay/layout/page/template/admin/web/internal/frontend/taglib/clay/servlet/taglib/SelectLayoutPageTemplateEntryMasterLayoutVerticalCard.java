@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -54,7 +55,15 @@ public class SelectLayoutPageTemplateEntryMasterLayoutVerticalCard
 
 	@Override
 	public String getCssClass() {
-		return "card-interactive card-interactive-primary";
+		String cssClass = "card-interactive card-interactive-primary";
+
+		if (DesignLibraryUtil.isDesignLibraryScope(
+				_layoutPageTemplateEntry.getGroupId())) {
+
+			cssClass += " design-library-master-layout";
+		}
+
+		return cssClass;
 	}
 
 	@Override

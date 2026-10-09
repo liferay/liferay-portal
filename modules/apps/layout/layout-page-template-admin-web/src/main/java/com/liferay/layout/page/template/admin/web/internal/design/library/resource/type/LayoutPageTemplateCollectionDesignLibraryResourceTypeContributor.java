@@ -10,17 +10,15 @@ import com.liferay.design.library.resource.type.DesignLibraryResourceCreationIte
 import com.liferay.design.library.resource.type.DesignLibraryResourceTypeContributor;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
+import com.liferay.layout.page.template.admin.web.internal.util.PageTemplateSetsUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -66,9 +64,8 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 			httpServletRequest, depotEntry.getGroup(), backURL);
 
 		return ListUtil.fromArray(
-			_getDesignLibraryResourceCreationItem(
-				httpServletRequest, "add-content-page-template",
-				"new-content-page-template", "page-template", baseModuleProps),
+			_getContentPageTemplateDesignLibraryResourceCreationItem(
+				httpServletRequest, depotEntry, backURL, baseModuleProps),
 			_getDesignLibraryResourceCreationItem(
 				httpServletRequest, "add-page-template-set",
 				"new-page-template-set", "set", baseModuleProps));
@@ -226,21 +223,39 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES)
 		).put(
 			"pageTemplateSets",
-			JSONUtil.toJSONArray(
-				_layoutPageTemplateCollectionLocalService.
-					getLayoutPageTemplateCollections(
-						depotGroup.getGroupId(),
-						LayoutPageTemplateCollectionTypeConstants.BASIC,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				layoutPageTemplateCollection -> JSONUtil.put(
-					"id",
-					layoutPageTemplateCollection.
-						getLayoutPageTemplateCollectionId()
-				).put(
-					"name", layoutPageTemplateCollection.getName()
-				),
-				_log)
+			PageTemplateSetsUtil.getPageTemplateSetsJSONArray(
+				depotGroup.getGroupId(),
+				_layoutPageTemplateCollectionLocalService)
 		).build();
+	}
+
+	private DesignLibraryResourceCreationItem
+			_getContentPageTemplateDesignLibraryResourceCreationItem(
+				HttpServletRequest httpServletRequest, DepotEntry depotEntry,
+				String backURL, Map<String, Object> baseModuleProps)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				depotEntry.getCompanyId(), "LPD-81022")) {
+
+			return _getDesignLibraryResourceCreationItem(
+				httpServletRequest, "add-content-page-template",
+				"new-content-page-template", "page-template", baseModuleProps);
+		}
+
+		return new DesignLibraryResourceCreationItem(
+			PortletURLBuilder.create(
+				PortalUtil.getControlPanelPortletURL(
+					httpServletRequest, depotEntry.getGroup(),
+					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, 0,
+					0, PortletRequest.RENDER_PHASE)
+			).setMVCPath(
+				"/select_layout_page_template_entry_master_layout.jsp"
+			).setRedirect(
+				backURL
+			).buildString(),
+			"add-content-page-template",
+			LanguageUtil.get(httpServletRequest, "new-content-page-template"));
 	}
 
 	private DesignLibraryResourceCreationItem
@@ -259,9 +274,6 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 				"mode", mode
 			).build());
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor.class);
 
 	@Reference
 	private LayoutPageTemplateCollectionLocalService
