@@ -1,7 +1,6 @@
 # Database Migration Importer Tool
 
-This tool imports database schema and its data between different databases in
-the same network.
+This tool imports the database schema and data into a PostgreSQL database.
 
 ## Requirements
 

@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.db.migration.importer;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.db.migration.importer.jdbc.ConnectionConfigUtil;
@@ -33,8 +34,8 @@ public class DBMigrationImport {
 	public static void main(String[] args) throws Exception {
 		Options options = _getOptions();
 
-		if ((args.length != 0) && args[0].equals("--help")) {
-			_printHelpAndExit(options);
+		if (ArrayUtil.contains(args, "--help")) {
+			_printHelpAndExit(_LIFERAY_COMMON_EXIT_CODE_OK, options);
 		}
 
 		CommandLineParser commandLineParser = new DefaultParser();
@@ -47,7 +48,7 @@ public class DBMigrationImport {
 		catch (ParseException parseException) {
 			System.err.println(parseException.getMessage());
 
-			_printHelpAndExit(options);
+			_printHelpAndExit(_LIFERAY_COMMON_EXIT_CODE_HELP, options);
 		}
 
 		if (!DataSourceFactoryUtil.isValidSourceDatabase(
@@ -57,7 +58,7 @@ public class DBMigrationImport {
 				"Source database must be DB2, MariaDB, MySQL, Oracle, or SQL " +
 					"Server.");
 
-			_printHelpAndExit(options);
+			_printHelpAndExit(_LIFERAY_COMMON_EXIT_CODE_HELP, options);
 		}
 
 		if (!DataSourceFactoryUtil.isValidTargetDatabase(
@@ -65,7 +66,7 @@ public class DBMigrationImport {
 
 			System.err.println("Target database must be PostgreSQL.");
 
-			_printHelpAndExit(options);
+			_printHelpAndExit(_LIFERAY_COMMON_EXIT_CODE_HELP, options);
 		}
 
 		try {
@@ -145,13 +146,15 @@ public class DBMigrationImport {
 		return options;
 	}
 
-	private static void _printHelpAndExit(Options options) {
+	private static void _printHelpAndExit(int exitCode, Options options) {
 		new HelpFormatter(
 		).printHelp(
-			"Liferay Portal Tools Database Migration Importer", options
+			System.getProperty("launcher", "db_migration_importer") +
+				" <parameters>",
+			"Liferay Portal Tools Database Migration Importer", options, null
 		);
 
-		System.exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
+		System.exit(exitCode);
 	}
 
 	/**

@@ -16,6 +16,7 @@ java ^
 	--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED ^
 	--add-opens=jdk.zipfs/jdk.nio.zipfs=ALL-UNNAMED ^
 	-cp "com.liferay.portal.tools.db.migration.importer.jar;lib\*" ^
+	-Dlauncher="%~nx0" ^
 	com.liferay.portal.tools.db.migration.importer.DBMigrationImport %*
 
 popd
