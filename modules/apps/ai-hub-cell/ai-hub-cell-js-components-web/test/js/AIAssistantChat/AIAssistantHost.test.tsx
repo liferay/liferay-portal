@@ -995,7 +995,7 @@ describe('AIAssistantHost', () => {
 		function getMessageWrapper(text: string) {
 			return screen
 				.getByText(text)
-				.closest('.ai-assistant-chat__messages-container > div');
+				.closest('.ai-assistant-chat__message');
 		}
 
 		it('scrolls the conversation to the bottom when an image arrives without text', async () => {

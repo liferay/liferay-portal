@@ -84,6 +84,7 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 
 				{messages.map((item, index) => (
 					<div
+						className="ai-assistant-chat__message"
 						key={index}
 						ref={
 							index === messages.length - 1
