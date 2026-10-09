@@ -739,7 +739,7 @@ public class EditAssetListDisplayContext {
 		).build();
 	}
 
-	public List<Map<String, Object>> getFilters() {
+	public List<Map<String, Object>> getFilterMaps() {
 		String filtersJSON = _unicodeProperties.getProperty("filters");
 
 		if (Validator.isNull(filtersJSON)) {

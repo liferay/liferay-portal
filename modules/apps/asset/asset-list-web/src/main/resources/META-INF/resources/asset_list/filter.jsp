@@ -49,7 +49,7 @@
 				).put(
 					"groupIds", ListUtil.fromArray(editAssetListDisplayContext.getReferencedModelsGroupIds())
 				).put(
-					"initialConditions", editAssetListDisplayContext.getFilters()
+					"initialConditions", editAssetListDisplayContext.getFilterMaps()
 				).put(
 					"namespace", liferayPortletResponse.getNamespace()
 				).put(

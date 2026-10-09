@@ -244,7 +244,7 @@ public class EditAssetListDisplayContextTest {
 	}
 
 	@Test
-	public void testGetFilters() {
+	public void testGetFilterMaps() {
 		long[] groupIds = {RandomTestUtil.randomLong()};
 
 		Mockito.when(
@@ -355,7 +355,7 @@ public class EditAssetListDisplayContextTest {
 					).build());
 
 			List<Map<String, Object>> filterMaps =
-				editAssetListDisplayContext.getFilters();
+				editAssetListDisplayContext.getFilterMaps();
 
 			Assert.assertEquals(filterMaps.toString(), 3, filterMaps.size());
 
@@ -397,7 +397,7 @@ public class EditAssetListDisplayContextTest {
 	}
 
 	@Test
-	public void testGetFiltersWhenAssetCategoryLookupFails() {
+	public void testGetFilterMapsWhenAssetCategoryLookupFails() {
 		try (MockedStatic<AssetCategoryLocalServiceUtil>
 				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					AssetCategoryLocalServiceUtil.class);
@@ -442,7 +442,7 @@ public class EditAssetListDisplayContextTest {
 					).build());
 
 			List<Map<String, Object>> filterMaps =
-				editAssetListDisplayContext.getFilters();
+				editAssetListDisplayContext.getFilterMaps();
 
 			Assert.assertEquals(filterMaps.toString(), 2, filterMaps.size());
 
@@ -469,7 +469,7 @@ public class EditAssetListDisplayContextTest {
 	}
 
 	@Test
-	public void testGetFiltersWhenOnlyAssetCategoryOrTagIsDeleted() {
+	public void testGetFilterMapsWhenOnlyAssetCategoryOrTagIsDeleted() {
 		Mockito.when(
 			_portal.getCurrentAndAncestorSiteGroupIds(
 				Mockito.any(long[].class), Mockito.eq(true))
@@ -527,7 +527,7 @@ public class EditAssetListDisplayContextTest {
 					).build());
 
 			List<Map<String, Object>> filterMaps =
-				editAssetListDisplayContext.getFilters();
+				editAssetListDisplayContext.getFilterMaps();
 
 			Assert.assertEquals(filterMaps.toString(), 1, filterMaps.size());
 
