@@ -208,6 +208,22 @@ export default function useAIChat({
 		});
 	}, []);
 
+	const scrollToMessage = useCallback((element?: Element | null) => {
+		const container = messagesContainerRef.current;
+
+		if (!container || !element) {
+			return;
+		}
+
+		container.scrollTo?.({
+			behavior: 'smooth',
+			top:
+				element.getBoundingClientRect().top -
+				container.getBoundingClientRect().top +
+				container.scrollTop,
+		});
+	}, []);
+
 	useEffect(() => {
 		const lastMessage = messages.at(-1);
 
@@ -231,19 +247,19 @@ export default function useAIChat({
 				return;
 			}
 
-			lastMessageRef.current?.previousElementSibling?.scrollIntoView?.({
-				behavior: 'smooth',
-				block: 'start',
-			});
+			scrollToMessage(lastMessageRef.current?.previousElementSibling);
 
 			return;
 		}
 
-		lastMessageRef.current?.scrollIntoView?.({
-			behavior: 'smooth',
-			block: 'start',
-		});
-	}, [generatingBalloons, isGenerating, messages, scrollToBottom]);
+		scrollToMessage(lastMessageRef.current);
+	}, [
+		generatingBalloons,
+		isGenerating,
+		messages,
+		scrollToBottom,
+		scrollToMessage,
+	]);
 
 	useEffect(() => {
 		const onLocaleChanged = ({languageId}: {languageId: string}) => {
