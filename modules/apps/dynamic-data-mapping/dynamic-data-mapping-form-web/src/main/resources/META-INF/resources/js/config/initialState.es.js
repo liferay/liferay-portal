@@ -4,11 +4,13 @@
  */
 
 import {
+	EVENT_TYPES as CORE_EVENT_TYPES,
 	INITIAL_PAGES,
 	INITIAL_STATE,
 	PagesVisitor,
 	RulesSupport,
 	getUid,
+	languageReducer,
 } from 'data-engine-js-components-web';
 
 export const BUILDER_INITIAL_STATE = {
@@ -83,6 +85,21 @@ const normalizePages = (pages) => {
 	);
 };
 
+const localizePages = (
+	pages,
+	{availableLanguageIds, defaultLanguageId, editingLanguageId}
+) => {
+	const {pages: localizedPages} = languageReducer(
+		{availableLanguageIds, defaultLanguageId},
+		{
+			payload: {editingLanguageId, pages},
+			type: CORE_EVENT_TYPES.LANGUAGE.CHANGE,
+		}
+	);
+
+	return localizedPages;
+};
+
 export function initState(
 	{
 		pages: initialPages,
@@ -93,9 +110,13 @@ export function initState(
 	},
 	{view}
 ) {
-	const pages = initialPages.length
-		? normalizePages(initialPages)
-		: INITIAL_PAGES;
+	let pages = INITIAL_PAGES;
+
+	if (initialPages.length) {
+		const normalizedPages = normalizePages(initialPages);
+
+		pages = localizePages(normalizedPages, otherProps);
+	}
 
 	// Before starting the application formats the rules there may be a broken rule with
 	// an invalid field and it is necessary to remove it from the rule.
