@@ -37,6 +37,43 @@ describe('Deserializing a notification whose recipient roles omit auto-create', 
 	});
 });
 
+describe('Deserializing roles that carry an external reference code', () => {
+	it('Reads the external reference code, type, and ID of every role', () => {
+		const elements = getElements(
+			'roles-with-external-reference-codes-workflow-definition.xml'
+		);
+
+		const task = elements.find((element) => element.id === 'Review');
+
+		expect(task.data.assignments).toEqual({
+			assignmentType: ['roleId'],
+			roleExternalReferenceCode: 'ROLE1_ERC',
+			roleId: 1,
+			roleType: 'regular',
+		});
+		expect(task.data.notifications.recipients[0][0]).toEqual({
+			assignmentType: ['roleId'],
+			roleExternalReferenceCode: 'ROLE2_ERC',
+			roleId: '2',
+			roleType: 'site',
+		});
+		expect(task.data.taskTimers.reassignments[0]).toEqual({
+			assignmentType: ['roleId'],
+			roleExternalReferenceCode: 'ROLE3_ERC',
+			roleId: 3,
+			roleType: 'organization',
+		});
+		expect(
+			task.data.taskTimers.timerNotifications[0].recipients[0][0]
+		).toEqual({
+			assignmentType: ['roleId'],
+			roleExternalReferenceCode: 'ROLE4_ERC',
+			roleId: ['4'],
+			roleType: 'depot',
+		});
+	});
+});
+
 describe('Deserializing transitions that share a name', () => {
 	it('Renames a transition only when its source node already uses the name', () => {
 		const elements = getElements(

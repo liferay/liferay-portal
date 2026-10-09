@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Roles with External Reference Codes</name>
+	<state>
+		<name>Start</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						100
+					]
+				}
+			]]>
+		</metadata>
+		<initial>true</initial>
+		<transitions>
+			<transition>
+				<name>review</name>
+				<target>Review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<task>
+		<name>Review</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						260
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<notification>
+				<name>Review Notification</name>
+				<template>A new submission is waiting for your review.</template>
+				<template-language>text</template-language>
+				<notification-type>email</notification-type>
+				<recipients>
+					<roles>
+						<role>
+							<role-external-reference-code>ROLE2_ERC</role-external-reference-code>
+							<role-type>site</role-type>
+							<role-id>2</role-id>
+						</role>
+					</roles>
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			<roles>
+				<role>
+					<role-external-reference-code>ROLE1_ERC</role-external-reference-code>
+					<role-type>regular</role-type>
+					<role-id>1</role-id>
+				</role>
+			</roles>
+		</assignments>
+		<task-timers>
+			<task-timer>
+				<name>Timer</name>
+				<delay>
+					<duration>1</duration>
+					<scale>day</scale>
+				</delay>
+				<blocking>true</blocking>
+				<timer-actions>
+					<timer-notification>
+						<name>Timer Notification</name>
+						<template>The submission is still waiting for your review.</template>
+						<template-language>text</template-language>
+						<notification-type>email</notification-type>
+						<recipients>
+							<roles>
+								<role>
+									<role-external-reference-code>ROLE4_ERC</role-external-reference-code>
+									<role-type>depot</role-type>
+									<role-id>4</role-id>
+								</role>
+							</roles>
+						</recipients>
+					</timer-notification>
+					<reassignments>
+						<roles>
+							<role>
+								<role-external-reference-code>ROLE3_ERC</role-external-reference-code>
+								<role-type>organization</role-type>
+								<role-id>3</role-id>
+							</role>
+						</roles>
+					</reassignments>
+				</timer-actions>
+			</task-timer>
+		</task-timers>
+		<transitions>
+			<transition>
+				<name>end</name>
+				<target>End</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+	<state>
+		<name>End</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						300,
+						500
+					]
+				}
+			]]>
+		</metadata>
+	</state>
+</workflow-definition>
