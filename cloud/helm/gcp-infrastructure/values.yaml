@@ -65,7 +65,7 @@ podMonitoring:
                 app.kubernetes.io/name: liferay-default
             metricRelabeling:
                 -   action: keep
-                    regex: ^(?:Catalina_(?:GlobalRequestProcessor_(?:.*_)?(?:errorCount|processingTime|requestCount)|ThreadPool_(?:.*_)?(?:currentThreadCount|currentThreadsBusy))|hikaricp_(?:ActiveConnections|IdleConnections|ThreadsAwaitingConnection|TotalConnections)|java_lang_Threading_ThreadCount|jvm_(?:(?:buffer_pool|memory(?:_pool)?)_(?:used|max)_bytes|classes_currently_loaded|gc_collection_seconds_(?:count|sum)|threads_(?:current|peak|state))|process_(?:cpu_seconds_total|open_fds|resident_memory_bytes))$
+                    regex: ^(?:Catalina_(?:GlobalRequestProcessor_(?:.*_)?(?:errorCount|processingTime|requestCount)|ThreadPool_(?:.*_)?(?:connectionCount|currentThreadCount|currentThreadsBusy|maxConnections))|hikaricp_(?:ActiveConnections|IdleConnections|ThreadsAwaitingConnection|TotalConnections)|java_lang_Threading_ThreadCount|jvm_(?:(?:buffer_pool|memory(?:_pool)?)_(?:used|max)_bytes|classes_currently_loaded|gc_collection_seconds_(?:count|sum)|threads_(?:current|peak|state))|process_(?:cpu_seconds_total|open_fds|resident_memory_bytes))$
                     sourceLabels:
                         -   __name__
             path: /metrics

@@ -44,6 +44,17 @@ tests:
             value: liferay
         it: Configures the liferay PodMonitoring endpoint and selector
     -   asserts:
+            -   matchRegex:
+                    path: spec.endpoints[0].metricRelabeling[0].regex
+                    pattern: ThreadPool_.*connectionCount
+            -   matchRegex:
+                    path: spec.endpoints[0].metricRelabeling[0].regex
+                    pattern: ThreadPool_.*maxConnections
+        documentSelector:
+            path: metadata.name
+            value: liferay
+        it: Keeps the Tomcat connector connection metrics on the liferay instance
+    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the PodMonitoring resources when the chart is disabled
