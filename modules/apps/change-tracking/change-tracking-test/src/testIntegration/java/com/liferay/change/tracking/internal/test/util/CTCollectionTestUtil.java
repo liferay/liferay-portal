@@ -6,10 +6,8 @@
 package com.liferay.change.tracking.internal.test.util;
 
 import com.liferay.change.tracking.model.CTCollection;
-import com.liferay.change.tracking.model.CTScore;
 import com.liferay.change.tracking.service.CTCollectionLocalServiceUtil;
 import com.liferay.change.tracking.service.CTCollectionServiceUtil;
-import com.liferay.change.tracking.service.CTScoreLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.journal.model.JournalFolder;
@@ -17,6 +15,9 @@ import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -105,20 +106,12 @@ public class CTCollectionTestUtil {
 			long ctCollectionId, long groupId, int score, User user)
 		throws Exception {
 
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollectionId)) {
+		PortalCache<Long, Integer> portalCache =
+			PortalCacheHelperUtil.getPortalCache(
+				PortalCacheManagerNames.SINGLE_VM,
+				"com.liferay.change.tracking.internal.score.CTScoreCache");
 
-			DDMStructureTestUtil.addStructure(
-				groupId, DLFileEntryMetadata.class.getName());
-		}
-
-		CTScore ctScore = CTScoreLocalServiceUtil.fetchCTScoreByCTCollectionId(
-			ctCollectionId);
-
-		ctScore.setScore(score);
-
-		CTScoreLocalServiceUtil.updateCTScore(ctScore);
+		portalCache.put(ctCollectionId, score);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
