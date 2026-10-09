@@ -23,7 +23,7 @@ import com.liferay.headless.admin.site.resource.v1_0.UtilityPageResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
-import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
+import com.liferay.layout.utility.page.converter.LayoutUtilityPageEntryTypeConverter;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
 import com.liferay.portal.kernel.model.Layout;
@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -373,6 +372,8 @@ public class UtilityPageResourceImpl
 		ServiceContext serviceContext = _getServiceContext(
 			groupId, utilityPage);
 
+		String type = _getType(utilityPage.getType());
+
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				utilityPage.getExternalReferenceCode(), groupId,
@@ -382,8 +383,7 @@ public class UtilityPageResourceImpl
 					utilityPage.getThumbnailURLReference(),
 					contextUser.getUserId()),
 				GetterUtil.getBoolean(utilityPage.getMarkedAsDefault()),
-				utilityPage.getName(), _getType(utilityPage.getType()), null,
-				serviceContext);
+				utilityPage.getName(), type, null, serviceContext);
 
 		return _utilityPageDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
@@ -453,14 +453,21 @@ public class UtilityPageResourceImpl
 	}
 
 	private String _getType(UtilityPage.Type type) {
-		String internalType = _externalToInternalValuesMap.get(type);
-
-		if (internalType != null) {
-			return internalType;
+		if (type == null) {
+			throw new IllegalArgumentException(
+				"A utility page type is required");
 		}
 
-		throw new IllegalArgumentException(
-			"The page type does not match the expected utility page type");
+		String internalType =
+			LayoutUtilityPageEntryTypeConverter.convertToInternalValue(
+				type.getValue());
+
+		if (internalType == null) {
+			throw new IllegalArgumentException(
+				"The utility page type \"" + type + "\" is not supported");
+		}
+
+		return internalType;
 	}
 
 	private void _validateUtilityPage(UtilityPage utilityPage) {
@@ -480,30 +487,6 @@ public class UtilityPageResourceImpl
 
 	private static final EntityModel _entityModel =
 		new UtilityPageEntityModel();
-	private static final Map<UtilityPage.Type, String>
-		_externalToInternalValuesMap = HashMapBuilder.put(
-			UtilityPage.Type.COOKIE_POLICY,
-			LayoutUtilityPageEntryConstants.TYPE_COOKIE_POLICY
-		).put(
-			UtilityPage.Type.CREATE_ACCOUNT,
-			LayoutUtilityPageEntryConstants.TYPE_CREATE_ACCOUNT
-		).put(
-			UtilityPage.Type.ERROR, LayoutUtilityPageEntryConstants.TYPE_STATUS
-		).put(
-			UtilityPage.Type.ERROR_CODE404,
-			LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND
-		).put(
-			UtilityPage.Type.ERROR_CODE500,
-			LayoutUtilityPageEntryConstants.TYPE_SC_INTERNAL_SERVER_ERROR
-		).put(
-			UtilityPage.Type.FORGOT_PASSWORD,
-			LayoutUtilityPageEntryConstants.TYPE_FORGOT_PASSWORD
-		).put(
-			UtilityPage.Type.LOGIN, LayoutUtilityPageEntryConstants.TYPE_LOGIN
-		).put(
-			UtilityPage.Type.TERMS_OF_USE,
-			LayoutUtilityPageEntryConstants.TYPE_TERMS_OF_USE
-		).build();
 
 	@Reference
 	private CETManager _cetManager;
