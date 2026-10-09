@@ -125,11 +125,4 @@
 		<field name="companyId" type="long" />
 		<field name="schemaContext" type="Map" />
 	</model>
-	<model name="com.liferay.change.tracking.model.CTScore">
-		<field name="mvccVersion" type="long" />
-		<field name="ctScoreId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="ctCollectionId" type="long" />
-		<field name="score" type="int" />
-	</model>
 </model-hints>

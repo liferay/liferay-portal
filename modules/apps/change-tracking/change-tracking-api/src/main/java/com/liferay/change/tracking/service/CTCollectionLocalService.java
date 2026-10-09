@@ -412,4 +412,4 @@ public interface CTCollectionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-943615411
+// LIFERAY-SERVICE-BUILDER-HASH:-110934045

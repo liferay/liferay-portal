@@ -119,11 +119,3 @@ create table CTSchemaVersion (
 	companyId LONG,
 	schemaContext TEXT null
 );
-
-create table CTScore (
-	mvccVersion LONG default 0 not null,
-	ctScoreId LONG not null primary key,
-	companyId LONG,
-	ctCollectionId LONG,
-	score INTEGER
-);
