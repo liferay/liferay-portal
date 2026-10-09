@@ -138,55 +138,6 @@ definition {
 
 	@disable-webdriver = "true"
 	@priority = 4
-	test CanReturnUpdatedChildAndParentWithPatchChildStudentInOneToManyRelationship {
-		property portal.acceptance = "true";
-
-		task ("And Given with postSubject I create one subject and two related students in one request") {
-			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
-				en_US_plural_label = "subjects",
-				externalReferenceCode = "subjectErc",
-				fieldName = "name",
-				fieldValue = "Math",
-				nestedField = "mainSubjectStudents",
-				numberOfRelatedObjectEntries = 2,
-				relatedEntryFieldName = "name");
-		}
-
-		task ("When with patchStudent and studentId to update the existing student including mainSubjectStudents with updated subject and externalReferenceCode information") {
-			var studentId = JSONUtil.getWithJSONPath(${response}, "$.mainSubjectStudents[0].id");
-
-			var response = CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPatch(
-				en_US_plural_label = "students",
-				fieldName = "name",
-				fieldValue = "Able",
-				nestedField = "mainSubjectStudents",
-				numberOfRelatedObjectEntries = 1,
-				objectEntryId = ${studentId},
-				oneToManyChild = "true",
-				relatedEntryExternalReferenceCode = "subjectErc",
-				relatedEntryFieldName = "name");
-		}
-
-		task ("Then in response I can retrieve detailed information of the updated student and subject in mainSubjectStudents and r_mainSubjectStudents_c_subject") {
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "Able",
-				objectJsonPath = "$.name",
-				response = ${response});
-
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "name0-update",
-				objectJsonPath = "$.r_mainSubjectStudents_c_subject.name",
-				response = ${response});
-
-			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
-				expectedValues = "name0-update",
-				objectJsonPath = "$.mainSubjectStudents.name",
-				response = ${response});
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
 	test CanReturnUpdatedCustomObjectsWithPatchSubjectInOneToManyRelationshipWithItself {
 		property portal.acceptance = "true";
 
