@@ -115,21 +115,23 @@ public class AccountFaroControllerTest {
 	}
 
 	@Test
-	public void testSearchFDSFieldValuesWithLifecycleStatus()
-		throws Exception {
-
-		String externalReferenceCode = RandomTestUtil.randomString();
-		String id = RandomTestUtil.randomString();
-		String stageType = RandomTestUtil.randomString();
+	public void testSearchFDSFieldValuesWithLifecycleStatus() throws Exception {
+		AccountLifecycle accountLifecycle = new AccountLifecycle();
 
 		AccountLifecycleStage accountLifecycleStage =
 			new AccountLifecycleStage();
 
-		accountLifecycleStage.setExternalReferenceCode(externalReferenceCode);
-		accountLifecycleStage.setId(id);
-		accountLifecycleStage.setStageType(stageType);
+		String externalReferenceCode = RandomTestUtil.randomString();
 
-		AccountLifecycle accountLifecycle = new AccountLifecycle();
+		accountLifecycleStage.setExternalReferenceCode(externalReferenceCode);
+
+		String id = RandomTestUtil.randomString();
+
+		accountLifecycleStage.setId(id);
+
+		String stageType = RandomTestUtil.randomString();
+
+		accountLifecycleStage.setStageType(stageType);
 
 		accountLifecycle.setStages(
 			Collections.singletonList(accountLifecycleStage));
