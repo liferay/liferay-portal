@@ -7,6 +7,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.handler.LayoutUtilityPageEntryPortalExceptionRequestHandlerUtil;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
@@ -94,15 +95,21 @@ public class AddLayoutUtilityPageEntryMVCActionCommand
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			actionRequest);
+
 		String masterLayoutPageTemplateEntryERC = null;
 
 		if (masterLayoutPageTemplateEntry != null) {
 			masterLayoutPageTemplateEntryERC =
 				masterLayoutPageTemplateEntry.getExternalReferenceCode();
-		}
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			actionRequest);
+			serviceContext.setAttribute(
+				"masterLayoutPageTemplateEntryScopeERC",
+				MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeERC(
+					serviceContext.getScopeGroupId(),
+					masterLayoutPageTemplateEntry));
+		}
 
 		return _layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 			null, serviceContext.getScopeGroupId(), 0, 0, false, name, type,
