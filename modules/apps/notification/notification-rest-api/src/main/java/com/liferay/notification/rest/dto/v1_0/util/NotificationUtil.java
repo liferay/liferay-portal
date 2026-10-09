@@ -6,6 +6,10 @@
 package com.liferay.notification.rest.dto.v1_0.util;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
+import com.liferay.exportimport.report.model.ExportImportReportEntry;
+import com.liferay.exportimport.report.service.ExportImportReportEntryLocalServiceUtil;
 import com.liferay.notification.context.NotificationContext;
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
@@ -13,17 +17,25 @@ import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationRecipientLocalServiceUtil;
 import com.liferay.notification.service.NotificationTemplateLocalServiceUtil;
 import com.liferay.notification.type.NotificationType;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectFolderLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
@@ -41,15 +53,28 @@ public class NotificationUtil {
 	public static NotificationContext toNotificationContext(
 		com.liferay.notification.rest.dto.v1_0.NotificationTemplate
 			notificationTemplate,
-		ObjectFieldLocalService objectFieldLocalService) {
+		ObjectFieldLocalService objectFieldLocalService,
+		NotificationTemplate serviceBuilderNotificationTemplate) {
 
 		NotificationContext notificationContext = new NotificationContext();
-
-		List<Long> attachmentObjectFieldIds = new ArrayList<>();
 
 		String[] attachmentObjectFieldExternalReferenceCodes =
 			notificationTemplate.
 				getAttachmentObjectFieldExternalReferenceCodes();
+
+		boolean importInProcess = false;
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				serviceBuilderNotificationTemplate.getCompanyId(),
+				"LPD-49854") &&
+			ExportImportThreadLocal.isImportInProcess()) {
+
+			importInProcess = true;
+		}
+
+		List<Long> attachmentObjectFieldIds = new ArrayList<>();
+		List<String> missingAttachmentObjectFieldExternalReferenceCodes =
+			new ArrayList<>();
 
 		if (attachmentObjectFieldExternalReferenceCodes != null) {
 			for (String attachmentObjectFieldExternalReferenceCode :
@@ -58,19 +83,69 @@ public class NotificationUtil {
 				ObjectField objectField =
 					objectFieldLocalService.fetchObjectField(
 						attachmentObjectFieldExternalReferenceCode,
-						notificationTemplate.getObjectDefinitionId());
+						serviceBuilderNotificationTemplate.
+							getObjectDefinitionId());
 
 				if (objectField == null) {
-					attachmentObjectFieldIds.clear();
+					if (!importInProcess) {
+						attachmentObjectFieldIds.clear();
 
-					break;
+						break;
+					}
+
+					missingAttachmentObjectFieldExternalReferenceCodes.add(
+						attachmentObjectFieldExternalReferenceCode);
+
+					continue;
 				}
 
 				attachmentObjectFieldIds.add(objectField.getObjectFieldId());
 			}
 		}
 
-		if (attachmentObjectFieldIds.isEmpty()) {
+		if (!missingAttachmentObjectFieldExternalReferenceCodes.isEmpty()) {
+			String message = LanguageUtil.format(
+				LocaleUtil.getDefault(),
+				"the-following-object-fields-do-not-exist-and-were-removed-" +
+					"from-the-attachments-of-the-notification-template-x-x",
+				new Object[] {
+					StringUtil.merge(
+						missingAttachmentObjectFieldExternalReferenceCodes,
+						StringPool.COMMA_AND_SPACE),
+					serviceBuilderNotificationTemplate.getName(
+						LocaleUtil.getDefault())
+				});
+
+			ExportImportReportEntry exportImportReportEntry =
+				ExportImportReportEntryLocalServiceUtil.
+					getOrAddExportImportReportEntry(
+						0, serviceBuilderNotificationTemplate.getCompanyId(),
+						serviceBuilderNotificationTemplate.
+							getExternalReferenceCode(),
+						ClassNameLocalServiceUtil.getClassNameId(
+							NotificationTemplate.class),
+						serviceBuilderNotificationTemplate.
+							getNotificationTemplateId(),
+						GetterUtil.getLong(
+							ExportImportThreadLocal.
+								getExportImportConfigurationId()),
+						ExportImportReportEntryConstants.TYPE_WARNING, message,
+						null, "notification-template");
+
+			String errorMessage = exportImportReportEntry.getErrorMessage();
+
+			if (!errorMessage.contains(message)) {
+				exportImportReportEntry.setErrorMessage(
+					errorMessage + StringPool.SPACE + message);
+
+				ExportImportReportEntryLocalServiceUtil.
+					updateExportImportReportEntry(exportImportReportEntry);
+			}
+		}
+
+		if ((attachmentObjectFieldExternalReferenceCodes == null) ||
+			(!importInProcess && attachmentObjectFieldIds.isEmpty())) {
+
 			notificationContext.setAttachmentObjectFieldIds(
 				ListUtil.fromArray(
 					notificationTemplate.getAttachmentObjectFieldIds()));
@@ -80,13 +155,15 @@ public class NotificationUtil {
 				attachmentObjectFieldIds);
 		}
 
+		notificationContext.setNotificationTemplate(
+			serviceBuilderNotificationTemplate);
 		notificationContext.setType(notificationTemplate.getType());
 
 		return notificationContext;
 	}
 
 	public static NotificationRecipient toNotificationRecipient(
-		User user, long classPK) {
+		long classPK, User user) {
 
 		NotificationRecipient notificationRecipient =
 			NotificationRecipientLocalServiceUtil.
@@ -118,10 +195,12 @@ public class NotificationUtil {
 	}
 
 	public static NotificationTemplate toNotificationTemplate(
-		long notificationTemplateId,
-		com.liferay.notification.rest.dto.v1_0.NotificationTemplate
-			notificationTemplate,
-		ObjectDefinitionLocalService objectDefinitionLocalService, User user) {
+			com.liferay.notification.rest.dto.v1_0.NotificationTemplate
+				notificationTemplate,
+			long notificationTemplateId,
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			User user)
+		throws PortalException {
 
 		NotificationTemplate serviceBuilderNotificationTemplate =
 			NotificationTemplateLocalServiceUtil.fetchNotificationTemplate(
@@ -139,31 +218,9 @@ public class NotificationUtil {
 		serviceBuilderNotificationTemplate.setExternalReferenceCode(
 			notificationTemplate.getExternalReferenceCode());
 		serviceBuilderNotificationTemplate.setCompanyId(user.getCompanyId());
-
-		long objectDefinitionId = GetterUtil.getLong(
-			notificationTemplate.getObjectDefinitionId());
-
-		String objectDefinitionExternalReferenceCode =
-			notificationTemplate.getObjectDefinitionExternalReferenceCode();
-
-		if (Validator.isNotNull(objectDefinitionExternalReferenceCode)) {
-			try {
-				ObjectDefinition objectDefinition =
-					objectDefinitionLocalService.
-						getObjectDefinitionByExternalReferenceCode(
-							objectDefinitionExternalReferenceCode,
-							user.getCompanyId());
-
-				objectDefinitionId = objectDefinition.getObjectDefinitionId();
-			}
-			catch (PortalException portalException) {
-				_log.error(portalException);
-			}
-		}
-
 		serviceBuilderNotificationTemplate.setObjectDefinitionId(
-			objectDefinitionId);
-
+			_getObjectDefinitionId(
+				notificationTemplate, objectDefinitionLocalService, user));
 		serviceBuilderNotificationTemplate.setBodyMap(
 			LocalizedMapUtil.getLocalizedMap(notificationTemplate.getBody()));
 		serviceBuilderNotificationTemplate.setDescription(
@@ -193,6 +250,55 @@ public class NotificationUtil {
 			notificationTemplate.getType());
 
 		return serviceBuilderNotificationTemplate;
+	}
+
+	private static long _getObjectDefinitionId(
+			com.liferay.notification.rest.dto.v1_0.NotificationTemplate
+				notificationTemplate,
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			User user)
+		throws PortalException {
+
+		String objectDefinitionExternalReferenceCode =
+			notificationTemplate.getObjectDefinitionExternalReferenceCode();
+
+		if (Validator.isNull(objectDefinitionExternalReferenceCode)) {
+			return GetterUtil.getLong(
+				notificationTemplate.getObjectDefinitionId());
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				user.getCompanyId(), "LPD-49854") &&
+			ExportImportThreadLocal.isImportInProcess()) {
+
+			ObjectFolder defaultObjectFolder =
+				ObjectFolderLocalServiceUtil.getOrAddDefaultObjectFolder(
+					user.getCompanyId());
+
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.getOrAddEmptyObjectDefinition(
+					objectDefinitionExternalReferenceCode, user.getCompanyId(),
+					user.getUserId(), defaultObjectFolder.getObjectFolderId(),
+					true, ObjectDefinitionConstants.SCOPE_COMPANY, false);
+
+			return objectDefinition.getObjectDefinitionId();
+		}
+
+		try {
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.
+					getObjectDefinitionByExternalReferenceCode(
+						objectDefinitionExternalReferenceCode,
+						user.getCompanyId());
+
+			return objectDefinition.getObjectDefinitionId();
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return GetterUtil.getLong(
+				notificationTemplate.getObjectDefinitionId());
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

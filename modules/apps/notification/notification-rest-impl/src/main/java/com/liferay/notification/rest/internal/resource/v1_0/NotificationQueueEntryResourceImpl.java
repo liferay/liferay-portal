@@ -142,7 +142,7 @@ public class NotificationQueueEntryResourceImpl
 				notificationContext, notificationQueueEntry.getSubject()));
 
 		notificationContext.setNotificationRecipient(
-			NotificationUtil.toNotificationRecipient(contextUser, 0L));
+			NotificationUtil.toNotificationRecipient(0L, contextUser));
 
 		for (Object recipient : notificationQueueEntry.getRecipients()) {
 			Map<String, Object> recipientMap = (Map<String, Object>)recipient;
