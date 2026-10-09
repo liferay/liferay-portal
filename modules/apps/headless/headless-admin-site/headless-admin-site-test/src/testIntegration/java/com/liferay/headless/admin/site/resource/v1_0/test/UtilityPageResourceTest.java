@@ -13,6 +13,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.UtilityPage;
 import com.liferay.headless.admin.site.client.dto.v1_0.UtilityPageSEOSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.UtilityPageSettings;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.UtilityPageResource;
@@ -24,6 +25,9 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailHttpServ
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
@@ -32,6 +36,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
@@ -54,6 +59,8 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -66,6 +73,7 @@ import java.net.URL;
 
 import java.text.DateFormat;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -327,13 +335,75 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 				RandomTestUtil.randomString(), randomUtilityPage()));
 	}
 
+	@Test
+	@TestInfo("LPD-95021")
+	public void testPostImportTaskSiteUtilityPage() throws Exception {
+		UtilityPage utilityPage1 = randomUtilityPage();
+
+		UtilityPage utilityPage2 = randomUtilityPage();
+
+		utilityPage2.setType((UtilityPage.Type)null);
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			"siteExternalReferenceCode", testGroup.getExternalReferenceCode()
+		).build();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			ImportTask importTask = importTaskResource.postImportTask(
+				"com.liferay.headless.admin.site.dto.v1_0.UtilityPage", null,
+				null, null, "INSERT", null, null, "ON_ERROR_CONTINUE", null,
+				JSONUtil.putAll(
+					_jsonFactory.createJSONObject(utilityPage1.toString()),
+					_jsonFactory.createJSONObject(utilityPage2.toString())));
+
+			waitForFinish("COMPLETED", JSONUtil.put("id", importTask.getId()));
+
+			ImportTask completedImportTask = importTaskResource.getImportTask(
+				importTask.getId());
+
+			FailedItem[] failedItems = completedImportTask.getFailedItems();
+
+			Assert.assertEquals(
+				Arrays.toString(failedItems), 1, failedItems.length);
+
+			FailedItem failedItem = failedItems[0];
+
+			Assert.assertEquals(
+				"A utility page type is required", failedItem.getMessage());
+		}
+
+		Assert.assertNotNull(
+			utilityPageResource.getSiteUtilityPage(
+				testGroup.getExternalReferenceCode(),
+				utilityPage1.getExternalReferenceCode()));
+	}
+
 	@Override
 	@Test
-	@TestInfo({"LPD-48984", "LPD-92443", "LPD-107149", "LPD-109892"})
+	@TestInfo(
+		{"LPD-48984", "LPD-92443", "LPD-95021", "LPD-107149", "LPD-109892"})
 	public void testPostSiteUtilityPage() throws Exception {
 		super.testPostSiteUtilityPage();
 
+		_testPostSiteUtilityPageWithDuplicateExternalReferenceCode();
+		_testPostSiteUtilityPageWithDuplicateName();
+		_testPostSiteUtilityPageWithInvalidName();
+		_testPostSiteUtilityPageWithInvalidPageSpecifications();
+		_testPostSiteUtilityPageWithMissingType();
 		_testPostSiteUtilityPageWithPageSpecifications();
+		_testPostSiteUtilityPageWithServiceUnavailableType();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeAndFileBase64();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeEmptyAndFileBase64();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeNullAndFileBase64();
@@ -379,7 +449,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-42587", "LPD-48987", "LPD-86647", "LPD-92443"})
+	@TestInfo({"LPD-42587", "LPD-48987", "LPD-86647", "LPD-92443", "LPD-95021"})
 	public void testPutSiteUtilityPage() throws Exception {
 		_testPutSiteUtilityPage(Boolean.FALSE, randomUtilityPage());
 
@@ -394,7 +464,9 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		Assert.assertFalse(layout.isPublished());
 
 		ProblemExceptionTestUtil.assertProblemException(
-			"BAD_REQUEST", null,
+			"BAD_REQUEST",
+			"A utility page must be published before it is marked as the " +
+				"default utility page",
 			() -> _testPutSiteUtilityPage(
 				Boolean.TRUE,
 				_getUtilityPage(
@@ -568,6 +640,17 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		PageSpecificationsTestUtil.assertPageSpecifications(
 			draftContentPageSpecification, publishedContentPageSpecification,
 			utilityPage.getPageSpecifications(), layout, status);
+	}
+
+	private void _assertPostSiteUtilityPageProblemException(
+			String expectedStatus, String expectedTitle,
+			UtilityPage utilityPage)
+		throws Exception {
+
+		ProblemExceptionTestUtil.assertProblemException(
+			expectedStatus, expectedTitle,
+			() -> utilityPageResource.postSiteUtilityPage(
+				testGroup.getExternalReferenceCode(), utilityPage));
 	}
 
 	private void _assertThumbnailFileEntryId(
@@ -1078,6 +1161,110 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		}
 	}
 
+	private void _testPostSiteUtilityPageWithDuplicateExternalReferenceCode()
+		throws Exception {
+
+		UtilityPage utilityPage1 = utilityPageResource.postSiteUtilityPage(
+			testGroup.getExternalReferenceCode(), randomUtilityPage());
+
+		UtilityPage utilityPage2 = randomUtilityPage();
+
+		utilityPage2.setExternalReferenceCode(
+			utilityPage1.getExternalReferenceCode());
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST", "This external reference code is already in use.",
+			utilityPage2);
+	}
+
+	private void _testPostSiteUtilityPageWithDuplicateName() throws Exception {
+		UtilityPage utilityPage1 = utilityPageResource.postSiteUtilityPage(
+			testGroup.getExternalReferenceCode(), randomUtilityPage());
+
+		UtilityPage utilityPage2 = randomUtilityPage();
+
+		utilityPage2.setName(utilityPage1.getName());
+
+		_assertPostSiteUtilityPageProblemException(
+			"CONFLICT",
+			"A utility page of the same type with the name \"" +
+				utilityPage1.getName() + "\" already exists",
+			utilityPage2);
+	}
+
+	private void _testPostSiteUtilityPageWithInvalidName() throws Exception {
+		UtilityPage utilityPage1 = randomUtilityPage();
+
+		utilityPage1.setName((String)null);
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST", "A name is required", utilityPage1);
+
+		UtilityPage utilityPage2 = randomUtilityPage();
+
+		String name = RandomTestUtil.randomString(100);
+
+		utilityPage2.setName(name);
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST",
+			"The name \"" + name +
+				"\" of the utility page must not exceed 75 characters",
+			utilityPage2);
+
+		UtilityPage utilityPage3 = randomUtilityPage();
+
+		utilityPage3.setName(RandomTestUtil.randomString(300));
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST", "The name is too long", utilityPage3);
+
+		UtilityPage utilityPage4 = randomUtilityPage();
+
+		utilityPage4.setName("Invalid/Name");
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST",
+			"The name \"Invalid/Name\" of the utility page contains an " +
+				"invalid character: \"/\"",
+			utilityPage4);
+	}
+
+	private void _testPostSiteUtilityPageWithInvalidPageSpecifications()
+		throws Exception {
+
+		ContentPageSpecification contentPageSpecification =
+			PageSpecificationsTestUtil.getContentPageSpecification(
+				null, testGroup.getGroupId(),
+				PageSpecification.Status.APPROVED);
+
+		UtilityPage utilityPage = randomUtilityPage();
+
+		utilityPage.setPageSpecifications(
+			() -> new PageSpecification[] {
+				contentPageSpecification,
+				new WidgetPageSpecification() {
+					{
+						setStatus(PageSpecification.Status.APPROVED);
+						setType(() -> Type.WIDGET_PAGE_SPECIFICATION);
+					}
+				}
+			});
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST", "Only content page specifications are supported",
+			utilityPage);
+	}
+
+	private void _testPostSiteUtilityPageWithMissingType() throws Exception {
+		UtilityPage utilityPage = randomUtilityPage();
+
+		utilityPage.setType((UtilityPage.Type)null);
+
+		_assertPostSiteUtilityPageProblemException(
+			"BAD_REQUEST", "A utility page type is required", utilityPage);
+	}
+
 	private void _testPostSiteUtilityPageWithPageSpecifications()
 		throws Exception {
 
@@ -1138,6 +1325,20 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			utilityPageResource.postSiteUtilityPage(
 				testGroup.getExternalReferenceCode(), utilityPage),
 			draftContentPageSpecification, publishedContentPageSpecification);
+	}
+
+	private void _testPostSiteUtilityPageWithServiceUnavailableType()
+		throws Exception {
+
+		UtilityPage utilityPage = randomUtilityPage();
+
+		utilityPage.setType(UtilityPage.Type.ERROR_CODE503);
+
+		UtilityPage postUtilityPage = utilityPageResource.postSiteUtilityPage(
+			testGroup.getExternalReferenceCode(), utilityPage);
+
+		Assert.assertEquals(
+			UtilityPage.Type.ERROR_CODE503, postUtilityPage.getType());
 	}
 
 	private void _testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeAndFileBase64()
