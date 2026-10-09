@@ -58,12 +58,9 @@ export interface DesignLibraryItemData {
 	type?: string | number;
 }
 
-export type DesignLibraryResourceCreationItem = {
-	id: string;
-	label: string;
-	module: string;
-	moduleProps: Record<string, unknown>;
-};
+export type DesignLibraryResourceCreationItem =
+	| LinkDesignLibraryResourceCreationItem
+	| ModalDesignLibraryResourceCreationItem;
 
 export interface DesignLibraryResourceType {
 	color: string;
@@ -79,6 +76,19 @@ export interface DesignLibraryResourceType {
 
 export interface EntryActions {
 	delete?: DeleteAction;
+}
+
+interface LinkDesignLibraryResourceCreationItem {
+	href: string;
+	id: string;
+	label: string;
+}
+
+interface ModalDesignLibraryResourceCreationItem {
+	id: string;
+	label: string;
+	module: string;
+	moduleProps: Record<string, unknown>;
 }
 
 export interface Site {

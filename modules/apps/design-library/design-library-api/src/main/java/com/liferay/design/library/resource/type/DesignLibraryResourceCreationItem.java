@@ -14,13 +14,20 @@ import java.util.Map;
 public class DesignLibraryResourceCreationItem {
 
 	public DesignLibraryResourceCreationItem(
+		String href, String id, String label) {
+
+		this(href, id, label, null, null);
+	}
+
+	public DesignLibraryResourceCreationItem(
 		String id, String label, String module,
 		Map<String, Object> moduleProps) {
 
-		_id = id;
-		_label = label;
-		_module = module;
-		_moduleProps = moduleProps;
+		this(null, id, label, module, moduleProps);
+	}
+
+	public String getHref() {
+		return _href;
 	}
 
 	public String getId() {
@@ -39,6 +46,18 @@ public class DesignLibraryResourceCreationItem {
 		return _moduleProps;
 	}
 
+	private DesignLibraryResourceCreationItem(
+		String href, String id, String label, String module,
+		Map<String, Object> moduleProps) {
+
+		_href = href;
+		_id = id;
+		_label = label;
+		_module = module;
+		_moduleProps = moduleProps;
+	}
+
+	private final String _href;
 	private final String _id;
 	private final String _label;
 	private final String _module;
