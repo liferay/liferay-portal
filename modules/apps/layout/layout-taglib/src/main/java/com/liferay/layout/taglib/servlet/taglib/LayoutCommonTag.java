@@ -202,10 +202,7 @@ public class LayoutCommonTag extends IncludeTag {
 				SessionMessages.get(httpServletRequest, key));
 
 			if (key.endsWith("requestProcessed")) {
-				if (Validator.isNull(message) ||
-					Objects.equals(message, "request_processed") ||
-					Objects.equals(message, key)) {
-
+				if (Validator.isNull(message) || Objects.equals(message, key)) {
 					message = LanguageUtil.get(
 						httpServletRequest,
 						"your-request-completed-successfully");

@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -395,33 +394,6 @@ public class SessionMessages {
 		SessionMessages.class);
 
 	private static final SessionMaps _sessionMaps = new SessionMaps(
-		SessionMessagesMap::new);
-
-	private static class SessionMessagesMap extends HashMap<String, Object> {
-
-		@Override
-		public boolean containsKey(Object key) {
-			return super.containsKey(_transformKey((String)key));
-		}
-
-		@Override
-		public Object get(Object key) {
-			return super.get(_transformKey((String)key));
-		}
-
-		@Override
-		public Object put(String key, Object value) {
-			return super.put(_transformKey(key), value);
-		}
-
-		private String _transformKey(String key) {
-			if (Objects.equals(key, "request_processed")) {
-				key = "requestProcessed";
-			}
-
-			return key;
-		}
-
-	}
+		HashMap::new);
 
 }

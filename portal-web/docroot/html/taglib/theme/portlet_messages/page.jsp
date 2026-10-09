@@ -70,7 +70,7 @@ Portlet portlet = (Portlet)request.getAttribute("liferay-theme:portlet-messages:
 			var="successHTML"
 		>
 			<c:choose>
-				<c:when test='<%= Validator.isNotNull(successMessage) && !successMessage.equals("request_processed") %>'>
+				<c:when test="<%= Validator.isNotNull(successMessage) %>">
 					<%= HtmlUtil.escape(successMessage) %>
 				</c:when>
 				<c:otherwise>
