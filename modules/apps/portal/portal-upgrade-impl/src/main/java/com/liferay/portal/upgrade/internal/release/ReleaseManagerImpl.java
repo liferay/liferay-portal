@@ -17,21 +17,23 @@ import com.liferay.portal.kernel.upgrade.ReleaseManager;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.version.Version;
-import com.liferay.portal.osgi.debug.SystemChecker;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.upgrade.internal.executor.UpgradeExecutor;
 import com.liferay.portal.upgrade.internal.graph.ReleaseGraphManager;
 import com.liferay.portal.upgrade.internal.registry.UpgradeInfo;
 import com.liferay.portal.upgrade.internal.release.util.ReleaseManagerUtil;
+import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.release.SchemaCreator;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -41,10 +43,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.dto.BundleDTO;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.runtime.ServiceComponentRuntime;
+import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
+import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
+import org.osgi.service.component.runtime.dto.UnsatisfiedReferenceDTO;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -102,6 +109,17 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 	@Override
 	public String getStatus() throws Exception {
+		List<String> unsatisfiedUpgradeStepRegistrators =
+			_getUnsatisfiedUpgradeStepRegistrators();
+
+		for (String unsatisfiedUpgradeStepRegistrator :
+				unsatisfiedUpgradeStepRegistrators) {
+
+			_log.error(
+				"Unsatisfied component prevents upgrade processes to be " +
+					"registered: " + unsatisfiedUpgradeStepRegistrator);
+		}
+
 		try (Connection connection = DataAccess.getConnection()) {
 			if (!PortalUpgradeProcess.isInCompatibleSchemaVersion(connection) ||
 				_isPendingModuleUpgrades()) {
@@ -110,7 +128,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 			}
 		}
 
-		if (_hasUnsatisfiedUpgradeComponents()) {
+		if (!unsatisfiedUpgradeStepRegistrators.isEmpty()) {
 			return "unresolved";
 		}
 
@@ -119,7 +137,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 	@Override
 	public String getStatusMessage(boolean showUpgradeSteps) {
-		StringBundler sb = new StringBundler(5);
+		StringBundler sb = new StringBundler(7);
 
 		sb.append(_checkPortal(showUpgradeSteps));
 
@@ -129,9 +147,15 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 		sb.append(_checkModules(showUpgradeSteps));
 
-		if (_hasUnsatisfiedUpgradeComponents()) {
+		List<String> unsatisfiedUpgradeStepRegistrators =
+			_getUnsatisfiedUpgradeStepRegistrators();
+
+		if (!unsatisfiedUpgradeStepRegistrators.isEmpty()) {
 			sb.append("Unsatisfied components prevent upgrade processes to ");
-			sb.append("be registered\n");
+			sb.append("be registered:\n\t");
+			sb.append(
+				StringUtil.merge(unsatisfiedUpgradeStepRegistrators, "\n\t"));
+			sb.append(StringPool.NEW_LINE);
 		}
 
 		return sb.toString();
@@ -341,6 +365,69 @@ public class ReleaseManagerImpl implements ReleaseManager {
 		return sb.toString();
 	}
 
+	private String _getUnsatisfiedUpgradeStepRegistrator(
+		ComponentConfigurationDTO componentConfigurationDTO,
+		ComponentDescriptionDTO componentDescriptionDTO) {
+
+		BundleDTO bundleDTO = componentDescriptionDTO.bundle;
+
+		StringBundler sb = new StringBundler();
+
+		sb.append(componentDescriptionDTO.name);
+		sb.append(" in bundle ");
+		sb.append(bundleDTO.symbolicName);
+		sb.append(" has unsatisfied references");
+
+		for (UnsatisfiedReferenceDTO unsatisfiedReferenceDTO :
+				componentConfigurationDTO.unsatisfiedReferences) {
+
+			sb.append(StringPool.SPACE);
+			sb.append(unsatisfiedReferenceDTO.name);
+
+			if (unsatisfiedReferenceDTO.target != null) {
+				sb.append(StringPool.SPACE);
+				sb.append(unsatisfiedReferenceDTO.target);
+			}
+
+			sb.append(StringPool.COMMA);
+		}
+
+		sb.setIndex(sb.index() - 1);
+
+		return sb.toString();
+	}
+
+	private List<String> _getUnsatisfiedUpgradeStepRegistrators() {
+		List<String> unsatisfiedUpgradeStepRegistrators = new ArrayList<>();
+
+		for (ComponentDescriptionDTO componentDescriptionDTO :
+				_serviceComponentRuntime.getComponentDescriptionDTOs()) {
+
+			if (!ArrayUtil.contains(
+					componentDescriptionDTO.serviceInterfaces,
+					UpgradeStepRegistrator.class.getName())) {
+
+				continue;
+			}
+
+			for (ComponentConfigurationDTO componentConfigurationDTO :
+					_serviceComponentRuntime.getComponentConfigurationDTOs(
+						componentDescriptionDTO)) {
+
+				if (componentConfigurationDTO.state ==
+						ComponentConfigurationDTO.UNSATISFIED_REFERENCE) {
+
+					unsatisfiedUpgradeStepRegistrators.add(
+						_getUnsatisfiedUpgradeStepRegistrator(
+							componentConfigurationDTO,
+							componentDescriptionDTO));
+				}
+			}
+		}
+
+		return unsatisfiedUpgradeStepRegistrators;
+	}
+
 	private boolean _hasFailedModuleUpgrades() {
 		if (SetUtil.isNotEmpty(_failedBundleSymbolicNames) ||
 			SetUtil.isNotEmpty(
@@ -350,12 +437,6 @@ public class ReleaseManagerImpl implements ReleaseManager {
 		}
 
 		return false;
-	}
-
-	private boolean _hasUnsatisfiedUpgradeComponents() {
-		String result = _systemChecker.check();
-
-		return result.contains("UpgradeStepRegistrator");
 	}
 
 	private boolean _isPendingModuleUpgrades() {
@@ -423,10 +504,8 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 	private ServiceTracker<SchemaCreator, Release> _schemaCreatorServiceTracker;
 
-	@Reference(
-		target = "(component.name=com.liferay.portal.osgi.debug.declarative.service.internal.DeclarativeServiceUnsatisfiedComponentSystemChecker)"
-	)
-	private volatile SystemChecker _systemChecker;
+	@Reference
+	private ServiceComponentRuntime _serviceComponentRuntime;
 
 	@Reference
 	private UpgradeExecutor _upgradeExecutor;

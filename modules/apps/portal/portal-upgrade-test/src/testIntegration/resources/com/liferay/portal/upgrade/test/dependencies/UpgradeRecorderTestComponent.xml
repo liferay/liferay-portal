@@ -2,5 +2,8 @@
 
 <scr:component immediate="true" name="com.liferay.portal.upgrade.test.component.UpgradeRecorderTestComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0">
 	<implementation class="com.liferay.portal.upgrade.test.component.UpgradeRecorderTestComponent" />
-	<reference field="upgradeRecorderTestReference" interface="com.liferay.portal.upgrade.test.reference.UpgradeRecorderTestReference" name="UpgradeStepRegistrator" />
+	<service>
+		<provide interface="com.liferay.portal.upgrade.registry.UpgradeStepRegistrator" />
+	</service>
+	<reference field="upgradeRecorderTestReference" interface="com.liferay.portal.upgrade.test.reference.UpgradeRecorderTestReference" name="upgradeRecorderTestReference" />
 </scr:component>
