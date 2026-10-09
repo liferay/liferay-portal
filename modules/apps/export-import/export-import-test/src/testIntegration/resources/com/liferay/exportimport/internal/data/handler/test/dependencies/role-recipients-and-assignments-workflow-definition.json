@@ -1,0 +1,151 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "[$WORKFLOW_DEFINITION_NAME$]"
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "created"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "review"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "review"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "Review Notification"
+								},
+								{
+									"#tag-name": "template",
+									"#value": "Review"
+								},
+								{
+									"#tag-name": "template-language",
+									"#value": "freemarker"
+								},
+								{
+									"#tag-name": "notification-type",
+									"#value": "email"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#child-nodes": [
+												{
+													"#child-nodes": [
+														{
+															"#tag-name": "role-id",
+															"#value": "[$ROLE_ID_1$]"
+														}
+													],
+													"#tag-name": "role"
+												}
+											],
+											"#tag-name": "roles"
+										}
+									],
+									"#tag-name": "recipients"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onAssignment"
+								}
+							],
+							"#tag-name": "notification"
+						}
+					],
+					"#tag-name": "actions"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-id",
+											"#value": "[$ROLE_ID_2$]"
+										}
+									],
+									"#tag-name": "role"
+								}
+							],
+							"#tag-name": "roles"
+						}
+					],
+					"#tag-name": "assignments"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "approve"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "approved"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "task"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "approved"
+				}
+			],
+			"#tag-name": "state"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}
