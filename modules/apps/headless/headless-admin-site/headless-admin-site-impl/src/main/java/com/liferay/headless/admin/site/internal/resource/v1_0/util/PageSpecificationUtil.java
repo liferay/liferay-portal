@@ -103,6 +103,13 @@ public class PageSpecificationUtil {
 				"Exactly two page specifications are required");
 		}
 
+		for (PageSpecification pageSpecification : pageSpecifications) {
+			if (!(pageSpecification instanceof ContentPageSpecification)) {
+				throw new IllegalArgumentException(
+					"Only content page specifications are supported");
+			}
+		}
+
 		ContentPageSpecification draftContentPageSpecification;
 		ContentPageSpecification publishedContentPageSpecification =
 			(ContentPageSpecification)pageSpecifications[0];
