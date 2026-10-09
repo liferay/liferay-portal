@@ -34,6 +34,27 @@ tests:
         set:
             gateway.clientTrafficPolicySpec.enableProxyProtocol: true
     -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: SecurityPolicy
+                equal:
+                    path: spec.authorization.rules[0].principal.clientCIDRs
+                    value:
+                        -   10.0.0.0/16
+                        -   203.0.113.0/24
+            -   documentSelector:
+                    path: kind
+                    value: SecurityPolicy
+                equal:
+                    path: spec.targetRefs[0].name
+                    value: my-gateway
+        it: Denies every client outside the allowed CIDRs on the Gateway
+        set:
+            gateway.accessControl.allowedCIDRs:
+                -   10.0.0.0/16
+                -   203.0.113.0/24
+            gateway.accessControl.enabled: true
+    -   asserts:
             -   failedTemplate:
                     errorPattern: The mydomain endpoint does not serve HTTPS and must not set tls.externalSecretKeys
         it: Fails when a plain endpoint sets a certificate
@@ -45,6 +66,12 @@ tests:
                     tls:
                         externalSecretKeys:
                             -   liferay-certificates-my-certificate
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "gateway.accessControl.allowedCIDRs" must not be empty when "gateway.accessControl.enabled" is true
+        it: Fails when access control is enabled with no CIDR
+        set:
+            gateway.accessControl.enabled: true
     -   asserts:
             -   failedTemplate:
                     errorPattern: The mydomain endpoint serves HTTPS and must set tls.externalSecretKeys
@@ -88,6 +115,15 @@ tests:
         set:
             gateway.className: ""
     -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: Gateway
+        it: Omits the SecurityPolicy when access control is disabled
+        set:
+            gateway.accessControl.allowedCIDRs:
+                -   203.0.113.0/24
+    -   asserts:
             -   equal:
                     path: spec.listeners[0].name
                     value: http
@@ -117,48 +153,3 @@ tests:
                     tls:
                         externalSecretKeys:
                             -   liferay-certificates-my-certificate
-    -   asserts:
-            -   failedTemplate:
-                    errorMessage: The value "gateway.accessControl.allowedCIDRs" must not be empty when "gateway.accessControl.enabled" is true
-        it: Fails when access control is enabled with no CIDR
-        set:
-            gateway.accessControl.enabled: true
-    -   asserts:
-            -   hasDocuments:
-                    count: 1
-            -   isKind:
-                    of: Gateway
-        it: Omits the SecurityPolicy when access control is disabled
-        set:
-            gateway.accessControl.allowedCIDRs:
-                -   203.0.113.0/24
-    -   asserts:
-            -   documentSelector:
-                    path: kind
-                    value: SecurityPolicy
-                equal:
-                    path: spec.authorization
-                    value:
-                        defaultAction: Deny
-                        rules:
-                            -   action: Allow
-                                name: allowed-cidrs
-                                principal:
-                                    clientCIDRs:
-                                        -   10.0.0.0/16
-                                        -   203.0.113.0/24
-            -   documentSelector:
-                    path: kind
-                    value: SecurityPolicy
-                equal:
-                    path: spec.targetRefs[0]
-                    value:
-                        group: gateway.networking.k8s.io
-                        kind: Gateway
-                        name: my-gateway
-        it: Denies every client outside the allowed CIDRs on the Gateway
-        set:
-            gateway.accessControl.allowedCIDRs:
-                -   10.0.0.0/16
-                -   203.0.113.0/24
-            gateway.accessControl.enabled: true
