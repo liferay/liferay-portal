@@ -687,6 +687,44 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testLoopEarlyExit() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"LoopEarlyExit.testjava"
+			).addExpectedMessage(
+				"Invert the condition and use \"continue\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				22
+			).addExpectedMessage(
+				"Invert the condition and use \"continue\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				30
+			).addExpectedMessage(
+				"Invert the condition and use \"continue\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				40
+			).addExpectedMessage(
+				"Invert the condition and use \"break\" as early as possible " +
+					"instead of nesting the rest of the loop body in the " +
+						"if-statement",
+				51
+			).addExpectedMessage(
+				"Invert the condition and use \"return\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				140
+			).addExpectedMessage(
+				"Invert the condition and use \"throw\" as early as possible " +
+					"instead of nesting the rest of the loop body in the " +
+						"if-statement",
+				153
+			));
+	}
+
+	@Test
 	public void testMapBuilderGenerics() throws Exception {
 		test("MapBuilderGenerics.testjava");
 	}

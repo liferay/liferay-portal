@@ -1,0 +1,188 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author Alan Huang
+ */
+public class LoopEarlyExit {
+
+	public void method1(List<String> keys, Map<String, String> map) {
+		for (String key : keys) {
+			String value = map.get(key);
+
+			if (value != null) {
+				_print(key, value);
+			}
+		}
+	}
+
+	public void method2(List<String> keys, Set<String> set) {
+		for (String key : keys) {
+			if (set.add(key)) {
+				_print(key, key);
+			}
+		}
+	}
+
+	public void method3(Iterator<String> iterator) {
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+
+			if (!key.isEmpty()) {
+				_print(key, key);
+				_print(key, key);
+			}
+		}
+	}
+
+	public void method4(Iterator<String> iterator) {
+		do {
+			String key = iterator.next();
+
+			if (key.startsWith("a")) {
+				_print(key, key);
+			}
+			else {
+				break;
+			}
+		}
+		while (iterator.hasNext());
+	}
+
+	public void method5(List<String> keys, Map<String, String> map) {
+		for (String key : keys) {
+			String value = map.get(key);
+
+			if (value == null) {
+				continue;
+			}
+
+			_print(key, value);
+		}
+	}
+
+	public void method6(List<String> keys) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				_print(key, key);
+			}
+
+			_print(key, key);
+		}
+	}
+
+	public void method7(List<String> keys) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				_print(key, key);
+			}
+			else {
+				_print(key, "b");
+			}
+		}
+	}
+
+	public void method8(List<String> keys) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				_print(key, key);
+			}
+			else if (key.startsWith("b")) {
+				break;
+			}
+		}
+	}
+
+	public void method9(List<String> keys) {
+		keys.forEach(
+			key -> {
+				if (key.startsWith("a")) {
+					_print(key, key);
+				}
+			});
+	}
+
+	public void method10(Map<String, String> map, String key) {
+		String value = map.get(key);
+
+		if (value != null) {
+			_print(key, value);
+		}
+	}
+
+	public void method11(List<String> keys) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				return;
+			}
+		}
+	}
+
+	public void method12(List<String> keys) {
+		for (String key : keys) {
+			if (key.isEmpty()) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	public String method13(List<String> keys) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				_print(key, key);
+			}
+			else {
+				return key;
+			}
+		}
+
+		return null;
+	}
+
+	public void method14(List<String> keys) {
+		for (String key : keys) {
+			if (!key.isEmpty()) {
+				_print(key, key);
+			}
+			else {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	public void method15(List<String> keys, Set<String> set) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				set.add(key);
+
+				break;
+			}
+		}
+	}
+
+	public String method16(List<String> keys, Map<String, String> map) {
+		for (String key : keys) {
+			if (map.containsKey(key)) {
+				_print(key, key);
+
+				return map.get(key);
+			}
+		}
+
+		return null;
+	}
+
+	private void _print(String key, String value) {
+		System.out.println(key + "=" + value);
+	}
+
+}

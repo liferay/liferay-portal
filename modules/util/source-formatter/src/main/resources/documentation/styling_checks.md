@@ -119,6 +119,7 @@ ListStylingCheck | .list | Applies rules to enforce consistency in code style. |
 [ListUtilCheck](check/list_util_check.md#listutilcheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks for utilization of class `ListUtil`. |
 LiteralStringEqualsCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases where `Objects.equals` should be used. |
 [LogMessageCheck](check/message_check.md#messagecheck) | .java | Validates messages that are passed to `log.*` calls. |
+LoopEarlyExitCheck | .java | Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible. |
 MarkdownBreakingChangesAmendmentsFileCheck | .markdown or .md | Checks that breaking changes amendments should contain the schematized breaking changes in `BREAKING_CHANGES_AMENDMENTS.md` file. |
 MarkdownEmptyLinesCheck | .markdown or .md | Finds missing and unnecessary empty lines. |
 MarkdownFileExtensionCheck | .markdown or .md | Finds `markdown` files with `.markdown` extension (use `.md`). |
