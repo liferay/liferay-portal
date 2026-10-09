@@ -1,0 +1,26 @@
+Bundle-Name: Liferay Portal Tools Schema Manifest Builder
+Bundle-SymbolicName: com.liferay.portal.tools.schema.manifest.builder
+Bundle-Version: 1.0.0
+Main-Class: com.liferay.portal.tools.schema.manifest.builder.SchemaManifestBuilder
+-includeresource:\
+	@com.liferay.petra.lang-*.jar!/com/liferay/petra/lang/CentralizedThreadLocal.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/CharPool.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringBundler.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringBundler$UnsafeStringBuilder.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringPool.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/json/JSONArrayImpl.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/json/JSONObjectImpl.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ArgumentsMap.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ArgumentsUtil.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/exception/NestableException.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/exception/NestableRuntimeException.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/exception/PortalException.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/exception/SystemException.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/*,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONArray.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONException.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONObject.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONSerializable.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONUtil.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/*,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/util/*

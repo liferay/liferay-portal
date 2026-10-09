@@ -1,0 +1,33 @@
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+dependencies {
+	compileInclude group: "org.json", name: "json", version: "20231013"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.function", version: "5.5.0"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.lang", version: "5.2.0"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.string", version: "5.3.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"
+
+	constraints {
+		compileOnly(group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "109.0.0") {
+			because "Java 8 runtime support is required"
+		}
+		compileOnly(group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "154.0.0") {
+			because "Java 8 runtime support is required"
+		}
+	}
+}
+
+liferay {
+	deployDir = "../../../tools/sdk/dependencies/com.liferay.portal.tools.schema.manifest.builder/lib"
+}
+
+liferayOSGi {
+	expandCompileInclude = true
+}
+
+updateFileVersions {
+	match(/\t\t<dependency name="com.liferay.portal.tools.schema.manifest.builder" org="com.liferay" rev="(\d.+)" \/>/, "../../../tools/sdk/dependencies/com.liferay.portal.tools.schema.manifest.builder/ivy.xml")
+	match(/com\.liferay\.portal\.tools\.schema\.manifest\.builder=(\d.+)/, "../../sdk/gradle-plugins/src/main/resources/com/liferay/gradle/plugins/dependencies/portal-tools.properties")
+}
