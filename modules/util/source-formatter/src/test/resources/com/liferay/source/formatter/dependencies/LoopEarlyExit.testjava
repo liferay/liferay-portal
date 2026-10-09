@@ -5,6 +5,9 @@
 
 package com.liferay.source.formatter.dependencies;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -181,8 +184,19 @@ public class LoopEarlyExit {
 		return null;
 	}
 
+	public void method17(List<String> keys) {
+		for (String key : keys) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(key);
+			}
+		}
+	}
+
 	private void _print(String key, String value) {
 		System.out.println(key + "=" + value);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LoopEarlyExit.class);
 
 }

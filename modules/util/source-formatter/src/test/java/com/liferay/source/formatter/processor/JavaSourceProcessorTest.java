@@ -695,32 +695,32 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"Invert the condition and use \"continue\" as early as " +
 					"possible instead of nesting the rest of the loop body " +
 						"in the if-statement",
-				22
+				25
 			).addExpectedMessage(
 				"Invert the condition and use \"continue\" as early as " +
 					"possible instead of nesting the rest of the loop body " +
 						"in the if-statement",
-				30
+				33
 			).addExpectedMessage(
 				"Invert the condition and use \"continue\" as early as " +
 					"possible instead of nesting the rest of the loop body " +
 						"in the if-statement",
-				40
+				43
 			).addExpectedMessage(
 				"Invert the condition and use \"break\" as early as possible " +
 					"instead of nesting the rest of the loop body in the " +
 						"if-statement",
-				51
+				54
 			).addExpectedMessage(
 				"Invert the condition and use \"return\" as early as " +
 					"possible instead of nesting the rest of the loop body " +
 						"in the if-statement",
-				140
+				143
 			).addExpectedMessage(
 				"Invert the condition and use \"throw\" as early as possible " +
 					"instead of nesting the rest of the loop body in the " +
 						"if-statement",
-				153
+				156
 			));
 	}
 

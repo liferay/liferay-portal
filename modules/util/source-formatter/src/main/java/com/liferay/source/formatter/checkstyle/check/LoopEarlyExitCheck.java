@@ -5,8 +5,12 @@
 
 package com.liferay.source.formatter.checkstyle.check;
 
+import com.liferay.portal.kernel.util.SetUtil;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+
+import java.util.Set;
 
 /**
  * @author Alan Huang
@@ -20,7 +24,9 @@ public class LoopEarlyExitCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		if (!_isLastStatementInLoopBody(detailAST)) {
+		if (!_isLastStatementInLoopBody(detailAST) ||
+			_isLogLevelCheck(detailAST)) {
+
 			return;
 		}
 
@@ -128,6 +134,22 @@ public class LoopEarlyExitCheck extends BaseCheck {
 		return false;
 	}
 
+	private boolean _isLogLevelCheck(DetailAST literalIfDetailAST) {
+		for (String name :
+				getNames(
+					literalIfDetailAST.findFirstToken(TokenTypes.EXPR), true)) {
+
+			if (_logNames.contains(name)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static final String _MSG_EXIT_EARLY = "loop.exit.early";
+
+	private static final Set<String> _logNames = SetUtil.fromArray(
+		"_log", "_logger", "log", "logger");
 
 }
