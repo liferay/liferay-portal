@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import React, {FC} from 'react';
 import {ClayButtonWithIcon} from '@clayui/button';
 

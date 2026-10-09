@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Input from './Input';
 import omitDefinedProps from 'shared/util/omitDefinedProps';
 import React from 'react';

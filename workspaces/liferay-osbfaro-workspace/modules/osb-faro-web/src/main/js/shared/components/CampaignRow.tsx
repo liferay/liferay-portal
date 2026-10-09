@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';

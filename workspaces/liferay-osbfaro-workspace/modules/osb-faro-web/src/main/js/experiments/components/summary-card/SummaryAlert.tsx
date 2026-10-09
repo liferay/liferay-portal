@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import React from 'react';
 
 interface SummaryAlertIProps extends React.HTMLAttributes<HTMLElement> {

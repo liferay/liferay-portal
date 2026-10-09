@@ -1,5 +1,5 @@
 import BasePage from 'shared/components/base-page';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import InterestDetails from 'shared/components/InterestDetails';
 import React from 'react';

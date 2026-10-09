@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import CriteriaSidebarItem from './CriteriaSidebarItem';
 import EmptyState from '@clayui/empty-state';

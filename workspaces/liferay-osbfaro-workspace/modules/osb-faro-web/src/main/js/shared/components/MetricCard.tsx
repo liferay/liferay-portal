@@ -1,6 +1,6 @@
 import Card from 'shared/components/Card';
 import classNames from 'classnames';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Loading from 'shared/components/Loading';
 import React, {ReactNode} from 'react';
 import {formatPercent} from 'shared/util/numbers';

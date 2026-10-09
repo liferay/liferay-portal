@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Modal, {useModal} from '@clayui/modal';
 import React from 'react';
 import {Text} from '@clayui/core';

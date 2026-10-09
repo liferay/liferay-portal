@@ -9,7 +9,7 @@ import BLOCKED_CUSTOM_EVENT_DEFINITIONS_QUERY, {
 } from '../queries/BlockedCustomEventDefinitionsQuery';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import Nav from 'shared/components/Nav';

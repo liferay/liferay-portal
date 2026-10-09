@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 import {DragTypes} from '../utils/drag-types';

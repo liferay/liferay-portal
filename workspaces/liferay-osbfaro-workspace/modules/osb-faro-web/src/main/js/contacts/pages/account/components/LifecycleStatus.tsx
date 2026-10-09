@@ -2,7 +2,7 @@ import * as API from 'shared/api';
 import Card from 'shared/components/Card';
 import classNames from 'classnames';
 import ClayEmptyState from '@clayui/empty-state';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClaySticker from '@clayui/sticker';
 import MultiStepNav from '@clayui/multi-step-nav';
 import React from 'react';

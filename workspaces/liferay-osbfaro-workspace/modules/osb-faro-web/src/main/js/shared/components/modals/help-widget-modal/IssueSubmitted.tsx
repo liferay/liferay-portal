@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Modal from 'shared/components/modal';
 import React from 'react';
 import {IHelpWidgetScreenProps} from './types';

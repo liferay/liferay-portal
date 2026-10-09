@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import getCN from 'classnames';

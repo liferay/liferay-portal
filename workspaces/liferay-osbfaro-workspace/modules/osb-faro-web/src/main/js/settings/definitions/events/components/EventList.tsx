@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import EventDefinitionsQuery, {
 	EventDefinitionsData,

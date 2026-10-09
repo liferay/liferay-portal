@@ -1,5 +1,5 @@
 import Cell from './Cell';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayTable from '@clayui/table';
 import getCN from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';

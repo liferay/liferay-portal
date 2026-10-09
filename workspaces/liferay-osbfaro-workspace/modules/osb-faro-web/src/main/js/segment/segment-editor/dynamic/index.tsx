@@ -2,7 +2,7 @@ import * as API from 'shared/api';
 import BaseEditPage from 'shared/components/base-edit-page';
 import Canvas from 'shared/components/canvas/Canvas';
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayPopover from '@clayui/popover';

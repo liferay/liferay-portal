@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import BasePage from 'shared/components/base-page';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import IndividualMetricsQuery from 'shared/queries/IndividualMetricsQuery';

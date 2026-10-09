@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import React from 'react';
 import {onEnter} from 'shared/util/key-constants';
 import {PropTypes} from 'prop-types';

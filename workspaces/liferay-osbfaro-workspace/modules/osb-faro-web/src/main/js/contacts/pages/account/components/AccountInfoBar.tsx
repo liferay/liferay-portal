@@ -1,5 +1,5 @@
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Label from '@clayui/label';
 import React from 'react';
 import {getAccountInfoDisplayValues} from 'contacts/pages/account/utils/accountInfo';

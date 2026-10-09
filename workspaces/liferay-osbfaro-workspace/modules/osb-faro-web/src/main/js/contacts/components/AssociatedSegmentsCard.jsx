@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import debounce from 'shared/util/debounce-decorator';
 import EntityList from 'shared/components/EntityList';

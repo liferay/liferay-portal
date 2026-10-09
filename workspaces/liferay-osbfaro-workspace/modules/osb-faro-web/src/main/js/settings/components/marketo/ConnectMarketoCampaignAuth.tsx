@@ -1,6 +1,6 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Form from 'shared/components/form';
 import React, {useRef, useState} from 'react';
 import {Alert} from 'shared/types';

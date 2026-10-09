@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import omitDefinedProps from 'shared/util/omitDefinedProps';
 import React, {FC} from 'react';

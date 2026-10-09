@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Form from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
 import React from 'react';

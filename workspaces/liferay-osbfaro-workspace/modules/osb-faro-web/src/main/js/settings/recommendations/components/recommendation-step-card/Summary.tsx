@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Constants from 'shared/util/constants';
 import Form from 'shared/components/form';
 import getCN from 'classnames';

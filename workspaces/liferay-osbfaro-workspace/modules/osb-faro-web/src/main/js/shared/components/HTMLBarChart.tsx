@@ -1,6 +1,6 @@
 import ChartTooltip from 'shared/components/chart-tooltip';
 import Circle from 'shared/components/Circle';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';

@@ -1,6 +1,6 @@
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Form, {
 	validateMaxLength,
 	validateRequired,

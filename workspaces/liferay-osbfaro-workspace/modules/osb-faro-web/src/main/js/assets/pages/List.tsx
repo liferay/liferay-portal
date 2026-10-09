@@ -1,7 +1,7 @@
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';

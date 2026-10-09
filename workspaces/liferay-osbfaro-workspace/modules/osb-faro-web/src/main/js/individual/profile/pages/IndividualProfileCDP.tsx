@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import AccountMembership from '../components/AccountMembership';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import EngagementSummary from '../components/EngagementSummary';
 import IndividualAttributesCDP from '../components/IndividualAttributesCDP';

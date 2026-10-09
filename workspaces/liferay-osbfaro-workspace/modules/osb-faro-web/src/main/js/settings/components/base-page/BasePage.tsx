@@ -1,6 +1,6 @@
 import BaseEditPage from 'shared/components/base-edit-page';
 import Breadcrumbs from 'shared/components/Breadcrumbs';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import DocumentTitle from 'shared/components/DocumentTitle';
 import getCN from 'classnames';

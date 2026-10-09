@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';

@@ -1,6 +1,6 @@
 import AccountName from 'shared/components/table/cell-components/AccountName';
 import Checkbox from 'shared/components/Checkbox';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import IndividualType from 'shared/components/table/cell-components/IndividualTypes';
 import InfoPopover from 'shared/components/InfoPopover';

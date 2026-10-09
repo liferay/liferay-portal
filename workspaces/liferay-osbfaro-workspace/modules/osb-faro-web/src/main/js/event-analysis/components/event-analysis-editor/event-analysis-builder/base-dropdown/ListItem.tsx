@@ -1,6 +1,6 @@
 import ClayButton from '@clayui/button';
 import ClayDropdown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import InfoCardPopover from '../InfoCardPopover';
 import Overlay from 'shared/components/Overlay';

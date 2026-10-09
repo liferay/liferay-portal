@@ -1,6 +1,6 @@
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import React from 'react';
 import {mapGrowthHistory} from 'shared/hoc/mappers/segment';

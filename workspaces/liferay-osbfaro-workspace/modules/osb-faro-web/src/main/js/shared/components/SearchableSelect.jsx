@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay, {

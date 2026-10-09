@@ -2,7 +2,7 @@ import * as API from 'shared/api';
 import autobind from 'autobind-decorator';
 import Checkbox from 'shared/components/Checkbox';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import DataTransformationList from './data-transformation-list';
 import FormNavigation from './FormNavigation';
 import getCN from 'classnames';

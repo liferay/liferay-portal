@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import ClayBadge from '@clayui/badge';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';

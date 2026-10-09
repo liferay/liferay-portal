@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import InfoPopover from 'shared/components/InfoPopover';
 import React from 'react';

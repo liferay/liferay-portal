@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Loading, {Align} from 'shared/components/Loading';
 import React from 'react';
 import {useMutationObserver} from './utils';

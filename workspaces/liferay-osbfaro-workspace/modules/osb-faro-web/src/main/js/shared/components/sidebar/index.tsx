@@ -1,5 +1,5 @@
 import ChannelsMenu, {Channel} from '../channels-menu';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import React, {useLayoutEffect} from 'react';
 import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';

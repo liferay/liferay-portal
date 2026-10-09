@@ -1,6 +1,6 @@
 import Avatar from 'shared/components/Avatar';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import getCN from 'classnames';
 import React from 'react';

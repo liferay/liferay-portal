@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import FaroConstants from 'shared/util/constants';
 import getCN from 'classnames';

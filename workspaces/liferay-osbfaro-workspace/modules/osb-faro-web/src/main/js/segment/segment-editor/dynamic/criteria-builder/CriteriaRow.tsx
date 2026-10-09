@@ -2,7 +2,7 @@ import AccountInput from '../inputs/AccountInput';
 import AccountSelectInput from '../inputs/AccountSelectInput';
 import BehaviorInput from '../inputs/BehaviorInput';
 import BooleanInput from '../inputs/BooleanInput';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClaySticker from '@clayui/sticker';
 import CustomBooleanInput from '../inputs/CustomBooleanInput';
 import CustomDateInput from '../inputs/CustomDateInput';

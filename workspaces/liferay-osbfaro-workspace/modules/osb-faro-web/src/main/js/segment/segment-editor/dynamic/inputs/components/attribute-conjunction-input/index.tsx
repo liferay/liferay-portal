@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import FilterPicker, {IFilterPickerItem} from 'shared/components/FilterPicker';
 import Form from 'shared/components/form';
 import OperatorSelect from './OperatorSelect';

@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import EventCountPill from 'shared/components/EventCountPill';
 import React, {FC} from 'react';
 

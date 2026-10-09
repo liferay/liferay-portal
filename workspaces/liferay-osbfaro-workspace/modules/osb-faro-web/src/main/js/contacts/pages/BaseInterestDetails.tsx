@@ -1,6 +1,6 @@
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import InterestPagesList from 'contacts/components/InterestPagesList';

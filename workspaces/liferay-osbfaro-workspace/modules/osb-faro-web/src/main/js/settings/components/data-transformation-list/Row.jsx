@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import debounce from 'shared/util/debounce-decorator';
 import FieldDropDown from './FieldDropDown';
 import Form from 'shared/components/form';

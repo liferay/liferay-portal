@@ -1,6 +1,6 @@
 import BaseToolbar from 'shared/components/toolbar/BaseToolbar';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import React from 'react';
 import {Link} from 'react-router-dom';

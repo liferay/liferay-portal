@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import Modal from 'shared/components/modal';

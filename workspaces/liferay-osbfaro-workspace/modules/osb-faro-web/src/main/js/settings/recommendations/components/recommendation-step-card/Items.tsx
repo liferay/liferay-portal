@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Constants from 'shared/util/constants';
 import Loading from 'shared/components/Loading';
 import React, {useEffect} from 'react';

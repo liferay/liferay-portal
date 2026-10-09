@@ -1,6 +1,6 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import Item from './Item';
 import React, {Fragment, useEffect, useRef, useState} from 'react';

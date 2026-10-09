@@ -1,6 +1,6 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import Modal from 'shared/components/modal';
 import React, {useEffect, useState} from 'react';

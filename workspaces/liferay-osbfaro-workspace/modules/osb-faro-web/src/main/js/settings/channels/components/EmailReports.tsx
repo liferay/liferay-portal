@@ -1,6 +1,6 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import Loading, {Align} from 'shared/components/Loading';
 import React, {useEffect, useState} from 'react';

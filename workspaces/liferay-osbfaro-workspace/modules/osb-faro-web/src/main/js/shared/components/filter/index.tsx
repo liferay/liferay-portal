@@ -1,6 +1,6 @@
 import AppliedFilters from 'shared/components/filter/AppliedFilters';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import DropdownMenu from 'shared/components/filter/DropdownMenu';
 import React, {useEffect, useRef, useState} from 'react';
 import remove from 'lodash/remove';

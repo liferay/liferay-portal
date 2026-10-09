@@ -1,5 +1,5 @@
 import * as API from 'shared/api';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import DocumentTitle from 'shared/components/DocumentTitle';
 import getCN from 'classnames';

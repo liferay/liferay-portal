@@ -1,6 +1,6 @@
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Clipboard from 'clipboard';
 import getCN from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';

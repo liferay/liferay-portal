@@ -1,7 +1,7 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Clipboard from 'clipboard';
 import Form from 'shared/components/form';
 import getCN from 'classnames';

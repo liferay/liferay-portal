@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import DateBreakdown from './DateBreakdown';
 import DurationBreakdown from './DurationBreakdown';
 import FilterInfo from '../../FilterInfo';

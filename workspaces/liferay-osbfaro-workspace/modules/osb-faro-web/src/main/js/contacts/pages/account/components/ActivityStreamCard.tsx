@@ -12,7 +12,7 @@ import AccountUserSessionQuery, {
 } from 'shared/queries/AccountUserSessionQuery';
 import ActivityChartEmptyState from 'shared/components/ActivityChartEmptyState';
 import ActivityStreamCard from 'shared/components/ActivityStreamCard';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import ActivityStreamNoResults from 'shared/components/ActivityStreamNoResults';
 import formatAccountSessions from '../utils/formatAccountSessions';

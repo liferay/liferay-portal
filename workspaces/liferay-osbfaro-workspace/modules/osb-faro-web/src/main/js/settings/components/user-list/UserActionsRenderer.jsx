@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import React from 'react';
 import {noop} from 'lodash';

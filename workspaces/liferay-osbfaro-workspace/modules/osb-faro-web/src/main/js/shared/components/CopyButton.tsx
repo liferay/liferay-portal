@@ -1,5 +1,5 @@
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Clipboard from 'clipboard';
 import React, {useEffect, useRef, useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';

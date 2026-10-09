@@ -4,7 +4,7 @@ import BasePage from 'shared/components/base-page';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import LinkCell from 'shared/components/table/cell-components/LinkCell';

@@ -1,5 +1,5 @@
 import Alert from '@clayui/alert';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import Conjunction from './Conjunction';
 import CriteriaRow from './CriteriaRow';
 import DropZone from './DropZone';

@@ -1,4 +1,4 @@
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';

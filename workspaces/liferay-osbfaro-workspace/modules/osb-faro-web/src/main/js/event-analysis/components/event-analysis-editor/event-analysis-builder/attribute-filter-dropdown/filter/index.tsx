@@ -1,6 +1,6 @@
 import BooleanFilter from './BooleanFilter';
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import DateFilter from './DateFilter';
 import DurationFilter from './DurationFilter';
 import FilterInfo from '../../FilterInfo';

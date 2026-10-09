@@ -2,7 +2,7 @@ import * as API from 'shared/api';
 import BaseToolbar from './BaseToolbar';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
+import ClayIcon from 'shared/components/Icon';
 import ClaySticker from '@clayui/sticker';
 import React, {useRef, useState} from 'react';
 import {collapseSidebar} from 'shared/actions/sidebar';
