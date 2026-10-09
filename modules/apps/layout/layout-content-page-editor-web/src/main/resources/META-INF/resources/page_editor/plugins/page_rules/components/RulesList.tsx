@@ -386,6 +386,11 @@ function RuleItem({
 
 					<ClayDropDown
 						hasLeftSymbols={true}
+						menuElementAttrs={{
+							containerProps: {
+								className: 'cadmin',
+							},
+						}}
 						onMouseOver={(event) => event.stopPropagation()}
 						trigger={
 							<ClayButtonWithIcon
