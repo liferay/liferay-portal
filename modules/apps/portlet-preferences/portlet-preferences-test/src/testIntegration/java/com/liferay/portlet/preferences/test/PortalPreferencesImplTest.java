@@ -224,24 +224,22 @@ public class PortalPreferencesImplTest {
 
 	@Test
 	public void testSetValueSameKey() {
+		PortalPreferences portalPreferences1 =
+			_portletPreferencesFactory.getPortalPreferences(_testOwnerId, true);
+
 		FutureTask<Void> futureTask1 = new FutureTask<>(
 			() -> {
-				PortalPreferences portalPreferences =
-					_portletPreferencesFactory.getPortalPreferences(
-						_testOwnerId, true);
-
-				portalPreferences.setValue(_NAMESPACE, _KEY_1, _VALUE_1);
+				portalPreferences1.setValue(_NAMESPACE, _KEY_1, _VALUE_1);
 
 				return null;
 			});
 
+		PortalPreferences portalPreferences2 =
+			_portletPreferencesFactory.getPortalPreferences(_testOwnerId, true);
+
 		FutureTask<Void> futureTask2 = new FutureTask<>(
 			() -> {
-				PortalPreferences portalPreferences =
-					_portletPreferencesFactory.getPortalPreferences(
-						_testOwnerId, true);
-
-				portalPreferences.setValue(_NAMESPACE, _KEY_1, _VALUE_2);
+				portalPreferences2.setValue(_NAMESPACE, _KEY_1, _VALUE_2);
 
 				return null;
 			});
@@ -259,6 +257,10 @@ public class PortalPreferencesImplTest {
 			Assert.assertSame(
 				ConcurrentModificationException.class, throwable.getClass());
 		}
+
+		Assert.assertEquals(
+			portalPreferences1.getValue(_NAMESPACE, _KEY_1),
+			portalPreferences2.getValue(_NAMESPACE, _KEY_1));
 	}
 
 	@Test
