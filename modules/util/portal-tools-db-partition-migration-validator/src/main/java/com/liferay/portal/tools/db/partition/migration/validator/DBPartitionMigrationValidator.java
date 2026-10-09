@@ -52,20 +52,34 @@ import org.apache.commons.cli.ParseException;
 public class DBPartitionMigrationValidator {
 
 	public static void main(String[] args) {
-		if (args.length != 0) {
-			if (args[0].equals("export")) {
-				_export(ArrayUtil.remove(args, args[0]));
+		if (args.length == 0) {
+			System.err.println("Missing command: export or validate");
+		}
+		else if (args[0].equals("export")) {
+			_export(ArrayUtil.remove(args, args[0]));
 
-				_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
-			}
-			else if (args[0].equals("validate")) {
-				_validate(ArrayUtil.remove(args, args[0]));
+			_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
+		}
+		else if (args[0].equals("validate")) {
+			_validate(ArrayUtil.remove(args, args[0]));
 
-				_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
-			}
+			_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
+		}
+		else if (args[0].equals("--help")) {
+			_printHelp();
+
+			_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
+		}
+		else if (args[0].startsWith("-")) {
+			System.err.println("Unrecognized option: " + args[0]);
+		}
+		else {
+			System.err.println("Unrecognized command: " + args[0]);
 		}
 
 		_printHelp();
+
+		_exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
 	}
 
 	private static void _exit(int code) {
@@ -82,24 +96,7 @@ public class DBPartitionMigrationValidator {
 	}
 
 	private static void _export(String[] args) {
-		Options options = _getExportOptions();
-
-		CommandLine commandLine = null;
-
-		try {
-			CommandLineParser commandLineParser = new DefaultParser();
-
-			commandLine = commandLineParser.parse(options, args);
-		}
-		catch (ParseException parseException) {
-			if (!ArrayUtil.contains(args, "--help")) {
-				System.err.println(parseException.getMessage());
-			}
-
-			_printHelp();
-
-			_exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
-		}
+		CommandLine commandLine = _parse(args, _getExportOptions());
 
 		String jdbcURL = DatabaseUtil.replaceSchemaName(
 			commandLine.getOptionValue("jdbc-url"),
@@ -137,7 +134,7 @@ public class DBPartitionMigrationValidator {
 				"Export file generated successfully in " + exportFilePath);
 		}
 		catch (Exception exception) {
-			System.out.println("Unable to generate the export file:");
+			System.err.println("Unable to generate the export file:");
 
 			exception.printStackTrace();
 
@@ -189,6 +186,31 @@ public class DBPartitionMigrationValidator {
 		return options;
 	}
 
+	private static CommandLine _parse(String[] args, Options options) {
+		if (ArrayUtil.contains(args, "--help")) {
+			_printHelp();
+
+			_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
+		}
+
+		CommandLine commandLine = null;
+
+		try {
+			CommandLineParser commandLineParser = new DefaultParser();
+
+			commandLine = commandLineParser.parse(options, args);
+		}
+		catch (ParseException parseException) {
+			System.err.println(parseException.getMessage());
+
+			_printHelp();
+
+			_exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
+		}
+
+		return commandLine;
+	}
+
 	private static void _printHelp() {
 		HelpFormatter helpFormatter = new HelpFormatter();
 
@@ -202,7 +224,8 @@ public class DBPartitionMigrationValidator {
 			"Liferay Database Partition Migration Validator Tool.\n\n");
 		helpFormatter.printUsage(
 			printWriter, _HELP_WIDTH,
-			"./db_partition_migration_validator.sh <command> [parameters]");
+			System.getProperty("launcher", "db_partition_migration_validator") +
+				" <command> [parameters]");
 		helpFormatter.printWrapped(printWriter, _HELP_WIDTH, "\nCommands:");
 		helpFormatter.printOptions(
 			printWriter, _HELP_WIDTH, _getMainOptions(), _HELP_LEFT_PAD,
@@ -244,24 +267,7 @@ public class DBPartitionMigrationValidator {
 	}
 
 	private static void _validate(String[] args) {
-		Options options = _getValidationOptions();
-
-		CommandLine commandLine = null;
-
-		try {
-			CommandLineParser commandLineParser = new DefaultParser();
-
-			commandLine = commandLineParser.parse(options, args);
-		}
-		catch (ParseException parseException) {
-			if (!ArrayUtil.contains(args, "--help")) {
-				System.err.println(parseException.getMessage());
-			}
-
-			_printHelp();
-
-			_exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
-		}
+		CommandLine commandLine = _parse(args, _getValidationOptions());
 
 		try {
 			_sourceLiferayDatabase = _read(
