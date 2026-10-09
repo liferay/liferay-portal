@@ -1,3 +1,22 @@
+{{- $availabilityType := $database.availabilityType | default "ZONAL" }}
+{{- $backupConfiguration := $database.backupConfiguration | default dict }}
+{{- $edition := $database.edition | default "ENTERPRISE" }}
+{{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
+
+{{- if and (eq $edition "ENTERPRISE_PLUS") (not (hasPrefix "db-perf-optimized-" $instanceType)) }}
+{{- fail (printf "database.edition=ENTERPRISE_PLUS requires a db-perf-optimized-* instance type (got %q)" $instanceType) }}
+{{- end }}
+
+{{- if eq $availabilityType "REGIONAL" }}
+{{- if not $backupConfiguration.enabled }}
+{{- fail "database.availabilityType=REGIONAL requires database.backupConfiguration.enabled=true" }}
+{{- end }}
+
+{{- if not $backupConfiguration.pointInTimeRecoveryEnabled }}
+{{- fail "database.availabilityType=REGIONAL requires database.backupConfiguration.pointInTimeRecoveryEnabled=true" }}
+{{- end }}
+{{- end }}
+
 {{- range $i, $dataPlane := $dataPlanes }}
 {{- $databaseInstanceName := printf "%s-db-instance-%s" $xr.metadata.name $dataPlane }}
 {{- if $i }}
@@ -24,12 +43,18 @@ spec:
             key: password
             name: {{ $database.rootPasswordSecretName }}
         settings:
+            availabilityType: {{ $availabilityType }}
+            {{- if or $backupConfiguration.enabled $backupConfiguration.pointInTimeRecoveryEnabled }}
+            backupConfiguration:
+                enabled: {{ $backupConfiguration.enabled | default false }}
+                pointInTimeRecoveryEnabled: {{ $backupConfiguration.pointInTimeRecoveryEnabled | default false }}
+            {{- end }}
             databaseFlags:
                 -   name: cloudsql.iam_authentication
                     value: "on"
             diskSize: {{ $database.storageGB | default 10 }}
             diskType: PD_SSD
-            edition: ENTERPRISE
+            edition: {{ $edition }}
             insightsConfig:
                 queryInsightsEnabled: {{ $database.queryInsightsEnabled | default true }}
             ipConfiguration:
@@ -37,7 +62,7 @@ spec:
                 privateNetwork: projects/{{ $env.projectId }}/global/networks/{{ $env.vpcName }}
                 sslMode: TRUSTED_CLIENT_CERTIFICATE_REQUIRED
             retainBackupsOnDelete: true
-            tier: {{ $database.instanceType | default "db-custom-1-3840" }}
+            tier: {{ $instanceType }}
             userLabels:
                 {{- $backupTargetLabels | toYaml | nindent 16 }}
                 active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}

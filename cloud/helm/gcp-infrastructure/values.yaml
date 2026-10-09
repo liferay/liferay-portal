@@ -13,8 +13,13 @@ backup:
 cmk:
     enabled: false
 database:
+    availabilityType: ZONAL
+    backupConfiguration:
+        enabled: false
+        pointInTimeRecoveryEnabled: false
     databaseVersion: POSTGRES_18
     deletionProtection: true
+    edition: ENTERPRISE
     instanceType: db-custom-1-3840
     queryInsightsEnabled: true
     storageGB: 20

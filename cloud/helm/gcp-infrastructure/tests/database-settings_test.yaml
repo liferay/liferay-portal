@@ -1,0 +1,39 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Database Settings
+templates:
+    -   templates/liferayinfrastructure.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.database.availabilityType
+                    value: ZONAL
+            -   equal:
+                    path: spec.database.backupConfiguration
+                    value:
+                        enabled: false
+                        pointInTimeRecoveryEnabled: false
+            -   equal:
+                    path: spec.database.edition
+                    value: ENTERPRISE
+        it: Defaults to a zonal Enterprise instance without automated backups
+    -   asserts:
+            -   equal:
+                    path: spec.database.availabilityType
+                    value: REGIONAL
+            -   equal:
+                    path: spec.database.backupConfiguration
+                    value:
+                        enabled: true
+                        pointInTimeRecoveryEnabled: true
+            -   equal:
+                    path: spec.database.edition
+                    value: ENTERPRISE_PLUS
+        it: Passes a regional Enterprise Plus instance with backups through to the spec
+        set:
+            database.availabilityType: REGIONAL
+            database.backupConfiguration.enabled: true
+            database.backupConfiguration.pointInTimeRecoveryEnabled: true
+            database.edition: ENTERPRISE_PLUS
+            database.instanceType: db-perf-optimized-N-2

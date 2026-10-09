@@ -1,0 +1,44 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: LiferayInfrastructure Composite Resource Definition
+templates:
+    -   templates/liferayinfrastructure-composition.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.database.properties.availabilityType.default
+                    value: ZONAL
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.database.properties.availabilityType.enum
+                    value:
+                        -   REGIONAL
+                        -   ZONAL
+        documentSelector:
+            path: kind
+            value: CompositeResourceDefinition
+        it: Accepts a regional or zonal database and defaults to zonal
+    -   asserts:
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.database.properties.edition.default
+                    value: ENTERPRISE
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.database.properties.edition.enum
+                    value:
+                        -   ENTERPRISE
+                        -   ENTERPRISE_PLUS
+        documentSelector:
+            path: kind
+            value: CompositeResourceDefinition
+        it: Accepts an Enterprise or Enterprise Plus database and defaults to Enterprise
+    -   asserts:
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.database.properties.backupConfiguration.properties.enabled.default
+                    value: false
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.database.properties.backupConfiguration.properties.pointInTimeRecoveryEnabled.default
+                    value: false
+        documentSelector:
+            path: kind
+            value: CompositeResourceDefinition
+        it: Disables automated database backups by default
