@@ -38,9 +38,7 @@ describe('Icon', () => {
 		);
 
 		expect(CLAY_ICONS_SPRITEMAP).toBe('icons.svg');
-		expect(container.querySelector('svg')).toHaveClass(
-			'lexicon-icon-plus'
-		);
+		expect(container.querySelector('svg')).toHaveClass('lexicon-icon-plus');
 		expect(container.querySelector('use')).toHaveAttribute(
 			'href',
 			'icons.svg#plus'
