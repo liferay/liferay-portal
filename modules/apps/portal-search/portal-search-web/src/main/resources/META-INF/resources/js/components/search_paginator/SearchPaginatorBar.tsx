@@ -25,6 +25,11 @@ export interface ISearchPaginatorProps {
 	activeDelta: number;
 	activePage: number;
 
+	/**
+	 * How many results the active page holds.
+	 */
+	activePageItemsCount: number;
+
 	deltas: Array<IDelta>;
 
 	/**
@@ -98,6 +103,7 @@ interface IProps extends ISearchPaginatorProps {
 const SearchPaginatorBar = ({
 	activeDelta,
 	activePage,
+	activePageItemsCount,
 	children,
 	deltas,
 	showDeltasDropDown = true,
@@ -114,14 +120,28 @@ const SearchPaginatorBar = ({
 		Liferay.ThemeDisplay.getBCP47LanguageId()
 	);
 
-	// `totalItems` stays an exact number so the page count and the upper bound
-	// below remain arithmetic. When the search only counted up to its accurate
-	// count limit, that number is a floor rather than a true total, so it is
-	// the rendered label that gains the "or more" marker, not the value.
+	const getResultsLabel = () => {
+		const firstItem = (activePage - 1) * activeDelta + 1;
 
-	const totalItemsLabel = totalItemsApproximate
-		? sub(Liferay.Language.get('x-plus'), [numberFormat.format(totalItems)])
-		: numberFormat.format(totalItems);
+		// A page can hold fewer results than a full page, so the range ends at
+		// the last result on it.
+
+		const lastItem = firstItem + activePageItemsCount - 1;
+
+		// An approximate total is shown as a minimum, such as "10,000+".
+
+		const totalItemsLabel = totalItemsApproximate
+			? sub(Liferay.Language.get('x-plus'), [
+					numberFormat.format(totalItems),
+				])
+			: numberFormat.format(totalItems);
+
+		return sub(Liferay.Language.get('showing-x-to-x-of-x-entries'), [
+			numberFormat.format(firstItem),
+			numberFormat.format(lastItem),
+			totalItemsLabel,
+		]);
+	};
 
 	return (
 		<PaginationBar>
@@ -162,13 +182,7 @@ const SearchPaginatorBar = ({
 			)}
 
 			<PaginationBar.Results id={resultsId}>
-				{sub(Liferay.Language.get('showing-x-to-x-of-x-entries'), [
-					numberFormat.format((activePage - 1) * activeDelta + 1),
-					numberFormat.format(
-						Math.min(activePage * activeDelta, totalItems)
-					),
-					totalItemsLabel,
-				])}
+				{getResultsLabel()}
 			</PaginationBar.Results>
 
 			{children}

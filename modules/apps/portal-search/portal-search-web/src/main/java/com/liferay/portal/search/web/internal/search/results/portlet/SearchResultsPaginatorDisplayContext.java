@@ -54,6 +54,13 @@ public class SearchResultsPaginatorDisplayContext {
 		).put(
 			"activePage", _searchContainer.getCur()
 		).put(
+			"activePageItemsCount",
+			() -> {
+				List<?> results = _searchContainer.getResults();
+
+				return results.size();
+			}
+		).put(
 			"deltas", _getDeltas(url, urlAnchor)
 		).put(
 			"paginationURLTemplate",
