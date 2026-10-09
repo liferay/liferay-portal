@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -1323,9 +1324,14 @@ public class ServicePreAction extends Action {
 			if (signedIn && customizable && customizedView &&
 				hasCustomizeLayoutPermission) {
 
-				layoutTypePortlet.setPortalPreferences(
+				PortalPreferences portalPreferences =
 					PortletPreferencesFactoryUtil.getPortalPreferences(
-						user.getUserId(), true));
+						user.getUserId(), true);
+
+				httpServletRequest.setAttribute(
+					WebKeys.REQUEST_PORTAL_PREFERENCES, portalPreferences);
+
+				layoutTypePortlet.setPortalPreferences(portalPreferences);
 			}
 
 			LayoutClone layoutClone = LayoutCloneFactory.getInstance();
