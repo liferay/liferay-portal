@@ -7439,13 +7439,13 @@
 			</library>
 			<library>
 				<file-name>com.liferay.sharepoint.soap.repository.jar!xmlschema-core.jar</file-name>
-				<version>2.2.1</version>
+				<version>2.3.3</version>
 				<project-name>XmlSchema Core</project-name>
 				<project-url>http://ws.apache.org/xmlschema/</project-url>
 				<licenses>
 					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
