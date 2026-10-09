@@ -1,4 +1,6 @@
-backup: {}
+backup:
+    restore:
+        sanitizationScripts: {}
 clusterSecretStoreName: ""
 cmk: {}
 commonTags: {}

@@ -150,3 +150,10 @@ tests:
             -   notExists:
                     path: spec.targetActiveDataPlane
         it: Withholds the fields the provider and restore controller own
+    -   asserts:
+            -   notExists:
+                    path: spec.backup.restore
+        it: Withholds the restore sanitization scripts from the composite resource
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';

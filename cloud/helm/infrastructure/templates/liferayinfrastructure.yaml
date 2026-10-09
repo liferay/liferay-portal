@@ -9,7 +9,7 @@ metadata:
     namespace: {{ .Release.Namespace }}
 spec:
     backup:
-        {{- .Values.backup | toYaml | nindent 8 }}
+        {{- pick .Values.backup "dayOfWeek" "enabled" "frequency" "retentionDays" "timeOfDay" "timeZone" "vaultTags" | toYaml | nindent 8 }}
     cmk:
         {{- .Values.cmk | toYaml | nindent 8 }}
     {{- with .Values.commonTags }}
