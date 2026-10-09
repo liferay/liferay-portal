@@ -18,7 +18,6 @@ import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHand
 import DataSelectionStep from './steps/DataSelectionStep';
 import FileSelectionStep from './steps/FileSelectionStep';
 import SettingsStep, {SETTINGS_STEP_INITIAL_VALUES} from './steps/SettingsStep';
-import SiteSelection from './steps/SiteSelection';
 
 export function NewImport({
 	backURL,
@@ -65,9 +64,6 @@ export function NewImport({
 			</WizardStep>
 
 			<WizardStep
-				description={Liferay.Language.get(
-					'select-the-data-from-your-file-that-you-would-like-to-import'
-				)}
 				initialValues={{
 					contentSelection: undefined,
 					deletions: false,
@@ -84,14 +80,7 @@ export function NewImport({
 					commentsAndRatingsEnabled={commentsAndRatingsEnabled}
 					importPreview={importPreview}
 					lookAndFeelEnabled={lookAndFeelEnabled}
-					sitesSelection={
-						siteSelectionEnabled &&
-						!!importPreview?.previewSites?.length && (
-							<SiteSelection
-								previewSites={importPreview.previewSites}
-							/>
-						)
-					}
+					siteSelectionEnabled={siteSelectionEnabled}
 				/>
 			</WizardStep>
 

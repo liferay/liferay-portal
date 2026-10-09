@@ -10,6 +10,7 @@ interface SectionHeaderProps {
 	className?: string;
 	id?: string;
 	subtitle?: string;
+	subtitleId?: string;
 	title: string;
 }
 
@@ -17,6 +18,7 @@ export default function SectionHeader({
 	className,
 	id,
 	subtitle,
+	subtitleId,
 	title,
 }: SectionHeaderProps) {
 	return (
@@ -26,7 +28,9 @@ export default function SectionHeader({
 			</div>
 
 			{subtitle && (
-				<p className="sheet-text text-secondary">{subtitle}</p>
+				<p className="sheet-text text-secondary" id={subtitleId}>
+					{subtitle}
+				</p>
 			)}
 		</div>
 	);

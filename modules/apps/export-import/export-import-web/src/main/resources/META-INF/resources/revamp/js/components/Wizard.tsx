@@ -13,7 +13,7 @@ import SectionHeader from './SectionHeader';
 interface WizardStepProps {
 	actionButton?: React.ReactElement;
 	children: React.ReactNode;
-	description: string;
+	description?: string;
 	initialValues?: FormikValues;
 	isStepValid?: (values: FormikValues) => boolean;
 	onSubmit?: FormikConfig<FormikValues>['onSubmit'];
@@ -118,7 +118,9 @@ export function Wizard({
 						})}
 					</ClayMultiStepNav>
 
-					<SectionHeader subtitle={description} title={title} />
+					{description && (
+						<SectionHeader subtitle={description} title={title} />
+					)}
 
 					{step}
 

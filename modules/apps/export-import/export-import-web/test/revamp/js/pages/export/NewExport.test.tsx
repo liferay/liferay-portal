@@ -249,16 +249,21 @@ describe('NewExport', () => {
 			'please-select-at-least-one-entity-type-or-site-to-continue'
 		);
 
-		expect(
-			screen.getByRole('group', {name: 'data-selection'})
-		).not.toHaveAttribute('aria-invalid');
+		const dataSelectionGroup = screen.getByRole('group', {
+			name: 'data-selection',
+		});
 
-		const sitesHeading = screen.getByText('sites');
+		expect(dataSelectionGroup).not.toHaveAttribute('aria-invalid');
 
-		expect(
-			sitesHeading.compareDocumentPosition(alert) &
-				Node.DOCUMENT_POSITION_FOLLOWING
-		).toBeTruthy();
+		for (const group of [
+			screen.getByRole('group', {name: 'scope'}),
+			dataSelectionGroup,
+		]) {
+			expect(
+				group.compareDocumentPosition(alert) &
+					Node.DOCUMENT_POSITION_FOLLOWING
+			).toBeTruthy();
+		}
 	});
 
 	it('keeps the entity types deselected after exporting only sites', async () => {
