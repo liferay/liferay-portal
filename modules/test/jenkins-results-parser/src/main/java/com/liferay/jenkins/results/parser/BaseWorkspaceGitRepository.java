@@ -1174,7 +1174,8 @@ public abstract class BaseWorkspaceGitRepository
 			getBranchName(), getSenderBranchName(),
 			JenkinsResultsParserUtil.combine(
 				"git@github.com:", getSenderBranchUsername(), "/", getName()),
-			senderBranchSHA, upstreamBranchName, baseBranchSHA);
+			senderBranchSHA, upstreamBranchName, baseBranchSHA,
+			_getUpstreamRemoteGitRef().getRemoteURL());
 	}
 
 	private LocalGitBranch _createRemoteGitRefLocalGitBranch() {

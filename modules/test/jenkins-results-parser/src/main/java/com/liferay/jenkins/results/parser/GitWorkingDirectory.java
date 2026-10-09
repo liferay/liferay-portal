@@ -157,13 +157,22 @@ public class GitWorkingDirectory {
 			RemoteGitRef senderRemoteGitRef =
 				branchInformation.getSenderRemoteGitRef();
 
+			String upstreamRemoteURL = null;
+
+			String receiverUsername = branchInformation.getReceiverUsername();
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(receiverUsername)) {
+				upstreamRemoteURL = GitUtil.getUserRemoteURL(
+					branchInformation.getRepositoryName(), receiverUsername);
+			}
+
 			localGitBranch = getRebasedLocalGitBranch(
 				localGitBranch.getName(),
 				branchInformation.getSenderBranchName(),
 				senderRemoteGitRef.getRemoteURL(),
 				branchInformation.getSenderBranchSHA(),
 				branchInformation.getUpstreamBranchName(),
-				branchInformation.getUpstreamBranchSHA());
+				branchInformation.getUpstreamBranchSHA(), upstreamRemoteURL);
 		}
 
 		checkoutLocalGitBranch(localGitBranch);
@@ -1925,18 +1934,38 @@ public class GitWorkingDirectory {
 	}
 
 	public LocalGitBranch getRebasedLocalGitBranch(PullRequest pullRequest) {
+		RemoteGitBranch upstreamRemoteGitBranch =
+			pullRequest.getUpstreamRemoteGitBranch();
+
 		return getRebasedLocalGitBranch(
 			pullRequest.getLocalSenderBranchName(),
 			pullRequest.getSenderBranchName(), pullRequest.getSenderRemoteURL(),
 			pullRequest.getSenderSHA(),
 			pullRequest.getUpstreamRemoteGitBranchName(),
-			pullRequest.getUpstreamBranchSHA());
+			pullRequest.getUpstreamBranchSHA(),
+			upstreamRemoteGitBranch.getRemoteURL());
 	}
 
 	public LocalGitBranch getRebasedLocalGitBranch(
 		String rebasedLocalGitBranchName, String senderBranchName,
 		String senderRemoteURL, String senderSHA, String upstreamBranchName,
 		String upstreamBranchSHA) {
+
+		return getRebasedLocalGitBranch(
+			rebasedLocalGitBranchName, senderBranchName, senderRemoteURL,
+			senderSHA, upstreamBranchName, upstreamBranchSHA, null);
+	}
+
+	public LocalGitBranch getRebasedLocalGitBranch(
+		String rebasedLocalGitBranchName, String senderBranchName,
+		String senderRemoteURL, String senderSHA, String upstreamBranchName,
+		String upstreamBranchSHA, String upstreamRemoteURL) {
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(upstreamRemoteURL)) {
+			GitRemote upstreamGitRemote = getUpstreamGitRemote();
+
+			upstreamRemoteURL = upstreamGitRemote.getRemoteURL();
+		}
 
 		String currentBranchName = getCurrentBranchName();
 
@@ -1965,7 +1994,7 @@ public class GitWorkingDirectory {
 			}
 
 			RemoteGitBranch upstreamRemoteGitBranch = getRemoteGitBranch(
-				upstreamBranchName, getUpstreamGitRemote(), true);
+				upstreamBranchName, upstreamRemoteURL, true);
 
 			if (upstreamBranchSHA == null) {
 				upstreamBranchSHA = upstreamRemoteGitBranch.getSHA();
