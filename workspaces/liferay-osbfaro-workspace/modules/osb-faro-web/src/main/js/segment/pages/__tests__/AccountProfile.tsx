@@ -1,6 +1,8 @@
+import * as API from 'shared/api';
 import AccountProfile from '../AccountProfile';
 import DataSourcesProvider from 'shared/context/dataSources';
 import mockStore from 'test/mock-store';
+import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
@@ -53,6 +55,8 @@ jest.mock('shared/hooks/useTimeZone', () => ({
 const renderAccountProfile = (data = {}) =>
 	render(
 		<Provider store={mockStore()}>
+			<ModalRenderer />
+
 			<MemoryRouter>
 				<ChannelContext.Provider value={mockChannelContext() as any}>
 					<DataSourcesProvider groupId="23">
@@ -170,5 +174,24 @@ describe('AccountProfile', () => {
 		expect(screen.getByText('Industry')).toBeTruthy();
 		expect(screen.getByText('Segment Criteria')).toBeTruthy();
 		expect(screen.getByText('"Technology"')).toBeTruthy();
+	});
+
+	it('should open the manage notifications modal with the workspace and segment IDs', () => {
+		renderAccountProfile({id: '456'});
+
+		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
+
+		fireEvent.click(
+			screen.getByRole('menuitem', {name: 'Manage Notifications'})
+		);
+
+		expect(
+			screen.getByText('Manage Segment Notifications')
+		).toBeInTheDocument();
+
+		expect(API.preferences.fetchSegmentNotifications).toHaveBeenCalledWith({
+			groupId: '23',
+			segmentId: '456',
+		});
 	});
 });
