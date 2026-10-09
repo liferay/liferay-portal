@@ -18,6 +18,7 @@ export interface ILifecycleStage {
 	accountLifecycleStageRule?: IAccountLifecycleStageRule;
 	description: string;
 	displayOrder: number;
+	externalReferenceCode: string;
 	id: string;
 	maxDuration: number | null;
 	stageType: string;

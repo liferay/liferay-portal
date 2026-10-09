@@ -34,11 +34,11 @@ export const useLifecycleStageOptions = ({
 		options: stages
 			.slice()
 			.sort((a, b) => a.displayOrder - b.displayOrder)
-			.map(({id, stageType}) => ({
+			.map(({externalReferenceCode, stageType}) => ({
 				label:
 					lifecycleStagesLabelMap[stageType as LifecycleStages]
 						?.label ?? stageType,
-				value: id,
+				value: externalReferenceCode,
 			})),
 	};
 };

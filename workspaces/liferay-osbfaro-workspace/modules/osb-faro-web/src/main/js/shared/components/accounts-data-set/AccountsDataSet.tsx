@@ -36,6 +36,7 @@ interface IAccountsDataSetProps {
 }
 
 interface ILifecycleStageFieldValue {
+	externalReferenceCode: string;
 	id: string;
 	stageType: LifecycleStages;
 }
@@ -77,10 +78,12 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	const lifecycleStages: ILifecycleStageFieldValue[] =
 		lifecycleStageFieldValues?.items ?? [];
 
-	const lifecycleStageItems = lifecycleStages.map(({id, stageType}) => ({
-		label: lifecycleStagesLabelMap[stageType].label,
-		value: id,
-	}));
+	const lifecycleStageItems = lifecycleStages.map(
+		({externalReferenceCode, stageType}) => ({
+			label: lifecycleStagesLabelMap[stageType].label,
+			value: externalReferenceCode,
+		})
+	);
 
 	const preloadedRangeSelector = rangeSelectors.find(
 		({value}) => value === rangeKeyFilter
@@ -170,7 +173,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 									multiple: true,
 									name: 'status',
 									preloadedData: buildSelectionPreloadedData(
-										preloadedLifecycleStage?.id,
+										preloadedLifecycleStage?.externalReferenceCode,
 										lifecycleStageFilter
 											? lifecycleStagesLabelMap[
 													lifecycleStageFilter
