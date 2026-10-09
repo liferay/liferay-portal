@@ -6,15 +6,22 @@
 package com.liferay.portal.security.permission.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -41,7 +48,7 @@ public class PermissionServiceImplTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testCheckPermission() throws PortalException {
+	public void testCheckPermission() throws Exception {
 		Bundle bundle = FrameworkUtil.getBundle(
 			PermissionServiceImplTest.class);
 
@@ -67,6 +74,48 @@ public class PermissionServiceImplTest {
 					"service.ranking", Integer.MAX_VALUE
 				).build());
 
+		String portletName = RandomTestUtil.randomString();
+		String rootModelName = RandomTestUtil.randomString();
+
+		ResourceActionsUtil resourceActionsUtil = new ResourceActionsUtil();
+
+		resourceActionsUtil.setResourceActions(
+			(ResourceActions)ProxyUtil.newProxyInstance(
+				ResourceActions.class.getClassLoader(),
+				new Class<?>[] {ResourceActions.class},
+				(proxy, method, args) -> {
+					if (Objects.equals(method.getName(), "getPortletNames")) {
+						return Arrays.asList(portletName);
+					}
+
+					if (Objects.equals(
+							method.getName(), "isRootModelResource")) {
+
+						return Objects.equals(args[0], rootModelName);
+					}
+
+					return method.invoke(_resourceActions, args);
+				}));
+
+		long[] groupId = {0};
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		PermissionThreadLocal.setPermissionChecker(
+			(PermissionChecker)ProxyUtil.newProxyInstance(
+				PermissionChecker.class.getClassLoader(),
+				new Class<?>[] {PermissionChecker.class},
+				(proxy, method, args) -> {
+					if (Objects.equals(method.getName(), "hasPermission")) {
+						groupId[0] = (Long)args[0];
+
+						return true;
+					}
+
+					return method.invoke(permissionChecker, args);
+				}));
+
 		try {
 			_permissionService.checkPermission(0, _CLASS_NAME, 0);
 
@@ -77,8 +126,29 @@ public class PermissionServiceImplTest {
 			_permissionService.checkPermission(0, _CLASS_NAME, null);
 
 			Assert.assertTrue(calledCheckBaseModel[0]);
+
+			long siteGroupId = RandomTestUtil.randomLong();
+
+			_permissionService.checkPermission(
+				RandomTestUtil.randomLong(), rootModelName,
+				String.valueOf(siteGroupId));
+
+			Assert.assertEquals(siteGroupId, groupId[0]);
+
+			String modelName = RandomTestUtil.randomString();
+
+			_permissionService.checkPermission(
+				RandomTestUtil.randomLong(), modelName, modelName);
+
+			Assert.assertEquals(0, groupId[0]);
+
+			_permissionService.checkPermission(
+				RandomTestUtil.randomLong(), portletName, portletName);
+
+			Assert.assertEquals(0, groupId[0]);
 		}
 		finally {
+			resourceActionsUtil.setResourceActions(_resourceActions);
 			serviceRegistration.unregister();
 		}
 	}
@@ -87,5 +157,8 @@ public class PermissionServiceImplTest {
 
 	@Inject
 	private PermissionService _permissionService;
+
+	@Inject
+	private ResourceActions _resourceActions;
 
 }
