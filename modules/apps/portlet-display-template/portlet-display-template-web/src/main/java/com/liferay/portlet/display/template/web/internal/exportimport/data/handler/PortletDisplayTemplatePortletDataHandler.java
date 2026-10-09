@@ -151,14 +151,16 @@ public class PortletDisplayTemplatePortletDataHandler
 		List<Long> classNameIds = _getClassNameIds(portletDataContext);
 
 		for (Element ddmTemplateElement : ddmTemplateElements) {
-			if (classNameIds.contains(
+			if (!classNameIds.contains(
 					_portal.getClassNameId(
 						ddmTemplateElement.attributeValue(
 							"attached-class-name")))) {
 
-				StagedModelDataHandlerUtil.importStagedModel(
-					portletDataContext, ddmTemplateElement);
+				continue;
 			}
+
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, ddmTemplateElement);
 		}
 
 		return null;
@@ -199,17 +201,16 @@ public class PortletDisplayTemplatePortletDataHandler
 			ClassName className = _classNameLocalService.fetchClassName(
 				templateHandler.getClassName());
 
-			if (className == null) {
-				continue;
-			}
-
-			if (portletDataContext.getBooleanParameter(
+			if ((className == null) ||
+				!portletDataContext.getBooleanParameter(
 					NAMESPACE,
 					templateHandler.getName(LocaleUtil.getSiteDefault()))) {
 
-				classNameIds.add(
-					_portal.getClassNameId(templateHandler.getClassName()));
+				continue;
 			}
+
+			classNameIds.add(
+				_portal.getClassNameId(templateHandler.getClassName()));
 		}
 
 		return classNameIds;

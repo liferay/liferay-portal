@@ -42,19 +42,21 @@ public class LiferayDescriptorParser {
 			for (Element element : portletElement.elements()) {
 				String elementName = element.getName();
 
-				if (!Objects.equals(elementName, "portlet-name")) {
-					String key = "com.liferay.portlet.".concat(elementName);
-
-					Set<String> values = configuration.get(key);
-
-					if (values == null) {
-						values = new LinkedHashSet<>();
-
-						configuration.put(key, values);
-					}
-
-					values.add(element.getText());
+				if (Objects.equals(elementName, "portlet-name")) {
+					continue;
 				}
+
+				String key = "com.liferay.portlet.".concat(elementName);
+
+				Set<String> values = configuration.get(key);
+
+				if (values == null) {
+					values = new LinkedHashSet<>();
+
+					configuration.put(key, values);
+				}
+
+				values.add(element.getText());
 			}
 
 			configurations.put(portletName, configuration);

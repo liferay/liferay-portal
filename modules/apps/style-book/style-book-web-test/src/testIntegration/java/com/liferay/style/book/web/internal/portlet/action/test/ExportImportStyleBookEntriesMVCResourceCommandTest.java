@@ -487,11 +487,13 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 			while (enumeration.hasMoreElements()) {
 				ZipEntry zipEntry = enumeration.nextElement();
 
-				if (!zipEntry.isDirectory()) {
-					_validateZipEntry(styleBookEntry, zipEntry, zipFile);
-
-					count++;
+				if (zipEntry.isDirectory()) {
+					continue;
 				}
+
+				_validateZipEntry(styleBookEntry, zipEntry, zipFile);
+
+				count++;
 			}
 
 			Assert.assertEquals(3, count);
@@ -517,11 +519,13 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 			while (enumeration.hasMoreElements()) {
 				ZipEntry zipEntry = enumeration.nextElement();
 
-				if (!zipEntry.isDirectory()) {
-					_validateZipEntry(styleBookEntry, zipEntry, zipFile);
-
-					count++;
+				if (zipEntry.isDirectory()) {
+					continue;
 				}
+
+				_validateZipEntry(styleBookEntry, zipEntry, zipFile);
+
+				count++;
 			}
 
 			Assert.assertEquals(4, count);

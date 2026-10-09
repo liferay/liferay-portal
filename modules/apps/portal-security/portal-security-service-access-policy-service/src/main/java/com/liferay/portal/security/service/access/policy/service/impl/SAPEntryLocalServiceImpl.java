@@ -326,11 +326,13 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 				sb.append(StringPool.POUND);
 			}
 
-			if (!empty) {
-				sb.setIndex(sb.index() - 1);
-
-				sortedServiceSignatures.add(sb.toString());
+			if (empty) {
+				continue;
 			}
+
+			sb.setIndex(sb.index() - 1);
+
+			sortedServiceSignatures.add(sb.toString());
 		}
 
 		StringBundler sb = new StringBundler(

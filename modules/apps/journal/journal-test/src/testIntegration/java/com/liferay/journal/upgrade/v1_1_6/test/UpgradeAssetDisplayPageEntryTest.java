@@ -78,9 +78,11 @@ public class UpgradeAssetDisplayPageEntryTest {
 		for (Group group : _groups) {
 			cleanUpGroup(group);
 
-			if (group.isStaged()) {
-				cleanUpGroup(group.getStagingGroup());
+			if (!group.isStaged()) {
+				continue;
 			}
+
+			cleanUpGroup(group.getStagingGroup());
 		}
 	}
 
@@ -360,10 +362,12 @@ public class UpgradeAssetDisplayPageEntryTest {
 					for (UpgradeStep upgradeStep : upgradeSteps) {
 						Class<?> clazz = upgradeStep.getClass();
 
-						if (Objects.equals(clazz.getName(), _CLASS_NAME)) {
-							_assetDisplayPageEntryUpgradeProcess =
-								(UpgradeProcess)upgradeStep;
+						if (!Objects.equals(clazz.getName(), _CLASS_NAME)) {
+							continue;
 						}
+
+						_assetDisplayPageEntryUpgradeProcess =
+							(UpgradeProcess)upgradeStep;
 					}
 				}
 

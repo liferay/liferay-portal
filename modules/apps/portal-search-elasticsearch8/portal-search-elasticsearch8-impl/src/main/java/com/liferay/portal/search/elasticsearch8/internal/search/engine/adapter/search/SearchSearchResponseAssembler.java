@@ -117,9 +117,11 @@ public class SearchSearchResponseAssembler
 			elasticsearchAggregationResultsTranslator.translate(aggregates);
 
 		for (AggregationResult aggregationResult : aggregationResults) {
-			if (aggregationResult != null) {
-				searchSearchResponse.addAggregationResult(aggregationResult);
+			if (aggregationResult == null) {
+				continue;
 			}
+
+			searchSearchResponse.addAggregationResult(aggregationResult);
 		}
 	}
 

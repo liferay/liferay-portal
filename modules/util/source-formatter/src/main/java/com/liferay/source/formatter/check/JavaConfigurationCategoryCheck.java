@@ -104,9 +104,11 @@ public class JavaConfigurationCategoryCheck extends BaseFileCheck {
 
 			matcher = _categoryKeyPattern2.matcher(content);
 
-			if (matcher.find()) {
-				_categoryKeys.add(matcher.group(1));
+			if (!matcher.find()) {
+				continue;
 			}
+
+			_categoryKeys.add(matcher.group(1));
 		}
 
 		return _categoryKeys;

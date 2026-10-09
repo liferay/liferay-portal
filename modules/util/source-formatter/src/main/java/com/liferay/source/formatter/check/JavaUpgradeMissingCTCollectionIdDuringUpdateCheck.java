@@ -146,18 +146,17 @@ public class JavaUpgradeMissingCTCollectionIdDuringUpdateCheck
 
 			List<String> primaryKeys = _getPrimaryKeysMap(tableName);
 
-			if (ListUtil.isEmpty(primaryKeys)) {
+			if (ListUtil.isEmpty(primaryKeys) ||
+				!primaryKeys.contains(columnName) ||
+				!primaryKeys.contains("ctCollectionId")) {
+
 				continue;
 			}
 
-			if (primaryKeys.contains(columnName) &&
-				primaryKeys.contains("ctCollectionId")) {
-
-				addMessage(
-					fileName,
-					"Missing \"ctCollectionId\" in where clause during update",
-					getLineNumber(content, x));
-			}
+			addMessage(
+				fileName,
+				"Missing \"ctCollectionId\" in where clause during update",
+				getLineNumber(content, x));
 		}
 	}
 

@@ -48,9 +48,11 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 			String propertyValue = PrefsPropsUtil.getString(
 				companyId, renamePropertykeys[0]);
 
-			if (propertyValue != null) {
-				dictionary.put(renamePropertykeys[1], propertyValue);
+			if (propertyValue == null) {
+				continue;
 			}
+
+			dictionary.put(renamePropertykeys[1], propertyValue);
 		}
 
 		return dictionary;
@@ -90,9 +92,11 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 
 			String oldValue = settings.getValue(name, null);
 
-			if (!value.equals(oldValue)) {
-				modifiableSettings.setValue(name, value);
+			if (value.equals(oldValue)) {
+				continue;
 			}
+
+			modifiableSettings.setValue(name, value);
 		}
 
 		modifiableSettings.store();

@@ -370,10 +370,12 @@ public class EditElementVariationsDisplayContext {
 					}
 				}
 
-				if (Validator.isNotNull(name)) {
-					layoutStructureItemNamesMap.put(
-						fragmentStyledLayoutStructureItem.getItemId(), name);
+				if (Validator.isNull(name)) {
+					continue;
 				}
+
+				layoutStructureItemNamesMap.put(
+					fragmentStyledLayoutStructureItem.getItemId(), name);
 			}
 
 			return layoutStructureItemNamesMap;

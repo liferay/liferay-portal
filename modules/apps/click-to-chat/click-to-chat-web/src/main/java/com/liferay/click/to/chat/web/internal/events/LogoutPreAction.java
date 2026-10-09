@@ -63,10 +63,12 @@ public class LogoutPreAction extends Action {
 		for (Cookie cookie : cookies) {
 			String name = cookie.getName();
 
-			if (name.startsWith("intercom-")) {
-				CookiesManagerUtil.deleteCookies(
-					domain, httpServletRequest, httpServletResponse, name);
+			if (!name.startsWith("intercom-")) {
+				continue;
 			}
+
+			CookiesManagerUtil.deleteCookies(
+				domain, httpServletRequest, httpServletResponse, name);
 		}
 	}
 

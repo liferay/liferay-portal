@@ -717,20 +717,22 @@ public class MicroblogsEntryLocalServiceImpl
 						microblogsEntry, receiverUserIds.get(j),
 						UserNotificationDeliveryConstants.TYPE_WEBSITE);
 
-					if (notificationType !=
+					if (notificationType ==
 							MicroblogsEntryConstants.
 								NOTIFICATION_TYPE_UNKNOWN) {
 
-						notificationEventJSONObject.put(
-							"notificationType", notificationType);
-
-						_userNotificationEventLocalService.
-							sendUserNotificationEvents(
-								receiverUserIds.get(j),
-								MicroblogsPortletKeys.MICROBLOGS,
-								UserNotificationDeliveryConstants.TYPE_WEBSITE,
-								notificationEventJSONObject);
+						continue;
 					}
+
+					notificationEventJSONObject.put(
+						"notificationType", notificationType);
+
+					_userNotificationEventLocalService.
+						sendUserNotificationEvents(
+							receiverUserIds.get(j),
+							MicroblogsPortletKeys.MICROBLOGS,
+							UserNotificationDeliveryConstants.TYPE_WEBSITE,
+							notificationEventJSONObject);
 				}
 			}
 		}

@@ -67,16 +67,18 @@ public class NavItem implements Serializable {
 			while (iterator.hasNext()) {
 				Layout childLayout = iterator.next();
 
-				if (_isContentLayoutDraft(
-						childLayout, draftLayouts.get(childLayout)) ||
-					!_isLayoutRevisionDisplayable(childLayout) ||
-					childLayout.isHidden() ||
-					!LayoutPermissionUtil.contains(
+				if (!_isContentLayoutDraft(
+						childLayout, draftLayouts.get(childLayout)) &&
+					_isLayoutRevisionDisplayable(childLayout) &&
+					!childLayout.isHidden() &&
+					LayoutPermissionUtil.contains(
 						themeDisplay.getPermissionChecker(), childLayout,
 						ActionKeys.VIEW)) {
 
-					iterator.remove();
+					continue;
 				}
+
+				iterator.remove();
 			}
 		}
 

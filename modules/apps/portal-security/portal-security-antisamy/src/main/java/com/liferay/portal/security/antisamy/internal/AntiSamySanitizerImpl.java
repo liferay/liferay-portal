@@ -46,11 +46,13 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 			for (String blacklistItem : blacklist) {
 				blacklistItem = blacklistItem.trim();
 
-				if (!blacklistItem.isEmpty()) {
-					blacklistItem = _stripTrailingStar(blacklistItem);
-
-					_blacklist.add(blacklistItem);
+				if (blacklistItem.isEmpty()) {
+					continue;
 				}
+
+				blacklistItem = _stripTrailingStar(blacklistItem);
+
+				_blacklist.add(blacklistItem);
 			}
 		}
 
@@ -58,11 +60,13 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 			for (String whitelistItem : whitelist) {
 				whitelistItem = whitelistItem.trim();
 
-				if (!whitelistItem.isEmpty()) {
-					whitelistItem = _stripTrailingStar(whitelistItem);
-
-					_whitelist.add(whitelistItem);
+				if (whitelistItem.isEmpty()) {
+					continue;
 				}
+
+				whitelistItem = _stripTrailingStar(whitelistItem);
+
+				_whitelist.add(whitelistItem);
 			}
 		}
 	}

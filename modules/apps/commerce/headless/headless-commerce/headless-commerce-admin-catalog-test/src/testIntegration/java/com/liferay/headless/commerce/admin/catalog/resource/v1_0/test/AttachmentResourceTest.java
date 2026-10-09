@@ -495,12 +495,14 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 		String getBase64EncodedContent = null;
 
 		for (Attachment attachment : attachmentsPage.getItems()) {
-			if (Objects.equals(
+			if (!Objects.equals(
 					postAttachment.getExternalReferenceCode(),
 					attachment.getExternalReferenceCode())) {
 
-				getBase64EncodedContent = attachment.getAttachment();
+				continue;
 			}
+
+			getBase64EncodedContent = attachment.getAttachment();
 		}
 
 		Assert.assertEquals(base64EncodedContent, getBase64EncodedContent);

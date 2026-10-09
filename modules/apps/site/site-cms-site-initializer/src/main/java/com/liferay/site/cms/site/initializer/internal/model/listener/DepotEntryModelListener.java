@@ -50,13 +50,14 @@ public class DepotEntryModelListener extends BaseModelListener<DepotEntry> {
 							assetVocabularyGroupRel.getVocabularyId(),
 							depotEntry.getType());
 
-				if (spaceAssetVocabularyGroupRels.size() == 1) {
-					_assetVocabularyGroupRelLocalService.
-						addAssetVocabularyGroupRel(
-							GroupConstants.ANY_PARENT_GROUP_ID,
-							assetVocabularyGroupRel.getVocabularyId(),
-							depotEntry.getType());
+				if (spaceAssetVocabularyGroupRels.size() != 1) {
+					continue;
 				}
+
+				_assetVocabularyGroupRelLocalService.addAssetVocabularyGroupRel(
+					GroupConstants.ANY_PARENT_GROUP_ID,
+					assetVocabularyGroupRel.getVocabularyId(),
+					depotEntry.getType());
 			}
 		}
 		catch (Exception exception) {

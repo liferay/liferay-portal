@@ -55,9 +55,11 @@ public class UpgradeDynamicDataListDisplay
 
 			String[] newValues = preferencesMap.get(newName);
 
-			if (newValues == null) {
-				portletPreferences.setValues(newName, values);
+			if (newValues != null) {
+				continue;
 			}
+
+			portletPreferences.setValues(newName, values);
 		}
 
 		return PortletPreferencesFactoryUtil.toXML(portletPreferences);

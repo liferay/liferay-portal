@@ -105,9 +105,11 @@ public class PersistenceCallCheck extends BaseCheck {
 				return;
 			}
 
-			if (!packageName.startsWith(importName.substring(0, pos))) {
-				log(lineNo, _MSG_ILLEGAL_PERSISTENCE_CALL, importName);
+			if (packageName.startsWith(importName.substring(0, pos))) {
+				continue;
 			}
+
+			log(lineNo, _MSG_ILLEGAL_PERSISTENCE_CALL, importName);
 		}
 	}
 

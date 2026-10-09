@@ -300,13 +300,15 @@ public class HtmlBBCodeTranslatorImpl implements BBCodeTranslator {
 				}
 			}
 
-			if (!entityFound) {
-				String escapedValue = _bbCodeCharacters.get(match);
-
-				sb.append(escapedValue);
-
-				index = matchStartIndex + match.length();
+			if (entityFound) {
+				continue;
 			}
+
+			String escapedValue = _bbCodeCharacters.get(match);
+
+			sb.append(escapedValue);
+
+			index = matchStartIndex + match.length();
 		}
 
 		if (index < quote.length()) {
@@ -329,9 +331,11 @@ public class HtmlBBCodeTranslatorImpl implements BBCodeTranslator {
 		do {
 			bbCodeItem = bbCodeItems.get(index++);
 
-			if ((bbCodeItem.getType() & type) > 0) {
-				sb.append(bbCodeItem.getValue());
+			if ((bbCodeItem.getType() & type) <= 0) {
+				continue;
 			}
+
+			sb.append(bbCodeItem.getValue());
 		}
 		while ((bbCodeItem.getType() != BBCodeParser.TYPE_TAG_END) &&
 			   !tag.equals(bbCodeItem.getValue()));
@@ -505,19 +509,21 @@ public class HtmlBBCodeTranslatorImpl implements BBCodeTranslator {
 		while (matcher.find()) {
 			String attributeName = matcher.group(1);
 
-			if (Validator.isNotNull(attributeName) &&
-				_imageAttributes.contains(
+			if (Validator.isNull(attributeName) ||
+				!_imageAttributes.contains(
 					StringUtil.toLowerCase(attributeName))) {
 
-				String attributeValue = matcher.group(2);
-
-				sb.append(StringPool.SPACE);
-				sb.append(attributeName);
-				sb.append(StringPool.EQUAL);
-				sb.append(StringPool.QUOTE);
-				sb.append(HtmlUtil.escapeAttribute(attributeValue));
-				sb.append(StringPool.QUOTE);
+				continue;
 			}
+
+			String attributeValue = matcher.group(2);
+
+			sb.append(StringPool.SPACE);
+			sb.append(attributeName);
+			sb.append(StringPool.EQUAL);
+			sb.append(StringPool.QUOTE);
+			sb.append(HtmlUtil.escapeAttribute(attributeValue));
+			sb.append(StringPool.QUOTE);
 		}
 	}
 

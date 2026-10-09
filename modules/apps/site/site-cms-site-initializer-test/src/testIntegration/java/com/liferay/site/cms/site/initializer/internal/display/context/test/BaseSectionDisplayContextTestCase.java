@@ -1194,9 +1194,11 @@ public abstract class BaseSectionDisplayContextTestCase
 		for (Long groupId : groupIds) {
 			JSONObject jsonObject = _getJSONObject(groupId);
 
-			if (jsonObject != null) {
-				jsonArray.put(jsonObject);
+			if (jsonObject == null) {
+				continue;
 			}
+
+			jsonArray.put(jsonObject);
 		}
 
 		return jsonArray;
@@ -1227,17 +1229,18 @@ public abstract class BaseSectionDisplayContextTestCase
 		for (DepotEntry depotEntry : depotEntries) {
 			Group group = groupLocalService.fetchGroup(depotEntry.getGroupId());
 
-			if (group != null) {
-				jsonArray.put(
-					JSONUtil.put(
-						"externalReferenceCode",
-						group.getExternalReferenceCode()
-					).put(
-						"groupId", group.getGroupId()
-					).put(
-						"name", group.getName(LocaleUtil.getDefault())
-					));
+			if (group == null) {
+				continue;
 			}
+
+			jsonArray.put(
+				JSONUtil.put(
+					"externalReferenceCode", group.getExternalReferenceCode()
+				).put(
+					"groupId", group.getGroupId()
+				).put(
+					"name", group.getName(LocaleUtil.getDefault())
+				));
 		}
 
 		return jsonArray;

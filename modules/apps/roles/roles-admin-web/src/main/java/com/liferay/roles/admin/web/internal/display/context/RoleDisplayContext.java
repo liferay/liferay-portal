@@ -333,18 +333,20 @@ public class RoleDisplayContext {
 				for (String assigneeTypeName :
 						_getAssigneeTypeNamesByRoleId(portletURL)) {
 
-					if (_isAssigneeTypeVisible(role, assigneeTypeName)) {
-						add(
-							navigationItem -> {
-								navigationItem.setActive(
-									assigneeTypeName.equals(tabs2));
-								navigationItem.setHref(
-									portletURL, "tabs2", assigneeTypeName);
-								navigationItem.setLabel(
-									LanguageUtil.get(
-										_httpServletRequest, assigneeTypeName));
-							});
+					if (!_isAssigneeTypeVisible(role, assigneeTypeName)) {
+						continue;
 					}
+
+					add(
+						navigationItem -> {
+							navigationItem.setActive(
+								assigneeTypeName.equals(tabs2));
+							navigationItem.setHref(
+								portletURL, "tabs2", assigneeTypeName);
+							navigationItem.setLabel(
+								LanguageUtil.get(
+									_httpServletRequest, assigneeTypeName));
+						});
 				}
 			}
 		};

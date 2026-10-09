@@ -151,22 +151,24 @@ public class AMImageHTMLExportImportContentProcessor
 				String.valueOf(fileEntryId));
 			element.removeAttr(_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
 
-			if (Objects.equals(element.tagName(), "picture")) {
-				Elements imgElements = element.getElementsByTag("img");
-
-				Element imgElement = imgElements.first();
-
-				imgElement.removeAttr(_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
-				imgElement.attr(
-					AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
-					String.valueOf(fileEntryId));
-
-				Element picture = _parseNode(
-					_amImageHTMLTagFactory.create(
-						imgElement.toString(), fileEntry));
-
-				element.html(picture.html());
+			if (!Objects.equals(element.tagName(), "picture")) {
+				continue;
 			}
+
+			Elements imgElements = element.getElementsByTag("img");
+
+			Element imgElement = imgElements.first();
+
+			imgElement.removeAttr(_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
+			imgElement.attr(
+				AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
+				String.valueOf(fileEntryId));
+
+			Element picture = _parseNode(
+				_amImageHTMLTagFactory.create(
+					imgElement.toString(), fileEntry));
+
+			element.html(picture.html());
 		}
 
 		Element bodyElement = document.body();

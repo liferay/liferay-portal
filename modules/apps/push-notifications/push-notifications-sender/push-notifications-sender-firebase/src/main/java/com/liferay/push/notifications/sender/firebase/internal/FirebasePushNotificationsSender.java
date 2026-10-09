@@ -205,9 +205,11 @@ public class FirebasePushNotificationsSender
 		while (keysIterator.hasNext()) {
 			String key = keysIterator.next();
 
-			if (!_keys.contains(key)) {
-				jsonObject.put(key, payloadJSONObject.get(key));
+			if (_keys.contains(key)) {
+				continue;
 			}
+
+			jsonObject.put(key, payloadJSONObject.get(key));
 		}
 
 		return JSONUtil.put("payload", jsonObject.toString());

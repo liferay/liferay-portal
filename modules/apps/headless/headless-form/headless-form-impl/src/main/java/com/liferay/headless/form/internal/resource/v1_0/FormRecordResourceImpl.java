@@ -187,12 +187,14 @@ public class FormRecordResourceImpl extends BaseFormRecordResourceImpl {
 				for (DDMFormFieldValue ddmFormFieldValue :
 						ddmFormValues.getDDMFormFieldValues()) {
 
-					if (Objects.equals(
+					if (!Objects.equals(
 							ddmFormField.getName(),
 							ddmFormFieldValue.getName())) {
 
-						_setValue(ddmFormFieldValue);
+						continue;
 					}
+
+					_setValue(ddmFormFieldValue);
 				}
 			}
 			catch (Exception exception) {

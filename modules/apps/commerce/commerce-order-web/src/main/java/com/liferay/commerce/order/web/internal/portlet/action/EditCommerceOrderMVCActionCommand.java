@@ -299,33 +299,35 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 						commerceOrderItem.
 							getCommerceInventoryBookedQuantityId();
 
-					if (commerceInventoryBookedQuantityId > 0) {
-						CommerceInventoryBookedQuantity
-							commerceInventoryBookedQuantity =
-								_commerceInventoryBookedQuantityLocalService.
-									fetchCommerceInventoryBookedQuantity(
-										commerceOrderItem.
-											getCommerceInventoryBookedQuantityId());
-
-						if (commerceInventoryBookedQuantity != null) {
-							_commerceInventoryBookedQuantityLocalService.
-								deleteCommerceInventoryBookedQuantity(
-									_portal.getUserId(actionRequest),
-									commerceOrderItem.
-										getCommerceInventoryBookedQuantityId(),
-									HashMapBuilder.put(
-										CommerceInventoryAuditTypeConstants.
-											ORDER_ID,
-										String.valueOf(
-											commerceOrderItem.
-												getCommerceOrderId())
-									).build(),
-									_commerceInventoryAuditTypeRegistry.
-										getCommerceInventoryAuditType(
-											CommerceInventoryConstants.
-												AUDIT_TYPE_CANCEL_BOOKED_QUANTITY));
-						}
+					if (commerceInventoryBookedQuantityId <= 0) {
+						continue;
 					}
+
+					CommerceInventoryBookedQuantity
+						commerceInventoryBookedQuantity =
+							_commerceInventoryBookedQuantityLocalService.
+								fetchCommerceInventoryBookedQuantity(
+									commerceOrderItem.
+										getCommerceInventoryBookedQuantityId());
+
+					if (commerceInventoryBookedQuantity == null) {
+						continue;
+					}
+
+					_commerceInventoryBookedQuantityLocalService.
+						deleteCommerceInventoryBookedQuantity(
+							_portal.getUserId(actionRequest),
+							commerceOrderItem.
+								getCommerceInventoryBookedQuantityId(),
+							HashMapBuilder.put(
+								CommerceInventoryAuditTypeConstants.ORDER_ID,
+								String.valueOf(
+									commerceOrderItem.getCommerceOrderId())
+							).build(),
+							_commerceInventoryAuditTypeRegistry.
+								getCommerceInventoryAuditType(
+									CommerceInventoryConstants.
+										AUDIT_TYPE_CANCEL_BOOKED_QUANTITY));
 				}
 			}
 

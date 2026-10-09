@@ -78,13 +78,15 @@ public class LanguageImplUpdateCookieTest {
 		int total = 0;
 
 		for (Cookie cookie : mockHttpServletResponse.getCookies()) {
-			if (StringUtil.equals(
+			if (!StringUtil.equals(
 					cookie.getName(),
 					CookiesConstants.NAME_GUEST_LANGUAGE_ID)) {
 
-				validCookie = cookie;
-				total++;
+				continue;
 			}
+
+			validCookie = cookie;
+			total++;
 		}
 
 		Assert.assertEquals(1, total);

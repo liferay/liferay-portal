@@ -157,9 +157,11 @@ public class DefaultUpgradeTableImpl
 		for (int i = 0; i < columns.length; i++) {
 			String name = (String)columns[i][0];
 
-			if (upgradeColumn.isApplicable(name)) {
-				_upgradeColumns[i] = upgradeColumn;
+			if (!upgradeColumn.isApplicable(name)) {
+				continue;
 			}
+
+			_upgradeColumns[i] = upgradeColumn;
 		}
 	}
 

@@ -202,9 +202,11 @@ public class UploadPageAttachmentMVCActionCommand extends BaseMVCActionCommand {
 			List<String> validMimeTypes = new ArrayList<>();
 
 			for (String mimeType : mimeTypes) {
-				if (wikiAttachmentMimeTypes.contains(mimeType)) {
-					validMimeTypes.add(mimeType);
+				if (!wikiAttachmentMimeTypes.contains(mimeType)) {
+					continue;
 				}
+
+				validMimeTypes.add(mimeType);
 			}
 
 			return validMimeTypes.toArray(new String[0]);

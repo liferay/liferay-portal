@@ -93,18 +93,19 @@ public class SXPBlueprintUpgradeProcess extends UpgradeProcess {
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-			if ((jsonObject != null) &&
-				Objects.equals(
+			if ((jsonObject == null) ||
+				!Objects.equals(
 					jsonObject.getString("key"),
 					"search.experiences.blueprint.id")) {
 
-				jsonObject.put(
-					"key",
-					"search.experiences.blueprint.external.reference.code"
-				).put(
-					"value", externalReferenceCode
-				);
+				continue;
 			}
+
+			jsonObject.put(
+				"key", "search.experiences.blueprint.external.reference.code"
+			).put(
+				"value", externalReferenceCode
+			);
 		}
 
 		return jsonArray.toString();

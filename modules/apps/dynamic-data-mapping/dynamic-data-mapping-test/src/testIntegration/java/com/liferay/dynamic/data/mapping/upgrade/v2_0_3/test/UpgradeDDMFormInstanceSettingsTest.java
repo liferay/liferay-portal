@@ -237,10 +237,12 @@ public class UpgradeDDMFormInstanceSettingsTest {
 
 						String className = clazz.getName();
 
-						if (className.contains(_CLASS_NAME)) {
-							_ddmFormInstanceSettingsUpgradeProcess =
-								(UpgradeProcess)upgradeStep;
+						if (!className.contains(_CLASS_NAME)) {
+							continue;
 						}
+
+						_ddmFormInstanceSettingsUpgradeProcess =
+							(UpgradeProcess)upgradeStep;
 					}
 				}
 

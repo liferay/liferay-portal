@@ -145,20 +145,22 @@ public class XMLSuppressionsFileCheck extends BaseFileCheck {
 
 			File file = new File(expectedFolderName);
 
-			if (!file.exists()) {
-				String relativeValue = _getRelativeValue(
-					originalValue, fileLocation, directoryValue);
-
-				if (relativeValue != null) {
-					return StringUtil.replace(
-						content, "\"" + originalValue + "\"",
-						"\"" + relativeValue + "\"");
-				}
-
-				_addMessage(
-					fileName, content, originalValue, expectedFolderName,
-					"Directory");
+			if (file.exists()) {
+				continue;
 			}
+
+			String relativeValue = _getRelativeValue(
+				originalValue, fileLocation, directoryValue);
+
+			if (relativeValue != null) {
+				return StringUtil.replace(
+					content, "\"" + originalValue + "\"",
+					"\"" + relativeValue + "\"");
+			}
+
+			_addMessage(
+				fileName, content, originalValue, expectedFolderName,
+				"Directory");
 		}
 
 		return content;

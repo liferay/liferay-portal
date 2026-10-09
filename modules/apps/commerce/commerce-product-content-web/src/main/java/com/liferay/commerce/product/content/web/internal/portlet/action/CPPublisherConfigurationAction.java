@@ -350,9 +350,11 @@ public class CPPublisherConfigurationAction extends BaseConfigurationAction {
 		int j = 0;
 
 		for (; i < manualEntries.length; i++) {
-			if (i != productEntryOrder) {
-				newEntries[j++] = manualEntries[i];
+			if (i == productEntryOrder) {
+				continue;
 			}
+
+			newEntries[j++] = manualEntries[i];
 		}
 
 		portletPreferences.setValues("catalogEntryXml", newEntries);

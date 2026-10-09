@@ -1057,9 +1057,11 @@ public class ThemeDisplay
 				value = themeSetting.getValue();
 			}
 
-			if (value != null) {
-				properties.put(key, value);
+			if (value == null) {
+				continue;
 			}
+
+			properties.put(key, value);
 		}
 
 		return properties;

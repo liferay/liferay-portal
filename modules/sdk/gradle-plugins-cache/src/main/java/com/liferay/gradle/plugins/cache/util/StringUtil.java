@@ -33,9 +33,11 @@ public class StringUtil extends com.liferay.gradle.util.StringUtil {
 				}
 			}
 
-			if (match) {
-				index = nextIndex;
+			if (!match) {
+				continue;
 			}
+
+			index = nextIndex;
 		}
 
 		if (index == 0) {

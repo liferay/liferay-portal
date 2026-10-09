@@ -120,12 +120,14 @@ public class NestedPortletsPortlet extends MVCPortlet {
 				while (processColumnMatcher.find()) {
 					String columnId = processColumnMatcher.group(2);
 
-					if (Validator.isNotNull(columnId)) {
-						columnIds.put(
-							columnId,
-							renderResponse.getNamespace() +
-								StringPool.UNDERLINE + columnId);
+					if (Validator.isNull(columnId)) {
+						continue;
 					}
+
+					columnIds.put(
+						columnId,
+						renderResponse.getNamespace() + StringPool.UNDERLINE +
+							columnId);
 				}
 
 				processColumnMatcher.reset();
@@ -185,13 +187,15 @@ public class NestedPortletsPortlet extends MVCPortlet {
 			String portletIds = typeSettingsUnicodeProperties.getProperty(
 				columnId);
 
-			if (Validator.isNotNull(portletIds) &&
-				!ArrayUtil.contains(layoutColumnIds, columnId)) {
+			if (Validator.isNull(portletIds) ||
+				ArrayUtil.contains(layoutColumnIds, columnId)) {
 
-				layoutColumnIds = ArrayUtil.append(layoutColumnIds, columnId);
-
-				updateColumnIds = true;
+				continue;
 			}
+
+			layoutColumnIds = ArrayUtil.append(layoutColumnIds, columnId);
+
+			updateColumnIds = true;
 		}
 
 		if (updateColumnIds) {

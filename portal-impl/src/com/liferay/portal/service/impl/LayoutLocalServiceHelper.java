@@ -156,13 +156,15 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 		for (Locale locale : LanguageUtil.getAvailableLocales(groupId)) {
 			String friendlyURL = friendlyURLMap.get(locale);
 
-			if (Validator.isNotNull(friendlyURL)) {
-				friendlyURL = getFriendlyURL(
-					groupId, privateLayout, layoutId, name, friendlyURL,
-					locale.toString());
-
-				newFriendlyURLMap.put(locale, friendlyURL);
+			if (Validator.isNull(friendlyURL)) {
+				continue;
 			}
+
+			friendlyURL = getFriendlyURL(
+				groupId, privateLayout, layoutId, name, friendlyURL,
+				locale.toString());
+
+			newFriendlyURLMap.put(locale, friendlyURL);
 		}
 
 		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();

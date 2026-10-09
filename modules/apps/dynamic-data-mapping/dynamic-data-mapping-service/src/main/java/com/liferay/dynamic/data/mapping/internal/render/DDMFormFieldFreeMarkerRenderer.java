@@ -460,12 +460,14 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		int offset = 0;
 
 		for (; offset < fieldsDisplayValues.length; offset++) {
-			if (name.equals(fieldsDisplayValues[offset])) {
-				index--;
+			if (!name.equals(fieldsDisplayValues[offset])) {
+				continue;
+			}
 
-				if (index < 0) {
-					break;
-				}
+			index--;
+
+			if (index < 0) {
+				break;
 			}
 		}
 

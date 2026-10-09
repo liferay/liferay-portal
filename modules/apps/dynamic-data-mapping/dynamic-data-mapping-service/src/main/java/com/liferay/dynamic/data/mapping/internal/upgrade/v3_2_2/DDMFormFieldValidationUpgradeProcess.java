@@ -234,10 +234,12 @@ public class DDMFormFieldValidationUpgradeProcess extends UpgradeProcess {
 			JSONArray nestedFieldsJSONArray = jsonObject.getJSONArray(
 				"nestedFields");
 
-			if (nestedFieldsJSONArray != null) {
-				_upgradeFields(
-					availableLanguageIdsJSONArray, nestedFieldsJSONArray);
+			if (nestedFieldsJSONArray == null) {
+				continue;
 			}
+
+			_upgradeFields(
+				availableLanguageIdsJSONArray, nestedFieldsJSONArray);
 		}
 	}
 

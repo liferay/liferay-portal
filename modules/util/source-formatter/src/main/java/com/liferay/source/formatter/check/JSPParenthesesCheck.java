@@ -20,23 +20,27 @@ public class JSPParenthesesCheck extends BaseIfStatementCheck {
 		Matcher matcher = _ifStatementPattern.matcher(content);
 
 		while (matcher.find()) {
-			if (isJavaSource(content, matcher.start())) {
-				checkIfClauseParentheses(
-					matcher.group(), fileName,
-					getLineNumber(content, matcher.start(1)), true);
+			if (!isJavaSource(content, matcher.start())) {
+				continue;
 			}
+
+			checkIfClauseParentheses(
+				matcher.group(), fileName,
+				getLineNumber(content, matcher.start(1)), true);
 		}
 
 		matcher = _tagPattern.matcher(content);
 
 		while (matcher.find()) {
-			if (!isJavaSource(content, matcher.start())) {
-				String ifClause = "if (" + matcher.group(1) + ") {";
-
-				checkIfClauseParentheses(
-					ifClause, fileName, getLineNumber(content, matcher.start()),
-					true);
+			if (isJavaSource(content, matcher.start())) {
+				continue;
 			}
+
+			String ifClause = "if (" + matcher.group(1) + ") {";
+
+			checkIfClauseParentheses(
+				ifClause, fileName, getLineNumber(content, matcher.start()),
+				true);
 		}
 
 		return content;

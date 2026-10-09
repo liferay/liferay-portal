@@ -137,14 +137,16 @@ public class CheckstyleUtil {
 				for (String attributeName :
 						checkConfiguration.getAttributeNames()) {
 
-					if (!attributeName.equals("category") &&
-						!attributeName.equals("description") &&
-						!attributeName.equals("documentationLocation")) {
+					if (attributeName.equals("category") ||
+						attributeName.equals("description") ||
+						attributeName.equals("documentationLocation")) {
 
-						defaultConfiguration.addAttribute(
-							attributeName,
-							checkConfiguration.getAttribute(attributeName));
+						continue;
 					}
+
+					defaultConfiguration.addAttribute(
+						attributeName,
+						checkConfiguration.getAttribute(attributeName));
 				}
 			}
 

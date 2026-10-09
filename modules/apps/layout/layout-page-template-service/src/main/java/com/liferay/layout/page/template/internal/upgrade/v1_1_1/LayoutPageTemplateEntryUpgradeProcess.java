@@ -79,14 +79,13 @@ public class LayoutPageTemplateEntryUpgradeProcess extends UpgradeProcess {
 						ResultSet countResultSet =
 							countPreparedStatement.executeQuery();
 
-						if (countResultSet.next() &&
-							(countResultSet.getLong("count") > 0)) {
+						if (!countResultSet.next() ||
+							(countResultSet.getLong("count") <= 0)) {
 
-							newName = name + i;
-						}
-						else {
 							break;
 						}
+
+						newName = name + i;
 					}
 
 					updatePreparedStatement.setLong(1, company.getGroupId());

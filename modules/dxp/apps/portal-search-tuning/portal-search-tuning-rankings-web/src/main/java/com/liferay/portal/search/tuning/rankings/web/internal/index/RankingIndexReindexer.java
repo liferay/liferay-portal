@@ -112,11 +112,12 @@ public class RankingIndexReindexer implements IndexReindexer {
 			_rankingIndexWriter.create(
 				rankingIndexName, _buildRanking(classPKs.get(i)));
 
-			if ((i % sendStatusInterval) == 0) {
-				ReindexStatusMessageSenderUtil.sendStatusMessage(
-					RankingIndexReindexer.class.getName(), i + 1,
-					classPKs.size());
+			if ((i % sendStatusInterval) != 0) {
+				continue;
 			}
+
+			ReindexStatusMessageSenderUtil.sendStatusMessage(
+				RankingIndexReindexer.class.getName(), i + 1, classPKs.size());
 		}
 
 		if (_isExecuteSyncReindex(executionMode)) {

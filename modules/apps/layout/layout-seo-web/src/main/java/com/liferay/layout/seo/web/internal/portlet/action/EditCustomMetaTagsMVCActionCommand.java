@@ -116,16 +116,19 @@ public class EditCustomMetaTagsMVCActionCommand extends BaseMVCActionCommand {
 						"content", propertyIndex, StringPool.UNDERLINE,
 						_language.getLanguageId(locale)));
 
-				if (Validator.isNotNull(content)) {
-					contentMap.put(locale, content);
+				if (Validator.isNull(content)) {
+					continue;
 				}
+
+				contentMap.put(locale, content);
 			}
 
-			if (MapUtil.isNotEmpty(contentMap)) {
-				layoutSEOEntryCustomMetaTagProperties.add(
-					new LayoutSEOEntryCustomMetaTagProperty(
-						contentMap, property));
+			if (MapUtil.isEmpty(contentMap)) {
+				continue;
 			}
+
+			layoutSEOEntryCustomMetaTagProperties.add(
+				new LayoutSEOEntryCustomMetaTagProperty(contentMap, property));
 		}
 
 		return layoutSEOEntryCustomMetaTagProperties;

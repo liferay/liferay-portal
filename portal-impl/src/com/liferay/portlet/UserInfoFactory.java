@@ -99,9 +99,11 @@ public class UserInfoFactory {
 				String userAttributeValue = userAttributes.getValue(
 					userAttributeName);
 
-				if (userAttributeValue != null) {
-					userInfo.put(userAttributeName, userAttributeValue);
+				if (userAttributeValue == null) {
+					continue;
 				}
+
+				userInfo.put(userAttributeName, userAttributeValue);
 			}
 		}
 		catch (Exception exception) {
@@ -157,16 +159,20 @@ public class UserInfoFactory {
 				}
 			}
 
-			if (customUserAttributes != null) {
-				String userAttributeName = entry.getKey();
-
-				String attrValue = customUserAttributes.getValue(
-					userAttributeName, unmodifiableUserInfo);
-
-				if (attrValue != null) {
-					userInfo.put(userAttributeName, attrValue);
-				}
+			if (customUserAttributes == null) {
+				continue;
 			}
+
+			String userAttributeName = entry.getKey();
+
+			String attrValue = customUserAttributes.getValue(
+				userAttributeName, unmodifiableUserInfo);
+
+			if (attrValue == null) {
+				continue;
+			}
+
+			userInfo.put(userAttributeName, attrValue);
 		}
 
 		return userInfo;

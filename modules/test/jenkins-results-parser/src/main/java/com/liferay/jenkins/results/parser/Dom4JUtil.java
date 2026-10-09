@@ -103,11 +103,13 @@ public class Dom4JUtil {
 
 	public static void detach(Object... items) {
 		for (Object item : items) {
-			if (item instanceof Node) {
-				Node node = (Node)item;
-
-				node.detach();
+			if (!(item instanceof Node)) {
+				continue;
 			}
+
+			Node node = (Node)item;
+
+			node.detach();
 		}
 	}
 
@@ -362,9 +364,11 @@ public class Dom4JUtil {
 
 			text = text.trim();
 
-			if (text.isEmpty()) {
-				nodes.remove(i);
+			if (!text.isEmpty()) {
+				continue;
 			}
+
+			nodes.remove(i);
 		}
 	}
 
@@ -432,9 +436,11 @@ public class Dom4JUtil {
 		for (Node node : nodes) {
 			String nodeText = node.getText();
 
-			if ((nodeText != null) && (nodeText.length() > size)) {
-				node.setText(nodeText.substring(0, size));
+			if ((nodeText == null) || (nodeText.length() <= size)) {
+				continue;
 			}
+
+			node.setText(nodeText.substring(0, size));
 		}
 
 		for (Iterator<Element> iterator = element.elementIterator();

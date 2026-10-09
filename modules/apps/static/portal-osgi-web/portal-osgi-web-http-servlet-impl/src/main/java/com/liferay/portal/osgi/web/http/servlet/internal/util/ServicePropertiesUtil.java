@@ -46,11 +46,13 @@ public class ServicePropertiesUtil {
 		}
 
 		for (String propertyKey : serviceReference.getPropertyKeys()) {
-			if (propertyKey.startsWith(propertyKeyPrefix)) {
-				initParameters.put(
-					propertyKey.substring(propertyKeyPrefix.length()),
-					String.valueOf(serviceReference.getProperty(propertyKey)));
+			if (!propertyKey.startsWith(propertyKeyPrefix)) {
+				continue;
 			}
+
+			initParameters.put(
+				propertyKey.substring(propertyKeyPrefix.length()),
+				String.valueOf(serviceReference.getProperty(propertyKey)));
 		}
 
 		return Collections.unmodifiableMap(initParameters);

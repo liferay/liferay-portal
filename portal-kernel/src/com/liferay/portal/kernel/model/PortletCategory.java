@@ -146,9 +146,11 @@ public class PortletCategory implements Serializable {
 		while (iterator.hasNext()) {
 			String portletId = iterator.next();
 
-			if (portletIds.contains(portletId)) {
-				iterator.remove();
+			if (!portletIds.contains(portletId)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 

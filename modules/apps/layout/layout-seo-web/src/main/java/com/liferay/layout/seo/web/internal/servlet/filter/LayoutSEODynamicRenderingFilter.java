@@ -151,12 +151,13 @@ public class LayoutSEODynamicRenderingFilter extends BaseFilter {
 		while (enumeration.hasMoreElements()) {
 			String headerName = enumeration.nextElement();
 
-			if (!_hopByHopHeaderNames.contains(headerName) &&
-				!headerName.equals("content-length")) {
+			if (_hopByHopHeaderNames.contains(headerName) ||
+				headerName.equals("content-length")) {
 
-				headers.put(
-					headerName, httpServletRequest.getHeader(headerName));
+				continue;
 			}
+
+			headers.put(headerName, httpServletRequest.getHeader(headerName));
 		}
 
 		return headers;

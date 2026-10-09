@@ -133,13 +133,15 @@ public class Arquillian extends Runner implements Filterable {
 
 			String methodName = method.getName();
 
-			if (!filter.shouldRun(
+			if (filter.shouldRun(
 					Description.createTestDescription(clazz, methodName))) {
 
-				filteredMethodNames.add(methodName);
-
-				iterator.remove();
+				continue;
 			}
+
+			filteredMethodNames.add(methodName);
+
+			iterator.remove();
 		}
 
 		return filteredMethodNames;
@@ -150,9 +152,11 @@ public class Arquillian extends Runner implements Filterable {
 
 		while (clazz != Object.class) {
 			for (Method method : clazz.getDeclaredMethods()) {
-				if (method.getAnnotation(Test.class) != null) {
-					testMethods.add(method);
+				if (method.getAnnotation(Test.class) == null) {
+					continue;
 				}
+
+				testMethods.add(method);
 			}
 
 			clazz = clazz.getSuperclass();

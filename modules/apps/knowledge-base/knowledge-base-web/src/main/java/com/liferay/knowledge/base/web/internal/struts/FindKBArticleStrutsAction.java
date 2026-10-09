@@ -350,11 +350,13 @@ public class FindKBArticleStrutsAction implements StrutsAction {
 						httpServletRequest);
 				}
 
-				if (firstMatchPortletURL == null) {
-					firstMatchPortletURL = _getKBArticleURL(
-						layout.getPlid(), portlet.getPortletId(), kbArticle,
-						httpServletRequest);
+				if (firstMatchPortletURL != null) {
+					continue;
 				}
+
+				firstMatchPortletURL = _getKBArticleURL(
+					layout.getPlid(), portlet.getPortletId(), kbArticle,
+					httpServletRequest);
 			}
 		}
 

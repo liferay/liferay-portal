@@ -92,9 +92,11 @@ public class SystemOSGiCommands implements OSGiCommands {
 
 				Bundle providerBundle = providerBundleWiring.getBundle();
 
-				if (invertDependencyClosureBundles.add(providerBundle)) {
-					queue.add(providerBundle);
+				if (!invertDependencyClosureBundles.add(providerBundle)) {
+					continue;
 				}
+
+				queue.add(providerBundle);
 			}
 		}
 
@@ -313,9 +315,11 @@ public class SystemOSGiCommands implements OSGiCommands {
 
 				int index = path.lastIndexOf('/');
 
-				if (spiTypesSet.contains(path.substring(index + 1))) {
-					urls.add(url);
+				if (!spiTypesSet.contains(path.substring(index + 1))) {
+					continue;
 				}
+
+				urls.add(url);
 			}
 		}
 

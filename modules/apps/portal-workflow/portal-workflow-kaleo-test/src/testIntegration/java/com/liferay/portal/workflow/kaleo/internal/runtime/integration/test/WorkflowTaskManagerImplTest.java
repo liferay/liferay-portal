@@ -1793,15 +1793,17 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 				userNotificationEvents.toString(), expected,
 				userNotificationEvents.size());
 
-			if (expected > 0) {
-				UserNotificationEvent userNotificationEvent =
-					userNotificationEvents.get(0);
-
-				userNotificationEvent.setArchived(true);
-
-				_userNotificationEventLocalService.updateUserNotificationEvent(
-					userNotificationEvent);
+			if (expected <= 0) {
+				continue;
 			}
+
+			UserNotificationEvent userNotificationEvent =
+				userNotificationEvents.get(0);
+
+			userNotificationEvent.setArchived(true);
+
+			_userNotificationEventLocalService.updateUserNotificationEvent(
+				userNotificationEvent);
 		}
 	}
 

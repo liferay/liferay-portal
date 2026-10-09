@@ -588,9 +588,11 @@ public class PoshiRunnerExecutor {
 					"value" + i);
 			}
 
-			if (value != null) {
-				_poshiVariablesContext.putIntoExecuteMap("value" + i, value);
+			if (value == null) {
+				continue;
 			}
+
+			_poshiVariablesContext.putIntoExecuteMap("value" + i, value);
 		}
 
 		if (_functionExecuteElement == executeElement) {

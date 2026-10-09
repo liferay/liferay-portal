@@ -216,13 +216,14 @@ public class JavaAnnotationsCheck extends BaseJavaTermCheck {
 					return annotation;
 				}
 
-				if (!ToolsUtil.isInsideQuotes(annotation, y)) {
-					arrayString = annotation.substring(
-						matcher.end() - 1, y + 1);
+				if (ToolsUtil.isInsideQuotes(annotation, y)) {
+					continue;
+				}
 
-					if (getLevel(arrayString, "{", "}") == 0) {
-						break;
-					}
+				arrayString = annotation.substring(matcher.end() - 1, y + 1);
+
+				if (getLevel(arrayString, "{", "}") == 0) {
+					break;
 				}
 			}
 

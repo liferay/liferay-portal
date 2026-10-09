@@ -459,18 +459,20 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 				continue;
 			}
 
-			if ((baseProductPurchase == null) ||
-				((baseProductPurchase.getStatus() !=
-					productPurchase.getStatus()) &&
-				 Objects.equals(
-					 productPurchase.getStatus(),
-					 ProductPurchase.Status.APPROVED)) ||
+			if ((baseProductPurchase != null) &&
 				((baseProductPurchase.getStatus() ==
-					productPurchase.getStatus()) &&
-				 _isAfter(baseProductPurchase, productPurchase))) {
+					productPurchase.getStatus()) ||
+				 !Objects.equals(
+					 productPurchase.getStatus(),
+					 ProductPurchase.Status.APPROVED)) &&
+				((baseProductPurchase.getStatus() !=
+					productPurchase.getStatus()) ||
+				 !_isAfter(baseProductPurchase, productPurchase))) {
 
-				baseProductPurchase = productPurchase;
+				continue;
 			}
+
+			baseProductPurchase = productPurchase;
 		}
 
 		return baseProductPurchase;

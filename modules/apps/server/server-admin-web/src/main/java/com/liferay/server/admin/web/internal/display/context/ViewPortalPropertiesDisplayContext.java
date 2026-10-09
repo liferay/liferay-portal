@@ -192,15 +192,19 @@ public class ViewPortalPropertiesDisplayContext {
 
 			String keywords = _getKeywords();
 
-			if (Validator.isNull(keywords) || property.contains(keywords) ||
-				value.contains(keywords)) {
+			if (Validator.isNotNull(keywords) && !property.contains(keywords) &&
+				!value.contains(keywords)) {
 
-				filteredProperties.put(property, value);
-
-				if (overriddenPropertyValue) {
-					_overriddenProperties.add(property);
-				}
+				continue;
 			}
+
+			filteredProperties.put(property, value);
+
+			if (!overriddenPropertyValue) {
+				continue;
+			}
+
+			_overriddenProperties.add(property);
 		}
 
 		_filteredProperties = ListUtil.fromCollection(

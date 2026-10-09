@@ -733,13 +733,15 @@ public class ExpandoValueLocalServiceImpl
 				value.setClassPK(classPK);
 			}
 
-			if (value.isNew() || !Objects.equals(value.getData(), dataString)) {
-				value.setData(dataString);
-
-				expandoValuePersistence.update(value);
-
-				rowModified = true;
+			if (!value.isNew() && Objects.equals(value.getData(), dataString)) {
+				continue;
 			}
+
+			value.setData(dataString);
+
+			expandoValuePersistence.update(value);
+
+			rowModified = true;
 		}
 
 		if (rowModified) {

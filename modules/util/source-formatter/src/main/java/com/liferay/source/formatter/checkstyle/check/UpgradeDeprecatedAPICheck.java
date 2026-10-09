@@ -57,17 +57,19 @@ public class UpgradeDeprecatedAPICheck extends DeprecatedAPICheck {
 			for (String upgradeToDeprecatedImportName :
 					upgradeToDeprecatedImportNames) {
 
-				if (!upgradeFromDeprecatedImportNames.contains(
-						upgradeToDeprecatedImportName) &&
-					hasUndeprecatedReference(
+				if (upgradeFromDeprecatedImportNames.contains(
+						upgradeToDeprecatedImportName) ||
+					!hasUndeprecatedReference(
 						detailAST, upgradeToDeprecatedImportName)) {
 
-					log(
-						getImportLineNumber(
-							detailAST, upgradeToDeprecatedImportName),
-						_MSG_DEPRECATED_TYPE_CALL,
-						upgradeToDeprecatedImportName, upgradeToVersion);
+					continue;
 				}
+
+				log(
+					getImportLineNumber(
+						detailAST, upgradeToDeprecatedImportName),
+					_MSG_DEPRECATED_TYPE_CALL, upgradeToDeprecatedImportName,
+					upgradeToVersion);
 			}
 
 			_checkDeprecatedConstructors(
@@ -113,15 +115,17 @@ public class UpgradeDeprecatedAPICheck extends DeprecatedAPICheck {
 		for (ConstructorCall upgradeToDeprecatedConstructorCall :
 				upgradeToDeprecatedConstructorCalls) {
 
-			if (!upgradeFromDeprecatedConstructorCalls.contains(
+			if (upgradeFromDeprecatedConstructorCalls.contains(
 					upgradeToDeprecatedConstructorCall)) {
 
-				log(
-					upgradeToDeprecatedConstructorCall.getLineNumber(),
-					_MSG_DEPRECATED_CONSTRUCTOR_CALL,
-					upgradeToDeprecatedConstructorCall.getTypeName(),
-					upgradeToVersion);
+				continue;
 			}
+
+			log(
+				upgradeToDeprecatedConstructorCall.getLineNumber(),
+				_MSG_DEPRECATED_CONSTRUCTOR_CALL,
+				upgradeToDeprecatedConstructorCall.getTypeName(),
+				upgradeToVersion);
 		}
 	}
 
@@ -143,14 +147,16 @@ public class UpgradeDeprecatedAPICheck extends DeprecatedAPICheck {
 		for (MethodCall upgradeToDeprecatedMethodCall :
 				upgradeToDeprecatedMethodCalls) {
 
-			if (!upgradeFromDeprecatedMethodCalls.contains(
+			if (upgradeFromDeprecatedMethodCalls.contains(
 					upgradeToDeprecatedMethodCall)) {
 
-				log(
-					upgradeToDeprecatedMethodCall.getLineNumber(),
-					_MSG_DEPRECATED_METHOD_CALL,
-					upgradeToDeprecatedMethodCall.getName(), upgradeToVersion);
+				continue;
 			}
+
+			log(
+				upgradeToDeprecatedMethodCall.getLineNumber(),
+				_MSG_DEPRECATED_METHOD_CALL,
+				upgradeToDeprecatedMethodCall.getName(), upgradeToVersion);
 		}
 	}
 
@@ -208,15 +214,16 @@ public class UpgradeDeprecatedAPICheck extends DeprecatedAPICheck {
 		for (VariableCall upgradeToDeprecatedVariableCall :
 				upgradeToDeprecatedVariableCalls) {
 
-			if (!upgradeFromDeprecatedVariableCalls.contains(
+			if (upgradeFromDeprecatedVariableCalls.contains(
 					upgradeToDeprecatedVariableCall)) {
 
-				log(
-					upgradeToDeprecatedVariableCall.getLineNumber(),
-					_MSG_DEPRECATED_FIELD_CALL,
-					upgradeToDeprecatedVariableCall.getName(),
-					upgradeToVersion);
+				continue;
 			}
+
+			log(
+				upgradeToDeprecatedVariableCall.getLineNumber(),
+				_MSG_DEPRECATED_FIELD_CALL,
+				upgradeToDeprecatedVariableCall.getName(), upgradeToVersion);
 		}
 	}
 

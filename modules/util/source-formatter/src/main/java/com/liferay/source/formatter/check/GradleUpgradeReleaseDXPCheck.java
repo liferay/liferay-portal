@@ -111,9 +111,11 @@ public class GradleUpgradeReleaseDXPCheck extends BaseFileCheck {
 				hasCompileOrImplementation = true;
 			}
 
-			if (configuration.startsWith("test")) {
-				hasTest = true;
+			if (!configuration.startsWith("test")) {
+				continue;
 			}
+
+			hasTest = true;
 		}
 
 		if (gradleDependencies.isEmpty()) {

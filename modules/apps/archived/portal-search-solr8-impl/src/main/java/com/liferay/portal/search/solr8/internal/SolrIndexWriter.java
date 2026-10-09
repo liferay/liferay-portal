@@ -405,13 +405,15 @@ public class SolrIndexWriter extends BaseIndexWriter {
 		for (BulkDocumentItemResponse bulkDocumentItemResponse :
 				bulkDocumentResponse.getBulkDocumentItemResponses()) {
 
-			if (bulkDocumentItemResponse.getFailureMessage() != null) {
-				if (sb.length() > 0) {
-					sb.append(", ");
-				}
-
-				sb.append(bulkDocumentItemResponse.getFailureMessage());
+			if (bulkDocumentItemResponse.getFailureMessage() == null) {
+				continue;
 			}
+
+			if (sb.length() > 0) {
+				sb.append(", ");
+			}
+
+			sb.append(bulkDocumentItemResponse.getFailureMessage());
 		}
 
 		return sb.toString();

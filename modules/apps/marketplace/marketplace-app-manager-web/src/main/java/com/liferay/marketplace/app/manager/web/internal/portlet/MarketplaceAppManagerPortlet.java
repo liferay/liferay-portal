@@ -122,13 +122,13 @@ public class MarketplaceAppManagerPortlet extends MVCPortlet {
 		List<Bundle> bundles = BundleManagerUtil.getInstalledBundles();
 
 		for (Bundle bundle : bundles) {
-			if (BundleUtil.isFragment(bundle)) {
+			if (BundleUtil.isFragment(bundle) ||
+				!ArrayUtil.contains(bundleIds, bundle.getBundleId())) {
+
 				continue;
 			}
 
-			if (ArrayUtil.contains(bundleIds, bundle.getBundleId())) {
-				bundle.start();
-			}
+			bundle.start();
 		}
 	}
 
@@ -142,13 +142,13 @@ public class MarketplaceAppManagerPortlet extends MVCPortlet {
 		List<Bundle> bundles = BundleManagerUtil.getInstalledBundles();
 
 		for (Bundle bundle : bundles) {
-			if (BundleUtil.isFragment(bundle)) {
+			if (BundleUtil.isFragment(bundle) ||
+				!ArrayUtil.contains(bundleIds, bundle.getBundleId())) {
+
 				continue;
 			}
 
-			if (ArrayUtil.contains(bundleIds, bundle.getBundleId())) {
-				bundle.stop();
-			}
+			bundle.stop();
 		}
 	}
 
@@ -263,9 +263,11 @@ public class MarketplaceAppManagerPortlet extends MVCPortlet {
 		List<String> symbolicNames = new ArrayList<>(bundleIds.length);
 
 		for (Bundle bundle : bundles) {
-			if (ArrayUtil.contains(bundleIds, bundle.getBundleId())) {
-				symbolicNames.add(bundle.getSymbolicName());
+			if (!ArrayUtil.contains(bundleIds, bundle.getBundleId())) {
+				continue;
 			}
+
+			symbolicNames.add(bundle.getSymbolicName());
 		}
 
 		_bundleBlacklistManager.addToBlacklistAndUninstall(
@@ -358,17 +360,19 @@ public class MarketplaceAppManagerPortlet extends MVCPortlet {
 			List<Theme> themes = (List<Theme>)servletContext.getAttribute(
 				WebKeys.PLUGIN_THEMES);
 
-			if (themes != null) {
-				for (Theme theme : themes) {
-					PluginSetting pluginSetting =
-						_pluginSettingLocalService.getPluginSetting(
-							themeDisplay.getCompanyId(), theme.getThemeId(),
-							Plugin.TYPE_THEME);
+			if (themes == null) {
+				continue;
+			}
 
-					_pluginSettingService.updatePluginSetting(
+			for (Theme theme : themes) {
+				PluginSetting pluginSetting =
+					_pluginSettingLocalService.getPluginSetting(
 						themeDisplay.getCompanyId(), theme.getThemeId(),
-						Plugin.TYPE_THEME, pluginSetting.getRoles(), active);
-				}
+						Plugin.TYPE_THEME);
+
+				_pluginSettingService.updatePluginSetting(
+					themeDisplay.getCompanyId(), theme.getThemeId(),
+					Plugin.TYPE_THEME, pluginSetting.getRoles(), active);
 			}
 		}
 	}

@@ -173,17 +173,19 @@ public class JSUnitModulesBatchTestClassGroup
 		for (JobProperty excludesJobProperty : getExcludesJobProperties()) {
 			String excludesJobPropertyValue = excludesJobProperty.getValue();
 
-			if (excludesJobPropertyValue != null) {
-				for (String excludesJobPropertyValueElement :
-						excludesJobPropertyValue.split("\\s*,\\s*")) {
+			if (excludesJobPropertyValue == null) {
+				continue;
+			}
 
-					excludesJobPropertyValueElement =
-						excludesJobPropertyValueElement.replace("/", ":");
+			for (String excludesJobPropertyValueElement :
+					excludesJobPropertyValue.split("\\s*,\\s*")) {
 
-					excludedTestMethodNames.add(
-						excludesJobPropertyValueElement.replaceAll(
-							"[^a-zA-Z-:]", ""));
-				}
+				excludesJobPropertyValueElement =
+					excludesJobPropertyValueElement.replace("/", ":");
+
+				excludedTestMethodNames.add(
+					excludesJobPropertyValueElement.replaceAll(
+						"[^a-zA-Z-:]", ""));
 			}
 		}
 
@@ -271,9 +273,11 @@ public class JSUnitModulesBatchTestClassGroup
 					}
 				}
 
-				if (!testClassMethods.isEmpty()) {
-					addTestClass(testClass);
+				if (testClassMethods.isEmpty()) {
+					continue;
 				}
+
+				addTestClass(testClass);
 			}
 		}
 

@@ -43,9 +43,11 @@ public class GroupItemSelectorProviderRegistryUtil {
 		for (GroupItemSelectorProvider groupItemSelectorProvider :
 				_serviceTrackerMap.values()) {
 
-			if (groupItemSelectorProvider.isEnabled()) {
-				types.add(groupItemSelectorProvider.getGroupType());
+			if (!groupItemSelectorProvider.isEnabled()) {
+				continue;
 			}
+
+			types.add(groupItemSelectorProvider.getGroupType());
 		}
 
 		return types;

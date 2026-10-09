@@ -74,14 +74,16 @@ public class GradleBuildFile {
 				continue;
 			}
 
-			if (Objects.equals(group, gradleDependency.getGroup()) &&
-				Objects.equals(name, gradleDependency.getName())) {
+			if (!Objects.equals(group, gradleDependency.getGroup()) ||
+				!Objects.equals(name, gradleDependency.getName())) {
 
-				for (int i = gradleDependency.getLastLineNumber();
-					 i >= gradleDependency.getLineNumber(); i--) {
+				continue;
+			}
 
-					sourceLines.remove(i - 1);
-				}
+			for (int i = gradleDependency.getLastLineNumber();
+				 i >= gradleDependency.getLineNumber(); i--) {
+
+				sourceLines.remove(i - 1);
 			}
 		}
 

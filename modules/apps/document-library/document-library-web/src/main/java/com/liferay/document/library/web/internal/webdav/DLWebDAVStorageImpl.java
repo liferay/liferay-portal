@@ -1069,9 +1069,11 @@ public class DLWebDAVStorageImpl extends BaseWebDAVStorageImpl {
 
 			Folder folder = _dlAppService.getFolder(groupId, folderId, name);
 
-			if (groupId == folder.getRepositoryId()) {
-				folderId = folder.getFolderId();
+			if (groupId != folder.getRepositoryId()) {
+				continue;
 			}
+
+			folderId = folder.getFolderId();
 		}
 
 		return folderId;

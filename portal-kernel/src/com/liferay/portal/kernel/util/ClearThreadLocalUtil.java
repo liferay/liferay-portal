@@ -100,21 +100,23 @@ public class ClearThreadLocalUtil {
 				}
 			}
 
-			if (remove) {
-				if (key != null) {
-					if (_log.isDebugEnabled()) {
-						Class<?> keyClass = key.getClass();
+			if (!remove) {
+				continue;
+			}
 
-						_log.debug(
-							"Clear a ThreadLocal with key of type " +
-								keyClass.getCanonicalName());
-					}
+			if (key != null) {
+				if (_log.isDebugEnabled()) {
+					Class<?> keyClass = key.getClass();
 
-					_removeMethod.invoke(threadLocalMap, key);
+					_log.debug(
+						"Clear a ThreadLocal with key of type " +
+							keyClass.getCanonicalName());
 				}
-				else {
-					staleEntriesCount++;
-				}
+
+				_removeMethod.invoke(threadLocalMap, key);
+			}
+			else {
+				staleEntriesCount++;
 			}
 		}
 

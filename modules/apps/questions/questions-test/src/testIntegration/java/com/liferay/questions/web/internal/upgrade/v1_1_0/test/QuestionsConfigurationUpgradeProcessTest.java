@@ -72,12 +72,14 @@ public class QuestionsConfigurationUpgradeProcessTest {
 		_originalScopedConfigurationsProperties = new ArrayList<>();
 
 		for (Configuration scopedConfiguration : scopedConfigurations) {
-			if (scopedConfiguration != null) {
-				_originalScopedConfigurationsProperties.add(
-					scopedConfiguration.getProperties());
-
-				scopedConfiguration.delete();
+			if (scopedConfiguration == null) {
+				continue;
 			}
+
+			_originalScopedConfigurationsProperties.add(
+				scopedConfiguration.getProperties());
+
+			scopedConfiguration.delete();
 		}
 	}
 
@@ -179,9 +181,11 @@ public class QuestionsConfigurationUpgradeProcessTest {
 		Configuration[] configurations = _getScopedConfigurations();
 
 		for (Configuration configuration : configurations) {
-			if (configuration != null) {
-				configuration.delete();
+			if (configuration == null) {
+				continue;
 			}
+
+			configuration.delete();
 		}
 	}
 

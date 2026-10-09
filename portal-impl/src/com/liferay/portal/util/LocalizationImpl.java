@@ -80,9 +80,11 @@ public class LocalizationImpl implements Localization {
 
 			String value = jsonObject.getString(languageId);
 
-			if (Validator.isNotNull(value)) {
-				map.put(locale, value);
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			map.put(locale, value);
 		}
 
 		return map;
@@ -548,9 +550,11 @@ public class LocalizationImpl implements Localization {
 
 			String value = getLocalization(xml, languageId, useDefault);
 
-			if (Validator.isNotNull(value)) {
-				map.put(locale, value);
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			map.put(locale, value);
 		}
 
 		return map;
@@ -591,9 +595,11 @@ public class LocalizationImpl implements Localization {
 			String value = _getLocalization(
 				bundleName, locale, classLoader, key, null);
 
-			if (Validator.isNotNull(value) && !value.equals(defaultValue)) {
-				map.put(locale, value);
+			if (Validator.isNull(value) || value.equals(defaultValue)) {
+				continue;
 			}
+
+			map.put(locale, value);
 		}
 
 		return map;
@@ -659,9 +665,11 @@ public class LocalizationImpl implements Localization {
 				portletRequest, prefixedLocalizedKey,
 				portletPreferences.getValue(localizedKey, null));
 
-			if (value != null) {
-				xml = updateLocalization(xml, parameter, value, languageId);
+			if (value == null) {
+				continue;
 			}
+
+			xml = updateLocalization(xml, parameter, value, languageId);
 		}
 
 		if (getLocalization(xml, defaultLanguageId, true, null) == null) {
@@ -835,16 +843,18 @@ public class LocalizationImpl implements Localization {
 			for (Locale locale : availableLocales) {
 				String value = localizedValuesMap.get(locale);
 
-				if (value != null) {
-					xmlStreamWriter.writeStartElement(key);
-
-					xmlStreamWriter.writeAttribute(
-						"language-id", locale.toString());
-
-					xmlStreamWriter.writeCharacters(value);
-
-					xmlStreamWriter.writeEndElement();
+				if (value == null) {
+					continue;
 				}
+
+				xmlStreamWriter.writeStartElement(key);
+
+				xmlStreamWriter.writeAttribute(
+					"language-id", locale.toString());
+
+				xmlStreamWriter.writeCharacters(value);
+
+				xmlStreamWriter.writeEndElement();
 			}
 
 			xmlStreamWriter.writeEndElement();
@@ -894,10 +904,12 @@ public class LocalizationImpl implements Localization {
 			sb.append(defaultLanguageId);
 
 			for (String languageId : map.keySet()) {
-				if (!defaultLanguageId.equals(languageId)) {
-					sb.append(StringPool.COMMA);
-					sb.append(languageId);
+				if (defaultLanguageId.equals(languageId)) {
+					continue;
 				}
+
+				sb.append(StringPool.COMMA);
+				sb.append(languageId);
 			}
 
 			xmlStreamWriter.writeAttribute(_AVAILABLE_LOCALES, sb.toString());
@@ -956,11 +968,13 @@ public class LocalizationImpl implements Localization {
 		for (Locale availableLocale :
 				LanguageUtil.getAvailableLocales(groupId)) {
 
-			if (!localizationMap.containsKey(availableLocale) ||
-				Validator.isNull(localizationMap.get(availableLocale))) {
+			if (localizationMap.containsKey(availableLocale) &&
+				Validator.isNotNull(localizationMap.get(availableLocale))) {
 
-				localizationMap.put(availableLocale, defaultValue);
+				continue;
 			}
+
+			localizationMap.put(availableLocale, defaultValue);
 		}
 
 		return localizationMap;
@@ -1147,11 +1161,13 @@ public class LocalizationImpl implements Localization {
 				Locale locale = entry.getKey();
 				String value = entry.getValue();
 
-				if (availableLocales.contains(locale) &&
-					Validator.isNotNull(value)) {
+				if (!availableLocales.contains(locale) ||
+					Validator.isNull(value)) {
 
-					map.put(LocaleUtil.toLanguageId(locale), value);
+					continue;
 				}
+
+				map.put(LocaleUtil.toLanguageId(locale), value);
 			}
 
 			if (map.isEmpty()) {

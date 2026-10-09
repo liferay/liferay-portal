@@ -1567,13 +1567,15 @@ public class JournalArticleLocalServiceImpl
 				serviceContext.setIndexingEnabled(false);
 
 				for (JournalArticle article : articles) {
-					if (!article.isExpired()) {
-						journalArticleLocalService.expireArticle(
-							userId, groupId, article.getArticleId(),
-							article.getVersion(), articleURL, serviceContext);
-
-						expired = true;
+					if (article.isExpired()) {
+						continue;
 					}
+
+					journalArticleLocalService.expireArticle(
+						userId, groupId, article.getArticleId(),
+						article.getVersion(), articleURL, serviceContext);
+
+					expired = true;
 				}
 			}
 			finally {
@@ -2276,10 +2278,12 @@ public class JournalArticleLocalServiceImpl
 			Locale locale = LocaleUtil.fromLanguageId(
 				journalArticleLocalization.getLanguageId(), true, false);
 
-			if (locale != null) {
-				journalArticleLocalizationDescriptionMap.put(
-					locale, journalArticleLocalization.getDescription());
+			if (locale == null) {
+				continue;
 			}
+
+			journalArticleLocalizationDescriptionMap.put(
+				locale, journalArticleLocalization.getDescription());
 		}
 
 		return journalArticleLocalizationDescriptionMap;
@@ -2579,10 +2583,12 @@ public class JournalArticleLocalServiceImpl
 			Locale locale = LocaleUtil.fromLanguageId(
 				journalArticleLocalization.getLanguageId(), true, false);
 
-			if (locale != null) {
-				journalArticleLocalizationTitleMap.put(
-					locale, journalArticleLocalization.getTitle());
+			if (locale == null) {
+				continue;
 			}
+
+			journalArticleLocalizationTitleMap.put(
+				locale, journalArticleLocalization.getTitle());
 		}
 
 		return journalArticleLocalizationTitleMap;
@@ -4197,9 +4203,11 @@ public class JournalArticleLocalServiceImpl
 
 			versionArticle = journalArticlePersistence.update(versionArticle);
 
-			if (article.equals(versionArticle)) {
-				article = versionArticle;
+			if (!article.equals(versionArticle)) {
+				continue;
 			}
+
+			article = versionArticle;
 		}
 
 		articleResource.setArticleId(trashArticleId);
@@ -4396,9 +4404,11 @@ public class JournalArticleLocalServiceImpl
 
 			articleVersion = journalArticlePersistence.update(articleVersion);
 
-			if (article.equals(articleVersion)) {
-				article = articleVersion;
+			if (!article.equals(articleVersion)) {
+				continue;
 			}
+
+			article = articleVersion;
 		}
 
 		article.setArticleId(trashArticleId);
@@ -7083,9 +7093,11 @@ public class JournalArticleLocalServiceImpl
 			curArticle = journalArticleLocalService.updateJournalArticle(
 				curArticle);
 
-			if (article.equals(curArticle)) {
-				article = curArticle;
+			if (!article.equals(curArticle)) {
+				continue;
 			}
+
+			article = curArticle;
 		}
 
 		return article;
@@ -7269,21 +7281,22 @@ public class JournalArticleLocalServiceImpl
 			article.getResourcePrimKey(), urlTitleMap, serviceContext);
 
 		for (Map.Entry<String, String> entry : urlTitleMap.entrySet()) {
-			if (Validator.isNull(entry.getValue())) {
-				for (FriendlyURLEntry friendlyURLEntry : friendlyURLEntries) {
-					try {
-						friendlyURLEntryLocalService.
-							deleteFriendlyURLLocalizationEntry(
-								friendlyURLEntry.getFriendlyURLEntryId(),
-								entry.getKey());
-					}
-					catch (NoSuchFriendlyURLEntryLocalizationException
-								noSuchFriendlyURLEntryLocalizationException) {
+			if (Validator.isNotNull(entry.getValue())) {
+				continue;
+			}
 
-						if (_log.isDebugEnabled()) {
-							_log.debug(
-								noSuchFriendlyURLEntryLocalizationException);
-						}
+			for (FriendlyURLEntry friendlyURLEntry : friendlyURLEntries) {
+				try {
+					friendlyURLEntryLocalService.
+						deleteFriendlyURLLocalizationEntry(
+							friendlyURLEntry.getFriendlyURLEntryId(),
+							entry.getKey());
+				}
+				catch (NoSuchFriendlyURLEntryLocalizationException
+							noSuchFriendlyURLEntryLocalizationException) {
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(noSuchFriendlyURLEntryLocalizationException);
 					}
 				}
 			}
@@ -7350,11 +7363,13 @@ public class JournalArticleLocalServiceImpl
 		for (JournalArticle article : articles) {
 			String curArticleUrlTitle = article.getUrlTitle();
 
-			if (!curArticleUrlTitle.equals(urlTitle)) {
-				article.setUrlTitle(urlTitle);
-
-				journalArticlePersistence.update(article);
+			if (curArticleUrlTitle.equals(urlTitle)) {
+				continue;
 			}
+
+			article.setUrlTitle(urlTitle);
+
+			journalArticlePersistence.update(article);
 		}
 	}
 
@@ -8425,18 +8440,18 @@ public class JournalArticleLocalServiceImpl
 			String languageId = LocaleUtil.toLanguageId(entry.getKey());
 			String value = entry.getValue();
 
-			if (!urlTitleMap.containsKey(languageId) &&
-				Validator.isNotNull(value)) {
+			if (urlTitleMap.containsKey(languageId) ||
+				Validator.isNull(value)) {
 
-				String urlTitle =
-					friendlyURLEntryLocalService.getUniqueUrlTitle(
-						groupId,
-						_classNameLocalService.getClassNameId(
-							JournalArticle.class),
-						resourcePrimKey, value);
-
-				urlTitleMap.put(languageId, urlTitle);
+				continue;
 			}
+
+			String urlTitle = friendlyURLEntryLocalService.getUniqueUrlTitle(
+				groupId,
+				_classNameLocalService.getClassNameId(JournalArticle.class),
+				resourcePrimKey, value);
+
+			urlTitleMap.put(languageId, urlTitle);
 		}
 
 		return urlTitleMap;
@@ -8551,12 +8566,14 @@ public class JournalArticleLocalServiceImpl
 				value.removeLocale(locale);
 			}
 
-			if (ListUtil.isNotEmpty(
+			if (ListUtil.isEmpty(
 					ddmFormFieldValue.getNestedDDMFormFieldValues())) {
 
-				_removeDDMFormFieldValues(
-					ddmFormFieldValue.getNestedDDMFormFieldValues(), locale);
+				continue;
 			}
+
+			_removeDDMFormFieldValues(
+				ddmFormFieldValue.getNestedDDMFormFieldValues(), locale);
 		}
 	}
 
@@ -8729,23 +8746,27 @@ public class JournalArticleLocalServiceImpl
 
 			DDMFormField ddmFormField = ddmFormFieldsMap.get(entry.getKey());
 
-			if (ddmFormField != null) {
-				List<DDMFormFieldValue> ddmFormFieldValues = entry.getValue();
-
-				DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
-
-				LocalizedValue localizedValue =
-					(LocalizedValue)ddmFormFieldValue.getValue();
-
-				if (!_equals(
-						ddmFormField.getPredefinedValue(), localizedValue,
-						ddmFormField.getType())) {
-
-					ddmFormField.setPredefinedValue(localizedValue);
-
-					update = true;
-				}
+			if (ddmFormField == null) {
+				continue;
 			}
+
+			List<DDMFormFieldValue> ddmFormFieldValues = entry.getValue();
+
+			DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+
+			LocalizedValue localizedValue =
+				(LocalizedValue)ddmFormFieldValue.getValue();
+
+			if (_equals(
+					ddmFormField.getPredefinedValue(), localizedValue,
+					ddmFormField.getType())) {
+
+				continue;
+			}
+
+			ddmFormField.setPredefinedValue(localizedValue);
+
+			update = true;
 		}
 
 		if (update) {

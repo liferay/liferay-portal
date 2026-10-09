@@ -58,11 +58,13 @@ public class ConstantNameCheck extends BaseCheck {
 			_CAMEL_CASE_TYPE_NAMES_KEY);
 
 		for (String camelCaseTypeName : camelCaseTypeNames) {
-			if (typeName.matches(camelCaseTypeName) ||
-				isCollection(detailAST.findFirstToken(TokenTypes.TYPE))) {
+			if (!typeName.matches(camelCaseTypeName) &&
+				!isCollection(detailAST.findFirstToken(TokenTypes.TYPE))) {
 
-				regex = _CAMEL_CASE_REGEX;
+				continue;
 			}
+
+			regex = _CAMEL_CASE_REGEX;
 		}
 
 		if (regex == null) {

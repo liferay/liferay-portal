@@ -337,12 +337,14 @@ public class SitemapManagerImpl implements SitemapManager {
 			Date nextFireDate = _schedulerEngineHelper.getNextFireDate(
 				schedulerResponse);
 
-			if ((nextFireDate != null) &&
-				((nextRegenerateSitemapDate == null) ||
-				 nextFireDate.before(nextRegenerateSitemapDate))) {
+			if ((nextFireDate == null) ||
+				((nextRegenerateSitemapDate != null) &&
+				 !nextFireDate.before(nextRegenerateSitemapDate))) {
 
-				nextRegenerateSitemapDate = nextFireDate;
+				continue;
 			}
+
+			nextRegenerateSitemapDate = nextFireDate;
 		}
 
 		return nextRegenerateSitemapDate;

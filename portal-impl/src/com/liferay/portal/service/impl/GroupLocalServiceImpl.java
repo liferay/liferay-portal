@@ -1584,9 +1584,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			List<String> keys = new ArrayList<>();
 
 			for (String key : typeSettingsUnicodeProperties.keySet()) {
-				if (key.startsWith(StagingConstants.STAGED_PORTLET)) {
-					keys.add(key);
+				if (!key.startsWith(StagingConstants.STAGED_PORTLET)) {
+					continue;
 				}
+
+				keys.add(key);
 			}
 
 			for (String key : keys) {
@@ -2590,12 +2592,14 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		for (Organization organization : userOrgs) {
 			userOrgsGroups.add(0, organization.getGroup());
 
-			if (!PropsValues.ORGANIZATIONS_MEMBERSHIP_STRICT) {
-				for (Organization ancestorOrganization :
-						organization.getAncestors()) {
+			if (PropsValues.ORGANIZATIONS_MEMBERSHIP_STRICT) {
+				continue;
+			}
 
-					userOrgsGroups.add(0, ancestorOrganization.getGroup());
-				}
+			for (Organization ancestorOrganization :
+					organization.getAncestors()) {
+
+				userOrgsGroups.add(0, ancestorOrganization.getGroup());
 			}
 		}
 
@@ -2644,9 +2648,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		List<Group> userSiteGroups = new ArrayList<>(userGroups.size());
 
 		for (Group group : userGroups) {
-			if (group.isSite()) {
-				userSiteGroups.add(group);
+			if (!group.isSite()) {
+				continue;
 			}
+
+			userSiteGroups.add(group);
 		}
 
 		userSiteGroups.sort(new GroupNameComparator(true));
@@ -2673,11 +2679,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			String roleName = role.getName();
 
-			if (roleName.equals(RoleConstants.SITE_ADMINISTRATOR) ||
-				roleName.equals(RoleConstants.SITE_OWNER)) {
+			if (!roleName.equals(RoleConstants.SITE_ADMINISTRATOR) &&
+				!roleName.equals(RoleConstants.SITE_OWNER)) {
 
-				siteGroups.add(userGroupRole.getGroup());
+				continue;
 			}
+
+			siteGroups.add(userGroupRole.getGroup());
 		}
 
 		siteGroups.addAll(getUserSitesGroups(userId));
@@ -4689,9 +4697,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				continue;
 			}
 
-			if ((types != null) && !types.contains(type)) {
-				iterator.remove();
+			if ((types == null) || types.contains(type)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		// Join by role permissions
@@ -4716,15 +4726,18 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				for (ResourcePermission resourcePermission :
 						resourcePermissions) {
 
-					if (resourcePermission.hasAction(resourceAction)) {
-						Group group = groupPersistence.fetchByPrimaryKey(
-							GetterUtil.getLong(
-								resourcePermission.getPrimKey()));
-
-						if (group != null) {
-							rolePermissionsGroups.add(group);
-						}
+					if (!resourcePermission.hasAction(resourceAction)) {
+						continue;
 					}
+
+					Group group = groupPersistence.fetchByPrimaryKey(
+						GetterUtil.getLong(resourcePermission.getPrimKey()));
+
+					if (group == null) {
+						continue;
+					}
+
+					rolePermissionsGroups.add(group);
 				}
 
 				groups.retainAll(rolePermissionsGroups);
@@ -4865,11 +4878,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			PortletDataHandler portletDataHandler =
 				portlet.getPortletDataHandlerInstance();
 
-			if ((portletDataHandler != null) &&
-				!portletDataHandler.isDataPortalLevel()) {
+			if ((portletDataHandler == null) ||
+				portletDataHandler.isDataPortalLevel()) {
 
-				portletDataHandlers.add(portletDataHandler);
+				continue;
 			}
+
+			portletDataHandlers.add(portletDataHandler);
 		}
 
 		return portletDataHandlers;
@@ -5789,9 +5804,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
 			String value = entry.getValue();
 
-			if (Validator.isNotNull(value)) {
-				normalizedNameMap.put(entry.getKey(), StringUtil.trim(value));
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			normalizedNameMap.put(entry.getKey(), StringUtil.trim(value));
 		}
 
 		return normalizedNameMap;

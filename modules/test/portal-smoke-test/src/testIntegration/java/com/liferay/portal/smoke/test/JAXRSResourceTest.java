@@ -50,14 +50,15 @@ public class JAXRSResourceTest {
 		Class<?> superClass = serviceClass.getSuperclass();
 
 		for (Class<?> interfaceClass : serviceClass.getInterfaces()) {
-			if (interfaceClass.isAssignableFrom(superClass)) {
-				sb.append(serviceClass.getName());
-				sb.append(" should not directly implement interface ");
-				sb.append(interfaceClass.getName());
-				sb.append(
-					" because it is already implemented by the super class ");
-				sb.append(superClass.getName());
+			if (!interfaceClass.isAssignableFrom(superClass)) {
+				continue;
 			}
+
+			sb.append(serviceClass.getName());
+			sb.append(" should not directly implement interface ");
+			sb.append(interfaceClass.getName());
+			sb.append(" because it is already implemented by the super class ");
+			sb.append(superClass.getName());
 		}
 	}
 

@@ -318,12 +318,14 @@ public class DLFileEntryTypeServiceImpl extends DLFileEntryTypeServiceBaseImpl {
 
 			DLFileEntryType fileEntryType = iterator.next();
 
-			if ((fileEntryType.getFileEntryTypeId() > 0) &&
-				!dlFileEntryTypeModelResourcePermission.contains(
+			if ((fileEntryType.getFileEntryTypeId() <= 0) ||
+				dlFileEntryTypeModelResourcePermission.contains(
 					permissionChecker, fileEntryType, ActionKeys.VIEW)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return fileEntryTypes;

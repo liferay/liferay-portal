@@ -119,10 +119,12 @@ public class LayoutPageTemplatesPortlet extends MVCPortlet {
 						fetchFirstLayoutPageTemplateEntry(
 							layoutPrototype.getLayoutPrototypeId());
 
-				if (layoutPageTemplateEntry == null) {
-					_layoutPageTemplateEntryLocalService.
-						addGlobalLayoutPageTemplateEntry(layoutPrototype);
+				if (layoutPageTemplateEntry != null) {
+					continue;
 				}
+
+				_layoutPageTemplateEntryLocalService.
+					addGlobalLayoutPageTemplateEntry(layoutPrototype);
 			}
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(

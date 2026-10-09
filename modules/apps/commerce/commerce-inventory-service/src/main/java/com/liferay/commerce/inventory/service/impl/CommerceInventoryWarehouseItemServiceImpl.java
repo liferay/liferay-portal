@@ -120,12 +120,14 @@ public class CommerceInventoryWarehouseItemServiceImpl
 					fetchCommerceInventoryWarehouseItem(
 						commerceInventoryWarehouseId, sku, unitOfMeasureKey);
 
-			if (commerceInventoryWarehouseItem != null) {
-				commerceInventoryWarehouseItemLocalService.
-					deleteCommerceInventoryWarehouseItem(
-						commerceInventoryWarehouseItem.
-							getCommerceInventoryWarehouseItemId());
+			if (commerceInventoryWarehouseItem == null) {
+				continue;
 			}
+
+			commerceInventoryWarehouseItemLocalService.
+				deleteCommerceInventoryWarehouseItem(
+					commerceInventoryWarehouseItem.
+						getCommerceInventoryWarehouseItemId());
 		}
 	}
 

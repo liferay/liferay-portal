@@ -182,9 +182,11 @@ public class SchemaUtils {
 			String name = runtimeField.getProp(
 				SchemaConstants.TALEND_COLUMN_DB_COLUMN_NAME);
 
-			if (!designFieldSet.contains(name)) {
-				dynamicFields.add(runtimeField);
+			if (designFieldSet.contains(name)) {
+				continue;
 			}
+
+			dynamicFields.add(runtimeField);
 		}
 
 		dynamicFields = _cloneFieldsAndResetPosition(dynamicFields);

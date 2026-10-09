@@ -355,16 +355,20 @@ public class WatchTask extends DefaultTask {
 		for (FileChange fileChange : fileChanges) {
 			FileType fileType = fileChange.getFileType();
 
-			if (fileType == FileType.FILE) {
-				ChangeType changeType = fileChange.getChangeType();
-
-				if ((changeType == ChangeType.ADDED) ||
-					(changeType == ChangeType.MODIFIED) ||
-					(changeType == ChangeType.REMOVED)) {
-
-					modifiedFiles.add(fileChange.getFile());
-				}
+			if (fileType != FileType.FILE) {
+				continue;
 			}
+
+			ChangeType changeType = fileChange.getChangeType();
+
+			if ((changeType != ChangeType.ADDED) &&
+				(changeType != ChangeType.MODIFIED) &&
+				(changeType != ChangeType.REMOVED)) {
+
+				continue;
+			}
+
+			modifiedFiles.add(fileChange.getFile());
 		}
 
 		return modifiedFiles;
@@ -476,14 +480,18 @@ public class WatchTask extends DefaultTask {
 			Set<File> files = fileCollection.getFiles();
 
 			for (File file : files) {
-				if (file.exists()) {
-					long fragmentBundleId = _installBundle(
-						file, gogoShellClient, false);
-
-					if (fragmentBundleId > 0) {
-						installedFragment = true;
-					}
+				if (!file.exists()) {
+					continue;
 				}
+
+				long fragmentBundleId = _installBundle(
+					file, gogoShellClient, false);
+
+				if (fragmentBundleId <= 0) {
+					continue;
+				}
+
+				installedFragment = true;
 			}
 
 			if (_isFragmentModule()) {
@@ -562,9 +570,11 @@ public class WatchTask extends DefaultTask {
 
 			String key = String.valueOf(entry.getKey());
 
-			if (_ignoredManifestKeys.contains(key)) {
-				iterator.remove();
+			if (!_ignoredManifestKeys.contains(key)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (differences.isEmpty()) {

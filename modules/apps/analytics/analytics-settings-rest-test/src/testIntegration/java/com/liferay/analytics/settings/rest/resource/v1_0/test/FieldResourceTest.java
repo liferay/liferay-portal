@@ -148,9 +148,11 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					int selectedCount = 0;
 
 					for (Field field : fieldsAccountsPage.getItems()) {
-						if (field.getSelected()) {
-							selectedCount += 1;
+						if (!field.getSelected()) {
+							continue;
 						}
+
+						selectedCount += 1;
 					}
 
 					Assert.assertEquals(
@@ -180,9 +182,11 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					int selectedCount = 0;
 
 					for (Field field : fieldsAccountsPage.getItems()) {
-						if (field.getSelected()) {
-							selectedCount += 1;
+						if (!field.getSelected()) {
+							continue;
 						}
+
+						selectedCount += 1;
 					}
 
 					Assert.assertEquals(
@@ -211,9 +215,11 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					int selectedCount = 0;
 
 					for (Field field : fieldsAccountsPage.getItems()) {
-						if (field.getSelected()) {
-							selectedCount += 1;
+						if (!field.getSelected()) {
+							continue;
 						}
+
+						selectedCount += 1;
 					}
 
 					Assert.assertEquals(
@@ -249,9 +255,11 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					int selectedCount = 0;
 
 					for (Field field : fieldsPeoplePage.getItems()) {
-						if (field.getSelected()) {
-							selectedCount += 1;
+						if (!field.getSelected()) {
+							continue;
 						}
+
+						selectedCount += 1;
 					}
 
 					Assert.assertEquals(
@@ -286,9 +294,11 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					int selectedCount = 0;
 
 					for (Field field : fieldsPeoplePage.getItems()) {
-						if (field.getSelected()) {
-							selectedCount += 1;
+						if (!field.getSelected()) {
+							continue;
 						}
+
+						selectedCount += 1;
 					}
 
 					Assert.assertEquals(
@@ -321,9 +331,11 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					int selectedCount = 0;
 
 					for (Field field : fieldsPeoplePage.getItems()) {
-						if (field.getSelected()) {
-							selectedCount += 1;
+						if (!field.getSelected()) {
+							continue;
 						}
+
+						selectedCount += 1;
 					}
 
 					Assert.assertEquals(

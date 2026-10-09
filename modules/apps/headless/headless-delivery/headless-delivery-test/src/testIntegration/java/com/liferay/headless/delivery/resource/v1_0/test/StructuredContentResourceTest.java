@@ -545,12 +545,14 @@ public class StructuredContentResourceTest
 		for (RenderedContent curRenderedContent :
 				structuredContent.getRenderedContents()) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					curRenderedContent.getContentTemplateId(),
 					layoutPageTemplateEntry.getLayoutPageTemplateEntryKey())) {
 
-				renderedContent = curRenderedContent;
+				continue;
 			}
+
+			renderedContent = curRenderedContent;
 		}
 
 		html = renderedContent.getRenderedContentValue();
@@ -3090,14 +3092,16 @@ public class StructuredContentResourceTest
 			for (ContentField nestedContentField :
 					contentField.getNestedContentFields()) {
 
-				if (Objects.equals(
+				if (!Objects.equals(
 						nestedContentField.getName(), "Text97681688")) {
 
-					ContentFieldValue contentFieldValue =
-						nestedContentField.getContentFieldValue();
-
-					patchedData = contentFieldValue.getData();
+					continue;
 				}
+
+				ContentFieldValue contentFieldValue =
+					nestedContentField.getContentFieldValue();
+
+				patchedData = contentFieldValue.getData();
 			}
 		}
 

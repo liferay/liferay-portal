@@ -317,11 +317,13 @@ public class CalendarServiceImpl extends CalendarServiceBaseImpl {
 		while (iterator.hasNext()) {
 			Calendar calendar = iterator.next();
 
-			if (!_calendarModelResourcePermission.contains(
+			if (_calendarModelResourcePermission.contains(
 					getPermissionChecker(), calendar, actionId)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return calendars;

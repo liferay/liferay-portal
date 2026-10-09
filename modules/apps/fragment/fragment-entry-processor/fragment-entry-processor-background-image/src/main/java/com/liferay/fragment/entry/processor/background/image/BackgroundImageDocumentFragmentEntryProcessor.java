@@ -179,16 +179,18 @@ public class BackgroundImageDocumentFragmentEntryProcessor
 				element.removeAttr("data-lfr-background-image-id");
 			}
 
-			if (analyticsEnabled &&
-				fragmentEntryProcessorContext.isViewMode()) {
+			if (!analyticsEnabled ||
+				!fragmentEntryProcessorContext.isViewMode()) {
 
-				_setAnalyticsAttributes(
-					element,
-					AnalyticsAttributesUtil.getAnalyticsAttributes(
-						editableValueJSONObject, fragmentEntryProcessorContext,
-						_fragmentEntryProcessorHelper, infoDisplaysFieldValues,
-						_infoItemServiceRegistry));
+				continue;
 			}
+
+			_setAnalyticsAttributes(
+				element,
+				AnalyticsAttributesUtil.getAnalyticsAttributes(
+					editableValueJSONObject, fragmentEntryProcessorContext,
+					_fragmentEntryProcessorHelper, infoDisplaysFieldValues,
+					_infoItemServiceRegistry));
 		}
 	}
 

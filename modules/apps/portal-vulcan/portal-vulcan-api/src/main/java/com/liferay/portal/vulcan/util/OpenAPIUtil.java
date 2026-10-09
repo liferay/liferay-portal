@@ -66,9 +66,11 @@ public class OpenAPIUtil {
 
 			String operationScope = _getOperationScope(post);
 
-			if (Validator.isNotNull(operationScope)) {
-				scopes.add(operationScope);
+			if (Validator.isNull(operationScope)) {
+				continue;
 			}
+
+			scopes.add(operationScope);
 		}
 
 		return scopes;
@@ -133,9 +135,11 @@ public class OpenAPIUtil {
 
 			String operationScope = _getOperationScope(get);
 
-			if (Validator.isNotNull(operationScope)) {
-				scopes.add(operationScope);
+			if (Validator.isNull(operationScope)) {
+				continue;
 			}
+
+			scopes.add(operationScope);
 		}
 
 		return scopes;

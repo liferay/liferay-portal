@@ -88,14 +88,16 @@ public class JSONUpgradeLiferayThemePackageJSONCheck extends BaseUpgradeCheck {
 			String latestVersion = devDependenciesLatestVersions.get(
 				packageName);
 
-			if (!currentVersion.equals(latestVersion)) {
-				if (packageName.equals("liferay-theme-tasks")) {
-					devDependenciesJSONObject.put(
-						packageName, StringPool.CARET + latestVersion);
-				}
-				else {
-					devDependenciesJSONObject.put(packageName, latestVersion);
-				}
+			if (currentVersion.equals(latestVersion)) {
+				continue;
+			}
+
+			if (packageName.equals("liferay-theme-tasks")) {
+				devDependenciesJSONObject.put(
+					packageName, StringPool.CARET + latestVersion);
+			}
+			else {
+				devDependenciesJSONObject.put(packageName, latestVersion);
 			}
 		}
 	}

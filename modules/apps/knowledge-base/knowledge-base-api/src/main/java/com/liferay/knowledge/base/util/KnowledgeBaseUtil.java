@@ -438,9 +438,11 @@ public class KnowledgeBaseUtil {
 		for (long resourcePrimKey : resourcePrimKeys) {
 			KBArticle kbArticle = map.get(resourcePrimKey);
 
-			if (kbArticle != null) {
-				kbArticles.add(kbArticle);
+			if (kbArticle == null) {
+				continue;
 			}
+
+			kbArticles.add(kbArticle);
 		}
 
 		return kbArticles;

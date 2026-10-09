@@ -104,16 +104,18 @@ public class EmailAddressObjectFieldBusinessType
 				continue;
 			}
 
-			if (objectFieldSetting.compareName(
-					ObjectFieldSettingConstants.NAME_AUTOCOMPLETE_DOMAINS) ||
-				objectFieldSetting.compareName(
-					ObjectFieldSettingConstants.NAME_BLOCKED_DOMAINS) ||
-				objectFieldSetting.compareName(
+			if (!objectFieldSetting.compareName(
+					ObjectFieldSettingConstants.NAME_AUTOCOMPLETE_DOMAINS) &&
+				!objectFieldSetting.compareName(
+					ObjectFieldSettingConstants.NAME_BLOCKED_DOMAINS) &&
+				!objectFieldSetting.compareName(
 					ObjectFieldSettingConstants.NAME_DEFAULT_VALUE)) {
 
-				objectFieldSetting.setValue(
-					StringUtil.toLowerCase(objectFieldSetting.getValue()));
+				continue;
 			}
+
+			objectFieldSetting.setValue(
+				StringUtil.toLowerCase(objectFieldSetting.getValue()));
 		}
 	}
 

@@ -144,9 +144,11 @@ public class LPKGControllerVerifyTest {
 		for (Bundle bundle : _bundleContext.getBundles()) {
 			String symbolicName = bundle.getSymbolicName();
 
-			if (symbolicName.equals(_SYMBOLIC_NAME.concat("-war"))) {
-				warBundle = bundle;
+			if (!symbolicName.equals(_SYMBOLIC_NAME.concat("-war"))) {
+				continue;
 			}
+
+			warBundle = bundle;
 		}
 
 		Assert.assertEquals(

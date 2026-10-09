@@ -99,9 +99,11 @@ public class BatchEngineBrokerImpl implements BatchEngineBroker {
 			sb.append(StringPool.EQUAL);
 			sb.append(batchPlannerMapping.getInternalFieldName());
 
-			if (iterator.hasNext()) {
-				sb.append(StringPool.COMMA);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA);
 		}
 
 		return sb.toString();

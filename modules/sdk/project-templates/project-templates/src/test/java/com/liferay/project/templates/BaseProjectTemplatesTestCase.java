@@ -257,17 +257,18 @@ public interface BaseProjectTemplatesTestCase {
 
 			String artifactId = node.getNodeValue();
 
-			if (artifactId.equals("com.liferay.css.builder")) {
-				Element configurationElement = XMLTestUtil.getChildElement(
-					pluginElement, "configuration");
-
-				Element newElement = document.createElement(configurationName);
-
-				newElement.appendChild(
-					document.createTextNode(configurationText));
-
-				configurationElement.appendChild(newElement);
+			if (!artifactId.equals("com.liferay.css.builder")) {
+				continue;
 			}
+
+			Element configurationElement = XMLTestUtil.getChildElement(
+				pluginElement, "configuration");
+
+			Element newElement = document.createElement(configurationName);
+
+			newElement.appendChild(document.createTextNode(configurationText));
+
+			configurationElement.appendChild(newElement);
 		}
 	}
 
@@ -286,9 +287,11 @@ public interface BaseProjectTemplatesTestCase {
 			for (String line : lines) {
 				FileTestUtil.write(bufferedWriter, line);
 
-				if (line.contains("dependencies {")) {
-					FileTestUtil.write(bufferedWriter, dependencies);
+				if (!line.contains("dependencies {")) {
+					continue;
 				}
+
+				FileTestUtil.write(bufferedWriter, dependencies);
 			}
 		}
 	}

@@ -467,13 +467,15 @@ public class CommerceProductPriceCalculationV2Impl
 				commerceContext.getCommerceCurrency(), secure, unitOfMeasureKey,
 				commerceContext);
 
-			if (commerceMoney.isEmpty() ||
-				BigDecimalUtil.lt(
+			if (!commerceMoney.isEmpty() &&
+				!BigDecimalUtil.lt(
 					commerceMoney.getPrice(),
 					cpInstanceCommerceMoney.getPrice())) {
 
-				commerceMoney = cpInstanceCommerceMoney;
+				continue;
 			}
+
+			commerceMoney = cpInstanceCommerceMoney;
 		}
 
 		return commerceMoney;

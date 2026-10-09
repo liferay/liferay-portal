@@ -76,19 +76,18 @@ public abstract class BaseNotificationSender implements NotificationSender {
 		for (NotificationRecipient notificationRecipient :
 				notificationRecipients) {
 
-			if (notificationRecipient.getUserId() <= 0) {
-				continue;
-			}
-
-			if (UserNotificationManagerUtil.isDeliver(
+			if ((notificationRecipient.getUserId() <= 0) ||
+				!UserNotificationManagerUtil.isDeliver(
 					notificationRecipient.getUserId(),
 					PortletKeys.MY_WORKFLOW_TASK, 0,
 					MyWorkflowTasksConstants.
 						NOTIFICATION_TYPE_MY_WORKFLOW_TASKS,
 					notificationDeliveryType)) {
 
-				newNotificationRecipients.add(notificationRecipient);
+				continue;
 			}
+
+			newNotificationRecipients.add(notificationRecipient);
 		}
 
 		return newNotificationRecipients;

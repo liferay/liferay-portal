@@ -91,9 +91,11 @@ public class MySQLDB extends BaseDB {
 		for (IndexMetadata indexMetadata : indexMetadatas) {
 			String[] columnNames = indexMetadata.getColumnNames();
 
-			if (columnNames.length > 1) {
-				runSQL(connection, indexMetadata.getDropSQL());
+			if (columnNames.length <= 1) {
+				continue;
 			}
+
+			runSQL(connection, indexMetadata.getDropSQL());
 		}
 
 		super.alterTableDropColumn(connection, tableName, columnName);

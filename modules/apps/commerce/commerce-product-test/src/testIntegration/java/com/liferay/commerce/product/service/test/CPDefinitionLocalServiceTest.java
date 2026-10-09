@@ -403,9 +403,11 @@ public class CPDefinitionLocalServiceTest {
 		int approvedCPInstances = 0;
 
 		for (CPInstance cpInstance : cpInstances) {
-			if (cpInstance.isApproved()) {
-				approvedCPInstances++;
+			if (!cpInstance.isApproved()) {
+				continue;
 			}
+
+			approvedCPInstances++;
 		}
 
 		Assert.assertEquals(1, approvedCPInstances);

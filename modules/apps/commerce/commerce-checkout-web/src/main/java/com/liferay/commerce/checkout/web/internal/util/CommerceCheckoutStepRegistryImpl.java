@@ -126,18 +126,20 @@ public class CommerceCheckoutStepRegistryImpl
 			 commerceCheckoutStepIndex < commerceCheckoutSteps.size();
 			 commerceCheckoutStepIndex++) {
 
-			if ((commerceCheckoutStepIndex >= 0) &&
-				(commerceCheckoutStepIndex <
+			if ((commerceCheckoutStepIndex < 0) ||
+				(commerceCheckoutStepIndex >=
 					(commerceCheckoutSteps.size() - 1))) {
 
-				CommerceCheckoutStep commerceCheckoutStep =
-					commerceCheckoutSteps.get(commerceCheckoutStepIndex + 1);
+				continue;
+			}
 
-				if (commerceCheckoutStep.isActive(
-						httpServletRequest, httpServletResponse)) {
+			CommerceCheckoutStep commerceCheckoutStep =
+				commerceCheckoutSteps.get(commerceCheckoutStepIndex + 1);
 
-					return commerceCheckoutStep;
-				}
+			if (commerceCheckoutStep.isActive(
+					httpServletRequest, httpServletResponse)) {
+
+				return commerceCheckoutStep;
 			}
 		}
 

@@ -121,32 +121,33 @@ public class DDMFormParagraphFieldsUpgradeProcess extends UpgradeProcess {
 
 			String type = jsonObject.getString("type");
 
-			if (type.equals("paragraph") &&
-				!_isValueLocalizable(
+			if (!type.equals("paragraph") ||
+				_isValueLocalizable(
 					jsonObject, availableLanguageIdsJSONArray)) {
 
-				String originalValue = jsonObject.getString("text");
-
-				Map<String, String> localizedValue = new HashMap<>();
-
-				for (int j = 0; j < availableLanguageIdsJSONArray.length();
-					 j++) {
-
-					localizedValue.put(
-						availableLanguageIdsJSONArray.getString(j),
-						originalValue);
-				}
-
-				jsonObject.put("text", localizedValue);
-
-				JSONArray nestedFieldsJSONArray = jsonObject.getJSONArray(
-					"nestedFields");
-
-				if (nestedFieldsJSONArray != null) {
-					_makeFieldsLocalizable(
-						nestedFieldsJSONArray, availableLanguageIdsJSONArray);
-				}
+				continue;
 			}
+
+			String originalValue = jsonObject.getString("text");
+
+			Map<String, String> localizedValue = new HashMap<>();
+
+			for (int j = 0; j < availableLanguageIdsJSONArray.length(); j++) {
+				localizedValue.put(
+					availableLanguageIdsJSONArray.getString(j), originalValue);
+			}
+
+			jsonObject.put("text", localizedValue);
+
+			JSONArray nestedFieldsJSONArray = jsonObject.getJSONArray(
+				"nestedFields");
+
+			if (nestedFieldsJSONArray == null) {
+				continue;
+			}
+
+			_makeFieldsLocalizable(
+				nestedFieldsJSONArray, availableLanguageIdsJSONArray);
 		}
 	}
 

@@ -507,11 +507,13 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 		for (WorkflowTransition workflowTransition :
 				workflowDefinition.getWorkflowTransitions()) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					workflowTransition.getSourceNodeName(), "convert")) {
 
-				targetNodeNames.add(workflowTransition.getTargetNodeName());
+				continue;
 			}
+
+			targetNodeNames.add(workflowTransition.getTargetNodeName());
 		}
 
 		Assert.assertEquals(

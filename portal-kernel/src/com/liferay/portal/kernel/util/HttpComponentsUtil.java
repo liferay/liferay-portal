@@ -176,23 +176,21 @@ public class HttpComponentsUtil {
 
 		if (leading) {
 			for (int i = 0; i < path.length(); i++) {
-				if (path.charAt(i) == CharPool.SLASH) {
-					leadingSlashCount++;
-				}
-				else {
+				if (path.charAt(i) != CharPool.SLASH) {
 					break;
 				}
+
+				leadingSlashCount++;
 			}
 		}
 
 		if (trailing) {
 			for (int i = path.length() - 1; i >= 0; i--) {
-				if (path.charAt(i) == CharPool.SLASH) {
-					trailingSlashCount++;
-				}
-				else {
+				if (path.charAt(i) != CharPool.SLASH) {
 					break;
 				}
+
+				trailingSlashCount++;
 			}
 		}
 
@@ -834,24 +832,28 @@ public class HttpComponentsUtil {
 			url.substring(pos + 1), CharPool.AMPERSAND);
 
 		for (String parameter : parameters) {
-			if (parameter.length() > 0) {
-				String[] kvp = StringUtil.split(parameter, CharPool.EQUAL);
-
-				String key = kvp[0];
-
-				String value = StringPool.BLANK;
-
-				if (kvp.length > 1) {
-					value = kvp[1];
-				}
-
-				if (!key.equals(name)) {
-					sb.append(key);
-					sb.append(StringPool.EQUAL);
-					sb.append(value);
-					sb.append(StringPool.AMPERSAND);
-				}
+			if (parameter.length() <= 0) {
+				continue;
 			}
+
+			String[] kvp = StringUtil.split(parameter, CharPool.EQUAL);
+
+			String key = kvp[0];
+
+			String value = StringPool.BLANK;
+
+			if (kvp.length > 1) {
+				value = kvp[1];
+			}
+
+			if (key.equals(name)) {
+				continue;
+			}
+
+			sb.append(key);
+			sb.append(StringPool.EQUAL);
+			sb.append(value);
+			sb.append(StringPool.AMPERSAND);
 		}
 
 		url = StringUtil.replace(
@@ -898,10 +900,12 @@ public class HttpComponentsUtil {
 				continue;
 			}
 
-			if (pos != 0) {
-				sb.append(StringPool.SLASH);
-				sb.append(uriPart.substring(0, pos));
+			if (pos == 0) {
+				continue;
 			}
+
+			sb.append(StringPool.SLASH);
+			sb.append(uriPart.substring(0, pos));
 		}
 
 		if (sb.length() == 0) {
@@ -941,13 +945,15 @@ public class HttpComponentsUtil {
 		for (int i = 0; i < header.length(); i++) {
 			char c = header.charAt(i);
 
-			if (((c <= 31) && (c != 9)) || (c == 127) || (c > 255)) {
-				if (sb == null) {
-					sb = new StringBuilder(header);
-				}
-
-				sb.setCharAt(i, CharPool.SPACE);
+			if (((c > 31) || (c == 9)) && (c != 127) && (c <= 255)) {
+				continue;
 			}
+
+			if (sb == null) {
+				sb = new StringBuilder(header);
+			}
+
+			sb.setCharAt(i, CharPool.SPACE);
 		}
 
 		if (sb != null) {

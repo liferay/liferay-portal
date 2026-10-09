@@ -228,10 +228,12 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 				}
 
 				for (Folder folder : folders) {
-					if (!_isExternalRepositoryFolder(folder)) {
-						size += _getFolderSize(
-							folder.getRepositoryId(), folder.getFolderId());
+					if (_isExternalRepositoryFolder(folder)) {
+						continue;
 					}
+
+					size += _getFolderSize(
+						folder.getRepositoryId(), folder.getFolderId());
 				}
 
 				_dlValidator.validateDownloadSize(groupId, size);
@@ -257,12 +259,14 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 			}
 
 			for (Folder folder : folders) {
-				if (!_isExternalRepositoryFolder(folder)) {
-					_zipFolder(
-						folder.getRepositoryId(), folder.getFolderId(),
-						folder.getName() + StringPool.SLASH, permissionChecker,
-						zipOutputStream);
+				if (_isExternalRepositoryFolder(folder)) {
+					continue;
 				}
+
+				_zipFolder(
+					folder.getRepositoryId(), folder.getFolderId(),
+					folder.getName() + StringPool.SLASH, permissionChecker,
+					zipOutputStream);
 			}
 
 			zipOutputStream.close();

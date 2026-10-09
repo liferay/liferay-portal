@@ -175,9 +175,11 @@ public class ProcessConfig implements Serializable {
 		for (int i = 0; i < pathHolders.length; i++) {
 			sb.append(pathHolders[i]);
 
-			if ((pathHolders.length - 1) != i) {
-				sb.append(File.pathSeparator);
+			if ((pathHolders.length - 1) == i) {
+				continue;
 			}
+
+			sb.append(File.pathSeparator);
 		}
 
 		return sb.toString();

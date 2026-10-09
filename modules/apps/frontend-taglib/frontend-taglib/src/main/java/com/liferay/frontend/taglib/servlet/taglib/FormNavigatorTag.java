@@ -168,13 +168,15 @@ public class FormNavigatorTag extends IncludeTag {
 				WebKeys.THEME_DISPLAY);
 
 		for (String categoryKey : formNavigatorCategoryProvider.getKeys(_id)) {
-			if (ListUtil.isNotEmpty(
+			if (ListUtil.isEmpty(
 					formNavigatorEntryProvider.getFormNavigatorEntries(
 						_id, categoryKey, themeDisplay.getUser(),
 						_formModelBean))) {
 
-				categoryKeys.add(categoryKey);
+				continue;
 			}
+
+			categoryKeys.add(categoryKey);
 		}
 
 		return ArrayUtil.toStringArray(categoryKeys);

@@ -160,17 +160,19 @@ public class MBMessageModelDocumentContributor
 				Comment comment = commentManager.fetchComment(
 					mbMessage.getMessageId());
 
-				if (comment != null) {
-					try {
-						relatedEntryIndexer.addRelatedEntryFields(
-							document, comment);
-					}
-					catch (Exception exception) {
-						throw new SystemException(exception);
-					}
-
-					document.addKeyword(Field.RELATED_ENTRY, true);
+				if (comment == null) {
+					continue;
 				}
+
+				try {
+					relatedEntryIndexer.addRelatedEntryFields(
+						document, comment);
+				}
+				catch (Exception exception) {
+					throw new SystemException(exception);
+				}
+
+				document.addKeyword(Field.RELATED_ENTRY, true);
 			}
 		}
 	}

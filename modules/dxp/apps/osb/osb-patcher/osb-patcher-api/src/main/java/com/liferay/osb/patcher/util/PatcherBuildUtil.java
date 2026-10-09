@@ -458,15 +458,14 @@ public class PatcherBuildUtil {
 		List<PatcherFix> incompletePatcherFixes = new ArrayList<>();
 
 		for (PatcherFix patcherFix : patcherFixes) {
-			if ((skipPatcherFixId == patcherFix.getPatcherFixId()) &&
-				(patcherFixes.size() > 1)) {
+			if (((skipPatcherFixId == patcherFix.getPatcherFixId()) &&
+				 (patcherFixes.size() > 1)) ||
+				!PatcherFixUtil.isIncomplete(patcherFix)) {
 
 				continue;
 			}
 
-			if (PatcherFixUtil.isIncomplete(patcherFix)) {
-				incompletePatcherFixes.add(patcherFix);
-			}
+			incompletePatcherFixes.add(patcherFix);
 		}
 
 		return incompletePatcherFixes;
@@ -1218,12 +1217,14 @@ public class PatcherBuildUtil {
 			PatcherFixUtil.getPreviousVersionsPatcherFixIds(patcherFix);
 
 		for (long previousVersionPatcherFixId : previousVersionPatcherFixIds) {
-			if (patcherBuildPatcherFixIds.contains(
+			if (!patcherBuildPatcherFixIds.contains(
 					previousVersionPatcherFixId)) {
 
-				PatcherFixLocalServiceUtil.deletePatcherBuildPatcherFix(
-					patcherBuildId, patcherFix.getPatcherFixId());
+				continue;
 			}
+
+			PatcherFixLocalServiceUtil.deletePatcherBuildPatcherFix(
+				patcherBuildId, patcherFix.getPatcherFixId());
 		}
 	}
 
@@ -1817,11 +1818,13 @@ public class PatcherBuildUtil {
 			patcherBuild = PatcherBuildLocalServiceUtil.updateStatus(
 				user.getUserId(), patcherBuild.getPatcherBuildId(), status);
 
-			if (patcherBuild.isChildBuild() ||
-				!PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)) {
+			if (!patcherBuild.isChildBuild() &&
+				PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)) {
 
-				sendToJenkinsBaseModels.add(patcherBuild);
+				continue;
 			}
+
+			sendToJenkinsBaseModels.add(patcherBuild);
 		}
 
 		return sendToJenkinsBaseModels;
@@ -2184,11 +2187,13 @@ public class PatcherBuildUtil {
 			List<String> patcherBuildPatcherFixTickets = PatcherUtil.getTickets(
 				patcherBuildPatcherFix.getName());
 
-			if (patcherFixTickets.containsAll(patcherBuildPatcherFixTickets)) {
-				PatcherBuildLocalServiceUtil.deletePatcherFixPatcherBuild(
-					patcherBuildPatcherFix.getPatcherFixId(),
-					patcherBuild.getPatcherBuildId());
+			if (!patcherFixTickets.containsAll(patcherBuildPatcherFixTickets)) {
+				continue;
 			}
+
+			PatcherBuildLocalServiceUtil.deletePatcherFixPatcherBuild(
+				patcherBuildPatcherFix.getPatcherFixId(),
+				patcherBuild.getPatcherBuildId());
 		}
 	}
 

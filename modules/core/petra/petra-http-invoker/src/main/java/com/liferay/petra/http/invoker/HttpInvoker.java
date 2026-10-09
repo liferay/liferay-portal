@@ -312,14 +312,18 @@ public class HttpInvoker {
 
 				sb.append(value);
 
-				if ((i + 1) < values.length) {
-					sb.append("&");
+				if ((i + 1) >= values.length) {
+					continue;
 				}
-			}
 
-			if (iterator.hasNext()) {
 				sb.append("&");
 			}
+
+			if (!iterator.hasNext()) {
+				continue;
+			}
+
+			sb.append("&");
 		}
 
 		return sb.toString();

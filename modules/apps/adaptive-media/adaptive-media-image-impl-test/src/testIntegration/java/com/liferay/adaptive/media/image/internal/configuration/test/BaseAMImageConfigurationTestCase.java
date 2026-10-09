@@ -40,10 +40,12 @@ public abstract class BaseAMImageConfigurationTestCase {
 			getAMImageConfigurationHelper();
 
 		for (String uuid : _getAMImageConfigurationEntryUUIDs()) {
-			if (!_initialAMImageConfigurationEntryUUIDs.contains(uuid)) {
-				amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
-					TestPropsValues.getCompanyId(), uuid);
+			if (_initialAMImageConfigurationEntryUUIDs.contains(uuid)) {
+				continue;
 			}
+
+			amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
+				TestPropsValues.getCompanyId(), uuid);
 		}
 	}
 

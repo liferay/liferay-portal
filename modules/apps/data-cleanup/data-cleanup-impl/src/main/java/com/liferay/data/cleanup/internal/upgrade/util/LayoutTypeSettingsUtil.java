@@ -98,10 +98,12 @@ public class LayoutTypeSettingsUtil {
 			StringBundler sb = new StringBundler((2 * parts.size()) - 2);
 
 			for (String part : parts) {
-				if (!part.startsWith(portletId)) {
-					sb.append(part);
-					sb.append(StringPool.COMMA);
+				if (part.startsWith(portletId)) {
+					continue;
 				}
+
+				sb.append(part);
+				sb.append(StringPool.COMMA);
 			}
 
 			if (sb.index() == 0) {

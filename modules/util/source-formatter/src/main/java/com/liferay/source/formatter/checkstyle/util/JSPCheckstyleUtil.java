@@ -112,9 +112,11 @@ public class JSPCheckstyleUtil {
 
 			sb.append("\n");
 
-			if (trimmedLine.equals("<%") || trimmedLine.endsWith("<%=")) {
-				javaSource = true;
+			if (!trimmedLine.equals("<%") && !trimmedLine.endsWith("<%=")) {
+				continue;
 			}
+
+			javaSource = true;
 		}
 
 		sb.append("\t}\n");

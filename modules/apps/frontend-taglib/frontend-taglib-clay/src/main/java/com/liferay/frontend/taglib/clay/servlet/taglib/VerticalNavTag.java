@@ -236,9 +236,11 @@ public class VerticalNavTag extends BaseContainerTag {
 				}
 			}
 
-			if (items != null) {
-				_computeDefaultExpandedKeys(defaultExpandedKeys, items);
+			if (items == null) {
+				continue;
 			}
+
+			_computeDefaultExpandedKeys(defaultExpandedKeys, items);
 		}
 	}
 
@@ -259,12 +261,14 @@ public class VerticalNavTag extends BaseContainerTag {
 				return (String)verticalNavItem.get("id");
 			}
 
-			if (items != null) {
-				String activeKey = _getActiveVerticalNavItemKey(items);
+			if (items == null) {
+				continue;
+			}
 
-				if (activeKey != null) {
-					return activeKey;
-				}
+			String activeKey = _getActiveVerticalNavItemKey(items);
+
+			if (activeKey != null) {
+				return activeKey;
 			}
 		}
 

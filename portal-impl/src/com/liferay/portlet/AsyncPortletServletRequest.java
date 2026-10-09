@@ -128,19 +128,20 @@ public class AsyncPortletServletRequest extends HttpServletRequestWrapper {
 			}
 
 			for (String urlPattern : _portalServletURLPatterns) {
-				if (urlPattern.endsWith("/*")) {
-					int length = urlPattern.length() - 2;
+				if (!urlPattern.endsWith("/*")) {
+					continue;
+				}
 
-					if ((pathNoQueryString.length() > length) &&
-						pathNoQueryString.regionMatches(
-							0, urlPattern, 0, length) &&
-						(pathNoQueryString.charAt(length) == CharPool.SLASH)) {
+				int length = urlPattern.length() - 2;
 
-						pathInfo = pathNoQueryString.substring(length);
-						servletPath = urlPattern.substring(0, length);
+				if ((pathNoQueryString.length() > length) &&
+					pathNoQueryString.regionMatches(0, urlPattern, 0, length) &&
+					(pathNoQueryString.charAt(length) == CharPool.SLASH)) {
 
-						break;
-					}
+					pathInfo = pathNoQueryString.substring(length);
+					servletPath = urlPattern.substring(0, length);
+
+					break;
 				}
 			}
 

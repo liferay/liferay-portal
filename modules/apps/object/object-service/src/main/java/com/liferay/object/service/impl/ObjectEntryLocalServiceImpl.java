@@ -820,11 +820,13 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinition.getObjectDefinitionId());
 
 		for (ObjectField objectField : objectFields) {
-			if (ObjectFieldUtil.isReadOnly(
+			if (!ObjectFieldUtil.isReadOnly(
 					_ddmExpressionFactory, objectEntry, objectField, userId)) {
 
-				values.remove(objectField.getName());
+				continue;
 			}
+
+			values.remove(objectField.getName());
 		}
 
 		if (objectDefinition.isEnableObjectEntryDraft()) {
@@ -3096,9 +3098,11 @@ public class ObjectEntryLocalServiceImpl
 				long primaryKey = GetterUtil.getLong(
 					values.get(objectField.getName()));
 
-				if (primaryKey != 0) {
-					primaryKeys.add(primaryKey);
+				if (primaryKey == 0) {
+					continue;
 				}
+
+				primaryKeys.add(primaryKey);
 			}
 
 			if (primaryKeys.isEmpty()) {
@@ -3142,11 +3146,13 @@ public class ObjectEntryLocalServiceImpl
 					String externalReferenceCode = externalReferenceCodes.get(
 						GetterUtil.getLong(values.get(objectField.getName())));
 
-					if (externalReferenceCode != null) {
-						values.put(
-							objectRelationshipERCObjectFieldName,
-							externalReferenceCode);
+					if (externalReferenceCode == null) {
+						continue;
 					}
+
+					values.put(
+						objectRelationshipERCObjectFieldName,
+						externalReferenceCode);
 				}
 
 				continue;
@@ -3159,10 +3165,12 @@ public class ObjectEntryLocalServiceImpl
 					objectField.getObjectDefinitionId()) {
 
 				for (ObjectEntry objectEntry : objectEntries) {
-					if (primaryKeys.remove(objectEntry.getObjectEntryId())) {
-						relatedObjectEntries.put(
-							objectEntry.getObjectEntryId(), objectEntry);
+					if (!primaryKeys.remove(objectEntry.getObjectEntryId())) {
+						continue;
 					}
+
+					relatedObjectEntries.put(
+						objectEntry.getObjectEntryId(), objectEntry);
 				}
 			}
 
@@ -3243,9 +3251,11 @@ public class ObjectEntryLocalServiceImpl
 
 			comments.put(comment.getExternalReferenceCode(), comment);
 
-			if (!comment.isRoot()) {
-				deleteCommentIds.add(comment.getCommentId());
+			if (comment.isRoot()) {
+				continue;
 			}
+
+			deleteCommentIds.add(comment.getCommentId());
 		}
 
 		User user = _userLocalService.getUser(userId);
@@ -3555,12 +3565,14 @@ public class ObjectEntryLocalServiceImpl
 						objectEntryReviewNotificationContributor :
 							_objectEntryReviewNotificationContributors) {
 
-					if (objectEntryReviewNotificationContributor.isApplicable(
+					if (!objectEntryReviewNotificationContributor.isApplicable(
 							objectEntry)) {
 
-						objectEntryReviewNotificationContributor.contribute(
-							objectEntry, payloadJSONObject);
+						continue;
 					}
+
+					objectEntryReviewNotificationContributor.contribute(
+						objectEntry, payloadJSONObject);
 				}
 
 				ObjectDefinition objectDefinition =
@@ -6725,12 +6737,14 @@ public class ObjectEntryLocalServiceImpl
 					_getValues(objectFieldBag, row, selectExpressions));
 			}
 
-			if (dynamicObjectDefinitionLocalizationTable != null) {
-				localizedRowsMap.putAll(
-					_getLocalizedRowsMap(
-						dynamicObjectDefinitionLocalizationTable,
-						objectFieldBag, primaryKeysBatch));
+			if (dynamicObjectDefinitionLocalizationTable == null) {
+				continue;
 			}
+
+			localizedRowsMap.putAll(
+				_getLocalizedRowsMap(
+					dynamicObjectDefinitionLocalizationTable, objectFieldBag,
+					primaryKeysBatch));
 		}
 
 		for (ObjectEntry objectEntry : objectEntries) {
@@ -7072,12 +7086,14 @@ public class ObjectEntryLocalServiceImpl
 			AssetCategory assetCategory =
 				_assetCategoryLocalService.getAssetCategory(assetCategoryId);
 
-			if (!ArrayUtil.contains(
+			if (ArrayUtil.contains(
 					assetVocabularyIds, assetCategory.getVocabularyId())) {
 
-				assetCategoryIds = ArrayUtil.remove(
-					assetCategoryIds, assetCategory.getCategoryId());
+				continue;
 			}
+
+			assetCategoryIds = ArrayUtil.remove(
+				assetCategoryIds, assetCategory.getCategoryId());
 		}
 
 		serviceContext.setAssetCategoryIds(assetCategoryIds);
@@ -7109,10 +7125,11 @@ public class ObjectEntryLocalServiceImpl
 					AssetTagGroupRel::getTagId)));
 
 		for (AssetTag assetTag : assetEntry.getTags()) {
-			if (!ArrayUtil.contains(tagIds, assetTag.getTagId())) {
-				assetTagNames = ArrayUtil.remove(
-					assetTagNames, assetTag.getName());
+			if (ArrayUtil.contains(tagIds, assetTag.getTagId())) {
+				continue;
 			}
+
+			assetTagNames = ArrayUtil.remove(assetTagNames, assetTag.getName());
 		}
 
 		serviceContext.setAssetTagNames(assetTagNames);
@@ -7449,26 +7466,28 @@ public class ObjectEntryLocalServiceImpl
 		ObjectEntry objectEntry, Map<String, Serializable> values) {
 
 		for (Map.Entry<String, Serializable> entry : values.entrySet()) {
-			if (StringUtil.equals(entry.getKey(), "externalReferenceCode")) {
-				String externalReferenceCode = String.valueOf(entry.getValue());
-
-				if (Validator.isNull(externalReferenceCode)) {
-					externalReferenceCode = objectEntry.getUuid();
-				}
-
-				if (!Objects.equals(
-						externalReferenceCode,
-						objectEntry.getExternalReferenceCode())) {
-
-					_validateExternalReferenceCode(
-						externalReferenceCode, objectEntry.getGroupId(),
-						objectEntry.getCompanyId(),
-						objectEntry.getObjectDefinitionId(),
-						objectEntry.getObjectEntryId());
-				}
-
-				objectEntry.setExternalReferenceCode(externalReferenceCode);
+			if (!StringUtil.equals(entry.getKey(), "externalReferenceCode")) {
+				continue;
 			}
+
+			String externalReferenceCode = String.valueOf(entry.getValue());
+
+			if (Validator.isNull(externalReferenceCode)) {
+				externalReferenceCode = objectEntry.getUuid();
+			}
+
+			if (!Objects.equals(
+					externalReferenceCode,
+					objectEntry.getExternalReferenceCode())) {
+
+				_validateExternalReferenceCode(
+					externalReferenceCode, objectEntry.getGroupId(),
+					objectEntry.getCompanyId(),
+					objectEntry.getObjectDefinitionId(),
+					objectEntry.getObjectEntryId());
+			}
+
+			objectEntry.setExternalReferenceCode(externalReferenceCode);
 		}
 	}
 
@@ -8585,11 +8604,13 @@ public class ObjectEntryLocalServiceImpl
 				_objectStateLocalService.getNextObjectStates(
 					sourceObjectState.getObjectStateId())) {
 
-			if (nextObjectState.getListTypeEntryId() ==
+			if (nextObjectState.getListTypeEntryId() !=
 					targetObjectState.getListTypeEntryId()) {
 
-				invalidObjectStateTransition = false;
+				continue;
 			}
+
+			invalidObjectStateTransition = false;
 		}
 
 		if (invalidObjectStateTransition) {

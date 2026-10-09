@@ -88,12 +88,13 @@ public class CommerceCountryUpgradeProcess extends UpgradeProcess {
 						lastPublishDate);
 				}
 
-				if (country.getCountryId() != commerceCountryId) {
-					for (String tableName : _TABLE_NAMES) {
-						_updateCountryId(
-							tableName, country.getCountryId(),
-							commerceCountryId);
-					}
+				if (country.getCountryId() == commerceCountryId) {
+					continue;
+				}
+
+				for (String tableName : _TABLE_NAMES) {
+					_updateCountryId(
+						tableName, country.getCountryId(), commerceCountryId);
 				}
 			}
 		}

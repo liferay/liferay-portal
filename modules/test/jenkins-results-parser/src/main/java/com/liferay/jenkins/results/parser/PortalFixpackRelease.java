@@ -181,9 +181,11 @@ public class PortalFixpackRelease {
 				int portalFixVersion = Integer.valueOf(
 					propertyName.replaceAll(propertyNameRegex, "$1"));
 
-				if (portalFixVersion > latestPortalFixVersion) {
-					latestPortalFixVersion = portalFixVersion;
+				if (portalFixVersion <= latestPortalFixVersion) {
+					continue;
 				}
+
+				latestPortalFixVersion = portalFixVersion;
 			}
 
 			if (latestPortalFixVersion == -1) {
@@ -199,16 +201,14 @@ public class PortalFixpackRelease {
 						portalVersionCandidate);
 
 				if ((portalReleaseFixpackVersion == null) ||
-					portalReleaseFixpackVersion.isEmpty()) {
+					portalReleaseFixpackVersion.isEmpty() ||
+					(Integer.valueOf(portalFixpackVersion) < Integer.valueOf(
+						portalReleaseFixpackVersion))) {
 
 					continue;
 				}
 
-				if (Integer.valueOf(portalFixpackVersion) >= Integer.valueOf(
-						portalReleaseFixpackVersion)) {
-
-					portalVersion = portalVersionCandidate;
-				}
+				portalVersion = portalVersionCandidate;
 			}
 		}
 		catch (IOException ioException) {

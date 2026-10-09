@@ -154,11 +154,13 @@ public class DLFileEntryMetadataLocalServiceImpl
 			DDMFormValues ddmFormValues = ddmFormValuesMap.get(
 				ddmStructure.getStructureKey());
 
-			if (ddmFormValues != null) {
-				updateFileEntryMetadata(
-					externalReferenceCode, companyId, ddmStructure, fileEntryId,
-					fileVersionId, ddmFormValues, serviceContext);
+			if (ddmFormValues == null) {
+				continue;
 			}
+
+			updateFileEntryMetadata(
+				externalReferenceCode, companyId, ddmStructure, fileEntryId,
+				fileVersionId, ddmFormValues, serviceContext);
 		}
 	}
 

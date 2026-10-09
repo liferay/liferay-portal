@@ -684,9 +684,11 @@ public class NodePlugin implements Plugin<Project> {
 						curProject, YarnPlugin.YARN_INSTALL_TASK_NAME,
 						YarnInstallTask.class);
 
-				if (yarnInstallTaskProvider != null) {
-					npmInstallTask.finalizedBy(yarnInstallTaskProvider);
+				if (yarnInstallTaskProvider == null) {
+					continue;
 				}
+
+				npmInstallTask.finalizedBy(yarnInstallTaskProvider);
 			}
 			while ((curProject = curProject.getParent()) != null);
 		}

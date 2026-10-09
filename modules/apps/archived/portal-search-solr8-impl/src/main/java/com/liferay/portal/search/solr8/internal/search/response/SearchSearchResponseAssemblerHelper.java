@@ -297,9 +297,11 @@ public class SearchSearchResponseAssemblerHelper {
 		Map<String, Facet> facetsMap = searchSearchRequest.getFacets();
 
 		for (Facet facet : facetsMap.values()) {
-			if (!facet.isStatic()) {
-				facet.setFacetCollector(getFacetCollector(facet, namedList2));
+			if (facet.isStatic()) {
+				continue;
 			}
+
+			facet.setFacetCollector(getFacetCollector(facet, namedList2));
 		}
 	}
 

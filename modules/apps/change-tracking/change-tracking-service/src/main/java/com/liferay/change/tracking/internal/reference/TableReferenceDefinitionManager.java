@@ -71,9 +71,11 @@ public class TableReferenceDefinitionManager {
 			for (TableReferenceInfo<?> tableReferenceInfo :
 					_serviceTrackerMap.values()) {
 
-				if (tableReferenceInfo != null) {
-					tableReferenceInfos.add(tableReferenceInfo);
+				if (tableReferenceInfo == null) {
+					continue;
 				}
+
+				tableReferenceInfos.add(tableReferenceInfo);
 			}
 
 			for (TableReferenceInfo<?> tableReferenceInfo :
@@ -285,18 +287,20 @@ public class TableReferenceDefinitionManager {
 			List<TableJoinHolder> currentChildTableJoinHolders =
 				currentChildTableJoinHoldersMap.get(table);
 
-			if (currentChildTableJoinHolders != null) {
-				List<TableJoinHolder> combinedParentTableJoinHolders =
-					combinedParentTableJoinHoldersMap.computeIfAbsent(
-						currentTableReferenceDefinition.getTable(),
-						key -> new ArrayList<>());
-
-				combinedParentTableJoinHolders.addAll(
-					TransformUtil.transform(
-						currentChildTableJoinHolders,
-						currentChildTableJoinHolder -> TableJoinHolder.reverse(
-							currentChildTableJoinHolder)));
+			if (currentChildTableJoinHolders == null) {
+				continue;
 			}
+
+			List<TableJoinHolder> combinedParentTableJoinHolders =
+				combinedParentTableJoinHoldersMap.computeIfAbsent(
+					currentTableReferenceDefinition.getTable(),
+					key -> new ArrayList<>());
+
+			combinedParentTableJoinHolders.addAll(
+				TransformUtil.transform(
+					currentChildTableJoinHolders,
+					currentChildTableJoinHolder -> TableJoinHolder.reverse(
+						currentChildTableJoinHolder)));
 		}
 
 		return new TableReferenceInfo<>(

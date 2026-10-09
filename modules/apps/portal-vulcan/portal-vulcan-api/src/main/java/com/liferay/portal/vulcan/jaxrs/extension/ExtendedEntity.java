@@ -73,15 +73,17 @@ public class ExtendedEntity {
 		}
 
 		for (Field field : _getAllFields()) {
-			if (_extendedProperties.containsKey(field.getName())) {
-				try {
-					field.setAccessible(true);
-					field.set(_entity, null);
-				}
-				catch (Exception exception) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(exception);
-					}
+			if (!_extendedProperties.containsKey(field.getName())) {
+				continue;
+			}
+
+			try {
+				field.setAccessible(true);
+				field.set(_entity, null);
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
 				}
 			}
 		}

@@ -36,13 +36,15 @@ public class JavaServiceTrackerFactoryCheck extends BaseFileCheck {
 			List<String> parameterList = JavaSourceUtil.getParameterList(
 				content.substring(matcher.start()));
 
-			if (parameterList.size() == 1) {
-				addMessage(
-					fileName,
-					"ServiceTrackerFactory.open(java.lang.Class) is " +
-						"deprecated, because it leaks ServiceTrackers",
-					getLineNumber(content, matcher.start()));
+			if (parameterList.size() != 1) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"ServiceTrackerFactory.open(java.lang.Class) is deprecated, " +
+					"because it leaks ServiceTrackers",
+				getLineNumber(content, matcher.start()));
 		}
 
 		return content;

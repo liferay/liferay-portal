@@ -169,9 +169,11 @@ public class PasswordPolicyLocalServiceImpl
 			passwordPolicyPersistence.findByCompanyId(companyId);
 
 		for (PasswordPolicy passwordPolicy : passwordPolicies) {
-			if (!passwordPolicy.isDefaultPolicy()) {
-				passwordPolicyLocalService.deletePasswordPolicy(passwordPolicy);
+			if (passwordPolicy.isDefaultPolicy()) {
+				continue;
 			}
+
+			passwordPolicyLocalService.deletePasswordPolicy(passwordPolicy);
 		}
 	}
 

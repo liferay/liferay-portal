@@ -25,9 +25,11 @@ public class FDSActionDropdownItemList
 		for (FDSActionDropdownItem fdsActionDropdownItem :
 				fdsActionDropdownItems) {
 
-			if (fdsActionDropdownItem != null) {
-				fdsActionDropdownItemList.add(fdsActionDropdownItem);
+			if (fdsActionDropdownItem == null) {
+				continue;
 			}
+
+			fdsActionDropdownItemList.add(fdsActionDropdownItem);
 		}
 
 		return fdsActionDropdownItemList;

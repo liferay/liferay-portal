@@ -36,17 +36,19 @@ public class CPDefinitionLinkUpgradeProcess extends UpgradeProcess {
 
 				ResultSet resultSet2 = preparedStatement.executeQuery();
 
-				if (!resultSet2.next()) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Removing commerce product definition link rows " +
-								"with commerce product ID " + cProductId);
-					}
-
-					runSQL(
-						"delete from CPDefinitionLink where CProductId = " +
-							cProductId);
+				if (resultSet2.next()) {
+					continue;
 				}
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Removing commerce product definition link rows with " +
+							"commerce product ID " + cProductId);
+				}
+
+				runSQL(
+					"delete from CPDefinitionLink where CProductId = " +
+						cProductId);
 			}
 		}
 	}

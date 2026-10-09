@@ -211,9 +211,11 @@ public class PortletSharedSearchRequestImpl
 			layout, segmentsExperienceId);
 
 		for (Portlet instantiatedPortlet : instantiatedPortlets) {
-			if (!portlets.contains(instantiatedPortlet)) {
-				portlets.add(instantiatedPortlet);
+			if (portlets.contains(instantiatedPortlet)) {
+				continue;
 			}
+
+			portlets.add(instantiatedPortlet);
 		}
 
 		if ((!layout.isTypeAssetDisplay() && !layout.isTypeContent()) ||
@@ -233,9 +235,11 @@ public class PortletSharedSearchRequestImpl
 			masterLayout, segmentsExperienceId);
 
 		for (Portlet instantiatedPortlet : instantiatedPortlets) {
-			if (!portlets.contains(instantiatedPortlet)) {
-				portlets.add(instantiatedPortlet);
+			if (portlets.contains(instantiatedPortlet)) {
+				continue;
 			}
+
+			portlets.add(instantiatedPortlet);
 		}
 
 		return portlets;

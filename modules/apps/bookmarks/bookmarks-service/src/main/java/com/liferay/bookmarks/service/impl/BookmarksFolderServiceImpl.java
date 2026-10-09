@@ -204,11 +204,12 @@ public class BookmarksFolderServiceImpl extends BookmarksFolderServiceBaseImpl {
 		for (BookmarksFolder folder : folders) {
 			folderIds.add(folder.getFolderId());
 
-			if (recurse) {
-				getSubfolderIds(
-					folderIds, folder.getGroupId(), folder.getFolderId(),
-					recurse);
+			if (!recurse) {
+				continue;
 			}
+
+			getSubfolderIds(
+				folderIds, folder.getGroupId(), folder.getFolderId(), recurse);
 		}
 	}
 

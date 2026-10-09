@@ -289,9 +289,11 @@ public class JavaTaglibMethodCheck extends BaseJavaTermCheck {
 		javaMethods = new ArrayList<>();
 
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
-			if (javaTerm.isJavaMethod()) {
-				javaMethods.add((JavaMethod)javaTerm);
+			if (!javaTerm.isJavaMethod()) {
+				continue;
 			}
+
+			javaMethods.add((JavaMethod)javaTerm);
 		}
 
 		_javaMethodsMap.put(className, javaMethods);

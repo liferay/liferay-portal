@@ -42,9 +42,11 @@ public class StringBundlerBenchmark {
 		String s = "";
 
 		for (int i = 0; i < _strings.length; i++) {
-			if (i != _excludeIndex) {
-				s = s.concat(_strings[i]);
+			if (i == _excludeIndex) {
+				continue;
 			}
+
+			s = s.concat(_strings[i]);
 		}
 
 		return s;
@@ -55,9 +57,11 @@ public class StringBundlerBenchmark {
 		String s = "";
 
 		for (int i = 0; i < _strings.length; i++) {
-			if (i != _excludeIndex) {
-				s += _strings[i];
+			if (i == _excludeIndex) {
+				continue;
 			}
+
+			s += _strings[i];
 		}
 
 		return s;
@@ -68,9 +72,11 @@ public class StringBundlerBenchmark {
 		StringBuilder sb = new StringBuilder(8);
 
 		for (int i = 0; i < _strings.length; i++) {
-			if (i != _excludeIndex) {
-				sb.append(_strings[i]);
+			if (i == _excludeIndex) {
+				continue;
 			}
+
+			sb.append(_strings[i]);
 		}
 
 		return sb.toString();
@@ -81,9 +87,11 @@ public class StringBundlerBenchmark {
 		StringBundler sb = new StringBundler(8);
 
 		for (int i = 0; i < _strings.length; i++) {
-			if (i != _excludeIndex) {
-				sb.append(_strings[i]);
+			if (i == _excludeIndex) {
+				continue;
 			}
+
+			sb.append(_strings[i]);
 		}
 
 		return sb.toString();

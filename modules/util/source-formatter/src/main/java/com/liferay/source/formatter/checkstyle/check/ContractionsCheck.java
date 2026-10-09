@@ -27,12 +27,13 @@ public class ContractionsCheck extends BaseCheck {
 		for (String contraction : _CONTRACTIONS) {
 			int i = s.indexOf(StringUtil.toLowerCase(contraction));
 
-			if ((i != -1) && !Character.isLetterOrDigit(s.charAt(i - 1)) &&
-				!Character.isLetterOrDigit(
-					s.charAt(i + contraction.length()))) {
+			if ((i == -1) || Character.isLetterOrDigit(s.charAt(i - 1)) ||
+				Character.isLetterOrDigit(s.charAt(i + contraction.length()))) {
 
-				log(detailAST, _MSG_AVOID_CONTRACTION, contraction);
+				continue;
 			}
+
+			log(detailAST, _MSG_AVOID_CONTRACTION, contraction);
 		}
 	}
 

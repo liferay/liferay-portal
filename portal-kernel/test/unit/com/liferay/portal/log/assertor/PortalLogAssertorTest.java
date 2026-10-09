@@ -128,43 +128,44 @@ public class PortalLogAssertorTest {
 
 				String levelString = levelNode.getNodeValue();
 
-				if (levelString.equals("ERROR") ||
-					levelString.equals("FATAL") || levelString.equals("WARN")) {
+				if (!levelString.equals("ERROR") &&
+					!levelString.equals("FATAL") &&
+					!levelString.equals("WARN")) {
 
-					NodeList childNodeList = node.getChildNodes();
-
-					String message =
-						"\nPortal log assert failure, see above log for more " +
-							"information: \n";
-
-					for (int j = 0; j < childNodeList.getLength(); j++) {
-						Node childNode = childNodeList.item(j);
-
-						String nodeName = childNode.getNodeName();
-
-						if (nodeName.equals("message")) {
-							message += childNode.getTextContent();
-						}
-						else if (nodeName.equals("throwable")) {
-							message += "\n" + childNode.getTextContent();
-						}
-					}
-
-					System.out.println(
-						"Error detected, dumping the full log for reference:");
-
-					Files.copy(
-						Paths.get(
-							StringUtil.replace(
-								path.toString(), ".xml", ".log")),
-						System.out);
-
-					Assert.assertFalse(
-						message,
-						levelString.equals("ERROR") ||
-						levelString.equals("FATAL") ||
-						levelString.equals("WARN"));
+					continue;
 				}
+
+				NodeList childNodeList = node.getChildNodes();
+
+				String message =
+					"\nPortal log assert failure, see above log for more " +
+						"information: \n";
+
+				for (int j = 0; j < childNodeList.getLength(); j++) {
+					Node childNode = childNodeList.item(j);
+
+					String nodeName = childNode.getNodeName();
+
+					if (nodeName.equals("message")) {
+						message += childNode.getTextContent();
+					}
+					else if (nodeName.equals("throwable")) {
+						message += "\n" + childNode.getTextContent();
+					}
+				}
+
+				System.out.println(
+					"Error detected, dumping the full log for reference:");
+
+				Files.copy(
+					Paths.get(
+						StringUtil.replace(path.toString(), ".xml", ".log")),
+					System.out);
+
+				Assert.assertFalse(
+					message,
+					levelString.equals("ERROR") ||
+					levelString.equals("FATAL") || levelString.equals("WARN"));
 			}
 		}
 		catch (Exception exception) {

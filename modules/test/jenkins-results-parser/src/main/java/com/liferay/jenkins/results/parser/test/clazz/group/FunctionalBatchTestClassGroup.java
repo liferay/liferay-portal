@@ -619,20 +619,24 @@ public class FunctionalBatchTestClassGroup extends BatchTestClassGroup {
 				sb.append(")");
 			}
 
-			if (isUpgradeFile(modifiedFile)) {
-				String upgradePQL = _concatPQL(
-					modifiedFile, "upgrades-relevant", "");
-
-				if (!JenkinsResultsParserUtil.isNullOrEmpty(upgradePQL)) {
-					if (sb.length() > 0) {
-						sb.append(" OR ");
-					}
-
-					sb.append("(");
-					sb.append(upgradePQL);
-					sb.append(")");
-				}
+			if (!isUpgradeFile(modifiedFile)) {
+				continue;
 			}
+
+			String upgradePQL = _concatPQL(
+				modifiedFile, "upgrades-relevant", "");
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(upgradePQL)) {
+				continue;
+			}
+
+			if (sb.length() > 0) {
+				sb.append(" OR ");
+			}
+
+			sb.append("(");
+			sb.append(upgradePQL);
+			sb.append(")");
 		}
 
 		String defaultPQL = getDefaultTestBatchRunPropertyQuery(

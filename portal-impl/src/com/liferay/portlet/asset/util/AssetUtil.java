@@ -39,12 +39,14 @@ public class AssetUtil {
 			AssetCategory category =
 				AssetCategoryLocalServiceUtil.fetchCategory(categoryId);
 
-			if ((category != null) &&
-				AssetCategoryPermission.contains(
+			if ((category == null) ||
+				!AssetCategoryPermission.contains(
 					permissionChecker, category, ActionKeys.VIEW)) {
 
-				viewableCategoryIds.add(categoryId);
+				continue;
 			}
+
+			viewableCategoryIds.add(categoryId);
 		}
 
 		return ArrayUtil.toArray(viewableCategoryIds.toArray(new Long[0]));

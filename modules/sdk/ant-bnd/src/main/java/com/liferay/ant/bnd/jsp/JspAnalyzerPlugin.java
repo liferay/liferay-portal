@@ -78,21 +78,22 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 
 		for (String key : keys) {
 			for (Instruction instruction : instructions.keySet()) {
-				if (instruction.matches(key)) {
-					if (instruction.isNegated()) {
-						break;
-					}
-
-					Resource resource = jar.getResource(key);
-
-					String jsp = IO.collect(
-						resource.openInputStream(), "UTF-8");
-
-					addApiUses(analyzer, jsp);
-					addTaglibRequirements(analyzer, jsp, taglibURIs);
-
-					matches = true;
+				if (!instruction.matches(key)) {
+					continue;
 				}
+
+				if (instruction.isNegated()) {
+					break;
+				}
+
+				Resource resource = jar.getResource(key);
+
+				String jsp = IO.collect(resource.openInputStream(), "UTF-8");
+
+				addApiUses(analyzer, jsp);
+				addTaglibRequirements(analyzer, jsp, taglibURIs);
+
+				matches = true;
 			}
 		}
 
@@ -172,19 +173,20 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 						index = packageFragment.length();
 					}
 
-					if (index != -1) {
-						Packages packages = analyzer.getReferred();
-
-						String packageName = packageFragment.substring(
-							0, index);
-
-						Descriptors.PackageRef packageRef =
-							analyzer.getPackageRef(packageName);
-
-						packages.put(packageRef, new Attrs());
-
-						addApiUses(analyzer, packageFragment, packageRef);
+					if (index == -1) {
+						continue;
 					}
+
+					Packages packages = analyzer.getReferred();
+
+					String packageName = packageFragment.substring(0, index);
+
+					Descriptors.PackageRef packageRef = analyzer.getPackageRef(
+						packageName);
+
+					packages.put(packageRef, new Attrs());
+
+					addApiUses(analyzer, packageFragment, packageRef);
 				}
 			}
 
@@ -256,9 +258,11 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 
 					Attrs attrs = packages.get(packageRef);
 
-					if (attrs.isEmpty()) {
-						packages.put(packageRef, entry.getValue());
+					if (!attrs.isEmpty()) {
+						continue;
 					}
+
+					packages.put(packageRef, entry.getValue());
 				}
 			}
 			catch (Exception exception) {
@@ -277,9 +281,11 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 
 			Matcher matcher = _packagePattern.matcher(packageRef.getFQN());
 
-			if (matcher.matches()) {
-				packages.putIfAbsent(packageRef, new Attrs());
+			if (!matcher.matches()) {
+				continue;
 			}
+
+			packages.putIfAbsent(packageRef, new Attrs());
 		}
 	}
 
@@ -341,16 +347,14 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 				containsTLD(analyzer, analyzer.getJar(), "WEB-INF/tld", uri) ||
 				containsTLDInBundleClassPath(analyzer, "META-INF", uri) ||
 				containsTLDInBundleClassPath(
-					analyzer, "META-INF/resources", uri)) {
+					analyzer, "META-INF/resources", uri) ||
+				(Arrays.binarySearch(_JSTL_CORE_URIS_JAKARTA, uri) >= 0) ||
+				(Arrays.binarySearch(_JSTL_CORE_URIS_JAVAX, uri) >= 0)) {
 
 				continue;
 			}
 
-			if ((Arrays.binarySearch(_JSTL_CORE_URIS_JAKARTA, uri) < 0) &&
-				(Arrays.binarySearch(_JSTL_CORE_URIS_JAVAX, uri) < 0)) {
-
-				addTaglibRequirement(taglibRequirements, uri);
-			}
+			addTaglibRequirement(taglibRequirements, uri);
 		}
 
 		if (taglibRequirements.isEmpty()) {
@@ -698,21 +702,19 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 			int end = start + length;
 
 			for (int i = start; i < end; i++) {
-				if (Character.isWhitespace(chars[i])) {
-					start++;
-				}
-				else {
+				if (!Character.isWhitespace(chars[i])) {
 					break;
 				}
+
+				start++;
 			}
 
 			for (int i = end - 1; i >= start; i--) {
-				if (Character.isWhitespace(chars[i])) {
-					end--;
-				}
-				else {
+				if (!Character.isWhitespace(chars[i])) {
 					break;
 				}
+
+				end--;
 			}
 
 			return new String(chars, start, end - start);

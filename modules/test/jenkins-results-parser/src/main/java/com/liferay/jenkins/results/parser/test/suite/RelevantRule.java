@@ -341,11 +341,13 @@ public class RelevantRule implements Comparable<RelevantRule> {
 		List<File> modifiedFiles = new ArrayList<>();
 
 		for (File modifiedFile : _getModifiedFilesList()) {
-			if (JenkinsResultsParserUtil.isFileIncluded(
+			if (!JenkinsResultsParserUtil.isFileIncluded(
 					excludesPathMatchers, includesPathMatchers, modifiedFile)) {
 
-				modifiedFiles.add(modifiedFile);
+				continue;
 			}
+
+			modifiedFiles.add(modifiedFile);
 		}
 
 		Set<String> moduleDirPaths = _getModuleDirPaths();

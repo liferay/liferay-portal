@@ -216,11 +216,13 @@ public class JSPStylingCheck extends BaseStylingCheck {
 		Matcher matcher = _incorrectLineBreakPattern1.matcher(content);
 
 		while (matcher.find()) {
-			if (!JSPSourceUtil.isJSSource(content, matcher.start(1))) {
-				addMessage(
-					fileName, "There should be a line break after \"}\"",
-					getLineNumber(content, matcher.start(1)));
+			if (JSPSourceUtil.isJSSource(content, matcher.start(1))) {
+				continue;
 			}
+
+			addMessage(
+				fileName, "There should be a line break after \"}\"",
+				getLineNumber(content, matcher.start(1)));
 		}
 
 		matcher = _incorrectLineBreakPattern2.matcher(content);
@@ -271,11 +273,13 @@ public class JSPStylingCheck extends BaseStylingCheck {
 
 			String line = SourceUtil.getLine(content, lineNumber);
 
-			if (!line.endsWith("%>")) {
-				addMessage(
-					fileName, "There should be a line break after \"<%\"",
-					lineNumber);
+			if (line.endsWith("%>")) {
+				continue;
 			}
+
+			addMessage(
+				fileName, "There should be a line break after \"<%\"",
+				lineNumber);
 		}
 
 		return content;

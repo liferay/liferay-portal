@@ -170,9 +170,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					_bundleContext.ungetService(serviceReference);
 
 					for (Artifact artifact : _getArtifacts()) {
-						if (artifact.getFileInstaller() == fileInstaller) {
-							artifact.setFileInstaller(null);
+						if (artifact.getFileInstaller() != fileInstaller) {
+							continue;
 						}
+
+						artifact.setFileInstaller(null);
 					}
 
 					synchronized (this) {
@@ -363,11 +365,13 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		Set<String> hostBundleSymbolicNames = new HashSet<>();
 
 		for (Bundle bundle : bundles) {
-			if ((bundle.getState() != Bundle.UNINSTALLED) &&
-				_isFragment(bundle)) {
+			if ((bundle.getState() == Bundle.UNINSTALLED) ||
+				!_isFragment(bundle)) {
 
-				hostBundleSymbolicNames.add(_getFragmentHost(bundle));
+				continue;
 			}
+
+			hostBundleSymbolicNames.add(_getFragmentHost(bundle));
 		}
 
 		if (hostBundleSymbolicNames.isEmpty()) {
@@ -375,16 +379,20 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		}
 
 		for (Bundle bundle : _bundleContext.getBundles()) {
-			if (hostBundleSymbolicNames.remove(bundle.getSymbolicName())) {
-				int hostBundleState = bundle.getState();
-
-				if ((hostBundleState == Bundle.ACTIVE) ||
-					(hostBundleState == Bundle.RESOLVED) ||
-					(hostBundleState == Bundle.STARTING)) {
-
-					bundles.add(bundle);
-				}
+			if (!hostBundleSymbolicNames.remove(bundle.getSymbolicName())) {
+				continue;
 			}
+
+			int hostBundleState = bundle.getState();
+
+			if ((hostBundleState != Bundle.ACTIVE) &&
+				(hostBundleState != Bundle.RESOLVED) &&
+				(hostBundleState != Bundle.STARTING)) {
+
+				continue;
+			}
+
+			bundles.add(bundle);
 		}
 	}
 
@@ -517,24 +525,23 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 
 			int index = path.lastIndexOf(CharPool.SLASH);
 
-			if ((index != -1) && _startWith(path, _watchedDirPaths)) {
-				if (!_filenameFilter.accept(
-						new File(path.substring(0, index)),
-						path.substring(index + 1))) {
+			if ((index == -1) || !_startWith(path, _watchedDirPaths) ||
+				!_filenameFilter.accept(
+					new File(path.substring(0, index)),
+					path.substring(index + 1))) {
 
-					continue;
-				}
-
-				Artifact artifact = new Artifact();
-
-				artifact.setBundleId(bundle.getBundleId());
-				artifact.setChecksum(_getChecksum(bundle));
-				artifact.setFile(new File(path));
-
-				_setArtifact(new File(path), artifact);
-
-				checksums.put(new File(path), artifact.getChecksum());
+				continue;
 			}
+
+			Artifact artifact = new Artifact();
+
+			artifact.setBundleId(bundle.getBundleId());
+			artifact.setChecksum(_getChecksum(bundle));
+			artifact.setFile(new File(path));
+
+			_setArtifact(new File(path), artifact);
+
+			checksums.put(new File(path), artifact.getChecksum());
 		}
 
 		_scanner.initialize(checksums);
@@ -608,9 +615,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		for (Artifact artifact : artifacts) {
 			Bundle bundle = _install(artifact);
 
-			if (bundle != null) {
-				bundles.add(bundle);
+			if (bundle == null) {
+				continue;
 			}
+
+			bundles.add(bundle);
 		}
 
 		return bundles;
@@ -663,45 +672,47 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 			for (Bundle currentBundle : _bundleContext.getBundles()) {
 				String currentSymbolicName = currentBundle.getSymbolicName();
 
-				if ((currentSymbolicName != null) &&
-					Objects.equals(currentSymbolicName, symbolicName)) {
+				if ((currentSymbolicName == null) ||
+					!Objects.equals(currentSymbolicName, symbolicName)) {
 
-					Dictionary<String, String> headers =
-						currentBundle.getHeaders(StringPool.BLANK);
+					continue;
+				}
 
-					versionString = headers.get(Constants.BUNDLE_VERSION);
+				Dictionary<String, String> headers = currentBundle.getHeaders(
+					StringPool.BLANK);
 
-					Version currentVersion = Version.emptyVersion;
+				versionString = headers.get(Constants.BUNDLE_VERSION);
 
-					if (versionString != null) {
-						currentVersion = Version.parseVersion(versionString);
-					}
+				Version currentVersion = Version.emptyVersion;
 
-					if (version.equals(currentVersion)) {
-						bufferedInputStream.reset();
+				if (versionString != null) {
+					currentVersion = Version.parseVersion(versionString);
+				}
 
-						if (_getChecksum(currentBundle) != checksum) {
-							if (_log.isWarnEnabled()) {
-								_log.warn(
-									StringBundler.concat(
-										"A bundle with the same symbolic name ",
-										"(", symbolicName, ") and version (",
-										versionString,
-										") is already installed. Updating ",
-										"this bundle instead."));
-							}
+				if (version.equals(currentVersion)) {
+					bufferedInputStream.reset();
 
-							_stopTransient(currentBundle);
-
-							_putChecksum(currentBundle, checksum);
-
-							currentBundle.update(bufferedInputStream);
-
-							modified.set(true);
+					if (_getChecksum(currentBundle) != checksum) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								StringBundler.concat(
+									"A bundle with the same symbolic name ",
+									"(", symbolicName, ") and version (",
+									versionString,
+									") is already installed. Updating this ",
+									"bundle instead."));
 						}
 
-						return currentBundle;
+						_stopTransient(currentBundle);
+
+						_putChecksum(currentBundle, checksum);
+
+						currentBundle.update(bufferedInputStream);
+
+						modified.set(true);
 					}
+
+					return currentBundle;
 				}
 			}
 
@@ -920,27 +931,32 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		for (Artifact artifact : _getArtifacts()) {
 			long bundleId = artifact.getBundleId();
 
-			if (bundleId > 0) {
-				Bundle bundle = _bundleContext.getBundle(bundleId);
-
-				if (bundle != null) {
-					int state = bundle.getState();
-
-					BundleStartLevel bundleStartLevel = bundle.adapt(
-						BundleStartLevel.class);
-
-					if ((state != Bundle.STARTING) &&
-						(state != Bundle.ACTIVE) &&
-						(PropsValues.
-							MODULE_FRAMEWORK_FILE_INSTALL_BUNDLES_START_TRANSIENT ||
-						 bundleStartLevel.isPersistentlyStarted()) &&
-						(frameworkStartLevel.getStartLevel() >=
-							bundleStartLevel.getStartLevel())) {
-
-						bundles.add(bundle);
-					}
-				}
+			if (bundleId <= 0) {
+				continue;
 			}
+
+			Bundle bundle = _bundleContext.getBundle(bundleId);
+
+			if (bundle == null) {
+				continue;
+			}
+
+			int state = bundle.getState();
+
+			BundleStartLevel bundleStartLevel = bundle.adapt(
+				BundleStartLevel.class);
+
+			if ((state == Bundle.STARTING) || (state == Bundle.ACTIVE) ||
+				(!PropsValues.
+					MODULE_FRAMEWORK_FILE_INSTALL_BUNDLES_START_TRANSIENT &&
+				 !bundleStartLevel.isPersistentlyStarted()) ||
+				(frameworkStartLevel.getStartLevel() <
+					bundleStartLevel.getStartLevel())) {
+
+				continue;
+			}
+
+			bundles.add(bundle);
 		}
 
 		_startBundles(bundles);
@@ -1002,9 +1018,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		while (iterator.hasNext()) {
 			Bundle bundle = iterator.next();
 
-			if (_startBundle(bundle, true)) {
-				iterator.remove();
+			if (!_startBundle(bundle, true)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 
@@ -1085,9 +1103,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		for (Artifact artifact : artifacts) {
 			Bundle bundle = _uninstall(artifact);
 
-			if (bundle != null) {
-				bundles.add(bundle);
+			if (bundle == null) {
+				continue;
 			}
+
+			bundles.add(bundle);
 		}
 
 		return bundles;
@@ -1163,9 +1183,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		for (Artifact artifact : artifacts) {
 			Bundle bundle = _update(artifact);
 
-			if (bundle != null) {
-				bundles.add(bundle);
+			if (bundle == null) {
+				continue;
 			}
+
+			bundles.add(bundle);
 		}
 
 		return bundles;

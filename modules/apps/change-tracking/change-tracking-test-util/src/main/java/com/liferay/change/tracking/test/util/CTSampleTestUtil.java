@@ -89,13 +89,14 @@ public class CTSampleTestUtil {
 
 				preparedStatement1.addBatch();
 
-				if (ctCollectionId > 0) {
-					_addCTEntry(
-						ctCollectionId, CTConstants.CT_CHANGE_TYPE_ADDITION,
-						ClassNameLocalServiceUtil.getClassNameId(
-							CTSChild.class),
-						ctsChildId, preparedStatement2);
+				if (ctCollectionId <= 0) {
+					continue;
 				}
+
+				_addCTEntry(
+					ctCollectionId, CTConstants.CT_CHANGE_TYPE_ADDITION,
+					ClassNameLocalServiceUtil.getClassNameId(CTSChild.class),
+					ctsChildId, preparedStatement2);
 			}
 
 			preparedStatement1.executeBatch();

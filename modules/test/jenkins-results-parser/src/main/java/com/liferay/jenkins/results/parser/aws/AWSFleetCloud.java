@@ -94,9 +94,11 @@ public class AWSFleetCloud {
 		int idleNodes = getMaxSize();
 
 		for (JenkinsSlave jenkinsSlave : getJenkinsSlaves()) {
-			if (!jenkinsSlave.isIdle()) {
-				idleNodes--;
+			if (jenkinsSlave.isIdle()) {
+				continue;
 			}
+
+			idleNodes--;
 		}
 
 		return idleNodes;
@@ -134,9 +136,11 @@ public class AWSFleetCloud {
 				}
 			}
 
-			if (matchingLabel) {
-				jenkinsSlaves.add(jenkinsSlave);
+			if (!matchingLabel) {
+				continue;
 			}
+
+			jenkinsSlaves.add(jenkinsSlave);
 		}
 
 		return jenkinsSlaves;
@@ -190,9 +194,11 @@ public class AWSFleetCloud {
 		int occupiedNodes = 0;
 
 		for (JenkinsSlave jenkinsSlave : getJenkinsSlaves()) {
-			if (!jenkinsSlave.isIdle()) {
-				occupiedNodes++;
+			if (jenkinsSlave.isIdle()) {
+				continue;
 			}
+
+			occupiedNodes++;
 		}
 
 		return occupiedNodes;
@@ -202,9 +208,11 @@ public class AWSFleetCloud {
 		int offlineNodes = 0;
 
 		for (JenkinsSlave jenkinsSlave : getJenkinsSlaves()) {
-			if (jenkinsSlave.isOffline()) {
-				offlineNodes++;
+			if (!jenkinsSlave.isOffline()) {
+				continue;
 			}
+
+			offlineNodes++;
 		}
 
 		return offlineNodes;
@@ -253,9 +261,11 @@ public class AWSFleetCloud {
 		for (JenkinsMaster.QueueItem queueItem :
 				_jenkinsMaster.getQueueItems()) {
 
-			if (labels.contains(queueItem.getLabelExpression())) {
-				queuedBuilds++;
+			if (!labels.contains(queueItem.getLabelExpression())) {
+				continue;
 			}
+
+			queuedBuilds++;
 		}
 
 		return queuedBuilds;

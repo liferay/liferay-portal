@@ -47,9 +47,11 @@ public class AntivirusAsyncRetrySchedulerImpl
 		while (iterator.hasNext()) {
 			Map.Entry<String, Object> entry = iterator.next();
 
-			if (entry.getValue() instanceof TransientValue) {
-				iterator.remove();
+			if (!(entry.getValue() instanceof TransientValue)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		_componentInstances.computeIfAbsent(

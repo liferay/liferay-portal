@@ -36,9 +36,11 @@ public class ServiceNodeValidator extends BaseNodeValidator<ServiceNode> {
 		String javaDelegate = null;
 
 		for (Setting setting : serviceNode.getSettings()) {
-			if (Objects.equals(setting.getName(), "javaDelegate")) {
-				javaDelegate = setting.getValue();
+			if (!Objects.equals(setting.getName(), "javaDelegate")) {
+				continue;
 			}
+
+			javaDelegate = setting.getValue();
 		}
 
 		if (Validator.isNull(javaDelegate) ||

@@ -46,9 +46,11 @@ public class GroupUtil {
 				for (Group group : liveGroups) {
 					Group stagingGroup = group.getStagingGroup();
 
-					if (stagingGroup != null) {
-						allGroups.add(stagingGroup);
+					if (stagingGroup == null) {
+						continue;
 					}
+
+					allGroups.add(stagingGroup);
 				}
 
 				return ListUtil.toLongArray(allGroups, Group.GROUP_ID_ACCESSOR);

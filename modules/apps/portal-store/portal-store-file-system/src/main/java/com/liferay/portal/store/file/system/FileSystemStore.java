@@ -357,9 +357,11 @@ public class FileSystemStore implements Store {
 		String headVersionLabel = VERSION_DEFAULT;
 
 		for (String versionLabel : versionLabels) {
-			if (DLUtil.compareVersions(versionLabel, headVersionLabel) > 0) {
-				headVersionLabel = versionLabel;
+			if (DLUtil.compareVersions(versionLabel, headVersionLabel) <= 0) {
+				continue;
 			}
+
+			headVersionLabel = versionLabel;
 		}
 
 		return headVersionLabel;

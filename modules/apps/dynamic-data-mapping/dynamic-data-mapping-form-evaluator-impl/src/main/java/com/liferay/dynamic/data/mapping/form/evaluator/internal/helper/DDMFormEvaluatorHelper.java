@@ -335,16 +335,18 @@ public class DDMFormEvaluatorHelper {
 		Boolean ddmFormRuleConditionEvaluationResult) {
 
 		for (DDMFormRule ddmFormRule : ddmFormRules) {
-			if (ddmFormRule.isEnabled() &&
-				Validator.isNotNull(ddmFormRule.getCondition()) &&
-				Objects.equals(
+			if (!ddmFormRule.isEnabled() ||
+				Validator.isNull(ddmFormRule.getCondition()) ||
+				!Objects.equals(
 					ddmFormRuleConditionEvaluationResult,
 					_evaluateDDMFormRuleCondition(
 						ddmFormRule.getCondition()))) {
 
-				_evaluateDDMFormRule(
-					ddmFormRule, ddmFormRuleConditionEvaluationResult);
+				continue;
 			}
+
+			_evaluateDDMFormRule(
+				ddmFormRule, ddmFormRuleConditionEvaluationResult);
 		}
 	}
 
@@ -379,11 +381,12 @@ public class DDMFormEvaluatorHelper {
 		Map<String, String> nameVisibilityExpressionMap = new HashMap<>();
 
 		for (DDMFormField ddmFormField : _ddmFormFieldsMap.values()) {
-			if (Validator.isNotNull(ddmFormField.getVisibilityExpression())) {
-				nameVisibilityExpressionMap.put(
-					ddmFormField.getName(),
-					ddmFormField.getVisibilityExpression());
+			if (Validator.isNull(ddmFormField.getVisibilityExpression())) {
+				continue;
 			}
+
+			nameVisibilityExpressionMap.put(
+				ddmFormField.getName(), ddmFormField.getVisibilityExpression());
 		}
 
 		for (Map.Entry<String, String> entry :
@@ -794,32 +797,32 @@ public class DDMFormEvaluatorHelper {
 		Map<Locale, String> map = value.getValues();
 
 		for (Map.Entry<Locale, String> entry : map.entrySet()) {
-			if (Validator.isNotNull(entry.getValue())) {
-				DDMFormFieldValueLocalizer ddmFormFieldValueLocalizer =
-					_ddmFormFieldTypeServicesRegistry.
-						getDDMFormFieldValueLocalizer(
-							ddmFormFieldValue.getType());
-
-				if (ddmFormFieldValueLocalizer != null) {
-					if (ddmFormFieldValueLocalizer instanceof
-							DDMFormFieldValueEditingAware) {
-
-						DDMFormFieldValueEditingAware
-							ddmFormFieldValueEditingAware =
-								(DDMFormFieldValueEditingAware)
-									ddmFormFieldValueLocalizer;
-
-						ddmFormFieldValueEditingAware.setEditingFieldValue(
-							_ddmFormEvaluatorEvaluateRequest.
-								isEditingFieldValue());
-					}
-
-					value.addString(
-						entry.getKey(),
-						ddmFormFieldValueLocalizer.localize(
-							entry.getValue(), entry.getKey()));
-				}
+			if (Validator.isNull(entry.getValue())) {
+				continue;
 			}
+
+			DDMFormFieldValueLocalizer ddmFormFieldValueLocalizer =
+				_ddmFormFieldTypeServicesRegistry.getDDMFormFieldValueLocalizer(
+					ddmFormFieldValue.getType());
+
+			if (ddmFormFieldValueLocalizer == null) {
+				continue;
+			}
+
+			if (ddmFormFieldValueLocalizer instanceof
+					DDMFormFieldValueEditingAware) {
+
+				DDMFormFieldValueEditingAware ddmFormFieldValueEditingAware =
+					(DDMFormFieldValueEditingAware)ddmFormFieldValueLocalizer;
+
+				ddmFormFieldValueEditingAware.setEditingFieldValue(
+					_ddmFormEvaluatorEvaluateRequest.isEditingFieldValue());
+			}
+
+			value.addString(
+				entry.getKey(),
+				ddmFormFieldValueLocalizer.localize(
+					entry.getValue(), entry.getKey()));
 		}
 	}
 

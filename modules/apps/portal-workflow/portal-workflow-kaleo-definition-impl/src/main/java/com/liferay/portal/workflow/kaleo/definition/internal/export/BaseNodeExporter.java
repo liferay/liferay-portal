@@ -217,18 +217,20 @@ public abstract class BaseNodeExporter implements NodeExporter {
 
 			Set<Assignment> assignments = timer.getReassignments();
 
-			if (!actions.isEmpty() || !notifications.isEmpty() ||
-				!assignments.isEmpty()) {
+			if (actions.isEmpty() && notifications.isEmpty() &&
+				assignments.isEmpty()) {
 
-				Element timerActionsElement = timerElement.addElement(
-					"timer-actions");
-
-				_exportActionsElement(
-					actions, notifications, timerActionsElement, "timer-action",
-					"timer-notification");
-				exportAssignmentsElement(
-					assignments, timerActionsElement, "reassignments");
+				continue;
 			}
+
+			Element timerActionsElement = timerElement.addElement(
+				"timer-actions");
+
+			_exportActionsElement(
+				actions, notifications, timerActionsElement, "timer-action",
+				"timer-notification");
+			exportAssignmentsElement(
+				assignments, timerActionsElement, "reassignments");
 		}
 	}
 

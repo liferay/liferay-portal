@@ -67,11 +67,13 @@ public class FragmentEntryLinkUpgradeProcess extends UpgradeProcess {
 					editableValuesJSONObject.getJSONObject(
 						fragmentEntryProcessorKey);
 
-				if ((fragmentEntryProcessorJSONObject != null) &&
-					(fragmentEntryProcessorJSONObject.length() == 0)) {
+				if ((fragmentEntryProcessorJSONObject == null) ||
+					(fragmentEntryProcessorJSONObject.length() != 0)) {
 
-					editableValuesJSONObject.remove(fragmentEntryProcessorKey);
+					continue;
 				}
+
+				editableValuesJSONObject.remove(fragmentEntryProcessorKey);
 			}
 
 			return editableValuesJSONObject.toString();

@@ -129,13 +129,15 @@ public class SiteNavigationMenuItemUtil {
 					String languageId = LocaleUtil.toLanguageId(
 						nameEntry.getKey());
 
-					if (Validator.isNull(
+					if (Validator.isNotNull(
 							typeSettingsUnicodeProperties.getProperty(
 								"name_" + languageId))) {
 
-						typeSettingsUnicodeProperties.setProperty(
-							"name_" + languageId, nameEntry.getValue());
+						continue;
 					}
+
+					typeSettingsUnicodeProperties.setProperty(
+						"name_" + languageId, nameEntry.getValue());
 				}
 			}
 			else {
@@ -164,9 +166,11 @@ public class SiteNavigationMenuItemUtil {
 			String value = typeSettingsUnicodeProperties.getProperty(
 				name + "_" + languageId);
 
-			if (Validator.isNotNull(value)) {
-				map.put(languageId, value);
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			map.put(languageId, value);
 		}
 
 		if (MapUtil.isEmpty(map)) {

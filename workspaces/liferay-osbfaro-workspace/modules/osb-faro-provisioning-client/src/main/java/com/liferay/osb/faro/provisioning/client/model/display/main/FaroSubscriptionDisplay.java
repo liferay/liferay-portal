@@ -91,42 +91,43 @@ public class FaroSubscriptionDisplay {
 					getFaroSubscriptionPlanByProductEntryId(
 						osbOfferingEntry.getProductEntryId());
 
-			if ((faroSubscriptionPlan != null) &&
-				StringUtil.equals(
+			if ((faroSubscriptionPlan == null) ||
+				!StringUtil.equals(
 					faroSubscriptionPlan.getBaseSubscriptionPlan(),
 					baseFaroSubscriptionPlan.getName())) {
 
-				_addOns.add(new AddOn(osbOfferingEntry));
-
-				_apiActivationDailyLimit = _computeLimit(
-					faroSubscriptionPlan.getApiActivationDailyLimit(),
-					_apiActivationDailyLimit, osbOfferingEntry.getQuantity());
-				_apiActivationMonthlyLimit = _computeLimit(
-					faroSubscriptionPlan.getApiActivationMonthlyLimit(),
-					_apiActivationMonthlyLimit, osbOfferingEntry.getQuantity());
-				_batchSegmentsLimit = _computeLimit(
-					faroSubscriptionPlan.getBatchSegmentsLimit(),
-					_batchSegmentsLimit, osbOfferingEntry.getQuantity());
-				_billableEventsMonthlyLimit = _computeLimit(
-					faroSubscriptionPlan.getBillableEventsMonthlyLimit(),
-					_billableEventsMonthlyLimit,
-					osbOfferingEntry.getQuantity());
-				_connectorsLimit = _computeLimit(
-					faroSubscriptionPlan.getConnectorsLimit(), _connectorsLimit,
-					osbOfferingEntry.getQuantity());
-				_eventAnalysisLimit = _computeLimit(
-					faroSubscriptionPlan.getEventAnalysisLimit(),
-					_eventAnalysisLimit, osbOfferingEntry.getQuantity());
-				_individualsLimit = _computeLimit(
-					faroSubscriptionPlan.getIndividualsLimit(),
-					_individualsLimit, osbOfferingEntry.getQuantity());
-				_pageViewsLimit = _computeLimit(
-					faroSubscriptionPlan.getPageViewsLimit(), _pageViewsLimit,
-					osbOfferingEntry.getQuantity());
-				_realTimeSegmentsLimit = _computeLimit(
-					faroSubscriptionPlan.getRealTimeSegmentsLimit(),
-					_realTimeSegmentsLimit, osbOfferingEntry.getQuantity());
+				continue;
 			}
+
+			_addOns.add(new AddOn(osbOfferingEntry));
+
+			_apiActivationDailyLimit = _computeLimit(
+				faroSubscriptionPlan.getApiActivationDailyLimit(),
+				_apiActivationDailyLimit, osbOfferingEntry.getQuantity());
+			_apiActivationMonthlyLimit = _computeLimit(
+				faroSubscriptionPlan.getApiActivationMonthlyLimit(),
+				_apiActivationMonthlyLimit, osbOfferingEntry.getQuantity());
+			_batchSegmentsLimit = _computeLimit(
+				faroSubscriptionPlan.getBatchSegmentsLimit(),
+				_batchSegmentsLimit, osbOfferingEntry.getQuantity());
+			_billableEventsMonthlyLimit = _computeLimit(
+				faroSubscriptionPlan.getBillableEventsMonthlyLimit(),
+				_billableEventsMonthlyLimit, osbOfferingEntry.getQuantity());
+			_connectorsLimit = _computeLimit(
+				faroSubscriptionPlan.getConnectorsLimit(), _connectorsLimit,
+				osbOfferingEntry.getQuantity());
+			_eventAnalysisLimit = _computeLimit(
+				faroSubscriptionPlan.getEventAnalysisLimit(),
+				_eventAnalysisLimit, osbOfferingEntry.getQuantity());
+			_individualsLimit = _computeLimit(
+				faroSubscriptionPlan.getIndividualsLimit(), _individualsLimit,
+				osbOfferingEntry.getQuantity());
+			_pageViewsLimit = _computeLimit(
+				faroSubscriptionPlan.getPageViewsLimit(), _pageViewsLimit,
+				osbOfferingEntry.getQuantity());
+			_realTimeSegmentsLimit = _computeLimit(
+				faroSubscriptionPlan.getRealTimeSegmentsLimit(),
+				_realTimeSegmentsLimit, osbOfferingEntry.getQuantity());
 		}
 	}
 
@@ -372,17 +373,19 @@ public class FaroSubscriptionDisplay {
 				continue;
 			}
 
-			if ((baseOSBOfferingEntry == null) ||
-				((baseOSBOfferingEntry.getStatus() !=
-					osbOfferingEntry.getStatus()) &&
-				 (osbOfferingEntry.getStatus() ==
-					 ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE)) ||
+			if ((baseOSBOfferingEntry != null) &&
 				((baseOSBOfferingEntry.getStatus() ==
-					osbOfferingEntry.getStatus()) &&
-				 _isAfter(baseOSBOfferingEntry, osbOfferingEntry))) {
+					osbOfferingEntry.getStatus()) ||
+				 (osbOfferingEntry.getStatus() !=
+					 ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE)) &&
+				((baseOSBOfferingEntry.getStatus() !=
+					osbOfferingEntry.getStatus()) ||
+				 !_isAfter(baseOSBOfferingEntry, osbOfferingEntry))) {
 
-				baseOSBOfferingEntry = osbOfferingEntry;
+				continue;
 			}
+
+			baseOSBOfferingEntry = osbOfferingEntry;
 		}
 
 		return baseOSBOfferingEntry;

@@ -65,16 +65,17 @@ public class JavaClassNameCheck extends BaseJavaTermCheck {
 
 			String expectedClassNameEnding = array[1];
 
-			if (packageName.endsWith("." + array[0]) &&
-				!className.endsWith(expectedClassNameEnding)) {
+			if (!packageName.endsWith("." + array[0]) ||
+				className.endsWith(expectedClassNameEnding)) {
 
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Name of class in package \"", packageName,
-						"\" should end with \"", expectedClassNameEnding,
-						"\""));
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Name of class in package \"", packageName,
+					"\" should end with \"", expectedClassNameEnding, "\""));
 		}
 
 		List<String> extendedClassNames = javaClass.getExtendedClassNames();

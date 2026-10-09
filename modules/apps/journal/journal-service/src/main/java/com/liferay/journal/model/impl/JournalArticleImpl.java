@@ -823,9 +823,11 @@ public class JournalArticleImpl extends JournalArticleBaseImpl {
 			}
 
 			for (Element dynamicContentElement : dynamicContentElements) {
-				if (dynamicContentElement != matchingElement) {
-					dynamicElementElement.remove(dynamicContentElement);
+				if (dynamicContentElement == matchingElement) {
+					continue;
 				}
+
+				dynamicElementElement.remove(dynamicContentElement);
 			}
 		}
 	}

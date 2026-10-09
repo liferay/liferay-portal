@@ -123,19 +123,18 @@ public class JavaFeatureFlagManagerUtilCheck extends BaseFileCheck {
 			parameterList = JavaSourceUtil.getParameterList(
 				JavaSourceUtil.getMethodCall(parameter, 0));
 
-			if (parameterList.size() != 1) {
+			if ((parameterList.size() != 1) ||
+				!StringUtil.startsWith(
+					parameterList.get(0), "\"feature.flag.")) {
+
 				continue;
 			}
 
-			if (StringUtil.startsWith(
-					parameterList.get(0), "\"feature.flag.")) {
-
-				addMessage(
-					fileName,
-					"Use \"FeatureFlagManagerUtil.isEnabled\" instead of " +
-						"\"PropsUtil.get\" for feature flag",
-					getLineNumber(content, matcher.start()));
-			}
+			addMessage(
+				fileName,
+				"Use \"FeatureFlagManagerUtil.isEnabled\" instead of " +
+					"\"PropsUtil.get\" for feature flag",
+				getLineNumber(content, matcher.start()));
 		}
 	}
 
@@ -146,16 +145,15 @@ public class JavaFeatureFlagManagerUtilCheck extends BaseFileCheck {
 			String variableTypeName = getVariableTypeName(
 				content, null, content, fileName, matcher.group(1));
 
-			if (variableTypeName == null) {
+			if ((variableTypeName == null) ||
+				!variableTypeName.equals("FeatureFlagManager")) {
+
 				continue;
 			}
 
-			if (variableTypeName.equals("FeatureFlagManager")) {
-				addMessage(
-					fileName,
-					"Use \"FeatureFlagManagerUtil.isEnabled\" instead",
-					getLineNumber(content, matcher.start()));
-			}
+			addMessage(
+				fileName, "Use \"FeatureFlagManagerUtil.isEnabled\" instead",
+				getLineNumber(content, matcher.start()));
 		}
 	}
 

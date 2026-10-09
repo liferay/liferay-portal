@@ -189,9 +189,11 @@ public class CXFJaxWsServiceRegistrator {
 		for (Map<Object, Server> servers : _busServers.values()) {
 			Server server = servers.get(service);
 
-			if (server != null) {
-				server.destroy();
+			if (server == null) {
+				continue;
 			}
+
+			server.destroy();
 		}
 	}
 

@@ -1091,18 +1091,22 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		List<WikiPage> pages = wikiPagePersistence.findByN_H(nodeId, true);
 
 		for (WikiPage page : pages) {
-			if (_isLinkedTo(page, title)) {
-				links.add(page);
+			if (!_isLinkedTo(page, title)) {
+				continue;
 			}
+
+			links.add(page);
 		}
 
 		List<WikiPage> redirectorPages = getRedirectorPages(nodeId, title);
 
 		for (WikiPage redirectorPage : redirectorPages) {
 			for (WikiPage page : pages) {
-				if (_isLinkedTo(page, redirectorPage.getTitle())) {
-					links.add(page);
+				if (!_isLinkedTo(page, redirectorPage.getTitle())) {
+					continue;
 				}
+
+				links.add(page);
 			}
 		}
 
@@ -1211,9 +1215,11 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		List<WikiPage> orphans = new ArrayList<>();
 
 		for (WikiPage page : pages) {
-			if (!notOrphans.contains(page)) {
-				orphans.add(page);
+			if (notOrphans.contains(page)) {
+				continue;
 			}
+
+			orphans.add(page);
 		}
 
 		return ListUtil.sort(orphans);
@@ -2176,9 +2182,11 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 					pageVersion = wikiPagePersistence.update(pageVersion);
 
-					if (pageVersion.equals(page)) {
-						page = pageVersion;
+					if (!pageVersion.equals(page)) {
+						continue;
 					}
+
+					page = pageVersion;
 				}
 			}
 			else if (cmd.equals(Constants.RENAME)) {
@@ -2306,11 +2314,13 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 				page.getNodeId(), page.getTitle(), true);
 
 			for (WikiPage curPage : pages) {
-				if (!curPage.equals(page)) {
-					curPage.setHead(false);
-
-					wikiPagePersistence.update(curPage);
+				if (curPage.equals(page)) {
+					continue;
 				}
+
+				curPage.setHead(false);
+
+				wikiPagePersistence.update(curPage);
 			}
 		}
 		else if (status != WorkflowConstants.STATUS_IN_TRASH) {
@@ -2576,11 +2586,12 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			childPage = wikiPagePersistence.update(childPage);
 
-			if (_trashHelper.isInTrashImplicitly(childPage)) {
-				_moveDependentFromTrash(
-					childPage, newParentPage.getNodeId(),
-					newParentPage.getTitle());
+			if (!_trashHelper.isInTrashImplicitly(childPage)) {
+				continue;
 			}
+
+			_moveDependentFromTrash(
+				childPage, newParentPage.getNodeId(), newParentPage.getTitle());
 		}
 	}
 
@@ -2599,10 +2610,11 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			childPage = wikiPagePersistence.update(childPage);
 
-			if (!childPage.isInTrash()) {
-				_moveDependentToTrash(
-					childPage, trashEntryId, createTrashVersion);
+			if (childPage.isInTrash()) {
+				continue;
 			}
+
+			_moveDependentToTrash(childPage, trashEntryId, createTrashVersion);
 		}
 	}
 
@@ -2684,9 +2696,11 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			// Trash
 
-			if (trashVersion != null) {
-				_trashVersionLocalService.deleteTrashVersion(trashVersion);
+			if (trashVersion == null) {
+				continue;
 			}
+
+			_trashVersionLocalService.deleteTrashVersion(trashVersion);
 		}
 
 		// Asset
@@ -2737,11 +2751,13 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			redirectorPage = wikiPagePersistence.update(redirectorPage);
 
-			if (_trashHelper.isInTrashImplicitly(redirectorPage)) {
-				_moveDependentFromTrash(
-					redirectorPage, newRedirectPage.getNodeId(),
-					redirectorPage.getParentTitle());
+			if (!_trashHelper.isInTrashImplicitly(redirectorPage)) {
+				continue;
 			}
+
+			_moveDependentFromTrash(
+				redirectorPage, newRedirectPage.getNodeId(),
+				redirectorPage.getParentTitle());
 		}
 	}
 
@@ -2761,10 +2777,12 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			redirectorPage = wikiPagePersistence.update(redirectorPage);
 
-			if (!redirectorPage.isInTrash()) {
-				_moveDependentToTrash(
-					redirectorPage, trashEntryId, createTrashVersion);
+			if (redirectorPage.isInTrash()) {
+				continue;
 			}
+
+			_moveDependentToTrash(
+				redirectorPage, trashEntryId, createTrashVersion);
 		}
 	}
 
@@ -2834,11 +2852,13 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 				status = WorkflowConstants.STATUS_DRAFT;
 			}
 
-			if (versionPageOldStatus != WorkflowConstants.STATUS_APPROVED) {
-				_trashVersionLocalService.addTrashVersion(
-					trashEntryId, WikiPage.class.getName(),
-					versionPage.getPageId(), status, null);
+			if (versionPageOldStatus == WorkflowConstants.STATUS_APPROVED) {
+				continue;
 			}
+
+			_trashVersionLocalService.addTrashVersion(
+				trashEntryId, WikiPage.class.getName(), versionPage.getPageId(),
+				status, null);
 		}
 
 		// Asset
@@ -3234,9 +3254,11 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			versionPage = wikiPagePersistence.update(versionPage);
 
-			if (versionPage.equals(page)) {
-				page = versionPage;
+			if (!versionPage.equals(page)) {
+				continue;
 			}
+
+			page = versionPage;
 		}
 
 		// Page resource

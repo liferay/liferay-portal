@@ -56,13 +56,15 @@ public class NestedDDMFieldArrayUtil {
 		String name, List<Map<String, Object>> maps) {
 
 		for (Map<String, Object> map : maps) {
-			if (Objects.equals(name, _getValue(map.get("ddmFieldName")))) {
-				Object fieldValue = _getValue(
-					map.get(_getValue(map.get("ddmValueFieldName"))));
+			if (!Objects.equals(name, _getValue(map.get("ddmFieldName")))) {
+				continue;
+			}
 
-				if (fieldValue != null) {
-					return fieldValue;
-				}
+			Object fieldValue = _getValue(
+				map.get(_getValue(map.get("ddmValueFieldName"))));
+
+			if (fieldValue != null) {
+				return fieldValue;
 			}
 		}
 

@@ -96,13 +96,17 @@ public class Definition {
 			_terminalStates = new ArrayList<>();
 
 			for (Node node : _nodesMap.values()) {
-				if (node instanceof State) {
-					State state = (State)node;
-
-					if (state.isTerminal()) {
-						_terminalStates.add(state);
-					}
+				if (!(node instanceof State)) {
+					continue;
 				}
+
+				State state = (State)node;
+
+				if (!state.isTerminal()) {
+					continue;
+				}
+
+				_terminalStates.add(state);
 			}
 		}
 

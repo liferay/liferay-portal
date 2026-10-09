@@ -72,9 +72,11 @@ public class KBArticleAssetEntriesUtil {
 		AssetEntry assetEntry = null;
 
 		for (AssetEntry curAssetEntry : assetEntries) {
-			if (curAssetEntry.getClassPK() == resourcePrimKey) {
-				assetEntry = curAssetEntry;
+			if (curAssetEntry.getClassPK() != resourcePrimKey) {
+				continue;
 			}
+
+			assetEntry = curAssetEntry;
 		}
 
 		assetEntries.remove(assetEntry);

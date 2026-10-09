@@ -46,20 +46,24 @@ public class UADHierarchyResultRowSplitter implements ResultRowSplitter {
 			List<ResultRow> classResultRows = classResultRowsMap.get(
 				uadEntity.getTypeKey());
 
-			if (classResultRows != null) {
-				classResultRows.add(resultRow);
+			if (classResultRows == null) {
+				continue;
 			}
+
+			classResultRows.add(resultRow);
 		}
 
 		for (UADDisplay<?> uadDisplay : _uadDisplays) {
 			List<ResultRow> classResultRows = classResultRowsMap.get(
 				uadDisplay.getTypeKey());
 
-			if (!classResultRows.isEmpty()) {
-				resultRowSplitterEntries.add(
-					new ResultRowSplitterEntry(
-						uadDisplay.getTypeName(_locale), classResultRows));
+			if (classResultRows.isEmpty()) {
+				continue;
 			}
+
+			resultRowSplitterEntries.add(
+				new ResultRowSplitterEntry(
+					uadDisplay.getTypeName(_locale), classResultRows));
 		}
 
 		return resultRowSplitterEntries;

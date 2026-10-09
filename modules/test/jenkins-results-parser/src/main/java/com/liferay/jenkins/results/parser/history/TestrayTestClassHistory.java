@@ -108,9 +108,11 @@ public class TestrayTestClassHistory extends BaseTestClassHistory {
 		for (TestClassReport testClassReport : _testClassReports) {
 			String status = _fixStatus(testClassReport.getStatus());
 
-			if (!Objects.equals(status, "PASSED")) {
-				failureCount++;
+			if (Objects.equals(status, "PASSED")) {
+				continue;
 			}
+
+			failureCount++;
 		}
 
 		return failureCount;
@@ -158,11 +160,13 @@ public class TestrayTestClassHistory extends BaseTestClassHistory {
 				continue;
 			}
 
-			if (!lastStatus.equals(status)) {
-				lastStatus = status;
-
-				statusChanges++;
+			if (lastStatus.equals(status)) {
+				continue;
 			}
+
+			lastStatus = status;
+
+			statusChanges++;
 		}
 
 		return statusChanges;

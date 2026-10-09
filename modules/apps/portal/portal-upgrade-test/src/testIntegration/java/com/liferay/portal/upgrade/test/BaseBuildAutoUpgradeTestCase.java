@@ -484,9 +484,11 @@ public abstract class BaseBuildAutoUpgradeTestCase {
 			methodVisitor.visitInsn(Opcodes.AASTORE);
 			methodVisitor.visitInsn(Opcodes.AASTORE);
 
-			if (i < (tableColumns.length - 1)) {
-				methodVisitor.visitInsn(Opcodes.DUP);
+			if (i >= (tableColumns.length - 1)) {
+				continue;
 			}
+
+			methodVisitor.visitInsn(Opcodes.DUP);
 		}
 
 		methodVisitor.visitFieldInsn(

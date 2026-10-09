@@ -86,9 +86,11 @@ public class LockMethodImpl implements Method {
 				for (Element element : lockscopeElement.elements()) {
 					String name = GetterUtil.getString(element.getName());
 
-					if (name.equals("exclusive")) {
-						exclusive = true;
+					if (!name.equals("exclusive")) {
+						continue;
 					}
+
+					exclusive = true;
 				}
 
 				if (!exclusive) {

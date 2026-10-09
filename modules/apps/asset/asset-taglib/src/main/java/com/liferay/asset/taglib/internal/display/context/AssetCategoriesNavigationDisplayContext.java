@@ -127,9 +127,11 @@ public class AssetCategoriesNavigationDisplayContext {
 				AssetVocabulary vocabulary =
 					AssetVocabularyServiceUtil.fetchVocabulary(vocabularyId);
 
-				if (vocabulary != null) {
-					assetVocabularies.add(vocabulary);
+				if (vocabulary == null) {
+					continue;
 				}
+
+				assetVocabularies.add(vocabulary);
 			}
 
 			_assetVocabularies = assetVocabularies;

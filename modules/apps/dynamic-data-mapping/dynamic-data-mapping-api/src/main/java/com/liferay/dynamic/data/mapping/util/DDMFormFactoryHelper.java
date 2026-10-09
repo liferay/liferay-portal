@@ -73,9 +73,11 @@ public class DDMFormFactoryHelper {
 		}
 
 		for (Method method : clazz.getDeclaredMethods()) {
-			if (method.isAnnotationPresent(_DDM_FORM_FIELD_ANNOTATION)) {
-				methodsMap.put(method.getName(), method);
+			if (!method.isAnnotationPresent(_DDM_FORM_FIELD_ANNOTATION)) {
+				continue;
 			}
+
+			methodsMap.put(method.getName(), method);
 		}
 	}
 

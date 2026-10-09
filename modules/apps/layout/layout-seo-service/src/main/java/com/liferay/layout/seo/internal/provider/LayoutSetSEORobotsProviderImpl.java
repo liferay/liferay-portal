@@ -86,9 +86,11 @@ public class LayoutSetSEORobotsProviderImpl
 				layoutSetSEORobotsContributor.contributeDisallowURLEntries(
 					layoutSet);
 
-			if (SetUtil.isNotEmpty(contributedDisallowURLEntries)) {
-				disallowURLEntries.addAll(contributedDisallowURLEntries);
+			if (SetUtil.isEmpty(contributedDisallowURLEntries)) {
+				continue;
 			}
+
+			disallowURLEntries.addAll(contributedDisallowURLEntries);
 		}
 
 		if (SetUtil.isEmpty(disallowURLEntries)) {

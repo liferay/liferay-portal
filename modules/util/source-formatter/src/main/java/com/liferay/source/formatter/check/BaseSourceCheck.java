@@ -697,19 +697,20 @@ public abstract class BaseSourceCheck implements SourceCheck {
 			}
 
 			for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
-				if (childJavaTerm.isJavaVariable()) {
-					JavaVariable javaVariable = (JavaVariable)childJavaTerm;
+				if (!childJavaTerm.isJavaVariable()) {
+					continue;
+				}
 
-					String variableContent = javaVariable.getContent();
+				JavaVariable javaVariable = (JavaVariable)childJavaTerm;
 
-					variableTypeName = _getVariableTypeName(
-						variableContent, variableName,
-						includeArrayOrCollectionTypes,
-						includeFullyQualifiedName);
+				String variableContent = javaVariable.getContent();
 
-					if (variableTypeName != null) {
-						return variableTypeName;
-					}
+				variableTypeName = _getVariableTypeName(
+					variableContent, variableName,
+					includeArrayOrCollectionTypes, includeFullyQualifiedName);
+
+				if (variableTypeName != null) {
+					return variableTypeName;
 				}
 			}
 		}

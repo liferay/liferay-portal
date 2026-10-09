@@ -84,9 +84,11 @@ public class TestPropsUtil {
 		}
 
 		for (String key : keys) {
-			if (!_doNotPrintKeys.contains(key)) {
-				System.out.println(key + "=" + _props.getProperty(key));
+			if (_doNotPrintKeys.contains(key)) {
+				continue;
 			}
+
+			System.out.println(key + "=" + _props.getProperty(key));
 		}
 
 		System.out.println("");

@@ -129,14 +129,16 @@ public class PatcherFixPackValidator {
 		for (PatcherFixPack prerequisitePatcherFixPack :
 				prerequisitePatcherFixPacks) {
 
-			if ((prerequisitePatcherFixPack.getStatus() !=
-					WorkflowConstants.STATUS_FIX_PACK_FROZEN) &&
-				(prerequisitePatcherFixPack.getStatus() !=
+			if ((prerequisitePatcherFixPack.getStatus() ==
+					WorkflowConstants.STATUS_FIX_PACK_FROZEN) ||
+				(prerequisitePatcherFixPack.getStatus() ==
 					WorkflowConstants.STATUS_FIX_PACK_RELEASED)) {
 
-				pendingPatcherFixPackNames.add(
-					prerequisitePatcherFixPack.getName());
+				continue;
 			}
+
+			pendingPatcherFixPackNames.add(
+				prerequisitePatcherFixPack.getName());
 		}
 
 		if (!pendingPatcherFixPackNames.isEmpty()) {
@@ -256,12 +258,14 @@ public class PatcherFixPackValidator {
 		for (PatcherFixPack prerequisitePatcherFixPack :
 				prerequisitePatcherFixPacks) {
 
-			if (prerequisitePatcherFixPack.getStatus() !=
+			if (prerequisitePatcherFixPack.getStatus() ==
 					WorkflowConstants.STATUS_FIX_PACK_RELEASED) {
 
-				pendingPatcherFixPackNames.add(
-					prerequisitePatcherFixPack.getName());
+				continue;
 			}
+
+			pendingPatcherFixPackNames.add(
+				prerequisitePatcherFixPack.getName());
 		}
 
 		if (!pendingPatcherFixPackNames.isEmpty()) {
@@ -307,16 +311,17 @@ public class PatcherFixPackValidator {
 			patcherFixPackPatcherFixIds.add(
 				patcherFixPackPatcherFix.getPatcherFixId());
 
-			if (!patcherFixPackPatcherFix.isLatestFix()) {
-				removePatcherFixIds.add(
-					patcherFixPackPatcherFix.getPatcherFixId());
-
-				PatcherFix latestPatcherFix =
-					PatcherFixUtil.fetchPatcherFixByLatestFix(
-						patcherFixPackPatcherFix.getKey());
-
-				addPatcherFixIds.add(latestPatcherFix.getPatcherFixId());
+			if (patcherFixPackPatcherFix.isLatestFix()) {
+				continue;
 			}
+
+			removePatcherFixIds.add(patcherFixPackPatcherFix.getPatcherFixId());
+
+			PatcherFix latestPatcherFix =
+				PatcherFixUtil.fetchPatcherFixByLatestFix(
+					patcherFixPackPatcherFix.getKey());
+
+			addPatcherFixIds.add(latestPatcherFix.getPatcherFixId());
 		}
 
 		List<Long> allPatcherFixIds = PatcherFixUtil.getPatcherFixIds(
@@ -331,9 +336,11 @@ public class PatcherFixPackValidator {
 				allPatcherFixIds, copiedAllPatcherFixIds);
 
 		for (long parentPatcherFixId : parentPatcherFixIds) {
-			if (!patcherFixPackPatcherFixIds.contains(parentPatcherFixId)) {
-				parentPatcherFixIds.remove(parentPatcherFixId);
+			if (patcherFixPackPatcherFixIds.contains(parentPatcherFixId)) {
+				continue;
 			}
+
+			parentPatcherFixIds.remove(parentPatcherFixId);
 		}
 
 		removePatcherFixIds.addAll(parentPatcherFixIds);

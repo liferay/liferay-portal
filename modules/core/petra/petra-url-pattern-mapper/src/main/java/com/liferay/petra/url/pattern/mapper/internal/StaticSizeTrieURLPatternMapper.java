@@ -28,9 +28,11 @@ public class StaticSizeTrieURLPatternMapper<T>
 				throw new IllegalArgumentException("URL pattern is blank");
 			}
 
-			if (urlPattern.length() > maxURLPatternLength) {
-				maxURLPatternLength = urlPattern.length();
+			if (urlPattern.length() <= maxURLPatternLength) {
+				continue;
 			}
+
+			maxURLPatternLength = urlPattern.length();
 		}
 
 		_maxURLPatternLength = maxURLPatternLength + 2;
@@ -118,15 +120,18 @@ public class StaticSizeTrieURLPatternMapper<T>
 				break;
 			}
 
-			if (!exact && (character == '/')) {
-				long bitmask =
-					currentBitmask &
-					_wildCardTrieMatrix[1][row + 1][_INDEX_STAR];
-
-				if (bitmask != 0) {
-					bestMatchBitmask = bitmask;
-				}
+			if (exact || (character != '/')) {
+				continue;
 			}
+
+			long bitmask =
+				currentBitmask & _wildCardTrieMatrix[1][row + 1][_INDEX_STAR];
+
+			if (bitmask == 0) {
+				continue;
+			}
+
+			bestMatchBitmask = bitmask;
 		}
 
 		if (currentBitmask == 0) {
@@ -307,15 +312,18 @@ public class StaticSizeTrieURLPatternMapper<T>
 				break;
 			}
 
-			if (!exact && (character == '/')) {
-				long bitmask =
-					currentBitmask &
-					_wildCardTrieMatrix[1][row + 1][_INDEX_STAR];
-
-				if (bitmask != 0) {
-					valuesBitmask |= bitmask;
-				}
+			if (exact || (character != '/')) {
+				continue;
 			}
+
+			long bitmask =
+				currentBitmask & _wildCardTrieMatrix[1][row + 1][_INDEX_STAR];
+
+			if (bitmask == 0) {
+				continue;
+			}
+
+			valuesBitmask |= bitmask;
 		}
 
 		if (currentBitmask == 0) {

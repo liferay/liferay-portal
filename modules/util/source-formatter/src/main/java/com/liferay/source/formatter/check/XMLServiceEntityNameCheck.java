@@ -52,13 +52,15 @@ public class XMLServiceEntityNameCheck extends BaseFileCheck {
 
 			String entityName = entityElement.attributeValue("name");
 
-			if (trimmedPackage.endsWith(StringUtil.lowerCase(entityName))) {
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Do not use entity \"", entityName,
-						"\" when package is \"", packagePathName, "\""));
+			if (!trimmedPackage.endsWith(StringUtil.lowerCase(entityName))) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Do not use entity \"", entityName, "\" when package is \"",
+					packagePathName, "\""));
 		}
 
 		return content;

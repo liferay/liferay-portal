@@ -269,9 +269,11 @@ public class ExportImportUtil {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 		for (JSONObject jsonObject : jsonObjects) {
-			if (jsonObject != null) {
-				jsonArray.put(jsonObject);
+			if (jsonObject == null) {
+				continue;
 			}
+
+			jsonArray.put(jsonObject);
 		}
 
 		return jsonArray;

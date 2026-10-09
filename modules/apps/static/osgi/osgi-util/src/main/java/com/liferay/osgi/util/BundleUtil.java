@@ -118,13 +118,15 @@ public class BundleUtil {
 				Dictionary<String, String> headers = installedBundle.getHeaders(
 					StringPool.BLANK);
 
-				if (contextName.equals(
+				if (!contextName.equals(
 						headers.get("Liferay-WAB-Context-Name"))) {
 
-					refreshBundles(
-						bundleContext,
-						Collections.<Bundle>singletonList(installedBundle));
+					continue;
 				}
+
+				refreshBundles(
+					bundleContext,
+					Collections.<Bundle>singletonList(installedBundle));
 			}
 
 			return;
@@ -197,29 +199,31 @@ public class BundleUtil {
 		Map<String, String[]> parameterMap = new HashMap<>();
 
 		for (String parameter : parameters) {
-			if (parameter.length() > 0) {
-				String[] kvp = StringUtil.split(parameter, CharPool.EQUAL);
+			if (parameter.length() <= 0) {
+				continue;
+			}
 
-				if (kvp.length == 0) {
-					continue;
-				}
+			String[] kvp = StringUtil.split(parameter, CharPool.EQUAL);
 
-				String key = kvp[0];
+			if (kvp.length == 0) {
+				continue;
+			}
 
-				String value = StringPool.BLANK;
+			String key = kvp[0];
 
-				if (kvp.length > 1) {
-					value = kvp[1];
-				}
+			String value = StringPool.BLANK;
 
-				String[] values = parameterMap.get(key);
+			if (kvp.length > 1) {
+				value = kvp[1];
+			}
 
-				if (values == null) {
-					parameterMap.put(key, new String[] {value});
-				}
-				else {
-					parameterMap.put(key, ArrayUtil.append(values, value));
-				}
+			String[] values = parameterMap.get(key);
+
+			if (values == null) {
+				parameterMap.put(key, new String[] {value});
+			}
+			else {
+				parameterMap.put(key, ArrayUtil.append(values, value));
 			}
 		}
 

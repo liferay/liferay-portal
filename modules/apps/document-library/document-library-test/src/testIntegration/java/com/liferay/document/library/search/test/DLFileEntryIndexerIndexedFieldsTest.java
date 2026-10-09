@@ -178,9 +178,11 @@ public class DLFileEntryIndexerIndexedFieldsTest extends BaseDLIndexerTestCase {
 				dlFileVersion.getFileVersionId());
 
 		for (DLFileEntryMetadata dlFileEntryMetadata : dlFileEntryMetadatas) {
-			if (dlFileEntryMetadata != null) {
-				ddmStructureId = dlFileEntryMetadata.getDDMStructureId();
+			if (dlFileEntryMetadata == null) {
+				continue;
 			}
+
+			ddmStructureId = dlFileEntryMetadata.getDDMStructureId();
 		}
 
 		return ddmStructureId;

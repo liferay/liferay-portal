@@ -57,15 +57,18 @@ public class Transformer {
 			String errorTemplateId = getErrorTemplateId(
 				errorTemplatePropertyKey, langType);
 
-			if (Validator.isNotNull(errorTemplateId)) {
-				URL url = classLoader.getResource(errorTemplateId);
-
-				if (url != null) {
-					_errorTemplateResources.put(
-						langType,
-						new URLTemplateResource(errorTemplateId, url));
-				}
+			if (Validator.isNull(errorTemplateId)) {
+				continue;
 			}
+
+			URL url = classLoader.getResource(errorTemplateId);
+
+			if (url == null) {
+				continue;
+			}
+
+			_errorTemplateResources.put(
+				langType, new URLTemplateResource(errorTemplateId, url));
 		}
 	}
 

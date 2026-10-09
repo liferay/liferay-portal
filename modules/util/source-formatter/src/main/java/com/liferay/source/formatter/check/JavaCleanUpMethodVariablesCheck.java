@@ -156,12 +156,14 @@ public class JavaCleanUpMethodVariablesCheck extends BaseJavaTermCheck {
 
 			matcher = pattern.matcher(cleanUpMethodContent);
 
-			if (!matcher.find()) {
-				addMessage(
-					fileName,
-					"Initial value for \"" + variableName +
-						"\" differs from value in cleanUp method");
+			if (matcher.find()) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"Initial value for \"" + variableName +
+					"\" differs from value in cleanUp method");
 		}
 
 		return cleanUpMethodContent;

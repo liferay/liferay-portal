@@ -19,9 +19,11 @@ public class ResourceBundleLoaderAnalyzerPlugin implements AnalyzerPlugin {
 		boolean modified = false;
 
 		for (AnalyzerPlugin analyzerPlugin : _analyzerPlugins) {
-			if (analyzerPlugin.analyzeJar(analyzer)) {
-				modified = true;
+			if (!analyzerPlugin.analyzeJar(analyzer)) {
+				continue;
 			}
+
+			modified = true;
 		}
 
 		return modified;

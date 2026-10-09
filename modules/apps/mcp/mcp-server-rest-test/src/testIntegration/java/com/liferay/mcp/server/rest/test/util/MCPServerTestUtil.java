@@ -364,12 +364,14 @@ public class MCPServerTestUtil {
 
 			Map<String, Serializable> values = objectEntry.getValues();
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					mcpServerProfileExternalReferenceCode,
 					values.get("mcpServerProfileExternalReferenceCode"))) {
 
-				mcpServerProfileDataMaskObjectEntries.add(objectEntry);
+				continue;
 			}
+
+			mcpServerProfileDataMaskObjectEntries.add(objectEntry);
 		}
 
 		return mcpServerProfileDataMaskObjectEntries;

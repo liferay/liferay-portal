@@ -5229,9 +5229,11 @@ public class BatchEnginePortletDataHandlerTest {
 				objectEntry.getValues(),
 				_OBJECT_FIELD_NAME_ATTACHMENT_SHOW_FILES_IN_DOCS_AND_MEDIA);
 
-			if (fileEntryId != 0) {
-				_dlFileEntryLocalService.deleteFileEntry(fileEntryId);
+			if (fileEntryId == 0) {
+				continue;
 			}
+
+			_dlFileEntryLocalService.deleteFileEntry(fileEntryId);
 		}
 	}
 

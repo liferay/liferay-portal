@@ -646,11 +646,13 @@ public class DLFolderServiceImpl extends DLFolderServiceBaseImpl {
 
 			folderIds.add(dlFolder.getFolderId());
 
-			if (recurse) {
-				getSubfolderIds(
-					folderIds, dlFolder.getGroupId(), dlFolder.getFolderId(),
-					recurse);
+			if (!recurse) {
+				continue;
 			}
+
+			getSubfolderIds(
+				folderIds, dlFolder.getGroupId(), dlFolder.getFolderId(),
+				recurse);
 		}
 	}
 

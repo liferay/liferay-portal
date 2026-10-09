@@ -167,9 +167,11 @@ public class CustomElementCETPortlet extends BaseCETPortlet<CustomElementCET> {
 				urls[i] = urls[i].replace(contextPath + "/o/", "/o/");
 			}
 
-			if (!urls[i].startsWith("module:")) {
-				urls[i] = "nocombo:" + urls[i];
+			if (urls[i].startsWith("module:")) {
+				continue;
 			}
+
+			urls[i] = "nocombo:" + urls[i];
 		}
 
 		return urls;

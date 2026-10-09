@@ -208,11 +208,12 @@ public class DLConfigurationUpgradeHelper {
 				continue;
 			}
 
-			if (groupId != 0) {
-				_configurationProvider.saveGroupConfiguration(
-					DLFileEntryConfiguration.class, companyId, groupId,
-					dictionary);
+			if (groupId == 0) {
+				continue;
 			}
+
+			_configurationProvider.saveGroupConfiguration(
+				DLFileEntryConfiguration.class, companyId, groupId, dictionary);
 		}
 	}
 

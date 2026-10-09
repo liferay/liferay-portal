@@ -3079,16 +3079,18 @@ public class CPDefinitionLocalServiceImpl
 				WorkflowConstants.STATUS_APPROVED, serviceContext,
 				new HashMap<String, Serializable>());
 
-			if (cpDefinition.isApproved()) {
-				_cpAttachmentFileEntryLocalService.
-					checkCPAttachmentFileEntriesByDisplayDate(
-						_classNameLocalService.getClassNameId(
-							cpDefinition.getModelClassName()),
-						cpDefinition.getCPDefinitionId());
-
-				_cpInstanceLocalService.checkCPInstancesByDisplayDate(
-					cpDefinition.getCPDefinitionId());
+			if (!cpDefinition.isApproved()) {
+				continue;
 			}
+
+			_cpAttachmentFileEntryLocalService.
+				checkCPAttachmentFileEntriesByDisplayDate(
+					_classNameLocalService.getClassNameId(
+						cpDefinition.getModelClassName()),
+					cpDefinition.getCPDefinitionId());
+
+			_cpInstanceLocalService.checkCPInstancesByDisplayDate(
+				cpDefinition.getCPDefinitionId());
 		}
 	}
 
@@ -3151,13 +3153,15 @@ public class CPDefinitionLocalServiceImpl
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		for (CPInstance cpInstance : cpInstances) {
-			if (!_cpInstanceOptionValueRelLocalService.
+			if (_cpInstanceOptionValueRelLocalService.
 					hasCPInstanceOptionValueRel(cpInstance.getCPInstanceId())) {
 
-				_cpInstanceLocalService.updateStatus(
-					userId, cpInstance.getCPInstanceId(),
-					WorkflowConstants.STATUS_INACTIVE);
+				continue;
 			}
+
+			_cpInstanceLocalService.updateStatus(
+				userId, cpInstance.getCPInstanceId(),
+				WorkflowConstants.STATUS_INACTIVE);
 		}
 	}
 
@@ -3355,16 +3359,18 @@ public class CPDefinitionLocalServiceImpl
 		for (Map.Entry<Locale, String> titleEntry : urlTitleMap.entrySet()) {
 			String urlTitle = urlTitleMap.get(titleEntry.getKey());
 
-			if (Validator.isNotNull(urlTitle) ||
-				((urlTitle != null) && urlTitle.equals(StringPool.BLANK))) {
+			if (Validator.isNull(urlTitle) &&
+				((urlTitle == null) || !urlTitle.equals(StringPool.BLANK))) {
 
-				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-					companyGroup.getGroupId(),
-					_classNameLocalService.getClassNameId(CProduct.class),
-					cpDefinition.getCProductId(), titleEntry.getValue());
-
-				newURLTitleMap.put(titleEntry.getKey(), urlTitle);
+				continue;
 			}
+
+			urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
+				companyGroup.getGroupId(),
+				_classNameLocalService.getClassNameId(CProduct.class),
+				cpDefinition.getCProductId(), titleEntry.getValue());
+
+			newURLTitleMap.put(titleEntry.getKey(), urlTitle);
 		}
 
 		return newURLTitleMap;
@@ -3545,14 +3551,16 @@ public class CPDefinitionLocalServiceImpl
 					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS)) {
 
-			if (draftCPDefinition.getCPDefinitionId() !=
+			if (draftCPDefinition.getCPDefinitionId() ==
 					cpDefinition.getCPDefinitionId()) {
 
-				cpDefinitionLocalService.updateStatus(
-					userId, draftCPDefinition.getCPDefinitionId(),
-					WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
-					Collections.emptyMap());
+				continue;
 			}
+
+			cpDefinitionLocalService.updateStatus(
+				userId, draftCPDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
+				Collections.emptyMap());
 		}
 	}
 

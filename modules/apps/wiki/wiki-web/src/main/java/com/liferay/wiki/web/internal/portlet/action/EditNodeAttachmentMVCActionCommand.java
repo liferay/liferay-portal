@@ -71,10 +71,12 @@ public class EditNodeAttachmentMVCActionCommand extends BaseMVCActionCommand {
 			nodeId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (WikiPage wikiPage : wikiPages) {
-			if (wikiPage.getDeletedAttachmentsFileEntriesCount() > 0) {
-				_wikiPageService.deleteTrashPageAttachments(
-					nodeId, wikiPage.getTitle());
+			if (wikiPage.getDeletedAttachmentsFileEntriesCount() <= 0) {
+				continue;
 			}
+
+			_wikiPageService.deleteTrashPageAttachments(
+				nodeId, wikiPage.getTitle());
 		}
 	}
 

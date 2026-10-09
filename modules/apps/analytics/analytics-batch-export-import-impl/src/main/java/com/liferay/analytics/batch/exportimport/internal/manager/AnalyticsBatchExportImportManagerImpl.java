@@ -156,43 +156,38 @@ public class AnalyticsBatchExportImportManagerImpl
 				BatchEngineTaskExecuteStatus.valueOf(
 					batchEngineExportTask.getExecuteStatus());
 
-			if (batchEngineTaskExecuteStatus.equals(
+			if (!batchEngineTaskExecuteStatus.equals(
 					BatchEngineTaskExecuteStatus.COMPLETED)) {
 
-				_notify(
-					StringBundler.concat(
-						"Exported ", batchEngineExportTask.getTotalItemsCount(),
-						" items from task ",
-						batchEngineExportTaskItemDelegateName),
-					notificationUnsafeConsumer);
-
-				if (batchEngineExportTask.getTotalItemsCount() == 0) {
-					_notify(
-						"There are no items from task " +
-							batchEngineExportTaskItemDelegateName,
-						notificationUnsafeConsumer);
-
-					continue;
-				}
-
-				skipUpload = false;
-
-				try (ZipInputStream zipInputStream = new ZipInputStream(
-						_batchEngineExportTaskLocalService.
-							openContentInputStream(
-								batchEngineExportTask.
-									getBatchEngineExportTaskId()))) {
-
-					zipInputStream.getNextEntry();
-
-					StreamUtil.transfer(
-						zipInputStream, gzipOutputStream, false);
-				}
-			}
-			else {
 				throw new PortalException(
 					"Unable to export resource " +
 						batchEngineExportTaskItemDelegateName);
+			}
+
+			_notify(
+				StringBundler.concat(
+					"Exported ", batchEngineExportTask.getTotalItemsCount(),
+					" items from task ", batchEngineExportTaskItemDelegateName),
+				notificationUnsafeConsumer);
+
+			if (batchEngineExportTask.getTotalItemsCount() == 0) {
+				_notify(
+					"There are no items from task " +
+						batchEngineExportTaskItemDelegateName,
+					notificationUnsafeConsumer);
+
+				continue;
+			}
+
+			skipUpload = false;
+
+			try (ZipInputStream zipInputStream = new ZipInputStream(
+					_batchEngineExportTaskLocalService.openContentInputStream(
+						batchEngineExportTask.getBatchEngineExportTaskId()))) {
+
+				zipInputStream.getNextEntry();
+
+				StreamUtil.transfer(zipInputStream, gzipOutputStream, false);
 			}
 		}
 

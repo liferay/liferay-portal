@@ -104,12 +104,14 @@ public class APIPropertyObjectDefinitionDeployerImplTest {
 			for (ObjectRelatedModelsProvider<?> objectRelatedModelsProvider :
 					objectRelatedModelsProviders) {
 
-				if (Objects.equals(
+				if (!Objects.equals(
 						objectDefinition.getClassName(),
 						objectRelatedModelsProvider.getClassName())) {
 
-					count++;
+					continue;
 				}
+
+				count++;
 			}
 
 			return count;
@@ -132,11 +134,13 @@ public class APIPropertyObjectDefinitionDeployerImplTest {
 				(ObjectRelatedModelsProvider<?>)bundleContext.getService(
 					serviceReference);
 
-			if ((objectRelatedModelsProvider != null) &&
-				(objectRelatedModelsProvider.getCompanyId() == companyId)) {
+			if ((objectRelatedModelsProvider == null) ||
+				(objectRelatedModelsProvider.getCompanyId() != companyId)) {
 
-				objectRelatedModelsProviders.add(objectRelatedModelsProvider);
+				continue;
 			}
+
+			objectRelatedModelsProviders.add(objectRelatedModelsProvider);
 		}
 
 		return objectRelatedModelsProviders;

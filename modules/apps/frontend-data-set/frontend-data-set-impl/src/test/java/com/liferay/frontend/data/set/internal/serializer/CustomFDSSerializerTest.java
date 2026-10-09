@@ -1818,111 +1818,112 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			String rendererType = String.valueOf(
 				propertiesMap.get("rendererType"));
 
-			if (Validator.isNotNull(rendererType) &&
-				rendererType.equals("clientExtension")) {
+			if (Validator.isNull(rendererType) ||
+				!rendererType.equals("clientExtension")) {
 
-				String clientExtensionEntryERC = String.valueOf(
-					propertiesMap.get("renderer"));
-
-				CETManager cetManager = Mockito.mock(CETManager.class);
-
-				Mockito.when(
-					cetManager.getCET(
-						Mockito.anyLong(), Mockito.eq(clientExtensionEntryERC))
-				).thenAnswer(
-					invocation -> new FDSCellRendererCET() {
-
-						@Override
-						public String getBaseURL() {
-							return "";
-						}
-
-						@Override
-						public long getCompanyId() {
-							return invocation.getArgument(0, long.class);
-						}
-
-						@Override
-						public Date getCreateDate() {
-							return null;
-						}
-
-						@Override
-						public String getDescription() {
-							return "";
-						}
-
-						@Override
-						public String getEditJSP() {
-							return "";
-						}
-
-						@Override
-						public String getExternalReferenceCode() {
-							return clientExtensionEntryERC;
-						}
-
-						@Override
-						public Date getModifiedDate() {
-							return null;
-						}
-
-						@Override
-						public String getName() {
-							return "";
-						}
-
-						@Override
-						public String getName(Locale locale) {
-							return "";
-						}
-
-						@Override
-						public Properties getProperties() {
-							return null;
-						}
-
-						@Override
-						public String getSourceCodeURL() {
-							return "";
-						}
-
-						@Override
-						public int getStatus() {
-							return 0;
-						}
-
-						@Override
-						public String getType() {
-							return "";
-						}
-
-						@Override
-						public String getTypeSettings() {
-							return "";
-						}
-
-						@Override
-						public String getURL() {
-							return "/o/" + clientExtensionEntryERC +
-								"/index.js";
-						}
-
-						@Override
-						public boolean hasProperties() {
-							return false;
-						}
-
-						@Override
-						public boolean isReadOnly() {
-							return false;
-						}
-
-					}
-				);
-
-				_customFDSSerializer.cetManager = cetManager;
+				continue;
 			}
+
+			String clientExtensionEntryERC = String.valueOf(
+				propertiesMap.get("renderer"));
+
+			CETManager cetManager = Mockito.mock(CETManager.class);
+
+			Mockito.when(
+				cetManager.getCET(
+					Mockito.anyLong(), Mockito.eq(clientExtensionEntryERC))
+			).thenAnswer(
+				invocation -> new FDSCellRendererCET() {
+
+					@Override
+					public String getBaseURL() {
+						return "";
+					}
+
+					@Override
+					public long getCompanyId() {
+						return invocation.getArgument(0, long.class);
+					}
+
+					@Override
+					public Date getCreateDate() {
+						return null;
+					}
+
+					@Override
+					public String getDescription() {
+						return "";
+					}
+
+					@Override
+					public String getEditJSP() {
+						return "";
+					}
+
+					@Override
+					public String getExternalReferenceCode() {
+						return clientExtensionEntryERC;
+					}
+
+					@Override
+					public Date getModifiedDate() {
+						return null;
+					}
+
+					@Override
+					public String getName() {
+						return "";
+					}
+
+					@Override
+					public String getName(Locale locale) {
+						return "";
+					}
+
+					@Override
+					public Properties getProperties() {
+						return null;
+					}
+
+					@Override
+					public String getSourceCodeURL() {
+						return "";
+					}
+
+					@Override
+					public int getStatus() {
+						return 0;
+					}
+
+					@Override
+					public String getType() {
+						return "";
+					}
+
+					@Override
+					public String getTypeSettings() {
+						return "";
+					}
+
+					@Override
+					public String getURL() {
+						return "/o/" + clientExtensionEntryERC + "/index.js";
+					}
+
+					@Override
+					public boolean hasProperties() {
+						return false;
+					}
+
+					@Override
+					public boolean isReadOnly() {
+						return false;
+					}
+
+				}
+			);
+
+			_customFDSSerializer.cetManager = cetManager;
 		}
 
 		Mockito.when(

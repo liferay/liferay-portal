@@ -122,11 +122,13 @@ public class TLDFormatter {
 			Element dynamicAttributesElement = tagElement.element(
 				"dynamic-attributes");
 
-			if (dynamicAttributesElement != null) {
-				dynamicAttributesElement.detach();
-
-				tagElement.add(dynamicAttributesElement);
+			if (dynamicAttributesElement == null) {
+				continue;
 			}
+
+			dynamicAttributesElement.detach();
+
+			tagElement.add(dynamicAttributesElement);
 		}
 
 		String newContent = _toString(document);

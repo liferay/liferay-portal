@@ -510,15 +510,17 @@ public class AssetPublisherDisplayContext {
 		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
 			String[] values = entry.getValue();
 
-			if (ArrayUtil.isNotEmpty(values)) {
-				String name = entry.getKey();
+			if (ArrayUtil.isEmpty(values)) {
+				continue;
+			}
 
-				if (values.length == 1) {
-					_attributes.put(name, values[0]);
-				}
-				else {
-					_attributes.put(name, values);
-				}
+			String name = entry.getKey();
+
+			if (values.length == 1) {
+				_attributes.put(name, values[0]);
+			}
+			else {
+				_attributes.put(name, values);
 			}
 		}
 
@@ -2210,9 +2212,13 @@ public class AssetPublisherDisplayContext {
 				assetEntryAssetTagNames[i] = assetTag.getName();
 			}
 
-			if (ArrayUtil.containsAll(assetEntryAssetTagNames, assetTagNames)) {
-				filteredAssetEntries.add(assetEntry);
+			if (!ArrayUtil.containsAll(
+					assetEntryAssetTagNames, assetTagNames)) {
+
+				continue;
 			}
+
+			filteredAssetEntries.add(assetEntry);
 		}
 
 		return filteredAssetEntries;

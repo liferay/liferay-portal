@@ -125,9 +125,11 @@ public class JSONLocalizer {
 					for (int i = 0; i < jsonArray.length(); i++) {
 						Object currentObject = jsonArray.get(i);
 
-						if (currentObject instanceof JSONObject) {
-							_localize((JSONObject)currentObject, locale);
+						if (!(currentObject instanceof JSONObject)) {
+							continue;
 						}
+
+						_localize((JSONObject)currentObject, locale);
 					}
 				}
 			}

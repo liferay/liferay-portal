@@ -364,10 +364,12 @@ public class BeanPortletImpl implements BeanPortlet {
 		for (Map.Entry<String, String> entry : initParams.entrySet()) {
 			String value = entry.getValue();
 
-			if (value != null) {
-				dictionary.put(
-					"jakarta.portlet.init-param." + entry.getKey(), value);
+			if (value == null) {
+				continue;
 			}
+
+			dictionary.put(
+				"jakarta.portlet.init-param." + entry.getKey(), value);
 		}
 
 		// jakarta.portlet.description
@@ -453,10 +455,12 @@ public class BeanPortletImpl implements BeanPortlet {
 			Set<String> portletModes = entry.getValue();
 
 			for (String portletMode : portletModes) {
-				if (allPortletModes.contains(portletMode)) {
-					portletModesSB.append(portletMode);
-					portletModesSB.append(",");
+				if (!allPortletModes.contains(portletMode)) {
+					continue;
 				}
+
+				portletModesSB.append(portletMode);
+				portletModesSB.append(",");
 			}
 
 			if (portletModesSB.index() > 2) {
@@ -651,14 +655,15 @@ public class BeanPortletImpl implements BeanPortlet {
 			{
 				try {
 					for (Field field : LiferayPortletMode.class.getFields()) {
-						if (Modifier.isStatic(field.getModifiers()) &&
-							(field.getType() == PortletMode.class)) {
+						if (!Modifier.isStatic(field.getModifiers()) ||
+							(field.getType() != PortletMode.class)) {
 
-							PortletMode portletMode = (PortletMode)field.get(
-								null);
-
-							add(portletMode.toString());
+							continue;
 						}
+
+						PortletMode portletMode = (PortletMode)field.get(null);
+
+						add(portletMode.toString());
 					}
 				}
 				catch (IllegalAccessException illegalAccessException) {

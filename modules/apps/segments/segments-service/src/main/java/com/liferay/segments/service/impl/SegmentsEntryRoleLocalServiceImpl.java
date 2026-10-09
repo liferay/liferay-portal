@@ -247,9 +247,11 @@ public class SegmentsEntryRoleLocalServiceImpl
 			Role role = _roleLocalService.fetchRole(
 				segmentsEntryRole.getRoleId());
 
-			if (Objects.equals(role.getType(), RoleConstants.TYPE_SITE)) {
-				roleIds.add(role.getRoleId());
+			if (!Objects.equals(role.getType(), RoleConstants.TYPE_SITE)) {
+				continue;
 			}
+
+			roleIds.add(role.getRoleId());
 		}
 
 		return roleIds;

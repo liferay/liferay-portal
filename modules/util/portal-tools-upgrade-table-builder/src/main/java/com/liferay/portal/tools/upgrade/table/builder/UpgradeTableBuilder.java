@@ -225,17 +225,19 @@ public class UpgradeTableBuilder {
 			String line = null;
 
 			while ((line = bufferedReader.readLine()) != null) {
-				if (line.contains(" on " + tableName + " (") ||
-					line.contains(" on " + tableName + "_ (")) {
+				if (!line.contains(" on " + tableName + " (") &&
+					!line.contains(" on " + tableName + "_ (")) {
 
-					String sql = line.trim();
-
-					if (sql.endsWith(";")) {
-						sql = sql.substring(0, sql.length() - 1);
-					}
-
-					addIndexes.add(sql);
+					continue;
 				}
+
+				String sql = line.trim();
+
+				if (sql.endsWith(";")) {
+					sql = sql.substring(0, sql.length() - 1);
+				}
+
+				addIndexes.add(sql);
 			}
 		}
 
@@ -433,9 +435,11 @@ public class UpgradeTableBuilder {
 			sb.append(line);
 			sb.append("\n");
 
-			if (line.endsWith(";")) {
-				sb.append("\n");
+			if (!line.endsWith(";")) {
+				continue;
 			}
+
+			sb.append("\n");
 		}
 
 		sb.append("\tpublic static final String[] TABLE_SQL_ADD_INDEXES = {\n");

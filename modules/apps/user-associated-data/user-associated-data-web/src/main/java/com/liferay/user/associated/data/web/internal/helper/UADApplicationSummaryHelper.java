@@ -114,24 +114,27 @@ public class UADApplicationSummaryHelper {
 			for (UADDisplay<?> uadDisplay :
 					_uadRegistry.getApplicationUADDisplays(applicationKey)) {
 
-				if (ArrayUtil.isNotEmpty(groupIds) ==
+				if (ArrayUtil.isNotEmpty(groupIds) !=
 						uadDisplay.isSiteScoped()) {
 
-					applicationUADDisplays.add(uadDisplay);
+					continue;
 				}
+
+				applicationUADDisplays.add(uadDisplay);
 			}
 
-			if (ListUtil.isNotEmpty(applicationUADDisplays)) {
-				UADApplicationSummaryDisplay uadApplicationSummaryDisplay =
-					getUADApplicationSummaryDisplay(
-						applicationKey, applicationUADDisplays, userId,
-						groupIds);
-
-				generatedUADApplicationSummaryDisplays.add(
-					uadApplicationSummaryDisplay);
-
-				count += uadApplicationSummaryDisplay.getCount();
+			if (ListUtil.isEmpty(applicationUADDisplays)) {
+				continue;
 			}
+
+			UADApplicationSummaryDisplay uadApplicationSummaryDisplay =
+				getUADApplicationSummaryDisplay(
+					applicationKey, applicationUADDisplays, userId, groupIds);
+
+			generatedUADApplicationSummaryDisplays.add(
+				uadApplicationSummaryDisplay);
+
+			count += uadApplicationSummaryDisplay.getCount();
 		}
 
 		allApplicationsUADApplicationSummaryDisplay.setCount(count);

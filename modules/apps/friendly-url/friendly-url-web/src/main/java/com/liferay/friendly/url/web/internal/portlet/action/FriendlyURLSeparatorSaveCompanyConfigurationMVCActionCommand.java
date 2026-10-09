@@ -206,12 +206,14 @@ public class FriendlyURLSeparatorSaveCompanyConfigurationMVCActionCommand
 			redirect = HttpComponentsUtil.removeParameter(
 				redirect, namespace + friendlyURLResolver.getKey());
 
-			if (!validSeparators) {
-				redirect = HttpComponentsUtil.addParameter(
-					redirect, namespace + friendlyURLResolver.getKey(),
-					ParamUtil.getString(
-						actionRequest, friendlyURLResolver.getKey()));
+			if (validSeparators) {
+				continue;
 			}
+
+			redirect = HttpComponentsUtil.addParameter(
+				redirect, namespace + friendlyURLResolver.getKey(),
+				ParamUtil.getString(
+					actionRequest, friendlyURLResolver.getKey()));
 		}
 
 		return redirect;

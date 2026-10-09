@@ -110,9 +110,11 @@ public class CompileModulesBatchTestClassGroup
 					JenkinsResultsParserUtil.findFiles(
 						modifiedModuleDir, "\\.lfrbuild-portal");
 
-				if (!lfrBuildPortalFiles.isEmpty()) {
-					moduleDirsList.add(modifiedModuleDir);
+				if (lfrBuildPortalFiles.isEmpty()) {
+					continue;
 				}
+
+				moduleDirsList.add(modifiedModuleDir);
 			}
 		}
 		else {

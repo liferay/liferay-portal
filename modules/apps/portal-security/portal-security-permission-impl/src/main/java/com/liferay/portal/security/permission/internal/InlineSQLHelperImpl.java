@@ -111,12 +111,14 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 					baseModel.getModelClassName(),
 					ResourceConstants.SCOPE_INDIVIDUAL)) {
 
-			if (resourcePermission.isViewActionId() &&
-				(roleIdsSet.contains(resourcePermission.getRoleId()) ||
-				 (signedIn && (resourcePermission.getOwnerId() == userId)))) {
+			if (!resourcePermission.isViewActionId() ||
+				(!roleIdsSet.contains(resourcePermission.getRoleId()) &&
+				 (!signedIn || (resourcePermission.getOwnerId() != userId)))) {
 
-				permittedClassPKs.add(resourcePermission.getPrimKeyId());
+				continue;
 			}
+
+			permittedClassPKs.add(resourcePermission.getPrimKeyId());
 		}
 
 		_collectSharingEntryClassPKs(

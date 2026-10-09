@@ -72,16 +72,18 @@ public class JSONPackageJSONDependencyVersionCheck extends BaseFileCheck {
 			String expectedVersion = expectedDependencyVersionsMap.get(
 				dependencyName);
 
-			if ((expectedVersion != null) &&
-				!expectedVersion.equals(actualVersion)) {
+			if ((expectedVersion == null) ||
+				expectedVersion.equals(actualVersion)) {
 
-				content = StringUtil.replace(
-					content,
-					StringBundler.concat(
-						"\"", dependencyName, "\": \"", actualVersion, "\""),
-					StringBundler.concat(
-						"\"", dependencyName, "\": \"", expectedVersion, "\""));
+				continue;
 			}
+
+			content = StringUtil.replace(
+				content,
+				StringBundler.concat(
+					"\"", dependencyName, "\": \"", actualVersion, "\""),
+				StringBundler.concat(
+					"\"", dependencyName, "\": \"", expectedVersion, "\""));
 		}
 
 		return content;
@@ -109,11 +111,13 @@ public class JSONPackageJSONDependencyVersionCheck extends BaseFileCheck {
 		while (iterator.hasNext()) {
 			String dependencyName = iterator.next();
 
-			if (dependencyName.matches(regex)) {
-				dependencyVersionsMap.put(
-					dependencyName,
-					dependenciesJSONObject.getString(dependencyName));
+			if (!dependencyName.matches(regex)) {
+				continue;
 			}
+
+			dependencyVersionsMap.put(
+				dependencyName,
+				dependenciesJSONObject.getString(dependencyName));
 		}
 
 		return dependencyVersionsMap;
@@ -158,10 +162,12 @@ public class JSONPackageJSONDependencyVersionCheck extends BaseFileCheck {
 
 			String key = array[0];
 
-			if (key.startsWith("bundle.symbolic.name[")) {
-				_expectedDependencyVersionsMap.put(
-					key.substring(21, key.length() - 1), StringPool.STAR);
+			if (!key.startsWith("bundle.symbolic.name[")) {
+				continue;
 			}
+
+			_expectedDependencyVersionsMap.put(
+				key.substring(21, key.length() - 1), StringPool.STAR);
 		}
 
 		return _expectedDependencyVersionsMap;

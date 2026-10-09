@@ -250,10 +250,11 @@ public class SearchResponseTranslator {
 		}
 
 		for (Facet facet : facets.values()) {
-			if (!facet.isStatic()) {
-				facet.setFacetCollector(
-					_getFacetCollector(aggregations, facet));
+			if (facet.isStatic()) {
+				continue;
 			}
+
+			facet.setFacetCollector(_getFacetCollector(aggregations, facet));
 		}
 	}
 

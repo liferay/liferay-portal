@@ -92,11 +92,13 @@ public class MarketplaceTopicSubscriber {
 	@PreDestroy
 	public void preDestroy() {
 		for (Subscriber subscriber : _subscribers) {
-			if (subscriber != null) {
-				ApiService apiService = subscriber.stopAsync();
-
-				apiService.awaitTerminated();
+			if (subscriber == null) {
+				continue;
 			}
+
+			ApiService apiService = subscriber.stopAsync();
+
+			apiService.awaitTerminated();
 		}
 
 		if (_subscriptionAdminClient != null) {

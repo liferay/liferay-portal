@@ -52,22 +52,23 @@ public class GridDDMFormFieldValueRenderer
 		Set<String> rowOptions = rows.getOptionsValues();
 
 		for (String rowOption : rowOptions) {
-			if (valuesJSONObject.has(rowOption)) {
-				String columnOption = valuesJSONObject.getString(rowOption);
-
-				LocalizedValue rowLabel = rows.getOptionLabels(rowOption);
-				LocalizedValue columnLabel = columns.getOptionLabels(
-					columnOption);
-
-				sb.append(getLabel(rowLabel, rowOption, locale));
-
-				sb.append(StringPool.COLON);
-				sb.append(StringPool.SPACE);
-
-				sb.append(getLabel(columnLabel, columnOption, locale));
-
-				sb.append(StringPool.COMMA_AND_SPACE);
+			if (!valuesJSONObject.has(rowOption)) {
+				continue;
 			}
+
+			String columnOption = valuesJSONObject.getString(rowOption);
+
+			LocalizedValue rowLabel = rows.getOptionLabels(rowOption);
+			LocalizedValue columnLabel = columns.getOptionLabels(columnOption);
+
+			sb.append(getLabel(rowLabel, rowOption, locale));
+
+			sb.append(StringPool.COLON);
+			sb.append(StringPool.SPACE);
+
+			sb.append(getLabel(columnLabel, columnOption, locale));
+
+			sb.append(StringPool.COMMA_AND_SPACE);
 		}
 
 		if (sb.index() > 0) {

@@ -42,24 +42,24 @@ public class CommercePermissionUpgradeProcess extends UpgradeProcess {
 				_resourcePermissionLocalService.getResourcePermissions(
 					AccountEntry.class.getName())) {
 
-			if (_resourcePermissionLocalService.hasActionId(
-					resourcePermission, resourceAction) &&
-				(resourcePermission.getScope() !=
+			if (!_resourcePermissionLocalService.hasActionId(
+					resourcePermission, resourceAction) ||
+				(resourcePermission.getScope() ==
 					ResourceConstants.SCOPE_INDIVIDUAL)) {
 
-				_resourcePermissionLocalService.addResourcePermission(
-					resourcePermission.getCompanyId(),
-					AccountEntry.class.getName(), resourcePermission.getScope(),
-					resourcePermission.getPrimKey(),
-					resourcePermission.getRoleId(),
-					CommerceAccountActionKeys.MANAGE_CHANNEL_DEFAULTS);
-				_resourcePermissionLocalService.addResourcePermission(
-					resourcePermission.getCompanyId(),
-					AccountEntry.class.getName(), resourcePermission.getScope(),
-					resourcePermission.getPrimKey(),
-					resourcePermission.getRoleId(),
-					CommerceAccountActionKeys.VIEW_CHANNEL_DEFAULTS);
+				continue;
 			}
+
+			_resourcePermissionLocalService.addResourcePermission(
+				resourcePermission.getCompanyId(), AccountEntry.class.getName(),
+				resourcePermission.getScope(), resourcePermission.getPrimKey(),
+				resourcePermission.getRoleId(),
+				CommerceAccountActionKeys.MANAGE_CHANNEL_DEFAULTS);
+			_resourcePermissionLocalService.addResourcePermission(
+				resourcePermission.getCompanyId(), AccountEntry.class.getName(),
+				resourcePermission.getScope(), resourcePermission.getPrimKey(),
+				resourcePermission.getRoleId(),
+				CommerceAccountActionKeys.VIEW_CHANNEL_DEFAULTS);
 		}
 	}
 

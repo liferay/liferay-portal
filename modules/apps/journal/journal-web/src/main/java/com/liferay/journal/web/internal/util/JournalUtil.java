@@ -78,11 +78,13 @@ public class JournalUtil {
 				previousVersion = article.getVersion();
 			}
 
-			if ((article.getVersion() > targetVersion) &&
-				((article.getVersion() < nextVersion) || (nextVersion == 0))) {
+			if ((article.getVersion() <= targetVersion) ||
+				((article.getVersion() >= nextVersion) && (nextVersion != 0))) {
 
-				nextVersion = article.getVersion();
+				continue;
 			}
+
+			nextVersion = article.getVersion();
 		}
 
 		List<DiffVersion> diffVersions = new ArrayList<>();

@@ -132,23 +132,24 @@ public class RelevantTestSuiteTest extends BaseRelevantRuleTestCase {
 		PoshiTestBatch poshiTestBatch = null;
 
 		for (TestBatch testBatch : relevantTestSuite.getTestBatches(false)) {
-			if (testBatch instanceof PoshiTestBatch) {
-				poshiTestBatch = (PoshiTestBatch)testBatch;
-
-				PoshiTestSelector poshiTestSelector =
-					poshiTestBatch.getTestSelector();
-
-				String pql = JenkinsResultsParserUtil.read(
-					new File(getBaseDir(), "modules/module-2/text_file_2.txt"));
-
-				Assert.assertEquals(
-					pql, poshiTestSelector.getPoshiQuery(false));
-
-				pql = JenkinsResultsParserUtil.combine(
-					"((portal.acceptance != quarantine)) AND (", pql, ")");
-
-				Assert.assertEquals(pql, poshiTestSelector.getPoshiQuery());
+			if (!(testBatch instanceof PoshiTestBatch)) {
+				continue;
 			}
+
+			poshiTestBatch = (PoshiTestBatch)testBatch;
+
+			PoshiTestSelector poshiTestSelector =
+				poshiTestBatch.getTestSelector();
+
+			String pql = JenkinsResultsParserUtil.read(
+				new File(getBaseDir(), "modules/module-2/text_file_2.txt"));
+
+			Assert.assertEquals(pql, poshiTestSelector.getPoshiQuery(false));
+
+			pql = JenkinsResultsParserUtil.combine(
+				"((portal.acceptance != quarantine)) AND (", pql, ")");
+
+			Assert.assertEquals(pql, poshiTestSelector.getPoshiQuery());
 		}
 	}
 

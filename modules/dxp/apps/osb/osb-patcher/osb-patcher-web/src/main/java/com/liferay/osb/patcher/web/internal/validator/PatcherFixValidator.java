@@ -462,12 +462,13 @@ public class PatcherFixValidator {
 				List<String> patcherFixPackPatcherFixTokens =
 					PatcherUtil.getTokens(patcherFixPackPatcherFix.getName());
 
-				if (!Collections.disjoint(
+				if (Collections.disjoint(
 						patcherFixTokens, patcherFixPackPatcherFixTokens)) {
 
-					patcherFixIds.add(
-						patcherFixPackPatcherFix.getPatcherFixId());
+					continue;
 				}
+
+				patcherFixIds.add(patcherFixPackPatcherFix.getPatcherFixId());
 			}
 
 			PatcherFixPack patcherFixPack =

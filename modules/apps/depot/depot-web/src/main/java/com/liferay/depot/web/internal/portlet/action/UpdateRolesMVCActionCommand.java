@@ -150,10 +150,12 @@ public class UpdateRolesMVCActionCommand extends BaseMVCActionCommand {
 		Set<UserGroupRole> userGroupRoles = new HashSet<>();
 
 		for (int i = 0; i < groupIds.length; i++) {
-			if ((groupIds[i] != 0) && (roleIds[i] != 0)) {
-				userGroupRoles.add(
-					_getUserGroupRole(userId, groupIds[i], roleIds[i]));
+			if ((groupIds[i] == 0) || (roleIds[i] == 0)) {
+				continue;
 			}
+
+			userGroupRoles.add(
+				_getUserGroupRole(userId, groupIds[i], roleIds[i]));
 		}
 
 		return userGroupRoles;

@@ -80,54 +80,55 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 			url = JenkinsResultsParserUtil.getLocalURL(url);
 
-			if (!hasBuildURL(url)) {
-				final String axisName = urlEntry.getValue();
-
-				final String buildURL = url;
-
-				Matcher matcher = _buildURLPattern.matcher(buildURL);
-
-				String hostname = null;
-
-				if (matcher.matches()) {
-					hostname = matcher.group("hostname");
-				}
-
-				ParallelExecutor.SequentialCallable<Build> callable =
-					new ParallelExecutor.SequentialCallable<Build>(hostname) {
-
-						@Override
-						public Build call() {
-							try {
-								return BuildFactory.newBuild(
-									buildURL, axisName, thisBuild);
-							}
-							catch (RuntimeException runtimeException) {
-								if (!isFromArchive()) {
-									String shortStackTrace =
-										JenkinsResultsParserUtil.getStackTrace(
-											runtimeException, 10);
-
-									System.out.println(
-										"WARNING: Build object failure:\n" +
-											shortStackTrace);
-
-									NotificationUtil.sendSlackNotification(
-										JenkinsResultsParserUtil.combine(
-											shortStackTrace, "\nBuild URL: ",
-											thisBuild.getBuildURL()),
-										"ci-notifications",
-										"Build object failure");
-								}
-
-								return null;
-							}
-						}
-
-					};
-
-				callables.add(callable);
+			if (hasBuildURL(url)) {
+				continue;
 			}
+
+			final String axisName = urlEntry.getValue();
+
+			final String buildURL = url;
+
+			Matcher matcher = _buildURLPattern.matcher(buildURL);
+
+			String hostname = null;
+
+			if (matcher.matches()) {
+				hostname = matcher.group("hostname");
+			}
+
+			ParallelExecutor.SequentialCallable<Build> callable =
+				new ParallelExecutor.SequentialCallable<Build>(hostname) {
+
+					@Override
+					public Build call() {
+						try {
+							return BuildFactory.newBuild(
+								buildURL, axisName, thisBuild);
+						}
+						catch (RuntimeException runtimeException) {
+							if (!isFromArchive()) {
+								String shortStackTrace =
+									JenkinsResultsParserUtil.getStackTrace(
+										runtimeException, 10);
+
+								System.out.println(
+									"WARNING: Build object failure:\n" +
+										shortStackTrace);
+
+								NotificationUtil.sendSlackNotification(
+									JenkinsResultsParserUtil.combine(
+										shortStackTrace, "\nBuild URL: ",
+										thisBuild.getBuildURL()),
+									"ci-notifications", "Build object failure");
+							}
+
+							return null;
+						}
+					}
+
+				};
+
+			callables.add(callable);
 		}
 
 		ParallelExecutor<Build> parallelExecutor = new ParallelExecutor<>(
@@ -194,13 +195,15 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 		}
 
 		for (Build downstreamBuild : downstreamBuilds) {
-			if (((status == null) ||
-				 status.equals(downstreamBuild.getStatus())) &&
-				((result == null) ||
-				 result.equals(downstreamBuild.getResult()))) {
+			if (((status != null) &&
+				 !status.equals(downstreamBuild.getStatus())) ||
+				((result != null) &&
+				 !result.equals(downstreamBuild.getResult()))) {
 
-				filteredDownstreamBuilds.add(downstreamBuild);
+				continue;
 			}
+
+			filteredDownstreamBuilds.add(downstreamBuild);
 		}
 
 		return filteredDownstreamBuilds;
@@ -265,11 +268,13 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 				longestDelayedDownstreamBuild = downstreamBuild;
 			}
 
-			if (longestDelayedDownstreamBuild.getDelayTime() >
+			if (longestDelayedDownstreamBuild.getDelayTime() <=
 					longestDelayedBuild.getDelayTime()) {
 
-				longestDelayedBuild = longestDelayedDownstreamBuild;
+				continue;
 			}
+
+			longestDelayedBuild = longestDelayedDownstreamBuild;
 		}
 
 		return longestDelayedBuild;
@@ -280,12 +285,14 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 		Build longestRunningDownstreamBuild = null;
 
 		for (Build downstreamBuild : getDownstreamBuilds(null)) {
-			if ((longestRunningDownstreamBuild == null) ||
-				(downstreamBuild.getDuration() >
+			if ((longestRunningDownstreamBuild != null) &&
+				(downstreamBuild.getDuration() <=
 					longestRunningDownstreamBuild.getDuration())) {
 
-				longestRunningDownstreamBuild = downstreamBuild;
+				continue;
 			}
+
+			longestRunningDownstreamBuild = downstreamBuild;
 		}
 
 		return longestRunningDownstreamBuild;
@@ -313,9 +320,11 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 			ParentBuild parentBuild = (ParentBuild)downstreamBuild;
 
-			if (parentBuild.hasModifiedDownstreamBuilds()) {
-				modifiedDownstreamBuilds.add(parentBuild);
+			if (!parentBuild.hasModifiedDownstreamBuilds()) {
+				continue;
 			}
+
+			modifiedDownstreamBuilds.add(parentBuild);
 		}
 
 		if (status != null) {
@@ -333,9 +342,11 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 			List<TestResult> downstreamTestResults =
 				downstreamBuild.getTestResults(testStatus);
 
-			if (!(downstreamTestResults == null)) {
-				testResults.addAll(downstreamTestResults);
+			if (downstreamTestResults == null) {
+				continue;
 			}
+
+			testResults.addAll(downstreamTestResults);
 		}
 
 		return testResults;
@@ -680,12 +691,14 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 		if ((downstreamBuilds != null) && !downstreamBuilds.isEmpty()) {
 			for (Build downstreamBuild : downstreamBuilds) {
-				if (downstreamBuild instanceof BaseBuild) {
-					BaseBuild downstreamBaseBuild = (BaseBuild)downstreamBuild;
-
-					archiveCallables.addAll(
-						downstreamBaseBuild.getArchiveCallables());
+				if (!(downstreamBuild instanceof BaseBuild)) {
+					continue;
 				}
+
+				BaseBuild downstreamBaseBuild = (BaseBuild)downstreamBuild;
+
+				archiveCallables.addAll(
+					downstreamBaseBuild.getArchiveCallables());
 			}
 		}
 
@@ -704,9 +717,11 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 		for (Build downstreamBuild : downstreamBuilds) {
 			String downstreamBuildResult = downstreamBuild.getResult();
 
-			if (Objects.equals(downstreamBuildResult, result)) {
-				count++;
+			if (!Objects.equals(downstreamBuildResult, result)) {
+				continue;
 			}
+
+			count++;
 		}
 
 		return count;

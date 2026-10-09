@@ -421,11 +421,13 @@ public class BNDExportsCheck extends BaseFileCheck {
 		for (String line : StringUtil.splitLines(matcher.group(3))) {
 			line = StringUtil.trim(line);
 
-			if (Validator.isNotNull(line) && !line.equals("\\") &&
-				!line.contains(StringPool.SEMICOLON)) {
+			if (Validator.isNull(line) || line.equals("\\") ||
+				line.contains(StringPool.SEMICOLON)) {
 
-				exportPackages.add(StringUtil.removeSubstring(line, ",\\"));
+				continue;
 			}
+
+			exportPackages.add(StringUtil.removeSubstring(line, ",\\"));
 		}
 
 		return exportPackages;

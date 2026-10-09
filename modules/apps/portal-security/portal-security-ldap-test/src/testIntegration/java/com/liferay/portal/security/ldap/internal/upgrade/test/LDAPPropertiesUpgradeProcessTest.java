@@ -224,15 +224,17 @@ public class LDAPPropertiesUpgradeProcessTest {
 			Dictionary<String, Object> properties =
 				configuration.getProperties();
 
-			if (properties != null) {
-				Long companyId = (Long)properties.get(LDAPConstants.COMPANY_ID);
-
-				if ((companyId != null) &&
-					(companyId == company.getCompanyId())) {
-
-					configuration.delete();
-				}
+			if (properties == null) {
+				continue;
 			}
+
+			Long companyId = (Long)properties.get(LDAPConstants.COMPANY_ID);
+
+			if ((companyId == null) || (companyId != company.getCompanyId())) {
+				continue;
+			}
+
+			configuration.delete();
 		}
 	}
 

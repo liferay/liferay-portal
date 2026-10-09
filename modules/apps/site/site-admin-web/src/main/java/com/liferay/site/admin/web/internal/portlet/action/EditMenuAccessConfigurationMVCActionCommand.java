@@ -60,9 +60,11 @@ public class EditMenuAccessConfigurationMVCActionCommand
 		for (String roleId : roleSearchContainerPrimaryKeys) {
 			Role role = _roleLocalService.fetchRole(Long.valueOf(roleId));
 
-			if (role != null) {
-				roleIds.add(roleId);
+			if (role == null) {
+				continue;
 			}
+
+			roleIds.add(roleId);
 		}
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(

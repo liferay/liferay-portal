@@ -301,19 +301,20 @@ public class MembershipRequestLocalServiceImpl
 				currentIndividualActions, currentGroupActions,
 				currentGroupTemplateActions, currentCompanyActions);
 
-			if (currentIndividualActions.contains(ActionKeys.ASSIGN_MEMBERS) ||
-				currentGroupActions.contains(ActionKeys.ASSIGN_MEMBERS) ||
-				currentGroupTemplateActions.contains(
-					ActionKeys.ASSIGN_MEMBERS) ||
-				currentCompanyActions.contains(ActionKeys.ASSIGN_MEMBERS)) {
+			if (!currentIndividualActions.contains(ActionKeys.ASSIGN_MEMBERS) &&
+				!currentGroupActions.contains(ActionKeys.ASSIGN_MEMBERS) &&
+				!currentGroupTemplateActions.contains(
+					ActionKeys.ASSIGN_MEMBERS) &&
+				!currentCompanyActions.contains(ActionKeys.ASSIGN_MEMBERS)) {
 
-				List<UserGroupRole> currentUserGroupRoles =
-					_userGroupRolePersistence.findByG_R(
-						groupId, role.getRoleId());
+				continue;
+			}
 
-				for (UserGroupRole userGroupRole : currentUserGroupRoles) {
-					userIds.add(userGroupRole.getUserId());
-				}
+			List<UserGroupRole> currentUserGroupRoles =
+				_userGroupRolePersistence.findByG_R(groupId, role.getRoleId());
+
+			for (UserGroupRole userGroupRole : currentUserGroupRoles) {
+				userIds.add(userGroupRole.getUserId());
 			}
 		}
 

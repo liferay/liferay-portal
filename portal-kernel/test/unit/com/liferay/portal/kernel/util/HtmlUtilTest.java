@@ -63,9 +63,11 @@ public class HtmlUtilTest {
 		StringBundler sb = new StringBundler(256);
 
 		for (int i = 0; i < 256; i++) {
-			if (Character.isLetterOrDigit(i)) {
-				sb.append((char)i);
+			if (!Character.isLetterOrDigit(i)) {
+				continue;
 			}
+
+			sb.append((char)i);
 		}
 
 		String value = sb.toString();

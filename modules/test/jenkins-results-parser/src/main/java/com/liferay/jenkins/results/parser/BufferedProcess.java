@@ -96,9 +96,11 @@ public class BufferedProcess extends Process {
 				while (bytesRead != -1) {
 					bytesRead = _inputStream.read(bytes);
 
-					if (bytesRead > 0) {
-						_write(bytes, bytesRead);
+					if (bytesRead <= 0) {
+						continue;
 					}
+
+					_write(bytes, bytesRead);
 				}
 			}
 			catch (IOException ioException) {

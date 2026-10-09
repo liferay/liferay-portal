@@ -413,10 +413,12 @@ public class StagedLayoutSetStagedModelDataHandler
 		for (ClientExtensionEntryRel clientExtensionEntryRel :
 				clientExtensionEntryRels) {
 
-			if (!importedUuids.contains(clientExtensionEntryRel.getUuid())) {
-				_clientExtensionEntryRelLocalService.
-					deleteClientExtensionEntryRel(clientExtensionEntryRel);
+			if (importedUuids.contains(clientExtensionEntryRel.getUuid())) {
+				continue;
 			}
+
+			_clientExtensionEntryRelLocalService.deleteClientExtensionEntryRel(
+				clientExtensionEntryRel);
 		}
 	}
 
@@ -979,44 +981,41 @@ public class StagedLayoutSetStagedModelDataHandler
 				continue;
 			}
 
-			if (action.equals(Constants.ADD)) {
-				Layout layout = layouts.get(
-					GetterUtil.getLong(
-						layoutElement.attributeValue("layout-id")));
-				String uuid = layoutElement.attributeValue("uuid");
-
-				if ((layout != null) &&
-					!Objects.equals(layout.getUuid(), uuid)) {
-
-					layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
-						uuid, portletDataContext.getScopeGroupId(),
-						privateLayout);
-				}
-
-				if (layout == null) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							StringBundler.concat(
-								"Layout ", uuid,
-								" might not have been imported due to a ",
-								"controlled error. See ",
-								"SitesImpl#addMergeFailFriendlyURLLayout."));
-					}
-
-					continue;
-				}
-
-				int layoutPriority = GetterUtil.getInteger(
-					layoutElement.attributeValue("layout-priority"));
-
-				layoutPriority = _layoutLocalServiceHelper.getNextPriority(
-					layout.getGroupId(),
-					layout.getLayoutSetPrototypeLayoutERC(),
-					layout.isPrivateLayout(), layout.getParentLayoutId(),
-					layoutPriority);
-
-				layoutPriorities.put(layout.getPlid(), layoutPriority);
+			if (!action.equals(Constants.ADD)) {
+				continue;
 			}
+
+			Layout layout = layouts.get(
+				GetterUtil.getLong(layoutElement.attributeValue("layout-id")));
+			String uuid = layoutElement.attributeValue("uuid");
+
+			if ((layout != null) && !Objects.equals(layout.getUuid(), uuid)) {
+				layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+					uuid, portletDataContext.getScopeGroupId(), privateLayout);
+			}
+
+			if (layout == null) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"Layout ", uuid,
+							" might not have been imported due to a ",
+							"controlled error. See ",
+							"SitesImpl#addMergeFailFriendlyURLLayout."));
+				}
+
+				continue;
+			}
+
+			int layoutPriority = GetterUtil.getInteger(
+				layoutElement.attributeValue("layout-priority"));
+
+			layoutPriority = _layoutLocalServiceHelper.getNextPriority(
+				layout.getGroupId(), layout.getLayoutSetPrototypeLayoutERC(),
+				layout.isPrivateLayout(), layout.getParentLayoutId(),
+				layoutPriority);
+
+			layoutPriorities.put(layout.getPlid(), layoutPriority);
 		}
 
 		Set<Long> parentLayoutIds = new HashSet<>();
@@ -1052,19 +1051,22 @@ public class StagedLayoutSetStagedModelDataHandler
 				portletDataContext.getGroupId(), privateLayout, parentLayoutId);
 
 			for (Layout layout : siblingLayouts) {
-				if (!updatedPlids.contains(layout.getPlid()) &&
-					_hasSiblingLayoutWithSamePriority(layout, siblingLayouts)) {
+				if (updatedPlids.contains(layout.getPlid()) ||
+					!_hasSiblingLayoutWithSamePriority(
+						layout, siblingLayouts)) {
 
-					do {
-						int priority = layout.getPriority();
-
-						layout.setPriority(++priority);
-					}
-					while (_hasSiblingLayoutWithSamePriority(
-								layout, siblingLayouts));
-
-					_layoutLocalService.updateLayout(layout);
+					continue;
 				}
+
+				do {
+					int priority = layout.getPriority();
+
+					layout.setPriority(++priority);
+				}
+				while (_hasSiblingLayoutWithSamePriority(
+							layout, siblingLayouts));
+
+				_layoutLocalService.updateLayout(layout);
 			}
 		}
 	}
@@ -1117,17 +1119,19 @@ public class StagedLayoutSetStagedModelDataHandler
 				importedSettingsUnicodeProperties.getProperty(
 					propertyKey, defaultValue);
 
-			if (!Objects.equals(currentValue, importedValue)) {
-				if (Objects.equals(defaultValue, importedValue)) {
-					settingsUnicodeProperties.remove(propertyKey);
-				}
-				else {
-					settingsUnicodeProperties.setProperty(
-						propertyKey, importedValue);
-				}
-
-				changed = true;
+			if (Objects.equals(currentValue, importedValue)) {
+				continue;
 			}
+
+			if (Objects.equals(defaultValue, importedValue)) {
+				settingsUnicodeProperties.remove(propertyKey);
+			}
+			else {
+				settingsUnicodeProperties.setProperty(
+					propertyKey, importedValue);
+			}
+
+			changed = true;
 		}
 
 		if (changed) {

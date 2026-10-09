@@ -77,9 +77,11 @@ public abstract class BaseTemplateUpgradeProcess extends UpgradeProcess {
 				Matcher emptyAssignMatcher = emptyAssignPattern.matcher(
 					template);
 
-				if (emptyAssignMatcher.find()) {
-					template = emptyAssignMatcher.replaceAll(StringPool.BLANK);
+				if (!emptyAssignMatcher.find()) {
+					continue;
 				}
+
+				template = emptyAssignMatcher.replaceAll(StringPool.BLANK);
 			}
 		}
 

@@ -203,9 +203,11 @@ public class SetupWizardUtil {
 		UnicodeProperties unicodeProperties) {
 
 		for (Map.Entry<String, String> entry : unicodeProperties.entrySet()) {
-			if (Validator.isNull(entry.getValue())) {
-				unicodeProperties.setProperty(entry.getKey(), _NULL_HOLDER);
+			if (Validator.isNotNull(entry.getValue())) {
+				continue;
 			}
+
+			unicodeProperties.setProperty(entry.getKey(), _NULL_HOLDER);
 		}
 
 		return StringUtil.removeSubstring(

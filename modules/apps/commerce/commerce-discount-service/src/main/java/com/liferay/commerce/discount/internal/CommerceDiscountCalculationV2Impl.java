@@ -272,59 +272,59 @@ public class CommerceDiscountCalculationV2Impl
 
 			if (!_isValidCouponCode(
 					commerceDiscount.getCommerceDiscountId(), couponCode,
-					discountCouponCode, commerceContext)) {
+					discountCouponCode, commerceContext) ||
+				!_isValidDiscount(commerceContext, commerceDiscount)) {
 
 				continue;
 			}
 
-			if (_isValidDiscount(commerceContext, commerceDiscount)) {
-				String discountLevel = commerceDiscount.getLevel();
+			String discountLevel = commerceDiscount.getLevel();
 
-				if (discountLevel.isEmpty() ||
-					discountLevel.equals(CommerceDiscountConstants.LEVEL_L1)) {
+			if (discountLevel.isEmpty() ||
+				discountLevel.equals(CommerceDiscountConstants.LEVEL_L1)) {
 
-					levels[0] = _getCommerceDiscountLevel(
-						levels[0], commercePrice, commerceCurrency,
-						commerceDiscount.getCommerceDiscountId(),
-						commerceDiscount.getLevel1(),
-						commerceDiscount.isUsePercentage());
-				}
-
-				if (commerceDiscount.isUsePercentage()) {
-					if (discountLevel.isEmpty() ||
-						discountLevel.equals(
-							CommerceDiscountConstants.LEVEL_L2)) {
-
-						levels[1] = _getCommerceDiscountLevel(
-							levels[1], commercePrice, commerceCurrency,
-							commerceDiscount.getCommerceDiscountId(),
-							commerceDiscount.getLevel2(),
-							commerceDiscount.isUsePercentage());
-					}
-
-					if (discountLevel.isEmpty() ||
-						discountLevel.equals(
-							CommerceDiscountConstants.LEVEL_L3)) {
-
-						levels[2] = _getCommerceDiscountLevel(
-							levels[2], commercePrice, commerceCurrency,
-							commerceDiscount.getCommerceDiscountId(),
-							commerceDiscount.getLevel3(),
-							commerceDiscount.isUsePercentage());
-					}
-
-					if (discountLevel.isEmpty() ||
-						discountLevel.equals(
-							CommerceDiscountConstants.LEVEL_L4)) {
-
-						levels[3] = _getCommerceDiscountLevel(
-							levels[3], commercePrice, commerceCurrency,
-							commerceDiscount.getCommerceDiscountId(),
-							commerceDiscount.getLevel4(),
-							commerceDiscount.isUsePercentage());
-					}
-				}
+				levels[0] = _getCommerceDiscountLevel(
+					levels[0], commercePrice, commerceCurrency,
+					commerceDiscount.getCommerceDiscountId(),
+					commerceDiscount.getLevel1(),
+					commerceDiscount.isUsePercentage());
 			}
+
+			if (!commerceDiscount.isUsePercentage()) {
+				continue;
+			}
+
+			if (discountLevel.isEmpty() ||
+				discountLevel.equals(CommerceDiscountConstants.LEVEL_L2)) {
+
+				levels[1] = _getCommerceDiscountLevel(
+					levels[1], commercePrice, commerceCurrency,
+					commerceDiscount.getCommerceDiscountId(),
+					commerceDiscount.getLevel2(),
+					commerceDiscount.isUsePercentage());
+			}
+
+			if (discountLevel.isEmpty() ||
+				discountLevel.equals(CommerceDiscountConstants.LEVEL_L3)) {
+
+				levels[2] = _getCommerceDiscountLevel(
+					levels[2], commercePrice, commerceCurrency,
+					commerceDiscount.getCommerceDiscountId(),
+					commerceDiscount.getLevel3(),
+					commerceDiscount.isUsePercentage());
+			}
+
+			if (!discountLevel.isEmpty() &&
+				!discountLevel.equals(CommerceDiscountConstants.LEVEL_L4)) {
+
+				continue;
+			}
+
+			levels[3] = _getCommerceDiscountLevel(
+				levels[3], commercePrice, commerceCurrency,
+				commerceDiscount.getCommerceDiscountId(),
+				commerceDiscount.getLevel4(),
+				commerceDiscount.isUsePercentage());
 		}
 
 		return levels;

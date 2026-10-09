@@ -92,13 +92,15 @@ public abstract class BaseUpgradeClassNames extends UpgradeProcess {
 				Map<String, Serializable> workflowContext =
 					updateWorkflowContext(workflowContextJSON);
 
-				if (workflowContext != null) {
-					long primaryKeyValue = resultSet.getLong(primaryKeyName);
-
-					updateWorkflowContext(
-						tableName, primaryKeyName, primaryKeyValue,
-						WorkflowContextUtil.convert(workflowContext));
+				if (workflowContext == null) {
+					continue;
 				}
+
+				long primaryKeyValue = resultSet.getLong(primaryKeyName);
+
+				updateWorkflowContext(
+					tableName, primaryKeyName, primaryKeyValue,
+					WorkflowContextUtil.convert(workflowContext));
 			}
 		}
 	}

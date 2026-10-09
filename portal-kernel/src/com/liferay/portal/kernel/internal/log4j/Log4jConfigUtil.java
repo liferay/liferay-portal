@@ -131,12 +131,12 @@ public class Log4jConfigUtil {
 		for (LoggerConfig loggerConfig : loggerConfigs.values()) {
 			String loggerConfigName = loggerConfig.getName();
 
-			if (!Objects.equals(
-					loggerConfigName, LogManager.ROOT_LOGGER_NAME)) {
-
-				priorities.put(
-					loggerConfigName, String.valueOf(loggerConfig.getLevel()));
+			if (Objects.equals(loggerConfigName, LogManager.ROOT_LOGGER_NAME)) {
+				continue;
 			}
+
+			priorities.put(
+				loggerConfigName, String.valueOf(loggerConfig.getLevel()));
 		}
 
 		return priorities;
@@ -190,12 +190,15 @@ public class Log4jConfigUtil {
 				}
 
 				for (Element childElement : element.elements()) {
-					if (Objects.equals(childElement.getName(), "AppenderRef") &&
-						Objects.equals(
+					if (!Objects.equals(
+							childElement.getName(), "AppenderRef") ||
+						!Objects.equals(
 							childElement.attributeValue("ref"), appenderName)) {
 
-						element.remove(childElement);
+						continue;
 					}
+
+					element.remove(childElement);
 				}
 			}
 		}

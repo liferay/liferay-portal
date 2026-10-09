@@ -121,11 +121,13 @@ public class LinkEditableElementParser extends BaseEditableElementParser {
 
 		if (!buttonType.isEmpty()) {
 			for (String className : replaceableElement.classNames()) {
-				if (className.startsWith("btn-") ||
-					Objects.equals(className, "btn")) {
+				if (!className.startsWith("btn-") &&
+					!Objects.equals(className, "btn")) {
 
-					replaceableElement.removeClass(className);
+					continue;
 				}
+
+				replaceableElement.removeClass(className);
 			}
 
 			if (Objects.equals(buttonType, "link")) {

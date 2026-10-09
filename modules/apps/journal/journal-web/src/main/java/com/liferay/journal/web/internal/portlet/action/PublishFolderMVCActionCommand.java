@@ -109,12 +109,14 @@ public class PublishFolderMVCActionCommand extends BaseMVCActionCommand {
 					}
 
 					for (JournalArticle curJournalArticle : journalArticles) {
-						if (ArrayUtil.contains(
+						if (!ArrayUtil.contains(
 								stagedModelDataHandler.getExportableStatuses(),
 								curJournalArticle.getStatus())) {
 
-							stagedModels.add(curJournalArticle);
+							continue;
 						}
+
+						stagedModels.add(curJournalArticle);
 					}
 				}
 				else {

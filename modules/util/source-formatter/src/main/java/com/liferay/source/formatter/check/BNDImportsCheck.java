@@ -103,13 +103,15 @@ public class BNDImportsCheck extends BaseFileCheck {
 		while (matcher.find()) {
 			String wildcardImport = matcher.group(1);
 
-			if (wildcardImport.matches("^!?com\\.liferay\\..+")) {
-				String message = StringBundler.concat(
-					"Do not use wildcard in ", instruction, ": \"",
-					wildcardImport, "\"");
-
-				addMessage(fileName, message);
+			if (!wildcardImport.matches("^!?com\\.liferay\\..+")) {
+				continue;
 			}
+
+			String message = StringBundler.concat(
+				"Do not use wildcard in ", instruction, ": \"", wildcardImport,
+				"\"");
+
+			addMessage(fileName, message);
 		}
 	}
 

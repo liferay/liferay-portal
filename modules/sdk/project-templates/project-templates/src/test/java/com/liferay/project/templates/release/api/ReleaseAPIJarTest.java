@@ -96,12 +96,14 @@ public class ReleaseAPIJarTest implements BaseReleaseAPIJarTestCase {
 			releaseApiJarFile.getName());
 
 		for (String classFileString : classFileStrings) {
-			if (!classFileString.contains("$") &&
-				!ignoreStrings.contains(classFileString) &&
-				!sourceFileStrings.contains(classFileString)) {
+			if (classFileString.contains("$") ||
+				ignoreStrings.contains(classFileString) ||
+				sourceFileStrings.contains(classFileString)) {
 
-				missingClassFileStrings.add(classFileString);
+				continue;
 			}
+
+			missingClassFileStrings.add(classFileString);
 		}
 
 		Assert.assertTrue(

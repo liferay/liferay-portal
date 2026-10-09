@@ -66,9 +66,11 @@ public class ActionHelperImpl implements ActionHelper {
 				_cpAttachmentFileEntryService.fetchCPAttachmentFileEntry(
 					cpAttachmentFileEntryId);
 
-			if (cpAttachmentFileEntry != null) {
-				cpAttachmentFileEntries.add(cpAttachmentFileEntry);
+			if (cpAttachmentFileEntry == null) {
+				continue;
 			}
+
+			cpAttachmentFileEntries.add(cpAttachmentFileEntry);
 		}
 
 		return cpAttachmentFileEntries;

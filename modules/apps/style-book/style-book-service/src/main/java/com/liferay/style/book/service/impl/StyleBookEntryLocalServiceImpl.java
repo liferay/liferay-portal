@@ -892,13 +892,15 @@ public class StyleBookEntryLocalServiceImpl
 				styleBookEntryPersistence.findByG_D_T_Head(
 					groupId, true, themeId, true)) {
 
-			if (styleBookEntry.getStyleBookEntryId() != styleBookEntryId) {
-				styleBookEntry.setDefaultStyleBookEntry(false);
-
-				_updateDraftDefaultStyleBookEntry(false, styleBookEntry);
-
-				styleBookEntryPersistence.update(styleBookEntry);
+			if (styleBookEntry.getStyleBookEntryId() == styleBookEntryId) {
+				continue;
 			}
+
+			styleBookEntry.setDefaultStyleBookEntry(false);
+
+			_updateDraftDefaultStyleBookEntry(false, styleBookEntry);
+
+			styleBookEntryPersistence.update(styleBookEntry);
 		}
 	}
 

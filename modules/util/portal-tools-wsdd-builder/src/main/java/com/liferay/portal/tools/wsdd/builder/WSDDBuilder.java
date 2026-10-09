@@ -108,14 +108,16 @@ public class WSDDBuilder {
 			boolean remoteService = GetterUtil.getBoolean(
 				entityElement.attributeValue("remote-service"), true);
 
-			if (remoteService) {
-				_createServiceWSDD(entityName);
-
-				WSDDMerger.merge(
-					StringBundler.concat(
-						_outputPath, "/", entityName, "Service_deploy.wsdd"),
-					_serverConfigFileName);
+			if (!remoteService) {
+				continue;
 			}
+
+			_createServiceWSDD(entityName);
+
+			WSDDMerger.merge(
+				StringBundler.concat(
+					_outputPath, "/", entityName, "Service_deploy.wsdd"),
+				_serverConfigFileName);
 		}
 	}
 

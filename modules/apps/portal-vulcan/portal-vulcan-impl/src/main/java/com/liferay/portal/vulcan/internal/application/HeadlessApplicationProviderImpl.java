@@ -98,13 +98,15 @@ public class HeadlessApplicationProviderImpl
 		long companyId = CompanyThreadLocal.getCompanyId();
 
 		for (ApplicationImpl applicationImpl : applicationImpls) {
-			if (_isRegistered(
+			if (!_isRegistered(
 					companyId,
 					_companyIdsServiceTrackerMap.getService(
 						applicationImpl._applicationDTO.serviceId))) {
 
-				applications.add(applicationImpl);
+				continue;
 			}
+
+			applications.add(applicationImpl);
 		}
 
 		return applications;

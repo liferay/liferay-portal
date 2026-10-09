@@ -1860,21 +1860,25 @@ public class CalendarBookingLocalServiceImpl
 
 			oldChildCalendarBooking = childCalendarBookingMap.get(calendarId);
 
-			if (oldChildCalendarBooking != null) {
-				int workflowAction = GetterUtil.getInteger(
-					serviceContext.getAttribute("workflowAction"));
-
-				if ((calendarBooking.getStartTime() ==
-						oldChildCalendarBooking.getStartTime()) &&
-					(calendarBooking.getEndTime() ==
-						oldChildCalendarBooking.getEndTime()) &&
-					(workflowAction != WorkflowConstants.ACTION_SAVE_DRAFT)) {
-
-					updateStatus(
-						childCalendarBooking.getUserId(), childCalendarBooking,
-						oldChildCalendarBooking.getStatus(), serviceContext);
-				}
+			if (oldChildCalendarBooking == null) {
+				continue;
 			}
+
+			int workflowAction = GetterUtil.getInteger(
+				serviceContext.getAttribute("workflowAction"));
+
+			if ((calendarBooking.getStartTime() !=
+					oldChildCalendarBooking.getStartTime()) ||
+				(calendarBooking.getEndTime() !=
+					oldChildCalendarBooking.getEndTime()) ||
+				(workflowAction == WorkflowConstants.ACTION_SAVE_DRAFT)) {
+
+				continue;
+			}
+
+			updateStatus(
+				childCalendarBooking.getUserId(), childCalendarBooking,
+				oldChildCalendarBooking.getStatus(), serviceContext);
 		}
 	}
 
@@ -2062,10 +2066,12 @@ public class CalendarBookingLocalServiceImpl
 		Map<Locale, String> updatedTitleMap = new HashMap<>();
 
 		for (Map.Entry<Locale, String> titleMapEntry : titleMap.entrySet()) {
-			if (titleMapEntry.getValue() != null) {
-				updatedTitleMap.put(
-					titleMapEntry.getKey(), titleMapEntry.getValue());
+			if (titleMapEntry.getValue() == null) {
+				continue;
 			}
+
+			updatedTitleMap.put(
+				titleMapEntry.getKey(), titleMapEntry.getValue());
 		}
 
 		if (Objects.equals(updatedTitleMap, calendarBooking.getTitleMap())) {
@@ -2077,11 +2083,12 @@ public class CalendarBookingLocalServiceImpl
 		for (Map.Entry<Locale, String> descriptionMapEntry :
 				descriptionMap.entrySet()) {
 
-			if (descriptionMapEntry.getValue() != null) {
-				updatedDescriptionMap.put(
-					descriptionMapEntry.getKey(),
-					descriptionMapEntry.getValue());
+			if (descriptionMapEntry.getValue() == null) {
+				continue;
 			}
+
+			updatedDescriptionMap.put(
+				descriptionMapEntry.getKey(), descriptionMapEntry.getValue());
 		}
 
 		if (Objects.equals(

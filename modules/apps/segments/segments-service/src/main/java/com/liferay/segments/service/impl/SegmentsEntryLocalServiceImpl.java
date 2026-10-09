@@ -655,16 +655,20 @@ public class SegmentsEntryLocalServiceImpl
 			Criteria.Criterion criterion = criteria.getCriterion(
 				SegmentsEntrySegmentsCriteriaContributor.KEY);
 
-			if (criterion != null) {
-				String filterString = criterion.getFilterString();
-
-				if (Validator.isNotNull(filterString) &&
-					filterString.contains(
-						String.valueOf(segmentsEntry.getSegmentsEntryId()))) {
-
-					_reindexSegmentsEntryRels2(referredSegmentsEntry);
-				}
+			if (criterion == null) {
+				continue;
 			}
+
+			String filterString = criterion.getFilterString();
+
+			if (Validator.isNull(filterString) ||
+				!filterString.contains(
+					String.valueOf(segmentsEntry.getSegmentsEntryId()))) {
+
+				continue;
+			}
+
+			_reindexSegmentsEntryRels2(referredSegmentsEntry);
 		}
 	}
 

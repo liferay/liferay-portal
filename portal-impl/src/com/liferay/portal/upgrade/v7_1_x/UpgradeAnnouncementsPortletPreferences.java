@@ -63,16 +63,17 @@ public class UpgradeAnnouncementsPortletPreferences extends UpgradeProcess {
 							String preferences2 = resultSet2.getString(
 								"preferences");
 
-							if (preferences2.equals(
+							if (!preferences2.equals(
 									PortletConstants.DEFAULT_PREFERENCES)) {
 
-								preparedStatement3.setString(1, preferences);
-								preparedStatement3.setLong(
-									2,
-									resultSet2.getLong("portletPreferencesId"));
-
-								preparedStatement3.addBatch();
+								continue;
 							}
+
+							preparedStatement3.setString(1, preferences);
+							preparedStatement3.setLong(
+								2, resultSet2.getLong("portletPreferencesId"));
+
+							preparedStatement3.addBatch();
 						}
 
 						preparedStatement3.executeBatch();

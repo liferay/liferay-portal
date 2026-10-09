@@ -216,9 +216,11 @@ public class WorkflowInstanceViewDisplayContext
 			WorkflowHandlerRegistryUtil.getWorkflowHandlers();
 
 		for (WorkflowHandler<?> workflowHandler : workflowHandlers) {
-			if (workflowHandler.isAssetTypeSearchable()) {
-				searchableAssetsWorkflowHandlers.add(workflowHandler);
+			if (!workflowHandler.isAssetTypeSearchable()) {
+				continue;
 			}
+
+			searchableAssetsWorkflowHandlers.add(workflowHandler);
 		}
 
 		return searchableAssetsWorkflowHandlers;

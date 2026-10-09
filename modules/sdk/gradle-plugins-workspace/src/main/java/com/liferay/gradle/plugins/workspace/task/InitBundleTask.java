@@ -147,9 +147,11 @@ public class InitBundleTask extends JavaExec {
 
 				sb.append(path.toString());
 
-				if (iterator.hasNext()) {
-					sb.append(',');
+				if (!iterator.hasNext()) {
+					continue;
 				}
+
+				sb.append(',');
 			}
 
 			args.add("--provided-modules");

@@ -128,9 +128,11 @@ public class JSTranspilerBasePlugin implements Plugin<Project> {
 						(YarnInstallTask)GradleUtil.fetchTask(
 							curProject, YarnPlugin.YARN_INSTALL_TASK_NAME);
 
-					if (yarnInstallTask != null) {
-						copy.mustRunAfter(yarnInstallTask);
+					if (yarnInstallTask == null) {
+						continue;
 					}
+
+					copy.mustRunAfter(yarnInstallTask);
 				}
 				while ((curProject = curProject.getParent()) != null);
 			}

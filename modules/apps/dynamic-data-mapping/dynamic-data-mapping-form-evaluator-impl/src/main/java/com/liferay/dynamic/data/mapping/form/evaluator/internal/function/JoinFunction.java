@@ -26,9 +26,11 @@ public class JoinFunction
 		for (int i = 0; i < jsonArray.length(); i++) {
 			sb.append(GetterUtil.getString(jsonArray.get(i)));
 
-			if (i < (jsonArray.length() - 1)) {
-				sb.append(CharPool.COMMA);
+			if (i >= (jsonArray.length() - 1)) {
+				continue;
 			}
+
+			sb.append(CharPool.COMMA);
 		}
 
 		return sb.toString();

@@ -569,11 +569,13 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 					WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS, null)) {
 
-			if (includeTrashedEntries ||
-				!_trashHelper.isInTrashExplicitly(kbArticle)) {
+			if (!includeTrashedEntries &&
+				_trashHelper.isInTrashExplicitly(kbArticle)) {
 
-				kbArticleLocalService.deleteKBArticle(kbArticle);
+				continue;
 			}
+
+			kbArticleLocalService.deleteKBArticle(kbArticle);
 		}
 
 		for (KBArticle kbArticle :
@@ -582,11 +584,13 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 					WorkflowConstants.STATUS_IN_TRASH, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS, null)) {
 
-			if (includeTrashedEntries ||
-				!_trashHelper.isInTrashExplicitly(kbArticle)) {
+			if (!includeTrashedEntries &&
+				_trashHelper.isInTrashExplicitly(kbArticle)) {
 
-				kbArticleLocalService.deleteKBArticle(kbArticle);
+				continue;
 			}
+
+			kbArticleLocalService.deleteKBArticle(kbArticle);
 		}
 	}
 

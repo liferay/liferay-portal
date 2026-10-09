@@ -208,13 +208,15 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 					for (LinkDescription linkDescription :
 							authorizeOrder.links()) {
 
-						if (Objects.equals(
+						if (!Objects.equals(
 								PayPalCommercePaymentMethodConstants.
 									APPROVE_URL,
 								linkDescription.rel())) {
 
-							url = linkDescription.href();
+							continue;
 						}
+
+						url = linkDescription.href();
 					}
 
 					success = true;
@@ -643,12 +645,14 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 				Order createOrder = orderCreateHttpResponse.result();
 
 				for (LinkDescription linkDescription : createOrder.links()) {
-					if (Objects.equals(
+					if (!Objects.equals(
 							PayPalCommercePaymentMethodConstants.APPROVE_URL,
 							linkDescription.rel())) {
 
-						url = linkDescription.href();
+						continue;
 					}
+
+					url = linkDescription.href();
 				}
 
 				if (Validator.isNull(url)) {

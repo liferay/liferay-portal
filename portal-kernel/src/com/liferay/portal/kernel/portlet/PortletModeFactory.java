@@ -50,14 +50,15 @@ public class PortletModeFactory {
 			{
 				try {
 					for (Field field : LiferayPortletMode.class.getFields()) {
-						if (Modifier.isStatic(field.getModifiers()) &&
-							(field.getType() == PortletMode.class)) {
+						if (!Modifier.isStatic(field.getModifiers()) ||
+							(field.getType() != PortletMode.class)) {
 
-							PortletMode portletMode = (PortletMode)field.get(
-								null);
-
-							put(portletMode.toString(), portletMode);
+							continue;
 						}
+
+						PortletMode portletMode = (PortletMode)field.get(null);
+
+						put(portletMode.toString(), portletMode);
 					}
 				}
 				catch (IllegalAccessException illegalAccessException) {

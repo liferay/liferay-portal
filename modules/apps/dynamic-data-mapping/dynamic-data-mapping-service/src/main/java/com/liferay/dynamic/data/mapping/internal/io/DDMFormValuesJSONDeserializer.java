@@ -232,11 +232,13 @@ public class DDMFormValuesJSONDeserializer
 		while (iterator.hasNext()) {
 			String languageId = iterator.next();
 
-			if (_language.isAvailableLocale(languageId)) {
-				localizedValue.addString(
-					LocaleUtil.fromLanguageId(languageId),
-					jsonObject.getString(languageId));
+			if (!_language.isAvailableLocale(languageId)) {
+				continue;
 			}
+
+			localizedValue.addString(
+				LocaleUtil.fromLanguageId(languageId),
+				jsonObject.getString(languageId));
 		}
 
 		return localizedValue;

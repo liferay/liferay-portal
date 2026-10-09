@@ -187,9 +187,11 @@ public class FileTestUtil {
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 
-				if (line != null) {
-					allLines.add(line);
+				if (line == null) {
+					continue;
 				}
+
+				allLines.add(line);
 			}
 		}
 

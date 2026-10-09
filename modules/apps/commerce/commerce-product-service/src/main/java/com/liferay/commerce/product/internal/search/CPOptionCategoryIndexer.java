@@ -108,11 +108,13 @@ public class CPOptionCategoryIndexer extends BaseIndexer<CPOptionCategory> {
 				_localization.getLocalizedName(Field.TITLE, languageId), title);
 			document.addText(FIELD_KEY, cpOptionCategory.getKey());
 
-			if (languageId.equals(cpOptionCategoryDefaultLanguageId)) {
-				document.addText(Field.DESCRIPTION, description);
-				document.addText(Field.TITLE, title);
-				document.addText("defaultLanguageId", languageId);
+			if (!languageId.equals(cpOptionCategoryDefaultLanguageId)) {
+				continue;
 			}
+
+			document.addText(Field.DESCRIPTION, description);
+			document.addText(Field.TITLE, title);
+			document.addText("defaultLanguageId", languageId);
 		}
 
 		if (_log.isDebugEnabled()) {

@@ -174,9 +174,11 @@ public class LayoutSetPrototypeLocalServiceImpl
 			layoutSetPrototypePersistence.findByCompanyId(companyId);
 
 		for (LayoutSetPrototype layoutSetPrototype : layoutSetPrototypes) {
-			if (layoutSetPrototype.getUserId() != guestUserId) {
-				deleteLayoutSetPrototype(layoutSetPrototype);
+			if (layoutSetPrototype.getUserId() == guestUserId) {
+				continue;
 			}
+
+			deleteLayoutSetPrototype(layoutSetPrototype);
 		}
 	}
 

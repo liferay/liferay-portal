@@ -2205,12 +2205,13 @@ public class ObjectDefinitionResourceTest
 			JSONObject actualPermissionJSONObject =
 				actualPermissionsJSONArray.getJSONObject(i);
 
-			if (expectedRoleNames.contains(
+			if (!expectedRoleNames.contains(
 					actualPermissionJSONObject.getString("roleName"))) {
 
-				filteredActualPermissionsJSONArray.put(
-					actualPermissionJSONObject);
+				continue;
 			}
+
+			filteredActualPermissionsJSONArray.put(actualPermissionJSONObject);
 		}
 
 		JSONAssert.assertEquals(

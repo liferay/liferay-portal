@@ -60,11 +60,13 @@ public class CommerceRegionUpgradeProcess extends UpgradeProcess {
 						lastPublishDate);
 				}
 
-				if (region.getRegionId() != commerceRegionId) {
-					for (String tableName : _TABLE_NAMES) {
-						_updateRegionId(
-							tableName, region.getRegionId(), commerceRegionId);
-					}
+				if (region.getRegionId() == commerceRegionId) {
+					continue;
+				}
+
+				for (String tableName : _TABLE_NAMES) {
+					_updateRegionId(
+						tableName, region.getRegionId(), commerceRegionId);
 				}
 			}
 		}

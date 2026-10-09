@@ -162,11 +162,12 @@ public class RenderStateUtil {
 						PortletQNameUtil.getPublicRenderParameterName(
 							publicRenderParameter.getQName()));
 
-					if (currentValue != null) {
-						changedPublicRenderParameters.put(
-							publicRenderParameter.getIdentifier(),
-							currentValue);
+					if (currentValue == null) {
+						continue;
 					}
+
+					changedPublicRenderParameters.put(
+						publicRenderParameter.getIdentifier(), currentValue);
 				}
 
 				continue;
@@ -176,18 +177,22 @@ public class RenderStateUtil {
 				RenderParametersPool.get(
 					httpServletRequest, plid, portlet.getPortletId());
 
-			if (privateRenderParameterMap != null) {
-				for (PublicRenderParameter publicRenderParameter :
-						publicRenderParameters) {
+			if (privateRenderParameterMap == null) {
+				continue;
+			}
 
-					String[] values = privateRenderParameterMap.get(
-						publicRenderParameter.getIdentifier());
+			for (PublicRenderParameter publicRenderParameter :
+					publicRenderParameters) {
 
-					if (values != null) {
-						changedPublicRenderParameters.put(
-							publicRenderParameter.getIdentifier(), values);
-					}
+				String[] values = privateRenderParameterMap.get(
+					publicRenderParameter.getIdentifier());
+
+				if (values == null) {
+					continue;
 				}
+
+				changedPublicRenderParameters.put(
+					publicRenderParameter.getIdentifier(), values);
 			}
 		}
 
@@ -391,9 +396,11 @@ public class RenderStateUtil {
 			String[] values = changedPublicRenderParameters.get(
 				publicRenderParameter.getIdentifier());
 
-			if (values != null) {
-				jsonObject.put(publicRenderParameter.getIdentifier(), values);
+			if (values == null) {
+				continue;
 			}
+
+			jsonObject.put(publicRenderParameter.getIdentifier(), values);
 		}
 
 		return jsonObject;

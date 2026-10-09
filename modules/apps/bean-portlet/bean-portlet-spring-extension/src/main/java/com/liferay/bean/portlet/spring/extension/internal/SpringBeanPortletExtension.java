@@ -283,11 +283,13 @@ public class SpringBeanPortletExtension {
 
 			Object value = httpSession.getAttribute(name);
 
-			if (value instanceof ScopedBean) {
-				ScopedBean<?> scopedBean = (ScopedBean<?>)value;
-
-				scopedBean.destroy();
+			if (!(value instanceof ScopedBean)) {
+				continue;
 			}
+
+			ScopedBean<?> scopedBean = (ScopedBean<?>)value;
+
+			scopedBean.destroy();
 		}
 	}
 

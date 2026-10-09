@@ -44,9 +44,11 @@ public class LayoutRemoveUnusedTypeSettingsUpgradeProcess
 				boolean modified = false;
 
 				for (String key : _UNUSED_PROPERTY_KEYS) {
-					if (unicodeProperties.remove(key) != null) {
-						modified = true;
+					if (unicodeProperties.remove(key) == null) {
+						continue;
 					}
+
+					modified = true;
 				}
 
 				if (!modified) {

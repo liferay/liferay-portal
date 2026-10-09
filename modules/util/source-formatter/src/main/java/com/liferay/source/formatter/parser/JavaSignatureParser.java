@@ -84,15 +84,17 @@ public class JavaSignatureParser {
 
 				String annotation = parameters.substring(0, pos);
 
-				if ((ToolsUtil.getLevel(annotation) == 0) &&
-					(ToolsUtil.getLevel(annotation, "<", ">") == 0)) {
+				if ((ToolsUtil.getLevel(annotation) != 0) ||
+					(ToolsUtil.getLevel(annotation, "<", ">") != 0)) {
 
-					parameterAnnotations.add(annotation);
-
-					parameters = parameters.substring(pos + 1);
-
-					pos = -1;
+					continue;
 				}
+
+				parameterAnnotations.add(annotation);
+
+				parameters = parameters.substring(pos + 1);
+
+				pos = -1;
 			}
 
 			if (parameters.startsWith("final ")) {

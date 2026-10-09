@@ -115,9 +115,11 @@ public class SearchUtil {
 		for (Document document : hits.getDocs()) {
 			T item = transformUnsafeFunction.apply(document);
 
-			if (item != null) {
-				items.add(item);
+			if (item == null) {
+				continue;
 			}
+
+			items.add(item);
 		}
 
 		return Page.of(

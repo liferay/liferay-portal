@@ -278,9 +278,11 @@ public class IndexUpdaterUtil {
 						StringPool.COMMA_AND_SPACE),
 					orderByColumns + " asc");
 
-			if (duplicateUniqueFinderRowsCleaner.deleteDuplicates()) {
-				duplicatesDeleted = true;
+			if (!duplicateUniqueFinderRowsCleaner.deleteDuplicates()) {
+				continue;
 			}
+
+			duplicatesDeleted = true;
 		}
 
 		return duplicatesDeleted;

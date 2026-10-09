@@ -149,9 +149,11 @@ public class ResourceActionsImpl implements ResourceActions {
 		List<String> modelNames = new ArrayList<>();
 
 		for (String name : _resourceActionsBags.keySet()) {
-			if (name.indexOf(CharPool.PERIOD) != -1) {
-				modelNames.add(name);
+			if (name.indexOf(CharPool.PERIOD) == -1) {
+				continue;
 			}
+
+			modelNames.add(name);
 		}
 
 		return modelNames;
@@ -276,9 +278,11 @@ public class ResourceActionsImpl implements ResourceActions {
 		List<String> portletNames = new ArrayList<>();
 
 		for (String name : _resourceActionsBags.keySet()) {
-			if (name.indexOf(CharPool.PERIOD) == -1) {
-				portletNames.add(name);
+			if (name.indexOf(CharPool.PERIOD) != -1) {
+				continue;
 			}
+
+			portletNames.add(name);
 		}
 
 		return portletNames;
@@ -657,9 +661,11 @@ public class ResourceActionsImpl implements ResourceActions {
 
 				modelResourceNames.remove(modelName);
 
-				if (modelResourceNames.isEmpty()) {
-					_resourceReferences.remove(portletName);
+				if (!modelResourceNames.isEmpty()) {
+					continue;
 				}
+
+				_resourceReferences.remove(portletName);
 			}
 
 			if (SetUtil.isNotEmpty(_resourceReferences.get(modelName))) {
@@ -750,9 +756,11 @@ public class ResourceActionsImpl implements ResourceActions {
 		while (iterator.hasNext()) {
 			String actionId = iterator.next();
 
-			if (guestUnsupportedActions.contains(actionId)) {
-				iterator.remove();
+			if (!guestUnsupportedActions.contains(actionId)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 
@@ -812,9 +820,11 @@ public class ResourceActionsImpl implements ResourceActions {
 
 			sb.append(modelNameElement.getTextTrim());
 
-			if (iterator.hasNext()) {
-				sb.append(_COMPOSITE_MODEL_NAME_SEPARATOR);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(_COMPOSITE_MODEL_NAME_SEPARATOR);
 		}
 
 		return sb.toString();
@@ -1159,21 +1169,23 @@ public class ResourceActionsImpl implements ResourceActions {
 				boolean root = GetterUtil.getBoolean(
 					modelResourceElement.elementText("root"));
 
-				if (root) {
-					String existingModelName =
-						_portletRootModelResources.putIfAbsent(
-							portletName, modelName);
+				if (!root) {
+					continue;
+				}
 
-					if (Validator.isNotNull(existingModelName) &&
-						!Objects.equals(existingModelName, modelName)) {
+				String existingModelName =
+					_portletRootModelResources.putIfAbsent(
+						portletName, modelName);
 
-						throw new ResourceActionsException(
-							StringBundler.concat(
-								"Portlet ", portletName,
-								" cannot be assigned to both ",
-								existingModelName, " and ", modelName,
-								" as root model resources. See LPS-135983."));
-					}
+				if (Validator.isNotNull(existingModelName) &&
+					!Objects.equals(existingModelName, modelName)) {
+
+					throw new ResourceActionsException(
+						StringBundler.concat(
+							"Portlet ", portletName,
+							" cannot be assigned to both ", existingModelName,
+							" and ", modelName,
+							" as root model resources. See LPS-135983."));
 				}
 			}
 
@@ -1186,9 +1198,11 @@ public class ResourceActionsImpl implements ResourceActions {
 				modelResourceElement, modelName,
 				Collections.singleton(ActionKeys.PERMISSIONS));
 
-			if (resourceNames != null) {
-				resourceNames.add(modelName);
+			if (resourceNames == null) {
+				continue;
 			}
+
+			resourceNames.add(modelName);
 		}
 	}
 
@@ -1243,9 +1257,11 @@ public class ResourceActionsImpl implements ResourceActions {
 				_readResource(
 					portletResourceElement, portletName, portletActions);
 
-				if (resourceNames != null) {
-					resourceNames.add(portletName);
+				if (resourceNames == null) {
+					continue;
 				}
+
+				resourceNames.add(portletName);
 			}
 		}
 	}

@@ -202,12 +202,14 @@ public class AIHubAgentNodeExecutor extends BaseNodeExecutor {
 
 						Serializable value = entry.getValue();
 
-						if (value instanceof Boolean ||
-							value instanceof Number ||
-							value instanceof String) {
+						if (!(value instanceof Boolean) &&
+							!(value instanceof Number) &&
+							!(value instanceof String)) {
 
-							contextJSONObject.put(entry.getKey(), value);
+							continue;
 						}
+
+						contextJSONObject.put(entry.getKey(), value);
 					}
 
 					return contextJSONObject;

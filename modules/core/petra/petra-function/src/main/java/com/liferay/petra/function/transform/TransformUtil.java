@@ -278,9 +278,11 @@ public class TransformUtil {
 		for (T item : collection) {
 			R newItem = unsafeFunction.apply(item);
 
-			if (newItem != null) {
-				list.add(newItem);
+			if (newItem == null) {
+				continue;
 			}
+
+			list.add(newItem);
 		}
 
 		return list;
@@ -426,9 +428,11 @@ public class TransformUtil {
 		for (Integer item : array) {
 			R newItem = unsafeFunction.apply(item);
 
-			if (newItem != null) {
-				list.add(newItem);
+			if (newItem == null) {
+				continue;
 			}
+
+			list.add(newItem);
 		}
 
 		return list;
@@ -447,9 +451,11 @@ public class TransformUtil {
 		for (Long item : array) {
 			R newItem = unsafeFunction.apply(item);
 
-			if (newItem != null) {
-				list.add(newItem);
+			if (newItem == null) {
+				continue;
 			}
+
+			list.add(newItem);
 		}
 
 		return list;
@@ -468,9 +474,11 @@ public class TransformUtil {
 		for (T item : array) {
 			R newItem = unsafeFunction.apply(item);
 
-			if (newItem != null) {
-				list.add(newItem);
+			if (newItem == null) {
+				continue;
 			}
+
+			list.add(newItem);
 		}
 
 		return list;

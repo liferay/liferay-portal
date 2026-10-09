@@ -107,11 +107,13 @@ public class SynonymSetIndexReindexer implements IndexReindexer {
 			_synonymSetIndexWriter.create(
 				synonymSetIndexName, _buildSynonymSet(classPKs.get(i)));
 
-			if ((i % sendStatusInterval) == 0) {
-				ReindexStatusMessageSenderUtil.sendStatusMessage(
-					SynonymSetIndexReindexer.class.getName(), i + 1,
-					classPKs.size());
+			if ((i % sendStatusInterval) != 0) {
+				continue;
 			}
+
+			ReindexStatusMessageSenderUtil.sendStatusMessage(
+				SynonymSetIndexReindexer.class.getName(), i + 1,
+				classPKs.size());
 		}
 
 		if (_isExecuteSyncReindex(executionMode)) {

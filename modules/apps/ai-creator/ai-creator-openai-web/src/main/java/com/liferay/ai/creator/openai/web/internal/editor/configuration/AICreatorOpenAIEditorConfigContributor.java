@@ -121,11 +121,13 @@ public class AICreatorOpenAIEditorConfigContributor
 
 			JSONArray toolbarJSONArray = jsonObject.getJSONArray(key);
 
-			if ((toolbarJSONArray != null) &&
-				!_hasAICreatorToolbarItem(toolbarJSONArray)) {
+			if ((toolbarJSONArray == null) ||
+				_hasAICreatorToolbarItem(toolbarJSONArray)) {
 
-				toolbarJSONArray.put(toJSONArray("['AICreator']"));
+				continue;
 			}
+
+			toolbarJSONArray.put(toJSONArray("['AICreator']"));
 		}
 	}
 

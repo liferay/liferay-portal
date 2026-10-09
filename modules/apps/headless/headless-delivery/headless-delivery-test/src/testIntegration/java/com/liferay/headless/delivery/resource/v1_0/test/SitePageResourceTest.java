@@ -1834,9 +1834,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			for (ResourceAction resourceAction : resourceActions) {
 				long bitwiseValue = resourceAction.getBitwiseValue();
 
-				if ((actionIds & bitwiseValue) == bitwiseValue) {
-					actionIdsSet.add(resourceAction.getActionId());
+				if ((actionIds & bitwiseValue) != bitwiseValue) {
+					continue;
 				}
+
+				actionIdsSet.add(resourceAction.getActionId());
 			}
 
 			String[] actionKeys = pagePermission.getActionKeys();

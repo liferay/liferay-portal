@@ -148,9 +148,11 @@ public class XMLIndentationCheck extends BaseFileCheck {
 
 			String line = lines[i - 1];
 
-			if (line.matches("\\s*[\\w-]+=.*")) {
-				content = _fixIndentation(content, line, expectedTabCount, i);
+			if (!line.matches("\\s*[\\w-]+=.*")) {
+				continue;
 			}
+
+			content = _fixIndentation(content, line, expectedTabCount, i);
 		}
 
 		return content;
@@ -294,14 +296,12 @@ public class XMLIndentationCheck extends BaseFileCheck {
 			for (String token : tokens) {
 				int matchPos = _getFirstMatchPos(line, startPos, token);
 
-				if (matchPos == -1) {
+				if ((matchPos == -1) || ((min != -1) && (min <= matchPos))) {
 					continue;
 				}
 
-				if ((min == -1) || (min > matchPos)) {
-					match = token;
-					min = matchPos;
-				}
+				match = token;
+				min = matchPos;
 			}
 
 			if (min != -1) {

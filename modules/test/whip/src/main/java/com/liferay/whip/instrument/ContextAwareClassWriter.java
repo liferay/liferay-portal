@@ -50,13 +50,15 @@ public class ContextAwareClassWriter extends ClassWriter {
 
 			type2 = getSuperName(type2);
 
-			if (type2 != null) {
-				if (list1.contains(type2)) {
-					return type2;
-				}
-
-				list2.add(type2);
+			if (type2 == null) {
+				continue;
 			}
+
+			if (list1.contains(type2)) {
+				return type2;
+			}
+
+			list2.add(type2);
 		}
 	}
 

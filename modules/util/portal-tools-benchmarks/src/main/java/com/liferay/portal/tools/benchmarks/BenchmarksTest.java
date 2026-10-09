@@ -158,9 +158,11 @@ public class BenchmarksTest {
 				sb.append(_excludedCompanyWebIds.get(i));
 				sb.append("'");
 
-				if (i < (_excludedCompanyWebIds.size() - 1)) {
-					sb.append(", ");
+				if (i >= (_excludedCompanyWebIds.size() - 1)) {
+					continue;
 				}
+
+				sb.append(", ");
 			}
 
 			sb.append(") and ");

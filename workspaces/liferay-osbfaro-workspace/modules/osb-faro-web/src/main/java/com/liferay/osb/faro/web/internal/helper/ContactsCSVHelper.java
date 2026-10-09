@@ -242,9 +242,11 @@ public class ContactsCSVHelper {
 			Map<String, Object> individualMap = new HashMap<>();
 
 			for (int i = 0; i < headers.length; i++) {
-				if (row[i] != null) {
-					individualMap.put(headers[i], row[i]);
+				if (row[i] == null) {
+					continue;
 				}
+
+				individualMap.put(headers[i], row[i]);
 			}
 
 			individualMaps.add(individualMap);

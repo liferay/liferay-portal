@@ -161,15 +161,17 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 				MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
 					mcpServerProfileExternalReferenceCode)) {
 
-			if (ArrayUtil.contains(
+			if (!ArrayUtil.contains(
 					dataMaskExternalReferenceCodes,
 					MapUtil.getString(
 						mcpServerProfileDataMaskObjectEntry.getValues(),
 						"dataMaskExternalReferenceCode"))) {
 
-				MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
-					"Deleted by test.", mcpServerProfileDataMaskObjectEntry);
+				continue;
 			}
+
+			MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
+				"Deleted by test.", mcpServerProfileDataMaskObjectEntry);
 		}
 	}
 

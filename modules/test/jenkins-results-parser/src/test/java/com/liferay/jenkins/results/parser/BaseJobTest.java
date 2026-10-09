@@ -106,9 +106,11 @@ public class BaseJobTest extends com.liferay.jenkins.results.parser.Test {
 					pkg.getName(), ".",
 					fileName.substring(0, fileName.length() - 6)));
 
-			if (SegmentTestClassGroup.class.isAssignableFrom(clazz)) {
-				segmentTestClassGroupClasses.add(clazz);
+			if (!SegmentTestClassGroup.class.isAssignableFrom(clazz)) {
+				continue;
 			}
+
+			segmentTestClassGroupClasses.add(clazz);
 		}
 
 		return segmentTestClassGroupClasses;

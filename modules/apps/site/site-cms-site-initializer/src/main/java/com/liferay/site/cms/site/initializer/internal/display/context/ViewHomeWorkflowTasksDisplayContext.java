@@ -145,9 +145,11 @@ public class ViewHomeWorkflowTasksDisplayContext {
 			JSONObject objectDefinitionJSONObject =
 				_getObjectDefinitionJSONObject(objectDefinition);
 
-			if (objectDefinitionJSONObject != null) {
-				jsonArray.put(objectDefinitionJSONObject);
+			if (objectDefinitionJSONObject == null) {
+				continue;
 			}
+
+			jsonArray.put(objectDefinitionJSONObject);
 		}
 
 		return jsonArray;

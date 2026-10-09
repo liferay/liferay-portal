@@ -64,16 +64,20 @@ public class StagingConfigurationClassNamesUpgradeProcess
 			}
 
 			for (String adminPortletId : allPortletIds) {
-				if (adminPortletId.endsWith("AdminPortlet")) {
-					String portletId = StringUtil.replace(
-						adminPortletId, "AdminPortlet", "Portlet");
-
-					if (allPortletIds.contains(portletId) &&
-						!adminPortletIdsMap.containsKey(portletId)) {
-
-						adminPortletIdsMap.put(portletId, adminPortletId);
-					}
+				if (!adminPortletId.endsWith("AdminPortlet")) {
+					continue;
 				}
+
+				String portletId = StringUtil.replace(
+					adminPortletId, "AdminPortlet", "Portlet");
+
+				if (!allPortletIds.contains(portletId) ||
+					adminPortletIdsMap.containsKey(portletId)) {
+
+					continue;
+				}
+
+				adminPortletIdsMap.put(portletId, adminPortletId);
 			}
 		}
 
@@ -130,24 +134,25 @@ public class StagingConfigurationClassNamesUpgradeProcess
 		for (Map.Entry<String, String> entry : portletNamesMap.entrySet()) {
 			String stagedKey = "staged-portlet_" + entry.getKey();
 
-			if (typeSettingsUnicodeProperties.containsKey(stagedKey)) {
-				String adminStagedKey = "staged-portlet_" + entry.getValue();
-				String value = typeSettingsUnicodeProperties.getProperty(
-					stagedKey);
-
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						StringBundler.concat(
-							"Renaming key \"", stagedKey, "\" to \"",
-							adminStagedKey, "\" with value \"", value, "\""));
-				}
-
-				typeSettingsUnicodeProperties.put(adminStagedKey, value);
-
-				typeSettingsUnicodeProperties.remove(stagedKey);
-
-				changed = true;
+			if (!typeSettingsUnicodeProperties.containsKey(stagedKey)) {
+				continue;
 			}
+
+			String adminStagedKey = "staged-portlet_" + entry.getValue();
+			String value = typeSettingsUnicodeProperties.getProperty(stagedKey);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Renaming key \"", stagedKey, "\" to \"",
+						adminStagedKey, "\" with value \"", value, "\""));
+			}
+
+			typeSettingsUnicodeProperties.put(adminStagedKey, value);
+
+			typeSettingsUnicodeProperties.remove(stagedKey);
+
+			changed = true;
 		}
 
 		if (changed) {

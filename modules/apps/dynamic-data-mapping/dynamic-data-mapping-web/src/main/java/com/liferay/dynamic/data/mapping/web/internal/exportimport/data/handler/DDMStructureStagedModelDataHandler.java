@@ -611,10 +611,12 @@ public class DDMStructureStagedModelDataHandler
 			long referencedDDMStructureId = GetterUtil.getLong(
 				ddmFormField.getProperty("ddmStructureId"));
 
-			if (referencedDDMStructureId != 0) {
-				_exportReferencedDDMStructure(
-					ddmFormField, ddmStructure, portletDataContext);
+			if (referencedDDMStructureId == 0) {
+				continue;
 			}
+
+			_exportReferencedDDMStructure(
+				ddmFormField, ddmStructure, portletDataContext);
 		}
 	}
 
@@ -834,12 +836,13 @@ public class DDMStructureStagedModelDataHandler
 			long ddmStructureId = GetterUtil.getLong(
 				ddmFormField.getProperty("ddmStructureId"));
 
-			if (ddmStructureId != 0) {
-				ddmFormField.setProperty(
-					"ddmStructureId",
-					MapUtil.getLong(
-						structureIds, ddmStructureId, ddmStructureId));
+			if (ddmStructureId == 0) {
+				continue;
 			}
+
+			ddmFormField.setProperty(
+				"ddmStructureId",
+				MapUtil.getLong(structureIds, ddmStructureId, ddmStructureId));
 		}
 	}
 

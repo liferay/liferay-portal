@@ -291,9 +291,11 @@ public class AppJavadocBuilderPlugin implements Plugin<Project> {
 		for (File file : files) {
 			String packageName = _getPackageName(file, srcDirs);
 
-			if (Validator.isNotNull(packageName)) {
-				packageNames.add(packageName);
+			if (Validator.isNull(packageName)) {
+				continue;
 			}
+
+			packageNames.add(packageName);
 		}
 
 		return packageNames;

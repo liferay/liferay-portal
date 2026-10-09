@@ -126,9 +126,11 @@ public class LPKGArtifactInstaller implements FileInstaller {
 
 			List<Bundle> bundles = _install(file, properties);
 
-			if (!bundles.isEmpty()) {
-				lpkgBundles.put(bundles.remove(0), bundles);
+			if (bundles.isEmpty()) {
+				continue;
 			}
+
+			lpkgBundles.put(bundles.remove(0), bundles);
 		}
 
 		for (Map.Entry<Bundle, List<Bundle>> entry : lpkgBundles.entrySet()) {
@@ -313,9 +315,11 @@ public class LPKGArtifactInstaller implements FileInstaller {
 			Dictionary<String, String> headers = bundle.getHeaders(
 				StringPool.BLANK);
 
-			if (Boolean.getBoolean(headers.get("Wrapper-Bundle"))) {
-				wrapperBundles.add(installedBundle);
+			if (!Boolean.getBoolean(headers.get("Wrapper-Bundle"))) {
+				continue;
 			}
+
+			wrapperBundles.add(installedBundle);
 		}
 
 		if (!wrapperBundles.isEmpty()) {

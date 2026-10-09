@@ -67,19 +67,20 @@ public class DDMContentUpgradeProcess extends UpgradeProcess {
 					JSONObject dataJSONObject = _jsonFactory.createJSONObject(
 						data);
 
-					if (upgradeDDMContentData(
+					if (!upgradeDDMContentData(
 							dataJSONObject.getJSONArray("fieldValues"),
 							definitionJSONObject.getJSONArray("fields"))) {
 
-						preparedStatement2.setString(
-							1, dataJSONObject.toString());
-
-						long contentId = resultSet.getLong("contentId");
-
-						preparedStatement2.setLong(2, contentId);
-
-						preparedStatement2.addBatch();
+						continue;
 					}
+
+					preparedStatement2.setString(1, dataJSONObject.toString());
+
+					long contentId = resultSet.getLong("contentId");
+
+					preparedStatement2.setLong(2, contentId);
+
+					preparedStatement2.addBatch();
 				}
 			}
 

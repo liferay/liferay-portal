@@ -318,11 +318,13 @@ public class ExpandoBridgeIndexerImpl implements ExpandoBridgeIndexer {
 						int indexType = ExpandoBridgeUtil.getIndexType(
 							expandoColumn);
 
-						if (indexType !=
+						if (indexType ==
 								ExpandoColumnConstants.INDEX_TYPE_NONE) {
 
-							expandoColumns.add(expandoColumn);
+							continue;
 						}
+
+						expandoColumns.add(expandoColumn);
 					}
 
 					if (expandoColumns.isEmpty()) {
@@ -409,9 +411,11 @@ public class ExpandoBridgeIndexerImpl implements ExpandoBridgeIndexer {
 			for (ExpandoColumn expandoColumn : expandoColumns) {
 				int indexType = ExpandoBridgeUtil.getIndexType(expandoColumn);
 
-				if (indexType != ExpandoColumnConstants.INDEX_TYPE_NONE) {
-					indexedExpandoColumns.add(expandoColumn);
+				if (indexType == ExpandoColumnConstants.INDEX_TYPE_NONE) {
+					continue;
 				}
+
+				indexedExpandoColumns.add(expandoColumn);
 			}
 
 			return indexedExpandoColumns;

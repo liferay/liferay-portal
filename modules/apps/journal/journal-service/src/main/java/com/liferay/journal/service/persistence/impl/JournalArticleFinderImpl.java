@@ -825,9 +825,11 @@ public class JournalArticleFinderImpl
 			sb.append(tableName);
 			sb.append(".folderId = ? ");
 
-			if ((i + 1) != folderIds.size()) {
-				sb.append(WHERE_OR);
+			if ((i + 1) == folderIds.size()) {
+				continue;
 			}
+
+			sb.append(WHERE_OR);
 		}
 
 		sb.append(StringPool.CLOSE_PARENTHESIS);

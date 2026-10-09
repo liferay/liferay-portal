@@ -217,9 +217,11 @@ public class CPSearchResultsDisplayContext {
 
 			sb.append(cpType.getLabel(_cpRequestHelper.getLocale()));
 
-			if ((i + 1) < cpTypes.size()) {
-				sb.append(",");
+			if ((i + 1) >= cpTypes.size()) {
+				continue;
 			}
+
+			sb.append(",");
 		}
 
 		return sb.toString();

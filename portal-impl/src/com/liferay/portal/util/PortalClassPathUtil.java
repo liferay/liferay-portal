@@ -215,9 +215,11 @@ public class PortalClassPathUtil {
 
 				Bundle requiredBundle = bundleRevision.getBundle();
 
-				if (requiredBundle.getBundleId() != 0) {
-					bundles.add(requiredBundle);
+				if (requiredBundle.getBundleId() == 0) {
+					continue;
 				}
+
+				bundles.add(requiredBundle);
 			}
 		}
 
@@ -231,39 +233,43 @@ public class PortalClassPathUtil {
 			File[] files = bundleDir.listFiles(
 				file -> file.isDirectory() && !file.equals(bundleDataDir));
 
-			if ((files != null) && (files.length > 0)) {
-				Arrays.sort(
-					files,
-					Comparator.comparing(
-						file -> GetterUtil.getInteger(file.getName(), -1),
-						Comparator.reverseOrder()));
+			if ((files == null) || (files.length <= 0)) {
+				continue;
+			}
 
-				File bundleRevisionDir = files[0];
+			Arrays.sort(
+				files,
+				Comparator.comparing(
+					file -> GetterUtil.getInteger(file.getName(), -1),
+					Comparator.reverseOrder()));
 
-				File bundleFile = new File(bundleRevisionDir, "bundleFile");
+			File bundleRevisionDir = files[0];
 
-				sb.append(bundleFile.getAbsolutePath());
+			File bundleFile = new File(bundleRevisionDir, "bundleFile");
 
-				sb.append(File.pathSeparator);
+			sb.append(bundleFile.getAbsolutePath());
 
-				File cpLibDir = new File(bundleRevisionDir, ".cp");
+			sb.append(File.pathSeparator);
 
-				if (cpLibDir.exists()) {
-					Queue<File> queue = new LinkedList<>();
+			File cpLibDir = new File(bundleRevisionDir, ".cp");
 
-					queue.add(cpLibDir);
+			if (!cpLibDir.exists()) {
+				continue;
+			}
 
-					File currentFile = null;
+			Queue<File> queue = new LinkedList<>();
 
-					while ((currentFile = queue.poll()) != null) {
-						if (currentFile.isDirectory()) {
-							Collections.addAll(queue, currentFile.listFiles());
-						}
-						else {
-							sb.append(currentFile.getAbsolutePath());
-							sb.append(File.pathSeparator);
-						}
-					}
+			queue.add(cpLibDir);
+
+			File currentFile = null;
+
+			while ((currentFile = queue.poll()) != null) {
+				if (currentFile.isDirectory()) {
+					Collections.addAll(queue, currentFile.listFiles());
+				}
+				else {
+					sb.append(currentFile.getAbsolutePath());
+					sb.append(File.pathSeparator);
 				}
 			}
 		}
@@ -418,9 +424,11 @@ public class PortalClassPathUtil {
 		for (Class<?> clazz : classes) {
 			File[] files = _listClassPathFiles(clazz);
 
-			if (files != null) {
-				Collections.addAll(filesSet, files);
+			if (files == null) {
+				continue;
 			}
+
+			Collections.addAll(filesSet, files);
 		}
 
 		File[] files = filesSet.toArray(new File[0]);

@@ -109,11 +109,13 @@ public class TestClassMissingLiferayUnitTestRuleCheck extends BaseCheck {
 
 			List<String> importNames = getImportNames(detailAST);
 
-			if (!importNames.contains(
+			if (importNames.contains(
 					"com.liferay.portal.test.rule.LiferayUnitTestRule")) {
 
-				log(detailAST, _MSG_REQUIRE_TEST_RULE);
+				continue;
 			}
+
+			log(detailAST, _MSG_REQUIRE_TEST_RULE);
 		}
 	}
 

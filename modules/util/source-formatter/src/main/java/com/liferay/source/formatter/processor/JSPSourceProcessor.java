@@ -185,9 +185,11 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		for (String fileName : fileNames) {
 			File file = new File(SourceUtil.getAbsolutePath(fileName));
 
-			if (!Files.exists(file.toPath())) {
-				deletedFileNames.add(fileName);
+			if (Files.exists(file.toPath())) {
+				continue;
 			}
+
+			deletedFileNames.add(fileName);
 		}
 
 		if (deletedFileNames.isEmpty()) {

@@ -74,9 +74,11 @@ public class DesignLibraryAdminControlPanelEntry extends BaseControlPanelEntry {
 		for (String roleName : DepotRolesConstants.DESIGN_LIBRARY_ROLE_NAMES) {
 			Role role = _roleLocalService.fetchRole(companyId, roleName);
 
-			if (role != null) {
-				designLibraryRoleIds.add(role.getRoleId());
+			if (role == null) {
+				continue;
 			}
+
+			designLibraryRoleIds.add(role.getRoleId());
 		}
 
 		return designLibraryRoleIds;

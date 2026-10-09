@@ -77,11 +77,12 @@ public class WarDeployDirectoryTest {
 		for (Bundle bundle : bundleContext.getBundles()) {
 			String location = bundle.getLocation();
 
-			if (location.startsWith("webbundle:")) {
-				installedWars.add(
-					location.substring(
-						10, location.indexOf(StringPool.QUESTION)));
+			if (!location.startsWith("webbundle:")) {
+				continue;
 			}
+
+			installedWars.add(
+				location.substring(10, location.indexOf(StringPool.QUESTION)));
 		}
 
 		File portalWarDir = new File(

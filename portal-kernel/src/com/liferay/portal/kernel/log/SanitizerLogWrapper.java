@@ -208,9 +208,11 @@ public class SanitizerLogWrapper extends LogWrapper {
 				sanitized = true;
 			}
 
-			if (c == CharPool.LESS_THAN) {
-				hasLessThanCharacter = true;
+			if (c != CharPool.LESS_THAN) {
+				continue;
 			}
+
+			hasLessThanCharacter = true;
 		}
 
 		boolean escapeHTML = false;

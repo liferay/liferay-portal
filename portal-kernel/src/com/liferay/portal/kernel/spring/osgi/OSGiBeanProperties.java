@@ -217,15 +217,17 @@ public @interface OSGiBeanProperties {
 
 					clazz = clazz.getSuperclass();
 
-					if (clazz != null) {
-						if (clazz.isInterface()) {
-							_optionallyCollectInterface(
-								clazz, interfaceNames, ignoredInterfaceNames,
-								mappingFunction);
-						}
-
-						queue.add(clazz);
+					if (clazz == null) {
+						continue;
 					}
+
+					if (clazz.isInterface()) {
+						_optionallyCollectInterface(
+							clazz, interfaceNames, ignoredInterfaceNames,
+							mappingFunction);
+					}
+
+					queue.add(clazz);
 				}
 			}
 			else {

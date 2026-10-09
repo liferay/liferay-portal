@@ -93,19 +93,21 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject itemJSONObject = jsonArray.getJSONObject(i);
 
-					if ((itemJSONObject != null) &&
-						Objects.equals(
+					if ((itemJSONObject == null) ||
+						!Objects.equals(
 							itemJSONObject.getString("className"),
 							siteNavigationMenuItemTypeString)) {
 
-						infoItemReferences.add(
-							new InfoItemReference(
-								itemJSONObject.getString("className"),
-								itemJSONObject.getLong("classPK")));
-
-						jsonObjects.put(
-							itemJSONObject.getLong("classPK"), itemJSONObject);
+						continue;
 					}
+
+					infoItemReferences.add(
+						new InfoItemReference(
+							itemJSONObject.getString("className"),
+							itemJSONObject.getLong("classPK")));
+
+					jsonObjects.put(
+						itemJSONObject.getLong("classPK"), itemJSONObject);
 				}
 
 				LayoutDisplayPageMultiSelectionProvider<?>

@@ -730,9 +730,11 @@ public class JournalTransformer {
 		while (iterator.hasNext()) {
 			Element optionElement = iterator.next();
 
-			if (Validator.isNotNull(optionElement.getData())) {
-				dataJSONArray.put(optionElement.getData());
+			if (Validator.isNull(optionElement.getData())) {
+				continue;
 			}
+
+			dataJSONArray.put(optionElement.getData());
 		}
 
 		if (dataJSONArray.length() != 0) {
@@ -926,14 +928,18 @@ public class JournalTransformer {
 				_logScriptBeforeListener.debug(script);
 			}
 
-			if (transformerListener != null) {
-				script = transformerListener.onScript(
-					script, document, languageId, tokens);
-
-				if (_logScriptAfterListener.isDebugEnabled()) {
-					_logScriptAfterListener.debug(script);
-				}
+			if (transformerListener == null) {
+				continue;
 			}
+
+			script = transformerListener.onScript(
+				script, document, languageId, tokens);
+
+			if (!_logScriptAfterListener.isDebugEnabled()) {
+				continue;
+			}
+
+			_logScriptAfterListener.debug(script);
 		}
 
 		// Transform
@@ -1119,9 +1125,11 @@ public class JournalTransformer {
 
 			output = transformerListener.onOutput(output, languageId, tokens);
 
-			if (_logOutputAfterListener.isDebugEnabled()) {
-				_logOutputAfterListener.debug(output);
+			if (!_logOutputAfterListener.isDebugEnabled()) {
+				continue;
 			}
+
+			_logOutputAfterListener.debug(output);
 		}
 
 		if (_logTransfromAfter.isDebugEnabled()) {

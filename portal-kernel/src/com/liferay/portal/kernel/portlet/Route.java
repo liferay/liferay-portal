@@ -375,9 +375,11 @@ public class Route {
 			// of the virtual parameters in the route pattern must match their
 			// format in the generated parameter.
 
-			if (value != null) {
-				parameters.put(entry.getKey(), value);
+			if (value == null) {
+				continue;
 			}
+
+			parameters.put(entry.getKey(), value);
 		}
 
 		return true;

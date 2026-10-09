@@ -56,9 +56,11 @@ public class CalendarUpgradeTestUtil {
 
 				String className = clazz.getName();
 
-				if (className.contains(_upgradeStepClassName)) {
-					_upgradeStep = (UpgradeProcess)upgradeStep;
+				if (!className.contains(_upgradeStepClassName)) {
+					continue;
 				}
+
+				_upgradeStep = (UpgradeProcess)upgradeStep;
 			}
 		}
 

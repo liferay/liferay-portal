@@ -1072,9 +1072,11 @@ public class CommerceOrderSplitTest {
 				curCommerceOrderItem -> StringUtil.equals(
 					curCommerceOrderItem.getSku(), cpInstance.getSku()));
 
-			if (!commerceOrderItems.isEmpty()) {
-				commerceOrderItem = commerceOrderItems.get(0);
+			if (commerceOrderItems.isEmpty()) {
+				continue;
 			}
+
+			commerceOrderItem = commerceOrderItems.get(0);
 		}
 
 		Assert.assertNotNull(commerceOrderItem);

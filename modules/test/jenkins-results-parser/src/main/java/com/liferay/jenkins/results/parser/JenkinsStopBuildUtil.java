@@ -131,9 +131,11 @@ public class JenkinsStopBuildUtil {
 
 			Matcher buildURLMatcher = _buildURLPattern.matcher(urlString);
 
-			if (buildURLMatcher.find()) {
-				downstreamURLs.add(urlString);
+			if (!buildURLMatcher.find()) {
+				continue;
 			}
+
+			downstreamURLs.add(urlString);
 		}
 
 		return downstreamURLs;

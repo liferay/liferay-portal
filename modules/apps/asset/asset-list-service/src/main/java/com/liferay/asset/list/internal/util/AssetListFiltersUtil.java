@@ -158,9 +158,11 @@ public class AssetListFiltersUtil {
 
 				String value = itemJSONObject.getString("value");
 
-				if (Validator.isNotNull(value)) {
-					values.add(value);
+				if (Validator.isNull(value)) {
+					continue;
 				}
+
+				values.add(value);
 			}
 		}
 

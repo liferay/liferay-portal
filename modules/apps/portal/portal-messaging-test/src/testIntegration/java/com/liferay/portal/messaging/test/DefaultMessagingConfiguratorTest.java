@@ -146,13 +146,15 @@ public class DefaultMessagingConfiguratorTest {
 					destinationMessageListeners.size());
 			}
 
-			if (!destinationMessageListeners.isEmpty()) {
-				Message message = new Message();
-
-				message.setDestinationName(destinationName);
-
-				destination.send(message);
+			if (destinationMessageListeners.isEmpty()) {
+				continue;
 			}
+
+			Message message = new Message();
+
+			message.setDestinationName(destinationName);
+
+			destination.send(message);
 		}
 	}
 

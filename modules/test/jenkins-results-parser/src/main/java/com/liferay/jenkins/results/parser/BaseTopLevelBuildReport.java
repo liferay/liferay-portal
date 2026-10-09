@@ -205,9 +205,11 @@ public abstract class BaseTopLevelBuildReport
 				}
 			}
 
-			if (!hasSimilarFailureReport) {
-				distinctFailureReports.add(failureReport);
+			if (hasSimilarFailureReport) {
+				continue;
 			}
+
+			distinctFailureReports.add(failureReport);
 		}
 
 		_distinctFailureReports = distinctFailureReports;
@@ -673,9 +675,11 @@ public abstract class BaseTopLevelBuildReport
 				}
 			}
 
-			if (!hasSimilarFailure) {
-				uniqueFailureReports.add(failureReport);
+			if (hasSimilarFailure) {
+				continue;
 			}
+
+			uniqueFailureReports.add(failureReport);
 		}
 
 		_uniqueFailureReports = uniqueFailureReports;

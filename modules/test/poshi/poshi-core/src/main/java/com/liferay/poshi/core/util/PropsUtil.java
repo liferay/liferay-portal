@@ -123,13 +123,15 @@ public class PropsUtil {
 			InputStream inputStream = classLoader.getResourceAsStream(
 				propertiesFileName);
 
-			if (inputStream != null) {
-				try {
-					classProperties.load(inputStream);
-				}
-				catch (IOException ioException) {
-					ioException.printStackTrace();
-				}
+			if (inputStream == null) {
+				continue;
+			}
+
+			try {
+				classProperties.load(inputStream);
+			}
+			catch (IOException ioException) {
+				ioException.printStackTrace();
 			}
 		}
 

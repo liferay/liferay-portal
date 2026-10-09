@@ -488,22 +488,21 @@ public class ProductOptionValueDTOConverter
 		for (CommerceOptionValue commerceOptionValue : commerceOptionValues) {
 			if (Objects.equals(
 					commerceOptionValue.getOptionValueKey(),
-					cpDefinitionOptionValueRel.getKey())) {
+					cpDefinitionOptionValueRel.getKey()) ||
+				(commerceOptionValue.getCPInstanceId() <= 0)) {
 
 				continue;
 			}
 
-			if (commerceOptionValue.getCPInstanceId() > 0) {
-				CPInstance commerceOptionValueCPInstance =
-					_cpInstanceLocalService.getCPInstance(
-						commerceOptionValue.getCPInstanceId());
+			CPInstance commerceOptionValueCPInstance =
+				_cpInstanceLocalService.getCPInstance(
+					commerceOptionValue.getCPInstanceId());
 
-				corEntryTypeItems.add(
-					new COREntryTypeItem(
-						commerceOptionValueCPInstance.getCPDefinitionId(),
-						commerceOptionValueCPInstance.getCPInstanceId(),
-						cpDefinitionOptionValueRel.getQuantity()));
-			}
+			corEntryTypeItems.add(
+				new COREntryTypeItem(
+					commerceOptionValueCPInstance.getCPDefinitionId(),
+					commerceOptionValueCPInstance.getCPInstanceId(),
+					cpDefinitionOptionValueRel.getQuantity()));
 		}
 
 		corEntryTypeItems.add(
@@ -521,23 +520,25 @@ public class ProductOptionValueDTOConverter
 			QueryUtil.ALL_POS);
 
 		for (COREntry corEntry : corEntries) {
-			if (!corEntryType.evaluate(corEntry, corEntryTypeItems)) {
-				if (infoMessage == null) {
-					infoMessage = corEntryType.getErrorMessage(
-						corEntry, null, dtoConverterContext.getLocale());
-				}
-
-				UnicodeProperties typeSettingsUnicodeProperties =
-					UnicodePropertiesBuilder.fastLoad(
-						corEntry.getTypeSettings()
-					).build();
-
-				cProductExternalReferenceCodes.addAll(
-					StringUtil.split(
-						typeSettingsUnicodeProperties.getProperty(
-							COREntryConstants.
-								TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES)));
+			if (corEntryType.evaluate(corEntry, corEntryTypeItems)) {
+				continue;
 			}
+
+			if (infoMessage == null) {
+				infoMessage = corEntryType.getErrorMessage(
+					corEntry, null, dtoConverterContext.getLocale());
+			}
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				UnicodePropertiesBuilder.fastLoad(
+					corEntry.getTypeSettings()
+				).build();
+
+			cProductExternalReferenceCodes.addAll(
+				StringUtil.split(
+					typeSettingsUnicodeProperties.getProperty(
+						COREntryConstants.
+							TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES)));
 		}
 
 		if (cProductExternalReferenceCodes.contains(

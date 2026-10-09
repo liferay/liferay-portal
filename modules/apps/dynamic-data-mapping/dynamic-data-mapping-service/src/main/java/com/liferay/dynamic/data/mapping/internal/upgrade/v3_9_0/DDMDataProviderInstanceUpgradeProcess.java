@@ -89,18 +89,20 @@ public class DDMDataProviderInstanceUpgradeProcess extends UpgradeProcess {
 
 			String[] valueStringParts = valueString.split(StringPool.SEMICOLON);
 
-			if (valueStringParts.length > 1) {
-				String outputPathType = valueStringParts[1];
-				String outputPathValue = valueStringParts[0];
-
-				if (outputPathType.equals("List")) {
-					outputPathValue = StringBundler.concat(
-						StringPool.DOLLAR, StringPool.DOUBLE_PERIOD,
-						outputPathValue);
-				}
-
-				valuesMap.put(valueEntry.getKey(), outputPathValue);
+			if (valueStringParts.length <= 1) {
+				continue;
 			}
+
+			String outputPathType = valueStringParts[1];
+			String outputPathValue = valueStringParts[0];
+
+			if (outputPathType.equals("List")) {
+				outputPathValue = StringBundler.concat(
+					StringPool.DOLLAR, StringPool.DOUBLE_PERIOD,
+					outputPathValue);
+			}
+
+			valuesMap.put(valueEntry.getKey(), outputPathValue);
 		}
 	}
 

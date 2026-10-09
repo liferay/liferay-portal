@@ -100,19 +100,23 @@ public class PortletPreferencesFactoryImpl
 			while (xmlEventReader.hasNext()) {
 				XMLEvent xmlEvent = xmlEventReader.nextEvent();
 
-				if (xmlEvent.isStartElement()) {
-					StartElement startElement = xmlEvent.asStartElement();
-
-					QName startElementName = startElement.getName();
-
-					String elementName = startElementName.getLocalPart();
-
-					if (elementName.equals("preference")) {
-						Preference preference = readPreference(xmlEventReader);
-
-						preferencesMap.put(preference.getName(), preference);
-					}
+				if (!xmlEvent.isStartElement()) {
+					continue;
 				}
+
+				StartElement startElement = xmlEvent.asStartElement();
+
+				QName startElementName = startElement.getName();
+
+				String elementName = startElementName.getLocalPart();
+
+				if (!elementName.equals("preference")) {
+					continue;
+				}
+
+				Preference preference = readPreference(xmlEventReader);
+
+				preferencesMap.put(preference.getName(), preference);
 			}
 		}
 		catch (XMLStreamException xmlStreamException) {

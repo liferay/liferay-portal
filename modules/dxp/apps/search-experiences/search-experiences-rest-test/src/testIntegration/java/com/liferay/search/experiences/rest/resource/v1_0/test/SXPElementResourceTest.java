@@ -369,9 +369,11 @@ public class SXPElementResourceTest extends BaseSXPElementResourceTestCase {
 		for (SXPElement sxpElement : page.getItems()) {
 			String title = sxpElement.getTitle();
 
-			if (title.startsWith(_TITLE_PREFIX)) {
-				sxpElementResource.deleteSXPElement(sxpElement.getId());
+			if (!title.startsWith(_TITLE_PREFIX)) {
+				continue;
 			}
+
+			sxpElementResource.deleteSXPElement(sxpElement.getId());
 		}
 	}
 

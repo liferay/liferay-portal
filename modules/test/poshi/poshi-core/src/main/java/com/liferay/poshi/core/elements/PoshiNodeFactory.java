@@ -240,9 +240,11 @@ public abstract class PoshiNodeFactory {
 					continue;
 				}
 
-				if (poshiNode instanceof PoshiElement) {
-					_poshiElements.add((PoshiElement)poshiNode);
+				if (!(poshiNode instanceof PoshiElement)) {
+					continue;
 				}
+
+				_poshiElements.add((PoshiElement)poshiNode);
 			}
 
 			Collections.sort(

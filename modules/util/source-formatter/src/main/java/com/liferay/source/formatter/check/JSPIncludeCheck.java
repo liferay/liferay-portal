@@ -47,13 +47,14 @@ public class JSPIncludeCheck extends BaseFileCheck {
 
 			String includeFileName = line.substring(y + 1, z);
 
-			if (!includeFileName.startsWith("/")) {
-				addMessage(
-					fileName,
-					"Include \"" + includeFileName +
-						"\" should start with \"/\"",
-					getLineNumber(content, x));
+			if (includeFileName.startsWith("/")) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"Include \"" + includeFileName + "\" should start with \"/\"",
+				getLineNumber(content, x));
 		}
 
 		Matcher matcher = _includeFilePattern.matcher(content);

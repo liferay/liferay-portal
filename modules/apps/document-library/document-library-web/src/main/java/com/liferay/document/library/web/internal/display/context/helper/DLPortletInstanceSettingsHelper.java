@@ -312,14 +312,16 @@ public class DLPortletInstanceSettingsHelper {
 			PropsValues.DL_DISPLAY_VIEWS);
 
 		for (String displayView : allDisplayViews) {
-			if (Arrays.binarySearch(displayViews, displayView) < 0) {
-				_availableDisplayViews.add(
-					new KeyValuePair(
-						displayView,
-						LanguageUtil.get(
-							_dlRequestHelper.getLocale(),
-							_displayViews.get(displayView))));
+			if (Arrays.binarySearch(displayViews, displayView) >= 0) {
+				continue;
 			}
+
+			_availableDisplayViews.add(
+				new KeyValuePair(
+					displayView,
+					LanguageUtil.get(
+						_dlRequestHelper.getLocale(),
+						_displayViews.get(displayView))));
 		}
 
 		_availableDisplayViews = ListUtil.sort(
@@ -353,13 +355,15 @@ public class DLPortletInstanceSettingsHelper {
 		Set<String> allEntryColumns = SetUtil.fromArray(_getAllEntryColumns());
 
 		for (String entryColumn : allEntryColumns) {
-			if (Arrays.binarySearch(entryColumns, entryColumn) < 0) {
-				_availableEntryColumns.add(
-					new KeyValuePair(
-						entryColumn,
-						LanguageUtil.get(
-							_dlRequestHelper.getLocale(), entryColumn)));
+			if (Arrays.binarySearch(entryColumns, entryColumn) >= 0) {
+				continue;
 			}
+
+			_availableEntryColumns.add(
+				new KeyValuePair(
+					entryColumn,
+					LanguageUtil.get(
+						_dlRequestHelper.getLocale(), entryColumn)));
 		}
 
 		_availableEntryColumns = ListUtil.sort(
@@ -392,12 +396,14 @@ public class DLPortletInstanceSettingsHelper {
 			DLUtil.getAllMediaGalleryMimeTypes();
 
 		for (String mimeType : allMediaGalleryMimeTypes) {
-			if (Arrays.binarySearch(mediaGalleryMimeTypes, mimeType) < 0) {
-				_availableMimeTypes.add(
-					new KeyValuePair(
-						mimeType,
-						LanguageUtil.get(themeDisplay.getLocale(), mimeType)));
+			if (Arrays.binarySearch(mediaGalleryMimeTypes, mimeType) >= 0) {
+				continue;
 			}
+
+			_availableMimeTypes.add(
+				new KeyValuePair(
+					mimeType,
+					LanguageUtil.get(themeDisplay.getLocale(), mimeType)));
 		}
 	}
 

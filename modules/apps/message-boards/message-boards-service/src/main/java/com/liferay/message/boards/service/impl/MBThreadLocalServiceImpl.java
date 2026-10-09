@@ -298,11 +298,13 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 			groupId, categoryId);
 
 		for (MBThread thread : threads) {
-			if (includeTrashedEntries ||
-				!_trashHelper.isInTrashExplicitly(thread)) {
+			if (!includeTrashedEntries &&
+				_trashHelper.isInTrashExplicitly(thread)) {
 
-				mbThreadLocalService.deleteThread(thread);
+				continue;
 			}
+
+			mbThreadLocalService.deleteThread(thread);
 		}
 
 		if (mbThreadPersistence.countByGroupId(groupId) == 0) {
@@ -601,11 +603,13 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 			// Workflow
 
-			if (oldStatus == WorkflowConstants.STATUS_PENDING) {
-				_workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(
-					message.getCompanyId(), message.getGroupId(),
-					MBMessage.class.getName(), message.getMessageId());
+			if (oldStatus != WorkflowConstants.STATUS_PENDING) {
+				continue;
 			}
+
+			_workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(
+				message.getCompanyId(), message.getGroupId(),
+				MBMessage.class.getName(), message.getMessageId());
 		}
 	}
 
@@ -635,12 +639,14 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 			// Indexer
 
-			if (!message.isDiscussion()) {
-				Indexer<MBMessage> indexer =
-					IndexerRegistryUtil.nullSafeGetIndexer(MBMessage.class);
-
-				indexer.reindex(message);
+			if (message.isDiscussion()) {
+				continue;
 			}
+
+			Indexer<MBMessage> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+				MBMessage.class);
+
+			indexer.reindex(message);
 		}
 
 		// Indexer

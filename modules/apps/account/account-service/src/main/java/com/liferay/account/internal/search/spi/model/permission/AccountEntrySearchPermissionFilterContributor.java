@@ -88,18 +88,20 @@ public class AccountEntrySearchPermissionFilterContributor
 					organizations.add(organization);
 				}
 
-				if (hasManageAvailableAccountsPermission ||
-					OrganizationPermissionUtil.contains(
+				if (!hasManageAvailableAccountsPermission &&
+					!OrganizationPermissionUtil.contains(
 						permissionChecker, organization,
-						AccountActionKeys.MANAGE_SUBORGANIZATIONS_ACCOUNTS) ||
-					OrganizationPermissionUtil.contains(
+						AccountActionKeys.MANAGE_SUBORGANIZATIONS_ACCOUNTS) &&
+					!OrganizationPermissionUtil.contains(
 						permissionChecker, organization,
 						AccountActionKeys.UPDATE_SUBORGANIZATIONS_ACCOUNTS)) {
 
-					organizations.addAll(
-						_organizationLocalService.getOrganizations(
-							companyId, organization.getTreePath() + "%/"));
+					continue;
 				}
+
+				organizations.addAll(
+					_organizationLocalService.getOrganizations(
+						companyId, organization.getTreePath() + "%/"));
 			}
 
 			BaseModelSearchResult<Organization> baseModelSearchResult =

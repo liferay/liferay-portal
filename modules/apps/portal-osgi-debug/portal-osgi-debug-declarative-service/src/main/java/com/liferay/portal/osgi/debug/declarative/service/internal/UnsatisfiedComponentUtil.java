@@ -50,12 +50,14 @@ public class UnsatisfiedComponentUtil {
 			for (ComponentConfigurationDTO componentConfigurationDTO :
 					componentConfigurationDTOs) {
 
-				if (componentConfigurationDTO.state ==
+				if (componentConfigurationDTO.state !=
 						ComponentConfigurationDTO.UNSATISFIED_REFERENCE) {
 
-					_collectUnsatisfiedReferences(
-						componentDescriptionDTO, componentConfigurationDTO, sb);
+					continue;
 				}
+
+				_collectUnsatisfiedReferences(
+					componentDescriptionDTO, componentConfigurationDTO, sb);
 			}
 		}
 

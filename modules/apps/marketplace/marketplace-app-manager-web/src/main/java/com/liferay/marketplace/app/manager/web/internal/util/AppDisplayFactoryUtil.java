@@ -141,9 +141,11 @@ public class AppDisplayFactoryUtil {
 		for (Module module : modules) {
 			Bundle bundle = bundlesMap.getBundle(module);
 
-			if (bundle != null) {
-				appDisplay.addBundle(bundle);
+			if (bundle == null) {
+				continue;
 			}
+
+			appDisplay.addBundle(bundle);
 		}
 
 		return appDisplay;
@@ -241,9 +243,11 @@ public class AppDisplayFactoryUtil {
 		while (iterator.hasNext()) {
 			AppDisplay appDisplay = iterator.next();
 
-			if ((state > 0) && (appDisplay.getState() != state)) {
-				iterator.remove();
+			if ((state <= 0) || (appDisplay.getState() == state)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 

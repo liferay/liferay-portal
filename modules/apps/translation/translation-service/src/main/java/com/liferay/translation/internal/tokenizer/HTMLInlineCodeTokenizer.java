@@ -194,14 +194,13 @@ public class HTMLInlineCodeTokenizer {
 		while (end < html.length()) {
 			char c = html.charAt(end);
 
-			if (Character.isLetterOrDigit(c) || (c == CharPool.COLON) ||
-				(c == CharPool.DASH)) {
+			if (!Character.isLetterOrDigit(c) && (c != CharPool.COLON) &&
+				(c != CharPool.DASH)) {
 
-				end++;
-			}
-			else {
 				break;
 			}
+
+			end++;
 		}
 
 		return html.substring(index, end);

@@ -172,17 +172,17 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 			String previousLine = SourceUtil.getLine(
 				breakingChanges, lineNumber - 1);
 
-			if (Validator.isNotNull(nextLine) ||
-				Validator.isNotNull(previousLine)) {
-
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						message,
-						"There should be an empty line after/before \"----\", ",
-						"\"# breaking\", \"## What\", \"## Why\" and \"## ",
-						"Alternatives\""));
+			if (Validator.isNull(nextLine) && Validator.isNull(previousLine)) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					message,
+					"There should be an empty line after/before \"----\", \"# ",
+					"breaking\", \"## What\", \"## Why\" and \"## ",
+					"Alternatives\""));
 		}
 	}
 
@@ -224,9 +224,11 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 		for (String commitMessage : getCurrentBranchCommitMessages()) {
 			String[] parts = commitMessage.split(":", 2);
 
-			if (parts[1].contains("# breaking")) {
-				breakingChangeCommitMessages.add(commitMessage);
+			if (!parts[1].contains("# breaking")) {
+				continue;
 			}
+
+			breakingChangeCommitMessages.add(commitMessage);
 		}
 
 		if (breakingChangeCommitMessages.isEmpty()) {
@@ -267,18 +269,19 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 			String explanationLine = SourceUtil.getLine(
 				breakingChange, lineNumber + 2);
 
-			if (Validator.isNull(explanationLine) ||
-				ArrayUtil.contains(
+			if (Validator.isNotNull(explanationLine) &&
+				!ArrayUtil.contains(
 					_BREAKING_CHANGE_HEADER_NAMES, explanationLine)) {
 
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						message,
-						"There should be at least a line containing an ",
-						"explanation after \"## What\", \"## Why\" and \"## ",
-						"Alternatives\""));
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					message, "There should be at least a line containing an ",
+					"explanation after \"## What\", \"## Why\" and \"## ",
+					"Alternatives\""));
 		}
 	}
 

@@ -221,30 +221,35 @@ public class PoshiProperties extends Properties {
 
 		try {
 			for (Field field : clazz.getFields()) {
-				if (Modifier.isFinal(field.getModifiers()) &&
-					(field.get(field) instanceof String)) {
+				if (!Modifier.isFinal(field.getModifiers()) ||
+					!(field.get(field) instanceof String)) {
 
-					String propertyName = (String)field.get(field);
-
-					String propertyValue = System.getProperty(
-						"thread." + propertyName);
-
-					if (Validator.isNull(propertyValue)) {
-						propertyValue = _classProperties.getProperty(
-							"thread." + propertyName);
-					}
-
-					if (Validator.isNotNull(propertyValue)) {
-						String[] propertyValues = propertyValue.split(",");
-
-						int index = _threadBasedPoshiProperties.size();
-
-						if (index < propertyValues.length) {
-							properties.setProperty(
-								propertyName, propertyValues[index]);
-						}
-					}
+					continue;
 				}
+
+				String propertyName = (String)field.get(field);
+
+				String propertyValue = System.getProperty(
+					"thread." + propertyName);
+
+				if (Validator.isNull(propertyValue)) {
+					propertyValue = _classProperties.getProperty(
+						"thread." + propertyName);
+				}
+
+				if (Validator.isNull(propertyValue)) {
+					continue;
+				}
+
+				String[] propertyValues = propertyValue.split(",");
+
+				int index = _threadBasedPoshiProperties.size();
+
+				if (index >= propertyValues.length) {
+					continue;
+				}
+
+				properties.setProperty(propertyName, propertyValues[index]);
 			}
 
 			_threadBasedPoshiProperties.put(
@@ -510,13 +515,15 @@ public class PoshiProperties extends Properties {
 			InputStream inputStream = classLoader.getResourceAsStream(
 				propertiesFileName);
 
-			if (inputStream != null) {
-				try {
-					_classProperties.load(inputStream);
-				}
-				catch (IOException ioException) {
-					ioException.printStackTrace();
-				}
+			if (inputStream == null) {
+				continue;
+			}
+
+			try {
+				_classProperties.load(inputStream);
+			}
+			catch (IOException ioException) {
+				ioException.printStackTrace();
 			}
 		}
 
@@ -524,22 +531,25 @@ public class PoshiProperties extends Properties {
 
 		try {
 			for (Field field : clazz.getFields()) {
-				if (Modifier.isFinal(field.getModifiers()) &&
-					(field.get(field) instanceof String)) {
+				if (!Modifier.isFinal(field.getModifiers()) ||
+					!(field.get(field) instanceof String)) {
 
-					String propertyName = (String)field.get(field);
-
-					String propertyValue = System.getProperty(propertyName);
-
-					if (Validator.isNull(propertyValue)) {
-						propertyValue = _classProperties.getProperty(
-							propertyName);
-					}
-
-					if (Validator.isNotNull(propertyValue)) {
-						properties.setProperty(propertyName, propertyValue);
-					}
+					continue;
 				}
+
+				String propertyName = (String)field.get(field);
+
+				String propertyValue = System.getProperty(propertyName);
+
+				if (Validator.isNull(propertyValue)) {
+					propertyValue = _classProperties.getProperty(propertyName);
+				}
+
+				if (Validator.isNull(propertyValue)) {
+					continue;
+				}
+
+				properties.setProperty(propertyName, propertyValue);
 			}
 		}
 		catch (IllegalAccessException illegalAccessException) {

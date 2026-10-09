@@ -171,10 +171,12 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 						serviceContext.getScopeGroupId(), new long[] {userId});
 				}
 
-				if (roleIds != null) {
-					_userGroupRoleLocalService.addUserGroupRoles(
-						user.getUserId(), group.getGroupId(), roleIds);
+				if (roleIds == null) {
+					continue;
 				}
+
+				_userGroupRoleLocalService.addUserGroupRoles(
+					user.getUserId(), group.getGroupId(), roleIds);
 			}
 		}
 

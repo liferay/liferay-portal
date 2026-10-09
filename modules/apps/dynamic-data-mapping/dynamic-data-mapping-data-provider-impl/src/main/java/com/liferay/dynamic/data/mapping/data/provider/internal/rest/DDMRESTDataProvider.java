@@ -285,11 +285,12 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 					"paginationStart", String.class),
 				1);
 
-			if (keyValuePairs.size() > (end - start)) {
-				builder = builder.withOutput(
-					outputParameterId,
-					ListUtil.subList(keyValuePairs, start, end));
+			if (keyValuePairs.size() <= (end - start)) {
+				continue;
 			}
+
+			builder = builder.withOutput(
+				outputParameterId, ListUtil.subList(keyValuePairs, start, end));
 		}
 
 		return builder.build();

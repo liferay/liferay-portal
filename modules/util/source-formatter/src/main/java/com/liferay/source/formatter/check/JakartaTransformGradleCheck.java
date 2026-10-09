@@ -66,9 +66,11 @@ public class JakartaTransformGradleCheck extends BaseJakartaTransformCheck {
 				dependencySB.append(
 					content.substring(matcher.end(3), matcher.end(0)));
 
-				if (i < (dependencies.length - 1)) {
-					dependencySB.append('\n');
+				if (i >= (dependencies.length - 1)) {
+					continue;
 				}
+
+				dependencySB.append('\n');
 			}
 
 			String dependency = dependencySB.toString();

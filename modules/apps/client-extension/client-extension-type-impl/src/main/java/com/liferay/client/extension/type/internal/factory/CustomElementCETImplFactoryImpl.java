@@ -135,11 +135,11 @@ public class CustomElementCETImplFactoryImpl
 				containsDash = true;
 			}
 
-			if ((Validator.isChar(c) && Character.isLowerCase(c)) ||
-				Validator.isNumber(String.valueOf(c)) || (c == CharPool.DASH) ||
-				(c == CharPool.PERIOD) || (c == CharPool.UNDERLINE)) {
-			}
-			else {
+			if ((!Validator.isChar(c) || !Character.isLowerCase(c)) &&
+				!Validator.isNumber(String.valueOf(c)) &&
+				(c != CharPool.DASH) && (c != CharPool.PERIOD) &&
+				(c != CharPool.UNDERLINE)) {
+
 				throw new ClientExtensionEntryTypeSettingsException(
 					"HTML element name contains an invalid character: " + c,
 					"html-element-name-contains-invalid-character-x", c);

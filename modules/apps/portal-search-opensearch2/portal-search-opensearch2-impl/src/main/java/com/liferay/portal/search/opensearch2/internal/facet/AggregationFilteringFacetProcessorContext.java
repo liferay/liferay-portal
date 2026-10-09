@@ -199,18 +199,22 @@ public class AggregationFilteringFacetProcessorContext
 		Map<String, List<Query>> queriesMap = new HashMap<>();
 
 		for (Facet facet : facets) {
-			if ((facet instanceof com.liferay.portal.search.facet.Facet) &&
-				!facet.isStatic()) {
+			if (!(facet instanceof com.liferay.portal.search.facet.Facet) ||
+				facet.isStatic()) {
 
-				com.liferay.portal.search.facet.Facet osgiFacet =
-					(com.liferay.portal.search.facet.Facet)facet;
-
-				if (ArrayUtil.isNotEmpty(osgiFacet.getSelections())) {
-					queriesMap.put(
-						osgiFacet.getAggregationName(),
-						_getFacetSelectionFilterQueries(osgiFacet));
-				}
+				continue;
 			}
+
+			com.liferay.portal.search.facet.Facet osgiFacet =
+				(com.liferay.portal.search.facet.Facet)facet;
+
+			if (ArrayUtil.isEmpty(osgiFacet.getSelections())) {
+				continue;
+			}
+
+			queriesMap.put(
+				osgiFacet.getAggregationName(),
+				_getFacetSelectionFilterQueries(osgiFacet));
 		}
 
 		return queriesMap;

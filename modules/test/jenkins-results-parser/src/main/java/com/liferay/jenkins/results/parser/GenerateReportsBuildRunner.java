@@ -234,9 +234,11 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			File nodeDataFile = new File(
 				_TMP_BASE_DIR_PATH + "/nodes/" + dateString, "node.json");
 
-			if (nodeDataArchiveFile.exists()) {
-				FileUtils.copyFile(nodeDataArchiveFile, nodeDataFile);
+			if (!nodeDataArchiveFile.exists()) {
+				continue;
 			}
+
+			FileUtils.copyFile(nodeDataArchiveFile, nodeDataFile);
 		}
 	}
 
@@ -336,11 +338,13 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 				_getTestrayBucketBuildReportJSONFilePaths(
 					currentMonthString, jenkinsMasterName, jobName));
 
-			if (startMonthString != null) {
-				keys.addAll(
-					_getTestrayBucketBuildReportJSONFilePaths(
-						startMonthString, jenkinsMasterName, jobName));
+			if (startMonthString == null) {
+				continue;
 			}
+
+			keys.addAll(
+				_getTestrayBucketBuildReportJSONFilePaths(
+					startMonthString, jenkinsMasterName, jobName));
 		}
 
 		try {
@@ -906,32 +910,36 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 
 				matcher = _linkElementPattern.matcher(line);
 
-				if (matcher.find()) {
-					String hrefValue = matcher.group("hrefValue");
-
-					if (hrefValue.startsWith("http://") ||
-						hrefValue.startsWith("https://")) {
-
-						continue;
-					}
-
-					File cssFile = new File(reportDir, hrefValue);
-
-					if (!cssFile.exists()) {
-						continue;
-					}
-
-					String styleElementContent =
-						"<style>" + JenkinsResultsParserUtil.read(cssFile) +
-							"</style>";
-
-					newReportFileContent = newReportFileContent.replace(
-						line, styleElementContent);
-
-					if (deleteFrontendFiles) {
-						cssFile.delete();
-					}
+				if (!matcher.find()) {
+					continue;
 				}
+
+				String hrefValue = matcher.group("hrefValue");
+
+				if (hrefValue.startsWith("http://") ||
+					hrefValue.startsWith("https://")) {
+
+					continue;
+				}
+
+				File cssFile = new File(reportDir, hrefValue);
+
+				if (!cssFile.exists()) {
+					continue;
+				}
+
+				String styleElementContent =
+					"<style>" + JenkinsResultsParserUtil.read(cssFile) +
+						"</style>";
+
+				newReportFileContent = newReportFileContent.replace(
+					line, styleElementContent);
+
+				if (!deleteFrontendFiles) {
+					continue;
+				}
+
+				cssFile.delete();
 			}
 
 			if (!reportFileContent.equals(newReportFileContent)) {

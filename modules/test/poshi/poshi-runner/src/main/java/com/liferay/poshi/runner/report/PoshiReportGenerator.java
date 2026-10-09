@@ -271,21 +271,23 @@ public class PoshiReportGenerator {
 				String macroName = commandKey.substring(
 					commandKey.indexOf(".") + 1);
 
-				if (macroName.equals(executeMacroElementKey)) {
-					PoshiElement poshiElement =
-						(PoshiElement)commandElements.get(commandKey);
-
-					StringBuilder sb = new StringBuilder();
-
-					URL fileURL = poshiElement.getFilePathURL();
-
-					sb.append(fileURL.toString());
-
-					sb.append(":");
-					sb.append(poshiElement.getPoshiScriptLineNumber());
-
-					jsonArray.put(sb.toString());
+				if (!macroName.equals(executeMacroElementKey)) {
+					continue;
 				}
+
+				PoshiElement poshiElement = (PoshiElement)commandElements.get(
+					commandKey);
+
+				StringBuilder sb = new StringBuilder();
+
+				URL fileURL = poshiElement.getFilePathURL();
+
+				sb.append(fileURL.toString());
+
+				sb.append(":");
+				sb.append(poshiElement.getPoshiScriptLineNumber());
+
+				jsonArray.put(sb.toString());
 			}
 
 			Set<Element> executeMacroElements = _executeMacroElementMap.get(

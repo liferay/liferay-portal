@@ -42,9 +42,11 @@ public class FeatureFlagsBag {
 		List<FeatureFlag> featureFlags = new ArrayList<>();
 
 		for (FeatureFlag featureFlag : _featureFlagsMap.values()) {
-			if (predicate.test(featureFlag)) {
-				featureFlags.add(featureFlag);
+			if (!predicate.test(featureFlag)) {
+				continue;
 			}
+
+			featureFlags.add(featureFlag);
 		}
 
 		return featureFlags;

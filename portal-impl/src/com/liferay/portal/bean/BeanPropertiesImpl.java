@@ -622,28 +622,32 @@ public class BeanPropertiesImpl implements BeanProperties {
 
 			BeanUtil.forcedSilent.setProperty(bean, name, value);
 
-			if (name.endsWith("Month")) {
-				String dateParam = name.substring(0, name.lastIndexOf("Month"));
-
-				if (httpServletRequest.getParameter(dateParam) != null) {
-					continue;
-				}
-
-				Class<?> propertyTypeClass = BeanUtil.pojo.getPropertyType(
-					bean, dateParam);
-
-				if ((propertyTypeClass == null) ||
-					!propertyTypeClass.equals(Date.class)) {
-
-					continue;
-				}
-
-				Date date = getDate(dateParam, httpServletRequest);
-
-				if (date != null) {
-					BeanUtil.forcedSilent.setProperty(bean, dateParam, date);
-				}
+			if (!name.endsWith("Month")) {
+				continue;
 			}
+
+			String dateParam = name.substring(0, name.lastIndexOf("Month"));
+
+			if (httpServletRequest.getParameter(dateParam) != null) {
+				continue;
+			}
+
+			Class<?> propertyTypeClass = BeanUtil.pojo.getPropertyType(
+				bean, dateParam);
+
+			if ((propertyTypeClass == null) ||
+				!propertyTypeClass.equals(Date.class)) {
+
+				continue;
+			}
+
+			Date date = getDate(dateParam, httpServletRequest);
+
+			if (date == null) {
+				continue;
+			}
+
+			BeanUtil.forcedSilent.setProperty(bean, dateParam, date);
 		}
 	}
 

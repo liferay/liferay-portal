@@ -119,11 +119,12 @@ public class XMLBuildFileCheck extends BaseFileCheck {
 
 			File file = new File(dirPath + importFileName);
 
-			if (!file.exists()) {
-				addMessage(
-					fileName,
-					"Incorrect import file \"" + importFileName + "\"");
+			if (file.exists()) {
+				continue;
 			}
+
+			addMessage(
+				fileName, "Incorrect import file \"" + importFileName + "\"");
 		}
 	}
 

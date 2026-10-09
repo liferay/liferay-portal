@@ -210,9 +210,11 @@ public class DropdownItemListBuilder {
 			List<DropdownItem> dropdownItems) {
 
 			for (DropdownItem dropdownItem : dropdownItems) {
-				if (dropdownItem != null) {
-					_dropdownItemList.add(dropdownItem);
+				if (dropdownItem == null) {
+					continue;
 				}
+
+				_dropdownItemList.add(dropdownItem);
 			}
 
 			return this;

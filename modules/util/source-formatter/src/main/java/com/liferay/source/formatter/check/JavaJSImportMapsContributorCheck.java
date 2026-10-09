@@ -56,15 +56,17 @@ public class JavaJSImportMapsContributorCheck extends BaseFileCheck {
 					getLineNumber(content, x));
 			}
 
-			if (!resourcePath.contains("__liferay__/api.js") &&
-				!resourcePath.contains("__liferay__/exports")) {
+			if (resourcePath.contains("__liferay__/api.js") ||
+				resourcePath.contains("__liferay__/exports")) {
 
-				addMessage(
-					fileName,
-					"Import map resource path should only contain " +
-						"\"__liferay__/api.js\" or \"__liferay__/exports\"",
-					getLineNumber(content, x));
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"Import map resource path should only contain " +
+					"\"__liferay__/api.js\" or \"__liferay__/exports\"",
+				getLineNumber(content, x));
 		}
 
 		return content;

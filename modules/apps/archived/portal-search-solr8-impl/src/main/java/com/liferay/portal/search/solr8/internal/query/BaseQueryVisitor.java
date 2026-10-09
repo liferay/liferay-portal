@@ -67,10 +67,12 @@ public abstract class BaseQueryVisitor implements QueryVisitor<Query> {
 
 			Query query = _translate(booleanClause.getClause(), this);
 
-			if (query != null) {
-				booleanQueryBuilder.add(
-					query, _translate(booleanClause.getBooleanClauseOccur()));
+			if (query == null) {
+				continue;
 			}
+
+			booleanQueryBuilder.add(
+				query, _translate(booleanClause.getBooleanClauseOccur()));
 		}
 
 		BooleanFilter booleanFilter = booleanQuery.getPreBooleanFilter();

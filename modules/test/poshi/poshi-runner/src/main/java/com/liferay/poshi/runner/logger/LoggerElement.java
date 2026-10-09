@@ -124,9 +124,11 @@ public class LoggerElement {
 		List<LoggerElement> childLoggerElements = new ArrayList<>();
 
 		for (LoggerElement childLoggerElement : _childLoggerElements) {
-			if (Objects.equals(childLoggerElement.getName(), name)) {
-				childLoggerElements.add(childLoggerElement);
+			if (!Objects.equals(childLoggerElement.getName(), name)) {
+				continue;
 			}
+
+			childLoggerElements.add(childLoggerElement);
 		}
 
 		return childLoggerElements;
@@ -136,9 +138,11 @@ public class LoggerElement {
 		List<LoggerElement> childLoggerElements = new ArrayList<>();
 
 		for (LoggerElement childLoggerElement : _childLoggerElements) {
-			if (Objects.equals(childLoggerElement.getName(), name)) {
-				childLoggerElements.add(childLoggerElement);
+			if (!Objects.equals(childLoggerElement.getName(), name)) {
+				continue;
 			}
+
+			childLoggerElements.add(childLoggerElement);
 		}
 
 		for (LoggerElement childLoggerElement : childLoggerElements) {

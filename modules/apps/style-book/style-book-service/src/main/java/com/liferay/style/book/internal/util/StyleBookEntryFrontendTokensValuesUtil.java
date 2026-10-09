@@ -88,14 +88,16 @@ public class StyleBookEntryFrontendTokensValuesUtil {
 
 			String name = frontendTokenValueJSONObject.getString("name");
 
-			if (Validator.isNotNull(name) && !_isNamespaced(name)) {
-				frontendTokenValueJSONObject.put(
-					"name",
-					StringBundler.concat(
-						_getFrontendTokenDefinitionId(
-							customFrontendTokenNames, name, themeId),
-						StringPool.COLON, name));
+			if (Validator.isNull(name) || _isNamespaced(name)) {
+				continue;
 			}
+
+			frontendTokenValueJSONObject.put(
+				"name",
+				StringBundler.concat(
+					_getFrontendTokenDefinitionId(
+						customFrontendTokenNames, name, themeId),
+					StringPool.COLON, name));
 		}
 
 		return frontendTokensValuesJSONObject.toString();

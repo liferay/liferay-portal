@@ -54,12 +54,14 @@ public class AdminHelperImpl implements AdminHelper {
 				previousVersion = curKBArticle.getVersion();
 			}
 
-			if ((curKBArticle.getVersion() > targetVersion) &&
-				((curKBArticle.getVersion() < nextVersion) ||
-				 (nextVersion == 0))) {
+			if ((curKBArticle.getVersion() <= targetVersion) ||
+				((curKBArticle.getVersion() >= nextVersion) &&
+				 (nextVersion != 0))) {
 
-				nextVersion = curKBArticle.getVersion();
+				continue;
 			}
+
+			nextVersion = curKBArticle.getVersion();
 		}
 
 		List<DiffVersion> diffVersions = new ArrayList<>();

@@ -66,14 +66,16 @@ public class RequestParameterProperties extends ComponentPropertiesImpl {
 		List<RequestParameter> filteredRequestParameters = new ArrayList<>();
 
 		for (RequestParameter requestParameter : getRequestParameters()) {
-			if (Objects.equals(requestParameter.getLocation(), "header") &&
-				(Objects.equals(
-					requestParameter.getName(), "proxyIdentityId") ||
-				 Objects.equals(
+			if (!Objects.equals(requestParameter.getLocation(), "header") ||
+				(!Objects.equals(
+					requestParameter.getName(), "proxyIdentityId") &&
+				 !Objects.equals(
 					 requestParameter.getName(), "proxyIdentitySecret"))) {
 
-				filteredRequestParameters.add(requestParameter);
+				continue;
 			}
+
+			filteredRequestParameters.add(requestParameter);
 		}
 
 		return filteredRequestParameters;

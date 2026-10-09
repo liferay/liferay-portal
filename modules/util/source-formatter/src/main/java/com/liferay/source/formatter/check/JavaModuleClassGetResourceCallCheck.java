@@ -71,15 +71,17 @@ public class JavaModuleClassGetResourceCallCheck extends BaseFileCheck {
 				break;
 			}
 
-			if ((literalString.length() > 1) &&
-				!literalString.equals("dependencies") &&
-				!literalString.startsWith("dependencies/")) {
+			if ((literalString.length() <= 1) ||
+				literalString.equals("dependencies") ||
+				literalString.startsWith("dependencies/")) {
 
-				addMessage(
-					fileName,
-					"Resource files should be in \"dependencies\" directory",
-					getLineNumber(content, matcher.start()));
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"Resource files should be in \"dependencies\" directory",
+				getLineNumber(content, matcher.start()));
 		}
 
 		return content;

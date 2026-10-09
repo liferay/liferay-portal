@@ -109,9 +109,11 @@ public class CleanServiceBuilderCommand extends BaseCommand {
 
 			_dropTable(connection, tableName);
 
-			if (_hasLocalizationTable(entityElement)) {
-				_dropTable(connection, tableName + "Localization");
+			if (!_hasLocalizationTable(entityElement)) {
+				continue;
 			}
+
+			_dropTable(connection, tableName + "Localization");
 		}
 
 		_deleteReleaseRows(connection);

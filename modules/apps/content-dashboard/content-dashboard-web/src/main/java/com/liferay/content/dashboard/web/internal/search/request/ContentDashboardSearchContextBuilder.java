@@ -278,9 +278,11 @@ public class ContentDashboardSearchContextBuilder {
 					_getAuthorIdsFilter(), _getDateTypeRangeFilter(),
 					_getGoogleDriveShortcutFilter(), _getReviewDateFilter())) {
 
-			if (filter != null) {
-				booleanFilter.add(filter, BooleanClauseOccur.MUST);
+			if (filter == null) {
+				continue;
 			}
+
+			booleanFilter.add(filter, BooleanClauseOccur.MUST);
 		}
 
 		for (ContentDashboardItemFilterProvider

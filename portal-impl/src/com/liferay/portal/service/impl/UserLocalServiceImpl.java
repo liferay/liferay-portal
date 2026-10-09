@@ -401,9 +401,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			Group group = groupPersistence.fetchByC_GK(
 				user.getCompanyId(), defaultGroupName);
 
-			if (group != null) {
-				defaultGroups.add(group);
+			if (group == null) {
+				continue;
 			}
+
+			defaultGroups.add(group);
 		}
 
 		String[] defaultOrganizationGroupNames = PrefsPropsUtil.getStringArray(
@@ -421,9 +423,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			Group group = groupPersistence.fetchByC_GK(
 				user.getCompanyId(), defaultOrganizationGroupName);
 
-			if (group != null) {
-				defaultGroups.add(group);
+			if (group == null) {
+				continue;
 			}
+
+			defaultGroups.add(group);
 		}
 
 		long[] userGroupIds = user.getGroupIds();
@@ -545,12 +549,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			UserGroup userGroup = userGroupPersistence.fetchByC_N(
 				user.getCompanyId(), defaultUserGroupName);
 
-			if ((userGroup != null) &&
-				!ArrayUtil.contains(
+			if ((userGroup == null) ||
+				ArrayUtil.contains(
 					userUserGroupIds, userGroup.getUserGroupId())) {
 
-				userGroupIdSet.add(userGroup.getUserGroupId());
+				continue;
 			}
+
+			userGroupIdSet.add(userGroup.getUserGroupId());
 		}
 
 		if (userGroupIdSet.isEmpty()) {
@@ -3073,14 +3079,13 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					socialRelation.getUserId2());
 
 				if (user.isGuestUser() ||
-					(user.getStatus() != WorkflowConstants.STATUS_APPROVED)) {
+					(user.getStatus() != WorkflowConstants.STATUS_APPROVED) ||
+					users.contains(user)) {
 
 					continue;
 				}
 
-				if (!users.contains(user)) {
-					users.add(user);
-				}
+				users.add(user);
 			}
 
 			if (orderByComparator != null) {
@@ -4095,9 +4100,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				int count = userFinder.countByKeywords(
 					companyId, null, status, params);
 
-				if (count > 0) {
-					counts.put(groupId, count);
+				if (count <= 0) {
+					continue;
 				}
+
+				counts.put(groupId, count);
 			}
 		}
 		catch (Exception exception) {
@@ -4882,9 +4889,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		for (Long userId : userIds) {
 			User user = userPersistence.fetchByPrimaryKey(userId);
 
-			if (user != null) {
-				users.add(user);
+			if (user == null) {
+				continue;
 			}
+
+			users.add(user);
 		}
 
 		unsetRoleUsers(roleId, users);
@@ -7277,16 +7286,20 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			_userGroupRolePersistence.findByUserId(userId);
 
 		for (UserGroupRole userGroupRole : userGroupRoles) {
-			if (ArrayUtil.contains(groupIds, userGroupRole.getGroupId())) {
-				Role role = rolePersistence.findByPrimaryKey(
-					userGroupRole.getRoleId());
-
-				if ((role.getType() == RoleConstants.TYPE_DEPOT) ||
-					(role.getType() == RoleConstants.TYPE_SITE)) {
-
-					_userGroupRolePersistence.remove(userGroupRole);
-				}
+			if (!ArrayUtil.contains(groupIds, userGroupRole.getGroupId())) {
+				continue;
 			}
+
+			Role role = rolePersistence.findByPrimaryKey(
+				userGroupRole.getRoleId());
+
+			if ((role.getType() != RoleConstants.TYPE_DEPOT) &&
+				(role.getType() != RoleConstants.TYPE_SITE)) {
+
+				continue;
+			}
+
+			_userGroupRolePersistence.remove(userGroupRole);
 		}
 
 		List<Team> oldTeams = userPersistence.getTeams(userId);
@@ -7294,9 +7307,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		List<Team> removedFromTeams = new ArrayList<>();
 
 		for (Team team : oldTeams) {
-			if (ArrayUtil.contains(groupIds, team.getGroupId())) {
-				removedFromTeams.add(team);
+			if (!ArrayUtil.contains(groupIds, team.getGroupId())) {
+				continue;
 			}
+
+			removedFromTeams.add(team);
 		}
 
 		if (!removedFromTeams.isEmpty()) {
@@ -7396,9 +7411,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		userGroupRoles = new ArrayList<>(userGroupRoles);
 
 		for (UserGroupRole userGroupRole : previousUserGroupRoles) {
-			if (!userGroupRoles.remove(userGroupRole)) {
-				_userGroupRoleLocalService.deleteUserGroupRole(userGroupRole);
+			if (userGroupRoles.remove(userGroupRole)) {
+				continue;
 			}
+
+			_userGroupRoleLocalService.deleteUserGroupRole(userGroupRole);
 		}
 
 		if (ListUtil.isEmpty(userGroupRoles)) {
@@ -7433,10 +7450,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			Organization organization =
 				organizationPersistence.findByPrimaryKey(organizationId);
 
-			if (!ArrayUtil.contains(validGroupIds, organization.getGroupId())) {
-				validGroupIds = ArrayUtil.append(
-					validGroupIds, organization.getGroupId());
+			if (ArrayUtil.contains(validGroupIds, organization.getGroupId())) {
+				continue;
 			}
+
+			validGroupIds = ArrayUtil.append(
+				validGroupIds, organization.getGroupId());
 		}
 
 		Arrays.sort(validGroupIds);
@@ -7445,9 +7464,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			int count = Arrays.binarySearch(
 				validGroupIds, userGroupRole.getGroupId());
 
-			if (count >= 0) {
-				_userGroupRoleLocalService.addUserGroupRole(userGroupRole);
+			if (count < 0) {
+				continue;
 			}
+
+			_userGroupRoleLocalService.addUserGroupRole(userGroupRole);
 		}
 	}
 
@@ -7791,11 +7812,13 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			Role role = rolePersistence.fetchByC_N(
 				user.getCompanyId(), defaultRoleName);
 
-			if ((role != null) &&
-				(role.getType() == RoleConstants.TYPE_REGULAR)) {
+			if ((role == null) ||
+				(role.getType() != RoleConstants.TYPE_REGULAR)) {
 
-				roleIdsSet.add(role.getRoleId());
+				continue;
 			}
+
+			roleIdsSet.add(role.getRoleId());
 		}
 
 		roleIds = ArrayUtil.toArray(roleIdsSet.toArray(new Long[0]));
@@ -7827,12 +7850,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			user.getUserId(), TicketConstants.TYPE_PASSWORD);
 
 		for (Ticket ticket : tickets) {
-			if (!ticket.isExpired()) {
-				_ticketLocalService.updateTicket(
-					ticket.getTicketId(), User.class.getName(),
-					user.getUserId(), TicketConstants.TYPE_PASSWORD,
-					ticket.getExtraInfo(), new Date());
+			if (ticket.isExpired()) {
+				continue;
 			}
+
+			_ticketLocalService.updateTicket(
+				ticket.getTicketId(), User.class.getName(), user.getUserId(),
+				TicketConstants.TYPE_PASSWORD, ticket.getExtraInfo(),
+				new Date());
 		}
 	}
 

@@ -125,21 +125,23 @@ public class PoshiElementFactoryTest {
 		int i = 0;
 
 		for (Node node : Dom4JUtil.toNodeList(rootPoshiElement.content())) {
-			if (node instanceof PoshiElement) {
-				PoshiElement poshiElement = (PoshiElement)node;
+			if (!(node instanceof PoshiElement)) {
+				continue;
+			}
 
-				for (Node childNode :
-						Dom4JUtil.toNodeList(poshiElement.content())) {
+			PoshiElement poshiElement = (PoshiElement)node;
 
-					PoshiNode<?, ?> childPoshiNode = (PoshiNode<?, ?>)childNode;
+			for (Node childNode :
+					Dom4JUtil.toNodeList(poshiElement.content())) {
 
-					Assert.assertEquals(
-						"The the expected line number does not match",
-						expectedLineNumbers[i],
-						childPoshiNode.getPoshiScriptLineNumber());
+				PoshiNode<?, ?> childPoshiNode = (PoshiNode<?, ?>)childNode;
 
-					i++;
-				}
+				Assert.assertEquals(
+					"The the expected line number does not match",
+					expectedLineNumbers[i],
+					childPoshiNode.getPoshiScriptLineNumber());
+
+				i++;
 			}
 		}
 	}

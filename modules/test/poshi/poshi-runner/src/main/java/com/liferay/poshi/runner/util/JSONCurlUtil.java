@@ -257,28 +257,29 @@ public class JSONCurlUtil {
 
 				Matcher optionTypeMatcher = _requestPattern.matcher(optionType);
 
-				if (optionTypeMatcher.matches()) {
-					String optionValue = "";
-
-					if (i < (tokens.size() - 1)) {
-						String nextToken = tokens.get(i + 1);
-
-						optionTypeMatcher = _requestPattern.matcher(nextToken);
-
-						if (!optionTypeMatcher.matches()) {
-							if (nextToken.matches("\\$CURLDATA:\\w{10}")) {
-								nextToken = _curlDataMap.get(nextToken);
-							}
-
-							optionValue = nextToken;
-
-							i++;
-						}
-					}
-
-					_requestOptions.add(
-						new RequestOption(optionType, optionValue));
+				if (!optionTypeMatcher.matches()) {
+					continue;
 				}
+
+				String optionValue = "";
+
+				if (i < (tokens.size() - 1)) {
+					String nextToken = tokens.get(i + 1);
+
+					optionTypeMatcher = _requestPattern.matcher(nextToken);
+
+					if (!optionTypeMatcher.matches()) {
+						if (nextToken.matches("\\$CURLDATA:\\w{10}")) {
+							nextToken = _curlDataMap.get(nextToken);
+						}
+
+						optionValue = nextToken;
+
+						i++;
+					}
+				}
+
+				_requestOptions.add(new RequestOption(optionType, optionValue));
 			}
 		}
 

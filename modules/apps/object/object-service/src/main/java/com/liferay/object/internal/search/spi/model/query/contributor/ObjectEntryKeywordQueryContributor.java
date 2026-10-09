@@ -900,9 +900,11 @@ public class ObjectEntryKeywordQueryContributor
 			for (String keywordToken : keywordTokens) {
 				String token = keywordToken.trim();
 
-				if (!token.isEmpty()) {
-					tokens.add(token);
+				if (token.isEmpty()) {
+					continue;
 				}
+
+				tokens.add(token);
 			}
 		}
 

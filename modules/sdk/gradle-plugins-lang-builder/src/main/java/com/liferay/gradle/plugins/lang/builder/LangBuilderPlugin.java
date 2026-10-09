@@ -234,13 +234,17 @@ public class LangBuilderPlugin implements Plugin<Project> {
 		for (Map.Entry<String, ?> entry : projectProperties.entrySet()) {
 			Object value = entry.getValue();
 
-			if (value instanceof String) {
-				String key = entry.getKey();
-
-				if (key.startsWith("liferay.releng")) {
-					relengProperties.put("${" + key + "}", (String)value);
-				}
+			if (!(value instanceof String)) {
+				continue;
 			}
+
+			String key = entry.getKey();
+
+			if (!key.startsWith("liferay.releng")) {
+				continue;
+			}
+
+			relengProperties.put("${" + key + "}", (String)value);
 		}
 
 		final Action<FileCopyDetails> action = new Action<FileCopyDetails>() {

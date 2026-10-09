@@ -25,13 +25,15 @@ public class GradleTaskCreationCheck extends BaseGradleFileCheck {
 		String[] lines = StringUtil.splitLines(content);
 
 		for (String line : lines) {
-			if (line.matches("^task\\s+.*$") && line.contains("{")) {
-				addMessage(
-					fileName,
-					"The task should be declared in a separate line before " +
-						"the closure",
-					getLineNumber(content, content.indexOf(line)));
+			if (!line.matches("^task\\s+.*$") || !line.contains("{")) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"The task should be declared in a separate line before the " +
+					"closure",
+				getLineNumber(content, content.indexOf(line)));
 		}
 
 		return content;

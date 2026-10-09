@@ -692,12 +692,14 @@ public class ObjectEntryDTOConverter
 					objectRelationship.getName(), entry::getValue);
 			}
 
-			if (nestedFieldName.contains(relatedObjectDefinitionName) ||
-				StringUtil.equals(
+			if (!nestedFieldName.contains(relatedObjectDefinitionName) &&
+				!StringUtil.equals(
 					nestedFieldName, objectRelationship.getName())) {
 
-				unsafeSuppliers.put(manyToOneRelationshipName, entry::getValue);
+				continue;
 			}
+
+			unsafeSuppliers.put(manyToOneRelationshipName, entry::getValue);
 		}
 	}
 

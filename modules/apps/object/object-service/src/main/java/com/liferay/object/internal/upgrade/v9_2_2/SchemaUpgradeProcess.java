@@ -41,12 +41,14 @@ public class SchemaUpgradeProcess extends UpgradeProcess {
 
 				String tableNameLowerCase = StringUtil.toLowerCase(tableName);
 
-				if (tableName.contains(String.valueOf(defaultCompanyId)) &&
-					(tableNameLowerCase.contains("_x_") ||
-					 tableNameLowerCase.startsWith("o_"))) {
+				if (!tableName.contains(String.valueOf(defaultCompanyId)) ||
+					(!tableNameLowerCase.contains("_x_") &&
+					 !tableNameLowerCase.startsWith("o_"))) {
 
-					runSQL("drop view if exists " + tableName);
+					continue;
 				}
+
+				runSQL("drop view if exists " + tableName);
 			}
 		}
 	}

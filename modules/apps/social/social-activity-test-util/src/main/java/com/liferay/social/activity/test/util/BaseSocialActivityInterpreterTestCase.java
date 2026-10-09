@@ -192,20 +192,22 @@ public abstract class BaseSocialActivityInterpreterTestCase {
 			getActivityInterpreter();
 
 		for (SocialActivity activity : activities) {
-			if (hasClassName(activityInterpreter, activity.getClassName()) &&
-				hasActivityType(activity.getType())) {
+			if (!hasClassName(activityInterpreter, activity.getClassName()) ||
+				!hasActivityType(activity.getType())) {
 
-				SocialActivityFeedEntry activityFeedEntry =
-					activityInterpreter.interpret(activity, serviceContext);
-
-				Assert.assertNotNull(activityFeedEntry);
-
-				String title = activityFeedEntry.getTitle();
-
-				Assert.assertFalse(
-					"Title contains parameters: " + title,
-					title.matches("\\{\\d\\}"));
+				continue;
 			}
+
+			SocialActivityFeedEntry activityFeedEntry =
+				activityInterpreter.interpret(activity, serviceContext);
+
+			Assert.assertNotNull(activityFeedEntry);
+
+			String title = activityFeedEntry.getTitle();
+
+			Assert.assertFalse(
+				"Title contains parameters: " + title,
+				title.matches("\\{\\d\\}"));
 		}
 	}
 
@@ -218,25 +220,27 @@ public abstract class BaseSocialActivityInterpreterTestCase {
 			getActivityInterpreter();
 
 		for (SocialActivity activity : activities) {
-			if (hasClassName(activityInterpreter, activity.getClassName()) &&
-				hasActivityType(activity.getType())) {
+			if (!hasClassName(activityInterpreter, activity.getClassName()) ||
+				!hasActivityType(activity.getType())) {
 
-				SocialActivityFeedEntry activityFeedEntry =
-					activityInterpreter.interpret(activity, serviceContext);
-
-				PortletURL portletURL = trashHelper.getViewContentURL(
-					serviceContext.getRequest(), activity.getClassName(),
-					activity.getClassPK());
-
-				if (Validator.isNull(activityFeedEntry.getLink()) &&
-					(portletURL == null)) {
-
-					continue;
-				}
-
-				Assert.assertEquals(
-					portletURL.toString(), activityFeedEntry.getLink());
+				continue;
 			}
+
+			SocialActivityFeedEntry activityFeedEntry =
+				activityInterpreter.interpret(activity, serviceContext);
+
+			PortletURL portletURL = trashHelper.getViewContentURL(
+				serviceContext.getRequest(), activity.getClassName(),
+				activity.getClassPK());
+
+			if (Validator.isNull(activityFeedEntry.getLink()) &&
+				(portletURL == null)) {
+
+				continue;
+			}
+
+			Assert.assertEquals(
+				portletURL.toString(), activityFeedEntry.getLink());
 		}
 	}
 
@@ -254,16 +258,20 @@ public abstract class BaseSocialActivityInterpreterTestCase {
 		Assert.assertFalse(activities.toString(), activities.isEmpty());
 
 		for (SocialActivity activity : activities) {
-			if (!originalActivitiesIds.contains(activity.getActivityId())) {
-				String title = activity.getExtraDataValue(
-					"title", serviceContext.getLocale());
-
-				if (isSupportsRename(activity.getClassName()) &&
-					Validator.isNotNull(title)) {
-
-					Assert.assertNotEquals(originalTitle, title);
-				}
+			if (originalActivitiesIds.contains(activity.getActivityId())) {
+				continue;
 			}
+
+			String title = activity.getExtraDataValue(
+				"title", serviceContext.getLocale());
+
+			if (!isSupportsRename(activity.getClassName()) ||
+				Validator.isNull(title)) {
+
+				continue;
+			}
+
+			Assert.assertNotEquals(originalTitle, title);
 		}
 	}
 

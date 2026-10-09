@@ -98,12 +98,14 @@ public class UpgradeKaleoProcessTest {
 
 						String className = clazz.getName();
 
-						if (className.contains(
+						if (!className.contains(
 								".v1_1_0.KaleoProcessUpgradeProcess")) {
 
-							_kaleoProcessUpgradeProcess =
-								(UpgradeProcess)upgradeStep;
+							continue;
 						}
+
+						_kaleoProcessUpgradeProcess =
+							(UpgradeProcess)upgradeStep;
 					}
 				}
 

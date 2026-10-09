@@ -164,12 +164,14 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 					typeSettings, oldStagedPortletId,
 					_getStagedPortletId(newRootPortletId));
 
-				if (!Objects.equals(typeSettings, newTypeSettings)) {
-					preparedStatement2.setString(1, newTypeSettings);
-					preparedStatement2.setLong(2, resultSet.getLong("groupId"));
-
-					preparedStatement2.addBatch();
+				if (Objects.equals(typeSettings, newTypeSettings)) {
+					continue;
 				}
+
+				preparedStatement2.setString(1, newTypeSettings);
+				preparedStatement2.setLong(2, resultSet.getLong("groupId"));
+
+				preparedStatement2.addBatch();
 			}
 
 			preparedStatement2.executeBatch();
@@ -355,9 +357,11 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 					String newTypeSettings = StringUtil.replace(
 						typeSettings, oldPortletId, newPortletId);
 
-					if (!Objects.equals(typeSettings, newTypeSettings)) {
-						updateLayout(plid, newTypeSettings);
+					if (Objects.equals(typeSettings, newTypeSettings)) {
+						continue;
 					}
+
+					updateLayout(plid, newTypeSettings);
 				}
 			}
 		}
@@ -416,13 +420,15 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 					typeSettings, oldRootPortletId, newRootPortletId,
 					exactMatch);
 
-				if (!Objects.equals(typeSettings, newTypeSettings)) {
-					preparedStatement2.setString(1, newTypeSettings);
-					preparedStatement2.setLong(
-						2, resultSet.getLong("layoutRevisionId"));
-
-					preparedStatement2.addBatch();
+				if (Objects.equals(typeSettings, newTypeSettings)) {
+					continue;
 				}
+
+				preparedStatement2.setString(1, newTypeSettings);
+				preparedStatement2.setLong(
+					2, resultSet.getLong("layoutRevisionId"));
+
+				preparedStatement2.addBatch();
 			}
 
 			preparedStatement2.executeBatch();
@@ -453,12 +459,14 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 					typeSettings, oldRootPortletId, newRootPortletId,
 					exactMatch);
 
-				if (!Objects.equals(typeSettings, newTypeSettings)) {
-					preparedStatement2.setString(1, newTypeSettings);
-					preparedStatement2.setLong(2, resultSet.getLong("plid"));
-
-					preparedStatement2.addBatch();
+				if (Objects.equals(typeSettings, newTypeSettings)) {
+					continue;
 				}
+
+				preparedStatement2.setString(1, newTypeSettings);
+				preparedStatement2.setLong(2, resultSet.getLong("plid"));
+
+				preparedStatement2.addBatch();
 			}
 
 			preparedStatement2.executeBatch();

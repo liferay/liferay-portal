@@ -92,16 +92,18 @@ public class EditAssetCategoryFriendlyURLMVCActionCommand
 
 			String urlTitle = urlTitleMap.get(locale);
 
-			if (Validator.isNotNull(urlTitle) ||
-				((urlTitle != null) && urlTitle.equals(StringPool.BLANK))) {
+			if (Validator.isNull(urlTitle) &&
+				((urlTitle == null) || !urlTitle.equals(StringPool.BLANK))) {
 
-				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-					assetCategory.getGroupId(), classNameId,
-					_getParentClassPK(assetCategory),
-					assetCategory.getCategoryId(), urlTitle);
-
-				newUrlTitleMap.put(LocaleUtil.toLanguageId(locale), urlTitle);
+				continue;
 			}
+
+			urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
+				assetCategory.getGroupId(), classNameId,
+				_getParentClassPK(assetCategory), assetCategory.getCategoryId(),
+				urlTitle);
+
+			newUrlTitleMap.put(LocaleUtil.toLanguageId(locale), urlTitle);
 		}
 
 		return newUrlTitleMap;

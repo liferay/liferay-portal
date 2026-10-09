@@ -33,13 +33,15 @@ public class CompanyCentralizedThreadLocal<T>
 		for (CentralizedThreadLocal<?> shortLivedCentralizedThreadLocal :
 				shortLivedCentralizedThreadLocals.keySet()) {
 
-			if (shortLivedCentralizedThreadLocal instanceof
-					CompanyCentralizedThreadLocal) {
+			if (!(shortLivedCentralizedThreadLocal instanceof
+					CompanyCentralizedThreadLocal)) {
 
-				companyCentralizedThreadLocals.add(
-					(CompanyCentralizedThreadLocal<?>)
-						shortLivedCentralizedThreadLocal);
+				continue;
 			}
+
+			companyCentralizedThreadLocals.add(
+				(CompanyCentralizedThreadLocal<?>)
+					shortLivedCentralizedThreadLocal);
 		}
 
 		return companyCentralizedThreadLocals;

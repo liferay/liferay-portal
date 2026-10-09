@@ -263,9 +263,11 @@ public class RootCauseAnalysisToolBuild extends DefaultTopLevelBuild {
 						gitCommitGroups.add(gitCommitGroup);
 					}
 
-					if (retestLocalGitCommit != null) {
-						gitCommitGroup.add(retestLocalGitCommit);
+					if (retestLocalGitCommit == null) {
+						continue;
 					}
+
+					gitCommitGroup.add(retestLocalGitCommit);
 				}
 
 				return gitCommitGroups;
@@ -515,17 +517,19 @@ public class RootCauseAnalysisToolBuild extends DefaultTopLevelBuild {
 					gitCommitGroup.get(0), portalBuildData, gitCommitGroup,
 					nextGitCommitGroup, firstCommit));
 
-			if (gitCommitGroup.size() > 1) {
-				Element commitGroupElement = Dom4JUtil.getNewElement(
-					"tbody", tableBodyElement);
+			if (gitCommitGroup.size() <= 1) {
+				continue;
+			}
 
-				commitGroupElement.addAttribute("class", "hidden-row");
+			Element commitGroupElement = Dom4JUtil.getNewElement(
+				"tbody", tableBodyElement);
 
-				for (int j = 1; j < gitCommitGroup.size(); j++) {
-					Dom4JUtil.addToElement(
-						commitGroupElement,
-						getCommitGroupRowElement(gitCommitGroup.get(j)));
-				}
+			commitGroupElement.addAttribute("class", "hidden-row");
+
+			for (int j = 1; j < gitCommitGroup.size(); j++) {
+				Dom4JUtil.addToElement(
+					commitGroupElement,
+					getCommitGroupRowElement(gitCommitGroup.get(j)));
 			}
 		}
 

@@ -176,11 +176,13 @@ public class FieldsToDDMFormValuesConverterImpl
 				offset++;
 			}
 
-			if (fieldDisplayName.equals(fieldName) &&
-				(offset == parentOffset)) {
+			if (!fieldDisplayName.equals(fieldName) ||
+				(offset != parentOffset)) {
 
-				repetitions++;
+				continue;
 			}
+
+			repetitions++;
 		}
 
 		return repetitions;

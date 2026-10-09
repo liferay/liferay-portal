@@ -243,9 +243,11 @@ public class XLIFFTranslationSnapshotProvider
 		Event eventStartSubdocument = null;
 
 		for (Event event : events) {
-			if (event.isStartSubDocument()) {
-				eventStartSubdocument = event;
+			if (!event.isStartSubDocument()) {
+				continue;
 			}
+
+			eventStartSubdocument = event;
 		}
 
 		if (eventStartSubdocument == null) {
@@ -400,19 +402,22 @@ public class XLIFFTranslationSnapshotProvider
 
 	private boolean _isVersion20(List<Event> events) {
 		for (Event event : events) {
-			if (event.isStartDocument()) {
-				StartDocument startDocument = event.getStartDocument();
+			if (!event.isStartDocument()) {
+				continue;
+			}
 
-				Property versionProperty = startDocument.getProperty("version");
+			StartDocument startDocument = event.getStartDocument();
 
-				if (versionProperty != null) {
-					double version = GetterUtil.getDouble(
-						versionProperty.getValue());
+			Property versionProperty = startDocument.getProperty("version");
 
-					if ((version >= 2.0) && (version < 3.0)) {
-						return true;
-					}
-				}
+			if (versionProperty == null) {
+				continue;
+			}
+
+			double version = GetterUtil.getDouble(versionProperty.getValue());
+
+			if ((version >= 2.0) && (version < 3.0)) {
+				return true;
 			}
 		}
 
@@ -548,17 +553,18 @@ public class XLIFFTranslationSnapshotProvider
 		throws XLIFFFileException.MustBeValid {
 
 		for (Event event : events) {
-			if (event.isDocumentPart()) {
-				DocumentPart documentPart = event.getDocumentPart();
+			if (!event.isDocumentPart()) {
+				continue;
+			}
 
-				Property versionProperty = documentPart.getProperty("version");
+			DocumentPart documentPart = event.getDocumentPart();
 
-				if ((versionProperty != null) &&
-					!Objects.equals(versionProperty.getValue(), "1.2")) {
+			Property versionProperty = documentPart.getProperty("version");
 
-					throw new XLIFFFileException.MustBeValid(
-						"version must be 1.2");
-				}
+			if ((versionProperty != null) &&
+				!Objects.equals(versionProperty.getValue(), "1.2")) {
+
+				throw new XLIFFFileException.MustBeValid("version must be 1.2");
 			}
 		}
 	}
@@ -571,15 +577,17 @@ public class XLIFFTranslationSnapshotProvider
 		}
 
 		for (Object object : fragment) {
-			if (object instanceof CTag) {
-				CTag cTag = (CTag)object;
+			if (!(object instanceof CTag)) {
+				continue;
+			}
 
-				if (!cTag.hasData()) {
-					throw new XLIFFFileException.MustBeValid(
-						StringBundler.concat(
-							"Inline code \"", cTag.getId(),
-							"\" has no original data"));
-				}
+			CTag cTag = (CTag)object;
+
+			if (!cTag.hasData()) {
+				throw new XLIFFFileException.MustBeValid(
+					StringBundler.concat(
+						"Inline code \"", cTag.getId(),
+						"\" has no original data"));
 			}
 		}
 	}

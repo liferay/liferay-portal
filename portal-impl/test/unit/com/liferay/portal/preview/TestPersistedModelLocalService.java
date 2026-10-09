@@ -46,9 +46,11 @@ public class TestPersistedModelLocalService
 		for (Serializable primaryKey : primaryKeys) {
 			PersistedModel persistedModel = _persistedModels.get(primaryKey);
 
-			if (persistedModel != null) {
-				map.put(primaryKey, (T)persistedModel);
+			if (persistedModel == null) {
+				continue;
 			}
+
+			map.put(primaryKey, (T)persistedModel);
 		}
 
 		return map;

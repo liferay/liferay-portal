@@ -124,9 +124,11 @@ public class IOZipReader extends BaseZipReader {
 					folderName = fileName.substring(0, pos);
 				}
 
-				if (folderName.equals(path)) {
-					entries.add(fileName);
+				if (!folderName.equals(path)) {
+					continue;
 				}
+
+				entries.add(fileName);
 			}
 		}
 

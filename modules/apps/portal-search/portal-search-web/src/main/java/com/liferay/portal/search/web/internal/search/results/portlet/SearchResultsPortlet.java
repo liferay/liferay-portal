@@ -416,12 +416,14 @@ public class SearchResultsPortlet extends MVCPortlet {
 					portletURLFactory, searchResultsPortletPreferences,
 					searchResultPreferences);
 
-			if ((searchResultSummaryDisplayContext != null) &&
-				!searchResultSummaryDisplayContext.isTemporarilyUnavailable()) {
+			if ((searchResultSummaryDisplayContext == null) ||
+				searchResultSummaryDisplayContext.isTemporarilyUnavailable()) {
 
-				searchResultsSummariesHolder.put(
-					document, searchResultSummaryDisplayContext);
+				continue;
 			}
+
+			searchResultsSummariesHolder.put(
+				document, searchResultSummaryDisplayContext);
 		}
 
 		return searchResultsSummariesHolder;

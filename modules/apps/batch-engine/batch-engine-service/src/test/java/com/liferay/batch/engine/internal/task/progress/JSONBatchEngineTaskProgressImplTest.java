@@ -44,9 +44,11 @@ public class JSONBatchEngineTaskProgressImplTest
 		for (int i = 0; i < expectedTotalItemsCount; i++) {
 			sb.append(productJSONObject.toString());
 
-			if (i < (PRODUCTS_COUNT - 1)) {
-				sb.append(StringPool.COMMA);
+			if (i >= (PRODUCTS_COUNT - 1)) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA);
 		}
 
 		if (!invalidJSONSyntax) {

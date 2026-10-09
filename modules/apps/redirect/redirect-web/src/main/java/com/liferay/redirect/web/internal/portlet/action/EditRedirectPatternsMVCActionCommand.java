@@ -99,14 +99,15 @@ public class EditRedirectPatternsMVCActionCommand extends BaseMVCActionCommand {
 
 			String userAgent = _getUserAgent(parameterMap, i);
 
-			if ((patternString != null) && (destinationURL != null) &&
-				(userAgent != null)) {
+			if ((patternString == null) || (destinationURL == null) ||
+				(userAgent == null)) {
 
-				redirectPatternEntries.add(
-					new RedirectPatternEntry(
-						Pattern.compile(patternString), destinationURL,
-						userAgent));
+				continue;
 			}
+
+			redirectPatternEntries.add(
+				new RedirectPatternEntry(
+					Pattern.compile(patternString), destinationURL, userAgent));
 		}
 
 		return redirectPatternEntries;

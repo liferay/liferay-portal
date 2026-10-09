@@ -690,23 +690,25 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 				String assembledInitParameterValue =
 					assembledInitParameters.get(initParameterName);
 
-				if (Validator.isNull(assembledInitParameterValue)) {
-					if ((webXMLInitParameterValue == null) &&
-						!Objects.equals(
-							assembledInitParameterValue,
-							initParametersEntry.getValue())) {
-
-						// Servlet 3 spec 8.2.3
-
-						throw new Exception(
-							StringBundler.concat(
-								"Init parameter name ", initParameterName,
-								" conflicts with filter name ", filterName));
-					}
-
-					assembledInitParameters.put(
-						initParameterName, initParametersEntry.getValue());
+				if (Validator.isNotNull(assembledInitParameterValue)) {
+					continue;
 				}
+
+				if ((webXMLInitParameterValue == null) &&
+					!Objects.equals(
+						assembledInitParameterValue,
+						initParametersEntry.getValue())) {
+
+					// Servlet 3 spec 8.2.3
+
+					throw new Exception(
+						StringBundler.concat(
+							"Init parameter name ", initParameterName,
+							" conflicts with filter name ", filterName));
+				}
+
+				assembledInitParameters.put(
+					initParameterName, initParametersEntry.getValue());
 			}
 
 			List<String> assembledDispatchers =
@@ -716,9 +718,11 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 				fragmentFilterDefinition.getDispatchers();
 
 			for (String dispatcher : fragmentDispatchers) {
-				if (!assembledDispatchers.contains(dispatcher)) {
-					assembledDispatchers.add(dispatcher);
+				if (assembledDispatchers.contains(dispatcher)) {
+					continue;
 				}
+
+				assembledDispatchers.add(dispatcher);
 			}
 
 			List<String> assembledServletNames =
@@ -728,9 +732,11 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 				fragmentFilterDefinition.getServletNames();
 
 			for (String servletName : fragmentServletNames) {
-				if (!assembledServletNames.contains(servletName)) {
-					assembledServletNames.add(servletName);
+				if (assembledServletNames.contains(servletName)) {
+					continue;
 				}
+
+				assembledServletNames.add(servletName);
 			}
 
 			List<String> assembledURLPatterns =
@@ -740,9 +746,11 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 				fragmentFilterDefinition.getURLPatterns();
 
 			for (String urlPattern : fragmentURLPatterns) {
-				if (!assembledURLPatterns.contains(urlPattern)) {
-					assembledURLPatterns.add(urlPattern);
+				if (assembledURLPatterns.contains(urlPattern)) {
+					continue;
 				}
+
+				assembledURLPatterns.add(urlPattern);
 			}
 		}
 	}
@@ -754,11 +762,13 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 		for (ListenerDefinition fragmentListenerDefinition :
 				fragmentListenerDefinitions) {
 
-			if (!assembledListenerDefinitions.contains(
+			if (assembledListenerDefinitions.contains(
 					fragmentListenerDefinition)) {
 
-				assembledListenerDefinitions.add(fragmentListenerDefinition);
+				continue;
 			}
+
+			assembledListenerDefinitions.add(fragmentListenerDefinition);
 		}
 	}
 
@@ -817,23 +827,25 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 				String assembledInitParameterValue =
 					assembledInitInitParameters.get(initParameterName);
 
-				if (Validator.isNull(assembledInitParameterValue)) {
-					if ((webXMLInitParameterValue == null) &&
-						!Objects.equals(
-							assembledInitParameterValue,
-							initParameterEntry.getValue())) {
-
-						// Servlet 3 spec 8.2.3
-
-						throw new Exception(
-							StringBundler.concat(
-								"Init parameter name ", initParameterName,
-								" conflicts with servlet name ", servletName));
-					}
-
-					assembledInitInitParameters.put(
-						initParameterName, initParameterEntry.getValue());
+				if (Validator.isNotNull(assembledInitParameterValue)) {
+					continue;
 				}
+
+				if ((webXMLInitParameterValue == null) &&
+					!Objects.equals(
+						assembledInitParameterValue,
+						initParameterEntry.getValue())) {
+
+					// Servlet 3 spec 8.2.3
+
+					throw new Exception(
+						StringBundler.concat(
+							"Init parameter name ", initParameterName,
+							" conflicts with servlet name ", servletName));
+				}
+
+				assembledInitInitParameters.put(
+					initParameterName, initParameterEntry.getValue());
 			}
 
 			List<String> assembledURLPatterns =
@@ -843,15 +855,19 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 				fragmentServletDefinition.getURLPatterns();
 
 			for (String urlPattern : fragmentURLPatterns) {
-				if (!assembledURLPatterns.contains(urlPattern)) {
-					assembledURLPatterns.add(urlPattern);
+				if (assembledURLPatterns.contains(urlPattern)) {
+					continue;
 				}
+
+				assembledURLPatterns.add(urlPattern);
 			}
 
-			if (Validator.isNull(assembledServletDefinition.getJspFile())) {
-				assembledServletDefinition.setJSPFile(
-					fragmentServletDefinition.getJspFile());
+			if (Validator.isNotNull(assembledServletDefinition.getJspFile())) {
+				continue;
 			}
+
+			assembledServletDefinition.setJSPFile(
+				fragmentServletDefinition.getJspFile());
 		}
 	}
 

@@ -302,9 +302,11 @@ public class OrganizationFinderImpl
 			while (iterator.hasNext()) {
 				Long l = iterator.next();
 
-				if (l != null) {
-					count += l.intValue();
+				if (l == null) {
+					continue;
 				}
+
+				count += l.intValue();
 			}
 
 			return count;
@@ -357,9 +359,11 @@ public class OrganizationFinderImpl
 			while (iterator.hasNext()) {
 				Long l = iterator.next();
 
-				if (l != null) {
-					count += l.intValue();
+				if (l == null) {
+					continue;
 				}
+
+				count += l.intValue();
 			}
 
 			return count;
@@ -744,13 +748,13 @@ public class OrganizationFinderImpl
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 			String key = entry.getKey();
 
-			if (key.equals("expandoAttributes")) {
+			if (key.equals("expandoAttributes") ||
+				Validator.isNull(entry.getValue())) {
+
 				continue;
 			}
 
-			if (Validator.isNotNull(entry.getValue())) {
-				sb.append(getJoin(key));
-			}
+			sb.append(getJoin(key));
 		}
 
 		return sb.toString();
@@ -816,9 +820,11 @@ public class OrganizationFinderImpl
 
 			Object value = entry.getValue();
 
-			if (Validator.isNotNull(value)) {
-				sb.append(getWhere(key, value));
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			sb.append(getWhere(key, value));
 		}
 
 		return sb.toString();
@@ -846,9 +852,11 @@ public class OrganizationFinderImpl
 				for (int i = 0; i < organizationIds.length; i++) {
 					sb.append("(Organization_.organizationId = ?) ");
 
-					if ((i + 1) < organizationIds.length) {
-						sb.append("OR ");
+					if ((i + 1) >= organizationIds.length) {
+						continue;
 					}
+
+					sb.append("OR ");
 				}
 
 				sb.append(StringPool.CLOSE_PARENTHESIS);
@@ -875,9 +883,11 @@ public class OrganizationFinderImpl
 					for (int i = 0; i < organizationGroupIds.length; i++) {
 						sb.append("(Groups_Orgs.groupId = ?) ");
 
-						if ((i + 1) < organizationGroupIds.length) {
-							sb.append("OR ");
+						if ((i + 1) >= organizationGroupIds.length) {
+							continue;
 						}
+
+						sb.append("OR ");
 					}
 
 					sb.append(StringPool.CLOSE_PARENTHESIS);
@@ -908,9 +918,11 @@ public class OrganizationFinderImpl
 				for (int i = 0; i < size; i++) {
 					sb.append("(Organization_.treePath LIKE ?) ");
 
-					if ((i + 1) < size) {
-						sb.append("OR ");
+					if ((i + 1) >= size) {
+						continue;
 					}
+
+					sb.append("OR ");
 				}
 
 				sb.append(StringPool.CLOSE_PARENTHESIS);
@@ -1006,9 +1018,11 @@ public class OrganizationFinderImpl
 				Long[] valueArray = (Long[])value;
 
 				for (Long element : valueArray) {
-					if (Validator.isNotNull(element)) {
-						queryPos.add(element);
+					if (Validator.isNull(element)) {
+						continue;
 					}
+
+					queryPos.add(element);
 				}
 			}
 			else if (value instanceof Long[][]) {

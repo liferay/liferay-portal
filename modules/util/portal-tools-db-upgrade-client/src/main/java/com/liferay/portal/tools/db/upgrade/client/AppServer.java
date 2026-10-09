@@ -148,16 +148,18 @@ public class AppServer {
 		for (File file : files) {
 			String fileName = file.getName();
 
-			if (file.isDirectory() &&
-				(Objects.equals(file.getName(), dirName) ||
-				 fileName.startsWith(dirName + "-"))) {
+			if (!file.isDirectory() ||
+				(!Objects.equals(file.getName(), dirName) &&
+				 !fileName.startsWith(dirName + "-"))) {
 
-				try {
-					return file.getCanonicalPath();
-				}
-				catch (IOException ioException) {
-					ioException.printStackTrace();
-				}
+				continue;
+			}
+
+			try {
+				return file.getCanonicalPath();
+			}
+			catch (IOException ioException) {
+				ioException.printStackTrace();
 			}
 		}
 

@@ -50,10 +50,12 @@ public class CPTaxCategoryModelDocumentContributor
 			String cpTaxCategoryDefaultLanguageId =
 				_localization.getDefaultLanguageId(cpTaxCategory.getName());
 
-			if (languageId.equals(cpTaxCategoryDefaultLanguageId)) {
-				document.addText(Field.NAME, name);
-				document.addText("defaultLanguageId", languageId);
+			if (!languageId.equals(cpTaxCategoryDefaultLanguageId)) {
+				continue;
 			}
+
+			document.addText(Field.NAME, name);
+			document.addText("defaultLanguageId", languageId);
 		}
 	}
 

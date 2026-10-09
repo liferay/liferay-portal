@@ -36,9 +36,11 @@ public class StringBundler implements Serializable {
 
 	public static String concat(String... strings) {
 		for (int i = 0; i < strings.length; i++) {
-			if (strings[i] == null) {
-				strings[i] = StringPool.NULL;
+			if (strings[i] != null) {
+				continue;
 			}
+
+			strings[i] = StringPool.NULL;
 		}
 
 		return _toString(strings, strings.length);
@@ -73,9 +75,11 @@ public class StringBundler implements Serializable {
 		_array = new String[stringArray.length + extraSpace];
 
 		for (String s : stringArray) {
-			if ((s != null) && !s.isEmpty()) {
-				_array[_arrayIndex++] = s;
+			if ((s == null) || s.isEmpty()) {
+				continue;
 			}
+
+			_array[_arrayIndex++] = s;
 		}
 	}
 
@@ -147,9 +151,11 @@ public class StringBundler implements Serializable {
 		}
 
 		for (String s : stringArray) {
-			if ((s != null) && (s.length() > 0)) {
-				_array[_arrayIndex++] = s;
+			if ((s == null) || (s.length() <= 0)) {
+				continue;
 			}
+
+			_array[_arrayIndex++] = s;
 		}
 
 		return this;

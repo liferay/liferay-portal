@@ -95,27 +95,31 @@ public class RenderURLParamsTag extends TagSupport {
 			HttpComponentsUtil.getQueryString(url), CharPool.AMPERSAND);
 
 		for (String parameter : parameters) {
-			if (parameter.length() > 0) {
-				String[] kvp = StringUtil.split(parameter, CharPool.EQUAL);
-
-				if (ArrayUtil.isNotEmpty(kvp)) {
-					String key = kvp[0];
-
-					String value = StringPool.BLANK;
-
-					if (kvp.length > 1) {
-						value = kvp[1];
-					}
-
-					value = HttpComponentsUtil.decodeURL(value);
-
-					jspWriter.write("<input name=\"");
-					jspWriter.write(key);
-					jspWriter.write("\" type=\"hidden\" value=\"");
-					jspWriter.write(HtmlUtil.escapeAttribute(value));
-					jspWriter.write("\" />");
-				}
+			if (parameter.length() <= 0) {
+				continue;
 			}
+
+			String[] kvp = StringUtil.split(parameter, CharPool.EQUAL);
+
+			if (ArrayUtil.isEmpty(kvp)) {
+				continue;
+			}
+
+			String key = kvp[0];
+
+			String value = StringPool.BLANK;
+
+			if (kvp.length > 1) {
+				value = kvp[1];
+			}
+
+			value = HttpComponentsUtil.decodeURL(value);
+
+			jspWriter.write("<input name=\"");
+			jspWriter.write(key);
+			jspWriter.write("\" type=\"hidden\" value=\"");
+			jspWriter.write(HtmlUtil.escapeAttribute(value));
+			jspWriter.write("\" />");
 		}
 	}
 

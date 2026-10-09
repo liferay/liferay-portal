@@ -88,15 +88,17 @@ public class ParsePrimitiveTypeCheck extends BaseCheck {
 			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			if ((exprDetailASTs.size() == 1) &&
-				!_catchesException(
+			if ((exprDetailASTs.size() != 1) ||
+				_catchesException(
 					methodCallDetailAST, "Exception",
 					"NumberFormatException")) {
 
-				log(
-					methodCallDetailAST, _MSG_USE_GETTER_UTIL_METHOD,
-					getterUtilMethodName, className, methodName);
+				continue;
 			}
+
+			log(
+				methodCallDetailAST, _MSG_USE_GETTER_UTIL_METHOD,
+				getterUtilMethodName, className, methodName);
 		}
 	}
 

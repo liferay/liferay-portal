@@ -251,12 +251,14 @@ public class FreeMarkerTool {
 				}
 			}
 
-			if (!exists &&
-				!isQueryParameter(
+			if (exists ||
+				isQueryParameter(
 					javaMethodParameter, javaMethodSignature.getOperation())) {
 
-				javaMethodParameters.add(javaMethodParameter);
+				continue;
 			}
+
+			javaMethodParameters.add(javaMethodParameter);
 		}
 
 		return javaMethodParameters;
@@ -617,18 +619,22 @@ public class FreeMarkerTool {
 				Map<String, Schema> propertySchemas =
 					schema.getPropertySchemas();
 
-				if (propertySchemas != null) {
-					for (String propertyName : propertySchemas.keySet()) {
-						if (_isGraphQLPropertyRelation(
-								javaMethodSignature, parameterName,
-								propertyName, entry.getKey())) {
+				if (propertySchemas == null) {
+					continue;
+				}
 
-							javaMethodSignatureMap.put(
-								methodName,
-								_getJavaMethodSignature(
-									javaMethodSignature, entry.getKey()));
-						}
+				for (String propertyName : propertySchemas.keySet()) {
+					if (!_isGraphQLPropertyRelation(
+							javaMethodSignature, parameterName, propertyName,
+							entry.getKey())) {
+
+						continue;
 					}
+
+					javaMethodSignatureMap.put(
+						methodName,
+						_getJavaMethodSignature(
+							javaMethodSignature, entry.getKey()));
 				}
 			}
 		}
@@ -1538,9 +1544,11 @@ public class FreeMarkerTool {
 
 				sb.append(": ___");
 
-				if (iterator.hasNext()) {
-					sb.append(", ");
+				if (!iterator.hasNext()) {
+					continue;
 				}
+
+				sb.append(", ");
 			}
 
 			sb.append(")");
@@ -1574,9 +1582,11 @@ public class FreeMarkerTool {
 
 					sb.append(key);
 
-					if (iterator.hasNext()) {
-						sb.append(", ");
+					if (!iterator.hasNext()) {
+						continue;
 					}
+
+					sb.append(", ");
 				}
 			}
 		}
@@ -1721,23 +1731,24 @@ public class FreeMarkerTool {
 
 			Schema schema = schemas.get(schemaName);
 
-			if (schema != null) {
-				Map<String, Schema> propertySchemas =
-					schema.getPropertySchemas();
+			if (schema == null) {
+				continue;
+			}
 
-				if (propertySchemas == null) {
+			Map<String, Schema> propertySchemas = schema.getPropertySchemas();
+
+			if (propertySchemas == null) {
+				continue;
+			}
+
+			for (Map.Entry<String, Schema> entry : propertySchemas.entrySet()) {
+				Schema propertySchema = entry.getValue();
+
+				if (propertySchema.isReadOnly()) {
 					continue;
 				}
 
-				for (Map.Entry<String, Schema> entry :
-						propertySchemas.entrySet()) {
-
-					Schema propertySchema = entry.getValue();
-
-					if (!propertySchema.isReadOnly()) {
-						properties.add(entry.getKey());
-					}
-				}
+				properties.add(entry.getKey());
 			}
 		}
 
@@ -1751,9 +1762,11 @@ public class FreeMarkerTool {
 				sb.append(iterator.next());
 				sb.append("\": ___");
 
-				if (iterator.hasNext()) {
-					sb.append(", ");
+				if (!iterator.hasNext()) {
+					continue;
 				}
+
+				sb.append(", ");
 			}
 
 			sb.append("}' --header 'Content-Type: application/json'");

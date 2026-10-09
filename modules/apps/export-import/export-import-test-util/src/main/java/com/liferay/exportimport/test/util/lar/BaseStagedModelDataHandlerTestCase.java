@@ -1105,9 +1105,11 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 					String dependentStagedModelPath =
 						ExportImportPathUtil.getModelPath(dependentStagedModel);
 
-					if (path.equals(dependentStagedModelPath)) {
-						iterator.remove();
+					if (!path.equals(dependentStagedModelPath)) {
+						continue;
 					}
+
+					iterator.remove();
 				}
 			}
 

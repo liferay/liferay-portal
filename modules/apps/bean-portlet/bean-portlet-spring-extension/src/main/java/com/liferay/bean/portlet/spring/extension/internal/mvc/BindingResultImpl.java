@@ -74,15 +74,19 @@ public class BindingResultImpl implements MutableBindingResult, Serializable {
 		Set<ParamError> paramErrors = new LinkedHashSet<>();
 
 		for (BindingError bindingError : _bindingErrors) {
-			if (Objects.equals(bindingError.getParamName(), paramName)) {
-				paramErrors.add(bindingError);
+			if (!Objects.equals(bindingError.getParamName(), paramName)) {
+				continue;
 			}
+
+			paramErrors.add(bindingError);
 		}
 
 		for (ValidationError validationError : _validationErrors) {
-			if (Objects.equals(validationError.getParamName(), paramName)) {
-				paramErrors.add(validationError);
+			if (!Objects.equals(validationError.getParamName(), paramName)) {
+				continue;
 			}
+
+			paramErrors.add(validationError);
 		}
 
 		return paramErrors;

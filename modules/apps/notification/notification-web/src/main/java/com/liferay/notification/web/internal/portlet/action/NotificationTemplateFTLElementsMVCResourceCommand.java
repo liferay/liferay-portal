@@ -110,18 +110,19 @@ public class NotificationTemplateFTLElementsMVCResourceCommand
 				new TemplateVariableGroup(infoFieldSet.getLabel(locale));
 
 			for (InfoField<?> infoField : infoFieldSet.getAllInfoFields()) {
-				if (!StringUtil.startsWith(
+				if (StringUtil.startsWith(
 						infoField.getUniqueId(),
 						PortletDisplayTemplate.DISPLAY_STYLE_PREFIX)) {
 
-					InfoFieldType infoFieldType = infoField.getInfoFieldType();
-
-					templateVariableGroup.addFieldVariable(
-						infoField.getLabel(locale), TemplateNode.class,
-						infoField.getUniqueId(), infoField.getLabel(locale),
-						infoFieldType.getName(), infoField.isMultivalued(),
-						null);
+					continue;
 				}
+
+				InfoFieldType infoFieldType = infoField.getInfoFieldType();
+
+				templateVariableGroup.addFieldVariable(
+					infoField.getLabel(locale), TemplateNode.class,
+					infoField.getUniqueId(), infoField.getLabel(locale),
+					infoFieldType.getName(), infoField.isMultivalued(), null);
 			}
 
 			jsonArray.put(

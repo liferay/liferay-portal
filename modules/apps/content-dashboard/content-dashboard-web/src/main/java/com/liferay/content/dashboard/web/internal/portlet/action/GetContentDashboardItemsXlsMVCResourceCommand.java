@@ -276,12 +276,14 @@ public class GetContentDashboardItemsXlsMVCResourceCommand
 				ContentDashboardItem<?> contentDashboardItem =
 					_toContentDashboardItem(document);
 
-				if (contentDashboardItem != null) {
-					workbookBuilder.row();
-
-					_addWorkbookCell(
-						contentDashboardItem, themeDisplay, workbookBuilder);
+				if (contentDashboardItem == null) {
+					continue;
 				}
+
+				workbookBuilder.row();
+
+				_addWorkbookCell(
+					contentDashboardItem, themeDisplay, workbookBuilder);
 			}
 
 			if (documents.size() < searchQueryResultWindowLimit) {

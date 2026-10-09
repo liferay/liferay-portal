@@ -201,9 +201,11 @@ public class DDMFormPagesTemplateContextFactory {
 			List<Object> fieldTemplateContexts = _createFieldTemplateContext(
 				ddmFormFieldName);
 
-			if (ListUtil.isNotEmpty(fieldTemplateContexts)) {
-				fieldsTemplateContext.addAll(fieldTemplateContexts);
+			if (ListUtil.isEmpty(fieldTemplateContexts)) {
+				continue;
 			}
+
+			fieldsTemplateContext.addAll(fieldTemplateContexts);
 		}
 
 		return fieldsTemplateContext;

@@ -172,17 +172,19 @@ public class JavaTestMethodAnnotationsCheck extends BaseJavaTermCheck {
 			parameterList = JavaSourceUtil.getParameterList(
 				JavaSourceUtil.getMethodCall(parameterList.get(0), 0));
 
-			if ((parameterList.size() == 2) &&
-				StringUtil.startsWith(
+			if ((parameterList.size() != 2) ||
+				!StringUtil.startsWith(
 					parameterList.get(0), "\"feature.flag.")) {
 
-				addMessage(
-					fileName,
-					"Use annotation \"@FeatureFlags\" instead of \"PropsUtil." +
-						"addProperties\" for feature flag",
-					javaTerm.getLineNumber() +
-						getLineNumber(javaTermContent, x) - 1);
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				"Use annotation \"@FeatureFlags\" instead of \"PropsUtil." +
+					"addProperties\" for feature flag",
+				javaTerm.getLineNumber() + getLineNumber(javaTermContent, x) -
+					1);
 		}
 	}
 

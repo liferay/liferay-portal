@@ -284,16 +284,18 @@ public class LPKGDeployerTest {
 					bundleContext.getBundle(location));
 			}
 
-			if (!symbolicName.equals("static")) {
-				Collections.sort(actualAppBundles);
-
-				Assert.assertEquals(
-					StringBundler.concat(
-						"LPKG bundle ", lpkgBundle, " expects app bundles ",
-						expectedAppBundles, " but has actual app bundles ",
-						actualAppBundles),
-					expectedAppBundles, actualAppBundles);
+			if (symbolicName.equals("static")) {
+				continue;
 			}
+
+			Collections.sort(actualAppBundles);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"LPKG bundle ", lpkgBundle, " expects app bundles ",
+					expectedAppBundles, " but has actual app bundles ",
+					actualAppBundles),
+				expectedAppBundles, actualAppBundles);
 		}
 	}
 

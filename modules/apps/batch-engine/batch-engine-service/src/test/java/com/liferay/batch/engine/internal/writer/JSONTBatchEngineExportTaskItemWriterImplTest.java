@@ -104,9 +104,11 @@ public class JSONTBatchEngineExportTaskItemWriterImplTest
 
 			sb.append(getItemJSONContent(fieldNames, item));
 
-			if (iterator.hasNext()) {
-				sb.append(",\n");
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(",\n");
 		}
 
 		sb.append("\n]\n}");

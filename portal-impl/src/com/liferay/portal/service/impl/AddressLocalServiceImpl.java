@@ -483,11 +483,13 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 				companyId, classNameId, classPK, mailing);
 
 			for (Address address : addresses) {
-				if ((addressId <= 0) || (address.getAddressId() != addressId)) {
-					address.setMailing(false);
-
-					addressPersistence.update(address);
+				if ((addressId > 0) && (address.getAddressId() == addressId)) {
+					continue;
 				}
+
+				address.setMailing(false);
+
+				addressPersistence.update(address);
 			}
 		}
 
@@ -499,11 +501,13 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 				companyId, classNameId, classPK, primary);
 
 			for (Address address : addresses) {
-				if ((addressId <= 0) || (address.getAddressId() != addressId)) {
-					address.setPrimary(false);
-
-					addressPersistence.update(address);
+				if ((addressId > 0) && (address.getAddressId() == addressId)) {
+					continue;
 				}
+
+				address.setPrimary(false);
+
+				addressPersistence.update(address);
 			}
 		}
 	}

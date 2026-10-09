@@ -184,9 +184,11 @@ public abstract class BaseDynamicInclude implements DynamicInclude {
 					stringBuilder.append(StringPool.QUOTE);
 				}
 
-				if (iterator.hasNext()) {
-					stringBuilder.append(StringPool.SPACE);
+				if (!iterator.hasNext()) {
+					continue;
 				}
+
+				stringBuilder.append(StringPool.SPACE);
 			}
 		}
 		catch (JSONException jsonException) {

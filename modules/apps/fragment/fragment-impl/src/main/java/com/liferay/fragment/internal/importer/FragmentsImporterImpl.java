@@ -481,39 +481,41 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			for (Map.Entry<String, FileEntry> entry : resources.entrySet()) {
 				String fileEntryPath = entry.getKey();
 
-				if (zipEntryNames.containsKey(fileEntryPath)) {
-					FileEntry fileEntry = entry.getValue();
+				if (!zipEntryNames.containsKey(fileEntryPath)) {
+					continue;
+				}
 
-					if (fragmentServiceConfiguration.propagateChanges()) {
-						_updateFileEntry(
-							fileEntry, userId, zipEntryNames.get(fileEntryPath),
-							zipFile);
+				FileEntry fileEntry = entry.getValue();
 
-						zipEntryNames.remove(fileEntryPath);
+				if (fragmentServiceConfiguration.propagateChanges()) {
+					_updateFileEntry(
+						fileEntry, userId, zipEntryNames.get(fileEntryPath),
+						zipFile);
+
+					zipEntryNames.remove(fileEntryPath);
+				}
+				else {
+					String folderPath = StringPool.BLANK;
+
+					int index = fileEntryPath.lastIndexOf(StringPool.SLASH);
+
+					if (index != -1) {
+						folderPath = fileEntryPath.substring(0, index + 1);
 					}
-					else {
-						String folderPath = StringPool.BLANK;
 
-						int index = fileEntryPath.lastIndexOf(StringPool.SLASH);
+					String newFileName =
+						PortletFileRepositoryUtil.getUniqueFileName(
+							fileEntry.getGroupId(), fileEntry.getFolderId(),
+							fileEntry.getFileName());
 
-						if (index != -1) {
-							folderPath = fileEntryPath.substring(0, index + 1);
-						}
+					resourceReferences.put(
+						fileEntryPath, folderPath + newFileName);
 
-						String newFileName =
-							PortletFileRepositoryUtil.getUniqueFileName(
-								fileEntry.getGroupId(), fileEntry.getFolderId(),
-								fileEntry.getFileName());
+					zipEntryNames.put(
+						folderPath + newFileName,
+						zipEntryNames.get(fileEntryPath));
 
-						resourceReferences.put(
-							fileEntryPath, folderPath + newFileName);
-
-						zipEntryNames.put(
-							folderPath + newFileName,
-							zipEntryNames.get(fileEntryPath));
-
-						zipEntryNames.remove(fileEntryPath);
-					}
+					zipEntryNames.remove(fileEntryPath);
 				}
 			}
 		}

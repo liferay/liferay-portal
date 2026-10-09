@@ -158,11 +158,12 @@ public class ContentImagesUpgradeProcess extends UpgradeProcess {
 						"uuid", fileEntry.getUuid()
 					).toString());
 
-				if (fileEntryId <= 0) {
-					dynamicContentElement.addAttribute(
-						"fileEntryId",
-						String.valueOf(fileEntry.getFileEntryId()));
+				if (fileEntryId > 0) {
+					continue;
 				}
+
+				dynamicContentElement.addAttribute(
+					"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
 			}
 		}
 

@@ -39,9 +39,11 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 		Set<String> dtoClassNames = new HashSet<>();
 
 		for (String dtoClassName : _serviceTrackerMap.keySet()) {
-			if (_getDTOConverter(dtoClassName) != null) {
-				dtoClassNames.add(dtoClassName);
+			if (_getDTOConverter(dtoClassName) == null) {
+				continue;
 			}
+
+			dtoClassNames.add(dtoClassName);
 		}
 
 		return dtoClassNames;

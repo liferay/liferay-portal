@@ -155,12 +155,14 @@ public class SoftCircularDependencyUtil {
 								new ComponentDescriptionKey(
 									bundle.getBundleId(), clazz.getName()));
 
-						if (toComponentDescriptionDTO != null) {
-							dependencies.add(
-								new Dependency(
-									fromComponentDescriptionDTO,
-									toComponentDescriptionDTO, referenceDTO));
+						if (toComponentDescriptionDTO == null) {
+							continue;
 						}
+
+						dependencies.add(
+							new Dependency(
+								fromComponentDescriptionDTO,
+								toComponentDescriptionDTO, referenceDTO));
 					}
 				}
 
@@ -190,11 +192,13 @@ public class SoftCircularDependencyUtil {
 			while (iterator.hasNext()) {
 				Dependency dependency = iterator.next();
 
-				if (!closureNavigationMap.containsKey(
+				if (closureNavigationMap.containsKey(
 						dependency.getToComponentDescriptionDTO())) {
 
-					iterator.remove();
+					continue;
 				}
+
+				iterator.remove();
 			}
 		}
 

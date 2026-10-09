@@ -108,15 +108,17 @@ public class EvaluateLayoutStructureRulesStrutsAction implements StrutsAction {
 				LayoutStructureItem layoutStructureItem =
 					layoutStructure.getLayoutStructureItem(entry.getKey());
 
-				if (layoutStructureItem instanceof
-						FragmentStyledLayoutStructureItem) {
+				if (!(layoutStructureItem instanceof
+						FragmentStyledLayoutStructureItem)) {
 
-					String formattedItemId = StringUtil.replace(
-						layoutStructureItem.getItemId(), CharPool.DASH,
-						CharPool.UNDERLINE);
-
-					map.put(_INPUT_PREFIX + formattedItemId, entry.getValue());
+					continue;
 				}
+
+				String formattedItemId = StringUtil.replace(
+					layoutStructureItem.getItemId(), CharPool.DASH,
+					CharPool.UNDERLINE);
+
+				map.put(_INPUT_PREFIX + formattedItemId, entry.getValue());
 			}
 
 			return map;

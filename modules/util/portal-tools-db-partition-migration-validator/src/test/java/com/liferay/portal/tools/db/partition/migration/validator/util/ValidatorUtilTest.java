@@ -132,9 +132,11 @@ public class ValidatorUtilTest {
 		List<Release> sourceReleases = _getReleases();
 
 		for (Release release : sourceReleases) {
-			if (!Objects.equals(release.getServletContextName(), "module1")) {
-				targetReleases.add(release);
+			if (Objects.equals(release.getServletContextName(), "module1")) {
+				continue;
 			}
+
+			targetReleases.add(release);
 		}
 
 		_sourceLiferayDatabase.setReleases(sourceReleases);
@@ -330,11 +332,13 @@ public class ValidatorUtilTest {
 		for (Release release : _getReleases()) {
 			targetReleases.add(release);
 
-			if (!targetServletContextName.equals(
+			if (targetServletContextName.equals(
 					release.getServletContextName())) {
 
-				sourceReleases.add(release);
+				continue;
 			}
+
+			sourceReleases.add(release);
 		}
 
 		_sourceLiferayDatabase.setReleases(sourceReleases);

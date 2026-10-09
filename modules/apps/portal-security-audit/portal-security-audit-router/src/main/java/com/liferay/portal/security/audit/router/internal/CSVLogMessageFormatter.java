@@ -41,9 +41,11 @@ public class CSVLogMessageFormatter implements LogMessageFormatter {
 			sb.append(jsonObject.getString(_columns[i]));
 			sb.append(StringPool.QUOTE);
 
-			if ((i + 1) < _columns.length) {
-				sb.append(StringPool.COMMA);
+			if ((i + 1) >= _columns.length) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA);
 		}
 
 		return sb.toString();

@@ -565,9 +565,11 @@ public class PatcherFixLocalServiceImpl extends PatcherFixLocalServiceBaseImpl {
 
 			Matcher matcher = _patcherFixNamePattern.matcher(patcherFixName);
 
-			if (!matcher.matches()) {
-				invalidPatcherFixNames.add(patcherFixName);
+			if (matcher.matches()) {
+				continue;
 			}
+
+			invalidPatcherFixNames.add(patcherFixName);
 		}
 
 		if (!invalidPatcherFixNames.isEmpty()) {

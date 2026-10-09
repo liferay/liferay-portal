@@ -1305,12 +1305,14 @@ public class ProductResourceImpl
 						contextCompany.getGroupId(), classNameId,
 						cpDefinition.getCProductId())) {
 
-				if ((mainFriendlyURLEntry == null) ||
-					(friendlyURLEntry.getFriendlyURLEntryId() >
+				if ((mainFriendlyURLEntry != null) &&
+					(friendlyURLEntry.getFriendlyURLEntryId() <=
 						mainFriendlyURLEntry.getFriendlyURLEntryId())) {
 
-					mainFriendlyURLEntry = friendlyURLEntry;
+					continue;
 				}
+
+				mainFriendlyURLEntry = friendlyURLEntry;
 			}
 		}
 
@@ -1523,18 +1525,19 @@ public class ProductResourceImpl
 				ProductOptionValue[] productOptionValues =
 					productOption.getProductOptionValues();
 
-				if (productOptionValues != null) {
-					for (ProductOptionValue productOptionValue :
-							productOptionValues) {
+				if (productOptionValues == null) {
+					continue;
+				}
 
-						ProductOptionValueUtil.
-							addOrUpdateCPDefinitionOptionValueRel(
-								_cpDefinitionOptionValueRelService,
-								_cpInstanceService, productOptionValue,
-								cpDefinitionOptionRel.
-									getCPDefinitionOptionRelId(),
-								serviceContext);
-					}
+				for (ProductOptionValue productOptionValue :
+						productOptionValues) {
+
+					ProductOptionValueUtil.
+						addOrUpdateCPDefinitionOptionValueRel(
+							_cpDefinitionOptionValueRelService,
+							_cpInstanceService, productOptionValue,
+							cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+							serviceContext);
 				}
 			}
 		}

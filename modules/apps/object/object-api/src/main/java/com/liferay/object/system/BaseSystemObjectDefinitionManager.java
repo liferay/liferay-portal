@@ -178,17 +178,21 @@ public abstract class BaseSystemObjectDefinitionManager
 			for (Map.Entry<String, Object> entry : values.entrySet()) {
 				String propertyKey = entry.getKey();
 
-				if (propertyDefinitions.containsKey(propertyKey)) {
-					extendedProperties.put(
-						propertyKey, (Serializable)entry.getValue());
+				if (!propertyDefinitions.containsKey(propertyKey)) {
+					continue;
 				}
+
+				extendedProperties.put(
+					propertyKey, (Serializable)entry.getValue());
 			}
 
-			if (MapUtil.isNotEmpty(extendedProperties)) {
-				extensionProvider.setExtendedProperties(
-					user.getCompanyId(), user.getUserId(), className, entity,
-					extendedProperties);
+			if (MapUtil.isEmpty(extendedProperties)) {
+				continue;
 			}
+
+			extensionProvider.setExtendedProperties(
+				user.getCompanyId(), user.getUserId(), className, entity,
+				extendedProperties);
 		}
 	}
 

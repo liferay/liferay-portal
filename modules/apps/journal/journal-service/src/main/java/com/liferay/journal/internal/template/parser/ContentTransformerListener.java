@@ -215,14 +215,15 @@ public class ContentTransformerListener extends BaseTransformerListener {
 				String type = GetterUtil.getString(
 					element.attributeValue("type"));
 
-				if (!name.startsWith("reserved-") &&
-					(type.equals("text") || type.equals("text_area") ||
-					 type.equals("text_box"))) {
+				if (name.startsWith("reserved-") ||
+					(!type.equals("text") && !type.equals("text_area") &&
+					 !type.equals("text_box"))) {
 
-					script = _wrapEditInPlaceField(script, name, type, "data");
-					script = _wrapEditInPlaceField(
-						script, name, type, "getData()");
+					continue;
 				}
+
+				script = _wrapEditInPlaceField(script, name, type, "data");
+				script = _wrapEditInPlaceField(script, name, type, "getData()");
 			}
 		}
 		catch (Exception exception) {

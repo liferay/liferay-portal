@@ -81,9 +81,11 @@ public abstract class BaseImportsFormatter implements ImportsFormatter {
 			while ((line = unsyncBufferedReader.readLine()) != null) {
 				ImportPackage importPackage = createImportPackage(line);
 
-				if (importPackage != null) {
-					importPackages.add(importPackage);
+				if (importPackage == null) {
+					continue;
 				}
+
+				importPackages.add(importPackage);
 			}
 
 			StringBundler sb = new StringBundler(3 * importPackages.size());
@@ -141,12 +143,14 @@ public abstract class BaseImportsFormatter implements ImportsFormatter {
 
 				String importClass = line.substring(y + 1, line.length() - 1);
 
-				if (importClass.matches(classNameExceptionRegex) ||
-					classes.contains(importClass)) {
+				if (!importClass.matches(classNameExceptionRegex) &&
+					!classes.contains(importClass)) {
 
-					sb.append(line);
-					sb.append("\n");
+					continue;
 				}
+
+				sb.append(line);
+				sb.append("\n");
 			}
 
 			return sb.toString();

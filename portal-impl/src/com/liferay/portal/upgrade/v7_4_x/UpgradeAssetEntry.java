@@ -25,10 +25,12 @@ public class UpgradeAssetEntry extends UpgradeProcess {
 			long classNameId = _getClassNameId(
 				"com.liferay.message.boards.model.MBDiscussion_" + className);
 
-			if (classNameId != 0) {
-				sb.append(classNameId);
-				sb.append(StringPool.COMMA);
+			if (classNameId == 0) {
+				continue;
 			}
+
+			sb.append(classNameId);
+			sb.append(StringPool.COMMA);
 		}
 
 		if (sb.length() == 0) {

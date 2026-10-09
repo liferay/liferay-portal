@@ -109,9 +109,11 @@ public class PrefixHandlerFactoryImpl implements PrefixHandlerFactory {
 		for (String excludedScope :
 				bundlePrefixHandlerFactoryConfiguration.excludedScopes()) {
 
-			if (!Validator.isBlank(excludedScope)) {
-				excludedInputs.add(excludedScope);
+			if (Validator.isBlank(excludedScope)) {
+				continue;
 			}
+
+			excludedInputs.add(excludedScope);
 		}
 
 		_excludedInputs = excludedInputs;

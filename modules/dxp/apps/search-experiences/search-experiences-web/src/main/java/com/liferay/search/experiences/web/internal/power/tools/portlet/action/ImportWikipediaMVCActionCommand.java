@@ -65,9 +65,11 @@ public class ImportWikipediaMVCActionCommand extends BaseMVCActionCommand {
 			JSONObject categoryJSONObject = categoriesJSONArray.getJSONObject(
 				i);
 
-			if (!categoryJSONObject.has("hidden")) {
-				assetTagNames.add(categoryJSONObject.getString("*"));
+			if (categoryJSONObject.has("hidden")) {
+				continue;
 			}
+
+			assetTagNames.add(categoryJSONObject.getString("*"));
 		}
 
 		return assetTagNames.toArray(new String[0]);
@@ -103,10 +105,11 @@ public class ImportWikipediaMVCActionCommand extends BaseMVCActionCommand {
 			for (int i = 0; i < linksJSONArray.length(); i++) {
 				JSONObject linkJSONObject = linksJSONArray.getJSONObject(i);
 
-				if (linkJSONObject.getInt("ns") == 0) {
-					linkedWikipediaPageTitles.add(
-						linkJSONObject.getString("*"));
+				if (linkJSONObject.getInt("ns") != 0) {
+					continue;
 				}
+
+				linkedWikipediaPageTitles.add(linkJSONObject.getString("*"));
 			}
 
 			JSONObject textJSONObject = parseJSONObject.getJSONObject("text");

@@ -176,23 +176,25 @@ public class ProjectTemplates {
 			String templateName = ProjectTemplatesUtil.getTemplateName(
 				projectTemplateJarName);
 
-			if (!templateName.startsWith(WorkspaceUtil.WORKSPACE)) {
-				try (InputStream inputStream =
-						ProjectTemplates.class.getResourceAsStream(
-							projectTemplateJarName);
+			if (templateName.startsWith(WorkspaceUtil.WORKSPACE)) {
+				continue;
+			}
 
-					JarInputStream jarInputStream = new JarInputStream(
-						inputStream)) {
+			try (InputStream inputStream =
+					ProjectTemplates.class.getResourceAsStream(
+						projectTemplateJarName);
 
-					Manifest manifest = jarInputStream.getManifest();
+				JarInputStream jarInputStream = new JarInputStream(
+					inputStream)) {
 
-					Attributes attributes = manifest.getMainAttributes();
+				Manifest manifest = jarInputStream.getManifest();
 
-					String bundleDescription = attributes.getValue(
-						"Bundle-Description");
+				Attributes attributes = manifest.getMainAttributes();
 
-					templates.put(templateName, bundleDescription);
-				}
+				String bundleDescription = attributes.getValue(
+					"Bundle-Description");
+
+				templates.put(templateName, bundleDescription);
 			}
 		}
 
@@ -469,11 +471,13 @@ public class ProjectTemplates {
 
 			lineLength += template.length();
 
-			if (iterator.hasNext()) {
-				System.out.print(", ");
-
-				lineLength += 2;
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			System.out.print(", ");
+
+			lineLength += 2;
 		}
 
 		System.out.println();

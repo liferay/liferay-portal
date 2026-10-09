@@ -221,16 +221,16 @@ public class ResourceActionsDefinitionTest {
 				return;
 			}
 
-			if (classLoader != bundleClassLoader) {
-				sb.append("\n\t\tPortlet resource ");
-				sb.append(portletName);
-				sb.append(" is defined in bundle ");
-				sb.append(bundle.getSymbolicName());
-				sb.append(
-					", but the corresponding portlet is in another bundle ");
-				sb.append(
-					ClassLoaderPool.getContextName(clazz.getClassLoader()));
+			if (classLoader == bundleClassLoader) {
+				continue;
 			}
+
+			sb.append("\n\t\tPortlet resource ");
+			sb.append(portletName);
+			sb.append(" is defined in bundle ");
+			sb.append(bundle.getSymbolicName());
+			sb.append(", but the corresponding portlet is in another bundle ");
+			sb.append(ClassLoaderPool.getContextName(clazz.getClassLoader()));
 		}
 	}
 

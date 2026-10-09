@@ -402,13 +402,15 @@ public class MVCPortlet extends LiferayPortlet {
 				boolean valid = true;
 
 				for (MVCActionCommand mvcActionCommand : mvcActionCommands) {
-					if (mvcActionCommand instanceof FormMVCActionCommand) {
-						FormMVCActionCommand formMVCActionCommand =
-							(FormMVCActionCommand)mvcActionCommand;
-
-						valid &= formMVCActionCommand.validateForm(
-							actionRequest, actionResponse);
+					if (!(mvcActionCommand instanceof FormMVCActionCommand)) {
+						continue;
 					}
+
+					FormMVCActionCommand formMVCActionCommand =
+						(FormMVCActionCommand)mvcActionCommand;
+
+					valid &= formMVCActionCommand.validateForm(
+						actionRequest, actionResponse);
 				}
 
 				if (!valid) {
@@ -708,18 +710,20 @@ public class MVCPortlet extends LiferayPortlet {
 		while ((path = queue.poll()) != null) {
 			Set<String> childPaths = portletContext.getResourcePaths(path);
 
-			if (childPaths != null) {
-				for (String childPath : childPaths) {
-					if (childPath.charAt(childPath.length() - 1) ==
-							CharPool.SLASH) {
+			if (childPaths == null) {
+				continue;
+			}
 
-						queue.add(childPath);
-					}
-					else if (childPath.endsWith(".jsp") ||
-							 childPath.endsWith(".jspx")) {
+			for (String childPath : childPaths) {
+				if (childPath.charAt(childPath.length() - 1) ==
+						CharPool.SLASH) {
 
-						paths.add(childPath);
-					}
+					queue.add(childPath);
+				}
+				else if (childPath.endsWith(".jsp") ||
+						 childPath.endsWith(".jspx")) {
+
+					paths.add(childPath);
 				}
 			}
 		}

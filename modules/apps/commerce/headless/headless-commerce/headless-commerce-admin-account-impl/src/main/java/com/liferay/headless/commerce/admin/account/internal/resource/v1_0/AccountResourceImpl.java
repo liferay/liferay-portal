@@ -584,13 +584,15 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 						commerceAddress.getCommerceAddressId());
 				}
 
-				if (GetterUtil.getBoolean(
+				if (!GetterUtil.getBoolean(
 						accountAddress.getDefaultShipping())) {
 
-					_accountEntryLocalService.updateDefaultShippingAddressId(
-						accountEntry.getAccountEntryId(),
-						commerceAddress.getCommerceAddressId());
+					continue;
 				}
+
+				_accountEntryLocalService.updateDefaultShippingAddressId(
+					accountEntry.getAccountEntryId(),
+					commerceAddress.getCommerceAddressId());
 			}
 		}
 

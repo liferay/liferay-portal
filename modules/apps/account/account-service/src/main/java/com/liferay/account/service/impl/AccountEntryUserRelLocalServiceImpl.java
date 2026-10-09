@@ -511,16 +511,20 @@ public class AccountEntryUserRelLocalServiceImpl
 		}
 
 		for (long addAccountEntryId : addAccountEntryIds) {
-			if (!hasAccountEntryUserRel(addAccountEntryId, accountUserId)) {
-				addAccountEntryUserRel(addAccountEntryId, accountUserId);
+			if (hasAccountEntryUserRel(addAccountEntryId, accountUserId)) {
+				continue;
 			}
+
+			addAccountEntryUserRel(addAccountEntryId, accountUserId);
 		}
 
 		for (long deleteAccountEntryId : deleteAccountEntryIds) {
-			if (hasAccountEntryUserRel(deleteAccountEntryId, accountUserId)) {
-				accountEntryUserRelPersistence.removeByAEI_AUI(
-					deleteAccountEntryId, accountUserId);
+			if (!hasAccountEntryUserRel(deleteAccountEntryId, accountUserId)) {
+				continue;
 			}
+
+			accountEntryUserRelPersistence.removeByAEI_AUI(
+				deleteAccountEntryId, accountUserId);
 		}
 	}
 

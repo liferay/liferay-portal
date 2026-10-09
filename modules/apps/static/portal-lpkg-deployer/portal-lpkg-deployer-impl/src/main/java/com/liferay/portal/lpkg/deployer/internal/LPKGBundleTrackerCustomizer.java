@@ -146,15 +146,14 @@ public class LPKGBundleTrackerCustomizer
 				for (Bundle installedBundle : _bundleContext.getBundles()) {
 					properties = _readMarketplaceProperties(installedBundle);
 
-					if (properties == null) {
+					if ((properties == null) ||
+						!_outdatedRemoteAppIds.contains(
+							properties.getProperty("remote-app-id"))) {
+
 						continue;
 					}
 
-					if (_outdatedRemoteAppIds.contains(
-							properties.getProperty("remote-app-id"))) {
-
-						_processOutdatedBundle(installedBundle);
-					}
+					_processOutdatedBundle(installedBundle);
 				}
 			}
 		}
@@ -418,15 +417,17 @@ public class LPKGBundleTrackerCustomizer
 			}
 
 			for (Bundle installedBundle : bundles) {
-				if (installedBundle.getState() != Bundle.UNINSTALLED) {
-					installedBundle.uninstall();
+				if (installedBundle.getState() == Bundle.UNINSTALLED) {
+					continue;
+				}
 
-					if (_log.isInfoEnabled()) {
-						_log.info(
-							StringBundler.concat(
-								"Uninstalled ", installedBundle, "because ",
-								bundle, " was updated"));
-					}
+				installedBundle.uninstall();
+
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Uninstalled ", installedBundle, "because ", bundle,
+							" was updated"));
 				}
 			}
 
@@ -801,14 +802,16 @@ public class LPKGBundleTrackerCustomizer
 			Version version = bundle.getVersion();
 
 			for (Bundle curBundle : _bundleContext.getBundles()) {
-				if (wrappedBundleSymbolicName.equals(
-						curBundle.getSymbolicName()) &&
-					version.equals(curBundle.getVersion())) {
+				if (!wrappedBundleSymbolicName.equals(
+						curBundle.getSymbolicName()) ||
+					!version.equals(curBundle.getVersion())) {
 
-					curBundle.uninstall();
-
-					uninstalledBundles.add(curBundle);
+					continue;
 				}
+
+				curBundle.uninstall();
+
+				uninstalledBundles.add(curBundle);
 			}
 		}
 

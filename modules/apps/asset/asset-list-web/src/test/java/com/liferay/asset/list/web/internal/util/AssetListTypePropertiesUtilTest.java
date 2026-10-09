@@ -115,9 +115,11 @@ public class AssetListTypePropertiesUtilTest {
 
 			String name = itemJSONObject.getString("name");
 
-			if (name.equals("externalReferenceCode")) {
-				type = itemJSONObject.getString("type");
+			if (!name.equals("externalReferenceCode")) {
+				continue;
 			}
+
+			type = itemJSONObject.getString("type");
 		}
 
 		Assert.assertEquals(itemsJSONArray.toString(), "keyword", type);

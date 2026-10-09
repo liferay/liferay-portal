@@ -142,15 +142,17 @@ public class OAuth2ScopeGrantLocalServiceImpl
 						getOAuth2AuthorizationOAuth2ScopeGrants(
 							oAuth2Authorization.getPrimaryKey())) {
 
-				if (Objects.equals(
+				if (!Objects.equals(
 						applicationName,
-						oAuth2ScopeGrant.getApplicationName()) &&
-					Objects.equals(
+						oAuth2ScopeGrant.getApplicationName()) ||
+					!Objects.equals(
 						bundleSymbolicName,
 						oAuth2ScopeGrant.getBundleSymbolicName())) {
 
-					oAuth2ScopeGrants.add(oAuth2ScopeGrant);
+					continue;
 				}
+
+				oAuth2ScopeGrants.add(oAuth2ScopeGrant);
 			}
 		}
 

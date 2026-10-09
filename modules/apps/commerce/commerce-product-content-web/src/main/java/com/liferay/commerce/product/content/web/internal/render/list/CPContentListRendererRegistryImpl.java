@@ -77,30 +77,30 @@ public class CPContentListRendererRegistryImpl
 				cpContentListRendererServiceWrapper :
 					cpContentListRendererServiceWrappers) {
 
-			if (Validator.isNotNull(portletName)) {
-				Map<String, Object>
-					cpContentListRendererServiceWrapperProperties =
-						cpContentListRendererServiceWrapper.getProperties();
+			if (Validator.isNull(portletName)) {
+				continue;
+			}
 
-				Object valueObject =
-					cpContentListRendererServiceWrapperProperties.get(
-						"commerce.product.content.list.renderer.portlet.name");
+			Map<String, Object> cpContentListRendererServiceWrapperProperties =
+				cpContentListRendererServiceWrapper.getProperties();
 
-				if (valueObject instanceof String[]) {
-					String[] values = GetterUtil.getStringValues(valueObject);
+			Object valueObject =
+				cpContentListRendererServiceWrapperProperties.get(
+					"commerce.product.content.list.renderer.portlet.name");
 
-					if (ArrayUtil.contains(values, portletName)) {
-						cpContentListRenderers.add(
-							cpContentListRendererServiceWrapper.getService());
-					}
-				}
-				else if ((valueObject instanceof String) &&
-						 portletName.equals(
-							 GetterUtil.getString(valueObject))) {
+			if (valueObject instanceof String[]) {
+				String[] values = GetterUtil.getStringValues(valueObject);
 
+				if (ArrayUtil.contains(values, portletName)) {
 					cpContentListRenderers.add(
 						cpContentListRendererServiceWrapper.getService());
 				}
+			}
+			else if ((valueObject instanceof String) &&
+					 portletName.equals(GetterUtil.getString(valueObject))) {
+
+				cpContentListRenderers.add(
+					cpContentListRendererServiceWrapper.getService());
 			}
 		}
 

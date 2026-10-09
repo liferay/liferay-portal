@@ -74,10 +74,12 @@ public class DDMStructureUpgradeProcess extends UpgradeProcess {
 				ddmFormField.setShowLabel(true);
 			}
 
-			if (ListUtil.isNotEmpty(ddmFormField.getNestedDDMFormFields())) {
-				_addLabelToFieldsGroup(
-					availableLocales, ddmFormField.getNestedDDMFormFields());
+			if (ListUtil.isEmpty(ddmFormField.getNestedDDMFormFields())) {
+				continue;
 			}
+
+			_addLabelToFieldsGroup(
+				availableLocales, ddmFormField.getNestedDDMFormFields());
 		}
 	}
 

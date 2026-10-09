@@ -441,12 +441,14 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			for (Element resourceActionElement : resourceActionElements) {
 				String actionId = resourceActionElement.getTextTrim();
 
-				if (Validator.isNotNull(actionId)) {
-					ResourceActionAssignment resourceActionAssignment =
-						new ResourceActionAssignment(actionId);
-
-					assignments.add(resourceActionAssignment);
+				if (Validator.isNull(actionId)) {
+					continue;
 				}
+
+				ResourceActionAssignment resourceActionAssignment =
+					new ResourceActionAssignment(actionId);
+
+				assignments.add(resourceActionAssignment);
 			}
 		}
 
@@ -1242,9 +1244,11 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 			sourceNode.addOutgoingTransition(transition);
 
-			if (targetNode != null) {
-				targetNode.addIncomingTransition(transition);
+			if (targetNode == null) {
+				continue;
 			}
+
+			targetNode.addIncomingTransition(transition);
 		}
 	}
 

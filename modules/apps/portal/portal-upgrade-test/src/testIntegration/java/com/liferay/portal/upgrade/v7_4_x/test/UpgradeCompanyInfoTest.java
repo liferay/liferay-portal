@@ -175,10 +175,11 @@ public class UpgradeCompanyInfoTest {
 				}
 
 				for (String columnName : _COMPANY_INFO_COLUMN_NAMES) {
-					if (dbInspector.hasColumn("Company", columnName)) {
-						db.alterTableDropColumn(
-							connection, "Company", columnName);
+					if (!dbInspector.hasColumn("Company", columnName)) {
+						continue;
 					}
+
+					db.alterTableDropColumn(connection, "Company", columnName);
 				}
 			}
 

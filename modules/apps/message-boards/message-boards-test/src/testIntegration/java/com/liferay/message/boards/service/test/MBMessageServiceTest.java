@@ -176,9 +176,11 @@ public class MBMessageServiceTest {
 		int successCount = 0;
 
 		for (DoAsUserThread doAsUserThread : doAsUserThreads) {
-			if (doAsUserThread.isSuccess()) {
-				successCount++;
+			if (!doAsUserThread.isSuccess()) {
+				continue;
 			}
+
+			successCount++;
 		}
 
 		Assert.assertTrue(

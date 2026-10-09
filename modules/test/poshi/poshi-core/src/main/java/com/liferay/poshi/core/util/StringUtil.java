@@ -264,9 +264,11 @@ public class StringUtil {
 		char[] chars = s.toCharArray();
 
 		for (char c : chars) {
-			if (Validator.isChar(c)) {
-				sb.append(c);
+			if (!Validator.isChar(c)) {
+				continue;
 			}
+
+			sb.append(c);
 		}
 
 		return sb.toString();
@@ -282,9 +284,11 @@ public class StringUtil {
 		char[] chars = s.toCharArray();
 
 		for (char c : chars) {
-			if (Validator.isDigit(c)) {
-				sb.append(c);
+			if (!Validator.isDigit(c)) {
+				continue;
 			}
+
+			sb.append(c);
 		}
 
 		return sb.toString();
@@ -328,12 +332,11 @@ public class StringUtil {
 		char[] chars = s.toCharArray();
 
 		for (char c : chars) {
-			if (Validator.isDigit(c)) {
-				sb.append(c);
-			}
-			else {
+			if (!Validator.isDigit(c)) {
 				return sb.toString();
 			}
+
+			sb.append(c);
 		}
 
 		return sb.toString();

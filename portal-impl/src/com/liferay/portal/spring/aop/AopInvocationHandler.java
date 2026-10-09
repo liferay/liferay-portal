@@ -102,13 +102,15 @@ public class AopInvocationHandler implements InvocationHandler {
 			Object methodContext = chainableMethodAdvice.createMethodContext(
 				target, method, annotations);
 
-			if (methodContext != null) {
-				aopMethodInvocation = new AopMethodInvocationImpl(
-					target, method, methodContext, nextChainableMethodAdvice,
-					aopMethodInvocation);
-
-				nextChainableMethodAdvice = chainableMethodAdvice;
+			if (methodContext == null) {
+				continue;
 			}
+
+			aopMethodInvocation = new AopMethodInvocationImpl(
+				target, method, methodContext, nextChainableMethodAdvice,
+				aopMethodInvocation);
+
+			nextChainableMethodAdvice = chainableMethodAdvice;
 		}
 
 		return new AopMethodInvocationImpl(

@@ -376,10 +376,12 @@ public class ChangesetPortletDataHandler extends BasePortletDataHandler {
 
 			String key = entry.getKey();
 
-			if (key.endsWith(".postProcessStagedModelPath")) {
-				postProcessStagedModelPaths.putAll(
-					(Map<String, String>)entry.getValue());
+			if (!key.endsWith(".postProcessStagedModelPath")) {
+				continue;
 			}
+
+			postProcessStagedModelPaths.putAll(
+				(Map<String, String>)entry.getValue());
 		}
 
 		if (postProcessStagedModelPaths.isEmpty()) {
@@ -396,10 +398,12 @@ public class ChangesetPortletDataHandler extends BasePortletDataHandler {
 			for (Element entityElement : entityElements) {
 				String uuid = entityElement.attributeValue("uuid");
 
-				if (postProcessStagedModelPaths.remove(uuid) != null) {
-					StagedModelDataHandlerUtil.importStagedModel(
-						portletDataContext, entityElement);
+				if (postProcessStagedModelPaths.remove(uuid) == null) {
+					continue;
 				}
+
+				StagedModelDataHandlerUtil.importStagedModel(
+					portletDataContext, entityElement);
 			}
 		}
 	}

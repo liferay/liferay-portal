@@ -475,9 +475,11 @@ public class UserSegmentsEntryMembershipChecker {
 
 				Statement statement = methodNode.getCode();
 
-				if (statement != null) {
-					statement.visit(methodNameClassCodeVisitor);
+				if (statement == null) {
+					continue;
 				}
+
+				statement.visit(methodNameClassCodeVisitor);
 			}
 		}
 

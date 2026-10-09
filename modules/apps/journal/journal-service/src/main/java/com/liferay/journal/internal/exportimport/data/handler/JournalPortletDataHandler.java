@@ -450,12 +450,14 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 				String className = articleElement.attributeValue(
 					"attached-class-name");
 
-				if (Validator.isNotNull(className) &&
-					className.equals(DDMStructure.class.getName())) {
+				if (Validator.isNull(className) ||
+					!className.equals(DDMStructure.class.getName())) {
 
-					StagedModelDataHandlerUtil.importStagedModel(
-						portletDataContext, articleElement);
+					continue;
 				}
+
+				StagedModelDataHandlerUtil.importStagedModel(
+					portletDataContext, articleElement);
 			}
 		}
 
@@ -489,10 +491,12 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			for (Element articleElement : articleElements) {
 				String uuid = articleElement.attributeValue("uuid");
 
-				if (postProcessStagedModelPaths.remove(uuid) != null) {
-					StagedModelDataHandlerUtil.importStagedModel(
-						portletDataContext, articleElement);
+				if (postProcessStagedModelPaths.remove(uuid) == null) {
+					continue;
 				}
+
+				StagedModelDataHandlerUtil.importStagedModel(
+					portletDataContext, articleElement);
 			}
 
 			_journalContent.clearCache();
@@ -757,15 +761,17 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 						(DDMTemplate)stagedModelRepository.getStagedModel(
 							changesetEntry.getClassPK());
 
-					if (Objects.equals(
+					if (!Objects.equals(
 							ddmTemplate.getClassNameId(),
-							stagedModelType.getReferrerClassNameId()) &&
-						Objects.equals(
+							stagedModelType.getReferrerClassNameId()) ||
+						!Objects.equals(
 							ddmTemplate.getResourceClassNameId(),
 							journalArticleClassNameId)) {
 
-						modelAdditionCount++;
+						continue;
 					}
+
+					modelAdditionCount++;
 				}
 			}
 

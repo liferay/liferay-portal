@@ -519,19 +519,20 @@ public class BatchEngineImportTaskExecutorImpl
 						exception, processedItemsCount);
 				}
 
-				if (items.size() == batchEngineImportTask.getBatchSize()) {
-					batchEngineImportTask = _commitItems(
-						batchEngineImportTask, batchEngineTaskItemDelegate,
-						items, parameters, processedItemsCount);
-
-					BatchEngineTaskExecutorUtil.sendBatchProgressMessage(
-						_backgroundTaskStatusMessageSender,
-						processedItemsCount);
-
-					items.clear();
-
-					ItemIndexThreadLocal.clear();
+				if (items.size() != batchEngineImportTask.getBatchSize()) {
+					continue;
 				}
+
+				batchEngineImportTask = _commitItems(
+					batchEngineImportTask, batchEngineTaskItemDelegate, items,
+					parameters, processedItemsCount);
+
+				BatchEngineTaskExecutorUtil.sendBatchProgressMessage(
+					_backgroundTaskStatusMessageSender, processedItemsCount);
+
+				items.clear();
+
+				ItemIndexThreadLocal.clear();
 			}
 
 			if (!items.isEmpty()) {

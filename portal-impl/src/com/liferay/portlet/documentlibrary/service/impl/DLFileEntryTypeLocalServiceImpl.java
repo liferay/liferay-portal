@@ -536,43 +536,43 @@ public class DLFileEntryTypeLocalServiceImpl
 		}
 
 		for (Long fileEntryTypeId : fileEntryTypeIds) {
-			if (!originalFileEntryTypeIds.contains(fileEntryTypeId)) {
-				if (fileEntryTypeId ==
-						DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL) {
+			if (originalFileEntryTypeIds.contains(fileEntryTypeId) ||
+				(fileEntryTypeId ==
+					DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL)) {
 
-					continue;
-				}
-
-				DLFileEntryType dlFileEntryType =
-					DLFileEntryTypeLocalServiceUtil.fetchDLFileEntryType(
-						fileEntryTypeId);
-
-				if (dlFileEntryType == null) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Document library file entry type " +
-								fileEntryTypeId + " does not exist");
-					}
-
-					continue;
-				}
-
-				dlFolderPersistence.addDLFileEntryType(
-					dlFolder.getFolderId(), fileEntryTypeId);
+				continue;
 			}
+
+			DLFileEntryType dlFileEntryType =
+				DLFileEntryTypeLocalServiceUtil.fetchDLFileEntryType(
+					fileEntryTypeId);
+
+			if (dlFileEntryType == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Document library file entry type " + fileEntryTypeId +
+							" does not exist");
+				}
+
+				continue;
+			}
+
+			dlFolderPersistence.addDLFileEntryType(
+				dlFolder.getFolderId(), fileEntryTypeId);
 		}
 
 		for (Long originalFileEntryTypeId : originalFileEntryTypeIds) {
-			if (!fileEntryTypeIds.contains(originalFileEntryTypeId)) {
-				dlFolderPersistence.removeDLFileEntryType(
-					dlFolder.getFolderId(), originalFileEntryTypeId);
-
-				_workflowDefinitionLinkLocalService.
-					deleteWorkflowDefinitionLink(
-						dlFolder.getCompanyId(), dlFolder.getGroupId(),
-						DLFolder.class.getName(), dlFolder.getFolderId(),
-						originalFileEntryTypeId);
+			if (fileEntryTypeIds.contains(originalFileEntryTypeId)) {
+				continue;
 			}
+
+			dlFolderPersistence.removeDLFileEntryType(
+				dlFolder.getFolderId(), originalFileEntryTypeId);
+
+			_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
+				dlFolder.getCompanyId(), dlFolder.getGroupId(),
+				DLFolder.class.getName(), dlFolder.getFolderId(),
+				originalFileEntryTypeId);
 		}
 	}
 
@@ -630,9 +630,11 @@ public class DLFileEntryTypeLocalServiceImpl
 				for (String actionId :
 						modelPermissions.getActionIds(roleName)) {
 
-					if (dlFileEntryMetadataActionIds.contains(actionId)) {
-						dlFileEntryMetadataDDMStructureActionIds.add(actionId);
+					if (!dlFileEntryMetadataActionIds.contains(actionId)) {
+						continue;
 					}
+
+					dlFileEntryMetadataDDMStructureActionIds.add(actionId);
 				}
 
 				dlFileEntryMetadataDDMStructureModelPermissions.

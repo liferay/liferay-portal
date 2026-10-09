@@ -231,10 +231,12 @@ public abstract class UpgradeProcess
 						IndexMetadata indexMetadata =
 							IndexMetadataFactoryUtil.createIndexMetadata(line);
 
-						if (tableName.equals(indexMetadata.getTableName())) {
-							objectValuePairs.add(
-								new ObjectValuePair<>(line, indexMetadata));
+						if (!tableName.equals(indexMetadata.getTableName())) {
+							continue;
 						}
+
+						objectValuePairs.add(
+							new ObjectValuePair<>(line, indexMetadata));
 					}
 				}
 

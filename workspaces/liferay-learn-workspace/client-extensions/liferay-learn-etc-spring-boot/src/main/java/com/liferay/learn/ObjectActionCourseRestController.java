@@ -109,9 +109,11 @@ public class ObjectActionCourseRestController extends BaseRestController {
 				totalAssets += moduleJSONObject.getInt("lessons");
 			}
 
-			if (moduleJSONObject.has("quizzes")) {
-				totalAssets += moduleJSONObject.getInt("quizzes");
+			if (!moduleJSONObject.has("quizzes")) {
+				continue;
 			}
+
+			totalAssets += moduleJSONObject.getInt("quizzes");
 		}
 
 		return new JSONObject(

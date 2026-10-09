@@ -90,9 +90,11 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 		for (String key : jobsJSONObject.keySet()) {
 			JSONObject jobJSONObject = jobsJSONObject.getJSONObject(key);
 
-			if ((jobJSONObject != null) && !jobJSONObject.isEmpty()) {
-				jobs.add(JobFactory.newJob(jobJSONObject));
+			if ((jobJSONObject == null) || jobJSONObject.isEmpty()) {
+				continue;
 			}
+
+			jobs.add(JobFactory.newJob(jobJSONObject));
 		}
 
 		return jobs;
@@ -122,12 +124,14 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 			JSONObject portalFixpackReleaseJSONObject =
 				portalFixpackReleasesJSONObject.getJSONObject(key);
 
-			if ((portalFixpackReleaseJSONObject != null) &&
-				!portalFixpackReleaseJSONObject.isEmpty()) {
+			if ((portalFixpackReleaseJSONObject == null) ||
+				portalFixpackReleaseJSONObject.isEmpty()) {
 
-				portalFixpackReleases.add(
-					new PortalFixpackRelease(portalFixpackReleaseJSONObject));
+				continue;
 			}
+
+			portalFixpackReleases.add(
+				new PortalFixpackRelease(portalFixpackReleaseJSONObject));
 		}
 
 		return portalFixpackReleases;
@@ -157,12 +161,14 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 			JSONObject portalHotfixReleaseJSONObject =
 				portalHotfixReleasesJSONObject.getJSONObject(key);
 
-			if ((portalHotfixReleaseJSONObject != null) &&
-				!portalHotfixReleaseJSONObject.isEmpty()) {
+			if ((portalHotfixReleaseJSONObject == null) ||
+				portalHotfixReleaseJSONObject.isEmpty()) {
 
-				portalHotfixReleases.add(
-					new PortalHotfixRelease(portalHotfixReleaseJSONObject));
+				continue;
 			}
+
+			portalHotfixReleases.add(
+				new PortalHotfixRelease(portalHotfixReleaseJSONObject));
 		}
 
 		return portalHotfixReleases;
@@ -191,11 +197,13 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 			JSONObject portalReleaseJSONObject =
 				portalReleasesJSONObject.getJSONObject(key);
 
-			if ((portalReleaseJSONObject != null) &&
-				!portalReleaseJSONObject.isEmpty()) {
+			if ((portalReleaseJSONObject == null) ||
+				portalReleaseJSONObject.isEmpty()) {
 
-				portalReleases.add(new PortalRelease(portalReleaseJSONObject));
+				continue;
 			}
+
+			portalReleases.add(new PortalRelease(portalReleaseJSONObject));
 		}
 
 		return portalReleases;
@@ -233,9 +241,11 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 
 			Matcher matcher = pattern.matcher(propertyName);
 
-			if (matcher.matches()) {
-				properties.setProperty(propertyName, propertyValue);
+			if (!matcher.matches()) {
+				continue;
 			}
+
+			properties.setProperty(propertyName, propertyValue);
 		}
 
 		return properties;
@@ -268,12 +278,14 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 			JSONObject pullRequestJSONObject =
 				pullRequestsJSONObject.getJSONObject(key);
 
-			if ((pullRequestJSONObject != null) &&
-				!pullRequestJSONObject.isEmpty()) {
+			if ((pullRequestJSONObject == null) ||
+				pullRequestJSONObject.isEmpty()) {
 
-				pullRequests.add(
-					PullRequestFactory.newPullRequest(pullRequestJSONObject));
+				continue;
 			}
+
+			pullRequests.add(
+				PullRequestFactory.newPullRequest(pullRequestJSONObject));
 		}
 
 		return pullRequests;
@@ -320,12 +332,13 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 			JSONObject workspaceJSONObject = workspacesJSONObject.getJSONObject(
 				key);
 
-			if ((workspaceJSONObject != null) &&
-				!workspaceJSONObject.isEmpty()) {
+			if ((workspaceJSONObject == null) ||
+				workspaceJSONObject.isEmpty()) {
 
-				workspaces.add(
-					WorkspaceFactory.newWorkspace(workspaceJSONObject));
+				continue;
 			}
+
+			workspaces.add(WorkspaceFactory.newWorkspace(workspaceJSONObject));
 		}
 
 		return workspaces;

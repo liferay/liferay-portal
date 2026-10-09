@@ -55,9 +55,11 @@ public class SimpleURLPatternMapper<T> extends BaseURLPatternMapper<T> {
 			value = _wildcardURLPatternValues.get(
 				urlPath.substring(0, i) + "*");
 
-			if (Objects.nonNull(value)) {
-				consumer.accept(value);
+			if (Objects.isNull(value)) {
+				continue;
 			}
+
+			consumer.accept(value);
 		}
 
 		value = _extensionURLPatternValues.get("*" + urlPath.substring(index));

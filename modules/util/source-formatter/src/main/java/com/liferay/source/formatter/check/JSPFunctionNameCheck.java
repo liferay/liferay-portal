@@ -29,14 +29,16 @@ public class JSPFunctionNameCheck extends BaseFileCheck {
 		while (matcher.find()) {
 			String functionName = matcher.group(2);
 
-			if (!functionName.matches(_FUNCTION_NAME_REGEX)) {
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Function \"", functionName, "\" much match pattern \"",
-						_FUNCTION_NAME_REGEX, "\""),
-					getLineNumber(content, matcher.start(2)));
+			if (functionName.matches(_FUNCTION_NAME_REGEX)) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Function \"", functionName, "\" much match pattern \"",
+					_FUNCTION_NAME_REGEX, "\""),
+				getLineNumber(content, matcher.start(2)));
 		}
 
 		return content;

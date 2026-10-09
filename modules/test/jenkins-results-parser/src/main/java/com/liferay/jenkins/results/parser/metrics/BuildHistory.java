@@ -398,9 +398,11 @@ public class BuildHistory {
 				for (int i = startIndex; i <= endIndex; i++) {
 					_buildCounts[i]++;
 
-					if (containsTopLevelBuildURL(buildJSONObject.getURL())) {
-						_topLevelBuildCounts[i]++;
+					if (!containsTopLevelBuildURL(buildJSONObject.getURL())) {
+						continue;
 					}
+
+					_topLevelBuildCounts[i]++;
 				}
 
 				_totalBuildTime[startIndex] += buildDuration;

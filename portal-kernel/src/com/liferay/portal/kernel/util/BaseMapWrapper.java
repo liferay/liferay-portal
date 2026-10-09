@@ -65,9 +65,11 @@ public abstract class BaseMapWrapper<K, V> {
 			for (K key : keyCollection) {
 				V value = unsafeFunction.apply(key);
 
-				if (value != null) {
-					_put(key, value);
+				if (value == null) {
+					continue;
 				}
+
+				_put(key, value);
 			}
 		}
 		catch (Exception exception) {

@@ -42,20 +42,24 @@ public class SassAnalyzerPlugin implements AnalyzerPlugin {
 
 		for (String key : keys) {
 			for (Instruction instruction : instructions.keySet()) {
-				if (key.contains("/.sass-cache/") && instruction.matches(key)) {
-					if (instruction.isNegated()) {
-						break;
-					}
+				if (!key.contains("/.sass-cache/") ||
+					!instruction.matches(key)) {
 
-					Resource resource = jar.remove(key);
-
-					if (resource == null) {
-						continue;
-					}
-
-					jar.putResource(
-						key.replace("/.sass-cache/", "/"), resource, true);
+					continue;
 				}
+
+				if (instruction.isNegated()) {
+					break;
+				}
+
+				Resource resource = jar.remove(key);
+
+				if (resource == null) {
+					continue;
+				}
+
+				jar.putResource(
+					key.replace("/.sass-cache/", "/"), resource, true);
 			}
 		}
 

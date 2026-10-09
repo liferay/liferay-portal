@@ -75,33 +75,35 @@ public class PatcherPermission {
 		for (int i = 0; i < action.length(); i++) {
 			char c = action.charAt(i);
 
-			if (Character.isUpperCase(c) && (i > 0)) {
-				int delta = sb.length() - action.length();
-
-				sb.insert(i + delta, CharPool.UNDERLINE);
-
-				if (((i + 1) >= action.length()) ||
-					Character.isLowerCase(action.charAt(i + 1))) {
-
-					continue;
-				}
-
-				while (i < action.length()) {
-					c = action.charAt(i);
-
-					if (Character.isLowerCase(c)) {
-						break;
-					}
-
-					i++;
-				}
-
-				if (i == action.length()) {
-					continue;
-				}
-
-				sb.insert(i + delta, CharPool.UNDERLINE);
+			if (!Character.isUpperCase(c) || (i <= 0)) {
+				continue;
 			}
+
+			int delta = sb.length() - action.length();
+
+			sb.insert(i + delta, CharPool.UNDERLINE);
+
+			if (((i + 1) >= action.length()) ||
+				Character.isLowerCase(action.charAt(i + 1))) {
+
+				continue;
+			}
+
+			while (i < action.length()) {
+				c = action.charAt(i);
+
+				if (Character.isLowerCase(c)) {
+					break;
+				}
+
+				i++;
+			}
+
+			if (i == action.length()) {
+				continue;
+			}
+
+			sb.insert(i + delta, CharPool.UNDERLINE);
 		}
 
 		return sb.toString();

@@ -106,9 +106,11 @@ public class StagingIndicatorDynamicInclude extends BaseDynamicInclude {
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
 		for (T value : values) {
-			if (value != null) {
-				jsonArray.put(value);
+			if (value == null) {
+				continue;
 			}
+
+			jsonArray.put(value);
 		}
 
 		return jsonArray;

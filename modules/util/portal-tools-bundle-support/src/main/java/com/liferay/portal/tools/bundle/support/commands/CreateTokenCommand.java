@@ -54,9 +54,11 @@ public class CreateTokenCommand implements Command {
 			while ((_password == null) || _password.isEmpty()) {
 				char[] characters = console.readPassword("Password: ");
 
-				if (characters != null) {
-					_password = new String(characters);
+				if (characters == null) {
+					continue;
 				}
+
+				_password = new String(characters);
 			}
 		}
 

@@ -180,13 +180,15 @@ public class ElasticsearchDocumentFactoryUtil {
 
 				_addLegacyField(field, localizedName, translatedFields, value);
 
-				if (field.isSortable()) {
-					_addLegacyField(
-						field,
-						com.liferay.portal.kernel.search.Field.
-							getSortableFieldName(localizedName),
-						translatedFields, value);
+				if (!field.isSortable()) {
+					continue;
 				}
+
+				_addLegacyField(
+					field,
+					com.liferay.portal.kernel.search.Field.getSortableFieldName(
+						localizedName),
+					translatedFields, value);
 			}
 		}
 	}

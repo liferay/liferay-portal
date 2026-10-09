@@ -229,19 +229,20 @@ public class SharedAssetDTOConverter
 				_objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId())) {
 
-			if (objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
-				Objects.equals(objectField.getName(), "file")) {
+			if (!objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) ||
+				!Objects.equals(objectField.getName(), "file")) {
 
-				Map<String, Serializable> values = objectEntry.getValues();
+				continue;
+			}
 
-				long fileEntryId = GetterUtil.getLong(values.get("file"));
+			Map<String, Serializable> values = objectEntry.getValues();
 
-				if (fileEntryId != 0) {
-					return _getFileEntry(
-						fileEntryId, objectDefinition, objectEntry,
-						objectField);
-				}
+			long fileEntryId = GetterUtil.getLong(values.get("file"));
+
+			if (fileEntryId != 0) {
+				return _getFileEntry(
+					fileEntryId, objectDefinition, objectEntry, objectField);
 			}
 		}
 

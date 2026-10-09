@@ -77,9 +77,11 @@ public class DispatchOutputUtilTest {
 			sb.append(StringPool.SPACE);
 			sb.append(RandomTestUtil.randomString());
 
-			if ((i + 1) < lineCount) {
-				sb.append(System.lineSeparator());
+			if ((i + 1) >= lineCount) {
+				continue;
 			}
+
+			sb.append(System.lineSeparator());
 		}
 
 		return sb.toString();

@@ -41,19 +41,21 @@ public abstract class BaseReplacePortletId extends BasePortletIdUpgradeProcess {
 
 			List<String> sourcePortletIds = entry.getValue();
 
-			if (sourcePortletIds.size() > 1) {
-				for (int i = 0; i < (sourcePortletIds.size() - 1); i++) {
-					String portletId1 = sourcePortletIds.get(i);
+			if (sourcePortletIds.size() <= 1) {
+				continue;
+			}
 
-					for (int j = i + 1; j < sourcePortletIds.size(); j++) {
-						String portletId2 = sourcePortletIds.get(j);
+			for (int i = 0; i < (sourcePortletIds.size() - 1); i++) {
+				String portletId1 = sourcePortletIds.get(i);
 
-						clauses.add(
-							String.format(
-								"((PP1.portletId = '%s') AND (PP2.portletId " +
-									"= '%s'))",
-								portletId1, portletId2));
-					}
+				for (int j = i + 1; j < sourcePortletIds.size(); j++) {
+					String portletId2 = sourcePortletIds.get(j);
+
+					clauses.add(
+						String.format(
+							"((PP1.portletId = '%s') AND (PP2.portletId = " +
+								"'%s'))",
+							portletId1, portletId2));
 				}
 			}
 		}

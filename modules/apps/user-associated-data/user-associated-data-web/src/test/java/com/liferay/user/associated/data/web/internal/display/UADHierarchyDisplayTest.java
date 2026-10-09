@@ -127,11 +127,13 @@ public class UADHierarchyDisplayTest {
 
 			Assert.assertNotNull(uuid);
 
-			if (StringUtil.equals(uuid, _folderA.getUuid())) {
-				Long count = (Long)fieldValues.get("count");
-
-				Assert.assertEquals(4, count.intValue());
+			if (!StringUtil.equals(uuid, _folderA.getUuid())) {
+				continue;
 			}
+
+			Long count = (Long)fieldValues.get("count");
+
+			Assert.assertEquals(4, count.intValue());
 		}
 	}
 

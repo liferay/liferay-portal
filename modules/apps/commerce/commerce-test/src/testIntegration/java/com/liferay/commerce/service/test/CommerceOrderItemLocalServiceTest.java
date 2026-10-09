@@ -2417,11 +2417,13 @@ public class CommerceOrderItemLocalServiceTest {
 				String cpDefinitionOptionValueRelKey =
 					cpDefinitionOptionValueRel.getKey();
 
-				if (StringUtil.equalsIgnoreCase(
+				if (!StringUtil.equalsIgnoreCase(
 						cpDefinitionOptionValueRelKey, key)) {
 
-					cpInstance = bundleCPInstance;
+					continue;
 				}
+
+				cpInstance = bundleCPInstance;
 			}
 		}
 
@@ -2459,15 +2461,14 @@ public class CommerceOrderItemLocalServiceTest {
 		List<CommerceOrderItem> commerceOrderItems) {
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
-			if (commerceOrderItem.getCPInstanceId() == cpInstanceId) {
-				if (insideBundle) {
-					if (commerceOrderItem.getParentCommerceOrderItemId() != 0) {
-						return commerceOrderItem;
-					}
-				}
-				else {
-					return commerceOrderItem;
-				}
+			if (commerceOrderItem.getCPInstanceId() != cpInstanceId) {
+				continue;
+			}
+
+			if (!insideBundle ||
+				(commerceOrderItem.getParentCommerceOrderItemId() != 0)) {
+
+				return commerceOrderItem;
 			}
 		}
 

@@ -188,16 +188,18 @@ public class JavaOSGiReferenceCheck extends BaseFileCheck {
 					serviceBaseJavaTerm, JavaTerm.ACCESS_MODIFIER_PROTECTED,
 					serviceBaseJavaClass);
 
-				if (Validator.isNotNull(serviceBaseFieldTypeClassName) &&
-					fieldTypeClassName.equals(serviceBaseFieldTypeClassName)) {
+				if (Validator.isNull(serviceBaseFieldTypeClassName) ||
+					!fieldTypeClassName.equals(serviceBaseFieldTypeClassName)) {
 
-					addMessage(
-						fileName,
-						"Use super class variable \"" +
-							serviceBaseJavaTerm.getName() +
-								"\" instead of injection",
-						javaTerm.getLineNumber());
+					continue;
 				}
+
+				addMessage(
+					fileName,
+					"Use super class variable \"" +
+						serviceBaseJavaTerm.getName() +
+							"\" instead of injection",
+					javaTerm.getLineNumber());
 			}
 		}
 	}
@@ -223,23 +225,25 @@ public class JavaOSGiReferenceCheck extends BaseFileCheck {
 		JavaClass javaClass = JavaClassParser.parseJavaClass(fileName, content);
 
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
-			if (!javaTerm.isStatic() &&
-				(javaTerm.isJavaConstructor() || javaTerm.isJavaMethod()) &&
-				!javaTerm.hasAnnotation("Reference")) {
+			if (javaTerm.isStatic() ||
+				(!javaTerm.isJavaConstructor() && !javaTerm.isJavaMethod()) ||
+				javaTerm.hasAnnotation("Reference")) {
 
-				String javaTermContent = javaTerm.getContent();
+				continue;
+			}
 
-				if (javaTermContent.matches(
-						StringBundler.concat(
-							"(?s).*", shortClassName, "\\.(?!class).*"))) {
+			String javaTermContent = javaTerm.getContent();
 
-					addMessage(
-						fileName,
-						"Use portal service reference instead of \"" +
-							serviceReferenceUtilClassName + "\" in modules");
+			if (javaTermContent.matches(
+					StringBundler.concat(
+						"(?s).*", shortClassName, "\\.(?!class).*"))) {
 
-					return;
-				}
+				addMessage(
+					fileName,
+					"Use portal service reference instead of \"" +
+						serviceReferenceUtilClassName + "\" in modules");
+
+				return;
 			}
 		}
 	}
@@ -561,13 +565,15 @@ public class JavaOSGiReferenceCheck extends BaseFileCheck {
 			for (String fileName : utilFileNames) {
 				String content = FileUtil.read(new File(fileName));
 
-				if (content.contains(
+				if (!content.contains(
 						"com.liferay.portal.kernel.util.ServiceProxyFactory")) {
 
-					_serviceProxyFactoryUtilClassNames.add(
-						JavaSourceUtil.getPackageName(content) + "." +
-							JavaSourceUtil.getClassName(fileName));
+					continue;
 				}
+
+				_serviceProxyFactoryUtilClassNames.add(
+					JavaSourceUtil.getPackageName(content) + "." +
+						JavaSourceUtil.getClassName(fileName));
 			}
 
 			return _serviceProxyFactoryUtilClassNames;

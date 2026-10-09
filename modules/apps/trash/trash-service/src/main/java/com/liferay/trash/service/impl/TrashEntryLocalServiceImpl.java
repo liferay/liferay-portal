@@ -187,19 +187,22 @@ public class TrashEntryLocalServiceImpl extends TrashEntryLocalServiceBaseImpl {
 		for (TrashEntry entry : entries) {
 			deleteEntry(entry);
 
-			if (deleteTrashedModels) {
-				TrashHandler trashHandler =
-					TrashHandlerRegistryUtil.getTrashHandler(
-						entry.getClassName());
+			if (!deleteTrashedModels) {
+				continue;
+			}
 
-				if (trashHandler != null) {
-					try {
-						trashHandler.deleteTrashEntry(entry.getClassPK());
-					}
-					catch (Exception exception) {
-						_log.error(exception);
-					}
-				}
+			TrashHandler trashHandler =
+				TrashHandlerRegistryUtil.getTrashHandler(entry.getClassName());
+
+			if (trashHandler == null) {
+				continue;
+			}
+
+			try {
+				trashHandler.deleteTrashEntry(entry.getClassPK());
+			}
+			catch (Exception exception) {
+				_log.error(exception);
 			}
 		}
 	}

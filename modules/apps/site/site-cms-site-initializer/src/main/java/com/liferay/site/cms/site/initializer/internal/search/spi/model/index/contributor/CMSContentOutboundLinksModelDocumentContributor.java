@@ -93,11 +93,13 @@ public class CMSContentOutboundLinksModelDocumentContributor
 						long classPK = _getClassPK(
 							GetterUtil.getLong(value), objectEntry);
 
-						if (classPK > 0) {
-							outboundLinks.add(
-								CMSOutboundLinksUtil.getObjectEntryIdToken(
-									classPK));
+						if (classPK <= 0) {
+							continue;
 						}
+
+						outboundLinks.add(
+							CMSOutboundLinksUtil.getObjectEntryIdToken(
+								classPK));
 					}
 				}
 				else if (Objects.equals(

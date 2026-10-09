@@ -7,6 +7,7 @@ package com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.pars
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.parser.util.OpenAPIParserUtil;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.util.OpenAPIUtil;
@@ -41,15 +42,15 @@ public class DTOOpenAPIParser {
 		for (Map.Entry<String, Schema> entry : propertySchemas.entrySet()) {
 			Schema propertySchema = entry.getValue();
 
-			List<String> enumValues = propertySchema.getEnumValues();
-
-			if ((enumValues != null) && !enumValues.isEmpty()) {
-				String propertySchemaName = entry.getKey();
-
-				enumSchemas.put(
-					_getEnumName(configYAML, openAPIYAML, propertySchemaName),
-					propertySchema);
+			if (ListUtil.isEmpty(propertySchema.getEnumValues())) {
+				continue;
 			}
+
+			String propertySchemaName = entry.getKey();
+
+			enumSchemas.put(
+				_getEnumName(configYAML, openAPIYAML, propertySchemaName),
+				propertySchema);
 		}
 
 		return enumSchemas;
@@ -237,20 +238,18 @@ public class DTOOpenAPIParser {
 			configYAML, openAPIYAML);
 
 		for (String schemaName : schemas.keySet()) {
-			if (propertySchemaName.length() <= schemaName.length()) {
-				continue;
-			}
-
-			if (StringUtil.startsWith(
+			if ((propertySchemaName.length() <= schemaName.length()) ||
+				!StringUtil.startsWith(
 					StringUtil.toLowerCase(propertySchemaName),
 					StringUtil.toLowerCase(schemaName))) {
 
-				String suffix = propertySchemaName.substring(
-					schemaName.length());
+				continue;
+			}
 
-				if (Character.isUpperCase(suffix.charAt(0))) {
-					return schemaName + suffix;
-				}
+			String suffix = propertySchemaName.substring(schemaName.length());
+
+			if (Character.isUpperCase(suffix.charAt(0))) {
+				return schemaName + suffix;
 			}
 		}
 

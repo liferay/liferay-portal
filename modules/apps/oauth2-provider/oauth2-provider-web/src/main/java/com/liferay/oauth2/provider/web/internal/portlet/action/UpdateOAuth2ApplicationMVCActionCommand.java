@@ -92,9 +92,11 @@ public class UpdateOAuth2ApplicationMVCActionCommand
 		List<String> featuresList = new ArrayList<>();
 
 		for (String feature : oAuth2Features) {
-			if (ParamUtil.getBoolean(request, "feature-" + feature)) {
-				featuresList.add(feature);
+			if (!ParamUtil.getBoolean(request, "feature-" + feature)) {
+				continue;
 			}
+
+			featuresList.add(feature);
 		}
 
 		List<GrantType> allowedGrantTypesList = new ArrayList<>();
@@ -102,13 +104,13 @@ public class UpdateOAuth2ApplicationMVCActionCommand
 			oAuth2AdminPortletDisplayContext.getGrantTypes(portletPreferences);
 
 		for (GrantType grantType : clientProfile.grantTypes()) {
-			if (!grantTypes.contains(grantType)) {
+			if (!grantTypes.contains(grantType) ||
+				!ParamUtil.getBoolean(request, "grant-" + grantType.name())) {
+
 				continue;
 			}
 
-			if (ParamUtil.getBoolean(request, "grant-" + grantType.name())) {
-				allowedGrantTypesList.add(grantType);
-			}
+			allowedGrantTypesList.add(grantType);
 		}
 
 		String clientAuthenticationMethod = ParamUtil.get(
@@ -153,10 +155,12 @@ public class UpdateOAuth2ApplicationMVCActionCommand
 				}
 
 				for (GrantType grantType : allowedGrantTypesList) {
-					if (!grantType.isSupportsPublicClients()) {
-						clientSecret =
-							OAuth2SecureRandomGenerator.generateClientSecret();
+					if (grantType.isSupportsPublicClients()) {
+						continue;
 					}
+
+					clientSecret =
+						OAuth2SecureRandomGenerator.generateClientSecret();
 				}
 
 				ServiceContext serviceContext =

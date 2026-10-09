@@ -80,10 +80,12 @@ public class CommerceShipmentModelDocumentContributor
 					_commerceOrderLocalService.fetchCommerceOrder(
 						commerceOrderId);
 
-				if (commerceOrder != null) {
-					commerceOrderUserIds.add(
-						String.valueOf(commerceOrder.getUserId()));
+				if (commerceOrder == null) {
+					continue;
 				}
+
+				commerceOrderUserIds.add(
+					String.valueOf(commerceOrder.getUserId()));
 			}
 
 			document.addKeyword(

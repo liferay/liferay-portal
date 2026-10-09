@@ -833,9 +833,11 @@ public class ArrayUtil {
 		int count = 0;
 
 		for (T t : array) {
-			if (predicate.test(t)) {
-				count++;
+			if (!predicate.test(t)) {
+				continue;
 			}
+
+			count++;
 		}
 
 		return count;
@@ -912,9 +914,11 @@ public class ArrayUtil {
 		List<Boolean> filteredList = new ArrayList<>();
 
 		for (boolean b : array) {
-			if (predicate.test(b)) {
-				filteredList.add(b);
+			if (!predicate.test(b)) {
+				continue;
 			}
+
+			filteredList.add(b);
 		}
 
 		return toArray(filteredList.toArray(new Boolean[0]));
@@ -928,9 +932,11 @@ public class ArrayUtil {
 		List<Byte> filteredList = new ArrayList<>();
 
 		for (byte b : array) {
-			if (predicate.test(b)) {
-				filteredList.add(b);
+			if (!predicate.test(b)) {
+				continue;
 			}
+
+			filteredList.add(b);
 		}
 
 		return toArray(filteredList.toArray(new Byte[0]));
@@ -944,9 +950,11 @@ public class ArrayUtil {
 		List<Character> filteredList = new ArrayList<>();
 
 		for (char c : array) {
-			if (predicate.test(c)) {
-				filteredList.add(c);
+			if (!predicate.test(c)) {
+				continue;
 			}
+
+			filteredList.add(c);
 		}
 
 		return toArray(filteredList.toArray(new Character[0]));
@@ -960,9 +968,11 @@ public class ArrayUtil {
 		List<Double> filteredList = new ArrayList<>();
 
 		for (double d : array) {
-			if (predicate.test(d)) {
-				filteredList.add(d);
+			if (!predicate.test(d)) {
+				continue;
 			}
+
+			filteredList.add(d);
 		}
 
 		return toArray(filteredList.toArray(new Double[0]));
@@ -976,9 +986,11 @@ public class ArrayUtil {
 		List<Float> filteredList = new ArrayList<>();
 
 		for (float f : array) {
-			if (predicate.test(f)) {
-				filteredList.add(f);
+			if (!predicate.test(f)) {
+				continue;
 			}
+
+			filteredList.add(f);
 		}
 
 		return toArray(filteredList.toArray(new Float[0]));
@@ -992,9 +1004,11 @@ public class ArrayUtil {
 		List<Integer> filteredList = new ArrayList<>();
 
 		for (int i : array) {
-			if (predicate.test(i)) {
-				filteredList.add(i);
+			if (!predicate.test(i)) {
+				continue;
 			}
+
+			filteredList.add(i);
 		}
 
 		return toArray(filteredList.toArray(new Integer[0]));
@@ -1008,9 +1022,11 @@ public class ArrayUtil {
 		List<Long> filteredList = new ArrayList<>();
 
 		for (long l : array) {
-			if (predicate.test(l)) {
-				filteredList.add(l);
+			if (!predicate.test(l)) {
+				continue;
 			}
+
+			filteredList.add(l);
 		}
 
 		return toArray(filteredList.toArray(new Long[0]));
@@ -1024,9 +1040,11 @@ public class ArrayUtil {
 		List<Short> filteredList = new ArrayList<>();
 
 		for (short s : array) {
-			if (predicate.test(s)) {
-				filteredList.add(s);
+			if (!predicate.test(s)) {
+				continue;
 			}
+
+			filteredList.add(s);
 		}
 
 		return toArray(filteredList.toArray(new Short[0]));
@@ -1041,9 +1059,11 @@ public class ArrayUtil {
 		List<T> filteredList = new ArrayList<>();
 
 		for (T t : array) {
-			if (filterPredicate.test(t)) {
-				filteredList.add(t);
+			if (!filterPredicate.test(t)) {
+				continue;
 			}
+
+			filteredList.add(t);
 		}
 
 		Class<?> arrayClass = array.getClass();
@@ -1192,9 +1212,11 @@ public class ArrayUtil {
 		List<Boolean> list = new ArrayList<>();
 
 		for (boolean b : array) {
-			if (value != b) {
-				list.add(b);
+			if (value == b) {
+				continue;
 			}
+
+			list.add(b);
 		}
 
 		return toArray(list.toArray(new Boolean[0]));
@@ -1208,9 +1230,11 @@ public class ArrayUtil {
 		List<Byte> list = new ArrayList<>();
 
 		for (byte b : array) {
-			if (value != b) {
-				list.add(Byte.valueOf(b));
+			if (value == b) {
+				continue;
 			}
+
+			list.add(Byte.valueOf(b));
 		}
 
 		return toArray(list.toArray(new Byte[0]));
@@ -1224,9 +1248,11 @@ public class ArrayUtil {
 		List<Character> list = new ArrayList<>();
 
 		for (char c : array) {
-			if (value != c) {
-				list.add(Character.valueOf(c));
+			if (value == c) {
+				continue;
 			}
+
+			list.add(Character.valueOf(c));
 		}
 
 		return toArray(list.toArray(new Character[0]));
@@ -1240,9 +1266,11 @@ public class ArrayUtil {
 		List<Double> list = new ArrayList<>();
 
 		for (double d : array) {
-			if (value != d) {
-				list.add(Double.valueOf(d));
+			if (value == d) {
+				continue;
 			}
+
+			list.add(Double.valueOf(d));
 		}
 
 		return toArray(list.toArray(new Double[0]));
@@ -1256,9 +1284,11 @@ public class ArrayUtil {
 		List<Float> list = new ArrayList<>();
 
 		for (float f : array) {
-			if (value != f) {
-				list.add(Float.valueOf(f));
+			if (value == f) {
+				continue;
 			}
+
+			list.add(Float.valueOf(f));
 		}
 
 		return toArray(list.toArray(new Float[0]));
@@ -1272,9 +1302,11 @@ public class ArrayUtil {
 		List<Integer> list = new ArrayList<>();
 
 		for (int i : array) {
-			if (value != i) {
-				list.add(Integer.valueOf(i));
+			if (value == i) {
+				continue;
 			}
+
+			list.add(Integer.valueOf(i));
 		}
 
 		return toArray(list.toArray(new Integer[0]));
@@ -1288,9 +1320,11 @@ public class ArrayUtil {
 		List<Long> list = new ArrayList<>();
 
 		for (long l : array) {
-			if (value != l) {
-				list.add(Long.valueOf(l));
+			if (value == l) {
+				continue;
 			}
+
+			list.add(Long.valueOf(l));
 		}
 
 		return toArray(list.toArray(new Long[0]));
@@ -1304,9 +1338,11 @@ public class ArrayUtil {
 		List<Short> list = new ArrayList<>();
 
 		for (short s : array) {
-			if (value != s) {
-				list.add(Short.valueOf(s));
+			if (value == s) {
+				continue;
 			}
+
+			list.add(Short.valueOf(s));
 		}
 
 		return toArray(list.toArray(new Short[0]));
@@ -1320,9 +1356,11 @@ public class ArrayUtil {
 		List<String> list = new ArrayList<>();
 
 		for (String s : array) {
-			if (!s.equals(value)) {
-				list.add(s);
+			if (s.equals(value)) {
+				continue;
 			}
+
+			list.add(s);
 		}
 
 		return list.toArray(new String[0]);
@@ -1336,9 +1374,11 @@ public class ArrayUtil {
 		List<T> list = new ArrayList<>();
 
 		for (T object : array) {
-			if (value != object) {
-				list.add(object);
+			if (value == object) {
+				continue;
 			}
+
+			list.add(object);
 		}
 
 		if (array.length == list.size()) {
@@ -1355,9 +1395,11 @@ public class ArrayUtil {
 		List<String> list = new ArrayList<>();
 
 		for (String s : array) {
-			if (!s.startsWith(prefix)) {
-				list.add(s);
+			if (s.startsWith(prefix)) {
+				continue;
 			}
+
+			list.add(s);
 		}
 
 		return list.toArray(new String[0]);
@@ -1367,9 +1409,11 @@ public class ArrayUtil {
 		String[] values, String oldValue, String newValue) {
 
 		for (int i = 0; i < values.length; i++) {
-			if (values[i].equals(oldValue)) {
-				values[i] = newValue;
+			if (!values[i].equals(oldValue)) {
+				continue;
 			}
+
+			values[i] = newValue;
 		}
 	}
 
@@ -1466,9 +1510,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if ((array[index] != array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if ((array[index] == array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -1494,9 +1540,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if ((array[index] != array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if ((array[index] == array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -1522,9 +1570,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if ((array[index] != array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if ((array[index] == array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -1550,9 +1600,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if ((array[index] != array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if ((array[index] == array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -1578,9 +1630,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if ((array[index] != array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if ((array[index] == array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -1606,9 +1660,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if ((array[index] != array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if ((array[index] == array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -1634,9 +1690,11 @@ public class ArrayUtil {
 		int index = 0;
 
 		for (int i = 1; i < array.length; i++) {
-			if (!Objects.equals(array[index], array[i]) && (++index != i)) {
-				array[index] = array[i];
+			if (Objects.equals(array[index], array[i]) || (++index == i)) {
+				continue;
 			}
+
+			array[index] = array[i];
 		}
 
 		if (++index != array.length) {
@@ -2210,9 +2268,11 @@ public class ArrayUtil {
 				}
 			}
 
-			if ((i + 1) != array.length) {
-				sb.append(delimiter);
+			if ((i + 1) == array.length) {
+				continue;
 			}
+
+			sb.append(delimiter);
 		}
 
 		return sb.toString();
@@ -2257,9 +2317,11 @@ public class ArrayUtil {
 				}
 			}
 
-			if ((i + 1) != list.length) {
-				sb.append(delimiter);
+			if ((i + 1) == list.length) {
+				continue;
 			}
+
+			sb.append(delimiter);
 		}
 
 		return sb.toString();

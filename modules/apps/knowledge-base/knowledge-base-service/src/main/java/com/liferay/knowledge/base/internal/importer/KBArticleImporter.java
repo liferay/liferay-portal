@@ -211,10 +211,11 @@ public class KBArticleImporter {
 			for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 				Object value = entry.getValue();
 
-				if (value != null) {
-					metadata.put(
-						String.valueOf(entry.getKey()), value.toString());
+				if (value == null) {
+					continue;
 				}
+
+				metadata.put(String.valueOf(entry.getKey()), value.toString());
 			}
 
 			return metadata;
@@ -307,20 +308,24 @@ public class KBArticleImporter {
 
 				importedKBArticlesCount++;
 
-				if (prioritizeByNumericalPrefix) {
-					double nonintroFilePriority = _getKBArchiveResourcePriority(
-						file);
-
-					int value = Double.compare(
-						nonintroFilePriority, kbArticle.getPriority());
-
-					if (value != 0) {
-						_kbArticleLocalService.moveKBArticle(
-							userId, kbArticle.getResourcePrimKey(),
-							sectionResourceClassNameId,
-							sectionResourcePrimaryKey, nonintroFilePriority);
-					}
+				if (!prioritizeByNumericalPrefix) {
+					continue;
 				}
+
+				double nonintroFilePriority = _getKBArchiveResourcePriority(
+					file);
+
+				int value = Double.compare(
+					nonintroFilePriority, kbArticle.getPriority());
+
+				if (value == 0) {
+					continue;
+				}
+
+				_kbArticleLocalService.moveKBArticle(
+					userId, kbArticle.getResourcePrimKey(),
+					sectionResourceClassNameId, sectionResourcePrimaryKey,
+					nonintroFilePriority);
 			}
 		}
 

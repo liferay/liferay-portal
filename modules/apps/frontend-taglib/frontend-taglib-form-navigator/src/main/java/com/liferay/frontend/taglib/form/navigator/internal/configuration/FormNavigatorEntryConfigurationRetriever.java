@@ -39,9 +39,11 @@ public class FormNavigatorEntryConfigurationRetriever {
 				formNavigatorEntryConfigurationParser.getFormNavigatorEntryKeys(
 					categoryKey, context);
 
-			if (currentFormNavigatorEntryKeys != null) {
-				formNavigatorEntryKeys = currentFormNavigatorEntryKeys;
+			if (currentFormNavigatorEntryKeys == null) {
+				continue;
 			}
+
+			formNavigatorEntryKeys = currentFormNavigatorEntryKeys;
 		}
 
 		return formNavigatorEntryKeys;

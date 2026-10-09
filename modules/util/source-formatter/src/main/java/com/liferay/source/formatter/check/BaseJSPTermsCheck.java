@@ -72,12 +72,16 @@ public abstract class BaseJSPTermsCheck extends BaseFileCheck {
 			while (iterator.hasNext()) {
 				String prefix = iterator.next();
 
-				if (dependenFileContent.contains("prefix=\"" + prefix + "\"")) {
-					iterator.remove();
+				if (!dependenFileContent.contains(
+						"prefix=\"" + prefix + "\"")) {
 
-					if (taglibPrefixes.isEmpty()) {
-						return taglibPrefixes;
-					}
+					continue;
+				}
+
+				iterator.remove();
+
+				if (taglibPrefixes.isEmpty()) {
+					return taglibPrefixes;
 				}
 			}
 		}
@@ -332,13 +336,15 @@ public abstract class BaseJSPTermsCheck extends BaseFileCheck {
 
 			z = content.indexOf("%>", x);
 
-			if ((z == -1) ||
-				(getLineNumber(content, y) != getLineNumber(content, z)) ||
-				!ToolsUtil.isInsideQuotes(
+			if ((z != -1) &&
+				(getLineNumber(content, y) == getLineNumber(content, z)) &&
+				ToolsUtil.isInsideQuotes(
 					content.substring(y, z), x - y, false)) {
 
-				count++;
+				continue;
 			}
+
+			count++;
 		}
 
 		if ((count > 1) ||

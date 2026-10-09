@@ -265,16 +265,16 @@ public class RowStyledLayoutStructureItem extends StyledLayoutStructureItem {
 		}
 
 		for (ViewportSize viewportSize : _viewportSizes) {
-			if (viewportSize.equals(ViewportSize.DESKTOP)) {
+			if (viewportSize.equals(ViewportSize.DESKTOP) ||
+				!itemConfigJSONObject.has(viewportSize.getViewportSizeId())) {
+
 				continue;
 			}
 
-			if (itemConfigJSONObject.has(viewportSize.getViewportSizeId())) {
-				setViewportConfiguration(
-					viewportSize.getViewportSizeId(),
-					itemConfigJSONObject.getJSONObject(
-						viewportSize.getViewportSizeId()));
-			}
+			setViewportConfiguration(
+				viewportSize.getViewportSizeId(),
+				itemConfigJSONObject.getJSONObject(
+					viewportSize.getViewportSizeId()));
 		}
 	}
 

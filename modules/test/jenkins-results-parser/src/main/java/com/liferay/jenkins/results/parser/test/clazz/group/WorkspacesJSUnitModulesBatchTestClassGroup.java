@@ -43,9 +43,11 @@ public class WorkspacesJSUnitModulesBatchTestClassGroup
 		for (File portalDir : _getPortalDirs()) {
 			File workspacesDir = new File(portalDir, "workspaces");
 
-			if (workspacesDir.exists()) {
-				workspacesDirs.add(workspacesDir);
+			if (!workspacesDir.exists()) {
+				continue;
 			}
+
+			workspacesDirs.add(workspacesDir);
 		}
 
 		return workspacesDirs;

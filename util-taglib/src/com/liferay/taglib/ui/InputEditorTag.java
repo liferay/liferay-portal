@@ -354,11 +354,12 @@ public class InputEditorTag extends BaseValidatorTagSupport {
 		while (enumeration.hasMoreElements()) {
 			String attributeName = enumeration.nextElement();
 
-			if (attributeName.startsWith("liferay-ui:input-editor")) {
-				attributes.put(
-					attributeName,
-					httpServletRequest.getAttribute(attributeName));
+			if (!attributeName.startsWith("liferay-ui:input-editor")) {
+				continue;
 			}
+
+			attributes.put(
+				attributeName, httpServletRequest.getAttribute(attributeName));
 		}
 
 		attributes.put("liferay-ui:input-editor:namespace", getNamespace());

@@ -183,10 +183,12 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			socialRelationLocalService.addRelation(
 				themeDisplay.getUserId(), userId, type);
 
-			if (blocked) {
-				socialRelationLocalService.addRelation(
-					userId, themeDisplay.getUserId(), type);
+			if (!blocked) {
+				continue;
 			}
+
+			socialRelationLocalService.addRelation(
+				userId, themeDisplay.getUserId(), type);
 		}
 	}
 

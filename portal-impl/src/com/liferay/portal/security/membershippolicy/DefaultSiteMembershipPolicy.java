@@ -131,24 +131,26 @@ public class DefaultSiteMembershipPolicy extends BaseSiteMembershipPolicy {
 			}
 
 			for (long userId : userIds) {
-				if (!GroupLocalServiceUtil.hasUserGroup(
+				if (GroupLocalServiceUtil.hasUserGroup(
 						userId, group.getParentGroupId(), false)) {
 
-					if (membershipPolicyException == null) {
-						membershipPolicyException =
-							new MembershipPolicyException(
-								MembershipPolicyException.
-									SITE_MEMBERSHIP_NOT_ALLOWED);
-					}
-
-					membershipPolicyException.addUser(
-						UserLocalServiceUtil.getUser(userId));
+					continue;
 				}
+
+				if (membershipPolicyException == null) {
+					membershipPolicyException = new MembershipPolicyException(
+						MembershipPolicyException.SITE_MEMBERSHIP_NOT_ALLOWED);
+				}
+
+				membershipPolicyException.addUser(
+					UserLocalServiceUtil.getUser(userId));
 			}
 
-			if (membershipPolicyException != null) {
-				membershipPolicyException.addGroup(group);
+			if (membershipPolicyException == null) {
+				continue;
 			}
+
+			membershipPolicyException.addGroup(group);
 		}
 
 		if (membershipPolicyException != null) {

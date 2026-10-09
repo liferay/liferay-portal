@@ -138,10 +138,12 @@ public class CommerceShippingOriginLocatorImpl
 				commerceInventoryWarehouse.getLatitude(),
 				commerceInventoryWarehouse.getLongitude());
 
-			if (distance < closestDistance) {
-				closestCommerceInventoryWarehouse = commerceInventoryWarehouse;
-				closestDistance = distance;
+			if (!(distance < closestDistance)) {
+				continue;
 			}
+
+			closestCommerceInventoryWarehouse = commerceInventoryWarehouse;
+			closestDistance = distance;
 		}
 
 		return closestCommerceInventoryWarehouse;

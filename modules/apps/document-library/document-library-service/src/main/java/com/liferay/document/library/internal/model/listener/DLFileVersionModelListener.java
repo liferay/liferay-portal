@@ -143,9 +143,11 @@ public class DLFileVersionModelListener
 			fileVersionId);
 
 		for (DLProcessor dlProcessor : _serviceTrackerMap.values()) {
-			if (dlProcessor.isSupported(fileVersion)) {
-				dlProcessor.cleanUp(fileVersion);
+			if (!dlProcessor.isSupported(fileVersion)) {
+				continue;
 			}
+
+			dlProcessor.cleanUp(fileVersion);
 		}
 	}
 

@@ -694,11 +694,14 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 			_ddmForm = ddmFormDeserializerDeserializeResponse.getDDMForm();
 
 			for (DDMFormField ddmFormField : _ddmForm.getDDMFormFields()) {
-				if (_isFieldSet(ddmFormField) &&
-					ListUtil.isEmpty(ddmFormField.getNestedDDMFormFields())) {
+				if (!_isFieldSet(ddmFormField) ||
+					ListUtil.isNotEmpty(
+						ddmFormField.getNestedDDMFormFields())) {
 
-					_setNestedDDMFormFields(ddmFormField);
+					continue;
 				}
+
+				_setNestedDDMFormFields(ddmFormField);
 			}
 
 			ddmFormUpdateEntityCacheBiConsumer.accept(this, _ddmForm);

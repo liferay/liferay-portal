@@ -265,11 +265,13 @@ public class PortalRequestProcessor {
 		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
 			String key = entry.getKey();
 
-			if (key.startsWith(namespace)) {
-				key = key.substring(namespace.length());
-
-				portletURL.setParameter(key, entry.getValue());
+			if (!key.startsWith(namespace)) {
+				continue;
 			}
+
+			key = key.substring(namespace.length());
+
+			portletURL.setParameter(key, entry.getValue());
 		}
 
 		String portletFriendlyURL = friendlyURLMapper.buildPath(portletURL);

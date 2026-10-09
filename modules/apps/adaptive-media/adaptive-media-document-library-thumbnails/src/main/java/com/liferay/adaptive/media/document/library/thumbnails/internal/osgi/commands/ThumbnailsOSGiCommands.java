@@ -96,11 +96,13 @@ public class ThumbnailsOSGiCommands implements OSGiCommands {
 				FileVersion fileVersion = _getFileVersion(
 					thumbnailConfiguration.getFileVersionId(actualFileName));
 
-				if (fileVersion != null) {
-					_store.deleteDirectory(
-						companyId, BasePreviewableDLProcessor.REPOSITORY_ID,
-						actualFileName);
+				if (fileVersion == null) {
+					continue;
 				}
+
+				_store.deleteDirectory(
+					companyId, BasePreviewableDLProcessor.REPOSITORY_ID,
+					actualFileName);
 			}
 		}
 	}
@@ -125,9 +127,11 @@ public class ThumbnailsOSGiCommands implements OSGiCommands {
 				FileVersion fileVersion = _getFileVersion(
 					thumbnailConfiguration.getFileVersionId(actualFileName));
 
-				if (fileVersion != null) {
-					companyTotal = +1;
+				if (fileVersion == null) {
+					continue;
 				}
+
+				companyTotal = +1;
 			}
 		}
 
@@ -249,11 +253,13 @@ public class ThumbnailsOSGiCommands implements OSGiCommands {
 					thumbnailConfiguration.selectMatchingConfigurationEntry(
 						amImageConfigurationEntries);
 
-				if (amImageConfigurationEntry != null) {
-					_migrate(
-						actualFileName, amImageConfigurationEntry,
-						thumbnailConfiguration);
+				if (amImageConfigurationEntry == null) {
+					continue;
 				}
+
+				_migrate(
+					actualFileName, amImageConfigurationEntry,
+					thumbnailConfiguration);
 			}
 		}
 	}

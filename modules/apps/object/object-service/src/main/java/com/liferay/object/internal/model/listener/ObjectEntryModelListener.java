@@ -549,13 +549,14 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			Object originalValue = originalValues.get(objectField.getName());
 			Object value = values.get(objectField.getName());
 
-			if (!Objects.equals(originalValue, value)) {
-				attributes.add(
-					new Attribute(
-						objectField.getName(),
-						_getAuditValue(objectField, value),
-						_getAuditValue(objectField, originalValue)));
+			if (Objects.equals(originalValue, value)) {
+				continue;
 			}
+
+			attributes.add(
+				new Attribute(
+					objectField.getName(), _getAuditValue(objectField, value),
+					_getAuditValue(objectField, originalValue)));
 		}
 
 		return attributes;
@@ -606,13 +607,15 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		for (RelevantObjectEntryModelListener relevantObjectEntryModelListener :
 				_relevantObjectEntryModelListeners) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					objectDefinition.getExternalReferenceCode(),
 					relevantObjectEntryModelListener.
 						getObjectDefinitionExternalReferenceCode())) {
 
-				unsafeConsumer.accept(relevantObjectEntryModelListener);
+				continue;
 			}
+
+			unsafeConsumer.accept(relevantObjectEntryModelListener);
 		}
 	}
 

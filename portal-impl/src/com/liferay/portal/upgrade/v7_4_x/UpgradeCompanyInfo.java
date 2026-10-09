@@ -29,11 +29,13 @@ public class UpgradeCompanyInfo extends UpgradeProcess {
 
 			String columnName = columnDefinition.substring(0, index);
 
-			if (!hasColumn("CompanyInfo", columnName)) {
-				alterTableAddColumn(
-					"CompanyInfo", columnName,
-					columnDefinition.substring(index + 1));
+			if (hasColumn("CompanyInfo", columnName)) {
+				continue;
 			}
+
+			alterTableAddColumn(
+				"CompanyInfo", columnName,
+				columnDefinition.substring(index + 1));
 		}
 
 		if (!hasColumn("Company", "homeURL")) {

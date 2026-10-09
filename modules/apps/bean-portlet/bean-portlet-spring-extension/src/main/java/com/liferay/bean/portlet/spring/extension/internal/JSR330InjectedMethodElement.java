@@ -129,19 +129,21 @@ public class JSR330InjectedMethodElement
 							for (int i = 0; i < parameterTypes.length; i++) {
 								String autowiredBeanName = iterator.next();
 
-								if (_configurableListableBeanFactory.
-										containsBean(autowiredBeanName) &&
-									_configurableListableBeanFactory.
+								if (!_configurableListableBeanFactory.
+										containsBean(autowiredBeanName) ||
+									!_configurableListableBeanFactory.
 										isTypeMatch(
 											autowiredBeanName,
 											parameterTypes[i])) {
 
-									cachedDependencies[i] =
-										new JSR330DependencyDescriptor(
-											autowiredBeanName,
-											dependencyDescriptors[i],
-											parameterTypes[i]);
+									continue;
 								}
+
+								cachedDependencies[i] =
+									new JSR330DependencyDescriptor(
+										autowiredBeanName,
+										dependencyDescriptors[i],
+										parameterTypes[i]);
 							}
 						}
 

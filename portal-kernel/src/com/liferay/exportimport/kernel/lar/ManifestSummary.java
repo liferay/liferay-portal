@@ -364,13 +364,15 @@ public class ManifestSummary implements Serializable {
 
 			long count = getModelAdditionCount(key);
 
-			if (count >= 0) {
-				if (modelAdditionCount < 0) {
-					modelAdditionCount = count;
-				}
-				else {
-					modelAdditionCount += count;
-				}
+			if (count < 0) {
+				continue;
+			}
+
+			if (modelAdditionCount < 0) {
+				modelAdditionCount = count;
+			}
+			else {
+				modelAdditionCount += count;
 			}
 		}
 
@@ -403,13 +405,15 @@ public class ManifestSummary implements Serializable {
 
 			long count = getModelDeletionCount(key);
 
-			if (count >= 0) {
-				if (modelDeletionCount < 0) {
-					modelDeletionCount = count;
-				}
-				else {
-					modelDeletionCount += count;
-				}
+			if (count < 0) {
+				continue;
+			}
+
+			if (modelDeletionCount < 0) {
+				modelDeletionCount = count;
+			}
+			else {
+				modelDeletionCount += count;
 			}
 		}
 

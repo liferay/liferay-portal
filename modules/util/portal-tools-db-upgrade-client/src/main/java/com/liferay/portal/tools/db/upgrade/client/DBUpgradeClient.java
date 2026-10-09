@@ -347,9 +347,11 @@ public class DBUpgradeClient {
 		defaultJVMOpts.put("-Xmx", "-Xmx4096m");
 
 		for (Map.Entry<String, String> entry : defaultJVMOpts.entrySet()) {
-			if (!_containsPrefix(jvmOpts, entry.getKey())) {
-				jvmOpts.add(entry.getValue());
+			if (_containsPrefix(jvmOpts, entry.getKey())) {
+				continue;
 			}
+
+			jvmOpts.add(entry.getValue());
 		}
 	}
 
@@ -678,9 +680,11 @@ public class DBUpgradeClient {
 				File testDir = _getResolvedDir(
 					allowAbsolutePaths, baseDir, dirName);
 
-				if ((testDir == null) || !_isValidDir(testDir)) {
-					hasErrors = true;
+				if ((testDir != null) && _isValidDir(testDir)) {
+					continue;
 				}
+
+				hasErrors = true;
 			}
 
 			if (!hasErrors) {
@@ -793,10 +797,12 @@ public class DBUpgradeClient {
 							"liferay.home")),
 					response);
 
-				if (_appServer == null) {
-					System.err.println(
-						response + " is an unsupported application server.");
+				if (_appServer != null) {
+					continue;
 				}
+
+				System.err.println(
+					response + " is an unsupported application server.");
 			}
 
 			File dir = _appServer.getDir();
@@ -1085,9 +1091,11 @@ public class DBUpgradeClient {
 
 			dataSource = Database.getDatabase(response);
 
-			if (dataSource == null) {
-				System.err.println(response + " is an unsupported database.");
+			if (dataSource != null) {
+				continue;
 			}
+
+			System.err.println(response + " is an unsupported database.");
 		}
 
 		System.out.println(

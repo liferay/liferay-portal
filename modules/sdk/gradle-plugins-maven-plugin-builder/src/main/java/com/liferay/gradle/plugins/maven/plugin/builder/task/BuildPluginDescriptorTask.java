@@ -399,16 +399,17 @@ public class BuildPluginDescriptorTask extends DefaultTask {
 
 			XMLUtil.appendElement(document, dependencyElement, "scope", scope);
 
-			if (!forcedExclusions.isEmpty()) {
-				Element exclusionsElement = document.createElement(
-					"exclusions");
+			if (forcedExclusions.isEmpty()) {
+				continue;
+			}
 
-				dependencyElement.appendChild(exclusionsElement);
+			Element exclusionsElement = document.createElement("exclusions");
 
-				for (String dependencyNotation : forcedExclusions) {
-					_appendDependencyExclusionElement(
-						document, exclusionsElement, dependencyNotation);
-				}
+			dependencyElement.appendChild(exclusionsElement);
+
+			for (String dependencyNotation : forcedExclusions) {
+				_appendDependencyExclusionElement(
+					document, exclusionsElement, dependencyNotation);
 			}
 		}
 	}

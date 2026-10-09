@@ -774,9 +774,11 @@ public class CustomSQL {
 
 				sb.append(line);
 
-				if (!line.endsWith(StringPool.OPEN_PARENTHESIS)) {
-					sb.append(StringPool.SPACE);
+				if (line.endsWith(StringPool.OPEN_PARENTHESIS)) {
+					continue;
 				}
+
+				sb.append(StringPool.SPACE);
 			}
 		}
 		catch (IOException ioException) {
@@ -806,11 +808,13 @@ public class CustomSQL {
 				continue;
 			}
 
-			if ((c == CharPool.UNDERLINE) || (c == CharPool.PERCENT)) {
-				sb.insert(i, CharPool.BACK_SLASH);
-
-				i++;
+			if ((c != CharPool.UNDERLINE) && (c != CharPool.PERCENT)) {
+				continue;
 			}
+
+			sb.insert(i, CharPool.BACK_SLASH);
+
+			i++;
 		}
 
 		return sb.toString();

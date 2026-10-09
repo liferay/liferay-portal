@@ -145,9 +145,11 @@ public class UpgradePortalPreferences extends PortalPreferencesUpgradeProcess {
 					newPreferenceName = _getNewPreferenceName(preferenceName);
 				}
 
-				if (newPreferenceName != null) {
-					_preferenceNamesMap.put(preferenceName, newPreferenceName);
+				if (newPreferenceName == null) {
+					continue;
 				}
+
+				_preferenceNamesMap.put(preferenceName, newPreferenceName);
 			}
 		}
 	}

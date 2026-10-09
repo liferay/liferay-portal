@@ -60,9 +60,11 @@ public class SearchPage<T> extends Page<T> {
 		while (iterator.hasNext()) {
 			sb.append(iterator.next());
 
-			if (iterator.hasNext()) {
-				sb.append(", ");
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(", ");
 		}
 
 		sb.append("], \"page\": ");
@@ -116,9 +118,11 @@ public class SearchPage<T> extends Page<T> {
 				sb.append("\"");
 			}
 
-			if (iterator.hasNext()) {
-				sb.append(", ");
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(", ");
 		}
 
 		sb.append("}");

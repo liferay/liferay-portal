@@ -142,11 +142,13 @@ public class GroupSearchProvider {
 			themeDisplay.getPermissionChecker();
 
 		for (Group group : groups) {
-			if (GroupPermissionUtil.contains(
+			if (!GroupPermissionUtil.contains(
 					permissionChecker, group, actionId)) {
 
-				permittedGroups.add(group);
+				continue;
 			}
+
+			permittedGroups.add(group);
 		}
 
 		return permittedGroups;

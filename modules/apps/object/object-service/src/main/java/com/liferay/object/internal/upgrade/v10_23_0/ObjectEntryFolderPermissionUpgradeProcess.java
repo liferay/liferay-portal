@@ -58,21 +58,21 @@ public class ObjectEntryFolderPermissionUpgradeProcess extends UpgradeProcess {
 
 			long actionIds = resourcePermission.getActionIds();
 
-			if ((actionIds & bitwiseValue) == bitwiseValue) {
-				_resourcePermissionLocalService.addResourcePermission(
-					resourcePermission.getCompanyId(),
-					ObjectConstants.RESOURCE_NAME_OBJECT_ENTRY_FOLDER,
-					resourcePermission.getScope(),
-					resourcePermission.getPrimKey(),
-					resourcePermission.getRoleId(),
-					ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER);
-
-				_resourcePermissionLocalService.removeResourcePermission(
-					resourcePermission.getCompanyId(),
-					resourcePermission.getName(), resourcePermission.getScope(),
-					resourcePermission.getPrimKey(),
-					resourcePermission.getRoleId(), ActionKeys.ADD_FOLDER);
+			if ((actionIds & bitwiseValue) != bitwiseValue) {
+				continue;
 			}
+
+			_resourcePermissionLocalService.addResourcePermission(
+				resourcePermission.getCompanyId(),
+				ObjectConstants.RESOURCE_NAME_OBJECT_ENTRY_FOLDER,
+				resourcePermission.getScope(), resourcePermission.getPrimKey(),
+				resourcePermission.getRoleId(),
+				ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER);
+
+			_resourcePermissionLocalService.removeResourcePermission(
+				resourcePermission.getCompanyId(), resourcePermission.getName(),
+				resourcePermission.getScope(), resourcePermission.getPrimKey(),
+				resourcePermission.getRoleId(), ActionKeys.ADD_FOLDER);
 		}
 
 		_resourceActionLocalService.deleteResourceAction(

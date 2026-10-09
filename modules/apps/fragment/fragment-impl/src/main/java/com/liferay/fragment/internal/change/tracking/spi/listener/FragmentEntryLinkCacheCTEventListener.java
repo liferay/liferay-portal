@@ -31,12 +31,14 @@ public class FragmentEntryLinkCacheCTEventListener implements CTEventListener {
 					_portal.getClassNameId(
 						FragmentEntryLink.class.getName()))) {
 
-			if (ctEntry.getChangeType() ==
+			if (ctEntry.getChangeType() !=
 					CTConstants.CT_CHANGE_TYPE_MODIFICATION) {
 
-				_fragmentEntryLinkCache.removeFragmentEntryLinkCache(
-					ctEntry.getModelClassPK());
+				continue;
 			}
+
+			_fragmentEntryLinkCache.removeFragmentEntryLinkCache(
+				ctEntry.getModelClassPK());
 		}
 	}
 

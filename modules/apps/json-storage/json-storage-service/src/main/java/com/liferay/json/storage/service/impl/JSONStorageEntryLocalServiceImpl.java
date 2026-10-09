@@ -596,12 +596,14 @@ public class JSONStorageEntryLocalServiceImpl
 		}
 		else if (jsonStorageEntries != null) {
 			for (JSONStorageEntry jsonStorageEntry : jsonStorageEntries) {
-				if (!set.contains(jsonStorageEntry.getKey())) {
-					jsonStorageEntryPersistence.remove(jsonStorageEntry);
-
-					_removeChildJSONStorageEntries(
-						jsonStorageEntriesMap, jsonStorageEntry);
+				if (set.contains(jsonStorageEntry.getKey())) {
+					continue;
 				}
+
+				jsonStorageEntryPersistence.remove(jsonStorageEntry);
+
+				_removeChildJSONStorageEntries(
+					jsonStorageEntriesMap, jsonStorageEntry);
 			}
 		}
 	}

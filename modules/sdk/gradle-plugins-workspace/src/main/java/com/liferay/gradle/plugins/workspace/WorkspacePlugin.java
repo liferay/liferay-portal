@@ -150,17 +150,19 @@ public class WorkspacePlugin implements Plugin<Settings> {
 							PathMatcher pathMatcher = fileSystem.getPathMatcher(
 								"glob:" + glob);
 
-							if (pathMatcher.matches(relativeProjectPath)) {
-								if (_logger.isInfoEnabled()) {
-									_logger.info(
-										"Skipping project evaluation for {} " +
-											"because it matches the exclude " +
-												"pattern {}.",
-										relativeProjectPath, glob);
-								}
-
-								iterator.remove();
+							if (!pathMatcher.matches(relativeProjectPath)) {
+								continue;
 							}
+
+							if (_logger.isInfoEnabled()) {
+								_logger.info(
+									"Skipping project evaluation for {} " +
+										"because it matches the exclude " +
+											"pattern {}.",
+									relativeProjectPath, glob);
+							}
+
+							iterator.remove();
 						}
 					}
 

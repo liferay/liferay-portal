@@ -76,13 +76,15 @@ public class GradleDependencyConfigurationCheck extends BaseFileCheck {
 					"testIntegrationRuntimeOnly");
 			}
 
-			if (isAttributeValue(
+			if (!isAttributeValue(
 					_CHECK_TEST_RUNTIME_ONLY_DEPENDENCIES_KEY, absolutePath,
 					true)) {
 
-				content = _fixConfigurations(
-					content, dependencies, "testRuntime", "testRuntimeOnly");
+				continue;
 			}
+
+			content = _fixConfigurations(
+				content, dependencies, "testRuntime", "testRuntimeOnly");
 		}
 
 		return content;
@@ -132,16 +134,17 @@ public class GradleDependencyConfigurationCheck extends BaseFileCheck {
 		for (String oldDependency : StringUtil.splitLines(dependencies)) {
 			String configuration = GradleSourceUtil.getConfiguration(
 				oldDependency);
-			String newDependency = oldDependency;
 
-			if (configuration.equals("compileOnly") &&
-				!oldDependency.contains("transitive: false")) {
+			if (!configuration.equals("compileOnly") ||
+				oldDependency.contains("transitive: false")) {
 
-				newDependency = oldDependency + ", transitive: false";
-
-				content = StringUtil.replaceFirst(
-					content, oldDependency, newDependency);
+				continue;
 			}
+
+			String newDependency = oldDependency + ", transitive: false";
+
+			content = StringUtil.replaceFirst(
+				content, oldDependency, newDependency);
 		}
 
 		return content;

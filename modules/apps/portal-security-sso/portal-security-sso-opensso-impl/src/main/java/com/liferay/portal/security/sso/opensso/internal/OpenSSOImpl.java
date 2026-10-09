@@ -98,19 +98,23 @@ public class OpenSSOImpl implements OpenSSO {
 				String line = null;
 
 				while ((line = unsyncBufferedReader.readLine()) != null) {
-					if (line.startsWith("userdetails.attribute.name=")) {
-						String name = line.replaceFirst(
-							"userdetails.attribute.name=", "");
-
-						line = unsyncBufferedReader.readLine();
-
-						if (line.startsWith("userdetails.attribute.value=")) {
-							String value = line.replaceFirst(
-								"userdetails.attribute.value=", "");
-
-							nameValues.put(name, value);
-						}
+					if (!line.startsWith("userdetails.attribute.name=")) {
+						continue;
 					}
+
+					String name = line.replaceFirst(
+						"userdetails.attribute.name=", "");
+
+					line = unsyncBufferedReader.readLine();
+
+					if (!line.startsWith("userdetails.attribute.value=")) {
+						continue;
+					}
+
+					String value = line.replaceFirst(
+						"userdetails.attribute.value=", "");
+
+					nameValues.put(name, value);
 				}
 			}
 			else if (_log.isDebugEnabled()) {
@@ -171,11 +175,13 @@ public class OpenSSOImpl implements OpenSSO {
 				String line = null;
 
 				while ((line = unsyncBufferedReader.readLine()) != null) {
-					if (line.startsWith("string=")) {
-						line = line.replaceFirst("string=", "");
-
-						cookieName = line;
+					if (!line.startsWith("string=")) {
+						continue;
 					}
+
+					line = line.replaceFirst("string=", "");
+
+					cookieName = line;
 				}
 			}
 
@@ -201,15 +207,17 @@ public class OpenSSOImpl implements OpenSSO {
 				String line = null;
 
 				while ((line = unsyncBufferedReader.readLine()) != null) {
-					if (line.startsWith("string=")) {
-						line = line.replaceFirst("string=", "");
+					if (!line.startsWith("string=")) {
+						continue;
+					}
 
-						if (cookieName.equals(line)) {
-							cookieNamesList.add(0, cookieName);
-						}
-						else {
-							cookieNamesList.add(line);
-						}
+					line = line.replaceFirst("string=", "");
+
+					if (cookieName.equals(line)) {
+						cookieNamesList.add(0, cookieName);
+					}
+					else {
+						cookieNamesList.add(line);
 					}
 				}
 			}

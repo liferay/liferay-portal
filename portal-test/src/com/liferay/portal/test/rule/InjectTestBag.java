@@ -42,11 +42,13 @@ public class InjectTestBag {
 			for (Field field : ReflectionUtil.getDeclaredFields(testClass)) {
 				boolean staticField = Modifier.isStatic(field.getModifiers());
 
-				if (((target == null) == staticField) &&
-					field.isAnnotationPresent(Inject.class)) {
+				if (((target == null) != staticField) ||
+					!field.isAnnotationPresent(Inject.class)) {
 
-					_fields.add(field);
+					continue;
 				}
+
+				_fields.add(field);
 			}
 
 			testClass = testClass.getSuperclass();
@@ -72,12 +74,14 @@ public class InjectTestBag {
 				bundleContext, clazz, field, inject.filter(),
 				inject.blocking());
 
-			if (serviceReference != null) {
-				_serviceReferences.add(serviceReference);
-
-				ReflectionTestUtil.setFieldValue(
-					field, _target, bundleContext.getService(serviceReference));
+			if (serviceReference == null) {
+				continue;
 			}
+
+			_serviceReferences.add(serviceReference);
+
+			ReflectionTestUtil.setFieldValue(
+				field, _target, bundleContext.getService(serviceReference));
 		}
 	}
 

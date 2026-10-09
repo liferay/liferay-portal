@@ -499,9 +499,11 @@ public class CPFileImporterImpl implements CPFileImporter {
 		while (iterator.hasNext()) {
 			String key = iterator.next();
 
-			if (key.startsWith(keyPrefix)) {
-				iterator.remove();
+			if (!key.startsWith(keyPrefix)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 
@@ -872,11 +874,13 @@ public class CPFileImporterImpl implements CPFileImporter {
 
 			String value = themeSetting.getValue();
 
-			if (!value.equals(themeSetting.getValue())) {
-				typeSettingUnicodeProperties.setProperty(
-					ThemeSettingImpl.namespaceProperty(device, entry.getKey()),
-					value);
+			if (value.equals(themeSetting.getValue())) {
+				continue;
 			}
+
+			typeSettingUnicodeProperties.setProperty(
+				ThemeSettingImpl.namespaceProperty(device, entry.getKey()),
+				value);
 		}
 	}
 

@@ -235,16 +235,18 @@ public class ViewRelatedEntriesDisplayContext {
 				StringPool.BLANK));
 
 		for (CTCollection ctCollection : ctCollections) {
-			if ((ctCollection.getCtCollectionId() != _ctCollectionId) &&
-				CTCollectionPermission.contains(
+			if ((ctCollection.getCtCollectionId() == _ctCollectionId) ||
+				!CTCollectionPermission.contains(
 					PermissionThreadLocal.getPermissionChecker(), ctCollection,
 					ActionKeys.UPDATE)) {
 
-				selectOptions.add(
-					new SelectOption(
-						HtmlUtil.escape(ctCollection.getName()),
-						String.valueOf(ctCollection.getCtCollectionId())));
+				continue;
 			}
+
+			selectOptions.add(
+				new SelectOption(
+					HtmlUtil.escape(ctCollection.getName()),
+					String.valueOf(ctCollection.getCtCollectionId())));
 		}
 
 		return selectOptions;

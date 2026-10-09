@@ -221,10 +221,12 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 				_sapEntryLocalService.getCompanySAPEntries(
 					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-			if (_isOAuth2ExportedSAPEntry(sapEntry)) {
-				sapEntryScopes.add(
-					new SAPEntryScope(sapEntry, _parseScope(sapEntry)));
+			if (!_isOAuth2ExportedSAPEntry(sapEntry)) {
+				continue;
 			}
+
+			sapEntryScopes.add(
+				new SAPEntryScope(sapEntry, _parseScope(sapEntry)));
 		}
 
 		return sapEntryScopes;

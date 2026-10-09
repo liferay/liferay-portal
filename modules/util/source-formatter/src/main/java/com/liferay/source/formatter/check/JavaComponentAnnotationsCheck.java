@@ -103,19 +103,21 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 		Matcher matcher = _attributePattern.matcher(annotation);
 
 		while (matcher.find()) {
-			if (!ToolsUtil.isInsideQuotes(annotation, matcher.end(1)) &&
-				(getLevel(annotation.substring(0, matcher.end()), "{", "}") ==
+			if (ToolsUtil.isInsideQuotes(annotation, matcher.end(1)) ||
+				(getLevel(annotation.substring(0, matcher.end()), "{", "}") !=
 					0)) {
 
-				String curAttributeName = matcher.group(1);
+				continue;
+			}
 
-				if (curAttributeName.compareTo(attributeName) > 0) {
-					return StringUtil.insert(
-						annotation,
-						StringBundler.concat(
-							attributeName, " = ", attributeValue, ", "),
-						matcher.start(1));
-				}
+			String curAttributeName = matcher.group(1);
+
+			if (curAttributeName.compareTo(attributeName) > 0) {
+				return StringUtil.insert(
+					annotation,
+					StringBundler.concat(
+						attributeName, " = ", attributeValue, ", "),
+					matcher.start(1));
 			}
 		}
 
@@ -519,14 +521,16 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 				configurationClass, _getRootDirName(absolutePath),
 				getBundleSymbolicNamesMap(absolutePath));
 
-			if (javaFile == null) {
-				String message = StringBundler.concat(
-					"Remove \"", configurationClass,
-					"\" from \"configurationPid\" as the configuration class ",
-					"does not exist");
-
-				addMessage(fileName, message);
+			if (javaFile != null) {
+				continue;
 			}
+
+			String message = StringBundler.concat(
+				"Remove \"", configurationClass,
+				"\" from \"configurationPid\" as the configuration class does ",
+				"not exist");
+
+			addMessage(fileName, message);
 		}
 
 		return annotation;
@@ -876,17 +880,19 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 				break;
 			}
 
-			if (exportPackageName.endsWith(StringPool.STAR)) {
-				exportPackageName = exportPackageName.substring(
-					0, exportPackageName.length() - 1);
+			if (!exportPackageName.endsWith(StringPool.STAR)) {
+				continue;
+			}
 
-				if (packageName.startsWith(exportPackageName)) {
-					if (negation) {
-						break;
-					}
+			exportPackageName = exportPackageName.substring(
+				0, exportPackageName.length() - 1);
 
-					return false;
+			if (packageName.startsWith(exportPackageName)) {
+				if (negation) {
+					break;
 				}
+
+				return false;
 			}
 		}
 

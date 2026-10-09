@@ -201,9 +201,11 @@ public class CodeCoverageAssertor implements TestRule {
 			for (Method method : methods) {
 				Class<?> declaringClass = method.getDeclaringClass();
 
-				if (!assertClasses.contains(declaringClass)) {
-					assertClasses.add(declaringClass);
+				if (assertClasses.contains(declaringClass)) {
+					continue;
 				}
+
+				assertClasses.add(declaringClass);
 			}
 		}
 

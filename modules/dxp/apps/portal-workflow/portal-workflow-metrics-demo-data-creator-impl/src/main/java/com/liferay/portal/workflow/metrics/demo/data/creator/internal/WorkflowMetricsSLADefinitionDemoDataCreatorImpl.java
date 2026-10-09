@@ -140,11 +140,13 @@ public class WorkflowMetricsSLADefinitionDemoDataCreatorImpl
 					fetchWorkflowMetricsSLADefinition(
 						workflowMetricsSLADefinitionId);
 
-			if (workflowMetricsSLADefinition != null) {
-				_workflowMetricsSLADefinitionLocalService.
-					deleteWorkflowMetricsSLADefinition(
-						workflowMetricsSLADefinition);
+			if (workflowMetricsSLADefinition == null) {
+				continue;
 			}
+
+			_workflowMetricsSLADefinitionLocalService.
+				deleteWorkflowMetricsSLADefinition(
+					workflowMetricsSLADefinition);
 		}
 	}
 

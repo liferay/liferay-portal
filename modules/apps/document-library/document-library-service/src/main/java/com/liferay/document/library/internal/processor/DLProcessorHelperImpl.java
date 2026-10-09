@@ -45,9 +45,11 @@ public class DLProcessorHelperImpl implements DLProcessorHelper {
 					fileEntry.getCtCollectionId())) {
 
 			for (DLProcessor dlProcessor : _serviceTrackerMap.values()) {
-				if (dlProcessor.isSupported(fileEntry.getMimeType())) {
-					dlProcessor.cleanUp(fileEntry);
+				if (!dlProcessor.isSupported(fileEntry.getMimeType())) {
+					continue;
 				}
+
+				dlProcessor.cleanUp(fileEntry);
 			}
 		}
 	}
@@ -63,9 +65,11 @@ public class DLProcessorHelperImpl implements DLProcessorHelper {
 					fileVersion.getCtCollectionId())) {
 
 			for (DLProcessor dlProcessor : _serviceTrackerMap.values()) {
-				if (dlProcessor.isSupported(fileVersion)) {
-					dlProcessor.cleanUp(fileVersion);
+				if (!dlProcessor.isSupported(fileVersion)) {
+					continue;
 				}
+
+				dlProcessor.cleanUp(fileVersion);
 			}
 		}
 	}
@@ -92,10 +96,12 @@ public class DLProcessorHelperImpl implements DLProcessorHelper {
 			}
 
 			for (DLProcessor dlProcessor : _serviceTrackerMap.values()) {
-				if (dlProcessor.isSupported(latestFileVersion)) {
-					dlProcessor.exportGeneratedFiles(
-						portletDataContext, fileEntry, fileEntryElement);
+				if (!dlProcessor.isSupported(latestFileVersion)) {
+					continue;
 				}
+
+				dlProcessor.exportGeneratedFiles(
+					portletDataContext, fileEntry, fileEntryElement);
 			}
 		}
 	}
@@ -132,11 +138,13 @@ public class DLProcessorHelperImpl implements DLProcessorHelper {
 					fileVersion.getCtCollectionId())) {
 
 			for (DLProcessor dlProcessor : _serviceTrackerMap.values()) {
-				if (dlProcessor.isSupported(fileVersion)) {
-					dlProcessor.importGeneratedFiles(
-						portletDataContext, fileEntry, importedFileEntry,
-						fileEntryElement);
+				if (!dlProcessor.isSupported(fileVersion)) {
+					continue;
 				}
+
+				dlProcessor.importGeneratedFiles(
+					portletDataContext, fileEntry, importedFileEntry,
+					fileEntryElement);
 			}
 		}
 	}
@@ -184,9 +192,11 @@ public class DLProcessorHelperImpl implements DLProcessorHelper {
 			}
 
 			for (DLProcessor dlProcessor : _serviceTrackerMap.values()) {
-				if (dlProcessor.isSupported(latestFileVersion)) {
-					dlProcessor.trigger(fileVersion, latestFileVersion);
+				if (!dlProcessor.isSupported(latestFileVersion)) {
+					continue;
 				}
+
+				dlProcessor.trigger(fileVersion, latestFileVersion);
 			}
 		}
 	}

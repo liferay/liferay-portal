@@ -908,9 +908,11 @@ public class MirrorsGetTask extends Task {
 		String[] separators = {"/", "\\"};
 
 		for (String separator : separators) {
-			if (!separator.equals(File.separator)) {
-				path = path.replace(separator, File.separator);
+			if (separator.equals(File.separator)) {
+				continue;
 			}
+
+			path = path.replace(separator, File.separator);
 		}
 
 		return path;
@@ -1449,11 +1451,13 @@ public class MirrorsGetTask extends Task {
 				outputStream.write(bytes, 0, read);
 				size += read;
 
-				if (_verbose && ((System.currentTimeMillis() - time) > 100)) {
-					System.out.print(".");
-
-					time = System.currentTimeMillis();
+				if (!_verbose || ((System.currentTimeMillis() - time) <= 100)) {
+					continue;
 				}
+
+				System.out.print(".");
+
+				time = System.currentTimeMillis();
 			}
 
 			if (_verbose) {

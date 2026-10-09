@@ -77,17 +77,19 @@ public class DBColumnSizeUpgradeProcess extends UpgradeProcess {
 							"DECIMAL_DIGITS");
 						int size = columnResultSet.getInt("COLUMN_SIZE");
 
-						if (((_oldDecimalDigits == null) ||
-							 (decimalDigits == _oldDecimalDigits)) &&
-							(size == _oldSize) &&
-							StringUtil.equalsIgnoreCase(
+						if (((_oldDecimalDigits != null) &&
+							 (decimalDigits != _oldDecimalDigits)) ||
+							(size != _oldSize) ||
+							!StringUtil.equalsIgnoreCase(
 								_oldTypeName,
 								columnResultSet.getString("TYPE_NAME"))) {
 
-							tableColumnNames.add(
-								tableName + StringPool.PERIOD +
-									columnResultSet.getString("COLUMN_NAME"));
+							continue;
 						}
+
+						tableColumnNames.add(
+							tableName + StringPool.PERIOD +
+								columnResultSet.getString("COLUMN_NAME"));
 					}
 				}
 			}

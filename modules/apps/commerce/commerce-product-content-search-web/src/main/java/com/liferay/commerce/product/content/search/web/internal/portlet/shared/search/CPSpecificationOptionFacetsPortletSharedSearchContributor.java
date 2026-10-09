@@ -237,16 +237,18 @@ public class CPSpecificationOptionFacetsPortletSharedSearchContributor
 				_cpSpecificationOptionLocalService.getCPSpecificationOption(
 					searchContext.getCompanyId(), termCollector.getTerm());
 
-			if (cpSpecificationOption.isFacetable()) {
-				MultiValueFacet multiValueFacet = new MultiValueFacet(
-					searchContext);
-
-				multiValueFacet.setFieldName(
-					CPSpecificationOptionFacetsUtil.getIndexFieldName(
-						termCollector.getTerm(), themeDisplay.getLanguageId()));
-
-				facets.add(multiValueFacet);
+			if (!cpSpecificationOption.isFacetable()) {
+				continue;
 			}
+
+			MultiValueFacet multiValueFacet = new MultiValueFacet(
+				searchContext);
+
+			multiValueFacet.setFieldName(
+				CPSpecificationOptionFacetsUtil.getIndexFieldName(
+					termCollector.getTerm(), themeDisplay.getLanguageId()));
+
+			facets.add(multiValueFacet);
 		}
 
 		return facets;

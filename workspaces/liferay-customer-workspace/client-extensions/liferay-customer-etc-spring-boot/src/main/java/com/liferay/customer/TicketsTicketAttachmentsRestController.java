@@ -128,16 +128,18 @@ public class TicketsTicketAttachmentsRestController extends BaseRestController {
 		}
 
 		for (AccountBrief accountBrief : userAccount.getAccountBriefs()) {
-			if (accountExternalReferenceCode.equals(
+			if (!accountExternalReferenceCode.equals(
 					accountBrief.getExternalReferenceCode())) {
 
-				for (RoleBrief roleBrief : accountBrief.getRoleBriefs()) {
-					if (ArrayUtil.contains(
-							RoleConstants.SUPPORT_ACCOUNT_TICKET_ROLES,
-							roleBrief.getName())) {
+				continue;
+			}
 
-						return true;
-					}
+			for (RoleBrief roleBrief : accountBrief.getRoleBriefs()) {
+				if (ArrayUtil.contains(
+						RoleConstants.SUPPORT_ACCOUNT_TICKET_ROLES,
+						roleBrief.getName())) {
+
+					return true;
 				}
 			}
 		}

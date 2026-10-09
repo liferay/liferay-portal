@@ -203,9 +203,11 @@ public class JavaFinderImplCustomSQLCheck extends BaseJavaTermCheck {
 
 			sb.append(line);
 
-			if (!line.endsWith(StringPool.OPEN_PARENTHESIS)) {
-				sb.append(StringPool.SPACE);
+			if (line.endsWith(StringPool.OPEN_PARENTHESIS)) {
+				continue;
 			}
+
+			sb.append(StringPool.SPACE);
 		}
 
 		return sb.toString();

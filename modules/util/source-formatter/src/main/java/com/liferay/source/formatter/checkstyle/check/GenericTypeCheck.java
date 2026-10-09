@@ -351,12 +351,14 @@ public class GenericTypeCheck extends BaseCheck {
 				return;
 			}
 
-			if (firstChildDetailAST.getType() == TokenTypes.IDENT) {
-				String name = firstChildDetailAST.getText();
+			if (firstChildDetailAST.getType() != TokenTypes.IDENT) {
+				continue;
+			}
 
-				if (name.length() == 1) {
-					return;
-				}
+			String name = firstChildDetailAST.getText();
+
+			if (name.length() == 1) {
+				return;
 			}
 		}
 

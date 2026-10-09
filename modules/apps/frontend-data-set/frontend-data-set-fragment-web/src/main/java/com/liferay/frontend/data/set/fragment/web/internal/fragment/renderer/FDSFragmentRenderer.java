@@ -589,16 +589,15 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 				apiURLTokenMappingsJSONObject.getJSONObject(
 					unresolvedTokenName);
 
-			if (mappingJSONObject == null) {
+			if ((mappingJSONObject == null) ||
+				!Objects.equals(
+					mappingJSONObject.getString("mappingMode"), "context") ||
+				Validator.isNull(mappingJSONObject.getString("fieldId"))) {
+
 				continue;
 			}
 
-			if (Objects.equals(
-					mappingJSONObject.getString("mappingMode"), "context") &&
-				Validator.isNotNull(mappingJSONObject.getString("fieldId"))) {
-
-				unresolvedContextTokenNames.add(unresolvedTokenName);
-			}
+			unresolvedContextTokenNames.add(unresolvedTokenName);
 		}
 
 		return unresolvedContextTokenNames;

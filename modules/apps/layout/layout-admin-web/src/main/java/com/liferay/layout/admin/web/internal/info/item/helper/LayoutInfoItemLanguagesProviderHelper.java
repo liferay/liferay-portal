@@ -123,10 +123,12 @@ public class LayoutInfoItemLanguagesProviderHelper {
 				Object valueObject = editableValueJSONObject.get(
 					_language.getLanguageId(siteAvailableLocale));
 
-				if (valueObject != null) {
-					availableLocalesIds.add(
-						LocaleUtil.toLanguageId(siteAvailableLocale));
+				if (valueObject == null) {
+					continue;
 				}
+
+				availableLocalesIds.add(
+					LocaleUtil.toLanguageId(siteAvailableLocale));
 			}
 		}
 

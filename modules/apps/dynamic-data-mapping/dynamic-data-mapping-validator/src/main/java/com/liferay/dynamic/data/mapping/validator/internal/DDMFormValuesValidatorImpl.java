@@ -298,15 +298,17 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 			DDMFormField ddmFormField = ddmFormFieldsMap.get(
 				ddmFormFieldValue.getName());
 
-			if (ddmFormField != null) {
-				_validateDDMFormFieldValue(
-					ddmFormFieldsMap.get(ddmFormFieldValue.getName()),
-					ddmFormFieldValue);
-
-				_traverseDDMFormFieldValues(
-					ddmFormFieldValue.getNestedDDMFormFieldValues(),
-					ddmFormField.getNestedDDMFormFieldsMap());
+			if (ddmFormField == null) {
+				continue;
 			}
+
+			_validateDDMFormFieldValue(
+				ddmFormFieldsMap.get(ddmFormFieldValue.getName()),
+				ddmFormFieldValue);
+
+			_traverseDDMFormFieldValues(
+				ddmFormFieldValue.getNestedDDMFormFieldValues(),
+				ddmFormField.getNestedDDMFormFieldsMap());
 		}
 	}
 

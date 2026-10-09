@@ -290,9 +290,11 @@ public class ParallelExecutor<T> {
 			int failedTaskCount = 0;
 
 			for (Task<T> completedTask : _completedTasks) {
-				if (completedTask.failed()) {
-					failedTaskCount++;
+				if (!completedTask.failed()) {
+					continue;
 				}
+
+				failedTaskCount++;
 			}
 
 			return failedTaskCount;
@@ -318,9 +320,11 @@ public class ParallelExecutor<T> {
 			for (Task<T> runningTask : _runningTasks) {
 				TaskCallable<T> taskCallable = runningTask.getCallable();
 
-				if (taskCallable.isRunning()) {
-					runningTaskCount++;
+				if (!taskCallable.isRunning()) {
+					continue;
 				}
+
+				runningTaskCount++;
 			}
 
 			return runningTaskCount;
@@ -332,9 +336,11 @@ public class ParallelExecutor<T> {
 			for (Task<T> runningTask : _runningTasks) {
 				TaskCallable<T> taskCallable = runningTask.getCallable();
 
-				if (!taskCallable.isRunning()) {
-					submittedTaskCount++;
+				if (taskCallable.isRunning()) {
+					continue;
 				}
+
+				submittedTaskCount++;
 			}
 
 			return submittedTaskCount;
@@ -344,9 +350,11 @@ public class ParallelExecutor<T> {
 			int successfulTaskCount = 0;
 
 			for (Task<T> completedTask : _completedTasks) {
-				if (!completedTask.failed()) {
-					successfulTaskCount++;
+				if (completedTask.failed()) {
+					continue;
 				}
+
+				successfulTaskCount++;
 			}
 
 			return successfulTaskCount;
@@ -425,58 +433,57 @@ public class ParallelExecutor<T> {
 
 						Future<T> future = processorTask.getFuture();
 
-						if (future.isDone()) {
-							T result;
+						if (!future.isDone()) {
+							continue;
+						}
 
-							try {
-								result = future.get();
-							}
-							catch (CancellationException | ExecutionException |
-								   InterruptedException exception) {
+						T result;
 
-								processorTask.fail();
+						try {
+							result = future.get();
+						}
+						catch (CancellationException | ExecutionException |
+							   InterruptedException exception) {
 
-								RuntimeException runtimeException =
-									new RuntimeException(
-										"Parallel task threw an exception",
-										exception);
+							processorTask.fail();
 
-								if (_parallelExecutor._failOnError) {
-									if (_parallelExecutor._excludeNulls ==
-											false) {
+							RuntimeException runtimeException =
+								new RuntimeException(
+									"Parallel task threw an exception",
+									exception);
 
-										_resultsSortedMap.put(
-											callableIndex, null);
-									}
-
-									abort();
-
-									throw runtimeException;
+							if (_parallelExecutor._failOnError) {
+								if (_parallelExecutor._excludeNulls == false) {
+									_resultsSortedMap.put(callableIndex, null);
 								}
 
-								result = null;
+								abort();
 
-								runtimeException.printStackTrace();
+								throw runtimeException;
 							}
 
-							if ((result != null) ||
-								(_parallelExecutor._excludeNulls == false)) {
+							result = null;
 
-								_resultsSortedMap.put(callableIndex, result);
-							}
-
-							latestCompletedProcessorTasks.add(processorTask);
-
-							Iterator<Callable<T>> iterator =
-								processorTask.getIterator();
-
-							if ((iterator == null) || !iterator.hasNext()) {
-								continue;
-							}
-
-							newProcessorTasks.add(
-								_processCallable(iterator.next(), iterator));
+							runtimeException.printStackTrace();
 						}
+
+						if ((result != null) ||
+							(_parallelExecutor._excludeNulls == false)) {
+
+							_resultsSortedMap.put(callableIndex, result);
+						}
+
+						latestCompletedProcessorTasks.add(processorTask);
+
+						Iterator<Callable<T>> iterator =
+							processorTask.getIterator();
+
+						if ((iterator == null) || !iterator.hasNext()) {
+							continue;
+						}
+
+						newProcessorTasks.add(
+							_processCallable(iterator.next(), iterator));
 					}
 
 					if (!latestCompletedProcessorTasks.isEmpty()) {
@@ -507,28 +514,27 @@ public class ParallelExecutor<T> {
 						for (Task<T> processorTask : _runningTasks) {
 							Future<T> future = processorTask.getFuture();
 
-							if ((future != null) && !future.isCancelled()) {
-								if (!future.isDone()) {
-									future.cancel(true);
-
-									processorTask.fail();
-
-									if (_parallelExecutor._excludeNulls ==
-											false) {
-
-										TaskCallable<T> taskCallable =
-											processorTask.getCallable();
-
-										int callableIndex = _callables.indexOf(
-											taskCallable.getNestedCallable());
-
-										_resultsSortedMap.put(
-											callableIndex, null);
-									}
-								}
-
-								_completedTasks.add(processorTask);
+							if ((future == null) || future.isCancelled()) {
+								continue;
 							}
+
+							if (!future.isDone()) {
+								future.cancel(true);
+
+								processorTask.fail();
+
+								if (_parallelExecutor._excludeNulls == false) {
+									TaskCallable<T> taskCallable =
+										processorTask.getCallable();
+
+									int callableIndex = _callables.indexOf(
+										taskCallable.getNestedCallable());
+
+									_resultsSortedMap.put(callableIndex, null);
+								}
+							}
+
+							_completedTasks.add(processorTask);
 						}
 
 						if (_parallelExecutor._excludeNulls == false) {

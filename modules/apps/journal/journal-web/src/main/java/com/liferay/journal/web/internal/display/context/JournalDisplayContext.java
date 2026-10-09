@@ -191,12 +191,14 @@ public class JournalDisplayContext {
 			new String[0]);
 
 		for (DDMStructure ddmStructure : getDDMStructures()) {
-			if (ArrayUtil.contains(
+			if (!ArrayUtil.contains(
 					addMenuFavItems,
 					String.valueOf(ddmStructure.getStructureId()))) {
 
-				addMenuFavItemsList.add(ddmStructure.getStructureId());
+				continue;
 			}
+
+			addMenuFavItemsList.add(ddmStructure.getStructureId());
 		}
 
 		_addMenuFavItems = ArrayUtil.toLongArray(addMenuFavItemsList);

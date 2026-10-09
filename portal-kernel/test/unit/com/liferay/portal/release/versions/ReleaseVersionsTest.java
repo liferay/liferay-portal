@@ -370,9 +370,11 @@ public class ReleaseVersionsTest {
 				for (String dirName : dirNames) {
 					Path dirPath = portalPath.resolve(dirName);
 
-					if (Files.exists(dirPath)) {
-						ignorePaths.add(dirPath);
+					if (!Files.exists(dirPath)) {
+						continue;
 					}
+
+					ignorePaths.add(dirPath);
 				}
 			}
 		}

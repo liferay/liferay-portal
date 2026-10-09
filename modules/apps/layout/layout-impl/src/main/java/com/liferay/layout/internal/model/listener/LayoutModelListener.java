@@ -85,10 +85,12 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 					layout.getGroupId(), LocaleUtil.toLanguageId(locale),
 					layout.getPlid());
 
-			if (layoutLocalization != null) {
-				_layoutLocalizationLocalService.deleteLayoutLocalization(
-					layoutLocalization);
+			if (layoutLocalization == null) {
+				continue;
 			}
+
+			_layoutLocalizationLocalService.deleteLayoutLocalization(
+				layoutLocalization);
 		}
 	}
 

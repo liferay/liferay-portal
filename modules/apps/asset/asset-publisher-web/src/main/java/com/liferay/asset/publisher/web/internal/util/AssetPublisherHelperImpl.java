@@ -125,12 +125,15 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
-			if (Objects.equals(queryName, "assetCategories") && queryContains &&
-				(queryAndOperator || (queryValues.length == 1))) {
+			if (!Objects.equals(queryName, "assetCategories") ||
+				!queryContains ||
+				(!queryAndOperator && (queryValues.length != 1))) {
 
-				assetCategoryIds = ArrayUtil.append(
-					assetCategoryIds, GetterUtil.getLongValues(queryValues));
+				continue;
 			}
+
+			assetCategoryIds = ArrayUtil.append(
+				assetCategoryIds, GetterUtil.getLongValues(queryValues));
 		}
 
 		return assetCategoryIds;
@@ -565,13 +568,15 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
-			if (Objects.equals(queryName, "assetTags") && queryContains &&
-				(queryAndOperator || (queryValues.length == 1))) {
+			if (!Objects.equals(queryName, "assetTags") || !queryContains ||
+				(!queryAndOperator && (queryValues.length != 1))) {
 
-				queryValues = _normalizeAssetTagNames(queryValues);
-
-				Collections.addAll(allAssetTagNames, queryValues);
+				continue;
 			}
+
+			queryValues = _normalizeAssetTagNames(queryValues);
+
+			Collections.addAll(allAssetTagNames, queryValues);
 		}
 
 		return allAssetTagNames.toArray(new String[0]);
@@ -937,11 +942,13 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
-			if (Objects.equals(queryName, "keywords") && queryContains &&
-				(queryAndOperator || (queryValues.length == 1))) {
+			if (!Objects.equals(queryName, "keywords") || !queryContains ||
+				(!queryAndOperator && (queryValues.length != 1))) {
 
-				allKeywords = queryValues;
+				continue;
 			}
+
+			allKeywords = queryValues;
 		}
 
 		return allKeywords;
@@ -1052,9 +1059,13 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				assetEntryAssetTagNames[i] = assetTag.getName();
 			}
 
-			if (ArrayUtil.containsAll(assetEntryAssetTagNames, assetTagNames)) {
-				filteredAssetEntries.add(assetEntry);
+			if (!ArrayUtil.containsAll(
+					assetEntryAssetTagNames, assetTagNames)) {
+
+				continue;
 			}
+
+			filteredAssetEntries.add(assetEntry);
 		}
 
 		return filteredAssetEntries;
@@ -1104,26 +1115,28 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 					new AssetEntryResult(title, assetEntries));
 			}
 
-			if (!portletName.equals(AssetPublisherPortletKeys.RECENT_CONTENT)) {
-				if (groupTotal > 0) {
-					if ((end > 0) && (end > groupTotal)) {
-						end -= groupTotal;
-					}
-					else {
-						end = 0;
-					}
+			if (portletName.equals(AssetPublisherPortletKeys.RECENT_CONTENT)) {
+				continue;
+			}
 
-					if ((start > 0) && (start > groupTotal)) {
-						start -= groupTotal;
-					}
-					else {
-						start = 0;
-					}
+			if (groupTotal > 0) {
+				if ((end > 0) && (end > groupTotal)) {
+					end -= groupTotal;
+				}
+				else {
+					end = 0;
 				}
 
-				assetEntryQuery.setEnd(QueryUtil.ALL_POS);
-				assetEntryQuery.setStart(QueryUtil.ALL_POS);
+				if ((start > 0) && (start > groupTotal)) {
+					start -= groupTotal;
+				}
+				else {
+					start = 0;
+				}
 			}
+
+			assetEntryQuery.setEnd(QueryUtil.ALL_POS);
+			assetEntryQuery.setStart(QueryUtil.ALL_POS);
 		}
 
 		searchContainer.setResultsAndTotal(searchContainer::getResults, total);
@@ -1332,9 +1345,11 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 			String assetEntryUuid = rootElement.elementText("asset-entry-uuid");
 
-			if (assetEntryUuids.contains(assetEntryUuid)) {
-				iterator.remove();
+			if (!assetEntryUuids.contains(assetEntryUuid)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		portletPreferences.setValues(

@@ -167,9 +167,11 @@ public class EditAssetCategoryCPDisplayLayoutMVCActionCommand
 					actionRequest,
 					"classPK_" + assetVocabulary.getVocabularyId());
 
-				if (assetVocabularyClassPK > 0) {
-					classPKs.add(assetVocabularyClassPK);
+				if (assetVocabularyClassPK <= 0) {
+					continue;
 				}
+
+				classPKs.add(assetVocabularyClassPK);
 			}
 		}
 

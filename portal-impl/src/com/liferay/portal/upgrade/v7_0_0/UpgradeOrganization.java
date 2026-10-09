@@ -123,10 +123,12 @@ public class UpgradeOrganization extends UpgradeProcess {
 				sb.append(StringPool.SLASH);
 
 				for (String organizationId : organizationIds) {
-					if (organizationId.length() > 0) {
-						sb.append(OrganizationGroup.getGroupId(organizationId));
-						sb.append(StringPool.SLASH);
+					if (organizationId.length() <= 0) {
+						continue;
 					}
+
+					sb.append(OrganizationGroup.getGroupId(organizationId));
+					sb.append(StringPool.SLASH);
 				}
 
 				preparedStatement2.setLong(

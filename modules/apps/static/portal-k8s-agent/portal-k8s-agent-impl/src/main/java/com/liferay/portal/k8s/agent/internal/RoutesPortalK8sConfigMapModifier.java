@@ -74,21 +74,22 @@ public class RoutesPortalK8sConfigMapModifier
 		File liferayRoutesFile = liferayRoutesPath.toFile();
 
 		for (String directoryName : FileUtil.listDirs(liferayRoutesFile)) {
-			if (Objects.equals(directoryName, "default")) {
+			if (Objects.equals(directoryName, "default") ||
+				virtualInstanceIds.contains(directoryName)) {
+
 				continue;
 			}
 
-			if (!virtualInstanceIds.contains(directoryName)) {
-				File routesDirectory = new File(
-					liferayRoutesFile, directoryName);
+			File routesDirectory = new File(liferayRoutesFile, directoryName);
 
-				if (routesDirectory.exists()) {
-					FileUtil.deltree(routesDirectory);
+			if (!routesDirectory.exists()) {
+				continue;
+			}
 
-					if (_log.isDebugEnabled()) {
-						_log.debug("Deleted custodian " + directoryName);
-					}
-				}
+			FileUtil.deltree(routesDirectory);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug("Deleted custodian " + directoryName);
 			}
 		}
 	}

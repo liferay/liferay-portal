@@ -40,9 +40,11 @@ public class ListUtil {
 		Predicate<T> predicate) {
 
 		for (T item : inputList) {
-			if (predicate.test(item)) {
-				outputList.add(item);
+			if (!predicate.test(item)) {
+				continue;
 			}
+
+			outputList.add(item);
 		}
 
 		return outputList;
@@ -219,9 +221,11 @@ public class ListUtil {
 				sb.append(value);
 			}
 
-			if ((i + 1) != list.size()) {
-				sb.append(delimiter);
+			if ((i + 1) == list.size()) {
+				continue;
 			}
+
+			sb.append(delimiter);
 		}
 
 		return sb.toString();

@@ -74,9 +74,11 @@ public class DepotRoleUtil {
 		for (Locale locale : language.getAvailableLocales()) {
 			String description = _getDescription(locale, name);
 
-			if (description != null) {
-				descriptionMap.put(locale, description);
+			if (description == null) {
+				continue;
 			}
+
+			descriptionMap.put(locale, description);
 		}
 
 		return descriptionMap;
@@ -101,9 +103,11 @@ public class DepotRoleUtil {
 		for (Locale locale : language.getAvailableLocales()) {
 			String title = _getTitle(locale, name);
 
-			if (title != null) {
-				titleMap.put(locale, title);
+			if (title == null) {
+				continue;
 			}
+
+			titleMap.put(locale, title);
 		}
 
 		return titleMap;

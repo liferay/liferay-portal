@@ -551,12 +551,13 @@ public class AnnouncementsEntryLocalServiceImpl
 					user.getEmailAddress(), user.getFullName());
 			}
 
-			if (announcementsDelivery.isSms()) {
-				Contact contact = user.getContact();
-
-				notifyUsersFullNames.put(
-					contact.getSmsSn(), user.getFullName());
+			if (!announcementsDelivery.isSms()) {
+				continue;
 			}
+
+			Contact contact = user.getContact();
+
+			notifyUsersFullNames.put(contact.getSmsSn(), user.getFullName());
 		}
 
 		if (notifyUsersFullNames.isEmpty()) {

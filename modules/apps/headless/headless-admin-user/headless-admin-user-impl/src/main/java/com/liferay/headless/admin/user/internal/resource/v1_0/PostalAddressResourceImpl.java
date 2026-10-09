@@ -388,9 +388,11 @@ public class PostalAddressResourceImpl extends BasePostalAddressResourceImpl {
 			title = country.getTitle(
 				contextAcceptLanguage.getPreferredLocale());
 
-			if (title.equals(postalAddress.getAddressCountry())) {
-				found = true;
+			if (!title.equals(postalAddress.getAddressCountry())) {
+				continue;
 			}
+
+			found = true;
 		}
 
 		if (!found) {

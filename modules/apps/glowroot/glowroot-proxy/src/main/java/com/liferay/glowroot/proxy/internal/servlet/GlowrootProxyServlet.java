@@ -203,11 +203,13 @@ public class GlowrootProxyServlet extends ProxyServlet implements Serializable {
 				while (enumeration.hasMoreElements()) {
 					String headerName = enumeration.nextElement();
 
-					if (!StringUtil.equalsIgnoreCase(
+					if (StringUtil.equalsIgnoreCase(
 							"Accept-Encoding", headerName)) {
 
-						_headerNames.add(headerName);
+						continue;
 					}
+
+					_headerNames.add(headerName);
 				}
 			}
 

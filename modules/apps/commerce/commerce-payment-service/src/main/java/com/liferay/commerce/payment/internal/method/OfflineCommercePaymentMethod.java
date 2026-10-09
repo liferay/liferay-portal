@@ -126,14 +126,16 @@ public class OfflineCommercePaymentMethod implements CommercePaymentMethod {
 		for (CommercePaymentMethodGroupRel commercePaymentMethodGroupRel :
 				commercePaymentMethodGroupRels) {
 
-			if (key.equals(
+			if (!key.equals(
 					commercePaymentMethodGroupRel.getPaymentIntegrationKey())) {
 
-				_commercePaymentMethodGroupRelLocalService.
-					deleteCommercePaymentMethodGroupRel(
-						commercePaymentMethodGroupRel.
-							getCommercePaymentMethodGroupRelId());
+				continue;
 			}
+
+			_commercePaymentMethodGroupRelLocalService.
+				deleteCommercePaymentMethodGroupRel(
+					commercePaymentMethodGroupRel.
+						getCommercePaymentMethodGroupRelId());
 		}
 	}
 

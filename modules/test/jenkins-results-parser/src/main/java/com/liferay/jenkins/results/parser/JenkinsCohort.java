@@ -51,9 +51,11 @@ public class JenkinsCohort {
 		List<JenkinsMaster> availableJenkinsMasters = new ArrayList<>();
 
 		for (JenkinsMaster jenkinsMaster : getJenkinsMasters()) {
-			if (!jenkinsMaster.isBlacklisted() && jenkinsMaster.isAvailable()) {
-				availableJenkinsMasters.add(jenkinsMaster);
+			if (jenkinsMaster.isBlacklisted() || !jenkinsMaster.isAvailable()) {
+				continue;
 			}
+
+			availableJenkinsMasters.add(jenkinsMaster);
 		}
 
 		return availableJenkinsMasters;
@@ -70,9 +72,11 @@ public class JenkinsCohort {
 					JenkinsMaster.getSlaveRAMMinimumDefault(), null);
 
 			for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
-				if (jenkinsMaster.isBlacklisted()) {
-					blacklistedJenkinsMasters.add(jenkinsMaster);
+				if (!jenkinsMaster.isBlacklisted()) {
+					continue;
 				}
+
+				blacklistedJenkinsMasters.add(jenkinsMaster);
 			}
 		}
 		catch (IOException ioException) {
@@ -413,81 +417,79 @@ public class JenkinsCohort {
 
 			String jobName = jenkinsCohortJob.getJobName();
 
-			if (jobName.contains("test-portal-acceptance-pullrequest")) {
-				for (String buildURL :
-						jenkinsCohortJob.getTopLevelBuildURLs()) {
+			if (!jobName.contains("test-portal-acceptance-pullrequest")) {
+				continue;
+			}
 
-					JSONObject jsonObject = JenkinsAPIUtil.getAPIJSONObject(
-						buildURL);
+			for (String buildURL : jenkinsCohortJob.getTopLevelBuildURLs()) {
+				JSONObject jsonObject = JenkinsAPIUtil.getAPIJSONObject(
+					buildURL);
 
-					long queuedDuration = 0;
+				long queuedDuration = 0;
 
-					JSONArray actionsJSONArray = jsonObject.getJSONArray(
-						"actions");
+				JSONArray actionsJSONArray = jsonObject.getJSONArray("actions");
 
-					for (int i = 0; i < actionsJSONArray.length(); i++) {
-						Object actions = actionsJSONArray.get(i);
+				for (int i = 0; i < actionsJSONArray.length(); i++) {
+					Object actions = actionsJSONArray.get(i);
 
-						if (actions == JSONObject.NULL) {
-							continue;
-						}
-
-						JSONObject actionJSONObject =
-							actionsJSONArray.getJSONObject(i);
-
-						if (actionJSONObject.has("_class")) {
-							String clazz = actionJSONObject.getString("_class");
-
-							if (clazz.equals(
-									"jenkins.metrics.impl.TimeInQueueAction")) {
-
-								queuedDuration = actionJSONObject.getLong(
-									"buildableDurationMillis");
-
-								break;
-							}
-						}
+					if (actions == JSONObject.NULL) {
+						continue;
 					}
 
-					long duration =
+					JSONObject actionJSONObject =
+						actionsJSONArray.getJSONObject(i);
+
+					if (!actionJSONObject.has("_class")) {
+						continue;
+					}
+
+					String clazz = actionJSONObject.getString("_class");
+
+					if (clazz.equals(
+							"jenkins.metrics.impl.TimeInQueueAction")) {
+
+						queuedDuration = actionJSONObject.getLong(
+							"buildableDurationMillis");
+
+						break;
+					}
+				}
+
+				long duration =
+					JenkinsResultsParserUtil.getCurrentTimeMillis() -
+						jsonObject.getLong("timestamp");
+
+				pullRequestDataTableJSONArray.put(
+					_createpullRequestDataTableRow(
+						buildURL, JenkinsAPIUtil.getBuildParameters(jsonObject),
+						queuedDuration, duration));
+			}
+
+			Map<String, JSONObject> queuedTopLevelBuildsJsonMap =
+				jenkinsCohortJob.getQueuedTopLevelBuildsJsonMap();
+
+			for (JSONObject jsonObject : queuedTopLevelBuildsJsonMap.values()) {
+				try {
+					Map<String, String> buildParameters =
+						JenkinsAPIUtil.getBuildParameters(jsonObject);
+
+					JSONObject taskJSONObject = jsonObject.getJSONObject(
+						"task");
+
+					String jobURL = taskJSONObject.getString("url");
+
+					long queueDuration =
 						JenkinsResultsParserUtil.getCurrentTimeMillis() -
-							jsonObject.getLong("timestamp");
+							jsonObject.optLong("inQueueSince");
 
 					pullRequestDataTableJSONArray.put(
 						_createpullRequestDataTableRow(
-							buildURL,
-							JenkinsAPIUtil.getBuildParameters(jsonObject),
-							queuedDuration, duration));
+							jobURL, buildParameters, queueDuration, 0));
 				}
+				catch (JSONException jsonException) {
+					System.out.println(jsonObject.toString());
 
-				Map<String, JSONObject> queuedTopLevelBuildsJsonMap =
-					jenkinsCohortJob.getQueuedTopLevelBuildsJsonMap();
-
-				for (JSONObject jsonObject :
-						queuedTopLevelBuildsJsonMap.values()) {
-
-					try {
-						Map<String, String> buildParameters =
-							JenkinsAPIUtil.getBuildParameters(jsonObject);
-
-						JSONObject taskJSONObject = jsonObject.getJSONObject(
-							"task");
-
-						String jobURL = taskJSONObject.getString("url");
-
-						long queueDuration =
-							JenkinsResultsParserUtil.getCurrentTimeMillis() -
-								jsonObject.optLong("inQueueSince");
-
-						pullRequestDataTableJSONArray.put(
-							_createpullRequestDataTableRow(
-								jobURL, buildParameters, queueDuration, 0));
-					}
-					catch (JSONException jsonException) {
-						System.out.println(jsonObject.toString());
-
-						throw new RuntimeException(jsonException);
-					}
+					throw new RuntimeException(jsonException);
 				}
 			}
 		}

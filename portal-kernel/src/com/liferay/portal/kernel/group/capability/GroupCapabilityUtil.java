@@ -63,9 +63,11 @@ public class GroupCapabilityUtil {
 			GroupCapability capability =
 				groupCapabilityContributor.getGroupCapability(group);
 
-			if (capability != null) {
-				groupCapabilities.add(capability);
+			if (capability == null) {
+				continue;
 			}
+
+			groupCapabilities.add(capability);
 		}
 
 		return groupCapabilities;

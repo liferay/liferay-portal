@@ -543,9 +543,11 @@ public class KaleoTaskInstanceTokenFinderImpl
 		while (iterator.hasNext()) {
 			sb.append(iterator.next());
 
-			if (iterator.hasNext()) {
-				sb.append(", ");
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(", ");
 		}
 
 		sb.append("))");
@@ -642,9 +644,11 @@ public class KaleoTaskInstanceTokenFinderImpl
 				for (int i = 0; i < roleIds.size(); i++) {
 					sb.append(roleIds.get(i));
 
-					if (i < (roleIds.size() - 1)) {
-						sb.append(", ");
+					if (i >= (roleIds.size() - 1)) {
+						continue;
 					}
+
+					sb.append(", ");
 				}
 			}
 
@@ -675,9 +679,11 @@ public class KaleoTaskInstanceTokenFinderImpl
 					while (iterator.hasNext()) {
 						sb.append(iterator.next());
 
-						if (iterator.hasNext()) {
-							sb.append(", ");
+						if (!iterator.hasNext()) {
+							continue;
 						}
+
+						sb.append(", ");
 					}
 
 					sb.append("))) ");

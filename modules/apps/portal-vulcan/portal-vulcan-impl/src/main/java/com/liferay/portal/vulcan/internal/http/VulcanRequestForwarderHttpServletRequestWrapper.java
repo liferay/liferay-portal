@@ -164,9 +164,11 @@ public class VulcanRequestForwarderHttpServletRequestWrapper
 		List<String> headerNames = new ArrayList<>();
 
 		for (Map.Entry<String, String> entry : _headers.entrySet()) {
-			if (entry.getValue() != null) {
-				headerNames.add(entry.getKey());
+			if (entry.getValue() == null) {
+				continue;
 			}
+
+			headerNames.add(entry.getKey());
 		}
 
 		return Collections.enumeration(headerNames);

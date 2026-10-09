@@ -169,11 +169,13 @@ public class LanguagePropertyTest {
 			for (String userNameRequiredFieldName :
 					userNameRequiredFieldNames) {
 
-				if (!ArrayUtil.contains(
+				if (ArrayUtil.contains(
 						userNameFieldNames, userNameRequiredFieldName)) {
 
-					failureMessages.add(path);
+					continue;
 				}
+
+				failureMessages.add(path);
 			}
 		}
 
@@ -238,9 +240,11 @@ public class LanguagePropertyTest {
 
 			Set<String> propertyNames = properties.stringPropertyNames();
 
-			if (propertyNames.contains(key)) {
-				invalidFileNames.add(fileName);
+			if (!propertyNames.contains(key)) {
+				continue;
 			}
+
+			invalidFileNames.add(fileName);
 		}
 
 		Assert.assertTrue(
@@ -259,9 +263,11 @@ public class LanguagePropertyTest {
 
 			String value = properties.getProperty(key);
 
-			if ((value != null) && !LanguageValidator.isValid(key, value)) {
-				invalidFileNames.add(path);
+			if ((value == null) || LanguageValidator.isValid(key, value)) {
+				continue;
 			}
+
+			invalidFileNames.add(path);
 		}
 
 		Assert.assertTrue(

@@ -113,48 +113,50 @@ public class DBBuilder {
 
 			DB db = DBManagerUtil.getDB(dbType, null);
 
-			if (db != null) {
-				String recreateSQL = db.getRecreateSQL(_databaseName);
-
-				if (!sqlDir.endsWith("/WEB-INF/sql")) {
-					FileUtil.write(
-						StringBundler.concat(
-							sqlDir, "/create-bare/create-bare-", db.getDBType(),
-							".sql"),
-						recreateSQL);
-				}
-
-				StringBundler sb = new StringBundler(6);
-
-				String tablesPrefix = "/portal/portal-";
-
-				if (sqlDir.endsWith("/WEB-INF/sql")) {
-					tablesPrefix = "/tables/tables-";
-				}
-
-				_appendFile(sb, sqlDir, tablesPrefix, db.getDBType());
-
-				sb.append("\n\n");
-
-				_appendFile(sb, sqlDir, "/indexes/indexes-", db.getDBType());
-
-				sb.append("\n\n");
-
-				_appendFile(
-					sb, sqlDir, "/sequences/sequences-", db.getDBType());
-
-				sb.append("\n");
-
-				String content = db.getPopulateSQL(
-					_databaseName, sb.toString());
-
-				if (!content.isEmpty()) {
-					FileUtil.write(
-						StringBundler.concat(
-							sqlDir, "/create/create-", db.getDBType(), ".sql"),
-						recreateSQL.concat(content));
-				}
+			if (db == null) {
+				continue;
 			}
+
+			String recreateSQL = db.getRecreateSQL(_databaseName);
+
+			if (!sqlDir.endsWith("/WEB-INF/sql")) {
+				FileUtil.write(
+					StringBundler.concat(
+						sqlDir, "/create-bare/create-bare-", db.getDBType(),
+						".sql"),
+					recreateSQL);
+			}
+
+			StringBundler sb = new StringBundler(6);
+
+			String tablesPrefix = "/portal/portal-";
+
+			if (sqlDir.endsWith("/WEB-INF/sql")) {
+				tablesPrefix = "/tables/tables-";
+			}
+
+			_appendFile(sb, sqlDir, tablesPrefix, db.getDBType());
+
+			sb.append("\n\n");
+
+			_appendFile(sb, sqlDir, "/indexes/indexes-", db.getDBType());
+
+			sb.append("\n\n");
+
+			_appendFile(sb, sqlDir, "/sequences/sequences-", db.getDBType());
+
+			sb.append("\n");
+
+			String content = db.getPopulateSQL(_databaseName, sb.toString());
+
+			if (content.isEmpty()) {
+				continue;
+			}
+
+			FileUtil.write(
+				StringBundler.concat(
+					sqlDir, "/create/create-", db.getDBType(), ".sql"),
+				recreateSQL.concat(content));
 		}
 	}
 

@@ -78,16 +78,18 @@ public class CTUserNotificationSender {
 		throws PortalException {
 
 		for (long userId : userIds) {
-			if (UserNotificationManagerUtil.isDeliver(
+			if (!UserNotificationManagerUtil.isDeliver(
 					userId, CTPortletKeys.PUBLICATIONS, 0,
 					UserNotificationDefinition.NOTIFICATION_TYPE_REVIEW_ENTRY,
 					UserNotificationDeliveryConstants.TYPE_WEBSITE)) {
 
-				_userNotificationEventLocalService.sendUserNotificationEvents(
-					userId, CTPortletKeys.PUBLICATIONS,
-					UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
-					notificationEventJSONObject);
+				continue;
 			}
+
+			_userNotificationEventLocalService.sendUserNotificationEvents(
+				userId, CTPortletKeys.PUBLICATIONS,
+				UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
+				notificationEventJSONObject);
 		}
 	}
 

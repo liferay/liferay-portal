@@ -141,24 +141,26 @@ public class GroupModelListener extends BaseModelListener<Group> {
 			Group groupRel = _groupLocalService.getGroup(
 				depotEntryGroupRel.getGroupId());
 
-			if (groupRel.isStagingGroup()) {
-				DepotEntry depotEntry =
-					_depotEntryLocalService.fetchGroupDepotEntry(
-						group.getGroupId());
-
-				DepotEntryGroupRel stagedDepotEntryGroupRel =
-					_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-						depotEntry.getDepotEntryId(),
-						depotEntryGroupRel.getGroupId());
-
-				stagedDepotEntryGroupRel.setDdmStructuresAvailable(
-					depotEntryGroupRel.isDdmStructuresAvailable());
-				stagedDepotEntryGroupRel.setSearchable(
-					depotEntryGroupRel.isSearchable());
-
-				_depotEntryGroupRelLocalService.updateDepotEntryGroupRel(
-					stagedDepotEntryGroupRel);
+			if (!groupRel.isStagingGroup()) {
+				continue;
 			}
+
+			DepotEntry depotEntry =
+				_depotEntryLocalService.fetchGroupDepotEntry(
+					group.getGroupId());
+
+			DepotEntryGroupRel stagedDepotEntryGroupRel =
+				_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+					depotEntry.getDepotEntryId(),
+					depotEntryGroupRel.getGroupId());
+
+			stagedDepotEntryGroupRel.setDdmStructuresAvailable(
+				depotEntryGroupRel.isDdmStructuresAvailable());
+			stagedDepotEntryGroupRel.setSearchable(
+				depotEntryGroupRel.isSearchable());
+
+			_depotEntryGroupRelLocalService.updateDepotEntryGroupRel(
+				stagedDepotEntryGroupRel);
 		}
 	}
 

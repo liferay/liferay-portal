@@ -45,9 +45,11 @@ public class ValidatorUtil {
 		List<String> failedServletContextNames = new ArrayList<>();
 
 		for (Release release : liferayDatabase.getReleases()) {
-			if (release.getState() != 0) {
-				failedServletContextNames.add(release.getServletContextName());
+			if (release.getState() == 0) {
+				continue;
 			}
+
+			failedServletContextNames.add(release.getServletContextName());
 		}
 
 		return failedServletContextNames;

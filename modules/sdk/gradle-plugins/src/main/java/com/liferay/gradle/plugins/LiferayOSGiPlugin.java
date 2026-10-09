@@ -522,9 +522,11 @@ public class LiferayOSGiPlugin implements Plugin<Project> {
 
 			String key = entry.getKey();
 
-			if (!bundleExtension.containsKey(key)) {
-				bundleExtension.instruction(key, entry.getValue());
+			if (bundleExtension.containsKey(key)) {
+				continue;
 			}
+
+			bundleExtension.instruction(key, entry.getValue());
 		}
 	}
 
@@ -1304,12 +1306,14 @@ public class LiferayOSGiPlugin implements Plugin<Project> {
 
 									Matcher matcher = _keyPattern.matcher(key);
 
-									if (matcher.matches() &&
-										(value instanceof String)) {
+									if (!matcher.matches() ||
+										!(value instanceof String)) {
 
-										bundleExtension.instruction(
-											key, entry.getValue());
+										continue;
 									}
+
+									bundleExtension.instruction(
+										key, entry.getValue());
 								}
 
 								bundleTaskExtension.setBnd(bundleExtension);
@@ -1480,9 +1484,11 @@ public class LiferayOSGiPlugin implements Plugin<Project> {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
-			if (Character.isLowerCase(key.charAt(0)) && (value != null)) {
-				properties.put(key, GradleUtil.toString(value));
+			if (!Character.isLowerCase(key.charAt(0)) || (value == null)) {
+				continue;
 			}
+
+			properties.put(key, GradleUtil.toString(value));
 		}
 
 		properties.remove(Constants.DONOTCOPY);

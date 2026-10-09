@@ -588,17 +588,21 @@ public class CPInstanceHelperTest {
 				sb.append(optionValueKey);
 				sb.append(StringPool.QUOTE);
 
-				if (optionValueIterator.hasNext()) {
-					sb.append(StringPool.COMMA);
+				if (!optionValueIterator.hasNext()) {
+					continue;
 				}
+
+				sb.append(StringPool.COMMA);
 			}
 
 			sb.append(StringPool.CLOSE_BRACKET);
 			sb.append(StringPool.CLOSE_CURLY_BRACE);
 
-			if (iterator.hasNext()) {
-				sb.append(StringPool.COMMA);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA);
 		}
 
 		sb.append(StringPool.CLOSE_BRACKET);

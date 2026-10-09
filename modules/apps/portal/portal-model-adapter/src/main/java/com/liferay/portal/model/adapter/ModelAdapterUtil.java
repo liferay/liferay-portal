@@ -146,12 +146,14 @@ public class ModelAdapterUtil {
 				InvocationHandler invocationHandler =
 					ProxyUtil.getInvocationHandler(args[i]);
 
-				if (invocationHandler instanceof DelegateInvocationHandler) {
-					DelegateInvocationHandler delegateInvocationHandler =
-						(DelegateInvocationHandler)invocationHandler;
-
-					args[i] = delegateInvocationHandler._delegateObject;
+				if (!(invocationHandler instanceof DelegateInvocationHandler)) {
+					continue;
 				}
+
+				DelegateInvocationHandler delegateInvocationHandler =
+					(DelegateInvocationHandler)invocationHandler;
+
+				args[i] = delegateInvocationHandler._delegateObject;
 			}
 
 			return method.invoke(_delegateObject, args);

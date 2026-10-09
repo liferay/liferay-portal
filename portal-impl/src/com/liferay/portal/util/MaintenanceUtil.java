@@ -75,14 +75,16 @@ public class MaintenanceUtil {
 		Collection<HttpSession> httpSessions = PortalSessionContext.values();
 
 		for (HttpSession httpSession : httpSessions) {
-			if (!sessionId.equals(httpSession.getId())) {
-				try {
-					httpSession.invalidate();
-				}
-				catch (IllegalStateException illegalStateException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(illegalStateException);
-					}
+			if (sessionId.equals(httpSession.getId())) {
+				continue;
+			}
+
+			try {
+				httpSession.invalidate();
+			}
+			catch (IllegalStateException illegalStateException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(illegalStateException);
 				}
 			}
 		}

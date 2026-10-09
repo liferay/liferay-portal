@@ -190,9 +190,11 @@ public class OAuth2ApplicationLocalServiceTest {
 			String prefix = companyId + StringPool.SLASH;
 
 			for (String key : _secrets.keySet()) {
-				if (key.startsWith(prefix)) {
-					secretIdentifiers.add(key.substring(prefix.length()));
+				if (!key.startsWith(prefix)) {
+					continue;
 				}
+
+				secretIdentifiers.add(key.substring(prefix.length()));
 			}
 
 			return secretIdentifiers;

@@ -74,10 +74,12 @@ public class AggregatedPortalCacheListener<K extends Serializable, V>
 
 			PortalCacheListener<K, V> portalCacheListener = entry.getKey();
 
-			if (_shouldDeliver(portalCacheListener, entry.getValue())) {
-				portalCacheListener.notifyEntryEvicted(
-					portalCache, key, value, timeToLive);
+			if (!_shouldDeliver(portalCacheListener, entry.getValue())) {
+				continue;
 			}
+
+			portalCacheListener.notifyEntryEvicted(
+				portalCache, key, value, timeToLive);
 		}
 	}
 
@@ -91,10 +93,12 @@ public class AggregatedPortalCacheListener<K extends Serializable, V>
 
 			PortalCacheListener<K, V> portalCacheListener = entry.getKey();
 
-			if (_shouldDeliver(portalCacheListener, entry.getValue())) {
-				portalCacheListener.notifyEntryExpired(
-					portalCache, key, value, timeToLive);
+			if (!_shouldDeliver(portalCacheListener, entry.getValue())) {
+				continue;
 			}
+
+			portalCacheListener.notifyEntryExpired(
+				portalCache, key, value, timeToLive);
 		}
 	}
 
@@ -108,10 +112,12 @@ public class AggregatedPortalCacheListener<K extends Serializable, V>
 
 			PortalCacheListener<K, V> portalCacheListener = entry.getKey();
 
-			if (_shouldDeliver(portalCacheListener, entry.getValue())) {
-				portalCacheListener.notifyEntryPut(
-					portalCache, key, value, timeToLive);
+			if (!_shouldDeliver(portalCacheListener, entry.getValue())) {
+				continue;
 			}
+
+			portalCacheListener.notifyEntryPut(
+				portalCache, key, value, timeToLive);
 		}
 	}
 
@@ -125,10 +131,12 @@ public class AggregatedPortalCacheListener<K extends Serializable, V>
 
 			PortalCacheListener<K, V> portalCacheListener = entry.getKey();
 
-			if (_shouldDeliver(portalCacheListener, entry.getValue())) {
-				portalCacheListener.notifyEntryRemoved(
-					portalCache, key, value, timeToLive);
+			if (!_shouldDeliver(portalCacheListener, entry.getValue())) {
+				continue;
 			}
+
+			portalCacheListener.notifyEntryRemoved(
+				portalCache, key, value, timeToLive);
 		}
 	}
 
@@ -142,10 +150,12 @@ public class AggregatedPortalCacheListener<K extends Serializable, V>
 
 			PortalCacheListener<K, V> portalCacheListener = entry.getKey();
 
-			if (_shouldDeliver(portalCacheListener, entry.getValue())) {
-				portalCacheListener.notifyEntryUpdated(
-					portalCache, key, value, timeToLive);
+			if (!_shouldDeliver(portalCacheListener, entry.getValue())) {
+				continue;
 			}
+
+			portalCacheListener.notifyEntryUpdated(
+				portalCache, key, value, timeToLive);
 		}
 	}
 
@@ -158,9 +168,11 @@ public class AggregatedPortalCacheListener<K extends Serializable, V>
 
 			PortalCacheListener<K, V> portalCacheListener = entry.getKey();
 
-			if (_shouldDeliver(portalCacheListener, entry.getValue())) {
-				portalCacheListener.notifyRemoveAll(portalCache);
+			if (!_shouldDeliver(portalCacheListener, entry.getValue())) {
+				continue;
 			}
+
+			portalCacheListener.notifyRemoveAll(portalCache);
 		}
 	}
 

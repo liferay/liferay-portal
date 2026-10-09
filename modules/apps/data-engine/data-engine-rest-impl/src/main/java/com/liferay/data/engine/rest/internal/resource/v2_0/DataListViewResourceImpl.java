@@ -293,14 +293,14 @@ public class DataListViewResourceImpl extends BaseDataListViewResourceImpl {
 							ddmFormField.getProperties(), "ddmStructureId"),
 						ddmFormField.getName());
 
-			if (fieldSetDEDataDefinitionFieldLink == null) {
-				_deDataDefinitionFieldLinkLocalService.
-					addDEDataDefinitionFieldLink(
-						groupId, _getClassNameId(), dataListViewId,
-						MapUtil.getLong(
-							ddmFormField.getProperties(), "ddmStructureId"),
-						ddmFormField.getName());
+			if (fieldSetDEDataDefinitionFieldLink != null) {
+				continue;
 			}
+
+			_deDataDefinitionFieldLinkLocalService.addDEDataDefinitionFieldLink(
+				groupId, _getClassNameId(), dataListViewId,
+				MapUtil.getLong(ddmFormField.getProperties(), "ddmStructureId"),
+				ddmFormField.getName());
 		}
 	}
 

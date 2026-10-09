@@ -231,11 +231,13 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 			String nestedStatementIndent =
 				PythonSourceUtil.getNestedStatementIndent(statement);
 
-			if (!nestedStatementIndent.equals(StringPool.BLANK)) {
-				content = StringUtil.replaceFirst(
-					content, statement,
-					_sortItems(fileName, statement, nestedStatementIndent));
+			if (nestedStatementIndent.equals(StringPool.BLANK)) {
+				continue;
 			}
+
+			content = StringUtil.replaceFirst(
+				content, statement,
+				_sortItems(fileName, statement, nestedStatementIndent));
 		}
 
 		return content;

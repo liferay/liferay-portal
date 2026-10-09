@@ -242,9 +242,11 @@ public class LayoutRemoteStagingBackgroundTaskExecutor
 					httpPrincipal, layout, remoteGroupId);
 
 				for (Layout parentLayout : parentLayouts) {
-					if (!layouts.contains(parentLayout)) {
-						layouts.add(parentLayout);
+					if (layouts.contains(parentLayout)) {
+						continue;
 					}
+
+					layouts.add(parentLayout);
 				}
 
 				boolean includeChildren = entry.getValue();
@@ -254,9 +256,11 @@ public class LayoutRemoteStagingBackgroundTaskExecutor
 				}
 
 				for (Layout childLayout : layout.getAllChildren()) {
-					if (!layouts.contains(childLayout)) {
-						layouts.add(childLayout);
+					if (layouts.contains(childLayout)) {
+						continue;
 					}
+
+					layouts.add(childLayout);
 				}
 			}
 		}

@@ -79,9 +79,11 @@ public class PortalCORSConfigurationModelListener
 			for (String urlPattern :
 					portalCORSConfiguration.filterMappingURLPatterns()) {
 
-				if (!urlPatterns.add(urlPattern)) {
-					duplicateURLPatterns.add(urlPattern);
+				if (urlPatterns.add(urlPattern)) {
+					continue;
 				}
+
+				duplicateURLPatterns.add(urlPattern);
 			}
 		}
 

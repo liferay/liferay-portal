@@ -154,11 +154,13 @@ public class ThemeContributorExtender
 
 				int index = path.lastIndexOf('/');
 
-				if (!StringPool.UNDERLINE.equals(path.charAt(index + 1)) &&
-					!path.endsWith("_rtl.css")) {
+				if (StringPool.UNDERLINE.equals(path.charAt(index + 1)) ||
+					path.endsWith("_rtl.css")) {
 
-					cssResourcePaths.add(path);
+					continue;
 				}
+
+				cssResourcePaths.add(path);
 			}
 		}
 

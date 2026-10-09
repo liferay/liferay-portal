@@ -146,16 +146,18 @@ public class TeamStagedModelDataHandler
 			User user = _userLocalService.fetchUserByUuidAndCompanyId(
 				uuid, companyId);
 
-			if ((user != null) &&
-				!_userLocalService.hasTeamUser(
-					importedTeam.getTeamId(), user.getUserId()) &&
-				((ExportImportThreadLocal.isStagingInProcess() &&
-				  !ExportImportThreadLocal.isStagingInProcessOnRemoteLive()) ||
-				 _userLocalService.hasGroupUser(
+			if ((user == null) ||
+				_userLocalService.hasTeamUser(
+					importedTeam.getTeamId(), user.getUserId()) ||
+				((!ExportImportThreadLocal.isStagingInProcess() ||
+				  ExportImportThreadLocal.isStagingInProcessOnRemoteLive()) &&
+				 !_userLocalService.hasGroupUser(
 					 importedTeam.getGroupId(), user.getUserId()))) {
 
-				_userLocalService.addTeamUser(importedTeam.getTeamId(), user);
+				continue;
 			}
+
+			_userLocalService.addTeamUser(importedTeam.getTeamId(), user);
 		}
 
 		List<Element> userGroupElements =
@@ -170,13 +172,15 @@ public class TeamStagedModelDataHandler
 				_userGroupLocalService.fetchUserGroupByUuidAndCompanyId(
 					uuid, companyId);
 
-			if ((userGroup != null) &&
-				!_userGroupLocalService.hasTeamUserGroup(
+			if ((userGroup == null) ||
+				_userGroupLocalService.hasTeamUserGroup(
 					importedTeam.getTeamId(), userGroup.getUserGroupId())) {
 
-				_userGroupLocalService.addTeamUserGroup(
-					importedTeam.getTeamId(), userGroup);
+				continue;
 			}
+
+			_userGroupLocalService.addTeamUserGroup(
+				importedTeam.getTeamId(), userGroup);
 		}
 
 		portletDataContext.importClassedModel(team, importedTeam);

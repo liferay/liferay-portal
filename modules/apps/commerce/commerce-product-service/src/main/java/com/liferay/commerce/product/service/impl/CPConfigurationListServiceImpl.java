@@ -179,11 +179,13 @@ public class CPConfigurationListServiceImpl
 		while (iterator.hasNext()) {
 			CPConfigurationList cpConfigurationList = iterator.next();
 
-			if (!_containsCommerceCatalog(
+			if (_containsCommerceCatalog(
 					cpConfigurationList.getGroupId(), ActionKeys.VIEW)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return cpConfigurationLists;

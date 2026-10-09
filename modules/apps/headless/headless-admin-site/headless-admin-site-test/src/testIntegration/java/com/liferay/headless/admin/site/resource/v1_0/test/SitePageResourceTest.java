@@ -1126,11 +1126,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			PageSpecification pageSpecification =
 				pageSpecificationVersion.getPageSpecification();
 
-			if (pageSpecification != null) {
-				Assert.assertEquals(
-					draftLayout.getExternalReferenceCode(),
-					pageSpecification.getExternalReferenceCode());
+			if (pageSpecification == null) {
+				continue;
 			}
+
+			Assert.assertEquals(
+				draftLayout.getExternalReferenceCode(),
+				pageSpecification.getExternalReferenceCode());
 		}
 
 		Assert.assertEquals(
@@ -3337,9 +3339,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			for (LogEntry logEntry : logEntries) {
 				String message = logEntry.getMessage();
 
-				if (message.contains("LayoutPageTemplateEntry")) {
-					count++;
+				if (!message.contains("LayoutPageTemplateEntry")) {
+					continue;
 				}
+
+				count++;
 			}
 
 			Assert.assertEquals(
@@ -4764,12 +4768,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		for (int i = 0; i < pageExperiences.length; i++) {
 			PageExperience pageExperience = pageExperiences[i];
 
-			if (!Objects.equals(
+			if (Objects.equals(
 					pageExperience.getKey(),
 					SegmentsExperienceConstants.KEY_DEFAULT)) {
 
-				pageExperience.setPriority(i + 1);
+				continue;
 			}
+
+			pageExperience.setPriority(i + 1);
 		}
 
 		Comparator<PageExperience> comparator = Comparator.comparingInt(

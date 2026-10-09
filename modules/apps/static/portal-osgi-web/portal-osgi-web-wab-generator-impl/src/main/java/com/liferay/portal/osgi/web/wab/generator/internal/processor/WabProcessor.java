@@ -632,12 +632,14 @@ public class WabProcessor {
 
 						Filter filter = new Filter(filterString);
 
-						if (Objects.equals(namespace, "osgi.extender") &&
-							filter.matchMap(arguments)) {
+						if (!Objects.equals(namespace, "osgi.extender") ||
+							!filter.matchMap(arguments)) {
 
-							attrs.putTyped(
-								"descriptor", Arrays.asList(finalBeansXMLFile));
+							continue;
 						}
+
+						attrs.putTyped(
+							"descriptor", Arrays.asList(finalBeansXMLFile));
 					}
 
 					analyzer.setProperty(
@@ -864,18 +866,20 @@ public class WabProcessor {
 					0, processedKey.indexOf(StringPool.OPEN_BRACKET));
 			}
 
-			if (Validator.isNotNull(value)) {
-				Parameters parameters = new Parameters(value);
-
-				if (processedKey.equals(Constants.EXPORT_PACKAGE)) {
-					_exportPackageParameters.mergeWith(parameters, true);
-				}
-				else if (processedKey.equals(Constants.IMPORT_PACKAGE)) {
-					_importPackageParameters.mergeWith(parameters, true);
-				}
-
-				analyzer.setProperty(processedKey, parameters.toString());
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			Parameters parameters = new Parameters(value);
+
+			if (processedKey.equals(Constants.EXPORT_PACKAGE)) {
+				_exportPackageParameters.mergeWith(parameters, true);
+			}
+			else if (processedKey.equals(Constants.IMPORT_PACKAGE)) {
+				_importPackageParameters.mergeWith(parameters, true);
+			}
+
+			analyzer.setProperty(processedKey, parameters.toString());
 		}
 	}
 
@@ -1071,20 +1075,19 @@ public class WabProcessor {
 		for (Element contextParamElement : contextParamElements) {
 			String paramName = contextParamElement.elementText("param-name");
 
-			if (Validator.isNotNull(paramName) &&
-				paramName.equals("portalListenerClasses")) {
+			if (Validator.isNull(paramName) ||
+				!paramName.equals("portalListenerClasses")) {
 
-				String paramValue = contextParamElement.elementText(
-					"param-value");
+				continue;
+			}
 
-				String[] portalListenerClassNames = StringUtil.split(
-					paramValue, StringPool.COMMA);
+			String paramValue = contextParamElement.elementText("param-value");
 
-				for (String portalListenerClassName :
-						portalListenerClassNames) {
+			String[] portalListenerClassNames = StringUtil.split(
+				paramValue, StringPool.COMMA);
 
-					_processClass(analyzer, portalListenerClassName.trim());
-				}
+			for (String portalListenerClassName : portalListenerClassNames) {
+				_processClass(analyzer, portalListenerClassName.trim());
 			}
 		}
 	}
@@ -1186,9 +1189,11 @@ public class WabProcessor {
 			sb.append(StringPool.EQUAL);
 			sb.append(_bundleVersion);
 
-			if ((i + 1) < requiredDeploymentContexts.size()) {
-				sb.append(StringPool.COMMA);
+			if ((i + 1) >= requiredDeploymentContexts.size()) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA);
 		}
 
 		analyzer.setProperty(Constants.REQUIRE_BUNDLE, sb.toString());
@@ -1519,11 +1524,11 @@ public class WabProcessor {
 
 				String name = clazz.getName() + "]";
 
-				if (!GetterUtil.getBoolean(
-						properties.getProperty(name), true)) {
-
-					disabledPlugins.add(plugin);
+				if (GetterUtil.getBoolean(properties.getProperty(name), true)) {
+					continue;
 				}
+
+				disabledPlugins.add(plugin);
 			}
 
 			plugins.removeAll(disabledPlugins);

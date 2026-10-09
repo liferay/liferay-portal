@@ -60,16 +60,17 @@ public class AMAttributeDistanceComparator
 			Object value1 = adaptiveMedia1.getValue(amAttribute);
 			Object value2 = adaptiveMedia2.getValue(amAttribute);
 
-			if ((value1 != null) && (value2 != null)) {
-				AMImageQueryBuilder.SortOrder sortOrder =
-					sortCriterion.getValue();
+			if ((value1 == null) || (value2 == null)) {
+				continue;
+			}
 
-				long result = sortOrder.getSortValue(
-					amAttribute.compare(value1, value2));
+			AMImageQueryBuilder.SortOrder sortOrder = sortCriterion.getValue();
 
-				if (result != 0) {
-					return result;
-				}
+			long result = sortOrder.getSortValue(
+				amAttribute.compare(value1, value2));
+
+			if (result != 0) {
+				return result;
 			}
 		}
 

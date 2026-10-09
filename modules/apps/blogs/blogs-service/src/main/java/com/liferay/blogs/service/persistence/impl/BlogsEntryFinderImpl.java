@@ -254,9 +254,11 @@ public class BlogsEntryFinderImpl
 		for (int i = 0; i < organizationIds.size(); i++) {
 			sb.append("Users_Orgs.organizationId = ? ");
 
-			if ((i + 1) != organizationIds.size()) {
-				sb.append("OR ");
+			if ((i + 1) == organizationIds.size()) {
+				continue;
 			}
+
+			sb.append("OR ");
 		}
 
 		return sb.toString();

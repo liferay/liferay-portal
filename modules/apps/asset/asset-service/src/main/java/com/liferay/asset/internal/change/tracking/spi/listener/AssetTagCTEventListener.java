@@ -79,11 +79,13 @@ public class AssetTagCTEventListener implements CTEventListener {
 									assetTagPersistence.getAssetEntriesSize(
 										tagId);
 
-								if (assetTag.getAssetCount() != assetCount) {
-									assetTag.setAssetCount(assetCount);
-
-									assetTagPersistence.update(assetTag);
+								if (assetTag.getAssetCount() == assetCount) {
+									continue;
 								}
+
+								assetTag.setAssetCount(assetCount);
+
+								assetTagPersistence.update(assetTag);
 							}
 						}
 					});

@@ -185,11 +185,13 @@ public class AntivirusAsyncFileStoreSchedulerJobConfigurationTest {
 						filterString));
 			}
 
-			if (serviceReferences == null) {
-				Thread.sleep(_SLEEP_TIME);
-
-				waitTime += _SLEEP_TIME;
+			if (serviceReferences != null) {
+				continue;
 			}
+
+			Thread.sleep(_SLEEP_TIME);
+
+			waitTime += _SLEEP_TIME;
 		}
 
 		return _bundleContext.getService(serviceReferences[0]);

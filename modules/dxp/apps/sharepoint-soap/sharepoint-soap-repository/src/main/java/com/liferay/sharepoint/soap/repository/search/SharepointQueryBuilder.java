@@ -540,9 +540,11 @@ public class SharepointQueryBuilder {
 
 			QueryClause queryClause = traverseQuery(query);
 
-			if (queryClause != null) {
-				queryClauses.add(queryClause);
+			if (queryClause == null) {
+				continue;
 			}
+
+			queryClauses.add(queryClause);
 		}
 
 		return joinBooleanQueryClauses(

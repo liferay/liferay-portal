@@ -158,20 +158,22 @@ public class ApplePushNotificationsSender implements PushNotificationsSender {
 		while (iterator.hasNext()) {
 			String key = iterator.next();
 
-			if (!key.equals(PushNotificationsConstants.KEY_BADGE) &&
-				!key.equals(PushNotificationsConstants.KEY_BODY) &&
-				!key.equals(PushNotificationsConstants.KEY_BODY_LOCALIZED) &&
-				!key.equals(
-					PushNotificationsConstants.KEY_BODY_LOCALIZED_ARGUMENTS) &&
-				!key.equals(PushNotificationsConstants.KEY_SOUND) &&
-				!key.equals(PushNotificationsConstants.KEY_SILENT) &&
-				!key.equals(PushNotificationsConstants.KEY_TITLE) &&
-				!key.equals(PushNotificationsConstants.KEY_TITLE_LOCALIZED) &&
-				!key.equals(
+			if (key.equals(PushNotificationsConstants.KEY_BADGE) ||
+				key.equals(PushNotificationsConstants.KEY_BODY) ||
+				key.equals(PushNotificationsConstants.KEY_BODY_LOCALIZED) ||
+				key.equals(
+					PushNotificationsConstants.KEY_BODY_LOCALIZED_ARGUMENTS) ||
+				key.equals(PushNotificationsConstants.KEY_SOUND) ||
+				key.equals(PushNotificationsConstants.KEY_SILENT) ||
+				key.equals(PushNotificationsConstants.KEY_TITLE) ||
+				key.equals(PushNotificationsConstants.KEY_TITLE_LOCALIZED) ||
+				key.equals(
 					PushNotificationsConstants.KEY_TITLE_LOCALIZED_ARGUMENTS)) {
 
-				newPayloadJSONObject.put(key, payloadJSONObject.get(key));
+				continue;
 			}
+
+			newPayloadJSONObject.put(key, payloadJSONObject.get(key));
 		}
 
 		simpleApnsPayloadBuilder.addCustomProperty(

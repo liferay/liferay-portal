@@ -26,11 +26,13 @@ public class SchemaUpgradeProcess extends UpgradeProcess {
 				String localizationDBTableName =
 					resultSet.getString("dbTableName") + "_l";
 
-				if (hasColumn(localizationDBTableName, "languageId")) {
-					alterColumnType(
-						localizationDBTableName, "languageId",
-						"VARCHAR(75) not null");
+				if (!hasColumn(localizationDBTableName, "languageId")) {
+					continue;
 				}
+
+				alterColumnType(
+					localizationDBTableName, "languageId",
+					"VARCHAR(75) not null");
 			}
 		}
 	}

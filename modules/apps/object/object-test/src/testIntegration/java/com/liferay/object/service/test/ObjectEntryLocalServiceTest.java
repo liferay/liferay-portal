@@ -9499,11 +9499,13 @@ public class ObjectEntryLocalServiceTest {
 			for (LogEntry logEntry : logCapture.getLogEntries()) {
 				String message = logEntry.getMessage();
 
-				if (message.startsWith("select") &&
-					message.contains(objectDefinition.getDBTableName())) {
+				if (!message.startsWith("select") ||
+					!message.contains(objectDefinition.getDBTableName())) {
 
-					count++;
+					continue;
 				}
+
+				count++;
 			}
 
 			Assert.assertEquals(
@@ -10742,12 +10744,14 @@ public class ObjectEntryLocalServiceTest {
 		for (LogEntry logEntry : logCapture.getLogEntries()) {
 			String message = logEntry.getMessage();
 
-			if (message.startsWith(
+			if (!message.startsWith(
 					"SQL: insert into " +
 						objectDefinition.getExtensionDBTableName())) {
 
-				sqls.add(message);
+				continue;
 			}
+
+			sqls.add(message);
 		}
 
 		Assert.assertEquals(sqls.toString(), expectedCount, sqls.size());
@@ -11147,9 +11151,11 @@ public class ObjectEntryLocalServiceTest {
 		for (int i = 1; i <= size; i++) {
 			sb.append(prefixKey + i);
 
-			if (i < size) {
-				sb.append(StringPool.COMMA_AND_SPACE);
+			if (i >= size) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA_AND_SPACE);
 		}
 
 		return sb.toString();

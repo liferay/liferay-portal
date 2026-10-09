@@ -96,9 +96,11 @@ public class DeploymentHelperPlugin implements Plugin<Project> {
 						Task task = taskContainer.findByName(
 							JavaPlugin.JAR_TASK_NAME);
 
-						if (task instanceof Jar) {
-							jarTasks.add((Jar)task);
+						if (!(task instanceof Jar)) {
+							continue;
 						}
+
+						jarTasks.add((Jar)task);
 					}
 
 					return jarTasks;

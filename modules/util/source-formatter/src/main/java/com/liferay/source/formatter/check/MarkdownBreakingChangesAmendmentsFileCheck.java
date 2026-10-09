@@ -121,11 +121,13 @@ public class MarkdownBreakingChangesAmendmentsFileCheck
 				sb.append(line);
 				sb.append("\n");
 
-				if (line.startsWith("```") &&
-					(StringUtil.count(line, "```") == 1)) {
+				if (!line.startsWith("```") ||
+					(StringUtil.count(line, "```") != 1)) {
 
-					codeBlock = !codeBlock;
+					continue;
 				}
+
+				codeBlock = !codeBlock;
 			}
 
 			if (sb.index() > 0) {

@@ -404,9 +404,11 @@ public class CommerceOrderTest {
 		List<CommerceOrder> placedCommerceOrders = new ArrayList<>();
 
 		for (CommerceOrder commerceOrder : randomOrders) {
-			if (RandomTestUtil.randomBoolean()) {
-				placedCommerceOrders.add(_checkoutCommerceOrder(commerceOrder));
+			if (!RandomTestUtil.randomBoolean()) {
+				continue;
 			}
+
+			placedCommerceOrders.add(_checkoutCommerceOrder(commerceOrder));
 		}
 
 		ordersCount = _commerceOrderService.getUserPlacedCommerceOrdersCount(

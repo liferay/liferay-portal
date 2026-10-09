@@ -372,17 +372,19 @@ public class WorkflowMetricsSLAProcessor {
 				}
 			}
 
-			if (stopTimeMarker != null) {
-				if (Objects.equals(stopTimeMarker, "enter")) {
-					workflowMetricsSLAStopwatch.stop(
-						taskInterval._startLocalDateTime);
-				}
-				else if (Objects.equals(stopTimeMarker, "leave") &&
-						 (taskInterval._endLocalDateTime != null)) {
+			if (stopTimeMarker == null) {
+				continue;
+			}
 
-					workflowMetricsSLAStopwatch.stop(
-						taskInterval._endLocalDateTime);
-				}
+			if (Objects.equals(stopTimeMarker, "enter")) {
+				workflowMetricsSLAStopwatch.stop(
+					taskInterval._startLocalDateTime);
+			}
+			else if (Objects.equals(stopTimeMarker, "leave") &&
+					 (taskInterval._endLocalDateTime != null)) {
+
+				workflowMetricsSLAStopwatch.stop(
+					taskInterval._endLocalDateTime);
 			}
 		}
 

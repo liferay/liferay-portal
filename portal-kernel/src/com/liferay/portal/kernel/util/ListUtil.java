@@ -84,9 +84,11 @@ public class ListUtil {
 		int count = 0;
 
 		for (E element : list) {
-			if (predicate.test(element)) {
-				count++;
+			if (!predicate.test(element)) {
+				continue;
 			}
+
+			count++;
 		}
 
 		return count;
@@ -106,9 +108,11 @@ public class ListUtil {
 		while (iterator.hasNext()) {
 			E object = iterator.next();
 
-			if (!set.add(object)) {
-				iterator.remove();
+			if (set.add(object)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (comparator != null) {
@@ -141,9 +145,11 @@ public class ListUtil {
 		Predicate<T> predicate) {
 
 		for (T item : inputList) {
-			if (predicate.test(item)) {
-				outputList.add(item);
+			if (!predicate.test(item)) {
+				continue;
 			}
+
+			outputList.add(item);
 		}
 
 		return outputList;
@@ -622,9 +628,11 @@ public class ListUtil {
 				sb.append(attribute);
 			}
 
-			if ((i + 1) != list.size()) {
-				sb.append(delimiter);
+			if ((i + 1) == list.size()) {
+				continue;
 			}
+
+			sb.append(delimiter);
 		}
 
 		return sb.toString();
@@ -665,9 +673,11 @@ public class ListUtil {
 				sb.append(value);
 			}
 
-			if ((i + 1) != list.size()) {
-				sb.append(delimiter);
+			if ((i + 1) == list.size()) {
+				continue;
 			}
+
+			sb.append(delimiter);
 		}
 
 		return sb.toString();

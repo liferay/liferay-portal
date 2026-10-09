@@ -338,10 +338,11 @@ public class AssetEntriesCheckerHelperTest {
 			String assetEntryXml = AssetPublisherTestUtil.getAssetEntryXml(
 				assetEntry);
 
-			if (!ArrayUtil.contains(assetEntryXmls, assetEntryXml)) {
-				assetEntryXmls = ArrayUtil.append(
-					assetEntryXmls, assetEntryXml);
+			if (ArrayUtil.contains(assetEntryXmls, assetEntryXml)) {
+				continue;
 			}
+
+			assetEntryXmls = ArrayUtil.append(assetEntryXmls, assetEntryXml);
 		}
 
 		portletPreferences.setValues("assetEntryXml", assetEntryXmls);

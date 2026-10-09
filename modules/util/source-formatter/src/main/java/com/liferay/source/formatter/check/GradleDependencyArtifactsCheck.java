@@ -57,14 +57,17 @@ public class GradleDependencyArtifactsCheck extends BaseFileCheck {
 				fileName, absolutePath, content, matcher.group(2), name,
 				version, matcher.start(3), enforceVersionArtifacts);
 
-			if ((isSubrepository() || absolutePath.contains("/modules/apps/") ||
-				 absolutePath.contains("/modules/dxp/apps/") ||
-				 absolutePath.contains("/modules/private/apps/")) &&
-				!_isTestUtilModule(absolutePath)) {
+			if ((!isSubrepository() &&
+				 !absolutePath.contains("/modules/apps/") &&
+				 !absolutePath.contains("/modules/dxp/apps/") &&
+				 !absolutePath.contains("/modules/private/apps/")) ||
+				_isTestUtilModule(absolutePath)) {
 
-				content = _fixMicroVersion(
-					fileName, content, matcher.group(1), name, version);
+				continue;
 			}
+
+			content = _fixMicroVersion(
+				fileName, content, matcher.group(1), name, version);
 		}
 
 		if (absolutePath.endsWith("/lib/development/dependencies.properties") ||
@@ -311,10 +314,11 @@ public class GradleDependencyArtifactsCheck extends BaseFileCheck {
 
 			String key = array[0];
 
-			if (key.startsWith("project.name[")) {
-				_projectNamesMap.put(
-					key.substring(13, key.length() - 1), array[1]);
+			if (!key.startsWith("project.name[")) {
+				continue;
 			}
+
+			_projectNamesMap.put(key.substring(13, key.length() - 1), array[1]);
 		}
 
 		return _projectNamesMap;
@@ -392,14 +396,16 @@ public class GradleDependencyArtifactsCheck extends BaseFileCheck {
 			String oldArtifactString = _getArtifactString(
 				renameArtifactArray[0]);
 
-			if ((newArtifactString != null) && (oldArtifactString != null) &&
-				!_isAllowedArtifactFile(
+			if ((newArtifactString == null) || (oldArtifactString == null) ||
+				_isAllowedArtifactFile(
 					fileName, renameArtifactArray[0],
 					allowedArtifactsFileNames)) {
 
-				content = StringUtil.replace(
-					content, oldArtifactString, newArtifactString);
+				continue;
 			}
+
+			content = StringUtil.replace(
+				content, oldArtifactString, newArtifactString);
 		}
 
 		return content;

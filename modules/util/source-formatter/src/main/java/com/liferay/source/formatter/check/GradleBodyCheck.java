@@ -66,12 +66,14 @@ public class GradleBodyCheck extends BaseGradleFileCheck {
 				continue;
 			}
 
-			oldBlocks = oldBlocks + "\n" + line;
+			if (Validator.isNull(line)) {
+				oldBlocks = oldBlocks + "\n" + line;
 
-			if (Validator.isNotNull(line)) {
-				newBlocks.clear();
-				oldBlocks = StringPool.BLANK;
+				continue;
 			}
+
+			newBlocks.clear();
+			oldBlocks = StringPool.BLANK;
 		}
 
 		if (newBlocks.isEmpty()) {

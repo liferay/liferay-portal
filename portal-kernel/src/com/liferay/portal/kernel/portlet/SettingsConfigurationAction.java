@@ -122,9 +122,11 @@ public abstract class SettingsConfigurationAction
 
 			String oldValue = settings.getValue(name, null);
 
-			if (!StringUtil.equalsIgnoreBreakLine(value, oldValue)) {
-				modifiableSettings.setValue(name, value);
+			if (StringUtil.equalsIgnoreBreakLine(value, oldValue)) {
+				continue;
 			}
+
+			modifiableSettings.setValue(name, value);
 		}
 
 		Map<String, String[]> portletPreferencesMap =
@@ -140,9 +142,11 @@ public abstract class SettingsConfigurationAction
 
 				String[] oldValues = settings.getValues(name, null);
 
-				if (!Objects.equals(values, oldValues)) {
-					modifiableSettings.setValues(name, values);
+				if (Objects.equals(values, oldValues)) {
+					continue;
 				}
+
+				modifiableSettings.setValues(name, values);
 			}
 		}
 
@@ -298,11 +302,13 @@ public abstract class SettingsConfigurationAction
 			String multiValuedValue = getParameter(
 				actionRequest, multiValuedKey);
 
-			if (multiValuedValue != null) {
-				setPreference(
-					actionRequest, multiValuedKey,
-					StringUtil.split(multiValuedValue));
+			if (multiValuedValue == null) {
+				continue;
 			}
+
+			setPreference(
+				actionRequest, multiValuedKey,
+				StringUtil.split(multiValuedValue));
 		}
 	}
 

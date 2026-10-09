@@ -48,36 +48,38 @@ public class XMLServiceOrderCheck extends BaseFileCheck {
 		while (iterator.hasNext()) {
 			Node node = (Node)iterator.next();
 
-			if (node instanceof DefaultComment) {
-				DefaultComment defaultComment = (DefaultComment)node;
-
-				String comment = defaultComment.asXML();
-
-				if (!comment.matches("<!--.*-->")) {
-					continue;
-				}
-
-				String category = StringUtil.trim(
-					comment.substring(4, comment.length() - 3));
-
-				int categoryIndex = _getCategoryIndex(category);
-
-				if (categoryIndex == -1) {
-					continue;
-				}
-
-				if (previousCategoryIndex > categoryIndex) {
-					addMessage(
-						fileName,
-						StringBundler.concat(
-							"Incorrect order \"", entityName, "\": Category \"",
-							previousCategory, "\" should come after \"",
-							category, "\""));
-				}
-
-				previousCategoryIndex = categoryIndex;
-				previousCategory = category;
+			if (!(node instanceof DefaultComment)) {
+				continue;
 			}
+
+			DefaultComment defaultComment = (DefaultComment)node;
+
+			String comment = defaultComment.asXML();
+
+			if (!comment.matches("<!--.*-->")) {
+				continue;
+			}
+
+			String category = StringUtil.trim(
+				comment.substring(4, comment.length() - 3));
+
+			int categoryIndex = _getCategoryIndex(category);
+
+			if (categoryIndex == -1) {
+				continue;
+			}
+
+			if (previousCategoryIndex > categoryIndex) {
+				addMessage(
+					fileName,
+					StringBundler.concat(
+						"Incorrect order \"", entityName, "\": Category \"",
+						previousCategory, "\" should come after \"", category,
+						"\""));
+			}
+
+			previousCategoryIndex = categoryIndex;
+			previousCategory = category;
 		}
 	}
 

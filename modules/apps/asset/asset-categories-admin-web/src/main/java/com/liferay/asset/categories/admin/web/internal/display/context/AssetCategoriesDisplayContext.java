@@ -540,10 +540,12 @@ public class AssetCategoriesDisplayContext {
 					QueryUtil.ALL_POS,
 					AssetVocabularyCreateDateComparator.getInstance(true));
 
-			if (ListUtil.isNotEmpty(groupAssetVocabularies)) {
-				_inheritedVocabularies.put(
-					group.getGroupId(), groupAssetVocabularies);
+			if (ListUtil.isEmpty(groupAssetVocabularies)) {
+				continue;
 			}
+
+			_inheritedVocabularies.put(
+				group.getGroupId(), groupAssetVocabularies);
 		}
 
 		return _inheritedVocabularies;

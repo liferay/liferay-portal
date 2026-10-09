@@ -140,11 +140,13 @@ public class KBFolderLocalServiceImpl extends KBFolderLocalServiceBaseImpl {
 			kbFolder.getGroupId(), kbFolder.getKbFolderId());
 
 		for (KBFolder childKBFolder : childKBFolders) {
-			if (includeTrashedEntries ||
-				!_trashHelper.isInTrashExplicitly(childKBFolder)) {
+			if (!includeTrashedEntries &&
+				_trashHelper.isInTrashExplicitly(childKBFolder)) {
 
-				deleteKBFolder(childKBFolder.getKbFolderId());
+				continue;
 			}
+
+			deleteKBFolder(childKBFolder.getKbFolderId());
 		}
 
 		_resourceLocalService.deleteResource(

@@ -76,10 +76,11 @@ public class TrashIndexer extends BaseIndexer<TrashEntry> {
 			for (TrashHandler trashHandler : trashHandlers) {
 				Filter filter = trashHandler.getExcludeFilter(searchContext);
 
-				if (filter != null) {
-					fullQueryBooleanFilter.add(
-						filter, BooleanClauseOccur.MUST_NOT);
+				if (filter == null) {
+					continue;
 				}
+
+				fullQueryBooleanFilter.add(filter, BooleanClauseOccur.MUST_NOT);
 			}
 
 			long[] groupIds = searchContext.getGroupIds();

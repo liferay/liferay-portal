@@ -66,9 +66,11 @@ public class RangeWebServerTest extends BaseWebServerTestCase {
 		for (int i = 0; i < ranges.length; i++) {
 			rangeHeader += ranges[i];
 
-			if (i != (ranges.length - 1)) {
-				rangeHeader += StringPool.COMMA;
+			if (i == (ranges.length - 1)) {
+				continue;
 			}
+
+			rangeHeader += StringPool.COMMA;
 		}
 
 		MockHttpServletResponse mockHttpServletResponse = testRange(

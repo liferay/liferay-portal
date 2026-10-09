@@ -572,13 +572,15 @@ public class NestedSetsTreeManagerTest {
 			for (SimpleNestedSetsTreeNode simpleNestedSetsTreeNode :
 					_simpleNestedSetsTreeNodeList) {
 
-				if ((nestedSetsTreeNodeLeft >=
-						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) &&
-					(nestedSetsTreeNodeRight <=
+				if ((nestedSetsTreeNodeLeft <
+						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) ||
+					(nestedSetsTreeNodeRight >
 						simpleNestedSetsTreeNode._nestedSetsTreeNodeRight)) {
 
-					count++;
+					continue;
 				}
+
+				count++;
 			}
 
 			return count;
@@ -594,13 +596,15 @@ public class NestedSetsTreeManagerTest {
 			for (SimpleNestedSetsTreeNode simpleNestedSetsTreeNode :
 					_simpleNestedSetsTreeNodeList) {
 
-				if ((nestedSetsTreeNodeLeft <=
-						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) &&
-					(nestedSetsTreeNodeRight >=
+				if ((nestedSetsTreeNodeLeft >
+						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) ||
+					(nestedSetsTreeNodeRight <
 						simpleNestedSetsTreeNode._nestedSetsTreeNodeRight)) {
 
-					count++;
+					continue;
 				}
+
+				count++;
 			}
 
 			return count;
@@ -617,13 +621,15 @@ public class NestedSetsTreeManagerTest {
 			for (SimpleNestedSetsTreeNode simpleNestedSetsTreeNode :
 					_simpleNestedSetsTreeNodeList) {
 
-				if ((nestedSetsTreeNodeLeft >=
-						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) &&
-					(nestedSetsTreeNodeRight <=
+				if ((nestedSetsTreeNodeLeft <
+						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) ||
+					(nestedSetsTreeNodeRight >
 						simpleNestedSetsTreeNode._nestedSetsTreeNodeRight)) {
 
-					simpleNestedSetsTreeNodes.add(simpleNestedSetsTreeNode);
+					continue;
 				}
+
+				simpleNestedSetsTreeNodes.add(simpleNestedSetsTreeNode);
 			}
 
 			Collections.sort(simpleNestedSetsTreeNodes);
@@ -642,13 +648,15 @@ public class NestedSetsTreeManagerTest {
 			for (SimpleNestedSetsTreeNode simpleNestedSetsTreeNode :
 					_simpleNestedSetsTreeNodeList) {
 
-				if ((nestedSetsTreeNodeLeft <=
-						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) &&
-					(nestedSetsTreeNodeRight >=
+				if ((nestedSetsTreeNodeLeft >
+						simpleNestedSetsTreeNode._nestedSetsTreeNodeLeft) ||
+					(nestedSetsTreeNodeRight <
 						simpleNestedSetsTreeNode._nestedSetsTreeNodeRight)) {
 
-					simpleNestedSetsTreeNodes.add(simpleNestedSetsTreeNode);
+					continue;
 				}
+
+				simpleNestedSetsTreeNodes.add(simpleNestedSetsTreeNode);
 			}
 
 			Collections.sort(simpleNestedSetsTreeNodes);
@@ -732,13 +740,15 @@ public class NestedSetsTreeManagerTest {
 				long nestedSetsTreeNodeRight =
 					simpleNestedSetsTreeNode._nestedSetsTreeNodeRight;
 
-				if (isInRange(
+				if (!isInRange(
 						nestedSetsTreeNodeRight, start, startInclusive, end,
 						endInclusive)) {
 
-					simpleNestedSetsTreeNode.setNestedSetsTreeNodeRight(
-						nestedSetsTreeNodeRight + delta);
+					continue;
 				}
+
+				simpleNestedSetsTreeNode.setNestedSetsTreeNodeRight(
+					nestedSetsTreeNodeRight + delta);
 			}
 
 			synchronizeSimpleNestedSetsTreeNodes();
@@ -756,9 +766,11 @@ public class NestedSetsTreeManagerTest {
 				long nestedSetsTreeNodeRight =
 					simpleNestedSetsTreeNode.getNestedSetsTreeNodeRight();
 
-				if (nestedSetsTreeNodeRight > maxNestedSetsTreeNodeRight) {
-					maxNestedSetsTreeNodeRight = nestedSetsTreeNodeRight;
+				if (nestedSetsTreeNodeRight <= maxNestedSetsTreeNodeRight) {
+					continue;
 				}
+
+				maxNestedSetsTreeNodeRight = nestedSetsTreeNodeRight;
 			}
 
 			return maxNestedSetsTreeNodeRight + 1;
@@ -797,9 +809,11 @@ public class NestedSetsTreeManagerTest {
 			SimpleNestedSetsTreeNode simpleNestedSetsTreeNode) {
 
 			for (int i = 0; i < _simpleNestedSetsTreeNodes.length; i++) {
-				if (_simpleNestedSetsTreeNodes[i] == simpleNestedSetsTreeNode) {
-					_simpleNestedSetsTreeNodes[i] = null;
+				if (_simpleNestedSetsTreeNodes[i] != simpleNestedSetsTreeNode) {
+					continue;
 				}
+
+				_simpleNestedSetsTreeNodes[i] = null;
 			}
 		}
 

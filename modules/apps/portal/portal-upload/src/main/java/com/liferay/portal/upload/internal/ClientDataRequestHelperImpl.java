@@ -93,15 +93,14 @@ public class ClientDataRequestHelperImpl implements ClientDataRequestHelper {
 				return (UploadRequest)request;
 			}
 
-			if (request instanceof ServletRequestWrapper) {
-				ServletRequestWrapper servletRequestWrapper =
-					(ServletRequestWrapper)request;
-
-				request = servletRequestWrapper.getRequest();
-			}
-			else {
+			if (!(request instanceof ServletRequestWrapper)) {
 				return null;
 			}
+
+			ServletRequestWrapper servletRequestWrapper =
+				(ServletRequestWrapper)request;
+
+			request = servletRequestWrapper.getRequest();
 		}
 	}
 

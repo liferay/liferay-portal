@@ -79,11 +79,13 @@ public class ConfigurationDataCleanupPreupgradeProcess
 
 				long groupId = _getPrimaryKey(dictionary, _groupIdPattern);
 
-				if ((groupId != -1) && !ArrayUtil.contains(groupIds, groupId)) {
-					_deleteConfiguration(
-						configurationId, dbInspector, "groupId", "Group_",
-						groupId, preparedStatement2);
+				if ((groupId == -1) || ArrayUtil.contains(groupIds, groupId)) {
+					continue;
 				}
+
+				_deleteConfiguration(
+					configurationId, dbInspector, "groupId", "Group_", groupId,
+					preparedStatement2);
 			}
 
 			preparedStatement2.executeBatch();

@@ -47,30 +47,31 @@ public class JavaFinalVariableCheck extends BaseJavaTermCheck {
 		JavaSignature javaSignature = javaTerm.getSignature();
 
 		for (JavaParameter javaParameter : javaSignature.getParameters()) {
-			if (javaParameter.isFinal()) {
-				String name = javaParameter.getParameterName();
-
-				if (_requiresFinal(content, name)) {
-					continue;
-				}
-
-				String type = javaParameter.getParameterType();
-
-				int y = content.lastIndexOf(
-					StringBundler.concat("final ", type, " ", name), x);
-
-				if (y != -1) {
-					return StringUtil.replaceFirst(
-						content, "final ", "", y - 1);
-				}
-
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Keyword \"final\" not required for parameter \"", name,
-						"\""),
-					javaTerm.getLineNumber());
+			if (!javaParameter.isFinal()) {
+				continue;
 			}
+
+			String name = javaParameter.getParameterName();
+
+			if (_requiresFinal(content, name)) {
+				continue;
+			}
+
+			String type = javaParameter.getParameterType();
+
+			int y = content.lastIndexOf(
+				StringBundler.concat("final ", type, " ", name), x);
+
+			if (y != -1) {
+				return StringUtil.replaceFirst(content, "final ", "", y - 1);
+			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Keyword \"final\" not required for parameter \"", name,
+					"\""),
+				javaTerm.getLineNumber());
 		}
 
 		return content;

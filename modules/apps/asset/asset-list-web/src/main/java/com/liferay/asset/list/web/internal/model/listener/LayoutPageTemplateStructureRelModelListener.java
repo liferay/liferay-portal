@@ -157,16 +157,17 @@ public class LayoutPageTemplateStructureRelModelListener
 					layoutPageTemplateStructure.getUserId());
 			}
 
-			if (collectionJSONObject.has("key")) {
-				_addAssetListEntryUsage(
-					_portal.getClassNameId(
-						InfoCollectionProvider.class.getName()),
-					layoutPageTemplateStructure.getGroupId(),
-					layoutStructureItem.getItemId(),
-					collectionJSONObject.getString("key"),
-					layoutPageTemplateStructure.getPlid(),
-					layoutPageTemplateStructure.getUserId());
+			if (!collectionJSONObject.has("key")) {
+				continue;
 			}
+
+			_addAssetListEntryUsage(
+				_portal.getClassNameId(InfoCollectionProvider.class.getName()),
+				layoutPageTemplateStructure.getGroupId(),
+				layoutStructureItem.getItemId(),
+				collectionJSONObject.getString("key"),
+				layoutPageTemplateStructure.getPlid(),
+				layoutPageTemplateStructure.getUserId());
 		}
 	}
 

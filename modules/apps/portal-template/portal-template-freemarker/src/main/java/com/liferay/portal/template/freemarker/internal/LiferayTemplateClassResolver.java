@@ -183,9 +183,11 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 				_freeMarkerEngineConfiguration.allowedClasses(),
 				bundle.getBundleContext());
 
-			if (classLoader != null) {
-				_whitelistedClassLoaders.add(classLoader);
+			if (classLoader == null) {
+				continue;
 			}
+
+			_whitelistedClassLoaders.add(classLoader);
 		}
 	}
 

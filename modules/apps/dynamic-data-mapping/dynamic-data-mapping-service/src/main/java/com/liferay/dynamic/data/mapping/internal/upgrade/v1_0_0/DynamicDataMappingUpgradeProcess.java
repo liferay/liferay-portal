@@ -368,9 +368,11 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 			ExpandoRow expandoRow = _expandoRowLocalService.fetchExpandoRow(
 				expandoRowId);
 
-			if (expandoRow != null) {
-				expandoTableIds.add(expandoRow.getTableId());
+			if (expandoRow == null) {
+				continue;
 			}
+
+			expandoTableIds.add(expandoRow.getTableId());
 		}
 
 		for (long expandoTableId : expandoTableIds) {
@@ -1702,10 +1704,11 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 								ddmFormField, ddmFieldsCounter, fieldName,
 								rootElement);
 
-						if (ddmFormFieldValue != null) {
-							ddmFormValues.addDDMFormFieldValue(
-								ddmFormFieldValue);
+						if (ddmFormFieldValue == null) {
+							continue;
 						}
+
+						ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 					}
 				}
 
@@ -1756,11 +1759,13 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 					offset++;
 				}
 
-				if (fieldDisplayName.equals(fieldName) &&
-					(offset == parentOffset)) {
+				if (!fieldDisplayName.equals(fieldName) ||
+					(offset != parentOffset)) {
 
-					repetitions++;
+					continue;
 				}
+
+				repetitions++;
 			}
 
 			return repetitions;
@@ -1895,13 +1900,15 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 			String prefix = fieldName.concat(DDMImpl.INSTANCE_SEPARATOR);
 
 			for (String ddmFieldsDisplayValue : ddmFieldsDisplayValues) {
-				if (ddmFieldsDisplayValue.startsWith(prefix)) {
-					index--;
+				if (!ddmFieldsDisplayValue.startsWith(prefix)) {
+					continue;
+				}
 
-					if (index < 0) {
-						return StringUtil.extractLast(
-							ddmFieldsDisplayValue, DDMImpl.INSTANCE_SEPARATOR);
-					}
+				index--;
+
+				if (index < 0) {
+					return StringUtil.extractLast(
+						ddmFieldsDisplayValue, DDMImpl.INSTANCE_SEPARATOR);
 				}
 			}
 
@@ -2129,10 +2136,12 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 							nestedDDMFormField, ddmFieldsCounter,
 							nestedDDMFormFieldName, rootElement);
 
-					if (nestedDDMFormFieldValue != null) {
-						ddmFormFieldValue.addNestedDDMFormFieldValue(
-							nestedDDMFormFieldValue);
+					if (nestedDDMFormFieldValue == null) {
+						continue;
 					}
+
+					ddmFormFieldValue.addNestedDDMFormFieldValue(
+						nestedDDMFormFieldValue);
 				}
 			}
 		}

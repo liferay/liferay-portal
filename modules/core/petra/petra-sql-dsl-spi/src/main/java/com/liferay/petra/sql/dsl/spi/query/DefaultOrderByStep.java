@@ -45,18 +45,20 @@ public interface DefaultOrderByStep extends DefaultLimitStep, OrderByStep {
 		for (String field : orderByFields) {
 			Column<?, ?> column = table.getColumn(field);
 
-			if (column != null) {
-				if (field.equals(column.getName())) {
-					orderByExpressions.add(
-						new DefaultOrderByExpression(
-							column, orderByInfo.isAscending(field)));
-				}
-				else {
-					orderByExpressions.add(
-						new DefaultOrderByExpression(
-							new DefaultAlias<>(column, field),
-							orderByInfo.isAscending(field)));
-				}
+			if (column == null) {
+				continue;
+			}
+
+			if (field.equals(column.getName())) {
+				orderByExpressions.add(
+					new DefaultOrderByExpression(
+						column, orderByInfo.isAscending(field)));
+			}
+			else {
+				orderByExpressions.add(
+					new DefaultOrderByExpression(
+						new DefaultAlias<>(column, field),
+						orderByInfo.isAscending(field)));
 			}
 		}
 

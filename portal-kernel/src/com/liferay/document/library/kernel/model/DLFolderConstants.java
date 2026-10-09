@@ -81,9 +81,11 @@ public class DLFolderConstants {
 				sb.append(charLastBlacklist[i]);
 			}
 
-			if ((i + 1) < charLastBlacklist.length) {
-				sb.append(StringPool.SPACE);
+			if ((i + 1) >= charLastBlacklist.length) {
+				continue;
 			}
+
+			sb.append(StringPool.SPACE);
 		}
 
 		return sb.toString();

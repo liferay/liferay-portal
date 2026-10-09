@@ -56,16 +56,17 @@ public class DependencyCheckerPlugin implements Plugin<Project> {
 			ComponentIdentifier componentIdentifier =
 				resolvedComponentResult.getId();
 
-			if (componentIdentifier instanceof ModuleComponentIdentifier) {
-				ModuleComponentIdentifier moduleComponentIdentifier =
-					(ModuleComponentIdentifier)componentIdentifier;
-
-				dependencyCheckerExtension.check(
-					configuration.getName(),
-					moduleComponentIdentifier.getGroup(),
-					moduleComponentIdentifier.getModule(),
-					moduleComponentIdentifier.getVersion());
+			if (!(componentIdentifier instanceof ModuleComponentIdentifier)) {
+				continue;
 			}
+
+			ModuleComponentIdentifier moduleComponentIdentifier =
+				(ModuleComponentIdentifier)componentIdentifier;
+
+			dependencyCheckerExtension.check(
+				configuration.getName(), moduleComponentIdentifier.getGroup(),
+				moduleComponentIdentifier.getModule(),
+				moduleComponentIdentifier.getVersion());
 		}
 	}
 

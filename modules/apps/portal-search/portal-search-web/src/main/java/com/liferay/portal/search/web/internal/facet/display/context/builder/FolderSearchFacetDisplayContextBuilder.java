@@ -243,9 +243,11 @@ public class FolderSearchFacetDisplayContextBuilder {
 			BucketDisplayContext bucketDisplayContext =
 				_buildBucketDisplayContext(termCollector);
 
-			if (bucketDisplayContext != null) {
-				bucketDisplayContexts.add(bucketDisplayContext);
+			if (bucketDisplayContext == null) {
+				continue;
 			}
+
+			bucketDisplayContexts.add(bucketDisplayContext);
 		}
 
 		if (_order != null) {

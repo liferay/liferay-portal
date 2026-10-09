@@ -569,32 +569,34 @@ public class TicketAttachmentsRestController extends BaseRestController {
 					));
 			}
 
-			if (matcher.find()) {
-				String link = matcher.group(1);
+			if (!matcher.find()) {
+				continue;
+			}
 
-				jsonArray.put(
-					new JSONObject(
+			String link = matcher.group(1);
+
+			jsonArray.put(
+				new JSONObject(
+				).put(
+					"marks",
+					new JSONArray(
 					).put(
-						"marks",
-						new JSONArray(
+						new JSONObject(
 						).put(
+							"attrs",
 							new JSONObject(
 							).put(
-								"attrs",
-								new JSONObject(
-								).put(
-									"href", link
-								)
-							).put(
-								"type", "link"
+								"href", link
 							)
+						).put(
+							"type", "link"
 						)
-					).put(
-						"text", link
-					).put(
-						"type", "text"
-					));
-			}
+					)
+				).put(
+					"text", link
+				).put(
+					"type", "text"
+				));
 		}
 
 		return jsonArray;

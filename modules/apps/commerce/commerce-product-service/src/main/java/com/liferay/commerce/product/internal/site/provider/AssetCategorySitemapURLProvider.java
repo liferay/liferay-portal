@@ -132,19 +132,21 @@ public class AssetCategorySitemapURLProvider implements SitemapURLProvider {
 					null);
 
 			for (AssetVocabulary assetVocabulary : assetVocabularies) {
-				if (assetVocabulary.getVisibilityType() !=
+				if (assetVocabulary.getVisibilityType() ==
 						AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL) {
 
-					List<AssetCategory> assetCategories =
-						_assetCategoryService.getVocabularyCategories(
-							assetVocabulary.getVocabularyId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+					continue;
+				}
 
-					for (AssetCategory assetCategory : assetCategories) {
-						visitLayout(
-							element, layout, assetCategory.getCategoryId(),
-							themeDisplay);
-					}
+				List<AssetCategory> assetCategories =
+					_assetCategoryService.getVocabularyCategories(
+						assetVocabulary.getVocabularyId(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null);
+
+				for (AssetCategory assetCategory : assetCategories) {
+					visitLayout(
+						element, layout, assetCategory.getCategoryId(),
+						themeDisplay);
 				}
 			}
 		}

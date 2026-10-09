@@ -35,12 +35,14 @@ public class SitemapURLProviderUtil {
 				LocaleUtil.fromLanguageId(
 					friendlyURLEntryLocalization.getLanguageId()));
 
-			if (alternateSiteURL != null) {
-				alternateFriendlyURLs.put(
-					LocaleUtil.fromLanguageId(
-						friendlyURLEntryLocalization.getLanguageId()),
-					alternateSiteURL);
+			if (alternateSiteURL == null) {
+				continue;
 			}
+
+			alternateFriendlyURLs.put(
+				LocaleUtil.fromLanguageId(
+					friendlyURLEntryLocalization.getLanguageId()),
+				alternateSiteURL);
 		}
 
 		return alternateFriendlyURLs;

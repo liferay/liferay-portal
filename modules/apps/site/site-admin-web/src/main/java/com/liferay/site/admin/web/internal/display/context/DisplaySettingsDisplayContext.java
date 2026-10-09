@@ -102,16 +102,17 @@ public class DisplaySettingsDisplayContext {
 		List<Locale> siteCurrentLocales = _getCurrentLocales();
 
 		for (Locale availableLocale : LanguageUtil.getAvailableLocales()) {
-			if (!siteCurrentLocales.contains(availableLocale)) {
-				availableLanguagesJSONObjects.add(
-					JSONUtil.put(
-						"label",
-						availableLocale.getDisplayName(
-							_themeDisplay.getLocale())
-					).put(
-						"value", LocaleUtil.toLanguageId(availableLocale)
-					));
+			if (siteCurrentLocales.contains(availableLocale)) {
+				continue;
 			}
+
+			availableLanguagesJSONObjects.add(
+				JSONUtil.put(
+					"label",
+					availableLocale.getDisplayName(_themeDisplay.getLocale())
+				).put(
+					"value", LocaleUtil.toLanguageId(availableLocale)
+				));
 		}
 
 		for (JSONObject availableLanguageJSONObject :

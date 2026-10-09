@@ -308,12 +308,14 @@ public class ObjectValidationRuleLocalServiceImpl
 				ObjectValidationRuleSettingConstants.
 					NAME_OUTPUT_OBJECT_FIELD_ID);
 
-			if (count == 0) {
-				objectValidationRule.setOutputType(
-					ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION);
-
-				objectValidationRulePersistence.update(objectValidationRule);
+			if (count != 0) {
+				continue;
 			}
+
+			objectValidationRule.setOutputType(
+				ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION);
+
+			objectValidationRulePersistence.update(objectValidationRule);
 		}
 	}
 

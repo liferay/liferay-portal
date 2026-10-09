@@ -201,11 +201,13 @@ public class WidgetTemplatesManagementToolbarDisplayContext
 			TemplateHandler templateHandler =
 				TemplateHandlerRegistryUtil.getTemplateHandler(classNameId);
 
-			if (containsAddPortletDisplayTemplatePermission(
+			if (!containsAddPortletDisplayTemplatePermission(
 					templateHandler.getResourceName())) {
 
-				addAllowedTemplateHandlers.add(templateHandler);
+				continue;
 			}
+
+			addAllowedTemplateHandlers.add(templateHandler);
 		}
 
 		Collections.sort(

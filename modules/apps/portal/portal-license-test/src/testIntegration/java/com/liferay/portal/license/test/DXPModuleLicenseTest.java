@@ -84,12 +84,14 @@ public class DXPModuleLicenseTest extends BaseLicenseTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					bundle.getSymbolicName(),
 					_getEnterpriseAppSymbolicName())) {
 
-				enterpriseAppBundle = bundle;
+				continue;
 			}
+
+			enterpriseAppBundle = bundle;
 		}
 
 		Assert.assertNotNull(dxpOnlyBundle);

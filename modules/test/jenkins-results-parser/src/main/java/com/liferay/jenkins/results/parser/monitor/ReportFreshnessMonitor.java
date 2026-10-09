@@ -101,11 +101,13 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 			while (matcher.find()) {
 				long timestamp = Long.parseLong(matcher.group("timestamp"));
 
-				if ((generatedTimestamp == 0) ||
-					(timestamp < generatedTimestamp)) {
+				if ((generatedTimestamp != 0) &&
+					(timestamp >= generatedTimestamp)) {
 
-					generatedTimestamp = timestamp;
+					continue;
 				}
+
+				generatedTimestamp = timestamp;
 			}
 		}
 

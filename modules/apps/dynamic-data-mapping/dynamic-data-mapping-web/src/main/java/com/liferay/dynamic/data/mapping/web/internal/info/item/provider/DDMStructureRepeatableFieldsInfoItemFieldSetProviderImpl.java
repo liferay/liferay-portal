@@ -79,9 +79,11 @@ public class DDMStructureRepeatableFieldsInfoItemFieldSetProviderImpl
 					_getInfoFieldSetEntry(
 						convertedDDMFormFields, nestedDDMFormField);
 
-				if (ListUtil.isNotEmpty(infoFieldSetEntries)) {
-					nestedInfoFieldsetEntries.addAll(infoFieldSetEntries);
+				if (ListUtil.isEmpty(infoFieldSetEntries)) {
+					continue;
 				}
+
+				nestedInfoFieldsetEntries.addAll(infoFieldSetEntries);
 			}
 
 			if (ddmFormField.isRepeatable()) {

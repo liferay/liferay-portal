@@ -302,9 +302,11 @@ public class InputLocalizedTag extends IncludeTag {
 				"symbol", StringUtil.toLowerCase(w3cLanguageId)
 			);
 
-			if (availableLocales.contains(locale)) {
-				availableLocalesJSONArray.put(localeJSONObject);
+			if (!availableLocales.contains(locale)) {
+				continue;
 			}
+
+			availableLocalesJSONArray.put(localeJSONObject);
 		}
 
 		return availableLocalesJSONArray;
@@ -367,12 +369,14 @@ public class InputLocalizedTag extends IncludeTag {
 					httpServletRequest, parameterName, languageValue);
 			}
 
-			if (Validator.isNotNull(languageValue) ||
-				languageId.equals(_defaultLanguageId)) {
+			if (Validator.isNull(languageValue) &&
+				!languageId.equals(_defaultLanguageId)) {
 
-				translationsMap.put(
-					languageId, GetterUtil.getString(languageValue));
+				continue;
 			}
+
+			translationsMap.put(
+				languageId, GetterUtil.getString(languageValue));
 		}
 
 		return JSONFactoryUtil.createJSONObject(translationsMap);

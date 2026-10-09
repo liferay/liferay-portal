@@ -60,11 +60,13 @@ public class LearnResourcesTest {
 
 			String failure = _getFailure(url, timeout);
 
-			if (failure != null) {
-				unservedURLs.add(failure);
-
-				timeout = _TIMEOUT_AFTER_FAILURE;
+			if (failure == null) {
+				continue;
 			}
+
+			unservedURLs.add(failure);
+
+			timeout = _TIMEOUT_AFTER_FAILURE;
 		}
 
 		Assert.assertTrue(unservedURLs.toString(), unservedURLs.isEmpty());

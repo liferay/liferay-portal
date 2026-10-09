@@ -235,13 +235,15 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (name.startsWith(
-					PublicRenderParameterConfiguration.IGNORE_PREFIX) ||
-				name.startsWith(
+			if (!name.startsWith(
+					PublicRenderParameterConfiguration.IGNORE_PREFIX) &&
+				!name.startsWith(
 					PublicRenderParameterConfiguration.MAPPING_PREFIX)) {
 
-				portletPreferences.reset(name);
+				continue;
 			}
+
+			portletPreferences.reset(name);
 		}
 
 		for (PublicRenderParameter publicRenderParameter :
@@ -608,10 +610,12 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 					resourcePrimKey, roleIdActionIdsMap);
 			}
 
-			if (permissionPropagator != null) {
-				permissionPropagator.propagateRolePermissions(
-					actionRequest, modelResource, resourcePrimKey, roleIds);
+			if (permissionPropagator == null) {
+				continue;
 			}
+
+			permissionPropagator.propagateRolePermissions(
+				actionRequest, modelResource, resourcePrimKey, roleIds);
 		}
 
 		if (Validator.isNull(modelResource)) {
@@ -832,18 +836,17 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		ActionParameters actionParameters = actionRequest.getActionParameters();
 
 		for (String name : actionParameters.getNames()) {
-			if (!name.startsWith(roleId + ActionUtil.ACTION)) {
+			if (!name.startsWith(roleId + ActionUtil.ACTION) ||
+				!valuePredicate.test(actionParameters.getValue(name))) {
+
 				continue;
 			}
 
-			if (valuePredicate.test(actionParameters.getValue(name))) {
-				int pos = name.indexOf(ActionUtil.ACTION);
+			int pos = name.indexOf(ActionUtil.ACTION);
 
-				String actionId = name.substring(
-					pos + ActionUtil.ACTION.length());
+			String actionId = name.substring(pos + ActionUtil.ACTION.length());
 
-				actionIds.add(actionId);
-			}
+			actionIds.add(actionId);
 		}
 
 		return actionIds;

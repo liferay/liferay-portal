@@ -477,12 +477,11 @@ public class ExportImportLocalServiceImpl
 					throw (PortalException)throwable;
 				}
 
-				if (throwable instanceof PortletDataException) {
-					throwable = throwable.getCause();
-				}
-				else {
+				if (!(throwable instanceof PortletDataException)) {
 					break;
 				}
+
+				throwable = throwable.getCause();
 			}
 
 			throw portalException;

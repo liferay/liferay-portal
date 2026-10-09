@@ -227,14 +227,16 @@ public class CMSObjectEntryReviewUserNotificationTest {
 			JSONObject payloadJSONObject = JSONFactoryUtil.createJSONObject(
 				userNotificationEvent.getPayload());
 
-			if ((payloadJSONObject.getLong("classPK") ==
-					objectEntry.getObjectEntryId()) &&
-				Objects.equals(
+			if ((payloadJSONObject.getLong("classPK") !=
+					objectEntry.getObjectEntryId()) ||
+				!Objects.equals(
 					payloadJSONObject.getString("notificationMessageKey"),
 					"x-has-reached-its-review-date")) {
 
-				userNotificationEvents.add(userNotificationEvent);
+				continue;
 			}
+
+			userNotificationEvents.add(userNotificationEvent);
 		}
 
 		return userNotificationEvents;

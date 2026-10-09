@@ -164,9 +164,11 @@ public class FastDateFormatFactoryImpl implements FastDateFormatFactory {
 		for (int i = 0; i < arguments.length; i++) {
 			sb.append(arguments[i]);
 
-			if ((i + 1) < arguments.length) {
-				sb.append(StringPool.UNDERLINE);
+			if ((i + 1) >= arguments.length) {
+				continue;
 			}
+
+			sb.append(StringPool.UNDERLINE);
 		}
 
 		return sb.toString();

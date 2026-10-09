@@ -103,30 +103,31 @@ public class FiltersManagementToolbarDisplayContextWrapper
 			String currentValue = _getCurrentValue(
 				httpServletRequest, filterContributor);
 
-			if (ArrayUtil.contains(
+			if (!ArrayUtil.contains(
 					filterContributor.getFilterLabelValues(), currentValue)) {
 
-				filterLabelItems.add(
-					labelItem -> {
-						labelItem.putData(
-							"removeLabelURL",
-							PortletURLBuilder.create(
-								getPortletURL()
-							).setParameter(
-								filterContributor.getParameter(), (String)null
-							).buildString());
-
-						labelItem.setDismissible(true);
-						labelItem.setLabel(
-							String.format(
-								"%s: %s",
-								filterContributor.getShortLabel(
-									httpServletRequest.getLocale()),
-								filterContributor.getValueLabel(
-									httpServletRequest.getLocale(),
-									currentValue)));
-					});
+				continue;
 			}
+
+			filterLabelItems.add(
+				labelItem -> {
+					labelItem.putData(
+						"removeLabelURL",
+						PortletURLBuilder.create(
+							getPortletURL()
+						).setParameter(
+							filterContributor.getParameter(), (String)null
+						).buildString());
+
+					labelItem.setDismissible(true);
+					labelItem.setLabel(
+						String.format(
+							"%s: %s",
+							filterContributor.getShortLabel(
+								httpServletRequest.getLocale()),
+							filterContributor.getValueLabel(
+								httpServletRequest.getLocale(), currentValue)));
+				});
 		}
 
 		return filterLabelItems;

@@ -473,12 +473,14 @@ public class RESTBuilder {
 					});
 			}
 
-			if (_configYAML.isGenerateClientJS() &&
-				Validator.isNotNull(_configYAML.getClientDir())) {
+			if (!_configYAML.isGenerateClientJS() ||
+				Validator.isNull(_configYAML.getClientDir())) {
 
-				TypeScriptClientUtil.generateTypeScriptClient(
-					_configDir, _configYAML, _copyrightFile, yamlString);
+				continue;
 			}
+
+			TypeScriptClientUtil.generateTypeScriptClient(
+				_configDir, _configYAML, _copyrightFile, yamlString);
 		}
 
 		if (!validationErrorMessages.isEmpty()) {
@@ -1230,17 +1232,18 @@ public class RESTBuilder {
 				Collections.singletonMap(schemaName, schemaName), schema,
 				schemaName, Collections.emptySet());
 
-			if (Validator.isNotNull(_configYAML.getClientDir())) {
-				if (createClientScopeFiles && _containsVulcanScope(schema)) {
-					_createClientScopeFile(mergedContext);
-
-					createClientScopeFiles = false;
-				}
-
-				_createClientDTOFile(mergedContext, escapedVersion, schemaName);
-				_createClientSerDesFile(
-					mergedContext, escapedVersion, schemaName);
+			if (Validator.isNull(_configYAML.getClientDir())) {
+				continue;
 			}
+
+			if (createClientScopeFiles && _containsVulcanScope(schema)) {
+				_createClientScopeFile(mergedContext);
+
+				createClientScopeFiles = false;
+			}
+
+			_createClientDTOFile(mergedContext, escapedVersion, schemaName);
+			_createClientSerDesFile(mergedContext, escapedVersion, schemaName);
 		}
 	}
 
@@ -1783,26 +1786,25 @@ public class RESTBuilder {
 					String in = parameter.getIn();
 					String parameterName = parameter.getName();
 
-					if (in.equals("path") && parameterName.contains("-")) {
-						String newParameterName = CamelCaseUtil.toCamelCase(
-							parameterName);
-
-						int z = yamlString.indexOf(
-							" " + parameterName + "\n", y);
-
-						yamlString = StringBundler.concat(
-							yamlString.substring(0, z + 1), newParameterName,
-							"\n",
-							yamlString.substring(
-								z + parameterName.length() + 2));
-
-						String newPathLine = StringUtil.replace(
-							pathLine, "{" + parameterName + "}",
-							"{" + newParameterName + "}");
-
-						yamlString = StringUtil.replace(
-							yamlString, pathLine, newPathLine);
+					if (!in.equals("path") || !parameterName.contains("-")) {
+						continue;
 					}
+
+					String newParameterName = CamelCaseUtil.toCamelCase(
+						parameterName);
+
+					int z = yamlString.indexOf(" " + parameterName + "\n", y);
+
+					yamlString = StringBundler.concat(
+						yamlString.substring(0, z + 1), newParameterName, "\n",
+						yamlString.substring(z + parameterName.length() + 2));
+
+					String newPathLine = StringUtil.replace(
+						pathLine, "{" + parameterName + "}",
+						"{" + newParameterName + "}");
+
+					yamlString = StringUtil.replace(
+						yamlString, pathLine, newPathLine);
 				}
 			}
 
@@ -1811,9 +1813,11 @@ public class RESTBuilder {
 			List<String> pathSegments = new ArrayList<>();
 
 			for (String pathSegment : path.split("/")) {
-				if (Validator.isNotNull(pathSegment)) {
-					pathSegments.add(pathSegment);
+				if (Validator.isNull(pathSegment)) {
+					continue;
 				}
+
+				pathSegments.add(pathSegment);
 			}
 
 			if ((pathSegments.size() != 3) ||
@@ -1862,30 +1866,30 @@ public class RESTBuilder {
 					String in = parameter.getIn();
 					String parameterName = parameter.getName();
 
-					if (in.equals("path") &&
-						parameterName.equals(selParameterName)) {
+					if (!in.equals("path") ||
+						!parameterName.equals(selParameterName)) {
 
-						int z = yamlString.indexOf(
-							" " + parameterName + "\n", y);
-
-						sb.setLength(0);
-
-						sb.append(yamlString.substring(0, z + 1));
-						sb.append(newParameterName);
-						sb.append("\n");
-						sb.append(
-							yamlString.substring(
-								z + parameterName.length() + 2));
-
-						yamlString = sb.toString();
-
-						String newPathLine = StringUtil.replace(
-							pathLine, "{" + parameterName + "}",
-							"{" + newParameterName + "}");
-
-						yamlString = StringUtil.replace(
-							yamlString, pathLine, newPathLine);
+						continue;
 					}
+
+					int z = yamlString.indexOf(" " + parameterName + "\n", y);
+
+					sb.setLength(0);
+
+					sb.append(yamlString.substring(0, z + 1));
+					sb.append(newParameterName);
+					sb.append("\n");
+					sb.append(
+						yamlString.substring(z + parameterName.length() + 2));
+
+					yamlString = sb.toString();
+
+					String newPathLine = StringUtil.replace(
+						pathLine, "{" + parameterName + "}",
+						"{" + newParameterName + "}");
+
+					yamlString = StringUtil.replace(
+						yamlString, pathLine, newPathLine);
 				}
 			}
 
@@ -1931,10 +1935,11 @@ public class RESTBuilder {
 
 			x = yamlString.indexOf(path + ":");
 
-			if (x != -1) {
-				yamlString = StringUtil.replaceFirst(
-					yamlString, path, newPath, x);
+			if (x == -1) {
+				continue;
 			}
+
+			yamlString = StringUtil.replaceFirst(yamlString, path, newPath, x);
 		}
 
 		return yamlString;
@@ -2083,15 +2088,19 @@ public class RESTBuilder {
 
 			String[] returnTypeParts = returnType.split("\\.");
 
-			if (returnTypeParts.length > 0) {
-				String string = returnTypeParts[returnTypeParts.length - 1];
-
-				if (!string.equals(javaMethodSignature.getSchemaName()) &&
-					schemas.containsKey(string)) {
-
-					relatedSchemaNames.add(string);
-				}
+			if (returnTypeParts.length <= 0) {
+				continue;
 			}
+
+			String string = returnTypeParts[returnTypeParts.length - 1];
+
+			if (string.equals(javaMethodSignature.getSchemaName()) ||
+				!schemas.containsKey(string)) {
+
+				continue;
+			}
+
+			relatedSchemaNames.add(string);
 		}
 
 		return relatedSchemaNames;
@@ -2210,18 +2219,20 @@ public class RESTBuilder {
 
 				Schema propertySchema = entry2.getValue();
 
-				if (Objects.equals(propertySchema.getType(), "number") &&
-					!Objects.equals(propertySchema.getFormat(), "bigdecimal") &&
-					!Objects.equals(propertySchema.getFormat(), "double") &&
-					!Objects.equals(propertySchema.getFormat(), "float")) {
+				if (!Objects.equals(propertySchema.getType(), "number") ||
+					Objects.equals(propertySchema.getFormat(), "bigdecimal") ||
+					Objects.equals(propertySchema.getFormat(), "double") ||
+					Objects.equals(propertySchema.getFormat(), "float")) {
 
-					System.out.println(
-						StringBundler.concat(
-							"The property \"", entry1.getKey(), '.',
-							entry2.getKey(),
-							"\" should use \"type: integer\" instead of ",
-							"\"type: number\""));
+					continue;
 				}
+
+				System.out.println(
+					StringBundler.concat(
+						"The property \"", entry1.getKey(), '.',
+						entry2.getKey(),
+						"\" should use \"type: integer\" instead of \"type: ",
+						"number\""));
 			}
 
 			if (schema.getRequiredPropertySchemaNames() == null) {
@@ -2236,13 +2247,14 @@ public class RESTBuilder {
 			for (String requiredPropertySchemaName :
 					requiredPropertySchemaNames) {
 
-				if (!propertySchemaNames.contains(requiredPropertySchemaName)) {
-					System.out.println(
-						StringBundler.concat(
-							"The required property \"",
-							requiredPropertySchemaName, "\" is not defined in ",
-							entry1.getKey()));
+				if (propertySchemaNames.contains(requiredPropertySchemaName)) {
+					continue;
 				}
+
+				System.out.println(
+					StringBundler.concat(
+						"The required property \"", requiredPropertySchemaName,
+						"\" is not defined in ", entry1.getKey()));
 			}
 		}
 	}

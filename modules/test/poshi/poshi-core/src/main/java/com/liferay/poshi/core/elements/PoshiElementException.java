@@ -58,14 +58,18 @@ public class PoshiElementException extends Exception {
 		List<Exception> warnings = new ArrayList<>();
 
 		for (Exception exception : exceptions) {
-			if (exception instanceof PoshiElementException) {
-				PoshiElementException poshiElementException =
-					(PoshiElementException)exception;
-
-				if (poshiElementException.isWarning()) {
-					warnings.add(poshiElementException);
-				}
+			if (!(exception instanceof PoshiElementException)) {
+				continue;
 			}
+
+			PoshiElementException poshiElementException =
+				(PoshiElementException)exception;
+
+			if (!poshiElementException.isWarning()) {
+				continue;
+			}
+
+			warnings.add(poshiElementException);
 		}
 
 		return warnings;

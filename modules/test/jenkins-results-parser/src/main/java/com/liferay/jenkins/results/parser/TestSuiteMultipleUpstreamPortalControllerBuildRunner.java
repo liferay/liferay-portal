@@ -338,9 +338,11 @@ public class TestSuiteMultipleUpstreamPortalControllerBuildRunner
 			Long testSuiteIdleDuration =
 				startTime - latestTestSuiteStartTimes.get(testSuiteName);
 
-			if (testSuiteIdleDuration > entry.getValue()) {
-				_selectedTestSuiteNames.add(testSuiteName);
+			if (testSuiteIdleDuration <= entry.getValue()) {
+				continue;
 			}
+
+			_selectedTestSuiteNames.add(testSuiteName);
 		}
 
 		return _selectedTestSuiteNames;

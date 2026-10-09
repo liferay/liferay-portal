@@ -60,36 +60,35 @@ public class LinkbackProducerUtil {
 
 			Date time = (Date)tuple.getObject(0);
 
-			if (time.before(expiration)) {
-				_pingbackQueue.remove(0);
-
-				String targetUri = (String)tuple.getObject(2);
-
-				String serverUri = _discoverPingbackServer(targetUri);
-
-				if (Validator.isNull(serverUri)) {
-					continue;
-				}
-
-				String sourceUri = (String)tuple.getObject(1);
-
-				if (_log.isInfoEnabled()) {
-					_log.info(
-						StringBundler.concat(
-							"XML-RPC pingback ", serverUri, ", source ",
-							sourceUri, ", target ", targetUri));
-				}
-
-				Response response = XmlRpcUtil.executeMethod(
-					serverUri, "pingback.ping",
-					new Object[] {sourceUri, targetUri});
-
-				if (_log.isInfoEnabled()) {
-					_log.info(response.toString());
-				}
-			}
-			else {
+			if (!time.before(expiration)) {
 				break;
+			}
+
+			_pingbackQueue.remove(0);
+
+			String targetUri = (String)tuple.getObject(2);
+
+			String serverUri = _discoverPingbackServer(targetUri);
+
+			if (Validator.isNull(serverUri)) {
+				continue;
+			}
+
+			String sourceUri = (String)tuple.getObject(1);
+
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					StringBundler.concat(
+						"XML-RPC pingback ", serverUri, ", source ", sourceUri,
+						", target ", targetUri));
+			}
+
+			Response response = XmlRpcUtil.executeMethod(
+				serverUri, "pingback.ping",
+				new Object[] {sourceUri, targetUri});
+
+			if (_log.isInfoEnabled()) {
+				_log.info(response.toString());
 			}
 		}
 	}

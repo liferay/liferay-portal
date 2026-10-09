@@ -36,11 +36,13 @@ public class JavaMethodSignature {
 		for (JavaMethodParameter javaMethodParameter : _javaMethodParameters) {
 			FreeMarkerTool freeMarkerTool = FreeMarkerTool.getInstance();
 
-			if (freeMarkerTool.isPathParameter(
+			if (!freeMarkerTool.isPathParameter(
 					javaMethodParameter, operation)) {
 
-				_pathJavaMethodParameters.add(javaMethodParameter);
+				continue;
 			}
+
+			_pathJavaMethodParameters.add(javaMethodParameter);
 		}
 
 		_parentSchemaName = parentSchemaName;

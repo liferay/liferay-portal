@@ -24,26 +24,32 @@ public class XMLUtil {
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < xml.length(); i++) {
-			char c = xml.charAt(i);
+			char c1 = xml.charAt(i);
 
-			if ((c == 0x9) || (c == 0xA) || (c == 0xD) ||
-				((c >= 0x20) && (c <= 0xD7FF)) ||
-				((c >= 0xE000) && (c <= 0xFFFD))) {
+			if ((c1 == 0x9) || (c1 == 0xA) || (c1 == 0xD) ||
+				((c1 >= 0x20) && (c1 <= 0xD7FF)) ||
+				((c1 >= 0xE000) && (c1 <= 0xFFFD))) {
 
-				sb.append(c);
+				sb.append(c1);
 			}
 
-			if (Character.isHighSurrogate(c) && ((i + 1) < xml.length())) {
-				char c2 = xml.charAt(i + 1);
-
-				if (Character.isLowSurrogate(c2)) {
-					int codePoint = Character.toCodePoint(c, c2);
-
-					if ((codePoint >= 0x10000) && (codePoint <= 0x10FFFF)) {
-						sb.appendCodePoint(codePoint);
-					}
-				}
+			if (!Character.isHighSurrogate(c1) || ((i + 1) >= xml.length())) {
+				continue;
 			}
+
+			char c2 = xml.charAt(i + 1);
+
+			if (!Character.isLowSurrogate(c2)) {
+				continue;
+			}
+
+			int codePoint = Character.toCodePoint(c1, c2);
+
+			if ((codePoint < 0x10000) || (codePoint > 0x10FFFF)) {
+				continue;
+			}
+
+			sb.appendCodePoint(codePoint);
 		}
 
 		return sb.toString();

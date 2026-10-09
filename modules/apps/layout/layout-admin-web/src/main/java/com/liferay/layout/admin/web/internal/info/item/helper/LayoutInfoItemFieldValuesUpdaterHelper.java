@@ -145,14 +145,16 @@ public class LayoutInfoItemFieldValuesUpdaterHelper {
 
 			JSONObject jsonObject = entry.getValue();
 
-			if (jsonObject != null) {
-				FragmentEntryLink fragmentEntryLink = entry.getKey();
-
-				fragmentEntryLink.setEditableValues(jsonObject.toString());
-
-				_fragmentEntryLinkLocalService.updateFragmentEntryLink(
-					fragmentEntryLink);
+			if (jsonObject == null) {
+				continue;
 			}
+
+			FragmentEntryLink fragmentEntryLink = entry.getKey();
+
+			fragmentEntryLink.setEditableValues(jsonObject.toString());
+
+			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+				fragmentEntryLink);
 		}
 	}
 

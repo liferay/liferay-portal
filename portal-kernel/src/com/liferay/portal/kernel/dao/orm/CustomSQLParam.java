@@ -33,9 +33,11 @@ public class CustomSQLParam {
 			Long[] valueArray = (Long[])_value;
 
 			for (Long l : valueArray) {
-				if (l != null) {
-					queryPos.add(l);
+				if (l == null) {
+					continue;
 				}
+
+				queryPos.add(l);
 			}
 		}
 		else if (_value instanceof String) {
@@ -49,9 +51,11 @@ public class CustomSQLParam {
 			String[] valueArray = (String[])_value;
 
 			for (String s : valueArray) {
-				if (Validator.isNotNull(s)) {
-					queryPos.add(s);
+				if (Validator.isNull(s)) {
+					continue;
 				}
+
+				queryPos.add(s);
 			}
 		}
 	}

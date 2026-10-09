@@ -55,25 +55,27 @@ public class InstrumentationAgent {
 				_assertClassDataCoverage(
 					assertionErrors, projectData.getClassData(clazz.getName()));
 
-				if (includeInnerClasses) {
-					Class<?>[] declaredClasses = clazz.getDeclaredClasses();
+				if (!includeInnerClasses) {
+					continue;
+				}
 
-					declaredClass:
-					for (Class<?> declaredClass : declaredClasses) {
-						if (declaredClass.isSynthetic()) {
-							continue;
-						}
+				Class<?>[] declaredClasses = clazz.getDeclaredClasses();
 
-						for (Class<?> clazz2 : classes) {
-							if (clazz2.equals(declaredClass)) {
-								continue declaredClass;
-							}
-						}
-
-						_assertClassDataCoverage(
-							assertionErrors,
-							projectData.getClassData(declaredClass.getName()));
+				declaredClass:
+				for (Class<?> declaredClass : declaredClasses) {
+					if (declaredClass.isSynthetic()) {
+						continue;
 					}
+
+					for (Class<?> clazz2 : classes) {
+						if (clazz2.equals(declaredClass)) {
+							continue declaredClass;
+						}
+					}
+
+					_assertClassDataCoverage(
+						assertionErrors,
+						projectData.getClassData(declaredClass.getName()));
 				}
 			}
 
@@ -109,9 +111,11 @@ public class InstrumentationAgent {
 						ClassDefinition classDefinition =
 							originalClassDefinition.toClassDefinition();
 
-						if (classDefinition != null) {
-							classDefinitions.add(classDefinition);
+						if (classDefinition == null) {
+							continue;
 						}
+
+						classDefinitions.add(classDefinition);
 					}
 
 					_originalClassDefinitions = null;
@@ -187,15 +191,19 @@ public class InstrumentationAgent {
 		List<Class<?>> modifiableClasses = new ArrayList<>();
 
 		for (Class<?> loadedClass : allLoadedClasses) {
-			if (_instrumentation.isModifiableClass(loadedClass)) {
-				String className = loadedClass.getName();
-
-				className = className.replace('.', '/');
-
-				if (_whipClassFileTransformer.matches(className)) {
-					modifiableClasses.add(loadedClass);
-				}
+			if (!_instrumentation.isModifiableClass(loadedClass)) {
+				continue;
 			}
+
+			String className = loadedClass.getName();
+
+			className = className.replace('.', '/');
+
+			if (!_whipClassFileTransformer.matches(className)) {
+				continue;
+			}
+
+			modifiableClasses.add(loadedClass);
 		}
 
 		_instrumentation.retransformClasses(

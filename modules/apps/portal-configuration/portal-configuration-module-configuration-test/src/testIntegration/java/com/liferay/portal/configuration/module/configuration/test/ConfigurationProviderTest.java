@@ -60,9 +60,11 @@ public class ConfigurationProviderTest {
 	@After
 	public void tearDown() throws Exception {
 		for (Configuration configuration : _configurations.values()) {
-			if (configuration != null) {
-				configuration.delete();
+			if (configuration == null) {
+				continue;
 			}
+
+			configuration.delete();
 		}
 	}
 

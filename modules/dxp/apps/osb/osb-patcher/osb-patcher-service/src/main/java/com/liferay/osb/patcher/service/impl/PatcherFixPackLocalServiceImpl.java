@@ -235,14 +235,16 @@ public class PatcherFixPackLocalServiceImpl
 		for (PatcherFixPack prerequisitePatcherFixPack :
 				prerequisitePatcherFixPacks) {
 
-			if ((prerequisitePatcherFixPack.getStatus() !=
-					WorkflowConstants.STATUS_FIX_PACK_FROZEN) &&
-				(prerequisitePatcherFixPack.getStatus() !=
+			if ((prerequisitePatcherFixPack.getStatus() ==
+					WorkflowConstants.STATUS_FIX_PACK_FROZEN) ||
+				(prerequisitePatcherFixPack.getStatus() ==
 					WorkflowConstants.STATUS_FIX_PACK_RELEASED)) {
 
-				pendingPatcherFixPackNames.add(
-					prerequisitePatcherFixPack.getName());
+				continue;
 			}
+
+			pendingPatcherFixPackNames.add(
+				prerequisitePatcherFixPack.getName());
 		}
 
 		if (!pendingPatcherFixPackNames.isEmpty()) {
@@ -353,12 +355,14 @@ public class PatcherFixPackLocalServiceImpl
 		for (PatcherFixPack prerequisitePatcherFixPack :
 				prerequisitePatcherFixPacks) {
 
-			if (prerequisitePatcherFixPack.getStatus() !=
+			if (prerequisitePatcherFixPack.getStatus() ==
 					WorkflowConstants.STATUS_FIX_PACK_RELEASED) {
 
-				pendingPatcherFixPackNames.add(
-					prerequisitePatcherFixPack.getName());
+				continue;
 			}
+
+			pendingPatcherFixPackNames.add(
+				prerequisitePatcherFixPack.getName());
 		}
 
 		if (!pendingPatcherFixPackNames.isEmpty()) {

@@ -601,18 +601,20 @@ public class DBCopyTablesProcess {
 			List<String> targetColumnNames = _targetColumnNamesMap.get(
 				targetTableName);
 
-			if (sourceColumnNames.size() > targetColumnNames.size()) {
-				sb.append("Source table ");
-				sb.append(sourceTableName);
-				sb.append(" has ");
-				sb.append(sourceColumnNames.size());
-				sb.append(" columns, but target table ");
-				sb.append(targetTableName);
-				sb.append(" has only ");
-				sb.append(targetColumnNames.size());
-				sb.append(_partitionMessage);
-				sb.append(StringPool.NEW_LINE);
+			if (sourceColumnNames.size() <= targetColumnNames.size()) {
+				continue;
 			}
+
+			sb.append("Source table ");
+			sb.append(sourceTableName);
+			sb.append(" has ");
+			sb.append(sourceColumnNames.size());
+			sb.append(" columns, but target table ");
+			sb.append(targetTableName);
+			sb.append(" has only ");
+			sb.append(targetColumnNames.size());
+			sb.append(_partitionMessage);
+			sb.append(StringPool.NEW_LINE);
 		}
 
 		if (sb.length() > 0) {

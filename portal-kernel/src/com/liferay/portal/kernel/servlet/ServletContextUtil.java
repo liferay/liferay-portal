@@ -192,9 +192,11 @@ public class ServletContextUtil {
 
 						String jarEntryName = jarEntry.getName();
 
-						if (jarEntryName.endsWith(_EXT_CLASS)) {
-							classNames.add(_getClassName(null, jarEntryName));
+						if (!jarEntryName.endsWith(_EXT_CLASS)) {
+							continue;
 						}
+
+						classNames.add(_getClassName(null, jarEntryName));
 					}
 				}
 			}

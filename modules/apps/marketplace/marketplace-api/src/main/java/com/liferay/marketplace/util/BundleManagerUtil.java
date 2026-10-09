@@ -65,9 +65,11 @@ public class BundleManagerUtil {
 		while (iterator.hasNext()) {
 			Bundle bundle = iterator.next();
 
-			if (!isInstalled(bundle)) {
-				iterator.remove();
+			if (isInstalled(bundle)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return bundles;

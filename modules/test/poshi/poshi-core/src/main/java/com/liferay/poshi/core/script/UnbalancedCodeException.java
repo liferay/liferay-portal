@@ -24,9 +24,11 @@ public class UnbalancedCodeException extends PoshiScriptParserException {
 		int lineNumber = 1;
 
 		for (int i = 0; i < index; i++) {
-			if (code.charAt(i) == '\n') {
-				lineNumber++;
+			if (code.charAt(i) != '\n') {
+				continue;
 			}
+
+			lineNumber++;
 		}
 
 		return lineNumber;
@@ -38,11 +40,13 @@ public class UnbalancedCodeException extends PoshiScriptParserException {
 		int newLineIndex = -1;
 
 		for (int i = 0; i < index; i++) {
-			if (code.charAt(i) == '\n') {
-				lineNumber++;
-
-				newLineIndex = i;
+			if (code.charAt(i) != '\n') {
+				continue;
 			}
+
+			lineNumber++;
+
+			newLineIndex = i;
 		}
 
 		int column = 1;

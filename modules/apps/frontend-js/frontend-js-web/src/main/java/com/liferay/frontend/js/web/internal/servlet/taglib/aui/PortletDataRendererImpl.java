@@ -307,16 +307,18 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 					AMDRequire amdRequire = amdRequiresMap.get(
 						fragmentAMDRequire);
 
-					if (!Objects.equals(
+					if (Objects.equals(
 							amdRequire.getAlias(),
 							fragmentAMDRequire.getAlias())) {
 
-						sb.append("const ");
-						sb.append(fragmentAMDRequire.getAlias());
-						sb.append(" = ");
-						sb.append(amdRequire.getAlias());
-						sb.append(";\n");
+						continue;
 					}
+
+					sb.append("const ");
+					sb.append(fragmentAMDRequire.getAlias());
+					sb.append(" = ");
+					sb.append(amdRequire.getAlias());
+					sb.append(";\n");
 				}
 
 				// Map ES imports to their requested aliases
@@ -326,15 +328,17 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 				for (ESImport fragmentESImport : fragmentESImports) {
 					ESImport esImport = esImportsMap.get(fragmentESImport);
 
-					if (!Objects.equals(
+					if (Objects.equals(
 							esImport.getAlias(), fragmentESImport.getAlias())) {
 
-						sb.append("const ");
-						sb.append(fragmentESImport.getAlias());
-						sb.append(" = ");
-						sb.append(esImport.getAlias());
-						sb.append(";\n");
+						continue;
 					}
+
+					sb.append("const ");
+					sb.append(fragmentESImport.getAlias());
+					sb.append(" = ");
+					sb.append(esImport.getAlias());
+					sb.append(";\n");
 				}
 
 				sb.append(code);

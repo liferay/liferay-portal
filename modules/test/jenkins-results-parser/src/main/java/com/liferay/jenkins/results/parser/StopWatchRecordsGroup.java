@@ -118,9 +118,11 @@ public class StopWatchRecordsGroup implements Iterable<StopWatchRecord> {
 				}
 			}
 
-			if (stopWatchRecord.getParentStopWatchRecord() == null) {
-				parentStopWatchRecords.add(stopWatchRecord);
+			if (stopWatchRecord.getParentStopWatchRecord() != null) {
+				continue;
 			}
+
+			parentStopWatchRecords.add(stopWatchRecord);
 		}
 
 		return parentStopWatchRecords;

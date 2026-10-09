@@ -61,10 +61,12 @@ public class CommerceAddressImpl extends CommerceAddressBaseImpl {
 				commerceAddressObjectBiConsumer =
 					attributeSetterBiConsumers.get(entry.getKey());
 
-			if (commerceAddressObjectBiConsumer != null) {
-				commerceAddressObjectBiConsumer.accept(
-					commerceAddress, entry.getValue());
+			if (commerceAddressObjectBiConsumer == null) {
+				continue;
 			}
+
+			commerceAddressObjectBiConsumer.accept(
+				commerceAddress, entry.getValue());
 		}
 
 		commerceAddress.setCommerceAddressId(address.getAddressId());

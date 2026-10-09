@@ -33,9 +33,11 @@ public class InfoItemServiceVerifierImpl implements InfoItemServiceVerifier {
 				_infoItemServiceRegistry.getFirstInfoItemService(
 					serviceClass, itemClassName);
 
-			if (infoItemService == null) {
-				missingServiceClasses.add(serviceClass);
+			if (infoItemService != null) {
+				continue;
 			}
+
+			missingServiceClasses.add(serviceClass);
 		}
 
 		return missingServiceClasses;

@@ -280,11 +280,13 @@ public class ConfigurationEntryRetrieverImpl
 
 		if (configurationModels != null) {
 			for (ConfigurationModel configurationModel : configurationModels) {
-				if (configurationModel.isGenerateUI()) {
-					configurationEntries.add(
-						new ConfigurationModelConfigurationEntry(
-							configurationModel));
+				if (!configurationModel.isGenerateUI()) {
+					continue;
 				}
+
+				configurationEntries.add(
+					new ConfigurationModelConfigurationEntry(
+						configurationModel));
 			}
 		}
 

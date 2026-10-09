@@ -256,19 +256,20 @@ public class CPOptionsSearchFacetDisplayContextBuilder implements Serializable {
 			CPOption cpOption = _cpOptionLocalService.fetchCPOption(
 				themeDisplay.getCompanyId(), termCollector.getTerm());
 
-			if ((cpOption != null) && cpOption.isFacetable()) {
-				Facet cpOptionFacet = portletSharedSearchResponse.getFacet(
-					CPOptionFacetsUtil.getIndexFieldName(
-						termCollector.getTerm(), themeDisplay.getLanguageId()));
-
-				if (cpOptionFacet == null) {
-					continue;
-				}
-
-				filledFacets.add(cpOptionFacet);
-				_tuples = _getTuples(
-					cpOption, cpOptionFacet.getFacetCollector());
+			if ((cpOption == null) || !cpOption.isFacetable()) {
+				continue;
 			}
+
+			Facet cpOptionFacet = portletSharedSearchResponse.getFacet(
+				CPOptionFacetsUtil.getIndexFieldName(
+					termCollector.getTerm(), themeDisplay.getLanguageId()));
+
+			if (cpOptionFacet == null) {
+				continue;
+			}
+
+			filledFacets.add(cpOptionFacet);
+			_tuples = _getTuples(cpOption, cpOptionFacet.getFacetCollector());
 		}
 
 		return filledFacets;

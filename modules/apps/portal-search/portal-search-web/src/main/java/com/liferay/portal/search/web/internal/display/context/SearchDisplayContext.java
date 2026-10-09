@@ -545,10 +545,12 @@ public class SearchDisplayContext {
 				searchContext -> _getFacet(
 					searchFacet, companyId, searchContext));
 
-			if (facet != null) {
-				searchRequestBuilder.withFacetContext(
-					facetContext -> facetContext.addFacet(facet));
+			if (facet == null) {
+				continue;
 			}
+
+			searchRequestBuilder.withFacetContext(
+				facetContext -> facetContext.addFacet(facet));
 		}
 	}
 

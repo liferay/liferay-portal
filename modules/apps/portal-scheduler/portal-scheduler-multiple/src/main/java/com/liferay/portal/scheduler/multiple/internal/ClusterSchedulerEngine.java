@@ -645,9 +645,11 @@ public class ClusterSchedulerEngine
 
 			SchedulerResponse schedulerResponse = memoryClusteredJob.getKey();
 
-			if (groupName.equals(schedulerResponse.getGroupName())) {
-				iterator.remove();
+			if (!groupName.equals(schedulerResponse.getGroupName())) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 
@@ -739,12 +741,14 @@ public class ClusterSchedulerEngine
 
 					TriggerState triggerState = memoryClusteredJob.getValue();
 
-					if (triggerState.equals(TriggerState.PAUSED)) {
-						_schedulerEngine.pause(
-							schedulerResponse.getJobName(),
-							schedulerResponse.getGroupName(),
-							schedulerResponse.getStorageType());
+					if (!triggerState.equals(TriggerState.PAUSED)) {
+						continue;
 					}
+
+					_schedulerEngine.pause(
+						schedulerResponse.getJobName(),
+						schedulerResponse.getGroupName(),
+						schedulerResponse.getStorageType());
 				}
 
 				if (_log.isInfoEnabled()) {

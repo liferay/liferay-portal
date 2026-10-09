@@ -207,64 +207,63 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 				}
 			}
 
-			if (layoutStructureItem instanceof
-					FragmentStyledLayoutStructureItem) {
+			if (!(layoutStructureItem instanceof
+					FragmentStyledLayoutStructureItem)) {
 
-				FragmentStyledLayoutStructureItem
-					fragmentStyledLayoutStructureItem =
-						(FragmentStyledLayoutStructureItem)layoutStructureItem;
-
-				JSONObject itemConfigJSONObject =
-					fragmentStyledLayoutStructureItem.getItemConfigJSONObject();
-
-				JSONObject stylesJSONObject =
-					itemConfigJSONObject.getJSONObject("styles");
-
-				if (stylesJSONObject == null) {
-					stylesJSONObject = JSONFactoryUtil.createJSONObject();
-
-					itemConfigJSONObject.put("styles", stylesJSONObject);
-				}
-
-				FragmentEntryLink fragmentEntryLink =
-					FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
-						fragmentStyledLayoutStructureItem.
-							getFragmentEntryLinkId());
-
-				if (fragmentEntryLink == null) {
-					continue;
-				}
-
-				JSONObject editableValuesJSONObject =
-					fragmentEntryLink.getEditableValuesJSONObject();
-
-				JSONObject fragmentConfigValuesJSONObject =
-					editableValuesJSONObject.getJSONObject(
-						FragmentEntryProcessorConstants.
-							KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-				if (fragmentConfigValuesJSONObject == null) {
-					continue;
-				}
-
-				_replaceBottomSpacing(
-					_fragmentEntryConfigurationParser.
-						getConfigurationDefaultValuesJSONObject(
-							fragmentEntryLink.getConfigurationJSONObject()),
-					fragmentConfigValuesJSONObject, stylesJSONObject);
-
-				if (_isEmpty(fragmentConfigValuesJSONObject)) {
-					continue;
-				}
-
-				_replaceAlign(fragmentConfigValuesJSONObject, stylesJSONObject);
-				_replaceBorderRadius(
-					fragmentConfigValuesJSONObject, stylesJSONObject);
-				_replaceShadow(
-					fragmentConfigValuesJSONObject, stylesJSONObject);
-				_replaceTextColor(
-					fragmentConfigValuesJSONObject, stylesJSONObject);
+				continue;
 			}
+
+			FragmentStyledLayoutStructureItem
+				fragmentStyledLayoutStructureItem =
+					(FragmentStyledLayoutStructureItem)layoutStructureItem;
+
+			JSONObject itemConfigJSONObject =
+				fragmentStyledLayoutStructureItem.getItemConfigJSONObject();
+
+			JSONObject stylesJSONObject = itemConfigJSONObject.getJSONObject(
+				"styles");
+
+			if (stylesJSONObject == null) {
+				stylesJSONObject = JSONFactoryUtil.createJSONObject();
+
+				itemConfigJSONObject.put("styles", stylesJSONObject);
+			}
+
+			FragmentEntryLink fragmentEntryLink =
+				FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
+					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
+
+			if (fragmentEntryLink == null) {
+				continue;
+			}
+
+			JSONObject editableValuesJSONObject =
+				fragmentEntryLink.getEditableValuesJSONObject();
+
+			JSONObject fragmentConfigValuesJSONObject =
+				editableValuesJSONObject.getJSONObject(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+			if (fragmentConfigValuesJSONObject == null) {
+				continue;
+			}
+
+			_replaceBottomSpacing(
+				_fragmentEntryConfigurationParser.
+					getConfigurationDefaultValuesJSONObject(
+						fragmentEntryLink.getConfigurationJSONObject()),
+				fragmentConfigValuesJSONObject, stylesJSONObject);
+
+			if (_isEmpty(fragmentConfigValuesJSONObject)) {
+				continue;
+			}
+
+			_replaceAlign(fragmentConfigValuesJSONObject, stylesJSONObject);
+			_replaceBorderRadius(
+				fragmentConfigValuesJSONObject, stylesJSONObject);
+			_replaceShadow(fragmentConfigValuesJSONObject, stylesJSONObject);
+			_replaceTextColor(fragmentConfigValuesJSONObject, stylesJSONObject);
 		}
 
 		JSONObject jsonObject = layoutStructure.toJSONObject();

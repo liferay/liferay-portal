@@ -258,23 +258,22 @@ public class UpgradeImportsCheck extends BaseFileCheck {
 			String newClassName = SourceFormatterUtil.getSimpleName(
 				entry.getValue());
 
-			if (!className.equals(newClassName)) {
-				variablesMap.put(className, newClassName);
-
-				if (!className.endsWith("Util") &&
-					newClassName.endsWith("Util")) {
-
-					variablesMap.put(
-						StringUtil.lowerCaseFirstLetter(className),
-						newClassName);
-
-					continue;
-				}
-
-				variablesMap.put(
-					StringUtil.lowerCaseFirstLetter(className),
-					StringUtil.lowerCaseFirstLetter(newClassName));
+			if (className.equals(newClassName)) {
+				continue;
 			}
+
+			variablesMap.put(className, newClassName);
+
+			if (!className.endsWith("Util") && newClassName.endsWith("Util")) {
+				variablesMap.put(
+					StringUtil.lowerCaseFirstLetter(className), newClassName);
+
+				continue;
+			}
+
+			variablesMap.put(
+				StringUtil.lowerCaseFirstLetter(className),
+				StringUtil.lowerCaseFirstLetter(newClassName));
 		}
 
 		return variablesMap;

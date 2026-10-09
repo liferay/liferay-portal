@@ -408,11 +408,13 @@ public class DataCleanupRegistratorTest {
 		for (DataCleanup dataCleanup :
 				DataCleanupUtil.getModuleDataCleanups()) {
 
-			if (servletContextName.equals(
+			if (!servletContextName.equals(
 					dataCleanup.getServletContextName())) {
 
-				dataCleanup.cleanup();
+				continue;
 			}
+
+			dataCleanup.cleanup();
 		}
 
 		if (portletPreferencePortletId != null) {

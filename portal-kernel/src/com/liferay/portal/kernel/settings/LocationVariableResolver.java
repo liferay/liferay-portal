@@ -122,9 +122,11 @@ public class LocationVariableResolver {
 		for (Locale locale : availableLocales) {
 			String message = LanguageUtil.get(locale, location);
 
-			if (!message.equals(location)) {
-				jsonObject.put(LocaleUtil.toLanguageId(locale), message);
+			if (message.equals(location)) {
+				continue;
 			}
+
+			jsonObject.put(LocaleUtil.toLanguageId(locale), message);
 		}
 
 		return jsonObject.toString();

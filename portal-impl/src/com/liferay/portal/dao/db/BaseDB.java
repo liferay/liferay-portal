@@ -279,11 +279,13 @@ public abstract class BaseDB implements DB {
 			sb.append(".");
 			sb.append(sourceColumnNames[i]);
 
-			if (defaultValue != null) {
-				sb.append(", ");
-				sb.append(defaultValue);
-				sb.append(")");
+			if (defaultValue == null) {
+				continue;
 			}
+
+			sb.append(", ");
+			sb.append(defaultValue);
+			sb.append(")");
 		}
 
 		sb.append(" from ");
@@ -306,9 +308,11 @@ public abstract class BaseDB implements DB {
 			sb.append(".");
 			sb.append(columnNamesMap.get(primaryKeyColumnName));
 
-			if (i < (primaryKeyColumnNames.length - 1)) {
-				sb.append(" and ");
+			if (i >= (primaryKeyColumnNames.length - 1)) {
+				continue;
 			}
+
+			sb.append(" and ");
 		}
 
 		sb.append(" where ");
@@ -367,12 +371,14 @@ public abstract class BaseDB implements DB {
 						tableName));
 			}
 
-			if (dbInspector.hasIndex(tableName, indexName)) {
-				runSQL(
-					connection,
-					StringBundler.concat(
-						"drop index ", indexName, " on ", tableName));
+			if (!dbInspector.hasIndex(tableName, indexName)) {
+				continue;
 			}
+
+			runSQL(
+				connection,
+				StringBundler.concat(
+					"drop index ", indexName, " on ", tableName));
 		}
 	}
 
@@ -1038,24 +1044,26 @@ public abstract class BaseDB implements DB {
 		}
 
 		for (String columnName : primaryKeyColumnNames) {
-			if (!dbInspector.hasColumn(tableName, columnName)) {
-				if (StringUtil.equalsIgnoreCase(columnName, "ctCollectionId")) {
-					primaryKeyColumnNames = ArrayUtil.filter(
-						primaryKeyColumnNames,
-						name -> !StringUtil.equalsIgnoreCase(
-							name, "ctCollectionId"));
-				}
-				else {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							StringBundler.concat(
-								"Unable to recreate primary key for table ",
-								tableName, " because column ", columnName,
-								" does not exist"));
-					}
+			if (dbInspector.hasColumn(tableName, columnName)) {
+				continue;
+			}
 
-					return;
+			if (StringUtil.equalsIgnoreCase(columnName, "ctCollectionId")) {
+				primaryKeyColumnNames = ArrayUtil.filter(
+					primaryKeyColumnNames,
+					name -> !StringUtil.equalsIgnoreCase(
+						name, "ctCollectionId"));
+			}
+			else {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"Unable to recreate primary key for table ",
+							tableName, " because column ", columnName,
+							" does not exist"));
 				}
+
+				return;
 			}
 		}
 
@@ -1280,11 +1288,13 @@ public abstract class BaseDB implements DB {
 			sb.append("new.");
 			sb.append(sourceColumnNames[i]);
 
-			if (defaultValue != null) {
-				sb.append(", ");
-				sb.append(defaultValue);
-				sb.append(")");
+			if (defaultValue == null) {
+				continue;
 			}
+
+			sb.append(", ");
+			sb.append(defaultValue);
+			sb.append(")");
 		}
 
 		sb.append(")");
@@ -1328,11 +1338,13 @@ public abstract class BaseDB implements DB {
 			sb.append("new.");
 			sb.append(sourceColumnNames[i]);
 
-			if (defaultValue != null) {
-				sb.append(", ");
-				sb.append(defaultValue);
-				sb.append(")");
+			if (defaultValue == null) {
+				continue;
 			}
+
+			sb.append(", ");
+			sb.append(defaultValue);
+			sb.append(")");
 		}
 
 		sb.append(" where ");

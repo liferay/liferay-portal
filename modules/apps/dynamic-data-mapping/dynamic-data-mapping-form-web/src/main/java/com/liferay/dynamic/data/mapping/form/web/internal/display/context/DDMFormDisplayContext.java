@@ -353,11 +353,13 @@ public class DDMFormDisplayContext {
 		for (String key : SessionErrors.keySet(_renderRequest)) {
 			Object value = SessionErrors.get(_renderRequest, key);
 
-			if (!(value instanceof PortalException) &&
-				(value instanceof Throwable throwable)) {
+			if ((value instanceof PortalException) ||
+				!(value instanceof Throwable throwable)) {
 
-				errorMessages.put(key, HtmlUtil.escape(throwable.getMessage()));
+				continue;
 			}
+
+			errorMessages.put(key, HtmlUtil.escape(throwable.getMessage()));
 		}
 
 		return errorMessages;

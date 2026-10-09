@@ -917,9 +917,11 @@ public class StructuredContentResourceImpl
 				_assetTypeTypeToClassNames.get(relatedContent.getContentType()),
 				relatedContent.getId());
 
-			if (assetEntry != null) {
-				assetLinkEntryIds.add(assetEntry.getEntryId());
+			if (assetEntry == null) {
+				continue;
 			}
+
+			assetLinkEntryIds.add(assetEntry.getEntryId());
 		}
 
 		return ArrayUtil.toLongArray(assetLinkEntryIds);
@@ -1281,10 +1283,12 @@ public class StructuredContentResourceImpl
 							contextAcceptLanguage.getPreferredLocale())));
 			}
 
-			if (ListUtil.isNotEmpty(fieldValues)) {
-				field.setValues(
-					contextAcceptLanguage.getPreferredLocale(), fieldValues);
+			if (ListUtil.isEmpty(fieldValues)) {
+				continue;
 			}
+
+			field.setValues(
+				contextAcceptLanguage.getPreferredLocale(), fieldValues);
 		}
 
 		_ddmFormValuesValidator.validate(

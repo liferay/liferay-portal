@@ -262,12 +262,11 @@ public class ToolsUtil {
 						int precedingBackSlashCount = 0;
 
 						for (int j = i - 1; j >= 0; j--) {
-							if (line.charAt(j) == CharPool.BACK_SLASH) {
-								precedingBackSlashCount += 1;
-							}
-							else {
+							if (line.charAt(j) != CharPool.BACK_SLASH) {
 								break;
 							}
+
+							precedingBackSlashCount += 1;
 						}
 
 						if ((precedingBackSlashCount == 0) ||
@@ -629,9 +628,11 @@ public class ToolsUtil {
 					continue forLoop;
 				}
 
-				if (!isInsideQuotes(line, x)) {
-					level += diff;
+				if (isInsideQuotes(line, x)) {
+					continue;
 				}
+
+				level += diff;
 			}
 		}
 
@@ -775,14 +776,16 @@ public class ToolsUtil {
 			{
 				try {
 					for (Field field : CharPool.class.getFields()) {
-						if (Modifier.isStatic(field.getModifiers()) &&
-							(field.getType() == char.class)) {
+						if (!Modifier.isStatic(field.getModifiers()) ||
+							(field.getType() != char.class)) {
 
-							put(
-								field.getChar(null),
-								StringUtil.removeChar(
-									field.getName(), CharPool.UNDERLINE));
+							continue;
 						}
+
+						put(
+							field.getChar(null),
+							StringUtil.removeChar(
+								field.getName(), CharPool.UNDERLINE));
 					}
 				}
 				catch (ReflectiveOperationException

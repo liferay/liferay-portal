@@ -211,10 +211,12 @@ public class JavaScriptFrontendResourceRequestHandler
 
 			int index = parameterName.indexOf(CharPool.COLON);
 
-			if (index > 0) {
-				portletConfig = _portletConfigFactory.get(
-					parameterName.substring(0, index));
+			if (index <= 0) {
+				continue;
 			}
+
+			portletConfig = _portletConfigFactory.get(
+				parameterName.substring(0, index));
 		}
 
 		if (portletConfig != null) {

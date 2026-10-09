@@ -475,9 +475,11 @@ public class StagingImpl implements Staging {
 			Set<String> keys = new HashSet<>();
 
 			for (String key : typeSettingsUnicodeProperties.keySet()) {
-				if (key.startsWith("last-import-")) {
-					keys.add(key);
+				if (!key.startsWith("last-import-")) {
+					continue;
 				}
+
+				keys.add(key);
 			}
 
 			if (keys.isEmpty()) {
@@ -2306,17 +2308,20 @@ public class StagingImpl implements Staging {
 								stagedModelRepository.getStagedModel(
 									changesetEntry.getClassPK());
 
-							if (stagedModel instanceof TypedModel) {
-								TypedModel typedModel = (TypedModel)stagedModel;
-
-								if (Objects.equals(
-										typedModel.getClassName(),
-										stagedModelType.
-											getReferrerClassName())) {
-
-									modelAdditionCount++;
-								}
+							if (!(stagedModel instanceof TypedModel)) {
+								continue;
 							}
+
+							TypedModel typedModel = (TypedModel)stagedModel;
+
+							if (!Objects.equals(
+									typedModel.getClassName(),
+									stagedModelType.getReferrerClassName())) {
+
+								continue;
+							}
+
+							modelAdditionCount++;
 						}
 					}
 				}

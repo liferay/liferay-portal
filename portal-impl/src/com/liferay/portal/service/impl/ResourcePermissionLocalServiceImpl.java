@@ -752,15 +752,19 @@ public class ResourcePermissionLocalServiceImpl
 			Set<String> availableActionIds = new HashSet<>();
 
 			for (String actionId : actionIds) {
-				if (resourcePermission.hasActionId(actionId)) {
-					availableActionIds.add(actionId);
+				if (!resourcePermission.hasActionId(actionId)) {
+					continue;
 				}
+
+				availableActionIds.add(actionId);
 			}
 
-			if (!availableActionIds.isEmpty()) {
-				roleIdsToActionIds.put(
-					resourcePermission.getRoleId(), availableActionIds);
+			if (availableActionIds.isEmpty()) {
+				continue;
 			}
+
+			roleIdsToActionIds.put(
+				resourcePermission.getRoleId(), availableActionIds);
 		}
 
 		return roleIdsToActionIds;
@@ -797,12 +801,14 @@ public class ResourcePermissionLocalServiceImpl
 		List<String> availableActionIds = new ArrayList<>(actionIds.size());
 
 		for (String actionId : actionIds) {
-			if (resourcePermission.hasAction(
+			if (!resourcePermission.hasAction(
 					_resourceActionLocalService.getResourceAction(
 						name, actionId))) {
 
-				availableActionIds.add(actionId);
+				continue;
 			}
+
+			availableActionIds.add(actionId);
 		}
 
 		return availableActionIds;
@@ -2262,12 +2268,14 @@ public class ResourcePermissionLocalServiceImpl
 								return localRole;
 							});
 
-						if (role != _dummyRole) {
-							List<Role> roles = localRolesMap.computeIfAbsent(
-								(String)values[0], roleId -> new ArrayList<>());
-
-							roles.add(role);
+						if (role == _dummyRole) {
+							continue;
 						}
+
+						List<Role> roles = localRolesMap.computeIfAbsent(
+							(String)values[0], roleId -> new ArrayList<>());
+
+						roles.add(role);
 					}
 
 					return localRolesMap;
@@ -2280,9 +2288,11 @@ public class ResourcePermissionLocalServiceImpl
 					resourcePermissionPersistence.findByC_N_S_P(
 						companyId, name, scope, primKey)) {
 
-				if ((resourcePermission.getActionIds() & bitwiseValue) != 0) {
-					roleIds.add(resourcePermission.getRoleId());
+				if ((resourcePermission.getActionIds() & bitwiseValue) == 0) {
+					continue;
 				}
+
+				roleIds.add(resourcePermission.getRoleId());
 			}
 
 			Map<Serializable, Role> rolesMapByRoleIds =

@@ -83,20 +83,21 @@ public class UserSearchPermissionFilterContributor
 					organizationIds.add(userOrgId);
 				}
 
-				if (OrganizationPermissionUtil.contains(
+				if (!OrganizationPermissionUtil.contains(
 						permissionChecker, userOrgId,
 						ActionKeys.MANAGE_SUBORGANIZATIONS_USERS)) {
 
-					Organization organization =
-						_organizationLocalService.getOrganization(userOrgId);
+					continue;
+				}
 
-					for (Organization suborganization :
-							_organizationLocalService.getOrganizations(
-								companyId, organization.getTreePath() + "%/")) {
+				Organization organization =
+					_organizationLocalService.getOrganization(userOrgId);
 
-						organizationIds.add(
-							suborganization.getOrganizationId());
-					}
+				for (Organization suborganization :
+						_organizationLocalService.getOrganizations(
+							companyId, organization.getTreePath() + "%/")) {
+
+					organizationIds.add(suborganization.getOrganizationId());
 				}
 			}
 

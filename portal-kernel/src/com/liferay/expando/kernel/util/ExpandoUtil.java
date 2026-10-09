@@ -126,11 +126,13 @@ public class ExpandoUtil {
 		while (enumeration.hasMoreElements()) {
 			String param = enumeration.nextElement();
 
-			if (param.contains("ExpandoAttributeName--")) {
-				String name = ParamUtil.getString(httpServletRequest, param);
-
-				names.add(name);
+			if (!param.contains("ExpandoAttributeName--")) {
+				continue;
 			}
+
+			String name = ParamUtil.getString(httpServletRequest, param);
+
+			names.add(name);
 		}
 
 		for (String name : names) {

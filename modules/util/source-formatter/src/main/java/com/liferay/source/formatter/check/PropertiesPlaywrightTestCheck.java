@@ -68,15 +68,16 @@ public class PropertiesPlaywrightTestCheck extends BaseFileCheck {
 			List<String> testPropertiesFileNames = new ArrayList<>();
 
 			for (String buildGradleFileName : buildGradleFileNames) {
-				if (buildGradleFileName.endsWith(
+				if (!buildGradleFileName.endsWith(
 						"/" + moduleName + "/build.gradle")) {
 
-					int x = buildGradleFileName.lastIndexOf("/");
-
-					testPropertiesFileNames.add(
-						buildGradleFileName.substring(0, x) +
-							"/test.properties");
+					continue;
 				}
+
+				int x = buildGradleFileName.lastIndexOf("/");
+
+				testPropertiesFileNames.add(
+					buildGradleFileName.substring(0, x) + "/test.properties");
 			}
 
 			testPropertiesFileNames = ListUtil.filter(

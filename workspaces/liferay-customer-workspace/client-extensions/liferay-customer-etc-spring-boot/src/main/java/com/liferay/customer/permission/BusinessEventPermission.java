@@ -75,25 +75,27 @@ public class BusinessEventPermission {
 		AccountBrief[] accountBriefs = userAccount.getAccountBriefs();
 
 		for (AccountBrief accountBrief : accountBriefs) {
-			if (accountExternalReferenceCode.equals(
+			if (!accountExternalReferenceCode.equals(
 					accountBrief.getExternalReferenceCode())) {
 
-				for (RoleBrief roleBrief : accountBrief.getRoleBriefs()) {
-					if (ArrayUtil.contains(
-							RoleConstants.SUPPORT_ACCOUNT_ROLES,
-							roleBrief.getName()) &&
-						actionId.equals(ActionKeys.VIEW)) {
+				continue;
+			}
 
-						return true;
-					}
+			for (RoleBrief roleBrief : accountBrief.getRoleBriefs()) {
+				if (ArrayUtil.contains(
+						RoleConstants.SUPPORT_ACCOUNT_ROLES,
+						roleBrief.getName()) &&
+					actionId.equals(ActionKeys.VIEW)) {
 
-					if (ArrayUtil.contains(
-							RoleConstants.SUPPORT_ACCOUNT_TICKET_ROLES,
-							roleBrief.getName()) &&
-						actionId.equals(ActionKeys.UPDATE)) {
+					return true;
+				}
 
-						return true;
-					}
+				if (ArrayUtil.contains(
+						RoleConstants.SUPPORT_ACCOUNT_TICKET_ROLES,
+						roleBrief.getName()) &&
+					actionId.equals(ActionKeys.UPDATE)) {
+
+					return true;
 				}
 			}
 		}

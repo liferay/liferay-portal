@@ -251,9 +251,11 @@ public class AssignScopesDisplayContext
 				Set<LiferayOAuth2Scope> liferayOAuth2Scopes =
 					applicationAssignableScopes.getLiferayOAuth2Scopes();
 
-				if (liferayOAuth2Scopes.isEmpty()) {
-					unassignable = false;
+				if (!liferayOAuth2Scopes.isEmpty()) {
+					continue;
 				}
+
+				unassignable = false;
 			}
 
 			if (!unassignable) {

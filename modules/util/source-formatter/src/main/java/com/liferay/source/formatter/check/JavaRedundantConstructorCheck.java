@@ -115,9 +115,11 @@ public class JavaRedundantConstructorCheck extends BaseJavaTermCheck {
 		int count = 0;
 
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
-			if (javaTerm.isJavaConstructor()) {
-				count++;
+			if (!javaTerm.isJavaConstructor()) {
+				continue;
 			}
+
+			count++;
 		}
 
 		return count;

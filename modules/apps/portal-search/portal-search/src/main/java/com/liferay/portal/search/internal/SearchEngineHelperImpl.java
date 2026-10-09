@@ -60,9 +60,11 @@ public class SearchEngineHelperImpl implements SearchEngineHelper {
 
 		for (Indexer<?> indexer : IndexerRegistryUtil.getIndexers()) {
 			for (String className : indexer.getSearchClassNames()) {
-				if (!_excludedEntryClassNames.contains(className)) {
-					assetEntryClassNames.add(className);
+				if (_excludedEntryClassNames.contains(className)) {
+					continue;
 				}
+
+				assetEntryClassNames.add(className);
 			}
 		}
 

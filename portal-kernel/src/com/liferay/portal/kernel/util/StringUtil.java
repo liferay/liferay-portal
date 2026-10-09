@@ -598,9 +598,11 @@ public class StringUtil {
 		char[] chars = s.toCharArray();
 
 		for (char c : chars) {
-			if (Validator.isChar(c)) {
-				sb.append(c);
+			if (!Validator.isChar(c)) {
+				continue;
 			}
+
+			sb.append(c);
 		}
 
 		return sb.toString();
@@ -624,9 +626,11 @@ public class StringUtil {
 		char[] chars = s.toCharArray();
 
 		for (char c : chars) {
-			if (Validator.isDigit(c)) {
-				sb.append(c);
+			if (!Validator.isDigit(c)) {
+				continue;
 			}
+
+			sb.append(c);
 		}
 
 		return sb.toString();
@@ -750,12 +754,11 @@ public class StringUtil {
 		char[] chars = s.toCharArray();
 
 		for (char c : chars) {
-			if (Validator.isDigit(c)) {
-				sb.append(c);
-			}
-			else {
+			if (!Validator.isDigit(c)) {
 				return sb.toString();
 			}
+
+			sb.append(c);
 		}
 
 		return sb.toString();
@@ -4291,13 +4294,15 @@ public class StringUtil {
 				return s.toLowerCase(locale);
 			}
 
-			if ((c >= 'A') && (c <= 'Z')) {
-				if (sb == null) {
-					sb = new StringBuilder(s);
-				}
-
-				sb.setCharAt(i, (char)(c + 32));
+			if ((c < 'A') || (c > 'Z')) {
+				continue;
 			}
+
+			if (sb == null) {
+				sb = new StringBuilder(s);
+			}
+
+			sb.setCharAt(i, (char)(c + 32));
 		}
 
 		if (sb == null) {
@@ -4349,13 +4354,15 @@ public class StringUtil {
 				return s.toUpperCase(locale);
 			}
 
-			if ((c >= 'a') && (c <= 'z')) {
-				if (sb == null) {
-					sb = new StringBuilder(s);
-				}
-
-				sb.setCharAt(i, (char)(c - 32));
+			if ((c < 'a') || (c > 'z')) {
+				continue;
 			}
+
+			if (sb == null) {
+				sb = new StringBuilder(s);
+			}
+
+			sb.setCharAt(i, (char)(c - 32));
 		}
 
 		if (sb == null) {
@@ -4995,13 +5002,15 @@ public class StringUtil {
 
 			offset += count;
 
-			if (offset == buffer.length) {
-				byte[] newBuffer = new byte[buffer.length << 1];
-
-				System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-
-				buffer = newBuffer;
+			if (offset != buffer.length) {
+				continue;
 			}
+
+			byte[] newBuffer = new byte[buffer.length << 1];
+
+			System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+
+			buffer = newBuffer;
 		}
 
 		if (offset == 0) {

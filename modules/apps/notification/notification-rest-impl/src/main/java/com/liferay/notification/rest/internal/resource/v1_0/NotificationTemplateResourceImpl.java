@@ -104,11 +104,13 @@ public class NotificationTemplateResourceImpl
 				serviceBuilderNotificationTemplate = _fetchNotificationTemplate(
 					notificationTemplate);
 
-			if ((serviceBuilderNotificationTemplate == null) ||
-				!serviceBuilderNotificationTemplate.isSystem()) {
+			if ((serviceBuilderNotificationTemplate != null) &&
+				serviceBuilderNotificationTemplate.isSystem()) {
 
-				customNotificationTemplates.add(notificationTemplate);
+				continue;
 			}
+
+			customNotificationTemplates.add(notificationTemplate);
 		}
 
 		super.delete(customNotificationTemplates, parameters);

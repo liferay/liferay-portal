@@ -152,9 +152,11 @@ public class TestClassFileUtil {
 					return testClassFileMethod;
 				}
 
-				if (matchedTestClassFileMethod == null) {
-					matchedTestClassFileMethod = testClassFileMethod;
+				if (matchedTestClassFileMethod != null) {
+					continue;
 				}
+
+				matchedTestClassFileMethod = testClassFileMethod;
 			}
 		}
 

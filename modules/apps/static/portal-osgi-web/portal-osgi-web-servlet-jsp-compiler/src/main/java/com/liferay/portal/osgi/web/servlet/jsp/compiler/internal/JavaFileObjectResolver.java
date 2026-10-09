@@ -76,10 +76,12 @@ public class JavaFileObjectResolver {
 
 			Set<String> packageNames = entry.getValue();
 
-			if (packageNames.contains(packageName)) {
-				javaFileObjects.addAll(
-					_resolveClasses(entry.getKey(), packagePath, options));
+			if (!packageNames.contains(packageName)) {
+				continue;
 			}
+
+			javaFileObjects.addAll(
+				_resolveClasses(entry.getKey(), packagePath, options));
 		}
 
 		return javaFileObjects;
@@ -252,9 +254,11 @@ public class JavaFileObjectResolver {
 			JavaFileObject javaFileObject = _getJavaFileObject(
 				bundle.getResource(resource), resource);
 
-			if (javaFileObject != null) {
-				javaFileObjects.add(javaFileObject);
+			if (javaFileObject == null) {
+				continue;
 			}
+
+			javaFileObjects.add(javaFileObject);
 		}
 
 		return javaFileObjects;

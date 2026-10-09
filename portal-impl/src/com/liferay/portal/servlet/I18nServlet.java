@@ -68,14 +68,16 @@ public class I18nServlet extends HttpServlet {
 		for (Element element : rootElements) {
 			String servletName = element.elementText("servlet-name");
 
-			if (servletName.equals("I18n Servlet")) {
-				String urlPattern = element.elementText("url-pattern");
-
-				String languageId = urlPattern.substring(
-					0, urlPattern.lastIndexOf(CharPool.SLASH));
-
-				languageIds.put(StringUtil.toLowerCase(languageId), languageId);
+			if (!servletName.equals("I18n Servlet")) {
+				continue;
 			}
+
+			String urlPattern = element.elementText("url-pattern");
+
+			String languageId = urlPattern.substring(
+				0, urlPattern.lastIndexOf(CharPool.SLASH));
+
+			languageIds.put(StringUtil.toLowerCase(languageId), languageId);
 		}
 
 		_languageIds = Collections.unmodifiableMap(languageIds);

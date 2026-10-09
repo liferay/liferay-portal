@@ -234,10 +234,11 @@ public class ObjectEntryAuditModelListenerTest {
 		JSONObject additionalInfoJSONObject = _pollAdditionalInfoJSONObject();
 
 		for (String key : additionalInfoJSONObject.keySet()) {
-			if (key.startsWith(_objectField.getName())) {
-				localizedValues.put(
-					key, additionalInfoJSONObject.getString(key));
+			if (!key.startsWith(_objectField.getName())) {
+				continue;
 			}
+
+			localizedValues.put(key, additionalInfoJSONObject.getString(key));
 		}
 
 		Assert.assertEquals(expectedLocalizedValues, localizedValues);

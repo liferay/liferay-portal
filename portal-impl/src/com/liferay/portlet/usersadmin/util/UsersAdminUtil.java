@@ -338,13 +338,15 @@ public class UsersAdminUtil {
 				"organizationId",
 				String.valueOf(ancestorOrganization.getOrganizationId()));
 
-			if (OrganizationPermissionUtil.contains(
+			if (!OrganizationPermissionUtil.contains(
 					permissionChecker, ancestorOrganization, ActionKeys.VIEW)) {
 
-				PortalUtil.addPortletBreadcrumbEntry(
-					httpServletRequest, ancestorOrganization.getName(),
-					portletURL.toString());
+				continue;
 			}
+
+			PortalUtil.addPortletBreadcrumbEntry(
+				httpServletRequest, ancestorOrganization.getName(),
+				portletURL.toString());
 		}
 
 		Organization unescapedOrganization = organization.toUnescapedModel();
@@ -408,11 +410,13 @@ public class UsersAdminUtil {
 
 			String roleName = groupRole.getName();
 
-			if (roleName.equals(RoleConstants.ORGANIZATION_USER) ||
-				roleName.equals(RoleConstants.SITE_MEMBER)) {
+			if (!roleName.equals(RoleConstants.ORGANIZATION_USER) &&
+				!roleName.equals(RoleConstants.SITE_MEMBER)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (permissionChecker.isCompanyAdmin() ||
@@ -439,16 +443,18 @@ public class UsersAdminUtil {
 
 			String roleName = groupRole.getName();
 
-			if (roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) ||
-				roleName.equals(RoleConstants.ORGANIZATION_OWNER) ||
-				roleName.equals(RoleConstants.SITE_ADMINISTRATOR) ||
-				roleName.equals(RoleConstants.SITE_OWNER) ||
-				!RolePermissionUtil.contains(
+			if (!roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) &&
+				!roleName.equals(RoleConstants.ORGANIZATION_OWNER) &&
+				!roleName.equals(RoleConstants.SITE_ADMINISTRATOR) &&
+				!roleName.equals(RoleConstants.SITE_OWNER) &&
+				RolePermissionUtil.contains(
 					permissionChecker, groupId, groupRole.getRoleId(),
 					ActionKeys.ASSIGN_MEMBERS)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return filteredGroupRoles;
@@ -469,11 +475,13 @@ public class UsersAdminUtil {
 		while (iterator.hasNext()) {
 			Group group = iterator.next();
 
-			if (!GroupPermissionUtil.contains(
+			if (GroupPermissionUtil.contains(
 					permissionChecker, group, ActionKeys.ASSIGN_MEMBERS)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return filteredGroups;
@@ -495,12 +503,14 @@ public class UsersAdminUtil {
 		while (iterator.hasNext()) {
 			Organization organization = iterator.next();
 
-			if (!OrganizationPermissionUtil.contains(
+			if (OrganizationPermissionUtil.contains(
 					permissionChecker, organization,
 					ActionKeys.ASSIGN_MEMBERS)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return filteredOrganizations;
@@ -518,14 +528,16 @@ public class UsersAdminUtil {
 
 			String roleName = role.getName();
 
-			if (roleName.equals(RoleConstants.GUEST) ||
-				roleName.equals(RoleConstants.ORGANIZATION_USER) ||
-				roleName.equals(RoleConstants.OWNER) ||
-				roleName.equals(RoleConstants.SITE_MEMBER) ||
-				roleName.equals(RoleConstants.USER)) {
+			if (!roleName.equals(RoleConstants.GUEST) &&
+				!roleName.equals(RoleConstants.ORGANIZATION_USER) &&
+				!roleName.equals(RoleConstants.OWNER) &&
+				!roleName.equals(RoleConstants.SITE_MEMBER) &&
+				!roleName.equals(RoleConstants.USER)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (permissionChecker.isCompanyAdmin()) {
@@ -537,12 +549,14 @@ public class UsersAdminUtil {
 		while (iterator.hasNext()) {
 			Role role = iterator.next();
 
-			if (!RolePermissionUtil.contains(
+			if (RolePermissionUtil.contains(
 					permissionChecker, role.getRoleId(),
 					ActionKeys.ASSIGN_MEMBERS)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return filteredRoles;
@@ -555,11 +569,13 @@ public class UsersAdminUtil {
 		long[] filteredUserIds = userIds;
 
 		for (long userId : userIds) {
-			if (SiteMembershipPolicyUtil.isMembershipProtected(
+			if (!SiteMembershipPolicyUtil.isMembershipProtected(
 					permissionChecker, userId, groupId)) {
 
-				filteredUserIds = ArrayUtil.remove(filteredUserIds, userId);
+				continue;
 			}
+
+			filteredUserIds = ArrayUtil.remove(filteredUserIds, userId);
 		}
 
 		return filteredUserIds;
@@ -573,11 +589,13 @@ public class UsersAdminUtil {
 		long[] filteredUserIds = userIds;
 
 		for (long userId : userIds) {
-			if (OrganizationMembershipPolicyUtil.isMembershipProtected(
+			if (!OrganizationMembershipPolicyUtil.isMembershipProtected(
 					permissionChecker, userId, organizationId)) {
 
-				filteredUserIds = ArrayUtil.remove(filteredUserIds, userId);
+				continue;
 			}
+
+			filteredUserIds = ArrayUtil.remove(filteredUserIds, userId);
 		}
 
 		return filteredUserIds;
@@ -600,11 +618,13 @@ public class UsersAdminUtil {
 
 			String roleName = role.getName();
 
-			if (roleName.equals(RoleConstants.ORGANIZATION_USER) ||
-				roleName.equals(RoleConstants.SITE_MEMBER)) {
+			if (!roleName.equals(RoleConstants.ORGANIZATION_USER) &&
+				!roleName.equals(RoleConstants.SITE_MEMBER)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (permissionChecker.isCompanyAdmin()) {
@@ -616,12 +636,14 @@ public class UsersAdminUtil {
 		while (iterator.hasNext()) {
 			UserGroupRole userGroupRole = iterator.next();
 
-			if (!UserGroupRolePermissionUtil.contains(
+			if (UserGroupRolePermissionUtil.contains(
 					permissionChecker, userGroupRole.getGroupId(),
 					userGroupRole.getRoleId())) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return filteredUserGroupRoles;
@@ -641,12 +663,14 @@ public class UsersAdminUtil {
 		while (iterator.hasNext()) {
 			UserGroup userGroup = iterator.next();
 
-			if (!UserGroupPermissionUtil.contains(
+			if (UserGroupPermissionUtil.contains(
 					permissionChecker, userGroup.getUserGroupId(),
 					ActionKeys.ASSIGN_MEMBERS)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return filteredUserGroups;
@@ -1475,11 +1499,13 @@ public class UsersAdminUtil {
 		for (Address address :
 				AddressServiceUtil.getAddresses(className, classPK)) {
 
-			if (!addressIds.contains(address.getAddressId()) &&
-				listTypes.contains(address.getListType())) {
+			if (addressIds.contains(address.getAddressId()) ||
+				!listTypes.contains(address.getListType())) {
 
-				AddressServiceUtil.deleteAddress(address.getAddressId());
+				continue;
 			}
+
+			AddressServiceUtil.deleteAddress(address.getAddressId());
 		}
 	}
 
@@ -1529,10 +1555,12 @@ public class UsersAdminUtil {
 		for (EmailAddress emailAddress :
 				EmailAddressServiceUtil.getEmailAddresses(className, classPK)) {
 
-			if (!emailAddressIds.contains(emailAddress.getEmailAddressId())) {
-				EmailAddressServiceUtil.deleteEmailAddress(
-					emailAddress.getEmailAddressId());
+			if (emailAddressIds.contains(emailAddress.getEmailAddressId())) {
+				continue;
 			}
+
+			EmailAddressServiceUtil.deleteEmailAddress(
+				emailAddress.getEmailAddressId());
 		}
 	}
 
@@ -1579,9 +1607,11 @@ public class UsersAdminUtil {
 		}
 
 		for (OrgLabor orgLabor : OrgLaborServiceUtil.getOrgLabors(classPK)) {
-			if (!orgLaborsIds.contains(orgLabor.getOrgLaborId())) {
-				OrgLaborServiceUtil.deleteOrgLabor(orgLabor.getOrgLaborId());
+			if (orgLaborsIds.contains(orgLabor.getOrgLaborId())) {
+				continue;
 			}
+
+			OrgLaborServiceUtil.deleteOrgLabor(orgLabor.getOrgLaborId());
 		}
 	}
 
@@ -1629,9 +1659,11 @@ public class UsersAdminUtil {
 		}
 
 		for (Phone phone : PhoneServiceUtil.getPhones(className, classPK)) {
-			if (!phoneIds.contains(phone.getPhoneId())) {
-				PhoneServiceUtil.deletePhone(phone.getPhoneId());
+			if (phoneIds.contains(phone.getPhoneId())) {
+				continue;
 			}
+
+			PhoneServiceUtil.deletePhone(phone.getPhoneId());
 		}
 	}
 
@@ -1680,9 +1712,11 @@ public class UsersAdminUtil {
 		for (Website website :
 				WebsiteServiceUtil.getWebsites(className, classPK)) {
 
-			if (!websiteIds.contains(website.getWebsiteId())) {
-				WebsiteServiceUtil.deleteWebsite(website.getWebsiteId());
+			if (websiteIds.contains(website.getWebsiteId())) {
+				continue;
 			}
+
+			WebsiteServiceUtil.deleteWebsite(website.getWebsiteId());
 		}
 	}
 

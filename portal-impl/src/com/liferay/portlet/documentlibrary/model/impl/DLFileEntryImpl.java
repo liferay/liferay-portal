@@ -108,12 +108,14 @@ public class DLFileEntryImpl extends DLFileEntryBaseImpl {
 				DLFileEntryMetadataLocalServiceUtil.fetchFileEntryMetadata(
 					ddmStructure.getStructureId(), fileVersionId);
 
-			if (dlFileEntryMetadata != null) {
-				ddmFormValuesMap.put(
-					ddmStructure.getStructureKey(),
-					StorageEngineManagerUtil.getDDMFormValues(
-						dlFileEntryMetadata.getDDMStorageId()));
+			if (dlFileEntryMetadata == null) {
+				continue;
 			}
+
+			ddmFormValuesMap.put(
+				ddmStructure.getStructureKey(),
+				StorageEngineManagerUtil.getDDMFormValues(
+					dlFileEntryMetadata.getDDMStorageId()));
 		}
 
 		return ddmFormValuesMap;

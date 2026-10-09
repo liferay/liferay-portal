@@ -556,12 +556,13 @@ public class DDMValueUtil {
 			Locale locale = LocaleUtil.fromLanguageId(
 				entry.getKey(), true, false);
 
-			if (locale != null) {
-				localizedValue.addString(
-					locale,
-					localizedValueUnsafeBiFunction.apply(
-						entry.getValue(), locale));
+			if (locale == null) {
+				continue;
 			}
+
+			localizedValue.addString(
+				locale,
+				localizedValueUnsafeBiFunction.apply(entry.getValue(), locale));
 		}
 
 		return localizedValue;

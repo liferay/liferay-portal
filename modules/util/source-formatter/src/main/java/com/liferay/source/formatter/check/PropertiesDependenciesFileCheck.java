@@ -39,12 +39,12 @@ public class PropertiesDependenciesFileCheck extends BaseFileCheck {
 		for (String line : lines) {
 			line = StringUtil.removeChar(line, CharPool.SPACE);
 
-			if (Validator.isNotNull(line) &&
-				(line.charAt(0) != CharPool.POUND)) {
-
-				sb.append(line);
-				sb.append(CharPool.NEW_LINE);
+			if (Validator.isNull(line) || (line.charAt(0) == CharPool.POUND)) {
+				continue;
 			}
+
+			sb.append(line);
+			sb.append(CharPool.NEW_LINE);
 		}
 
 		if (sb.index() > 0) {

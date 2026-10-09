@@ -362,13 +362,15 @@ public class UploadServletRequestImpl
 			for (int i = 0; i < liferayFileItems.length; i++) {
 				FileItem liferayFileItem = liferayFileItems[i];
 
-				if (Validator.isNotNull(liferayFileItem.getFileName())) {
-					if (liferayFileItem.isInMemory()) {
-						files[i] = liferayFileItem.getTempFile();
-					}
-					else {
-						files[i] = liferayFileItem.getStoreLocation();
-					}
+				if (Validator.isNull(liferayFileItem.getFileName())) {
+					continue;
+				}
+
+				if (liferayFileItem.isInMemory()) {
+					files[i] = liferayFileItem.getTempFile();
+				}
+				else {
+					files[i] = liferayFileItem.getStoreLocation();
 				}
 			}
 
@@ -403,10 +405,12 @@ public class UploadServletRequestImpl
 			for (int i = 0; i < liferayFileItems.length; i++) {
 				FileItem liferayFileItem = liferayFileItems[i];
 
-				if (Validator.isNotNull(liferayFileItem.getFileName())) {
-					inputStreams[i] = getInputStream(
-						liferayFileItem, deleteOnClose);
+				if (Validator.isNull(liferayFileItem.getFileName())) {
+					continue;
 				}
+
+				inputStreams[i] = getInputStream(
+					liferayFileItem, deleteOnClose);
 			}
 		}
 
@@ -462,9 +466,11 @@ public class UploadServletRequestImpl
 
 			String[] values = getParameterValues(name);
 
-			if (values != null) {
-				map.put(name, values);
+			if (values == null) {
+				continue;
 			}
+
+			map.put(name, values);
 		}
 
 		return map;

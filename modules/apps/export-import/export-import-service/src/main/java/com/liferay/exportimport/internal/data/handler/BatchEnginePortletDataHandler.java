@@ -235,9 +235,11 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 				exportImportDescriptor =
 					registration.getExportImportDescriptor();
 
-			if (exportImportDescriptor.getRank() < rank) {
-				rank = exportImportDescriptor.getRank();
+			if (exportImportDescriptor.getRank() >= rank) {
+				continue;
 			}
+
+			rank = exportImportDescriptor.getRank();
 		}
 
 		return rank;
@@ -857,9 +859,11 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 
 			String modelClassName = exportImportDescriptor.getModelClassName();
 
-			if (!classNames.add(modelClassName)) {
-				sharedClassNames.add(modelClassName);
+			if (classNames.add(modelClassName)) {
+				continue;
 			}
+
+			sharedClassNames.add(modelClassName);
 		}
 
 		return sharedClassNames;

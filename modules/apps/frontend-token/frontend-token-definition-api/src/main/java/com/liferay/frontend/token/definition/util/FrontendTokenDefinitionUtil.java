@@ -344,9 +344,11 @@ public class FrontendTokenDefinitionUtil {
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-			if (jsonObject != null) {
-				jsonObjectsByName.put(jsonObject.getString("name"), jsonObject);
+			if (jsonObject == null) {
+				continue;
 			}
+
+			jsonObjectsByName.put(jsonObject.getString("name"), jsonObject);
 		}
 
 		for (int i = 0; i < overrideJSONArray.length(); i++) {

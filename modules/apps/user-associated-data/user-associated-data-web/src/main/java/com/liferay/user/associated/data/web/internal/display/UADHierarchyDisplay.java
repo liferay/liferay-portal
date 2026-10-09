@@ -441,14 +441,16 @@ public class UADHierarchyDisplay {
 					_uadHierarchyDeclaration.getNoncontainerUADDisplays()) {
 
 			for (Object userItem : allUserItems) {
-				if ((userItem != null) &&
-					noncontainerUADDisplay.isTypeEntity(userItem) &&
-					parentContainerId.equals(
+				if ((userItem == null) ||
+					!noncontainerUADDisplay.isTypeEntity(userItem) ||
+					!parentContainerId.equals(
 						noncontainerUADDisplay.getParentContainerId(
 							userItem))) {
 
-					searchResults.add(userItem);
+					continue;
 				}
+
+				searchResults.add(userItem);
 			}
 		}
 
@@ -569,9 +571,11 @@ public class UADHierarchyDisplay {
 							parentContainerUADDisplay.getTypeClass(),
 							parentContainerId, searchItem);
 
-					if (topLevelContainer != null) {
-						containerItem = true;
+					if (topLevelContainer == null) {
+						continue;
 					}
+
+					containerItem = true;
 				}
 
 				if (containerItem) {

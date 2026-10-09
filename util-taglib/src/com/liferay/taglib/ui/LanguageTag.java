@@ -201,9 +201,11 @@ public class LanguageTag extends IncludeTag {
 		for (Locale locale : locales) {
 			Integer count = counts.get(locale.getLanguage());
 
-			if (count.intValue() != 1) {
-				duplicateLanguages.add(locale.getLanguage());
+			if (count.intValue() == 1) {
+				continue;
 			}
+
+			duplicateLanguages.add(locale.getLanguage());
 		}
 
 		Locale currentLocale = null;

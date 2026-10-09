@@ -143,21 +143,23 @@ public class SaveScimConfigurationMVCActionCommand
 				Date refreshTokenExpirationDate =
 					oAuth2Authorization.getRefreshTokenExpirationDate();
 
-				if ((daysBetween > 10) ||
-					(refreshTokenExpirationDate != null)) {
+				if ((daysBetween <= 10) &&
+					(refreshTokenExpirationDate == null)) {
 
-					oAuth2Authorization.setAccessTokenExpirationDate(
-						new Date(
-							Math.min(
-								accessTokenExpirationDate.getTime(),
-								System.currentTimeMillis() + (Time.DAY * 10))));
-					oAuth2Authorization.setRefreshTokenContent(null);
-					oAuth2Authorization.setRefreshTokenCreateDate(null);
-					oAuth2Authorization.setRefreshTokenExpirationDate(null);
-
-					_oAuth2AuthorizationLocalService.updateOAuth2Authorization(
-						oAuth2Authorization);
+					continue;
 				}
+
+				oAuth2Authorization.setAccessTokenExpirationDate(
+					new Date(
+						Math.min(
+							accessTokenExpirationDate.getTime(),
+							System.currentTimeMillis() + (Time.DAY * 10))));
+				oAuth2Authorization.setRefreshTokenContent(null);
+				oAuth2Authorization.setRefreshTokenCreateDate(null);
+				oAuth2Authorization.setRefreshTokenExpirationDate(null);
+
+				_oAuth2AuthorizationLocalService.updateOAuth2Authorization(
+					oAuth2Authorization);
 			}
 
 			actionRequest.setAttribute(

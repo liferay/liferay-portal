@@ -26,9 +26,11 @@ public class XWWWFormURLEncoder {
 
 			i = i + 2;
 
-			if (i < args.length) {
-				sb.append("&");
+			if (i >= args.length) {
+				continue;
 			}
+
+			sb.append("&");
 		}
 
 		return sb.toString();

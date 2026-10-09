@@ -45,11 +45,13 @@ public class ReleaseManagerUtil {
 		Set<String> upgradableBundleSymbolicNames = new HashSet<>();
 
 		for (String bundleSymbolicName : bundleSymbolicNames) {
-			if (isUpgradable(
+			if (!isUpgradable(
 					bundleSymbolicName, releaseLocalService, upgradeExecutor)) {
 
-				upgradableBundleSymbolicNames.add(bundleSymbolicName);
+				continue;
 			}
+
+			upgradableBundleSymbolicNames.add(bundleSymbolicName);
 		}
 
 		return upgradableBundleSymbolicNames;

@@ -116,9 +116,11 @@ public class JS {
 			sb.append(UnicodeFormatter.toString(array[i]));
 			sb.append(StringPool.APOSTROPHE);
 
-			if ((i + 1) < array.length) {
-				sb.append(StringPool.COMMA);
+			if ((i + 1) >= array.length) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA);
 		}
 
 		sb.append(StringPool.CLOSE_BRACKET);

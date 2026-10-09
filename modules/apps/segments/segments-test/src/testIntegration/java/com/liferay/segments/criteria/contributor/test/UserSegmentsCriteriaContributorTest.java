@@ -251,11 +251,12 @@ public class UserSegmentsCriteriaContributorTest {
 		Set<String> complexEntityFieldNames = new HashSet<>();
 
 		for (Field field : fields) {
-			if (StringUtil.startsWith(field.getName(), "customField/")) {
-				complexEntityFieldNames.add(
-					StringUtil.removeSubstring(
-						field.getName(), "customField/"));
+			if (!StringUtil.startsWith(field.getName(), "customField/")) {
+				continue;
 			}
+
+			complexEntityFieldNames.add(
+				StringUtil.removeSubstring(field.getName(), "customField/"));
 		}
 
 		Assert.assertFalse(complexEntityFieldNames.isEmpty());
@@ -314,9 +315,11 @@ public class UserSegmentsCriteriaContributorTest {
 				segmentsCriteriaContributor.getFields(
 					_getMockPortletRequest())) {
 
-			if (Objects.equals(curField.getName(), "groupIds")) {
-				field = curField;
+			if (!Objects.equals(curField.getName(), "groupIds")) {
+				continue;
 			}
+
+			field = curField;
 		}
 
 		Assert.assertNotNull(field);

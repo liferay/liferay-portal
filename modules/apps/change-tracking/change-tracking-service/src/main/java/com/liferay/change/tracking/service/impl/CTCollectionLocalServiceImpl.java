@@ -282,9 +282,11 @@ public class CTCollectionLocalServiceImpl
 
 				List<ConflictInfo> conflictInfos = ctConflictChecker.check();
 
-				if (!conflictInfos.isEmpty()) {
-					conflictInfosMap.put(entry.getKey(), conflictInfos);
+				if (conflictInfos.isEmpty()) {
+					continue;
 				}
+
+				conflictInfosMap.put(entry.getKey(), conflictInfos);
 			}
 		}
 
@@ -699,9 +701,11 @@ public class CTCollectionLocalServiceImpl
 			CTMappingTableInfo ctMappingTableInfo =
 				ctTableMapperHelper.getCTMappingTableInfo(ctCollectionId);
 
-			if (ctMappingTableInfo != null) {
-				ctMappingTableInfos.add(ctMappingTableInfo);
+			if (ctMappingTableInfo == null) {
+				continue;
 			}
+
+			ctMappingTableInfos.add(ctMappingTableInfo);
 		}
 
 		return ctMappingTableInfos;
@@ -1437,15 +1441,17 @@ public class CTCollectionLocalServiceImpl
 					List<String> uids = new ArrayList<>(ctEntries.size());
 
 					for (CTEntry ctEntry : ctEntries) {
-						if (ctEntry.getChangeType() !=
+						if (ctEntry.getChangeType() ==
 								CTConstants.CT_CHANGE_TYPE_DELETION) {
 
-							uids.add(
-								_uidFactory.getUID(
-									indexer.getClassName(),
-									ctEntry.getModelClassPK(),
-									ctEntry.getCtCollectionId()));
+							continue;
 						}
+
+						uids.add(
+							_uidFactory.getUID(
+								indexer.getClassName(),
+								ctEntry.getModelClassPK(),
+								ctEntry.getCtCollectionId()));
 					}
 
 					_indexWriterHelper.deleteDocuments(
@@ -1663,24 +1669,25 @@ public class CTCollectionLocalServiceImpl
 					List<String> uids = new ArrayList<>(ctEntries.size());
 
 					for (CTEntry ctEntry : ctEntries) {
-						if (ctEntry.getChangeType() !=
+						if (ctEntry.getChangeType() ==
 								CTConstants.CT_CHANGE_TYPE_DELETION) {
 
-							uids.add(
-								_uidFactory.getUID(
-									indexer.getClassName(),
-									ctEntry.getModelClassPK(),
-									fromCTCollectionId));
+							continue;
+						}
 
-							try (SafeCloseable safeCloseable =
-									CTCollectionThreadLocal.
-										setCTCollectionIdWithSafeCloseable(
-											toCTCollectionId)) {
+						uids.add(
+							_uidFactory.getUID(
+								indexer.getClassName(),
+								ctEntry.getModelClassPK(), fromCTCollectionId));
 
-								indexer.reindex(
-									indexer.getClassName(),
-									ctEntry.getModelClassPK());
-							}
+						try (SafeCloseable safeCloseable =
+								CTCollectionThreadLocal.
+									setCTCollectionIdWithSafeCloseable(
+										toCTCollectionId)) {
+
+							indexer.reindex(
+								indexer.getClassName(),
+								ctEntry.getModelClassPK());
 						}
 					}
 

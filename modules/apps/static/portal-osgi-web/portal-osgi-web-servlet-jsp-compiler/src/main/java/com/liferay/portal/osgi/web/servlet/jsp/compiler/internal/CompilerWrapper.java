@@ -221,9 +221,11 @@ public class CompilerWrapper extends Compiler {
 			Object packageName = attributes.get(
 				BundleRevision.PACKAGE_NAMESPACE);
 
-			if (packageName != null) {
-				packageNames.add((String)packageName);
+			if (packageName == null) {
+				continue;
 			}
+
+			packageNames.add((String)packageName);
 		}
 
 		_bundleWiringPackageNamesCache.put(bundleWiring, packageNames);

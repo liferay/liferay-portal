@@ -90,14 +90,16 @@ public class CTTableMapper<L extends BaseModel<L>, R extends BaseModel<R>>
 		List<Long> addedRightPrimaryKeys = new ArrayList<>();
 
 		for (long rightPrimaryKey : rightPrimaryKeys) {
-			if (!_containsTableMapping(
+			if (_containsTableMapping(
 					leftPrimaryKey, rightPrimaryKey, ctCollectionId)) {
 
-				addedRightPrimaryKeys.add(rightPrimaryKey);
-
-				_addTableMapping(
-					companyId, leftPrimaryKey, rightPrimaryKey, ctCollectionId);
+				continue;
 			}
+
+			addedRightPrimaryKeys.add(rightPrimaryKey);
+
+			_addTableMapping(
+				companyId, leftPrimaryKey, rightPrimaryKey, ctCollectionId);
 		}
 
 		return ArrayUtil.toLongArray(addedRightPrimaryKeys);
@@ -117,14 +119,16 @@ public class CTTableMapper<L extends BaseModel<L>, R extends BaseModel<R>>
 		List<Long> addedLeftPrimaryKeys = new ArrayList<>();
 
 		for (long leftPrimaryKey : leftPrimaryKeys) {
-			if (!_containsTableMapping(
+			if (_containsTableMapping(
 					leftPrimaryKey, rightPrimaryKey, ctCollectionId)) {
 
-				addedLeftPrimaryKeys.add(leftPrimaryKey);
-
-				_addTableMapping(
-					companyId, leftPrimaryKey, rightPrimaryKey, ctCollectionId);
+				continue;
 			}
+
+			addedLeftPrimaryKeys.add(leftPrimaryKey);
+
+			_addTableMapping(
+				companyId, leftPrimaryKey, rightPrimaryKey, ctCollectionId);
 		}
 
 		return ArrayUtil.toLongArray(addedLeftPrimaryKeys);
@@ -194,14 +198,16 @@ public class CTTableMapper<L extends BaseModel<L>, R extends BaseModel<R>>
 		List<Long> deletedRightPrimaryKeys = new ArrayList<>();
 
 		for (long rightPrimaryKey : rightPrimaryKeys) {
-			if (Arrays.binarySearch(currentRightPrimaryKeys, rightPrimaryKey) >=
+			if (Arrays.binarySearch(currentRightPrimaryKeys, rightPrimaryKey) <
 					0) {
 
-				_deleteTableMapping(
-					leftPrimaryKey, rightPrimaryKey, ctCollectionId);
-
-				deletedRightPrimaryKeys.add(rightPrimaryKey);
+				continue;
 			}
+
+			_deleteTableMapping(
+				leftPrimaryKey, rightPrimaryKey, ctCollectionId);
+
+			deletedRightPrimaryKeys.add(rightPrimaryKey);
 		}
 
 		return ArrayUtil.toLongArray(deletedRightPrimaryKeys);
@@ -223,14 +229,16 @@ public class CTTableMapper<L extends BaseModel<L>, R extends BaseModel<R>>
 		List<Long> deletedLeftPrimaryKeys = new ArrayList<>();
 
 		for (long leftPrimaryKey : leftPrimaryKeys) {
-			if (Arrays.binarySearch(currentLeftPrimaryKeys, leftPrimaryKey) >=
+			if (Arrays.binarySearch(currentLeftPrimaryKeys, leftPrimaryKey) <
 					0) {
 
-				_deleteTableMapping(
-					leftPrimaryKey, rightPrimaryKey, ctCollectionId);
-
-				deletedLeftPrimaryKeys.add(leftPrimaryKey);
+				continue;
 			}
+
+			_deleteTableMapping(
+				leftPrimaryKey, rightPrimaryKey, ctCollectionId);
+
+			deletedLeftPrimaryKeys.add(leftPrimaryKey);
 		}
 
 		return ArrayUtil.toLongArray(deletedLeftPrimaryKeys);

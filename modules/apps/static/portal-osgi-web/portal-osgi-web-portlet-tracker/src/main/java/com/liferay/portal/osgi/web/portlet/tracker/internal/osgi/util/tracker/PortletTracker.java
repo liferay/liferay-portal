@@ -626,9 +626,11 @@ public class PortletTracker
 				}
 			}
 
-			if (eventDefinition != null) {
-				portletApp.addEventDefinition(eventDefinition);
+			if (eventDefinition == null) {
+				continue;
 			}
+
+			portletApp.addEventDefinition(eventDefinition);
 		}
 	}
 
@@ -1154,9 +1156,11 @@ public class PortletTracker
 			for (EventDefinition eventDefinition : eventDefinitions) {
 				Set<QName> qNames = eventDefinition.getQNames();
 
-				if (qNames.contains(qName)) {
-					processingEvents.addAll(qNames);
+				if (!qNames.contains(qName)) {
+					continue;
 				}
+
+				processingEvents.addAll(qNames);
 			}
 		}
 

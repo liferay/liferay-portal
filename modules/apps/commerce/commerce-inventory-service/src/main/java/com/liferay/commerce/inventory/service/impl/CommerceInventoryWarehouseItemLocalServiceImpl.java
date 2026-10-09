@@ -708,44 +708,45 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		List<CIWarehouseItem> ciWarehouseItems = new ArrayList<>();
 
 		for (Object[] stock : sumStocks) {
-			if (stock != null) {
-				String skuCode = StringPool.BLANK;
-
-				if ((stock.length > 0) && (stock[0] != null)) {
-					skuCode = (String)stock[0];
-				}
-
-				String unitOfMeasureKey = StringPool.BLANK;
-
-				if ((stock.length > 1) && (stock[1] != null)) {
-					unitOfMeasureKey = (String)stock[1];
-				}
-
-				BigDecimal stockQuantity = BigDecimal.ZERO;
-
-				if ((stock.length > 2) && (stock[2] != null)) {
-					stockQuantity = (BigDecimal)stock[2];
-				}
-
-				BigDecimal bookedQuantity = BigDecimal.ZERO;
-
-				if ((stock.length > 3) && (stock[3] != null)) {
-					bookedQuantity = BigDecimalUtil.get(
-						stock[3], BigDecimal.ZERO);
-				}
-
-				BigDecimal replenishmentQuantity = BigDecimal.ZERO;
-
-				if ((stock.length > 4) && (stock[4] != null)) {
-					replenishmentQuantity = BigDecimalUtil.get(
-						stock[4], BigDecimal.ZERO);
-				}
-
-				ciWarehouseItems.add(
-					new CIWarehouseItem(
-						skuCode, unitOfMeasureKey, bookedQuantity,
-						replenishmentQuantity, stockQuantity));
+			if (stock == null) {
+				continue;
 			}
+
+			String skuCode = StringPool.BLANK;
+
+			if ((stock.length > 0) && (stock[0] != null)) {
+				skuCode = (String)stock[0];
+			}
+
+			String unitOfMeasureKey = StringPool.BLANK;
+
+			if ((stock.length > 1) && (stock[1] != null)) {
+				unitOfMeasureKey = (String)stock[1];
+			}
+
+			BigDecimal stockQuantity = BigDecimal.ZERO;
+
+			if ((stock.length > 2) && (stock[2] != null)) {
+				stockQuantity = (BigDecimal)stock[2];
+			}
+
+			BigDecimal bookedQuantity = BigDecimal.ZERO;
+
+			if ((stock.length > 3) && (stock[3] != null)) {
+				bookedQuantity = BigDecimalUtil.get(stock[3], BigDecimal.ZERO);
+			}
+
+			BigDecimal replenishmentQuantity = BigDecimal.ZERO;
+
+			if ((stock.length > 4) && (stock[4] != null)) {
+				replenishmentQuantity = BigDecimalUtil.get(
+					stock[4], BigDecimal.ZERO);
+			}
+
+			ciWarehouseItems.add(
+				new CIWarehouseItem(
+					skuCode, unitOfMeasureKey, bookedQuantity,
+					replenishmentQuantity, stockQuantity));
 		}
 
 		return ciWarehouseItems;

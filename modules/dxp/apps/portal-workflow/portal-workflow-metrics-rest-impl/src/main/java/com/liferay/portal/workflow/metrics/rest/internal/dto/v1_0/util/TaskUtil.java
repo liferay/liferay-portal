@@ -235,16 +235,18 @@ public class TaskUtil {
 		for (Map.Entry<String, Field> entry : fields.entrySet()) {
 			String key = entry.getKey();
 
-			if (StringUtil.startsWith(key, fieldName + StringPool.UNDERLINE) &&
-				!StringUtil.endsWith(key, "_sortable")) {
+			if (!StringUtil.startsWith(key, fieldName + StringPool.UNDERLINE) ||
+				StringUtil.endsWith(key, "_sortable")) {
 
-				Field field = entry.getValue();
-
-				map.put(
-					StringUtil.removeSubstring(
-						key, fieldName + StringPool.UNDERLINE),
-					String.valueOf(field.getValue()));
+				continue;
 			}
+
+			Field field = entry.getValue();
+
+			map.put(
+				StringUtil.removeSubstring(
+					key, fieldName + StringPool.UNDERLINE),
+				String.valueOf(field.getValue()));
 		}
 
 		return map;
@@ -256,16 +258,18 @@ public class TaskUtil {
 		Map<String, String> map = new HashMap<>();
 
 		for (Map.Entry<String, Object> entry : sourcesMap.entrySet()) {
-			if (StringUtil.startsWith(
-					entry.getKey(), fieldName + StringPool.UNDERLINE) &&
-				!StringUtil.endsWith(entry.getKey(), "_sortable")) {
+			if (!StringUtil.startsWith(
+					entry.getKey(), fieldName + StringPool.UNDERLINE) ||
+				StringUtil.endsWith(entry.getKey(), "_sortable")) {
 
-				map.put(
-					_toLanguageTag(
-						StringUtil.removeSubstring(
-							entry.getKey(), fieldName + StringPool.UNDERLINE)),
-					GetterUtil.getString(entry.getValue()));
+				continue;
 			}
+
+			map.put(
+				_toLanguageTag(
+					StringUtil.removeSubstring(
+						entry.getKey(), fieldName + StringPool.UNDERLINE)),
+				GetterUtil.getString(entry.getValue()));
 		}
 
 		return map;

@@ -83,19 +83,23 @@ public class NestedPortletsConfigurationAction
 		Set<String> columnIds = new HashSet<>();
 
 		while (matcher.find()) {
-			if (Validator.isNotNull(matcher.group(1))) {
-				columnIds.add(matcher.group(1));
+			if (Validator.isNull(matcher.group(1))) {
+				continue;
 			}
+
+			columnIds.add(matcher.group(1));
 		}
 
 		Set<String> columnNames = new LinkedHashSet<>();
 
 		for (String columnId : columnIds) {
-			if (!columnId.contains(portletId)) {
-				columnNames.add(
-					_portal.getPortletNamespace(portletId) +
-						StringPool.UNDERLINE + columnId);
+			if (columnId.contains(portletId)) {
+				continue;
 			}
+
+			columnNames.add(
+				_portal.getPortletNamespace(portletId) + StringPool.UNDERLINE +
+					columnId);
 		}
 
 		return new ArrayList<>(columnNames);

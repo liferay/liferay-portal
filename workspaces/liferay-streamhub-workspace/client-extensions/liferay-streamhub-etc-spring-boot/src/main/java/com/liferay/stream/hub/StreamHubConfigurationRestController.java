@@ -225,9 +225,11 @@ public class StreamHubConfigurationRestController extends BaseRestController {
 			String externalReferenceCode =
 				objectAction.getExternalReferenceCode();
 
-			if (externalReferenceCode.startsWith("T4L9_STREAM_HUB_EVENT_")) {
-				objectActionResource.deleteObjectAction(objectAction.getId());
+			if (!externalReferenceCode.startsWith("T4L9_STREAM_HUB_EVENT_")) {
+				continue;
 			}
+
+			objectActionResource.deleteObjectAction(objectAction.getId());
 		}
 	}
 

@@ -85,13 +85,15 @@ public class DLFileEntryConfigurationProviderImpl
 
 			Group group = _groupLocalService.fetchGroup(groupId);
 
-			if ((group != null) &&
-				(previewableProcessorMaxSize !=
+			if ((group == null) ||
+				(previewableProcessorMaxSize ==
 					getCompanyPreviewableProcessorMaxSize(
 						group.getCompanyId()))) {
 
-				map.put(groupId, previewableProcessorMaxSize);
+				continue;
 			}
+
+			map.put(groupId, previewableProcessorMaxSize);
 		}
 
 		return map;
@@ -222,9 +224,11 @@ public class DLFileEntryConfigurationProviderImpl
 		long minimum = Long.MAX_VALUE;
 
 		for (long value : values) {
-			if ((value != unlimitedValue) && (value < minimum)) {
-				minimum = value;
+			if ((value == unlimitedValue) || (value >= minimum)) {
+				continue;
 			}
+
+			minimum = value;
 		}
 
 		if (minimum == Long.MAX_VALUE) {

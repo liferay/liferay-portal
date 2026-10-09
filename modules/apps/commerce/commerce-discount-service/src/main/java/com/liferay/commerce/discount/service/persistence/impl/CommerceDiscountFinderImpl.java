@@ -486,9 +486,11 @@ public class CommerceDiscountFinderImpl
 		for (int i = 0; i < classPKs.length; i++) {
 			sb.append(classPKs[i]);
 
-			if (i != (classPKs.length - 1)) {
-				sb.append(", ");
+			if (i == (classPKs.length - 1)) {
+				continue;
 			}
+
+			sb.append(", ");
 		}
 
 		return StringUtil.replace(sql, queryPlaceholder, sb.toString());

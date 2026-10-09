@@ -36,11 +36,13 @@ public class RSSPreferencesValidator implements PreferencesValidator {
 		String[] urls = portletPreferences.getValues("urls", new String[0]);
 
 		for (String url : urls) {
-			if (!HttpComponentsUtil.hasHTTPProtocol(url) ||
-				!Validator.isUrl(url)) {
+			if (HttpComponentsUtil.hasHTTPProtocol(url) &&
+				Validator.isUrl(url)) {
 
-				badURLs.add(url);
+				continue;
 			}
+
+			badURLs.add(url);
 		}
 
 		if (!badURLs.isEmpty()) {

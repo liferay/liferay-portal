@@ -58,11 +58,13 @@ public class BatchEngineTaskOrphanScannerSchedulerJobConfiguration
 
 				Date modifiedDate = batchEngineExportTask.getModifiedDate();
 
-				if ((time - modifiedDate.getTime()) > _orphanageThreshold) {
-					noticeableExecutorService.submit(
-						() -> _batchEngineExportTaskExecutor.execute(
-							batchEngineExportTask));
+				if ((time - modifiedDate.getTime()) <= _orphanageThreshold) {
+					continue;
 				}
+
+				noticeableExecutorService.submit(
+					() -> _batchEngineExportTaskExecutor.execute(
+						batchEngineExportTask));
 			}
 
 			for (BatchEngineImportTask batchEngineImportTask :
@@ -72,11 +74,13 @@ public class BatchEngineTaskOrphanScannerSchedulerJobConfiguration
 
 				Date modifiedDate = batchEngineImportTask.getModifiedDate();
 
-				if ((time - modifiedDate.getTime()) > _orphanageThreshold) {
-					noticeableExecutorService.submit(
-						() -> _batchEngineImportTaskExecutor.execute(
-							batchEngineImportTask));
+				if ((time - modifiedDate.getTime()) <= _orphanageThreshold) {
+					continue;
 				}
+
+				noticeableExecutorService.submit(
+					() -> _batchEngineImportTaskExecutor.execute(
+						batchEngineImportTask));
 			}
 		};
 	}

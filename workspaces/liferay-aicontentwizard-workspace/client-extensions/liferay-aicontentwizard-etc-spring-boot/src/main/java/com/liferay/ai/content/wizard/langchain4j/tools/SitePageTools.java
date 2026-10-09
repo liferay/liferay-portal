@@ -364,9 +364,11 @@ public class SitePageTools extends BaseTools {
 					JSONObject jsonObject = _createPageElementJSONObject(
 						component.name);
 
-					if (jsonObject != null) {
-						jsonArray.put(jsonObject);
+					if (jsonObject == null) {
+						continue;
 					}
+
+					jsonArray.put(jsonObject);
 				}
 
 				pageElementsJSONArray.put(

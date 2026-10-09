@@ -1008,9 +1008,11 @@ public class OrganizationLocalServiceImpl
 		while (iterator.hasNext()) {
 			Organization organization = iterator.next();
 
-			if (organization.getCompanyId() != user.getCompanyId()) {
-				iterator.remove();
+			if (organization.getCompanyId() == user.getCompanyId()) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (organizations.isEmpty()) {
@@ -1384,13 +1386,15 @@ public class OrganizationLocalServiceImpl
 
 			String roleName = role.getName();
 
-			if (roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) ||
-				roleName.equals(RoleConstants.ORGANIZATION_OWNER)) {
+			if (!roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) &&
+				!roleName.equals(RoleConstants.ORGANIZATION_OWNER)) {
 
-				Group group = userGroupRole.getGroup();
-
-				organizationIds.add(group.getOrganizationId());
+				continue;
 			}
+
+			Group group = userGroupRole.getGroup();
+
+			organizationIds.add(group.getOrganizationId());
 		}
 
 		return ArrayUtil.toLongArray(organizationIds);
@@ -1435,17 +1439,19 @@ public class OrganizationLocalServiceImpl
 
 			String roleName = role.getName();
 
-			if (roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) ||
-				roleName.equals(RoleConstants.ORGANIZATION_OWNER)) {
+			if (!roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) &&
+				!roleName.equals(RoleConstants.ORGANIZATION_OWNER)) {
 
-				Group group = userGroupRole.getGroup();
-
-				Organization organization =
-					organizationPersistence.findByPrimaryKey(
-						group.getOrganizationId());
-
-				organizations.add(organization);
+				continue;
 			}
+
+			Group group = userGroupRole.getGroup();
+
+			Organization organization =
+				organizationPersistence.findByPrimaryKey(
+					group.getOrganizationId());
+
+			organizations.add(organization);
 		}
 
 		return new ArrayList<>(organizations);
@@ -2492,14 +2498,16 @@ public class OrganizationLocalServiceImpl
 			for (Organization childOrganization : childOrganizations) {
 				Group childGroup = childOrganization.getGroup();
 
-				if (childGroup.isSite() &&
-					(childGroup.getParentGroupId() ==
+				if (!childGroup.isSite() ||
+					(childGroup.getParentGroupId() !=
 						GroupConstants.DEFAULT_PARENT_GROUP_ID)) {
 
-					childGroup.setParentGroupId(group.getGroupId());
-
-					_groupLocalService.updateGroup(childGroup);
+					continue;
 				}
+
+				childGroup.setParentGroupId(group.getGroupId());
+
+				_groupLocalService.updateGroup(childGroup);
 			}
 		}
 
@@ -2547,16 +2555,18 @@ public class OrganizationLocalServiceImpl
 		List<Organization> organizations) {
 
 		for (Organization organization : organizations) {
-			if (!allSuborganizations.contains(organization)) {
-				allSuborganizations.add(organization);
-
-				List<Organization> suborganizations =
-					organizationPersistence.findByC_P(
-						organization.getCompanyId(),
-						organization.getOrganizationId());
-
-				addSuborganizations(allSuborganizations, suborganizations);
+			if (allSuborganizations.contains(organization)) {
+				continue;
 			}
+
+			allSuborganizations.add(organization);
+
+			List<Organization> suborganizations =
+				organizationPersistence.findByC_P(
+					organization.getCompanyId(),
+					organization.getOrganizationId());
+
+			addSuborganizations(allSuborganizations, suborganizations);
 		}
 	}
 

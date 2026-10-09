@@ -342,9 +342,11 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 					field -> StringUtil.toLowerCase(field.getType()));
 			}
 
-			if (sort.isReverse()) {
-				fieldComparator = fieldComparator.reversed();
+			if (!sort.isReverse()) {
+				continue;
 			}
+
+			fieldComparator = fieldComparator.reversed();
 		}
 
 		if (fieldComparator != null) {
@@ -363,16 +365,16 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 			Arrays.asList(configurationFieldNames));
 
 		for (Field field : fields) {
-			if (Objects.equals(source, field.getSource())) {
-				if (!field.getSelected()) {
-					selectedFieldNames.remove(field.getName());
-				}
-				else {
-					if (ArrayUtil.contains(
-							validateFieldNames, field.getName())) {
+			if (!Objects.equals(source, field.getSource())) {
+				continue;
+			}
 
-						selectedFieldNames.add(field.getName());
-					}
+			if (!field.getSelected()) {
+				selectedFieldNames.remove(field.getName());
+			}
+			else {
+				if (ArrayUtil.contains(validateFieldNames, field.getName())) {
+					selectedFieldNames.add(field.getName());
 				}
 			}
 		}

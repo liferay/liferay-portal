@@ -266,12 +266,14 @@ public class InviteUsersMVCResourceCommand
 					userIds[i], group.getGroupId(), role.getRoleId());
 			}
 
-			if (userGroupRoles.isEmpty()) {
-				_sendNotificationEvent(
-					ctCollectionId, userIds[i], roleValues[i], themeDisplay);
-
-				_sendEmail(ctCollectionId, userIds[i], themeDisplay);
+			if (!userGroupRoles.isEmpty()) {
+				continue;
 			}
+
+			_sendNotificationEvent(
+				ctCollectionId, userIds[i], roleValues[i], themeDisplay);
+
+			_sendEmail(ctCollectionId, userIds[i], themeDisplay);
 		}
 
 		JSONPortletResponseUtil.writeJSON(

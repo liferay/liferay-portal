@@ -491,9 +491,11 @@ public class JournalUpgradeProcess extends UpgradeProcess {
 			String newFieldName = oldFieldName.replaceAll(
 				_INVALID_FIELD_NAME_CHARS_REGEX, StringPool.BLANK);
 
-			if (!oldFieldName.equals(newFieldName)) {
-				invalidDDMFormFieldNamesMap.put(oldFieldName, newFieldName);
+			if (oldFieldName.equals(newFieldName)) {
+				continue;
 			}
+
+			invalidDDMFormFieldNamesMap.put(oldFieldName, newFieldName);
 		}
 
 		return invalidDDMFormFieldNamesMap;
@@ -668,9 +670,11 @@ public class JournalUpgradeProcess extends UpgradeProcess {
 
 					updatedContent = _transformFieldNames(updatedContent);
 
-					if (!content.equals(updatedContent)) {
-						_updateJournalArticleContent(id, updatedContent);
+					if (content.equals(updatedContent)) {
+						continue;
 					}
+
+					_updateJournalArticleContent(id, updatedContent);
 				}
 			}
 		}

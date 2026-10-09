@@ -201,14 +201,15 @@ public class LiferayDynamicCapability
 		LocalRepository wrappedLocalRepository = localRepository;
 
 		for (Capability capability : _capabilities) {
-			if (capability instanceof RepositoryWrapperAware) {
-				RepositoryWrapperAware repositoryWrapperAware =
-					(RepositoryWrapperAware)capability;
-
-				wrappedLocalRepository =
-					repositoryWrapperAware.wrapLocalRepository(
-						wrappedLocalRepository);
+			if (!(capability instanceof RepositoryWrapperAware)) {
+				continue;
 			}
+
+			RepositoryWrapperAware repositoryWrapperAware =
+				(RepositoryWrapperAware)capability;
+
+			wrappedLocalRepository = repositoryWrapperAware.wrapLocalRepository(
+				wrappedLocalRepository);
 		}
 
 		return wrappedLocalRepository;
@@ -218,13 +219,15 @@ public class LiferayDynamicCapability
 		Repository wrappedRepository = repository;
 
 		for (Capability capability : _capabilities) {
-			if (capability instanceof RepositoryWrapperAware) {
-				RepositoryWrapperAware repositoryWrapperAware =
-					(RepositoryWrapperAware)capability;
-
-				wrappedRepository = repositoryWrapperAware.wrapRepository(
-					wrappedRepository);
+			if (!(capability instanceof RepositoryWrapperAware)) {
+				continue;
 			}
+
+			RepositoryWrapperAware repositoryWrapperAware =
+				(RepositoryWrapperAware)capability;
+
+			wrappedRepository = repositoryWrapperAware.wrapRepository(
+				wrappedRepository);
 		}
 
 		return wrappedRepository;

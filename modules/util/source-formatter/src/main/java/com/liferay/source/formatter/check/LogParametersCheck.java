@@ -76,16 +76,18 @@ public class LogParametersCheck extends BaseFileCheck {
 					matcher.start(2));
 			}
 
-			if ((parameterList.size() == 2) &&
-				variableTypeName.endsWith("Exception")) {
+			if ((parameterList.size() != 2) ||
+				!variableTypeName.endsWith("Exception")) {
 
-				String secondParameter = StringUtil.trim(parameterList.get(1));
+				continue;
+			}
 
-				if (firstParameter.equals(secondParameter)) {
-					return StringUtil.replaceFirst(
-						content, firstParameter + StringPool.COMMA,
-						StringPool.BLANK, matcher.start(2));
-				}
+			String secondParameter = StringUtil.trim(parameterList.get(1));
+
+			if (firstParameter.equals(secondParameter)) {
+				return StringUtil.replaceFirst(
+					content, firstParameter + StringPool.COMMA,
+					StringPool.BLANK, matcher.start(2));
 			}
 		}
 

@@ -136,9 +136,11 @@ public class GetObjectFieldNotificationTemplateTermsMVCResourceCommandTest {
 		while (iterator.hasNext()) {
 			JSONObject termJSONObject = iterator.next();
 
-			if (Objects.equals(termJSONObject.get("termLabel"), "test")) {
-				Assert.assertEquals("[%TEST%]", termJSONObject.get("termName"));
+			if (!Objects.equals(termJSONObject.get("termLabel"), "test")) {
+				continue;
 			}
+
+			Assert.assertEquals("[%TEST%]", termJSONObject.get("termName"));
 		}
 	}
 

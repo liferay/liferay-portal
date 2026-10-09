@@ -123,12 +123,11 @@ public class AnnotationLocator {
 
 			T annotation = clazz.getAnnotation(annotationClass);
 
-			if (annotation == null) {
-				_queueSuperTypes(clazz, queue);
-			}
-			else {
+			if (annotation != null) {
 				return annotation;
 			}
+
+			_queueSuperTypes(clazz, queue);
 		}
 
 		return null;
@@ -188,12 +187,11 @@ public class AnnotationLocator {
 			catch (Exception exception) {
 			}
 
-			if (annotation == null) {
-				_queueSuperTypes(clazz, queue);
-			}
-			else {
+			if (annotation != null) {
 				return annotation;
 			}
+
+			_queueSuperTypes(clazz, queue);
 		}
 
 		return null;
@@ -239,9 +237,11 @@ public class AnnotationLocator {
 		Class<?>[] interfaceClasses = clazz.getInterfaces();
 
 		for (Class<?> interfaceClass : interfaceClasses) {
-			if (!queue.contains(interfaceClass)) {
-				queue.offer(interfaceClass);
+			if (queue.contains(interfaceClass)) {
+				continue;
 			}
+
+			queue.offer(interfaceClass);
 		}
 	}
 

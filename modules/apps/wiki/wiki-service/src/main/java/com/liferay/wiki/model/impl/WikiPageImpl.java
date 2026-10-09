@@ -142,9 +142,11 @@ public class WikiPageImpl extends WikiPageBaseImpl {
 			int value = DateUtil.compareTo(
 				fileEntry.getModifiedDate(), getStatusDate());
 
-			if (value <= 0) {
-				fileEntries.add(fileEntry);
+			if (value > 0) {
+				continue;
 			}
+
+			fileEntries.add(fileEntry);
 		}
 
 		return fileEntries;

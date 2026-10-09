@@ -61,10 +61,12 @@ public class CommercePermissionUpgradeProcess extends UpgradeProcess {
 				role = _roleLocalService.fetchRole(
 					resultSet.getLong("companyId"), RoleConstants.USER);
 
-				if ((role != null) && (roleId == role.getRoleId())) {
-					_resourcePermissionLocalService.deleteResourcePermission(
-						resultSet.getLong("resourcePermissionId"));
+				if ((role == null) || (roleId != role.getRoleId())) {
+					continue;
 				}
+
+				_resourcePermissionLocalService.deleteResourcePermission(
+					resultSet.getLong("resourcePermissionId"));
 			}
 		}
 	}

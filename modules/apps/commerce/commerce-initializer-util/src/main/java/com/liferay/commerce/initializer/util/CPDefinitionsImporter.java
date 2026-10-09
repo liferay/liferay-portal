@@ -268,18 +268,19 @@ public class CPDefinitionsImporter {
 			int quantity = skuJSONObject.getInt(
 				"warehouse" + String.valueOf(i + 1));
 
-			if (quantity > 0) {
-				long commerceInventoryWarehouseId =
-					commerceInventoryWarehouseIds[i];
-
-				_commerceInventoryWarehouseItemLocalService.
-					addOrUpdateCommerceInventoryWarehouseItem(
-						StringPool.BLANK, serviceContext.getCompanyId(),
-						serviceContext.getUserId(),
-						commerceInventoryWarehouseId,
-						BigDecimal.valueOf(quantity), BigDecimal.ZERO,
-						cpInstance.getSku(), StringPool.BLANK);
+			if (quantity <= 0) {
+				continue;
 			}
+
+			long commerceInventoryWarehouseId =
+				commerceInventoryWarehouseIds[i];
+
+			_commerceInventoryWarehouseItemLocalService.
+				addOrUpdateCommerceInventoryWarehouseItem(
+					StringPool.BLANK, serviceContext.getCompanyId(),
+					serviceContext.getUserId(), commerceInventoryWarehouseId,
+					BigDecimal.valueOf(quantity), BigDecimal.ZERO,
+					cpInstance.getSku(), StringPool.BLANK);
 		}
 	}
 
@@ -744,12 +745,14 @@ public class CPDefinitionsImporter {
 							accountGroupExternalReferenceCode,
 							company.getCompanyId());
 
-				if (accountGroup != null) {
-					_accountGroupRelLocalService.addAccountGroupRel(
-						accountGroup.getAccountGroupId(),
-						CPDefinition.class.getName(),
-						accountGroup.getAccountGroupId());
+				if (accountGroup == null) {
+					continue;
 				}
+
+				_accountGroupRelLocalService.addAccountGroupRel(
+					accountGroup.getAccountGroupId(),
+					CPDefinition.class.getName(),
+					accountGroup.getAccountGroupId());
 			}
 		}
 
@@ -928,12 +931,14 @@ public class CPDefinitionsImporter {
 					String name = cpDefinitionOptionValueRel.getName(
 						LocaleUtil.getSiteDefault());
 
-					if (name.equals(optionsJSONObject.getString("value"))) {
-						JSONArray valueJSONArray = JSONUtil.put(
-							cpDefinitionOptionValueRel.getKey());
-
-						jsonObject.put("value", valueJSONArray);
+					if (!name.equals(optionsJSONObject.getString("value"))) {
+						continue;
 					}
+
+					JSONArray valueJSONArray = JSONUtil.put(
+						cpDefinitionOptionValueRel.getKey());
+
+					jsonObject.put("value", valueJSONArray);
 				}
 
 				jsonArray.put(jsonObject);

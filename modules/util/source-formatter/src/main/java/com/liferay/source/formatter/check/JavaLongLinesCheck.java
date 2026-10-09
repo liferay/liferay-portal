@@ -59,11 +59,13 @@ public class JavaLongLinesCheck extends BaseFileCheck {
 					continue;
 				}
 
-				if (line.contains(StringPool.QUOTE) ||
-					trimmedLine.startsWith("//")) {
+				if (!line.contains(StringPool.QUOTE) &&
+					!trimmedLine.startsWith("//")) {
 
-					addMessage(fileName, "> " + getMaxLineLength(), lineNumber);
+					continue;
 				}
+
+				addMessage(fileName, "> " + getMaxLineLength(), lineNumber);
 			}
 		}
 

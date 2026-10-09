@@ -379,11 +379,12 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 		for (JournalFolder folder : folders) {
 			folderIds.add(folder.getFolderId());
 
-			if (recurse) {
-				getSubfolderIds(
-					folderIds, folder.getGroupId(), folder.getFolderId(),
-					recurse);
+			if (!recurse) {
+				continue;
 			}
+
+			getSubfolderIds(
+				folderIds, folder.getGroupId(), folder.getFolderId(), recurse);
 		}
 	}
 
@@ -633,11 +634,13 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 		while (iterator.hasNext()) {
 			DDMStructure ddmStructure = iterator.next();
 
-			if (!_ddmStructureModelResourcePermission.contains(
+			if (_ddmStructureModelResourcePermission.contains(
 					permissionChecker, ddmStructure, ActionKeys.VIEW)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return ddmStructures;

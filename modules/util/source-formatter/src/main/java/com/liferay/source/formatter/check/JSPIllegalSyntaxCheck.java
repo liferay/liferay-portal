@@ -42,9 +42,11 @@ public class JSPIllegalSyntaxCheck extends BaseFileCheck {
 				return;
 			}
 
-			if (!ToolsUtil.isInsideQuotes(content, x)) {
-				addMessage(fileName, message, getLineNumber(content, x));
+			if (ToolsUtil.isInsideQuotes(content, x)) {
+				continue;
 			}
+
+			addMessage(fileName, message, getLineNumber(content, x));
 		}
 	}
 

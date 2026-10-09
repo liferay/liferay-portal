@@ -655,9 +655,11 @@ public class CommercePriceListFinderImpl
 		for (int i = 0; i < commerceAccountGroupIds.length; i++) {
 			sb.append(commerceAccountGroupIds[i]);
 
-			if (i != (commerceAccountGroupIds.length - 1)) {
-				sb.append(", ");
+			if (i == (commerceAccountGroupIds.length - 1)) {
+				continue;
 			}
+
+			sb.append(", ");
 		}
 
 		return StringUtil.replace(sql, "[$ACCOUNT_GROUP_IDS$]", sb.toString());

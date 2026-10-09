@@ -138,15 +138,18 @@ public class DDMForm implements Serializable {
 		for (DDMFormField ddmFormField : _ddmFormFields) {
 			ddmFormFieldsMap.put(ddmFormField.getName(), ddmFormField);
 
-			if (includeNestedDDMFormFields) {
-				List<DDMFormField> nestedDDMFormFields =
-					ddmFormField.getNestedDDMFormFields();
-
-				if (!nestedDDMFormFields.isEmpty()) {
-					ddmFormFieldsMap.putAll(
-						ddmFormField.getNestedDDMFormFieldsMap());
-				}
+			if (!includeNestedDDMFormFields) {
+				continue;
 			}
+
+			List<DDMFormField> nestedDDMFormFields =
+				ddmFormField.getNestedDDMFormFields();
+
+			if (nestedDDMFormFields.isEmpty()) {
+				continue;
+			}
+
+			ddmFormFieldsMap.putAll(ddmFormField.getNestedDDMFormFieldsMap());
 		}
 
 		return ddmFormFieldsMap;
@@ -162,10 +165,12 @@ public class DDMForm implements Serializable {
 			ddmFormFieldsReferencesMap.put(
 				ddmFormField.getFieldReference(), ddmFormField);
 
-			if (includeNestedDDMFormFields) {
-				ddmFormFieldsReferencesMap.putAll(
-					ddmFormField.getNestedDDMFormFieldsReferencesMap());
+			if (!includeNestedDDMFormFields) {
+				continue;
 			}
+
+			ddmFormFieldsReferencesMap.putAll(
+				ddmFormField.getNestedDDMFormFieldsReferencesMap());
 		}
 
 		return ddmFormFieldsReferencesMap;
@@ -197,10 +202,12 @@ public class DDMForm implements Serializable {
 				ddmFormFieldsMap.put(ddmFormField.getName(), ddmFormField);
 			}
 
-			if (includeNestedDDMFormFields) {
-				ddmFormFieldsMap.putAll(
-					ddmFormField.getNontransientNestedDDMFormFieldsMap());
+			if (!includeNestedDDMFormFields) {
+				continue;
 			}
+
+			ddmFormFieldsMap.putAll(
+				ddmFormField.getNontransientNestedDDMFormFieldsMap());
 		}
 
 		return ddmFormFieldsMap;
@@ -218,11 +225,12 @@ public class DDMForm implements Serializable {
 					ddmFormField.getFieldReference(), ddmFormField);
 			}
 
-			if (includeNestedDDMFormFields) {
-				ddmFormFieldsReferencesMap.putAll(
-					ddmFormField.
-						getNontransientNestedDDMFormFieldsReferencesMap());
+			if (!includeNestedDDMFormFields) {
+				continue;
 			}
+
+			ddmFormFieldsReferencesMap.putAll(
+				ddmFormField.getNontransientNestedDDMFormFieldsReferencesMap());
 		}
 
 		return ddmFormFieldsReferencesMap;

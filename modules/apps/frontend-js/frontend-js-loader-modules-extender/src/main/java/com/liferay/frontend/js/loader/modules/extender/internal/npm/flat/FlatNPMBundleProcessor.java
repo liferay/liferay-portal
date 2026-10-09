@@ -368,9 +368,11 @@ public class FlatNPMBundleProcessor implements JSBundleProcessor {
 
 				URL bundleURL = bundle.getEntry(path);
 
-				if (bundleURL != null) {
-					jsURLsMap.putIfAbsent(path, bundleURL);
+				if (bundleURL == null) {
+					continue;
 				}
+
+				jsURLsMap.putIfAbsent(path, bundleURL);
 			}
 		}
 
@@ -541,25 +543,27 @@ public class FlatNPMBundleProcessor implements JSBundleProcessor {
 
 			String main = jsonObject.getString("main", null);
 
-			if (Validator.isNotNull(main)) {
-				String folderPath = filePath.substring(
-					0, filePath.lastIndexOf(StringPool.SLASH));
-
-				String alias = folderPath.substring(1);
-
-				if (!main.startsWith(StringPool.SLASH)) {
-					main = _canonicalizePath(alias + StringPool.SLASH + main);
-				}
-
-				main = ModuleNameUtil.toModuleName(main);
-
-				JSModuleAlias jsModuleAlias = new JSModuleAlias(
-					flatJSPackage, main, alias);
-
-				flatJSPackage.addJSModuleAlias(jsModuleAlias);
-
-				processedFolderPaths.add(folderPath);
+			if (Validator.isNull(main)) {
+				continue;
 			}
+
+			String folderPath = filePath.substring(
+				0, filePath.lastIndexOf(StringPool.SLASH));
+
+			String alias = folderPath.substring(1);
+
+			if (!main.startsWith(StringPool.SLASH)) {
+				main = _canonicalizePath(alias + StringPool.SLASH + main);
+			}
+
+			main = ModuleNameUtil.toModuleName(main);
+
+			JSModuleAlias jsModuleAlias = new JSModuleAlias(
+				flatJSPackage, main, alias);
+
+			flatJSPackage.addJSModuleAlias(jsModuleAlias);
+
+			processedFolderPaths.add(folderPath);
 		}
 
 		for (URL url : moduleDependenciesMap.keySet()) {
@@ -582,10 +586,12 @@ public class FlatNPMBundleProcessor implements JSBundleProcessor {
 
 			String alias = folderPath.substring(1);
 
-			if (!processedFolderPaths.contains(folderPath)) {
-				flatJSPackage.addJSModuleAlias(
-					new JSModuleAlias(flatJSPackage, alias + "/index", alias));
+			if (processedFolderPaths.contains(folderPath)) {
+				continue;
 			}
+
+			flatJSPackage.addJSModuleAlias(
+				new JSModuleAlias(flatJSPackage, alias + "/index", alias));
 		}
 	}
 
@@ -662,12 +668,14 @@ public class FlatNPMBundleProcessor implements JSBundleProcessor {
 
 			String lastFolderPath = parts[parts.length - 2];
 
-			if (lastFolderPath.equals("node_modules")) {
-				_processPackage(
-					flatJSBundle, manifest, entry.getValue(), jsonObjects,
-					moduleDependenciesMap, StringPool.SLASH.concat(location),
-					false);
+			if (!lastFolderPath.equals("node_modules")) {
+				continue;
 			}
+
+			_processPackage(
+				flatJSBundle, manifest, entry.getValue(), jsonObjects,
+				moduleDependenciesMap, StringPool.SLASH.concat(location),
+				false);
 		}
 	}
 

@@ -138,9 +138,11 @@ public class CommerceOrderListDisplayContext {
 			String paramValue = ParamUtil.getString(
 				_commerceOrderRequestHelper.getRequest(), displayTerm);
 
-			if (Validator.isNotNull(paramValue)) {
-				portletURL.setParameter(displayTerm, paramValue);
+			if (Validator.isNull(paramValue)) {
+				continue;
 			}
+
+			portletURL.setParameter(displayTerm, paramValue);
 		}
 
 		return portletURL;

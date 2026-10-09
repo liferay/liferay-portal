@@ -61,9 +61,11 @@ public abstract class BaseBuiltInJSModule implements JSModule {
 		for (String dependency : _dependencies) {
 			String packageName = ModuleNameUtil.getPackageName(dependency);
 
-			if (packageName != null) {
-				dependencyPackageNames.add(packageName);
+			if (packageName == null) {
+				continue;
 			}
+
+			dependencyPackageNames.add(packageName);
 		}
 
 		return dependencyPackageNames;

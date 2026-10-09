@@ -2401,14 +2401,16 @@ public class TableMapperTest {
 			for (Map.Entry<Long, long[]> entry : _mappingStore.entrySet()) {
 				long[] rightPrimaryKeys = entry.getValue();
 
-				if (ArrayUtil.contains(rightPrimaryKeys, rightPrimaryKey)) {
-					count++;
-
-					rightPrimaryKeys = ArrayUtil.remove(
-						rightPrimaryKeys, rightPrimaryKey);
-
-					entry.setValue(rightPrimaryKeys);
+				if (!ArrayUtil.contains(rightPrimaryKeys, rightPrimaryKey)) {
+					continue;
 				}
+
+				count++;
+
+				rightPrimaryKeys = ArrayUtil.remove(
+					rightPrimaryKeys, rightPrimaryKey);
+
+				entry.setValue(rightPrimaryKeys);
 			}
 
 			return count;
@@ -2447,9 +2449,11 @@ public class TableMapperTest {
 			for (Map.Entry<Long, long[]> entry : _mappingStore.entrySet()) {
 				long[] rightPrimaryKeys = entry.getValue();
 
-				if (ArrayUtil.contains(rightPrimaryKeys, rightPrimaryKey)) {
-					leftPrimaryKeysList.add(entry.getKey());
+				if (!ArrayUtil.contains(rightPrimaryKeys, rightPrimaryKey)) {
+					continue;
 				}
+
+				leftPrimaryKeysList.add(entry.getKey());
 			}
 
 			return leftPrimaryKeysList;

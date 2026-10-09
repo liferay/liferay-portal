@@ -392,20 +392,21 @@ public class PublicationUserNotificationHandlerTest {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
 				userNotificationEvent.getPayload());
 
-			if (jsonObject.getLong("ctCollectionId") == ctCollectionId) {
-				int notificationType = jsonObject.getInt("notificationType");
+			if (jsonObject.getLong("ctCollectionId") != ctCollectionId) {
+				continue;
+			}
 
-				if (((notificationType ==
-						UserNotificationDefinition.
-							NOTIFICATION_TYPE_REVIEW_ENTRY) &&
-					 (jsonObject.getBoolean("showConflicts") ==
-						 showConflicts)) ||
-					(notificationType ==
-						UserNotificationDefinition.
-							NOTIFICATION_TYPE_UPDATE_ENTRY)) {
+			int notificationType = jsonObject.getInt("notificationType");
 
-					return userNotificationEvent;
-				}
+			if (((notificationType ==
+					UserNotificationDefinition.
+						NOTIFICATION_TYPE_REVIEW_ENTRY) &&
+				 (jsonObject.getBoolean("showConflicts") == showConflicts)) ||
+				(notificationType ==
+					UserNotificationDefinition.
+						NOTIFICATION_TYPE_UPDATE_ENTRY)) {
+
+				return userNotificationEvent;
 			}
 		}
 

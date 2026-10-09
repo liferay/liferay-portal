@@ -250,16 +250,18 @@ public class SocialActivityCounterLocalServiceImpl
 		for (SocialActivityCounterDefinition activityCounterDefinition :
 				activityDefinition.getActivityCounterDefinitions()) {
 
-			if (isAddActivityCounter(
+			if (!isAddActivityCounter(
 					user, assetEntryUser, assetEntry,
 					activityCounterDefinition)) {
 
-				SocialActivityCounter activityCounter = addActivityCounter(
-					activity.getGroupId(), user, activity,
-					activityCounterDefinition);
-
-				activityCounters.add(activityCounter);
+				continue;
 			}
+
+			SocialActivityCounter activityCounter = addActivityCounter(
+				activity.getGroupId(), user, activity,
+				activityCounterDefinition);
+
+			activityCounters.add(activityCounter);
 		}
 
 		SocialActivityCounter assetActivitiesCounter = null;
@@ -281,10 +283,14 @@ public class SocialActivityCounterLocalServiceImpl
 				activityDefinition.getActivityCounterDefinition(
 					activityCounter.getName());
 
-			if (checkActivityLimit(user, activity, activityCounterDefinition)) {
-				incrementActivityCounter(
-					activityCounter, activityCounterDefinition);
+			if (!checkActivityLimit(
+					user, activity, activityCounterDefinition)) {
+
+				continue;
 			}
+
+			incrementActivityCounter(
+				activityCounter, activityCounterDefinition);
 		}
 
 		if (assetActivitiesCounter != null) {
@@ -429,11 +435,13 @@ public class SocialActivityCounterLocalServiceImpl
 		adjustUserContribution(assetEntry, false);
 
 		for (SocialActivityCounter activityCounter : activityCounters) {
-			if (activityCounter.isActive()) {
-				activityCounter.setActive(false);
-
-				socialActivityCounterPersistence.update(activityCounter);
+			if (!activityCounter.isActive()) {
+				continue;
 			}
+
+			activityCounter.setActive(false);
+
+			socialActivityCounterPersistence.update(activityCounter);
 		}
 
 		clearFinderCache();
@@ -492,11 +500,13 @@ public class SocialActivityCounterLocalServiceImpl
 		adjustUserContribution(assetEntry, true);
 
 		for (SocialActivityCounter activityCounter : activityCounters) {
-			if (!activityCounter.isActive()) {
-				activityCounter.setActive(true);
-
-				socialActivityCounterPersistence.update(activityCounter);
+			if (activityCounter.isActive()) {
+				continue;
 			}
+
+			activityCounter.setActive(true);
+
+			socialActivityCounterPersistence.update(activityCounter);
 		}
 
 		clearFinderCache();

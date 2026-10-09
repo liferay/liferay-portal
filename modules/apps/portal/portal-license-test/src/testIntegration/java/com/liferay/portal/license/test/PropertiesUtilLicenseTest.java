@@ -35,17 +35,19 @@ public class PropertiesUtilLicenseTest extends BaseLicenseTestCase {
 		Set<String> keys = new HashSet<>();
 
 		for (Field field : clazz.getDeclaredFields()) {
-			if (Modifier.isPublic(field.getModifiers())) {
-				String key = (String)field.get(null);
+			if (!Modifier.isPublic(field.getModifiers())) {
+				continue;
+			}
 
-				if (key.contains(".app.product.")) {
-					for (App app : App.values()) {
-						keys.add(key + StringPool.PERIOD + app.toString());
-					}
+			String key = (String)field.get(null);
+
+			if (key.contains(".app.product.")) {
+				for (App app : App.values()) {
+					keys.add(key + StringPool.PERIOD + app.toString());
 				}
-				else {
-					keys.add(key);
-				}
+			}
+			else {
+				keys.add(key);
 			}
 		}
 

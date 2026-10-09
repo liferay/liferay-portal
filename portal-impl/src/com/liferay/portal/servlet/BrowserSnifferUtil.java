@@ -348,13 +348,16 @@ public class BrowserSnifferUtil {
 				}
 
 				char c1 = userAgent.charAt(index);
+
 				char c2 = userAgent.charAt(++index);
 
-				if (((c2 >= '0') && (c2 <= '9')) || (c2 == '.')) {
-					for (char separator : separators) {
-						if (c1 == separator) {
-							break version;
-						}
+				if (((c2 < '0') || (c2 > '9')) && (c2 != '.')) {
+					continue;
+				}
+
+				for (char separator : separators) {
+					if (c1 == separator) {
+						break version;
 					}
 				}
 			}

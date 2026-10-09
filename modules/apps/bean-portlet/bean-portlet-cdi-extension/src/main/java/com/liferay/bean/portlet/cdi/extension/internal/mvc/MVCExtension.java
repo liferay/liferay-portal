@@ -171,19 +171,21 @@ public class MVCExtension {
 				Annotation unsupportedAnnotation = annotatedField.getAnnotation(
 					unsupportedAnnotationClass);
 
-				if (unsupportedAnnotation != null) {
-					fieldAnnotations.remove(unsupportedAnnotation);
+				if (unsupportedAnnotation == null) {
+					continue;
+				}
 
-					modifiedFieldAnnotations = true;
+				fieldAnnotations.remove(unsupportedAnnotation);
 
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							StringBundler.concat(
-								"Removed the @",
-								unsupportedAnnotationClass.getSimpleName(),
-								" annotation from ", annotatedField,
-								" because it is unsupported"));
-					}
+				modifiedFieldAnnotations = true;
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Removed the @",
+							unsupportedAnnotationClass.getSimpleName(),
+							" annotation from ", annotatedField,
+							" because it is unsupported"));
 				}
 			}
 

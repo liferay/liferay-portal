@@ -88,17 +88,18 @@ public class SocialRequestInterpreterLocalServiceImpl
 			SocialRequestInterpreterImpl socialRequestInterpreterImpl =
 				(SocialRequestInterpreterImpl)requestInterpreter;
 
-			if (matches(socialRequestInterpreterImpl, className, request)) {
-				SocialRequestFeedEntry requestFeedEntry =
-					socialRequestInterpreterImpl.interpret(
-						request, themeDisplay);
+			if (!matches(socialRequestInterpreterImpl, className, request)) {
+				continue;
+			}
 
-				if (requestFeedEntry != null) {
-					requestFeedEntry.setPortletId(
-						socialRequestInterpreterImpl.getPortletId());
+			SocialRequestFeedEntry requestFeedEntry =
+				socialRequestInterpreterImpl.interpret(request, themeDisplay);
 
-					return requestFeedEntry;
-				}
+			if (requestFeedEntry != null) {
+				requestFeedEntry.setPortletId(
+					socialRequestInterpreterImpl.getPortletId());
+
+				return requestFeedEntry;
 			}
 		}
 
@@ -131,14 +132,15 @@ public class SocialRequestInterpreterLocalServiceImpl
 			SocialRequestInterpreterImpl socialRequestInterpreterImpl =
 				(SocialRequestInterpreterImpl)requestInterpreter;
 
-			if (matches(socialRequestInterpreterImpl, className, request)) {
-				boolean value =
-					socialRequestInterpreterImpl.processConfirmation(
-						request, themeDisplay);
+			if (!matches(socialRequestInterpreterImpl, className, request)) {
+				continue;
+			}
 
-				if (value) {
-					return;
-				}
+			boolean value = socialRequestInterpreterImpl.processConfirmation(
+				request, themeDisplay);
+
+			if (value) {
+				return;
 			}
 		}
 	}
@@ -170,13 +172,15 @@ public class SocialRequestInterpreterLocalServiceImpl
 			SocialRequestInterpreterImpl socialRequestInterpreterImpl =
 				(SocialRequestInterpreterImpl)requestInterpreter;
 
-			if (matches(socialRequestInterpreterImpl, className, request)) {
-				boolean value = socialRequestInterpreterImpl.processRejection(
-					request, themeDisplay);
+			if (!matches(socialRequestInterpreterImpl, className, request)) {
+				continue;
+			}
 
-				if (value) {
-					return;
-				}
+			boolean value = socialRequestInterpreterImpl.processRejection(
+				request, themeDisplay);
+
+			if (value) {
+				return;
 			}
 		}
 	}

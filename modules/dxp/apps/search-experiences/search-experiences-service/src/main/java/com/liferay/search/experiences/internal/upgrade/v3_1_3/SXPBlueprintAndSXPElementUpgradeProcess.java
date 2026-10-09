@@ -163,11 +163,13 @@ public class SXPBlueprintAndSXPElementUpgradeProcess extends UpgradeProcess {
 				return false;
 			}
 
-			if (fieldMappingJSONObject.has("label") ||
-				fieldMappingJSONObject.has("value")) {
+			if (!fieldMappingJSONObject.has("label") &&
+				!fieldMappingJSONObject.has("value")) {
 
-				legacyMultiselect = true;
+				continue;
 			}
+
+			legacyMultiselect = true;
 		}
 
 		return legacyMultiselect;
@@ -259,13 +261,13 @@ public class SXPBlueprintAndSXPElementUpgradeProcess extends UpgradeProcess {
 					elementInstanceJSONArray.getJSONObject(i),
 					"JSONObject/sxpElement", "JSONObject/elementDefinition");
 
-			if (elementDefinitionJSONObject == null) {
+			if ((elementDefinitionJSONObject == null) ||
+				!_upgradeLegacyFieldMappings(elementDefinitionJSONObject)) {
+
 				continue;
 			}
 
-			if (_upgradeLegacyFieldMappings(elementDefinitionJSONObject)) {
-				modified = true;
-			}
+			modified = true;
 		}
 
 		return modified;
@@ -328,13 +330,15 @@ public class SXPBlueprintAndSXPElementUpgradeProcess extends UpgradeProcess {
 					JSONObject fieldMappingJSONObject =
 						fieldMappingsJSONArray.getJSONObject(k);
 
-					if ((fieldMappingJSONObject != null) &&
-						fieldMappingJSONObject.has("label")) {
+					if ((fieldMappingJSONObject == null) ||
+						!fieldMappingJSONObject.has("label")) {
 
-						fieldMappingJSONObject.remove("label");
-
-						modified = true;
+						continue;
 					}
+
+					fieldMappingJSONObject.remove("label");
+
+					modified = true;
 				}
 			}
 		}

@@ -69,9 +69,11 @@ public class DDMFormLayoutValidatorImpl implements DDMFormLayoutValidator {
 					for (String ddmFormFieldName :
 							ddmFormLayoutColumn.getDDMFormFieldNames()) {
 
-						if (!ddmFormFieldNames.add(ddmFormFieldName)) {
-							duplicatedDDMFormFieldNames.add(ddmFormFieldName);
+						if (ddmFormFieldNames.add(ddmFormFieldName)) {
+							continue;
 						}
+
+						duplicatedDDMFormFieldNames.add(ddmFormFieldName);
 					}
 				}
 			}

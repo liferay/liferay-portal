@@ -127,14 +127,16 @@ public class AddDefaultAccountRolesPortalInstanceLifecycleListener
 							ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
 							role.getRoleId());
 
-					if ((resourcePermission == null) ||
-						!resourcePermission.hasActionId(resourceAction)) {
+					if ((resourcePermission != null) &&
+						resourcePermission.hasActionId(resourceAction)) {
 
-						_resourcePermissionLocalService.addResourcePermission(
-							companyId, resourceName,
-							ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
-							role.getRoleId(), resourceAction);
+						continue;
 					}
+
+					_resourcePermissionLocalService.addResourcePermission(
+						companyId, resourceName,
+						ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
+						role.getRoleId(), resourceAction);
 				}
 			}
 		}

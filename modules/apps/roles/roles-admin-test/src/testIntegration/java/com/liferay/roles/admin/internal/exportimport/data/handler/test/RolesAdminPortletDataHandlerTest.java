@@ -175,9 +175,11 @@ public class RolesAdminPortletDataHandlerTest
 		for (RoleTypeContributor roleTypeContributor :
 				_roleTypeContributorProvider.getRoleTypeContributors()) {
 
-			if (Validator.isNotNull(roleTypeContributor.getClassName())) {
-				classNames.add(roleTypeContributor.getClassName());
+			if (Validator.isNull(roleTypeContributor.getClassName())) {
+				continue;
 			}
+
+			classNames.add(roleTypeContributor.getClassName());
 		}
 
 		for (String manifestSummaryKey :

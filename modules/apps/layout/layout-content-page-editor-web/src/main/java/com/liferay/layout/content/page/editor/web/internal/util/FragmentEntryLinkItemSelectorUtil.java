@@ -84,18 +84,22 @@ public class FragmentEntryLinkItemSelectorUtil {
 					}
 				}
 
-				if (Objects.equals(type, "collectionSelector")) {
-					JSONObject typeOptionsJSONObject =
-						fieldJSONObject.getJSONObject("typeOptions");
-
-					if (typeOptionsJSONObject.has("itemType")) {
-						typeOptionsJSONObject.put(
-							"infoListSelectorURL",
-							_getInfoListSelectorURL(
-								itemSelector, httpServletRequest, namespace,
-								typeOptionsJSONObject));
-					}
+				if (!Objects.equals(type, "collectionSelector")) {
+					continue;
 				}
+
+				JSONObject typeOptionsJSONObject =
+					fieldJSONObject.getJSONObject("typeOptions");
+
+				if (!typeOptionsJSONObject.has("itemType")) {
+					continue;
+				}
+
+				typeOptionsJSONObject.put(
+					"infoListSelectorURL",
+					_getInfoListSelectorURL(
+						itemSelector, httpServletRequest, namespace,
+						typeOptionsJSONObject));
 			}
 		}
 	}

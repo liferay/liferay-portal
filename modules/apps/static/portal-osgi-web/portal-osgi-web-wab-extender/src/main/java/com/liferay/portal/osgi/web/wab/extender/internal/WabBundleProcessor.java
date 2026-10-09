@@ -657,11 +657,13 @@ public class WabBundleProcessor {
 
 					fqcn = fqcn.trim();
 
-					if (Validator.isNotNull(fqcn)) {
-						_processServletContainerInitializerClass(
-							fqcn, bundle, servletContext, classes,
-							annotatedClasses);
+					if (Validator.isNull(fqcn)) {
+						continue;
 					}
+
+					_processServletContainerInitializerClass(
+						fqcn, bundle, servletContext, classes,
+						annotatedClasses);
 				}
 			}
 			catch (IOException ioException) {
@@ -776,13 +778,15 @@ public class WabBundleProcessor {
 				Set<Class<?>> annotationHandlesTypesClasses = null;
 
 				for (Class<?> handlesTypesClass : handlesTypesClasses) {
-					if (handlesTypesClass.isAnnotation()) {
-						if (annotationHandlesTypesClasses == null) {
-							annotationHandlesTypesClasses = new HashSet<>();
-						}
-
-						annotationHandlesTypesClasses.add(handlesTypesClass);
+					if (!handlesTypesClass.isAnnotation()) {
+						continue;
 					}
+
+					if (annotationHandlesTypesClasses == null) {
+						annotationHandlesTypesClasses = new HashSet<>();
+					}
+
+					annotationHandlesTypesClasses.add(handlesTypesClass);
 				}
 
 				localAnnotatedClasses = new HashSet<>();

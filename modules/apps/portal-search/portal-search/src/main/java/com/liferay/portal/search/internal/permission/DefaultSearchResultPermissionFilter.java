@@ -697,10 +697,12 @@ public class DefaultSearchResultPermissionFilter
 
 					int frequency = helperTermCollector.getFrequency();
 
-					if (frequency >= 0) {
-						newTermCollectors.add(
-							new DefaultTermCollector(term, frequency));
+					if (frequency < 0) {
+						continue;
 					}
+
+					newTermCollectors.add(
+						new DefaultTermCollector(term, frequency));
 				}
 
 				facet.setFacetCollector(

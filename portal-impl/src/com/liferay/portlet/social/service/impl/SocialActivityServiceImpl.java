@@ -786,21 +786,23 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 			SocialActivityInterpreterImpl socialActivityInterpreterImpl =
 				(SocialActivityInterpreterImpl)activityInterpreter;
 
-			if (socialActivityInterpreterImpl.hasClassName(
+			if (!socialActivityInterpreterImpl.hasClassName(
 					activity.getClassName())) {
 
-				try {
-					if (socialActivityInterpreterImpl.hasPermission(
-							permissionChecker, activity, ActionKeys.VIEW,
-							serviceContext)) {
+				continue;
+			}
 
-						return true;
-					}
+			try {
+				if (socialActivityInterpreterImpl.hasPermission(
+						permissionChecker, activity, ActionKeys.VIEW,
+						serviceContext)) {
+
+					return true;
 				}
-				catch (Exception exception) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(exception);
-					}
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
 				}
 			}
 		}

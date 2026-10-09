@@ -115,12 +115,14 @@ public class CategoryFacetConfigurationDisplayContext {
 		for (long connectedGroupId : connectedGroupIds) {
 			Group group = _groupLocalService.fetchGroup(connectedGroupId);
 
-			if ((group != null) && group.isDepot() &&
-				!groupIds.contains(group.getGroupId())) {
+			if ((group == null) || !group.isDepot() ||
+				groupIds.contains(group.getGroupId())) {
 
-				depotGroups.add(group);
-				groupIds.add(group.getGroupId());
+				continue;
 			}
+
+			depotGroups.add(group);
+			groupIds.add(group.getGroupId());
 		}
 
 		depotGroups.sort(

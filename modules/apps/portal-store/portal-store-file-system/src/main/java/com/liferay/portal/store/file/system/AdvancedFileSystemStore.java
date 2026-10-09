@@ -47,11 +47,13 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		for (int i = 0; i < versions.length; i++) {
 			int x = versions[i].lastIndexOf(CharPool.UNDERLINE);
 
-			if (x > -1) {
-				int y = versions[i].lastIndexOf(CharPool.PERIOD);
-
-				versions[i] = versions[i].substring(x + 1, y);
+			if (x <= -1) {
+				continue;
 			}
+
+			int y = versions[i].lastIndexOf(CharPool.PERIOD);
+
+			versions[i] = versions[i].substring(x + 1, y);
 		}
 
 		return versions;
@@ -221,9 +223,11 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 
 			String versionLabel = versionLabelFragment;
 
-			if (DLUtil.compareVersions(versionLabel, headVersionLabel) > 0) {
-				headVersionLabel = versionLabel;
+			if (DLUtil.compareVersions(versionLabel, headVersionLabel) <= 0) {
+				continue;
 			}
+
+			headVersionLabel = versionLabel;
 		}
 
 		return headVersionLabel;

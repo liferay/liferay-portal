@@ -148,18 +148,20 @@ public class DataGuardTestRuleUtil {
 		for (Method method : clazz.getMethods()) {
 			String methodName = method.getName();
 
-			if (methodName.startsWith("delete") &&
-				Arrays.equals(method.getParameterTypes(), parameterTypes)) {
+			if (!methodName.startsWith("delete") ||
+				!Arrays.equals(method.getParameterTypes(), parameterTypes)) {
 
-				if (deleteMethod == null) {
+				continue;
+			}
+
+			if (deleteMethod == null) {
+				deleteMethod = method;
+			}
+			else {
+				String deleteMethodName = deleteMethod.getName();
+
+				if (deleteMethodName.length() > methodName.length()) {
 					deleteMethod = method;
-				}
-				else {
-					String deleteMethodName = deleteMethod.getName();
-
-					if (deleteMethodName.length() > methodName.length()) {
-						deleteMethod = method;
-					}
 				}
 			}
 		}
@@ -271,9 +273,11 @@ public class DataGuardTestRuleUtil {
 		throws Throwable {
 
 		for (Portlet portlet : PortletLocalServiceUtil.getPortlets()) {
-			if (!previousPortlets.remove(portlet)) {
-				PortletLocalServiceUtil.destroyPortlet(portlet);
+			if (previousPortlets.remove(portlet)) {
+				continue;
 			}
+
+			PortletLocalServiceUtil.destroyPortlet(portlet);
 		}
 
 		if (autoDelete) {
@@ -299,39 +303,41 @@ public class DataGuardTestRuleUtil {
 				leftoverBaseModels.removeAll(previsoutBaseModels);
 			}
 
-			if (!leftoverBaseModels.isEmpty()) {
-				sb.append(testClassName);
-				sb.append(" caused leftover data for class :");
-				sb.append(className);
-				sb.append(" with data : [\n");
+			if (leftoverBaseModels.isEmpty()) {
+				continue;
+			}
 
-				for (BaseModel<?> baseModel : leftoverBaseModels) {
-					sb.append(StringPool.TAB);
-					sb.append(baseModel);
+			sb.append(testClassName);
+			sb.append(" caused leftover data for class :");
+			sb.append(className);
+			sb.append(" with data : [\n");
 
-					String backtraceInfo = null;
+			for (BaseModel<?> baseModel : leftoverBaseModels) {
+				sb.append(StringPool.TAB);
+				sb.append(baseModel);
 
-					Map<Serializable, String> map = records.get(
-						baseModel.getModelClassName());
+				String backtraceInfo = null;
 
-					if (map != null) {
-						backtraceInfo = map.get(baseModel.getPrimaryKeyObj());
-					}
+				Map<Serializable, String> map = records.get(
+					baseModel.getModelClassName());
 
-					if (backtraceInfo == null) {
-						sb.append(" with no backtrace info,\n");
-					}
-					else {
-						sb.append(" with backtrace info,\n");
-						sb.append(StringPool.TAB);
-						sb.append(StringPool.TAB);
-						sb.append(backtraceInfo);
-						sb.append(",\n");
-					}
+				if (map != null) {
+					backtraceInfo = map.get(baseModel.getPrimaryKeyObj());
 				}
 
-				sb.setStringAt("\n]\n", sb.index() - 1);
+				if (backtraceInfo == null) {
+					sb.append(" with no backtrace info,\n");
+				}
+				else {
+					sb.append(" with backtrace info,\n");
+					sb.append(StringPool.TAB);
+					sb.append(StringPool.TAB);
+					sb.append(backtraceInfo);
+					sb.append(",\n");
+				}
 			}
+
+			sb.setStringAt("\n]\n", sb.index() - 1);
 		}
 
 		Assert.assertTrue(sb.toString(), sb.index() == 0);
@@ -538,23 +544,25 @@ public class DataGuardTestRuleUtil {
 				"_serviceTrackerMap");
 
 		for (String modelClassName : _PRIORITIZED_MODEL_CLASS_NAMES) {
-			if (serviceTrackerMap.containsKey(modelClassName) &&
-				(modelClassName.indexOf(CharPool.POUND) == -1)) {
+			if (!serviceTrackerMap.containsKey(modelClassName) ||
+				(modelClassName.indexOf(CharPool.POUND) != -1)) {
 
-				scrubbedPersistedModelLocalServices.put(
-					modelClassName,
-					serviceTrackerMap.getService(modelClassName));
+				continue;
 			}
+
+			scrubbedPersistedModelLocalServices.put(
+				modelClassName, serviceTrackerMap.getService(modelClassName));
 		}
 
 		for (String modelClassName : serviceTrackerMap.keySet()) {
-			if (!_blacklistedModelClassNames.contains(modelClassName) &&
-				(modelClassName.indexOf(CharPool.POUND) == -1)) {
+			if (_blacklistedModelClassNames.contains(modelClassName) ||
+				(modelClassName.indexOf(CharPool.POUND) != -1)) {
 
-				scrubbedPersistedModelLocalServices.put(
-					modelClassName,
-					serviceTrackerMap.getService(modelClassName));
+				continue;
 			}
+
+			scrubbedPersistedModelLocalServices.put(
+				modelClassName, serviceTrackerMap.getService(modelClassName));
 		}
 
 		return scrubbedPersistedModelLocalServices;

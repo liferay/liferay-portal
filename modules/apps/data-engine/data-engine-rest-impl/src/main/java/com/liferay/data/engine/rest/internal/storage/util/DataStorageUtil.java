@@ -239,31 +239,32 @@ public class DataStorageUtil {
 		}
 
 		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
-			if (StringUtil.equals(
+			if (!StringUtil.equals(
 					ddmFormField.getType(),
 					DDMFormFieldTypeConstants.FIELDSET)) {
 
-				List<DDMFormFieldValue> nestedDDMFormFieldValues =
-					new ArrayList<>();
-
-				for (DDMFormField nestedDDMFormField :
-						ddmFormField.getNestedDDMFormFields()) {
-
-					Map<String, List<DDMFormFieldValue>>
-						nestedDDMFormFieldValuesMap =
-							ddmFormFieldValue.getNestedDDMFormFieldValuesMap();
-
-					nestedDDMFormFieldValues.addAll(
-						_getDDMFormFieldValues(
-							nestedDDMFormField,
-							nestedDDMFormFieldValuesMap.get(
-								nestedDDMFormField.getName()),
-							locale));
-				}
-
-				ddmFormFieldValue.setNestedDDMFormFields(
-					nestedDDMFormFieldValues);
+				continue;
 			}
+
+			List<DDMFormFieldValue> nestedDDMFormFieldValues =
+				new ArrayList<>();
+
+			for (DDMFormField nestedDDMFormField :
+					ddmFormField.getNestedDDMFormFields()) {
+
+				Map<String, List<DDMFormFieldValue>>
+					nestedDDMFormFieldValuesMap =
+						ddmFormFieldValue.getNestedDDMFormFieldValuesMap();
+
+				nestedDDMFormFieldValues.addAll(
+					_getDDMFormFieldValues(
+						nestedDDMFormField,
+						nestedDDMFormFieldValuesMap.get(
+							nestedDDMFormField.getName()),
+						locale));
+			}
+
+			ddmFormFieldValue.setNestedDDMFormFields(nestedDDMFormFieldValues);
 		}
 
 		return ddmFormFieldValues;

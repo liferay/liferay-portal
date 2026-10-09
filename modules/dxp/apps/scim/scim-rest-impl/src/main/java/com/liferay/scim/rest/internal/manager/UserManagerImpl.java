@@ -968,16 +968,17 @@ public class UserManagerImpl implements UserManager {
 		}
 
 		for (Map.Entry<String, String> entry : _columnNames.entrySet()) {
-			if (StringUtil.contains(
+			if (!StringUtil.contains(
 					expressionNode.getAttributeValue(), entry.getKey(),
 					StringPool.COLON)) {
 
-				Expression<String> expression =
-					(Expression<String>)baseTable.getColumn(entry.getValue());
-
-				predicate = predicate.and(
-					expression.eq(expressionNode.getValue()));
+				continue;
 			}
+
+			Expression<String> expression =
+				(Expression<String>)baseTable.getColumn(entry.getValue());
+
+			predicate = predicate.and(expression.eq(expressionNode.getValue()));
 		}
 
 		return predicate;

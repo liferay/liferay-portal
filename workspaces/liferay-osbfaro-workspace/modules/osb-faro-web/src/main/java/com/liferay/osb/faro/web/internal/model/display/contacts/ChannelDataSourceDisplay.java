@@ -33,9 +33,11 @@ public class ChannelDataSourceDisplay {
 			Boolean individualEnabled = (Boolean)dataSource.get(
 				"individualEnabled");
 
-			if (individualEnabled) {
-				_individualDataSourcesCount += 1;
+			if (!individualEnabled) {
+				continue;
 			}
+
+			_individualDataSourcesCount += 1;
 		}
 	}
 

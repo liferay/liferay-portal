@@ -240,12 +240,13 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 			List<InfoItemCapability> infoItemCapabilities =
 				infoItemCapabilitiesProvider.getInfoItemCapabilities();
 
-			if (infoItemCapabilities.contains(infoItemCapability)) {
-				infoItemCapability.verify(
-					curInfoItemClassDetails.getClassName());
-
-				infoItemClassDetailsList.add(curInfoItemClassDetails);
+			if (!infoItemCapabilities.contains(infoItemCapability)) {
+				continue;
 			}
+
+			infoItemCapability.verify(curInfoItemClassDetails.getClassName());
+
+			infoItemClassDetailsList.add(curInfoItemClassDetails);
 		}
 
 		return infoItemClassDetailsList;
@@ -267,11 +268,13 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 					InfoPermissionProvider.class,
 					infoItemClassDetail.getClassName());
 
-			if ((infoPermissionProvider == null) ||
-				infoPermissionProvider.hasViewPermission(permissionChecker)) {
+			if ((infoPermissionProvider != null) &&
+				!infoPermissionProvider.hasViewPermission(permissionChecker)) {
 
-				infoItemClassDetails.add(infoItemClassDetail);
+				continue;
 			}
+
+			infoItemClassDetails.add(infoItemClassDetail);
 		}
 
 		return infoItemClassDetails;

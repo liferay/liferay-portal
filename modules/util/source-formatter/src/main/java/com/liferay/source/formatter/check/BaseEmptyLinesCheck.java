@@ -234,13 +234,14 @@ public abstract class BaseEmptyLinesCheck extends BaseFileCheck {
 
 			String tabs1 = matcher.group(1);
 
-			if ((startTag && ((tabs1.length() + 1) == tabs2.length())) ||
-				(!startTag && ((tabs1.length() - 1) == tabs2.length()))) {
+			if ((!startTag || ((tabs1.length() + 1) != tabs2.length())) &&
+				(startTag || ((tabs1.length() - 1) != tabs2.length()))) {
 
-				content = StringUtil.replaceFirst(
-					content, StringPool.NEW_LINE, StringPool.BLANK,
-					matcher.end(1));
+				continue;
 			}
+
+			content = StringUtil.replaceFirst(
+				content, StringPool.NEW_LINE, StringPool.BLANK, matcher.end(1));
 		}
 
 		return content;

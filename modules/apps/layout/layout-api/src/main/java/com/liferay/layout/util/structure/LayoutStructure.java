@@ -887,16 +887,18 @@ public class LayoutStructure {
 			LayoutStructureItem layoutStructureItem = _layoutStructureItems.get(
 				itemId);
 
-			if (Validator.isNotNull(layoutStructureItem.getParentItemId())) {
-				LayoutStructureItem parentLayoutStructureItem =
-					_layoutStructureItems.get(
-						layoutStructureItem.getParentItemId());
-
-				List<String> childrenItemIds =
-					parentLayoutStructureItem.getChildrenItemIds();
-
-				childrenItemIds.remove(layoutStructureItem.getItemId());
+			if (Validator.isNull(layoutStructureItem.getParentItemId())) {
+				continue;
 			}
+
+			LayoutStructureItem parentLayoutStructureItem =
+				_layoutStructureItems.get(
+					layoutStructureItem.getParentItemId());
+
+			List<String> childrenItemIds =
+				parentLayoutStructureItem.getChildrenItemIds();
+
+			childrenItemIds.remove(layoutStructureItem.getItemId());
 		}
 
 		_deletedPortletIds.addAll(portletIds);

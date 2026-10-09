@@ -287,11 +287,13 @@ public class JournalConverterImpl implements JournalConverter {
 				offset++;
 			}
 
-			if (fieldDisplayName.equals(fieldName) &&
-				(offset == parentOffset)) {
+			if (!fieldDisplayName.equals(fieldName) ||
+				(offset != parentOffset)) {
 
-				repetitions++;
+				continue;
 			}
+
+			repetitions++;
 		}
 
 		return repetitions;
@@ -353,9 +355,11 @@ public class JournalConverterImpl implements JournalConverter {
 				String fieldName = StringUtil.extractFirst(
 					value, DDM.INSTANCE_SEPARATOR);
 
-				if (ddmStructure.hasField(fieldName)) {
-					fieldsDisplayValues.add(fieldName);
+				if (!ddmStructure.hasField(fieldName)) {
+					continue;
 				}
+
+				fieldsDisplayValues.add(fieldName);
 			}
 
 			return fieldsDisplayValues.toArray(new String[0]);
@@ -468,13 +472,15 @@ public class JournalConverterImpl implements JournalConverter {
 			(String)fieldsDisplayField.getValue());
 
 		for (String fieldsDisplayValue : fieldsDisplayValues) {
-			if (fieldsDisplayValue.startsWith(prefix)) {
-				index--;
+			if (!fieldsDisplayValue.startsWith(prefix)) {
+				continue;
+			}
 
-				if (index < 0) {
-					return StringUtil.extractLast(
-						fieldsDisplayValue, DDM.INSTANCE_SEPARATOR);
-				}
+			index--;
+
+			if (index < 0) {
+				return StringUtil.extractLast(
+					fieldsDisplayValue, DDM.INSTANCE_SEPARATOR);
 			}
 		}
 

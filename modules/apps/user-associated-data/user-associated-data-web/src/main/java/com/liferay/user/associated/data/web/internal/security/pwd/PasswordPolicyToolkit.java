@@ -304,9 +304,11 @@ public class PasswordPolicyToolkit extends BasicToolkit {
 		int count = 0;
 
 		for (int i = 0; i < s.length(); i++) {
-			if (Arrays.binarySearch(chars, s.charAt(i)) >= 0) {
-				count++;
+			if (Arrays.binarySearch(chars, s.charAt(i)) < 0) {
+				continue;
 			}
+
+			count++;
 		}
 
 		return count;

@@ -46,14 +46,16 @@ public class LayoutSEOUpgradeProcess extends UpgradeProcess {
 		for (String key : _KEYS) {
 			String value = unicodeProperties.getProperty(key);
 
-			if (Validator.isNotNull(value) &&
-				!value.startsWith(StringPool.DOLLAR_AND_OPEN_CURLY_BRACE)) {
+			if (Validator.isNull(value) ||
+				value.startsWith(StringPool.DOLLAR_AND_OPEN_CURLY_BRACE)) {
 
-				unicodeProperties.setProperty(
-					key,
-					StringPool.DOLLAR_AND_OPEN_CURLY_BRACE + value +
-						StringPool.CLOSE_CURLY_BRACE);
+				continue;
 			}
+
+			unicodeProperties.setProperty(
+				key,
+				StringPool.DOLLAR_AND_OPEN_CURLY_BRACE + value +
+					StringPool.CLOSE_CURLY_BRACE);
 		}
 
 		layout.setTypeSettingsProperties(unicodeProperties);

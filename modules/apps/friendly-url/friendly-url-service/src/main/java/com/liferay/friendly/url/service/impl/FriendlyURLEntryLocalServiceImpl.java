@@ -512,15 +512,17 @@ public class FriendlyURLEntryLocalServiceImpl
 		Map<String, String> urlTitleMap = new HashMap<>();
 
 		for (Map.Entry<Locale, String> entry : titleMap.entrySet()) {
-			if (Validator.isNotNull(entry.getValue())) {
-				String languageId = LocaleUtil.toLanguageId(entry.getKey());
-
-				urlTitleMap.put(
-					languageId,
-					friendlyURLEntryLocalService.getUniqueUrlTitle(
-						groupId, classNameId, parentClassPK, classPK,
-						entry.getValue()));
+			if (Validator.isNull(entry.getValue())) {
+				continue;
 			}
+
+			String languageId = LocaleUtil.toLanguageId(entry.getKey());
+
+			urlTitleMap.put(
+				languageId,
+				friendlyURLEntryLocalService.getUniqueUrlTitle(
+					groupId, classNameId, parentClassPK, classPK,
+					entry.getValue()));
 		}
 
 		return urlTitleMap;

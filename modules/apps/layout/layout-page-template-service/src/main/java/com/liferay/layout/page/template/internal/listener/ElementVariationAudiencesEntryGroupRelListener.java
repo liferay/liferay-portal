@@ -34,9 +34,11 @@ public class ElementVariationAudiencesEntryGroupRelListener
 			Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
 				groupERC, companyId);
 
-			if (group != null) {
-				groupIds.add(group.getGroupId());
+			if (group == null) {
+				continue;
 			}
+
+			groupIds.add(group.getGroupId());
 		}
 
 		for (LayoutPageTemplateStructureRelElementVariationAudienceEntryRel

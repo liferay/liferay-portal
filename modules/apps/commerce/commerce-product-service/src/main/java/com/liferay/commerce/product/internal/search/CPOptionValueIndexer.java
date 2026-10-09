@@ -98,10 +98,12 @@ public class CPOptionValueIndexer extends BaseIndexer<CPOptionValue> {
 				_localization.getLocalizedName(Field.NAME, languageId), name);
 			document.addNumber(Field.PRIORITY, cpOptionValue.getPriority());
 
-			if (languageId.equals(cpOptionValueDefaultLanguageId)) {
-				document.addText(Field.NAME, name);
-				document.addText("defaultLanguageId", languageId);
+			if (!languageId.equals(cpOptionValueDefaultLanguageId)) {
+				continue;
 			}
+
+			document.addText(Field.NAME, name);
+			document.addText("defaultLanguageId", languageId);
 		}
 
 		if (_log.isDebugEnabled()) {

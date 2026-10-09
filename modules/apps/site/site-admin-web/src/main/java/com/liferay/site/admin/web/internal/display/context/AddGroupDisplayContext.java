@@ -105,18 +105,20 @@ public class AddGroupDisplayContext {
 			AssetVocabularyServiceUtil.getGroupVocabularies(getGroupIds());
 
 		for (AssetVocabulary assetVocabulary : assetVocabularies) {
-			if (assetVocabulary.isAssociatedToClassNameId(classNameId) &&
-				assetVocabulary.isRequired(
+			if (!assetVocabulary.isAssociatedToClassNameId(classNameId) ||
+				!assetVocabulary.isRequired(
 					classNameId, 0, _themeDisplay.getScopeGroupId())) {
 
-				int assetVocabularyCategoriesCount =
-					AssetCategoryServiceUtil.getVocabularyCategoriesCount(
-						assetVocabulary.getGroupId(),
-						assetVocabulary.getVocabularyId());
+				continue;
+			}
 
-				if (assetVocabularyCategoriesCount > 0) {
-					return true;
-				}
+			int assetVocabularyCategoriesCount =
+				AssetCategoryServiceUtil.getVocabularyCategoriesCount(
+					assetVocabulary.getGroupId(),
+					assetVocabulary.getVocabularyId());
+
+			if (assetVocabularyCategoriesCount > 0) {
+				return true;
 			}
 		}
 

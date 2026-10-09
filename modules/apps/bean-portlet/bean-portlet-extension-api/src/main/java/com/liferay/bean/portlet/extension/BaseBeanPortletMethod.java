@@ -189,12 +189,14 @@ public abstract class BaseBeanPortletMethod implements BeanPortletMethod {
 		for (PortletQName portletQName : portletQNames) {
 			String localPart = portletQName.localPart();
 
-			if (localPart.equals(qName.getLocalPart())) {
-				String namespaceURI = portletQName.namespaceURI();
+			if (!localPart.equals(qName.getLocalPart())) {
+				continue;
+			}
 
-				if (namespaceURI.equals(qName.getNamespaceURI())) {
-					return true;
-				}
+			String namespaceURI = portletQName.namespaceURI();
+
+			if (namespaceURI.equals(qName.getNamespaceURI())) {
+				return true;
 			}
 		}
 

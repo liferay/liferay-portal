@@ -63,16 +63,14 @@ public class ProductsLimitCOREntryTypeImpl implements COREntryType {
 				_getCProductExternalReferenceCode(
 					commerceOrderItem.getCPDefinitionId());
 
-			if (cProductExternalReferenceCode == null) {
+			if ((cProductExternalReferenceCode == null) ||
+				!cProductExternalReferenceCodes.contains(
+					cProductExternalReferenceCode)) {
+
 				continue;
 			}
 
-			if (cProductExternalReferenceCodes.contains(
-					cProductExternalReferenceCode)) {
-
-				totalQuantity = totalQuantity.add(
-					commerceOrderItem.getQuantity());
-			}
+			totalQuantity = totalQuantity.add(commerceOrderItem.getQuantity());
 		}
 
 		int compare = totalQuantity.compareTo(
@@ -110,16 +108,14 @@ public class ProductsLimitCOREntryTypeImpl implements COREntryType {
 				_getCProductExternalReferenceCode(
 					corEntryTypeItem.getCPDefinitionId());
 
-			if (cProductExternalReferenceCode == null) {
+			if ((cProductExternalReferenceCode == null) ||
+				!cProductExternalReferenceCodes.contains(
+					cProductExternalReferenceCode)) {
+
 				continue;
 			}
 
-			if (cProductExternalReferenceCodes.contains(
-					cProductExternalReferenceCode)) {
-
-				totalQuantity = totalQuantity.add(
-					corEntryTypeItem.getQuantity());
-			}
+			totalQuantity = totalQuantity.add(corEntryTypeItem.getQuantity());
 		}
 
 		int compare = totalQuantity.compareTo(

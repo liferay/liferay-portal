@@ -48,9 +48,11 @@ public class AggregateTestRule implements TestRule {
 		for (int i = _testRules.length - 1; i >= 0; i--) {
 			TestRule testRule = _testRules[i];
 
-			if (!_skippedTestRules.contains(testRule)) {
-				statement = testRule.apply(statement, description);
+			if (_skippedTestRules.contains(testRule)) {
+				continue;
 			}
+
+			statement = testRule.apply(statement, description);
 		}
 
 		return statement;

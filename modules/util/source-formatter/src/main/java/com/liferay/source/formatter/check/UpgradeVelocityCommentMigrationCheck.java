@@ -20,31 +20,31 @@ public class UpgradeVelocityCommentMigrationCheck
 		String[] lines = StringUtil.splitLines(content);
 
 		for (String line : lines) {
-			if (line.contains(
-					VelocityMigrationConstants.VELOCITY_COMMENT_LINE) &&
-				(line.length() != 2)) {
+			if (!line.contains(
+					VelocityMigrationConstants.VELOCITY_COMMENT_LINE) ||
+				(line.length() == 2)) {
 
-				String newLineStart = StringUtil.replace(
-					line, VelocityMigrationConstants.VELOCITY_COMMENT_LINE,
-					VelocityMigrationConstants.FREEMARKER_COMMENT_START);
-
-				String newLine =
-					newLineStart + CharPool.SPACE +
-						VelocityMigrationConstants.FREEMARKER_COMMENT_END;
-
-				if (newLine.contains(
-						VelocityMigrationConstants.
-							VELOCITY_TEMPLATE_DECLARATION)) {
-
-					newLine = StringUtil.replace(
-						newLine,
-						VelocityMigrationConstants.
-							VELOCITY_TEMPLATE_DECLARATION,
-						"FreeMarker Template");
-				}
-
-				content = StringUtil.replace(content, line, newLine);
+				continue;
 			}
+
+			String newLineStart = StringUtil.replace(
+				line, VelocityMigrationConstants.VELOCITY_COMMENT_LINE,
+				VelocityMigrationConstants.FREEMARKER_COMMENT_START);
+
+			String newLine =
+				newLineStart + CharPool.SPACE +
+					VelocityMigrationConstants.FREEMARKER_COMMENT_END;
+
+			if (newLine.contains(
+					VelocityMigrationConstants.VELOCITY_TEMPLATE_DECLARATION)) {
+
+				newLine = StringUtil.replace(
+					newLine,
+					VelocityMigrationConstants.VELOCITY_TEMPLATE_DECLARATION,
+					"FreeMarker Template");
+			}
+
+			content = StringUtil.replace(content, line, newLine);
 		}
 
 		StringUtil.replace(

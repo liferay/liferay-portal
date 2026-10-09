@@ -280,9 +280,11 @@ public class APIApplicationPublisherImpl
 		for (ServiceRegistration<?> serviceRegistration :
 				serviceRegistrations) {
 
-			if (serviceRegistration != null) {
-				serviceRegistration.unregister();
+			if (serviceRegistration == null) {
+				continue;
 			}
+
+			serviceRegistration.unregister();
 		}
 	}
 

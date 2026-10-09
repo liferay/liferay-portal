@@ -21,18 +21,19 @@ public class UpgradeVelocityVariableSetMigrationCheck
 		String[] lines = StringUtil.splitLines(content);
 
 		for (String line : lines) {
-			if (line.contains(VelocityMigrationConstants.VELOCITY_SET)) {
-				String newLine = StringUtil.replace(
-					line, VelocityMigrationConstants.VELOCITY_SET, "<#assign");
-
-				newLine = VelocityMigrationUtil.removeFirstParenthesis(newLine);
-				newLine = StringUtil.replaceLast(
-					newLine, CharPool.CLOSE_PARENTHESIS,
-					CharPool.SPACE +
-						VelocityMigrationConstants.FREEMARKER_TAG_END);
-
-				content = StringUtil.replace(content, line, newLine);
+			if (!line.contains(VelocityMigrationConstants.VELOCITY_SET)) {
+				continue;
 			}
+
+			String newLine = StringUtil.replace(
+				line, VelocityMigrationConstants.VELOCITY_SET, "<#assign");
+
+			newLine = VelocityMigrationUtil.removeFirstParenthesis(newLine);
+			newLine = StringUtil.replaceLast(
+				newLine, CharPool.CLOSE_PARENTHESIS,
+				CharPool.SPACE + VelocityMigrationConstants.FREEMARKER_TAG_END);
+
+			content = StringUtil.replace(content, line, newLine);
 		}
 
 		return content;

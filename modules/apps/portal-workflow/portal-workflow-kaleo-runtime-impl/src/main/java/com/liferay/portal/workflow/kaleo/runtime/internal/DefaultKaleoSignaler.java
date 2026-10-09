@@ -256,9 +256,11 @@ public class DefaultKaleoSignaler
 						curPathElement.getTargetNode(), remainingPathElements,
 						curPathElement.getExecutionContext());
 
-					if (!remainingPathElements.isEmpty()) {
-						queue.add(remainingPathElements);
+					if (remainingPathElements.isEmpty()) {
+						continue;
 					}
+
+					queue.add(remainingPathElements);
 				}
 			}
 		}

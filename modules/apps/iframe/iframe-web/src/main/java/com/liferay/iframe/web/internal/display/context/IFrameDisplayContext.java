@@ -131,11 +131,13 @@ public class IFrameDisplayContext {
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (name.startsWith(_IFRAME_PREFIX)) {
-				iFrameVariables.add(
-					name.substring(_IFRAME_PREFIX.length()) + StringPool.EQUAL +
-						_request.getParameter(name));
+			if (!name.startsWith(_IFRAME_PREFIX)) {
+				continue;
 			}
+
+			iFrameVariables.add(
+				name.substring(_IFRAME_PREFIX.length()) + StringPool.EQUAL +
+					_request.getParameter(name));
 		}
 
 		return iFrameVariables;

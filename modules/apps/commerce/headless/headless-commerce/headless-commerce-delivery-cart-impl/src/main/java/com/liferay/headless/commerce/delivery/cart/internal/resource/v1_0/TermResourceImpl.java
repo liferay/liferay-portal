@@ -153,20 +153,22 @@ public class TermResourceImpl extends BaseTermResourceImpl {
 					commerceOrder,
 					contextAcceptLanguage.getPreferredLocale())) {
 
-			if (StringUtil.equals(
+			if (!StringUtil.equals(
 					commerceOrder.getShippingOptionName(),
 					commerceShippingOption.getKey())) {
 
-				CommerceShippingFixedOption commerceShippingFixedOption =
-					_commerceShippingFixedOptionLocalService.
-						fetchCommerceShippingFixedOption(
-							commerceOrder.getCompanyId(),
-							commerceShippingOption.getKey());
+				continue;
+			}
 
-				if (commerceShippingFixedOption != null) {
-					return commerceShippingFixedOption.
-						getCommerceShippingFixedOptionId();
-				}
+			CommerceShippingFixedOption commerceShippingFixedOption =
+				_commerceShippingFixedOptionLocalService.
+					fetchCommerceShippingFixedOption(
+						commerceOrder.getCompanyId(),
+						commerceShippingOption.getKey());
+
+			if (commerceShippingFixedOption != null) {
+				return commerceShippingFixedOption.
+					getCommerceShippingFixedOptionId();
 			}
 		}
 

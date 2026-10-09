@@ -846,27 +846,28 @@ public class ClientExtensionProjectConfigurator
 
 								Set<Project> projects = entry.getValue();
 
-								if ((projects.size() > 1) &&
-									projects.contains(project)) {
+								if ((projects.size() <= 1) ||
+									!projects.contains(project)) {
+
+									continue;
+								}
+
+								sb.append("Duplicate client extension ID \"");
+								sb.append(entry.getKey());
+								sb.append("\" found in these projects:\n");
+
+								for (Project curProject : projects) {
+									File projectDir =
+										curProject.getProjectDir();
 
 									sb.append(
-										"Duplicate client extension ID \"");
-									sb.append(entry.getKey());
-									sb.append("\" found in these projects:\n");
-
-									for (Project curProject : projects) {
-										File projectDir =
-											curProject.getProjectDir();
-
-										sb.append(
-											rootDirPath.relativize(
-												projectDir.toPath()));
-
-										sb.append(StringUtil.COMMA_AND_SPACE);
-									}
+										rootDirPath.relativize(
+											projectDir.toPath()));
 
 									sb.append(StringUtil.COMMA_AND_SPACE);
 								}
+
+								sb.append(StringUtil.COMMA_AND_SPACE);
 							}
 
 							if (sb.length() > 0) {

@@ -151,9 +151,11 @@ public class TalendArchive {
 
 				sb.append(jvmOption);
 
-				if (iterator.hasNext()) {
-					sb.append(StringPool.SPACE);
+				if (!iterator.hasNext()) {
+					continue;
 				}
+
+				sb.append(StringPool.SPACE);
 			}
 
 			return sb.toString();

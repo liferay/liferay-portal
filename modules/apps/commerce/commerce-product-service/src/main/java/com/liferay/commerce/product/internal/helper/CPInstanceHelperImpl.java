@@ -541,12 +541,14 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 						cpInstanceOptionValueRel.
 							getCPDefinitionOptionValueRelId());
 
-			if ((cpDefinitionOptionValueRel != null) &&
-				!cpDefinitionOptionValueRels.contains(
+			if ((cpDefinitionOptionValueRel == null) ||
+				cpDefinitionOptionValueRels.contains(
 					cpDefinitionOptionValueRel)) {
 
-				cpDefinitionOptionValueRels.add(cpDefinitionOptionValueRel);
+				continue;
 			}
+
+			cpDefinitionOptionValueRels.add(cpDefinitionOptionValueRel);
 		}
 
 		Collections.sort(

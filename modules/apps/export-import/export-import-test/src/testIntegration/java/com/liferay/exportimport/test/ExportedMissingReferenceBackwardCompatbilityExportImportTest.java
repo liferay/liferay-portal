@@ -225,10 +225,12 @@ public class ExportedMissingReferenceBackwardCompatbilityExportImportTest
 									missingReferenceElement.attribute(
 										"element-path");
 
-								if (elementPathAttribute != null) {
-									missingReferencesElement.remove(
-										missingReferenceElement);
+								if (elementPathAttribute == null) {
+									continue;
 								}
+
+								missingReferencesElement.remove(
+									missingReferenceElement);
 							}
 
 							zipWriter.addEntry(

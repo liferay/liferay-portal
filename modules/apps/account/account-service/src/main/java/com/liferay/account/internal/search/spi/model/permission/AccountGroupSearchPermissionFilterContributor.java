@@ -54,15 +54,16 @@ public class AccountGroupSearchPermissionFilterContributor
 					_accountEntryUserRelLocalService.
 						getAccountEntryUserRelsByAccountUserId(userId)) {
 
-				if (_accountEntryModelResourcePermission.contains(
+				if (!_accountEntryModelResourcePermission.contains(
 						permissionChecker,
 						accountEntryUserRel.getAccountEntryId(),
 						AccountActionKeys.VIEW_ACCOUNT_GROUPS)) {
 
-					accountEntryIdsTermsFilter.addValue(
-						String.valueOf(
-							accountEntryUserRel.getAccountEntryId()));
+					continue;
 				}
+
+				accountEntryIdsTermsFilter.addValue(
+					String.valueOf(accountEntryUserRel.getAccountEntryId()));
 			}
 		}
 		catch (PortalException portalException) {

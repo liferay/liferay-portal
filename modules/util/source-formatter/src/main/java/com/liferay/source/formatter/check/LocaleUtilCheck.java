@@ -42,11 +42,13 @@ public class LocaleUtilCheck extends BaseFileCheck {
 			List<String> localeUtilTermNames = _getLocaleUtilTermNames(
 				absolutePath);
 
-			if (localeUtilTermNames.contains(matcher.group(1))) {
-				addMessage(
-					fileName, "Use \"LocaleUtil." + matcher.group(1) + "\"",
-					getLineNumber(content, matcher.start()));
+			if (!localeUtilTermNames.contains(matcher.group(1))) {
+				continue;
 			}
+
+			addMessage(
+				fileName, "Use \"LocaleUtil." + matcher.group(1) + "\"",
+				getLineNumber(content, matcher.start()));
 		}
 
 		return content;
@@ -73,9 +75,11 @@ public class LocaleUtilCheck extends BaseFileCheck {
 			_LOCALE_UTIL_FILE_NAME, localeUtilClassContent);
 
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
-			if (javaTerm.isPublic()) {
-				_localeUtilTermNames.add(javaTerm.getName());
+			if (!javaTerm.isPublic()) {
+				continue;
 			}
+
+			_localeUtilTermNames.add(javaTerm.getName());
 		}
 
 		return _localeUtilTermNames;

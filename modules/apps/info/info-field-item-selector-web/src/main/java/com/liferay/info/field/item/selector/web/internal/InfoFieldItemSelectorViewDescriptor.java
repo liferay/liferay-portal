@@ -278,9 +278,11 @@ public class InfoFieldItemSelectorViewDescriptor
 						"inputFieldId", "string", "", false, "text"),
 					_themeDisplay.getLocale()));
 
-			if (Validator.isNotNull(inputFieldId)) {
-				checkedUniqueInfoFieldIds.add(inputFieldId);
+			if (Validator.isNull(inputFieldId)) {
+				continue;
 			}
+
+			checkedUniqueInfoFieldIds.add(inputFieldId);
 		}
 
 		return checkedUniqueInfoFieldIds;
@@ -325,9 +327,11 @@ public class InfoFieldItemSelectorViewDescriptor
 				InfoFieldSet infoFieldSet = (InfoFieldSet)infoFieldSetEntry;
 
 				for (InfoField<?> infoField : infoFieldSet.getAllInfoFields()) {
-					if (infoField.isEditable()) {
-						infoFieldsMap.put(infoField, infoFieldSet);
+					if (!infoField.isEditable()) {
+						continue;
 					}
+
+					infoFieldsMap.put(infoField, infoFieldSet);
 				}
 			}
 		}

@@ -407,13 +407,15 @@ public class LiferaySerializer extends AbstractSerializer {
 						}
 					}
 
-					if (value != null) {
-						try {
-							field.set(javaClassInstance, value);
-						}
-						catch (Exception exception) {
-							_log.error(exception);
-						}
+					if (value == null) {
+						continue;
+					}
+
+					try {
+						field.set(javaClassInstance, value);
+					}
+					catch (Exception exception) {
+						_log.error(exception);
 					}
 				}
 

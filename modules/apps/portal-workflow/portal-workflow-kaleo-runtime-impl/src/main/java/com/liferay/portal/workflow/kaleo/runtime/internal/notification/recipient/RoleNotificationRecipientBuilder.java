@@ -107,12 +107,14 @@ public class RoleNotificationRecipientBuilder
 		throws Exception {
 
 		for (User user : _getRoleUsers(role, executionContext)) {
-			if (user.isActive() &&
-				!_isSelfAssignedUser(executionContext, user)) {
+			if (!user.isActive() ||
+				_isSelfAssignedUser(executionContext, user)) {
 
-				notificationRecipients.add(
-					new NotificationRecipient(user, notificationReceptionType));
+				continue;
 			}
+
+			notificationRecipients.add(
+				new NotificationRecipient(user, notificationReceptionType));
 		}
 	}
 
@@ -145,9 +147,11 @@ public class RoleNotificationRecipientBuilder
 		List<Long> groupIds = new ArrayList<>();
 
 		for (Group ancestorGroup : group.getAncestors()) {
-			if (_isValidGroup(group, role)) {
-				groupIds.add(ancestorGroup.getGroupId());
+			if (!_isValidGroup(group, role)) {
+				continue;
 			}
+
+			groupIds.add(ancestorGroup.getGroupId());
 		}
 
 		return groupIds;
@@ -162,9 +166,11 @@ public class RoleNotificationRecipientBuilder
 			group.getOrganizationId());
 
 		for (Organization ancestorOrganization : organization.getAncestors()) {
-			if (_isValidGroup(group, role)) {
-				groupIds.add(ancestorOrganization.getGroupId());
+			if (!_isValidGroup(group, role)) {
+				continue;
 			}
+
+			groupIds.add(ancestorOrganization.getGroupId());
 		}
 
 		return groupIds;
@@ -239,18 +245,21 @@ public class RoleNotificationRecipientBuilder
 						groupId, WorkflowConstants.STATUS_APPROVED, null));
 			}
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					role.getName(), RoleConstants.ORGANIZATION_USER)) {
 
-				Group group = groupLocalService.getGroup(groupId);
-
-				if (group.isOrganization()) {
-					long organizationId = group.getClassPK();
-
-					users.addAll(
-						userLocalService.getOrganizationUsers(organizationId));
-				}
+				continue;
 			}
+
+			Group group = groupLocalService.getGroup(groupId);
+
+			if (!group.isOrganization()) {
+				continue;
+			}
+
+			long organizationId = group.getClassPK();
+
+			users.addAll(userLocalService.getOrganizationUsers(organizationId));
 		}
 
 		return users;

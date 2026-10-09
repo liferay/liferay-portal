@@ -70,9 +70,11 @@ public class PortalLDAPContext extends DummyDirContext {
 		for (String id : ids) {
 			Attribute attribute = _attributes.get(id);
 
-			if (attribute != null) {
-				attributes.put(attribute);
+			if (attribute == null) {
+				continue;
 			}
+
+			attributes.put(attribute);
 		}
 
 		return attributes;

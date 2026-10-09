@@ -133,11 +133,13 @@ public class WebsiteLocalServiceImpl extends WebsiteLocalServiceBaseImpl {
 				companyId, classNameId, classPK, primary);
 
 			for (Website website : websites) {
-				if ((websiteId <= 0) || (website.getWebsiteId() != websiteId)) {
-					website.setPrimary(false);
-
-					websitePersistence.update(website);
+				if ((websiteId > 0) && (website.getWebsiteId() == websiteId)) {
+					continue;
 				}
+
+				website.setPrimary(false);
+
+				websitePersistence.update(website);
 			}
 		}
 	}

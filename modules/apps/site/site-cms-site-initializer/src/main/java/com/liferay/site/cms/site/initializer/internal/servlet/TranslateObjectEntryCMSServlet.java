@@ -203,10 +203,12 @@ public class TranslateObjectEntryCMSServlet extends BaseCMSServlet {
 
 			zipFileName = file.getName();
 
-			if (objectEntryIds.size() > 1) {
-				zipWriter.addEntry(
-					file.getName(), new AutoDeleteFileInputStream(file));
+			if (objectEntryIds.size() <= 1) {
+				continue;
 			}
+
+			zipWriter.addEntry(
+				file.getName(), new AutoDeleteFileInputStream(file));
 		}
 
 		if (objectEntryIds.size() > 1) {
@@ -231,9 +233,11 @@ public class TranslateObjectEntryCMSServlet extends BaseCMSServlet {
 					fetchObjectDefinitionByExternalReferenceCode(
 						externalReferenceCode, companyId);
 
-			if (objectDefinition != null) {
-				set.add(objectDefinition.getClassName());
+			if (objectDefinition == null) {
+				continue;
 			}
+
+			set.add(objectDefinition.getClassName());
 		}
 
 		return set;

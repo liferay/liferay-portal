@@ -887,17 +887,21 @@ public class CTSQLTransformerImpl implements CTSQLTransformer {
 
 					rightFromItem.accept(this);
 
-					if (join.isLeft() || join.isRight() || join.isFull() ||
-						join.isOuter()) {
+					if (!join.isLeft() && !join.isRight() && !join.isFull() &&
+						!join.isOuter()) {
 
-						allowNull = true;
-
-						Expression onExpression = join.getOnExpression();
-
-						if (onExpression != null) {
-							join.setOnExpression(_visit(onExpression));
-						}
+						continue;
 					}
+
+					allowNull = true;
+
+					Expression onExpression = join.getOnExpression();
+
+					if (onExpression == null) {
+						continue;
+					}
+
+					join.setOnExpression(_visit(onExpression));
 				}
 			}
 
@@ -1218,20 +1222,22 @@ public class CTSQLTransformerImpl implements CTSQLTransformer {
 				CTModelRegistration ctModelRegistration =
 					CTModelRegistry.getCTModelRegistration(table.getName());
 
-				if ((ctModelRegistration != null) &&
-					_includeCTExpression(
+				if ((ctModelRegistration == null) ||
+					!_includeCTExpression(
 						originalWhereExpression, tableWrapper)) {
 
-					Expression ctExpression = getWhereExpression(
-						table, ctModelRegistration);
+					continue;
+				}
 
-					if (whereExpression == null) {
-						whereExpression = ctExpression;
-					}
-					else {
-						whereExpression = new AndExpression(
-							whereExpression, ctExpression);
-					}
+				Expression ctExpression = getWhereExpression(
+					table, ctModelRegistration);
+
+				if (whereExpression == null) {
+					whereExpression = ctExpression;
+				}
+				else {
+					whereExpression = new AndExpression(
+						whereExpression, ctExpression);
 				}
 			}
 

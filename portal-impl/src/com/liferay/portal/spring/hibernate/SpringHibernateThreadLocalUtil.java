@@ -109,37 +109,38 @@ public class SpringHibernateThreadLocalUtil {
 					ReflectionUtil.getDeclaredFields(
 						TransactionSynchronizationManager.class)) {
 
-				if (Modifier.isStatic(field.getModifiers()) &&
-					ThreadLocal.class.isAssignableFrom(field.getType())) {
+				if (!Modifier.isStatic(field.getModifiers()) ||
+					!ThreadLocal.class.isAssignableFrom(field.getType())) {
 
-					ThreadLocal<Object> threadLocal =
-						(ThreadLocal<Object>)field.get(null);
+					continue;
+				}
 
-					Object value = threadLocal.get();
+				ThreadLocal<Object> threadLocal =
+					(ThreadLocal<Object>)field.get(null);
 
-					if (threadLocal instanceof NamedThreadLocal) {
-						threadLocal = new CentralizedThreadLocal<>(
-							(String)nameField.get(threadLocal), () -> null,
-							false);
-					}
-					else {
-						threadLocal = new CentralizedThreadLocal<>(false);
-					}
+				Object value = threadLocal.get();
 
-					if (value != null) {
-						threadLocal.set(value);
-					}
+				if (threadLocal instanceof NamedThreadLocal) {
+					threadLocal = new CentralizedThreadLocal<>(
+						(String)nameField.get(threadLocal), () -> null, false);
+				}
+				else {
+					threadLocal = new CentralizedThreadLocal<>(false);
+				}
 
-					field.set(null, threadLocal);
+				if (value != null) {
+					threadLocal.set(value);
+				}
 
-					String name = field.getName();
+				field.set(null, threadLocal);
 
-					if (name.equals("currentTransactionReadOnly")) {
-						currentTransactionReadOnly = threadLocal;
-					}
-					else if (name.equals("resources")) {
-						resources = threadLocal;
-					}
+				String name = field.getName();
+
+				if (name.equals("currentTransactionReadOnly")) {
+					currentTransactionReadOnly = threadLocal;
+				}
+				else if (name.equals("resources")) {
+					resources = threadLocal;
 				}
 			}
 

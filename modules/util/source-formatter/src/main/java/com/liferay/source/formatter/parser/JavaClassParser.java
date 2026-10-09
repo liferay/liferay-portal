@@ -544,11 +544,13 @@ public class JavaClassParser {
 			detailAST, true, DetailASTUtil.ALL_TYPES);
 
 		for (DetailAST childDetailAST : childDetailASTs) {
-			if ((childDetailAST.getColumnNo() == detailAST.getColumnNo()) &&
-				(childDetailAST.getLineNo() < startLineNumber)) {
+			if ((childDetailAST.getColumnNo() != detailAST.getColumnNo()) ||
+				(childDetailAST.getLineNo() >= startLineNumber)) {
 
-				startLineNumber = childDetailAST.getLineNo();
+				continue;
 			}
+
+			startLineNumber = childDetailAST.getLineNo();
 		}
 
 		return startLineNumber;

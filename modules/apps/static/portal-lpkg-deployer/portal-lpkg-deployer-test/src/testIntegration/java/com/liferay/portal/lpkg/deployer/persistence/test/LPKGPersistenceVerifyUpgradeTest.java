@@ -44,9 +44,11 @@ public class LPKGPersistenceVerifyUpgradeTest {
 				jarBundle = testBundle;
 			}
 
-			if (symbolicName.equals("Liferay Persistence Test")) {
-				lpkgBundle = testBundle;
+			if (!symbolicName.equals("Liferay Persistence Test")) {
+				continue;
 			}
+
+			lpkgBundle = testBundle;
 		}
 
 		Assert.assertNotNull(jarBundle);

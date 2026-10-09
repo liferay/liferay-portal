@@ -117,9 +117,11 @@ public class AppJSDocPlugin extends BaseJSDocPlugin {
 			subproject, JSDocPlugin.JSDOC_TASK_NAME);
 
 		for (File dir : subprojectJSDocTask.getSourceDirs()) {
-			if (dir.exists()) {
-				appJSDocTask.sourceDirs(dir);
+			if (!dir.exists()) {
+				continue;
 			}
+
+			appJSDocTask.sourceDirs(dir);
 		}
 	}
 

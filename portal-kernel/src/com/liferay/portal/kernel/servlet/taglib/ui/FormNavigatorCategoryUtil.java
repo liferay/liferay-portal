@@ -59,9 +59,11 @@ public class FormNavigatorCategoryUtil {
 
 			String key = formNavigatorCategory.getKey();
 
-			if (Validator.isNotNull(key)) {
-				keys.add(key);
+			if (Validator.isNull(key)) {
+				continue;
 			}
+
+			keys.add(key);
 		}
 
 		return keys.toArray(new String[0]);
@@ -82,9 +84,11 @@ public class FormNavigatorCategoryUtil {
 
 			String label = formNavigatorCategory.getLabel(locale);
 
-			if (Validator.isNotNull(label)) {
-				labels.add(label);
+			if (Validator.isNull(label)) {
+				continue;
 			}
+
+			labels.add(label);
 		}
 
 		return labels.toArray(new String[0]);

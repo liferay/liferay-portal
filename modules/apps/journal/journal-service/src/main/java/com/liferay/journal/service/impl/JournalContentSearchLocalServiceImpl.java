@@ -119,11 +119,13 @@ public class JournalContentSearchLocalServiceImpl
 					orphanedJournalContentSearches.remove(
 						journalContentSearchKey);
 
-				if (existingJournalContentSearch == null) {
-					updateContentSearch(
-						layout.getGroupId(), layout.isPrivateLayout(),
-						layout.getLayoutId(), portletId, articleId);
+				if (existingJournalContentSearch != null) {
+					continue;
 				}
+
+				updateContentSearch(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					layout.getLayoutId(), portletId, articleId);
 			}
 		}
 

@@ -110,9 +110,11 @@ public class LiferaySettingsPlugin implements Plugin<Settings> {
 			flagName = flagName.replace('_', '.');
 			flagName = flagName.toLowerCase();
 
-			if (!Boolean.getBoolean(prefix + flagName)) {
-				iterator.remove();
+			if (Boolean.getBoolean(prefix + flagName)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return flags;

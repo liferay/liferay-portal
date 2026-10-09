@@ -173,9 +173,11 @@ public class PluginsGitSvnSyncer {
 		while (iterator.hasNext()) {
 			String ignore = iterator.next();
 
-			if (ignore.equals("classes")) {
-				iterator.remove();
+			if (!ignore.equals("classes")) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (!ignores.isEmpty()) {
@@ -184,9 +186,11 @@ public class PluginsGitSvnSyncer {
 			for (int i = 0; i < ignoresArray.length; i++) {
 				String ignore = ignoresArray[i];
 
-				if (Validator.isNotNull(ignore) && !ignore.startsWith("/")) {
-					ignoresArray[i] = "/" + ignore;
+				if (Validator.isNull(ignore) || ignore.startsWith("/")) {
+					continue;
 				}
+
+				ignoresArray[i] = "/" + ignore;
 			}
 
 			_fileImpl.write(

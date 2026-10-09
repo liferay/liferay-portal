@@ -120,11 +120,13 @@ public abstract class BaseJavaTermCheck
 
 			String s = StringUtil.trim(matcher.group(1));
 
-			if (!s.equals("break") && !s.equals("continue") &&
-				!s.equals("return") && !s.equals("throw")) {
+			if (s.equals("break") || s.equals("continue") ||
+				s.equals("return") || s.equals("throw")) {
 
-				variableNames.add(matcher.group(3));
+				continue;
 			}
+
+			variableNames.add(matcher.group(3));
 		}
 
 		return variableNames;

@@ -176,32 +176,35 @@ public class DDMFormValuesExportImportContentProcessor
 				for (Element element : elements) {
 					String className = element.attributeValue("class-name");
 
-					if (className.equals(Layout.class.getName())) {
-						String uuid = element.attributeValue("uuid");
-
-						if (jsonObject.has("id") &&
-							!Objects.equals(uuid, jsonObject.getString("id"))) {
-
-							continue;
-						}
-
-						String privateLayout = element.attributeValue(
-							"private-layout");
-
-						importedLayout =
-							_layoutLocalService.fetchLayoutByUuidAndGroupId(
-								uuid, _portletDataContext.getScopeGroupId(),
-								Boolean.valueOf(privateLayout));
+					if (!className.equals(Layout.class.getName())) {
+						continue;
 					}
+
+					String uuid = element.attributeValue("uuid");
+
+					if (jsonObject.has("id") &&
+						!Objects.equals(uuid, jsonObject.getString("id"))) {
+
+						continue;
+					}
+
+					String privateLayout = element.attributeValue(
+						"private-layout");
+
+					importedLayout =
+						_layoutLocalService.fetchLayoutByUuidAndGroupId(
+							uuid, _portletDataContext.getScopeGroupId(),
+							Boolean.valueOf(privateLayout));
 				}
 
-				if (importedLayout != null) {
-					value.addString(
-						locale,
-						toJSON(
-							importedLayout, locale,
-							jsonObject.getString("name")));
+				if (importedLayout == null) {
+					continue;
 				}
+
+				value.addString(
+					locale,
+					toJSON(
+						importedLayout, locale, jsonObject.getString("name")));
 			}
 		}
 

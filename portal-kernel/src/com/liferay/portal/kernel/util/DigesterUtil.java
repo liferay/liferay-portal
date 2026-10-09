@@ -166,9 +166,11 @@ public class DigesterUtil {
 			int read = 0;
 
 			while ((read = inputStream2.read(buffer)) != -1) {
-				if (read > 0) {
-					messageDigest.update(buffer, 0, read);
+				if (read <= 0) {
+					continue;
 				}
+
+				messageDigest.update(buffer, 0, read);
 			}
 
 			return messageDigest.digest();

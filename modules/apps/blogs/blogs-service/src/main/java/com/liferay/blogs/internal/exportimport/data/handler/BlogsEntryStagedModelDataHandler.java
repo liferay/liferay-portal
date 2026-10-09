@@ -484,13 +484,15 @@ public class BlogsEntryStagedModelDataHandler
 				_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
 					assetDisplayPageEntryId);
 
-			if (existingAssetDisplayPageEntry != null) {
-				existingAssetDisplayPageEntry.setClassPK(
-					importedEntry.getEntryId());
-
-				_assetDisplayPageEntryLocalService.updateAssetDisplayPageEntry(
-					existingAssetDisplayPageEntry);
+			if (existingAssetDisplayPageEntry == null) {
+				continue;
 			}
+
+			existingAssetDisplayPageEntry.setClassPK(
+				importedEntry.getEntryId());
+
+			_assetDisplayPageEntryLocalService.updateAssetDisplayPageEntry(
+				existingAssetDisplayPageEntry);
 		}
 	}
 
@@ -531,12 +533,14 @@ public class BlogsEntryStagedModelDataHandler
 				_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
 					friendlyURLEntryId);
 
-			if (existingFriendlyURLEntry != null) {
-				existingFriendlyURLEntry.setClassPK(importedEntry.getEntryId());
-
-				_friendlyURLEntryLocalService.updateFriendlyURLEntry(
-					existingFriendlyURLEntry);
+			if (existingFriendlyURLEntry == null) {
+				continue;
 			}
+
+			existingFriendlyURLEntry.setClassPK(importedEntry.getEntryId());
+
+			_friendlyURLEntryLocalService.updateFriendlyURLEntry(
+				existingFriendlyURLEntry);
 		}
 	}
 

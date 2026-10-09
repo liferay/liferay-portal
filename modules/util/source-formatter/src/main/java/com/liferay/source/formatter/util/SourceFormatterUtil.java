@@ -92,9 +92,11 @@ public class SourceFormatterUtil {
 		List<String> includeRegexList = new ArrayList<>();
 
 		for (String exclude : excludes) {
-			if (!exclude.contains(StringPool.DOLLAR)) {
-				excludeRegexList.add(_createRegex(exclude));
+			if (exclude.contains(StringPool.DOLLAR)) {
+				continue;
 			}
+
+			excludeRegexList.add(_createRegex(exclude));
 		}
 
 		if (!forceIncludeAllFiles) {
@@ -130,9 +132,11 @@ public class SourceFormatterUtil {
 		}
 
 		for (String include : includes) {
-			if (!include.contains(StringPool.DOLLAR)) {
-				includeRegexList.add(_createRegex(include));
+			if (include.contains(StringPool.DOLLAR)) {
+				continue;
 			}
+
+			includeRegexList.add(_createRegex(include));
 		}
 
 		List<String> fileNames = new ArrayList<>();
@@ -157,11 +161,13 @@ public class SourceFormatterUtil {
 
 					String propertiesFileLocation = entry.getKey();
 
-					if (encodedFileName.startsWith(propertiesFileLocation)) {
-						for (String excludeRegex : entry.getValue()) {
-							if (encodedFileName.matches(excludeRegex)) {
-								continue outerLoop;
-							}
+					if (!encodedFileName.startsWith(propertiesFileLocation)) {
+						continue;
+					}
+
+					for (String excludeRegex : entry.getValue()) {
+						if (encodedFileName.matches(excludeRegex)) {
+							continue outerLoop;
 						}
 					}
 				}
@@ -526,11 +532,13 @@ public class SourceFormatterUtil {
 
 				String propertiesFileLocation = entry.getKey();
 
-				if (currentFilePath.startsWith(propertiesFileLocation)) {
-					for (PathMatcher pathMatcher : entry.getValue()) {
-						if (pathMatcher.matches(filePath)) {
-							continue recentChangesFileNamesLoop;
-						}
+				if (!currentFilePath.startsWith(propertiesFileLocation)) {
+					continue;
+				}
+
+				for (PathMatcher pathMatcher : entry.getValue()) {
+					if (pathMatcher.matches(filePath)) {
+						continue recentChangesFileNamesLoop;
 					}
 				}
 			}
@@ -560,11 +568,13 @@ public class SourceFormatterUtil {
 
 					String propertiesFileLocation = entry.getKey();
 
-					if (currentDirPath.startsWith(propertiesFileLocation)) {
-						for (PathMatcher pathMatcher : entry.getValue()) {
-							if (pathMatcher.matches(dirPath)) {
-								continue recentChangesFileNamesLoop;
-							}
+					if (!currentDirPath.startsWith(propertiesFileLocation)) {
+						continue;
+					}
+
+					for (PathMatcher pathMatcher : entry.getValue()) {
+						if (pathMatcher.matches(dirPath)) {
+							continue recentChangesFileNamesLoop;
 						}
 					}
 				}
@@ -809,11 +819,15 @@ public class SourceFormatterUtil {
 
 						String propertiesFileLocation = entry.getKey();
 
-						if (currentDirPath.startsWith(propertiesFileLocation)) {
-							for (PathMatcher pathMatcher : entry.getValue()) {
-								if (pathMatcher.matches(dirPath)) {
-									return FileVisitResult.SKIP_SUBTREE;
-								}
+						if (!currentDirPath.startsWith(
+								propertiesFileLocation)) {
+
+							continue;
+						}
+
+						for (PathMatcher pathMatcher : entry.getValue()) {
+							if (pathMatcher.matches(dirPath)) {
+								return FileVisitResult.SKIP_SUBTREE;
 							}
 						}
 					}
@@ -846,13 +860,15 @@ public class SourceFormatterUtil {
 
 						String propertiesFileLocation = entry.getKey();
 
-						if (currentFilePath.startsWith(
+						if (!currentFilePath.startsWith(
 								propertiesFileLocation)) {
 
-							for (PathMatcher pathMatcher : entry.getValue()) {
-								if (pathMatcher.matches(canonicalPath)) {
-									return FileVisitResult.CONTINUE;
-								}
+							continue;
+						}
+
+						for (PathMatcher pathMatcher : entry.getValue()) {
+							if (pathMatcher.matches(canonicalPath)) {
+								return FileVisitResult.CONTINUE;
 							}
 						}
 					}

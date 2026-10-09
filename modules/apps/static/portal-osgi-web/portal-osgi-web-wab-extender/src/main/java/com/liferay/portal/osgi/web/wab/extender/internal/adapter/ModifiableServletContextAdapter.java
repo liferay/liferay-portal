@@ -545,9 +545,11 @@ public class ModifiableServletContextAdapter
 		for (FilterDefinition filterDefinition : filterDefinitions.values()) {
 			Filter filter = filterDefinition.getFilter();
 
-			if (!_filterRegistrationImpls.containsValue(filter)) {
-				addFilter(filterDefinition.getName(), filter);
+			if (_filterRegistrationImpls.containsValue(filter)) {
+				continue;
 			}
+
+			addFilter(filterDefinition.getName(), filter);
 		}
 	}
 
@@ -612,9 +614,11 @@ public class ModifiableServletContextAdapter
 
 			Servlet servlet = servletDefinition.getServlet();
 
-			if (!_servletRegistrationImpls.containsValue(servlet)) {
-				addServlet(servletDefinition.getName(), servlet);
+			if (_servletRegistrationImpls.containsValue(servlet)) {
+				continue;
 			}
+
+			addServlet(servletDefinition.getName(), servlet);
 		}
 	}
 

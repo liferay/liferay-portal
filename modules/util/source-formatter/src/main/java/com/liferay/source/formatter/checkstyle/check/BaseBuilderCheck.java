@@ -241,9 +241,11 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 				end = Math.max(end, getEndLineNumber(variableCallerDetailAST));
 			}
 
-			if (!isFinal) {
-				nonfinalVariableRangeList.add(new int[] {start, end});
+			if (isFinal) {
+				continue;
 			}
+
+			nonfinalVariableRangeList.add(new int[] {start, end});
 		}
 
 		return nonfinalVariableRangeList;
@@ -344,23 +346,25 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 				return;
 			}
 
-			if (!allowNullValues()) {
-				DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
-					TokenTypes.ELIST);
+			if (allowNullValues()) {
+				continue;
+			}
 
-				DetailAST childDetailAST = elistDetailAST.getFirstChild();
+			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
+				TokenTypes.ELIST);
 
-				while (true) {
-					if (childDetailAST == null) {
-						break;
-					}
+			DetailAST childDetailAST = elistDetailAST.getFirstChild();
 
-					if (_isNullValueExpression(childDetailAST)) {
-						return;
-					}
-
-					childDetailAST = childDetailAST.getNextSibling();
+			while (true) {
+				if (childDetailAST == null) {
+					break;
 				}
+
+				if (_isNullValueExpression(childDetailAST)) {
+					return;
+				}
+
+				childDetailAST = childDetailAST.getNextSibling();
 			}
 		}
 
@@ -913,12 +917,14 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 				return;
 			}
 
-			if (branchStatementLineNumber < lineNumber) {
-				_checkInline(
-					variableDefinitionDetailAST, parentDetailAST,
-					builderClassName, supportsFunctionMethodNames,
-					expressionDetailASTMap, startLineNumber, endLineNumber);
+			if (branchStatementLineNumber >= lineNumber) {
+				continue;
 			}
+
+			_checkInline(
+				variableDefinitionDetailAST, parentDetailAST, builderClassName,
+				supportsFunctionMethodNames, expressionDetailASTMap,
+				startLineNumber, endLineNumber);
 		}
 	}
 
@@ -1099,11 +1105,13 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 				expressionDetailASTMap.entrySet()) {
 
 			for (DetailAST expressionDetailAST : entry.getValue()) {
-				if (_isNullValueExpression(expressionDetailAST)) {
-					log(
-						expressionDetailAST, _MSG_INCORRECT_NULL_VALUE,
-						builderClassName);
+				if (!_isNullValueExpression(expressionDetailAST)) {
+					continue;
 				}
+
+				log(
+					expressionDetailAST, _MSG_INCORRECT_NULL_VALUE,
+					builderClassName);
 			}
 		}
 	}
@@ -1199,20 +1207,24 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 
 				DetailAST childDetailAST = expressionDetailAST.getFirstChild();
 
-				if (childDetailAST.getType() == TokenTypes.METHOD_CALL) {
-					FullIdent fullIdent = FullIdent.createFullIdentBelow(
-						childDetailAST);
-
-					String methodCall = fullIdent.getText();
-
-					if (methodCall.equals("String.valueOf") ||
-						methodCall.endsWith(".toString")) {
-
-						log(
-							expressionDetailAST, _MSG_UNNEEDED_STRING_CAST,
-							avoidCastStringMethodName);
-					}
+				if (childDetailAST.getType() != TokenTypes.METHOD_CALL) {
+					continue;
 				}
+
+				FullIdent fullIdent = FullIdent.createFullIdentBelow(
+					childDetailAST);
+
+				String methodCall = fullIdent.getText();
+
+				if (!methodCall.equals("String.valueOf") &&
+					!methodCall.endsWith(".toString")) {
+
+					continue;
+				}
+
+				log(
+					expressionDetailAST, _MSG_UNNEEDED_STRING_CAST,
+					avoidCastStringMethodName);
 			}
 		}
 	}

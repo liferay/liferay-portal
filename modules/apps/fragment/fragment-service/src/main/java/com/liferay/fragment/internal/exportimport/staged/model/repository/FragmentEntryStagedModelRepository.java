@@ -200,9 +200,11 @@ public class FragmentEntryStagedModelRepository
 
 			Layout draftLayout = layout.fetchDraftLayout();
 
-			if (draftLayout != null) {
-				plids = ArrayUtil.append(plids, draftLayout.getPlid());
+			if (draftLayout == null) {
+				continue;
 			}
+
+			plids = ArrayUtil.append(plids, draftLayout.getPlid());
 		}
 
 		long[] fragmentEntryLinkIds = new long[fragmentEntryLinks.size()];
@@ -210,13 +212,12 @@ public class FragmentEntryStagedModelRepository
 		for (int i = 0; i < fragmentEntryLinks.size(); i++) {
 			FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(i);
 
-			if (ArrayUtil.contains(plids, fragmentEntryLink.getPlid())) {
-				fragmentEntryLinkIds[i] =
-					fragmentEntryLink.getFragmentEntryLinkId();
-			}
-			else {
+			if (!ArrayUtil.contains(plids, fragmentEntryLink.getPlid())) {
 				throw new RequiredFragmentEntryException();
 			}
+
+			fragmentEntryLinkIds[i] =
+				fragmentEntryLink.getFragmentEntryLinkId();
 		}
 
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLinks(

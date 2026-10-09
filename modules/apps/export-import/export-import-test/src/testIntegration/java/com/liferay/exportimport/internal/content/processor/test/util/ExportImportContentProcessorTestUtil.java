@@ -265,9 +265,11 @@ public class ExportImportContentProcessorTestUtil {
 		for (String url : urls) {
 			outURLs.add(url);
 
-			if (StringUtil.indexOfAny(url, findParams) > -1) {
-				outURLs.add(StringUtil.replace(url, findParams, addParams));
+			if (StringUtil.indexOfAny(url, findParams) <= -1) {
+				continue;
 			}
+
+			outURLs.add(StringUtil.replace(url, findParams, addParams));
 		}
 
 		return StringUtil.merge(outURLs, StringPool.NEW_LINE);
@@ -341,19 +343,19 @@ public class ExportImportContentProcessorTestUtil {
 						new String[] {"[$TIMESTAMP$]", "[$TIMESTAMP_ONLY$]"},
 						new String[] {"&" + parameters, "?" + parameters}));
 
-				if (url.contains("[$TIMESTAMP")) {
-					urls.add(
-						StringUtil.replace(
-							url,
-							new String[] {
-								"[$TIMESTAMP$]", "[$TIMESTAMP_ONLY$]"
-							},
-							new String[] {
-								StringPool.BLANK,
-								StringBundler.concat(
-									"?", _TIMESTAMP_PARAMETER, "?", parameters)
-							}));
+				if (!url.contains("[$TIMESTAMP")) {
+					continue;
 				}
+
+				urls.add(
+					StringUtil.replace(
+						url,
+						new String[] {"[$TIMESTAMP$]", "[$TIMESTAMP_ONLY$]"},
+						new String[] {
+							StringPool.BLANK,
+							StringBundler.concat(
+								"?", _TIMESTAMP_PARAMETER, "?", parameters)
+						}));
 			}
 		}
 

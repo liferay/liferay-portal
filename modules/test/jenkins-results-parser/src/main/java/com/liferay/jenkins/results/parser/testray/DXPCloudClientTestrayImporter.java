@@ -61,9 +61,11 @@ public class DXPCloudClientTestrayImporter {
 			Element testCaseFailureElement = _getTestCaseFailureElement(
 				testCaseResultElement);
 
-			if (testCaseFailureElement != null) {
-				testCaseElement.add(testCaseFailureElement);
+			if (testCaseFailureElement == null) {
+				continue;
 			}
+
+			testCaseElement.add(testCaseFailureElement);
 		}
 
 		TestrayBuild testrayBuild = _getTestrayBuild();
@@ -510,36 +512,36 @@ public class DXPCloudClientTestrayImporter {
 			for (File childFile : parentDir.listFiles()) {
 				String childFileName = childFile.getName();
 
-				if (childFileName.endsWith(".xml")) {
-					try {
-						Document document = Dom4JUtil.parse(
-							JenkinsResultsParserUtil.read(childFile));
+				if (!childFileName.endsWith(".xml")) {
+					continue;
+				}
 
-						Element rootElement = document.getRootElement();
+				try {
+					Document document = Dom4JUtil.parse(
+						JenkinsResultsParserUtil.read(childFile));
 
-						for (Element testCaseElement :
-								rootElement.elements("testcase")) {
+					Element rootElement = document.getRootElement();
 
-							testCaseElements.add(testCaseElement);
-						}
+					for (Element testCaseElement :
+							rootElement.elements("testcase")) {
+
+						testCaseElements.add(testCaseElement);
 					}
-					catch (Exception exception) {
-						if (childFile.exists()) {
-							File xmlGzipFile = new File(
-								childFile.getParentFile(),
-								childFile.getName() + ".gz");
+				}
+				catch (Exception exception) {
+					if (childFile.exists()) {
+						File xmlGzipFile = new File(
+							childFile.getParentFile(),
+							childFile.getName() + ".gz");
 
-							JenkinsResultsParserUtil.gzip(
-								childFile, xmlGzipFile);
+						JenkinsResultsParserUtil.gzip(childFile, xmlGzipFile);
 
-							_testrayCloudBucket.createTestrayCloudObject(
-								_getRelativeURLPath() + "/" +
-									xmlGzipFile.getName(),
-								xmlGzipFile);
-						}
-
-						throw new RuntimeException(exception);
+						_testrayCloudBucket.createTestrayCloudObject(
+							_getRelativeURLPath() + "/" + xmlGzipFile.getName(),
+							xmlGzipFile);
 					}
+
+					throw new RuntimeException(exception);
 				}
 			}
 

@@ -89,9 +89,11 @@ public class ViewHomeQuickActionsDisplayContext {
 		for (Long groupId : groupIds) {
 			JSONObject jsonObject = _getJSONObject(groupId);
 
-			if (jsonObject != null) {
-				jsonArray.put(jsonObject);
+			if (jsonObject == null) {
+				continue;
 			}
+
+			jsonArray.put(jsonObject);
 		}
 
 		return jsonArray;

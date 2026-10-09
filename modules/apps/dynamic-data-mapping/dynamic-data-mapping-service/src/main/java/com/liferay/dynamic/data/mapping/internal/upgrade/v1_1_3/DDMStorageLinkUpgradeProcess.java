@@ -40,13 +40,14 @@ public class DDMStorageLinkUpgradeProcess extends UpgradeProcess {
 				long ddmStructureVersionId = resultSet.getLong(
 					"structureVersionId");
 
-				if (ddmStructureVersionId > 0) {
-					preparedStatement2.setLong(1, ddmStructureVersionId);
-					preparedStatement2.setLong(
-						2, resultSet.getLong("structureId"));
-
-					preparedStatement2.addBatch();
+				if (ddmStructureVersionId <= 0) {
+					continue;
 				}
+
+				preparedStatement2.setLong(1, ddmStructureVersionId);
+				preparedStatement2.setLong(2, resultSet.getLong("structureId"));
+
+				preparedStatement2.addBatch();
 			}
 
 			preparedStatement2.executeBatch();

@@ -165,33 +165,33 @@ public class FragmentEntryLinkModelListener
 							fragmentEntryLink, type, defaultValue));
 				}
 
-				if (!_fragmentEntryProcessorHelper.isMapped(
-						editableValueJSONObject) &&
-					!_fragmentEntryProcessorHelper.isMappedCollection(
-						editableValueJSONObject) &&
-					!_fragmentEntryProcessorHelper.isMappedDisplayPage(
+				if (_fragmentEntryProcessorHelper.isMapped(
+						editableValueJSONObject) ||
+					_fragmentEntryProcessorHelper.isMappedCollection(
+						editableValueJSONObject) ||
+					_fragmentEntryProcessorHelper.isMappedDisplayPage(
 						editableValueJSONObject)) {
 
-					Iterator<String> valueKeysIterator =
-						editableValueJSONObject.keys();
+					continue;
+				}
 
-					while (valueKeysIterator.hasNext()) {
-						String valueKey = valueKeysIterator.next();
+				Iterator<String> valueKeysIterator =
+					editableValueJSONObject.keys();
 
-						if (valueKey.equals("config") ||
-							valueKey.equals("defaultValue")) {
+				while (valueKeysIterator.hasNext()) {
+					String valueKey = valueKeysIterator.next();
 
-							continue;
-						}
+					if (valueKey.equals("config") ||
+						valueKey.equals("defaultValue")) {
 
-						String value = editableValueJSONObject.getString(
-							valueKey);
-
-						editableValueJSONObject.put(
-							valueKey,
-							_sanitizeEditableValue(
-								fragmentEntryLink, type, value));
+						continue;
 					}
+
+					String value = editableValueJSONObject.getString(valueKey);
+
+					editableValueJSONObject.put(
+						valueKey,
+						_sanitizeEditableValue(fragmentEntryLink, type, value));
 				}
 			}
 		}

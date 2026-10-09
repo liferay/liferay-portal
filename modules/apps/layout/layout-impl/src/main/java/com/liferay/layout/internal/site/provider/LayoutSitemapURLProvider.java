@@ -174,10 +174,12 @@ public class LayoutSitemapURLProvider implements SitemapURLProvider {
 
 			Locale locale = LocaleUtil.fromLanguageId(availableLanguageId);
 
-			if (siteAvailableLocales.contains(locale)) {
-				availableLocales.add(
-					LocaleUtil.fromLanguageId(availableLanguageId));
+			if (!siteAvailableLocales.contains(locale)) {
+				continue;
 			}
+
+			availableLocales.add(
+				LocaleUtil.fromLanguageId(availableLanguageId));
 		}
 
 		return availableLocales;

@@ -42,9 +42,11 @@ public class DLVideoExternalShortcutUIItemsUtil {
 		while (iterator.hasNext()) {
 			T item = iterator.next();
 
-			if (keys.contains(function.apply(item))) {
-				iterator.remove();
+			if (!keys.contains(function.apply(item))) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 	}
 

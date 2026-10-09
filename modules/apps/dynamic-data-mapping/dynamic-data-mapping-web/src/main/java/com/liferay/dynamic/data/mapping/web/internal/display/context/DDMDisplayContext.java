@@ -947,11 +947,13 @@ public class DDMDisplayContext {
 			while (iterator.hasNext()) {
 				TemplateHandler templateHandler = iterator.next();
 
-				if (!_containsAddPortletDisplayTemplatePermission(
+				if (_containsAddPortletDisplayTemplatePermission(
 						templateHandler.getResourceName())) {
 
-					iterator.remove();
+					continue;
 				}
+
+				iterator.remove();
 			}
 		}
 

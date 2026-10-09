@@ -39,11 +39,13 @@ public class JavaVariableTypeCheck extends BaseJavaTermCheck {
 		String classContent = javaClass.getContent();
 
 		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
-			if (childJavaTerm.isJavaVariable()) {
-				classContent = _checkFieldType(
-					absolutePath, javaClass, classContent,
-					(JavaVariable)childJavaTerm);
+			if (!childJavaTerm.isJavaVariable()) {
+				continue;
 			}
+
+			classContent = _checkFieldType(
+				absolutePath, javaClass, classContent,
+				(JavaVariable)childJavaTerm);
 		}
 
 		return classContent;
@@ -223,11 +225,13 @@ public class JavaVariableTypeCheck extends BaseJavaTermCheck {
 		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
 			childJavaTerms.add(childJavaTerm);
 
-			if (childJavaTerm.isJavaClass()) {
-				JavaClass childJavaClass = (JavaClass)childJavaTerm;
-
-				childJavaTerms.addAll(_getAllChildJavaTerms(childJavaClass));
+			if (!childJavaTerm.isJavaClass()) {
+				continue;
 			}
+
+			JavaClass childJavaClass = (JavaClass)childJavaTerm;
+
+			childJavaTerms.addAll(_getAllChildJavaTerms(childJavaClass));
 		}
 
 		return childJavaTerms;

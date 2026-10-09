@@ -206,18 +206,20 @@ public class GenerateReportsControllerBuildRunner
 
 			long reportStaleDuration = startTime - entry.getValue();
 
-			if (reportStaleDuration >= _getReportStaleDuration(reportName)) {
-				System.out.println(
-					JenkinsResultsParserUtil.combine(
-						reportName, " was last generated ",
-						JenkinsResultsParserUtil.toDurationString(
-							reportStaleDuration),
-						" ago which exceeds the stale duration of ",
-						JenkinsResultsParserUtil.toDurationString(
-							_getReportStaleDuration(reportName))));
-
-				_selectedReportNames.add(reportName);
+			if (reportStaleDuration < _getReportStaleDuration(reportName)) {
+				continue;
 			}
+
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					reportName, " was last generated ",
+					JenkinsResultsParserUtil.toDurationString(
+						reportStaleDuration),
+					" ago which exceeds the stale duration of ",
+					JenkinsResultsParserUtil.toDurationString(
+						_getReportStaleDuration(reportName))));
+
+			_selectedReportNames.add(reportName);
 		}
 
 		Collections.sort(_selectedReportNames);

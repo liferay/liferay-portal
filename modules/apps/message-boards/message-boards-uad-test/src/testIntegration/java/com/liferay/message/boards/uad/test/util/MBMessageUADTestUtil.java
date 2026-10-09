@@ -101,11 +101,13 @@ public class MBMessageUADTestUtil {
 		for (MBMessage mbMessage : mbMessages) {
 			long mbCategoryId = mbMessage.getCategoryId();
 
-			if (mbCategoryId !=
+			if (mbCategoryId ==
 					MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) {
 
-				mbCategoryLocalService.deleteCategory(mbCategoryId);
+				continue;
 			}
+
+			mbCategoryLocalService.deleteCategory(mbCategoryId);
 		}
 	}
 

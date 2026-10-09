@@ -263,11 +263,13 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 		List<Long> removeRoleIds = new ArrayList<>();
 
 		for (long roleId : curRoleIds) {
-			if (!ArrayUtil.contains(roleIds, roleId) &&
-				ArrayUtil.contains(availableRoleIds, roleId)) {
+			if (ArrayUtil.contains(roleIds, roleId) ||
+				!ArrayUtil.contains(availableRoleIds, roleId)) {
 
-				removeRoleIds.add(roleId);
+				continue;
 			}
+
+			removeRoleIds.add(roleId);
 		}
 
 		_userGroupRoleService.updateUserGroupRoles(
@@ -437,9 +439,11 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 		Set<Long> filteredUserIds = new HashSet<>();
 
 		for (long userId : userIds) {
-			if (!_userLocalService.hasGroupUser(groupId, userId)) {
-				filteredUserIds.add(userId);
+			if (_userLocalService.hasGroupUser(groupId, userId)) {
+				continue;
 			}
+
+			filteredUserIds.add(userId);
 		}
 
 		return ArrayUtil.toArray(filteredUserIds.toArray(new Long[0]));
@@ -449,9 +453,11 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 		Set<Long> filteredUserIds = new HashSet<>();
 
 		for (long userId : userIds) {
-			if (_userLocalService.hasGroupUser(groupId, userId)) {
-				filteredUserIds.add(userId);
+			if (!_userLocalService.hasGroupUser(groupId, userId)) {
+				continue;
 			}
+
+			filteredUserIds.add(userId);
 		}
 
 		return ArrayUtil.toArray(filteredUserIds.toArray(new Long[0]));

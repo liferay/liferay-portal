@@ -205,13 +205,15 @@ public class RelevantRuleEngine {
 		for (Object object : properties.keySet()) {
 			String propertyName = (String)object;
 
-			if (propertyName.contains("[" + relevantRuleName + "]") &&
-				propertyName.contains("[" + getTestSuiteName() + "]")) {
+			if (!propertyName.contains("[" + relevantRuleName + "]") ||
+				!propertyName.contains("[" + getTestSuiteName() + "]")) {
 
-				String propertyValue = properties.getProperty(propertyName);
-
-				relevantRuleProperties.setProperty(propertyName, propertyValue);
+				continue;
 			}
+
+			String propertyValue = properties.getProperty(propertyName);
+
+			relevantRuleProperties.setProperty(propertyName, propertyValue);
 		}
 
 		return relevantRuleProperties;

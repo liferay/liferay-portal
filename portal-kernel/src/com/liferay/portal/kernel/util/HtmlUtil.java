@@ -245,31 +245,33 @@ public class HtmlUtil {
 		for (int i = 0; i < css.length(); i++) {
 			char c = css.charAt(i);
 
-			if ((c < _VALID_CHARS.length) && !_VALID_CHARS[c]) {
-				if (sb == null) {
-					sb = new StringBuilder(css.length() + 64);
-				}
-
-				if (i > lastReplacementIndex) {
-					sb.append(css, lastReplacementIndex, i);
-				}
-
-				sb.append(prefix);
-
-				_appendHexChars(sb, hexBuffer, c);
-
-				if (i < (css.length() - 1)) {
-					char nextChar = css.charAt(i + 1);
-
-					if ((nextChar >= CharPool.NUMBER_0) &&
-						(nextChar <= CharPool.NUMBER_9)) {
-
-						sb.append(CharPool.SPACE);
-					}
-				}
-
-				lastReplacementIndex = i + 1;
+			if ((c >= _VALID_CHARS.length) || _VALID_CHARS[c]) {
+				continue;
 			}
+
+			if (sb == null) {
+				sb = new StringBuilder(css.length() + 64);
+			}
+
+			if (i > lastReplacementIndex) {
+				sb.append(css, lastReplacementIndex, i);
+			}
+
+			sb.append(prefix);
+
+			_appendHexChars(sb, hexBuffer, c);
+
+			if (i < (css.length() - 1)) {
+				char nextChar = css.charAt(i + 1);
+
+				if ((nextChar >= CharPool.NUMBER_0) &&
+					(nextChar <= CharPool.NUMBER_9)) {
+
+					sb.append(CharPool.SPACE);
+				}
+			}
+
+			lastReplacementIndex = i + 1;
 		}
 
 		if (sb == null) {
@@ -725,12 +727,14 @@ public class HtmlUtil {
 				continue;
 			}
 
-			if (group.equals(StringPool.SPACE) ||
-				group.equals(StringPool.NEW_LINE)) {
+			if (!group.equals(StringPool.SPACE) &&
+				!group.equals(StringPool.NEW_LINE)) {
 
-				length = 0;
-				pos = matcher.start() + 1;
+				continue;
 			}
+
+			length = 0;
+			pos = matcher.start() + 1;
 		}
 
 		sb.append(text.substring(lastWrite));
@@ -827,20 +831,19 @@ public class HtmlUtil {
 		while (true) {
 			x = text.indexOf("</", x);
 
-			if (x >= 0) {
-				if (_isTag(tag, text, x + 2)) {
-					pos = x;
-
-					break;
-				}
-
-				// Skip past "</"
-
-				x += 2;
-			}
-			else {
+			if (x < 0) {
 				break;
 			}
+
+			if (_isTag(tag, text, x + 2)) {
+				pos = x;
+
+				break;
+			}
+
+			// Skip past "</"
+
+			x += 2;
 		}
 
 		return pos;
@@ -924,9 +927,11 @@ public class HtmlUtil {
 			_ATTRIBUTE_ESCAPES[CharPool.LESS_THAN] = "&lt;";
 			_ATTRIBUTE_ESCAPES[CharPool.QUOTE] = "&quot;";
 
-			if (Character.isLetterOrDigit(c)) {
-				_VALID_CHARS[i] = true;
+			if (!Character.isLetterOrDigit(c)) {
+				continue;
 			}
+
+			_VALID_CHARS[i] = true;
 		}
 
 		_VALID_CHARS['-'] = true;

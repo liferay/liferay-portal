@@ -110,9 +110,11 @@ public abstract class UpgradeModules extends UpgradeProcess {
 	protected void updateLegacyServiceModules() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			for (String[] legacyServiceModule : getLegacyServiceModules()) {
-				if (hasTable(legacyServiceModule[1])) {
-					addRelease(legacyServiceModule[0]);
+				if (!hasTable(legacyServiceModule[1])) {
+					continue;
 				}
+
+				addRelease(legacyServiceModule[0]);
 			}
 		}
 	}

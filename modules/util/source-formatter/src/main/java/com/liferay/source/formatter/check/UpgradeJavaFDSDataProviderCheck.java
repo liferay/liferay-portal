@@ -101,13 +101,14 @@ public class UpgradeJavaFDSDataProviderCheck extends BaseUpgradeCheck {
 			String methodCall = JavaSourceUtil.getMethodCall(
 				javaMethodContent, methodCallGetItemsMatcher.start());
 
-			if (_checkMethodCall(
+			if (!_checkMethodCall(
 					content, fileName, javaMethodContent, methodCall)) {
 
-				javaMethodContent = StringUtil.replace(
-					javaMethodContent, methodCall,
-					_reorderGetItems(methodCall));
+				continue;
 			}
+
+			javaMethodContent = StringUtil.replace(
+				javaMethodContent, methodCall, _reorderGetItems(methodCall));
 		}
 
 		Matcher methodCallGetItemsCountMatcher =
@@ -117,16 +118,18 @@ public class UpgradeJavaFDSDataProviderCheck extends BaseUpgradeCheck {
 			String methodCall = JavaSourceUtil.getMethodCall(
 				javaMethodContent, methodCallGetItemsCountMatcher.start());
 
-			if (_checkMethodCall(
+			if (!_checkMethodCall(
 					content, fileName, javaMethodContent, methodCall)) {
 
-				javaMethodContent = StringUtil.replace(
-					javaMethodContent, methodCall,
-					_reorderGetItemsCount(methodCall));
-
-				javaMethodContent = StringUtil.replace(
-					javaMethodContent, "countItems", "getItemsCount");
+				continue;
 			}
+
+			javaMethodContent = StringUtil.replace(
+				javaMethodContent, methodCall,
+				_reorderGetItemsCount(methodCall));
+
+			javaMethodContent = StringUtil.replace(
+				javaMethodContent, "countItems", "getItemsCount");
 		}
 
 		return javaMethodContent;

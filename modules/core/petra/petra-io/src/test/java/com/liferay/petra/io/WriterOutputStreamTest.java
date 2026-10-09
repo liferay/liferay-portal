@@ -215,13 +215,15 @@ public class WriterOutputStreamTest {
 
 			int currentCharNumber = charArrayWriter.size();
 
-			if (currentCharNumber > charNumber) {
-				charNumber = currentCharNumber;
-
-				Assert.assertEquals(
-					unalignedOutput.charAt(charNumber - 1),
-					charArrayWriter.toCharArray()[charNumber - 1]);
+			if (currentCharNumber <= charNumber) {
+				continue;
 			}
+
+			charNumber = currentCharNumber;
+
+			Assert.assertEquals(
+				unalignedOutput.charAt(charNumber - 1),
+				charArrayWriter.toCharArray()[charNumber - 1]);
 		}
 
 		Assert.assertEquals(unalignedOutput, charArrayWriter.toString());

@@ -127,20 +127,22 @@ public class DDMStructureEmptyValidationUpgradeProcess extends UpgradeProcess {
 			DDMFormFieldValidation ddmFormFieldValidation =
 				ddmFormField.getDDMFormFieldValidation();
 
-			if (ddmFormFieldValidation != null) {
-				DDMFormFieldValidationExpression
-					ddmFormFieldValidationExpression =
-						ddmFormFieldValidation.
-							getDDMFormFieldValidationExpression();
-
-				if (Validator.isNull(
-						ddmFormFieldValidationExpression.getName()) &&
-					Validator.isNull(
-						ddmFormFieldValidationExpression.getValue())) {
-
-					ddmFormField.setDDMFormFieldValidation(null);
-				}
+			if (ddmFormFieldValidation == null) {
+				continue;
 			}
+
+			DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+				ddmFormFieldValidation.getDDMFormFieldValidationExpression();
+
+			if (Validator.isNotNull(
+					ddmFormFieldValidationExpression.getName()) ||
+				Validator.isNotNull(
+					ddmFormFieldValidationExpression.getValue())) {
+
+				continue;
+			}
+
+			ddmFormField.setDDMFormFieldValidation(null);
 		}
 
 		return DDMFormSerializeUtil.serialize(ddmForm, _ddmFormSerializer);

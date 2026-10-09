@@ -3774,11 +3774,13 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		Set<Long> allowedAssetCategoryIds = new HashSet<>();
 
 		for (long assetCategoryId : assetCategoryIds) {
-			if (_isAssetCategoryIdAllowed(
+			if (!_isAssetCategoryIdAllowed(
 					assetCategoryId, repositoryId, groupIds)) {
 
-				allowedAssetCategoryIds.add(assetCategoryId);
+				continue;
 			}
+
+			allowedAssetCategoryIds.add(assetCategoryId);
 		}
 
 		return ArrayUtil.toLongArray(allowedAssetCategoryIds);
@@ -3797,9 +3799,11 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		Set<String> allowedAssetTagNames = new HashSet<>();
 
 		for (String assetTagName : assetTagNames) {
-			if (_isAssetTagNameAllowed(groupIds, assetTagName)) {
-				allowedAssetTagNames.add(assetTagName);
+			if (!_isAssetTagNameAllowed(groupIds, assetTagName)) {
+				continue;
 			}
+
+			allowedAssetTagNames.add(assetTagName);
 		}
 
 		return ArrayUtil.toStringArray(allowedAssetTagNames);

@@ -37,9 +37,11 @@ public class EntityFinder {
 		_entityColumns = entityColumns;
 
 		for (EntityColumn column : _entityColumns) {
-			if (column.hasArrayableOperator()) {
-				_arrayableColumns.add(column);
+			if (!column.hasArrayableOperator()) {
+				continue;
 			}
+
+			_arrayableColumns.add(column);
 		}
 
 		if (isCollection() && isUnique() && !hasArrayableOperator()) {
@@ -59,9 +61,11 @@ public class EntityFinder {
 		List<EntityColumn> arrayableOrEntityColumns = new ArrayList<>();
 
 		for (EntityColumn arrayableEntityColumn : _arrayableColumns) {
-			if (!arrayableEntityColumn.isArrayableAndOperator()) {
-				arrayableOrEntityColumns.add(arrayableEntityColumn);
+			if (arrayableEntityColumn.isArrayableAndOperator()) {
+				continue;
 			}
+
+			arrayableOrEntityColumns.add(arrayableEntityColumn);
 		}
 
 		return arrayableOrEntityColumns;

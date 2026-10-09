@@ -284,9 +284,11 @@ public class CSSRTLConverter {
 			String replacementValue = replacementValues.get(
 				cssExpressionMemberTermSimple.getValue());
 
-			if (replacementValue != null) {
-				cssExpressionMemberTermSimple.setValue(replacementValue);
+			if (replacementValue == null) {
+				continue;
 			}
+
+			cssExpressionMemberTermSimple.setValue(replacementValue);
 		}
 	}
 

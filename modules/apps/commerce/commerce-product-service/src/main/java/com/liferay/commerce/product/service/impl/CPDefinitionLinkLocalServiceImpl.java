@@ -382,12 +382,14 @@ public class CPDefinitionLinkLocalServiceImpl
 			cpDefinitionId, type);
 
 		for (CPDefinitionLink cpDefinitionLink : cpDefinitionLinks) {
-			if (!ArrayUtil.contains(
+			if (ArrayUtil.contains(
 					cProductIds, cpDefinitionLink.getCProductId())) {
 
-				cpDefinitionLinkLocalService.deleteCPDefinitionLink(
-					cpDefinitionLink);
+				continue;
 			}
+
+			cpDefinitionLinkLocalService.deleteCPDefinitionLink(
+				cpDefinitionLink);
 		}
 
 		CPDefinition cpDefinition = _cpDefinitionPersistence.findByPrimaryKey(

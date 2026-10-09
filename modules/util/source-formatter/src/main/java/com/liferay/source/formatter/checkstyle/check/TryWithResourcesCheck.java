@@ -172,9 +172,11 @@ public class TryWithResourcesCheck extends BaseCheck {
 		for (DetailAST exprDetailAST : exprDetailASTs) {
 			firstChildDetailAST = exprDetailAST.getFirstChild();
 
-			if (firstChildDetailAST.getType() == TokenTypes.IDENT) {
-				variableNames.add(firstChildDetailAST.getText());
+			if (firstChildDetailAST.getType() != TokenTypes.IDENT) {
+				continue;
 			}
+
+			variableNames.add(firstChildDetailAST.getText());
 		}
 
 		return variableNames;

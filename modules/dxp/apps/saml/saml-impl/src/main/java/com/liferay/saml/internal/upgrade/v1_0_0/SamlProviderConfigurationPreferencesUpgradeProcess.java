@@ -97,13 +97,13 @@ public class SamlProviderConfigurationPreferencesUpgradeProcess
 				value = getPropsValue(key, propsFilter);
 			}
 
-			if (value == null) {
+			if ((value == null) ||
+				Objects.equals(value, getDefaultValue(key))) {
+
 				continue;
 			}
 
-			if (!Objects.equals(value, getDefaultValue(key))) {
-				unicodeProperties.put(key, value);
-			}
+			unicodeProperties.put(key, value);
 		}
 
 		if (!migratedPrefsPropsKeys.isEmpty()) {
@@ -136,13 +136,13 @@ public class SamlProviderConfigurationPreferencesUpgradeProcess
 
 			String value = getPropsValue(key, filter);
 
-			if (value == null) {
+			if ((value == null) ||
+				Objects.equals(value, getDefaultValue(key))) {
+
 				continue;
 			}
 
-			if (!Objects.equals(value, getDefaultValue(key))) {
-				unicodeProperties.put(key, value);
-			}
+			unicodeProperties.put(key, value);
 		}
 
 		if (!unicodeProperties.isEmpty()) {

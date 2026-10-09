@@ -121,10 +121,12 @@ public class TagFileCompileTest {
 		for (Class<?> clazz : classes) {
 			Package pkg = clazz.getPackage();
 
-			if (packages.add(pkg)) {
-				sb.append(pkg.getName());
-				sb.append(StringPool.COMMA);
+			if (!packages.add(pkg)) {
+				continue;
 			}
+
+			sb.append(pkg.getName());
+			sb.append(StringPool.COMMA);
 		}
 
 		sb.setIndex(sb.index() - 1);

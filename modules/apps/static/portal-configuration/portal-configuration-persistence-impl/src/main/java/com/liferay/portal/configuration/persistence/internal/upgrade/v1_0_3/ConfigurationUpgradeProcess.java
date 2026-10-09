@@ -53,14 +53,16 @@ public class ConfigurationUpgradeProcess extends UpgradeProcess {
 							new UnsyncByteArrayInputStream(
 								dictionaryString.getBytes(StringPool.UTF8)));
 
-					if (!_FILTER_VALUE.equals(dictionary.get(_FILTER_KEY))) {
-						dictionary.put(_FILTER_KEY, _FILTER_VALUE);
-
-						Configuration configuration =
-							_configurationAdmin.getConfiguration(_PID, "?");
-
-						configuration.update(dictionary);
+					if (_FILTER_VALUE.equals(dictionary.get(_FILTER_KEY))) {
+						continue;
 					}
+
+					dictionary.put(_FILTER_KEY, _FILTER_VALUE);
+
+					Configuration configuration =
+						_configurationAdmin.getConfiguration(_PID, "?");
+
+					configuration.update(dictionary);
 				}
 			}
 		}

@@ -1071,20 +1071,24 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 			poshiRunnerExtension.getPoshiPropertiesFiles());
 
 		for (File poshiPropertiesFile : poshiPropertiesFiles) {
-			if (poshiPropertiesFile != null) {
-				if (poshiPropertiesFile.exists()) {
-					poshiProperties.putAll(
-						GUtil.loadProperties(poshiPropertiesFile));
-				}
-
-				File poshiExtPropertiesFile = _getPoshiExtPropertiesFile(
-					poshiPropertiesFile);
-
-				if (poshiExtPropertiesFile.exists()) {
-					poshiProperties.putAll(
-						GUtil.loadProperties(poshiExtPropertiesFile));
-				}
+			if (poshiPropertiesFile == null) {
+				continue;
 			}
+
+			if (poshiPropertiesFile.exists()) {
+				poshiProperties.putAll(
+					GUtil.loadProperties(poshiPropertiesFile));
+			}
+
+			File poshiExtPropertiesFile = _getPoshiExtPropertiesFile(
+				poshiPropertiesFile);
+
+			if (!poshiExtPropertiesFile.exists()) {
+				continue;
+			}
+
+			poshiProperties.putAll(
+				GUtil.loadProperties(poshiExtPropertiesFile));
 		}
 
 		return poshiProperties;
@@ -1237,18 +1241,20 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 
 			String[] array = propertyName.split("(?=\\p{Upper})");
 
-			if (Objects.equals(array[0], "poshi") && (array.length > 1)) {
-				StringBuilder sb = new StringBuilder();
-
-				for (int i = 1; i < array.length; i++) {
-					sb.append(array[i].toLowerCase());
-					sb.append('.');
-				}
-
-				sb.setLength(sb.length() - 1);
-
-				gradleSystemProperties.put(sb.toString(), entry.getValue());
+			if (!Objects.equals(array[0], "poshi") || (array.length <= 1)) {
+				continue;
 			}
+
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 1; i < array.length; i++) {
+				sb.append(array[i].toLowerCase());
+				sb.append('.');
+			}
+
+			sb.setLength(sb.length() - 1);
+
+			gradleSystemProperties.put(sb.toString(), entry.getValue());
 		}
 
 		if (poshiProperties != null) {

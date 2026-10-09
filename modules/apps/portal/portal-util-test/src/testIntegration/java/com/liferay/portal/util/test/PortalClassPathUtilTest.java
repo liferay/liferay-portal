@@ -99,9 +99,11 @@ public class PortalClassPathUtilTest {
 					processConfig.getBootstrapClassPath(),
 					File.pathSeparatorChar)) {
 
-			if (!bootstrapClassPathEntry.contains("petra")) {
-				nonpetraEntries.add(bootstrapClassPathEntry);
+			if (bootstrapClassPathEntry.contains("petra")) {
+				continue;
 			}
+
+			nonpetraEntries.add(bootstrapClassPathEntry);
 		}
 
 		Assert.assertTrue(
@@ -123,9 +125,11 @@ public class PortalClassPathUtilTest {
 		List<String> duplicateEntries = new ArrayList<>();
 
 		for (String runtimeClassPathEntry : runtimeClassPathEntries) {
-			if (!runtimeClassPathEntrySet.add(runtimeClassPathEntry)) {
-				duplicateEntries.add(runtimeClassPathEntry);
+			if (runtimeClassPathEntrySet.add(runtimeClassPathEntry)) {
+				continue;
 			}
+
+			duplicateEntries.add(runtimeClassPathEntry);
 		}
 
 		Assert.assertTrue(

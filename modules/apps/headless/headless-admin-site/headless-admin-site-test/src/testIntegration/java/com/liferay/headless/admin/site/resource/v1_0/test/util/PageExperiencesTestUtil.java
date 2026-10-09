@@ -72,10 +72,12 @@ public class PageExperiencesTestUtil {
 				layout.getExternalReferenceCode(),
 				pageExperience.getPageSpecificationExternalReferenceCode());
 
-			if (expectedPageExperience.getUuid() != null) {
-				Assert.assertEquals(
-					expectedPageExperience.getUuid(), pageExperience.getUuid());
+			if (expectedPageExperience.getUuid() == null) {
+				continue;
 			}
+
+			Assert.assertEquals(
+				expectedPageExperience.getUuid(), pageExperience.getUuid());
 		}
 
 		PageExperience defaultPageExperience = pageExperiencesMap.get(

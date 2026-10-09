@@ -40,10 +40,12 @@ public class LiferayBuildLoggerInstallerTask extends Task {
 					currentProject.addBuildListener(
 						new LiferayBuildLogger(buildListener));
 
-					if (buildPerformanceLoggerEnabled) {
-						currentProject.addBuildListener(
-							new LiferayBuildPerformanceLogger());
+					if (!buildPerformanceLoggerEnabled) {
+						continue;
 					}
+
+					currentProject.addBuildListener(
+						new LiferayBuildPerformanceLogger());
 				}
 			}
 		}

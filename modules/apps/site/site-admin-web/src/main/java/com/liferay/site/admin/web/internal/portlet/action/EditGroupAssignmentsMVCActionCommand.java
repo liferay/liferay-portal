@@ -68,9 +68,11 @@ public class EditGroupAssignmentsMVCActionCommand extends BaseMVCActionCommand {
 		Set<Long> filteredUserIds = new HashSet<>();
 
 		for (long userId : userIds) {
-			if (_userLocalService.hasGroupUser(groupId, userId)) {
-				filteredUserIds.add(userId);
+			if (!_userLocalService.hasGroupUser(groupId, userId)) {
+				continue;
 			}
+
+			filteredUserIds.add(userId);
 		}
 
 		return ArrayUtil.toArray(filteredUserIds.toArray(new Long[0]));

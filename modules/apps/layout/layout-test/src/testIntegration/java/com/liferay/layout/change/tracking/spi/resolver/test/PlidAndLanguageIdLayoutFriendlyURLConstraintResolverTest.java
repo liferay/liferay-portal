@@ -128,12 +128,14 @@ public class PlidAndLanguageIdLayoutFriendlyURLConstraintResolverTest {
 					conflictInfoMap.entrySet()) {
 
 				for (ConflictInfo conflictInfo : entry.getValue()) {
-					if (!conflictInfo.isResolved()) {
-						ClassName className =
-							_classNameLocalService.getClassName(entry.getKey());
-
-						unresolvedClassNames.add(className.getValue());
+					if (conflictInfo.isResolved()) {
+						continue;
 					}
+
+					ClassName className = _classNameLocalService.getClassName(
+						entry.getKey());
+
+					unresolvedClassNames.add(className.getValue());
 				}
 			}
 

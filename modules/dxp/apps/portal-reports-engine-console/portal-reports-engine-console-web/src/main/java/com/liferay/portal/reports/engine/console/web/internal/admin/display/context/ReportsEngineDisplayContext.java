@@ -216,12 +216,13 @@ public class ReportsEngineDisplayContext {
 						reportParameterJSONObject.getString("value")));
 			}
 
-			if (reportParameterJSONObject.has("key")) {
-				reportParameterJSONObject.put(
-					"key",
-					HtmlUtil.escapeJS(
-						reportParameterJSONObject.getString("key")));
+			if (!reportParameterJSONObject.has("key")) {
+				continue;
 			}
+
+			reportParameterJSONObject.put(
+				"key",
+				HtmlUtil.escapeJS(reportParameterJSONObject.getString("key")));
 		}
 
 		return reportParametersJSONArray.toString();

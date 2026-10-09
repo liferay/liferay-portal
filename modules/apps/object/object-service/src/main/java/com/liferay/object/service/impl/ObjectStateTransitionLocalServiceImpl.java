@@ -146,12 +146,14 @@ public class ObjectStateTransitionLocalServiceImpl
 		for (ObjectStateTransition objectStateTransition :
 				persistedObjectStateTransitions) {
 
-			if (!targetObjectStateIds.contains(
+			if (targetObjectStateIds.contains(
 					objectStateTransition.getTargetObjectStateId())) {
 
-				objectStateTransitionPersistence.remove(
-					objectStateTransition.getObjectStateTransitionId());
+				continue;
 			}
+
+			objectStateTransitionPersistence.remove(
+				objectStateTransition.getObjectStateTransitionId());
 		}
 
 		List<Long> persistedTargetObjectStateIds = ListUtil.toList(
@@ -161,22 +163,23 @@ public class ObjectStateTransitionLocalServiceImpl
 		for (ObjectStateTransition objectStateTransition :
 				objectStateTransitions) {
 
-			if (!persistedTargetObjectStateIds.contains(
+			if (persistedTargetObjectStateIds.contains(
 					objectStateTransition.getTargetObjectStateId())) {
 
-				User user = _userLocalService.fetchUser(
-					PrincipalThreadLocal.getUserId());
-
-				if (user == null) {
-					return;
-				}
-
-				addObjectStateTransition(
-					user.getUserId(),
-					objectStateTransition.getObjectStateFlowId(),
-					objectStateTransition.getSourceObjectStateId(),
-					objectStateTransition.getTargetObjectStateId());
+				continue;
 			}
+
+			User user = _userLocalService.fetchUser(
+				PrincipalThreadLocal.getUserId());
+
+			if (user == null) {
+				return;
+			}
+
+			addObjectStateTransition(
+				user.getUserId(), objectStateTransition.getObjectStateFlowId(),
+				objectStateTransition.getSourceObjectStateId(),
+				objectStateTransition.getTargetObjectStateId());
 		}
 	}
 

@@ -234,10 +234,12 @@ public class CascadeFileEntryTypesExportImportLifecycleListener
 			DLFolder rootDLFolder = _getProcessableRootDLFolder(
 				_dlFolderLocalService.fetchDLFolder(dlFolderId));
 
-			if (rootDLFolder != null) {
-				_dlFileEntryTypeLocalService.cascadeFileEntryTypes(
-					rootDLFolder.getUserId(), rootDLFolder);
+			if (rootDLFolder == null) {
+				continue;
 			}
+
+			_dlFileEntryTypeLocalService.cascadeFileEntryTypes(
+				rootDLFolder.getUserId(), rootDLFolder);
 		}
 	}
 

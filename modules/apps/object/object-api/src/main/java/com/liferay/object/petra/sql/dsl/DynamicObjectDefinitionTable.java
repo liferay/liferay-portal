@@ -50,13 +50,15 @@ public class DynamicObjectDefinitionTable
 				_createColumn(dbColumnName, objectField.getDBType());
 			}
 
-			if (objectField.compareBusinessType(
+			if (!objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {
 
-				_createColumn(
-					objectField.getSortableDBColumnName(),
-					ObjectFieldConstants.DB_TYPE_LONG);
+				continue;
 			}
+
+			_createColumn(
+				objectField.getSortableDBColumnName(),
+				ObjectFieldConstants.DB_TYPE_LONG);
 		}
 	}
 
@@ -95,14 +97,16 @@ public class DynamicObjectDefinitionTable
 					objectField.getDBType());
 			}
 
-			if (objectField.compareBusinessType(
+			if (!objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {
 
-				_append(
-					sb, objectField.getBusinessType(),
-					objectField.getSortableDBColumnName(),
-					ObjectFieldConstants.DB_TYPE_LONG);
+				continue;
 			}
+
+			_append(
+				sb, objectField.getBusinessType(),
+				objectField.getSortableDBColumnName(),
+				ObjectFieldConstants.DB_TYPE_LONG);
 		}
 
 		sb.append(");");

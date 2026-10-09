@@ -156,9 +156,11 @@ public class DLBreadcrumbUtil {
 			for (int i = 0; i < ancestorFolders.size(); i++) {
 				Folder ancestorFolder = ancestorFolders.get(i);
 
-				if (rootFolderId == ancestorFolder.getFolderId()) {
-					indexOfRootFolder = i;
+				if (rootFolderId != ancestorFolder.getFolderId()) {
+					continue;
 				}
+
+				indexOfRootFolder = i;
 			}
 
 			if (indexOfRootFolder > -1) {

@@ -121,15 +121,19 @@ public class LayoutReportsIssue {
 		for (int i = 0; i < _details.size(); i++) {
 			Detail detail = _details.get(i);
 
-			if (detail.getTotal() > 0) {
-				sb.append(detail.getKey());
-				sb.append("=");
-				sb.append(detail.getTotal());
-
-				if (i < (_details.size() - 1)) {
-					sb.append(", ");
-				}
+			if (detail.getTotal() <= 0) {
+				continue;
 			}
+
+			sb.append(detail.getKey());
+			sb.append("=");
+			sb.append(detail.getTotal());
+
+			if (i >= (_details.size() - 1)) {
+				continue;
+			}
+
+			sb.append(", ");
 		}
 
 		sb.append("}, key=");
@@ -253,16 +257,19 @@ public class LayoutReportsIssue {
 						JSONObject failingElementJSONObject =
 							failingElementsJSONArray.getJSONObject(i);
 
-						if (failingElementJSONObject != null) {
-							JSONObject selectorJSONObject =
-								failingElementJSONObject.getJSONObject(
-									"selector");
-
-							if (selectorJSONObject != null) {
-								filteredFailingElementsJSONArray.put(
-									failingElementJSONObject);
-							}
+						if (failingElementJSONObject == null) {
+							continue;
 						}
+
+						JSONObject selectorJSONObject =
+							failingElementJSONObject.getJSONObject("selector");
+
+						if (selectorJSONObject == null) {
+							continue;
+						}
+
+						filteredFailingElementsJSONArray.put(
+							failingElementJSONObject);
 					}
 
 					return filteredFailingElementsJSONArray;

@@ -832,11 +832,12 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		for (MimeTypeLimit mimeTypeLimit : mimeTypeLimits) {
 			String mimeType = mimeTypeLimit.getMimeType();
 
-			if (Validator.isNotNull(mimeType)) {
-				mimeTypeSizeLimits.put(
-					mimeType,
-					GetterUtil.getLong(mimeTypeLimit.getMaximumSize()));
+			if (Validator.isNull(mimeType)) {
+				continue;
 			}
+
+			mimeTypeSizeLimits.put(
+				mimeType, GetterUtil.getLong(mimeTypeLimit.getMaximumSize()));
 		}
 
 		_dlSizeLimitConfigurationProvider.updateGroupSizeLimit(

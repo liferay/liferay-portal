@@ -130,14 +130,16 @@ public class CommerceOrderAttachmentRoleUpgradeProcess extends UpgradeProcess {
 		}
 
 		for (String actionId : actionIds) {
-			if (!_resourcePermissionLocalService.hasResourcePermission(
+			if (_resourcePermissionLocalService.hasResourcePermission(
 					companyId, name, scope, String.valueOf(primKey),
 					role.getRoleId(), actionId)) {
 
-				_resourcePermissionLocalService.addResourcePermission(
-					companyId, name, scope, String.valueOf(primKey),
-					role.getRoleId(), actionId);
+				continue;
 			}
+
+			_resourcePermissionLocalService.addResourcePermission(
+				companyId, name, scope, String.valueOf(primKey),
+				role.getRoleId(), actionId);
 		}
 	}
 

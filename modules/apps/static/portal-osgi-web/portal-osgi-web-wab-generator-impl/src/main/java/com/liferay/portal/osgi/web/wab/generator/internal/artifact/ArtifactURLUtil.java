@@ -104,23 +104,24 @@ public class ArtifactURLUtil {
 
 				String name = zipEntry.getName();
 
-				if ((name.indexOf(CharPool.SLASH) == -1) &&
-					name.endsWith(".client-extension-config.json")) {
+				if ((name.indexOf(CharPool.SLASH) != -1) ||
+					!name.endsWith(".client-extension-config.json")) {
 
-					try (InputStream inputStream = zipFile.getInputStream(
-							zipEntry)) {
+					continue;
+				}
 
-						return JSONFactoryUtil.createJSONObject(
-							StringUtil.read(inputStream));
-					}
-					catch (JSONException jsonException) {
-						_log.error(
-							"Unable to parse client extension config in " +
-								path,
-							jsonException);
+				try (InputStream inputStream = zipFile.getInputStream(
+						zipEntry)) {
 
-						return null;
-					}
+					return JSONFactoryUtil.createJSONObject(
+						StringUtil.read(inputStream));
+				}
+				catch (JSONException jsonException) {
+					_log.error(
+						"Unable to parse client extension config in " + path,
+						jsonException);
+
+					return null;
 				}
 			}
 		}

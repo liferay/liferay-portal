@@ -91,9 +91,11 @@ public class UpdateRootKBFolderIdMVCActionCommand extends BaseMVCActionCommand {
 			kbArticle = _kbArticleLocalService.fetchKBArticleByUrlTitle(
 				groupId, newKBFolderId, oldKBArticle.getUrlTitle());
 
-			if (kbArticle == null) {
-				oldKBArticle = oldKBArticle.getParentKBArticle();
+			if (kbArticle != null) {
+				continue;
 			}
+
+			oldKBArticle = oldKBArticle.getParentKBArticle();
 		}
 
 		if (kbArticle == null) {

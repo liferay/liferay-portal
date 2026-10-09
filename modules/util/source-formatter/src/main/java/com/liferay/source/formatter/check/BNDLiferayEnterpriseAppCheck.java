@@ -101,12 +101,14 @@ public class BNDLiferayEnterpriseAppCheck extends BaseFileCheck {
 			String previousProperty = propertiesArray[i - 1];
 			String property = propertiesArray[i];
 
-			if (propertyComparator.compare(previousProperty, property) > 0) {
-				liferayEnterpriseApp = StringUtil.replaceFirst(
-					liferayEnterpriseApp, previousProperty, property);
-				liferayEnterpriseApp = StringUtil.replaceLast(
-					liferayEnterpriseApp, property, previousProperty);
+			if (propertyComparator.compare(previousProperty, property) <= 0) {
+				continue;
 			}
+
+			liferayEnterpriseApp = StringUtil.replaceFirst(
+				liferayEnterpriseApp, previousProperty, property);
+			liferayEnterpriseApp = StringUtil.replaceLast(
+				liferayEnterpriseApp, property, previousProperty);
 		}
 
 		return liferayEnterpriseApp;

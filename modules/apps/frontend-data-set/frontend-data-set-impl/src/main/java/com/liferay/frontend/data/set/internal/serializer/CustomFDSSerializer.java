@@ -148,15 +148,19 @@ public class CustomFDSSerializer
 					"[]", StringPool.PERIOD),
 				CharPool.PERIOD);
 
-			if (fieldNames.length > 1) {
-				for (int i = 0; i < (fieldNames.length - 1); i++) {
-					nestedFields = StringUtil.add(nestedFields, fieldNames[i]);
-				}
-
-				if (fieldNames.length > nestedFieldsDepth) {
-					nestedFieldsDepth = fieldNames.length - 1;
-				}
+			if (fieldNames.length <= 1) {
+				continue;
 			}
+
+			for (int i = 0; i < (fieldNames.length - 1); i++) {
+				nestedFields = StringUtil.add(nestedFields, fieldNames[i]);
+			}
+
+			if (fieldNames.length <= nestedFieldsDepth) {
+				continue;
+			}
+
+			nestedFieldsDepth = fieldNames.length - 1;
 		}
 
 		if (nestedFields.equals(StringPool.BLANK)) {
@@ -636,18 +640,20 @@ public class CustomFDSSerializer
 			String contentRenderer = systemViewJSONObject.getString(
 				"contentRenderer");
 
-			if (Validator.isNotNull(contentRenderer) &&
-				contentRenderer.contains("table")) {
+			if (Validator.isNull(contentRenderer) ||
+				!contentRenderer.contains("table")) {
 
-				JSONObject tableViewSchemaJSONObject =
-					systemViewJSONObject.getJSONObject("schema");
+				continue;
+			}
 
-				if (tableViewSchemaJSONObject != null) {
-					tableViewSchemaFieldsJSONArray =
-						tableViewSchemaJSONObject.getJSONArray("fields");
+			JSONObject tableViewSchemaJSONObject =
+				systemViewJSONObject.getJSONObject("schema");
 
-					break;
-				}
+			if (tableViewSchemaJSONObject != null) {
+				tableViewSchemaFieldsJSONArray =
+					tableViewSchemaJSONObject.getJSONArray("fields");
+
+				break;
 			}
 		}
 
@@ -673,9 +679,11 @@ public class CustomFDSSerializer
 					for (int j = 0; j < fieldNameItems.length; j++) {
 						sb.append(fieldNameItems[j]);
 
-						if ((j + 1) < fieldNameItems.length) {
-							sb.append('.');
+						if ((j + 1) >= fieldNameItems.length) {
+							continue;
 						}
+
+						sb.append('.');
 					}
 
 					fieldName = sb.toString();

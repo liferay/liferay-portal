@@ -98,11 +98,13 @@ public class AssignableScopes {
 		Set<LiferayOAuth2Scope> liferayOAuth2Scopes = new HashSet<>();
 
 		for (LiferayOAuth2Scope liferayOAuth2Scope : _liferayOAuth2Scopes) {
-			if (Objects.equals(
+			if (!Objects.equals(
 					applicationName, liferayOAuth2Scope.getApplicationName())) {
 
-				liferayOAuth2Scopes.add(liferayOAuth2Scope);
+				continue;
 			}
+
+			liferayOAuth2Scopes.add(liferayOAuth2Scope);
 		}
 
 		return new AssignableScopes(
@@ -138,12 +140,14 @@ public class AssignableScopes {
 		Set<String> scopeDescriptions = new HashSet<>();
 
 		for (LiferayOAuth2Scope liferayOAuth2Scope : _liferayOAuth2Scopes) {
-			if (Objects.equals(
+			if (!Objects.equals(
 					applicationName, liferayOAuth2Scope.getApplicationName())) {
 
-				scopeDescriptions.add(
-					getScopeDescription(companyId, liferayOAuth2Scope));
+				continue;
 			}
+
+			scopeDescriptions.add(
+				getScopeDescription(companyId, liferayOAuth2Scope));
 		}
 
 		return scopeDescriptions;

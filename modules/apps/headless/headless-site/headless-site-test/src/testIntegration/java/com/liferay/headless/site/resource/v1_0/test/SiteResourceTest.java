@@ -124,15 +124,17 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 				site.getExternalReferenceCode(),
 				TestPropsValues.getCompanyId());
 
-			if (group != null) {
-				List<Group> childGroups = group.getChildren(true);
-
-				for (Group childGroup : childGroups) {
-					_groupLocalService.deleteGroup(childGroup);
-				}
-
-				_groupLocalService.deleteGroup(group);
+			if (group == null) {
+				continue;
 			}
+
+			List<Group> childGroups = group.getChildren(true);
+
+			for (Group childGroup : childGroups) {
+				_groupLocalService.deleteGroup(childGroup);
+			}
+
+			_groupLocalService.deleteGroup(group);
 		}
 
 		PrincipalThreadLocal.setName(_originalName);

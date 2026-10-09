@@ -63,9 +63,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				collection.add((String)value);
+			if (value == null) {
+				continue;
 			}
+
+			collection.add((String)value);
 		}
 	}
 
@@ -451,9 +453,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(jsonObject.getDouble(jsonObjectKey));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(jsonObject.getDouble(jsonObjectKey));
 		}
 
 		return values;
@@ -487,9 +491,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(jsonObject.getDouble(jsonObjectKey));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(jsonObject.getDouble(jsonObjectKey));
 		}
 
 		return values;
@@ -549,9 +555,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(GetterUtil.getFloat(jsonObject.get(jsonObjectKey)));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(GetterUtil.getFloat(jsonObject.get(jsonObjectKey)));
 		}
 
 		return values;
@@ -585,9 +593,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(GetterUtil.getFloat(jsonObject.get(jsonObjectKey)));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(GetterUtil.getFloat(jsonObject.get(jsonObjectKey)));
 		}
 
 		return values;
@@ -647,9 +657,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(jsonObject.getInt(jsonObjectKey));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(jsonObject.getInt(jsonObjectKey));
 		}
 
 		return values;
@@ -683,9 +695,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(jsonObject.getInt(jsonObjectKey));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(jsonObject.getInt(jsonObjectKey));
 		}
 
 		return values;
@@ -707,9 +721,11 @@ public class JSONUtil {
 		while (iterator.hasNext()) {
 			Object item = unsafeFunction.apply(iterator.next());
 
-			if (item != null) {
-				jsonArray.put(item);
+			if (item == null) {
+				continue;
 			}
+
+			jsonArray.put(item);
 		}
 
 		return jsonArray;
@@ -770,9 +786,11 @@ public class JSONUtil {
 		for (T t : array) {
 			Object item = unsafeFunction.apply(t);
 
-			if (item != null) {
-				jsonArray.put(item);
+			if (item == null) {
+				continue;
 			}
+
+			jsonArray.put(item);
 		}
 
 		return jsonArray;
@@ -845,9 +863,11 @@ public class JSONUtil {
 		for (int i = 0; i < jsonArray.length(); i++) {
 			T item = unsafeFunction.apply(jsonArray.getJSONObject(i));
 
-			if (item != null) {
-				values.add(item);
+			if (item == null) {
+				continue;
 			}
+
+			values.add(item);
 		}
 
 		return values;
@@ -947,9 +967,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(jsonObject.getLong(jsonObjectKey));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(jsonObject.getLong(jsonObjectKey));
 		}
 
 		return values;
@@ -983,9 +1005,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(jsonObject.getLong(jsonObjectKey));
+			if (value == null) {
+				continue;
 			}
+
+			values.add(jsonObject.getLong(jsonObjectKey));
 		}
 
 		return values;
@@ -1045,9 +1069,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(value);
+			if (value == null) {
+				continue;
 			}
+
+			values.add(value);
 		}
 
 		return values;
@@ -1081,9 +1107,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add(value);
+			if (value == null) {
+				continue;
 			}
+
+			values.add(value);
 		}
 
 		return values;
@@ -1151,9 +1179,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add((String)value);
+			if (value == null) {
+				continue;
 			}
+
+			values.add((String)value);
 		}
 
 		return values;
@@ -1197,9 +1227,11 @@ public class JSONUtil {
 
 			Object value = jsonObject.opt(jsonObjectKey);
 
-			if (value != null) {
-				values.add((String)value);
+			if (value == null) {
+				continue;
 			}
+
+			values.add((String)value);
 		}
 
 		return values;

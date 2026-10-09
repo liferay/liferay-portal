@@ -149,9 +149,11 @@ public class CPPublisherWebHelper {
 			long cpDefinitionId = GetterUtil.getLong(
 				rootElement.elementText("product-id"));
 
-			if (cpDefinitionIds.contains(cpDefinitionId)) {
-				iterator.remove();
+			if (!cpDefinitionIds.contains(cpDefinitionId)) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		portletPreferences.setValues(

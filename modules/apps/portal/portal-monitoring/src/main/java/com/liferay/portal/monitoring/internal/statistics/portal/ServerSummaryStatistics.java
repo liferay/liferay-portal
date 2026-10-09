@@ -103,9 +103,11 @@ public class ServerSummaryStatistics implements SummaryStatistics {
 		for (CompanyStatistics companyStatistics :
 				_serverStatisticsHelper.getCompanyStatisticsSet()) {
 
-			if (companyStatistics.getMaxTime() > maxTime) {
-				maxTime = companyStatistics.getMaxTime();
+			if (companyStatistics.getMaxTime() <= maxTime) {
+				continue;
 			}
+
+			maxTime = companyStatistics.getMaxTime();
 		}
 
 		return maxTime;
@@ -132,9 +134,11 @@ public class ServerSummaryStatistics implements SummaryStatistics {
 		for (CompanyStatistics companyStatistics :
 				_serverStatisticsHelper.getCompanyStatisticsSet()) {
 
-			if (companyStatistics.getMinTime() < minTime) {
-				minTime = companyStatistics.getMinTime();
+			if (companyStatistics.getMinTime() >= minTime) {
+				continue;
 			}
+
+			minTime = companyStatistics.getMinTime();
 		}
 
 		return minTime;

@@ -177,11 +177,13 @@ public class ViewDisplayContextFactory {
 				for (PLOEntry ploEntry : keyPLOEntriesMap.get(key)) {
 					overrideLanguageIds.add(ploEntry.getLanguageId());
 
-					if (Objects.equals(
+					if (!Objects.equals(
 							selectedLanguageId, ploEntry.getLanguageId())) {
 
-						languageItemDisplay.setOverrideSelectedLanguageId(true);
+						continue;
 					}
+
+					languageItemDisplay.setOverrideSelectedLanguageId(true);
 				}
 
 				languageItemDisplay.setOverrideLanguageIdsString(
@@ -233,9 +235,11 @@ public class ViewDisplayContextFactory {
 				sb.append(overrideLanguageId);
 			}
 
-			if (iterator.hasNext()) {
-				sb.append(StringPool.COMMA_AND_SPACE);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(StringPool.COMMA_AND_SPACE);
 		}
 
 		return sb.toString();
@@ -286,38 +290,41 @@ public class ViewDisplayContextFactory {
 			String value = LanguageUtil.get(
 				selectedLocale, key, StringPool.BLANK);
 
-			if (keyMatchPredicate.test(key) ||
-				valueMatchPredicate.test(value)) {
+			if (!keyMatchPredicate.test(key) &&
+				!valueMatchPredicate.test(value)) {
 
-				LanguageItemDisplay languageItemDisplay =
-					new LanguageItemDisplay(key, value);
+				continue;
+			}
 
-				languageItemDisplay.setOverride(true);
+			LanguageItemDisplay languageItemDisplay = new LanguageItemDisplay(
+				key, value);
 
-				Set<String> overrideLanguageIds = new TreeSet<>();
+			languageItemDisplay.setOverride(true);
 
-				for (PLOEntry ploEntry : entry.getValue()) {
-					overrideLanguageIds.add(ploEntry.getLanguageId());
+			Set<String> overrideLanguageIds = new TreeSet<>();
 
-					if (Objects.equals(
-							selectedLanguageId, ploEntry.getLanguageId())) {
+			for (PLOEntry ploEntry : entry.getValue()) {
+				overrideLanguageIds.add(ploEntry.getLanguageId());
 
-						languageItemDisplay.setOverrideSelectedLanguageId(true);
-					}
-				}
-
-				if (limitToSelectedLanguage &&
-					!languageItemDisplay.isOverrideSelectedLanguageId()) {
+				if (!Objects.equals(
+						selectedLanguageId, ploEntry.getLanguageId())) {
 
 					continue;
 				}
 
-				languageItemDisplay.setOverrideLanguageIdsString(
-					_getLanguageIdsString(
-						overrideLanguageIds, selectedLanguageId));
-
-				languageItemDisplays.add(languageItemDisplay);
+				languageItemDisplay.setOverrideSelectedLanguageId(true);
 			}
+
+			if (limitToSelectedLanguage &&
+				!languageItemDisplay.isOverrideSelectedLanguageId()) {
+
+				continue;
+			}
+
+			languageItemDisplay.setOverrideLanguageIdsString(
+				_getLanguageIdsString(overrideLanguageIds, selectedLanguageId));
+
+			languageItemDisplays.add(languageItemDisplay);
 		}
 
 		return languageItemDisplays;

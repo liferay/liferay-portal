@@ -68,9 +68,11 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 		for (long groupId :
 				_userGroupLocalService.getGroupPrimaryKeys(userGroupId)) {
 
-			if (!groupIds.contains(Long.valueOf(groupId))) {
-				_blogsEntryLocalService.unsubscribe(userId, groupId);
+			if (groupIds.contains(Long.valueOf(groupId))) {
+				continue;
 			}
+
+			_blogsEntryLocalService.unsubscribe(userId, groupId);
 		}
 	}
 
@@ -105,12 +107,13 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 		for (long userGroupPK :
 				_groupLocalService.getUserGroupPrimaryKeys(groupId)) {
 
-			if (userGroupPK != userGroupId) {
-				userGroupUserIds.removeAll(
-					SetUtil.fromArray(
-						_userGroupLocalService.getUserPrimaryKeys(
-							userGroupPK)));
+			if (userGroupPK == userGroupId) {
+				continue;
 			}
+
+			userGroupUserIds.removeAll(
+				SetUtil.fromArray(
+					_userGroupLocalService.getUserPrimaryKeys(userGroupPK)));
 		}
 
 		for (long userId : userGroupUserIds) {

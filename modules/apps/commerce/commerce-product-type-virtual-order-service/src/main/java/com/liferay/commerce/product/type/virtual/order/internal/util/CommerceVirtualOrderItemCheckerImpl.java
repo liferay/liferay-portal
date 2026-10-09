@@ -99,15 +99,16 @@ public class CommerceVirtualOrderItemCheckerImpl
 								getCommerceVirtualOrderItemId());
 			}
 
-			if (commerceOrder.getOrderStatus() ==
+			if (commerceOrder.getOrderStatus() !=
 					commerceVirtualOrderItem.getActivationStatus()) {
 
-				// Set commerce virtual order item active
-
-				_commerceVirtualOrderItemLocalService.setActive(
-					commerceVirtualOrderItem.getCommerceVirtualOrderItemId(),
-					true);
+				continue;
 			}
+
+			// Set commerce virtual order item active
+
+			_commerceVirtualOrderItemLocalService.setActive(
+				commerceVirtualOrderItem.getCommerceVirtualOrderItemId(), true);
 		}
 	}
 

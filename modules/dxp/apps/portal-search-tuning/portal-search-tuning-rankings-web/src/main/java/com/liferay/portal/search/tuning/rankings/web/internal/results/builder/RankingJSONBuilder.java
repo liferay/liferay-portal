@@ -331,16 +331,16 @@ public class RankingJSONBuilder {
 
 			String fieldName = entry.getKey();
 
-			if (fieldName.startsWith("snippet_nestedFieldArray.value")) {
-				com.liferay.portal.search.document.Field field =
-					entry.getValue();
-
-				sb.append(
-					StringUtil.merge(
-						field.getValues(), StringPool.TRIPLE_PERIOD));
-
-				sb.append(StringPool.TRIPLE_PERIOD);
+			if (!fieldName.startsWith("snippet_nestedFieldArray.value")) {
+				continue;
 			}
+
+			com.liferay.portal.search.document.Field field = entry.getValue();
+
+			sb.append(
+				StringUtil.merge(field.getValues(), StringPool.TRIPLE_PERIOD));
+
+			sb.append(StringPool.TRIPLE_PERIOD);
 		}
 
 		if (sb.index() > 0) {

@@ -162,15 +162,19 @@ public class Dom4JUtil {
 
 	public static void removeWhiteSpaceTextNodes(Element element) {
 		for (Node node : toNodeList(element.content())) {
-			if (node instanceof Text) {
-				String nodeText = node.getText();
-
-				nodeText = nodeText.trim();
-
-				if (nodeText.length() == 0) {
-					node.detach();
-				}
+			if (!(node instanceof Text)) {
+				continue;
 			}
+
+			String nodeText = node.getText();
+
+			nodeText = nodeText.trim();
+
+			if (nodeText.length() != 0) {
+				continue;
+			}
+
+			node.detach();
 		}
 
 		for (Element childElement : toElementList(element.elements())) {
@@ -213,9 +217,11 @@ public class Dom4JUtil {
 				continue;
 			}
 
-			if ((node instanceof Element) && cascade) {
-				replace((Element)node, cascade, replacementText, targetText);
+			if (!(node instanceof Element) || !cascade) {
+				continue;
 			}
+
+			replace((Element)node, cascade, replacementText, targetText);
 		}
 	}
 

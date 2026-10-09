@@ -101,20 +101,22 @@ public class
 
 				Repository repository = _getRepository(companyId);
 
-				if (repository != null) {
-					try {
-						Folder folder = _portletFileRepository.getPortletFolder(
-							repository.getRepositoryId(),
-							DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-							String.valueOf(notificationQueueEntryId));
+				if (repository == null) {
+					continue;
+				}
 
-						_portletFileRepository.deletePortletFolder(
-							folder.getFolderId());
-					}
-					catch (PortalException portalException) {
-						if (_log.isDebugEnabled()) {
-							_log.debug(portalException);
-						}
+				try {
+					Folder folder = _portletFileRepository.getPortletFolder(
+						repository.getRepositoryId(),
+						DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+						String.valueOf(notificationQueueEntryId));
+
+					_portletFileRepository.deletePortletFolder(
+						folder.getFolderId());
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
 					}
 				}
 			}

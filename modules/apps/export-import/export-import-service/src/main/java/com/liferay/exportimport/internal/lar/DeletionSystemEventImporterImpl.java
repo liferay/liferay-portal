@@ -122,10 +122,14 @@ public class DeletionSystemEventImporterImpl
 				_portletDataHandlerProvider.provide(
 					portletDataContext.getCompanyId(), targetPortletId);
 
-			if (portletDataHandler instanceof BatchEnginePortletDataHandler) {
-				portletDataHandler.deleteData(
-					portletDataContext, targetPortletId, null);
+			if (!(portletDataHandler instanceof
+					BatchEnginePortletDataHandler)) {
+
+				continue;
 			}
+
+			portletDataHandler.deleteData(
+				portletDataContext, targetPortletId, null);
 		}
 	}
 

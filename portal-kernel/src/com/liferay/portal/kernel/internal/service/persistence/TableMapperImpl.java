@@ -124,15 +124,17 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 			false);
 
 		for (long rightPrimaryKey : rightPrimaryKeys) {
-			if (Arrays.binarySearch(currentRightPrimaryKeys, rightPrimaryKey) <
+			if (Arrays.binarySearch(currentRightPrimaryKeys, rightPrimaryKey) >=
 					0) {
 
-				addedRightPrimaryKeys.add(rightPrimaryKey);
-
-				rightToLeftPortalCache.remove(rightPrimaryKey);
-
-				_addTableMapping(companyId, leftPrimaryKey, rightPrimaryKey);
+				continue;
 			}
+
+			addedRightPrimaryKeys.add(rightPrimaryKey);
+
+			rightToLeftPortalCache.remove(rightPrimaryKey);
+
+			_addTableMapping(companyId, leftPrimaryKey, rightPrimaryKey);
 		}
 
 		if (!addedRightPrimaryKeys.isEmpty()) {
@@ -154,15 +156,17 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 			false);
 
 		for (long leftPrimaryKey : leftPrimaryKeys) {
-			if (Arrays.binarySearch(currentLeftPrimaryKeys, leftPrimaryKey) <
+			if (Arrays.binarySearch(currentLeftPrimaryKeys, leftPrimaryKey) >=
 					0) {
 
-				addedLeftPrimaryKeys.add(leftPrimaryKey);
-
-				leftToRightPortalCache.remove(leftPrimaryKey);
-
-				_addTableMapping(companyId, leftPrimaryKey, rightPrimaryKey);
+				continue;
 			}
+
+			addedLeftPrimaryKeys.add(leftPrimaryKey);
+
+			leftToRightPortalCache.remove(leftPrimaryKey);
+
+			_addTableMapping(companyId, leftPrimaryKey, rightPrimaryKey);
 		}
 
 		if (!addedLeftPrimaryKeys.isEmpty()) {
@@ -236,17 +240,21 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 		List<Long> deletedRightPrimaryKeys = new ArrayList<>();
 
 		for (long rightPrimaryKey : rightPrimaryKeys) {
-			if (Arrays.binarySearch(currentRightPrimaryKeys, rightPrimaryKey) >=
+			if (Arrays.binarySearch(currentRightPrimaryKeys, rightPrimaryKey) <
 					0) {
 
-				clearCache = true;
-
-				rightToLeftPortalCache.remove(rightPrimaryKey);
-
-				if (_deleteTableMapping(leftPrimaryKey, rightPrimaryKey)) {
-					deletedRightPrimaryKeys.add(rightPrimaryKey);
-				}
+				continue;
 			}
+
+			clearCache = true;
+
+			rightToLeftPortalCache.remove(rightPrimaryKey);
+
+			if (!_deleteTableMapping(leftPrimaryKey, rightPrimaryKey)) {
+				continue;
+			}
+
+			deletedRightPrimaryKeys.add(rightPrimaryKey);
 		}
 
 		if (clearCache) {
@@ -269,17 +277,21 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 		List<Long> deletedLeftPrimaryKeys = new ArrayList<>();
 
 		for (long leftPrimaryKey : leftPrimaryKeys) {
-			if (Arrays.binarySearch(currentLeftPrimaryKeys, leftPrimaryKey) >=
+			if (Arrays.binarySearch(currentLeftPrimaryKeys, leftPrimaryKey) <
 					0) {
 
-				leftToRightPortalCache.remove(leftPrimaryKey);
-
-				clearCache = true;
-
-				if (_deleteTableMapping(leftPrimaryKey, rightPrimaryKey)) {
-					deletedLeftPrimaryKeys.add(leftPrimaryKey);
-				}
+				continue;
 			}
+
+			leftToRightPortalCache.remove(leftPrimaryKey);
+
+			clearCache = true;
+
+			if (!_deleteTableMapping(leftPrimaryKey, rightPrimaryKey)) {
+				continue;
+			}
+
+			deletedLeftPrimaryKeys.add(leftPrimaryKey);
 		}
 
 		if (clearCache) {

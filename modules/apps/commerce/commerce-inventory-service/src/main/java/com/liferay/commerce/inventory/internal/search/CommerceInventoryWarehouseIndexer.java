@@ -229,9 +229,11 @@ public class CommerceInventoryWarehouseIndexer
 			BigDecimal commerceInventoryWarehouseItemQuantity =
 				commerceInventoryWarehouseItem.getQuantity();
 
-			if (commerceInventoryWarehouseItemQuantity != null) {
-				count = count.add(commerceInventoryWarehouseItemQuantity);
+			if (commerceInventoryWarehouseItemQuantity == null) {
+				continue;
 			}
+
+			count = count.add(commerceInventoryWarehouseItemQuantity);
 		}
 
 		return count;

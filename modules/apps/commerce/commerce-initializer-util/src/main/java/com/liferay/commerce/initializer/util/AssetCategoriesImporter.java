@@ -116,15 +116,16 @@ public class AssetCategoriesImporter {
 			JSONArray permissionsJSONArray = jsonObject.getJSONArray(
 				"permissions");
 
-			if ((permissionsJSONArray != null) &&
-				(permissionsJSONArray.length() > 0)) {
+			if ((permissionsJSONArray == null) ||
+				(permissionsJSONArray.length() <= 0)) {
 
-				updatePermissions(
-					assetCategory.getCompanyId(),
-					assetCategory.getModelClassName(),
-					String.valueOf(assetCategory.getCategoryId()),
-					permissionsJSONArray);
+				continue;
 			}
+
+			updatePermissions(
+				assetCategory.getCompanyId(), assetCategory.getModelClassName(),
+				String.valueOf(assetCategory.getCategoryId()),
+				permissionsJSONArray);
 		}
 
 		return assetCategories;

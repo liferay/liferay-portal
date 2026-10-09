@@ -122,13 +122,15 @@ public class LayoutInfoItemFieldValuesProviderHelper {
 			Map<Locale, String> valuesMap = new HashMap<>();
 
 			for (String languageId : valuesJSONObject.keySet()) {
-				if (!languageId.equals("config") &&
-					!languageId.equals("defaultValue")) {
+				if (languageId.equals("config") ||
+					languageId.equals("defaultValue")) {
 
-					valuesMap.put(
-						LocaleUtil.fromLanguageId(languageId),
-						valuesJSONObject.getString(languageId));
+					continue;
 				}
+
+				valuesMap.put(
+					LocaleUtil.fromLanguageId(languageId),
+					valuesJSONObject.getString(languageId));
 			}
 
 			Locale defaultLocale = LocaleUtil.fromLanguageId(defaultLanguageId);

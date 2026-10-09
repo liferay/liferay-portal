@@ -175,11 +175,13 @@ public class DatabaseUtil {
 		DBInspector dbInspector = new DBInspector(connection);
 
 		for (String tableName : dbInspector.getTableNames(null)) {
-			if (!dbInspector.isControlTable(tableName) &&
-				!dbInspector.isObjectTable(companyIds, tableName)) {
+			if (dbInspector.isControlTable(tableName) ||
+				dbInspector.isObjectTable(companyIds, tableName)) {
 
-				partitionedTableNames.add(tableName);
+				continue;
 			}
+
+			partitionedTableNames.add(tableName);
 		}
 
 		return partitionedTableNames;

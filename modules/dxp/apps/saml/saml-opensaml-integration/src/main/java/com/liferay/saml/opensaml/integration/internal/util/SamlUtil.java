@@ -130,13 +130,15 @@ public class SamlUtil {
 			for (XMLObject xmlObject : xmlValues) {
 				Serializable value = getXMLObjectValue(xmlObject);
 
-				if (value != null) {
-					if (implicitMapping) {
-						values.add(value);
-					}
-					else {
-						values.add(0, value);
-					}
+				if (value == null) {
+					continue;
+				}
+
+				if (implicitMapping) {
+					values.add(value);
+				}
+				else {
+					values.add(0, value);
 				}
 			}
 

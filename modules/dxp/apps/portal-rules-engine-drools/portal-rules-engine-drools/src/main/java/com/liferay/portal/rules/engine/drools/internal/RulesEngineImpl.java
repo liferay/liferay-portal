@@ -366,9 +366,11 @@ public class RulesEngineImpl implements RulesEngine {
 			for (String identifier : queryResultsIdentifiers) {
 				Object returnValue = queryResultsRow.get(identifier);
 
-				if (returnValue != null) {
-					returnValues.put(identifier, returnValue);
+				if (returnValue == null) {
+					continue;
 				}
+
+				returnValues.put(identifier, returnValue);
 			}
 		}
 

@@ -187,10 +187,12 @@ public class LayoutInfoItemLanguagesProviderTest {
 				Object valueObject = editableValueJSONObject.get(
 					_language.getLanguageId(siteAvailableLocale));
 
-				if (valueObject != null) {
-					availableLocales.add(
-						LocaleUtil.toLanguageId(siteAvailableLocale));
+				if (valueObject == null) {
+					continue;
 				}
+
+				availableLocales.add(
+					LocaleUtil.toLanguageId(siteAvailableLocale));
 			}
 		}
 

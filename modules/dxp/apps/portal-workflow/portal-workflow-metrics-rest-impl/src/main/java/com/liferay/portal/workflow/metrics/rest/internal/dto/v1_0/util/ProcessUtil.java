@@ -65,18 +65,22 @@ public class ProcessUtil {
 		for (Map.Entry<String, Field> entry : fields.entrySet()) {
 			String key = entry.getKey();
 
-			if (StringUtil.startsWith(key, "title_") &&
-				!StringUtil.endsWith(key, "_sortable")) {
+			if (!StringUtil.startsWith(key, "title_") ||
+				StringUtil.endsWith(key, "_sortable")) {
 
-				String languageTag = _toLanguageTag(
-					StringUtil.removeSubstring(key, "title_"));
-
-				if (languageTag != null) {
-					Field field = entry.getValue();
-
-					titleMap.put(languageTag, String.valueOf(field.getValue()));
-				}
+				continue;
 			}
+
+			String languageTag = _toLanguageTag(
+				StringUtil.removeSubstring(key, "title_"));
+
+			if (languageTag == null) {
+				continue;
+			}
+
+			Field field = entry.getValue();
+
+			titleMap.put(languageTag, String.valueOf(field.getValue()));
 		}
 
 		return titleMap;

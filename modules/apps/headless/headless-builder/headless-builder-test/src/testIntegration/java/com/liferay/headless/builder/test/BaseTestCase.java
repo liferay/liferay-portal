@@ -50,16 +50,18 @@ public abstract class BaseTestCase {
 		BundleContext bundleContext = testBundle.getBundleContext();
 
 		for (Bundle bundle : bundleContext.getBundles()) {
-			if (Objects.equals(
+			if (!Objects.equals(
 					bundle.getSymbolicName(),
 					"com.liferay.headless.builder.impl")) {
 
-				_deleteFile(bundle, "00.list.type.definition");
-				_deleteFile(bundle, "01.object.definition");
-
-				_batchEngineUnitProcessor.processBatchEngineUnits(
-					_batchEngineUnitReader.getBatchEngineUnits(bundle));
+				continue;
 			}
+
+			_deleteFile(bundle, "00.list.type.definition");
+			_deleteFile(bundle, "01.object.definition");
+
+			_batchEngineUnitProcessor.processBatchEngineUnits(
+				_batchEngineUnitReader.getBatchEngineUnits(bundle));
 		}
 	}
 

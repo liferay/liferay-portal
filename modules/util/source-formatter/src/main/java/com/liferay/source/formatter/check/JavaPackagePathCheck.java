@@ -74,11 +74,13 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 			String[] array = StringUtil.split(
 				expectedInternalImplementsDataEntry, CharPool.COLON);
 
-			if (array.length == 2) {
-				_checkInternalPackageName(
-					fileName, absolutePath, javaClass, array[0], packageName,
-					array[1]);
+			if (array.length != 2) {
+				continue;
 			}
+
+			_checkInternalPackageName(
+				fileName, absolutePath, javaClass, array[0], packageName,
+				array[1]);
 		}
 
 		return javaTerm.getContent();
@@ -368,15 +370,17 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 				continue;
 			}
 
-			if (!packageName.endsWith("." + expectedPackagePath) &&
-				!packageName.contains("." + expectedPackagePath + ".")) {
+			if (packageName.endsWith("." + expectedPackagePath) ||
+				packageName.contains("." + expectedPackagePath + ".")) {
 
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Class \"", className, "\" should be in package \".",
-						array[1], "\""));
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Class \"", className, "\" should be in package \".",
+					array[1], "\""));
 		}
 	}
 

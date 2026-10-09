@@ -122,9 +122,11 @@ public class MarketplaceAppManagerUtil {
 				headers.get(BundleConstants.LIFERAY_RELENG_CATEGORY));
 
 			for (String category : categoriesArray) {
-				if (Validator.isNotNull(category)) {
-					categories.add(category);
+				if (Validator.isNull(category)) {
+					continue;
 				}
+
+				categories.add(category);
 			}
 		}
 

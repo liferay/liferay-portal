@@ -51,14 +51,18 @@ public class CTEnclosureUtil {
 				Set<Long> classPKs = enclosureMap.computeIfAbsent(
 					classNameId, key -> new HashSet<>());
 
-				if (classPKs.add(classPK)) {
-					Map<Long, ? extends Collection<Long>> childPKsMap =
-						ctClosure.getChildPKsMap(classNameId, classPK);
-
-					if (!childPKsMap.isEmpty()) {
-						queue.addAll(childPKsMap.entrySet());
-					}
+				if (!classPKs.add(classPK)) {
+					continue;
 				}
+
+				Map<Long, ? extends Collection<Long>> childPKsMap =
+					ctClosure.getChildPKsMap(classNameId, classPK);
+
+				if (childPKsMap.isEmpty()) {
+					continue;
+				}
+
+				queue.addAll(childPKsMap.entrySet());
 			}
 		}
 

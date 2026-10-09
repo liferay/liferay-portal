@@ -116,10 +116,11 @@ public class ResourceRequestImpl
 
 			String renderParameterName = entry.getKey();
 
-			if (!liferayRenderParametersImpl.isPublic(renderParameterName)) {
-				privateRenderParameters.put(
-					renderParameterName, entry.getValue());
+			if (liferayRenderParametersImpl.isPublic(renderParameterName)) {
+				continue;
 			}
+
+			privateRenderParameters.put(renderParameterName, entry.getValue());
 		}
 
 		if (privateRenderParameters.isEmpty()) {

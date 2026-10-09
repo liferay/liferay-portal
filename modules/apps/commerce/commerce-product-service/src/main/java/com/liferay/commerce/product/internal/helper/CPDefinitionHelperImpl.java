@@ -200,9 +200,11 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 				_cpDefinitionLocalService.fetchCPDefinition(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
 
-			if (cpDefinition != null) {
-				cpDefinitions.add(cpDefinition);
+			if (cpDefinition == null) {
+				continue;
 			}
+
+			cpDefinitions.add(cpDefinition);
 		}
 
 		return cpDefinitions;

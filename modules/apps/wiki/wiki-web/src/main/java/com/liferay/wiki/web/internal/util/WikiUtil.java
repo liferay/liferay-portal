@@ -87,11 +87,13 @@ public class WikiUtil {
 				previousVersion = page.getVersion();
 			}
 
-			if ((page.getVersion() > targetVersion) &&
-				((page.getVersion() < nextVersion) || (nextVersion == 0))) {
+			if ((page.getVersion() <= targetVersion) ||
+				((page.getVersion() >= nextVersion) && (nextVersion != 0))) {
 
-				nextVersion = page.getVersion();
+				continue;
 			}
+
+			nextVersion = page.getVersion();
 		}
 
 		List<DiffVersion> diffVersions = new ArrayList<>();
@@ -181,12 +183,14 @@ public class WikiUtil {
 			ModelResourcePermission<WikiNode> wikiNodeModelResourcePermission =
 				_wikiNodeModelResourcePermissionSnapshot.get();
 
-			if (!(Arrays.binarySearch(hiddenNodes, node.getName()) < 0) ||
-				!wikiNodeModelResourcePermission.contains(
+			if ((Arrays.binarySearch(hiddenNodes, node.getName()) < 0) &&
+				wikiNodeModelResourcePermission.contains(
 					permissionChecker, node, ActionKeys.VIEW)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return nodes;

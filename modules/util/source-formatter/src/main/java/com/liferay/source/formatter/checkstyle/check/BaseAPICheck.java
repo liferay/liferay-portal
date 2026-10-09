@@ -70,16 +70,18 @@ public abstract class BaseAPICheck extends BaseCheck {
 			String constructorTypeName = _getConstructorTypeName(
 				literalNewDetailAST);
 
-			if ((constructorTypeName != null) &&
-				constructorTypeName.startsWith("com.liferay.") &&
-				!excludeImportNames.contains(constructorTypeName)) {
+			if ((constructorTypeName == null) ||
+				!constructorTypeName.startsWith("com.liferay.") ||
+				excludeImportNames.contains(constructorTypeName)) {
 
-				constructorCalls.add(
-					new ConstructorCall(
-						constructorTypeName,
-						_getParameterTypeNames(literalNewDetailAST),
-						literalNewDetailAST.getLineNo()));
+				continue;
 			}
+
+			constructorCalls.add(
+				new ConstructorCall(
+					constructorTypeName,
+					_getParameterTypeNames(literalNewDetailAST),
+					literalNewDetailAST.getLineNo()));
 		}
 
 		return constructorCalls;
@@ -234,15 +236,17 @@ public abstract class BaseAPICheck extends BaseCheck {
 				continue;
 			}
 
-			if (variableTypeName.startsWith("com.liferay.") &&
-				!excludeImportNames.contains(variableTypeName)) {
+			if (!variableTypeName.startsWith("com.liferay.") ||
+				excludeImportNames.contains(variableTypeName)) {
 
-				methodCalls.add(
-					new MethodCall(
-						methodName, variableTypeName,
-						_getParameterTypeNames(methodCallDetailAST),
-						methodCallDetailAST.getLineNo()));
+				continue;
 			}
+
+			methodCalls.add(
+				new MethodCall(
+					methodName, variableTypeName,
+					_getParameterTypeNames(methodCallDetailAST),
+					methodCallDetailAST.getLineNo()));
 		}
 
 		return methodCalls;
@@ -320,15 +324,17 @@ public abstract class BaseAPICheck extends BaseCheck {
 			while (iterator.hasNext()) {
 				String extendedClassName = iterator.next();
 
-				if (extendedClassName.startsWith("com.liferay.")) {
-					methodJSONObjects.addAll(
-						getMethodJSONObjects(
-							new MethodCall(
-								methodCall.getName(), extendedClassName,
-								methodCall.getParameterTypeNames(),
-								methodCall.getLineNumber()),
-							javaClassesJSONObject));
+				if (!extendedClassName.startsWith("com.liferay.")) {
+					continue;
 				}
+
+				methodJSONObjects.addAll(
+					getMethodJSONObjects(
+						new MethodCall(
+							methodCall.getName(), extendedClassName,
+							methodCall.getParameterTypeNames(),
+							methodCall.getLineNumber()),
+						javaClassesJSONObject));
 			}
 		}
 
@@ -393,15 +399,16 @@ public abstract class BaseAPICheck extends BaseCheck {
 			detailAST, true, TokenTypes.TYPE);
 
 		for (DetailAST typeDetailAST : typeDetailASTs) {
-			if (!skipDeprecated ||
-				(!hasDeprecatedParent(typeDetailAST) &&
-				 !hasSuppressDeprecationWarningsAnnotation(typeDetailAST))) {
+			if (skipDeprecated &&
+				(hasDeprecatedParent(typeDetailAST) ||
+				 hasSuppressDeprecationWarningsAnnotation(typeDetailAST))) {
 
-				typeNamesMap = _addTypeName(
-					typeNamesMap,
-					getTypeName(typeDetailAST, false, false, true),
-					typeDetailAST.getLineNo(), excludeImportNames);
+				continue;
 			}
+
+			typeNamesMap = _addTypeName(
+				typeNamesMap, getTypeName(typeDetailAST, false, false, true),
+				typeDetailAST.getLineNo(), excludeImportNames);
 		}
 
 		return typeNamesMap;

@@ -110,13 +110,15 @@ public class AssetListFiltersUpgradeUtil {
 		unicodeProperties.setProperty("filters", filtersJSONArray.toString());
 
 		for (String key : keys) {
-			if (StringUtil.startsWith(key, "queryAndOperator") ||
-				StringUtil.startsWith(key, "queryContains") ||
-				StringUtil.startsWith(key, "queryName") ||
-				StringUtil.startsWith(key, "queryValues")) {
+			if (!StringUtil.startsWith(key, "queryAndOperator") &&
+				!StringUtil.startsWith(key, "queryContains") &&
+				!StringUtil.startsWith(key, "queryName") &&
+				!StringUtil.startsWith(key, "queryValues")) {
 
-				unicodeProperties.remove(key);
+				continue;
 			}
+
+			unicodeProperties.remove(key);
 		}
 
 		return unicodeProperties.toString();

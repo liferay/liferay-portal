@@ -186,15 +186,17 @@ public class FeatureFlagsDisplayContextFactory {
 			List<String> systemScopedDependencyKeys = new ArrayList<>();
 
 			for (String key : dependencyKeys) {
-				if (GetterUtil.getBoolean(
+				if (!GetterUtil.getBoolean(
 						PropsUtil.get(
 							FeatureFlagConstants.getKey(
 								key,
 								ExtendedObjectClassDefinition.Scope.SYSTEM.
 									getValue())))) {
 
-					systemScopedDependencyKeys.add(key);
+					continue;
 				}
+
+				systemScopedDependencyKeys.add(key);
 			}
 
 			dependencyKeys.removeAll(systemScopedDependencyKeys);

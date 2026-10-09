@@ -93,15 +93,17 @@ public class CommerceOrderValidatorRegistryImpl
 			for (CommerceOrderValidatorResult commerceOrderValidatorResult :
 					commerceOrderValidatorResults) {
 
-				if ((commerceOrderValidatorResult.getCommerceOrderItemId() >
-						0) &&
-					(commerceOrderItem.getCommerceOrderItemId() ==
+				if ((commerceOrderValidatorResult.getCommerceOrderItemId() <=
+						0) ||
+					(commerceOrderItem.getCommerceOrderItemId() !=
 						commerceOrderValidatorResult.
 							getCommerceOrderItemId())) {
 
-					filteredCommerceOrderValidatorResults.add(
-						commerceOrderValidatorResult);
+					continue;
 				}
+
+				filteredCommerceOrderValidatorResults.add(
+					commerceOrderValidatorResult);
 			}
 
 			commerceOrderValidatorResultsMap.put(
@@ -169,9 +171,11 @@ public class CommerceOrderValidatorRegistryImpl
 			CommerceOrderValidatorResult commerceOrderValidatorResult =
 				commerceOrderValidator.validate(locale, commerceOrder);
 
-			if (!commerceOrderValidatorResult.isValid()) {
-				commerceOrderValidatorResults.add(commerceOrderValidatorResult);
+			if (commerceOrderValidatorResult.isValid()) {
+				continue;
 			}
+
+			commerceOrderValidatorResults.add(commerceOrderValidatorResult);
 		}
 
 		for (CommerceOrderItem commerceOrderItem :

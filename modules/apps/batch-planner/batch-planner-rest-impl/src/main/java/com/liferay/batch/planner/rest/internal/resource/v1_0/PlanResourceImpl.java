@@ -167,11 +167,13 @@ public class PlanResourceImpl extends BasePlanResourceImpl {
 
 			lineSB.append(field.getType());
 
-			if (iterator.hasNext()) {
-				headerSB.append(StringPool.COMMA);
-
-				lineSB.append(StringPool.COMMA);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			headerSB.append(StringPool.COMMA);
+
+			lineSB.append(StringPool.COMMA);
 		}
 
 		return Response.ok(

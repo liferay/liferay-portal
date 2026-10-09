@@ -518,16 +518,18 @@ public class RolesAdminPortlet extends MVCPortlet {
 					role, themeDisplay.getScopeGroupId(), selResource, actionId,
 					selected, scope, groupIds);
 
-				if (selected &&
-					actionId.equals(ActionKeys.ACCESS_IN_CONTROL_PANEL)) {
+				if (!selected ||
+					!actionId.equals(ActionKeys.ACCESS_IN_CONTROL_PANEL)) {
 
-					_updateViewControlPanelPermission(
-						role, themeDisplay.getScopeGroupId(), selResource,
-						scope, groupIds);
-
-					rootResourceScope = scope;
-					rootResourceGroupIds = groupIds;
+					continue;
 				}
+
+				_updateViewControlPanelPermission(
+					role, themeDisplay.getScopeGroupId(), selResource, scope,
+					groupIds);
+
+				rootResourceScope = scope;
+				rootResourceGroupIds = groupIds;
 			}
 		}
 
@@ -685,14 +687,16 @@ public class RolesAdminPortlet extends MVCPortlet {
 				_panelCategoryRoleTypeMapperRegistry.
 					getPanelCategoryRoleTypeMappers()) {
 
-			if (ArrayUtil.contains(
+			if (!ArrayUtil.contains(
 					panelCategoryRoleTypeMapper.getRoleTypes(),
 					role.getType())) {
 
-				Collections.addAll(
-					panelAppKeys,
-					panelCategoryRoleTypeMapper.getExcludedPanelAppKeys(role));
+				continue;
 			}
+
+			Collections.addAll(
+				panelAppKeys,
+				panelCategoryRoleTypeMapper.getExcludedPanelAppKeys(role));
 		}
 
 		return panelAppKeys.toArray(new String[0]);

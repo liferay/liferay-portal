@@ -337,9 +337,11 @@ public class DataSourceFactoryUtil {
 				null);
 
 			for (String ibmSupportedCipherSuite : ibmSupportedCipherSuites) {
-				if (!allowedCiphers.contains(ibmSupportedCipherSuite)) {
-					allowedCiphers.add(ibmSupportedCipherSuite);
+				if (allowedCiphers.contains(ibmSupportedCipherSuite)) {
+					continue;
 				}
+
+				allowedCiphers.add(ibmSupportedCipherSuite);
 			}
 		}
 		catch (Exception exception) {

@@ -249,15 +249,16 @@ public class JavadocFormatter {
 				String newJavadocsRuntimeXmlContent = _compactString(
 					javadocsXmlDocument);
 
-				if (!oldJavadocsRuntimeXmlContent.equals(
+				if (oldJavadocsRuntimeXmlContent.equals(
 						newJavadocsRuntimeXmlContent)) {
 
-					_write(
-						javadocsRuntimeXmlFile, newJavadocsRuntimeXmlContent);
-
-					_modifiedFileNames.add(
-						javadocsRuntimeXmlFile.getAbsolutePath());
+					continue;
 				}
+
+				_write(javadocsRuntimeXmlFile, newJavadocsRuntimeXmlContent);
+
+				_modifiedFileNames.add(
+					javadocsRuntimeXmlFile.getAbsolutePath());
 			}
 		}
 	}
@@ -643,9 +644,11 @@ public class JavadocFormatter {
 		}
 
 		for (String name : maxTagNameLengthTags) {
-			if (name.length() > maxTagNameLength) {
-				maxTagNameLength = name.length();
+			if (name.length() <= maxTagNameLength) {
+				continue;
 			}
+
+			maxTagNameLength = name.length();
 		}
 
 		// There should be an @ sign before the tag and a space after it
@@ -1043,9 +1046,11 @@ public class JavadocFormatter {
 		for (Element element : elements) {
 			String type = element.elementText("type");
 
-			if (!type.contains(".service.") || !type.endsWith("ServiceImpl")) {
-				element.detach();
+			if (type.contains(".service.") && type.endsWith("ServiceImpl")) {
+				continue;
 			}
+
+			element.detach();
 		}
 	}
 
@@ -1209,9 +1214,11 @@ public class JavadocFormatter {
 				annotationLineNumber--;
 			}
 
-			if (annotationLineNumber < lineNumber) {
-				lineNumber = annotationLineNumber;
+			if (annotationLineNumber >= lineNumber) {
+				continue;
 			}
+
+			lineNumber = annotationLineNumber;
 		}
 
 		return lineNumber;
@@ -1416,12 +1423,11 @@ public class JavadocFormatter {
 		String indent = StringPool.BLANK;
 
 		for (char c : line.toCharArray()) {
-			if (Character.isWhitespace(c)) {
-				indent += c;
-			}
-			else {
+			if (!Character.isWhitespace(c)) {
 				break;
 			}
+
+			indent += c;
 		}
 
 		return indent;
@@ -1984,30 +1990,34 @@ public class JavadocFormatter {
 
 			line = line.trim();
 
-			if (line.endsWith("*/")) {
-				while (true) {
-					lines[pos] = null;
+			if (!line.endsWith("*/")) {
+				continue;
+			}
 
-					if (line.startsWith("/**") || line.startsWith("/*")) {
-						break;
-					}
+			while (true) {
+				lines[pos] = null;
 
-					line = lines[--pos].trim();
+				if (line.startsWith("/**") || line.startsWith("/*")) {
+					break;
 				}
 
-				for (int i = 0; i < blankLines; i++) {
-					lines[lineNumber - i - 2] = null;
-				}
+				line = lines[--pos].trim();
+			}
+
+			for (int i = 0; i < blankLines; i++) {
+				lines[lineNumber - i - 2] = null;
 			}
 		}
 
 		StringBundler sb = new StringBundler(content.length());
 
 		for (String line : lines) {
-			if (line != null) {
-				sb.append(line);
-				sb.append("\n");
+			if (line == null) {
+				continue;
 			}
+
+			sb.append(line);
+			sb.append("\n");
 		}
 
 		content = sb.toString();
@@ -2025,12 +2035,13 @@ public class JavadocFormatter {
 		for (Element curElement : elements) {
 			curElement.detach();
 
-			if (elementName.equals(curElement.getName())) {
-				String childElementValue = curElement.elementText(
-					childElementName);
-
-				elementsMap.put(childElementValue, curElement);
+			if (!elementName.equals(curElement.getName())) {
+				continue;
 			}
+
+			String childElementValue = curElement.elementText(childElementName);
+
+			elementsMap.put(childElementValue, curElement);
 		}
 
 		for (Element curElement : elements) {
@@ -2079,11 +2090,13 @@ public class JavadocFormatter {
 
 			sb.append(line);
 
-			if (!line.endsWith(StringPool.OPEN_PARENTHESIS) &&
-				(i < (lines.length - 1))) {
+			if (line.endsWith(StringPool.OPEN_PARENTHESIS) ||
+				(i >= (lines.length - 1))) {
 
-				sb.append(StringPool.SPACE);
+				continue;
 			}
+
+			sb.append(StringPool.SPACE);
 		}
 
 		return sb.toString();

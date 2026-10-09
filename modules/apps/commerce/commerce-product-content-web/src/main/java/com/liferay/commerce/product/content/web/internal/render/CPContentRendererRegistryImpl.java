@@ -72,28 +72,29 @@ public class CPContentRendererRegistryImpl
 		for (ServiceWrapper<CPContentRenderer> cpContentRendererServiceWrapper :
 				cpContentRendererServiceWrappers) {
 
-			if (Validator.isNotNull(cpType)) {
-				Map<String, Object> cpContentRendererServiceWrapperProperties =
-					cpContentRendererServiceWrapper.getProperties();
+			if (Validator.isNull(cpType)) {
+				continue;
+			}
 
-				Object typeObject =
-					cpContentRendererServiceWrapperProperties.get(
-						"commerce.product.content.renderer.type");
+			Map<String, Object> cpContentRendererServiceWrapperProperties =
+				cpContentRendererServiceWrapper.getProperties();
 
-				if (typeObject instanceof String[]) {
-					String[] types = GetterUtil.getStringValues(typeObject);
+			Object typeObject = cpContentRendererServiceWrapperProperties.get(
+				"commerce.product.content.renderer.type");
 
-					if (ArrayUtil.contains(types, cpType)) {
-						cpContentRenderers.add(
-							cpContentRendererServiceWrapper.getService());
-					}
-				}
-				else if ((typeObject instanceof String) &&
-						 cpType.equals(GetterUtil.getString(typeObject))) {
+			if (typeObject instanceof String[]) {
+				String[] types = GetterUtil.getStringValues(typeObject);
 
+				if (ArrayUtil.contains(types, cpType)) {
 					cpContentRenderers.add(
 						cpContentRendererServiceWrapper.getService());
 				}
+			}
+			else if ((typeObject instanceof String) &&
+					 cpType.equals(GetterUtil.getString(typeObject))) {
+
+				cpContentRenderers.add(
+					cpContentRendererServiceWrapper.getService());
 			}
 		}
 

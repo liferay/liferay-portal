@@ -220,11 +220,13 @@ public class RecurrenceUtil {
 			CalendarBooking lastCalendarBookingInstance =
 				getLastCalendarBookingInstance(calendarBooking);
 
-			if (lastCalendarBookingInstance.getStartTime() > lastStartTime) {
-				lastStartTime = lastCalendarBookingInstance.getStartTime();
-
-				lastCalendarBooking = calendarBooking;
+			if (lastCalendarBookingInstance.getStartTime() <= lastStartTime) {
+				continue;
 			}
+
+			lastStartTime = lastCalendarBookingInstance.getStartTime();
+
+			lastCalendarBooking = calendarBooking;
 		}
 
 		return lastCalendarBooking;

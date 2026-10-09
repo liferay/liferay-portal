@@ -95,9 +95,11 @@ public class LegacyPortletPanelAppHotDeployListener
 				ServiceRegistration<PanelApp> serviceRegistration =
 					_serviceRegistrations.remove(portletId);
 
-				if (serviceRegistration != null) {
-					serviceRegistration.unregister();
+				if (serviceRegistration == null) {
+					continue;
 				}
+
+				serviceRegistration.unregister();
 			}
 		}
 		catch (DocumentException | IOException exception) {

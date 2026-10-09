@@ -332,19 +332,20 @@ public class PortletURLUtil {
 					continue;
 				}
 
-				if (!PortalUtil.isReservedParameter(name) &&
-					!name.equals("currentURL") &&
-					!name.equals("settingsScope") &&
-					!isRefreshURLReservedParameter(name, namespace)) {
+				if (PortalUtil.isReservedParameter(name) ||
+					name.equals("currentURL") || name.equals("settingsScope") ||
+					isRefreshURLReservedParameter(name, namespace)) {
 
-					String[] values = entry.getValue();
-
-					if (values == null) {
-						continue;
-					}
-
-					refreshURLParameters.put(name, values);
+					continue;
 				}
+
+				String[] values = entry.getValue();
+
+				if (values == null) {
+					continue;
+				}
+
+				refreshURLParameters.put(name, values);
 			}
 		}
 
@@ -399,9 +400,11 @@ public class PortletURLUtil {
 				}
 			}
 
-			if (addParam) {
-				portletURL.setParameter(param, values);
+			if (!addParam) {
+				continue;
 			}
+
+			portletURL.setParameter(param, values);
 		}
 
 		return portletURL;

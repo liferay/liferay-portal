@@ -321,20 +321,20 @@ public class DDMDataProviderInstanceUpgradeProcess extends UpgradeProcess {
 							long structureVersionId = resultSet2.getLong(
 								"structureVersionId");
 
-							if (updated &&
-								!_updatedStructureVersionIds.contains(
+							if (!updated ||
+								_updatedStructureVersionIds.contains(
 									structureVersionId)) {
 
-								preparedStatement4.setString(
-									1, jsonObject.toString());
-								preparedStatement4.setLong(
-									2, structureVersionId);
-
-								preparedStatement4.addBatch();
-
-								_updatedStructureVersionIds.add(
-									structureVersionId);
+								continue;
 							}
+
+							preparedStatement4.setString(
+								1, jsonObject.toString());
+							preparedStatement4.setLong(2, structureVersionId);
+
+							preparedStatement4.addBatch();
+
+							_updatedStructureVersionIds.add(structureVersionId);
 						}
 					}
 				}
@@ -364,27 +364,28 @@ public class DDMDataProviderInstanceUpgradeProcess extends UpgradeProcess {
 			long ddmDataProviderInstanceId = _extractDDMDataProviderInstanceId(
 				fieldJSONObject.getString("ddmDataProviderInstanceId"));
 
-			if (_ddmDataProviderInstanceOutputParametersInstanceId.containsKey(
+			if (!_ddmDataProviderInstanceOutputParametersInstanceId.containsKey(
 					ddmDataProviderInstanceId)) {
 
-				String ddmDataProviderInstanceOutputName =
-					_extractDDMDataProviderInstanceOutputName(
-						fieldJSONObject.getString(
-							"ddmDataProviderInstanceOutput"));
-
-				Map<String, String> ddmDataProviderOutputParameters =
-					_ddmDataProviderInstanceOutputParametersInstanceId.get(
-						ddmDataProviderInstanceId);
-
-				String outputParameterId = ddmDataProviderOutputParameters.get(
-					ddmDataProviderInstanceOutputName);
-
-				fieldJSONObject.put(
-					"ddmDataProviderInstanceOutput",
-					"[\"" + outputParameterId + "\"]");
-
-				updated = true;
+				continue;
 			}
+
+			String ddmDataProviderInstanceOutputName =
+				_extractDDMDataProviderInstanceOutputName(
+					fieldJSONObject.getString("ddmDataProviderInstanceOutput"));
+
+			Map<String, String> ddmDataProviderOutputParameters =
+				_ddmDataProviderInstanceOutputParametersInstanceId.get(
+					ddmDataProviderInstanceId);
+
+			String outputParameterId = ddmDataProviderOutputParameters.get(
+				ddmDataProviderInstanceOutputName);
+
+			fieldJSONObject.put(
+				"ddmDataProviderInstanceOutput",
+				"[\"" + outputParameterId + "\"]");
+
+			updated = true;
 		}
 
 		return updated;

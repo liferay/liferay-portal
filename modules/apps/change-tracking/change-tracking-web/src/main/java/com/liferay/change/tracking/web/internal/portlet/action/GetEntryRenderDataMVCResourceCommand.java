@@ -699,15 +699,17 @@ public class GetEntryRenderDataMVCResourceCommand
 				String rightLocalizedPreview =
 					rightLocalizedPreviewJSONObject.getString(languageId);
 
-				if ((leftLocalizedPreview != null) &&
-					(rightLocalizedPreview != null)) {
+				if ((leftLocalizedPreview == null) ||
+					(rightLocalizedPreview == null)) {
 
-					unifiedLocalizedPreviewJSONObject.put(
-						languageId,
-						_diffHtml.diff(
-							new UnsyncStringReader(leftLocalizedPreview),
-							new UnsyncStringReader(rightLocalizedPreview)));
+					continue;
 				}
+
+				unifiedLocalizedPreviewJSONObject.put(
+					languageId,
+					_diffHtml.diff(
+						new UnsyncStringReader(leftLocalizedPreview),
+						new UnsyncStringReader(rightLocalizedPreview)));
 			}
 
 			jsonObject.put(
@@ -726,15 +728,17 @@ public class GetEntryRenderDataMVCResourceCommand
 				String rightLocalizedRender =
 					rightLocalizedRenderJSONObject.getString(languageId);
 
-				if ((leftLocalizedRender != null) &&
-					(rightLocalizedRender != null)) {
+				if ((leftLocalizedRender == null) ||
+					(rightLocalizedRender == null)) {
 
-					unifiedLocalizedRenderJSONObject.put(
-						languageId,
-						_diffHtml.diff(
-							new UnsyncStringReader(leftLocalizedRender),
-							new UnsyncStringReader(rightLocalizedRender)));
+					continue;
 				}
+
+				unifiedLocalizedRenderJSONObject.put(
+					languageId,
+					_diffHtml.diff(
+						new UnsyncStringReader(leftLocalizedRender),
+						new UnsyncStringReader(rightLocalizedRender)));
 			}
 
 			jsonObject.put(
@@ -841,13 +845,15 @@ public class GetEntryRenderDataMVCResourceCommand
 						ctEntryId, LocaleUtil.fromLanguageId(languageId), model,
 						type));
 
-				if (preview != null) {
-					if (jsonObject == null) {
-						jsonObject = _jsonFactory.createJSONObject();
-					}
-
-					jsonObject.put(languageId, preview);
+				if (preview == null) {
+					continue;
 				}
+
+				if (jsonObject == null) {
+					jsonObject = _jsonFactory.createJSONObject();
+				}
+
+				jsonObject.put(languageId, preview);
 			}
 
 			return jsonObject;
@@ -1104,13 +1110,15 @@ public class GetEntryRenderDataMVCResourceCommand
 						httpServletRequest.getLocale())
 				));
 
-			if (segmentsExperience.getSegmentsExperienceId() ==
+			if (segmentsExperience.getSegmentsExperienceId() !=
 					highestPrioritySegmentsExperienceId) {
 
-				jsonObject.put(
-					"activeSegmentsExperience",
-					jsonArray.get(jsonArray.length() - 1));
+				continue;
 			}
+
+			jsonObject.put(
+				"activeSegmentsExperience",
+				jsonArray.get(jsonArray.length() - 1));
 		}
 
 		jsonObject.put("segmentsExperiences", jsonArray);

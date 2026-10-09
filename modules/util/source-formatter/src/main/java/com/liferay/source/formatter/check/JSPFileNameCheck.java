@@ -36,12 +36,13 @@ public class JSPFileNameCheck extends BaseFileCheck {
 		}
 
 		for (char c : shortFileName.toCharArray()) {
-			if (!Character.isLetterOrDigit(c) && (c != CharPool.UNDERLINE)) {
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Do not use \"", c, "\" in file name"));
+			if (Character.isLetterOrDigit(c) || (c == CharPool.UNDERLINE)) {
+				continue;
 			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat("Do not use \"", c, "\" in file name"));
 		}
 
 		return content;

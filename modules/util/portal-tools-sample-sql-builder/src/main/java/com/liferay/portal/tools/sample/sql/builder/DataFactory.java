@@ -2673,27 +2673,29 @@ public class DataFactory {
 			JSONArray subLayoutsJSONArray = jsonObject.getJSONArray(
 				"subLayouts");
 
-			if ((subLayoutsJSONArray != null) &&
-				(subLayoutsJSONArray.length() > 0)) {
+			if ((subLayoutsJSONArray == null) ||
+				(subLayoutsJSONArray.length() <= 0)) {
 
-				for (int k = 0; k < subLayoutsJSONArray.length(); k++) {
-					JSONObject sublayoutJSONObject =
-						subLayoutsJSONArray.getJSONObject(k);
+				continue;
+			}
 
-					layoutModels.add(
-						newLayoutModel(
-							groupId,
-							sublayoutJSONObject.getBoolean("privateLayout"),
-							layoutModel.getLayoutId(),
-							StringUtil.replace(
-								StringUtil.toLowerCase(
-									sublayoutJSONObject.getString("name")),
-								CharPool.SPACE, CharPool.DASH),
-							sublayoutJSONObject.getString("layoutTemplateId"),
-							sublayoutJSONObject.getBoolean("hidden"),
-							getPortletNames(
-								sublayoutJSONObject.getJSONArray("portlets"))));
-				}
+			for (int k = 0; k < subLayoutsJSONArray.length(); k++) {
+				JSONObject sublayoutJSONObject =
+					subLayoutsJSONArray.getJSONObject(k);
+
+				layoutModels.add(
+					newLayoutModel(
+						groupId,
+						sublayoutJSONObject.getBoolean("privateLayout"),
+						layoutModel.getLayoutId(),
+						StringUtil.replace(
+							StringUtil.toLowerCase(
+								sublayoutJSONObject.getString("name")),
+							CharPool.SPACE, CharPool.DASH),
+						sublayoutJSONObject.getString("layoutTemplateId"),
+						sublayoutJSONObject.getBoolean("hidden"),
+						getPortletNames(
+							sublayoutJSONObject.getJSONArray("portlets"))));
 			}
 		}
 
@@ -2723,16 +2725,18 @@ public class DataFactory {
 			JSONArray sublayoutsJSONArray = jsonObject.getJSONArray(
 				"subLayouts");
 
-			if (sublayoutsJSONArray != null) {
-				for (int j = 0; j < sublayoutsJSONArray.length(); j++) {
-					JSONObject sublayoutJSONObject =
-						sublayoutsJSONArray.getJSONObject(j);
+			if (sublayoutsJSONArray == null) {
+				continue;
+			}
 
-					portletPreferenceValueModels.addAll(
-						newCommercePortletPreferenceValueModels(
-							portletPreferencesModels,
-							sublayoutJSONObject.getJSONArray("portlets")));
-				}
+			for (int j = 0; j < sublayoutsJSONArray.length(); j++) {
+				JSONObject sublayoutJSONObject =
+					sublayoutsJSONArray.getJSONObject(j);
+
+				portletPreferenceValueModels.addAll(
+					newCommercePortletPreferenceValueModels(
+						portletPreferencesModels,
+						sublayoutJSONObject.getJSONArray("portlets")));
 			}
 		}
 
@@ -2978,16 +2982,18 @@ public class DataFactory {
 			typeSettingsUnicodeProperties.keySet();
 
 		for (String typeSettingPropertiesKey : typeSettingPropertiesKeys) {
-			if (typeSettingPropertiesKey.startsWith("column-")) {
-				String[] portletIds = StringUtil.split(
-					typeSettingsUnicodeProperties.getProperty(
-						typeSettingPropertiesKey));
+			if (!typeSettingPropertiesKey.startsWith("column-")) {
+				continue;
+			}
 
-				for (String portletId : portletIds) {
-					portletPreferencesModels.add(
-						newPortletPreferencesModel(
-							layoutModel.getPlid(), portletId));
-				}
+			String[] portletIds = StringUtil.split(
+				typeSettingsUnicodeProperties.getProperty(
+					typeSettingPropertiesKey));
+
+			for (String portletId : portletIds) {
+				portletPreferencesModels.add(
+					newPortletPreferencesModel(
+						layoutModel.getPlid(), portletId));
 			}
 		}
 
@@ -5207,9 +5213,11 @@ public class DataFactory {
 			new ArrayList<>();
 
 		for (FragmentEntryLinkModel model : fragmentEntryLinkModels) {
-			if (model.getPlid() == layoutModel.getPlid()) {
-				targetFragmentEntryLinkModels.add(model);
+			if (model.getPlid() != layoutModel.getPlid()) {
+				continue;
 			}
+
+			targetFragmentEntryLinkModels.add(model);
 		}
 
 		LayoutPageTemplateStructureRelModel
@@ -5732,14 +5740,16 @@ public class DataFactory {
 		for (FragmentEntryLinkModel fragmentEntryLinkModel :
 				fragmentEntryLinkModels) {
 
-			if (layoutModel.getPlid() == fragmentEntryLinkModel.getPlid()) {
-				correspondingFragmentEntryLinkModel = fragmentEntryLinkModel;
-
-				data = StringUtil.replaceFirst(
-					data, "${fragmentEntryLinkId}",
-					String.valueOf(
-						fragmentEntryLinkModel.getFragmentEntryLinkId()));
+			if (layoutModel.getPlid() != fragmentEntryLinkModel.getPlid()) {
+				continue;
 			}
+
+			correspondingFragmentEntryLinkModel = fragmentEntryLinkModel;
+
+			data = StringUtil.replaceFirst(
+				data, "${fragmentEntryLinkId}",
+				String.valueOf(
+					fragmentEntryLinkModel.getFragmentEntryLinkId()));
 		}
 
 		layoutPageTemplateStructureRelModel.setSegmentsExperienceId(
@@ -6429,15 +6439,17 @@ public class DataFactory {
 
 			String[] parts = StringUtil.split(release, CharPool.COLON);
 
-			if (parts.length > 0) {
-				String servletContextName = parts[0];
-				String schemaVersion = parts[1];
-
-				releases.add(
-					newReleaseModel(
-						_counter.get(), servletContextName, schemaVersion, 0,
-						true, null));
+			if (parts.length <= 0) {
+				continue;
 			}
+
+			String servletContextName = parts[0];
+			String schemaVersion = parts[1];
+
+			releases.add(
+				newReleaseModel(
+					_counter.get(), servletContextName, schemaVersion, 0, true,
+					null));
 		}
 
 		return releases;
@@ -9478,10 +9490,12 @@ public class DataFactory {
 			).build();
 
 		for (int i = 0; i < columns.length; i++) {
-			if (!columns[i].equals("")) {
-				typeSettingsUnicodeProperties.setProperty(
-					"column-" + (i + 1), columns[i]);
+			if (columns[i].equals("")) {
+				continue;
 			}
+
+			typeSettingsUnicodeProperties.setProperty(
+				"column-" + (i + 1), columns[i]);
 		}
 
 		if (name.equals("search")) {

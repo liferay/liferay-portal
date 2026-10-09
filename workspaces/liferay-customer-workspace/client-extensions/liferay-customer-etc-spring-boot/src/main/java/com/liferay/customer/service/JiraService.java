@@ -741,9 +741,11 @@ public class JiraService extends BaseService {
 
 			String value = itemJSONObject.optString("value");
 
-			if (Validator.isNotNull(value)) {
-				flattenedJSONArray.put(value);
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			flattenedJSONArray.put(value);
 		}
 
 		return flattenedJSONArray;

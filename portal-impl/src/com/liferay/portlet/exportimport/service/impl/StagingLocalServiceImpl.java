@@ -279,9 +279,11 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 		Set<String> keys = new HashSet<>();
 
 		for (String key : typeSettingsUnicodeProperties.keySet()) {
-			if (key.startsWith(StagingConstants.STAGED_PORTLET)) {
-				keys.add(key);
+			if (!key.startsWith(StagingConstants.STAGED_PORTLET)) {
+				continue;
 			}
+
+			keys.add(key);
 		}
 
 		for (String key : keys) {
@@ -783,13 +785,15 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 
 				Date statusDate = headLayoutRevision.getStatusDate();
 
-				if (statusDate.after(layoutRevision.getStatusDate()) &&
-					((lastPublishDate == null) ||
-					 lastPublishDate.after(statusDate))) {
+				if (!statusDate.after(layoutRevision.getStatusDate()) ||
+					((lastPublishDate != null) &&
+					 !lastPublishDate.after(statusDate))) {
 
-					layoutRevisions.put(
-						headLayoutRevision.getPlid(), headLayoutRevision);
+					continue;
 				}
+
+				layoutRevisions.put(
+					headLayoutRevision.getPlid(), headLayoutRevision);
 			}
 		}
 
@@ -1213,10 +1217,12 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 		Map<String, String> stagedPortletIds = new HashMap<>();
 
 		for (String key : typeSettingsUnicodeProperties.keySet()) {
-			if (key.startsWith(StagingConstants.STAGED_PORTLET)) {
-				stagedPortletIds.put(
-					key, typeSettingsUnicodeProperties.getProperty(key));
+			if (!key.startsWith(StagingConstants.STAGED_PORTLET)) {
+				continue;
 			}
+
+			stagedPortletIds.put(
+				key, typeSettingsUnicodeProperties.getProperty(key));
 		}
 
 		try {

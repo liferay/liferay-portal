@@ -329,13 +329,11 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 		for (Method method : configurationBeanClass.getMethods()) {
 			Meta.AD annotation = method.getAnnotation(Meta.AD.class);
 
-			if (annotation == null) {
+			if ((annotation == null) || !annotation.required()) {
 				continue;
 			}
 
-			if (annotation.required()) {
-				requiredKeys.add(method.getName());
-			}
+			requiredKeys.add(method.getName());
 		}
 
 		String configurationPid = ConfigurationPidUtil.getConfigurationPid(
@@ -558,9 +556,11 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 				SafeCloseable safeCloseable = _registerConfigurationBeanClass(
 					configurationBeanClass);
 
-				if (safeCloseable != null) {
-					autoCloseables.add(safeCloseable);
+				if (safeCloseable == null) {
+					continue;
 				}
+
+				autoCloseables.add(safeCloseable);
 			}
 
 			if (ListUtil.isEmpty(autoCloseables)) {

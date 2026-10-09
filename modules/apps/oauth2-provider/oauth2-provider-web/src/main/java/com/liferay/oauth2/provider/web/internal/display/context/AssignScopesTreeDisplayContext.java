@@ -121,9 +121,11 @@ public class AssignScopesTreeDisplayContext
 		Set<String> assignedDeletedScopeAliases = new HashSet<>();
 
 		for (String assignedScopeAlias : _assignedScopeAliases) {
-			if (!scopeAliases.contains(assignedScopeAlias)) {
-				assignedDeletedScopeAliases.add(assignedScopeAlias);
+			if (scopeAliases.contains(assignedScopeAlias)) {
+				continue;
 			}
+
+			assignedDeletedScopeAliases.add(assignedScopeAlias);
 		}
 
 		return assignedDeletedScopeAliases;

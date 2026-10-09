@@ -256,11 +256,12 @@ public class InfoFormUtil {
 						for (OptionInfoFieldType optionInfoFieldType :
 								optionInfoFieldTypes) {
 
-							if (optionInfoFieldType.isActive()) {
-								jsonArray.put(
-									String.valueOf(
-										optionInfoFieldType.getValue()));
+							if (!optionInfoFieldType.isActive()) {
+								continue;
 							}
+
+							jsonArray.put(
+								String.valueOf(optionInfoFieldType.getValue()));
 						}
 
 						return jsonArray;

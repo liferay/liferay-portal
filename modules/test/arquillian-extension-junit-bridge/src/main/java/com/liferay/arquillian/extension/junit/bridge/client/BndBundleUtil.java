@@ -225,12 +225,14 @@ public class BndBundleUtil {
 
 			int length = fileName.length();
 
-			if (file.isDirectory() ||
-				fileName.regionMatches(true, length - 4, ".zip", 0, 4) ||
-				fileName.regionMatches(true, length - 4, ".jar", 0, 4)) {
+			if (!file.isDirectory() &&
+				!fileName.regionMatches(true, length - 4, ".zip", 0, 4) &&
+				!fileName.regionMatches(true, length - 4, ".jar", 0, 4)) {
 
-				classPathFiles.add(file);
+				continue;
 			}
+
+			classPathFiles.add(file);
 		}
 
 		return classPathFiles;

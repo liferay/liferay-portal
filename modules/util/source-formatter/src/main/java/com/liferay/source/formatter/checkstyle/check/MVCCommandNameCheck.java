@@ -101,12 +101,14 @@ public class MVCCommandNameCheck extends BaseCheck {
 		for (Map.Entry<String, Integer> entry : mvcCommandNamesMap.entrySet()) {
 			String mvcCommandName = entry.getKey();
 
-			if (!_hasValidMVCCommandName(
+			if (_hasValidMVCCommandName(
 					mvcCommandName, detailAST, annotationArrayInitDetailAST,
 					className, modulePath, validateActionName)) {
 
-				log(entry.getValue(), _MSG_INCORRECT_VALUE, mvcCommandName);
+				continue;
 			}
+
+			log(entry.getValue(), _MSG_INCORRECT_VALUE, mvcCommandName);
 		}
 	}
 
@@ -152,13 +154,15 @@ public class MVCCommandNameCheck extends BaseCheck {
 
 			String value = firstChildDetailAST.getText();
 
-			if (value.startsWith("\"mvc.command.name=") &&
-				!value.equals("\"mvc.command.name=/\"")) {
+			if (!value.startsWith("\"mvc.command.name=") ||
+				value.equals("\"mvc.command.name=/\"")) {
 
-				mvcCommandNamesMap.put(
-					value.substring(18, value.length() - 1),
-					expressionDetailAST.getLineNo());
+				continue;
 			}
+
+			mvcCommandNamesMap.put(
+				value.substring(18, value.length() - 1),
+				expressionDetailAST.getLineNo());
 		}
 
 		return mvcCommandNamesMap;
@@ -260,16 +264,17 @@ public class MVCCommandNameCheck extends BaseCheck {
 			Matcher matcher = _componentNamePattern.matcher(
 				fullIdent.getText());
 
-			if (matcher.find()) {
-				String expectedPath = StringUtil.replace(
-					matcher.group(1), CharPool.PERIOD, CharPool.UNDERLINE);
+			if (!matcher.find()) {
+				continue;
+			}
 
-				if (path.equals(expectedPath) &&
-					actionName.equals(
-						_getExpectedActionName(matcher.group(2)))) {
+			String expectedPath = StringUtil.replace(
+				matcher.group(1), CharPool.PERIOD, CharPool.UNDERLINE);
 
-					return true;
-				}
+			if (path.equals(expectedPath) &&
+				actionName.equals(_getExpectedActionName(matcher.group(2)))) {
+
+				return true;
 			}
 		}
 

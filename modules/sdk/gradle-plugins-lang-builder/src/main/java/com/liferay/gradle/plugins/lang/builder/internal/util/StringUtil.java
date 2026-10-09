@@ -27,9 +27,11 @@ public class StringUtil extends com.liferay.gradle.util.StringUtil {
 
 			String s = GradleUtil.toString(object);
 
-			if (Validator.isNotNull(s)) {
-				sb.append(s);
+			if (Validator.isNull(s)) {
+				continue;
 			}
+
+			sb.append(s);
 		}
 
 		return sb.toString();

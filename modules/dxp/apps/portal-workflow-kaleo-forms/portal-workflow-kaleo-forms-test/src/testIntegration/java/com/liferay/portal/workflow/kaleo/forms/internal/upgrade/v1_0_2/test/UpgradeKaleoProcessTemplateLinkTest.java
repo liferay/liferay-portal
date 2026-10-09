@@ -193,12 +193,14 @@ public class UpgradeKaleoProcessTemplateLinkTest {
 
 						String className = clazz.getName();
 
-						if (className.contains(
+						if (!className.contains(
 								"KaleoProcessTemplateLinkUpgradeProcess")) {
 
-							_kaleoProcessTemplateLinkUpgradeProcess =
-								(UpgradeProcess)upgradeStep;
+							continue;
 						}
+
+						_kaleoProcessTemplateLinkUpgradeProcess =
+							(UpgradeProcess)upgradeStep;
 					}
 				}
 

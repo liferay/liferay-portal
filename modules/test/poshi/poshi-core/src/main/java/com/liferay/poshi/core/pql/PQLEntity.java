@@ -32,13 +32,15 @@ public abstract class PQLEntity {
 					parenthesisCount++;
 				}
 
-				if (c == ')') {
-					if (parenthesisCount < 1) {
-						return pql.trim();
-					}
-
-					parenthesisCount--;
+				if (c != ')') {
+					continue;
 				}
+
+				if (parenthesisCount < 1) {
+					return pql.trim();
+				}
+
+				parenthesisCount--;
 			}
 
 			if (parenthesisCount > 0) {

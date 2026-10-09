@@ -71,15 +71,17 @@ public class JavaSignatureParametersCheck extends BaseJavaTermCheck {
 				}
 
 				for (Map.Entry<String, Integer> entry : indexMap.entrySet()) {
-					if (i < entry.getValue()) {
-						addMessage(
-							fileName,
-							StringBundler.concat(
-								"Parameter of type \"", entry.getKey(),
-								"\" should come before parameter of type \"",
-								typeName, "\""),
-							lineNumber);
+					if (i >= entry.getValue()) {
+						continue;
 					}
+
+					addMessage(
+						fileName,
+						StringBundler.concat(
+							"Parameter of type \"", entry.getKey(),
+							"\" should come before parameter of type \"",
+							typeName, "\""),
+						lineNumber);
 				}
 
 				indexMap.put(typeName, i);

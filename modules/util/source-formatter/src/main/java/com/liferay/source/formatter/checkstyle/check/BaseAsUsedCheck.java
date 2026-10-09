@@ -174,12 +174,14 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 		int emptyLineCount = 0;
 
 		for (int i = endLineNumber; i <= identDetailAST.getLineNo(); i++) {
-			if (Validator.isNull(getLine(i - 1))) {
-				emptyLineCount++;
+			if (Validator.isNotNull(getLine(i - 1))) {
+				continue;
+			}
 
-				if (emptyLineCount > 1) {
-					return;
-				}
+			emptyLineCount++;
+
+			if (emptyLineCount > 1) {
+				return;
 			}
 		}
 
@@ -343,12 +345,14 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 
 			DetailAST parentDetailAST = elistDetailAST.getParent();
 
-			if (parentDetailAST.getType() == TokenTypes.METHOD_CALL) {
-				String methodName = getMethodName(parentDetailAST);
+			if (parentDetailAST.getType() != TokenTypes.METHOD_CALL) {
+				continue;
+			}
 
-				if (methodName.matches(actionNameRegex)) {
-					return dependentIdentDetailAST.getLineNo();
-				}
+			String methodName = getMethodName(parentDetailAST);
+
+			if (methodName.matches(actionNameRegex)) {
+				return dependentIdentDetailAST.getLineNo();
 			}
 		}
 
@@ -493,14 +497,16 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 					TokenTypes.LAMBDA, TokenTypes.METHOD_DEF);
 			}
 
-			if ((branchedStatementDetailAST != null) &&
-				(branchedStatementDetailAST.getLineNo() < start) &&
-				((lastBranchingStatementDetailAST == null) ||
-				 (branchingStatementDetailAST.getLineNo() >
+			if ((branchedStatementDetailAST == null) ||
+				(branchedStatementDetailAST.getLineNo() >= start) ||
+				((lastBranchingStatementDetailAST != null) &&
+				 (branchingStatementDetailAST.getLineNo() <=
 					 lastBranchingStatementDetailAST.getLineNo()))) {
 
-				lastBranchingStatementDetailAST = branchingStatementDetailAST;
+				continue;
 			}
+
+			lastBranchingStatementDetailAST = branchingStatementDetailAST;
 		}
 
 		return lastBranchingStatementDetailAST;

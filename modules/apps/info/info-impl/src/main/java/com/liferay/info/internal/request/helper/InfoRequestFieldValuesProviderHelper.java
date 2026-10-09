@@ -190,10 +190,11 @@ public class InfoRequestFieldValuesProviderHelper {
 											regularParameterMap,
 											themeDisplay.getUserId());
 
-										if (value != null) {
-											unsafeBiConsumer.accept(
-												locale, value);
+										if (value == null) {
+											continue;
 										}
+
+										unsafeBiConsumer.accept(locale, value);
 									}
 								}
 							).build()),
@@ -214,10 +215,11 @@ public class InfoRequestFieldValuesProviderHelper {
 					regularParameters != null, infoField,
 					themeDisplay.getLocale(), value);
 
-				if (infoFieldValue != null) {
-					_putInfoFieldValue(
-						infoFieldValues, infoFieldValue, inputName);
+				if (infoFieldValue == null) {
+					continue;
 				}
+
+				_putInfoFieldValue(infoFieldValues, infoFieldValue, inputName);
 			}
 		}
 
@@ -315,9 +317,11 @@ public class InfoRequestFieldValuesProviderHelper {
 				inputNamesMap.getOrDefault(
 					infoField.getUniqueId(), Collections.emptyList())) {
 
-			if (infoField.isLocalizable() == inputName.isLocalized()) {
-				inputNames.putIfAbsent(inputName.getName(), inputName);
+			if (infoField.isLocalizable() != inputName.isLocalized()) {
+				continue;
 			}
+
+			inputNames.putIfAbsent(inputName.getName(), inputName);
 		}
 
 		return inputNames.values();

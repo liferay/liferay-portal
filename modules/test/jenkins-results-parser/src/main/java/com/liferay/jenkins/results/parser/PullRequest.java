@@ -468,19 +468,25 @@ public class PullRequest {
 
 				_fileNames.add(fileName);
 
-				if (fileName.endsWith("/ci-merge")) {
-					String patch = fileJSONObject.getString("patch");
-
-					Matcher matcher = _ciMergeSHAPattern.matcher(patch);
-
-					if (matcher.find()) {
-						String sha = matcher.group(1);
-
-						if (!matcher.find()) {
-							_ciMergeSHA = sha;
-						}
-					}
+				if (!fileName.endsWith("/ci-merge")) {
+					continue;
 				}
+
+				String patch = fileJSONObject.getString("patch");
+
+				Matcher matcher = _ciMergeSHAPattern.matcher(patch);
+
+				if (!matcher.find()) {
+					continue;
+				}
+
+				String sha = matcher.group(1);
+
+				if (matcher.find()) {
+					continue;
+				}
+
+				_ciMergeSHA = sha;
 			}
 
 			return _fileNames;
@@ -1062,9 +1068,11 @@ public class PullRequest {
 		for (GitHubRemoteGitRepository.Label label : getLabels()) {
 			String name = label.getName();
 
-			if (name.startsWith(testSuiteLabelPrefix)) {
-				oldLabelNames.add(label.getName());
+			if (!name.startsWith(testSuiteLabelPrefix)) {
+				continue;
 			}
+
+			oldLabelNames.add(label.getName());
 		}
 
 		for (String oldLabelName : oldLabelNames) {
@@ -1432,9 +1440,11 @@ public class PullRequest {
 
 			Issue issue = gitHubRemoteGitCommit.getJIRAIssue();
 
-			if (issue != null) {
-				_jiraIssues.add(issue);
+			if (issue == null) {
+				continue;
 			}
+
+			_jiraIssues.add(issue);
 		}
 	}
 

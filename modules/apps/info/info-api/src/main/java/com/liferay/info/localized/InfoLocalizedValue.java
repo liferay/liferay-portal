@@ -67,9 +67,11 @@ public interface InfoLocalizedValue<T> {
 		for (Locale locale : getAvailableLocales()) {
 			T value = getValue(locale);
 
-			if (value != null) {
-				values.put(locale, value);
+			if (value == null) {
+				continue;
 			}
+
+			values.put(locale, value);
 		}
 
 		return values;

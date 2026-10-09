@@ -703,9 +703,11 @@ public class PostUpgradeVerifyDatabaseStateTest
 			List<String> logMessages = new ArrayList<>();
 
 			for (LogEntry logEntry : logCapture.getLogEntries()) {
-				if (priority.equals(logEntry.getPriority())) {
-					logMessages.add(logEntry.getMessage());
+				if (!priority.equals(logEntry.getPriority())) {
+					continue;
 				}
+
+				logMessages.add(logEntry.getMessage());
 			}
 
 			List<String> messages = function.apply(
@@ -730,9 +732,11 @@ public class PostUpgradeVerifyDatabaseStateTest
 			Set<String> messages = new HashSet<>();
 
 			for (String message : logCapture.getMessages()) {
-				if (ArrayUtil.exists(_MESSAGE_PREFIXES, message::startsWith)) {
-					messages.add(message);
+				if (!ArrayUtil.exists(_MESSAGE_PREFIXES, message::startsWith)) {
+					continue;
 				}
+
+				messages.add(message);
 			}
 
 			Assert.assertEquals(SetUtil.fromArray(expectedMessages), messages);

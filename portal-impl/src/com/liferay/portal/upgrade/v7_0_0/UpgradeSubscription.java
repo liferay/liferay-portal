@@ -195,15 +195,17 @@ public class UpgradeSubscription extends UpgradeProcess {
 					groupId = classPK;
 				}
 
-				if (groupId != 0) {
-					preparedStatement2.setLong(1, groupId);
-
-					long subscriptionId = resultSet.getLong("subscriptionId");
-
-					preparedStatement2.setLong(2, subscriptionId);
-
-					preparedStatement2.addBatch();
+				if (groupId == 0) {
+					continue;
 				}
+
+				preparedStatement2.setLong(1, groupId);
+
+				long subscriptionId = resultSet.getLong("subscriptionId");
+
+				preparedStatement2.setLong(2, subscriptionId);
+
+				preparedStatement2.addBatch();
 			}
 
 			preparedStatement2.executeBatch();

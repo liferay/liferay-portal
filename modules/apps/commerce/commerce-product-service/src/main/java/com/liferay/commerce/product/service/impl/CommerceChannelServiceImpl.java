@@ -166,11 +166,13 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 				commerceChannelLocalService.getEligibleCommerceChannels(
 					accountEntryId, name, start, end)) {
 
-			if (_commerceChannelModelResourcePermission.contains(
+			if (!_commerceChannelModelResourcePermission.contains(
 					getPermissionChecker(), commerceChannel, ActionKeys.VIEW)) {
 
-				commerceChannels.add(commerceChannel);
+				continue;
 			}
+
+			commerceChannels.add(commerceChannel);
 		}
 
 		return commerceChannels;

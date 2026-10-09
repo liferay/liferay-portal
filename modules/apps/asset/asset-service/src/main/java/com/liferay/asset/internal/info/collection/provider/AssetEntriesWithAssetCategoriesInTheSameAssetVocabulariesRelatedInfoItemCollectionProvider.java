@@ -236,9 +236,11 @@ public class
 			String[] itemTypes = configuration.get("item_types");
 
 			for (String itemType : itemTypes) {
-				if (Validator.isNotNull(itemType)) {
-					classNameIds.add(_portal.getClassNameId(itemType));
+				if (Validator.isNull(itemType)) {
+					continue;
 				}
+
+				classNameIds.add(_portal.getClassNameId(itemType));
 			}
 
 			if (ListUtil.isNotEmpty(classNameIds)) {

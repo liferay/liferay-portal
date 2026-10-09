@@ -24,23 +24,25 @@ public class UpgradeVelocityMacroDeclarationMigrationCheck
 		for (int i = 0; i < lines.length; i++) {
 			String newLine = lines[i];
 
-			if (newLine.contains(
-					VelocityMigrationConstants.VELOCITY_MACRO_START) &&
-				VelocityMigrationUtil.isVelocityStatement(
+			if (!newLine.contains(
+					VelocityMigrationConstants.VELOCITY_MACRO_START) ||
+				!VelocityMigrationUtil.isVelocityStatement(
 					newLine, VelocityMigrationConstants.VELOCITY_MACRO_START)) {
 
-				newLine = VelocityMigrationUtil.removeFirstParenthesis(newLine);
-				newLine = StringUtil.replace(
-					newLine, VelocityMigrationConstants.VELOCITY_MACRO_START,
-					VelocityMigrationConstants.FREEMARKER_MACRO_START);
-				newLine = StringUtil.replaceLast(
-					newLine, CharPool.CLOSE_PARENTHESIS, CharPool.GREATER_THAN);
-
-				VelocityMigrationUtil.replaceStatementEnd(
-					i, lines, VelocityMigrationConstants.VELOCITY_MACRO_START);
-
-				lines[i] = newLine;
+				continue;
 			}
+
+			newLine = VelocityMigrationUtil.removeFirstParenthesis(newLine);
+			newLine = StringUtil.replace(
+				newLine, VelocityMigrationConstants.VELOCITY_MACRO_START,
+				VelocityMigrationConstants.FREEMARKER_MACRO_START);
+			newLine = StringUtil.replaceLast(
+				newLine, CharPool.CLOSE_PARENTHESIS, CharPool.GREATER_THAN);
+
+			VelocityMigrationUtil.replaceStatementEnd(
+				i, lines, VelocityMigrationConstants.VELOCITY_MACRO_START);
+
+			lines[i] = newLine;
 		}
 
 		return com.liferay.petra.string.StringUtil.merge(

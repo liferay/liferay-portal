@@ -201,11 +201,13 @@ public class AssetCategoriesNavigationPortletPreferencesProcessor
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (name.equals("assetVocabularyIds")) {
-				updateImportPortletPreferencesClassPKs(
-					portletDataContext, portletPreferences, name,
-					AssetVocabulary.class, companyGroup.getGroupId());
+			if (!name.equals("assetVocabularyIds")) {
+				continue;
 			}
+
+			updateImportPortletPreferencesClassPKs(
+				portletDataContext, portletPreferences, name,
+				AssetVocabulary.class, companyGroup.getGroupId());
 		}
 
 		return portletPreferences;

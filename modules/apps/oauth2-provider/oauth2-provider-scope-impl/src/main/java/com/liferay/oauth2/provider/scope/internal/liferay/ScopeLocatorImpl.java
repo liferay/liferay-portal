@@ -217,9 +217,11 @@ public class ScopeLocatorImpl implements ScopeLocator {
 					}
 
 					for (String unmappedScope : unmappedScopes) {
-						if (!processedScopes.contains(unmappedScope)) {
-							queue.add(unmappedScope);
+						if (processedScopes.contains(unmappedScope)) {
+							continue;
 						}
+
+						queue.add(unmappedScope);
 					}
 				});
 		}

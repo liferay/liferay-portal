@@ -139,9 +139,11 @@ public class TalendArchiveParserUtil {
 				token = token.substring(0, token.length() - 1);
 			}
 
-			if (token.startsWith("-X")) {
-				jvmOptionsList.add(token);
+			if (!token.startsWith("-X")) {
+				continue;
 			}
+
+			jvmOptionsList.add(token);
 		}
 	}
 
@@ -161,9 +163,11 @@ public class TalendArchiveParserUtil {
 
 				String name = zipEntry.getName();
 
-				if (name.endsWith(contextPropertiesSuffix)) {
-					properties.load(zipFile.getInputStream(zipEntry));
+				if (!name.endsWith(contextPropertiesSuffix)) {
+					continue;
 				}
+
+				properties.load(zipFile.getInputStream(zipEntry));
 			}
 		}
 

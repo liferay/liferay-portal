@@ -242,13 +242,14 @@ public class ImportFragmentEntriesStrutsActionTest {
 
 			String path = url.getPath();
 
-			if (!path.endsWith(StringPool.SLASH)) {
-				try (InputStream inputStream = url.openStream()) {
-					zipWriter.addEntry(
-						StringUtil.removeSubstring(
-							url.getPath(), _RESOURCES_PATH),
-						inputStream);
-				}
+			if (path.endsWith(StringPool.SLASH)) {
+				continue;
+			}
+
+			try (InputStream inputStream = url.openStream()) {
+				zipWriter.addEntry(
+					StringUtil.removeSubstring(url.getPath(), _RESOURCES_PATH),
+					inputStream);
 			}
 		}
 

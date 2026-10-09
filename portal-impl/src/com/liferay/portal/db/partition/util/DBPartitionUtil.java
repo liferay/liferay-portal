@@ -280,12 +280,14 @@ public class DBPartitionUtil {
 			}
 
 			for (long companyId : companyIds) {
-				if (companyId != _defaultCompanyId) {
-					try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
-							companyId)) {
+				if (companyId == _defaultCompanyId) {
+					continue;
+				}
 
-						unsafeConsumer.accept(companyId);
-					}
+				try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+						companyId)) {
+
+					unsafeConsumer.accept(companyId);
 				}
 			}
 		}
@@ -811,17 +813,18 @@ public class DBPartitionUtil {
 								fromCompanyId));
 					}
 
-					if (StringUtil.equalsIgnoreCase(
+					if (!StringUtil.equalsIgnoreCase(
 							fromTableName, "ResourcePermission")) {
 
-						statement.executeUpdate(
-							StringBundler.concat(
-								"update ", partitionTableName, " set primKey ",
-								"= '", toCompanyId, "', primKeyId = ",
-								toCompanyId, " where primKey = '",
-								fromCompanyId, "' and scope = ",
-								ResourceConstants.SCOPE_COMPANY));
+						continue;
 					}
+
+					statement.executeUpdate(
+						StringBundler.concat(
+							"update ", partitionTableName, " set primKey = ",
+							"'", toCompanyId, "', primKeyId = ", toCompanyId,
+							" where primKey = '", fromCompanyId,
+							"' and scope = ", ResourceConstants.SCOPE_COMPANY));
 				}
 			}
 
@@ -1085,17 +1088,18 @@ public class DBPartitionUtil {
 							companyId, connection, tableName, statement,
 							dbInspector, false);
 
-						if (StringUtil.equalsIgnoreCase(
+						if (!StringUtil.equalsIgnoreCase(
 								tableName, "DLFileEntryType")) {
 
-							_moveData(
-								_defaultPartitionName, exportedPartitionName,
-								tableName,
-								_getColumnNames(
-									connection, _defaultPartitionName,
-									tableName),
-								statement, " where companyId = 0", false);
+							continue;
 						}
+
+						_moveData(
+							_defaultPartitionName, exportedPartitionName,
+							tableName,
+							_getColumnNames(
+								connection, _defaultPartitionName, tableName),
+							statement, " where companyId = 0", false);
 					}
 				}
 			}
@@ -1156,11 +1160,13 @@ public class DBPartitionUtil {
 						continue;
 					}
 
-					if (dbInspector.isControlTable(tableName)) {
-						_exportTable(
-							companyId, connection, tableName, statement,
-							dbInspector, false);
+					if (!dbInspector.isControlTable(tableName)) {
+						continue;
 					}
+
+					_exportTable(
+						companyId, connection, tableName, statement,
+						dbInspector, false);
 				}
 			}
 

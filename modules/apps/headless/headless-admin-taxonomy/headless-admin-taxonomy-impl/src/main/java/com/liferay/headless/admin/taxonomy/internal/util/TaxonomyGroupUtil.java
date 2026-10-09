@@ -45,11 +45,13 @@ public class TaxonomyGroupUtil {
 				companyId, assetLibrary.getExternalReferenceCode(),
 				assetLibrary.getId(), assetLibrary.getScopeKey());
 
-			if ((group != null) &&
-				_isGroupDepotEntryType(group, DepotConstants.TYPE_SPACE)) {
+			if ((group == null) ||
+				!_isGroupDepotEntryType(group, DepotConstants.TYPE_SPACE)) {
 
-				groupIds.add(group.getGroupId());
+				continue;
 			}
+
+			groupIds.add(group.getGroupId());
 		}
 
 		if (groupIds.isEmpty()) {
@@ -84,11 +86,13 @@ public class TaxonomyGroupUtil {
 				companyId, project.getExternalReferenceCode(), project.getId(),
 				project.getScopeKey());
 
-			if ((group != null) &&
-				_isGroupDepotEntryType(group, DepotConstants.TYPE_PROJECT)) {
+			if ((group == null) ||
+				!_isGroupDepotEntryType(group, DepotConstants.TYPE_PROJECT)) {
 
-				groupIds.add(group.getGroupId());
+				continue;
 			}
+
+			groupIds.add(group.getGroupId());
 		}
 
 		if (groupIds.isEmpty()) {

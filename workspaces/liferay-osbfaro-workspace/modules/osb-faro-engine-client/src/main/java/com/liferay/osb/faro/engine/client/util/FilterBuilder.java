@@ -164,10 +164,12 @@ public class FilterBuilder implements Cloneable {
 		FilterBuilder fieldNameFilterBuilder = new FilterBuilder();
 
 		for (String fieldName : fieldNames) {
-			if (!nameSearch || !_nameFieldNames.contains(fieldName)) {
-				fieldNameFilterBuilder.addSearchFilter(
-					query, fieldName, fieldNameContext, false);
+			if (nameSearch && _nameFieldNames.contains(fieldName)) {
+				continue;
 			}
+
+			fieldNameFilterBuilder.addSearchFilter(
+				query, fieldName, fieldNameContext, false);
 		}
 
 		filters.add(fieldNameFilterBuilder.build());

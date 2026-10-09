@@ -245,15 +245,17 @@ public class ServiceContextFactory {
 		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
 			String[] values = entry.getValue();
 
-			if (ArrayUtil.isNotEmpty(values)) {
-				String name = entry.getKey();
+			if (ArrayUtil.isEmpty(values)) {
+				continue;
+			}
 
-				if (values.length == 1) {
-					attributes.put(name, values[0]);
-				}
-				else {
-					attributes.put(name, values);
-				}
+			String name = entry.getKey();
+
+			if (values.length == 1) {
+				attributes.put(name, values[0]);
+			}
+			else {
+				attributes.put(name, values);
 			}
 		}
 
@@ -405,15 +407,17 @@ public class ServiceContextFactory {
 		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
 			String[] values = entry.getValue();
 
-			if (ArrayUtil.isNotEmpty(values)) {
-				String name = entry.getKey();
+			if (ArrayUtil.isEmpty(values)) {
+				continue;
+			}
 
-				if (values.length == 1) {
-					attributes.put(name, values[0]);
-				}
-				else {
-					attributes.put(name, values);
-				}
+			String name = entry.getKey();
+
+			if (values.length == 1) {
+				attributes.put(name, values[0]);
+			}
+			else {
+				attributes.put(name, values);
 			}
 		}
 

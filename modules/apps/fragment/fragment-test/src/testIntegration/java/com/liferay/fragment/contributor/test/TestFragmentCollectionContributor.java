@@ -68,9 +68,11 @@ public class TestFragmentCollectionContributor
 		for (int type : types) {
 			FragmentEntry fragmentEntry = _fragmentEntriesMap.get(type);
 
-			if (fragmentEntry != null) {
-				fragmentEntries.add(fragmentEntry);
+			if (fragmentEntry == null) {
+				continue;
 			}
+
+			fragmentEntries.add(fragmentEntry);
 		}
 
 		return fragmentEntries;

@@ -248,10 +248,12 @@ public class ModifiedFacetDisplayContextBuilder implements Serializable {
 				new ModifiedFacetCalendarDisplayContextBuilder();
 
 		for (String selectedRange : _selectedRanges) {
-			if (selectedRange.startsWith(StringPool.OPEN_CURLY_BRACE)) {
-				modifiedFacetCalendarDisplayContextBuilder.setRangeString(
-					selectedRange);
+			if (!selectedRange.startsWith(StringPool.OPEN_CURLY_BRACE)) {
+				continue;
 			}
+
+			modifiedFacetCalendarDisplayContextBuilder.setRangeString(
+				selectedRange);
 		}
 
 		modifiedFacetCalendarDisplayContextBuilder.setFrom(_from);

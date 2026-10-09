@@ -64,13 +64,13 @@ public class SamlConfigurationPreferencesUpgradeProcess
 
 				String value = getPropsValue(key, filter);
 
-				if (value == null) {
+				if ((value == null) ||
+					Objects.equals(value, getDefaultValue(key))) {
+
 					continue;
 				}
 
-				if (!Objects.equals(value, getDefaultValue(key))) {
-					dictionary.put(key, value);
-				}
+				dictionary.put(key, value);
 			}
 
 			if (!dictionary.isEmpty()) {

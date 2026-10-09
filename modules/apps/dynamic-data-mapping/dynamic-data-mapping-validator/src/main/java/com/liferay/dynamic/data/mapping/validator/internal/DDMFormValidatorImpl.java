@@ -221,9 +221,11 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		Set<String> ddmFormFieldNames = new HashSet<>();
 
 		for (DDMFormField ddmFormField : ddmFormFields) {
-			if (!ddmFormFieldNames.add(ddmFormField.getName())) {
-				duplicatedDDMFieldNames.add(ddmFormField.getName());
+			if (ddmFormFieldNames.add(ddmFormField.getName())) {
+				continue;
 			}
+
+			duplicatedDDMFieldNames.add(ddmFormField.getName());
 		}
 
 		if (SetUtil.isNotEmpty(duplicatedDDMFieldNames)) {

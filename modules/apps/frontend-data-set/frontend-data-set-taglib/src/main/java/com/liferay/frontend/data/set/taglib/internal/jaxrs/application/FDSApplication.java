@@ -153,9 +153,11 @@ public class FDSApplication extends Application {
 						fdsActionProvider.getDropdownItems(
 							groupId, httpServletRequest, item);
 
-					if (actionDropdownItems != null) {
-						fdsDataRow.addActionDropdownItems(actionDropdownItems);
+					if (actionDropdownItems == null) {
+						continue;
 					}
+
+					fdsDataRow.addActionDropdownItems(actionDropdownItems);
 				}
 			}
 

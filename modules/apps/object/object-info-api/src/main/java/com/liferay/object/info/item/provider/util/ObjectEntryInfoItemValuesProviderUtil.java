@@ -924,9 +924,11 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					_getKeyLocalizedLabelPair(
 						listTypeEntryLocalService, object, objectField);
 
-				if (keyLocalizedLabelPair != null) {
-					keyLocalizedLabelPairs.add(keyLocalizedLabelPair);
+				if (keyLocalizedLabelPair == null) {
+					continue;
 				}
+
+				keyLocalizedLabelPairs.add(keyLocalizedLabelPair);
 			}
 
 			if (ListUtil.isNotEmpty(keyLocalizedLabelPairs)) {

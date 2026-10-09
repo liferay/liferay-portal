@@ -1047,12 +1047,14 @@ public class AnalyticsCloudClient {
 			ObjectDefinition objectDefinition = objectDefinitionsMap.get(
 				performanceAssetConsumptionItem.getTitle());
 
-			if (objectDefinition != null) {
-				performanceAssetConsumptionItem.setKey(
-					objectDefinition::getExternalReferenceCode);
-				performanceAssetConsumptionItem.setTitle(
-					() -> objectDefinition.getLabel(locale));
+			if (objectDefinition == null) {
+				continue;
 			}
+
+			performanceAssetConsumptionItem.setKey(
+				objectDefinition::getExternalReferenceCode);
+			performanceAssetConsumptionItem.setTitle(
+				() -> objectDefinition.getLabel(locale));
 		}
 	}
 

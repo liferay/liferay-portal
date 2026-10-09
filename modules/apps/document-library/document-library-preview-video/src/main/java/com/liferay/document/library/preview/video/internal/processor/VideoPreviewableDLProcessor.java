@@ -267,11 +267,13 @@ public class VideoPreviewableDLProcessor
 			}
 
 			for (String previewType : _PREVIEW_TYPES) {
-				if (previewType.equals("mp4") || previewType.equals("ogv")) {
-					exportPreview(
-						portletDataContext, fileEntry, fileEntryElement,
-						"video", previewType);
+				if (!previewType.equals("mp4") && !previewType.equals("ogv")) {
+					continue;
 				}
+
+				exportPreview(
+					portletDataContext, fileEntry, fileEntryElement, "video",
+					previewType);
 			}
 		}
 	}
@@ -306,11 +308,13 @@ public class VideoPreviewableDLProcessor
 		}
 
 		for (String previewType : _PREVIEW_TYPES) {
-			if (previewType.equals("mp4") || previewType.equals("ogv")) {
-				importPreview(
-					portletDataContext, fileEntry, importedFileEntry,
-					fileEntryElement, "video", previewType);
+			if (!previewType.equals("mp4") && !previewType.equals("ogv")) {
+				continue;
 			}
+
+			importPreview(
+				portletDataContext, fileEntry, importedFileEntry,
+				fileEntryElement, "video", previewType);
 		}
 	}
 

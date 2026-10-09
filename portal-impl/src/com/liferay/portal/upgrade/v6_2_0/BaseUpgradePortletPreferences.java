@@ -169,13 +169,15 @@ public abstract class BaseUpgradePortletPreferences
 						companyId, ownerId, ownerType, plid, portletId,
 						preferences);
 
-					if (!preferences.equals(newPreferences)) {
-						preparedStatement2.setString(1, newPreferences);
-						preparedStatement2.setLong(
-							2, resultSet.getLong("portletPreferencesId"));
-
-						preparedStatement2.addBatch();
+					if (preferences.equals(newPreferences)) {
+						continue;
 					}
+
+					preparedStatement2.setString(1, newPreferences);
+					preparedStatement2.setLong(
+						2, resultSet.getLong("portletPreferencesId"));
+
+					preparedStatement2.addBatch();
 				}
 
 				preparedStatement2.executeBatch();

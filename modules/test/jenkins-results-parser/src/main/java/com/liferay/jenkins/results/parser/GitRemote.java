@@ -196,9 +196,11 @@ public class GitRemote {
 				fetchRemoteURL = remoteURL;
 			}
 
-			if ((pushRemoteURL == null) && type.equals("push")) {
-				pushRemoteURL = remoteURL;
+			if ((pushRemoteURL != null) || !type.equals("push")) {
+				continue;
 			}
+
+			pushRemoteURL = remoteURL;
 		}
 
 		_fetchRemoteURL = fetchRemoteURL;

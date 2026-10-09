@@ -306,9 +306,11 @@ public class MergeCentralGitSubrepositoryUtil {
 
 						String login = userJSONObject.getString("login");
 
-						if (login.equals("liferay-continuous-integration")) {
-							_pullsJSONArray.put(jsonObject);
+						if (!login.equals("liferay-continuous-integration")) {
+							continue;
 						}
+
+						_pullsJSONArray.put(jsonObject);
 					}
 				}
 				else {

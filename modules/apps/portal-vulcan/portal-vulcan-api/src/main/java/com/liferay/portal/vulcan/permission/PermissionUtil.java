@@ -242,9 +242,11 @@ public class PermissionUtil {
 		for (ResourceAction resourceAction : resourceActions) {
 			long bitwiseValue = resourceAction.getBitwiseValue();
 
-			if ((actionIds & bitwiseValue) == bitwiseValue) {
-				actionsIdsSet.add(resourceAction.getActionId());
+			if ((actionIds & bitwiseValue) != bitwiseValue) {
+				continue;
 			}
+
+			actionsIdsSet.add(resourceAction.getActionId());
 		}
 
 		return new Permission() {

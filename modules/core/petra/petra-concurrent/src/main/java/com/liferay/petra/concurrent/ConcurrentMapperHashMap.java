@@ -129,12 +129,11 @@ public abstract class ConcurrentMapperHashMap<K, IK, V, IV>
 
 			V value = unmapValueForQuery(innerValue);
 
-			if (value == null) {
-				innerConcurrentMap.remove(innerKey, innerValue);
-			}
-			else {
+			if (value != null) {
 				return value;
 			}
+
+			innerConcurrentMap.remove(innerKey, innerValue);
 		}
 	}
 

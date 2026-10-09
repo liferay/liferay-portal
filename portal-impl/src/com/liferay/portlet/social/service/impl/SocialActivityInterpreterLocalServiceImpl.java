@@ -212,17 +212,19 @@ public class SocialActivityInterpreterLocalServiceImpl
 			SocialActivityInterpreterImpl socialActivityInterpreterImpl =
 				(SocialActivityInterpreterImpl)activityInterpreter;
 
-			if (socialActivityInterpreterImpl.hasClassName(className)) {
-				SocialActivityFeedEntry activityFeedEntry =
-					socialActivityInterpreterImpl.interpret(
-						activity, serviceContext);
+			if (!socialActivityInterpreterImpl.hasClassName(className)) {
+				continue;
+			}
 
-				if (activityFeedEntry != null) {
-					activityFeedEntry.setPortletId(
-						socialActivityInterpreterImpl.getPortletId());
+			SocialActivityFeedEntry activityFeedEntry =
+				socialActivityInterpreterImpl.interpret(
+					activity, serviceContext);
 
-					return activityFeedEntry;
-				}
+			if (activityFeedEntry != null) {
+				activityFeedEntry.setPortletId(
+					socialActivityInterpreterImpl.getPortletId());
+
+				return activityFeedEntry;
 			}
 		}
 
@@ -269,17 +271,19 @@ public class SocialActivityInterpreterLocalServiceImpl
 			SocialActivityInterpreterImpl socialActivityInterpreterImpl =
 				(SocialActivityInterpreterImpl)activityInterpreter;
 
-			if (socialActivityInterpreterImpl.hasClassName(className)) {
-				SocialActivityFeedEntry activityFeedEntry =
-					socialActivityInterpreterImpl.interpret(
-						activitySet, serviceContext);
+			if (!socialActivityInterpreterImpl.hasClassName(className)) {
+				continue;
+			}
 
-				if (activityFeedEntry != null) {
-					activityFeedEntry.setPortletId(
-						socialActivityInterpreterImpl.getPortletId());
+			SocialActivityFeedEntry activityFeedEntry =
+				socialActivityInterpreterImpl.interpret(
+					activitySet, serviceContext);
 
-					return activityFeedEntry;
-				}
+			if (activityFeedEntry != null) {
+				activityFeedEntry.setPortletId(
+					socialActivityInterpreterImpl.getPortletId());
+
+				return activityFeedEntry;
 			}
 		}
 

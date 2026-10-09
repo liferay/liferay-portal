@@ -78,9 +78,11 @@ public class RSSExporterImpl implements RSSExporter {
 		for (int i = 0; i < array.length; i++) {
 			String s = String.valueOf(array[i]);
 
-			if (!s.matches(_REGEXP_STRIP)) {
-				array[i] = CharPool.SPACE;
+			if (s.matches(_REGEXP_STRIP)) {
+				continue;
 			}
+
+			array[i] = CharPool.SPACE;
 		}
 
 		return new String(array);

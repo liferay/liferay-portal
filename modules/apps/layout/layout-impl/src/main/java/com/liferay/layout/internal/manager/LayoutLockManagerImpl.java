@@ -287,9 +287,11 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 		for (com.liferay.portal.lock.model.Lock lock :
 				_lockLocalService.getLocks(companyId, _CLASS_NAME_LAYOUT)) {
 
-			if (lock.getUserId() == userId) {
-				_lockLocalService.unlock(_CLASS_NAME_LAYOUT, lock.getKey());
+			if (lock.getUserId() != userId) {
+				continue;
 			}
+
+			_lockLocalService.unlock(_CLASS_NAME_LAYOUT, lock.getKey());
 		}
 	}
 
@@ -407,13 +409,15 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 
 				long groupId = GetterUtil.getLong(dictionary.get("groupId"));
 
-				if (Arrays.binarySearch(groupIds, groupId) >= 0) {
-					lockedLayoutsGroupConfigurations.put(
-						groupId,
-						_configurationProvider.getGroupConfiguration(
-							LockedLayoutsGroupConfiguration.class, companyId,
-							groupId));
+				if (Arrays.binarySearch(groupIds, groupId) < 0) {
+					continue;
 				}
+
+				lockedLayoutsGroupConfigurations.put(
+					groupId,
+					_configurationProvider.getGroupConfiguration(
+						LockedLayoutsGroupConfiguration.class, companyId,
+						groupId));
 			}
 		}
 		catch (Exception exception) {

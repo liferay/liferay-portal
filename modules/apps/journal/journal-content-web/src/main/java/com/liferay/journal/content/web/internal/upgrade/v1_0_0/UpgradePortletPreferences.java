@@ -104,10 +104,12 @@ public class UpgradePortletPreferences
 				String newPreferenceValue = newPreferenceValues.get(
 					preferenceValue);
 
-				if (Validator.isNotNull(newPreferenceValue)) {
-					assetAddonEntryKeys = ArrayUtil.append(
-						assetAddonEntryKeys, preferenceKey);
+				if (Validator.isNull(newPreferenceValue)) {
+					continue;
 				}
+
+				assetAddonEntryKeys = ArrayUtil.append(
+					assetAddonEntryKeys, preferenceKey);
 			}
 		}
 

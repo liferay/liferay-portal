@@ -37,17 +37,17 @@ public class TreeUtil {
 			directedAcyclicGraph.addVertex(vertex1);
 
 			for (T vertex2 : set) {
-				if (Objects.equals(vertex1, vertex2)) {
+				if (Objects.equals(vertex1, vertex2) ||
+					!biPredicate.test(vertex1, vertex2)) {
+
 					continue;
 				}
 
-				if (biPredicate.test(vertex1, vertex2)) {
-					directedAcyclicGraph.addVertex(vertex2);
+				directedAcyclicGraph.addVertex(vertex2);
 
-					directedAcyclicGraph.addEdge(
-						vertex1, vertex2,
-						StringBundler.concat(vertex1, "#", vertex2));
-				}
+				directedAcyclicGraph.addEdge(
+					vertex1, vertex2,
+					StringBundler.concat(vertex1, "#", vertex2));
 			}
 		}
 
@@ -59,9 +59,11 @@ public class TreeUtil {
 				endingVertices.add(vertex);
 			}
 
-			if (directedAcyclicGraph.inDegreeOf(vertex) == 0) {
-				initialVertices.add(vertex);
+			if (directedAcyclicGraph.inDegreeOf(vertex) != 0) {
+				continue;
 			}
+
+			initialVertices.add(vertex);
 		}
 
 		_filterRedundantPaths(
@@ -126,9 +128,11 @@ public class TreeUtil {
 
 			if (visitedVerticesSet.containsAll(graphPath.getVertexList())) {
 				for (String edge : graphPath.getEdgeList()) {
-					if (!visitedEdgesSet.contains(edge)) {
-						directedAcyclicGraph.removeEdge(edge);
+					if (visitedEdgesSet.contains(edge)) {
+						continue;
 					}
+
+					directedAcyclicGraph.removeEdge(edge);
 				}
 
 				continue;

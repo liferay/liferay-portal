@@ -37,10 +37,12 @@ public class DDMFormValues implements Serializable {
 				matchedDDMFormFieldValues.add(ddmFormFieldValue);
 			}
 
-			if (includeNestedDDMFormFieldValues) {
-				ddmFormFieldValue.populateNestedDDMFormFieldValues(
-					name, matchedDDMFormFieldValues);
+			if (!includeNestedDDMFormFieldValues) {
+				continue;
 			}
+
+			ddmFormFieldValue.populateNestedDDMFormFieldValues(
+				name, matchedDDMFormFieldValues);
 		}
 
 		return matchedDDMFormFieldValues;
@@ -155,10 +157,12 @@ public class DDMFormValues implements Serializable {
 
 			ddmFormFieldValues.add(ddmFormFieldValue);
 
-			if (includeNestedDDMFormFieldValues) {
-				ddmFormFieldValue.populateNestedDDMFormFieldValuesMap(
-					ddmFormFieldValuesMap);
+			if (!includeNestedDDMFormFieldValues) {
+				continue;
 			}
+
+			ddmFormFieldValue.populateNestedDDMFormFieldValuesMap(
+				ddmFormFieldValuesMap);
 		}
 
 		return ddmFormFieldValuesMap;
@@ -185,10 +189,12 @@ public class DDMFormValues implements Serializable {
 
 			ddmFormFieldValues.add(ddmFormFieldValue);
 
-			if (includeNestedDDMFormFieldValues) {
-				ddmFormFieldValue.populateNestedDDMFormFieldValuesReferencesMap(
-					ddmFormFieldValuesReferencesMap);
+			if (!includeNestedDDMFormFieldValues) {
+				continue;
 			}
+
+			ddmFormFieldValue.populateNestedDDMFormFieldValuesReferencesMap(
+				ddmFormFieldValuesReferencesMap);
 		}
 
 		return ddmFormFieldValuesReferencesMap;

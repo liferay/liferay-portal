@@ -463,9 +463,11 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 				long bitwiseValue =
 					actionIds & resourceAction.getBitwiseValue();
 
-				if (bitwiseValue == resourceAction.getBitwiseValue()) {
-					actionIdsSet.add(resourceAction.getActionId());
+				if (bitwiseValue != resourceAction.getBitwiseValue()) {
+					continue;
 				}
+
+				actionIdsSet.add(resourceAction.getActionId());
 			}
 
 			for (String actionId : actionIdsSet) {
@@ -544,16 +546,17 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 							"defaultSiteRoleIds"),
 						0L));
 
-				if (defaultSiteRoleIds.remove(role.getRoleId())) {
-					typeSettingsUnicodeProperties.setProperty(
-						"defaultSiteRoleIds",
-						ListUtil.toString(
-							defaultSiteRoleIds, StringPool.BLANK));
-
-					_groupLocalService.updateGroup(
-						group.getGroupId(),
-						typeSettingsUnicodeProperties.toString());
+				if (!defaultSiteRoleIds.remove(role.getRoleId())) {
+					continue;
 				}
+
+				typeSettingsUnicodeProperties.setProperty(
+					"defaultSiteRoleIds",
+					ListUtil.toString(defaultSiteRoleIds, StringPool.BLANK));
+
+				_groupLocalService.updateGroup(
+					group.getGroupId(),
+					typeSettingsUnicodeProperties.toString());
 			}
 
 			_userGroupRoleLocalService.deleteUserGroupRolesByRoleId(
@@ -1377,10 +1380,12 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 					Groups_RolesTable.INSTANCE.groupId.eq(curGroupId));
 			}
 
-			if (predicate != null) {
-				groupRoles.addAll(
-					dslQuery(joinStep.where(predicate.withParentheses())));
+			if (predicate == null) {
+				continue;
 			}
+
+			groupRoles.addAll(
+				dslQuery(joinStep.where(predicate.withParentheses())));
 		}
 
 		if (!groupRoles.isEmpty()) {

@@ -143,9 +143,11 @@ public class EditDepotEntryMVCActionCommand extends BaseMVCActionCommand {
 				size = GetterUtil.getLong(sizes[0]);
 			}
 
-			if ((mimeType != null) || (size != null)) {
-				mimeTypeSizeLimits.put(mimeType, size);
+			if ((mimeType == null) && (size == null)) {
+				continue;
 			}
+
+			mimeTypeSizeLimits.put(mimeType, size);
 		}
 
 		_dlSizeLimitConfigurationProvider.updateGroupSizeLimit(

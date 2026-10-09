@@ -187,9 +187,11 @@ public class EditRolePermissionsSummaryDisplayContext {
 				_roleDisplayContext.getActionLabel(
 					resource.getName(), actionId));
 
-			if (!_permissionDisplays.contains(permissionDisplay)) {
-				_permissionDisplays.add(permissionDisplay);
+			if (_permissionDisplays.contains(permissionDisplay)) {
+				continue;
 			}
+
+			_permissionDisplays.add(permissionDisplay);
 		}
 
 		return _permissionDisplays;
@@ -404,10 +406,12 @@ public class EditRolePermissionsSummaryDisplayContext {
 							group.getDescriptiveName(
 								_themeDisplay.getLocale())));
 
-					if (j < (groups.size() - 1)) {
-						sb.append(StringPool.COMMA);
-						sb.append(StringPool.SPACE);
+					if (j >= (groups.size() - 1)) {
+						continue;
 					}
+
+					sb.append(StringPool.COMMA);
+					sb.append(StringPool.SPACE);
 				}
 
 				row.addText(sb.toString());

@@ -67,10 +67,12 @@ public class RootCauseAnalysisToolTopLevelBuildRunner
 		for (BuildData downstreamBuildData :
 				portalTopLevelBuildData.getDownstreamBuildDataList()) {
 
-			if (downstreamBuildData instanceof PortalBuildData) {
-				downstreamPortalBuildDataList.add(
-					(PortalBuildData)downstreamBuildData);
+			if (!(downstreamBuildData instanceof PortalBuildData)) {
+				continue;
 			}
+
+			downstreamPortalBuildDataList.add(
+				(PortalBuildData)downstreamBuildData);
 		}
 
 		rootCauseAnalysisToolBuild.setDownstreamPortalBuildDataList(

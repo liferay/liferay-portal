@@ -343,12 +343,14 @@ public class CalendarResourceStagedModelDataHandler
 			Calendar calendar = _calendarLocalService.fetchCalendar(
 				MapUtil.getLong(calendarIds, calendarId));
 
-			if (calendar != null) {
-				calendar.setCalendarResourceId(
-					importedCalendarResource.getCalendarResourceId());
-
-				_calendarLocalService.updateCalendar(calendar);
+			if (calendar == null) {
+				continue;
 			}
+
+			calendar.setCalendarResourceId(
+				importedCalendarResource.getCalendarResourceId());
+
+			_calendarLocalService.updateCalendar(calendar);
 		}
 	}
 

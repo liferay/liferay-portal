@@ -76,14 +76,16 @@ public class ServiceComponentRuntimeCheck extends BaseCheck {
 				DetailAST slistDetailAST = methodDefDetailAST.findFirstToken(
 					TokenTypes.SLIST);
 
-				if (ListUtil.isEmpty(
+				if (ListUtil.isNotEmpty(
 						getMethodCalls(
 							slistDetailAST, promiseVariableName, "getValue"))) {
 
-					log(
-						assignDetailAST, _MSG_PROMISE_GET_VALUE,
-						getMethodName(methodCallDetailAST));
+					continue;
 				}
+
+				log(
+					assignDetailAST, _MSG_PROMISE_GET_VALUE,
+					getMethodName(methodCallDetailAST));
 			}
 		}
 	}

@@ -124,25 +124,27 @@ public class DDMStructureUpgradeProcess extends UpgradeProcess {
 
 			String unquotedParameterValue = StringUtil.unquote(parameterValue);
 
-			if (ddmFormFieldsMap.containsKey(unquotedParameterValue) ||
-				((i > 0) &&
-				 _isDDMFormFieldOptionValue(
+			if (!ddmFormFieldsMap.containsKey(unquotedParameterValue) &&
+				((i <= 0) ||
+				 !_isDDMFormFieldOptionValue(
 					 ddmFormFieldsMap, unquotedParameterValue,
 					 StringUtil.unquote(parameterValues.get(i - 1))))) {
 
-				int index = ddmFormRuleExpression.indexOf(parameterValue);
-
-				sb.append(ddmFormRuleExpression.substring(0, index));
-
-				sb.append(
-					StringUtil.replace(
-						parameterValue, unquotedParameterValue,
-						DDMFormFieldUpgradeProcessUtil.getNormalizedName(
-							unquotedParameterValue)));
-
-				ddmFormRuleExpression = ddmFormRuleExpression.substring(
-					index + parameterValue.length());
+				continue;
 			}
+
+			int index = ddmFormRuleExpression.indexOf(parameterValue);
+
+			sb.append(ddmFormRuleExpression.substring(0, index));
+
+			sb.append(
+				StringUtil.replace(
+					parameterValue, unquotedParameterValue,
+					DDMFormFieldUpgradeProcessUtil.getNormalizedName(
+						unquotedParameterValue)));
+
+			ddmFormRuleExpression = ddmFormRuleExpression.substring(
+				index + parameterValue.length());
 		}
 
 		sb.append(ddmFormRuleExpression);

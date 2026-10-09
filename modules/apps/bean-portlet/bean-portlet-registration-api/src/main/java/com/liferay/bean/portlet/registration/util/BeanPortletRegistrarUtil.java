@@ -249,10 +249,11 @@ public class BeanPortletRegistrarUtil {
 					RegistrationUtil.registerResourceBundleLoader(
 						beanPortlet, bundleContext, servletContext);
 
-			if (resourceBundleLoaderserviceRegistration != null) {
-				serviceRegistrations.add(
-					resourceBundleLoaderserviceRegistration);
+			if (resourceBundleLoaderserviceRegistration == null) {
+				continue;
 			}
+
+			serviceRegistrations.add(resourceBundleLoaderserviceRegistration);
 		}
 
 		for (BeanFilter beanFilter : beanFilters.values()) {
@@ -454,14 +455,16 @@ public class BeanPortletRegistrarUtil {
 			PortletApplication discoveredPortletApplication =
 				clazz.getAnnotation(PortletApplication.class);
 
-			if (discoveredPortletApplication != null) {
-				if (portletApplication == null) {
-					portletApplication = discoveredPortletApplication;
-				}
-				else {
-					_log.error(
-						"Found more than one @PortletApplication annotation");
-				}
+			if (discoveredPortletApplication == null) {
+				continue;
+			}
+
+			if (portletApplication == null) {
+				portletApplication = discoveredPortletApplication;
+			}
+			else {
+				_log.error(
+					"Found more than one @PortletApplication annotation");
 			}
 		}
 
@@ -542,9 +545,11 @@ public class BeanPortletRegistrarUtil {
 		for (CustomPortletMode customPortletMode :
 				portletApplication.customPortletModes()) {
 
-			if (!customPortletMode.portalManaged()) {
-				customPortletModes.add(customPortletMode.name());
+			if (customPortletMode.portalManaged()) {
+				continue;
 			}
+
+			customPortletModes.add(customPortletMode.name());
 		}
 
 		List<Map.Entry<Integer, String>> portletListeners = new ArrayList<>();
@@ -586,9 +591,11 @@ public class BeanPortletRegistrarUtil {
 		for (InitParameter initParameter : portletConfiguration.initParams()) {
 			String value = initParameter.value();
 
-			if (value != null) {
-				initParams.put(initParameter.name(), value);
+			if (value == null) {
+				continue;
 			}
+
+			initParams.put(initParameter.name(), value);
 		}
 
 		Map<String, Set<String>> supportedPortletModes = new HashMap<>();
@@ -855,23 +862,25 @@ public class BeanPortletRegistrarUtil {
 		for (Map.Entry<String, List<String>> entry :
 				descriptorContainerRuntimeOptions.entrySet()) {
 
-			if (entry.getValue() != null) {
-				String optionName = entry.getKey();
+			if (entry.getValue() == null) {
+				continue;
+			}
 
-				List<String> existingOptionValues = containerRuntimeOptions.get(
-					optionName);
+			String optionName = entry.getKey();
 
-				if (existingOptionValues == null) {
-					containerRuntimeOptions.put(optionName, entry.getValue());
-				}
-				else {
-					List<String> mergedOptions = new ArrayList<>(
-						existingOptionValues);
+			List<String> existingOptionValues = containerRuntimeOptions.get(
+				optionName);
 
-					mergedOptions.addAll(entry.getValue());
+			if (existingOptionValues == null) {
+				containerRuntimeOptions.put(optionName, entry.getValue());
+			}
+			else {
+				List<String> mergedOptions = new ArrayList<>(
+					existingOptionValues);
 
-					containerRuntimeOptions.put(optionName, mergedOptions);
-				}
+				mergedOptions.addAll(entry.getValue());
+
+				containerRuntimeOptions.put(optionName, mergedOptions);
 			}
 		}
 
@@ -993,25 +1002,27 @@ public class BeanPortletRegistrarUtil {
 
 			BeanPortlet beanPortlet = beanPortlets.get(portletName);
 
-			if (beanPortlet == null) {
-				Set<QName> supportedProcessingEvents = new HashSet<>();
-				Set<QName> supportedPublishingEvents = new HashSet<>();
-
-				Map<BeanPortletMethodType, List<BeanPortletMethod>>
-					beanMethodMap = BeanMethodIndexUtil.indexBeanMethods(
-						portletBeanMethodsFunction.apply(portletName));
-
-				BeanMethodIndexUtil.scanSupportedEvents(
-					beanMethodMap, supportedProcessingEvents,
-					supportedPublishingEvents);
-
-				beanPortlet = new BeanPortletImpl(
-					beanMethodMap, descriptorDisplayCategories.get(portletName),
-					entry.getValue(), portletName, supportedProcessingEvents,
-					supportedPublishingEvents);
-
-				beanPortlets.put(portletName, beanPortlet);
+			if (beanPortlet != null) {
+				continue;
 			}
+
+			Set<QName> supportedProcessingEvents = new HashSet<>();
+			Set<QName> supportedPublishingEvents = new HashSet<>();
+
+			Map<BeanPortletMethodType, List<BeanPortletMethod>> beanMethodMap =
+				BeanMethodIndexUtil.indexBeanMethods(
+					portletBeanMethodsFunction.apply(portletName));
+
+			BeanMethodIndexUtil.scanSupportedEvents(
+				beanMethodMap, supportedProcessingEvents,
+				supportedPublishingEvents);
+
+			beanPortlet = new BeanPortletImpl(
+				beanMethodMap, descriptorDisplayCategories.get(portletName),
+				entry.getValue(), portletName, supportedProcessingEvents,
+				supportedPublishingEvents);
+
+			beanPortlets.put(portletName, beanPortlet);
 		}
 	}
 
@@ -1038,26 +1049,27 @@ public class BeanPortletRegistrarUtil {
 
 			BeanPortlet beanPortlet = beanPortlets.get(portletName);
 
-			if (beanPortlet == null) {
-				Map<BeanPortletMethodType, List<BeanPortletMethod>>
-					beanMethodMap = BeanMethodIndexUtil.indexBeanMethods(
-						portletBeanMethodsFunction.apply(portletName));
-
-				Set<QName> supportedProcessingEvents = new HashSet<>();
-				Set<QName> supportedPublishingEvents = new HashSet<>();
-
-				BeanMethodIndexUtil.scanSupportedEvents(
-					beanMethodMap, supportedProcessingEvents,
-					supportedPublishingEvents);
-
-				beanPortlet = new BeanPortletImpl(
-					beanMethodMap, descriptorDisplayCategories.get(portletName),
-					descriptorLiferayConfigurations.get(portletName),
-					portletName, supportedProcessingEvents,
-					supportedPublishingEvents);
-
-				beanPortlets.put(portletName, beanPortlet);
+			if (beanPortlet != null) {
+				continue;
 			}
+
+			Map<BeanPortletMethodType, List<BeanPortletMethod>> beanMethodMap =
+				BeanMethodIndexUtil.indexBeanMethods(
+					portletBeanMethodsFunction.apply(portletName));
+
+			Set<QName> supportedProcessingEvents = new HashSet<>();
+			Set<QName> supportedPublishingEvents = new HashSet<>();
+
+			BeanMethodIndexUtil.scanSupportedEvents(
+				beanMethodMap, supportedProcessingEvents,
+				supportedPublishingEvents);
+
+			beanPortlet = new BeanPortletImpl(
+				beanMethodMap, descriptorDisplayCategories.get(portletName),
+				descriptorLiferayConfigurations.get(portletName), portletName,
+				supportedProcessingEvents, supportedPublishingEvents);
+
+			beanPortlets.put(portletName, beanPortlet);
 		}
 	}
 

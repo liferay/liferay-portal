@@ -136,9 +136,11 @@ public class DDLCSVExporter extends BaseDDLExporter {
 
 			sb.append(CSVUtil.encode(recordVersion.getUserName()));
 
-			if (iterator.hasNext()) {
-				sb.append(StringPool.NEW_LINE);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			sb.append(StringPool.NEW_LINE);
 		}
 
 		String csv = sb.toString();

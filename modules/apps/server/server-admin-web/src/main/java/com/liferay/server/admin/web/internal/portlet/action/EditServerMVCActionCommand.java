@@ -319,11 +319,13 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		while (iterator.hasNext()) {
 			Map.Entry<String, String> entry = iterator.next();
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					entry.getValue(), priorities.get(entry.getKey()))) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		for (Map.Entry<String, String> logLevel : logLevels.entrySet()) {
@@ -632,9 +634,11 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		throws Exception {
 
 		for (DataCleanup dataCleanup : dataCleanups) {
-			if (cmd.equals(dataCleanup.getLabel())) {
-				dataCleanup.cleanup();
+			if (!cmd.equals(dataCleanup.getLabel())) {
+				continue;
 			}
+
+			dataCleanup.cleanup();
 		}
 	}
 
@@ -832,12 +836,14 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (name.startsWith("logLevel")) {
-				logLevels.put(
-					name.substring(8),
-					ParamUtil.getString(
-						actionRequest, name, Level.INFO.toString()));
+			if (!name.startsWith("logLevel")) {
+				continue;
 			}
+
+			logLevels.put(
+				name.substring(8),
+				ParamUtil.getString(
+					actionRequest, name, Level.INFO.toString()));
 		}
 
 		_updateLogLevels(logLevels);
@@ -872,11 +878,13 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (name.startsWith("portalProperty")) {
-				portalProperties.put(
-					name.substring(14),
-					ParamUtil.getString(actionRequest, name, "false"));
+			if (!name.startsWith("portalProperty")) {
+				continue;
 			}
+
+			portalProperties.put(
+				name.substring(14),
+				ParamUtil.getString(actionRequest, name, "false"));
 		}
 
 		_updatePortalProperties(portalProperties);

@@ -3725,14 +3725,16 @@ public class DLFileEntryLocalServiceImpl
 				_dlFileVersionLocalService.fetchLatestFileVersion(
 					dlFileEntry.getFileEntryId(), false);
 
-			if (WorkflowConstants.STATUS_SCHEDULED ==
+			if (WorkflowConstants.STATUS_SCHEDULED !=
 					latestFileVersion.getStatus()) {
 
-				updateStatus(
-					userId, dlFileEntry, latestFileVersion,
-					WorkflowConstants.STATUS_APPROVED, serviceContext,
-					workflowContext);
+				continue;
 			}
+
+			updateStatus(
+				userId, dlFileEntry, latestFileVersion,
+				WorkflowConstants.STATUS_APPROVED, serviceContext,
+				workflowContext);
 		}
 	}
 

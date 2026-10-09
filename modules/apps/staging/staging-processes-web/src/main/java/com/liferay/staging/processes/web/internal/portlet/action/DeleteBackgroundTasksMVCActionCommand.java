@@ -68,9 +68,11 @@ public class DeleteBackgroundTasksMVCActionCommand
 			BackgroundTask backgroundTask =
 				_backgroundTaskManager.getBackgroundTask(backgroundTaskId);
 
-			if (!backgroundTask.isInProgress()) {
-				_backgroundTaskManager.deleteBackgroundTask(backgroundTaskId);
+			if (backgroundTask.isInProgress()) {
+				continue;
 			}
+
+			_backgroundTaskManager.deleteBackgroundTask(backgroundTaskId);
 		}
 	}
 

@@ -97,11 +97,13 @@ public class BaseJSPSettingsConfigurationAction
 
 			String value = getParameter(portletRequest, languageKeyId);
 
-			if (defaultValue.equals(value) ||
-				StringUtil.equalsIgnoreBreakLine(defaultValue, value)) {
+			if (!defaultValue.equals(value) &&
+				!StringUtil.equalsIgnoreBreakLine(defaultValue, value)) {
 
-				modifiableSettings.reset(languageKeyId);
+				continue;
 			}
+
+			modifiableSettings.reset(languageKeyId);
 		}
 	}
 

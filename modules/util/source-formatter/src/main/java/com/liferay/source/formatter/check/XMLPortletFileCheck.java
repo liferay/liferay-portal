@@ -51,19 +51,21 @@ public class XMLPortletFileCheck extends BaseFileCheck {
 		List<Element> portletElements = rootElement.elements("portlet");
 
 		for (Element portletElement : portletElements) {
-			if (checkNumericalPortletNameElement) {
-				Element portletNameElement = portletElement.element(
-					"portlet-name");
-
-				String portletNameText = portletNameElement.getText();
-
-				if (!Validator.isNumber(portletNameText)) {
-					addMessage(
-						fileName,
-						"Nonstandard portlet-name element \"" +
-							portletNameText + "\"");
-				}
+			if (!checkNumericalPortletNameElement) {
+				continue;
 			}
+
+			Element portletNameElement = portletElement.element("portlet-name");
+
+			String portletNameText = portletNameElement.getText();
+
+			if (Validator.isNumber(portletNameText)) {
+				continue;
+			}
+
+			addMessage(
+				fileName,
+				"Nonstandard portlet-name element \"" + portletNameText + "\"");
 		}
 	}
 

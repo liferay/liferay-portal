@@ -174,11 +174,13 @@ public class IconOptionsTag extends IncludeTag {
 
 			portletConfigurationIcons.add(portletConfigurationIcon);
 
-			if (portletConfigurationIcon.hasSeparator()) {
-				portletConfigurationIcons = new ArrayList<>();
-
-				portletConfigurationIconsList.add(portletConfigurationIcons);
+			if (!portletConfigurationIcon.hasSeparator()) {
+				continue;
 			}
+
+			portletConfigurationIcons = new ArrayList<>();
+
+			portletConfigurationIconsList.add(portletConfigurationIcons);
 		}
 
 		return portletConfigurationIconsList;

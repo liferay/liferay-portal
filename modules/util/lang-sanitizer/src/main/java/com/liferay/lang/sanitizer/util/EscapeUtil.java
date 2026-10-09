@@ -54,10 +54,11 @@ public class EscapeUtil {
 		Set<String> keys = _unescapedCharactersMap.keySet();
 
 		for (String key : keys) {
-			if (content.contains(key)) {
-				content = content.replaceAll(
-					key, _unescapedCharactersMap.get(key));
+			if (!content.contains(key)) {
+				continue;
 			}
+
+			content = content.replaceAll(key, _unescapedCharactersMap.get(key));
 		}
 
 		return content;

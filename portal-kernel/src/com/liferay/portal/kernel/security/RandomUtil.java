@@ -48,12 +48,14 @@ public class RandomUtil {
 		for (int i = numbers.length; i > 1; i--) {
 			int position = random.nextInt(i);
 
-			if (position != (i - 1)) {
-				int number = numbers[position];
-
-				numbers[position] = numbers[i - 1];
-				numbers[i - 1] = number;
+			if (position == (i - 1)) {
+				continue;
 			}
+
+			int number = numbers[position];
+
+			numbers[position] = numbers[i - 1];
+			numbers[i - 1] = number;
 		}
 	}
 
@@ -69,12 +71,14 @@ public class RandomUtil {
 		for (int i = sb.length(); i > 1; i--) {
 			int position = random.nextInt(i);
 
-			if (position != (i - 1)) {
-				char c = sb.charAt(position);
-
-				sb.setCharAt(position, sb.charAt(i - 1));
-				sb.setCharAt(i - 1, c);
+			if (position == (i - 1)) {
+				continue;
 			}
+
+			char c = sb.charAt(position);
+
+			sb.setCharAt(position, sb.charAt(i - 1));
+			sb.setCharAt(i - 1, c);
 		}
 	}
 

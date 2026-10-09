@@ -466,10 +466,12 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			String localizedFileName = _getFileName(
 				fileSourceType, entry.getValue());
 
-			if (localizedFileName != null) {
-				fileNameI18n.put(
-					_language.getLanguageId(entry.getKey()), localizedFileName);
+			if (localizedFileName == null) {
+				continue;
 			}
+
+			fileNameI18n.put(
+				_language.getLanguageId(entry.getKey()), localizedFileName);
 		}
 
 		inputTemplateNode.addAttribute("fileNameI18n", fileNameI18n);
@@ -496,11 +498,12 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			String localizedPreviewURL = _getPreviewURL(
 				httpServletRequest, entry.getValue());
 
-			if (localizedPreviewURL != null) {
-				previewURLI18n.put(
-					_language.getLanguageId(entry.getKey()),
-					localizedPreviewURL);
+			if (localizedPreviewURL == null) {
+				continue;
 			}
+
+			previewURLI18n.put(
+				_language.getLanguageId(entry.getKey()), localizedPreviewURL);
 		}
 
 		inputTemplateNode.addAttribute("previewURLI18n", previewURLI18n);
@@ -802,14 +805,15 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 					optionInfoFieldType.getLabel(locale),
 					optionInfoFieldType.getValue()));
 
-			if ((value != null) &&
-				value.equals(optionInfoFieldType.getValue())) {
+			if ((value == null) ||
+				!value.equals(optionInfoFieldType.getValue())) {
 
-				inputTemplateNode.addAttribute(
-					"selectedOptionLabel",
-					optionInfoFieldType.getLabel(locale));
-				inputTemplateNode.addAttribute("selectedOptionValue", value);
+				continue;
 			}
+
+			inputTemplateNode.addAttribute(
+				"selectedOptionLabel", optionInfoFieldType.getLabel(locale));
+			inputTemplateNode.addAttribute("selectedOptionValue", value);
 		}
 
 		inputTemplateNode.addAttribute("options", options);
@@ -884,9 +888,11 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 			String a2 = availableLocale.getCountry();
 
-			if (Validator.isNotNull(a2)) {
-				a2s.add(a2);
+			if (Validator.isNull(a2)) {
+				continue;
 			}
+
+			a2s.add(a2);
 		}
 
 		List<Map<String, Object>> countries = new ArrayList<>();
@@ -1183,12 +1189,14 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			for (OptionInfoFieldType optionInfoFieldType :
 					optionInfoFieldTypes) {
 
-				if (Objects.equals(
+				if (!Objects.equals(
 						keyLocalizedLabelPair.getKey(),
 						optionInfoFieldType.getValue())) {
 
-					selectedOptions.add(optionInfoFieldType.getValue());
+					continue;
 				}
+
+				selectedOptions.add(optionInfoFieldType.getValue());
 			}
 		}
 

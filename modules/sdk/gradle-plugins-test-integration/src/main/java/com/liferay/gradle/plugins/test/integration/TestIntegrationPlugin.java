@@ -709,16 +709,18 @@ public class TestIntegrationPlugin implements Plugin<Project> {
 		Properties systemProperties = System.getProperties();
 
 		for (String propertyName : systemProperties.stringPropertyNames()) {
-			if (propertyName.startsWith("liferay.arquillian.")) {
-				StringBuilder sb = new StringBuilder();
-
-				sb.append("-D");
-				sb.append(propertyName);
-				sb.append("=");
-				sb.append(systemProperties.get(propertyName));
-
-				test.jvmArgs(sb.toString());
+			if (!propertyName.startsWith("liferay.arquillian.")) {
+				continue;
 			}
+
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("-D");
+			sb.append(propertyName);
+			sb.append("=");
+			sb.append(systemProperties.get(propertyName));
+
+			test.jvmArgs(sb.toString());
 		}
 
 		Project project = test.getProject();

@@ -520,9 +520,11 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 			for (String languageId : assetRenderer.getAvailableLanguageIds()) {
 				Locale locale = LocaleUtil.fromLanguageId(languageId);
 
-				if (locale != null) {
-					titleMap.put(locale, assetRenderer.getTitle(locale));
+				if (locale == null) {
+					continue;
 				}
+
+				titleMap.put(locale, assetRenderer.getTitle(locale));
 			}
 
 			jsonObject.put(

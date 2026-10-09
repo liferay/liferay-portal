@@ -51,17 +51,19 @@ public class DynamicProxyCreator implements BeanPostProcessor, Ordered {
 
 			BeanMatcher beanMatcher = objectValuePair.getKey();
 
-			if (beanMatcher.match(beanClass, beanName)) {
-				InvocationHandlerFactory invocationHandlerFactory =
-					objectValuePair.getValue();
-
-				InvocationHandler invocationHandler =
-					invocationHandlerFactory.createInvocationHandler(bean);
-
-				bean = ProxyUtil.newProxyInstance(
-					contextClassLoader, beanClass.getInterfaces(),
-					invocationHandler);
+			if (!beanMatcher.match(beanClass, beanName)) {
+				continue;
 			}
+
+			InvocationHandlerFactory invocationHandlerFactory =
+				objectValuePair.getValue();
+
+			InvocationHandler invocationHandler =
+				invocationHandlerFactory.createInvocationHandler(bean);
+
+			bean = ProxyUtil.newProxyInstance(
+				contextClassLoader, beanClass.getInterfaces(),
+				invocationHandler);
 		}
 
 		return bean;

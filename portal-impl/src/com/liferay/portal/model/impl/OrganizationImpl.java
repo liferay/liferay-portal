@@ -56,9 +56,11 @@ public class OrganizationImpl extends OrganizationBaseImpl {
 		List<String> parentTypes = new ArrayList<>();
 
 		for (String curType : types) {
-			if (ArrayUtil.contains(getChildrenTypes(curType), type)) {
-				parentTypes.add(curType);
+			if (!ArrayUtil.contains(getChildrenTypes(curType), type)) {
+				continue;
 			}
+
+			parentTypes.add(curType);
 		}
 
 		return parentTypes.toArray(new String[0]);

@@ -73,9 +73,11 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 		List<User> assignableUsers = new ArrayList<>(users.size());
 
 		for (User user : users) {
-			if (CMSUserUtil.isAssignableUser(permissionChecker, user)) {
-				assignableUsers.add(user);
+			if (!CMSUserUtil.isAssignableUser(permissionChecker, user)) {
+				continue;
 			}
+
+			assignableUsers.add(user);
 		}
 
 		return assignableUsers;

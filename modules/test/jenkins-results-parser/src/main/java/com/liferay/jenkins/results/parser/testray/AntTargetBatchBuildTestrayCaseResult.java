@@ -108,12 +108,14 @@ public class AntTargetBatchBuildTestrayCaseResult
 		}
 		else {
 			for (TestReport testReport : testClassReport.getTestReports()) {
-				if (testReport.isFailing()) {
-					sb.append(testReport.getTestName());
-					sb.append(": ");
-					sb.append(testReport.getErrorStackTrace());
-					sb.append("\n");
+				if (!testReport.isFailing()) {
+					continue;
 				}
+
+				sb.append(testReport.getTestName());
+				sb.append(": ");
+				sb.append(testReport.getErrorStackTrace());
+				sb.append("\n");
 			}
 		}
 
@@ -243,11 +245,13 @@ public class AntTargetBatchBuildTestrayCaseResult
 		for (TestClassReport testClassReport :
 				downstreamBuildReport.getTestClassReports()) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					testClassName, testClassReport.getTestClassName())) {
 
-				_testClassReport = testClassReport;
+				continue;
 			}
+
+			_testClassReport = testClassReport;
 		}
 
 		return _testClassReport;

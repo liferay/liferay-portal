@@ -139,9 +139,11 @@ public class ReleaseAPIJarTLDTest implements BaseReleaseAPIJarTestCase {
 
 								String textContent = childNode.getTextContent();
 
-								if (textContent.startsWith("com.liferay.")) {
-									paths.add(textContent.replace('.', '/'));
+								if (!textContent.startsWith("com.liferay.")) {
+									continue;
 								}
+
+								paths.add(textContent.replace('.', '/'));
 							}
 						}
 						catch (Exception exception) {

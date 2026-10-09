@@ -196,15 +196,17 @@ public class SXPParameterDataCreatorUtil {
 							searchContext.getCompanyId(),
 							searchContext.getLocale());
 
-			if (ListUtil.isNotEmpty(sxpParameterContributorDefinitions)) {
-				for (SXPParameterContributorDefinition
-						sxpParameterContributorDefinition :
-							sxpParameterContributorDefinitions) {
+			if (ListUtil.isEmpty(sxpParameterContributorDefinitions)) {
+				continue;
+			}
 
-					_addSXPParameter(
-						searchContext, sxpParameterContributorDefinition,
-						sxpParameters);
-				}
+			for (SXPParameterContributorDefinition
+					sxpParameterContributorDefinition :
+						sxpParameterContributorDefinitions) {
+
+				_addSXPParameter(
+					searchContext, sxpParameterContributorDefinition,
+					sxpParameters);
 			}
 		}
 	}

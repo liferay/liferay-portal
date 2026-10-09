@@ -527,13 +527,13 @@ public class ServletContextHelperRegistrationImpl
 		while (iterator.hasNext()) {
 			String classResource = iterator.next();
 
-			if (_contains(_WHITELIST, classResource)) {
+			if (_contains(_WHITELIST, classResource) ||
+				!_contains(_BLACKLIST, classResource)) {
+
 				continue;
 			}
 
-			if (_contains(_BLACKLIST, classResource)) {
-				iterator.remove();
-			}
+			iterator.remove();
 		}
 
 		if (classResources == null) {

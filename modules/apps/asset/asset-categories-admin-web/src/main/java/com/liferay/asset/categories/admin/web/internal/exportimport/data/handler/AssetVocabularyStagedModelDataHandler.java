@@ -452,9 +452,11 @@ public class AssetVocabularyStagedModelDataHandler
 			DepotEntry depotEntry = _depotEntryService.fetchGroupDepotEntry(
 				group.getGroupId());
 
-			if (depotEntry != null) {
-				groupIds.add(group.getGroupId());
+			if (depotEntry == null) {
+				continue;
 			}
+
+			groupIds.add(group.getGroupId());
 		}
 
 		if (groupIds.isEmpty()) {

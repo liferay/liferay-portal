@@ -91,11 +91,13 @@ public class GroupExporter {
 
 			Group parentGroup = group.getParentGroup();
 
-			if (parentGroup != null) {
-				groupElement.addAttribute(
-					"parent-group-external-reference-code",
-					parentGroup.getExternalReferenceCode());
+			if (parentGroup == null) {
+				continue;
 			}
+
+			groupElement.addAttribute(
+				"parent-group-external-reference-code",
+				parentGroup.getExternalReferenceCode());
 		}
 	}
 

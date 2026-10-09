@@ -89,12 +89,14 @@ public class ModulesBatchBuildTestrayCaseResult
 		StringBuilder sb = new StringBuilder();
 
 		for (TestReport testReport : testClassReport.getTestReports()) {
-			if (testReport.isFailing()) {
-				sb.append(testReport.getTestName());
-				sb.append(": ");
-				sb.append(testReport.getErrorStackTrace());
-				sb.append("\n");
+			if (!testReport.isFailing()) {
+				continue;
 			}
+
+			sb.append(testReport.getTestName());
+			sb.append(": ");
+			sb.append(testReport.getErrorStackTrace());
+			sb.append("\n");
 		}
 
 		if (sb.length() == 0) {
@@ -188,11 +190,13 @@ public class ModulesBatchBuildTestrayCaseResult
 		for (TestClassReport testClassReport :
 				downstreamBuildReport.getTestClassReports()) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					testClassName, testClassReport.getTestClassName())) {
 
-				_testClassReport = testClassReport;
+				continue;
 			}
+
+			_testClassReport = testClassReport;
 		}
 
 		return _testClassReport;

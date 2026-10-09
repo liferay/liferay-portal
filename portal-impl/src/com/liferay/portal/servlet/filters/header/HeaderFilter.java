@@ -59,11 +59,13 @@ public class HeaderFilter extends BasePortalFilter {
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (!_requestHeaderIgnoreInitParams.contains(name)) {
-				_addHeader(
-					httpServletRequest, httpServletResponse, name,
-					filterConfig.getInitParameter(name));
+			if (_requestHeaderIgnoreInitParams.contains(name)) {
+				continue;
 			}
+
+			_addHeader(
+				httpServletRequest, httpServletResponse, name,
+				filterConfig.getInitParameter(name));
 		}
 
 		String ifNoneMatch = httpServletRequest.getHeader(

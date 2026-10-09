@@ -84,12 +84,14 @@ public class CommerceOrderModelPreFilterContributor
 					"commerceAccountId", String.valueOf(commerceAccountIds[i])),
 				BooleanClauseOccur.SHOULD);
 
-			if (((i + 1) % _MAX_CLAUSES_COUNT) == 0) {
-				commerceAccountIdBooleanFilter.add(
-					nestedBooleanFilter, BooleanClauseOccur.SHOULD);
-
-				nestedBooleanFilter = new BooleanFilter();
+			if (((i + 1) % _MAX_CLAUSES_COUNT) != 0) {
+				continue;
 			}
+
+			commerceAccountIdBooleanFilter.add(
+				nestedBooleanFilter, BooleanClauseOccur.SHOULD);
+
+			nestedBooleanFilter = new BooleanFilter();
 		}
 
 		if (nestedBooleanFilter.hasClauses()) {

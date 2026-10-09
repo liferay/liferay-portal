@@ -1916,10 +1916,12 @@ public class RootProjectConfigurator implements Plugin<Project> {
 						boolean success = file.setLastModified(
 							fileCopyDetails.getLastModified());
 
-						if (!success) {
-							logger.error(
-								"Unable to set last modified time of {}", file);
+						if (success) {
+							continue;
 						}
+
+						logger.error(
+							"Unable to set last modified time of {}", file);
 					}
 				}
 
@@ -2082,9 +2084,11 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		for (int i = 0; i < segments.length; i++) {
 			sb.append(segments[i].toUpperCase());
 
-			if (i < (segments.length - 1)) {
-				sb.append("_PERIOD_");
+			if (i >= (segments.length - 1)) {
+				continue;
 			}
+
+			sb.append("_PERIOD_");
 		}
 
 		return sb.toString();

@@ -211,10 +211,12 @@ public class TypeScriptClientUtil {
 		for (Schema schema : schemas.values()) {
 			Map<String, Schema> propertySchemas = schema.getPropertySchemas();
 
-			if (propertySchemas != null) {
-				for (Schema propertySchema : propertySchemas.values()) {
-					_getDataType(dataTypes, propertySchema);
-				}
+			if (propertySchemas == null) {
+				continue;
+			}
+
+			for (Schema propertySchema : propertySchemas.values()) {
+				_getDataType(dataTypes, propertySchema);
 			}
 		}
 
@@ -313,9 +315,11 @@ public class TypeScriptClientUtil {
 						_getAllOfSchemaPropertySchemas(
 							parentClass, allOfSchema, schemas);
 
-					if (allOfSchemaPropertySchemas != null) {
-						propertySchemas.putAll(allOfSchemaPropertySchemas);
+					if (allOfSchemaPropertySchemas == null) {
+						continue;
 					}
+
+					propertySchemas.putAll(allOfSchemaPropertySchemas);
 				}
 			}
 		}
@@ -512,9 +516,11 @@ public class TypeScriptClientUtil {
 				for (Response response : responses.values()) {
 					Map<String, Content> content = response.getContent();
 
-					if (content != null) {
-						responseContentTypes.addAll(content.keySet());
+					if (content == null) {
+						continue;
 					}
+
+					responseContentTypes.addAll(content.keySet());
 				}
 
 				if (responseContentTypes.isEmpty()) {
@@ -841,9 +847,11 @@ public class TypeScriptClientUtil {
 
 		if (allOfSchemas != null) {
 			for (Schema allOfSchema : allOfSchemas) {
-				if (allOfSchema.getReference() != null) {
-					references.add(allOfSchema.getReference());
+				if (allOfSchema.getReference() == null) {
+					continue;
 				}
+
+				references.add(allOfSchema.getReference());
 			}
 		}
 
@@ -860,13 +868,17 @@ public class TypeScriptClientUtil {
 
 			Items items = propertySchema.getItems();
 
-			if (items != null) {
-				Schema itemsSchema = items.toSchema();
-
-				if (itemsSchema.getReference() != null) {
-					references.add(itemsSchema.getReference());
-				}
+			if (items == null) {
+				continue;
 			}
+
+			Schema itemsSchema = items.toSchema();
+
+			if (itemsSchema.getReference() == null) {
+				continue;
+			}
+
+			references.add(itemsSchema.getReference());
 		}
 
 		return references;

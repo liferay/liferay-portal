@@ -106,9 +106,11 @@ public class DLAppServiceTestUtil {
 		int successCount = 0;
 
 		for (DoAsUserThread doAsUserThread : doAsUserThreads) {
-			if (doAsUserThread.isSuccess()) {
-				successCount++;
+			if (!doAsUserThread.isSuccess()) {
+				continue;
 			}
+
+			successCount++;
 		}
 
 		return successCount;

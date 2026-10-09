@@ -426,10 +426,12 @@ public class CartDTOConverter implements DTOConverter<CommerceOrder, Cart> {
 		for (CommerceOrderValidatorResult commerceOrderValidatorResult :
 				commerceOrderValidatorResults) {
 
-			if (commerceOrderValidatorResult.hasMessageResult()) {
-				errorMessages.add(
-					commerceOrderValidatorResult.getLocalizedMessage());
+			if (!commerceOrderValidatorResult.hasMessageResult()) {
+				continue;
 			}
+
+			errorMessages.add(
+				commerceOrderValidatorResult.getLocalizedMessage());
 		}
 
 		return errorMessages.toArray(new String[0]);

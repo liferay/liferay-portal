@@ -39,35 +39,36 @@ public class UpgradeJavaGetFDSTableSchemaParameterCheck
 		List<String> extendedClassNames = javaClass.getExtendedClassNames();
 
 		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
-			if (!childJavaTerm.isJavaMethod()) {
+			if (!childJavaTerm.isJavaMethod() ||
+				!extendedClassNames.contains("BaseTableFDSView")) {
+
 				continue;
 			}
 
-			if (extendedClassNames.contains("BaseTableFDSView")) {
-				JavaMethod javaMethod = (JavaMethod)childJavaTerm;
+			JavaMethod javaMethod = (JavaMethod)childJavaTerm;
 
-				String javaMethodContent = javaMethod.getContent();
+			String javaMethodContent = javaMethod.getContent();
 
-				Matcher matcher = _getFDSTableSchemaPattern.matcher(
-					javaMethodContent);
+			Matcher matcher = _getFDSTableSchemaPattern.matcher(
+				javaMethodContent);
 
-				while (matcher.find()) {
-					String methodCall = matcher.group();
+			while (matcher.find()) {
+				String methodCall = matcher.group();
 
-					newContent = StringUtil.replace(
-						content, methodCall,
-						StringUtil.replace(
-							methodCall, matcher.group(1), "(Locale locale)"));
-				}
-
-				matcher = _fDSTableSchemaFieldPattern.matcher(
-					javaMethodContent);
-
-				if (matcher.find()) {
-					newContent = _formatFDSTableSchemaFieldCall(
-						newContent, javaMethodContent, matcher);
-				}
+				newContent = StringUtil.replace(
+					content, methodCall,
+					StringUtil.replace(
+						methodCall, matcher.group(1), "(Locale locale)"));
 			}
+
+			matcher = _fDSTableSchemaFieldPattern.matcher(javaMethodContent);
+
+			if (!matcher.find()) {
+				continue;
+			}
+
+			newContent = _formatFDSTableSchemaFieldCall(
+				newContent, javaMethodContent, matcher);
 		}
 
 		return newContent;

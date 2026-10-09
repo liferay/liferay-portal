@@ -65,62 +65,64 @@ public class BeanValidationInterceptor extends BeanPortletMethodInterceptor {
 				lastPathNode = pathNode;
 			}
 
-			if ((lastPathNode != null) &&
-				(lastPathNode.getKind() == ElementKind.PROPERTY)) {
+			if ((lastPathNode == null) ||
+				(lastPathNode.getKind() != ElementKind.PROPERTY)) {
 
-				Object leafBean = constraintViolation.getLeafBean();
-
-				Class<?> leafBeanClass = leafBean.getClass();
-
-				Field field = leafBeanClass.getDeclaredField(
-					lastPathNode.getName());
-
-				String paramName = null;
-
-				Annotation[] annotations = field.getAnnotations();
-
-				for (Annotation annotation : annotations) {
-					if (annotation instanceof CookieParam) {
-						CookieParam cookieParam = (CookieParam)annotation;
-
-						paramName = cookieParam.value();
-
-						break;
-					}
-					else if (annotation instanceof FormParam) {
-						FormParam formParam = (FormParam)annotation;
-
-						paramName = formParam.value();
-
-						break;
-					}
-					else if (annotation instanceof HeaderParam) {
-						HeaderParam headerParam = (HeaderParam)annotation;
-
-						paramName = headerParam.value();
-
-						break;
-					}
-					else if (annotation instanceof QueryParam) {
-						QueryParam queryParam = (QueryParam)annotation;
-
-						paramName = queryParam.value();
-					}
-				}
-
-				String interpolatedMessage = constraintViolation.getMessage();
-
-				if (_messageInterpolator != null) {
-					interpolatedMessage = _messageInterpolator.interpolate(
-						constraintViolation.getMessageTemplate(),
-						new MessageInterpolatorContextImpl(constraintViolation),
-						_mvcContext.getLocale());
-				}
-
-				_mutableBindingResult.addValidationError(
-					new ValidationErrorImpl(
-						constraintViolation, interpolatedMessage, paramName));
+				continue;
 			}
+
+			Object leafBean = constraintViolation.getLeafBean();
+
+			Class<?> leafBeanClass = leafBean.getClass();
+
+			Field field = leafBeanClass.getDeclaredField(
+				lastPathNode.getName());
+
+			String paramName = null;
+
+			Annotation[] annotations = field.getAnnotations();
+
+			for (Annotation annotation : annotations) {
+				if (annotation instanceof CookieParam) {
+					CookieParam cookieParam = (CookieParam)annotation;
+
+					paramName = cookieParam.value();
+
+					break;
+				}
+				else if (annotation instanceof FormParam) {
+					FormParam formParam = (FormParam)annotation;
+
+					paramName = formParam.value();
+
+					break;
+				}
+				else if (annotation instanceof HeaderParam) {
+					HeaderParam headerParam = (HeaderParam)annotation;
+
+					paramName = headerParam.value();
+
+					break;
+				}
+				else if (annotation instanceof QueryParam) {
+					QueryParam queryParam = (QueryParam)annotation;
+
+					paramName = queryParam.value();
+				}
+			}
+
+			String interpolatedMessage = constraintViolation.getMessage();
+
+			if (_messageInterpolator != null) {
+				interpolatedMessage = _messageInterpolator.interpolate(
+					constraintViolation.getMessageTemplate(),
+					new MessageInterpolatorContextImpl(constraintViolation),
+					_mvcContext.getLocale());
+			}
+
+			_mutableBindingResult.addValidationError(
+				new ValidationErrorImpl(
+					constraintViolation, interpolatedMessage, paramName));
 		}
 
 		return super.invoke(args);

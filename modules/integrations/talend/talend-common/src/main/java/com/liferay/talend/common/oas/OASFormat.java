@@ -41,9 +41,11 @@ public enum OASFormat {
 				return oasFormat;
 			}
 
-			if (oasFormat._defaultFormat) {
-				defaultOASFormat = oasFormat;
+			if (!oasFormat._defaultFormat) {
+				continue;
 			}
+
+			defaultOASFormat = oasFormat;
 		}
 
 		return defaultOASFormat;

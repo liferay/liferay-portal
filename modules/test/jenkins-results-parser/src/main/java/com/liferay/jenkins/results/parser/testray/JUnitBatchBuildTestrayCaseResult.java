@@ -377,15 +377,17 @@ public class JUnitBatchBuildTestrayCaseResult
 				continue;
 			}
 
-			if (testClassName.equals("junit.framework.TestSuite")) {
-				for (TestReport testReport : testClassReport.getTestReports()) {
-					String testName = testReport.getTestName();
+			if (!testClassName.equals("junit.framework.TestSuite")) {
+				continue;
+			}
 
-					if (testName.equals(getName())) {
-						_testClassReports.add(testClassReport);
+			for (TestReport testReport : testClassReport.getTestReports()) {
+				String testName = testReport.getTestName();
 
-						break;
-					}
+				if (testName.equals(getName())) {
+					_testClassReports.add(testClassReport);
+
+					break;
 				}
 			}
 		}
@@ -408,9 +410,11 @@ public class JUnitBatchBuildTestrayCaseResult
 			for (TestReport testReport : testClassReport.getTestReports()) {
 				String testName = testReport.getTestName();
 
-				if (testName.equals(getName())) {
-					testReports.add(testReport);
+				if (!testName.equals(getName())) {
+					continue;
 				}
+
+				testReports.add(testReport);
 			}
 		}
 

@@ -1590,9 +1590,11 @@ public class ServiceBuilder {
 							exception = "SystemException";
 						}
 
-						if (!exceptions.contains(exception)) {
-							exceptions.add(exception);
+						if (exceptions.contains(exception)) {
+							continue;
 						}
+
+						exceptions.add(exception);
 					}
 
 					Collections.sort(exceptions);
@@ -2997,22 +2999,19 @@ public class ServiceBuilder {
 
 	private void _createExceptions(List<String> exceptions) throws Exception {
 		for (Entity entity : _entities) {
-			if (!_isTargetEntity(entity)) {
+			if (!_isTargetEntity(entity) || !entity.hasEntityColumns()) {
 				continue;
 			}
 
-			if (entity.hasEntityColumns()) {
-				if ((entity.hasExternalReferenceCode() ||
-					 entity.hasEntityColumn("externalReferenceCode")) &&
-					(entity.getVersionedEntity() == null)) {
+			if ((entity.hasExternalReferenceCode() ||
+				 entity.hasEntityColumn("externalReferenceCode")) &&
+				(entity.getVersionedEntity() == null)) {
 
-					exceptions.add(
-						getDuplicateEntityExternalReferenceCodeException(
-							entity));
-				}
-
-				exceptions.add(getNoSuchEntityException(entity));
+				exceptions.add(
+					getDuplicateEntityExternalReferenceCodeException(entity));
 			}
+
+			exceptions.add(getNoSuchEntityException(entity));
 		}
 
 		for (String exception : exceptions) {
@@ -3182,9 +3181,11 @@ public class ServiceBuilder {
 
 			String methodName = method.getName();
 
-			if (methodName.equals("getStagedModelType")) {
-				iterator.remove();
+			if (!methodName.equals("getStagedModelType")) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		JavaClass modelJavaClass = _getJavaClass(
@@ -3404,15 +3405,17 @@ public class ServiceBuilder {
 		boolean hasDeprecated = false;
 
 		for (Entity entity : _entities) {
-			if (entity.hasEntityColumns() &&
-				(entity.hasFinderClassName() || entity.hasPersistence())) {
+			if (!entity.hasEntityColumns() ||
+				(!entity.hasFinderClassName() && !entity.hasPersistence())) {
 
-				if (entity.isDeprecated()) {
-					hasDeprecated = true;
-				}
-				else {
-					entities.add(entity);
-				}
+				continue;
+			}
+
+			if (entity.isDeprecated()) {
+				hasDeprecated = true;
+			}
+			else {
+				entities.add(entity);
 			}
 		}
 
@@ -3540,9 +3543,11 @@ public class ServiceBuilder {
 		List<String> dbNames = new ArrayList<>();
 
 		for (EntityColumn entityColumn : entityColumns) {
-			if (entityColumn.isIndexable()) {
-				dbNames.add(entityColumn.getDBName());
+			if (!entityColumn.isIndexable()) {
+				continue;
 			}
+
+			dbNames.add(entityColumn.getDBName());
 		}
 
 		if (dbNames.isEmpty()) {
@@ -3887,9 +3892,11 @@ public class ServiceBuilder {
 		}
 
 		for (File oldFile : dir.listFiles()) {
-			if (!Objects.equals(file.getName(), oldFile.getName())) {
-				oldFile.delete();
+			if (Objects.equals(file.getName(), oldFile.getName())) {
+				continue;
 			}
+
+			oldFile.delete();
 		}
 	}
 
@@ -4349,9 +4356,11 @@ public class ServiceBuilder {
 					break;
 				}
 
-				if (Validator.isNotNull(sequenceSQL)) {
-					sequenceSQLs.add(sequenceSQL);
+				if (Validator.isNull(sequenceSQL)) {
+					continue;
 				}
+
+				sequenceSQLs.add(sequenceSQL);
 			}
 		}
 
@@ -4367,21 +4376,23 @@ public class ServiceBuilder {
 			List<EntityColumn> entityColumns = entity.getEntityColumns();
 
 			for (EntityColumn entityColumn : entityColumns) {
-				if (Objects.equals(entityColumn.getIdType(), "sequence")) {
-					StringBundler sb = new StringBundler(3);
-
-					String sequenceName = entityColumn.getIdParam();
-
-					if (sequenceName.length() > 30) {
-						sequenceName = sequenceName.substring(0, 30);
-					}
-
-					sb.append("create sequence ");
-					sb.append(sequenceName);
-					sb.append(";");
-
-					sequenceSQLs.add(sb.toString());
+				if (!Objects.equals(entityColumn.getIdType(), "sequence")) {
+					continue;
 				}
+
+				StringBundler sb = new StringBundler(3);
+
+				String sequenceName = entityColumn.getIdParam();
+
+				if (sequenceName.length() > 30) {
+					sequenceName = sequenceName.substring(0, 30);
+				}
+
+				sb.append("create sequence ");
+				sb.append(sequenceName);
+				sb.append(";");
+
+				sequenceSQLs.add(sb.toString());
 			}
 		}
 
@@ -4425,25 +4436,30 @@ public class ServiceBuilder {
 
 			String createTableSQL = _getCreateTableSQL(entity);
 
-			if (Validator.isNotNull(createTableSQL)) {
-				_createSQLTables(sqlFile, createTableSQL, entity, true);
+			if (Validator.isNull(createTableSQL)) {
+				continue;
+			}
 
-				if (GetterUtil.getBoolean(
-						_compatProperties.getProperty(
-							"update.sql.file.auto.update"))) {
+			_createSQLTables(sqlFile, createTableSQL, entity, true);
 
-					List<Path> updateSQLFilePaths = _getUpdateSQLFilePaths();
+			if (!GetterUtil.getBoolean(
+					_compatProperties.getProperty(
+						"update.sql.file.auto.update"))) {
 
-					for (Path updateSQLFilePath : updateSQLFilePaths) {
-						if ((updateSQLFilePath != null) &&
-							Files.exists(updateSQLFilePath)) {
+				continue;
+			}
 
-							_createSQLTables(
-								updateSQLFilePath.toFile(), createTableSQL,
-								entity, false);
-						}
-					}
+			List<Path> updateSQLFilePaths = _getUpdateSQLFilePaths();
+
+			for (Path updateSQLFilePath : updateSQLFilePaths) {
+				if ((updateSQLFilePath == null) ||
+					!Files.exists(updateSQLFilePath)) {
+
+					continue;
 				}
+
+				_createSQLTables(
+					updateSQLFilePath.toFile(), createTableSQL, entity, false);
 			}
 		}
 
@@ -4455,10 +4471,12 @@ public class ServiceBuilder {
 			String createMappingTableSQL = _getCreateMappingTableSQL(
 				entityMapping);
 
-			if (Validator.isNotNull(createMappingTableSQL)) {
-				_createSQLMappingTables(
-					sqlFile, createMappingTableSQL, entityMapping, true);
+			if (Validator.isNull(createMappingTableSQL)) {
+				continue;
 			}
+
+			_createSQLMappingTables(
+				sqlFile, createMappingTableSQL, entityMapping, true);
 		}
 
 		String content = _read(sqlFile);
@@ -4626,9 +4644,11 @@ public class ServiceBuilder {
 			String contentWithoutImport = StringUtil.removeSubstring(
 				content, importLine);
 
-			if (!contentWithoutImport.contains(simpleName)) {
-				content = contentWithoutImport;
+			if (contentWithoutImport.contains(simpleName)) {
+				continue;
 			}
+
+			content = contentWithoutImport;
 		}
 
 		File file = new File(
@@ -5315,9 +5335,11 @@ public class ServiceBuilder {
 		while (iterator.hasNext()) {
 			EntityColumn entityColumn = iterator.next();
 
-			if (!entityColumn.isLazy()) {
-				iterator.remove();
+			if (entityColumn.isLazy()) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return blobEntityColumns;
@@ -5366,9 +5388,11 @@ public class ServiceBuilder {
 
 			String colType = entityColumn.getType();
 
-			if (colType.equals("String")) {
-				columnLengths[i] = getMaxLength(entity.getName(), entityColumn);
+			if (!colType.equals("String")) {
+				continue;
 			}
+
+			columnLengths[i] = getMaxLength(entity.getName(), entityColumn);
 		}
 
 		return columnLengths;
@@ -5838,9 +5862,11 @@ public class ServiceBuilder {
 
 				sb.append(pk.getDBName());
 
-				if ((j + 1) != pkEntityColumns.size()) {
-					sb.append(", ");
+				if ((j + 1) == pkEntityColumns.size()) {
+					continue;
 				}
+
+				sb.append(", ");
 			}
 
 			if (entity.isChangeTrackingEnabled()) {
@@ -5863,19 +5889,23 @@ public class ServiceBuilder {
 		for (JavaMethod javaMethod : javaClass.getMethods(false)) {
 			String javaMethodName = javaMethod.getName();
 
-			if (javaMethodName.startsWith("delete")) {
-				List<JavaType> javaTypes = javaMethod.getParameterTypes();
-
-				if (javaTypes.size() == 1) {
-					JavaType parameterType = javaTypes.get(0);
-
-					if (StringUtil.equals(
-							parameterType.getValue(), entityName)) {
-
-						methodNames.add(javaMethodName);
-					}
-				}
+			if (!javaMethodName.startsWith("delete")) {
+				continue;
 			}
+
+			List<JavaType> javaTypes = javaMethod.getParameterTypes();
+
+			if (javaTypes.size() != 1) {
+				continue;
+			}
+
+			JavaType parameterType = javaTypes.get(0);
+
+			if (!StringUtil.equals(parameterType.getValue(), entityName)) {
+				continue;
+			}
+
+			methodNames.add(javaMethodName);
 		}
 
 		String deleteEntityMethodName = "delete" + entityName;
@@ -5945,13 +5975,15 @@ public class ServiceBuilder {
 		for (EntityFinder entityFinder : entity.getEntityFinders()) {
 			String where = entityFinder.getWhere();
 
-			if (Validator.isNotNull(where)) {
-				EntityFinderWhereClause entityFinderWhereClause =
-					entityFinderWhereClauses.computeIfAbsent(
-						where, key -> new EntityFinderWhereClause(entity, key));
-
-				entityFinderWhereClause.addEntityFinder(entityFinder);
+			if (Validator.isNull(where)) {
+				continue;
 			}
+
+			EntityFinderWhereClause entityFinderWhereClause =
+				entityFinderWhereClauses.computeIfAbsent(
+					where, key -> new EntityFinderWhereClause(entity, key));
+
+			entityFinderWhereClause.addEntityFinder(entityFinder);
 		}
 
 		return entityFinderWhereClauses;
@@ -6167,9 +6199,11 @@ public class ServiceBuilder {
 		}
 
 		for (JavaMethod javaMethod : javaClass.getMethods(false)) {
-			if (!cacheFieldMethods.contains(javaMethod.getName())) {
-				methods.add(javaMethod);
+			if (cacheFieldMethods.contains(javaMethod.getName())) {
+				continue;
 			}
+
+			methods.add(javaMethod);
 		}
 
 		return methods;
@@ -6187,11 +6221,13 @@ public class ServiceBuilder {
 		}
 
 		for (JavaMethod method : interfaceJavaClass.getMethods(true)) {
-			if (method.isDefault() &&
-				seenSignatures.add(_getMethodSignature(method, true))) {
+			if (!method.isDefault() ||
+				!seenSignatures.add(_getMethodSignature(method, true))) {
 
-				methods.add(method);
+				continue;
 			}
+
+			methods.add(method);
 		}
 
 		return methods;
@@ -6271,27 +6307,30 @@ public class ServiceBuilder {
 		while (!matcher.hitEnd()) {
 			boolean found = matcher.find();
 
-			if (found) {
-				String property = matcher.group();
-
-				if (property.contains("get")) {
-					property = property.substring(
-						property.indexOf("get") + 3, property.length() - 1);
-				}
-				else {
-					property = property.substring(
-						property.indexOf("is") + 2, property.length() - 1);
-				}
-
-				if (!entity.hasEntityColumn(property) &&
-					!entity.hasEntityColumn(
-						Introspector.decapitalize(property))) {
-
-					property = Introspector.decapitalize(property);
-
-					getters.add(property);
-				}
+			if (!found) {
+				continue;
 			}
+
+			String property = matcher.group();
+
+			if (property.contains("get")) {
+				property = property.substring(
+					property.indexOf("get") + 3, property.length() - 1);
+			}
+			else {
+				property = property.substring(
+					property.indexOf("is") + 2, property.length() - 1);
+			}
+
+			if (entity.hasEntityColumn(property) ||
+				entity.hasEntityColumn(Introspector.decapitalize(property))) {
+
+				continue;
+			}
+
+			property = Introspector.decapitalize(property);
+
+			getters.add(property);
 		}
 
 		matcher = _setterPattern.matcher(content);
@@ -6301,21 +6340,24 @@ public class ServiceBuilder {
 		while (!matcher.hitEnd()) {
 			boolean found = matcher.find();
 
-			if (found) {
-				String property = matcher.group();
-
-				property = property.substring(
-					property.indexOf("set") + 3, property.length() - 1);
-
-				if (!entity.hasEntityColumn(property) &&
-					!entity.hasEntityColumn(
-						Introspector.decapitalize(property))) {
-
-					property = Introspector.decapitalize(property);
-
-					setters.add(property);
-				}
+			if (!found) {
+				continue;
 			}
+
+			String property = matcher.group();
+
+			property = property.substring(
+				property.indexOf("set") + 3, property.length() - 1);
+
+			if (entity.hasEntityColumn(property) ||
+				entity.hasEntityColumn(Introspector.decapitalize(property))) {
+
+				continue;
+			}
+
+			property = Introspector.decapitalize(property);
+
+			setters.add(property);
 		}
 
 		getters.retainAll(setters);
@@ -7075,14 +7117,16 @@ public class ServiceBuilder {
 
 			entityColumns.add(entityColumn);
 
-			if (Validator.isNotNull(columnEntityName) &&
-				Validator.isNotNull(mappingTableName)) {
+			if (Validator.isNull(columnEntityName) ||
+				Validator.isNull(mappingTableName)) {
 
-				EntityMapping entityMapping = new EntityMapping(
-					mappingTableName, entityName, columnEntityName);
-
-				_entityMappings.putIfAbsent(mappingTableName, entityMapping);
+				continue;
 			}
+
+			EntityMapping entityMapping = new EntityMapping(
+				mappingTableName, entityName, columnEntityName);
+
+			_entityMappings.putIfAbsent(mappingTableName, entityMapping);
 		}
 
 		if (uuid && pkEntityColumns.isEmpty()) {
@@ -8039,26 +8083,30 @@ public class ServiceBuilder {
 		for (Element columnElement : columnElements) {
 			String name = columnElement.attributeValue("name");
 
-			if (!name.equals("mvccVersion") && !name.equals("headId") &&
-				(!name.equals("ctCollectionId") ||
-				 !entity.isChangeTrackingEnabled())) {
+			if (name.equals("mvccVersion") || name.equals("headId") ||
+				(name.equals("ctCollectionId") &&
+				 entity.isChangeTrackingEnabled())) {
 
-				versionEntityColumnElement = versionEntityElement.addElement(
-					"column");
+				continue;
+			}
 
-				List<Attribute> columnAttributes = columnElement.attributes();
+			versionEntityColumnElement = versionEntityElement.addElement(
+				"column");
 
-				for (Attribute attribute : columnAttributes) {
-					String attributeName = attribute.getName();
+			List<Attribute> columnAttributes = columnElement.attributes();
 
-					if (!attributeName.equals("primary") &&
-						!attributeName.equals("uad-anonymize-field-name") &&
-						!attributeName.equals("uad-nonanonymizable")) {
+			for (Attribute attribute : columnAttributes) {
+				String attributeName = attribute.getName();
 
-						versionEntityColumnElement.addAttribute(
-							attributeName, attribute.getValue());
-					}
+				if (attributeName.equals("primary") ||
+					attributeName.equals("uad-anonymize-field-name") ||
+					attributeName.equals("uad-nonanonymizable")) {
+
+					continue;
 				}
+
+				versionEntityColumnElement.addAttribute(
+					attributeName, attribute.getValue());
 			}
 		}
 

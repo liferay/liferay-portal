@@ -236,9 +236,11 @@ public class ExpandoUserFieldExpressionHandler
 				_expandoColumnLocalService.getDefaultTableColumns(
 					CompanyThreadLocal.getCompanyId(), User.class.getName())) {
 
-			if (types.contains(column.getType())) {
-				validExpressions.add(column.getName());
+			if (!types.contains(column.getType())) {
+				continue;
 			}
+
+			validExpressions.add(column.getName());
 		}
 
 		return Collections.unmodifiableList(validExpressions);

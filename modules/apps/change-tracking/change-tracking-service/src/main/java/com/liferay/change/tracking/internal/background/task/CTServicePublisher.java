@@ -328,12 +328,14 @@ public class CTServicePublisher<T extends CTModel<T>> {
 
 				preparedStatement.addBatch();
 
-				if (++batchCount >= PropsValues.HIBERNATE_JDBC_BATCH_SIZE) {
-					batchCount = 0;
+				if (++batchCount < PropsValues.HIBERNATE_JDBC_BATCH_SIZE) {
+					continue;
+				}
 
-					for (int rowCount : preparedStatement.executeBatch()) {
-						totalRowCount += rowCount;
-					}
+				batchCount = 0;
+
+				for (int rowCount : preparedStatement.executeBatch()) {
+					totalRowCount += rowCount;
 				}
 			}
 

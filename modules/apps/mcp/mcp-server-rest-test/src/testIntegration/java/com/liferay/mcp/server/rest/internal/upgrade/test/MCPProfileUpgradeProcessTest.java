@@ -438,12 +438,14 @@ public class MCPProfileUpgradeProcessTest {
 					for (UpgradeStep upgradeStep : upgradeSteps) {
 						Class<?> clazz = upgradeStep.getClass();
 
-						if (Objects.equals(
+						if (!Objects.equals(
 								clazz.getSimpleName(),
 								"MCPProfileUpgradeProcess")) {
 
-							versionedUpgradeSteps.add(upgradeStep);
+							continue;
 						}
+
+						versionedUpgradeSteps.add(upgradeStep);
 					}
 				}
 

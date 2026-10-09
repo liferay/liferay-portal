@@ -490,9 +490,11 @@ public class CISystemStatusReportUtil {
 					continue;
 				}
 
-				if (topLevelResult.equals("APPROVED")) {
-					unstableBuilds++;
+				if (!topLevelResult.equals("APPROVED")) {
+					continue;
 				}
+
+				unstableBuilds++;
 			}
 
 			datesJSONArray.put(localDate.toString());
@@ -602,9 +604,11 @@ public class CISystemStatusReportUtil {
 					continue;
 				}
 
-				if (topLevelResult.equals("APPROVED")) {
-					unstableBuilds++;
+				if (!topLevelResult.equals("APPROVED")) {
+					continue;
 				}
+
+				unstableBuilds++;
 			}
 		}
 

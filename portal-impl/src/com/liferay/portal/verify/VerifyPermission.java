@@ -109,11 +109,13 @@ public class VerifyPermission extends VerifyProcess {
 
 						long organizationBitwiseValue = entry.getKey();
 
-						if ((oldActionIds & organizationBitwiseValue) != 0) {
-							long groupBitwiseValue = entry.getValue();
-
-							newGroupActionIds |= groupBitwiseValue;
+						if ((oldActionIds & organizationBitwiseValue) == 0) {
+							continue;
 						}
+
+						long groupBitwiseValue = entry.getValue();
+
+						newGroupActionIds |= groupBitwiseValue;
 					}
 
 					ResourcePermission groupResourcePermission =
@@ -351,20 +353,24 @@ public class VerifyPermission extends VerifyProcess {
 				ResourceActionLocalServiceUtil.fetchResourceAction(
 					Organization.class.getName(), actionId);
 
-			if (organizationResourceAction != null) {
-				deprecatedOrganizationBitwiseValues |=
-					organizationResourceAction.getBitwiseValue();
-
-				ResourceAction groupResourceAction =
-					ResourceActionLocalServiceUtil.fetchResourceAction(
-						Group.class.getName(), actionId);
-
-				if (groupResourceAction != null) {
-					_organizationToGroupBitwiseValues.put(
-						organizationResourceAction.getBitwiseValue(),
-						groupResourceAction.getBitwiseValue());
-				}
+			if (organizationResourceAction == null) {
+				continue;
 			}
+
+			deprecatedOrganizationBitwiseValues |=
+				organizationResourceAction.getBitwiseValue();
+
+			ResourceAction groupResourceAction =
+				ResourceActionLocalServiceUtil.fetchResourceAction(
+					Group.class.getName(), actionId);
+
+			if (groupResourceAction == null) {
+				continue;
+			}
+
+			_organizationToGroupBitwiseValues.put(
+				organizationResourceAction.getBitwiseValue(),
+				groupResourceAction.getBitwiseValue());
 		}
 
 		_DEPRECATED_ORGANIZATION_BITWISE_VALUES =

@@ -90,9 +90,11 @@ public class UpgradePortletPreferences
 
 			portletPreferences.reset(oldName);
 
-			if (newName != null) {
-				portletPreferences.setValues(newName, entry.getValue());
+			if (newName == null) {
+				continue;
 			}
+
+			portletPreferences.setValues(newName, entry.getValue());
 		}
 
 		Map<String, String> defaultPreferencesMap = _getDefaultPreferencesMap(
@@ -103,10 +105,12 @@ public class UpgradePortletPreferences
 
 			String name = entry.getKey();
 
-			if (portletPreferences.getValues(name, null) == null) {
-				portletPreferences.setValues(
-					name, StringUtil.split(entry.getValue()));
+			if (portletPreferences.getValues(name, null) != null) {
+				continue;
 			}
+
+			portletPreferences.setValues(
+				name, StringUtil.split(entry.getValue()));
 		}
 
 		return PortletPreferencesFactoryUtil.toXML(portletPreferences);

@@ -84,9 +84,11 @@ public class DDMStructureIndexTypeUpgradeProcess extends UpgradeProcess {
 			for (int i = 0; i < fieldsJSONArray.length(); i++) {
 				JSONObject jsonObject = fieldsJSONArray.getJSONObject(i);
 
-				if (!jsonObject.has("indexType")) {
-					jsonObject.put("indexType", "text");
+				if (jsonObject.has("indexType")) {
+					continue;
 				}
+
+				jsonObject.put("indexType", "text");
 			}
 
 			return definitionJSONObject.toString();

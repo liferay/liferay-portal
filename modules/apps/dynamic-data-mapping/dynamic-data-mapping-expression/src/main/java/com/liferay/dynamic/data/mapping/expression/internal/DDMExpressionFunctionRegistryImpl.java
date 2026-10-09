@@ -41,10 +41,12 @@ public class DDMExpressionFunctionRegistryImpl
 			DDMExpressionFunction ddmExpressionFunction =
 				ddmExpressionFunctionFactory.create();
 
-			if (ddmExpressionFunction.isCustomDDMExpressionFunction()) {
-				customDDMExpressionFunctions.put(
-					ddmExpressionFunction.getName(), ddmExpressionFunction);
+			if (!ddmExpressionFunction.isCustomDDMExpressionFunction()) {
+				continue;
 			}
+
+			customDDMExpressionFunctions.put(
+				ddmExpressionFunction.getName(), ddmExpressionFunction);
 		}
 
 		return customDDMExpressionFunctions;
@@ -61,10 +63,12 @@ public class DDMExpressionFunctionRegistryImpl
 			DDMExpressionFunctionFactory ddmExpressionFunctionFactory =
 				_serviceTrackerMap.getService(functionName);
 
-			if (ddmExpressionFunctionFactory != null) {
-				ddmExpressionFunctionFactories.put(
-					functionName, ddmExpressionFunctionFactory);
+			if (ddmExpressionFunctionFactory == null) {
+				continue;
 			}
+
+			ddmExpressionFunctionFactories.put(
+				functionName, ddmExpressionFunctionFactory);
 		}
 
 		return ddmExpressionFunctionFactories;

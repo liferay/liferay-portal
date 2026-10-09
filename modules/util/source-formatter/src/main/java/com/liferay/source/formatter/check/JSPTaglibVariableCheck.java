@@ -142,24 +142,26 @@ public class JSPTaglibVariableCheck extends BaseJSPTermsCheck {
 				Set<String> checkedFileNames = new HashSet<>();
 				Set<String> includeFileNames = new HashSet<>();
 
-				if (hasUnusedJSPTerm(
+				if (!hasUnusedJSPTerm(
 						fileName, newContent, "\\W" + variableName + "\\W",
 						getLineNumber(newContent, y), "variable",
 						checkedFileNames, includeFileNames, getContentsMap())) {
 
-					if (!taglibValue.contains("\n")) {
-						return StringUtil.replaceFirst(
-							newContent, variableDefinition + ";\n",
-							StringPool.BLANK, matcher.start());
-					}
-
-					addMessage(
-						fileName,
-						StringBundler.concat(
-							"No need to declare variable \"", variableName,
-							"\", inline inside the tag."),
-						getLineNumber(content, matcher.start(4)));
+					continue;
 				}
+
+				if (!taglibValue.contains("\n")) {
+					return StringUtil.replaceFirst(
+						newContent, variableDefinition + ";\n",
+						StringPool.BLANK, matcher.start());
+				}
+
+				addMessage(
+					fileName,
+					StringBundler.concat(
+						"No need to declare variable \"", variableName,
+						"\", inline inside the tag."),
+					getLineNumber(content, matcher.start(4)));
 			}
 		}
 
@@ -184,9 +186,11 @@ public class JSPTaglibVariableCheck extends BaseJSPTermsCheck {
 				continue;
 			}
 
-			if (isJavaSource(content, x, true)) {
-				count++;
+			if (!isJavaSource(content, x, true)) {
+				continue;
 			}
+
+			count++;
 		}
 
 		return count;

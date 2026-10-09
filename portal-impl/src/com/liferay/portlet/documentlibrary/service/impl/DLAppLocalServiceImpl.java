@@ -455,11 +455,13 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 			RepositoryProviderUtil.getGroupLocalRepositories(groupId);
 
 		for (LocalRepository localRepository : localRepositories) {
-			if (localRepository.getRepositoryId() !=
+			if (localRepository.getRepositoryId() ==
 					groupLocalRepository.getRepositoryId()) {
 
-				deleteRepository(localRepository);
+				continue;
 			}
+
+			deleteRepository(localRepository);
 		}
 	}
 

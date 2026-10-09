@@ -143,22 +143,21 @@ public class SummaryBuilderImpl implements SummaryBuilder {
 
 			int openTagIndex = openTagIndexes.get(i);
 
-			if (openTagIndex < textEndIndex) {
-				text = StringUtil.insert(
-					text, HighlightUtil.HIGHLIGHT_TAG_OPEN, openTagIndex);
-
-				textEndIndex =
-					textEndIndex + HighlightUtil.HIGHLIGHT_TAG_OPEN.length();
-
-				int closeTagIndex = closeTagIndexes.get(i);
-
-				text = StringUtil.insert(
-					text, HighlightUtil.HIGHLIGHT_TAG_CLOSE,
-					Math.min(closeTagIndex, textEndIndex));
-			}
-			else {
+			if (openTagIndex >= textEndIndex) {
 				break;
 			}
+
+			text = StringUtil.insert(
+				text, HighlightUtil.HIGHLIGHT_TAG_OPEN, openTagIndex);
+
+			textEndIndex =
+				textEndIndex + HighlightUtil.HIGHLIGHT_TAG_OPEN.length();
+
+			int closeTagIndex = closeTagIndexes.get(i);
+
+			text = StringUtil.insert(
+				text, HighlightUtil.HIGHLIGHT_TAG_CLOSE,
+				Math.min(closeTagIndex, textEndIndex));
 		}
 
 		return text;

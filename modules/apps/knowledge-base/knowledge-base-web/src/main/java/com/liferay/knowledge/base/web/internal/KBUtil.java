@@ -78,9 +78,11 @@ public class KBUtil {
 		while (iterator.hasNext()) {
 			KBFolder kbFolder = iterator.next();
 
-			if (kbFolder.isEmpty()) {
-				iterator.remove();
+			if (!kbFolder.isEmpty()) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return ListUtil.sort(

@@ -39,20 +39,20 @@ public class AMPropertyDistanceComparator
 			Object value1 = adaptiveMedia1.getValue(amAttribute);
 			Object value2 = adaptiveMedia2.getValue(amAttribute);
 
-			if ((value1 != null) && (value2 != null)) {
-				Object requestedValue = entry.getValue();
+			if ((value1 == null) || (value2 == null)) {
+				continue;
+			}
 
-				long valueDistance1 = amAttribute.distance(
-					value1, requestedValue);
+			Object requestedValue = entry.getValue();
 
-				long valueDistance2 = amAttribute.distance(
-					value2, requestedValue);
+			long valueDistance1 = amAttribute.distance(value1, requestedValue);
 
-				long result = valueDistance1 - valueDistance2;
+			long valueDistance2 = amAttribute.distance(value2, requestedValue);
 
-				if (result != 0) {
-					return result;
-				}
+			long result = valueDistance1 - valueDistance2;
+
+			if (result != 0) {
+				return result;
 			}
 		}
 

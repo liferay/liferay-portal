@@ -162,11 +162,13 @@ public class RoleDTOConverter
 							long bitwiseValue =
 								actionIds & resourceAction.getBitwiseValue();
 
-							if (bitwiseValue ==
+							if (bitwiseValue !=
 									resourceAction.getBitwiseValue()) {
 
-								actionIdsSet.add(resourceAction.getActionId());
+								continue;
 							}
+
+							actionIdsSet.add(resourceAction.getActionId());
 						}
 
 						return actionIdsSet.toArray(new String[0]);

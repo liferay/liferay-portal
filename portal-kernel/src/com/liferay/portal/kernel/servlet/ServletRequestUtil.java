@@ -28,16 +28,17 @@ public class ServletRequestUtil {
 				_log.info("Request class " + clazz.getName());
 			}
 
-			if (tempHttpServletRequest instanceof HttpServletRequestWrapper) {
-				HttpServletRequestWrapper requestWrapper =
-					(HttpServletRequestWrapper)tempHttpServletRequest;
+			if (!(tempHttpServletRequest instanceof
+					HttpServletRequestWrapper)) {
 
-				tempHttpServletRequest =
-					(HttpServletRequest)requestWrapper.getRequest();
-			}
-			else {
 				break;
 			}
+
+			HttpServletRequestWrapper requestWrapper =
+				(HttpServletRequestWrapper)tempHttpServletRequest;
+
+			tempHttpServletRequest =
+				(HttpServletRequest)requestWrapper.getRequest();
 		}
 	}
 

@@ -362,9 +362,11 @@ public class DefaultAttributeResolver implements AttributeResolver {
 						organizations);
 
 				for (Group group : organizationsRelatedGroups) {
-					if (!inheritedSiteGroups.contains(group)) {
-						inheritedSiteGroups.add(group);
+					if (inheritedSiteGroups.contains(group)) {
+						continue;
 					}
+
+					inheritedSiteGroups.add(group);
 				}
 			}
 
@@ -383,10 +385,12 @@ public class DefaultAttributeResolver implements AttributeResolver {
 			uniqueRoles.addAll(roles);
 
 			for (Group group : allGroups) {
-				if (_roleLocalService.hasGroupRoles(group.getGroupId())) {
-					uniqueRoles.addAll(
-						_roleLocalService.getGroupRoles(group.getGroupId()));
+				if (!_roleLocalService.hasGroupRoles(group.getGroupId())) {
+					continue;
 				}
+
+				uniqueRoles.addAll(
+					_roleLocalService.getGroupRoles(group.getGroupId()));
 			}
 
 			if (uniqueRoles.isEmpty()) {

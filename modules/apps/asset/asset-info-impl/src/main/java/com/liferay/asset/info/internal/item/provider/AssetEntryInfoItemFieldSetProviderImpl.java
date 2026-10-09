@@ -301,11 +301,13 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 				_assetVocabularyLocalService.fetchAssetVocabulary(
 					assetCategory.getVocabularyId());
 
-			if (!(assetVocabulary.getVisibilityType() ==
-					AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL)) {
+			if (assetVocabulary.getVisibilityType() ==
+					AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL) {
 
-				assetVocabularies.add(assetVocabulary);
+				continue;
 			}
+
+			assetVocabularies.add(assetVocabulary);
 		}
 
 		return assetVocabularies;

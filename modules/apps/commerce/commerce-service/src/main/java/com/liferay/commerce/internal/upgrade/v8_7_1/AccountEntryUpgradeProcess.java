@@ -105,27 +105,29 @@ public class AccountEntryUpgradeProcess extends UpgradeProcess {
 				Address shippingAddress = _addressLocalService.fetchAddress(
 					defaultShippingAddressId);
 
-				if (shippingAddress != null) {
-					CommerceChannelAccountEntryRel
-						existingCommerceChannelAccountEntryRel =
-							_commerceChannelAccountEntryRelLocalService.
-								fetchCommerceChannelAccountEntryRel(
-									accountEntryId, Address.class.getName(),
-									shippingAddress.getAddressId(), 0,
-									CommerceChannelAccountEntryRelConstants.
-										TYPE_SHIPPING_ADDRESS);
-
-					if (existingCommerceChannelAccountEntryRel != null) {
-						continue;
-					}
-
-					_commerceChannelAccountEntryRelLocalService.
-						addCommerceChannelAccountEntryRel(
-							userId, accountEntryId, Address.class.getName(),
-							shippingAddress.getAddressId(), 0, false, 0,
-							CommerceChannelAccountEntryRelConstants.
-								TYPE_SHIPPING_ADDRESS);
+				if (shippingAddress == null) {
+					continue;
 				}
+
+				CommerceChannelAccountEntryRel
+					existingCommerceChannelAccountEntryRel =
+						_commerceChannelAccountEntryRelLocalService.
+							fetchCommerceChannelAccountEntryRel(
+								accountEntryId, Address.class.getName(),
+								shippingAddress.getAddressId(), 0,
+								CommerceChannelAccountEntryRelConstants.
+									TYPE_SHIPPING_ADDRESS);
+
+				if (existingCommerceChannelAccountEntryRel != null) {
+					continue;
+				}
+
+				_commerceChannelAccountEntryRelLocalService.
+					addCommerceChannelAccountEntryRel(
+						userId, accountEntryId, Address.class.getName(),
+						shippingAddress.getAddressId(), 0, false, 0,
+						CommerceChannelAccountEntryRelConstants.
+							TYPE_SHIPPING_ADDRESS);
 			}
 		}
 	}
@@ -163,15 +165,17 @@ public class AccountEntryUpgradeProcess extends UpgradeProcess {
 					_commerceTermEntryLocalService.fetchCommerceTermEntry(
 						defaultPaymentCTermEntryId);
 
-				if (paymentCommerceTermEntry != null) {
-					_commerceChannelAccountEntryRelLocalService.
-						addCommerceChannelAccountEntryRel(
-							userId, accountEntryId,
-							CommerceTermEntry.class.getName(),
-							defaultPaymentCTermEntryId, 0, false, 0,
-							CommerceChannelAccountEntryRelConstants.
-								TYPE_PAYMENT_TERM);
+				if (paymentCommerceTermEntry == null) {
+					continue;
 				}
+
+				_commerceChannelAccountEntryRelLocalService.
+					addCommerceChannelAccountEntryRel(
+						userId, accountEntryId,
+						CommerceTermEntry.class.getName(),
+						defaultPaymentCTermEntryId, 0, false, 0,
+						CommerceChannelAccountEntryRelConstants.
+							TYPE_PAYMENT_TERM);
 			}
 		}
 	}

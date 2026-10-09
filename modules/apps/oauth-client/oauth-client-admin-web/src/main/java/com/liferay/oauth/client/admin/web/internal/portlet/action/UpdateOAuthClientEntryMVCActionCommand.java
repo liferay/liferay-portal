@@ -117,9 +117,11 @@ public class UpdateOAuthClientEntryMVCActionCommand
 			String value = ParamUtil.getString(
 				actionRequest, "customClaimsValue-" + index);
 
-			if (Validator.isNotNull(key) && Validator.isNotNull(value)) {
-				jsonObject.put(key, value);
+			if (Validator.isNull(key) || Validator.isNull(value)) {
+				continue;
 			}
+
+			jsonObject.put(key, value);
 		}
 
 		return jsonObject.toString();

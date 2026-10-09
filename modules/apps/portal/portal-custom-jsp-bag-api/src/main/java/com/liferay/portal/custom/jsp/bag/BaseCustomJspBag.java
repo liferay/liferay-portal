@@ -77,9 +77,11 @@ public abstract class BaseCustomJspBag implements CustomJspBag {
 			Set<String> paths = new HashSet<>();
 
 			for (String customJsp : _customJsps) {
-				if (customJsp.startsWith(path)) {
-					paths.add(customJsp);
+				if (!customJsp.startsWith(path)) {
+					continue;
 				}
+
+				paths.add(customJsp);
 			}
 
 			return paths;

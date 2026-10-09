@@ -353,13 +353,11 @@ public class UserGroupFinderImpl
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 			String key = entry.getKey();
 
-			if (!_isFinderParam(key)) {
+			if (!_isFinderParam(key) || Validator.isNull(entry.getValue())) {
 				continue;
 			}
 
-			if (Validator.isNotNull(entry.getValue())) {
-				sb.append(getJoin(key));
-			}
+			sb.append(getJoin(key));
 		}
 
 		return sb.toString();
@@ -421,9 +419,11 @@ public class UserGroupFinderImpl
 
 			Object value = entry.getValue();
 
-			if (Validator.isNotNull(value)) {
-				sb.append(getWhere(key, value));
+			if (Validator.isNull(value)) {
+				continue;
 			}
+
+			sb.append(getWhere(key, value));
 		}
 
 		return sb.toString();
@@ -458,9 +458,11 @@ public class UserGroupFinderImpl
 					for (int i = 0; i < userGroupIds.length; i++) {
 						sb.append("(Groups_UserGroups.groupId = ?) ");
 
-						if ((i + 1) < userGroupIds.length) {
-							sb.append("OR ");
+						if ((i + 1) >= userGroupIds.length) {
+							continue;
 						}
+
+						sb.append("OR ");
 					}
 
 					sb.append(StringPool.CLOSE_PARENTHESIS);
@@ -526,9 +528,11 @@ public class UserGroupFinderImpl
 				Long[] valueArray = (Long[])value;
 
 				for (Long curValue : valueArray) {
-					if (Validator.isNotNull(curValue)) {
-						queryPos.add(curValue);
+					if (Validator.isNull(curValue)) {
+						continue;
 					}
+
+					queryPos.add(curValue);
 				}
 			}
 			else if (value instanceof String) {

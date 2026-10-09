@@ -610,9 +610,11 @@ public class SitesImpl implements Sites {
 				_layoutSetLocalService.getLayoutSetsByLayoutSetPrototypeUuid(
 					layoutSetPrototype.getUuid())) {
 
-			if (isLayoutSetMergeable(layoutSet)) {
-				mergeableLayoutSets.add(layoutSet);
+			if (!isLayoutSetMergeable(layoutSet)) {
+				continue;
 			}
+
+			mergeableLayoutSets.add(layoutSet);
 		}
 
 		Map<Long, ExportImportConfiguration> exportImportConfigurations =

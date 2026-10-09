@@ -453,9 +453,11 @@ public class DropZoneFragmentEntryLinkListenerTest {
 
 			String itemId = dropZoneIdItemIdKeyValuePairs[i].getValue();
 
-			if (!Validator.isBlank(itemId)) {
-				Assert.assertEquals(itemId, layoutStructureItem.getItemId());
+			if (Validator.isBlank(itemId)) {
+				continue;
 			}
+
+			Assert.assertEquals(itemId, layoutStructureItem.getItemId());
 		}
 
 		for (String deletedItemId : deletedItemIds) {

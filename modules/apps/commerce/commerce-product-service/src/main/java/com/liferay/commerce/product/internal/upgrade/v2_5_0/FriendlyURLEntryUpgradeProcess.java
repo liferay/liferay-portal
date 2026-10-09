@@ -118,29 +118,30 @@ public class FriendlyURLEntryUpgradeProcess extends UpgradeProcess {
 					_getFriendlyURLEntryLocalizationId(
 						languageId, classNameId, classPK);
 
-				if (friendlyURLEntryLocalizationId <= 0) {
-					friendlyURLEntryLocalizationId = increment();
-
-					preparedStatement3.setLong(1, 0);
-					preparedStatement3.setLong(
-						2, friendlyURLEntryLocalizationId);
-					preparedStatement3.setLong(3, companyId);
-					preparedStatement3.setLong(4, friendlyURLEntryId);
-					preparedStatement3.setString(5, languageId);
-
-					String urlTitle = resultSet.getString("urlTitle");
-
-					urlTitle = _getUniqueURLTitle(
-						group.getGroupId(), classNameId, urlTitle);
-
-					preparedStatement3.setString(6, urlTitle);
-
-					preparedStatement3.setLong(7, group.getGroupId());
-					preparedStatement3.setLong(8, classNameId);
-					preparedStatement3.setLong(9, classPK);
-
-					preparedStatement3.execute();
+				if (friendlyURLEntryLocalizationId > 0) {
+					continue;
 				}
+
+				friendlyURLEntryLocalizationId = increment();
+
+				preparedStatement3.setLong(1, 0);
+				preparedStatement3.setLong(2, friendlyURLEntryLocalizationId);
+				preparedStatement3.setLong(3, companyId);
+				preparedStatement3.setLong(4, friendlyURLEntryId);
+				preparedStatement3.setString(5, languageId);
+
+				String urlTitle = resultSet.getString("urlTitle");
+
+				urlTitle = _getUniqueURLTitle(
+					group.getGroupId(), classNameId, urlTitle);
+
+				preparedStatement3.setString(6, urlTitle);
+
+				preparedStatement3.setLong(7, group.getGroupId());
+				preparedStatement3.setLong(8, classNameId);
+				preparedStatement3.setLong(9, classPK);
+
+				preparedStatement3.execute();
 			}
 		}
 	}

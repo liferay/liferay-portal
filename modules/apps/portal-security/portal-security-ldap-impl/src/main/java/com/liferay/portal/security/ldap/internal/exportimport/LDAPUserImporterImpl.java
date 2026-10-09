@@ -839,19 +839,21 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			userGroupId);
 
 		for (User user : userGroupUsers) {
-			if ((ldapImportContext.getLdapServerId() ==
-					user.getLdapServerId()) &&
-				!newUserIds.contains(user.getUserId())) {
+			if ((ldapImportContext.getLdapServerId() !=
+					user.getLdapServerId()) ||
+				newUserIds.contains(user.getUserId())) {
 
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						StringBundler.concat(
-							"Removing user ", user, " from user group ",
-							userGroupId));
-				}
-
-				deletedUserIds.add(user.getUserId());
+				continue;
 			}
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Removing user ", user, " from user group ",
+						userGroupId));
+			}
+
+			deletedUserIds.add(user.getUserId());
 		}
 
 		_userLocalService.addUserGroupUsers(
@@ -1655,42 +1657,41 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 
 			String name = expandoAttribute.getKey();
 
-			if (!expandoBridge.hasAttribute(name)) {
+			if (!expandoBridge.hasAttribute(name) ||
+				!expandoMappings.containsKey(name) ||
+				ldapUserIgnoreAttributes.contains(name)) {
+
 				continue;
 			}
 
-			if (expandoMappings.containsKey(name) &&
-				!ldapUserIgnoreAttributes.contains(name)) {
+			int type = expandoBridge.getAttributeType(name);
 
-				int type = expandoBridge.getAttributeType(name);
+			Serializable value =
+				ExpandoConverterUtil.getAttributeFromStringArray(
+					type, expandoAttribute.getValue());
 
-				Serializable value =
-					ExpandoConverterUtil.getAttributeFromStringArray(
-						type, expandoAttribute.getValue());
+			if ((type == ExpandoColumnConstants.STRING_LOCALIZED) &&
+				(value != null)) {
 
-				if ((type == ExpandoColumnConstants.STRING_LOCALIZED) &&
-					(value != null)) {
+				ExpandoValue existingValue =
+					_expandoValueLocalService.fetchValue(
+						expandoBridge.getCompanyId(),
+						expandoBridge.getClassName(),
+						ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
+						expandoBridge.getClassPK());
 
-					ExpandoValue existingValue =
-						_expandoValueLocalService.fetchValue(
-							expandoBridge.getCompanyId(),
-							expandoBridge.getClassName(),
-							ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
-							expandoBridge.getClassPK());
+				if (existingValue != null) {
+					Map<Locale, String> existingValuesMap =
+						_localization.getLocalizationMap(
+							existingValue.getData());
 
-					if (existingValue != null) {
-						Map<Locale, String> existingValuesMap =
-							_localization.getLocalizationMap(
-								existingValue.getData());
+					existingValuesMap.putAll((Map<Locale, String>)value);
 
-						existingValuesMap.putAll((Map<Locale, String>)value);
-
-						value = (Serializable)existingValuesMap;
-					}
+					value = (Serializable)existingValuesMap;
 				}
-
-				serializedExpandoAttributes.put(name, value);
 			}
+
+			serializedExpandoAttributes.put(name, value);
 		}
 
 		if (serializedExpandoAttributes.isEmpty()) {
@@ -1741,11 +1742,13 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 				mappingPropertyName = ContactConverterKeys.SUFFIX;
 			}
 
-			if (!contactMappings.containsKey(mappingPropertyName) ||
-				ldapUserIgnoreAttributes.contains(propertyName)) {
+			if (contactMappings.containsKey(mappingPropertyName) &&
+				!ldapUserIgnoreAttributes.contains(propertyName)) {
 
-				_setProperty(ldapContact, contact, propertyName);
+				continue;
 			}
+
+			_setProperty(ldapContact, contact, propertyName);
 		}
 
 		for (String propertyName : _USER_PROPERTY_NAMES) {
@@ -1755,11 +1758,13 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 				mappingPropertyName = UserConverterKeys.PORTRAIT;
 			}
 
-			if (!userMappings.containsKey(mappingPropertyName) ||
-				ldapUserIgnoreAttributes.contains(propertyName)) {
+			if (userMappings.containsKey(mappingPropertyName) &&
+				!ldapUserIgnoreAttributes.contains(propertyName)) {
 
-				_setProperty(ldapUser, user, propertyName);
+				continue;
 			}
+
+			_setProperty(ldapUser, user, propertyName);
 		}
 	}
 
@@ -2033,25 +2038,30 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 		for (UserGroup userGroup :
 				_userGroupLocalService.getUserUserGroups(userId)) {
 
-			if (userGroup.isAddedByLDAPImport()) {
-				long userGroupId = userGroup.getUserGroupId();
-
-				if (!userGroupIds.remove(userGroupId)) {
-					ExpandoColumn expandoColumn = _getOrAddExpandoColumn(
-						userGroup.getCompanyId());
-
-					ExpandoValue expandoValue =
-						_expandoValueLocalService.fetchValue(
-							expandoColumn.getTableId(),
-							expandoColumn.getColumnId(), userGroupId);
-
-					if ((expandoValue != null) &&
-						(expandoValue.getLong() == ldapServerId)) {
-
-						deleteUserGroupIds.add(userGroupId);
-					}
-				}
+			if (!userGroup.isAddedByLDAPImport()) {
+				continue;
 			}
+
+			long userGroupId = userGroup.getUserGroupId();
+
+			if (userGroupIds.remove(userGroupId)) {
+				continue;
+			}
+
+			ExpandoColumn expandoColumn = _getOrAddExpandoColumn(
+				userGroup.getCompanyId());
+
+			ExpandoValue expandoValue = _expandoValueLocalService.fetchValue(
+				expandoColumn.getTableId(), expandoColumn.getColumnId(),
+				userGroupId);
+
+			if ((expandoValue == null) ||
+				(expandoValue.getLong() != ldapServerId)) {
+
+				continue;
+			}
+
+			deleteUserGroupIds.add(userGroupId);
 		}
 
 		if (!deleteUserGroupIds.isEmpty()) {

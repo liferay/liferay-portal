@@ -197,12 +197,13 @@ public class ImportSystemDataSetMVCResourceCommand
 					objectEntry);
 			}
 
-			if (fdsView instanceof BaseTableFDSView) {
-				_addBaseTableFDSViewObjectEntries(
-					(BaseTableFDSView)fdsView, fdsName,
-					_portal.getHttpServletRequest(resourceRequest),
-					objectEntry);
+			if (!(fdsView instanceof BaseTableFDSView)) {
+				continue;
 			}
+
+			_addBaseTableFDSViewObjectEntries(
+				(BaseTableFDSView)fdsView, fdsName,
+				_portal.getHttpServletRequest(resourceRequest), objectEntry);
 		}
 
 		JSONPortletResponseUtil.writeJSON(

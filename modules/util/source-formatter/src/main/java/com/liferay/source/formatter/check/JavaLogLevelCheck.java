@@ -55,17 +55,18 @@ public class JavaLogLevelCheck extends BaseFileCheck {
 				"_log.is" + StringUtil.upperCaseFirstLetter(matcher.group(2)) +
 					"Enabled()";
 
-			if (codeBlock.contains(s) ^ !s.equals("_log.isErrorEnabled()")) {
-				int lineNumber = getLineNumber(content, matcher.start(1));
+			if (!(codeBlock.contains(s) ^ !s.equals("_log.isErrorEnabled()"))) {
+				continue;
+			}
 
-				if (codeBlock.contains(s)) {
-					addMessage(
-						fileName, "Do not use _log.isErrorEnabled()",
-						lineNumber);
-				}
-				else {
-					addMessage(fileName, "Use " + s, lineNumber);
-				}
+			int lineNumber = getLineNumber(content, matcher.start(1));
+
+			if (codeBlock.contains(s)) {
+				addMessage(
+					fileName, "Do not use _log.isErrorEnabled()", lineNumber);
+			}
+			else {
+				addMessage(fileName, "Use " + s, lineNumber);
 			}
 		}
 	}

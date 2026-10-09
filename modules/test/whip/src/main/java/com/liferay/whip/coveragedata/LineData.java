@@ -150,9 +150,11 @@ public class LineData implements CoverageData<LineData>, Serializable {
 			JumpData previousJumpData = _jumpDatas.putIfAbsent(
 				jumpData.getJumpNumber(), jumpData);
 
-			if (previousJumpData != null) {
-				previousJumpData.merge(jumpData);
+			if (previousJumpData == null) {
+				continue;
 			}
+
+			previousJumpData.merge(jumpData);
 		}
 
 		ConcurrentMap<Integer, SwitchData> otherSwitchDatas =
@@ -162,9 +164,11 @@ public class LineData implements CoverageData<LineData>, Serializable {
 			SwitchData previousSwitchData = _switchDatas.putIfAbsent(
 				switchData.getSwitchNumber(), switchData);
 
-			if (previousSwitchData != null) {
-				previousSwitchData.merge(switchData);
+			if (previousSwitchData == null) {
+				continue;
 			}
+
+			previousSwitchData.merge(switchData);
 		}
 	}
 

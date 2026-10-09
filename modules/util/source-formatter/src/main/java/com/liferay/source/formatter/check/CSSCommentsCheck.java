@@ -50,13 +50,15 @@ public class CSSCommentsCheck extends BaseFileCheck {
 
 				String word = words[i];
 
-				if ((word.length() > 1) &&
-					Character.isUpperCase(word.charAt(0)) &&
-					StringUtil.isLowerCase(word.substring(1))) {
+				if ((word.length() <= 1) ||
+					!Character.isUpperCase(word.charAt(0)) ||
+					!StringUtil.isLowerCase(word.substring(1))) {
 
-					comment = StringUtil.replaceFirst(
-						comment, word, StringUtil.toLowerCase(word));
+					continue;
 				}
+
+				comment = StringUtil.replaceFirst(
+					comment, word, StringUtil.toLowerCase(word));
 			}
 
 			content = StringUtil.replaceFirst(

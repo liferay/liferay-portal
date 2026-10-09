@@ -275,14 +275,16 @@ public class CORCommerceOrderValidator implements CommerceOrderValidator {
 		for (COREntry corEntry : corEntries) {
 			String type = corEntry.getType();
 
-			if (validatedRuleType.add(type)) {
-				COREntryType corEntryType =
-					_corEntryTypeRegistry.getCOREntryType(type);
+			if (!validatedRuleType.add(type)) {
+				continue;
+			}
 
-				if (!corEntryType.evaluate(corEntry, commerceOrder)) {
-					return corEntryType.getErrorMessage(
-						corEntry, commerceOrder, locale);
-				}
+			COREntryType corEntryType = _corEntryTypeRegistry.getCOREntryType(
+				type);
+
+			if (!corEntryType.evaluate(corEntry, commerceOrder)) {
+				return corEntryType.getErrorMessage(
+					corEntry, commerceOrder, locale);
 			}
 		}
 

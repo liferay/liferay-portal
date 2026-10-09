@@ -67,10 +67,11 @@ public class ContactsLayoutTemplateDisplay extends FaroModelDisplay {
 										getContactsCardTemplateId()),
 							contactsLayoutTemplateSettingDisplay.getSize());
 
-				if (contactsCardTemplateDisplay != null) {
-					contactsCardTemplateDisplays.add(
-						contactsCardTemplateDisplay);
+				if (contactsCardTemplateDisplay == null) {
+					continue;
 				}
+
+				contactsCardTemplateDisplays.add(contactsCardTemplateDisplay);
 			}
 
 			_contactsCardTemplateDisplaysList.add(contactsCardTemplateDisplays);

@@ -62,9 +62,11 @@ public class ConfigurationUpgradeStepFactoryTest {
 		for (File file : _configsDir.listFiles()) {
 			String fileName = file.getName();
 
-			if (fileName.startsWith(_TEST_PID)) {
-				file.delete();
+			if (!fileName.startsWith(_TEST_PID)) {
+				continue;
 			}
+
+			file.delete();
 		}
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(

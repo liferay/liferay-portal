@@ -1247,23 +1247,27 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			List<AuthnStatement> authnStatements =
 				curAssertion.getAuthnStatements();
 
-			if (!authnStatements.isEmpty()) {
-				Subject subject = curAssertion.getSubject();
+			if (authnStatements.isEmpty()) {
+				continue;
+			}
 
-				if ((subject != null) &&
-					(subject.getSubjectConfirmations() != null)) {
+			Subject subject = curAssertion.getSubject();
 
-					for (SubjectConfirmation subjectConfirmation :
-							subject.getSubjectConfirmations()) {
+			if ((subject == null) ||
+				(subject.getSubjectConfirmations() == null)) {
 
-						if (SubjectConfirmation.METHOD_BEARER.equals(
-								subjectConfirmation.getMethod())) {
+				continue;
+			}
 
-							assertion = curAssertion;
+			for (SubjectConfirmation subjectConfirmation :
+					subject.getSubjectConfirmations()) {
 
-							break;
-						}
-					}
+				if (SubjectConfirmation.METHOD_BEARER.equals(
+						subjectConfirmation.getMethod())) {
+
+					assertion = curAssertion;
+
+					break;
 				}
 			}
 		}

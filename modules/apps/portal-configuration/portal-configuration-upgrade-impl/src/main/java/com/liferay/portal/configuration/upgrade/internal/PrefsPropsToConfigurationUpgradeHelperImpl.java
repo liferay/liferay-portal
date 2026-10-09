@@ -138,10 +138,11 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 					"No valid return type found: " + method);
 			}
 
-			if (!Objects.equals(value, defaultValueObject)) {
-				_writeProperty(
-					properties, portletPreferences, keyValuePair, value);
+			if (Objects.equals(value, defaultValueObject)) {
+				continue;
 			}
+
+			_writeProperty(properties, portletPreferences, keyValuePair, value);
 		}
 
 		if (properties.isEmpty()) {

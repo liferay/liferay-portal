@@ -96,9 +96,11 @@ public class NGramQueryBuilderImpl implements NGramQueryBuilder {
 			while (fieldValuesIterator.hasNext()) {
 				addQuery(sb, fieldName, fieldValuesIterator.next());
 
-				if (fieldValuesIterator.hasNext() || iterator.hasNext()) {
-					addOrQuerySeparator(sb);
+				if (!fieldValuesIterator.hasNext() && !iterator.hasNext()) {
+					continue;
 				}
+
+				addOrQuerySeparator(sb);
 			}
 		}
 	}
@@ -118,9 +120,11 @@ public class NGramQueryBuilderImpl implements NGramQueryBuilder {
 
 			addQuery(sb, fieldName, fieldValue);
 
-			if (iterator.hasNext()) {
-				addOrQuerySeparator(sb);
+			if (!iterator.hasNext()) {
+				continue;
 			}
+
+			addOrQuerySeparator(sb);
 		}
 	}
 

@@ -195,20 +195,22 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 		}
 
 		for (CommerceOrderStatus commerceOrderStatus : commerceOrderStatuses) {
-			if ((!_commerceShippingHelper.isShippable(commerceOrder) &&
-				 commerceOrderStatus.isValidForOrder(commerceOrder) &&
-				 (commerceOrderStatus.getPriority() >
-					 currentCommerceOrderStatus.getPriority())) ||
-				((((commerceOrderStatus.getPriority() ==
-					CommerceOrderConstants.ORDER_STATUS_ANY) &&
-				   (currentCommerceOrderStatus.getKey() !=
-					   CommerceOrderConstants.ORDER_STATUS_OPEN)) ||
-				  (commerceOrderStatus.getPriority() ==
-					  nextCommerceOrderStatus.getPriority())) &&
-				 commerceOrderStatus.isTransitionCriteriaMet(commerceOrder))) {
+			if ((_commerceShippingHelper.isShippable(commerceOrder) ||
+				 !commerceOrderStatus.isValidForOrder(commerceOrder) ||
+				 (commerceOrderStatus.getPriority() <=
+					 currentCommerceOrderStatus.getPriority())) &&
+				((((commerceOrderStatus.getPriority() !=
+					CommerceOrderConstants.ORDER_STATUS_ANY) ||
+				   (currentCommerceOrderStatus.getKey() ==
+					   CommerceOrderConstants.ORDER_STATUS_OPEN)) &&
+				  (commerceOrderStatus.getPriority() !=
+					  nextCommerceOrderStatus.getPriority())) ||
+				 !commerceOrderStatus.isTransitionCriteriaMet(commerceOrder))) {
 
-				nextCommerceOrderStatuses.add(commerceOrderStatus);
+				continue;
 			}
+
+			nextCommerceOrderStatuses.add(commerceOrderStatus);
 		}
 
 		return nextCommerceOrderStatuses;

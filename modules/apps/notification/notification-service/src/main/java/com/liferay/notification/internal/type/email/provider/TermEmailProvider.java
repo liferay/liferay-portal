@@ -95,14 +95,16 @@ public class TermEmailProvider implements EmailProvider {
 				User user = _userLocalService.getUser(
 					GetterUtil.getLong(termValue));
 
-				if (ModelResourcePermissionUtil.contains(
+				if (!ModelResourcePermissionUtil.contains(
 						_permissionCheckerFactory.create(user),
 						notificationContext.getGroupId(),
 						notificationContext.getClassName(),
 						notificationContext.getClassPK(), ActionKeys.VIEW)) {
 
-					emailAddresses.add(user.getEmailAddress());
+					continue;
 				}
+
+				emailAddresses.add(user.getEmailAddress());
 			}
 		}
 

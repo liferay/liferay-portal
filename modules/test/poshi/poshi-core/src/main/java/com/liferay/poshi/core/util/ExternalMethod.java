@@ -173,9 +173,11 @@ public class ExternalMethod {
 
 	private static Object[] _transformParameters(Object[] parameters) {
 		for (int i = 0; i < parameters.length; i++) {
-			if (Objects.equals(parameters[i], _POSHI_NULL_NOTATION)) {
-				parameters[i] = null;
+			if (!Objects.equals(parameters[i], _POSHI_NULL_NOTATION)) {
+				continue;
 			}
+
+			parameters[i] = null;
 		}
 
 		return parameters;

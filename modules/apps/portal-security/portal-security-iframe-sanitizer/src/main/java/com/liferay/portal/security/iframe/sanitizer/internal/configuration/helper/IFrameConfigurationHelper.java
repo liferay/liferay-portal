@@ -104,11 +104,13 @@ public class IFrameConfigurationHelper {
 		for (String className : classNames) {
 			className = className.trim();
 
-			if (!className.isEmpty()) {
-				className = _stripTrailingStar(className);
-
-				classNames.add(className);
+			if (className.isEmpty()) {
+				continue;
 			}
+
+			className = _stripTrailingStar(className);
+
+			classNames.add(className);
 		}
 
 		return classNames;

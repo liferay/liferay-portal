@@ -80,9 +80,11 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 
 		for (CheckPattern checkPattern : _checkPatterns) {
 			for (String scope : checkPattern.getScopes()) {
-				if (Validator.isNotNull(scope)) {
-					scopes.add(scope);
+				if (Validator.isNull(scope)) {
+					continue;
 				}
+
+				scopes.add(scope);
 			}
 		}
 

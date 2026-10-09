@@ -224,11 +224,13 @@ public class DBMigrationImportProcess {
 		for (File file : files) {
 			sb.append(_readFile(file));
 
-			if ((++count % _COMPANY_BATCH_SIZE) == 0) {
-				_runSQLTemplate(_targetDataSource, sb.toString());
-
-				sb.setIndex(0);
+			if ((++count % _COMPANY_BATCH_SIZE) != 0) {
+				continue;
 			}
+
+			_runSQLTemplate(_targetDataSource, sb.toString());
+
+			sb.setIndex(0);
 		}
 
 		if (sb.index() > 0) {
@@ -340,29 +342,31 @@ public class DBMigrationImportProcess {
 				sb.append(line);
 				sb.append(StringPool.NEW_LINE);
 
-				if (line.endsWith(";")) {
-					String sql = sb.toString();
+				if (!line.endsWith(";")) {
+					continue;
+				}
 
-					sb.setIndex(0);
+				String sql = sb.toString();
 
-					if (StringUtil.startsWith(sql, "create or replace rule")) {
-						_syncFinalSQLs.add(sql);
-					}
-					else if (StringUtil.startsWith(
-								sql, "create schema if not exists")) {
+				sb.setIndex(0);
 
-						String[] parts = StringUtil.split(sql, CharPool.SPACE);
+				if (StringUtil.startsWith(sql, "create or replace rule")) {
+					_syncFinalSQLs.add(sql);
+				}
+				else if (StringUtil.startsWith(
+							sql, "create schema if not exists")) {
 
-						String partitionName = StringUtil.removeChar(
-							parts[5], CharPool.SEMICOLON);
+					String[] parts = StringUtil.split(sql, CharPool.SPACE);
 
-						_partitionNames.add(partitionName);
+					String partitionName = StringUtil.removeChar(
+						parts[5], CharPool.SEMICOLON);
 
-						_syncInitialSQLs.add(sql);
-					}
-					else {
-						_asyncSQLs.add(sql);
-					}
+					_partitionNames.add(partitionName);
+
+					_syncInitialSQLs.add(sql);
+				}
+				else {
+					_asyncSQLs.add(sql);
 				}
 			}
 		}

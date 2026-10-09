@@ -126,11 +126,13 @@ public class CTStoreCTEventListener implements CTEventListener {
 						_ctsContentLocalService.openDataInputStream(
 							ctsContent.getCtsContentId()));
 
-					if (cleanUpCTSContentData) {
-						_ctEntryLocalService.deleteCTEntry(ctEntry, true);
-
-						_ctsContentLocalService.deleteCTSContent(ctsContent);
+					if (!cleanUpCTSContentData) {
+						continue;
 					}
+
+					_ctEntryLocalService.deleteCTEntry(ctEntry, true);
+
+					_ctsContentLocalService.deleteCTSContent(ctsContent);
 				}
 			}
 			catch (PortalException portalException) {
@@ -157,9 +159,11 @@ public class CTStoreCTEventListener implements CTEventListener {
 				CTSContent ctsContent = _ctsContentLocalService.fetchCTSContent(
 					ctsContentId);
 
-				if (ctsContent != null) {
-					_ctsContentLocalService.deleteCTSContent(ctsContent);
+				if (ctsContent == null) {
+					continue;
 				}
+
+				_ctsContentLocalService.deleteCTSContent(ctsContent);
 			}
 		}
 	}

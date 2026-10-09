@@ -168,15 +168,17 @@ public class JSPUpgradeRemovedTagsCheck extends BaseTagAttributesCheck {
 				(List<String>)upgradeToTagStatusTuple.getObject(1);
 
 			for (String upgradeFromTagAttribute : upgradeFromTagAttributes) {
-				if (!upgradeToTagAttributes.contains(upgradeFromTagAttribute)) {
-					addMessage(
-						fileName,
-						StringBundler.concat(
-							"Attribute \"", upgradeFromTagAttribute,
-							"\" no longer exists for tag \"", tag.getFullName(),
-							"\" in version \"", upgradeToVersion, "\""),
-						lineNumber);
+				if (upgradeToTagAttributes.contains(upgradeFromTagAttribute)) {
+					continue;
 				}
+
+				addMessage(
+					fileName,
+					StringBundler.concat(
+						"Attribute \"", upgradeFromTagAttribute,
+						"\" no longer exists for tag \"", tag.getFullName(),
+						"\" in version \"", upgradeToVersion, "\""),
+					lineNumber);
 			}
 		}
 	}
@@ -227,9 +229,11 @@ public class JSPUpgradeRemovedTagsCheck extends BaseTagAttributesCheck {
 		for (Map.Entry<String, String> entry : attributesMap.entrySet()) {
 			String attributeName = entry.getKey();
 
-			if (attributeNames.contains(attributeName)) {
-				matchingAttributeNames.add(attributeName);
+			if (!attributeNames.contains(attributeName)) {
+				continue;
 			}
+
+			matchingAttributeNames.add(attributeName);
 		}
 
 		return new Tuple(TagStatus.ATTRIBUTES_FOUND, matchingAttributeNames);

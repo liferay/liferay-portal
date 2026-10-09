@@ -192,9 +192,11 @@ public class LoadBalancerUtil {
 			for (String blacklistItem : propertyBlacklistString.split(",")) {
 				blacklistItem = blacklistItem.trim();
 
-				if (!blacklistItem.isEmpty()) {
-					blacklist.add(blacklistItem);
+				if (blacklistItem.isEmpty()) {
+					continue;
 				}
+
+				blacklist.add(blacklistItem);
 			}
 		}
 
@@ -205,9 +207,11 @@ public class LoadBalancerUtil {
 				"\\s*,\\s*");
 
 			for (String blacklistItem : requestBlacklistItems) {
-				if (!blacklist.contains(blacklistItem)) {
-					blacklist.add(blacklistItem);
+				if (blacklist.contains(blacklistItem)) {
+					continue;
 				}
+
+				blacklist.add(blacklistItem);
 			}
 		}
 

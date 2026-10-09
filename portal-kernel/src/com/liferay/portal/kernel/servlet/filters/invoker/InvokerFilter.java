@@ -307,12 +307,14 @@ public class InvokerFilter implements Filter {
 
 			int index = parameter.indexOf(CharPool.EQUAL);
 
-			if ((index != -1) &&
-				_queryStringIgnoredKeys.contains(
+			if ((index == -1) ||
+				!_queryStringIgnoredKeys.contains(
 					parameter.substring(0, index))) {
 
-				parameters[i] = StringPool.BLANK;
+				continue;
 			}
+
+			parameters[i] = StringPool.BLANK;
 		}
 
 		Arrays.sort(parameters);
@@ -320,10 +322,12 @@ public class InvokerFilter implements Filter {
 		StringBundler sb = new StringBundler();
 
 		for (String parameter : parameters) {
-			if (!parameter.isEmpty()) {
-				sb.append(parameter);
-				sb.append(StringPool.AMPERSAND);
+			if (parameter.isEmpty()) {
+				continue;
 			}
+
+			sb.append(parameter);
+			sb.append(StringPool.AMPERSAND);
 		}
 
 		if (sb.index() != 0) {

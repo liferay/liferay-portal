@@ -75,17 +75,19 @@ public class RedirectProviderImpl implements RedirectProvider {
 		for (RedirectPatternEntry redirectPatternEntry :
 				redirectPatternEntries) {
 
-			if (_isUserAgentMatch(redirectPatternEntry, userAgent)) {
-				Pattern pattern = redirectPatternEntry.getPattern();
+			if (!_isUserAgentMatch(redirectPatternEntry, userAgent)) {
+				continue;
+			}
 
-				Matcher matcher = pattern.matcher(friendlyURL);
+			Pattern pattern = redirectPatternEntry.getPattern();
 
-				if (matcher.matches()) {
-					return new RedirectImpl(
-						matcher.replaceFirst(
-							redirectPatternEntry.getDestinationURL()),
-						false);
-				}
+			Matcher matcher = pattern.matcher(friendlyURL);
+
+			if (matcher.matches()) {
+				return new RedirectImpl(
+					matcher.replaceFirst(
+						redirectPatternEntry.getDestinationURL()),
+					false);
 			}
 		}
 

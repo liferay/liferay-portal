@@ -153,9 +153,11 @@ public class KBFolderFinderImpl
 			while (iterator.hasNext()) {
 				Long l = iterator.next();
 
-				if (l != null) {
-					count += l.intValue();
+				if (l == null) {
+					continue;
 				}
+
+				count += l.intValue();
 			}
 
 			return count;

@@ -2227,14 +2227,16 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		for (StartTag startTag : startTags) {
 			String targetUri = startTag.getAttributeValue("href");
 
-			if (Validator.isNotNull(targetUri)) {
-				try {
-					LinkbackProducerUtil.sendPingback(sourceUri, targetUri);
-				}
-				catch (Exception exception) {
-					_log.error(
-						"Error while sending pingback " + targetUri, exception);
-				}
+			if (Validator.isNull(targetUri)) {
+				continue;
+			}
+
+			try {
+				LinkbackProducerUtil.sendPingback(sourceUri, targetUri);
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Error while sending pingback " + targetUri, exception);
 			}
 		}
 	}

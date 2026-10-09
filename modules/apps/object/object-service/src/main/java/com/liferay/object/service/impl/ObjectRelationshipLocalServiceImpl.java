@@ -730,14 +730,16 @@ public class ObjectRelationshipLocalServiceImpl
 				objectRelationshipPersistence.findByCompanyId(
 					objectDefinition.getCompanyId())) {
 
-			if (((objectRelationship.getObjectDefinitionId1() ==
-					objectDefinitionId) ||
-				 (objectRelationship.getObjectDefinitionId2() ==
-					 objectDefinitionId)) &&
-				!objectRelationship.isReverse()) {
+			if (((objectRelationship.getObjectDefinitionId1() !=
+					objectDefinitionId) &&
+				 (objectRelationship.getObjectDefinitionId2() !=
+					 objectDefinitionId)) ||
+				objectRelationship.isReverse()) {
 
-				objectRelationships.add(objectRelationship);
+				continue;
 			}
+
+			objectRelationships.add(objectRelationship);
 		}
 
 		return objectRelationships;
@@ -1473,14 +1475,16 @@ public class ObjectRelationshipLocalServiceImpl
 				_objectFieldSettingPersistence.fetchByOFI_N(
 					objectField.getObjectFieldId(), "objectRelationshipName");
 
-			if ((objectFieldSetting != null) &&
-				StringUtil.equals(
+			if ((objectFieldSetting == null) ||
+				!StringUtil.equals(
 					objectFieldSetting.getValue(),
 					objectRelationship.getName())) {
 
-				_objectFieldLocalService.deleteObjectField(
-					objectField.getObjectFieldId());
+				continue;
 			}
+
+			_objectFieldLocalService.deleteObjectField(
+				objectField.getObjectFieldId());
 		}
 	}
 
@@ -1865,9 +1869,11 @@ public class ObjectRelationshipLocalServiceImpl
 
 			Node node = tree.getNode(objectDefinition1.getObjectDefinitionId());
 
-			if (node.getDepth() > objectDefinition1MaxDepth) {
-				objectDefinition1MaxDepth = node.getDepth();
+			if (node.getDepth() <= objectDefinition1MaxDepth) {
+				continue;
 			}
+
+			objectDefinition1MaxDepth = node.getDepth();
 		}
 
 		int objectDefinition2MaxHeight = 0;
@@ -1881,9 +1887,11 @@ public class ObjectRelationshipLocalServiceImpl
 			int height = tree.getHeight(
 				tree.getNode(objectDefinition2.getObjectDefinitionId()));
 
-			if (height > objectDefinition2MaxHeight) {
-				objectDefinition2MaxHeight = height;
+			if (height <= objectDefinition2MaxHeight) {
+				continue;
 			}
+
+			objectDefinition2MaxHeight = height;
 		}
 
 		treeHeight += objectDefinition1MaxDepth + objectDefinition2MaxHeight;

@@ -96,9 +96,11 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 		long[] siteNavigationMenuIds, Layout layout) {
 
 		for (long siteNavigationMenuId : siteNavigationMenuIds) {
-			if (siteNavigationMenuId > 0) {
-				_addSiteNavigationMenuItem(siteNavigationMenuId, layout);
+			if (siteNavigationMenuId <= 0) {
+				continue;
 			}
+
+			_addSiteNavigationMenuItem(siteNavigationMenuId, layout);
 		}
 
 		if (Validator.isNotNull(
@@ -183,13 +185,14 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 			String externalReferenceCode = unicodeProperties.getProperty(
 				"externalReferenceCode");
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					layout.getExternalReferenceCode(), externalReferenceCode)) {
 
-				_siteNavigationMenuItemLocalService.
-					deleteSiteNavigationMenuItem(
-						siteNavigationMenuItem.getSiteNavigationMenuItemId());
+				continue;
 			}
+
+			_siteNavigationMenuItemLocalService.deleteSiteNavigationMenuItem(
+				siteNavigationMenuItem.getSiteNavigationMenuItemId());
 		}
 	}
 

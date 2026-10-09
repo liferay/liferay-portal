@@ -169,14 +169,18 @@ public class FrontendTokenDefinitionRegistryImpl
 		String keyPrefix = companyId + StringPool.POUND;
 
 		for (String key : _serviceTrackerMap.keySet()) {
-			if (key.startsWith(keyPrefix)) {
-				FrontendTokenDefinition frontendTokenDefinition =
-					_serviceTrackerMap.getService(key);
-
-				if (frontendTokenDefinition != null) {
-					frontendTokenDefinitions.add(frontendTokenDefinition);
-				}
+			if (!key.startsWith(keyPrefix)) {
+				continue;
 			}
+
+			FrontendTokenDefinition frontendTokenDefinition =
+				_serviceTrackerMap.getService(key);
+
+			if (frontendTokenDefinition == null) {
+				continue;
+			}
+
+			frontendTokenDefinitions.add(frontendTokenDefinition);
 		}
 
 		return frontendTokenDefinitions;

@@ -187,11 +187,14 @@ public class ServerAuthorizationCodeGrantProvider {
 				serverAuthorizationCodeGrantDelayed.
 					getServerAuthorizationCodeGrant();
 
-			if (client.equals(serverAuthorizationCodeGrant.getClient()) &&
-				userSubject.equals(serverAuthorizationCodeGrant.getSubject())) {
+			if (!client.equals(serverAuthorizationCodeGrant.getClient()) ||
+				!userSubject.equals(
+					serverAuthorizationCodeGrant.getSubject())) {
 
-				serverAuthorizationCodeGrants.add(serverAuthorizationCodeGrant);
+				continue;
 			}
+
+			serverAuthorizationCodeGrants.add(serverAuthorizationCodeGrant);
 		}
 
 		return serverAuthorizationCodeGrants;

@@ -148,18 +148,20 @@ public class QueryUtil {
 		int[] scrollIds = RandomUtil.nextInts(total, num);
 
 		for (int scrollId : scrollIds) {
-			if (sr.scroll(scrollId)) {
-				Object[] array = sr.get();
-
-				if (array.length == 1) {
-					list.add(array[0]);
-				}
-				else {
-					list.add(array);
-				}
-
-				sr.first();
+			if (!sr.scroll(scrollId)) {
+				continue;
 			}
+
+			Object[] array = sr.get();
+
+			if (array.length == 1) {
+				list.add(array[0]);
+			}
+			else {
+				list.add(array);
+			}
+
+			sr.first();
 		}
 
 		if (unmodifiable) {

@@ -593,9 +593,11 @@ public class CPDefinitionModelDocumentContributor
 				price = promoPrice;
 			}
 
-			if (BigDecimalUtil.lt(price, lowestPrice)) {
-				lowestPrice = price;
+			if (!BigDecimalUtil.lt(price, lowestPrice)) {
+				continue;
 			}
+
+			lowestPrice = price;
 		}
 
 		return lowestPrice;

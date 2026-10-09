@@ -32,17 +32,19 @@ public class StreamUtil {
 		IOException ioException1 = null;
 
 		for (Closeable closeable : closeables) {
-			if (closeable != null) {
-				try {
-					closeable.close();
+			if (closeable == null) {
+				continue;
+			}
+
+			try {
+				closeable.close();
+			}
+			catch (IOException ioException2) {
+				if (ioException1 == null) {
+					ioException1 = ioException2;
 				}
-				catch (IOException ioException2) {
-					if (ioException1 == null) {
-						ioException1 = ioException2;
-					}
-					else {
-						ioException1.addSuppressed(ioException2);
-					}
+				else {
+					ioException1.addSuppressed(ioException2);
 				}
 			}
 		}

@@ -75,15 +75,17 @@ public class DDMFormInstanceEntriesUpgradeProcess extends UpgradeProcess {
 
 			Object value = fieldJSONObject.get("value");
 
-			if (value instanceof String) {
-				JSONObject localizedValueJSONObject =
-					_jsonFactory.createJSONObject();
-
-				localizedValueJSONObject.put(
-					defaultLanguageId, fieldJSONObject.getString("value"));
-
-				fieldJSONObject.put("value", localizedValueJSONObject);
+			if (!(value instanceof String)) {
+				continue;
 			}
+
+			JSONObject localizedValueJSONObject =
+				_jsonFactory.createJSONObject();
+
+			localizedValueJSONObject.put(
+				defaultLanguageId, fieldJSONObject.getString("value"));
+
+			fieldJSONObject.put("value", localizedValueJSONObject);
 		}
 
 		return ddmFormValuesJSONObject.toString();

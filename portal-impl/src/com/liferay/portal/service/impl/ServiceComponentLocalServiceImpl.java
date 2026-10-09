@@ -387,10 +387,12 @@ public class ServiceComponentLocalServiceImpl
 
 			upgradeTable.updateTable();
 
-			if (upgradeTableListener != null) {
-				upgradeTableListener.onAfterUpdateTable(
-					previousServiceComponent, upgradeTable);
+			if (upgradeTableListener == null) {
+				continue;
 			}
+
+			upgradeTableListener.onAfterUpdateTable(
+				previousServiceComponent, upgradeTable);
 		}
 	}
 
@@ -406,12 +408,14 @@ public class ServiceComponentLocalServiceImpl
 			ServiceComponent previousServiceComponent = serviceComponents.get(
 				buildNamespace);
 
-			if ((previousServiceComponent == null) ||
-				(serviceComponent.getBuildNumber() >
+			if ((previousServiceComponent != null) &&
+				(serviceComponent.getBuildNumber() <=
 					previousServiceComponent.getBuildNumber())) {
 
-				serviceComponents.put(buildNamespace, serviceComponent);
+				continue;
 			}
+
+			serviceComponents.put(buildNamespace, serviceComponent);
 		}
 
 		return serviceComponents;

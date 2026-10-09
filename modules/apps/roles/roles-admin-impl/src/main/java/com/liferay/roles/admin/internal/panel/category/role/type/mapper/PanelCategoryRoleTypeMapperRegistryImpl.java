@@ -34,12 +34,14 @@ public class PanelCategoryRoleTypeMapperRegistryImpl
 		for (PanelCategoryRoleTypeMapper panelCategoryRoleTypeMapper :
 				_serviceTrackerList) {
 
-			if (ArrayUtil.contains(
+			if (!ArrayUtil.contains(
 					panelCategoryRoleTypeMapper.getRoleTypes(), type)) {
 
-				panelCategoryKeys.add(
-					panelCategoryRoleTypeMapper.getPanelCategoryKey());
+				continue;
 			}
+
+			panelCategoryKeys.add(
+				panelCategoryRoleTypeMapper.getPanelCategoryKey());
 		}
 
 		return panelCategoryKeys.toArray(new String[0]);

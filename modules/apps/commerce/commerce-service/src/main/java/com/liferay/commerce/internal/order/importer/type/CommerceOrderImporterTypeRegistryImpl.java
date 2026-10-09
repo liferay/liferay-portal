@@ -71,9 +71,11 @@ public class CommerceOrderImporterTypeRegistryImpl
 			CommerceOrderImporterType commerceOrderImporterType =
 				commerceOrderImporterTypeServiceWrapper.getService();
 
-			if (commerceOrderImporterType.isActive(commerceOrder)) {
-				commerceOrderImporterTypes.add(commerceOrderImporterType);
+			if (!commerceOrderImporterType.isActive(commerceOrder)) {
+				continue;
 			}
+
+			commerceOrderImporterTypes.add(commerceOrderImporterType);
 		}
 
 		return Collections.unmodifiableList(commerceOrderImporterTypes);

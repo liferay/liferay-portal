@@ -79,11 +79,13 @@ public class ObjectEntriesPanelAppTest {
 			objectDefinition.getPanelCategoryKey());
 
 		for (PanelApp panelApp : panelApps) {
-			if (Objects.equals(
+			if (!Objects.equals(
 					panelApp.getPortletId(), objectDefinition.getPortletId())) {
 
-				portlet = panelApp.getPortlet();
+				continue;
 			}
+
+			portlet = panelApp.getPortlet();
 		}
 
 		Assert.assertEquals(
@@ -119,11 +121,13 @@ public class ObjectEntriesPanelAppTest {
 		portlet = null;
 
 		for (PanelApp panelApp : panelApps) {
-			if (Objects.equals(
+			if (!Objects.equals(
 					panelApp.getPortletId(), objectDefinition.getPortletId())) {
 
-				portlet = panelApp.getPortlet();
+				continue;
 			}
+
+			portlet = panelApp.getPortlet();
 		}
 
 		Assert.assertEquals(

@@ -112,9 +112,11 @@ public class ActionUtil {
 			for (PublicRenderParameter publicRenderParameter :
 					portlet.getPublicRenderParameters()) {
 
-				if (identifiers.add(publicRenderParameter.getIdentifier())) {
-					publicRenderParameters.add(publicRenderParameter);
+				if (!identifiers.add(publicRenderParameter.getIdentifier())) {
+					continue;
 				}
+
+				publicRenderParameters.add(publicRenderParameter);
 			}
 		}
 

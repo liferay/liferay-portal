@@ -265,9 +265,11 @@ public class AssetHelperImpl implements AssetHelper {
 			AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 				className, classPK);
 
-			if (assetEntry != null) {
-				assetEntries.add(assetEntry);
+			if (assetEntry == null) {
+				continue;
 			}
+
+			assetEntries.add(assetEntry);
 		}
 
 		return assetEntries;
@@ -293,9 +295,11 @@ public class AssetHelperImpl implements AssetHelper {
 			AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 				className, classPK);
 
-			if (assetEntry != null) {
-				assetEntries.add(assetEntry);
+			if (assetEntry == null) {
+				continue;
 			}
+
+			assetEntries.add(assetEntry);
 		}
 
 		return assetEntries;
@@ -416,21 +420,25 @@ public class AssetHelperImpl implements AssetHelper {
 			for (ClassType classType : classTypes) {
 				long classTypeId = classType.getClassTypeId();
 
-				if (ArrayUtil.contains(classTypeIds, classTypeId) ||
-					(classTypeIds.length == 0)) {
+				if (!ArrayUtil.contains(classTypeIds, classTypeId) &&
+					(classTypeIds.length != 0)) {
 
-					PortletURL addPortletURL = getAddPortletURL(
-						liferayPortletRequest, liferayPortletResponse, groupId,
-						className, classTypeId, allAssetCategoryIds,
-						allAssetTagNames, redirect);
-
-					if (addPortletURL != null) {
-						assetPublisherAddItemHolders.add(
-							new AssetPublisherAddItemHolder(
-								portlet.getPortletId(), classType.getName(),
-								resourceBundle, locale, addPortletURL));
-					}
+					continue;
 				}
+
+				PortletURL addPortletURL = getAddPortletURL(
+					liferayPortletRequest, liferayPortletResponse, groupId,
+					className, classTypeId, allAssetCategoryIds,
+					allAssetTagNames, redirect);
+
+				if (addPortletURL == null) {
+					continue;
+				}
+
+				assetPublisherAddItemHolders.add(
+					new AssetPublisherAddItemHolder(
+						portlet.getPortletId(), classType.getName(),
+						resourceBundle, locale, addPortletURL));
 			}
 		}
 

@@ -944,18 +944,19 @@ public class FragmentEntryLocalServiceImpl
 				PortletFileRepositoryUtil.fetchPortletFileEntry(
 					fragmentEntry.getGroupId(), folderId, fileName);
 
-			if (existingFileEntry == null) {
-				FileEntry fileEntry = entry.getValue();
-
-				PortletFileRepositoryUtil.addPortletFileEntry(
-					null, serviceContext.getScopeGroupId(),
-					serviceContext.getUserId(),
-					FragmentCollection.class.getName(),
-					targetFragmentCollection.getFragmentCollectionId(),
-					FragmentPortletKeys.FRAGMENT, folderId,
-					fileEntry.getContentStream(), fileName,
-					fileEntry.getMimeType(), false);
+			if (existingFileEntry != null) {
+				continue;
 			}
+
+			FileEntry fileEntry = entry.getValue();
+
+			PortletFileRepositoryUtil.addPortletFileEntry(
+				null, serviceContext.getScopeGroupId(),
+				serviceContext.getUserId(), FragmentCollection.class.getName(),
+				targetFragmentCollection.getFragmentCollectionId(),
+				FragmentPortletKeys.FRAGMENT, folderId,
+				fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
+				false);
 		}
 	}
 
@@ -1090,9 +1091,11 @@ public class FragmentEntryLocalServiceImpl
 			FileEntry fileEntry = fragmentCollection.getResource(
 				matcher.group(1));
 
-			if (fileEntry != null) {
-				fileEntries.put(matcher.group(1), fileEntry);
+			if (fileEntry == null) {
+				continue;
 			}
+
+			fileEntries.put(matcher.group(1), fileEntry);
 		}
 
 		return fileEntries;

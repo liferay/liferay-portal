@@ -440,27 +440,27 @@ public class FragmentEditableElementUtil {
 							layoutStructureItemImporterContext.getGroupId())));
 			}
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					fragmentEditableElementValue.getType(),
 					FragmentEditableElementValue.Type.TEXT)) {
 
-				TextFragmentEditableElementValue
-					textFragmentEditableElementValue =
-						(TextFragmentEditableElementValue)
-							fragmentEditableElementValue;
-
-				jsonObject.put(
-					fragmentEditableElement.getId(),
-					() -> _getJSONObject(
-						() -> _getFragmentLinkTextJSONObject(
-							layoutStructureItemImporterContext.getCompanyId(),
-							textFragmentEditableElementValue.
-								getFragmentLinkTextValue(),
-							layoutStructureItemImporterContext.
-								getInfoItemServiceRegistry(),
-							"link",
-							layoutStructureItemImporterContext.getGroupId())));
+				continue;
 			}
+
+			TextFragmentEditableElementValue textFragmentEditableElementValue =
+				(TextFragmentEditableElementValue)fragmentEditableElementValue;
+
+			jsonObject.put(
+				fragmentEditableElement.getId(),
+				() -> _getJSONObject(
+					() -> _getFragmentLinkTextJSONObject(
+						layoutStructureItemImporterContext.getCompanyId(),
+						textFragmentEditableElementValue.
+							getFragmentLinkTextValue(),
+						layoutStructureItemImporterContext.
+							getInfoItemServiceRegistry(),
+						"link",
+						layoutStructureItemImporterContext.getGroupId())));
 		}
 
 		return jsonObject;

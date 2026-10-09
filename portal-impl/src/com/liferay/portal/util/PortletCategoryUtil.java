@@ -170,9 +170,11 @@ public class PortletCategoryUtil {
 			Collection<PortletCategory> categories =
 				curRelevantPortletCategory.getCategories();
 
-			if (!categories.isEmpty() || !portletIds.isEmpty()) {
-				relevantPortletCategory.addCategory(curRelevantPortletCategory);
+			if (categories.isEmpty() && portletIds.isEmpty()) {
+				continue;
 			}
+
+			relevantPortletCategory.addCategory(curRelevantPortletCategory);
 		}
 
 		return relevantPortletCategory;

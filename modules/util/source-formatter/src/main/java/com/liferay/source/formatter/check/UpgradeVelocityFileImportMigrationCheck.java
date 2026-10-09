@@ -21,21 +21,21 @@ public class UpgradeVelocityFileImportMigrationCheck
 		String[] lines = StringUtil.splitLines(content);
 
 		for (String line : lines) {
-			if (line.contains(VelocityMigrationConstants.VELOCITY_PARSE)) {
-				String newLine = StringUtil.replace(
-					line, VelocityMigrationConstants.VELOCITY_PARSE,
-					"<#include");
-
-				newLine = VelocityMigrationUtil.removeFirstParenthesis(newLine);
-				newLine = StringUtil.replace(
-					newLine, EXTENSION_VELOCITY, EXTENSION_FREEMARKER);
-				newLine = StringUtil.replaceLast(
-					newLine, CharPool.CLOSE_PARENTHESIS,
-					CharPool.SPACE +
-						VelocityMigrationConstants.FREEMARKER_TAG_END);
-
-				content = StringUtil.replace(content, line, newLine);
+			if (!line.contains(VelocityMigrationConstants.VELOCITY_PARSE)) {
+				continue;
 			}
+
+			String newLine = StringUtil.replace(
+				line, VelocityMigrationConstants.VELOCITY_PARSE, "<#include");
+
+			newLine = VelocityMigrationUtil.removeFirstParenthesis(newLine);
+			newLine = StringUtil.replace(
+				newLine, EXTENSION_VELOCITY, EXTENSION_FREEMARKER);
+			newLine = StringUtil.replaceLast(
+				newLine, CharPool.CLOSE_PARENTHESIS,
+				CharPool.SPACE + VelocityMigrationConstants.FREEMARKER_TAG_END);
+
+			content = StringUtil.replace(content, line, newLine);
 		}
 
 		return content;

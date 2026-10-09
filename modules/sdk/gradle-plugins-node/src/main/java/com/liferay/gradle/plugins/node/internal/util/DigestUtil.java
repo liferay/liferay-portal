@@ -93,10 +93,12 @@ public class DigestUtil {
 		StringBuilder sb = new StringBuilder();
 
 		for (String s : array) {
-			if (Validator.isNotNull(s)) {
-				sb.append(Integer.toHexString(s.hashCode()));
-				sb.append('-');
+			if (Validator.isNull(s)) {
+				continue;
 			}
+
+			sb.append(Integer.toHexString(s.hashCode()));
+			sb.append('-');
 		}
 
 		if (sb.length() > 0) {

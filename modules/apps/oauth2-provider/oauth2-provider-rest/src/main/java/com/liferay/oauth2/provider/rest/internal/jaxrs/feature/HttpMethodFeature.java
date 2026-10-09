@@ -110,10 +110,12 @@ public class HttpMethodFeature implements Feature {
 				HttpMethod[] annotationsByType =
 					annotationType.getAnnotationsByType(HttpMethod.class);
 
-				if (annotationsByType != null) {
-					for (HttpMethod httpMethod : annotationsByType) {
-						_scopes.add(httpMethod.value());
-					}
+				if (annotationsByType == null) {
+					continue;
+				}
+
+				for (HttpMethod httpMethod : annotationsByType) {
+					_scopes.add(httpMethod.value());
 				}
 			}
 

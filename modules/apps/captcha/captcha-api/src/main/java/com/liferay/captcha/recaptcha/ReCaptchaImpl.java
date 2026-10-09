@@ -167,9 +167,11 @@ public class ReCaptchaImpl extends SimpleCaptchaImpl {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				sb.append(jsonArray.getString(i));
 
-				if (i < (jsonArray.length() - 1)) {
-					sb.append(StringPool.COMMA_AND_SPACE);
+				if (i >= (jsonArray.length() - 1)) {
+					continue;
 				}
+
+				sb.append(StringPool.COMMA_AND_SPACE);
 			}
 
 			_log.error("reCAPTCHA encountered an error: " + sb.toString());

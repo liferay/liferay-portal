@@ -101,9 +101,11 @@ public class AssetCategoriesNavigationConfigurationAction
 
 			String key = entry.getKey();
 
-			if (key.startsWith("assetVocabularyExternalReferenceCodes")) {
-				portletPreferences.reset(key);
+			if (!key.startsWith("assetVocabularyExternalReferenceCodes")) {
+				continue;
 			}
+
+			portletPreferences.reset(key);
 		}
 	}
 

@@ -209,11 +209,12 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 			(Map<String, Object>)stateMap.get("requestParameters");
 
 		for (Map.Entry<String, Object> entry : requestParameters.entrySet()) {
-			if (entry.getValue() instanceof List) {
-				entry.setValue(
-					ListUtil.toArray(
-						(List<?>)entry.getValue(), _STRING_ACCESSOR));
+			if (!(entry.getValue() instanceof List)) {
+				continue;
 			}
+
+			entry.setValue(
+				ListUtil.toArray((List<?>)entry.getValue(), _STRING_ACCESSOR));
 		}
 
 		return new ActionRequestWrapper(actionRequest) {

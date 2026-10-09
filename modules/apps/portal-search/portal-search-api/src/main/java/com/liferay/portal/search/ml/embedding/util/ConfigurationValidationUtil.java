@@ -32,9 +32,11 @@ public class ConfigurationValidationUtil {
 		List<String> missingKeys = new ArrayList<>();
 
 		for (String key : keys) {
-			if (!attributes.containsKey(key)) {
-				missingKeys.add(key);
+			if (attributes.containsKey(key)) {
+				continue;
 			}
+
+			missingKeys.add(key);
 		}
 
 		if (!missingKeys.isEmpty()) {

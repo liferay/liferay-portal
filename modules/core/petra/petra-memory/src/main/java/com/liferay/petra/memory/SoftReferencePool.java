@@ -77,9 +77,11 @@ public class SoftReferencePool<V, P> {
 		}
 		else {
 			while (_getCount() > _maxIdleSize) {
-				if ((_softReferences.poll() != null) && _useWeakCounter) {
-					_weakCounter.getAndDecrement();
+				if ((_softReferences.poll() == null) || !_useWeakCounter) {
+					continue;
 				}
+
+				_weakCounter.getAndDecrement();
 			}
 		}
 
@@ -92,9 +94,11 @@ public class SoftReferencePool<V, P> {
 				break;
 			}
 
-			if (_softReferences.remove(softReference) && _useWeakCounter) {
-				_weakCounter.getAndDecrement();
+			if (!_softReferences.remove(softReference) || !_useWeakCounter) {
+				continue;
 			}
+
+			_weakCounter.getAndDecrement();
 		}
 	}
 

@@ -247,13 +247,15 @@ public class PageFragmentInstanceDefinitionMapper {
 					getFragmentConfigurationFields(
 						fragmentEntryLink.getConfigurationJSONObject())) {
 
-			if (ArrayUtil.contains(
+			if (!ArrayUtil.contains(
 					_EXCLUDED_FRAGMENT_CONFIGURATION_FIELD_TYPES,
 					fragmentConfigurationField.getType())) {
 
-				excludedFragmentConfigurationFieldNames.add(
-					fragmentConfigurationField.getName());
+				continue;
 			}
+
+			excludedFragmentConfigurationFieldNames.add(
+				fragmentConfigurationField.getName());
 		}
 
 		Map<String, Object> resultMap = new HashMap<>();
@@ -1293,11 +1295,13 @@ public class PageFragmentInstanceDefinitionMapper {
 				for (String key : keys) {
 					JSONObject valueJSONObject = jsonObject.getJSONObject(key);
 
-					if (availableLanguageIds.contains(key) &&
-						(valueJSONObject != null)) {
+					if (!availableLanguageIds.contains(key) ||
+						(valueJSONObject == null)) {
 
-						put(key, valueJSONObject);
+						continue;
 					}
+
+					put(key, valueJSONObject);
 				}
 			}
 		};

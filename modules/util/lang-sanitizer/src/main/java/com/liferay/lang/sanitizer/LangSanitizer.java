@@ -131,9 +131,11 @@ public class LangSanitizer {
 		for (String word : words1) {
 			List<String> wordList = Arrays.asList(words2);
 
-			if (!wordList.contains(word)) {
-				differentWords.add(word);
+			if (wordList.contains(word)) {
+				continue;
 			}
+
+			differentWords.add(word);
 		}
 
 		Set<String> escapedCharacters = EscapeUtil.getEscapedCharacters();
@@ -154,9 +156,11 @@ public class LangSanitizer {
 		for (String word : words2) {
 			List<String> wordList = Arrays.asList(words1);
 
-			if (!wordList.contains(word)) {
-				differentWords.add(word);
+			if (wordList.contains(word)) {
+				continue;
 			}
+
+			differentWords.add(word);
 		}
 
 		return String.join(", ", differentWords);
@@ -308,9 +312,11 @@ public class LangSanitizer {
 			SanitizedMessage sanitizedMessage = _sanitizeContent(
 				file, (String)entry.getKey(), (String)entry.getValue());
 
-			if (sanitizedMessage != null) {
-				sanitizedMessages.add(sanitizedMessage);
+			if (sanitizedMessage == null) {
+				continue;
 			}
+
+			sanitizedMessages.add(sanitizedMessage);
 		}
 
 		return sanitizedMessages;

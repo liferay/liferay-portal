@@ -612,27 +612,27 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			List<CustomAttributesDisplay> portletCustomAttributesDisplays =
 				portlet.getCustomAttributesDisplayInstances();
 
-			if ((portletCustomAttributesDisplays != null) &&
-				!portletCustomAttributesDisplays.isEmpty()) {
-
-				customAttributesDisplays.addAll(
-					TransformUtil.transform(
-						portletCustomAttributesDisplays,
-						customAttributesDisplay -> {
-							String featureFlagKey =
-								customAttributesDisplay.getFeatureFlagKey();
-
-							if ((featureFlagKey == null) ||
-								FeatureFlagManagerUtil.isEnabled(
-									CompanyThreadLocal.getCompanyId(),
-									featureFlagKey)) {
-
-								return customAttributesDisplay;
-							}
-
-							return null;
-						}));
+			if (ListUtil.isEmpty(portletCustomAttributesDisplays)) {
+				continue;
 			}
+
+			customAttributesDisplays.addAll(
+				TransformUtil.transform(
+					portletCustomAttributesDisplays,
+					customAttributesDisplay -> {
+						String featureFlagKey =
+							customAttributesDisplay.getFeatureFlagKey();
+
+						if ((featureFlagKey == null) ||
+							FeatureFlagManagerUtil.isEnabled(
+								CompanyThreadLocal.getCompanyId(),
+								featureFlagKey)) {
+
+							return customAttributesDisplay;
+						}
+
+						return null;
+					}));
 		}
 
 		return customAttributesDisplays;
@@ -689,9 +689,11 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			FriendlyURLMapper friendlyURLMapper =
 				portlet.getFriendlyURLMapperInstance();
 
-			if (friendlyURLMapper != null) {
-				friendlyURLMappers.add(friendlyURLMapper);
+			if (friendlyURLMapper == null) {
+				continue;
 			}
+
+			friendlyURLMappers.add(friendlyURLMapper);
 		}
 
 		return friendlyURLMappers;
@@ -955,9 +957,11 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		while (iterator.hasNext()) {
 			Portlet portlet = iterator.next();
 
-			if (!portlet.isScopeable()) {
-				iterator.remove();
+			if (portlet.isScopeable()) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return portlets;
@@ -1091,18 +1095,20 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 				Portlet portletModel = entry.getValue();
 
-				if (!Objects.equals(
+				if (Objects.equals(
 						portletModel.getPortletId(),
-						PortletKeys.SERVER_ADMIN) &&
-					!portletModel.isInclude() &&
-					!Objects.equals(
+						PortletKeys.SERVER_ADMIN) ||
+					portletModel.isInclude() ||
+					Objects.equals(
 						portletModel.getPortletId(),
 						PortletProviderUtil.getPortletId(
 							PortalMyAccountApplicationType.MyAccount.CLASS_NAME,
 							PortletProvider.Action.VIEW))) {
 
-					iterator.remove();
+					continue;
 				}
+
+				iterator.remove();
 			}
 		}
 		catch (Exception exception) {
@@ -1219,12 +1225,14 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			for (Map.Entry<String, Portlet> entry : portletsMap.entrySet()) {
 				Portlet portlet = _portletsMap.remove(entry.getKey());
 
-				if (portlet != null) {
-					PortletInstanceFactoryUtil.clear(portlet);
-
-					PortletConfigFactoryUtil.destroy(portlet);
-					PortletContextFactoryUtil.destroy(portlet);
+				if (portlet == null) {
+					continue;
 				}
+
+				PortletInstanceFactoryUtil.clear(portlet);
+
+				PortletConfigFactoryUtil.destroy(portlet);
+				PortletContextFactoryUtil.destroy(portlet);
 			}
 
 			return Collections.emptyList();
@@ -1264,13 +1272,15 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			// Portlet may be null if it exists in the database but its portlet
 			// WAR is not yet loaded
 
-			if (portletModel != null) {
-				portletModel.setRoles(portlet.getRoles());
-				portletModel.setActive(portlet.isActive());
-				portletModel.setPluginPackage(portlet.getPluginPackage());
-				portletModel.setDefaultPluginSetting(
-					portlet.getDefaultPluginSetting());
+			if (portletModel == null) {
+				continue;
 			}
+
+			portletModel.setRoles(portlet.getRoles());
+			portletModel.setActive(portlet.isActive());
+			portletModel.setPluginPackage(portlet.getPluginPackage());
+			portletModel.setDefaultPluginSetting(
+				portlet.getDefaultPluginSetting());
 		}
 
 		return portletsMap;
@@ -2491,9 +2501,11 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			for (EventDefinition eventDefinition : eventDefinitions) {
 				Set<QName> qNames = eventDefinition.getQNames();
 
-				if (qNames.contains(qName)) {
-					processingEvents.addAll(qNames);
+				if (!qNames.contains(qName)) {
+					continue;
 				}
+
+				processingEvents.addAll(qNames);
 			}
 		}
 
@@ -2727,12 +2739,14 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 			containerRuntimeOptions.put(name, values.toArray(new String[0]));
 
-			if (name.equals(
-					LiferayPortletConfig.RUNTIME_OPTION_PORTAL_CONTEXT) &&
-				!values.isEmpty() && GetterUtil.getBoolean(values.get(0))) {
+			if (!name.equals(
+					LiferayPortletConfig.RUNTIME_OPTION_PORTAL_CONTEXT) ||
+				values.isEmpty() || !GetterUtil.getBoolean(values.get(0))) {
 
-				portletApp.setWARFile(false);
+				continue;
 			}
+
+			portletApp.setWARFile(false);
 		}
 
 		Set<String> validCustomPortletModes = new HashSet<>();

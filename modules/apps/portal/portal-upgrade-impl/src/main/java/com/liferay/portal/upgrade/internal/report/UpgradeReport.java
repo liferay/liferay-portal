@@ -698,13 +698,15 @@ public class UpgradeReport {
 
 					long duration = GetterUtil.getLong(parts[parts.length - 2]);
 
-					if (duration >=
+					if (duration <
 							PropsValues.
 								UPGRADE_REPORT_UPGRADE_PROCESS_THRESHOLD) {
 
-						upgradeProcessDurations.put(
-							upgradeProcessClassName, duration);
+						continue;
 					}
+
+					upgradeProcessDurations.put(
+						upgradeProcessClassName, duration);
 				}
 
 				List<RunningUpgradeProcess> longestRunningUpgradeProcesses =

@@ -672,11 +672,13 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 		while (iterator.hasNext()) {
 			AssetCategory category = iterator.next();
 
-			if (!AssetCategoryPermission.contains(
+			if (AssetCategoryPermission.contains(
 					permissionChecker, category, ActionKeys.VIEW)) {
 
-				iterator.remove();
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		return categories;

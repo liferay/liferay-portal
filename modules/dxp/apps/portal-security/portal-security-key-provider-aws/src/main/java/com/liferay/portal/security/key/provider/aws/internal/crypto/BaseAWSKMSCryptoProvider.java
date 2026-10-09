@@ -334,12 +334,14 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 							String aliasName = aliasListEntry.getAliasName();
 
-							if ((aliasName != null) &&
-								aliasName.startsWith(aliasPrefix)) {
+							if ((aliasName == null) ||
+								!aliasName.startsWith(aliasPrefix)) {
 
-								keyIdentifiers.add(
-									aliasName.substring(aliasPrefix.length()));
+								continue;
 							}
+
+							keyIdentifiers.add(
+								aliasName.substring(aliasPrefix.length()));
 						}
 
 						String marker = listAliasesResult.getNextMarker();

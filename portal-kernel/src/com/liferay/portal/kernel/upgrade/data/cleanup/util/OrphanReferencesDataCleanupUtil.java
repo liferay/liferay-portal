@@ -50,13 +50,15 @@ public class OrphanReferencesDataCleanupUtil {
 
 		if (firstIndexColumnNames != null) {
 			for (String columnName : columnNames) {
-				if (!firstIndexColumnNames.contains(
+				if (firstIndexColumnNames.contains(
 						StringUtil.toLowerCase(columnName))) {
 
-					safeCloseables.add(
-						db.addTemporaryIndex(
-							connection, tableName, false, columnName));
+					continue;
 				}
+
+				safeCloseables.add(
+					db.addTemporaryIndex(
+						connection, tableName, false, columnName));
 			}
 		}
 
@@ -289,18 +291,19 @@ public class OrphanReferencesDataCleanupUtil {
 			while (resultSet.next()) {
 				String indexName = resultSet.getString("INDEX_NAME");
 
-				if (indexName == null) {
+				if ((indexName == null) ||
+					(resultSet.getShort("ORDINAL_POSITION") != 1)) {
+
 					continue;
 				}
 
-				if (resultSet.getShort("ORDINAL_POSITION") == 1) {
-					String columnName = resultSet.getString("COLUMN_NAME");
+				String columnName = resultSet.getString("COLUMN_NAME");
 
-					if (columnName != null) {
-						firstIndexColumnNames.add(
-							StringUtil.lowerCase(columnName));
-					}
+				if (columnName == null) {
+					continue;
 				}
+
+				firstIndexColumnNames.add(StringUtil.lowerCase(columnName));
 			}
 		}
 

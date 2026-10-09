@@ -53,14 +53,16 @@ public abstract class BaseContactInfoManager<T>
 			long size = contactInfos.size();
 
 			for (T tempContactInfo : contactInfos) {
-				if ((size == 1) ||
-					(getPrimaryKey(tempContactInfo) != getPrimaryKey(
+				if ((size != 1) &&
+					(getPrimaryKey(tempContactInfo) == getPrimaryKey(
 						contactInfo))) {
 
-					setPrimary(tempContactInfo, true);
-
-					doUpdate(tempContactInfo);
+					continue;
 				}
+
+				setPrimary(tempContactInfo, true);
+
+				doUpdate(tempContactInfo);
 			}
 		}
 	}

@@ -277,10 +277,12 @@ public class UpgradeDDMStructureTest {
 
 						String className = clazz.getName();
 
-						if (className.contains(_CLASS_NAME)) {
-							_ddmStructureUpgradeProcess =
-								(UpgradeProcess)upgradeStep;
+						if (!className.contains(_CLASS_NAME)) {
+							continue;
 						}
+
+						_ddmStructureUpgradeProcess =
+							(UpgradeProcess)upgradeStep;
 					}
 				}
 

@@ -171,21 +171,22 @@ public class JavaModuleJavaxPortletInitParamTemplatePathCheck
 				templatePath = path;
 			}
 
-			if (!path.contains(templatePath)) {
-				int x = templatePath.lastIndexOf(StringPool.SLASH);
+			if (path.contains(templatePath)) {
+				continue;
+			}
 
-				int y = templatePath.lastIndexOf(StringPool.SLASH, x - 1);
+			int x = templatePath.lastIndexOf(StringPool.SLASH);
 
-				while (y != -1) {
-					templatePath = templatePath.substring(0, y + 1);
+			int y = templatePath.lastIndexOf(StringPool.SLASH, x - 1);
 
-					if (path.contains(templatePath)) {
-						break;
-					}
+			while (y != -1) {
+				templatePath = templatePath.substring(0, y + 1);
 
-					y = templatePath.lastIndexOf(
-						StringPool.FORWARD_SLASH, y - 1);
+				if (path.contains(templatePath)) {
+					break;
 				}
+
+				y = templatePath.lastIndexOf(StringPool.FORWARD_SLASH, y - 1);
 			}
 		}
 

@@ -209,9 +209,11 @@ public abstract class BasePortletPreferencesUpgradeProcess
 				sb.append("'");
 			}
 
-			if ((i + 1) < portletIds.length) {
-				sb.append(" or ");
+			if ((i + 1) >= portletIds.length) {
+				continue;
 			}
+
+			sb.append(" or ");
 		}
 
 		return sb.toString();
@@ -414,9 +416,11 @@ public abstract class BasePortletPreferencesUpgradeProcess
 				preferenceElement.addElement("value", value);
 			}
 
-			if (preferenceValues._readOnly) {
-				preferenceElement.addElement("read-only", Boolean.TRUE);
+			if (!preferenceValues._readOnly) {
+				continue;
 			}
+
+			preferenceElement.addElement("read-only", Boolean.TRUE);
 		}
 
 		return portletPreferencesElement.toXMLString();

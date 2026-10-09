@@ -318,9 +318,11 @@ public class JournalFeedTypeUpgradeProcess extends UpgradeProcess {
 					String type = StringUtil.toLowerCase(
 						resultSet.getString("type_"));
 
-					if (Validator.isNotNull(type)) {
-						types.add(type);
+					if (Validator.isNull(type)) {
+						continue;
 					}
+
+					types.add(type);
 				}
 
 				return types;

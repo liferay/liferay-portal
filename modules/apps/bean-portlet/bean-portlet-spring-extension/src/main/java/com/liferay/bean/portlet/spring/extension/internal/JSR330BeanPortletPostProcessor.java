@@ -180,25 +180,22 @@ public class JSR330BeanPortletPostProcessor
 				MergedAnnotation<?> mergedAnnotation = _getMergedAnnotation(
 					bridgedMethod);
 
-				if ((mergedAnnotation != null) &&
-					method.equals(
-						ClassUtils.getMostSpecificMethod(method, beanClass))) {
+				if ((mergedAnnotation == null) ||
+					!method.equals(
+						ClassUtils.getMostSpecificMethod(method, beanClass)) ||
+					Modifier.isStatic(method.getModifiers())) {
 
-					if (Modifier.isStatic(method.getModifiers())) {
-						continue;
-					}
-
-					PropertyDescriptor propertyDescriptor =
-						BeanUtils.findPropertyForMethod(
-							bridgedMethod, beanClass);
-					boolean required = determineRequiredStatus(
-						mergedAnnotation);
-
-					injectedElements2.add(
-						new JSR330InjectedMethodElement(
-							_configurableListableBeanFactory, method,
-							propertyDescriptor, required));
+					continue;
 				}
+
+				PropertyDescriptor propertyDescriptor =
+					BeanUtils.findPropertyForMethod(bridgedMethod, beanClass);
+				boolean required = determineRequiredStatus(mergedAnnotation);
+
+				injectedElements2.add(
+					new JSR330InjectedMethodElement(
+						_configurableListableBeanFactory, method,
+						propertyDescriptor, required));
 			}
 
 			injectedElements1.addAll(0, injectedElements2);

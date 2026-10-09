@@ -174,9 +174,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			modifiedModuleDirsList.size());
 
 		for (File modifiedModuleDir : modifiedModuleDirsList) {
-			if (_isNPMTestModuleDir(modifiedModuleDir)) {
-				modifiedNPMTestModuleDirsList.add(modifiedModuleDir);
+			if (!_isNPMTestModuleDir(modifiedModuleDir)) {
+				continue;
 			}
+
+			modifiedNPMTestModuleDirsList.add(modifiedModuleDir);
 		}
 
 		return modifiedNPMTestModuleDirsList;
@@ -188,9 +190,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		List<File> modifiedNonposhiFilesList = new ArrayList<>();
 
 		for (File modifiedFile : modifiedFilesList) {
-			if (!JenkinsResultsParserUtil.isPoshiFile(modifiedFile)) {
-				modifiedNonposhiFilesList.add(modifiedFile);
+			if (JenkinsResultsParserUtil.isPoshiFile(modifiedFile)) {
+				continue;
 			}
+
+			modifiedNonposhiFilesList.add(modifiedFile);
 		}
 
 		return JenkinsResultsParserUtil.getDirectoriesContainingFiles(
@@ -203,9 +207,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		List<File> modifiedPoshiFilesList = new ArrayList<>();
 
 		for (File modifiedFile : modifiedFilesList) {
-			if (JenkinsResultsParserUtil.isPoshiFile(modifiedFile)) {
-				modifiedPoshiFilesList.add(modifiedFile);
+			if (!JenkinsResultsParserUtil.isPoshiFile(modifiedFile)) {
+				continue;
 			}
+
+			modifiedPoshiFilesList.add(modifiedFile);
 		}
 
 		return JenkinsResultsParserUtil.getDirectoriesContainingFiles(
@@ -354,9 +360,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 			String mode = gitrepoProperties.getProperty("mode", "push");
 
-			if (mode.equals("pull")) {
-				moduleSubrepoDirs.add(gitrepoFile.getParentFile());
+			if (!mode.equals("pull")) {
+				continue;
 			}
+
+			moduleSubrepoDirs.add(gitrepoFile.getParentFile());
 		}
 
 		return moduleSubrepoDirs;
@@ -366,9 +374,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		List<File> npmModuleDirsList = new ArrayList<>();
 
 		for (File moduleDir : getModuleDirsList()) {
-			if (_isNPMTestModuleDir(moduleDir)) {
-				npmModuleDirsList.add(moduleDir);
+			if (!_isNPMTestModuleDir(moduleDir)) {
+				continue;
 			}
+
+			npmModuleDirsList.add(moduleDir);
 		}
 
 		return npmModuleDirsList;
@@ -506,29 +516,31 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 				Matcher matcher = _esBuildFileNamePattern.matcher(
 					file.getName());
 
-				if (matcher.find()) {
-					File esBuildDir = new File(
-						getWorkingDirectory(),
-						"modules/node_modules/@esbuild/" + matcher.group(1));
-
-					if (esBuildDir.exists()) {
-						continue;
-					}
-
-					File tmpDir = new File(getWorkingDirectory(), "tmp");
-
-					JenkinsResultsParserUtil.unTarGzip(file, tmpDir);
-
-					JenkinsResultsParserUtil.move(
-						new File(tmpDir, "package"), esBuildDir);
-
-					File esBuildBinFile = new File(esBuildDir, "bin/esbuild");
-
-					JenkinsResultsParserUtil.executeBashCommands(
-						"chmod +x " + esBuildBinFile);
-
-					JenkinsResultsParserUtil.delete(tmpDir);
+				if (!matcher.find()) {
+					continue;
 				}
+
+				File esBuildDir = new File(
+					getWorkingDirectory(),
+					"modules/node_modules/@esbuild/" + matcher.group(1));
+
+				if (esBuildDir.exists()) {
+					continue;
+				}
+
+				File tmpDir = new File(getWorkingDirectory(), "tmp");
+
+				JenkinsResultsParserUtil.unTarGzip(file, tmpDir);
+
+				JenkinsResultsParserUtil.move(
+					new File(tmpDir, "package"), esBuildDir);
+
+				File esBuildBinFile = new File(esBuildDir, "bin/esbuild");
+
+				JenkinsResultsParserUtil.executeBashCommands(
+					"chmod +x " + esBuildBinFile);
+
+				JenkinsResultsParserUtil.delete(tmpDir);
 			}
 		}
 		catch (AntException | IOException | TimeoutException exception) {

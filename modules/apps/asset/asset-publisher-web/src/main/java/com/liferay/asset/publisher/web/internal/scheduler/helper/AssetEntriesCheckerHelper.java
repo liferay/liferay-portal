@@ -166,12 +166,14 @@ public class AssetEntriesCheckerHelper {
 		ArrayList<AssetEntry> newAssetEntries = new ArrayList<>();
 
 		for (AssetEntry assetEntry : assetEntries) {
-			if (assetEntry.isVisible() &&
-				!ArrayUtil.contains(
+			if (!assetEntry.isVisible() ||
+				ArrayUtil.contains(
 					notifiedAssetEntryIds, assetEntry.getEntryId())) {
 
-				newAssetEntries.add(assetEntry);
+				continue;
 			}
+
+			newAssetEntries.add(assetEntry);
 		}
 
 		if (newAssetEntries.isEmpty()) {
@@ -511,9 +513,11 @@ public class AssetEntriesCheckerHelper {
 
 			map.put(locale, portletTitle);
 
-			if (Validator.isNotNull(portletTitle)) {
-				empty = false;
+			if (Validator.isNull(portletTitle)) {
+				continue;
 			}
+
+			empty = false;
 		}
 
 		if (!empty) {

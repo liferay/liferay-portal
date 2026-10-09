@@ -217,9 +217,11 @@ public class ViewCountEntryLocalServiceImpl
 		Set<String> disabledClassNames = new HashSet<>();
 
 		for (String className : viewCountConfiguration.disabledClassNames()) {
-			if (Validator.isNotNull(className)) {
-				disabledClassNames.add(className);
+			if (Validator.isNull(className)) {
+				continue;
 			}
+
+			disabledClassNames.add(className);
 		}
 
 		_disabledClassNames = disabledClassNames;

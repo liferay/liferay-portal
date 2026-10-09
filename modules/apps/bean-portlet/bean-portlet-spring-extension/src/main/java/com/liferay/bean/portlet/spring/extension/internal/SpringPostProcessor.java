@@ -163,10 +163,12 @@ public class SpringPostProcessor
 
 			String beanClassName = beanDefinition.getBeanClassName();
 
-			if (beanClassName != null) {
-				_springBeanPortletExtension.step2ProcessAnnotatedType(
-					beanClassName);
+			if (beanClassName == null) {
+				continue;
 			}
+
+			_springBeanPortletExtension.step2ProcessAnnotatedType(
+				beanClassName);
 		}
 
 		JspFactory jspFactory = JspFactory.getDefaultFactory();

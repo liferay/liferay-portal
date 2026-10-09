@@ -1049,16 +1049,18 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 		dir = dir.getCanonicalFile();
 
 		for (File file : _listConfigs(dir)) {
-			if ((boolean)canTransformURLMethod.invoke(
+			if (!(boolean)canTransformURLMethod.invoke(
 					configurationFileInstaller, file)) {
 
-				try {
-					transformURLMethod.invoke(configurationFileInstaller, file);
-				}
-				catch (InvocationTargetException invocationTargetException) {
-					_log.error(
-						"Unable to install " + file, invocationTargetException);
-				}
+				continue;
+			}
+
+			try {
+				transformURLMethod.invoke(configurationFileInstaller, file);
+			}
+			catch (InvocationTargetException invocationTargetException) {
+				_log.error(
+					"Unable to install " + file, invocationTargetException);
 			}
 		}
 	}
@@ -1079,12 +1081,14 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			BundleContext bundleContext = _framework.getBundleContext();
 
 			for (Bundle bundle : bundleContext.getBundles()) {
-				if (fragmentHosts.remove(bundle.getSymbolicName())) {
-					refreshBundles.add(bundle);
+				if (!fragmentHosts.remove(bundle.getSymbolicName())) {
+					continue;
+				}
 
-					if (fragmentHosts.isEmpty()) {
-						break;
-					}
+				refreshBundles.add(bundle);
+
+				if (fragmentHosts.isEmpty()) {
+					break;
 				}
 			}
 
@@ -1503,11 +1507,12 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 			file = file.getCanonicalFile();
 
-			if (file.exists()) {
-				bundles.addAll(
-					_deployStaticBundlesFromFile(
-						file, overrideStaticFileNames));
+			if (!file.exists()) {
+				continue;
 			}
+
+			bundles.addAll(
+				_deployStaticBundlesFromFile(file, overrideStaticFileNames));
 		}
 
 		Set<String> overrideLPKGFileNames = new HashSet<>();
@@ -1520,9 +1525,11 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 				String pathName = StringUtil.toLowerCase(fileName);
 
-				if (pathName.endsWith("jar")) {
-					overrideLPKGFileNames.add(fileName);
+				if (!pathName.endsWith("jar")) {
+					continue;
 				}
+
+				overrideLPKGFileNames.add(fileName);
 			}
 		}
 
@@ -1536,9 +1543,11 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 				location = _extractFileName(location);
 
-				if (overrideLPKGFileNames.contains(location)) {
-					bundle.uninstall();
+				if (!overrideLPKGFileNames.contains(location)) {
+					continue;
 				}
+
+				bundle.uninstall();
 			}
 		}
 
@@ -1555,16 +1564,18 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 				continue;
 			}
 
-			if (!_isFragmentBundle(bundle)) {
-				if (Objects.equals(
-						bundle.getSymbolicName(),
-						"com.liferay.portal.file.install.impl")) {
-
-					fileInstallBundle = bundle;
-				}
-
-				bundle.stop();
+			if (_isFragmentBundle(bundle)) {
+				continue;
 			}
+
+			if (Objects.equals(
+					bundle.getSymbolicName(),
+					"com.liferay.portal.file.install.impl")) {
+
+				fileInstallBundle = bundle;
+			}
+
+			bundle.stop();
 		}
 
 		FrameworkStartLevel frameworkStartLevel = _framework.adapt(
@@ -1603,17 +1614,19 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			List<Future<Void>> futures = new ArrayList<>(bundles.size());
 
 			for (Bundle bundle : bundles) {
-				if (!_isFragmentBundle(bundle) &&
-					(bundle != fileInstallBundle)) {
+				if (_isFragmentBundle(bundle) ||
+					(bundle == fileInstallBundle)) {
 
-					futures.add(
-						executorService.submit(
-							() -> {
-								bundle.start();
-
-								return null;
-							}));
+					continue;
 				}
+
+				futures.add(
+					executorService.submit(
+						() -> {
+							bundle.start();
+
+							return null;
+						}));
 			}
 
 			for (Future<Void> future : futures) {
@@ -1630,11 +1643,13 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 		}
 		else {
 			for (Bundle bundle : bundles) {
-				if (!_isFragmentBundle(bundle) &&
-					(bundle != fileInstallBundle)) {
+				if (_isFragmentBundle(bundle) ||
+					(bundle == fileInstallBundle)) {
 
-					bundle.start();
+					continue;
 				}
+
+				bundle.start();
 			}
 		}
 
@@ -1645,9 +1660,11 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 		Set<Bundle> fragmentBundles = new HashSet<>();
 
 		for (Bundle bundle : installedBundles) {
-			if (_isFragmentBundle(bundle)) {
-				fragmentBundles.add(bundle);
+			if (!_isFragmentBundle(bundle)) {
+				continue;
 			}
+
+			fragmentBundles.add(bundle);
 		}
 
 		frameworkWiring.resolveBundles(fragmentBundles);
@@ -1678,13 +1695,15 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 		while (iterator.hasNext()) {
 			Bundle bundle = iterator.next();
 
-			if (_configurationBundleSymbolicNames.contains(
+			if (!_configurationBundleSymbolicNames.contains(
 					bundle.getSymbolicName())) {
 
-				bundle.start();
-
-				iterator.remove();
+				continue;
 			}
+
+			bundle.start();
+
+			iterator.remove();
 		}
 	}
 

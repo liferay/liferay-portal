@@ -37,9 +37,11 @@ public abstract class BaseCETImplFactoryImpl<T extends CET>
 
 			CETProperty.Type type = cetProperty.type();
 
-			if (type.isURL()) {
-				urlCETPropertyNames.add(cetProperty.name());
+			if (!type.isURL()) {
+				continue;
 			}
+
+			urlCETPropertyNames.add(cetProperty.name());
 		}
 
 		return urlCETPropertyNames;

@@ -41,27 +41,28 @@ public class DocumentHTMLProcessor {
 			while (scanner.hasNext()) {
 				String token = scanner.next();
 
-				if (Validator.isNotNull(token)) {
-					token += ">";
-
-					replacement = token.replaceAll(
-						_DOCUMENTS_REGEX,
-						"$1&auth_token=" + imageRequestToken + "$3");
-
-					replacement = replacement.replaceAll(
-						_IMAGE_REGEX,
-						"$1&auth_token=" + imageRequestToken + "$3");
-
-					replacement = replacement.replaceAll(
-						_PORTLET_FILE_ENTRY_REGEX,
-						"$1?auth_token=" + imageRequestToken + "$3");
-
-					replacement = replacement.replaceAll(
-						_WIKI_PAGE_ATTACHMENT_REGEX,
-						"$1$3&auth_token=" + imageRequestToken + "$6");
-
-					FileUtil.write(tempFile, replacement, true, true);
+				if (Validator.isNull(token)) {
+					continue;
 				}
+
+				token += ">";
+
+				replacement = token.replaceAll(
+					_DOCUMENTS_REGEX,
+					"$1&auth_token=" + imageRequestToken + "$3");
+
+				replacement = replacement.replaceAll(
+					_IMAGE_REGEX, "$1&auth_token=" + imageRequestToken + "$3");
+
+				replacement = replacement.replaceAll(
+					_PORTLET_FILE_ENTRY_REGEX,
+					"$1?auth_token=" + imageRequestToken + "$3");
+
+				replacement = replacement.replaceAll(
+					_WIKI_PAGE_ATTACHMENT_REGEX,
+					"$1$3&auth_token=" + imageRequestToken + "$6");
+
+				FileUtil.write(tempFile, replacement, true, true);
 			}
 
 			processedInputStream = new AutoDeleteFileInputStream(tempFile);

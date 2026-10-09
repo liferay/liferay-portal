@@ -234,12 +234,14 @@ public class JournalArticleDDMFormConverterTest {
 				return value.getString(LocaleUtil.US);
 			}
 
-			if (ListUtil.isNotEmpty(
+			if (ListUtil.isEmpty(
 					ddmFormFieldValue.getNestedDDMFormFieldValues())) {
 
-				valueString = _getValue(
-					ddmFormFieldValue.getNestedDDMFormFieldValues());
+				continue;
 			}
+
+			valueString = _getValue(
+				ddmFormFieldValue.getNestedDDMFormFieldValues());
 		}
 
 		return valueString;

@@ -19,9 +19,11 @@ public class DropdownItemList extends ArrayList<DropdownItem> {
 		DropdownItemList dropdownItemList = new DropdownItemList();
 
 		for (DropdownItem dropdownItem : dropdownItems) {
-			if (dropdownItem != null) {
-				dropdownItemList.add(dropdownItem);
+			if (dropdownItem == null) {
+				continue;
 			}
+
+			dropdownItemList.add(dropdownItem);
 		}
 
 		return dropdownItemList;

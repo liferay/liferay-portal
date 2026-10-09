@@ -157,17 +157,17 @@ public class AssetCategoryStagedModelDataHandler
 		for (AssetCategoryProperty assetCategoryProperty :
 				assetCategoryProperties) {
 
-			if (!_exists(categoryElement, assetCategoryProperty)) {
-				Element propertyElement = categoryElement.addElement(
-					"property");
-
-				propertyElement.addAttribute(
-					"userUuid", assetCategoryProperty.getUserUuid());
-				propertyElement.addAttribute(
-					"key", assetCategoryProperty.getKey());
-				propertyElement.addAttribute(
-					"value", assetCategoryProperty.getValue());
+			if (_exists(categoryElement, assetCategoryProperty)) {
+				continue;
 			}
+
+			Element propertyElement = categoryElement.addElement("property");
+
+			propertyElement.addAttribute(
+				"userUuid", assetCategoryProperty.getUserUuid());
+			propertyElement.addAttribute("key", assetCategoryProperty.getKey());
+			propertyElement.addAttribute(
+				"value", assetCategoryProperty.getValue());
 		}
 
 		String categoryPath = ExportImportPathUtil.getModelPath(category);
@@ -429,13 +429,15 @@ public class AssetCategoryStagedModelDataHandler
 				_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
 					assetDisplayPageEntryId);
 
-			if (existingAssetDisplayPageEntry != null) {
-				existingAssetDisplayPageEntry.setClassPK(
-					importedCategory.getCategoryId());
-
-				_assetDisplayPageEntryLocalService.updateAssetDisplayPageEntry(
-					existingAssetDisplayPageEntry);
+			if (existingAssetDisplayPageEntry == null) {
+				continue;
 			}
+
+			existingAssetDisplayPageEntry.setClassPK(
+				importedCategory.getCategoryId());
+
+			_assetDisplayPageEntryLocalService.updateAssetDisplayPageEntry(
+				existingAssetDisplayPageEntry);
 		}
 	}
 

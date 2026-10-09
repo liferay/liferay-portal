@@ -1714,9 +1714,11 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			ProjectInternal dependencyProject =
 				(ProjectInternal)project.findProject(value);
 
-			if (dependencyProject != null) {
-				projectConfigurer.configure(dependencyProject);
+			if (dependencyProject == null) {
+				continue;
 			}
+
+			projectConfigurer.configure(dependencyProject);
 		}
 
 		// Package versions
@@ -2642,11 +2644,13 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						File archetypeResourcesDir = new File(
 							sourceFolder.getDir(), "archetype-resources");
 
-						if (archetypeResourcesDir.isDirectory()) {
-							List<String> excludes = sourceFolder.getExcludes();
-
-							excludes.add("**/*.java");
+						if (!archetypeResourcesDir.isDirectory()) {
+							continue;
 						}
+
+						List<String> excludes = sourceFolder.getExcludes();
+
+						excludes.add("**/*.java");
 					}
 				}
 
@@ -3174,12 +3178,14 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 					String key = (String)entry.getKey();
 
-					if (Objects.equals(
+					if (!Objects.equals(
 							entry.getValue(),
 							otherProperties.getProperty(key))) {
 
-						iterator.remove();
+						continue;
 					}
+
+					iterator.remove();
 				}
 			}
 
@@ -3374,11 +3380,13 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						dependencyProject = project.findProject(
 							path.substring(0, path.length() - 3) + "impl");
 
-						if (dependencyProject != null) {
-							deployTask.finalizedBy(
-								dependencyProject.getPath() + ':' +
-									LiferayBasePlugin.DEPLOY_TASK_NAME);
+						if (dependencyProject == null) {
+							continue;
 						}
+
+						deployTask.finalizedBy(
+							dependencyProject.getPath() + ':' +
+								LiferayBasePlugin.DEPLOY_TASK_NAME);
 					}
 				}
 
@@ -3778,11 +3786,12 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 			File file = project.file(fileName);
 
-			if (file.exists()) {
-				replaceRegexTask.match(
-					GradlePluginsDefaultsUtil.jsonVersionPattern.pattern(),
-					file);
+			if (!file.exists()) {
+				continue;
 			}
+
+			replaceRegexTask.match(
+				GradlePluginsDefaultsUtil.jsonVersionPattern.pattern(), file);
 		}
 	}
 
@@ -4883,9 +4892,11 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 				Version version = Version.parseVersion(
 					versions.getProperty(key));
 
-				if (releaseVersion.compareTo(version) > 0) {
-					versions.setProperty(key, releaseVersion.toString());
+				if (releaseVersion.compareTo(version) <= 0) {
+					continue;
 				}
+
+				versions.setProperty(key, releaseVersion.toString());
 			}
 
 			_saveVersions(

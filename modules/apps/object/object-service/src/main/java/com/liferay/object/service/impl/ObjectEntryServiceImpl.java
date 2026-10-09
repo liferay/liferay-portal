@@ -942,9 +942,11 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 				}
 			}
 
-			if (addUserId) {
-				userIds.add(userId);
+			if (!addUserId) {
+				continue;
 			}
+
+			userIds.add(userId);
 		}
 
 		try {

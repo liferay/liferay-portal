@@ -131,9 +131,11 @@ public class RichTextDDMFormFieldTemplateContextContributor
 		for (String key : data.keySet()) {
 			Object value = ddmFormFieldProperties.get(key);
 
-			if (value != null) {
-				data.put(key, value);
+			if (value == null) {
+				continue;
 			}
+
+			data.put(key, value);
 		}
 
 		return data;

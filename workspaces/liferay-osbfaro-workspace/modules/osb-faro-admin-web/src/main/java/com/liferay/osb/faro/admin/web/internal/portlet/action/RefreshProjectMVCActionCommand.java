@@ -70,14 +70,16 @@ public class RefreshProjectMVCActionCommand extends BaseMVCActionCommand {
 					_faroProjectLocalService.getFaroProjects(
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-				if (StringUtil.equals(
+				if (!StringUtil.equals(
 						faroProject.getState(),
 						FaroProjectConstants.STATE_READY)) {
 
-					sendRequest(
-						actionRequest, options, themeDisplay.getPortalURL(),
-						faroProject.getGroupId());
+					continue;
 				}
+
+				sendRequest(
+					actionRequest, options, themeDisplay.getPortalURL(),
+					faroProject.getGroupId());
 			}
 		}
 	}

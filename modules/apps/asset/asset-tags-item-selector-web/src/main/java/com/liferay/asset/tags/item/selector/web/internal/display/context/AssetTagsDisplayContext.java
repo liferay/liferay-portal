@@ -129,9 +129,11 @@ public class AssetTagsDisplayContext {
 					continue;
 				}
 
-				if (!groupIds.contains(cmsGroup.getGroupId())) {
-					groupIds.add(cmsGroup.getGroupId());
+				if (groupIds.contains(cmsGroup.getGroupId())) {
+					continue;
 				}
+
+				groupIds.add(cmsGroup.getGroupId());
 			}
 
 			_groupIds = ArrayUtil.toLongArray(groupIds);

@@ -57,12 +57,14 @@ public class MetadataKeysBuilder {
 				schemaJsonNode,
 				OASConstants.PATH_PROPERTIES_X_CLASS_NAME_DEFAULT);
 
-			if (!classNameJsonNode.isNull()) {
-				MetadataKeyBuilder metadataKeyBuilder =
-					MetadataKeyBuilder.newKey(classNameJsonNode.asText());
-
-				metadataKeys.add(metadataKeyBuilder.build());
+			if (classNameJsonNode.isNull()) {
+				continue;
 			}
+
+			MetadataKeyBuilder metadataKeyBuilder = MetadataKeyBuilder.newKey(
+				classNameJsonNode.asText());
+
+			metadataKeys.add(metadataKeyBuilder.build());
 		}
 
 		return metadataKeys;
@@ -86,14 +88,16 @@ public class MetadataKeysBuilder {
 
 			JsonNode pathJsonNode = entry.getValue();
 
-			if (pathJsonNode.has(operation)) {
-				String path = entry.getKey();
-
-				MetadataKeyBuilder metadataKeyBuilder =
-					MetadataKeyBuilder.newKey(path);
-
-				metadataKeys.add(metadataKeyBuilder.build());
+			if (!pathJsonNode.has(operation)) {
+				continue;
 			}
+
+			String path = entry.getKey();
+
+			MetadataKeyBuilder metadataKeyBuilder = MetadataKeyBuilder.newKey(
+				path);
+
+			metadataKeys.add(metadataKeyBuilder.build());
 		}
 
 		return metadataKeys;

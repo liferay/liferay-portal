@@ -88,10 +88,12 @@ public class UpdateIdentityProviderConnectionMVCActionCommand
 		}
 
 		for (String booleanFieldExpression : _BOOLEAN_FIELD_EXPRESSIONS) {
-			if (!regularParameterMap.containsKey(booleanFieldExpression)) {
-				samlSpIdpConnectionProcessor.setValueArray(
-					booleanFieldExpression, new String[] {StringPool.BLANK});
+			if (regularParameterMap.containsKey(booleanFieldExpression)) {
+				continue;
 			}
+
+			samlSpIdpConnectionProcessor.setValueArray(
+				booleanFieldExpression, new String[] {StringPool.BLANK});
 		}
 
 		Map<String, FileItem[]> multipartParameterMap =

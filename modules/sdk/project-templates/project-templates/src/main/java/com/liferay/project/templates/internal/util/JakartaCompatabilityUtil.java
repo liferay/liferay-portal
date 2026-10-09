@@ -95,16 +95,18 @@ public class JakartaCompatabilityUtil {
 
 			Matcher matcher = pattern.matcher(content);
 
-			if (matcher.find()) {
-				String value = String.valueOf(entry.getValue());
-
-				String[] groupAndNameAndVersion = value.split(_DELIMITER_COLON);
-
-				content = matcher.replaceAll(
-					String.format(
-						replacementPattern, groupAndNameAndVersion[0],
-						groupAndNameAndVersion[1], groupAndNameAndVersion[2]));
+			if (!matcher.find()) {
+				continue;
 			}
+
+			String value = String.valueOf(entry.getValue());
+
+			String[] groupAndNameAndVersion = value.split(_DELIMITER_COLON);
+
+			content = matcher.replaceAll(
+				String.format(
+					replacementPattern, groupAndNameAndVersion[0],
+					groupAndNameAndVersion[1], groupAndNameAndVersion[2]));
 		}
 
 		Files.writeString(filePath, content);

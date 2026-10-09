@@ -1426,9 +1426,11 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		for (int i = 0; i < allSelectedOptionsWebElements.size(); i++) {
 			WebElement webElement = allSelectedOptionsWebElements.get(i);
 
-			if (webElement != null) {
-				selectedOptionsWebElements[i] = webElement.getText();
+			if (webElement == null) {
+				continue;
 			}
+
+			selectedOptionsWebElements[i] = webElement.getText();
 		}
 
 		return selectedOptionsWebElements;
@@ -2732,9 +2734,11 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 			for (int i = 0; i < tokens.length; i++) {
 				keyboard.type(tokens[i]);
 
-				if ((i + 1) < tokens.length) {
-					keyboard.type(Key.ENTER);
+				if ((i + 1) >= tokens.length) {
+					continue;
 				}
+
+				keyboard.type(Key.ENTER);
 			}
 
 			if (value.endsWith("${line.separator}")) {
@@ -2897,16 +2901,17 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 
 			retryCount++;
 
-			if (retryCount < maxRetries) {
-				String message =
-					"Actual typed value: '" + typedValue +
-						"' did not match expected typed value: '" + value +
-							"'.";
-
-				System.out.println(
-					message + " Retrying LiferaySelenium.type() attempt #" +
-						(retryCount + 1) + ".");
+			if (retryCount >= maxRetries) {
+				continue;
 			}
+
+			String message =
+				"Actual typed value: '" + typedValue +
+					"' did not match expected typed value: '" + value + "'.";
+
+			System.out.println(
+				message + " Retrying LiferaySelenium.type() attempt #" +
+					(retryCount + 1) + ".");
 		}
 	}
 

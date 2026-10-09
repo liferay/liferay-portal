@@ -143,13 +143,15 @@ public class EmailAddressLocalServiceImpl
 					companyId, classNameId, classPK, primary);
 
 			for (EmailAddress emailAddress : emailAddresses) {
-				if ((emailAddressId <= 0) ||
-					(emailAddress.getEmailAddressId() != emailAddressId)) {
+				if ((emailAddressId > 0) &&
+					(emailAddress.getEmailAddressId() == emailAddressId)) {
 
-					emailAddress.setPrimary(false);
-
-					emailAddressPersistence.update(emailAddress);
+					continue;
 				}
+
+				emailAddress.setPrimary(false);
+
+				emailAddressPersistence.update(emailAddress);
 			}
 		}
 	}

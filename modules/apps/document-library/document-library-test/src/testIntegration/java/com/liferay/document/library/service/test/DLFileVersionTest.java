@@ -481,14 +481,16 @@ public class DLFileVersionTest {
 				String fieldType = ddmStructure.getFieldType(
 					ddmFormFieldValue.getName());
 
-				if (fieldType.equals("text")) {
-					LocalizedValue localizedValue = new LocalizedValue(
-						LocaleUtil.US);
-
-					localizedValue.addString(LocaleUtil.US, metadata);
-
-					ddmFormFieldValue.setValue(localizedValue);
+				if (!fieldType.equals("text")) {
+					continue;
 				}
+
+				LocalizedValue localizedValue = new LocalizedValue(
+					LocaleUtil.US);
+
+				localizedValue.addString(LocaleUtil.US, metadata);
+
+				ddmFormFieldValue.setValue(localizedValue);
 			}
 
 			_serviceContext.setAttribute(

@@ -420,9 +420,11 @@ public class JSTestClassFile extends BaseTestClassFile {
 		for (String parameter : parametersString.split(",")) {
 			parameter = parameter.trim();
 
-			if (!parameter.isEmpty()) {
-				parameters.add(parameter);
+			if (parameter.isEmpty()) {
+				continue;
 			}
+
+			parameters.add(parameter);
 		}
 
 		return parameters;

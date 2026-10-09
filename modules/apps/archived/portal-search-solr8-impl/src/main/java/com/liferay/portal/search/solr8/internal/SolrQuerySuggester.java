@@ -233,9 +233,11 @@ public class SolrQuerySuggester implements QuerySuggester {
 			sb.append(values[i]);
 			sb.append(StringPool.SPACE);
 
-			if (i < (values.length - 1)) {
-				sb.append("OR ");
+			if (i >= (values.length - 1)) {
+				continue;
 			}
+
+			sb.append("OR ");
 		}
 
 		return sb.toString();

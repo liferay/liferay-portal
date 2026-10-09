@@ -109,14 +109,17 @@ public class PortalDefaultPermissionsUtil {
 		Role role = RoleLocalServiceUtil.getRole(companyId, roleName);
 
 		for (String actionId : defaultActions) {
-			if (ListUtil.isEmpty(actionIds) || !actionIds.contains(actionId)) {
-				ResourceLocalServiceUtil.removeResource(
-					auditedModel.getCompanyId(),
-					auditedModel.getModelClassName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(auditedModel.getPrimaryKeyObj()),
-					role.getRoleId(), actionId);
+			if (ListUtil.isNotEmpty(actionIds) &&
+				actionIds.contains(actionId)) {
+
+				continue;
 			}
+
+			ResourceLocalServiceUtil.removeResource(
+				auditedModel.getCompanyId(), auditedModel.getModelClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(auditedModel.getPrimaryKeyObj()),
+				role.getRoleId(), actionId);
 		}
 	}
 

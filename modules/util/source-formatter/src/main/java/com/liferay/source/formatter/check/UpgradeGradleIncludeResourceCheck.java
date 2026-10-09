@@ -72,9 +72,11 @@ public class UpgradeGradleIncludeResourceCheck extends BaseFileCheck {
 				}
 			}
 
-			if (!hasDependency) {
-				iterator.remove();
+			if (hasDependency) {
+				continue;
 			}
+
+			iterator.remove();
 		}
 
 		if (gradleDependencies.isEmpty()) {

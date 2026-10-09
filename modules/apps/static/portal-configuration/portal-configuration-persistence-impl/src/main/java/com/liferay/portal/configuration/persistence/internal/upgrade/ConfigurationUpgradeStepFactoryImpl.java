@@ -86,28 +86,29 @@ public class ConfigurationUpgradeStepFactoryImpl
 				for (File file : configResourcesDir.listFiles()) {
 					String fileName = file.getName();
 
-					if (fileName.equals(oldPid.concat(".cfg")) ||
-						fileName.equals(oldPid.concat(".config")) ||
-						fileName.startsWith(oldPid.concat(StringPool.DASH))) {
+					if (!fileName.equals(oldPid.concat(".cfg")) &&
+						!fileName.equals(oldPid.concat(".config")) &&
+						!fileName.startsWith(oldPid.concat(StringPool.DASH))) {
 
-						File newFile = new File(
-							StringUtil.replace(file.getPath(), oldPid, newPid));
+						continue;
+					}
 
-						if (newFile.exists()) {
-							if (_log.isWarnEnabled()) {
-								_log.warn(
-									StringBundler.concat(
-										"Unable to rename ",
-										file.getAbsolutePath(), " to ",
-										newFile.getAbsolutePath(),
-										" because the file already exists"));
-							}
+					File newFile = new File(
+						StringUtil.replace(file.getPath(), oldPid, newPid));
 
-							continue;
+					if (newFile.exists()) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								StringBundler.concat(
+									"Unable to rename ", file.getAbsolutePath(),
+									" to ", newFile.getAbsolutePath(),
+									" because the file already exists"));
 						}
 
-						Files.move(file.toPath(), newFile.toPath());
+						continue;
 					}
+
+					Files.move(file.toPath(), newFile.toPath());
 				}
 			}
 			catch (IOException ioException) {
