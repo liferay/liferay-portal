@@ -57,7 +57,14 @@ describe('AccountDisplay', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [{displayOrder: 1, id: '1002', stageType: 'ENGAGED'}]
+				stages: [
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-1002',
+						id: '1002',
+						stageType: 'ENGAGED'
+					}
+				]
 			})
 		);
 
@@ -70,7 +77,7 @@ describe('AccountDisplay', () => {
 						Map({
 							operatorName: RelationalOperators.EQ,
 							propertyName: 'lifecycleStatus',
-							value: '1002'
+							value: 'erc-stage-1002'
 						})
 					])
 				})
@@ -103,7 +110,14 @@ describe('AccountDisplay', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [{displayOrder: 1, id: '1002', stageType: 'ENGAGED'}]
+				stages: [
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-1002',
+						id: '1002',
+						stageType: 'ENGAGED'
+					}
+				]
 			})
 		);
 
@@ -116,7 +130,7 @@ describe('AccountDisplay', () => {
 						Map({
 							operatorName: RelationalOperators.EQ,
 							propertyName: 'lifecycleStatus',
-							value: '1002'
+							value: 'erc-stage-1002'
 						})
 					])
 				})
@@ -149,7 +163,14 @@ describe('AccountDisplay', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [{displayOrder: 1, id: '1002', stageType: 'ENGAGED'}]
+				stages: [
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-1002',
+						id: '1002',
+						stageType: 'ENGAGED'
+					}
+				]
 			})
 		);
 

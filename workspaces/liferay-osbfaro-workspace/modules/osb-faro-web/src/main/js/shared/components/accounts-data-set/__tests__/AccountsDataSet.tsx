@@ -9,10 +9,26 @@ import {useRequest} from 'shared/hooks/useRequest';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 const DEFAULT_STAGE_ITEMS = [
-	{id: '9990', stageType: LifecycleStages.AWARE},
-	{id: '9991', stageType: LifecycleStages.ENGAGED},
-	{id: '9992', stageType: LifecycleStages.PIPELINE},
-	{id: '9993', stageType: LifecycleStages.AT_RISK},
+	{
+		externalReferenceCode: 'erc-stage-9990',
+		id: '9990',
+		stageType: LifecycleStages.AWARE,
+	},
+	{
+		externalReferenceCode: 'erc-stage-9991',
+		id: '9991',
+		stageType: LifecycleStages.ENGAGED,
+	},
+	{
+		externalReferenceCode: 'erc-stage-9992',
+		id: '9992',
+		stageType: LifecycleStages.PIPELINE,
+	},
+	{
+		externalReferenceCode: 'erc-stage-9993',
+		id: '9993',
+		stageType: LifecycleStages.AT_RISK,
+	},
 ];
 
 const buildCatalogField = (
@@ -329,14 +345,14 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(lifecycleStatusFilter?.items).toEqual([
-			{label: 'Aware', value: '9990'},
-			{label: 'Engaged', value: '9991'},
-			{label: 'Pipeline', value: '9992'},
-			{label: 'At Risk', value: '9993'},
+			{label: 'Aware', value: 'erc-stage-9990'},
+			{label: 'Engaged', value: 'erc-stage-9991'},
+			{label: 'Pipeline', value: 'erc-stage-9992'},
+			{label: 'At Risk', value: 'erc-stage-9993'},
 		]);
 	});
 
-	it('should preload the lifecycleStatus filter with the stage id and localized label when lifecycleStageFilter prop is provided', () => {
+	it('should preload the lifecycleStatus filter with the stage external reference code and localized label when lifecycleStageFilter prop is provided', () => {
 		render(
 			<AccountsDataSet
 				accountLifecycleId="al-1"
@@ -353,7 +369,7 @@ describe('AccountsDataSet', () => {
 
 		expect(lifecycleStatusFilter?.preloadedData).toEqual({
 			exclude: false,
-			selectedItems: [{label: 'At Risk', value: '9993'}],
+			selectedItems: [{label: 'At Risk', value: 'erc-stage-9993'}],
 		});
 	});
 

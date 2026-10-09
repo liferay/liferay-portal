@@ -9,7 +9,7 @@ import {PropertyTypes} from '../../utils/constants';
 jest.unmock('react-dom');
 
 const mockValue = createCustomValueMap([
-	{key: 'criterionGroup', value: [{operatorName: 'eq', value: '1002'}]}
+	{key: 'criterionGroup', value: [{operatorName: 'eq', value: 'erc-stage-1002'}]}
 ]);
 
 const defaultProps = {
@@ -41,8 +41,18 @@ describe('AccountSelectInput', () => {
 		API.lifecycle.fetchLifecycle.mockReturnValue(
 			Promise.resolve({
 				stages: [
-					{displayOrder: 2, id: '1002', stageType: 'ENGAGED'},
-					{displayOrder: 1, id: '1001', stageType: 'AWARE'}
+					{
+						displayOrder: 2,
+						externalReferenceCode: 'erc-stage-1002',
+						id: '1002',
+						stageType: 'ENGAGED'
+					},
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-1001',
+						id: '1001',
+						stageType: 'AWARE'
+					}
 				]
 			})
 		);
@@ -56,7 +66,7 @@ describe('AccountSelectInput', () => {
 		expect(getByText('is')).toBeTruthy();
 	});
 
-	it('should render the stage of the selected id', async () => {
+	it('should render the stage of the selected external reference code', async () => {
 		const {getByText} = render(<DefaultComponent />);
 
 		await waitFor(() => expect(getByText('Engaged')).toBeTruthy());
@@ -75,7 +85,7 @@ describe('AccountSelectInput', () => {
 		expect(options[1]).toHaveTextContent('Engaged');
 	});
 
-	it('should store the id of the selected stage', async () => {
+	it('should store the external reference code of the selected stage', async () => {
 		const onChange = jest.fn();
 
 		const {getAllByRole, getByText} = render(
@@ -94,6 +104,6 @@ describe('AccountSelectInput', () => {
 				0,
 				'value'
 			])
-		).toBe('1001');
+		).toBe('erc-stage-1001');
 	});
 });

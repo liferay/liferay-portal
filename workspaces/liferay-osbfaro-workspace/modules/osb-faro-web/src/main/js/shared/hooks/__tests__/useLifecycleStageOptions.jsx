@@ -17,8 +17,18 @@ describe('useLifecycleStageOptions', () => {
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
 				stages: [
-					{displayOrder: 2, id: '1002', stageType: 'ENGAGED'},
-					{displayOrder: 1, id: '1001', stageType: 'AWARE'}
+					{
+						displayOrder: 2,
+						externalReferenceCode: 'erc-stage-1002',
+						id: '1002',
+						stageType: 'ENGAGED'
+					},
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-1001',
+						id: '1001',
+						stageType: 'AWARE'
+					}
 				]
 			})
 		);
@@ -29,8 +39,8 @@ describe('useLifecycleStageOptions', () => {
 
 		await waitFor(() =>
 			expect(result.current.options).toEqual([
-				{label: 'Aware', value: '1001'},
-				{label: 'Engaged', value: '1002'}
+				{label: 'Aware', value: 'erc-stage-1001'},
+				{label: 'Engaged', value: 'erc-stage-1002'}
 			])
 		);
 
@@ -44,7 +54,14 @@ describe('useLifecycleStageOptions', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [{displayOrder: 1, id: '1001', stageType: 'CONVERTED'}]
+				stages: [
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-1001',
+						id: '1001',
+						stageType: 'CONVERTED'
+					}
+				]
 			})
 		);
 
@@ -54,7 +71,7 @@ describe('useLifecycleStageOptions', () => {
 
 		await waitFor(() =>
 			expect(result.current.options).toEqual([
-				{label: 'CONVERTED', value: '1001'}
+				{label: 'CONVERTED', value: 'erc-stage-1001'}
 			])
 		);
 	});

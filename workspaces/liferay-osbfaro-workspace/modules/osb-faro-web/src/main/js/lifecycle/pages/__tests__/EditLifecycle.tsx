@@ -52,6 +52,7 @@ const buildStages = (): ILifecycleStage[] =>
 		},
 		description: 'A configured stage',
 		displayOrder: index + 1,
+		externalReferenceCode: `erc-stage-${index + 1}`,
 		id: `stage-${index}`,
 		maxDuration: 30,
 		stageType,
