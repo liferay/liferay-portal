@@ -1213,7 +1213,7 @@
 
 		<check name="JSONBatchEngineDataFileCheck">
 			<category name="Styling" />
-			<description name="Checks the `className` of object definitions, removes default values, and sorts `objectFields` in `*.batch-engine-data.json` files." />
+			<description name="Performs several checks on `*.batch-engine-data.json` files." />
 		</check>
 		<check name="JSONCommerceCatalogFileCheck">
 			<category name="Styling" />
