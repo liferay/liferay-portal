@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ObjectValuePair;
@@ -1267,7 +1268,7 @@ public class DBTest {
 		DBType dbType = db.getDBType();
 
 		if (dbType == DBType.DB2) {
-			return "dbms_lock.sleep";
+			return "dbms_pipe.receive_message";
 		}
 		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			return "sleep";
@@ -1289,7 +1290,9 @@ public class DBTest {
 		DBType dbType = db.getDBType();
 
 		if (dbType == DBType.DB2) {
-			return "call dbms_lock.sleep(" + _SLOW_QUERY_SECONDS + ")";
+			return StringBundler.concat(
+				"values dbms_pipe.receive_message('",
+				RandomTestUtil.randomString(), "', ", _SLOW_QUERY_SECONDS, ")");
 		}
 		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			return "select sleep(" + _SLOW_QUERY_SECONDS + ")";
