@@ -1,5 +1,8 @@
 {{- if and .Values.enabled .Values.gateway.className .Values.gateway.name }}
 {{- $gateway := .Values.gateway }}
+{{- if and $gateway.accessControl.enabled (not $gateway.accessControl.allowedCIDRs) }}
+{{- fail (printf "The value %q must not be empty when %q is true" "gateway.accessControl.allowedCIDRs" "gateway.accessControl.enabled") }}
+{{- end }}
 {{- range $name, $endpoint := .Values.endpoints }}
 {{- include "liferay.validateEndpoint" (dict "endpoint" $endpoint "name" $name) }}
 {{- end }}
@@ -18,6 +21,36 @@ metadata:
     namespace: {{ $.Release.Namespace }}
 spec:
     {{- toYaml . | nindent 4 }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: Gateway
+            name: {{ $gateway.name | quote }}
+---
+{{- end }}
+{{- if $gateway.accessControl.enabled }}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-30"
+    labels:
+        app: liferay
+        component: gateway
+        environmentId: {{ .Values.environmentId | quote }}
+        projectId: {{ .Values.projectId | quote }}
+    name: {{ printf "%s-security-policy" $gateway.name | quote }}
+    namespace: {{ .Release.Namespace }}
+spec:
+    authorization:
+        defaultAction: Deny
+        rules:
+            -   action: Allow
+                name: allowed-cidrs
+                principal:
+                    clientCIDRs:
+                        {{- range $gateway.accessControl.allowedCIDRs }}
+                        -   {{ . | quote }}
+                        {{- end }}
     targetRefs:
         -   group: gateway.networking.k8s.io
             kind: Gateway

@@ -9,6 +9,9 @@ enabled: true
 endpoints: {}
 environmentId: ""
 gateway:
+    accessControl:
+        allowedCIDRs: []
+        enabled: false
     annotations: {}
     className: ""
     clientTrafficPolicySpec: {}
