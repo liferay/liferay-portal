@@ -23,7 +23,10 @@ public class UtilityPageMarkAsDefaultExceptionProblemMapper
 		DefaultLayoutUtilityPageEntryException
 			defaultLayoutUtilityPageEntryException) {
 
-		return ProblemUtil.getProblem(defaultLayoutUtilityPageEntryException);
+		return ProblemUtil.getProblem(
+			"A utility page must be published before it is marked as the " +
+				"default utility page",
+			Problem.Status.BAD_REQUEST, defaultLayoutUtilityPageEntryException);
 	}
 
 }
