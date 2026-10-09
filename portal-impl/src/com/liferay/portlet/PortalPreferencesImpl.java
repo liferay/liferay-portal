@@ -519,13 +519,13 @@ public class PortalPreferencesImpl
 						values = PreferencesValueUtil.getActualValues(values);
 					}
 
-					if (!Arrays.equals(originalValues, values)) {
-						throw new ConcurrentModificationException();
-					}
-
 					_modifiedPreferences = null;
 
 					_originalPreferences = preferenceMap;
+
+					if (!Arrays.equals(originalValues, values)) {
+						throw new ConcurrentModificationException();
+					}
 				}
 				else {
 					throw exception;
