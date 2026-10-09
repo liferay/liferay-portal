@@ -6,11 +6,17 @@
 package com.liferay.change.tracking.internal.score;
 
 import com.liferay.change.tracking.internal.CTServiceRegistry;
+import com.liferay.change.tracking.model.CTEntryTable;
+import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.store.model.CTSContent;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.SingleVMPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -27,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -82,9 +89,52 @@ public class CTScoreCalculator {
 		return score;
 	}
 
+	public int calculateCTCollectionScore(long ctCollectionId) {
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
+
+			List<Object[]> results = _ctEntryLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					CTEntryTable.INSTANCE.modelClassNameId,
+					DSLFunctionFactoryUtil.count(
+						CTEntryTable.INSTANCE.ctEntryId
+					).as(
+						"ctEntriesCount"
+					)
+				).from(
+					CTEntryTable.INSTANCE
+				).where(
+					CTEntryTable.INSTANCE.ctCollectionId.eq(ctCollectionId)
+				).groupBy(
+					CTEntryTable.INSTANCE.modelClassNameId
+				));
+
+			int score = 0;
+
+			for (Object[] result : results) {
+				Number ctEntriesCount = (Number)result[1];
+
+				score += calculate((Long)result[0]) * ctEntriesCount.intValue();
+			}
+
+			return score;
+		}
+	}
+
+	public String getScoreSizeClassification(int score) {
+		if (score > _THRESHOLD_LARGE) {
+			return "large";
+		}
+		else if (score > _THRESHOLD_MEDIUM) {
+			return "medium";
+		}
+
+		return "small";
+	}
+
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_portalCache = (PortalCache<Long, Integer>)_multiVMPool.getPortalCache(
+		_portalCache = (PortalCache<Long, Integer>)_singleVMPool.getPortalCache(
 			CTScoreCalculator.class.getName());
 	}
 
@@ -147,6 +197,10 @@ public class CTScoreCalculator {
 
 	private static final int _COUNT_DIVISOR = 50000000;
 
+	private static final int _THRESHOLD_LARGE = 20000;
+
+	private static final int _THRESHOLD_MEDIUM = 10000;
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CTScoreCalculator.class);
 
@@ -154,14 +208,17 @@ public class CTScoreCalculator {
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
+	private CTEntryLocalService _ctEntryLocalService;
+
+	@Reference
 	private CTServiceRegistry _ctServiceRegistry;
 
 	@Reference
 	private CurrentConnection _currentConnection;
 
-	@Reference
-	private MultiVMPool _multiVMPool;
-
 	private PortalCache<Long, Integer> _portalCache;
+
+	@Reference
+	private SingleVMPool _singleVMPool;
 
 }
