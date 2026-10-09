@@ -626,14 +626,14 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 		if (name.length() > nameMaxLength) {
 			throw new LayoutUtilityPageEntryNameException.
-				MustNotExceedMaximumSize(nameMaxLength);
+				MustNotExceedMaximumSize(nameMaxLength, name);
 		}
 
 		Character character = LayoutValidator.getBlacklistCharacter(name);
 
 		if (character != null) {
 			throw new LayoutUtilityPageEntryNameException.
-				MustNotContainInvalidCharacters(character);
+				MustNotContainInvalidCharacters(character, name);
 		}
 
 		LayoutUtilityPageEntry duplicatedLayoutUtilityPageEntry =

@@ -22,7 +22,11 @@ public class LayoutUtilityPageEntryNameException extends PortalException {
 					StringBundler.concat(
 						"Duplicate utility page for group ", groupId,
 						" with name ", name)));
+
+			this.name = name;
 		}
+
+		public final String name;
 
 	}
 
@@ -38,22 +42,35 @@ public class LayoutUtilityPageEntryNameException extends PortalException {
 	public static class MustNotContainInvalidCharacters
 		extends LayoutUtilityPageEntryNameException {
 
-		public MustNotContainInvalidCharacters(char character) {
-			super("Invalid character in name " + character);
+		public MustNotContainInvalidCharacters(char character, String name) {
+			super(
+				StringBundler.concat(
+					"Name ", name, " contains invalid character ", character));
 
 			this.character = character;
+			this.name = name;
 		}
 
 		public final char character;
+		public final String name;
 
 	}
 
 	public static class MustNotExceedMaximumSize
 		extends LayoutUtilityPageEntryNameException {
 
-		public MustNotExceedMaximumSize(int maxLength) {
-			super("Maximum length of name exceeded " + maxLength);
+		public MustNotExceedMaximumSize(int maxLength, String name) {
+			super(
+				StringBundler.concat(
+					"Length of name ", name, " exceeds maximum length ",
+					maxLength));
+
+			this.maxLength = maxLength;
+			this.name = name;
 		}
+
+		public final int maxLength;
+		public final String name;
 
 	}
 
