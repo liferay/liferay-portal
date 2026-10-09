@@ -16,21 +16,14 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.source.formatter.check.util.JSONSourceUtil;
-import com.liferay.source.formatter.checkstyle.util.CheckstyleUtil;
-import com.liferay.source.formatter.checkstyle.util.DetailASTUtil;
 import com.liferay.source.formatter.util.FileUtil;
-
-import com.puppycrawl.tools.checkstyle.JavaParser;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.FileContents;
-import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.api.FullIdent;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.io.File;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Qi Zhang
@@ -58,40 +51,6 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 		_removeRootDefaultValues(absolutePath, jsonObject);
 
 		return JSONUtil.toString(jsonObject);
-	}
-
-	private boolean _appendString(DetailAST detailAST, StringBundler sb) {
-		if (detailAST == null) {
-			return false;
-		}
-
-		if (detailAST.getType() == TokenTypes.STRING_LITERAL) {
-			String text = detailAST.getText();
-
-			sb.append(text.substring(1, text.length() - 1));
-
-			return true;
-		}
-
-		if (detailAST.getType() != TokenTypes.PLUS) {
-			return false;
-		}
-
-		DetailAST firstChildDetailAST = detailAST.getFirstChild();
-
-		if (firstChildDetailAST == null) {
-			return false;
-		}
-
-		DetailAST nextSiblingDetailAST = firstChildDetailAST.getNextSibling();
-
-		if (_appendString(firstChildDetailAST, sb) &&
-			_appendString(nextSiblingDetailAST, sb)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private void _checkClassName(
@@ -189,111 +148,25 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 			return null;
 		}
 
-		String content = FileUtil.read(file);
+		Matcher matcher = _classNamePatternDefinitionPattern.matcher(
+			FileUtil.read(file));
 
-		FileText fileText = new FileText(
-			file, CheckstyleUtil.getLines(content));
-
-		FileContents fileContents = new FileContents(fileText);
-
-		DetailAST rootDetailAST = JavaParser.parse(fileContents);
-
-		DetailAST childDetailAST = rootDetailAST.getFirstChild();
-
-		while (childDetailAST != null) {
-			if (childDetailAST.getType() != TokenTypes.CLASS_DEF) {
-				childDetailAST = childDetailAST.getNextSibling();
-
-				continue;
-			}
-
-			DetailAST objBlockDetailAST = childDetailAST.findFirstToken(
-				TokenTypes.OBJBLOCK);
-
-			List<DetailAST> variableDefinitionDetailASTs =
-				DetailASTUtil.getAllChildTokens(
-					objBlockDetailAST, false, TokenTypes.VARIABLE_DEF);
-
-			for (DetailAST variableDefinitionDetailAST :
-					variableDefinitionDetailASTs) {
-
-				DetailAST identDetailAST =
-					variableDefinitionDetailAST.findFirstToken(
-						TokenTypes.IDENT);
-
-				if (identDetailAST == null) {
-					continue;
-				}
-
-				String variableName = identDetailAST.getText();
-
-				if (!variableName.equals("_classNamePattern")) {
-					continue;
-				}
-
-				DetailAST assignDetailAST =
-					variableDefinitionDetailAST.findFirstToken(
-						TokenTypes.ASSIGN);
-
-				if (assignDetailAST == null) {
-					return null;
-				}
-
-				DetailAST firstChildDetailAST = assignDetailAST.getFirstChild();
-
-				if ((firstChildDetailAST == null) ||
-					(firstChildDetailAST.getType() != TokenTypes.EXPR)) {
-
-					return null;
-				}
-
-				firstChildDetailAST = firstChildDetailAST.getFirstChild();
-
-				if ((firstChildDetailAST == null) ||
-					(firstChildDetailAST.getType() != TokenTypes.METHOD_CALL)) {
-
-					return null;
-				}
-
-				FullIdent fullIdent = FullIdent.createFullIdentBelow(
-					firstChildDetailAST);
-
-				if (!StringUtil.equals(
-						fullIdent.getText(), "Pattern.compile")) {
-
-					return null;
-				}
-
-				_classNameRegex = _getClassNameRegex(firstChildDetailAST);
-
-				return _classNameRegex;
-			}
-		}
-
-		return null;
-	}
-
-	private String _getClassNameRegex(DetailAST detailAST) {
-		DetailAST elistDetailAST = detailAST.findFirstToken(TokenTypes.ELIST);
-
-		if ((elistDetailAST == null) || (elistDetailAST.getChildCount() == 0)) {
-			return null;
-		}
-
-		DetailAST exprDetailAST = elistDetailAST.findFirstToken(
-			TokenTypes.EXPR);
-
-		if (exprDetailAST == null) {
+		if (!matcher.find()) {
 			return null;
 		}
 
 		StringBundler sb = new StringBundler();
 
-		if (_appendString(exprDetailAST.getFirstChild(), sb)) {
-			return StringUtil.replace(sb.toString(), "\\\\", "\\");
+		Matcher stringLiteralMatcher = _stringLiteralPattern.matcher(
+			matcher.group(1));
+
+		while (stringLiteralMatcher.find()) {
+			sb.append(stringLiteralMatcher.group(1));
 		}
 
-		return null;
+		_classNameRegex = StringUtil.replace(sb.toString(), "\\\\", "\\");
+
+		return _classNameRegex;
 	}
 
 	private boolean _isObjectDefinition(JSONObject jsonObject) {
@@ -392,6 +265,12 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 		"objectDefinitionItemsDefaultValues";
 
 	private static final String _ROOT_DEFAULT_VALUES_KEY = "rootDefaultValues";
+
+	private static final Pattern _classNamePatternDefinitionPattern =
+		Pattern.compile(
+			"_classNamePattern\\s*=\\s*Pattern\\.compile\\(([^;]*)\\);");
+	private static final Pattern _stringLiteralPattern = Pattern.compile(
+		"\"((?:\\\\.|[^\"\\\\])*)\"");
 
 	private String _classNameRegex;
 
