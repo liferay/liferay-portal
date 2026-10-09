@@ -30,12 +30,16 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -158,66 +162,10 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 	}
 
 	@Test
+	@TestInfo("LPD-109441")
 	public void testGetCreationItems() throws Exception {
-		_setUpInfoItemServiceRegistry();
-
-		List<DesignLibraryResourceCreationItem>
-			designLibraryResourceCreationItems =
-				_displayPageTemplateDesignLibraryResourceTypeContributor.
-					getCreationItems(
-						_httpServletRequest, _depotEntry, _BACK_URL);
-
-		Assert.assertEquals(
-			designLibraryResourceCreationItems.toString(), 1,
-			designLibraryResourceCreationItems.size());
-
-		DesignLibraryResourceCreationItem designLibraryResourceCreationItem =
-			designLibraryResourceCreationItems.get(0);
-
-		Assert.assertEquals(
-			"add-display-page-template",
-			designLibraryResourceCreationItem.getId());
-		Assert.assertEquals(
-			"new-display-page-template",
-			designLibraryResourceCreationItem.getLabel());
-		Assert.assertEquals(
-			"{AddDisplayPageTemplateDesignLibraryModalContent} from " +
-				"layout-page-template-admin-web",
-			designLibraryResourceCreationItem.getModule());
-
-		Map<String, Object> moduleProps =
-			designLibraryResourceCreationItem.getModuleProps();
-
-		Assert.assertEquals(_NAMESPACE, moduleProps.get("namespace"));
-
-		JSONArray mappingTypesJSONArray = (JSONArray)moduleProps.get(
-			"mappingTypes");
-
-		Assert.assertEquals(
-			mappingTypesJSONArray.toString(), 1,
-			mappingTypesJSONArray.length());
-
-		JSONObject mappingTypeJSONObject = mappingTypesJSONArray.getJSONObject(
-			0);
-
-		Assert.assertEquals(
-			String.valueOf(_CLASS_NAME_ID),
-			mappingTypeJSONObject.getString("id"));
-		Assert.assertEquals(
-			_CLASS_NAME_LABEL, mappingTypeJSONObject.getString("label"));
-
-		JSONArray subtypesJSONArray = mappingTypeJSONObject.getJSONArray(
-			"subtypes");
-
-		Assert.assertEquals(
-			subtypesJSONArray.toString(), 1, subtypesJSONArray.length());
-
-		JSONObject subtypeJSONObject = subtypesJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			_FORM_VARIATION_KEY, subtypeJSONObject.getString("id"));
-		Assert.assertEquals(
-			_FORM_VARIATION_LABEL, subtypeJSONObject.getString("label"));
+		_testGetCreationItems();
+		_testGetCreationItemsWhenFeatureFlagIsEnabled();
 	}
 
 	@Test
@@ -554,6 +502,120 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 		).thenReturn(
 			null
 		);
+	}
+
+	private void _testGetCreationItems() throws Exception {
+		_setUpInfoItemServiceRegistry();
+
+		List<DesignLibraryResourceCreationItem>
+			designLibraryResourceCreationItems =
+				_displayPageTemplateDesignLibraryResourceTypeContributor.
+					getCreationItems(
+						_httpServletRequest, _depotEntry, _BACK_URL);
+
+		Assert.assertEquals(
+			designLibraryResourceCreationItems.toString(), 1,
+			designLibraryResourceCreationItems.size());
+
+		DesignLibraryResourceCreationItem designLibraryResourceCreationItem =
+			designLibraryResourceCreationItems.get(0);
+
+		Assert.assertEquals(
+			"add-display-page-template",
+			designLibraryResourceCreationItem.getId());
+		Assert.assertEquals(
+			"new-display-page-template",
+			designLibraryResourceCreationItem.getLabel());
+		Assert.assertEquals(
+			"{AddDisplayPageTemplateDesignLibraryModalContent} from " +
+				"layout-page-template-admin-web",
+			designLibraryResourceCreationItem.getModule());
+
+		Map<String, Object> moduleProps =
+			designLibraryResourceCreationItem.getModuleProps();
+
+		Assert.assertEquals(_NAMESPACE, moduleProps.get("namespace"));
+
+		JSONArray mappingTypesJSONArray = (JSONArray)moduleProps.get(
+			"mappingTypes");
+
+		Assert.assertEquals(
+			mappingTypesJSONArray.toString(), 1,
+			mappingTypesJSONArray.length());
+
+		JSONObject mappingTypeJSONObject = mappingTypesJSONArray.getJSONObject(
+			0);
+
+		Assert.assertEquals(
+			String.valueOf(_CLASS_NAME_ID),
+			mappingTypeJSONObject.getString("id"));
+		Assert.assertEquals(
+			_CLASS_NAME_LABEL, mappingTypeJSONObject.getString("label"));
+
+		JSONArray subtypesJSONArray = mappingTypeJSONObject.getJSONArray(
+			"subtypes");
+
+		Assert.assertEquals(
+			subtypesJSONArray.toString(), 1, subtypesJSONArray.length());
+
+		JSONObject subtypeJSONObject = subtypesJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			_FORM_VARIATION_KEY, subtypeJSONObject.getString("id"));
+		Assert.assertEquals(
+			_FORM_VARIATION_LABEL, subtypeJSONObject.getString("label"));
+	}
+
+	private void _testGetCreationItemsWhenFeatureFlagIsEnabled()
+		throws Exception {
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-81022")
+		).thenReturn(
+			true
+		);
+
+		LiferayPortletURL liferayPortletURL = new MockLiferayPortletURL();
+
+		_portalUtilMockedStatic.when(
+			() -> PortalUtil.getControlPanelPortletURL(
+				_httpServletRequest, _group,
+				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, 0, 0,
+				PortletRequest.RENDER_PHASE)
+		).thenReturn(
+			liferayPortletURL
+		);
+
+		List<DesignLibraryResourceCreationItem>
+			designLibraryResourceCreationItems =
+				_displayPageTemplateDesignLibraryResourceTypeContributor.
+					getCreationItems(
+						_httpServletRequest, _depotEntry, _BACK_URL);
+
+		Assert.assertEquals(
+			designLibraryResourceCreationItems.toString(), 1,
+			designLibraryResourceCreationItems.size());
+
+		DesignLibraryResourceCreationItem designLibraryResourceCreationItem =
+			designLibraryResourceCreationItems.get(0);
+
+		Assert.assertEquals(
+			String.valueOf(liferayPortletURL),
+			designLibraryResourceCreationItem.getHref());
+		Assert.assertEquals(
+			"add-display-page-template",
+			designLibraryResourceCreationItem.getId());
+		Assert.assertEquals(
+			"new-display-page-template",
+			designLibraryResourceCreationItem.getLabel());
+		Assert.assertNull(designLibraryResourceCreationItem.getModule());
+		Assert.assertNull(designLibraryResourceCreationItem.getModuleProps());
+
+		Assert.assertEquals(
+			"/select_display_page_master_layout.jsp",
+			liferayPortletURL.getParameter("mvcPath"));
+		Assert.assertEquals(
+			_BACK_URL, liferayPortletURL.getParameter("redirect"));
 	}
 
 	private static final String _BACK_URL = RandomTestUtil.randomString();
