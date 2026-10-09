@@ -10,6 +10,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -109,7 +110,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-89086", "LPD-104842"})
+	@TestInfo({"LPD-89086", "LPD-104842", "LPD-109442"})
 	public void testGetCreationMenu() throws Exception {
 		LayoutPageTemplateManagementToolbarDisplayContext
 			layoutPageTemplateManagementToolbarDisplayContext =
@@ -125,10 +126,12 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 			_testGetCreationMenu(
 				true, featureFlagManagerUtilMockedStatic,
 				layoutPageTemplateManagementToolbarDisplayContext);
+			_testGetCreationMenuInDesignLibraryGroup(
+				layoutPageTemplateManagementToolbarDisplayContext);
+			_testGetCreationMenuInDesignLibraryGroupWhenFeatureFlagIsEnabled(
+				featureFlagManagerUtilMockedStatic,
+				layoutPageTemplateManagementToolbarDisplayContext);
 		}
-
-		_testGetCreationMenuInDesignLibraryGroup(
-			layoutPageTemplateManagementToolbarDisplayContext);
 	}
 
 	private LayoutPageTemplateManagementToolbarDisplayContext
@@ -269,6 +272,45 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		Assert.assertTrue(data.containsKey("addPageTemplateURL"));
 
 		Assert.assertNull(primaryDropdownItem.get("href"));
+	}
+
+	private void
+		_testGetCreationMenuInDesignLibraryGroupWhenFeatureFlagIsEnabled(
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic,
+			LayoutPageTemplateManagementToolbarDisplayContext
+				layoutPageTemplateManagementToolbarDisplayContext) {
+
+		featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-81022"))
+		).thenReturn(
+			true
+		);
+
+		String currentURL = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_themeDisplay.getURLCurrent()
+		).thenReturn(
+			currentURL
+		);
+
+		List<DropdownItem> primaryDropdownItems = _getPrimaryDropdownItems(
+			layoutPageTemplateManagementToolbarDisplayContext);
+
+		Assert.assertEquals(
+			primaryDropdownItems.toString(), 1, primaryDropdownItems.size());
+
+		DropdownItem primaryDropdownItem = primaryDropdownItems.get(0);
+
+		Assert.assertNull(primaryDropdownItem.get("data"));
+		Assert.assertEquals(
+			StringBundler.concat(
+				"http//localhost/test?param_redirect=", currentURL,
+				";param_mvcPath=/select_layout_page_template_entry_master_",
+				"layout.jsp;param_layoutPageTemplateCollectionId=0"),
+			primaryDropdownItem.get("href"));
 	}
 
 	private final MockedStatic<DesignLibraryUtil>
