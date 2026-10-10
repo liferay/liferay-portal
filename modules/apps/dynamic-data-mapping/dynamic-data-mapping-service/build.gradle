@@ -57,8 +57,6 @@ dependencies {
 	compileOnly project(":apps:view-count:view-count-api")
 	compileOnly project(":apps:xstream:xstream-configurator-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
-	compileOnly project(":core:petra:petra-concurrent")
-	compileOnly project(":core:petra:petra-executor")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")

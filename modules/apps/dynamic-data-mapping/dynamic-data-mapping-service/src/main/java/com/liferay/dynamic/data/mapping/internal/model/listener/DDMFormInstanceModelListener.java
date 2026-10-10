@@ -5,7 +5,6 @@
 
 package com.liferay.dynamic.data.mapping.internal.model.listener;
 
-import com.liferay.dynamic.data.mapping.internal.petra.executor.DDMFormInstanceReportPortalExecutor;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceReport;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceReportLocalService;
@@ -15,7 +14,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -57,17 +55,8 @@ public class DDMFormInstanceModelListener
 					getFormInstanceReportByFormInstanceId(
 						ddmFormInstance.getFormInstanceId());
 
-			TransactionCallbackUtil.registerCommitCallback(
-				() -> {
-					_ddmFormInstanceReportPortalExecutor.execute(
-						() ->
-							ddmFormInstanceReportLocalService.
-								deleteDDMFormInstanceReport(
-									ddmFormInstanceReport.
-										getFormInstanceReportId()));
-
-					return null;
-				});
+			ddmFormInstanceReportLocalService.deleteDDMFormInstanceReport(
+				ddmFormInstanceReport);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -87,9 +76,5 @@ public class DDMFormInstanceModelListener
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormInstanceModelListener.class);
-
-	@Reference
-	private DDMFormInstanceReportPortalExecutor
-		_ddmFormInstanceReportPortalExecutor;
 
 }
