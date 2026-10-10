@@ -127,6 +127,13 @@
 		<field name="companyId" type="long" />
 		<field name="blob" type="Blob" />
 	</model>
+	<model name="com.liferay.portal.tools.service.builder.test.model.FilterPrimaryEntry">
+		<field name="filterPrimaryEntryId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="resourcePrimKey" type="long" />
+	</model>
 	<model name="com.liferay.portal.tools.service.builder.test.model.FinderWhereClauseEntry">
 		<field name="finderWhereClauseEntryId" type="long" />
 		<field name="headId" type="long" />

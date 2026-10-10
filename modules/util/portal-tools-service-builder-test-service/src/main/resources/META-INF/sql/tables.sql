@@ -150,6 +150,14 @@ create table EagerBlobEntry (
 	blob_ BLOB
 );
 
+create table FilterPrimaryEntry (
+	filterPrimaryEntryId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	resourcePrimKey LONG
+);
+
 create table FinderWhereClauseEntry (
 	finderWhereClauseEntryId LONG not null primary key,
 	headId LONG,

@@ -22,6 +22,7 @@
 	<import class="com.liferay.portal.tools.service.builder.test.model.ERCGroupEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntryVersion" />
+	<import class="com.liferay.portal.tools.service.builder.test.model.FilterPrimaryEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.FinderWhereClauseEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.IndexEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.LazyBlobEntry" />
@@ -205,6 +206,15 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="blob_" name="blob" type="blob" />
+	</class>
+	<class name="com.liferay.portal.tools.service.builder.test.model.impl.FilterPrimaryEntryImpl" table="FilterPrimaryEntry">
+		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="filterPrimaryEntryId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="resourcePrimKey" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="com.liferay.portal.tools.service.builder.test.model.impl.FinderWhereClauseEntryImpl" table="FinderWhereClauseEntry">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="finderWhereClauseEntryId" type="long">
