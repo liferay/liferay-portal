@@ -22,12 +22,14 @@ import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import AccessibilitySetting from './AccessibilitySetting';
-import {getSettingValue, toggleClassName} from './util';
+import {applySetting, getSettingValue} from './util';
 
 type KEYS = keyof typeof CONSTANTS;
 
 type Setting = {
-	className: string;
+	attributeName?: string | null;
+	attributeValue?: string | null;
+	className?: string | null;
 	defaultValue: boolean;
 	description: string;
 	key: KEYS;
@@ -36,7 +38,9 @@ type Setting = {
 };
 
 type AccessibilityMenuSetting = {
-	className: string;
+	attributeName?: string | null;
+	attributeValue?: string | null;
+	className?: string | null;
 	description: string;
 	key: KEYS;
 	label: string;
@@ -64,6 +68,8 @@ const AccessibilityMenu = (props: Props) => {
 			props.settings.reduce<Record<KEYS, AccessibilityMenuSetting>>(
 				(prev, setting) => {
 					const {
+						attributeName,
+						attributeValue,
 						className,
 						defaultValue,
 						description,
@@ -78,9 +84,20 @@ const AccessibilityMenu = (props: Props) => {
 						key
 					);
 
-					toggleClassName(className, value);
+					applySetting(
+						{attributeName, attributeValue, className},
+						value
+					);
 
-					prev[key] = {className, description, key, label, value};
+					prev[key] = {
+						attributeName,
+						attributeValue,
+						className,
+						description,
+						key,
+						label,
+						value,
+					};
 
 					return prev;
 				},
@@ -130,7 +147,7 @@ const AccessibilityMenu = (props: Props) => {
 
 	const afterSettingValueChange = useCallback(
 		(value: any, setting: any) => {
-			toggleClassName(setting.className, value);
+			applySetting(setting, value);
 
 			updateSetting(setting.key, {updating: false, value});
 		},
@@ -242,6 +259,8 @@ const AccessibilityMenu = (props: Props) => {
 AccessibilityMenu.propTypes = {
 	settings: PropTypes.arrayOf(
 		PropTypes.shape({
+			attributeName: PropTypes.string,
+			attributeValue: PropTypes.string,
 			className: PropTypes.string,
 			defaultValue: PropTypes.bool,
 			key: PropTypes.string,

@@ -27,6 +27,10 @@ public class AccessibilityMenuDisplayContext {
 			AccessibilitySettingsUtil.getAccessibilitySettings(
 				_httpServletRequest),
 			accessibilitySetting -> JSONUtil.put(
+				"attributeName", accessibilitySetting.getAttributeName()
+			).put(
+				"attributeValue", accessibilitySetting.getAttributeValue()
+			).put(
 				"className", accessibilitySetting.getCssClass()
 			).put(
 				"defaultValue", accessibilitySetting.getDefaultValue()

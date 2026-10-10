@@ -34,6 +34,43 @@ export function isNullOrUndefined(value: boolean | string | undefined | null) {
 	return value === null || value === undefined;
 }
 
+export function applySetting(
+	{
+		attributeName,
+		attributeValue,
+		className,
+	}: {
+		attributeName?: string | null;
+		attributeValue?: string | null;
+		className?: string | null;
+	},
+	value: boolean
+) {
+	if (attributeName && attributeValue) {
+		toggleAttribute(attributeName, attributeValue, value);
+	}
+
+	if (className) {
+		toggleClassName(className, value);
+	}
+}
+
+export function toggleAttribute(
+	attributeName: string,
+	attributeValue: string,
+	value: boolean
+) {
+	if (value) {
+		window.document.documentElement.setAttribute(
+			attributeName,
+			attributeValue
+		);
+	}
+	else {
+		window.document.documentElement.removeAttribute(attributeName);
+	}
+}
+
 export function toggleClassName(className: string, value: boolean) {
 	window.document.querySelector('body')!.classList.toggle(className, value);
 }

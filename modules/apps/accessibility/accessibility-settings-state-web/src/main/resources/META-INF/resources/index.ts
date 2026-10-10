@@ -8,6 +8,7 @@ import {State} from '@liferay/frontend-js-state-web';
 export const CONSTANTS = {
 	ACCESSIBILITY_SETTING_EXPANDED_TEXT: 'ACCESSIBILITY_SETTING_EXPANDED_TEXT',
 	ACCESSIBILITY_SETTING_FOCUS_RING: 'ACCESSIBILITY_SETTING_FOCUS_RING',
+	ACCESSIBILITY_SETTING_HIGH_CONTRAST: 'ACCESSIBILITY_SETTING_HIGH_CONTRAST',
 	ACCESSIBILITY_SETTING_INCREASED_TEXT_SPACING:
 		'ACCESSIBILITY_SETTING_INCREASED_TEXT_SPACING',
 	ACCESSIBILITY_SETTING_PERSISTENT_NOTIFICATIONS:
@@ -21,7 +22,9 @@ export const CONSTANTS = {
 type SettingId = (typeof CONSTANTS)[keyof typeof CONSTANTS];
 
 type AccessibilityMenuSetting = {
-	className: string;
+	attributeName?: string | null;
+	attributeValue?: string | null;
+	className?: string | null;
 	description: string;
 	key: SettingId;
 	label: string;

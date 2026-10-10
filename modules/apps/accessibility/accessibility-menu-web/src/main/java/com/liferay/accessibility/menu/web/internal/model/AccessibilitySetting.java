@@ -14,12 +14,32 @@ public class AccessibilitySetting {
 		String cssClass, boolean defaultValue, String description, String key,
 		String label, Boolean sessionClicksValue) {
 
+		this(
+			null, null, cssClass, defaultValue, description, key, label,
+			sessionClicksValue);
+	}
+
+	public AccessibilitySetting(
+		String attributeName, String attributeValue, String cssClass,
+		boolean defaultValue, String description, String key, String label,
+		Boolean sessionClicksValue) {
+
+		_attributeName = attributeName;
+		_attributeValue = attributeValue;
 		_cssClass = cssClass;
 		_defaultValue = defaultValue;
 		_description = description;
 		_key = key;
 		_label = label;
 		_sessionClicksValue = sessionClicksValue;
+	}
+
+	public String getAttributeName() {
+		return _attributeName;
+	}
+
+	public String getAttributeValue() {
+		return _attributeValue;
 	}
 
 	public String getCssClass() {
@@ -54,6 +74,14 @@ public class AccessibilitySetting {
 		return _defaultValue;
 	}
 
+	public void setAttributeName(String attributeName) {
+		_attributeName = attributeName;
+	}
+
+	public void setAttributeValue(String attributeValue) {
+		_attributeValue = attributeValue;
+	}
+
 	public void setCssClass(String cssClass) {
 		_cssClass = cssClass;
 	}
@@ -78,6 +106,8 @@ public class AccessibilitySetting {
 		_sessionClicksValue = sessionClicksValue;
 	}
 
+	private String _attributeName;
+	private String _attributeValue;
 	private String _cssClass;
 	private boolean _defaultValue;
 	private String _description;
