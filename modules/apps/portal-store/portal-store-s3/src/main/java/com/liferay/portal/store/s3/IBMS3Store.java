@@ -65,8 +65,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -251,20 +253,14 @@ public class IBMS3Store implements Store {
 				companyId, repositoryId, dirName);
 		}
 
-		List<S3ObjectSummary> s3ObjectSummaries = _getS3ObjectSummaries(key);
+		Set<String> fileNames = new LinkedHashSet<>();
 
-		Iterator<S3ObjectSummary> iterator = s3ObjectSummaries.iterator();
-
-		String[] fileNames = new String[s3ObjectSummaries.size()];
-
-		for (int i = 0; i < fileNames.length; i++) {
-			S3ObjectSummary s3ObjectSummary = iterator.next();
-
-			fileNames[i] = S3KeyTransformerUtil.getFileName(
-				s3ObjectSummary.getKey());
+		for (S3ObjectSummary s3ObjectSummary : _getS3ObjectSummaries(key)) {
+			fileNames.add(
+				S3KeyTransformerUtil.getFileName(s3ObjectSummary.getKey()));
 		}
 
-		return fileNames;
+		return fileNames.toArray(new String[0]);
 	}
 
 	@Override

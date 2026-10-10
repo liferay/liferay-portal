@@ -41,9 +41,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -296,19 +298,13 @@ public class S3Store implements Store {
 				companyId, repositoryId, dirName);
 		}
 
-		List<S3Object> s3Objects = _getS3Objects(key);
+		Set<String> fileNames = new LinkedHashSet<>();
 
-		Iterator<S3Object> iterator = s3Objects.iterator();
-
-		String[] fileNames = new String[s3Objects.size()];
-
-		for (int i = 0; i < fileNames.length; i++) {
-			S3Object s3Object = iterator.next();
-
-			fileNames[i] = S3KeyTransformerUtil.getFileName(s3Object.key());
+		for (S3Object s3Object : _getS3Objects(key)) {
+			fileNames.add(S3KeyTransformerUtil.getFileName(s3Object.key()));
 		}
 
-		return fileNames;
+		return fileNames.toArray(new String[0]);
 	}
 
 	@Override
