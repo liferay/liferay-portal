@@ -70,6 +70,29 @@ public class AccessibilitySettingsUtilTest {
 							ACCESSIBILITY_SETTING_PERSISTENT_NOTIFICATIONS)));
 	}
 
+	@Test
+	public void testGetAccessibilitySettingsHighContrast() {
+		List<AccessibilitySetting> accessibilitySettings = ListUtil.filter(
+			AccessibilitySettingsUtil.getAccessibilitySettings(
+				_httpServletRequest),
+			accessibilitySetting -> Objects.equals(
+				accessibilitySetting.getKey(),
+				AccessibilitySettingConstants.
+					ACCESSIBILITY_SETTING_HIGH_CONTRAST));
+
+		Assert.assertEquals(
+			accessibilitySettings.toString(), 1, accessibilitySettings.size());
+
+		AccessibilitySetting accessibilitySetting = accessibilitySettings.get(
+			0);
+
+		Assert.assertEquals(
+			"data-prefers-contrast", accessibilitySetting.getAttributeName());
+		Assert.assertEquals("more", accessibilitySetting.getAttributeValue());
+		Assert.assertNull(accessibilitySetting.getCssClass());
+		Assert.assertFalse(accessibilitySetting.getDefaultValue());
+	}
+
 	private HttpServletRequest _httpServletRequest;
 
 }
