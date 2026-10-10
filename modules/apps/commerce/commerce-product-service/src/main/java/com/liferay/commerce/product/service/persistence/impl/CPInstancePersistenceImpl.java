@@ -2132,7 +2132,7 @@ public class CPInstancePersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_CPINSTANCE_WHERE, _SQL_COUNT_CPINSTANCE_WHERE,
 				CPInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, CPInstance::getCPInstanceId,
 				new FinderColumn<>(
 					"cpInstance.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, CPInstance::getGroupId));
@@ -2245,7 +2245,7 @@ public class CPInstancePersistenceImpl
 					new String[] {"groupId", "status"}, false),
 				_SQL_SELECT_CPINSTANCE_WHERE, _SQL_COUNT_CPINSTANCE_WHERE,
 				CPInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, CPInstance::getCPInstanceId,
 				new FinderColumn<>(
 					"cpInstance.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, CPInstance::getGroupId),
@@ -2535,4 +2535,4 @@ public class CPInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-920758944
+// LIFERAY-SERVICE-BUILDER-HASH:-1732511328

@@ -2204,7 +2204,7 @@ public class CommerceOrderPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
 				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CommerceOrder::getCommerceOrderId,
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId));
@@ -2346,7 +2346,7 @@ public class CommerceOrderPersistenceImpl
 					new String[] {"groupId", "commerceAccountId"}, false),
 				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
 				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CommerceOrder::getCommerceOrderId,
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2378,7 +2378,7 @@ public class CommerceOrderPersistenceImpl
 					false, null),
 				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
 				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CommerceOrder::getCommerceOrderId,
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2415,7 +2415,7 @@ public class CommerceOrderPersistenceImpl
 					new String[] {"groupId", "userId", "orderStatus"}, false),
 				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
 				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CommerceOrder::getCommerceOrderId,
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2463,7 +2463,7 @@ public class CommerceOrderPersistenceImpl
 					false),
 				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
 				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CommerceOrder::getCommerceOrderId,
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2653,4 +2653,4 @@ public class CommerceOrderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-508911767
+// LIFERAY-SERVICE-BUILDER-HASH:-1843103863

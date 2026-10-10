@@ -1167,7 +1167,7 @@ public class CommerceChannelPersistenceImpl
 				_SQL_SELECT_COMMERCECHANNEL_WHERE,
 				_SQL_COUNT_COMMERCECHANNEL_WHERE,
 				CommerceChannelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceChannel::getCommerceChannelId,
 				new FinderColumn<>(
 					"commerceChannel.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1195,7 +1195,7 @@ public class CommerceChannelPersistenceImpl
 				_SQL_SELECT_COMMERCECHANNEL_WHERE,
 				_SQL_COUNT_COMMERCECHANNEL_WHERE,
 				CommerceChannelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceChannel::getCommerceChannelId,
 				new FinderColumn<>(
 					"commerceChannel.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1226,7 +1226,7 @@ public class CommerceChannelPersistenceImpl
 				_SQL_SELECT_COMMERCECHANNEL_WHERE,
 				_SQL_COUNT_COMMERCECHANNEL_WHERE,
 				CommerceChannelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceChannel::getCommerceChannelId,
 				new FinderColumn<>(
 					"commerceChannel.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CommerceChannel::getCompanyId));
@@ -1255,7 +1255,7 @@ public class CommerceChannelPersistenceImpl
 				_SQL_SELECT_COMMERCECHANNEL_WHERE,
 				_SQL_COUNT_COMMERCECHANNEL_WHERE,
 				CommerceChannelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceChannel::getCommerceChannelId,
 				new FinderColumn<>(
 					"commerceChannel.", "accountEntryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1283,7 +1283,7 @@ public class CommerceChannelPersistenceImpl
 				_SQL_SELECT_COMMERCECHANNEL_WHERE,
 				_SQL_COUNT_COMMERCECHANNEL_WHERE,
 				CommerceChannelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceChannel::getCommerceChannelId,
 				new FinderColumn<>(
 					"commerceChannel.", "siteGroupId", FinderColumn.Type.LONG,
 					"=", true, true, CommerceChannel::getSiteGroupId));
@@ -1372,4 +1372,4 @@ public class CommerceChannelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1679979966
+// LIFERAY-SERVICE-BUILDER-HASH:1080160840

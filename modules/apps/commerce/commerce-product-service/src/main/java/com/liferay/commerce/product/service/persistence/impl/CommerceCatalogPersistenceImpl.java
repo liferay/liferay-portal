@@ -1171,7 +1171,7 @@ public class CommerceCatalogPersistenceImpl
 				_SQL_SELECT_COMMERCECATALOG_WHERE,
 				_SQL_COUNT_COMMERCECATALOG_WHERE,
 				CommerceCatalogModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceCatalog::getCommerceCatalogId,
 				new FinderColumn<>(
 					"commerceCatalog.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1199,7 +1199,7 @@ public class CommerceCatalogPersistenceImpl
 				_SQL_SELECT_COMMERCECATALOG_WHERE,
 				_SQL_COUNT_COMMERCECATALOG_WHERE,
 				CommerceCatalogModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceCatalog::getCommerceCatalogId,
 				new FinderColumn<>(
 					"commerceCatalog.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1230,7 +1230,7 @@ public class CommerceCatalogPersistenceImpl
 				_SQL_SELECT_COMMERCECATALOG_WHERE,
 				_SQL_COUNT_COMMERCECATALOG_WHERE,
 				CommerceCatalogModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceCatalog::getCommerceCatalogId,
 				new FinderColumn<>(
 					"commerceCatalog.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CommerceCatalog::getCompanyId));
@@ -1259,7 +1259,7 @@ public class CommerceCatalogPersistenceImpl
 				_SQL_SELECT_COMMERCECATALOG_WHERE,
 				_SQL_COUNT_COMMERCECATALOG_WHERE,
 				CommerceCatalogModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceCatalog::getCommerceCatalogId,
 				new FinderColumn<>(
 					"commerceCatalog.", "accountEntryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1291,7 +1291,7 @@ public class CommerceCatalogPersistenceImpl
 				_SQL_SELECT_COMMERCECATALOG_WHERE,
 				_SQL_COUNT_COMMERCECATALOG_WHERE,
 				CommerceCatalogModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceCatalog::getCommerceCatalogId,
 				new FinderColumn<>(
 					"commerceCatalog.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CommerceCatalog::getCompanyId),
@@ -1384,4 +1384,4 @@ public class CommerceCatalogPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-307074777
+// LIFERAY-SERVICE-BUILDER-HASH:-1691238479

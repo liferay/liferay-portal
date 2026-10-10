@@ -909,7 +909,7 @@ public class LayoutSetPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
 				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
 				new FinderColumn<>(
 					"layoutSetPrototype.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -937,7 +937,7 @@ public class LayoutSetPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
 				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
 				new FinderColumn<>(
 					"layoutSetPrototype.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -968,7 +968,7 @@ public class LayoutSetPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
 				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
 				new FinderColumn<>(
 					"layoutSetPrototype.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutSetPrototype::getCompanyId));
@@ -999,7 +999,7 @@ public class LayoutSetPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
 				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
 				new FinderColumn<>(
 					"layoutSetPrototype.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutSetPrototype::getCompanyId),
@@ -1038,4 +1038,4 @@ public class LayoutSetPrototypePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1763202552
+// LIFERAY-SERVICE-BUILDER-HASH:1511141768

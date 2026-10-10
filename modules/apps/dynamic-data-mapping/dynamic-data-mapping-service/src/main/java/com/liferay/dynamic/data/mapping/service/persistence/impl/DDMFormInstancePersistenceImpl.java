@@ -985,7 +985,7 @@ public class DDMFormInstancePersistenceImpl
 				_SQL_SELECT_DDMFORMINSTANCE_WHERE,
 				_SQL_COUNT_DDMFORMINSTANCE_WHERE,
 				DDMFormInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, DDMFormInstance::getFormInstanceId,
 				new ArrayableFinderColumn<>(
 					"ddmFormInstance.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMFormInstance::getGroupId));
@@ -1068,4 +1068,4 @@ public class DDMFormInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:514674606
+// LIFERAY-SERVICE-BUILDER-HASH:-943077791

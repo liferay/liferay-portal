@@ -500,7 +500,7 @@ public class FilterPrimaryEntryPersistenceImpl
 				_SQL_SELECT_FILTERPRIMARYENTRY_WHERE,
 				_SQL_COUNT_FILTERPRIMARYENTRY_WHERE,
 				FilterPrimaryEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, FilterPrimaryEntry::getResourcePrimKey,
 				new FinderColumn<>(
 					"filterPrimaryEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FilterPrimaryEntry::getGroupId));
@@ -538,4 +538,4 @@ public class FilterPrimaryEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-148141614
+// LIFERAY-SERVICE-BUILDER-HASH:328852796

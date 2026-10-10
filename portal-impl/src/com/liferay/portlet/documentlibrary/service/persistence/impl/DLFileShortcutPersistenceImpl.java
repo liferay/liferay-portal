@@ -1743,7 +1743,7 @@ public class DLFileShortcutPersistenceImpl
 				_SQL_SELECT_DLFILESHORTCUT_WHERE,
 				_SQL_COUNT_DLFILESHORTCUT_WHERE,
 				DLFileShortcutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileShortcut::getFileShortcutId,
 				new FinderColumn<>(
 					"dlFileShortcut.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileShortcut::getGroupId));
@@ -1825,7 +1825,7 @@ public class DLFileShortcutPersistenceImpl
 				_SQL_SELECT_DLFILESHORTCUT_WHERE,
 				_SQL_COUNT_DLFILESHORTCUT_WHERE,
 				DLFileShortcutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileShortcut::getFileShortcutId,
 				new FinderColumn<>(
 					"dlFileShortcut.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileShortcut::getGroupId),
@@ -1891,7 +1891,7 @@ public class DLFileShortcutPersistenceImpl
 				_SQL_SELECT_DLFILESHORTCUT_WHERE,
 				_SQL_COUNT_DLFILESHORTCUT_WHERE,
 				DLFileShortcutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileShortcut::getFileShortcutId,
 				new FinderColumn<>(
 					"dlFileShortcut.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileShortcut::getGroupId),
@@ -1935,7 +1935,7 @@ public class DLFileShortcutPersistenceImpl
 				_SQL_SELECT_DLFILESHORTCUT_WHERE,
 				_SQL_COUNT_DLFILESHORTCUT_WHERE,
 				DLFileShortcutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileShortcut::getFileShortcutId,
 				new FinderColumn<>(
 					"dlFileShortcut.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileShortcut::getGroupId),
@@ -1997,4 +1997,4 @@ public class DLFileShortcutPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1697693581
+// LIFERAY-SERVICE-BUILDER-HASH:1074773371

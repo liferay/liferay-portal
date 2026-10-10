@@ -1133,6 +1133,7 @@ public class CPSpecificationOptionPersistenceImpl
 				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
 				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CPSpecificationOption::getCPSpecificationOptionId,
 				new FinderColumn<>(
 					"cpSpecificationOption.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1161,6 +1162,7 @@ public class CPSpecificationOptionPersistenceImpl
 				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
 				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CPSpecificationOption::getCPSpecificationOptionId,
 				new FinderColumn<>(
 					"cpSpecificationOption.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1193,6 +1195,7 @@ public class CPSpecificationOptionPersistenceImpl
 				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
 				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CPSpecificationOption::getCPSpecificationOptionId,
 				new FinderColumn<>(
 					"cpSpecificationOption.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1224,6 +1227,7 @@ public class CPSpecificationOptionPersistenceImpl
 				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
 				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CPSpecificationOption::getCPSpecificationOptionId,
 				new FinderColumn<>(
 					"cpSpecificationOption.", "CPOptionCategoryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1331,4 +1335,4 @@ public class CPSpecificationOptionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1099613362
+// LIFERAY-SERVICE-BUILDER-HASH:-2135082834

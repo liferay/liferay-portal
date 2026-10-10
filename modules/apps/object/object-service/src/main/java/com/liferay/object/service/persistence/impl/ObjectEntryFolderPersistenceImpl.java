@@ -1510,7 +1510,7 @@ public class ObjectEntryFolderPersistenceImpl
 				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE,
 				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
 				ObjectEntryFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, ObjectEntryFolder::getObjectEntryFolderId,
 				new FinderColumn<>(
 					"objectEntryFolder.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectEntryFolder::getGroupId),
@@ -1545,7 +1545,7 @@ public class ObjectEntryFolderPersistenceImpl
 				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE,
 				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
 				ObjectEntryFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, ObjectEntryFolder::getObjectEntryFolderId,
 				new FinderColumn<>(
 					"objectEntryFolder.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectEntryFolder::getGroupId),
@@ -1591,7 +1591,7 @@ public class ObjectEntryFolderPersistenceImpl
 				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE,
 				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
 				ObjectEntryFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, ObjectEntryFolder::getObjectEntryFolderId,
 				new FinderColumn<>(
 					"objectEntryFolder.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectEntryFolder::getGroupId),
@@ -1672,4 +1672,4 @@ public class ObjectEntryFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1152894003
+// LIFERAY-SERVICE-BUILDER-HASH:1031231129

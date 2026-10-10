@@ -931,6 +931,7 @@ public class CommercePricingClassPersistenceImpl
 				_SQL_COUNT_COMMERCEPRICINGCLASS_WHERE,
 				CommercePricingClassModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CommercePricingClass::getCommercePricingClassId,
 				new FinderColumn<>(
 					"commercePricingClass.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -959,6 +960,7 @@ public class CommercePricingClassPersistenceImpl
 				_SQL_COUNT_COMMERCEPRICINGCLASS_WHERE,
 				CommercePricingClassModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CommercePricingClass::getCommercePricingClassId,
 				new FinderColumn<>(
 					"commercePricingClass.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -991,6 +993,7 @@ public class CommercePricingClassPersistenceImpl
 				_SQL_COUNT_COMMERCEPRICINGCLASS_WHERE,
 				CommercePricingClassModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				CommercePricingClass::getCommercePricingClassId,
 				new FinderColumn<>(
 					"commercePricingClass.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1081,4 +1084,4 @@ public class CommercePricingClassPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:773705515
+// LIFERAY-SERVICE-BUILDER-HASH:-1123086095

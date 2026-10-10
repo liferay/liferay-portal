@@ -2935,6 +2935,7 @@ public class MBThreadPersistenceImpl
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"mbThread.categoryId != -1", "mbThread.categoryId != -1", null,
+				MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId));
@@ -2972,7 +2973,7 @@ public class MBThreadPersistenceImpl
 					new String[] {"groupId", "categoryId"}, false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -2998,7 +2999,7 @@ public class MBThreadPersistenceImpl
 					new String[] {"groupId", "categoryId"}, false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3032,6 +3033,7 @@ public class MBThreadPersistenceImpl
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"mbThread.categoryId != -1", "mbThread.categoryId != -1", null,
+				MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3125,7 +3127,7 @@ public class MBThreadPersistenceImpl
 					false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3164,7 +3166,7 @@ public class MBThreadPersistenceImpl
 					new String[] {"groupId", "categoryId", "status"}, false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3197,7 +3199,7 @@ public class MBThreadPersistenceImpl
 					new String[] {"groupId", "categoryId", "status"}, false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3230,7 +3232,7 @@ public class MBThreadPersistenceImpl
 					new String[] {"groupId", "categoryId", "status"}, false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3264,7 +3266,7 @@ public class MBThreadPersistenceImpl
 					new String[] {"groupId", "categoryId", "status"}, false),
 				_SQL_SELECT_MBTHREAD_WHERE, _SQL_COUNT_MBTHREAD_WHERE,
 				MBThreadModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBThread::getThreadId,
 				new FinderColumn<>(
 					"mbThread.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBThread::getGroupId),
@@ -3341,4 +3343,4 @@ public class MBThreadPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1056766347
+// LIFERAY-SERVICE-BUILDER-HASH:476935934

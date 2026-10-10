@@ -1407,7 +1407,7 @@ public class CommerceShipmentPersistenceImpl
 				_SQL_SELECT_COMMERCESHIPMENT_WHERE,
 				_SQL_COUNT_COMMERCESHIPMENT_WHERE,
 				CommerceShipmentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceShipment::getCommerceShipmentId,
 				new ArrayableFinderColumn<>(
 					"commerceShipment.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, CommerceShipment::getGroupId));
@@ -1434,7 +1434,7 @@ public class CommerceShipmentPersistenceImpl
 				_SQL_SELECT_COMMERCESHIPMENT_WHERE,
 				_SQL_COUNT_COMMERCESHIPMENT_WHERE,
 				CommerceShipmentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceShipment::getCommerceShipmentId,
 				new ArrayableFinderColumn<>(
 					"commerceShipment.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, CommerceShipment::getGroupId),
@@ -1469,7 +1469,7 @@ public class CommerceShipmentPersistenceImpl
 				_SQL_SELECT_COMMERCESHIPMENT_WHERE,
 				_SQL_COUNT_COMMERCESHIPMENT_WHERE,
 				CommerceShipmentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceShipment::getCommerceShipmentId,
 				new ArrayableFinderColumn<>(
 					"commerceShipment.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, CommerceShipment::getGroupId),
@@ -1558,4 +1558,4 @@ public class CommerceShipmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-49616855
+// LIFERAY-SERVICE-BUILDER-HASH:337810595

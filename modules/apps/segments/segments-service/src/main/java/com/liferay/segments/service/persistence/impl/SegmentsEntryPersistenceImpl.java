@@ -2820,7 +2820,7 @@ public class SegmentsEntryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_SEGMENTSENTRY_WHERE, _SQL_COUNT_SEGMENTSENTRY_WHERE,
 				SegmentsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, SegmentsEntry::getSegmentsEntryId,
 				new ArrayableFinderColumn<>(
 					"segmentsEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, SegmentsEntry::getGroupId));
@@ -2919,7 +2919,7 @@ public class SegmentsEntryPersistenceImpl
 					new String[] {"groupId", "active_"}, false),
 				_SQL_SELECT_SEGMENTSENTRY_WHERE, _SQL_COUNT_SEGMENTSENTRY_WHERE,
 				SegmentsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, SegmentsEntry::getSegmentsEntryId,
 				new ArrayableFinderColumn<>(
 					"segmentsEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, SegmentsEntry::getGroupId),
@@ -2949,7 +2949,7 @@ public class SegmentsEntryPersistenceImpl
 					new String[] {"groupId", "source"}, 0, 2, false, null),
 				_SQL_SELECT_SEGMENTSENTRY_WHERE, _SQL_COUNT_SEGMENTSENTRY_WHERE,
 				SegmentsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, SegmentsEntry::getSegmentsEntryId,
 				new ArrayableFinderColumn<>(
 					"segmentsEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, SegmentsEntry::getGroupId),
@@ -3043,7 +3043,7 @@ public class SegmentsEntryPersistenceImpl
 					null),
 				_SQL_SELECT_SEGMENTSENTRY_WHERE, _SQL_COUNT_SEGMENTSENTRY_WHERE,
 				SegmentsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, SegmentsEntry::getSegmentsEntryId,
 				new ArrayableFinderColumn<>(
 					"segmentsEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, SegmentsEntry::getGroupId),
@@ -3085,7 +3085,7 @@ public class SegmentsEntryPersistenceImpl
 					null),
 				_SQL_SELECT_SEGMENTSENTRY_WHERE, _SQL_COUNT_SEGMENTSENTRY_WHERE,
 				SegmentsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, SegmentsEntry::getSegmentsEntryId,
 				new ArrayableFinderColumn<>(
 					"segmentsEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, SegmentsEntry::getGroupId),
@@ -3222,4 +3222,4 @@ public class SegmentsEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-750077593
+// LIFERAY-SERVICE-BUILDER-HASH:-98558011

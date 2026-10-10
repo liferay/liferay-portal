@@ -2845,7 +2845,7 @@ public class AssetCategoryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_ASSETCATEGORY_WHERE, _SQL_COUNT_ASSETCATEGORY_WHERE,
 				AssetCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AssetCategory::getCategoryId,
 				new FinderColumn<>(
 					"assetCategory.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AssetCategory::getGroupId));
@@ -2954,7 +2954,7 @@ public class AssetCategoryPersistenceImpl
 					new String[] {"groupId", "parentCategoryId"}, false),
 				_SQL_SELECT_ASSETCATEGORY_WHERE, _SQL_COUNT_ASSETCATEGORY_WHERE,
 				AssetCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AssetCategory::getCategoryId,
 				new FinderColumn<>(
 					"assetCategory.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AssetCategory::getGroupId),
@@ -2984,7 +2984,7 @@ public class AssetCategoryPersistenceImpl
 					new String[] {"groupId", "vocabularyId"}, false),
 				_SQL_SELECT_ASSETCATEGORY_WHERE, _SQL_COUNT_ASSETCATEGORY_WHERE,
 				AssetCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AssetCategory::getCategoryId,
 				new ArrayableFinderColumn<>(
 					"assetCategory.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetCategory::getGroupId),
@@ -3113,7 +3113,7 @@ public class AssetCategoryPersistenceImpl
 					false),
 				_SQL_SELECT_ASSETCATEGORY_WHERE, _SQL_COUNT_ASSETCATEGORY_WHERE,
 				AssetCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AssetCategory::getCategoryId,
 				new FinderColumn<>(
 					"assetCategory.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AssetCategory::getGroupId),
@@ -3148,7 +3148,7 @@ public class AssetCategoryPersistenceImpl
 					false),
 				_SQL_SELECT_ASSETCATEGORY_WHERE, _SQL_COUNT_ASSETCATEGORY_WHERE,
 				AssetCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AssetCategory::getCategoryId,
 				new FinderColumn<>(
 					"assetCategory.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AssetCategory::getGroupId),
@@ -3181,7 +3181,7 @@ public class AssetCategoryPersistenceImpl
 					new String[] {"groupId", "name", "vocabularyId"}, false),
 				_SQL_SELECT_ASSETCATEGORY_WHERE, _SQL_COUNT_ASSETCATEGORY_WHERE,
 				AssetCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AssetCategory::getCategoryId,
 				new ArrayableFinderColumn<>(
 					"assetCategory.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetCategory::getGroupId),
@@ -3262,4 +3262,4 @@ public class AssetCategoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-138416690
+// LIFERAY-SERVICE-BUILDER-HASH:-1380219862

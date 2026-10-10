@@ -404,7 +404,7 @@ public class CTRemotePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CTREMOTE_WHERE, _SQL_COUNT_CTREMOTE_WHERE,
 				CTRemoteModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, CTRemote::getCtRemoteId,
 				new FinderColumn<>(
 					"ctRemote.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, CTRemote::getCompanyId));
@@ -469,4 +469,4 @@ public class CTRemotePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1194839597
+// LIFERAY-SERVICE-BUILDER-HASH:1556320263

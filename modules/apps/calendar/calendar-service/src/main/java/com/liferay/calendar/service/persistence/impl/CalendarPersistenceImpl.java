@@ -980,7 +980,7 @@ public class CalendarPersistenceImpl
 					new String[] {"groupId", "calendarResourceId"}, false),
 				_SQL_SELECT_CALENDAR_WHERE, _SQL_COUNT_CALENDAR_WHERE,
 				CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Calendar::getCalendarId,
 				new FinderColumn<>(
 					"calendar.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Calendar::getGroupId),
@@ -1025,7 +1025,7 @@ public class CalendarPersistenceImpl
 					false),
 				_SQL_SELECT_CALENDAR_WHERE, _SQL_COUNT_CALENDAR_WHERE,
 				CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Calendar::getCalendarId,
 				new FinderColumn<>(
 					"calendar.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Calendar::getGroupId),
@@ -1102,4 +1102,4 @@ public class CalendarPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:548142924
+// LIFERAY-SERVICE-BUILDER-HASH:-471865576

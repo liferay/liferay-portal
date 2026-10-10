@@ -904,7 +904,7 @@ public class JournalFeedPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_JOURNALFEED_WHERE, _SQL_COUNT_JOURNALFEED_WHERE,
 				JournalFeedModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, JournalFeed::getId,
 				new FinderColumn<>(
 					"journalFeed.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFeed::getGroupId));
@@ -991,4 +991,4 @@ public class JournalFeedPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1676174536
+// LIFERAY-SERVICE-BUILDER-HASH:1828083683

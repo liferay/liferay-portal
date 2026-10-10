@@ -1321,7 +1321,7 @@ public class WikiNodePersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_WIKINODE_WHERE, _SQL_COUNT_WIKINODE_WHERE,
 				WikiNodeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiNode::getNodeId,
 				new FinderColumn<>(
 					"wikiNode.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiNode::getGroupId));
@@ -1392,7 +1392,7 @@ public class WikiNodePersistenceImpl
 					new String[] {"groupId", "status"}, false),
 				_SQL_SELECT_WIKINODE_WHERE, _SQL_COUNT_WIKINODE_WHERE,
 				WikiNodeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiNode::getNodeId,
 				new FinderColumn<>(
 					"wikiNode.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiNode::getGroupId),
@@ -1509,4 +1509,4 @@ public class WikiNodePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1775165583
+// LIFERAY-SERVICE-BUILDER-HASH:1368521649

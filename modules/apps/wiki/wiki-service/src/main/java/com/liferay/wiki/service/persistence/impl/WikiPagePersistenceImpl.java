@@ -4622,7 +4622,7 @@ public class WikiPagePersistenceImpl
 					false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4911,7 +4911,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"groupId", "nodeId", "head"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4950,7 +4950,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"groupId", "nodeId", "status"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5267,7 +5267,7 @@ public class WikiPagePersistenceImpl
 					false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5311,7 +5311,7 @@ public class WikiPagePersistenceImpl
 					false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5354,7 +5354,7 @@ public class WikiPagePersistenceImpl
 					false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5576,7 +5576,7 @@ public class WikiPagePersistenceImpl
 					8, 8, false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, WikiPage::getResourcePrimKey,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5659,4 +5659,4 @@ public class WikiPagePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-713857090
+// LIFERAY-SERVICE-BUILDER-HASH:-869711357

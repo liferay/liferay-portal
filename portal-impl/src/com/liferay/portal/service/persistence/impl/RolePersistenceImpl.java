@@ -2662,6 +2662,7 @@ public class RolePersistenceImpl
 					new String[] {"uuid_"}, 0, 1, false, null),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Role::getUuid));
@@ -2687,6 +2688,7 @@ public class RolePersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Role::getUuid),
@@ -2715,6 +2717,7 @@ public class RolePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Role::getCompanyId));
@@ -2740,6 +2743,7 @@ public class RolePersistenceImpl
 					new String[] {"name"}, 0, 1, false, null),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "name", FinderColumn.Type.STRING, "=", true, true,
 					Role::getName));
@@ -2765,6 +2769,7 @@ public class RolePersistenceImpl
 					new String[] {"type_"}, false),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "type", "type_", FinderColumn.Type.INTEGER, "=",
 					true, true, Role::getType));
@@ -2790,6 +2795,7 @@ public class RolePersistenceImpl
 					new String[] {"subtype"}, 0, 1, false, null),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "subtype", FinderColumn.Type.STRING, "=", true,
 					true, Role::getSubtype));
@@ -2834,6 +2840,7 @@ public class RolePersistenceImpl
 					new String[] {"companyId", "type_"}, false),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Role::getCompanyId),
@@ -2866,6 +2873,7 @@ public class RolePersistenceImpl
 					new String[] {"type_", "subtype"}, 0, 2, false, null),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "type", "type_", FinderColumn.Type.INTEGER, "=",
 					true, true, Role::getType),
@@ -2924,7 +2932,7 @@ public class RolePersistenceImpl
 					false),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				_uniquePersistenceFinderByC_C_C,
+				_uniquePersistenceFinderByC_C_C, Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Role::getCompanyId),
@@ -2997,7 +3005,7 @@ public class RolePersistenceImpl
 					false),
 				_SQL_SELECT_ROLE__WHERE, _SQL_COUNT_ROLE__WHERE,
 				RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				_uniquePersistenceFinderByC_C_C_T,
+				_uniquePersistenceFinderByC_C_C_T, Role::getRoleId,
 				new FinderColumn<>(
 					"role_.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Role::getCompanyId),
@@ -3072,4 +3080,4 @@ public class RolePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-761376160
+// LIFERAY-SERVICE-BUILDER-HASH:-1048488928

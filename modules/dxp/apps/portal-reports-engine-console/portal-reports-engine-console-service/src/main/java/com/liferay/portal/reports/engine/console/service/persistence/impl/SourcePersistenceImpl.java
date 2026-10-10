@@ -814,7 +814,7 @@ public class SourcePersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_SOURCE_WHERE, _SQL_COUNT_SOURCE_WHERE,
 				SourceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Source::getSourceId,
 				new FinderColumn<>(
 					"source.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Source::getGroupId));
@@ -908,4 +908,4 @@ public class SourcePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2048472424
+// LIFERAY-SERVICE-BUILDER-HASH:-1357355486

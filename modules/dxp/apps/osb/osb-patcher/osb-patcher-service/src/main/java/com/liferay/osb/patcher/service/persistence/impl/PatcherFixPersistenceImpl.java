@@ -3242,7 +3242,7 @@ public class PatcherFixPersistenceImpl
 					new String[] {"patcherProjectVersionId"}, false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3285,7 +3285,7 @@ public class PatcherFixPersistenceImpl
 					false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3325,7 +3325,7 @@ public class PatcherFixPersistenceImpl
 					false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3360,7 +3360,7 @@ public class PatcherFixPersistenceImpl
 					new String[] {"key_", "keyVersion", "type_"}, false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "key", "key_", FinderColumn.Type.STRING, "=",
 					true, true, PatcherFix::getKey),
@@ -3394,7 +3394,7 @@ public class PatcherFixPersistenceImpl
 					new String[] {"key_", "keyVersion", "type_"}, false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "key", "key_", FinderColumn.Type.STRING, "=",
 					true, true, PatcherFix::getKey),
@@ -3427,7 +3427,7 @@ public class PatcherFixPersistenceImpl
 					new String[] {"key_", "latestFix", "type_"}, false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "key", "key_", FinderColumn.Type.STRING, "=",
 					true, true, PatcherFix::getKey),
@@ -3466,7 +3466,7 @@ public class PatcherFixPersistenceImpl
 					false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "modifiedDate", FinderColumn.Type.DATE, "<",
 					true, true, PatcherFix::getModifiedDate),
@@ -3508,7 +3508,7 @@ public class PatcherFixPersistenceImpl
 					false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3553,7 +3553,7 @@ public class PatcherFixPersistenceImpl
 					false),
 				_SQL_SELECT_PATCHERFIX_WHERE, _SQL_COUNT_PATCHERFIX_WHERE,
 				PatcherFixModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, PatcherFix::getPatcherFixId,
 				new FinderColumn<>(
 					"patcherFix.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3649,4 +3649,4 @@ public class PatcherFixPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:837090318
+// LIFERAY-SERVICE-BUILDER-HASH:-1596562944

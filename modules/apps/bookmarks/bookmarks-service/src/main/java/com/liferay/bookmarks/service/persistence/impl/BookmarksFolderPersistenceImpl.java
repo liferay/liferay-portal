@@ -1764,7 +1764,7 @@ public class BookmarksFolderPersistenceImpl
 				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
 				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
 				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, BookmarksFolder::getFolderId,
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId));
@@ -1818,7 +1818,7 @@ public class BookmarksFolderPersistenceImpl
 				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
 				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
 				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, BookmarksFolder::getFolderId,
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId),
@@ -1886,7 +1886,7 @@ public class BookmarksFolderPersistenceImpl
 				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
 				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
 				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, BookmarksFolder::getFolderId,
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId),
@@ -1922,7 +1922,7 @@ public class BookmarksFolderPersistenceImpl
 				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
 				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
 				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, BookmarksFolder::getFolderId,
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId),
@@ -2046,4 +2046,4 @@ public class BookmarksFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1653183705
+// LIFERAY-SERVICE-BUILDER-HASH:-847612721

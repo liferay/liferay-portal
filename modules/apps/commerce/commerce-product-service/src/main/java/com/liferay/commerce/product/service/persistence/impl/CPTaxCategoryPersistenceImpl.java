@@ -911,7 +911,7 @@ public class CPTaxCategoryPersistenceImpl
 					new String[] {"uuid_"}, 0, 1, false, null),
 				_SQL_SELECT_CPTAXCATEGORY_WHERE, _SQL_COUNT_CPTAXCATEGORY_WHERE,
 				CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CPTaxCategory::getCPTaxCategoryId,
 				new FinderColumn<>(
 					"cpTaxCategory.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, CPTaxCategory::getUuid));
@@ -937,7 +937,7 @@ public class CPTaxCategoryPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_CPTAXCATEGORY_WHERE, _SQL_COUNT_CPTAXCATEGORY_WHERE,
 				CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CPTaxCategory::getCPTaxCategoryId,
 				new FinderColumn<>(
 					"cpTaxCategory.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, CPTaxCategory::getUuid),
@@ -966,7 +966,7 @@ public class CPTaxCategoryPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CPTAXCATEGORY_WHERE, _SQL_COUNT_CPTAXCATEGORY_WHERE,
 				CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CPTaxCategory::getCPTaxCategoryId,
 				new FinderColumn<>(
 					"cpTaxCategory.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, CPTaxCategory::getCompanyId));
@@ -1055,4 +1055,4 @@ public class CPTaxCategoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1213351058
+// LIFERAY-SERVICE-BUILDER-HASH:-508681468

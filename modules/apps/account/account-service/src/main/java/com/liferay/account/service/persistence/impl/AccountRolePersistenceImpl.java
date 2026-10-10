@@ -982,7 +982,7 @@ public class AccountRolePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
 				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AccountRole::getAccountRoleId,
 				new FinderColumn<>(
 					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AccountRole::getCompanyId));
@@ -1010,7 +1010,7 @@ public class AccountRolePersistenceImpl
 					new String[] {"accountEntryId"}, false),
 				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
 				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AccountRole::getAccountRoleId,
 				new ArrayableFinderColumn<>(
 					"accountRole.", "accountEntryId", FinderColumn.Type.LONG,
 					"=", false, true, true, AccountRole::getAccountEntryId));
@@ -1047,7 +1047,7 @@ public class AccountRolePersistenceImpl
 					new String[] {"companyId", "accountEntryId"}, false),
 				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
 				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, AccountRole::getAccountRoleId,
 				new FinderColumn<>(
 					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AccountRole::getCompanyId),
@@ -1133,4 +1133,4 @@ public class AccountRolePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:879346413
+// LIFERAY-SERVICE-BUILDER-HASH:-1825707603

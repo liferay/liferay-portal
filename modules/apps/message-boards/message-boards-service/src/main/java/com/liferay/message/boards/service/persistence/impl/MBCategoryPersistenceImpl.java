@@ -3248,7 +3248,7 @@ public class MBCategoryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new FinderColumn<>(
 					"mbCategory.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBCategory::getGroupId));
@@ -3300,7 +3300,7 @@ public class MBCategoryPersistenceImpl
 					new String[] {"groupId", "parentCategoryId"}, false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new FinderColumn<>(
 					"mbCategory.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBCategory::getGroupId),
@@ -3349,7 +3349,7 @@ public class MBCategoryPersistenceImpl
 					new String[] {"groupId", "status"}, false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new FinderColumn<>(
 					"mbCategory.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBCategory::getGroupId),
@@ -3409,7 +3409,7 @@ public class MBCategoryPersistenceImpl
 					false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new ArrayableFinderColumn<>(
 					"mbCategory.", "categoryId", FinderColumn.Type.LONG, "!=",
 					true, true, true, MBCategory::getCategoryId),
@@ -3451,7 +3451,7 @@ public class MBCategoryPersistenceImpl
 					false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new FinderColumn<>(
 					"mbCategory.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBCategory::getGroupId),
@@ -3486,7 +3486,7 @@ public class MBCategoryPersistenceImpl
 					false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new FinderColumn<>(
 					"mbCategory.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, MBCategory::getGroupId),
@@ -3525,7 +3525,7 @@ public class MBCategoryPersistenceImpl
 					false),
 				_SQL_SELECT_MBCATEGORY_WHERE, _SQL_COUNT_MBCATEGORY_WHERE,
 				MBCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, MBCategory::getCategoryId,
 				new ArrayableFinderColumn<>(
 					"mbCategory.", "categoryId", FinderColumn.Type.LONG, "!=",
 					true, true, true, MBCategory::getCategoryId),
@@ -3622,4 +3622,4 @@ public class MBCategoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:86613795
+// LIFERAY-SERVICE-BUILDER-HASH:1918401394

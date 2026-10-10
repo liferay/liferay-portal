@@ -1736,7 +1736,7 @@ public class SavedContentEntryPersistenceImpl
 				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
 				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
 				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SavedContentEntry::getSavedContentEntryId,
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId));
@@ -1790,7 +1790,7 @@ public class SavedContentEntryPersistenceImpl
 				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
 				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
 				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SavedContentEntry::getSavedContentEntryId,
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId),
@@ -1820,7 +1820,7 @@ public class SavedContentEntryPersistenceImpl
 				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
 				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
 				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SavedContentEntry::getSavedContentEntryId,
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId),
@@ -1886,7 +1886,7 @@ public class SavedContentEntryPersistenceImpl
 				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
 				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
 				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SavedContentEntry::getSavedContentEntryId,
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId),
@@ -2105,4 +2105,4 @@ public class SavedContentEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1209037601
+// LIFERAY-SERVICE-BUILDER-HASH:2140012309

@@ -807,7 +807,7 @@ public class KaleoProcessPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_KALEOPROCESS_WHERE, _SQL_COUNT_KALEOPROCESS_WHERE,
 				KaleoProcessModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, KaleoProcess::getKaleoProcessId,
 				new FinderColumn<>(
 					"kaleoProcess.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, KaleoProcess::getGroupId));
@@ -888,4 +888,4 @@ public class KaleoProcessPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:754291774
+// LIFERAY-SERVICE-BUILDER-HASH:-716674172

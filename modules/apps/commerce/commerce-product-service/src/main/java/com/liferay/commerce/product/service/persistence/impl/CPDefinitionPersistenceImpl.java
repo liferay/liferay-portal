@@ -1688,7 +1688,7 @@ public class CPDefinitionPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_CPDEFINITION_WHERE, _SQL_COUNT_CPDEFINITION_WHERE,
 				CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CPDefinition::getCPDefinitionId,
 				new FinderColumn<>(
 					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CPDefinition::getGroupId));
@@ -1799,7 +1799,7 @@ public class CPDefinitionPersistenceImpl
 					new String[] {"groupId", "subscriptionEnabled"}, false),
 				_SQL_SELECT_CPDEFINITION_WHERE, _SQL_COUNT_CPDEFINITION_WHERE,
 				CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CPDefinition::getCPDefinitionId,
 				new FinderColumn<>(
 					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CPDefinition::getGroupId),
@@ -1833,7 +1833,7 @@ public class CPDefinitionPersistenceImpl
 					new String[] {"groupId", "status"}, false),
 				_SQL_SELECT_CPDEFINITION_WHERE, _SQL_COUNT_CPDEFINITION_WHERE,
 				CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, CPDefinition::getCPDefinitionId,
 				new FinderColumn<>(
 					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CPDefinition::getGroupId),
@@ -1979,4 +1979,4 @@ public class CPDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:297839203
+// LIFERAY-SERVICE-BUILDER-HASH:1820262269

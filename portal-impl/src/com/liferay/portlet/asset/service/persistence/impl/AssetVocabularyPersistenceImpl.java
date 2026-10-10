@@ -1679,7 +1679,7 @@ public class AssetVocabularyPersistenceImpl
 				_SQL_SELECT_ASSETVOCABULARY_WHERE,
 				_SQL_COUNT_ASSETVOCABULARY_WHERE,
 				AssetVocabularyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, AssetVocabulary::getVocabularyId,
 				new ArrayableFinderColumn<>(
 					"assetVocabulary.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetVocabulary::getGroupId));
@@ -1746,7 +1746,7 @@ public class AssetVocabularyPersistenceImpl
 				_SQL_SELECT_ASSETVOCABULARY_WHERE,
 				_SQL_COUNT_ASSETVOCABULARY_WHERE,
 				AssetVocabularyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, AssetVocabulary::getVocabularyId,
 				new FinderColumn<>(
 					"assetVocabulary.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AssetVocabulary::getGroupId),
@@ -1780,7 +1780,7 @@ public class AssetVocabularyPersistenceImpl
 				_SQL_SELECT_ASSETVOCABULARY_WHERE,
 				_SQL_COUNT_ASSETVOCABULARY_WHERE,
 				AssetVocabularyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, AssetVocabulary::getVocabularyId,
 				new ArrayableFinderColumn<>(
 					"assetVocabulary.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetVocabulary::getGroupId),
@@ -1836,4 +1836,4 @@ public class AssetVocabularyPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1581101391
+// LIFERAY-SERVICE-BUILDER-HASH:82839573

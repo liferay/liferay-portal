@@ -1410,7 +1410,7 @@ public class CommerceOrderTypePersistenceImpl
 				_SQL_SELECT_COMMERCEORDERTYPE_WHERE,
 				_SQL_COUNT_COMMERCEORDERTYPE_WHERE,
 				CommerceOrderTypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceOrderType::getCommerceOrderTypeId,
 				new FinderColumn<>(
 					"commerceOrderType.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1438,7 +1438,7 @@ public class CommerceOrderTypePersistenceImpl
 				_SQL_SELECT_COMMERCEORDERTYPE_WHERE,
 				_SQL_COUNT_COMMERCEORDERTYPE_WHERE,
 				CommerceOrderTypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceOrderType::getCommerceOrderTypeId,
 				new FinderColumn<>(
 					"commerceOrderType.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1469,7 +1469,7 @@ public class CommerceOrderTypePersistenceImpl
 				_SQL_SELECT_COMMERCEORDERTYPE_WHERE,
 				_SQL_COUNT_COMMERCEORDERTYPE_WHERE,
 				CommerceOrderTypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceOrderType::getCommerceOrderTypeId,
 				new FinderColumn<>(
 					"commerceOrderType.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CommerceOrderType::getCompanyId));
@@ -1500,7 +1500,7 @@ public class CommerceOrderTypePersistenceImpl
 				_SQL_SELECT_COMMERCEORDERTYPE_WHERE,
 				_SQL_COUNT_COMMERCEORDERTYPE_WHERE,
 				CommerceOrderTypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceOrderType::getCommerceOrderTypeId,
 				new FinderColumn<>(
 					"commerceOrderType.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CommerceOrderType::getCompanyId),
@@ -1530,7 +1530,7 @@ public class CommerceOrderTypePersistenceImpl
 				_SQL_SELECT_COMMERCEORDERTYPE_WHERE,
 				_SQL_COUNT_COMMERCEORDERTYPE_WHERE,
 				CommerceOrderTypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceOrderType::getCommerceOrderTypeId,
 				new FinderColumn<>(
 					"commerceOrderType.", "displayDate", FinderColumn.Type.DATE,
 					"<", true, true, CommerceOrderType::getDisplayDate),
@@ -1559,7 +1559,7 @@ public class CommerceOrderTypePersistenceImpl
 				_SQL_SELECT_COMMERCEORDERTYPE_WHERE,
 				_SQL_COUNT_COMMERCEORDERTYPE_WHERE,
 				CommerceOrderTypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, CommerceOrderType::getCommerceOrderTypeId,
 				new FinderColumn<>(
 					"commerceOrderType.", "expirationDate",
 					FinderColumn.Type.DATE, "<", true, true,
@@ -1650,4 +1650,4 @@ public class CommerceOrderTypePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1790377153
+// LIFERAY-SERVICE-BUILDER-HASH:-212399039

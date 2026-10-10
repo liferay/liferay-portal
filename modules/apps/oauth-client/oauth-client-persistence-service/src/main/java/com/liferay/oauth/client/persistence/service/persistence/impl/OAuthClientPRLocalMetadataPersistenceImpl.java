@@ -1253,6 +1253,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				OAuthClientPRLocalMetadata::getOAuthClientPRLocalMetadataId,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1281,6 +1282,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				OAuthClientPRLocalMetadata::getOAuthClientPRLocalMetadataId,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1313,6 +1315,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				OAuthClientPRLocalMetadata::getOAuthClientPRLocalMetadataId,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1341,6 +1344,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				OAuthClientPRLocalMetadata::getOAuthClientPRLocalMetadataId,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "userId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1373,6 +1377,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				OAuthClientPRLocalMetadata::getOAuthClientPRLocalMetadataId,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1503,4 +1508,4 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:283184806
+// LIFERAY-SERVICE-BUILDER-HASH:1420922200

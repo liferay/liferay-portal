@@ -1362,7 +1362,7 @@ public class KBFolderPersistenceImpl
 					new String[] {"groupId", "parentKBFolderId"}, false),
 				_SQL_SELECT_KBFOLDER_WHERE, _SQL_COUNT_KBFOLDER_WHERE,
 				KBFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, KBFolder::getKbFolderId,
 				new FinderColumn<>(
 					"kbFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBFolder::getGroupId),
@@ -1445,7 +1445,7 @@ public class KBFolderPersistenceImpl
 					false),
 				_SQL_SELECT_KBFOLDER_WHERE, _SQL_COUNT_KBFOLDER_WHERE,
 				KBFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, KBFolder::getKbFolderId,
 				new FinderColumn<>(
 					"kbFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBFolder::getGroupId),
@@ -1538,4 +1538,4 @@ public class KBFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1447354402
+// LIFERAY-SERVICE-BUILDER-HASH:-62904034

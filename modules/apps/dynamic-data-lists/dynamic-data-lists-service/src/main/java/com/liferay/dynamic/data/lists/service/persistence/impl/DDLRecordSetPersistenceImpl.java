@@ -1107,7 +1107,7 @@ public class DDLRecordSetPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_DDLRECORDSET_WHERE, _SQL_COUNT_DDLRECORDSET_WHERE,
 				DDLRecordSetModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DDLRecordSet::getRecordSetId,
 				new ArrayableFinderColumn<>(
 					"ddlRecordSet.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDLRecordSet::getGroupId));
@@ -1222,4 +1222,4 @@ public class DDLRecordSetPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1026720793
+// LIFERAY-SERVICE-BUILDER-HASH:-980953051

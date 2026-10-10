@@ -982,6 +982,7 @@ public class PatcherProjectVersionPersistenceImpl
 				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
 				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				PatcherProjectVersion::getPatcherProjectVersionId,
 				new FinderColumn<>(
 					"patcherProjectVersion.", "patcherProductVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1013,6 +1014,7 @@ public class PatcherProjectVersionPersistenceImpl
 				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
 				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				PatcherProjectVersion::getPatcherProjectVersionId,
 				new FinderColumn<>(
 					"patcherProjectVersion.", "rootPatcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1074,6 +1076,7 @@ public class PatcherProjectVersionPersistenceImpl
 				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
 				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				PatcherProjectVersion::getPatcherProjectVersionId,
 				new FinderColumn<>(
 					"patcherProjectVersion.", "patcherProductVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1109,6 +1112,7 @@ public class PatcherProjectVersionPersistenceImpl
 				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
 				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				PatcherProjectVersion::getPatcherProjectVersionId,
 				new FinderColumn<>(
 					"patcherProjectVersion.", "patcherProductVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1178,4 +1182,4 @@ public class PatcherProjectVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1988171705
+// LIFERAY-SERVICE-BUILDER-HASH:-1883533639

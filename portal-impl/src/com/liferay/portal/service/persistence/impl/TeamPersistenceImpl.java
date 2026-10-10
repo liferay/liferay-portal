@@ -1655,6 +1655,7 @@ public class TeamPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_TEAM_WHERE, _SQL_COUNT_TEAM_WHERE,
 				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
+				Team::getTeamId,
 				new FinderColumn<>(
 					"team.", "groupId", FinderColumn.Type.LONG, "=", true, true,
 					Team::getGroupId));
@@ -1718,4 +1719,4 @@ public class TeamPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2102530555
+// LIFERAY-SERVICE-BUILDER-HASH:-185733323

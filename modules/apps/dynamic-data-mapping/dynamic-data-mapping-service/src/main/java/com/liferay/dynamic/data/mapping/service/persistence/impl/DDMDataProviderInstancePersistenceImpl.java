@@ -1027,6 +1027,7 @@ public class DDMDataProviderInstancePersistenceImpl
 				_SQL_COUNT_DDMDATAPROVIDERINSTANCE_WHERE,
 				DDMDataProviderInstanceModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				DDMDataProviderInstance::getDataProviderInstanceId,
 				new ArrayableFinderColumn<>(
 					"ddmDataProviderInstance.", "groupId",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -1126,4 +1127,4 @@ public class DDMDataProviderInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2091193967
+// LIFERAY-SERVICE-BUILDER-HASH:-709909286

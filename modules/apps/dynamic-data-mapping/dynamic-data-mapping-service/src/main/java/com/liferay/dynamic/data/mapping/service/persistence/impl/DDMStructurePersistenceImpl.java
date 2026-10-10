@@ -1516,7 +1516,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DDMStructure::getStructureId,
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId));
@@ -1572,7 +1572,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"groupId", "classNameId"}, false),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DDMStructure::getStructureId,
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId),
@@ -1722,4 +1722,4 @@ public class DDMStructurePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1337264137
+// LIFERAY-SERVICE-BUILDER-HASH:-1419266619

@@ -3650,7 +3650,7 @@ public class DLFolderPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId));
@@ -3729,7 +3729,7 @@ public class DLFolderPersistenceImpl
 					new String[] {"groupId", "parentFolderId"}, false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -3900,7 +3900,7 @@ public class DLFolderPersistenceImpl
 					false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4014,7 +4014,7 @@ public class DLFolderPersistenceImpl
 					false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4057,7 +4057,7 @@ public class DLFolderPersistenceImpl
 					false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4108,7 +4108,7 @@ public class DLFolderPersistenceImpl
 					false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4167,7 +4167,7 @@ public class DLFolderPersistenceImpl
 					false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4216,7 +4216,7 @@ public class DLFolderPersistenceImpl
 					false),
 				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
 				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, DLFolder::getFolderId,
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4288,4 +4288,4 @@ public class DLFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-984304096
+// LIFERAY-SERVICE-BUILDER-HASH:250407076

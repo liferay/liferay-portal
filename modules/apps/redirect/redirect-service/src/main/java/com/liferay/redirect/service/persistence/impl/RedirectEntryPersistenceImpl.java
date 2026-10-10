@@ -979,7 +979,7 @@ public class RedirectEntryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_REDIRECTENTRY_WHERE, _SQL_COUNT_REDIRECTENTRY_WHERE,
 				RedirectEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, RedirectEntry::getRedirectEntryId,
 				new FinderColumn<>(
 					"redirectEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, RedirectEntry::getGroupId));
@@ -1007,7 +1007,7 @@ public class RedirectEntryPersistenceImpl
 					null),
 				_SQL_SELECT_REDIRECTENTRY_WHERE, _SQL_COUNT_REDIRECTENTRY_WHERE,
 				RedirectEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, RedirectEntry::getRedirectEntryId,
 				new FinderColumn<>(
 					"redirectEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, RedirectEntry::getGroupId),
@@ -1095,4 +1095,4 @@ public class RedirectEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1246721647
+// LIFERAY-SERVICE-BUILDER-HASH:-553688977

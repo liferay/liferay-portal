@@ -2043,7 +2043,7 @@ public class JournalFolderPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
 				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, JournalFolder::getFolderId,
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId));
@@ -2095,7 +2095,7 @@ public class JournalFolderPersistenceImpl
 					new String[] {"groupId", "parentFolderId"}, false),
 				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
 				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, JournalFolder::getFolderId,
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId),
@@ -2198,7 +2198,7 @@ public class JournalFolderPersistenceImpl
 					false),
 				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
 				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, JournalFolder::getFolderId,
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId),
@@ -2232,7 +2232,7 @@ public class JournalFolderPersistenceImpl
 					false),
 				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
 				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, JournalFolder::getFolderId,
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId),
@@ -2370,4 +2370,4 @@ public class JournalFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1636401938
+// LIFERAY-SERVICE-BUILDER-HASH:48367236

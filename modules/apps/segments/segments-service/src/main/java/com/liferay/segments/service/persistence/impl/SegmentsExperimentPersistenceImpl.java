@@ -1090,7 +1090,7 @@ public class SegmentsExperimentPersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIMENT_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIMENT_WHERE,
 				SegmentsExperimentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperiment::getSegmentsExperimentId,
 				new FinderColumn<>(
 					"segmentsExperiment.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperiment::getGroupId));
@@ -1234,4 +1234,4 @@ public class SegmentsExperimentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1972977492
+// LIFERAY-SERVICE-BUILDER-HASH:1313607374

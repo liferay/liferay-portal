@@ -2992,7 +2992,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"uuid_"}, 0, 1, false, null),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, Organization::getUuid));
@@ -3018,7 +3018,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, Organization::getUuid),
@@ -3047,7 +3047,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId));
@@ -3078,6 +3078,7 @@ public class OrganizationPersistenceImpl
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"organization.parentOrganizationId != 0",
 				"organization.parentOrganizationId != 0", null,
+				Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId));
@@ -3103,7 +3104,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"logoId"}, false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "logoId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getLogoId));
@@ -3129,7 +3130,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"companyId", "parentOrganizationId"}, false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId),
@@ -3156,7 +3157,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"companyId", "treePath"}, false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId),
@@ -3198,7 +3199,7 @@ public class OrganizationPersistenceImpl
 					new String[] {"companyId", "name"}, false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId),
@@ -3234,7 +3235,7 @@ public class OrganizationPersistenceImpl
 					false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "organizationId", FinderColumn.Type.LONG,
 					">", true, true, Organization::getOrganizationId),
@@ -3270,7 +3271,7 @@ public class OrganizationPersistenceImpl
 					false),
 				_SQL_SELECT_ORGANIZATION_WHERE, _SQL_COUNT_ORGANIZATION_WHERE,
 				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, Organization::getOrganizationId,
 				new FinderColumn<>(
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId),
@@ -3345,4 +3346,4 @@ public class OrganizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-704813148
+// LIFERAY-SERVICE-BUILDER-HASH:668108644

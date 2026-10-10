@@ -1942,6 +1942,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				LayoutUtilityPageEntry::getLayoutUtilityPageEntryId,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1981,6 +1982,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				LayoutUtilityPageEntry::getLayoutUtilityPageEntryId,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2029,6 +2031,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				LayoutUtilityPageEntry::getLayoutUtilityPageEntryId,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2090,6 +2093,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				LayoutUtilityPageEntry::getLayoutUtilityPageEntryId,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2186,4 +2190,4 @@ public class LayoutUtilityPageEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-851700994
+// LIFERAY-SERVICE-BUILDER-HASH:-1463808078

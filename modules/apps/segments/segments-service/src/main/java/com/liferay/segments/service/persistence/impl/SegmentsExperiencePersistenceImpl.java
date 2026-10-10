@@ -2847,7 +2847,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId));
@@ -2874,7 +2874,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -2908,7 +2908,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new ArrayableFinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, SegmentsExperience::getGroupId),
@@ -3000,7 +3000,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3083,7 +3083,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3118,7 +3118,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3159,7 +3159,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3215,7 +3215,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3278,7 +3278,7 @@ public class SegmentsExperiencePersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
 				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
+				"", "", null, SegmentsExperience::getSegmentsExperienceId,
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3382,4 +3382,4 @@ public class SegmentsExperiencePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1634269833
+// LIFERAY-SERVICE-BUILDER-HASH:883170735

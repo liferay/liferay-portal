@@ -627,7 +627,7 @@ public class ExpandoColumnPersistenceImpl
 					new String[] {"tableId"}, false),
 				_SQL_SELECT_EXPANDOCOLUMN_WHERE, _SQL_COUNT_EXPANDOCOLUMN_WHERE,
 				ExpandoColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, ExpandoColumn::getColumnId,
 				new FinderColumn<>(
 					"expandoColumn.", "tableId", FinderColumn.Type.LONG, "=",
 					true, true, ExpandoColumn::getTableId));
@@ -669,7 +669,7 @@ public class ExpandoColumnPersistenceImpl
 					new String[] {"tableId", "name"}, 0, 2, false, null),
 				_SQL_SELECT_EXPANDOCOLUMN_WHERE, _SQL_COUNT_EXPANDOCOLUMN_WHERE,
 				ExpandoColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", _uniquePersistenceFinderByT_N,
+				"", _uniquePersistenceFinderByT_N, ExpandoColumn::getColumnId,
 				new FinderColumn<>(
 					"expandoColumn.", "tableId", FinderColumn.Type.LONG, "=",
 					true, true, ExpandoColumn::getTableId),
@@ -707,4 +707,4 @@ public class ExpandoColumnPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:151953228
+// LIFERAY-SERVICE-BUILDER-HASH:1462094888

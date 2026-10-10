@@ -827,7 +827,7 @@ public class DefinitionPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_DEFINITION_WHERE, _SQL_COUNT_DEFINITION_WHERE,
 				DefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Definition::getDefinitionId,
 				new FinderColumn<>(
 					"definition.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Definition::getGroupId));
@@ -921,4 +921,4 @@ public class DefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1853089368
+// LIFERAY-SERVICE-BUILDER-HASH:1325369314

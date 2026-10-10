@@ -4145,6 +4145,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId));
@@ -4284,7 +4285,7 @@ public class LayoutPersistenceImpl
 					new String[] {"groupId", "privateLayout"}, false),
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4314,6 +4315,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4346,7 +4348,7 @@ public class LayoutPersistenceImpl
 					null),
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4496,6 +4498,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4537,6 +4540,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4576,7 +4580,7 @@ public class LayoutPersistenceImpl
 					false),
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4651,7 +4655,7 @@ public class LayoutPersistenceImpl
 					0, 4, false, null),
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4692,6 +4696,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4731,6 +4736,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4772,7 +4778,7 @@ public class LayoutPersistenceImpl
 					false),
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4815,6 +4821,7 @@ public class LayoutPersistenceImpl
 				_SQL_SELECT_LAYOUT_WHERE, _SQL_COUNT_LAYOUT_WHERE,
 				LayoutModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				"layout.system = [$FALSE$]", "layout.system_ = [$FALSE$]", null,
+				Layout::getPlid,
 				new FinderColumn<>(
 					"layout.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Layout::getGroupId),
@@ -4880,4 +4887,4 @@ public class LayoutPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1607176170
+// LIFERAY-SERVICE-BUILDER-HASH:252514774

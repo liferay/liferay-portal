@@ -901,6 +901,7 @@ public class NotificationQueueEntryPersistenceImpl
 				_SQL_COUNT_NOTIFICATIONQUEUEENTRY_WHERE,
 				NotificationQueueEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				NotificationQueueEntry::getNotificationQueueEntryId,
 				new FinderColumn<>(
 					"notificationQueueEntry.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -932,6 +933,7 @@ public class NotificationQueueEntryPersistenceImpl
 				_SQL_COUNT_NOTIFICATIONQUEUEENTRY_WHERE,
 				NotificationQueueEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				NotificationQueueEntry::getNotificationQueueEntryId,
 				new FinderColumn<>(
 					"notificationQueueEntry.", "notificationTemplateId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -957,6 +959,7 @@ public class NotificationQueueEntryPersistenceImpl
 				_SQL_COUNT_NOTIFICATIONQUEUEENTRY_WHERE,
 				NotificationQueueEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				NotificationQueueEntry::getNotificationQueueEntryId,
 				new FinderColumn<>(
 					"notificationQueueEntry.", "sentDate",
 					FinderColumn.Type.DATE, "<", true, true,
@@ -989,6 +992,7 @@ public class NotificationQueueEntryPersistenceImpl
 				_SQL_COUNT_NOTIFICATIONQUEUEENTRY_WHERE,
 				NotificationQueueEntryModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX, "", "", null,
+				NotificationQueueEntry::getNotificationQueueEntryId,
 				new FinderColumn<>(
 					"notificationQueueEntry.", "type", "type_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1061,4 +1065,4 @@ public class NotificationQueueEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-697613268
+// LIFERAY-SERVICE-BUILDER-HASH:-1207417684

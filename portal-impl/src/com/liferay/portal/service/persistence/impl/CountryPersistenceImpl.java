@@ -2268,7 +2268,7 @@ public class CountryPersistenceImpl
 					new String[] {"uuid_"}, 0, 1, false, null),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Country::getUuid));
@@ -2294,7 +2294,7 @@ public class CountryPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Country::getUuid),
@@ -2323,7 +2323,7 @@ public class CountryPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId));
@@ -2349,7 +2349,7 @@ public class CountryPersistenceImpl
 					new String[] {"active_"}, false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "active", "active_", FinderColumn.Type.BOOLEAN,
 					"=", true, true, Country::isActive));
@@ -2410,7 +2410,7 @@ public class CountryPersistenceImpl
 					new String[] {"companyId", "active_"}, false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId),
@@ -2479,7 +2479,7 @@ public class CountryPersistenceImpl
 					false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId),
@@ -2521,7 +2521,7 @@ public class CountryPersistenceImpl
 					false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId),
@@ -2572,7 +2572,7 @@ public class CountryPersistenceImpl
 					false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCountryId),
@@ -2626,7 +2626,7 @@ public class CountryPersistenceImpl
 					false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCountryId),
@@ -2685,7 +2685,7 @@ public class CountryPersistenceImpl
 					false),
 				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
 				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
+				null, Country::getCountryId,
 				new FinderColumn<>(
 					"country.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCountryId),
@@ -2751,4 +2751,4 @@ public class CountryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1970189197
+// LIFERAY-SERVICE-BUILDER-HASH:752634379

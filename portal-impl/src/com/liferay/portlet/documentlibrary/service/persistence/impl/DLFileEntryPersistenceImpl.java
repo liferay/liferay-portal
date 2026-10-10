@@ -3133,7 +3133,7 @@ public class DLFileEntryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_DLFILEENTRY_WHERE, _SQL_COUNT_DLFILEENTRY_WHERE,
 				DLFileEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileEntry::getFileEntryId,
 				new FinderColumn<>(
 					"dlFileEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileEntry::getGroupId));
@@ -3377,7 +3377,7 @@ public class DLFileEntryPersistenceImpl
 					new String[] {"groupId", "userId"}, false),
 				_SQL_SELECT_DLFILEENTRY_WHERE, _SQL_COUNT_DLFILEENTRY_WHERE,
 				DLFileEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileEntry::getFileEntryId,
 				new FinderColumn<>(
 					"dlFileEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileEntry::getGroupId),
@@ -3406,7 +3406,7 @@ public class DLFileEntryPersistenceImpl
 					new String[] {"groupId", "folderId"}, false),
 				_SQL_SELECT_DLFILEENTRY_WHERE, _SQL_COUNT_DLFILEENTRY_WHERE,
 				DLFileEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileEntry::getFileEntryId,
 				new FinderColumn<>(
 					"dlFileEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileEntry::getGroupId),
@@ -3498,7 +3498,7 @@ public class DLFileEntryPersistenceImpl
 					new String[] {"groupId", "userId", "folderId"}, false),
 				_SQL_SELECT_DLFILEENTRY_WHERE, _SQL_COUNT_DLFILEENTRY_WHERE,
 				DLFileEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileEntry::getFileEntryId,
 				new FinderColumn<>(
 					"dlFileEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileEntry::getGroupId),
@@ -3606,7 +3606,7 @@ public class DLFileEntryPersistenceImpl
 					false),
 				_SQL_SELECT_DLFILEENTRY_WHERE, _SQL_COUNT_DLFILEENTRY_WHERE,
 				DLFileEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"", null, DLFileEntry::getFileEntryId,
 				new FinderColumn<>(
 					"dlFileEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileEntry::getGroupId),
@@ -3757,4 +3757,4 @@ public class DLFileEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1289889468
+// LIFERAY-SERVICE-BUILDER-HASH:-947605086
