@@ -88,17 +88,18 @@ public class FreeMarkerFragmentEntryProcessor
 			return html;
 		}
 
-		FreeMarkerFragmentEntryProcessorConfiguration
-			freeMarkerFragmentEntryProcessorConfiguration =
-				_configurationProvider.getCompanyConfiguration(
-					FreeMarkerFragmentEntryProcessorConfiguration.class,
-					fragmentEntryLink.getCompanyId());
+		if (Validator.isNull(fragmentEntryLink.getRendererKey())) {
+			FreeMarkerFragmentEntryProcessorConfiguration
+				freeMarkerFragmentEntryProcessorConfiguration =
+					_configurationProvider.getCompanyConfiguration(
+						FreeMarkerFragmentEntryProcessorConfiguration.class,
+						fragmentEntryLink.getCompanyId());
 
-		if (!freeMarkerFragmentEntryProcessorConfiguration.enable() &&
-			Validator.isNull(fragmentEntryLink.getRendererKey()) &&
-			!fragmentEntryLink.isSystem()) {
+			if (!freeMarkerFragmentEntryProcessorConfiguration.enable() &&
+				!fragmentEntryLink.isSystem()) {
 
-			return html;
+				return html;
+			}
 		}
 
 		if (fragmentEntryProcessorContext.getHttpServletRequest() == null) {
