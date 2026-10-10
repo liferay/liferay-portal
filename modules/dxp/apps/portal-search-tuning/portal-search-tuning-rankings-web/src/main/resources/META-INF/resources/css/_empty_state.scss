@@ -5,8 +5,7 @@
 	// values in sync with it, and remove this once the admin theme covers
 	// .c-empty-state-image or native dark illustrations exist.
 
-	[data-color-scheme='dark'] &,
-	[data-color-scheme='dark-high-contrast'] & {
+	[data-color-scheme='dark'] & {
 		filter: invert(0.8) sepia(0.8) hue-rotate(198deg) saturate(1)
 			brightness(0.52);
 	}

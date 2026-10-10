@@ -42,10 +42,9 @@
 		@media (prefers-contrast: more) {
 			@include clay-css($c-dark-high-contrast);
 		}
-	}
 
-	[data-color-scheme='dark-high-contrast']:root,
-	:root [data-color-scheme='dark-high-contrast'] {
-		@include clay-css($c-dark-high-contrast);
+		&[data-prefers-contrast='more'] {
+			@include clay-css($c-dark-high-contrast);
+		}
 	}
 }
