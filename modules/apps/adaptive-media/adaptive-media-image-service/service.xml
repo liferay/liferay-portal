@@ -29,15 +29,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="ConfigurationUuid" return-type="Collection">
-			<finder-column name="configurationUuid" />
-		</finder>
 		<finder name="FileVersionId" return-type="Collection">
 			<finder-column name="fileVersionId" />
 		</finder>
