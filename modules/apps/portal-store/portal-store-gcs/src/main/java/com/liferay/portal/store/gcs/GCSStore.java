@@ -61,8 +61,10 @@ import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.osgi.framework.BundleContext;
@@ -167,12 +169,18 @@ public class GCSStore implements Store {
 			StoreArea.getCurrentStoreAreaPath(companyId, repositoryId) +
 				StringPool.SLASH;
 
-		return TransformUtil.transform(
-			_getFilePaths(companyId, repositoryId, dirName),
-			filePath -> filePath.substring(
-				filePath.indexOf(prefix) + prefix.length(),
-				filePath.lastIndexOf(StringPool.SLASH)),
-			String.class);
+		Set<String> fileNames = new LinkedHashSet<>();
+
+		for (String filePath :
+				_getFilePaths(companyId, repositoryId, dirName)) {
+
+			fileNames.add(
+				filePath.substring(
+					filePath.indexOf(prefix) + prefix.length(),
+					filePath.lastIndexOf(StringPool.SLASH)));
+		}
+
+		return fileNames.toArray(new String[0]);
 	}
 
 	@Override
