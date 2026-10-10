@@ -23,6 +23,11 @@ public class SpaceDepotGroupItemSelectorProvider
 	}
 
 	@Override
+	public String getIcon() {
+		return "box-container";
+	}
+
+	@Override
 	protected int getDepotEntryType() {
 		return DepotConstants.TYPE_SPACE;
 	}

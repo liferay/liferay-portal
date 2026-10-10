@@ -13,7 +13,13 @@ GroupSelectorDisplayContext groupSelectorDisplayContext = new GroupSelectorDispl
 Set<String> groupTypes = groupSelectorDisplayContext.getGroupTypes();
 %>
 
-<c:if test="<%= groupTypes.size() > 1 %>">
+<liferay-util:html-top
+	outputKey="com.liferay.item.selector.taglib#/group_selector/page.jsp"
+>
+	<aui:link hashedFile="<%= true %>" href="item-selector-taglib/css/group_selector.css" rel="stylesheet" type="text/css" />
+</liferay-util:html-top>
+
+<c:if test="<%= !groupSelectorDisplayContext.isShowBreadcrumb() && (groupTypes.size() > 1) %>">
 	<clay:container-fluid>
 		<div class="btn-group btn-group-sm my-3" role="group">
 
@@ -34,27 +40,71 @@ Set<String> groupTypes = groupSelectorDisplayContext.getGroupTypes();
 <clay:container-fluid
 	cssClass="lfr-item-viewer"
 >
-	<liferay-ui:search-container
-		searchContainer="<%= groupSelectorDisplayContext.getSearchContainer() %>"
-		var="listSearchContainer"
-	>
-		<liferay-ui:search-container-row
-			className="com.liferay.portal.kernel.model.Group"
-			cssClass="card-page-item card-page-item-directory"
-			modelVar="curGroup"
-		>
-			<liferay-ui:search-container-column-text
-				colspan="<%= 3 %>"
-			>
-				<clay:navigation-card
-					navigationCard="<%= new GroupNavigationCard(curGroup, groupSelectorDisplayContext, request) %>"
-				/>
-			</liferay-ui:search-container-column-text>
-		</liferay-ui:search-container-row>
-
-		<liferay-ui:search-iterator
-			displayStyle="icon"
-			markupView="lexicon"
+	<c:if test="<%= groupSelectorDisplayContext.isShowBreadcrumb() %>">
+		<liferay-site-navigation:breadcrumb
+			breadcrumbEntries="<%= groupSelectorDisplayContext.getBreadcrumbEntries() %>"
 		/>
-	</liferay-ui:search-container>
+	</c:if>
+
+	<c:choose>
+		<c:when test="<%= groupSelectorDisplayContext.isShowGroupTypes() %>">
+			<liferay-ui:search-container
+				searchContainer="<%= groupSelectorDisplayContext.getGroupTypesSearchContainer() %>"
+				var="groupTypesSearchContainer"
+			>
+				<liferay-ui:search-container-row
+					className="java.lang.String"
+					cssClass="card-page-item card-page-item-directory"
+					modelVar="curGroupType"
+				>
+					<liferay-ui:search-container-column-text
+						colspan="<%= 3 %>"
+					>
+						<clay:navigation-card
+							navigationCard="<%= new GroupTypeNavigationCard(groupSelectorDisplayContext, curGroupType) %>"
+						/>
+					</liferay-ui:search-container-column-text>
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator
+					displayStyle="icon"
+					markupView="lexicon"
+				/>
+			</liferay-ui:search-container>
+		</c:when>
+		<c:otherwise>
+			<liferay-ui:search-container
+				searchContainer="<%= groupSelectorDisplayContext.getSearchContainer() %>"
+				var="listSearchContainer"
+			>
+				<liferay-ui:search-container-row
+					className="com.liferay.portal.kernel.model.Group"
+					cssClass="card-page-item card-page-item-directory"
+					modelVar="curGroup"
+				>
+					<liferay-ui:search-container-column-text
+						colspan="<%= 3 %>"
+					>
+						<c:choose>
+							<c:when test="<%= groupSelectorDisplayContext.isShowBreadcrumb() %>">
+								<clay:vertical-card
+									verticalCard="<%= new GroupVerticalCard(curGroup, groupSelectorDisplayContext, request) %>"
+								/>
+							</c:when>
+							<c:otherwise>
+								<clay:navigation-card
+									navigationCard="<%= new GroupNavigationCard(curGroup, groupSelectorDisplayContext, request) %>"
+								/>
+							</c:otherwise>
+						</c:choose>
+					</liferay-ui:search-container-column-text>
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator
+					displayStyle="icon"
+					markupView="lexicon"
+				/>
+			</liferay-ui:search-container>
+		</c:otherwise>
+	</c:choose>
 </clay:container-fluid>
