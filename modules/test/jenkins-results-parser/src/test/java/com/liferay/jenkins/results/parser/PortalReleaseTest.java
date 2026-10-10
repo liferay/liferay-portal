@@ -178,8 +178,6 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testSetStandalone() throws Exception {
-		mockEnvironment(Collections.<String, String>emptyMap());
-
 		Properties buildProperties = new Properties();
 
 		for (String propertyName : _BUILD_PROPERTY_NAMES) {
@@ -232,6 +230,19 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 				jsonPortalReleaseJSONObject.optString(urlFieldName, null));
 			testEquals(
 				null, portalReleaseJSONObject.optString(urlFieldName, null));
+		}
+
+		jsonPortalRelease.setStandalone(false);
+
+		testEquals(false, jsonPortalRelease.isStandalone());
+
+		JSONObject unsetPortalReleaseJSONObject =
+			jsonPortalRelease.getJSONObject();
+
+		for (String urlFieldName : _NON_TOMCAT_URL_FIELD_NAMES) {
+			testEquals(
+				null,
+				unsetPortalReleaseJSONObject.optString(urlFieldName, null));
 		}
 	}
 
