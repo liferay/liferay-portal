@@ -329,6 +329,39 @@ public class GCSStoreStoreAreaProcessorTest {
 	}
 
 	@Test
+	public void testCopyDirectory() throws Exception {
+		String fileName1 = StringUtil.randomString();
+
+		_store.addFile(
+			_company.getCompanyId(), _group.getGroupId(), fileName1,
+			Store.VERSION_DEFAULT, new UnsyncByteArrayInputStream(new byte[0]));
+
+		long repositoryId = _group.getGroupId() * 10;
+		String fileName2 = StringUtil.randomString();
+
+		_store.addFile(
+			_company.getCompanyId(), repositoryId, fileName2,
+			Store.VERSION_DEFAULT, new UnsyncByteArrayInputStream(new byte[0]));
+
+		_storeAreaProcessor.copyDirectory(
+			_company.getCompanyId(), _group.getGroupId(), StringPool.BLANK,
+			new StoreArea[] {StoreArea.LIVE}, StoreArea.DELETED);
+
+		StoreArea.withStoreArea(
+			StoreArea.DELETED,
+			() -> {
+				Assert.assertTrue(
+					_store.hasFile(
+						_company.getCompanyId(), _group.getGroupId(), fileName1,
+						Store.VERSION_DEFAULT));
+				Assert.assertFalse(
+					_store.hasFile(
+						_company.getCompanyId(), repositoryId, fileName2,
+						Store.VERSION_DEFAULT));
+			});
+	}
+
+	@Test
 	public void testCopyNonexistentFile() throws Exception {
 		Assert.assertFalse(
 			_storeAreaProcessor.copy(
