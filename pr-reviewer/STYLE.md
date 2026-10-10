@@ -101,7 +101,6 @@ Simplicity never outranks safety: when the two trade off, choose the safer form.
 ## Visibility and structure
 
 - A method used in one place is `private` and underscore prefixed; a `protected` method is justified only when it overrides a base class or base test case method. [801] Every override carries `@Override`. [802]
-- Consolidate sibling `@Ignore`d test methods on one subject into one `@Test` with private `_test*` helpers [606], set up state in `@Before` and `@After` rather than their class level counterparts [607], and compare a boxed actual value against a boxed expected value instead of unboxing it [608].
 - Put a class in the package that matches its sole user or its naming sibling.
 
 ## General coding
