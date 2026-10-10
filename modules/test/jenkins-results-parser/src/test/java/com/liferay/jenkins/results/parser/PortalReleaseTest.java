@@ -25,8 +25,13 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		String portalVersion = RandomTestUtil.randomString();
+
+		for (String propertyName : _BUILD_PROPERTY_NAMES) {
+			buildProperties.setProperty(
+				propertyName + "[" + portalVersion + "]",
+				"https://" + RandomTestUtil.randomString());
+		}
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -46,7 +51,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		jsonObject.put(
 			"bundles_base_url", bundlesBaseURL
 		).put(
-			"portal_version", RandomTestUtil.randomString()
+			"portal_version", portalVersion
 		);
 
 		for (String urlFieldName : urlFieldNames) {
@@ -72,7 +77,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		).put(
 			"bundles_base_url", bundlesBaseURL
 		).put(
-			"portal_version", RandomTestUtil.randomString()
+			"portal_version", portalVersion
 		);
 
 		PortalRelease unsetPortalRelease = new PortalRelease(unsetJSONObject);
@@ -192,6 +197,11 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		).put(
 			"portal_version", "7.4.13"
 		);
+
+		for (String urlFieldName : _NON_TOMCAT_URL_FIELD_NAMES) {
+			jsonObject.put(
+				urlFieldName, "https://" + RandomTestUtil.randomString());
+		}
 
 		PortalRelease portalRelease = new PortalRelease(jsonObject);
 
