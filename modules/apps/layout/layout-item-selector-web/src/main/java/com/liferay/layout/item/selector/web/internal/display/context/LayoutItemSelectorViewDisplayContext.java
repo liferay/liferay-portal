@@ -8,12 +8,10 @@ package com.liferay.layout.item.selector.web.internal.display.context;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.item.selector.LayoutItemSelectorReturnType;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.PortletURLUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -27,7 +25,7 @@ import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,9 +82,19 @@ public class LayoutItemSelectorViewDisplayContext {
 	public List<BreadcrumbEntry> getPortletBreadcrumbEntries()
 		throws PortalException, PortletException {
 
-		return Arrays.asList(
-			_getSitesAndAssetLibrariesBreadcrumbEntry(),
-			_getHomeBreadcrumbEntry());
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		List<BreadcrumbEntry> breadcrumbEntries = new ArrayList<>(
+			GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
+				themeDisplay.getSiteGroup(), _httpServletRequest,
+				PortalUtil.getLiferayPortletResponse(_renderResponse),
+				_portletURL));
+
+		breadcrumbEntries.add(_getHomeBreadcrumbEntry());
+
+		return breadcrumbEntries;
 	}
 
 	public boolean isCheckDisplayPage() {
@@ -117,27 +125,6 @@ public class LayoutItemSelectorViewDisplayContext {
 		BreadcrumbEntry breadcrumbEntry = new BreadcrumbEntry();
 
 		breadcrumbEntry.setTitle(themeDisplay.getSiteGroupName());
-
-		return breadcrumbEntry;
-	}
-
-	private BreadcrumbEntry _getSitesAndAssetLibrariesBreadcrumbEntry()
-		throws PortletException {
-
-		BreadcrumbEntry breadcrumbEntry = new BreadcrumbEntry();
-
-		breadcrumbEntry.setTitle(
-			LanguageUtil.get(_httpServletRequest, "sites-and-libraries"));
-		breadcrumbEntry.setURL(
-			PortletURLBuilder.create(
-				PortletURLUtil.clone(
-					_portletURL,
-					PortalUtil.getLiferayPortletResponse(_renderResponse))
-			).setParameter(
-				"groupType", "site"
-			).setParameter(
-				"showGroupSelector", true
-			).buildString());
 
 		return breadcrumbEntry;
 	}

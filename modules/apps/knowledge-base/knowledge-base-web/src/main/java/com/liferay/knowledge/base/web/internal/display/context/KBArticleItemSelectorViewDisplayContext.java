@@ -7,6 +7,7 @@ package com.liferay.knowledge.base.web.internal.display.context;
 
 import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.knowledge.base.constants.KBFolderConstants;
 import com.liferay.knowledge.base.constants.KBPortletKeys;
 import com.liferay.knowledge.base.model.KBArticle;
@@ -195,18 +196,12 @@ public class KBArticleItemSelectorViewDisplayContext {
 
 		KBFolder kbFolder = _getKBFolder();
 
-		return BreadcrumbEntryListBuilder.add(
-			BreadcrumbEntryBuilder.setTitle(
-				LanguageUtil.get(_httpServletRequest, "sites-and-libraries")
-			).setURL(
-				PortletURLBuilder.create(
-					getPortletURL()
-				).setParameter(
-					"groupType", "site"
-				).setParameter(
-					"showGroupSelector", true
-				).buildString()
-			).build()
+		return BreadcrumbEntryListBuilder.addAll(
+			() -> GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
+				GroupLocalServiceUtil.getGroup(_getGroupId()),
+				_httpServletRequest,
+				PortalUtil.getLiferayPortletResponse(_portletResponse),
+				getPortletURL())
 		).add(
 			breadcrumbEntry -> {
 				Group group = GroupLocalServiceUtil.getGroup(_getGroupId());

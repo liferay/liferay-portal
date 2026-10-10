@@ -16,6 +16,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -39,7 +40,6 @@ import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -275,18 +275,12 @@ public class JournalArticleItemSelectorViewDisplayContext {
 	public List<BreadcrumbEntry> getPortletBreadcrumbEntries() {
 		JournalFolder folder = _getFolder();
 
-		return BreadcrumbEntryListBuilder.add(
-			breadcrumbEntry -> {
-				breadcrumbEntry.setTitle(
-					LanguageUtil.get(
-						_httpServletRequest, "sites-and-libraries"));
-				breadcrumbEntry.setURL(
-					PortletURLBuilder.create(
-						getPortletURL()
-					).setParameter(
-						"showGroupSelector", true
-					).buildString());
-			}
+		return BreadcrumbEntryListBuilder.addAll(
+			() -> GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
+				GroupLocalServiceUtil.getGroup(_getGroupId()),
+				_httpServletRequest,
+				_portal.getLiferayPortletResponse(_portletResponse),
+				getPortletURL())
 		).add(
 			breadcrumbEntry -> {
 				Group group = GroupLocalServiceUtil.getGroup(_getGroupId());
