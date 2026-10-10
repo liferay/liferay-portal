@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -29,8 +30,10 @@ import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundT
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -66,16 +69,58 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
+		List<String> names = _getNames(
+			HashMapBuilder.<String, Serializable>put(
+				"groupId", _group.getGroupId()
+			).build());
+
+		Assert.assertTrue(
+			names.toString(),
+			names.contains("en" + layout.getFriendlyURL() + ".html"));
+	}
+
+	@Sync
+	@Test
+	public void testExecuteWithLanguageIds() throws Exception {
+		GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(),
+			Arrays.asList(LocaleUtil.GERMANY, LocaleUtil.SPAIN, LocaleUtil.US),
+			LocaleUtil.US);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		List<String> names = _getNames(
+			HashMapBuilder.<String, Serializable>put(
+				"groupId", _group.getGroupId()
+			).put(
+				"languageIds", new String[] {"en_US", "es_ES"}
+			).build());
+
+		Assert.assertFalse(
+			names.toString(),
+			names.contains("de" + layout.getFriendlyURL() + ".html"));
+		Assert.assertTrue(
+			names.toString(),
+			names.contains("en" + layout.getFriendlyURL() + ".html"));
+		Assert.assertTrue(
+			names.toString(),
+			names.contains("es" + layout.getFriendlyURL() + ".html"));
+	}
+
+	private List<String> _getNames(Map<String, Serializable> taskContextMap)
+		throws Exception {
+
+		List<String> names = new ArrayList<>();
+
 		BackgroundTask backgroundTask =
 			_backgroundTaskManager.addBackgroundTask(
 				TestPropsValues.getUserId(), _group.getGroupId(),
 				_group.getDescriptiveName(),
 				StaticSiteExportBackgroundTaskExecutorNames.
 					STATIC_SITE_EXPORT_BACKGROUND_TASK_EXECUTOR,
-				HashMapBuilder.<String, Serializable>put(
-					"groupId", _group.getGroupId()
-				).build(),
-				new ServiceContext());
+				taskContextMap, new ServiceContext());
 
 		backgroundTask = _backgroundTaskManager.fetchBackgroundTask(
 			backgroundTask.getBackgroundTaskId());
@@ -91,8 +136,6 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 			fileEntry.getFileName(),
 			StringUtil.endsWith(fileEntry.getFileName(), ".zip"));
 
-		List<String> names = new ArrayList<>();
-
 		try (ZipFile zipFile = new ZipFile(
 				FileUtil.createTempFile(fileEntry.getContentStream()))) {
 
@@ -105,11 +148,7 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 			}
 		}
 
-		String friendlyURL = layout.getFriendlyURL();
-
-		Assert.assertTrue(
-			names.toString(),
-			names.contains(friendlyURL.substring(1) + ".html"));
+		return names;
 	}
 
 	@Inject
