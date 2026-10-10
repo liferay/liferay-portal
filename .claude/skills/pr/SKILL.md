@@ -1,7 +1,7 @@
 ---
 
 allowed-tools: [Bash, Glob, Grep, Read, Skill]
-argument-hint: "[optional target-org/repo, message hint, or --skip-pr-check]"
+argument-hint: "[optional target-org/repo, message hint, --skip-pr-check, or --skip-pr-reviewer <reason>]"
 description: Create a GitHub PR for the current branch. Use when the user asks to create a PR, send a PR, or invokes /pr.
 name: pr
 
@@ -23,7 +23,7 @@ Below, `${BASE_BRANCH}` stands for that base branch, and `<repository>` stands f
 
 - The current branch is a development branch, not `${BASE_BRANCH}` or any other protected branch.
 
-- The `pr-check` skill must pass. Skip only when `${ARGUMENTS}` contains `--skip-pr-check`. A skip requires a reason: take it from the text following the flag when present, otherwise prompt the user for one. The reason is recorded in the **PR Check** section, which is written for a skip rather than omitted.
+- The `pr-check` skill must pass. Skip only when `${ARGUMENTS}` contains `--skip-pr-check`. A skip requires a reason: take it from the text following the flag when present, otherwise prompt the user for one. The reason is recorded in the **PR Check** section, which is written for a skip rather than omitted. When `${ARGUMENTS}` contains `--skip-pr-reviewer`, pass the flag and the text following it to `pr-check`, which skips only its PR Reviewer validation.
 
 ## Input
 

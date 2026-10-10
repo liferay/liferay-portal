@@ -1,6 +1,7 @@
 ---
 
 allowed-tools: [Agent, Bash, Edit, Glob, Grep, Read, Skill, Write]
+argument-hint: "[--skip-pr-reviewer <reason>]"
 description: Check that a PR is ready to be sent for review.
 name: pr-check
 
@@ -112,6 +113,10 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 	Link only the build cache, never the whole user home. Ant writes the properties Gradle needs, such as `liferay.home` and `baseline.jar.report.level`, into this checkout's own `.gradle/gradle.properties`, and a shared user home would read none of them. An existing cache folder is merged into the shared directory before the link replaces it, so nothing cached is lost: each entry is named by its cache key, and an entry already there holds the same content. Tell the developer which directory is in use the first time the link is created or repointed, in one line, such as `Using ~/.liferay/gradle-build-cache as the shared Gradle build cache.` When the link already points there, say nothing.
 
 ## Input
+
+### Arguments
+
+`--skip-pr-reviewer` skips the [PR Reviewer](validations/branch/pr-reviewer.md) validation for this run. A skip requires a reason: take it from the text following the flag when present, otherwise prompt the developer for one. Do not dispatch the validation, and leave it out of the Pass 1 estimate. List it in the Results Summary as `NOT VERIFIED` with the note `**PR Reviewer was skipped with --skip-pr-reviewer.** <reason>`, so that the skip and its reason travel into the PR description. Without the flag, run PR Reviewer whenever it fires.
 
 ### Diff
 
