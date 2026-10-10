@@ -55,6 +55,16 @@ Report **PASS** when the rerun exits `0`. Report **NOT VERIFIED** when it exits 
 
 When no fix was applied, skip the rerun. Report **FAIL** with the same note when at least one violation applies and could not be fixed, and report **PASS** when you dismissed every violation as a false positive.
 
+Whenever you applied a fix, return the applied fixes as the note below, with any verdict, so that the developer can review the `<TICKET> Apply pr-reviewer rules` commit before sending the PR. Give the line in the file before the fix, as the first review reported it:
+
+```markdown
+**The pr-check applied these pr-reviewer fixes in the `<TICKET> Apply pr-reviewer rules` commit.** Review each one, and revert any that you disagree with.
+
+| File | Line | Rule | Violation | Change |
+| --- | --- | --- | --- | --- |
+| <file> | <line> | <rule> | <message> | <what was changed> |
+```
+
 Whenever you dismissed a violation, return the dismissed violations as the note below, with a **PASS** as well as a **FAIL**, so that the developer can confirm each one:
 
 ```markdown
