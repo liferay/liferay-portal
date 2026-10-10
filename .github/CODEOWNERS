@@ -357,8 +357,26 @@ modules/apps/shared-dependencies/
 modules/apps/sharing/    @liferay-content-management
 modules/apps/site/    @liferay-site-management
 modules/apps/site/site-cms-site-initializer/    @liferay-content-management
+modules/apps/site/site-cms-site-initializer-api/    @liferay-content-management
+modules/apps/site/site-cms-site-initializer-test/    @liferay-content-management
+modules/apps/site/site-cms-standalone-site-initializer/    @liferay-content-management
 modules/apps/site/site-demo-data-creator-api/
 modules/apps/site/site-demo-data-creator-impl/
+modules/apps/site/site-dsr-analytics-rest-api/    @liferay-commerce
+modules/apps/site/site-dsr-analytics-rest-client/    @liferay-commerce
+modules/apps/site/site-dsr-analytics-rest-impl/    @liferay-commerce
+modules/apps/site/site-dsr-analytics-rest-test/    @liferay-commerce
+modules/apps/site/site-dsr-site-initializer/    @liferay-commerce
+modules/apps/site/site-dsr-site-initializer-api/    @liferay-commerce
+modules/apps/site/site-dsr-site-initializer-test/    @liferay-commerce
+modules/apps/site/site-dsr-site-initializer-test-util/    @liferay-commerce
+modules/apps/site/site-pim-site-initializer/    @liferay-commerce
+modules/apps/site/site-pim-site-initializer-api/    @liferay-commerce
+modules/apps/site/site-pim-site-initializer-test/    @liferay-commerce
+modules/apps/site/site-pim-site-initializer-test-util/    @liferay-commerce
+modules/apps/site/site-staticexport-api/    @liferay-frontend
+modules/apps/site/site-staticexport-impl/    @liferay-frontend
+modules/apps/site/site-staticexport-test/    @liferay-frontend
 modules/apps/site/site-teams-item-selector-api/    @liferay-commerce
 modules/apps/site/site-teams-item-selector-web/    @liferay-commerce
 modules/apps/site/site-teams-test/    @liferay-commerce
@@ -369,7 +387,9 @@ modules/apps/site/site-welcome-site-initializer/
 modules/apps/site-initializer/
 modules/apps/site-initializer/site-initializer-extender/    @liferay-site-management
 modules/apps/site-navigation/    @liferay-site-management
+modules/apps/site-navigation/site-navigation-language-api/    @liferay-page-management
 modules/apps/site-navigation/site-navigation-language-web    @liferay-page-management
+modules/apps/site-navigation/site-navigation-language-web-test/    @liferay-page-management
 modules/apps/social/    @liferay-content-management
 modules/apps/staging/    @liferay-headless
 modules/apps/static/
