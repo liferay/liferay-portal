@@ -231,12 +231,10 @@
 			"accountEntryRestrictedObjectFieldName": "r_accountToCommerceReturns_accountEntryId",
 			"className": "com.liferay.object.model.ObjectDefinition#C1R1",
 			"enableCategorization": true,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_COMMERCE_RETURN",
 			"label": {
 				"en_US": "Commerce Return"
 			},
-			"modifiable": true,
 			"name": "CommerceReturn",
 			"objectDefinitionSettings": [
 				{
@@ -612,12 +610,10 @@
 			"accountEntryRestrictedObjectFieldName": "r_accountToCommerceReturnItems_accountEntryId",
 			"className": "com.liferay.object.model.ObjectDefinition#C2R2",
 			"enableCategorization": true,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_COMMERCE_RETURN_ITEM",
 			"label": {
 				"en_US": "Commerce Return Item"
 			},
-			"modifiable": true,
 			"name": "CommerceReturnItem",
 			"objectDefinitionSettings": [
 				{

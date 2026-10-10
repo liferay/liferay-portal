@@ -17,7 +17,6 @@
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
@@ -73,7 +72,6 @@
 				"zh_CN": "基本文档",
 				"zh_TW": "基本文件"
 			},
-			"modifiable": true,
 			"name": "CMSBasicDocument",
 			"objectActions": [
 			],
@@ -327,7 +325,6 @@
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
@@ -391,7 +388,6 @@
 				"zh_CN": "基本 Web 内容",
 				"zh_TW": "基本網站內容"
 			},
-			"modifiable": true,
 			"name": "CMSBasicWebContent",
 			"objectDefinitionSettings": [
 				{
@@ -627,7 +623,6 @@
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
@@ -679,7 +674,6 @@
 				"zh_CN": "博客",
 				"zh_TW": "部落格"
 			},
-			"modifiable": true,
 			"name": "CMSBlog",
 			"objectDefinitionSettings": [
 				{
@@ -1049,7 +1043,6 @@
 			"label": {
 				"en_US": "Bulk Action Task"
 			},
-			"modifiable": true,
 			"name": "CMSBulkActionTask",
 			"objectFields": [
 				{
@@ -1390,19 +1383,12 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#S5M4",
 			"enableCategorization": false,
-			"enableComments": false,
 			"enableFormContainer": false,
-			"enableFriendlyURLCustomization": false,
 			"enableIndexSearch": false,
-			"enableLocalization": true,
-			"enableObjectEntryDraft": false,
-			"enableObjectEntryHistory": false,
-			"enableObjectEntryVersioning": false,
 			"externalReferenceCode": "L_CMS_DEFAULT_PERMISSION",
 			"label": {
 				"en_US": "CMS Default Permission"
 			},
-			"modifiable": true,
 			"name": "CMSDefaultPermission",
 			"objectActions": [
 			],
@@ -1597,7 +1583,6 @@
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
@@ -1634,7 +1619,6 @@
 				"zh_CN": "外部视频",
 				"zh_TW": "外部影音"
 			},
-			"modifiable": true,
 			"name": "CMSExternalVideo",
 			"objectDefinitionSettings": [
 				{

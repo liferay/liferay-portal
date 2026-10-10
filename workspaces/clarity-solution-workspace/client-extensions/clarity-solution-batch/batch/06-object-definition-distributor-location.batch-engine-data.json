@@ -18,7 +18,6 @@
 			"label": {
 				"en_US": "U3A2 Distributor Location"
 			},
-			"modifiable": true,
 			"name": "U3A2DistributorLocation",
 			"objectFields": [
 				{

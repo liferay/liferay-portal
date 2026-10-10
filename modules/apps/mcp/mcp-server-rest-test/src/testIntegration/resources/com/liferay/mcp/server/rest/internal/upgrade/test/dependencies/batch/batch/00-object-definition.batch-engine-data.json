@@ -18,7 +18,6 @@
 			"label": {
 				"en_US": "MCP Server Prompt"
 			},
-			"modifiable": true,
 			"name": "MCPServerPrompt",
 			"objectFields": [
 				{

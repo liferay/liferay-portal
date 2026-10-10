@@ -19,7 +19,6 @@
 			"label": {
 				"en_US": "MCP Server Profile"
 			},
-			"modifiable": true,
 			"name": "MCPServerProfile",
 			"objectFields": [
 				{

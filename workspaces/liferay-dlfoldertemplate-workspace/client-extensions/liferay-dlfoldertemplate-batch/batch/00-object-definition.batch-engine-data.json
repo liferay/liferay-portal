@@ -13,9 +13,6 @@
 		{
 			"accountEntryRestricted": false,
 			"active": true,
-			"enableComments": false,
-			"enableLocalization": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "T4T1_DL_FOLDER_TEMPLATE",
 			"label": {
 				"en_US": "T4T1 DL Folder Template"
@@ -77,28 +74,22 @@
 				"en_US": "T4T1 Folder Templates"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/t4t1dlfoldertemplates",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldName": "name"
 		},
 		{
 			"accountEntryRestricted": false,
 			"active": true,
 			"enableCategorization": true,
-			"enableComments": false,
-			"enableLocalization": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "T4T1_DL_FOLDER_TEMPLATE_NODE",
 			"label": {
 				"en_US": "T4T1 DL Folder Template Node"
 			},
-			"modifiable": true,
 			"name": "T4T1DLFolderTemplateNode",
 			"objectFields": [
 				{
@@ -212,14 +203,12 @@
 				"en_US": "T4T1 Folder Templates Nodes"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/t4t1dlfoldertemplatenodes",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldName": "name"
 		}
 	]

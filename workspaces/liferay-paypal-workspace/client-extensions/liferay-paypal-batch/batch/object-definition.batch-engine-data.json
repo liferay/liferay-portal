@@ -15,12 +15,10 @@
 			"accountEntryRestrictedObjectFieldName": "",
 			"active": true,
 			"enableCategorization": true,
-			"enableComments": false,
 			"externalReferenceCode": "B9K3_PAYPAL_TRANSACTION",
 			"label": {
 				"en_US": "B9K3 PayPal Transaction"
 			},
-			"modifiable": false,
 			"name": "B9K3PayPalTransaction",
 			"objectFields": [
 				{
@@ -52,26 +50,22 @@
 				"en_US": "B9K3 PayPal Transactions"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/b9k3paypaltransactions",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
-			},
-			"system": false
+			}
 		},
 		{
 			"accountEntryRestricted": false,
 			"accountEntryRestrictedObjectFieldName": "",
 			"active": true,
 			"enableCategorization": true,
-			"enableComments": false,
 			"externalReferenceCode": "B9K3_PAYPAL_WEBHOOK",
 			"label": {
 				"en_US": "B9K3 PayPal Webhook"
 			},
-			"modifiable": false,
 			"name": "B9K3PayPalWebhook",
 			"objectFields": [
 				{
@@ -189,14 +183,12 @@
 				"en_US": "B9K3 PayPal Webhooks"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/b9k3paypalwebhooks",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
-			},
-			"system": false
+			}
 		}
 	]
 }

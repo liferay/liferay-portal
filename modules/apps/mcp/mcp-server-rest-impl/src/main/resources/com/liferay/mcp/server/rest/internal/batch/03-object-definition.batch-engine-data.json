@@ -21,7 +21,6 @@
 			"label": {
 				"en_US": "MCP Server Profile Data Mask"
 			},
-			"modifiable": true,
 			"name": "MCPServerProfileDataMask",
 			"objectFields": [
 				{

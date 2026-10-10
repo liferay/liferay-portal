@@ -18,12 +18,10 @@
 			"className": "com.liferay.object.model.ObjectDefinition#X9U6",
 			"enableCategorization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_ACCOUNT_VALIDATOR_RESULT",
 			"label": {
 				"en_US": "Account Validator Result"
 			},
-			"modifiable": true,
 			"name": "AccountValidatorResult",
 			"objectDefinitionSettings": [
 				{

@@ -18,7 +18,6 @@
 			"label": {
 				"en_US": "MCP Server Profile Tool"
 			},
-			"modifiable": true,
 			"name": "MCPServerProfileTool",
 			"objectFields": [
 				{

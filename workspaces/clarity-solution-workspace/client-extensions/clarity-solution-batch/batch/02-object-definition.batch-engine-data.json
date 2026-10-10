@@ -20,7 +20,6 @@
 			"label": {
 				"en_US": "U3A2 Distributor Application"
 			},
-			"modifiable": true,
 			"name": "U3A2DistributorApplication",
 			"objectActions": [
 			],
@@ -542,7 +541,6 @@
 			"pluralLabel": {
 				"en_US": "U3A2 Distributor Applications"
 			},
-			"restContextPath": "/o/c/u3a2distributorapplications",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -559,7 +557,6 @@
 			"label": {
 				"en_US": "U3A2 Distributor Application Evaluation"
 			},
-			"modifiable": true,
 			"name": "U3A2DistributorApplicationEvaluation",
 			"objectFields": [
 				{
@@ -691,7 +688,6 @@
 			"pluralLabel": {
 				"en_US": "U3A2 Distributor Application Evaluations"
 			},
-			"restContextPath": "/o/c/u3a2adistributorpplicationevaluations",
 			"scope": "company",
 			"status": {
 				"code": 0,

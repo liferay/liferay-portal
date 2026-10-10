@@ -19,7 +19,6 @@
 			"label": {
 				"en_US": "CSG Generation Item"
 			},
-			"modifiable": true,
 			"name": "CSGGenerationItem",
 			"objectFields": [
 				{
@@ -149,7 +148,6 @@
 			"label": {
 				"en_US": "CSG Generation"
 			},
-			"modifiable": true,
 			"name": "CSGGeneration",
 			"objectActions": [
 				{

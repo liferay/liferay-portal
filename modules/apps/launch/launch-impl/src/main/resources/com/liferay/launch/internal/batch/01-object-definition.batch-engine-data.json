@@ -14,19 +14,13 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#L1E1",
 			"enableCategorization": false,
-			"enableComments": false,
-			"enableFriendlyURLCustomization": false,
 			"enableIndexSearch": true,
-			"enableLocalization": false,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
-			"enableObjectEntrySchedule": false,
-			"enableObjectEntryVersioning": false,
 			"externalReferenceCode": "L_LAUNCH_ENTRY",
 			"label": {
 				"en_US": "Launch Entry"
 			},
-			"modifiable": true,
 			"name": "LaunchEntry",
 			"objectDefinitionSettings": [
 				{
@@ -124,19 +118,13 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#L1S1",
 			"enableCategorization": false,
-			"enableComments": false,
-			"enableFriendlyURLCustomization": false,
 			"enableIndexSearch": true,
-			"enableLocalization": false,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
-			"enableObjectEntrySchedule": false,
-			"enableObjectEntryVersioning": false,
 			"externalReferenceCode": "L_LAUNCH_SET",
 			"label": {
 				"en_US": "Launch Set"
 			},
-			"modifiable": true,
 			"name": "LaunchSet",
 			"objectDefinitionSettings": [
 				{

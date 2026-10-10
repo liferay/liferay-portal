@@ -15,17 +15,12 @@
 			"active": true,
 			"className": "com.liferay.portal.kernel.model.User",
 			"enableCategorization": true,
-			"enableComments": false,
 			"enableIndexSearch": true,
-			"enableLocalization": false,
-			"enableObjectEntryDraft": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "L_USER",
 			"label": {
 				"en_US": "User",
 				"ja_JP": "ユーザー"
 			},
-			"modifiable": false,
 			"name": "User",
 			"objectFolderExternalReferenceCode": "default",
 			"objectRelationships": [
@@ -69,7 +64,6 @@
 				"ja_JP": "ユーザー"
 			},
 			"portlet": false,
-			"restContextPath": "/o/headless-admin-user/v1.0/user-accounts",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -81,13 +75,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_ANNOUNCEMENT",
 			"label": {
 				"en_US": "P2S3 Announcement"
 			},
-			"modifiable": true,
 			"name": "P2S3Announcement",
 			"objectFields": [
 				{
@@ -267,7 +258,6 @@
 				"en_US": "P2S3 Announcements"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3announcements",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -278,13 +268,10 @@
 		},
 		{
 			"active": true,
-			"enableComments": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_ANNOUNCEMENT_IMAGE_TYPE",
 			"label": {
 				"en_US": "P2S3 Announcement Image Type"
 			},
-			"modifiable": true,
 			"name": "P2S3AnnouncementImageType",
 			"objectFields": [
 				{
@@ -407,7 +394,6 @@
 				"en_US": "P2S3 Announcement Image Types"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3announcementimagetypes",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -418,13 +404,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_ASSESSMENT",
 			"label": {
 				"en_US": "P2S3 Assessment"
 			},
-			"modifiable": true,
 			"name": "P2S3Assessment",
 			"objectFields": [
 				{
@@ -636,7 +619,6 @@
 				"en_US": "P2S3 Assessments"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3assessments",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -647,13 +629,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_AUDIO_LESSON",
 			"label": {
 				"en_US": "P2S3 Audio Lesson"
 			},
-			"modifiable": true,
 			"name": "P2S3AudioLesson",
 			"objectFields": [
 				{
@@ -730,7 +709,6 @@
 				"en_US": "P2S3 Audio Lessons"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3audiolessons",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -741,13 +719,10 @@
 		{
 			"active": true,
 			"enableCategorization": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_BADGE",
 			"label": {
 				"en_US": "P2S3 Badge"
 			},
-			"modifiable": true,
 			"name": "P2S3Badge",
 			"objectFields": [
 				{
@@ -910,7 +885,6 @@
 				"en_US": "P2S3 Badges"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3badges",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -921,13 +895,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_CERTIFICATION",
 			"label": {
 				"en_US": "P2S3 Certification"
 			},
-			"modifiable": true,
 			"name": "P2S3Certification",
 			"objectFields": [
 				{
@@ -1113,7 +1084,6 @@
 				"en_US": "P2S3 Certifications"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3certifications",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -1126,13 +1096,11 @@
 			"active": true,
 			"enableCategorization": true,
 			"enableComments": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_COURSE",
 			"label": {
 				"en_US": "P2S3 Course"
 			},
-			"modifiable": true,
 			"name": "P2S3Course",
 			"objectActions": [
 				{
@@ -1487,7 +1455,6 @@
 				"en_US": "P2S3 Courses"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3courses",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -1499,12 +1466,10 @@
 		{
 			"active": true,
 			"enableCategorization": true,
-			"enableObjectEntryDraft": false,
 			"externalReferenceCode": "P2S3_ENROLLMENT",
 			"label": {
 				"en_US": "P2S3 Enrollment"
 			},
-			"modifiable": true,
 			"name": "P2S3Enrollment",
 			"objectFields": [
 				{
@@ -1578,7 +1543,6 @@
 				"en_US": "P2S3 Enrollments"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3enrollments",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -1589,13 +1553,10 @@
 		{
 			"active": true,
 			"enableCategorization": false,
-			"enableLocalization": false,
-			"enableObjectEntryDraft": false,
 			"externalReferenceCode": "P2S3_EXAM_RESULT",
 			"label": {
 				"en_US": "P2S3 Exam Result"
 			},
-			"modifiable": true,
 			"name": "P2S3ExamResult",
 			"objectFields": [
 				{
@@ -1754,7 +1715,6 @@
 				"en_US": "P2S3 Exam Results"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3examresults",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -1765,13 +1725,10 @@
 		{
 			"active": true,
 			"enableCategorization": false,
-			"enableLocalization": false,
-			"enableObjectEntryDraft": false,
 			"externalReferenceCode": "P2S3_EXAM_RESULTS_SYNCHRONIZATION",
 			"label": {
 				"en_US": "P2S3 Exam Results Synchronization"
 			},
-			"modifiable": true,
 			"name": "P2S3ExamResultsSynchronization",
 			"objectActions": [
 				{
@@ -1846,7 +1803,6 @@
 				"en_US": "P2S3 Exam Results Synchronizations"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3examresultssynchronizations",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -1857,13 +1813,10 @@
 		{
 			"active": true,
 			"enableCategorization": true,
-			"enableLocalization": true,
-			"enableObjectEntryDraft": false,
 			"externalReferenceCode": "P2S3_EXTERNAL_MEDIA",
 			"label": {
 				"en_US": "P2S3 External Media"
 			},
-			"modifiable": true,
 			"name": "P2S3ExternalMedia",
 			"objectFields": [
 				{
@@ -2055,7 +2008,6 @@
 				"en_US": "P2S3 External Medias"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3externalmedias",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -2067,13 +2019,10 @@
 		{
 			"active": true,
 			"enableCategorization": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_FAQ_QUESTION",
 			"label": {
 				"en_US": "P2S3 FAQ Question"
 			},
-			"modifiable": true,
 			"name": "P2S3FAQQuestion",
 			"objectFields": [
 				{
@@ -2194,7 +2143,6 @@
 				"en_US": "P2S3 FAQ Questions"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3faqquestions",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -2205,14 +2153,10 @@
 		},
 		{
 			"active": true,
-			"enableComments": false,
-			"enableLocalization": true,
-			"enableObjectEntryDraft": false,
 			"externalReferenceCode": "P2S3_FAQ_TOPIC",
 			"label": {
 				"en_US": "P2S3 FAQ Topic"
 			},
-			"modifiable": true,
 			"name": "P2S3FAQTopic",
 			"objectFields": [
 				{
@@ -2333,7 +2277,6 @@
 				"en_US": "P2S3 FAQ Topics"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3faqtopics",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -2346,13 +2289,11 @@
 			"active": true,
 			"enableCategorization": true,
 			"enableComments": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_KNOWLEDGE_ARTICLE",
 			"label": {
 				"en_US": "P2S3 Knowledge Article"
 			},
-			"modifiable": true,
 			"name": "P2S3KnowledgeArticle",
 			"objectFields": [
 				{
@@ -2706,7 +2647,6 @@
 				"en_US": "P2S3 Knowledge Articles"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3knowledgearticles",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -2719,13 +2659,11 @@
 			"active": true,
 			"enableCategorization": true,
 			"enableComments": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_KNOWLEDGE_ARTICLE_ATTACHMENT",
 			"label": {
 				"en_US": "P2S3 Knowledge Article Attachment"
 			},
-			"modifiable": true,
 			"name": "P2S3KnowledgeArticleAttachment",
 			"objectFields": [
 				{
@@ -2784,7 +2722,6 @@
 				"en_US": "P2S3 Knowledge Article Attachments"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3knowledgearticleattachments",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -2797,13 +2734,11 @@
 			"active": true,
 			"enableCategorization": true,
 			"enableComments": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_LEARNING_PATH",
 			"label": {
 				"en_US": "P2S3 Learning Path"
 			},
-			"modifiable": true,
 			"name": "P2S3LearningPath",
 			"objectActions": [
 				{
@@ -3152,7 +3087,6 @@
 				"en_US": "P2S3 Learning Paths"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3learningpaths",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -3164,13 +3098,11 @@
 		{
 			"active": true,
 			"enableCategorization": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_LEARNING_PATH_STEP",
 			"label": {
 				"en_US": "P2S3 Learning Path Step"
 			},
-			"modifiable": true,
 			"name": "P2S3LearningPathStep",
 			"objectFields": [
 				{
@@ -3345,7 +3277,6 @@
 				"en_US": "P2S3 Learning Path Steps"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3learningpathsteps",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -3358,13 +3289,11 @@
 			"active": true,
 			"enableCategorization": true,
 			"enableComments": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_LESSON",
 			"label": {
 				"en_US": "P2S3 Lesson"
 			},
-			"modifiable": true,
 			"name": "P2S3Lesson",
 			"objectFields": [
 				{
@@ -3620,7 +3549,6 @@
 				"en_US": "P2S3 Lessons"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3lessons",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -3631,14 +3559,11 @@
 		},
 		{
 			"active": true,
-			"enableComments": false,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_MODULE",
 			"label": {
 				"en_US": "P2S3 Module"
 			},
-			"modifiable": true,
 			"name": "P2S3Module",
 			"objectFields": [
 				{
@@ -3859,7 +3784,6 @@
 				"en_US": "P2S3 Modules"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3modules",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -3870,12 +3794,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
 			"externalReferenceCode": "P2S3_QUIZ",
 			"label": {
 				"en_US": "P2S3 Quiz"
 			},
-			"modifiable": true,
 			"name": "P2S3Quiz",
 			"objectFields": [
 				{
@@ -4140,7 +4062,6 @@
 			"pluralLabel": {
 				"en_US": "P2S3 Quizzes"
 			},
-			"restContextPath": "/o/c/p2s3quizzes",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -4151,12 +4072,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
 			"externalReferenceCode": "P2S3_QUIZ_ANSWER",
 			"label": {
 				"en_US": "P2S3 Quiz Answer"
 			},
-			"modifiable": true,
 			"name": "P2S3QuizAnswer",
 			"objectFields": [
 				{
@@ -4300,7 +4219,6 @@
 			"pluralLabel": {
 				"en_US": "P2S3 Quiz Answers"
 			},
-			"restContextPath": "/o/c/p2s3quizanswers",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -4311,12 +4229,10 @@
 		},
 		{
 			"active": true,
-			"enableLocalization": true,
 			"externalReferenceCode": "P2S3_QUIZ_QUESTION",
 			"label": {
 				"en_US": "P2S3 Quiz Question"
 			},
-			"modifiable": true,
 			"name": "P2S3QuizQuestion",
 			"objectFields": [
 				{
@@ -4511,7 +4427,6 @@
 			"pluralLabel": {
 				"en_US": "P2S3 Quiz Questions"
 			},
-			"restContextPath": "/o/c/p2s3quizquestions",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -4586,7 +4501,6 @@
 				"en_US": "P2S3 Quiz Results"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/p2s3quizresults",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -4596,14 +4510,11 @@
 		},
 		{
 			"active": true,
-			"enableComments": false,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"externalReferenceCode": "P2S3_TRAINER_KIT",
 			"label": {
 				"en_US": "P2S3 Trainer Kit"
 			},
-			"modifiable": true,
 			"name": "P2S3TrainerKit",
 			"objectFields": [
 				{
@@ -5118,7 +5029,6 @@
 				"en_US": "P2S3 Trainer Kits"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3trainerkits",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -5130,13 +5040,10 @@
 		{
 			"active": true,
 			"enableCategorization": true,
-			"enableLocalization": true,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_TRAINER_KIT_AGENDA",
 			"label": {
 				"en_US": "P2S3 Trainer Kit Agenda"
 			},
-			"modifiable": true,
 			"name": "P2S3TrainerKitAgenda",
 			"objectFields": [
 				{
@@ -5257,7 +5164,6 @@
 				"en_US": "P2S3 Trainer Kit Agendas"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/p2s3trainerkitagendas",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -5273,7 +5179,6 @@
 			"label": {
 				"en_US": "P2S3 User Badge"
 			},
-			"modifiable": true,
 			"name": "P2S3UserBadge",
 			"objectFields": [
 				{
@@ -5315,7 +5220,6 @@
 			"pluralLabel": {
 				"en_US": "P2S3 User Badges"
 			},
-			"restContextPath": "/o/c/p2s3userbadges",
 			"scope": "company",
 			"status": {
 				"code": 0,

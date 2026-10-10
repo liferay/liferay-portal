@@ -20,7 +20,6 @@
 			"label": {
 				"en_US": "API Sort"
 			},
-			"modifiable": true,
 			"name": "APISort",
 			"objectFields": [
 				{
@@ -67,7 +66,6 @@
 			"label": {
 				"en_US": "API Filter"
 			},
-			"modifiable": true,
 			"name": "APIFilter",
 			"objectFields": [
 				{
@@ -114,7 +112,6 @@
 			"label": {
 				"en_US": "API Endpoint"
 			},
-			"modifiable": true,
 			"name": "APIEndpoint",
 			"objectFields": [
 				{
@@ -353,13 +350,11 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#Z9M6",
 			"enableCategorization": true,
-			"enableComments": false,
 			"externalReferenceCode": "L_API_PROPERTY",
 			"friendlyURLSeparator": "l",
 			"label": {
 				"en_US": "API Property"
 			},
-			"modifiable": true,
 			"name": "APIProperty",
 			"objectFields": [
 				{
@@ -459,7 +454,6 @@
 			"label": {
 				"en_US": "API Schema"
 			},
-			"modifiable": true,
 			"name": "APISchema",
 			"objectFields": [
 				{
@@ -572,7 +566,6 @@
 			"label": {
 				"en_US": "API Application"
 			},
-			"modifiable": true,
 			"name": "APIApplication",
 			"objectFields": [
 				{

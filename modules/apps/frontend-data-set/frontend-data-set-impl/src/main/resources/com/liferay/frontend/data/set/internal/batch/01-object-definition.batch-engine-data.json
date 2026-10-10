@@ -19,7 +19,6 @@
 			"label": {
 				"en_US": "Data Set"
 			},
-			"modifiable": true,
 			"name": "DataSet",
 			"objectFields": [
 				{
@@ -510,12 +509,10 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#V0H2",
 			"enableFormContainer": false,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_ACTION",
 			"label": {
 				"en_US": "Data Set Action"
 			},
-			"modifiable": true,
 			"name": "DataSetAction",
 			"objectDefinitionSettings": [
 				{
@@ -785,7 +782,6 @@
 			"label": {
 				"en_US": "Data Set Cards Section"
 			},
-			"modifiable": true,
 			"name": "DataSetCardsSection",
 			"objectDefinitionSettings": [
 				{
@@ -872,12 +868,10 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#K8Y5",
 			"enableFormContainer": false,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_CLIENT_EXTENSION_FILTER",
 			"label": {
 				"en_US": "Data Set Client Extension Filter"
 			},
-			"modifiable": true,
 			"name": "DataSetClientExtensionFilter",
 			"objectDefinitionSettings": [
 				{
@@ -967,12 +961,10 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#U0S3",
 			"enableFormContainer": false,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_DATE_FILTER",
 			"label": {
 				"en_US": "Data Set Date Filter"
 			},
-			"modifiable": true,
 			"name": "DataSetDateFilter",
 			"objectDefinitionSettings": [
 				{
@@ -1098,7 +1090,6 @@
 			"label": {
 				"en_US": "Data Set List Section"
 			},
-			"modifiable": true,
 			"name": "DataSetListSection",
 			"objectDefinitionSettings": [
 				{
@@ -1185,12 +1176,10 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#C1K2",
 			"enableFormContainer": false,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_SELECTION_FILTER",
 			"label": {
 				"en_US": "Data Set Selection Filter"
 			},
-			"modifiable": true,
 			"name": "DataSetSelectionFilter",
 			"objectDefinitionSettings": [
 				{
@@ -1440,12 +1429,10 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#D0O2",
 			"enableFormContainer": false,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_SORT",
 			"label": {
 				"en_US": "Data Set Sort"
 			},
-			"modifiable": true,
 			"name": "DataSetSort",
 			"objectDefinitionSettings": [
 				{
@@ -1551,12 +1538,10 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#M0U6",
 			"enableFormContainer": false,
-			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_TABLE_SECTION",
 			"label": {
 				"en_US": "Data Set Table Section"
 			},
-			"modifiable": true,
 			"name": "DataSetTableSection",
 			"objectDefinitionSettings": [
 				{
@@ -1697,7 +1682,6 @@
 			"label": {
 				"en_US": "Data Set Snapshot"
 			},
-			"modifiable": true,
 			"name": "DataSetSnapshot",
 			"objectFields": [
 				{
@@ -1799,7 +1783,6 @@
 			"label": {
 				"en_US": "Data Set User Configuration"
 			},
-			"modifiable": true,
 			"name": "DataSetUserConfiguration",
 			"objectFields": [
 				{

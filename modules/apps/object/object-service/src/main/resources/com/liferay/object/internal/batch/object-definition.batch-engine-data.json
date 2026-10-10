@@ -18,7 +18,6 @@
 			"label": {
 				"en_US": "Bookmark"
 			},
-			"modifiable": true,
 			"name": "Bookmark",
 			"objectFields": [
 				{

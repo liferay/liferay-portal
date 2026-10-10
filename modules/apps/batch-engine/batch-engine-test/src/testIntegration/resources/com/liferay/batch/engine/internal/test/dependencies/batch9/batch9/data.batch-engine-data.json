@@ -205,7 +205,6 @@
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldId": 0
 		}
 	]

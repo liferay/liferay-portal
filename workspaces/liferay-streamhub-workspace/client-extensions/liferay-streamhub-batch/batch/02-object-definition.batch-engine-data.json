@@ -14,14 +14,10 @@
 			"accountEntryRestrictedObjectFieldName": "",
 			"active": true,
 			"enableCategorization": false,
-			"enableComments": false,
-			"enableObjectEntryDraft": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "T4L9_STREAM_HUB_CONFIGURATION",
 			"label": {
 				"en_US": "T4L9 Stream Hub Configuration"
 			},
-			"modifiable": true,
 			"name": "T4L9StreamHubConfiguration",
 			"objectActions": [
 				{
@@ -166,14 +162,12 @@
 				"en_US": "T4L9 Stream Hub Configurations"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/t4l9streamhubconfigurations",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldName": "id"
 		}
 	]

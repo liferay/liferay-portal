@@ -18,7 +18,6 @@
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
@@ -82,7 +81,6 @@
 				"zh_CN": "项目",
 				"zh_TW": "專案"
 			},
-			"modifiable": true,
 			"name": "CMPProject",
 			"objectActions": [
 				{
@@ -651,19 +649,11 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#P4A1",
 			"enableCategorization": false,
-			"enableComments": false,
-			"enableFriendlyURLCustomization": false,
 			"enableIndexSearch": true,
-			"enableLocalization": false,
-			"enableObjectEntryDraft": false,
-			"enableObjectEntryHistory": false,
-			"enableObjectEntrySchedule": false,
-			"enableObjectEntrySubscription": false,
 			"externalReferenceCode": "L_CMP_PROJECT_LINK",
 			"label": {
 				"en_US": "Project Link"
 			},
-			"modifiable": true,
 			"name": "CMPProjectLink",
 			"objectDefinitionSettings": [
 				{
@@ -768,7 +758,6 @@
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
 			"enableIndexSearch": true,
-			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
@@ -834,7 +823,6 @@
 				"zh_CN": "任务",
 				"zh_TW": "工作"
 			},
-			"modifiable": true,
 			"name": "CMPTask",
 			"objectActions": [
 				{
@@ -1358,19 +1346,11 @@
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#T7R2",
 			"enableCategorization": false,
-			"enableComments": false,
-			"enableFriendlyURLCustomization": false,
 			"enableIndexSearch": true,
-			"enableLocalization": false,
-			"enableObjectEntryDraft": false,
-			"enableObjectEntryHistory": false,
-			"enableObjectEntrySchedule": false,
-			"enableObjectEntrySubscription": false,
 			"externalReferenceCode": "L_CMP_TASK_LINK",
 			"label": {
 				"en_US": "Task Link"
 			},
-			"modifiable": true,
 			"name": "CMPTaskLink",
 			"objectDefinitionSettings": [
 				{

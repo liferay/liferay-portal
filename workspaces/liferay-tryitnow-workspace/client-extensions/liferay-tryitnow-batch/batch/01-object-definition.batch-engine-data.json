@@ -197,14 +197,12 @@
 				"en_US": "M2H8 Progress Trackers"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/m2h8progresstrackers",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldName": "stepNumber"
 		}
 	]

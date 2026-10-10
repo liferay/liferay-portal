@@ -14,8 +14,6 @@
 			"accountEntryRestricted": false,
 			"active": true,
 			"enableCategorization": true,
-			"enableComments": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "HS10_COMPANY",
 			"label": {
 				"en_US": "HS10 Company"
@@ -132,7 +130,6 @@
 				"en_US": "HS10 Companies"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/hs10companies",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -144,8 +141,6 @@
 			"accountEntryRestricted": false,
 			"active": true,
 			"enableCategorization": true,
-			"enableComments": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "HS10_CONTACT",
 			"label": {
 				"en_US": "HS10 Contact"
@@ -279,7 +274,6 @@
 				"en_US": "HS10 Contacts"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/hs10contacts",
 			"scope": "company",
 			"status": {
 				"code": 0,
@@ -291,8 +285,6 @@
 			"accountEntryRestricted": false,
 			"active": true,
 			"enableCategorization": true,
-			"enableComments": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "HS10_LEAD",
 			"label": {
 				"en_US": "HS10 Lead"
@@ -385,7 +377,6 @@
 				"en_US": "HS10 Leads"
 			},
 			"portlet": true,
-			"restContextPath": "/o/c/hs10leads",
 			"scope": "company",
 			"status": {
 				"code": 0,

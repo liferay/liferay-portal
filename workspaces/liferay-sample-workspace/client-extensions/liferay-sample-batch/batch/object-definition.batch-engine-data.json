@@ -17,8 +17,6 @@
 			"dateCreated": "2023-03-02T21:43:03.776+00:00",
 			"dateModified": "2023-03-03T15:48:30.576+00:00",
 			"enableCategorization": true,
-			"enableComments": false,
-			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "1b437c8e-abd4-26e7-5473-2e8c68aa93e1",
 			"id": 44131,
 			"label": {
@@ -280,14 +278,12 @@
 				"en_US": "Samples"
 			},
 			"portlet": false,
-			"restContextPath": "/o/c/samples",
 			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldName": "id"
 		}
 	]
