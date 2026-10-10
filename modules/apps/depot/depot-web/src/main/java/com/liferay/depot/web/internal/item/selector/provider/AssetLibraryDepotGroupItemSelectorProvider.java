@@ -7,6 +7,8 @@ package com.liferay.depot.web.internal.item.selector.provider;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -34,6 +36,12 @@ public class AssetLibraryDepotGroupItemSelectorProvider
 
 	@Override
 	protected String getLabelKey() {
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getNonsystemCompanyId(), "LPD-81022")) {
+
+			return "asset-libraries";
+		}
+
 		return "asset-library";
 	}
 

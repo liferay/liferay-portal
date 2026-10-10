@@ -5,7 +5,10 @@
 
 package com.liferay.depot.web.internal.item.selector.provider;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -89,11 +92,32 @@ public abstract class BaseDepotGroupItemSelectorProvider
 		return language.get(locale, getLabelKey());
 	}
 
+	@Override
+	public boolean isGroupType(Group group) {
+		if (!group.isDepot()) {
+			return false;
+		}
+
+		DepotEntry depotEntry = depotEntryLocalService.fetchGroupDepotEntry(
+			StagingUtil.getLiveGroupId(group.getGroupId()));
+
+		if ((depotEntry != null) &&
+			(depotEntry.getType() == getDepotEntryType())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	protected abstract int getDepotEntryType();
 
 	protected abstract String getEmptyResultsMessageKey();
 
 	protected abstract String getLabelKey();
+
+	@Reference
+	protected DepotEntryLocalService depotEntryLocalService;
 
 	@Reference
 	protected DepotEntryService depotEntryService;

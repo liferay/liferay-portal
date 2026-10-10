@@ -7,6 +7,8 @@ package com.liferay.depot.web.internal.item.selector.provider;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,6 +22,17 @@ public class SpaceDepotGroupItemSelectorProvider
 	@Override
 	public String getGroupType() {
 		return "space-depot";
+	}
+
+	@Override
+	public String getIcon() {
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getNonsystemCompanyId(), "LPD-81022")) {
+
+			return "box-container";
+		}
+
+		return super.getIcon();
 	}
 
 	@Override

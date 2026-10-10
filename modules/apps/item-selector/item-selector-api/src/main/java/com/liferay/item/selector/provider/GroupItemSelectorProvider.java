@@ -40,4 +40,8 @@ public interface GroupItemSelectorProvider {
 		return true;
 	}
 
+	public default boolean isGroupType(Group group) {
+		return false;
+	}
+
 }

@@ -1,0 +1,10 @@
+@import 'atlas-custom-properties/_variables';
+@import 'atlas-variables';
+
+.group-selector-design-library .card-item-first {
+	background-color: $teal-l3;
+
+	.card-type-asset-icon {
+		color: $teal;
+	}
+}

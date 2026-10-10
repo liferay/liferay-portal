@@ -25,6 +25,17 @@ public class DesignLibraryDepotGroupItemSelectorProvider
 	}
 
 	@Override
+	public String getIcon() {
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getNonsystemCompanyId(), "LPD-81022")) {
+
+			return "books-brush";
+		}
+
+		return super.getIcon();
+	}
+
+	@Override
 	public boolean isEnabled() {
 		return FeatureFlagManagerUtil.isEnabled(
 			CompanyThreadLocal.getNonsystemCompanyId(), "LPD-57283");
