@@ -28,31 +28,6 @@ $c-root: map-merge(
 );
 
 $c-dark-high-contrast: () !default;
-$c-dark-high-contrast: map-deep-merge(
-	(
-		color-scheme: dark,
-
-		--c-empty-state-primary-d1: #c7daff,
-		--c-empty-state-primary-d2: #f0f5ff,
-		--c-empty-state-primary-l0: #003eb2,
-		--c-empty-state-primary-l1: #00318f,
-		--c-empty-state-primary-l2: #002366,
-		--c-empty-state-primary-l3: #001a4d,
-		--c-empty-state-primary: #b3cdff,
-		--c-empty-state-purple-d1: #ecd1ff,
-		--c-empty-state-purple-d2: #ecd1ff,
-		--c-empty-state-purple-d3: #ecd1ff,
-		--c-empty-state-purple-d4: #f5ebff,
-		--c-empty-state-purple-l1: #9b0fff,
-		--c-empty-state-purple-l2: #7f00db,
-		--c-empty-state-purple-l3: #6e00bd,
-		--c-empty-state-purple-l4: #590099,
-		--c-empty-state-purple-l5: #3c0066,
-		--c-empty-state-purple: #e1b8ff,
-		--c-empty-state-white: #111116,
-	),
-	$c-dark-high-contrast
-);
 
 $c-high-contrast: () !default;
 $c-high-contrast: map-deep-merge(
