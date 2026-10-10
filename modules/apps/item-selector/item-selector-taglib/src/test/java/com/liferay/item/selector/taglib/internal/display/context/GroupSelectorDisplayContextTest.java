@@ -6,15 +6,25 @@
 package com.liferay.item.selector.taglib.internal.display.context;
 
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletRequest;
@@ -103,13 +113,41 @@ public class GroupSelectorDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-109452")
+	public void testGetBreadcrumbEntries() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		Language language = Mockito.mock(Language.class);
+
+		Mockito.when(
+			language.get(
+				Mockito.<Locale>any(), Mockito.eq("sites-and-libraries"))
+		).thenReturn(
+			"Sites and Libraries"
+		);
+
+		languageUtil.setLanguage(language);
+
+		Mockito.when(
+			_itemSelector.getItemSelectorURL(
+				Mockito.any(), Mockito.any(),
+				Mockito.any(ItemSelectorCriterion[].class))
+		).thenAnswer(
+			invocationOnMock -> new MockLiferayPortletURL()
+		);
+
+		_testGetBreadcrumbEntries();
+		_testGetBreadcrumbEntriesWithGroupType();
+	}
+
+	@Test
 	public void testGetGroupItemSelectorIcon() {
 		GroupSelectorDisplayContext groupSelectorDisplayContext =
-			new GroupSelectorDisplayContext(
-				"test", new MockLiferayResourceRequest());
+			new GroupSelectorDisplayContext(new MockLiferayResourceRequest());
 
 		Assert.assertEquals(
-			"icon", groupSelectorDisplayContext.getGroupItemSelectorIcon());
+			"icon",
+			groupSelectorDisplayContext.getGroupItemSelectorIcon("test"));
 	}
 
 	@Test
@@ -130,6 +168,79 @@ public class GroupSelectorDisplayContextTest {
 		_testGetGroupTypesWithLegacyItemSelectorViewSelectedTab();
 		_testGetGroupTypesWithObjectEntryItemSelectorViewSelectedTab();
 		_testGetGroupTypesWithoutJournalArticleInfoItemItemSelectorCriterion();
+	}
+
+	@Test
+	@TestInfo("LPD-109452")
+	public void testIsShowGroupTypes() throws Exception {
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-81022"))
+			).thenReturn(
+				true
+			);
+
+			Assert.assertFalse(
+				_isShowGroupTypes(RandomTestUtil.randomString()));
+			Assert.assertTrue(_isShowGroupTypes(null));
+		}
+	}
+
+	private boolean _isShowGroupTypes(String groupType) throws Exception {
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(Mockito.mock(Company.class));
+
+		mockLiferayResourceRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(
+				groupType, mockLiferayResourceRequest);
+
+		return groupSelectorDisplayContext.isShowGroupTypes();
+	}
+
+	private void _testGetBreadcrumbEntries() {
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(new MockLiferayResourceRequest());
+
+		List<BreadcrumbEntry> breadcrumbEntries =
+			groupSelectorDisplayContext.getBreadcrumbEntries();
+
+		Assert.assertEquals(
+			breadcrumbEntries.toString(), 1, breadcrumbEntries.size());
+
+		BreadcrumbEntry breadcrumbEntry = breadcrumbEntries.get(0);
+
+		Assert.assertEquals("Sites and Libraries", breadcrumbEntry.getTitle());
+	}
+
+	private void _testGetBreadcrumbEntriesWithGroupType() {
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(
+				"test", new MockLiferayResourceRequest());
+
+		List<BreadcrumbEntry> breadcrumbEntries =
+			groupSelectorDisplayContext.getBreadcrumbEntries();
+
+		Assert.assertEquals(
+			breadcrumbEntries.toString(), 2, breadcrumbEntries.size());
+
+		BreadcrumbEntry breadcrumbEntry = breadcrumbEntries.get(0);
+
+		Assert.assertEquals("Sites and Libraries", breadcrumbEntry.getTitle());
+
+		breadcrumbEntry = breadcrumbEntries.get(1);
+
+		Assert.assertEquals("label", breadcrumbEntry.getTitle());
 	}
 
 	private void _testGetGroupTypesWithDefaultSelectedTabRequestAttribute() {

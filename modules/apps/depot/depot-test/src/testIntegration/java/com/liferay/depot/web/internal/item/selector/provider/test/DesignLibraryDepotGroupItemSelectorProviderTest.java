@@ -60,8 +60,18 @@ public class DesignLibraryDepotGroupItemSelectorProviderTest
 	}
 
 	@Override
+	protected String getIcon() {
+		return "books-brush";
+	}
+
+	@Override
 	protected String getLabel() {
 		return "Design Libraries";
+	}
+
+	@Override
+	protected int getOtherDepotType() {
+		return DepotConstants.TYPE_ASSET_LIBRARY;
 	}
 
 	@Inject(

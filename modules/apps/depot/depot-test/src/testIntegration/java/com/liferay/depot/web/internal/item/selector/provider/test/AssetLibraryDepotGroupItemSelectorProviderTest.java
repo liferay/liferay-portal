@@ -42,8 +42,18 @@ public class AssetLibraryDepotGroupItemSelectorProviderTest
 	}
 
 	@Override
+	protected String getIcon() {
+		return "books";
+	}
+
+	@Override
 	protected String getLabel() {
-		return "Asset Library";
+		return "Asset Libraries";
+	}
+
+	@Override
+	protected int getOtherDepotType() {
+		return DepotConstants.TYPE_SPACE;
 	}
 
 	@Inject(
