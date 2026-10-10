@@ -7,18 +7,23 @@ package com.liferay.portal.store.gcs.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.store.Store;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.store.test.util.BaseStoreTestCase;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -42,6 +47,38 @@ public class GCSStoreTest extends BaseStoreTestCase {
 				"Property \"", PropsKeys.DL_STORE_IMPL, "\" is not set to \"",
 				gcsStoreClassName, "\""),
 			dlStoreImpl.equals(gcsStoreClassName));
+	}
+
+	@Override
+	@Test
+	public void testGetFileVersions() throws Exception {
+		super.testGetFileVersions();
+
+		long companyId = RandomTestUtil.nextLong();
+
+		try {
+			long repositoryId = RandomTestUtil.nextLong();
+			String fileName = RandomTestUtil.randomString();
+
+			_store.addFile(
+				companyId, repositoryId, fileName, Store.VERSION_DEFAULT,
+				new UnsyncByteArrayInputStream(DATA_VERSION));
+			_store.addFile(
+				companyId, repositoryId,
+				fileName + RandomTestUtil.randomString(), Store.VERSION_DEFAULT,
+				new UnsyncByteArrayInputStream(DATA_VERSION));
+
+			Assert.assertArrayEquals(
+				new String[] {Store.VERSION_DEFAULT},
+				_store.getFileVersions(companyId, repositoryId, fileName));
+			Assert.assertArrayEquals(
+				new String[] {Store.VERSION_DEFAULT},
+				_store.getFileVersions(
+					companyId, repositoryId, fileName + StringPool.SLASH));
+		}
+		finally {
+			_store.deleteDirectory(companyId);
+		}
 	}
 
 	@Override
