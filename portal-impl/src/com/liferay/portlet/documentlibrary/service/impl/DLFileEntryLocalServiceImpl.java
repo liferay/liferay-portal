@@ -2198,7 +2198,10 @@ public class DLFileEntryLocalServiceImpl
 
 			if (Objects.equals(
 					dlFileVersion.getVersion(),
-					DLFileEntryConstants.VERSION_DEFAULT)) {
+					DLFileEntryConstants.VERSION_DEFAULT) &&
+				((status != WorkflowConstants.STATUS_EXPIRED) ||
+				 ((serviceContext != null) &&
+				  !serviceContext.isIndexingEnabled()))) {
 
 				Indexer<DLFileEntry> indexer =
 					IndexerRegistryUtil.nullSafeGetIndexer(DLFileEntry.class);
