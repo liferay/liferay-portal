@@ -157,11 +157,10 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 		StringBundler sb = new StringBundler();
 
-		Matcher stringLiteralMatcher = _stringLiteralPattern.matcher(
-			matcher.group(1));
+		matcher = _stringLiteralPattern.matcher(matcher.group(1));
 
-		while (stringLiteralMatcher.find()) {
-			sb.append(stringLiteralMatcher.group(1));
+		while (matcher.find()) {
+			sb.append(matcher.group(1));
 		}
 
 		_classNameRegex = StringUtil.replace(sb.toString(), "\\\\", "\\");
