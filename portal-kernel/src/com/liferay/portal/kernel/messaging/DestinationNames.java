@@ -39,9 +39,6 @@ public interface DestinationNames {
 	public static final String DOCUMENT_LIBRARY_AUDIO_PROCESSOR =
 		"liferay/document_library_audio_processor";
 
-	public static final String DOCUMENT_LIBRARY_DELETION =
-		"liferay/document_library_deletion";
-
 	public static final String DOCUMENT_LIBRARY_IMAGE_PROCESSOR =
 		"liferay/document_library_image_processor";
 

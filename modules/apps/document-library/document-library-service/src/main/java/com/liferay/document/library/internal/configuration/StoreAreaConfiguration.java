@@ -39,10 +39,4 @@ public interface StoreAreaConfiguration {
 	)
 	public int evictionQuota();
 
-	@Meta.AD(
-		deflt = "-1", description = "max-deletion-queue-size-help",
-		name = "max-deletion-queue-size", required = false
-	)
-	public int maxDeletionQueueSize();
-
 }
