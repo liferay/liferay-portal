@@ -500,7 +500,9 @@ public class AMImageEntryLocalServiceTest {
 
 			int percentage = AMImageEntryLocalServiceUtil.getPercentage(
 				TestPropsValues.getCompanyId(),
-				amImageConfigurationEntry.getUUID());
+				amImageConfigurationEntry.getUUID(),
+				AMImageEntryLocalServiceUtil.getExpectedAMImageEntriesCount(
+					TestPropsValues.getCompanyId()));
 
 			Assert.assertTrue(String.valueOf(percentage), percentage <= 20);
 		}
@@ -549,7 +551,9 @@ public class AMImageEntryLocalServiceTest {
 				100,
 				AMImageEntryLocalServiceUtil.getPercentage(
 					TestPropsValues.getCompanyId(),
-					amImageConfigurationEntry.getUUID()));
+					amImageConfigurationEntry.getUUID(),
+					AMImageEntryLocalServiceUtil.getExpectedAMImageEntriesCount(
+						TestPropsValues.getCompanyId())));
 		}
 		finally {
 			_unregisterAMImageCounter(amImageCounterServiceRegistration);
@@ -566,7 +570,9 @@ public class AMImageEntryLocalServiceTest {
 			0,
 			AMImageEntryLocalServiceUtil.getPercentage(
 				TestPropsValues.getCompanyId(),
-				amImageConfigurationEntry1.getUUID()));
+				amImageConfigurationEntry1.getUUID(),
+				AMImageEntryLocalServiceUtil.getExpectedAMImageEntriesCount(
+					TestPropsValues.getCompanyId())));
 	}
 
 	@Test
