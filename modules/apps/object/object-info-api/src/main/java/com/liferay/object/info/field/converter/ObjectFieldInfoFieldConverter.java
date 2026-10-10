@@ -50,6 +50,8 @@ import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -79,6 +81,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Lourdes Fernández Besada
@@ -153,7 +156,8 @@ public class ObjectFieldInfoFieldConverter {
 			).editable(
 				editable
 			).labelInfoLocalizedValue(
-				_getLabelInfoLocalizedValue(objectField)
+				new LazyInfoLocalizedValue(
+					() -> _getLabelInfoLocalizedValue(objectField))
 			).localizable(
 				objectField.isLocalized()
 			).readOnly(
@@ -731,5 +735,87 @@ public class ObjectFieldInfoFieldConverter {
 	private final SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
 	private final UserLocalService _userLocalService;
+
+	private static class LazyInfoLocalizedValue
+		implements InfoLocalizedValue<String> {
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			if (object instanceof
+					LazyInfoLocalizedValue lazyInfoLocalizedValue) {
+
+				return infoLocalizedValue.equals(
+					lazyInfoLocalizedValue._unsafeSupplierValue.getValue());
+			}
+
+			return infoLocalizedValue.equals(object);
+		}
+
+		@Override
+		public Set<Locale> getAvailableLocales() {
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			return infoLocalizedValue.getAvailableLocales();
+		}
+
+		@Override
+		public Locale getDefaultLocale() {
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			return infoLocalizedValue.getDefaultLocale();
+		}
+
+		@Override
+		public String getValue() {
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			return infoLocalizedValue.getValue();
+		}
+
+		@Override
+		public String getValue(Locale locale) {
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			return infoLocalizedValue.getValue(locale);
+		}
+
+		@Override
+		public Map<Locale, String> getValues() {
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			return infoLocalizedValue.getValues();
+		}
+
+		@Override
+		public int hashCode() {
+			InfoLocalizedValue<String> infoLocalizedValue =
+				_unsafeSupplierValue.getValue();
+
+			return infoLocalizedValue.hashCode();
+		}
+
+		private LazyInfoLocalizedValue(
+			UnsafeSupplier<InfoLocalizedValue<String>, RuntimeException>
+				unsafeSupplier) {
+
+			_unsafeSupplierValue = new UnsafeSupplierValue<>(unsafeSupplier);
+		}
+
+		private final UnsafeSupplierValue
+			<InfoLocalizedValue<String>, RuntimeException> _unsafeSupplierValue;
+
+	}
 
 }
