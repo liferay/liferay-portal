@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author Raymond Augé
@@ -21,12 +22,12 @@ import java.util.List;
 public class InlineSQLHelperUtil {
 
 	public static <T extends BaseModel<T>> List<T> filter(
-		List<T> list, long... groupIds) {
+		Function<T, Long> classPKFunction, List<T> list, long... groupIds) {
 
 		InlineSQLHelper inlineSQLPermission =
 			_inlineSQLPermissionSnapshot.get();
 
-		return inlineSQLPermission.filter(list, groupIds);
+		return inlineSQLPermission.filter(classPKFunction, list, groupIds);
 	}
 
 	public static <T extends Table<T>> Predicate getPermissionWherePredicate(

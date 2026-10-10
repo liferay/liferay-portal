@@ -79,7 +79,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 	@Override
 	public <T extends BaseModel<T>> List<T> filter(
-		List<T> list, long... groupIds) {
+		Function<T, Long> classPKFunction, List<T> list, long... groupIds) {
 
 		if (list.isEmpty()) {
 			return list;
@@ -135,9 +135,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			return ListUtil.filter(
 				list,
 				t -> {
-					if (permittedClassPKs.contains(
-							(Long)t.getPrimaryKeyObj())) {
-
+					if (permittedClassPKs.contains(classPKFunction.apply(t))) {
 						return true;
 					}
 
@@ -147,7 +145,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		}
 
 		return ListUtil.filter(
-			list, t -> permittedClassPKs.contains((Long)t.getPrimaryKeyObj()));
+			list, t -> permittedClassPKs.contains(classPKFunction.apply(t)));
 	}
 
 	@Override

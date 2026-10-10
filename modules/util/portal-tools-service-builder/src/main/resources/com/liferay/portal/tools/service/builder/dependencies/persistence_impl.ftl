@@ -3295,6 +3295,9 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 						<#else>
 							null,
 						</#if>
+						<#if filterEnabled>
+							${entity.name}::get${entity.filterPKEntityColumn.methodName},
+						</#if>
 						<#list entityColumns as entityColumn>
 							<#if entity.hasCompoundPK() && entityColumn.isPrimary()>
 								<#assign columnName = "id." + entityColumn.name />
