@@ -2933,7 +2933,7 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
-	@TestInfo("LPS-120094")
+	@TestInfo({"LPD-109694", "LPS-120094"})
 	public void testRenderFragmentEntryLinkWithImageLinkToURL()
 		throws Exception {
 
@@ -3003,7 +3003,7 @@ public class RenderLayoutStructureTagTest {
 					HtmlUtil.escape(
 						_dlURLHelper.getPreviewURL(
 							fileEntry, fileEntry.getFileVersion(), themeDisplay,
-							StringPool.BLANK)),
+							StringPool.BLANK, true, false)),
 					"\" data-fileentryid=\"", fileEntry.getFileEntryId(),
 					"\"")));
 	}
