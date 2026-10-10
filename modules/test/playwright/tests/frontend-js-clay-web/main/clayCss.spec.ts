@@ -138,23 +138,21 @@ async function getResolvedColor(locator: Locator, value: string) {
 }
 
 test(
-	'High contrast class applies the high contrast palette in both color schemes',
+	'High contrast attribute applies the high contrast palette in both color schemes',
 	{tag: '@LPD-108865'},
 	async ({page}) => {
 		await page.goto('/group/control_panel/manage');
 
 		const body = page.locator('body');
 		const cadmin = page.locator('.cadmin').first();
+		const html = page.locator('html');
 
-		await body.evaluate((element) =>
-			element.classList.add('c-prefers-high-contrast')
+		await html.evaluate((element) =>
+			element.setAttribute('data-prefers-contrast', 'more')
 		);
 
 		await test.step('Light color scheme', async () => {
-			await expect(page.locator('html')).toHaveAttribute(
-				'data-color-scheme',
-				'light'
-			);
+			await expect(html).toHaveAttribute('data-color-scheme', 'light');
 
 			await expect(body).toHaveCSS(
 				'background-color',
@@ -171,13 +169,11 @@ test(
 		});
 
 		await test.step('Dark color scheme', async () => {
-			await page
-				.locator('html')
-				.evaluate((element) =>
-					element.setAttribute('data-color-scheme', 'dark')
-				);
+			await html.evaluate((element) =>
+				element.setAttribute('data-color-scheme', 'dark')
+			);
 
-			await expect(body).toHaveCSS('background-color', 'rgb(17, 17, 22)');
+			await expect(body).toHaveCSS('background-color', 'rgb(7, 11, 19)');
 
 			expect(await getResolvedColor(body, 'var(--link-color)')).toBe(
 				'rgb(179, 205, 255)'
