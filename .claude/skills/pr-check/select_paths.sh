@@ -63,8 +63,11 @@ function _get_workspaces_paths {
 	fi
 
 	local owned_paths_regex="^workspaces/${2}/"
+	local refresh_script
 
-	if [[ ${2} != liferay-sample-workspace ]]
+	refresh_script="$(git rev-parse --show-toplevel)/workspaces/refresh_other_workspaces.sh"
+
+	if [[ ${2} != liferay-sample-workspace ]] && [[ -f ${refresh_script} ]]
 	then
 		local names
 
@@ -72,7 +75,7 @@ function _get_workspaces_paths {
 			sed \
 				-e "s/^[[:space:]]*--exclude[[:space:]]\{1,\}\([^[:space:]\\\\]*\).*/\1/p" \
 				-n \
-				"$(git rev-parse --show-toplevel)/workspaces/refresh_other_workspaces.sh" | \
+				"${refresh_script}" | \
 			sed -e "s/\./\\\\./g" -e "s/\*/[^\/]*/g" | \
 			paste -d "|" -s -)
 
