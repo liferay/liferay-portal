@@ -117,7 +117,7 @@ public class AMImageAMProcessorTest {
 
 	private byte[] _getImageBytes() throws Exception {
 		return FileUtil.getBytes(
-			AMImageAMProcessorTest.class, "dependencies/image.jpg");
+			AMImageAMProcessorTest.class, "dependencies/liferay.jpg");
 	}
 
 	private ServiceRegistration<AMImageScaler> _registerAMImageScaler(

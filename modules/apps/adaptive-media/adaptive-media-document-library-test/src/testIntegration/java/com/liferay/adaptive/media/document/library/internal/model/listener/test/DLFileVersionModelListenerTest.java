@@ -144,7 +144,7 @@ public class DLFileVersionModelListenerTest {
 
 	private byte[] _getImageBytes() throws Exception {
 		return FileUtil.getBytes(
-			DLFileVersionModelListenerTest.class, "dependencies/image.jpg");
+			DLFileVersionModelListenerTest.class, "dependencies/liferay.jpg");
 	}
 
 	private void _testOnAfterRemoveWhenCancelCheckOut() throws Exception {
