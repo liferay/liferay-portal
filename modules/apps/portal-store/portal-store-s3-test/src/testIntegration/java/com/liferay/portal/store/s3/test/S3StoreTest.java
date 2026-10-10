@@ -59,6 +59,48 @@ public class S3StoreTest extends BaseStoreTestCase {
 			dlStoreImpl.equals(s3StoreClassName));
 	}
 
+	@Override
+	@Test
+	public void testDeleteDirectory() throws Exception {
+		super.testDeleteDirectory();
+
+		long companyId = RandomTestUtil.nextLong();
+
+		try {
+			long repositoryId = RandomTestUtil.nextLong();
+
+			String dirName = RandomTestUtil.randomString();
+
+			String fileName1 = StringBundler.concat(
+				dirName, StringPool.SLASH, RandomTestUtil.randomString());
+
+			_store.addFile(
+				companyId, repositoryId, fileName1, Store.VERSION_DEFAULT,
+				new UnsyncByteArrayInputStream(DATA_VERSION));
+
+			String fileName2 = StringBundler.concat(
+				dirName, RandomTestUtil.randomString(), StringPool.SLASH,
+				RandomTestUtil.randomString());
+
+			_store.addFile(
+				companyId, repositoryId, fileName2, Store.VERSION_DEFAULT,
+				new UnsyncByteArrayInputStream(DATA_VERSION));
+
+			_store.deleteDirectory(
+				companyId, repositoryId, dirName + StringPool.SLASH);
+
+			Assert.assertFalse(
+				_store.hasFile(
+					companyId, repositoryId, fileName1, Store.VERSION_DEFAULT));
+			Assert.assertTrue(
+				_store.hasFile(
+					companyId, repositoryId, fileName2, Store.VERSION_DEFAULT));
+		}
+		finally {
+			_store.deleteDirectory(companyId);
+		}
+	}
+
 	@Test
 	@TestInfo("LPS-127589")
 	public void testGetFileAsStream() throws Exception {
