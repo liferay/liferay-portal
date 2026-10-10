@@ -15,7 +15,9 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -111,14 +113,27 @@ public class StaticSiteExportBackgroundTaskExecutor
 		return null;
 	}
 
+	private Set<Locale> _getLocales(
+			long groupId, Map<String, Serializable> taskContextMap)
+		throws PortalException {
+
+		String[] languageIds = GetterUtil.getStringValues(
+			taskContextMap.get("languageIds"));
+
+		if (ArrayUtil.isEmpty(languageIds)) {
+			return Collections.singleton(_portal.getSiteDefaultLocale(groupId));
+		}
+
+		return SetUtil.fromArray(LocaleUtil.fromLanguageIds(languageIds));
+	}
+
 	private StaticSiteExport _getStaticSiteExport(
 			Map<String, Serializable> taskContextMap)
 		throws PortalException {
 
 		long groupId = MapUtil.getLong(taskContextMap, "groupId");
 
-		Set<Locale> locales = Collections.singleton(
-			_portal.getSiteDefaultLocale(groupId));
+		Set<Locale> locales = _getLocales(groupId, taskContextMap);
 
 		Serializable layoutIds = taskContextMap.get("layoutIds");
 
