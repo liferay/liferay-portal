@@ -250,6 +250,44 @@ public class DLFileEntryTrashHandlerTest
 			dlFileEntry.getFileEntryId(), WorkflowConstants.STATUS_EXPIRED);
 	}
 
+	@Test
+	public void testRestoreFileEntryWithDraftLatestVersion() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		DLFileEntry dlFileEntry = (DLFileEntry)addBaseModelWithWorkflow(
+			serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		updateBaseModel(dlFileEntry.getFileEntryId(), serviceContext);
+
+		_assertRestoredFileEntryVisible(dlFileEntry.getFileEntryId());
+	}
+
+	@Test
+	public void testRestoreFileEntryWithExpiredLatestVersion()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		DLFileEntry dlFileEntry = (DLFileEntry)addBaseModelWithWorkflow(
+			serviceContext);
+
+		dlFileEntry = (DLFileEntry)updateBaseModel(
+			dlFileEntry.getFileEntryId(), serviceContext);
+
+		DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
+
+		DLFileEntryLocalServiceUtil.updateStatus(
+			dlFileEntry.getUserId(), dlFileVersion.getFileVersionId(),
+			WorkflowConstants.STATUS_EXPIRED, serviceContext,
+			Collections.emptyMap());
+
+		_assertRestoredFileEntryVisible(dlFileEntry.getFileEntryId());
+	}
+
 	@Override
 	@Test(expected = TrashEntryException.class)
 	public void testTrashParentAndBaseModel() throws Exception {
@@ -418,6 +456,21 @@ public class DLFileEntryTrashHandlerTest
 
 		Assert.assertEquals(
 			String.valueOf(fileEntryId), document.get(Field.ENTRY_CLASS_PK));
+	}
+
+	private void _assertRestoredFileEntryVisible(long fileEntryId)
+		throws Exception {
+
+		moveBaseModelToTrash(fileEntryId);
+
+		_restoreTrashEntry(fileEntryId);
+
+		Assert.assertTrue(
+			isAssetEntryVisible(
+				DLFileEntryLocalServiceUtil.getFileEntry(fileEntryId),
+				fileEntryId));
+
+		_assertIndexed(fileEntryId, WorkflowConstants.STATUS_APPROVED);
 	}
 
 	private void _restoreTrashEntry(long fileEntryId) throws Exception {
