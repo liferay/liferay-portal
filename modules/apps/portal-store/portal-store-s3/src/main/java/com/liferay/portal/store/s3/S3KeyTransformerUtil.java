@@ -73,7 +73,8 @@ public class S3KeyTransformerUtil {
 	}
 
 	public static String getRepositoryKey(long companyId, long repositoryId) {
-		return companyId + StringPool.SLASH + repositoryId;
+		return StringBundler.concat(
+			companyId, StringPool.SLASH, repositoryId, StringPool.SLASH);
 	}
 
 	public static String moveKey(
