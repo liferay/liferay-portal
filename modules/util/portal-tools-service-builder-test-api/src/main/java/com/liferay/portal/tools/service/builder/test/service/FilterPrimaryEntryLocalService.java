@@ -75,6 +75,10 @@ public interface FilterPrimaryEntryLocalService
 	public FilterPrimaryEntry addFilterPrimaryEntry(
 		FilterPrimaryEntry filterPrimaryEntry);
 
+	public FilterPrimaryEntry addFilterPrimaryEntry(
+			long companyId, long groupId, long resourcePrimKey, long userId)
+		throws PortalException;
+
 	/**
 	 * Creates a new filter primary entry with the primary key. Does not add the filter primary entry to the database.
 	 *
@@ -100,10 +104,12 @@ public interface FilterPrimaryEntryLocalService
 	 *
 	 * @param filterPrimaryEntry the filter primary entry
 	 * @return the filter primary entry that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public FilterPrimaryEntry deleteFilterPrimaryEntry(
-		FilterPrimaryEntry filterPrimaryEntry);
+			FilterPrimaryEntry filterPrimaryEntry)
+		throws PortalException;
 
 	/**
 	 * Deletes the filter primary entry with the primary key from the database. Also notifies the appropriate model listeners.
@@ -204,6 +210,10 @@ public interface FilterPrimaryEntryLocalService
 	public FilterPrimaryEntry fetchFilterPrimaryEntry(
 		long filterPrimaryEntryId);
 
+	public int filterCountByGroupId(long groupId);
+
+	public List<FilterPrimaryEntry> filterFindByGroupId(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -279,4 +289,4 @@ public interface FilterPrimaryEntryLocalService
 		FilterPrimaryEntry filterPrimaryEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-613241439
+// LIFERAY-SERVICE-BUILDER-HASH:-1848501870

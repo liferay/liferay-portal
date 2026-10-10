@@ -126,11 +126,13 @@ public abstract class FilterPrimaryEntryLocalServiceBaseImpl
 	 *
 	 * @param filterPrimaryEntry the filter primary entry
 	 * @return the filter primary entry that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public FilterPrimaryEntry deleteFilterPrimaryEntry(
-		FilterPrimaryEntry filterPrimaryEntry) {
+			FilterPrimaryEntry filterPrimaryEntry)
+		throws PortalException {
 
 		return filterPrimaryEntryPersistence.remove(filterPrimaryEntry);
 	}
@@ -536,4 +538,4 @@ public abstract class FilterPrimaryEntryLocalServiceBaseImpl
 		FilterPrimaryEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1909554869
+// LIFERAY-SERVICE-BUILDER-HASH:-1035879015

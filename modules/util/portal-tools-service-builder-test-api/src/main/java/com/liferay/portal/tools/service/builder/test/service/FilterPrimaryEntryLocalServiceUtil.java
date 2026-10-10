@@ -52,6 +52,14 @@ public class FilterPrimaryEntryLocalServiceUtil {
 		return getService().addFilterPrimaryEntry(filterPrimaryEntry);
 	}
 
+	public static FilterPrimaryEntry addFilterPrimaryEntry(
+			long companyId, long groupId, long resourcePrimKey, long userId)
+		throws PortalException {
+
+		return getService().addFilterPrimaryEntry(
+			companyId, groupId, resourcePrimKey, userId);
+	}
+
 	/**
 	 * Creates a new filter primary entry with the primary key. Does not add the filter primary entry to the database.
 	 *
@@ -83,9 +91,11 @@ public class FilterPrimaryEntryLocalServiceUtil {
 	 *
 	 * @param filterPrimaryEntry the filter primary entry
 	 * @return the filter primary entry that was removed
+	 * @throws PortalException
 	 */
 	public static FilterPrimaryEntry deleteFilterPrimaryEntry(
-		FilterPrimaryEntry filterPrimaryEntry) {
+			FilterPrimaryEntry filterPrimaryEntry)
+		throws PortalException {
 
 		return getService().deleteFilterPrimaryEntry(filterPrimaryEntry);
 	}
@@ -209,6 +219,14 @@ public class FilterPrimaryEntryLocalServiceUtil {
 		return getService().fetchFilterPrimaryEntry(filterPrimaryEntryId);
 	}
 
+	public static int filterCountByGroupId(long groupId) {
+		return getService().filterCountByGroupId(groupId);
+	}
+
+	public static List<FilterPrimaryEntry> filterFindByGroupId(long groupId) {
+		return getService().filterFindByGroupId(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -314,4 +332,4 @@ public class FilterPrimaryEntryLocalServiceUtil {
 	private static volatile FilterPrimaryEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:724775348
+// LIFERAY-SERVICE-BUILDER-HASH:1391553098

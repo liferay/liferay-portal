@@ -50,6 +50,18 @@ public class FilterPrimaryEntryLocalServiceWrapper
 			filterPrimaryEntry);
 	}
 
+	@Override
+	public
+		com.liferay.portal.tools.service.builder.test.model.FilterPrimaryEntry
+				addFilterPrimaryEntry(
+					long companyId, long groupId, long resourcePrimKey,
+					long userId)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _filterPrimaryEntryLocalService.addFilterPrimaryEntry(
+			companyId, groupId, resourcePrimKey, userId);
+	}
+
 	/**
 	 * Creates a new filter primary entry with the primary key. Does not add the filter primary entry to the database.
 	 *
@@ -86,13 +98,15 @@ public class FilterPrimaryEntryLocalServiceWrapper
 	 *
 	 * @param filterPrimaryEntry the filter primary entry
 	 * @return the filter primary entry that was removed
+	 * @throws PortalException
 	 */
 	@Override
 	public
 		com.liferay.portal.tools.service.builder.test.model.FilterPrimaryEntry
-			deleteFilterPrimaryEntry(
-				com.liferay.portal.tools.service.builder.test.model.
-					FilterPrimaryEntry filterPrimaryEntry) {
+				deleteFilterPrimaryEntry(
+					com.liferay.portal.tools.service.builder.test.model.
+						FilterPrimaryEntry filterPrimaryEntry)
+			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _filterPrimaryEntryLocalService.deleteFilterPrimaryEntry(
 			filterPrimaryEntry);
@@ -244,6 +258,19 @@ public class FilterPrimaryEntryLocalServiceWrapper
 	}
 
 	@Override
+	public int filterCountByGroupId(long groupId) {
+		return _filterPrimaryEntryLocalService.filterCountByGroupId(groupId);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.portal.tools.service.builder.test.model.FilterPrimaryEntry>
+			filterFindByGroupId(long groupId) {
+
+		return _filterPrimaryEntryLocalService.filterFindByGroupId(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -377,4 +404,4 @@ public class FilterPrimaryEntryLocalServiceWrapper
 	private FilterPrimaryEntryLocalService _filterPrimaryEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-379058544
+// LIFERAY-SERVICE-BUILDER-HASH:1668710800
