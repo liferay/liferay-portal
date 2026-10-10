@@ -383,9 +383,22 @@ public class TrashEntryDLAppHelperLocalServiceWrapper
 		TrashEntry trashEntry = _trashEntryLocalService.getEntry(
 			DLFileEntryConstants.getClassName(), fileEntry.getFileEntryId());
 
+		int status = trashEntry.getStatus();
+
+		List<TrashVersion> trashVersions =
+			_trashVersionLocalService.getVersions(trashEntry.getEntryId());
+
+		for (TrashVersion trashVersion : trashVersions) {
+			if (trashVersion.getClassPK() == dlFileVersion.getFileVersionId()) {
+				status = trashVersion.getStatus();
+
+				break;
+			}
+		}
+
 		_dlFileEntryLocalService.updateStatus(
-			userId, dlFileEntry, dlFileVersion, trashEntry.getStatus(),
-			new ServiceContext(), new HashMap<>());
+			userId, dlFileEntry, dlFileVersion, status, new ServiceContext(),
+			new HashMap<>());
 
 		// File shortcut
 
@@ -400,9 +413,6 @@ public class TrashEntryDLAppHelperLocalServiceWrapper
 			fileEntry);
 
 		// Trash
-
-		List<TrashVersion> trashVersions =
-			_trashVersionLocalService.getVersions(trashEntry.getEntryId());
 
 		for (TrashVersion trashVersion : trashVersions) {
 			DLFileVersion trashDLFileVersion =
