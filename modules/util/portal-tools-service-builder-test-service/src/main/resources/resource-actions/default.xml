@@ -3,6 +3,15 @@
 
 <resource-action-mapping>
 	<model-resource>
+		<model-name>com.liferay.portal.tools.service.builder.test.model.FilterPrimaryEntry</model-name>
+		<portlet-ref />
+		<permissions>
+			<supports>
+				<action-key>VIEW</action-key>
+			</supports>
+		</permissions>
+	</model-resource>
+	<model-resource>
 		<model-name>com.liferay.portal.tools.service.builder.test.model.PermissionCheckFinderEntry</model-name>
 		<portlet-ref />
 		<permissions>

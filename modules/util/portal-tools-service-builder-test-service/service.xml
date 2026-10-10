@@ -331,6 +331,31 @@
 
 		<column lazy="false" name="blob" type="Blob" />
 	</entity>
+	<entity local-service="true" name="FilterPrimaryEntry" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="filterPrimaryEntryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column filter-primary="true" name="resourcePrimKey" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="FinderWhereClauseEntry" remote-service="false">
 
 		<!-- PK fields -->
