@@ -37,6 +37,21 @@ import java.util.Set;
  */
 public class GroupSelectorBreadcrumbUtil {
 
+	public static void addPortletBreadcrumbEntries(
+		Group group, HttpServletRequest httpServletRequest,
+		LiferayPortletResponse liferayPortletResponse, PortletURL portletURL) {
+
+		for (BreadcrumbEntry breadcrumbEntry :
+				getBreadcrumbEntries(
+					group, httpServletRequest, liferayPortletResponse,
+					portletURL)) {
+
+			PortalUtil.addPortletBreadcrumbEntry(
+				httpServletRequest, breadcrumbEntry.getTitle(),
+				breadcrumbEntry.getURL());
+		}
+	}
+
 	public static List<BreadcrumbEntry> getBreadcrumbEntries(
 		Group group, HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse, PortletURL portletURL) {

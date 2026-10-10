@@ -6,6 +6,7 @@
 package com.liferay.document.library.item.selector.web.internal.util;
 
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -13,8 +14,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortletURLUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.RepositoryServiceUtil;
@@ -41,9 +40,20 @@ public class DLBreadcrumbUtil {
 			PortletURL portletURL, long repositoryId, boolean showGroupSelector)
 		throws Exception {
 
+		String rootFolderName = LanguageUtil.get(httpServletRequest, "home");
+
 		if (showGroupSelector) {
-			_addGroupSelectorBreadcrumbEntry(
-				httpServletRequest, liferayPortletResponse, portletURL);
+			Group group = _getGroup(
+				_getRepositoryId(folder, httpServletRequest, repositoryId));
+
+			GroupSelectorBreadcrumbUtil.addPortletBreadcrumbEntries(
+				group, httpServletRequest, liferayPortletResponse, portletURL);
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			rootFolderName = group.getDescriptiveName(themeDisplay.getLocale());
 		}
 
 		portletURL.setParameter("displayStyle", displayStyle);
@@ -52,10 +62,7 @@ public class DLBreadcrumbUtil {
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, httpServletRequest,
 			portletURL,
 			_getRepositoryId(folder, httpServletRequest, repositoryId),
-			_getRootFolderName(
-				folder, httpServletRequest,
-				_getRepositoryId(folder, httpServletRequest, repositoryId),
-				showGroupSelector));
+			rootFolderName);
 
 		if (folder != null) {
 			List<Folder> ancestorFolders = folder.getAncestors();
@@ -75,24 +82,6 @@ public class DLBreadcrumbUtil {
 		}
 	}
 
-	private static void _addGroupSelectorBreadcrumbEntry(
-			HttpServletRequest httpServletRequest,
-			LiferayPortletResponse liferayPortletResponse,
-			PortletURL portletURL)
-		throws Exception {
-
-		PortalUtil.addPortletBreadcrumbEntry(
-			httpServletRequest,
-			LanguageUtil.get(httpServletRequest, "sites-and-libraries"),
-			PortletURLBuilder.create(
-				PortletURLUtil.clone(portletURL, liferayPortletResponse)
-			).setParameter(
-				"groupType", "site"
-			).setParameter(
-				"showGroupSelector", true
-			).buildString());
-	}
-
 	private static void _addPortletBreadcrumbEntry(
 		long folderId, HttpServletRequest httpServletRequest,
 		PortletURL portletURL, long repositoryId, String title) {
@@ -102,6 +91,20 @@ public class DLBreadcrumbUtil {
 
 		PortalUtil.addPortletBreadcrumbEntry(
 			httpServletRequest, title, portletURL.toString());
+	}
+
+	private static Group _getGroup(long repositoryId) throws Exception {
+		try {
+			return GroupServiceUtil.getGroup(repositoryId);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			Repository repository = RepositoryServiceUtil.getRepository(
+				repositoryId);
+
+			return GroupServiceUtil.getGroup(repository.getGroupId());
+		}
 	}
 
 	private static long _getRepositoryId(
@@ -125,41 +128,6 @@ public class DLBreadcrumbUtil {
 		}
 
 		return themeDisplay.getScopeGroupId();
-	}
-
-	private static String _getRootFolderName(
-			Folder folder, HttpServletRequest httpServletRequest,
-			long repositoryId, boolean showGroupSelector)
-		throws Exception {
-
-		if (!showGroupSelector) {
-			return LanguageUtil.get(httpServletRequest, "home");
-		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Group group = themeDisplay.getScopeGroup();
-
-		if (repositoryId != 0) {
-			try {
-				group = GroupServiceUtil.getGroup(repositoryId);
-			}
-			catch (PortalException portalException) {
-				_log.error(portalException);
-
-				Repository repository = RepositoryServiceUtil.getRepository(
-					repositoryId);
-
-				group = GroupServiceUtil.getGroup(repository.getGroupId());
-			}
-		}
-		else if (folder != null) {
-			group = GroupServiceUtil.getGroup(folder.getGroupId());
-		}
-
-		return group.getDescriptiveName(themeDisplay.getLocale());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
