@@ -113,6 +113,9 @@ public class S3StoreTest extends BaseStoreTestCase {
 			_store.addFile(
 				companyId, repositoryId, fileName, Store.VERSION_DEFAULT,
 				new UnsyncByteArrayInputStream(DATA_VERSION));
+			_store.addFile(
+				companyId, repositoryId, fileName, "1.1",
+				new UnsyncByteArrayInputStream(DATA_VERSION));
 
 			_store.addFile(
 				companyId, repositoryId * 10, RandomTestUtil.randomString(),
