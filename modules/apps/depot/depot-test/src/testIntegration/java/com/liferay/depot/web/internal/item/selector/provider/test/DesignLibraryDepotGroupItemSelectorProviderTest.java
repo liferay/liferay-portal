@@ -60,6 +60,11 @@ public class DesignLibraryDepotGroupItemSelectorProviderTest
 	}
 
 	@Override
+	protected String getIcon() {
+		return "books-brush";
+	}
+
+	@Override
 	protected String getLabel() {
 		return "Design Libraries";
 	}
