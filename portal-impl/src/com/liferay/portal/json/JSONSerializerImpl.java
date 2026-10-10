@@ -41,14 +41,22 @@ public class JSONSerializerImpl implements JSONSerializer {
 
 	@Override
 	public String serialize(Object target) {
-		return _jsonSerializer.serialize(target);
+		StringBuilder sb = new StringBuilder();
+
+		_jsonSerializer.serialize(target, sb);
+
+		return sb.toString();
 	}
 
 	@Override
 	public String serializeDeep(Object target) {
 		JsonSerializer jsonSerializer = _jsonSerializer.deep(true);
 
-		return jsonSerializer.serialize(target);
+		StringBuilder sb = new StringBuilder();
+
+		jsonSerializer.serialize(target, sb);
+
+		return sb.toString();
 	}
 
 	@Override
