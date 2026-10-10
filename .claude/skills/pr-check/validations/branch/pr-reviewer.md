@@ -8,18 +8,31 @@ Reviews the branch diff against the rules in `pr-reviewer/rules`, which hold the
 
 ## Command
 
-Review the branch diff against the rules in `pr-reviewer/rules`:
+Resolve the directory that holds the reviewer. A `liferay-portal-ee` checkout ships no `pr-reviewer` directory, so it uses the one in `LIFERAY_PR_REVIEWER_HOME` or in a sibling `liferay-portal` checkout, the same places `review.sh` reads the rules from:
+
+```bash
+REVIEWER_HOME="${REPO_ROOT}/pr-reviewer"
+
+if [[ ! -f ${REVIEWER_HOME}/review.sh ]]
+then
+	REVIEWER_HOME="${LIFERAY_PR_REVIEWER_HOME:-${REPO_ROOT%/*}/liferay-portal/pr-reviewer}"
+fi
+```
+
+When `${REVIEWER_HOME}/review.sh` does not exist, report **NOT VERIFIED**, name the path that was tried, and say to set `LIFERAY_PR_REVIEWER_HOME` or to check out `liferay-portal` beside this repository.
+
+Review the branch diff against the rules in `${REVIEWER_HOME}/rules`:
 
 ```bash
 LOG=$(mktemp)
 LOG_ERROR=$(mktemp)
 
-(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG}" 2> "${LOG_ERROR}")
+(cd "${REPO_ROOT}" && "${REVIEWER_HOME}/review.sh" --json "${MERGE_BASE}..HEAD" > "${LOG}" 2> "${LOG_ERROR}")
 ```
 
 The exit status is the verdict. `0` with a nonempty `reviewed_files` list is a clean diff, so report **PASS** and quote how many files the list holds. `0` with an empty list means that every changed file was generated, frontend, or ignored, so report **NOT VERIFIED** and say that the reviewer had nothing to review. `2` means the reviewer could not run, most often because the `claude` CLI is not on the PATH, so report **NOT VERIFIED** and quote `${LOG_ERROR}`. `1` means violations, and the log holds one JSON object whose `violations` array has an entry for each violation, with `file`, `line`, `rule`, `message`, and `fix`.
 
-Apply the fixes. For each violation, read the rule file `pr-reviewer/rules/<rule>-*.md` and the code around the line, then make the change the `fix` describes. A `fix` that starts with `Verify:` is one the reviewer was not sure about, so confirm it against the rule and the surrounding code first, and leave the code alone when the rule does not apply. Skip a `fix` that SourceFormatter would revert; the reviewer marks those with `SourceFormatter is authoritative`. Never edit a file that carries an `@generated` marker.
+Apply the fixes. For each violation, read the rule file `${REVIEWER_HOME}/rules/<rule>-*.md` and the code around the line, then make the change the `fix` describes. A `fix` that starts with `Verify:` is one the reviewer was not sure about, so confirm it against the rule and the surrounding code first, and leave the code alone when the rule does not apply. Skip a `fix` that SourceFormatter would revert; the reviewer marks those with `SourceFormatter is authoritative`. Never edit a file that carries an `@generated` marker.
 
 When at least one fix was applied, commit as the **Autocommit** section says, then review once more:
 
@@ -27,7 +40,7 @@ When at least one fix was applied, commit as the **Autocommit** section says, th
 LOG_RERUN=$(mktemp)
 LOG_RERUN_ERROR=$(mktemp)
 
-(cd "${REPO_ROOT}" && pr-reviewer/review.sh --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2> "${LOG_RERUN_ERROR}")
+(cd "${REPO_ROOT}" && "${REVIEWER_HOME}/review.sh" --json "${MERGE_BASE}..HEAD" > "${LOG_RERUN}" 2> "${LOG_RERUN_ERROR}")
 ```
 
 Report **PASS** when the rerun exits `0`. Report **NOT VERIFIED** when it exits `2`, quote `${LOG_RERUN_ERROR}`, and say in the note that the fixes in the `<TICKET> Apply pr-reviewer rules` commit were not reviewed again. Keep that commit, since each fix in it was checked against its rule before it was applied. When the rerun exits `1`, judge each violation it flags the way the first round does, by reading the rule file and the code around the line, but apply no fix. A violation you already dismissed in the same file under the same rule stays dismissed. Report **FAIL** when at least one violation still applies, and return those violations as the note below. Report **PASS** when you dismissed every one. Do not start a second round of fixes, since a violation the first round did not resolve needs the developer's judgment, and a loop of automated rounds can chase a false positive indefinitely.
