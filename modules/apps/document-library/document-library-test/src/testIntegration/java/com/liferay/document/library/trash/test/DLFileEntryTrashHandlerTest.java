@@ -27,9 +27,16 @@ import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.model.WorkflowedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.trash.TrashHandler;
@@ -59,6 +66,7 @@ import com.liferay.trash.test.util.WhenIsMoveableFromTrashBaseModel;
 import com.liferay.trash.test.util.WhenIsRestorableBaseModel;
 import com.liferay.trash.test.util.WhenIsUpdatableBaseModel;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -233,12 +241,13 @@ public class DLFileEntryTrashHandlerTest
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_IN_TRASH, dlFileEntry.getStatus());
 
-		moveBaseModelFromTrash(
-			dlFileEntry, group,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+		_restoreTrashEntry(dlFileEntry.getFileEntryId());
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EXPIRED, dlFileEntry.getStatus());
+
+		_assertIndexed(
+			dlFileEntry.getFileEntryId(), WorkflowConstants.STATUS_EXPIRED);
 	}
 
 	@Override
@@ -388,6 +397,35 @@ public class DLFileEntryTrashHandlerTest
 	@Override
 	protected void moveBaseModelToTrash(long primaryKey) throws Exception {
 		DLTrashServiceUtil.moveFileEntryToTrash(primaryKey);
+	}
+
+	private void _assertIndexed(long fileEntryId, int status) throws Exception {
+		Indexer<DLFileEntry> indexer = IndexerRegistryUtil.getIndexer(
+			DLFileEntry.class);
+
+		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
+			group.getGroupId());
+
+		searchContext.setAttribute(Field.STATUS, status);
+
+		Hits hits = indexer.search(searchContext);
+
+		Document[] documents = hits.getDocs();
+
+		Assert.assertEquals(Arrays.toString(documents), 1, documents.length);
+
+		Document document = documents[0];
+
+		Assert.assertEquals(
+			String.valueOf(fileEntryId), document.get(Field.ENTRY_CLASS_PK));
+	}
+
+	private void _restoreTrashEntry(long fileEntryId) throws Exception {
+		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+			getBaseModelClassName());
+
+		trashHandler.restoreTrashEntry(
+			TestPropsValues.getUserId(), fileEntryId);
 	}
 
 	private static final String _FILE_ENTRY_TITLE = RandomTestUtil.randomString(
