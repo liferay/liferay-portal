@@ -21,6 +21,10 @@ public class S3KeyTransformerUtil {
 	public static String getDirectoryKey(
 		long companyId, long repositoryId, String folderName) {
 
+		if (folderName.endsWith(StringPool.SLASH)) {
+			return getFileKey(companyId, repositoryId, folderName);
+		}
+
 		return StringBundler.concat(
 			companyId, StringPool.SLASH, repositoryId,
 			getNormalizedFileName(folderName));
