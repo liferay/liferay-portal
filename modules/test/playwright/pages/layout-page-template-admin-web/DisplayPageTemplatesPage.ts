@@ -47,6 +47,36 @@ export class DisplayPageTemplatesPage {
 		pageEditorPage: PageEditorPage;
 		site: Site;
 	}) {
+		const {layoutPageTemplateEntryId, name} =
+			await this.createMappedTemplate({
+				className,
+				mappedField,
+				pageEditorPage,
+				site,
+			});
+
+		await this.apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+			{layoutPageTemplateEntryId}
+		);
+
+		return name;
+	}
+
+	/**
+	 * Creates a display page template of an item type through the API and
+	 * maps a Heading fragment to one of its fields in the page editor.
+	 */
+	async createMappedTemplate({
+		className,
+		mappedField = 'Title',
+		pageEditorPage,
+		site,
+	}: {
+		className: string;
+		mappedField?: string;
+		pageEditorPage: PageEditorPage;
+		site: Site;
+	}) {
 		const name = `DPT ${getRandomString()}`;
 
 		const {classNameId} =
@@ -62,10 +92,6 @@ export class DisplayPageTemplatesPage {
 					name,
 				}
 			);
-
-		await this.apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
-			{layoutPageTemplateEntryId}
-		);
 
 		await this.goto(site.friendlyUrlPath);
 
@@ -89,7 +115,7 @@ export class DisplayPageTemplatesPage {
 
 		await pageEditorPage.publishPage();
 
-		return name;
+		return {layoutPageTemplateEntryId, name};
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
