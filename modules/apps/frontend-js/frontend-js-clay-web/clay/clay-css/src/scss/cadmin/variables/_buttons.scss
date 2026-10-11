@@ -377,7 +377,7 @@ $cadmin-btn-monospaced-sizes: map-deep-merge(
 		btn-monospaced-xs: (
 			font-size: map-deep-get($cadmin-btn-sizes, btn-xs, font-size),
 			height: 1.5rem,
-			width: 1.4rem,
+			width: 1.5rem,
 
 			lexicon-icon: (
 				font-size: inherit,
