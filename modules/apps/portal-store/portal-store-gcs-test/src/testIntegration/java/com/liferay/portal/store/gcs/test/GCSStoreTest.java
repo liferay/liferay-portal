@@ -51,6 +51,34 @@ public class GCSStoreTest extends BaseStoreTestCase {
 
 	@Override
 	@Test
+	public void testGetFileSize() throws Exception {
+		super.testGetFileSize();
+
+		long companyId = RandomTestUtil.nextLong();
+
+		try {
+			long repositoryId = RandomTestUtil.nextLong();
+			String fileName = RandomTestUtil.randomString();
+
+			_store.addFile(
+				companyId, repositoryId, fileName, Store.VERSION_DEFAULT,
+				new UnsyncByteArrayInputStream(DATA_VERSION));
+			_store.addFile(
+				companyId, repositoryId, fileName, "1.1",
+				new UnsyncByteArrayInputStream(new byte[0]));
+
+			Assert.assertEquals(
+				0,
+				_store.getFileSize(
+					companyId, repositoryId, fileName, StringPool.BLANK));
+		}
+		finally {
+			_store.deleteDirectory(companyId);
+		}
+	}
+
+	@Override
+	@Test
 	public void testGetFileVersions() throws Exception {
 		super.testGetFileVersions();
 
