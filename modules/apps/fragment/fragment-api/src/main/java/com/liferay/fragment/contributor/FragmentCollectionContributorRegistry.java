@@ -40,6 +40,8 @@ public interface FragmentCollectionContributorRegistry {
 
 	public FragmentEntry getFragmentEntry(String fragmentEntryKey);
 
+	public String getFragmentEntryName(String fragmentEntryKey, Locale locale);
+
 	public ResourceBundleLoader getResourceBundleLoader();
 
 }

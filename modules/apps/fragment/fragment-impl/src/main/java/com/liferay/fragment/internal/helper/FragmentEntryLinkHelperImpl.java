@@ -15,7 +15,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,14 +41,12 @@ public class FragmentEntryLinkHelperImpl implements FragmentEntryLinkHelper {
 			return StringPool.BLANK;
 		}
 
-		Map<String, FragmentEntry> fragmentEntries =
-			_fragmentCollectionContributorRegistry.getFragmentEntries(locale);
+		String fragmentEntryName =
+			_fragmentCollectionContributorRegistry.getFragmentEntryName(
+				rendererKey, locale);
 
-		FragmentEntry contributedFragmentEntry = fragmentEntries.get(
-			rendererKey);
-
-		if (contributedFragmentEntry != null) {
-			return contributedFragmentEntry.getName();
+		if (fragmentEntryName != null) {
+			return fragmentEntryName;
 		}
 
 		FragmentRenderer fragmentRenderer =

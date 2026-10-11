@@ -204,6 +204,20 @@ public class FragmentCollectionContributorRegistryImpl
 	}
 
 	@Override
+	public String getFragmentEntryName(String fragmentEntryKey, Locale locale) {
+		Map<String, FragmentEntry> fragmentEntries = getFragmentEntries(locale);
+
+		FragmentEntry contributedFragmentEntry = fragmentEntries.get(
+			fragmentEntryKey);
+
+		if (contributedFragmentEntry != null) {
+			return contributedFragmentEntry.getName();
+		}
+
+		return null;
+	}
+
+	@Override
 	public ResourceBundleLoader getResourceBundleLoader() {
 		List<ResourceBundleLoader> resourceBundleLoaders = new ArrayList<>();
 
