@@ -5,12 +5,9 @@
 
 package com.liferay.portal.tools.db.partition.migration.validator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.liferay.petra.function.UnsafeConsumer;
-import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -125,6 +122,48 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-109433")
+	public void testHelp() throws Exception {
+		_testHelp(
+			Collections.singletonList("--help"), StringPool.BLANK, 0,
+			Collections.singletonList(_getJVMArg("launcher", "launcher.sh")),
+			"usage: launcher.sh <command> [parameters]");
+		_testHelp(
+			Arrays.asList("export", "--help"), StringPool.BLANK, 0,
+			Collections.emptyList(),
+			"usage: db_partition_migration_validator <command> [parameters]",
+			"Export validation file.", "Export parameters:");
+		_testHelp(
+			Arrays.asList("validate", "--help"), StringPool.BLANK, 0,
+			Collections.emptyList(),
+			"usage: db_partition_migration_validator <command> [parameters]",
+			"Validate source and target validation files.",
+			"Validate parameters:");
+	}
+
+	@Test
+	@TestInfo("LPD-109433")
+	public void testInvalidArguments() throws Exception {
+		_testHelp(
+			Collections.emptyList(), "Missing command: export or validate", 2,
+			Collections.emptyList(),
+			"usage: db_partition_migration_validator <command> [parameters]");
+		_testHelp(
+			Collections.singletonList("--foo"), "Unrecognized option: --foo", 2,
+			Collections.emptyList(),
+			"usage: db_partition_migration_validator <command> [parameters]");
+		_testHelp(
+			Arrays.asList("export", "--user", RandomTestUtil.randomString()),
+			"Missing required options: company-id, jdbc-url, password", 2,
+			Collections.emptyList(),
+			"usage: db_partition_migration_validator <command> [parameters]");
+		_testHelp(
+			Collections.singletonList("foo"), "Unrecognized command: foo", 2,
+			Collections.emptyList(),
+			"usage: db_partition_migration_validator <command> [parameters]");
+	}
+
+	@Test
 	@TestInfo("LPD-6742")
 	public void testValidateFailure() throws Exception {
 		String[] messages = {
@@ -162,49 +201,36 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 					"instance import request."
 		};
 
-		_testValidate(
-			"source-failure.json", "target-failure.json",
-			runtimeException -> {
-				Assert.assertEquals("1", runtimeException.getMessage());
+		Assert.assertEquals(
+			1, _validate("source-failure.json", "target-failure.json"));
 
-				String outputFileContent = new String(
-					Files.readAllBytes(_outputFile.toPath()), StringPool.UTF8);
+		String outputFileContent = new String(
+			Files.readAllBytes(_outputFile.toPath()), StringPool.UTF8);
 
-				for (String message : messages) {
-					Assert.assertTrue(outputFileContent.contains(message));
-				}
-			},
-			() -> {
-			});
+		for (String message : messages) {
+			Assert.assertTrue(outputFileContent.contains(message));
+		}
 	}
 
 	@Test
 	@TestInfo("LPD-6742")
 	public void testValidateSuccess() throws Exception {
-		_testValidate(
-			"source-success.json", "target-success.json",
-			runtimeException -> Assert.assertEquals(
-				"0", runtimeException.getMessage()),
-			() -> Assert.assertEquals(
-				0, Files.readAllBytes(_errorFile.toPath()).length));
+		Assert.assertEquals(
+			0, _validate("source-success.json", "target-success.json"));
+		Assert.assertEquals(0, Files.readAllBytes(_errorFile.toPath()).length);
 	}
 
 	@Test
 	@TestInfo("LPD-6742")
 	public void testValidateTargetNondefaultPartition() throws Exception {
-		_testValidate(
-			"source-success.json", "target-nondefault.json",
-			runtimeException -> {
-				String errorFileContent = new String(
-					Files.readAllBytes(_errorFile.toPath()), StringPool.UTF8);
+		Assert.assertEquals(
+			1, _validate("source-success.json", "target-nondefault.json"));
 
-				Assert.assertEquals("1", runtimeException.getMessage());
-				Assert.assertTrue(
-					errorFileContent.contains(
-						"Target is not the default partition"));
-			},
-			() -> {
-			});
+		String errorFileContent = new String(
+			Files.readAllBytes(_errorFile.toPath()), StringPool.UTF8);
+
+		Assert.assertTrue(
+			errorFileContent.contains("Target is not the default partition"));
 	}
 
 	@Rule
@@ -240,7 +266,7 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 		mockGetTables(defaultPartition);
 	}
 
-	private void _execute(List<String> args, List<String> jvmArgs)
+	private int _execute(List<String> args, List<String> jvmArgs)
 		throws Exception {
 
 		List<String> commands = new ArrayList<>();
@@ -263,9 +289,7 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 			_errorFile
 		).start();
 
-		process.waitFor();
-
-		throw new RuntimeException(String.valueOf(process.exitValue()));
+		return process.waitFor();
 	}
 
 	private String _getJVMArg(String key, String value) {
@@ -297,7 +321,7 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 		return sb.toString();
 	}
 
-	private String _serialize(Object object) throws JsonProcessingException {
+	private String _serialize(Object object) throws Exception {
 		Base64.Encoder encoder = Base64.getEncoder();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -327,45 +351,42 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 
 		File outputDirectory = temporaryFolder.newFolder();
 
-		try {
-			_execute(
-				Arrays.asList(
-					"export", "--company-id", String.valueOf(companyId),
-					"--jdbc-url", _JDBC_URL, "--output-dir",
-					outputDirectory.getAbsolutePath(), "--password", password,
-					"--schema-name", schemaName, "--user", user),
-				Arrays.asList(
-					_getJVMArg(
-						_SYSTEM_PROPERTY_KEY_COMPANIES, _serialize(companies)),
-					_getJVMArg(
-						_SYSTEM_PROPERTY_KEY_COMPANY_IDS,
-						_serialize(companyIds)),
-					_getJVMArg(
-						_SYSTEM_PROPERTY_KEY_DEFAULT_PARTITION,
-						String.valueOf(defaultPartition)),
-					_getJVMArg(_SYSTEM_PROPERTY_KEY_PASSWORD, password),
-					_getJVMArg(_SYSTEM_PROPERTY_KEY_SCHEMA_NAME, schemaName),
-					_getJVMArg(_SYSTEM_PROPERTY_KEY_USER, user)));
-		}
-		catch (RuntimeException runtimeException) {
+		int exitCode = _execute(
+			Arrays.asList(
+				"export", "--company-id", String.valueOf(companyId),
+				"--jdbc-url", _JDBC_URL, "--output-dir",
+				outputDirectory.getAbsolutePath(), "--password", password,
+				"--schema-name", schemaName, "--user", user),
+			Arrays.asList(
+				_getJVMArg(
+					_SYSTEM_PROPERTY_KEY_COMPANIES, _serialize(companies)),
+				_getJVMArg(
+					_SYSTEM_PROPERTY_KEY_COMPANY_IDS, _serialize(companyIds)),
+				_getJVMArg(
+					_SYSTEM_PROPERTY_KEY_DEFAULT_PARTITION,
+					String.valueOf(defaultPartition)),
+				_getJVMArg(_SYSTEM_PROPERTY_KEY_PASSWORD, password),
+				_getJVMArg(_SYSTEM_PROPERTY_KEY_SCHEMA_NAME, schemaName),
+				_getJVMArg(_SYSTEM_PROPERTY_KEY_USER, user)));
+
+		if (!companyExists) {
+			Assert.assertEquals(1, exitCode);
+
 			String errorFileContent = new String(
 				Files.readAllBytes(_errorFile.toPath()), StringPool.UTF8);
 
-			if (!companyExists) {
-				Assert.assertTrue(
-					errorFileContent.contains(
-						"Company " + companyId + " does not exist"));
-				Assert.assertEquals("1", runtimeException.getMessage());
+			Assert.assertTrue(
+				errorFileContent.contains(
+					"Company " + companyId + " does not exist"));
 
-				File[] files = outputDirectory.listFiles();
+			File[] files = outputDirectory.listFiles();
 
-				Assert.assertEquals(Arrays.toString(files), 0, files.length);
+			Assert.assertEquals(Arrays.toString(files), 0, files.length);
 
-				return;
-			}
-
-			Assert.assertEquals("0", runtimeException.getMessage());
+			return;
 		}
+
+		Assert.assertEquals(0, exitCode);
 
 		File[] files = outputDirectory.listFiles();
 
@@ -413,24 +434,34 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 			content, false);
 	}
 
-	private void _testValidate(
-			String sourceFileName, String targetFileName,
-			UnsafeConsumer<RuntimeException, Exception> unsafeConsumer,
-			UnsafeRunnable<Exception> unsafeRunnable)
+	private void _testHelp(
+			List<String> args, String errorMessage, int exitCode,
+			List<String> jvmArgs, String... outputMessages)
 		throws Exception {
 
-		try {
-			_execute(
-				Arrays.asList(
-					"validate", "--source-file", _getPathString(sourceFileName),
-					"--target-file", _getPathString(targetFileName)),
-				Collections.emptyList());
-		}
-		catch (RuntimeException runtimeException) {
-			unsafeConsumer.accept(runtimeException);
-		}
+		Assert.assertEquals(exitCode, _execute(args, jvmArgs));
 
-		unsafeRunnable.run();
+		String errorFileContent = new String(
+			Files.readAllBytes(_errorFile.toPath()), StringPool.UTF8);
+
+		Assert.assertEquals(errorMessage, errorFileContent.trim());
+
+		String outputFileContent = new String(
+			Files.readAllBytes(_outputFile.toPath()), StringPool.UTF8);
+
+		for (String outputMessage : outputMessages) {
+			Assert.assertTrue(outputFileContent.contains(outputMessage));
+		}
+	}
+
+	private int _validate(String sourceFileName, String targetFileName)
+		throws Exception {
+
+		return _execute(
+			Arrays.asList(
+				"validate", "--source-file", _getPathString(sourceFileName),
+				"--target-file", _getPathString(targetFileName)),
+			Collections.emptyList());
 	}
 
 	private static final String _JDBC_URL =
@@ -464,7 +495,7 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 	private static class MockedDBPartitionMigrationValidator {
 
 		public static void main(String[] args) throws Exception {
-			if (args[0].equals("export")) {
+			if (System.getProperty(_SYSTEM_PROPERTY_KEY_COMPANIES) != null) {
 				List<Company> companies = _deserialize(
 					System.getProperty(_SYSTEM_PROPERTY_KEY_COMPANIES),
 					new TypeReference<List<Company>>() {
