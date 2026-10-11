@@ -117,6 +117,27 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetStandaloneBuildProfile() throws Exception {
+		_testGetStandaloneBuildProfile(
+			"cms-standalone",
+			"liferay-dxp-tomcat-2026.q3.1-lts-cms-standalone-1791273379.7z",
+			true);
+		_testGetStandaloneBuildProfile(
+			"cms-standalone",
+			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z",
+			true);
+		_testGetStandaloneBuildProfile(
+			"foo-standalone",
+			"liferay-dxp-tomcat-7.4.13-u154-foo-standalone-1791273379.zip",
+			true);
+		_testGetStandaloneBuildProfile(
+			null, "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z", true);
+		_testGetStandaloneBuildProfile(
+			null, "liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z",
+			false);
+	}
+
+	@Test
 	public void testInitializeURLs() throws Exception {
 		Properties buildProperties = new Properties();
 
@@ -257,6 +278,39 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 					JenkinsResultsParserUtil.combine(
 						"https://", RandomTestUtil.randomString(), "/",
 						urlPath))));
+	}
+
+	private void _testGetStandaloneBuildProfile(
+			String expectedStandaloneBuildProfile, String fileName,
+			boolean standalone)
+		throws Exception {
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"bundles_base_url", "https://" + RandomTestUtil.randomString()
+		).put(
+			"portal_version", RandomTestUtil.randomString()
+		);
+
+		PortalRelease portalRelease = new PortalRelease(jsonObject);
+
+		portalRelease.setPortalBundleTomcatURL(
+			new URL(
+				JenkinsResultsParserUtil.combine(
+					"https://", RandomTestUtil.randomString(), "/", fileName)));
+		portalRelease.setStandalone(standalone);
+
+		testEquals(
+			expectedStandaloneBuildProfile,
+			portalRelease.getStandaloneBuildProfile());
+
+		PortalRelease jsonPortalRelease = new PortalRelease(
+			portalRelease.getJSONObject());
+
+		testEquals(
+			expectedStandaloneBuildProfile,
+			jsonPortalRelease.getStandaloneBuildProfile());
 	}
 
 	private void _testIsStandaloneBundleURL(boolean expected, String fileName)

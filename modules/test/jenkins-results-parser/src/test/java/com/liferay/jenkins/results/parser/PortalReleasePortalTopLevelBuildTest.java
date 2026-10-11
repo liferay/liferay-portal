@@ -167,7 +167,8 @@ public class PortalReleasePortalTopLevelBuildTest
 			JenkinsResultsParserUtil.combine(
 				"Invalid standalone bundle URL ", regularTomcatURLString,
 				". The file name must match liferay-dxp-tomcat-<version>-",
-				"<component>-standalone-<timestamp>.(7z|tar.gz|zip)."),
+				"<build profile>-<timestamp>.(7z|tar.gz|zip), where the ",
+				"build profile ends in -standalone."),
 			new String[0], regularTomcatURLString);
 	}
 
