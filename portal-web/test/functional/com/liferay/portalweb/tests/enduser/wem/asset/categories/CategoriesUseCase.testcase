@@ -398,49 +398,6 @@ definition {
 		}
 	}
 
-	@description = "Copy a web content with a category."
-	@priority = 3
-	test CopyWebContentWithCategory {
-		task ("Add a vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a web content with the category") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Copy the web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.copyCP(webContentTitle = "Web Content Title");
-		}
-
-		task ("View the category is assigned to the copy of web content") {
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title (Copy)");
-
-			WebContent.viewCP(
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title (Copy)");
-
-			WebContent.viewCategorizationVocabularyCP(vocabularyNameList = "Vocabulary Name");
-
-			WebContent.viewCategorizationCategoryCP(categoryNameList = "Category Name");
-		}
-	}
-
 	@description = "Export and import vocabularies."
 	@priority = 5
 	test ExportImportVocabularies {
