@@ -24,7 +24,13 @@ export class AssetCategoriesAdminPage {
 	}
 
 	async gotoAction(
-		action: 'Add Subcategory' | 'Delete' | 'Edit' | 'Move' | 'Permissions',
+		action:
+			| 'Add Subcategory'
+			| 'Delete'
+			| 'Edit'
+			| 'Move'
+			| 'Permissions'
+			| 'View Display Page',
 		title: string
 	) {
 		const row = this.page.getByRole('row', {name: title});
