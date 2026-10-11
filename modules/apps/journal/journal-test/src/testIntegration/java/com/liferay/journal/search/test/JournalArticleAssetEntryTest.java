@@ -125,6 +125,42 @@ public class JournalArticleAssetEntryTest {
 	}
 
 	@Test
+	public void testSearchLocalizedAssetCategoryTitle() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
+
+		String germanAssetCategoryTitle = RandomTestUtil.randomString();
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
+			HashMapBuilder.put(
+				LocaleUtil.GERMANY, germanAssetCategoryTitle
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			null, assetVocabulary.getVocabularyId(), false, null,
+			serviceContext);
+
+		serviceContext.setAssetCategoryIds(
+			new long[] {assetCategory.getCategoryId()});
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, serviceContext);
+
+		_assertArticleId(
+			_indexerFixture.searchOnlyOne(
+				germanAssetCategoryTitle, LocaleUtil.GERMANY),
+			journalArticle);
+	}
+
+	@Test
 	public void testUpdateAssetCategoryTitle() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
