@@ -13,11 +13,15 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {createCategories} from '../../../helpers/CreateCategories';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {assetCategoriesPagesTest} from './fixtures/assetCategoriesAdminPagesTest';
+import {AssetCategoriesAdminPage} from './pages/AssetCategoriesAdminPage';
+import {AssetCategoriesEditPage} from './pages/AssetCategoriesEditPage';
 
 const _ASSET_CATEGORY_CLASS_NAME =
 	'com.liferay.asset.kernel.model.AssetCategory';
@@ -756,40 +760,13 @@ test(
 		const taxonomy = await _createTaxonomy(apiHelpers, site);
 
 		await test.step('Add an image to the category', async () => {
-			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
-
-			await assetCategoriesAdminPage.gotoVocabulary(
-				taxonomy.vocabularyName
-			);
-
-			await assetCategoriesEditPage.goto(taxonomy.categoryName);
-
-			await page.getByRole('link', {exact: true, name: 'Images'}).click();
-
-			await page.getByRole('link', {name: 'Add Image'}).click();
-
-			await page.getByRole('button', {name: 'Select File'}).click();
-
-			const selectFileFrame = page.frameLocator(
-				'iframe[title="Select File"]'
-			);
-
-			await selectFileFrame
-				.locator('input[type="file"]')
-				.setInputFiles(
-					path.join(
-						__dirname,
-						'../../document-library-web/main/dependencies/image1.jpeg'
-					)
-				);
-
-			await selectFileFrame
-				.getByRole('button', {exact: true, name: 'Add'})
-				.click();
-
-			await page.getByRole('button', {name: 'Publish'}).click();
-
-			await waitForAlert(page);
+			await _addCategoryImage({
+				assetCategoriesAdminPage,
+				assetCategoriesEditPage,
+				page,
+				site,
+				taxonomy,
+			});
 		});
 
 		await test.step('View the mapped values in the display page', async () => {
@@ -831,6 +808,313 @@ test(
 		});
 	}
 );
+
+test(
+	'Preview a category, a subcategory and no item in a display page template',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		assetCategoriesEditPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		const taxonomy = await _createTaxonomy(apiHelpers, site);
+
+		await _addCategoryImage({
+			assetCategoriesAdminPage,
+			assetCategoriesEditPage,
+			page,
+			site,
+			taxonomy,
+		});
+
+		await test.step('Map the name and main image to a card', async () => {
+			const name = getRandomString();
+
+			const {classNameId} =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					_ASSET_CATEGORY_CLASS_NAME
+				);
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId,
+					groupId: String(site.id),
+					name,
+				}
+			);
+
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			await displayPageTemplatesPage.editTemplate(name);
+
+			await pageEditorPage.addFragment('Basic Components', 'Card');
+
+			const cardId = await pageEditorPage.getFragmentId('Card');
+
+			await pageEditorPage.selectEditable(cardId, '04-link');
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Field',
+				tab: 'Mapping',
+				value: 'Name',
+			});
+
+			await pageEditorPage.selectEditable(cardId, '01-img');
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Source Selection',
+				tab: 'Image Source',
+				value: 'Mapping',
+			});
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Field',
+				tab: 'Image Source',
+				value: 'Main Image',
+			});
+
+			await pageEditorPage.waitForChangesSaved();
+		});
+
+		const expectCard = async (
+			targetPage: Page,
+			linkText: string,
+			imageSrc: RegExp
+		) => {
+			await expect(
+				targetPage.locator('[data-lfr-editable-id="04-link"]')
+			).toHaveText(linkText);
+
+			await expect(
+				targetPage.locator('[data-lfr-editable-id="01-img"]')
+			).toHaveAttribute('src', imageSrc);
+		};
+
+		const expectPreviewInNewTab = async (
+			linkText: string,
+			imageSrc: RegExp
+		) => {
+			const [previewPage] = await Promise.all([
+				page.context().waitForEvent('page'),
+				clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('menuitem', {
+						name: 'Preview in a New Tab',
+					}),
+					trigger: page
+						.locator('.control-menu-nav-item')
+						.getByLabel('Options', {exact: true}),
+				}),
+			]);
+
+			await expectCard(previewPage, linkText, imageSrc);
+
+			await previewPage.close();
+		};
+
+		const selectNone = async () => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {name: 'None'}),
+				trigger: pageEditorPage.previewItemSelectorButton,
+			});
+
+			await expect(pageEditorPage.previewItemSelectorButton).toHaveText(
+				'None'
+			);
+		};
+
+		const selectCategory = async (categoryName: string) => {
+			await pageEditorPage.previewItemSelectorButton.click();
+
+			await pageEditorPage.selectOtherPreviewItemMenuItem.click();
+
+			const selectFrame = page.frameLocator('iframe[title="Select"]');
+
+			await selectFrame
+				.getByRole('searchbox', {name: 'Search Categories'})
+				.fill(categoryName);
+
+			await selectFrame
+				.getByRole('treeitem', {exact: true, name: categoryName})
+				.click();
+
+			await expect(pageEditorPage.previewItemSelectorButton).toHaveText(
+				categoryName
+			);
+		};
+
+		const defaultLinkText = 'Go Somewhere';
+		const imageSrc = /\/images\/\d+/;
+		const placeholderImageSrc = /^data:image\/png/;
+
+		await test.step('Preview the category', async () => {
+			await selectCategory(taxonomy.categoryName);
+
+			await expectCard(page, taxonomy.categoryName, imageSrc);
+
+			await expectPreviewInNewTab(taxonomy.categoryName, imageSrc);
+		});
+
+		await test.step('Preview no item after the category', async () => {
+			await selectNone();
+
+			await expectCard(page, defaultLinkText, placeholderImageSrc);
+
+			await expectPreviewInNewTab(defaultLinkText, placeholderImageSrc);
+		});
+
+		await test.step('Preview the subcategory without an image', async () => {
+			await selectCategory(taxonomy.childCategoryName);
+
+			await expectCard(
+				page,
+				taxonomy.childCategoryName,
+				placeholderImageSrc
+			);
+
+			await expectPreviewInNewTab(
+				taxonomy.childCategoryName,
+				placeholderImageSrc
+			);
+		});
+
+		await test.step('Preview no item after the subcategory', async () => {
+			await selectNone();
+
+			await expectCard(page, defaultLinkText, placeholderImageSrc);
+
+			await expectPreviewInNewTab(defaultLinkText, placeholderImageSrc);
+		});
+	}
+);
+
+test(
+	'Only the public vocabularies are available in the preview item selector',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		const company =
+			await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+				'liferay.com'
+			);
+
+		const companyGroup =
+			await apiHelpers.jsonWebServicesGroup.getCompanyGroup(
+				company.companyId
+			);
+
+		const internalVocabularyName = getRandomString();
+		const publicVocabularyName = getRandomString();
+
+		for (const [vocabularyName, vocabularyVisibility] of [
+			[internalVocabularyName, true],
+			[publicVocabularyName, false],
+		] as const) {
+			await createCategories({
+				apiHelpers,
+				categoryNames: [{name: getRandomString()}],
+				siteId: companyGroup.groupId,
+				vocabularyName,
+				vocabularyVisibility,
+			});
+		}
+
+		const name = getRandomString();
+
+		const {classNameId} =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				_ASSET_CATEGORY_CLASS_NAME
+			);
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+			{
+				classNameId,
+				groupId: String(site.id),
+				name,
+			}
+		);
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		await displayPageTemplatesPage.editTemplate(name);
+
+		await pageEditorPage.previewItemSelectorButton.click();
+
+		await pageEditorPage.selectOtherPreviewItemMenuItem.click();
+
+		const selectFrame = page.frameLocator('iframe[title="Select"]');
+
+		await expect(
+			selectFrame.getByRole('treeitem', {
+				name: `${publicVocabularyName} (Global)`,
+			})
+		).toBeVisible();
+
+		await expect(
+			selectFrame.getByRole('treeitem', {
+				name: `${internalVocabularyName} (Global)`,
+			})
+		).toHaveCount(0);
+	}
+);
+
+async function _addCategoryImage({
+	assetCategoriesAdminPage,
+	assetCategoriesEditPage,
+	page,
+	site,
+	taxonomy,
+}: {
+	assetCategoriesAdminPage: AssetCategoriesAdminPage;
+	assetCategoriesEditPage: AssetCategoriesEditPage;
+	page: Page;
+	site: Site;
+	taxonomy: {categoryName: string; vocabularyName: string};
+}) {
+
+	// The Images tab only shows when editing an existing category
+
+	await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+	await assetCategoriesAdminPage.gotoVocabulary(taxonomy.vocabularyName);
+
+	await assetCategoriesEditPage.goto(taxonomy.categoryName);
+
+	await page.getByRole('link', {exact: true, name: 'Images'}).click();
+
+	await page.getByRole('link', {name: 'Add Image'}).click();
+
+	await page.getByRole('button', {name: 'Select File'}).click();
+
+	const selectFileFrame = page.frameLocator('iframe[title="Select File"]');
+
+	await selectFileFrame
+		.locator('input[type="file"]')
+		.setInputFiles(
+			path.join(
+				__dirname,
+				'../../document-library-web/main/dependencies/image1.jpeg'
+			)
+		);
+
+	await selectFileFrame
+		.getByRole('button', {exact: true, name: 'Add'})
+		.click();
+
+	await page.getByRole('button', {name: 'Publish'}).click();
+
+	await waitForAlert(page);
+}
 
 async function _createTaxonomy(
 	apiHelpers: DataApiHelpers,
