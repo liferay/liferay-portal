@@ -263,11 +263,13 @@ export class HeadlessDeliveryApiHelper {
 	async postSiteKnowledgeBaseArticle({
 		articleBody,
 		siteId,
+		taxonomyCategoryIds,
 		title,
 		viewableBy,
 	}: {
 		articleBody: string;
 		siteId: string;
+		taxonomyCategoryIds?: number[];
 		title: string;
 		viewableBy?: string;
 	}): Promise<KnowledgeBaseArticle> {
@@ -276,6 +278,7 @@ export class HeadlessDeliveryApiHelper {
 			{
 				data: {
 					articleBody,
+					taxonomyCategoryIds,
 					title,
 					viewableBy,
 				},
