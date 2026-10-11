@@ -218,6 +218,7 @@ export class HeadlessDeliveryApiHelper {
 			articleBody?: string;
 			headline?: string;
 			keywords?: string[];
+			taxonomyCategoryIds?: number[];
 		}
 	): Promise<any> {
 		blog = {
