@@ -7,7 +7,7 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import {openFieldset} from '../../../../utils/openFieldset';
+import {expandSection} from '../../../../utils/expandSection';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {AssetCategoriesAdminPage} from './AssetCategoriesAdminPage';
 
@@ -179,7 +179,22 @@ export class AssetCategoriesEditPage {
 		displayPageName?: string;
 		type: 'Default' | 'Inherited' | 'None' | 'Specific';
 	}) {
-		const fieldset = await openFieldset(this.page, 'Display Page');
+		const fieldset = this.page.getByRole('group', {name: 'Display Page'});
+
+		const displayPageTemplateTypeSelect = fieldset.getByTitle(
+			'Display Page Template Type'
+		);
+
+		await displayPageTemplateTypeSelect.waitFor({state: 'attached'});
+
+		// The category editor collapses the fieldset, but the bulk assignment
+		// screen renders it without a toggle
+
+		const toggle = fieldset.getByRole('button', {name: 'Display Page'});
+
+		if (await toggle.count()) {
+			await expandSection(toggle);
+		}
 
 		await fieldset
 			.getByTitle('Display Page Template Type')
