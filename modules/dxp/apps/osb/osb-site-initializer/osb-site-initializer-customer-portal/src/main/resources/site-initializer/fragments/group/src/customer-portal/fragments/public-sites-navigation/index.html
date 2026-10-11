@@ -1,0 +1,425 @@
+[#assign
+	layoutSet = themeDisplay.getLayoutSet()
+	layoutSetDisplayURL = portal.getLayoutSetDisplayURL(layoutSet, true)
+	layoutSetCanonicalURL = portal.getCanonicalURL(layoutSetDisplayURL, themeDisplay, layout)
+	navClass = "light-nav"
+/]
+
+[#if configuration.darkNav]
+	[#assign navClass = "dark-nav" /]
+[/#if]
+
+<div class="public-sites-navigation-padding"></div>
+<nav class="${navClass} d-flex nav flex-column public-sites-navigation">
+	<div class="utility-nav-container">
+		<div class="align-items-center d-flex justify-content-between py-1 utility-nav w-100">
+			<div class="d-flex sites-languages-container">
+<div class="d-flex p-2 sites-container" data-toggle="liferay-dropdown" id="liferay-sites-id" tabindex="6">
+	<span class="align-self-center opacity-50 pr-1 sites-icon">
+		[@clay["icon"] symbol="sites"/]
+	</span>
+
+
+	<div class="d-flex font-weight-semi-bold liferay-sites position-relative">
+		<div class="liferay-sites-text opacity-80">
+			${languageUtil.get(locale, "liferay-sites", "Liferay Sites")}
+		</div>
+
+		<span class="caret-bottom-icon">
+			[@clay["icon"] symbol="caret-bottom-l"/]
+		</span>
+	</div>
+</div>
+
+<div aria-labelledby="liferay-sites-id" class="dropdown-menu liferay-sites-dropdown">
+	<lfr-drop-zone></lfr-drop-zone>
+</div>
+				[#if configuration.showLanguageMenu]
+				<div class="language-selector-container ml-2">
+					<div class="d-flex language language-selector px-2 py-2 utility-nav-link" data-toggle="liferay-dropdown" id="language-selector-id" tabindex="7">
+						<div class="language-selector-globe-icon opacity-50">
+							[@clay["icon"] symbol="globe-lines" /]
+						</div>
+
+						<div class="language-selector-text opacity-80">
+							[#assign current_locale = locale ]
+
+							[#if current_locale?has_content]
+								[#assign current_locale = current_locale[0..1] + " (" + current_locale[3..4] + ")" ]
+							[/#if]
+
+							${current_locale?upper_case}
+						</div>
+
+						<span class="language-caret-icon opacity-50">
+							[@clay["icon"] symbol="caret-bottom-l" /]
+						</span>
+					</div>
+
+					<div class="dropdown-menu dropdown-menu-content">
+						<div class="language-dropdown-list" aria-labelledby="language-selector-id">
+							[@liferay_ui["language"]
+								ddmTemplateGroupId=(scopeGroupId)
+								ddmTemplateKey="NAVIGATION_LANGUAGE_MENU"
+								displayCurrentLocale=true
+								languageIds=localeUtil.toLanguageIds(languageUtil.getAvailableLocales(themeDisplay.getSiteGroupId()))
+								useNamespace=false
+							/]
+						</div>
+					</div>
+				</div>
+				[/#if]
+			</div>
+
+			<a class="align-center flex skip-to-footer-wrapper" href="#footer" tabindex="1">
+				<div class="align-center flex skip-to-footer-text">
+					${languageUtil.get(locale, 'skip-to-footer', 'Skip To Footer')}
+				</div>
+			</a>
+
+			<a class="align-center flex skip-to-content-wrapper" href="#main-content" tabindex="2">
+				<div class="align-center flex skip-to-content-text">
+					${languageUtil.get(locale, 'skip-to-content', 'Skip to Content')}
+				</div>
+			</a>
+
+			<div class="align-items-center d-flex search-account-container">
+				[#if configuration.showSearch]
+				<div class="mr-2 search-icon-container">
+					<span class="search-icon mr-2 opacity-50" tabindex="8"> [@clay["icon"] symbol="search"/] </span>
+				</div>
+				[/#if]
+				[#if configuration.showAccountMenu]
+				<div class="account position-relative" tabindex="9">
+					<div class="account-info align-items-center d-flex ${themeDisplay.isSignedIn()?then('py-1 pl-2', '')}" data-toggle="liferay-dropdown" id="account-menu-id">
+						[#if themeDisplay.isSignedIn()]
+						<div class="user-avatar">
+							<img class="h-100 mx-100" src="${user.fetchPortraitURL(themeDisplay)}" />
+						</div>
+						[#else]
+						<div class="py-2 signed-out-account">
+							<span class="opacity-50 pl-2 user-icon">
+								[@clay["icon"] symbol="user"/]
+							</span>
+							<span class="account-text font-weight-semi-bold opacity-80 user-out">
+								${languageUtil.get(locale, "account", "Account")}
+							</span>
+						</div>
+						[/#if]
+						<span class="account-dropdown-icon opacity-30 pr-2">
+							[@clay["icon"] symbol="caret-bottom-l"/]
+						</span>
+					</div>
+
+					<div aria-labelledby="language-selector-id" class="account-dropdown dropdown-menu position-absolute pt-2">
+						<div class="dropdown-wrapper">
+							<div class="account-content p-2">
+								<div class="create-account-settings">
+									[#if themeDisplay.isSignedIn()]
+									<div class="signed-in-account">
+										<a class="account-menu-item d-flex font-weight-bold p-3 settings text-decoration-none" data-lfr-editable-id="link_okta" data-lfr-editable-type="link" href="https://liferay.okta.com/enduser/settings" target="_blank">
+											<span class="account-menu-icon align-items-center d-flex opacity-70 pr-2 pt-1">
+												[@clay["icon"] symbol="cog"/]
+											</span>
+											<span class="account-settings dropdown-option-text">
+												${languageUtil.get(locale, "account-settings","Account Settings")}
+											</span>
+										</a>
+
+										<a class="account-menu-item d-flex font-weight-bold p-3 text-decoration-none" href="${htmlUtil.escape(themeDisplay.getURLSignOut())}">
+											<span class="account-menu-icon align-items-center d-flex opacity-70 pr-2 pt-1">
+												[@clay["icon"] symbol="logout"/]
+											</span>
+											<span class="dropdown-option-text">
+												${languageUtil.get(locale, "sign-out","Sign Out")}
+											</span>
+										</a>
+									</div>
+									[#else]
+									<div class="signed-out-account">
+										<div class="d-flex p-3 settings">
+											<span class="align-items-center d-flex pr-2 pt-1">
+												[@clay["icon"] symbol="user-plus"/]
+											</span>
+											<span>
+												${languageUtil.get(locale, "create-an-account", "Create An Account")}
+											</span>
+										</div>
+
+										<a class="account-menu-item d-flex p-3 sign-in text-decoration-none" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
+											<span class="account-menu-item align-items-center d-flex opacity-70 pr-2 pt-1 sign-in-icon">
+												[@clay["icon"] symbol="user"/]
+											</span>
+											<span>
+												${languageUtil.get(locale, "sign-in", "Sign In")}
+											</span>
+										</a>
+									</div>
+									[/#if]
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				[/#if]
+			</div>
+		</div>
+	</div>
+
+	<header class="align-self-center d-flex justify-content-between primary-nav w-100">
+		<a class="align-items-center d-flex liferay-logo" href="${htmlUtil.escape(layoutSetCanonicalURL)}" tabindex="3">
+			<svg fill="none" height="28" viewBox="0 0 28 28" width="28" xmlns="http://www.w3.org/2000/svg">
+				<path clip-rule="evenodd" d="M2 0C0.895431 0 0 0.895431 0 2V26C0 27.1046 0.895431 28 2 28H26C27.1046 28 28 27.1046 28 26V2C28 0.895431 27.1046 0 26 0H2ZM4 4.5C4 4.22386 4.22386 4 4.5 4H7.5C7.77614 4 8 4.22386 8 4.5V7.5C8 7.77614 7.77614 8 7.5 8H4.5C4.22386 8 4 7.77614 4 7.5V4.5ZM4 9.5C4 9.22386 4.22386 9 4.5 9H7.5C7.77614 9 8 9.22386 8 9.5V12.5C8 12.7761 7.77614 13 7.5 13H4.5C4.22386 13 4 12.7761 4 12.5V9.5ZM4.5 14C4.22386 14 4 14.2239 4 14.5V17.5C4 17.7761 4.22386 18 4.5 18H7.5C7.77614 18 8 17.7761 8 17.5V14.5C8 14.2239 7.77614 14 7.5 14H4.5ZM9 4.5C9 4.22386 9.22386 4 9.5 4H12.5C12.7761 4 13 4.22386 13 4.5V7.5C13 7.77614 12.7761 8 12.5 8H9.5C9.22386 8 9 7.77614 9 7.5V4.5ZM9.5 9C9.22386 9 9 9.22386 9 9.5V12.5C9 12.7761 9.22386 13 9.5 13H12.5C12.7761 13 13 12.7761 13 12.5V9.5C13 9.22386 12.7761 9 12.5 9H9.5ZM10 20.5C10 20.2239 10.2239 20 10.5 20H13.5C13.7761 20 14 20.2239 14 20.5V23.5C14 23.7761 13.7761 24 13.5 24H10.5C10.2239 24 10 23.7761 10 23.5V20.5ZM14.5 4C14.2239 4 14 4.22386 14 4.5V7.5C14 7.77614 14.2239 8 14.5 8H17.5C17.7761 8 18 7.77614 18 7.5V4.5C18 4.22386 17.7761 4 17.5 4H14.5ZM15 15.5C15 15.2239 15.2239 15 15.5 15H18.5C18.7761 15 19 15.2239 19 15.5V18.5C19 18.7761 18.7761 19 18.5 19H15.5C15.2239 19 15 18.7761 15 18.5V15.5ZM15.5 20C15.2239 20 15 20.2239 15 20.5V23.5C15 23.7761 15.2239 24 15.5 24H18.5C18.7761 24 19 23.7761 19 23.5V20.5C19 20.2239 18.7761 20 18.5 20H15.5ZM20 10.5C20 10.2239 20.2239 10 20.5 10H23.5C23.7761 10 24 10.2239 24 10.5V13.5C24 13.7761 23.7761 14 23.5 14H20.5C20.2239 14 20 13.7761 20 13.5V10.5ZM20.5 15C20.2239 15 20 15.2239 20 15.5V18.5C20 18.7761 20.2239 19 20.5 19H23.5C23.7761 19 24 18.7761 24 18.5V15.5C24 15.2239 23.7761 15 23.5 15H20.5ZM20 20.5C20 20.2239 20.2239 20 20.5 20H23.5C23.7761 20 24 20.2239 24 20.5V23.5C24 23.7761 23.7761 24 23.5 24H20.5C20.2239 24 20 23.7761 20 23.5V20.5Z" fill="#0e62ce" fill-rule="evenodd" />
+			</svg>
+
+			[#if configuration.showSiteName]
+			<div class="display-4 logo-text pl-3 text-decoration-none" data-lfr-editable-id="siteName" data-lfr-editable-type="text">
+					Learn
+				</div>
+			[/#if]
+		</a>
+
+		<div class="nav-items-wrapper tablet-mobile-nav-section">
+			[@liferay_site_navigation["navigation-menu"]
+				ddmTemplateGroupId=(scopeGroupId)
+				ddmTemplateKey=(configuration.navigationDDMTemplateKey)
+				displayDepth=0
+				expandedLevels="auto"
+				preview=false
+				rootItemLevel=0
+				rootLayoutType="absolute"
+				siteNavigationMenuId=(configuration.siteNavigationMenuId)!0
+			/]
+			<div class="cta-container-mobile py-3">
+				[#if !configuration.showAccountMenu && themeDisplay.isSignedIn()]
+					<div class="account mobile position-relative">
+						<div class="account-info align-items-center d-flex px-2">
+							<div class="user-avatar">
+								<img class="h-100 mx-100" src="${user.fetchPortraitURL(themeDisplay)}" />
+							</div>
+
+							<span class="pl-1">[@clay["icon"] symbol="caret-bottom-l"/]</span>
+						</div>
+
+						<div class="dropdown-content position-absolute pt-3">
+							<div class="dropdown-wrapper">
+								<div class="account-configurables mb-1 pb-2 px-3">
+									[@liferay_site_navigation["navigation-menu"]
+										ddmTemplateGroupId=(scopeGroupId)
+										ddmTemplateKey="NAVIGATION_ACCOUNT_MENU"
+										displayDepth=0
+										expandedLevels="auto"
+										preview=false
+										rootItemLevel=0
+										rootLayoutType="absolute"
+										siteNavigationMenuId=(configuration.accountMenuId)!0
+									/]
+								</div>
+
+								<div class="account-content pt-2">
+									<div class="create-account-settings">
+										<div class="signed-in-account">
+											<a class="d-flex p-3 settings text-decoration-none">
+												<span class="pr-2">[@clay["icon"] symbol="cog"/]</span>
+												<span class="account-settings">
+													${languageUtil.get(locale, "account-settings", "Account Settings")}
+												</span>
+											</a>
+										<a class="d-flex p-3 sign-out text-decoration-none" href="${htmlUtil.escape(themeDisplay.getURLSignOut())}">
+												<span class="pr-2 ">[@clay["icon"] symbol="user"/]</span>
+												<span class="w-100">
+													${languageUtil.get(locale, "sign-out")}
+												</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				[#elseif configuration.showCta]
+					<a class="align-items-center align-self-center btn btn-primary d-flex justify-content-center w-100" data-lfr-editable-id="call-to-action-btn-mobile" data-lfr-editable-type="link" tabindex="5">
+						Call to Action
+					</a>
+				[/#if]
+			</div>
+		</div>
+
+		<div class="d-flex">
+			[#if !configuration.showAccountMenu && themeDisplay.isSignedIn()]
+				<div class="account position-relative primary">
+					<div class="account-info align-items-center d-flex px-2 py-3">
+						<div class="user-avatar">
+							<img class="h-100 mx-100" src="${user.fetchPortraitURL(themeDisplay)}" />
+						</div>
+
+						<span class="pl-1">[@clay["icon"] symbol="caret-bottom-l"/]</span>
+					</div>
+
+					<div class="dropdown-content position-absolute pt-3">
+						<div class="dropdown-wrapper">
+							<div class="account-configurables mb-1 pb-2 px-3">
+								[@liferay_site_navigation["navigation-menu"]
+									ddmTemplateGroupId=(scopeGroupId)
+									ddmTemplateKey="NAVIGATION_ACCOUNT_MENU"
+									displayDepth=0
+									expandedLevels="auto"
+									preview=false
+									rootItemLevel=0
+									rootLayoutType="absolute"
+									siteNavigationMenuId=(configuration.accountMenuId)!0
+								/]
+							</div>
+
+							<div class="account-content pt-2">
+								<div class="create-account-settings">
+									<div class="signed-in-account">
+										<a class="d-flex p-3 settings text-decoration-none">
+											<span class="pr-2">[@clay["icon"] symbol="cog"/]</span>
+											<span class="account-settings">
+												${languageUtil.get(locale, "account-settings", "Account Settings")}
+											</span>
+										</a>
+									<a class="d-flex p-3 sign-out text-decoration-none" href="${htmlUtil.escape(themeDisplay.getURLSignOut())}">
+											<span class="pr-2 ">[@clay["icon"] symbol="user"/]</span>
+											<span class="w-100">
+												${languageUtil.get(locale, "sign-out")}
+											</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			[#elseif configuration.showCta]
+				<a class="align-items-center align-self-center btn btn-primary cta-btn-nav" data-lfr-editable-id="call-to-action-btn" data-lfr-editable-type="link">
+					Call to Action
+				</a>
+			[/#if]
+
+			<div class="menu-button-group ml-3">
+			<a class="align-items-center align-self-center btn btn-secondary menu-btn">
+					<svg height="14" viewBox="0 0 14 14" width="14" xmlns="http://www.w3.org/2000/svg">
+					<mask height="14" id="mask0_3810_43939" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="14" x="0" y="0">
+						<path d="M13.125 1.75H0.875C0.392212 1.75 0 1.358 0 0.875C0 0.391998 0.392212 0 0.875 0H13.125C13.6078 0 14 0.391998 14 0.875C14 1.358 13.6078 1.75 13.125 1.75Z" />
+						<path d="M13.125 7.875H0.875C0.392212 7.875 0 7.483 0 7C0 6.517 0.392212 6.125 0.875 6.125H13.125C13.6078 6.125 14 6.517 14 7C14 7.483 13.6078 7.875 13.125 7.875Z" />
+						<path d="M0.875 14H13.125C13.6078 14 14 13.608 14 13.125C14 12.642 13.6078 12.25 13.125 12.25H0.875C0.392212 12.25 0 12.642 0 13.125C0 13.608 0.392212 14 0.875 14Z" />
+						</mask>
+
+						<g mask="url(#mask0_3810_43939)">
+							<rect height="14" width="14" />
+						</g>
+					</svg>
+
+					<div class="menu-btn-text ml-2">
+						${languageUtil.get(locale, "menu", "Menu")}
+					</div>
+				</a>
+
+			<a class="align-items-center align-self-center btn btn-secondary close-btn">
+					<svg height="14" viewBox="0 0 14 14" width="14" xmlns="http://www.w3.org/2000/svg">
+					<mask height="13" id="mask0_3360_165743" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="13" x="0" y="0">
+						<path d="M8.12698 6.91257L12.6824 2.3571C13.4918 1.54773 12.2778 0.330932 11.4684 1.14304L6.91291 5.69851L2.35744 1.14304C1.54807 0.330932 0.331273 1.54773 1.14338 2.3571L5.69885 6.91257L1.14338 11.468C0.331273 12.2802 1.54534 13.4942 2.35744 12.6821L6.91291 8.12663L11.4684 12.6821C12.2805 13.4942 13.4946 12.2802 12.6824 11.468L8.12698 6.91257Z" />
+						</mask>
+
+						<g mask="url(#mask0_3360_165743)">
+							<rect height="14" width="14" />
+						</g>
+					</svg>
+
+					<div class="close-btn-text ml-2">
+						${languageUtil.get(locale, "close", "Close")}
+					</div>
+				</a>
+			</div>
+		</div>
+	</header>
+
+	[#if configuration.showSiteName]
+	<div class="search-wrapper">
+		<form class="mb-5 search" id="siteSearch" name="siteSearch">
+			<input class="search-input search-suggestions-input w-100" id="searchInput" placeholder="${languageUtil.get(locale, 'search')}" type="text" />
+
+			<a class="search-submit" href="/search" id="searchSubmitBtn" type="submit">
+				<span>[@clay["icon"] symbol="search"/]
+			</a>
+		</form>
+
+		<div class="suggestions w-100">
+		<span class="loading-animation-lg loading-animation-primary loading-animation-squares search-loading-animation"></span>
+			<div class="mb-4 suggestions-popular">
+				<div class="mb-3 suggestions-popular-text">
+					${languageUtil.get(locale, "popular", "Popular")}
+				</div>
+
+				<div class="d-flex justify-content-between suggestions-popular-items">
+					<div class="d-flex suggestions-popular-item">
+						<a class="suggestions-popular-item-text text-decoration-none" data-lfr-editable-id="suggestionsPopularItem1" data-lfr-editable-type="link">
+							Popular
+						</a>
+					</div>
+
+					<div class="d-flex suggestions-popular-item">
+						<a class="suggestions-popular-item-text text-decoration-none" data-lfr-editable-id="suggestionsPopularItem2" data-lfr-editable-type="link">
+							Gartner MQ
+						</a>
+					</div>
+
+					<div class="d-flex suggestions-popular-item">
+						<a class="suggestions-popular-item-text text-decoration-none" data-lfr-editable-id="suggestionsPopularItem3" data-lfr-editable-type="link">
+							DXP Features
+						</a>
+					</div>
+
+					<div class="d-flex suggestions-popular-item">
+						<a class="suggestions-popular-item-text text-decoration-none" data-lfr-editable-id="suggestionsPopularItem4" data-lfr-editable-type="link">
+							Commerce
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-4 suggested-text">
+				${languageUtil.get(locale, "suggested", "Suggested")}
+			</div>
+
+			<div class="search-suggestions">
+				<template>
+					<a class="search-suggestion-item" href="">
+						<div class="search-suggestion-item-title">
+						</div>
+
+						<div class="search-suggestion-item-content">
+							${languageUtil.get(locale, "no-preview-available", "No Preview Available")}
+						</div>
+
+						<div class="search-suggestion-item-link">
+						</div>
+					</a>
+				</template>
+			</div>
+
+			<div class="no-results-message">
+				${languageUtil.get(locale, "there-are-no-results", "There are no results.")}
+			</div>
+
+			<div class="search-error-message">
+				${languageUtil.get(locale, "an-unexpected-error-occurred", "An unexpected error occured.")}
+			</div>
+
+			<div class="mt-3 search-suggestions-see-all-results">
+				<a class="d-inline-block search-suggestions-see-all-results-text text-decoration-none" data-lfr-editable-id="searchSeeAllResultsButton" data-lfr-editable-type="link" href="/search">
+					${languageUtil.get(locale, "see-all-results", "See All Results")}
+				</a>
+
+				<span class="pl-1 d-inline-block search-suggestions-see-all-results-arrow">[@clay["icon"] symbol="order-arrow-right"/]</span>
+			</div>
+		</div>
+
+		<a class="close-search w-inline-block" id="closeSearch">
+			[@clay["icon"] symbol="times"/]
+		</a>
+	</div>
+	[/#if]
+</nav>
