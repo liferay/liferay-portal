@@ -4,6 +4,8 @@
  */
 
 import {Page, expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
@@ -12,6 +14,8 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
+import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {assetCategoriesPagesTest} from './fixtures/assetCategoriesAdminPagesTest';
 
 const _ASSET_CATEGORY_CLASS_NAME =
@@ -538,6 +542,133 @@ test(
 
 			await viewDisplayPage(childCategoryName, childDescription);
 		});
+	}
+);
+
+test(
+	'View the items with the category in a collection display of its display page template',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await test.step('Add a collection display of the items with this category', async () => {
+			const name = getRandomString();
+
+			const {classNameId} =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					_ASSET_CATEGORY_CLASS_NAME
+				);
+
+			const {layoutPageTemplateEntryId} =
+				await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+					{
+						classNameId,
+						groupId: String(site.id),
+						name,
+					}
+				);
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+				{layoutPageTemplateEntryId}
+			);
+
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			await displayPageTemplatesPage.editTemplate(name);
+
+			await pageEditorPage.addFragment(
+				'Content Display',
+				'Collection Display'
+			);
+
+			await page.locator('.lfr-layout-structure-item-collection').click();
+
+			await pageEditorPage.chooseCollectionDisplayCollection(
+				'Related Items Collection Providers',
+				'Items with This Category'
+			);
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await pageEditorPage.addFragment(
+				'Basic Components',
+				'Heading',
+				page.locator('.page-editor__collection-item.empty').first()
+			);
+
+			const headingId = await pageEditorPage.getFragmentId('Heading');
+
+			await pageEditorPage.selectEditable(headingId, 'element-text');
+
+			await page.getByLabel('Field').selectOption('Title');
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await pageEditorPage.publishPage();
+		});
+
+		const taxonomy = await _createTaxonomy(apiHelpers, site);
+
+		const blogPosting = await apiHelpers.headlessDelivery.postBlog(
+			site.id,
+			{taxonomyCategoryIds: [taxonomy.categoryId]}
+		);
+
+		const uncategorizedBlogPosting =
+			await apiHelpers.headlessDelivery.postBlog(site.id);
+
+		const document = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(
+					__dirname,
+					'../../document-library-web/main/dependencies/image1.jpeg'
+				)
+			),
+			{
+				fileName: getRandomString(),
+				taxonomyCategoryIds: [taxonomy.categoryId],
+				title: getRandomString(),
+			}
+		);
+
+		const webContentTitle = getRandomString();
+
+		await addApprovedStructuredContent({
+			apiHelpers,
+			categoryIds: [taxonomy.categoryId],
+			contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+			siteId: site.id,
+			title: webContentTitle,
+		});
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}/v/${taxonomy.vocabularyName}/${taxonomy.categoryName}`
+		);
+
+		const collection = page.locator(
+			'.lfr-layout-structure-item-collection'
+		);
+
+		for (const title of [
+			blogPosting.headline,
+			document.title,
+			webContentTitle,
+		]) {
+			await expect(
+				collection.getByText(title, {exact: true})
+			).toBeVisible();
+		}
+
+		await expect(
+			collection.getByText(uncategorizedBlogPosting.headline, {
+				exact: true,
+			})
+		).toHaveCount(0);
 	}
 );
 
