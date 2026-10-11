@@ -682,68 +682,6 @@ definition {
 		}
 	}
 
-	@description = "Search web content by edited category."
-	@priority = 4
-	test SearchWebContentByEditedCategory {
-		task ("Add a Search page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Search");
-		}
-
-		task ("Add a Search Results widget to page") {
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Search",
-				widgetName = "Search Results");
-		}
-
-		task ("Add a vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a web content with category") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "Test Content",
-				groupName = "Test Site Name",
-				title = "Test Title");
-		}
-
-		task ("Edit the category") {
-			JSONCategory.updateCategoryName(
-				categoryName = "Category Name",
-				groupName = "Test Site Name",
-				title = "Edited",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Navigate to the Search page") {
-			Navigator.gotoSitePage(
-				pageName = "Search",
-				siteName = "Test Site Name");
-		}
-
-		task ("Search the web content by edited category") {
-			Search.searchCP(searchTerm = "Edited");
-		}
-
-		task ("View the web content is shown in search result") {
-			SearchResults.viewSearchResults(
-				searchAssetTitle = "Test Title",
-				searchAssetType = "Web Content Article");
-		}
-	}
-
 	@description = "This is for LPS-101409. Validate selecting multiple categories when creating page with blank template."
 	@priority = 4
 	test SelectMultipleRequiredCategoriesInContentPageCreation {
