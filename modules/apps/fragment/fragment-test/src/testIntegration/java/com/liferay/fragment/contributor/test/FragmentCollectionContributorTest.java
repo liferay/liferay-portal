@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -80,6 +81,27 @@ public class FragmentCollectionContributorTest {
 	@After
 	public void tearDown() throws Exception {
 		ServiceContextThreadLocal.pushServiceContext(_originalServiceContext);
+	}
+
+	@Test
+	public void testGetFragmentEntryName() {
+		Assert.assertEquals(
+			"Heading",
+			_fragmentCollectionContributorRegistry.getFragmentEntryName(
+				"BASIC_COMPONENT-heading", LocaleUtil.US));
+
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-heading");
+
+		String name = fragmentEntry.getName();
+
+		Assert.assertEquals(
+			"Título",
+			_fragmentCollectionContributorRegistry.getFragmentEntryName(
+				"BASIC_COMPONENT-heading", LocaleUtil.SPAIN));
+
+		Assert.assertEquals(name, fragmentEntry.getName());
 	}
 
 	@Test
