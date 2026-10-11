@@ -21,3 +21,5 @@ java ^
 popd
 
 @echo on
+
+@exit /b %ERRORLEVEL%

@@ -100,8 +100,12 @@ java \
 	-Dlauncher="$0" \
 	-jar com.liferay.portal.tools.db.upgrade.client.jar "$@"
 
+DB_UPGRADE_CLIENT_EXIT_CODE=$?
+
 #
 # Clean up.
 #
 
 rm ${DB_UPGRADE_CLIENT_PID}
+
+exit "${DB_UPGRADE_CLIENT_EXIT_CODE}"
