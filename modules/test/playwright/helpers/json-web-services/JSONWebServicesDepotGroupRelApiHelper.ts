@@ -39,4 +39,45 @@ export class JSONWebServicesDepotGroupRelApiHelper {
 			}
 		);
 	}
+
+	async getDepotEntryGroupRelByDepotEntryIdToGroupId(
+		depotEntryId: string,
+		toGroupId: string
+	): Promise<DepotEntryGroupRel> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('depotEntryId', depotEntryId);
+		urlSearchParams.append('toGroupId', toGroupId);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/get-depot-entry-group-rel-by-depot-entry-id-to-group-id`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
+	async updateDDMStructuresAvailable(
+		depotEntryGroupRelId: string,
+		ddmStructuresAvailable: boolean
+	): Promise<DepotEntryGroupRel> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('depotEntryGroupRelId', depotEntryGroupRelId);
+		urlSearchParams.append(
+			'ddmStructuresAvailable',
+			String(ddmStructuresAvailable)
+		);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/update-ddm-structures-available`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
 }

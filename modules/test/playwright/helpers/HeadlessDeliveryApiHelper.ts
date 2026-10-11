@@ -20,6 +20,7 @@ type TDocument = {
 	contentUrl?: string;
 	description?: string;
 	documentFolderId?: number;
+	documentType?: {name: string};
 	externalReferenceCode?: string;
 	fileName?: string;
 	id?: number;
