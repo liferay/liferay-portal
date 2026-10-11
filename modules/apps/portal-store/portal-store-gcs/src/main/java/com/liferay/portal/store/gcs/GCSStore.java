@@ -200,7 +200,9 @@ public class GCSStore implements Store {
 		long companyId, long repositoryId, String fileName) {
 
 		return TransformUtil.transform(
-			_getFilePaths(companyId, repositoryId, fileName),
+			_getFilePaths(
+				_getFileVersionKey(
+					companyId, repositoryId, fileName, StringPool.BLANK)),
 			path -> {
 				String[] parts = StringUtil.split(path, CharPool.SLASH);
 
