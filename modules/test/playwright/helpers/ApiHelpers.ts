@@ -83,6 +83,7 @@ import {JSONWebServicesLayoutSetPrototypeApiHelper} from './json-web-services/JS
 import {JSONWebServicesMBApiHelper} from './json-web-services/JSONWebServicesMBApiHelper';
 import {JSONWebServicesOSBAsahApiHelper} from './json-web-services/JSONWebServicesOSBAsahApiHelper';
 import {JSONWebServicesOSBFaroApiHelper} from './json-web-services/JSONWebServicesOSBFaroApiHelper';
+import {JSONWebServicesOrganizationApiHelper} from './json-web-services/JSONWebServicesOrganizationApiHelper';
 import {JSONWebServicesPushNotificationsDeviceApiHelper} from './json-web-services/JSONWebServicesPushNotificationsDeviceApiHelper';
 import {JSONWebServicesResourcePermissionApiHelper} from './json-web-services/JSONWebServicesResourcePermissionApiHelper';
 import {JSONWebServicesRoleApiHelper} from './json-web-services/JSONWebServicesRoleApiHelper';
@@ -168,6 +169,7 @@ export class ApiHelpers {
 	readonly jsonWebServicesLayoutSet: JSONWebServicesLayoutSetApiHelper;
 	readonly jsonWebServicesLayoutSetPrototype: JSONWebServicesLayoutSetPrototypeApiHelper;
 	readonly jsonWebServicesMBApiHelper: JSONWebServicesMBApiHelper;
+	readonly jsonWebServicesOrganization: JSONWebServicesOrganizationApiHelper;
 	readonly jsonWebServicesOSBAsah: JSONWebServicesOSBAsahApiHelper;
 	readonly jsonWebServicesOSBFaro: JSONWebServicesOSBFaroApiHelper;
 	readonly jsonWebServicesPushNotificationsDevice: JSONWebServicesPushNotificationsDeviceApiHelper;
@@ -285,6 +287,8 @@ export class ApiHelpers {
 		this.jsonWebServicesLayoutSetPrototype =
 			new JSONWebServicesLayoutSetPrototypeApiHelper(this);
 		this.jsonWebServicesMBApiHelper = new JSONWebServicesMBApiHelper(this);
+		this.jsonWebServicesOrganization =
+			new JSONWebServicesOrganizationApiHelper(this);
 		this.jsonWebServicesOSBFaro = new JSONWebServicesOSBFaroApiHelper(this);
 		this.jsonWebServicesOSBAsah = new JSONWebServicesOSBAsahApiHelper(this);
 		this.jsonWebServicesPushNotificationsDevice =
