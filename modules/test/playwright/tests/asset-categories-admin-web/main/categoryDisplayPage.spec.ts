@@ -14,11 +14,15 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {createCategories} from '../../../helpers/CreateCategories';
+import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {enableLocalStaging} from '../../../utils/staging';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {stagingPageTest} from '../../export-import-web/main/fixtures/stagingPageTest';
 import {assetCategoriesPagesTest} from './fixtures/assetCategoriesAdminPagesTest';
 import {AssetCategoriesAdminPage} from './pages/AssetCategoriesAdminPage';
 import {AssetCategoriesEditPage} from './pages/AssetCategoriesEditPage';
@@ -32,7 +36,8 @@ const test = mergeTests(
 	displayPageTemplatesPagesTest,
 	isolatedSiteTest,
 	loginTest(),
-	pageEditorPagesTest
+	pageEditorPagesTest,
+	stagingPageTest
 );
 
 test(
@@ -1068,6 +1073,222 @@ test(
 	}
 );
 
+test(
+	'Assign display page templates to several categories in staging',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		assetCategoriesEditPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+		stagingPage,
+	}) => {
+		const {categoryNames, displayPageName, stagingSite, vocabularyName} =
+			await _addStagingCategories({
+				apiHelpers,
+				displayPageTemplatesPage,
+				page,
+				pageEditorPage,
+				site,
+			});
+
+		const assignDisplayPageButton = page.getByRole('button', {
+			name: 'Assign Display Page Template',
+		});
+
+		const viewDisplayPages = (
+			withDisplayPage: string[],
+			withoutDisplayPage: string[] = []
+		) =>
+			_viewDisplayPages({
+				assetCategoriesAdminPage,
+				page,
+				siteUrl: stagingSite.friendlyUrlPath,
+				vocabularyName,
+				withDisplayPage,
+				withoutDisplayPage,
+			});
+
+		await test.step('Assign a specific display page template to all the categories', async () => {
+			await assetCategoriesAdminPage.goto(stagingSite.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			await page.getByLabel('Select All Items on the Page').check();
+
+			await assignDisplayPageButton.click();
+
+			await assetCategoriesEditPage.selectDisplayPage({
+				displayPageName,
+				type: 'Specific',
+			});
+
+			await assetCategoriesEditPage.save();
+
+			await viewDisplayPages(categoryNames);
+		});
+
+		await test.step('The categories cannot be assigned in live', async () => {
+			await stagingPage.goto(
+				`${site.friendlyUrlPath.substring(1)}-staging`
+			);
+
+			await stagingPage.publish();
+
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			await page.getByLabel('Select All Items on the Page').check();
+
+			await expect(assignDisplayPageButton).toBeDisabled();
+		});
+
+		await test.step('Assign the default display page template to two categories', async () => {
+			await assetCategoriesAdminPage.goto(stagingSite.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			for (const categoryName of categoryNames.slice(0, 2)) {
+				await page
+					.getByRole('row', {name: categoryName})
+					.getByRole('checkbox')
+					.check();
+			}
+
+			await assignDisplayPageButton.click();
+
+			await assetCategoriesEditPage.selectDisplayPage({type: 'Default'});
+
+			await assetCategoriesEditPage.save();
+
+			await viewDisplayPages(
+				categoryNames.slice(2),
+				categoryNames.slice(0, 2)
+			);
+		});
+	}
+);
+
+// Quarantined until LPD-108099: the display page assignments of the
+// categories do not reach the live site, so their display pages return 404
+
+test.skip(
+	'View the display page templates assigned in staging in live',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		assetCategoriesEditPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+		stagingPage,
+	}) => {
+		const {categoryNames, displayPageName, stagingSite, vocabularyName} =
+			await _addStagingCategories({
+				apiHelpers,
+				displayPageTemplatesPage,
+				page,
+				pageEditorPage,
+				site,
+			});
+
+		await assetCategoriesAdminPage.goto(stagingSite.friendlyUrlPath);
+
+		await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+		await page.getByLabel('Select All Items on the Page').check();
+
+		await page
+			.getByRole('button', {name: 'Assign Display Page Template'})
+			.click();
+
+		await assetCategoriesEditPage.selectDisplayPage({
+			displayPageName,
+			type: 'Specific',
+		});
+
+		await assetCategoriesEditPage.save();
+
+		await stagingPage.goto(`${site.friendlyUrlPath.substring(1)}-staging`);
+
+		await stagingPage.publish();
+
+		await _viewDisplayPages({
+			assetCategoriesAdminPage,
+			page,
+			siteUrl: site.friendlyUrlPath,
+			vocabularyName,
+			withDisplayPage: categoryNames,
+		});
+	}
+);
+
+async function _addStagingCategories({
+	apiHelpers,
+	displayPageTemplatesPage,
+	page,
+	pageEditorPage,
+	site,
+}: {
+	apiHelpers: DataApiHelpers;
+	displayPageTemplatesPage: DisplayPageTemplatesPage;
+	page: Page;
+	pageEditorPage: PageEditorPage;
+	site: Site;
+}) {
+	await enableLocalStaging(apiHelpers, page, site);
+
+	const company =
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
+
+	const stagingGroup = await apiHelpers.jsonWebServicesGroup.getGroupByKey(
+		company.companyId,
+		`${site.name}-staging`
+	);
+
+	const stagingSite: Site = {
+		...site,
+		friendlyUrlPath: `${site.friendlyUrlPath}-staging`,
+		id: String(stagingGroup.groupId),
+	};
+
+	const vocabularyName = getRandomString();
+
+	const categories = await createCategories({
+		apiHelpers,
+		categoryNames: [
+			{name: getRandomString()},
+			{name: getRandomString()},
+			{name: getRandomString()},
+		],
+		siteId: stagingSite.id,
+		vocabularyName,
+	});
+
+	const {name: displayPageName} =
+		await displayPageTemplatesPage.createMappedTemplate({
+			className: _ASSET_CATEGORY_CLASS_NAME,
+			mappedField: 'Name',
+			pageEditorPage,
+			site: stagingSite,
+		});
+
+	return {
+		categoryNames: categories.map(({name}) => name),
+		displayPageName,
+		stagingSite,
+		vocabularyName,
+	};
+}
+
 async function _addCategoryImage({
 	assetCategoriesAdminPage,
 	assetCategoriesEditPage,
@@ -1196,4 +1417,54 @@ async function _expectRedirect(
 			page.locator('#main-content').getByText(name, {exact: true})
 		).toBeVisible({timeout: 2000});
 	}).toPass({timeout: 10000});
+}
+
+async function _viewDisplayPages({
+	assetCategoriesAdminPage,
+	page,
+	siteUrl,
+	vocabularyName,
+	withDisplayPage,
+	withoutDisplayPage = [],
+}: {
+	assetCategoriesAdminPage: AssetCategoriesAdminPage;
+	page: Page;
+	siteUrl: string;
+	vocabularyName: string;
+	withDisplayPage: string[];
+	withoutDisplayPage?: string[];
+}) {
+	for (const categoryName of withDisplayPage) {
+		await assetCategoriesAdminPage.goto(siteUrl);
+
+		await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+		await assetCategoriesAdminPage.gotoAction(
+			'View Display Page',
+			categoryName
+		);
+
+		await expect(page).toHaveURL(new RegExp(`/web${siteUrl}/v/`));
+
+		await expect(
+			page.locator('[data-lfr-editable-id="element-text"]')
+		).toHaveText(categoryName);
+	}
+
+	for (const categoryName of withoutDisplayPage) {
+		await assetCategoriesAdminPage.goto(siteUrl);
+
+		await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('menuitem', {name: 'Edit'}),
+			trigger: page
+				.getByRole('row', {name: categoryName})
+				.getByLabel('Show Actions'),
+		});
+
+		await expect(
+			page.getByRole('menuitem', {name: 'View Display Page'})
+		).toHaveCount(0);
+	}
 }
