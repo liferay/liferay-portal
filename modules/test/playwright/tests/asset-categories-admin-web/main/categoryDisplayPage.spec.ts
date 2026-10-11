@@ -16,6 +16,7 @@ import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {assetCategoriesPagesTest} from './fixtures/assetCategoriesAdminPagesTest';
 
 const _ASSET_CATEGORY_CLASS_NAME =
@@ -669,6 +670,165 @@ test(
 				exact: true,
 			})
 		).toHaveCount(0);
+	}
+);
+
+test(
+	'View the name, display page URL and main image of a category in its display page template',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		assetCategoriesEditPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await test.step('Map the name, display page URL and main image', async () => {
+			const name = getRandomString();
+
+			const {classNameId} =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					_ASSET_CATEGORY_CLASS_NAME
+				);
+
+			const {layoutPageTemplateEntryId} =
+				await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+					{
+						classNameId,
+						groupId: String(site.id),
+						name,
+					}
+				);
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+				{layoutPageTemplateEntryId}
+			);
+
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			await displayPageTemplatesPage.editTemplate(name);
+
+			for (const [fragmentName, editableId, field] of [
+				['Heading', 'element-text', 'Name'],
+				['Button', 'link', 'Default'],
+			]) {
+				await pageEditorPage.addFragment(
+					'Basic Components',
+					fragmentName
+				);
+
+				await pageEditorPage.selectEditable(
+					await pageEditorPage.getFragmentId(fragmentName),
+					editableId
+				);
+
+				await pageEditorPage.changeConfiguration({
+					fieldLabel: 'Field',
+					tab: 'Mapping',
+					value: field,
+				});
+			}
+
+			await pageEditorPage.addFragment('Basic Components', 'Image');
+
+			await pageEditorPage.selectEditable(
+				await pageEditorPage.getFragmentId('Image'),
+				'image-square'
+			);
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Source Selection',
+				tab: 'Image Source',
+				value: 'Mapping',
+			});
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Field',
+				tab: 'Image Source',
+				value: 'Main Image',
+			});
+
+			await pageEditorPage.publishPage();
+		});
+
+		const taxonomy = await _createTaxonomy(apiHelpers, site);
+
+		await test.step('Add an image to the category', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(
+				taxonomy.vocabularyName
+			);
+
+			await assetCategoriesEditPage.goto(taxonomy.categoryName);
+
+			await page.getByRole('link', {exact: true, name: 'Images'}).click();
+
+			await page.getByRole('link', {name: 'Add Image'}).click();
+
+			await page.getByRole('button', {name: 'Select File'}).click();
+
+			const selectFileFrame = page.frameLocator(
+				'iframe[title="Select File"]'
+			);
+
+			await selectFileFrame
+				.locator('input[type="file"]')
+				.setInputFiles(
+					path.join(
+						__dirname,
+						'../../document-library-web/main/dependencies/image1.jpeg'
+					)
+				);
+
+			await selectFileFrame
+				.getByRole('button', {exact: true, name: 'Add'})
+				.click();
+
+			await page.getByRole('button', {name: 'Publish'}).click();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('View the mapped values in the display page', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(
+				taxonomy.vocabularyName
+			);
+
+			await assetCategoriesAdminPage.gotoAction(
+				'View Display Page',
+				taxonomy.categoryName
+			);
+
+			await expect(page).toHaveURL(/\/v\//);
+
+			await expect(
+				page.locator('[data-lfr-editable-id="element-text"]')
+			).toHaveText(taxonomy.categoryName);
+
+			await expect(
+				page.locator('[data-lfr-editable-id="link"]')
+			).toHaveText(
+				`${new URL(page.url()).origin}/web${site.friendlyUrlPath}/v/` +
+					`${taxonomy.vocabularyName}/${taxonomy.categoryName}`
+			);
+
+			const image = page.locator('[data-lfr-editable-id="image-square"]');
+
+			await expect(image).toHaveAttribute('src', /\/images\/\d+/);
+
+			await expect
+				.poll(() =>
+					image.evaluate(
+						(element: HTMLImageElement) => element.naturalWidth
+					)
+				)
+				.toBeGreaterThan(0);
+		});
 	}
 );
 
