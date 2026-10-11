@@ -12,11 +12,13 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
+import {assetCategoriesPagesTest} from './fixtures/assetCategoriesAdminPagesTest';
 
 const _ASSET_CATEGORY_CLASS_NAME =
 	'com.liferay.asset.kernel.model.AssetCategory';
 
 const test = mergeTests(
+	assetCategoriesPagesTest,
 	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
 	isolatedSiteTest,
@@ -359,6 +361,182 @@ test(
 				`/es/web${site.friendlyUrlPath}/v/${taxonomy.categoryId}`,
 				spanishCategoryName
 			);
+		});
+	}
+);
+
+test(
+	'Select default, specific and inherited display page templates in the category and subcategory editors',
+	{tag: '@LPD-109100'},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		assetCategoriesEditPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Each template maps a different field, so the rendered value tells
+		// which template a category uses
+
+		await displayPageTemplatesPage.createDefaultTemplate({
+			className: _ASSET_CATEGORY_CLASS_NAME,
+			mappedField: 'Name',
+			pageEditorPage,
+			site,
+		});
+
+		const {name: descriptionTemplateName} =
+			await displayPageTemplatesPage.createMappedTemplate({
+				className: _ASSET_CATEGORY_CLASS_NAME,
+				mappedField: 'Description',
+				pageEditorPage,
+				site,
+			});
+
+		const {name: vocabularyTemplateName} =
+			await displayPageTemplatesPage.createMappedTemplate({
+				className: _ASSET_CATEGORY_CLASS_NAME,
+				mappedField: 'Vocabulary',
+				pageEditorPage,
+				site,
+			});
+
+		const vocabularyName = getRandomString();
+
+		await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
+			name: vocabularyName,
+			siteId: site.id,
+		});
+
+		const saveCategory = async ({
+			description,
+			displayPageName,
+			name,
+			type,
+		}: {
+			description?: string;
+			displayPageName?: string;
+			name: string;
+			type: 'Default' | 'Inherited' | 'Specific';
+		}) => {
+			await assetCategoriesEditPage.fillName(name);
+
+			if (description) {
+				await assetCategoriesEditPage.descriptionField.fill(
+					description
+				);
+			}
+
+			await assetCategoriesEditPage.selectDisplayPage({
+				displayPageName,
+				type,
+			});
+
+			await assetCategoriesEditPage.save(`Success:${name}`);
+		};
+
+		const viewDisplayPage = async (categoryName: string, text: string) => {
+			await assetCategoriesAdminPage.gotoAction(
+				'View Display Page',
+				categoryName
+			);
+
+			await expect(page).toHaveURL(/\/v\//);
+
+			await expect(
+				page.locator('[data-lfr-editable-id="element-text"]')
+			).toHaveText(text);
+		};
+
+		const categoryName = getRandomString();
+		const description = getRandomString();
+
+		await test.step('A category uses the default display page template', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			await page.getByRole('link', {name: 'Add Category'}).click();
+
+			await saveCategory({
+				description,
+				name: categoryName,
+				type: 'Default',
+			});
+
+			await viewDisplayPage(categoryName, categoryName);
+		});
+
+		await test.step('A category uses a specific display page template', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			await assetCategoriesEditPage.goto(categoryName);
+
+			await assetCategoriesEditPage.selectDisplayPage({
+				displayPageName: descriptionTemplateName,
+				type: 'Specific',
+			});
+
+			await assetCategoriesEditPage.save(`Success:${categoryName}`);
+
+			await viewDisplayPage(categoryName, description);
+		});
+
+		const subcategoryName = getRandomString();
+
+		await test.step('A subcategory uses a specific display page template and its subcategory inherits it', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			await assetCategoriesAdminPage.gotoAction(
+				'Add Subcategory',
+				categoryName
+			);
+
+			await saveCategory({
+				displayPageName: vocabularyTemplateName,
+				name: subcategoryName,
+				type: 'Specific',
+			});
+
+			await assetCategoriesAdminPage.gotoAction(
+				'Add Subcategory',
+				subcategoryName
+			);
+
+			const grandSubcategoryName = getRandomString();
+
+			await saveCategory({name: grandSubcategoryName, type: 'Inherited'});
+
+			await viewDisplayPage(grandSubcategoryName, vocabularyName);
+		});
+
+		await test.step('A subcategory inherits the display page template of its parent', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await assetCategoriesAdminPage.gotoVocabulary(vocabularyName);
+
+			await assetCategoriesAdminPage.gotoAction(
+				'Add Subcategory',
+				categoryName
+			);
+
+			const childCategoryName = getRandomString();
+			const childDescription = getRandomString();
+
+			await saveCategory({
+				description: childDescription,
+				name: childCategoryName,
+				type: 'Inherited',
+			});
+
+			await viewDisplayPage(childCategoryName, childDescription);
 		});
 	}
 );
