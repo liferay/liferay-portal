@@ -57,6 +57,8 @@ public interface FragmentCollectionContributor {
 		return getFragmentEntries();
 	}
 
+	public String getFragmentEntryName(String fragmentEntryKey, Locale locale);
+
 	public String getName();
 
 	public default String getName(Locale locale) {

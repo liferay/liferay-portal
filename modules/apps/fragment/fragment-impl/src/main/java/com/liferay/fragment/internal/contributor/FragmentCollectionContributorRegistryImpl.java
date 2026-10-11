@@ -209,16 +209,18 @@ public class FragmentCollectionContributorRegistryImpl
 
 	@Override
 	public String getFragmentEntryName(String fragmentEntryKey, Locale locale) {
-		Map<String, FragmentEntry> fragmentEntries = getFragmentEntries(locale);
-
-		FragmentEntry contributedFragmentEntry = fragmentEntries.get(
+		FragmentCollectionBag fragmentCollectionBag = _getFragmentCollectionBag(
 			fragmentEntryKey);
 
-		if (contributedFragmentEntry != null) {
-			return contributedFragmentEntry.getName();
+		if (fragmentCollectionBag == null) {
+			return null;
 		}
 
-		return null;
+		FragmentCollectionContributor fragmentCollectionContributor =
+			fragmentCollectionBag._fragmentCollectionContributor;
+
+		return fragmentCollectionContributor.getFragmentEntryName(
+			fragmentEntryKey, locale);
 	}
 
 	@Override

@@ -986,6 +986,13 @@ public class MasterLayoutsImporterTest {
 		}
 
 		@Override
+		public String getFragmentEntryName(
+			String fragmentEntryKey, Locale locale) {
+
+			return null;
+		}
+
+		@Override
 		public String getName() {
 			return "Test Master Page Fragment Collection Contributor";
 		}

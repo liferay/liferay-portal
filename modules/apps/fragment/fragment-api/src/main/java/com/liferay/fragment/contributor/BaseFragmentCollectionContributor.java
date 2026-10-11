@@ -123,6 +123,31 @@ public abstract class BaseFragmentCollectionContributor
 	}
 
 	@Override
+	public String getFragmentEntryName(String fragmentEntryKey, Locale locale) {
+		_initialize();
+
+		Map<Locale, String> names = _fragmentEntryNames.get(fragmentEntryKey);
+
+		if (names == null) {
+			return null;
+		}
+
+		String name = names.get(locale);
+
+		if (Validator.isNotNull(name)) {
+			return name;
+		}
+
+		name = names.get(LocaleUtil.getDefault());
+
+		if (Validator.isNotNull(name)) {
+			return name;
+		}
+
+		return _fragmentEntryJSONNames.get(fragmentEntryKey);
+	}
+
+	@Override
 	public String getName() {
 		_initialize();
 
@@ -200,6 +225,7 @@ public abstract class BaseFragmentCollectionContributor
 			_fragmentCompositionNames = new HashMap<>();
 			_fragmentCompositions = new ArrayList<>();
 			_fragmentEntries = new HashMap<>();
+			_fragmentEntryJSONNames = new HashMap<>();
 			_fragmentEntryNames = new HashMap<>();
 
 			if (MapUtil.isEmpty(names) ||
@@ -370,6 +396,7 @@ public abstract class BaseFragmentCollectionContributor
 		_setLocalizedNames(name, names, getResourceBundleLoader());
 
 		_fragmentEntryNames.put(fragmentEntryKey, names);
+		_fragmentEntryJSONNames.put(fragmentEntryKey, name);
 
 		String path = FileUtil.getPath(url.getPath());
 
@@ -501,6 +528,7 @@ public abstract class BaseFragmentCollectionContributor
 	private Map<String, Map<Locale, String>> _fragmentCompositionNames;
 	private List<FragmentComposition> _fragmentCompositions;
 	private Map<Integer, List<FragmentEntry>> _fragmentEntries;
+	private Map<String, String> _fragmentEntryJSONNames;
 	private Map<String, Map<Locale, String>> _fragmentEntryNames;
 	private volatile boolean _initialized;
 	private Map<Locale, String> _names;
