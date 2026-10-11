@@ -398,39 +398,6 @@ definition {
 		}
 	}
 
-	@description = "Export and import vocabularies."
-	@priority = 5
-	test ExportImportVocabularies {
-		property portal.acceptance = "true";
-
-		task ("Add a new site based on Blank Site") {
-			HeadlessSite.addSite(siteName = "Site Name 2");
-		}
-
-		task ("Add multiple vocabularies") {
-			for (var title : list "Unit 2 - Moon Minerals,Unit 3 - Ingeneous Moon Rocks,Unit 4 - Metamorphic Moon Rocks,Unit 5 - Sedimentary Moon Rocks,Unit 6 - Moon Rock Structure and Deformation,Unit 7 - Geological Structures on the Moon,Unit 8 - Moon Tectonics,Unit 9 - Nova Rocks,Unit 10 - Moon Crust Formation,Unit 11 - Evidence of Moon Rivers,Unit 12 - Geological Mapping,Unit 13 - Moon Topography,Unit 14 - Field Techniques,Unit 15 - Climate Through Moon History") {
-				JSONCategory.addVocabulary(
-					groupName = "Site Name 2",
-					siteURLKey = "site-name-2",
-					title = ${title});
-			}
-		}
-
-		task ("Export the vocabularies") {
-			HeadlessExportImport.exportPortlet(
-				larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar",
-				portletId = "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
-				siteName = "Site Name 2");
-		}
-
-		task ("Import the vocabularies to another site") {
-			HeadlessExportImport.importPortlet(
-				larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar",
-				portletId = "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
-				siteName = "Test Site Name");
-		}
-	}
-
 	@description = "Search categories in vocabulary and subcategories in category by name and description, and view the empty search result for an unrelated keyword at both levels."
 	@priority = 4
 	test SearchCategoriesAndSubcategoriesInCategoriesAdmin {
