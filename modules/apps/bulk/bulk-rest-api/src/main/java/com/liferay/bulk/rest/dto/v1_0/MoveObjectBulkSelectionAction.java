@@ -306,4 +306,4 @@ public class MoveObjectBulkSelectionAction
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1307646805
+// LIFERAY-REST-BUILDER-HASH:705344439

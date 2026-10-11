@@ -318,4 +318,4 @@ public class MasterPage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1476133960
+// LIFERAY-REST-BUILDER-HASH:143250194

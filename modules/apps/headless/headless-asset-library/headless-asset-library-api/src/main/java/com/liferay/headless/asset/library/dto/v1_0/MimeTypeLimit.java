@@ -314,4 +314,4 @@ public class MimeTypeLimit implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:929852374
+// LIFERAY-REST-BUILDER-HASH:836070666

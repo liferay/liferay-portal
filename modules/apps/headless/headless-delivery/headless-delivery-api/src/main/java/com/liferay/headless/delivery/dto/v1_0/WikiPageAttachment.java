@@ -727,4 +727,4 @@ public class WikiPageAttachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1851809940
+// LIFERAY-REST-BUILDER-HASH:72000692

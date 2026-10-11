@@ -799,4 +799,4 @@ public class WorkflowInstance implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-97291610
+// LIFERAY-REST-BUILDER-HASH:699875508

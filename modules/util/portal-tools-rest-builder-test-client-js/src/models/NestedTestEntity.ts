@@ -19,6 +19,7 @@
 			"description"?: string;
 			"id"?: number;
 			"name"?: string;
+			"password"?: string;
 			"testEntity"?: TestEntity;
 
 		static "discriminator": string | undefined = undefined;
@@ -51,6 +52,11 @@
 		{
 			baseName: "name",
 			name: "name",
+			type: "string",
+		},
+		{
+			baseName: "password",
+			name: "password",
 			type: "string",
 		},
 		{

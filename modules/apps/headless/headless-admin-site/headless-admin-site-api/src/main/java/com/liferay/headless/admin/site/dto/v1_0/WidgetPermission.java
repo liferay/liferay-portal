@@ -334,4 +334,4 @@ public class WidgetPermission implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1392209067
+// LIFERAY-REST-BUILDER-HASH:1691533957

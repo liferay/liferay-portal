@@ -368,4 +368,4 @@ public class Equals implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1729527294
+// LIFERAY-REST-BUILDER-HASH:-2109325986

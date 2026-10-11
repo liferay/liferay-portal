@@ -373,4 +373,4 @@ public class Captcha implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1120429274
+// LIFERAY-REST-BUILDER-HASH:-741903270

@@ -909,4 +909,4 @@ public class ObjectView implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-483068452
+// LIFERAY-REST-BUILDER-HASH:1449543210

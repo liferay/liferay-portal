@@ -306,4 +306,4 @@ public class Origin implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:642958438
+// LIFERAY-REST-BUILDER-HASH:-1542576458

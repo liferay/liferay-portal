@@ -311,4 +311,4 @@ public class Contains implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-70255004
+// LIFERAY-REST-BUILDER-HASH:-1372055412

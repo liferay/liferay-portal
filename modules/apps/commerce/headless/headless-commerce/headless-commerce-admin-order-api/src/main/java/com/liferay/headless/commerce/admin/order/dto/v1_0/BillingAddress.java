@@ -1178,4 +1178,4 @@ public class BillingAddress implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2107024909
+// LIFERAY-REST-BUILDER-HASH:2122787761

@@ -557,4 +557,4 @@ public abstract class BulkAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-458144451
+// LIFERAY-REST-BUILDER-HASH:-1318117329

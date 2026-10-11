@@ -522,4 +522,4 @@ public class Range implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-664434750
+// LIFERAY-REST-BUILDER-HASH:1157888498

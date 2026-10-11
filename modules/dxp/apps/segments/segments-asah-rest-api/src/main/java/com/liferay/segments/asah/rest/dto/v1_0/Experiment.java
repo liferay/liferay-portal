@@ -649,4 +649,4 @@ public class Experiment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2063576140
+// LIFERAY-REST-BUILDER-HASH:1501028506

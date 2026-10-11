@@ -267,4 +267,4 @@ public class PageFragmentDropZoneDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1054940738
+// LIFERAY-REST-BUILDER-HASH:-1548314878

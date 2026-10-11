@@ -540,4 +540,4 @@ public class AuthenticationScheme implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1467717561
+// LIFERAY-REST-BUILDER-HASH:1981474043

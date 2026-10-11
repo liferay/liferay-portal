@@ -630,4 +630,4 @@ public class OrderRuleChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1200288989
+// LIFERAY-REST-BUILDER-HASH:-1461000101

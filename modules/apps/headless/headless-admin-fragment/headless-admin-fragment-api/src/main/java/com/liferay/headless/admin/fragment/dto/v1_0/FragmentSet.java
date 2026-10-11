@@ -736,4 +736,4 @@ public class FragmentSet implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1989663337
+// LIFERAY-REST-BUILDER-HASH:-1866230503

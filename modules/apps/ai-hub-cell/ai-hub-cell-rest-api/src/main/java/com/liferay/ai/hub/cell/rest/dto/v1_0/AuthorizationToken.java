@@ -426,4 +426,4 @@ public class AuthorizationToken implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1038440829
+// LIFERAY-REST-BUILDER-HASH:555777649

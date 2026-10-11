@@ -342,4 +342,4 @@ public class URLFragmentConfigurationFieldValue
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-419880001
+// LIFERAY-REST-BUILDER-HASH:-1152104413

@@ -264,4 +264,4 @@ public class AssetDeviceMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-68325414
+// LIFERAY-REST-BUILDER-HASH:-1971297116

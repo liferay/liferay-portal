@@ -587,4 +587,4 @@ public class Mapping implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1213969212
+// LIFERAY-REST-BUILDER-HASH:145864262

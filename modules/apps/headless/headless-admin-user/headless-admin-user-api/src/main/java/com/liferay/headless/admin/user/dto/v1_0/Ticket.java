@@ -425,4 +425,4 @@ public class Ticket implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1403358278
+// LIFERAY-REST-BUILDER-HASH:1524586714

@@ -367,4 +367,4 @@ public class Message implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-309714486
+// LIFERAY-REST-BUILDER-HASH:-1163412642

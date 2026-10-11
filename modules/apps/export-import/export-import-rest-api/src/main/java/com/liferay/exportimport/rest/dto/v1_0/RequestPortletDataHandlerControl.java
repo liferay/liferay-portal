@@ -400,4 +400,4 @@ public class RequestPortletDataHandlerControl implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1313636872
+// LIFERAY-REST-BUILDER-HASH:750323300

@@ -313,4 +313,4 @@ public class ObjectValidationRuleSetting implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1032877932
+// LIFERAY-REST-BUILDER-HASH:-80612450

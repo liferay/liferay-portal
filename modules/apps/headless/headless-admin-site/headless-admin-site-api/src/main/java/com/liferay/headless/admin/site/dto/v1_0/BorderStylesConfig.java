@@ -362,4 +362,4 @@ public class BorderStylesConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-201308790
+// LIFERAY-REST-BUILDER-HASH:-1671886170

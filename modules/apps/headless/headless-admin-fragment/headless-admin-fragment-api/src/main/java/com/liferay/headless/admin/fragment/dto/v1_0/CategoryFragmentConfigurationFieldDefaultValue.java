@@ -278,4 +278,4 @@ public class CategoryFragmentConfigurationFieldDefaultValue
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1651365707
+// LIFERAY-REST-BUILDER-HASH:-1984556547

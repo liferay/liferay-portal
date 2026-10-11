@@ -363,4 +363,4 @@ public class RecommendationItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1215200943
+// LIFERAY-REST-BUILDER-HASH:-2022543137

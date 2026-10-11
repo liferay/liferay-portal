@@ -274,4 +274,4 @@ public class SitePageURLValue extends URLValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-103912343
+// LIFERAY-REST-BUILDER-HASH:-229056965

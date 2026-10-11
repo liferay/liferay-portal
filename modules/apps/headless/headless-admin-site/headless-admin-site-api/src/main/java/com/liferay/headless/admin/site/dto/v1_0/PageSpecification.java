@@ -673,4 +673,4 @@ public abstract class PageSpecification implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1650492955
+// LIFERAY-REST-BUILDER-HASH:756786297

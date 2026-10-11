@@ -413,4 +413,4 @@ public class CheckboxField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1830789934
+// LIFERAY-REST-BUILDER-HASH:-1718152238

@@ -419,4 +419,4 @@ public class Index implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-864883989
+// LIFERAY-REST-BUILDER-HASH:1682542265

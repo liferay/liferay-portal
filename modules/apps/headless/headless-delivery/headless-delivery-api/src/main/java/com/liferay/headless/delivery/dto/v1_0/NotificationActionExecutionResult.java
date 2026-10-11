@@ -325,4 +325,4 @@ public class NotificationActionExecutionResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:637470196
+// LIFERAY-REST-BUILDER-HASH:850323214

@@ -258,4 +258,4 @@ public class ModelPrefilterContributor implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-119759560
+// LIFERAY-REST-BUILDER-HASH:2076002452

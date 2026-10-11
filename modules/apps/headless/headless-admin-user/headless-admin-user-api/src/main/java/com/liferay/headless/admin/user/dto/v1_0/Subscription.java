@@ -593,4 +593,4 @@ public class Subscription implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-634796367
+// LIFERAY-REST-BUILDER-HASH:1294012305

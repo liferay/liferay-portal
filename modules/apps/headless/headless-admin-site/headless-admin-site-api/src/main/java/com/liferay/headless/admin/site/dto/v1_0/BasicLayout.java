@@ -521,4 +521,4 @@ public class BasicLayout implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1219669061
+// LIFERAY-REST-BUILDER-HASH:1350489857

@@ -374,4 +374,4 @@ public class ObjectState implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-609768543
+// LIFERAY-REST-BUILDER-HASH:1025930629

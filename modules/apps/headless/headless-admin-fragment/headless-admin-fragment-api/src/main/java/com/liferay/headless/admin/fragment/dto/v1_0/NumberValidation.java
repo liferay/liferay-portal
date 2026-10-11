@@ -352,4 +352,4 @@ public class NumberValidation extends Validation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1495526758
+// LIFERAY-REST-BUILDER-HASH:-360363736

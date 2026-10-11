@@ -414,4 +414,4 @@ public class ColorPaletteField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-340347885
+// LIFERAY-REST-BUILDER-HASH:-589192039

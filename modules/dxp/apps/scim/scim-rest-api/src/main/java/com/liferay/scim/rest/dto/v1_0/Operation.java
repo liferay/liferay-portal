@@ -374,4 +374,4 @@ public class Operation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:314337706
+// LIFERAY-REST-BUILDER-HASH:-777470950

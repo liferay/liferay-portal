@@ -361,4 +361,4 @@ public class Membership implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:147049782
+// LIFERAY-REST-BUILDER-HASH:1732948992

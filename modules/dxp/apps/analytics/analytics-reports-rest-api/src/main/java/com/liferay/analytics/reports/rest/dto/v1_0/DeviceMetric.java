@@ -321,4 +321,4 @@ public class DeviceMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1372858350
+// LIFERAY-REST-BUILDER-HASH:-672328000

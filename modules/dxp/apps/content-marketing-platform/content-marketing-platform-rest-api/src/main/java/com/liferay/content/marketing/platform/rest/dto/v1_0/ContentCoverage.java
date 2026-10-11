@@ -449,4 +449,4 @@ public class ContentCoverage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-340746099
+// LIFERAY-REST-BUILDER-HASH:206560395

@@ -415,4 +415,4 @@ public class CollectionSelectorField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-406870582
+// LIFERAY-REST-BUILDER-HASH:-1383215956

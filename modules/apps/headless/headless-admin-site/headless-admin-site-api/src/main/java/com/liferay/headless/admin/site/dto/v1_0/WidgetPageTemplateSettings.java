@@ -343,4 +343,4 @@ public class WidgetPageTemplateSettings
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:837599337
+// LIFERAY-REST-BUILDER-HASH:409704017

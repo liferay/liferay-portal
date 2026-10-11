@@ -1141,4 +1141,4 @@ public class DataDefinitionField implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2082207802
+// LIFERAY-REST-BUILDER-HASH:-317638976

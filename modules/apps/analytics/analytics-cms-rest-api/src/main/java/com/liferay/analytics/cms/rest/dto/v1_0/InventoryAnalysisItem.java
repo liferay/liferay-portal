@@ -363,4 +363,4 @@ public class InventoryAnalysisItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-484672269
+// LIFERAY-REST-BUILDER-HASH:270816287

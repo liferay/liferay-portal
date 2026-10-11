@@ -485,4 +485,4 @@ public class Project implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1924289535
+// LIFERAY-REST-BUILDER-HASH:-1166745205

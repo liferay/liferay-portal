@@ -1090,4 +1090,4 @@ public class ObjectAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-925794398
+// LIFERAY-REST-BUILDER-HASH:1823630680

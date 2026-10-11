@@ -318,4 +318,4 @@ public class UpdateReviewDateObjectBulkSelectionAction
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-321996047
+// LIFERAY-REST-BUILDER-HASH:1855158805

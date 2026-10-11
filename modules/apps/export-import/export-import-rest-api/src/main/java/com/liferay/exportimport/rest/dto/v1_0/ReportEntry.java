@@ -1063,4 +1063,4 @@ public class ReportEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1530911396
+// LIFERAY-REST-BUILDER-HASH:32897712

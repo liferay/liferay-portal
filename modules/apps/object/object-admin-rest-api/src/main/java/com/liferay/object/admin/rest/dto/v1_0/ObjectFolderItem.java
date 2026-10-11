@@ -479,4 +479,4 @@ public class ObjectFolderItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1937660974
+// LIFERAY-REST-BUILDER-HASH:938443218

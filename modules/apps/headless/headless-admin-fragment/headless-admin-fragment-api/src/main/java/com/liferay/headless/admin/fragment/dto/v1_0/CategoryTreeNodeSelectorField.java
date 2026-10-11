@@ -417,4 +417,4 @@ public class CategoryTreeNodeSelectorField
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-541892924
+// LIFERAY-REST-BUILDER-HASH:872421990

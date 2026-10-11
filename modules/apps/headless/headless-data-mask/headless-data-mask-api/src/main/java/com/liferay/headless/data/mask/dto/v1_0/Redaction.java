@@ -326,4 +326,4 @@ public class Redaction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:523668065
+// LIFERAY-REST-BUILDER-HASH:-167833473

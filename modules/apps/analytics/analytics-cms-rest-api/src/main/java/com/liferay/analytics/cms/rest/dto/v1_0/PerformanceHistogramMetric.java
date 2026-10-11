@@ -268,4 +268,4 @@ public class PerformanceHistogramMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1645434702
+// LIFERAY-REST-BUILDER-HASH:-525945184

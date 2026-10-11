@@ -762,4 +762,4 @@ public class PageFormRelationshipDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1409629636
+// LIFERAY-REST-BUILDER-HASH:646401544

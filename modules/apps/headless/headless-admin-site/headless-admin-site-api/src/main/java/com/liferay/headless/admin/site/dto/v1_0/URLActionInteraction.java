@@ -282,4 +282,4 @@ public class URLActionInteraction
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1702197648
+// LIFERAY-REST-BUILDER-HASH:-518644758

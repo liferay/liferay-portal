@@ -418,4 +418,4 @@ public class Persona implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1893723495
+// LIFERAY-REST-BUILDER-HASH:-665128399

@@ -323,4 +323,4 @@ public class ObjectArrayPropertyTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:477154792
+// LIFERAY-REST-BUILDER-HASH:-1847710950

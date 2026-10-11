@@ -679,4 +679,4 @@ public class LanguageOverride implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:330473978
+// LIFERAY-REST-BUILDER-HASH:1152744178

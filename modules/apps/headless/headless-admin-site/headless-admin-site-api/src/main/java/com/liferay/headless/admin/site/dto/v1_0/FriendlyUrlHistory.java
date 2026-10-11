@@ -264,4 +264,4 @@ public class FriendlyUrlHistory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1141596212
+// LIFERAY-REST-BUILDER-HASH:-1004051318

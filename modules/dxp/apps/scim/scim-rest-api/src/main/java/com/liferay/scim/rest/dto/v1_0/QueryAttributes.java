@@ -637,4 +637,4 @@ public class QueryAttributes implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1843834442
+// LIFERAY-REST-BUILDER-HASH:-431279572

@@ -384,4 +384,4 @@ public class FragmentEditableElementValueFragmentLink implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2010643246
+// LIFERAY-REST-BUILDER-HASH:1383200514

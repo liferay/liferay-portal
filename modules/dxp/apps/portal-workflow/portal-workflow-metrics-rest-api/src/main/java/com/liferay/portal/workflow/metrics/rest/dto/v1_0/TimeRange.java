@@ -483,4 +483,4 @@ public class TimeRange implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1124452307
+// LIFERAY-REST-BUILDER-HASH:-1169438049

@@ -705,4 +705,4 @@ public class GridPageElementDefinition
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:869222215
+// LIFERAY-REST-BUILDER-HASH:-254667093

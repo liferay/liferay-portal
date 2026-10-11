@@ -436,4 +436,4 @@ public class ReferencingTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1582231236
+// LIFERAY-REST-BUILDER-HASH:-472560992

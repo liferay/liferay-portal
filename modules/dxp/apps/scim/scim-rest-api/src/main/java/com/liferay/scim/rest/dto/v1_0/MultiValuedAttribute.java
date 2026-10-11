@@ -503,4 +503,4 @@ public class MultiValuedAttribute implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1647543448
+// LIFERAY-REST-BUILDER-HASH:-802030826

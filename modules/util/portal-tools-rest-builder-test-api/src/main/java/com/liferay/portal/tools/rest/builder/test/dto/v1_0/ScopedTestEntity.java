@@ -666,4 +666,4 @@ public class ScopedTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1777178657
+// LIFERAY-REST-BUILDER-HASH:2045880289

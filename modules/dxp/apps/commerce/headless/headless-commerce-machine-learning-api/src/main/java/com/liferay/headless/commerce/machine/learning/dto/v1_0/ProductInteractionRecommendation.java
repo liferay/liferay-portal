@@ -570,4 +570,4 @@ public class ProductInteractionRecommendation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1266568091
+// LIFERAY-REST-BUILDER-HASH:2104860815

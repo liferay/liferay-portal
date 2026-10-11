@@ -502,4 +502,4 @@ public class DXPEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:204843289
+// LIFERAY-REST-BUILDER-HASH:787116941

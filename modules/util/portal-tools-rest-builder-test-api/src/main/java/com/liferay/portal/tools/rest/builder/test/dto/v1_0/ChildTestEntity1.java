@@ -455,4 +455,4 @@ public class ChildTestEntity1 extends TestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-612856442
+// LIFERAY-REST-BUILDER-HASH:-2090518580

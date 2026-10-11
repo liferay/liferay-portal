@@ -775,4 +775,4 @@ public class PublishProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:857316058
+// LIFERAY-REST-BUILDER-HASH:-1003357096

@@ -517,4 +517,4 @@ public class TaskBulkSelection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1163288873
+// LIFERAY-REST-BUILDER-HASH:662247059

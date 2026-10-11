@@ -646,4 +646,4 @@ public class Condition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:330026030
+// LIFERAY-REST-BUILDER-HASH:452384846

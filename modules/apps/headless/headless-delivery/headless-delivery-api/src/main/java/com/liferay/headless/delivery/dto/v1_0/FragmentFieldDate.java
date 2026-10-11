@@ -316,4 +316,4 @@ public class FragmentFieldDate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-452564702
+// LIFERAY-REST-BUILDER-HASH:1623189090

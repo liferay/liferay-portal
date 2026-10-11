@@ -897,4 +897,4 @@ public class FormStructure implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1105157166
+// LIFERAY-REST-BUILDER-HASH:-973992956

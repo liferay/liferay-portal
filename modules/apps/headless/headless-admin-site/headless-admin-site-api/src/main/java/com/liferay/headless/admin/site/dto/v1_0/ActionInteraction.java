@@ -335,4 +335,4 @@ public abstract class ActionInteraction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:387879374
+// LIFERAY-REST-BUILDER-HASH:-326929748

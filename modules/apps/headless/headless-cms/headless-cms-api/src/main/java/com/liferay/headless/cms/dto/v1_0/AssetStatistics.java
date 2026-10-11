@@ -946,4 +946,4 @@ public class AssetStatistics implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-521506856
+// LIFERAY-REST-BUILDER-HASH:-927761910

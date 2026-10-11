@@ -395,4 +395,4 @@ public class FragmentItemExternalReference
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-659890272
+// LIFERAY-REST-BUILDER-HASH:-1706863354

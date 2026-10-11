@@ -1762,4 +1762,4 @@ public class TaxonomyVocabulary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-23775482
+// LIFERAY-REST-BUILDER-HASH:-602487504

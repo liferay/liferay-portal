@@ -418,4 +418,4 @@ public class NavigationMenuSelectorField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-939681149
+// LIFERAY-REST-BUILDER-HASH:-1245031161

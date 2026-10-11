@@ -311,4 +311,4 @@ public class Version implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1582211503
+// LIFERAY-REST-BUILDER-HASH:2096983519

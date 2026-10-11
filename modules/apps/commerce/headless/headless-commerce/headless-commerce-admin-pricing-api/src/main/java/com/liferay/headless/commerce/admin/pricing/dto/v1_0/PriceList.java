@@ -1278,4 +1278,4 @@ public class PriceList implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1542398767
+// LIFERAY-REST-BUILDER-HASH:-1447291787

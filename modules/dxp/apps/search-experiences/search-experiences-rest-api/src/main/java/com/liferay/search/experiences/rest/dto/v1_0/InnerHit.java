@@ -424,4 +424,4 @@ public class InnerHit implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:241743636
+// LIFERAY-REST-BUILDER-HASH:-908368620

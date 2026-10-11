@@ -331,4 +331,4 @@ public abstract class HTMLFragmentValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2050533773
+// LIFERAY-REST-BUILDER-HASH:1067009453

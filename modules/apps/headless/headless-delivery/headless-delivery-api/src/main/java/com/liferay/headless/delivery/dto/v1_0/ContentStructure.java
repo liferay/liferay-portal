@@ -933,4 +933,4 @@ public class ContentStructure implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-691709350
+// LIFERAY-REST-BUILDER-HASH:-965454418

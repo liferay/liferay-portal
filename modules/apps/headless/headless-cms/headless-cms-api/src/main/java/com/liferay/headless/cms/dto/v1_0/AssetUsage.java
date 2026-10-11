@@ -363,4 +363,4 @@ public class AssetUsage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1339990321
+// LIFERAY-REST-BUILDER-HASH:1060466241

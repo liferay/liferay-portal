@@ -311,4 +311,4 @@ public class PatternValidation extends Validation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:517517233
+// LIFERAY-REST-BUILDER-HASH:1942857205

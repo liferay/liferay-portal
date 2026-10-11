@@ -560,4 +560,4 @@ public class CookiesConsentPreference implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1323191800
+// LIFERAY-REST-BUILDER-HASH:-1865206128

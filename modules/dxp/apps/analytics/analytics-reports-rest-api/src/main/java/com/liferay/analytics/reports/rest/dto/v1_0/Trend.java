@@ -365,4 +365,4 @@ public class Trend implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1308697986
+// LIFERAY-REST-BUILDER-HASH:1839577554

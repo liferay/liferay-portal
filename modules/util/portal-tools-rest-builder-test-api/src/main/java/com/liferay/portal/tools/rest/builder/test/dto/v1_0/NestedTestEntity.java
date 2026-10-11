@@ -261,6 +261,47 @@ public class NestedTestEntity implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(format = "password")
+	public String getPassword() {
+		if (_passwordSupplier != null) {
+			password = _passwordSupplier.get();
+
+			_passwordSupplier = null;
+		}
+
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+
+		_passwordSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPassword(
+		UnsafeSupplier<String, Exception> passwordUnsafeSupplier) {
+
+		_passwordSupplier = () -> {
+			try {
+				return passwordUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String password;
+
+	@JsonIgnore
+	private Supplier<String> _passwordSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
 	public TestEntity getTestEntity() {
@@ -409,6 +450,22 @@ public class NestedTestEntity implements Serializable {
 			sb.append("\"");
 		}
 
+		String password = getPassword();
+
+		if (password != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"password\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(password));
+
+			sb.append("\"");
+		}
+
 		TestEntity testEntity = getTestEntity();
 
 		if (testEntity != null) {
@@ -543,4 +600,4 @@ public class NestedTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1813287193
+// LIFERAY-REST-BUILDER-HASH:1154810502

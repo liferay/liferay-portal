@@ -509,4 +509,4 @@ public class ContactConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1380562300
+// LIFERAY-REST-BUILDER-HASH:-1139134838

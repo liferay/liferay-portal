@@ -631,4 +631,4 @@ public class SkuForecast implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1743976761
+// LIFERAY-REST-BUILDER-HASH:1894331555

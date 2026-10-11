@@ -321,4 +321,4 @@ public class ParentKnowledgeBaseFolder implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1808870502
+// LIFERAY-REST-BUILDER-HASH:320396742

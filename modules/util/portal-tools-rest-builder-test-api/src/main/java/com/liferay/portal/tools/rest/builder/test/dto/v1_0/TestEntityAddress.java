@@ -594,4 +594,4 @@ public class TestEntityAddress implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1864956220
+// LIFERAY-REST-BUILDER-HASH:-1558765782

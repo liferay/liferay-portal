@@ -317,4 +317,4 @@ public class StopNodeKeys implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-550303524
+// LIFERAY-REST-BUILDER-HASH:377495474

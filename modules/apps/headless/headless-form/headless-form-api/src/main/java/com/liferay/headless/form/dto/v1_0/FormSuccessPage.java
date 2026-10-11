@@ -481,4 +481,4 @@ public class FormSuccessPage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:855924437
+// LIFERAY-REST-BUILDER-HASH:623007635

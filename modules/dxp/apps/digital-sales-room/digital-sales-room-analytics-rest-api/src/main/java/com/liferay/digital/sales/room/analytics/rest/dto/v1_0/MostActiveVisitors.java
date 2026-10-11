@@ -316,4 +316,4 @@ public class MostActiveVisitors implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1712971288
+// LIFERAY-REST-BUILDER-HASH:-283256286

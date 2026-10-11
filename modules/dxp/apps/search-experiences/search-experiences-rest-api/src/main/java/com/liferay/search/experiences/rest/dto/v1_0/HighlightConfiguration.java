@@ -605,4 +605,4 @@ public class HighlightConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1963835207
+// LIFERAY-REST-BUILDER-HASH:-1797503371

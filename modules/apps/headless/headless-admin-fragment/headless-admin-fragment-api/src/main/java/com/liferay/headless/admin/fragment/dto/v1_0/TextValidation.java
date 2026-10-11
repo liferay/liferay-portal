@@ -356,4 +356,4 @@ public class TextValidation extends Validation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:4775602
+// LIFERAY-REST-BUILDER-HASH:-650775600

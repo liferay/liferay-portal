@@ -452,4 +452,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:781414624
+// LIFERAY-REST-BUILDER-HASH:955469100

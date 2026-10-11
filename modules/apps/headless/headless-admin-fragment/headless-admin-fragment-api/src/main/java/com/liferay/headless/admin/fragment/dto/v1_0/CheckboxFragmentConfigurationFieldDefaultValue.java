@@ -274,4 +274,4 @@ public class CheckboxFragmentConfigurationFieldDefaultValue
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:204307957
+// LIFERAY-REST-BUILDER-HASH:712422421

@@ -576,4 +576,4 @@ public class ItemSelectorTypeOptions implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1724779620
+// LIFERAY-REST-BUILDER-HASH:-955994626

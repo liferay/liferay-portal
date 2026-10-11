@@ -343,4 +343,4 @@ public class NotificationActionInteraction
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:990948612
+// LIFERAY-REST-BUILDER-HASH:2090851990

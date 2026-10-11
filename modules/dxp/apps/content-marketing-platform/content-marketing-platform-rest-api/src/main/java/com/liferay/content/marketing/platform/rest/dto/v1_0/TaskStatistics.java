@@ -410,4 +410,4 @@ public class TaskStatistics implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:366941787
+// LIFERAY-REST-BUILDER-HASH:1467747427

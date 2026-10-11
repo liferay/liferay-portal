@@ -520,4 +520,4 @@ public class ToolSearchResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:748975644
+// LIFERAY-REST-BUILDER-HASH:-1395911276

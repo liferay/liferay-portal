@@ -2044,4 +2044,4 @@ public class ObjectField implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-607699808
+// LIFERAY-REST-BUILDER-HASH:2090228524

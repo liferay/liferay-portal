@@ -333,4 +333,4 @@ public class PatchOp implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2106171577
+// LIFERAY-REST-BUILDER-HASH:-1595031323

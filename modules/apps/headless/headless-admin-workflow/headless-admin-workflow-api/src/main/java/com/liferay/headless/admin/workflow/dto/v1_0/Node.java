@@ -428,4 +428,4 @@ public class Node implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-311921193
+// LIFERAY-REST-BUILDER-HASH:-392428663

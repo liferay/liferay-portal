@@ -373,4 +373,4 @@ public class SXPParameterContributorDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1517071207
+// LIFERAY-REST-BUILDER-HASH:900524741

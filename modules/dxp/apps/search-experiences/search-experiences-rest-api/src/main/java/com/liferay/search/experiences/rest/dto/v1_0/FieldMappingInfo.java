@@ -361,4 +361,4 @@ public class FieldMappingInfo implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:586328709
+// LIFERAY-REST-BUILDER-HASH:-1413636675

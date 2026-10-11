@@ -380,4 +380,4 @@ public class ExportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1802528751
+// LIFERAY-REST-BUILDER-HASH:68130295

@@ -372,4 +372,4 @@ public class ActionExecutionResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:813918434
+// LIFERAY-REST-BUILDER-HASH:1526466048

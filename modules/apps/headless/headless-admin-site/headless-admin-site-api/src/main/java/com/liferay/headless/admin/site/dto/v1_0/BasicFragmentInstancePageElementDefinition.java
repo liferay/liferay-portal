@@ -289,4 +289,4 @@ public class BasicFragmentInstancePageElementDefinition
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:801814956
+// LIFERAY-REST-BUILDER-HASH:2075545866

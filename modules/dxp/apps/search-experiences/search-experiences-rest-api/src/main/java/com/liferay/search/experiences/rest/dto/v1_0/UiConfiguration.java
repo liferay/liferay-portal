@@ -264,4 +264,4 @@ public class UiConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1151291452
+// LIFERAY-REST-BUILDER-HASH:-1704616982

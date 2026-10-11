@@ -324,4 +324,4 @@ public class FileURLReference implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2124561312
+// LIFERAY-REST-BUILDER-HASH:-1621883312

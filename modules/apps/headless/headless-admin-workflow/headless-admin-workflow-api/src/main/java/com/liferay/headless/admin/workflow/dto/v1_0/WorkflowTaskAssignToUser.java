@@ -445,4 +445,4 @@ public class WorkflowTaskAssignToUser implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-735482682
+// LIFERAY-REST-BUILDER-HASH:881095202

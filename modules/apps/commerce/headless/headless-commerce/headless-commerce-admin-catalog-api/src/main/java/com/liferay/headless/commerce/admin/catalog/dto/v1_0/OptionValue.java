@@ -643,4 +643,4 @@ public class OptionValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:390192177
+// LIFERAY-REST-BUILDER-HASH:798045167

@@ -411,4 +411,4 @@ public class LengthField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1130675971
+// LIFERAY-REST-BUILDER-HASH:1749219055

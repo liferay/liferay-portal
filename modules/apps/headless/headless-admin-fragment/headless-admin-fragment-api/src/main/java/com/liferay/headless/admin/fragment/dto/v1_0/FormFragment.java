@@ -503,4 +503,4 @@ public class FormFragment extends Fragment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1127664785
+// LIFERAY-REST-BUILDER-HASH:-1910501747

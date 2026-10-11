@@ -373,4 +373,4 @@ public class FailedItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-992080438
+// LIFERAY-REST-BUILDER-HASH:1724466062

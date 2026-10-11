@@ -412,4 +412,4 @@ public class ItemSelectorField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1298855609
+// LIFERAY-REST-BUILDER-HASH:-1618435267

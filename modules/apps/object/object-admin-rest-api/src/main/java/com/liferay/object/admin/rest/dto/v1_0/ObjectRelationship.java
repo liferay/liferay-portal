@@ -1523,4 +1523,4 @@ public class ObjectRelationship implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2055064587
+// LIFERAY-REST-BUILDER-HASH:561838029

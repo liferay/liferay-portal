@@ -127,6 +127,27 @@ public class NestedTestEntity implements Cloneable, Serializable {
 
 	protected String name;
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setPassword(
+		UnsafeSupplier<String, Exception> passwordUnsafeSupplier) {
+
+		try {
+			password = passwordUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String password;
+
 	public TestEntity getTestEntity() {
 		return testEntity;
 	}
@@ -180,4 +201,4 @@ public class NestedTestEntity implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:288490902
+// LIFERAY-REST-BUILDER-HASH:2006044128

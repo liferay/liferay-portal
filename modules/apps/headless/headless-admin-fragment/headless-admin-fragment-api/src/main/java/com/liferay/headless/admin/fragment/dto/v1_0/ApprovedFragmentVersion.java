@@ -329,4 +329,4 @@ public class ApprovedFragmentVersion
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-901399401
+// LIFERAY-REST-BUILDER-HASH:-474034257

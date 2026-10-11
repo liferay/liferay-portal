@@ -2286,4 +2286,4 @@ public class Document implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1984244993
+// LIFERAY-REST-BUILDER-HASH:-1026840251

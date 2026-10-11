@@ -715,4 +715,4 @@ public abstract class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-771391323
+// LIFERAY-REST-BUILDER-HASH:310867537

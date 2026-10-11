@@ -251,4 +251,4 @@ public class Sort implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2083236700
+// LIFERAY-REST-BUILDER-HASH:-354110940

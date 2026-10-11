@@ -1211,4 +1211,4 @@ public class PostalAddress implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1373898378
+// LIFERAY-REST-BUILDER-HASH:383094106

@@ -257,4 +257,4 @@ public class ParameterConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-853737006
+// LIFERAY-REST-BUILDER-HASH:1686377214

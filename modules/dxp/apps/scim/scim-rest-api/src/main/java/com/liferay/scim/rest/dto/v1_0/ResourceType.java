@@ -615,4 +615,4 @@ public class ResourceType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:30629934
+// LIFERAY-REST-BUILDER-HASH:1517174370

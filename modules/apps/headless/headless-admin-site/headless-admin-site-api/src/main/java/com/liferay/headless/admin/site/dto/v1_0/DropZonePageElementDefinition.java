@@ -354,4 +354,4 @@ public class DropZonePageElementDefinition
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-891698655
+// LIFERAY-REST-BUILDER-HASH:522370731

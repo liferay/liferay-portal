@@ -320,4 +320,4 @@ public class UserSchemaExtension implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:733895960
+// LIFERAY-REST-BUILDER-HASH:-1132118008

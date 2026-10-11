@@ -1165,4 +1165,4 @@ public class ProductOptionValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-640456541
+// LIFERAY-REST-BUILDER-HASH:-2096216619

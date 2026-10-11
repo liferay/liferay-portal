@@ -316,4 +316,4 @@ public class CollectionSettings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:948182798
+// LIFERAY-REST-BUILDER-HASH:323981716

@@ -412,4 +412,4 @@ public class ColorPickerField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1912189084
+// LIFERAY-REST-BUILDER-HASH:-1515498328

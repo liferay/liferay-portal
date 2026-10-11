@@ -1855,4 +1855,4 @@ public class FragmentStyle implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1764968571
+// LIFERAY-REST-BUILDER-HASH:1029318711

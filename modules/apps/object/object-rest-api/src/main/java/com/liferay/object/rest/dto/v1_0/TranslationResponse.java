@@ -333,4 +333,4 @@ public class TranslationResponse implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1622898878
+// LIFERAY-REST-BUILDER-HASH:-1383375412

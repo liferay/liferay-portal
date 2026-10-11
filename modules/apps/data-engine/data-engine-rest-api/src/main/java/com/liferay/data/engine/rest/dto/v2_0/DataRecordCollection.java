@@ -532,4 +532,4 @@ public class DataRecordCollection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:74562686
+// LIFERAY-REST-BUILDER-HASH:1058746014

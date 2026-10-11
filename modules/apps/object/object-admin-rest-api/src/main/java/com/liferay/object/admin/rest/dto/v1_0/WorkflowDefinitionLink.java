@@ -319,4 +319,4 @@ public class WorkflowDefinitionLink implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-136248971
+// LIFERAY-REST-BUILDER-HASH:-1558378991

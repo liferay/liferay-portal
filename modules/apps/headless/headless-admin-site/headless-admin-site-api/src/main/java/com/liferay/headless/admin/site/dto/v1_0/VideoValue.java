@@ -315,4 +315,4 @@ public class VideoValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:751506767
+// LIFERAY-REST-BUILDER-HASH:512074653

@@ -347,4 +347,4 @@ public abstract class CollectionDisplayListStyle implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1125244254
+// LIFERAY-REST-BUILDER-HASH:1104522190

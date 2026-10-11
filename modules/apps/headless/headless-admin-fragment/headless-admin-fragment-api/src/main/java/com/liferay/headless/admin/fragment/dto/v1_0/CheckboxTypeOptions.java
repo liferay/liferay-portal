@@ -379,4 +379,4 @@ public class CheckboxTypeOptions implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-640691822
+// LIFERAY-REST-BUILDER-HASH:425926550

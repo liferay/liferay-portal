@@ -182,7 +182,7 @@ public class SamlProvider implements Serializable {
 	@JsonIgnore
 	private Supplier<Idp> _idpSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(format = "password")
 	public String getKeyStoreCredentialPassword() {
 		if (_keyStoreCredentialPasswordSupplier != null) {
 			keyStoreCredentialPassword =
@@ -694,4 +694,4 @@ public class SamlProvider implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1338281897
+// LIFERAY-REST-BUILDER-HASH:-1178574324

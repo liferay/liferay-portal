@@ -494,4 +494,4 @@ public class Pin implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1334291391
+// LIFERAY-REST-BUILDER-HASH:-1485013915

@@ -432,4 +432,4 @@ public class AssetType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1091953251
+// LIFERAY-REST-BUILDER-HASH:-208152337

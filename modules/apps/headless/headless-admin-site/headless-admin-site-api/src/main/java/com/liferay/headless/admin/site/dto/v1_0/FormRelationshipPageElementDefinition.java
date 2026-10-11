@@ -658,4 +658,4 @@ public class FormRelationshipPageElementDefinition
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1831080629
+// LIFERAY-REST-BUILDER-HASH:-27616653

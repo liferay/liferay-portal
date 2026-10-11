@@ -380,4 +380,4 @@ public class PublishPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1166786478
+// LIFERAY-REST-BUILDER-HASH:-1381204800

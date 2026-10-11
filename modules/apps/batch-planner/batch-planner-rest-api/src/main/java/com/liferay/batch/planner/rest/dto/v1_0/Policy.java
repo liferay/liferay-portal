@@ -414,4 +414,4 @@ public class Policy implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1853387654
+// LIFERAY-REST-BUILDER-HASH:1350582652

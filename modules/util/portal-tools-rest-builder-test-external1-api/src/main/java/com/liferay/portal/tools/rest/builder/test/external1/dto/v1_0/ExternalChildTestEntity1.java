@@ -272,4 +272,4 @@ public class ExternalChildTestEntity1
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-900508625
+// LIFERAY-REST-BUILDER-HASH:1531046793

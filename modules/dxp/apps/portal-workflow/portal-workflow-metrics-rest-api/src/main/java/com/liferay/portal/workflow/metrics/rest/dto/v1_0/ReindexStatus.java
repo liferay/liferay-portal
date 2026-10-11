@@ -312,4 +312,4 @@ public class ReindexStatus implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:198882223
+// LIFERAY-REST-BUILDER-HASH:-1770509233

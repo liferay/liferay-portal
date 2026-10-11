@@ -394,4 +394,4 @@ public class KeywordBulkSelection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1556768390
+// LIFERAY-REST-BUILDER-HASH:1802192958

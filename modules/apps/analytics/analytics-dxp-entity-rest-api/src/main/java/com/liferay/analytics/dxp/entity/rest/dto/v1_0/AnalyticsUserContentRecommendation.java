@@ -597,4 +597,4 @@ public class AnalyticsUserContentRecommendation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-975425939
+// LIFERAY-REST-BUILDER-HASH:1984471189

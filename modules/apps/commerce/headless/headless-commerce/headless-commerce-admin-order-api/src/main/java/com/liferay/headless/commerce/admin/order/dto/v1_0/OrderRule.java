@@ -1393,4 +1393,4 @@ public class OrderRule implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-45167659
+// LIFERAY-REST-BUILDER-HASH:1950956923

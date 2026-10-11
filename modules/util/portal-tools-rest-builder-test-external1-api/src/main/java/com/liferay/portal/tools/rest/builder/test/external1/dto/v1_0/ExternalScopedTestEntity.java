@@ -314,4 +314,4 @@ public class ExternalScopedTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1360499998
+// LIFERAY-REST-BUILDER-HASH:-442486568

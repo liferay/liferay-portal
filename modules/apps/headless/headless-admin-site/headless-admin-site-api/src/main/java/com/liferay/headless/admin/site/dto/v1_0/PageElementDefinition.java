@@ -386,4 +386,4 @@ public abstract class PageElementDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-13286798
+// LIFERAY-REST-BUILDER-HASH:113248764

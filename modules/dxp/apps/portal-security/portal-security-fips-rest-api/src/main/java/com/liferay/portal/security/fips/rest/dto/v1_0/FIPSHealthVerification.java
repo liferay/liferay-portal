@@ -434,4 +434,4 @@ public class FIPSHealthVerification implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:240280439
+// LIFERAY-REST-BUILDER-HASH:-1178333553

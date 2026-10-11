@@ -893,4 +893,4 @@ public class ProductGroupProduct implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1164207916
+// LIFERAY-REST-BUILDER-HASH:-1850657180

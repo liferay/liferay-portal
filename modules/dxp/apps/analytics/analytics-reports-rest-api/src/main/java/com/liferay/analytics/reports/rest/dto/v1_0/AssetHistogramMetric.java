@@ -266,4 +266,4 @@ public class AssetHistogramMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-554669466
+// LIFERAY-REST-BUILDER-HASH:1947457728

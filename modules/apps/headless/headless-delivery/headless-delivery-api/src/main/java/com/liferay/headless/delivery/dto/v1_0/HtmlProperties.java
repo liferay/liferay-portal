@@ -315,4 +315,4 @@ public class HtmlProperties implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1560714821
+// LIFERAY-REST-BUILDER-HASH:1823362331

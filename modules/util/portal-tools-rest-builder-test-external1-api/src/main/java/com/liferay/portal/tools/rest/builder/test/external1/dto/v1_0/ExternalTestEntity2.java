@@ -256,4 +256,4 @@ public class ExternalTestEntity2 implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-708005779
+// LIFERAY-REST-BUILDER-HASH:965150241

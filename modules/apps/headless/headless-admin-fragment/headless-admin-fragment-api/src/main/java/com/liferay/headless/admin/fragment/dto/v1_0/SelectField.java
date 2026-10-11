@@ -412,4 +412,4 @@ public class SelectField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2000627847
+// LIFERAY-REST-BUILDER-HASH:-652363211

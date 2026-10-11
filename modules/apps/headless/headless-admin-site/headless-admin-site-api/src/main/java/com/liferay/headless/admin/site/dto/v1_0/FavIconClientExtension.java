@@ -344,4 +344,4 @@ public class FavIconClientExtension extends FavIcon implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1034396793
+// LIFERAY-REST-BUILDER-HASH:-479126159

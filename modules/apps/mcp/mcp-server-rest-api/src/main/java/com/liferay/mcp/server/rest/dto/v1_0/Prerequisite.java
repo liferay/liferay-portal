@@ -450,4 +450,4 @@ public class Prerequisite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2025783929
+// LIFERAY-REST-BUILDER-HASH:-304611955

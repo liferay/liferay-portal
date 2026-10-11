@@ -652,4 +652,4 @@ public class PageWidgetInstanceDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1479485190
+// LIFERAY-REST-BUILDER-HASH:-1400764686

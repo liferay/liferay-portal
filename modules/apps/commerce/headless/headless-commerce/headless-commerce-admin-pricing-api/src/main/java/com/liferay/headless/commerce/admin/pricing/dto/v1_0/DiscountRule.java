@@ -447,4 +447,4 @@ public class DiscountRule implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:305665824
+// LIFERAY-REST-BUILDER-HASH:1342969272

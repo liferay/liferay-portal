@@ -941,4 +941,4 @@ public class PageSpecificationVersion implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1205976476
+// LIFERAY-REST-BUILDER-HASH:839145808

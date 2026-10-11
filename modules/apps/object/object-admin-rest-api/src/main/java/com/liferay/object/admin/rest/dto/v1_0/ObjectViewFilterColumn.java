@@ -531,4 +531,4 @@ public class ObjectViewFilterColumn implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1756600377
+// LIFERAY-REST-BUILDER-HASH:40794491

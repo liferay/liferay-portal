@@ -775,4 +775,4 @@ public class WidgetPageTemplate extends PageTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-47735198
+// LIFERAY-REST-BUILDER-HASH:2060339878

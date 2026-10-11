@@ -694,4 +694,4 @@ public class WarehouseOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-956496444
+// LIFERAY-REST-BUILDER-HASH:694986038

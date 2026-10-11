@@ -453,4 +453,4 @@ public class SEOSettingsMapping implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1772560459
+// LIFERAY-REST-BUILDER-HASH:-1723311609

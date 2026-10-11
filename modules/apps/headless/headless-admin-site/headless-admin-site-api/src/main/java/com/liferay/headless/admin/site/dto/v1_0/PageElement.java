@@ -514,4 +514,4 @@ public class PageElement implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-23309440
+// LIFERAY-REST-BUILDER-HASH:-2145091640

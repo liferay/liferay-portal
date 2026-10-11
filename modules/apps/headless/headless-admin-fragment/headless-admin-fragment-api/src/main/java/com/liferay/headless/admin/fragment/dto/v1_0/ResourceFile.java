@@ -811,4 +811,4 @@ public class ResourceFile implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2101590315
+// LIFERAY-REST-BUILDER-HASH:-2088623499

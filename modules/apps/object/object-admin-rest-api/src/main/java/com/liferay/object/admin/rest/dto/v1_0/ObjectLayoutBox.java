@@ -583,4 +583,4 @@ public class ObjectLayoutBox implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:52558315
+// LIFERAY-REST-BUILDER-HASH:1027054249

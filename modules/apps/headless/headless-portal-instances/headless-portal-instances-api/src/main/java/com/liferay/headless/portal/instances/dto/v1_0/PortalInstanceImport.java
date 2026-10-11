@@ -452,4 +452,4 @@ public class PortalInstanceImport implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1437678389
+// LIFERAY-REST-BUILDER-HASH:-1530075213

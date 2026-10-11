@@ -675,4 +675,4 @@ public class Address implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-982921504
+// LIFERAY-REST-BUILDER-HASH:-194607784

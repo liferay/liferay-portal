@@ -3036,4 +3036,4 @@ public class ObjectDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-364355004
+// LIFERAY-REST-BUILDER-HASH:2068035854

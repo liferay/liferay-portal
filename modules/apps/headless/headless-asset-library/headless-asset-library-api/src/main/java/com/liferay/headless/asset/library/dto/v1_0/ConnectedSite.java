@@ -870,4 +870,4 @@ public class ConnectedSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1658212306
+// LIFERAY-REST-BUILDER-HASH:-1341573462

@@ -251,4 +251,4 @@ public class ChangePassword implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2047146781
+// LIFERAY-REST-BUILDER-HASH:-1888113015

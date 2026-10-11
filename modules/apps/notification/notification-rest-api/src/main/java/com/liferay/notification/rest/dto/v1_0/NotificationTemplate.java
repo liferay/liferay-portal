@@ -1542,4 +1542,4 @@ public class NotificationTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:681992450
+// LIFERAY-REST-BUILDER-HASH:1755388770

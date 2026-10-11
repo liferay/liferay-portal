@@ -471,4 +471,4 @@ public class AssigneeMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1935696646
+// LIFERAY-REST-BUILDER-HASH:-1560885780

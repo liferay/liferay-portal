@@ -1057,4 +1057,4 @@ public class ExportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1295466518
+// LIFERAY-REST-BUILDER-HASH:-1501838116

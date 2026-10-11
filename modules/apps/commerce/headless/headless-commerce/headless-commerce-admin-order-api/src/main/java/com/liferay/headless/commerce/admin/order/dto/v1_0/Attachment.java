@@ -998,4 +998,4 @@ public class Attachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:236774576
+// LIFERAY-REST-BUILDER-HASH:21824716

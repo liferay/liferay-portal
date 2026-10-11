@@ -445,4 +445,4 @@ public class Tool implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1313738219
+// LIFERAY-REST-BUILDER-HASH:1995172465

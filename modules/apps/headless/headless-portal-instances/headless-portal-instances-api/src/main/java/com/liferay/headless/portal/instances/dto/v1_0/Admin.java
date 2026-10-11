@@ -225,7 +225,7 @@ public class Admin implements Serializable {
 	private Supplier<String> _middleNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The admin's password."
+		description = "The admin's password.", format = "password"
 	)
 	public String getPassword() {
 		if (_passwordSupplier != null) {
@@ -555,4 +555,4 @@ public class Admin implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1727326677
+// LIFERAY-REST-BUILDER-HASH:-1324723081

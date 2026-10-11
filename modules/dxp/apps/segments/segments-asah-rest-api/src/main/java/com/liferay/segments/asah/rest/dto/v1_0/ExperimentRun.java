@@ -385,4 +385,4 @@ public class ExperimentRun implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-300956969
+// LIFERAY-REST-BUILDER-HASH:1514097911

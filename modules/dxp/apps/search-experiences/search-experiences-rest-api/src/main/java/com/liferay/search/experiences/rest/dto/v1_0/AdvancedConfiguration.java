@@ -444,4 +444,4 @@ public class AdvancedConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1005483395
+// LIFERAY-REST-BUILDER-HASH:-1158137027

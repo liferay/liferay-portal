@@ -855,4 +855,4 @@ public class ExportTask implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1683164028
+// LIFERAY-REST-BUILDER-HASH:831217484

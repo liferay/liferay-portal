@@ -375,4 +375,4 @@ public class FragmentLinkValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1638259040
+// LIFERAY-REST-BUILDER-HASH:-699921918

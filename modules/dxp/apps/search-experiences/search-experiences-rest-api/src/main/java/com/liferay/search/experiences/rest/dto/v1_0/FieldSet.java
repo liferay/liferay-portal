@@ -264,4 +264,4 @@ public class FieldSet implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1455295320
+// LIFERAY-REST-BUILDER-HASH:-1990216026

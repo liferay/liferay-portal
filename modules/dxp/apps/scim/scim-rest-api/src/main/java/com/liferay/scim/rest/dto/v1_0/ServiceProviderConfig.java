@@ -763,4 +763,4 @@ public class ServiceProviderConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1051237960
+// LIFERAY-REST-BUILDER-HASH:-521822190

@@ -426,4 +426,4 @@ public class Validation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1570607510
+// LIFERAY-REST-BUILDER-HASH:-319321888

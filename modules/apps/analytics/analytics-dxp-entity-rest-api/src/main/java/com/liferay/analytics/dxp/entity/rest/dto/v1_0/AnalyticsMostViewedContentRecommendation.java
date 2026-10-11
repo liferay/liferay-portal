@@ -547,4 +547,4 @@ public class AnalyticsMostViewedContentRecommendation implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-932745999
+// LIFERAY-REST-BUILDER-HASH:2057552573

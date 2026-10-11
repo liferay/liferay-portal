@@ -567,4 +567,4 @@ public class FacetConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1306779415
+// LIFERAY-REST-BUILDER-HASH:-1916217769

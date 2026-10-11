@@ -1138,4 +1138,4 @@ public class ImportTask implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1024805467
+// LIFERAY-REST-BUILDER-HASH:-970120195

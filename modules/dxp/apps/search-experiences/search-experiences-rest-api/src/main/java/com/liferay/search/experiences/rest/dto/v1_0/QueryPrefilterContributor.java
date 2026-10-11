@@ -258,4 +258,4 @@ public class QueryPrefilterContributor implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1061037123
+// LIFERAY-REST-BUILDER-HASH:-444035213

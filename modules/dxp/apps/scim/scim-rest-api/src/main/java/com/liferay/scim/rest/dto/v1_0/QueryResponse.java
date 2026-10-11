@@ -429,4 +429,4 @@ public class QueryResponse implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-328647058
+// LIFERAY-REST-BUILDER-HASH:1353743890

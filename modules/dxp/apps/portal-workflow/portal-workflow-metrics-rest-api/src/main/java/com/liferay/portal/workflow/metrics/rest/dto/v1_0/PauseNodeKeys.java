@@ -317,4 +317,4 @@ public class PauseNodeKeys implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:194564048
+// LIFERAY-REST-BUILDER-HASH:1962897958

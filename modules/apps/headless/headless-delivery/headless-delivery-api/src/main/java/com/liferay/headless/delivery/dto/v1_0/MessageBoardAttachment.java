@@ -731,4 +731,4 @@ public class MessageBoardAttachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1579837374
+// LIFERAY-REST-BUILDER-HASH:1211887882

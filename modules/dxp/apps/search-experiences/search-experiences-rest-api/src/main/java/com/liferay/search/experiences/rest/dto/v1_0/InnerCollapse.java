@@ -255,4 +255,4 @@ public class InnerCollapse implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-417064217
+// LIFERAY-REST-BUILDER-HASH:1015464513

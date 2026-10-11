@@ -321,4 +321,4 @@ public class ColumnViewport implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-667969335
+// LIFERAY-REST-BUILDER-HASH:1754884125

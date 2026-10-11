@@ -378,4 +378,4 @@ public class NavigationSettings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1237629178
+// LIFERAY-REST-BUILDER-HASH:-847286864

@@ -251,4 +251,4 @@ public class Patch implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1704306854
+// LIFERAY-REST-BUILDER-HASH:919098058

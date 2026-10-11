@@ -421,4 +421,4 @@ public class ElementDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1301688824
+// LIFERAY-REST-BUILDER-HASH:-1530121346

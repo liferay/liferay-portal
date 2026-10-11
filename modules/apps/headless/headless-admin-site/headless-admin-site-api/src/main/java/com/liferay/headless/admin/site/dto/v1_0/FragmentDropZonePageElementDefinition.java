@@ -285,4 +285,4 @@ public class FragmentDropZonePageElementDefinition
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1077025020
+// LIFERAY-REST-BUILDER-HASH:173412734

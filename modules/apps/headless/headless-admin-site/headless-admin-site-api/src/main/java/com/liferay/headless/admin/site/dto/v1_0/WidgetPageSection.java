@@ -393,4 +393,4 @@ public class WidgetPageSection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1796883359
+// LIFERAY-REST-BUILDER-HASH:-284718431

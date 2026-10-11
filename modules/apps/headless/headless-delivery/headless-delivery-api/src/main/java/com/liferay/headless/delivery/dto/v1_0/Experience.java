@@ -446,4 +446,4 @@ public class Experience implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-80229476
+// LIFERAY-REST-BUILDER-HASH:1339165380

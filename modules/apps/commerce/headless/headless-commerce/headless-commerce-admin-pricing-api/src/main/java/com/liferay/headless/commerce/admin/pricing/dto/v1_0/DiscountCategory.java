@@ -515,4 +515,4 @@ public class DiscountCategory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1854737177
+// LIFERAY-REST-BUILDER-HASH:334708637

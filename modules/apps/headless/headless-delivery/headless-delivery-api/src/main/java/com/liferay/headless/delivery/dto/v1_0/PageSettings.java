@@ -504,4 +504,4 @@ public class PageSettings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1106748897
+// LIFERAY-REST-BUILDER-HASH:-1085941463

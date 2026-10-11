@@ -369,4 +369,4 @@ public class AssetLibraryBrief implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1029810004
+// LIFERAY-REST-BUILDER-HASH:-1060458794

@@ -1064,4 +1064,4 @@ public class OAuthClientEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1994775296
+// LIFERAY-REST-BUILDER-HASH:-1466913550

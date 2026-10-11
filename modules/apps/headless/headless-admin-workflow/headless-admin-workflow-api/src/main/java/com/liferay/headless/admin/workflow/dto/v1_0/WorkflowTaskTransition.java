@@ -439,4 +439,4 @@ public class WorkflowTaskTransition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1700538198
+// LIFERAY-REST-BUILDER-HASH:1463457320

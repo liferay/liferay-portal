@@ -450,4 +450,4 @@ public class DisplayPageTemplateSEOSettings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:178040061
+// LIFERAY-REST-BUILDER-HASH:1326073273

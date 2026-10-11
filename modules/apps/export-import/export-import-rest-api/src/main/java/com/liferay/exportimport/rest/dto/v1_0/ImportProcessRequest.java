@@ -1038,4 +1038,4 @@ public class ImportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-199456213
+// LIFERAY-REST-BUILDER-HASH:-423617885

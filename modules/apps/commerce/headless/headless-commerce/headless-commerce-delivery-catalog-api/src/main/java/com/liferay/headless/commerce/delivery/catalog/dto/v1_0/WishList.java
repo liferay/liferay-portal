@@ -448,4 +448,4 @@ public class WishList implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:450996925
+// LIFERAY-REST-BUILDER-HASH:-1940567199

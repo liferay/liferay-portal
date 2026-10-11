@@ -383,4 +383,4 @@ public class Dependency implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:66169240
+// LIFERAY-REST-BUILDER-HASH:-901791420

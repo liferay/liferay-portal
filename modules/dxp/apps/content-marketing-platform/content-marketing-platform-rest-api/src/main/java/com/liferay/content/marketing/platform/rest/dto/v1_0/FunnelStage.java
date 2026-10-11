@@ -418,4 +418,4 @@ public class FunnelStage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-697057987
+// LIFERAY-REST-BUILDER-HASH:-797812011

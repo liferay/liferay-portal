@@ -630,4 +630,4 @@ public class DiscountChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-810338333
+// LIFERAY-REST-BUILDER-HASH:896325453

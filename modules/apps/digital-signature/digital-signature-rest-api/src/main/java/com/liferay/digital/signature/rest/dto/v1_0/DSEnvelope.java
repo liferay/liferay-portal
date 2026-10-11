@@ -840,4 +840,4 @@ public class DSEnvelope implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:725856683
+// LIFERAY-REST-BUILDER-HASH:-1207584985

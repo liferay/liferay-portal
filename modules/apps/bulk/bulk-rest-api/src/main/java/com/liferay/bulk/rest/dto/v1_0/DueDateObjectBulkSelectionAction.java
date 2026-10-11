@@ -315,4 +315,4 @@ public class DueDateObjectBulkSelectionAction
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:994265776
+// LIFERAY-REST-BUILDER-HASH:193184266

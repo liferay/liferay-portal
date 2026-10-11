@@ -639,4 +639,4 @@ public class AccountAddressChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2069330521
+// LIFERAY-REST-BUILDER-HASH:-831911949

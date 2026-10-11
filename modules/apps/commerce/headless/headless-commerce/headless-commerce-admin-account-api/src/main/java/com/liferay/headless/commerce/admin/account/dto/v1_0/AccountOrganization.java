@@ -515,4 +515,4 @@ public class AccountOrganization implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2056912871
+// LIFERAY-REST-BUILDER-HASH:-1116142457

@@ -736,4 +736,4 @@ public class Layout implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1145749127
+// LIFERAY-REST-BUILDER-HASH:-1803694593

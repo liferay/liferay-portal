@@ -564,4 +564,4 @@ public class PageRule implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2047942855
+// LIFERAY-REST-BUILDER-HASH:-202977441

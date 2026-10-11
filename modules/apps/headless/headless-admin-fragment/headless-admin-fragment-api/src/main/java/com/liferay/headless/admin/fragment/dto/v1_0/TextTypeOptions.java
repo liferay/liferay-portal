@@ -382,4 +382,4 @@ public class TextTypeOptions implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1092337602
+// LIFERAY-REST-BUILDER-HASH:919674098

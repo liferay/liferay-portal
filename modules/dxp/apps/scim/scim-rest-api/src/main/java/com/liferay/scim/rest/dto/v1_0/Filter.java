@@ -304,4 +304,4 @@ public class Filter implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:963713109
+// LIFERAY-REST-BUILDER-HASH:-514148791

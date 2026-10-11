@@ -430,4 +430,4 @@ public class Transition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1712815866
+// LIFERAY-REST-BUILDER-HASH:429271662

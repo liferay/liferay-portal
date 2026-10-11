@@ -261,4 +261,4 @@ public class WorkflowTaskIds implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-472836532
+// LIFERAY-REST-BUILDER-HASH:200737412

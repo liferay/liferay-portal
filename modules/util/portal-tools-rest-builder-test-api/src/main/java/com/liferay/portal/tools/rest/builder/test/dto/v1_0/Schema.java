@@ -255,4 +255,4 @@ public class Schema implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2145292550
+// LIFERAY-REST-BUILDER-HASH:-1687294276

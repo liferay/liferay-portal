@@ -372,4 +372,4 @@ public class ListStyleDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1680292894
+// LIFERAY-REST-BUILDER-HASH:2069358666

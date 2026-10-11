@@ -433,4 +433,4 @@ public abstract class AssetPermissionAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1506216811
+// LIFERAY-REST-BUILDER-HASH:-466194967

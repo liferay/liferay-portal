@@ -411,4 +411,4 @@ public class TextField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1998896296
+// LIFERAY-REST-BUILDER-HASH:1045398080

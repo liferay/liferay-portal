@@ -306,4 +306,4 @@ public class Assignee implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1610339405
+// LIFERAY-REST-BUILDER-HASH:1014172717

@@ -304,4 +304,4 @@ public class FieldSummary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:505448950
+// LIFERAY-REST-BUILDER-HASH:-312030086

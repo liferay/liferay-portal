@@ -361,4 +361,4 @@ public class LandscapeMobile implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1536341225
+// LIFERAY-REST-BUILDER-HASH:-473754503

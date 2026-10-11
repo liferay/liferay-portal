@@ -737,4 +737,4 @@ public class ScheduledPublishProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:228822266
+// LIFERAY-REST-BUILDER-HASH:1619903734

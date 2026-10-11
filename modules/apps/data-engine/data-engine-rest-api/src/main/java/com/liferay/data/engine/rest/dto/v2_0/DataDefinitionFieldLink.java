@@ -385,4 +385,4 @@ public class DataDefinitionFieldLink implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:501469194
+// LIFERAY-REST-BUILDER-HASH:-589980730

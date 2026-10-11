@@ -310,4 +310,4 @@ public class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2147458914
+// LIFERAY-REST-BUILDER-HASH:-1923501520

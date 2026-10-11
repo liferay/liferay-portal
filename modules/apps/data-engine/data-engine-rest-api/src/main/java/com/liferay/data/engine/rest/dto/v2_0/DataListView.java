@@ -764,4 +764,4 @@ public class DataListView implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-36576340
+// LIFERAY-REST-BUILDER-HASH:-732787012

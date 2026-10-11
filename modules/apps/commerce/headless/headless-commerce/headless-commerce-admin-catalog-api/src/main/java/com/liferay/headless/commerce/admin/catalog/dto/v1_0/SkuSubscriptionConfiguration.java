@@ -994,4 +994,4 @@ public class SkuSubscriptionConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-178948186
+// LIFERAY-REST-BUILDER-HASH:2002224760

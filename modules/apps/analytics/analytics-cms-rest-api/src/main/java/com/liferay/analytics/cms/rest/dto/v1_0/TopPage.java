@@ -425,4 +425,4 @@ public class TopPage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:581986985
+// LIFERAY-REST-BUILDER-HASH:-96841207

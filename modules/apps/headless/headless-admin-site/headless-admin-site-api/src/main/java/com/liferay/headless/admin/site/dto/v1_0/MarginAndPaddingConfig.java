@@ -310,4 +310,4 @@ public class MarginAndPaddingConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-803258826
+// LIFERAY-REST-BUILDER-HASH:-94488004

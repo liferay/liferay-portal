@@ -312,4 +312,4 @@ public class EmbeddingProviderValidationResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-486322669
+// LIFERAY-REST-BUILDER-HASH:-1820701187

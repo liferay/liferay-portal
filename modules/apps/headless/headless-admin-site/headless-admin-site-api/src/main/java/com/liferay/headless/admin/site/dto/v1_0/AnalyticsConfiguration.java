@@ -329,4 +329,4 @@ public class AnalyticsConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1591402490
+// LIFERAY-REST-BUILDER-HASH:-2036605524

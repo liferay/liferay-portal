@@ -624,4 +624,4 @@ public class SkuUnitOfMeasure implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1660583469
+// LIFERAY-REST-BUILDER-HASH:-943578549

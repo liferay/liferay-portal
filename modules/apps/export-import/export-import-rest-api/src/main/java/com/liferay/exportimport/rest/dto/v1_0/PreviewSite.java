@@ -479,4 +479,4 @@ public class PreviewSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-662573593
+// LIFERAY-REST-BUILDER-HASH:1927714923

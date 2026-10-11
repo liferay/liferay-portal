@@ -255,4 +255,4 @@ public class DSEnvelopeSignatureURL implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:891300221
+// LIFERAY-REST-BUILDER-HASH:807649341

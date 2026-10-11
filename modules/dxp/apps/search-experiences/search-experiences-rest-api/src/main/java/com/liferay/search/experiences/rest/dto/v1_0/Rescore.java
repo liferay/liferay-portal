@@ -473,4 +473,4 @@ public class Rescore implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1262427354
+// LIFERAY-REST-BUILDER-HASH:-1671781706

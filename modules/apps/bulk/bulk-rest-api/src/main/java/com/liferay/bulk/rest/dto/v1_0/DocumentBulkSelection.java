@@ -324,4 +324,4 @@ public class DocumentBulkSelection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1232627988
+// LIFERAY-REST-BUILDER-HASH:1950488010

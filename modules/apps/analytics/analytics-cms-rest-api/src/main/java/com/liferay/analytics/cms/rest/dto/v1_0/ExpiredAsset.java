@@ -366,4 +366,4 @@ public class ExpiredAsset implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1267651362
+// LIFERAY-REST-BUILDER-HASH:-1316860256

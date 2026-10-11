@@ -464,4 +464,4 @@ public class Overview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:113166448
+// LIFERAY-REST-BUILDER-HASH:1473659248

@@ -330,4 +330,4 @@ public class TargetCollectionDisplayTypeOptions implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2086833683
+// LIFERAY-REST-BUILDER-HASH:1347602167

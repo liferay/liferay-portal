@@ -485,4 +485,4 @@ public class GeneralConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1801353718
+// LIFERAY-REST-BUILDER-HASH:-1516741196

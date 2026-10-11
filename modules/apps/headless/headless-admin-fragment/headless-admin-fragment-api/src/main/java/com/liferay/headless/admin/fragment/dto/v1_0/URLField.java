@@ -411,4 +411,4 @@ public class URLField extends Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1401621938
+// LIFERAY-REST-BUILDER-HASH:884744270

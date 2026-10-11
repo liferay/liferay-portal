@@ -266,4 +266,4 @@ public class PageDropZoneDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1473044530
+// LIFERAY-REST-BUILDER-HASH:209704392

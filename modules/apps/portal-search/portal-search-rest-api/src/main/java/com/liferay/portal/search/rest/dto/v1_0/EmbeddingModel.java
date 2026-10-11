@@ -255,4 +255,4 @@ public class EmbeddingModel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:68721677
+// LIFERAY-REST-BUILDER-HASH:1107332077

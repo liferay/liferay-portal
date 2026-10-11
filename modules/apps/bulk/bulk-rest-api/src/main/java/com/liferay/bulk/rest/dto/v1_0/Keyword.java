@@ -253,4 +253,4 @@ public class Keyword implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-37551077
+// LIFERAY-REST-BUILDER-HASH:1352408575

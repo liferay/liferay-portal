@@ -1006,4 +1006,4 @@ public class DisplayPageTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-902229081
+// LIFERAY-REST-BUILDER-HASH:-1239629685

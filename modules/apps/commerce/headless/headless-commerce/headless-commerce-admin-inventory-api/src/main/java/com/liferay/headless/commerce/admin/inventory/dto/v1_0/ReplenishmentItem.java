@@ -634,4 +634,4 @@ public class ReplenishmentItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:727778365
+// LIFERAY-REST-BUILDER-HASH:-181369717

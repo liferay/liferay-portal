@@ -363,4 +363,4 @@ public class ObjectEntryAcquisitionChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-520450623
+// LIFERAY-REST-BUILDER-HASH:1585742339

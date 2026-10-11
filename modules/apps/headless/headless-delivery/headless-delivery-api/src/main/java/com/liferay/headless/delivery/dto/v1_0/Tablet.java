@@ -361,4 +361,4 @@ public class Tablet implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1966293548
+// LIFERAY-REST-BUILDER-HASH:-1389392022

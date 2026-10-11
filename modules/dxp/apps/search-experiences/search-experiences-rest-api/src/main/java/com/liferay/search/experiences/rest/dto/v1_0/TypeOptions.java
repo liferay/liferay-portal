@@ -748,4 +748,4 @@ public class TypeOptions implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1832560904
+// LIFERAY-REST-BUILDER-HASH:1730669026

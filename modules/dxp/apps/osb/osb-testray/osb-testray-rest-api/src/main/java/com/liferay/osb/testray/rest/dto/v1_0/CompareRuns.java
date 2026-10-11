@@ -323,4 +323,4 @@ public class CompareRuns implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-891419626
+// LIFERAY-REST-BUILDER-HASH:1804447910

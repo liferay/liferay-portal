@@ -317,4 +317,4 @@ public class StartNodeKeys implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2111428028
+// LIFERAY-REST-BUILDER-HASH:2010925978

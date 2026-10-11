@@ -804,4 +804,4 @@ public class BrokenLinkAsset implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1157866593
+// LIFERAY-REST-BUILDER-HASH:965016147

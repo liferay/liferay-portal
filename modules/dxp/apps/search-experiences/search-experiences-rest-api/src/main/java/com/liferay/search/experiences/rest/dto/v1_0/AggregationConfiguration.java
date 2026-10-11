@@ -254,4 +254,4 @@ public class AggregationConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-570533637
+// LIFERAY-REST-BUILDER-HASH:1325477953

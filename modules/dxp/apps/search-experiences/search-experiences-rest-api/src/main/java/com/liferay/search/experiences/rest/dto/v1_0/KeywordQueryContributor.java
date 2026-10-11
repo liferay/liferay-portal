@@ -257,4 +257,4 @@ public class KeywordQueryContributor implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:905367385
+// LIFERAY-REST-BUILDER-HASH:-1426628217

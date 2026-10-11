@@ -481,4 +481,4 @@ public class BulkActionItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1635971468
+// LIFERAY-REST-BUILDER-HASH:-1717907252

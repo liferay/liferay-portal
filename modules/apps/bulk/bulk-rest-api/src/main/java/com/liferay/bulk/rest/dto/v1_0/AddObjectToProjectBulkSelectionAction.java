@@ -321,4 +321,4 @@ public class AddObjectToProjectBulkSelectionAction
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-733470471
+// LIFERAY-REST-BUILDER-HASH:-1110442955

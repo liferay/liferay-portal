@@ -690,4 +690,4 @@ public class DiscountOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1724390946
+// LIFERAY-REST-BUILDER-HASH:1819043736

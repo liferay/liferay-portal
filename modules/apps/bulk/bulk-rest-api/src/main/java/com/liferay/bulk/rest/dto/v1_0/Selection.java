@@ -249,4 +249,4 @@ public class Selection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1544335124
+// LIFERAY-REST-BUILDER-HASH:1258602218

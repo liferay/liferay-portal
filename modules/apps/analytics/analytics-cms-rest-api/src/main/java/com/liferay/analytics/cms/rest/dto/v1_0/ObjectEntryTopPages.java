@@ -318,4 +318,4 @@ public class ObjectEntryTopPages implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1117536739
+// LIFERAY-REST-BUILDER-HASH:-749799473

@@ -1561,4 +1561,4 @@ public class Summary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1365011296
+// LIFERAY-REST-BUILDER-HASH:1390691386

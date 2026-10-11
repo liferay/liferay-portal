@@ -314,4 +314,4 @@ public class SharedInternalModelBatchTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2140198837
+// LIFERAY-REST-BUILDER-HASH:-1962753531

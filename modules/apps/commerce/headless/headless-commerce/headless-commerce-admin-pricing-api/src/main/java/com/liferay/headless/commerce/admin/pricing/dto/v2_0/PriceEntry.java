@@ -2020,4 +2020,4 @@ public class PriceEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:405293182
+// LIFERAY-REST-BUILDER-HASH:-312637550

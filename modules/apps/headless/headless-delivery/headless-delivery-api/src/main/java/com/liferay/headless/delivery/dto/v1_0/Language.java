@@ -550,4 +550,4 @@ public class Language implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:467676561
+// LIFERAY-REST-BUILDER-HASH:-355297159

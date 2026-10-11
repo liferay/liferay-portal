@@ -1119,4 +1119,4 @@ public class Form implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1679527480
+// LIFERAY-REST-BUILDER-HASH:-1730783438

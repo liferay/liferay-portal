@@ -330,4 +330,4 @@ public class ContextualMenuNavigationMenuValue
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1160494246
+// LIFERAY-REST-BUILDER-HASH:-865963172

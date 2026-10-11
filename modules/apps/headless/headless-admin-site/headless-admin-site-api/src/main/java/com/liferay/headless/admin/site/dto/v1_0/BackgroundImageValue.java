@@ -332,4 +332,4 @@ public abstract class BackgroundImageValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1344981218
+// LIFERAY-REST-BUILDER-HASH:-781061586

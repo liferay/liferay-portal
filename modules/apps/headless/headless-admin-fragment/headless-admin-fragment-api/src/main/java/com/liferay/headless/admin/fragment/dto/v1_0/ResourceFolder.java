@@ -758,4 +758,4 @@ public class ResourceFolder implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:422697684
+// LIFERAY-REST-BUILDER-HASH:-249241564

@@ -255,4 +255,4 @@ public class SearchRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1877108566
+// LIFERAY-REST-BUILDER-HASH:585541094

@@ -394,4 +394,4 @@ public class DDMOption implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1676438421
+// LIFERAY-REST-BUILDER-HASH:1113747829

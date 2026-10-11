@@ -304,4 +304,4 @@ public class Coordinates implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:298462249
+// LIFERAY-REST-BUILDER-HASH:330937361

@@ -312,4 +312,4 @@ public class Group implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1225333345
+// LIFERAY-REST-BUILDER-HASH:80311859
