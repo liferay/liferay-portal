@@ -394,16 +394,7 @@ public class GCSStore implements Store {
 	private String[] _getFilePaths(
 		long companyId, long repositoryId, String dirName) {
 
-		String path = null;
-
-		if (Validator.isNull(dirName) ||
-			dirName.equals(StringPool.FORWARD_SLASH)) {
-
-			path = _getRepositoryKey(companyId, repositoryId);
-		}
-		else {
-			path = _getDirectoryKey(companyId, repositoryId, dirName);
-		}
+		String path = _getDirectoryKey(companyId, repositoryId, dirName);
 
 		return _getFilePaths(path);
 	}
@@ -465,10 +456,6 @@ public class GCSStore implements Store {
 		}
 
 		return blob.reader(_decryptBlobBlobSourceOption);
-	}
-
-	private String _getRepositoryKey(long companyId, long repositoryId) {
-		return StoreArea.getCurrentStoreAreaPath(companyId, repositoryId);
 	}
 
 	private WriteChannel _getWriteChannel(BlobInfo blobInfo) {
