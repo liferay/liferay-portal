@@ -9,8 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentCompositionLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -169,6 +171,12 @@ public class FragmentCollectionContributorTest {
 	public void testRegisterContributedFragmentEntries() {
 		String fragmentCollectionContributorKey = RandomTestUtil.randomString();
 
+		FragmentComposition fragmentComposition =
+			FragmentCompositionLocalServiceUtil.createFragmentComposition(0L);
+
+		fragmentComposition.setFragmentCompositionKey(
+			"test-fragment-composition");
+
 		TestFragmentCollectionContributor testFragmentCollectionContributor =
 			new TestFragmentCollectionContributor(
 				fragmentCollectionContributorKey,
@@ -195,7 +203,8 @@ public class FragmentCollectionContributorTest {
 						"test-section-fragment-entry",
 						RandomTestUtil.randomString(),
 						FragmentConstants.TYPE_SECTION)
-				).build());
+				).build(),
+				fragmentComposition);
 
 		ServiceRegistration<?> serviceRegistration = _getServiceRegistration(
 			testFragmentCollectionContributor);
@@ -212,6 +221,13 @@ public class FragmentCollectionContributorTest {
 				fragmentEntries.get("test-section-fragment-entry"));
 			Assert.assertNull(
 				fragmentEntries.get("test-unsupported-fragment-entry"));
+
+			Assert.assertNotNull(
+				_fragmentCollectionContributorRegistry.getFragmentEntry(
+					"test-component-fragment-entry"));
+			Assert.assertNotNull(
+				_fragmentCollectionContributorRegistry.getFragmentComposition(
+					"test-fragment-composition"));
 		}
 		finally {
 			serviceRegistration.unregister();

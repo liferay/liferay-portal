@@ -6,8 +6,10 @@
 package com.liferay.fragment.contributor.test;
 
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
+import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.util.ArrayList;
@@ -24,15 +26,23 @@ public class TestFragmentCollectionContributor
 
 	public TestFragmentCollectionContributor(
 		String fragmentCollectionKey,
-		Map<Integer, FragmentEntry> fragmentEntriesMap) {
+		Map<Integer, FragmentEntry> fragmentEntriesMap,
+		FragmentComposition... fragmentCompositions) {
 
 		_fragmentCollectionKey = fragmentCollectionKey;
 		_fragmentEntriesMap = fragmentEntriesMap;
+
+		_fragmentCompositions = ListUtil.fromArray(fragmentCompositions);
 	}
 
 	@Override
 	public String getFragmentCollectionKey() {
 		return _fragmentCollectionKey;
+	}
+
+	@Override
+	public List<FragmentComposition> getFragmentCompositions() {
+		return _fragmentCompositions;
 	}
 
 	@Override
@@ -84,6 +94,7 @@ public class TestFragmentCollectionContributor
 	}
 
 	private final String _fragmentCollectionKey;
+	private final List<FragmentComposition> _fragmentCompositions;
 	private final Map<Integer, FragmentEntry> _fragmentEntriesMap;
 
 }
