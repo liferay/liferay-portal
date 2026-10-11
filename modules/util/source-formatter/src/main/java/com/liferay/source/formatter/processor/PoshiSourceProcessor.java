@@ -5,8 +5,10 @@
 
 package com.liferay.source.formatter.processor;
 
+import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.poshi.core.PoshiContext;
+import com.liferay.poshi.core.PoshiProperties;
 import com.liferay.poshi.core.elements.PoshiElement;
 import com.liferay.poshi.core.elements.PoshiNodeFactory;
 import com.liferay.poshi.core.script.PoshiScriptParserException;
@@ -17,6 +19,7 @@ import com.liferay.source.formatter.util.DebugUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -107,6 +110,26 @@ public class PoshiSourceProcessor extends BaseSourceProcessor {
 		}
 
 		return newContent;
+	}
+
+	@Override
+	protected void preFormat() throws Exception {
+
+		// Initializing PoshiProperties prints every Poshi property to
+		// System.out, so load it once here instead of during each parse
+
+		PrintStream printStream = System.out;
+
+		printStream.flush();
+
+		System.setOut(new PrintStream(new UnsyncByteArrayOutputStream()));
+
+		try {
+			PoshiProperties.getPoshiProperties();
+		}
+		finally {
+			System.setOut(printStream);
+		}
 	}
 
 	private synchronized void _populateFunctionAndMacroFiles()
