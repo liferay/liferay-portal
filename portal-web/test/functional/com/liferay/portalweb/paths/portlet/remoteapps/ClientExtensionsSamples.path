@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>ClientExtensionsSamples</title>
+</head>
+
+<body>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ClientExtensionsSamples</td></tr>
+</thead>
+
+<tbody>
+
+<!-- Counter App -->
+
+<tr>
+	<td>COUNTER_CART_TOTAL</td>
+	<td>//span[contains(@class,'badge-pill')]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_DECREMENT</td>
+	<td>xpath=(//button[contains(@class,'btn-info')])[${key_row}]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_DELETE_ROW</td>
+	<td>xpath=(//button//i[contains(@class,'fa-trash-o')])[${key_row}]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_HEADER</td>
+	<td>//div[@class='navbar-brand']</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_INCREMENT</td>
+	<td>xpath=(//button//i[contains(@class,'fa-plus-circle')])[${key_row}]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_QUANTITY_VALUE</td>
+	<td>xpath=(//div//span[contains(@class,'badge-primary')])[${key_row}]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_RESET_BUTTON</td>
+	<td>xpath=(//button//i[contains(@class,'fa-recycle')])</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>COUNTER_ROW</td>
+	<td>xpath=(//div[@class='row']//span)[${key_row}]</td>
+	<td></td>
+</tr>
+
+<!-- Liferay Sample Custom Element 1 -->
+
+<tr>
+	<td>CUSTOM_ELEMENT_1_COUNTER</td>
+	<td>css=vanilla-counter>>>.counter</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_ELEMENT_1_DECREMENT_BUTTON</td>
+	<td>css=vanilla-counter>>>.decrement</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_ELEMENT_1_INCREMENT_BUTTON</td>
+	<td>css=vanilla-counter>>>.increment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_ELEMENT_1_WIDGET</td>
+	<td>css=vanilla-counter</td>
+	<td></td>
+</tr>
+
+<!-- Liferay Sample Global CSS -->
+
+<tr>
+	<td>GLOBAL_CSS_TITLE_CONTAINER</td>
+	<td>//a[contains(@title,'Go to Liferay DXP')]</td>
+	<td></td>
+</tr>
+
+</tbody>
+</table>
+</body>
+</html>
