@@ -412,9 +412,9 @@ public class GCSStore implements Store {
 	private String[] _getFilePaths(String path) {
 		List<String> filePaths = new ArrayList<>();
 
-		Bucket bucket = _gcsStore.get(_gcsStoreConfiguration.bucketName());
-
-		Page<Blob> blobPage = bucket.list(Storage.BlobListOption.prefix(path));
+		Page<Blob> blobPage = _gcsStore.list(
+			_gcsStoreConfiguration.bucketName(),
+			Storage.BlobListOption.prefix(path));
 
 		Iterable<Blob> blobs = blobPage.iterateAll();
 
