@@ -190,27 +190,10 @@ public class FragmentCollectionContributorRegistryImpl
 
 	@Override
 	public FragmentEntry getFragmentEntry(String fragmentEntryKey) {
-		if (fragmentEntryKey == null) {
-			return null;
-		}
-
-		int index = fragmentEntryKey.indexOf(CharPool.DASH);
-
-		if (index == -1) {
-			return null;
-		}
-
-		FragmentCollectionBag fragmentCollectionBag =
-			_serviceTrackerMap.getService(fragmentEntryKey.substring(0, index));
+		FragmentCollectionBag fragmentCollectionBag = _getFragmentCollectionBag(
+			fragmentEntryKey);
 
 		if (fragmentCollectionBag == null) {
-			return null;
-		}
-
-		FragmentCollectionContributor fragmentCollectionContributor =
-			fragmentCollectionBag._fragmentCollectionContributor;
-
-		if (!fragmentCollectionContributor.isEnabled()) {
 			return null;
 		}
 
@@ -261,6 +244,36 @@ public class FragmentCollectionContributorRegistryImpl
 
 	@Reference
 	protected FragmentEntryValidator fragmentEntryValidator;
+
+	private FragmentCollectionBag _getFragmentCollectionBag(
+		String fragmentEntryKey) {
+
+		if (fragmentEntryKey == null) {
+			return null;
+		}
+
+		int index = fragmentEntryKey.indexOf(CharPool.DASH);
+
+		if (index == -1) {
+			return null;
+		}
+
+		FragmentCollectionBag fragmentCollectionBag =
+			_serviceTrackerMap.getService(fragmentEntryKey.substring(0, index));
+
+		if (fragmentCollectionBag == null) {
+			return null;
+		}
+
+		FragmentCollectionContributor fragmentCollectionContributor =
+			fragmentCollectionBag._fragmentCollectionContributor;
+
+		if (!fragmentCollectionContributor.isEnabled()) {
+			return null;
+		}
+
+		return fragmentCollectionBag;
+	}
 
 	private Configuration _getFragmentServiceCompanyConfiguration(
 			long companyId)
