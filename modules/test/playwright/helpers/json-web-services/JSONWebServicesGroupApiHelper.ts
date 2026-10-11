@@ -68,6 +68,21 @@ export class JSONWebServicesGroupApiHelper {
 		);
 	}
 
+	async getGroup(groupId: string): Promise<Group> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('groupId', groupId);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/get-group`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async getGroupByKey(companyId: string, groupKey: string): Promise<Group> {
 		const urlSearchParams = new URLSearchParams();
 
