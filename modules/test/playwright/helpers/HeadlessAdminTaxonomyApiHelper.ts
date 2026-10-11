@@ -19,6 +19,7 @@ interface postSiteTaxonomyVocabularyProps {
 }
 
 export interface postTaxonomyCategoryTaxonomyCategory {
+	description?: string;
 	name: string;
 	name_i18n?: {[key: string]: string};
 	parentTaxonomyCategoryId: number;
@@ -33,6 +34,7 @@ export interface postTaxonomyVocabularyProps {
 }
 
 export interface postTaxonomyVocabularyTaxonomyCategoryProps {
+	description?: string;
 	name: string;
 	name_i18n?: {[key: string]: string};
 	system?: boolean;
@@ -207,13 +209,14 @@ export class HeadlessAdminTaxonomyApiHelper {
 	 */
 
 	async postTaxonomyCategoryTaxonomyCategory({
+		description,
 		name,
 		name_i18n,
 		parentTaxonomyCategoryId,
 	}: postTaxonomyCategoryTaxonomyCategory): Promise<{id: number}> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-categories/${parentTaxonomyCategoryId}/taxonomy-categories`,
-			{data: {name, name_i18n}}
+			{data: {description, name, name_i18n}}
 		);
 	}
 
@@ -225,6 +228,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 	 */
 
 	async postTaxonomyVocabularyTaxonomyCategory({
+		description,
 		name,
 		name_i18n,
 		system,
@@ -235,7 +239,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-vocabularies/${vocabularyId}/taxonomy-categories`,
-			{data: {name, name_i18n, system}}
+			{data: {description, name, name_i18n, system}}
 		);
 	}
 

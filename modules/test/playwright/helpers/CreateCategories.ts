@@ -42,10 +42,11 @@ export async function createCategories({
 		});
 
 	const categories = [];
-	for (const {name, name_i18n} of categoryNames) {
+	for (const {description, name, name_i18n} of categoryNames) {
 		const {externalReferenceCode, id} =
 			await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabularyTaxonomyCategory(
 				{
+					description,
 					name,
 					name_i18n,
 					vocabularyId,
@@ -53,6 +54,7 @@ export async function createCategories({
 			);
 
 		categories.push({
+			description,
 			externalReferenceCode,
 			id,
 			name,
