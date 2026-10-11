@@ -1,0 +1,6 @@
+{
+	"className": "com.liferay.portal.search.web.internal.category.facet.portlet.CategoryFacetPortlet",
+	"ddmTemplateKey": "LEARN_SEARCH_TABS",
+	"name": "Learn Search Tabs",
+	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"
+}
