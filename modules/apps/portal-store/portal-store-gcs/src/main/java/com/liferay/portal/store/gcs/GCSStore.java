@@ -386,27 +386,13 @@ public class GCSStore implements Store {
 	}
 
 	private String[] _getFilePaths(long companyId) {
-		List<String> filePaths = new ArrayList<>();
-
-		Bucket bucket = _gcsStore.get(_gcsStoreConfiguration.bucketName());
-
 		String path = StoreArea.getCurrentStoreAreaPath(companyId);
 
-		Page<Blob> blobPage = bucket.list(Storage.BlobListOption.prefix(path));
-
-		Iterable<Blob> blobs = blobPage.iterateAll();
-
-		blobs.forEach(blob -> filePaths.add(blob.getName()));
-
-		return filePaths.toArray(new String[0]);
+		return _getFilePaths(path);
 	}
 
 	private String[] _getFilePaths(
 		long companyId, long repositoryId, String dirName) {
-
-		List<String> filePaths = new ArrayList<>();
-
-		Bucket bucket = _gcsStore.get(_gcsStoreConfiguration.bucketName());
 
 		String path = null;
 
@@ -418,6 +404,14 @@ public class GCSStore implements Store {
 		else {
 			path = _getDirectoryKey(companyId, repositoryId, dirName);
 		}
+
+		return _getFilePaths(path);
+	}
+
+	private String[] _getFilePaths(String path) {
+		List<String> filePaths = new ArrayList<>();
+
+		Bucket bucket = _gcsStore.get(_gcsStoreConfiguration.bucketName());
 
 		Page<Blob> blobPage = bucket.list(Storage.BlobListOption.prefix(path));
 
