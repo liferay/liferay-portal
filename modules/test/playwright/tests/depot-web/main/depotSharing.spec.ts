@@ -24,6 +24,7 @@ import {
 	withRecipientPage,
 } from '../../../utils/sharingRecipient';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import addEditableDepot from './utils/addEditableDepot';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -86,23 +87,7 @@ test(
 	'Sharing can be disabled in a depot',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, documentLibraryPage, page}) => {
-
-		// The General form cannot be saved for a headless asset library
-		// (LPD-109404)
-
-		const depot =
-			await apiHelpers.jsonWebServicesDepot.addDepotEntry(
-				getRandomString()
-			);
-
-		const group = await apiHelpers.jsonWebServicesGroup.getGroup(
-			String(depot.groupId)
-		);
-
-		apiHelpers.data.push({
-			id: group.externalReferenceCode,
-			type: 'assetLibrary',
-		});
+		const depot = await addEditableDepot(apiHelpers);
 
 		const title = await addDocument(apiHelpers, depot.depotEntryId);
 

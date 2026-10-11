@@ -13,6 +13,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {FileSizeMimetypesForm} from '../../document-library-web/main/pages/FileSizeMimetypesForm';
+import addEditableDepot from './utils/addEditableDepot';
 
 const test = mergeTests(dataApiHelpersTest, loginTest());
 
@@ -66,25 +67,7 @@ test(
 	'A depot enforces its mime type size limits only on its own uploads',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, page}) => {
-
-		// The General form cannot be saved for a headless asset library
-		// (LPD-109404)
-
-		const depot =
-			await apiHelpers.jsonWebServicesDepot.addDepotEntry(
-				getRandomString()
-			);
-
-		// Delete the depot through the fixture, also when the test times out
-
-		const group = await apiHelpers.jsonWebServicesGroup.getGroup(
-			String(depot.groupId)
-		);
-
-		apiHelpers.data.push({
-			id: group.externalReferenceCode,
-			type: 'assetLibrary',
-		});
+		const depot = await addEditableDepot(apiHelpers);
 
 		const anotherAssetLibrary =
 			await apiHelpers.headlessAssetLibrary.createAssetLibrary({

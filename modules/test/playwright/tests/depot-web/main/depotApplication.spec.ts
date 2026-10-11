@@ -10,7 +10,6 @@ import path from 'path';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {DocumentLibraryPage} from '../../../pages/document-library-web/DocumentLibraryPage';
 import {WebContentPage} from '../../../pages/journal-web/WebContentPage';
 import getRandomString from '../../../utils/getRandomString';
@@ -18,6 +17,7 @@ import {PORTLET_URLS} from '../../../utils/portletUrls';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {BlogsEditBlogEntryPage} from '../../blogs-web/main/pages/BlogsEditBlogEntryPage';
+import addEditableDepot from './utils/addEditableDepot';
 
 const test = mergeTests(dataApiHelpersTest, isolatedSiteTest, loginTest());
 
@@ -30,26 +30,6 @@ const APPLICATIONS = [
 
 const DEPOT_ADMIN_NAMESPACE =
 	'_com_liferay_depot_web_portlet_DepotAdminPortlet_';
-
-async function addDepot(apiHelpers: DataApiHelpers) {
-
-	// The General form cannot be saved for a headless asset library
-	// (LPD-109404)
-
-	const depot =
-		await apiHelpers.jsonWebServicesDepot.addDepotEntry(getRandomString());
-
-	const group = await apiHelpers.jsonWebServicesGroup.getGroup(
-		String(depot.groupId)
-	);
-
-	apiHelpers.data.push({
-		id: group.externalReferenceCode,
-		type: 'assetLibrary',
-	});
-
-	return depot;
-}
 
 function getApplicationCard(page: Page, application: string) {
 	return page.locator('.card-page-item-asset').filter({hasText: application});
@@ -84,7 +64,7 @@ test(
 	'Depot applications can be disabled and enabled again with their content',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, page}) => {
-		const depot = await addDepot(apiHelpers);
+		const depot = await addEditableDepot(apiHelpers);
 
 		const documentTitle = getRandomString();
 
@@ -174,14 +154,10 @@ test(
 	'A connected site cannot select depot documents once the depot disables Documents and Media',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, page, site}) => {
-		const depot = await addDepot(apiHelpers);
-
-		const group = await apiHelpers.jsonWebServicesGroup.getGroup(
-			String(depot.groupId)
-		);
+		const depot = await addEditableDepot(apiHelpers);
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
-			group.externalReferenceCode,
+			depot.externalReferenceCode,
 			site.externalReferenceCode
 		);
 
@@ -191,12 +167,6 @@ test(
 			['Documents and Media'],
 			false
 		);
-
-		const depotName = (
-			await apiHelpers.headlessAssetLibrary.getAssetLibrary(
-				group.externalReferenceCode
-			)
-		).name;
 
 		await new BlogsEditBlogEntryPage(page).goto(site.friendlyUrlPath);
 
@@ -214,7 +184,7 @@ test(
 
 		await itemSelector.getByText('Asset Library', {exact: true}).click();
 
-		await itemSelector.getByText(depotName, {exact: true}).click();
+		await itemSelector.getByText(depot.name, {exact: true}).click();
 
 		await expect(
 			itemSelector.getByText(
