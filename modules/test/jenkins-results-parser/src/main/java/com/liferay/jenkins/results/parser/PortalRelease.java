@@ -280,6 +280,17 @@ public class PortalRelease {
 		return "master";
 	}
 
+	public String getStandaloneBuildProfile() {
+		Matcher matcher = _standaloneBundleURLPattern.matcher(
+			String.valueOf(getPortalBundleTomcatURL()));
+
+		if (_standalone && matcher.matches()) {
+			return matcher.group("buildProfile");
+		}
+
+		return null;
+	}
+
 	public boolean isStandalone() {
 		return _standalone;
 	}
@@ -842,8 +853,8 @@ public class PortalRelease {
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile(_QUARTERLY_RELEASE_VERSION_REGEX);
 	private static final Pattern _standaloneBundleURLPattern = Pattern.compile(
-		"https?://.+/liferay-dxp-tomcat-.+-(?<component>[a-z]+)-standalone-" +
-			"\\d+\\.(7z|tar\\.gz|zip)");
+		"https?://.+/liferay-dxp-tomcat-.+-" +
+			"(?<buildProfile>[a-z]+-standalone)-\\d+\\.(7z|tar\\.gz|zip)");
 	private static final Pattern _tomcatBundlePropertyPattern = Pattern.compile(
 		"portal.bundle.tomcat\\[(?<portalVersion>.+)\\]");
 	private static final Pattern _tomcatBundleURLPattern = Pattern.compile(
