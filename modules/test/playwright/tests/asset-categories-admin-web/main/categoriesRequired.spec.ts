@@ -16,6 +16,7 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
+import {sitesAdminPagesTest} from '../../site-admin-web/main/fixtures/sitesAdminPagesTest';
 import {assetCategoriesPagesTest} from './fixtures/assetCategoriesAdminPagesTest';
 
 const test = mergeTests(
@@ -25,7 +26,8 @@ const test = mergeTests(
 	journalPagesTest,
 	loginTest(),
 	pagesAdminPagesTest,
-	siteSettingsPagesTest
+	siteSettingsPagesTest,
+	sitesAdminPagesTest
 );
 
 const widgetPagesTest = mergeTests(
@@ -164,6 +166,96 @@ test(
 				`Please select at least one category for ${vocabularyName}.`
 			)
 		).toBeVisible();
+	}
+);
+
+test(
+	'Select a required category of the parent site when adding a child site',
+	{tag: '@LPD-109100'},
+	async ({apiHelpers, page, site, sitesAdminPage}) => {
+		const vocabularyName = getRandomString();
+
+		const [category] = await createCategories({
+			apiHelpers,
+			assetTypes: [{required: true, type: 'WebSite'}],
+			categoryNames: [{name: getRandomString()}],
+			siteId: site.id,
+			vocabularyName,
+		});
+
+		const childSiteName = getRandomString();
+
+		try {
+
+			// Add a child site without the required category
+
+			await sitesAdminPage.goto();
+
+			await sitesAdminPage.searchSite(site.name);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {name: 'Add Child Site'}),
+				trigger: page
+					.getByRole('row', {name: site.name})
+					.getByLabel('Show Actions'),
+			});
+
+			await page
+				.getByRole('button', {name: 'Select Template: Blank Site'})
+				.click();
+
+			const addSiteFrame = page.frameLocator('iframe[title="Add Site"]');
+
+			await addSiteFrame.getByLabel('Name').fill(childSiteName);
+
+			await addSiteFrame.getByRole('button', {name: 'Add'}).click();
+
+			await expect(
+				addSiteFrame.getByText(
+					`Please select at least one category for ${vocabularyName}.`
+				)
+			).toBeVisible();
+
+			// Select the required category and add the child site
+
+			await addSiteFrame
+				.getByRole('button', {name: `Select ${vocabularyName}`})
+				.click();
+
+			const selectCategoryModal = addSiteFrame.getByRole('dialog', {
+				name: `Select ${vocabularyName}`,
+			});
+
+			await selectCategoryModal
+				.getByRole('treeitem', {name: category.name})
+				.getByRole('checkbox')
+				.check();
+
+			await selectCategoryModal
+				.getByRole('button', {name: 'Done'})
+				.click();
+
+			await addSiteFrame.getByRole('button', {name: 'Add'}).click();
+
+			await waitForAlert(page, 'Success: Site was successfully added.');
+		}
+		finally {
+			const company =
+				await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+					'liferay.com'
+				);
+
+			const childSite = await apiHelpers.jsonWebServicesGroup
+				.getGroupByKey(company.companyId, childSiteName)
+				.catch(() => null);
+
+			if (childSite?.externalReferenceCode) {
+				await apiHelpers.headlessAdminSite.deleteSite(
+					childSite.externalReferenceCode
+				);
+			}
+		}
 	}
 );
 
