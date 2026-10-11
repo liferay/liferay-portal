@@ -432,24 +432,23 @@ public class GCSStore implements Store {
 				companyId, repositoryId, fileName, versionLabel);
 		}
 
-		String path = _getFileKey(companyId, repositoryId, fileName);
+		String[] versionLabels = getFileVersions(
+			companyId, repositoryId, fileName);
 
-		String[] fileNames = _getFilePaths(companyId, repositoryId, path);
-
-		if (ArrayUtil.isEmpty(fileNames)) {
+		if (ArrayUtil.isEmpty(versionLabels)) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Using default version for " + path);
+				_log.debug("Using default version for " + fileName);
 			}
 
 			return _getFileVersionKey(
 				companyId, repositoryId, fileName, VERSION_DEFAULT);
 		}
 
-		List<String> fileNamesList = Arrays.asList(fileNames);
+		Arrays.sort(versionLabels, new VersionNumberComparator(true));
 
-		fileNamesList.sort(new VersionNumberComparator());
-
-		return fileNamesList.get(fileNamesList.size() - 1);
+		return _getFileVersionKey(
+			companyId, repositoryId, fileName,
+			versionLabels[versionLabels.length - 1]);
 	}
 
 	private ReadChannel _getReadChannel(Blob blob) {
