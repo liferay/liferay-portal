@@ -56,12 +56,12 @@ public class DBPartitionMigrationValidator {
 			System.err.println("Missing command: export or validate");
 		}
 		else if (args[0].equals("export")) {
-			_export(ArrayUtil.remove(args, args[0]));
+			_export(ArrayUtil.subset(args, 1, args.length));
 
 			_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
 		}
 		else if (args[0].equals("validate")) {
-			_validate(ArrayUtil.remove(args, args[0]));
+			_validate(ArrayUtil.subset(args, 1, args.length));
 
 			_exit(_LIFERAY_COMMON_EXIT_CODE_OK);
 		}
