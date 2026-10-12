@@ -43,6 +43,16 @@ export class ProductRelationshipsPage {
 				.check();
 		}
 
+		await expect(
+			this.selectorDialog
+				.locator('.management-bar')
+				.getByText(
+					new RegExp(
+						`^(All Selected \\()?${names.length} of \\d+ Items( Selected|\\))$`
+					)
+				)
+		).toBeVisible();
+
 		await this.selectorConfirmButton.click();
 
 		await expect(this.selectorDialog).toBeHidden();
