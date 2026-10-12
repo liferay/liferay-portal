@@ -16,6 +16,7 @@ import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -87,6 +88,12 @@ public class CommerceProductViewPermissionImpl
 			PermissionChecker permissionChecker, long commerceAccountId,
 			long groupId, long cpDefinitionId)
 		throws PortalException {
+
+		if (!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+				permissionChecker, groupId)) {
+
+			return false;
+		}
 
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);
