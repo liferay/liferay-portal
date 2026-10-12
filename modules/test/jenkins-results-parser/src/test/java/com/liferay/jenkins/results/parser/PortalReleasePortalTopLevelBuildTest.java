@@ -178,16 +178,16 @@ public class PortalReleasePortalTopLevelBuildTest
 		PortalReleasePortalTopLevelBuild portalReleasePortalTopLevelBuild =
 			Mockito.mock(PortalReleasePortalTopLevelBuild.class);
 
+		Mockito.doCallRealMethod(
+		).when(
+			portalReleasePortalTopLevelBuild
+		).getPortalRelease();
+
 		Mockito.doReturn(
 			buildDatabase
 		).when(
 			portalReleasePortalTopLevelBuild
 		).getBuildDatabase();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalReleasePortalTopLevelBuild
-		).getPortalRelease();
 
 		return portalReleasePortalTopLevelBuild;
 	}
