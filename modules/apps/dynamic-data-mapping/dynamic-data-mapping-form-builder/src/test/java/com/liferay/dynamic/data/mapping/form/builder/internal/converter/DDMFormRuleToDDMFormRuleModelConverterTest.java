@@ -18,7 +18,6 @@ import com.liferay.dynamic.data.mapping.spi.converter.serializer.SPIDDMFormRuleS
 import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -26,7 +25,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -353,40 +352,13 @@ public class DDMFormRuleToDDMFormRuleModelConverterTest
 		String expectedParametersExpression,
 		String actualParametersExpression) {
 
-		Map<String, String> expectedParametersExpressionMap =
-			MapUtil.toLinkedHashMap(
-				StringUtil.split(
-					expectedParametersExpression, CharPool.SEMICOLON),
-				StringPool.EQUAL);
-
-		Map<String, String> actualParametersExpressionMap =
-			MapUtil.toLinkedHashMap(
-				StringUtil.split(
-					actualParametersExpression, CharPool.SEMICOLON),
-				StringPool.EQUAL);
-
 		Assert.assertEquals(
-			actualParametersExpressionMap.toString(),
-			expectedParametersExpressionMap.size(),
-			actualParametersExpressionMap.size());
-
-		for (Map.Entry<String, String> expectedParameterExpression :
-				expectedParametersExpressionMap.entrySet()) {
-
-			String expectedParameterName = expectedParameterExpression.getKey();
-
-			String expectedParameterValue =
-				expectedParameterExpression.getValue();
-
-			Assert.assertTrue(
-				actualParametersExpressionMap.containsKey(
-					expectedParameterName));
-
-			String actualParameterValue = actualParametersExpressionMap.get(
-				expectedParameterName);
-
-			Assert.assertEquals(expectedParameterValue, actualParameterValue);
-		}
+			SetUtil.fromArray(
+				StringUtil.split(
+					expectedParametersExpression, CharPool.SEMICOLON)),
+			SetUtil.fromArray(
+				StringUtil.split(
+					actualParametersExpression, CharPool.SEMICOLON)));
 	}
 
 	private void _assertConversionToConvertModel(
