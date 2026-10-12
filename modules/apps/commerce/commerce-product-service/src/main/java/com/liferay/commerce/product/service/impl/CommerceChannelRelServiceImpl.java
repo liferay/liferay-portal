@@ -89,7 +89,7 @@ public class CommerceChannelRelServiceImpl
 				QueryUtil.ALL_POS);
 
 		for (CommerceChannelRel commerceChannelRel : commerceChannelRels) {
-			commerceChannelRelLocalService.deleteCommerceChannelRel(
+			commerceChannelRelService.deleteCommerceChannelRel(
 				commerceChannelRel.getCommerceChannelRelId());
 		}
 	}
