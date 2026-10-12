@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {render} from '@liferay/frontend-js-react-web';
 import {
 	StatusLabel,
 	addOnClickToCreationMenuItems,
@@ -11,11 +12,16 @@ import {
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
+import ProductRelationshipSelectorModal from './ProductRelationshipSelectorModal';
 import ProductRelationshipSelectorTitleRenderer from './cell_renderers/ProductRelationshipSelectorTitleRenderer';
-import openProductRelationshipSelectorModal from './openProductRelationshipSelectorModal';
 
 const ACTIONS = {
-	createProductRelationship: openProductRelationshipSelectorModal,
+	createProductRelationship: (data: any, loadData?: () => void) =>
+		render(
+			ProductRelationshipSelectorModal,
+			{...data, loadData},
+			document.createElement('div')
+		),
 };
 
 export default function propsTransformer({
