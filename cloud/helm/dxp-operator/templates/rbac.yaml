@@ -101,6 +101,7 @@ rules:
         verbs:
             -   get
             -   list
+            -   patch
             -   watch
     -   apiGroups:
             -   cx.liferay.com

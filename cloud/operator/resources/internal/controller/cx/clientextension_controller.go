@@ -30,6 +30,8 @@ import (
 
 const (
 	ReasonConfigurationOnly      = "ConfigurationOnly"
+	ReasonDeleteIncomplete       = "DeleteIncomplete"
+	ReasonDeleting               = "Deleting"
 	ReasonDelivered              = "Delivered"
 	ReasonDeliveryNotPermitted   = "DeliveryNotPermitted"
 	ReasonDxpNamespaceNotFound   = "DxpNamespaceNotFound"
@@ -60,7 +62,7 @@ const refusalRequeueInterval = time.Minute
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;patch;watch
 // +kubebuilder:rbac:groups=batch,resources=cronjobs,verbs=get;list;watch
 // +kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch
-// +kubebuilder:rbac:groups=cx.liferay.com,resources=clientextensions,verbs=get;list;watch
+// +kubebuilder:rbac:groups=cx.liferay.com,resources=clientextensions,verbs=get;list;patch;watch
 // +kubebuilder:rbac:groups=cx.liferay.com,resources=clientextensions/finalizers,verbs=update
 // +kubebuilder:rbac:groups=cx.liferay.com,resources=clientextensions/status,verbs=get;patch;update
 func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
@@ -73,6 +75,16 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 		context, request.NamespacedName, &clientExtension,
 	); error != nil {
 		return controllerruntime.Result{}, client.IgnoreNotFound(error)
+	}
+
+	if !clientExtension.DeletionTimestamp.IsZero() {
+		return clientExtensionReconciler.deleteClientExtension(&clientExtension, context)
+	}
+
+	if error := clientExtensionReconciler.addFinalizer(
+		&clientExtension, context,
+	); error != nil {
+		return controllerruntime.Result{}, error
 	}
 
 	dxpNamespace, refusedReason, error := clientExtensionReconciler.resolveDxpNamespace(
@@ -176,7 +188,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 
 	currentConfigMapName := types.NamespacedName{Name: extProvisionName(&clientExtension), Namespace: dxpNamespace}
 
-	ownedExtProvisions, error := clientExtensionReconciler.listOwnedExtProvisions(
+	ownedExtProvisionConfigMaps, error := clientExtensionReconciler.listOwnedExtProvisions(
 		&clientExtension, context,
 	)
 
@@ -185,7 +197,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 	}
 
 	forbiddenConfigMapNames, error := clientExtensionReconciler.cleanUpStaleExtProvisions(
-		context, currentConfigMapName, ownedExtProvisions,
+		context, currentConfigMapName, ownedExtProvisionConfigMaps,
 	)
 
 	if error != nil {

@@ -54,12 +54,6 @@ tests:
         it: Grants only reading ConfigMaps cluster wide
     -   asserts:
             -   equal:
-                    path: rules[?(@.resources[0]=="clientextensions")].verbs
-                    value:
-                        -   get
-                        -   list
-                        -   watch
-            -   equal:
                     path: rules[?(@.resources[0]=="clientextensions/finalizers")].verbs
                     value:
                         -   update

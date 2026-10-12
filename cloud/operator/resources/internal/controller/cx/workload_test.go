@@ -86,8 +86,8 @@ func TestReconcileHoldsConfigDigestUntilProvisioned(t *testing.T) {
 		},
 	)
 
-	clientExtensionReconciler := newReconciler(
-		nil, t, clientExtension, newDeployment(podTemplate), newDxpMetadata("liferay-dev", "liferay.com"),
+	clientExtensionReconciler := newClientExtensionReconciler(
+		nil, t, clientExtension, newDeployment(podTemplate), newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
 		newDxpNamespace("liferay-cx"),
 	)
 
@@ -98,7 +98,7 @@ func TestReconcileHoldsConfigDigestUntilProvisioned(t *testing.T) {
 	}
 
 	if error := clientExtensionReconciler.Create(
-		context.Background(), newExtInit("able-oauth-application-user-agent"),
+		context.Background(), newExtInitConfigMap("able-oauth-application-user-agent"),
 	); error != nil {
 		t.Fatal(error)
 	}
@@ -120,11 +120,11 @@ func TestReconcilePutConfigDigestUpdatesWorkload(t *testing.T) {
 
 	clientExtension.Spec.WorkloadRef = &cxv1alpha1.WorkloadRef{Kind: cxv1alpha1.WorkloadKindDeployment, Name: "able"}
 
-	dxpMetadata := newDxpMetadata("liferay-dev", "liferay.com")
+	dxpMetadata := newDxpMetadataConfigMap("liferay-dev", "liferay.com")
 
 	dxpMetadata.Data = map[string]string{"com.liferay.lxc.dxp.mainDomain": "liferay.example.com"}
 
-	clientExtensionReconciler := newReconciler(
+	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, dxpMetadata, newDeployment(newInitializedPodTemplate()), newDxpNamespace("liferay-cx"),
 	)
 
@@ -176,7 +176,7 @@ func TestReconcileReadsWorkloadFromTheAPIServer(t *testing.T) {
 
 	clientExtension.Spec.WorkloadRef = &cxv1alpha1.WorkloadRef{Kind: cxv1alpha1.WorkloadKindDeployment, Name: "able"}
 
-	clientExtensionReconciler := newReconciler(
+	clientExtensionReconciler := newClientExtensionReconciler(
 		&interceptor.Funcs{
 			Get: func(
 				context context.Context, client client.WithWatch, key client.ObjectKey,
@@ -189,7 +189,7 @@ func TestReconcileReadsWorkloadFromTheAPIServer(t *testing.T) {
 				return client.Get(context, key, object, options...)
 			},
 		},
-		t, clientExtension, newDeployment(newInitializedPodTemplate()), newDxpMetadata("liferay-dev", "liferay.com"),
+		t, clientExtension, newDeployment(newInitializedPodTemplate()), newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
 		newDxpNamespace("liferay-cx"),
 	)
 
@@ -253,11 +253,11 @@ func TestReconcileReportsWorkload(t *testing.T) {
 				}
 			}
 
-			clientExtensionReconciler := newReconciler(
+			clientExtensionReconciler := newClientExtensionReconciler(
 				nil, t,
 				append(
 					testCase.objects, clientExtension,
-					newDxpMetadata("liferay-dev", "liferay.com"), newDxpNamespace("liferay-cx"),
+					newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("liferay-cx"),
 				)...,
 			)
 
@@ -294,8 +294,8 @@ func TestReconcileReportsWorkloadNotFoundAfterGracePeriod(t *testing.T) {
 
 	clientExtension.Spec.WorkloadRef = &cxv1alpha1.WorkloadRef{Kind: cxv1alpha1.WorkloadKindDeployment, Name: "able"}
 
-	clientExtensionReconciler := newReconciler(
-		nil, t, clientExtension, newDxpMetadata("liferay-dev", "liferay.com"), newDxpNamespace("liferay-cx"),
+	clientExtensionReconciler := newClientExtensionReconciler(
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("liferay-cx"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -350,8 +350,8 @@ func TestReconcileRestartsWorkloadGracePeriodWhenMisconfiguredWorkloadDisappears
 
 	deployment := newDeployment(corev1.PodTemplateSpec{})
 
-	clientExtensionReconciler := newReconciler(
-		nil, t, clientExtension, deployment, newDxpMetadata("liferay-dev", "liferay.com"),
+	clientExtensionReconciler := newClientExtensionReconciler(
+		nil, t, clientExtension, deployment, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
 		newDxpNamespace("liferay-cx"),
 	)
 
@@ -401,7 +401,7 @@ func TestRequestsForWorkloadMatchesKindAndName(t *testing.T) {
 		Kind: cxv1alpha1.WorkloadKindJob, Name: "able",
 	}
 
-	clientExtensionReconciler := newReconciler(nil, t, able, baker)
+	clientExtensionReconciler := newClientExtensionReconciler(nil, t, able, baker)
 
 	got := clientExtensionReconciler.requestsForWorkload(cxv1alpha1.WorkloadKindDeployment)(
 		context.Background(), newDeployment(corev1.PodTemplateSpec{}),
