@@ -59,7 +59,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
-		formData.putSingle("virtualHost", "testcompany.xyz");
+		formData.putSingle("virtualHostname", "testcompany.xyz");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
@@ -125,7 +125,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 
 		formData = new MultivaluedHashMap<>();
 
-		formData.putSingle("virtualHost", "testcompany.xyz");
+		formData.putSingle("virtualHostname", "testcompany.xyz");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
