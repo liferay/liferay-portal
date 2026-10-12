@@ -1400,7 +1400,8 @@ public class GroupServiceHttp {
 
 	public static java.util.List<com.liferay.portal.kernel.model.Group> search(
 			HttpPrincipal httpPrincipal, long companyId, String name,
-			String description, String[] params, int start, int end)
+			String description, java.util.LinkedHashMap<String, Object> params,
+			int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -1474,7 +1475,7 @@ public class GroupServiceHttp {
 
 	public static int searchCount(
 		HttpPrincipal httpPrincipal, long companyId, String name,
-		String description, String[] params) {
+		String description, java.util.LinkedHashMap<String, Object> params) {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -1840,14 +1841,14 @@ public class GroupServiceHttp {
 		com.liferay.portal.kernel.util.OrderByComparator.class
 	};
 	private static final Class<?>[] _searchParameterTypes33 = new Class[] {
-		long.class, String.class, String.class, String[].class, int.class,
-		int.class
+		long.class, String.class, String.class, java.util.LinkedHashMap.class,
+		int.class, int.class
 	};
 	private static final Class<?>[] _searchCountParameterTypes34 = new Class[] {
 		long.class, long[].class, String.class, java.util.LinkedHashMap.class
 	};
 	private static final Class<?>[] _searchCountParameterTypes35 = new Class[] {
-		long.class, String.class, String.class, String[].class
+		long.class, String.class, String.class, java.util.LinkedHashMap.class
 	};
 	private static final Class<?>[] _setRoleGroupsParameterTypes36 =
 		new Class[] {long.class, long[].class};
@@ -1868,4 +1869,4 @@ public class GroupServiceHttp {
 		new Class[] {long.class, java.util.Map.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1684559598
+// LIFERAY-SERVICE-BUILDER-HASH:1973020578

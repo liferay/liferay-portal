@@ -603,8 +603,8 @@ public class GroupServiceWrapper
 	 */
 	@Override
 	public java.util.List<Group> search(
-			long companyId, String name, String description, String[] params,
-			int start, int end)
+			long companyId, String name, String description,
+			java.util.LinkedHashMap<String, Object> params, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _groupService.search(
@@ -639,7 +639,8 @@ public class GroupServiceWrapper
 	 */
 	@Override
 	public int searchCount(
-		long companyId, String name, String description, String[] params) {
+		long companyId, String name, String description,
+		java.util.LinkedHashMap<String, Object> params) {
 
 		return _groupService.searchCount(companyId, name, description, params);
 	}
@@ -743,4 +744,4 @@ public class GroupServiceWrapper
 	private GroupService _groupService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-370067583
+// LIFERAY-SERVICE-BUILDER-HASH:1877556733

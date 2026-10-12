@@ -555,8 +555,8 @@ public class GroupServiceUtil {
 	 * @throws PortalException if a portal exception occurred
 	 */
 	public static List<Group> search(
-			long companyId, String name, String description, String[] params,
-			int start, int end)
+			long companyId, String name, String description,
+			java.util.LinkedHashMap<String, Object> params, int start, int end)
 		throws PortalException {
 
 		return getService().search(
@@ -589,7 +589,8 @@ public class GroupServiceUtil {
 	 * @return the number of matching groups
 	 */
 	public static int searchCount(
-		long companyId, String name, String description, String[] params) {
+		long companyId, String name, String description,
+		java.util.LinkedHashMap<String, Object> params) {
 
 		return getService().searchCount(companyId, name, description, params);
 	}
@@ -685,4 +686,4 @@ public class GroupServiceUtil {
 	private static volatile GroupService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:545048214
+// LIFERAY-SERVICE-BUILDER-HASH:355160510

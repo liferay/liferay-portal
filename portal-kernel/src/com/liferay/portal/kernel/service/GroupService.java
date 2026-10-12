@@ -481,8 +481,8 @@ public interface GroupService extends BaseService {
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Group> search(
-			long companyId, String name, String description, String[] params,
-			int start, int end)
+			long companyId, String name, String description,
+			LinkedHashMap<String, Object> params, int start, int end)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -509,7 +509,8 @@ public interface GroupService extends BaseService {
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int searchCount(
-		long companyId, String name, String description, String[] params);
+		long companyId, String name, String description,
+		LinkedHashMap<String, Object> params);
 
 	/**
 	 * Sets the groups associated with the role, removing and adding
@@ -569,4 +570,4 @@ public interface GroupService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-215775897
+// LIFERAY-SERVICE-BUILDER-HASH:463219875
