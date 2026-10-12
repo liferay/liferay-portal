@@ -322,7 +322,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private RoleLocalService _roleLocalService;
 
 	@Reference(
-		target = "(site.initializer.key=com.liferay.digital.sales.room.room.site.initializer)"
+		target = "(site.initializer.key=com.liferay.digital.sales.room.template.site.initializer)"
 	)
 	private SiteInitializer _siteInitializer;
 
