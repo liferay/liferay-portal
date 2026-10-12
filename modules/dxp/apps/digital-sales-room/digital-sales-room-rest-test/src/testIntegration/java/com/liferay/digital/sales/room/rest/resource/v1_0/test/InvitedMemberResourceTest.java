@@ -8,12 +8,14 @@ package com.liferay.digital.sales.room.rest.resource.v1_0.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 import com.liferay.digital.sales.room.rest.client.dto.v1_0.InvitedMember;
 import com.liferay.digital.sales.room.rest.client.dto.v1_0.UserAccount;
 import com.liferay.digital.sales.room.rest.client.pagination.Page;
 import com.liferay.digital.sales.room.rest.client.problem.Problem;
 import com.liferay.digital.sales.room.rest.client.resource.v1_0.InvitedMemberResource;
 import com.liferay.digital.sales.room.rest.client.resource.v1_0.UserAccountResource;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -40,8 +42,6 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import java.io.Serializable;
 

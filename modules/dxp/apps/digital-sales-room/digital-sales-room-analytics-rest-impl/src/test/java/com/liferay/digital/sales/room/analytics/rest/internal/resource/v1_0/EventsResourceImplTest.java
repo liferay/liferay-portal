@@ -5,11 +5,11 @@
 
 package com.liferay.digital.sales.room.analytics.rest.internal.resource.v1_0;
 
+import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events;
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.Events;
-import com.liferay.digital.sales.room.util.DSRRoomUtil;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

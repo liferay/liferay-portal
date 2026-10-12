@@ -7,13 +7,13 @@ package com.liferay.digital.sales.room.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.digital.sales.room.analytics.rest.dto.v1_0.IdentityActivity;
 import com.liferay.digital.sales.room.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.digital.sales.room.analytics.rest.resource.v1_0.IdentityActivityResource;
 import com.liferay.digital.sales.room.util.DSRRoomUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Http;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

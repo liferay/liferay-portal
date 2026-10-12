@@ -6,6 +6,9 @@
 package com.liferay.digital.sales.room.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.constants.DSRPortletKeys;
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.login.web.constants.LoginPortletKeys;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
@@ -36,9 +39,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.digital.sales.room.constants.DSRPortletKeys;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 

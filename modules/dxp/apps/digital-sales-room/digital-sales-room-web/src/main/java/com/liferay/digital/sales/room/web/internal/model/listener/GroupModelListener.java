@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.model.listener;
 
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -19,7 +20,6 @@ import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 
 import java.io.Serializable;
 

@@ -8,6 +8,8 @@ package com.liferay.digital.sales.room.web.internal.application.list;
 import com.liferay.application.list.BasePanelCategory;
 import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
+import com.liferay.digital.sales.room.web.internal.util.DSRUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
@@ -19,8 +21,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
-import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
-import com.liferay.digital.sales.room.web.internal.util.DSRUtil;
 
 import java.util.Locale;
 

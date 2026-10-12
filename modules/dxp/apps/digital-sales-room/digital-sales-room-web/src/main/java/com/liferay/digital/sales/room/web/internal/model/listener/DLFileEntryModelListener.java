@@ -5,6 +5,8 @@
 
 package com.liferay.digital.sales.room.web.internal.model.listener;
 
+import com.liferay.digital.sales.room.constants.DSRFolderConstants;
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -28,8 +30,6 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.digital.sales.room.constants.DSRFolderConstants;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 
 import java.util.Objects;
 

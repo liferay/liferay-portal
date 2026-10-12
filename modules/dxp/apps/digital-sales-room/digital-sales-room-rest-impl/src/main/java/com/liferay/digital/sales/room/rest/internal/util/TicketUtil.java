@@ -5,12 +5,12 @@
 
 package com.liferay.digital.sales.room.rest.internal.util;
 
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.service.TicketLocalService;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 
 /**
  * @author Stefano Motta

@@ -9,6 +9,9 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.constants.DSRPortletKeys;
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -52,9 +55,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.digital.sales.room.constants.DSRPortletKeys;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import java.io.Serializable;
 

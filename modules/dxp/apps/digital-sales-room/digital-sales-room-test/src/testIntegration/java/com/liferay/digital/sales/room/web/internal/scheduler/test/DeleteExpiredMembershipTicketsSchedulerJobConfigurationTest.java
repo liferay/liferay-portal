@@ -6,6 +6,7 @@
 package com.liferay.digital.sales.room.web.internal.scheduler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -23,7 +24,6 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 
 import java.util.Date;
 

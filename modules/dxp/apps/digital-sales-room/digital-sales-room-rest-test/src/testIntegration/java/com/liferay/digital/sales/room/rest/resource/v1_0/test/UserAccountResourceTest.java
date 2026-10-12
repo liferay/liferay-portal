@@ -9,11 +9,14 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 import com.liferay.digital.sales.room.rest.client.dto.v1_0.UserAccount;
 import com.liferay.digital.sales.room.rest.client.pagination.Page;
 import com.liferay.digital.sales.room.rest.client.pagination.Pagination;
 import com.liferay.digital.sales.room.rest.client.problem.Problem;
 import com.liferay.digital.sales.room.rest.client.resource.v1_0.UserAccountResource;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.notification.constants.NotificationRecipientSettingConstants;
@@ -55,9 +58,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import java.io.Serializable;
 

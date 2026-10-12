@@ -5,10 +5,10 @@
 
 package com.liferay.digital.sales.room.web.internal.struts;
 
+import com.liferay.digital.sales.room.web.internal.constants.DSRWebKeys;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.digital.sales.room.web.internal.constants.DSRWebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

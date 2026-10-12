@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.frontend.data.set.view.table;
 
+import com.liferay.digital.sales.room.web.internal.constants.DSRSiteInitializerFDSNames;
 import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
@@ -12,7 +13,6 @@ import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.digital.sales.room.web.internal.constants.DSRSiteInitializerFDSNames;
 
 import java.util.Locale;
 

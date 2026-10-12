@@ -5,8 +5,8 @@
 
 package com.liferay.digital.sales.room.web.internal.portlet;
 
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.digital.sales.room.constants.DSRPortletKeys;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
 import jakarta.portlet.Portlet;
 

@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.fragment.renderer;
 
+import com.liferay.digital.sales.room.web.internal.display.context.ViewAnalyticsEngagementChartAnalyticsSectionDisplayContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
@@ -18,7 +19,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.digital.sales.room.web.internal.display.context.ViewAnalyticsEngagementChartAnalyticsSectionDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 

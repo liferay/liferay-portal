@@ -7,6 +7,8 @@ package com.liferay.digital.sales.room.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
+import com.liferay.digital.sales.room.web.internal.util.DSRUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -25,8 +27,6 @@ import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.impl.PortletImpl;
-import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
-import com.liferay.digital.sales.room.web.internal.util.DSRUtil;
 
 import jakarta.portlet.PortletURL;
 

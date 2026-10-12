@@ -8,6 +8,7 @@ package com.liferay.digital.sales.room.web.internal.portlet.toolbar.contributor.
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.document.library.portlet.toolbar.contributor.DLPortletToolbarContributorContext;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -40,7 +41,6 @@ import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import java.io.Serializable;
 

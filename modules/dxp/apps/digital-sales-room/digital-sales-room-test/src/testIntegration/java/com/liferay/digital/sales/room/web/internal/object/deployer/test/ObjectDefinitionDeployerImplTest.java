@@ -10,6 +10,8 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.test.util.DSRLayoutTestUtil;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntryModel;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
@@ -55,8 +57,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.digital.sales.room.test.util.DSRLayoutTestUtil;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import java.io.Serializable;
 

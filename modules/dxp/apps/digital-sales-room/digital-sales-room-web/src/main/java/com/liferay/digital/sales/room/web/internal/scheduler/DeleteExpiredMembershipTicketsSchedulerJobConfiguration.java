@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.scheduler;
 
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
@@ -18,7 +19,6 @@ import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.liveusers.LiveUsers;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 
 import java.util.Arrays;
 import java.util.Date;

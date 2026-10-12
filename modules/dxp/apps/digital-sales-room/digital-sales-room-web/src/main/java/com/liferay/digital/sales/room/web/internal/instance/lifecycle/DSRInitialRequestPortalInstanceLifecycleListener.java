@@ -5,6 +5,10 @@
 
 package com.liferay.digital.sales.room.web.internal.instance.lifecycle;
 
+import com.liferay.digital.sales.room.constants.DSRFragmentRendererConstants;
+import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
+import com.liferay.digital.sales.room.web.internal.constants.DSRSiteInitializerConstants;
+import com.liferay.digital.sales.room.web.internal.util.SiteInitializerUtil;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
@@ -21,10 +25,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.digital.sales.room.constants.DSRFragmentRendererConstants;
-import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
-import com.liferay.digital.sales.room.web.internal.constants.DSRSiteInitializerConstants;
-import com.liferay.digital.sales.room.web.internal.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
 import jakarta.servlet.ServletContext;

@@ -6,9 +6,9 @@
 package com.liferay.digital.sales.room.web.internal.display.context;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.digital.sales.room.web.internal.constants.DSRSiteInitializerFDSNames;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.digital.sales.room.web.internal.constants.DSRSiteInitializerFDSNames;
 
 import jakarta.servlet.http.HttpServletRequest;
 

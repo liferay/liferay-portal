@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.fragment.renderer;
 
+import com.liferay.digital.sales.room.web.internal.util.DSRUtil;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
@@ -13,7 +14,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.digital.sales.room.web.internal.util.DSRUtil;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
 import jakarta.servlet.ServletContext;

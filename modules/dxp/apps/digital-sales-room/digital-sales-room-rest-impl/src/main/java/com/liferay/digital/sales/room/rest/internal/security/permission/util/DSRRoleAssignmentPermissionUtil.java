@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.rest.internal.security.permission.util;
 
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RoleAssignmentException;
 import com.liferay.portal.kernel.model.Group;
@@ -16,7 +17,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 
 import java.util.Map;
 

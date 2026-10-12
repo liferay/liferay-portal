@@ -362,6 +362,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		Company company = _companyLocalService.getCompany(
 			objectEntry.getCompanyId());
+
 		Map<String, Serializable> values = objectEntry.getValues();
 
 		// The group is added by DSRRoomObjectEntryValuesContributor before the

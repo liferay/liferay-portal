@@ -5,6 +5,8 @@
 
 package com.liferay.digital.sales.room.web.internal.message.listener;
 
+import com.liferay.digital.sales.room.constants.DSRFolderConstants;
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
@@ -32,8 +34,6 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.digital.sales.room.constants.DSRFolderConstants;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 
 import java.io.Serializable;
 

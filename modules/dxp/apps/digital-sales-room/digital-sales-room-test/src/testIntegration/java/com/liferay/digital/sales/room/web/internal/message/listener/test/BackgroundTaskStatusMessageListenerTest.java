@@ -8,6 +8,9 @@ package com.liferay.digital.sales.room.web.internal.message.listener.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.digital.sales.room.constants.DSRFolderConstants;
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
+import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
@@ -34,9 +37,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.digital.sales.room.constants.DSRFolderConstants;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
-import com.liferay.digital.sales.room.test.util.DSRTestUtil;
 
 import java.io.Serializable;
 

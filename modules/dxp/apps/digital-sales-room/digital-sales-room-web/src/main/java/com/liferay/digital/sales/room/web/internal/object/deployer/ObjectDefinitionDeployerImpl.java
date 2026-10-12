@@ -5,6 +5,9 @@
 
 package com.liferay.digital.sales.room.web.internal.object.deployer;
 
+import com.liferay.digital.sales.room.constants.DSRRoleConstants;
+import com.liferay.digital.sales.room.web.internal.security.permission.resource.DSRDefaultPermissionObjectEntryModelResourcePermission;
+import com.liferay.digital.sales.room.web.internal.util.SiteInitializerUtil;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.model.ObjectDefinition;
@@ -36,9 +39,6 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
-import com.liferay.digital.sales.room.web.internal.security.permission.resource.DSRDefaultPermissionObjectEntryModelResourcePermission;
-import com.liferay.digital.sales.room.web.internal.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
 import java.util.Arrays;

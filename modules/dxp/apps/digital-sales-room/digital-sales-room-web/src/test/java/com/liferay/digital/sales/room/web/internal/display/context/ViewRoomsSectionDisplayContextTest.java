@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.display.context;
 
+import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -33,7 +34,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.digital.sales.room.web.internal.constants.DSRConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 

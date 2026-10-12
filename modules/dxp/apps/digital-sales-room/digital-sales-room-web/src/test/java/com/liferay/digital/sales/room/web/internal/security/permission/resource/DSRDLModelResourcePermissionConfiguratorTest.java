@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.security.permission.resource;
 
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.portal.kernel.model.GroupedModel;
@@ -14,7 +15,6 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionLogic;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.digital.sales.room.util.DSRRoomUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,13 +5,13 @@
 
 package com.liferay.digital.sales.room.web.internal.security.permission.resource;
 
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionLogic;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.digital.sales.room.util.DSRRoomUtil;
 
 import java.util.Set;
 import java.util.function.Consumer;

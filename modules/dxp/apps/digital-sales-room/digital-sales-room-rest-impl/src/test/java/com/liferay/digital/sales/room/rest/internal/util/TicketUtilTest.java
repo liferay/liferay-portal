@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.rest.internal.util;
 
+import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Group;
@@ -12,7 +13,6 @@ import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.digital.sales.room.constants.DSRTicketConstants;
 
 import java.util.Arrays;
 import java.util.Collections;

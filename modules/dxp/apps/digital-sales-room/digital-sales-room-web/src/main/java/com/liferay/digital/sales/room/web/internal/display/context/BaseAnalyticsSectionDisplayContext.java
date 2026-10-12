@@ -6,6 +6,7 @@
 package com.liferay.digital.sales.room.web.internal.display.context;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.digital.sales.room.web.internal.constants.DSRWebKeys;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.object.model.ObjectDefinition;
@@ -17,7 +18,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.digital.sales.room.web.internal.constants.DSRWebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

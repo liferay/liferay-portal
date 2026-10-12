@@ -5,6 +5,8 @@
 
 package com.liferay.digital.sales.room.web.internal.servlet.taglib;
 
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
+import com.liferay.digital.sales.room.web.internal.servlet.ServletContextUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
@@ -26,8 +28,6 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.digital.sales.room.web.internal.servlet.ServletContextUtil;
-import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.taglib.util.IncludeTag;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,8 +76,7 @@ public class CommentsTag extends IncludeTag {
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		httpServletRequest.setAttribute(
-			"liferay-digital-sales-room-web:comments:readOnly",
-			Boolean.FALSE);
+			"liferay-digital-sales-room-web:comments:readOnly", Boolean.FALSE);
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:comments:roomId", 0L);
 
