@@ -1,8 +1,31 @@
 package v1alpha1
 
 import (
+	appsv1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
+
+const (
+	WorkloadKindDeployment  WorkloadKind = "Deployment"
+	WorkloadKindStatefulSet WorkloadKind = "StatefulSet"
+)
+
+func (workloadRef WorkloadRef) EffectiveKind() WorkloadKind {
+	if workloadRef.Kind == "" {
+		return WorkloadKindStatefulSet
+	}
+
+	return workloadRef.Kind
+}
+
+func (workloadRef WorkloadRef) NewObject() client.Object {
+	if workloadRef.EffectiveKind() == WorkloadKindDeployment {
+		return &appsv1.Deployment{}
+	}
+
+	return &appsv1.StatefulSet{}
+}
 
 func init() {
 	SchemeBuilder.Register(&LiferayEnvironment{}, &LiferayEnvironmentList{})
@@ -157,7 +180,14 @@ type SecretKeyRef struct {
 	Name string `json:"name"`
 }
 
+// +kubebuilder:validation:Enum=Deployment;StatefulSet
+type WorkloadKind string
+
 type WorkloadRef struct {
+	// +kubebuilder:default=StatefulSet
+	// +optional
+	Kind WorkloadKind `json:"kind,omitempty"`
+
 	// +kubebuilder:validation:Required
 	Name string `json:"name"`
 }
