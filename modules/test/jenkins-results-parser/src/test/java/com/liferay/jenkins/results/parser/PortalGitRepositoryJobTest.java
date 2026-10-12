@@ -46,8 +46,7 @@ public class PortalGitRepositoryJobTest
 		File gitRepositoryDir = temporaryFolder.newFolder();
 
 		String buildHostnamePropertiesFileName =
-			JenkinsResultsParserUtil.combine(
-				"build.", hostname, ".properties");
+			JenkinsResultsParserUtil.combine("build.", hostname, ".properties");
 		String testHostnamePropertiesFileName =
 			JenkinsResultsParserUtil.combine("test.", hostname, ".properties");
 
