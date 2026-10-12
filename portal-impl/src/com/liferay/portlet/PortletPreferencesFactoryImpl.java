@@ -295,13 +295,13 @@ public class PortletPreferencesFactoryImpl
 	public PortalPreferences getPortalPreferences(
 		HttpServletRequest httpServletRequest) {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		PortalPreferences portalPreferences =
 			(PortalPreferences)httpServletRequest.getAttribute(
 				WebKeys.REQUEST_PORTAL_PREFERENCES);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		if ((portalPreferences != null) &&
 			(portalPreferences.getUserId() == themeDisplay.getUserId()) &&
