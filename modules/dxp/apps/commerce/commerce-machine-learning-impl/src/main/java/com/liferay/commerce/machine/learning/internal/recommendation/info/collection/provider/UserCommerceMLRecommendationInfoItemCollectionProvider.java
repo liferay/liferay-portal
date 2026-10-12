@@ -56,6 +56,10 @@ public class UserCommerceMLRecommendationInfoItemCollectionProvider
 		Pagination pagination = collectionQuery.getPagination();
 
 		try {
+			if (!isGuestBrowsingEnabled()) {
+				return InfoPage.of(Collections.emptyList(), pagination, 0);
+			}
+
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
