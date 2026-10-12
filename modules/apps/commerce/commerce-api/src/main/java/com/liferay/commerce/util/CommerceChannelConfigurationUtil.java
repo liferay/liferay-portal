@@ -190,6 +190,10 @@ public class CommerceChannelConfigurationUtil {
 
 		long groupId = commerceOrder.getGroupId();
 
+		if (!isGuestBrowsingEnabled(groupId)) {
+			throw new CommerceOrderGuestCheckoutException();
+		}
+
 		try {
 			CommerceAccountGroupServiceConfiguration
 				commerceAccountGroupServiceConfiguration =

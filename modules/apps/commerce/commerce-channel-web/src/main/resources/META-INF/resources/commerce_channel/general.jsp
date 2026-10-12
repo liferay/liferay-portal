@@ -162,12 +162,12 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 
 					<c:if test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-109588") %>'>
 						<div class="col-lg-6">
-							<aui:input checked="<%= commerceChannelDisplayContext.isGuestBrowsingEnabled() %>" helpMessage="configures-whether-guests-may-find-and-view-the-products-of-this-channel-or-if-they-must-sign-in" label="guest-browsing" labelOff="disabled" labelOn="enabled" name="settings--guestBrowsingEnabled--" type="toggle-switch" />
+							<aui:input checked="<%= commerceChannelDisplayContext.isGuestBrowsingEnabled() %>" helpMessage="configures-whether-guests-may-find-and-view-the-products-of-this-channel-or-if-they-must-sign-in" id="guestBrowsingEnabled" label="guest-browsing" labelOff="disabled" labelOn="enabled" name="settings--guestBrowsingEnabled--" type="toggle-switch" />
 						</div>
 					</c:if>
 
 					<div class="col-lg-6">
-						<aui:input checked="<%= commerceChannelDisplayContext.isGuestCheckoutEnabled() %>" helpMessage="configures-whether-a-guest-may-check-out-by-providing-an-email-address-or-if-they-must-sign-in" label="guest-checkout" labelOff="disabled" labelOn="enabled" name="settings--guestCheckoutEnabled--" type="toggle-switch" />
+						<aui:input checked="<%= commerceChannelDisplayContext.isGuestCheckoutEnabled() %>" helpMessage="configures-whether-a-guest-may-check-out-by-providing-an-email-address-or-if-they-must-sign-in" id="guestCheckoutEnabled" label="guest-checkout" labelOff="disabled" labelOn="enabled" name="settings--guestCheckoutEnabled--" type="toggle-switch" />
 					</div>
 
 					<div class="col-lg-6">
