@@ -12,16 +12,25 @@ import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.exception.CommerceOrderGuestCheckoutException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.Settings;
+import com.liferay.portal.kernel.settings.SettingsException;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
  * @author Gianmarco Brunialti Masera
@@ -104,6 +113,51 @@ public class CommerceChannelConfigurationUtil {
 		return StringPool.BLANK;
 	}
 
+	public static boolean isGuestBrowsingEnabled(long groupId) {
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+		if ((group == null) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-109588")) {
+
+			return true;
+		}
+
+		return _isGuestBrowsingEnabled(groupId);
+	}
+
+	public static boolean isGuestBrowsingEnabled(
+			PermissionChecker permissionChecker, long groupId)
+		throws PortalException {
+
+		if ((permissionChecker != null) && permissionChecker.isSignedIn()) {
+			return true;
+		}
+
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+		if ((group == null) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-109588")) {
+
+			return true;
+		}
+
+		String className = group.getClassName();
+
+		if (!className.equals(CommerceChannel.class.getName())) {
+			groupId =
+				CommerceChannelLocalServiceUtil.
+					getCommerceChannelGroupIdBySiteGroupId(groupId);
+
+			if (groupId == 0) {
+				return true;
+			}
+		}
+
+		return _isGuestBrowsingEnabled(groupId);
+	}
+
 	public static boolean isUserNotificationScopeEnabled(long groupId) {
 		try {
 			CommerceOrderConfiguration commerceOrderConfiguration =
@@ -170,6 +224,24 @@ public class CommerceChannelConfigurationUtil {
 		}
 
 		throw new CommerceOrderGuestCheckoutException();
+	}
+
+	private static boolean _isGuestBrowsingEnabled(long groupId) {
+		try {
+			Settings settings = FallbackKeysSettingsUtil.getSettings(
+				new GroupServiceSettingsLocator(
+					groupId, CommerceConstants.SERVICE_NAME_COMMERCE_ACCOUNT));
+
+			return GetterUtil.getBoolean(
+				settings.getValue("guestBrowsingEnabled", null), true);
+		}
+		catch (SettingsException settingsException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(settingsException);
+			}
+		}
+
+		return true;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
