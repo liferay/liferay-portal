@@ -42,6 +42,9 @@ locals {
 		} : {},
 		var.observability_config.enabled ? {
 			ack_prometheusservice="ack-system:ack-prometheusservice-controller"
+			alloy="observability:liferay-alloy"
+			grafana="observability:grafana"
+			rds_exporter="observability:liferay-rds-exporter"
 		} : {})
 	keda_enabled=var.keda_config.enabled && var.observability_config.enabled
 	marketplace_posix_id=1000

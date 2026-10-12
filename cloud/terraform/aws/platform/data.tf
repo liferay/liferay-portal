@@ -28,6 +28,43 @@ data "aws_iam_policy_document" "ack_prometheusservice" {
 		]
 	}
 }
+data "aws_iam_policy_document" "alloy" {
+	statement {
+		actions=[
+			"aps:GetLabels",
+			"aps:GetMetricMetadata",
+			"aps:GetSeries",
+			"aps:QueryMetrics",
+			"aps:RemoteWrite",
+		]
+		effect="Allow"
+		resources=aws_prometheus_workspace.amp[*].arn
+	}
+}
+data "aws_iam_policy_document" "alloy_cloudwatch_rds" {
+	statement {
+		actions=[
+			"cloudwatch:GetMetricData",
+			"cloudwatch:GetMetricStatistics",
+			"cloudwatch:ListMetrics",
+		]
+		effect="Allow"
+		resources=["*"]
+	}
+	statement {
+		actions=[
+			"rds:DescribeDBInstances",
+			"rds:ListTagsForResource",
+		]
+		effect="Allow"
+		resources=["*"]
+	}
+	statement {
+		actions=["tag:GetResources"]
+		effect="Allow"
+		resources=["*"]
+	}
+}
 data "aws_iam_policy_document" "crossplane_data_backup" {
 	statement {
 		actions=["backup:*"]
@@ -475,6 +512,33 @@ data "aws_iam_policy_document" "keda" {
 		]
 		effect="Allow"
 		resources=["arn:${local.partition}:aps:${var.region}:${local.account_id}:workspace/*"]
+	}
+}
+data "aws_iam_policy_document" "rds_exporter" {
+	statement {
+		actions=[
+			"cloudwatch:GetMetricData",
+			"cloudwatch:GetMetricStatistics",
+		]
+		effect="Allow"
+		resources=["*"]
+	}
+	statement {
+		actions=[
+			"ec2:DescribeAccountAttributes",
+			"ec2:DescribeInstanceTypes",
+		]
+		effect="Allow"
+		resources=["*"]
+	}
+	statement {
+		actions=[
+			"rds:DescribeDBClusters",
+			"rds:DescribeDBInstances",
+			"rds:ListTagsForResource",
+		]
+		effect="Allow"
+		resources=["*"]
 	}
 }
 data "aws_partition" "current" {
