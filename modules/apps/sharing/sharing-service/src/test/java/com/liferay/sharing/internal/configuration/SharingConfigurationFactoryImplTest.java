@@ -68,24 +68,6 @@ public class SharingConfigurationFactoryImplTest {
 			boolean companyEnabled, boolean systemEnabled)
 		throws Exception {
 
-		Group group = Mockito.mock(Group.class);
-
-		long companyId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			group.getCompanyId()
-		).thenReturn(
-			companyId
-		);
-
-		long groupId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			group.getGroupId()
-		).thenReturn(
-			groupId
-		);
-
 		Mockito.when(
 			group.getTypeSettingsProperties()
 		).thenReturn(
@@ -104,6 +86,8 @@ public class SharingConfigurationFactoryImplTest {
 			companyEnabled
 		);
 
+		long companyId = RandomTestUtil.randomLong();
+
 		Mockito.when(
 			configurationProvider.getCompanyConfiguration(
 				SharingCompanyConfiguration.class, companyId)
@@ -119,6 +103,8 @@ public class SharingConfigurationFactoryImplTest {
 		).thenReturn(
 			true
 		);
+
+		long groupId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			configurationProvider.getGroupConfiguration(
@@ -138,6 +124,20 @@ public class SharingConfigurationFactoryImplTest {
 			HashMapBuilder.<String, Object>put(
 				"enabled", systemEnabled
 			).build());
+
+		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			group.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		Mockito.when(
+			group.getGroupId()
+		).thenReturn(
+			groupId
+		);
 
 		return sharingConfigurationFactoryImpl.getGroupSharingConfiguration(
 			group);
