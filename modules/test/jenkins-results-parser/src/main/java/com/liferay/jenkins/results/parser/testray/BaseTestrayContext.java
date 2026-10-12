@@ -86,6 +86,10 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 		_jobs = _buildDatabase.getJobs();
 
+		for (Job job : _jobs) {
+			job.setTestrayContext(this);
+		}
+
 		return _jobs;
 	}
 

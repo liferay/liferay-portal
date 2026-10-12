@@ -584,6 +584,12 @@ public abstract class BaseTopLevelBuild
 		_testrayContext = TestrayFactory.newTestrayContext(
 			getBuildDatabase(), this);
 
+		Job job = getJob();
+
+		if (job != null) {
+			job.setTestrayContext(_testrayContext);
+		}
+
 		return _testrayContext;
 	}
 
