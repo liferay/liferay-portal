@@ -333,6 +333,39 @@ describe('AccountSelector', () => {
 
 			expect(orders.length).toBe(10);
 		});
+
+		it('displays the account list when the back to accounts button is clicked', async () => {
+			await act(async () => {
+				fireEvent.click(
+					renderedComponent.baseElement.querySelector(
+						'.btn-account-selector'
+					)
+				);
+			});
+
+			await act(async () => {
+				fireEvent.click(
+					renderedComponent.getByLabelText('back-to-accounts')
+				);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.queryByText(/loading/i)
+				).not.toBeInTheDocument()
+			);
+
+			expect(
+				renderedComponent.baseElement.querySelector(
+					'.orders-list-container'
+				)
+			).not.toBeInTheDocument();
+			expect(
+				renderedComponent.baseElement.querySelectorAll(
+					'.accounts-list li'
+				).length
+			).toBe(11);
+		});
 	});
 
 	describe('When account and order are selected', () => {
