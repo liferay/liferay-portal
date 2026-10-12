@@ -11,8 +11,6 @@ function main {
 		aws/dependencies
 		aws/ecr
 		aws/eks
-		aws/gitops/platform
-		aws/gitops/resources
 		aws/platform
 		azure/aks
 		azure/platform
