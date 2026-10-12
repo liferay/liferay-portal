@@ -17,8 +17,10 @@ import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -78,9 +80,14 @@ public class CommerceProductViewPermissionImpl
 			long cpDefinitionId)
 		throws PortalException {
 
-		return _isAccountEnabled(
-			commerceAccountId,
-			_cpDefinitionLocalService.getCPDefinition(cpDefinitionId));
+		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+			cpDefinitionId);
+
+		if (!_isGuestBrowsingEnabled(permissionChecker, cpDefinition)) {
+			return false;
+		}
+
+		return _isAccountEnabled(commerceAccountId, cpDefinition);
 	}
 
 	@Override
@@ -167,6 +174,48 @@ public class CommerceProductViewPermissionImpl
 		for (CommerceChannelRel commerceChannelRel : commerceChannelRels) {
 			if (commerceChannelRel.getCommerceChannelId() ==
 					commerceChannelId) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _isGuestBrowsingEnabled(
+		PermissionChecker permissionChecker, CPDefinition cpDefinition) {
+
+		if (((permissionChecker != null) && permissionChecker.isSignedIn()) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				cpDefinition.getCompanyId(), "LPD-109588")) {
+
+			return true;
+		}
+
+		List<CommerceChannel> commerceChannels = null;
+
+		if (cpDefinition.isChannelFilterEnabled()) {
+			commerceChannels = TransformUtil.transform(
+				_commerceChannelRelLocalService.getCommerceChannelRels(
+					CPDefinition.class.getName(),
+					cpDefinition.getCPDefinitionId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null),
+				commerceChannelRel ->
+					_commerceChannelLocalService.fetchCommerceChannel(
+						commerceChannelRel.getCommerceChannelId()));
+		}
+		else {
+			commerceChannels = _commerceChannelLocalService.getCommerceChannels(
+				cpDefinition.getCompanyId());
+		}
+
+		if (commerceChannels.isEmpty()) {
+			return true;
+		}
+
+		for (CommerceChannel commerceChannel : commerceChannels) {
+			if (CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+					commerceChannel.getGroupId())) {
 
 				return true;
 			}

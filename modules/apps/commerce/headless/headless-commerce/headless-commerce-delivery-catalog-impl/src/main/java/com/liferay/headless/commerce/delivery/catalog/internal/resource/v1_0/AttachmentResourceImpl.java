@@ -16,12 +16,14 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.AttachmentDTOConverterContext;
 import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.AttachmentResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -56,13 +58,17 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 				productId, true);
 
-		if (cpDefinition == null) {
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		if ((cpDefinition == null) ||
+			!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+				PermissionThreadLocal.getPermissionChecker(),
+				commerceChannel.getGroupId())) {
+
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + productId);
 		}
-
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(channelId);
 
 		return _getAttachmentPage(
 			cpDefinition,
@@ -84,13 +90,17 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 				productId, true);
 
-		if (cpDefinition == null) {
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		if ((cpDefinition == null) ||
+			!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+				PermissionThreadLocal.getPermissionChecker(),
+				commerceChannel.getGroupId())) {
+
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + productId);
 		}
-
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(channelId);
 
 		return _getAttachmentPage(
 			cpDefinition,
