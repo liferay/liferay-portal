@@ -13,7 +13,6 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -277,26 +276,9 @@ public class DDMStructureImplTest extends BaseDDMTestCase {
 
 	@Test
 	public void testGetRootFieldNames() throws Exception {
-		DDMForm ddmForm = createDDMForm();
-
-		DDMFormField field1 = createTextDDMFormField("field1");
-
-		addNestedTextDDMFormFields(field1, "child1Field1", "child2Field1");
-
-		DDMFormField field2 = createTextDDMFormField("field2");
-		DDMFormField field3 = createTextDDMFormField("field3");
-
-		addDDMFormFields(ddmForm, field1, field2, field3);
-
-		DDMStructure structure = createStructure("Test Structure", ddmForm);
-
-		List<String> expectedFieldNames = new ArrayList<>();
-
-		expectedFieldNames.add("field1");
-		expectedFieldNames.add("field2");
-		expectedFieldNames.add("field3");
-
-		Assert.assertEquals(expectedFieldNames, structure.getRootFieldNames());
+		_testGetRootFieldNames();
+		_testGetRootFieldNamesWithParentStructure();
+		_testGetRootFieldNamesWithoutParentStructure();
 	}
 
 	@Test
@@ -352,6 +334,70 @@ public class DDMStructureImplTest extends BaseDDMTestCase {
 		DDMStructure structure = createStructure("Test Structure", ddmForm);
 
 		Assert.assertTrue(structure.getFieldRequired("field1"));
+	}
+
+	private DDMFormField _createParentStructureFieldSetDDMFormField() {
+		DDMFormField field = new DDMFormField(
+			"parentStructureFieldSet", "fieldset");
+
+		field.setProperty("upgradedStructure", true);
+
+		return field;
+	}
+
+	private void _testGetRootFieldNames() throws Exception {
+		DDMForm ddmForm = createDDMForm();
+
+		DDMFormField field1 = createTextDDMFormField("field1");
+
+		addNestedTextDDMFormFields(field1, "child1Field1", "child2Field1");
+
+		DDMFormField field2 = createTextDDMFormField("field2");
+		DDMFormField field3 = createTextDDMFormField("field3");
+
+		addDDMFormFields(ddmForm, field1, field2, field3);
+
+		DDMStructure structure = createStructure("Test Structure", ddmForm);
+
+		Assert.assertEquals(
+			Arrays.asList("field1", "field2", "field3"),
+			structure.getRootFieldNames());
+	}
+
+	private void _testGetRootFieldNamesWithParentStructure() throws Exception {
+		DDMStructure parentStructure = createStructure(
+			"Parent Structure", "field1", "field2");
+
+		DDMForm ddmForm = createDDMForm();
+
+		addDDMFormFields(
+			ddmForm, _createParentStructureFieldSetDDMFormField(),
+			createTextDDMFormField("field3"));
+
+		DDMStructure childStructure = createStructure(
+			"Child Structure", ddmForm);
+
+		childStructure.setParentStructureId(parentStructure.getStructureId());
+
+		Assert.assertEquals(
+			Arrays.asList("field1", "field2", "field3"),
+			childStructure.getRootFieldNames());
+	}
+
+	private void _testGetRootFieldNamesWithoutParentStructure()
+		throws Exception {
+
+		DDMForm ddmForm = createDDMForm();
+
+		addDDMFormFields(
+			ddmForm, _createParentStructureFieldSetDDMFormField(),
+			createTextDDMFormField("field3"));
+
+		DDMStructure structure = createStructure("Test Structure", ddmForm);
+
+		Assert.assertEquals(
+			Arrays.asList("parentStructureFieldSet", "field3"),
+			structure.getRootFieldNames());
 	}
 
 }
