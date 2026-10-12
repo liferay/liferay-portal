@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce API
 Bundle-SymbolicName: com.liferay.commerce.api
-Bundle-Version: 110.0.1
+Bundle-Version: 110.1.0
 Export-Package:\
 	com.liferay.commerce.address,\
 	com.liferay.commerce.checkout.helper,\
