@@ -18,9 +18,12 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRequestContext;
+import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ContactBirthdayException;
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.NoSuchTicketException;
 import com.liferay.portal.kernel.exception.PasswordExpiredException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,9 +35,11 @@ import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Role;
@@ -2402,6 +2407,87 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateStatusWithAuditRequestContext() throws Exception {
+		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
+			null, TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, User.class.getName(), 0, 0,
+			"Single Approver", 1);
+
+		User user1 = _addUserWithWorkflow();
+		User user2 = _addUserWithWorkflow();
+
+		AuditRequestContext auditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		String clientHost = RandomTestUtil.randomString();
+		String clientIP = RandomTestUtil.randomString();
+		long realUserId = RandomTestUtil.randomLong();
+		String serverName = RandomTestUtil.randomString();
+		int serverPort = RandomTestUtil.randomInt();
+		String sessionID = RandomTestUtil.randomString();
+
+		auditRequestContext.setClientHost(clientHost);
+		auditRequestContext.setClientIP(clientIP);
+		auditRequestContext.setRealUserId(realUserId);
+		auditRequestContext.setServerName(serverName);
+		auditRequestContext.setServerPort(serverPort);
+		auditRequestContext.setSessionID(sessionID);
+
+		try {
+			WorkflowHandler<User> workflowHandler =
+				WorkflowHandlerRegistryUtil.getWorkflowHandler(
+					User.class.getName());
+
+			user1 = workflowHandler.updateStatus(
+				WorkflowConstants.STATUS_APPROVED, _getWorkflowContext(user1));
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_APPROVED, user1.getStatus());
+
+			_assertAuditRequestContext(
+				clientHost, clientIP, realUserId, serverName, serverPort,
+				sessionID);
+
+			ServiceRegistration<?> serviceRegistration =
+				_bundleContext.registerService(
+					ModelListener.class,
+					new BaseModelListener<User>() {
+
+						@Override
+						public void onBeforeUpdate(User originalUser, User user)
+							throws ModelListenerException {
+
+							if (user.getStatus() ==
+									WorkflowConstants.STATUS_APPROVED) {
+
+								throw new ModelListenerException();
+							}
+						}
+
+					},
+					null);
+
+			try {
+				Assert.assertThrows(
+					ModelListenerException.class,
+					() -> workflowHandler.updateStatus(
+						WorkflowConstants.STATUS_APPROVED,
+						_getWorkflowContext(user2)));
+			}
+			finally {
+				serviceRegistration.unregister();
+			}
+
+			_assertAuditRequestContext(
+				clientHost, clientIP, realUserId, serverName, serverPort,
+				sessionID);
+		}
+		finally {
+			AuditRequestContextThreadLocal.removeAuditRequestContext();
+		}
+	}
+
+	@Test
 	public void testUpdateTicketWithModifiedEncryption() throws Exception {
 		try (AutoCloseable autoCloseable1 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
@@ -2635,6 +2721,20 @@ public class UserLocalServiceTest {
 			null, null, null, null, true, serviceContext);
 	}
 
+	private User _addUserWithWorkflow() throws Exception {
+		return _userLocalService.addUserWithWorkflow(
+			0, TestPropsValues.getCompanyId(), true, null, null, false,
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com", LocaleUtil.US,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), 0, 0, true, 1, 1, 1970,
+			StringPool.BLANK, UserConstants.TYPE_REGULAR, null, null, null,
+			null, true,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				TestPropsValues.getUserId()));
+	}
+
 	private long[] _addUsers(int numberOfUsers) throws Exception {
 		long[] userIds = new long[numberOfUsers];
 
@@ -2645,6 +2745,21 @@ public class UserLocalServiceTest {
 		}
 
 		return userIds;
+	}
+
+	private void _assertAuditRequestContext(
+		String clientHost, String clientIP, long realUserId, String serverName,
+		int serverPort, String sessionID) {
+
+		AuditRequestContext auditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		Assert.assertEquals(clientHost, auditRequestContext.getClientHost());
+		Assert.assertEquals(clientIP, auditRequestContext.getClientIP());
+		Assert.assertEquals(realUserId, auditRequestContext.getRealUserId());
+		Assert.assertEquals(serverName, auditRequestContext.getServerName());
+		Assert.assertEquals(serverPort, auditRequestContext.getServerPort());
+		Assert.assertEquals(sessionID, auditRequestContext.getSessionID());
 	}
 
 	private User _assertFailedLoginAttempts(
@@ -2764,6 +2879,31 @@ public class UserLocalServiceTest {
 		}
 
 		return matcher.group();
+	}
+
+	private Map<String, Serializable> _getWorkflowContext(User user)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				user.getGroupId(), user.getUserId());
+
+		serviceContext.setAttribute(
+			"serverName", RandomTestUtil.randomString());
+		serviceContext.setAttribute("serverPort", RandomTestUtil.randomInt());
+		serviceContext.setAttribute("sessionId", RandomTestUtil.randomString());
+		serviceContext.setRemoteAddr(RandomTestUtil.randomString());
+		serviceContext.setRemoteHost(RandomTestUtil.randomString());
+
+		return HashMapBuilder.<String, Serializable>put(
+			WorkflowConstants.CONTEXT_ENTRY_CLASS_PK,
+			String.valueOf(user.getUserId())
+		).put(
+			WorkflowConstants.CONTEXT_USER_ID,
+			String.valueOf(TestPropsValues.getUserId())
+		).put(
+			"serviceContext", serviceContext
+		).build();
 	}
 
 	private List<Long> _search(UserGroup userGroup) {
