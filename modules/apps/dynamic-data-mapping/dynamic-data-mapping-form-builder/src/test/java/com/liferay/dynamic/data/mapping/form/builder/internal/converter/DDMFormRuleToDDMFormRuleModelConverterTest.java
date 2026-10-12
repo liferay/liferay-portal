@@ -134,24 +134,20 @@ public class DDMFormRuleToDDMFormRuleModelConverterTest
 			expectedDDMDataProviderInstanceUUID,
 			actualDDMDataProviderInstanceUUID);
 
-		String expectedInputParametersExpression =
-			expectedCallFunctionParameters.get(1);
-
-		String actualInputParametersExpression =
-			actualCallFunctionParameters.get(1);
-
-		_assertCallFunctionParametersExpression(
-			expectedInputParametersExpression, actualInputParametersExpression);
-
-		String expectedOutputParametersExpression =
-			expectedCallFunctionParameters.get(2);
-
-		String actualOutputParametersExpression =
-			actualCallFunctionParameters.get(2);
-
-		_assertCallFunctionParametersExpression(
-			expectedOutputParametersExpression,
-			actualOutputParametersExpression);
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				StringUtil.split(
+					expectedCallFunctionParameters.get(1), CharPool.SEMICOLON)),
+			SetUtil.fromArray(
+				StringUtil.split(
+					actualCallFunctionParameters.get(1), CharPool.SEMICOLON)));
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				StringUtil.split(
+					expectedCallFunctionParameters.get(2), CharPool.SEMICOLON)),
+			SetUtil.fromArray(
+				StringUtil.split(
+					actualCallFunctionParameters.get(2), CharPool.SEMICOLON)));
 	}
 
 	@Test
@@ -346,19 +342,6 @@ public class DDMFormRuleToDDMFormRuleModelConverterTest
 		return _ddmFormRuleConverterImpl.convert(
 			_ddmFormRuleDeserializerImpl.deserialize(serializedDDMFormRules),
 			_spiDDMFormRuleSerializerContext);
-	}
-
-	private void _assertCallFunctionParametersExpression(
-		String expectedParametersExpression,
-		String actualParametersExpression) {
-
-		Assert.assertEquals(
-			SetUtil.fromArray(
-				StringUtil.split(
-					expectedParametersExpression, CharPool.SEMICOLON)),
-			SetUtil.fromArray(
-				StringUtil.split(
-					actualParametersExpression, CharPool.SEMICOLON)));
 	}
 
 	private void _assertConversionToConvertModel(
