@@ -64,8 +64,8 @@ EOF
 }
 
 function generate_tfvars {
-	local cloud="${2}"
-	local configuration_json_file="${1}"
+	local cloud="${1}"
+	local configuration_json_file="${2}"
 	local terraform_stack="${3}"
 
 	local tfvars_file="${ROOT_CLOUD_DIR}/terraform/${cloud}/${terraform_stack}/config.auto.tfvars.json"

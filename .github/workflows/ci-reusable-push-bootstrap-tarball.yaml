@@ -86,6 +86,8 @@ jobs:
                         if [[ "${provider}" == "aws" ]]
                         then
                             files=(
+                                cloud/scripts/_aws_common.sh
+                                cloud/scripts/_common.sh
                                 cloud/scripts/setup_aws.sh
                                 cloud/terraform/aws/eks/*
                                 cloud/terraform/aws/gitops/platform/*

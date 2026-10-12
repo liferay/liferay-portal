@@ -22,6 +22,8 @@ function main {
 	fi
 
 	local aws_bootstrap_sources=(
+		"${ROOT_CLOUD_DIR}/scripts/_aws_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_common.sh"
 		"${ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
 		"${ROOT_CLOUD_DIR}/terraform/aws/eks"
 		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/platform"

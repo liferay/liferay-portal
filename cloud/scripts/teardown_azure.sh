@@ -34,9 +34,9 @@ function main {
 		exit 1
 	fi
 
-	generate_tfvars "${1}" "azure" "aks"
+	generate_tfvars "azure" "${1}" "aks"
 
-	generate_tfvars "${1}" "azure" "platform"
+	generate_tfvars "azure" "${1}" "platform"
 
 	az_login "${1}"
 

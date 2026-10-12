@@ -28,9 +28,9 @@ function main {
 
 	configuration_json_file=$(_resolve_config_json "${1}")
 
-	generate_tfvars "${configuration_json_file}" "azure" "aks"
+	generate_tfvars "azure" "${configuration_json_file}" "aks"
 
-	generate_tfvars "${configuration_json_file}" "azure" "platform"
+	generate_tfvars "azure" "${configuration_json_file}" "platform"
 
 	az_login "${configuration_json_file}"
 

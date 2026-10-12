@@ -16,15 +16,15 @@ function main {
 		exit 1
 	fi
 
-	check_utils aws helm jq kubectl terraform
+	check_utils aws jq terraform
 
 	validate_config_json "${1}"
 
 	local configuration_json_file="${1}"
 
-	generate_tfvars "${configuration_json_file}" "aws" "eks"
+	generate_tfvars "aws" "${configuration_json_file}" "eks"
 
-	generate_tfvars "${configuration_json_file}" "aws" "platform"
+	generate_tfvars "aws" "${configuration_json_file}" "platform"
 
 	aws_login "${configuration_json_file}"
 
