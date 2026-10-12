@@ -7,9 +7,7 @@ package com.liferay.info.item.provider.filter;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.GetterUtil;
-
-import java.util.Objects;
+import com.liferay.portal.kernel.util.ArrayUtil;
 
 import org.osgi.framework.ServiceReference;
 
@@ -40,10 +38,19 @@ public class PropertyInfoItemServiceFilter implements InfoItemServiceFilter {
 	}
 
 	public boolean match(ServiceReference<?> serviceReference) {
-		return Objects.equals(
-			_propertyValue,
-			GetterUtil.getString(
-				serviceReference.getProperty(_propertyName), null));
+		return matchPropertyValue(serviceReference.getProperty(_propertyName));
+	}
+
+	public boolean matchPropertyValue(Object propertyValue) {
+		if (propertyValue instanceof String[] propertyValues) {
+			return ArrayUtil.contains(propertyValues, _propertyValue);
+		}
+
+		if (propertyValue == null) {
+			return false;
+		}
+
+		return _propertyValue.equals(String.valueOf(propertyValue));
 	}
 
 	private final String _propertyName;

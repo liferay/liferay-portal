@@ -6,11 +6,6 @@
 package com.liferay.info.item.provider.filter;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.util.GetterUtil;
-
-import java.util.Objects;
-
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Jorge Ferrer
@@ -31,12 +26,12 @@ public class OptionalPropertyInfoItemServiceFilter
 	}
 
 	@Override
-	public boolean match(ServiceReference<?> serviceReference) {
-		return Objects.equals(
-			getPropertyValue(),
-			GetterUtil.getString(
-				serviceReference.getProperty(getPropertyName()),
-				getPropertyValue()));
+	public boolean matchPropertyValue(Object propertyValue) {
+		if (propertyValue == null) {
+			return true;
+		}
+
+		return super.matchPropertyValue(propertyValue);
 	}
 
 }
