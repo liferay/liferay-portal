@@ -34,9 +34,9 @@ function main {
 		exit 1
 	fi
 
-	generate_tfvars "${1}" "aks"
+	generate_tfvars "${1}" "azure" "aks"
 
-	generate_tfvars "${1}" "platform"
+	generate_tfvars "${1}" "azure" "platform"
 
 	az_login "${1}"
 
@@ -70,7 +70,7 @@ function main {
 
 		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 	else
-		generate_local_backend_overrides
+		generate_local_backend_overrides "azure" "aks" "platform"
 	fi
 
 	if connect_to_cluster

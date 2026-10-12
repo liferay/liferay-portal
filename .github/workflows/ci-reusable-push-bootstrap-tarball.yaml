@@ -95,6 +95,7 @@ jobs:
                         then
                             files=(
                                 cloud/scripts/_azure_common.sh
+                                cloud/scripts/_common.sh
                                 cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_azure.sh
                                 cloud/scripts/teardown_azure.sh

@@ -4,9 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-_SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-
-_ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
+source "$(dirname "${BASH_SOURCE[0]}")/_aws_common.sh"
 
 function main {
 	if [ ${#} -eq 0 ]
@@ -18,91 +16,47 @@ function main {
 		exit 1
 	fi
 
-	_check_utils aws jq kubectl terraform
+	check_utils aws helm jq kubectl terraform
 
-	_check_terraform_version "1.10.0"
+	validate_config_json "${1}"
 
-	_validate_config_json "${1}"
+	local configuration_json_file="${1}"
 
-	_generate_tfvars "${1}" "${_SCRIPTS_DIR}/global_terraform.tfvars"
+	generate_tfvars "${configuration_json_file}" "aws" "eks"
 
-	echo "Attempting to login to your AWS account via SSO."
+	generate_tfvars "${configuration_json_file}" "aws" "platform"
 
-	aws sso login
-
-	local bucket_name=""
-	local deployment_name=""
-	local region=""
+	aws_login
 
 	local terraform_args=()
 
 	while IFS= read -r terraform_arg
 	do
 		terraform_args+=("${terraform_arg}")
-	done < <(_get_terraform_apply_args "${1}")
+	done < <(get_terraform_args "${configuration_json_file}")
 
-	if jq --exit-status '.variables.tfstate_bucket_name' "${1}" &> /dev/null
+	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
 	then
-		if ! jq --exit-status '.variables.deployment_name' "${1}" &> /dev/null
-		then
-			echo "The configuration JSON file must contain a key named \"variables.deployment_name\"." >&2
+		local bucket_name
+		local deployment_name
+		local region
 
-			exit 1
-		fi
-
-		if ! jq --exit-status '.variables.region' "${1}" &> /dev/null
-		then
-			echo "The configuration JSON file must contain a key named \"variables.region\"." >&2
-
-			exit 1
-		fi
-
-		bucket_name="$(jq --raw-output '.variables.tfstate_bucket_name' "${1}")"
-		deployment_name="$(jq --raw-output '.variables.deployment_name' "${1}")"
-		region="$(jq --raw-output '.variables.region' "${1}")"
+		bucket_name="$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")"
+		deployment_name="$(jq --raw-output '.deployment_name' "${configuration_json_file}")"
+		region="$(jq --raw-output '.region' "${configuration_json_file}")"
 
 		_create_tfstate_bucket "${bucket_name}" "${region}"
+
+		generate_remote_backend_overrides "${bucket_name}" "${deployment_name}" "${region}"
+	else
+		generate_local_backend_overrides "aws" "eks" "platform"
 	fi
 
 	_set_up_aws_service_linked_roles
 
-	_set_up_aws_eks "${bucket_name}" "${region}" "${deployment_name}" "${terraform_args[@]}"
+	_set_up_aws_eks "${terraform_args[@]}"
 
-	_set_up_aws_gitops "${bucket_name}" "${region}" "${deployment_name}" "${terraform_args[@]}"
-
-	_port_forward_argo_cd
-}
-
-function _check_terraform_version {
-	local found_version
-
-	found_version=$(terraform --version | awk '/^Terraform v/ {print $2; exit}')
-	found_version="${found_version#v}"
-
-	local required_version="${1}"
-
-	local lowest_version
-
-	lowest_version=$(printf "%s\n%s\n" "${required_version}" "${found_version}" | sort --version-sort | head -n 1)
-
-	if [[ ${lowest_version} != ${required_version} ]]
-	then
-		echo "The installed Terraform version ${found_version} is older than ${required_version}." >&2
-
-		exit 1
-	fi
-}
-
-function _check_utils {
-	for util in "${@}"
-	do
-		if (! command -v "${util}" &> /dev/null)
-		then
-			echo "The utility ${util} is not installed."
-
-			exit 1
-		fi
-	done
+	connect_to_cluster
 }
 
 function _configure_s3_bucket {
@@ -236,154 +190,22 @@ function _create_s3_bucket {
 		--versioning-configuration Status=Enabled
 }
 
-function _generate_tfvars {
-	local configuration_json_file="${1}"
-	local tfvars_file="${2}"
-
-	echo "Generating ${tfvars_file} from ${configuration_json_file}."
-
-	local tfvars_content
-
-	tfvars_content=$( \
-		jq --raw-output '.variables
-		| to_entries[]
-		| if (.value | type) == "string"
-		  then
-		  	"\(.key) = \"\(.value)\""
-		  elif (.value | type) == "array" or (.value | type) == "object"
-		  then
-		  	"\(.key) = \(.value | @json)"
-		  else
-		  	"\(.key) = \(.value)"
-		  end' "${configuration_json_file}")
-
-	if [[ -z ${tfvars_content} ]]
-	then
-		echo "The \"variables\" object in the configuration JSON file is empty. You will be prompted for all required variables."
-
-		> "${tfvars_file}"
-	else
-		echo "${tfvars_content}" > "${tfvars_file}"
-	fi
-
-	echo "${tfvars_file} was generated successfully."
-}
-
-function _get_terraform_apply_args {
-	local auto_approve="false"
-
-	local configuration_json_file="${1}"
-
-	if jq --exit-status '.options.auto_approve' "${configuration_json_file}" > /dev/null
-	then
-		auto_approve=$(jq --raw-output '.options.auto_approve' "${configuration_json_file}")
-	fi
-
-	local apply_args=(
-		"-var-file=${_SCRIPTS_DIR}/global_terraform.tfvars")
-
-	if [[ ${auto_approve} == true ]]
-	then
-		apply_args+=("-auto-approve")
-	fi
-
-	if jq --exit-status '.options.parallelism | numbers' "${configuration_json_file}" > /dev/null
-	then
-		local parallelism
-
-		parallelism=$(jq --raw-output '.options.parallelism' "${configuration_json_file}")
-
-		apply_args+=("-parallelism=${parallelism}")
-	fi
-
-	printf '%s\n' "${apply_args[@]}"
-}
-
 function _log {
 	echo "[Tfstate bucket configuration] ${1}"
 }
 
-function _popd {
-	popd > /dev/null
-}
-
-function _port_forward_argo_cd {
-	_pushd "${_ROOT_CLOUD_DIR}/terraform/aws/gitops/platform"
-
-	local argocd_namespace
-
-	argocd_namespace=$(terraform output -raw argocd_namespace)
-
-	local argocd_password
-
-	argocd_password=$( \
-		kubectl \
-			get \
-			secret \
-			argocd-initial-admin-secret \
-			--namespace ${argocd_namespace} \
-			--output jsonpath="{.data.password}" \
-		| base64 --decode)
-
-	echo "Port-forwarding the ArgoCD service at http://localhost:8080."
-	echo ""
-	echo "Login with username \"admin\" and password \"${argocd_password}\" to continue monitoring setup."
-	echo ""
-	echo "Use CTRL+C to exit when finished."
-
-	kubectl \
-		port-forward \
-		--namespace "${argocd_namespace}" \
-		service/argocd-server \
-		8080:443
-
-	_popd
-}
-
-function _pushd {
-	pushd "${1}" > /dev/null
-}
-
 function _set_up_aws_eks {
-	local bucket_name="${1}"
-	local deployment_name="${3}"
-	local region="${2}"
-
-	_pushd "${_ROOT_CLOUD_DIR}/terraform/aws/eks"
+	push_directory "${ROOT_CLOUD_DIR}/terraform/aws/eks"
 
 	echo "Setting up the AWS EKS cluster."
 
-	_terraform_init_and_apply "." "eks" "${bucket_name}" "${deployment_name}" "${region}" "${@:4}"
+	terraform init
 
-	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
-
-	aws \
-		eks \
-		update-kubeconfig \
-		--name "$(terraform output -raw cluster_name)" \
-		--region "$(terraform output -raw region)"
+	terraform apply -input=false "${@}"
 
 	echo "AWS EKS cluster setup complete."
 
-	_popd
-}
-
-function _set_up_aws_gitops {
-	local bucket_name="${1}"
-	local deployment_name="${3}"
-	local region="${2}"
-
-	_pushd "${_ROOT_CLOUD_DIR}/terraform/aws/gitops"
-
-	echo "Setting up GitOps infrastructure."
-
-	_terraform_init_and_apply "./platform" "gitops/platform" "${bucket_name}" "${deployment_name}" "${region}" "${@:4}"
-
-	_terraform_init_and_apply "./resources" "gitops/resources" "${bucket_name}" "${deployment_name}" "${region}" "${@:4}"
-
-	echo "GitOps infrastructure setup complete."
-
-	_popd
+	pop_directory
 }
 
 function _set_up_aws_service_linked_roles {
@@ -412,61 +234,6 @@ function _set_up_aws_service_linked_roles {
 	done
 
 	echo "AWS service-linked roles setup complete."
-}
-
-function _terraform_init_and_apply {
-	local bucket_name="${3}"
-	local deployment_name="${4}"
-	local folder_separator="${2}"
-	local region="${5}"
-
-	_pushd "${1}"
-
-	if [[ -n ${bucket_name} ]]
-	then
-	terraform init \
-		-backend-config="bucket=${bucket_name}" \
-		-backend-config="encrypt=true" \
-		-backend-config="key=${deployment_name}/${region}/${folder_separator}/terraform.tfstate" \
-		-backend-config="region=${region}" \
-		-backend-config="use_lockfile=true"
-	else
-			cat > backend_override.tf <<EOF
-terraform {
-	backend "local" {}
-}
-EOF
-			terraform init
-	fi
-
-	terraform apply "${@:6}"
-
-	_popd
-}
-
-function _validate_config_json {
-	local configuration_json_file="${1}"
-
-	if [[ ! -f ${configuration_json_file} ]]
-	then
-		echo "Configuration JSON file ${configuration_json_file} does not exist." >&2
-
-		exit 1
-	fi
-
-	if ! jq empty "${configuration_json_file}" &> /dev/null
-	then
-		echo "Configuration JSON file ${configuration_json_file} is not valid JSON." >&2
-
-		exit 1
-	fi
-
-	if ! jq --exit-status '.variables | objects' "${configuration_json_file}" > /dev/null
-	then
-		echo "The configuration JSON file must contain a root object named \"variables\"." >&2
-
-		exit 1
-	fi
 }
 
 main "${@}"

@@ -28,9 +28,9 @@ function main {
 
 	configuration_json_file=$(_resolve_config_json "${1}")
 
-	generate_tfvars "${configuration_json_file}" "aks"
+	generate_tfvars "${configuration_json_file}" "azure" "aks"
 
-	generate_tfvars "${configuration_json_file}" "platform"
+	generate_tfvars "${configuration_json_file}" "azure" "platform"
 
 	az_login "${configuration_json_file}"
 
@@ -61,7 +61,7 @@ function main {
 
 		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 	else
-		generate_local_backend_overrides
+		generate_local_backend_overrides "azure" "aks" "platform"
 	fi
 
 	_set_up_azure_aks "${terraform_args[@]}"

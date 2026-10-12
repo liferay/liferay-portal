@@ -32,6 +32,7 @@ function main {
 
 	local azure_bootstrap_sources=(
 		"${ROOT_CLOUD_DIR}/scripts/_azure_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_common.sh"
 		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
 		"${ROOT_CLOUD_DIR}/terraform/azure/aks"
