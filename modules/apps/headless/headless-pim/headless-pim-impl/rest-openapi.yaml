@@ -26,21 +26,21 @@ components:
                     type: object
                 className:
                     type: string
-                code:
-                    readOnly: true
-                    type: string
                 externalReferenceCode:
                     type: string
                 id:
                     format: int64
                     readOnly: true
                     type: integer
-                name:
+                sku:
                     readOnly: true
                     type: string
                 status:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
+                title:
+                    readOnly: true
+                    type: string
                 type:
                     readOnly: true
                     type: string
@@ -60,7 +60,7 @@ components:
             type: object
 info:
     description:
-        "Manages typed relationships between PIM entities.. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.pim.client', and version '1.0.3'."
+        "Manages typed relationships between PIM entities.. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.pim.client', and version '2.0.0'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
