@@ -25,6 +25,10 @@ public class SessionMaps {
 	public static void add(
 		HttpSession httpSession, String mapKey, String key, Object value) {
 
+		if (value == null) {
+			return;
+		}
+
 		_updateMap(httpSession, mapKey, true, map -> map.put(key, value));
 	}
 

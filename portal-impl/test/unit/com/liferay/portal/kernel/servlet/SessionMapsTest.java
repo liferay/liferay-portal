@@ -45,6 +45,10 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 
 	@Test
 	public void testAdd() {
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, null);
+
+		Assert.assertFalse(SessionMaps.contains(httpSession, _MAP_KEY, KEY1));
+
 		SessionMaps.add(httpSession, _MAP_KEY, KEY1, VALUE1);
 		SessionMaps.add(httpSession, _MAP_KEY, KEY2, VALUE2);
 
@@ -60,6 +64,11 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 		Assert.assertEquals(
 			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY2));
+
+		SessionMaps.add(httpSession, _MAP_KEY, KEY1, null);
+
+		Assert.assertEquals(
+			VALUE3, SessionMaps.get(httpSession, _MAP_KEY, KEY1));
 	}
 
 	@Test
