@@ -413,9 +413,11 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 
 		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
 
-		ddmFormFields.removeIf(
-			ddmFormField -> GetterUtil.getBoolean(
-				ddmFormField.getProperty("upgradedStructure")));
+		if (getParentStructureId() > 0) {
+			ddmFormFields.removeIf(
+				ddmFormField -> GetterUtil.getBoolean(
+					ddmFormField.getProperty("upgradedStructure")));
+		}
 
 		return getDDMFormFieldNames(ddmFormFields);
 	}
