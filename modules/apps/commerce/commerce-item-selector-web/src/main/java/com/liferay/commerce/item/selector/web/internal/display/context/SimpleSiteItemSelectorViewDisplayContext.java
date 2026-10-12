@@ -25,6 +25,7 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -129,7 +130,8 @@ public class SimpleSiteItemSelectorViewDisplayContext
 				).build(),
 				searchContainer.getStart(), searchContainer.getEnd(), null),
 			_groupService.searchCount(
-				cpRequestHelper.getCompanyId(), null, null, new String[0]));
+				cpRequestHelper.getCompanyId(), (String)null, null,
+				new LinkedHashMap<>()));
 		searchContainer.setSearch(_search);
 
 		return searchContainer;
