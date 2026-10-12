@@ -68,7 +68,7 @@ public class SnapshotTest {
 				bundleContext));
 
 		Mockito.when(
-			FrameworkUtil.getBundle(Mockito.any())
+			FrameworkUtil.getBundle(SnapshotTest.class)
 		).thenReturn(
 			bundle
 		);
@@ -190,7 +190,7 @@ public class SnapshotTest {
 	@Test
 	public void testInvalidFilter() throws InvalidSyntaxException {
 		Mockito.when(
-			FrameworkUtil.getBundle(Mockito.any())
+			FrameworkUtil.getBundle(SnapshotTest.class)
 		).thenReturn(
 			null
 		);
