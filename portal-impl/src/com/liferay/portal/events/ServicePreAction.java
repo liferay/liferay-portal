@@ -1329,7 +1329,8 @@ public class ServicePreAction extends Action {
 						user.getUserId(), true);
 
 				httpServletRequest.setAttribute(
-					WebKeys.HTTP_SERVLET_REQUEST_PORTAL_PREFERENCES, portalPreferences);
+					WebKeys.HTTP_SERVLET_REQUEST_PORTAL_PREFERENCES,
+					portalPreferences);
 
 				layoutTypePortlet.setPortalPreferences(portalPreferences);
 			}
