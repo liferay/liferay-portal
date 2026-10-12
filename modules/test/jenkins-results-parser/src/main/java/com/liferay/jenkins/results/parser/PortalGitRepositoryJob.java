@@ -108,7 +108,7 @@ public abstract class PortalGitRepositoryJob
 						"test.", Environment.get("HOSTNAME"), ".properties")));
 
 			jobPropertiesFiles.add(
-				new File(privatePortalDir, "test.properties"));
+				new File(privatePortalDir, "test-private.properties"));
 		}
 
 		jobPropertiesFiles.add(
