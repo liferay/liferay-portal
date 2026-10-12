@@ -12,6 +12,8 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {CommerceAdminChannelDetailsPage} from '../../../../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsPage';
 import {CommerceAdminChannelsPage} from '../../../../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
+import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
@@ -1072,6 +1074,115 @@ test(
 				companyId,
 				'0',
 				'com.liferay.portal.kernel.model.Organization',
+				String(companyId),
+				String(salesAgentRole.id),
+				'1'
+			);
+		}
+	}
+);
+
+test(
+	'Sales Agent with ADD_ACCOUNT_ENTRY permission can create an account from the account selector and order for it',
+	{tag: ['@COMMERCE-9022', '@LPD-94598']},
+	async ({apiHelpers, commerceThemeMiniumCatalogPage, page}) => {
+		const accountExternalReferenceCode = getRandomString();
+		const accountName = `Commerce Account ${getRandomString()}`;
+
+		const salesAgentRole =
+			await apiHelpers.headlessAdminUser.getRoleByName('Sales Agent');
+
+		await apiHelpers.jsonWebServicesResourcePermissionApiHelper.addResourcePermission(
+			'ADD_ACCOUNT_ENTRY',
+			companyId,
+			'0',
+			'90',
+			String(companyId),
+			String(salesAgentRole.id),
+			'1'
+		);
+
+		try {
+			await performUserSwitch(page, salesAgent.alternateName);
+
+			await test.step('Create a new account from the account selector', async () => {
+				await page.goto(`/web${site.friendlyUrlPath}`, {
+					waitUntil: 'networkidle',
+				});
+
+				await commerceThemeMiniumCatalogPage.openAccountSelectorDropdown();
+
+				await clickAndExpectToBeVisible({
+					target: commerceThemeMiniumCatalogPage.createNewAccountModal,
+					trigger:
+						commerceThemeMiniumCatalogPage.createNewAccountButton,
+				});
+
+				await commerceThemeMiniumCatalogPage.createNewAccountModalExternalReferenceCodeInput.fill(
+					accountExternalReferenceCode
+				);
+				await commerceThemeMiniumCatalogPage.createNewAccountModalNameInput.fill(
+					accountName
+				);
+
+				await clickAndExpectToBeHidden({
+					target: commerceThemeMiniumCatalogPage.createNewAccountModal,
+					trigger:
+						commerceThemeMiniumCatalogPage.createNewAccountModalCreateButton,
+				});
+
+				await expect(
+					commerceThemeMiniumCatalogPage.accountSelectorSelectedAccount
+				).toHaveText(accountName);
+			});
+
+			await test.step('The new account is a business account', async () => {
+				const account =
+					await apiHelpers.headlessAdminUser.getAccountByExternalReferenceCode(
+						accountExternalReferenceCode
+					);
+
+				apiHelpers.data.push({id: account.id, type: 'account'});
+
+				expect(account.name).toBe(accountName);
+				expect(account.type).toBe('business');
+			});
+
+			await test.step('Create a new order for the new account from the account selector', async () => {
+				await expect(
+					commerceThemeMiniumCatalogPage.accountSelectorNoOrderSelectedMessage
+				).toBeVisible();
+
+				await clickAndExpectToBeVisible({
+					target: commerceThemeMiniumCatalogPage.createNewOrderButton,
+					trigger:
+						commerceThemeMiniumCatalogPage.accountSelectorButton,
+				});
+
+				await commerceThemeMiniumCatalogPage.createNewOrderButton.click();
+
+				await page.waitForLoadState('networkidle');
+
+				await page.goto(`/web${site.friendlyUrlPath}`, {
+					waitUntil: 'networkidle',
+				});
+
+				await expect(
+					commerceThemeMiniumCatalogPage.accountSelectorOrderId
+				).toHaveText(/\d+/);
+				await expect(
+					commerceThemeMiniumCatalogPage.accountSelectorSelectedAccount
+				).toHaveText(accountName);
+			});
+		}
+		finally {
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.removeResourcePermission(
+				'ADD_ACCOUNT_ENTRY',
+				companyId,
+				'0',
+				'90',
 				String(companyId),
 				String(salesAgentRole.id),
 				'1'
