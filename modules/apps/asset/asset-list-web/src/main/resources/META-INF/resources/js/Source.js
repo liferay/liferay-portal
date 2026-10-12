@@ -14,6 +14,7 @@ import {
 	toggleSelectBox,
 } from 'frontend-js-web';
 
+import {invalidFiltersAtom} from './atoms/invalidFiltersAtom';
 import {propertiesAtom} from './atoms/propertiesAtom';
 
 export default function ({
@@ -246,15 +247,39 @@ export default function ({
 		}
 	};
 
-	const toggleSaveButton = (valueIsEmpty) => {
-		if (valueIsEmpty) {
+	let filtersAreInvalid = State.read(invalidFiltersAtom);
+	let sourceIsEmpty = saveButton?.disabled ?? false;
+
+	const updateSaveButton = () => {
+		if (!saveButton) {
+			return;
+		}
+
+		const disabled = sourceIsEmpty || filtersAreInvalid;
+
+		if (disabled) {
 			saveButton.classList.add('disabled');
 		}
 		else {
 			saveButton.classList.remove('disabled');
 		}
-		saveButton.disabled = valueIsEmpty;
+		saveButton.disabled = disabled;
 	};
+
+	const setSourceIsEmpty = (isEmpty) => {
+		sourceIsEmpty = isEmpty;
+
+		updateSaveButton();
+	};
+
+	const invalidFiltersSubscription = State.subscribe(
+		invalidFiltersAtom,
+		(invalid) => {
+			filtersAreInvalid = invalid;
+
+			updateSaveButton();
+		}
+	);
 
 	const removeOptionsOrderByFilter = () => {
 		const options = orderingPanel.querySelectorAll('.order-by-subtype');
@@ -334,7 +359,7 @@ export default function ({
 		if (classTypeSelected) {
 			selectedSubtype = subtypeSelector[classTypeSelected.className];
 		}
-		toggleSaveButton(
+		setSourceIsEmpty(
 			assetSelector.value === '' || selectedSubtype?.value === ''
 		);
 
@@ -424,7 +449,7 @@ export default function ({
 			const subtypeSelectorIsEmpty =
 				subtypeSelector[className].value === '';
 
-			toggleSaveButton(subtypeSelectorIsEmpty);
+			setSourceIsEmpty(subtypeSelectorIsEmpty);
 
 			setDDMFields({className});
 
@@ -521,7 +546,7 @@ export default function ({
 			if (isClassNameMove) {
 				toggleSubclasses();
 
-				toggleSaveButton(
+				setSourceIsEmpty(
 					!document.getElementById(classNameIdsId).options.length
 				);
 			}
@@ -590,6 +615,11 @@ export default function ({
 		`${namespace}classNamesBoxes`
 	);
 
+	// Set the save button once on load. invalidFiltersSubscription only fires
+	// when the filters change, so it misses filters that were already invalid.
+
+	updateSaveButton();
+
 	State.write(
 		propertiesAtom,
 		collapseToCommonFields(initialProperties || [], getSelectedIds())
@@ -598,6 +628,8 @@ export default function ({
 	return {
 		dispose() {
 			eventDelegates.forEach((eventDelegate) => eventDelegate.dispose());
+
+			invalidFiltersSubscription.dispose();
 		},
 	};
 }

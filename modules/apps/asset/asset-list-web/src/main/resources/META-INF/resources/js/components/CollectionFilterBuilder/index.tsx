@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {State} from '@liferay/frontend-js-state-web';
 import {uuidv4} from 'frontend-js-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import {invalidFiltersAtom} from '../../atoms/invalidFiltersAtom';
 import useTypeProperties from '../../hooks/useTypeProperties';
 import {ConditionBuilder} from './ConditionBuilder';
 import {Config, initializeConfig} from './config';
@@ -197,6 +199,12 @@ export default function CollectionFilterBuilder({
 			Liferay.detach(`${namespace}sourceChange`, handleSourceChange);
 		};
 	}, [namespace]);
+
+	useEffect(() => {
+		State.write(invalidFiltersAtom, hasInvalidValue);
+	}, [hasInvalidValue]);
+
+	useEffect(() => () => State.write(invalidFiltersAtom, false), []);
 
 	useEffect(() => {
 		if (!hasInvalidValue) {
