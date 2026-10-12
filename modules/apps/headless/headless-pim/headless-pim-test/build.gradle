@@ -9,6 +9,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-pim:headless-pim-api")
 	testIntegrationImplementation project(":apps:headless:headless-pim:headless-pim-client")
 	testIntegrationImplementation project(":apps:object:object-api")
+	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:site:site-pim-site-initializer-api")
