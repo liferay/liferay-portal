@@ -126,11 +126,12 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			return _pullRequests.get(0);
 		}
 
-		Map<String, String> buildParameters = getBuildParameters();
+		Map<String, String> topLevelBuildParameters =
+			getTopLevelBuildParameters();
 
-		String gitHubReceiverUsername = buildParameters.get(
+		String gitHubReceiverUsername = topLevelBuildParameters.get(
 			"GITHUB_RECEIVER_USERNAME");
-		String pullRequestNumber = buildParameters.get(
+		String pullRequestNumber = topLevelBuildParameters.get(
 			"GITHUB_PULL_REQUEST_NUMBER");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(gitHubReceiverUsername) &&
@@ -264,7 +265,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			return getControllerStartDate();
 		}
 
-		return getStartDate();
+		return getTopLevelStartDate();
 	}
 
 	@Override
@@ -297,7 +298,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 		sb.append("<a href=\"");
 
-		URL testrayAttachmentURL = getTestrayAttachmentURLBySuffix(
+		URL testrayAttachmentURL = getTopLevelTestrayAttachmentURLBySuffix(
 			"jenkins-report.html.gz");
 
 		if (testrayAttachmentURL != null) {
@@ -473,11 +474,12 @@ public abstract class BaseTestrayContext implements TestrayContext {
 				}
 			}
 
-			String jobName = getJobName();
+			String topLevelJobName = getTopLevelJobName();
 
 			if ((testrayProductVersion == null) &&
-				(jobName.equals("test-qa-websites-functional-daily") ||
-				 jobName.equals("test-qa-websites-functional-weekly"))) {
+				(topLevelJobName.equals("test-qa-websites-functional-daily") ||
+				 topLevelJobName.equals(
+					 "test-qa-websites-functional-weekly"))) {
 
 				testrayProductVersion =
 					testrayProject.createTestrayProductVersion(replace("1.x"));
@@ -913,10 +915,6 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		_workspaces = buildDatabase.getWorkspaces();
 	}
 
-	protected abstract int getBuildNumber();
-
-	protected abstract Map<String, String> getBuildParameters();
-
 	protected abstract int getControllerBuildNumber();
 
 	protected abstract Map<String, String> getControllerBuildParameters();
@@ -927,15 +925,20 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 	protected abstract Date getControllerStartDate();
 
-	protected abstract JenkinsMaster getJenkinsMaster();
-
-	protected abstract String getJobName();
-
-	protected abstract Date getStartDate();
-
 	protected abstract String getTestSuiteName();
 
-	protected abstract URL getTestrayAttachmentURLBySuffix(String suffix);
+	protected abstract int getTopLevelBuildNumber();
+
+	protected abstract Map<String, String> getTopLevelBuildParameters();
+
+	protected abstract JenkinsMaster getTopLevelJenkinsMaster();
+
+	protected abstract String getTopLevelJobName();
+
+	protected abstract Date getTopLevelStartDate();
+
+	protected abstract URL getTopLevelTestrayAttachmentURLBySuffix(
+		String suffix);
 
 	protected abstract boolean hasControllerBuild();
 
@@ -954,7 +957,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			buildParameters.putAll(getControllerBuildParameters());
 		}
 
-		buildParameters.putAll(getBuildParameters());
+		buildParameters.putAll(getTopLevelBuildParameters());
 
 		return buildParameters.get(buildParameterName);
 	}
@@ -968,12 +971,12 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	private String _getJenkinsReportURL() {
-		JenkinsMaster jenkinsMaster = getJenkinsMaster();
+		JenkinsMaster topLevelJenkinsMaster = getTopLevelJenkinsMaster();
 
 		return JenkinsResultsParserUtil.combine(
-			"https://", jenkinsMaster.getName(), ".liferay.com/",
-			"userContent/jobs/", getJobName(), "/builds/",
-			String.valueOf(getBuildNumber()), "/jenkins-report.html");
+			"https://", topLevelJenkinsMaster.getName(), ".liferay.com/",
+			"userContent/jobs/", getTopLevelJobName(), "/builds/",
+			String.valueOf(getTopLevelBuildNumber()), "/jenkins-report.html");
 	}
 
 	private Job _getJob() {
@@ -1041,10 +1044,11 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	private Job.BuildProfile _getPortalBuildProfile() {
-		Map<String, String> buildParameters = getBuildParameters();
+		Map<String, String> topLevelBuildParameters =
+			getTopLevelBuildParameters();
 
 		Job.BuildProfile buildProfile = Job.BuildProfile.getByString(
-			buildParameters.get("TEST_PORTAL_BUILD_PROFILE"));
+			topLevelBuildParameters.get("TEST_PORTAL_BUILD_PROFILE"));
 
 		if (buildProfile != null) {
 			return buildProfile;
@@ -1097,9 +1101,9 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		string = _replaceQAWebsitesTopLevelBuild(string);
 		string = _replaceTopLevelBuild(string);
 
-		String jobName = getJobName();
+		String topLevelJobName = getTopLevelJobName();
 
-		if (jobName.contains("subrepository")) {
+		if (topLevelJobName.contains("subrepository")) {
 			string = _replaceSubrepository(string);
 		}
 
@@ -1162,9 +1166,10 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	private String _replacePluginsTopLevelBuild(String string) {
-		Map<String, String> buildParameters = getBuildParameters();
+		Map<String, String> topLevelBuildParameters =
+			getTopLevelBuildParameters();
 
-		String pluginName = buildParameters.get("TEST_PLUGIN_NAME");
+		String pluginName = topLevelBuildParameters.get("TEST_PLUGIN_NAME");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(pluginName)) {
 			string = string.replace("$(plugin.name)", pluginName);
@@ -1174,9 +1179,11 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	private String _replacePortalAppReleaseTopLevelBuild(String string) {
-		Map<String, String> buildParameters = getBuildParameters();
+		Map<String, String> topLevelBuildParameters =
+			getTopLevelBuildParameters();
 
-		String portalAppName = buildParameters.get("TEST_PORTAL_APP_NAME");
+		String portalAppName = topLevelBuildParameters.get(
+			"TEST_PORTAL_APP_NAME");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalAppName)) {
 			string = string.replace("$(portal.app.name)", portalAppName);
@@ -1263,9 +1270,10 @@ public abstract class BaseTestrayContext implements TestrayContext {
 					matcher.group("releaseName"));
 			}
 
-			Map<String, String> buildParameters = getBuildParameters();
+			Map<String, String> topLevelBuildParameters =
+				getTopLevelBuildParameters();
 
-			String portalReleaseBuildVersion = buildParameters.get(
+			String portalReleaseBuildVersion = topLevelBuildParameters.get(
 				"TEST_PORTAL_RELEASE_VERSION");
 
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(
@@ -1377,9 +1385,10 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	private String _replaceQAWebsitesTopLevelBuild(String string) {
-		Map<String, String> buildParameters = getBuildParameters();
+		Map<String, String> topLevelBuildParameters =
+			getTopLevelBuildParameters();
 
-		String projectNames = buildParameters.get("PROJECT_NAMES");
+		String projectNames = topLevelBuildParameters.get("PROJECT_NAMES");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(projectNames)) {
 			string = string.replace(
@@ -1467,9 +1476,10 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	private String _replaceSubrepository(String string) {
-		Map<String, String> buildParameters = getBuildParameters();
+		Map<String, String> topLevelBuildParameters =
+			getTopLevelBuildParameters();
 
-		String gitHubUpstreamBranchName = buildParameters.get(
+		String gitHubUpstreamBranchName = topLevelBuildParameters.get(
 			"GITHUB_UPSTREAM_BRANCH_NAME");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(gitHubUpstreamBranchName)) {
@@ -1477,7 +1487,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 				"$(github.upstream.branch.name)", gitHubUpstreamBranchName);
 		}
 
-		String repositoryName = buildParameters.get("REPOSITORY_NAME");
+		String repositoryName = topLevelBuildParameters.get("REPOSITORY_NAME");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(repositoryName)) {
 			string = string.replace("$(repository.name)", repositoryName);
@@ -1489,24 +1499,26 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	private String _replaceTopLevelBuild(String string) {
 		string = string.replace("$(ci.test.suite)", getTestSuiteName());
 
-		int buildNumber = getBuildNumber();
+		int topLevelBuildNumber = getTopLevelBuildNumber();
 
 		string = string.replace(
-			"$(jenkins.build.number)", String.valueOf(buildNumber));
+			"$(jenkins.build.number)", String.valueOf(topLevelBuildNumber));
 		string = string.replace(
 			"$(jenkins.build.start)",
 			JenkinsResultsParserUtil.toDateString(
-				getStartDate(), "yyyy-MM-dd[HH:mm:ss]", "America/Los_Angeles"));
+				getTopLevelStartDate(), "yyyy-MM-dd[HH:mm:ss]",
+				"America/Los_Angeles"));
 
-		JenkinsMaster jenkinsMaster = getJenkinsMaster();
-		String jobName = getJobName();
+		JenkinsMaster topLevelJenkinsMaster = getTopLevelJenkinsMaster();
+		String topLevelJobName = getTopLevelJobName();
 
 		string = string.replace(
 			"$(jenkins.build.url)",
-			_getBuildURL(buildNumber, jenkinsMaster, jobName));
-		string = string.replace("$(jenkins.job.name)", jobName);
+			_getBuildURL(
+				topLevelBuildNumber, topLevelJenkinsMaster, topLevelJobName));
+		string = string.replace("$(jenkins.job.name)", topLevelJobName);
 		string = string.replace(
-			"$(jenkins.master.hostname)", jenkinsMaster.getName());
+			"$(jenkins.master.hostname)", topLevelJenkinsMaster.getName());
 
 		return string.replace("$(jenkins.report.url)", _getJenkinsReportURL());
 	}

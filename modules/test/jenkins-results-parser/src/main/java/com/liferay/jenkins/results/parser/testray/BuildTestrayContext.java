@@ -29,22 +29,6 @@ public class BuildTestrayContext extends BaseTestrayContext {
 	}
 
 	@Override
-	protected int getBuildNumber() {
-		return _topLevelBuild.getBuildNumber();
-	}
-
-	@Override
-	protected synchronized Map<String, String> getBuildParameters() {
-		if (_buildParameters != null) {
-			return _buildParameters;
-		}
-
-		_buildParameters = _topLevelBuild.getParameters();
-
-		return _buildParameters;
-	}
-
-	@Override
 	protected int getControllerBuildNumber() {
 		Build controllerBuild = _topLevelBuild.getControllerBuild();
 
@@ -80,27 +64,43 @@ public class BuildTestrayContext extends BaseTestrayContext {
 	}
 
 	@Override
-	protected JenkinsMaster getJenkinsMaster() {
-		return _topLevelBuild.getJenkinsMaster();
-	}
-
-	@Override
-	protected String getJobName() {
-		return _topLevelBuild.getJobName();
-	}
-
-	@Override
-	protected Date getStartDate() {
-		return new Date(_topLevelBuild.getStartTime());
-	}
-
-	@Override
 	protected String getTestSuiteName() {
 		return _topLevelBuild.getTestSuiteName();
 	}
 
 	@Override
-	protected URL getTestrayAttachmentURLBySuffix(String suffix) {
+	protected int getTopLevelBuildNumber() {
+		return _topLevelBuild.getBuildNumber();
+	}
+
+	@Override
+	protected synchronized Map<String, String> getTopLevelBuildParameters() {
+		if (_buildParameters != null) {
+			return _buildParameters;
+		}
+
+		_buildParameters = _topLevelBuild.getParameters();
+
+		return _buildParameters;
+	}
+
+	@Override
+	protected JenkinsMaster getTopLevelJenkinsMaster() {
+		return _topLevelBuild.getJenkinsMaster();
+	}
+
+	@Override
+	protected String getTopLevelJobName() {
+		return _topLevelBuild.getJobName();
+	}
+
+	@Override
+	protected Date getTopLevelStartDate() {
+		return new Date(_topLevelBuild.getStartTime());
+	}
+
+	@Override
+	protected URL getTopLevelTestrayAttachmentURLBySuffix(String suffix) {
 		for (URL testrayAttachmentURL :
 				_topLevelBuild.getTestrayAttachmentURLs()) {
 

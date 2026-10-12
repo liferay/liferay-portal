@@ -29,22 +29,6 @@ public class BuildReportTestrayContext extends BaseTestrayContext {
 	}
 
 	@Override
-	protected int getBuildNumber() {
-		return _topLevelBuildReport.getBuildNumber();
-	}
-
-	@Override
-	protected synchronized Map<String, String> getBuildParameters() {
-		if (_buildParameters != null) {
-			return _buildParameters;
-		}
-
-		_buildParameters = _topLevelBuildReport.getBuildParameters();
-
-		return _buildParameters;
-	}
-
-	@Override
 	protected int getControllerBuildNumber() {
 		ControllerBuildReport controllerBuildReport =
 			_topLevelBuildReport.getControllerBuildReport();
@@ -85,21 +69,6 @@ public class BuildReportTestrayContext extends BaseTestrayContext {
 	}
 
 	@Override
-	protected JenkinsMaster getJenkinsMaster() {
-		return _topLevelBuildReport.getJenkinsMaster();
-	}
-
-	@Override
-	protected String getJobName() {
-		return _topLevelBuildReport.getJobName();
-	}
-
-	@Override
-	protected Date getStartDate() {
-		return _topLevelBuildReport.getStartDate();
-	}
-
-	@Override
 	protected synchronized String getTestSuiteName() {
 		if (_testSuiteName != null) {
 			return _testSuiteName;
@@ -111,7 +80,38 @@ public class BuildReportTestrayContext extends BaseTestrayContext {
 	}
 
 	@Override
-	protected URL getTestrayAttachmentURLBySuffix(String suffix) {
+	protected int getTopLevelBuildNumber() {
+		return _topLevelBuildReport.getBuildNumber();
+	}
+
+	@Override
+	protected synchronized Map<String, String> getTopLevelBuildParameters() {
+		if (_buildParameters != null) {
+			return _buildParameters;
+		}
+
+		_buildParameters = _topLevelBuildReport.getBuildParameters();
+
+		return _buildParameters;
+	}
+
+	@Override
+	protected JenkinsMaster getTopLevelJenkinsMaster() {
+		return _topLevelBuildReport.getJenkinsMaster();
+	}
+
+	@Override
+	protected String getTopLevelJobName() {
+		return _topLevelBuildReport.getJobName();
+	}
+
+	@Override
+	protected Date getTopLevelStartDate() {
+		return _topLevelBuildReport.getStartDate();
+	}
+
+	@Override
+	protected URL getTopLevelTestrayAttachmentURLBySuffix(String suffix) {
 		return _topLevelBuildReport.getTestrayAttachmentURLBySuffix(suffix);
 	}
 
