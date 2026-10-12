@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import org.osgi.framework.Bundle;
@@ -23,7 +24,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Shuyang Zhou
@@ -60,7 +60,7 @@ public class Snapshot<T> {
 
 				if (filterString == null) {
 					serviceTracker = new ServiceTracker<>(
-						bundleContext, serviceClass, null);
+						bundleContext, serviceClass);
 				}
 				else {
 					try {
@@ -69,8 +69,7 @@ public class Snapshot<T> {
 							bundleContext.createFilter(
 								StringBundler.concat(
 									"(&(objectClass=", serviceClass.getName(),
-									")", filterString, ")")),
-							null);
+									")", filterString, ")")));
 					}
 					catch (InvalidSyntaxException invalidSyntaxException) {
 						return ReflectionUtil.throwException(
@@ -198,23 +197,46 @@ public class Snapshot<T> {
 	private static class ServiceTracker<S, T>
 		extends org.osgi.util.tracker.ServiceTracker<S, T> {
 
+		@Override
+		public T addingService(ServiceReference<S> serviceReference) {
+			T service = super.addingService(serviceReference);
+
+			_trackedCount.incrementAndGet();
+
+			return service;
+		}
+
 		public BundleContext getContext() {
 			return context;
 		}
 
-		private ServiceTracker(
-			BundleContext bundleContext, Class<S> clazz,
-			ServiceTrackerCustomizer<S, T> serviceTrackerCustomizer) {
+		@Override
+		public T getService() {
+			if (_trackedCount.get() == 0) {
+				return null;
+			}
 
-			super(bundleContext, clazz, serviceTrackerCustomizer);
+			return super.getService();
 		}
 
-		private ServiceTracker(
-			BundleContext bundleContext, Filter filter,
-			ServiceTrackerCustomizer<S, T> serviceTrackerCustomizer) {
+		@Override
+		public void removedService(
+			ServiceReference<S> serviceReference, T service) {
 
-			super(bundleContext, filter, serviceTrackerCustomizer);
+			_trackedCount.decrementAndGet();
+
+			super.removedService(serviceReference, service);
 		}
+
+		private ServiceTracker(BundleContext bundleContext, Class<S> clazz) {
+			super(bundleContext, clazz, null);
+		}
+
+		private ServiceTracker(BundleContext bundleContext, Filter filter) {
+			super(bundleContext, filter, null);
+		}
+
+		private final AtomicInteger _trackedCount = new AtomicInteger();
 
 	}
 
