@@ -258,6 +258,9 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 
 		int[] startAndEnd = _getStartAndEnd();
 
+		startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			startAndEnd[0], startAndEnd[1], getRepositoryEntriesCount());
+
 		Repository repository = _getRepository();
 
 		if (_isFilterByFileEntryType() &&
