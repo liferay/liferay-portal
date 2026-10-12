@@ -18,7 +18,6 @@ override_module {
 		cluster_addons={}
 		cluster_certificate_authority_data="dGVzdA=="
 		cluster_endpoint="https://example.eks.amazonaws.com"
-		cluster_id="liferay-test-eks"
 		cluster_name="liferay-test-eks"
 		cluster_primary_security_group_id="sg-0123456789abcdef0"
 		cluster_version="1.31"

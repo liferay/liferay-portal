@@ -18,7 +18,6 @@ override_module {
 		cluster_addons={}
 		cluster_certificate_authority_data="dGVzdA=="
 		cluster_endpoint="https://example.eks.amazonaws.com"
-		cluster_id="liferay-test-eks"
 		cluster_name="liferay-test-eks"
 		cluster_primary_security_group_id="sg-0123456789abcdef0"
 		cluster_version="1.31"
@@ -34,19 +33,9 @@ override_module {
 	}
 	target=module.vpc
 }
-run "should_accept_custom_deployment_namespace" {
-	assert {
-		condition=output.deployment_namespace == "my-ns"
-		error_message="The custom deployment_namespace must be accepted and exposed"
-	}
-	command=plan
-	variables {
-		deployment_namespace="my-ns"
-	}
-}
 run "should_accept_deployment_name_with_3_characters" {
 	assert {
-		condition=output.deployment_name == "abc"
+		condition=local.cluster_name == "abc-eks"
 		error_message="The deployment_name with 3 lowercase characters must be accepted"
 	}
 	command=plan
@@ -84,13 +73,6 @@ run "should_not_accept_deployment_name_starting_with_a_digit" {
 	expect_failures=[var.deployment_name]
 	variables {
 		deployment_name="1iferay-test"
-	}
-}
-run "should_not_accept_invalid_deployment_namespace" {
-	command=plan
-	expect_failures=[var.deployment_namespace]
-	variables {
-		deployment_namespace="Bad_Namespace"
 	}
 }
 run "should_not_accept_uppercase_deployment_name" {
