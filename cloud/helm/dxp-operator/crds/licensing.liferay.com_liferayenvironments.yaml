@@ -119,6 +119,12 @@ spec:
                                 type: string
                             workloadRef:
                                 properties:
+                                    kind:
+                                        default: StatefulSet
+                                        enum:
+                                        -   Deployment
+                                        -   StatefulSet
+                                        type: string
                                     name:
                                         type: string
                                 required:
