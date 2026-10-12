@@ -1,5 +1,5 @@
 {
-	"@generated": "0630d6407cd311351f2874563501773aacee51f6",
+	"@generated": "bdc3c50c5663f23870f8a4724e6b84bea02e1a11",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -17,8 +17,8 @@
 			"@liferay/frontend-data-set-web/api": [
 				"../../../../../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/js/api/api.ts"
 			],
-			"@liferay/frontend-js-item-selector-web": [
-				"../../../../../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
+			"@liferay/frontend-js-react-web": [
+				"../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"@liferay/site-cms-site-initializer": [
 				"../../../../../../site-cms-site-initializer/src/main/resources/META-INF/resources/js/index.ts"
@@ -56,7 +56,7 @@
 			"path": "../../../../../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
-			"path": "../../../../../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"
+			"path": "../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../site-cms-site-initializer/src/main/resources/META-INF/resources/tsconfig.json"
