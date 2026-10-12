@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -379,9 +380,11 @@ public class GroupServiceTest {
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), null,
 				_group.getDescription(_getLocale()),
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
@@ -399,9 +402,11 @@ public class GroupServiceTest {
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), null,
 				_group.getDescription(_getLocale()),
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
@@ -413,9 +418,11 @@ public class GroupServiceTest {
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), _group.getName(_getLocale()),
 				null,
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
@@ -433,9 +440,11 @@ public class GroupServiceTest {
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), _group.getName(_getLocale()),
 				null,
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
@@ -446,15 +455,18 @@ public class GroupServiceTest {
 
 		_role = _roleLocalService.fetchRole(roleId);
 
-		String[] groupParams = {
-			"groupsRoles:" + String.valueOf(roleId) + ":long",
-			"site:true:boolean"
-		};
+		LinkedHashMap<String, Object> groupParams =
+			LinkedHashMapBuilder.<String, Object>put(
+				"groupsRoles", roleId
+			).put(
+				"site", true
+			).build();
 
 		Assert.assertEquals(
 			1,
 			_groupService.searchCount(
-				TestPropsValues.getCompanyId(), null, null, groupParams));
+				TestPropsValues.getCompanyId(), (String)null, null,
+				groupParams));
 
 		List<Group> groups = _groupService.search(
 			TestPropsValues.getCompanyId(), null, null, groupParams,
@@ -477,9 +489,11 @@ public class GroupServiceTest {
 			1,
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), "liferay%", null,
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
@@ -488,9 +502,11 @@ public class GroupServiceTest {
 			1,
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), "Liferay%", null,
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
@@ -499,9 +515,11 @@ public class GroupServiceTest {
 			0,
 			_groupService.searchCount(
 				TestPropsValues.getCompanyId(), "cabina14", null,
-				new String[] {
-					"manualMembership:true:boolean", "site:true:boolean"
-				}));
+				LinkedHashMapBuilder.<String, Object>put(
+					"manualMembership", true
+				).put(
+					"site", true
+				).build()));
 	}
 
 	@Test
