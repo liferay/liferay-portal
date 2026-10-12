@@ -17,6 +17,7 @@
 		"@liferay/layout-js-components-web": "*",
 		"asset-taglib": "*",
 		"classnames": "2.3.1",
+		"date-fns": "2.29.3",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",

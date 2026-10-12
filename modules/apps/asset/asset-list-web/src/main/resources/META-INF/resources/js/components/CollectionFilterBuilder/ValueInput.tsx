@@ -4,7 +4,7 @@
  */
 
 import {Option, Picker} from '@clayui/core';
-import {ClayInput} from '@clayui/form';
+import ClayForm, {ClayInput} from '@clayui/form';
 import MultiSelect from '@clayui/multi-select';
 import {
 	AssetTagsSelector,
@@ -16,6 +16,7 @@ import React from 'react';
 import {TriggerLabel} from './ConditionBuilder';
 import DateValueInput from './DateValueInput';
 import {config} from './config';
+import getValueErrorMessage from './getValueErrorMessage';
 
 import type {FilterProperty} from './types';
 
@@ -33,22 +34,33 @@ function handlePreventEnterSubmit(event: React.KeyboardEvent) {
 interface ValueInputContainerProps
 	extends React.HTMLAttributes<HTMLDivElement> {
 	children: React.ReactNode;
+	errorMessage?: string | null;
 }
 
 export function ValueInputContainer({
 	children,
 	className,
+	errorMessage,
 	...otherProps
 }: ValueInputContainerProps) {
 	return (
 		<div
 			className={classNames(
-				'condition-builder__value-input d-flex flex-grow-1',
+				'condition-builder__value-input flex-grow-1 form-group mb-0',
+				{'has-error': errorMessage},
 				className
 			)}
 			{...otherProps}
 		>
-			{children}
+			<div className="c-gap-2 d-flex">{children}</div>
+
+			{errorMessage && (
+				<ClayForm.FeedbackGroup role="alert">
+					<ClayForm.FeedbackItem>
+						{errorMessage}
+					</ClayForm.FeedbackItem>
+				</ClayForm.FeedbackGroup>
+			)}
 		</div>
 	);
 }
@@ -177,7 +189,13 @@ export default function ValueInput({
 			const [from, to] = (value as string[]) || [];
 
 			return (
-				<ValueInputContainer className="c-gap-2">
+				<ValueInputContainer
+					errorMessage={getValueErrorMessage(
+						property,
+						operator,
+						value
+					)}
+				>
 					<ClayInput
 						aria-label={Liferay.Language.get('from')}
 						className="form-control-sm"
@@ -210,7 +228,9 @@ export default function ValueInput({
 		}
 
 		return (
-			<ValueInputContainer>
+			<ValueInputContainer
+				errorMessage={getValueErrorMessage(property, operator, value)}
+			>
 				<ClayInput
 					aria-label={Liferay.Language.get('value')}
 					className="form-control-sm"

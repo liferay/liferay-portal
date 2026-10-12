@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 
 import {TriggerLabel} from './ConditionBuilder';
 import {ValueInputContainer} from './ValueInput';
+import getValueErrorMessage from './getValueErrorMessage';
 import {RELATIVE_DATE_OPTIONS, RELATIVE_DATE_VALUES} from './operators';
 
 import type {ValueInputProps} from './ValueInput';
@@ -55,12 +56,14 @@ export default function DateValueInput({
 	};
 	const valueStr = (value as string) || '';
 
+	const errorMessage = getValueErrorMessage(property, operator, value);
+
 	if (operator === 'between') {
 		const [from = '', to = ''] = (value as string[]) || [];
 
 		if (isDateTime) {
 			return (
-				<ValueInputContainer className="c-gap-2">
+				<ValueInputContainer errorMessage={errorMessage}>
 					<DatePicker
 						{...datePickerProps}
 						inputName={`${property.name}-from-${index}`}
@@ -83,7 +86,7 @@ export default function DateValueInput({
 		}
 
 		return (
-			<ValueInputContainer>
+			<ValueInputContainer errorMessage={errorMessage}>
 				<DatePicker
 					{...datePickerProps}
 					inputName={`${property.name}-${index}`}
@@ -103,7 +106,7 @@ export default function DateValueInput({
 
 	if (isDateTime) {
 		return (
-			<ValueInputContainer>
+			<ValueInputContainer errorMessage={errorMessage}>
 				<DatePicker
 					{...datePickerProps}
 					inputName={`${property.name}-${index}`}
@@ -140,7 +143,7 @@ export default function DateValueInput({
 				</Picker>
 			</div>
 
-			<ValueInputContainer>
+			<ValueInputContainer errorMessage={errorMessage}>
 				{mode === DATE_MODE.relative ? (
 					<Picker
 						aria-label={Liferay.Language.get('value')}
