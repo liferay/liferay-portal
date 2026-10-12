@@ -526,7 +526,7 @@ describe('buildObjectDefinition object layout', () => {
 		uuid: getUuid(),
 	});
 
-	const build = (children: StructureChild[]) =>
+	const build = (children: StructureChild[], titleFieldName?: string) =>
 		buildObjectDefinition({
 			children: new Map(children.map((child) => [child.uuid, child])),
 			erc: 'structureERC',
@@ -534,6 +534,7 @@ describe('buildObjectDefinition object layout', () => {
 			name: 'myStructure',
 			spaces: [],
 			status: 'draft',
+			titleFieldName,
 		});
 
 	it('Clears the layout when there is no group', () => {
@@ -570,6 +571,22 @@ describe('buildObjectDefinition object layout', () => {
 				.objectLayoutColumns[0].objectFieldName
 		).toBe(TEXT_FIELD.name);
 		expect(second.name).toEqual({en_US: 'Group'});
+	});
+
+	it('Leaves the title field out of the layout', () => {
+		const objectDefinition = build(
+			[TITLE_FIELD, buildGroup('Group', [TEXT_FIELD])],
+			TITLE_FIELD.name
+		);
+
+		const [objectLayout] = objectDefinition.objectLayouts!;
+
+		expect(objectLayout.objectLayoutTabs.map(({name}) => name)).toEqual([
+			{en_US: 'Group'},
+		]);
+		expect(objectDefinition.objectFields!.map(({name}) => name)).toContain(
+			TITLE_FIELD.name
+		);
 	});
 
 	it('Nests a group of a group in a collapsable box', () => {
