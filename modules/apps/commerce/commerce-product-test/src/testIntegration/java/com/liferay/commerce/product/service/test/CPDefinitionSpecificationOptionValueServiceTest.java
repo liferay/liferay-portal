@@ -65,7 +65,6 @@ public class CPDefinitionSpecificationOptionValueServiceTest {
 		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
 			commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
 			false);
-
 		CPSpecificationOption cpSpecificationOption =
 			CPTestUtil.addCPSpecificationOption(
 				commerceCatalog.getGroupId(), false);
@@ -103,9 +102,13 @@ public class CPDefinitionSpecificationOptionValueServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException.MustHavePermission principalException) {
-			_assertMessage(
-				ActionKeys.UPDATE, principalException.getMessage(),
-				_user.getUserId());
+			String message = principalException.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					StringBundler.concat(
+						"User ", _user.getUserId(), " must have ",
+						ActionKeys.UPDATE, " permission for")));
 		}
 
 		_addResourcePermission(ActionKeys.UPDATE);
@@ -126,14 +129,6 @@ public class CPDefinitionSpecificationOptionValueServiceTest {
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), _role.getRoleId(),
 			actionId);
-	}
-
-	private void _assertMessage(String actionId, String message, long userId) {
-		Assert.assertTrue(
-			message.contains(
-				StringBundler.concat(
-					"User ", userId, " must have ", actionId,
-					" permission for")));
 	}
 
 	@Inject

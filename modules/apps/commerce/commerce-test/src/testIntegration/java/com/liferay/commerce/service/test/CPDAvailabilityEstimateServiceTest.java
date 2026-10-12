@@ -68,7 +68,13 @@ public class CPDAvailabilityEstimateServiceTest {
 			false);
 
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
-			_addCommerceAvailabilityEstimate();
+			_commerceAvailabilityEstimateLocalService.
+				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.nextDouble(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId()));
 
 		_cpdAvailabilityEstimate =
 			_cpdAvailabilityEstimateLocalService.
@@ -89,7 +95,13 @@ public class CPDAvailabilityEstimateServiceTest {
 		_addResourcePermission(ActionKeys.VIEW);
 
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
-			_addCommerceAvailabilityEstimate();
+			_commerceAvailabilityEstimateLocalService.
+				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.nextDouble(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId()));
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -103,40 +115,33 @@ public class CPDAvailabilityEstimateServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException.MustHavePermission principalException) {
-			_assertMessage(
-				ActionKeys.UPDATE, principalException.getMessage(),
-				_user.getUserId());
+			String message = principalException.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					StringBundler.concat(
+						"User ", _user.getUserId(), " must have ",
+						ActionKeys.UPDATE, " permission for")));
 		}
 
 		_addResourcePermission(ActionKeys.UPDATE);
 
+		CPDAvailabilityEstimate cpdAvailabilityEstimate = null;
+
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			CPDAvailabilityEstimate cpdAvailabilityEstimate =
+			cpdAvailabilityEstimate =
 				_cpdAvailabilityEstimateService.updateCPDAvailabilityEstimate(
 					_cpdAvailabilityEstimate.getCPDAvailabilityEstimateId(),
 					_cpDefinition.getCPDefinitionId(),
 					commerceAvailabilityEstimate.
 						getCommerceAvailabilityEstimateId());
-
-			Assert.assertEquals(
-				commerceAvailabilityEstimate.
-					getCommerceAvailabilityEstimateId(),
-				cpdAvailabilityEstimate.getCommerceAvailabilityEstimateId());
 		}
-	}
 
-	private CommerceAvailabilityEstimate _addCommerceAvailabilityEstimate()
-		throws Exception {
-
-		return _commerceAvailabilityEstimateLocalService.
-			addCommerceAvailabilityEstimate(
-				RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.nextDouble(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId()));
+		Assert.assertEquals(
+			commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId(),
+			cpdAvailabilityEstimate.getCommerceAvailabilityEstimateId());
 	}
 
 	private void _addResourcePermission(String actionId) throws Exception {
@@ -145,14 +150,6 @@ public class CPDAvailabilityEstimateServiceTest {
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), _role.getRoleId(),
 			actionId);
-	}
-
-	private void _assertMessage(String actionId, String message, long userId) {
-		Assert.assertTrue(
-			message.contains(
-				StringBundler.concat(
-					"User ", userId, " must have ", actionId,
-					" permission for")));
 	}
 
 	@Inject

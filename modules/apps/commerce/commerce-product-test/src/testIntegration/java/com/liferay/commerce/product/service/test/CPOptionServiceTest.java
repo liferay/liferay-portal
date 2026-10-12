@@ -70,7 +70,13 @@ public class CPOptionServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_addOrUpdateCPOption();
+			_cpOptionService.addOrUpdateCPOption(
+				_cpOption.getExternalReferenceCode(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				_cpOption.getCommerceOptionTypeKey(), _cpOption.isFacetable(),
+				_cpOption.isRequired(), _cpOption.isSkuContributor(),
+				_cpOption.getKey(), ServiceContextTestUtil.getServiceContext());
 
 			Assert.fail();
 		}
@@ -85,7 +91,13 @@ public class CPOptionServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_addOrUpdateCPOption();
+			_cpOptionService.addOrUpdateCPOption(
+				_cpOption.getExternalReferenceCode(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				_cpOption.getCommerceOptionTypeKey(), _cpOption.isFacetable(),
+				_cpOption.isRequired(), _cpOption.isSkuContributor(),
+				_cpOption.getKey(), ServiceContextTestUtil.getServiceContext());
 		}
 	}
 
@@ -134,7 +146,13 @@ public class CPOptionServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_updateCPOption();
+			_cpOptionService.updateCPOption(
+				_cpOption.getCPOptionId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				_cpOption.getCommerceOptionTypeKey(), _cpOption.isFacetable(),
+				_cpOption.isRequired(), _cpOption.isSkuContributor(),
+				_cpOption.getKey(), ServiceContextTestUtil.getServiceContext());
 
 			Assert.fail();
 		}
@@ -149,18 +167,14 @@ public class CPOptionServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_updateCPOption();
+			_cpOptionService.updateCPOption(
+				_cpOption.getCPOptionId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				_cpOption.getCommerceOptionTypeKey(), _cpOption.isFacetable(),
+				_cpOption.isRequired(), _cpOption.isSkuContributor(),
+				_cpOption.getKey(), ServiceContextTestUtil.getServiceContext());
 		}
-	}
-
-	private void _addOrUpdateCPOption() throws Exception {
-		_cpOptionService.addOrUpdateCPOption(
-			_cpOption.getExternalReferenceCode(),
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			_cpOption.getCommerceOptionTypeKey(), _cpOption.isFacetable(),
-			_cpOption.isRequired(), _cpOption.isSkuContributor(),
-			_cpOption.getKey(), ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _addResourcePermission(String name, String actionId)
@@ -179,15 +193,6 @@ public class CPOptionServiceTest {
 				StringBundler.concat(
 					"User ", userId, " must have ", actionId,
 					" permission for")));
-	}
-
-	private void _updateCPOption() throws Exception {
-		_cpOptionService.updateCPOption(
-			_cpOption.getCPOptionId(), RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			_cpOption.getCommerceOptionTypeKey(), _cpOption.isFacetable(),
-			_cpOption.isRequired(), _cpOption.isSkuContributor(),
-			_cpOption.getKey(), ServiceContextTestUtil.getServiceContext());
 	}
 
 	private CPOption _cpOption;

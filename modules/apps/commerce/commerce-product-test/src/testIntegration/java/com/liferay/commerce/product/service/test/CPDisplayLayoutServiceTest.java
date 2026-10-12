@@ -80,9 +80,25 @@ public class CPDisplayLayoutServiceTest {
 	public void testAddCPDisplayLayout() throws Exception {
 		_addResourcePermission(
 			CommerceCatalog.class.getName(), ActionKeys.VIEW);
-		_addResourcePermission(Group.class.getName(), ActionKeys.ADD_LAYOUT);
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			_cpDisplayLayoutService.addCPDisplayLayout(
+				_group.getGroupId(), CPDefinition.class,
+				_cpDefinition.getCPDefinitionId(), null, layout.getUuid());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMessage(
+				ActionKeys.ADD_LAYOUT, principalException.getMessage(),
+				_user.getUserId());
+		}
+
+		_addResourcePermission(Group.class.getName(), ActionKeys.ADD_LAYOUT);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -113,6 +129,9 @@ public class CPDisplayLayoutServiceTest {
 
 	@Test
 	public void testUpdateCPDisplayLayout() throws Exception {
+		_addResourcePermission(
+			CommerceCatalog.class.getName(), ActionKeys.VIEW);
+
 		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
 
 		CPDisplayLayout cpDisplayLayout =
@@ -120,9 +139,6 @@ public class CPDisplayLayoutServiceTest {
 				TestPropsValues.getUserId(), _group.getGroupId(),
 				CPDefinition.class, _cpDefinition.getCPDefinitionId(), null,
 				layout.getUuid());
-
-		_addResourcePermission(
-			CommerceCatalog.class.getName(), ActionKeys.VIEW);
 
 		Layout publicLayout = LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -189,10 +205,10 @@ public class CPDisplayLayoutServiceTest {
 				cpDisplayLayout.getCPDisplayLayoutId(),
 				_cpDefinition.getCPDefinitionId(), null,
 				publicLayout.getUuid());
-
-			Assert.assertEquals(
-				publicLayout.getUuid(), cpDisplayLayout.getLayoutUuid());
 		}
+
+		Assert.assertEquals(
+			publicLayout.getUuid(), cpDisplayLayout.getLayoutUuid());
 	}
 
 	private void _addResourcePermission(String name, String actionId)
