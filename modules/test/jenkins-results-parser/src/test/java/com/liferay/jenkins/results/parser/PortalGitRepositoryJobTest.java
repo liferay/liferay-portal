@@ -30,9 +30,9 @@ public class PortalGitRepositoryJobTest
 
 	@Test
 	public void testGetJobPropertiesFiles() throws IOException {
-		File baseGitRepositoryDir = temporaryFolder.newFolder();
-
 		Properties buildProperties = new Properties();
+
+		File baseGitRepositoryDir = temporaryFolder.newFolder();
 
 		buildProperties.setProperty(
 			"base.repository.dir", baseGitRepositoryDir.getPath());
