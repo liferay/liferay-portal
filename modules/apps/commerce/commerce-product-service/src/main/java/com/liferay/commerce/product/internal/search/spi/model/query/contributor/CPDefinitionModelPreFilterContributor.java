@@ -13,8 +13,10 @@ import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -23,6 +25,8 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.RangeTermFilter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -64,6 +68,7 @@ public class CPDefinitionModelPreFilterContributor
 		if (GetterUtil.getBoolean(searchContext.getAttribute("secure"))) {
 			_filterByAccountGroupIds(booleanFilter, searchContext);
 			_filterByCommerceChannelId(booleanFilter, searchContext);
+			_filterByGuestBrowsing(booleanFilter, searchContext);
 		}
 
 		if (_isIndexersSuppressed(searchContext)) {
@@ -276,6 +281,39 @@ public class CPDefinitionModelPreFilterContributor
 			booleanFilter.addTerm(
 				Field.ENTRY_CLASS_PK, String.valueOf(excludedCPDefinitionId),
 				BooleanClauseOccur.MUST_NOT);
+		}
+	}
+
+	private void _filterByGuestBrowsing(
+		BooleanFilter booleanFilter, SearchContext searchContext) {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (((permissionChecker != null) && permissionChecker.isSignedIn()) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-109588")) {
+
+			return;
+		}
+
+		long commerceChannelGroupId = GetterUtil.getLong(
+			searchContext.getAttribute("commerceChannelGroupId"));
+
+		long[] commerceChannelGroupIds = GetterUtil.getLongValues(
+			searchContext.getAttribute("commerceChannelGroupIds"),
+			new long[] {commerceChannelGroupId});
+
+		for (long groupId : commerceChannelGroupIds) {
+			if ((groupId > 0) &&
+				!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+					groupId)) {
+
+				booleanFilter.addTerm(
+					Field.ENTRY_CLASS_PK, "-1", BooleanClauseOccur.MUST);
+
+				return;
+			}
 		}
 	}
 
