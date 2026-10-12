@@ -59,8 +59,16 @@ public class ImageToolUtil_IW {
 		return ImageToolUtil.getBytes(renderedImage, contentType);
 	}
 
+	public com.liferay.portal.kernel.model.Image getDefaultCompanyGroupLogo() {
+		return ImageToolUtil.getDefaultCompanyGroupLogo();
+	}
+
 	public com.liferay.portal.kernel.model.Image getDefaultCompanyLogo() {
 		return ImageToolUtil.getDefaultCompanyLogo();
+	}
+
+	public com.liferay.portal.kernel.model.Image getDefaultLiferayLogo() {
+		return ImageToolUtil.getDefaultLiferayLogo();
 	}
 
 	public com.liferay.portal.kernel.model.Image getDefaultOrganizationLogo() {

@@ -122,16 +122,16 @@ public class Validator_IW {
 		return Validator.isGregorianDate(month, day, year);
 	}
 
-	public boolean isHex(java.lang.String s) {
-		return Validator.isHex(s);
+	public boolean isHTML(java.lang.String s) {
+		return Validator.isHTML(s);
+	}
+
+	public boolean isHex(java.lang.String hexString) {
+		return Validator.isHex(hexString);
 	}
 
 	public boolean isHostName(java.lang.String name) {
 		return Validator.isHostName(name);
-	}
-
-	public boolean isHTML(java.lang.String s) {
-		return Validator.isHTML(s);
 	}
 
 	public boolean isIPAddress(java.lang.String ipAddress) {
