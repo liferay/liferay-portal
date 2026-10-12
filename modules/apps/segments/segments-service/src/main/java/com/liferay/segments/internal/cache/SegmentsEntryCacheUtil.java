@@ -44,12 +44,12 @@ public class SegmentsEntryCacheUtil {
 
 		if (userIdSegmentsEntryIds == null) {
 			userIdSegmentsEntryIds = new ConcurrentHashMap<>();
+
+			_portalCache.put(
+				_generateCacheKey(userId), userIdSegmentsEntryIds, 1800);
 		}
 
 		userIdSegmentsEntryIds.put(key, segmentsEntryIds);
-
-		_portalCache.put(
-			_generateCacheKey(userId), userIdSegmentsEntryIds, 1800);
 	}
 
 	private static String _generateCacheKey(long userId) {
