@@ -1,1 +1,0 @@
-envoy_gateway_helm_chart_version="1.6.3"

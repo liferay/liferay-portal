@@ -1,7 +1,5 @@
 mock_provider "aws" {}
-mock_provider "helm" {}
 mock_provider "kubernetes" {}
-mock_provider "random" {}
 mock_provider "time" {}
 override_data {
 	target=data.aws_availability_zones.available
@@ -28,10 +26,6 @@ override_module {
 		oidc_provider_arn="arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/EXAMPLE"
 	}
 	target=module.eks
-}
-override_module {
-	outputs={}
-	target=module.envoy_proxy_role
 }
 override_module {
 	outputs={
@@ -72,6 +66,5 @@ run "should_create_the_gp3_default_storage_class" {
 }
 variables {
 	deployment_name="liferay-test"
-	envoy_gateway_helm_chart_version="1.5.2"
 	region="us-east-1"
 }

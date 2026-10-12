@@ -134,76 +134,6 @@ resource "aws_iam_role" "efs_csi_driver" {
 	force_detach_policies=true
 	name="${var.deployment_name}-efs_csi_driver"
 }
-resource "aws_iam_role" "irsa" {
-	assume_role_policy=jsonencode(
-		{
-			Statement=[
-				{
-					Action="sts:AssumeRoleWithWebIdentity"
-					Condition={
-						StringEquals={
-							"${module.eks.oidc_provider}:aud"="sts.amazonaws.com"
-						}
-						StringLike={
-							"${module.eks.oidc_provider}:sub"="system:serviceaccount:${local.liferay_namespace_pattern}:liferay-default"
-						}
-					}
-					Effect="Allow"
-					Principal={
-						Federated=local.oidc_provider_arn
-					}
-				}
-			]
-			Version="2012-10-17"
-		})
-	force_detach_policies=true
-	name="${var.deployment_name}-irsa"
-}
-resource "aws_iam_role_policy" "overlay" {
-	policy=jsonencode(
-		{
-			Statement=[
-				{
-					Action=[
-						"s3:GetObject",
-						"s3:ListBucket",
-					]
-					Effect="Allow"
-					Resource=[
-						"arn:${var.arn_partition}:s3:::${var.deployment_name}-overlay-*",
-						"arn:${var.arn_partition}:s3:::${var.deployment_name}-overlay-*/*"
-					]
-					Sid="AllowS3BucketOperations"
-				}
-			]
-			Version="2012-10-17"
-		}
-	)
-	role=aws_iam_role.irsa.id
-}
-resource "aws_iam_role_policy" "this" {
-	count=length(var.ecr_repositories) > 0 ? 1 : 0
-	policy=jsonencode(
-		{
-			Statement=[
-				{
-					Action=[
-						"ecr:BatchCheckLayerAvailability",
-						"ecr:BatchGetImage",
-						"ecr:GetAuthorizationToken",
-						"ecr:GetDownloadUrlForLayer"
-					]
-					Effect="Allow"
-					Resource=[
-						for k, v in var.ecr_repositories : v.arn
-					]
-				}
-			]
-			Version="2012-10-17"
-		}
-	)
-	role=aws_iam_role.irsa.id
-}
 resource "aws_iam_role_policy_attachment" "role_policy_attachment_ebs_csi_driver" {
 	policy_arn="arn:${var.arn_partition}:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 	role=aws_iam_role.ebs_csi_driver.name
@@ -275,15 +205,6 @@ resource "kubernetes_storage_class_v1" "gp3_storage_class" {
 	reclaim_policy="Delete"
 	storage_provisioner="ebs.csi.eks.amazonaws.com"
 	volume_binding_mode="WaitForFirstConsumer"
-}
-resource "terraform_data" "update_kubeconfig" {
-	depends_on=[time_sleep.cluster_addons_ready_time_buffer]
-	provisioner "local-exec" {
-		command="aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.region}"
-	}
-	triggers_replace=[
-		module.eks.cluster_id
-	]
 }
 resource "time_sleep" "cluster_addons_ready_time_buffer" {
 	create_duration="30s"

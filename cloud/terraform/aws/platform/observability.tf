@@ -6,9 +6,9 @@ module "alloy_role" {
 	oidc_providers={
 		main={
 			namespace_service_accounts=[
-				"${var.observability_config.namespace}:liferay-alloy",
+				"observability:liferay-alloy",
 			]
-			provider_arn=local.oidc_provider_arn
+			provider_arn=data.aws_iam_openid_connect_provider.eks.arn
 		}
 	}
 	policies={
@@ -24,13 +24,13 @@ module "grafana_role" {
 	oidc_providers={
 		main={
 			namespace_service_accounts=[
-				"${var.observability_config.namespace}:grafana",
+				"observability:grafana",
 			]
-			provider_arn=local.oidc_provider_arn
+			provider_arn=data.aws_iam_openid_connect_provider.eks.arn
 		}
 	}
 	policies={
-		prometheus_query="arn:aws:iam::aws:policy/AmazonPrometheusQueryAccess"
+		prometheus_query="arn:${local.partition}:iam::aws:policy/AmazonPrometheusQueryAccess"
 	}
 	source="git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts?ref=277e8947b1267290988e47882d8dc116850929be"
 	use_name_prefix=false
@@ -41,9 +41,9 @@ module "rds_exporter_role" {
 	oidc_providers={
 		main={
 			namespace_service_accounts=[
-				"${var.observability_config.namespace}:liferay-rds-exporter",
+				"observability:liferay-rds-exporter",
 			]
-			provider_arn=local.oidc_provider_arn
+			provider_arn=data.aws_iam_openid_connect_provider.eks.arn
 		}
 	}
 	policies={

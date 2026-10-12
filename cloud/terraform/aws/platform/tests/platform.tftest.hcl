@@ -75,7 +75,19 @@ override_data {
 	}
 }
 override_module {
+	target=module.alloy_role
+}
+override_module {
 	target=module.argocd
+}
+override_module {
+	target=module.envoy_proxy_role
+}
+override_module {
+	target=module.grafana_role
+}
+override_module {
+	target=module.rds_exporter_role
 }
 run "should_assemble_the_deployment_context" {
 	assert {
@@ -154,6 +166,22 @@ run "should_build_the_secrets_manager_secret_store_provider" {
 	}
 	command=plan
 }
+run "should_create_observability_resources_when_enabled" {
+	assert {
+		condition=length(aws_iam_policy.alloy_cloudwatch_rds) == 1 && length(aws_iam_policy.rds_exporter) == 1
+		error_message="The Alloy CloudWatch/RDS and RDS exporter IAM policies must be created when observability is enabled"
+	}
+	assert {
+		condition=length(aws_prometheus_workspace.amp) == 1
+		error_message="A managed Prometheus workspace must be created when observability is enabled"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_create_the_ack_prometheusservice_role_when_observability_is_enabled" {
 	assert {
 		condition=aws_iam_role.ack_prometheusservice[0].name == "liferay-test-ack-prometheusservice"
@@ -205,6 +233,17 @@ run "should_derive_the_kubernetes_endpoint_cidrs_from_the_cluster_subnets" {
 	assert {
 		condition=join(",", output.kubernetes_endpoint_cidrs) == "10.0.1.0/24,10.0.2.0/24"
 		error_message="The Kubernetes endpoint CIDRs must be the sorted CIDR blocks of the cluster subnets"
+	}
+	command=plan
+}
+run "should_disable_observability_by_default" {
+	assert {
+		condition=length(aws_iam_policy.alloy_cloudwatch_rds) == 0 && length(aws_iam_policy.rds_exporter) == 0
+		error_message="No observability IAM policies must be created when observability is disabled"
+	}
+	assert {
+		condition=length(aws_prometheus_workspace.amp) == 0
+		error_message="No managed Prometheus workspace must be created when observability is disabled"
 	}
 	command=plan
 }
@@ -352,6 +391,26 @@ run "should_limit_what_bounded_principals_can_do" {
 	}
 	command=plan
 }
+run "should_name_observability_resources_when_enabled" {
+	assert {
+		condition=aws_iam_policy.alloy_cloudwatch_rds[0].name == "liferay-test-alloy-cloudwatch-rds"
+		error_message="The Alloy CloudWatch/RDS policy name must embed deployment_name"
+	}
+	assert {
+		condition=aws_iam_policy.rds_exporter[0].name == "liferay-test-rds-exporter"
+		error_message="The RDS exporter policy name must embed deployment_name"
+	}
+	assert {
+		condition=aws_prometheus_workspace.amp[0].alias == "liferay-test-amp-workspace"
+		error_message="The Prometheus workspace alias must embed deployment_name"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_omit_the_ack_prometheusservice_role_by_default" {
 	assert {
 		condition=length(aws_iam_role.ack_prometheusservice) == 0
@@ -396,6 +455,22 @@ run "should_publish_the_marketplace_volume_handle" {
 		error_message="The marketplace access point must be rooted at /marketplace"
 	}
 	command=apply
+}
+run "should_scope_the_observability_policies" {
+	assert {
+		condition=contains([for statement in jsondecode(aws_iam_policy.alloy_cloudwatch_rds[0].policy).Statement : statement.Sid], "RDSDescribe")
+		error_message="The Alloy CloudWatch/RDS policy must allow describing RDS instances"
+	}
+	assert {
+		condition=contains([for statement in jsondecode(aws_iam_policy.rds_exporter[0].policy).Statement : statement.Sid], "CloudWatchMetricsRead")
+		error_message="The RDS exporter policy must allow reading CloudWatch metrics"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
 }
 run "should_wire_the_platform_roles" {
 	assert {
