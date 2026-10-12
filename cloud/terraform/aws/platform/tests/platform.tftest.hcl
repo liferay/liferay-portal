@@ -77,9 +77,6 @@ override_data {
 override_module {
 	target=module.argocd
 }
-override_module {
-	target=module.envoy_proxy_role
-}
 run "should_assemble_the_deployment_context" {
 	assert {
 		condition=join(",", keys(local.deployment_context)) == "accountId,clusterSecurityGroupId,clusterSubnetIds,crossplaneDataRoleArn,crossplaneIamBoundaryArn,crossplaneIamPath,crossplaneIamRoleArn,deploymentName,oidcIssuerUrl,partition,region,vpcId"

@@ -10,9 +10,6 @@ output "cluster_secret_store_provider" {
 output "deployment_context" {
 	value=local.deployment_context
 }
-output "envoy_proxy_role_arn" {
-	value=module.envoy_proxy_role.arn
-}
 output "external_secrets_role_arn" {
 	value=aws_iam_role.external_secrets.arn
 }

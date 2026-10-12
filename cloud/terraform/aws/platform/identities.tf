@@ -1,19 +1,3 @@
-module "envoy_proxy_role" {
-	attach_aws_gateway_controller_policy=true
-	name="${var.deployment_name}-envoy-proxy"
-	oidc_providers={
-		main={
-			namespace_service_accounts=[
-				"envoy-gateway-system:envoy-*",
-				"liferay-*:envoy-*",
-			]
-			provider_arn=data.aws_iam_openid_connect_provider.eks.arn
-		}
-	}
-	policy_name="${var.deployment_name}-AWS-Gateway-Controller"
-	source="git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts?ref=277e8947b1267290988e47882d8dc116850929be"
-	use_name_prefix=false
-}
 resource "aws_iam_policy" "crossplane_iam_boundary" {
 	name="${var.deployment_name}-crossplane-iam-boundary"
 	policy=data.aws_iam_policy_document.crossplane_iam_boundary.json
