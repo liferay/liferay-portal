@@ -9,6 +9,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import useTypeProperties from '../../hooks/useTypeProperties';
 import {ConditionBuilder} from './ConditionBuilder';
 import {Config, initializeConfig} from './config';
+import normalizeDateTime from './normalizeDateTime';
 import {ASSET_FIELDS, RELATIVE_DATE_VALUES} from './operators';
 import {getFilterPropertyKey} from './types';
 
@@ -29,21 +30,6 @@ function createEmptyConditions(): FilterCondition[] {
  */
 function isTypeSpecificCondition(condition: FilterCondition): boolean {
 	return condition.objectDefinitionExternalReferenceCode !== undefined;
-}
-
-function normalizeDateTime(value: string) {
-	if (!value) {
-		return value;
-	}
-
-	// The picker emits "--:--" when the time portion isn't filled. Default
-	// to midnight so a date-only entry still serializes cleanly.
-
-	const normalized = value.replace('--:--', '00:00');
-
-	const date = new Date(normalized.replace(' ', 'T'));
-
-	return Number.isNaN(date.getTime()) ? '' : normalized;
 }
 
 function serializeValue(
