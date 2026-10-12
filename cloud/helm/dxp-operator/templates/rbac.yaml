@@ -59,6 +59,7 @@ rules:
             -   get
             -   list
             -   patch
+            -   update
             -   watch
     {{- end }}
     -   apiGroups:

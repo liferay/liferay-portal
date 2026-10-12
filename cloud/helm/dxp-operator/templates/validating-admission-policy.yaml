@@ -3,7 +3,7 @@ kind: ValidatingAdmissionPolicy
 metadata:
     labels:
         {{- include "dxp-operator.labels" . | nindent 8 }}
-    name: {{ include "dxp-operator.fullname" . }}-statefulset-scale
+    name: {{ include "dxp-operator.fullname" . }}-workload-scale
 spec:
     failurePolicy: Fail
     matchConditions:
@@ -23,6 +23,8 @@ spec:
                     -   CREATE
                     -   UPDATE
                 resources:
+                    -   deployments
+                    -   deployments/scale
                     -   statefulsets
                     -   statefulsets/scale
     paramKind:
@@ -31,12 +33,13 @@ spec:
     validations:
         -   expression: >-
                 !variables.hasCeiling ||
+                variables.licensedWorkloadKind != variables.workloadKind ||
                 variables.licensedWorkloadName != variables.workloadName ||
                 variables.requestedReplicas <= variables.replicaCeiling
             messageExpression: >-
                 'replicas ' + string(variables.requestedReplicas) +
                 ' exceeds the replica ceiling ' + string(variables.replicaCeiling) +
-                ' for StatefulSet "' + variables.workloadName + '"'
+                ' for ' + variables.workloadKind + ' "' + variables.workloadName + '"'
             reason: Forbidden
     variables:
         -   expression: >-
@@ -45,6 +48,10 @@ spec:
             name: hasCeiling
         -   expression: "has(request.subResource) && request.subResource == 'scale'"
             name: isScale
+        -   expression: >-
+                has(params.spec.workloadRef) && has(params.spec.workloadRef.kind) ?
+                params.spec.workloadRef.kind : 'StatefulSet'
+            name: licensedWorkloadKind
         -   expression: "has(params.spec.workloadRef) ? params.spec.workloadRef.name : ''"
             name: licensedWorkloadName
         -   expression: >-
@@ -56,6 +63,8 @@ spec:
                 has(object.spec.replicas) ? object.spec.replicas :
                 (variables.isScale ? 0 : 1)
             name: requestedReplicas
+        -   expression: "request.resource.resource == 'deployments' ? 'Deployment' : 'StatefulSet'"
+            name: workloadKind
         -   expression: "variables.isScale ? request.name : object.metadata.name"
             name: workloadName
 ---
@@ -64,11 +73,11 @@ kind: ValidatingAdmissionPolicyBinding
 metadata:
     labels:
         {{- include "dxp-operator.labels" . | nindent 8 }}
-    name: {{ include "dxp-operator.fullname" . }}-statefulset-scale
+    name: {{ include "dxp-operator.fullname" . }}-workload-scale
 spec:
     paramRef:
         parameterNotFoundAction: Allow
         selector: {}
-    policyName: {{ include "dxp-operator.fullname" . }}-statefulset-scale
+    policyName: {{ include "dxp-operator.fullname" . }}-workload-scale
     validationActions:
         -   Deny

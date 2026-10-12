@@ -8,7 +8,7 @@ tests:
     -   asserts:
             -   equal:
                     path: spec.policyName
-                    value: my-release-liferay-dxp-operator-statefulset-scale
+                    value: my-release-liferay-dxp-operator-workload-scale
             -   contains:
                     content: Deny
                     path: spec.validationActions
@@ -24,7 +24,7 @@ tests:
     -   asserts:
             -   equal:
                     path: metadata.name
-                    value: my-release-liferay-dxp-operator-statefulset-scale
+                    value: my-release-liferay-dxp-operator-workload-scale
             -   equal:
                     path: spec.failurePolicy
                     value: Fail
