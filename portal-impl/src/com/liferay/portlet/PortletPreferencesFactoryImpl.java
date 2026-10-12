@@ -297,7 +297,7 @@ public class PortletPreferencesFactoryImpl
 
 		PortalPreferences portalPreferences =
 			(PortalPreferences)httpServletRequest.getAttribute(
-				WebKeys.REQUEST_PORTAL_PREFERENCES);
+				WebKeys.HTTP_SERVLET_REQUEST_PORTAL_PREFERENCES);
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -315,7 +315,7 @@ public class PortletPreferencesFactoryImpl
 			themeDisplay.isSignedIn());
 
 		httpServletRequest.setAttribute(
-			WebKeys.REQUEST_PORTAL_PREFERENCES, portalPreferences);
+			WebKeys.HTTP_SERVLET_REQUEST_PORTAL_PREFERENCES, portalPreferences);
 
 		return portalPreferences;
 	}
