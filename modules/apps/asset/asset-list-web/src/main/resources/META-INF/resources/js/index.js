@@ -10,12 +10,10 @@ export {default as EmptyResultMessagePropsTransformer} from './EmptyResultMessag
 export {default as InfoCollectionProviderDropdownDefaultPropsTransformer} from './InfoCollectionProviderDropdownDefaultPropsTransformer';
 export {default as ListItemsDropdownPropsTransformer} from './ListItemsDropdownPropsTransformer';
 export {default as ManagementToolbarPropsTransformer} from './ManagementToolbarPropsTransformer';
-export {default as Ordering} from './Ordering';
 export {default as ScopeDefaultPropsTransformer} from './ScopeDefaultPropsTransformer';
 export {default as SelectStructureField} from './SelectStructureField';
 export {default as Source} from './Source';
 export {default as TopLinkEventHandler} from './TopLinkEventHandler';
-export {default as AssetFilterBuilder} from './components/AssetFilterBuilder/index';
 export {default as CollectionFilterBuilder} from './components/CollectionFilterBuilder/index';
 export {default as CollectionOrdering} from './components/CollectionOrdering/index';
 export {default as VariationsNav} from './components/VariationsNav/index';

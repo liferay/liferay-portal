@@ -82,7 +82,6 @@ export default function ValueInput({
 		return (
 			<ValueInputContainer onKeyDown={handlePreventEnterSubmit}>
 				<AssetTagsSelector
-					eventName={`${namespace}selectTag`}
 					formGroupClassName="condition-builder__asset-selector mb-0"
 					groupIds={groupIds}
 					inputName={`${namespace}queryTagNames`}
@@ -99,7 +98,6 @@ export default function ValueInput({
 					showLabel={false}
 					showSelectButton
 					showSubtitle={false}
-					tagNames={value || ''}
 				/>
 			</ValueInputContainer>
 		);
@@ -109,8 +107,6 @@ export default function ValueInput({
 		return (
 			<ValueInputContainer onKeyDown={handlePreventEnterSubmit}>
 				<AssetVocabularyCategoriesSelector
-					categoryIds={value || ''}
-					eventName={`${namespace}selectCategory`}
 					formGroupClassName="condition-builder__asset-selector mb-0"
 					groupIds={groupIds}
 					inputName={`${namespace}queryCategoryIds`}
@@ -122,7 +118,6 @@ export default function ValueInput({
 							}))
 						)
 					}
-					portletURL={categorySelectorURL}
 					selectedItems={value}
 					sourceItemsVocabularyIds={vocabularyIds}
 				/>
