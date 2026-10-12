@@ -15,6 +15,7 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.url.CPFriendlyURL;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -108,6 +109,12 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 				_commerceChannelLocalService.
 					getCommerceChannelGroupIdBySiteGroupId(
 						layoutSet.getGroupId());
+
+			if (!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+					groupId)) {
+
+				return;
+			}
 
 			AccountEntry accountEntry =
 				_commerceAccountHelper.getCurrentAccountEntry(
