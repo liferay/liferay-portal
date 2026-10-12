@@ -3,6 +3,8 @@
 source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 
 function aws_login {
+	local configuration_json_file="${1}"
+
 	if aws sts get-caller-identity &> /dev/null
 	then
 		echo "Reusing the active AWS session."
@@ -11,6 +13,23 @@ function aws_login {
 
 		aws sso login
 	fi
+
+	local account_id
+
+	account_id=$(jq --raw-output '.account_id' "${configuration_json_file}")
+
+	local session_account_id
+
+	session_account_id=$(aws sts get-caller-identity --output text --query "Account")
+
+	if [[ ${session_account_id} != "${account_id}" ]]
+	then
+		echo "The active AWS session is for the account ${session_account_id}, not the configured account ${account_id}. Set AWS_PROFILE to a profile for the account ${account_id} and run the script again." >&2
+
+		exit 1
+	fi
+
+	echo "Using the AWS account ${account_id}."
 }
 
 function connect_to_cluster {
@@ -80,6 +99,7 @@ function validate_config_json {
 	local configuration_json_file="${1}"
 
 	local required_keys=(
+		".account_id"
 		".deployment_name"
 		".region"
 	)

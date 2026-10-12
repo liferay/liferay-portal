@@ -12,6 +12,7 @@ function main {
 
 	scripts_dir=$(cd "$(dirname "${0}")/.." && pwd)
 
+	_run_test "${scripts_dir}/setup_aws.sh" _test_aborts_with_config_missing_account_id
 	_run_test "${scripts_dir}/setup_aws.sh" _test_aborts_with_tfstate_missing_bucket_name
 
 	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_azure.sh"
@@ -161,13 +162,32 @@ function _run_test {
 	fi
 }
 
+function _test_aborts_with_config_missing_account_id {
+	local config_json
+	local exit_code
+	local output
+	local result
+
+	config_json=$(jq --null-input '{deployment_name: "liferay-test", region: "us-east-1"}')
+	result=$(_run_setup_test "${1}" "${config_json}")
+	exit_code=$(echo "${result}" | head -n 1)
+	output=$(echo "${result}" | tail -n +2)
+
+	if [ ${exit_code} -ne 0 ] && [[ ${output} == *'must contain a key named "account_id"'* ]]
+	then
+		return 0
+	fi
+
+	return 1
+}
+
 function _test_aborts_with_config_missing_required_key {
 	local config_json
 	local exit_code
 	local output
 	local result
 
-	config_json=$(jq --null-input '{deployment_name: "liferay-test"}')
+	config_json=$(jq --null-input '{account_id: "111111111111", deployment_name: "liferay-test", subscription_id: "subscription", tenant_id: "tenant"}')
 	result=$(_run_setup_test "${1}" "${config_json}")
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
@@ -295,7 +315,7 @@ function _test_aborts_with_tfstate_missing_bucket_name {
 	local output
 	local result
 
-	config_json=$(jq --null-input '{deployment_name: "liferay-test", region: "us-east-1", tfstate: {}}')
+	config_json=$(jq --null-input '{account_id: "111111111111", deployment_name: "liferay-test", region: "us-east-1", tfstate: {}}')
 	result=$(_run_setup_test "${1}" "${config_json}")
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)

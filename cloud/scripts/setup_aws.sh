@@ -26,7 +26,7 @@ function main {
 
 	generate_tfvars "${configuration_json_file}" "aws" "platform"
 
-	aws_login
+	aws_login "${configuration_json_file}"
 
 	local terraform_args=()
 

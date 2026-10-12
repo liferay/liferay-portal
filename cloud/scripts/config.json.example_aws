@@ -1,4 +1,5 @@
 {
+	"account_id": "your-aws-account-id",
 	"deployment_name": "liferay-aws-test",
 	"options": {
 		"auto_approve": false,
