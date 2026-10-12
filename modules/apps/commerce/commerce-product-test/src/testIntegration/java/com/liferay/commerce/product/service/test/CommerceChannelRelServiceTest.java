@@ -50,14 +50,14 @@ public class CommerceChannelRelServiceTest {
 
 	@Test
 	public void testDeleteCommerceChannelRels() throws Exception {
+		long classPK = RandomTestUtil.randomLong();
+
 		CommerceCurrency commerceCurrency =
 			CommerceCurrencyTestUtil.addCommerceCurrency(
 				TestPropsValues.getCompanyId());
 
 		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
 			commerceCurrency.getCode());
-
-		long classPK = RandomTestUtil.randomLong();
 
 		_commerceChannelRelLocalService.addCommerceChannelRel(
 			CommercePriceList.class.getName(), classPK,
