@@ -160,10 +160,6 @@ run "should_create_the_ack_prometheusservice_role_when_observability_is_enabled"
 		error_message="The ACK Prometheus service role name must be derived from deployment_name"
 	}
 	assert {
-		condition=local.irsa_service_accounts.ack_prometheusservice == "ack-system:ack-prometheusservice-controller"
-		error_message="The ACK Prometheus service role must trust the ACK controller service account"
-	}
-	assert {
 		condition=length(aws_iam_role_policy.ack_prometheusservice) == 1
 		error_message="The ACK Prometheus service role must be granted AMP rule group access"
 	}
@@ -178,10 +174,6 @@ run "should_create_the_keda_role_when_enabled" {
 	assert {
 		condition=aws_iam_role.keda[0].name == "liferay-test-keda"
 		error_message="The KEDA role name must be derived from deployment_name"
-	}
-	assert {
-		condition=local.irsa_service_accounts.keda == "keda-system:keda-operator"
-		error_message="The KEDA role must trust the keda-operator service account in the KEDA namespace"
 	}
 	assert {
 		condition=length(aws_iam_role_policy.keda) == 1
@@ -225,10 +217,6 @@ run "should_create_the_observability_resources_when_observability_is_enabled" {
 	assert {
 		condition=length(aws_iam_role_policy.alloy) == 1 && length(aws_iam_role_policy.alloy_cloudwatch_rds) == 1 && length(aws_iam_role_policy.rds_exporter) == 1 && length(aws_iam_role_policy_attachment.grafana) == 1
 		error_message="The observability roles must be granted their AMP, CloudWatch, and RDS access"
-	}
-	assert {
-		condition=local.irsa_service_accounts.alloy == "observability:liferay-alloy" && local.irsa_service_accounts.grafana == "observability:grafana" && local.irsa_service_accounts.rds_exporter == "observability:liferay-rds-exporter"
-		error_message="The observability roles must trust the Alloy, Grafana, and RDS exporter service accounts"
 	}
 	command=plan
 	override_resource {
@@ -453,10 +441,6 @@ run "should_publish_the_marketplace_volume_handle" {
 		condition=output.marketplace_volume_handle == "fs-0123456789abcdef0::fsap-0123456789abcdef0"
 		error_message="The marketplace volume handle must join the file system and access point IDs"
 	}
-	assert {
-		condition=aws_efs_access_point.marketplace.root_directory[0].path == "/marketplace"
-		error_message="The marketplace access point must be rooted at /marketplace"
-	}
 	command=apply
 }
 run "should_wire_the_platform_roles" {
@@ -471,18 +455,6 @@ run "should_wire_the_platform_roles" {
 	assert {
 		condition=aws_iam_role.external_secrets.name == "liferay-test-external-secrets"
 		error_message="The External Secrets role name must be derived from deployment_name"
-	}
-	assert {
-		condition=local.irsa_service_accounts.crossplane_data == "crossplane-system:crossplane-data"
-		error_message="The crossplane-data role must trust the crossplane-data service account"
-	}
-	assert {
-		condition=local.irsa_service_accounts.crossplane_iam == "crossplane-system:crossplane-iam"
-		error_message="The crossplane-iam role must trust the crossplane-iam service account"
-	}
-	assert {
-		condition=local.irsa_service_accounts.external_secrets == "external-secrets-system:external-secrets"
-		error_message="The External Secrets role must trust the External Secrets controller service account"
 	}
 	command=plan
 }

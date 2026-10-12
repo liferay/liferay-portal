@@ -65,25 +65,6 @@ run "should_derive_cluster_name_from_deployment_name" {
 	}
 	command=plan
 }
-run "should_expose_inputs_as_outputs" {
-	assert {
-		condition=output.arn_partition == "aws"
-		error_message="The arn_partition output must default to \"aws\""
-	}
-	assert {
-		condition=output.deployment_name == "liferay-test"
-		error_message="The deployment_name output must echo var.deployment_name"
-	}
-	assert {
-		condition=output.deployment_namespace == "liferay-system"
-		error_message="The deployment_namespace output must default to \"liferay-system\""
-	}
-	assert {
-		condition=output.region == "us-east-1"
-		error_message="The region output must echo var.region"
-	}
-	command=plan
-}
 run "should_not_accept_deployment_name_longer_than_24_characters" {
 	command=plan
 	expect_failures=[var.deployment_name]

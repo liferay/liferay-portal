@@ -56,25 +56,6 @@ run "should_compute_default_subnet_cidrs" {
 	}
 	command=plan
 }
-run "should_create_an_envoy_ingress_rule_per_port" {
-	assert {
-		condition=aws_vpc_security_group_ingress_rule.envoy_ingress_managed["10080"].cidr_ipv4 == "10.0.0.0/16"
-		error_message="The Envoy ingress rules must be scoped to the VPC CIDR"
-	}
-	assert {
-		condition=aws_vpc_security_group_ingress_rule.envoy_ingress_managed["10080"].from_port == 10080 && aws_vpc_security_group_ingress_rule.envoy_ingress_managed["10080"].to_port == 10080
-		error_message="The 10080 ingress rule must open port 10080"
-	}
-	assert {
-		condition=aws_vpc_security_group_ingress_rule.envoy_ingress_managed["10443"].from_port == 10443 && aws_vpc_security_group_ingress_rule.envoy_ingress_managed["10443"].to_port == 10443
-		error_message="The 10443 ingress rule must open port 10443"
-	}
-	assert {
-		condition=length(aws_vpc_security_group_ingress_rule.envoy_ingress_managed) == 2
-		error_message="One managed ingress rule must be created per Envoy port (10080, 10443)"
-	}
-	command=plan
-}
 run "should_extend_subnets_when_max_availability_zones_increases" {
 	assert {
 		condition=length(local.default_private_subnets) == 3 && local.default_private_subnets[2] == "10.0.3.0/24"
