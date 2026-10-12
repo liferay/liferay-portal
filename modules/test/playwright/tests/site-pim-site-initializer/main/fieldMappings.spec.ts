@@ -119,14 +119,14 @@ test(
 		});
 
 		await test.step('Map the channel field to a source attribute', async () => {
-			await editFieldMappingsPage.mapToSourceAttribute('Code (code)');
+			await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
 			await editFieldMappingsPage.saveButton.click();
 
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 			await expect(fieldMappingsPage.status('SKU')).toHaveText('Mapped');
 			await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
-				'Code'
+				'SKU'
 			);
 		});
 
@@ -134,21 +134,21 @@ test(
 			await fieldMappingsPage.channelField('SKU').click();
 
 			await expect(editFieldMappingsPage.sourceAttribute(0)).toHaveValue(
-				'code'
+				'sku'
 			);
 		});
 
 		await test.step('Narrow the mapping to one structure', async () => {
 			await editFieldMappingsPage.source(0).selectOption({
-				label: 'PIM Base SKU',
+				label: 'PIM Basic Product',
 			});
-			await editFieldMappingsPage.mapToSourceAttribute('Code (code)');
+			await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
 			await editFieldMappingsPage.saveButton.click();
 
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 			await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
-				'PIM Base SKU/Code'
+				'PIM Basic Product/SKU'
 			);
 		});
 
@@ -163,7 +163,7 @@ test(
 
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 			await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
-				'PIM Base SKU/CodeABC-1'
+				'PIM Basic Product/SKUABC-1'
 			);
 		});
 
@@ -255,7 +255,7 @@ test(
 
 			await expect(page).toHaveURL(/\/edit-field-mappings\?/);
 
-			await editFieldMappingsPage.mapToSourceAttribute('Code (code)');
+			await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
 			await editFieldMappingsPage.saveButton.click();
 

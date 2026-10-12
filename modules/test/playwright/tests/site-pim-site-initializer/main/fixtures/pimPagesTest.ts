@@ -51,7 +51,9 @@ const pimPages = test.extend<{
 		async ({page}, use) => {
 			const apiHelpers = new ApiHelpers(page);
 
-			await apiHelpers.objectAdmin.waitForObjectDefinition('PIMBaseSku');
+			await apiHelpers.objectAdmin.waitForObjectDefinition(
+				'PIMBasicProduct'
+			);
 			await apiHelpers.objectAdmin.waitForObjectDefinition(
 				'PIMConnector'
 			);

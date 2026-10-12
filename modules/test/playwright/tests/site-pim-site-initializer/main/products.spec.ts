@@ -20,20 +20,20 @@ const test = mergeTests(
 );
 
 test(
-	'Create a base SKU',
+	'Create a basic product',
 	{tag: ['@LPD-98441', '@LPD-99449', '@LPD-99450']},
 	async ({productPage, productsPage}) => {
-		const baseSkuName = getRandomString();
+		const productTitle = getRandomString();
 
 		try {
 			await productsPage.goto();
 
 			await productsPage.openNewProductEditor();
 
-			await productPage.code.fill(getRandomString());
+			await productPage.sku.fill(getRandomString());
 			await productPage.depth.fill('10.5');
 			await productPage.height.fill('20.5');
-			await productPage.name.fill(baseSkuName);
+			await productPage.title.fill(productTitle);
 			await productPage.virtual.setChecked(true);
 			await productPage.weight.fill('30.5');
 			await productPage.width.fill('40.5');
@@ -52,10 +52,10 @@ test(
 
 			await productPage.save();
 
-			await expect(productsPage.getProduct(baseSkuName)).toBeVisible();
+			await expect(productsPage.getProduct(productTitle)).toBeVisible();
 
 			await test.step('Verify that the unit of measure and dimension fields are persisted', async () => {
-				await productsPage.openProductEditor(baseSkuName);
+				await productsPage.openProductEditor(productTitle);
 
 				await expect(productPage.depth).toHaveValue('10.5');
 				await expect(productPage.height).toHaveValue('20.5');
@@ -79,13 +79,13 @@ test(
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(baseSkuName);
+			await productsPage.deleteProduct(productTitle);
 		}
 	}
 );
 
 test(
-	'The base SKU object layout renders a tab per group',
+	'The basic product object layout renders a tab per group',
 	{tag: '@LPD-99449'},
 	async ({productPage, productsPage}) => {
 		await productsPage.goto();
@@ -99,13 +99,12 @@ test(
 		]);
 
 		await test.step('The first tab is the one the form opens on', async () => {
-			await expect(productPage.code).toBeVisible();
 			await expect(productPage.descriptionField).toBeVisible();
-			await expect(productPage.name).toBeVisible();
-			await expect(productPage.virtual).toBeVisible();
+			await expect(productPage.sku).toBeVisible();
 			await expect(productPage.unitOfMeasureKey).toBeHidden();
 			await expect(productPage.unitOfMeasureName).toBeHidden();
 			await expect(productPage.unitOfMeasureSymbol).toBeHidden();
+			await expect(productPage.virtual).toBeVisible();
 		});
 
 		await test.step('The dimensions are grouped in a panel of the first tab', async () => {
@@ -121,14 +120,14 @@ test(
 			trigger: productPage.getTab('Units of Measure'),
 		});
 
+		await expect(productPage.depth).toBeHidden();
+		await expect(productPage.descriptionField).toBeHidden();
+		await expect(productPage.sku).toBeHidden();
+		await expect(productPage.title).toBeVisible();
 		await expect(
 			productPage.unitOfMeasureAllowDecimalQuantities
 		).toBeVisible();
 		await expect(productPage.unitOfMeasureKey).toBeVisible();
 		await expect(productPage.unitOfMeasureSymbol).toBeVisible();
-		await expect(productPage.code).toBeHidden();
-		await expect(productPage.depth).toBeHidden();
-		await expect(productPage.descriptionField).toBeHidden();
-		await expect(productPage.name).toBeHidden();
 	}
 );

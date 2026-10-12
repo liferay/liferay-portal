@@ -12,16 +12,16 @@ function getObjectFieldInput(objectFieldName: string, page: Page) {
 }
 
 export class ProductPage {
-	readonly code: Locator;
 	readonly depth: Locator;
 	readonly descriptionField: Locator;
 	readonly dimensions: Locator;
 	readonly height: Locator;
-	readonly name: Locator;
 	readonly newButton: Locator;
 	readonly page: Page;
 	readonly publishButton: Locator;
+	readonly sku: Locator;
 	readonly tabs: Locator;
+	readonly title: Locator;
 	readonly unitOfMeasureAllowDecimalQuantities: Locator;
 	readonly unitOfMeasureKey: Locator;
 	readonly unitOfMeasureName: Locator;
@@ -31,7 +31,6 @@ export class ProductPage {
 	readonly width: Locator;
 
 	constructor(page: Page) {
-		this.code = getObjectFieldInput('code', page);
 		this.depth = getObjectFieldInput('depth', page);
 		this.descriptionField = page
 			.locator('.cms-object-layout-form')
@@ -40,7 +39,6 @@ export class ProductPage {
 			.locator('.cms-object-layout-form .panel-title')
 			.filter({hasText: 'Dimensions'});
 		this.height = getObjectFieldInput('height', page);
-		this.name = getObjectFieldInput('name', page);
 		this.newButton = page
 			.locator('[data-testid="fdsCreationActionButton"]')
 			.first();
@@ -48,9 +46,11 @@ export class ProductPage {
 		this.publishButton = page
 			.getByText('Publish', {exact: true})
 			.or(page.getByText('Submit for Workflow', {exact: true}));
+		this.sku = getObjectFieldInput('sku', page);
 		this.tabs = page
 			.locator('.cms-object-layout-form .component-tabs')
 			.getByRole('tab');
+		this.title = getObjectFieldInput('title', page);
 		this.unitOfMeasureAllowDecimalQuantities = getObjectFieldInput(
 			'unitOfMeasureAllowDecimalQuantities',
 			page

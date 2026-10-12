@@ -11,7 +11,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {pimPagesTest} from './fixtures/pimPagesTest';
 
-const PRODUCT_STRUCTURE_LABEL = 'PIM Base SKU';
+const PRODUCT_STRUCTURE_LABEL = 'PIM Basic Product';
 
 const SPACE_NAME = 'Default';
 
@@ -28,7 +28,7 @@ test(
 		productsPage,
 		spaceSelectorPage,
 	}) => {
-		const productName = getRandomString();
+		const productTitle = getRandomString();
 		const webContentTitle = getRandomString();
 
 		try {
@@ -39,8 +39,8 @@ test(
 
 				await spaceSelectorPage.selectSpace(SPACE_NAME);
 
-				await productPage.code.fill(getRandomString());
-				await productPage.name.fill(productName);
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
 
 				await productPage.save();
 			});
@@ -81,7 +81,7 @@ test(
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName);
+			await productsPage.deleteProduct(productTitle);
 		}
 	}
 );

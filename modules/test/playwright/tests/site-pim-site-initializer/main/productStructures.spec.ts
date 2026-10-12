@@ -21,7 +21,7 @@ const test = mergeTests(
 );
 
 test(
-	'Create a product structure from the base SKU and use its own field',
+	'Create a product structure from the basic product and use its own field',
 	{tag: ['@LPD-99448', '@LPD-105922']},
 	async ({
 		productPage,
@@ -31,13 +31,13 @@ test(
 	}) => {
 		const fieldLabel = `Packaging Note ${getRandomInt()}`;
 		const fieldName = `packagingNote${getRandomInt()}`;
-		const productName = getRandomString();
+		const productTitle = getRandomString();
 		const structureLabel = `ProductType${getRandomInt()}`;
 
 		try {
 			await productStructuresPage.goto();
 
-			await test.step('The new structure starts from the base SKU', async () => {
+			await test.step('The new structure starts from the basic product', async () => {
 				await expect(
 					productStructuresPage.getTreeItem('Units of Measure')
 				).toBeVisible();
@@ -81,12 +81,12 @@ test(
 				);
 
 				await clickAndExpectToBeVisible({
-					target: productPage.name,
+					target: productPage.title,
 					trigger: productPage.getTab('Details'),
 				});
 
-				await productPage.code.fill(getRandomString());
-				await productPage.name.fill(productName);
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
 
 				await clickAndExpectToBeVisible({
 					target: productPage.unitOfMeasureName,
@@ -100,14 +100,14 @@ test(
 				await productPage.save();
 
 				await expect(
-					productsPage.getProduct(productName)
+					productsPage.getProduct(productTitle)
 				).toBeVisible();
 			});
 
 			await test.step('The field value is persisted', async () => {
 				await productsPage.goto();
 
-				await productsPage.openProductEditor(productName);
+				await productsPage.openProductEditor(productTitle);
 
 				await clickAndExpectToBeVisible({
 					target: productPage.unitOfMeasureName,
@@ -122,13 +122,13 @@ test(
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName);
+			await productsPage.deleteProduct(productTitle);
 		}
 	}
 );
 
 test(
-	'Create a product structure with its own tab from the base SKU',
+	'Create a product structure with its own tab from the basic product',
 	{tag: ['@LPD-105923']},
 	async ({
 		productPage,
@@ -138,14 +138,14 @@ test(
 	}) => {
 		const fieldLabel = `Warehouse Note ${getRandomInt()}`;
 		const fieldName = `warehouseNote${getRandomInt()}`;
-		const productName = getRandomString();
+		const productTitle = getRandomString();
 		const structureLabel = `ProductType${getRandomInt()}`;
 		const tabLabel = `Logistics ${getRandomInt()}`;
 
 		try {
 			await productStructuresPage.goto();
 
-			await test.step('The new structure starts from the base SKU', async () => {
+			await test.step('The new structure starts from the basic product', async () => {
 				await expect(
 					productStructuresPage.getTreeItem('Details')
 				).toBeVisible();
@@ -196,12 +196,12 @@ test(
 				]);
 
 				await clickAndExpectToBeVisible({
-					target: productPage.name,
+					target: productPage.title,
 					trigger: productPage.getTab('Details'),
 				});
 
-				await productPage.code.fill(getRandomString());
-				await productPage.name.fill(productName);
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
 
 				await clickAndExpectToBeVisible({
 					target: productPage.getField(fieldName),
@@ -213,14 +213,14 @@ test(
 				await productPage.save();
 
 				await expect(
-					productsPage.getProduct(productName)
+					productsPage.getProduct(productTitle)
 				).toBeVisible();
 			});
 		}
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName);
+			await productsPage.deleteProduct(productTitle);
 		}
 	}
 );

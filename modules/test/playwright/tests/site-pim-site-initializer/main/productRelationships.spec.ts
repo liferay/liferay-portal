@@ -19,7 +19,7 @@ const RELATIONSHIPS_TAB = 'Relationships';
 const test = mergeTests(cmsPagesTest, loginTest(), pimPagesTest);
 
 async function createProduct(
-	name: string,
+	title: string,
 	productPage: ProductPage,
 	productsPage: ProductsPage
 ) {
@@ -27,23 +27,23 @@ async function createProduct(
 
 	await productsPage.openNewProductEditor();
 
-	await productPage.code.fill(getRandomString());
-	await productPage.name.fill(name);
+	await productPage.sku.fill(getRandomString());
+	await productPage.title.fill(title);
 
 	await productPage.save();
 
-	await expect(productsPage.getProduct(name)).toBeVisible();
+	await expect(productsPage.getProduct(title)).toBeVisible();
 }
 
 async function openRelationships(
-	name: string,
+	title: string,
 	productPage: ProductPage,
 	productRelationshipsPage: ProductRelationshipsPage,
 	productsPage: ProductsPage
 ) {
 	await productsPage.goto();
 
-	await productsPage.openProductEditor(name);
+	await productsPage.openProductEditor(title);
 
 	await clickAndExpectToBeVisible({
 		target: productRelationshipsPage.addRelationshipButton,
@@ -55,27 +55,27 @@ test(
 	'Relate a product to another one',
 	{tag: ['@LPD-105923']},
 	async ({productPage, productRelationshipsPage, productsPage}) => {
-		const productName1 = getRandomString();
-		const productName2 = getRandomString();
+		const productTitle1 = getRandomString();
+		const productTitle2 = getRandomString();
 
 		try {
-			await createProduct(productName1, productPage, productsPage);
-			await createProduct(productName2, productPage, productsPage);
+			await createProduct(productTitle1, productPage, productsPage);
+			await createProduct(productTitle2, productPage, productsPage);
 
 			await openRelationships(
-				productName1,
+				productTitle1,
 				productPage,
 				productRelationshipsPage,
 				productsPage
 			);
 
-			await productRelationshipsPage.addRelationships([productName2]);
+			await productRelationshipsPage.addRelationships([productTitle2]);
 
 			await test.step('Both products list each other', async () => {
 				await expect(productRelationshipsPage.rows).toHaveCount(1);
 
 				await openRelationships(
-					productName2,
+					productTitle2,
 					productPage,
 					productRelationshipsPage,
 					productsPage
@@ -83,15 +83,15 @@ test(
 
 				await expect(productRelationshipsPage.rows).toHaveCount(1);
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName1)
+					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
 			});
 		}
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName1);
-			await productsPage.deleteProduct(productName2);
+			await productsPage.deleteProduct(productTitle1);
+			await productsPage.deleteProduct(productTitle2);
 		}
 	}
 );
@@ -100,32 +100,32 @@ test(
 	'Relate a product to two others',
 	{tag: ['@LPD-105923']},
 	async ({productPage, productRelationshipsPage, productsPage}) => {
-		const productName1 = getRandomString();
-		const productName2 = getRandomString();
-		const productName3 = getRandomString();
+		const productTitle1 = getRandomString();
+		const productTitle2 = getRandomString();
+		const productTitle3 = getRandomString();
 
 		try {
-			await createProduct(productName1, productPage, productsPage);
-			await createProduct(productName2, productPage, productsPage);
-			await createProduct(productName3, productPage, productsPage);
+			await createProduct(productTitle1, productPage, productsPage);
+			await createProduct(productTitle2, productPage, productsPage);
+			await createProduct(productTitle3, productPage, productsPage);
 
 			await openRelationships(
-				productName1,
+				productTitle1,
 				productPage,
 				productRelationshipsPage,
 				productsPage
 			);
 
 			await productRelationshipsPage.addRelationships([
-				productName2,
-				productName3,
+				productTitle2,
+				productTitle3,
 			]);
 
 			await test.step('Every product lists the other two', async () => {
 				await expect(productRelationshipsPage.rows).toHaveCount(2);
 
 				await openRelationships(
-					productName2,
+					productTitle2,
 					productPage,
 					productRelationshipsPage,
 					productsPage
@@ -133,14 +133,14 @@ test(
 
 				await expect(productRelationshipsPage.rows).toHaveCount(2);
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName1)
+					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName3)
+					productRelationshipsPage.getRelatedProduct(productTitle3)
 				).toBeVisible();
 
 				await openRelationships(
-					productName3,
+					productTitle3,
 					productPage,
 					productRelationshipsPage,
 					productsPage
@@ -148,19 +148,19 @@ test(
 
 				await expect(productRelationshipsPage.rows).toHaveCount(2);
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName1)
+					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName2)
+					productRelationshipsPage.getRelatedProduct(productTitle2)
 				).toBeVisible();
 			});
 		}
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName1);
-			await productsPage.deleteProduct(productName2);
-			await productsPage.deleteProduct(productName3);
+			await productsPage.deleteProduct(productTitle1);
+			await productsPage.deleteProduct(productTitle2);
+			await productsPage.deleteProduct(productTitle3);
 		}
 	}
 );
@@ -169,37 +169,37 @@ test(
 	'Remove one relationship from a group of three products',
 	{tag: ['@LPD-105923']},
 	async ({productPage, productRelationshipsPage, productsPage}) => {
-		const productName1 = getRandomString();
-		const productName2 = getRandomString();
-		const productName3 = getRandomString();
+		const productTitle1 = getRandomString();
+		const productTitle2 = getRandomString();
+		const productTitle3 = getRandomString();
 
 		try {
-			await createProduct(productName1, productPage, productsPage);
-			await createProduct(productName2, productPage, productsPage);
-			await createProduct(productName3, productPage, productsPage);
+			await createProduct(productTitle1, productPage, productsPage);
+			await createProduct(productTitle2, productPage, productsPage);
+			await createProduct(productTitle3, productPage, productsPage);
 
 			await openRelationships(
-				productName1,
+				productTitle1,
 				productPage,
 				productRelationshipsPage,
 				productsPage
 			);
 
 			await productRelationshipsPage.addRelationships([
-				productName2,
-				productName3,
+				productTitle2,
+				productTitle3,
 			]);
 
-			await productRelationshipsPage.removeRelationship(productName3);
+			await productRelationshipsPage.removeRelationship(productTitle3);
 
 			await test.step('The removed product keeps no relationship', async () => {
 				await expect(productRelationshipsPage.rows).toHaveCount(1);
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName2)
+					productRelationshipsPage.getRelatedProduct(productTitle2)
 				).toBeVisible();
 
 				await openRelationships(
-					productName2,
+					productTitle2,
 					productPage,
 					productRelationshipsPage,
 					productsPage
@@ -207,11 +207,11 @@ test(
 
 				await expect(productRelationshipsPage.rows).toHaveCount(1);
 				await expect(
-					productRelationshipsPage.getRelatedProduct(productName1)
+					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
 
 				await openRelationships(
-					productName3,
+					productTitle3,
 					productPage,
 					productRelationshipsPage,
 					productsPage
@@ -223,9 +223,9 @@ test(
 		finally {
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName1);
-			await productsPage.deleteProduct(productName2);
-			await productsPage.deleteProduct(productName3);
+			await productsPage.deleteProduct(productTitle1);
+			await productsPage.deleteProduct(productTitle2);
+			await productsPage.deleteProduct(productTitle3);
 		}
 	}
 );
