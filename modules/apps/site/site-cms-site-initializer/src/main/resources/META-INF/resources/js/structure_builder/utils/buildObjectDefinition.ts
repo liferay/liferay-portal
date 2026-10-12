@@ -126,7 +126,7 @@ export default function buildObjectDefinition({
 		);
 	}
 
-	const objectLayout = buildLayout({children, label});
+	const objectLayout = buildLayout({children, label, titleFieldName});
 
 	objectDefinition.objectLayouts = objectLayout ? [objectLayout] : [];
 
@@ -136,9 +136,11 @@ export default function buildObjectDefinition({
 function buildLayout({
 	children,
 	label,
+	titleFieldName,
 }: {
 	children: Structure['children'];
 	label: Structure['label'];
+	titleFieldName: Structure['titleFieldName'];
 }): ObjectLayout | undefined {
 	const groups = Array.from(children.values()).filter(isPlainGroup);
 
@@ -148,7 +150,9 @@ function buildLayout({
 
 	const objectLayoutTabs: ObjectLayoutTab[] = [];
 
-	const fields = getDirectFields(children);
+	const fields = getDirectFields(children).filter(
+		(field) => field.name !== titleFieldName
+	);
 
 	if (fields.length) {
 		objectLayoutTabs.push({
