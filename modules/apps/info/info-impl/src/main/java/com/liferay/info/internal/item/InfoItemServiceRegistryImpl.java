@@ -48,7 +48,6 @@ import com.liferay.info.type.Keyed;
 import com.liferay.osgi.service.tracker.collections.ServiceReferenceServiceTuple;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -76,6 +75,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Jürgen Kappler
@@ -99,14 +99,15 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 		InfoItemServiceFilter infoItemServiceFilter) {
 
 		ServiceTrackerMap
-			<String, ? extends List<ServiceReferenceServiceTuple<P, P>>>
+			<String, ? extends List<CompanyIdServiceReferenceServiceTuple<P>>>
 				infoItemServiceTrackerMap =
 					(ServiceTrackerMap)
 						_getItemClassNameInfoItemServiceTrackerMap(
 							serviceClass);
 
-		List<ServiceReferenceServiceTuple<P, P>> serviceReferenceServiceTuples =
-			infoItemServiceTrackerMap.getService(itemClassName);
+		List<CompanyIdServiceReferenceServiceTuple<P>>
+			serviceReferenceServiceTuples =
+				infoItemServiceTrackerMap.getService(itemClassName);
 
 		if (serviceReferenceServiceTuples != null) {
 			PropertyInfoItemServiceFilter
@@ -127,14 +128,13 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 					serviceReferenceServiceTuples = ListUtil.filter(
 						serviceReferenceServiceTuples,
 						serviceReferenceServiceTuple -> {
-							ServiceReference<?> serviceReference =
-								serviceReferenceServiceTuple.
-									getServiceReference();
-
-							if (companyIdPropertyInfoItemServiceFilter.match(
-									serviceReference) &&
+							if (companyIdPropertyInfoItemServiceFilter.
+									matchPropertyValue(
+										serviceReferenceServiceTuple.
+											getCompanyIdPropertyValue()) &&
 								propertyInfoItemServiceFilter.match(
-									serviceReference)) {
+									serviceReferenceServiceTuple.
+										getServiceReference())) {
 
 								return true;
 							}
@@ -155,8 +155,9 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 			serviceReferenceServiceTuples = ListUtil.filter(
 				serviceReferenceServiceTuples,
 				serviceReferenceServiceTuple ->
-					companyIdPropertyInfoItemServiceFilter.match(
-						serviceReferenceServiceTuple.getServiceReference()));
+					companyIdPropertyInfoItemServiceFilter.matchPropertyValue(
+						serviceReferenceServiceTuple.
+							getCompanyIdPropertyValue()));
 
 			return ListUtil.toList(
 				serviceReferenceServiceTuples,
@@ -342,10 +343,10 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 		}
 	}
 
-	private <P> List<ServiceReferenceServiceTuple<P, P>>
+	private <P> List<CompanyIdServiceReferenceServiceTuple<P>>
 		_filterServiceReferenceServiceTuples(
 			InfoItemServiceFilter infoItemServiceFilter,
-			List<ServiceReferenceServiceTuple<P, P>>
+			List<CompanyIdServiceReferenceServiceTuple<P>>
 				serviceReferenceServiceTuples) {
 
 		try {
@@ -404,8 +405,7 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 			keyClass -> ServiceTrackerMapFactory.openMultiValueMap(
 				_bundleContext, (Class<Object>)keyClass, null,
 				new ItemClassNameServiceReferenceMapper(_bundleContext),
-				ServiceTrackerCustomizerFactory.serviceReferenceServiceTuple(
-					_bundleContext)));
+				new CompanyIdServiceTrackerCustomizer()));
 	}
 
 	private ServiceTrackerMap<String, ?> _getKeyedInfoItemServiceTrackerMap(
@@ -460,11 +460,76 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 	private final Map
 		<Class<?>,
 		 ServiceTrackerMap
-			 <String, List<ServiceReferenceServiceTuple<Object, Object>>>>
+			 <String, List<CompanyIdServiceReferenceServiceTuple<Object>>>>
 				_itemClassNameInfoItemServiceTrackerMap =
 					new ConcurrentHashMap<>();
 	private final Map<Class<?>, ServiceTrackerMap<String, ?>>
 		_keyedInfoItemServiceTrackerMap = new ConcurrentHashMap<>();
 	private ServiceTrackerMap<String, InfoItemCapability> _serviceTrackerMap;
+
+	private static class CompanyIdServiceReferenceServiceTuple<S>
+		extends ServiceReferenceServiceTuple<S, S> {
+
+		public Object getCompanyIdPropertyValue() {
+			return _companyIdPropertyValue;
+		}
+
+		private CompanyIdServiceReferenceServiceTuple(
+			ServiceReference<S> serviceReference, S service) {
+
+			super(serviceReference, service);
+
+			_updateCompanyIdPropertyValue();
+		}
+
+		private void _updateCompanyIdPropertyValue() {
+			ServiceReference<S> serviceReference = getServiceReference();
+
+			_companyIdPropertyValue = serviceReference.getProperty(
+				"company.id");
+		}
+
+		private volatile Object _companyIdPropertyValue;
+
+	}
+
+	private class CompanyIdServiceTrackerCustomizer
+		implements ServiceTrackerCustomizer
+			<Object, CompanyIdServiceReferenceServiceTuple<Object>> {
+
+		@Override
+		public CompanyIdServiceReferenceServiceTuple<Object> addingService(
+			ServiceReference<Object> serviceReference) {
+
+			Object service = _bundleContext.getService(serviceReference);
+
+			if (service == null) {
+				return null;
+			}
+
+			return new CompanyIdServiceReferenceServiceTuple<>(
+				serviceReference, service);
+		}
+
+		@Override
+		public void modifiedService(
+			ServiceReference<Object> serviceReference,
+			CompanyIdServiceReferenceServiceTuple<Object>
+				companyIdServiceReferenceServiceTuple) {
+
+			companyIdServiceReferenceServiceTuple.
+				_updateCompanyIdPropertyValue();
+		}
+
+		@Override
+		public void removedService(
+			ServiceReference<Object> serviceReference,
+			CompanyIdServiceReferenceServiceTuple<Object>
+				companyIdServiceReferenceServiceTuple) {
+
+			_bundleContext.ungetService(serviceReference);
+		}
+
+	}
 
 }
