@@ -21,6 +21,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -63,6 +64,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -352,6 +354,36 @@ public class CommerceSitemapURLProviderTest {
 		Assert.assertTrue(xml, xml.contains(translatedURLTitle));
 	}
 
+	@FeatureFlag("LPD-109588")
+	@Test
+	public void testCPDefinitionSitemapURLProviderWhenGuestBrowsingIsDisabled()
+		throws Exception {
+
+		CPDefinition cpDefinition = _addCPDefinition();
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+				_portal.getClassNameId(CProduct.class),
+				cpDefinition.getCProductId());
+
+		CommerceTestUtil.runWithGuestBrowsingDisabled(
+			_commerceChannelLocalService.getCommerceChannelGroupIdBySiteGroupId(
+				_group.getGroupId()),
+			() -> {
+				Element element = _visitLayout(
+					_cpDefinitionSitemapURLProvider,
+					CPPortletKeys.CP_CONTENT_WEB);
+
+				String xml = element.asXML();
+
+				Assert.assertFalse(
+					xml,
+					xml.contains(
+						friendlyURLEntry.getUrlTitle(
+							_themeDisplay.getLanguageId())));
+			});
+	}
+
 	@Test
 	public void testCPDefinitionSitemapURLProviderWithLocalePrependedFriendlyURLStyle()
 		throws Exception {
@@ -526,6 +558,9 @@ public class CommerceSitemapURLProviderTest {
 		type = SitemapURLProvider.class
 	)
 	private SitemapURLProvider _assetCategorySitemapURLProvider;
+
+	@Inject
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	private CommerceCurrency _commerceCurrency;
 	private Company _company;

@@ -22,8 +22,10 @@ import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingLocalService;
@@ -56,6 +58,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -350,6 +353,57 @@ public class CommerceMediaServletTest {
 			mockHttpServletResponse);
 	}
 
+	@FeatureFlag("LPD-109588")
+	@Test
+	public void testDoGetWhenGuestBrowsingIsDisabled() throws Exception {
+		byte[] bytes = FileUtil.getBytes(
+			CommerceMediaServletTest.class, "dependencies/image.jpg");
+
+		CPAttachmentFileEntry cpAttachmentFileEntry = _addCPAttachmentFileEntry(
+			bytes, ContentTypes.IMAGE_JPEG, "jpg");
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyTestUtil.addCommerceCurrency(_group.getCompanyId());
+
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_group.getGroupId(), commerceCurrency.getCode());
+
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			CPDefinition.class.getName(), cpAttachmentFileEntry.getClassPK(),
+			commerceChannel.getCommerceChannelId(), _serviceContext);
+
+		_cpDefinitionLocalService.updateCPDefinitionChannelFilter(
+			cpAttachmentFileEntry.getClassPK(), true);
+
+		User user = _userLocalService.getGuestUser(_group.getCompanyId());
+
+		CommerceTestUtil.runWithGuestBrowsingDisabled(
+			commerceChannel.getGroupId(),
+			() -> {
+				try (LogCapture logCapture =
+						LoggerTestUtil.configureLog4JLogger(
+							"com.liferay.commerce.media.internal.servlet." +
+								"CommerceMediaServlet",
+							LoggerTestUtil.OFF)) {
+
+					MockHttpServletResponse mockHttpServletResponse = _get(
+						AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+						cpAttachmentFileEntry, false, user);
+
+					Assert.assertEquals(
+						HttpServletResponse.SC_NOT_FOUND,
+						mockHttpServletResponse.getStatus());
+				}
+			});
+
+		MockHttpServletResponse mockHttpServletResponse = _get(
+			AccountConstants.ACCOUNT_ENTRY_ID_GUEST, cpAttachmentFileEntry,
+			false, user);
+
+		Assert.assertArrayEquals(
+			bytes, mockHttpServletResponse.getContentAsByteArray());
+	}
+
 	private CPAttachmentFileEntry _addCPAttachmentFileEntry(
 			byte[] bytes, String contentType, String extension)
 		throws Exception {
@@ -443,6 +497,9 @@ public class CommerceMediaServletTest {
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	private CommerceCatalog _commerceCatalog;
+
+	@Inject
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@Inject
 	private CPAttachmentFileEntryLocalService

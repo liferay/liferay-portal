@@ -5,30 +5,41 @@
 
 package com.liferay.commerce.product.util.test;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
+import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.data.source.CPDataSourceResult;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -238,6 +249,66 @@ public class CPDefinitionHelperTest {
 			cpCatalogEntry.getCPDefinitionId());
 	}
 
+	@FeatureFlag("LPD-109588")
+	@Test
+	public void testSearchCPDefinitionsWhenGuestBrowsingIsDisabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions as a guest"
+		).given(
+			"A collection of CPDefinitions"
+		).and(
+			"A channel with guest browsing disabled"
+		).when(
+			"A guest searches for CPDefinitions in that channel"
+		).then(
+			"The results will not contain any product"
+		);
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyTestUtil.addCommerceCurrency(
+				_company.getCompanyId());
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.addCommerceChannel(
+				StringPool.BLANK, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
+				commerceCurrency.getCode(),
+				ServiceContextTestUtil.getServiceContext(
+					_company.getGroupId()));
+
+		_addCPInstances(_commerceCatalog.getGroupId(), _CP_INSTANCES_COUNT);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_company.getGuestUser()));
+
+		CPDataSourceResult cpDataSourceResult = _cpDefinitionHelper.search(
+			commerceChannel.getGroupId(),
+			CPTestUtil.getSearchContext(
+				null, WorkflowConstants.STATUS_APPROVED,
+				_commerceCatalog.getGroup()),
+			new CPQuery(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			_CP_INSTANCES_COUNT, cpDataSourceResult.getLength());
+
+		CommerceTestUtil.runWithGuestBrowsingDisabled(
+			commerceChannel.getGroupId(),
+			() -> {
+				CPDataSourceResult guestCPDataSourceResult =
+					_cpDefinitionHelper.search(
+						commerceChannel.getGroupId(),
+						CPTestUtil.getSearchContext(
+							null, WorkflowConstants.STATUS_APPROVED,
+							_commerceCatalog.getGroup()),
+						new CPQuery(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+				Assert.assertEquals(0, guestCPDataSourceResult.getLength());
+			});
+	}
+
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -261,6 +332,9 @@ public class CPDefinitionHelperTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Inject
 	private CPDefinitionHelper _cpDefinitionHelper;

@@ -23,6 +23,7 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.info.collection.provider.CollectionQuery;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
@@ -31,14 +32,18 @@ import com.liferay.info.pagination.InfoPage;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -131,6 +136,48 @@ public class UserCommerceMLRecommendationRelatedInfoItemCollectionProviderTest
 
 				return null;
 			});
+	}
+
+	@FeatureFlag("LPD-109588")
+	@Override
+	@Test
+	public void testGetRelatedItemsInfoPageWhenGuestBrowsingIsDisabled()
+		throws Exception {
+
+		UserCommerceMLRecommendation userCommerceMLRecommendation =
+			_userCommerceMLRecommendations.get(0);
+
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(userCommerceMLRecommendation.getEntryClassPK()));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId())));
+
+		try {
+			CommerceTestUtil.runWithGuestBrowsingDisabled(
+				_commerceChannel.getGroupId(),
+				() -> {
+					InfoCollectionProvider<CPDefinition>
+						infoCollectionProvider =
+							infoItemServiceRegistry.getInfoItemService(
+								InfoCollectionProvider.class,
+								getInfoItemCollectionProviderName());
+
+					InfoPage<CPDefinition> infoPage =
+						infoCollectionProvider.getCollectionInfoPage(
+							new CollectionQuery());
+
+					List<? extends CPDefinition> pageItems =
+						infoPage.getPageItems();
+
+					Assert.assertTrue(
+						pageItems.toString(), pageItems.isEmpty());
+				});
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Test
@@ -325,5 +372,8 @@ public class UserCommerceMLRecommendationRelatedInfoItemCollectionProviderTest
 		_userCommerceMLRecommendationManager;
 
 	private List<UserCommerceMLRecommendation> _userCommerceMLRecommendations;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

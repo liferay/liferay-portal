@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -394,11 +395,13 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 	}
 
+	@FeatureFlag("LPD-109588")
 	@Override
 	@Test
 	public void testPostChannelCart() throws Exception {
 		super.testPostChannelCart();
 
+		_testPostChannelCartByGuestWithGuestBrowsingDisabled();
 		_testPostChannelCartByGuestWithGuestCheckoutDisabledOnB2BChannel();
 		_testPostChannelCartWithMoreExternalReferenceCodes();
 		_testPostChannelCartWithoutSkuId();
@@ -1345,6 +1348,32 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		Assert.assertEquals(
 			serviceBuilderAddress.getExternalReferenceCode(),
 			postCart.getShippingAddressExternalReferenceCode());
+	}
+
+	private void _testPostChannelCartByGuestWithGuestBrowsingDisabled()
+		throws Exception {
+
+		CommerceTestUtil.runWithGuestBrowsingDisabled(
+			_commerceChannel.getGroupId(),
+			() -> {
+				CartResource guestCartResource = CartResource.builder(
+				).endpoint(
+					testCompany.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), "http"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+				Problem.ProblemException problemException = Assert.assertThrows(
+					Problem.ProblemException.class,
+					() -> guestCartResource.postChannelCart(
+						_commerceChannel.getCommerceChannelId(),
+						_randomGuestCart()));
+
+				Problem problem = problemException.getProblem();
+
+				Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			});
 	}
 
 	private void _testPostChannelCartByGuestWithGuestCheckoutDisabledOnB2BChannel()

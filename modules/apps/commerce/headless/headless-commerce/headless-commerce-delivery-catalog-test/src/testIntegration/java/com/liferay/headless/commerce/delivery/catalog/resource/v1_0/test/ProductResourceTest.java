@@ -29,6 +29,8 @@ import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.delivery.catalog.client.problem.Problem;
+import com.liferay.headless.commerce.delivery.catalog.client.resource.v1_0.ProductResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -43,7 +45,9 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
@@ -80,6 +84,15 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
 			_user.getUserId());
+	}
+
+	@FeatureFlag("LPD-109588")
+	@Override
+	@Test
+	public void testGetChannelProduct() throws Exception {
+		super.testGetChannelProduct();
+
+		_testGetChannelProductByGuestWithGuestBrowsingDisabled();
 	}
 
 	@Override
@@ -288,6 +301,54 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 					});
 			}
 		};
+	}
+
+	private void _testGetChannelProductByGuestWithGuestBrowsingDisabled()
+		throws Exception {
+
+		Product product = _addCPDefinition(randomProduct());
+
+		ProductResource guestProductResource = ProductResource.builder(
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		Product guestProduct = guestProductResource.getChannelProduct(
+			_commerceChannel.getCommerceChannelId(), product.getId(), null);
+
+		Assert.assertEquals(
+			product.getProductId(), guestProduct.getProductId());
+
+		CommerceTestUtil.runWithGuestBrowsingDisabled(
+			_commerceChannel.getGroupId(),
+			() -> {
+				Problem.ProblemException problemException = Assert.assertThrows(
+					Problem.ProblemException.class,
+					() -> guestProductResource.getChannelProduct(
+						_commerceChannel.getCommerceChannelId(),
+						product.getId(), null));
+
+				Problem problem = problemException.getProblem();
+
+				Assert.assertEquals("NOT_FOUND", problem.getStatus());
+
+				Page<Product> page =
+					guestProductResource.getChannelProductsPage(
+						_commerceChannel.getCommerceChannelId(), null, null,
+						null, Pagination.of(1, 10), null);
+
+				Assert.assertEquals(0, page.getTotalCount());
+
+				Product adminProduct = productResource.getChannelProduct(
+					_commerceChannel.getCommerceChannelId(), product.getId(),
+					null);
+
+				Assert.assertEquals(
+					product.getProductId(), adminProduct.getProductId());
+			});
 	}
 
 	private void _testGetChannelProductsPageWithCustomFields()

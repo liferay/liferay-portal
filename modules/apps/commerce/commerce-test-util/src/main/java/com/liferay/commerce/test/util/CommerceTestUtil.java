@@ -630,6 +630,23 @@ public class CommerceTestUtil {
 		return CommerceOrderLocalServiceUtil.updateCommerceOrder(commerceOrder);
 	}
 
+	public static void runWithGuestBrowsingDisabled(
+			long groupId, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						groupId,
+						CommerceConstants.SERVICE_NAME_COMMERCE_ACCOUNT,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"guestBrowsingEnabled", false
+						).build())) {
+
+			unsafeRunnable.run();
+		}
+	}
+
 	public static void runWithGuestCheckoutDisabledOnB2BChannel(
 			long groupId, UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {
