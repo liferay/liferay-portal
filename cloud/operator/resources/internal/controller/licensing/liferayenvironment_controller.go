@@ -1,6 +1,6 @@
-// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments,verbs=get;list;patch;update;watch
+// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments,verbs=get;list;watch
 // +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments/finalizers,verbs=update
-// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments/status,verbs=get;patch;update
+// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments/status,verbs=get;update
 package licensing
 
 import (
@@ -69,10 +69,10 @@ const (
 )
 
 // +kubebuilder:rbac:groups="",resources=events,verbs=create;patch
-// +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;patch;update;watch
-// +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
+// +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;update;watch
+// +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;update;watch
 // +kubebuilder:rbac:groups=apiextensions.k8s.io,resources=customresourcedefinitions,verbs=get;list;watch
-// +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;patch;update;watch
+// +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;update;watch
 // +kubebuilder:rbac:groups=autoscaling,resources=horizontalpodautoscalers,verbs=get;list;patch;watch
 // +kubebuilder:rbac:groups=keda.sh,resources=scaledobjects,verbs=get;list;patch;watch
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(

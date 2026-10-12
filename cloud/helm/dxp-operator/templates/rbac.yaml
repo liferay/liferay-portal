@@ -28,7 +28,6 @@ rules:
         verbs:
             -   get
             -   list
-            -   patch
             -   update
             -   watch
     -   apiGroups:
@@ -39,7 +38,6 @@ rules:
             -   create
             -   get
             -   list
-            -   patch
             -   update
             -   watch
     -   apiGroups:
@@ -66,7 +64,6 @@ rules:
         verbs:
             -   get
             -   list
-            -   patch
             -   update
             -   watch
     -   apiGroups:
@@ -133,8 +130,6 @@ rules:
         verbs:
             -   get
             -   list
-            -   patch
-            -   update
             -   watch
     -   apiGroups:
             -   licensing.liferay.com
@@ -148,7 +143,6 @@ rules:
             -   liferayenvironments/status
         verbs:
             -   get
-            -   patch
             -   update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
