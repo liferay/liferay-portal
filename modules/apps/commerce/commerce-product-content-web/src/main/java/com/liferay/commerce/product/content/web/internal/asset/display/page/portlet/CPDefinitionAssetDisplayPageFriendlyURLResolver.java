@@ -25,6 +25,7 @@ import com.liferay.commerce.product.configuration.CPDisplayLayoutConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.constants.CPWebKeys;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDisplayLayout;
@@ -35,6 +36,7 @@ import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.url.CPFriendlyURL;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.commerce.util.CommerceContextThreadLocal;
 import com.liferay.commerce.util.CommerceGroupThreadLocal;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
@@ -59,11 +61,13 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.login.AuthLoginGroupSettingsUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURLComposite;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
@@ -127,6 +131,19 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)requestContext.get("request");
+
+		if (!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+				PermissionThreadLocal.getPermissionChecker(), groupId)) {
+
+			if (AuthLoginGroupSettingsUtil.isPromptEnabled(groupId)) {
+				return _getLoginURL(
+					groupId, privateLayout, mainPath, httpServletRequest);
+			}
+
+			throw new NoSuchCPDefinitionException(
+				"No commerce product definition exists with the primary key " +
+					cpDefinition.getCPDefinitionId());
+		}
 
 		CPCatalogEntry cpCatalogEntry = _cpDefinitionHelper.getCPCatalogEntry(
 			_getCommerceAccountId(groupId, httpServletRequest), groupId,
@@ -475,6 +492,25 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 		}
 
 		return layoutDisplayPageProvider;
+	}
+
+	private String _getLoginURL(
+		long groupId, boolean privateLayout, String mainPath,
+		HttpServletRequest httpServletRequest) {
+
+		String loginURL = HttpComponentsUtil.addParameter(
+			mainPath + "/portal/login", "redirect",
+			_portal.getCurrentURL(httpServletRequest));
+
+		Layout layout = _layoutLocalService.fetchDefaultLayout(
+			groupId, privateLayout);
+
+		if (layout == null) {
+			return loginURL;
+		}
+
+		return HttpComponentsUtil.addParameter(
+			loginURL, "p_l_id", layout.getPlid());
 	}
 
 	private Layout _getProductLayout(
