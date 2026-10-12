@@ -7,10 +7,6 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import java.lang.reflect.Constructor;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -18,7 +14,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -314,77 +309,6 @@ public class MapUtil {
 		return new SingletonDictionary<>(key, value);
 	}
 
-	public static <T> LinkedHashMap<String, T> toLinkedHashMap(
-		String[] params) {
-
-		return toLinkedHashMap(params, StringPool.COLON);
-	}
-
-	public static <T> LinkedHashMap<String, T> toLinkedHashMap(
-		String[] params, String delimiter) {
-
-		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-
-		if (params == null) {
-			return (LinkedHashMap<String, T>)map;
-		}
-
-		for (String param : params) {
-			String[] kvp = StringUtil.split(param, delimiter);
-
-			if (kvp.length == 2) {
-				map.put(kvp[0], kvp[1]);
-			}
-			else if (kvp.length == 3) {
-				String type = kvp[2];
-
-				if (StringUtil.equalsIgnoreCase(type, "boolean") ||
-					type.equals(Boolean.class.getName())) {
-
-					map.put(kvp[0], Boolean.valueOf(kvp[1]));
-				}
-				else if (StringUtil.equalsIgnoreCase(type, "double") ||
-						 type.equals(Double.class.getName())) {
-
-					map.put(kvp[0], Double.valueOf(kvp[1]));
-				}
-				else if (StringUtil.equalsIgnoreCase(type, "int") ||
-						 type.equals(Integer.class.getName())) {
-
-					map.put(kvp[0], Integer.valueOf(kvp[1]));
-				}
-				else if (StringUtil.equalsIgnoreCase(type, "long") ||
-						 type.equals(Long.class.getName())) {
-
-					map.put(kvp[0], Long.valueOf(kvp[1]));
-				}
-				else if (StringUtil.equalsIgnoreCase(type, "short") ||
-						 type.equals(Short.class.getName())) {
-
-					map.put(kvp[0], Short.valueOf(kvp[1]));
-				}
-				else if (type.equals(String.class.getName())) {
-					map.put(kvp[0], kvp[1]);
-				}
-				else {
-					try {
-						Class<?> clazz = Class.forName(type);
-
-						Constructor<?> constructor = clazz.getConstructor(
-							String.class);
-
-						map.put(kvp[0], constructor.newInstance(kvp[1]));
-					}
-					catch (Exception exception) {
-						_log.error(exception);
-					}
-				}
-			}
-		}
-
-		return (LinkedHashMap<String, T>)map;
-	}
-
 	public static <K, V> Map<K, List<V>> toPartitionMap(
 		List<V> list, Function<V, K> keyExtractor) {
 
@@ -464,8 +388,6 @@ public class MapUtil {
 	}
 
 	private static final Object _ABSENT_VALUE = new Object();
-
-	private static final Log _log = LogFactoryUtil.getLog(MapUtil.class);
 
 	private static class SingletonDictionary<K, V> extends Dictionary<K, V> {
 
