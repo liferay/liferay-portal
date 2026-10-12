@@ -862,7 +862,7 @@ public class GitWorkingDirectory {
 			throw new GitWorkingDirectoryRuntimeException(
 				this,
 				JenkinsResultsParserUtil.combine(
-					"Unable to fetch remote url ", remoteURL, "\n",
+					"Unable to fetch remote URL ", remoteURL, "\n",
 					exception.getMessage()));
 		}
 
@@ -979,7 +979,7 @@ public class GitWorkingDirectory {
 
 		if (!GitUtil.isValidRemoteURL(remoteURL)) {
 			throw new GitWorkingDirectoryIllegalArgumentException(
-				this, "Invalid remote url " + remoteURL);
+				this, "Invalid remote URL " + remoteURL);
 		}
 
 		StringBuilder gitBranchesSHAReportStringBuilder = new StringBuilder();
@@ -1031,7 +1031,7 @@ public class GitWorkingDirectory {
 			throw new GitWorkingDirectoryRuntimeException(
 				this,
 				JenkinsResultsParserUtil.combine(
-					"Unable to fetch remote url ", remoteURL, "\n",
+					"Unable to fetch remote URL ", remoteURL, "\n",
 					exception.getMessage()));
 		}
 
@@ -1045,7 +1045,7 @@ public class GitWorkingDirectory {
 			throw new GitWorkingDirectoryRuntimeException(
 				this,
 				JenkinsResultsParserUtil.combine(
-					"Unable to fetch remote url ", remoteURL, " after ",
+					"Unable to fetch remote URL ", remoteURL, " after ",
 					JenkinsResultsParserUtil.toDurationString(duration), "\n",
 					executionResult.getStandardError()));
 		}
@@ -2101,7 +2101,7 @@ public class GitWorkingDirectory {
 
 		if (!GitUtil.isValidRemoteURL(remoteURL)) {
 			throw new GitWorkingDirectoryIllegalArgumentException(
-				this, "Invalid remote url " + remoteURL);
+				this, "Invalid remote URL " + remoteURL);
 		}
 
 		if (JenkinsResultsParserUtil.isCINode() &&
@@ -2632,7 +2632,7 @@ public class GitWorkingDirectory {
 
 		if (!GitUtil.isValidRemoteURL(remoteURL)) {
 			throw new GitWorkingDirectoryIllegalArgumentException(
-				this, "Invalid remote url " + remoteURL);
+				this, "Invalid remote URL " + remoteURL);
 		}
 
 		StringBuilder sb = new StringBuilder();

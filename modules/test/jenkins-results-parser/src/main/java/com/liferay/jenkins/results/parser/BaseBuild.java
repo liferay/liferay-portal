@@ -1472,7 +1472,7 @@ public abstract class BaseBuild implements Build {
 			catch (MalformedURLException malformedURLException) {
 				throw new RuntimeException(
 					JenkinsResultsParserUtil.combine(
-						"Unable to compare urls ", buildURL, " and ",
+						"Unable to compare URLs ", buildURL, " and ",
 						thisBuildURL),
 					malformedURLException);
 			}

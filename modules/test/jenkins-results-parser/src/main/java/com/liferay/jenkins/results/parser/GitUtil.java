@@ -260,7 +260,7 @@ public class GitUtil {
 
 		if (!isValidRemoteURL(remoteURL)) {
 			throw new IllegalArgumentException(
-				"Invalid remote url " + remoteURL);
+				"Invalid remote URL " + remoteURL);
 		}
 
 		String command = null;
@@ -421,7 +421,7 @@ public class GitUtil {
 		}
 
 		throw new IllegalArgumentException(
-			"Invalid github-dev remote url " + gitHubDevRemoteURL);
+			"Invalid github-dev remote URL " + gitHubDevRemoteURL);
 	}
 
 	public static class ExecutionResult {

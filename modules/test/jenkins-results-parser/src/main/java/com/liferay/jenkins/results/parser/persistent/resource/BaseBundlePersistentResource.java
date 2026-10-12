@@ -532,7 +532,7 @@ public abstract class BaseBundlePersistentResource
 		String producerBuildURL = getProducerBuildURL();
 
 		if (!JenkinsResultsParserUtil.isURL(producerBuildURL)) {
-			print("WARNING: Unable to find producer build url");
+			print("WARNING: Unable to find producer build URL");
 
 			return;
 		}
