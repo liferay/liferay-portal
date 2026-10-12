@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Date;
@@ -276,47 +275,19 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 			assetListEntryAssetEntryRelPersistence.update(
 				assetListEntryAssetEntryRel);
 
-		long assetListEntryAssetEntryRelId =
-			assetListEntryAssetEntryRel.getAssetListEntryAssetEntryRelId();
+		assetListEntryAssetEntryRelPersistence.flush();
 
-		swapAssetListEntryAssetEntryRel.setPosition(-2);
+		swapAssetListEntryAssetEntryRel.setPosition(position);
 
-		swapAssetListEntryAssetEntryRel =
-			assetListEntryAssetEntryRelPersistence.update(
-				swapAssetListEntryAssetEntryRel);
+		assetListEntryAssetEntryRelPersistence.update(
+			swapAssetListEntryAssetEntryRel);
 
-		long swapAssetListEntryAssetEntryRelId =
-			swapAssetListEntryAssetEntryRel.getAssetListEntryAssetEntryRelId();
+		assetListEntryAssetEntryRelPersistence.flush();
 
-		TransactionCallbackUtil.registerCommitCallback(
-			() -> {
-				AssetListEntryAssetEntryRel
-					callbackAssetListEntryAssetEntryRel =
-						assetListEntryAssetEntryRelLocalService.
-							fetchAssetListEntryAssetEntryRel(
-								assetListEntryAssetEntryRelId);
+		assetListEntryAssetEntryRel.setPosition(newPosition);
 
-				callbackAssetListEntryAssetEntryRel.setPosition(newPosition);
-
-				assetListEntryAssetEntryRelLocalService.
-					updateAssetListEntryAssetEntryRel(
-						callbackAssetListEntryAssetEntryRel);
-
-				callbackAssetListEntryAssetEntryRel =
-					assetListEntryAssetEntryRelLocalService.
-						fetchAssetListEntryAssetEntryRel(
-							swapAssetListEntryAssetEntryRelId);
-
-				callbackAssetListEntryAssetEntryRel.setPosition(position);
-
-				assetListEntryAssetEntryRelLocalService.
-					updateAssetListEntryAssetEntryRel(
-						callbackAssetListEntryAssetEntryRel);
-
-				return null;
-			});
-
-		return assetListEntryAssetEntryRel;
+		return assetListEntryAssetEntryRelPersistence.update(
+			assetListEntryAssetEntryRel);
 	}
 
 	@Override
