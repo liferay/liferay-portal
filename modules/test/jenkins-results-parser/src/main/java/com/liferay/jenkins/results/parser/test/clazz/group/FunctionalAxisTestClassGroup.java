@@ -50,6 +50,24 @@ public class FunctionalAxisTestClassGroup extends AxisTestClassGroup {
 		return new ArrayList<>(cachedDownstreamBuildReports);
 	}
 
+	@Override
+	public String getEnhancedBatchName() {
+		String batchName = getBatchName();
+
+		Properties poshiProperties = getPoshiProperties();
+
+		String browserChromeVersion = poshiProperties.getProperty(
+			"browser.chrome.version");
+
+		if ((browserChromeVersion != null) &&
+			browserChromeVersion.equals("139.0")) {
+
+			batchName += "-chrome139";
+		}
+
+		return batchName;
+	}
+
 	public List<FunctionalTestClass> getFunctionalTestClasses() {
 		List<FunctionalTestClass> functionalTestClasses = new ArrayList<>();
 

@@ -149,6 +149,10 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 		return _batchTestClassGroup.getDownstreamJobName();
 	}
 
+	public String getEnhancedBatchName() {
+		return getBatchName();
+	}
+
 	public JSONObject getJSONObject() {
 		JSONObject jsonObject = new JSONObject();
 
