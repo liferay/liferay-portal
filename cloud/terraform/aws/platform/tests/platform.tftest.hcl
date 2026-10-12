@@ -383,6 +383,21 @@ run "should_limit_what_bounded_principals_can_do" {
 	}
 	command=plan
 }
+run "should_name_the_platform_roles_after_the_deployment" {
+	assert {
+		condition=aws_iam_role.crossplane_data.name == "liferay-test-crossplane-data"
+		error_message="The crossplane-data role name must be derived from deployment_name"
+	}
+	assert {
+		condition=aws_iam_role.crossplane_iam.name == "liferay-test-crossplane-iam"
+		error_message="The crossplane-iam role name must be derived from deployment_name"
+	}
+	assert {
+		condition=aws_iam_role.external_secrets.name == "liferay-test-external-secrets"
+		error_message="The External Secrets role name must be derived from deployment_name"
+	}
+	command=plan
+}
 run "should_omit_the_ack_prometheusservice_role_by_default" {
 	assert {
 		condition=length(aws_iam_role.ack_prometheusservice) == 0
@@ -442,21 +457,6 @@ run "should_publish_the_marketplace_volume_handle" {
 		error_message="The marketplace volume handle must join the file system and access point IDs"
 	}
 	command=apply
-}
-run "should_wire_the_platform_roles" {
-	assert {
-		condition=aws_iam_role.crossplane_data.name == "liferay-test-crossplane-data"
-		error_message="The crossplane-data role name must be derived from deployment_name"
-	}
-	assert {
-		condition=aws_iam_role.crossplane_iam.name == "liferay-test-crossplane-iam"
-		error_message="The crossplane-iam role name must be derived from deployment_name"
-	}
-	assert {
-		condition=aws_iam_role.external_secrets.name == "liferay-test-external-secrets"
-		error_message="The External Secrets role name must be derived from deployment_name"
-	}
-	command=plan
 }
 variables {
 	argocd_helm_chart_version="10.1.3"

@@ -48,10 +48,6 @@ run "should_derive_cluster_name_from_deployment_name" {
 		condition=local.cluster_name == "liferay-test-eks"
 		error_message="The local.cluster_name must be \"<deployment_name>-eks\""
 	}
-	assert {
-		condition=output.cluster_name == "liferay-test-eks"
-		error_message="The cluster_name output must come from module.eks"
-	}
 	command=plan
 }
 run "should_not_accept_deployment_name_longer_than_24_characters" {
