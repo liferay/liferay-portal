@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.MultiMatchQuery;
+import com.liferay.portal.search.query.Operator;
 import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -139,17 +141,26 @@ public class AutocompleteAssigneeMVCResourceCommand
 		}
 
 		roleBooleanQuery.addMustQueryClauses(
-			QueriesUtil.matchPhrasePrefix(Field.NAME, search),
+			_getMultiMatchQuery(Field.NAME, search),
 			QueriesUtil.term(Field.ENTRY_CLASS_NAME, Role.class.getName()));
 
 		BooleanQuery userBooleanQuery = QueriesUtil.booleanQuery();
 
 		userBooleanQuery.addMustQueryClauses(
-			QueriesUtil.matchPhrasePrefix("fullName", search),
+			_getMultiMatchQuery("fullName", search),
 			QueriesUtil.term(Field.ENTRY_CLASS_NAME, User.class.getName()));
 
 		return booleanQuery.addShouldQueryClauses(
 			roleBooleanQuery, userBooleanQuery);
+	}
+
+	private MultiMatchQuery _getMultiMatchQuery(String field, String search) {
+		MultiMatchQuery multiMatchQuery = QueriesUtil.multiMatch(search, field);
+
+		multiMatchQuery.setOperator(Operator.AND);
+		multiMatchQuery.setType(MultiMatchQuery.Type.BOOL_PREFIX);
+
+		return multiMatchQuery;
 	}
 
 	private final RoleLocalService _roleLocalService;
