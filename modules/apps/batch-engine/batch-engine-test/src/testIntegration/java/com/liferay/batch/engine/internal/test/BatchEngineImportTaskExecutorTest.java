@@ -992,11 +992,19 @@ public class BatchEngineImportTaskExecutorTest
 		AuditRequestContext auditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
 
-		String realUserEmailAddress = RandomTestUtil.randomString();
+		String clientHost = RandomTestUtil.randomString();
+		String clientIP = RandomTestUtil.randomString();
 		long realUserId = RandomTestUtil.randomLong();
+		String serverName = RandomTestUtil.randomString();
+		int serverPort = RandomTestUtil.randomInt();
+		String sessionID = RandomTestUtil.randomString();
 
-		auditRequestContext.setRealUserEmailAddress(realUserEmailAddress);
+		auditRequestContext.setClientHost(clientHost);
+		auditRequestContext.setClientIP(clientIP);
 		auditRequestContext.setRealUserId(realUserId);
+		auditRequestContext.setServerName(serverName);
+		auditRequestContext.setServerPort(serverPort);
+		auditRequestContext.setSessionID(sessionID);
 
 		try {
 			_importBlogPostings(
@@ -1009,7 +1017,9 @@ public class BatchEngineImportTaskExecutorTest
 				BatchEngineTaskExecuteStatus.COMPLETED.toString(),
 				_batchEngineImportTask.getExecuteStatus());
 
-			_assertAuditRequestContext(realUserEmailAddress, realUserId);
+			_assertAuditRequestContext(
+				clientHost, clientIP, realUserId, serverName, serverPort,
+				sessionID);
 
 			StringBundler sb = new StringBundler();
 
@@ -1056,7 +1066,9 @@ public class BatchEngineImportTaskExecutorTest
 
 			Assert.assertEquals(1, batchEngineImportTaskError.getItemIndex());
 
-			_assertAuditRequestContext(realUserEmailAddress, realUserId);
+			_assertAuditRequestContext(
+				clientHost, clientIP, realUserId, serverName, serverPort,
+				sessionID);
 		}
 		finally {
 			AuditRequestContextThreadLocal.removeAuditRequestContext();
@@ -1332,16 +1344,18 @@ public class BatchEngineImportTaskExecutorTest
 	}
 
 	private void _assertAuditRequestContext(
-		String realUserEmailAddress, long realUserId) {
+		String clientHost, String clientIP, long realUserId, String serverName,
+		int serverPort, String sessionID) {
 
 		AuditRequestContext auditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
 
-		Assert.assertEquals(
-			realUserEmailAddress,
-			auditRequestContext.getRealUserEmailAddress());
-		Assert.assertEquals(
-			realUserId, auditRequestContext.getRealUserId());
+		Assert.assertEquals(clientHost, auditRequestContext.getClientHost());
+		Assert.assertEquals(clientIP, auditRequestContext.getClientIP());
+		Assert.assertEquals(realUserId, auditRequestContext.getRealUserId());
+		Assert.assertEquals(serverName, auditRequestContext.getServerName());
+		Assert.assertEquals(serverPort, auditRequestContext.getServerPort());
+		Assert.assertEquals(sessionID, auditRequestContext.getSessionID());
 	}
 
 	private void _assertCreatedBlogPostings() throws Exception {
