@@ -7,8 +7,10 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
+import {structureBuilderPagesTest} from '../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
 import {pimPagesTest} from './fixtures/pimPagesTest';
 import {ProductPage} from './pages/ProductPage';
 import {ProductRelationshipsPage} from './pages/ProductRelationshipsPage';
@@ -16,16 +18,29 @@ import {ProductsPage} from './pages/ProductsPage';
 
 const RELATIONSHIPS_TAB = 'Relationships';
 
-const test = mergeTests(cmsPagesTest, loginTest(), pimPagesTest);
+const test = mergeTests(
+	cmsPagesTest,
+	loginTest(),
+	pimPagesTest,
+	structureBuilderPagesTest
+);
 
 async function createProduct(
 	title: string,
 	productPage: ProductPage,
-	productsPage: ProductsPage
+	productsPage: ProductsPage,
+	type?: string
 ) {
 	await productsPage.goto();
 
-	await productsPage.openNewProductEditor();
+	await productsPage.openNewProductEditor('Default', type);
+
+	if (type) {
+		await clickAndExpectToBeVisible({
+			target: productPage.title,
+			trigger: productPage.getTab('Details'),
+		});
+	}
 
 	await productPage.sku.fill(getRandomString());
 	await productPage.title.fill(title);
@@ -161,6 +176,76 @@ test(
 			await productsPage.deleteProduct(productTitle1);
 			await productsPage.deleteProduct(productTitle2);
 			await productsPage.deleteProduct(productTitle3);
+		}
+	}
+);
+
+test(
+	'Relate products of different product types',
+	{tag: ['@LPD-109595']},
+	async ({
+		productPage,
+		productRelationshipsPage,
+		productStructuresPage,
+		productsPage,
+		structureBuilderPage,
+	}) => {
+		const productTitle1 = getRandomString();
+		const productTitle2 = getRandomString();
+		const structureLabel = `ProductType${getRandomInt()}`;
+
+		try {
+			await createProduct(productTitle1, productPage, productsPage);
+
+			await productStructuresPage.goto();
+
+			await structureBuilderPage.selectStructure();
+
+			await structureBuilderPage.changeStructureSettings({
+				label: structureLabel,
+			});
+
+			await structureBuilderPage.saveStructure();
+
+			await structureBuilderPage.publishStructure();
+
+			await createProduct(
+				productTitle2,
+				productPage,
+				productsPage,
+				structureLabel
+			);
+
+			await openRelationships(
+				productTitle1,
+				productPage,
+				productRelationshipsPage,
+				productsPage
+			);
+
+			await productRelationshipsPage.addRelationships([productTitle2]);
+
+			await test.step('Both products list each other', async () => {
+				await expect(productRelationshipsPage.rows).toHaveCount(1);
+
+				await openRelationships(
+					productTitle2,
+					productPage,
+					productRelationshipsPage,
+					productsPage
+				);
+
+				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(
+					productRelationshipsPage.getRelatedProduct(productTitle1)
+				).toBeVisible();
+			});
+		}
+		finally {
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(productTitle1);
+			await productsPage.deleteProduct(productTitle2);
 		}
 	}
 );
