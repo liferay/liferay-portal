@@ -160,6 +160,12 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 						<aui:input checked="<%= commerceChannelDisplayContext.isCheckoutRequestedDeliveryDateEnabled() %>" helpMessage="configures-whether-an-order-requested-delivery-date-can-be-set-during-checkout" label="requested-delivery-date-at-checkout" labelOff="disabled" labelOn="enabled" name="settings--checkoutRequestedDeliveryDateEnabled--" type="toggle-switch" />
 					</div>
 
+					<c:if test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-109588") %>'>
+						<div class="col-lg-6">
+							<aui:input checked="<%= commerceChannelDisplayContext.isGuestBrowsingEnabled() %>" helpMessage="configures-whether-guests-may-find-and-view-the-products-of-this-channel-or-if-they-must-sign-in" label="guest-browsing" labelOff="disabled" labelOn="enabled" name="settings--guestBrowsingEnabled--" type="toggle-switch" />
+						</div>
+					</c:if>
+
 					<div class="col-lg-6">
 						<aui:input checked="<%= commerceChannelDisplayContext.isGuestCheckoutEnabled() %>" helpMessage="configures-whether-a-guest-may-check-out-by-providing-an-email-address-or-if-they-must-sign-in" label="guest-checkout" labelOff="disabled" labelOn="enabled" name="settings--guestCheckoutEnabled--" type="toggle-switch" />
 					</div>
