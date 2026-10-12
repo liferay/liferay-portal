@@ -710,14 +710,9 @@ public class TestrayImporter {
 		AxisTestClassGroup axisTestClassGroup,
 		TestrayCaseResult topLevelTestrayCaseResult) {
 
-		Job job = axisTestClassGroup.getJob();
+		TestrayRun testrayRun = axisTestClassGroup.getTestrayRun();
 
-		TestrayBuild testrayBuild = _testrayContext.getTestrayBuild(
-			axisTestClassGroup.getTestBaseDir());
-
-		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, axisTestClassGroup.getEnhancedBatchName(),
-			_topLevelBuildReport.getTestSuiteName(), job.getJobProperties());
+		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
 
 		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 

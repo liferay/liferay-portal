@@ -98,6 +98,8 @@ public interface Job {
 
 	public String getTestPropertiesContent();
 
+	public String getTestSuiteName();
+
 	public TestrayContext getTestrayContext();
 
 	public int getTimeoutMinutes(JenkinsMaster jenkinsMaster);

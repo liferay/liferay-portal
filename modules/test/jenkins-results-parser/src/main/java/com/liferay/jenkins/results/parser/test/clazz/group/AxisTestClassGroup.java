@@ -11,6 +11,9 @@ import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.history.BatchHistory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
+import com.liferay.jenkins.results.parser.testray.TestrayContext;
+import com.liferay.jenkins.results.parser.testray.TestrayFactory;
+import com.liferay.jenkins.results.parser.testray.TestrayRun;
 
 import java.io.File;
 
@@ -217,6 +220,25 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 
 	public File getTestBaseDir() {
 		return null;
+	}
+
+	public TestrayRun getTestrayRun() {
+		Job job = getJob();
+
+		if (job == null) {
+			return null;
+		}
+
+		TestrayContext testrayContext = job.getTestrayContext();
+
+		if (testrayContext == null) {
+			return null;
+		}
+
+		return TestrayFactory.newTestrayRun(
+			testrayContext.getTestrayBuild(getTestBaseDir()),
+			getEnhancedBatchName(), job.getTestSuiteName(),
+			job.getJobProperties());
 	}
 
 	public boolean isBuildCachingEnabled() {
