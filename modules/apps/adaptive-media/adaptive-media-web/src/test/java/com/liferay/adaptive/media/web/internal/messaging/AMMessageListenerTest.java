@@ -80,13 +80,16 @@ public class AMMessageListenerTest {
 		_ctCollectionIds.clear();
 
 		long ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
-		long messageCTCollectionId = RandomTestUtil.randomLong();
 
 		Message message = new Message();
 
 		message.put("className", _CLASS_NAME);
 		message.put("command", amProcessorCommand);
+
+		long messageCTCollectionId = RandomTestUtil.randomLong();
+
 		message.put("ctCollectionId", messageCTCollectionId);
+
 		message.put("model", new Object());
 		message.put("modelId", RandomTestUtil.randomString());
 

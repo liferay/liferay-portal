@@ -69,7 +69,6 @@ public class DLFileVersionModelListenerTest {
 				).put(
 					"max-width", String.valueOf(RandomTestUtil.randomInt())
 				).build());
-
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group, TestPropsValues.getUserId());
 
