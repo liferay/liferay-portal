@@ -28,6 +28,7 @@ type ProductRelationshipData = {
 
 type Product = {
 	embedded: {externalReferenceCode: string};
+	entryClassName: string;
 };
 
 export default async function openProductRelationshipSelectorModal(
@@ -114,7 +115,7 @@ export default async function openProductRelationshipSelectorModal(
 				scopeKey,
 				sourceLinkReference: {className, externalReferenceCode},
 				targetLinkReferences: products.map((product) => ({
-					className,
+					className: product.entryClassName,
 					externalReferenceCode:
 						product.embedded.externalReferenceCode,
 				})),
