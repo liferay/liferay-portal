@@ -98,8 +98,14 @@ describe('openProductRelationshipSelectorModal', () => {
 			.calls[0][0];
 
 		await onItemsChange([
-			{embedded: {externalReferenceCode: 'erc-2'}},
-			{embedded: {externalReferenceCode: 'erc-3'}},
+			{
+				embedded: {externalReferenceCode: 'erc-2'},
+				entryClassName: 'com.liferay.object.model.ObjectDefinition#P',
+			},
+			{
+				embedded: {externalReferenceCode: 'erc-3'},
+				entryClassName: 'com.liferay.object.model.ObjectDefinition#Q',
+			},
 		]);
 
 		expect(addProductRelationships).toHaveBeenCalledWith({
@@ -114,7 +120,7 @@ describe('openProductRelationshipSelectorModal', () => {
 					externalReferenceCode: 'erc-2',
 				},
 				{
-					className: 'com.liferay.object.model.ObjectDefinition#P',
+					className: 'com.liferay.object.model.ObjectDefinition#Q',
 					externalReferenceCode: 'erc-3',
 				},
 			],
