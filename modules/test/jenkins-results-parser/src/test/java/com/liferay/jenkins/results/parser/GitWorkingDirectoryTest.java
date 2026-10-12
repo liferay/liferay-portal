@@ -105,6 +105,71 @@ public class GitWorkingDirectoryTest
 	}
 
 	@Test
+	public void testGetRebasedLocalGitBranchPullRequest() throws Exception {
+		GitWorkingDirectory gitWorkingDirectory =
+			_newRebaseGitWorkingDirectory();
+
+		String upstreamRemoteURL = RandomTestUtil.randomString();
+
+		RemoteGitBranch upstreamRemoteGitBranch = Mockito.mock(
+			RemoteGitBranch.class);
+
+		Mockito.doReturn(
+			upstreamRemoteURL
+		).when(
+			upstreamRemoteGitBranch
+		).getRemoteURL();
+
+		String upstreamRemoteGitBranchName = RandomTestUtil.randomString();
+
+		PullRequest pullRequest = Mockito.mock(PullRequest.class);
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			pullRequest
+		).getLocalSenderBranchName();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			pullRequest
+		).getSenderBranchName();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			pullRequest
+		).getSenderSHA();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			pullRequest
+		).getUpstreamBranchSHA();
+
+		Mockito.doReturn(
+			upstreamRemoteGitBranch
+		).when(
+			pullRequest
+		).getUpstreamRemoteGitBranch();
+
+		Mockito.doReturn(
+			upstreamRemoteGitBranchName
+		).when(
+			pullRequest
+		).getUpstreamRemoteGitBranchName();
+
+		gitWorkingDirectory.getRebasedLocalGitBranch(pullRequest);
+
+		Mockito.verify(
+			gitWorkingDirectory
+		).getRemoteGitBranch(
+			upstreamRemoteGitBranchName, upstreamRemoteURL, true
+		);
+	}
+
+	@Test
 	public void testGetRebasedLocalGitBranchUpstreamRemoteURL()
 		throws Exception {
 
