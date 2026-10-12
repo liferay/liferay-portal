@@ -53,7 +53,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -72,6 +72,7 @@ import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -275,16 +276,21 @@ public class CalendarDisplayContext {
 		_groupSearchContainer.setOrderByComparator(
 			new GroupNameComparator(orderByAsc));
 		_groupSearchContainer.setOrderByType(getOrderByType());
+
+		LinkedHashMap<String, Object> params =
+			LinkedHashMapBuilder.<String, Object>put(
+				"site", true
+			).build();
+
 		_groupSearchContainer.setResultsAndTotal(
 			() -> GroupServiceUtil.search(
 				_themeDisplay.getCompanyId(), _getClassNameIds(), getKeywords(),
-				MapUtil.toLinkedHashMap(new String[] {"site:true:boolean"}),
-				_groupSearchContainer.getStart(),
+				params, _groupSearchContainer.getStart(),
 				_groupSearchContainer.getEnd(),
 				_groupSearchContainer.getOrderByComparator()),
 			GroupServiceUtil.searchCount(
 				_themeDisplay.getCompanyId(), getKeywords(), getKeywords(),
-				MapUtil.toLinkedHashMap(new String[] {"site:true:boolean"})));
+				params));
 
 		return _groupSearchContainer;
 	}
