@@ -91,16 +91,16 @@ public class GitWorkingDirectoryTest
 			"master", _LOCAL_BRANCH_SHA);
 
 		Mockito.verify(
+			gitWorkingDirectory
+		).getRemoteGitBranch(
+			"master", "git@github.com:liferay/liferay-portal.git", true
+		);
+
+		Mockito.verify(
 			gitWorkingDirectory, Mockito.never()
 		).getRemoteGitBranch(
 			Mockito.eq(_SENDER_BRANCH_NAME), Mockito.anyString(),
 			Mockito.anyBoolean()
-		);
-
-		Mockito.verify(
-			gitWorkingDirectory
-		).getRemoteGitBranch(
-			"master", "git@github.com:liferay/liferay-portal.git", true
 		);
 	}
 
@@ -162,6 +162,13 @@ public class GitWorkingDirectoryTest
 			gitWorkingDirectory
 		).clean();
 
+		Mockito.doNothing(
+		).when(
+			gitWorkingDirectory
+		).reset(
+			Mockito.anyString()
+		);
+
 		Mockito.doReturn(
 			localGitBranch
 		).when(
@@ -208,13 +215,6 @@ public class GitWorkingDirectoryTest
 		).rebase(
 			Mockito.anyBoolean(), Mockito.any(LocalGitBranch.class),
 			Mockito.any(LocalGitBranch.class)
-		);
-
-		Mockito.doNothing(
-		).when(
-			gitWorkingDirectory
-		).reset(
-			Mockito.anyString()
 		);
 
 		return gitWorkingDirectory;
