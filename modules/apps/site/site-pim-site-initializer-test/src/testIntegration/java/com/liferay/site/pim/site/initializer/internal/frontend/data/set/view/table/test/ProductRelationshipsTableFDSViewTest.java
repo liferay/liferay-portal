@@ -50,15 +50,8 @@ public class ProductRelationshipsTableFDSViewTest {
 			fdsTableSchema.getFDSTableSchemaFieldsMap();
 
 		Assert.assertEquals(
-			Arrays.asList("name", "code", "type", "status"),
+			Arrays.asList("title", "sku", "type", "status"),
 			new ArrayList<>(fdsTableSchemaFieldsMap.keySet()));
-
-		FDSTableSchemaField nameFDSTableSchemaField =
-			fdsTableSchemaFieldsMap.get("name");
-
-		Assert.assertEquals(
-			"nameTableCellRenderer",
-			nameFDSTableSchemaField.getContentRenderer());
 
 		FDSTableSchemaField statusFDSTableSchemaField =
 			fdsTableSchemaFieldsMap.get("status");
@@ -66,6 +59,13 @@ public class ProductRelationshipsTableFDSViewTest {
 		Assert.assertEquals(
 			"statusTableCellRenderer",
 			statusFDSTableSchemaField.getContentRenderer());
+
+		FDSTableSchemaField titleFDSTableSchemaField =
+			fdsTableSchemaFieldsMap.get("title");
+
+		Assert.assertEquals(
+			"titleTableCellRenderer",
+			titleFDSTableSchemaField.getContentRenderer());
 	}
 
 	@Inject

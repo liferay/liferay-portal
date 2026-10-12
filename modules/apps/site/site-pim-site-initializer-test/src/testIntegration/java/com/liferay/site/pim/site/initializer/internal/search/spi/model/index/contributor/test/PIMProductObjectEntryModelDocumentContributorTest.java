@@ -24,7 +24,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
-import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import org.junit.Assert;
@@ -61,14 +61,15 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 					TestPropsValues.getCompanyId());
 
-		ObjectEntry objectEntry = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId(), RandomTestUtil.randomString(),
-			objectDefinition.getDefaultLanguageId(),
-			RandomTestUtil.randomString(),
-			PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
+		ObjectEntry objectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId(),
+				objectDefinition.getDefaultLanguageId(),
+				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(
 			objectDefinition.getClassName());

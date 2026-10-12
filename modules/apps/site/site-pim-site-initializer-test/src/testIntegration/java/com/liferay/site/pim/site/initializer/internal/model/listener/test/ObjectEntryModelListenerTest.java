@@ -34,7 +34,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
-import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
@@ -73,15 +73,17 @@ public class ObjectEntryModelListenerTest {
 	public void testOnAfterRemove() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_addPIMLinkObjectEntry(
 			depotEntry.getGroupId(), objectEntry1.getModelClassName(),
 			objectEntry1.getExternalReferenceCode());
 
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_addPIMLinkObjectEntry(
 			depotEntry.getGroupId(), objectEntry2.getModelClassName(),
@@ -106,8 +108,9 @@ public class ObjectEntryModelListenerTest {
 	public void testOnAfterUpdate() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 
@@ -198,10 +201,11 @@ public class ObjectEntryModelListenerTest {
 
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString(),
-			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
+		ObjectEntry objectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId(), null,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
@@ -239,10 +243,11 @@ public class ObjectEntryModelListenerTest {
 						EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId()));
 
-		ObjectEntry objectEntry = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString(),
-			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
+		ObjectEntry objectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId(), null,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
@@ -261,8 +266,9 @@ public class ObjectEntryModelListenerTest {
 
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_addPIMLinkObjectEntry(
 			depotEntry.getGroupId(), objectEntry.getModelClassName(),
@@ -284,7 +290,7 @@ public class ObjectEntryModelListenerTest {
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 					TestPropsValues.getCompanyId());
 
 		Assert.assertThrows(

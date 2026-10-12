@@ -28,7 +28,7 @@ import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConsta
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 import com.liferay.site.pim.site.initializer.link.PIMLinkRelatedEntry;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
-import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.link.TestPIMLinkType;
 
@@ -96,10 +96,12 @@ public class PIMLinkEngineTest {
 	public void testDeletePIMLink() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry2), _TYPE);
@@ -117,7 +119,7 @@ public class PIMLinkEngineTest {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		ObjectEntry sourceObjectEntry =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId());
 
 		List<PIMLinkRelatedEntry> pimLinkRelatedEntries =
@@ -126,10 +128,10 @@ public class PIMLinkEngineTest {
 		Assert.assertTrue(pimLinkRelatedEntries.isEmpty());
 
 		ObjectEntry targetObjectEntry1 =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId());
 		ObjectEntry targetObjectEntry2 =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
@@ -161,7 +163,7 @@ public class PIMLinkEngineTest {
 		Assert.assertTrue(pimLinkRelatedEntries.isEmpty());
 
 		ObjectEntry targetObjectEntry3 =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
@@ -240,10 +242,12 @@ public class PIMLinkEngineTest {
 	private void _testAddPIMLinks() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry2), _TYPE);
@@ -257,18 +261,22 @@ public class PIMLinkEngineTest {
 	private void _testAddPIMLinksWithExistingCluster() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry2), _TYPE);
 
-		ObjectEntry objectEntry3 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry4 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry3 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry4 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
 			objectEntry3, Collections.singletonList(objectEntry4), _TYPE);
@@ -289,13 +297,15 @@ public class PIMLinkEngineTest {
 	private void _testAddPIMLinksWithInvalidGroupId() throws Exception {
 		DepotEntry depotEntry1 = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry1.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry1.getGroupId());
 
 		DepotEntry depotEntry2 = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry2.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry2.getGroupId());
 
 		Assert.assertThrows(
 			UnsupportedOperationException.class,
@@ -306,10 +316,12 @@ public class PIMLinkEngineTest {
 	private void _testAddPIMLinksWithInvalidType() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		Assert.assertThrows(
 			UnsupportedOperationException.class,

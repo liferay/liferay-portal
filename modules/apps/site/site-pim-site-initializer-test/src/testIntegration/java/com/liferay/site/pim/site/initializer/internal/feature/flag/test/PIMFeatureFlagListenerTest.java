@@ -68,19 +68,19 @@ public class PIMFeatureFlagListenerTest {
 				PIMObjectFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES,
 				companyId));
 
-		ObjectDefinition pimBaseSKUObjectDefinition =
+		ObjectDefinition pimBasicProductObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 					companyId);
 
 		Assert.assertEquals(
 			ObjectDefinitionConstants.SCOPE_DEPOT,
-			pimBaseSKUObjectDefinition.getScope());
+			pimBasicProductObjectDefinition.getScope());
 
 		_assertObjectDefinitionSetting(
-			"domain", pimBaseSKUObjectDefinition, "space");
+			"domain", pimBasicProductObjectDefinition, "space");
 
 		ObjectDefinition pimLinkObjectDefinition =
 			_objectDefinitionLocalService.
