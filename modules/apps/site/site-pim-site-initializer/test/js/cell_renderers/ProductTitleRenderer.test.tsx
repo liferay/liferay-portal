@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import ProductNameRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/ProductNameRenderer';
+import ProductTitleRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/ProductTitleRenderer';
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	findAction: (actions: any[], id: string) =>
@@ -23,10 +23,10 @@ const ACTIONS = [
 	},
 ];
 
-describe('ProductNameRenderer', () => {
-	it('links the product name to the edit page when the user can update', () => {
+describe('ProductTitleRenderer', () => {
+	it('links the product title to the edit page when the user can update', () => {
 		render(
-			<ProductNameRenderer
+			<ProductTitleRenderer
 				actions={ACTIONS}
 				itemData={{embedded: {actions: {update: {}}, id: '42'}}}
 				value="Product A"
@@ -39,9 +39,9 @@ describe('ProductNameRenderer', () => {
 		);
 	});
 
-	it('renders the product name as plain text when the user cannot update', () => {
+	it('renders the product title as plain text when the user cannot update', () => {
 		render(
-			<ProductNameRenderer
+			<ProductTitleRenderer
 				actions={ACTIONS}
 				itemData={{embedded: {actions: {}, id: '42'}}}
 				value="Product A"

@@ -36,7 +36,8 @@ jest.mock('@liferay/site-cms-site-initializer', () => {
 	};
 });
 
-const BASE_SKU_CLASS_NAME = 'com.liferay.object.model.ObjectDefinition#P4R4';
+const PIM_BASIC_PRODUCT_CLASS_NAME =
+	'com.liferay.object.model.ObjectDefinition#P4R4';
 
 const PROPS = {
 	apiURL: '/o/pim/connector-field-mappings',
@@ -46,14 +47,14 @@ const PROPS = {
 	fieldMappings: [],
 	objectDefinitions: [
 		{
-			className: BASE_SKU_CLASS_NAME,
-			label: 'PIM Base SKU',
-			objectFields: [{label: 'Code', name: 'code'}],
+			className: PIM_BASIC_PRODUCT_CLASS_NAME,
+			label: 'PIM Basic Product',
+			objectFields: [{label: 'SKU', name: 'sku'}],
 		},
 		{
 			className: 'com.liferay.object.model.ObjectDefinition#S1Z3',
 			label: 'PIM Shirt',
-			objectFields: [{label: 'Name', name: 'name'}],
+			objectFields: [{label: 'Title', name: 'title'}],
 		},
 	],
 	objectEntryId: 42,
@@ -79,7 +80,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('source-attribute'),
-			'code'
+			'sku'
 		);
 
 		await userEvent.click(screen.getByText('save'));
@@ -95,7 +96,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 			priority: 0,
 			r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId: 42,
 			sourceClassName: '',
-			sourceFieldName: 'code',
+			sourceFieldName: 'sku',
 			type: 'dynamicValue',
 			value: '',
 		});
@@ -111,7 +112,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 					{
 						id: 7,
 						sourceClassName: '',
-						sourceFieldName: 'code',
+						sourceFieldName: 'sku',
 						type: 'dynamicValue',
 						value: '',
 					},
@@ -121,7 +122,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('source-attribute'),
-			'name'
+			'title'
 		);
 
 		await userEvent.click(screen.getByText('save'));
@@ -135,7 +136,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		expect(getRequestBody(0)).not.toHaveProperty(
 			'r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId'
 		);
-		expect(getRequestBody(0).sourceFieldName).toBe('name');
+		expect(getRequestBody(0).sourceFieldName).toBe('title');
 	});
 
 	it('numbers the rows it saves by their order', async () => {
@@ -143,14 +144,14 @@ describe('EditPIMConnectorFieldMappings', () => {
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('source-attribute'),
-			'code'
+			'sku'
 		);
 
 		await userEvent.click(screen.getByLabelText('add-row'));
 
 		await userEvent.selectOptions(
 			screen.getAllByLabelText('source-attribute')[1],
-			'name'
+			'title'
 		);
 
 		await userEvent.click(screen.getByText('save'));
@@ -158,9 +159,9 @@ describe('EditPIMConnectorFieldMappings', () => {
 		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(2));
 
 		expect(getRequestBody(0).priority).toBe(0);
-		expect(getRequestBody(0).sourceFieldName).toBe('code');
+		expect(getRequestBody(0).sourceFieldName).toBe('sku');
 		expect(getRequestBody(1).priority).toBe(1);
-		expect(getRequestBody(1).sourceFieldName).toBe('name');
+		expect(getRequestBody(1).sourceFieldName).toBe('title');
 	});
 
 	it('deletes a field mapping the integrator unmapped', async () => {
@@ -171,7 +172,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 					{
 						id: 7,
 						sourceClassName: '',
-						sourceFieldName: 'code',
+						sourceFieldName: 'sku',
 						type: 'dynamicValue',
 						value: '',
 					},
@@ -220,7 +221,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('source-attribute'),
-			'code'
+			'sku'
 		);
 
 		await userEvent.click(screen.getByText('save'));

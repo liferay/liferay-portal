@@ -8,17 +8,17 @@ import getObjectFields from '../../../src/main/resources/META-INF/resources/js/e
 const OBJECT_DEFINITIONS = [
 	{
 		className: 'com.liferay.object.model.ObjectDefinition#P4R4',
-		label: 'PIM Base SKU',
+		label: 'PIM Basic Product',
 		objectFields: [
-			{label: 'Name', name: 'name'},
-			{label: 'Code', name: 'code'},
+			{label: 'Title', name: 'title'},
+			{label: 'SKU', name: 'sku'},
 		],
 	},
 	{
 		className: 'com.liferay.object.model.ObjectDefinition#S1Z3',
 		label: 'PIM Shirt',
 		objectFields: [
-			{label: 'Code', name: 'code'},
+			{label: 'SKU', name: 'sku'},
 			{label: 'Size', name: 'size'},
 		],
 	},
@@ -27,9 +27,9 @@ const OBJECT_DEFINITIONS = [
 describe('getObjectFields', () => {
 	it('returns every structure field, deduplicated and sorted by label, when no source is selected', () => {
 		expect(getObjectFields(OBJECT_DEFINITIONS, '')).toEqual([
-			{label: 'Code', name: 'code'},
-			{label: 'Name', name: 'name'},
 			{label: 'Size', name: 'size'},
+			{label: 'SKU', name: 'sku'},
+			{label: 'Title', name: 'title'},
 		]);
 	});
 
@@ -40,7 +40,7 @@ describe('getObjectFields', () => {
 				'com.liferay.object.model.ObjectDefinition#S1Z3'
 			)
 		).toEqual([
-			{label: 'Code', name: 'code'},
+			{label: 'SKU', name: 'sku'},
 			{label: 'Size', name: 'size'},
 		]);
 	});

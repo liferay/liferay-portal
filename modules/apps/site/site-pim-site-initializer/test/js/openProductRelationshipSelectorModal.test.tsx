@@ -23,7 +23,7 @@ jest.mock('frontend-js-web', () => ({
 }));
 
 jest.mock(
-	'../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorNameRenderer',
+	'../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorTitleRenderer',
 	() => ({
 		__esModule: true,
 		default: () => null,
@@ -43,10 +43,10 @@ const DATA = {
 	className: 'com.liferay.object.model.ObjectDefinition#P',
 	externalReferenceCode: 'erc-source',
 	filters: '[{"id":"status"}]',
-	name: 'Product A',
 	scopeKey: '123',
 	searchAPIURL:
 		'/o/search/v1.0/search?filter=not%20%28entryClassPK%20in%20%2842{relatedObjectEntryIds}%29%29',
+	title: 'Product A',
 };
 
 describe('openProductRelationshipSelectorModal', () => {

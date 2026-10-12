@@ -15,18 +15,19 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 	RequiredMark: () => <span>required</span>,
 }));
 
-const BASE_SKU_CLASS_NAME = 'com.liferay.object.model.ObjectDefinition#P4R4';
+const PIM_BASIC_PRODUCT_CLASS_NAME =
+	'com.liferay.object.model.ObjectDefinition#P4R4';
 
 const OBJECT_DEFINITIONS = [
 	{
-		className: BASE_SKU_CLASS_NAME,
-		label: 'PIM Base SKU',
-		objectFields: [{label: 'Code', name: 'code'}],
+		className: PIM_BASIC_PRODUCT_CLASS_NAME,
+		label: 'PIM Basic Product',
+		objectFields: [{label: 'SKU', name: 'sku'}],
 	},
 	{
 		className: 'com.liferay.object.model.ObjectDefinition#S1Z3',
 		label: 'PIM Shirt',
-		objectFields: [{label: 'Name', name: 'name'}],
+		objectFields: [{label: 'Title', name: 'title'}],
 	},
 ];
 
@@ -79,10 +80,10 @@ describe('FieldMappingsSection', () => {
 		);
 
 		expect(
-			screen.getByRole('option', {name: 'Code (code)'})
+			screen.getByRole('option', {name: 'SKU (sku)'})
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('option', {name: 'Name (name)'})
+			screen.getByRole('option', {name: 'Title (title)'})
 		).toBeInTheDocument();
 	});
 
@@ -95,14 +96,14 @@ describe('FieldMappingsSection', () => {
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('source'),
-			BASE_SKU_CLASS_NAME
+			PIM_BASIC_PRODUCT_CLASS_NAME
 		);
 
 		expect(
-			screen.getByRole('option', {name: 'Code (code)'})
+			screen.getByRole('option', {name: 'SKU (sku)'})
 		).toBeInTheDocument();
 		expect(
-			screen.queryByRole('option', {name: 'Name (name)'})
+			screen.queryByRole('option', {name: 'Title (title)'})
 		).not.toBeInTheDocument();
 	});
 
@@ -139,7 +140,7 @@ describe('FieldMappingsSection', () => {
 	it('keeps a row on its own inputs when an earlier row is deleted', async () => {
 		render(
 			<FieldMappingsSectionWrapper
-				initialFieldMappings={[dynamicValue('code'), fixedValue()]}
+				initialFieldMappings={[dynamicValue('sku'), fixedValue()]}
 			/>
 		);
 
@@ -169,7 +170,7 @@ describe('FieldMappingsSection', () => {
 	it('keeps the last row undeletable', () => {
 		render(
 			<FieldMappingsSectionWrapper
-				initialFieldMappings={[dynamicValue('code')]}
+				initialFieldMappings={[dynamicValue('sku')]}
 			/>
 		);
 
@@ -180,8 +181,8 @@ describe('FieldMappingsSection', () => {
 		render(
 			<FieldMappingsSectionWrapper
 				initialFieldMappings={[
-					dynamicValue('code'),
-					dynamicValue('name'),
+					dynamicValue('sku'),
+					dynamicValue('title'),
 				]}
 			/>
 		);

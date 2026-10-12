@@ -4,7 +4,7 @@
  */
 
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductRelationshipsFDSPropsTransformer';
-import ProductRelationshipSelectorNameRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorNameRenderer';
+import ProductRelationshipSelectorTitleRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorTitleRenderer';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	StatusLabel: jest.fn(),
@@ -66,15 +66,15 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		);
 	});
 
-	it('registers the product name cell renderer', () => {
+	it('registers the product title cell renderer', () => {
 		const result = propsTransformer({});
 
 		const [renderer] = result.customRenderers.tableCell;
 
 		expect(renderer.component).toBe(
-			ProductRelationshipSelectorNameRenderer
+			ProductRelationshipSelectorTitleRenderer
 		);
-		expect(renderer.name).toBe('nameTableCellRenderer');
+		expect(renderer.name).toBe('titleTableCellRenderer');
 	});
 
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
@@ -100,7 +100,7 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 						method: 'DELETE',
 					},
 				},
-				name: 'Blue Shirt',
+				title: 'Blue Shirt',
 			},
 			loadData: jest.fn(),
 		});
@@ -122,7 +122,7 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		propsTransformer({}).onActionDropdownItemClick({
 			action: {data: {id: 'edit'}},
 			event,
-			itemData: {actions: {delete: {href: '', method: ''}}, name: ''},
+			itemData: {actions: {delete: {href: '', method: ''}}, title: ''},
 			loadData: jest.fn(),
 		});
 
