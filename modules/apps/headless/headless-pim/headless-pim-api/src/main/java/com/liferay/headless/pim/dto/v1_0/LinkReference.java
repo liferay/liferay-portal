@@ -141,45 +141,6 @@ public class LinkReference implements Serializable {
 	private Supplier<String> _classNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getCode() {
-		if (_codeSupplier != null) {
-			code = _codeSupplier.get();
-
-			_codeSupplier = null;
-		}
-
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-
-		_codeSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setCode(UnsafeSupplier<String, Exception> codeUnsafeSupplier) {
-		_codeSupplier = () -> {
-			try {
-				return codeUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String code;
-
-	@JsonIgnore
-	private Supplier<String> _codeSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -261,27 +222,27 @@ public class LinkReference implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getName() {
-		if (_nameSupplier != null) {
-			name = _nameSupplier.get();
+	public String getSku() {
+		if (_skuSupplier != null) {
+			sku = _skuSupplier.get();
 
-			_nameSupplier = null;
+			_skuSupplier = null;
 		}
 
-		return name;
+		return sku;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSku(String sku) {
+		this.sku = sku;
 
-		_nameSupplier = null;
+		_skuSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
-		_nameSupplier = () -> {
+	public void setSku(UnsafeSupplier<String, Exception> skuUnsafeSupplier) {
+		_skuSupplier = () -> {
 			try {
-				return nameUnsafeSupplier.get();
+				return skuUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -294,10 +255,10 @@ public class LinkReference implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String name;
+	protected String sku;
 
 	@JsonIgnore
-	private Supplier<String> _nameSupplier;
+	private Supplier<String> _skuSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
@@ -340,6 +301,47 @@ public class LinkReference implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Status> _statusSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getTitle() {
+		if (_titleSupplier != null) {
+			title = _titleSupplier.get();
+
+			_titleSupplier = null;
+		}
+
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+
+		_titleSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTitle(
+		UnsafeSupplier<String, Exception> titleUnsafeSupplier) {
+
+		_titleSupplier = () -> {
+			try {
+				return titleUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String title;
+
+	@JsonIgnore
+	private Supplier<String> _titleSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getType() {
@@ -435,22 +437,6 @@ public class LinkReference implements Serializable {
 			sb.append("\"");
 		}
 
-		String code = getCode();
-
-		if (code != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"code\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(code));
-
-			sb.append("\"");
-		}
-
 		String externalReferenceCode = getExternalReferenceCode();
 
 		if (externalReferenceCode != null) {
@@ -479,18 +465,18 @@ public class LinkReference implements Serializable {
 			sb.append(id);
 		}
 
-		String name = getName();
+		String sku = getSku();
 
-		if (name != null) {
+		if (sku != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"name\": ");
+			sb.append("\"sku\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(name));
+			sb.append(_escape(sku));
 
 			sb.append("\"");
 		}
@@ -505,6 +491,22 @@ public class LinkReference implements Serializable {
 			sb.append("\"status\": ");
 
 			sb.append(String.valueOf(status));
+		}
+
+		String title = getTitle();
+
+		if (title != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"title\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(title));
+
+			sb.append("\"");
 		}
 
 		String type = getType();
@@ -645,4 +647,4 @@ public class LinkReference implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-175523141
+// LIFERAY-REST-BUILDER-HASH:809726563

@@ -173,9 +173,9 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		LinkReference linkReference = randomLinkReference();
 
 		linkReference.setClassName(regex);
-		linkReference.setCode(regex);
 		linkReference.setExternalReferenceCode(regex);
-		linkReference.setName(regex);
+		linkReference.setSku(regex);
+		linkReference.setTitle(regex);
 		linkReference.setType(regex);
 
 		String json = LinkReferenceSerDes.toJSON(linkReference);
@@ -185,9 +185,9 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		linkReference = LinkReferenceSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, linkReference.getClassName());
-		Assert.assertEquals(regex, linkReference.getCode());
 		Assert.assertEquals(regex, linkReference.getExternalReferenceCode());
-		Assert.assertEquals(regex, linkReference.getName());
+		Assert.assertEquals(regex, linkReference.getSku());
+		Assert.assertEquals(regex, linkReference.getTitle());
 		Assert.assertEquals(regex, linkReference.getType());
 	}
 
@@ -472,14 +472,6 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("code", additionalAssertFieldName)) {
-				if (linkReference.getCode() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -490,8 +482,8 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("name", additionalAssertFieldName)) {
-				if (linkReference.getName() == null) {
+			if (Objects.equals("sku", additionalAssertFieldName)) {
+				if (linkReference.getSku() == null) {
 					valid = false;
 				}
 
@@ -500,6 +492,14 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 			if (Objects.equals("status", additionalAssertFieldName)) {
 				if (linkReference.getStatus() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("title", additionalAssertFieldName)) {
+				if (linkReference.getTitle() == null) {
 					valid = false;
 				}
 
@@ -658,16 +658,6 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("code", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						linkReference1.getCode(), linkReference2.getCode())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -691,9 +681,9 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("name", additionalAssertFieldName)) {
+			if (Objects.equals("sku", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						linkReference1.getName(), linkReference2.getName())) {
+						linkReference1.getSku(), linkReference2.getSku())) {
 
 					return false;
 				}
@@ -705,6 +695,16 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				if (!Objects.deepEquals(
 						linkReference1.getStatus(),
 						linkReference2.getStatus())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("title", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						linkReference1.getTitle(), linkReference2.getTitle())) {
 
 					return false;
 				}
@@ -880,52 +880,6 @@ public abstract class BaseLinkReferenceResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("code")) {
-			Object object = linkReference.getCode();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = linkReference.getExternalReferenceCode();
 
@@ -977,8 +931,8 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("name")) {
-			Object object = linkReference.getName();
+		if (entityFieldName.equals("sku")) {
+			Object object = linkReference.getSku();
 
 			String value = String.valueOf(object);
 
@@ -1026,6 +980,52 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		if (entityFieldName.equals("status")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("title")) {
+			Object object = linkReference.getTitle();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("type")) {
@@ -1123,11 +1123,11 @@ public abstract class BaseLinkReferenceResourceTestCase {
 			{
 				className = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
-				code = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
-				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				sku = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
@@ -1353,4 +1353,4 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		_linkReferenceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2013138734
+// LIFERAY-REST-BUILDER-HASH:1548559442
