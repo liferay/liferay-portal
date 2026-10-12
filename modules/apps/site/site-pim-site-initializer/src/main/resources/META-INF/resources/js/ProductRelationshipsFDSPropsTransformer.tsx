@@ -12,7 +12,7 @@ import {
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import ProductRelationshipSelectorNameRenderer from './cell_renderers/ProductRelationshipSelectorNameRenderer';
+import ProductRelationshipSelectorTitleRenderer from './cell_renderers/ProductRelationshipSelectorTitleRenderer';
 import openProductRelationshipSelectorModal from './openProductRelationshipSelectorModal';
 
 const ACTIONS = {
@@ -40,8 +40,8 @@ export default function propsTransformer({
 		customRenderers: {
 			tableCell: [
 				{
-					component: ProductRelationshipSelectorNameRenderer,
-					name: 'nameTableCellRenderer',
+					component: ProductRelationshipSelectorTitleRenderer,
+					name: 'titleTableCellRenderer',
 					type: 'internal',
 				},
 				{
@@ -65,7 +65,7 @@ export default function propsTransformer({
 			event: Event;
 			itemData: {
 				actions: {delete: {href: string; method: string}};
-				name: string;
+				title: string;
 			};
 			loadData: () => void;
 		}) {
@@ -84,9 +84,9 @@ export default function propsTransformer({
 				loadData,
 				successMessage: sub(
 					Liferay.Language.get('x-was-removed-successfully'),
-					Liferay.Util.escapeHTML(itemData.name)
+					Liferay.Util.escapeHTML(itemData.title)
 				),
-				title: sub(Liferay.Language.get('remove-x'), itemData.name),
+				title: sub(Liferay.Language.get('remove-x'), itemData.title),
 			});
 		},
 	};

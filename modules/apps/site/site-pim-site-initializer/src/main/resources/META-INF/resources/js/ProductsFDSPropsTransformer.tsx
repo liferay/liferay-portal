@@ -16,7 +16,7 @@ import {
 } from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
-import ProductNameRenderer from './cell_renderers/ProductNameRenderer';
+import ProductTitleRenderer from './cell_renderers/ProductTitleRenderer';
 
 export default function propsTransformer({
 	bulkActions = [],
@@ -48,8 +48,8 @@ export default function propsTransformer({
 					type: 'internal',
 				},
 				{
-					component: ProductNameRenderer,
-					name: 'nameTableCellRenderer',
+					component: ProductTitleRenderer,
+					name: 'titleTableCellRenderer',
 					type: 'internal',
 				},
 				{

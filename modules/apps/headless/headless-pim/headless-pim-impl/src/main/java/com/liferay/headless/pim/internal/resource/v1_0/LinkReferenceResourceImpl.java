@@ -81,13 +81,13 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 						_objectEntryLocalService.getValues(
 							pimLinkRelatedEntry.getObjectEntry());
 
-					String code = StringUtil.toLowerCase(
-						MapUtil.getString(values, "code"));
-					String name = StringUtil.toLowerCase(
-						MapUtil.getString(values, "name"));
+					String sku = StringUtil.toLowerCase(
+						MapUtil.getString(values, "sku"));
+					String title = StringUtil.toLowerCase(
+						MapUtil.getString(values, "title"));
 
-					if (code.contains(StringUtil.toLowerCase(search)) ||
-						name.contains(StringUtil.toLowerCase(search))) {
+					if (sku.contains(StringUtil.toLowerCase(search)) ||
+						title.contains(StringUtil.toLowerCase(search))) {
 
 						return pimLinkRelatedEntry;
 					}
@@ -200,10 +200,9 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 			{
 				setActions(() -> _getActions(objectEntry, linkType));
 				setClassName(objectEntry::getModelClassName);
-				setCode(() -> MapUtil.getString(values, "code"));
 				setExternalReferenceCode(objectEntry::getExternalReferenceCode);
 				setId(objectEntry::getObjectEntryId);
-				setName(() -> MapUtil.getString(values, "name"));
+				setSku(() -> MapUtil.getString(values, "sku"));
 				setStatus(
 					() -> new Status() {
 						{
@@ -218,6 +217,7 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 										objectEntry.getStatus())));
 						}
 					});
+				setTitle(() -> MapUtil.getString(values, "title"));
 				setType(() -> _getTypeLabel(linkType));
 			}
 		};

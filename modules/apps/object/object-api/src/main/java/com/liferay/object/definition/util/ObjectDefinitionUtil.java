@@ -260,7 +260,7 @@ public class ObjectDefinitionUtil {
 		).put(
 			"PersonalizationCookieEntry", "/personalization-cookies-entries"
 		).put(
-			"PIMBaseSku", "/pim/base-skus"
+			"PIMBasicProduct", "/pim/basic-products"
 		).put(
 			"PIMCatalog", "/pim/catalogs"
 		).put(

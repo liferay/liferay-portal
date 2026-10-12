@@ -9,12 +9,12 @@
 	"enableObjectEntryHistory": true,
 	"enableObjectEntrySchedule": true,
 	"enableObjectEntrySubscription": false,
-	"externalReferenceCode": "L_PIM_BASE_SKU",
+	"externalReferenceCode": "L_PIM_BASIC_PRODUCT",
 	"label": {
-		"en_US": "PIM Base SKU"
+		"en_US": "PIM Basic Product"
 	},
 	"modifiable": true,
-	"name": "PIMBaseSku",
+	"name": "PIMBasicProduct",
 	"objectActions": [
 	],
 	"objectDefinitionSettings": [
@@ -32,20 +32,6 @@
 		}
 	],
 	"objectFields": [
-		{
-			"DBType": "String",
-			"businessType": "Text",
-			"externalReferenceCode": "CODE",
-			"indexed": true,
-			"indexedAsKeyword": true,
-			"indexedLanguageId": "",
-			"label": {
-				"en_US": "Code"
-			},
-			"name": "code",
-			"required": true,
-			"system": true
-		},
 		{
 			"DBType": "Double",
 			"businessType": "Decimal",
@@ -91,14 +77,28 @@
 		{
 			"DBType": "String",
 			"businessType": "Text",
-			"externalReferenceCode": "NAME",
+			"externalReferenceCode": "SKU",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "SKU"
+			},
+			"name": "sku",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TITLE",
 			"indexed": true,
 			"indexedAsKeyword": false,
 			"indexedLanguageId": "en_US",
 			"label": {
-				"en_US": "Name"
+				"en_US": "Title"
 			},
-			"name": "name",
+			"name": "title",
 			"required": true,
 			"system": true
 		},
@@ -208,7 +208,7 @@
 		{
 			"defaultObjectLayout": false,
 			"name": {
-				"en_US": "PIM Base SKU"
+				"en_US": "PIM Basic Product"
 			},
 			"objectLayoutTabs": [
 				{
@@ -225,7 +225,7 @@
 								{
 									"objectLayoutColumns": [
 										{
-											"objectFieldName": "name",
+											"objectFieldName": "sku",
 											"priority": 0,
 											"size": 12
 										}
@@ -235,7 +235,7 @@
 								{
 									"objectLayoutColumns": [
 										{
-											"objectFieldName": "code",
+											"objectFieldName": "description",
 											"priority": 0,
 											"size": 12
 										}
@@ -245,22 +245,12 @@
 								{
 									"objectLayoutColumns": [
 										{
-											"objectFieldName": "description",
-											"priority": 0,
-											"size": 12
-										}
-									],
-									"priority": 2
-								},
-								{
-									"objectLayoutColumns": [
-										{
 											"objectFieldName": "virtual",
 											"priority": 0,
 											"size": 12
 										}
 									],
-									"priority": 3
+									"priority": 2
 								}
 							],
 							"priority": 0,
@@ -384,10 +374,10 @@
 	],
 	"panelCategoryKey": "",
 	"pluralLabel": {
-		"en_US": "PIM Base SKUs"
+		"en_US": "PIM Basic Products"
 	},
 	"scope": "depot",
 	"system": true,
-	"titleObjectFieldName": "name",
+	"titleObjectFieldName": "title",
 	"updateStrategy": "UPDATE"
 }

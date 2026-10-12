@@ -92,11 +92,11 @@ public class ProductRelationshipsDisplayContext {
 						PIMFDSNames.PRODUCT_RELATIONSHIP_SELECTOR,
 						_httpServletRequest))
 			).putData(
-				"name", _getName(objectEntry)
-			).putData(
 				"scopeKey", String.valueOf(objectEntry.getGroupId())
 			).putData(
 				"searchAPIURL", _getSearchAPIURL(objectEntry)
+			).putData(
+				"title", _getTitle(objectEntry)
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "new")
 			).build());
@@ -134,20 +134,6 @@ public class ProductRelationshipsDisplayContext {
 			));
 	}
 
-	private String _getName(ObjectEntry objectEntry) {
-		try {
-			return MapUtil.getString(
-				_objectEntryLocalService.getValues(objectEntry), "name");
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
-			return objectEntry.getExternalReferenceCode();
-		}
-	}
-
 	private ObjectEntry _getObjectEntry() {
 		return (ObjectEntry)_httpServletRequest.getAttribute(
 			InfoDisplayWebKeys.INFO_ITEM);
@@ -168,6 +154,20 @@ public class ProductRelationshipsDisplayContext {
 	private ThemeDisplay _getThemeDisplay() {
 		return (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+	}
+
+	private String _getTitle(ObjectEntry objectEntry) {
+		try {
+			return MapUtil.getString(
+				_objectEntryLocalService.getValues(objectEntry), "title");
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return objectEntry.getExternalReferenceCode();
+		}
 	}
 
 	private boolean _hasUpdatePermission(

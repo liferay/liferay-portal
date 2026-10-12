@@ -9,7 +9,7 @@ import ClaySticker from '@clayui/sticker';
 import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
-export default function ProductNameRenderer({
+export default function ProductTitleRenderer({
 	actions,
 	itemData,
 	value,

@@ -42,7 +42,8 @@ public class ProductTypesCMSStructureObjectFolderContributor
 			return null;
 		}
 
-		return PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASE_SKU;
+		return PIMObjectDefinitionConstants.
+			EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT;
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class ProductTypesCMSStructureObjectFolderContributor
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 					companyId);
 
 		if (objectDefinition == null) {
@@ -122,7 +123,7 @@ public class ProductTypesCMSStructureObjectFolderContributor
 		}
 
 		return HashMapBuilder.<String, List<String>>put(
-			PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASE_SKU,
+			PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 			systemObjectFieldNames
 		).build();
 	}

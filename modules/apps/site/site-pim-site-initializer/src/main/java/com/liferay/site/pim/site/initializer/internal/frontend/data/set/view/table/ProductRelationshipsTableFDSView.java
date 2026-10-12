@@ -32,11 +32,11 @@ public class ProductRelationshipsTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"name", "name",
+			"title", "title",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"nameTableCellRenderer")
+				"titleTableCellRenderer")
 		).add(
-			"code", "sku"
+			"sku", "sku"
 		).add(
 			"type", "type"
 		).add(

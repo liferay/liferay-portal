@@ -46,11 +46,11 @@ public class PIMTestUtil {
 		Group group = GroupLocalServiceUtil.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
-		ObjectDefinition pimBaseSkuObjectDefinition =
+		ObjectDefinition pimBasicProductObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 					TestPropsValues.getCompanyId());
 		ObjectDefinition pimLinkObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.
@@ -58,7 +58,7 @@ public class PIMTestUtil {
 					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
 					TestPropsValues.getCompanyId());
 
-		if ((pimBaseSkuObjectDefinition != null) &&
+		if ((pimBasicProductObjectDefinition != null) &&
 			(pimLinkObjectDefinition != null)) {
 
 			return group;

@@ -7,7 +7,7 @@ import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
-export default function ProductRelationshipSelectorNameRenderer({
+export default function ProductRelationshipSelectorTitleRenderer({
 	value,
 }: {
 	value: string;

@@ -23,27 +23,28 @@ import java.io.Serializable;
 /**
  * @author Stefano Motta
  */
-public class PIMBaseSKUTestUtil {
+public class PIMBasicProductTestUtil {
 
-	public static ObjectEntry addPIMBaseSKUObjectEntry(long groupId)
+	public static ObjectEntry addPIMBasicProductObjectEntry(long groupId)
 		throws Exception {
 
-		return addPIMBaseSKUObjectEntry(
-			groupId, RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString(),
-			PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
+		return addPIMBasicProductObjectEntry(
+			groupId, null,
+			PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 	}
 
-	public static ObjectEntry addPIMBaseSKUObjectEntry(
-			long groupId, String code, String defaultLanguageId, String name,
-			String objectEntryFolderExternalReferenceCode)
+	public static ObjectEntry addPIMBasicProductObjectEntry(
+			long groupId, String defaultLanguageId,
+			String objectEntryFolderExternalReferenceCode, String sku,
+			String title)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
 					TestPropsValues.getCompanyId());
 		ObjectEntryFolder objectEntryFolder =
 			ObjectEntryFolderLocalServiceUtil.
@@ -56,9 +57,9 @@ public class PIMBaseSKUTestUtil {
 			objectDefinition.getObjectDefinitionId(),
 			objectEntryFolder.getObjectEntryFolderId(), defaultLanguageId,
 			HashMapBuilder.<String, Serializable>put(
-				"code", code
+				"sku", sku
 			).put(
-				"name", name
+				"title", title
 			).build(),
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}

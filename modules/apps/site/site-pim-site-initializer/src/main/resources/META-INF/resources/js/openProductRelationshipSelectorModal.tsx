@@ -8,22 +8,22 @@ import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
 import {openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 
-import ProductRelationshipSelectorNameRenderer from './cell_renderers/ProductRelationshipSelectorNameRenderer';
+import ProductRelationshipSelectorTitleRenderer from './cell_renderers/ProductRelationshipSelectorTitleRenderer';
 import addProductRelationships, {
 	getRelatedObjectEntryIds,
 } from './services/ProductRelationshipService';
 
 import '../css/ProductRelationshipSelector.scss';
 
-const NAME_TABLE_CELL_RENDERER = 'nameTableCellRenderer';
+const TITLE_TABLE_CELL_RENDERER = 'titleTableCellRenderer';
 
 type ProductRelationshipData = {
 	className: string;
 	externalReferenceCode: string;
 	filters: string;
-	name: string;
 	scopeKey: string;
 	searchAPIURL: string;
+	title: string;
 };
 
 type Product = {
@@ -35,9 +35,9 @@ export default async function openProductRelationshipSelectorModal(
 		className,
 		externalReferenceCode,
 		filters,
-		name,
 		scopeKey,
 		searchAPIURL,
+		title,
 	}: ProductRelationshipData,
 	loadData?: () => void
 ) {
@@ -62,8 +62,8 @@ export default async function openProductRelationshipSelectorModal(
 			customRenderers: {
 				tableCell: [
 					{
-						component: ProductRelationshipSelectorNameRenderer,
-						name: NAME_TABLE_CELL_RENDERER,
+						component: ProductRelationshipSelectorTitleRenderer,
+						name: TITLE_TABLE_CELL_RENDERER,
 						type: 'internal',
 					},
 				],
@@ -78,12 +78,12 @@ export default async function openProductRelationshipSelectorModal(
 					schema: {
 						fields: [
 							{
-								contentRenderer: NAME_TABLE_CELL_RENDERER,
-								fieldName: 'embedded.name',
-								label: Liferay.Language.get('name'),
+								contentRenderer: TITLE_TABLE_CELL_RENDERER,
+								fieldName: 'embedded.title',
+								label: Liferay.Language.get('title'),
 							},
 							{
-								fieldName: 'embedded.code',
+								fieldName: 'embedded.sku',
 								label: Liferay.Language.get('sku'),
 							},
 							{
@@ -105,7 +105,7 @@ export default async function openProductRelationshipSelectorModal(
 		items: [],
 		locator: {
 			id: 'embedded.externalReferenceCode',
-			label: 'embedded.name',
+			label: 'embedded.title',
 			value: 'embedded.externalReferenceCode',
 		},
 		multiSelect: true,
@@ -142,6 +142,6 @@ export default async function openProductRelationshipSelectorModal(
 			loadData?.();
 		},
 		size: 'lg',
-		title: sub(Liferay.Language.get('create-relationship-with-x'), name),
+		title: sub(Liferay.Language.get('create-relationship-with-x'), title),
 	});
 }

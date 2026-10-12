@@ -10,8 +10,8 @@ package com.liferay.site.pim.site.initializer.constants;
  */
 public class PIMObjectDefinitionConstants {
 
-	public static final String EXTERNAL_REFERENCE_CODE_BASE_SKU =
-		"L_PIM_BASE_SKU";
+	public static final String EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT =
+		"L_PIM_BASIC_PRODUCT";
 
 	public static final String EXTERNAL_REFERENCE_CODE_CONNECTOR =
 		"L_PIM_CONNECTOR";
