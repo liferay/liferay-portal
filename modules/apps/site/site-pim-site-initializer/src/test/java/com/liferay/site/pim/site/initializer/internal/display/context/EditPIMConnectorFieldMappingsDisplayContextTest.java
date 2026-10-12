@@ -175,9 +175,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		_mockPIMConnector();
 		_mockPIMConnectorFieldMappingObjectEntries(
 			_mockPIMConnectorFieldMappingObjectEntry(
-				_CHANNEL_FIELD, 1, "code", "dynamicValue", StringPool.BLANK),
+				_CHANNEL_FIELD, 1, "sku", "dynamicValue", StringPool.BLANK),
 			_mockPIMConnectorFieldMappingObjectEntry(
-				"name", 2, "name", "dynamicValue", StringPool.BLANK));
+				"name", 2, "title", "dynamicValue", StringPool.BLANK));
 
 		EditPIMConnectorFieldMappingsDisplayContext
 			editPIMConnectorFieldMappingsDisplayContext =
@@ -211,8 +211,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(1, jsonObject.getLong("id"));
-		Assert.assertEquals("code", jsonObject.getString("sourceFieldName"));
 		Assert.assertEquals("dynamicValue", jsonObject.getString("type"));
+		Assert.assertEquals("sku", jsonObject.getString("sourceFieldName"));
 
 		jsonArray = (JSONArray)reactData.get("objectDefinitions");
 
@@ -220,7 +220,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		jsonObject = jsonArray.getJSONObject(0);
 
-		Assert.assertEquals("PIM Base SKU", jsonObject.getString("label"));
+		Assert.assertEquals("PIM Basic Product", jsonObject.getString("label"));
 
 		jsonArray = jsonObject.getJSONArray("objectFields");
 
@@ -228,8 +228,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		jsonObject = jsonArray.getJSONObject(0);
 
-		Assert.assertEquals("Code", jsonObject.getString("label"));
-		Assert.assertEquals("code", jsonObject.getString("name"));
+		Assert.assertEquals("SKU", jsonObject.getString("label"));
+		Assert.assertEquals("sku", jsonObject.getString("name"));
 
 		_objectRelationshipLocalServiceUtilMockedStatic.when(
 			() ->
@@ -354,7 +354,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Mockito.when(
 			productTypeObjectDefinition.getLabel(LocaleUtil.US)
 		).thenReturn(
-			"PIM Base SKU"
+			"PIM Basic Product"
 		);
 
 		Mockito.when(
@@ -375,13 +375,13 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Mockito.when(
 			objectField.getLabel(LocaleUtil.US)
 		).thenReturn(
-			"Code"
+			"SKU"
 		);
 
 		Mockito.when(
 			objectField.getName()
 		).thenReturn(
-			"code"
+			"sku"
 		);
 
 		Mockito.when(

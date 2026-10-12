@@ -23,7 +23,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
@@ -67,10 +67,12 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 	public void testDeleteScopeScopeKeyLink() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		linkResource.postScopeScopeKeyLink(
 			String.valueOf(depotEntry.getGroupId()),
@@ -102,10 +104,12 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 	public void testPostScopeScopeKeyLink() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		linkResource.postScopeScopeKeyLink(
 			String.valueOf(depotEntry.getGroupId()),

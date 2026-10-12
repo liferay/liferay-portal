@@ -54,7 +54,7 @@ public class ObjectDefinitionSelectionFDSFilterTest {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
 		ObjectDefinition objectDefinition2 = _mockObjectDefinition(
-			externalReferenceCode, "PIM Base SKU");
+			externalReferenceCode, "PIM Basic Product");
 
 		Mockito.when(
 			_objectDefinitionService.getCMSObjectDefinitions(
@@ -86,7 +86,8 @@ public class ObjectDefinitionSelectionFDSFilterTest {
 		SelectionFDSFilterItem selectionFDSFilterItem =
 			selectionFDSFilterItems.get(0);
 
-		Assert.assertEquals("PIM Base SKU", selectionFDSFilterItem.getLabel());
+		Assert.assertEquals(
+			"PIM Basic Product", selectionFDSFilterItem.getLabel());
 		Assert.assertEquals(
 			externalReferenceCode, selectionFDSFilterItem.getValue());
 	}

@@ -112,7 +112,7 @@ public class ProductRelationshipsDisplayContextTest {
 			objectEntryLocalService.getValues(objectEntry)
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
-				"name", "Product Name"
+				"title", "Product Title"
 			).build()
 		);
 
@@ -181,7 +181,6 @@ public class ProductRelationshipsDisplayContextTest {
 				objectEntry.getExternalReferenceCode(),
 				data.get("externalReferenceCode"));
 			Assert.assertEquals("[\"filter\"]", data.get("filters"));
-			Assert.assertEquals("Product Name", data.get("name"));
 			Assert.assertEquals(
 				String.valueOf(objectEntry.getGroupId()), data.get("scopeKey"));
 
@@ -198,6 +197,8 @@ public class ProductRelationshipsDisplayContextTest {
 							objectEntry.getObjectEntryId()))));
 			Assert.assertTrue(
 				searchAPIURL, searchAPIURL.contains("{relatedObjectEntryIds}"));
+
+			Assert.assertEquals("Product Title", data.get("title"));
 		}
 	}
 

@@ -21,7 +21,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
-import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.link.TestPIMLinkType;
 
@@ -88,7 +88,7 @@ public class LinkReferenceResourceTest
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		ObjectEntry sourceObjectEntry =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId());
 
 		Page<LinkReference> page = _getLinkReferencesPage(
@@ -97,14 +97,15 @@ public class LinkReferenceResourceTest
 		Assert.assertEquals(0, page.getTotalCount());
 
 		ObjectEntry targetObjectEntry1 =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-				depotEntry.getGroupId(), "sku-alpha", null, "Product",
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId(), null,
+				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				"sku-alpha", "Product");
 		ObjectEntry targetObjectEntry2 =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-				depotEntry.getGroupId(), RandomTestUtil.randomString(), null,
-				"Beta Product",
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId(), null,
+				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				RandomTestUtil.randomString(), "Beta Product");
 
 		_pimLinkEngine.addPIMLinks(
 			sourceObjectEntry,
@@ -156,17 +157,17 @@ public class LinkReferenceResourceTest
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		ObjectEntry sourceObjectEntry =
-			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId());
 
 		_pimLinkEngine.addPIMLinks(
 			sourceObjectEntry,
 			Arrays.asList(
-				PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+				PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 					depotEntry.getGroupId()),
-				PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+				PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 					depotEntry.getGroupId()),
-				PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+				PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 					depotEntry.getGroupId())),
 			_TYPE);
 

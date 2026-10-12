@@ -199,7 +199,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 
 		_mockPIMConnectorFieldMappingObjectEntries(
 			_mockPIMConnectorFieldMappingObjectEntry(
-				"skus[].sku", 1, 0, StringPool.BLANK, "code", "dynamicValue",
+				"skus[].sku", 1, 0, StringPool.BLANK, "sku", "dynamicValue",
 				StringPool.BLANK));
 
 		pimConnectorChannelFieldDisplays =
@@ -218,7 +218,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			pimConnectorChannelFieldDisplay.getHref());
 		Assert.assertTrue(pimConnectorChannelFieldDisplay.isMapped());
 		Assert.assertEquals(
-			Collections.singletonList("Code"),
+			Collections.singletonList("SKU"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
 		_mockPIMConnectorFieldMappingObjectEntries(
@@ -246,7 +246,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 				"skus[].sku", 2, 2, StringPool.BLANK, StringPool.BLANK,
 				"fixedValue", "ABC-1"),
 			_mockPIMConnectorFieldMappingObjectEntry(
-				"skus[].sku", 1, 1, StringPool.BLANK, "code", "dynamicValue",
+				"skus[].sku", 1, 1, StringPool.BLANK, "sku", "dynamicValue",
 				StringPool.BLANK));
 
 		pimConnectorChannelFieldDisplays =
@@ -261,12 +261,12 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			Arrays.asList(1L, 2L),
 			pimConnectorChannelFieldDisplay.getFieldMappingIds());
 		Assert.assertEquals(
-			Arrays.asList("Code", "ABC-1"),
+			Arrays.asList("SKU", "ABC-1"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
 		_mockPIMConnectorFieldMappingObjectEntries(
 			_mockPIMConnectorFieldMappingObjectEntry(
-				"skus[].sku", 1, 0, _OBJECT_DEFINITION_CLASS_NAME, "code",
+				"skus[].sku", 1, 0, _OBJECT_DEFINITION_CLASS_NAME, "sku",
 				"dynamicValue", StringPool.BLANK));
 
 		pimConnectorChannelFieldDisplays =
@@ -278,7 +278,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			1);
 
 		Assert.assertEquals(
-			Collections.singletonList("PIM Base SKU/Code"),
+			Collections.singletonList("PIM Basic Product/SKU"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
 		_mockPIMConnectorFieldMappingObjectEntries(
@@ -295,7 +295,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			1);
 
 		Assert.assertEquals(
-			Collections.singletonList("PIM Base SKU/ABC-1"),
+			Collections.singletonList("PIM Basic Product/ABC-1"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
 		pimConnectorChannelFieldDisplays =
@@ -618,7 +618,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		Mockito.when(
 			objectDefinition.getLabel(LocaleUtil.US)
 		).thenReturn(
-			"PIM Base SKU"
+			"PIM Basic Product"
 		);
 
 		Mockito.when(
@@ -638,7 +638,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			Collections.singletonList(objectDefinition)
 		);
 
-		ObjectField objectField = _mockObjectField("Code", "code");
+		ObjectField objectField = _mockObjectField("SKU", "sku");
 
 		Mockito.when(
 			_objectFieldLocalService.getObjectFields(_OBJECT_DEFINITION_ID)
