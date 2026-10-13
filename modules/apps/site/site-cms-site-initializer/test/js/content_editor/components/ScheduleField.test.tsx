@@ -161,6 +161,21 @@ describe('ScheduleField', () => {
 			expect(screen.queryByText('error')).not.toBeInTheDocument();
 		});
 	});
+
+	it('allows a past date when allowPastDate is enabled', async () => {
+		renderComponent({allowPastDate: true});
+
+		const input = screen.getByPlaceholderText('MM/DD/YYYY --:-- --');
+
+		await userEvent.type(input, '10/31/2024 01:00 PM');
+		await userEvent.tab();
+
+		await waitFor(() => {
+			expect(
+				screen.queryByText('the-date-entered-is-in-the-past')
+			).not.toBeInTheDocument();
+		});
+	});
 });
 
 describe('isPastDate', () => {
