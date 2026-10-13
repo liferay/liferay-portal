@@ -112,10 +112,6 @@ public class SegmentsEntryProviderRegistryTest {
 			ArrayUtil.contains(
 				segmentsEntryIds, segmentsEntry2.getSegmentsEntryId()));
 
-		Context context = new Context();
-
-		context.put(Context.URL, RandomTestUtil.randomString());
-
 		PortalCache<String, Map<String, long[]>> portalCache =
 			PortalCacheHelperUtil.getPortalCache(
 				PortalCacheManagerNames.MULTI_VM,
@@ -125,6 +121,10 @@ public class SegmentsEntryProviderRegistryTest {
 			testPortalCacheListener = new TestPortalCacheListener<>();
 
 		portalCache.registerPortalCacheListener(testPortalCacheListener);
+
+		Context context = new Context();
+
+		context.put(Context.URL, RandomTestUtil.randomString());
 
 		try {
 			_segmentsEntryProviderRegistry.getSegmentsEntryIds(
