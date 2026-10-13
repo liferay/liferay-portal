@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -17,6 +18,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface FrontendTokenDefinition {
+
+	public Map<String, String> getCSSVariables();
 
 	public Collection<FrontendTokenCategory> getFrontendTokenCategories();
 

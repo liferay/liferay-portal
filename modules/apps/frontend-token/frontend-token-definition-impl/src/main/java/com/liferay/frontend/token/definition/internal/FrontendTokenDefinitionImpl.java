@@ -18,10 +18,14 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -64,6 +68,11 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 			_frontendTokenSets.addAll(
 				frontendTokenCategory.getFrontendTokenSets());
 		}
+	}
+
+	@Override
+	public Map<String, String> getCSSVariables() {
+		return _getCSSVariables();
 	}
 
 	@Override
@@ -123,6 +132,39 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 		return new JSONLocalizer(
 			_jsonFactory.looseSerializeDeep(jsonObject), _jsonFactory,
 			_resourceBundleLoader, _themeId);
+	}
+
+	private Map<String, String> _getCSSVariables() {
+		Map<String, String> cssVariables = new HashMap<>();
+
+		for (FrontendToken frontendToken : _frontendTokens) {
+			if (frontendToken.<Object>getDefaultValue() == null) {
+				continue;
+			}
+
+			String defaultValue = String.valueOf(
+				frontendToken.<Object>getDefaultValue());
+
+			if (Validator.isNull(defaultValue)) {
+				continue;
+			}
+
+			Collection<FrontendTokenMapping> frontendTokenMappings =
+				frontendToken.getFrontendTokenMappings(
+					FrontendTokenMapping.TYPE_CSS_VARIABLE);
+
+			if (frontendTokenMappings == null) {
+				continue;
+			}
+
+			for (FrontendTokenMapping frontendTokenMapping :
+					frontendTokenMappings) {
+
+				cssVariables.put(frontendTokenMapping.getValue(), defaultValue);
+			}
+		}
+
+		return Collections.unmodifiableMap(cssVariables);
 	}
 
 	private final Collection<FrontendTokenCategory> _frontendTokenCategories =
