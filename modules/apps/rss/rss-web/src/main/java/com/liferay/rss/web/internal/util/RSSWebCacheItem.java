@@ -109,7 +109,9 @@ public class RSSWebCacheItem implements WebCacheItem {
 				return inputStream;
 			}
 
-			inputStream.close();
+			if (inputStream != null) {
+				inputStream.close();
+			}
 
 			urlString = String.valueOf(new URL(url, redirect));
 		}
