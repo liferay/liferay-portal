@@ -207,6 +207,30 @@
 					"system": true,
 					"type": "String",
 					"unique": false
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "SCHEDULED_DATE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Scheduled Date"
+					},
+					"name": "scheduledDate",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime",
+					"unique": false
 				}
 			],
 			"objectRelationships": [
