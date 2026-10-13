@@ -19,6 +19,7 @@ import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -66,9 +67,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 			}
 		}
 		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
+			throw new ModelListenerException(portalException);
 		}
 
 		CTPreferences ctPreferences =
