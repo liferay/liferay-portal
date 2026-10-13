@@ -54,7 +54,9 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 
 	@Deactivate
 	protected void deactivate() {
-		_batchProcessor.close();
+		if (_batchProcessor != null) {
+			_batchProcessor.close();
+		}
 	}
 
 	protected void doProcess(AuditMessage auditMessage) throws Exception {
@@ -71,26 +73,31 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 
 	@Modified
 	protected void modified(Map<String, Object> properties) {
+		PersistentAuditMessageProcessorConfiguration
+			persistentAuditMessageProcessorConfiguration =
+				ConfigurableUtil.createConfigurable(
+					PersistentAuditMessageProcessorConfiguration.class,
+					properties);
+
+		if (persistentAuditMessageProcessorConfiguration.enabled()) {
+			if (_batchProcessor == null) {
+				_batchProcessor = new BatchProcessor<>(
+					persistentAuditMessageProcessorConfiguration.
+						flushInterval(),
+					persistentAuditMessageProcessorConfiguration.bufferSize(),
+					_auditEventManager::addAuditEvents,
+					PersistentAuditMessageProcessor.class.getName());
+			}
+			else {
+				_batchProcessor.configure(
+					persistentAuditMessageProcessorConfiguration.
+						flushInterval(),
+					persistentAuditMessageProcessorConfiguration.bufferSize());
+			}
+		}
+
 		_persistentAuditMessageProcessorConfiguration =
-			ConfigurableUtil.createConfigurable(
-				PersistentAuditMessageProcessorConfiguration.class, properties);
-
-		if (!_persistentAuditMessageProcessorConfiguration.enabled()) {
-			return;
-		}
-
-		if (_batchProcessor == null) {
-			_batchProcessor = new BatchProcessor<>(
-				_persistentAuditMessageProcessorConfiguration.flushInterval(),
-				_persistentAuditMessageProcessorConfiguration.bufferSize(),
-				_auditEventManager::addAuditEvents,
-				PersistentAuditMessageProcessor.class.getName());
-		}
-		else {
-			_batchProcessor.configure(
-				_persistentAuditMessageProcessorConfiguration.flushInterval(),
-				_persistentAuditMessageProcessorConfiguration.bufferSize());
-		}
+			persistentAuditMessageProcessorConfiguration;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
