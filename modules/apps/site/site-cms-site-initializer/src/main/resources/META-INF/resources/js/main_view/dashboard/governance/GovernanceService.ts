@@ -58,7 +58,7 @@ const DUPLICATE_TITLES_AGGREGATION_NAME = 'duplicateTitles';
 
 const LONG_STANDING_DRAFT_DAYS = 30;
 
-export const LONG_STANDING_DRAFTS_PAGE_SIZE = 8;
+export const GOVERNANCE_ASSET_LIST_PAGE_SIZE = 8;
 
 const MAX_CONTRIBUTORS = 7;
 
@@ -218,7 +218,7 @@ function getLongStandingDraftsURL(filter: string, groupId?: number) {
 			groupId
 		),
 		nestedFields: NESTED_FIELDS,
-		pageSize: String(LONG_STANDING_DRAFTS_PAGE_SIZE),
+		pageSize: String(GOVERNANCE_ASSET_LIST_PAGE_SIZE),
 		sort: 'dateModified:asc',
 	});
 
