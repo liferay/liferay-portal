@@ -6,6 +6,7 @@
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductsFDSPropsTransformer';
 
 const mockDeleteAssetEntriesBulkAction = jest.fn();
+const mockDeleteItemAction = jest.fn();
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	ACTIONS: {},
@@ -15,6 +16,8 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 	addOnClickToCreationMenuItems: (primaryItems) => primaryItems,
 	deleteAssetEntriesBulkAction: (...args) =>
 		mockDeleteAssetEntriesBulkAction(...args),
+	deleteItemAction: (...args) => mockDeleteItemAction(...args),
+	getFormattedLabel: (label) => `<strong>${label}</strong>`,
 	getScopeExternalReferenceCode: () => '',
 	styleDeleteAction: (action) =>
 		action?.data?.id === 'delete'
@@ -22,6 +25,10 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 			: action,
 	transformFDSBulkActions: (bulkActions) =>
 		bulkActions.map((bulkAction) => ({...bulkAction, transformed: true})),
+}));
+
+jest.mock('frontend-js-web', () => ({
+	sub: (template, value) => `${template}:${value}`,
 }));
 
 describe('ProductsFDSPropsTransformer', () => {
@@ -81,6 +88,29 @@ describe('ProductsFDSPropsTransformer', () => {
 			dataSetId: 'products',
 			selectedData,
 		});
+	});
+
+	it('deletes the product through the CMS delete action when the delete item action is clicked', async () => {
+		const event = {preventDefault: jest.fn()};
+		const itemData = {
+			actions: {delete: {href: '/delete', method: 'delete'}},
+			embedded: {id: 1, title: 'Shirt'},
+		};
+		const loadData = jest.fn();
+
+		await propsTransformer({}).onActionDropdownItemClick({
+			action: {data: {id: 'delete'}},
+			event,
+			itemData,
+			loadData,
+		});
+
+		expect(event.preventDefault).toHaveBeenCalled();
+		expect(mockDeleteItemAction).toHaveBeenCalledWith(
+			'delete-asset-confirmation-body:<strong>Shirt</strong>',
+			itemData,
+			loadData
+		);
 	});
 
 	it('ignores bulk actions other than delete', () => {
