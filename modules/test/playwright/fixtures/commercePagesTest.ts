@@ -49,6 +49,7 @@ import {CommerceAdminPriceListsPage} from '../pages/commerce/commerce-pricing-we
 import {CommerceAdminProductGroupDetailsPage} from '../pages/commerce/commerce-pricing-web/commerceAdminProductGroupDetailsPage';
 import {CommerceAdminProductGroupsPage} from '../pages/commerce/commerce-pricing-web/commerceAdminProductGroupsPage';
 import {CommerceAdminPromotionsPage} from '../pages/commerce/commerce-pricing-web/commerceAdminPromotionsPage';
+import {SearchResultsPage} from '../pages/commerce/commerce-product-content-search-web/searchResultsPage';
 import {SpecificationFacetsPage} from '../pages/commerce/commerce-product-content-search-web/specificationFacetsPage';
 import {ProductComparisonPage} from '../pages/commerce/commerce-product-content-web/productComparisonPage';
 import {ProductDetailsPage} from '../pages/commerce/commerce-product-content-web/productDetailsPage';
@@ -161,6 +162,7 @@ const commercePagesTest = test.extend<{
 	refundReasonsSystemSettingPage: RefundReasonsSystemSettingPage;
 	returnDetailsPage: ReturnDetailsPage;
 	returnsPage: ReturnsPage;
+	searchResultsPage: SearchResultsPage;
 	specificationFacetsPage: SpecificationFacetsPage;
 	termsAndConditionDetailsPage: TermsAndConditionDetailsPage;
 	termsAndConditionsPage: TermsAndConditionsPage;
@@ -397,6 +399,9 @@ const commercePagesTest = test.extend<{
 	},
 	returnsPage: async ({page}, use) => {
 		await use(new ReturnsPage(page));
+	},
+	searchResultsPage: async ({page}, use) => {
+		await use(new SearchResultsPage(page));
 	},
 	specificationFacetsPage: async ({page}, use) => {
 		await use(new SpecificationFacetsPage(page));
