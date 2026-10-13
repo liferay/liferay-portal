@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.IndexSearcherHelper;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.MatchAllQuery;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -58,8 +58,6 @@ public class ExpressionConvertTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_entryClassName = RandomTestUtil.randomString();
-
 		_addDocument("n45alpha9omega");
 		_addDocument("n45alpha*omega");
 		_addDocument("n45controlxyz");
@@ -74,47 +72,22 @@ public class ExpressionConvertTest {
 	}
 
 	@Test
-	public void testContainsWithQuestionMark() throws Exception {
-		Assert.assertEquals(
-			Collections.emptyList(), _search("contains(title,'alpha?omega')"));
-	}
-
-	@Test
-	public void testContainsWithStar() throws Exception {
-		Assert.assertEquals(
-			Collections.singletonList("n45alpha*omega"),
-			_search("contains(title,'alpha*omega')"));
-	}
-
-	@Test
-	public void testStartsWithLiteral() throws Exception {
-		Assert.assertEquals(
-			Collections.singletonList("n45alpha9omega"),
-			_search("startswith(title,'n45alpha9omega')"));
-	}
-
-	@Test
-	public void testStartsWithQuestionMark() throws Exception {
-		Assert.assertEquals(
-			Collections.emptyList(),
-			_search("startswith(title,'n45alpha?omega')"));
-	}
-
-	@Test
-	public void testStartsWithStar() throws Exception {
-		Assert.assertEquals(
-			Collections.singletonList("n45alpha*omega"),
-			_search("startswith(title,'n45alpha*omega')"));
+	public void testConvert() throws Exception {
+		_testContainsWithQuestionMark();
+		_testContainsWithStar();
+		_testStartsWithLiteral();
+		_testStartsWithQuestionMark();
+		_testStartsWithStar();
 	}
 
 	private void _addDocument(String title) throws Exception {
 		Document document = new DocumentImpl();
 
-		document.addUID(_entryClassName, RandomTestUtil.randomString());
+		document.addUID(_ENTRY_CLASS_NAME, RandomTestUtil.randomString());
 
 		document.addKeyword(_TITLE_FIELD_NAME, title);
 		document.addKeyword(Field.COMPANY_ID, TestPropsValues.getCompanyId());
-		document.addKeyword(Field.ENTRY_CLASS_NAME, _entryClassName);
+		document.addKeyword(Field.ENTRY_CLASS_NAME, _ENTRY_CLASS_NAME);
 		document.addKeyword(
 			Field.getSortableFieldName(_TITLE_FIELD_NAME),
 			StringUtil.toLowerCase(title));
@@ -133,7 +106,7 @@ public class ExpressionConvertTest {
 		BooleanFilter booleanFilter = new BooleanFilter();
 
 		booleanFilter.add(
-			new TermFilter(Field.ENTRY_CLASS_NAME, _entryClassName),
+			new TermFilter(Field.ENTRY_CLASS_NAME, _ENTRY_CLASS_NAME),
 			BooleanClauseOccur.MUST);
 		booleanFilter.add(
 			_expressionConvert.convert(
@@ -151,7 +124,7 @@ public class ExpressionConvertTest {
 
 		searchContext.setCompanyId(TestPropsValues.getCompanyId());
 
-		Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+		Hits hits = _indexSearcherHelper.search(searchContext, booleanQuery);
 
 		for (Document document : hits.getDocs()) {
 			titles.add(document.get(_TITLE_FIELD_NAME));
@@ -159,6 +132,38 @@ public class ExpressionConvertTest {
 
 		return titles;
 	}
+
+	private void _testContainsWithQuestionMark() throws Exception {
+		Assert.assertEquals(
+			Collections.emptyList(), _search("contains(title,'alpha?omega')"));
+	}
+
+	private void _testContainsWithStar() throws Exception {
+		Assert.assertEquals(
+			Collections.singletonList("n45alpha*omega"),
+			_search("contains(title,'alpha*omega')"));
+	}
+
+	private void _testStartsWithLiteral() throws Exception {
+		Assert.assertEquals(
+			Collections.singletonList("n45alpha9omega"),
+			_search("startswith(title,'n45alpha9omega')"));
+	}
+
+	private void _testStartsWithQuestionMark() throws Exception {
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_search("startswith(title,'n45alpha?omega')"));
+	}
+
+	private void _testStartsWithStar() throws Exception {
+		Assert.assertEquals(
+			Collections.singletonList("n45alpha*omega"),
+			_search("startswith(title,'n45alpha*omega')"));
+	}
+
+	private static final String _ENTRY_CLASS_NAME =
+		RandomTestUtil.randomString();
 
 	private static final String _TITLE_FIELD_NAME = "title";
 
@@ -180,8 +185,6 @@ public class ExpressionConvertTest {
 
 	};
 
-	private String _entryClassName;
-
 	@Inject(
 		filter = "result.class.name=com.liferay.portal.kernel.search.filter.Filter"
 	)
@@ -189,6 +192,9 @@ public class ExpressionConvertTest {
 
 	@Inject
 	private FilterParserProvider _filterParserProvider;
+
+	@Inject
+	private IndexSearcherHelper _indexSearcherHelper;
 
 	private final List<String> _uids = new ArrayList<>();
 
