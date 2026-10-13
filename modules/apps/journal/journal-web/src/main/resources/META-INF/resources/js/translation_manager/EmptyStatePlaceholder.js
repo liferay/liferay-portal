@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 export default function EmptyStatePlaceholder() {
@@ -12,7 +13,13 @@ export default function EmptyStatePlaceholder() {
 			description={Liferay.Language.get('no-results-were-found')}
 			hidden={true}
 			id="emptyPlaceHolder"
-			imgSrc={`${themeDisplay.getPathThemeImages()}/states/search_state.gif`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-search-state"
+					illustration
+					symbol="search-state"
+				/>
+			}
 			small
 			title={Liferay.Language.get('no-results-found')}
 		/>
