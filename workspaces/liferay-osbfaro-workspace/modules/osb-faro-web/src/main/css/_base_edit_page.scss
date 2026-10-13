@@ -9,6 +9,22 @@
 	}
 }
 
+.base-edit-page-toolbar {
+	flex-shrink: 0;
+	height: auto;
+	min-height: $toolbarHeight;
+	padding: 0.5rem 0;
+
+	.tbar-nav {
+		flex-wrap: wrap;
+		row-gap: $gridGap;
+	}
+
+	.base-edit-page-toolbar-actions {
+		justify-content: flex-end;
+	}
+}
+
 .base-edit-page-sidebar {
 	flex: 0 0 $criteriaSidebarWidth;
 }

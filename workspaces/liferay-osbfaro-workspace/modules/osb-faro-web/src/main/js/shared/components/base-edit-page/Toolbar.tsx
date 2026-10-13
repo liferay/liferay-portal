@@ -2,6 +2,7 @@ import BaseToolbar from 'shared/components/toolbar/BaseToolbar';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
+import getCN from 'classnames';
 import React from 'react';
 import {Link} from 'react-router-dom';
 
@@ -16,13 +17,13 @@ const Item = BaseToolbar.Item;
 
 const Divider: React.FC = () => (
 	<BaseToolbar.Item
-		className="align-self-stretch border-left my-1 p-0"
+		className="align-self-stretch border-left d-lg-flex d-none my-1 p-0"
 		data-testid="toolbar-divider"
 	/>
 );
 
 const Cancel: React.FC<{href: string}> = ({href}) => (
-	<BaseToolbar.Item>
+	<BaseToolbar.Item className="d-lg-flex d-none">
 		<ClayLink
 			borderless
 			button
@@ -72,7 +73,7 @@ const Toolbar: React.FC<IToolbarProps> & {
 	Item: typeof Item;
 	Save: typeof Save;
 } = ({backURL, children, className, title}) => (
-	<BaseToolbar className={className}>
+	<BaseToolbar className={getCN('base-edit-page-toolbar', className)}>
 		<BaseToolbar.Item>
 			<Link
 				aria-label={Liferay.Language.get('back')}
@@ -93,9 +94,14 @@ const Toolbar: React.FC<IToolbarProps> & {
 			</BaseToolbar.Section>
 		</BaseToolbar.Item>
 
-		<BaseToolbar.Item expand />
-
-		{children}
+		<BaseToolbar.Item className="ml-auto">
+			<ul
+				className="base-edit-page-toolbar-actions tbar-nav"
+				data-testid="toolbar-actions"
+			>
+				{children}
+			</ul>
+		</BaseToolbar.Item>
 	</BaseToolbar>
 );
 
