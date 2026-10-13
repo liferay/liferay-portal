@@ -33,6 +33,7 @@ import org.gradle.api.plugins.Convention;
 import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.PluginContainer;
 import org.gradle.api.provider.Property;
 import org.gradle.api.reporting.ReportingExtension;
 import org.gradle.api.specs.Spec;
@@ -109,13 +110,6 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 			project, LifecycleBasePlugin.CHECK_TASK_NAME);
 		TaskProvider<Task> classesTaskProvider = GradleUtil.getTaskProvider(
 			project, JavaPlugin.CLASSES_TASK_NAME);
-		TaskProvider<JavaCompile> compileJSPTaskProvider =
-			GradleUtil.getTaskProvider(
-				project, JspCPlugin.COMPILE_JSP_TASK_NAME, JavaCompile.class);
-		TaskProvider<CompileJSPTask> generateJSPJavaTaskProvider =
-			GradleUtil.getTaskProvider(
-				project, JspCPlugin.GENERATE_JSP_JAVA_TASK_NAME,
-				CompileJSPTask.class);
 
 		_configureTaskCheckProvider(
 			checkTaskProvider, findSecurityBugsTaskProvider);
@@ -129,8 +123,21 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 			printFindSecurityBugsReportTaskProvider);
 		_configureTaskWriteFindBugsProjectProvider(
 			project, javaPluginConvention, classesTaskProvider,
-			compileJSPTaskProvider, generateJSPJavaTaskProvider,
 			writeFindBugsProjectTaskProvider);
+
+		PluginContainer pluginContainer = project.getPlugins();
+
+		pluginContainer.withType(
+			JspCPlugin.class,
+			new Action<JspCPlugin>() {
+
+				@Override
+				public void execute(JspCPlugin jspCPlugin) {
+					_configureTaskWriteFindBugsProjectProviderForJspCPlugin(
+						project, writeFindBugsProjectTaskProvider);
+				}
+
+			});
 	}
 
 	private FindSecurityBugsPlugin() {
@@ -451,8 +458,6 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 	private void _configureTaskWriteFindBugsProjectProvider(
 		final Project project, final JavaPluginConvention javaPluginConvention,
 		final TaskProvider<Task> classesTaskProvider,
-		final TaskProvider<JavaCompile> compileJSPTaskProvider,
-		final TaskProvider<CompileJSPTask> generateJSPJavaTaskProvider,
 		TaskProvider<WriteFindBugsProjectTask>
 			writeFindBugsProjectTaskProvider) {
 
@@ -464,9 +469,6 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 					WriteFindBugsProjectTask writeFindBugsProjectTask) {
 
 					writeFindBugsProjectTask.dependsOn(classesTaskProvider);
-					writeFindBugsProjectTask.dependsOn(
-						generateJSPJavaTaskProvider);
-					writeFindBugsProjectTask.dependsOn(compileJSPTaskProvider);
 
 					SourceSet mainSourceSet = _getSourceSet(
 						javaPluginConvention, SourceSet.MAIN_SOURCE_SET_NAME);
@@ -474,24 +476,10 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 					SourceDirectorySet javaSourceDirectorySet =
 						mainSourceSet.getJava();
 
-					final JavaCompile compileJSPJavaCompile =
-						compileJSPTaskProvider.get();
-
 					writeFindBugsProjectTask.setAuxClasspath(
-						project.files(
-							mainSourceSet.getCompileClasspath(),
-							compileJSPJavaCompile.getClasspath()));
+						mainSourceSet.getCompileClasspath());
 					writeFindBugsProjectTask.setClasspath(
 						project.files(
-							new Callable<File>() {
-
-								@Override
-								public File call() throws Exception {
-									return compileJSPJavaCompile.
-										getDestinationDir();
-								}
-
-							},
 							new Callable<File>() {
 
 								@Override
@@ -515,14 +503,58 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 
 						});
 					writeFindBugsProjectTask.setProjectName(project.getName());
+					writeFindBugsProjectTask.setSrcDirs(
+						project.files(javaSourceDirectorySet.getSrcDirs()));
+				}
+
+			});
+	}
+
+	private void _configureTaskWriteFindBugsProjectProviderForJspCPlugin(
+		Project project,
+		TaskProvider<WriteFindBugsProjectTask>
+			writeFindBugsProjectTaskProvider) {
+
+		final TaskProvider<JavaCompile> compileJSPTaskProvider =
+			GradleUtil.getTaskProvider(
+				project, JspCPlugin.COMPILE_JSP_TASK_NAME, JavaCompile.class);
+		final TaskProvider<CompileJSPTask> generateJSPJavaTaskProvider =
+			GradleUtil.getTaskProvider(
+				project, JspCPlugin.GENERATE_JSP_JAVA_TASK_NAME,
+				CompileJSPTask.class);
+
+		writeFindBugsProjectTaskProvider.configure(
+			new Action<WriteFindBugsProjectTask>() {
+
+				@Override
+				public void execute(
+					WriteFindBugsProjectTask writeFindBugsProjectTask) {
+
+					writeFindBugsProjectTask.dependsOn(
+						generateJSPJavaTaskProvider);
+					writeFindBugsProjectTask.dependsOn(compileJSPTaskProvider);
+
+					final JavaCompile compileJSPJavaCompile =
+						compileJSPTaskProvider.get();
+
+					writeFindBugsProjectTask.auxClasspath(
+						compileJSPJavaCompile.getClasspath());
+					writeFindBugsProjectTask.classpath(
+						new Callable<File>() {
+
+							@Override
+							public File call() throws Exception {
+								return compileJSPJavaCompile.
+									getDestinationDir();
+							}
+
+						});
 
 					CompileJSPTask generateJSPJavaCompileJSPTask =
 						generateJSPJavaTaskProvider.get();
 
-					writeFindBugsProjectTask.setSrcDirs(
-						project.files(
-							javaSourceDirectorySet.getSrcDirs(),
-							generateJSPJavaCompileJSPTask.getDestinationDir()));
+					writeFindBugsProjectTask.srcDirs(
+						generateJSPJavaCompileJSPTask.getDestinationDir());
 				}
 
 			});
