@@ -14,14 +14,21 @@ import com.liferay.headless.cms.client.resource.v1_0.AssetStatisticsResource;
 import com.liferay.headless.cms.resource.v1_0.test.util.CMSFreeTierTestUtil;
 import com.liferay.headless.cms.resource.v1_0.test.util.CMSOutboundLinkTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -52,6 +59,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.metrics.sla.processor.WorkflowMetricsSLAStatus;
@@ -272,6 +280,7 @@ public class AssetStatisticsResourceTest
 
 		_testGetAssetStatisticsBrokenLinksCount();
 		_testGetAssetStatisticsByAssetLibrary();
+		_testGetAssetStatisticsMissingRequiredFieldsCount();
 		_testGetAssetStatisticsSLABreachedWorkflowTasksCount();
 		_testGetAssetStatisticsWithFreeTier();
 		_testGetAssetStatisticsWorkflowTasksCounts();
@@ -330,6 +339,26 @@ public class AssetStatisticsResourceTest
 				LocaleUtil.getDefault(), StringUtil.randomString()
 			).build(),
 			DepotConstants.TYPE_SPACE, serviceContext);
+	}
+
+	private ObjectEntry _addTextObjectEntry(
+			DepotEntry depotEntry, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.
+				getObjectEntryFolderByExternalReferenceCode(
+					"L_CONTENTS", depotEntry.getGroupId(),
+					depotEntry.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			depotEntry.getGroupId(), depotEntry.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			objectEntryFolder.getObjectEntryFolderId(), "en_US",
+			HashMapBuilder.<String, Serializable>put(
+				"text", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private User _addUserWithRole(String roleName) throws Exception {
@@ -407,6 +436,23 @@ public class AssetStatisticsResourceTest
 			Assert.assertEquals(
 				expectedBrokenLinksCount,
 				GetterUtil.getLong(assetStatistics.getBrokenLinksCount()));
+		}
+	}
+
+	private void _assertMissingRequiredFieldsCount(
+			Long assetLibraryId, long expectedMissingRequiredFieldsCount)
+		throws Exception {
+
+		for (AssetStatisticsResource assetStatisticsResource :
+				_assetStatisticsResources) {
+
+			AssetStatistics assetStatistics =
+				assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+			Assert.assertEquals(
+				expectedMissingRequiredFieldsCount,
+				GetterUtil.getLong(
+					assetStatistics.getMissingRequiredFieldsCount()));
 		}
 	}
 
@@ -670,6 +716,97 @@ public class AssetStatisticsResourceTest
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
 	}
 
+	private void _testGetAssetStatisticsMissingRequiredFieldsCount()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry1 = _addSpaceDepotEntry(serviceContext);
+		DepotEntry depotEntry2 = _addSpaceDepotEntry(serviceContext);
+
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				true, false, true, ObjectDefinitionTestUtil.getRandomName(),
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), "text")),
+				objectFolder.getObjectFolderId(),
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				TestPropsValues.getUserId());
+
+		try {
+			_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+				TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+				"true");
+
+			ObjectEntry objectEntry = _addTextObjectEntry(
+				depotEntry1, objectDefinition);
+
+			_addTextObjectEntry(depotEntry2, objectDefinition);
+
+			_assertMissingRequiredFieldsCount(depotEntry1.getGroupId(), 0);
+
+			ObjectField objectField =
+				_objectFieldLocalService.addCustomObjectField(
+					null, TestPropsValues.getUserId(), 0,
+					objectDefinition.getObjectDefinitionId(),
+					ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+					ObjectFieldConstants.DB_TYPE_INTEGER, null, false, false,
+					null,
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
+					false, "integer", null, null, true, false,
+					Collections.emptyList());
+
+			_assertMissingRequiredFieldsCount(depotEntry1.getGroupId(), 1);
+			_assertMissingRequiredFieldsCount(depotEntry2.getGroupId(), 1);
+
+			ObjectEntryFolder objectEntryFolder =
+				_objectEntryFolderLocalService.
+					getObjectEntryFolderByExternalReferenceCode(
+						"L_CONTENTS", depotEntry1.getGroupId(),
+						depotEntry1.getCompanyId());
+
+			_objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntryFolder.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"integer", 0
+				).put(
+					"text", RandomTestUtil.randomString()
+				).build(),
+				serviceContext);
+
+			_assertMissingRequiredFieldsCount(depotEntry1.getGroupId(), 0);
+			_assertMissingRequiredFieldsCount(depotEntry2.getGroupId(), 1);
+
+			_objectFieldLocalService.deleteObjectField(
+				objectField.getObjectFieldId());
+
+			_assertMissingRequiredFieldsCount(depotEntry2.getGroupId(), 0);
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition.getObjectDefinitionId());
+
+			_depotEntryLocalService.deleteDepotEntry(
+				depotEntry1.getDepotEntryId());
+			_depotEntryLocalService.deleteDepotEntry(
+				depotEntry2.getDepotEntryId());
+		}
+	}
+
 	private void _testGetAssetStatisticsSLABreachedWorkflowTasksCount()
 		throws Exception {
 
@@ -898,10 +1035,20 @@ public class AssetStatisticsResourceTest
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
+
+	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Inject
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
