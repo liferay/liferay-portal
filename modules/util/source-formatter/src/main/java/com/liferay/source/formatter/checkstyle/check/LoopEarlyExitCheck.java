@@ -63,18 +63,11 @@ public class LoopEarlyExitCheck extends BaseCheck {
 	}
 
 	private DetailAST _getJumpStatementDetailAST(DetailAST slistDetailAST) {
-		if (slistDetailAST == null) {
+		if ((slistDetailAST == null) || (slistDetailAST.getChildCount() != 2)) {
 			return null;
 		}
 
 		DetailAST firstChildDetailAST = slistDetailAST.getFirstChild();
-
-		if ((firstChildDetailAST == null) ||
-			(firstChildDetailAST.getNextSibling() !=
-				slistDetailAST.getLastChild())) {
-
-			return null;
-		}
 
 		if (_isJumpStatement(firstChildDetailAST)) {
 			return firstChildDetailAST;
