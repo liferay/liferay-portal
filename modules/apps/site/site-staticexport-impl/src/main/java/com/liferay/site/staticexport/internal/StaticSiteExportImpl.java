@@ -7,7 +7,7 @@ package com.liferay.site.staticexport.internal;
 
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.site.staticexport.StaticSiteExport;
-import com.liferay.site.staticexport.StaticSiteExportLayout;
+import com.liferay.site.staticexport.StaticSiteExportEntry;
 import com.liferay.site.staticexport.StaticSiteExportReport;
 import com.liferay.site.staticexport.StaticSiteExportResource;
 
@@ -20,11 +20,11 @@ import java.util.List;
 public class StaticSiteExportImpl implements StaticSiteExport {
 
 	public StaticSiteExportImpl(
-		List<StaticSiteExportLayout> staticSiteExportLayouts,
+		List<StaticSiteExportEntry> staticSiteExportEntries,
 		StaticSiteExportReport staticSiteExportReport,
 		List<StaticSiteExportResource> staticSiteExportResources) {
 
-		_staticSiteExportLayouts = staticSiteExportLayouts;
+		_staticSiteExportEntries = staticSiteExportEntries;
 		_staticSiteExportReport = staticSiteExportReport;
 		_staticSiteExportResources = staticSiteExportResources;
 	}
@@ -39,8 +39,8 @@ public class StaticSiteExportImpl implements StaticSiteExport {
 	}
 
 	@Override
-	public List<StaticSiteExportLayout> getStaticSiteExportLayouts() {
-		return Collections.unmodifiableList(_staticSiteExportLayouts);
+	public List<StaticSiteExportEntry> getStaticSiteExportEntries() {
+		return Collections.unmodifiableList(_staticSiteExportEntries);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class StaticSiteExportImpl implements StaticSiteExport {
 		return Collections.unmodifiableList(_staticSiteExportResources);
 	}
 
-	private final List<StaticSiteExportLayout> _staticSiteExportLayouts;
+	private final List<StaticSiteExportEntry> _staticSiteExportEntries;
 	private final StaticSiteExportReport _staticSiteExportReport;
 	private final List<StaticSiteExportResource> _staticSiteExportResources;
 

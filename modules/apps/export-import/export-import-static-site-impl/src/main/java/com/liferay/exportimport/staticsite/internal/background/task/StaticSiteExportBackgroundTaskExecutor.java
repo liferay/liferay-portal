@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.site.staticexport.StaticSiteExport;
-import com.liferay.site.staticexport.StaticSiteExportLayout;
+import com.liferay.site.staticexport.StaticSiteExportEntry;
 import com.liferay.site.staticexport.StaticSiteExportResource;
 import com.liferay.site.staticexport.StaticSiteExporter;
 import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundTaskExecutorNames;
@@ -68,15 +68,15 @@ public class StaticSiteExportBackgroundTaskExecutor
 		try (StaticSiteExport staticSiteExport = _getStaticSiteExport(
 				backgroundTask.getTaskContextMap())) {
 
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
+			List<StaticSiteExportEntry> staticSiteExportEntries =
+				staticSiteExport.getStaticSiteExportEntries();
 
-			for (StaticSiteExportLayout staticSiteExportLayout :
-					staticSiteExportLayouts) {
+			for (StaticSiteExportEntry staticSiteExportEntry :
+					staticSiteExportEntries) {
 
 				zipWriter.addEntry(
-					staticSiteExportLayout.getPath(),
-					staticSiteExportLayout.getHTML());
+					staticSiteExportEntry.getPath(),
+					staticSiteExportEntry.getHTML());
 			}
 
 			List<StaticSiteExportResource> staticSiteExportResources =

@@ -18,7 +18,7 @@ public interface StaticSiteExport extends AutoCloseable {
 	@Override
 	public void close();
 
-	public List<StaticSiteExportLayout> getStaticSiteExportLayouts();
+	public List<StaticSiteExportEntry> getStaticSiteExportEntries();
 
 	public StaticSiteExportReport getStaticSiteExportReport();
 

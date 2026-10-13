@@ -10,36 +10,44 @@ import java.util.Locale;
 /**
  * @author Víctor Galán
  */
-public class StaticSiteExportLayout {
+public class LayoutStaticSiteExportEntry implements StaticSiteExportEntry {
 
-	public StaticSiteExportLayout(
-		String html, Locale locale, String path, long plid) {
+	public LayoutStaticSiteExportEntry(
+		String externalReferenceCode, String html, Locale locale, String path) {
 
+		_externalReferenceCode = externalReferenceCode;
 		_html = html;
 		_locale = locale;
 		_path = path;
-		_plid = plid;
 	}
 
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
+	}
+
+	@Override
 	public String getHTML() {
 		return _html;
 	}
 
+	@Override
+	public String getKey() {
+		return _externalReferenceCode;
+	}
+
+	@Override
 	public Locale getLocale() {
 		return _locale;
 	}
 
+	@Override
 	public String getPath() {
 		return _path;
 	}
 
-	public long getPlid() {
-		return _plid;
-	}
-
+	private final String _externalReferenceCode;
 	private final String _html;
 	private final Locale _locale;
 	private final String _path;
-	private final long _plid;
 
 }
