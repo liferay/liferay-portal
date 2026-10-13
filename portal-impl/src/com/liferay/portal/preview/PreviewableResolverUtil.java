@@ -5,6 +5,7 @@
 
 package com.liferay.portal.preview;
 
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PreviewableResolverUtil {
 
 	public static Long addPreviewableMap(
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap) {
+		Map<Class<?>, Map<Serializable, Object>> previewableMap) {
 
 		Long previewId = _previewIdGenerator.getAndIncrement();
 
@@ -48,7 +49,7 @@ public class PreviewableResolverUtil {
 		return _previewableMaps.keySet();
 	}
 
-	public static Map<Serializable, Serializable> getPreviewableMap(
+	public static Map<Serializable, Object> getPreviewableMap(
 		Class<?> modelClass) {
 
 		Long previewId = _previewId.get();
@@ -57,7 +58,7 @@ public class PreviewableResolverUtil {
 			return null;
 		}
 
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap =
+		Map<Class<?>, Map<Serializable, Object>> previewableMap =
 			_previewableMaps.get(previewId);
 
 		if (previewableMap == null) {
@@ -67,8 +68,8 @@ public class PreviewableResolverUtil {
 		return previewableMap.get(modelClass);
 	}
 
-	public static Map<Class<?>, Map<Serializable, Serializable>>
-		removePreviewableMap(Long previewId) {
+	public static Map<Class<?>, Map<Serializable, Object>> removePreviewableMap(
+		Long previewId) {
 
 		return _previewableMaps.remove(previewId);
 	}
@@ -80,7 +81,7 @@ public class PreviewableResolverUtil {
 			return baseModel;
 		}
 
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap =
+		Map<Class<?>, Map<Serializable, Object>> previewableMap =
 			_previewableMaps.get(previewId);
 
 		if (MapUtil.isEmpty(previewableMap)) {
@@ -89,28 +90,32 @@ public class PreviewableResolverUtil {
 
 		Class<?> modelClass = baseModel.getModelClass();
 
-		Map<Serializable, Serializable> pkMap = previewableMap.get(modelClass);
+		Map<Serializable, Object> pkMap = previewableMap.get(modelClass);
 
 		if (MapUtil.isEmpty(pkMap)) {
 			return baseModel;
 		}
 
-		Serializable toPK = pkMap.get(baseModel.getPrimaryKeyObj());
+		Object to = pkMap.get(baseModel.getPrimaryKeyObj());
 
-		if (toPK == null) {
+		if (to == null) {
 			return baseModel;
 		}
 
-		PersistedModelLocalService persistedModelLocalService =
-			PersistedModelLocalServiceRegistryUtil.
-				getPersistedModelLocalService(modelClass.getName());
-
 		try {
+			if (to instanceof UnsafeSupplierValue<?, ?> unsafeSupplierValue) {
+				return (BaseModel<?>)unsafeSupplierValue.getValue();
+			}
+
+			PersistedModelLocalService persistedModelLocalService =
+				PersistedModelLocalServiceRegistryUtil.
+					getPersistedModelLocalService(modelClass.getName());
+
 			return (BaseModel<?>)persistedModelLocalService.getPersistedModel(
-				toPK);
+				(Serializable)to);
 		}
-		catch (PortalException portalException) {
-			return ReflectionUtil.throwException(portalException);
+		catch (Throwable throwable) {
+			return ReflectionUtil.throwException(throwable);
 		}
 	}
 
@@ -128,7 +133,7 @@ public class PreviewableResolverUtil {
 			return fromBaseModels;
 		}
 
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap =
+		Map<Class<?>, Map<Serializable, Object>> previewableMap =
 			_previewableMaps.get(previewId);
 
 		if (MapUtil.isEmpty(previewableMap)) {
@@ -141,7 +146,7 @@ public class PreviewableResolverUtil {
 
 		Class<?> modelClass = baseModel.getModelClass();
 
-		Map<Serializable, Serializable> pkMap = previewableMap.get(modelClass);
+		Map<Serializable, Object> pkMap = previewableMap.get(modelClass);
 
 		if (MapUtil.isEmpty(pkMap)) {
 			return fromBaseModels;
@@ -154,27 +159,38 @@ public class PreviewableResolverUtil {
 		Set<Serializable> toPKs = new TreeSet<>();
 
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
-			Serializable toPK = pkMap.get(fromBaseModel.getPrimaryKeyObj());
+			Object to = pkMap.get(fromBaseModel.getPrimaryKeyObj());
 
-			if (toPK == null) {
-				continue;
+			if ((to != null) && !(to instanceof UnsafeSupplierValue)) {
+				toPKs.add((Serializable)to);
 			}
-
-			toPKs.add(toPK);
 		}
 
 		Map<Serializable, PersistedModel> toPersistedModels =
 			persistedModelLocalService.fetchPersistedModels(toPKs);
 
-		Exception exception = null;
+		Throwable throwable1 = null;
 
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
-			Serializable toPK = pkMap.get(fromBaseModel.getPrimaryKeyObj());
+			Object to = pkMap.get(fromBaseModel.getPrimaryKeyObj());
 
-			if (toPK == null) {
+			if (to == null) {
 				toBaseModels.add(fromBaseModel);
 			}
+			else if (to instanceof
+						UnsafeSupplierValue<?, ?> unsafeSupplierValue) {
+
+				try {
+					toBaseModels.add(
+						(BaseModel<?>)unsafeSupplierValue.getValue());
+				}
+				catch (Throwable throwable2) {
+					throwable1 = _addSuppressed(throwable1, throwable2);
+				}
+			}
 			else {
+				Serializable toPK = (Serializable)to;
+
 				PersistedModel toPersistedModel = toPersistedModels.get(toPK);
 
 				if (toPersistedModel == null) {
@@ -182,12 +198,8 @@ public class PreviewableResolverUtil {
 						persistedModelLocalService.getPersistedModel(toPK);
 					}
 					catch (PortalException portalException) {
-						if (exception == null) {
-							exception = portalException;
-						}
-						else {
-							exception.addSuppressed(portalException);
-						}
+						throwable1 = _addSuppressed(
+							throwable1, portalException);
 					}
 				}
 
@@ -197,8 +209,8 @@ public class PreviewableResolverUtil {
 			}
 		}
 
-		if (exception != null) {
-			ReflectionUtil.throwException(exception);
+		if (throwable1 != null) {
+			ReflectionUtil.throwException(throwable1);
 		}
 
 		return toBaseModels;
@@ -208,12 +220,23 @@ public class PreviewableResolverUtil {
 		return _previewId.setWithSafeCloseable(previewId);
 	}
 
+	private static Throwable _addSuppressed(
+		Throwable throwable1, Throwable throwable2) {
+
+		if (throwable1 == null) {
+			return throwable2;
+		}
+
+		throwable1.addSuppressed(throwable2);
+
+		return throwable1;
+	}
+
 	private static final CentralizedThreadLocal<Long> _previewId =
 		new CentralizedThreadLocal<>(
 			PreviewableResolverUtil.class.getName() + "._previewId");
 	private static final AtomicLong _previewIdGenerator = new AtomicLong();
-	private static final Map
-		<Long, Map<Class<?>, Map<Serializable, Serializable>>>
-			_previewableMaps = new ConcurrentHashMap<>();
+	private static final Map<Long, Map<Class<?>, Map<Serializable, Object>>>
+		_previewableMaps = new ConcurrentHashMap<>();
 
 }

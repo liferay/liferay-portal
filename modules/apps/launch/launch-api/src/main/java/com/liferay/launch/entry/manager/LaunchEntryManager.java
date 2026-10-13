@@ -7,6 +7,7 @@ package com.liferay.launch.entry.manager;
 
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 
 import java.io.Serializable;
@@ -61,7 +62,7 @@ public interface LaunchEntryManager {
 
 		public Date getModifiedDate();
 
-		public Serializable getPreviewPrimaryKey();
+		public BaseModel<?> getPreviewBaseModel();
 
 		public int getStatus();
 
@@ -87,7 +88,7 @@ public interface LaunchEntryManager {
 
 		public Date getModifiedDate();
 
-		public Serializable getPreviewPrimaryKey();
+		public BaseModel<?> getPreviewBaseModel();
 
 		public int getStatus();
 

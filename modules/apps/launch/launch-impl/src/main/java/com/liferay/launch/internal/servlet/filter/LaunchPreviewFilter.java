@@ -12,15 +12,19 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -162,17 +166,18 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 			null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
-	private Serializable _getPreviewPrimaryKey(
-			long classPK, LaunchEntryManager launchEntryManager,
-			Map<String, Serializable> launchEntryValues,
-			LaunchEntryManager.Version publishedVersion)
+	private UnsafeSupplier<BaseModel<?>, PortalException>
+			_getPreviewBaseModelUnsafeSupplier(
+				long classPK, LaunchEntryManager launchEntryManager,
+				Map<String, Serializable> launchEntryValues,
+				LaunchEntryManager.Version publishedVersion)
 		throws Exception {
 
 		LaunchEntryManager.Draft draft = launchEntryManager.fetchDraft(
 			classPK, MapUtil.getLong(launchEntryValues, "draftId"));
 
 		if (draft != null) {
-			return draft.getPreviewPrimaryKey();
+			return draft::getPreviewBaseModel;
 		}
 
 		String versionKey = MapUtil.getString(launchEntryValues, "versionKey");
@@ -188,14 +193,14 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 			return null;
 		}
 
-		return version.getPreviewPrimaryKey();
+		return version::getPreviewBaseModel;
 	}
 
-	private Map<Class<?>, Map<Serializable, Serializable>> _getPreviewableMap(
+	private Map<Class<?>, Map<Serializable, Object>> _getPreviewableMap(
 			long companyId, long launchSetId)
 		throws Exception {
 
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap =
+		Map<Class<?>, Map<Serializable, Object>> previewableMap =
 			new HashMap<>();
 
 		for (Map<String, Serializable> launchEntryValues :
@@ -227,19 +232,22 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 				continue;
 			}
 
-			Serializable previewPrimaryKey = _getPreviewPrimaryKey(
-				classPK, launchEntryManager, launchEntryValues,
-				publishedVersion);
+			UnsafeSupplier<BaseModel<?>, PortalException> unsafeSupplier =
+				_getPreviewBaseModelUnsafeSupplier(
+					classPK, launchEntryManager, launchEntryValues,
+					publishedVersion);
 
-			if (previewPrimaryKey == null) {
+			if (unsafeSupplier == null) {
 				continue;
 			}
 
-			Map<Serializable, Serializable> primaryKeys =
+			Map<Serializable, Object> primaryKeys =
 				previewableMap.computeIfAbsent(
 					launchEntryManager.getModelClass(), key -> new HashMap<>());
 
-			primaryKeys.put(item.getPrimaryKey(), previewPrimaryKey);
+			primaryKeys.put(
+				item.getPrimaryKey(),
+				new UnsafeSupplierValue<>(unsafeSupplier));
 		}
 
 		return previewableMap;
@@ -251,7 +259,7 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 			HttpServletResponse httpServletResponse, long previewLaunchSetId)
 		throws Exception {
 
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap =
+		Map<Class<?>, Map<Serializable, Object>> previewableMap =
 			_getPreviewableMap(companyId, previewLaunchSetId);
 
 		if (previewableMap.isEmpty()) {

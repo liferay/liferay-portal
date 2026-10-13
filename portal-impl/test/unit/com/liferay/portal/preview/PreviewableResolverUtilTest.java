@@ -5,11 +5,13 @@
 
 package com.liferay.portal.preview;
 
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -82,11 +84,11 @@ public class PreviewableResolverUtilTest {
 
 	@Test
 	public void testGetPreviewableMap() {
-		Map<Serializable, Serializable> pkMap =
-			Collections.<Serializable, Serializable>singletonMap(1L, 2L);
+		Map<Serializable, Object> pkMap =
+			Collections.<Serializable, Object>singletonMap(1L, 2L);
 
 		Long previewId = PreviewableResolverUtil.addPreviewableMap(
-			Collections.<Class<?>, Map<Serializable, Serializable>>singletonMap(
+			Collections.<Class<?>, Map<Serializable, Object>>singletonMap(
 				TestModel.class, pkMap));
 
 		try {
@@ -114,7 +116,7 @@ public class PreviewableResolverUtilTest {
 
 	@Test
 	public void testRemovePreviewableMap() {
-		Map<Class<?>, Map<Serializable, Serializable>> previewableMap =
+		Map<Class<?>, Map<Serializable, Object>> previewableMap =
 			_createPreviewableMap(1L, 2L);
 
 		Long previewId = PreviewableResolverUtil.addPreviewableMap(
@@ -168,6 +170,28 @@ public class PreviewableResolverUtilTest {
 		catch (Exception exception) {
 			Assert.assertSame(NoSuchModelException.class, exception.getClass());
 			Assert.assertEquals("2", exception.getMessage());
+		}
+		finally {
+			PreviewableResolverUtil.removePreviewableMap(previewId);
+		}
+	}
+
+	@Test
+	public void testResolveBaseModelWithSupplierValue() {
+		TestModel fromTestModel = new TestModel(1L);
+
+		TestModel toTestModel = new TestModel(2L);
+
+		Long previewId = PreviewableResolverUtil.addPreviewableMap(
+			_createPreviewableMap(
+				1L, new UnsafeSupplierValue<>(() -> toTestModel)));
+
+		try (SafeCloseable safeCloseable =
+				PreviewableResolverUtil.setPreviewIdWithSafeCloseable(
+					previewId)) {
+
+			Assert.assertSame(
+				toTestModel, PreviewableResolverUtil.resolve(fromTestModel));
 		}
 		finally {
 			PreviewableResolverUtil.removePreviewableMap(previewId);
@@ -259,6 +283,45 @@ public class PreviewableResolverUtilTest {
 	}
 
 	@Test
+	public void testResolveCollectionWithSupplierValue() {
+		TestModel fromTestModel1 = new TestModel(1L);
+		TestModel fromTestModel2 = new TestModel(3L);
+
+		TestModel toTestModel1 = new TestModel(2L);
+
+		TestModel toTestModel2 = new TestModel(4L);
+
+		_testModels.put(4L, toTestModel2);
+
+		Long previewId = PreviewableResolverUtil.addPreviewableMap(
+			Collections.<Class<?>, Map<Serializable, Object>>singletonMap(
+				TestModel.class,
+				HashMapBuilder.<Serializable, Object>put(
+					1L, new UnsafeSupplierValue<>(() -> toTestModel1)
+				).put(
+					3L, 4L
+				).build()));
+
+		try (SafeCloseable safeCloseable =
+				PreviewableResolverUtil.setPreviewIdWithSafeCloseable(
+					previewId)) {
+
+			List<BaseModel<?>> toBaseModels = new ArrayList<>();
+
+			PreviewableResolverUtil.resolve(
+				Arrays.<BaseModel<?>>asList(fromTestModel1, fromTestModel2),
+				toBaseModels);
+
+			Assert.assertEquals(
+				Arrays.<BaseModel<?>>asList(toTestModel1, toTestModel2),
+				toBaseModels);
+		}
+		finally {
+			PreviewableResolverUtil.removePreviewableMap(previewId);
+		}
+	}
+
+	@Test
 	public void testResolveCollectionWithoutPreviewId() {
 		List<BaseModel<?>> fromBaseModels = Arrays.<BaseModel<?>>asList(
 			new TestModel(1L));
@@ -292,15 +355,12 @@ public class PreviewableResolverUtilTest {
 		Assert.assertNull(PreviewableResolverUtil.getPreviewId());
 	}
 
-	private Map<Class<?>, Map<Serializable, Serializable>>
-		_createPreviewableMap(
-			Serializable fromPrimaryKey, Serializable toPrimaryKey) {
+	private Map<Class<?>, Map<Serializable, Object>> _createPreviewableMap(
+		Serializable fromPrimaryKey, Object to) {
 
-		return Collections.
-			<Class<?>, Map<Serializable, Serializable>>singletonMap(
-				TestModel.class,
-				Collections.<Serializable, Serializable>singletonMap(
-					fromPrimaryKey, toPrimaryKey));
+		return Collections.<Class<?>, Map<Serializable, Object>>singletonMap(
+			TestModel.class,
+			Collections.<Serializable, Object>singletonMap(fromPrimaryKey, to));
 	}
 
 	private ServiceRegistration<PersistedModelLocalService>

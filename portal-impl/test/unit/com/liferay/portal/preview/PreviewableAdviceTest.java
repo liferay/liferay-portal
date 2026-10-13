@@ -259,9 +259,9 @@ public class PreviewableAdviceTest {
 
 	private SafeCloseable _openPreviewScope() {
 		Long previewId = PreviewableResolverUtil.addPreviewableMap(
-			Collections.<Class<?>, Map<Serializable, Serializable>>singletonMap(
+			Collections.<Class<?>, Map<Serializable, Object>>singletonMap(
 				TestModel.class,
-				Collections.<Serializable, Serializable>singletonMap(1L, 2L)));
+				Collections.<Serializable, Object>singletonMap(1L, 2L)));
 
 		SafeCloseable safeCloseable =
 			PreviewableResolverUtil.setPreviewIdWithSafeCloseable(previewId);

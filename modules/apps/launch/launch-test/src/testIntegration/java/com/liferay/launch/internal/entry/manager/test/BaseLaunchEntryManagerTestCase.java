@@ -9,9 +9,12 @@ import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -275,7 +278,7 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 		draft1 = getDraft(classPK, draft1.getDraftId());
 
 		try (SafeCloseable safeCloseable = setPreviewIdWithSafeCloseable(
-				classPK, draft1.getPreviewPrimaryKey())) {
+				classPK, draft1::getPreviewBaseModel)) {
 
 			Assert.assertEquals(value1, getEntryValue(classPK));
 		}
@@ -283,7 +286,7 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 		draft2 = getDraft(classPK, draft2.getDraftId());
 
 		try (SafeCloseable safeCloseable = setPreviewIdWithSafeCloseable(
-				classPK, draft2.getPreviewPrimaryKey())) {
+				classPK, draft2::getPreviewBaseModel)) {
 
 			Assert.assertEquals(value2, getEntryValue(classPK));
 		}
@@ -456,18 +459,19 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 	protected abstract T randomValue();
 
 	protected SafeCloseable setPreviewIdWithSafeCloseable(
-		long classPK, Serializable previewPrimaryKey) {
+		long classPK,
+		UnsafeSupplier<BaseModel<?>, PortalException> unsafeSupplier) {
 
 		Long previewId = PreviewableResolverUtil.addPreviewableMap(
-			HashMapBuilder.<Class<?>, Map<Serializable, Serializable>>put(
+			HashMapBuilder.<Class<?>, Map<Serializable, Object>>put(
 				getModelClass(),
-				HashMapBuilder.<Serializable, Serializable>put(
+				HashMapBuilder.<Serializable, Object>put(
 					() -> {
 						LaunchEntryManager.Item item = getItem(classPK);
 
 						return item.getPrimaryKey();
 					},
-					previewPrimaryKey
+					new UnsafeSupplierValue<>(unsafeSupplier)
 				).build()
 			).build());
 
