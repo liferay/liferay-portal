@@ -68,14 +68,18 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 
 	@After
 	public void tearDown() throws Exception {
-		_configurationProvider.deleteCompanyConfiguration(
-			OAuthClientCompanyConfiguration.class, _company.getCompanyId());
+		_deleteCompanyConfiguration();
 	}
 
 	@Test
 	public void testUpdateOAuthClientCompanyConfiguration() throws Exception {
 		_testUpdateOAuthClientCompanyConfiguration();
 		_testUpdateOAuthClientCompanyConfigurationWithoutPermission();
+	}
+
+	private void _deleteCompanyConfiguration() throws Exception {
+		_configurationProvider.deleteCompanyConfiguration(
+			OAuthClientCompanyConfiguration.class, _company.getCompanyId());
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
@@ -143,6 +147,8 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 
 	private void _testUpdateOAuthClientCompanyConfigurationWithoutPermission()
 		throws Exception {
+
+		_deleteCompanyConfiguration();
 
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
