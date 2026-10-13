@@ -240,7 +240,10 @@ async function getContentAgeDistribution(
 	groupId?: number
 ): Promise<RequestResult<number[]>> {
 	const searchParams = new URLSearchParams({
-		filter: getScopedFilter(filter, groupId),
+		filter: getScopedFilter(
+			`${filter} and status eq ${WORKFLOW_STATUS.APPROVED}`,
+			groupId
+		),
 		pageSize: '1',
 	});
 

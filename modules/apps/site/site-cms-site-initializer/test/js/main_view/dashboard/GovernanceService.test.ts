@@ -381,7 +381,7 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 		);
 	});
 
-	it('requests five contiguous age ranges on the given date field', async () => {
+	it('requests five contiguous age ranges of the approved content on the given date field', async () => {
 		const postSpy = jest
 			.spyOn(ApiHelper, 'post')
 			.mockResolvedValue({data: {}, error: null} as any);
@@ -392,7 +392,7 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 		);
 
 		expect(postSpy).toHaveBeenCalledWith(
-			'/o/search/v1.0/search?filter=someFilter&pageSize=1',
+			'/o/search/v1.0/search?filter=someFilter+and+status+eq+0&pageSize=1',
 			{
 				attributes: {'search.empty.search': true},
 				facetConfigurations: [
@@ -431,7 +431,7 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 		const [url, body] = postSpy.mock.calls[0];
 
 		expect(url).toBe(
-			'/o/search/v1.0/search?filter=someFilter+and+groupIds%2Fany%28g%3Ag+eq+123%29&pageSize=1'
+			'/o/search/v1.0/search?filter=someFilter+and+status+eq+0+and+groupIds%2Fany%28g%3Ag+eq+123%29&pageSize=1'
 		);
 		expect(body).toMatchObject({
 			facetConfigurations: [{attributes: {field: 'modified'}}],

@@ -110,7 +110,7 @@ export function ContentAgeDistribution({
 			}
 			className="cms-content-age-distribution custom-empty-state h-100"
 			description={Liferay.Language.get(
-				'this-is-the-distribution-of-content-by-time-since-it-was-created-or-last-updated'
+				'this-is-the-distribution-of-approved-content-by-time-since-it-was-created-or-last-updated'
 			)}
 			title={Liferay.Language.get('content-age-distribution')}
 			uppercaseTitle={false}
