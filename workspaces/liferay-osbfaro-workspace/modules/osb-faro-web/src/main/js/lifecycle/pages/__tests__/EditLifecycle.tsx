@@ -216,6 +216,95 @@ describe('EditLifecycle', () => {
 		expect(payload.stages[0].name).toBe('Aware');
 	});
 
+	it('moves the selection to the next stage when the selected one is removed', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('group', {name: /^qualified$/i}));
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /remove.qualified/i})
+		);
+
+		expect(screen.queryByRole('group', {name: /^qualified$/i})).toBeNull();
+		expect(
+			screen.getByRole('group', {name: /^pipeline$/i})
+		).toHaveAttribute('aria-current', 'true');
+		expect(
+			screen.getByRole('group', {name: /^pipeline$/i})
+		).toHaveTextContent(/stage 2/i);
+	});
+
+	it('moves the selection to the previous stage when the last one is removed', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('group', {name: /^pipeline$/i}));
+
+		fireEvent.click(screen.getByRole('button', {name: /remove.pipeline/i}));
+
+		expect(
+			screen.getByRole('group', {name: /^qualified$/i})
+		).toHaveAttribute('aria-current', 'true');
+	});
+
+	it('counts the stages left after removing one', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /remove.aware/i}));
+
+		expect(
+			(screen.getByLabelText(/^stages/i) as HTMLInputElement).value
+		).toMatch(/^2 stages$/i);
+	});
+
+	it('saves removed and reordered stages numbered in their new order', async () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /remove.aware/i}));
+
+		const handle = screen.getByRole('button', {name: /drag.pipeline/i});
+
+		handle.focus();
+
+		fireEvent.keyDown(handle, {key: 'Enter'});
+		fireEvent.keyDown(handle, {key: 'ArrowUp'});
+		fireEvent.keyDown(handle, {key: 'Enter'});
+
+		expect(
+			screen.getByRole('group', {name: /^pipeline$/i})
+		).toHaveTextContent(/stage 1/i);
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		await waitFor(() =>
+			expect(API.lifecycle.updateLifecycle).toHaveBeenCalled()
+		);
+
+		const payload = (API.lifecycle.updateLifecycle as jest.Mock).mock
+			.calls[0][0];
+
+		expect(
+			payload.stages.map(({displayOrder, id, name}: any) => [
+				displayOrder,
+				id,
+				name,
+			])
+		).toEqual([
+			[1, 'stage-2', 'Pipeline'],
+			[2, 'stage-1', 'Qualified'],
+		]);
+	});
+
+	it('adds a stage at the end and selects it', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		const stage = screen.getByRole('group', {name: /^stage 4$/i});
+
+		expect(stage).toHaveAttribute('aria-current', 'true');
+		expect(stage).toHaveTextContent(/stage 4.+no trigger/i);
+	});
+
 	it('renders a loading state while the lifecycle is loading', () => {
 		mockedUseRequest.mockReturnValue({data: undefined, loading: true});
 

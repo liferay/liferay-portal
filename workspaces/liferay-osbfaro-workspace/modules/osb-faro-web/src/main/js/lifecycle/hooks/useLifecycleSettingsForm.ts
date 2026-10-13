@@ -6,7 +6,10 @@ import {
 	isConditionComplete,
 	isStageConfigured,
 } from 'lifecycle/utils/lifecycleOperators';
-import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
+import {
+	createStageConfig,
+	IStageConfig,
+} from 'lifecycle/utils/stageConfiguration';
 import {Routes, toRoute} from 'shared/util/router';
 import {useDispatch} from 'react-redux';
 import {useEffect, useState} from 'react';
@@ -93,6 +96,43 @@ export const useLifecycleSettingsForm = ({
 			previous.map((config) => (config.key === key ? value : config))
 		);
 
+	const addStage = () => {
+		const stage = createStageConfig();
+
+		setStageConfigs((previous) => [...previous, stage]);
+
+		setSelectedKey(stage.key);
+	};
+
+	const removeStage = (key: string) => {
+		const index = stageConfigs.findIndex((stage) => stage.key === key);
+
+		if (index === -1) {
+			return;
+		}
+
+		const remaining = stageConfigs.filter((stage) => stage.key !== key);
+
+		setStageConfigs(remaining);
+
+		if (selectedKey === key) {
+			setSelectedKey(
+				(remaining[index] ?? remaining[index - 1])?.key ?? null
+			);
+		}
+	};
+
+	const moveStage = ({from, to}: {from: number; to: number}) =>
+		setStageConfigs((previous) => {
+			const next = [...previous];
+
+			const [stage] = next.splice(from, 1);
+
+			next.splice(to, 0, stage);
+
+			return next;
+		});
+
 	const selectedStage =
 		stageConfigs.find((stage) => stage.key === selectedKey) ?? null;
 
@@ -126,6 +166,7 @@ export const useLifecycleSettingsForm = ({
 			});
 
 	return {
+		addStage,
 		canSubmit,
 		catalogError,
 		catalogFields,
@@ -133,7 +174,9 @@ export const useLifecycleSettingsForm = ({
 		lifecycleDescription,
 		lifecycleName,
 		lifecycleURL,
+		moveStage,
 		refetchCatalog,
+		removeStage,
 		selectedStage,
 		setLifecycleDescription,
 		setLifecycleName,

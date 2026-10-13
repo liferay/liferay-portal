@@ -107,9 +107,9 @@ describe('LifecycleConditionsPanel', () => {
 
 		expect(container.querySelector('.sticker-success')).toBeNull();
 		expect(container.querySelectorAll('.sticker-warning')).toHaveLength(3);
-		expect(
-			screen.getByRole('group', {name: /^aware$/i})
-		).toHaveTextContent(/stage 1.+1 condition/i);
+		expect(screen.getByRole('group', {name: /^aware$/i})).toHaveTextContent(
+			/stage 1.+1 condition/i
+		);
 	});
 
 	it('gives every stage chip a drag handle and a remove button', () => {
@@ -207,5 +207,66 @@ describe('LifecycleConditionsPanel', () => {
 		expect(
 			aware.querySelector('.lexicon-icon-exclamation-full')
 		).toBeInTheDocument();
+	});
+
+	it('shows the empty state without stages and adds one from it', () => {
+		const onAddStage = jest.fn();
+
+		renderPanel({onAddStage, stageConfigs: []});
+
+		expect(screen.getByText(/no stages yet/i)).toBeInTheDocument();
+		expect(
+			screen.getByText(/add stages to define its structure/i)
+		).toBeInTheDocument();
+
+		fireEvent.click(screen.getByRole('button', {name: /^new$/i}));
+
+		expect(onAddStage).toHaveBeenCalledTimes(1);
+		expect(screen.getByRole('status')).toHaveTextContent(/added.+stage 1/i);
+	});
+
+	it('adds a stage from the structure button', () => {
+		const onAddStage = jest.fn();
+
+		renderPanel({onAddStage});
+
+		expect(screen.queryByText(/no stages yet/i)).toBeNull();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		expect(onAddStage).toHaveBeenCalledTimes(1);
+		expect(screen.getByRole('status')).toHaveTextContent(/added.+stage 4/i);
+	});
+
+	it('removes a stage and announces it', () => {
+		const onRemoveStage = jest.fn();
+
+		renderPanel({onRemoveStage});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /remove.qualified/i})
+		);
+
+		expect(onRemoveStage).toHaveBeenCalledWith('qualified');
+		expect(screen.getByRole('status')).toHaveTextContent(
+			/removed.+qualified/i
+		);
+	});
+
+	it('moves a stage with the keyboard and announces where it lands', () => {
+		const onMoveStage = jest.fn();
+
+		renderPanel({onMoveStage});
+
+		const handle = screen.getByRole('button', {name: /drag.aware/i});
+
+		handle.focus();
+
+		fireEvent.keyDown(handle, {key: 'Enter'});
+		fireEvent.keyDown(handle, {key: 'ArrowDown'});
+		fireEvent.keyDown(handle, {key: 'Enter'});
+
+		expect(onMoveStage).toHaveBeenCalledWith({from: 0, to: 1});
+		expect(screen.getByRole('status')).toHaveTextContent(/aware.+2.+3/i);
 	});
 });

@@ -5,7 +5,6 @@ import Loading from 'shared/components/Loading';
 import React from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import {buildCreateLifecyclePayload} from 'lifecycle/utils/lifecyclePayload';
-import {createStageConfig} from 'lifecycle/utils/stageConfiguration';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useParams} from 'react-router-dom';
@@ -22,6 +21,7 @@ const CreateLifecycle = () => {
 	});
 
 	const {
+		addStage,
 		canSubmit,
 		catalogError,
 		catalogFields,
@@ -29,7 +29,9 @@ const CreateLifecycle = () => {
 		lifecycleDescription,
 		lifecycleName,
 		lifecycleURL,
+		moveStage,
 		refetchCatalog,
+		removeStage,
 		selectedStage,
 		setLifecycleDescription,
 		setLifecycleName,
@@ -40,7 +42,7 @@ const CreateLifecycle = () => {
 	} = useLifecycleSettingsForm({
 		description: '',
 		name: '',
-		stageConfigs: () => [createStageConfig()],
+		stageConfigs: () => [],
 	});
 
 	if (loading || catalogLoading) {
@@ -81,8 +83,11 @@ const CreateLifecycle = () => {
 			catalogFields={catalogFields?.items}
 			lifecycleDescription={lifecycleDescription}
 			lifecycleName={lifecycleName}
+			onAddStage={addStage}
 			onLifecycleDescriptionChange={setLifecycleDescription}
 			onLifecycleNameChange={setLifecycleName}
+			onMoveStage={moveStage}
+			onRemoveStage={removeStage}
 			onSelect={setSelectedKey}
 			onStageChange={updateStage}
 			onSubmit={handleCreate}

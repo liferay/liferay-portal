@@ -125,22 +125,24 @@ describe('CreateLifecycle', () => {
 		).toHaveAttribute('aria-current', 'true');
 	});
 
-	it('starts with one stage that has no trigger yet', () => {
+	it('starts with no stages and the empty state', () => {
 		renderPage();
+
+		expect(screen.getByText(/no stages yet/i)).toBeInTheDocument();
+		expect(screen.queryByRole('group', {name: /^stage 1$/i})).toBeNull();
+		expect(
+			(screen.getByLabelText(/^stages/i) as HTMLInputElement).value
+		).toMatch(/^0 stages$/i);
+	});
+
+	it('adds a stage from the empty state and selects it', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /^new$/i}));
 
 		const stage = screen.getByRole('group', {name: /^stage 1$/i});
 
 		expect(stage).toHaveTextContent(/stage 1.+no trigger/i);
-		expect(stage).not.toHaveAttribute('aria-current');
-	});
-
-	it('shows the stage view when its chip is selected', () => {
-		renderPage();
-
-		const stage = screen.getByRole('group', {name: /^stage 1$/i});
-
-		fireEvent.keyDown(stage, {key: 'Enter'});
-
 		expect(stage).toHaveAttribute('aria-current', 'true');
 		expect(screen.getByText(/unconfigured/i)).toBeInTheDocument();
 		expect(screen.getByLabelText(/^name/i)).toHaveAttribute(
@@ -152,9 +154,7 @@ describe('CreateLifecycle', () => {
 	it('shows the stage name on its chip as it is typed', () => {
 		renderPage();
 
-		fireEvent.keyDown(screen.getByRole('group', {name: /^stage 1$/i}), {
-			key: 'Enter',
-		});
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
 
 		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'Qualified'},
@@ -165,6 +165,22 @@ describe('CreateLifecycle', () => {
 		).toHaveTextContent(/qualified/i);
 	});
 
+	it('shows the empty state and the summary again after removing the last stage', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		fireEvent.click(screen.getByRole('button', {name: /remove.stage 1/i}));
+
+		expect(screen.getByText(/no stages yet/i)).toBeInTheDocument();
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).toHaveAttribute('aria-current', 'true');
+		expect(
+			(screen.getByLabelText(/^stages/i) as HTMLInputElement).value
+		).toMatch(/^0 stages$/i);
+	});
+
 	it('summarizes a new lifecycle with the current user and no date', () => {
 		renderPage();
 
@@ -172,7 +188,6 @@ describe('CreateLifecycle', () => {
 			'placeholder',
 			expect.stringMatching(/new lifecycle/i)
 		);
-		expect(screen.getByLabelText(/^stages/i)).toHaveValue('1 stage');
 		expect(screen.getByLabelText(/last modified by/i)).toHaveValue(
 			'Anneta Smith'
 		);
@@ -298,6 +313,8 @@ describe('CreateLifecycle', () => {
 			target: {value: 'Qualified accounts'},
 		});
 
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
 		fireEvent.click(
 			screen.getByRole('button', {name: /create lifecycle/i})
 		);
@@ -349,6 +366,8 @@ describe('CreateLifecycle', () => {
 		fireEvent.change(screen.getByLabelText(/^description/i), {
 			target: {value: 'Qualified accounts'},
 		});
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
 
 		fireEvent.click(
 			screen.getByRole('button', {name: /create lifecycle/i})

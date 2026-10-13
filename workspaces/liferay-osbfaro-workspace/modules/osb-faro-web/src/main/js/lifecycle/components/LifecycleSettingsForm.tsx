@@ -13,8 +13,11 @@ interface ILifecycleSettingsFormProps {
 	lifecycleDescription: string;
 	lifecycleName: string;
 	modifiedDate?: number | null;
+	onAddStage: () => void;
 	onLifecycleDescriptionChange: (description: string) => void;
 	onLifecycleNameChange: (name: string) => void;
+	onMoveStage: (movement: {from: number; to: number}) => void;
+	onRemoveStage: (key: string) => void;
 	onSelect: (key: string | null) => void;
 	onStageChange: (key: string, value: IStageConfig) => void;
 	onSubmit: () => void;
@@ -32,8 +35,11 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 	lifecycleDescription,
 	lifecycleName,
 	modifiedDate,
+	onAddStage,
 	onLifecycleDescriptionChange,
 	onLifecycleNameChange,
+	onMoveStage,
+	onRemoveStage,
 	onSelect,
 	onStageChange,
 	onSubmit,
@@ -61,6 +67,9 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 			>
 				<LifecycleConditionsPanel
 					lifecycleName={lifecycleName}
+					onAddStage={onAddStage}
+					onMoveStage={onMoveStage}
+					onRemoveStage={onRemoveStage}
 					onSelect={onSelect}
 					selectedKey={selectedStage?.key ?? null}
 					stageConfigs={stageConfigs}

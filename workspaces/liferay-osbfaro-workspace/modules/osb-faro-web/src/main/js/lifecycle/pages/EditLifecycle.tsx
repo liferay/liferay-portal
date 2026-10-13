@@ -21,6 +21,7 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 	const {groupId, lifecycleId} = useParams();
 
 	const {
+		addStage,
 		canSubmit,
 		catalogError,
 		catalogFields,
@@ -28,7 +29,9 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 		lifecycleDescription,
 		lifecycleName,
 		lifecycleURL,
+		moveStage,
 		refetchCatalog,
+		removeStage,
 		selectedStage,
 		setLifecycleDescription,
 		setLifecycleName,
@@ -77,8 +80,11 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 			lifecycleDescription={lifecycleDescription}
 			lifecycleName={lifecycleName}
 			modifiedDate={lifecycle.modifiedDate}
+			onAddStage={addStage}
 			onLifecycleDescriptionChange={setLifecycleDescription}
 			onLifecycleNameChange={setLifecycleName}
+			onMoveStage={moveStage}
+			onRemoveStage={removeStage}
 			onSelect={setSelectedKey}
 			onStageChange={updateStage}
 			onSubmit={handleSave}
