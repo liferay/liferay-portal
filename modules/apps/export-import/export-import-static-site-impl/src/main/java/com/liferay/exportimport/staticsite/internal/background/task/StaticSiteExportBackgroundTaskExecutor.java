@@ -77,7 +77,6 @@ public class StaticSiteExportBackgroundTaskExecutor
 			backgroundTask.getTaskContextMap();
 
 		long groupId = MapUtil.getLong(taskContextMap, "groupId");
-
 		Serializable layoutIds = taskContextMap.get("layoutIds");
 
 		Set<Locale> locales = _getLocales(groupId, taskContextMap);
