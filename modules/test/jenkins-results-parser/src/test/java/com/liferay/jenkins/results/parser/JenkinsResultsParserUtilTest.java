@@ -18,6 +18,7 @@ import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -580,74 +581,57 @@ public class JenkinsResultsParserUtilTest
 		String firstThreadName = "deadlock-first";
 		String secondThreadName = "deadlock-second";
 
-		Object firstLock = new Object();
-		Object secondLock = new Object();
+		ReentrantLock firstLock = new ReentrantLock();
+		ReentrantLock secondLock = new ReentrantLock();
 
 		CountDownLatch bothLockedLatch = new CountDownLatch(2);
 		CountDownLatch proceedLatch = new CountDownLatch(1);
 
 		Thread firstThread = new Thread(
-			() -> {
-				synchronized (firstLock) {
-					bothLockedLatch.countDown();
-
-					try {
-						proceedLatch.await();
-					}
-					catch (InterruptedException interruptedException) {
-						return;
-					}
-
-					synchronized (secondLock) {
-					}
-				}
-			},
+			() -> _awaitDeadlock(
+				bothLockedLatch, firstLock, proceedLatch, secondLock),
 			firstThreadName);
 
 		Thread secondThread = new Thread(
-			() -> {
-				synchronized (secondLock) {
-					bothLockedLatch.countDown();
-
-					try {
-						proceedLatch.await();
-					}
-					catch (InterruptedException interruptedException) {
-						return;
-					}
-
-					synchronized (firstLock) {
-					}
-				}
-			},
+			() -> _awaitDeadlock(
+				bothLockedLatch, secondLock, proceedLatch, firstLock),
 			secondThreadName);
 
 		firstThread.setDaemon(true);
 		secondThread.setDaemon(true);
 
-		firstThread.start();
-		secondThread.start();
+		try {
+			firstThread.start();
+			secondThread.start();
 
-		bothLockedLatch.await();
+			bothLockedLatch.await();
 
-		proceedLatch.countDown();
+			proceedLatch.countDown();
 
-		String threadDump = JenkinsResultsParserUtil.getThreadDump();
+			String threadDump = JenkinsResultsParserUtil.getThreadDump();
 
-		while (!threadDump.contains(" deadlocked threads:")) {
-			JenkinsResultsParserUtil.sleep(10);
+			while (!threadDump.contains(" deadlocked threads:")) {
+				JenkinsResultsParserUtil.sleep(10);
 
-			threadDump = JenkinsResultsParserUtil.getThreadDump();
+				threadDump = JenkinsResultsParserUtil.getThreadDump();
+			}
+
+			String deadlockSection = threadDump.substring(
+				threadDump.indexOf(" deadlocked threads:"));
+
+			Assert.assertTrue(
+				deadlockSection.contains("\"" + firstThreadName + "\""));
+
+			Assert.assertTrue(
+				deadlockSection.contains("\"" + secondThreadName + "\""));
 		}
+		finally {
+			firstThread.interrupt();
+			secondThread.interrupt();
 
-		String deadlockSection = threadDump.substring(
-			threadDump.indexOf(" deadlocked threads:"));
-
-		Assert.assertTrue(
-			deadlockSection.contains("\"" + firstThreadName + "\""));
-
-		Assert.assertTrue(
-			deadlockSection.contains("\"" + secondThreadName + "\""));
+			firstThread.join();
+			secondThread.join();
+		}
 	}
 
 	@Test
@@ -937,6 +921,31 @@ public class JenkinsResultsParserUtilTest
 		Environment.setInstance(environment);
 
 		return environment;
+	}
+
+	private void _awaitDeadlock(
+		CountDownLatch bothLockedLatch, ReentrantLock heldLock,
+		CountDownLatch proceedLatch, ReentrantLock requestedLock) {
+
+		heldLock.lock();
+
+		try {
+			bothLockedLatch.countDown();
+
+			proceedLatch.await();
+
+			requestedLock.lockInterruptibly();
+
+			requestedLock.unlock();
+		}
+		catch (InterruptedException interruptedException) {
+			Thread currentThread = Thread.currentThread();
+
+			currentThread.interrupt();
+		}
+		finally {
+			heldLock.unlock();
+		}
 	}
 
 	private ServerSocket _createServerSocket() throws Exception {
