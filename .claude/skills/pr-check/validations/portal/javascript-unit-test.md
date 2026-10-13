@@ -30,9 +30,9 @@ With no `test` script there is no suite, so record that and continue to the swee
 
 **Cross module consumer snapshots.** The changed module's own suite does not cover a snapshot stored in a *consumer* module. When another module declares the changed module by name in its `dependencies` or `devDependencies`, also run those consumers. Do not read `"private": true` as ruling this out, since Liferay modules depend on each other by bare name with `"*"` and a private module is still a workspace dependency.
 
-List the consumers in a fixed order. A consumer is a module under `modules`, other than the changed module, whose `package.json` names the changed module's package `name` in `dependencies` or `devDependencies` and declares a `test` script. Put first the consumers with a file under their `test` directory that imports or mocks the package, meaning `from`, `require(`, `import(`, or `jest.mock(` followed by the quoted package name, alone or followed by a `/`. Sort each group by module path, as `LC_ALL=C sort` does.
+List the consumers in a fixed order. A consumer is a module under `modules`, other than the changed module, whose `package.json` names the changed module's package `name` in `dependencies` or `devDependencies` and declares a `test` script. Put first the consumers that have a file under their `test` directory that imports or mocks the package, then the rest, and sort each group by module path, as `LC_ALL=C sort` does. A file imports or mocks the package when it has `from`, `require(`, `import(`, or `jest.mock(` followed by a quote and the package name, then either the closing quote or a `/`.
 
-Run the full suite of the first 8. When the list is longer, qualify the verdict with how many of the listed consumers ran, such as `PASS (8 of 103 consumers)`.
+Run the full suite of each of the first 8. When the list is longer, qualify the verdict with how many of the listed consumers ran, such as `PASS (8 of 103 consumers)`.
 
 **Stale stub lists.** A module that stubs a shared package family for Jest keeps its own copy of the stub list, so adding a package to that family leaves every copy stale.
 
