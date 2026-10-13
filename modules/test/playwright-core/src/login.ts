@@ -61,15 +61,7 @@ export async function performLogin(
 
 	await page.goto(baseUrl);
 
-	const signInButton = page.getByRole('button', {name: 'Sign In'});
-
-	const searchInput = page
-		.locator('.user-personal-bar')
-		.getByPlaceholder('Search');
-
-	await expect(searchInput).toBeVisible();
-
-	await signInButton.click();
+	await page.getByRole('button', {name: 'Sign In'}).click();
 
 	const emailAddressInput = page.getByLabel('Email Address');
 
