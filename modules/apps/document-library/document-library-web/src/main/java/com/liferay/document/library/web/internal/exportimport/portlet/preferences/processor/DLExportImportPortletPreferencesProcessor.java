@@ -326,6 +326,18 @@ public class DLExportImportPortletPreferencesProcessor
 	}
 
 	@Override
+	public void processImportPortletPreferences(
+			long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupImportPortletPreferencesExternalReferenceCode(
+				companyId,
+				_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
+				portletPreferences);
+	}
+
+	@Override
 	public PortletPreferences processImportPortletPreferences(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
@@ -342,8 +354,10 @@ public class DLExportImportPortletPreferencesProcessor
 						_PREFERENCE_KEY_ROOT_FOLDER_EXTERNAL_REFERENCE_CODE));
 				portletPreferences.setValue(
 					_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
-					stagingPreferencesMappingJSONObject.getString(
-						_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE));
+					getGroupImportPortletPreferencesExternalReferenceCode(
+						portletDataContext,
+						stagingPreferencesMappingJSONObject.getString(
+							_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE)));
 				portletPreferences.setValue(
 					_PREFERENCE_KEY_SELECTED_REPOSITORY_EXTERNAL_REFERENCE_CODE,
 					stagingPreferencesMappingJSONObject.getString(
@@ -414,17 +428,19 @@ public class DLExportImportPortletPreferencesProcessor
 		}
 
 		try {
-			long sourceGroupId = portletDataContext.getSourceGroupId();
+			String selectedGroupExternalReferenceCode =
+				portletPreferences.getValue(
+					_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
+					null);
 
-			if (sourceGroupId != 0) {
-				Group group = _groupLocalService.fetchGroup(sourceGroupId);
+			if (Validator.isNotNull(selectedGroupExternalReferenceCode)) {
+				Group sourceGroup = _groupLocalService.fetchGroup(
+					portletDataContext.getSourceGroupId());
 
-				if ((group != null) &&
+				if ((sourceGroup != null) &&
 					Objects.equals(
-						group.getExternalReferenceCode(),
-						portletPreferences.getValue(
-							_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
-							null))) {
+						sourceGroup.getExternalReferenceCode(),
+						selectedGroupExternalReferenceCode)) {
 
 					Group selectedGroup = _groupLocalService.getGroup(
 						portletDataContext.getGroupId());
@@ -432,6 +448,13 @@ public class DLExportImportPortletPreferencesProcessor
 					portletPreferences.setValue(
 						_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
 						selectedGroup.getExternalReferenceCode());
+				}
+				else {
+					portletPreferences.setValue(
+						_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
+						getGroupImportPortletPreferencesExternalReferenceCode(
+							portletDataContext,
+							selectedGroupExternalReferenceCode));
 				}
 			}
 		}

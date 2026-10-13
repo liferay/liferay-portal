@@ -69,6 +69,15 @@ public class IGDisplayExportImportPortletPreferencesProcessor
 	}
 
 	@Override
+	public void processImportPortletPreferences(
+			long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+
+		_dlExportImportPortletPreferencesProcessor.
+			processImportPortletPreferences(companyId, portletPreferences);
+	}
+
+	@Override
 	public PortletPreferences processImportPortletPreferences(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
