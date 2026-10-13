@@ -68,12 +68,12 @@ public class EmptyConstructorCheck extends BaseCheck {
 			DetailAST firstChildDetailAST = lastChildDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() == TokenTypes.RCURLY) {
-				log(detailAST, _MSG_UNNEEDED_EMTPY_CONSTRUCTOR);
+				log(detailAST, _MSG_UNNEEDED_EMPTY_CONSTRUCTOR);
 			}
 		}
 	}
 
-	private static final String _MSG_UNNEEDED_EMTPY_CONSTRUCTOR =
+	private static final String _MSG_UNNEEDED_EMPTY_CONSTRUCTOR =
 		"empty.constructor.unneeded";
 
 }
