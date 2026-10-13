@@ -82,6 +82,147 @@ components:
                     type: string
                 userName:
                     type: string
+        FileEntryBrief:
+            description:
+                A document library file entry to be signed.
+            properties:
+                id:
+                    description:
+                        The file entry's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                title:
+                    description:
+                        The file entry's title.
+                    readOnly: true
+                    type: string
+            type: object
+        SignatureRequest:
+            description:
+                A signature request for one or more documents to be signed.
+            properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    description:
+                        Actions the current user can take on the signature request, such as signing it when it is their turn. Read-only.
+                    readOnly: true
+                    type: object
+                creator:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    description:
+                        The user who created the signature request. Read-only.
+                    readOnly: true
+                dateCreated:
+                    description:
+                        When the signature request was created. Read-only.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                emailMessage:
+                    description:
+                        Message of the notification sent to each recipient.
+                    type: string
+                emailSubject:
+                    description:
+                        Subject of the notification sent to each recipient.
+                    type: string
+                expirationDate:
+                    description:
+                        When the provider voids the signature request if it is still unsigned. Read-only; derived from the expiration supplied on creation.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                expireAfter:
+                    description:
+                        Days until the signature request expires. Zero leaves it open. Supplied on creation; not returned on read.
+                    type: integer
+                fileEntryBriefs:
+                    description:
+                        The document library file entries to be signed.
+                    items:
+                        $ref: "#/components/schemas/FileEntryBrief"
+                    readOnly: true
+                    type: array
+                fileEntryIds:
+                    description:
+                        Document library file entries to be signed. Supplied on creation; not returned on read.
+                    items:
+                        format: int64
+                        type: integer
+                    type: array
+                id:
+                    description:
+                        ID of the signature request. Read-only; assigned by the server.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    description:
+                        Name of the signature request. Supplied on creation; not returned on read.
+                    type: string
+                sendNotifications:
+                    description:
+                        Whether Liferay emails each recipient a link to sign. Defaults to true. Supplied on creation; not returned on read.
+                    type: boolean
+                signatureRequestRecipients:
+                    description:
+                        The recipients on the signature request. Supply a user ID for each one when creating; every other field is read-only.
+                    items:
+                        $ref: "#/components/schemas/SignatureRequestRecipient"
+                    type: array
+                status:
+                    description:
+                        Status of the signature request as Liferay last recorded it. Read-only.
+                    readOnly: true
+                    type: string
+                statusDate:
+                    description:
+                        When the status last changed. Read-only.
+                    format: date-time
+                    readOnly: true
+                    type: string
+            type: object
+        SignatureRequestRecipient:
+            description:
+                One recipient on a signature request.
+            properties:
+                emailAddress:
+                    description:
+                        Email address of the recipient. Read-only; taken from the user.
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        Name of the recipient. Read-only; taken from the user.
+                    readOnly: true
+                    type: string
+                sentDate:
+                    description:
+                        When the recipient was notified. Read-only.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                status:
+                    description:
+                        Status of this recipient. Read-only.
+                    readOnly: true
+                    type: string
+                statusDate:
+                    description:
+                        When this recipient's status last changed. Read-only.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                userId:
+                    description:
+                        Liferay user who must sign. Required when creating a signature request.
+                    format: int64
+                    type: integer
+            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.digital.signature.rest.client', and version '1.0.37'."
@@ -92,6 +233,77 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/signature-requests/{signatureRequestId}":
+        get:
+            description:
+                Retrieves a signature request. Requires VIEW permission on the signature request.
+            operationId: getSignatureRequest
+            parameters:
+                -   in: path
+                    name: signatureRequestId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+            tags: ["SignatureRequest"]
+    "/signature-requests/{signatureRequestId}/notifications":
+        post:
+            description:
+                Sends each recipient whose turn it is a link to sign the signature request. Requires UPDATE permission on the signature request.
+            operationId: postSignatureRequestNotification
+            parameters:
+                -   in: path
+                    name: signatureRequestId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+            tags: ["SignatureRequest"]
+    "/signature-requests/{signatureRequestId}/void":
+        post:
+            description:
+                Voids the signature request with the provider and records the reason. Requires UPDATE permission on the signature request.
+            operationId: postSignatureRequestVoid
+            parameters:
+                -   in: path
+                    name: signatureRequestId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: voidedReason
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+            tags: ["SignatureRequest"]
     "/sites/{siteId}/ds-envelopes":
         get:
             operationId: getSiteDSEnvelopesPage
@@ -225,3 +437,70 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/DSEnvelopeSignatureURL"
             tags: ["DSRecipientViewDefinition"]
+    "/sites/{siteId}/signature-requests":
+        get:
+            description:
+                Retrieves the signature requests of the site.
+            operationId: getSiteSignatureRequestsPage
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SignatureRequest"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SignatureRequest"
+                                type: array
+            tags: ["SignatureRequest"]
+        post:
+            description:
+                Sends the documents to the recipients through the signature provider and records the signature request. Requires permission to add signature requests and UPDATE permission on each document.
+            operationId: postSiteSignatureRequest
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SignatureRequest"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SignatureRequest"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SignatureRequest"
+            tags: ["SignatureRequest"]
