@@ -102,8 +102,7 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONArray typePropertiesJSONArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[] {_CLASS_NAME_ID_1}, new long[] {_CLASS_TYPE_ID_1},
-				_COMPANY_ID, LocaleUtil.US);
+				new long[] {_CLASS_NAME_ID_1}, _COMPANY_ID, LocaleUtil.US);
 
 		JSONObject groupJSONObject = typePropertiesJSONArray.getJSONObject(0);
 
@@ -157,8 +156,7 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[] {_CLASS_NAME_ID_1, _CLASS_NAME_ID_2},
-				new long[] {_CLASS_TYPE_ID_1, _CLASS_TYPE_ID_2}, _COMPANY_ID,
+				new long[] {_CLASS_NAME_ID_1, _CLASS_NAME_ID_2}, _COMPANY_ID,
 				LocaleUtil.US);
 
 		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
@@ -174,10 +172,6 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONObject itemJSONObject1 = itemsJSONArray1.getJSONObject(0);
 
-		Assert.assertEquals(
-			_CLASS_NAME_ID_1, itemJSONObject1.getLong("classNameId"));
-		Assert.assertEquals(
-			_CLASS_TYPE_ID_1, itemJSONObject1.getLong("classTypeId"));
 		Assert.assertEquals(
 			_EXTERNAL_REFERENCE_CODE_1,
 			itemJSONObject1.getString("objectDefinitionExternalReferenceCode"));
@@ -195,20 +189,12 @@ public class AssetListTypePropertiesUtilTest {
 		JSONObject itemJSONObject2 = itemsJSONArray2.getJSONObject(0);
 
 		Assert.assertEquals(
-			_CLASS_NAME_ID_2, itemJSONObject2.getLong("classNameId"));
-		Assert.assertEquals(
-			_CLASS_TYPE_ID_2, itemJSONObject2.getLong("classTypeId"));
-		Assert.assertEquals(
 			_EXTERNAL_REFERENCE_CODE_2,
 			itemJSONObject2.getString("objectDefinitionExternalReferenceCode"));
 		Assert.assertEquals("title", itemJSONObject2.getString("name"));
 
 		JSONObject itemJSONObject3 = itemsJSONArray2.getJSONObject(1);
 
-		Assert.assertEquals(
-			_CLASS_NAME_ID_2, itemJSONObject3.getLong("classNameId"));
-		Assert.assertEquals(
-			_CLASS_TYPE_ID_2, itemJSONObject3.getLong("classTypeId"));
 		Assert.assertEquals(
 			_EXTERNAL_REFERENCE_CODE_2,
 			itemJSONObject3.getString("objectDefinitionExternalReferenceCode"));
@@ -220,7 +206,7 @@ public class AssetListTypePropertiesUtilTest {
 	public void testGetTypePropertiesJSONArrayEmitsSortableFlagsForCommonFields() {
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[0], new long[0], _COMPANY_ID, LocaleUtil.US);
+				new long[0], _COMPANY_ID, LocaleUtil.US);
 
 		JSONObject groupJSONObject = jsonArray.getJSONObject(0);
 
@@ -268,8 +254,7 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[] {_CLASS_NAME_ID_1}, new long[] {_CLASS_TYPE_ID_1},
-				_COMPANY_ID, LocaleUtil.US);
+				new long[] {_CLASS_NAME_ID_1}, _COMPANY_ID, LocaleUtil.US);
 
 		JSONArray itemsJSONArray = JSONUtil.getValueAsJSONArray(
 			jsonArray, "JSONObject/1", "JSONArray/items");
@@ -307,8 +292,7 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[] {_CLASS_NAME_ID_1}, new long[] {_CLASS_TYPE_ID_1},
-				_COMPANY_ID, LocaleUtil.US);
+				new long[] {_CLASS_NAME_ID_1}, _COMPANY_ID, LocaleUtil.US);
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
@@ -332,8 +316,7 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[] {_CLASS_NAME_ID_1}, new long[] {_CLASS_TYPE_ID_1},
-				_COMPANY_ID, LocaleUtil.US);
+				new long[] {_CLASS_NAME_ID_1}, _COMPANY_ID, LocaleUtil.US);
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
@@ -348,10 +331,6 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
 
-		Assert.assertEquals(
-			_CLASS_NAME_ID_1, itemJSONObject.getLong("classNameId"));
-		Assert.assertEquals(
-			_CLASS_TYPE_ID_1, itemJSONObject.getLong("classTypeId"));
 		Assert.assertEquals(
 			_EXTERNAL_REFERENCE_CODE_1,
 			itemJSONObject.getString("objectDefinitionExternalReferenceCode"));
@@ -414,8 +393,7 @@ public class AssetListTypePropertiesUtilTest {
 
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[] {_CLASS_NAME_ID_1}, new long[] {_CLASS_TYPE_ID_1},
-				_COMPANY_ID, LocaleUtil.US);
+				new long[] {_CLASS_NAME_ID_1}, _COMPANY_ID, LocaleUtil.US);
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
@@ -453,7 +431,7 @@ public class AssetListTypePropertiesUtilTest {
 	public void testGetTypePropertiesJSONArrayReturnsOnlyCommonFieldsGroupWhenNoClassNameIds() {
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
-				new long[0], new long[0], _COMPANY_ID, LocaleUtil.US);
+				new long[0], _COMPANY_ID, LocaleUtil.US);
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
@@ -492,7 +470,7 @@ public class AssetListTypePropertiesUtilTest {
 		JSONArray jsonArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
 				new long[] {_CLASS_NAME_ID_1, RandomTestUtil.randomLong()},
-				new long[] {_CLASS_TYPE_ID_1, 0}, _COMPANY_ID, LocaleUtil.US);
+				_COMPANY_ID, LocaleUtil.US);
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
@@ -597,10 +575,6 @@ public class AssetListTypePropertiesUtilTest {
 	private static final long _CLASS_NAME_ID_1 = RandomTestUtil.randomLong();
 
 	private static final long _CLASS_NAME_ID_2 = RandomTestUtil.randomLong();
-
-	private static final long _CLASS_TYPE_ID_1 = RandomTestUtil.randomLong();
-
-	private static final long _CLASS_TYPE_ID_2 = RandomTestUtil.randomLong();
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 

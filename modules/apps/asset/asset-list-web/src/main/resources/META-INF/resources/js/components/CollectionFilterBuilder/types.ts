@@ -22,8 +22,6 @@ export interface PropertyOption {
 }
 
 export interface FilterProperty {
-	classNameId?: number;
-	classTypeId?: number;
 	label: string;
 	name: string;
 	objectDefinitionExternalReferenceCode?: string;
@@ -64,12 +62,4 @@ export function getFilterPropertyKey(
 	name: string | undefined
 ): string {
 	return `${objectDefinitionExternalReferenceCode ?? ''}|${name ?? ''}`;
-}
-
-export function getPropertyKey(
-	classNameId: number | undefined,
-	classTypeId: number | undefined,
-	name: string | undefined
-): string {
-	return `${classNameId ?? ''}|${classTypeId ?? ''}|${name ?? ''}`;
 }

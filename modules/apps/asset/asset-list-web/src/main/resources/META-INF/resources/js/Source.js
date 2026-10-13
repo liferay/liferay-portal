@@ -159,10 +159,7 @@ export default function ({
 
 		fetch(
 			addParams(
-				{
-					[`${namespace}classNameIds`]: classNameIds.join(','),
-					[`${namespace}classTypeIds`]: classTypeIds.join(','),
-				},
+				{[`${namespace}classNameIds`]: classNameIds.join(',')},
 				propertiesURL
 			)
 		)
