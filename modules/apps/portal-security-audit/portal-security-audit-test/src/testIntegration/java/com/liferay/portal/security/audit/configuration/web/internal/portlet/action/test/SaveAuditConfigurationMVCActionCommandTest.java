@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
@@ -128,7 +129,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			_configurationProvider.getCompanyConfiguration(
 				AuditConfiguration.class, TestPropsValues.getCompanyId());
 
-		Assert.assertFalse(auditConfiguration.enabled());
+		Assert.assertTrue(auditConfiguration.enabled());
 		Assert.assertFalse(auditConfiguration.pseudonymizationEnabled());
 
 		_assertFileSystemAuditMessageProcessorConfiguration(
@@ -160,15 +161,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		Assert.assertEquals(
 			"NDJSON",
 			fileSystemAuditMessageProcessorConfiguration.outputFormat());
-	}
-
-	@FeatureFlag("LPD-6417")
-	@Test
-	public void testProcessActionWithCompanyScopeWhenEnabledIsOverridden()
-		throws Exception {
-
-		_testProcessActionWhenEnabledIsOverridden(
-			true, ExtendedObjectClassDefinition.Scope.COMPANY);
 	}
 
 	@FeatureFlag(enable = false, value = "LPD-6417")
@@ -289,8 +281,21 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	public void testProcessActionWithSystemScopeWhenEnabledIsOverridden()
 		throws Exception {
 
-		_testProcessActionWhenEnabledIsOverridden(
-			false, ExtendedObjectClassDefinition.Scope.SYSTEM);
+		_configurationProvider.saveSystemConfiguration(
+			AuditConfiguration.class,
+			MapUtil.singletonDictionary("enabled", false));
+
+		_processActionWithOverriddenConfiguration(
+			AuditConfiguration.class,
+			HashMapBuilder.<String, Object>put(
+				"enabled", true
+			).build(),
+			ExtendedObjectClassDefinition.Scope.SYSTEM);
+
+		Dictionary<String, Object> properties = _getProperties(
+			ExtendedObjectClassDefinition.Scope.SYSTEM);
+
+		Assert.assertEquals(Boolean.FALSE, properties.get("enabled"));
 	}
 
 	@Test
@@ -524,27 +529,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		}
 	}
 
-	private void _saveConfiguration(
-			boolean enabled, ExtendedObjectClassDefinition.Scope scope)
-		throws Exception {
-
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", enabled
-			).build();
-
-		if (ExtendedObjectClassDefinition.Scope.SYSTEM.equals(scope)) {
-			_configurationProvider.saveSystemConfiguration(
-				AuditConfiguration.class, properties);
-
-			return;
-		}
-
-		_configurationProvider.saveCompanyConfiguration(
-			AuditConfiguration.class, TestPropsValues.getCompanyId(),
-			properties);
-	}
-
 	private void _testProcessActionRoutesAuditMessage(
 			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
@@ -608,24 +592,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		finally {
 			serviceRegistration.unregister();
 		}
-	}
-
-	private void _testProcessActionWhenEnabledIsOverridden(
-			boolean enabled, ExtendedObjectClassDefinition.Scope scope)
-		throws Exception {
-
-		_saveConfiguration(enabled, scope);
-
-		_processActionWithOverriddenConfiguration(
-			AuditConfiguration.class,
-			HashMapBuilder.<String, Object>put(
-				"enabled", true
-			).build(),
-			scope);
-
-		Dictionary<String, Object> properties = _getProperties(scope);
-
-		Assert.assertEquals(enabled, properties.get("enabled"));
 	}
 
 	private void _testProcessActionWhenFileSystemProcessorIsOverridden(

@@ -39,8 +39,8 @@ test(
 			'Virtual Instance Scope'
 		);
 
-		await expect(page.getByLabel('Enabled', {exact: true})).toBeChecked();
 		await expect(instanceSettingsPage.saveButton).toBeVisible();
+		await expect(page.getByLabel('Enabled', {exact: true})).toBeHidden();
 	}
 );
 

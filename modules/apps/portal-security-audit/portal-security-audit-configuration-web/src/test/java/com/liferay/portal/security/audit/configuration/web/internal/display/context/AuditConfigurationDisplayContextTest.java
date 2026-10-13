@@ -95,7 +95,8 @@ public class AuditConfigurationDisplayContextTest {
 	private AuditConfigurationDisplayContext _createDisplayContext() {
 		return new AuditConfigurationDisplayContext(
 			Mockito.mock(AuditConfiguration.class),
-			Mockito.mock(FileSystemAuditMessageProcessorConfiguration.class));
+			Mockito.mock(FileSystemAuditMessageProcessorConfiguration.class),
+			false);
 	}
 
 	private void _mockOverrideProperties(

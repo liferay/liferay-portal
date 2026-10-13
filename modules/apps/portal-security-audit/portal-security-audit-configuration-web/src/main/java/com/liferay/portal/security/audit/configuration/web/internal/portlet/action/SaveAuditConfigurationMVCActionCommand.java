@@ -121,22 +121,22 @@ public class SaveAuditConfigurationMVCActionCommand
 					permissionChecker);
 			}
 
-			if (!AuditConfigurationOverrideUtil.isOverridden(
-					AuditConfiguration.class, "enabled")) {
+			AuditConfiguration auditConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					AuditConfiguration.class, companyId);
 
-				AuditConfiguration auditConfiguration =
-					_configurationProvider.getCompanyConfiguration(
-						AuditConfiguration.class, companyId);
+			_configurationProvider.saveCompanyConfiguration(
+				AuditConfiguration.class, companyId,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"pseudonymizationEnabled",
+					ParamUtil.getBoolean(
+						actionRequest, "pseudonymizationEnabled",
+						auditConfiguration.pseudonymizationEnabled())
+				).build());
 
-				_configurationProvider.saveCompanyConfiguration(
-					AuditConfiguration.class, companyId,
-					_getAuditConfigurationProperties(
-						actionRequest, auditConfiguration));
-
-				_routePseudonymizationChangeAuditMessage(
-					actionRequest, auditConfiguration.pseudonymizationEnabled(),
-					themeDisplay);
-			}
+			_routePseudonymizationChangeAuditMessage(
+				actionRequest, auditConfiguration.pseudonymizationEnabled(),
+				themeDisplay);
 
 			Dictionary<String, Object>
 				fileSystemAuditMessageProcessorConfigurationProperties =

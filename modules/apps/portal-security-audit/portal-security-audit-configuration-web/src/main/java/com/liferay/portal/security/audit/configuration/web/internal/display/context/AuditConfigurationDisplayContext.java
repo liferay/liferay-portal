@@ -17,11 +17,13 @@ public class AuditConfigurationDisplayContext {
 	public AuditConfigurationDisplayContext(
 		AuditConfiguration auditConfiguration,
 		FileSystemAuditMessageProcessorConfiguration
-			fileSystemAuditMessageProcessorConfiguration) {
+			fileSystemAuditMessageProcessorConfiguration,
+		boolean systemScope) {
 
 		_auditConfiguration = auditConfiguration;
 		_fileSystemAuditMessageProcessorConfiguration =
 			fileSystemAuditMessageProcessorConfiguration;
+		_systemScope = systemScope;
 	}
 
 	public String getEnabledHelpMessage() {
@@ -118,6 +120,10 @@ public class AuditConfigurationDisplayContext {
 			AuditConfiguration.class, "pseudonymizationEnabled");
 	}
 
+	public boolean isSystemScope() {
+		return _systemScope;
+	}
+
 	private String _getHelpMessage(Class<?> clazz, String key) {
 		return AuditConfigurationOverrideUtil.getHelpMessage(clazz, key);
 	}
@@ -129,5 +135,6 @@ public class AuditConfigurationDisplayContext {
 	private final AuditConfiguration _auditConfiguration;
 	private final FileSystemAuditMessageProcessorConfiguration
 		_fileSystemAuditMessageProcessorConfiguration;
+	private final boolean _systemScope;
 
 }

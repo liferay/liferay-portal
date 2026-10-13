@@ -119,7 +119,8 @@ public class AuditPortalSettingsConfigurationScreenWrapper
 				new AuditConfigurationDisplayContext(
 					_getConfiguration(AuditConfiguration.class),
 					_getConfiguration(
-						FileSystemAuditMessageProcessorConfiguration.class)));
+						FileSystemAuditMessageProcessorConfiguration.class),
+					ExtendedObjectClassDefinition.Scope.SYSTEM.equals(_scope)));
 		}
 
 		private <T> T _getConfiguration(Class<T> clazz) {
