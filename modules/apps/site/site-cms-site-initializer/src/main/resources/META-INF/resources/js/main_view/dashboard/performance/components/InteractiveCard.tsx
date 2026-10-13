@@ -18,23 +18,27 @@ import {MetricValue} from '../../common/MetricValue';
 import './InteractiveCard.scss';
 
 export type MetricColor =
+	| 'cyan'
 	| 'dark'
 	| 'green'
 	| 'orange'
 	| 'pink'
 	| 'purple'
-	| 'red';
+	| 'red'
+	| 'yellow';
 
 const STICKER_DISPLAY_TYPES: Record<
 	MetricColor,
 	React.ComponentProps<typeof ClaySticker>['displayType']
 > = {
+	cyan: 'outline-7',
 	dark: 'outline-0',
 	green: 'outline-3',
 	orange: 'outline-5',
 	pink: 'outline-8',
 	purple: 'outline-1',
 	red: 'outline-4',
+	yellow: 'outline-2',
 };
 
 type Props = {

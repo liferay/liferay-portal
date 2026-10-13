@@ -4,7 +4,11 @@
  */
 
 import ApiHelper, {RequestResult} from '../../../common/services/ApiHelper';
-import {WORKFLOW_STATUS} from '../../../common/utils/constants';
+import {
+	EXPIRING_SOON_THRESHOLD_DAYS,
+	UPCOMING_REVIEW_THRESHOLD_DAYS,
+	WORKFLOW_STATUS,
+} from '../../../common/utils/constants';
 
 export type AssetStatistics = {
 	approvedCount: number;
@@ -52,6 +56,12 @@ export type FacetBucket = {
 	term: string;
 };
 
+export type FreshnessListType =
+	| 'expiredAssets'
+	| 'expiringSoon'
+	| 'overdueReviews'
+	| 'upcomingReviews';
+
 const CONTRIBUTORS_AGGREGATION_NAME = 'contributors';
 
 const DUPLICATE_TITLES_AGGREGATION_NAME = 'duplicateTitles';
@@ -71,6 +81,28 @@ const MINIMUM_DUPLICATE_FREQUENCY = 2;
 const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
 
 const SEARCH_URL = '/o/search/v1.0/search';
+
+const FRESHNESS_LIST_QUERIES: Record<
+	FreshnessListType,
+	() => {filter: string; sort: string}
+> = {
+	expiredAssets: () => ({
+		filter: `status eq ${WORKFLOW_STATUS.EXPIRED}`,
+		sort: 'dateExpiration:asc',
+	}),
+	expiringSoon: () => ({
+		filter: `status eq ${WORKFLOW_STATUS.APPROVED} and dateExpiration le ${getDateInDays(EXPIRING_SOON_THRESHOLD_DAYS).toISOString()}`,
+		sort: 'dateExpiration:asc',
+	}),
+	overdueReviews: () => ({
+		filter: `dateReview lt ${getDateInDays(0).toISOString()}`,
+		sort: 'dateReview:asc',
+	}),
+	upcomingReviews: () => ({
+		filter: `dateReview gt ${getDateInDays(0).toISOString()} and dateReview le ${getDateInDays(UPCOMING_REVIEW_THRESHOLD_DAYS).toISOString()}`,
+		sort: 'dateReview:asc',
+	}),
+};
 
 async function getAssetStatistics(
 	assetLibraryId?: string,
@@ -210,19 +242,38 @@ function getLongStandingDraftsThresholdDate() {
 	);
 }
 
-function getLongStandingDraftsURL(filter: string, groupId?: number) {
+function getAssetListURL(filter: string, sort: string, groupId?: number) {
 	const searchParams = new URLSearchParams({
 		emptySearch: 'true',
-		filter: getScopedFilter(
-			`${filter} and status eq ${WORKFLOW_STATUS.DRAFT} and dateModified lt ${getLongStandingDraftsThresholdDate().toISOString()}`,
-			groupId
-		),
+		filter: getScopedFilter(filter, groupId),
 		nestedFields: NESTED_FIELDS,
 		pageSize: String(GOVERNANCE_ASSET_LIST_PAGE_SIZE),
-		sort: 'dateModified:asc',
+		sort,
 	});
 
 	return `${SEARCH_URL}?${searchParams}`;
+}
+
+function getDateInDays(days: number) {
+	return new Date(Date.now() + days * MILLISECONDS_PER_DAY);
+}
+
+function getFreshnessListURL(
+	type: FreshnessListType,
+	filter: string,
+	groupId?: number
+) {
+	const {filter: typeFilter, sort} = FRESHNESS_LIST_QUERIES[type]();
+
+	return getAssetListURL(`${filter} and ${typeFilter}`, sort, groupId);
+}
+
+function getLongStandingDraftsURL(filter: string, groupId?: number) {
+	return getAssetListURL(
+		`${filter} and status eq ${WORKFLOW_STATUS.DRAFT} and dateModified lt ${getLongStandingDraftsThresholdDate().toISOString()}`,
+		'dateModified:asc',
+		groupId
+	);
 }
 
 async function getCMSEntryClassNames(
@@ -317,6 +368,7 @@ export default {
 	getContributors,
 	getDuplicateTitles,
 	getDuplicateTopicsCount,
+	getFreshnessListURL,
 	getLongStandingDraftsThresholdDate,
 	getLongStandingDraftsURL,
 };
