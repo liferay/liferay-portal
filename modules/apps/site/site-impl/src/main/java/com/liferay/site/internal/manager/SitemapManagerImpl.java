@@ -411,12 +411,11 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 
 		if (Validator.isNotNull(layoutUuid) &&
-			_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
-				companyId) &&
 			_isIndexModeCompanyEnabled(
 				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId)) {
 
-			return _getLayoutSitemap(companyId, groupId, layoutUuid, page);
+			return _getLayoutSitemap(
+				groupId, layoutUuid, page, privateLayout, themeDisplay);
 		}
 
 		return _getSitemap(groupId, layoutUuid, privateLayout, themeDisplay);
@@ -937,7 +936,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private void _generateLayoutSitemap(
-			Layout layout, LayoutSet layoutSet, ThemeDisplay themeDisplay,
+			LayoutSet layoutSet, String layoutUuid, ThemeDisplay themeDisplay,
 			UnsafeBiConsumer<Integer, String, PortalException> unsafeBiConsumer)
 		throws PortalException {
 
@@ -951,11 +950,12 @@ public class SitemapManagerImpl implements SitemapManager {
 
 			_initEntriesAndSize(rootElement);
 			_initPagination(
-				_getPageLayoutChildSitemapKey(layout.getUuid()),
-				themeDisplay.getCompanyId(), rootElement, layout.getGroupId());
+				_getPageLayoutChildSitemapKey(layoutUuid),
+				themeDisplay.getCompanyId(), rootElement,
+				layoutSet.getGroupId());
 
 			_visitLayoutSets(
-				rootElement, ListUtil.fromArray(layoutSet), layout.getUuid(),
+				rootElement, ListUtil.fromArray(layoutSet), layoutUuid,
 				themeDisplay);
 
 			_consumePage(
@@ -1314,8 +1314,41 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private String _getLayoutSitemap(
-			long companyId, long groupId, String layoutUuid, int page)
+			long groupId, String layoutUuid, int page, boolean privateLayout,
+			ThemeDisplay themeDisplay)
 		throws PortalException {
+
+		long companyId = themeDisplay.getCompanyId();
+
+		if (!_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
+				companyId)) {
+
+			PermissionChecker originalPermissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			try {
+				PermissionThreadLocal.setPermissionChecker(
+					_permissionCheckerFactory.create(
+						_userLocalService.getGuestUser(companyId)));
+
+				String[] xml = {null};
+
+				_generateLayoutSitemap(
+					_layoutSetLocalService.getLayoutSet(groupId, privateLayout),
+					layoutUuid, themeDisplay,
+					(curPage, curXML) -> {
+						if (curPage == page) {
+							xml[0] = curXML;
+						}
+					});
+
+				return xml[0];
+			}
+			finally {
+				PermissionThreadLocal.setPermissionChecker(
+					originalPermissionChecker);
+			}
+		}
 
 		return _getStoredSitemap(
 			_getPageLayoutChildSitemapKey(layoutUuid), companyId, groupId, page,
@@ -1334,22 +1367,6 @@ public class SitemapManagerImpl implements SitemapManager {
 
 				return false;
 			});
-	}
-
-	private Map<String, Integer> _getPageCountsByChildSitemapKey(
-			LayoutSet layoutSet, ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		long companyId = themeDisplay.getCompanyId();
-
-		if (!_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
-				companyId)) {
-
-			return Collections.emptyMap();
-		}
-
-		return _sitemapStorageHelper.getPageCountsByChildSitemapKey(
-			companyId, layoutSet.getGroupId());
 	}
 
 	private String _getPageLayoutChildSitemapKey(String layoutUuid) {
@@ -2024,29 +2041,38 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		int[] pageCount = {0};
+		int[] pageCountArray = {0};
 
 		long companyId = themeDisplay.getCompanyId();
 		String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
 			layout.getUuid());
 
 		_generateLayoutSitemap(
-			layout, layoutSet, themeDisplay,
+			layoutSet, layout.getUuid(), themeDisplay,
 			(page, xml) -> {
-				pageCount[0] = page;
+				pageCountArray[0] = page;
 
 				_sitemapStorageHelper.storeSitemapFile(
 					companyId, layout.getGroupId(), pageLayoutChildSitemapKey,
 					page, xml);
 			});
 
-		for (int page = pageCount[0] + 1; page <= previousPageCount; page++) {
-			_sitemapStorageHelper.deleteSitemap(
-				companyId, layout.getGroupId(), pageLayoutChildSitemapKey,
-				page);
+		try {
+			for (int page = pageCountArray[0] + 1; page <= previousPageCount;
+				 page++) {
+
+				_sitemapStorageHelper.deleteSitemap(
+					companyId, layout.getGroupId(), pageLayoutChildSitemapKey,
+					page);
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
 		}
 
-		return pageCount[0];
+		return pageCountArray[0];
 	}
 
 	private void _unlockRegenerateSitemap(
@@ -2061,14 +2087,40 @@ public class SitemapManagerImpl implements SitemapManager {
 			Element element, LayoutSet layoutSet, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		String portalURL = themeDisplay.getPortalURL();
+		long companyId = themeDisplay.getCompanyId();
+
+		boolean cachedGenerationCompanyEnabled =
+			_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
+				companyId);
+
 		Map<String, Integer> pageCountsByChildSitemapKey =
-			_getPageCountsByChildSitemapKey(layoutSet, themeDisplay);
+			Collections.emptyMap();
+
+		if (cachedGenerationCompanyEnabled) {
+			pageCountsByChildSitemapKey =
+				_sitemapStorageHelper.getPageCountsByChildSitemapKey(
+					companyId, layoutSet.getGroupId());
+		}
+
+		String portalURL = themeDisplay.getPortalURL();
 
 		for (Layout layout : _getSitemapLayouts(layoutSet)) {
-			int pageCount = GetterUtil.getInteger(
-				pageCountsByChildSitemapKey.get(
-					_getPageLayoutChildSitemapKey(layout.getUuid())));
+			int pageCount = 0;
+
+			if (cachedGenerationCompanyEnabled) {
+				pageCount = GetterUtil.getInteger(
+					pageCountsByChildSitemapKey.get(
+						_getPageLayoutChildSitemapKey(layout.getUuid())));
+			}
+			else {
+				int[] pageCountArray = {0};
+
+				_generateLayoutSitemap(
+					layoutSet, layout.getUuid(), themeDisplay,
+					(page, xml) -> pageCountArray[0]++);
+
+				pageCount = pageCountArray[0];
+			}
 
 			if (pageCount <= 1) {
 				_addLayoutSitemapElement(element, layout, 0, portalURL);
