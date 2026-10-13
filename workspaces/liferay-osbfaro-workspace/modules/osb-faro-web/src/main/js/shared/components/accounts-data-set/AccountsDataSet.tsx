@@ -135,8 +135,8 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 							value,
 						}),
 					activitiesCountRenderer: columns.countRenderer,
-					annualRevenueRenderer: ({value}: {value: number}) => (
-						<div>{toThousands(value)}</div>
+					annualRevenueRenderer: ({value}: {value?: number}) => (
+						<div>{value ? toThousands(value) : ''}</div>
 					),
 					dateRenderer: ({value}: {value: string}) =>
 						columns.dateRenderer({itemData: {}, value}),
