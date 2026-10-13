@@ -15,6 +15,11 @@ import jakarta.portlet.PortletPreferences;
  */
 public interface Capability {
 
+	public default void process(
+			long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+	}
+
 	public PortletPreferences process(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
