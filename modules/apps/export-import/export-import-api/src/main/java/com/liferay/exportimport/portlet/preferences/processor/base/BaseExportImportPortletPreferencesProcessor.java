@@ -56,6 +56,18 @@ public abstract class BaseExportImportPortletPreferencesProcessor
 				portletDataContext.getCompanyId(), externalReferenceCode);
 	}
 
+	protected String getGroupImportPortletPreferencesExternalReferenceCode(
+		PortletDataContext portletDataContext, String externalReferenceCode) {
+
+		ExportImportPortletPreferencesProcessorHelper
+			exportImportPortletPreferencesProcessorHelper =
+				_exportImportPortletPreferencesProcessorHelperSnapshot.get();
+
+		return exportImportPortletPreferencesProcessorHelper.
+			getGroupImportPortletPreferencesExternalReferenceCode(
+				portletDataContext, externalReferenceCode);
+	}
+
 	protected String getImportPortletPreferencesNewExternalReferenceCode(
 			PortletDataContext portletDataContext, Class<?> clazz,
 			long companyGroupId, Map<String, String[]> primaryKeys,
@@ -258,22 +270,36 @@ public abstract class BaseExportImportPortletPreferencesProcessor
 			for (String portletPreferencesOldValue :
 					portletPreferencesOldValues) {
 
+				String externalReferenceCode = portletPreferencesOldValue;
+
+				if (clazz == Group.class) {
+					externalReferenceCode =
+						getGroupImportPortletPreferencesExternalReferenceCode(
+							portletDataContext, portletPreferencesOldValue);
+				}
+
 				String newExternalReferenceCode =
 					getImportPortletPreferencesNewExternalReferenceCode(
 						portletDataContext, clazz, companyGroupId, parameterMap,
-						portletPreferencesOldValue);
+						externalReferenceCode);
 
-				if (Validator.isNull(newExternalReferenceCode)) {
-					if (_log.isInfoEnabled()) {
-						_log.info(
-							"Unable to import portlet preferences value " +
-								portletPreferencesOldValue);
-					}
-				}
-				else {
+				if (Validator.isNotNull(newExternalReferenceCode)) {
 					newValue = StringUtil.replace(
 						newValue, portletPreferencesOldValue,
 						newExternalReferenceCode);
+				}
+				else if (!Objects.equals(
+							externalReferenceCode,
+							portletPreferencesOldValue)) {
+
+					newValue = StringUtil.replace(
+						newValue, portletPreferencesOldValue,
+						externalReferenceCode);
+				}
+				else if (_log.isInfoEnabled()) {
+					_log.info(
+						"Unable to import portlet preferences value " +
+							portletPreferencesOldValue);
 				}
 			}
 
