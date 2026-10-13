@@ -110,14 +110,12 @@ public class InfoRequestFieldValuesProviderHelper {
 			uploadServletRequest, "deletedItemIdentifiers");
 		long groupId = ParamUtil.getLong(uploadServletRequest, "groupId");
 
-		Map<String, FileItem[]> multipartParameterMap =
-			uploadServletRequest.getMultipartParameterMap();
-
-		Map<String, List<String>> regularParameterMap =
-			uploadServletRequest.getRegularParameterMap();
-
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
 			themeDisplay.getSiteGroupId());
+		Map<String, FileItem[]> multipartParameterMap =
+			uploadServletRequest.getMultipartParameterMap();
+		Map<String, List<String>> regularParameterMap =
+			uploadServletRequest.getRegularParameterMap();
 
 		Map<String, List<InputName>> inputNamesMap = _getInputNamesMap(
 			LocaleUtil.toLanguageIds(availableLocales), multipartParameterMap,
