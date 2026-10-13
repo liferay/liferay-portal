@@ -30,6 +30,24 @@ describe('Canvas', () => {
 		expect(getByText('Action').closest('.canvas-header')).toBeTruthy();
 	});
 
+	it('keeps the gap before the body unless the header has no body', () => {
+		const {getByText} = render(
+			<Canvas>
+				<Canvas.Header title="With Body" />
+
+				<Canvas.Header hasBody={false} title="Header Only" />
+			</Canvas>
+		);
+
+		expect(getByText('With Body').closest('.canvas-header')).toHaveClass(
+			'mb-5',
+			'pb-0'
+		);
+		expect(
+			getByText('Header Only').closest('.canvas-header')
+		).not.toHaveClass('mb-5', 'pb-0');
+	});
+
 	it('renders the body children', () => {
 		const {getByText} = render(
 			<Canvas>
