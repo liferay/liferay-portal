@@ -137,6 +137,14 @@ test(
 			commerceAdminProductDetailsSkusPage.skuAddModalSuccessMessage
 		).toBeVisible();
 
+		await (
+			await commerceAdminProductDetailsSkusPage.closeSidePanelFrame(false)
+		).click();
+
+		await expect(
+			await commerceAdminProductDetailsSkusPage.closeSidePanelFrame(false)
+		).toBeHidden();
+
 		await commerceAdminProductDetailsSkusPage
 			.skusTableRowLink('BLACKSKU')
 			.click();
