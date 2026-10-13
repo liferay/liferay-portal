@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
@@ -234,13 +235,28 @@ public class ExportImportTestUtil {
 			long companyId, long groupId, Map<String, String[]> parameterMap)
 		throws Exception {
 
+		return getImportPortletDataContext(
+			companyId, groupId, parameterMap, null);
+	}
+
+	public static PortletDataContext getImportPortletDataContext(
+			long companyId, long groupId, Map<String, String[]> parameterMap,
+			String sourceCompanyGroupExternalReferenceCode)
+		throws Exception {
+
 		TestReaderWriter testReaderWriter = new TestReaderWriter();
 
 		Document document = SAXReaderUtil.createDocument();
 
 		Element manifestRootElement = document.addElement("root");
 
-		manifestRootElement.addElement("header");
+		Element headerElement = manifestRootElement.addElement("header");
+
+		if (Validator.isNotNull(sourceCompanyGroupExternalReferenceCode)) {
+			headerElement.addAttribute(
+				"company-group-external-reference-code",
+				sourceCompanyGroupExternalReferenceCode);
+		}
 
 		testReaderWriter.addEntry("/manifest.xml", document.asXML());
 
