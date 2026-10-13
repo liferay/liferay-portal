@@ -34,13 +34,20 @@ const Body: React.FC<ICanvasBodyProps> = ({children, className}) => (
 interface ICanvasHeaderProps {
 	children?: React.ReactNode;
 	className?: string;
+	hasBody?: boolean;
 	title: string;
 }
 
-const Header: React.FC<ICanvasHeaderProps> = ({children, className, title}) => (
+const Header: React.FC<ICanvasHeaderProps> = ({
+	children,
+	className,
+	hasBody = true,
+	title,
+}) => (
 	<Card.Header
 		className={getCN(
-			'align-items-lg-center align-items-start c-gap-3 canvas-header d-flex flex-column flex-lg-row flex-wrap justify-content-between mb-5 pb-0',
+			'align-items-lg-center align-items-start c-gap-3 canvas-header d-flex flex-column flex-lg-row flex-wrap justify-content-between',
+			{'mb-5 pb-0': hasBody},
 			className
 		)}
 	>
