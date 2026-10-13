@@ -8,9 +8,11 @@ package com.liferay.headless.cms.internal.graphql.query.v1_0;
 import com.liferay.headless.cms.dto.v1_0.AssetStatistics;
 import com.liferay.headless.cms.dto.v1_0.AssetUsage;
 import com.liferay.headless.cms.dto.v1_0.BrokenLinkAsset;
+import com.liferay.headless.cms.dto.v1_0.MissingRequiredFieldsAsset;
 import com.liferay.headless.cms.resource.v1_0.AssetStatisticsResource;
 import com.liferay.headless.cms.resource.v1_0.AssetUsageResource;
 import com.liferay.headless.cms.resource.v1_0.BrokenLinkAssetResource;
+import com.liferay.headless.cms.resource.v1_0.MissingRequiredFieldsAssetResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -66,6 +68,15 @@ public class Query {
 
 		_brokenLinkAssetResourceComponentServiceObjects =
 			brokenLinkAssetResourceComponentServiceObjects;
+	}
+
+	public static void
+		setMissingRequiredFieldsAssetResourceComponentServiceObjects(
+			ComponentServiceObjects<MissingRequiredFieldsAssetResource>
+				missingRequiredFieldsAssetResourceComponentServiceObjects) {
+
+		_missingRequiredFieldsAssetResourceComponentServiceObjects =
+			missingRequiredFieldsAssetResourceComponentServiceObjects;
 	}
 
 	/**
@@ -132,6 +143,34 @@ public class Query {
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(
 						brokenLinkAssetResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {missingRequiredFieldsAssets(assetLibraryId: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public MissingRequiredFieldsAssetPage missingRequiredFieldsAssets(
+			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page,
+			@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_missingRequiredFieldsAssetResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			missingRequiredFieldsAssetResource ->
+				new MissingRequiredFieldsAssetPage(
+					missingRequiredFieldsAssetResource.
+						getMissingRequiredFieldsAssetsPage(
+							Long.valueOf(assetLibraryId), search,
+							Pagination.of(page, pageSize),
+							_sortsBiFunction.apply(
+								missingRequiredFieldsAssetResource,
+								sortsString))));
 	}
 
 	@GraphQLName("AssetStatisticsPage")
@@ -233,6 +272,41 @@ public class Query {
 
 	}
 
+	@GraphQLName("MissingRequiredFieldsAssetPage")
+	public class MissingRequiredFieldsAssetPage {
+
+		public MissingRequiredFieldsAssetPage(
+			Page missingRequiredFieldsAssetPage) {
+
+			actions = missingRequiredFieldsAssetPage.getActions();
+
+			items = missingRequiredFieldsAssetPage.getItems();
+			lastPage = missingRequiredFieldsAssetPage.getLastPage();
+			page = missingRequiredFieldsAssetPage.getPage();
+			pageSize = missingRequiredFieldsAssetPage.getPageSize();
+			totalCount = missingRequiredFieldsAssetPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<MissingRequiredFieldsAsset> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
 			_applyComponentServiceObjects(
 				ComponentServiceObjects<T> componentServiceObjects,
@@ -309,12 +383,38 @@ public class Query {
 		brokenLinkAssetResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private void _populateResourceContext(
+			MissingRequiredFieldsAssetResource
+				missingRequiredFieldsAssetResource)
+		throws Exception {
+
+		missingRequiredFieldsAssetResource.setContextAcceptLanguage(
+			_acceptLanguage);
+		missingRequiredFieldsAssetResource.setContextCompany(_company);
+		missingRequiredFieldsAssetResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		missingRequiredFieldsAssetResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		missingRequiredFieldsAssetResource.setContextUriInfo(_uriInfo);
+		missingRequiredFieldsAssetResource.setContextUser(_user);
+		missingRequiredFieldsAssetResource.setGroupLocalService(
+			_groupLocalService);
+		missingRequiredFieldsAssetResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		missingRequiredFieldsAssetResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
+		missingRequiredFieldsAssetResource.setRoleLocalService(
+			_roleLocalService);
+	}
+
 	private static ComponentServiceObjects<AssetStatisticsResource>
 		_assetStatisticsResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AssetUsageResource>
 		_assetUsageResourceComponentServiceObjects;
 	private static ComponentServiceObjects<BrokenLinkAssetResource>
 		_brokenLinkAssetResourceComponentServiceObjects;
+	private static ComponentServiceObjects<MissingRequiredFieldsAssetResource>
+		_missingRequiredFieldsAssetResourceComponentServiceObjects;
 
 	private AcceptLanguage _acceptLanguage;
 	private com.liferay.portal.kernel.model.Company _company;
@@ -333,4 +433,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:874633049
+// LIFERAY-REST-BUILDER-HASH:1344130022
