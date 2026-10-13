@@ -326,7 +326,12 @@ testWithEnhancedFiltering.describe(
 
 						await collectionsPage.openCollection(collectionName);
 
-						expect(await getFilters()).toHaveLength(2);
+						const filters = await getFilters();
+
+						expect(filters).toHaveLength(2);
+						expect(
+							filters[0].objectDefinitionExternalReferenceCode
+						).toBe('L_CMS_BASIC_WEB_CONTENT');
 					}
 				);
 
@@ -351,8 +356,10 @@ testWithEnhancedFiltering.describe(
 						const filters = await getFilters();
 
 						expect(filters).toHaveLength(1);
+						expect(
+							filters[0].objectDefinitionExternalReferenceCode
+						).toBeUndefined();
 						expect(filters[0].propertyName).toBe('userName');
-						expect(filters[0].classNameId).toBeUndefined();
 					}
 				);
 
@@ -378,8 +385,10 @@ testWithEnhancedFiltering.describe(
 						const filters = await getFilters();
 
 						expect(filters).toHaveLength(1);
+						expect(
+							filters[0].objectDefinitionExternalReferenceCode
+						).toBeUndefined();
 						expect(filters[0].propertyName).toBe('userName');
-						expect(filters[0].classNameId).toBeUndefined();
 					}
 				);
 			}
