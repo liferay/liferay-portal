@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -486,11 +487,10 @@ public class SitemapManagerImpl implements SitemapManager {
 			return;
 		}
 
-		if (StringUtil.equals(
-				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
-
+		if (_isPageLayoutChildSitemapKey(childSitemapKey)) {
 			for (long curGroupId : _getGroupIds(companyId, groupId)) {
-				_regeneratePageLayoutSitemap(companyId, curGroupId);
+				_regeneratePageLayoutSitemap(
+					childSitemapKey, companyId, curGroupId);
 			}
 
 			return;
@@ -1435,13 +1435,7 @@ public class SitemapManagerImpl implements SitemapManager {
 				entry.getKey());
 
 			for (Layout layout : layouts) {
-				if ((layout.isSystem() && !layout.isTypeAssetDisplay()) ||
-					_sitemapURLProviderHelper.isExcludeLayoutFromSitemap(
-						layout) ||
-					(permissionChecker == null) ||
-					!_layoutModelResourcePermission.contains(
-						permissionChecker, layout, ActionKeys.VIEW)) {
-
+				if (!_isSitemapLayout(layout, permissionChecker)) {
 					continue;
 				}
 
@@ -1524,15 +1518,26 @@ public class SitemapManagerImpl implements SitemapManager {
 		String xmlSitemapIndexMode =
 			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId);
 
-		if (StringUtil.equals(
-				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
-
+		if (_isPageLayoutChildSitemapKey(childSitemapKey)) {
 			return StringUtil.equals(
 				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_PAGE_LAYOUT);
 		}
 
 		return StringUtil.equals(
 			xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE);
+	}
+
+	private boolean _isPageLayoutChildSitemapKey(String childSitemapKey) {
+		if (StringUtil.equals(
+				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT) ||
+			StringUtil.startsWith(
+				childSitemapKey,
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT + StringPool.SLASH)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isSecure() {
@@ -1546,6 +1551,23 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 
 		return false;
+	}
+
+	private boolean _isSitemapLayout(
+			Layout layout, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		if (!_portal.isLayoutSitemapable(layout) ||
+			(layout.isSystem() && !layout.isTypeAssetDisplay()) ||
+			_sitemapURLProviderHelper.isExcludeLayoutFromSitemap(layout) ||
+			(permissionChecker == null) ||
+			!_layoutModelResourcePermission.contains(
+				permissionChecker, layout, ActionKeys.VIEW)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private Lock _lockRegenerateSitemap(
@@ -1635,11 +1657,9 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 	}
 
-	private void _regenerateLayoutSitemaps(
-			long groupId, ThemeDisplay themeDisplay)
+	private void _regenerateLayoutSitemap(
+			long groupId, String layoutUuid, ThemeDisplay themeDisplay)
 		throws PortalException {
-
-		Set<String> pageLayoutChildSitemapKeys = new HashSet<>();
 
 		long companyId = themeDisplay.getCompanyId();
 
@@ -1647,48 +1667,61 @@ public class SitemapManagerImpl implements SitemapManager {
 			_sitemapStorageHelper.getPageCountsByChildSitemapKey(
 				companyId, groupId);
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
+			layoutUuid);
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				_permissionCheckerFactory.create(
-					_userLocalService.getGuestUser(companyId)));
+		int previousPageCount = GetterUtil.getInteger(
+			pageCountsByChildSitemapKey.get(pageLayoutChildSitemapKey));
 
-			LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-				groupId, false);
+		Layout layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layoutUuid, groupId, false);
 
-			for (Layout layout : _getSitemapLayouts(layoutSet)) {
-				int[] pageCount = {0};
-				String pageLayoutChildSitemapKey =
-					_getPageLayoutChildSitemapKey(layout.getUuid());
+		int pageCount = 0;
 
-				_generateLayoutSitemap(
-					layout, layoutSet, themeDisplay,
-					(page, xml) -> {
-						pageCount[0] = page;
+		if ((layout != null) &&
+			_isSitemapLayout(
+				layout, PermissionThreadLocal.getPermissionChecker())) {
 
-						_sitemapStorageHelper.storeSitemapFile(
-							companyId, groupId, pageLayoutChildSitemapKey, page,
-							xml);
-					});
-
-				pageLayoutChildSitemapKeys.add(pageLayoutChildSitemapKey);
-
-				for (int page = pageCount[0] + 1;
-					 page <= GetterUtil.getInteger(
-						 pageCountsByChildSitemapKey.get(
-							 pageLayoutChildSitemapKey));
-					 page++) {
-
-					_sitemapStorageHelper.deleteSitemap(
-						companyId, groupId, pageLayoutChildSitemapKey, page);
-				}
-			}
+			pageCount = _storeLayoutSitemap(
+				layout, _layoutSetLocalService.getLayoutSet(groupId, false),
+				previousPageCount, themeDisplay);
 		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
+		else if (previousPageCount > 0) {
+			_sitemapStorageHelper.deleteSitemaps(
+				companyId, groupId, pageLayoutChildSitemapKey);
+		}
+
+		if (pageCount != previousPageCount) {
+			_regeneratePageLayoutIndexSitemaps(groupId, themeDisplay);
+		}
+	}
+
+	private void _regenerateLayoutSitemaps(
+			long groupId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		long companyId = themeDisplay.getCompanyId();
+
+		Map<String, Integer> pageCountsByChildSitemapKey =
+			_sitemapStorageHelper.getPageCountsByChildSitemapKey(
+				companyId, groupId);
+
+		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+			groupId, false);
+
+		Set<String> pageLayoutChildSitemapKeys = new HashSet<>();
+
+		for (Layout layout : _getSitemapLayouts(layoutSet)) {
+			String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
+				layout.getUuid());
+
+			_storeLayoutSitemap(
+				layout, layoutSet,
+				GetterUtil.getInteger(
+					pageCountsByChildSitemapKey.get(pageLayoutChildSitemapKey)),
+				themeDisplay);
+
+			pageLayoutChildSitemapKeys.add(pageLayoutChildSitemapKey);
 		}
 
 		for (String childSitemapKey : pageCountsByChildSitemapKey.keySet()) {
@@ -1706,22 +1739,84 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 	}
 
-	private void _regeneratePageLayoutSitemap(long companyId, long groupId)
+	private void _regeneratePageLayoutIndexSitemaps(
+			long groupId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		_getIndexSitemap(groupId, false, themeDisplay);
+
+		long companyId = themeDisplay.getCompanyId();
+
+		Group guestGroup = _groupLocalService.getGroup(
+			companyId, GroupConstants.GUEST);
+
+		if ((guestGroup.getGroupId() == groupId) ||
+			!_sitemapStorageHelper.hasSitemapFile(
+				companyId, guestGroup.getGroupId())) {
+
+			return;
+		}
+
+		try {
+			if (!ArrayUtil.contains(
+					_sitemapConfigurationManager.getCompanySitemapGroupIds(
+						companyId),
+					groupId)) {
+
+				return;
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return;
+		}
+
+		_getIndexSitemap(
+			guestGroup.getGroupId(), false,
+			_createThemeDisplay(companyId, guestGroup.getGroupId()));
+	}
+
+	private void _regeneratePageLayoutSitemap(
+			String childSitemapKey, long companyId, long groupId)
 		throws PortalException {
 
 		Lock lock = _lockRegenerateSitemap(
 			SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
 
 		if ((lock == null) || !lock.isNew()) {
+			_siteSitemapRegenerationEntryLocalService.
+				addSiteSitemapRegenerationEntry(
+					childSitemapKey, companyId, groupId);
+
 			return;
 		}
 
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
 		try {
+			PermissionThreadLocal.setPermissionChecker(
+				_permissionCheckerFactory.create(
+					_userLocalService.getGuestUser(companyId)));
+
 			ThemeDisplay themeDisplay = _createThemeDisplay(companyId, groupId);
 
-			_regenerateLayoutSitemaps(groupId, themeDisplay);
+			if (StringUtil.equals(
+					childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
 
-			_getIndexSitemap(groupId, false, themeDisplay);
+				_regenerateLayoutSitemaps(groupId, themeDisplay);
+
+				_regeneratePageLayoutIndexSitemaps(groupId, themeDisplay);
+			}
+			else {
+				_regenerateLayoutSitemap(
+					groupId,
+					StringUtil.extractLast(childSitemapKey, StringPool.SLASH),
+					themeDisplay);
+			}
 
 			if (_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 					companyId)) {
@@ -1731,6 +1826,9 @@ public class SitemapManagerImpl implements SitemapManager {
 			}
 		}
 		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+
 			_unlockRegenerateSitemap(
 				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
 		}
@@ -1827,9 +1925,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			Date startDate)
 		throws PortalException {
 
-		if (!StringUtil.equals(
-				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
-
+		if (!_isPageLayoutChildSitemapKey(childSitemapKey)) {
 			SitemapURLProvider sitemapURLProvider =
 				_serviceTrackerMap.getService(
 					getAssetTypeClassNameId(childSitemapKey));
@@ -1874,6 +1970,36 @@ public class SitemapManagerImpl implements SitemapManager {
 				"Sitemap regeneration for group ", groupId, " and sitemap key ",
 				childSitemapKey),
 			SitemapDestinationNames.SITEMAP_REGENERATION, message);
+	}
+
+	private int _storeLayoutSitemap(
+			Layout layout, LayoutSet layoutSet, int previousPageCount,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		int[] pageCount = {0};
+
+		long companyId = themeDisplay.getCompanyId();
+		String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
+			layout.getUuid());
+
+		_generateLayoutSitemap(
+			layout, layoutSet, themeDisplay,
+			(page, xml) -> {
+				pageCount[0] = page;
+
+				_sitemapStorageHelper.storeSitemapFile(
+					companyId, layout.getGroupId(), pageLayoutChildSitemapKey,
+					page, xml);
+			});
+
+		for (int page = pageCount[0] + 1; page <= previousPageCount; page++) {
+			_sitemapStorageHelper.deleteSitemap(
+				companyId, layout.getGroupId(), pageLayoutChildSitemapKey,
+				page);
+		}
+
+		return pageCount[0];
 	}
 
 	private void _unlockRegenerateSitemap(
