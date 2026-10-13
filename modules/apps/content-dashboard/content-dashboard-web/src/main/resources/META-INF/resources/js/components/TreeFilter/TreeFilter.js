@@ -307,7 +307,13 @@ const TreeFilter = ({
 								description={Liferay.Language.get(
 									'no-results-were-found'
 								)}
-								imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+								image={
+									<ClayIcon
+										className="c-empty-state-icon c-empty-state-icon-empty-state"
+										illustration
+										symbol="empty-state"
+									/>
+								}
 								title={Liferay.Language.get('no-results-found')}
 							/>
 						)}
