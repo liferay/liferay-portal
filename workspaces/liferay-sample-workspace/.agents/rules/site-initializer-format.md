@@ -165,7 +165,7 @@ client-extensions/<name>/
       <NN-name>.json
     object-relationships/         # One raw ObjectRelationship DTO per file
       <name>.json
-    object-fields/                # Fields added to already existing objects
+    object-fields/                # {"objectDefinitionId", "object-fields": [...]}; Aggregation fields go here (manage-objects)
     object-folders/               # Object folders
     object-actions/               # Object actions
     object-entries/               # Seed object entry data
@@ -176,6 +176,7 @@ client-extensions/<name>/
       <style-book-name>/
         style-book.json
     thumbnail.png                 # Site thumbnail (displayed in Site Admin)
+    workflow-definitions/         # Kaleo definition + object link (manage-object-logic → Approval Workflow)
 ```
 
 ## Objects and Picklists

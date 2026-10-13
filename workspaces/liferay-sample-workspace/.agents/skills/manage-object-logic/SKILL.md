@@ -7,7 +7,7 @@ name: manage-object-logic
 
 # Manage Object Logic
 
-Attach triggers, conditions, and actions to object definitions. The three extension points are object actions (immediate), Kaleo workflows (multistep approval), and notification templates (user facing messages).
+Attach triggers, conditions, and actions to object definitions. The three extension points are object actions (immediate), Kaleo workflows (approval, see "Approval Workflow"), and notification templates (user facing messages).
 
 ## When to Invoke
 
@@ -366,26 +366,171 @@ A callback to `/o/c/<plural>` needs the **object's own scope** on the CET's OAut
 
 The same hang was seen once without any callback, on the first add after creating two actions on Hypersonic. Liferay never called the CET; the add waited on its own action status update. A portal restart cleared it, and it did not recur. If an add hangs with nothing in the CET log, restart the portal.
 
-### Kaleo Workflow
+### Approval Workflow
 
-Deploy a workflow definition when the object requires multistep review or approval.
+Use this when a reviewer approves or rejects each entry. Everything in this section was verified end to end on a 2026.Q2 bundle.
+
+**Do not link the stock Single Approver.** Its `reject` transition goes to an `update` task that sets the entry back to Pending for the author to revise, so a rejected entry never leaves Pending, and a Guest submitter has no account to act on `update` with. **Do not write a Groovy script action either.** Deploying one fails with `KaleoDefinitionValidationException.NotAllowedScriptLanguage` (`Groovy is not allowed`).
+
+Set the status with declarative `<status>` actions on two terminal states instead:
+
+```xml
+<?xml version="1.0"?>
+<workflow-definition xmlns="urn:liferay.com:liferay-workflow_7.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd">
+	<name><Workflow Name></name>
+	<version>1</version>
+	<state>
+		<name>created</name>
+		<initial>true</initial>
+		<transitions>
+			<transition>
+				<name>review</name>
+				<target>review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<task>
+		<name>review</name>
+		<assignments>
+			<roles>
+				<role>
+					<role-type>regular</role-type>
+					<name>Administrator</name>
+				</role>
+			</roles>
+		</assignments>
+		<transitions>
+			<transition>
+				<name>approve</name>
+				<target>approved</target>
+				<default>true</default>
+			</transition>
+			<transition>
+				<name>reject</name>
+				<target>rejected</target>
+				<default>false</default>
+			</transition>
+		</transitions>
+	</task>
+	<state>
+		<name>approved</name>
+		<actions>
+			<action>
+				<name>approve</name>
+				<status>0</status>
+				<execution-type>onEntry</execution-type>
+			</action>
+		</actions>
+	</state>
+	<state>
+		<name>rejected</name>
+		<actions>
+			<action>
+				<name>reject</name>
+				<status>4</status>
+				<execution-type>onEntry</execution-type>
+			</action>
+		</actions>
+	</state>
+</workflow-definition>
+```
+
+The entry's system `status` follows the workflow: `1` pending on submission, `0` approved, `4` denied. There is no separate "rejected" code. A rejected entry reads `{"code": 4, "label": "denied"}`.
+
+#### Deploy and Link Over REST
+
+Deploy the definition, building the body with `jq` so the XML is escaped:
+
+```bash
+jq \
+	--arg content "$(cat <workflow>.xml)" \
+	--null-input \
+	'{active: true, content: $content, name: "<Workflow Name>", title: "<Workflow Name>"}' \
+	| curl \
+		--data @- \
+		--header "Content-Type: application/json" \
+		--request POST \
+		--silent \
+		--url "http://localhost:${PORT}/o/headless-admin-workflow/v1.0/workflow-definitions/deploy" \
+		--user "test@liferay.com:test"
+```
+
+Link it to the object with the returned `id`:
 
 ```bash
 curl \
 	--data '{
-		"active": true,
-		"name": "<WorkflowName>",
-		"title": {"en_US": "<Workflow Title>"},
-		"content": "<escaped XML or JSON workflow definition>"
+		"className": "<object definition className>",
+		"groupId": 0,
+		"workflowDefinitionName": "<Workflow Name>"
 	}' \
 	--header "Content-Type: application/json" \
 	--request POST \
 	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-workflow/v1.0/workflow-definitions" \
+	--url "http://localhost:${PORT}/o/headless-admin-workflow/v1.0/workflow-definitions/<workflow-definition-id>/workflow-definition-links" \
 	--user "test@liferay.com:test"
 ```
 
-After creating, associate the workflow with the object definition. The reliable path is the Control Panel (Objects → \<Definition\> → Actions → Workflow). There is **no** `workflow-definitions/{id}/assign-to-object` endpoint; programmatic association is done through the `workflow-definition-links` resource (`POST /o/headless-admin-workflow/v1.0/workflow-definitions/<id>/workflow-definition-links`) — confirm the request body against the OpenAPI spec (`get-openapi` MCP tool, or `GET /o/headless-admin-workflow/v1.0/openapi.json`) before scripting it, as the link payload (workflow, class name, type pk) is version sensitive.
+- `className` is the object definition's `className` field (`com.liferay.object.model.ObjectDefinition#<code>`), not its `name`. Read it with `GET /o/object-admin/v1.0/object-definitions/<id>`.
+- `groupId` is `0` for a company scoped object. A link at the site's group ID is accepted and then never applies to entries posted to `/o/c/<plural>`.
+- A link cannot be deleted (`405`), and there is no top level `GET /workflow-definition-links` (`404`). List a definition's links with `GET /workflow-definitions/<id>/workflow-definition-links`, and repoint one with `PUT /workflow-definition-links/by-external-reference-code/<erc>`.
+
+Confirm by posting an entry: the response `status.label` is `pending`.
+
+#### In a Site Initializer
+
+`site-initializer/workflow-definitions/<name>/` holds `workflow-definition.json` (the DTO without `content`), `workflow-definition.xml`, and `workflow-definition.properties.json`, which links it:
+
+```json
+[
+	{
+		"assetName": "C_<ObjectName>",
+		"className": "com.liferay.object.model.ObjectDefinition",
+		"scope": "company"
+	}
+]
+```
+
+`assetName` is the definition's database name, prefixed with `C_`. A bare `<ObjectName>` matches nothing and the link is skipped without a log line. The handler also declares no dependency on the object definition handlers, so the object may not exist yet when it runs. After provisioning, list the links as above, and link over REST when the link is missing.
+
+#### Approve or Reject as the Administrator
+
+```bash
+WF="http://localhost:${PORT}/o/headless-admin-workflow/v1.0"
+
+INSTANCE=$(curl \
+	--silent \
+	--url "${WF}/workflow-instances?completed=false&pageSize=200" \
+	--user "test@liferay.com:test" \
+	| jq --argjson id <entry-id> '.items[] | select(.objectReviewed.id == $id) | .id')
+
+TASK=$(curl \
+	--silent \
+	--url "${WF}/workflow-instances/${INSTANCE}/workflow-tasks?completed=false" \
+	--user "test@liferay.com:test" \
+	| jq '.items[0].id')
+
+curl \
+	--data '{}' \
+	--header "Content-Type: application/json" \
+	--request POST \
+	--silent \
+	--url "${WF}/workflow-tasks/${TASK}/assign-to-me" \
+	--user "test@liferay.com:test"
+
+curl \
+	--data '{"transitionName": "approve"}' \
+	--header "Content-Type: application/json" \
+	--request POST \
+	--silent \
+	--url "${WF}/workflow-tasks/${TASK}/change-transition" \
+	--user "test@liferay.com:test"
+```
+
+- `assign-to-me` needs the JSON `{}` body. Without it the call returns `415`, and transitioning an unclaimed task returns `403`.
+- The body field is `transitionName`. `{"name": ...}` returns `400`.
+- Use `"reject"` for the other outcome. The entry's status changes within a second.
 
 A `workflowAction` CET receives a `transitionURL` in its payload, and it is relative (`/o/headless-admin-workflow/v1.0/workflow-tasks/<id>/change-transition`). Prefix the portal URL before posting `{"transitionName": "<name>"}`. The call needs `Liferay.Headless.Admin.Workflow.everything`. Verified on 2026.Q1.
 

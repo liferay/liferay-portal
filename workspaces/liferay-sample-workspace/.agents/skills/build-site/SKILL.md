@@ -126,6 +126,8 @@ For each object in the confirmed scope, call `manage-objects`:
 
 1. Add validations.
 
+1. For a count or remaining capacity over children, such as places left, add an Aggregation field (`manage-objects` → "Aggregation Fields"), filtered when only some children count.
+
 For each business logic requirement, call `manage-object-logic`:
 
 1. Choose the trigger and action type.
@@ -133,6 +135,8 @@ For each business logic requirement, call `manage-object-logic`:
 1. Create notification templates if needed.
 
 1. Create the object action.
+
+1. For approve or reject review, follow "Approval Workflow". The stock Single Approver cannot set a rejected status.
 
 ### Phase 4: Site Initializer Scaffold
 
