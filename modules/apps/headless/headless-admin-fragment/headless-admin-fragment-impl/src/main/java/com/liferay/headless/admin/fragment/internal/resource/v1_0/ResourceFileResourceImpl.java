@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
 import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
+import com.liferay.document.library.kernel.exception.DuplicateFileEntryExternalReferenceCodeException;
 import com.liferay.document.library.kernel.exception.DuplicateFolderNameException;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -21,6 +22,7 @@ import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.headless.admin.fragment.dto.v1_0.FileURLReference;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFile;
+import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileExternalReferenceCodeException;
 import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileNameException;
 import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
 import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFileEntityModel;
@@ -317,6 +319,12 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 		catch (DuplicateFileEntryException duplicateFileEntryException) {
 			throw new DuplicateResourceFileNameException(
 				duplicateFileEntryException.getMessage());
+		}
+		catch (DuplicateFileEntryExternalReferenceCodeException
+					duplicateFileEntryExternalReferenceCodeException) {
+
+			throw new DuplicateResourceFileExternalReferenceCodeException(
+				duplicateFileEntryExternalReferenceCodeException.getMessage());
 		}
 		catch (DuplicateFolderNameException duplicateFolderNameException) {
 			throw new DuplicateResourceFolderNameException(
