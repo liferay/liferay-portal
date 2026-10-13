@@ -12,6 +12,7 @@ dependencies {
 	compileOnly project(":apps:digital-signature:digital-signature-api")
 	compileOnly project(":apps:digital-signature:digital-signature-rest-api")
 	compileOnly project(":apps:headless:headless-delivery:headless-delivery-api")
+	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":core:petra:petra-function")

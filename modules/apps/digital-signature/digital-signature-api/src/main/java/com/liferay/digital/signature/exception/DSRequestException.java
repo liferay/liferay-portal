@@ -13,6 +13,16 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class DSRequestException extends PortalException {
 
+	public static class MustBeActive extends DSRequestException {
+
+		public MustBeActive(long dsRequestId) {
+			super(
+				"Digital signature request " + dsRequestId +
+					" is no longer active");
+		}
+
+	}
+
 	public static class MustHaveEmbeddedViewEnabled extends DSRequestException {
 
 		public MustHaveEmbeddedViewEnabled(long groupId) {

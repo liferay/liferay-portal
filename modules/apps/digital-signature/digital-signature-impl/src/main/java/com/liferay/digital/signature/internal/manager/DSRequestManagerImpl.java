@@ -9,6 +9,7 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.digital.signature.constants.DSObjectDefinitionConstants;
 import com.liferay.digital.signature.constants.DSRequestConstants;
+import com.liferay.digital.signature.exception.DSEnvelopeException;
 import com.liferay.digital.signature.exception.DSRequestException;
 import com.liferay.digital.signature.manager.DSDocumentManager;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
@@ -281,6 +282,104 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	}
 
 	@Override
+	public List<DSRequest> getGroupDSRequests(
+		long companyId, long groupId, String search, int start, int end) {
+
+		if (!_isEnabled(companyId, groupId)) {
+			return new ArrayList<>();
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					DSObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_REQUEST,
+					companyId);
+
+		if (objectDefinition == null) {
+			return new ArrayList<>();
+		}
+
+		try {
+			List<Long> dsRequestIds = _objectEntryLocalService.getPrimaryKeys(
+				new Long[] {0L}, companyId, objectDefinition.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				_filterFactory.create(
+					"siteGroupId eq " + groupId, objectDefinition),
+				false, search, start, end,
+				new Sort[] {
+					new Sort(Field.CREATE_DATE, Sort.LONG_TYPE, true),
+					new Sort("id", Sort.LONG_TYPE, true)
+				});
+
+			if (dsRequestIds.isEmpty()) {
+				return new ArrayList<>();
+			}
+
+			Map<Long, DSRequest> dsRequests = _getDSRequests(
+				companyId, new HashSet<>(dsRequestIds));
+
+			return TransformUtil.transform(dsRequestIds, dsRequests::get);
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to get digital signature requests for site " + groupId,
+				exception);
+
+			return new ArrayList<>();
+		}
+	}
+
+	@Override
+	public int getGroupDSRequestsCount(
+		long companyId, long groupId, String search) {
+
+		if (!_isEnabled(companyId, groupId)) {
+			return 0;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					DSObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_REQUEST,
+					companyId);
+
+		if (objectDefinition == null) {
+			return 0;
+		}
+
+		try {
+			return _objectEntryLocalService.getValuesListCount(
+				new Long[] {0L}, companyId, objectDefinition.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				_filterFactory.create(
+					"siteGroupId eq " + groupId, objectDefinition),
+				false, search);
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to count digital signature requests for site " +
+					groupId,
+				exception);
+
+			return 0;
+		}
+	}
+
+	@Override
+	public Map<Long, DSRequest> getLatestFileEntryDSRequests(
+		long companyId, long[] fileEntryIds) {
+
+		try {
+			return _getLatestFileEntryDSRequests(companyId, fileEntryIds);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return new HashMap<>();
+		}
+	}
+
+	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, DSRequest dsRequest,
 			String actionId)
@@ -376,11 +475,30 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	public void updateDSRequest(long dsRequestId) throws PortalException {
 		ObjectEntry objectEntry = _getDSRequestObjectEntry(dsRequestId);
 
+		if (!_isEnabled(
+				objectEntry.getCompanyId(),
+				MapUtil.getLong(objectEntry.getValues(), "siteGroupId"))) {
+
+			return;
+		}
+
+		_updateDSRequest(objectEntry);
+	}
+
+	@Override
+	public void voidDSRequest(long dsRequestId, String voidedReason)
+		throws PortalException {
+
+		ObjectEntry objectEntry = _getDSRequestObjectEntry(dsRequestId);
+
 		long companyId = objectEntry.getCompanyId();
 		long groupId = MapUtil.getLong(objectEntry.getValues(), "siteGroupId");
 
-		if (!_isEnabled(companyId, groupId) ||
-			ArrayUtil.contains(
+		if (!_isEnabled(companyId, groupId)) {
+			throw new DSRequestException.MustHaveEmbeddedViewEnabled(groupId);
+		}
+
+		if (ArrayUtil.contains(
 				DSRequestConstants.STATUSES_REQUEST_TERMINAL,
 				MapUtil.getString(objectEntry.getValues(), "requestStatus"))) {
 
@@ -388,47 +506,35 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		}
 
 		try {
-			DSEnvelope dsEnvelope = _dsEnvelopeManager.getDSEnvelope(
-				companyId, groupId, objectEntry.getExternalReferenceCode());
+			_dsEnvelopeManager.voidDSEnvelope(
+				companyId, objectEntry.getExternalReferenceCode(), groupId,
+				voidedReason);
+		}
+		catch (DSEnvelopeException.MustBeVoidable dsEnvelopeException) {
+			_updateDSRequest(objectEntry);
 
-			String dsRequestStatus = _getDSRequestStatus(dsEnvelope);
+			objectEntry = _objectEntryLocalService.getObjectEntry(dsRequestId);
+
+			String dsRequestStatus = MapUtil.getString(
+				objectEntry.getValues(), "requestStatus");
 
 			if (Objects.equals(
-					DSRequestConstants.STATUS_COMPLETED, dsRequestStatus) &&
-				!Objects.equals(
-					DSRequestConstants.STATUS_COMPLETED,
-					MapUtil.getString(
-						objectEntry.getValues(), "requestStatus"))) {
+					dsRequestStatus, DSRequestConstants.STATUS_VOIDED)) {
 
-				_updateFileEntries(
-					companyId, dsEnvelope, dsRequestId, groupId,
-					objectEntry.getUserId());
+				return;
 			}
 
-			_updateDSRequestRecipientStatuses(
-				companyId, dsEnvelope, dsRequestId, dsRequestStatus, groupId);
+			if (ArrayUtil.contains(
+					DSRequestConstants.STATUSES_REQUEST_TERMINAL,
+					dsRequestStatus)) {
 
-			_objectEntryLocalService.partialUpdateObjectEntry(
-				objectEntry.getUserId(), dsRequestId,
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				HashMapBuilder.<String, Serializable>put(
-					"requestExpirationDate",
-					() -> _toDate(dsEnvelope.getExpirationLocalDateTime())
-				).put(
-					"requestStatus", () -> dsRequestStatus
-				).put(
-					"requestStatusDate",
-					() -> _toDate(dsEnvelope.getStatusLocalDateTime())
-				).build(),
-				_getServiceContext(
-					companyId, groupId, objectEntry.getUserId()));
+				throw new DSRequestException.MustBeActive(dsRequestId);
+			}
+
+			throw dsEnvelopeException;
 		}
-		catch (Exception exception) {
-			_log.error(
-				"Unable to update digital signature request " + dsRequestId,
-				exception);
-		}
+
+		_updateDSRequest(objectEntry);
 	}
 
 	private DSRequest _addDSRequest(
@@ -1112,6 +1218,62 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		}
 
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
+	}
+
+	private void _updateDSRequest(ObjectEntry objectEntry) {
+		if (ArrayUtil.contains(
+				DSRequestConstants.STATUSES_REQUEST_TERMINAL,
+				MapUtil.getString(objectEntry.getValues(), "requestStatus"))) {
+
+			return;
+		}
+
+		long companyId = objectEntry.getCompanyId();
+		long dsRequestId = objectEntry.getObjectEntryId();
+		long groupId = MapUtil.getLong(objectEntry.getValues(), "siteGroupId");
+
+		try {
+			DSEnvelope dsEnvelope = _dsEnvelopeManager.getDSEnvelope(
+				companyId, groupId, objectEntry.getExternalReferenceCode());
+
+			String dsRequestStatus = _getDSRequestStatus(dsEnvelope);
+
+			if (Objects.equals(
+					DSRequestConstants.STATUS_COMPLETED, dsRequestStatus) &&
+				!Objects.equals(
+					DSRequestConstants.STATUS_COMPLETED,
+					MapUtil.getString(
+						objectEntry.getValues(), "requestStatus"))) {
+
+				_updateFileEntries(
+					companyId, dsEnvelope, dsRequestId, groupId,
+					objectEntry.getUserId());
+			}
+
+			_updateDSRequestRecipientStatuses(
+				companyId, dsEnvelope, dsRequestId, dsRequestStatus, groupId);
+
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				objectEntry.getUserId(), dsRequestId,
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"requestExpirationDate",
+					() -> _toDate(dsEnvelope.getExpirationLocalDateTime())
+				).put(
+					"requestStatus", () -> dsRequestStatus
+				).put(
+					"requestStatusDate",
+					() -> _toDate(dsEnvelope.getStatusLocalDateTime())
+				).build(),
+				_getServiceContext(
+					companyId, groupId, objectEntry.getUserId()));
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to update digital signature request " + dsRequestId,
+				exception);
+		}
 	}
 
 	private void _updateDSRequestRecipientStatuses(

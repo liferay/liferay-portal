@@ -10,6 +10,9 @@ import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
+import java.util.List;
+import java.util.Map;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -25,6 +28,15 @@ public interface DSRequestManager {
 
 	public DSRequest fetchDSRequest(long companyId, long dsRequestId);
 
+	public List<DSRequest> getGroupDSRequests(
+		long companyId, long groupId, String search, int start, int end);
+
+	public int getGroupDSRequestsCount(
+		long companyId, long groupId, String search);
+
+	public Map<Long, DSRequest> getLatestFileEntryDSRequests(
+		long companyId, long[] fileEntryIds);
+
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, DSRequest dsRequest,
 			String actionId)
@@ -34,5 +46,8 @@ public interface DSRequestManager {
 		throws PortalException;
 
 	public void updateDSRequest(long dsRequestId) throws PortalException;
+
+	public void voidDSRequest(long dsRequestId, String voidedReason)
+		throws PortalException;
 
 }
