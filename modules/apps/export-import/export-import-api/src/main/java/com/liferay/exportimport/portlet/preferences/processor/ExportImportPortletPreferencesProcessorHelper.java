@@ -24,6 +24,12 @@ public interface ExportImportPortletPreferencesProcessorHelper {
 	public String getGroupExportPortletPreferencesExternalReferenceCode(
 		long companyId, String externalReferenceCode);
 
+	public String getGroupImportPortletPreferencesExternalReferenceCode(
+		long companyId, String externalReferenceCode);
+
+	public String getGroupImportPortletPreferencesExternalReferenceCode(
+		PortletDataContext portletDataContext, String externalReferenceCode);
+
 	public void updateExportPortletPreferencesClassPKs(
 			PortletDataContext portletDataContext, Portlet portlet,
 			PortletPreferences portletPreferences, String key, String className,
@@ -37,6 +43,17 @@ public interface ExportImportPortletPreferencesProcessorHelper {
 
 	public void updateGroupExportPortletPreferencesExternalReferenceCode(
 			long companyId, String externalReferenceCodePreferenceKey,
+			PortletPreferences portletPreferences)
+		throws PortletDataException;
+
+	public void updateGroupImportPortletPreferencesExternalReferenceCode(
+			long companyId, String externalReferenceCodePreferenceKey,
+			PortletPreferences portletPreferences)
+		throws PortletDataException;
+
+	public void updateGroupImportPortletPreferencesExternalReferenceCode(
+			PortletDataContext portletDataContext,
+			String externalReferenceCodePreferenceKey,
 			PortletPreferences portletPreferences)
 		throws PortletDataException;
 

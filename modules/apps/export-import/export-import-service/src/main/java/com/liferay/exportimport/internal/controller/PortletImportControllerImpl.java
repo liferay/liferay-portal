@@ -16,6 +16,7 @@ import com.liferay.exportimport.changeset.constants.ChangesetPortletKeys;
 import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletImportController;
+import com.liferay.exportimport.internal.lar.PortletDataContextThreadLocal;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
 import com.liferay.exportimport.kernel.exception.ExportImportDocumentException;
 import com.liferay.exportimport.kernel.exception.LARFileException;
@@ -50,6 +51,7 @@ import com.liferay.exportimport.portlet.element.handler.PortletElementHandlerFac
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorRegistryUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -620,20 +622,28 @@ public class PortletImportControllerImpl implements PortletImportController {
 								PortletIdCodec.decodePortletName(curPortletId));
 
 				if (exportImportPortletPreferencesProcessor != null) {
-					List<Capability> importCapabilities =
-						exportImportPortletPreferencesProcessor.
-							getImportCapabilities();
+					try (SafeCloseable safeCloseable =
+							PortletDataContextThreadLocal.
+								setPortletDataContextWithSafeCloseable(
+									portletDataContext)) {
 
-					if (ListUtil.isNotEmpty(importCapabilities)) {
-						for (Capability importCapability : importCapabilities) {
-							importCapability.process(
-								portletDataContext, jxPortletPreferences);
+						List<Capability> importCapabilities =
+							exportImportPortletPreferencesProcessor.
+								getImportCapabilities();
+
+						if (ListUtil.isNotEmpty(importCapabilities)) {
+							for (Capability importCapability :
+									importCapabilities) {
+
+								importCapability.process(
+									portletDataContext, jxPortletPreferences);
+							}
 						}
-					}
 
-					exportImportPortletPreferencesProcessor.
-						processImportPortletPreferences(
-							portletDataContext, jxPortletPreferences);
+						exportImportPortletPreferencesProcessor.
+							processImportPortletPreferences(
+								portletDataContext, jxPortletPreferences);
+					}
 				}
 			}
 			finally {

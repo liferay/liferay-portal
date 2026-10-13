@@ -237,6 +237,15 @@ public class LayoutExportController implements ExportController {
 			"company-group-id",
 			String.valueOf(portletDataContext.getCompanyGroupId()));
 
+		Group companyGroup = _groupLocalService.fetchCompanyGroup(
+			portletDataContext.getCompanyId());
+
+		if (companyGroup != null) {
+			headerElement.addAttribute(
+				"company-group-external-reference-code",
+				companyGroup.getExternalReferenceCode());
+		}
+
 		Group group = _groupLocalService.fetchGroup(
 			portletDataContext.getGroupId());
 

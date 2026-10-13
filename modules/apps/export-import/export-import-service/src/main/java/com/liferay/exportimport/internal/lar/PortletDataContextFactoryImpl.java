@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -310,6 +311,26 @@ public class PortletDataContextFactoryImpl
 		portletDataContext.setSourceUserPersonalSiteGroupId(
 			GetterUtil.getLong(
 				headerElement.attributeValue("user-personal-site-group-id")));
+
+		String sourceCompanyGroupExternalReferenceCode =
+			headerElement.attributeValue(
+				"company-group-external-reference-code");
+
+		if (Validator.isNotNull(sourceCompanyGroupExternalReferenceCode)) {
+			Group companyGroup = _groupLocalService.fetchCompanyGroup(
+				portletDataContext.getCompanyId());
+
+			if (companyGroup != null) {
+				Map<String, String> groupExternalReferenceCodes =
+					(Map<String, String>)
+						portletDataContext.getNewPrimaryKeysMap(
+							Group.class + ".externalReferenceCode");
+
+				groupExternalReferenceCodes.put(
+					sourceCompanyGroupExternalReferenceCode,
+					companyGroup.getExternalReferenceCode());
+			}
+		}
 
 		Element missingReferencesElement = rootElement.element(
 			"missing-references");

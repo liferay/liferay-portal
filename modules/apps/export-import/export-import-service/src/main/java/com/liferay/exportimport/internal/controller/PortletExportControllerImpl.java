@@ -854,6 +854,16 @@ public class PortletExportControllerImpl implements PortletExportController {
 		headerElement.addAttribute(
 			"company-group-id",
 			String.valueOf(portletDataContext.getCompanyGroupId()));
+
+		Group companyGroup = _groupLocalService.fetchCompanyGroup(
+			portletDataContext.getCompanyId());
+
+		if (companyGroup != null) {
+			headerElement.addAttribute(
+				"company-group-external-reference-code",
+				companyGroup.getExternalReferenceCode());
+		}
+
 		headerElement.addAttribute("group-id", String.valueOf(scopeGroupId));
 		headerElement.addAttribute(
 			"user-personal-site-group-id",

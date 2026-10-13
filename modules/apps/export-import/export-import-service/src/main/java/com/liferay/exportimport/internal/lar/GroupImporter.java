@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -189,6 +190,26 @@ public class GroupImporter {
 		groupPortletDataContext.setSourceUserPersonalSiteGroupId(
 			GetterUtil.getLong(
 				headerElement.attributeValue("user-personal-site-group-id")));
+
+		String sourceCompanyGroupExternalReferenceCode =
+			headerElement.attributeValue(
+				"company-group-external-reference-code");
+
+		if (Validator.isNotNull(sourceCompanyGroupExternalReferenceCode)) {
+			Group companyGroup = _groupLocalService.fetchCompanyGroup(
+				groupPortletDataContext.getCompanyId());
+
+			if (companyGroup != null) {
+				Map<String, String> groupExternalReferenceCodes =
+					(Map<String, String>)
+						groupPortletDataContext.getNewPrimaryKeysMap(
+							Group.class + ".externalReferenceCode");
+
+				groupExternalReferenceCodes.put(
+					sourceCompanyGroupExternalReferenceCode,
+					companyGroup.getExternalReferenceCode());
+			}
+		}
 
 		return groupPortletDataContext;
 	}
