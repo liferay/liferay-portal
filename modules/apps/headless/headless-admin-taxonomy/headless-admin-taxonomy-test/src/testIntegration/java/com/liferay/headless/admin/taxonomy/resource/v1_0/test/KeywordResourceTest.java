@@ -576,33 +576,8 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		super.testPutAssetLibraryKeywordByExternalReferenceCode();
 
-		String externalReferenceCode = StringUtil.toLowerCase(
-			RandomTestUtil.randomString());
-
-		Keyword keyword =
-			testPutAssetLibraryKeywordByExternalReferenceCode_createKeyword();
-
-		Keyword putKeyword =
-			keywordResource.putAssetLibraryKeywordByExternalReferenceCode(
-				testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId(),
-				externalReferenceCode, keyword);
-
-		Assert.assertEquals(
-			externalReferenceCode, putKeyword.getExternalReferenceCode());
-		assertValid(putKeyword);
-
-		String duplicateNameExternalReferenceCode = StringUtil.toLowerCase(
-			RandomTestUtil.randomString());
-
-		Keyword duplicateNameKeyword =
-			keywordResource.putAssetLibraryKeywordByExternalReferenceCode(
-				testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId(),
-				duplicateNameExternalReferenceCode, keyword);
-
-		Assert.assertEquals(putKeyword.getId(), duplicateNameKeyword.getId());
-		Assert.assertEquals(
-			duplicateNameExternalReferenceCode,
-			duplicateNameKeyword.getExternalReferenceCode());
+		_testPutAssetLibraryKeywordByExternalReferenceCodeWithNewExternalReferenceCode();
+		_testPutAssetLibraryKeywordByExternalReferenceCodeWithNewKeyword();
 	}
 
 	@FeatureFlag("LPD-99403")
@@ -1168,6 +1143,47 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			DepotConstants.TYPE_SPACE, keyword, spaceGroup.getGroupId());
 
 		testGroup = originalTestGroup;
+	}
+
+	private void _testPutAssetLibraryKeywordByExternalReferenceCodeWithNewExternalReferenceCode()
+		throws Exception {
+
+		Keyword keyword =
+			testPutAssetLibraryKeywordByExternalReferenceCode_createKeyword();
+
+		Keyword putKeyword1 =
+			keywordResource.putAssetLibraryKeywordByExternalReferenceCode(
+				testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()), keyword);
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		Keyword putKeyword2 =
+			keywordResource.putAssetLibraryKeywordByExternalReferenceCode(
+				testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId(),
+				externalReferenceCode, keyword);
+
+		Assert.assertEquals(putKeyword1.getId(), putKeyword2.getId());
+		Assert.assertEquals(
+			externalReferenceCode, putKeyword2.getExternalReferenceCode());
+	}
+
+	private void _testPutAssetLibraryKeywordByExternalReferenceCodeWithNewKeyword()
+		throws Exception {
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		Keyword putKeyword =
+			keywordResource.putAssetLibraryKeywordByExternalReferenceCode(
+				testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId(),
+				externalReferenceCode,
+				testPutAssetLibraryKeywordByExternalReferenceCode_createKeyword());
+
+		Assert.assertEquals(
+			externalReferenceCode, putKeyword.getExternalReferenceCode());
+		assertValid(putKeyword);
 	}
 
 	private void _testPutKeywordMergeAppendsProjects() throws Exception {
