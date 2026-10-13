@@ -367,16 +367,6 @@
 		transform: translate(-50%, -50%);
 	}
 }
-.empty-state-icon {
-	background-image: url(@theme_image_path@/states/empty_state.svg);
-	background-position-x: center;
-	background-repeat: no-repeat;
-	margin: auto;
-	min-width: 300px;
-	padding-top: 250px;
-	text-align: center;
-}
-
 .management-toolbar-filter-dropdown {
 	max-width: 400px;
 	width: 400px;

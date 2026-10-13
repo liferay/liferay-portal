@@ -6,6 +6,7 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import {useMutation, useQuery} from 'graphql-hooks';
 import React, {useCallback, useContext, useState} from 'react';
 
@@ -166,10 +167,16 @@ export default withRouter(({history, location, params}) => {
 							data={tags}
 							emptyState={
 								<ClayEmptyState
-									className="empty-state-icon"
 									description={Liferay.Language.get(
 										'sorry,-no-results-were-found'
 									)}
+									image={
+										<ClayIcon
+											className="c-empty-state-icon c-empty-state-icon-empty-state"
+											illustration
+											symbol="empty-state"
+										/>
+									}
 									title={Liferay.Language.get(
 										'there-are-no-results'
 									)}
