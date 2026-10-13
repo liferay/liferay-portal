@@ -96,14 +96,14 @@ public class TagsComponentSectionFragmentRendererTest
 
 	@FeatureFlag("LPD-99403")
 	@Test
-	public void testGetPropsWithProjectObjectEntry() throws Exception {
+	public void testGetPropsWithCMPProjectObjectEntry() throws Exception {
 		Map<String, Object> props = getProps();
 
 		Assert.assertEquals(
 			cmpProjectObjectEntry.getGroupId(), props.get("projectGroupId"));
 
+		testGetPropsWithCMPTaskObjectEntry();
 		testGetPropsWithCMSObjectEntry();
-		testGetPropsWithTaskObjectEntry();
 	}
 
 	@Override

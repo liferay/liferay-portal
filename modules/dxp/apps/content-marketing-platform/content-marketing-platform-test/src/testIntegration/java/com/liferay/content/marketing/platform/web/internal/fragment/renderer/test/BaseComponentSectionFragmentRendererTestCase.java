@@ -131,6 +131,16 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 			null, mockHttpServletRequest);
 	}
 
+	protected void testGetPropsWithCMPTaskObjectEntry() throws Exception {
+		mockHttpServletRequest = getMockHttpServletRequest(
+			cmpTaskObjectDefinition, cmpTaskObjectEntry);
+
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals(
+			cmpProjectObjectEntry.getGroupId(), props.get("projectGroupId"));
+	}
+
 	protected void testGetPropsWithCMSObjectEntry() throws Exception {
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
@@ -149,16 +159,6 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 		Assert.assertEquals(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			props.get("projectGroupId"));
-	}
-
-	protected void testGetPropsWithTaskObjectEntry() throws Exception {
-		mockHttpServletRequest = getMockHttpServletRequest(
-			cmpTaskObjectDefinition, cmpTaskObjectEntry);
-
-		Map<String, Object> props = getProps();
-
-		Assert.assertEquals(
-			cmpProjectObjectEntry.getGroupId(), props.get("projectGroupId"));
 	}
 
 	protected ObjectDefinition cmpProjectObjectDefinition;
