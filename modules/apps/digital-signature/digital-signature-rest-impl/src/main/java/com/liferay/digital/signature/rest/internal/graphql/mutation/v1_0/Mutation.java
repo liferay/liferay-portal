@@ -8,8 +8,10 @@ package com.liferay.digital.signature.rest.internal.graphql.mutation.v1_0;
 import com.liferay.digital.signature.rest.dto.v1_0.DSEnvelope;
 import com.liferay.digital.signature.rest.dto.v1_0.DSEnvelopeSignatureURL;
 import com.liferay.digital.signature.rest.dto.v1_0.DSRecipientViewDefinition;
+import com.liferay.digital.signature.rest.dto.v1_0.SignatureRequest;
 import com.liferay.digital.signature.rest.resource.v1_0.DSEnvelopeResource;
 import com.liferay.digital.signature.rest.resource.v1_0.DSRecipientViewDefinitionResource;
+import com.liferay.digital.signature.rest.resource.v1_0.SignatureRequestResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -56,6 +58,14 @@ public class Mutation {
 
 		_dsRecipientViewDefinitionResourceComponentServiceObjects =
 			dsRecipientViewDefinitionResourceComponentServiceObjects;
+	}
+
+	public static void setSignatureRequestResourceComponentServiceObjects(
+		ComponentServiceObjects<SignatureRequestResource>
+			signatureRequestResourceComponentServiceObjects) {
+
+		_signatureRequestResourceComponentServiceObjects =
+			signatureRequestResourceComponentServiceObjects;
 	}
 
 	@GraphQLField
@@ -142,6 +152,87 @@ public class Mutation {
 						object));
 	}
 
+	@GraphQLField(
+		description = "Sends each recipient whose turn it is a link to sign the signature request. Requires UPDATE permission on the signature request."
+	)
+	public SignatureRequest createSignatureRequestNotification(
+			@GraphQLName("signatureRequestId") Long signatureRequestId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			signatureRequestResource ->
+				signatureRequestResource.postSignatureRequestNotification(
+					signatureRequestId));
+	}
+
+	@GraphQLField(
+		description = "Voids the signature request with the provider and records the reason. Requires UPDATE permission on the signature request."
+	)
+	public SignatureRequest createSignatureRequestVoid(
+			@GraphQLName("signatureRequestId") Long signatureRequestId,
+			@GraphQLName("voidedReason") String voidedReason)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			signatureRequestResource ->
+				signatureRequestResource.postSignatureRequestVoid(
+					signatureRequestId, voidedReason));
+	}
+
+	@GraphQLField(
+		description = "Sends the documents to the recipients through the signature provider and records the signature request. Requires permission to add signature requests and UPDATE permission on each document."
+	)
+	public SignatureRequest createSiteSignatureRequest(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("signatureRequest") SignatureRequest signatureRequest)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			signatureRequestResource ->
+				signatureRequestResource.postSiteSignatureRequest(
+					Long.valueOf(siteKey), signatureRequest));
+	}
+
+	@GraphQLField
+	public Response createSiteSignatureRequestBatch(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			signatureRequestResource ->
+				signatureRequestResource.postSiteSignatureRequestBatch(
+					Long.valueOf(siteKey), callbackURL, object));
+	}
+
+	@GraphQLField
+	public Response createSiteSignatureRequestsPageExportBatch(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("search") String search,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("fieldNames") String fieldNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			signatureRequestResource ->
+				signatureRequestResource.
+					postSiteSignatureRequestsPageExportBatch(
+						Long.valueOf(siteKey), search, callbackURL, contentType,
+						fieldNames));
+	}
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
 			_applyComponentServiceObjects(
 				ComponentServiceObjects<T> componentServiceObjects,
@@ -226,10 +317,34 @@ public class Mutation {
 				_vulcanBatchEngineImportTaskResource);
 	}
 
+	private void _populateResourceContext(
+			SignatureRequestResource signatureRequestResource)
+		throws Exception {
+
+		signatureRequestResource.setContextAcceptLanguage(_acceptLanguage);
+		signatureRequestResource.setContextCompany(_company);
+		signatureRequestResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		signatureRequestResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		signatureRequestResource.setContextUriInfo(_uriInfo);
+		signatureRequestResource.setContextUser(_user);
+		signatureRequestResource.setGroupLocalService(_groupLocalService);
+		signatureRequestResource.setRoleLocalService(_roleLocalService);
+
+		signatureRequestResource.setVulcanBatchEngineExportTaskResource(
+			_vulcanBatchEngineExportTaskResource);
+
+		signatureRequestResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource);
+	}
+
 	private static ComponentServiceObjects<DSEnvelopeResource>
 		_dsEnvelopeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DSRecipientViewDefinitionResource>
 		_dsRecipientViewDefinitionResourceComponentServiceObjects;
+	private static ComponentServiceObjects<SignatureRequestResource>
+		_signatureRequestResourceComponentServiceObjects;
 
 	private AcceptLanguage _acceptLanguage;
 	private com.liferay.portal.kernel.model.Company _company;
@@ -247,4 +362,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-59274011
+// LIFERAY-REST-BUILDER-HASH:-1434916264

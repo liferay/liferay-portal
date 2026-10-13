@@ -6,6 +6,7 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation project(":apps:digital-signature:digital-signature-rest-api")
 	testIntegrationImplementation project(":apps:digital-signature:digital-signature-rest-client")
+	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

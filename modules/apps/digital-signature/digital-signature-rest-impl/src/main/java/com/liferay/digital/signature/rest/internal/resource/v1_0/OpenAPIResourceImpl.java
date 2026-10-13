@@ -89,9 +89,11 @@ public class OpenAPIResourceImpl {
 
 			add(DSRecipientViewDefinitionResourceImpl.class);
 
+			add(SignatureRequestResourceImpl.class);
+
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1027943978
+// LIFERAY-REST-BUILDER-HASH:395514093

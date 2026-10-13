@@ -9,8 +9,10 @@ import com.liferay.digital.signature.rest.internal.graphql.mutation.v1_0.Mutatio
 import com.liferay.digital.signature.rest.internal.graphql.query.v1_0.Query;
 import com.liferay.digital.signature.rest.internal.resource.v1_0.DSEnvelopeResourceImpl;
 import com.liferay.digital.signature.rest.internal.resource.v1_0.DSRecipientViewDefinitionResourceImpl;
+import com.liferay.digital.signature.rest.internal.resource.v1_0.SignatureRequestResourceImpl;
 import com.liferay.digital.signature.rest.resource.v1_0.DSEnvelopeResource;
 import com.liferay.digital.signature.rest.resource.v1_0.DSRecipientViewDefinitionResource;
+import com.liferay.digital.signature.rest.resource.v1_0.SignatureRequestResource;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
 
@@ -40,9 +42,13 @@ public class ServletDataImpl implements ServletData {
 			_dsEnvelopeResourceComponentServiceObjects);
 		Mutation.setDSRecipientViewDefinitionResourceComponentServiceObjects(
 			_dsRecipientViewDefinitionResourceComponentServiceObjects);
+		Mutation.setSignatureRequestResourceComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects);
 
 		Query.setDSEnvelopeResourceComponentServiceObjects(
 			_dsEnvelopeResourceComponentServiceObjects);
+		Query.setSignatureRequestResourceComponentServiceObjects(
+			_signatureRequestResourceComponentServiceObjects);
 	}
 
 	public String getApplicationName() {
@@ -104,6 +110,31 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							DSRecipientViewDefinitionResourceImpl.class,
 							"postSiteDSRecipientViewDefinitionBatch"));
+					put(
+						"mutation#createSignatureRequestNotification",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"postSignatureRequestNotification"));
+					put(
+						"mutation#createSignatureRequestVoid",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"postSignatureRequestVoid"));
+					put(
+						"mutation#createSiteSignatureRequest",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"postSiteSignatureRequest"));
+					put(
+						"mutation#createSiteSignatureRequestBatch",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"postSiteSignatureRequestBatch"));
+					put(
+						"mutation#createSiteSignatureRequestsPageExportBatch",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"postSiteSignatureRequestsPageExportBatch"));
 
 					put(
 						"query#dSEnvelope",
@@ -114,6 +145,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							DSEnvelopeResourceImpl.class,
 							"getSiteDSEnvelopesPage"));
+					put(
+						"query#signatureRequest",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"getSignatureRequest"));
+					put(
+						"query#signatureRequests",
+						new ObjectValuePair<>(
+							SignatureRequestResourceImpl.class,
+							"getSiteSignatureRequestsPage"));
 				}
 			};
 
@@ -125,5 +166,9 @@ public class ServletDataImpl implements ServletData {
 	private ComponentServiceObjects<DSRecipientViewDefinitionResource>
 		_dsRecipientViewDefinitionResourceComponentServiceObjects;
 
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<SignatureRequestResource>
+		_signatureRequestResourceComponentServiceObjects;
+
 }
-// LIFERAY-REST-BUILDER-HASH:35311342
+// LIFERAY-REST-BUILDER-HASH:1897743718
