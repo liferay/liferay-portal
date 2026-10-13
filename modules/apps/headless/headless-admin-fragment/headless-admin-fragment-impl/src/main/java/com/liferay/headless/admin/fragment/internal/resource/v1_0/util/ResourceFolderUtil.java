@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.fragment.internal.resource.v1_0.util;
 
 import com.liferay.document.library.kernel.exception.DuplicateFolderNameException;
+import com.liferay.document.library.kernel.exception.FolderNameException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -14,6 +15,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
 import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
+import com.liferay.headless.admin.fragment.internal.exception.ResourceFolderNameException;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -61,6 +63,10 @@ public class ResourceFolderUtil {
 		catch (DuplicateFolderNameException duplicateFolderNameException) {
 			throw new DuplicateResourceFolderNameException(
 				duplicateFolderNameException.getMessage());
+		}
+		catch (FolderNameException folderNameException) {
+			throw new ResourceFolderNameException(
+				folderNameException.getMessage());
 		}
 	}
 
