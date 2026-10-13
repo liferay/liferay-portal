@@ -949,10 +949,7 @@ public class PortalImpl implements Portal {
 
 			for (String allowedDomain : allowedDomains) {
 				if (allowedDomain.startsWith("*.") &&
-					(allowedDomain.regionMatches(
-						1, domain,
-						domain.length() - (allowedDomain.length() - 1),
-						allowedDomain.length() - 1) ||
+					(domain.endsWith(allowedDomain.substring(1)) ||
 					 domain.equals(allowedDomain.substring(2)))) {
 
 					return url;
