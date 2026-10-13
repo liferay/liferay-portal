@@ -6,11 +6,13 @@
 import {Locator, Page, expect} from '@playwright/test';
 
 import {waitForAlert} from '../../utils/waitForAlert';
+import {FormBuilderSidePanelPage} from './FormBuilderSidePanelPage';
 import {FormsPage} from './FormsPage';
 
 export class FormBuilderPage {
 	readonly copyButton: Locator;
 	readonly entriesTab: Locator;
+	readonly formBuilderSidePanelPage: FormBuilderSidePanelPage;
 	readonly formsPage: FormsPage;
 	readonly formSettingsButton: Locator;
 	readonly formSettingsDoneButton: Locator;
@@ -32,6 +34,7 @@ export class FormBuilderPage {
 	constructor(page: Page) {
 		this.copyButton = page.getByLabel('Copy');
 		this.entriesTab = page.getByRole('button', {name: 'Entries'});
+		this.formBuilderSidePanelPage = new FormBuilderSidePanelPage(page);
 		this.formsPage = new FormsPage(page);
 		this.formSettingsButton = page.getByRole('button', {name: 'Settings'});
 		this.formSettingsDoneButton = page.getByRole('button', {name: 'Done'});
@@ -148,5 +151,31 @@ export class FormBuilderPage {
 		await newTabPage.waitForLoadState('domcontentloaded');
 
 		return newTabPage;
+	}
+
+	async publishNewForm({
+		fieldTypes,
+		siteUrl,
+		title,
+	}: {
+		fieldTypes: FormFieldTypeTitle[];
+		siteUrl?: Site['friendlyUrlPath'];
+		title: string;
+	}) {
+		await this.goToNew(siteUrl);
+
+		await expect(this.newFormHeading).toBeVisible();
+
+		await this.fillFormTitle(title);
+
+		for (const fieldType of fieldTypes) {
+			await this.formBuilderSidePanelPage.addFieldByDoubleClick(
+				fieldType
+			);
+
+			await this.formBuilderSidePanelPage.clickBackButton();
+		}
+
+		await this.clickPublishFormButton();
 	}
 }
