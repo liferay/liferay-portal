@@ -55,7 +55,7 @@ public class JavaLogLevelCheck extends BaseFileCheck {
 				"_log.is" + StringUtil.upperCaseFirstLetter(matcher.group(2)) +
 					"Enabled()";
 
-			if (!(codeBlock.contains(s) ^ !s.equals("_log.isErrorEnabled()"))) {
+			if (codeBlock.contains(s) ^ s.equals("_log.isErrorEnabled()")) {
 				continue;
 			}
 
