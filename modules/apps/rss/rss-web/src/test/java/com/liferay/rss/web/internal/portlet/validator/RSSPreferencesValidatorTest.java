@@ -57,12 +57,11 @@ public class RSSPreferencesValidatorTest {
 			Assert.assertTrue(valid);
 		}
 		catch (ValidatorException validatorException) {
-			Assert.assertFalse(valid);
-
 			Assert.assertArrayEquals(
 				new String[] {url},
 				ArrayUtil.toStringArray(
 					Collections.list(validatorException.getFailedKeys())));
+			Assert.assertFalse(valid);
 		}
 	}
 
