@@ -53,23 +53,10 @@ public class CategoryFacetSearchExportImportPortletPreferencesProcessor
 		try {
 			_updateGroupVocabularyExternalReferenceCodes(
 				portletPreferences,
-				groupExternalReferenceCode -> {
-					Group group =
-						_groupLocalService.fetchGroupByExternalReferenceCode(
-							groupExternalReferenceCode, companyId);
-
-					if (group == null) {
-						return groupExternalReferenceCode;
-					}
-
-					if (group.isCompany()) {
-						return _COMPANY_GROUP_EXTERNAL_REFERENCE_CODE;
-					}
-
-					return _exportImportPortletPreferencesProcessorHelper.
+				groupExternalReferenceCode ->
+					_exportImportPortletPreferencesProcessorHelper.
 						getGroupExportPortletPreferencesExternalReferenceCode(
-							companyId, groupExternalReferenceCode);
-				});
+							companyId, groupExternalReferenceCode));
 		}
 		catch (Exception exception) {
 			throw new PortletDataException(
@@ -104,19 +91,12 @@ public class CategoryFacetSearchExportImportPortletPreferencesProcessor
 		throws PortletDataException {
 
 		try {
-			Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
-
 			_updateGroupVocabularyExternalReferenceCodes(
 				portletPreferences,
-				groupExternalReferenceCode -> {
-					if (groupExternalReferenceCode.equals(
-							_COMPANY_GROUP_EXTERNAL_REFERENCE_CODE)) {
-
-						return companyGroup.getExternalReferenceCode();
-					}
-
-					return groupExternalReferenceCode;
-				});
+				groupExternalReferenceCode ->
+					_exportImportPortletPreferencesProcessorHelper.
+						getGroupImportPortletPreferencesExternalReferenceCode(
+							companyId, groupExternalReferenceCode));
 		}
 		catch (Exception exception) {
 			throw new PortletDataException(
@@ -292,7 +272,9 @@ public class CategoryFacetSearchExportImportPortletPreferencesProcessor
 		}
 
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			oldExternalReferenceCode, portletDataContext.getCompanyId());
+			getGroupImportPortletPreferencesExternalReferenceCode(
+				portletDataContext, oldExternalReferenceCode),
+			portletDataContext.getCompanyId());
 
 		if (group != null) {
 			return group.getExternalReferenceCode();
@@ -452,9 +434,6 @@ public class CategoryFacetSearchExportImportPortletPreferencesProcessor
 
 		return portletPreferences;
 	}
-
-	private static final String _COMPANY_GROUP_EXTERNAL_REFERENCE_CODE =
-		"[$COMPANY_GROUP_EXTERNAL_REFERENCE_CODE$]";
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;

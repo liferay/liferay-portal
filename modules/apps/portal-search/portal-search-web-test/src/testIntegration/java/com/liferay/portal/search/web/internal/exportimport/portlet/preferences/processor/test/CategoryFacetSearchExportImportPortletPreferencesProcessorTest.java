@@ -126,7 +126,7 @@ public class CategoryFacetSearchExportImportPortletPreferencesProcessorTest
 				getPortletConfiguration(layout.getPlid(), portletId);
 
 		Assert.assertEquals(
-			"[$COMPANY_GROUP_EXTERNAL_REFERENCE_CODE$]&&" +
+			companyGroup.getExternalReferenceCode() + "&&" +
 				_assetVocabulary.getExternalReferenceCode(),
 			portletConfiguration.get("groupVocabularyExternalReferenceCodes"));
 
