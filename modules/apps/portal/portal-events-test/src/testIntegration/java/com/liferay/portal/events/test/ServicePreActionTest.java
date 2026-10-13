@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -263,7 +264,7 @@ public class ServicePreActionTest {
 	}
 
 	@Test
-	@TestInfo("LPD-100303")
+	@TestInfo({"LPD-100303", "LPD-105580"})
 	public void testInitThemeDisplayDefaultLayoutIsPublished()
 		throws Exception {
 
@@ -286,6 +287,12 @@ public class ServicePreActionTest {
 		plid = _getThemeDisplayPlid(true, false);
 
 		Assert.assertEquals(publishedLayout.getPlid(), plid);
+
+		_addResources(contentPageLayout);
+
+		plid = _getThemeDisplayPlid(true, contentPageLayout.getPlid(), false);
+
+		Assert.assertEquals(contentPageLayout.getPlid(), plid);
 
 		int count = layouts.size();
 
@@ -418,6 +425,12 @@ public class ServicePreActionTest {
 				CookiesConstants.NAME_COOKIE_SUPPORT));
 	}
 
+	private void _addResources(Layout layout) throws Exception {
+		_resourceLocalService.addResources(
+			_company.getCompanyId(), _group.getGroupId(), layout.getUserId(),
+			Layout.class.getName(), layout.getPlid(), false, true, true);
+	}
+
 	private Layout _getLayout(Object layoutComposite) {
 		return ReflectionTestUtil.invoke(
 			layoutComposite, "getLayout", null, null);
@@ -431,6 +444,18 @@ public class ServicePreActionTest {
 	private long _getThemeDisplayPlid(
 			boolean hasGuestViewPermission, boolean signedIn)
 		throws Exception {
+
+		return _getThemeDisplayPlid(hasGuestViewPermission, 0, signedIn);
+	}
+
+	private long _getThemeDisplayPlid(
+			boolean hasGuestViewPermission, long plid, boolean signedIn)
+		throws Exception {
+
+		if (plid > 0) {
+			_mockHttpServletRequest.setParameter(
+				"p_l_id", String.valueOf(plid));
+		}
 
 		if (!hasGuestViewPermission) {
 			Role role = _roleLocalService.getRole(
@@ -612,6 +637,9 @@ public class ServicePreActionTest {
 
 	@Inject
 	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Inject
+	private ResourceLocalService _resourceLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
