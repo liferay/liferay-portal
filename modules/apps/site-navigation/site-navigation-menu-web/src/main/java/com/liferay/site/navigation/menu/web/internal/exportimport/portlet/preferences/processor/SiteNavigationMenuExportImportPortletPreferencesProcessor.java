@@ -102,13 +102,21 @@ public class SiteNavigationMenuExportImportPortletPreferencesProcessor
 				siteNavigationMenu);
 		}
 
-		_exportImportPortletPreferencesProcessorHelper.
-			updateGroupExportPortletPreferencesExternalReferenceCode(
-				portletDataContext.getCompanyId(),
-				"siteNavigationMenuGroupExternalReferenceCode",
-				portletPreferences);
+		processExportPortletPreferences(
+			portletDataContext.getCompanyId(), portletPreferences);
 
 		return portletPreferences;
+	}
+
+	@Override
+	public void processImportPortletPreferences(
+			long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupImportPortletPreferencesExternalReferenceCode(
+				companyId, "siteNavigationMenuGroupExternalReferenceCode",
+				portletPreferences);
 	}
 
 	@Override
@@ -125,6 +133,12 @@ public class SiteNavigationMenuExportImportPortletPreferencesProcessor
 			throw new PortletDataException(
 				"Unable to import portlet permissions", portalException);
 		}
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupImportPortletPreferencesExternalReferenceCode(
+				portletDataContext,
+				"siteNavigationMenuGroupExternalReferenceCode",
+				portletPreferences);
 
 		if (!MapUtil.getBoolean(
 				portletDataContext.getParameterMap(),
