@@ -42,20 +42,19 @@ public class ThumbnailURLReferenceTestUtil {
 			new String[0], false, t1, thumbnailURLReferenceUnsafeFunction,
 			unsafeFunction);
 		_assertRestrictedHost(
-			new String[] {"example.test"}, false, t1,
+			new String[] {"127.0.0.1"}, false, t1,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 		_assertRestrictedHost(
-			new String[] {"127.0.0.1"}, false, t1,
+			new String[] {"example.test"}, false, t1,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 		_assertAllowedHost(
 			new String[0], true, assertUnsafeBiConsumer, t1,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
-
-		_assertRestrictedHost(
-			new String[] {"example.test"}, true, t2,
-			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 		_assertAllowedHost(
 			new String[] {"127.0.0.1"}, true, assertUnsafeBiConsumer, t2,
+			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
+		_assertRestrictedHost(
+			new String[] {"example.test"}, true, t2,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 	}
 
