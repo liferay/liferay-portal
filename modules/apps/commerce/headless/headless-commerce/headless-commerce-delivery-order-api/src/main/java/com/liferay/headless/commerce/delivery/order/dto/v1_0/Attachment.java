@@ -247,6 +247,52 @@ public class Attachment implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "ID of the underlying document library file entry. Read-only; correlates the attachment with document library features that key on a file entry.",
+		example = "41822"
+	)
+	public Long getFileEntryId() {
+		if (_fileEntryIdSupplier != null) {
+			fileEntryId = _fileEntryIdSupplier.get();
+
+			_fileEntryIdSupplier = null;
+		}
+
+		return fileEntryId;
+	}
+
+	public void setFileEntryId(Long fileEntryId) {
+		this.fileEntryId = fileEntryId;
+
+		_fileEntryIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFileEntryId(
+		UnsafeSupplier<Long, Exception> fileEntryIdUnsafeSupplier) {
+
+		_fileEntryIdSupplier = () -> {
+			try {
+				return fileEntryIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "ID of the underlying document library file entry. Read-only; correlates the attachment with document library features that key on a file entry."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long fileEntryId;
+
+	@JsonIgnore
+	private Supplier<Long> _fileEntryIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Identifier of the attachment. Read-only; assigned by the server.",
 		example = "30130"
 	)
@@ -652,6 +698,18 @@ public class Attachment implements Serializable {
 			sb.append("\"");
 		}
 
+		Long fileEntryId = getFileEntryId();
+
+		if (fileEntryId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fileEntryId\": ");
+
+			sb.append(fileEntryId);
+		}
+
 		Long id = getId();
 
 		if (id != null) {
@@ -874,4 +932,4 @@ public class Attachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1109678798
+// LIFERAY-REST-BUILDER-HASH:-899995412

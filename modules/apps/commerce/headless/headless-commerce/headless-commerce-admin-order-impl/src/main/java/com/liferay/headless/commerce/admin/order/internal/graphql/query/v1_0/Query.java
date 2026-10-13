@@ -274,7 +274,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {orderAttachment(attachmentId: ___, orderId: ___){actions, attachment, dateModified, extension, externalReferenceCode, fileName, id, priority, restricted, title, type, typeLabel, url}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {orderAttachment(attachmentId: ___, orderId: ___){actions, attachment, dateModified, extension, externalReferenceCode, fileEntryId, fileName, id, priority, restricted, title, type, typeLabel, url}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves a single attachment from an order by attachment ID the service. Returns populated Attachment DTO with file metadata (extension, fileName, url) and actions. Throws NoSuchOrderAttachmentException (404) if not found."
@@ -322,7 +322,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {orderByExternalReferenceCodeAttachmentByExternalReferenceCode(attachmentExternalReferenceCode: ___, externalReferenceCode: ___){actions, attachment, dateModified, extension, externalReferenceCode, fileName, id, priority, restricted, title, type, typeLabel, url}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {orderByExternalReferenceCodeAttachmentByExternalReferenceCode(attachmentExternalReferenceCode: ___, externalReferenceCode: ___){actions, attachment, dateModified, extension, externalReferenceCode, fileEntryId, fileName, id, priority, restricted, title, type, typeLabel, url}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves a single attachment via external reference code pair; resolves both order and attachment, then delegates to getOrderAttachment(). Throws NoSuchOrderException (404) or NoSuchOrderAttachmentException (404) if either not found."
@@ -2910,4 +2910,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-663038204
+// LIFERAY-REST-BUILDER-HASH:1736388240
