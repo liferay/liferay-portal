@@ -98,6 +98,9 @@ public class ViewRecycleBinSectionDisplayContextTest
 						language.get(LocaleUtil.getDefault(), "recycle-bin")
 					))
 			).put(
+				"emptyRecycleBinFilterString",
+				getCMSSectionFilterString(displayContext)
+			).put(
 				"hideSpace", true
 			).put(
 				"showEmptyRecycleBinAction", false
