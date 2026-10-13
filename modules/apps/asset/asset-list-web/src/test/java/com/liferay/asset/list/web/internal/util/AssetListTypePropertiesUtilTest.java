@@ -97,7 +97,8 @@ public class AssetListTypePropertiesUtilTest {
 		);
 
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1, Collections.singletonList(objectField));
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
+			Collections.singletonList(objectField));
 
 		JSONArray typePropertiesJSONArray =
 			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
@@ -142,12 +143,12 @@ public class AssetListTypePropertiesUtilTest {
 	@Test
 	public void testGetTypePropertiesJSONArrayEmitsOneGroupPerPair() {
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1,
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
 			Collections.singletonList(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "title")));
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_2, _LABEL_2,
+			_CLASS_NAME_ID_2, _EXTERNAL_REFERENCE_CODE_2, _LABEL_2,
 			Arrays.asList(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "title"),
@@ -177,6 +178,9 @@ public class AssetListTypePropertiesUtilTest {
 			_CLASS_NAME_ID_1, itemJSONObject1.getLong("classNameId"));
 		Assert.assertEquals(
 			_CLASS_TYPE_ID_1, itemJSONObject1.getLong("classTypeId"));
+		Assert.assertEquals(
+			_EXTERNAL_REFERENCE_CODE_1,
+			itemJSONObject1.getString("objectDefinitionExternalReferenceCode"));
 		Assert.assertEquals("title", itemJSONObject1.getString("name"));
 
 		JSONObject groupJSONObject2 = jsonArray.getJSONObject(2);
@@ -194,6 +198,9 @@ public class AssetListTypePropertiesUtilTest {
 			_CLASS_NAME_ID_2, itemJSONObject2.getLong("classNameId"));
 		Assert.assertEquals(
 			_CLASS_TYPE_ID_2, itemJSONObject2.getLong("classTypeId"));
+		Assert.assertEquals(
+			_EXTERNAL_REFERENCE_CODE_2,
+			itemJSONObject2.getString("objectDefinitionExternalReferenceCode"));
 		Assert.assertEquals("title", itemJSONObject2.getString("name"));
 
 		JSONObject itemJSONObject3 = itemsJSONArray2.getJSONObject(1);
@@ -202,6 +209,9 @@ public class AssetListTypePropertiesUtilTest {
 			_CLASS_NAME_ID_2, itemJSONObject3.getLong("classNameId"));
 		Assert.assertEquals(
 			_CLASS_TYPE_ID_2, itemJSONObject3.getLong("classTypeId"));
+		Assert.assertEquals(
+			_EXTERNAL_REFERENCE_CODE_2,
+			itemJSONObject3.getString("objectDefinitionExternalReferenceCode"));
 		Assert.assertEquals("priority", itemJSONObject3.getString("name"));
 		Assert.assertEquals("integer", itemJSONObject3.getString("type"));
 	}
@@ -236,7 +246,7 @@ public class AssetListTypePropertiesUtilTest {
 	@Test
 	public void testGetTypePropertiesJSONArrayEmitsSortableFlagsForObjectFields() {
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1,
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
 			Arrays.asList(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN, "active"),
@@ -289,7 +299,7 @@ public class AssetListTypePropertiesUtilTest {
 	@Test
 	public void testGetTypePropertiesJSONArrayEmitsTypeGroupWithEmptyItemsWhenNoFieldsFilterable() {
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1,
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
 			Collections.singletonList(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
@@ -315,7 +325,7 @@ public class AssetListTypePropertiesUtilTest {
 	@Test
 	public void testGetTypePropertiesJSONArrayIncludesOneTypeGroup() {
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1,
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
 			Collections.singletonList(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "title")));
@@ -342,6 +352,9 @@ public class AssetListTypePropertiesUtilTest {
 			_CLASS_NAME_ID_1, itemJSONObject.getLong("classNameId"));
 		Assert.assertEquals(
 			_CLASS_TYPE_ID_1, itemJSONObject.getLong("classTypeId"));
+		Assert.assertEquals(
+			_EXTERNAL_REFERENCE_CODE_1,
+			itemJSONObject.getString("objectDefinitionExternalReferenceCode"));
 		Assert.assertEquals("title", itemJSONObject.getString("name"));
 		Assert.assertEquals("text", itemJSONObject.getString("type"));
 	}
@@ -361,7 +374,8 @@ public class AssetListTypePropertiesUtilTest {
 		);
 
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1, Collections.singletonList(objectField));
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
+			Collections.singletonList(objectField));
 
 		ListTypeEntry approvedListTypeEntry = Mockito.mock(ListTypeEntry.class);
 
@@ -470,7 +484,7 @@ public class AssetListTypePropertiesUtilTest {
 	@Test
 	public void testGetTypePropertiesJSONArraySkipsNonexistentClassNameId() {
 		_setUpObjectDefinition(
-			_CLASS_NAME_ID_1, _LABEL_1,
+			_CLASS_NAME_ID_1, _EXTERNAL_REFERENCE_CODE_1, _LABEL_1,
 			Collections.singletonList(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "title")));
@@ -532,10 +546,17 @@ public class AssetListTypePropertiesUtilTest {
 	}
 
 	private void _setUpObjectDefinition(
-		long classNameId, String label, List<ObjectField> objectFields) {
+		long classNameId, String externalReferenceCode, String label,
+		List<ObjectField> objectFields) {
 
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
 
 		Mockito.when(
 			objectDefinition.getLabel(LocaleUtil.US, true)
@@ -582,6 +603,12 @@ public class AssetListTypePropertiesUtilTest {
 	private static final long _CLASS_TYPE_ID_2 = RandomTestUtil.randomLong();
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
+	private static final String _EXTERNAL_REFERENCE_CODE_1 =
+		RandomTestUtil.randomString();
+
+	private static final String _EXTERNAL_REFERENCE_CODE_2 =
+		RandomTestUtil.randomString();
 
 	private static final String _LABEL_1 = RandomTestUtil.randomString();
 
