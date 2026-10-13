@@ -41,6 +41,38 @@ describe('TagService.createTag', () => {
 		);
 	});
 
+	it('PATCHes the existing tag with its current spaces when it is added in a project', async () => {
+		const assetLibraries = [{id: assetLibraryId, scopeKey: 'space-key'}];
+		const projectGroupId = 41234;
+
+		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
+			data: {items: [{assetLibraries, name: 'Hola'}]},
+			error: null,
+		} as any);
+
+		const patchSpy = jest
+			.spyOn(ApiHelper, 'patch')
+			.mockResolvedValue({data: {name: 'Hola'}} as any);
+		const postSpy = jest.spyOn(ApiHelper, 'post');
+
+		await TagService.createTag({
+			assetLibraryId: null,
+			cmsGroupId,
+			name: 'Hola',
+			projectGroupId,
+		});
+
+		expect(postSpy).not.toHaveBeenCalled();
+		expect(patchSpy).toHaveBeenCalledWith(
+			{
+				assetLibraries,
+				name: 'Hola',
+				projects: [{id: projectGroupId}],
+			},
+			`/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`
+		);
+	});
+
 	it('POSTs a new tag when no case-insensitive match exists', async () => {
 		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
 			data: {items: []},
