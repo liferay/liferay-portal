@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.standalone.site.initializer.internal.instance.lifecycle;
 
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
@@ -54,11 +56,22 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 
 	@Override
 	protected void doPortalInstanceRegistered(long companyId) throws Exception {
-		Group group = _groupLocalService.getGroup(
+		Group cmsGroup = _groupLocalService.getGroup(
+			companyId, GroupConstants.CMS);
+
+		_configurationProvider.saveGroupConfiguration(
+			companyId, cmsGroup.getGroupId(),
+			"com.liferay.login.web.internal.configuration." +
+				"AuthLoginConfiguration",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"promptEnabled", true
+			).build());
+
+		Group guestGroup = _groupLocalService.getGroup(
 			companyId, GroupConstants.GUEST);
 
 		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-			group.getGroupId(), false);
+			guestGroup.getGroupId(), false);
 
 		Theme theme = _themeLocalService.fetchTheme(
 			companyId, layoutSet.getThemeId());
@@ -80,7 +93,7 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(user));
 
-			_siteInitializer.initialize(group.getGroupId());
+			_siteInitializer.initialize(guestGroup.getGroupId());
 
 			PortletPreferences portletPreferences =
 				PrefsPropsUtil.getPreferences(companyId);
@@ -125,6 +138,9 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 
 		return roleUsers.get(0);
 	}
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

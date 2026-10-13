@@ -38,6 +38,7 @@ dependencies {
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:notification:notification-api")
 	compileOnly project(":apps:on-demand-admin:on-demand-admin-api")
+	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
