@@ -70,51 +70,6 @@ testWithoutFeatureFlag(
 	}
 );
 
-test(
-	'Assert that the database processor configuration is rendered on the instance scope',
-	{tag: '@LPD-98545'},
-	async ({instanceSettingsPage, page}) => {
-		await instanceSettingsPage.goToInstanceSetting(
-			'Audit',
-			'Audit',
-			true,
-			'Virtual Instance Scope'
-		);
-
-		await expect(
-			page.getByRole('heading', {name: 'Database Processor'})
-		).toBeVisible();
-
-		await expect(
-			page.getByLabel('Enable Database Processor')
-		).toBeChecked();
-		await expect(page.getByLabel('Buffer Size')).toHaveValue('2000');
-		await expect(
-			page.getByLabel('Flush Interval in Milliseconds')
-		).toHaveValue('60000');
-	}
-);
-
-test(
-	'Assert that the database processor configuration is rendered on the system scope',
-	{tag: '@LPD-98545'},
-	async ({page, systemSettingsPage}) => {
-		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-		await expect(
-			page.getByRole('heading', {name: 'Database Processor'})
-		).toBeVisible();
-
-		await expect(
-			page.getByLabel('Enable Database Processor')
-		).toBeChecked();
-		await expect(page.getByLabel('Buffer Size')).toHaveValue('2000');
-		await expect(
-			page.getByLabel('Flush Interval in Milliseconds')
-		).toHaveValue('60000');
-	}
-);
-
 testWithoutFeatureFlag(
 	'Assert that the database processor has a separate configuration entry on the system scope when the feature flag is disabled',
 	{tag: '@LPD-98545'},
@@ -129,32 +84,6 @@ testWithoutFeatureFlag(
 
 		await expect(
 			page.getByRole('heading', {name: 'Database Processor'})
-		).toBeHidden();
-	}
-);
-
-test(
-	'Assert that the database processor has no separate configuration entry on the instance scope',
-	{tag: '@LPD-98545'},
-	async ({instanceSettingsPage, page}) => {
-		await instanceSettingsPage.goto();
-
-		await page.getByRole('link', {exact: true, name: 'Audit'}).click();
-
-		const menubar = page
-			.locator('div')
-			.filter({hasText: 'Virtual Instance Scope'})
-			.locator('+ div')
-			.getByRole('menubar');
-
-		await expect(
-			menubar.getByRole('menuitem', {exact: true, name: 'Audit'})
-		).toBeVisible();
-
-		await expect(
-			menubar.getByRole('menuitem', {
-				name: 'Persistent Message Audit Message Processor',
-			})
 		).toBeHidden();
 	}
 );
@@ -221,122 +150,6 @@ test(
 		await expect(page.getByLabel('Pseudonymization Enabled')).toBeChecked();
 	}
 );
-
-test.describe('Database Processor instance configuration', () => {
-	test.afterEach(async ({instanceSettingsPage, page}) => {
-		await instanceSettingsPage.goToInstanceSetting(
-			'Audit',
-			'Audit',
-			true,
-			'Virtual Instance Scope'
-		);
-
-		await page.getByLabel('Enable Database Processor').setChecked(true);
-		await page.getByLabel('Buffer Size').fill('2000');
-		await page.getByLabel('Flush Interval in Milliseconds').fill('60000');
-
-		await instanceSettingsPage.saveAndWaitForAlert();
-	});
-
-	test(
-		'Assert that the database processor configuration is saved and persisted on the instance scope',
-		{tag: '@LPD-98545'},
-		async ({instanceSettingsPage, page}) => {
-			await instanceSettingsPage.goToInstanceSetting(
-				'Audit',
-				'Audit',
-				true,
-				'Virtual Instance Scope'
-			);
-
-			await page
-				.getByLabel('Enable Database Processor')
-				.setChecked(false);
-			await page.getByLabel('Buffer Size').fill('500');
-			await page
-				.getByLabel('Flush Interval in Milliseconds')
-				.fill('30000');
-
-			await instanceSettingsPage.saveAndWaitForAlert();
-
-			await instanceSettingsPage.goToInstanceSetting(
-				'Audit',
-				'Audit',
-				true,
-				'Virtual Instance Scope'
-			);
-
-			await expect(
-				page.getByLabel('Enable Database Processor')
-			).not.toBeChecked();
-			await expect(page.getByLabel('Buffer Size')).toHaveValue('500');
-			await expect(
-				page.getByLabel('Flush Interval in Milliseconds')
-			).toHaveValue('30000');
-		}
-	);
-
-	test(
-		'Assert that a database processor override on the instance scope does not change the system scope',
-		{tag: '@LPD-98545'},
-		async ({instanceSettingsPage, page, systemSettingsPage}) => {
-			await instanceSettingsPage.goToInstanceSetting(
-				'Audit',
-				'Audit',
-				true,
-				'Virtual Instance Scope'
-			);
-
-			await page.getByLabel('Buffer Size').fill('500');
-
-			await instanceSettingsPage.saveAndWaitForAlert();
-
-			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-			await expect(page.getByLabel('Buffer Size')).toHaveValue('2000');
-		}
-	);
-});
-
-test.describe('Database Processor system configuration', () => {
-	test.afterEach(async ({page, systemSettingsPage}) => {
-		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-		await page.getByLabel('Enable Database Processor').setChecked(true);
-		await page.getByLabel('Buffer Size').fill('2000');
-		await page.getByLabel('Flush Interval in Milliseconds').fill('60000');
-
-		await systemSettingsPage.saveAndWaitForAlert();
-	});
-
-	test(
-		'Assert that the database processor configuration is saved and persisted on the system scope',
-		{tag: '@LPD-98545'},
-		async ({page, systemSettingsPage}) => {
-			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-			await page
-				.getByLabel('Enable Database Processor')
-				.setChecked(false);
-			await page.getByLabel('Buffer Size').fill('500');
-			await page
-				.getByLabel('Flush Interval in Milliseconds')
-				.fill('30000');
-
-			await systemSettingsPage.saveAndWaitForAlert();
-
-			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-			await expect(
-				page.getByLabel('Enable Database Processor')
-			).not.toBeChecked();
-			await expect(page.getByLabel('Buffer Size')).toHaveValue('500');
-			await expect(
-				page.getByLabel('Flush Interval in Milliseconds')
-			).toHaveValue('30000');
-		}
-	);
-});
 
 test.describe('File System Processor instance configuration', () => {
 	let defaultOutputDirectory: string;
