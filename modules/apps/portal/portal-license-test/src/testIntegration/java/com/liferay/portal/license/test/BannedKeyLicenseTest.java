@@ -80,8 +80,7 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 			SafeCloseable safeCloseable3 = setReturnValueWithSafeCloseable(
 				_encryptMethod, bannedKey)) {
 
-			deployFreeTierPortalLicense(
-				RandomTestUtil.randomString(), bannedKey, Time.HOUR);
+			deployEnterprisePortalLicense(bannedKey, Time.HOUR);
 
 			Assert.fail(
 				"Unable to see error message \"Corrupt license file. License " +
@@ -105,7 +104,6 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 
 	@Test
 	public void testNonbannedKeys() throws Exception {
-		String domain = RandomTestUtil.randomString();
 		String key = RandomTestUtil.randomString(8);
 
 		Set<String> bnnedKeys = (Set<String>)_bannedKeysField.get(
@@ -117,7 +115,7 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 				"2026.Q1.0 LTS");
 			SafeCloseable safeCloseable2 = resetLicenseDataWithSafeCloseble()) {
 
-			deployFreeTierPortalLicense(domain, key, Time.HOUR);
+			deployEnterprisePortalLicense(key, Time.HOUR);
 
 			Assert.fail(
 				"Unable to see error message \"Corrupt license file. License " +
@@ -144,7 +142,7 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 			SafeCloseable safeCloseable3 = setReturnValueWithSafeCloseable(
 				_encryptMethod, key)) {
 
-			deployFreeTierPortalLicense(domain, key, Time.HOUR);
+			deployEnterprisePortalLicense(key, Time.HOUR);
 
 			assertPortalLicenseRegistered();
 		}

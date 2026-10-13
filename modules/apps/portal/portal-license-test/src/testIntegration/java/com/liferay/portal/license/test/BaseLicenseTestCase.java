@@ -88,24 +88,15 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public static File deployFreeTierPortalLicense(long validityPeriod)
 		throws Exception {
 
-		return deployFreeTierPortalLicense(
-			_FREE_TIER_DOMAIN, StringPool.BLANK, validityPeriod);
+		return deployFreeTierPortalLicense(_FREE_TIER_DOMAIN, validityPeriod);
 	}
 
 	public static File deployFreeTierPortalLicense(
 			String domain, long validityPeriod)
 		throws Exception {
 
-		return deployFreeTierPortalLicense(
-			domain, StringPool.BLANK, validityPeriod);
-	}
-
-	public static File deployFreeTierPortalLicense(
-			String domain, String key, long validityPeriod)
-		throws Exception {
-
 		_registerLicense(
-			_buildFreeTierPortalLicenseXML(domain, key, validityPeriod));
+			_buildFreeTierPortalLicenseXML(domain, validityPeriod));
 
 		return _buildBinaryFile(
 			getPortalProductId(), _FREE_TIER_ACCOUNT_NAME,
@@ -120,13 +111,13 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		for (String[] license : licenses) {
 			if (Objects.equals(license[0], ENTERPRISE_LICENSE_TYPE)) {
 				sb.append(
-					_buildEnterprisePortalLicenseXML(Long.valueOf(license[1])));
+					_buildEnterprisePortalLicenseXML(
+						StringPool.BLANK, Long.valueOf(license[1])));
 			}
 			else if (Objects.equals(license[0], FREE_TIER_LICENSE_TYPE)) {
 				sb.append(
 					_buildFreeTierPortalLicenseXML(
-						_FREE_TIER_DOMAIN, StringPool.BLANK,
-						Long.valueOf(license[1])));
+						_FREE_TIER_DOMAIN, Long.valueOf(license[1])));
 			}
 			else {
 				App app = App.valueOf(license[0]);
@@ -270,7 +261,13 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public File deployEnterprisePortalLicense(long validityPeriod)
 		throws Exception {
 
-		_registerLicense(_buildEnterprisePortalLicenseXML(validityPeriod));
+		return deployEnterprisePortalLicense(StringPool.BLANK, validityPeriod);
+	}
+
+	public File deployEnterprisePortalLicense(String key, long validityPeriod)
+		throws Exception {
+
+		_registerLicense(_buildEnterprisePortalLicenseXML(key, validityPeriod));
 
 		return _buildBinaryFile(
 			getPortalProductId(), _ENTERPRISE_ACCOUNT_NAME,
@@ -605,11 +602,11 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	}
 
 	private static String _buildEnterprisePortalLicenseXML(
-		long validityPeriod) {
+		String key, long validityPeriod) {
 
 		long currentTimeMillis = System.currentTimeMillis();
 
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(20);
 
 		sb.append("<license><account-name>");
 		sb.append(_ENTERPRISE_ACCOUNT_NAME);
@@ -629,16 +626,17 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append("</expiration-date>");
 		sb.append("<domains><domain>");
 		sb.append(_ENTERPRISE_DOMAIN);
-		sb.append("</domain><domain>localhost</domain></domains>");
-		sb.append("<key></key></license>");
+		sb.append("</domain><domain>localhost</domain></domains><key>");
+		sb.append(key);
+		sb.append("</key></license>");
 
 		return sb.toString();
 	}
 
 	private static String _buildFreeTierPortalLicenseXML(
-		String domain, String key, long validityPeriod) {
+		String domain, long validityPeriod) {
 
-		StringBundler sb = new StringBundler(20);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("<license><account-name>");
 		sb.append(_FREE_TIER_ACCOUNT_NAME);
@@ -661,9 +659,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append("</expiration-date>");
 		sb.append("<max-cluster-nodes>3</max-cluster-nodes><domains><domain>");
 		sb.append(domain);
-		sb.append("</domain><domain>localhost</domain></domains><key>");
-		sb.append(key);
-		sb.append("</key></license>");
+		sb.append("</domain><domain>localhost</domain></domains><key></key>");
+		sb.append("</license>");
 
 		return sb.toString();
 	}

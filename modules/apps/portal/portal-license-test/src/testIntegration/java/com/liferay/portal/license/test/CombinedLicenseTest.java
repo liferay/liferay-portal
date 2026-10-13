@@ -57,8 +57,8 @@ public class CombinedLicenseTest extends BaseLicenseTestCase {
 
 			deployLicenses(
 				new String[][] {
-					{FREE_TIER_LICENSE_TYPE, String.valueOf(Time.HOUR)},
-					{FREE_TIER_LICENSE_TYPE, String.valueOf(Time.HOUR)}
+					{ENTERPRISE_LICENSE_TYPE, String.valueOf(Time.HOUR)},
+					{ENTERPRISE_LICENSE_TYPE, String.valueOf(Time.HOUR)}
 				});
 
 			assertLicensePropertiesExisted(getPortalProductId());
@@ -106,7 +106,7 @@ public class CombinedLicenseTest extends BaseLicenseTestCase {
 
 			deployLicenses(
 				new String[][] {
-					{FREE_TIER_LICENSE_TYPE, String.valueOf(Time.HOUR)}
+					{ENTERPRISE_LICENSE_TYPE, String.valueOf(Time.HOUR)}
 				});
 
 			assertLicensePropertiesExisted(getPortalProductId());
