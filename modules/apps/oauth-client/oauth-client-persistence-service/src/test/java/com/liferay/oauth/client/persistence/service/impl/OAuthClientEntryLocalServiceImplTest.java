@@ -71,6 +71,7 @@ public class OAuthClientEntryLocalServiceImplTest {
 		_testValidateAuthServerWellKnownURIWithRelativeRedirect();
 		_testValidateAuthServerWellKnownURIWithTooManyRedirects();
 		_testValidateAuthServerWellKnownURIWithUniqueLocalHost();
+		_testValidateAuthServerWellKnownURIWithUpperCaseScheme();
 	}
 
 	@Test
@@ -487,6 +488,22 @@ public class OAuthClientEntryLocalServiceImplTest {
 							RandomTestUtil.randomInt(16, 65535)),
 						"::1]")),
 				_createOAuthClientEntryLocalServiceImpl(null, false, http)));
+
+		Mockito.verifyNoInteractions(http);
+	}
+
+	private void _testValidateAuthServerWellKnownURIWithUpperCaseScheme()
+		throws Exception {
+
+		Http http = _mockHttp();
+
+		Assert.assertThrows(
+			OAuthClientEntryAuthServerWellKnownURIException.class,
+			() -> _validateAuthServerWellKnownURI(
+				StringBundler.concat(
+					"HTTP://", _getRandomHost(3, _HOST_PREFIX_LOOPBACK),
+					_WELL_KNOWN_PATH),
+				_createOAuthClientEntryLocalServiceImpl(null, true, http)));
 
 		Mockito.verifyNoInteractions(http);
 	}

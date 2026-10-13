@@ -354,7 +354,7 @@ public class OAuthClientEntryLocalServiceImpl
 
 	private boolean _isURIAllowed(long companyId, URI uri) {
 		try {
-			String scheme = StringUtil.toLowerCase(uri.getScheme());
+			String scheme = uri.getScheme();
 
 			if (!Objects.equals(scheme, Http.HTTP) &&
 				!Objects.equals(scheme, Http.HTTPS)) {
