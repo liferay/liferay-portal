@@ -54,7 +54,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Mariano Álvaro Sáiz
  */
-public class PostupgradeVerifyDatabaseState extends VerifyProcess {
+public class PostUpgradeVerifyDatabaseState extends VerifyProcess {
 
 	public List<String> getErrorMessages() {
 		return _errorMessages;
@@ -826,7 +826,7 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		PostupgradeVerifyDatabaseState.class);
+		PostUpgradeVerifyDatabaseState.class);
 
 	private static final Pattern _columnNamePattern = Pattern.compile(
 		"[a-zA-Z0-9_]+");

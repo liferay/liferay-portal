@@ -113,7 +113,7 @@ import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.security.membershippolicy.UserGroupMembershipPolicyFactoryUtil;
 import com.liferay.portal.util.MaintenanceUtil;
 import com.liferay.portal.util.ShutdownUtil;
-import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
+import com.liferay.portal.verify.PostUpgradeVerifyDatabaseState;
 import com.liferay.portal.verify.VerifyException;
 import com.liferay.server.admin.web.internal.constants.ImageMagickResourceLimitConstants;
 import com.liferay.server.admin.web.internal.scripting.util.ServerScriptingUtil;
@@ -889,11 +889,11 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private void _verifyDatabaseState(ActionRequest actionRequest) {
-		PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
-			new PostupgradeVerifyDatabaseState();
+		PostUpgradeVerifyDatabaseState postUpgradeVerifyDatabaseState =
+			new PostUpgradeVerifyDatabaseState();
 
 		try {
-			postupgradeVerifyDatabaseState.verify();
+			postUpgradeVerifyDatabaseState.verify();
 		}
 		catch (VerifyException verifyException) {
 			SessionErrors.add(
@@ -906,9 +906,9 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		hideDefaultSuccessMessage(actionRequest);
 
 		List<String> errorMessages =
-			postupgradeVerifyDatabaseState.getErrorMessages();
+			postUpgradeVerifyDatabaseState.getErrorMessages();
 		List<String> warnMessages =
-			postupgradeVerifyDatabaseState.getWarnMessages();
+			postUpgradeVerifyDatabaseState.getWarnMessages();
 
 		if (errorMessages.isEmpty() && warnMessages.isEmpty()) {
 			SessionMessages.add(actionRequest, "verifyDatabaseState");

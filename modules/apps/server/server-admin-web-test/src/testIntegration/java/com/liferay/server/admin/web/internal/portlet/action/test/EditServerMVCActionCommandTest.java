@@ -72,7 +72,7 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
+import com.liferay.portal.verify.PostUpgradeVerifyDatabaseState;
 
 import jakarta.portlet.ActionRequest;
 
@@ -428,12 +428,12 @@ public class EditServerMVCActionCommandTest {
 			mockLiferayPortletActionRequest = _verifyDatabaseState();
 
 			Assert.assertEquals(
-				_getMessages(PostupgradeVerifyDatabaseState::getErrorMessages),
+				_getMessages(PostUpgradeVerifyDatabaseState::getErrorMessages),
 				SessionErrors.get(
 					mockLiferayPortletActionRequest,
 					"verifyDatabaseStateErrors"));
 			Assert.assertEquals(
-				_getMessages(PostupgradeVerifyDatabaseState::getWarnMessages),
+				_getMessages(PostUpgradeVerifyDatabaseState::getWarnMessages),
 				SessionMessages.get(
 					mockLiferayPortletActionRequest,
 					"verifyDatabaseStateWarnings"));
@@ -452,7 +452,7 @@ public class EditServerMVCActionCommandTest {
 			mockLiferayPortletActionRequest = _verifyDatabaseState();
 
 			Assert.assertEquals(
-				_getMessages(PostupgradeVerifyDatabaseState::getWarnMessages),
+				_getMessages(PostUpgradeVerifyDatabaseState::getWarnMessages),
 				SessionMessages.get(
 					mockLiferayPortletActionRequest,
 					"verifyDatabaseStateWarnings"));
@@ -531,20 +531,20 @@ public class EditServerMVCActionCommandTest {
 	}
 
 	private List<String> _getMessages(
-			Function<PostupgradeVerifyDatabaseState, List<String>> function)
+			Function<PostUpgradeVerifyDatabaseState, List<String>> function)
 		throws Exception {
 
-		PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
-			new PostupgradeVerifyDatabaseState();
+		PostUpgradeVerifyDatabaseState postUpgradeVerifyDatabaseState =
+			new PostUpgradeVerifyDatabaseState();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.ERROR)) {
 
-			postupgradeVerifyDatabaseState.verify();
+			postUpgradeVerifyDatabaseState.verify();
 		}
 
-		return function.apply(postupgradeVerifyDatabaseState);
+		return function.apply(postUpgradeVerifyDatabaseState);
 	}
 
 	private void _testProcessAction(
@@ -642,7 +642,7 @@ public class EditServerMVCActionCommandTest {
 			new MockLiferayPortletActionRequest();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.ERROR)) {
 
 			ReflectionTestUtil.invoke(

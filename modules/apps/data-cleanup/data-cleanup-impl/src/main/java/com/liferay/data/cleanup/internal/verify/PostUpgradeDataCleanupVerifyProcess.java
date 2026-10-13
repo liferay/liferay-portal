@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.search.index.IndexInformation;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.tools.DBUpgrader;
-import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
+import com.liferay.portal.verify.PostUpgradeVerifyDatabaseState;
 import com.liferay.portal.verify.VerifyException;
 import com.liferay.portal.verify.VerifyProcess;
 
@@ -60,7 +60,7 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 	@Override
 	protected void doVerify() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer(
-				PostupgradeVerifyDatabaseState.class.getName())) {
+				PostUpgradeVerifyDatabaseState.class.getName())) {
 
 			_verifyDatabaseState();
 		}
@@ -121,7 +121,7 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 			if (_log.isWarnEnabled() && CompanyThreadLocal.isDefaultCompany()) {
 				_log.warn(
 					StringBundler.concat(
-						PostupgradeVerifyDatabaseState.class.getSimpleName(),
+						PostUpgradeVerifyDatabaseState.class.getSimpleName(),
 						" cannot be executed because there are modules with ",
 						"unsatisfied references"));
 			}
@@ -129,10 +129,10 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 			return;
 		}
 
-		PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
-			new PostupgradeVerifyDatabaseState();
+		PostUpgradeVerifyDatabaseState postUpgradeVerifyDatabaseState =
+			new PostUpgradeVerifyDatabaseState();
 
-		postupgradeVerifyDatabaseState.verify();
+		postUpgradeVerifyDatabaseState.verify();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -38,7 +38,7 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
+import com.liferay.portal.verify.PostUpgradeVerifyDatabaseState;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
@@ -72,7 +72,7 @@ import org.osgi.framework.FrameworkUtil;
  * @author Mariano Álvaro Sáiz
  */
 @RunWith(Arquillian.class)
-public class PostupgradeVerifyDatabaseStateTest
+public class PostUpgradeVerifyDatabaseStateTest
 	extends BaseVerifyProcessTestCase {
 
 	@ClassRule
@@ -86,7 +86,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getErrorMessages,
+				PostUpgradeVerifyDatabaseState::getErrorMessages,
 				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
@@ -107,7 +107,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getWarnMessages,
+				PostUpgradeVerifyDatabaseState::getWarnMessages,
 				LoggerTestUtil.WARN,
 				_getExpectedMessage(
 					StringBundler.concat(
@@ -122,7 +122,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeColumns() throws Exception {
+	public void testVerifyPostUpgradeColumns() throws Exception {
 		alterColumnName(
 			"UserTracker", "remoteAddr", "remoteAddr_backup VARCHAR(75) null");
 
@@ -164,13 +164,13 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeCustomTable() throws Exception {
+	public void testVerifyPostUpgradeCustomTable() throws Exception {
 		String tableName = getNormalizedName("TestCustomTable");
 
 		_createTable(tableName);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.INFO)) {
 
 			testVerify();
@@ -186,7 +186,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeIndexes() throws Exception {
+	public void testVerifyPostUpgradeIndexes() throws Exception {
 		Map<String, List<IndexMetadata>> portalTablesIndexMetadatas =
 			DBResourceUtil.getPortalTablesIndexMetadatas();
 
@@ -242,7 +242,7 @@ public class PostupgradeVerifyDatabaseStateTest
 				uniqueIndexMetadata.getColumnNames());
 
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getErrorMessages,
+				PostUpgradeVerifyDatabaseState::getErrorMessages,
 				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
@@ -260,7 +260,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeLengthLimitedIndexColumns()
+	public void testVerifyPostUpgradeLengthLimitedIndexColumns()
 		throws Exception {
 
 		DB db = DBManagerUtil.getDB();
@@ -288,12 +288,12 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeMalformedIndexes() throws Exception {
+	public void testVerifyPostUpgradeMalformedIndexes() throws Exception {
 		Bundle bundle = _installBundle("create wrong index");
 
 		try {
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getErrorMessages,
+				PostUpgradeVerifyDatabaseState::getErrorMessages,
 				LoggerTestUtil.ERROR, "Unable to get the declared indexes");
 		}
 		finally {
@@ -302,7 +302,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeMissingNonserviceBuilderTable()
+	public void testVerifyPostUpgradeMissingNonserviceBuilderTable()
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -318,7 +318,7 @@ public class PostupgradeVerifyDatabaseStateTest
 		_dropTable(tableName);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.ERROR)) {
 
 			testVerify();
@@ -336,14 +336,14 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradePrimaryKeys() throws Exception {
+	public void testVerifyPostUpgradePrimaryKeys() throws Exception {
 		try {
 			removePrimaryKey("Phone");
 
 			updatePrimaryKey("UserTracker", "userTrackerId", "mvccVersion");
 
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getErrorMessages,
+				PostUpgradeVerifyDatabaseState::getErrorMessages,
 				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
@@ -368,7 +368,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeRequireSchemaVersionBundleTable()
+	public void testVerifyPostUpgradeRequireSchemaVersionBundleTable()
 		throws Exception {
 
 		Map<String, String> tablesServletContextNames =
@@ -381,7 +381,7 @@ public class PostupgradeVerifyDatabaseStateTest
 		String tableName = getNormalizedName("Configuration_");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.INFO)) {
 
 			testVerify();
@@ -393,12 +393,12 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeStaleIndexes() throws Exception {
+	public void testVerifyPostUpgradeStaleIndexes() throws Exception {
 		addIndex("IX_TEST", "UserTracker", false, "companyId", "userId");
 
 		try {
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getWarnMessages,
+				PostUpgradeVerifyDatabaseState::getWarnMessages,
 				LoggerTestUtil.WARN,
 				_getExpectedMessage(
 					StringBundler.concat(
@@ -415,7 +415,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			_testGetMessages(
-				PostupgradeVerifyDatabaseState::getErrorMessages,
+				PostUpgradeVerifyDatabaseState::getErrorMessages,
 				LoggerTestUtil.ERROR,
 				_getExpectedMessage(
 					StringBundler.concat(
@@ -430,7 +430,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeStaleTable() throws Exception {
+	public void testVerifyPostUpgradeStaleTable() throws Exception {
 		String tableName = getNormalizedName("TestStaleTable");
 
 		_createTable(tableName);
@@ -440,7 +440,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					PostupgradeVerifyDatabaseState.class.getName(),
+					PostUpgradeVerifyDatabaseState.class.getName(),
 					LoggerTestUtil.WARN)) {
 
 				testVerify();
@@ -460,7 +460,7 @@ public class PostupgradeVerifyDatabaseStateTest
 			release = _releaseLocalService.updateRelease(release);
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					PostupgradeVerifyDatabaseState.class.getName(),
+					PostUpgradeVerifyDatabaseState.class.getName(),
 					LoggerTestUtil.ERROR)) {
 
 				testVerify();
@@ -486,7 +486,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPostupgradeViews() throws Exception {
+	public void testVerifyPostUpgradeViews() throws Exception {
 		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		String staleViewName = getNormalizedName(_STALE_VIEW_NAME);
@@ -497,7 +497,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 		try {
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					PostupgradeVerifyDatabaseState.class.getName(),
+					PostUpgradeVerifyDatabaseState.class.getName(),
 					LoggerTestUtil.INFO)) {
 
 				testVerify();
@@ -518,7 +518,7 @@ public class PostupgradeVerifyDatabaseStateTest
 			serviceComponent = _addServiceComponent(_STALE_VIEW_NAME);
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					PostupgradeVerifyDatabaseState.class.getName(),
+					PostUpgradeVerifyDatabaseState.class.getName(),
 					LoggerTestUtil.WARN)) {
 
 				testVerify();
@@ -542,7 +542,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 	@Override
 	protected VerifyProcess getVerifyProcess() {
-		return new PostupgradeVerifyDatabaseState();
+		return new PostUpgradeVerifyDatabaseState();
 	}
 
 	private ServiceComponent _addServiceComponent(String tableName)
@@ -674,7 +674,7 @@ public class PostupgradeVerifyDatabaseStateTest
 			}
 
 			Bundle bundle = FrameworkUtil.getBundle(
-				PostupgradeVerifyDatabaseStateTest.class);
+				PostUpgradeVerifyDatabaseStateTest.class);
 
 			BundleContext bundleContext = bundle.getBundleContext();
 
@@ -687,18 +687,18 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	private void _testGetMessages(
-			Function<PostupgradeVerifyDatabaseState, List<String>> function,
+			Function<PostUpgradeVerifyDatabaseState, List<String>> function,
 			String priority, String... expectedMessages)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.WARN)) {
 
-			PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
-				new PostupgradeVerifyDatabaseState();
+			PostUpgradeVerifyDatabaseState postUpgradeVerifyDatabaseState =
+				new PostUpgradeVerifyDatabaseState();
 
-			postupgradeVerifyDatabaseState.verify();
+			postUpgradeVerifyDatabaseState.verify();
 
 			List<String> logMessages = new ArrayList<>();
 
@@ -709,7 +709,7 @@ public class PostupgradeVerifyDatabaseStateTest
 			}
 
 			List<String> messages = function.apply(
-				postupgradeVerifyDatabaseState);
+				postUpgradeVerifyDatabaseState);
 
 			Assert.assertEquals(logMessages, messages);
 			Assert.assertTrue(
@@ -722,7 +722,7 @@ public class PostupgradeVerifyDatabaseStateTest
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				PostupgradeVerifyDatabaseState.class.getName(),
+				PostUpgradeVerifyDatabaseState.class.getName(),
 				LoggerTestUtil.WARN)) {
 
 			testVerify();
