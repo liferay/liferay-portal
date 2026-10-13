@@ -7,24 +7,26 @@ package com.liferay.portal.security.audit.router.internal;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
-import com.liferay.portal.security.audit.configuration.AuditConfigurationUtil;
+import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.router.internal.constants.AuditConstants;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Michael C. Han
@@ -32,7 +34,10 @@ import org.osgi.service.component.annotations.Deactivate;
  * @author Brian Greenwald
  * @author Prathima Shreenath
  */
-@Component(service = AuditRouter.class)
+@Component(
+	configurationPid = "com.liferay.portal.security.audit.configuration.AuditConfiguration",
+	service = AuditRouter.class
+)
 public class DefaultAuditRouter implements AuditRouter {
 
 	@Override
@@ -44,13 +49,10 @@ public class DefaultAuditRouter implements AuditRouter {
 
 	@Override
 	public void route(AuditMessage auditMessage) throws AuditException {
-		if (!AuditConfigurationUtil.isEnabled(auditMessage.getCompanyId())) {
+		if (!_auditEnabled) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					StringBundler.concat(
-						"Audit is disabled for company ",
-						auditMessage.getCompanyId(),
-						", not processing message: ", auditMessage));
+					"Audit disabled, not processing message: " + auditMessage);
 			}
 
 			return;
@@ -80,7 +82,11 @@ public class DefaultAuditRouter implements AuditRouter {
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		modified(properties);
+
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, AuditMessageProcessor.class,
 			AuditConstants.EVENT_TYPES);
@@ -91,9 +97,19 @@ public class DefaultAuditRouter implements AuditRouter {
 		_serviceTrackerMap.close();
 	}
 
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		AuditConfiguration auditConfiguration =
+			ConfigurableUtil.createConfigurable(
+				AuditConfiguration.class, properties);
+
+		_auditEnabled = auditConfiguration.enabled();
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultAuditRouter.class);
 
+	private volatile boolean _auditEnabled;
 	private ServiceTrackerMap<String, List<AuditMessageProcessor>>
 		_serviceTrackerMap;
 
