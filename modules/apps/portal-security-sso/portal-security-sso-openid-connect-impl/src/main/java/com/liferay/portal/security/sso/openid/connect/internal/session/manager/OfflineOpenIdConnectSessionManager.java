@@ -472,6 +472,12 @@ public class OfflineOpenIdConnectSessionManager {
 		implements SchedulerJobConfiguration {
 
 		@Override
+		public String getDestinationName() {
+			return OpenIdConnectDestinationNames.
+				OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER;
+		}
+
+		@Override
 		public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 			return () -> {
 				List<OpenIdConnectSession> openIdConnectSessions =

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.security.sso.openid.connect.internal.AuthorizationServerMetadataResolver;
+import com.liferay.portal.security.sso.openid.connect.internal.constants.OpenIdConnectDestinationNames;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectTokenRequestUtil;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
@@ -136,6 +137,18 @@ public class OfflineOpenIdConnectSessionManagerTest {
 	}
 
 	@Test
+	public void testGetDestinationName() {
+		SchedulerJobConfiguration schedulerJobConfiguration =
+			_getSchedulerJobConfiguration(
+				new OfflineOpenIdConnectSessionManager());
+
+		Assert.assertEquals(
+			OpenIdConnectDestinationNames.
+				OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER,
+			schedulerJobConfiguration.getDestinationName());
+	}
+
+	@Test
 	public void testGetJobExecutorUnsafeRunnable() throws Exception {
 		String authServerWellKnownURI = RandomTestUtil.randomString();
 		String clientId = RandomTestUtil.randomString();
@@ -148,38 +161,6 @@ public class OfflineOpenIdConnectSessionManagerTest {
 			_createOfflineOpenIdConnectSessionManager(
 				authServerWellKnownURI, clientId, companyId,
 				openIdConnectSessionLocalService);
-
-		DestinationFactory destinationFactory = Mockito.mock(
-			DestinationFactory.class);
-
-		Mockito.when(
-			destinationFactory.createDestination(
-				Mockito.any(DestinationConfiguration.class))
-		).thenReturn(
-			Mockito.mock(Destination.class)
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			offlineOpenIdConnectSessionManager, "_destinationFactory",
-			destinationFactory);
-
-		BundleContext bundleContext = Mockito.mock(BundleContext.class);
-
-		offlineOpenIdConnectSessionManager.activate(
-			bundleContext,
-			HashMapBuilder.<String, Object>put(
-				"enabled", true
-			).build());
-
-		ArgumentCaptor<SchedulerJobConfiguration> argumentCaptor =
-			ArgumentCaptor.forClass(SchedulerJobConfiguration.class);
-
-		Mockito.verify(
-			bundleContext
-		).registerService(
-			Mockito.eq(SchedulerJobConfiguration.class),
-			argumentCaptor.capture(), Mockito.isNull()
-		);
 
 		OpenIdConnectSession expiringOpenIdConnectSession =
 			_createOpenIdConnectSession(
@@ -255,7 +236,8 @@ public class OfflineOpenIdConnectSessionManagerTest {
 			);
 
 			SchedulerJobConfiguration schedulerJobConfiguration =
-				argumentCaptor.getValue();
+				_getSchedulerJobConfiguration(
+					offlineOpenIdConnectSessionManager);
 
 			UnsafeRunnable<Exception> unsafeRunnable =
 				schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
@@ -565,6 +547,44 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		);
 
 		return openIdConnectSession;
+	}
+
+	private SchedulerJobConfiguration _getSchedulerJobConfiguration(
+		OfflineOpenIdConnectSessionManager offlineOpenIdConnectSessionManager) {
+
+		DestinationFactory destinationFactory = Mockito.mock(
+			DestinationFactory.class);
+
+		Mockito.when(
+			destinationFactory.createDestination(
+				Mockito.any(DestinationConfiguration.class))
+		).thenReturn(
+			Mockito.mock(Destination.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			offlineOpenIdConnectSessionManager, "_destinationFactory",
+			destinationFactory);
+
+		BundleContext bundleContext = Mockito.mock(BundleContext.class);
+
+		offlineOpenIdConnectSessionManager.activate(
+			bundleContext,
+			HashMapBuilder.<String, Object>put(
+				"enabled", true
+			).build());
+
+		ArgumentCaptor<SchedulerJobConfiguration> argumentCaptor =
+			ArgumentCaptor.forClass(SchedulerJobConfiguration.class);
+
+		Mockito.verify(
+			bundleContext
+		).registerService(
+			Mockito.eq(SchedulerJobConfiguration.class),
+			argumentCaptor.capture(), Mockito.isNull()
+		);
+
+		return argumentCaptor.getValue();
 	}
 
 	private void _testExtendOpenIdConnectSessionRefreshesIdToken()
