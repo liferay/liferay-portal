@@ -28,6 +28,7 @@ import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
@@ -211,6 +212,10 @@ public abstract class BaseNotificationType implements NotificationType {
 
 	protected void addRecipientReferences(
 		long companyId, Map<String, String> recipientMap) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-49854")) {
+			return;
+		}
 
 		String roleName = recipientMap.get(
 			NotificationRecipientSettingConstants.NAME_ROLE_NAME);
