@@ -62,6 +62,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -420,7 +421,12 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 						fragmentEntry.getFragmentEntryId(), fileName,
 						thumbnailPath));
 			}
-			else {
+			else if (_isModifiedFragmentEntry(
+						cacheable, configuration, css, fileName,
+						fragmentCollectionId, fragmentEntry, html, icon, js,
+						name, readOnly, status, thumbnailPath, typeOptions,
+						zipFile)) {
+
 				if (fragmentEntry.getPreviewFileEntryId() > 0) {
 					PortletFileRepositoryUtil.deletePortletFileEntry(
 						fragmentEntry.getPreviewFileEntryId());
@@ -487,7 +493,14 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 
 				FileEntry fileEntry = entry.getValue();
 
-				if (fragmentServiceConfiguration.propagateChanges()) {
+				if (_isSameContent(
+						fileEntry,
+						_getInputStream(
+							zipFile, zipEntryNames.get(fileEntryPath)))) {
+
+					zipEntryNames.remove(fileEntryPath);
+				}
+				else if (fragmentServiceConfiguration.propagateChanges()) {
 					_updateFileEntry(
 						fileEntry, userId, zipEntryNames.get(fileEntryPath),
 						zipFile);
@@ -748,6 +761,22 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			0, fileName.lastIndexOf(StringPool.SLASH));
 
 		return _getInputStream(zipFile, path + StringPool.SLASH + contentPath);
+	}
+
+	private String _getIcon(FragmentEntry fragmentEntry, String icon) {
+		if (Validator.isNotNull(icon)) {
+			return icon;
+		}
+
+		if (fragmentEntry.isTypeInput()) {
+			return "forms";
+		}
+
+		if (fragmentEntry.isTypeReact()) {
+			return "react";
+		}
+
+		return "code";
 	}
 
 	private InputStream _getInputStream(ZipFile zipFile, String fileName)
@@ -1186,6 +1215,63 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 		return Objects.equals(
 			_getFileName(fileName),
 			FragmentExportImportConstants.FILE_NAME_FRAGMENT);
+	}
+
+	private boolean _isModifiedFragmentEntry(
+			boolean cacheable, String configuration, String css,
+			String fileName, long fragmentCollectionId,
+			FragmentEntry fragmentEntry, String html, String icon, String js,
+			String name, boolean readOnly, int status, String thumbnailPath,
+			String typeOptions, ZipFile zipFile)
+		throws Exception {
+
+		if ((fragmentEntry.isCacheable() != cacheable) ||
+			!Objects.equals(fragmentEntry.getConfiguration(), configuration) ||
+			!Objects.equals(fragmentEntry.getCss(), css) ||
+			(fragmentEntry.getFragmentCollectionId() != fragmentCollectionId) ||
+			!Objects.equals(fragmentEntry.getHtml(), html) ||
+			!Objects.equals(
+				fragmentEntry.getIcon(), _getIcon(fragmentEntry, icon)) ||
+			!Objects.equals(fragmentEntry.getJs(), js) ||
+			!Objects.equals(fragmentEntry.getName(), name) ||
+			(fragmentEntry.isReadOnly() != readOnly) ||
+			(fragmentEntry.getStatus() != status) ||
+			!Objects.equals(fragmentEntry.getTypeOptions(), typeOptions)) {
+
+			return true;
+		}
+
+		InputStream inputStream = null;
+
+		if (Validator.isNotNull(thumbnailPath)) {
+			inputStream = _getFragmentEntryInputStream(
+				zipFile, fileName, thumbnailPath);
+		}
+
+		if (fragmentEntry.getPreviewFileEntryId() == 0) {
+			if (inputStream == null) {
+				return false;
+			}
+
+			return true;
+		}
+
+		return !_isSameContent(
+			PortletFileRepositoryUtil.getPortletFileEntry(
+				fragmentEntry.getPreviewFileEntryId()),
+			inputStream);
+	}
+
+	private boolean _isSameContent(FileEntry fileEntry, InputStream inputStream)
+		throws Exception {
+
+		if (inputStream == null) {
+			return false;
+		}
+
+		return Arrays.equals(
+			FileUtil.getBytes(fileEntry.getContentStream()),
+			FileUtil.getBytes(inputStream));
 	}
 
 	private String _replaceResourceReferences(
