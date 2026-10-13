@@ -14,11 +14,13 @@ export type AssetStatistics = {
 	expiringSoonCount: number;
 	inDraftCount: number;
 	longStandingDraftsCount: number;
+	overdueWorkflowTasksCount: number;
 	pendingCount: number;
 	reviewDateOverdueCount: number;
 	scheduledCount: number;
 	totalCount: number;
 	upcomingReviewCount: number;
+	workflowTasksCount: number;
 };
 
 export type Contributor = {
