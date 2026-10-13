@@ -651,8 +651,9 @@ public class StaticSiteExporterTest {
 		Assert.assertThat(
 			html,
 			CoreMatchers.containsString(
-				"<meta property=\"og:locale:alternate\" content=\"" +
-					openGraphLocaleAlternate + "\">"));
+				StringBundler.concat(
+					"<meta content=\"", openGraphLocaleAlternate,
+					"\" property=\"og:locale:alternate\">")));
 		Assert.assertThat(
 			html,
 			CoreMatchers.containsString(
@@ -666,7 +667,7 @@ public class StaticSiteExporterTest {
 			html,
 			CoreMatchers.not(
 				CoreMatchers.containsString(
-					"property=\"og:locale:alternate\" content=\"de_DE\"")));
+					"content=\"de_DE\" property=\"og:locale:alternate\"")));
 	}
 
 	private void _assertStaticSiteExport(
