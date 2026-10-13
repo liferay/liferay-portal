@@ -49,6 +49,27 @@ public class AssetListObjectFieldUtil {
 			objectDefinition.getObjectDefinitionId(), name);
 	}
 
+	public static ObjectField fetchObjectField(
+		long companyId, String name,
+		String objectDefinitionExternalReferenceCode) {
+
+		if (Validator.isNull(objectDefinitionExternalReferenceCode)) {
+			return null;
+		}
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					objectDefinitionExternalReferenceCode, companyId);
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		return ObjectFieldLocalServiceUtil.fetchObjectField(
+			objectDefinition.getObjectDefinitionId(), name);
+	}
+
 	public static String getFilterSubfield(
 		Locale locale, ObjectField objectField) {
 
