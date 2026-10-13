@@ -41,8 +41,8 @@ public abstract class BaseMonitor implements Monitor {
 	protected int getAttemptTimeoutMillis(int maxRetries) {
 		long timeoutMillis = _getTimeoutMillis();
 
-		return (int)
-			((timeoutMillis - (timeoutMillis / 10)) / (2 * (maxRetries + 1)));
+		return (int)((timeoutMillis - (timeoutMillis / 10)) /
+			(getReadsCount() * (maxRetries + 1)));
 	}
 
 	protected boolean getBooleanValue(
@@ -155,6 +155,10 @@ public abstract class BaseMonitor implements Monitor {
 			"threshold",
 			Math.max(_SECONDS_OVERDUE_GRACE_MINIMUM, cadenceSeconds / 4),
 			"overdue.grace", thresholds);
+	}
+
+	protected int getReadsCount() {
+		return 2;
 	}
 
 	protected String getRequiredParameter(
