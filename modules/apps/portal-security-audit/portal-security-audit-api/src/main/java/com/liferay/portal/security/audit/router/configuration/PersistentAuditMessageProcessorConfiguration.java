@@ -14,9 +14,7 @@ import org.osgi.annotation.versioning.ProviderType;
 /**
  * @author Shanon Mathai
  */
-@ExtendedObjectClassDefinition(
-	category = "audit", scope = ExtendedObjectClassDefinition.Scope.COMPANY
-)
+@ExtendedObjectClassDefinition(category = "audit")
 @Meta.OCD(
 	id = "com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration",
 	localization = "content/Language",
