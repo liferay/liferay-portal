@@ -540,23 +540,31 @@ public class BrokenLinkAssetResourceTest
 		ObjectDefinition objectDefinition =
 			_getBasicWebContentObjectDefinition();
 
-		ObjectEntry deletedObjectEntry = _addObjectEntry(
+		ObjectEntry deletedObjectEntry1 = _addObjectEntry(
+			RandomTestUtil.randomString(), depotEntry, objectDefinition,
+			RandomTestUtil.randomString());
+		ObjectEntry deletedObjectEntry2 = _addObjectEntry(
 			RandomTestUtil.randomString(), depotEntry, objectDefinition,
 			RandomTestUtil.randomString());
 
+		String imageHTML1 = CMSOutboundLinkTestUtil.getImageHTML(
+			deletedObjectEntry1.getExternalReferenceCode());
+		String imageHTML2 = CMSOutboundLinkTestUtil.getImageHTML(
+			deletedObjectEntry2.getExternalReferenceCode());
+
 		_addObjectEntry(
-			CMSOutboundLinkTestUtil.getImageHTML(
-				deletedObjectEntry.getExternalReferenceCode()),
-			depotEntry, objectDefinition, RandomTestUtil.randomString());
+			imageHTML1 + imageHTML2, depotEntry, objectDefinition,
+			RandomTestUtil.randomString());
 
 		_assertEmptyBrokenLinkAssetsPage(depotEntry);
 
-		_objectEntryLocalService.deleteObjectEntry(deletedObjectEntry);
+		_objectEntryLocalService.deleteObjectEntry(deletedObjectEntry1);
+		_objectEntryLocalService.deleteObjectEntry(deletedObjectEntry2);
 
 		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
 			brokenLinkAssetResource, depotEntry);
 
-		_assertBrokenLinksCounts(brokenLinkAsset, 1, 1, 0, 0, 0);
+		_assertBrokenLinksCounts(brokenLinkAsset, 2, 2, 0, 0, 0);
 
 		Assert.assertNull(brokenLinkAsset.getBrokenLinkTitle());
 	}

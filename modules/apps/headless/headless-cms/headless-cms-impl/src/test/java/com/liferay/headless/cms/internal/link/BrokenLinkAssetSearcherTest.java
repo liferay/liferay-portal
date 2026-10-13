@@ -27,6 +27,7 @@ import com.liferay.site.cms.site.initializer.util.CMSOutboundLinksUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -62,19 +63,14 @@ public class BrokenLinkAssetSearcherTest {
 		BrokenLinkAssetSearcher brokenLinkAssetSearcher =
 			new BrokenLinkAssetSearcher(
 				_getAggregations(includeExcludeClauses),
-				_getObjectEntryLocalService(),
+				_getObjectEntryLocalService("b0-existing"),
 				_getSearcher(includeExcludeClauses, outboundLinks),
 				_getSearchRequestBuilderFactory(
 					Mockito.mock(
 						SearchRequestBuilder.class, Mockito.RETURNS_SELF)));
 
-		Long[] spaceGroupIds = {RandomTestUtil.randomLong()};
-
 		Map<String, BrokenLinkTarget> brokenLinkTargetsMap =
-			brokenLinkAssetSearcher.getBrokenLinkTargetsMap(
-				RandomTestUtil.randomLong(),
-				new Long[] {RandomTestUtil.randomLong()}, spaceGroupIds,
-				spaceGroupIds);
+			_getBrokenLinkTargetsMap(brokenLinkAssetSearcher);
 
 		Assert.assertEquals(
 			new TreeSet<>(
@@ -87,7 +83,48 @@ public class BrokenLinkAssetSearcherTest {
 			new TreeSet<>(brokenLinkTargetsMap.keySet()));
 
 		Assert.assertEquals(
-			includeExcludeClauses.toString(), 35, includeExcludeClauses.size());
+			includeExcludeClauses.toString(), 7, includeExcludeClauses.size());
+	}
+
+	@Test
+	@TestInfo("LPD-108685")
+	public void testGetBrokenLinkTargetsMapWithNonhexadecimalOutboundLinks() {
+		List<String> outboundLinks = TransformUtil.transform(
+			Arrays.asList(
+				"@deleted", "CUSTOM-1", "CUSTOM-2", "CUSTOM-3", "CUSTOM-4"),
+			CMSOutboundLinksUtil::getObjectEntryExternalReferenceCodeToken);
+
+		List<IncludeExcludeClause> includeExcludeClauses = new ArrayList<>();
+
+		BrokenLinkAssetSearcher brokenLinkAssetSearcher =
+			new BrokenLinkAssetSearcher(
+				_getAggregations(includeExcludeClauses),
+				_getObjectEntryLocalService(),
+				_getSearcher(includeExcludeClauses, outboundLinks),
+				_getSearchRequestBuilderFactory(
+					Mockito.mock(
+						SearchRequestBuilder.class, Mockito.RETURNS_SELF)));
+
+		Map<String, BrokenLinkTarget> brokenLinkTargetsMap =
+			_getBrokenLinkTargetsMap(brokenLinkAssetSearcher);
+
+		Assert.assertEquals(
+			new TreeSet<>(outboundLinks),
+			new TreeSet<>(brokenLinkTargetsMap.keySet()));
+
+		for (BrokenLinkTarget brokenLinkTarget :
+				brokenLinkTargetsMap.values()) {
+
+			Assert.assertTrue(brokenLinkTarget.isDeleted());
+		}
+
+		Assert.assertEquals(
+			outboundLinks.size(),
+			new HashSet<>(
+				brokenLinkTargetsMap.values()
+			).size());
+		Assert.assertEquals(
+			includeExcludeClauses.toString(), 20, includeExcludeClauses.size());
 	}
 
 	@Test
@@ -157,7 +194,20 @@ public class BrokenLinkAssetSearcherTest {
 		return aggregations;
 	}
 
-	private ObjectEntryLocalService _getObjectEntryLocalService() {
+	private Map<String, BrokenLinkTarget> _getBrokenLinkTargetsMap(
+		BrokenLinkAssetSearcher brokenLinkAssetSearcher) {
+
+		Long[] spaceGroupIds = {RandomTestUtil.randomLong()};
+
+		return brokenLinkAssetSearcher.getBrokenLinkTargetsMap(
+			RandomTestUtil.randomLong(),
+			new Long[] {RandomTestUtil.randomLong()}, spaceGroupIds,
+			spaceGroupIds);
+	}
+
+	private ObjectEntryLocalService _getObjectEntryLocalService(
+		String... existingExternalReferenceCodes) {
+
 		ObjectEntryLocalService objectEntryLocalService = Mockito.mock(
 			ObjectEntryLocalService.class);
 
@@ -165,7 +215,8 @@ public class BrokenLinkAssetSearcherTest {
 			objectEntryLocalService.dslQuery(Mockito.any())
 		).thenReturn(
 			Collections.emptyList(), Collections.emptyList(),
-			Collections.emptyList(), Collections.singletonList("b0-existing")
+			Collections.emptyList(),
+			Arrays.asList(existingExternalReferenceCodes)
 		);
 
 		return objectEntryLocalService;
