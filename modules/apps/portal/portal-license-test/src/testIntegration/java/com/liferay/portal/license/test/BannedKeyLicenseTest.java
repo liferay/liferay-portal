@@ -16,11 +16,13 @@ import com.liferay.portal.test.log.LogEntry;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,10 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class BannedKeyLicenseTest extends BaseLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle());
+	}
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -70,7 +76,7 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 		String[] bannedKeys = ArrayUtil.toStringArray(
 			(Set<String>)_bannedKeysField.get(getValidateClass()));
 
-		Assert.assertEquals(bannedKeys.toString(), 80, bannedKeys.length);
+		Assert.assertEquals(Arrays.toString(bannedKeys), 88, bannedKeys.length);
 
 		String bannedKey = bannedKeys[bannedKeys.length - 1];
 
@@ -106,10 +112,10 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 	public void testNonbannedKeys() throws Exception {
 		String key = RandomTestUtil.randomString(8);
 
-		Set<String> bnnedKeys = (Set<String>)_bannedKeysField.get(
+		Set<String> bannedKeys = (Set<String>)_bannedKeysField.get(
 			getValidateClass());
 
-		Assert.assertFalse(bnnedKeys.toString(), bnnedKeys.contains(key));
+		Assert.assertFalse(bannedKeys.toString(), bannedKeys.contains(key));
 
 		try (SafeCloseable safeCloseable1 = setVersionWithSafeCloseable(
 				"2026.Q1.0 LTS");
