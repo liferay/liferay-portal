@@ -61,6 +61,14 @@ describe('AccountInfo', () => {
 			expect(screen.getByText('https://acme.com')).toBeInTheDocument();
 		});
 
+		it('should not render the annual revenue when the account annual revenue is 0', () => {
+			render(
+				<AccountInfo account={{...mockAccount, annualRevenue: 0}} />
+			);
+
+			expect(screen.queryByText('0')).not.toBeInTheDocument();
+		});
+
 		it('should render the website value as an external link', () => {
 			render(<AccountInfo account={mockAccount} />);
 
