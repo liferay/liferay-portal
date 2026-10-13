@@ -430,6 +430,30 @@ public class JournalArticleSitemapURLProviderTest {
 	}
 
 	@Test
+	public void testJournalArticleSitemapURLProviderVisitLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId());
+
+		JournalArticle article1 = _addArticleWithLayoutUuid(layout);
+		JournalArticle article2 = _addArticleWithLayoutUuid(layout);
+
+		Element rootElement = _getRootElement();
+
+		_visitLayout(
+			layout,
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId())),
+			rootElement);
+
+		String xml = rootElement.asXML();
+
+		Assert.assertTrue(xml, xml.contains(article1.getUrlTitle() + "</loc>"));
+		Assert.assertTrue(xml, xml.contains(article2.getUrlTitle() + "</loc>"));
+	}
+
+	@Test
 	public void testJournalArticleSitemapWithADisabledLanguageId()
 		throws Exception {
 
@@ -638,6 +662,26 @@ public class JournalArticleSitemapURLProviderTest {
 		_themeDisplay.setSignedIn(true);
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(TestPropsValues.getUser());
+	}
+
+	private void _visitLayout(
+			Layout layout, PermissionChecker permissionChecker,
+			Element rootElement)
+		throws Exception {
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+			_journalArticleSitemapURLProvider.visitLayout(
+				rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
 	}
 
 	private void _visitLayoutSet(

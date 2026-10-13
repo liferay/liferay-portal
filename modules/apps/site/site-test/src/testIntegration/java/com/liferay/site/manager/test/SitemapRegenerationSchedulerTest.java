@@ -6,14 +6,23 @@
 package com.liferay.site.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
+import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -24,6 +33,8 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.messaging.Message;
@@ -45,9 +56,14 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -157,6 +173,80 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testDrainRegeneratesPageLayoutEntries() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		try {
+			Layout layout1 = LayoutTestUtil.addTypePortletLayout(_group);
+			Layout layout2 = LayoutTestUtil.addTypePortletLayout(group);
+
+			_deleteSiteSitemapRegenerationEntries();
+
+			_siteSitemapRegenerationEntryLocalService.
+				addSiteSitemapRegenerationEntry(
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId,
+					_group.getGroupId());
+			_siteSitemapRegenerationEntryLocalService.
+				addSiteSitemapRegenerationEntry(
+					_getPageLayoutChildSitemapKey(layout1), companyId,
+					_group.getGroupId());
+			_siteSitemapRegenerationEntryLocalService.
+				addSiteSitemapRegenerationEntry(
+					_getPageLayoutChildSitemapKey(layout2), companyId,
+					group.getGroupId());
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+				String key = StringBundler.concat(
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT, StringPool.SLASH,
+					_group.getGroupId(), StringPool.AT, companyId);
+
+				_lockManager.lock(
+					TestPropsValues.getUserId(),
+					_CLASS_NAME_SITEMAP_MANAGER_IMPL, key,
+					_CLASS_NAME_SITEMAP_MANAGER_IMPL, false, Time.MINUTE,
+					false);
+
+				try {
+					UnsafeConsumer<Long, Exception> unsafeConsumer =
+						_schedulerJobConfiguration.
+							getCompanyJobExecutorUnsafeConsumer();
+
+					unsafeConsumer.accept(companyId);
+				}
+				finally {
+					_lockManager.unlock(_CLASS_NAME_SITEMAP_MANAGER_IMPL, key);
+				}
+			}
+
+			List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
+				_siteSitemapRegenerationEntryLocalService.
+					getSiteSitemapRegenerationEntries(companyId);
+
+			Assert.assertEquals(
+				siteSitemapRegenerationEntries.toString(), 1,
+				siteSitemapRegenerationEntries.size());
+
+			_assertSiteSitemapRegenerationEntry(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT);
+
+			Assert.assertTrue(
+				_sitemapStorageHelper.hasSitemapFile(
+					companyId, group.getGroupId(),
+					_getPageLayoutChildSitemapKey(layout2), 1));
+		}
+		finally {
+			_sitemapStorageHelper.deleteSitemaps(companyId, group.getGroupId());
+
+			GroupTestUtil.deleteGroup(group);
+		}
+	}
+
+	@Test
 	public void testDrainRegeneratesQueuedEntries() throws Exception {
 		LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -251,6 +341,103 @@ public class SitemapRegenerationSchedulerTest {
 		Assert.assertNotNull(
 			_sitemapManager.getNextRegenerateSitemapDate(
 				TestPropsValues.getCompanyId()));
+	}
+
+	@Test
+	public void testGetSitemapInputStreamWithPageLayoutSitemapIndexNotStored()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+			Assert.assertNull(
+				_sitemapManager.getSitemapInputStream(
+					null, null, _group.getGroupId(), 1, false,
+					_getThemeDisplay()));
+
+			IdempotentRetryAssert.retryAssert(
+				30, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+				() -> {
+					Assert.assertTrue(
+						_sitemapStorageHelper.hasSitemapFile(
+							TestPropsValues.getCompanyId(),
+							_group.getGroupId()));
+					Assert.assertTrue(
+						_sitemapStorageHelper.hasSitemapFile(
+							TestPropsValues.getCompanyId(), _group.getGroupId(),
+							_getPageLayoutChildSitemapKey(layout), 1));
+
+					return null;
+				});
+		}
+	}
+
+	@Test
+	public void testGetSitemapInputStreamWithPageLayoutSitemapNotStored()
+		throws Exception {
+
+		long groupId = _group.getGroupId();
+
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(groupId);
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(groupId);
+		Layout layout3 = LayoutTestUtil.addTypePortletLayout(
+			groupId,
+			UnicodePropertiesBuilder.put(
+				LayoutTypePortletConstants.SITEMAP_INCLUDE, "0"
+			).buildString());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+			Assert.assertNull(
+				_sitemapManager.getSitemapInputStream(
+					null, RandomTestUtil.randomString(), groupId, 1, false,
+					_getThemeDisplay()));
+			Assert.assertNull(
+				_sitemapManager.getSitemapInputStream(
+					null, layout1.getUuid(), groupId, 2, false,
+					_getThemeDisplay()));
+			Assert.assertNull(
+				_sitemapManager.getSitemapInputStream(
+					null, layout3.getUuid(), groupId, 1, false,
+					_getThemeDisplay()));
+
+			List<SchedulerResponse> schedulerResponses =
+				_getRegenerateSitemapSchedulerResponses(null);
+
+			Assert.assertEquals(
+				schedulerResponses.toString(), 0, schedulerResponses.size());
+
+			Assert.assertNull(
+				_sitemapManager.getSitemapInputStream(
+					null, layout1.getUuid(), groupId, 1, false,
+					_getThemeDisplay()));
+
+			long companyId = TestPropsValues.getCompanyId();
+
+			IdempotentRetryAssert.retryAssert(
+				30, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+				() -> {
+					Assert.assertTrue(
+						_sitemapStorageHelper.hasSitemapFile(
+							companyId, groupId,
+							_getPageLayoutChildSitemapKey(layout1), 1));
+					Assert.assertFalse(
+						_sitemapManager.isRegenerateSitemapInProgress(
+							companyId));
+
+					return null;
+				});
+
+			Assert.assertFalse(
+				_sitemapStorageHelper.hasSitemapFile(
+					companyId, groupId, _getPageLayoutChildSitemapKey(layout2),
+					1));
+		}
 	}
 
 	@Test
@@ -387,6 +574,42 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testRegenerateSitemapWithPageLayoutIndexMode()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		long companyId = TestPropsValues.getCompanyId();
+		long groupId = _group.getGroupId();
+
+		_sitemapManager.regenerateSitemap(
+			SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+		String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
+			layout);
+
+		Assert.assertFalse(
+			_sitemapStorageHelper.hasSitemapFile(
+				companyId, groupId, pageLayoutChildSitemapKey, 1));
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+			Assert.assertTrue(
+				_sitemapStorageHelper.hasSitemapFile(
+					companyId, groupId, pageLayoutChildSitemapKey, 1));
+			Assert.assertFalse(
+				_sitemapManager.isRegenerateSitemapInProgress(companyId));
+			Assert.assertNotNull(
+				_sitemapStorageHelper.getLastRegenerateSitemapDate(companyId));
+		}
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithAddAssetCategory()
 		throws Exception {
 
@@ -398,6 +621,52 @@ public class SitemapRegenerationSchedulerTest {
 
 		_assertSiteSitemapRegenerationEntry(
 			SitemapConstants.ASSET_TYPE_KEY_CATEGORIES);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithAddDepotJournalArticlePageLayoutIndexMode()
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		try {
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), _group.getGroupId());
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+				JournalTestUtil.addArticle(
+					depotEntry.getGroupId(),
+					JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+				_assertSiteSitemapRegenerationEntry(
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT);
+
+				List<SiteSitemapRegenerationEntry>
+					siteSitemapRegenerationEntries =
+						_getSiteSitemapRegenerationEntries(
+							SitemapConstants.INDEX_MODE_PAGE_LAYOUT,
+							depotEntry.getGroupId());
+
+				Assert.assertTrue(
+					siteSitemapRegenerationEntries.toString(),
+					siteSitemapRegenerationEntries.isEmpty());
+			}
+		}
+		finally {
+			_depotEntryLocalService.deleteDepotEntry(
+				depotEntry.getDepotEntryId());
+		}
 	}
 
 	@Test
@@ -457,6 +726,45 @@ public class SitemapRegenerationSchedulerTest {
 
 			_assertSiteSitemapRegenerationEntry(
 				SitemapConstants.ASSET_TYPE_KEY_OBJECT_ENTRIES, 0);
+		}
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithAddObjectEntryPageLayoutIndexMode()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+			_addObjectEntry(_group.getGroupId());
+
+			List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
+				_siteSitemapRegenerationEntryLocalService.
+					getSiteSitemapRegenerationEntries(
+						TestPropsValues.getCompanyId());
+
+			Assert.assertTrue(
+				siteSitemapRegenerationEntries.toString(),
+				siteSitemapRegenerationEntries.isEmpty());
+
+			ObjectDefinition objectDefinition = _publishObjectDefinition(
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+					_group.getGroupId(),
+					_portal.getClassNameId(objectDefinition.getClassName()),
+					null, true, WorkflowConstants.STATUS_APPROVED);
+
+			_deleteSiteSitemapRegenerationEntries();
+
+			_addObjectEntry(_group.getGroupId());
+
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(
+					_layoutLocalService.getLayout(
+						layoutPageTemplateEntry.getPlid())));
 		}
 	}
 
@@ -620,6 +928,80 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testScheduleRegenerateSitemapWithUpdateJournalArticlePageLayoutIndexMode()
+		throws Exception {
+
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(_group);
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+			journalArticle = _updateJournalArticle(
+				journalArticle, layout1.getUuid());
+
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(layout1));
+
+			_deleteSiteSitemapRegenerationEntries();
+
+			journalArticle = _updateJournalArticle(
+				journalArticle, layout2.getUuid());
+
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(layout1));
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(layout2));
+
+			long classNameId = _portal.getClassNameId(
+				JournalArticle.class.getName());
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry1 =
+				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+					_group.getGroupId(), classNameId,
+					journalArticle.getDDMStructureKey(), false,
+					WorkflowConstants.STATUS_APPROVED);
+
+			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
+				TestPropsValues.getUserId(), _group.getGroupId(), classNameId,
+				journalArticle.getResourcePrimKey(),
+				layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
+				AssetDisplayPageConstants.TYPE_SPECIFIC,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+			_deleteSiteSitemapRegenerationEntries();
+
+			journalArticle = _updateJournalArticle(
+				journalArticle, layout2.getUuid());
+
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(
+					_layoutLocalService.getLayout(
+						layoutPageTemplateEntry1.getPlid())));
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry2 =
+				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+					_group.getGroupId(), classNameId,
+					journalArticle.getDDMStructureKey(), true,
+					WorkflowConstants.STATUS_APPROVED);
+
+			_deleteSiteSitemapRegenerationEntries();
+
+			_updateJournalArticle(journalArticle, layout2.getUuid());
+
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(
+					_layoutLocalService.getLayout(
+						layoutPageTemplateEntry2.getPlid())));
+		}
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithUpdateLayout()
 		throws Exception {
 
@@ -631,6 +1013,52 @@ public class SitemapRegenerationSchedulerTest {
 
 		_assertSiteSitemapRegenerationEntry(
 			SitemapConstants.ASSET_TYPE_KEY_PAGES);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithUpdateLayoutPageLayoutIndexMode()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper()) {
+
+			Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+			_assertSiteSitemapRegenerationEntry(
+				_getPageLayoutChildSitemapKey(layout));
+
+			List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
+				_getSiteSitemapRegenerationEntries(
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT,
+					_group.getGroupId());
+
+			Assert.assertTrue(
+				siteSitemapRegenerationEntries.toString(),
+				siteSitemapRegenerationEntries.isEmpty());
+
+			_layoutLocalService.updateParentLayoutId(
+				layout.getPlid(), parentLayout.getPlid());
+
+			_assertSiteSitemapRegenerationEntry(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT);
+
+			_deleteSiteSitemapRegenerationEntries();
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				parentLayout.getTypeSettingsProperties();
+
+			typeSettingsUnicodeProperties.setProperty(
+				"sitemap-include-child-layouts", Boolean.FALSE.toString());
+
+			_layoutLocalService.updateTypeSettings(
+				parentLayout, typeSettingsUnicodeProperties.toString());
+
+			_assertSiteSitemapRegenerationEntry(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT);
+		}
 	}
 
 	@Test
@@ -680,18 +1108,19 @@ public class SitemapRegenerationSchedulerTest {
 				_group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
-	private void _assertSiteSitemapRegenerationEntry(String assetTypeKey)
+	private void _assertSiteSitemapRegenerationEntry(String childSitemapKey)
 		throws Exception {
 
-		_assertSiteSitemapRegenerationEntry(assetTypeKey, _group.getGroupId());
+		_assertSiteSitemapRegenerationEntry(
+			childSitemapKey, _group.getGroupId());
 	}
 
 	private void _assertSiteSitemapRegenerationEntry(
-			String assetTypeKey, long groupId)
+			String childSitemapKey, long groupId)
 		throws Exception {
 
 		List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
-			_getSiteSitemapRegenerationEntries(assetTypeKey, groupId);
+			_getSiteSitemapRegenerationEntries(childSitemapKey, groupId);
 
 		Assert.assertEquals(
 			siteSitemapRegenerationEntries.toString(), 1,
@@ -742,6 +1171,26 @@ public class SitemapRegenerationSchedulerTest {
 			).build());
 	}
 
+	private String _getPageLayoutChildSitemapKey(Layout layout) {
+		return SitemapConstants.INDEX_MODE_PAGE_LAYOUT + StringPool.SLASH +
+			layout.getUuid();
+	}
+
+	private CompanyConfigurationTemporarySwapper
+			_getPageLayoutCompanyConfigurationTemporarySwapper()
+		throws Exception {
+
+		return new CompanyConfigurationTemporarySwapper(
+			TestPropsValues.getCompanyId(), _PID_SITEMAP_COMPANY_CONFIGURATION,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"cachedGenerationEnabled", true
+			).put(
+				"xmlSitemapIndexEnabled", true
+			).put(
+				"xmlSitemapIndexMode", SitemapConstants.INDEX_MODE_PAGE_LAYOUT
+			).build());
+	}
+
 	private int _getPagesSitemapLocCount(long companyId, long groupId)
 		throws Exception {
 
@@ -753,7 +1202,7 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	private List<SchedulerResponse> _getRegenerateSitemapSchedulerResponses(
-			String assetTypeKey)
+			String childSitemapKey)
 		throws Exception {
 
 		return TransformUtil.transform(
@@ -769,9 +1218,10 @@ public class SitemapRegenerationSchedulerTest {
 					return null;
 				}
 
-				if ((assetTypeKey == null) ||
+				if ((childSitemapKey == null) ||
 					Objects.equals(
-						message.getString("childSitemapKey"), assetTypeKey)) {
+						message.getString("childSitemapKey"),
+						childSitemapKey)) {
 
 					return schedulerResponse;
 				}
@@ -782,7 +1232,7 @@ public class SitemapRegenerationSchedulerTest {
 
 	private List<SiteSitemapRegenerationEntry>
 			_getSiteSitemapRegenerationEntries(
-				String assetTypeKey, long groupId)
+				String childSitemapKey, long groupId)
 		throws Exception {
 
 		return TransformUtil.transform(
@@ -793,7 +1243,7 @@ public class SitemapRegenerationSchedulerTest {
 				if ((siteSitemapRegenerationEntry.getGroupId() != groupId) ||
 					!Objects.equals(
 						siteSitemapRegenerationEntry.getAssetTypeKey(),
-						assetTypeKey)) {
+						childSitemapKey)) {
 
 					return null;
 				}
@@ -850,6 +1300,20 @@ public class SitemapRegenerationSchedulerTest {
 		return objectDefinition;
 	}
 
+	private JournalArticle _updateJournalArticle(
+			JournalArticle journalArticle, String layoutUuid)
+		throws Exception {
+
+		return _journalArticleLocalService.updateArticle(
+			journalArticle.getUserId(), journalArticle.getGroupId(),
+			journalArticle.getFolderId(), journalArticle.getArticleId(),
+			journalArticle.getVersion(), journalArticle.getTitleMap(),
+			journalArticle.getDescriptionMap(), journalArticle.getContent(),
+			layoutUuid,
+			ServiceContextTestUtil.getServiceContext(
+				journalArticle.getGroupId()));
+	}
+
 	private static final String _CLASS_NAME_SITEMAP_MANAGER_IMPL =
 		"com.liferay.site.internal.manager.SitemapManagerImpl";
 
@@ -863,10 +1327,20 @@ public class SitemapRegenerationSchedulerTest {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Inject
+	private AssetDisplayPageEntryLocalService
+		_assetDisplayPageEntryLocalService;
+
+	@Inject
 	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _companyObjectDefinition;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
@@ -882,6 +1356,9 @@ public class SitemapRegenerationSchedulerTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private Portal _portal;
 
 	@Inject
 	private SchedulerEngineHelper _schedulerEngineHelper;

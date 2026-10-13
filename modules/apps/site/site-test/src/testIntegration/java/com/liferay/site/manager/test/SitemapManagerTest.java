@@ -540,10 +540,10 @@ public class SitemapManagerTest {
 					TestPropsValues.getCompanyId(), _group.getGroupId(),
 					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 1));
 
-			Assert.assertFalse(xml.contains("_childSitemapKey"));
 			Assert.assertFalse(xml.contains("_companyId"));
 			Assert.assertFalse(xml.contains("_groupId"));
 			Assert.assertFalse(xml.contains("_page"));
+			Assert.assertFalse(xml.contains("_childSitemapKey"));
 			Assert.assertFalse(xml.contains("entries="));
 		}
 	}
@@ -687,6 +687,250 @@ public class SitemapManagerTest {
 			Assert.assertEquals("urlset", rootElement.getName());
 
 			Assert.assertFalse(elements.toString(), elements.isEmpty());
+		}
+	}
+
+	@Test
+	public void testSitemapByPageLayoutIncludesDefaultDisplayPageTemplateWithoutStructure()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(true)) {
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+					_group.getGroupId(), _journalArticleClassNameId, null, true,
+					WorkflowConstants.STATUS_APPROVED);
+
+			long companyId = TestPropsValues.getCompanyId();
+			long groupId = _group.getGroupId();
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+			Assert.assertEquals(
+				1,
+				_getSitemapPageCount(
+					_getPageLayoutChildSitemapKey(
+						_layoutLocalService.getLayout(
+							layoutPageTemplateEntry.getPlid()))));
+			Assert.assertTrue(
+				_sitemapStorageHelper.hasSitemapFile(companyId, groupId));
+		}
+	}
+
+	@Test
+	public void testSitemapByPageLayoutOnDemandPaginates() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(false)) {
+
+			ReflectionTestUtil.setFieldValue(
+				_sitemapManager, "_maximumEntries", 3);
+
+			try {
+				Layout layout = _addDisplayPageTemplateLayout(4);
+
+				long groupId = _group.getGroupId();
+
+				String xml = _sitemapManager.getSitemap(
+					groupId, false, _themeDisplay);
+
+				Document document = _saxReader.read(xml);
+
+				Element rootElement = document.getRootElement();
+
+				List<Element> elements = rootElement.elements();
+
+				Assert.assertEquals(xml, 3, elements.size());
+				Assert.assertNotNull(
+					xml,
+					_getLocElement(elements, _buildLayoutSitemapURL(_layout)));
+				Assert.assertNotNull(
+					xml,
+					_getLocElement(
+						elements, _buildLayoutSitemapURL(layout, 1)));
+				Assert.assertNotNull(
+					xml,
+					_getLocElement(
+						elements, _buildLayoutSitemapURL(layout, 2)));
+
+				for (int page = 1; page <= 2; page++) {
+					document = _saxReader.read(
+						_sitemapManager.getSitemap(
+							0, layout.getUuid(), groupId, page, false,
+							_themeDisplay));
+
+					rootElement = document.getRootElement();
+
+					elements = rootElement.elements();
+
+					Assert.assertFalse(elements.isEmpty());
+				}
+
+				Assert.assertNull(
+					_sitemapManager.getSitemap(
+						0, layout.getUuid(), groupId, 3, false, _themeDisplay));
+				Assert.assertEquals(
+					0,
+					_getSitemapPageCount(
+						_getPageLayoutChildSitemapKey(layout)));
+				Assert.assertFalse(
+					_sitemapStorageHelper.hasSitemapFile(
+						TestPropsValues.getCompanyId(), groupId));
+			}
+			finally {
+				ReflectionTestUtil.setFieldValue(
+					_sitemapManager, "_maximumEntries",
+					SitemapManager.MAXIMUM_ENTRIES);
+			}
+		}
+	}
+
+	@Test
+	public void testSitemapByPageLayoutPrunesDeletedLayout() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(true)) {
+
+			Layout deletedLayout = LayoutTestUtil.addTypePortletLayout(_group);
+			Layout hiddenLayout = LayoutTestUtil.addTypePortletLayout(_group);
+
+			long companyId = TestPropsValues.getCompanyId();
+			long groupId = _group.getGroupId();
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+			Assert.assertEquals(
+				1,
+				_getSitemapPageCount(
+					_getPageLayoutChildSitemapKey(deletedLayout)));
+			Assert.assertEquals(
+				1,
+				_getSitemapPageCount(
+					_getPageLayoutChildSitemapKey(hiddenLayout)));
+			Assert.assertEquals(
+				1,
+				_getSitemapPageCount(_getPageLayoutChildSitemapKey(_layout)));
+
+			_layoutLocalService.deleteLayout(deletedLayout);
+
+			Role role = _roleLocalService.getRole(
+				companyId, RoleConstants.GUEST);
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				companyId, Layout.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(hiddenLayout.getPlid()), role.getRoleId(),
+				new String[0]);
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+			Assert.assertEquals(
+				0,
+				_getSitemapPageCount(
+					_getPageLayoutChildSitemapKey(deletedLayout)));
+			Assert.assertEquals(
+				0,
+				_getSitemapPageCount(
+					_getPageLayoutChildSitemapKey(hiddenLayout)));
+			Assert.assertEquals(
+				1,
+				_getSitemapPageCount(_getPageLayoutChildSitemapKey(_layout)));
+		}
+	}
+
+	@Test
+	public void testSitemapByPageLayoutRegeneratesSingleLayout()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(true)) {
+
+			Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+			long companyId = TestPropsValues.getCompanyId();
+			long groupId = _group.getGroupId();
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+			String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
+				layout);
+			String xml = RandomTestUtil.randomString();
+
+			_sitemapStorageHelper.storeSitemapFile(
+				companyId, groupId, pageLayoutChildSitemapKey, 1, xml);
+			_sitemapStorageHelper.storeSitemapFile(
+				companyId, groupId, _getPageLayoutChildSitemapKey(_layout), 1,
+				xml);
+
+			_sitemapManager.regenerateSitemap(
+				pageLayoutChildSitemapKey, companyId, groupId);
+
+			Assert.assertNotEquals(
+				xml, _getStoredSitemap(pageLayoutChildSitemapKey));
+			Assert.assertEquals(
+				xml, _getStoredSitemap(_getPageLayoutChildSitemapKey(_layout)));
+
+			Role role = _roleLocalService.getRole(
+				companyId, RoleConstants.GUEST);
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				companyId, Layout.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(layout.getPlid()), role.getRoleId(),
+				new String[0]);
+
+			_sitemapManager.regenerateSitemap(
+				pageLayoutChildSitemapKey, companyId, groupId);
+
+			Assert.assertEquals(
+				0, _getSitemapPageCount(pageLayoutChildSitemapKey));
+
+			List<Element> elements = _getStoredSitemapIndexElements();
+
+			Assert.assertNotNull(
+				elements.toString(),
+				_getLocElement(elements, _buildLayoutSitemapURL(_layout)));
+			Assert.assertNull(
+				elements.toString(),
+				_getLocElement(elements, _buildLayoutSitemapURL(layout)));
+		}
+	}
+
+	@Test
+	public void testSitemapByPageLayoutServesStoredSitemap() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(true)) {
+
+			long companyId = TestPropsValues.getCompanyId();
+			long groupId = _group.getGroupId();
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, groupId);
+
+			String xml = RandomTestUtil.randomString();
+
+			_sitemapStorageHelper.storeSitemapFile(
+				companyId, groupId, _getPageLayoutChildSitemapKey(_layout), 1,
+				xml);
+
+			Assert.assertEquals(
+				xml,
+				_sitemapManager.getSitemap(
+					0, _layout.getUuid(), groupId, 1, false, _themeDisplay));
+			Assert.assertEquals(
+				xml,
+				StringUtil.read(
+					_sitemapManager.getSitemapInputStream(
+						null, _layout.getUuid(), groupId, 1, false,
+						_themeDisplay)));
 		}
 	}
 
@@ -1732,6 +1976,167 @@ public class SitemapManagerTest {
 	}
 
 	@Test
+	public void testSitemapIndexByPageLayoutPageParam() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(true)) {
+
+			ReflectionTestUtil.setFieldValue(
+				_sitemapManager, "_maximumEntries", 3);
+
+			try {
+				Layout layout = _addDisplayPageTemplateLayout(4);
+
+				_sitemapManager.regenerateSitemap(
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT,
+					TestPropsValues.getCompanyId(), _group.getGroupId());
+
+				Assert.assertEquals(
+					2,
+					_getSitemapPageCount(
+						_getPageLayoutChildSitemapKey(layout)));
+
+				List<Element> elements = _getStoredSitemapIndexElements();
+
+				Assert.assertEquals(elements.toString(), 3, elements.size());
+				Assert.assertNotNull(
+					elements.toString(),
+					_getLocElement(elements, _buildLayoutSitemapURL(_layout)));
+				Assert.assertNotNull(
+					elements.toString(),
+					_getLocElement(
+						elements, _buildLayoutSitemapURL(layout, 1)));
+				Assert.assertNotNull(
+					elements.toString(),
+					_getLocElement(
+						elements, _buildLayoutSitemapURL(layout, 2)));
+			}
+			finally {
+				ReflectionTestUtil.setFieldValue(
+					_sitemapManager, "_maximumEntries",
+					SitemapManager.MAXIMUM_ENTRIES);
+			}
+		}
+	}
+
+	@Test
+	public void testSitemapIndexByPageLayoutRebuildsGuestSitemapIndex()
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		Group group = _groupLocalService.getGroup(
+			companyId, GroupConstants.GUEST);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						companyId, _PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", true
+						).put(
+							"companySitemapGroupIds",
+							new String[] {String.valueOf(_group.getGroupId())}
+						).put(
+							"xmlSitemapIndexEnabled", true
+						).put(
+							"xmlSitemapIndexMode",
+							SitemapConstants.INDEX_MODE_PAGE_LAYOUT
+						).build())) {
+
+			_sitemapStorageHelper.storeSitemapFile(
+				companyId, group.getGroupId(), RandomTestUtil.randomString());
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId,
+				_group.getGroupId());
+
+			Document document = _saxReader.read(
+				StringUtil.read(
+					_sitemapStorageHelper.getSitemapInputStream(
+						companyId, group.getGroupId())));
+
+			Element rootElement = document.getRootElement();
+
+			Assert.assertNotNull(
+				rootElement.asXML(),
+				_getLocElement(
+					rootElement.elements(), _buildLayoutSitemapURL(_layout)));
+		}
+		finally {
+			_sitemapStorageHelper.deleteSitemaps(companyId, group.getGroupId());
+		}
+	}
+
+	@Test
+	public void testSitemapIndexByPageLayoutRebuildsOnPageCountChange()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getPageLayoutCompanyConfigurationTemporarySwapper(true)) {
+
+			ReflectionTestUtil.setFieldValue(
+				_sitemapManager, "_maximumEntries", 3);
+
+			try {
+				Layout layout = _addDisplayPageTemplateLayout(4);
+
+				long companyId = TestPropsValues.getCompanyId();
+				long groupId = _group.getGroupId();
+
+				_sitemapManager.regenerateSitemap(
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId,
+					groupId);
+
+				String pageLayoutChildSitemapKey =
+					_getPageLayoutChildSitemapKey(layout);
+
+				Assert.assertEquals(
+					2, _getSitemapPageCount(pageLayoutChildSitemapKey));
+
+				String xml = RandomTestUtil.randomString();
+
+				_sitemapStorageHelper.storeSitemapFile(companyId, groupId, xml);
+
+				_sitemapManager.regenerateSitemap(
+					pageLayoutChildSitemapKey, companyId, groupId);
+
+				Assert.assertEquals(
+					xml,
+					StringUtil.read(
+						_sitemapStorageHelper.getSitemapInputStream(
+							companyId, groupId)));
+
+				ReflectionTestUtil.setFieldValue(
+					_sitemapManager, "_maximumEntries",
+					SitemapManager.MAXIMUM_ENTRIES);
+
+				_sitemapManager.regenerateSitemap(
+					pageLayoutChildSitemapKey, companyId, groupId);
+
+				Assert.assertEquals(
+					1, _getSitemapPageCount(pageLayoutChildSitemapKey));
+
+				List<Element> elements = _getStoredSitemapIndexElements();
+
+				Assert.assertNotNull(
+					elements.toString(),
+					_getLocElement(elements, _buildLayoutSitemapURL(layout)));
+				Assert.assertNull(
+					elements.toString(),
+					_getLocElement(
+						elements, _buildLayoutSitemapURL(layout, 2)));
+			}
+			finally {
+				ReflectionTestUtil.setFieldValue(
+					_sitemapManager, "_maximumEntries",
+					SitemapManager.MAXIMUM_ENTRIES);
+			}
+		}
+	}
+
+	@Test
 	public void testSitemapIndexExcludesLayoutHiddenFromGuest()
 		throws Exception {
 
@@ -1854,6 +2259,25 @@ public class SitemapManagerTest {
 			TestPropsValues.getUserId(), _group.getGroupId(), classNameId,
 			classPK, layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 			type, _serviceContext);
+	}
+
+	private Layout _addDisplayPageTemplateLayout(int journalArticlesCount)
+		throws Exception {
+
+		AssetDisplayPageEntry assetDisplayPageEntry =
+			_addJournalArticleAssetDisplayPageEntry(_addJournalArticle());
+
+		for (int i = 1; i < journalArticlesCount; i++) {
+			JournalArticle journalArticle = _addJournalArticle();
+
+			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_journalArticleClassNameId, journalArticle.getResourcePrimKey(),
+				assetDisplayPageEntry.getLayoutPageTemplateEntryId(),
+				AssetDisplayPageConstants.TYPE_SPECIFIC, _serviceContext);
+		}
+
+		return _layoutLocalService.getLayout(assetDisplayPageEntry.getPlid());
 	}
 
 	private JournalArticle _addJournalArticle() throws Exception {
@@ -1990,6 +2414,10 @@ public class SitemapManagerTest {
 			layout.getUuid(), "&groupId=", _group.getGroupId());
 	}
 
+	private String _buildLayoutSitemapURL(Layout layout, int page) {
+		return _buildLayoutSitemapURL(layout) + "&page=" + page;
+	}
+
 	private Set<Locale> _getAvailableLocales(Layout layout)
 		throws PortalException {
 
@@ -2097,6 +2525,27 @@ public class SitemapManagerTest {
 		return String.valueOf(objectEntry.getObjectEntryId());
 	}
 
+	private String _getPageLayoutChildSitemapKey(Layout layout) {
+		return SitemapConstants.INDEX_MODE_PAGE_LAYOUT + StringPool.SLASH +
+			layout.getUuid();
+	}
+
+	private CompanyConfigurationTemporarySwapper
+			_getPageLayoutCompanyConfigurationTemporarySwapper(
+				boolean cachedGenerationEnabled)
+		throws Exception {
+
+		return new CompanyConfigurationTemporarySwapper(
+			TestPropsValues.getCompanyId(), _PID_SITEMAP_COMPANY_CONFIGURATION,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"cachedGenerationEnabled", cachedGenerationEnabled
+			).put(
+				"xmlSitemapIndexEnabled", true
+			).put(
+				"xmlSitemapIndexMode", SitemapConstants.INDEX_MODE_PAGE_LAYOUT
+			).build());
+	}
+
 	private String[] _getSitemapLayoutURLs(long groupId) {
 		return ArrayUtil.append(
 			TransformUtil.transformToArray(
@@ -2135,6 +2584,33 @@ public class SitemapManagerTest {
 					return null;
 				},
 				String[].class));
+	}
+
+	private int _getSitemapPageCount(String childSitemapKey) throws Exception {
+		Map<String, Integer> pageCountsByChildSitemapKey =
+			_sitemapStorageHelper.getPageCountsByChildSitemapKey(
+				TestPropsValues.getCompanyId(), _group.getGroupId());
+
+		return GetterUtil.getInteger(
+			pageCountsByChildSitemapKey.get(childSitemapKey));
+	}
+
+	private String _getStoredSitemap(String childSitemapKey) throws Exception {
+		return StringUtil.read(
+			_sitemapStorageHelper.getSitemapInputStream(
+				TestPropsValues.getCompanyId(), _group.getGroupId(),
+				childSitemapKey, 1));
+	}
+
+	private List<Element> _getStoredSitemapIndexElements() throws Exception {
+		Document document = _saxReader.read(
+			StringUtil.read(
+				_sitemapStorageHelper.getSitemapInputStream(
+					TestPropsValues.getCompanyId(), _group.getGroupId())));
+
+		Element rootElement = document.getRootElement();
+
+		return rootElement.elements();
 	}
 
 	private ObjectDefinition _publishObjectDefinition() throws Exception {

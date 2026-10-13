@@ -218,6 +218,46 @@ public class SitemapStrutsActionTest {
 	}
 
 	@Test
+	public void testExecuteReturnsPageLayoutSitemapXMLFromDLStore()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", true
+						).put(
+							"xmlSitemapIndexEnabled", true
+						).put(
+							"xmlSitemapIndexMode",
+							SitemapConstants.INDEX_MODE_PAGE_LAYOUT
+						).build())) {
+
+			_sitemapManager.regenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT,
+				TestPropsValues.getCompanyId(), _group.getGroupId());
+
+			MockHttpServletResponse mockHttpServletResponse = _executeRequest(
+				null, _layout.getUuid());
+
+			Assert.assertEquals(200, mockHttpServletResponse.getStatus());
+
+			Document document = _saxReader.read(
+				mockHttpServletResponse.getContentAsString());
+
+			Element rootElement = document.getRootElement();
+
+			Assert.assertEquals("urlset", rootElement.getName());
+
+			List<Element> elements = rootElement.elements();
+
+			Assert.assertFalse(elements.isEmpty());
+		}
+	}
+
+	@Test
 	public void testExecuteReturnsSitemapIndexXMLFromDLStore()
 		throws Exception {
 
@@ -317,31 +357,6 @@ public class SitemapStrutsActionTest {
 
 			MockHttpServletResponse mockHttpServletResponse = _executeRequest(
 				null, null);
-
-			Assert.assertEquals(200, mockHttpServletResponse.getStatus());
-
-			Assert.assertFalse(
-				_sitemapStorageHelper.hasSitemapFile(
-					TestPropsValues.getCompanyId(), _group.getGroupId()));
-		}
-	}
-
-	@Test
-	public void testExecuteWithPageLayoutModeDoesNotStore() throws Exception {
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						_PID_SITEMAP_COMPANY_CONFIGURATION,
-						HashMapDictionaryBuilder.<String, Object>put(
-							"xmlSitemapIndexEnabled", true
-						).put(
-							"xmlSitemapIndexMode",
-							SitemapConstants.INDEX_MODE_PAGE_LAYOUT
-						).build())) {
-
-			MockHttpServletResponse mockHttpServletResponse = _executeRequest(
-				null, _layout.getUuid());
 
 			Assert.assertEquals(200, mockHttpServletResponse.getStatus());
 
