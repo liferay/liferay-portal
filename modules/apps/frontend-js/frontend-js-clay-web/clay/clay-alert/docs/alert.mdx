@@ -3,12 +3,13 @@ title: 'Alerts'
 description: 'Alerts are used to capture the attention of the user in an intrusive way.'
 lexiconDefinition: 'https://liferay.design/lexicon/core-components/alerts/'
 packageNpm: '@clayui/alert'
-packageUse: "import Alert from '@clayui/alert';"
+packageUse: "import Alert, {usePrefersPersistentAlerts} from '@clayui/alert';"
 packageTypes:
     [
         'clay-alert/src/Alert.tsx',
         'clay-alert/src/Footer.tsx',
         'clay-alert/src/ToastContainer.tsx',
+        'clay-alert/src/usePrefersPersistentAlerts.ts',
     ]
 ---
 
@@ -261,3 +262,7 @@ Alerts also stay open while `document.body` has the `c-prefers-persistent-alerts
 	</Alert>
 </Provider>
 ```
+
+### Persistent Alerts in Custom Components
+
+A custom component that closes on its own can follow the same setting with `usePrefersPersistentAlerts`. It returns `true` when a `Provider` sets `persistentAlerts` or `document.body` has the `c-prefers-persistent-alerts` class, and it updates when either one changes. While it returns `true`, do not start the auto close timer.
