@@ -21,7 +21,6 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
@@ -215,27 +214,23 @@ public class ServerAuthorizationCodeGrantProvider {
 
 		_cleanUp();
 
-		AtomicReference<ServerAuthorizationCodeGrant>
-			serverAuthorizationCodeGrantAtomicReference =
-				new AtomicReference<>();
+		for (ServerAuthorizationCodeGrantDelayed
+				serverAuthorizationCodeGrantDelayed :
+					_serverAuthorizationCodeGrantDelayeds) {
 
-		_serverAuthorizationCodeGrantDelayeds.removeIf(
-			serverAuthorizationCodeGrantDelayed -> {
-				ServerAuthorizationCodeGrant serverAuthorizationCodeGrant =
-					serverAuthorizationCodeGrantDelayed.
-						getServerAuthorizationCodeGrant();
+			ServerAuthorizationCodeGrant serverAuthorizationCodeGrant =
+				serverAuthorizationCodeGrantDelayed.
+					getServerAuthorizationCodeGrant();
 
-				if (code.equals(serverAuthorizationCodeGrant.getCode())) {
-					serverAuthorizationCodeGrantAtomicReference.compareAndSet(
-						null, serverAuthorizationCodeGrant);
+			if (code.equals(serverAuthorizationCodeGrant.getCode()) &&
+				_serverAuthorizationCodeGrantDelayeds.remove(
+					serverAuthorizationCodeGrantDelayed)) {
 
-					return true;
-				}
+				return serverAuthorizationCodeGrant;
+			}
+		}
 
-				return false;
-			});
-
-		return serverAuthorizationCodeGrantAtomicReference.get();
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
