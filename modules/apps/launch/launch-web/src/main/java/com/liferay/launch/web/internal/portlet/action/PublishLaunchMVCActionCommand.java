@@ -7,12 +7,8 @@ package com.liferay.launch.web.internal.portlet.action;
 
 import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.ActionRequest;
@@ -31,30 +27,19 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class PublishLaunchMVCActionCommand extends BaseMVCActionCommand {
+public class PublishLaunchMVCActionCommand
+	extends BaseTransactionalMVCActionCommand {
 
 	@Override
-	protected void doProcessAction(
+	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		try {
-			_launchSetPublisher.publish(
-				ParamUtil.getLong(actionRequest, "launchSetId"));
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
-			SessionErrors.add(actionRequest, PortalException.class);
-		}
+		_launchSetPublisher.publish(
+			ParamUtil.getLong(actionRequest, "launchSetId"));
 
 		sendRedirect(actionRequest, actionResponse);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PublishLaunchMVCActionCommand.class);
 
 	@Reference
 	private LaunchSetPublisher _launchSetPublisher;

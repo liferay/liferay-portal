@@ -12,12 +12,10 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -32,11 +30,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alejandro Tardín
  */
-@Component(service = AopService.class)
-public class LaunchSetPublisherImpl implements AopService, LaunchSetPublisher {
+@Component(service = LaunchSetPublisher.class)
+public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public void publish(long launchSetId) throws PortalException {
 		ObjectEntry launchSetObjectEntry =
 			_objectEntryLocalService.getObjectEntry(launchSetId);

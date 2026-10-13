@@ -12,7 +12,6 @@ dependencies {
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:launch:launch-api")
 	compileOnly project(":apps:object:object-api")
-	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")

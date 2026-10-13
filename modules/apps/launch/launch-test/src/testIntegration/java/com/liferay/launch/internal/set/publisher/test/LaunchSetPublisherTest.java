@@ -19,8 +19,11 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.portlet.MockActionResponse;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -34,6 +37,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import jakarta.portlet.PortletException;
 
 import java.io.Serializable;
 
@@ -97,17 +102,26 @@ public class LaunchSetPublisherTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomInt(),
 			RandomTestUtil.randomString());
 
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setParameter(
+			"launchSetId",
+			String.valueOf(_launchSetObjectEntry.getObjectEntryId()));
+
 		try {
-			_launchSetPublisher.publish(
-				_launchSetObjectEntry.getObjectEntryId());
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest, new MockActionResponse());
 
 			Assert.fail();
 		}
-		catch (PortalException portalException) {
+		catch (PortletException portletException) {
+			Throwable throwable = portletException.getCause();
+
 			Assert.assertTrue(
-				portalException.getMessage(),
+				throwable.getMessage(),
 				StringUtil.startsWith(
-					portalException.getMessage(),
+					throwable.getMessage(),
 					"No launch entry type exists for "));
 		}
 
@@ -338,6 +352,9 @@ public class LaunchSetPublisherTest {
 
 	@Inject
 	private LaunchSetPublisher _launchSetPublisher;
+
+	@Inject(filter = "mvc.command.name=/launch/publish_launch")
+	private MVCActionCommand _mvcActionCommand;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
