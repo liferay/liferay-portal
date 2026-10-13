@@ -13,6 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -461,6 +464,40 @@ public class MonitorMetricsWriterTest
 						String.valueOf((double)status.getSeverityRank()),
 						"\n")));
 		}
+	}
+
+	@Test
+	public void testWriteUTF8() throws Exception {
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		String message = RandomTestUtil.randomString() + "\u00e9";
+
+		monitorResultStore.store(
+			"disk",
+			new MonitorResult(
+				message, null, MonitorResult.Status.CRITICAL,
+				RandomTestUtil.randomLong()));
+
+		File metricsFile = new File(
+			temporaryFolder.getRoot(), RandomTestUtil.randomString());
+
+		_write(
+			metricsFile, monitorResultStore,
+			Arrays.<Monitor>asList(
+				new TestMonitor(
+					_newMonitorConfig(
+						"disk", MonitorConfig.Severity.HIGH,
+						"resource-threshold"))));
+
+		String content = new String(
+			Files.readAllBytes(metricsFile.toPath()), StandardCharsets.UTF_8);
+
+		Assert.assertTrue(
+			content,
+			content.contains(
+				JenkinsResultsParserUtil.combine(
+					"monitor_message_info{message=\"", message,
+					"\",monitor=\"disk\"} 1.0\n")));
 	}
 
 	@Rule
