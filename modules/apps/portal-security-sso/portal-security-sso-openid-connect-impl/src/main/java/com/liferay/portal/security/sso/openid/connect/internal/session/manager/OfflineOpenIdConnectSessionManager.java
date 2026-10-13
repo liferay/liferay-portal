@@ -103,15 +103,7 @@ public class OfflineOpenIdConnectSessionManager {
 			return true;
 		}
 
-		Date accessTokenExpirationDate =
-			openIdConnectSession.getAccessTokenExpirationDate();
-
-		long currentTime = System.currentTimeMillis();
-
-		if (currentTime >
-				(accessTokenExpirationDate.getTime() -
-					_tokenRefreshOffsetMillis)) {
-
+		if (_isAccessTokenExpiring(openIdConnectSession)) {
 			Message message = new Message();
 
 			message.put("openIdConnectSessionId", openIdConnectSessionId);
@@ -281,6 +273,22 @@ public class OfflineOpenIdConnectSessionManager {
 		}
 
 		return null;
+	}
+
+	private boolean _isAccessTokenExpiring(
+		OpenIdConnectSession openIdConnectSession) {
+
+		Date accessTokenExpirationDate =
+			openIdConnectSession.getAccessTokenExpirationDate();
+
+		if (System.currentTimeMillis() >
+				(accessTokenExpirationDate.getTime() -
+					_tokenRefreshOffsetMillis)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _registerServices(BundleContext bundleContext) {
@@ -477,7 +485,18 @@ public class OfflineOpenIdConnectSessionManager {
 				for (OpenIdConnectSession openIdConnectSession :
 						openIdConnectSessions) {
 
-					_extendOpenIdConnectSession(openIdConnectSession);
+					OpenIdConnectSession currentOpenIdConnectSession =
+						_openIdConnectSessionLocalService.
+							fetchOpenIdConnectSession(
+								openIdConnectSession.
+									getOpenIdConnectSessionId());
+
+					if ((currentOpenIdConnectSession != null) &&
+						_isAccessTokenExpiring(currentOpenIdConnectSession)) {
+
+						_extendOpenIdConnectSession(
+							currentOpenIdConnectSession);
+					}
 				}
 			};
 		}

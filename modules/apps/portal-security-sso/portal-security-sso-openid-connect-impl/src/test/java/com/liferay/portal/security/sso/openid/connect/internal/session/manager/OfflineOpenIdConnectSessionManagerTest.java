@@ -7,11 +7,18 @@ package com.liferay.portal.security.sso.openid.connect.internal.session.manager;
 
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.messaging.Destination;
+import com.liferay.portal.kernel.messaging.DestinationConfiguration;
+import com.liferay.portal.kernel.messaging.DestinationFactory;
+import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.security.sso.openid.connect.internal.AuthorizationServerMetadataResolver;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectTokenRequestUtil;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
@@ -32,6 +39,7 @@ import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import java.net.URI;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -39,8 +47,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Manuele Castro
@@ -122,6 +133,147 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		_testExtendOpenIdConnectSessionWhenUpdateFails(
 			mvccVersion + 1, 0, mvccVersion);
 		_testExtendOpenIdConnectSessionWhenUpdateFails(null, 0, mvccVersion);
+	}
+
+	@Test
+	public void testGetJobExecutorUnsafeRunnable() throws Exception {
+		String authServerWellKnownURI = RandomTestUtil.randomString();
+		String clientId = RandomTestUtil.randomString();
+		long companyId = RandomTestUtil.randomLong();
+
+		OpenIdConnectSessionLocalService openIdConnectSessionLocalService =
+			Mockito.mock(OpenIdConnectSessionLocalService.class);
+
+		OfflineOpenIdConnectSessionManager offlineOpenIdConnectSessionManager =
+			_createOfflineOpenIdConnectSessionManager(
+				authServerWellKnownURI, clientId, companyId,
+				openIdConnectSessionLocalService);
+
+		DestinationFactory destinationFactory = Mockito.mock(
+			DestinationFactory.class);
+
+		Mockito.when(
+			destinationFactory.createDestination(
+				Mockito.any(DestinationConfiguration.class))
+		).thenReturn(
+			Mockito.mock(Destination.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			offlineOpenIdConnectSessionManager, "_destinationFactory",
+			destinationFactory);
+
+		BundleContext bundleContext = Mockito.mock(BundleContext.class);
+
+		offlineOpenIdConnectSessionManager.activate(
+			bundleContext,
+			HashMapBuilder.<String, Object>put(
+				"enabled", true
+			).build());
+
+		ArgumentCaptor<SchedulerJobConfiguration> argumentCaptor =
+			ArgumentCaptor.forClass(SchedulerJobConfiguration.class);
+
+		Mockito.verify(
+			bundleContext
+		).registerService(
+			Mockito.eq(SchedulerJobConfiguration.class),
+			argumentCaptor.capture(), Mockito.isNull()
+		);
+
+		OpenIdConnectSession expiringOpenIdConnectSession =
+			_createOpenIdConnectSession(
+				authServerWellKnownURI, clientId, companyId,
+				RandomTestUtil.randomString());
+
+		Mockito.when(
+			expiringOpenIdConnectSession.getAccessTokenExpirationDate()
+		).thenReturn(
+			new Date()
+		);
+
+		long expiringOpenIdConnectSessionId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			openIdConnectSessionLocalService.fetchOpenIdConnectSession(
+				expiringOpenIdConnectSessionId)
+		).thenReturn(
+			expiringOpenIdConnectSession
+		);
+
+		OpenIdConnectSession refreshedOpenIdConnectSession =
+			_createOpenIdConnectSession(
+				authServerWellKnownURI, clientId, companyId,
+				RandomTestUtil.randomString());
+
+		Mockito.when(
+			refreshedOpenIdConnectSession.getAccessTokenExpirationDate()
+		).thenReturn(
+			new Date(System.currentTimeMillis() + Time.HOUR)
+		);
+
+		long refreshedOpenIdConnectSessionId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			openIdConnectSessionLocalService.fetchOpenIdConnectSession(
+				refreshedOpenIdConnectSessionId)
+		).thenReturn(
+			refreshedOpenIdConnectSession
+		);
+
+		List<OpenIdConnectSession> openIdConnectSessions = List.of(
+			_createOpenIdConnectSession(RandomTestUtil.randomLong()),
+			_createOpenIdConnectSession(expiringOpenIdConnectSessionId),
+			_createOpenIdConnectSession(refreshedOpenIdConnectSessionId));
+
+		Mockito.when(
+			openIdConnectSessionLocalService.
+				getAccessTokenExpirationDateOpenIdConnectSessions(
+					Mockito.any(Date.class), Mockito.anyInt(), Mockito.anyInt())
+		).thenReturn(
+			openIdConnectSessions
+		);
+
+		try (MockedStatic<OpenIdConnectTokenRequestUtil>
+				openIdConnectTokenRequestUtilMockedStatic = Mockito.mockStatic(
+					OpenIdConnectTokenRequestUtil.class)) {
+
+			PlainJWT plainJWT = new PlainJWT(
+				new JWTClaimsSet.Builder(
+				).issuer(
+					RandomTestUtil.randomString()
+				).build());
+
+			openIdConnectTokenRequestUtilMockedStatic.when(
+				() -> OpenIdConnectTokenRequestUtil.request(
+					Mockito.any(OIDCClientInformation.class),
+					Mockito.any(OIDCProviderMetadata.class),
+					Mockito.any(RefreshToken.class),
+					Mockito.eq(_tokenConnectionTimeout), Mockito.anyString())
+			).thenReturn(
+				new OIDCTokens(plainJWT.serialize(), _createAccessToken(), null)
+			);
+
+			SchedulerJobConfiguration schedulerJobConfiguration =
+				argumentCaptor.getValue();
+
+			UnsafeRunnable<Exception> unsafeRunnable =
+				schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
+
+			unsafeRunnable.run();
+		}
+
+		Mockito.verify(
+			openIdConnectSessionLocalService
+		).updateOpenIdConnectSession(
+			expiringOpenIdConnectSession
+		);
+
+		Mockito.verify(
+			openIdConnectSessionLocalService, Mockito.never()
+		).updateOpenIdConnectSession(
+			refreshedOpenIdConnectSession
+		);
 	}
 
 	@Test
@@ -364,6 +516,21 @@ public class OfflineOpenIdConnectSessionManagerTest {
 			openIdConnectSessionLocalService);
 
 		return offlineOpenIdConnectSessionManager;
+	}
+
+	private OpenIdConnectSession _createOpenIdConnectSession(
+		long openIdConnectSessionId) {
+
+		OpenIdConnectSession openIdConnectSession = Mockito.mock(
+			OpenIdConnectSession.class);
+
+		Mockito.when(
+			openIdConnectSession.getOpenIdConnectSessionId()
+		).thenReturn(
+			openIdConnectSessionId
+		);
+
+		return openIdConnectSession;
 	}
 
 	private OpenIdConnectSession _createOpenIdConnectSession(
