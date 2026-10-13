@@ -484,3 +484,119 @@ test(
 		).toHaveText('es-ES');
 	}
 );
+
+test(
+	'Cannot publish a product with empty or zero order quantities',
+	{tag: ['@COMMERCE-10173', '@LPD-107429']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsConfigurationPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const defaultOrderQuantities = {
+			'Maximum Order Quantity': '10000.0',
+			'Minimum Order Quantity': '1.0',
+			'Multiple Order Quantity': '1.0',
+		};
+
+		await test.step('Open the configuration of a new product', async () => {
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+				});
+
+			await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+			await commerceAdminProductDetailsPage.goToProductConfiguration();
+
+			for (const [
+				orderQuantityLabel,
+				orderQuantityValue,
+			] of Object.entries(defaultOrderQuantities)) {
+				await expect(
+					commerceAdminProductDetailsConfigurationPage.orderQuantityInput(
+						orderQuantityLabel
+					)
+				).toHaveValue(orderQuantityValue);
+			}
+		});
+
+		await test.step('Publishing empty order quantities shows the required errors', async () => {
+			for (const orderQuantityLabel of Object.keys(
+				defaultOrderQuantities
+			)) {
+				await commerceAdminProductDetailsConfigurationPage
+					.orderQuantityInput(orderQuantityLabel)
+					.clear();
+			}
+
+			await commerceAdminProductDetailsConfigurationPage.publishLink.click();
+
+			await expect(
+				commerceAdminProductDetailsConfigurationPage.orderQuantityInput(
+					'Minimum Order Quantity'
+				)
+			).toBeFocused();
+
+			for (const orderQuantityLabel of Object.keys(
+				defaultOrderQuantities
+			)) {
+				await expect(
+					commerceAdminProductDetailsConfigurationPage.orderQuantityErrorMessage(
+						orderQuantityLabel
+					)
+				).toHaveText(`The ${orderQuantityLabel} field is required.`);
+			}
+		});
+
+		await test.step('Publishing zero order quantities shows the minimum value errors', async () => {
+			for (const orderQuantityLabel of Object.keys(
+				defaultOrderQuantities
+			)) {
+				await commerceAdminProductDetailsConfigurationPage
+					.orderQuantityInput(orderQuantityLabel)
+					.fill('0');
+			}
+
+			await commerceAdminProductDetailsConfigurationPage.publishLink.click();
+
+			await expect(
+				commerceAdminProductDetailsConfigurationPage.orderQuantityInput(
+					'Minimum Order Quantity'
+				)
+			).toBeFocused();
+
+			for (const orderQuantityLabel of Object.keys(
+				defaultOrderQuantities
+			)) {
+				await expect(
+					commerceAdminProductDetailsConfigurationPage.orderQuantityErrorMessage(
+						orderQuantityLabel
+					)
+				).toHaveText(
+					'Please enter a value greater than or equal to 0.000001.'
+				);
+			}
+		});
+
+		await test.step('The order quantities are not saved', async () => {
+			await page.reload();
+
+			for (const [
+				orderQuantityLabel,
+				orderQuantityValue,
+			] of Object.entries(defaultOrderQuantities)) {
+				await expect(
+					commerceAdminProductDetailsConfigurationPage.orderQuantityInput(
+						orderQuantityLabel
+					)
+				).toHaveValue(orderQuantityValue);
+			}
+		});
+	}
+);

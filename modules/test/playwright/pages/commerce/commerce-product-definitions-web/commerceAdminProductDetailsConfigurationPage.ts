@@ -6,15 +6,24 @@
 import {Locator, Page} from '@playwright/test';
 
 export class CommerceAdminProductDetailsConfigurationPage {
+	readonly minStockQuantityInput: Locator;
+	readonly orderQuantityErrorMessage: (orderQuantityLabel: string) => Locator;
+	readonly orderQuantityInput: (orderQuantityLabel: string) => Locator;
 	readonly page: Page;
 	readonly publishLink: Locator;
-	readonly minStockQuantityInput: Locator;
 	readonly purchasableInput: Locator;
 
 	constructor(page: Page) {
+		this.minStockQuantityInput = page.getByTestId('minStockQuantityInput');
+		this.orderQuantityErrorMessage = (orderQuantityLabel: string) =>
+			page
+				.locator('.form-group')
+				.filter({has: this.orderQuantityInput(orderQuantityLabel)})
+				.getByRole('alert');
+		this.orderQuantityInput = (orderQuantityLabel: string) =>
+			page.getByLabel(orderQuantityLabel);
 		this.page = page;
 		this.publishLink = page.getByRole('link', {name: 'Publish'});
-		this.minStockQuantityInput = page.getByTestId('minStockQuantityInput');
 		this.purchasableInput = page.getByTestId('purchasableInput');
 	}
 }
