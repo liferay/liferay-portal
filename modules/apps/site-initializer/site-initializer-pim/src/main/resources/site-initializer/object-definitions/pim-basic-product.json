@@ -9,6 +9,7 @@
 	"enableObjectEntryHistory": true,
 	"enableObjectEntrySchedule": true,
 	"enableObjectEntrySubscription": false,
+	"enableObjectEntryVersioning": true,
 	"externalReferenceCode": "L_PIM_BASIC_PRODUCT",
 	"label": {
 		"en_US": "PIM Basic Product"

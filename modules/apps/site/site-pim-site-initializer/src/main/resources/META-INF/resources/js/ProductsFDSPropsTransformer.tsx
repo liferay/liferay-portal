@@ -10,10 +10,13 @@ import {
 	StatusLabel,
 	addOnClickToCreationMenuItems,
 	deleteAssetEntriesBulkAction,
+	deleteItemAction,
+	getFormattedLabel,
 	getScopeExternalReferenceCode,
 	styleDeleteAction,
 	transformFDSBulkActions,
 } from '@liferay/site-cms-site-initializer';
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import ProductTitleRenderer from './cell_renderers/ProductTitleRenderer';
@@ -80,6 +83,36 @@ export default function propsTransformer({
 		},
 		hideManagementBarInEmptyState: true,
 		itemsActions: itemsActions?.map(styleDeleteAction),
+		async onActionDropdownItemClick({
+			action,
+			event,
+			itemData,
+			loadData,
+		}: {
+			action: any;
+			event: Event;
+			itemData: any;
+			loadData: () => {};
+		}) {
+			if (action?.data?.id !== 'delete') {
+				return;
+			}
+
+			event?.preventDefault();
+
+			await deleteItemAction(
+				sub(
+					Liferay.Language.get('delete-asset-confirmation-body'),
+					getFormattedLabel(
+						itemData.title ||
+							itemData.embedded?.title ||
+							Liferay.Language.get('untitled-asset')
+					)
+				),
+				itemData,
+				loadData
+			);
+		},
 		onBulkActionItemClick: ({
 			action,
 			selectedData,

@@ -235,21 +235,12 @@ public class ProductsSectionDisplayContext {
 			).build(
 				"edit"
 			),
-			FDSActionDropdownItemBuilder.setConfirmationMessage(
-				LanguageUtil.get(
-					_httpServletRequest, "are-you-sure-you-want-to-delete-this")
-			).setHref(
-				"{embedded.actions.delete.href}"
-			).setIcon(
+			FDSActionDropdownItemBuilder.setIcon(
 				"trash"
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "delete")
-			).setMethod(
-				"delete"
 			).setPermissionKey(
 				"delete"
-			).setTarget(
-				"headless"
 			).build(
 				"delete"
 			));
