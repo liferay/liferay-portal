@@ -403,10 +403,8 @@ public class AssetListAssetEntryProviderOrderByTest {
 
 	private String _getOrderByColumn(String propertyName) {
 		return JSONUtil.put(
-			"classNameId",
-			_portal.getClassNameId(_objectDefinition.getClassName())
-		).put(
-			"classTypeId", _objectDefinition.getObjectDefinitionId()
+			"objectDefinitionExternalReferenceCode",
+			_objectDefinition.getExternalReferenceCode()
 		).put(
 			"propertyName", propertyName
 		).toString();
