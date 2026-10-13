@@ -5,7 +5,14 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.BuildDatabaseUtil;
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.ReflectionTestUtil;
+import com.liferay.jenkins.results.parser.Workspace;
+import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
@@ -17,11 +24,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.commons.io.FileUtils;
+
+import org.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -103,6 +116,111 @@ public class BatchTestClassGroupTest
 		Collections.sort(axisTestClasses);
 
 		Assert.assertEquals(testClasses, axisTestClasses);
+	}
+
+	@Test
+	public void testGetCachedDownstreamBuildReportsFromOtherBatch()
+		throws Exception {
+
+		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
+			null, null, null, 0);
+
+		mockEnvironment(
+			Collections.singletonMap("BUILD_CACHING_ENABLED", "true"));
+
+		String baseBranchSHA = RandomTestUtil.randomSHA();
+		String senderBranchSHA = RandomTestUtil.randomSHA();
+
+		File cachedReportsDir = new File(
+			System.getProperty("java.io.tmpdir"),
+			"cached-build-report-files/liferay-portal/" + baseBranchSHA + "/" +
+				senderBranchSHA + "/default");
+
+		cachedReportsDir.mkdirs();
+
+		AtomicBoolean buildReportsDownloaded = ReflectionTestUtil.getFieldValue(
+			BatchTestClassGroup.class, "_buildReportsDownloaded");
+
+		try (MockedStatic<BuildDatabaseUtil> buildDatabaseUtilMockedStatic =
+				Mockito.mockStatic(BuildDatabaseUtil.class);
+			MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			WorkspaceGitRepository workspaceGitRepository = Mockito.mock(
+				WorkspaceGitRepository.class);
+
+			Mockito.when(
+				workspaceGitRepository.getBaseBranchSHA()
+			).thenReturn(
+				baseBranchSHA
+			);
+
+			Mockito.when(
+				workspaceGitRepository.getName()
+			).thenReturn(
+				"liferay-portal"
+			);
+
+			Mockito.when(
+				workspaceGitRepository.getSenderBranchSHA()
+			).thenReturn(
+				senderBranchSHA
+			);
+
+			Workspace workspace = Mockito.mock(Workspace.class);
+
+			Mockito.when(
+				workspace.getPrimaryWorkspaceGitRepository()
+			).thenReturn(
+				workspaceGitRepository
+			);
+
+			BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
+
+			Mockito.when(
+				buildDatabase.getWorkspaces()
+			).thenReturn(
+				Arrays.asList(workspace)
+			);
+
+			buildDatabaseUtilMockedStatic.when(
+				BuildDatabaseUtil::getBuildDatabase
+			).thenReturn(
+				buildDatabase
+			);
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				JenkinsResultsParserUtil::isCloudCINode
+			).thenReturn(
+				true
+			);
+
+			_writeCachedBuildReport(
+				"default-db-partition/1/2", cachedReportsDir);
+			_writeCachedBuildReport("default/1/2", cachedReportsDir);
+
+			List<DownstreamBuildReport> downstreamBuildReports =
+				batchTestClassGroup.getCachedDownstreamBuildReports(
+					"default/1/2");
+
+			testEquals(1, downstreamBuildReports.size());
+
+			DownstreamBuildReport downstreamBuildReport =
+				downstreamBuildReports.get(0);
+
+			testEquals("default/1/2", downstreamBuildReport.getAxisName());
+
+			Assert.assertNull(
+				batchTestClassGroup.getCachedDownstreamBuildReports(
+					"default-db-partition/1/2"));
+		}
+		finally {
+			buildReportsDownloaded.set(false);
+
+			FileUtils.deleteDirectory(cachedReportsDir.getParentFile());
+		}
 	}
 
 	@Test
@@ -410,6 +528,22 @@ public class BatchTestClassGroupTest
 
 		Assert.assertTrue(
 			segmentAxisTestClassGroups.containsAll(batchAxisTestClassGroups));
+	}
+
+	private void _writeCachedBuildReport(String axisName, File dir)
+		throws Exception {
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"axisName", axisName
+		).put(
+			"buildURL", "https://test-1-1.liferay.com/job/test-downstream/1"
+		);
+
+		JenkinsResultsParserUtil.write(
+			new File(dir, RandomTestUtil.randomString() + ".json"),
+			jsonObject.toString());
 	}
 
 }
