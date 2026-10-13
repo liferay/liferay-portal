@@ -986,11 +986,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>HEADER_ID_DATA_QA_ID</td>
-	<td>//div[@class='header-info']//div//span[contains(.,'ID')]/following-sibling::strong@data-qa-id</td>
-	<td></td>
-</tr>
-<tr>
 	<td>NOTIFICATION_DELIVERY_PANEL_CLOSED</td>
 	<td>//div[contains(@class,'content')]//a[contains(.,'${key_contentType}') and contains(@class,'collapsed')]//span[contains(@class,'closed')]//*[name()='svg']</td>
 	<td></td>
@@ -998,11 +993,6 @@
 <tr>
 	<td>FILE_ENTRY_ID_FROM_PRODUCT_MEDIA</td>
 	<td>//input[@id="_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fileEntryId"]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMMERCE_SEARCH_RESULTS_TEMPLATE_MENU_ITEM</td>
-	<td>xpath=((//div | //li)[contains(@class,'open') or contains(@class,'show')]//*[normalize-space(text())="Search Results Template"])[2]</td>
 	<td></td>
 </tr>
 <tr>

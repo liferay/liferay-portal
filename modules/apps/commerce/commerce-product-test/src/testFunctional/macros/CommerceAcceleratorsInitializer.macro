@@ -65,18 +65,11 @@ definition {
 		if (IsElementPresent(key_text = "More", locator1 = "Button#ANY")) {
 			Button.clickMore();
 
-			if (${adtType} == "Search Results") {
-				ScrollWebElementIntoView(locator1 = "CommerceEntry#COMMERCE_SEARCH_RESULTS_TEMPLATE_MENU_ITEM");
+			ScrollWebElementIntoView(
+				key_menuItem = "${adtType} Template",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
 
-				Click(locator1 = "CommerceEntry#COMMERCE_SEARCH_RESULTS_TEMPLATE_MENU_ITEM");
-			}
-			else {
-				ScrollWebElementIntoView(
-					key_menuItem = "${adtType} Template",
-					locator1 = "MenuItem#ANY_MENU_ITEM");
-
-				MenuItem.click(menuItem = "${adtType} Template");
-			}
+			MenuItem.click(menuItem = "${adtType} Template");
 		}
 		else {
 			MenuItem.click(menuItem = "${adtType} Template");
