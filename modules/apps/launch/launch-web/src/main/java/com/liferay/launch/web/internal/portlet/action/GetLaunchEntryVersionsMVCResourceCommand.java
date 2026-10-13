@@ -1,0 +1,97 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.launch.web.internal.portlet.action;
+
+import com.liferay.launch.entry.type.LaunchEntryType;
+import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
+import java.util.Locale;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Alejandro Tardín
+ */
+@Component(
+	property = {
+		"jakarta.portlet.name=" + LaunchPortletKeys.LAUNCH,
+		"mvc.command.name=/launch/get_launch_entry_versions"
+	},
+	service = MVCResourceCommand.class
+)
+public class GetLaunchEntryVersionsMVCResourceCommand
+	extends BaseMVCResourceCommand {
+
+	@Override
+	protected void doServeResource(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws Exception {
+
+		LaunchEntryType launchEntryType =
+			_launchEntryTypeRegistry.getLaunchEntryType(
+				ParamUtil.getString(resourceRequest, "className"));
+
+		if (launchEntryType == null) {
+			resourceResponse.setProperty(
+				ResourceResponse.HTTP_STATUS_CODE,
+				String.valueOf(HttpServletResponse.SC_NOT_FOUND));
+
+			return;
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Locale locale = themeDisplay.getLocale();
+
+		List<LaunchEntryType.Version> versions = launchEntryType.getVersions(
+			ParamUtil.getLong(resourceRequest, "classPK"), locale);
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (LaunchEntryType.Version version : versions) {
+			jsonArray.put(
+				JSONUtil.put(
+					"label", version.getLabel(locale)
+				).put(
+					"modified", version.getModifiedDate()
+				).put(
+					"status", version.getStatus()
+				).put(
+					"userName", version.getUserName()
+				).put(
+					"versionKey", version.getVersionKey()
+				));
+		}
+
+		JSONPortletResponseUtil.writeJSON(
+			resourceRequest, resourceResponse, jsonArray);
+	}
+
+	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
+	private LaunchEntryTypeRegistry _launchEntryTypeRegistry;
+
+}

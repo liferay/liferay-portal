@@ -2,19 +2,20 @@
 	"dependencies": {
 		"@clayui/alert": "^3.166.0",
 		"@clayui/button": "^3.166.0",
-		"@clayui/empty-state": "^3.166.0",
+		"@clayui/drop-down": "^3.166.0",
 		"@clayui/form": "^3.166.0",
 		"@clayui/icon": "^3.166.0",
 		"@clayui/label": "^3.166.0",
+		"@clayui/link": "^3.166.0",
 		"@clayui/modal": "^3.166.0",
 		"@clayui/table": "^3.166.0",
-		"@clayui/tabs": "^3.166.0",
+		"@liferay/frontend-js-react-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},
-	"main": "js/Launches.tsx",
+	"main": "js/index.ts",
 	"name": "@liferay/launch-web",
 	"private": true,
 	"scripts": {
@@ -23,5 +24,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.7"
+	"version": "1.1.0"
 }

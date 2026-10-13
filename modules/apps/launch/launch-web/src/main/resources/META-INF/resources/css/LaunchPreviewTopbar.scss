@@ -1,0 +1,74 @@
+@import 'atlas-custom-properties/_variables';
+
+$launch-preview-topbar-height: 48px;
+
+$launch-preview-topbar-zindex: $zindex-dropdown - 1;
+
+.launch-preview-topbar-root {
+	background-color: $primary;
+	min-height: $launch-preview-topbar-height;
+	position: sticky;
+	top: 0;
+	z-index: $launch-preview-topbar-zindex;
+}
+
+.launch-preview-topbar {
+	align-items: center;
+	background-color: $primary;
+	color: $white;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	min-height: $launch-preview-topbar-height;
+	padding: 0.25rem 1rem;
+	width: 100%;
+
+	&::after {
+		content: '';
+		flex: 1;
+	}
+
+	.launch-preview-topbar__pickers,
+	.launch-preview-topbar__status {
+		align-items: center;
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.launch-preview-topbar__status {
+		flex: 1;
+	}
+
+	.launch-preview-topbar__label {
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		opacity: 0.85;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.launch-preview-topbar__picker {
+		align-items: baseline;
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	.btn {
+		border-color: transparent;
+		color: $white;
+		font-weight: 600;
+
+		&:focus,
+		&:hover {
+			background-color: $primary-d1;
+			color: $white;
+		}
+	}
+
+	@media (max-width: 575px) {
+		.launch-preview-topbar__label {
+			display: none;
+		}
+	}
+}

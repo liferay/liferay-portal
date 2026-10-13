@@ -7,15 +7,17 @@
 
 <%@ include file="/init.jsp" %>
 
-<portlet:resourceURL id="/launch/get_launch_entry_content" var="getLaunchEntryContentResourceURL" />
+<%
+ViewLaunchesDisplayContext viewLaunchesDisplayContext = new ViewLaunchesDisplayContext(request, liferayPortletResponse);
+%>
 
-<div class="launch-app">
-	<react:component
-		module="{Launches} from launch-web"
-		props='<%=
-			HashMapBuilder.<String, Object>put(
-				"getLaunchEntryContentResourceURL", getLaunchEntryContentResourceURL.toString()
-			).build()
-		%>'
-	/>
-</div>
+<frontend-data-set:headless-display
+	additionalProps="<%= viewLaunchesDisplayContext.getAdditionalProps() %>"
+	apiURL="<%= viewLaunchesDisplayContext.getAPIURL() %>"
+	creationMenu="<%= viewLaunchesDisplayContext.getCreationMenu() %>"
+	fdsActionDropdownItems="<%= viewLaunchesDisplayContext.getFDSActionDropdownItems() %>"
+	fdsSortItemList="<%= viewLaunchesDisplayContext.getFDSSortItemList() %>"
+	id="<%= viewLaunchesDisplayContext.getFDSName() %>"
+	propsTransformer="{LaunchesFDSPropsTransformer} from launch-web"
+	style="fluid"
+/>

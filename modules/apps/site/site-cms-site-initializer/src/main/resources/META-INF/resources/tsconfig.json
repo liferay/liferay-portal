@@ -1,5 +1,5 @@
 {
-	"@generated": "8ce9bed7313ade3b052f9452edf978fb1b165fb6",
+	"@generated": "d7d1484d9f725270843bd33a4231fe77c2a9909b",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -45,7 +45,7 @@
 				"../../../../../../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/react/index.ts"
 			],
 			"@liferay/launch-web": [
-				"../../../../../../../launch/launch-web/src/main/resources/META-INF/resources/js/Launches.tsx"
+				"../../../../../../../launch/launch-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"@liferay/layout-js-components-web": [
 				"../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/js/index.ts"

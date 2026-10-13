@@ -4,5 +4,5 @@
  */
 
 module.exports = {
-	main: './src/main/resources/META-INF/resources/js/Launches.tsx',
+	main: './src/main/resources/META-INF/resources/js/index.ts',
 };

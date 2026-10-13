@@ -15,7 +15,7 @@ import {
 	Launch,
 	createLaunch,
 	createLaunchEntry,
-	getLaunch,
+	isPublished,
 	listLaunchEntriesForAsset,
 	listLaunches,
 } from '../api/launches';
@@ -32,7 +32,7 @@ interface AddToLaunchEventDetail {
 
 const CREATE_NEW_VALUE = 'create-new-launch';
 
-type Status = 'already-added' | 'loading' | 'picking';
+type Status = 'loading' | 'picking';
 
 export default function AddToLaunchModal() {
 	const {observer, onOpenChange, open} = useModal({
@@ -80,10 +80,6 @@ function AddToLaunchModalContent({
 	const [error, setError] = useState<string | null>(null);
 	const [submitting, setSubmitting] = useState(false);
 
-	const [existingLaunchName, setExistingLaunchName] = useState<string | null>(
-		null
-	);
-
 	const [launches, setLaunches] = useState<Launch[]>([]);
 	const [selectedValue, setSelectedValue] = useState<string>('');
 	const [newLaunchName, setNewLaunchName] = useState('');
@@ -96,25 +92,12 @@ function AddToLaunchModalContent({
 			try {
 				const launchEntries = await listLaunchEntriesForAsset(detail);
 
-				if (canceled) {
-					return;
-				}
-
-				if (launchEntries.length) {
-					const launch = await getLaunch(
-						launchEntries[0]
-							.r_launchSetToLaunchEntries_c_launchSetId
-					);
-
-					if (canceled) {
-						return;
-					}
-
-					setExistingLaunchName(launch.name);
-					setStatus('already-added');
-
-					return;
-				}
+				const launchIds = new Set(
+					launchEntries.map(
+						(launchEntry) =>
+							launchEntry.r_launchSetToLaunchEntries_c_launchSetId
+					)
+				);
 
 				const launches = await listLaunches();
 
@@ -122,7 +105,12 @@ function AddToLaunchModalContent({
 					return;
 				}
 
-				setLaunches(launches);
+				setLaunches(
+					launches.filter(
+						(launch) =>
+							!isPublished(launch) && !launchIds.has(launch.id)
+					)
+				);
 				setStatus('picking');
 			}
 			catch (exception) {
@@ -179,7 +167,12 @@ function AddToLaunchModalContent({
 					).id
 				: Number(selectedValue);
 
-			await createLaunchEntry({...detail, launchSetId: launchId});
+			await createLaunchEntry({
+				baseVersionKey: detail.classVersion,
+				className: detail.className,
+				classPK: detail.classPK,
+				launchSetId: launchId,
+			});
 
 			const launch = creatingNew
 				? {id: launchId, name: trimmedName}
@@ -216,17 +209,6 @@ function AddToLaunchModalContent({
 					<div className="text-center">
 						<span className="loading-animation" />
 					</div>
-				)}
-
-				{status === 'already-added' && (
-					<ClayAlert displayType="info">
-						{sub(
-							Liferay.Language.get(
-								'this-item-already-belongs-to-x'
-							),
-							existingLaunchName
-						)}
-					</ClayAlert>
 				)}
 
 				{status === 'picking' && (

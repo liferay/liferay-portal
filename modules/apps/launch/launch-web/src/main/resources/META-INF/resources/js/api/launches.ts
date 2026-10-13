@@ -12,6 +12,21 @@ const DEFAULT_HEADERS = {
 const LAUNCH_ENTRIES_BASE_URL = '/o/launch-entries';
 const LAUNCH_SETS_BASE_URL = '/o/launch-sets';
 
+async function readJSON(response: Response, message: string) {
+	const text = await response.text();
+
+	if (!response.ok || !text) {
+		throw new Error(message);
+	}
+
+	try {
+		return JSON.parse(text);
+	}
+	catch (error) {
+		throw new Error(message);
+	}
+}
+
 export interface Launch {
 	dateModified?: string;
 	description?: string;
@@ -20,22 +35,39 @@ export interface Launch {
 	status?: {code: number};
 }
 
-export interface LaunchEntry {
-	className: string;
-	classPK: number;
-	classVersion: string;
-	id: number;
-	r_launchSetToLaunchEntries_c_launchSetId: number;
+const WORKFLOW_STATUS_APPROVED = 0;
+
+export function isPublished(launch: Launch): boolean {
+	return launch.status?.code === WORKFLOW_STATUS_APPROVED;
 }
 
-export interface LaunchEntryContent {
+export interface LaunchEntry {
+	baseVersionKey: string;
+	className: string;
+	classPK: number;
+	draftId: number;
+	id: number;
+	r_launchSetToLaunchEntries_c_launchSetId: number;
+	versionKey?: string;
+}
+
+export interface LaunchEntrySummary {
 	author: string;
+	editURL: string | null;
 	modified: string;
 	space: string;
 	status: number;
 	title: string;
 	type: string;
 	version: string;
+}
+
+export interface LaunchEntryVersion {
+	label: string;
+	modified: string;
+	status: number;
+	userName: string;
+	versionKey: string;
 }
 
 export async function createLaunch({
@@ -63,21 +95,21 @@ export async function createLaunch({
 }
 
 export async function createLaunchEntry({
+	baseVersionKey,
 	className,
 	classPK,
-	classVersion,
 	launchSetId,
 }: {
+	baseVersionKey: string;
 	className: string;
 	classPK: number;
-	classVersion: string;
 	launchSetId: number;
 }): Promise<LaunchEntry> {
 	const response = await fetch(LAUNCH_ENTRIES_BASE_URL, {
 		body: JSON.stringify({
+			baseVersionKey,
 			className,
 			classPK,
-			classVersion,
 			r_launchSetToLaunchEntries_c_launchSetId: launchSetId,
 		}),
 		headers: DEFAULT_HEADERS,
@@ -111,14 +143,41 @@ export async function getLaunch(id: number): Promise<Launch> {
 export async function listLaunchEntriesForAsset({
 	className,
 	classPK,
-	classVersion,
 }: {
 	className: string;
 	classPK: number;
-	classVersion: string;
 }): Promise<LaunchEntry[]> {
 	const filter = encodeURIComponent(
-		`className eq '${className}' and classPK eq ${classPK} and classVersion eq '${classVersion}'`
+		`className eq '${className}' and classPK eq ${classPK}`
+	);
+
+	const response = await fetch(
+		`${LAUNCH_ENTRIES_BASE_URL}?filter=${filter}&pageSize=-1`,
+		{
+			headers: DEFAULT_HEADERS,
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error(Liferay.Language.get('unable-to-list-launch-entries'));
+	}
+
+	const data = await response.json();
+
+	return data.items || [];
+}
+
+export async function listLaunchEntries({
+	className,
+	classPK,
+	launchSetId,
+}: {
+	className: string;
+	classPK: number;
+	launchSetId: number;
+}): Promise<LaunchEntry[]> {
+	const filter = encodeURIComponent(
+		`className eq '${className}' and classPK eq ${classPK} and r_launchSetToLaunchEntries_c_launchSetId eq '${launchSetId}'`
 	);
 
 	const response = await fetch(
@@ -156,52 +215,151 @@ export async function listLaunches({
 	return data.items || [];
 }
 
-export async function listLaunchEntries(
-	launchSetId: number
-): Promise<LaunchEntry[]> {
-	const filter = encodeURIComponent(
-		`r_launchSetToLaunchEntries_c_launchSetId eq '${launchSetId}'`
-	);
-
-	const response = await fetch(
-		`${LAUNCH_ENTRIES_BASE_URL}?filter=${filter}`,
-		{
-			headers: DEFAULT_HEADERS,
-		}
-	);
-
-	if (!response.ok) {
-		throw new Error(Liferay.Language.get('unable-to-list-launch-entries'));
-	}
-
-	const data = await response.json();
-
-	return data.items || [];
-}
-
-export async function getLaunchEntryContent({
+export async function getLaunchEntrySummary({
 	className,
 	classPK,
-	classVersion,
+	draftId,
+	portletNamespace,
+	resourceURL,
+	versionKey,
+}: {
+	className: string;
+	classPK: number;
+	draftId: number;
+	portletNamespace: string;
+	resourceURL: string;
+	versionKey?: string;
+}): Promise<LaunchEntrySummary> {
+	const url = new URL(resourceURL, window.location.origin);
+
+	url.searchParams.set(`${portletNamespace}className`, className);
+	url.searchParams.set(`${portletNamespace}classPK`, String(classPK));
+	url.searchParams.set(`${portletNamespace}draftId`, String(draftId));
+	url.searchParams.set(`${portletNamespace}redirect`, window.location.href);
+	url.searchParams.set(`${portletNamespace}versionKey`, versionKey ?? '');
+
+	return readJSON(
+		await fetch(url.toString()),
+		Liferay.Language.get('unable-to-load-a-launch-entry')
+	);
+}
+
+export async function deleteLaunchEntry(id: number): Promise<void> {
+	const response = await fetch(`${LAUNCH_ENTRIES_BASE_URL}/${id}`, {
+		headers: DEFAULT_HEADERS,
+		method: 'DELETE',
+	});
+
+	if (!response.ok) {
+		throw new Error(
+			Liferay.Language.get('unable-to-remove-a-launch-entry')
+		);
+	}
+}
+
+export async function updateLaunch({
+	description,
+	id,
+	name,
+}: {
+	description: string;
+	id: number;
+	name: string;
+}): Promise<Launch> {
+	const response = await fetch(`${LAUNCH_SETS_BASE_URL}/${id}`, {
+		body: JSON.stringify({description, name}),
+		headers: DEFAULT_HEADERS,
+		method: 'PATCH',
+	});
+
+	if (!response.ok) {
+		throw new Error(Liferay.Language.get('unable-to-save-a-launch'));
+	}
+
+	return response.json();
+}
+
+export async function resolveLaunchEntry({
+	className,
+	portletNamespace,
+	resourceURL,
+	selectedItemData,
+}: {
+	className: string;
+	portletNamespace: string;
+	resourceURL: string;
+	selectedItemData: Record<string, string>;
+}): Promise<{baseVersionKey: string; classPK: number}> {
+	const url = new URL(resourceURL, window.location.origin);
+
+	url.searchParams.set(`${portletNamespace}className`, className);
+	url.searchParams.set(
+		`${portletNamespace}selectedItemData`,
+		JSON.stringify(selectedItemData)
+	);
+
+	const {baseVersionKey, classPK} = await readJSON(
+		await fetch(url.toString()),
+		Liferay.Language.get('unable-to-read-the-selected-item')
+	);
+
+	if (!classPK) {
+		throw new Error(
+			Liferay.Language.get('this-item-does-not-support-launches')
+		);
+	}
+
+	return {baseVersionKey, classPK};
+}
+
+export async function getLaunchEntryVersions({
+	className,
+	classPK,
 	portletNamespace,
 	resourceURL,
 }: {
 	className: string;
 	classPK: number;
-	classVersion: string;
 	portletNamespace: string;
 	resourceURL: string;
-}): Promise<LaunchEntryContent> {
+}): Promise<LaunchEntryVersion[]> {
 	const url = new URL(resourceURL, window.location.origin);
 
 	url.searchParams.set(`${portletNamespace}className`, className);
 	url.searchParams.set(`${portletNamespace}classPK`, String(classPK));
-	url.searchParams.set(`${portletNamespace}classVersion`, classVersion);
 
-	const response = await fetch(url.toString());
+	return readJSON(
+		await fetch(url.toString()),
+		Liferay.Language.get('unable-to-list-the-versions-of-the-item')
+	);
+}
+
+export async function rebaseLaunchEntry({
+	baseVersionKey,
+	className,
+	classPK,
+	id,
+}: {
+	baseVersionKey: string;
+	className: string;
+	classPK: number;
+	id: number;
+}): Promise<LaunchEntry> {
+	const response = await fetch(`${LAUNCH_ENTRIES_BASE_URL}/${id}`, {
+		body: JSON.stringify({
+			baseVersionKey,
+			className,
+			classPK,
+			draftId: 0,
+		}),
+		headers: DEFAULT_HEADERS,
+		method: 'PATCH',
+	});
 
 	if (!response.ok) {
-		throw new Error(Liferay.Language.get('unable-to-load-a-launch-entry'));
+		throw new Error(
+			Liferay.Language.get('unable-to-change-the-version-of-the-item')
+		);
 	}
 
 	return response.json();
