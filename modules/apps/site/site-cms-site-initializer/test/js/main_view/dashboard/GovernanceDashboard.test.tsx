@@ -16,6 +16,10 @@ import GovernanceDashboard from '../../../../src/main/resources/META-INF/resourc
 import GovernanceService from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService';
 
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/ContentAgeDistribution',
+	() => ({ContentAgeDistribution: () => null})
+);
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/Operations',
 	() => ({
 		Operations: () => null,

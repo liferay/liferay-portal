@@ -37,6 +37,10 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 }));
 
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/ContentAgeDistribution',
+	() => ({ContentAgeDistribution: () => null})
+);
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/getDashboardAssetListFDSProps',
 	() => ({__esModule: true, default: jest.fn(() => ({}))})
 );

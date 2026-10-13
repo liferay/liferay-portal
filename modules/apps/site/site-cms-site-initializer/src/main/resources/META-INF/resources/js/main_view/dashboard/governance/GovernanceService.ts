@@ -10,6 +10,13 @@ import {
 	WORKFLOW_STATUS,
 } from '../../../common/utils/constants';
 
+export type ContentAgeDateField = 'createDate' | 'modified';
+
+type ContentAgeRange = {
+	fromMonths: number;
+	toMonths?: number;
+};
+
 export type AssetStatistics = {
 	approvedCount: number;
 	brokenLinksCount: number;
@@ -61,6 +68,18 @@ export type FreshnessListType =
 	| 'expiringSoon'
 	| 'overdueReviews'
 	| 'upcomingReviews';
+
+const CONTENT_AGE_AGGREGATION_NAME = 'contentAge';
+
+const CONTENT_AGE_DATE_FORMAT = 'yyyyMMddHHmmss';
+
+const CONTENT_AGE_RANGES: ContentAgeRange[] = [
+	{fromMonths: 0, toMonths: 3},
+	{fromMonths: 3, toMonths: 6},
+	{fromMonths: 6, toMonths: 12},
+	{fromMonths: 12, toMonths: 24},
+	{fromMonths: 24},
+];
 
 const CONTRIBUTORS_AGGREGATION_NAME = 'contributors';
 
@@ -188,6 +207,73 @@ async function getContributors(
 			})),
 			totalCount: data.totalCount,
 		},
+		error: null,
+	};
+}
+
+function formatSearchDate(date: Date) {
+	return date
+		.toISOString()
+		.replace(/\D/g, '')
+		.slice(0, CONTENT_AGE_DATE_FORMAT.length);
+}
+
+function getDateMonthsAgo(now: Date, months: number) {
+	const date = new Date(now);
+
+	date.setUTCMonth(date.getUTCMonth() - months);
+
+	return date;
+}
+
+function getContentAgeSearchRanges(now: Date) {
+	return CONTENT_AGE_RANGES.map(({fromMonths, toMonths}) => {
+		const from = toMonths ? getDateMonthsAgo(now, toMonths) : new Date(0);
+
+		return `[${formatSearchDate(from)} TO ${formatSearchDate(getDateMonthsAgo(now, fromMonths))}]`;
+	});
+}
+
+async function getContentAgeDistribution(
+	filter: string,
+	dateField: ContentAgeDateField,
+	groupId?: number
+): Promise<RequestResult<number[]>> {
+	const searchParams = new URLSearchParams({
+		filter: getScopedFilter(filter, groupId),
+		pageSize: '1',
+	});
+
+	const ranges = getContentAgeSearchRanges(new Date(Date.now()));
+
+	const {data, error} = await ApiHelper.post<{
+		searchFacets?: Record<string, FacetBucket[]>;
+	}>(`${SEARCH_URL}?${searchParams}`, {
+		attributes: {'search.empty.search': true},
+		facetConfigurations: [
+			{
+				aggregationName: CONTENT_AGE_AGGREGATION_NAME,
+				attributes: {
+					field: dateField,
+					format: CONTENT_AGE_DATE_FORMAT,
+					ranges: ranges.map((range) => ({label: range, range})),
+				},
+				frequencyThreshold: 0,
+				name: 'date-range',
+			},
+		],
+	});
+
+	if (!data) {
+		return {data: null, error};
+	}
+
+	const buckets = data.searchFacets?.[CONTENT_AGE_AGGREGATION_NAME] ?? [];
+
+	return {
+		data: ranges.map(
+			(range) => buckets.find(({term}) => term === range)?.frequency ?? 0
+		),
 		error: null,
 	};
 }
@@ -364,6 +450,7 @@ async function getDuplicateTopicsCount({
 export default {
 	getAssetStatistics,
 	getCMSEntryClassNames,
+	getContentAgeDistribution,
 	getContentProgress,
 	getContributors,
 	getDuplicateTitles,

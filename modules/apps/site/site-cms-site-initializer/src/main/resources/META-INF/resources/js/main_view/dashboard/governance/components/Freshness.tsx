@@ -32,6 +32,7 @@ import GovernanceService, {
 import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
 import getCMSSectionURL from '../getCMSSectionURL';
 import {GovernanceAdditionalProps} from '../types';
+import {ContentAgeDistribution} from './ContentAgeDistribution';
 import {
 	GovernanceAssetList,
 	getGovernanceAssetListPanelId,
@@ -284,44 +285,53 @@ export function Freshness({
 			<SectionHeader icon="date-time" title={title} />
 
 			<ClayLayout.Row className="mt-4">
-				{FRESHNESS_CARDS.map((card) => {
-					const count = statistics?.[card.statKey] ?? 0;
-					const expanded = card === expandedCard;
+				<ClayLayout.Col className="mb-4" lg={6}>
+					<ContentAgeDistribution additionalProps={additionalProps} />
+				</ClayLayout.Col>
 
-					return (
-						<ClayLayout.Col
-							className="mb-4"
-							key={card.listType}
-							md={6}
-							xl={3}
-						>
-							<InteractiveCard
-								active={expanded}
-								aria-controls={getGovernanceAssetListPanelId(
-									card.listType
-								)}
-								aria-expanded={expanded}
-								color={card.color}
-								description={card.description}
-								icon={card.icon}
-								loading={loadingStatistics}
-								onClick={() =>
-									setExpandedCard(expanded ? null : card)
-								}
-								title={card.title}
-								value={count}
-							>
-								<PercentageOfTotal
-									count={count}
-									template={Liferay.Language.get(
-										'x-of-x-assets'
-									)}
-									total={total}
-								/>
-							</InteractiveCard>
-						</ClayLayout.Col>
-					);
-				})}
+				<ClayLayout.Col lg={6}>
+					<ClayLayout.Row>
+						{FRESHNESS_CARDS.map((card) => {
+							const count = statistics?.[card.statKey] ?? 0;
+							const expanded = card === expandedCard;
+
+							return (
+								<ClayLayout.Col
+									className="mb-4"
+									key={card.listType}
+									md={6}
+								>
+									<InteractiveCard
+										active={expanded}
+										aria-controls={getGovernanceAssetListPanelId(
+											card.listType
+										)}
+										aria-expanded={expanded}
+										color={card.color}
+										description={card.description}
+										icon={card.icon}
+										loading={loadingStatistics}
+										onClick={() =>
+											setExpandedCard(
+												expanded ? null : card
+											)
+										}
+										title={card.title}
+										value={count}
+									>
+										<PercentageOfTotal
+											count={count}
+											template={Liferay.Language.get(
+												'x-of-x-assets'
+											)}
+											total={total}
+										/>
+									</InteractiveCard>
+								</ClayLayout.Col>
+							);
+						})}
+					</ClayLayout.Row>
+				</ClayLayout.Col>
 			</ClayLayout.Row>
 
 			{expandedCard ? (

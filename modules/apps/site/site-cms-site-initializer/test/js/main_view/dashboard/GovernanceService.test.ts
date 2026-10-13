@@ -368,3 +368,118 @@ describe('GovernanceService.getContributors', () => {
 		expect(error).toBe('Forbidden');
 	});
 });
+
+describe('GovernanceService.getContentAgeDistribution', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+		jest.useRealTimers();
+	});
+
+	beforeEach(() => {
+		jest.useFakeTimers().setSystemTime(
+			new Date('2026-10-13T10:30:45.000Z')
+		);
+	});
+
+	it('requests five contiguous age ranges on the given date field', async () => {
+		const postSpy = jest
+			.spyOn(ApiHelper, 'post')
+			.mockResolvedValue({data: {}, error: null} as any);
+
+		await GovernanceService.getContentAgeDistribution(
+			'someFilter',
+			'createDate'
+		);
+
+		expect(postSpy).toHaveBeenCalledWith(
+			'/o/search/v1.0/search?filter=someFilter&pageSize=1',
+			{
+				attributes: {'search.empty.search': true},
+				facetConfigurations: [
+					{
+						aggregationName: 'contentAge',
+						attributes: {
+							field: 'createDate',
+							format: 'yyyyMMddHHmmss',
+							ranges: [
+								'[20260713103045 TO 20261013103045]',
+								'[20260413103045 TO 20260713103045]',
+								'[20251013103045 TO 20260413103045]',
+								'[20241013103045 TO 20251013103045]',
+								'[19700101000000 TO 20241013103045]',
+							].map((range) => ({label: range, range})),
+						},
+						frequencyThreshold: 0,
+						name: 'date-range',
+					},
+				],
+			}
+		);
+	});
+
+	it('scopes the filter by groupId when a space is given', async () => {
+		const postSpy = jest
+			.spyOn(ApiHelper, 'post')
+			.mockResolvedValue({data: {}, error: null} as any);
+
+		await GovernanceService.getContentAgeDistribution(
+			'someFilter',
+			'modified',
+			123
+		);
+
+		const [url, body] = postSpy.mock.calls[0];
+
+		expect(url).toBe(
+			'/o/search/v1.0/search?filter=someFilter+and+groupIds%2Fany%28g%3Ag+eq+123%29&pageSize=1'
+		);
+		expect(body).toMatchObject({
+			facetConfigurations: [{attributes: {field: 'modified'}}],
+		});
+	});
+
+	it('maps the buckets to the requested ranges, filling the missing ones with zero', async () => {
+		jest.spyOn(ApiHelper, 'post').mockResolvedValue({
+			data: {
+				searchFacets: {
+					contentAge: [
+						{
+							displayName: '',
+							frequency: 7,
+							term: '[20241013103045 TO 20251013103045]',
+						},
+						{
+							displayName: '',
+							frequency: 3,
+							term: '[20260713103045 TO 20261013103045]',
+						},
+					],
+				},
+			},
+			error: null,
+		} as any);
+
+		const {data, error} = await GovernanceService.getContentAgeDistribution(
+			'someFilter',
+			'createDate'
+		);
+
+		expect(data).toEqual([3, 0, 0, 7, 0]);
+		expect(error).toBeNull();
+	});
+
+	it('returns the error when the request fails', async () => {
+		jest.spyOn(ApiHelper, 'post').mockResolvedValue({
+			data: null,
+			error: 'Something went wrong',
+		} as any);
+
+		const {data, error} = await GovernanceService.getContentAgeDistribution(
+			'someFilter',
+			'createDate'
+		);
+
+		expect(data).toBeNull();
+		expect(error).toBe('Something went wrong');
+	});
+});
