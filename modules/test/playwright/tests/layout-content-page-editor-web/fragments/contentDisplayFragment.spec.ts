@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId, {
 	getWebContentStructureId,
@@ -215,10 +216,12 @@ test(
 			iframe.getByTitle('poodle.jpg', {exact: true})
 		).toBeVisible();
 
-		await page
-			.getByRole('dialog')
-			.getByLabel('Close', {exact: true})
-			.click();
+		await clickAndExpectToBeHidden({
+			target: page.locator('iframe[title="Select"]'),
+			trigger: page
+				.getByRole('dialog')
+				.getByLabel('Close', {exact: true}),
+		});
 
 		// Select specific document and media file
 
@@ -351,10 +354,12 @@ test(
 				.filter({hasText: basicWebContentTitle})
 		).not.toBeVisible();
 
-		await page
-			.getByRole('dialog')
-			.getByLabel('Close', {exact: true})
-			.click();
+		await clickAndExpectToBeHidden({
+			target: page.locator('iframe[title="Select"]'),
+			trigger: page
+				.getByRole('dialog')
+				.getByLabel('Close', {exact: true}),
+		});
 
 		// Select animal
 
