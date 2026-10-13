@@ -13,6 +13,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import {PagesAdminPage} from '../../../pages/layout-admin-web/PagesAdminPage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {
@@ -644,5 +645,55 @@ test(
 		await expect(
 			accountManagementWidgetPage.accountsTable.cell(businessAccount.name)
 		).toBeVisible();
+	}
+);
+
+test(
+	'User can reverse the sort direction of the account list',
+	{tag: ['@COMMERCE-9427', '@LPD-108861']},
+	async ({accountManagementWidgetPage, apiHelpers, page, site}) => {
+		const accountNamePrefix = getRandomString();
+
+		const firstAccountName = `${accountNamePrefix} A`;
+		const secondAccountName = `${accountNamePrefix} B`;
+
+		for (const accountName of [firstAccountName, secondAccountName]) {
+			await apiHelpers.headlessAdminUser.postAccount({
+				name: accountName,
+				type: 'business',
+			});
+		}
+
+		const layout = await createWidgetPage(apiHelpers, site.id);
+
+		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
+
+		await accountManagementWidgetPage.accountsTable.search(
+			accountNamePrefix
+		);
+
+		await expect(
+			await accountManagementWidgetPage.accountsTable.firstRow()
+		).toContainText(firstAccountName);
+		await expect(
+			await accountManagementWidgetPage.accountsTable.lastRow()
+		).toContainText(secondAccountName);
+
+		await clickAndExpectToBeVisible({
+			target: accountManagementWidgetPage.reverseOrderDirectionButton(
+				'Descending'
+			),
+			trigger:
+				accountManagementWidgetPage.reverseOrderDirectionButton(
+					'Ascending'
+				),
+		});
+
+		await expect(
+			await accountManagementWidgetPage.accountsTable.firstRow()
+		).toContainText(secondAccountName);
+		await expect(
+			await accountManagementWidgetPage.accountsTable.lastRow()
+		).toContainText(firstAccountName);
 	}
 );

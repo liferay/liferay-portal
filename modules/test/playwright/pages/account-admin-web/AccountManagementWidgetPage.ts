@@ -13,6 +13,9 @@ export class AccountManagementWidgetPage extends AccountsPage {
 	readonly editButton: Locator;
 	readonly manageOrganizationsButton: Locator;
 	readonly page: Page;
+	readonly reverseOrderDirectionButton: (
+		orderDirection: 'Ascending' | 'Descending'
+	) => Locator;
 	readonly searchInput: Locator;
 	readonly selectAccountButton: Locator;
 
@@ -40,6 +43,13 @@ export class AccountManagementWidgetPage extends AccountsPage {
 			)
 		);
 		this.page = page;
+		this.reverseOrderDirectionButton = (
+			orderDirection: 'Ascending' | 'Descending'
+		) =>
+			page.getByRole('button', {
+				exact: true,
+				name: `Reverse Order Direction: Currently ${orderDirection}`,
+			});
 		this.searchInput = page.locator('input[placeholder="Search for"]');
 		this.selectAccountButton = page
 			.getByRole('link', {name: 'Select Account'})
