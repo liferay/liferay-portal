@@ -47,7 +47,7 @@ public class LoopEarlyExitCheck extends BaseCheck {
 			TokenTypes.LITERAL_ELSE);
 
 		if (elseDetailAST == null) {
-			log(detailAST, _MSG_EXIT_EARLY, "continue");
+			log(detailAST, _MSG_EARLY_LOOP_EXIT, "continue");
 
 			return;
 		}
@@ -58,7 +58,9 @@ public class LoopEarlyExitCheck extends BaseCheck {
 		if ((jumpStatementDetailAST != null) &&
 			(jumpStatementDetailAST.getType() != TokenTypes.LITERAL_CONTINUE)) {
 
-			log(detailAST, _MSG_EXIT_EARLY, jumpStatementDetailAST.getText());
+			log(
+				detailAST, _MSG_EARLY_LOOP_EXIT,
+				jumpStatementDetailAST.getText());
 		}
 	}
 
@@ -115,7 +117,7 @@ public class LoopEarlyExitCheck extends BaseCheck {
 		return false;
 	}
 
-	private static final String _MSG_EXIT_EARLY = "loop.exit.early";
+	private static final String _MSG_EARLY_LOOP_EXIT = "loop.exit.early";
 
 	private static final Set<String> _logNames = SetUtil.fromArray(
 		"_log", "_logger", "log", "logger");
