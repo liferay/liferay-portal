@@ -331,7 +331,7 @@ public class BatchEngineTaskContentSanitizer {
 
 			while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
 				jsonGenerator.writeTree(
-					_sanitizeJSONNode(jsonParser.readValueAsTree()));
+					_sanitizeJsonNode(jsonParser.readValueAsTree()));
 			}
 
 			jsonGenerator.writeEndArray();
@@ -352,7 +352,7 @@ public class BatchEngineTaskContentSanitizer {
 			while ((line = unsyncBufferedReader.readLine()) != null) {
 				if (!Validator.isBlank(line)) {
 					line = _objectMapper.writeValueAsString(
-						_sanitizeJSONNode(_objectMapper.readTree(line)));
+						_sanitizeJsonNode(_objectMapper.readTree(line)));
 				}
 
 				writer.write(line);
@@ -361,7 +361,7 @@ public class BatchEngineTaskContentSanitizer {
 		}
 	}
 
-	private JsonNode _sanitizeJSONNode(JsonNode jsonNode) {
+	private JsonNode _sanitizeJsonNode(JsonNode jsonNode) {
 		if (!jsonNode.isObject()) {
 			return jsonNode;
 		}
