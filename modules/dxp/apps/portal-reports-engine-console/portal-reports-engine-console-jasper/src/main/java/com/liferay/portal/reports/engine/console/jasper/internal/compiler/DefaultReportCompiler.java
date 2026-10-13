@@ -12,12 +12,19 @@ import com.liferay.portal.reports.engine.ReportDesignRetriever;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  * @author Michael C. Han
  * @author Brian Wing Shun Chan
  */
 public class DefaultReportCompiler implements ReportCompiler {
+
+	public DefaultReportCompiler(JasperReportsContext jasperReportsContext) {
+		_jasperReportsContext = jasperReportsContext;
+	}
 
 	@Override
 	public JasperReport compile(ReportDesignRetriever reportDesignRetriever)
@@ -34,13 +41,20 @@ public class DefaultReportCompiler implements ReportCompiler {
 		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
 				DefaultReportCompiler.class.getClassLoader())) {
 
-			return JasperCompileManager.compileReport(
-				reportDesignRetriever.getInputStream());
+			JasperDesign jasperDesign = JRXmlLoader.load(
+				_jasperReportsContext, reportDesignRetriever.getInputStream());
+
+			JasperCompileManager jasperCompileManager =
+				JasperCompileManager.getInstance(_jasperReportsContext);
+
+			return jasperCompileManager.compile(jasperDesign);
 		}
 	}
 
 	@Override
 	public void flush() {
 	}
+
+	private final JasperReportsContext _jasperReportsContext;
 
 }

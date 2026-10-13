@@ -37,6 +37,7 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
 
 /**
  * @author Gavin Wan
@@ -46,7 +47,9 @@ public abstract class BaseReportFillManager implements ReportFillManager {
 
 	@Override
 	public JasperPrint fillReport(
-			JasperReport jasperReport, ReportRequest reportRequest)
+			JasperReport jasperReport,
+			JasperReportsContext jasperReportsContext,
+			ReportRequest reportRequest)
 		throws JRException {
 
 		Connection connection = null;
@@ -61,12 +64,15 @@ public abstract class BaseReportFillManager implements ReportFillManager {
 			throw new JRException(exception);
 		}
 
+		JasperFillManager jasperFillManager = JasperFillManager.getInstance(
+			jasperReportsContext);
+
 		Map<String, Object> reportParameters = _getReportParameters(
 			jasperReport, reportRequest);
 
 		if (connection != null) {
 			try {
-				return JasperFillManager.fillReport(
+				return jasperFillManager.fill(
 					jasperReport, reportParameters, connection);
 			}
 			finally {
@@ -87,11 +93,11 @@ public abstract class BaseReportFillManager implements ReportFillManager {
 		}
 
 		if (jrDataSource != null) {
-			return JasperFillManager.fillReport(
+			return jasperFillManager.fill(
 				jasperReport, reportParameters, jrDataSource);
 		}
 
-		return JasperFillManager.fillReport(jasperReport, reportParameters);
+		return jasperFillManager.fill(jasperReport, reportParameters);
 	}
 
 	protected Connection getConnection(ReportRequest reportRequest)

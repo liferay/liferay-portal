@@ -7,6 +7,7 @@ package com.liferay.portal.reports.engine.console.jasper.internal;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StackTraceUtil;
 import com.liferay.portal.reports.engine.ReportDataSourceType;
@@ -33,8 +34,12 @@ import jakarta.servlet.ServletContext;
 import java.util.EnumMap;
 import java.util.Map;
 
+import net.sf.jasperreports.compilers.ReportClassFilter;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -90,7 +95,7 @@ public class ReportEngineImpl implements ReportEngine {
 				reportRequest.getReportDesignRetriever());
 
 			JasperPrint jasperPrint = reportFillManager.fillReport(
-				jasperReport, reportRequest);
+				jasperReport, _jasperReportsContext, reportRequest);
 
 			ReportFormatExporter reportFormatExporter =
 				_serviceTrackerMap.getService(reportRequest.getReportFormat());
@@ -148,6 +153,19 @@ public class ReportEngineImpl implements ReportEngine {
 
 				emitter.emit(ReportFormat.parse(reportFormatString));
 			});
+
+		SimpleJasperReportsContext simpleJasperReportsContext =
+			new SimpleJasperReportsContext(
+				DefaultJasperReportsContext.getInstance());
+
+		simpleJasperReportsContext.setProperty(
+			ReportClassFilter.PROPERTY_PREFIX_CLASS_FILTER_ENABLED,
+			StringPool.TRUE);
+
+		_jasperReportsContext = simpleJasperReportsContext;
+
+		_reportCompiler = new CachedReportCompiler(
+			new DefaultReportCompiler(simpleJasperReportsContext));
 	}
 
 	@Deactivate
@@ -156,8 +174,8 @@ public class ReportEngineImpl implements ReportEngine {
 	}
 
 	private Map<String, String> _engineParameters;
-	private final ReportCompiler _reportCompiler = new CachedReportCompiler(
-		new DefaultReportCompiler());
+	private JasperReportsContext _jasperReportsContext;
+	private ReportCompiler _reportCompiler;
 	private final EnumMap<ReportDataSourceType, ReportFillManager>
 		_reportFillManagers = new EnumMap<>(ReportDataSourceType.class);
 	private ServiceTrackerMap<ReportFormat, ReportFormatExporter>

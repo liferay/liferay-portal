@@ -10,6 +10,7 @@ import com.liferay.portal.reports.engine.ReportRequest;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
 
 /**
  * @author Gavin Wan
@@ -18,7 +19,9 @@ import net.sf.jasperreports.engine.JasperReport;
 public interface ReportFillManager {
 
 	public JasperPrint fillReport(
-			JasperReport jasperReport, ReportRequest reportRequest)
+			JasperReport jasperReport,
+			JasperReportsContext jasperReportsContext,
+			ReportRequest reportRequest)
 		throws JRException;
 
 }
