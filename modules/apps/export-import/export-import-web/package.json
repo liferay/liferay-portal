@@ -12,6 +12,7 @@
 		"@clayui/link": "^3.166.0",
 		"@clayui/loading-indicator": "^3.166.0",
 		"@clayui/modal": "^3.166.0",
+		"@clayui/multi-select": "^3.166.0",
 		"@clayui/multi-step-nav": "^3.166.0",
 		"@clayui/progress-bar": "^3.166.0",
 		"@clayui/sticker": "^3.166.0",

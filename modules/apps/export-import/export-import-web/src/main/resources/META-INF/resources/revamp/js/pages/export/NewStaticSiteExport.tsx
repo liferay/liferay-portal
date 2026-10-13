@@ -7,6 +7,7 @@ import ClayButton from '@clayui/button';
 import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
+import ClayMultiSelect from '@clayui/multi-select';
 import {Form, Formik} from 'formik';
 import {fetch, objectToFormData, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
@@ -18,27 +19,39 @@ import PageTreeModal, {
 import SectionHeader from '../../components/SectionHeader';
 import Setup from '../../components/Setup';
 
+type Language = {
+	label: string;
+	value: string;
+};
+
 type StaticSiteExportFormValues = {
 	exportAllPages: boolean;
+	languageIds: string[];
 	layoutIds?: number[];
 	name: string;
 };
 
 export function NewStaticSiteExport({
+	availableLanguages,
 	backURL,
+	defaultLanguageId,
 	exportProcessAPIURL,
 	pageTreeModalConfiguration,
 	portletNamespace,
 }: {
+	availableLanguages: Language[];
 	backURL: string;
+	defaultLanguageId: string;
 	exportProcessAPIURL: string;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	portletNamespace: string;
 }) {
+	const [languageInputValue, setLanguageInputValue] = useState('');
 	const [showModal, setShowModal] = useState(false);
 
 	const initialFormValues: StaticSiteExportFormValues = {
 		exportAllPages: true,
+		languageIds: [defaultLanguageId],
 		name: '',
 	};
 
@@ -48,6 +61,7 @@ export function NewStaticSiteExport({
 			onSubmit={async (values) => {
 				const response = await fetch(exportProcessAPIURL, {
 					body: objectToFormData({
+						[`${portletNamespace}languageIds`]: values.languageIds,
 						[`${portletNamespace}name`]: values.name,
 						...(values.layoutIds && {
 							[`${portletNamespace}layoutIds`]: values.layoutIds,
@@ -70,11 +84,23 @@ export function NewStaticSiteExport({
 				Liferay.Util.navigate(backURL);
 			}}
 			validate={(values) => {
-				if (values.name) {
-					return {};
+				const errors: Partial<
+					Record<keyof StaticSiteExportFormValues, string>
+				> = {};
+
+				if (!values.languageIds.length) {
+					errors.languageIds = Liferay.Language.get(
+						'this-field-is-required'
+					);
 				}
 
-				return {name: Liferay.Language.get('this-field-is-required')};
+				if (!values.name) {
+					errors.name = Liferay.Language.get(
+						'this-field-is-required'
+					);
+				}
+
+				return errors;
 			}}
 			validateOnMount
 		>
@@ -133,6 +159,56 @@ export function NewStaticSiteExport({
 								</ClayButton>
 							</div>
 						)}
+					</ClayLayout.Sheet>
+
+					<SectionHeader
+						className="mt-4"
+						title={Liferay.Language.get('languages')}
+					/>
+
+					<ClayLayout.Sheet>
+						<ClayMultiSelect
+							allowsCustomLabel={false}
+							aria-label={Liferay.Language.get('languages')}
+							items={availableLanguages.filter((language) =>
+								formik.values.languageIds.includes(
+									language.value
+								)
+							)}
+							onChange={setLanguageInputValue}
+							onItemsChange={(languages: Language[]) =>
+								formik.setFieldValue(
+									'languageIds',
+									languages.map((language) => language.value)
+								)
+							}
+							placeholder={Liferay.Language.get(
+								'select-languages'
+							)}
+							sourceItems={availableLanguages.filter(
+								(language) =>
+									!formik.values.languageIds.includes(
+										language.value
+									)
+							)}
+							value={languageInputValue}
+						>
+							{(language: Language) => (
+								<ClayMultiSelect.Item
+									key={language.value}
+									textValue={language.label}
+								>
+									<ClayIcon
+										className="inline-item inline-item-before"
+										symbol={language.value
+											.replace(/_/g, '-')
+											.toLowerCase()}
+									/>
+
+									{language.label}
+								</ClayMultiSelect.Item>
+							)}
+						</ClayMultiSelect>
 					</ClayLayout.Sheet>
 
 					{showModal && (

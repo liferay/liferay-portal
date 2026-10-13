@@ -86,6 +86,10 @@ public class ExportStaticSiteMVCResourceCommand implements MVCResourceCommand {
 					HashMapBuilder.<String, Serializable>put(
 						"groupId", groupId
 					).put(
+						"languageIds",
+						() -> ParamUtil.getStringValues(
+							resourceRequest, "languageIds", null)
+					).put(
 						"layoutIds",
 						() -> ParamUtil.getLongValues(
 							resourceRequest, "layoutIds", null)

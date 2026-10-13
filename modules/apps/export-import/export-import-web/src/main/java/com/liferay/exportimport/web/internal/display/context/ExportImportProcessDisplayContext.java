@@ -11,9 +11,12 @@ import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate.Scope;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -32,6 +36,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 
 import java.nio.charset.StandardCharsets;
+
+import java.util.Locale;
 
 /**
  * @author Daniel Raposo
@@ -68,6 +74,26 @@ public class ExportImportProcessDisplayContext {
 			liferayPortletResponse, liveGroupId, privateLayout, false);
 	}
 
+	public JSONArray getAvailableLanguagesJSONArray() {
+		JSONArray availableLanguagesJSONArray =
+			JSONFactoryUtil.createJSONArray();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (Locale locale : LanguageUtil.getAvailableLocales(_groupId)) {
+			availableLanguagesJSONArray.put(
+				JSONUtil.put(
+					"label", locale.getDisplayName(themeDisplay.getLocale())
+				).put(
+					"value", LocaleUtil.toLanguageId(locale)
+				));
+		}
+
+		return availableLanguagesJSONArray;
+	}
+
 	public String getBackURL() {
 		if (_backURL != null) {
 			return _backURL;
@@ -95,6 +121,11 @@ public class ExportImportProcessDisplayContext {
 		_backURL = backURL;
 
 		return _backURL;
+	}
+
+	public String getDefaultLanguageId() throws PortalException {
+		return LocaleUtil.toLanguageId(
+			PortalUtil.getSiteDefaultLocale(_groupId));
 	}
 
 	public String getExportPreviewAPIURL() {
