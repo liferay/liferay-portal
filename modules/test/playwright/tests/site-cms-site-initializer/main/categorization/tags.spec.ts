@@ -776,6 +776,7 @@ cmpProjectScopeTest(
 
 		const projectTitle1 = getRandomString();
 		const projectTitle2 = getRandomString();
+		const spaceName = getRandomString();
 		const tagName = `Tag${getRandomInt()}`;
 		const projectTagName = `Tag${getRandomInt()}`;
 
@@ -814,14 +815,23 @@ cmpProjectScopeTest(
 			}
 		});
 
+		await cmpProjectScopeTest.step('Create a space', async () => {
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				type: 'Space',
+			});
+		});
+
 		await cmpProjectScopeTest.step(
-			'Create a tag scoped to one project',
+			'Create a tag scoped to one space and one project',
 			async () => {
 				await tagsPage.goto();
 
 				await tagsPage.newTagButton.click();
 
 				await page.getByLabel('NameRequired').fill(tagName);
+
+				await tagsPage.selectSpace(spaceName);
 
 				await tagsPage.selectProject(projectTitle1);
 
@@ -984,7 +994,7 @@ cmpProjectScopeTest(
 		);
 
 		await cmpProjectScopeTest.step(
-			'Add an existing tag scoped to another project and check it is not duplicated',
+			'Add an existing tag scoped to another project and check it is not duplicated and keeps its space',
 			async () => {
 				await editProjectPage.searchTags(tagName);
 
@@ -1007,6 +1017,12 @@ cmpProjectScopeTest(
 						.map((project) => project.name)
 						.sort()
 				).toEqual([projectTitle1, projectTitle2].sort());
+
+				expect(
+					(items[0].assetLibraries ?? []).map(
+						(assetLibrary) => assetLibrary.name
+					)
+				).toEqual([spaceName]);
 			}
 		);
 	}

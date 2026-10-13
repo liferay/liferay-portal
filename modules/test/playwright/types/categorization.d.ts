@@ -32,9 +32,15 @@ type AssetType = {
 };
 
 type Keyword = {
+	assetLibraries?: KeywordAssetLibrary[];
 	id: number;
 	name: string;
 	projects?: KeywordProject[];
+};
+
+type KeywordAssetLibrary = {
+	id: number;
+	name: string;
 };
 
 type KeywordProject = {

@@ -19,6 +19,7 @@ export class TagsPage {
 	readonly saveAndAddAnotherButton: Locator;
 	readonly saveButton: Locator;
 	readonly spaceCheckbox: Locator;
+	readonly spaceSelector: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -35,6 +36,7 @@ export class TagsPage {
 		this.spaceCheckbox = page.getByLabel(
 			'Make this tag available in all spaces, including those yet to be created.'
 		);
+		this.spaceSelector = this.page.getByLabel('Space Selector');
 	}
 
 	async goto() {
@@ -125,6 +127,28 @@ export class TagsPage {
 			await expect(this.projectSelector).toBeEnabled({timeout: 1000});
 
 			await this.projectSelector.click({timeout: 1000});
+
+			await expect(option).toBeVisible({timeout: 2000});
+		}).toPass();
+
+		await option.click();
+	}
+
+	async selectSpace(spaceName: string) {
+		const option = this.page
+			.getByRole('option')
+			.filter({hasText: spaceName});
+
+		// Loading the spaces resets the checkbox, as in selectProject.
+
+		await expect(async () => {
+			if (await this.spaceCheckbox.isChecked({timeout: 1000})) {
+				await this.spaceCheckbox.click({timeout: 1000});
+			}
+
+			await expect(this.spaceSelector).toBeEnabled({timeout: 1000});
+
+			await this.spaceSelector.click({timeout: 1000});
 
 			await expect(option).toBeVisible({timeout: 2000});
 		}).toPass();
