@@ -16,6 +16,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
@@ -42,6 +43,7 @@ import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTagProperty;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.seo.service.LayoutSEOSiteLocalService;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
@@ -49,6 +51,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -92,6 +95,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.translation.info.item.provider.InfoItemLanguagesProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -974,6 +978,39 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 	}
 
 	@Test
+	public void testIncludeLinkAssetDisplayPageLayoutTranslatedLanguagesFragmentEntryLink()
+		throws Exception {
+
+		FileEntry fileEntry = _getFileEntry();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry();
+
+		_layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		_addFragmentEntryLink(LocaleUtil.SPAIN);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			() -> _dynamicInclude.include(
+				_getAssetDisplayPageHttpServletRequest(
+					fileEntry, layoutPageTemplateEntry),
+				mockHttpServletResponse, RandomTestUtil.randomString()),
+			true, true);
+
+		_assertAlternateLinkTagAssetDisplayPage(
+			Jsoup.parse(mockHttpServletResponse.getContentAsString()),
+			fileEntry,
+			new HashSet<>(
+				Arrays.asList(
+					LocaleUtil.fromLanguageId(_group.getDefaultLanguageId()),
+					LocaleUtil.SPAIN)));
+	}
+
+	@Test
 	public void testIncludeLinkAssetDisplayPageLayoutTranslatedLanguagesOpenGraphDisabled()
 		throws Exception {
 
@@ -1090,6 +1127,29 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 	}
 
 	@Test
+	public void testIncludeLinkLayoutTranslatedLanguagesContentLayoutFragmentEntryLink()
+		throws Exception {
+
+		_addFragmentEntryLink(LocaleUtil.SPAIN);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			() -> _dynamicInclude.include(
+				_getHttpServletRequest(), mockHttpServletResponse,
+				RandomTestUtil.randomString()),
+			true, true);
+
+		_assertAlternateLinkTag(
+			Jsoup.parse(mockHttpServletResponse.getContentAsString()),
+			new HashSet<>(
+				Arrays.asList(
+					LocaleUtil.fromLanguageId(_group.getDefaultLanguageId()),
+					LocaleUtil.SPAIN)));
+	}
+
+	@Test
 	public void testIncludeLinkLayoutTranslatedLanguagesContentLayoutSiteEnabled()
 		throws Exception {
 
@@ -1141,6 +1201,32 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 		_assertCanonicalLinkTag(
 			document,
 			PortalUtil.getCanonicalURL("", _getThemeDisplay(), _layout));
+	}
+
+	@Test
+	public void testIncludeLinkLayoutTranslatedLanguagesPortletLayout()
+		throws Exception {
+
+		_layout.setName(RandomTestUtil.randomString(), LocaleUtil.SPAIN);
+		_layout.setType(LayoutConstants.TYPE_PORTLET);
+
+		_layout = _layoutLocalService.updateLayout(_layout);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			() -> _dynamicInclude.include(
+				_getHttpServletRequest(), mockHttpServletResponse,
+				RandomTestUtil.randomString()),
+			true, true);
+
+		_assertAlternateLinkTag(
+			Jsoup.parse(mockHttpServletResponse.getContentAsString()),
+			new HashSet<>(
+				Arrays.asList(
+					LocaleUtil.fromLanguageId(_group.getDefaultLanguageId()),
+					LocaleUtil.SPAIN)));
 	}
 
 	@Test
@@ -1752,6 +1838,26 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 		return _depotEntry.getGroup();
 	}
 
+	private void _addFragmentEntryLink(Locale locale) throws Exception {
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"element-text",
+					JSONUtil.put(
+						_group.getDefaultLanguageId(),
+						RandomTestUtil.randomString()
+					).put(
+						LocaleUtil.toLanguageId(locale),
+						RandomTestUtil.randomString()
+					))
+			).toString(),
+			_layout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()));
+	}
+
 	private FileEntry _addImageFileEntry(
 			String fileName, ServiceContext serviceContext)
 		throws Exception {
@@ -1762,6 +1868,17 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 			StringUtil.randomString(), ContentTypes.IMAGE_JPEG,
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName), null,
 			null, null, serviceContext);
+	}
+
+	private LayoutPageTemplateEntry _addLayoutPageTemplateEntry()
+		throws Exception {
+
+		return _layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+			null, _group.getCreatorUserId(), _group.getGroupId(), 0, null,
+			_classNameLocalService.getClassNameId(FileEntry.class.getName()),
+			null, RandomTestUtil.randomString(),
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0, 0, 0,
+			0, ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private void _assertAlternateLinkElementsSize(
@@ -2001,19 +2118,20 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 			FileEntry fileEntry)
 		throws Exception {
 
+		return _getAssetDisplayPageHttpServletRequest(
+			fileEntry, _addLayoutPageTemplateEntry());
+	}
+
+	private HttpServletRequest _getAssetDisplayPageHttpServletRequest(
+			FileEntry fileEntry,
+			LayoutPageTemplateEntry layoutPageTemplateEntry)
+		throws Exception {
+
 		String className = FileEntry.class.getName();
 
 		long classNameId = _classNameLocalService.getClassNameId(className);
 
 		long classPK = fileEntry.getFileEntryId();
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, _group.getCreatorUserId(), _group.getGroupId(), 0, null,
-				classNameId, null, RandomTestUtil.randomString(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,
-				0, 0, 0,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
 			TestPropsValues.getUserId(), _group.getGroupId(), classNameId,
@@ -2323,6 +2441,9 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	private ServiceContext _serviceContext;
 
