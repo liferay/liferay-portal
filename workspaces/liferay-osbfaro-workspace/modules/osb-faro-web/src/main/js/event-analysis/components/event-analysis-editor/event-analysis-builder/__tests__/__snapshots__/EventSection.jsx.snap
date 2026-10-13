@@ -4,7 +4,7 @@ exports[`EventSection render 1`] = `
 <div>
   <section
     aria-labelledby=":r0:"
-    class="event-section-root border-bottom px-4 py-3"
+    class="event-section-root px-4 py-3"
     tabindex="-1"
   >
     <div
@@ -51,7 +51,7 @@ exports[`EventSection render with event 1`] = `
 <div>
   <section
     aria-labelledby=":r1:"
-    class="event-section-root border-bottom px-4 py-3"
+    class="event-section-root px-4 py-3"
     tabindex="-1"
   >
     <div

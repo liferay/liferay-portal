@@ -7,7 +7,7 @@ exports[`Event Analysis Builder render 1`] = `
   >
     <section
       aria-labelledby=":r0:"
-      class="event-section-root border-bottom px-4 py-3"
+      class="event-section-root px-4 py-3"
       tabindex="-1"
     >
       <div
@@ -58,7 +58,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
   >
     <section
       aria-labelledby=":r1:"
-      class="event-section-root border-bottom px-4 py-3"
+      class="event-section-root px-4 py-3"
       tabindex="-1"
     >
       <div
@@ -140,7 +140,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
     </section>
     <section
       aria-labelledby=":r2:"
-      class="attribute-breakdown-section-root border-bottom px-4 py-3"
+      class="attribute-breakdown-section-root px-4 py-3"
       tabindex="-1"
     >
       <div
@@ -182,7 +182,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
     </section>
     <section
       aria-labelledby=":r3:"
-      class="attribute-filter-section-root border-bottom px-4 py-3"
+      class="attribute-filter-section-root px-4 py-3"
       tabindex="-1"
     >
       <div

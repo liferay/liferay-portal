@@ -18,7 +18,7 @@ const ConditionsSection = React.forwardRef<
 	return (
 		<section
 			aria-labelledby={titleId}
-			className={getCN(className, 'border-bottom px-4 py-3')}
+			className={getCN(className, 'px-4 py-3')}
 			ref={ref}
 			tabIndex={-1}
 		>
