@@ -6,16 +6,11 @@
 package com.liferay.portal.license.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Time;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,55 +18,7 @@ import org.junit.runner.RunWith;
  * @author Tina Tian
  */
 @RunWith(Arquillian.class)
-public class ExpiredLicenseTest extends BaseLicenseTestCase {
-
-	@BeforeClass
-	public static void setUpClass() {
-		_disableKeyValidatorSafeCloseable = disableValidateWithSafeCloseable();
-		_setVersionSafeCloseable = setVersionWithSafeCloseable("2026.Q1.0 LTS");
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
-		_disableKeyValidatorSafeCloseable.close();
-		_setVersionSafeCloseable.close();
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		_safeCloseable = resetLicenseDataWithSafeCloseble();
-	}
-
-	@After
-	public void tearDown() {
-		_safeCloseable.close();
-	}
-
-	@Test
-	public void testAppLicenseExpired() throws Exception {
-		for (App app : App.values()) {
-			_testAppLicenseExpired(app);
-		}
-	}
-
-	@Test
-	public void testEnterpriseLicenseExpired() throws Exception {
-		assertLicensePropertiesNotExisted(getPortalProductId());
-
-		assertPortalLicenseNotRegistered();
-
-		deployEnterprisePortalLicense(_GRACE_PEIROD + _VALIDTY_PERIOD);
-
-		assertLicensePropertiesExisted(getPortalProductId());
-
-		assertPortalLicenseRegistered();
-
-		Thread.sleep(_VALIDTY_PERIOD);
-
-		assertLicensePropertiesExisted(getPortalProductId());
-
-		assertPortalLicenseExpired();
-	}
+public class ExpiredLicenseTest extends BaseExpiredLicenseTestCase {
 
 	@Test
 	public void testFreeAndEnterpriseExpired() throws Exception {
@@ -87,7 +34,7 @@ public class ExpiredLicenseTest extends BaseLicenseTestCase {
 
 		Assert.assertTrue(LicenseManagerUtil.isFreeTier());
 
-		deployEnterprisePortalLicense(_GRACE_PEIROD + _VALIDTY_PERIOD);
+		deployEnterprisePortalLicense(GRACE_PERIOD + VALIDITY_PERIOD);
 
 		assertLicensePropertiesExisted(getPortalProductId());
 
@@ -95,7 +42,7 @@ public class ExpiredLicenseTest extends BaseLicenseTestCase {
 
 		Assert.assertFalse(LicenseManagerUtil.isFreeTier());
 
-		Thread.sleep(_VALIDTY_PERIOD);
+		Thread.sleep(VALIDITY_PERIOD);
 
 		assertLicensePropertiesExisted(getPortalProductId());
 
@@ -118,42 +65,22 @@ public class ExpiredLicenseTest extends BaseLicenseTestCase {
 
 		assertPortalLicenseNotRegistered();
 
-		deployFreeTierPortalLicense(_GRACE_PEIROD + _VALIDTY_PERIOD);
+		deployFreeTierPortalLicense(GRACE_PERIOD + VALIDITY_PERIOD);
 
 		assertLicensePropertiesExisted(getPortalProductId());
 
 		assertPortalLicenseRegistered();
 
-		Thread.sleep(_VALIDTY_PERIOD);
+		Thread.sleep(VALIDITY_PERIOD);
 
 		assertLicensePropertiesExisted(getPortalProductId());
 
 		assertPortalLicenseExpired();
 	}
 
-	private void _testAppLicenseExpired(App app) throws Exception {
-		assertLicensePropertiesNotExisted(getProductId(app));
-
-		deployAppLicense(app, _GRACE_PEIROD + _VALIDTY_PERIOD);
-
-		assertLicensePropertiesExisted(getProductId(app));
-
-		Assert.assertTrue(LicenseManagerUtil.isAppEnabled(app));
-
-		Thread.sleep(_VALIDTY_PERIOD);
-
-		assertLicensePropertiesExisted(getProductId(app));
-
-		Assert.assertFalse(LicenseManagerUtil.isAppEnabled(app));
+	@Override
+	protected App[] getApps() {
+		return App.values();
 	}
-
-	private static final long _GRACE_PEIROD = -2 * Time.DAY;
-
-	private static final long _VALIDTY_PERIOD = 15 * Time.SECOND;
-
-	private static SafeCloseable _disableKeyValidatorSafeCloseable;
-	private static SafeCloseable _setVersionSafeCloseable;
-
-	private SafeCloseable _safeCloseable;
 
 }
