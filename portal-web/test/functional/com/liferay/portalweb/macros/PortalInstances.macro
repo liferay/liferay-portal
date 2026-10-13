@@ -2,9 +2,13 @@ definition {
 
 	@summary = "Default summary"
 	macro addCP(maxUserNumber = null, instanceAdminLastName = null, maxUsers = null, portalInstanceActive = null, instanceAdminFirstName = null, webId = null, mailDomain = null, instanceScreenName = null, instancePassword = null, virtualHost = null, instanceAdminEmail = null) {
+		WaitForElementPresent(locator1 = "Button#PLUS");
+
+		var virtualInstancesAdminURL = Navigator.getCurrentURL();
+
 		Notifications.deleteAllNotifications();
 
-		PortalInstances.openVirtualInstancesAdmin();
+		Navigator.openSpecificURL(url = ${virtualInstancesAdminURL});
 
 		LexiconEntry.gotoAdd();
 
@@ -85,7 +89,7 @@ definition {
 
 		AssertElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT");
 
-		PortalInstances.openVirtualInstancesAdmin();
+		Navigator.openSpecificURL(url = ${virtualInstancesAdminURL});
 
 		var key_virtualHost = ${virtualHost};
 
