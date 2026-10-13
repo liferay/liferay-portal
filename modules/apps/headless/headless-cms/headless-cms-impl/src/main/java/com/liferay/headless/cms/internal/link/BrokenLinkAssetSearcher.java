@@ -14,12 +14,11 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.aggregation.bucket.Bucket;
@@ -43,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Jürgen Kappler
@@ -131,49 +131,60 @@ public class BrokenLinkAssetSearcher {
 	}
 
 	private void _addOutboundLinks(
-		long companyId, String excludeRegex, String outboundLinkPrefix,
-		List<String> outboundLinks, Long[] selectedSpaceGroupIds) {
+		long companyId, String outboundLinkPrefix, List<String> outboundLinks,
+		Long[] selectedSpaceGroupIds) {
 
-		TermsAggregationResult termsAggregationResult =
-			_getTermsAggregationResult(
-				companyId, excludeRegex, outboundLinkPrefix + ".*",
-				selectedSpaceGroupIds);
+		Set<String> excludedNextCharacters = new TreeSet<>();
 
-		if (termsAggregationResult == null) {
-			return;
-		}
+		while (true) {
+			TermsAggregationResult termsAggregationResult =
+				_getTermsAggregationResult(
+					companyId, excludedNextCharacters, outboundLinkPrefix,
+					selectedSpaceGroupIds);
 
-		if ((termsAggregationResult.getOtherDocCounts() == 0) ||
-			(excludeRegex != null)) {
-
-			if ((termsAggregationResult.getOtherDocCounts() > 0) &&
-				_log.isWarnEnabled()) {
-
-				_log.warn(
-					StringBundler.concat(
-						"Outbound links starting with \"", outboundLinkPrefix,
-						"\" and not followed by a hexadecimal character ",
-						"exceed the maximum of ", _MAX_OUTBOUND_LINKS,
-						", so links to deleted assets beyond it are not ",
-						"reported"));
+			if (termsAggregationResult == null) {
+				return;
 			}
 
-			for (Bucket bucket : termsAggregationResult.getBuckets()) {
-				outboundLinks.add(bucket.getKey());
+			Set<String> nextCharacters = _getNextCharacters(
+				outboundLinkPrefix, termsAggregationResult);
+
+			if ((termsAggregationResult.getOtherDocCounts() == 0) ||
+				nextCharacters.isEmpty()) {
+
+				for (Bucket bucket : termsAggregationResult.getBuckets()) {
+					outboundLinks.add(bucket.getKey());
+				}
+
+				return;
 			}
 
-			return;
+			for (String nextCharacter : nextCharacters) {
+				_addOutboundLinks(
+					companyId, outboundLinkPrefix + nextCharacter,
+					outboundLinks, selectedSpaceGroupIds);
+			}
+
+			excludedNextCharacters.addAll(nextCharacters);
+		}
+	}
+
+	private String _escapeRegex(String value) {
+		StringBundler sb = new StringBundler(value.length() * 2);
+
+		for (int i = 0; i < value.length();) {
+			int codePoint = value.codePointAt(i);
+
+			if ((codePoint > 127) || !Character.isLetterOrDigit(codePoint)) {
+				sb.append(StringPool.BACK_SLASH);
+			}
+
+			sb.append(new String(Character.toChars(codePoint)));
+
+			i += Character.charCount(codePoint);
 		}
 
-		for (char hexadecimalCharacter : "0123456789abcdef".toCharArray()) {
-			_addOutboundLinks(
-				companyId, null, outboundLinkPrefix + hexadecimalCharacter,
-				outboundLinks, selectedSpaceGroupIds);
-		}
-
-		_addOutboundLinks(
-			companyId, outboundLinkPrefix + "[0-9a-f].*", outboundLinkPrefix,
-			outboundLinks, selectedSpaceGroupIds);
+		return sb.toString();
 	}
 
 	private Predicate _getDraftPredicate() {
@@ -186,6 +197,20 @@ public class BrokenLinkAssetSearcher {
 			ObjectEntryTable.INSTANCE.objectEntryId.notIn(
 				_getObjectEntryIdsDSLQuery(WorkflowConstants.STATUS_EXPIRED))
 		);
+	}
+
+	private String _getExcludeRegex(
+		String escapedOutboundLinkPrefix, Set<String> excludedNextCharacters) {
+
+		if (excludedNextCharacters.isEmpty()) {
+			return null;
+		}
+
+		return StringBundler.concat(
+			escapedOutboundLinkPrefix, "[",
+			_escapeRegex(
+				StringUtil.merge(excludedNextCharacters, StringPool.BLANK)),
+			"].*");
 	}
 
 	private Set<String> _getExistingExternalReferenceCodes(
@@ -243,6 +268,26 @@ public class BrokenLinkAssetSearcher {
 	private String _getExternalReferenceCode(String outboundLink) {
 		return outboundLink.substring(
 			_OBJECT_ENTRY_EXTERNAL_REFERENCE_CODE_TOKEN_PREFIX.length());
+	}
+
+	private Set<String> _getNextCharacters(
+		String outboundLinkPrefix,
+		TermsAggregationResult termsAggregationResult) {
+
+		Set<String> nextCharacters = new TreeSet<>();
+
+		for (Bucket bucket : termsAggregationResult.getBuckets()) {
+			String key = bucket.getKey();
+
+			if (key.length() > outboundLinkPrefix.length()) {
+				nextCharacters.add(
+					new String(
+						Character.toChars(
+							key.codePointAt(outboundLinkPrefix.length()))));
+			}
+		}
+
+		return nextCharacters;
 	}
 
 	private DSLQuery _getObjectEntryIdsDSLQuery(int status) {
@@ -352,8 +397,14 @@ public class BrokenLinkAssetSearcher {
 	}
 
 	private TermsAggregationResult _getTermsAggregationResult(
-		long companyId, String excludeRegex, String includeRegex,
-		Long[] selectedSpaceGroupIds) {
+		long companyId, Set<String> excludedNextCharacters,
+		String outboundLinkPrefix, Long[] selectedSpaceGroupIds) {
+
+		String escapedOutboundLinkPrefix = _escapeRegex(outboundLinkPrefix);
+
+		String excludeRegex = _getExcludeRegex(
+			escapedOutboundLinkPrefix, excludedNextCharacters);
+		String includeRegex = escapedOutboundLinkPrefix + ".*";
 
 		TermsAggregation termsAggregation = _aggregations.terms(
 			"outboundLinks", "outboundLinks");
@@ -382,7 +433,7 @@ public class BrokenLinkAssetSearcher {
 				}
 
 			});
-		termsAggregation.setSize(_MAX_OUTBOUND_LINKS);
+		termsAggregation.setSize(10000);
 
 		SearchRequestBuilder searchRequestBuilder = _getSearchRequestBuilder(
 			_getReferrersBooleanQuery(), companyId, selectedSpaceGroupIds);
@@ -437,7 +488,7 @@ public class BrokenLinkAssetSearcher {
 		List<String> outboundLinks = new ArrayList<>();
 
 		_addOutboundLinks(
-			companyId, null, _OBJECT_ENTRY_EXTERNAL_REFERENCE_CODE_TOKEN_PREFIX,
+			companyId, _OBJECT_ENTRY_EXTERNAL_REFERENCE_CODE_TOKEN_PREFIX,
 			outboundLinks, selectedSpaceGroupIds);
 
 		outboundLinks.removeIf(brokenLinkTargetsMap::containsKey);
@@ -465,17 +516,12 @@ public class BrokenLinkAssetSearcher {
 
 	private static final int _EXTERNAL_REFERENCE_CODES_CHUNK_SIZE = 1000;
 
-	private static final int _MAX_OUTBOUND_LINKS = 10000;
-
 	private static final String
 		_OBJECT_ENTRY_EXTERNAL_REFERENCE_CODE_TOKEN_PREFIX =
 			CMSOutboundLinksUtil.getObjectEntryExternalReferenceCodeToken(
 				StringPool.BLANK);
 
 	private static final int _TERMS_QUERY_CHUNK_SIZE = 4096;
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		BrokenLinkAssetSearcher.class);
 
 	private final Aggregations _aggregations;
 	private final ObjectEntryLocalService _objectEntryLocalService;
