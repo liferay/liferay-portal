@@ -42,9 +42,9 @@ Do not select `Log4jConfigUtilTest` or `SampleSQLBuilderTest`, even when their c
 
 Verify each counterpart file exists before scheduling it.
 
-When a changed class has no counterpart, nothing here can exercise it, whatever the module costs to build. Name it as having no unit test. The same name often exists as an integration test in the sibling `-test` module, which this validation does not run but which does cover the class, so name that file when it exists or the report sends a developer to write a test that is already there. When nothing was scheduled at all, neither a counterpart nor a changed test, report **NO COVERAGE**. Otherwise the scheduled runs decide the verdict, and a PASS names the uncovered classes in its note. Running a suite that never touches the changed class establishes no more than declining to run it, so module size must not decide the verdict.
+When a changed class has no counterpart, nothing here can exercise it, whatever the module costs to build. Name it as having no unit test. When nothing was scheduled at all, neither a counterpart nor a changed test, report **NO COVERAGE**. Otherwise the scheduled runs decide the verdict, and a PASS names the uncovered classes in its note. Running a suite that never touches the changed class establishes no more than declining to run it, so module size must not decide the verdict.
 
-Running the suite anyway is worth doing when it is cheap, since it can catch an unrelated break. It cannot change the verdict either way, because a green suite that never loaded the changed class does not make it a PASS and a red one does not make it a FAIL. Report what the suite did alongside the **NO COVERAGE**.
+Running the suite anyway is worth doing when it is cheap, since it can catch an unrelated break. It cannot change the verdict either way, because a green suite that never loaded the changed class does not make it a PASS and a red one does not make it a FAIL.
 
 For OSGi modules, run only the specific test class, batching counterparts within the same module. Take the Gradle project path of each changed module:
 
