@@ -267,8 +267,17 @@ public class OfflineOpenIdConnectSessionManager {
 				_log.debug(exception);
 			}
 
-			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
-				openIdConnectSession);
+			OpenIdConnectSession currentOpenIdConnectSession =
+				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
+					openIdConnectSession.getOpenIdConnectSessionId());
+
+			if ((currentOpenIdConnectSession != null) &&
+				(currentOpenIdConnectSession.getMvccVersion() ==
+					openIdConnectSession.getMvccVersion())) {
+
+				_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
+					currentOpenIdConnectSession);
+			}
 		}
 
 		return null;
