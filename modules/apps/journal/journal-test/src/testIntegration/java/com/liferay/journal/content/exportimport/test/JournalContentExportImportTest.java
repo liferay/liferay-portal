@@ -14,6 +14,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
+import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
@@ -182,6 +183,25 @@ public class JournalContentExportImportTest
 	}
 
 	@Test
+	@TestInfo("LPD-109596")
+	public void testGetPortletConfigurationWithCompanyGroup() throws Exception {
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			group.getCompanyId());
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			Assert.assertEquals(
+				companyGroup.getExternalReferenceCode(),
+				_getExportedGroupExternalReferenceCode(
+					companyGroup.getExternalReferenceCode()));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-98716")
 	public void testGetPortletConfigurationWithLocalStaging() throws Exception {
 		StagingLocalServiceUtil.enableLocalStaging(
@@ -192,12 +212,15 @@ public class JournalContentExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		Assert.assertEquals(
-			group.getExternalReferenceCode(),
-			_getExportedGroupExternalReferenceCode(
-				stagingGroup.getExternalReferenceCode()));
-
-		ExportImportThreadLocal.setPortletStagingInProcess(false);
+		try {
+			Assert.assertEquals(
+				group.getExternalReferenceCode(),
+				_getExportedGroupExternalReferenceCode(
+					stagingGroup.getExternalReferenceCode()));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
 	}
 
 	@Test
@@ -215,12 +238,15 @@ public class JournalContentExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		Assert.assertEquals(
-			contentGroup.getExternalReferenceCode(),
-			_getExportedGroupExternalReferenceCode(
-				stagingGroup.getExternalReferenceCode()));
-
-		ExportImportThreadLocal.setPortletStagingInProcess(false);
+		try {
+			Assert.assertEquals(
+				contentGroup.getExternalReferenceCode(),
+				_getExportedGroupExternalReferenceCode(
+					stagingGroup.getExternalReferenceCode()));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
 
 		GroupTestUtil.deleteGroup(contentGroup);
 	}
@@ -246,12 +272,15 @@ public class JournalContentExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		Assert.assertEquals(
-			remoteGroupExternalReferenceCode,
-			_getExportedGroupExternalReferenceCode(
-				group.getExternalReferenceCode()));
-
-		ExportImportThreadLocal.setPortletStagingInProcess(false);
+		try {
+			Assert.assertEquals(
+				remoteGroupExternalReferenceCode,
+				_getExportedGroupExternalReferenceCode(
+					group.getExternalReferenceCode()));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
 	}
 
 	@Test
@@ -267,6 +296,50 @@ public class JournalContentExportImportTest
 			stagingGroup.getExternalReferenceCode(),
 			_getExportedGroupExternalReferenceCode(
 				stagingGroup.getExternalReferenceCode()));
+	}
+
+	@Test
+	@TestInfo("LPD-109596")
+	public void testImportPortletConfigurationWithCompanyGroup()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			group.getCompanyId());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"groupExternalReferenceCode",
+				new String[] {companyGroup.getExternalReferenceCode()}
+			).build());
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			Map<String, Object> portletConfiguration =
+				_portletPreferencesPortletConfigurationExporter.
+					getPortletConfiguration(layout.getPlid(), portletId);
+
+			Assert.assertEquals(
+				companyGroup.getExternalReferenceCode(),
+				portletConfiguration.get("groupExternalReferenceCode"));
+
+			importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
+
+			_portletPreferencesPortletConfigurationImporter.
+				importPortletConfiguration(
+					importedLayout.getPlid(), portletId, portletConfiguration);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+
+		Assert.assertEquals(
+			companyGroup.getExternalReferenceCode(),
+			portletPreferences.getValue("groupExternalReferenceCode", null));
 	}
 
 	private void _exportImportSelectedArticle(
@@ -310,5 +383,9 @@ public class JournalContentExportImportTest
 	@Inject
 	private PortletPreferencesPortletConfigurationExporter
 		_portletPreferencesPortletConfigurationExporter;
+
+	@Inject
+	private PortletPreferencesPortletConfigurationImporter
+		_portletPreferencesPortletConfigurationImporter;
 
 }
