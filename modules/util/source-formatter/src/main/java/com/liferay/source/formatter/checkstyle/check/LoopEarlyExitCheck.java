@@ -52,17 +52,17 @@ public class LoopEarlyExitCheck extends BaseCheck {
 			return;
 		}
 
-		String jumpStatementName = _getJumpStatementName(
+		DetailAST jumpStatementDetailAST = _getJumpStatementDetailAST(
 			elseDetailAST.findFirstToken(TokenTypes.SLIST));
 
-		if ((jumpStatementName != null) &&
-			!jumpStatementName.equals("continue")) {
+		if ((jumpStatementDetailAST != null) &&
+			(jumpStatementDetailAST.getType() != TokenTypes.LITERAL_CONTINUE)) {
 
-			log(detailAST, _MSG_EXIT_EARLY, jumpStatementName);
+			log(detailAST, _MSG_EXIT_EARLY, jumpStatementDetailAST.getText());
 		}
 	}
 
-	private String _getJumpStatementName(DetailAST slistDetailAST) {
+	private DetailAST _getJumpStatementDetailAST(DetailAST slistDetailAST) {
 		if (slistDetailAST == null) {
 			return null;
 		}
@@ -77,7 +77,7 @@ public class LoopEarlyExitCheck extends BaseCheck {
 		}
 
 		if (_isJumpStatement(firstChildDetailAST)) {
-			return firstChildDetailAST.getText();
+			return firstChildDetailAST;
 		}
 
 		return null;
