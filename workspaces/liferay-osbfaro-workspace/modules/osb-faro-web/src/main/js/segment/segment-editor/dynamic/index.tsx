@@ -18,6 +18,7 @@ import Form, {
 } from 'shared/components/form';
 import NavigationWarning from 'shared/components/NavigationWarning';
 import React from 'react';
+import SegmentMembership from './SegmentMembership';
 import SegmentSequentialToggle from 'segment/components/SegmentSequentialToggle';
 import Toolbar from './Toolbar';
 import {AlertTypes} from 'shared/components/Alert';
@@ -483,16 +484,9 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 
 									<Toolbar
 										channelId={channelId}
-										criteria={criteria}
-										criteriaString={newCriteriaString}
 										groupId={groupId}
 										id={id ?? ''}
-										includeAnonymousUsers={
-											includeAnonymousUsers
-										}
 										onDeleteSegment={onDeleteSegment}
-										segmentCategory={segmentCategory}
-										segmentType={type}
 										valid={isValid && hasChanges}
 									/>
 
@@ -554,6 +548,43 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 																	]}
 																/>
 															)}
+
+															<Canvas className="segment-membership-root">
+																<Canvas.Header
+																	hasBody={
+																		false
+																	}
+																	title={Liferay.Language.get(
+																		'membership'
+																	)}
+																>
+																	<Canvas.Actions>
+																		<SegmentMembership
+																			channelId={
+																				channelId
+																			}
+																			criteria={
+																				criteria
+																			}
+																			criteriaString={
+																				newCriteriaString
+																			}
+																			groupId={
+																				groupId
+																			}
+																			includeAnonymousUsers={
+																				includeAnonymousUsers
+																			}
+																			segmentCategory={
+																				segmentCategory
+																			}
+																			segmentType={
+																				type
+																			}
+																		/>
+																	</Canvas.Actions>
+																</Canvas.Header>
+															</Canvas>
 
 															<Canvas>
 																<Canvas.Header
