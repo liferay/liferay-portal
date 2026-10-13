@@ -73,11 +73,35 @@ public class RSSWebCacheItem implements WebCacheItem {
 		return Time.MINUTE * _rssWebCacheConfiguration.feedTime();
 	}
 
+	private URL _getValidatedURL(String urlString) throws IOException {
+		if (!HttpComponentsUtil.hasHttpProtocol(urlString)) {
+			throw new SecurityException(
+				"Only HTTP or HTTPS URLs are allowed: " + urlString);
+		}
+
+		URL url = new URL(urlString);
+
+		InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+			url.getHost());
+
+		if (inetAddress == null) {
+			throw new SecurityException(
+				"Unable to resolve host: " + url.getHost());
+		}
+
+		if (InetAddressUtil.isLocalInetAddress(inetAddress)) {
+			throw new SecurityException(
+				"Local network URLs are not allowed: " + urlString);
+		}
+
+		return url;
+	}
+
 	private InputStream _readURL() throws IOException {
 		String urlString = _url;
 
 		for (int i = 0; i <= _MAX_REDIRECTS; i++) {
-			_validateURL(urlString);
+			URL url = _getValidatedURL(urlString);
 
 			Http.Options options = new Http.Options();
 
@@ -102,36 +126,12 @@ public class RSSWebCacheItem implements WebCacheItem {
 				inputStream.close();
 			}
 
-			URL url = new URL(urlString);
-
 			urlString = String.valueOf(new URL(url, redirect));
 		}
 
 		throw new IOException(
 			"Unable to exceed maximum number of allowed URL redirects: " +
 				_url);
-	}
-
-	private void _validateURL(String urlString) throws IOException {
-		if (!HttpComponentsUtil.hasHttpProtocol(urlString)) {
-			throw new SecurityException(
-				"Only HTTP or HTTPS URLs are allowed: " + urlString);
-		}
-
-		URL url = new URL(urlString);
-
-		InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
-			url.getHost());
-
-		if (inetAddress == null) {
-			throw new SecurityException(
-				"Unable to resolve host: " + url.getHost());
-		}
-
-		if (InetAddressUtil.isLocalInetAddress(inetAddress)) {
-			throw new SecurityException(
-				"Local network URLs are not allowed: " + urlString);
-		}
 	}
 
 	private static final int _MAX_REDIRECTS = 5;
