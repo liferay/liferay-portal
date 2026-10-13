@@ -76,20 +76,8 @@ public class LoopEarlyExitCheck extends BaseCheck {
 			return null;
 		}
 
-		if (firstChildDetailAST.getType() == TokenTypes.LITERAL_BREAK) {
-			return "break";
-		}
-
-		if (firstChildDetailAST.getType() == TokenTypes.LITERAL_CONTINUE) {
-			return "continue";
-		}
-
-		if (firstChildDetailAST.getType() == TokenTypes.LITERAL_RETURN) {
-			return "return";
-		}
-
-		if (firstChildDetailAST.getType() == TokenTypes.LITERAL_THROW) {
-			return "throw";
+		if (_isJumpStatement(firstChildDetailAST)) {
+			return firstChildDetailAST.getText();
 		}
 
 		return null;
