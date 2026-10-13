@@ -245,40 +245,41 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 
 	private boolean _isRestricted(Class<?> clazz) {
 		return _restrictedClassMap.computeIfAbsent(
-			clazz.getName(),
-			className -> {
-				if (_allowedClassNames.contains(className)) {
-					return false;
-				}
+			clazz.getName(), className -> _isRestricted(clazz, className));
+	}
 
-				for (Class<?> restrictedClass : _restrictedClasses) {
-					if (!restrictedClass.isAssignableFrom(clazz)) {
-						continue;
-					}
+	private boolean _isRestricted(Class<?> clazz, String className) {
+		if (_allowedClassNames.contains(className)) {
+			return false;
+		}
 
-					return true;
-				}
+		for (Class<?> restrictedClass : _restrictedClasses) {
+			if (!restrictedClass.isAssignableFrom(clazz)) {
+				continue;
+			}
 
-				int index = className.lastIndexOf(StringPool.PERIOD);
+			return true;
+		}
 
-				if (index == -1) {
-					return false;
-				}
+		int index = className.lastIndexOf(StringPool.PERIOD);
 
-				String packageName = className.substring(0, index);
+		if (index == -1) {
+			return false;
+		}
 
-				packageName = packageName.concat(StringPool.PERIOD);
+		String packageName = className.substring(0, index);
 
-				for (String restrictedPackageName : _restrictedPackageNames) {
-					if (!packageName.startsWith(restrictedPackageName)) {
-						continue;
-					}
+		packageName = packageName.concat(StringPool.PERIOD);
 
-					return true;
-				}
+		for (String restrictedPackageName : _restrictedPackageNames) {
+			if (!packageName.startsWith(restrictedPackageName)) {
+				continue;
+			}
 
-				return false;
-			});
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final ModelFactory _RESTRICTED_STRING_MODEL_FACTORY =
