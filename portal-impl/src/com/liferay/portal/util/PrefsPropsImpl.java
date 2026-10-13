@@ -666,7 +666,7 @@ public class PrefsPropsImpl implements PrefsProps {
 
 					_skipCache.set(true);
 
-					TransactionCallbackUtil.registerCommitCallback(
+					TransactionCallbackUtil.registerCompletionCallback(
 						() -> {
 							_removePortletPreference(
 								portalPreferenceValue.getCompanyId());
