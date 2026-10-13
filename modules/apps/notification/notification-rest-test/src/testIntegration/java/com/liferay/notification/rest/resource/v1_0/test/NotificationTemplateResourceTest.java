@@ -101,6 +101,7 @@ public class NotificationTemplateResourceTest
 		super.testGetNotificationTemplate();
 
 		_testGetNotificationTemplateWithRecipientsAndEmailType();
+		_testGetNotificationTemplateWithRecipientsAndFeatureFlagDisabled();
 		_testGetNotificationTemplateWithRecipientsAndUserNotificationType();
 	}
 
@@ -203,6 +204,7 @@ public class NotificationTemplateResourceTest
 		_testPostNotificationTemplateWithNameWithoutDefaultLanguage();
 		_testPostNotificationTemplateWithPermissions();
 		_testPostNotificationTemplateWithPermissionsAndFeatureFlagDisabled();
+		_testPostNotificationTemplateWithRecipientsAndFeatureFlagDisabled();
 		_testPostNotificationTemplateWithRecipientsAndUserNotificationType();
 	}
 
@@ -564,6 +566,49 @@ public class NotificationTemplateResourceTest
 				)),
 			NotificationRecipientConstants.TYPE_EMAIL,
 			NotificationConstants.TYPE_EMAIL);
+	}
+
+	private void _testGetNotificationTemplateWithRecipientsAndFeatureFlagDisabled()
+		throws Exception {
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-49854"),
+					Boolean.FALSE.toString())) {
+
+			_testGetNotificationTemplate(
+				JSONUtil.putAll(
+					_toEmailRecipientJSONObject(
+						RandomTestUtil.randomString() + "@liferay.com",
+						JSONUtil.put("en_US", RandomTestUtil.randomString()),
+						JSONUtil.putAll(
+							JSONUtil.put(
+								NotificationRecipientSettingConstants.
+									NAME_ROLE_NAME,
+								_role.getName())),
+						NotificationRecipientConstants.TYPE_ROLE
+					).put(
+						NotificationRecipientSettingConstants.NAME_BCC,
+						JSONUtil.putAll(
+							JSONUtil.put(
+								NotificationRecipientSettingConstants.
+									NAME_USER_GROUP_NAME,
+								_userGroup.getName()))
+					).put(
+						NotificationRecipientSettingConstants.NAME_BCC_TYPE,
+						NotificationRecipientConstants.TYPE_USER_GROUP
+					)),
+				NotificationRecipientConstants.TYPE_EMAIL,
+				NotificationConstants.TYPE_EMAIL);
+			_testGetNotificationTemplate(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						NotificationRecipientSettingConstants.
+							NAME_USER_SCREEN_NAME,
+						_user.getScreenName())),
+				NotificationRecipientConstants.TYPE_USER,
+				NotificationConstants.TYPE_USER_NOTIFICATION);
+		}
 	}
 
 	private void _testGetNotificationTemplateWithRecipientsAndUserNotificationType()
@@ -1235,6 +1280,46 @@ public class NotificationTemplateResourceTest
 				NotificationRecipientSettingConstants.NAME_TO_TYPE,
 				NotificationRecipientConstants.TYPE_USER_GROUP
 			));
+	}
+
+	private void _testPostNotificationTemplateWithRecipientsAndFeatureFlagDisabled()
+		throws Exception {
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-49854"),
+					Boolean.FALSE.toString())) {
+
+			_testPostNotificationTemplateWithRecipient(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						NotificationRecipientSettingConstants.NAME_ROLE_NAME,
+						_role.getName())),
+				_toRoleJSONObject(
+					RandomTestUtil.randomString(), _role.getName()),
+				NotificationRecipientConstants.TYPE_ROLE);
+
+			String screenName = RandomTestUtil.randomString();
+
+			_testPostNotificationTemplateWithRecipient(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						NotificationRecipientSettingConstants.
+							NAME_USER_SCREEN_NAME,
+						screenName)),
+				_toUserJSONObject(RandomTestUtil.randomString(), screenName),
+				NotificationRecipientConstants.TYPE_USER);
+
+			_testPostNotificationTemplateWithRecipient(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						NotificationRecipientSettingConstants.
+							NAME_USER_GROUP_NAME,
+						_userGroup.getName())),
+				_toUserGroupJSONObject(
+					RandomTestUtil.randomString(), _userGroup.getName()),
+				NotificationRecipientConstants.TYPE_USER_GROUP);
+		}
 	}
 
 	private void _testPostNotificationTemplateWithRecipientsAndUserNotificationType()
