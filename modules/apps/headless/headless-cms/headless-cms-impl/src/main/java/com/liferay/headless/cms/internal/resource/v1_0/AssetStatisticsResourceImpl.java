@@ -27,11 +27,23 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.aggregation.AggregationResult;
 import com.liferay.portal.search.aggregation.Aggregations;
+import com.liferay.portal.search.aggregation.metrics.CardinalityAggregationResult;
+import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
+import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexRequest;
+import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexResponse;
+import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
+import com.liferay.portal.search.engine.adapter.search.SearchSearchResponse;
+import com.liferay.portal.search.index.IndexNameBuilder;
+import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.portal.search.query.TermsQuery;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceTokenTable;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
+import com.liferay.portal.workflow.metrics.sla.processor.WorkflowMetricsSLAStatus;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 
 import java.util.Date;
@@ -162,6 +174,9 @@ public class AssetStatisticsResourceImpl
 						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_SCHEDULED)));
+				setSlaBreachedWorkflowTasksCount(
+					() -> _getSLABreachedWorkflowTasksCount(
+						classNames, selectedSpaceGroupIds));
 				setTotalCount(
 					() -> _getCount(
 						selectedSpaceGroupIds, objectDefinitionIds,
@@ -243,6 +258,77 @@ public class AssetStatisticsResourceImpl
 		}
 	}
 
+	private long _getSLABreachedWorkflowTasksCount(
+		String[] classNames, Long[] groupIds) {
+
+		String indexName =
+			_indexNameBuilder.getIndexName(contextCompany.getCompanyId()) +
+				"-workflow-metrics-sla-task-results";
+
+		IndicesExistsIndexResponse indicesExistsIndexResponse =
+			_searchEngineAdapter.execute(
+				new IndicesExistsIndexRequest(indexName));
+
+		if (!indicesExistsIndexResponse.isExists()) {
+			return 0;
+		}
+
+		List<Long> kaleoTaskInstanceTokenIds =
+			_kaleoTaskInstanceTokenLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					KaleoTaskInstanceTokenTable.INSTANCE.
+						kaleoTaskInstanceTokenId
+				).from(
+					KaleoTaskInstanceTokenTable.INSTANCE
+				).where(
+					_getWorkflowTasksPredicate(
+						classNames, groupIds,
+						KaleoTaskInstanceTokenTable.INSTANCE.completed.eq(
+							false))
+				));
+
+		if (kaleoTaskInstanceTokenIds.isEmpty()) {
+			return 0;
+		}
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		TermsQuery termsQuery = QueriesUtil.terms("taskId");
+
+		termsQuery.addValues(
+			transformToArray(
+				kaleoTaskInstanceTokenIds, String::valueOf, Object.class));
+
+		booleanQuery.addFilterQueryClauses(
+			QueriesUtil.term("breached", true),
+			QueriesUtil.term("companyId", contextCompany.getCompanyId()),
+			QueriesUtil.term("deleted", false), termsQuery);
+
+		booleanQuery.addMustNotQueryClauses(
+			QueriesUtil.term("slaDefinitionId", 0),
+			QueriesUtil.term("status", WorkflowMetricsSLAStatus.NEW.name()));
+
+		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
+
+		searchSearchRequest.addAggregation(
+			_aggregations.cardinality("taskIdCount", "taskId"));
+		searchSearchRequest.setIndexNames(indexName);
+		searchSearchRequest.setQuery(booleanQuery);
+		searchSearchRequest.setSize(0);
+
+		SearchSearchResponse searchSearchResponse =
+			_searchEngineAdapter.execute(searchSearchRequest);
+
+		Map<String, AggregationResult> aggregationResultsMap =
+			searchSearchResponse.getAggregationResultsMap();
+
+		CardinalityAggregationResult cardinalityAggregationResult =
+			(CardinalityAggregationResult)aggregationResultsMap.get(
+				"taskIdCount");
+
+		return cardinalityAggregationResult.getValue();
+	}
+
 	private long _getWorkflowTasksCount(
 		String[] classNames, Long[] groupIds, Predicate predicate) {
 
@@ -251,17 +337,22 @@ public class AssetStatisticsResourceImpl
 			).from(
 				KaleoTaskInstanceTokenTable.INSTANCE
 			).where(
-				KaleoTaskInstanceTokenTable.INSTANCE.companyId.eq(
-					contextCompany.getCompanyId()
-				).and(
-					KaleoTaskInstanceTokenTable.INSTANCE.groupId.in(groupIds)
-				).and(
-					KaleoTaskInstanceTokenTable.INSTANCE.className.in(
-						classNames)
-				).and(
-					predicate
-				)
+				_getWorkflowTasksPredicate(classNames, groupIds, predicate)
 			));
+	}
+
+	private Predicate _getWorkflowTasksPredicate(
+		String[] classNames, Long[] groupIds, Predicate predicate) {
+
+		return KaleoTaskInstanceTokenTable.INSTANCE.companyId.eq(
+			contextCompany.getCompanyId()
+		).and(
+			KaleoTaskInstanceTokenTable.INSTANCE.groupId.in(groupIds)
+		).and(
+			KaleoTaskInstanceTokenTable.INSTANCE.className.in(classNames)
+		).and(
+			predicate
+		);
 	}
 
 	private AssetStatistics _toAssetStatistics() {
@@ -277,6 +368,7 @@ public class AssetStatisticsResourceImpl
 				setPendingCount(() -> 0L);
 				setReviewDateOverdueCount(() -> 0L);
 				setScheduledCount(() -> 0L);
+				setSlaBreachedWorkflowTasksCount(() -> 0L);
 				setTotalCount(() -> 0L);
 				setUpcomingReviewCount(() -> 0L);
 				setWorkflowTasksCount(() -> 0L);
@@ -303,6 +395,9 @@ public class AssetStatisticsResourceImpl
 	private DepotEntryService _depotEntryService;
 
 	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
+	@Reference
 	private KaleoTaskInstanceTokenLocalService
 		_kaleoTaskInstanceTokenLocalService;
 
@@ -311,6 +406,9 @@ public class AssetStatisticsResourceImpl
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private SearchEngineAdapter _searchEngineAdapter;
 
 	@Reference
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
