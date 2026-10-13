@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.util.Set;
 
@@ -95,16 +96,9 @@ public class LoopEarlyExitCheck extends BaseCheck {
 	}
 
 	private boolean _isJumpStatement(DetailAST detailAST) {
-		if ((detailAST != null) &&
-			((detailAST.getType() == TokenTypes.LITERAL_BREAK) ||
-			 (detailAST.getType() == TokenTypes.LITERAL_CONTINUE) ||
-			 (detailAST.getType() == TokenTypes.LITERAL_RETURN) ||
-			 (detailAST.getType() == TokenTypes.LITERAL_THROW))) {
-
-			return true;
-		}
-
-		return false;
+		return TokenUtil.isOfType(
+			detailAST, TokenTypes.LITERAL_BREAK, TokenTypes.LITERAL_CONTINUE,
+			TokenTypes.LITERAL_RETURN, TokenTypes.LITERAL_THROW);
 	}
 
 	private boolean _isLastStatementInLoopBody(DetailAST literalIfDetailAST) {
@@ -122,16 +116,9 @@ public class LoopEarlyExitCheck extends BaseCheck {
 			return false;
 		}
 
-		DetailAST loopDetailAST = parentDetailAST.getParent();
-
-		if ((loopDetailAST.getType() == TokenTypes.LITERAL_DO) ||
-			(loopDetailAST.getType() == TokenTypes.LITERAL_FOR) ||
-			(loopDetailAST.getType() == TokenTypes.LITERAL_WHILE)) {
-
-			return true;
-		}
-
-		return false;
+		return TokenUtil.isOfType(
+			parentDetailAST.getParent(), TokenTypes.LITERAL_DO,
+			TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_WHILE);
 	}
 
 	private boolean _isLogLevelCheck(DetailAST literalIfDetailAST) {
