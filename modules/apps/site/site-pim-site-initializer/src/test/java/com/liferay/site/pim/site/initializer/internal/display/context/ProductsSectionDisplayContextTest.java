@@ -179,13 +179,6 @@ public class ProductsSectionDisplayContextTest {
 			HttpServletRequest.class);
 
 		Mockito.when(
-			language.get(
-				httpServletRequest, "are-you-sure-you-want-to-delete-this")
-		).thenReturn(
-			"Are you sure?"
-		);
-
-		Mockito.when(
 			language.get(httpServletRequest, "delete")
 		).thenReturn(
 			"Delete"
@@ -286,22 +279,18 @@ public class ProductsSectionDisplayContextTest {
 			FDSActionDropdownItem deleteFDSActionDropdownItem =
 				fdsActionDropdownItems.get(1);
 
-			Assert.assertEquals(
-				"{embedded.actions.delete.href}",
-				deleteFDSActionDropdownItem.get("href"));
+			Assert.assertNull(deleteFDSActionDropdownItem.get("href"));
 			Assert.assertEquals(
 				"trash", deleteFDSActionDropdownItem.get("icon"));
 			Assert.assertEquals(
 				"Delete", deleteFDSActionDropdownItem.get("label"));
-			Assert.assertEquals(
-				"headless", deleteFDSActionDropdownItem.get("target"));
+			Assert.assertNull(deleteFDSActionDropdownItem.get("target"));
 
 			data = (Map<?, ?>)deleteFDSActionDropdownItem.get("data");
 
-			Assert.assertEquals(
-				"Are you sure?", data.get("confirmationMessage"));
+			Assert.assertNull(data.get("confirmationMessage"));
 			Assert.assertEquals("delete", data.get("id"));
-			Assert.assertEquals("delete", data.get("method"));
+			Assert.assertNull(data.get("method"));
 			Assert.assertEquals("delete", data.get("permissionKey"));
 		}
 	}
