@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -24,14 +25,21 @@ const EmptyState = ({
 	description = null,
 	title = DEFAULT_EMPTY.empty.title,
 }) => {
+	const symbol =
+		className === DEFAULT_EMPTY.search.className
+			? 'search-state'
+			: 'empty-state';
+
 	return (
 		<ClayEmptyState
 			className={className}
 			description={description}
-			imgSrc={
-				className === DEFAULT_EMPTY.search.className
-					? `${themeDisplay.getPathThemeImages()}/states/search_state.svg`
-					: `${themeDisplay.getPathThemeImages()}/states/empty_state.svg`
+			image={
+				<ClayIcon
+					className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+					illustration
+					symbol={symbol}
+				/>
 			}
 			title={title}
 		>
