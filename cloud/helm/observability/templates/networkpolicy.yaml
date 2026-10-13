@@ -1,4 +1,15 @@
 {{- if eq (include "observability.cloudProvider" .) "gcp" -}}
+{{- $grafana := .Values.grafana -}}
+{{- $grafanaRouteEnabled := false -}}
+{{- range $name, $route := $grafana.route -}}
+{{- if $route.enabled -}}
+{{- $grafanaRouteEnabled = true -}}
+{{- end -}}
+{{- end -}}
+{{- $grafanaExposed := or $grafana.ingress.enabled $grafanaRouteEnabled (ne $grafana.service.type "ClusterIP") -}}
+{{- if and $grafanaExposed (not $grafana.networkPolicy.enabled) -}}
+{{- fail (printf "The value %q must be true when Grafana is exposed, because this chart renders a namespace-wide default-deny that would otherwise drop every connection reaching Grafana. Exposure is any of %q, an enabled entry in %q, or a %q other than ClusterIP" "grafana.networkPolicy.enabled" "grafana.ingress.enabled" "grafana.route" "grafana.service.type") -}}
+{{- end -}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

@@ -48,6 +48,24 @@ tests:
             value: default-deny-ingress
         it: Denies every other ingress by default, namespace-wide
     -   asserts:
+            -   failedTemplate:
+                    errorPattern: grafana.networkPolicy.enabled.*must be true when Grafana is exposed
+        it: Fails when Grafana is exposed by a service type and its own policy is off
+        set:
+            grafana.service.type: LoadBalancer
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: grafana.networkPolicy.enabled.*must be true when Grafana is exposed
+        it: Fails when Grafana is exposed by an enabled route and its own policy is off
+        set:
+            grafana.route.main.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: grafana.networkPolicy.enabled.*must be true when Grafana is exposed
+        it: Fails when Grafana is exposed by an ingress and its own policy is off
+        set:
+            grafana.ingress.enabled: true
+    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits both policies on a cloud other than GCP, where alloy scrapes from inside the namespace
@@ -57,3 +75,17 @@ tests:
             -   hasDocuments:
                     count: 2
         it: Renders exactly the frontend allow and the namespace-wide default-deny, unconditionally on GCP
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+        it: Renders when Grafana is exposed and its own policy is on
+        set:
+            grafana.ingress.enabled: true
+            grafana.networkPolicy.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Skips the exposure check on a cloud other than GCP, where no deny is rendered
+        set:
+            cloudProvider: aws
+            grafana.ingress.enabled: true
