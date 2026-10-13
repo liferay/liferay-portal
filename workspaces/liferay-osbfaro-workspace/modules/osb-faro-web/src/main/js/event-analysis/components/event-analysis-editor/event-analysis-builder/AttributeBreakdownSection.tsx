@@ -1,4 +1,4 @@
-import AddConditionButton from './AddConditionButton';
+import AddConditionButton from 'shared/components/conditions-panel/AddConditionButton';
 import AttributeBreakdownDropdown from './attribute-breakdown-dropdown';
 import AttributeConditionsSection from './AttributeConditionsSection';
 import React from 'react';

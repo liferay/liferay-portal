@@ -106,7 +106,7 @@ describe('Event Analysis Create', () => {
 		).toBeInTheDocument();
 		expect(
 			container.querySelector(
-				'.event-analysis-conditions-panel .event-analysis-builder-root'
+				'.conditions-panel .event-analysis-builder-root'
 			)
 		).toBeInTheDocument();
 		expect(

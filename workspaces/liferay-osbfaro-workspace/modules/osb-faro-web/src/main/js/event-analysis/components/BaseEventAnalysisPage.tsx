@@ -1,8 +1,9 @@
 import BaseEditPage from 'shared/components/base-edit-page';
-import ConditionsPanel from '../components/event-analysis-editor/event-analysis-builder/ConditionsPanel';
+import ConditionsPanel from 'shared/components/conditions-panel/ConditionsPanel';
 import DownloadPDFReport, {
 	ReportContainer,
 } from 'shared/components/download-report/DownloadPDFReport';
+import EventAnalysisBuilder from '../components/event-analysis-editor/event-analysis-builder';
 import EventAnalysisEditor from '../components/event-analysis-editor';
 import Form from 'shared/components/form';
 import NavigationWarning from 'shared/components/NavigationWarning';
@@ -27,6 +28,7 @@ import {getSafeRangeSelectors} from 'shared/util/util';
 import {hasChanges} from 'shared/util/react';
 import {omit} from 'lodash';
 import {Routes, toRoute} from 'shared/util/router';
+import {SortableChipTypes} from '../components/event-analysis-editor/event-analysis-builder/SortableChipTypes';
 import {useAttributes} from '../components/event-analysis-editor/context/attributes';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -55,6 +57,11 @@ const ERRORS = {
 		),
 	},
 };
+
+const CONDITION_DRAG_TYPES = [
+	SortableChipTypes.Breakdown,
+	SortableChipTypes.Filter,
+];
 
 const FORM_ID = 'eventAnalysisForm';
 
@@ -269,9 +276,14 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 			position="left"
 		>
 			<ConditionsPanel
-				event={event ?? undefined}
-				onEventChange={onEventChange}
-			/>
+				dragTypes={CONDITION_DRAG_TYPES}
+				title={Liferay.Language.get('conditions-library')}
+			>
+				<EventAnalysisBuilder
+					event={event ?? undefined}
+					onEventChange={onEventChange}
+				/>
+			</ConditionsPanel>
 		</BaseEditPage.Sidebar>
 	);
 

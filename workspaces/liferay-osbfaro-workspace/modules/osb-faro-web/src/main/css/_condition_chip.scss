@@ -34,18 +34,23 @@
 		}
 	}
 
+	&.condition-chip-selectable {
+		cursor: pointer;
+	}
+
 	&.condition-chip-draggable,
 	&.condition-chip-draggable .drag-handle {
 		cursor: grab;
 	}
 
+	&.condition-chip-selected,
 	&:focus-within,
 	&:hover {
 		background-color: $primaryLighten45;
 		border-color: $primaryLighten23;
 		box-shadow: 0 0 0 1px $primaryLighten23;
 
-		.condition-sticker {
+		&:not(.condition-chip-static-sticker) .condition-sticker {
 			background-color: transparent;
 			color: $dark;
 		}
@@ -80,8 +85,20 @@
 	}
 }
 
-.sticker.condition-sticker {
-	background-color: $primaryLighten45;
+.condition-sticker {
+	&.sticker-primary {
+		background-color: $primaryLighten45;
+	}
+
+	&.sticker-success {
+		background-color: $successLighten63;
+		color: $success;
+	}
+
+	&.sticker-warning {
+		background-color: $warningLighten60;
+		color: $warning;
+	}
 }
 
 .sortable-condition-chip {

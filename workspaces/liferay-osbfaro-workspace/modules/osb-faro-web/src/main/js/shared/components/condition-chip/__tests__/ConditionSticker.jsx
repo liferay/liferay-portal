@@ -30,4 +30,28 @@ describe('ConditionSticker', () => {
 			container.querySelector('.lexicon-icon-click')
 		).toBeInTheDocument();
 	});
+
+	it('uses the primary style by default', () => {
+		const {container} = render(<ConditionSticker symbol="click" />);
+
+		expect(container.querySelector('.sticker-primary')).toBeInTheDocument();
+	});
+
+	it('shows an outlined green check for success', () => {
+		const {container} = render(<ConditionSticker displayType="success" />);
+
+		expect(container.querySelector('.sticker-success')).toBeInTheDocument();
+		expect(
+			container.querySelector('.lexicon-icon-check-circle')
+		).toBeInTheDocument();
+	});
+
+	it('shows an outlined orange exclamation for warning', () => {
+		const {container} = render(<ConditionSticker displayType="warning" />);
+
+		expect(container.querySelector('.sticker-warning')).toBeInTheDocument();
+		expect(
+			container.querySelector('.lexicon-icon-exclamation-circle')
+		).toBeInTheDocument();
+	});
 });

@@ -1,4 +1,4 @@
-import ConditionsSection from './ConditionsSection';
+import ConditionsSection from 'shared/components/conditions-panel/ConditionsSection';
 import React, {useRef} from 'react';
 import SortableConditionChip from 'shared/components/condition-chip/SortableConditionChip';
 import useKeyboardReorder from 'shared/components/condition-chip/useKeyboardReorder';

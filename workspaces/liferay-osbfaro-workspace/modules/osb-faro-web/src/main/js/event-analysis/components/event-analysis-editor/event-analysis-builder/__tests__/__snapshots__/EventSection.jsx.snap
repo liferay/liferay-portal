@@ -103,7 +103,7 @@ exports[`EventSection render with event 1`] = `
               class="d-block"
             >
               <span
-                class="text-3 font-weight-semi-bold"
+                class="text-4 font-weight-semi-bold"
               >
                 View Article
               </span>

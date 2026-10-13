@@ -150,7 +150,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
                 class="d-block"
               >
                 <span
-                  class="text-3 font-weight-semi-bold"
+                  class="text-4 font-weight-semi-bold"
                 >
                   Article Views
                 </span>

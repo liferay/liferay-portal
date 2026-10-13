@@ -1,5 +1,5 @@
-import AddConditionButton from './AddConditionButton';
-import ConditionsSection from './ConditionsSection';
+import AddConditionButton from 'shared/components/conditions-panel/AddConditionButton';
+import ConditionsSection from 'shared/components/conditions-panel/ConditionsSection';
 import EventChip from './EventChip';
 import EventDropdown from './EventDropdown';
 import React, {useRef} from 'react';
