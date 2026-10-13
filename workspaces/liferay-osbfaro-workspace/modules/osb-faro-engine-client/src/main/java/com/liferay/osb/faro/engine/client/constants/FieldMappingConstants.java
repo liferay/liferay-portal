@@ -182,6 +182,8 @@ public class FieldMappingConstants {
 		_demographicsFieldMappingLanguageKeys = HashMapBuilder.put(
 			"birthday", "field.birth-date"
 		).put(
+			"country", "field.country"
+		).put(
 			"emailAddress", "field.email-address"
 		).put(
 			"firstName", "field.first-name"
