@@ -13,6 +13,7 @@ import {
 
 import {Field, Token} from '../../types/ColorPicker';
 import convertRGBtoHex from '../../utils/convertRGBtoHex';
+import isTokenLinkedTo from '../../utils/isTokenLinkedTo';
 
 const ERROR_MESSAGES = {
 	mutuallyReferenced: Liferay.Language.get(
@@ -58,7 +59,13 @@ export function parseColorValue({
 			return {error: ERROR_MESSAGES.selfReferenced};
 		}
 
-		if (editedTokenValues?.[token.name]?.name === field.name) {
+		if (
+			isTokenLinkedTo({
+				editedTokenValues,
+				linkedName: field.name,
+				name: token.name,
+			})
+		) {
 			return {error: ERROR_MESSAGES.mutuallyReferenced};
 		}
 

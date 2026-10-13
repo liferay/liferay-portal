@@ -24,6 +24,7 @@ import {
 	useStyleErrors,
 } from '../../contexts/StyleErrorsContext';
 import {Color, ColorCategoryMap, Field, Token} from '../../types/ColorPicker';
+import isTokenLinkedTo from '../../utils/isTokenLinkedTo';
 import ColorPickerField from './ColorPickerField';
 import {parseColorValue} from './parseColorValue';
 
@@ -123,9 +124,11 @@ export default function ColorPicker({
 		.filter((token) => token.editorType === 'ColorPicker')
 		.map((token) => ({
 			...token,
-			disabled:
-				token.name === field.name ||
-				editedTokenValues?.[token.name]?.name === field.name,
+			disabled: isTokenLinkedTo({
+				editedTokenValues,
+				linkedName: field.name,
+				name: token.name,
+			}),
 		}));
 
 	tokenColorValues.forEach(
