@@ -283,16 +283,19 @@ const RichText = ({
 		}
 	};
 
-	const resetTranslation = useCallback(() => {
-		const data = currentValue[defaultLocale.localeId];
+	const resetTranslation = useCallback(
+		({defaultLanguageId}) => {
+			const data = currentValue[defaultLanguageId];
 
-		if (!Liferay.FeatureFlags['LPD-11235']) {
-			setCurrentInternalValue(data ?? '');
-		}
-		else {
-			editorRef.current.editor.setData(data);
-		}
-	}, [currentValue, defaultLocale, editorRef]);
+			if (!Liferay.FeatureFlags['LPD-11235']) {
+				setCurrentInternalValue(data ?? '');
+			}
+			else {
+				editorRef.current.editor.setData(data);
+			}
+		},
+		[currentValue, editorRef]
+	);
 
 	useEffect(() => {
 		const handleRestoreState = () => {
