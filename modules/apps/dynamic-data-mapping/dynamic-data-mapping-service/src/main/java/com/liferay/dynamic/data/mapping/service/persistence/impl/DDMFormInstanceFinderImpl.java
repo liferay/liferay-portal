@@ -8,6 +8,7 @@ package com.liferay.dynamic.data.mapping.service.persistence.impl;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.impl.DDMFormInstanceImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceFinder;
+import com.liferay.dynamic.data.mapping.util.comparator.DDMFormInstanceNameComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -353,7 +355,13 @@ public class DDMFormInstanceFinderImpl
 				sql, "DDMFormInstance.description", StringPool.LIKE, true,
 				descriptions);
 			sql = _customSQL.replaceAndOperator(sql, andOperator);
-			sql = _customSQL.replaceOrderBy(sql, orderByComparator);
+
+			boolean orderByName =
+				orderByComparator instanceof DDMFormInstanceNameComparator;
+
+			if (!orderByName) {
+				sql = _customSQL.replaceOrderBy(sql, orderByComparator);
+			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -373,8 +381,18 @@ public class DDMFormInstanceFinderImpl
 				queryPos.add(status);
 			}
 
-			return (List<DDMFormInstance>)QueryUtil.list(
-				sqlQuery, getDialect(), start, end);
+			if (!orderByName) {
+				return (List<DDMFormInstance>)QueryUtil.list(
+					sqlQuery, getDialect(), start, end);
+			}
+
+			return ListUtil.subList(
+				ListUtil.sort(
+					(List<DDMFormInstance>)QueryUtil.list(
+						sqlQuery, getDialect(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS),
+					orderByComparator),
+				start, end);
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
