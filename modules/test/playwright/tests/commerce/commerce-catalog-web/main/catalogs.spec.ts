@@ -195,8 +195,8 @@ test(
 
 test(
 	'The Master catalog is created by default and cannot be deleted',
-	{tag: '@LPD-106358'},
-	async ({commerceAdminCatalogsPage}) => {
+	{tag: ['@LPD-106358', '@LPD-109742']},
+	async ({commerceAdminCatalogsPage, page}) => {
 		await commerceAdminCatalogsPage.goto();
 		await commerceAdminCatalogsPage.search('Master');
 
@@ -207,7 +207,10 @@ test(
 		await commerceAdminCatalogsPage.catalogActionsButton('Master').click();
 		await commerceAdminCatalogsPage.deleteMenuItem.click();
 
-		await expect(commerceAdminCatalogsPage.deleteMenuItem).toBeHidden();
+		await waitForAlert(page, 'You cannot delete master catalog.', {
+			autoClose: false,
+			type: 'danger',
+		});
 
 		await commerceAdminCatalogsPage.goto();
 		await commerceAdminCatalogsPage.search('Master');

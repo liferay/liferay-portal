@@ -29,6 +29,7 @@ import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.CatalogR
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -76,6 +77,15 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			testGroup.getCompanyId());
+	}
+
+	@Override
+	@Test
+	public void testDeleteCatalog() throws Exception {
+		super.testDeleteCatalog();
+
+		_testDeleteCatalogWithProducts();
+		_testDeleteSystemCatalog();
 	}
 
 	@Override
@@ -368,6 +378,56 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 		catalog.setCurrencyId((Long)null);
 
 		return catalog;
+	}
+
+	private void _testDeleteCatalogWithProducts() throws Exception {
+		Catalog catalog = catalogResource.postCatalog(randomCatalog());
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.getCommerceCatalog(catalog.getId());
+
+		CPTestUtil.addCPDefinition(commerceCatalog.getGroupId());
+
+		try {
+			catalogResource.deleteCatalog(catalog.getId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+			Assert.assertEquals(
+				LanguageUtil.get(
+					LocaleUtil.getDefault(),
+					"you-cannot-delete-catalogs-that-have-products"),
+				problem.getTitle());
+		}
+	}
+
+	private void _testDeleteSystemCatalog() throws Exception {
+		List<CommerceCatalog> commerceCatalogs =
+			_commerceCatalogLocalService.getCommerceCatalogs(
+				testCompany.getCompanyId(), true);
+
+		CommerceCatalog commerceCatalog = commerceCatalogs.get(0);
+
+		try {
+			catalogResource.deleteCatalog(
+				commerceCatalog.getCommerceCatalogId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+			Assert.assertEquals(
+				LanguageUtil.get(
+					LocaleUtil.getDefault(),
+					"you-cannot-delete-master-catalog"),
+				problem.getTitle());
+		}
 	}
 
 	private void _testGetCatalogsPageWithExportImportDescriptorFilter()
