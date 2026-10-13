@@ -69,10 +69,6 @@ public class ObjectEntrySiteBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected void addStagedModels() throws Exception {
-	}
-
-	@Override
 	protected void deleteEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
