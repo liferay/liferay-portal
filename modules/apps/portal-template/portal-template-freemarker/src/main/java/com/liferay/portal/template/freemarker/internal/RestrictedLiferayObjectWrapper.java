@@ -244,8 +244,19 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 	}
 
 	private boolean _isRestricted(Class<?> clazz) {
-		return _restrictedClassMap.computeIfAbsent(
-			clazz.getName(), className -> _isRestricted(clazz, className));
+		String className = clazz.getName();
+
+		Boolean restricted = _restrictedClassMap.get(className);
+
+		if (restricted != null) {
+			return restricted;
+		}
+
+		restricted = _isRestricted(clazz, className);
+
+		_restrictedClassMap.putIfAbsent(className, restricted);
+
+		return restricted;
 	}
 
 	private boolean _isRestricted(Class<?> clazz, String className) {
