@@ -1,0 +1,7 @@
+{
+	"properties": {
+		"missingRequiredFieldsCount": {
+			"type": "integer"
+		}
+	}
+}
