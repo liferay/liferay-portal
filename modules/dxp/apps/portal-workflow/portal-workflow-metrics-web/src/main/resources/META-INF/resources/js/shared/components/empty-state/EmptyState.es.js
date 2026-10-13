@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -17,16 +18,21 @@ const EmptyState = ({
 	messageClassName,
 	title = null,
 }) => {
+	const symbol = filtered ? 'search-state' : 'empty-state';
+
 	return (
 		<div className={className}>
 			<ClayEmptyState
 				className={classNames({'text-center': hideAnimation})}
 				description={filtered ? filteredMessage : message}
-				imgSrc={
-					!hideAnimation &&
-					(filtered
-						? `${themeDisplay.getPathThemeImages()}/states/search_state.svg`
-						: `${themeDisplay.getPathThemeImages()}/states/empty_state.svg`)
+				image={
+					hideAnimation ? undefined : (
+						<ClayIcon
+							className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+							illustration
+							symbol={symbol}
+						/>
+					)
 				}
 				small={messageClassName === 'small'}
 				title={title}
