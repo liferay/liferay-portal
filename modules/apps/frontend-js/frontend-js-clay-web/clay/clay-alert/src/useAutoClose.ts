@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {useProvider} from '@clayui/provider';
 import {useCallback, useEffect, useRef} from 'react';
 
-import {useBodyHasClass} from './useBodyHasClass';
+import {usePrefersPersistentAlerts} from './usePrefersPersistentAlerts';
 
 interface IProps {
 	autoClose?: boolean | number;
@@ -14,14 +13,7 @@ interface IProps {
 }
 
 export function useAutoClose({autoClose, onClose}: IProps) {
-	const {persistentAlerts: providerPersistentAlerts} = useProvider();
-
-	const prefersPersistentAlerts = useBodyHasClass(
-		'c-prefers-persistent-alerts'
-	);
-
-	const persistentAlerts =
-		providerPersistentAlerts || prefersPersistentAlerts;
+	const prefersPersistentAlerts = usePrefersPersistentAlerts();
 
 	const elapsedRef = useRef(0);
 	const expiredRef = useRef(false);
@@ -46,7 +38,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 	const startTimer = useCallback(() => {
 		if (
 			!autoClose ||
-			persistentAlerts ||
+			prefersPersistentAlerts ||
 			expiredRef.current ||
 			pauseRequestedRef.current ||
 			timerRef.current
@@ -67,7 +59,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 			},
 			Math.max(0, autoCloseDuration - elapsedRef.current)
 		);
-	}, [autoClose, persistentAlerts]);
+	}, [autoClose, prefersPersistentAlerts]);
 
 	useEffect(() => {
 		onCloseRef.current = onClose;
