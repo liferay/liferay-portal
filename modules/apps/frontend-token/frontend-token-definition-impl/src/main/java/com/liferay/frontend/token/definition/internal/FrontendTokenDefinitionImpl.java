@@ -50,6 +50,8 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 			"frontendTokenCategories");
 
 		if (frontendTokenCategoriesJSONArray == null) {
+			_cssVariables = Collections.emptyMap();
+
 			return;
 		}
 
@@ -68,11 +70,13 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 			_frontendTokenSets.addAll(
 				frontendTokenCategory.getFrontendTokenSets());
 		}
+
+		_cssVariables = _getCSSVariables();
 	}
 
 	@Override
 	public Map<String, String> getCSSVariables() {
-		return _getCSSVariables();
+		return _cssVariables;
 	}
 
 	@Override
@@ -167,6 +171,7 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 		return Collections.unmodifiableMap(cssVariables);
 	}
 
+	private final Map<String, String> _cssVariables;
 	private final Collection<FrontendTokenCategory> _frontendTokenCategories =
 		new ArrayList<>();
 	private final Collection<FrontendTokenMapping> _frontendTokenMappings =

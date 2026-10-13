@@ -9,8 +9,6 @@ import com.liferay.frontend.css.variables.ScopedCSSVariables;
 import com.liferay.frontend.css.variables.ScopedCSSVariablesProvider;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
-import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -63,8 +61,8 @@ public class DefaultThemeScopedCSSVariablesProvider
 			return Collections.emptyList();
 		}
 
-		Map<String, String> cssVariables = _cssVariablesMap.computeIfAbsent(
-			frontendTokenDefinition, FrontendTokenDefinition::getCSSVariables);
+		Map<String, String> cssVariables =
+			frontendTokenDefinition.getCSSVariables();
 
 		return Collections.singletonList(
 			new ScopedCSSVariables() {
@@ -81,10 +79,6 @@ public class DefaultThemeScopedCSSVariablesProvider
 
 			});
 	}
-
-	private final Map<FrontendTokenDefinition, Map<String, String>>
-		_cssVariablesMap = new ConcurrentReferenceKeyHashMap<>(
-			FinalizeManager.WEAK_REFERENCE_FACTORY);
 
 	@Reference
 	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
