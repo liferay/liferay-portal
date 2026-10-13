@@ -13,9 +13,9 @@ import io.prometheus.metrics.model.snapshots.GaugeSnapshot;
 import io.prometheus.metrics.model.snapshots.Labels;
 import io.prometheus.metrics.model.snapshots.MetricSnapshots;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -44,32 +44,32 @@ public class MonitorMetricsWriter {
 	}
 
 	public void write() throws IOException {
-		File temporaryFile = new File(
-			_metricsFile.getParentFile(), _metricsFile.getName() + ".tmp");
+		File parentFile = _metricsFile.getParentFile();
 
-		JenkinsResultsParserUtil.write(temporaryFile, _getContent());
+		parentFile.mkdirs();
+
+		File temporaryFile = new File(
+			parentFile, _metricsFile.getName() + ".tmp");
+
+		try (OutputStream outputStream = Files.newOutputStream(
+				temporaryFile.toPath())) {
+
+			PrometheusTextFormatWriter prometheusTextFormatWriter =
+				PrometheusTextFormatWriter.create();
+
+			prometheusTextFormatWriter.write(
+				outputStream,
+				MetricSnapshots.of(
+					_newDurationGaugeSnapshot(),
+					_newHeartbeatTimestampSnapshot(),
+					_newLastRunTimestampSnapshot(), _newMessageInfoSnapshot(),
+					_newStatusSnapshot()),
+				EscapingScheme.DEFAULT);
+		}
 
 		Files.move(
 			temporaryFile.toPath(), _metricsFile.toPath(),
 			StandardCopyOption.ATOMIC_MOVE);
-	}
-
-	private String _getContent() throws IOException {
-		ByteArrayOutputStream byteArrayOutputStream =
-			new ByteArrayOutputStream();
-
-		PrometheusTextFormatWriter prometheusTextFormatWriter =
-			PrometheusTextFormatWriter.create();
-
-		prometheusTextFormatWriter.write(
-			byteArrayOutputStream,
-			MetricSnapshots.of(
-				_newDurationGaugeSnapshot(), _newHeartbeatTimestampSnapshot(),
-				_newLastRunTimestampSnapshot(), _newMessageInfoSnapshot(),
-				_newStatusSnapshot()),
-			EscapingScheme.DEFAULT);
-
-		return byteArrayOutputStream.toString("UTF-8");
 	}
 
 	private double _getDurationSeconds(Monitor monitor) {
