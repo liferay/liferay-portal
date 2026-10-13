@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.transaction.TransactionAttribute;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionStatus;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -37,12 +40,26 @@ public class AMAsyncProcessorImplTest {
 	public void setUp() {
 		_amAsyncProcessorImpl = new AMAsyncProcessorImpl<>(
 			Object.class, _messageBus);
+
+		TransactionAttribute.Builder builder =
+			new TransactionAttribute.Builder();
+
+		_transactionAttribute = builder.build();
 	}
 
 	@Test
 	public void testTriggerCleanUp() throws Exception {
-		long ctCollectionId = RandomTestUtil.randomLong();
 		String modelId = RandomTestUtil.randomString();
+
+		TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER.created(
+			_transactionAttribute, _transactionStatus);
+
+		_amAsyncProcessorImpl.triggerCleanUp(new Object(), modelId);
+
+		TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER.rollbacked(
+			_transactionAttribute, _transactionStatus, null);
+
+		long ctCollectionId = RandomTestUtil.randomLong();
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -58,8 +75,17 @@ public class AMAsyncProcessorImplTest {
 
 	@Test
 	public void testTriggerProcess() throws Exception {
-		long ctCollectionId = RandomTestUtil.randomLong();
 		String modelId = RandomTestUtil.randomString();
+
+		TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER.created(
+			_transactionAttribute, _transactionStatus);
+
+		_amAsyncProcessorImpl.triggerProcess(new Object(), modelId);
+
+		TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER.rollbacked(
+			_transactionAttribute, _transactionStatus, null);
+
+		long ctCollectionId = RandomTestUtil.randomLong();
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -96,5 +122,31 @@ public class AMAsyncProcessorImplTest {
 
 	private AMAsyncProcessorImpl<Object, ?> _amAsyncProcessorImpl;
 	private final MessageBus _messageBus = Mockito.mock(MessageBus.class);
+	private TransactionAttribute _transactionAttribute;
+
+	private final TransactionStatus _transactionStatus =
+		new TransactionStatus() {
+
+			@Override
+			public boolean isCompleted() {
+				return false;
+			}
+
+			@Override
+			public boolean isNewTransaction() {
+				return true;
+			}
+
+			@Override
+			public boolean isRollbackOnly() {
+				return false;
+			}
+
+			@Override
+			public void suppressLifecycleListenerThrowable(
+				Throwable throwable) {
+			}
+
+		};
 
 }
