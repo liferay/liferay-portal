@@ -99,6 +99,7 @@ public class PortletDisplayTemplateServiceTracker {
 					return bundleContext.registerService(
 						Capability.class,
 						new PortletDisplayTemplateImportCapability(
+							_exportImportPortletPreferencesProcessorHelper,
 							_portal, _portletLocalService,
 							_portletDisplayTemplate,
 							bundleContext.getService(serviceReference)),

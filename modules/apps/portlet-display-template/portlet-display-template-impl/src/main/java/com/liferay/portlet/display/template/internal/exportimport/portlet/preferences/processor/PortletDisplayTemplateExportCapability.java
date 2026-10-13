@@ -43,6 +43,16 @@ public class PortletDisplayTemplateExportCapability implements Capability {
 	}
 
 	@Override
+	public void process(long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupExportPortletPreferencesExternalReferenceCode(
+				companyId, "displayStyleGroupExternalReferenceCode",
+				portletPreferences);
+	}
+
+	@Override
 	public PortletPreferences process(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
@@ -111,10 +121,7 @@ public class PortletDisplayTemplateExportCapability implements Capability {
 
 		portletDataContext.setScopeGroupId(previousScopeGroupId);
 
-		_exportImportPortletPreferencesProcessorHelper.
-			updateGroupExportPortletPreferencesExternalReferenceCode(
-				portletDataContext.getCompanyId(),
-				"displayStyleGroupExternalReferenceCode", portletPreferences);
+		process(portletDataContext.getCompanyId(), portletPreferences);
 	}
 
 	private final ExportImportPortletPreferencesProcessorHelper
