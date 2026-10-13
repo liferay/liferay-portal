@@ -540,7 +540,7 @@ public class SitemapManagerTest {
 					TestPropsValues.getCompanyId(), _group.getGroupId(),
 					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 1));
 
-			Assert.assertFalse(xml.contains("_assetTypeKey"));
+			Assert.assertFalse(xml.contains("_childSitemapKey"));
 			Assert.assertFalse(xml.contains("_companyId"));
 			Assert.assertFalse(xml.contains("_groupId"));
 			Assert.assertFalse(xml.contains("_page"));

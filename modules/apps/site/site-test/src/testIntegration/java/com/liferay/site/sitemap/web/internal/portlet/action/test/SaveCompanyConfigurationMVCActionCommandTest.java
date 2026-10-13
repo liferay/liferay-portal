@@ -581,7 +581,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 				if ((message == null) ||
 					(message.getLong("companyId") != _company.getCompanyId()) ||
-					(message.get("assetTypeKey") == null)) {
+					(message.get("childSitemapKey") == null)) {
 
 					return null;
 				}

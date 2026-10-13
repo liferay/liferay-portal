@@ -771,7 +771,7 @@ public class SitemapRegenerationSchedulerTest {
 
 				if ((assetTypeKey == null) ||
 					Objects.equals(
-						message.getString("assetTypeKey"), assetTypeKey)) {
+						message.getString("childSitemapKey"), assetTypeKey)) {
 
 					return schedulerResponse;
 				}

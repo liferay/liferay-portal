@@ -479,15 +479,15 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Override
 	public void regenerateSitemap(
-			String assetTypeKey, long companyId, long groupId)
+			String childSitemapKey, long companyId, long groupId)
 		throws PortalException {
 
-		if (!_isIndexModeCompanyEnabled(assetTypeKey, companyId)) {
+		if (!_isIndexModeCompanyEnabled(childSitemapKey, companyId)) {
 			return;
 		}
 
 		if (StringUtil.equals(
-				assetTypeKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
+				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
 
 			for (long curGroupId : _getGroupIds(companyId, groupId)) {
 				_regeneratePageLayoutSitemap(companyId, curGroupId);
@@ -496,7 +496,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			return;
 		}
 
-		long assetTypeClassNameId = getAssetTypeClassNameId(assetTypeKey);
+		long assetTypeClassNameId = getAssetTypeClassNameId(childSitemapKey);
 
 		if (assetTypeClassNameId <= 0) {
 			return;
@@ -511,19 +511,19 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		for (long curGroupId : _getGroupIds(companyId, groupId)) {
 			_regenerateGroupSitemap(
-				assetTypeClassNameId, assetTypeKey, companyId, curGroupId,
+				assetTypeClassNameId, childSitemapKey, companyId, curGroupId,
 				sitemapURLProvider);
 		}
 	}
 
 	@Override
 	public void scheduleRegenerateSitemap(
-		String assetTypeKey, long companyId, long groupId, Date startDate) {
+		String childSitemapKey, long companyId, long groupId, Date startDate) {
 
 		try {
 			if (!_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 					companyId) ||
-				!_isIndexModeCompanyEnabled(assetTypeKey, companyId)) {
+				!_isIndexModeCompanyEnabled(childSitemapKey, companyId)) {
 
 				return;
 			}
@@ -540,11 +540,11 @@ public class SitemapManagerImpl implements SitemapManager {
 
 			if ((group == null) || group.isCompany()) {
 				_scheduleCompanyRegenerateSitemap(
-					assetTypeKey, companyId, force, startDate);
+					childSitemapKey, companyId, force, startDate);
 			}
 			else {
 				_scheduleGroupRegenerateSitemap(
-					assetTypeKey, companyId, force, groupId, startDate);
+					childSitemapKey, companyId, force, groupId, startDate);
 			}
 		}
 		catch (PortalException portalException) {
@@ -618,14 +618,14 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		_initEntriesAndSize(element);
 
-		String assetTypeKey = element.attributeValue(
-			_ATTRIBUTE_NAME_ASSET_TYPE_KEY);
+		String childSitemapKey = element.attributeValue(
+			_ATTRIBUTE_NAME_CHILD_SITEMAP_KEY);
 		long companyId = GetterUtil.getLong(
 			element.attributeValue(_ATTRIBUTE_NAME_COMPANY_ID));
 		long groupId = GetterUtil.getLong(
 			element.attributeValue(_ATTRIBUTE_NAME_GROUP_ID));
 
-		_initPagination(assetTypeKey, companyId, element, groupId);
+		_initPagination(childSitemapKey, companyId, element, groupId);
 
 		element.addAttribute(_ATTRIBUTE_NAME_PAGE, String.valueOf(page + 1));
 
@@ -1362,10 +1362,11 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private String _getSchedulerJobName(
-		String assetTypeKey, long companyId, long groupId) {
+		String childSitemapKey, long companyId, long groupId) {
 
 		return StringBundler.concat(
-			assetTypeKey, StringPool.SLASH, groupId, StringPool.AT, companyId);
+			childSitemapKey, StringPool.SLASH, groupId, StringPool.AT,
+			companyId);
 	}
 
 	private String _getSitemap(
@@ -1488,9 +1489,10 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private void _initPagination(
-		String assetTypeKey, long companyId, Element element, long groupId) {
+		String childSitemapKey, long companyId, Element element, long groupId) {
 
-		element.addAttribute(_ATTRIBUTE_NAME_ASSET_TYPE_KEY, assetTypeKey);
+		element.addAttribute(
+			_ATTRIBUTE_NAME_CHILD_SITEMAP_KEY, childSitemapKey);
 		element.addAttribute(
 			_ATTRIBUTE_NAME_COMPANY_ID, String.valueOf(companyId));
 		element.addAttribute(_ATTRIBUTE_NAME_GROUP_ID, String.valueOf(groupId));
@@ -1510,7 +1512,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private boolean _isIndexModeCompanyEnabled(
-			String assetTypeKey, long companyId)
+			String childSitemapKey, long companyId)
 		throws ConfigurationException {
 
 		if (!_sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
@@ -1523,7 +1525,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId);
 
 		if (StringUtil.equals(
-				assetTypeKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
+				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
 
 			return StringUtil.equals(
 				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_PAGE_LAYOUT);
@@ -1547,7 +1549,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private Lock _lockRegenerateSitemap(
-			String assetTypeKey, long companyId, long groupId)
+			String childSitemapKey, long companyId, long groupId)
 		throws PortalException {
 
 		try {
@@ -1555,7 +1557,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 			return _lockManager.lock(
 				guestUser.getUserId(), SitemapManagerImpl.class.getName(),
-				_getSchedulerJobName(assetTypeKey, companyId, groupId),
+				_getSchedulerJobName(childSitemapKey, companyId, groupId),
 				SitemapManagerImpl.class.getName(), false, Time.MINUTE * 20,
 				false);
 		}
@@ -1799,14 +1801,15 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private void _removePaginationAttributes(Element element) {
-		_removeAttribute(element, _ATTRIBUTE_NAME_ASSET_TYPE_KEY);
+		_removeAttribute(element, _ATTRIBUTE_NAME_CHILD_SITEMAP_KEY);
 		_removeAttribute(element, _ATTRIBUTE_NAME_COMPANY_ID);
 		_removeAttribute(element, _ATTRIBUTE_NAME_GROUP_ID);
 		_removeAttribute(element, _ATTRIBUTE_NAME_PAGE);
 	}
 
 	private void _scheduleCompanyRegenerateSitemap(
-			String assetTypeKey, long companyId, boolean force, Date startDate)
+			String childSitemapKey, long companyId, boolean force,
+			Date startDate)
 		throws PortalException {
 
 		for (Group group :
@@ -1814,21 +1817,22 @@ public class SitemapManagerImpl implements SitemapManager {
 					companyId, GroupConstants.ANY_PARENT_GROUP_ID, true)) {
 
 			_scheduleGroupRegenerateSitemap(
-				assetTypeKey, companyId, force, group.getGroupId(), startDate);
+				childSitemapKey, companyId, force, group.getGroupId(),
+				startDate);
 		}
 	}
 
 	private void _scheduleGroupRegenerateSitemap(
-			String assetTypeKey, long companyId, boolean force, long groupId,
+			String childSitemapKey, long companyId, boolean force, long groupId,
 			Date startDate)
 		throws PortalException {
 
 		if (!StringUtil.equals(
-				assetTypeKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
+				childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
 
 			SitemapURLProvider sitemapURLProvider =
 				_serviceTrackerMap.getService(
-					getAssetTypeClassNameId(assetTypeKey));
+					getAssetTypeClassNameId(childSitemapKey));
 
 			if ((sitemapURLProvider == null) ||
 				!sitemapURLProvider.isInclude(companyId, groupId)) {
@@ -1838,7 +1842,7 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 
 		String schedulerJobName = _getSchedulerJobName(
-			assetTypeKey, companyId, groupId);
+			childSitemapKey, companyId, groupId);
 
 		SchedulerResponse schedulerResponse =
 			_schedulerEngineHelper.getScheduledJob(
@@ -1857,7 +1861,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		Message message = new Message();
 
-		message.put("assetTypeKey", assetTypeKey);
+		message.put("childSitemapKey", childSitemapKey);
 		message.put("companyId", companyId);
 		message.put("groupId", groupId);
 
@@ -1867,17 +1871,17 @@ public class SitemapManagerImpl implements SitemapManager {
 				startDate, null, 0, null),
 			StorageType.PERSISTED,
 			StringBundler.concat(
-				"Sitemap regeneration for group ", groupId, " and asset type ",
-				assetTypeKey),
+				"Sitemap regeneration for group ", groupId, " and sitemap key ",
+				childSitemapKey),
 			SitemapDestinationNames.SITEMAP_REGENERATION, message);
 	}
 
 	private void _unlockRegenerateSitemap(
-		String assetTypeKey, long companyId, long groupId) {
+		String childSitemapKey, long companyId, long groupId) {
 
 		_lockManager.unlock(
 			SitemapManagerImpl.class.getName(),
-			_getSchedulerJobName(assetTypeKey, companyId, groupId));
+			_getSchedulerJobName(childSitemapKey, companyId, groupId));
 	}
 
 	private void _visitLayoutSet(
@@ -1937,8 +1941,8 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 	}
 
-	private static final String _ATTRIBUTE_NAME_ASSET_TYPE_KEY =
-		"_assetTypeKey";
+	private static final String _ATTRIBUTE_NAME_CHILD_SITEMAP_KEY =
+		"_childSitemapKey";
 
 	private static final String _ATTRIBUTE_NAME_COMPANY_ID = "_companyId";
 

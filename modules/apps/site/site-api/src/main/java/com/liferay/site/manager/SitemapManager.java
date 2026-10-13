@@ -85,10 +85,10 @@ public interface SitemapManager {
 	public boolean isRegenerateSitemapInProgress(long companyId);
 
 	public void regenerateSitemap(
-			String assetTypeKey, long companyId, long groupId)
+			String childSitemapKey, long companyId, long groupId)
 		throws PortalException;
 
 	public void scheduleRegenerateSitemap(
-		String assetTypeKey, long companyId, long groupId, Date startDate);
+		String childSitemapKey, long companyId, long groupId, Date startDate);
 
 }

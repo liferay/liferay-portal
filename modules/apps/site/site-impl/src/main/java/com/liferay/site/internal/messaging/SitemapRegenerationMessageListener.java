@@ -51,7 +51,7 @@ public class SitemapRegenerationMessageListener extends BaseMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		_sitemapManager.regenerateSitemap(
-			message.getString("assetTypeKey"), message.getLong("companyId"),
+			message.getString("childSitemapKey"), message.getLong("companyId"),
 			message.getLong("groupId"));
 	}
 
