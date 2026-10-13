@@ -97,6 +97,31 @@ describe('SegmentEditor', () => {
 		expect(screen.getByText('Error:')).not.toBeNull();
 	});
 
+	it('renders the membership section above the segment conditions', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<DndProvider backend={HTML5Backend}>
+						<SegmentEditor
+							channelId='321'
+							groupId='23'
+							type='BATCH'
+						/>
+					</DndProvider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		const headings = screen
+			.getAllByRole('heading', {level: 2})
+			.map(({textContent}) => textContent);
+
+		expect(headings.indexOf('Membership')).toBeGreaterThan(-1);
+		expect(headings.indexOf('Membership')).toBeLessThan(
+			headings.indexOf('Segment Conditions')
+		);
+	});
+
 	it('renders the realtime segment with the sequential toggle in the conditions heading', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>

@@ -54,99 +54,6 @@ exports[`SegmentEditor should render 1`] = `
           <li
             class="tbar-item"
           >
-            <label
-              class="toggle-switch simple-toggle-switch"
-            >
-              <span
-                class="toggle-switch-check-bar"
-              >
-                <input
-                  class="toggle-switch-check"
-                  id="includeAnonymousUsers"
-                  role="switch"
-                  type="checkbox"
-                  value=""
-                />
-                <span
-                  aria-hidden="true"
-                  class="toggle-switch-bar"
-                >
-                  <span
-                    class="toggle-switch-handle"
-                  />
-                </span>
-              </span>
-              <span
-                class="toggle-switch-label"
-              >
-                Include Anonymous
-              </span>
-            </label>
-          </li>
-          <li
-            class="pl-0 tbar-item"
-          >
-            <button
-              aria-label="Help"
-              class="rounded-lg btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-xs"
-              type="button"
-            >
-              <svg
-                class="lexicon-icon lexicon-icon-question-circle-full"
-                role="presentation"
-              >
-                <use
-                  href="#question-circle-full"
-                />
-              </svg>
-            </button>
-          </li>
-          <li
-            class="align-self-stretch border-left my-1 p-0 tbar-item"
-            data-testid="toolbar-divider"
-          />
-          <li
-            class="tbar-item"
-          >
-            <span
-              class="text-3 font-weight-semi-bold"
-            >
-              Total Members: 
-              <span>
-                0
-              </span>
-            </span>
-          </li>
-          <li
-            class="pl-0 tbar-item"
-          >
-            <button
-              aria-label="View Members"
-              class="rounded-lg btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
-              data-testid="preview-criteria-button"
-              data-tooltip="true"
-              data-tooltip-align="bottom"
-              disabled=""
-              title="Some of your criteria are incomplete or invalid."
-              type="button"
-            >
-              <svg
-                class="lexicon-icon lexicon-icon-view"
-                role="presentation"
-              >
-                <use
-                  href="#view"
-                />
-              </svg>
-            </button>
-          </li>
-          <li
-            class="align-self-stretch border-left my-1 p-0 tbar-item"
-            data-testid="toolbar-divider"
-          />
-          <li
-            class="tbar-item"
-          >
             <a
               class="rounded-lg btn btn-outline-borderless btn-sm btn-outline-secondary"
               href="/workspace/23/321/contacts/segments"
@@ -319,6 +226,118 @@ exports[`SegmentEditor should render 1`] = `
                           type="text"
                           value="00000000-0000-0000-0000-000000000000"
                         />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="card card-root canvas-root segment-membership-root"
+                >
+                  <div
+                    class="card-header align-items-lg-center align-items-start c-gap-3 canvas-header d-flex flex-column flex-lg-row flex-wrap justify-content-between"
+                  >
+                    <div
+                      class="card-title"
+                    >
+                      <h2
+                        class="text-5 font-weight-semi-bold"
+                      >
+                        Membership
+                      </h2>
+                    </div>
+                    <div
+                      class="align-items-center c-gap-3 canvas-actions d-flex flex-wrap"
+                    >
+                      <div
+                        class="align-items-center c-gap-2 d-flex"
+                      >
+                        <label
+                          class="toggle-switch simple-toggle-switch mb-0 text-secondary"
+                        >
+                          <span
+                            class="toggle-switch-check-bar"
+                          >
+                            <input
+                              class="toggle-switch-check"
+                              id=":r1:"
+                              name="includeAnonymousUsers"
+                              role="switch"
+                              type="checkbox"
+                              value=""
+                            />
+                            <span
+                              aria-hidden="true"
+                              class="toggle-switch-bar"
+                            >
+                              <span
+                                class="toggle-switch-handle"
+                              />
+                            </span>
+                          </span>
+                          <span
+                            class="toggle-switch-label"
+                          >
+                            Include Anonymous
+                          </span>
+                        </label>
+                        <span
+                          aria-label="More Information"
+                          class="info-popover-root"
+                          role="button"
+                          tabindex="0"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-question-circle-full icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#question-circle-full"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                      <span
+                        class="align-self-stretch border-left"
+                      />
+                      <span
+                        aria-live="polite"
+                      >
+                        <span
+                          class="text-3 font-weight-semi-bold"
+                        >
+                          Total Members: 
+                          <span>
+                            0
+                          </span>
+                        </span>
+                      </span>
+                      <div
+                        class="align-items-center c-gap-2 d-flex"
+                      >
+                        <button
+                          aria-describedby=":r0:"
+                          aria-label="View Members"
+                          class="rounded-lg btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
+                          data-testid="preview-criteria-button"
+                          disabled=""
+                          title="View Members"
+                          type="button"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-view"
+                            role="presentation"
+                          >
+                            <use
+                              href="#view"
+                            />
+                          </svg>
+                        </button>
+                        <span
+                          class="sr-only"
+                          id=":r0:"
+                        >
+                          Some of your criteria are incomplete or invalid.
+                        </span>
                       </div>
                     </div>
                   </div>
