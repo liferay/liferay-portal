@@ -21,7 +21,6 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.sql.dsl.Column;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,7 +31,6 @@ import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.extension.EntityExtensionThreadLocal;
@@ -161,7 +159,8 @@ public class SystemObjectDefinitionManagerModelListener<T extends BaseModel<T>>
 				groupId = groupedModel.getGroupId();
 			}
 
-			long primaryKey = _getPrimaryKey(baseModel);
+			long primaryKey = _systemObjectDefinitionManager.getPrimaryKey(
+				baseModel);
 
 			_objectEntryLocalService.deleteRelatedObjectEntries(
 				groupId, objectDefinition.getObjectDefinitionId(), primaryKey);
@@ -237,24 +236,6 @@ public class SystemObjectDefinitionManagerModelListener<T extends BaseModel<T>>
 		return (Long)function.apply(baseModel);
 	}
 
-	private long _getPrimaryKey(T baseModel) {
-		Map<String, Function<Object, Object>> functions =
-			(Map<String, Function<Object, Object>>)
-				(Map<String, ?>)baseModel.getAttributeGetterFunctions();
-
-		Column<?, Long> column =
-			_systemObjectDefinitionManager.getPrimaryKeyColumn();
-
-		Function<Object, Object> function = functions.get(column.getName());
-
-		if (function == null) {
-			throw new IllegalArgumentException(
-				"Base model does not have column: " + column.getName());
-		}
-
-		return (Long)function.apply(baseModel);
-	}
-
 	private long _getUserId(T baseModel) {
 		long userId = PrincipalThreadLocal.getUserId();
 
@@ -308,7 +289,7 @@ public class SystemObjectDefinitionManagerModelListener<T extends BaseModel<T>>
 				_objectEntryLocalService.
 					getExtensionDynamicObjectDefinitionTableValues(
 						objectDefinition,
-						GetterUtil.getLong(model.getPrimaryKeyObj()))
+						_systemObjectDefinitionManager.getPrimaryKey(model))
 			).build(),
 			objectFields, extendedProperties);
 

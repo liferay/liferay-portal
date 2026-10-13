@@ -71,7 +71,7 @@ public class ObjectEntryPayloadUtil {
 			ObjectEntryLocalServiceUtil.
 				getExtensionDynamicObjectDefinitionTableValues(
 					objectDefinition,
-					GetterUtil.getLong(baseModel.getPrimaryKeyObj()));
+					systemObjectDefinitionManager.getPrimaryKey(baseModel));
 
 		Map<String, Object> extendedProperties =
 			HashMapBuilder.<String, Object>putAll(

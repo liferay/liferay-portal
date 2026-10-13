@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @author Marco Leo
@@ -163,6 +164,23 @@ public interface SystemObjectDefinitionManager {
 	}
 
 	public Map<Locale, String> getPluralLabelMap();
+
+	public default long getPrimaryKey(BaseModel<?> baseModel) {
+		Map<String, Function<Object, Object>> functions =
+			(Map<String, Function<Object, Object>>)
+				(Map<String, ?>)baseModel.getAttributeGetterFunctions();
+
+		Column<?, Long> column = getPrimaryKeyColumn();
+
+		Function<Object, Object> function = functions.get(column.getName());
+
+		if (function == null) {
+			throw new IllegalArgumentException(
+				"Base model does not have column: " + column.getName());
+		}
+
+		return (Long)function.apply(baseModel);
+	}
 
 	public Column<?, Long> getPrimaryKeyColumn();
 
