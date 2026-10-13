@@ -220,11 +220,13 @@ public class JSONBatchEngineDataFileCheck extends BaseFileCheck {
 
 			String value = parts[1];
 
-			if (value.equals(StringPool.STAR) ||
-				value.equals(String.valueOf(jsonObject.get(key)))) {
+			if (!value.equals(StringPool.STAR) &&
+				!value.equals(String.valueOf(jsonObject.get(key)))) {
 
-				jsonObject.remove(key);
+				continue;
 			}
+
+			jsonObject.remove(key);
 		}
 	}
 

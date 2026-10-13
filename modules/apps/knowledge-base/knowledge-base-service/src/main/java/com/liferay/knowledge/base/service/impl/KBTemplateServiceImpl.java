@@ -83,10 +83,12 @@ public class KBTemplateServiceImpl extends KBTemplateServiceBaseImpl {
 			KBTemplate kbTemplate = kbTemplatePersistence.fetchByPrimaryKey(
 				kbTemplateId);
 
-			if ((kbTemplate != null) && (kbTemplate.getGroupId() != groupId)) {
-				_kbTemplateModelResourcePermission.check(
-					getPermissionChecker(), kbTemplate, KBActionKeys.DELETE);
+			if ((kbTemplate == null) || (kbTemplate.getGroupId() == groupId)) {
+				continue;
 			}
+
+			_kbTemplateModelResourcePermission.check(
+				getPermissionChecker(), kbTemplate, KBActionKeys.DELETE);
 		}
 
 		kbTemplateLocalService.deleteKBTemplates(kbTemplateIds);

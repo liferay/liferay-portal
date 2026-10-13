@@ -140,11 +140,13 @@ public class AssetListEntryExportImportContentProcessor
 					_dlFileEntryTypeLocalService.fetchFileEntryType(
 						classTypeId);
 
-				if (dlFileEntryType != null) {
-					StagedModelDataHandlerUtil.exportReferenceStagedModel(
-						portletDataContext, stagedModel, dlFileEntryType,
-						PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
+				if (dlFileEntryType == null) {
+					continue;
 				}
+
+				StagedModelDataHandlerUtil.exportReferenceStagedModel(
+					portletDataContext, stagedModel, dlFileEntryType,
+					PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
 			}
 		}
 
@@ -345,24 +347,26 @@ public class AssetListEntryExportImportContentProcessor
 			String key = entry.getKey();
 			String value = entry.getValue();
 
-			if (StringUtil.startsWith(key, "orderByColumn") &&
-				StringUtil.startsWith(value, "ddm__keyword__")) {
+			if (!StringUtil.startsWith(key, "orderByColumn") ||
+				!StringUtil.startsWith(value, "ddm__keyword__")) {
 
-				String[] parts = StringUtil.split(
-					value, StringPool.DOUBLE_UNDERLINE);
-
-				if (parts.length < 4) {
-					continue;
-				}
-
-				Long oldPrimaryKey = Long.valueOf(parts[2]);
-
-				parts[2] = String.valueOf(
-					ddmStructureIds.getOrDefault(oldPrimaryKey, oldPrimaryKey));
-
-				unicodeProperties.setProperty(
-					key, StringUtil.merge(parts, StringPool.DOUBLE_UNDERLINE));
+				continue;
 			}
+
+			String[] parts = StringUtil.split(
+				value, StringPool.DOUBLE_UNDERLINE);
+
+			if (parts.length < 4) {
+				continue;
+			}
+
+			Long oldPrimaryKey = Long.valueOf(parts[2]);
+
+			parts[2] = String.valueOf(
+				ddmStructureIds.getOrDefault(oldPrimaryKey, oldPrimaryKey));
+
+			unicodeProperties.setProperty(
+				key, StringUtil.merge(parts, StringPool.DOUBLE_UNDERLINE));
 		}
 
 		return unicodeProperties.toString();
@@ -452,10 +456,12 @@ public class AssetListEntryExportImportContentProcessor
 				JSONObject assetCategoryValueJSONObject =
 					assetCategoryValueJSONArray.getJSONObject(j);
 
-				if (assetCategoryValueJSONObject != null) {
-					assetCategoryValuesJSONObjects.add(
-						assetCategoryValueJSONObject);
+				if (assetCategoryValueJSONObject == null) {
+					continue;
 				}
+
+				assetCategoryValuesJSONObjects.add(
+					assetCategoryValueJSONObject);
 			}
 		}
 

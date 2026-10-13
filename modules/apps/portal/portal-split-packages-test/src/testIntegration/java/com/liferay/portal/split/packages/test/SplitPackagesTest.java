@@ -74,9 +74,11 @@ public class SplitPackagesTest {
 
 			Set<Bundle> bundles = entry.getValue();
 
-			if (bundles.size() > 1) {
-				splitPackages.add(entry.getKey() + " in " + bundles);
+			if (bundles.size() <= 1) {
+				continue;
 			}
+
+			splitPackages.add(entry.getKey() + " in " + bundles);
 		}
 
 		Assert.assertTrue(

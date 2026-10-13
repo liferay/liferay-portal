@@ -335,9 +335,11 @@ public class EditRolePermissionsNavigationDisplayContext {
 			NavigationItem panelCategoryNavigationItem =
 				_getPanelCategoryNavigationItem(panelCategory, new String[0]);
 
-			if (panelCategoryNavigationItem != null) {
-				navigationItems.add(panelCategoryNavigationItem);
+			if (panelCategoryNavigationItem == null) {
+				continue;
 			}
+
+			navigationItems.add(panelCategoryNavigationItem);
 		}
 
 		return navigationItems;
@@ -380,9 +382,11 @@ public class EditRolePermissionsNavigationDisplayContext {
 						panelApp.getPortletId())),
 				panelCategory);
 
-			if (navigationItem != null) {
-				navigationItems.add(navigationItem);
+			if (navigationItem == null) {
+				continue;
 			}
+
+			navigationItems.add(navigationItem);
 		}
 
 		NavigationItem applicationsNavigationItem =
@@ -506,10 +510,12 @@ public class EditRolePermissionsNavigationDisplayContext {
 							panelCategoryKey),
 						excludedPanelAppKeys);
 
-				if (panelCategoryNavigationItem != null) {
-					topLevelNavigationItem.addNavigationItems(
-						panelCategoryNavigationItem);
+				if (panelCategoryNavigationItem == null) {
+					continue;
 				}
+
+				topLevelNavigationItem.addNavigationItems(
+					panelCategoryNavigationItem);
 			}
 		}
 
@@ -547,10 +553,12 @@ public class EditRolePermissionsNavigationDisplayContext {
 						_panelAppRegistry.getPanelApps(panelCategory),
 						panelCategory);
 
-				if (panelCategoryNavigationItem != null) {
-					topLevelNavigationItem.addNavigationItems(
-						panelCategoryNavigationItem);
+				if (panelCategoryNavigationItem == null) {
+					continue;
 				}
+
+				topLevelNavigationItem.addNavigationItems(
+					panelCategoryNavigationItem);
 			}
 		}
 

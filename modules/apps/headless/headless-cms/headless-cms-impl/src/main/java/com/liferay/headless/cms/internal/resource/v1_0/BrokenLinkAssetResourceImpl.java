@@ -177,9 +177,11 @@ public class BrokenLinkAssetResourceImpl
 		long brokenLinksCount = 0;
 
 		for (BrokenLinkTarget brokenLinkTarget : brokenLinkTargets) {
-			if (brokenLinkTarget.getStatus() == status) {
-				brokenLinksCount++;
+			if (brokenLinkTarget.getStatus() != status) {
+				continue;
 			}
+
+			brokenLinksCount++;
 		}
 
 		return brokenLinksCount;
@@ -191,9 +193,11 @@ public class BrokenLinkAssetResourceImpl
 		long deletedBrokenLinksCount = 0;
 
 		for (BrokenLinkTarget brokenLinkTarget : brokenLinkTargets) {
-			if (brokenLinkTarget.isDeleted()) {
-				deletedBrokenLinksCount++;
+			if (!brokenLinkTarget.isDeleted()) {
+				continue;
 			}
+
+			deletedBrokenLinksCount++;
 		}
 
 		return deletedBrokenLinksCount;
@@ -222,9 +226,11 @@ public class BrokenLinkAssetResourceImpl
 			BrokenLinkTarget brokenLinkTarget = brokenLinkTargetsMap.get(
 				outboundLink);
 
-			if (brokenLinkTarget != null) {
-				brokenLinkTargets.add(brokenLinkTarget);
+			if (brokenLinkTarget == null) {
+				continue;
 			}
+
+			brokenLinkTargets.add(brokenLinkTarget);
 		}
 
 		long objectDefinitionId = GetterUtil.getLong(

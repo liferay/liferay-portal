@@ -710,12 +710,14 @@ public class PortalInstanceResourceTest
 					_virtualHostLocalService.fetchVirtualHost(
 						portalInstance.getVirtualHost());
 
-				if (virtualHost != null) {
-					_deletePortalInstance(
-						_toPortalInstance(
-							_companyLocalService.getCompany(
-								virtualHost.getCompanyId())));
+				if (virtualHost == null) {
+					continue;
 				}
+
+				_deletePortalInstance(
+					_toPortalInstance(
+						_companyLocalService.getCompany(
+							virtualHost.getCompanyId())));
 			}
 		}
 	}

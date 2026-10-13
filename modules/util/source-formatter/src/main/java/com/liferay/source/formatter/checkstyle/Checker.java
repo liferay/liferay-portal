@@ -138,18 +138,20 @@ public class Checker extends com.puppycrawl.tools.checkstyle.Checker {
 			Object checkModule = _moduleFactory.createModule(
 				checkConfiguration.getName());
 
-			if (checkModule instanceof AbstractCheck) {
-				AbstractCheck check = (AbstractCheck)checkModule;
-
-				// Checkstyle 10 leaves the tab width at 0 until TreeWalker
-				// passes its own down, and TreeWalker is bypassed here
-
-				check.setTabWidth(CommonUtil.DEFAULT_TAB_WIDTH);
-
-				check.configure(checkConfiguration);
-
-				checks.add(check);
+			if (!(checkModule instanceof AbstractCheck)) {
+				continue;
 			}
+
+			AbstractCheck check = (AbstractCheck)checkModule;
+
+			// Checkstyle 10 leaves the tab width at 0 until TreeWalker passes
+			// its own down, and TreeWalker is bypassed here
+
+			check.setTabWidth(CommonUtil.DEFAULT_TAB_WIDTH);
+
+			check.configure(checkConfiguration);
+
+			checks.add(check);
 		}
 
 		return checks;
@@ -241,18 +243,22 @@ public class Checker extends com.puppycrawl.tools.checkstyle.Checker {
 
 		while (detailAST != null) {
 			for (AbstractCheck check : checks) {
-				if (_isRegisteredCheck(check, detailAST.getType())) {
-					check.visitToken(detailAST);
+				if (!_isRegisteredCheck(check, detailAST.getType())) {
+					continue;
 				}
+
+				check.visitToken(detailAST);
 			}
 
 			DetailAST firstChildDetailAST = detailAST.getFirstChild();
 
 			while ((detailAST != null) && (firstChildDetailAST == null)) {
 				for (AbstractCheck check : checks) {
-					if (_isRegisteredCheck(check, detailAST.getType())) {
-						check.leaveToken(detailAST);
+					if (!_isRegisteredCheck(check, detailAST.getType())) {
+						continue;
 					}
+
+					check.leaveToken(detailAST);
 				}
 
 				firstChildDetailAST = detailAST.getNextSibling();

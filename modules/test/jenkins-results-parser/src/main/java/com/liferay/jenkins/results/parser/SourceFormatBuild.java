@@ -340,9 +340,11 @@ public class SourceFormatBuild
 			for (String line : consoleText.split("\\s*\\n\\s*")) {
 				Matcher matcher = _sourceFormatterVersionPattern.matcher(line);
 
-				if (matcher.find()) {
-					sourceFormatterVersion = matcher.group("version");
+				if (!matcher.find()) {
+					continue;
 				}
+
+				sourceFormatterVersion = matcher.group("version");
 			}
 
 			return sourceFormatterVersion;

@@ -31,11 +31,13 @@ public class PatternMatchingForSwitchCheck extends BaseCheck {
 				childDetailAST, false, TokenTypes.LITERAL_CASE);
 
 			for (DetailAST literalCaseDetailAST : literalCaseDetailASTs) {
-				if (_hasPatternLabel(literalCaseDetailAST)) {
-					log(
-						literalCaseDetailAST,
-						_MSG_AVOID_PATTERN_MATCHING_FOR_SWITCH);
+				if (!_hasPatternLabel(literalCaseDetailAST)) {
+					continue;
 				}
+
+				log(
+					literalCaseDetailAST,
+					_MSG_AVOID_PATTERN_MATCHING_FOR_SWITCH);
 			}
 		}
 	}

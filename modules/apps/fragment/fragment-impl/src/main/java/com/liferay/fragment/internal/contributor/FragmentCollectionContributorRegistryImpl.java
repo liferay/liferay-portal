@@ -307,9 +307,11 @@ public class FragmentCollectionContributorRegistryImpl
 			FragmentCollectionBag fragmentCollectionBag =
 				_serviceTrackerMap.getService(key);
 
-			if (fragmentCollectionBag != null) {
-				biConsumer.accept(keyClass.cast(key), fragmentCollectionBag);
+			if (fragmentCollectionBag == null) {
+				continue;
 			}
+
+			biConsumer.accept(keyClass.cast(key), fragmentCollectionBag);
 		}
 	}
 

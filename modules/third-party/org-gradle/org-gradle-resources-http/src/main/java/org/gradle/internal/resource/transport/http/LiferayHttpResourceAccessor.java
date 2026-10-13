@@ -137,11 +137,13 @@ public class LiferayHttpResourceAccessor extends HttpResourceAccessor {
 		while (iterator.hasNext()) {
 			File file = iterator.next();
 
-			if ((cachedFile == null) ||
-				(cachedFile.lastModified() < file.lastModified())) {
+			if ((cachedFile != null) &&
+				(cachedFile.lastModified() >= file.lastModified())) {
 
-				cachedFile = file;
+				continue;
 			}
+
+			cachedFile = file;
 		}
 
 		return cachedFile;

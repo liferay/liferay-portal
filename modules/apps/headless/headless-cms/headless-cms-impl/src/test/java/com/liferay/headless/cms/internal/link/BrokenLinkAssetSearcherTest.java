@@ -253,16 +253,17 @@ public class BrokenLinkAssetSearcherTest {
 				List<Bucket> buckets = new ArrayList<>();
 
 				for (String outboundLink : outboundLinks) {
-					if (outboundLink.matches(
-							includeExcludeClause.getIncludeRegex()) &&
-						((includeExcludeClause.getExcludeRegex() == null) ||
-						 !outboundLink.matches(
+					if (!outboundLink.matches(
+							includeExcludeClause.getIncludeRegex()) ||
+						((includeExcludeClause.getExcludeRegex() != null) &&
+						 outboundLink.matches(
 							 includeExcludeClause.getExcludeRegex()))) {
 
-						buckets.add(
-							new Bucket(
-								outboundLink, RandomTestUtil.randomLong()));
+						continue;
 					}
+
+					buckets.add(
+						new Bucket(outboundLink, RandomTestUtil.randomLong()));
 				}
 
 				TermsAggregationResult termsAggregationResult = Mockito.mock(

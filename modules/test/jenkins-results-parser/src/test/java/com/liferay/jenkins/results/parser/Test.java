@@ -448,9 +448,11 @@ public class Test {
 
 				String readURL = invocation.getArgument(6);
 
-				if ((readURL != null) && readURL.contains(url)) {
-					count++;
+				if ((readURL == null) || !readURL.contains(url)) {
+					continue;
 				}
+
+				count++;
 			}
 		}
 

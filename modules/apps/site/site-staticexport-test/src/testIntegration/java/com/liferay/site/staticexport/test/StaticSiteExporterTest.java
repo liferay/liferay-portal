@@ -144,9 +144,11 @@ public class StaticSiteExporterTest {
 			for (StaticSiteExportResource staticSiteExportResource :
 					staticSiteExport.getStaticSiteExportResources()) {
 
-				if (_ICONS_URL.equals(staticSiteExportResource.getURL())) {
-					iconsStaticSiteExportResource = staticSiteExportResource;
+				if (!_ICONS_URL.equals(staticSiteExportResource.getURL())) {
+					continue;
 				}
+
+				iconsStaticSiteExportResource = staticSiteExportResource;
 			}
 
 			Assert.assertNotNull(

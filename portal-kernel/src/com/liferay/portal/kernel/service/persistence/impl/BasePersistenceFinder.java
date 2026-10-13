@@ -83,9 +83,11 @@ public abstract class BasePersistenceFinder
 		List<Integer> blankIndexes = new ArrayList<>();
 
 		for (int i = 0; i < finderColumns.length; i++) {
-			if (finderColumns[i].isBlankEquality(values[i])) {
-				blankIndexes.add(i);
+			if (!finderColumns[i].isBlankEquality(values[i])) {
+				continue;
 			}
+
+			blankIndexes.add(i);
 		}
 
 		StringBundler sb = new StringBundler((finderColumns.length * 2) + 2);

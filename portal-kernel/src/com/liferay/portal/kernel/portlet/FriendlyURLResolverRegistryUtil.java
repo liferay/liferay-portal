@@ -64,11 +64,13 @@ public class FriendlyURLResolverRegistryUtil {
 			new ArrayList<>();
 
 		for (FriendlyURLResolver friendlyURLResolver : _serviceTrackerList) {
-			if ((friendlyURLResolver.getCompanyId() == 0) ||
-				(friendlyURLResolver.getCompanyId() == companyId)) {
+			if ((friendlyURLResolver.getCompanyId() != 0) &&
+				(friendlyURLResolver.getCompanyId() != companyId)) {
 
-				friendlyURLResolvers.add(friendlyURLResolver);
+				continue;
 			}
+
+			friendlyURLResolvers.add(friendlyURLResolver);
 		}
 
 		return friendlyURLResolvers;

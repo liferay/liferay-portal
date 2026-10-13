@@ -47,9 +47,11 @@ public class StaticSiteExportDocument {
 			for (Element element :
 					_document.select("[" + attributeName + "]")) {
 
-				if (_isEmbedded(attributeName, element)) {
-					embeddedURLs.add(element.attr(attributeName));
+				if (!_isEmbedded(attributeName, element)) {
+					continue;
 				}
+
+				embeddedURLs.add(element.attr(attributeName));
 			}
 		}
 
@@ -71,9 +73,11 @@ public class StaticSiteExportDocument {
 			while (iterator.hasNext()) {
 				String url = importsJSONObject.getString(iterator.next());
 
-				if (!url.endsWith(StringPool.SLASH)) {
-					embeddedURLs.add(url);
+				if (url.endsWith(StringPool.SLASH)) {
+					continue;
 				}
+
+				embeddedURLs.add(url);
 			}
 		}
 
@@ -158,9 +162,11 @@ public class StaticSiteExportDocument {
 
 				String path = pathFunction.apply(url);
 
-				if (path != null) {
-					element.attr(attributeName, path);
+				if (path == null) {
+					continue;
 				}
+
+				element.attr(attributeName, path);
 			}
 		}
 
@@ -203,9 +209,11 @@ public class StaticSiteExportDocument {
 				String path = pathFunction.apply(
 					importsJSONObject.getString(specifier));
 
-				if (path != null) {
-					importsJSONObject.put(specifier, path);
+				if (path == null) {
+					continue;
 				}
+
+				importsJSONObject.put(specifier, path);
 			}
 
 			element.text(jsonObject.toString());
