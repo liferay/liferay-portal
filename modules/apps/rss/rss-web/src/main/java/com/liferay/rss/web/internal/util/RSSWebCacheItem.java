@@ -22,6 +22,7 @@ import com.rometools.rome.io.XmlReader;
 
 import java.io.InputStream;
 
+import java.net.InetAddress;
 import java.net.URL;
 
 /**
@@ -77,9 +78,12 @@ public class RSSWebCacheItem implements WebCacheItem {
 		for (int i = 0; i <= _MAX_REDIRECTS; i++) {
 			URL url = new URL(urlString);
 
+			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+				url.getHost());
+
 			if (!HttpComponentsUtil.hasHttpProtocol(urlString) ||
-				InetAddressUtil.isLocalInetAddress(
-					InetAddressUtil.getInetAddressByName(url.getHost()))) {
+				(inetAddress == null) ||
+				InetAddressUtil.isLocalInetAddress(inetAddress)) {
 
 				throw new Exception(
 					"Only external HTTP or HTTPS URLs are allowed: " +
