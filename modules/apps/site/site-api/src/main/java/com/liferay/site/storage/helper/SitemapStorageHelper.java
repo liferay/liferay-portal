@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import java.io.InputStream;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -20,7 +21,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface SitemapStorageHelper {
 
 	public void deleteSitemap(
-			long companyId, long groupId, String assetTypeKey, int page)
+			long companyId, long groupId, String childSitemapKey, int page)
 		throws PortalException;
 
 	public void deleteSitemaps(long companyId) throws PortalException;
@@ -28,21 +29,29 @@ public interface SitemapStorageHelper {
 	public void deleteSitemaps(long companyId, long groupId)
 		throws PortalException;
 
+	public void deleteSitemaps(
+			long companyId, long groupId, String childSitemapKey)
+		throws PortalException;
+
 	public Date getLastRegenerateSitemapDate(long companyId)
+		throws PortalException;
+
+	public Map<String, Integer> getPageCountsByChildSitemapKey(
+			long companyId, long groupId)
 		throws PortalException;
 
 	public InputStream getSitemapInputStream(long companyId, long groupId)
 		throws PortalException;
 
 	public InputStream getSitemapInputStream(
-			long companyId, long groupId, String assetTypeKey, int page)
+			long companyId, long groupId, String childSitemapKey, int page)
 		throws PortalException;
 
 	public boolean hasSitemapFile(long companyId, long groupId)
 		throws PortalException;
 
 	public boolean hasSitemapFile(
-			long companyId, long groupId, String assetTypeKey, int page)
+			long companyId, long groupId, String childSitemapKey, int page)
 		throws PortalException;
 
 	public boolean hasSitemapFiles(long companyId) throws PortalException;
@@ -54,7 +63,7 @@ public interface SitemapStorageHelper {
 		throws PortalException;
 
 	public void storeSitemapFile(
-			long companyId, long groupId, String assetTypeKey, int page,
+			long companyId, long groupId, String childSitemapKey, int page,
 			String xml)
 		throws PortalException;
 
