@@ -18,7 +18,12 @@ jest.mock('staging-taglib', () => ({
 }));
 
 const DEFAULT_PROPS = {
+	availableLanguages: [
+		{label: 'English (United States)', value: 'en_US'},
+		{label: 'Spanish (Spain)', value: 'es_ES'},
+	],
 	backURL: '/some/back/url',
+	defaultLanguageId: 'en_US',
 	exportProcessAPIURL: '/o/export-static-site',
 	pageTreeModalConfiguration: {
 		groupId: 20121,
@@ -50,6 +55,20 @@ const typeFileName = () =>
 	userEvent.type(screen.getByRole('textbox', {name: /^name/i}), 'test-file');
 
 describe('NewStaticSiteExport', () => {
+	const {ResizeObserver: ResizeObserverOriginal} = window;
+
+	beforeAll(() => {
+		window.ResizeObserver = jest.fn().mockImplementation(() => ({
+			disconnect: jest.fn(),
+			observe: jest.fn(),
+			unobserve: jest.fn(),
+		}));
+	});
+
+	afterAll(() => {
+		window.ResizeObserver = ResizeObserverOriginal;
+	});
+
 	beforeEach(() => {
 		jest.clearAllMocks();
 
@@ -89,6 +108,29 @@ describe('NewStaticSiteExport', () => {
 		expect(screen.getByLabelText('page-2')).toBeChecked();
 	});
 
+	it('exports the languages selected', async () => {
+		renderComponent();
+
+		await typeFileName();
+
+		await userEvent.type(
+			screen.getByRole('combobox', {name: 'languages'}),
+			'Spanish'
+		);
+
+		await userEvent.click(
+			await screen.findByRole('option', {name: 'Spanish (Spain)'})
+		);
+
+		await submitExport();
+
+		await waitFor(() =>
+			expect(
+				getExportFormData().getAll('_portletNamespace_languageIds')
+			).toEqual(['en_US', 'es_ES'])
+		);
+	});
+
 	it('exports the pages selected through the modal', async () => {
 		renderComponent();
 
@@ -112,6 +154,9 @@ describe('NewStaticSiteExport', () => {
 			).toEqual(['1'])
 		);
 
+		expect(
+			getExportFormData().getAll('_portletNamespace_languageIds')
+		).toEqual(['en_US']);
 		expect(getExportFormData().get('_portletNamespace_name')).toBe(
 			'test-file'
 		);
