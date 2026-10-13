@@ -25,6 +25,7 @@ export {
 } from './common/types/BulkActionTask';
 export {ObjectField, StateFlowValue} from './common/types/ObjectDefinition';
 export {type Space} from './common/types/Space';
+export {getFormattedLabel} from './common/utils/getFormattedText';
 export {getScopeExternalReferenceCode} from './common/utils/getScopeExternalReferenceCode';
 export {
 	displayCreateSuccessToast,

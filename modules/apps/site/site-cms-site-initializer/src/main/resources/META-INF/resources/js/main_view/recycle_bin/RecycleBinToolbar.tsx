@@ -16,11 +16,13 @@ import EmptyRecycleBinModalContent from '../modal/EmptyRecycleBinModalContent';
 
 interface Props {
 	breadcrumbItems: any[];
+	emptyRecycleBinFilterString?: string;
 	showEmptyRecycleBinAction: boolean;
 }
 
 export default function RecycleBinToolbar({
 	breadcrumbItems,
+	emptyRecycleBinFilterString = '',
 	showEmptyRecycleBinAction,
 }: Props) {
 	return isRecycleBinRootPage(breadcrumbItems) ? (
@@ -64,6 +66,9 @@ export default function RecycleBinToolbar({
 												}) => (
 													<EmptyRecycleBinModalContent
 														closeModal={closeModal}
+														filterString={
+															emptyRecycleBinFilterString
+														}
 													/>
 												),
 												size: 'md',
