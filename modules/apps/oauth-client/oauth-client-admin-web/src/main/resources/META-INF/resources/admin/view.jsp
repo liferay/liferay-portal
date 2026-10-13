@@ -15,6 +15,8 @@ String navigation = ParamUtil.getString(request, "navigation", "oauth-clients");
 	navigationItems='<%=
 		new JSPNavigationItemList(pageContext) {
 			{
+				PermissionChecker permissionChecker = themeDisplay.getPermissionChecker();
+
 				add(
 					navigationItem -> {
 						navigationItem.setActive(navigation.equals("oauth-clients"));
@@ -66,9 +68,7 @@ String navigation = ParamUtil.getString(request, "navigation", "oauth-clients");
 						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "oauth-client-pr-local-metadata"));
 					});
 
-				if (themeDisplay.getPermissionChecker(
-					).isCompanyAdmin()) {
-
+				if (permissionChecker.isCompanyAdmin()) {
 					add(
 						navigationItem -> {
 							navigationItem.setActive(navigation.equals("oauth-client-company-configuration"));
