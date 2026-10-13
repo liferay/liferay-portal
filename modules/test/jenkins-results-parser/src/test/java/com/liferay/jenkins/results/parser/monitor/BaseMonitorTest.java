@@ -13,6 +13,8 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.Mockito;
+
 /**
  * @author Brittney Nguyen
  */
@@ -36,6 +38,20 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	public void testGetAttemptTimeoutMillisNonPositiveTimeout() {
 		_testGetAttemptTimeoutMillis(13500, 1, 0);
 		_testGetAttemptTimeoutMillis(27000, 0, 0);
+	}
+
+	@Test
+	public void testGetAttemptTimeoutMillisReadsCount() {
+		BaseMonitor baseMonitor = Mockito.spy(_newBaseMonitor(60));
+
+		Mockito.doReturn(
+			3
+		).when(
+			baseMonitor
+		).getReadsCount();
+
+		testEquals(18000, baseMonitor.getAttemptTimeoutMillis(0));
+		testEquals(9000, baseMonitor.getAttemptTimeoutMillis(1));
 	}
 
 	@Test
