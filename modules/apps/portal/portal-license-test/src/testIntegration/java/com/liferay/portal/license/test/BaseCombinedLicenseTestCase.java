@@ -6,13 +6,17 @@
 package com.liferay.portal.license.test;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.test.log.LogEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -85,6 +89,41 @@ public abstract class BaseCombinedLicenseTestCase extends BaseLicenseTestCase {
 			assertLicensePropertiesExisted(getPortalProductId());
 
 			assertPortalLicenseRegistered();
+		}
+	}
+
+	@Test
+	public void testUnsupportedPortalLicense() throws Exception {
+		String productName = ENTERPRISE_PRODUCT_NAME_CMS;
+
+		if (isCMS()) {
+			productName = ENTERPRISE_PRODUCT_NAME_DXP;
+		}
+
+		try (SafeCloseable safeCloseable = resetLicenseDataWithSafeCloseble()) {
+			deployEnterprisePortalLicense(
+				StringPool.BLANK, productName, Time.HOUR);
+
+			Assert.fail();
+		}
+		catch (LogEntriesException logEntriesException) {
+			List<LogEntry> logEntries = logEntriesException.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				productName + " license validation failed",
+				logEntry.getMessage());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"This product does not support the \"", productName,
+					"\" portal license"),
+				throwable.getMessage());
 		}
 	}
 
