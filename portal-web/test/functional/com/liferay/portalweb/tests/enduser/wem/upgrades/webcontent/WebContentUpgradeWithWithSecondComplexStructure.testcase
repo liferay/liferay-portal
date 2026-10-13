@@ -426,6 +426,10 @@ definition {
 
 			Button.clickSaveAsDraft();
 
+			Alert.viewSuccessMessage();
+
+			Alert.closeMessage(messageType = "SUCCESS");
+
 			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
