@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
+import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
 import com.liferay.document.library.kernel.exception.DuplicateFolderNameException;
 import com.liferay.document.library.kernel.exception.FolderNameException;
 import com.liferay.document.library.kernel.model.DLFolder;
@@ -16,6 +17,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
+import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileNameException;
 import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
 import com.liferay.headless.admin.fragment.internal.exception.ResourceFolderNameException;
 import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFolderEntityModel;
@@ -257,6 +259,10 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 			return _toResourceFolder(
 				_dlFolderLocalService.getDLFolder(folder.getFolderId()));
+		}
+		catch (DuplicateFileEntryException duplicateFileEntryException) {
+			throw new DuplicateResourceFileNameException(
+				duplicateFileEntryException.getMessage());
 		}
 		catch (DuplicateFolderNameException duplicateFolderNameException) {
 			throw new DuplicateResourceFolderNameException(
