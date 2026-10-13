@@ -37,8 +37,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
+import com.liferay.site.staticexport.LayoutStaticSiteExportEntry;
 import com.liferay.site.staticexport.StaticSiteExport;
-import com.liferay.site.staticexport.StaticSiteExportLayout;
+import com.liferay.site.staticexport.StaticSiteExportEntry;
 import com.liferay.site.staticexport.StaticSiteExportReport;
 import com.liferay.site.staticexport.StaticSiteExportResource;
 import com.liferay.site.staticexport.StaticSiteExporter;
@@ -132,13 +133,13 @@ public class StaticSiteExporterTest {
 				String.valueOf(staticSiteExport.getStaticSiteExportResources()),
 				iconsStaticSiteExportResource);
 
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
+			List<StaticSiteExportEntry> staticSiteExportEntries =
+				staticSiteExport.getStaticSiteExportEntries();
 
-			StaticSiteExportLayout staticSiteExportLayout =
-				staticSiteExportLayouts.get(0);
+			StaticSiteExportEntry staticSiteExportEntry =
+				staticSiteExportEntries.get(0);
 
-			String html = staticSiteExportLayout.getHTML();
+			String html = staticSiteExportEntry.getHTML();
 
 			Assert.assertEquals(
 				html, 3,
@@ -196,13 +197,13 @@ public class StaticSiteExporterTest {
 				resourceFailureURLs.toString(), List.of(imageURL),
 				resourceFailureURLs);
 
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
+			List<StaticSiteExportEntry> staticSiteExportEntries =
+				staticSiteExport.getStaticSiteExportEntries();
 
-			StaticSiteExportLayout staticSiteExportLayout =
-				staticSiteExportLayouts.get(0);
+			StaticSiteExportEntry staticSiteExportEntry =
+				staticSiteExportEntries.get(0);
 
-			String html = staticSiteExportLayout.getHTML();
+			String html = staticSiteExportEntry.getHTML();
 
 			Assert.assertThat(
 				html, CoreMatchers.containsString("href=\"" + linkURL + "\""));
@@ -229,11 +230,12 @@ public class StaticSiteExporterTest {
 
 			_assertStaticSiteExport(layout2, staticSiteExport);
 
-			for (StaticSiteExportLayout staticSiteExportLayout :
-					staticSiteExport.getStaticSiteExportLayouts()) {
+			for (StaticSiteExportEntry staticSiteExportEntry :
+					staticSiteExport.getStaticSiteExportEntries()) {
 
 				Assert.assertNotEquals(
-					layout1.getPlid(), staticSiteExportLayout.getPlid());
+					layout1.getExternalReferenceCode(),
+					staticSiteExportEntry.getKey());
 			}
 		}
 	}
@@ -286,30 +288,30 @@ public class StaticSiteExporterTest {
 		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
 				_group.getGroupId(), Set.of(LocaleUtil.SPAIN, LocaleUtil.US))) {
 
-			Map<Locale, StaticSiteExportLayout> staticSiteExportLayouts =
+			Map<Locale, StaticSiteExportEntry> staticSiteExportEntries =
 				new HashMap<>();
 
-			for (StaticSiteExportLayout staticSiteExportLayout :
-					staticSiteExport.getStaticSiteExportLayouts()) {
+			for (StaticSiteExportEntry staticSiteExportEntry :
+					staticSiteExport.getStaticSiteExportEntries()) {
 
-				staticSiteExportLayouts.put(
-					staticSiteExportLayout.getLocale(), staticSiteExportLayout);
+				staticSiteExportEntries.put(
+					staticSiteExportEntry.getLocale(), staticSiteExportEntry);
 			}
 
 			Assert.assertEquals(
-				staticSiteExportLayouts.toString(), 2,
-				staticSiteExportLayouts.size());
+				staticSiteExportEntries.toString(), 2,
+				staticSiteExportEntries.size());
 
 			String englishPath = "en" + englishFriendlyURL + ".html";
 			String spanishPath = "es" + spanishFriendlyURL + ".html";
 
-			StaticSiteExportLayout spanishStaticSiteExportLayout =
-				staticSiteExportLayouts.get(LocaleUtil.SPAIN);
+			StaticSiteExportEntry spanishStaticSiteExportEntry =
+				staticSiteExportEntries.get(LocaleUtil.SPAIN);
 
 			Assert.assertEquals(
-				spanishPath, spanishStaticSiteExportLayout.getPath());
+				spanishPath, spanishStaticSiteExportEntry.getPath());
 
-			String spanishHTML = spanishStaticSiteExportLayout.getHTML();
+			String spanishHTML = spanishStaticSiteExportEntry.getHTML();
 
 			_assertLinks(
 				spanishPath, englishPath, spanishHTML, "en_US", spanishPath);
@@ -323,13 +325,13 @@ public class StaticSiteExporterTest {
 				CoreMatchers.containsString(
 					"href=\"/" + spanishPath + "\">Unprefixed"));
 
-			StaticSiteExportLayout englishStaticSiteExportLayout =
-				staticSiteExportLayouts.get(LocaleUtil.US);
+			StaticSiteExportEntry englishStaticSiteExportEntry =
+				staticSiteExportEntries.get(LocaleUtil.US);
 
 			Assert.assertEquals(
-				englishPath, englishStaticSiteExportLayout.getPath());
+				englishPath, englishStaticSiteExportEntry.getPath());
 
-			String englishHTML = englishStaticSiteExportLayout.getHTML();
+			String englishHTML = englishStaticSiteExportEntry.getHTML();
 
 			_assertLinks(
 				englishPath, englishPath, englishHTML, "es_ES", spanishPath);
@@ -432,19 +434,19 @@ public class StaticSiteExporterTest {
 		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
 				_group.getGroupId(), Set.of(LocaleUtil.US))) {
 
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
+			List<StaticSiteExportEntry> staticSiteExportEntries =
+				staticSiteExport.getStaticSiteExportEntries();
 
 			Assert.assertEquals(
-				staticSiteExportLayouts.toString(),
+				staticSiteExportEntries.toString(),
 				_layoutLocalService.getLayoutsCount(_group.getGroupId(), false),
-				staticSiteExportLayouts.size());
+				staticSiteExportEntries.size());
 
-			for (StaticSiteExportLayout staticSiteExportLayout :
-					staticSiteExportLayouts) {
+			for (StaticSiteExportEntry staticSiteExportEntry :
+					staticSiteExportEntries) {
 
 				Assert.assertThat(
-					staticSiteExportLayout.getHTML(),
+					staticSiteExportEntry.getHTML(),
 					CoreMatchers.containsString(
 						"/o/layout-common-styles/main."));
 			}
@@ -559,14 +561,14 @@ public class StaticSiteExporterTest {
 						stylesheetImageStaticSiteExportResource.getPath() +
 							"#"));
 
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
+			List<StaticSiteExportEntry> staticSiteExportEntries =
+				staticSiteExport.getStaticSiteExportEntries();
 
-			StaticSiteExportLayout staticSiteExportLayout =
-				staticSiteExportLayouts.get(0);
+			StaticSiteExportEntry staticSiteExportEntry =
+				staticSiteExportEntries.get(0);
 
 			Assert.assertThat(
-				staticSiteExportLayout.getHTML(),
+				staticSiteExportEntry.getHTML(),
 				CoreMatchers.containsString(
 					"src=\"/" + imageStaticSiteExportResource.getPath() +
 						"\""));
@@ -595,17 +597,17 @@ public class StaticSiteExporterTest {
 		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
 				_group.getGroupId(), Set.of(LocaleUtil.US))) {
 
-			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				staticSiteExport.getStaticSiteExportLayouts();
+			List<StaticSiteExportEntry> staticSiteExportEntries =
+				staticSiteExport.getStaticSiteExportEntries();
 
-			StaticSiteExportLayout staticSiteExportLayout =
-				staticSiteExportLayouts.get(0);
+			StaticSiteExportEntry staticSiteExportEntry =
+				staticSiteExportEntries.get(0);
 
 			Assert.assertThat(
-				staticSiteExportLayout.getHTML(),
+				staticSiteExportEntry.getHTML(),
 				CoreMatchers.containsString(
 					StringBundler.concat(
-						"href=\"/", staticSiteExportLayout.getPath(),
+						"href=\"/", staticSiteExportEntry.getPath(),
 						"#section\"")));
 		}
 	}
@@ -673,23 +675,26 @@ public class StaticSiteExporterTest {
 	private void _assertStaticSiteExport(
 		Layout layout, StaticSiteExport staticSiteExport) {
 
-		List<StaticSiteExportLayout> staticSiteExportLayouts =
-			staticSiteExport.getStaticSiteExportLayouts();
+		List<StaticSiteExportEntry> staticSiteExportEntries =
+			staticSiteExport.getStaticSiteExportEntries();
 
 		Assert.assertEquals(
-			staticSiteExportLayouts.toString(), 1,
-			staticSiteExportLayouts.size());
+			staticSiteExportEntries.toString(), 1,
+			staticSiteExportEntries.size());
 
-		StaticSiteExportLayout staticSiteExportLayout =
-			staticSiteExportLayouts.get(0);
+		LayoutStaticSiteExportEntry layoutStaticSiteExportEntry =
+			(LayoutStaticSiteExportEntry)staticSiteExportEntries.get(0);
 
-		Assert.assertEquals(LocaleUtil.US, staticSiteExportLayout.getLocale());
+		Assert.assertEquals(
+			layout.getExternalReferenceCode(),
+			layoutStaticSiteExportEntry.getExternalReferenceCode());
+		Assert.assertEquals(
+			LocaleUtil.US, layoutStaticSiteExportEntry.getLocale());
 		Assert.assertEquals(
 			"en" + layout.getFriendlyURL() + ".html",
-			staticSiteExportLayout.getPath());
-		Assert.assertEquals(layout.getPlid(), staticSiteExportLayout.getPlid());
+			layoutStaticSiteExportEntry.getPath());
 		Assert.assertThat(
-			staticSiteExportLayout.getHTML(),
+			layoutStaticSiteExportEntry.getHTML(),
 			CoreMatchers.containsString(layout.getName(LocaleUtil.US)));
 
 		List<StaticSiteExportResource> staticSiteExportResources =
@@ -735,7 +740,7 @@ public class StaticSiteExporterTest {
 				generatedResource = true;
 			}
 
-			String html = staticSiteExportLayout.getHTML();
+			String html = layoutStaticSiteExportEntry.getHTML();
 
 			if (url.contains(".css") && html.contains(url)) {
 				stylesheet = true;
