@@ -126,12 +126,6 @@ public class UserIndexerIndexedFieldsByAssociationTest {
 		_userLocalService.addUserGroupUser(userGroupId, user);
 
 		assertFieldValues(user, fieldNames, map);
-
-		Group group = addGroup();
-
-		_groupLocalService.addUserGroupGroup(userGroupId, group);
-
-		assertFieldValues(user, fieldNames, map);
 	}
 
 	@Test
@@ -227,6 +221,43 @@ public class UserIndexerIndexedFieldsByAssociationTest {
 				"userGroupRoleNames",
 				StringUtil.toLowerCase(groupRole.getName())
 			).build());
+	}
+
+	@Test
+	public void testDeleteUserGroupGroup() {
+		String[] fieldNames = {
+			_CT_COLLECTION_ID, Field.GROUP_ID, Field.SCOPE_GROUP_ID, Field.UID
+		};
+
+		User user = addUser();
+		UserGroup userGroup = addUserGroup();
+
+		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user);
+
+		Map<String, String> map = new HashMap<>();
+
+		indexedFieldsFixture.populateUID(user, map);
+
+		assertFieldValues(user, fieldNames, map);
+
+		Group group = addGroup();
+
+		_groupLocalService.addUserGroupGroup(userGroup.getUserGroupId(), group);
+
+		assertFieldValues(
+			user, fieldNames,
+			HashMapBuilder.putAll(
+				map
+			).put(
+				Field.GROUP_ID, String.valueOf(group.getGroupId())
+			).put(
+				Field.SCOPE_GROUP_ID, String.valueOf(group.getGroupId())
+			).build());
+
+		_groupLocalService.deleteUserGroupGroup(
+			userGroup.getUserGroupId(), group);
+
+		assertFieldValues(user, fieldNames, map);
 	}
 
 	@Test
