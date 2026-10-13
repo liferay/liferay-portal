@@ -11,29 +11,37 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceService;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceTestUtil;
+import com.liferay.dynamic.data.mapping.util.comparator.DDMFormInstanceNameComparator;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import org.junit.Before;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Locale;
+
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,30 +58,23 @@ public class DDMFormInstanceServiceTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@Before
-	public void setUp() throws Exception {
-		_ddmFormInstance = DDMFormInstanceTestUtil.addDDMFormInstance(
-			_groupLocalService.getGroup(TestPropsValues.getGroupId()),
-			TestPropsValues.getUserId());
-	}
-
 	@Test
 	public void testGetFormInstance() throws Exception {
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		User user = UserTestUtil.addUser();
 
-		try {
-			User user = UserTestUtil.addUser();
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(user));
-
+			DDMFormInstance ddmFormInstance =
+				DDMFormInstanceTestUtil.addDDMFormInstance(
+					_groupLocalService.getGroup(TestPropsValues.getGroupId()),
+					TestPropsValues.getUserId());
 			Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 			_resourcePermissionLocalService.setResourcePermissions(
 				TestPropsValues.getCompanyId(), DDMFormInstance.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(_ddmFormInstance.getFormInstanceId()),
+				String.valueOf(ddmFormInstance.getFormInstanceId()),
 				role.getRoleId(),
 				new String[] {DDMActionKeys.ADD_FORM_INSTANCE_RECORD});
 
@@ -85,30 +86,61 @@ public class DDMFormInstanceServiceTest {
 					"User ", user.getUserId(),
 					" must have VIEW permission for ",
 					"com.liferay.dynamic.data.mapping.model.DDMFormInstance ",
-					_ddmFormInstance.getFormInstanceId()),
+					ddmFormInstance.getFormInstanceId()),
 				() -> _ddmFormInstanceService.getFormInstance(
-					_ddmFormInstance.getFormInstanceId()));
+					ddmFormInstance.getFormInstanceId()));
 
 			_resourcePermissionLocalService.setResourcePermissions(
 				TestPropsValues.getCompanyId(), DDMFormInstance.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(_ddmFormInstance.getFormInstanceId()),
+				String.valueOf(ddmFormInstance.getFormInstanceId()),
 				role.getRoleId(), new String[] {ActionKeys.VIEW});
 
 			_ddmFormInstanceService.getFormInstance(
-				_ddmFormInstance.getFormInstanceId());
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-
-			_ddmFormInstanceLocalService.deleteDDMFormInstance(
-				_ddmFormInstance);
+				ddmFormInstance.getFormInstanceId());
 		}
 	}
 
-	@DeleteAfterTestRun
-	private DDMFormInstance _ddmFormInstance;
+	@Test
+	public void testSearch() throws Exception {
+		Locale defaultLocale = LocaleThreadLocal.getDefaultLocale();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				TestPropsValues.getUser())) {
+
+			Group group = GroupTestUtil.addGroup();
+
+			_addDDMFormInstance(group, "able");
+			_addDDMFormInstance(group, "[bob");
+
+			LocaleThreadLocal.setDefaultLocale(LocaleUtil.JAPAN);
+
+			Assert.assertEquals(
+				Arrays.asList("[bob", "able"),
+				ListUtil.toList(
+					_ddmFormInstanceService.search(
+						group.getCompanyId(), group.getGroupId(), null,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						DDMFormInstanceNameComparator.getInstance(true)),
+					ddmFormInstance -> ddmFormInstance.getName(LocaleUtil.US)));
+		}
+		finally {
+			LocaleThreadLocal.setDefaultLocale(defaultLocale);
+		}
+	}
+
+	private void _addDDMFormInstance(Group group, String name)
+		throws Exception {
+
+		DDMFormInstance ddmFormInstance =
+			DDMFormInstanceTestUtil.addDDMFormInstance(
+				group, TestPropsValues.getUserId());
+
+		ddmFormInstance.setNameMap(
+			Collections.singletonMap(LocaleUtil.US, name));
+
+		_ddmFormInstanceLocalService.updateDDMFormInstance(ddmFormInstance);
+	}
 
 	@Inject
 	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
