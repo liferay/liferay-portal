@@ -553,13 +553,13 @@ public class JenkinsResultsParserUtilTest
 
 			String threadDump = JenkinsResultsParserUtil.getThreadDump();
 
-			String lockWaiterHeader = _getThreadDumpHeader(
+			String lockWaiterEntry = _getThreadDumpEntry(
 				threadDump, lockWaiterThreadName);
 
-			Assert.assertTrue(lockWaiterHeader.contains("BLOCKED"));
+			Assert.assertTrue(lockWaiterEntry.contains("BLOCKED"));
 
 			Assert.assertTrue(
-				lockWaiterHeader.contains(
+				lockWaiterEntry.contains(
 					"owned by \"" + lockOwnerThreadName + "\""));
 
 			String lockOwnerEntry = _getThreadDumpEntry(
@@ -610,11 +610,17 @@ public class JenkinsResultsParserUtilTest
 
 			String threadDump = JenkinsResultsParserUtil.getThreadDump();
 
-			while (!threadDump.contains(" deadlocked threads:")) {
+			for (int i = 0; i < 500; i++) {
+				if (threadDump.contains(" deadlocked threads:")) {
+					break;
+				}
+
 				JenkinsResultsParserUtil.sleep(10);
 
 				threadDump = JenkinsResultsParserUtil.getThreadDump();
 			}
+
+			Assert.assertTrue(threadDump.contains(" deadlocked threads:"));
 
 			String deadlockSection = threadDump.substring(
 				threadDump.indexOf(" deadlocked threads:"));
@@ -631,6 +637,36 @@ public class JenkinsResultsParserUtilTest
 
 			firstThread.join();
 			secondThread.join();
+		}
+	}
+
+	@Test(timeout = 30000)
+	public void testGetThreadDumpTruncatedStack() throws Exception {
+		String deepStackThreadName = "deep-stack";
+
+		CountDownLatch deepStackLatch = new CountDownLatch(1);
+		CountDownLatch holdLatch = new CountDownLatch(1);
+
+		Thread deepStackThread = new Thread(
+			() -> _buildDeepStack(deepStackLatch, 60, holdLatch),
+			deepStackThreadName);
+
+		deepStackThread.setDaemon(true);
+
+		try {
+			deepStackThread.start();
+
+			deepStackLatch.await();
+
+			String deepStackEntry = _getThreadDumpEntry(
+				JenkinsResultsParserUtil.getThreadDump(), deepStackThreadName);
+
+			Assert.assertTrue(deepStackEntry.contains("\t..."));
+		}
+		finally {
+			holdLatch.countDown();
+
+			deepStackThread.join();
 		}
 	}
 
@@ -948,6 +984,27 @@ public class JenkinsResultsParserUtilTest
 		}
 	}
 
+	private void _buildDeepStack(
+		CountDownLatch deepStackLatch, int depth, CountDownLatch holdLatch) {
+
+		if (depth > 0) {
+			_buildDeepStack(deepStackLatch, depth - 1, holdLatch);
+
+			return;
+		}
+
+		deepStackLatch.countDown();
+
+		try {
+			holdLatch.await();
+		}
+		catch (InterruptedException interruptedException) {
+			Thread currentThread = Thread.currentThread();
+
+			currentThread.interrupt();
+		}
+	}
+
 	private ServerSocket _createServerSocket() throws Exception {
 		return new ServerSocket(0, 1, InetAddress.getByName("localhost"));
 	}
@@ -993,16 +1050,6 @@ public class JenkinsResultsParserUtilTest
 		}
 
 		return sb.toString();
-	}
-
-	private String _getThreadDumpHeader(String threadDump, String threadName) {
-		for (String line : threadDump.split("\n")) {
-			if (line.startsWith("\"" + threadName + "\"")) {
-				return line;
-			}
-		}
-
-		return null;
 	}
 
 	private void _testFetchBuildURL(
