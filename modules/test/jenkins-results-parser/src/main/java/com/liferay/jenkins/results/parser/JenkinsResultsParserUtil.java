@@ -3668,10 +3668,6 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static String getThreadDump() {
-		return getThreadDump(_LINES_THREAD_DUMP_DEFAULT);
-	}
-
-	public static String getThreadDump(int lines) {
 		StringBuilder sb = new StringBuilder();
 
 		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
@@ -3711,7 +3707,7 @@ public class JenkinsResultsParserUtil {
 			MonitorInfo[] monitorInfos = threadInfo.getLockedMonitors();
 
 			int stackTraceElementsCount = Math.min(
-				stackTraceElements.length, lines);
+				stackTraceElements.length, 40);
 
 			for (int i = 0; i < stackTraceElementsCount; i++) {
 				sb.append("\tat ");
@@ -7011,8 +7007,6 @@ public class JenkinsResultsParserUtil {
 		"http://test-1-0/userContent/bundles/test-portal-acceptance-upstream";
 
 	private static final String _JENKINS_DIST_ROOT_PATH_DEFAULT = "/tmp/dist";
-
-	private static final int _LINES_THREAD_DUMP_DEFAULT = 40;
 
 	private static final long _MILLIS_BASH_COMMAND_TIMEOUT_DEFAULT =
 		1000 * 60 * 60;
