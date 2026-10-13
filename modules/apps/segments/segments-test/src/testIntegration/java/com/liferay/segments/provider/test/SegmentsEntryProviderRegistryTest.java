@@ -13,6 +13,10 @@ import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.expando.test.util.ExpandoTestUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.cache.test.util.TestPortalCacheListener;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -43,6 +47,7 @@ import com.liferay.segments.test.util.SegmentsTestUtil;
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -71,7 +76,7 @@ public class SegmentsEntryProviderRegistryTest {
 	}
 
 	@Test
-	@TestInfo("LPD-86011")
+	@TestInfo({"LPD-86011", "LPD-109786"})
 	public void testGetSegmentsEntryIds() throws Exception {
 		SegmentsEntry segmentsEntry1 = _addSegmentsEntry(
 			RandomTestUtil.randomString());
@@ -106,6 +111,31 @@ public class SegmentsEntryProviderRegistryTest {
 		Assert.assertTrue(
 			ArrayUtil.contains(
 				segmentsEntryIds, segmentsEntry2.getSegmentsEntryId()));
+
+		Context context = new Context();
+
+		context.put(Context.URL, RandomTestUtil.randomString());
+
+		PortalCache<String, Map<String, long[]>> portalCache =
+			PortalCacheHelperUtil.getPortalCache(
+				PortalCacheManagerNames.MULTI_VM,
+				"com.liferay.segments.internal.cache.SegmentsEntryCacheUtil");
+
+		TestPortalCacheListener<String, Map<String, long[]>>
+			testPortalCacheListener = new TestPortalCacheListener<>();
+
+		portalCache.registerPortalCacheListener(testPortalCacheListener);
+
+		try {
+			_segmentsEntryProviderRegistry.getSegmentsEntryIds(
+				_group.getGroupId(), User.class.getName(),
+				TestPropsValues.getUserId(), context);
+		}
+		finally {
+			portalCache.unregisterPortalCacheListener(testPortalCacheListener);
+		}
+
+		testPortalCacheListener.assertActionsCount(0);
 	}
 
 	@Test
