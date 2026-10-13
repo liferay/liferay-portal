@@ -117,6 +117,7 @@ type FakeCustomDataRenderers = {
 		value: string;
 	}) => React.ReactElement;
 	activitiesCountRenderer: (props: {value?: number}) => React.ReactElement;
+	annualRevenueRenderer: (props: {value?: number}) => React.ReactElement;
 };
 
 type FakeView = {
@@ -418,6 +419,42 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(container).toHaveTextContent('42');
+	});
+
+	it('should render an empty annual revenue when the account annual revenue is 0', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.annualRevenueRenderer({value: 0})
+		);
+
+		expect(container.textContent).toBe('');
+	});
+
+	it('should render an empty annual revenue when the account annual revenue is unknown', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.annualRevenueRenderer({value: undefined})
+		);
+
+		expect(container.textContent).toBe('');
+	});
+
+	it('should render the annual revenue in thousands when the account has annual revenue', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.annualRevenueRenderer({value: 120000000})
+		);
+
+		expect(container).toHaveTextContent('120M');
 	});
 
 	it('should not expose a filter for recent activities', () => {
