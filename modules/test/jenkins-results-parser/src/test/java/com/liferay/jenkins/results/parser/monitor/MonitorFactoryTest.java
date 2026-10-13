@@ -21,6 +21,29 @@ public class MonitorFactoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testNewMonitorControllerResult() {
+		String masterName = RandomTestUtil.randomString();
+
+		JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, "http://" + masterName);
+
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[job.name]", RandomTestUtil.randomString());
+		monitorProperties.setProperty(
+			"monitor[a].parameter[master.name]", masterName);
+		monitorProperties.setProperty("monitor[a].type", "controller-result");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof ControllerResultMonitor);
+	}
+
+	@Test
 	public void testNewMonitorExternalStatus() {
 		Properties monitorProperties = new Properties();
 
