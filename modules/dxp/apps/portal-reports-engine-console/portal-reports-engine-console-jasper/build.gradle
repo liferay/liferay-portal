@@ -17,6 +17,7 @@ dependencies {
 	compileInclude group: "org.olap4j", name: "olap4j", version: "1.2.0"
 	compileOnly group: "com.adobe.xmp", name: "xmpcore", version: "6.1.11"
 	compileOnly group: "com.ibm.icu", name: "icu4j", version: "69.1"
+	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.jfree.jfreechart", version: "1.0.19.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.zaxxer", name: "SparseBitSet", version: "1.2"
