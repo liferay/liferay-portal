@@ -63,7 +63,6 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 	public void setUp() throws Exception {
 		_company = _companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-
 		_user = UserTestUtil.addUser();
 	}
 
@@ -75,6 +74,40 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 
 	@Test
 	public void testUpdateOAuthClientCompanyConfiguration() throws Exception {
+		_testUpdateOAuthClientCompanyConfiguration();
+		_testUpdateOAuthClientCompanyConfigurationWithoutPermission();
+	}
+
+	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
+			Map<String, String[]> parameters)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(_company);
+		themeDisplay.setPermissionChecker(
+			PermissionThreadLocal.getPermissionChecker());
+		themeDisplay.setRequest(new MockHttpServletRequest());
+		themeDisplay.setUser(TestPropsValues.getUser());
+
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+			mockLiferayPortletActionRequest.setParameter(
+				entry.getKey(), entry.getValue());
+		}
+
+		mockLiferayPortletActionRequest.setPortletSession(
+			new MockPortletSession());
+
+		return mockLiferayPortletActionRequest;
+	}
+
+	private void _testUpdateOAuthClientCompanyConfiguration() throws Exception {
 		String host = RandomTestUtil.randomString();
 
 		Assert.assertTrue(
@@ -108,8 +141,7 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 			});
 	}
 
-	@Test
-	public void testUpdateOAuthClientCompanyConfigurationWithoutPermission()
+	private void _testUpdateOAuthClientCompanyConfigurationWithoutPermission()
 		throws Exception {
 
 		PermissionChecker permissionChecker =
@@ -118,74 +150,41 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(_user));
 
-		try {
-			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-				_getMockLiferayPortletActionRequest(
-					HashMapBuilder.put(
-						"authServerHostsAllowed",
-						new String[] {RandomTestUtil.randomString()}
-					).put(
-						"authServerLocalNetworkAccessEnabled",
-						new String[] {"true"}
-					).build());
-
-			Assert.assertFalse(
-				_mvcActionCommand.processAction(
-					mockLiferayPortletActionRequest,
-					new MockLiferayPortletActionResponse()));
-
-			Assert.assertTrue(
-				SessionErrors.contains(
-					mockLiferayPortletActionRequest, PrincipalException.class));
-
-			IdempotentRetryAssert.retryAssert(
-				5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
-				() -> {
-					OAuthClientCompanyConfiguration
-						oAuthClientCompanyConfiguration =
-							_configurationProvider.getCompanyConfiguration(
-								OAuthClientCompanyConfiguration.class,
-								_company.getCompanyId());
-
-					Assert.assertFalse(
-						oAuthClientCompanyConfiguration.
-							authServerLocalNetworkAccessEnabled());
-
-					return null;
-				});
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
-	}
-
-	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
-			Map<String, String[]> parameters)
-		throws Exception {
-
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
+			_getMockLiferayPortletActionRequest(
+				HashMapBuilder.put(
+					"authServerHostsAllowed",
+					new String[] {RandomTestUtil.randomString()}
+				).put(
+					"authServerLocalNetworkAccessEnabled", new String[] {"true"}
+				).build());
 
-		ThemeDisplay themeDisplay = new ThemeDisplay();
+		Assert.assertFalse(
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse()));
 
-		themeDisplay.setCompany(_company);
-		themeDisplay.setPermissionChecker(
-			PermissionThreadLocal.getPermissionChecker());
-		themeDisplay.setRequest(new MockHttpServletRequest());
-		themeDisplay.setUser(TestPropsValues.getUser());
+		Assert.assertTrue(
+			SessionErrors.contains(
+				mockLiferayPortletActionRequest, PrincipalException.class));
 
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
+		IdempotentRetryAssert.retryAssert(
+			5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+			() -> {
+				OAuthClientCompanyConfiguration
+					oAuthClientCompanyConfiguration =
+						_configurationProvider.getCompanyConfiguration(
+							OAuthClientCompanyConfiguration.class,
+							_company.getCompanyId());
 
-		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
-			mockLiferayPortletActionRequest.setParameter(
-				entry.getKey(), entry.getValue());
-		}
+				Assert.assertFalse(
+					oAuthClientCompanyConfiguration.
+						authServerLocalNetworkAccessEnabled());
 
-		mockLiferayPortletActionRequest.setPortletSession(
-			new MockPortletSession());
+				return null;
+			});
 
-		return mockLiferayPortletActionRequest;
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	private Company _company;

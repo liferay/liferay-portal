@@ -46,6 +46,46 @@ public class OAuthClientEntryLocalServiceTest {
 
 	@Test
 	public void testAddOAuthClientEntry() throws Exception {
+		_testAddOAuthClientEntry();
+		_testAddOAuthClientEntryWithLocalNetworkAccessDisabled();
+	}
+
+	private OAuthClientEntry _addOAuthClientEntry(String authServerWellKnownURI)
+		throws Exception {
+
+		return _oAuthClientEntryLocalService.addOAuthClientEntry(
+			null, TestPropsValues.getUserId(),
+			JSONUtil.put(
+				"response_type", "code"
+			).put(
+				"scope", "openid email profile"
+			).toString(),
+			authServerWellKnownURI, "{}",
+			JSONUtil.put(
+				"client_id", RandomTestUtil.randomString()
+			).put(
+				"client_name", RandomTestUtil.randomString()
+			).put(
+				"client_secret", RandomTestUtil.randomString()
+			).put(
+				"grant_types",
+				JSONUtil.putAll("authorization_code", "refresh_token")
+			).put(
+				"response_types", JSONUtil.putAll("code")
+			).put(
+				"scope", "openid email profile"
+			).toString(),
+			"email", OAuthClientEntryConstants.METADATA_CACHE_TIME_DEFAULT,
+			OAuthClientEntryConstants.OIDC_USER_INFO_MAPPER_JSON,
+			OAuthClientEntryConstants.TOKEN_CONNECTION_TIMEOUT_DEFAULT,
+			JSONUtil.put(
+				"grant_type", "authorization_code"
+			).put(
+				"scope", "openid email profile"
+			).toString());
+	}
+
+	private void _testAddOAuthClientEntry() throws Exception {
 		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
 				new OpenIdConnectProviderHttpServer();
 			CompanyConfigurationTemporarySwapper
@@ -185,50 +225,17 @@ public class OAuthClientEntryLocalServiceTest {
 		}
 	}
 
-	@Test(expected = OAuthClientEntryAuthServerWellKnownURIException.class)
-	public void testAddOAuthClientEntryWithLocalNetworkAccessDisabled()
+	private void _testAddOAuthClientEntryWithLocalNetworkAccessDisabled()
 		throws Exception {
 
 		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
 				new OpenIdConnectProviderHttpServer()) {
 
-			_addOAuthClientEntry(openIdConnectProviderHttpServer.getURL());
+			Assert.assertThrows(
+				OAuthClientEntryAuthServerWellKnownURIException.class,
+				() -> _addOAuthClientEntry(
+					openIdConnectProviderHttpServer.getURL()));
 		}
-	}
-
-	private OAuthClientEntry _addOAuthClientEntry(String authServerWellKnownURI)
-		throws Exception {
-
-		return _oAuthClientEntryLocalService.addOAuthClientEntry(
-			null, TestPropsValues.getUserId(),
-			JSONUtil.put(
-				"response_type", "code"
-			).put(
-				"scope", "openid email profile"
-			).toString(),
-			authServerWellKnownURI, "{}",
-			JSONUtil.put(
-				"client_id", RandomTestUtil.randomString()
-			).put(
-				"client_name", RandomTestUtil.randomString()
-			).put(
-				"client_secret", RandomTestUtil.randomString()
-			).put(
-				"grant_types",
-				JSONUtil.putAll("authorization_code", "refresh_token")
-			).put(
-				"response_types", JSONUtil.putAll("code")
-			).put(
-				"scope", "openid email profile"
-			).toString(),
-			"email", OAuthClientEntryConstants.METADATA_CACHE_TIME_DEFAULT,
-			OAuthClientEntryConstants.OIDC_USER_INFO_MAPPER_JSON,
-			OAuthClientEntryConstants.TOKEN_CONNECTION_TIMEOUT_DEFAULT,
-			JSONUtil.put(
-				"grant_type", "authorization_code"
-			).put(
-				"scope", "openid email profile"
-			).toString());
 	}
 
 	@Inject
