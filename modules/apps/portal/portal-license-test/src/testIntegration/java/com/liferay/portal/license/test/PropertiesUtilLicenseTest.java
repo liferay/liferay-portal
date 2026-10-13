@@ -6,54 +6,20 @@
 package com.liferay.portal.license.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.license.util.App;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
  * @author Tina Tian
  */
 @RunWith(Arquillian.class)
-public class PropertiesUtilLicenseTest extends BaseLicenseTestCase {
+public class PropertiesUtilLicenseTest
+	extends BasePropertiesUtilLicenseTestCase {
 
-	@Test
-	public void test() throws Exception {
-		Field propertiesField = findField("properties.field");
-
-		Class<?> clazz = propertiesField.getDeclaringClass();
-
-		Set<String> keys = new HashSet<>();
-
-		for (Field field : clazz.getDeclaredFields()) {
-			if (!Modifier.isPublic(field.getModifiers())) {
-				continue;
-			}
-
-			String key = (String)field.get(null);
-
-			if (key.contains(".app.product.")) {
-				for (App app : App.values()) {
-					keys.add(key + StringPool.PERIOD + app.toString());
-				}
-			}
-			else {
-				keys.add(key);
-			}
-		}
-
-		Properties properties = (Properties)propertiesField.get(null);
-
-		Assert.assertEquals(keys, properties.stringPropertyNames());
+	@Override
+	protected App[] getApps() {
+		return App.values();
 	}
 
 }
