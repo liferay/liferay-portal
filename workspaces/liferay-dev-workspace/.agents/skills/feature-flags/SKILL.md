@@ -96,7 +96,7 @@ For the full table see `rules/feature-flags-catalog.md`.
 
 | Flag | Default | Unlocks |
 | --- | --- | --- |
-| `LPD-63311` | off | MCP server (current path `/o/mcp`; `/o/mcp/sse` only on 2025.Q4) |
+| `LPD-63311` | off | MCP server (current path `/o/mcp`; `/o/mcp/sse` only on 2025.Q4); on 2026.Q3, only together with the `MCPServerConfiguration` `enabled` switch, which is not a flag (see `skills/mcp-server/SKILL.md`) |
 | `LPD-39244` | off | Headless Admin Fragment / composition API |
 | `LPD-17564` | off | Object collaborators API |
 | `LPD-52006` | off | Object entry folders |

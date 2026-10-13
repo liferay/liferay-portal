@@ -1,6 +1,6 @@
 ---
 
-description: Create and configure the OAuth 2.0 application that a client extension needs to call Liferay Headless APIs, and the browser side client a fragment or widget needs to call a CET. Use when a CET of type objectAction, workflowAction, notificationType, batchEngineDataImportTaskExecutor, siteInitializer, or any backend CET requires authenticated API access, or when browser code must call a client extension with a token. Called by scaffold-client-extension automatically when the CET type requires OAuth.
+description: Create and configure the OAuth 2.0 application that a client extension needs to call Liferay Headless APIs, and the browser side client a fragment or widget needs to call a CET. Use when a CET of type objectAction, workflowAction, notificationType, siteInitializer, or any backend CET requires authenticated API access, or when browser code must call a client extension with a token. Called by scaffold-client-extension automatically when the CET type requires OAuth.
 name: setup-oauth
 
 ---
@@ -22,8 +22,8 @@ Generate the companion OAuth application entry inside `client-extension.yaml` an
 Consult `rules/oauth-scopes.md` for the full scope table. Pick the minimum set that covers what the CET calls.
 
 Examples:
-- Object action that reads and writes entries: `Liferay.Headless.Admin.User.everything`, `Liferay.Headless.Object.everything`
-- Site initializer that creates pages and content: `Liferay.Headless.Admin.Site.everything`, `Liferay.Headless.Admin.Content.everything`
+- Object action that reads and writes entries: `c_<name>.everything` for each object it calls
+- Site initializer: `Liferay.Headless.Site.everything`
 - Batch data import only: `Liferay.Headless.Batch.Engine.everything`
 
 ### Add the OAuth Application Entry to `client-extension.yaml`

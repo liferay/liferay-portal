@@ -122,4 +122,4 @@ Reference cards under `rules/` hold the data skills look up. Skills cite the car
 
 The authoritative documentation is [learn.liferay.com](https://learn.liferay.com); search `site:learn.liferay.com <topic>` to find a topic.
 
-The Liferay Portal source code at [github.com/liferay/liferay-portal](https://github.com/liferay/liferay-portal) is canonical for architectural patterns and code samples; working client extension examples live at `workspaces/liferay-sample-workspace/client-extensions/`.
+The Liferay Portal source code at [github.com/liferay/liferay-portal](https://github.com/liferay/liferay-portal) is canonical for architectural patterns and code samples; working client extension examples live at [workspaces/liferay-sample-workspace/client-extensions](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions).

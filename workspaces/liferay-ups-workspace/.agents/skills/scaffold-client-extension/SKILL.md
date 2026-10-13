@@ -128,7 +128,7 @@ client-extensions/<name>/
     .serviceScheme: http
     name: <WorkspaceId> OAuth
     scopes:
-        - Liferay.Headless.Object.everything
+        - c_<name>.everything
     type: oAuthApplicationUserAgent
 
 <workspace-id>-<name>:
@@ -172,6 +172,60 @@ server.port=8081
 liferay.oauth.application.external.reference.code=<workspace-id>-oauth
 ```
 
+#### Every Microservice Project Needs a `Dockerfile` and `LCP.json`
+
+The project templates above list only source files, but `createClientExtensionConfig` refuses a microservice project without both, even for a purely local deploy:
+
+```text
+Required file "Dockerfile" not found in project "<name>"
+Required file "LCP.json" not found in project "<name>"
+```
+
+Copy them from the matching sample on GitHub — [liferay-sample-etc-node](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-node) or [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) — and change the port in `LCP.json` to the one in `.serviceAddress`. Verified on 2026.Q1 with a Node project.
+
+#### Run a Microservice Locally
+
+Deploying registers the CET with Liferay; it does not start the service. The deploy writes the service's configuration into `bundles/routes/default/<project>` and the portal's into `bundles/routes/default/dxp`. Point the service's config loader at both, as the [samples](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions) do.
+
+**Start the service detached from the agent's session.** It has to keep running after the agent finishes or goes down — object actions keep firing at it, and anything that fires while it is down fails and is not retried. An agent's own background execution ties the process to the session, so it dies with it. Start it in a new session with `setsid nohup`, logging to the bundle's log directory (for Node, after `npm install` in the project):
+
+```bash
+WORKSPACE=$(pwd)
+
+setsid \
+	nohup \
+	env \
+	LIFERAY_ROUTES_CLIENT_EXTENSION="${WORKSPACE}/bundles/routes/default/<project>" \
+	LIFERAY_ROUTES_DXP="${WORKSPACE}/bundles/routes/default/dxp" \
+	node \
+	"${WORKSPACE}/client-extensions/<project>/app.js" \
+	> "${WORKSPACE}/bundles/logs/<project>.log" 2>&1 < /dev/null &
+```
+
+Run it from the workspace root. Stop an earlier copy first — a second one fails to bind the port and exits, leaving the old code serving:
+
+```bash
+WORKSPACE=$(pwd)
+
+pkill -f "[n]ode ${WORKSPACE}/client-extensions/<project>/app.js"
+```
+
+The `[n]` keeps the pattern from matching the shell that runs the command. Without it, `pkill` also kills that shell, because its own command line contains the pattern.
+
+Then confirm both that it answers and that it no longer belongs to the agent. Run this from the workspace root too:
+
+```bash
+WORKSPACE=$(pwd)
+
+curl \
+	--silent \
+	--url "http://localhost:<port>/ready"
+
+ps -o pid=,ppid=,sid=,args= -p "$(pgrep -d , -f "[n]ode ${WORKSPACE}/client-extensions/<project>/app.js")"
+```
+
+`READY` means it is up. `ps` prints one line per copy; more than one line means an earlier copy is still running. The process must be its own session leader — its `pid` equals its `sid` — and its parent must not be the agent's process. If either check fails, the service stops when the session does. It does not survive a reboot; restart it the same way after one.
+
 #### `siteInitializer`
 
 ```yaml
@@ -185,11 +239,7 @@ liferay.oauth.application.external.reference.code=<workspace-id>-oauth
 <workspace-id>-site-oauth:
   name: <Site Name> OAuth
   scopes:
-    - Liferay.Headless.Admin.Site.everything
-    - Liferay.Headless.Admin.Content.everything
-    - Liferay.Object.Admin.REST.everything
-    - Liferay.Headless.Object.everything
-    - Liferay.Headless.Admin.User.everything
+    - Liferay.Headless.Site.everything
   type: oAuthApplicationHeadlessServer
 ```
 
@@ -197,9 +247,19 @@ Populate `site-initializer` per `rules/site-initializer-format.md`.
 
 `siteExternalReferenceCode` uniquely identifies the site so rerunning the initializer updates it rather than creating a duplicate. Derive it from the site name in kebab-case.
 
+#### `batch`
+
+Copy [liferay-sample-batch](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-batch) from GitHub into `client-extensions/<name>`. Rename the top level keys and each `name` in `client-extension.yaml`, and replace the files in `batch/` with your own.
+
+**Keep the sample's `assemble` block.** Without it, the `batch/` directory is left out of the zip. The build succeeds, the bundle reaches `STARTED`, and nothing is imported. The signal is `assembleClientExtension NO-SOURCE` in the build output, or no `Started batch engine import task` line in the log after `STARTED`. Confirm the files made it in with `unzip -l dist/<name>.zip`. Verified on 2026.Q1.
+
+Files import in filename order, so number them so that dependencies come first. Each file is one envelope, in the shape of the sample's files. On a local bundle, the import runs inside the portal, and `Liferay.Headless.Batch.Engine.everything` alone was enough for `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
+
+A batch project needs no `Dockerfile` or `LCP.json`; the build and import succeed without them, as in the sample. Only microservice projects require them. Verified on 2026.Q1.
+
 ### Wire OAuth When Required
 
-If `rules/client-extension-types.md` shows "Yes" in the OAuth column, call `setup-oauth` to add the companion `oAuthApplicationHeadlessServer` entry. The OAuth entry must appear in the same `client-extension.yaml` file.
+If `rules/client-extension-types.md` shows "Yes" in the OAuth column, call `setup-oauth` to add the companion OAuth entry: `oAuthApplicationUserAgent` for a microservice CET, or `oAuthApplicationHeadlessServer` for a `batch` or `siteInitializer` CET (see `rules/oauth-scopes.md`). The OAuth entry must appear in the same `client-extension.yaml` file.
 
 ### Deploy and Verify
 

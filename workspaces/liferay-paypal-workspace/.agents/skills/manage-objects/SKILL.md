@@ -37,7 +37,7 @@ Gather from the user or infer from context:
 - `label` — human readable singular (e.g. `Book`)
 - `pluralLabel` — REST path safe plural (e.g. `books`)
 - `scope` — `company` (default, global) or `site`
-- `storageType` — where entries are stored: Liferay's own DB (the default) or an external source such as `salesforce` or `ext-Service` (see `integrate-external-data`). Do **not** send this on the create call for default DB storage — omit it and Liferay assigns the default (see **Create the Object Definition**).
+- `storageType` — where entries are stored: Liferay's own DB (the default) or an external source such as `salesforce` or `function#<cet-erc>` (see `integrate-external-data`). Any `storageType` sent over REST needs feature flag `LPS-135430`, which is off by default. Do **not** send this on the create call for default DB storage — omit it and Liferay assigns the default (see **Create the Object Definition**).
 - Fields list — each with `businessType`, `name`, `label`, `required`
 
 ### Create the Object Definition

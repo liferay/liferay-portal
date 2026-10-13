@@ -10,7 +10,7 @@ Defaults change between quarterly releases. Reverify against the running portal 
 
 | Key | Default | Status | Unlocks | Used By | Dependent On |
 | --- | --- | --- | --- | --- | --- |
-| `LPD-63311` | off | beta | MCP server at `/o/mcp/sse`; `call-http-endpoint` tool | `build-site`, `manage-objects` (when MCP first) | none |
+| `LPD-63311` | off | beta | MCP server at `/o/mcp` (`/o/mcp/sse` on 2025.Q4); on 2026.Q3, only together with the `MCPServerConfiguration` `enabled` switch (see `skills/mcp-server/SKILL.md`) | `build-site`, `manage-objects` (when MCP first) | none |
 | `LPD-38869` | on | deprecation | Private layout REST access | `manage-pages` (private pages) | none |
 | `LPD-39244` | off | beta | Headless Admin Fragment / page composition REST API | `manage-pages`, `scaffold-fragment` | none |
 | `LPD-74328` | off | beta | Page element / page-specification creation and update (headless-admin-site) | `manage-pages`, `build-site` | none |
@@ -18,6 +18,7 @@ Defaults change between quarterly releases. Reverify against the running portal 
 | `LPD-52006` | off | beta | Object entry folders (nested folder structure) | `manage-objects` | `LPD-17564` |
 | `LPD-32867` | off | beta | Content provider integration for dynamic content sets (headless-delivery) | (informational) | none |
 | `LPD-36010` | on | deprecation | Legacy object behavior toggle | (informational) | none |
+| `LPS-135430` | off | release | Any `storageType` on an object definition created over REST, including `function#<cet-erc>` for an `objectEntryManager` CET | `integrate-external-data`, `manage-objects` | none |
 
 ## How to Read This Table
 

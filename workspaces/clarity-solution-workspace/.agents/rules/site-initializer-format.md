@@ -290,6 +290,24 @@ The field sits on the child but is named for the **parent**, first letter lowerc
 
 Do **not** copy `"system": true` from portal internal initializers (seo-studio, ai-hub) — it makes the object or picklist nonmodifiable.
 
+### `object-entries/<name>.json`
+
+Write one file per object. `objectDefinitionName` names the object, with or without the `C_` prefix, and `object-entries` (hyphenated) holds raw `ObjectEntry` DTOs:
+
+```json
+{
+	"object-entries": [
+		{
+			"externalReferenceCode": "EVENT_LAUNCH",
+			"title": "Launch"
+		}
+	],
+	"objectDefinitionName": "Event"
+}
+```
+
+A bare JSON array fails with `A JSONObject text must begin with '{'` and rolls back the site. A misspelled key, such as `objectEntries`, is skipped silently and logs `Invoking addOrUpdateObjectEntries took 0 ms`. Entries are written inside the portal, so the initializer's OAuth scopes do not apply to them. Verified on 2026.Q1.
+
 ## `resource-permissions.json`
 
 A flat array of grants, applied by the `addOrUpdateResourcePermissions` handler. This is how an object becomes visible to Guest — required before an object backed Collection renders anything on a public page.
@@ -611,12 +629,7 @@ Use the `settings` block to switch off the stock theme chrome when a master page
     .serviceScheme: http
     name: <WorkspaceId> Site OAuth
     scopes:
-        - Liferay.Headless.Admin.Site.everything
-        - Liferay.Headless.Admin.Content.everything
-        - Liferay.Object.Admin.REST.everything
-        - Liferay.Headless.Object.everything
-        - Liferay.Headless.Admin.User.everything
-        - Liferay.Headless.Batch.Engine.everything
+        - Liferay.Headless.Site.everything
     type: oAuthApplicationHeadlessServer
 ```
 
@@ -645,7 +658,7 @@ The current `Site` DTO uses `templateKey` (not `templateExternalReferenceCode`);
 
 ## References
 
-- Sample site initializer: `workspaces/liferay-sample-workspace/client-extensions/liferay-sample-site-initializer`
-- Production site initializer: `modules/apps/site-initializer/site-initializer-cms`
+- Sample site initializer: [liferay-sample-site-initializer](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-site-initializer)
+- Production site initializer: [site-initializer-cms](https://github.com/liferay/liferay-portal/tree/master/modules/apps/site-initializer/site-initializer-cms)
 - CET type details: `rules/client-extension-types.md`
 - OAuth scopes: `rules/oauth-scopes.md`
