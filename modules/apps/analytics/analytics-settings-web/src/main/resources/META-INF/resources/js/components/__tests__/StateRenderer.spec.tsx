@@ -20,7 +20,7 @@ describe('State Renderer', () => {
 					<EmptyStateComponent
 						className="empty-state-border"
 						description="this is a description"
-						imgSrc=""
+						symbol="empty-state"
 						title="this is a title"
 					/>
 				</StateRenderer.Empty>
@@ -40,7 +40,7 @@ describe('State Renderer', () => {
 		const {container} = render(
 			<StateRenderer empty={false} error={false} loading>
 				<StateRenderer.Empty>
-					<EmptyStateComponent imgSrc="" />
+					<EmptyStateComponent />
 				</StateRenderer.Empty>
 			</StateRenderer>
 		);
