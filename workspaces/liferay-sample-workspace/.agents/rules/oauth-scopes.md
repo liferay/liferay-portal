@@ -1,3 +1,10 @@
+---
+
+paths:
+  - "**/client-extension.yaml"
+
+---
+
 # OAuth Scopes (CET Scaffolding Reference)
 
 > **Before authoring:** Load `setup-oauth` when a CET needs a companion OAuth entry, or `scaffold-client-extension` when generating the whole project.
