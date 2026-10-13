@@ -642,31 +642,30 @@ public class JenkinsResultsParserUtilTest
 
 	@Test(timeout = 30000)
 	public void testGetThreadDumpTruncatedStack() throws Exception {
-		String deepStackThreadName = "deep-stack";
+		String threadName = "deep-stack";
 
 		CountDownLatch deepStackLatch = new CountDownLatch(1);
 		CountDownLatch holdLatch = new CountDownLatch(1);
 
-		Thread deepStackThread = new Thread(
-			() -> _buildDeepStack(deepStackLatch, 60, holdLatch),
-			deepStackThreadName);
+		Thread thread = new Thread(
+			() -> _buildDeepStack(deepStackLatch, 60, holdLatch), threadName);
 
-		deepStackThread.setDaemon(true);
+		thread.setDaemon(true);
 
 		try {
-			deepStackThread.start();
+			thread.start();
 
 			deepStackLatch.await();
 
-			String deepStackEntry = _getThreadDumpEntry(
-				JenkinsResultsParserUtil.getThreadDump(), deepStackThreadName);
+			String threadDumpEntry = _getThreadDumpEntry(
+				JenkinsResultsParserUtil.getThreadDump(), threadName);
 
-			Assert.assertTrue(deepStackEntry.contains("\t..."));
+			Assert.assertTrue(threadDumpEntry.contains("\t..."));
 		}
 		finally {
 			holdLatch.countDown();
 
-			deepStackThread.join();
+			thread.join();
 		}
 	}
 
