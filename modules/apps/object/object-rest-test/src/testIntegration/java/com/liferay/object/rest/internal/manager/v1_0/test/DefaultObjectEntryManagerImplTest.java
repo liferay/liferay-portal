@@ -2534,7 +2534,7 @@ public class DefaultObjectEntryManagerImplTest
 				new ObjectEntry() {
 					{
 						properties = HashMapBuilder.<String, Object>put(
-							"dateTimeUTCObjectFieldName", localDateTime
+							"dateTimeUTCObjectFieldName", localDateTimeString
 						).build();
 					}
 				},
