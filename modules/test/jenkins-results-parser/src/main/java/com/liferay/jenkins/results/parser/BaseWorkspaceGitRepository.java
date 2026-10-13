@@ -315,7 +315,13 @@ public abstract class BaseWorkspaceGitRepository
 			PullRequest pullRequest = PullRequestFactory.newPullRequest(
 				gitHubURL);
 
-			_upstreamRemoteGitRef = pullRequest.getUpstreamRemoteGitBranch();
+			if (_isUsePullRequestBaseRepository()) {
+				_upstreamRemoteGitRef = pullRequest.getBaseRemoteGitBranch();
+			}
+			else {
+				_upstreamRemoteGitRef =
+					pullRequest.getUpstreamRemoteGitBranch();
+			}
 
 			_setBaseBranchHeadSHA(_upstreamRemoteGitRef.getSHA());
 			setBaseBranchSHA(_upstreamRemoteGitRef.getSHA());
@@ -401,6 +407,13 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		setSetUp(true);
+	}
+
+	@Override
+	public void setUsePullRequestBaseRepository(
+		boolean usePullRequestBaseRepository) {
+
+		put("use_pull_request_base_repository", usePullRequestBaseRepository);
 	}
 
 	@Override
@@ -1170,14 +1183,20 @@ public abstract class BaseWorkspaceGitRepository
 		gitWorkingDirectory.createLocalGitBranch(
 			upstreamBranchName, true, baseBranchSHA);
 
-		RemoteGitRef upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
+		String upstreamRemoteURL = null;
+
+		if (_isUsePullRequestBaseRepository()) {
+			RemoteGitRef upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
+
+			upstreamRemoteURL = upstreamRemoteGitRef.getRemoteURL();
+		}
 
 		return gitWorkingDirectory.getRebasedLocalGitBranch(
 			getBranchName(), getSenderBranchName(),
 			JenkinsResultsParserUtil.combine(
 				"git@github.com:", getSenderBranchUsername(), "/", getName()),
 			senderBranchSHA, upstreamBranchName, baseBranchSHA,
-			upstreamRemoteGitRef.getRemoteURL());
+			upstreamRemoteURL);
 	}
 
 	private LocalGitBranch _createRemoteGitRefLocalGitBranch() {
@@ -1394,12 +1413,21 @@ public abstract class BaseWorkspaceGitRepository
 		String name = getName();
 		String upstreamBranchName = getUpstreamBranchName();
 
+		String upstreamUsername = JenkinsResultsParserUtil.getUpstreamUserName(
+			name, upstreamBranchName);
+
+		String baseBranchUsername = optString("base_branch_username");
+
+		if (_isUsePullRequestBaseRepository() &&
+			!JenkinsResultsParserUtil.isNullOrEmpty(baseBranchUsername)) {
+
+			upstreamUsername = baseBranchUsername;
+		}
+
 		_upstreamRemoteGitRef = GitUtil.getRemoteGitRef(
 			JenkinsResultsParserUtil.combine(
-				"https://github.com/",
-				JenkinsResultsParserUtil.getUpstreamUserName(
-					name, upstreamBranchName),
-				"/", name, "/tree/", upstreamBranchName));
+				"https://github.com/", upstreamUsername, "/", name, "/tree/",
+				upstreamBranchName));
 
 		return _upstreamRemoteGitRef;
 	}
@@ -1473,6 +1501,10 @@ public abstract class BaseWorkspaceGitRepository
 
 	private boolean _isPullRequest() {
 		return PullRequest.isValidGitHubPullRequestURL(getGitHubURL());
+	}
+
+	private boolean _isUsePullRequestBaseRepository() {
+		return getBoolean("use_pull_request_base_repository");
 	}
 
 	private void _setBaseBranchHeadSHA(String branchSHA) {

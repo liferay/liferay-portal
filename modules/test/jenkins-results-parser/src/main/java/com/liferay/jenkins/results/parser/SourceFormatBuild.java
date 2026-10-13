@@ -187,6 +187,8 @@ public class SourceFormatBuild
 		WorkspaceGitRepository workspaceGitRepository =
 			workspace.getPrimaryWorkspaceGitRepository();
 
+		workspaceGitRepository.setUsePullRequestBaseRepository(true);
+
 		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
 
 		String senderBranchSHA = getParameterValue("GITHUB_SENDER_BRANCH_SHA");

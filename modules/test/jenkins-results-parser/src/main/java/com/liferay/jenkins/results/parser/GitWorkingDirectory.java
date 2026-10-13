@@ -157,22 +157,13 @@ public class GitWorkingDirectory {
 			RemoteGitRef senderRemoteGitRef =
 				branchInformation.getSenderRemoteGitRef();
 
-			String upstreamRemoteURL = null;
-
-			String receiverUsername = branchInformation.getReceiverUsername();
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(receiverUsername)) {
-				upstreamRemoteURL = GitUtil.getUserRemoteURL(
-					branchInformation.getRepositoryName(), receiverUsername);
-			}
-
 			localGitBranch = getRebasedLocalGitBranch(
 				localGitBranch.getName(),
 				branchInformation.getSenderBranchName(),
 				senderRemoteGitRef.getRemoteURL(),
 				branchInformation.getSenderBranchSHA(),
 				branchInformation.getUpstreamBranchName(),
-				branchInformation.getUpstreamBranchSHA(), upstreamRemoteURL);
+				branchInformation.getUpstreamBranchSHA());
 		}
 
 		checkoutLocalGitBranch(localGitBranch);
@@ -1934,16 +1925,12 @@ public class GitWorkingDirectory {
 	}
 
 	public LocalGitBranch getRebasedLocalGitBranch(PullRequest pullRequest) {
-		RemoteGitBranch upstreamRemoteGitBranch =
-			pullRequest.getUpstreamRemoteGitBranch();
-
 		return getRebasedLocalGitBranch(
 			pullRequest.getLocalSenderBranchName(),
 			pullRequest.getSenderBranchName(), pullRequest.getSenderRemoteURL(),
 			pullRequest.getSenderSHA(),
 			pullRequest.getUpstreamRemoteGitBranchName(),
-			pullRequest.getUpstreamBranchSHA(),
-			upstreamRemoteGitBranch.getRemoteURL());
+			pullRequest.getUpstreamBranchSHA());
 	}
 
 	public LocalGitBranch getRebasedLocalGitBranch(
@@ -1962,9 +1949,9 @@ public class GitWorkingDirectory {
 		String upstreamBranchSHA, String upstreamRemoteURL) {
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(upstreamRemoteURL)) {
-			GitRemote upstreamGitRemote = getUpstreamGitRemote();
+			GitRemote gitRemote = getUpstreamGitRemote();
 
-			upstreamRemoteURL = upstreamGitRemote.getRemoteURL();
+			upstreamRemoteURL = gitRemote.getRemoteURL();
 		}
 
 		String currentBranchName = getCurrentBranchName();

@@ -1083,10 +1083,7 @@ public class GitHubDevSyncUtil {
 					gitWorkingDirectory.getRebasedLocalGitBranch(
 						cacheBranchName, senderBranchName,
 						senderGitRemote.getRemoteURL(), senderBranchSHA,
-						upstreamBranchName, upstreamBranchSHA,
-						GitUtil.getUserRemoteURL(
-							gitWorkingDirectory.getGitRepositoryName(),
-							receiverUsername));
+						upstreamBranchName, upstreamBranchSHA);
 
 				cacheBranches(
 					gitWorkingDirectory, cacheLocalGitBranch,
