@@ -453,6 +453,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		_testPostAccountWithLogo();
 		_testPostAccountWithMoreExternalReferenceCodes();
 		_testPostAccountWithPostalAddressPhoneNumber();
+		_testPostAccountWithType();
+		_testPostAccountWithoutType();
 	}
 
 	@Override
@@ -2793,6 +2795,26 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		Assert.assertEquals(
 			postalAddress.getPhoneNumber(), address.getPhoneNumber());
+	}
+
+	private void _testPostAccountWithType() throws Exception {
+		Account randomAccount = randomAccount();
+
+		randomAccount.setType(Account.Type.PERSON);
+
+		Account postAccount = _postAccount(randomAccount);
+
+		Assert.assertEquals(Account.Type.PERSON, postAccount.getType());
+	}
+
+	private void _testPostAccountWithoutType() throws Exception {
+		Account randomAccount = randomAccount();
+
+		randomAccount.setType(() -> null);
+
+		Account postAccount = _postAccount(randomAccount);
+
+		Assert.assertEquals(Account.Type.BUSINESS, postAccount.getType());
 	}
 
 	private void _testPostOrganizationAccounts() throws Exception {
