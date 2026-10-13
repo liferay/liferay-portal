@@ -73,6 +73,7 @@ public class ExpressionConvertTest {
 
 	@Test
 	public void testConvert() throws Exception {
+		_testContainsWithLiteral();
 		_testContainsWithQuestionMark();
 		_testContainsWithStar();
 		_testStartsWithLiteral();
@@ -131,6 +132,12 @@ public class ExpressionConvertTest {
 		}
 
 		return titles;
+	}
+
+	private void _testContainsWithLiteral() throws Exception {
+		Assert.assertEquals(
+			Collections.singletonList("n45alpha9omega"),
+			_search("contains(title,'alpha9')"));
 	}
 
 	private void _testContainsWithQuestionMark() throws Exception {
