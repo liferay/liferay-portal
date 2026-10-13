@@ -5,6 +5,7 @@
 
 import {Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import {useScreenReaderAnnounce} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import React, {Dispatch, Fragment, useMemo, useRef, useState} from 'react';
@@ -507,7 +508,13 @@ function ConditionsEmptyState({
 					description={Liferay.Language.get(
 						'to-create-a-new-audience-drag-items-from-the-sidebar-and-drop-them-here'
 					)}
-					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+					image={
+						<ClayIcon
+							className="c-empty-state-icon c-empty-state-icon-empty-state"
+							illustration
+							symbol="empty-state"
+						/>
+					}
 					title={Liferay.Language.get('no-criteria-yet')}
 				/>
 			)}

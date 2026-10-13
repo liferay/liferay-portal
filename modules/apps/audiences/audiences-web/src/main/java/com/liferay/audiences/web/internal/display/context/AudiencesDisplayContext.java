@@ -60,7 +60,7 @@ public class AudiencesDisplayContext {
 				_themeDisplay.getLocale(),
 				"click-new-to-create-your-first-audience")
 		).put(
-			"image", "/states/empty_state.svg"
+			"symbol", "empty-state"
 		).put(
 			"title",
 			LanguageUtil.get(_themeDisplay.getLocale(), "no-audiences-yet")

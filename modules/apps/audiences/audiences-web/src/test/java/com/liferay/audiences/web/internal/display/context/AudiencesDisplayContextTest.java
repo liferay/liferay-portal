@@ -81,7 +81,7 @@ public class AudiencesDisplayContextTest {
 		Assert.assertEquals(
 			"click-new-to-create-your-first-audience",
 			emptyState.get("description"));
-		Assert.assertEquals("/states/empty_state.svg", emptyState.get("image"));
+		Assert.assertEquals("empty-state", emptyState.get("symbol"));
 		Assert.assertEquals("no-audiences-yet", emptyState.get("title"));
 	}
 
