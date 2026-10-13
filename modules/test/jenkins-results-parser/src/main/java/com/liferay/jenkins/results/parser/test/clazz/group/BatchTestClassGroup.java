@@ -328,6 +328,11 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		return GroupingStrategy.getByString(jobPropertyValue);
 	}
 
+	@Override
+	public Job getJob() {
+		return portalTestClassJob;
+	}
+
 	public JSONObject getJSONObject() {
 		if (jsonObject != null) {
 			return jsonObject;
@@ -369,11 +374,6 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		);
 
 		return jsonObject;
-	}
-
-	@Override
-	public Job getJob() {
-		return portalTestClassJob;
 	}
 
 	public Integer getMaximumSlavesPerHost() {
@@ -1461,6 +1461,22 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 						null);
 
 				if (downstreamBuildReport == null) {
+					continue;
+				}
+
+				String axisName = downstreamBuildReport.getAxisName();
+
+				if ((axisName != null) &&
+					!Objects.equals(
+						getBatchName(),
+						axisName.replaceAll("([^/]+)/.*", "$1"))) {
+
+					System.out.println(
+						JenkinsResultsParserUtil.combine(
+							"Ignoring cached build report for axis \"",
+							axisName, "\" because it is not from batch \"",
+							getBatchName(), "\""));
+
 					continue;
 				}
 
