@@ -75,7 +75,7 @@ const AccountInfo: React.FC<IAccountInfoProps> = ({
 			return undefined;
 		}
 		if (key === 'annualRevenue') {
-			return account.annualRevenue !== undefined
+			return account.annualRevenue
 				? toThousands(account.annualRevenue)
 				: undefined;
 		}
