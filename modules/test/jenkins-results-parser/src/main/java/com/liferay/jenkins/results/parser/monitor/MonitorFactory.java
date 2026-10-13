@@ -16,6 +16,10 @@ public class MonitorFactory {
 		String type = monitorConfig.getType();
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(type)) {
+			if (type.equals("controller-result")) {
+				return new ControllerResultMonitor(monitorConfig);
+			}
+
 			if (type.equals("external-status")) {
 				return new ExternalStatusMonitor(monitorConfig);
 			}
