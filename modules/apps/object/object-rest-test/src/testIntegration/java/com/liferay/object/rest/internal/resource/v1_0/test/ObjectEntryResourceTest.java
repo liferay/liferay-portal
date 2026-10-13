@@ -19636,6 +19636,9 @@ public class ObjectEntryResourceTest {
 				companyConfigurationTemporarySwapper = _swapObjectConfiguration(
 					new String[0], true)) {
 
+			// Documents and media source, file from local URL with local
+			// network access enabled
+
 			_testPatchPutCustomObjectEntryWithAttachmentField(
 				fileEntry -> JSONUtil.put(
 					_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
@@ -20689,6 +20692,9 @@ public class ObjectEntryResourceTest {
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper = _swapObjectConfiguration(
 					new String[0], true)) {
+
+			// Documents and media source, file from local URL with local
+			// network access enabled
 
 			_testPostCustomObjectEntryWithAttachmentObjectField(
 				fileEntry -> JSONUtil.put(
