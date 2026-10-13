@@ -41,29 +41,24 @@ public class ViewOAuthClientCompanyConfigurationMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		if (!permissionChecker.isCompanyAdmin(themeDisplay.getCompanyId())) {
+			SessionErrors.add(renderRequest, PrincipalException.class);
+
+			return "/admin/error.jsp";
+		}
+
 		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-			PermissionChecker permissionChecker =
-				themeDisplay.getPermissionChecker();
-
-			if (!permissionChecker.isCompanyAdmin(
-					themeDisplay.getCompanyId())) {
-
-				throw new PrincipalException();
-			}
-
 			renderRequest.setAttribute(
 				OAuthClientCompanyConfiguration.class.getName(),
 				_configurationProvider.getCompanyConfiguration(
 					OAuthClientCompanyConfiguration.class,
 					themeDisplay.getCompanyId()));
-		}
-		catch (PrincipalException principalException) {
-			SessionErrors.add(renderRequest, principalException.getClass());
-
-			return "/admin/error.jsp";
 		}
 		catch (PortalException portalException) {
 			throw new PortletException(portalException);

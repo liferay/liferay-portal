@@ -8,7 +8,6 @@
 <%@ include file="/init.jsp" %>
 
 <%
-boolean companyAdmin = permissionChecker.isCompanyAdmin();
 String navigation = ParamUtil.getString(request, "navigation", "oauth-clients");
 %>
 
@@ -67,7 +66,9 @@ String navigation = ParamUtil.getString(request, "navigation", "oauth-clients");
 						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "oauth-client-pr-local-metadata"));
 					});
 
-				if (companyAdmin) {
+				if (themeDisplay.getPermissionChecker(
+					).isCompanyAdmin()) {
+
 					add(
 						navigationItem -> {
 							navigationItem.setActive(navigation.equals("oauth-client-company-configuration"));
@@ -100,7 +101,7 @@ String navigation = ParamUtil.getString(request, "navigation", "oauth-clients");
 	<c:when test='<%= navigation.equals("oauth-client-pr-local-metadata") %>'>
 		<liferay-util:include page="/admin/view_oauth_client_pr_local_metadata.jsp" servletContext="<%= application %>" />
 	</c:when>
-	<c:when test='<%= companyAdmin && navigation.equals("oauth-client-company-configuration") %>'>
+	<c:when test='<%= permissionChecker.isCompanyAdmin() && navigation.equals("oauth-client-company-configuration") %>'>
 		<liferay-util:include page="/admin/view_oauth_client_company_configuration.jsp" servletContext="<%= application %>" />
 	</c:when>
 </c:choose>
