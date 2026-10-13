@@ -1123,10 +1123,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 		JSONArray filtersJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
-				"classNameId",
-				_portal.getClassNameId(_objectDefinition.getClassName())
-			).put(
-				"classTypeId", _objectDefinition.getObjectDefinitionId()
+				"objectDefinitionExternalReferenceCode",
+				_objectDefinition.getExternalReferenceCode()
 			).put(
 				"operatorName", "contains"
 			).put(
@@ -1135,10 +1133,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 				"value", value
 			),
 			JSONUtil.put(
-				"classNameId",
-				_portal.getClassNameId(_objectDefinition.getClassName())
-			).put(
-				"classTypeId", _objectDefinition.getObjectDefinitionId()
+				"objectDefinitionExternalReferenceCode",
+				_objectDefinition.getExternalReferenceCode()
 			).put(
 				"operatorName", "eq"
 			).put(
@@ -1164,8 +1160,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 		JSONObject jsonObject = actualJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			_portal.getClassNameId(_objectDefinition.getClassName()),
-			jsonObject.getLong("classNameId"));
+			_objectDefinition.getExternalReferenceCode(),
+			jsonObject.getString("objectDefinitionExternalReferenceCode"));
 		Assert.assertEquals(propertyName, jsonObject.getString("propertyName"));
 		Assert.assertEquals(value, jsonObject.getString("value"));
 	}
@@ -1376,10 +1372,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 		String operatorName, String propertyName, Object value) {
 
 		return JSONUtil.put(
-			"classNameId",
-			_portal.getClassNameId(_objectDefinition.getClassName())
-		).put(
-			"classTypeId", _objectDefinition.getObjectDefinitionId()
+			"objectDefinitionExternalReferenceCode",
+			_objectDefinition.getExternalReferenceCode()
 		).put(
 			"operatorName", operatorName
 		).put(
@@ -1427,10 +1421,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 		String propertyName, String quantifier, String... keys) {
 
 		return JSONUtil.put(
-			"classNameId",
-			_portal.getClassNameId(_objectDefinition.getClassName())
-		).put(
-			"classTypeId", _objectDefinition.getObjectDefinitionId()
+			"objectDefinitionExternalReferenceCode",
+			_objectDefinition.getExternalReferenceCode()
 		).put(
 			"operatorName", "contains"
 		).put(
