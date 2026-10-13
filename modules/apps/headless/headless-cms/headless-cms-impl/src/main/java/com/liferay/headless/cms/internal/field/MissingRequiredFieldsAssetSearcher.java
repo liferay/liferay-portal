@@ -5,7 +5,11 @@
 
 package com.liferay.headless.cms.internal.field;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.query.BooleanQuery;
@@ -15,6 +19,7 @@ import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 /**
  * @author Mikel Lorza
@@ -38,6 +43,49 @@ public class MissingRequiredFieldsAssetSearcher {
 			).build());
 
 		return searchResponse.getCount();
+	}
+
+	public SearchResponse search(
+		long companyId, Long[] groupIds, String languageId,
+		Pagination pagination, String search, Sort[] sorts) {
+
+		SearchRequestBuilder searchRequestBuilder = _getSearchRequestBuilder(
+			companyId, groupIds);
+
+		int startPosition = Math.min(
+			pagination.getStartPosition(), _MAX_RESULT_WINDOW);
+
+		if ((pagination.getStartPosition() >= _MAX_RESULT_WINDOW) &&
+			_log.isWarnEnabled()) {
+
+			_log.warn(
+				StringBundler.concat(
+					"Requested start position ", pagination.getStartPosition(),
+					" reaches the maximum result window ", _MAX_RESULT_WINDOW,
+					", so the page is empty"));
+		}
+
+		searchRequestBuilder.addSelectedFieldNames(
+			Field.ENTRY_CLASS_PK, "missingRequiredFieldsCount",
+			"objectDefinitionId", "objectEntryTitle",
+			Field.getLocalizedName(languageId, "objectEntryTitle")
+		).from(
+			startPosition
+		).size(
+			Math.min(
+				pagination.getPageSize(), _MAX_RESULT_WINDOW - startPosition)
+		);
+
+		if (ArrayUtil.isNotEmpty(sorts)) {
+			searchRequestBuilder.withSearchContext(
+				searchContext -> searchContext.setSorts(sorts));
+		}
+
+		if (search != null) {
+			searchRequestBuilder.queryString(search);
+		}
+
+		return _searcher.search(searchRequestBuilder.build());
 	}
 
 	private SearchRequestBuilder _getSearchRequestBuilder(
@@ -67,6 +115,11 @@ public class MissingRequiredFieldsAssetSearcher {
 				Field.STATUS, WorkflowConstants.STATUS_ANY)
 		);
 	}
+
+	private static final int _MAX_RESULT_WINDOW = 10000;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		MissingRequiredFieldsAssetSearcher.class);
 
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final Searcher _searcher;
