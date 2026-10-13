@@ -145,15 +145,6 @@ public class NotificationRecipientSettingLocalServiceImpl
 	}
 
 	@Override
-	public List<NotificationRecipientSetting>
-		createNotificationRecipientSettings(
-			long notificationRecipientId, Object[] recipients, User user) {
-
-		return createNotificationRecipientSettings(
-			notificationRecipientId, null, recipients, user);
-	}
-
-	@Override
 	public NotificationRecipientSetting fetchNotificationRecipientSetting(
 		long notificationRecipientId, String name) {
 

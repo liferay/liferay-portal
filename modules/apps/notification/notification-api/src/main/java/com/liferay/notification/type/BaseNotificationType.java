@@ -98,7 +98,7 @@ public abstract class BaseNotificationType implements NotificationType {
 
 		return notificationRecipientSettingLocalService.
 			createNotificationRecipientSettings(
-				notificationRecipientId, recipients, user);
+				notificationRecipientId, null, recipients, user);
 	}
 
 	@Override

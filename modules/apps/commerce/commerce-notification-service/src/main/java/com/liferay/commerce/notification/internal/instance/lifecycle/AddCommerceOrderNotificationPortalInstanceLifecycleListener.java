@@ -120,7 +120,7 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 		notificationContext.setNotificationRecipientSettings(
 			_notificationRecipientSettingLocalService.
 				createNotificationRecipientSettings(
-					0L, notificationTemplate.getRecipients(), user));
+					0L, null, notificationTemplate.getRecipients(), user));
 		notificationContext.setNotificationTemplate(
 			NotificationUtil.toNotificationTemplate(
 				0L, notificationTemplate, _objectDefinitionLocalService, user));

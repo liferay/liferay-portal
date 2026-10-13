@@ -50,7 +50,7 @@ public class NotificationRecipientSettingLocalServiceTest {
 		List<NotificationRecipientSetting> notificationRecipientSettings =
 			_notificationRecipientSettingLocalService.
 				createNotificationRecipientSettings(
-					0L,
+					0L, null,
 					new Object[] {
 						HashMapBuilder.<String, Object>put(
 							NotificationRecipientSettingConstants.NAME_FROM,
@@ -93,7 +93,7 @@ public class NotificationRecipientSettingLocalServiceTest {
 		List<NotificationRecipientSetting> notificationRecipientSettings =
 			_notificationRecipientSettingLocalService.
 				createNotificationRecipientSettings(
-					0L,
+					0L, null,
 					new Object[] {
 						HashMapBuilder.<String, Object>put(
 							NotificationRecipientSettingConstants.NAME_TO,
