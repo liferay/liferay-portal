@@ -104,7 +104,7 @@ export default function InteractiveCard({
 				</Text>
 			) : null}
 
-			<div className="mt-2">
+			<div className="mt-auto pt-2">
 				<div className="cms-dashboard__interactive-card__metric d-flex flex-column justify-content-center">
 					{loading ? (
 						<ClayLoadingIndicator className="my-3" size="sm" />
