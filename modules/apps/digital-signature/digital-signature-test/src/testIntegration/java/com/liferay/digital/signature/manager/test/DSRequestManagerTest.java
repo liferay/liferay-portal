@@ -362,6 +362,41 @@ public class DSRequestManagerTest {
 	}
 
 	@Test
+	public void testGetLatestFileEntryDSRequests() throws Exception {
+		long fileEntryId1 = RandomTestUtil.randomInt();
+		long fileEntryId2 = RandomTestUtil.randomInt();
+
+		DSRequest dsRequest1 = _addDSRequestWithoutValidation(
+			_createDSEnvelope(), TestPropsValues.getUserId(), fileEntryId1,
+			fileEntryId2);
+		DSRequest dsRequest2 = _addDSRequestWithoutValidation(
+			_createDSEnvelope(), TestPropsValues.getUserId(), fileEntryId2);
+
+		Map<Long, DSRequest> dsRequests =
+			_dsRequestManager.getLatestFileEntryDSRequests(
+				TestPropsValues.getCompanyId(),
+				new long[] {fileEntryId1, fileEntryId2});
+
+		Assert.assertEquals(dsRequests.toString(), 2, dsRequests.size());
+
+		DSRequest dsRequest3 = dsRequests.get(fileEntryId1);
+
+		Assert.assertEquals(
+			dsRequest1.getDSRequestId(), dsRequest3.getDSRequestId());
+
+		DSRequest dsRequest4 = dsRequests.get(fileEntryId2);
+
+		Assert.assertEquals(
+			dsRequest2.getDSRequestId(), dsRequest4.getDSRequestId());
+
+		dsRequests = _dsRequestManager.getLatestFileEntryDSRequests(
+			TestPropsValues.getCompanyId(),
+			new long[] {RandomTestUtil.randomLong()});
+
+		Assert.assertTrue(dsRequests.isEmpty());
+	}
+
+	@Test
 	public void testHasPermission() throws Exception {
 		User user1 = UserTestUtil.addUser();
 
@@ -512,6 +547,85 @@ public class DSRequestManagerTest {
 		_testUpdateDSRequestWithDSRequestDocumentObjectEntry();
 		_testUpdateDSRequestWithInvalidSignedDocument();
 		_testUpdateDSRequestWithWorkflowFolder();
+	}
+
+	@Test
+	public void testVoidDSRequest() throws Exception {
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			_createDSEnvelope(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						DigitalSignatureConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"embeddedViewEnabled", false
+						).put(
+							"enabled", true
+						).put(
+							"siteSettingsStrategy", "always-inherit"
+						).build())) {
+
+			AssertUtils.assertFailure(
+				DSRequestException.MustHaveEmbeddedViewEnabled.class,
+				"Digital signature with embedded view is not enabled for " +
+					"group " + TestPropsValues.getGroupId(),
+				() -> _dsRequestManager.voidDSRequest(
+					dsRequest.getDSRequestId(), RandomTestUtil.randomString()));
+		}
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-69290")) {
+
+			AssertUtils.assertFailure(
+				DSRequestException.MustHaveEmbeddedViewEnabled.class,
+				"Digital signature with embedded view is not enabled for " +
+					"group " + TestPropsValues.getGroupId(),
+				() -> _dsRequestManager.voidDSRequest(
+					dsRequest.getDSRequestId(), RandomTestUtil.randomString()));
+
+			Assert.assertEquals(
+				0,
+				_dsRequestManager.getGroupDSRequestsCount(
+					TestPropsValues.getCompanyId(),
+					TestPropsValues.getGroupId(), null));
+		}
+
+		DSEnvelope dsEnvelope = _createDSEnvelope();
+
+		dsEnvelope.setStatus(DSRequestConstants.STATUS_VOIDED);
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> {
+						if (Objects.equals(method.getName(), "getDSEnvelope")) {
+							return dsEnvelope;
+						}
+
+						return null;
+					}));
+
+		try {
+			_dsRequestManager.voidDSRequest(
+				dsRequest.getDSRequestId(), RandomTestUtil.randomString());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		DSRequest voidedDSRequest = _dsRequestManager.fetchDSRequest(
+			TestPropsValues.getCompanyId(), dsRequest.getDSRequestId());
+
+		Assert.assertEquals(
+			DSRequestConstants.STATUS_VOIDED, voidedDSRequest.getStatus());
 	}
 
 	private DSRequest _addDSRequest(DSEnvelope dsEnvelope, FileEntry fileEntry)
