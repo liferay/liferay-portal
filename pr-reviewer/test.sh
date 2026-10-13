@@ -153,4 +153,4 @@ function _test_salvage_violations {
 _TESTS_FAILED=0
 _TESTS_RUN=0
 
-main "${@}"
+main ${@+"${@}"}

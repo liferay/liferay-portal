@@ -96,7 +96,7 @@ function main {
 
 	local work_dir
 
-	work_dir=$(mktemp --directory)
+	work_dir=$(mktemp -d)
 
 	trap "rm -fr ${work_dir}" EXIT
 
