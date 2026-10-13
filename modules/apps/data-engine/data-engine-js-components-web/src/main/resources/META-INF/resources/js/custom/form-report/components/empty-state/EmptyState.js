@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 export default function EmptyState({
@@ -15,7 +16,13 @@ export default function EmptyState({
 	return (
 		<ClayEmptyState
 			description={description}
-			imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-empty-state"
+					illustration
+					symbol="empty-state"
+				/>
+			}
 			title={title}
 		/>
 	);

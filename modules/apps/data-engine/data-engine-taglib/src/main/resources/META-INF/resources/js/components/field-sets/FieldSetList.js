@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {
 	DRAG_TYPES,
@@ -218,7 +219,13 @@ export default function FieldSetList({searchTerm}) {
 							description={Liferay.Language.get(
 								'an-unexpected-error-occurred'
 							)}
-							imgSrc={`${themeDisplay.getPathThemeImages()}/states/search_state.svg`}
+							image={
+								<ClayIcon
+									className="c-empty-state-icon c-empty-state-icon-search-state"
+									illustration
+									symbol="search-state"
+								/>
+							}
 							small
 							title={Liferay.Language.get(
 								'unable-to-load-content'
@@ -232,7 +239,13 @@ export default function FieldSetList({searchTerm}) {
 								),
 								[trimmedSearchTerm]
 							)}
-							imgSrc={`${themeDisplay.getPathThemeImages()}/states/search_state.svg`}
+							image={
+								<ClayIcon
+									className="c-empty-state-icon c-empty-state-icon-search-state"
+									illustration
+									symbol="search-state"
+								/>
+							}
 							small
 							title={Liferay.Language.get('no-results-found')}
 						/>
@@ -241,7 +254,13 @@ export default function FieldSetList({searchTerm}) {
 							description={Liferay.Language.get(
 								'there-are-no-fieldsets-description'
 							)}
-							imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+							image={
+								<ClayIcon
+									className="c-empty-state-icon c-empty-state-icon-empty-state"
+									illustration
+									symbol="empty-state"
+								/>
+							}
 							small
 							title={Liferay.Language.get(
 								'there-are-no-fieldsets'

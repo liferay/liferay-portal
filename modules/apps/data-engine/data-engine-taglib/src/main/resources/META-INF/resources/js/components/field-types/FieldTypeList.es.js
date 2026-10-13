@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {
 	EVENT_TYPES as CORE_EVENT_TYPES,
@@ -136,7 +137,13 @@ const FieldTypeList = ({
 					Liferay.Language.get('there-are-no-results-for-x'),
 					[keywords]
 				)}
-				imgSrc={`${themeDisplay.getPathThemeImages()}/states/search_state.svg`}
+				image={
+					<ClayIcon
+						className="c-empty-state-icon c-empty-state-icon-search-state"
+						illustration
+						symbol="search-state"
+					/>
+				}
 				small
 				title={Liferay.Language.get('no-results-found')}
 			/>

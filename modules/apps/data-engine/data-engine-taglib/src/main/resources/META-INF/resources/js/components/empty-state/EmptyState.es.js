@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import {sub} from '../../utils/lang.es';
@@ -32,15 +33,18 @@ const EmptyState = ({emptyState, keywords = '', small = false}) => {
 	};
 
 	const isSearch = keywords !== '';
+	const symbol = isSearch ? 'search-state' : 'empty-state';
 	const {button, description, title} = isSearch ? search : emptyState;
 
 	return (
 		<ClayEmptyState
 			description={description}
-			imgSrc={
-				isSearch
-					? `${themeDisplay.getPathThemeImages()}/states/search_state.svg`
-					: `${themeDisplay.getPathThemeImages()}/states/empty_state.svg`
+			image={
+				<ClayIcon
+					className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+					illustration
+					symbol={symbol}
+				/>
 			}
 			small={small}
 			title={title}
