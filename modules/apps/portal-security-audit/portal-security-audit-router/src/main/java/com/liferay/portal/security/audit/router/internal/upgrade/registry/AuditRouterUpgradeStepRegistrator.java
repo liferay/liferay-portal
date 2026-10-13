@@ -5,14 +5,10 @@
 
 package com.liferay.portal.security.audit.router.internal.upgrade.registry;
 
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.security.audit.router.internal.upgrade.v1_0_0.AuditConfigurationUpgradeProcess;
+import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Christian Moura
@@ -25,20 +21,7 @@ public class AuditRouterUpgradeStepRegistrator
 	public void register(Registry registry) {
 		registry.registerInitialization();
 
-		registry.register(
-			"0.0.1", "1.0.0",
-			new AuditConfigurationUpgradeProcess(
-				_companyLocalService, _configurationAdmin,
-				_configurationProvider));
+		registry.register("0.0.1", "1.0.0", new DummyUpgradeStep());
 	}
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
-
-	@Reference
-	private ConfigurationAdmin _configurationAdmin;
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 }
