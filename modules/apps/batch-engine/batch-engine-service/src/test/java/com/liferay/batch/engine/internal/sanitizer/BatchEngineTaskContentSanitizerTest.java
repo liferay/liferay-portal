@@ -348,6 +348,9 @@ public class BatchEngineTaskContentSanitizerTest {
 
 	private ConfigurationProvider _createConfigurationProvider() {
 		try {
+			ConfigurationProvider configurationProvider = Mockito.mock(
+				ConfigurationProvider.class);
+
 			BatchEngineTaskCompanyConfiguration
 				batchEngineTaskCompanyConfiguration = Mockito.mock(
 					BatchEngineTaskCompanyConfiguration.class);
@@ -357,9 +360,6 @@ public class BatchEngineTaskContentSanitizerTest {
 			).when(
 				batchEngineTaskCompanyConfiguration
 			).csvFileColumnDelimiter();
-
-			ConfigurationProvider configurationProvider = Mockito.mock(
-				ConfigurationProvider.class);
 
 			Mockito.doReturn(
 				batchEngineTaskCompanyConfiguration

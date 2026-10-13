@@ -196,9 +196,6 @@ public class BatchEngineImportTaskLocalServiceImpl
 				batchEngineImportTask);
 		}
 		catch (Exception exception) {
-
-			// The exception message may contain sensitive data.
-
 			Class<?> clazz = exception.getClass();
 
 			_log.error(
@@ -243,20 +240,18 @@ public class BatchEngineImportTaskLocalServiceImpl
 			return null;
 		}
 
-		BatchEngineTaskContentSanitizer batchEngineTaskContentSanitizer =
-			new BatchEngineTaskContentSanitizer(
-				batchEngineImportTask, _configurationProvider,
-				passwordFieldNames);
-
 		File file = FileUtil.createTempFile();
 
-		try {
+		try (OutputStream outputStream = new FileOutputStream(file)) {
+			BatchEngineTaskContentSanitizer batchEngineTaskContentSanitizer =
+				new BatchEngineTaskContentSanitizer(
+					batchEngineImportTask, _configurationProvider,
+					passwordFieldNames);
+
 			Blob blob = batchEngineImportTask.getContent();
 
-			try (OutputStream outputStream = new FileOutputStream(file)) {
-				batchEngineTaskContentSanitizer.sanitize(
-					blob.getBinaryStream(), outputStream);
-			}
+			batchEngineTaskContentSanitizer.sanitize(
+				blob.getBinaryStream(), outputStream);
 
 			return new OutputBlob(
 				new AutoDeleteFileInputStream(file), file.length());

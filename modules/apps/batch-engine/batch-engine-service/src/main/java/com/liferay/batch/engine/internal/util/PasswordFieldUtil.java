@@ -102,9 +102,6 @@ public class PasswordFieldUtil {
 			return objectMapper.writeValueAsString(jsonNode);
 		}
 		catch (JsonProcessingException jsonProcessingException) {
-
-			// The exception message may contain sensitive data.
-
 			Class<?> clazz = object.getClass();
 
 			_log.error(

@@ -366,9 +366,9 @@ public class BatchEngineTaskContentSanitizer {
 			return jsonNode;
 		}
 
-		ObjectNode objectNode = (ObjectNode)jsonNode;
-
 		List<String> names = new ArrayList<>();
+
+		ObjectNode objectNode = (ObjectNode)jsonNode;
 
 		Iterator<String> iterator = objectNode.fieldNames();
 
@@ -402,13 +402,13 @@ public class BatchEngineTaskContentSanitizer {
 		try (XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
 			XSSFWorkbook sanitizedXSSFWorkbook = new XSSFWorkbook()) {
 
+			Map<Short, CellStyle> cellStyles = new HashMap<>();
+			Set<Integer> indexes = new HashSet<>();
+
 			Sheet sheet = xssfWorkbook.getSheetAt(0);
 
 			Sheet sanitizedSheet = sanitizedXSSFWorkbook.createSheet(
 				sheet.getSheetName());
-
-			Map<Short, CellStyle> cellStyles = new HashMap<>();
-			Set<Integer> indexes = new HashSet<>();
 
 			for (Row row : sheet) {
 				Row sanitizedRow = sanitizedSheet.createRow(row.getRowNum());
