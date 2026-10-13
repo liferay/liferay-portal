@@ -7,6 +7,7 @@ package com.liferay.layout.internal.importer;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
+import com.liferay.exportimport.portlet.preferences.processor.Capability;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorRegistryUtil;
 import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
@@ -19,11 +20,13 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 import jakarta.portlet.PortletPreferences;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -127,6 +130,15 @@ public class PortletPreferencesPortletConfigurationImporterImpl
 		}
 
 		try {
+			List<Capability> importCapabilities =
+				exportImportPortletPreferencesProcessor.getImportCapabilities();
+
+			if (ListUtil.isNotEmpty(importCapabilities)) {
+				for (Capability importCapability : importCapabilities) {
+					importCapability.process(companyId, portletPreferences);
+				}
+			}
+
 			exportImportPortletPreferencesProcessor.
 				processImportPortletPreferences(companyId, portletPreferences);
 		}
