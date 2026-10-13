@@ -55,6 +55,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) deleteClientExtensio
 	if error != nil {
 		return controllerruntime.Result{}, error
 	}
+
 	if len(errorMessages) > 0 {
 		deleting, error := clientExtensionReconciler.setDeletingCondition(
 			clientExtension, context, errorMessages,
@@ -115,9 +116,9 @@ func (clientExtensionReconciler *ClientExtensionReconciler) deleteExtProvisionCo
 	for index := range ownedExtProvisionConfigMaps.Items {
 		configMap := &ownedExtProvisionConfigMaps.Items[index]
 
-		error := clientExtensionReconciler.Delete(context, configMap)
+		deleteError := clientExtensionReconciler.Delete(context, configMap)
 
-		if apierrors.IsForbidden(error) {
+		if apierrors.IsForbidden(deleteError) {
 			errorMessages = append(
 				errorMessages,
 				fmt.Sprintf(
@@ -129,8 +130,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) deleteExtProvisionCo
 			continue
 		}
 
-		if client.IgnoreNotFound(error) != nil {
-			return nil, error
+		if client.IgnoreNotFound(deleteError) != nil {
+			return nil, deleteError
 		}
 	}
 
@@ -146,9 +147,9 @@ func (clientExtensionReconciler *ClientExtensionReconciler) deleteExtProvisionCo
 		Name: extInitName(clientExtension), Namespace: effectiveDxpNamespace(clientExtension),
 	}
 
-	error := clientExtensionReconciler.Get(context, extInitConfigMapName, &extInitConfigMap)
+	getError := clientExtensionReconciler.Get(context, extInitConfigMapName, &extInitConfigMap)
 
-	if error == nil {
+	if getError == nil {
 		errorMessages = append(
 			errorMessages,
 			fmt.Sprintf(
@@ -156,8 +157,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) deleteExtProvisionCo
 				extInitConfigMapName.Name, extInitConfigMapName.Namespace,
 			),
 		)
-	} else if !apierrors.IsNotFound(error) {
-		return nil, error
+	} else if !apierrors.IsNotFound(getError) {
+		return nil, getError
 	}
 
 	return errorMessages, nil
