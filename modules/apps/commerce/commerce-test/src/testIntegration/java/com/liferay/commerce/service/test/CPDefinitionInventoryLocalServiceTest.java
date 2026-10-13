@@ -9,7 +9,9 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
 import com.liferay.commerce.exception.CPDefinitionInventoryAllowedOrderQuantitiesException;
+import com.liferay.commerce.exception.CPDefinitionInventoryMaxOrderQuantityException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMinOrderQuantityException;
+import com.liferay.commerce.exception.CPDefinitionInventoryMultipleOrderQuantityException;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityConstants;
@@ -239,18 +241,10 @@ public class CPDefinitionInventoryLocalServiceTest {
 		CPDefinitionInventory cpDefinitionInventory =
 			_addDefaultCPDefinitionInventory();
 
-		cpDefinitionInventory =
-			_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
-				cpDefinitionInventory.getCPDefinitionInventoryId(),
-				cpDefinitionInventory.getCPDefinitionInventoryEngine(),
-				cpDefinitionInventory.getLowStockActivity(),
-				cpDefinitionInventory.isDisplayAvailability(),
-				cpDefinitionInventory.isDisplayStockQuantity(),
-				cpDefinitionInventory.getMinStockQuantity(),
-				cpDefinitionInventory.isBackOrders(), minOrderQuantity,
-				cpDefinitionInventory.getMaxOrderQuantity(),
-				cpDefinitionInventory.getAllowedOrderQuantities(),
-				cpDefinitionInventory.getMultipleOrderQuantity());
+		cpDefinitionInventory = _updateCPDefinitionInventory(
+			cpDefinitionInventory, minOrderQuantity,
+			cpDefinitionInventory.getMaxOrderQuantity(),
+			cpDefinitionInventory.getMultipleOrderQuantity());
 
 		Assert.assertTrue(
 			BigDecimalUtil.eq(
@@ -277,19 +271,47 @@ public class CPDefinitionInventoryLocalServiceTest {
 
 		Assert.assertThrows(
 			CPDefinitionInventoryMinOrderQuantityException.class,
-			() ->
-				_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
-					cpDefinitionInventory.getCPDefinitionInventoryId(),
-					cpDefinitionInventory.getCPDefinitionInventoryEngine(),
-					cpDefinitionInventory.getLowStockActivity(),
-					cpDefinitionInventory.isDisplayAvailability(),
-					cpDefinitionInventory.isDisplayStockQuantity(),
-					cpDefinitionInventory.getMinStockQuantity(),
-					cpDefinitionInventory.isBackOrders(),
-					BigDecimal.valueOf(-0.5),
-					cpDefinitionInventory.getMaxOrderQuantity(),
-					cpDefinitionInventory.getAllowedOrderQuantities(),
-					cpDefinitionInventory.getMultipleOrderQuantity()));
+			() -> _updateCPDefinitionInventory(
+				cpDefinitionInventory, BigDecimal.valueOf(-0.5),
+				cpDefinitionInventory.getMaxOrderQuantity(),
+				cpDefinitionInventory.getMultipleOrderQuantity()));
+	}
+
+	@Test
+	public void testUpdateCPDefinitionInventoryRejectsZeroOrderQuantities()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Updating an order quantity to zero"
+		).given(
+			"A CPDefinitionInventory with default values"
+		).when(
+			"The maximum, minimum or multiple order quantity is set to zero"
+		).then(
+			"The update fails with an exception"
+		);
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_addDefaultCPDefinitionInventory();
+
+		Assert.assertThrows(
+			CPDefinitionInventoryMaxOrderQuantityException.class,
+			() -> _updateCPDefinitionInventory(
+				cpDefinitionInventory,
+				cpDefinitionInventory.getMinOrderQuantity(), BigDecimal.ZERO,
+				cpDefinitionInventory.getMultipleOrderQuantity()));
+		Assert.assertThrows(
+			CPDefinitionInventoryMinOrderQuantityException.class,
+			() -> _updateCPDefinitionInventory(
+				cpDefinitionInventory, BigDecimal.ZERO,
+				cpDefinitionInventory.getMaxOrderQuantity(),
+				cpDefinitionInventory.getMultipleOrderQuantity()));
+		Assert.assertThrows(
+			CPDefinitionInventoryMultipleOrderQuantityException.class,
+			() -> _updateCPDefinitionInventory(
+				cpDefinitionInventory,
+				cpDefinitionInventory.getMinOrderQuantity(),
+				cpDefinitionInventory.getMaxOrderQuantity(), BigDecimal.ZERO));
 	}
 
 	@Rule
@@ -314,6 +336,24 @@ public class CPDefinitionInventoryLocalServiceTest {
 			CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY,
 			CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY, "",
 			BigDecimal.ONE);
+	}
+
+	private CPDefinitionInventory _updateCPDefinitionInventory(
+			CPDefinitionInventory cpDefinitionInventory,
+			BigDecimal minOrderQuantity, BigDecimal maxOrderQuantity,
+			BigDecimal multipleOrderQuantity)
+		throws Exception {
+
+		return _cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
+			cpDefinitionInventory.getCPDefinitionInventoryId(),
+			cpDefinitionInventory.getCPDefinitionInventoryEngine(),
+			cpDefinitionInventory.getLowStockActivity(),
+			cpDefinitionInventory.isDisplayAvailability(),
+			cpDefinitionInventory.isDisplayStockQuantity(),
+			cpDefinitionInventory.getMinStockQuantity(),
+			cpDefinitionInventory.isBackOrders(), minOrderQuantity,
+			maxOrderQuantity, cpDefinitionInventory.getAllowedOrderQuantities(),
+			multipleOrderQuantity);
 	}
 
 	private CommerceCatalog _commerceCatalog;
