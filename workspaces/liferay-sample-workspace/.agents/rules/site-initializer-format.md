@@ -292,7 +292,7 @@ Do **not** copy `"system": true` from portal internal initializers (seo-studio, 
 
 ### `object-entries/<name>.json`
 
-One file per object. `objectDefinitionName` names the object, with or without the `C_` prefix, and `object-entries` (hyphenated) holds raw `ObjectEntry` DTOs:
+Write one file per object. `objectDefinitionName` names the object, with or without the `C_` prefix, and `object-entries` (hyphenated) holds raw `ObjectEntry` DTOs:
 
 ```json
 {

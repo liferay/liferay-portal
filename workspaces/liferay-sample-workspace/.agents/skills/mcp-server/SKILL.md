@@ -59,20 +59,21 @@ curl \
 
 A `200` means the portal is serving MCP. A `404` means nothing is registered at that path: the flag is not in effect, the 2026.Q3 configuration is off, or the URL does not match the DXP version. A `401` happens only on 2026.Q3 and later, and means the credentials were rejected.
 
-On 2026.Q1 and 2026.Q2 the probe says nothing about credentials. Verified on 2026.Q1 and 2026.Q2 with valid credentials, wrong credentials, and none: every call returned `200` with the flag on and `404` with it off. Connecting and listing tools also succeed with any credentials. Only a tool call checks them: `call-http-endpoint` on `/headless-admin-user/v1.0/my-user-account` returns the user with valid credentials, and `Status code: 401` (wrong) or `403` (none) inside a `200` response otherwise. Verified on 2026.Q1 and 2026.Q2.
+On 2026.Q1 and 2026.Q2, the probe says nothing about credentials. Verified on 2026.Q1 and 2026.Q2 with valid credentials, wrong credentials, and none: every call returned `200` with the flag on and `404` with it off. Connecting and listing tools also succeed with any credentials. Only a tool call checks them: `call-http-endpoint` on `/headless-admin-user/v1.0/my-user-account` returns the user with valid credentials, and `Status code: 401` (wrong) or `403` (none) inside a `200` response otherwise. Verified on 2026.Q1 and 2026.Q2.
 
 ### Enable the Feature Flag
 
 Enable `LPD-63311` in the active configuration. Use `skills/feature-flags/SKILL.md` for the per environment mechanism (Tomcat / Docker prebuilt / Docker custom) and the env var encoding scheme.
 
-### Enable the MCP Server Configuration (2026.Q3 and Later)
+### DXP 2026.Q3+: Enable the MCP Server Configuration
 
-On 2026.Q3 the flag is not enough. The server also reads `MCPServerConfiguration`, an instance scoped configuration whose `enabled` attribute defaults to `false`, and `/o/mcp` returns `404` until it is on. Nothing in the log says so. Verified on 2026.Q3 with `LPD-63311` already in effect: `404` before the file below, `200` within seconds after it.
+On 2026.Q3, the flag is not enough. The server also reads `MCPServerConfiguration`, an instance scoped configuration whose `enabled` attribute defaults to `false`, and `/o/mcp` returns `404` until it is on. Nothing in the log says so. Verified on 2026.Q3 with `LPD-63311` already in effect: `404` before the file below, `200` within seconds after it.
 
 Write it as an OSGi configuration file. File install picks it up while the portal runs, so no restart is needed:
 
 ```bash
-printf 'enabled=B"true"\n' \
+printf \
+	"enabled=B\"true\"\n" \
 	> bundles/osgi/configs/com.liferay.mcp.server.rest.internal.configuration.MCPServerConfiguration.config
 ```
 
@@ -150,7 +151,7 @@ Flattening the payload into the outer `body` is rejected before the call is made
 The "postObjectDefinitionObjectField" tool requires the request payload nested under a "body" property.
 ```
 
-A tool with no parameters still takes `"body": {}`; the argument is required. Query parameters are plain values: `{"filter": "name eq 'McpProbe'", "fields": ["id", "name"]}` works as written, with no URL encoding. An endpoint error comes back as text inside a successful result, such as `Status code: 500, Content: {...}`, and is logged at `ERROR` from `MCPServerServlet`.
+A tool with no parameters still takes `"body": {}`; the argument is required. Query parameters are plain values: `{"fields": ["id", "name"], "filter": "name eq 'McpProbe'"}` works as written, with no URL encoding. An endpoint error comes back as text inside a successful result, such as `Status code: 500, Content: {...}`, and is logged at `ERROR` from `MCPServerServlet`.
 
 So the 2026.Q1 and 2026.Q2 gotchas about encoding the query string and `204` errors do not apply. A `DELETE` returns the text `Status code: 204` with `isError: false`.
 
@@ -168,7 +169,7 @@ Verified on 2026.Q3: steps 1 to 4 for `getMyUserAccount`, and a draft object def
 
 ### DXP 2026.Q3+: Responses Are Masked
 
-MCP responses pass through data masks, and personal data is masked by default. On 2026.Q3 `getMyUserAccount` returned `"emailAddress": "[EMAIL_ADDRESS]"` through MCP, while the same account over REST returned `test@liferay.com`. Verified on 2026.Q3.
+MCP responses pass through data masks, and personal data is masked by default. On 2026.Q3, `getMyUserAccount` returned `"emailAddress": "[EMAIL_ADDRESS]"` through MCP, while the same account over REST returned `test@liferay.com`. Verified on 2026.Q3.
 
 So a masked value in an MCP response is not stored data. Do not write it back, compare against it, or report it to the user as the real value. When the real value matters, read it over REST.
 
@@ -198,7 +199,7 @@ After restarting, verify the MCP server entry appears in your client's server li
 
 If the server shows as connected but lists zero tools, check whether your agent provides a reconnect or refresh option for MCP servers — this can recover a dropped midsession connection without a full restart. This does **not** apply to newly added or changed server config — those always require a full restart.
 
-### 204 No Content Responses Are False Alarms (2026.Q1 and Q2)
+### DXP 2026.Q1 and 2026.Q2: 204 No Content Responses Are False Alarms
 
 The MCP `call-http-endpoint` tool throws `MCP error -32603: text must not be null` when an endpoint returns 204 No Content. This is a tool limitation, not an API failure — the operation most likely succeeded.
 
@@ -208,7 +209,7 @@ Verified on 2026.Q1 and 2026.Q2.
 
 **Workaround**: after a 204 MCP error, follow up with a GET to confirm the operation succeeded before assuming failure or retrying.
 
-### Encode the Query String Yourself (2026.Q1 and Q2)
+### DXP 2026.Q1 and 2026.Q2: Encode the Query String Yourself
 
 `call-http-endpoint` sends `path` as written and does not URL encode it. An OData `filter` with spaces or quotes fails before it reaches the API:
 
@@ -218,17 +219,17 @@ Invalid URI: http://localhost:8080/o/object-admin/v1.0/object-definitions?filter
 
 Liferay also logs each failure at `ERROR` from `MCPServerServlet`, so these failures show up when you scan the log for deployment errors.
 
-Encode spaces as `%20` and single quotes as `%27`: `?filter=name%20eq%20%27Event%27`. Commas need no encoding, so `?fields=id,name` works as written. Verified on 2026.Q1, and the same `Invalid URI` error on 2026.Q2.
+Encode spaces as `%20` and single quotes as `%27`: `?filter=name%20eq%20%27Event%27`. Commas need no encoding, so `?fields=id,name` works as written. Verified on 2026.Q1, and 2026.Q2 returns the same `Invalid URI` error.
 
-### Endpoint Discovery With `get-openapi` (2026.Q1 and Q2)
+### DXP 2026.Q1 and 2026.Q2: Endpoint Discovery With `get-openapi`
 
-On 2026.Q3 use `getToolSetToolSetNameTool` instead (see "Tool Sets Replace `call-http-endpoint`" above). The reasons to check a schema first are the same.
+On 2026.Q3, use `getToolSetToolSetNameTool` instead (see "Tool Sets Replace `call-http-endpoint`" above). The reasons to check a schema first are the same.
 
 `get-openapi` enumerates Liferay's headless API surface from the live instance's OpenAPI specs. Use it before answering "is there an endpoint for X?" questions, before debugging a call whose expected behavior is uncertain, or before composing any POST/PATCH payload. The live specs are the source of truth — Liferay's hosted documentation is known to lag, and GET response structure does not equal POST/PATCH request structure.
 
 The spec has known gaps: several fields required at runtime are marked optional (see `manage-pages` → "`headless-admin-site` Schema Gotchas" for the documented exceptions in that API). Treat the spec as the discovery surface, not the final word, and cross check against the per skill gotchas when working with `headless-admin-site`, `headless-delivery`, or `object-admin`.
 
-### Large OpenAPI Specs Exceed the Token Limit (2026.Q1 and Q2)
+### DXP 2026.Q1 and 2026.Q2: Large OpenAPI Specs Exceed the Token Limit
 
 `get-openapi` on large APIs (e.g., `headless-delivery`, `headless-admin-site`) exceeds the MCP tool's token limit. The tool saves the output to a temp file rather than returning it inline.
 
@@ -261,7 +262,7 @@ The MCP client connection drops when the Liferay server stops, restarts, or cras
 
 ### MCP/REST Auth Split — Handshake Succeeds Without BasicAuth Verifier
 
-The MCP connection handshake succeeds without `BasicAuthHeaderAuthVerifier` configured. Tools appear in the agent's tool list and the connection looks healthy. But on 2026.Q1, `call-http-endpoint` invokes the same `/o/*` endpoints as direct REST and is subject to the same verifier rules — without it, every tool call returns 403. If first login bootstrap is confirmed complete and 403s persist, add the BasicAuth verifier (dev only) per `skills/workspace-init/SKILL.md` → "Tomcat" setup.
+The MCP connection handshake succeeds without `BasicAuthHeaderAuthVerifier` configured. Tools appear in the agent's tool list and the connection looks healthy. But on 2026.Q1 and 2026.Q2, `call-http-endpoint` invokes the same `/o/*` endpoints as direct REST and is subject to the same verifier rules — without it, every tool call returns 403. If first login bootstrap is confirmed complete and 403s persist, add the BasicAuth verifier (dev only) per `skills/workspace-init/SKILL.md` → "Tomcat" setup.
 
 ### First Login 403 Trap (Fresh Liferay Instances)
 

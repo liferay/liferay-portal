@@ -205,14 +205,18 @@ setsid \
 Run it from the workspace root. Stop an earlier copy first — a second one fails to bind the port and exits, leaving the old code serving:
 
 ```bash
+WORKSPACE=$(pwd)
+
 pkill -f "[n]ode ${WORKSPACE}/client-extensions/<project>/app.js"
 ```
 
 The `[n]` keeps the pattern from matching the shell that runs the command. Without it, `pkill` also kills that shell, because its own command line contains the pattern.
 
-Then confirm both that it answers and that it no longer belongs to the agent:
+Then confirm both that it answers and that it no longer belongs to the agent. Run this from the workspace root too:
 
 ```bash
+WORKSPACE=$(pwd)
+
 curl \
 	--silent \
 	--url "http://localhost:<port>/ready"
@@ -247,15 +251,15 @@ Populate `site-initializer` per `rules/site-initializer-format.md`.
 
 Copy [liferay-sample-batch](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-batch) from GitHub into `client-extensions/<name>`. Rename the top level keys and each `name` in `client-extension.yaml`, and replace the files in `batch/` with your own.
 
-**Keep the sample's `assemble` block.** Without it the `batch/` directory is left out of the zip. The build succeeds, the bundle reaches `STARTED`, and nothing is imported. The signal is `assembleClientExtension NO-SOURCE` in the build output, or no `Started batch engine import task` line in the log after `STARTED`. Confirm the files made it in with `unzip -l dist/<name>.zip`. Verified on 2026.Q1.
+**Keep the sample's `assemble` block.** Without it, the `batch/` directory is left out of the zip. The build succeeds, the bundle reaches `STARTED`, and nothing is imported. The signal is `assembleClientExtension NO-SOURCE` in the build output, or no `Started batch engine import task` line in the log after `STARTED`. Confirm the files made it in with `unzip -l dist/<name>.zip`. Verified on 2026.Q1.
 
-Files import in filename order, so number them so that dependencies come first. Each file is one envelope, in the shape of the sample's files. On a local bundle the import runs inside the portal, and `Liferay.Headless.Batch.Engine.everything` alone was enough for `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
+Files import in filename order, so number them so that dependencies come first. Each file is one envelope, in the shape of the sample's files. On a local bundle, the import runs inside the portal, and `Liferay.Headless.Batch.Engine.everything` alone was enough for `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
 
 A batch project needs no `Dockerfile` or `LCP.json`; the build and import succeed without them, as in the sample. Only microservice projects require them. Verified on 2026.Q1.
 
 ### Wire OAuth When Required
 
-If `rules/client-extension-types.md` shows "Yes" in the OAuth column, call `setup-oauth` to add the companion `oAuthApplicationHeadlessServer` entry. The OAuth entry must appear in the same `client-extension.yaml` file.
+If `rules/client-extension-types.md` shows "Yes" in the OAuth column, call `setup-oauth` to add the companion OAuth entry: `oAuthApplicationUserAgent` for a microservice CET, or `oAuthApplicationHeadlessServer` for a `batch` or `siteInitializer` CET (see `rules/oauth-scopes.md`). The OAuth entry must appear in the same `client-extension.yaml` file.
 
 ### Deploy and Verify
 

@@ -63,7 +63,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Use `"storageType": "salesforce"` for native Salesforce integration, or `"storageType": "function#<cet-erc>"` for the custom CET pattern, where `<cet-erc>` is the key of the `objectEntryManager` entry. Any `storageType` sent over REST needs feature flag `LPS-135430`, which is off by default. Without it the create returns `400 ObjectDefinitionStorageTypeException` for every value. For the CET pattern, proceed to **Scaffold the `objectEntryManager` CET**.
+Use `"storageType": "salesforce"` for native Salesforce integration, or `"storageType": "function#<cet-erc>"` for the custom CET pattern, where `<cet-erc>` is the key of the `objectEntryManager` entry. Any `storageType` sent over REST needs feature flag `LPS-135430`, which is off by default. Without it, the create returns `400 ObjectDefinitionStorageTypeException` for every value. For the CET pattern, proceed to **Scaffold the `objectEntryManager` CET**.
 
 ### Scaffold the `objectEntryManager` CET
 
@@ -83,10 +83,10 @@ The entry takes only these keys. Liferay reaches the microservice at the OAuth e
 
 ### Implement the Microservice
 
-The microservice must respond to the five endpoints above. Use any stack (Spring Boot, Node.js, Python). The request and response bodies follow the Liferay Headless delivery envelope:
+The microservice must answer the calls above. Use any stack (Spring Boot, Node.js, Python). The request bodies are wrapped as described above, and the responses follow the Liferay Headless delivery envelope:
 
 ```json
-// GET / — list response
+// GET <resourcePath>/<objectERC> — list response
 
 {
   "actions": {},
@@ -98,11 +98,11 @@ The microservice must respond to the five endpoints above. Use any stack (Spring
   "totalCount": 1
 }
 
-// POST / — single item response
+// GET, POST, or PUT on a single entry — single item response
 
 {
-  "id": 123,
   "<fieldName>": "<value>",
+  "externalReferenceCode": "<entryERC>",
   ...
 }
 ```
@@ -147,9 +147,11 @@ Check the microservice logs to confirm Liferay forwarded the calls. If entries a
 | Symptom | Check |
 | --- | --- |
 | 500 on entry creation | Microservice unreachable at the OAuth entry's `.serviceAddress`; check network and port |
-| 401 from microservice | Bearer JWT validation failing. The token is `RS256`, signed by the single key at `/o/oauth2/jwks`, and carries no `kid`, so do not require a `kid` match. `aud` and `client_id` match the `.oauth2.user.agent.audience` and `.oauth2.user.agent.client.id` routes. Verified on 2026.Q1 |
+| 401 from microservice | Bearer JWT validation failing; see the token details below |
 | `400 ObjectDefinitionStorageTypeException` on create | Enable `LPS-135430`, and set `storageType` to `function#<cet-erc>` |
 | Empty list from Liferay | Microservice returns nonenvelope JSON; wrap in the Headless page envelope |
+
+The token is `RS256`, signed by the single key at `/o/oauth2/jwks`, and carries no `kid`, so do not require a `kid` match. Its `aud` and `client_id` match the `.oauth2.user.agent.audience` and `.oauth2.user.agent.client.id` routes. Verified on 2026.Q1.
 
 ## Success Signal
 

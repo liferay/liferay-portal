@@ -108,8 +108,8 @@ Report the gap table. Enable flags only after explicit user confirmation. Bounce
 
 Run the probe in `skills/mcp-server/SKILL.md` → "Audit the Current State First". It posts an `initialize` request with credentials; a bare `HEAD` does not, and on 2026.Q3 every unauthenticated request gets `401`.
 
-- **200**: MCP is available. Use it for all subsequent API calls: the `call-http-endpoint` tool on 2026.Q1 and 2026.Q2, the tool set tools on 2026.Q3 (see `skills/mcp-server/SKILL.md` → "Tool Sets Replace `call-http-endpoint`").
-- **404 on 2026.Q3**: the `MCPServerConfiguration` switch is probably off. Enable it per `skills/mcp-server/SKILL.md` before falling back.
+- **200**: MCP is available. Use it for all subsequent API calls: the `call-http-endpoint` tool on 2026.Q1 and 2026.Q2, the tool set meta tools on 2026.Q3 (see `skills/mcp-server/SKILL.md` → "Tool Sets Replace `call-http-endpoint`").
+- **404 on 2026.Q3**: The `MCPServerConfiguration` switch is probably off. Enable it per `skills/mcp-server/SKILL.md` before falling back.
 - **Otherwise**: Fall back to direct `curl` calls with Basic auth.
 
 ### Phase 3: Data Model
