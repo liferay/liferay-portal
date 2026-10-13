@@ -24,6 +24,7 @@ import com.liferay.headless.admin.taxonomy.client.pagination.Page;
 import com.liferay.headless.admin.taxonomy.client.pagination.Pagination;
 import com.liferay.headless.admin.taxonomy.client.problem.Problem;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.KeywordResource;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Group;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -45,6 +47,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -56,10 +59,8 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -781,21 +782,13 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 					keyword.getId(), depotEntryType),
 			AssetTagGroupRel::getGroupId);
 
-		Arrays.sort(expectedGroupIds);
-		Arrays.sort(groupIds);
-
-		Assert.assertEquals(
-			Arrays.toString(expectedGroupIds), Arrays.toString(groupIds));
+		AssertUtils.assertEqualsSorted(
+			ArrayUtil.toStringArray(expectedGroupIds),
+			ArrayUtil.toStringArray(groupIds));
 	}
 
-	private Set<String> _getKeywordNames(Page<Keyword> page) {
-		Set<String> keywordNames = new HashSet<>();
-
-		for (Keyword keyword : page.getItems()) {
-			keywordNames.add(keyword.getName());
-		}
-
-		return keywordNames;
+	private List<String> _getKeywordNames(Page<Keyword> page) {
+		return TransformUtil.transform(page.getItems(), Keyword::getName);
 	}
 
 	private KeywordResource _getKeywordResource(User user) {
@@ -877,7 +870,7 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
 			project.getId(), null, null, null, Pagination.of(1, 100), null);
 
-		Set<String> keywordNames = _getKeywordNames(page);
+		List<String> keywordNames = _getKeywordNames(page);
 
 		Assert.assertTrue(
 			keywordNames.toString(), keywordNames.contains(keyword1.getName()));
@@ -917,7 +910,7 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			depotEntryGroup.getGroupId(), null, null, null,
 			Pagination.of(1, 100), null);
 
-		Set<String> keywordNames = _getKeywordNames(page);
+		List<String> keywordNames = _getKeywordNames(page);
 
 		Assert.assertTrue(
 			keywordNames.toString(), keywordNames.contains(keyword1.getName()));
@@ -976,7 +969,7 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
 			project.getId(), null, null, null, Pagination.of(1, 100), null);
 
-		Set<String> keywordNames = _getKeywordNames(page);
+		List<String> keywordNames = _getKeywordNames(page);
 
 		Assert.assertTrue(
 			keywordNames.toString(), keywordNames.contains(keyword.getName()));
