@@ -862,9 +862,10 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		Project project = _randomProject();
 
-		Keyword keyword1 = _postKeywordWithProjects(
+		Keyword keyword1 = _postKeywordWithProjects(project);
+
+		Keyword keyword2 = _postKeywordWithProjects(
 			_toProject(GroupConstants.ANY_PARENT_GROUP_ID));
-		Keyword keyword2 = _postKeywordWithProjects(project);
 		Keyword keyword3 = _postKeywordWithProjects(_randomProject());
 
 		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
@@ -950,21 +951,18 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 	private void _testGetSiteKeywordsPageWithoutAssetTagGroupRels()
 		throws Exception {
 
-		Group cmsGroup = _groupLocalService.getGroup(
+		Group originalTestGroup = testGroup;
+
+		testGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_assetTag = AssetTestUtil.addTag(
-			cmsGroup.getGroupId(),
+			testGroup.getGroupId(),
 			StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 		Project project = _randomProject();
 
-		Keyword randomKeyword = randomKeyword();
-
-		randomKeyword.setProjects(new Project[] {project});
-
-		Keyword keyword = keywordResource.postSiteKeyword(
-			cmsGroup.getGroupId(), randomKeyword);
+		Keyword keyword = _postKeywordWithProjects(project);
 
 		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
 			project.getId(), null, null, null, Pagination.of(1, 100), null);
@@ -988,6 +986,8 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Assert.assertTrue(
 			keywordNames.toString(),
 			keywordNames.contains(_assetTag.getName()));
+
+		testGroup = originalTestGroup;
 	}
 
 	private void _testPatchSiteKeywordAppendsProjects() throws Exception {
