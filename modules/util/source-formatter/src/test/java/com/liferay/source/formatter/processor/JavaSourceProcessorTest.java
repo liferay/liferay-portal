@@ -1039,6 +1039,26 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testRedundantBranchingStatement() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"RedundantBranchingStatement.testjava"
+			).addExpectedMessage(
+				"Redundant \"return\" statement", 19
+			).addExpectedMessage(
+				"Redundant \"return\" statement", 26
+			).addExpectedMessage(
+				"Redundant \"return\" statement", 36
+			).addExpectedMessage(
+				"Redundant \"return\" statement", 47
+			).addExpectedMessage(
+				"Redundant \"continue\" statement", 57
+			).addExpectedMessage(
+				"Redundant \"continue\" statement", 71
+			));
+	}
+
+	@Test
 	public void testRedundantCommas() throws Exception {
 		test("RedundantCommas.testjava");
 	}

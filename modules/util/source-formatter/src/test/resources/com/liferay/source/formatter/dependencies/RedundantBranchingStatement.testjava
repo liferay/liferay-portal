@@ -1,0 +1,119 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import java.util.List;
+
+/**
+ * @author Alan Huang
+ */
+public class RedundantBranchingStatement {
+
+	public RedundantBranchingStatement(String name) {
+		if (name.isEmpty()) {
+			_print(name);
+
+			return;
+		}
+	}
+
+	public void method1(String key) {
+		_print(key);
+
+		return;
+	}
+
+	public void method2(String key) {
+		if (key.startsWith("a")) {
+			_print(key);
+		}
+		else if (key.startsWith("b")) {
+			_print(key);
+
+			return;
+		}
+	}
+
+	public void method3(String key) {
+		try {
+			_print(key);
+		}
+		catch (Exception exception) {
+			_print(exception.getMessage());
+
+			return;
+		}
+	}
+
+	public void method4(List<String> keys) {
+		for (String key : keys) {
+			if (key.startsWith("a")) {
+				_print(key);
+			}
+			else {
+				continue;
+			}
+		}
+	}
+
+	public void method5(List<String> keys) {
+		int i = 0;
+
+		while (i < keys.size()) {
+			String key = keys.get(i++);
+
+			if (key.startsWith("a")) {
+				_print(key);
+
+				continue;
+			}
+		}
+	}
+
+	public void method6(List<String> keys) {
+		for (String key : keys) {
+			if (key.isEmpty()) {
+				continue;
+			}
+
+			_print(key);
+		}
+	}
+
+	public void method7(List<List<String>> keysList) {
+		outer:
+		for (List<String> keys : keysList) {
+			for (String key : keys) {
+				if (key.isEmpty()) {
+					_print(key);
+
+					continue outer;
+				}
+			}
+		}
+	}
+
+	public String method8(String key) {
+		if (key.isEmpty()) {
+			return null;
+		}
+
+		return key;
+	}
+
+	public void method9(List<String> keys) {
+		for (String key : keys) {
+			if (key.isEmpty()) {
+				return;
+			}
+		}
+	}
+
+	private void _print(String value) {
+		System.out.println(value);
+	}
+
+}
