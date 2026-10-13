@@ -31,6 +31,7 @@ page import="com.liferay.commerce.price.list.constants.CommercePriceListConstant
 page import="com.liferay.commerce.price.list.exception.NoSuchPriceListException" %><%@
 page import="com.liferay.commerce.price.list.model.CommercePriceList" %><%@
 page import="com.liferay.commerce.product.exception.CommerceCatalogProductsException" %><%@
+page import="com.liferay.commerce.product.exception.CommerceCatalogSystemException" %><%@
 page import="com.liferay.commerce.product.exception.DuplicateCommerceCatalogExternalReferenceCodeException" %><%@
 page import="com.liferay.commerce.product.exception.NoSuchCatalogException" %><%@
 page import="com.liferay.commerce.product.model.CommerceCatalog" %><%@
