@@ -1,5 +1,6 @@
 import com.liferay.gradle.plugins.baseline.BaselinePlugin
 import com.liferay.gradle.plugins.baseline.BaselineTask
+import com.liferay.gradle.plugins.defaults.internal.FindSecurityBugsPlugin
 
 import org.gradle.util.GUtil
 
@@ -8,6 +9,8 @@ buildscript {
 }
 
 apply plugin: BaselinePlugin
+
+FindSecurityBugsPlugin.INSTANCE.apply(project)
 
 Properties bndProperties = GUtil.loadProperties(file("bnd.bnd"))
 
@@ -42,6 +45,7 @@ repositories {
 sourceSets {
 	main {
 		java {
+			destinationDirectory = file("classes")
 			srcDirs = ["src"]
 		}
 
