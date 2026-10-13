@@ -293,6 +293,8 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 			UserNotificationEventTable.INSTANCE.payload.getName()
 		).put(
 			"Configuration_", "dictionary"
+		).put(
+			"SXPBlueprint", "configurationJSON"
 		).build();
 
 	@Reference
