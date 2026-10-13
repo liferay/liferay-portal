@@ -6,17 +6,14 @@
 package com.liferay.layout.admin.web.internal.handler;
 
 import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryNameException;
-import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -55,40 +52,32 @@ public class LayoutUtilityPageEntryPortalExceptionRequestHandlerUtil {
 				themeDisplay.getLocale(), "name-must-not-be-empty");
 		}
 		else if (portalException instanceof
-					LayoutUtilityPageEntryNameException.MustNotBeDuplicate) {
-
-			String name = ParamUtil.getString(actionRequest, "name");
+					LayoutUtilityPageEntryNameException.MustNotBeDuplicate
+						mustNotBeDuplicate) {
 
 			errorMessage = LanguageUtil.format(
 				themeDisplay.getLocale(),
 				"there-is-already-a-utility-page-with-the-name-x",
-				new String[] {name});
+				new String[] {mustNotBeDuplicate.name});
 		}
 		else if (portalException instanceof
 					LayoutUtilityPageEntryNameException.
-						MustNotContainInvalidCharacters) {
-
-			LayoutUtilityPageEntryNameException.MustNotContainInvalidCharacters
-				layoutUtilityPageEntryNameException =
-					(LayoutUtilityPageEntryNameException.
-						MustNotContainInvalidCharacters)portalException;
+						MustNotContainInvalidCharacters
+							mustNotContainInvalidCharacters) {
 
 			errorMessage = LanguageUtil.format(
 				themeDisplay.getLocale(),
 				"name-cannot-contain-the-following-invalid-character-x",
-				layoutUtilityPageEntryNameException.character);
+				mustNotContainInvalidCharacters.character);
 		}
 		else if (portalException instanceof
-					LayoutUtilityPageEntryNameException.
-						MustNotExceedMaximumSize) {
-
-			int nameMaxLength = ModelHintsUtil.getMaxLength(
-				LayoutUtilityPageEntry.class.getName(), "name");
+					LayoutUtilityPageEntryNameException.MustNotExceedMaximumSize
+						mustNotExceedMaximumSize) {
 
 			errorMessage = LanguageUtil.format(
 				themeDisplay.getLocale(),
 				"please-enter-a-name-with-fewer-than-x-characters",
-				nameMaxLength);
+				mustNotExceedMaximumSize.maxLength);
 		}
 
 		if (Validator.isNull(errorMessage)) {
