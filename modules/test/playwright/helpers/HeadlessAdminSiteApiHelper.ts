@@ -185,4 +185,11 @@ export class HeadlessAdminSiteApiHelper {
 			{data: page, failOnStatusCode: true}
 		);
 	}
+
+	async putSite(externalReferenceCode: string, site: TSite): Promise<Site> {
+		return this.apiHelpers.put(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${externalReferenceCode}`,
+			{data: site, failOnStatusCode: true}
+		);
+	}
 }
