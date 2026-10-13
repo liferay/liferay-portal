@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Carolina Barbosa
@@ -68,13 +67,15 @@ public class ObjectEntryFolderUtil {
 			ObjectEntryFolderLocalServiceUtil.fetchObjectEntryFolder(
 				GetterUtil.getLong(parts.get(0)));
 
-		if ((rootObjectEntryFolder != null) &&
-			(Objects.equals(
+		if (rootObjectEntryFolder == null) {
+			return ObjectEntryFolderConstants.
+				PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT;
+		}
+
+		if (com.liferay.portal.kernel.util.StringUtil.startsWith(
 				rootObjectEntryFolder.getExternalReferenceCode(),
-				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS) ||
-			 Objects.equals(
-				 rootObjectEntryFolder.getExternalReferenceCode(),
-				 ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES))) {
+				ObjectEntryFolderConstants.
+					EXTERNAL_REFERENCE_CODE_PREFIX_SYSTEM_OBJECT_ENTRY_FOLDER)) {
 
 			return rootObjectEntryFolder.getObjectEntryFolderId();
 		}

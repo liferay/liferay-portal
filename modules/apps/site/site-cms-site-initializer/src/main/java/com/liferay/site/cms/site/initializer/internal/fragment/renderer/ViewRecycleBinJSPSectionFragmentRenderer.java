@@ -15,13 +15,18 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.rest.resource.v1_0.SearchResultResource;
+import com.liferay.site.cms.site.initializer.contributor.CMSSectionTypeContributor;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewRecycleBinSectionDisplayContext;
 import com.liferay.trash.TrashHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Pedro Leite
@@ -46,10 +51,10 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY);
 
 		return new ViewRecycleBinSectionDisplayContext(
-			_assetLibraryResourceFactory, _depotEntryLocalService,
-			themeDisplay.getScopeGroupId(), groupLocalService,
-			httpServletRequest, language, _objectDefinitionService,
-			_objectEntryFolderLocalService, _portal,
+			_assetLibraryResourceFactory, _cmsSectionTypeContributors,
+			_depotEntryLocalService, themeDisplay.getScopeGroupId(),
+			groupLocalService, httpServletRequest, language,
+			_objectDefinitionService, _objectEntryFolderLocalService, _portal,
 			_searchResultResourceFactory,
 			translationInfoItemFieldValuesExporterRegistry, _trashHelper);
 	}
@@ -61,6 +66,13 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 
 	@Reference
 	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<CMSSectionTypeContributor>
+		_cmsSectionTypeContributors;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;

@@ -37,6 +37,7 @@ import com.liferay.portal.search.rest.dto.v1_0.SearchResult;
 import com.liferay.portal.search.rest.resource.v1_0.SearchResultResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.site.cms.site.initializer.contributor.CMSSectionTypeContributor;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 import com.liferay.trash.TrashHelper;
@@ -54,6 +55,7 @@ public class ViewRecycleBinSectionDisplayContext
 
 	public ViewRecycleBinSectionDisplayContext(
 		AssetLibraryResource.Factory assetLibraryResourceFactory,
+		List<CMSSectionTypeContributor> cmsSectionTypeContributors,
 		DepotEntryLocalService depotEntryLocalService, long groupId,
 		GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest, Language language,
@@ -70,6 +72,7 @@ public class ViewRecycleBinSectionDisplayContext
 			translationInfoItemFieldValuesExporterRegistry);
 
 		_assetLibraryResourceFactory = assetLibraryResourceFactory;
+		_cmsSectionTypeContributors = cmsSectionTypeContributors;
 		_groupId = groupId;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 		_searchResultResourceFactory = searchResultResourceFactory;
@@ -89,6 +92,8 @@ public class ViewRecycleBinSectionDisplayContext
 
 			return HashMapBuilder.<String, Object>put(
 				"breadcrumbItems", jsonArray
+			).put(
+				"emptyRecycleBinFilterString", getCMSSectionFilterString()
 			).put(
 				"hideSpace", true
 			).put(
@@ -199,9 +204,11 @@ public class ViewRecycleBinSectionDisplayContext
 
 	@Override
 	protected String getCMSSectionFilterString() {
-		String filterString =
-			"cmsRoot eq true and (cmsSection eq 'contents' or cmsSection eq " +
-				"'files') and rootDescendantNode eq false";
+		String filterString = StringBundler.concat(
+			"cmsRoot eq true and ",
+			SectionDisplayContextUtil.getCMSSectionFilterString(
+				_cmsSectionTypeContributors),
+			" and rootDescendantNode eq false");
 
 		List<Long> groupIds = _getTrashEnabledDepotEntryGroupIds();
 
@@ -270,6 +277,7 @@ public class ViewRecycleBinSectionDisplayContext
 		ViewRecycleBinSectionDisplayContext.class);
 
 	private final AssetLibraryResource.Factory _assetLibraryResourceFactory;
+	private final List<CMSSectionTypeContributor> _cmsSectionTypeContributors;
 	private final long _groupId;
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 	private final SearchResultResource.Factory _searchResultResourceFactory;

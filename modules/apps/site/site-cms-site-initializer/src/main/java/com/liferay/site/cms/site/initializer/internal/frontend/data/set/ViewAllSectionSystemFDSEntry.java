@@ -9,7 +9,6 @@ import com.liferay.frontend.data.set.SystemFDSEntry;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.URLCodec;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.cms.site.initializer.contributor.CMSSectionTypeContributor;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.display.context.SectionDisplayContextUtil;
@@ -36,26 +35,12 @@ public class ViewAllSectionSystemFDSEntry implements SystemFDSEntry {
 	public String getAdditionalAPIURLParameters(
 		HttpServletRequest httpServletRequest) {
 
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(4);
 
-		sb.append("(cmsSection eq 'contents' or cmsSection eq 'files'");
-
-		for (CMSSectionTypeContributor cmsSectionTypeContributor :
-				_cmsSectionTypeContributors) {
-
-			String cmsSectionType =
-				cmsSectionTypeContributor.getCMSSectionType();
-
-			if (Validator.isNull(cmsSectionType)) {
-				continue;
-			}
-
-			sb.append(" or cmsSection eq '");
-			sb.append(cmsSectionType);
-			sb.append("'");
-		}
-
-		sb.append(") and objectDefinitionExternalReferenceCode ne '");
+		sb.append(
+			SectionDisplayContextUtil.getCMSSectionFilterString(
+				_cmsSectionTypeContributors));
+		sb.append(" and objectDefinitionExternalReferenceCode ne '");
 		sb.append(
 			ObjectEntryFolderConstants.
 				EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER);
