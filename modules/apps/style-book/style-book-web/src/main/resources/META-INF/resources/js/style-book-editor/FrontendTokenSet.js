@@ -59,6 +59,10 @@ export default function FrontendTokenSet({
 				return;
 			}
 
+			const linkedCSSVariableMapping = tokenValues[value]?.mappings?.find(
+				(mapping) => mapping.type === 'cssVariable'
+			);
+
 			saveTokenValue({
 				label,
 				name,
@@ -66,7 +70,9 @@ export default function FrontendTokenSet({
 					cssVariableMapping: cssVariableMapping.value,
 					name: tokenValues[value]?.name,
 					tokenDefinitionId,
-					value: tokenValues[value]?.value || value,
+					value: linkedCSSVariableMapping
+						? `var(--${linkedCSSVariableMapping.value})`
+						: tokenValues[value]?.value || value,
 				},
 			});
 		},
