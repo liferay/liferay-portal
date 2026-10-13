@@ -213,8 +213,7 @@ public class ExportImportProcessesDisplayContext {
 		).addPrimaryDropdownItem(
 			() ->
 				Objects.equals(cmd, Constants.EXPORT) &&
-				FeatureFlagManagerUtil.isEnabled(
-					_themeDisplay.getCompanyId(), "LPD-107410"),
+				Validator.isBlank(_getPortletId()) && _isStaticSiteEnabled(),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_liferayPortletResponse.createRenderURL(),
@@ -278,6 +277,23 @@ public class ExportImportProcessesDisplayContext {
 		return StringBundler.concat(
 			LanguageUtil.get(_httpServletRequest, key), " ",
 			PortalUtil.getPortletTitle(portletId, _themeDisplay.getLocale()));
+	}
+
+	private boolean _isStaticSiteEnabled() {
+		Group liveGroup = _group;
+
+		if (_group.isStagingGroup()) {
+			liveGroup = _group.getLiveGroup();
+		}
+
+		if (liveGroup.isSite() && !liveGroup.isCompany() &&
+			FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-107410")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private String _exportProcessesAPIURL;
