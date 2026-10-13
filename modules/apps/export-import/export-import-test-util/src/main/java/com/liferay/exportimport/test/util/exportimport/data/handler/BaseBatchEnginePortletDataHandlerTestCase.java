@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -94,7 +95,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			return;
 		}
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode, _getGroupId());
 
@@ -132,11 +133,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	@Override
 	@Test
 	public void testExportImportData() throws Exception {
-		String externalReferenceCode1 = RandomTestUtil.randomString();
+		String externalReferenceCode1 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode1, _getGroupId());
 
-		String externalReferenceCode2 = RandomTestUtil.randomString();
+		String externalReferenceCode2 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode2, _getGroupId());
 
@@ -150,11 +151,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 
 	@Test
 	public void testExportImportDeletions() throws Exception {
-		String externalReferenceCode1 = RandomTestUtil.randomString();
+		String externalReferenceCode1 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode1, _getGroupId());
 
-		String externalReferenceCode2 = RandomTestUtil.randomString();
+		String externalReferenceCode2 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode2, _getGroupId());
 
@@ -185,11 +186,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			return;
 		}
 
-		String externalReferenceCode1 = RandomTestUtil.randomString();
+		String externalReferenceCode1 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode1, _getGroupId());
 
-		String externalReferenceCode2 = RandomTestUtil.randomString();
+		String externalReferenceCode2 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode2, _getGroupId());
 
@@ -223,7 +224,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	public void testExportImportKeepCreatorData() throws Exception {
 		User user = addUser();
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode, _getGroupId());
 
@@ -250,7 +251,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	public void testExportImportOverrideCreatorData() throws Exception {
 		User user = addUser();
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode, _getGroupId());
 
@@ -279,7 +280,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			return;
 		}
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode, _getGroupId());
 
@@ -317,15 +318,15 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 
 	@Test
 	public void testExportImportWithDateRange() throws Exception {
-		String externalReferenceCode1 = RandomTestUtil.randomString();
+		String externalReferenceCode1 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode1, _getGroupId());
 
-		String externalReferenceCode2 = RandomTestUtil.randomString();
+		String externalReferenceCode2 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode2, _getGroupId());
 
-		String externalReferenceCode3 = RandomTestUtil.randomString();
+		String externalReferenceCode3 = _getRandomExternalReferenceCode();
 
 		addEntry(externalReferenceCode3, _getGroupId());
 
@@ -358,7 +359,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			return;
 		}
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = _getRandomExternalReferenceCode();
 
 		_addEmptyEntry(externalReferenceCode);
 
@@ -607,6 +608,10 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 		Group group = getGroup();
 
 		return group.getGroupId();
+	}
+
+	private String _getRandomExternalReferenceCode() {
+		return StringUtil.toLowerCase(RandomTestUtil.randomString());
 	}
 
 	private long _getTargetGroupId() {
