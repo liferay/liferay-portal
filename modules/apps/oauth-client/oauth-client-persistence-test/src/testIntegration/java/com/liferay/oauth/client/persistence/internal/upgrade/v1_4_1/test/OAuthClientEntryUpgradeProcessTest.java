@@ -61,16 +61,16 @@ public class OAuthClientEntryUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
-		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer();
-			CompanyConfigurationTemporarySwapper
+		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						OAuthClientCompanyConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
 							"authServerLocalNetworkAccessEnabled", true
-						).build())) {
+						).build());
+			OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
+				new OpenIdConnectProviderHttpServer()) {
 
 			String clientId1 = RandomTestUtil.randomString();
 			String discoveryEndpoint = openIdConnectProviderHttpServer.getURL();

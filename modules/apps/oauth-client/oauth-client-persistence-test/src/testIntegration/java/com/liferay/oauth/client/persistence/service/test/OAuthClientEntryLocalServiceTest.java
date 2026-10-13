@@ -86,16 +86,16 @@ public class OAuthClientEntryLocalServiceTest {
 	}
 
 	private void _testAddOAuthClientEntry() throws Exception {
-		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer();
-			CompanyConfigurationTemporarySwapper
+		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						OAuthClientCompanyConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
 							"authServerLocalNetworkAccessEnabled", true
-						).build())) {
+						).build());
+			OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
+				new OpenIdConnectProviderHttpServer()) {
 
 			String authRequestParametersJSON = JSONUtil.put(
 				"response_type", "code"

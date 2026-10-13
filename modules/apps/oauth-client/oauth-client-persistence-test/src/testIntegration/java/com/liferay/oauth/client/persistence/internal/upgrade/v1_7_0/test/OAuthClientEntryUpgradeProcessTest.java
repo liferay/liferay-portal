@@ -54,16 +54,16 @@ public class OAuthClientEntryUpgradeProcessTest {
 
 		OAuthClientEntry oAuthClientEntry = null;
 
-		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer();
-			CompanyConfigurationTemporarySwapper
+		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						OAuthClientCompanyConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
 							"authServerLocalNetworkAccessEnabled", true
-						).build())) {
+						).build());
+			OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
+				new OpenIdConnectProviderHttpServer()) {
 
 			oAuthClientEntry =
 				_oAuthClientEntryLocalService.addOAuthClientEntry(

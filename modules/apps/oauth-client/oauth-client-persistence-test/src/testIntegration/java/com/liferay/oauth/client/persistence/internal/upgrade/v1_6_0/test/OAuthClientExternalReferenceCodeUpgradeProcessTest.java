@@ -57,16 +57,16 @@ public class OAuthClientExternalReferenceCodeUpgradeProcessTest
 		JSONObject jsonObject = JSONUtil.put(
 			"client_id", RandomTestUtil.randomString());
 
-		try (OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
-				new OpenIdConnectProviderHttpServer();
-			CompanyConfigurationTemporarySwapper
+		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						OAuthClientCompanyConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
 							"authServerLocalNetworkAccessEnabled", true
-						).build())) {
+						).build());
+			OpenIdConnectProviderHttpServer openIdConnectProviderHttpServer =
+				new OpenIdConnectProviderHttpServer()) {
 
 			return new ExternalReferenceCodeModel[] {
 				_oAuthClientEntryLocalService.addOAuthClientEntry(
