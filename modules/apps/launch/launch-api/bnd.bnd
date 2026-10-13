@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Launch API
+Bundle-SymbolicName: com.liferay.launch.api
+Bundle-Version: 4.1.0
+Export-Package:\
+	com.liferay.launch.entry.type,\
+	com.liferay.launch.entry.type.registry,\
+	com.liferay.launch.set.publisher

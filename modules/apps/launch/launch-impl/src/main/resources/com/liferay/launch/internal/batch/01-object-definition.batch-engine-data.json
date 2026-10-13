@@ -32,6 +32,24 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
+					"externalReferenceCode": "BASE_VERSION_KEY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Base Version Key"
+					},
+					"name": "baseVersionKey",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
 					"externalReferenceCode": "CLASS_NAME",
 					"indexed": true,
 					"indexedAsKeyword": true,
@@ -67,18 +85,37 @@
 					"unique": false
 				},
 				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"defaultValue": "0",
+					"externalReferenceCode": "DRAFT_ID",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Draft ID"
+					},
+					"name": "draftId",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "CLASS_VERSION",
+					"externalReferenceCode": "VERSION_KEY",
 					"indexed": true,
 					"indexedAsKeyword": true,
 					"label": {
-						"en_US": "Class Version"
+						"en_US": "Version Key"
 					},
-					"name": "classVersion",
+					"name": "versionKey",
 					"readOnly": "false",
 					"readOnlyConditionExpression": "",
-					"required": true,
+					"required": false,
 					"state": false,
 					"system": true,
 					"type": "String",
