@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {createPortletURL, navigate as navigateUtil, sub} from 'frontend-js-web';
 import React, {useCallback, useRef, useState} from 'react';
@@ -427,7 +428,13 @@ export default function ChangeTrackingChangeView({
 									description={Liferay.Language.get(
 										'no-changes-were-found'
 									)}
-									imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+									image={
+										<ClayIcon
+											className="c-empty-state-icon c-empty-state-icon-empty-state"
+											illustration
+											symbol="empty-state"
+										/>
+									}
 									title={Liferay.Language.get(
 										'no-results-found'
 									)}

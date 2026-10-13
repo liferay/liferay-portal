@@ -559,6 +559,8 @@ const PublicationsSearchContainer = ({
 				className += ' publications-loading';
 			}
 
+			const symbol = resultsKeywords ? 'search-state' : 'empty-state';
+
 			return (
 				<div className={containerView ? 'container-view' : ''}>
 					<div className={className}>
@@ -566,10 +568,12 @@ const PublicationsSearchContainer = ({
 							description={Liferay.Language.get(
 								'no-publications-were-found'
 							)}
-							imgSrc={
-								resultsKeywords
-									? `${themeDisplay.getPathThemeImages()}/states/search_state.svg`
-									: `${themeDisplay.getPathThemeImages()}/states/empty_state.svg`
+							image={
+								<ClayIcon
+									className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+									illustration
+									symbol={symbol}
+								/>
 							}
 							title={Liferay.Language.get('no-results-found')}
 						/>
