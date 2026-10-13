@@ -235,9 +235,15 @@ testWithEnhancedFiltering.describe(
 						await collectionsPage.openCollection(collectionName);
 
 						// A column on a field of the item type is saved as JSON
-						// carrying the propertyName, classNameId, classTypeId.
+						// carrying the objectDefinitionExternalReferenceCode
+						// and propertyName.
 
-						expect(await getOrderByColumn(1)).toContain(
+						const orderByColumn1 = await getOrderByColumn(1);
+
+						expect(orderByColumn1).toContain(
+							'"objectDefinitionExternalReferenceCode":"L_CMS_BASIC_WEB_CONTENT"'
+						);
+						expect(orderByColumn1).toContain(
 							'"propertyName":"title"'
 						);
 						expect(await getOrderByColumn(2)).toBe('createDate');
