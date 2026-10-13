@@ -101,8 +101,11 @@ public class RSSWebCacheItem implements WebCacheItem {
 			Http.Response response = options.getResponse();
 
 			String redirect = response.getRedirect();
+			int responseCode = response.getResponseCode();
 
-			if (Validator.isNull(redirect)) {
+			if (Validator.isNull(redirect) || (responseCode < 300) ||
+				(responseCode >= 400)) {
+
 				return inputStream;
 			}
 
