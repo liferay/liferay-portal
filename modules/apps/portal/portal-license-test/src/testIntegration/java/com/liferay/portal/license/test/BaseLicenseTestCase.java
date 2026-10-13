@@ -94,8 +94,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 			_buildFreeTierPortalLicenseXML(domain, validityPeriod));
 
 		return _buildBinaryFile(
-			getPortalProductId(), _FREE_TIER_ACCOUNT_NAME,
-			_FREE_TIER_PRODUCT_NAME, FREE_TIER_LICENSE_TYPE);
+			_FREE_TIER_ACCOUNT_NAME, FREE_TIER_LICENSE_TYPE,
+			getPortalProductId(), _FREE_TIER_PRODUCT_NAME);
 	}
 
 	public static void deployLicenses(String[][] licenses) throws Exception {
@@ -107,7 +107,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 			if (Objects.equals(license[0], ENTERPRISE_LICENSE_TYPE)) {
 				sb.append(
 					_buildEnterprisePortalLicenseXML(
-						StringPool.BLANK, Long.valueOf(license[1])));
+						StringPool.BLANK, _getEnterpriseProductName(),
+						Long.valueOf(license[1])));
 			}
 			else if (Objects.equals(license[0], FREE_TIER_LICENSE_TYPE)) {
 				sb.append(
@@ -261,8 +262,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		_registerLicense(_buildAppLicenseXML(app, startTime, validityPeriod));
 
 		return _buildBinaryFile(
-			getProductId(app), StringPool.BLANK, app.toString(),
-			_APP_LICENSE_TYPE);
+			StringPool.BLANK, _APP_LICENSE_TYPE, getProductId(app),
+			app.toString());
 	}
 
 	public File deployEnterprisePortalLicense(long validityPeriod)
@@ -274,11 +275,20 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public File deployEnterprisePortalLicense(String key, long validityPeriod)
 		throws Exception {
 
-		_registerLicense(_buildEnterprisePortalLicenseXML(key, validityPeriod));
+		return deployEnterprisePortalLicense(
+			key, _getEnterpriseProductName(), validityPeriod);
+	}
+
+	public File deployEnterprisePortalLicense(
+			String key, String productName, long validityPeriod)
+		throws Exception {
+
+		_registerLicense(
+			_buildEnterprisePortalLicenseXML(key, productName, validityPeriod));
 
 		return _buildBinaryFile(
-			getPortalProductId(), _ENTERPRISE_ACCOUNT_NAME,
-			_ENTERPRISE_PRODUCT_NAME, ENTERPRISE_LICENSE_TYPE);
+			_ENTERPRISE_ACCOUNT_NAME, ENTERPRISE_LICENSE_TYPE,
+			getPortalProductId(), productName);
 	}
 
 	public void resetCheckInterval() throws Exception {
@@ -547,6 +557,12 @@ public abstract class BaseLicenseTestCase implements Serializable {
 
 	protected static final String ENTERPRISE_LICENSE_TYPE = "enterprise";
 
+	protected static final String ENTERPRISE_PRODUCT_NAME_CMS =
+		"CMS Enterprise";
+
+	protected static final String ENTERPRISE_PRODUCT_NAME_DXP =
+		"DXP Enterprise";
+
 	protected static final String FREE_TIER_LICENSE_TYPE = "free";
 
 	private static String _buildAppLicenseXML(
@@ -590,8 +606,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	}
 
 	private static File _buildBinaryFile(
-		String productId, String accountName, String productEntryName,
-		String licenseType) {
+		String accountName, String licenseType, String productId,
+		String productName) {
 
 		StringBundler sb = new StringBundler(6);
 
@@ -600,7 +616,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 			sb.append("_");
 		}
 
-		sb.append(StringUtil.extractChars(productEntryName));
+		sb.append(StringUtil.extractChars(productName));
 		sb.append("_");
 		sb.append(StringUtil.extractChars(licenseType));
 		sb.append(".li");
@@ -609,7 +625,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	}
 
 	private static String _buildEnterprisePortalLicenseXML(
-		String key, long validityPeriod) {
+		String key, String productName, long validityPeriod) {
 
 		long currentTimeMillis = System.currentTimeMillis();
 
@@ -620,7 +636,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append("</account-name><product-id>");
 		sb.append(getPortalProductId());
 		sb.append("</product-id><product-name>");
-		sb.append(_ENTERPRISE_PRODUCT_NAME);
+		sb.append(productName);
 		sb.append("</product-name><product-version>2026.Q1</product-version>");
 		sb.append("<license-type>");
 		sb.append(ENTERPRISE_LICENSE_TYPE);
@@ -670,6 +686,14 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append("</license>");
 
 		return sb.toString();
+	}
+
+	private static String _getEnterpriseProductName() {
+		if (isCMS()) {
+			return ENTERPRISE_PRODUCT_NAME_CMS;
+		}
+
+		return ENTERPRISE_PRODUCT_NAME_DXP;
 	}
 
 	private static void _registerLicense(String licenseXML) throws Exception {
@@ -747,8 +771,6 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	private static final String _ENTERPRISE_ACCOUNT_NAME = "Enterprise Account";
 
 	private static final String _ENTERPRISE_DOMAIN = "enterprise.com";
-
-	private static final String _ENTERPRISE_PRODUCT_NAME = "DXP Enterprise";
 
 	private static final String _EXPIRED_LICENSE_KEY =
 		"This instance is expired.";
