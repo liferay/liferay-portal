@@ -140,8 +140,8 @@ public class StaticSiteExportDocument {
 		for (String openGraphLocaleAlternate : openGraphLocaleAlternates) {
 			Element element = new Element("meta");
 
-			element.attr("property", "og:locale:alternate");
 			element.attr("content", openGraphLocaleAlternate);
+			element.attr("property", "og:locale:alternate");
 
 			firstElement.before(element);
 		}

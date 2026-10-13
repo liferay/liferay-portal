@@ -245,6 +245,10 @@ public class StaticSiteExporterTest {
 			Arrays.asList(LocaleUtil.GERMANY, LocaleUtil.SPAIN, LocaleUtil.US),
 			LocaleUtil.US);
 
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		String englishFriendlyURL = StringBundler.concat(
 			StringPool.SLASH,
 			StringUtil.toLowerCase(RandomTestUtil.randomString()),
@@ -255,11 +259,6 @@ public class StaticSiteExporterTest {
 			StringUtil.toLowerCase(RandomTestUtil.randomString()),
 			StringPool.SLASH,
 			StringUtil.toLowerCase(RandomTestUtil.randomString()));
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
 		String siteURL =
 			PortalUtil.getPathFriendlyURLPublic() + _group.getFriendlyURL();
 
