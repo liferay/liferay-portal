@@ -92,10 +92,6 @@ public interface NotificationRecipientSettingLocalService
 			NotificationTemplate notificationTemplate, Object[] recipients,
 			User user);
 
-	public List<NotificationRecipientSetting>
-		createNotificationRecipientSettings(
-			long notificationRecipientId, Object[] recipients, User user);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -328,4 +324,4 @@ public interface NotificationRecipientSettingLocalService
 		NotificationRecipientSetting notificationRecipientSetting);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:333679737
+// LIFERAY-SERVICE-BUILDER-HASH:1149336132
