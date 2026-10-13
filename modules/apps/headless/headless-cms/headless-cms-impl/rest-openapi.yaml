@@ -41,6 +41,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                missingRequiredFieldsCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 overdueWorkflowTasksCount:
                     format: int64
                     readOnly: true
