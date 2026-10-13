@@ -8,6 +8,7 @@ package com.liferay.portal.license.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.license.util.App;
 
+import org.junit.Assume;
 import org.junit.runner.RunWith;
 
 /**
@@ -15,6 +16,10 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class DXPAppModuleLicenseTest extends BaseAppModuleLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle() && !isCMS());
+	}
 
 	@Override
 	protected App[] getApps() {

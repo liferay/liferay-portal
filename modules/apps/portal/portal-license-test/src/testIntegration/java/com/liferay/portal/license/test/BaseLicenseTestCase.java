@@ -62,7 +62,6 @@ import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.matcher.ElementMatchers;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Rule;
 
@@ -80,10 +79,6 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
-
-	public static void assume() {
-		Assume.assumeTrue(isReleaseBundle());
-	}
 
 	public static File deployFreeTierPortalLicense(long validityPeriod)
 		throws Exception {
@@ -137,6 +132,18 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public static SafeCloseable disableValidateWithSafeCloseable() {
 		return setReturnValueWithSafeCloseable(
 			ReflectionsHolder._validateMethod, true);
+	}
+
+	public static boolean isCMS() {
+		Method nameMethod = ReflectionsHolder._nameMethod;
+
+		try {
+			return Objects.equals(
+				getProperty("cms.name"), nameMethod.invoke(null));
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	public static boolean isReleaseBundle() {
@@ -775,6 +782,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 
 		private static Instrumentation _instrumentation;
 		private static Class<?> _licenseManagerHelperClass;
+		private static Method _nameMethod;
 		private static Class<?> _validateClass;
 		private static Method _validateMethod;
 		private static Method _versionMethod;
@@ -813,6 +821,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 						}
 					}
 
+					_nameMethod = findMethod("name.method");
 					_versionMethod = findMethod("version.method");
 
 					Field field = findField("lifecycle.action.field");

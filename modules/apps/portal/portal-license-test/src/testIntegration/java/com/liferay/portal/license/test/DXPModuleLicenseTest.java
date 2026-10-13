@@ -18,6 +18,7 @@ import java.util.Objects;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,6 +33,10 @@ import org.osgi.framework.BundleContext;
  */
 @RunWith(Arquillian.class)
 public class DXPModuleLicenseTest extends BaseLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle() && !isCMS());
+	}
 
 	@BeforeClass
 	public static void setUpClass() {

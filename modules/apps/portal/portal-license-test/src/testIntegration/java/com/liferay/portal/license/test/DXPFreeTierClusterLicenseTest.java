@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,6 +29,10 @@ import org.junit.runner.RunWith;
 @Ignore
 @RunWith(Arquillian.class)
 public class DXPFreeTierClusterLicenseTest extends BaseClusterLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle() && !isCMS());
+	}
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {

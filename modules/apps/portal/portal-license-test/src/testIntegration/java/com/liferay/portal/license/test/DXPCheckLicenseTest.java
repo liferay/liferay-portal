@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,6 +24,10 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class DXPCheckLicenseTest extends BaseCheckLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle() && !isCMS());
+	}
 
 	@Test
 	public void testCheckLicenseWithFreeTierBinaryFile2026_Q1_0()

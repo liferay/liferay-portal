@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Time;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,6 +20,10 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class DXPExpiredLicenseTest extends BaseExpiredLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle() && !isCMS());
+	}
 
 	@Test
 	public void testFreeAndEnterpriseExpired() throws Exception {

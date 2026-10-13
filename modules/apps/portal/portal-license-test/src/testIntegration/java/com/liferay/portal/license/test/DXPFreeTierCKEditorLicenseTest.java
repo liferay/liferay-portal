@@ -30,6 +30,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,6 +45,10 @@ import org.osgi.service.cm.ConfigurationAdmin;
  */
 @RunWith(Arquillian.class)
 public class DXPFreeTierCKEditorLicenseTest extends BaseLicenseTestCase {
+
+	public static void assume() {
+		Assume.assumeTrue(isReleaseBundle() && !isCMS());
+	}
 
 	@BeforeClass
 	public static void setUpClass() {
