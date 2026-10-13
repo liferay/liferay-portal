@@ -147,6 +147,16 @@ public class AssetStatisticsSerDes {
 			sb.append(assetStatistics.getScheduledCount());
 		}
 
+		if (assetStatistics.getSlaBreachedWorkflowTasksCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"slaBreachedWorkflowTasksCount\": ");
+
+			sb.append(assetStatistics.getSlaBreachedWorkflowTasksCount());
+		}
+
 		if (assetStatistics.getTotalCount() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -286,6 +296,16 @@ public class AssetStatisticsSerDes {
 				String.valueOf(assetStatistics.getScheduledCount()));
 		}
 
+		if (assetStatistics.getSlaBreachedWorkflowTasksCount() == null) {
+			map.put("slaBreachedWorkflowTasksCount", null);
+		}
+		else {
+			map.put(
+				"slaBreachedWorkflowTasksCount",
+				String.valueOf(
+					assetStatistics.getSlaBreachedWorkflowTasksCount()));
+		}
+
 		if (assetStatistics.getTotalCount() == null) {
 			map.put("totalCount", null);
 		}
@@ -364,6 +384,11 @@ public class AssetStatisticsSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "scheduledCount")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "slaBreachedWorkflowTasksCount")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "totalCount")) {
@@ -451,6 +476,14 @@ public class AssetStatisticsSerDes {
 			else if (Objects.equals(jsonParserFieldName, "scheduledCount")) {
 				if (jsonParserFieldValue != null) {
 					assetStatistics.setScheduledCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "slaBreachedWorkflowTasksCount")) {
+
+				if (jsonParserFieldValue != null) {
+					assetStatistics.setSlaBreachedWorkflowTasksCount(
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
@@ -563,4 +596,4 @@ public class AssetStatisticsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1791730640
+// LIFERAY-REST-BUILDER-HASH:346830234

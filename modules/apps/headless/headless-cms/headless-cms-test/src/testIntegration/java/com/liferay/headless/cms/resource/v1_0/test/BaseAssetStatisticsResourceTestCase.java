@@ -362,6 +362,19 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"slaBreachedWorkflowTasksCount",
+					additionalAssertFieldName)) {
+
+				if (assetStatistics.getSlaBreachedWorkflowTasksCount() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("totalCount", additionalAssertFieldName)) {
 				if (assetStatistics.getTotalCount() == null) {
 					valid = false;
@@ -627,6 +640,20 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"slaBreachedWorkflowTasksCount",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						assetStatistics1.getSlaBreachedWorkflowTasksCount(),
+						assetStatistics2.getSlaBreachedWorkflowTasksCount())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("totalCount", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						assetStatistics1.getTotalCount(),
@@ -822,6 +849,11 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("slaBreachedWorkflowTasksCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("totalCount")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -894,6 +926,7 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				pendingCount = RandomTestUtil.randomLong();
 				reviewDateOverdueCount = RandomTestUtil.randomLong();
 				scheduledCount = RandomTestUtil.randomLong();
+				slaBreachedWorkflowTasksCount = RandomTestUtil.randomLong();
 				totalCount = RandomTestUtil.randomLong();
 				upcomingReviewCount = RandomTestUtil.randomLong();
 				workflowTasksCount = RandomTestUtil.randomLong();
@@ -1124,4 +1157,4 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 		_assetStatisticsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2138199839
+// LIFERAY-REST-BUILDER-HASH:-1556795111

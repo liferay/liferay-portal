@@ -238,6 +238,31 @@ public class AssetStatistics implements Cloneable, Serializable {
 
 	protected Long scheduledCount;
 
+	public Long getSlaBreachedWorkflowTasksCount() {
+		return slaBreachedWorkflowTasksCount;
+	}
+
+	public void setSlaBreachedWorkflowTasksCount(
+		Long slaBreachedWorkflowTasksCount) {
+
+		this.slaBreachedWorkflowTasksCount = slaBreachedWorkflowTasksCount;
+	}
+
+	public void setSlaBreachedWorkflowTasksCount(
+		UnsafeSupplier<Long, Exception>
+			slaBreachedWorkflowTasksCountUnsafeSupplier) {
+
+		try {
+			slaBreachedWorkflowTasksCount =
+				slaBreachedWorkflowTasksCountUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long slaBreachedWorkflowTasksCount;
+
 	public Long getTotalCount() {
 		return totalCount;
 	}
@@ -333,4 +358,4 @@ public class AssetStatistics implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-274497620
+// LIFERAY-REST-BUILDER-HASH:-1389555501
