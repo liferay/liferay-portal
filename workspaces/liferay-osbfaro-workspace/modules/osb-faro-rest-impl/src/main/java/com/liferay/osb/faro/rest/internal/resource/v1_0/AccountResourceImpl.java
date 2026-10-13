@@ -94,19 +94,19 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				faroProject, accountLifecycleId);
 		}
 
-		List<AccountLifecycle> accountLifecycles =
+		Results<AccountLifecycle> results =
 			_contactsEngineClient.getAccountLifecycles(
-				faroProject, GetterUtil.getLong(channelId));
+				faroProject, GetterUtil.getLong(channelId), Boolean.TRUE, null,
+				1, 1, null);
+
+		List<AccountLifecycle> accountLifecycles = results.getItems();
 
 		if (ListUtil.isEmpty(accountLifecycles)) {
 			throw new IllegalArgumentException(
-				"No account lifecycle is configured for the workspace");
+				"No default account lifecycle is configured for the channel");
 		}
 
-		AccountLifecycle accountLifecycle = accountLifecycles.get(0);
-
-		return _contactsEngineClient.getAccountLifecycle(
-			faroProject, accountLifecycle.getId());
+		return accountLifecycles.get(0);
 	}
 
 	private String _getLifecycleStageFilterString(

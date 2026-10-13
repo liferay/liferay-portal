@@ -5,6 +5,8 @@
 
 package com.liferay.osb.faro.engine.client.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +14,14 @@ import java.util.List;
  * @author Riccardo Ferrari
  */
 public class AccountLifecycle {
+
+	public String getAuthorId() {
+		return _authorId;
+	}
+
+	public String getAuthorName() {
+		return _authorName;
+	}
 
 	public String getDescription() {
 		return _description;
@@ -23,6 +33,14 @@ public class AccountLifecycle {
 
 	public String getId() {
 		return _id;
+	}
+
+	public Date getModifiedDate() {
+		if (_modifiedDate == null) {
+			return null;
+		}
+
+		return new Date(_modifiedDate.getTime());
 	}
 
 	public String getName() {
@@ -45,6 +63,23 @@ public class AccountLifecycle {
 		return _stages;
 	}
 
+	@JsonProperty("defaultAccountLifecycle")
+	public Boolean isDefaultAccountLifecycle() {
+		return _defaultAccountLifecycle;
+	}
+
+	public void setAuthorId(String authorId) {
+		_authorId = authorId;
+	}
+
+	public void setAuthorName(String authorName) {
+		_authorName = authorName;
+	}
+
+	public void setDefaultAccountLifecycle(Boolean defaultAccountLifecycle) {
+		_defaultAccountLifecycle = defaultAccountLifecycle;
+	}
+
 	public void setDescription(String description) {
 		_description = description;
 	}
@@ -55,6 +90,12 @@ public class AccountLifecycle {
 
 	public void setId(String id) {
 		_id = id;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		if (modifiedDate != null) {
+			_modifiedDate = new Date(modifiedDate.getTime());
+		}
 	}
 
 	public void setName(String name) {
@@ -75,9 +116,13 @@ public class AccountLifecycle {
 		_stages = stages;
 	}
 
+	private String _authorId;
+	private String _authorName;
+	private Boolean _defaultAccountLifecycle;
 	private String _description;
 	private String _externalReferenceCode;
 	private String _id;
+	private Date _modifiedDate;
 	private String _name;
 	private Date _processedDate;
 	private String _segmentId;

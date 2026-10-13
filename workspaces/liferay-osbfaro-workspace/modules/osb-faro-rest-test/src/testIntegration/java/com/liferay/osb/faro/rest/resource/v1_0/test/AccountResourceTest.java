@@ -166,7 +166,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 						}
 
 						if (methodName.equals("getAccountLifecycles")) {
-							return Collections.singletonList(accountLifecycle);
+							return new Results<>(
+								Collections.singletonList(accountLifecycle), 1);
 						}
 
 						argumentsAtomicReference.set(arguments);
