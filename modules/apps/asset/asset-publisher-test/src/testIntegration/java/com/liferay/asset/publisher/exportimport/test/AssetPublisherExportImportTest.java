@@ -808,6 +808,34 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-109596")
+	public void testExportImportCompanyGroupAssetVocabularyFilterWithRemoteStaging()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			group.getCompanyId());
+
+		_companyAssetVocabulary = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+
+		PortletPreferences importedPortletPreferences =
+			_getRemoteStagingImportedPortletPreferences(
+				HashMapBuilder.put(
+					"assetVocabularyId",
+					new String[] {
+						String.valueOf(
+							_companyAssetVocabulary.getVocabularyId())
+					}
+				).put(
+					"selectionStyle", new String[] {"dynamic"}
+				).build());
+
+		Assert.assertEquals(
+			String.valueOf(_companyAssetVocabulary.getVocabularyId()),
+			importedPortletPreferences.getValue("assetVocabularyId", null));
+	}
+
+	@Test
 	@TestInfo("LPD-98716")
 	public void testExportImportDisplayStyleFromStagedGroup() throws Exception {
 		Group displayStyleLiveGroup = GroupTestUtil.addGroup();
@@ -1929,6 +1957,9 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;
+
+	@DeleteAfterTestRun
+	private AssetVocabulary _companyAssetVocabulary;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
