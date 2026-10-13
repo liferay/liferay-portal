@@ -70,6 +70,7 @@ public class FieldMappingDisplayTest {
 
 		_testGetDisplayName("account", "customer-since", "yearStarted");
 		_testGetDisplayName("demographics", "field.birth-date", "birthday");
+		_testGetDisplayName("demographics", "field.country", "country");
 		_testGetDisplayName(
 			"demographics", "field.email-address", "emailAddress");
 		_testGetDisplayName("demographics", "field.first-name", "firstName");
