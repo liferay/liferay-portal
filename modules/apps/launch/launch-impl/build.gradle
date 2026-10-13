@@ -6,6 +6,10 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
+	compileOnly project(":apps:item-selector:item-selector-api")
+	compileOnly project(":apps:item-selector:item-selector-criteria-api")
+	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:launch:launch-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal:portal-aop-api")

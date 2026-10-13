@@ -140,6 +140,7 @@ import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.preview.Previewable;
 import com.liferay.portal.kernel.repository.capabilities.TemporaryFileEntriesCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -253,6 +254,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = "model.class.name=com.liferay.journal.model.JournalArticle",
 	service = AopService.class
 )
+@Previewable
 public class JournalArticleLocalServiceImpl
 	extends JournalArticleLocalServiceBaseImpl {
 
@@ -1614,6 +1616,7 @@ public class JournalArticleLocalServiceImpl
 	 * @return the web content article with the ID
 	 */
 	@Override
+	@Previewable(enabled = false)
 	public JournalArticle fetchArticle(long id) {
 		return journalArticlePersistence.fetchByPrimaryKey(id);
 	}
@@ -2010,6 +2013,7 @@ public class JournalArticleLocalServiceImpl
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Override
+	@Previewable(enabled = false)
 	public JournalArticle getArticle(long id) throws PortalException {
 		return journalArticlePersistence.findByPrimaryKey(id);
 	}
