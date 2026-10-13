@@ -2932,11 +2932,15 @@ public class JournalArticleLocalServiceImpl
 			return Collections.emptyList();
 		}
 
-		JournalArticleTable tempJournalArticleTable =
-			JournalArticleTable.INSTANCE.as("tempJournalArticleTable");
-
 		DDMStructure ddmStructure = _ddmStructureLocalService.fetchDDMStructure(
 			layoutPageTemplateEntry.getClassTypeId());
+
+		if (ddmStructure == null) {
+			return Collections.emptyList();
+		}
+
+		JournalArticleTable tempJournalArticleTable =
+			JournalArticleTable.INSTANCE.as("tempJournalArticleTable");
 
 		return journalArticlePersistence.dslQuery(
 			DSLQueryFactoryUtil.selectDistinct(
