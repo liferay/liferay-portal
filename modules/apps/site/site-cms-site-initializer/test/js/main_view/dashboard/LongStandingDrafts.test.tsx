@@ -137,22 +137,6 @@ describe('[CMS Dashboard] LongStandingDrafts', () => {
 		expect(getCard()).toHaveTextContent('2.6% of 350 Assets');
 	});
 
-	it('shows 0% when there are no assets', () => {
-		renderOperations({
-			statistics: {longStandingDraftsCount: 0, totalCount: 0},
-		});
-
-		expect(getCard()).toHaveTextContent('0% of 0 Assets');
-	});
-
-	it('formats the total of assets with the thousands separator of the language', () => {
-		renderOperations({
-			statistics: {longStandingDraftsCount: 9, totalCount: 1280},
-		});
-
-		expect(getCard()).toHaveTextContent('0.7% of 1,280 Assets');
-	});
-
 	it('toggles the list of long-standing drafts when clicking the card', async () => {
 		renderOperations();
 

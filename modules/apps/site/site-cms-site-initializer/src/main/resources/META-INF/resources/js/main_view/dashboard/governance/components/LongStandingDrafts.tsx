@@ -26,6 +26,7 @@ import GovernanceService, {
 } from '../GovernanceService';
 import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
 import {GovernanceAdditionalProps} from '../types';
+import {PercentageOfTotal} from './PercentageOfTotal';
 
 const EMPTY_STATE_IMAGE = '/states/cms_empty_state.svg';
 
@@ -62,29 +63,6 @@ const VIEWS = [
 	},
 ];
 
-function PercentageOfTotal({
-	label,
-	percentage,
-}: {
-	label: string;
-	percentage: number;
-}) {
-	return (
-		<div className="mt-2">
-			<Text color="secondary" size={3}>
-				{label}
-			</Text>
-
-			<div aria-hidden="true" className="mt-2 progress">
-				<div
-					className="progress-bar"
-					style={{width: `${percentage}%`}}
-				/>
-			</div>
-		</div>
-	);
-}
-
 function renderAuthorAndDaysInDraft(item: ISearchAssetObjectEntry) {
 	const daysInDraft = Math.floor(
 		(Date.now() - new Date(item.dateModified).getTime()) /
@@ -112,20 +90,6 @@ export function LongStandingDraftsCard({
 	const {loadingStatistics, statistics} = useContext(GovernanceContext);
 
 	const count = statistics?.longStandingDraftsCount ?? 0;
-	const total = statistics?.totalCount ?? 0;
-
-	const percentage = total ? (count / total) * 100 : 0;
-
-	const languageId = Liferay.ThemeDisplay.getBCP47LanguageId();
-
-	const percentageLabel = sub(
-		Liferay.Language.get('x-of-x-assets'),
-		new Intl.NumberFormat(languageId, {
-			maximumFractionDigits: 1,
-			style: 'percent',
-		}).format(percentage / 100),
-		new Intl.NumberFormat(languageId).format(total)
-	);
 
 	return (
 		<InteractiveCard
@@ -143,8 +107,9 @@ export function LongStandingDraftsCard({
 			value={count}
 		>
 			<PercentageOfTotal
-				label={percentageLabel}
-				percentage={percentage}
+				count={count}
+				template={Liferay.Language.get('x-of-x-assets')}
+				total={statistics?.totalCount ?? 0}
 			/>
 		</InteractiveCard>
 	);
