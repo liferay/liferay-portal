@@ -43,8 +43,8 @@ public class AssetListOrderByColumnUtil {
 		}
 
 		ObjectField objectField = AssetListObjectFieldUtil.fetchObjectField(
-			jsonObject.getLong("classNameId"), companyId,
-			jsonObject.getString("propertyName"));
+			companyId, jsonObject.getString("propertyName"),
+			jsonObject.getString("objectDefinitionExternalReferenceCode"));
 
 		if (objectField == null) {
 			return orderByColumn;
