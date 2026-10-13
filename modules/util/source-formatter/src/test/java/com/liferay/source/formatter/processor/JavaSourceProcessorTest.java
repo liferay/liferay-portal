@@ -721,6 +721,8 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 					"instead of nesting the rest of the loop body in the " +
 						"if-statement",
 				156
+			).addExpectedMessage(
+				"Redundant \"continue\" statement", 201
 			));
 	}
 
