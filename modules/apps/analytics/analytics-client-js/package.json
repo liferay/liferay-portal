@@ -13,8 +13,7 @@
 	"description": "Javascript client to capture and send analytics data to server",
 	"devDependencies": {
 		"browserslist-config-clay-components": "2.1.12",
-		"fetch-mock": "12.6.0",
-		"isomorphic-fetch": "2.2.1"
+		"fetch-mock": "12.6.0"
 	},
 	"homepage": "https://github.com/liferay/liferay-portal#readme",
 	"jest": {
