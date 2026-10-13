@@ -31,6 +31,7 @@ type TWebContent = {
 	folderId?: number | string;
 	groupId: number | string;
 	layoutUuid?: string;
+	rawContent?: string;
 	resourcePrimKey?: number | string;
 	serviceContext?: any;
 	title?: string;
@@ -72,6 +73,14 @@ type TWebContentDetailed = TWebContent & {
 	smallImageURL?: string;
 	titleMap?: Record<string, string>;
 };
+
+function getRichTextContent(html: string) {
+	return `<root>
+		<dynamic-element field-reference="content" index-type="text" name="content" type="rich_text">
+		<dynamic-content><![CDATA[${html}]]></dynamic-content>
+		</dynamic-element>
+	</root>`;
+}
 
 export class JSONWebServicesJournalApiHelper {
 	readonly apiHelpers: ApiHelpers;
@@ -147,12 +156,11 @@ export class JSONWebServicesJournalApiHelper {
 					.join('\n')}
 			</root>`;
 		}
+		else if (webContent.rawContent) {
+			content = getRichTextContent(webContent.rawContent);
+		}
 		else if (webContent.content) {
-			content = `<root>
-					<dynamic-element field-reference="content" index-type="text" name="content" type="rich_text">
-					<dynamic-content><![CDATA[<p>${webContent.content}</p>]]></dynamic-content>
-					</dynamic-element>
-				</root>`;
+			content = getRichTextContent(`<p>${webContent.content}</p>`);
 		}
 
 		urlSearchParams.append('content', content);
@@ -310,14 +318,18 @@ export class JSONWebServicesJournalApiHelper {
 			);
 		}
 
-		if (Object.prototype.hasOwnProperty.call(contentEdit, 'content')) {
+		if (Object.prototype.hasOwnProperty.call(contentEdit, 'rawContent')) {
 			urlSearchParams.append(
 				'content',
-				`<root>
-					<dynamic-element field-reference="content" index-type="text" name="content" type="rich_text">
-					<dynamic-content><![CDATA[<p>${contentEdit.content}</p>]]></dynamic-content>
-					</dynamic-element>
-					</root>`
+				getRichTextContent(contentEdit.rawContent)
+			);
+		}
+		else if (
+			Object.prototype.hasOwnProperty.call(contentEdit, 'content')
+		) {
+			urlSearchParams.append(
+				'content',
+				getRichTextContent(`<p>${contentEdit.content}</p>`)
 			);
 		}
 		else {
@@ -330,6 +342,7 @@ export class JSONWebServicesJournalApiHelper {
 			JSON.stringify({
 				scopeGroupId: webContent.groupId,
 				userId: webContent.userId,
+				...(webContent.serviceContext || {}),
 			})
 		);
 
