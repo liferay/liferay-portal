@@ -4,8 +4,10 @@
  */
 
 import ClayAlert from './Alert';
+import {usePrefersPersistentAlerts} from './usePrefersPersistentAlerts';
 
 import type {DisplayType, IClayAlertProps} from './Alert';
 
+export {usePrefersPersistentAlerts};
 export type {DisplayType, IClayAlertProps};
 export default ClayAlert;

@@ -7,6 +7,11 @@ import {useProvider} from '@clayui/provider';
 
 import {useBodyHasClass} from './useBodyHasClass';
 
+/**
+ * Returns whether alerts must stay open instead of closing automatically. It
+ * is `true` when the Provider `persistentAlerts` prop is set or the
+ * `c-prefers-persistent-alerts` class is present on the body.
+ */
 export function usePrefersPersistentAlerts() {
 	const {persistentAlerts} = useProvider();
 
