@@ -98,6 +98,7 @@ export const useLifecycleSettingsForm = ({
 
 	const canSubmit =
 		!!lifecycleName.trim() &&
+		!!lifecycleDescription.trim() &&
 		!!stageConfigs.length &&
 		stageConfigs.every(isStageReady);
 

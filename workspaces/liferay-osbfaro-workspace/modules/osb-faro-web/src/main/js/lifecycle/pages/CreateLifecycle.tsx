@@ -7,11 +7,14 @@ import RouteNotFound from 'shared/components/RouteNotFound';
 import {buildCreateLifecyclePayload} from 'lifecycle/utils/lifecyclePayload';
 import {createStageConfig} from 'lifecycle/utils/stageConfiguration';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
+import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const CreateLifecycle = () => {
 	const {channelId, groupId} = useParams();
+
+	const currentUser = useCurrentUser();
 
 	const {data: lifecycles, loading} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycles,
@@ -28,6 +31,7 @@ const CreateLifecycle = () => {
 		lifecycleURL,
 		refetchCatalog,
 		selectedStage,
+		setLifecycleDescription,
 		setLifecycleName,
 		setSelectedKey,
 		stageConfigs,
@@ -72,9 +76,12 @@ const CreateLifecycle = () => {
 
 	return (
 		<LifecycleSettingsForm
+			authorName={currentUser.name}
 			backURL={lifecycleURL}
 			catalogFields={catalogFields?.items}
+			lifecycleDescription={lifecycleDescription}
 			lifecycleName={lifecycleName}
+			onLifecycleDescriptionChange={setLifecycleDescription}
 			onLifecycleNameChange={setLifecycleName}
 			onSelect={setSelectedKey}
 			onStageChange={updateStage}

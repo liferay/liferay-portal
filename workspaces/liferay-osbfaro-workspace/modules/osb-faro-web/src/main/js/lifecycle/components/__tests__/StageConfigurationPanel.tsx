@@ -9,6 +9,7 @@ import {
 } from 'lifecycle/utils/stageConfiguration';
 import {ICatalogField} from 'shared/api/catalog';
 import {fireEvent, render, screen} from '@testing-library/react';
+import {MemoryRouter} from 'react-router-dom';
 
 jest.mock('shared/util/date', () => ({
 	...jest.requireActual('shared/util/date'),
@@ -94,15 +95,15 @@ const renderPanel = (
 	props: Partial<React.ComponentProps<typeof StageConfigurationPanel>> = {}
 ) =>
 	render(
-		<StageConfigurationPanel
-			defaultExpanded
-			fields={mockFields}
-			index={1}
-			name="Aware"
-			onChange={jest.fn()}
-			value={baseValue}
-			{...props}
-		/>
+		<MemoryRouter>
+			<StageConfigurationPanel
+				fields={mockFields}
+				lifecycleName="Growth and Retention Hub"
+				onChange={jest.fn()}
+				value={baseValue}
+				{...props}
+			/>
+		</MemoryRouter>
 	);
 
 describe('StageConfigurationPanel', () => {
@@ -128,11 +129,72 @@ describe('StageConfigurationPanel', () => {
 		expect(screen.getByText('Configured')).toBeInTheDocument();
 	});
 
-	it('renders the stage name and trigger', () => {
+	it('shows the lifecycle and the stage in the breadcrumb', () => {
 		renderPanel();
 
-		expect(screen.getByText('Aware')).toBeInTheDocument();
-		expect(screen.getByText('Trigger')).toBeInTheDocument();
+		const breadcrumb = screen.getByRole('navigation', {
+			name: /breadcrumb/i,
+		});
+
+		expect(breadcrumb).toHaveTextContent(/growth and retention hub/i);
+		expect(breadcrumb).toHaveTextContent(/aware/i);
+	});
+
+	it('goes back to the summary from the lifecycle in the breadcrumb', () => {
+		const onSelectSummary = jest.fn();
+
+		renderPanel({onSelectSummary});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /growth and retention hub/i})
+		);
+
+		expect(onSelectSummary).toHaveBeenCalled();
+	});
+
+	it('edits the stage name', () => {
+		const onChange = jest.fn();
+
+		renderPanel({onChange});
+
+		const nameInput = screen.getByLabelText(/^name/i);
+
+		expect(nameInput).toHaveValue('Aware');
+		expect(nameInput).toHaveAttribute(
+			'placeholder',
+			expect.stringMatching(/new stage/i)
+		);
+
+		fireEvent.change(nameInput, {target: {value: 'Qualified'}});
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({name: 'Qualified'})
+		);
+	});
+
+	it('groups the stage conditions into progression and triggers', () => {
+		renderPanel();
+
+		expect(screen.getByText(/stage conditions/i)).toBeInTheDocument();
+		expect(
+			screen.getByText(/define how accounts move/i)
+		).toBeInTheDocument();
+		expect(screen.getByText(/define entry triggers/i)).toBeInTheDocument();
+		expect(
+			screen.getByRole('switch', {name: /enable max time in stage/i})
+		).toBeInTheDocument();
+	});
+
+	it('collapses a section from its header', () => {
+		renderPanel();
+
+		const progression = screen.getByRole('button', {name: /progression/i});
+
+		expect(progression).toHaveAttribute('aria-expanded', 'true');
+
+		fireEvent.click(progression);
+
+		expect(progression).toHaveAttribute('aria-expanded', 'false');
 	});
 
 	it('renders the stage description input and persists typed text', () => {

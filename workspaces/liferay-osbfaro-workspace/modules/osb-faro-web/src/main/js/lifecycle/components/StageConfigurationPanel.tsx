@@ -1,12 +1,16 @@
+import BaseEditPage from 'shared/components/base-edit-page';
+import Breadcrumbs from 'shared/components/Breadcrumbs';
+import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayPopover from '@clayui/popover';
 import Label from '@clayui/label';
+import LifecycleFieldRow from 'lifecycle/components/LifecycleFieldRow';
 import Panel from '@clayui/panel';
+import PickerTriggerButton from 'shared/components/PickerTriggerButton';
 import React from 'react';
 import StageConditionRow from 'lifecycle/components/StageConditionRow';
-import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
-import PickerTriggerButton from 'shared/components/PickerTriggerButton';
 import {ClayButtonWithIcon} from '@clayui/button';
+import {ClayInput, ClayToggle} from '@clayui/form';
 import {ICatalogField} from 'shared/api/catalog';
 import {Icon, Option, Picker, Text} from '@clayui/core';
 import {
@@ -23,24 +27,55 @@ import {
 import {removeAtIndex} from 'shared/util/array';
 import {sub} from 'shared/util/lang';
 
+interface IStageSectionProps {
+	children: React.ReactNode;
+	description: string;
+	title: string;
+}
+
+const StageSection: React.FC<IStageSectionProps> = ({
+	children,
+	description,
+	title,
+}) => (
+	<Panel
+		collapsable
+		collapseHeaderClassNames="border-bottom px-0"
+		defaultExpanded
+		displayTitle={
+			<Panel.Title>
+				<Text color="secondary" size={4} weight="semi-bold">
+					{title}
+				</Text>
+			</Panel.Title>
+		}
+		displayType="unstyled"
+		showCollapseIcon
+	>
+		<Panel.Body className="px-0">
+			<p className="mb-4 text-secondary">{description}</p>
+
+			{children}
+		</Panel.Body>
+	</Panel>
+);
+
 interface IStageConfigurationPanelProps {
-	defaultExpanded?: boolean;
 	fields?: ICatalogField[];
-	index: number;
-	name: string;
+	lifecycleName: string;
 	onChange: (value: IStageConfig) => void;
+	onSelectSummary?: () => void;
 	value: IStageConfig;
 }
 
 const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
-	defaultExpanded = false,
 	fields = [],
-	index,
-	name,
+	lifecycleName,
 	onChange,
+	onSelectSummary,
 	value,
 }) => {
-	const {conditions, matchLogic} = value;
+	const {conditions, key, matchLogic} = value;
 
 	const updateCondition = (
 		conditionIndex: number,
@@ -72,206 +107,231 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 	const connectorLabel = CONNECTOR_LABEL_BY_MATCH_LOGIC[matchLogic];
 
 	return (
-		<Panel
-			className="border mb-3 rounded stage-configuration-panel"
-			collapsable
-			defaultExpanded={defaultExpanded}
-			displayTitle={
-				<Panel.Title className="align-items-center d-flex">
-					<span className="mr-3">
-						<Text size={6} weight="bold">
-							{sub(Liferay.Language.get('stage-x'), [index])}
+		<>
+			<nav aria-label={Liferay.Language.get('breadcrumb')}>
+				<Breadcrumbs
+					items={[
+						{label: lifecycleName},
+						{active: true, label: value.name},
+					]}
+					onClick={onSelectSummary}
+				/>
+			</nav>
+
+			<div className="mb-5">
+				<BaseEditPage.Title
+					id={`stageName-${key}`}
+					label={Liferay.Language.get('name')}
+					onChange={(event) =>
+						onChange({...value, name: event.target.value})
+					}
+					placeholder={Liferay.Language.get('new-stage')}
+					required
+					value={value.name}
+				/>
+			</div>
+
+			<LifecycleFieldRow
+				icon="align-left"
+				id={`stageDescription-${key}`}
+				label={Liferay.Language.get('description')}
+				required
+			>
+				<ClayInput
+					id={`stageDescription-${key}`}
+					onChange={(event) =>
+						onChange({...value, description: event.target.value})
+					}
+					required
+					value={value.description}
+				/>
+			</LifecycleFieldRow>
+
+			<Card className="mt-4">
+				<Card.Body>
+					<div className="align-items-center c-gap-2 d-flex mb-4">
+						<Text size={6} weight="semi-bold">
+							{Liferay.Language.get('stage-conditions')}
 						</Text>
-					</span>
 
-					<Label
-						displayType={configured ? 'success' : 'secondary'}
-						inverse
+						<Label
+							displayType={configured ? 'success' : 'secondary'}
+							inverse
+						>
+							{configured
+								? Liferay.Language.get('configured')
+								: Liferay.Language.get('unconfigured')}
+						</Label>
+					</div>
+
+					<StageSection
+						description={Liferay.Language.get(
+							'define-how-accounts-move-between-lifecycle-stages'
+						)}
+						title={Liferay.Language.get('progression')}
 					>
-						{configured
-							? Liferay.Language.get('configured')
-							: Liferay.Language.get('unconfigured')}
-					</Label>
-				</Panel.Title>
-			}
-		>
-			<Panel.Body>
-				<Text weight="semi-bold">{name}</Text>
+						<div className="align-items-center c-gap-2 d-flex mb-4">
+							<ClayToggle
+								containerProps={{className: 'mb-0'}}
+								label={Liferay.Language.get(
+									'enable-max-time-in-stage'
+								)}
+								onToggle={(maxTimeEnabled) =>
+									onChange({...value, maxTimeEnabled})
+								}
+								toggled={value.maxTimeEnabled}
+							/>
 
-				<ClayForm.Group className="mb-4 mt-3">
-					<label htmlFor={`stage-description-${index}`}>
-						{Liferay.Language.get('description')}
+							<ClayPopover
+								alignPosition="top"
+								closeOnClickOutside
+								header={Liferay.Language.get(
+									'max-time-in-stage'
+								)}
+								trigger={
+									<ClayButtonWithIcon
+										aria-label={Liferay.Language.get(
+											'max-time-in-stage-help'
+										)}
+										className="text-secondary"
+										displayType="unstyled"
+										size="xs"
+										symbol="question-circle-full"
+									/>
+								}
+							>
+								{Liferay.Language.get('max-time-in-stage-help')}
+							</ClayPopover>
 
-						<span className="reference-mark">
-							<Icon symbol="asterisk" />
-						</span>
-					</label>
+							<ClayInput
+								aria-label={Liferay.Language.get(
+									'max-time-in-stage'
+								)}
+								className="w-auto"
+								disabled={!value.maxTimeEnabled}
+								min={1}
+								onChange={(
+									event: React.ChangeEvent<HTMLInputElement>
+								) =>
+									onChange({
+										...value,
+										maxTimeDays:
+											Number(event.target.value) ||
+											value.maxTimeDays,
+									})
+								}
+								sizing="sm"
+								type="number"
+								value={value.maxTimeDays}
+							/>
 
-					<ClayInput
-						id={`stage-description-${index}`}
-						onChange={(event) =>
-							onChange({
-								...value,
-								description: event.target.value,
-							})
-						}
-						sizing="sm"
-						value={value.description}
-					/>
-				</ClayForm.Group>
+							<span className="text-secondary">
+								{Liferay.Language.get('days').toLowerCase()}
+							</span>
+						</div>
+					</StageSection>
 
-				<div className="border-bottom font-weight-semi-bold mb-3 pb-2 text-secondary">
-					{Liferay.Language.get('stage-conditions').toUpperCase()}
-				</div>
+					<StageSection
+						description={Liferay.Language.get(
+							'define-entry-triggers-for-each-lifecycle-stage.-an-account-moves-to-a-stage-when-it-meets-the-selected-triggers'
+						)}
+						title={Liferay.Language.get('triggers')}
+					>
+						<div className="border overflow-hidden rounded">
+							<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match text-secondary">
+								{sub(
+									Liferay.Language.get(
+										'x-of-these-criteria-are-met'
+									),
+									[
+										<Picker
+											aria-label={Liferay.Language.get(
+												'match-logic'
+											)}
+											as={PickerTriggerButton}
+											disabled={conditions.length < 2}
+											items={MATCH_LOGIC_OPTIONS}
+											key="matchLogic"
+											label={
+												matchLogic === MatchLogic.Any
+													? Liferay.Language.get(
+															'any'
+														)
+													: Liferay.Language.get(
+															'all'
+														)
+											}
+											onSelectionChange={(key) =>
+												onChange({
+													...value,
+													matchLogic:
+														key as MatchLogic,
+												})
+											}
+											selectedKey={matchLogic}
+											size="xs"
+										>
+											{(item) => (
+												<Option key={item.value}>
+													{item.label}
+												</Option>
+											)}
+										</Picker>,
+									],
+									false
+								)}
+							</div>
 
-				<div className="font-weight-semi-bold mb-2">
-					{Liferay.Language.get('trigger')}
-				</div>
+							<div className="p-3">
+								{conditions.map((condition, conditionIndex) => (
+									<React.Fragment key={condition.key}>
+										{conditionIndex > 0 && (
+											<div className="font-weight-semi-bold my-2 text-secondary text-uppercase">
+												{connectorLabel}
+											</div>
+										)}
 
-				<div className="border mb-4 overflow-hidden rounded">
-					<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match text-secondary">
-						{sub(
-							Liferay.Language.get(
-								'x-of-these-criteria-must-be-met'
-							),
-							[
-								<Picker
-									aria-label={Liferay.Language.get(
-										'match-logic'
-									)}
-									as={PickerTriggerButton}
-									disabled={conditions.length < 2}
-									items={MATCH_LOGIC_OPTIONS}
-									key="matchLogic"
-									label={
-										matchLogic === MatchLogic.Any
-											? Liferay.Language.get('any')
-											: Liferay.Language.get('all')
-									}
-									onSelectionChange={(key) =>
-										onChange({
-											...value,
-											matchLogic: key as MatchLogic,
-										})
-									}
-									selectedKey={matchLogic}
+										<StageConditionRow
+											condition={condition}
+											fields={fields}
+											index={conditionIndex + 1}
+											onChange={(patch) =>
+												updateCondition(
+													conditionIndex,
+													patch
+												)
+											}
+											onRemove={
+												conditionIndex > 0
+													? () =>
+															removeCondition(
+																conditionIndex
+															)
+													: undefined
+											}
+										/>
+									</React.Fragment>
+								))}
+
+								<ClayButton
+									className="mt-3"
+									displayType="secondary"
+									onClick={addCondition}
 									size="xs"
 								>
-									{(item) => (
-										<Option key={item.value}>
-											{item.label}
-										</Option>
-									)}
-								</Picker>,
-							],
-							false
-						)}
-					</div>
+									<Icon
+										className="inline-item inline-item-before"
+										symbol="plus"
+									/>
 
-					<div className="p-3">
-						{conditions.map((condition, conditionIndex) => (
-							<React.Fragment key={condition.key}>
-								{conditionIndex > 0 && (
-									<div className="font-weight-semi-bold my-2 text-secondary text-uppercase">
-										{connectorLabel}
-									</div>
-								)}
-
-								<StageConditionRow
-									condition={condition}
-									fields={fields}
-									index={conditionIndex + 1}
-									onChange={(patch) =>
-										updateCondition(conditionIndex, patch)
-									}
-									onRemove={
-										conditionIndex > 0
-											? () =>
-													removeCondition(
-														conditionIndex
-													)
-											: undefined
-									}
-								/>
-							</React.Fragment>
-						))}
-
-						<ClayButton
-							className="mt-3"
-							displayType="secondary"
-							onClick={addCondition}
-							size="xs"
-						>
-							<Icon
-								className="inline-item inline-item-before"
-								symbol="plus"
-							/>
-
-							{Liferay.Language.get('add-trigger')}
-						</ClayButton>
-					</div>
-				</div>
-
-				<div className="align-items-center d-flex font-weight-semi-bold mb-2">
-					{Liferay.Language.get('max-time-in-stage')}
-
-					<ClayPopover
-						alignPosition="top"
-						closeOnClickOutside
-						header={Liferay.Language.get('max-time-in-stage')}
-						trigger={
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get(
-									'max-time-in-stage-help'
-								)}
-								className="ml-1 text-secondary"
-								displayType="unstyled"
-								size="xs"
-								symbol="question-circle-full"
-							/>
-						}
-					>
-						{Liferay.Language.get('max-time-in-stage-help')}
-					</ClayPopover>
-				</div>
-
-				<div className="align-items-center c-gap-2 d-flex">
-					<ClayToggle
-						containerProps={{className: 'mb-0'}}
-						onToggle={(maxTimeEnabled) =>
-							onChange({...value, maxTimeEnabled})
-						}
-						toggled={value.maxTimeEnabled}
-					/>
-
-					<span className="font-weight-semi-bold">
-						{Liferay.Language.get('set-limit-to')}
-					</span>
-
-					<ClayInput
-						aria-label={Liferay.Language.get('max-time-in-stage')}
-						className="w-auto"
-						disabled={!value.maxTimeEnabled}
-						min={1}
-						onChange={(
-							event: React.ChangeEvent<HTMLInputElement>
-						) =>
-							onChange({
-								...value,
-								maxTimeDays:
-									Number(event.target.value) ||
-									value.maxTimeDays,
-							})
-						}
-						sizing="sm"
-						type="number"
-						value={value.maxTimeDays}
-					/>
-
-					<span>{Liferay.Language.get('days').toLowerCase()}</span>
-				</div>
-			</Panel.Body>
-		</Panel>
+									{Liferay.Language.get('add-trigger')}
+								</ClayButton>
+							</div>
+						</div>
+					</StageSection>
+				</Card.Body>
+			</Card>
+		</>
 	);
 };
 

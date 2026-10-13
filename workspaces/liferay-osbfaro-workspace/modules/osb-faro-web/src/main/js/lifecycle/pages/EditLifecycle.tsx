@@ -30,6 +30,7 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 		lifecycleURL,
 		refetchCatalog,
 		selectedStage,
+		setLifecycleDescription,
 		setLifecycleName,
 		setSelectedKey,
 		stageConfigs,
@@ -70,9 +71,13 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 
 	return (
 		<LifecycleSettingsForm
+			authorName={lifecycle.authorName ?? ''}
 			backURL={lifecycleURL}
 			catalogFields={catalogFields?.items}
+			lifecycleDescription={lifecycleDescription}
 			lifecycleName={lifecycleName}
+			modifiedDate={lifecycle.modifiedDate}
+			onLifecycleDescriptionChange={setLifecycleDescription}
 			onLifecycleNameChange={setLifecycleName}
 			onSelect={setSelectedKey}
 			onStageChange={updateStage}

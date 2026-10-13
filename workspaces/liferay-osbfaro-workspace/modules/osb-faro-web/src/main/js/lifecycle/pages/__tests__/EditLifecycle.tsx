@@ -31,6 +31,10 @@ jest.mock('react-router-dom', () => ({
 	useParams: () => ({channelId: '123', groupId: '23', lifecycleId: '9'}),
 }));
 
+jest.mock('shared/hooks/useTimeZone', () => ({
+	useTimeZone: () => ({timeZoneId: 'UTC'}),
+}));
+
 jest.mock('shared/hooks/useHistoryAdapter', () => ({
 	useHistoryAdapter: () => ({push: mockPush}),
 }));
@@ -123,7 +127,7 @@ describe('EditLifecycle', () => {
 		expect(
 			screen.getByRole('group', {name: /configuration summary/i})
 		).toHaveAttribute('aria-current', 'true');
-		expect(screen.getByLabelText(/title/i)).toHaveValue(
+		expect(screen.getByLabelText(/^name/i)).toHaveValue(
 			'Growth and Retention Hub'
 		);
 	});
@@ -144,7 +148,7 @@ describe('EditLifecycle', () => {
 	it('shows the selected stage and keeps edits when switching items', () => {
 		renderPage();
 
-		fireEvent.change(screen.getByLabelText(/title/i), {
+		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'Renamed Hub'},
 		});
 
@@ -153,14 +157,63 @@ describe('EditLifecycle', () => {
 		fireEvent.click(qualified);
 
 		expect(qualified).toHaveAttribute('aria-current', 'true');
-		expect(screen.getByText(/^stage 2$/i)).toBeInTheDocument();
-		expect(screen.queryByLabelText(/title/i)).toBeNull();
+		expect(screen.getByLabelText(/^name/i)).toHaveValue('Qualified');
 
 		fireEvent.click(
 			screen.getByRole('group', {name: /configuration summary/i})
 		);
 
-		expect(screen.getByLabelText(/title/i)).toHaveValue('Renamed Hub');
+		expect(screen.getByLabelText(/^name/i)).toHaveValue('Renamed Hub');
+	});
+
+	it('summarizes the saved lifecycle with its author and modified date', () => {
+		renderPage();
+
+		expect(screen.getByLabelText(/^description/i)).toHaveValue(
+			'Lifecycle for qualified accounts'
+		);
+		expect(
+			(screen.getByLabelText(/^stages/i) as HTMLInputElement).value
+		).toMatch(/^3 stages$/i);
+		expect(screen.getByLabelText(/last modified by/i)).toHaveValue(
+			'Anneta Smith'
+		);
+		expect(screen.getByLabelText(/modified date/i)).toHaveValue(
+			expect.stringMatching(/2026/)
+		);
+	});
+
+	it('saves the edited description and stage name', async () => {
+		renderPage();
+
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Renamed description'},
+		});
+
+		fireEvent.click(screen.getByRole('group', {name: /qualified/i}));
+
+		fireEvent.change(screen.getByLabelText(/^name/i), {
+			target: {value: 'Engaged'},
+		});
+
+		expect(
+			screen.getByRole('group', {name: /^engaged$/i})
+		).toBeInTheDocument();
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		await waitFor(() =>
+			expect(API.lifecycle.updateLifecycle).toHaveBeenCalled()
+		);
+
+		const payload = (API.lifecycle.updateLifecycle as jest.Mock).mock
+			.calls[0][0];
+
+		expect(payload.description).toBe('Renamed description');
+		expect(payload.stages[1]).toEqual(
+			expect.objectContaining({id: 'stage-1', name: 'Engaged'})
+		);
+		expect(payload.stages[0].name).toBe('Aware');
 	});
 
 	it('renders a loading state while the lifecycle is loading', () => {

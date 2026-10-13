@@ -1,14 +1,19 @@
 import BaseEditPage from 'shared/components/base-edit-page';
 import LifecycleConditionsPanel from 'lifecycle/components/LifecycleConditionsPanel';
+import LifecycleSummary from 'lifecycle/components/LifecycleSummary';
 import React from 'react';
 import StageConfigurationPanel from 'lifecycle/components/StageConfigurationPanel';
 import {ICatalogField} from 'shared/api/catalog';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 
 interface ILifecycleSettingsFormProps {
+	authorName: string;
 	backURL: string;
 	catalogFields?: ICatalogField[];
+	lifecycleDescription: string;
 	lifecycleName: string;
+	modifiedDate?: number | null;
+	onLifecycleDescriptionChange: (description: string) => void;
 	onLifecycleNameChange: (name: string) => void;
 	onSelect: (key: string | null) => void;
 	onStageChange: (key: string, value: IStageConfig) => void;
@@ -21,9 +26,13 @@ interface ILifecycleSettingsFormProps {
 }
 
 const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
+	authorName,
 	backURL,
 	catalogFields,
+	lifecycleDescription,
 	lifecycleName,
+	modifiedDate,
+	onLifecycleDescriptionChange,
 	onLifecycleNameChange,
 	onSelect,
 	onStageChange,
@@ -61,26 +70,24 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 			<BaseEditPage.Main className="page-container">
 				{selectedStage ? (
 					<StageConfigurationPanel
-						defaultExpanded
 						fields={catalogFields}
-						index={stageConfigs.indexOf(selectedStage) + 1}
 						key={selectedStage.key}
-						name={selectedStage.name}
+						lifecycleName={lifecycleName}
 						onChange={(value) =>
 							onStageChange(selectedStage.key, value)
 						}
+						onSelectSummary={() => onSelect(null)}
 						value={selectedStage}
 					/>
 				) : (
-					<BaseEditPage.Title
-						id="lifecycleName"
-						label={Liferay.Language.get('title')}
-						onChange={(event) =>
-							onLifecycleNameChange(event.target.value)
-						}
-						placeholder={Liferay.Language.get('lifecycle-name')}
-						required
-						value={lifecycleName}
+					<LifecycleSummary
+						authorName={authorName}
+						description={lifecycleDescription}
+						modifiedDate={modifiedDate}
+						name={lifecycleName}
+						onDescriptionChange={onLifecycleDescriptionChange}
+						onNameChange={onLifecycleNameChange}
+						stageCount={stageConfigs.length}
 					/>
 				)}
 			</BaseEditPage.Main>

@@ -65,6 +65,14 @@ jest.mock('react-router-dom', () => ({
 	useParams: () => ({channelId: '123', groupId: '23'}),
 }));
 
+jest.mock('shared/hooks/useCurrentUser', () => ({
+	useCurrentUser: () => ({name: 'Anneta Smith'}),
+}));
+
+jest.mock('shared/hooks/useTimeZone', () => ({
+	useTimeZone: () => ({timeZoneId: 'UTC'}),
+}));
+
 jest.mock('shared/hooks/useHistoryAdapter', () => ({
 	useHistoryAdapter: () => ({push: mockPush}),
 }));
@@ -135,13 +143,46 @@ describe('CreateLifecycle', () => {
 
 		expect(stage).toHaveAttribute('aria-current', 'true');
 		expect(screen.getByText(/unconfigured/i)).toBeInTheDocument();
-		expect(screen.queryByLabelText(/title/i)).toBeNull();
+		expect(screen.getByLabelText(/^name/i)).toHaveAttribute(
+			'placeholder',
+			expect.stringMatching(/new stage/i)
+		);
 	});
 
-	it('renders the title input and updates its value', () => {
+	it('shows the stage name on its chip as it is typed', () => {
 		renderPage();
 
-		const nameInput = screen.getByLabelText(/title/i);
+		fireEvent.keyDown(screen.getByRole('group', {name: /^stage 1$/i}), {
+			key: 'Enter',
+		});
+
+		fireEvent.change(screen.getByLabelText(/^name/i), {
+			target: {value: 'Qualified'},
+		});
+
+		expect(
+			screen.getByRole('group', {name: /^qualified$/i})
+		).toHaveTextContent(/qualified/i);
+	});
+
+	it('summarizes a new lifecycle with the current user and no date', () => {
+		renderPage();
+
+		expect(screen.getByLabelText(/^name/i)).toHaveAttribute(
+			'placeholder',
+			expect.stringMatching(/new lifecycle/i)
+		);
+		expect(screen.getByLabelText(/^stages/i)).toHaveValue('1 stage');
+		expect(screen.getByLabelText(/last modified by/i)).toHaveValue(
+			'Anneta Smith'
+		);
+		expect(screen.getByLabelText(/modified date/i)).toHaveValue('');
+	});
+
+	it('renders the name input and updates its value', () => {
+		renderPage();
+
+		const nameInput = screen.getByLabelText(/^name/i);
 
 		fireEvent.change(nameInput, {target: {value: 'My Lifecycle'}});
 
@@ -171,7 +212,7 @@ describe('CreateLifecycle', () => {
 			name: /create lifecycle/i,
 		});
 
-		fireEvent.change(screen.getByLabelText(/title/i), {
+		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'My Lifecycle'},
 		});
 
@@ -249,8 +290,12 @@ describe('CreateLifecycle', () => {
 
 		renderPage();
 
-		fireEvent.change(screen.getByLabelText(/title/i), {
+		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'My Lifecycle'},
+		});
+
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Qualified accounts'},
 		});
 
 		fireEvent.click(
@@ -267,7 +312,7 @@ describe('CreateLifecycle', () => {
 		expect(payload).toEqual(
 			expect.objectContaining({
 				channelId: '123',
-				description: '',
+				description: 'Qualified accounts',
 				name: 'My Lifecycle',
 			})
 		);
@@ -297,8 +342,12 @@ describe('CreateLifecycle', () => {
 
 		renderPage();
 
-		fireEvent.change(screen.getByLabelText(/title/i), {
+		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'My Lifecycle'},
+		});
+
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Qualified accounts'},
 		});
 
 		fireEvent.click(
