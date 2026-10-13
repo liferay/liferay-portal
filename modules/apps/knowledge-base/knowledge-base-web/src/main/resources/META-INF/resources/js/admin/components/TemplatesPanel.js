@@ -88,7 +88,13 @@ export default function TemplatesPanel({items: initialItems, selectedItemId}) {
 	) : (
 		<ClayEmptyState
 			description=""
-			imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-empty-state"
+					illustration
+					symbol="empty-state"
+				/>
+			}
 			small
 			title={Liferay.Language.get('there-are-no-article-templates')}
 		/>

@@ -20,7 +20,7 @@ describe('Suggestions Panel', () => {
 	it('renders empty message if there are no items', () => {
 		const {getAllByRole, getByText} = render(<SuggestionsPanel />);
 
-		expect(getAllByRole('presentation').length).toBe(2);
+		expect(getAllByRole('presentation').length).toBe(1);
 		expect(getByText(EMPTY_STATE_TEXT)).toBeInTheDocument();
 	});
 });
