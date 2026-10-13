@@ -12,7 +12,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -20,25 +19,6 @@ import org.mockito.Mockito;
  */
 public class GitWorkingDirectoryTest
 	extends com.liferay.jenkins.results.parser.Test {
-
-	@Test
-	public void testCheckoutLocalGitBranch() throws Exception {
-		_testCheckoutLocalGitBranch(
-			"git@github.com:liferay/liferay-portal.git", "",
-			RandomTestUtil.randomString());
-		_testCheckoutLocalGitBranch(
-			"git@github.com:liferay/liferay-portal.git", null,
-			RandomTestUtil.randomString());
-
-		String receiverUsername = RandomTestUtil.randomString();
-		String repositoryName = RandomTestUtil.randomString();
-
-		_testCheckoutLocalGitBranch(
-			JenkinsResultsParserUtil.combine(
-				"git@github.com:", receiverUsername, "/", repositoryName,
-				".git"),
-			receiverUsername, repositoryName);
-	}
 
 	@Test
 	public void testFetchGitCommitParentFromUpstream() throws Exception {
@@ -125,71 +105,6 @@ public class GitWorkingDirectoryTest
 	}
 
 	@Test
-	public void testGetRebasedLocalGitBranchPullRequest() throws Exception {
-		GitWorkingDirectory gitWorkingDirectory =
-			_newRebaseGitWorkingDirectory();
-
-		String upstreamRemoteURL = RandomTestUtil.randomString();
-
-		RemoteGitBranch upstreamRemoteGitBranch = Mockito.mock(
-			RemoteGitBranch.class);
-
-		Mockito.doReturn(
-			upstreamRemoteURL
-		).when(
-			upstreamRemoteGitBranch
-		).getRemoteURL();
-
-		String upstreamRemoteGitBranchName = RandomTestUtil.randomString();
-
-		PullRequest pullRequest = Mockito.mock(PullRequest.class);
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			pullRequest
-		).getLocalSenderBranchName();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			pullRequest
-		).getSenderBranchName();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			pullRequest
-		).getSenderSHA();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			pullRequest
-		).getUpstreamBranchSHA();
-
-		Mockito.doReturn(
-			upstreamRemoteGitBranch
-		).when(
-			pullRequest
-		).getUpstreamRemoteGitBranch();
-
-		Mockito.doReturn(
-			upstreamRemoteGitBranchName
-		).when(
-			pullRequest
-		).getUpstreamRemoteGitBranchName();
-
-		gitWorkingDirectory.getRebasedLocalGitBranch(pullRequest);
-
-		Mockito.verify(
-			gitWorkingDirectory
-		).getRemoteGitBranch(
-			upstreamRemoteGitBranchName, upstreamRemoteURL, true
-		);
-	}
-
-	@Test
 	public void testGetRebasedLocalGitBranchUpstreamRemoteURL()
 		throws Exception {
 
@@ -247,13 +162,6 @@ public class GitWorkingDirectoryTest
 			gitWorkingDirectory
 		).clean();
 
-		Mockito.doNothing(
-		).when(
-			gitWorkingDirectory
-		).reset(
-			Mockito.anyString()
-		);
-
 		Mockito.doReturn(
 			localGitBranch
 		).when(
@@ -302,103 +210,14 @@ public class GitWorkingDirectoryTest
 			Mockito.any(LocalGitBranch.class)
 		);
 
+		Mockito.doNothing(
+		).when(
+			gitWorkingDirectory
+		).reset(
+			Mockito.anyString()
+		);
+
 		return gitWorkingDirectory;
-	}
-
-	private void _testCheckoutLocalGitBranch(
-			String expectedUpstreamRemoteURL, String receiverUsername,
-			String repositoryName)
-		throws Exception {
-
-		GitWorkingDirectory gitWorkingDirectory =
-			_newRebaseGitWorkingDirectory();
-
-		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			localGitBranch
-		).getName();
-
-		Mockito.doNothing(
-		).when(
-			gitWorkingDirectory
-		).checkoutLocalGitBranch(
-			Mockito.any(LocalGitBranch.class)
-		);
-
-		Mockito.doNothing(
-		).when(
-			gitWorkingDirectory
-		).checkoutUpstreamLocalGitBranch();
-
-		Mockito.doReturn(
-			localGitBranch
-		).when(
-			gitWorkingDirectory
-		).createLocalGitBranch(
-			Mockito.anyString(), Mockito.anyBoolean()
-		);
-
-		String upstreamBranchName = RandomTestUtil.randomString();
-
-		Build.BranchInformation branchInformation = Mockito.mock(
-			Build.BranchInformation.class);
-
-		Mockito.doReturn(
-			receiverUsername
-		).when(
-			branchInformation
-		).getReceiverUsername();
-
-		Mockito.doReturn(
-			repositoryName
-		).when(
-			branchInformation
-		).getRepositoryName();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			branchInformation
-		).getSenderBranchName();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			branchInformation
-		).getSenderBranchSHA();
-
-		Mockito.doReturn(
-			Mockito.mock(RemoteGitRef.class)
-		).when(
-			branchInformation
-		).getSenderRemoteGitRef();
-
-		Mockito.doReturn(
-			upstreamBranchName
-		).when(
-			branchInformation
-		).getUpstreamBranchName();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			branchInformation
-		).getUpstreamBranchSHA();
-
-		try (MockedStatic<GitHubDevSyncUtil> gitHubDevSyncUtilMockedStatic =
-				Mockito.mockStatic(GitHubDevSyncUtil.class)) {
-
-			gitWorkingDirectory.checkoutLocalGitBranch(branchInformation);
-		}
-
-		Mockito.verify(
-			gitWorkingDirectory
-		).getRemoteGitBranch(
-			upstreamBranchName, expectedUpstreamRemoteURL, true
-		);
 	}
 
 	private static final String _LOCAL_BRANCH_SHA = "abcdef1234567890";
